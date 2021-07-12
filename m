@@ -2,127 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F973C66EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926103C66F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhGLX2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 19:28:18 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:35475 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhGLX2R (ORCPT
+        id S231922AbhGLXeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 19:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhGLXeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 19:28:17 -0400
-Received: by mail-ej1-f41.google.com with SMTP id gn32so37901460ejc.2;
-        Mon, 12 Jul 2021 16:25:28 -0700 (PDT)
+        Mon, 12 Jul 2021 19:34:05 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87D8C0613E8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 16:31:14 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 8so34927671lfp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 16:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SmD9wC6S6HXd90fnEsiBq1bDT4eXjAjdn3ifAXDkVWs=;
+        b=hAIpmKdW1W518cHLzs+EPkLneVA07sONS0itbFu5sbRK2QvQXjhr0rHy5VHDsPnXhm
+         vGLKnJKHjXAYIeWzh1rCbEzEQSKOHfgd8/o3f9cjimvzqRobAlBf99RNyRXMMv0GxBFm
+         LbGMXQ+A1Lew8FgNm53lP//G1/SkXGaeFT5IP7JdVIYSV66VaSCxyb7lDWbOelWAUK0H
+         pAjZcsaSxnzHmVgEICXC9winWzETj6hLcLcobtWkNTtuYDxKl8dsWCy6P7gw3CHHmujm
+         PWZQNqPEHXALYDjkcCIJ82BtZPL8HWd23PTyz+DTXPmwcD1Wcmzi0RanPccynm65l+iE
+         QpKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=H563yEm0J6K2K6xru5IzDuO+9clWz/y4OULndG63lZQ=;
-        b=n3MNN9LgrB6upN2PCZ08rT18zBbSrAtu0LV3s6pRBSkNAPPS1ykZlZ+G6NlhUwc2g5
-         JxHEhHYCI/HUk9iMHjtPIW8NogqQ2ZY0gonBF7kEhRWZTZWmrbfjZTRRR9lPJ1TShZ+2
-         aH1L2vCk7OF+k5SWgfFs9oGtCvmLgzYPTscqY1hWyl4vgsqAa+MOkeDCpOBzXwIEdqA6
-         14/qEyyhqzKB1iBgqHKBv7bJ06W9bh5elcx5Vt+KsViRdlKgsqeL/Vm/3mGngHp+sccU
-         hUreb142lSZOuKgT+6asjUtD4H3ajVJUeyDDlYgwi16Ljc8dU95NC62sH474MoigEbeW
-         dgYg==
-X-Gm-Message-State: AOAM5318u2xfy53AY/hqBrB9SA20cYmWyGZmPjTJNSZ2xHbRvfAsjWk4
-        lzLvby3wXVJr/LZZZDaw/r0=
-X-Google-Smtp-Source: ABdhPJzOxmMx2OGBYBjWUtpT596k9B7h1Eu/IV82RZK7jMwhWkMSvM5AZYmuqHZnWd0REitXiUH1RQ==
-X-Received: by 2002:a17:906:2dc4:: with SMTP id h4mr1727419eji.528.1626132327523;
-        Mon, 12 Jul 2021 16:25:27 -0700 (PDT)
-Received: from localhost (host-95-250-115-52.retail.telecomitalia.it. [95.250.115.52])
-        by smtp.gmail.com with ESMTPSA id p23sm8910919edw.94.2021.07.12.16.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 16:25:26 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 01:25:22 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     "Elliott, Robert (Servers)" <elliott@hpe.com>
-Cc:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Lennart Poettering" <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier =?UTF-8?B?R29uesOhbGV6?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v4 3/5] block: add ioctl to read the disk sequence
- number
-Message-ID: <20210713012522.70abe32e@linux.microsoft.com>
-In-Reply-To: <TU4PR8401MB10558BB52D2F37CFC96FB8B8AB159@TU4PR8401MB1055.NAMPRD84.PROD.OUTLOOK.COM>
-References: <20210711175415.80173-1-mcroce@linux.microsoft.com>
-        <20210711175415.80173-4-mcroce@linux.microsoft.com>
-        <TU4PR8401MB10558BB52D2F37CFC96FB8B8AB159@TU4PR8401MB1055.NAMPRD84.PROD.OUTLOOK.COM>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SmD9wC6S6HXd90fnEsiBq1bDT4eXjAjdn3ifAXDkVWs=;
+        b=cw+yFW2a+Pyc17EG/MKVSvrjFDg1dPeqm96mlOj4Bigs/+/p/Zawatru349s2FdnXV
+         ZHNuD8WN4MX9GMzkztm/hreszFdOT2KOSUNT1aR2gyrHcwmzPt2j7pZRg0ltSVhGGAEc
+         jRUPPXqGNj5n2zZBm4Ji/Gju5ywHgQ6K19JCwjXEny6gfppfbyKGMUswkwUYuStL2YNe
+         EAo/T6hEG5YXxTyCgigELdYBKCoXaUgUVWlVTvx8GSNFL+17svUvQcW+6/PVZpJYyi7V
+         cyM559YLASSADMlmh1AT2enlBb73ryCgVJlAG1jSMnS2ovkDFGVDOnO5d9bQuOzFro3s
+         61Ug==
+X-Gm-Message-State: AOAM5328cX7ix8ktx+effKwRYITrXuxAAcw+NxrEV2JubR6OIiUI6ARx
+        UIpQxriudJP5xpmooozczq4bhm1pNZ8Z1WDy86GE5g==
+X-Google-Smtp-Source: ABdhPJzawrnH2EMmks7QDs/Pc4YJ5ewMCCSLedNnOcA5Y95fOx9YAK5PGJ7tBsWIXNFWnQsvh8k32i/RiPpXTob5++I=
+X-Received: by 2002:a19:c508:: with SMTP id w8mr977965lfe.446.1626132672755;
+ Mon, 12 Jul 2021 16:31:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAPNVh5f3H7Gor-Dph7=2jAdme-4mRfCCb0gv=wjgHQtd7Cad=Q@mail.gmail.com>
+ <acad5960-30b2-3693-9117-e0b054ee97a7@uwaterloo.ca>
+In-Reply-To: <acad5960-30b2-3693-9117-e0b054ee97a7@uwaterloo.ca>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Mon, 12 Jul 2021 16:31:01 -0700
+Message-ID: <CAPNVh5cm9LhLEi1Td3rbOWtWH5oCvZTTMRd+p5bu75Epr3mqwA@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3 v0.2] sched/umcg: RFC: implement UMCG syscalls
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     avagin@google.com, bsegall@google.com, jannh@google.com,
+        jnewsome@torproject.org, joel@joelfernandes.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, mkarsten@uwaterloo.ca, pabuhr@uwaterloo.ca,
+        peterz@infradead.org, pjt@google.com, posk@posk.io,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 19:22:43 +0000
-"Elliott, Robert (Servers)" <elliott@hpe.com> wrote:
+On Mon, Jul 12, 2021 at 2:44 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
+>
+>  > sys_umcg_wait without next_tid puts the task in UMCG_IDLE state; wake
+>  > wakes it. These are standard sched operations. If they are emulated
+>  > via futexes, fast context switching will require something like
+>  > FUTEX_SWAP that was NACKed last year.
+>
+> I understand these wait and wake semantics and the need for the fast
+> context-switch(swap). As I see it, you need 3 operations:
+>
+> - SWAP: context-switch directly to a different thread, no scheduler involved
+> - WAIT: block current thread, go back to server thread
+> - WAKE: unblock target thread, add it to scheduler, e.g. through
+>          idle_workers_ptr
+>
+> There is no existing syscalls to handle SWAP, so I agree sys_umcg_wait is
+> needed for this to work.
+>
+> However, there already exists sys_futex to handle WAIT and WAKE. When a
+> worker
+> calls either sys_futex WAIT or sys_umcg_wait next_tid == NULL, in both case
+> the worker will block, SWAP to the server and wait for FUTEX_WAKE,
+> UMCG_WAIT_WAKE_ONLY respectively. It's not obvious to me that there
+> would be
+> performance difference and the semantics seem to be the same to me.
+>
+> So what I am asking is: is UMCG_WAIT_WAKE_ONLY needed?
 
-> 
-> 
-> > -----Original Message-----
-> > From: Matteo Croce <mcroce@linux.microsoft.com>
-> > Sent: Sunday, July 11, 2021 12:54 PM
-> ...
-> > Subject: [PATCH v4 3/5] block: add ioctl to read the disk sequence
-> > number
-> > 
-> > From: Matteo Croce <mcroce@microsoft.com>
-> > 
-> > Add a new BLKGETDISKSEQ ioctl which retrieves the disk sequence
-> > number from the genhd structure.
-> ...
-> 
-> 
-> Given:
->     static int put_u64(u64 __user *argp, u64 val)
->     {
->         return put_user(val, argp);
->     }
-> 
-> > diff --git a/block/ioctl.c b/block/ioctl.c
-> > index 24beec9ca9c9..0c3a4a53fa11 100644
-> > --- a/block/ioctl.c
-> > +++ b/block/ioctl.c
-> > @@ -469,6 +469,8 @@ static int blkdev_common_ioctl(struct
-> > block_device *bdev, fmode_t mode,
-> >  				BLKDEV_DISCARD_SECURE);
-> ...
-> 
-> > +	case BLKGETDISKSEQ:
-> > +		return put_u64(argp, bdev->bd_disk->diskseq);
-> 
-> How does that work on a system in which int is 32 bits?
-> 
-> 
+Because the approach you described has been tried last year and was NACKed:
+https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
 
-Hi,
+In short, futex maintainers do not want to touch the existing futex
+code at all other than for bugfixes. No new futex functionality,
+period. See e.g. futex2 efforts:
+https://lore.kernel.org/lkml/20210603195924.361327-1-andrealmeid@collabora.com/
 
-what's the difference with this?
+> Is the idea to support workers directly context-switching among each other,
+> without involving server threads and without going through idle_servers_ptr?
 
-	case BLKGETSIZE64:
-		return put_u64(argp, i_size_read(bdev->bd_inode));
+Yes.
 
-The returned int is an error code, not the diskseq value itself, e.g.
+> If so, can you explain some of the intended state transitions in this case.
 
-	case BLKFRAGET:
-		if (!argp)
-			return -EINVAL;
+Cooperative scheduling: workers can yield to each other (i.e. swap).
+This allows building very fast concurrency primitives (mutexes,
+producer-consumer queues, etc.). For example: a producer-consumer
+queue: a producer: prepare an item, contex-switch to a consumer on CPU
+synchronously: this can be done much faster than waking the consumer
+asynchronously; helps a lot to reduce latency (throughput? not so
+much)
 
-Regards,
--- 
-per aspera ad upstream
+>
+>
+>  > > However, I do not understand how the userspace is expected to use
+> it. I also
+>  > > do not understand if these link fields form a stack or a queue and
+> where is
+>  > > the head.
+>  >
+>  > When a server has nothing to do (no work to run), it is put into IDLE
+>  > state and added to the list. The kernel wakes an IDLE server if a
+>  > blocked worker unblocks.
+>
+>  From the code in umcg_wq_worker_running (Step 3), I am guessing users are
+> expected to provide a global head somewhere in memory and
+> umcg_task.idle_servers_ptr points to the head of the list for all workers.
+> Servers are then added in user space using atomic_stack_push_user. Is this
+> correct? I did not find any documentation on the list head.
+
+This is going to change somewhat. I'll post a new patchset soon-ish
+(later this week?)
+
+>
+> I like the idea that each worker thread points to a given list, it
+> allows the
+> possibility for separate containers with their own independent servers,
+> workers
+> and scheduling. However, it seems that the list itself could be implemented
+> using existing kernel APIs, for example a futex or an event fd. Like so:
+>
+> struct umcg_task {
+>       [...]
+>
+>       /**
+>        * @idle_futex_ptr: pointer to a futex user for idle server threads.
+>        *
+>        * When waking a worker, the kernel decrements the pointed to
+> futex value
+>        * if it is non-zero and wakes a server if the decrement occurred.
+>        *
+>        * Server threads that have no work to do should increment the futex
+>        * value and FUTEX_WAIT
+>        */
+>       uint64_t    idle_futex_ptr;    /* r/w */
+>
+>       [...]
+> } __attribute__((packed, aligned(8 * sizeof(__u64))));
+>
+> I believe the futex approach, like the list, has the advantage that when
+> there
+> are no idle servers, checking the list requires no locking. I don't know if
+> that can be achieved with eventfd.
+
+As mentioned above, a futex-based solution was rejected by
+maintainers. Believe me, I tried. Not only tried, we have a working
+userspace scheduling stack on top of FUTEX_SWAP deployed internally at
+Google, with some actual usage (mostly testing/debugging workloads). I
+suggest we stop discussing futexes in this context - I do not see the
+maintainers changing their position. And the approach used in this
+patchset seems to work (and I actually like how the code is shaping
+up).
