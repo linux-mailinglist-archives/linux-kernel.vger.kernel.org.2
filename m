@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9583C3C5777
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AF93C4A38
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359041AbhGLIeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
+        id S239222AbhGLGtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346503AbhGLHqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:46:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 361ED613FA;
-        Mon, 12 Jul 2021 07:41:52 +0000 (UTC)
+        id S237826AbhGLGjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A9161166;
+        Mon, 12 Jul 2021 06:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075712;
-        bh=kRiago927HFg+ZHkm+g4t8aU2H8KxprrSkJHgBpdzM4=;
+        s=korg; t=1626071731;
+        bh=cAeuC7oI2K6Da1Me3x4gMryj6x09fXna4zQuwwynkWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sv0Qyh5M6WoiiVcu+ZtNGfHMTDYbOeKq7iKWY0p/jWQybNkUuUY8oJnaJKmMYHBj6
-         82L/DZOmNnOxWG5PG9fRLpaMVCpz1pDn+Z9Yn8geuRdyj3KLQYNjqJ41M8S6xqKPqR
-         1MLuIVgYIgiDlKJYkUDAPk7c4VRmG2qgyDJx5WqM=
+        b=R9lvMyDx9z5rZaaVWV6gpjL9Ao+QqNK5Lk1roFULSgUn0ZHM9yl8pKo/G/QAnym3I
+         swDkq5MIMxr240O4VlzgkleGp3ttAYn8XoHASweSL5r4W6mv/zzw550rbWZpqNDuUq
+         hutvkB+8hFrdABOmxfnUwHTPTVTYp75bcq2qsXY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tuan Phan <tuanphan@os.amperecomputing.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 330/800] perf/arm-cmn: Fix invalid pointer when access dtc object sharing the same IRQ number
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        James Smart <jsmart2021@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 193/593] nvmet-fc: do not check for invalid target port in nvmet_fc_handle_fcp_rqst()
 Date:   Mon, 12 Jul 2021 08:05:53 +0200
-Message-Id: <20210712061001.527925982@linuxfoundation.org>
+Message-Id: <20210712060904.237248316@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuan Phan <tuanphan@os.amperecomputing.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 4e16f283edc289820e9b2d6f617ed8e514ee8396 ]
+[ Upstream commit 2a4a910aa4f0acc428dc8d10227c42e14ed21d10 ]
 
-When multiple dtcs share the same IRQ number, the irq_friend which
-used to refer to dtc object gets calculated incorrect which leads
-to invalid pointer.
+When parsing a request in nvmet_fc_handle_fcp_rqst() we should not
+check for invalid target ports; if we do the command is aborted
+from the fcp layer, causing the host to assume a transport error.
+Rather we should still forward this request to the nvmet layer, which
+will then correctly fail the command with an appropriate error status.
 
-Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
-
-Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/1623946129-3290-1-git-send-email-tuanphan@os.amperecomputing.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/arm-cmn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/target/fc.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-index 56a5c355701d..49016f2f505e 100644
---- a/drivers/perf/arm-cmn.c
-+++ b/drivers/perf/arm-cmn.c
-@@ -1212,7 +1212,7 @@ static int arm_cmn_init_irqs(struct arm_cmn *cmn)
- 		irq = cmn->dtc[i].irq;
- 		for (j = i; j--; ) {
- 			if (cmn->dtc[j].irq == irq) {
--				cmn->dtc[j].irq_friend = j - i;
-+				cmn->dtc[j].irq_friend = i - j;
- 				goto next;
- 			}
- 		}
+diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
+index cd4e73aa9807..640031cbda7c 100644
+--- a/drivers/nvme/target/fc.c
++++ b/drivers/nvme/target/fc.c
+@@ -2499,13 +2499,6 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
+ 	u32 xfrlen = be32_to_cpu(cmdiu->data_len);
+ 	int ret;
+ 
+-	/*
+-	 * if there is no nvmet mapping to the targetport there
+-	 * shouldn't be requests. just terminate them.
+-	 */
+-	if (!tgtport->pe)
+-		goto transport_error;
+-
+ 	/*
+ 	 * Fused commands are currently not supported in the linux
+ 	 * implementation.
+@@ -2533,7 +2526,8 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
+ 
+ 	fod->req.cmd = &fod->cmdiubuf.sqe;
+ 	fod->req.cqe = &fod->rspiubuf.cqe;
+-	fod->req.port = tgtport->pe->port;
++	if (tgtport->pe)
++		fod->req.port = tgtport->pe->port;
+ 
+ 	/* clear any response payload */
+ 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
 -- 
 2.30.2
 
