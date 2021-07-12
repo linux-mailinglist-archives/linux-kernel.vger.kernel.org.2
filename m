@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D3E3C4951
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4F53C56C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238335AbhGLGnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54932 "EHLO mail.kernel.org"
+        id S1352445AbhGLIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:24:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237287AbhGLGeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 893B961179;
-        Mon, 12 Jul 2021 06:30:40 +0000 (UTC)
+        id S1347864AbhGLHkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E866192B;
+        Mon, 12 Jul 2021 07:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071441;
-        bh=DUfuHFIan7YikCK757QFEnJSWizcpjwTGGA6kphbrOg=;
+        s=korg; t=1626075404;
+        bh=F0ZOtPaLg7ZLUv7+BtbmeLGwPX6I3v75FrJSUcAv5ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VEpQw2v/O4od9+yIPv35aTPvoOMnPW/JB7WRgGNZU+3pN01Kmxbb3Hctnh2037abx
-         iviV7zEvAalxxxMhOA8dNF47EHmftF/xNRT8Fv033u5UL2rcbpB9G+meLIL3Jx98Jt
-         5B6dEmDA1Htn/AJpCqRBVra/yFeryqZv1RybVs4g=
+        b=LqT+OcnSMPj0r0vgZYaVBhPA6Hdy3yTWmyx+EBajDfJaTQMypW2pekW3jbMJQbkHD
+         2c+rb4AFuCcI6+L2P9a2/optQYMCvs+bNOL2Q5JbGxqaATTcl/tKCY+Xq95n8h74ev
+         7i6S8JWAyTdwCQbQVNVkHizWWIoNT+rPfcnWnt4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 072/593] iio: frequency: adf4350: disable reg and clk on error in adf4350_probe()
-Date:   Mon, 12 Jul 2021 08:03:52 +0200
-Message-Id: <20210712060851.062365994@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 210/800] ACPI: PM: s2idle: Add missing LPS0 functions for AMD
+Date:   Mon, 12 Jul 2021 08:03:53 +0200
+Message-Id: <20210712060942.989503947@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-commit c8cc4cf60b000fb9f4b29bed131fb6cf1fe42d67 upstream.
+[ Upstream commit f59a905b962c34642e862b5edec35c0eda72d70d ]
 
-Disable reg and clk when devm_gpiod_get_optional() fails in adf4350_probe().
+These are supposedly not required for AMD platforms,
+but at least some HP laptops seem to require it to
+properly turn off the keyboard backlight.
 
-Fixes:4a89d2f47ccd ("iio: adf4350: Convert to use GPIO descriptor")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210601142605.3613605-1-yangyingliang@huawei.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Based on a patch from Marcin Bachry <hegel666@gmail.com>.
 
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1230
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/frequency/adf4350.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/acpi/x86/s2idle.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/iio/frequency/adf4350.c
-+++ b/drivers/iio/frequency/adf4350.c
-@@ -563,8 +563,10 @@ static int adf4350_probe(struct spi_devi
+diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
+index 2b69536cdccb..2d7ddb8a8cb6 100644
+--- a/drivers/acpi/x86/s2idle.c
++++ b/drivers/acpi/x86/s2idle.c
+@@ -42,6 +42,8 @@ static const struct acpi_device_id lps0_device_ids[] = {
  
- 	st->lock_detect_gpiod = devm_gpiod_get_optional(&spi->dev, NULL,
- 							GPIOD_IN);
--	if (IS_ERR(st->lock_detect_gpiod))
--		return PTR_ERR(st->lock_detect_gpiod);
-+	if (IS_ERR(st->lock_detect_gpiod)) {
-+		ret = PTR_ERR(st->lock_detect_gpiod);
-+		goto error_disable_reg;
-+	}
+ /* AMD */
+ #define ACPI_LPS0_DSM_UUID_AMD      "e3f32452-febc-43ce-9039-932122d37721"
++#define ACPI_LPS0_ENTRY_AMD         2
++#define ACPI_LPS0_EXIT_AMD          3
+ #define ACPI_LPS0_SCREEN_OFF_AMD    4
+ #define ACPI_LPS0_SCREEN_ON_AMD     5
  
- 	if (pdata->power_up_frequency) {
- 		ret = adf4350_set_freq(st, pdata->power_up_frequency);
+@@ -408,6 +410,7 @@ int acpi_s2idle_prepare_late(void)
+ 
+ 	if (acpi_s2idle_vendor_amd()) {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF_AMD);
++		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY_AMD);
+ 	} else {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF);
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY);
+@@ -422,6 +425,7 @@ void acpi_s2idle_restore_early(void)
+ 		return;
+ 
+ 	if (acpi_s2idle_vendor_amd()) {
++		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT_AMD);
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_ON_AMD);
+ 	} else {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT);
+-- 
+2.30.2
+
 
 
