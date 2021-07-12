@@ -2,112 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087A13C65BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEE83C65C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhGLVzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:55:52 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46240 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhGLVzu (ORCPT
+        id S230122AbhGLV7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhGLV7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:55:50 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EC63C1C0B77; Mon, 12 Jul 2021 23:52:59 +0200 (CEST)
-Date:   Mon, 12 Jul 2021 23:52:59 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 016/137] net: Treat __napi_schedule_irqoff()
- as __napi_schedule() on PREEMPT_RT
-Message-ID: <20210712215258.GB8934@amd>
-References: <20210706112203.2062605-1-sashal@kernel.org>
- <20210706112203.2062605-16-sashal@kernel.org>
+        Mon, 12 Jul 2021 17:59:12 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B67C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:56:23 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BA1B2CC;
+        Mon, 12 Jul 2021 23:56:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626126979;
+        bh=+d8YmarxqieQLIrWWfUj888qjlOdg83gqF6/rmhuzng=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sKGPXvlp5fN9Nh+8sOS1EV8yWEPE9bwH7owAA3bsoKZncpHSvV6TpGpoRfDXh6ksL
+         /cTysgd1UwzTaxWwxzAKusz0Eronc0bTFgtv0oh7wqRuGf7x1JKJG4mA44B3/9p0ob
+         l8Yl59ETdw/3+eejNTN39IkglMgK2w742R2Tyv1Q=
+Date:   Tue, 13 Jul 2021 00:55:33 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH] drm/of: free the iterator object on failure
+Message-ID: <YOy6VQNz8Htg6Usb@pendragon.ideasonboard.com>
+References: <20210712155758.48286-1-steven.price@arm.com>
+ <YOxyvIoJcZFAgUz5@pendragon.ideasonboard.com>
+ <b420a4e6-8038-6c1e-7c97-75ef3bea3c21@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="rS8CxjVDS/+yyDmU"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210706112203.2062605-16-sashal@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <b420a4e6-8038-6c1e-7c97-75ef3bea3c21@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steven,
 
---rS8CxjVDS/+yyDmU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 12, 2021 at 10:31:52PM +0100, Steven Price wrote:
+> On 12/07/2021 17:50, Laurent Pinchart wrote:
+> > On Mon, Jul 12, 2021 at 04:57:58PM +0100, Steven Price wrote:
+> >> When bailing out due to the sanity check the iterator value needs to be
+> >> freed because the early return prevents for_each_child_of_node() from
+> >> doing the dereference itself.
+> >>
+> >> Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
+> > 
+> > I don't think the Fixes tag is correct, the issue was already present
+> > before 4ee48cc5586b. The fix looks right though.
+> 
+> I'm not sure quite what you mean by "already present". As I understand
+> it the timeline was:
+> 
+> 1. 6529007522de drm: of: Add drm_of_lvds_get_dual_link_pixel_order
+>    The function was originally added. This made the mistake twice of
+>    calling of_node_put() on the wrong variable (remote_port rather than
+>    endpoint).
 
-Hi!
+Correct.
 
-> __napi_schedule_irqoff() is an optimized version of __napi_schedule()
-> which can be used where it is known that interrupts are disabled,
-> e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
-> callbacks.
->=20
-> On PREEMPT_RT enabled kernels this assumptions is not true. Force-
-> threaded interrupt handlers and spinlocks are not disabling interrupts
-> and the NAPI hrtimer callback is forced into softirq context which runs
-> with interrupts enabled as well.
->=20
-> Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
-> game so make __napi_schedule_irqoff() invoke __napi_schedule() for
-> PREEMPT_RT kernels.
->=20
-> The callers of ____napi_schedule() in the networking core have been
-> audited and are correct on PREEMPT_RT kernels as well.
+> 2. 4ee48cc5586b drm: of: Fix double-free bug
+>    One of the of_node_put() calls was removed as it was a double-free.
+>    This left the first incorrect of_node_put() in place, and the second
+>    is now a straight leak.
 
-I see this is queued to kernels as old as 4.4... Is it good idea?
-PREEMPT_RT is not usable there without extra patches, so it does not
-really fix anything user visible....
+That's right, but this commit didn't introduce the leak, it was already
+there in 6529007522de (in addition to the double-free).
 
-Best regards,
-								Pavel
-							=09
-> index 0c9ce36afc8c..2fdf30eefc59 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -6433,11 +6433,18 @@ EXPORT_SYMBOL(napi_schedule_prep);
->   * __napi_schedule_irqoff - schedule for receive
->   * @n: entry to schedule
->   *
-> - * Variant of __napi_schedule() assuming hard irqs are masked
-> + * Variant of __napi_schedule() assuming hard irqs are masked.
-> + *
-> + * On PREEMPT_RT enabled kernels this maps to __napi_schedule()
-> + * because the interrupt disabled assumption might not be true
-> + * due to force-threaded interrupts and spinlock substitution.
->   */
->  void __napi_schedule_irqoff(struct napi_struct *n)
->  {
-> -	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		____napi_schedule(this_cpu_ptr(&softnet_data), n);
-> +	else
-> +		__napi_schedule(n);
->  }
->  EXPORT_SYMBOL(__napi_schedule_irqoff);
-> =20
+> 3. b557a5f8da57 drm/of: free the right object
+>    This (correctly) fixes the first of_node_put() to free endpoint. And
+>    the post from Daniel was what caused me to look.
+> 
+> 4. This patch
+>    Reintroduces the of_node_put() removed in (2) but putting endpoint
+>    rather than remote_port.
+> 
+> I've put (2) in the Fixes line as this patch is fixing the leak
+> introduced by that patch, but that in itself was of course 'fixing' the
+> double free of the original patch.
+> 
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  drivers/gpu/drm/drm_of.c | 4 +++-
+> >>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>
+> >> Daniel's email[1] made me take a look at this function and it appears
+> >> that for_each_child_of_node()'s interface had caused a bad bug fix due
+> >> to the hidden reference counting in the iterator.
+> >>
+> >> [1] https://lore.kernel.org/r/YOxQ5TbkNrqCGBDJ%40phenom.ffwll.local
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
+> >> index 197c57477344..997b8827fed2 100644
+> >> --- a/drivers/gpu/drm/drm_of.c
+> >> +++ b/drivers/gpu/drm/drm_of.c
+> >> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
+> >>  		 * configurations by passing the endpoints explicitly to
+> >>  		 * drm_of_lvds_get_dual_link_pixel_order().
+> >>  		 */
+> >> -		if (!current_pt || pixels_type != current_pt)
+> >> +		if (!current_pt || pixels_type != current_pt) {
+> >> +			of_node_put(endpoint);
+> >>  			return -EINVAL;
+> >> +		}
+> >>  	}
+> >>  
+> >>  	return pixels_type;
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+-- 
+Regards,
 
---rS8CxjVDS/+yyDmU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmDsuboACgkQMOfwapXb+vLvvACffTukjrW71y6YKE1ySo+48aN2
-bFIAn1ntM7CS2o6IrhJD/6GFlrQPmDb+
-=5f+k
------END PGP SIGNATURE-----
-
---rS8CxjVDS/+yyDmU--
+Laurent Pinchart
