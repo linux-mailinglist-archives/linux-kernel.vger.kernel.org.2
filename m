@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D6A3C517D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF653C5868
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348985AbhGLHlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
+        id S1356275AbhGLIrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:47:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244622AbhGLHLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:11:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C7AB60FF0;
-        Mon, 12 Jul 2021 07:08:13 +0000 (UTC)
+        id S1350475AbhGLHvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A2061A14;
+        Mon, 12 Jul 2021 07:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073694;
-        bh=+iO7CxnzvqzVAeUkTGfv6Xxx3DoJ7K22SSdc+7/GvIY=;
+        s=korg; t=1626075943;
+        bh=CoN0J2MBEvya6ERUicUPdv/1mYF0XNCuj4gKEwDkavI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2YqpQq7YU98Q7JQ8XPc7427Johxy5SoGzqxeNTKaceSDe3k5bSDHufmO/OnvB2I6s
-         m3GMirimxK4wDnZ14uPQI0ersBkwgoeOha0QTxjcahQJ8GI02A5l5VfjkYi4pqYJCB
-         qrMnQy39w3+U7fJKdTjtvliDNtjEScX+K0ghEb7o=
+        b=Jhoyx3lIyr6f23W4VGGAwHEj8W2H6K8M71cglgRXt0+Lpgx3gb5H1VZHt35btQwdh
+         nnz6F2LtbPpq91Tk64AGFYmhFEc1rzvD5H5Nw0yjzNlcnDVuj4MqwATvzkqtcrym3h
+         1AFSFr++m0EZ2sXDBsooqCnhppJhTQzlmEmYJ33Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Jianwen Ji <jiji@redhat.com>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 328/700] ACPI: tables: FPDT: Add missing acpi_put_table() in acpi_init_fpdt()
+Subject: [PATCH 5.13 388/800] xfrm: xfrm_state_mtu should return at least 1280 for ipv6
 Date:   Mon, 12 Jul 2021 08:06:51 +0200
-Message-Id: <20210712061011.290830782@linuxfoundation.org>
+Message-Id: <20210712061008.512189505@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Sabrina Dubroca <sd@queasysnail.net>
 
-[ Upstream commit dd9eaa23e72572d4f1c03f2e5d2e14a5b5793e79 ]
+[ Upstream commit b515d2637276a3810d6595e10ab02c13bfd0b63a ]
 
-acpi_init_fpdt() forgets to call acpi_put_table() in an error path.
+Jianwen reported that IPv6 Interoperability tests are failing in an
+IPsec case where one of the links between the IPsec peers has an MTU
+of 1280. The peer generates a packet larger than this MTU, the router
+replies with a "Packet too big" message indicating an MTU of 1280.
+When the peer tries to send another large packet, xfrm_state_mtu
+returns 1280 - ipsec_overhead, which causes ip6_setup_cork to fail
+with EINVAL.
 
-Add the missing function call to fix it.
+We can fix this by forcing xfrm_state_mtu to return IPV6_MIN_MTU when
+IPv6 is used. After going through IPsec, the packet will then be
+fragmented to obey the actual network's PMTU, just before leaving the
+host.
 
-Fixes: d1eb86e59be0 ("ACPI: tables: introduce support for FPDT table")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Acked-by: Zhang Rui <rui.zhang@intel.com>
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-[ rjw: Subject and changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Currently, TFC padding is capped to PMTU - overhead to avoid
+fragementation: after padding and encapsulation, we still fit within
+the PMTU. That behavior is preserved in this patch.
+
+Fixes: 91657eafb64b ("xfrm: take net hdr len into account for esp payload size calculation")
+Reported-by: Jianwen Ji <jiji@redhat.com>
+Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_fpdt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/net/xfrm.h    |  1 +
+ net/ipv4/esp4.c       |  2 +-
+ net/ipv6/esp6.c       |  2 +-
+ net/xfrm/xfrm_state.c | 14 ++++++++++++--
+ 4 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
-index a89a806a7a2a..4ee2ad234e3d 100644
---- a/drivers/acpi/acpi_fpdt.c
-+++ b/drivers/acpi/acpi_fpdt.c
-@@ -240,8 +240,10 @@ static int __init acpi_init_fpdt(void)
- 		return 0;
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index c58a6d4eb610..6232a5f048bd 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1546,6 +1546,7 @@ void xfrm_sad_getinfo(struct net *net, struct xfrmk_sadinfo *si);
+ void xfrm_spd_getinfo(struct net *net, struct xfrmk_spdinfo *si);
+ u32 xfrm_replay_seqhi(struct xfrm_state *x, __be32 net_seq);
+ int xfrm_init_replay(struct xfrm_state *x);
++u32 __xfrm_state_mtu(struct xfrm_state *x, int mtu);
+ u32 xfrm_state_mtu(struct xfrm_state *x, int mtu);
+ int __xfrm_init_state(struct xfrm_state *x, bool init_replay, bool offload);
+ int xfrm_init_state(struct xfrm_state *x);
+diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+index 35803ab7ac80..26171dec08c4 100644
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -673,7 +673,7 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
+ 		struct xfrm_dst *dst = (struct xfrm_dst *)skb_dst(skb);
+ 		u32 padto;
  
- 	fpdt_kobj = kobject_create_and_add("fpdt", acpi_kobj);
--	if (!fpdt_kobj)
-+	if (!fpdt_kobj) {
-+		acpi_put_table(header);
- 		return -ENOMEM;
-+	}
+-		padto = min(x->tfcpad, xfrm_state_mtu(x, dst->child_mtu_cached));
++		padto = min(x->tfcpad, __xfrm_state_mtu(x, dst->child_mtu_cached));
+ 		if (skb->len < padto)
+ 			esp.tfclen = padto - skb->len;
+ 	}
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index 393ae2b78e7d..1654e4ce094f 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -708,7 +708,7 @@ static int esp6_output(struct xfrm_state *x, struct sk_buff *skb)
+ 		struct xfrm_dst *dst = (struct xfrm_dst *)skb_dst(skb);
+ 		u32 padto;
  
- 	while (offset < header->length) {
- 		subtable = (void *)header + offset;
+-		padto = min(x->tfcpad, xfrm_state_mtu(x, dst->child_mtu_cached));
++		padto = min(x->tfcpad, __xfrm_state_mtu(x, dst->child_mtu_cached));
+ 		if (skb->len < padto)
+ 			esp.tfclen = padto - skb->len;
+ 	}
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 4496f7efa220..c25586156c6a 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -2518,7 +2518,7 @@ void xfrm_state_delete_tunnel(struct xfrm_state *x)
+ }
+ EXPORT_SYMBOL(xfrm_state_delete_tunnel);
+ 
+-u32 xfrm_state_mtu(struct xfrm_state *x, int mtu)
++u32 __xfrm_state_mtu(struct xfrm_state *x, int mtu)
+ {
+ 	const struct xfrm_type *type = READ_ONCE(x->type);
+ 	struct crypto_aead *aead;
+@@ -2549,7 +2549,17 @@ u32 xfrm_state_mtu(struct xfrm_state *x, int mtu)
+ 	return ((mtu - x->props.header_len - crypto_aead_authsize(aead) -
+ 		 net_adj) & ~(blksize - 1)) + net_adj - 2;
+ }
+-EXPORT_SYMBOL_GPL(xfrm_state_mtu);
++EXPORT_SYMBOL_GPL(__xfrm_state_mtu);
++
++u32 xfrm_state_mtu(struct xfrm_state *x, int mtu)
++{
++	mtu = __xfrm_state_mtu(x, mtu);
++
++	if (x->props.family == AF_INET6 && mtu < IPV6_MIN_MTU)
++		return IPV6_MIN_MTU;
++
++	return mtu;
++}
+ 
+ int __xfrm_init_state(struct xfrm_state *x, bool init_replay, bool offload)
+ {
 -- 
 2.30.2
 
