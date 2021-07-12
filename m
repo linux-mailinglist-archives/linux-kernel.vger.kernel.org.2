@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595B43C54F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11893C54F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349717AbhGLIH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
+        id S1347641AbhGLIHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:07:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344566AbhGLH3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B7BC61474;
-        Mon, 12 Jul 2021 07:25:39 +0000 (UTC)
+        id S1344637AbhGLH3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:29:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D3DA6147D;
+        Mon, 12 Jul 2021 07:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074740;
-        bh=qx/HLqBgUvJolMSYnD8nwqfkTJ1Ug/+oFIpKC7CGhUM=;
+        s=korg; t=1626074743;
+        bh=cKP4GxnIuNOR7Wrkgosk62j3gIzMRVVyIlkEuxXSyR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y6YnGeqzlexOrF+tfOjDwS3gQwk+Ag11i2w3/nWxgjCuQYVSM0GpcA9rt5vT+Z4Rm
-         Dt3PQbNlkAvZOgsJdL4S4/HOwT5BBi7btfXTJDS/HiypLDGvilhajFdK6YAMIJ+CAw
-         F0ZO22JBzmoHeNQ6aGgtTDID7A6Eyw6vprNjXhg0=
+        b=kK2O75EKh56VR725JNPseZc4OGwII/wbrJMiGqwSUPeayrzesUHj0jQ0OWyjryHcf
+         bwXrbfiXqGRgo9vFgBz5KhUMf9+c7xAljPZskURHUFVi14+GzU0EQgpVLQQkWpk80d
+         Z4EyAMmWYgysr7AqTTGK4NFva6lIq/Yf0e6vAjwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Javed Hasan <jhasan@marvell.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.12 682/700] scsi: megaraid_sas: Send all non-RW I/Os for TYPE_ENCLOSURE device through firmware
-Date:   Mon, 12 Jul 2021 08:12:45 +0200
-Message-Id: <20210712061048.457170994@linuxfoundation.org>
+Subject: [PATCH 5.12 683/700] scsi: fc: Correct RHBA attributes length
+Date:   Mon, 12 Jul 2021 08:12:46 +0200
+Message-Id: <20210712061048.574684782@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,56 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-commit 79db830162b733f5f3ee80f0673eeeb0245fe38b upstream.
+commit 40445fd2c9fa427297acdfcc2c573ff10493f209 upstream.
 
-The driver issues all non-ReadWrite I/Os for TYPE_ENCLOSURE devices through
-the fast path with invalid dev handle. Fast path in turn directs all the
-I/Os to the firmware. As firmware stopped handling those I/Os from SAS3.5
-generation of controllers (Ventura generation and onwards) this will lead
-to I/O failures.
+As per the FC-GS-5 specification, attribute lengths of node_name and
+manufacturer should in range of "4 to 64 Bytes" only.
 
-Switch the driver to issue all the non-ReadWrite I/Os for TYPE_ENCLOSURE
-devices directly to firmware for SAS3.5 generation of controllers and
-later.
-
-Link: https://lore.kernel.org/r/20210528131307.25683-2-chandrakanth.patil@broadcom.com
-Cc: <stable@vger.kernel.org> # v5.11+
-Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Link: https://lore.kernel.org/r/20210603101404.7841-2-jhasan@marvell.com
+Fixes: e721eb0616f6 ("scsi: scsi_transport_fc: Match HBA Attribute Length with HBAAPI V2.0 definitions")
+CC: stable@vger.kernel.org
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/megaraid/megaraid_sas_fusion.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ include/scsi/fc/fc_ms.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -3167,6 +3167,8 @@ megasas_build_io_fusion(struct megasas_i
- {
- 	int sge_count;
- 	u8  cmd_type;
-+	u16 pd_index = 0;
-+	u8 drive_type = 0;
- 	struct MPI2_RAID_SCSI_IO_REQUEST *io_request = cmd->io_request;
- 	struct MR_PRIV_DEVICE *mr_device_priv_data;
- 	mr_device_priv_data = scp->device->hostdata;
-@@ -3201,8 +3203,12 @@ megasas_build_io_fusion(struct megasas_i
- 		megasas_build_syspd_fusion(instance, scp, cmd, true);
- 		break;
- 	case NON_READ_WRITE_SYSPDIO:
--		if (instance->secure_jbod_support ||
--		    mr_device_priv_data->is_tm_capable)
-+		pd_index = MEGASAS_PD_INDEX(scp);
-+		drive_type = instance->pd_list[pd_index].driveType;
-+		if ((instance->secure_jbod_support ||
-+		     mr_device_priv_data->is_tm_capable) ||
-+		     (instance->adapter_type >= VENTURA_SERIES &&
-+		     drive_type == TYPE_ENCLOSURE))
- 			megasas_build_syspd_fusion(instance, scp, cmd, false);
- 		else
- 			megasas_build_syspd_fusion(instance, scp, cmd, true);
+--- a/include/scsi/fc/fc_ms.h
++++ b/include/scsi/fc/fc_ms.h
+@@ -63,8 +63,8 @@ enum fc_fdmi_hba_attr_type {
+  * HBA Attribute Length
+  */
+ #define FC_FDMI_HBA_ATTR_NODENAME_LEN		8
+-#define FC_FDMI_HBA_ATTR_MANUFACTURER_LEN	80
+-#define FC_FDMI_HBA_ATTR_SERIALNUMBER_LEN	80
++#define FC_FDMI_HBA_ATTR_MANUFACTURER_LEN	64
++#define FC_FDMI_HBA_ATTR_SERIALNUMBER_LEN	64
+ #define FC_FDMI_HBA_ATTR_MODEL_LEN		256
+ #define FC_FDMI_HBA_ATTR_MODELDESCR_LEN		256
+ #define FC_FDMI_HBA_ATTR_HARDWAREVERSION_LEN	256
 
 
