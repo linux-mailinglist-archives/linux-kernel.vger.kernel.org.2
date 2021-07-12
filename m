@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C373C5995
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30093C5949
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384994AbhGLJFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:05:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35618 "EHLO mail.kernel.org"
+        id S1382586AbhGLJBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355684AbhGLIKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 762E8613DB;
-        Mon, 12 Jul 2021 08:07:23 +0000 (UTC)
+        id S1349225AbhGLH5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:57:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D94F86138C;
+        Mon, 12 Jul 2021 07:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626077243;
-        bh=xcVBS5NR2/kTAx0CnPSNv/gVAuYNRhkMw/yRU9TTFh0=;
+        s=korg; t=1626076365;
+        bh=BOru9AiWn+0ME6jxHDAxPejTyvnmWSBQAPjI/4Aazv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YevUDwTKkU+tE+dX/0R/5TGREOMUC+rXYjhrwrrJKDpxMIeDfjUlrjeD6/JM8yAZR
-         P4UZNots4JzHxstPn2eKVnNy2elDR5xRLf93M0WT/edv1AYzR7PyY8VYc2GaDqXP8l
-         LVANxSy/rKuhAUuuDADxH0ZwfOQA5qKS/kTsXBUM=
+        b=b60EsxJVt82wqKKOj23SpYSUV/1v1tX+5KOKGxpcDKCuggB33bA0b3m+3Di24gMbM
+         2k57Dh9kjzHQl0TAso2CoFcsfxS52iy+mkNlLc52HqkT2A82xvq3RoBkHHlC802wFQ
+         oF5/OSDor4b/sQbsNV7YBNr739+9m4x3mw0bnJEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>, Chen <leo881003@gmail.com>
-Subject: [PATCH 5.10 197/593] ACPI: EC: trust DSDT GPE for certain HP laptop
-Date:   Mon, 12 Jul 2021 08:05:57 +0200
-Message-Id: <20210712060904.683308055@linuxfoundation.org>
+        stable@vger.kernel.org, Lior Nahmanson <liorna@nvidia.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 569/800] net: macsec: fix the length used to copy the key for offloading
+Date:   Mon, 12 Jul 2021 08:09:52 +0200
+Message-Id: <20210712061027.952263955@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Rui <rui.zhang@intel.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit 4370cbf350dbaca984dbda9f9ce3fac45d6949d5 ]
+[ Upstream commit 1f7fe5121127e037b86592ba42ce36515ea0e3f7 ]
 
-On HP Pavilion Gaming Laptop 15-cx0xxx, the ECDT EC and DSDT EC share
-the same port addresses but different GPEs. And the DSDT GPE is the
-right one to use.
+The key length used when offloading macsec to Ethernet or PHY drivers
+was set to MACSEC_KEYID_LEN (16), which is an issue as:
+- This was never meant to be the key length.
+- The key length can be > 16.
 
-The current code duplicates DSDT EC with ECDT EC if the port addresses
-are the same, and uses ECDT GPE as a result, which breaks this machine.
+Fix this by using MACSEC_MAX_KEY_LEN to store the key (the max length
+accepted in uAPI) and secy->key_len to copy it.
 
-Introduce a new quirk for the HP laptop to trust the DSDT GPE,
-and avoid duplicating even if the port addresses are the same.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209989
-Reported-and-tested-by: Shao Fu, Chen <leo881003@gmail.com>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 3cf3227a21d1 ("net: macsec: hardware offloading infrastructure")
+Reported-by: Lior Nahmanson <liorna@nvidia.com>
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/ec.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/net/macsec.c | 4 ++--
+ include/net/macsec.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index 32f3b6d268f5..be3e0921a6c0 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -183,6 +183,7 @@ static struct workqueue_struct *ec_query_wq;
+diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
+index 92425e1fd70c..93dc48b9b4f2 100644
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -1819,7 +1819,7 @@ static int macsec_add_rxsa(struct sk_buff *skb, struct genl_info *info)
+ 		ctx.sa.rx_sa = rx_sa;
+ 		ctx.secy = secy;
+ 		memcpy(ctx.sa.key, nla_data(tb_sa[MACSEC_SA_ATTR_KEY]),
+-		       MACSEC_KEYID_LEN);
++		       secy->key_len);
  
- static int EC_FLAGS_CORRECT_ECDT; /* Needs ECDT port address correction */
- static int EC_FLAGS_IGNORE_DSDT_GPE; /* Needs ECDT GPE as correction setting */
-+static int EC_FLAGS_TRUST_DSDT_GPE; /* Needs DSDT GPE as correction setting */
- static int EC_FLAGS_CLEAR_ON_RESUME; /* Needs acpi_ec_clear() on boot/resume */
+ 		err = macsec_offload(ops->mdo_add_rxsa, &ctx);
+ 		if (err)
+@@ -2061,7 +2061,7 @@ static int macsec_add_txsa(struct sk_buff *skb, struct genl_info *info)
+ 		ctx.sa.tx_sa = tx_sa;
+ 		ctx.secy = secy;
+ 		memcpy(ctx.sa.key, nla_data(tb_sa[MACSEC_SA_ATTR_KEY]),
+-		       MACSEC_KEYID_LEN);
++		       secy->key_len);
  
- /* --------------------------------------------------------------------------
-@@ -1606,7 +1607,8 @@ static int acpi_ec_add(struct acpi_device *device)
- 		}
- 
- 		if (boot_ec && ec->command_addr == boot_ec->command_addr &&
--		    ec->data_addr == boot_ec->data_addr) {
-+		    ec->data_addr == boot_ec->data_addr &&
-+		    !EC_FLAGS_TRUST_DSDT_GPE) {
- 			/*
- 			 * Trust PNP0C09 namespace location rather than
- 			 * ECDT ID. But trust ECDT GPE rather than _GPE
-@@ -1829,6 +1831,18 @@ static int ec_correct_ecdt(const struct dmi_system_id *id)
- 	return 0;
- }
- 
-+/*
-+ * Some ECDTs contain wrong GPE setting, but they share the same port addresses
-+ * with DSDT EC, don't duplicate the DSDT EC with ECDT EC in this case.
-+ * https://bugzilla.kernel.org/show_bug.cgi?id=209989
-+ */
-+static int ec_honor_dsdt_gpe(const struct dmi_system_id *id)
-+{
-+	pr_debug("Detected system needing DSDT GPE setting.\n");
-+	EC_FLAGS_TRUST_DSDT_GPE = 1;
-+	return 0;
-+}
-+
- /*
-  * Some DSDTs contain wrong GPE setting.
-  * Asus FX502VD/VE, GL702VMK, X550VXK, X580VD
-@@ -1883,6 +1897,11 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
- 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 	DMI_MATCH(DMI_PRODUCT_NAME, "X580VD"),}, NULL},
- 	{
-+	/* https://bugzilla.kernel.org/show_bug.cgi?id=209989 */
-+	ec_honor_dsdt_gpe, "HP Pavilion Gaming Laptop 15-cx0xxx", {
-+	DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+	DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion Gaming Laptop 15-cx0xxx"),}, NULL},
-+	{
- 	ec_clear_on_resume, "Samsung hardware", {
- 	DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD.")}, NULL},
- 	{},
+ 		err = macsec_offload(ops->mdo_add_txsa, &ctx);
+ 		if (err)
+diff --git a/include/net/macsec.h b/include/net/macsec.h
+index 52874cdfe226..d6fa6b97f6ef 100644
+--- a/include/net/macsec.h
++++ b/include/net/macsec.h
+@@ -241,7 +241,7 @@ struct macsec_context {
+ 	struct macsec_rx_sc *rx_sc;
+ 	struct {
+ 		unsigned char assoc_num;
+-		u8 key[MACSEC_KEYID_LEN];
++		u8 key[MACSEC_MAX_KEY_LEN];
+ 		union {
+ 			struct macsec_rx_sa *rx_sa;
+ 			struct macsec_tx_sa *tx_sa;
 -- 
 2.30.2
 
