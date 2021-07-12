@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D90E3C577A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DBB3C4A3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359184AbhGLIeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53510 "EHLO mail.kernel.org"
+        id S239373AbhGLGtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346751AbhGLHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:46:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8673361185;
-        Mon, 12 Jul 2021 07:42:08 +0000 (UTC)
+        id S237954AbhGLGjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1D20611BF;
+        Mon, 12 Jul 2021 06:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075729;
-        bh=b47Ymz7+wtiB7mG7435MjsQbsvspRxQd1UZI8u6CO10=;
+        s=korg; t=1626071749;
+        bh=9brvtHm5P1xX4on/zdIiSZ+3b4pLzhJ4IaEBj2zRwds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HbFv3j2mG3B/dbKClpGKf56FHUdj5nevKhaX9vvhj8kYAkOp9gzoIkJ8ne4zon2wZ
-         GLfcIUPoCNRYuIprZA/x0lKwju0W2YQFzNxp/EP+4bXeEf3bPT6fmaxy1gdhvjF249
-         TdOruRyiKcDT0JLp+qmMDCP1vSwgcjs8deD7O994=
+        b=LqMxBbd4CBGB1IG2MoIMTrlWv/0xeum1Rhbhf4aibHEcDsjwKz+5dIGAuyU/P39e2
+         lE/ba8Z0hcnI1Gm3HYvnwm16M1OM2a4jThkkBBac9RAdtQCIUWT22GjwOoXTSrMzwH
+         9+JmMYG6StY6MP42OKcpsEw35hwnwTzF5ddyWtys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 297/800] media: venus: hfi_cmds: Fix conceal color property
+Subject: [PATCH 5.10 160/593] btrfs: disable build on platforms having page size 256K
 Date:   Mon, 12 Jul 2021 08:05:20 +0200
-Message-Id: <20210712060956.759076957@linuxfoundation.org>
+Message-Id: <20210712060900.656471260@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 6e2202ca1ee034920b029124151754aec67b61ba ]
+[ Upstream commit b05fbcc36be1f8597a1febef4892053a0b2f3f60 ]
 
-The conceal color property used for Venus v4 and v6 has the same
-payload structure. But currently v4 follow down to payload
-structure for v1. Correct this by moving set_property to v4.
+With a config having PAGE_SIZE set to 256K, BTRFS build fails
+with the following message
 
-Fixes: 4ef6039fad8f ("media: venus: vdec: Add support for conceal control")
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+  include/linux/compiler_types.h:326:38: error: call to
+  '__compiletime_assert_791' declared with attribute error:
+  BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+
+BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+256K pages at the time being.
+
+There are two platforms that can select 256K pages:
+ - hexagon
+ - powerpc
+
+Disable BTRFS when 256K page size is selected. Supporting this would
+require changes to the subpage mode that's currently being developed.
+Given that 256K is many times larger than page sizes commonly used and
+for what the algorithms and structures have been tuned, it's out of
+scope and disabling build is a reasonable option.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[ update changelog ]
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/venus/hfi_cmds.c | 22 ++++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ fs/btrfs/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 11a8347e5f5c..4b9dea7f6940 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1226,6 +1226,17 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*hdr10);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR: {
-+		struct hfi_conceal_color_v4 *color = prop_data;
-+		u32 *in = pdata;
-+
-+		color->conceal_color_8bit = *in & 0xff;
-+		color->conceal_color_8bit |= ((*in >> 10) & 0xff) << 8;
-+		color->conceal_color_8bit |= ((*in >> 20) & 0xff) << 16;
-+		color->conceal_color_10bit = *in;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
-+		break;
-+	}
+diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+index 68b95ad82126..520a0f6a7d9e 100644
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -18,6 +18,8 @@ config BTRFS_FS
+ 	select RAID6_PQ
+ 	select XOR_BLOCKS
+ 	select SRCU
++	depends on !PPC_256K_PAGES	# powerpc
++	depends on !PAGE_SIZE_256KB	# hexagon
  
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
-@@ -1279,17 +1290,6 @@ pkt_session_set_property_6xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cq);
- 		break;
- 	}
--	case HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR: {
--		struct hfi_conceal_color_v4 *color = prop_data;
--		u32 *in = pdata;
--
--		color->conceal_color_8bit = *in & 0xff;
--		color->conceal_color_8bit |= ((*in >> 10) & 0xff) << 8;
--		color->conceal_color_8bit |= ((*in >> 20) & 0xff) << 16;
--		color->conceal_color_10bit = *in;
--		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
--		break;
--	}
- 	default:
- 		return pkt_session_set_property_4xx(pkt, cookie, ptype, pdata);
- 	}
+ 	help
+ 	  Btrfs is a general purpose copy-on-write filesystem with extents,
 -- 
 2.30.2
 
