@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02173C4EA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF133C589A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344463AbhGLHUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48262 "EHLO mail.kernel.org"
+        id S1379534AbhGLIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239188AbhGLGta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F989610FA;
-        Mon, 12 Jul 2021 06:46:32 +0000 (UTC)
+        id S1347931AbhGLHyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:54:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CE356141F;
+        Mon, 12 Jul 2021 07:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072392;
-        bh=Iq+o5OeMMpRVe3gVKnWsaNnrPxGYSR9SQp7q+a1GDsE=;
+        s=korg; t=1626076274;
+        bh=ji+O9IzA+RBuQraGaWtstJSZbuwrc94Hf/BM5DOxx8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VNK/Nb5fwxviO3eA4gaAFQyjVfHY1MHJOqbJFn85uKbKhzB+rxvZWDf0tb33VnC1g
-         scW6KqfzWYXFjwaYfU/c3ucXtVeFbDDQzDXOqZrBVouOlQV3Ho2rh7Ieqlk80X0JcZ
-         cipxwRaW7uHESxGMI2Rsr8LPkHLIS37Xj0ORzWVA=
+        b=w8m3zK3aaIr9GxHw+TE5KGkASNzzvt2YZtoCduktN0TJCf5vLzicBw+knxyBbQUZZ
+         0d6qoV1DueLV5AvGrTt4N21uamyR1b7TpRb4ZQvMiLhvdlcxuCrCH3W20yoidAryxO
+         c96AGX4FbwTs3YE4bf3BPDWQq4NbuUVwHfYRur3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 436/593] rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
-Date:   Mon, 12 Jul 2021 08:09:56 +0200
-Message-Id: <20210712060936.633734952@linuxfoundation.org>
+Subject: [PATCH 5.13 574/800] net: dsa: sja1105: fix NULL pointer dereference in sja1105_reload_cbs()
+Date:   Mon, 12 Jul 2021 08:09:57 +0200
+Message-Id: <20210712061028.440792015@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 8e4b1d2bc198e34b48fc7cc3a3c5a2fcb269e271 ]
+[ Upstream commit be7f62eebaff2f86c1467a2d33930a0a7a87675b ]
 
-Currently, rcu_spawn_core_kthreads() is invoked via an early_initcall(),
-which works, except that rcu_spawn_gp_kthread() is also invoked via an
-early_initcall() and rcu_spawn_core_kthreads() relies on adjustments to
-kthread_prio that are carried out by rcu_spawn_gp_kthread().  There is
-no guaranttee of ordering among early_initcall() handlers, and thus no
-guarantee that kthread_prio will be properly checked and range-limited
-at the time that rcu_spawn_core_kthreads() needs it.
+priv->cbs is an array of priv->info->num_cbs_shapers elements of type
+struct sja1105_cbs_entry which only get allocated if CONFIG_NET_SCH_CBS
+is enabled.
 
-In most cases, this bug is harmless.  After all, the only reason that
-rcu_spawn_gp_kthread() adjusts the value of kthread_prio is if the user
-specified a nonsensical value for this boot parameter, which experience
-indicates is rare.
+However, sja1105_reload_cbs() is called from sja1105_static_config_reload()
+which in turn is called for any of the items in sja1105_reset_reasons,
+therefore during the normal runtime of the driver and not just from a
+code path which can be triggered by the tc-cbs offload.
 
-Nevertheless, a bug is a bug.  This commit therefore causes the
-rcu_spawn_core_kthreads() function to be invoked directly from
-rcu_spawn_gp_kthread() after any needed adjustments to kthread_prio have
-been carried out.
+The sja1105_reload_cbs() function does not contain a check whether the
+priv->cbs array is NULL or not, it just assumes it isn't and proceeds to
+iterate through the credit-based shaper elements. This leads to a NULL
+pointer dereference.
 
-Fixes: 48d07c04b4cc ("rcu: Enable elimination of Tree-RCU softirq processing")
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+The solution is to return success if the priv->cbs array has not been
+allocated, since sja1105_reload_cbs() has nothing to do.
+
+Fixes: 4d7525085a9b ("net: dsa: sja1105: offload the Credit-Based Shaper qdisc")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/sja1105/sja1105_main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 61e250cdd7c9..45b60e997461 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2837,7 +2837,6 @@ static int __init rcu_spawn_core_kthreads(void)
- 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
- 	return 0;
- }
--early_initcall(rcu_spawn_core_kthreads);
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
+index b88d9ef45a1f..ebe4d33cda27 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -1798,6 +1798,12 @@ static int sja1105_reload_cbs(struct sja1105_private *priv)
+ {
+ 	int rc = 0, i;
  
- /*
-  * Handle any core-RCU processing required by a call_rcu() invocation.
-@@ -4273,6 +4272,7 @@ static int __init rcu_spawn_gp_kthread(void)
- 	wake_up_process(t);
- 	rcu_spawn_nocb_kthreads();
- 	rcu_spawn_boost_kthreads();
-+	rcu_spawn_core_kthreads();
- 	return 0;
- }
- early_initcall(rcu_spawn_gp_kthread);
++	/* The credit based shapers are only allocated if
++	 * CONFIG_NET_SCH_CBS is enabled.
++	 */
++	if (!priv->cbs)
++		return 0;
++
+ 	for (i = 0; i < priv->info->num_cbs_shapers; i++) {
+ 		struct sja1105_cbs_entry *cbs = &priv->cbs[i];
+ 
 -- 
 2.30.2
 
