@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AF93C4A38
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D883C5119
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239222AbhGLGtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34398 "EHLO mail.kernel.org"
+        id S244674AbhGLHgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237826AbhGLGjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A9161166;
-        Mon, 12 Jul 2021 06:35:30 +0000 (UTC)
+        id S243850AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 444BD6128D;
+        Mon, 12 Jul 2021 07:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071731;
-        bh=cAeuC7oI2K6Da1Me3x4gMryj6x09fXna4zQuwwynkWo=;
+        s=korg; t=1626073517;
+        bh=y5VGwTrzuQwT2plzHSrl2/5rCfn4r0bcXrI0UDrKkDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R9lvMyDx9z5rZaaVWV6gpjL9Ao+QqNK5Lk1roFULSgUn0ZHM9yl8pKo/G/QAnym3I
-         swDkq5MIMxr240O4VlzgkleGp3ttAYn8XoHASweSL5r4W6mv/zzw550rbWZpqNDuUq
-         hutvkB+8hFrdABOmxfnUwHTPTVTYp75bcq2qsXY8=
+        b=OLH/EpmSBpsODGgdcZkXg06s+2aqJY2T1wIj35c2uc5SjLQBxHQbD7u6d/5TstT8A
+         f44sR8lktDLe6WuwsX+WnJ5Eu0pJQwFZy9lW0Zv2B+biT1mSb6SrVsMLYiCkte+p8n
+         PT3smRIX4MDG77RpwOJCXvxBgu+sHQdJ0PkCtP2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        James Smart <jsmart2021@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 193/593] nvmet-fc: do not check for invalid target port in nvmet_fc_handle_fcp_rqst()
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 270/700] pata_ep93xx: fix deferred probing
 Date:   Mon, 12 Jul 2021 08:05:53 +0200
-Message-Id: <20210712060904.237248316@linuxfoundation.org>
+Message-Id: <20210712061004.981605516@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 2a4a910aa4f0acc428dc8d10227c42e14ed21d10 ]
+[ Upstream commit 5c8121262484d99bffb598f39a0df445cecd8efb ]
 
-When parsing a request in nvmet_fc_handle_fcp_rqst() we should not
-check for invalid target ports; if we do the command is aborted
-from the fcp layer, causing the host to assume a transport error.
-Rather we should still forward this request to the nvmet layer, which
-will then correctly fail the command with an appropriate error status.
+The driver overrides the error codes returned by platform_get_irq() to
+-ENXIO, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing.  Propagate the error code
+upstream, as it should have been done from the start...
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 2fff27512600 ("PATA host controller driver for ep93xx")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Link: https://lore.kernel.org/r/509fda88-2e0d-2cc7-f411-695d7e94b136@omprussia.ru
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/ata/pata_ep93xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index cd4e73aa9807..640031cbda7c 100644
---- a/drivers/nvme/target/fc.c
-+++ b/drivers/nvme/target/fc.c
-@@ -2499,13 +2499,6 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
- 	u32 xfrlen = be32_to_cpu(cmdiu->data_len);
- 	int ret;
+diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
+index badab6708893..46208ececbb6 100644
+--- a/drivers/ata/pata_ep93xx.c
++++ b/drivers/ata/pata_ep93xx.c
+@@ -928,7 +928,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
+ 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		err = -ENXIO;
++		err = irq;
+ 		goto err_rel_gpio;
+ 	}
  
--	/*
--	 * if there is no nvmet mapping to the targetport there
--	 * shouldn't be requests. just terminate them.
--	 */
--	if (!tgtport->pe)
--		goto transport_error;
--
- 	/*
- 	 * Fused commands are currently not supported in the linux
- 	 * implementation.
-@@ -2533,7 +2526,8 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
- 
- 	fod->req.cmd = &fod->cmdiubuf.sqe;
- 	fod->req.cqe = &fod->rspiubuf.cqe;
--	fod->req.port = tgtport->pe->port;
-+	if (tgtport->pe)
-+		fod->req.port = tgtport->pe->port;
- 
- 	/* clear any response payload */
- 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
 -- 
 2.30.2
 
