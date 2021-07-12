@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8268E3C5E10
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EAD3C5E0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234884AbhGLOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 10:15:54 -0400
-Received: from mail-il1-f171.google.com ([209.85.166.171]:35797 "EHLO
-        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbhGLOPw (ORCPT
+        id S234433AbhGLOPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 10:15:51 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:37730 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231510AbhGLOPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:15:52 -0400
-Received: by mail-il1-f171.google.com with SMTP id a11so19639618ilf.2;
-        Mon, 12 Jul 2021 07:13:03 -0700 (PDT)
+        Mon, 12 Jul 2021 10:15:49 -0400
+Received: by mail-io1-f53.google.com with SMTP id l18so17849862iow.4;
+        Mon, 12 Jul 2021 07:13:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=k8igawHCplNtH/pRw0xjDqXjVsOZEfLMKg3MUaxXh5g=;
-        b=GEZ1y0RNESUsEhq9eNvqOmsR32D41v8vjftI1oGWijdQ7Ag0ud4Mn1EzdzIoIHpBfa
-         /W8grpvzX4PWyBs9Zp5pFU7sBtGr1aa4ghdkVyp/LvwpWTaNDe4jD+ZXlDgJSapSGuO6
-         ZQO03E73q2NT/hEcYVroNW9qlhgR723nCN2IpgSwpD6LOfcCoSsRHFY8WfdUe+ukpJRF
-         uRBrHwGqtmO9Xw7Rn3VlfRfZmXvB7ayAq7Wz1CiIz2S8iXs6fBapf1kxOBhdW5v4JSmu
-         qmct+g5wjgkyyGNJS6II1+Qvo3aMOrtvBGG9Pl34mG0fmFd+fKopmH/sOQE9w7g/xYqL
-         OERA==
-X-Gm-Message-State: AOAM532JRYQKPFJ3OvVy8KijdoYtMbuCedUF+nfzBX6EqbN1nTaCi/qc
-        /YE0GmCnrvrSKg6JWddbAw==
-X-Google-Smtp-Source: ABdhPJwlSCyGZShHWxRoAHp6sVQ0HFvFTi+uc+SK/Qy0mlZMPuHyoGu/+I/X9H0ledRrAXAX2AqTJQ==
-X-Received: by 2002:a05:6e02:c2e:: with SMTP id q14mr38126331ilg.2.1626099183211;
-        Mon, 12 Jul 2021 07:13:03 -0700 (PDT)
+        bh=h/6h0UaJMVg2aWVUlChzhWyuF5oxMGeyK9DMCIo1kac=;
+        b=HRFk4AA1/h0VKpOeA2lIKQKw6xyvd1+h/qgAgJWG3EnA6DNCoAlFWXCzyk5rzY4HGr
+         5ND72s/0eslgib1hC88C1U90DxjWG/FAYXYv8P3UzL0NHy90kClzK1v9vIe6AlNOyhhR
+         XanPohNdcjDJ4kQlV1yJpeV0qdo0NROuszEXqevmE5YWrqAI0azBwANxWKZHOgsLyDZl
+         ajs/hOOlE+npasydfCYOiCLIwrt/Q1mVh/FGbFdKhdgidWHHUtD1k65Q0pUHJclVm5Eh
+         3XyPL5KmNmySAqu8lyfj9EAU2eETwwWDzuT3Gino4PPJNfcWloF/PAK0OQOgX+zK/WhQ
+         mqdw==
+X-Gm-Message-State: AOAM530bZ3fIXMyIzHSUuVh2MKnWdAtB7GLIzejPxQbgpdL5AR9fxc05
+        rXiO7I5tzL9mDmZ5wGpHVw==
+X-Google-Smtp-Source: ABdhPJzuceYJTODmyK39U/Ix01ehe/gL8uY9ss4zcLfaiWqtvKuO9aUo1PaMhbGijJhZFJrCm9lhCw==
+X-Received: by 2002:a5e:9306:: with SMTP id k6mr41405170iom.157.1626099180376;
+        Mon, 12 Jul 2021 07:13:00 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id g1sm7386544ilq.13.2021.07.12.07.13.01
+        by smtp.gmail.com with ESMTPSA id z70sm7921281iof.13.2021.07.12.07.12.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 07:13:02 -0700 (PDT)
-Received: (nullmailer pid 1850545 invoked by uid 1000);
+        Mon, 12 Jul 2021 07:12:59 -0700 (PDT)
+Received: (nullmailer pid 1850542 invoked by uid 1000);
         Mon, 12 Jul 2021 14:12:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     alexandru.tachici@analog.com
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux@armlinux.org.uk, hkallweit1@gmail.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, andrew@lunn.ch,
-        robh+dt@kernel.org, davem@davemloft.net
-In-Reply-To: <20210712130631.38153-8-alexandru.tachici@analog.com>
-References: <20210712130631.38153-1-alexandru.tachici@analog.com> <20210712130631.38153-8-alexandru.tachici@analog.com>
-Subject: Re: [PATCH v2 7/7] dt-bindings: adin1100: Add binding for ADIN1100 Ethernet PHY
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        mauro.chehab@huawei.com, linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>, linuxarm@huawei.com,
+        linux-arm-kernel@axis.com, devicetree@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-omap@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Andy Gross <agross@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org, Shawn Guo <shawnguo@kernel.org>
+In-Reply-To: <fa846c83165894accdac1715c3fddfbdcb060958.1625838920.git.mchehab+huawei@kernel.org>
+References: <cover.1625838920.git.mchehab+huawei@kernel.org> <fa846c83165894accdac1715c3fddfbdcb060958.1625838920.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: designware-pcie.txt: convert it to yaml
 Date:   Mon, 12 Jul 2021 08:12:53 -0600
-Message-Id: <1626099173.624231.1850544.nullmailer@robh.at.kernel.org>
+Message-Id: <1626099173.609840.1850541.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 16:06:31 +0300, alexandru.tachici@analog.com wrote:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
+On Fri, 09 Jul 2021 15:57:42 +0200, Mauro Carvalho Chehab wrote:
+> Convert the file to DT schema.
 > 
-> DT bindings for the ADIN1100 10BASE-T1L Ethernet PHY.
-> 
-> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  .../devicetree/bindings/net/adi,adin1100.yaml | 45 +++++++++++++++++++
->  1 file changed, 45 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/adi,adin1100.yaml
+>  .../bindings/pci/amlogic,meson-pcie.txt       |   4 +-
+>  .../bindings/pci/axis,artpec6-pcie.txt        |   2 +-
+>  .../bindings/pci/designware-pcie.txt          |  77 ----------
+>  .../bindings/pci/fsl,imx6q-pcie.txt           |   2 +-
+>  .../bindings/pci/hisilicon-histb-pcie.txt     |   2 +-
+>  .../devicetree/bindings/pci/kirin-pcie.txt    |   2 +-
+>  .../bindings/pci/layerscape-pci.txt           |   2 +-
+>  .../bindings/pci/nvidia,tegra194-pcie.txt     |   4 +-
+>  .../devicetree/bindings/pci/pci-armada8k.txt  |   2 +-
+>  .../devicetree/bindings/pci/pcie-al.txt       |   2 +-
+>  .../devicetree/bindings/pci/qcom,pcie.txt     |  14 +-
+>  .../bindings/pci/samsung,exynos-pcie.yaml     |   2 +-
+>  .../bindings/pci/sifive,fu740-pcie.yaml       |   2 +-
+>  .../devicetree/bindings/pci/snps,dw-pcie.yaml | 135 ++++++++++++++++++
+>  .../pci/socionext,uniphier-pcie-ep.yaml       |   2 +-
+>  .../devicetree/bindings/pci/ti-pci.txt        |   4 +-
+>  .../devicetree/bindings/pci/uniphier-pcie.txt |   2 +-
+>  MAINTAINERS                                   |   2 +-
+>  18 files changed, 160 insertions(+), 102 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pci/designware-pcie.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -69,11 +118,19 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/net/adi,adin1100.example.dt.yaml:0:0: /example-0/ethernet@e000c000: failed to match any schema with compatible: ['cdns,zynq-gem', 'cdns,gem']
-Documentation/devicetree/bindings/net/adi,adin1100.example.dt.yaml:0:0: /example-0/ethernet@e000c000: failed to match any schema with compatible: ['cdns,zynq-gem', 'cdns,gem']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/intel-gw-pcie.example.dt.yaml: pcie@d0e00000: '#address-cells', '#interrupt-cells', '#size-cells', 'bus-range', 'clocks', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'linux,pci-domain', 'max-link-speed', 'phy-names', 'phys', 'ranges', 'reset-assert-ms', 'reset-gpios', 'resets' do not match any of the regexes: 'pcie?@[0-9a-f]+$', 'pcie?_ep@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,dw-pcie.example.dt.yaml: pcie@dfc00000: '#address-cells', '#interrupt-cells', '#size-cells', 'device_type', 'interrupts', 'ranges' do not match any of the regexes: 'pcie?@[0-9a-f]+$', 'pcie?_ep@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
 \ndoc reference errors (make refcheckdocs):
+Documentation/devicetree/bindings/pci/pci-keystone.txt: Documentation/devicetree/bindings/pci/designware-pcie.txt
+Documentation/devicetree/bindings/pci/pci-keystone.txt: Documentation/devicetree/bindings/pci/designware-pcie.txt
+Documentation/devicetree/bindings/pci/pci-keystone.txt: Documentation/devicetree/bindings/pci/designware-pcie.txt
+Documentation/devicetree/bindings/pci/pci-keystone.txt: Documentation/devicetree/bindings/pci/designware-pcie.txt
+Documentation/devicetree/bindings/pci/pci-keystone.txt: Documentation/devicetree/bindings/pci/designware-pcie.txt
+MAINTAINERS: Documentation/devicetree/bindings/pci/designware-pcie.txt
 
-See https://patchwork.ozlabs.org/patch/1503981
+See https://patchwork.ozlabs.org/patch/1503171
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
