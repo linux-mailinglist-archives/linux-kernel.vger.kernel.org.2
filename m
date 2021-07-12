@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55D33C4E28
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E03F3C561E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240841AbhGLHRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
+        id S1353971AbhGLIPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:15:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239250AbhGLGwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:52:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB5FB61004;
-        Mon, 12 Jul 2021 06:49:55 +0000 (UTC)
+        id S1344045AbhGLH3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:29:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 703D061431;
+        Mon, 12 Jul 2021 07:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072596;
-        bh=3VXaGHAyaewTOYvIuxByWSQBhJuMqKKqUenoZ6rXq30=;
+        s=korg; t=1626074690;
+        bh=x/ZAvooZq+6qW7aleeg580YEvCOUqRUUXFjKFwpw0+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0hScBY9SPrANaNs3vDZoqjj2Jy2xGroYw2ule8t6tlqZnn876Ts447WM+DMKPmRk
-         6GCcc8Kuj8Oc6y0JfHWQkLYpPUnKeOUdOsVc091UcNOXGhsx9Bdau8e8CfbzmLPyxG
-         l77vpLcTVVziwuDvgrylF4fxLeEVYXjTJ4wGix+k=
+        b=BIC13WUmx9WB1qfQ0A3ln75DDKkGNqAjHAwFlklpCTghnK5iGLM7beJqrIK/+yp07
+         EFLx8gP1qwbXIhehOCjyGa46F5ksyiOgbk4biYt4wDu6DpZaNKIfcFcpXuHmFfhoRz
+         eU7mNcbp2RP19mapeKktp0El/CKYK5TJjm8iXpU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 549/593] leds: ktd2692: Fix an error handling path
-Date:   Mon, 12 Jul 2021 08:11:49 +0200
-Message-Id: <20210712060954.668194301@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 627/700] usb: phy: tegra: Correct definition of B_SESS_VLD_WAKEUP_EN bit
+Date:   Mon, 12 Jul 2021 08:11:50 +0200
+Message-Id: <20210712061042.545676450@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit ee78b9360e14c276f5ceaa4a0d06f790f04ccdad ]
+[ Upstream commit 7917e90667bc8dce02daa3c2e6df47f6fc9481f7 ]
 
-In 'ktd2692_parse_dt()', if an error occurs after a successful
-'regulator_enable()' call, we should call 'regulator_enable()'.
+The B_SESS_VLD_WAKEUP_EN bit 6 was added by a mistake in a previous
+commit. This bit corresponds to B_SESS_END_WAKEUP_EN, which we don't use.
+The B_VBUS_VLD_WAKEUP_EN doesn't exist at all and B_SESS_VLD_WAKEUP_EN
+needs to be in place of it. We don't utilize B-sensors in the driver,
+so it never was a problem, nevertheless let's correct the definition of
+the bits.
 
-This is the same in 'ktd2692_probe()', if an error occurs after a
-successful 'ktd2692_parse_dt()' call.
-
-Instead of adding 'regulator_enable()' in several places, implement a
-resource managed solution and simplify the remove function accordingly.
-
-Fixes: b7da8c5c725c ("leds: Add ktd2692 flash LED driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210613145936.9902-2-digetx@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-ktd2692.c | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ drivers/usb/phy/phy-tegra-usb.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/leds/leds-ktd2692.c b/drivers/leds/leds-ktd2692.c
-index 632f10db4b3f..f341da1503a4 100644
---- a/drivers/leds/leds-ktd2692.c
-+++ b/drivers/leds/leds-ktd2692.c
-@@ -256,6 +256,17 @@ static void ktd2692_setup(struct ktd2692_context *led)
- 				 | KTD2692_REG_FLASH_CURRENT_BASE);
- }
+diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
+index 10fafcf9801b..c0f432d509aa 100644
+--- a/drivers/usb/phy/phy-tegra-usb.c
++++ b/drivers/usb/phy/phy-tegra-usb.c
+@@ -58,8 +58,7 @@
+ #define   USB_WAKEUP_DEBOUNCE_COUNT(x)		(((x) & 0x7) << 16)
  
-+static void regulator_disable_action(void *_data)
-+{
-+	struct device *dev = _data;
-+	struct ktd2692_context *led = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = regulator_disable(led->regulator);
-+	if (ret)
-+		dev_err(dev, "Failed to disable supply: %d\n", ret);
-+}
-+
- static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
- 			    struct ktd2692_led_config_data *cfg)
- {
-@@ -286,8 +297,14 @@ static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
+ #define USB_PHY_VBUS_SENSORS			0x404
+-#define   B_SESS_VLD_WAKEUP_EN			BIT(6)
+-#define   B_VBUS_VLD_WAKEUP_EN			BIT(14)
++#define   B_SESS_VLD_WAKEUP_EN			BIT(14)
+ #define   A_SESS_VLD_WAKEUP_EN			BIT(22)
+ #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
  
- 	if (led->regulator) {
- 		ret = regulator_enable(led->regulator);
--		if (ret)
-+		if (ret) {
- 			dev_err(dev, "Failed to enable supply: %d\n", ret);
-+		} else {
-+			ret = devm_add_action_or_reset(dev,
-+						regulator_disable_action, dev);
-+			if (ret)
-+				return ret;
-+		}
- 	}
+@@ -545,7 +544,7 @@ static int utmi_phy_power_on(struct tegra_usb_phy *phy)
  
- 	child_node = of_get_next_available_child(np, NULL);
-@@ -377,17 +394,9 @@ static int ktd2692_probe(struct platform_device *pdev)
- static int ktd2692_remove(struct platform_device *pdev)
- {
- 	struct ktd2692_context *led = platform_get_drvdata(pdev);
--	int ret;
+ 		val = readl_relaxed(base + USB_PHY_VBUS_SENSORS);
+ 		val &= ~(A_VBUS_VLD_WAKEUP_EN | A_SESS_VLD_WAKEUP_EN);
+-		val &= ~(B_VBUS_VLD_WAKEUP_EN | B_SESS_VLD_WAKEUP_EN);
++		val &= ~(B_SESS_VLD_WAKEUP_EN);
+ 		writel_relaxed(val, base + USB_PHY_VBUS_SENSORS);
  
- 	led_classdev_flash_unregister(&led->fled_cdev);
- 
--	if (led->regulator) {
--		ret = regulator_disable(led->regulator);
--		if (ret)
--			dev_err(&pdev->dev,
--				"Failed to disable supply: %d\n", ret);
--	}
--
- 	mutex_destroy(&led->lock);
- 
- 	return 0;
+ 		val = readl_relaxed(base + UTMIP_BAT_CHRG_CFG0);
 -- 
 2.30.2
 
