@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5026A3C4E92
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359FC3C54EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343637AbhGLHT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
+        id S1349661AbhGLIGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240953AbhGLGyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:54:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F3DC61186;
-        Mon, 12 Jul 2021 06:51:21 +0000 (UTC)
+        id S1343756AbhGLH2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:28:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C75961166;
+        Mon, 12 Jul 2021 07:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072682;
-        bh=7fbMYirB/mGtYtE6wJI6Dx6xC3KIBZASpqlwif7Pb+0=;
+        s=korg; t=1626074675;
+        bh=J0yhbvdUKMr+Yfgzy+EhEC+S0VN0f6BTmz0TGKluGmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htrK3vAbFvyvjV//xads+ySeQIryW5QMGYwEuFvxgC0OC4U5YCvYsRpTM78hcruyf
-         bnVS5/nB2XiGE/9nY7t5GS8iYQnALfD7rlv82ekLyGkQDXpaCEw6PXs0/6xiTDB1gQ
-         YR+TwJ9X0R2hoS9tF3MHSoB1gJQeKb7cTSNLR6+8=
+        b=GY8N4h32kT8vQBWPGjTMwcn97r/6j17sPbJ9ezt4u2JsdPh23jdhJMXRnTwUfCeil
+         xErdYXp119DO0mtAmbd2Vq4UZIC/HQ2U93nYkicj+v8M3HYbRqeBeLwa1lKvJz1ieo
+         ewYYUvSX/evODWRNoo3Nn6irnUn/oK5orapWoJVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Cramer <flrncrmr@gmail.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Chris Down <chris@chrisdown.name>,
-        Namjae Jeon <namjae.jeon@samsung.com>
-Subject: [PATCH 5.10 580/593] exfat: handle wrong stream entry size in exfat_readdir()
-Date:   Mon, 12 Jul 2021 08:12:20 +0200
-Message-Id: <20210712060958.979038217@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 658/700] powerpc: Fix is_kvm_guest() / kvm_para_available()
+Date:   Mon, 12 Jul 2021 08:12:21 +0200
+Message-Id: <20210712061045.887919415@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +39,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namjae Jeon <namjae.jeon@samsung.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 1e5654de0f51890f88abd409ebf4867782431e81 upstream.
+[ Upstream commit 95839225639ba7c3d8d7231b542728dcf222bf2d ]
 
-The compatibility issue between linux exfat and exfat of some camera
-company was reported from Florian. In their exfat, if the number of files
-exceeds any limit, the DataLength in stream entry of the directory is
-no longer updated. So some files created from camera does not show in
-linux exfat. because linux exfat doesn't allow that cpos becomes larger
-than DataLength of stream entry. This patch check DataLength in stream
-entry only if the type is ALLOC_NO_FAT_CHAIN and add the check ensure
-that dentry offset does not exceed max dentries size(256 MB) to avoid
-the circular FAT chain issue.
+Commit a21d1becaa3f ("powerpc: Reintroduce is_kvm_guest() as a fast-path
+check") added is_kvm_guest() and changed kvm_para_available() to use it.
 
-Fixes: ca06197382bd ("exfat: add directory operations")
-Cc: stable@vger.kernel.org # v5.9
-Reported-by: Florian Cramer <flrncrmr@gmail.com>
-Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-Tested-by: Chris Down <chris@chrisdown.name>
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+is_kvm_guest() checks a static key, kvm_guest, and that static key is
+set in check_kvm_guest().
 
+The problem is check_kvm_guest() is only called on pseries, and even
+then only in some configurations. That means is_kvm_guest() always
+returns false on all non-pseries and some pseries depending on
+configuration. That's a bug.
+
+For PR KVM guests this is noticable because they no longer do live
+patching of themselves, which can be detected by the omission of a
+message in dmesg such as:
+
+  KVM: Live patching for a fast VM worked
+
+To fix it make check_kvm_guest() an initcall, to ensure it's always
+called at boot. It needs to be core so that it runs before
+kvm_guest_init() which is postcore. To be an initcall it needs to return
+int, where 0 means success, so update that.
+
+We still call it manually in pSeries_smp_probe(), because that runs
+before init calls are run.
+
+Fixes: a21d1becaa3f ("powerpc: Reintroduce is_kvm_guest() as a fast-path check")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210623130514.2543232-1-mpe@ellerman.id.au
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/exfat/dir.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/kvm_guest.h |  4 ++--
+ arch/powerpc/kernel/firmware.c       | 10 ++++++----
+ arch/powerpc/platforms/pseries/smp.c |  4 +++-
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -62,7 +62,7 @@ static void exfat_get_uniname_from_ext_e
- static int exfat_readdir(struct inode *inode, loff_t *cpos, struct exfat_dir_entry *dir_entry)
+diff --git a/arch/powerpc/include/asm/kvm_guest.h b/arch/powerpc/include/asm/kvm_guest.h
+index 2fca299f7e19..c63105d2c9e7 100644
+--- a/arch/powerpc/include/asm/kvm_guest.h
++++ b/arch/powerpc/include/asm/kvm_guest.h
+@@ -16,10 +16,10 @@ static inline bool is_kvm_guest(void)
+ 	return static_branch_unlikely(&kvm_guest);
+ }
+ 
+-bool check_kvm_guest(void);
++int check_kvm_guest(void);
+ #else
+ static inline bool is_kvm_guest(void) { return false; }
+-static inline bool check_kvm_guest(void) { return false; }
++static inline int check_kvm_guest(void) { return 0; }
+ #endif
+ 
+ #endif /* _ASM_POWERPC_KVM_GUEST_H_ */
+diff --git a/arch/powerpc/kernel/firmware.c b/arch/powerpc/kernel/firmware.c
+index c9e2819b095a..c7022c41cc31 100644
+--- a/arch/powerpc/kernel/firmware.c
++++ b/arch/powerpc/kernel/firmware.c
+@@ -23,18 +23,20 @@ EXPORT_SYMBOL_GPL(powerpc_firmware_features);
+ 
+ #if defined(CONFIG_PPC_PSERIES) || defined(CONFIG_KVM_GUEST)
+ DEFINE_STATIC_KEY_FALSE(kvm_guest);
+-bool check_kvm_guest(void)
++int __init check_kvm_guest(void)
  {
- 	int i, dentries_per_clu, dentries_per_clu_bits = 0, num_ext;
--	unsigned int type, clu_offset;
-+	unsigned int type, clu_offset, max_dentries;
- 	sector_t sector;
- 	struct exfat_chain dir, clu;
- 	struct exfat_uni_name uni_name;
-@@ -85,6 +85,8 @@ static int exfat_readdir(struct inode *i
+ 	struct device_node *hyper_node;
  
- 	dentries_per_clu = sbi->dentries_per_clu;
- 	dentries_per_clu_bits = ilog2(dentries_per_clu);
-+	max_dentries = (unsigned int)min_t(u64, MAX_EXFAT_DENTRIES,
-+					   (u64)sbi->num_clusters << dentries_per_clu_bits);
+ 	hyper_node = of_find_node_by_path("/hypervisor");
+ 	if (!hyper_node)
+-		return false;
++		return 0;
  
- 	clu_offset = dentry >> dentries_per_clu_bits;
- 	exfat_chain_dup(&clu, &dir);
-@@ -108,7 +110,7 @@ static int exfat_readdir(struct inode *i
- 		}
- 	}
+ 	if (!of_device_is_compatible(hyper_node, "linux,kvm"))
+-		return false;
++		return 0;
  
--	while (clu.dir != EXFAT_EOF_CLUSTER) {
-+	while (clu.dir != EXFAT_EOF_CLUSTER && dentry < max_dentries) {
- 		i = dentry & (dentries_per_clu - 1);
+ 	static_branch_enable(&kvm_guest);
+-	return true;
++
++	return 0;
+ }
++core_initcall(check_kvm_guest); // before kvm_guest_init()
+ #endif
+diff --git a/arch/powerpc/platforms/pseries/smp.c b/arch/powerpc/platforms/pseries/smp.c
+index c70b4be9f0a5..096629f54576 100644
+--- a/arch/powerpc/platforms/pseries/smp.c
++++ b/arch/powerpc/platforms/pseries/smp.c
+@@ -211,7 +211,9 @@ static __init void pSeries_smp_probe(void)
+ 	if (!cpu_has_feature(CPU_FTR_SMT))
+ 		return;
  
- 		for ( ; i < dentries_per_clu; i++, dentry++) {
-@@ -244,7 +246,7 @@ static int exfat_iterate(struct file *fi
- 	if (err)
- 		goto unlock;
- get_new:
--	if (cpos >= i_size_read(inode))
-+	if (ei->flags == ALLOC_NO_FAT_CHAIN && cpos >= i_size_read(inode))
- 		goto end_of_dir;
- 
- 	err = exfat_readdir(inode, &cpos, &de);
+-	if (check_kvm_guest()) {
++	check_kvm_guest();
++
++	if (is_kvm_guest()) {
+ 		/*
+ 		 * KVM emulates doorbells by disabling FSCR[MSGP] so msgsndp
+ 		 * faults to the hypervisor which then reads the instruction
+-- 
+2.30.2
+
 
 
