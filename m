@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC07C3C49D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B9F3C5020
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhGLGqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:46:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
+        id S1346895AbhGLHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235989AbhGLGfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7813F610FB;
-        Mon, 12 Jul 2021 06:32:48 +0000 (UTC)
+        id S241765AbhGLHED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:04:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88FC061205;
+        Mon, 12 Jul 2021 07:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071568;
-        bh=roqyspRFC1/DgrllRoflMHE9bkjkXJi48MaQ1+M2RGU=;
+        s=korg; t=1626073276;
+        bh=H23AYYvulrpKBUSOuzXm0fdjY1KZV6XWaW5BPoth7mM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QF1jSCloWj6H0NgyCVzInSpZTsBT0XjOGVNjA3WE3FhS2zotV9Sq6/57kZHDAlWXx
-         c9U3vbLKUs4ceJ1qLegtjQUI85ZnG9tGEUdImapYIGUznaKFE7AzQIImLj0R/OpsH/
-         0KaB26YoJ/moUr0EXthj+2Hdk6rPbYaxEhwplr30=
+        b=W6g3hs0Z8NVcsUTpi/IjmMRjrMtQ8cS/eFQFCN34316Zw2sy96FNu5Qq/ihCa7SaE
+         0tDZijleB2vcv4+fUu886C4/J14Xe3GXuZnQYceiwmesLzavLb+v43zgTRlNvRk7tj
+         WVxIvo22J8IhypvEjzPrat9KF9R7EF50x8iIt7Vw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 109/593] media: s5p-jpeg: fix pm_runtime_get_sync() usage count
+Subject: [PATCH 5.12 186/700] btrfs: sysfs: fix format string for some discard stats
 Date:   Mon, 12 Jul 2021 08:04:29 +0200
-Message-Id: <20210712060855.202433134@linuxfoundation.org>
+Message-Id: <20210712060953.064614563@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 10343de268d10cf07b092b8b525e12ad558ead77 ]
+[ Upstream commit 8c5ec995616f1202ab92e195fd75d6f60d86f85c ]
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
-Replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
+The type of discard_bitmap_bytes and discard_extent_bytes is u64 so the
+format should be %llu, though the actual values would hardly ever
+overflow to negative values.
 
-As a plus, pm_runtime_resume_and_get() doesn't return
-positive numbers, so the return code validation can
-be removed.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/s5p-jpeg/jpeg-core.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/btrfs/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
-index 9b22dd8e34f4..d515eb08c3ee 100644
---- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
-+++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
-@@ -2566,11 +2566,8 @@ static void s5p_jpeg_buf_queue(struct vb2_buffer *vb)
- static int s5p_jpeg_start_streaming(struct vb2_queue *q, unsigned int count)
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 6eb1c50fa98c..bd95446869d0 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -414,7 +414,7 @@ static ssize_t btrfs_discard_bitmap_bytes_show(struct kobject *kobj,
  {
- 	struct s5p_jpeg_ctx *ctx = vb2_get_drv_priv(q);
--	int ret;
--
--	ret = pm_runtime_get_sync(ctx->jpeg->dev);
+ 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
  
--	return ret > 0 ? 0 : ret;
-+	return pm_runtime_resume_and_get(ctx->jpeg->dev);
+-	return scnprintf(buf, PAGE_SIZE, "%lld\n",
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
+ 			fs_info->discard_ctl.discard_bitmap_bytes);
  }
+ BTRFS_ATTR(discard, discard_bitmap_bytes, btrfs_discard_bitmap_bytes_show);
+@@ -436,7 +436,7 @@ static ssize_t btrfs_discard_extent_bytes_show(struct kobject *kobj,
+ {
+ 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
  
- static void s5p_jpeg_stop_streaming(struct vb2_queue *q)
+-	return scnprintf(buf, PAGE_SIZE, "%lld\n",
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
+ 			fs_info->discard_ctl.discard_extent_bytes);
+ }
+ BTRFS_ATTR(discard, discard_extent_bytes, btrfs_discard_extent_bytes_show);
 -- 
 2.30.2
 
