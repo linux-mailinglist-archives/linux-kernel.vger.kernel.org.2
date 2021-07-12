@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E3D3C502C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647F23C50BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239485AbhGLHbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:31:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40194 "EHLO mail.kernel.org"
+        id S1347377AbhGLHev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243335AbhGLHEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0879761167;
-        Mon, 12 Jul 2021 07:02:03 +0000 (UTC)
+        id S243392AbhGLHEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:04:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AC5361152;
+        Mon, 12 Jul 2021 07:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073324;
-        bh=B7DA+b3ltaaXrWpMhVn9fgrYsaiqobW8Rvmr22V+Zr0=;
+        s=korg; t=1626073327;
+        bh=J1mly4LOZ/Jd1S1t5r08mU2L0mcfIgnCNRCNH1XCERk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VwVoeUNTyMpVKS/q3CL1EQY/M1W0vrpht646KA7TnkurBDWGhxQ/UidPcNmxG3GLP
-         4mAruMnDVn2Jt4Lv+NN1wiGUFgi33Zf1AhGo6YLiRi2cH4AC87Wn8q7RI5nRFsoxda
-         ihbVwnoquxsZM5hYCkBb+ACpK1Ri8PP00PTeb3nA=
+        b=qJZ13xv3bk5+oZih+itgQjdPVgfB5IEmXzG1ST2qfzX/a4B8QUBkt2es/i1FOznF+
+         pME1o98h8ZF7nCKKp/Cet25G68ED9pBmPJBFCQYxI4EaluxBejZCjDedG2Q0rTaSbQ
+         hjyeFw4RxwFx4ZLlNM+9p6f63DiPLbL7tXiuRGeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 202/700] Input: goodix - platform/x86: touchscreen_dmi - Move upside down quirks to touchscreen_dmi.c
-Date:   Mon, 12 Jul 2021 08:04:45 +0200
-Message-Id: <20210712060955.437211471@linuxfoundation.org>
+Subject: [PATCH 5.12 203/700] platform/x86: touchscreen_dmi: Add an extra entry for the upside down Goodix touchscreen on Teclast X89 tablets
+Date:   Mon, 12 Jul 2021 08:04:46 +0200
+Message-Id: <20210712060955.542384873@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,187 +41,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 5a6f0dbe621a5c20dc912ac474debf9f11129e03 ]
+[ Upstream commit a22e3803f2a4d947ff0083a9448a169269ea0f62 ]
 
-Move the DMI quirks for upside-down mounted Goodix touchscreens from
-drivers/input/touchscreen/goodix.c to
-drivers/platform/x86/touchscreen_dmi.c,
-where all the other x86 touchscreen quirks live.
+Teclast X89 tablets come in 2 versions, with Windows pre-installed and with
+Android pre-installed. These 2 versions have different DMI strings.
 
-Note the touchscreen_dmi.c code attaches standard touchscreen
-device-properties to an i2c-client device based on a combination of a
-DMI match + a device-name match. I've verified that the: Teclast X98 Pro,
-WinBook TW100 and WinBook TW700 uses an ACPI devicename of "GDIX1001:00"
-based on acpidumps and/or dmesg output available on the web.
+Add a match for the DMI strings used by the Android version BIOS.
 
-This patch was tested on a Teclast X89 tablet.
+Note the Android version BIOS has a bug in the DSDT where no IRQ is
+provided, so for the touchscreen to work a DSDT override fixing this
+is necessary as well.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210504185746.175461-2-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20210504185746.175461-4-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/goodix.c     | 52 ------------------------
- drivers/platform/x86/touchscreen_dmi.c | 56 ++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+), 52 deletions(-)
+ drivers/platform/x86/touchscreen_dmi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index c682b028f0a2..4f53d3c57e69 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -178,51 +178,6 @@ static const unsigned long goodix_irq_flags[] = {
- 	IRQ_TYPE_LEVEL_HIGH,
- };
- 
--/*
-- * Those tablets have their coordinates origin at the bottom right
-- * of the tablet, as if rotated 180 degrees
-- */
--static const struct dmi_system_id rotated_screen[] = {
--#if defined(CONFIG_DMI) && defined(CONFIG_X86)
--	{
--		.ident = "Teclast X89",
--		.matches = {
--			/* tPAD is too generic, also match on bios date */
--			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
--			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
--			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
--		},
--	},
--	{
--		.ident = "Teclast X98 Pro",
--		.matches = {
--			/*
--			 * Only match BIOS date, because the manufacturers
--			 * BIOS does not report the board name at all
--			 * (sometimes)...
--			 */
--			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
--			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
--		},
--	},
--	{
--		.ident = "WinBook TW100",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
--		}
--	},
--	{
--		.ident = "WinBook TW700",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
--		},
--	},
--#endif
--	{}
--};
--
- static const struct dmi_system_id nine_bytes_report[] = {
- #if defined(CONFIG_DMI) && defined(CONFIG_X86)
- 	{
-@@ -1123,13 +1078,6 @@ static int goodix_configure_dev(struct goodix_ts_data *ts)
- 				  ABS_MT_POSITION_Y, ts->prop.max_y);
- 	}
- 
--	if (dmi_check_system(rotated_screen)) {
--		ts->prop.invert_x = true;
--		ts->prop.invert_y = true;
--		dev_dbg(&ts->client->dev,
--			"Applying '180 degrees rotated screen' quirk\n");
--	}
--
- 	if (dmi_check_system(nine_bytes_report)) {
- 		ts->contact_size = 9;
- 
 diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-index 8618c44106c2..222f6c9f0b45 100644
+index 222f6c9f0b45..bbd8d80230cd 100644
 --- a/drivers/platform/x86/touchscreen_dmi.c
 +++ b/drivers/platform/x86/touchscreen_dmi.c
-@@ -299,6 +299,23 @@ static const struct ts_dmi_data estar_beauty_hd_data = {
- 	.properties	= estar_beauty_hd_props,
- };
- 
-+/* Generic props + data for upside-down mounted GDIX1001 touchscreens */
-+static const struct property_entry gdix1001_upside_down_props[] = {
-+	PROPERTY_ENTRY_BOOL("touchscreen-inverted-x"),
-+	PROPERTY_ENTRY_BOOL("touchscreen-inverted-y"),
-+	{ }
-+};
-+
-+static const struct ts_dmi_data gdix1001_00_upside_down_data = {
-+	.acpi_name	= "GDIX1001:00",
-+	.properties	= gdix1001_upside_down_props,
-+};
-+
-+static const struct ts_dmi_data gdix1001_01_upside_down_data = {
-+	.acpi_name	= "GDIX1001:01",
-+	.properties	= gdix1001_upside_down_props,
-+};
-+
- static const struct property_entry gp_electronic_t701_props[] = {
- 	PROPERTY_ENTRY_U32("touchscreen-size-x", 960),
- 	PROPERTY_ENTRY_U32("touchscreen-size-y", 640),
-@@ -1295,6 +1312,16 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+@@ -1312,6 +1312,14 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
  			DMI_MATCH(DMI_BOARD_NAME, "X3 Plus"),
  		},
  	},
 +	{
-+		/* Teclast X89 (Windows version / BIOS) */
-+		.driver_data = (void *)&gdix1001_01_upside_down_data,
++		/* Teclast X89 (Android version / BIOS) */
++		.driver_data = (void *)&gdix1001_00_upside_down_data,
 +		.matches = {
-+			/* tPAD is too generic, also match on bios date */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
-+			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
++			DMI_MATCH(DMI_BOARD_VENDOR, "WISKY"),
++			DMI_MATCH(DMI_BOARD_NAME, "3G062i"),
 +		},
 +	},
  	{
- 		/* Teclast X98 Plus II */
- 		.driver_data = (void *)&teclast_x98plus2_data,
-@@ -1303,6 +1330,19 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "X98 Plus II"),
- 		},
- 	},
-+	{
-+		/* Teclast X98 Pro */
-+		.driver_data = (void *)&gdix1001_00_upside_down_data,
-+		.matches = {
-+			/*
-+			 * Only match BIOS date, because the manufacturers
-+			 * BIOS does not report the board name at all
-+			 * (sometimes)...
-+			 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
-+		},
-+	},
- 	{
- 		/* Trekstor Primebook C11 */
- 		.driver_data = (void *)&trekstor_primebook_c11_data,
-@@ -1378,6 +1418,22 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "VINGA Twizzle J116"),
- 		},
- 	},
-+	{
-+		/* "WinBook TW100" */
-+		.driver_data = (void *)&gdix1001_00_upside_down_data,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
-+		}
-+	},
-+	{
-+		/* WinBook TW700 */
-+		.driver_data = (void *)&gdix1001_00_upside_down_data,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
-+		},
-+	},
- 	{
- 		/* Yours Y8W81, same case and touchscreen as Chuwi Vi8 */
- 		.driver_data = (void *)&chuwi_vi8_data,
+ 		/* Teclast X89 (Windows version / BIOS) */
+ 		.driver_data = (void *)&gdix1001_01_upside_down_data,
 -- 
 2.30.2
 
