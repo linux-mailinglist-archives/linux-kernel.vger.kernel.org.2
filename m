@@ -2,174 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9403C600F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A5D3C6014
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhGLQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:06:48 -0400
-Received: from mail-eopbgr1410134.outbound.protection.outlook.com ([40.107.141.134]:11323
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230300AbhGLQGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:06:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JLypn4mxJkWh5zlksJsgJGhDOb80IGm4XTOFesB6c/jLX0JW22ArIDDVzFzdn78q3zhI73cR2FeT6veGAljfA0b5uVWdLsaEmpAkcBugNW37zcIpIlHUUNF7vuOqDlw5zpo9Pjer8sQBBHJeqiaaX1UzM2u4dYscwlYYrm/RhdOhY1NOj2RbUXk37j61Sc/TUCCVoGcSeYcLQ6WhAmuYzs2CKVWJVpTzmf7XbXSM3v4/9sRn0MPX93WeOJs1DD4w8gkXFAkBanlt1PgKg5LBSpy+Nu/KpeOlyytPMR0QgVQ4U7ys4qRmLZi7ofhq7jOzE9k/ufc5PPZzbXIga5ycZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d+2N3Pc19PFvkvydTV6B001bBKsnKeX6C1pANHtdHYU=;
- b=WDdesWvaPVRPFFf60WPHHBfeqjgql78hq7zEPWFzgeLBCsMGtk7DZmyPN7Cv48T9HBwkT4B2I8RaU0oV9U+mQdba3vwM5MgxpBW/ROEq14vKykFwuIvLRDRDiuO136iNv4JtCZaBUzBEQ3Yl//BT0N3OPuME5hkcSDimAGChSjwhs8wAuGWg0mQcuXaFE4YQ+5lobmabisBGx27e7/x7VhybTzUXcC0YF723bB6Awqb4MOVP10Swt5rNSxU0sQTip93wldDbrq8otqpYf3Vv//i1EkM9IsnoVyYfU6UPVuanXa6z8RZTuE6u2RTh6JztTUYGDo5IFNi9bE5zGvxDvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d+2N3Pc19PFvkvydTV6B001bBKsnKeX6C1pANHtdHYU=;
- b=SIhSQkvvGV57bZMjw694RDjh93h0qCYmKH9Nu4ltrTBaWsjZCqFCTng66BlqUiaK89EQcRCzaPZ2GrpoHi+EATRYiwXUtOcBQti51ALz0bfY+baqPDj0/Tfp5MUkeV++Bf2kdcyNf8tW+3aUTZ2GDxjSb+h4CtmyQWEzOWTuruk=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OSBPR01MB4182.jpnprd01.prod.outlook.com (2603:1096:604:4c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Mon, 12 Jul
- 2021 16:03:55 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::c6f:e31f:eaa9:60fe]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::c6f:e31f:eaa9:60fe%8]) with mapi id 15.20.4308.027; Mon, 12 Jul 2021
- 16:03:55 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Steven Price <steven.price@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Pavel Machek <pavel@denx.de>
-Subject: RE: [PATCH] drm/of: free the iterator object on failure
-Thread-Topic: [PATCH] drm/of: free the iterator object on failure
-Thread-Index: AQHXdza8yuvKKiaXE0SOB7GUW8ssjas/gHXg
-Date:   Mon, 12 Jul 2021 16:03:55 +0000
-Message-ID: <OS0PR01MB592294867B449F855496337186159@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20210712155758.48286-1-steven.price@arm.com>
-In-Reply-To: <20210712155758.48286-1-steven.price@arm.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 53c84719-6d65-41f8-d6d7-08d9454ea67d
-x-ms-traffictypediagnostic: OSBPR01MB4182:
-x-microsoft-antispam-prvs: <OSBPR01MB4182116AD4AC098251845B4586159@OSBPR01MB4182.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6yRpI0Tlr7enjBZw+8JHpyDDv8JdRSx/oSEaL1tqqBQ2Y4EpA2S6bnAebMj5jgOa5N217j6YxQe3I7VDf+jQfclj6X/OxkuW0wO3vMdKwW26ZtwXelpwSbGo4Z7KvtDwvOmIf/Kfdez2hFlnM9ovlfivFqBd22Z/jpMCYm4enhrpuaTjzAJs9XLHpG4StbiR+oeCP8MFTojZg7dDLP0Hx2vSn8lAtYE14Uaklat27iFkCIa+J9UoAhttOvavznQ4cqrnOkqBVDj06353yCkFL0Ji1t3nFw/wgw31eGcJG8JjP2Nn4MYTNx9y5If4Hun/2pXGMmXzE6VE28v/dz7eNQeuE9/tTg4Z+D+S7JZv0fLufH/u5Mzh3qfS/CUBkpeQpF9Rpjd3sxgivvsSHiamx54jFQUiWzvRjbiUhTZRvrm/ifaThhC3F8DHchsJHMcFWiJcgwfGUgQ2CanLkrA5CXC+08oc7hP1KmJ3zZ7f0IkrboPemaxcd/tBJwbWqaYYt8bXPSHT/pppdQIPHEQlDA9YekaycaVDotghc4lmMIbAI5LlnHdTbwKNoG7E5xhn+OPsr4sixtPgyLsadPLmcnWeZtFy3gJAKQpaJ3elWi5BDMJF/nvkMc2th9LI6btiqZlSkSTVhjLCLf+53/J315p/Ll3kkWUuOeEWdzbZthEWgIGOnqgkd8Oz/pweWmU0brtZ+3rw21tuKQpJilBgigEgjDe65KQ75+RVh7Ls5ko=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(376002)(39850400004)(83380400001)(66946007)(66476007)(66556008)(66446008)(64756008)(9686003)(76116006)(316002)(33656002)(966005)(53546011)(45080400002)(6506007)(5660300002)(478600001)(4326008)(110136005)(54906003)(122000001)(52536014)(2906002)(7696005)(38100700002)(7416002)(55016002)(26005)(8676002)(186003)(8936002)(71200400001)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?A0eTAjK0UK/qp2ECKWmVfhjGbZ/VvGPsB2qGxVVDvOM9ekUDgdxxCGicOyHj?=
- =?us-ascii?Q?0/0eVDzlp++PGsfzahsLZwrjN+nSfLuG8P8/zBwovGJ3qThtlU7uExDa9leg?=
- =?us-ascii?Q?he3Vuu7fuhI9iJqH0ewE2GV/piqej9jKrgwwX69ZiNU4dmEjZdSAZs331pVw?=
- =?us-ascii?Q?xTi/YpfG+F/yls1xjmd/koInXHqE7bNzMMvrjEJBSnSB7PLv5L0aj8FsNtHm?=
- =?us-ascii?Q?5LlIV+fnsrcUas0mR61CgFdnlyem8MMOT8+1cjhTjLP4bkI1ZyDx7PNMmCSF?=
- =?us-ascii?Q?ICYmG+Hyo7o311cFUBRI03QLA1hZlXspCV84JQQXyIeaIijuNNSLk8ZHWbSc?=
- =?us-ascii?Q?oxVSvYG91Y1wGLXg90I0jAfpe5O5/+uAnr3LIwVqGtcK0Xj9hpnc+y516y+E?=
- =?us-ascii?Q?bdSlsSsmM4tFVBzDelJ5jGYNM6qxX2bDJkvHB7eGLcAFNhb1HzukqBpUErIq?=
- =?us-ascii?Q?J93I/k/QXfl+wm462jUr9dZLKvR6PJctvElepvOmkqhR8Ru3ldIfcAJFY7lX?=
- =?us-ascii?Q?vmBMZUy068LCi+g0KAP8IzQZZ2Gq3W9Zi3OeSsPvnMNe0aQYYD8fR4vknNOk?=
- =?us-ascii?Q?aYKLYYDHCh0W+atx0JhYgmW6RXQlfFtzvqg3s6o7A9CmxVgJ+f+uRhtDcMpk?=
- =?us-ascii?Q?Mnhm7Q+MLROUb25qb6UV369knyfRpAPxpwlNxEFTybGtescBOzmp+3fUHgaf?=
- =?us-ascii?Q?IDM4Myc0iF690CuHoXOCN7WEDv6tNrr7+VVIf7aKgCSGgU99HONNhZ1WnvY5?=
- =?us-ascii?Q?O+yXwXhkXOwwsGuzSZN4xY7P5Wag8dH6ZoZkDBPl1vdJuxySBzhgAj2wzDRB?=
- =?us-ascii?Q?DPM49lfIjC1pEa5f6p0H+XWrwsTydV6tX8LxEO6GPP2k0olXbtQ/6RmCDE0J?=
- =?us-ascii?Q?Xf1XYO80olGJjhhyWu42BpsBakhTfOuFzkND4X9jtjXNhDDcZ0n2a/Fo2aPK?=
- =?us-ascii?Q?evlVIaBVQVS6eFlAeFpfukIL0CsY+zOA05Efapbbk1tpo7smv3Ien1Vh/pHb?=
- =?us-ascii?Q?AmVXBxLM1jqMG4+rQqwsfaODfOKpfg+MXbgl4eOA9hQ4hGEzu0F93I78lOVd?=
- =?us-ascii?Q?sbp69bRNJooCsCo+vrOnB1/Rkt9G4t3W+vdBsZ3XImqKEeQsi+BXxgmJVWHc?=
- =?us-ascii?Q?mn6hXbpxtm4zpnjhRvRkGQQBPEFJ22yPlXwBo3bM3VLBRe74OahdlBmRTsm7?=
- =?us-ascii?Q?EKiwxMp/AVsAPvLBIQs8U/XA4HFn+UdeL22jZjaP37DJRnN1x+I+Q0buS9Jg?=
- =?us-ascii?Q?hejOngiQomQNMiWExTb1qp3Ksa46CNWwdPs2sqezXfEW4rHnP8AdoyPzMzlU?=
- =?us-ascii?Q?IwzZJfp9iTz2PLiq6u/hEzzu?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231699AbhGLQHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:07:31 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:33627 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhGLQHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:07:30 -0400
+Received: by mail-io1-f51.google.com with SMTP id z11so1582068iow.0;
+        Mon, 12 Jul 2021 09:04:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t7zLlkpjqidi7PE+jjVFSaEwNjSZq4b1sP5J9W4oGrw=;
+        b=kwGLpAkrzYN6kQjbIywssQ+V1kZQPdOgryo4G9b0PR5EP3TlKDBdcAhhp84LHaf+es
+         oh5LU0+mr7BFF4ahooU3uugab2PlpMFfd6H8zlwKaYnadyBKxz1Iqh2WZR1dNhoq14Ph
+         teLFLCrzzAEG6OczpBrnAD3lzp1nOFTvm2STgmhGYEqZOhesCFsHJFgtE5+4/NJixAoC
+         AyalG8Idj+3C0shTGRZOFTB+1awNJ73MV1amSCasPNn6fReV5SundnIwcEFAbtmwleoE
+         husT7fhccLpO/XQTR7Ieu5LsvSFHmrD/RN413nKlokPKFVcShmCzlxNeyvkynxJp5cIS
+         SVVA==
+X-Gm-Message-State: AOAM530z+5Jhq2L/9RLToxNbWvW6klBKdFm7TR8uqPmII41nQdeMJW0X
+        JyX2GkwEch7O5x0B2guZ3g==
+X-Google-Smtp-Source: ABdhPJzOLYeTmZxL5V7NzmoyZPyyvU5QgZDr4OPjKFj9sUcqyCj09ZQNxbo71clkNp7eJvo9fYYvmQ==
+X-Received: by 2002:a05:6638:3594:: with SMTP id v20mr44293107jal.25.1626105878851;
+        Mon, 12 Jul 2021 09:04:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t15sm6942731iln.36.2021.07.12.09.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 09:04:37 -0700 (PDT)
+Received: (nullmailer pid 2022797 invoked by uid 1000);
+        Mon, 12 Jul 2021 16:04:35 -0000
+Date:   Mon, 12 Jul 2021 10:04:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pavo Banicevic <pavo.banicevic@sartura.hr>
+Cc:     linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, geert+renesas@glider.be,
+        Max.Merchel@tq-group.com, linux@rempel-privat.de, daniel@0x0f.com,
+        shawnguo@kernel.org, sam@ravnborg.org, arnd@arndb.de,
+        krzysztof.kozlowski@canonical.com, corbet@lwn.net,
+        lee.jones@linaro.org, pavel@ucw.cz, linux@roeck-us.net,
+        jdelvare@suse.com, goran.medic@sartura.hr, luka.perkov@sartura.hr,
+        luka.kovacic@sartura.hr, Robert Marko <robert.marko@sartura.hr>
+Subject: Re: [PATCH v8 1/7] dt-bindings: Add IEI vendor prefix and IEI
+ WT61P803 PUZZLE driver bindings
+Message-ID: <20210712160435.GA1994579@robh.at.kernel.org>
+References: <20210705134939.28691-1-pavo.banicevic@sartura.hr>
+ <20210705134939.28691-2-pavo.banicevic@sartura.hr>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53c84719-6d65-41f8-d6d7-08d9454ea67d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2021 16:03:55.1352
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fe7hbul+KaHJ7GhfvPtvZtWRKoA3KgP6DJebgljY4/UXV9r2tqkvatxwA7HGDFWpqrRp5GicoOnUVBuWQxCL0IJcmd9frk270LqgZoNeBlY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4182
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705134939.28691-2-pavo.banicevic@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Pavel
-
-> -----Original Message-----
-> From: Steven Price <steven.price@arm.com>
-> Sent: 12 July 2021 16:58
-> To: Daniel Vetter <daniel@ffwll.ch>; David Airlie <airlied@linux.ie>;
-> Maarten Lankhorst <maarten.lankhorst@linux.intel.com>; Maxime Ripard
-> <mripard@kernel.org>; Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Steven Price <steven.price@arm.com>; dri-devel@lists.freedesktop.org;
-> linux-kernel@vger.kernel.org; Biju Das <biju.das.jz@bp.renesas.com>;
-> Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Subject: [PATCH] drm/of: free the iterator object on failure
->=20
-> When bailing out due to the sanity check the iterator value needs to be
-> freed because the early return prevents for_each_child_of_node() from
-> doing the dereference itself.
->=20
-> Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
-> Signed-off-by: Steven Price <steven.price@arm.com>
+On Mon, Jul 05, 2021 at 03:49:33PM +0200, Pavo Banicevic wrote:
+> From: Luka Kovacic <luka.kovacic@sartura.hr>
+> 
+> Add the IEI WT61P803 PUZZLE Device Tree bindings for MFD, HWMON and LED
+> drivers. A new vendor prefix is also added accordingly for
+> IEI Integration Corp.
+> 
+> Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> Signed-off-by: Pavo Banicevic <pavo.banicevic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Robert Marko <robert.marko@sartura.hr>
 > ---
->  drivers/gpu/drm/drm_of.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> Daniel's email[1] made me take a look at this function and it appears tha=
-t
-> for_each_child_of_node()'s interface had caused a bad bug fix due to the
-> hidden reference counting in the iterator.
->=20
-> [1]
-> https://jpn01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.=
-ker
-> nel.org%2Fr%2FYOxQ5TbkNrqCGBDJ%2540phenom.ffwll.local&amp;data=3D04%7C01%=
-7Cb
-> iju.das.jz%40bp.renesas.com%7Cb0570b66e03a43fb8fa008d9454dddaa%7C53d82571=
-d
-> a1947e49cb4625a166a4a2a%7C0%7C0%7C637617023006562683%7CUnknown%7CTWFpbGZs=
-b
-> 3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1=
-0
-> 00&amp;sdata=3DcQICPYJzmgNkFsNw1wMH9Or73rohnCCGH1DrUg3hvhw%3D&amp;reserve=
-d=3D0
->=20
-> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c index
-> 197c57477344..997b8827fed2 100644
-> --- a/drivers/gpu/drm/drm_of.c
-> +++ b/drivers/gpu/drm/drm_of.c
-> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
->  		 * configurations by passing the endpoints explicitly to
->  		 * drm_of_lvds_get_dual_link_pixel_order().
->  		 */
-> -		if (!current_pt || pixels_type !=3D current_pt)
-> +		if (!current_pt || pixels_type !=3D current_pt) {
-> +			of_node_put(endpoint);
->  			return -EINVAL;
-> +		}
->  	}
->=20
->  	return pixels_type;
-> --
-> 2.20.1
+>  .../hwmon/iei,wt61p803-puzzle-hwmon.yaml      | 53 ++++++++++++
+>  .../leds/iei,wt61p803-puzzle-leds.yaml        | 44 ++++++++++
+>  .../bindings/mfd/iei,wt61p803-puzzle.yaml     | 82 +++++++++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+>  4 files changed, 181 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+>  create mode 100644 Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> new file mode 100644
+> index 000000000000..c24a24e90495
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/iei,wt61p803-puzzle-hwmon.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: IEI WT61P803 PUZZLE MCU HWMON module from IEI Integration Corp.
+> +
+> +maintainers:
+> +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +description: |
+> +  This module is a part of the IEI WT61P803 PUZZLE MFD device. For more details
+> +  see Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml.
+> +
+> +  The HWMON module is a sub-node of the MCU node in the Device Tree.
+> +
+> +properties:
+> +  compatible:
+> +    const: iei,wt61p803-puzzle-hwmon
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^fan-group@[0-1]$":
+> +    type: object
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 1
+> +        description:
+> +          Fan group ID
+> +
+> +      cooling-levels:
+> +        minItems: 1
+> +        maxItems: 255
+> +        description:
+> +          Cooling levels for the fans (PWM value mapping)
+> +    description: |
+> +      Properties for each fan group.
+> +    required:
+> +      - reg
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> diff --git a/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml b/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> new file mode 100644
+> index 000000000000..dc3e39aafd3e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/iei,wt61p803-puzzle-leds.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: IEI WT61P803 PUZZLE MCU LED module from IEI Integration Corp.
+> +
+> +maintainers:
+> +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +description: |
+> +  This module is a part of the IEI WT61P803 PUZZLE MFD device. For more details
+> +  see Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml.
+> +
+> +  The LED module is a sub-node of the MCU node in the Device Tree.
+> +
+> +properties:
+> +  compatible:
+> +    const: iei,wt61p803-puzzle-leds
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  "led@0":
 
+Don't need quotes.
+
+> +    type: object
+> +    $ref: common.yaml
+> +    description: |
+> +      Properties for a single LED.
+> +    properties:
+> +      reg:
+> +        description:
+> +          Index of the LED. Only one LED is supported at the moment.
+> +        const: 0
+
+If there can only be 1 LED, just make an 'led' node and drop reg.
+
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> diff --git a/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml b/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> new file mode 100644
+> index 000000000000..2452631505cc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/iei,wt61p803-puzzle.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: IEI WT61P803 PUZZLE MCU from IEI Integration Corp.
+> +
+> +maintainers:
+> +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +description: |
+> +  IEI WT61P803 PUZZLE MCU is embedded in some IEI Puzzle series boards.
+> +  It's used for controlling system power states, fans, LEDs and temperature
+> +  sensors.
+> +
+> +  For Device Tree bindings of other sub-modules (HWMON, LEDs) refer to the
+> +  binding documents under the respective subsystem directories.
+> +
+> +properties:
+> +  compatible:
+> +    const: iei,wt61p803-puzzle
+> +
+> +  current-speed:
+> +    description:
+> +      Serial bus speed in bps
+> +    maxItems: 1
+> +
+> +  enable-beep: true
+> +
+> +  hwmon:
+> +    $ref: ../hwmon/iei,wt61p803-puzzle-hwmon.yaml
+
+/schemas/hwmon/...
+
+> +
+> +  leds:
+> +    $ref: ../leds/iei,wt61p803-puzzle-leds.yaml
+
+/schemas/leds/...
+
+> +
+> +required:
+> +  - compatible
+> +  - current-speed
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +    serial {
+> +        mcu {
+> +            compatible = "iei,wt61p803-puzzle";
+> +            current-speed = <115200>;
+> +            enable-beep;
+> +
+> +            leds {
+> +                compatible = "iei,wt61p803-puzzle-leds";
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                led@0 {
+> +                    reg = <0>;
+> +                    function = LED_FUNCTION_POWER;
+> +                    color = <LED_COLOR_ID_BLUE>;
+> +                };
+> +            };
+> +
+> +            hwmon {
+> +                compatible = "iei,wt61p803-puzzle-hwmon";
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                fan-group@0 {
+> +                    #cooling-cells = <2>;
+> +                    reg = <0x00>;
+> +                    cooling-levels = <64 102 170 230 250>;
+> +                };
+> +
+> +                fan-group@1 {
+> +                    #cooling-cells = <2>;
+> +                    reg = <0x01>;
+> +                    cooling-levels = <64 102 170 230 250>;
+> +                };
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index b868cefc7c55..e02b6d6eb568 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -509,6 +509,8 @@ patternProperties:
+>      description: IC Plus Corp.
+>    "^idt,.*":
+>      description: Integrated Device Technologies, Inc.
+> +  "^iei,.*":
+> +    description: IEI Integration Corp.
+>    "^ifi,.*":
+>      description: Ingenieurburo Fur Ic-Technologie (I/F/I)
+>    "^ilitek,.*":
+> -- 
+> 2.31.1
+> 
+> 
