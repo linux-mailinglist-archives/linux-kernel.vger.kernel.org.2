@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2635A3C4C34
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA073C57F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240371AbhGLHC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:02:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41512 "EHLO mail.kernel.org"
+        id S1378195AbhGLIkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237238AbhGLGqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:46:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F1D661152;
-        Mon, 12 Jul 2021 06:41:58 +0000 (UTC)
+        id S1350774AbhGLHvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF0356124C;
+        Mon, 12 Jul 2021 07:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072118;
-        bh=8mzXLg0yDhF0iUgrxIe37YacjcJwVN75C/cMHvDwuOE=;
+        s=korg; t=1626076102;
+        bh=bzxE9/+cq058Y0PN9Gucbc72yldyrfnd+Y2KsOhj9fk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QSyHeJHYCLFf2xssQIrSM1bVCapq28lz5QgI9fucElzi2Gcqs8/iRpZkx+o6O7aWA
-         1gcG3Bq8AmpkbUtsAnjUZEy0rOFhge3cyHs7KBZzjfdyRbtzBwnMSYCRsVAmuDBs4q
-         nHs/CQjHr29KX3/h8NwADab9VVYxj20hElBX4z5s=
+        b=DvrwVh/ED6Y94Qs5JTRS4AvtgAVUeEfk6zD5UaoYtRQqWtxNNAXplQh90RkXOYikU
+         WdsQ5iUn85hVRw1Ny53uNfVznjeJuCRbdVqKcw5DeHo20fkroNMUjfpOOMCyR04+em
+         D5JfvPc6QKu31gH8sO971OGZSexPhLErUtks3KY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 362/593] xsk: Fix missing validation for skb and unaligned mode
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 499/800] mt76: mt7921: avoid unnecessary consecutive WiFi resets
 Date:   Mon, 12 Jul 2021 08:08:42 +0200
-Message-Id: <20210712060926.316046812@linuxfoundation.org>
+Message-Id: <20210712061020.283643223@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Sean Wang <sean.wang@mediatek.com>
 
-[ Upstream commit 2f99619820c2269534eb2c0cde44870313c6d353 ]
+[ Upstream commit f07ac384b4579f294bb1e0380ed501156219ed71 ]
 
-Fix a missing validation of a Tx descriptor when executing in skb mode
-and the umem is in unaligned mode. A descriptor could point to a
-buffer straddling the end of the umem, thus effectively tricking the
-kernel to read outside the allowed umem region. This could lead to a
-kernel crash if that part of memory is not mapped.
+Avoid unnecessary consecutive WiFi resets by dropping reset
+request when reset work is working.
 
-In zero-copy mode, the descriptor validation code rejects such
-descriptors by checking a bit in the DMA address that tells us if the
-next page is physically contiguous or not. For the last page in the
-umem, this bit is not set, therefore any descriptor pointing to a
-packet straddling this last page boundary will be rejected. However,
-the skb path does not use this bit since it copies out data and can do
-so to two different pages. (It also does not have the array of DMA
-address, so it cannot even store this bit.) The code just returned
-that the packet is always physically contiguous. But this is
-unfortunately also returned for the last page in the umem, which means
-that packets that cross the end of the umem are being allowed, which
-they should not be.
-
-Fix this by introducing a check for this in the SKB path only, not
-penalizing the zero-copy path.
-
-Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Link: https://lore.kernel.org/bpf/20210617092255.3487-1-magnus.karlsson@gmail.com
+Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/xsk_buff_pool.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/mac.c    | 5 ++++-
+ drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index eaa8386dbc63..7a9a23e7a604 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -147,11 +147,16 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
- {
- 	bool cross_pg = (addr & (PAGE_SIZE - 1)) + len > PAGE_SIZE;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index 9bb88b2e28a9..4eac7c3206f9 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -1272,6 +1272,7 @@ void mt7921_mac_reset_work(struct work_struct *work)
+ 	hw = mt76_hw(dev);
  
--	if (pool->dma_pages_cnt && cross_pg) {
-+	if (likely(!cross_pg))
-+		return false;
-+
-+	if (pool->dma_pages_cnt) {
- 		return !(pool->dma_pages[addr >> PAGE_SHIFT] &
- 			 XSK_NEXT_PG_CONTIG_MASK);
+ 	dev_err(dev->mt76.dev, "chip reset\n");
++	dev->hw_full_reset = true;
+ 	ieee80211_stop_queues(hw);
+ 
+ 	cancel_delayed_work_sync(&dev->mphy.mac_work);
+@@ -1296,6 +1297,7 @@ void mt7921_mac_reset_work(struct work_struct *work)
+ 		ieee80211_scan_completed(dev->mphy.hw, &info);
  	}
--	return false;
-+
-+	/* skb path */
-+	return addr + len > pool->addrs_cnt;
+ 
++	dev->hw_full_reset = false;
+ 	ieee80211_wake_queues(hw);
+ 	ieee80211_iterate_active_interfaces(hw,
+ 					    IEEE80211_IFACE_ITER_RESUME_ALL,
+@@ -1306,7 +1308,8 @@ void mt7921_reset(struct mt76_dev *mdev)
+ {
+ 	struct mt7921_dev *dev = container_of(mdev, struct mt7921_dev, mt76);
+ 
+-	queue_work(dev->mt76.wq, &dev->reset_work);
++	if (!dev->hw_full_reset)
++		queue_work(dev->mt76.wq, &dev->reset_work);
  }
  
- static inline u64 xp_aligned_extract_addr(struct xsk_buff_pool *pool, u64 addr)
+ static void
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h b/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
+index 59862ea4951c..4cc8a372b277 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
+@@ -156,6 +156,7 @@ struct mt7921_dev {
+ 	u16 chainmask;
+ 
+ 	struct work_struct reset_work;
++	bool hw_full_reset;
+ 
+ 	struct list_head sta_poll_list;
+ 	spinlock_t sta_poll_lock;
 -- 
 2.30.2
 
