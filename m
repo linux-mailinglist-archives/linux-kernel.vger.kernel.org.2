@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56AC3C4F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9463C56A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345064AbhGLHYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:24:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
+        id S1346081AbhGLIVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239662AbhGLG6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2575961004;
-        Mon, 12 Jul 2021 06:55:10 +0000 (UTC)
+        id S1346013AbhGLHjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:39:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CAC3613DC;
+        Mon, 12 Jul 2021 07:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072911;
-        bh=TdbwWf8n7PchFOwJ9TV/tdbvKG9kcmqkVMKqSn9mlf4=;
+        s=korg; t=1626075254;
+        bh=cDTbJhtT1KZywLOqfgUcrky/28iSPtnpqMoS9+aEOuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nx4DG3rJXPFAB/Q/Y12AB0tryGy9gNcKo1IeSKXbmlm3yOar7m/qyhcb9DzyoWreR
-         y2jANEPEzeFnDGEEspTwEuOVC2mIuUwUR6JJGxTQRD7ireKZS5MMKduwnW11doBlWj
-         06Uk++A4DNafrrbibbPxvx2Kk4UNuSy+Eab/VHRQ=
+        b=GXDYCzHCUfxF7WJtKiX45VsEptpMxXUPEriLM2FlIuhf1hvdomvQ+7lChhOKOnRSA
+         60csEqFiTSwKxE/rmDPP7dT4AhuCGd7JHb2Sr6Fbaj/V7JPp1jGnLDh+N2eC1nYy0p
+         sjCXkCeU/YPpkOuKNBKNHAuRmXre9E1Tsb0VgyyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.12 062/700] mac80211: remove iwlwifi specific workaround that broke sta NDP tx
-Date:   Mon, 12 Jul 2021 08:02:25 +0200
-Message-Id: <20210712060933.494375101@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Thomas Lindroth <thomas.lindroth@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.13 123/800] fuse: ignore PG_workingset after stealing
+Date:   Mon, 12 Jul 2021 08:02:26 +0200
+Message-Id: <20210712060930.257712180@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit e41eb3e408de27982a5f8f50b2dd8002bed96908 upstream.
+commit b89ecd60d38ec042d63bdb376c722a16f92bcb88 upstream.
 
-Sending nulldata packets is important for sw AP link probing and detecting
-4-address mode links. The checks that dropped these packets were apparently
-added to work around an iwlwifi firmware bug with multi-TID aggregation.
+Fix the "fuse: trying to steal weird page" warning.
 
-Fixes: 41cbb0f5a295 ("mac80211: add support for HE")
-Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210619101517.90806-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Description from Johannes Weiner:
+
+  "Think of it as similar to PG_active. It's just another usage/heat
+   indicator of file and anon pages on the reclaim LRU that, unlike
+   PG_active, persists across deactivation and even reclaim (we store it in
+   the page cache / swapper cache tree until the page refaults).
+
+   So if fuse accepts pages that can legally have PG_active set,
+   PG_workingset is fine too."
+
+Reported-by: Thomas Lindroth <thomas.lindroth@gmail.com>
+Fixes: 1899ad18c607 ("mm: workingset: tell cache transitions from workingset thrashing")
+Cc: <stable@vger.kernel.org> # v4.20
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/tx.c |    3 +++
- net/mac80211/mlme.c                         |    9 ---------
- 2 files changed, 3 insertions(+), 9 deletions(-)
+ fs/fuse/dev.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-@@ -1032,6 +1032,9 @@ static int iwl_mvm_tx_mpdu(struct iwl_mv
- 	if (WARN_ON_ONCE(mvmsta->sta_id == IWL_MVM_INVALID_STA))
- 		return -1;
- 
-+	if (unlikely(ieee80211_is_any_nullfunc(fc)) && sta->he_cap.has_he)
-+		return -1;
-+
- 	if (unlikely(ieee80211_is_probe_resp(fc)))
- 		iwl_mvm_probe_resp_set_noa(mvm, skb);
- 
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -1094,11 +1094,6 @@ void ieee80211_send_nullfunc(struct ieee
- 	struct ieee80211_hdr_3addr *nullfunc;
- 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
- 
--	/* Don't send NDPs when STA is connected HE */
--	if (sdata->vif.type == NL80211_IFTYPE_STATION &&
--	    !(ifmgd->flags & IEEE80211_STA_DISABLE_HE))
--		return;
--
- 	skb = ieee80211_nullfunc_get(&local->hw, &sdata->vif,
- 		!ieee80211_hw_check(&local->hw, DOESNT_SUPPORT_QOS_NDP));
- 	if (!skb)
-@@ -1130,10 +1125,6 @@ static void ieee80211_send_4addr_nullfun
- 	if (WARN_ON(sdata->vif.type != NL80211_IFTYPE_STATION))
- 		return;
- 
--	/* Don't send NDPs when connected HE */
--	if (!(sdata->u.mgd.flags & IEEE80211_STA_DISABLE_HE))
--		return;
--
- 	skb = dev_alloc_skb(local->hw.extra_tx_headroom + 30);
- 	if (!skb)
- 		return;
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -783,6 +783,7 @@ static int fuse_check_page(struct page *
+ 	       1 << PG_uptodate |
+ 	       1 << PG_lru |
+ 	       1 << PG_active |
++	       1 << PG_workingset |
+ 	       1 << PG_reclaim |
+ 	       1 << PG_waiters))) {
+ 		dump_page(page, "fuse: trying to steal weird page");
 
 
