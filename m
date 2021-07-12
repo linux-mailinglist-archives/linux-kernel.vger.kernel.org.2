@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ACA3C4C9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CA53C531B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242190AbhGLHGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:06:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41760 "EHLO mail.kernel.org"
+        id S243517AbhGLHwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:52:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236404AbhGLGrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:47:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B53EE610FB;
-        Mon, 12 Jul 2021 06:43:27 +0000 (UTC)
+        id S243626AbhGLHSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:18:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BAFA61467;
+        Mon, 12 Jul 2021 07:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072208;
-        bh=lpcMqwgaGCM3YNXRNUtFY+meGk25ETElQRXkSv2v/oc=;
+        s=korg; t=1626074143;
+        bh=zOY+5cme28hMNv5aMoucCPa7xXsLN0fE8ErHdxekRx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qiQnCkJ4pE+P3nComD4vYji84Ez0dr91aWGFYOw5A1PyhaN7yZLM7MZnxcy/XAoD8
-         Ov10uPGYTHccR8PnaZ3DAf7WuzzI8alny9t4CBcjmJ+zXANGM6to1R7ffLbiA6LAhN
-         pRb/HhU5ey416cKAGygOnzYQ9pgowxCOE3IZbqcc=
+        b=xZiq8Dl826dGos++pxNrJSPbEP5nuYNqkLNOCLJzvhJbd4Ff4UA5fmaDwhCS2SjIv
+         eNcriw7yMn0TclKyKTLKUOzNcvcVqGtHjm621AKiSPBuvIJN5IAPEOha1UTMKCrazs
+         4eLMxriPJus19NS04odKh3oUWFNig23GGktYZH68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 401/593] ibmvnic: free tx_pool if tso_pool alloc fails
+Subject: [PATCH 5.12 478/700] i40e: Fix error handling in i40e_vsi_open
 Date:   Mon, 12 Jul 2021 08:09:21 +0200
-Message-Id: <20210712060931.730713687@linuxfoundation.org>
+Message-Id: <20210712061027.455655242@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit f6ebca8efa52e4ae770f0325d618e7bcf08ada0c ]
+[ Upstream commit 9c04cfcd4aad232e36306cdc5c74cd9fc9148a7e ]
 
-Free tx_pool and clear it, if allocation of tso_pool fails.
+When vsi->type == I40E_VSI_FDIR, we have caught the return value of
+i40e_vsi_request_irq() but without further handling. Check and execute
+memory clean on failure just like the other i40e_vsi_request_irq().
 
-release_tx_pools() assumes we have both tx and tso_pools if ->tx_pool is
-non-NULL. If allocation of tso_pool fails in init_tx_pools(), the assumption
-will not be true and we would end up dereferencing ->tx_buff, ->free_map
-fields from a NULL pointer.
-
-Fixes: 3205306c6b8d ("ibmvnic: Update TX pool initialization routine")
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8a9eb7d3cbcab ("i40e: rework fdir setup and teardown")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 458619aa84f4..3134c1988db3 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -751,8 +751,11 @@ static int init_tx_pools(struct net_device *netdev)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index ac4b44fc19f1..2dbc03cd1769 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -8702,6 +8702,8 @@ int i40e_vsi_open(struct i40e_vsi *vsi)
+ 			 dev_driver_string(&pf->pdev->dev),
+ 			 dev_name(&pf->pdev->dev));
+ 		err = i40e_vsi_request_irq(vsi, int_name);
++		if (err)
++			goto err_setup_rx;
  
- 	adapter->tso_pool = kcalloc(tx_subcrqs,
- 				    sizeof(struct ibmvnic_tx_pool), GFP_KERNEL);
--	if (!adapter->tso_pool)
-+	if (!adapter->tso_pool) {
-+		kfree(adapter->tx_pool);
-+		adapter->tx_pool = NULL;
- 		return -1;
-+	}
- 
- 	adapter->num_active_tx_pools = tx_subcrqs;
- 
+ 	} else {
+ 		err = -EINVAL;
 -- 
 2.30.2
 
