@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02653C4ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203803C5767
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhGLGxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:53:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        id S1354121AbhGLIcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237335AbhGLGjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87D9C60FE3;
-        Mon, 12 Jul 2021 06:35:00 +0000 (UTC)
+        id S1349823AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:44:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DEF613BF;
+        Mon, 12 Jul 2021 07:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071701;
-        bh=Qdwvlvloc+EY50CgHCAEUBF3NINQSruHvX/lPYGFb/s=;
+        s=korg; t=1626075687;
+        bh=ebzmUuZU3p4ooSnA9888JXX4EL3/ee/C4zDSG9vNCFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4/ykco5lmqfHZeAsWKt0iGx3uJoaavcPm4L2krVirB17md2wYMYyZuBGmxdAzq4/
-         7yzWSbvYQil/etLy4GCwUK4IoWrSBwOQM166CfBGhGhKAUdtnOhjtFNU6aDQ+dzCZv
-         F18Qp+r0A+In99kgG0zmqfXjP2PK0lxubO0gSnho=
+        b=AIMU59lKBUrsWopVCFRzk3Tj+EQRcZAfC6PMcTpSRQ0Y8H/A3BKOqEj14FhUiYnQ9
+         83/exbbrPuiWo4GpBsCfuI1+fVqLnPeOFdrN7tcVBdAy4WiI/rugq1lJTWHb1KDZ0w
+         u6XJ0rJzofju99Uj8+YZlpZC3KLccKWd2//XtN2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Richard Guy Briggs <rgb@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
+        stable@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 182/593] open: dont silently ignore unknown O-flags in openat2()
-Date:   Mon, 12 Jul 2021 08:05:42 +0200
-Message-Id: <20210712060903.043923805@linuxfoundation.org>
+Subject: [PATCH 5.13 320/800] hwmon: (pmbus/bpa-rs600) Handle Vin readings >= 256V
+Date:   Mon, 12 Jul 2021 08:05:43 +0200
+Message-Id: <20210712061000.048528747@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,106 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-[ Upstream commit cfe80306a0dd6d363934913e47c3f30d71b721e5 ]
+[ Upstream commit 6e9ef8ca687e69e9d4cc89033d98e06350b0f3e0 ]
 
-The new openat2() syscall verifies that no unknown O-flag values are
-set and returns an error to userspace if they are while the older open
-syscalls like open() and openat() simply ignore unknown flag values:
+The BPA-RS600 doesn't follow the PMBus spec for linear data.
+Specifically it treats the mantissa as an unsigned 11-bit value instead
+of a two's complement 11-bit value. At this point it's unclear whether
+this only affects Vin or if Pin/Pout1 are affected as well. Erring on
+the side of caution only Vin is dealt with here.
 
-  #define O_FLAG_CURRENTLY_INVALID (1 << 31)
-  struct open_how how = {
-          .flags = O_RDONLY | O_FLAG_CURRENTLY_INVALID,
-          .resolve = 0,
-  };
-
-  /* fails */
-  fd = openat2(-EBADF, "/dev/null", &how, sizeof(how));
-
-  /* succeeds */
-  fd = openat(-EBADF, "/dev/null", O_RDONLY | O_FLAG_CURRENTLY_INVALID);
-
-However, openat2() silently truncates the upper 32 bits meaning:
-
-  #define O_FLAG_CURRENTLY_INVALID_LOWER32 (1 << 31)
-  #define O_FLAG_CURRENTLY_INVALID_UPPER32 (1 << 40)
-
-  struct open_how how_lowe32 = {
-          .flags = O_RDONLY | O_FLAG_CURRENTLY_INVALID_LOWER32,
-  };
-
-  struct open_how how_upper32 = {
-          .flags = O_RDONLY | O_FLAG_CURRENTLY_INVALID_UPPER32,
-  };
-
-  /* fails */
-  fd = openat2(-EBADF, "/dev/null", &how_lower32, sizeof(how_lower32));
-
-  /* succeeds */
-  fd = openat2(-EBADF, "/dev/null", &how_upper32, sizeof(how_upper32));
-
-Fix this by preventing the immediate truncation in build_open_flags().
-
-There's a snafu here though stripping FMODE_* directly from flags would
-cause the upper 32 bits to be truncated as well due to integer promotion
-rules since FMODE_* is unsigned int, O_* are signed ints (yuck).
-
-In addition, struct open_flags currently defines flags to be 32 bit
-which is reasonable. If we simply were to bump it to 64 bit we would
-need to change a lot of code preemptively which doesn't seem worth it.
-So simply add a compile-time check verifying that all currently known
-O_* flags are within the 32 bit range and fail to build if they aren't
-anymore.
-
-This change shouldn't regress old open syscalls since they silently
-truncate any unknown values anyway. It is a tiny semantic change for
-openat2() but it is very unlikely people pass ing > 32 bit unknown flags
-and the syscall is relatively new too.
-
-Link: https://lore.kernel.org/r/20210528092417.3942079-3-brauner@kernel.org
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Aleksa Sarai <cyphar@cyphar.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Reported-by: Richard Guy Briggs <rgb@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+Fixes: 15b2703e5e02 ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20210616034218.25821-1-chris.packham@alliedtelesis.co.nz
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/open.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/hwmon/pmbus/bpa-rs600.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/fs/open.c b/fs/open.c
-index 4d7537ae59df..3aaaad47d9ca 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -993,12 +993,20 @@ inline struct open_how build_open_how(int flags, umode_t mode)
+diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs600.c
+index f6558ee9dec3..2be69fedfa36 100644
+--- a/drivers/hwmon/pmbus/bpa-rs600.c
++++ b/drivers/hwmon/pmbus/bpa-rs600.c
+@@ -46,6 +46,32 @@ static int bpa_rs600_read_byte_data(struct i2c_client *client, int page, int reg
+ 	return ret;
+ }
  
- inline int build_open_flags(const struct open_how *how, struct open_flags *op)
- {
--	int flags = how->flags;
-+	u64 flags = how->flags;
-+	u64 strip = FMODE_NONOTIFY | O_CLOEXEC;
- 	int lookup_flags = 0;
- 	int acc_mode = ACC_MODE(flags);
- 
--	/* Must never be set by userspace */
--	flags &= ~(FMODE_NONOTIFY | O_CLOEXEC);
-+	BUILD_BUG_ON_MSG(upper_32_bits(VALID_OPEN_FLAGS),
-+			 "struct open_flags doesn't yet handle flags > 32 bits");
++/*
++ * The BPA-RS600 violates the PMBus spec. Specifically it treats the
++ * mantissa as unsigned. Deal with this here to allow the PMBus core
++ * to work with correctly encoded data.
++ */
++static int bpa_rs600_read_vin(struct i2c_client *client)
++{
++	int ret, exponent, mantissa;
 +
-+	/*
-+	 * Strip flags that either shouldn't be set by userspace like
-+	 * FMODE_NONOTIFY or that aren't relevant in determining struct
-+	 * open_flags like O_CLOEXEC.
-+	 */
-+	flags &= ~strip;
- 
- 	/*
- 	 * Older syscalls implicitly clear all of the invalid flags or argument
++	ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_READ_VIN);
++	if (ret < 0)
++		return ret;
++
++	if (ret & BIT(10)) {
++		exponent = ret >> 11;
++		mantissa = ret & 0x7ff;
++
++		exponent++;
++		mantissa >>= 1;
++
++		ret = (exponent << 11) | mantissa;
++	}
++
++	return ret;
++}
++
+ static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int phase, int reg)
+ {
+ 	int ret;
+@@ -85,6 +111,9 @@ static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int pha
+ 		/* These commands return data but it is invalid/un-documented */
+ 		ret = -ENXIO;
+ 		break;
++	case PMBUS_READ_VIN:
++		ret = bpa_rs600_read_vin(client);
++		break;
+ 	default:
+ 		if (reg >= PMBUS_VIRT_BASE)
+ 			ret = -ENXIO;
 -- 
 2.30.2
 
