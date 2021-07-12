@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043AD3C6022
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D413C6025
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhGLQLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhGLQLv (ORCPT
+        id S231868AbhGLQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:12:19 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:43549 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhGLQMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:11:51 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8487EC0613DD;
-        Mon, 12 Jul 2021 09:09:03 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id k20so11765817pgg.7;
-        Mon, 12 Jul 2021 09:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rLWwArdw3WJ78Jh1viBr73LCB/P7OLCQZa0RIq5R7bA=;
-        b=FX+FDFs4CpB2lqn39HrlK+3mIySS0wpd8KwkvXWmUFXlwoFWEmiQ3ti+V4EJ7+ChvI
-         N5LeknNX06pjr7sLBL9emtd0h4YxZ2SbHkOPqxMHNGClNhthRDGNu2xCVimJLeLXqmdE
-         dX68G8g/ix4xNWmmGl4klagfCRrbFYXKILCLI49iJO/py3wUd7eN/jXai0He5oEXq+N6
-         Az6t4GqMZYllTkpS3wP2GeeJ2qOoIWC7neyrp41SqEbFPNoNHUvgbJwFGZrF7Pi4G5ab
-         8uJ2Jii2bvlHS9Kn7LhhTkucSX/a+h7A5L6AQHTmsYk2jVHMIQJtPwv4S9/MXG9/FiiX
-         3Vug==
+        Mon, 12 Jul 2021 12:12:16 -0400
+Received: by mail-il1-f199.google.com with SMTP id e16-20020a056e0204b0b029020c886c9370so2574051ils.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:09:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rLWwArdw3WJ78Jh1viBr73LCB/P7OLCQZa0RIq5R7bA=;
-        b=qaqPiqs83UOVEszzA0MiZxB7tB7Z1POISZbTSWHIHpDMH2SjQN+ZerzVJsfNedQXjq
-         wmA+kf7uzWTfbncs7t6hIpCfrvBUfZDG4iwrnIAb1TJjlZQaX4E6BXsbJioJpmAcAjLb
-         8/isu2Kgt/g+1N0a3YNi6e/i2OPUVh6ZnHMpi1iIZf5aDTMX4ZvXUWMEUdf0E3pgjaR2
-         PWbft1ZR+kWEwoA/2SBQjg5g/9XAwpfyr/Arc4t5FaJH3uJjzQkLY8BibYMMFHVZeYjc
-         D6hC/MCBMq6MeWZD5Saf5iSi4MWJE8lEo+EC8jlmrHRZg9YNxmoFt70IX3mzSowcyE6c
-         dsLw==
-X-Gm-Message-State: AOAM532GzRXYtpuuECvqYfQdMZZCeAk1gGhCjke4oAZefGfkylRfmYqj
-        5+O/JqKR0XCeh8Z2kryAxkTkqCeWGDUNQpBoqMo=
-X-Google-Smtp-Source: ABdhPJxCF21a8BjCJ3aoG+5ZrAAswsoye7CQYhZVQ/l/or1h1pLBMlNHf4f2oqSXRptfEbsgmE6wNN6ibOdkNykMplA=
-X-Received: by 2002:a65:434a:: with SMTP id k10mr44360501pgq.4.1626106143006;
- Mon, 12 Jul 2021 09:09:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vJplYivQzcGWjNSabykUkuqB126rvR4luN1jl8jmks8=;
+        b=L+LeTWuW3jagDs3HmZJ6G/xdjo9Ul5RFhDumF3ptTZUWtSj2D/nieNE364bjQWERBM
+         XpdIM0BtWHOf4L6phbS1QYsJ/S6jBS4eSqlwdjep8ozGqqK10jiosgpGtCUiaxXfe6Q7
+         Xwf0SiJgRcKND41Rs5MboUL1uzi1IBGLtH596rkJ3z1+PQ/1Ca1RTKlqr0FP/vFmy1id
+         EHwGM8vUOsNJcy1dGOCMExpcqodkFrxsFj9Lmm7Lc8N5waFx1CupjmLIx+ULbtsVMGuP
+         pYZgRoSZfL2GzzsgaLtBXLFgHy48I6p3mV7eCdOcIeJWxD2wyLlCymc0eehXUciILJrj
+         uR4A==
+X-Gm-Message-State: AOAM530G2+idk3lHq914oW8Gcerbp7RXQFiL5L3OnbTL/oiXDD9PnKgQ
+        2StnXWiDUl15cf+vU5GOPSyKXE61Dqh7omqFMk9FVL/WjdP6
+X-Google-Smtp-Source: ABdhPJxALuS94+Q/I/hiCV+3ZiAT2NU4QR0ESCCCi5V6qrcsqwXFD7dVEBUny3mN3H9f5y3ngY6F30zDOHN1pBzx2bis+6HOFVF6
 MIME-Version: 1.0
-References: <20210708224226.457224-1-djrscally@gmail.com> <20210709170426.GC4112@sirena.org.uk>
- <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
- <20210712124223.GB4435@sirena.org.uk> <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
- <20210712133428.GD4435@sirena.org.uk>
-In-Reply-To: <20210712133428.GD4435@sirena.org.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 12 Jul 2021 19:08:23 +0300
-Message-ID: <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        kieran.bingham@ideasonboard.com
+X-Received: by 2002:a92:6f0a:: with SMTP id k10mr37377927ilc.105.1626106167835;
+ Mon, 12 Jul 2021 09:09:27 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 09:09:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000080403805c6ef586d@google.com>
+Subject: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
+From:   syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 4:35 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Jul 12, 2021 at 04:01:05PM +0300, Andy Shevchenko wrote:
->
-> > The software nodes shouldn't appear on its own in the generic code.
-> > When we use software nodes API in it, it means that we have tried
-> > other providers _explicitly_ and haven't found what we are looking for
-> > and hence we have to check if software nodes are providing the same.
-> > For example, here it's done that way:
-> > https://elixir.bootlin.com/linux/v5.14-rc1/source/kernel/irq/irqdomain.c#L178.
->
-> > In all other cases it shouldn't be called explicitly.
->
-> But why?  I'm not seeing the advantage over providing platform data
-> based on DMI quirks here, it seems like a bunch of work for no reason.
+Hello,
 
-What do you mean by additional work? It's exactly opposite since most
-of the drivers in the kernel are using the fwnode interface rather
-than platform data. Why should we _add_ the specific platform data
-handling code in the certain drivers instead of not touching them at
-all?
+syzbot found the following issue on:
 
--- 
-With Best Regards,
-Andy Shevchenko
+HEAD commit:    e73f0f0e Linux 5.14-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=172196d2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f5e73542d774430b
+dashboard link: https://syzkaller.appspot.com/bug?extid=e08a83a1940ec3846cd5
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in call_rcu / rcu_gp_kthread
+
+write to 0xffffffff837328a0 of 8 bytes by task 11 on cpu 0:
+ rcu_gp_fqs kernel/rcu/tree.c:1949 [inline]
+ rcu_gp_fqs_loop kernel/rcu/tree.c:2010 [inline]
+ rcu_gp_kthread+0xd78/0xec0 kernel/rcu/tree.c:2169
+ kthread+0x262/0x280 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+read to 0xffffffff837328a0 of 8 bytes by task 30193 on cpu 1:
+ __call_rcu_core kernel/rcu/tree.c:2946 [inline]
+ __call_rcu kernel/rcu/tree.c:3062 [inline]
+ call_rcu+0x4b0/0x6c0 kernel/rcu/tree.c:3109
+ file_free fs/file_table.c:58 [inline]
+ __fput+0x43e/0x4e0 fs/file_table.c:298
+ ____fput+0x11/0x20 fs/file_table.c:313
+ task_work_run+0xae/0x130 kernel/task_work.c:164
+ get_signal+0x156c/0x15e0 kernel/signal.c:2581
+ arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:302
+ do_syscall_64+0x49/0x90 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0x0000000000000f57 -> 0x0000000000000f58
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 30193 Comm: syz-executor.5 Tainted: G        W         5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
