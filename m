@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2773A3C495D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468713C56D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238788AbhGLGoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
+        id S1357977AbhGLIZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237757AbhGLGev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BF766052B;
-        Mon, 12 Jul 2021 06:31:29 +0000 (UTC)
+        id S1348029AbhGLHkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3232E611F2;
+        Mon, 12 Jul 2021 07:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071489;
-        bh=qS50egKAp8vEr3qpIuMYt0weiZiMDCcr9XlfK1nfdTI=;
+        s=korg; t=1626075463;
+        bh=LSg+7uqgLmXmAyAAsiTLfdHSDeUD1WeA8ubJ5SDsZL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nypltjpIRyyB/UHj7qOlwjjlCFnHlW8uLbKWVCIhgEXkC9PiWhx4Ujp44iM/k9XVz
-         yoc9yXvC09hGuj9u2qMhx7UofDtiMg7QcOp0c9RiBmbXwkL4nztY6kpImM+InmgkP/
-         2pPQUcKjRBWp+2alCUU5ExYtddXp909v4zri7dO8=
+        b=c1U66EiYKPifzkIbXQ6lib7MlseAwrVK68CIsQI+YGAL0iK4DGMeQen+aIvazqsVG
+         0yJh5CZPLJJD0djxPVVCQLIEZ6qSWpCgX1wEeo4gkHkKwchDAxSre9BUZgYXkLnZFJ
+         NxK27xuaKzjJH+C1yZBdAp32tFnr8eNwvazTuWvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.10 091/593] evm: Execute evm_inode_init_security() only when an HMAC key is loaded
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 228/800] drivers: hv: Fix missing error code in vmbus_connect()
 Date:   Mon, 12 Jul 2021 08:04:11 +0200
-Message-Id: <20210712060853.204482998@linuxfoundation.org>
+Message-Id: <20210712060945.918224950@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-commit 9eea2904292c2d8fa98df141d3bf7c41ec9dc1b5 upstream.
+[ Upstream commit 9de6655cc5a6a1febc514465c87c24a0e96d8dba ]
 
-evm_inode_init_security() requires an HMAC key to calculate the HMAC on
-initial xattrs provided by LSMs. However, it checks generically whether a
-key has been loaded, including also public keys, which is not correct as
-public keys are not suitable to calculate the HMAC.
+Eliminate the follow smatch warning:
 
-Originally, support for signature verification was introduced to verify a
-possibly immutable initial ram disk, when no new files are created, and to
-switch to HMAC for the root filesystem. By that time, an HMAC key should
-have been loaded and usable to calculate HMACs for new files.
+drivers/hv/connection.c:236 vmbus_connect() warn: missing error code
+'ret'.
 
-More recently support for requiring an HMAC key was removed from the
-kernel, so that signature verification can be used alone. Since this is a
-legitimate use case, evm_inode_init_security() should not return an error
-when no HMAC key has been loaded.
-
-This patch fixes this problem by replacing the evm_key_loaded() check with
-a check of the EVM_INIT_HMAC flag in evm_initialized.
-
-Fixes: 26ddabfe96b ("evm: enable EVM when X509 certificate is loaded")
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Cc: stable@vger.kernel.org # 4.5.x
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/1621940321-72353-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/evm/evm_main.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/hv/connection.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -521,7 +521,7 @@ void evm_inode_post_setattr(struct dentr
- }
+diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+index 311cd005b3be..5e479d54918c 100644
+--- a/drivers/hv/connection.c
++++ b/drivers/hv/connection.c
+@@ -232,8 +232,10 @@ int vmbus_connect(void)
+ 	 */
  
- /*
-- * evm_inode_init_security - initializes security.evm
-+ * evm_inode_init_security - initializes security.evm HMAC value
-  */
- int evm_inode_init_security(struct inode *inode,
- 				 const struct xattr *lsm_xattr,
-@@ -530,7 +530,8 @@ int evm_inode_init_security(struct inode
- 	struct evm_xattr *xattr_data;
- 	int rc;
+ 	for (i = 0; ; i++) {
+-		if (i == ARRAY_SIZE(vmbus_versions))
++		if (i == ARRAY_SIZE(vmbus_versions)) {
++			ret = -EDOM;
+ 			goto cleanup;
++		}
  
--	if (!evm_key_loaded() || !evm_protected_xattr(lsm_xattr->name))
-+	if (!(evm_initialized & EVM_INIT_HMAC) ||
-+	    !evm_protected_xattr(lsm_xattr->name))
- 		return 0;
- 
- 	xattr_data = kzalloc(sizeof(*xattr_data), GFP_NOFS);
+ 		version = vmbus_versions[i];
+ 		if (version > max_version)
+-- 
+2.30.2
+
 
 
