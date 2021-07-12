@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311C73C58E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5433C548A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381742AbhGLIxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:53:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
+        id S1352753AbhGLH7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:59:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353346AbhGLIBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:01:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97EE561983;
-        Mon, 12 Jul 2021 07:54:37 +0000 (UTC)
+        id S242520AbhGLHWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 354C160FDC;
+        Mon, 12 Jul 2021 07:19:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076478;
-        bh=c7rXUajXHO0BaBgWHo7kqiQHDzsN14ZB+sWGLhhsqUY=;
+        s=korg; t=1626074372;
+        bh=mveZEugygC5MY4rvkIqeNvkSeZCzNUZia+qsl3CGe40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuTvQCvJgtAbBm7UWBNvibGMe8iMrvOPgoW2QLKchofN2ojhuKEwj2CJRxzvKkKK7
-         RRvVu2/U10KxrIte/Nx37aotTEry2sfRreSpCsH6ZCNCAhoZCZobGaWMtYz86YApkF
-         8KBSKlimHvIUbCTDibLvIiJn+Uu050WPnfAMULXE=
+        b=n2YdmFyr/miTFXZV2V8z65WqDXj+E2ps39gzAgYSp/4BvpMmSQ9sOpwF6m65S7itw
+         F3vNEDCC/m/jBJ6YumQNFzqHJBbRloQyR0YJThba9Fly5AjCZwqVfJCTdCvzQxOMvK
+         5EdmEot9xjCUHpQXVvWCy9/fHQDYlJKbs37C710A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 617/800] iio: accel: bma220: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:40 +0200
-Message-Id: <20210712061032.975037095@linuxfoundation.org>
+Subject: [PATCH 5.12 558/700] ASoC: rsnd: tidyup loop on rsnd_adg_clk_query()
+Date:   Mon, 12 Jul 2021 08:10:41 +0200
+Message-Id: <20210712061035.581795193@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 151dbf0078da98206817ee0b87d499035479ef11 ]
+[ Upstream commit cf9d5c6619fadfc41cf8f5154cb990cc38e3da85 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under
+atomic context") used saved clk_rate, thus for_each_rsnd_clk()
+is no longer needed. This patch fixes it.
 
-Found during an audit of all calls of this function.
-
-Fixes: 194dc4c71413 ("iio: accel: Add triggered buffer support for BMA220")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-3-jic23@kernel.org
+Fixes: 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under atomic context")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v978oe2u.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/bma220_spi.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/adg.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/iio/accel/bma220_spi.c b/drivers/iio/accel/bma220_spi.c
-index 36fc9876dbca..0622c7936499 100644
---- a/drivers/iio/accel/bma220_spi.c
-+++ b/drivers/iio/accel/bma220_spi.c
-@@ -63,7 +63,11 @@ static const int bma220_scale_table[][2] = {
- struct bma220_data {
- 	struct spi_device *spi_device;
- 	struct mutex lock;
--	s8 buffer[16]; /* 3x8-bit channels + 5x8 padding + 8x8 timestamp */
-+	struct {
-+		s8 chans[3];
-+		/* Ensure timestamp is naturally aligned. */
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	u8 tx_buf[2] ____cacheline_aligned;
- };
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index abdfd9cf91e2..19c604b2e248 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -289,7 +289,6 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
+ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
+ {
+ 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
+-	struct clk *clk;
+ 	int i;
+ 	int sel_table[] = {
+ 		[CLKA] = 0x1,
+@@ -302,10 +301,9 @@ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
+ 	 * find suitable clock from
+ 	 * AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC/AUDIO_CLKI.
+ 	 */
+-	for_each_rsnd_clk(clk, adg, i) {
++	for (i = 0; i < CLKMAX; i++)
+ 		if (rate == adg->clk_rate[i])
+ 			return sel_table[i];
+-	}
  
-@@ -94,12 +98,12 @@ static irqreturn_t bma220_trigger_handler(int irq, void *p)
- 
- 	mutex_lock(&data->lock);
- 	data->tx_buf[0] = BMA220_REG_ACCEL_X | BMA220_READ_MASK;
--	ret = spi_write_then_read(spi, data->tx_buf, 1, data->buffer,
-+	ret = spi_write_then_read(spi, data->tx_buf, 1, &data->scan.chans,
- 				  ARRAY_SIZE(bma220_channels) - 1);
- 	if (ret < 0)
- 		goto err;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- err:
- 	mutex_unlock(&data->lock);
+ 	/*
+ 	 * find divided clock from BRGA/BRGB
 -- 
 2.30.2
 
