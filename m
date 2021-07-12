@@ -2,82 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705CA3C6398
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ABC3C639D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhGLTXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:23:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22184 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236394AbhGLTXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:23:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190422884"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="190422884"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 12:20:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="648355969"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 12 Jul 2021 12:19:59 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m31TC-000HCR-DH; Mon, 12 Jul 2021 19:19:58 +0000
-Date:   Tue, 13 Jul 2021 03:19:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: mm/sparse.c:145:2: warning: int result is returned as long value. If
- the return value is long to avoid loss of information, then you have loss of
- information. [truncLongCastReturn]
-Message-ID: <202107130348.6LsVT9Nc-lkp@intel.com>
+        id S236341AbhGLTZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:25:00 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:38403 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233793AbhGLTY7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 15:24:59 -0400
+Received: by mail-io1-f48.google.com with SMTP id k11so24108465ioa.5;
+        Mon, 12 Jul 2021 12:22:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mDv0toh0cQVMFqilKq+GF6LWR9g5w4GKINdo+Jev2uw=;
+        b=Fmo0382HyQukJtGAzUD+News8S9nBeD2XnefBMu+w29bh89whT6Legyu02FzlakHfE
+         hRKVHWC8NzgonTWoEBjuwINsOsvXQZvmmPk+YwOLWhKtOzS0NwVLQEKdTyXQrGvcNuk4
+         NJBn0XPcFey03EHBWkx9WIpho7qvclzdpxYml3T0buenRtW8ZTcw/nwdytl4/BzqeCoq
+         u8KYS09cY4OFTdSMqmuF8Gyk7iVhQcfNE1+OS0ftqobArWdwIbFXMWLBqg74X+9zPtrY
+         f593p6D9ksgMRUmd08FGgCaOoRDwWA4vl05gHAKCGfMuMghMK+9vyNxS9FVbECZmXDAZ
+         jNdw==
+X-Gm-Message-State: AOAM531bkQ5BYZOTuKhmsX3KRmG5lCIOYCjDfBwlAtKnGbELrFz81/Jg
+        25HgSPpvhwRn/R0G/1faOw==
+X-Google-Smtp-Source: ABdhPJytLe7NQalz459T4TdlUoU6293ep7Lg1k0viCmW246+EOjRDgIgM8y8fNL9EeOrgI8eS7nU4g==
+X-Received: by 2002:a5d:91d8:: with SMTP id k24mr376352ior.84.1626117730689;
+        Mon, 12 Jul 2021 12:22:10 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id j24sm3350224ioo.16.2021.07.12.12.22.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 12:22:10 -0700 (PDT)
+Received: (nullmailer pid 2333729 invoked by uid 1000);
+        Mon, 12 Jul 2021 19:22:07 -0000
+Date:   Mon, 12 Jul 2021 13:22:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Bin Meng <bmeng.cn@gmail.com>
+Subject: Re: [RFC PATCH v2 06/11] dt-bindings: interrupt-controller: Add
+ ACLINT MSWI and SSWI bindings
+Message-ID: <20210712192207.GA2322460@robh.at.kernel.org>
+References: <20210618123851.1344518-1-anup.patel@wdc.com>
+ <20210618123851.1344518-7-anup.patel@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210618123851.1344518-7-anup.patel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e73f0f0ee7541171d89f2e2491130c7771ba58d3
-commit: 36d40290c8f71daf1ba5567ab14574f36b9b8d6a alpha: switch from DISCONTIGMEM to SPARSEMEM
-date:   7 months ago
-compiler: alpha-linux-gcc (GCC) 9.3.0
+On Fri, Jun 18, 2021 at 06:08:46PM +0530, Anup Patel wrote:
+> We add DT bindings documentation for the ACLINT MSWI and SSWI
+> devices found on RISC-V SOCs.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+> ---
+>  .../riscv,aclint-swi.yaml                     | 82 +++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> new file mode 100644
+> index 000000000000..b74025542866
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RISC-V ACLINT Software Interrupt Devices
+> +
+> +maintainers:
+> +  - Anup Patel <anup.patel@wdc.com>
+> +
+> +description:
+> +  RISC-V SOCs include an implementation of the M-level software interrupt
+> +  (MSWI) device and the S-level software interrupt (SSWI) device defined
+> +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
+> +
+> +  The ACLINT MSWI and SSWI devices are documented in the RISC-V ACLINT
+> +  specification located at
+> +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
+> +
+> +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
+> +  S-level software interrupt lines of various HARTs (or CPUs) respectively
+> +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
+> +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - riscv,aclint-mswi
+> +          - riscv,aclint-sswi
+> +
+> +    description:
+> +      Should be "<vendor>,<chip>-aclint-mswi" and "riscv,aclint-mswi" OR
+> +      "<vendor>,<chip>-aclint-sswi" and "riscv,aclint-sswi".
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+The schema doesn't match the description.
 
+There's no actual vendor implementation yet? You could do:
 
-cppcheck warnings: (new ones prefixed by >>)
->> mm/sparse.c:145:2: warning: int result is returned as long value. If the return value is long to avoid loss of information, then you have loss of information. [truncLongCastReturn]
-    return (nid << SECTION_NID_SHIFT);
-    ^
+items:
+  - {}
+  - const: riscv,aclint-mswi
 
-vim +145 mm/sparse.c
+But then your example will fail.
 
-4ca644d970bf25 Dave Hansen    2005-10-29  136  
-30c253e6da655d Andy Whitcroft 2006-06-23  137  /*
-30c253e6da655d Andy Whitcroft 2006-06-23  138   * During early boot, before section_mem_map is used for an actual
-30c253e6da655d Andy Whitcroft 2006-06-23  139   * mem_map, we use section_mem_map to store the section's NUMA
-30c253e6da655d Andy Whitcroft 2006-06-23  140   * node.  This keeps us from having to use another data structure.  The
-30c253e6da655d Andy Whitcroft 2006-06-23  141   * node information is cleared just before we store the real mem_map.
-30c253e6da655d Andy Whitcroft 2006-06-23  142   */
-30c253e6da655d Andy Whitcroft 2006-06-23  143  static inline unsigned long sparse_encode_early_nid(int nid)
-30c253e6da655d Andy Whitcroft 2006-06-23  144  {
-30c253e6da655d Andy Whitcroft 2006-06-23 @145  	return (nid << SECTION_NID_SHIFT);
-30c253e6da655d Andy Whitcroft 2006-06-23  146  }
-30c253e6da655d Andy Whitcroft 2006-06-23  147  
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#interrupt-cells":
+> +    const: 0
+> +
+> +  interrupts-extended:
+> +    minItems: 1
 
-:::::: The code at line 145 was first introduced by commit
-:::::: 30c253e6da655d73eb8bfe2adca9b8f4d82fb81e [PATCH] sparsemem: record nid during memory present
+You need maxItems too. I guess this based on number of cores, so just 
+pick a 'should be enough' value.
 
-:::::: TO: Andy Whitcroft <apw@shadowen.org>
-:::::: CC: Linus Torvalds <torvalds@g5.osdl.org>
+> +
+> +  interrupt-controller: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
+> +  - interrupt-controller
+> +  - "#interrupt-cells"
+> +
+> +examples:
+> +  - |
+> +    // Example 1 (RISC-V MSWI device used by Linux RISC-V NoMMU kernel):
+> +
+> +    interrupt-controller@2000000 {
+> +      compatible = "riscv,aclint-mswi";
+> +      interrupts-extended = <&cpu1intc 3 &cpu2intc 3 &cpu3intc 3 &cpu4intc 3>;
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+interrupts-extended = <&cpu1intc 3>, <&cpu2intc 3>, <&cpu3intc 3>, <&cpu4intc 3>;
+
+> +      reg = <0x2000000 0x4000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <0>;
+> +    };
+> +
+> +  - |
+> +    // Example 2 (RISC-V SSWI device used by Linux RISC-V MMU kernel):
+> +
+> +    interrupt-controller@2100000 {
+> +      compatible = "riscv,aclint-sswi";
+> +      interrupts-extended = <&cpu1intc 1 &cpu2intc 1 &cpu3intc 1 &cpu4intc 1>;
+
+Same here.
+
+> +      reg = <0x2100000 0x4000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <0>;
+> +    };
+> +...
+> -- 
+> 2.25.1
+> 
+> 
