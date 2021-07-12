@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804A53C5893
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877483C530D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379381AbhGLIuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43404 "EHLO mail.kernel.org"
+        id S1351956AbhGLHwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:52:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347753AbhGLHxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10C2861165;
-        Mon, 12 Jul 2021 07:50:57 +0000 (UTC)
+        id S243582AbhGLHRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:17:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A48E6611ED;
+        Mon, 12 Jul 2021 07:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076258;
-        bh=0pgFFY4YwPzXxt3fiezSRoApU9VxQQaa5LghRmiDmCo=;
+        s=korg; t=1626074095;
+        bh=XKqbOAf8faM+Ie/RiraBNzC5aOntABgO/iL79yGUqx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bTUxOqaofsGIHrERWuaNr3AmXxOmJd7XDQe2OensaEgLju6O1IIiotFORXxzeRzWC
-         6YCz1LGy36Q3Vr/K1gkHu82wGWGyKJyIiLw8+4WaDNWxQSg6bvgMbSM/PwQYPLOUur
-         dfhFYpgneiQcWaww0TvSNoCZsO5ANv8JjEovu9oE=
+        b=zfCiIXYN3qATAtnaa3l05IgGni8n5Tz6HWkiQGt2pCCXSthAjzLzHkbYFuSMHQ0aG
+         5HqGu3imZ4Ftzreke1deR/iDmO7s9Y0WiLLguDaAAX4J30Yc6JpzSexbO3yXvAkp9I
+         UdXDLkZZsopp6L1hwNHiuJTIb49kVOuubeYT20Cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 523/800] netfilter: nf_tables_offload: check FLOW_DISSECTOR_KEY_BASIC in VLAN transfer logic
+Subject: [PATCH 5.12 463/700] net: ti: am65-cpsw-nuss: Fix crash when changing number of TX queues
 Date:   Mon, 12 Jul 2021 08:09:06 +0200
-Message-Id: <20210712061022.891120286@linuxfoundation.org>
+Message-Id: <20210712061025.832380327@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Vignesh Raghavendra <vigneshr@ti.com>
 
-[ Upstream commit ea45fdf82cc90430bb7c280e5e53821e833782c5 ]
+[ Upstream commit ce8eb4c728ef40b554b4f3d8963f11ed44502e00 ]
 
-The VLAN transfer logic should actually check for
-FLOW_DISSECTOR_KEY_BASIC, not FLOW_DISSECTOR_KEY_CONTROL. Moreover, do
-not fallback to case 2) .n_proto is set to 802.1q or 802.1ad, if
-FLOW_DISSECTOR_KEY_BASIC is unset.
+When changing number of TX queues using ethtool:
 
-Fixes: 783003f3bb8a ("netfilter: nftables_offload: special ethertype handling for VLAN")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+	# ethtool -L eth0 tx 1
+	[  135.301047] Unable to handle kernel paging request at virtual address 00000000af5d0000
+	[...]
+	[  135.525128] Call trace:
+	[  135.525142]  dma_release_from_dev_coherent+0x2c/0xb0
+	[  135.525148]  dma_free_attrs+0x54/0xe0
+	[  135.525156]  k3_cppi_desc_pool_destroy+0x50/0xa0
+	[  135.525164]  am65_cpsw_nuss_remove_tx_chns+0x88/0xdc
+	[  135.525171]  am65_cpsw_set_channels+0x3c/0x70
+	[...]
+
+This is because k3_cppi_desc_pool_destroy() which is called after
+k3_udma_glue_release_tx_chn() in am65_cpsw_nuss_remove_tx_chns()
+references struct device that is unregistered at the end of
+k3_udma_glue_release_tx_chn()
+
+Therefore the right order is to call k3_cppi_desc_pool_destroy() and
+destroy desc pool before calling k3_udma_glue_release_tx_chn().
+Fix this throughout the driver.
+
+Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_offload.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index ec701b84844f..b58d73a96523 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -54,15 +54,10 @@ static void nft_flow_rule_transfer_vlan(struct nft_offload_ctx *ctx,
- 					struct nft_flow_rule *flow)
- {
- 	struct nft_flow_match *match = &flow->match;
--	struct nft_offload_ethertype ethertype;
--
--	if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_CONTROL) &&
--	    match->key.basic.n_proto != htons(ETH_P_8021Q) &&
--	    match->key.basic.n_proto != htons(ETH_P_8021AD))
--		return;
--
--	ethertype.value = match->key.basic.n_proto;
--	ethertype.mask = match->mask.basic.n_proto;
-+	struct nft_offload_ethertype ethertype = {
-+		.value	= match->key.basic.n_proto,
-+		.mask	= match->mask.basic.n_proto,
-+	};
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index 638d7b03be4b..a98182b2d19b 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -1506,12 +1506,12 @@ static void am65_cpsw_nuss_free_tx_chns(void *data)
+ 	for (i = 0; i < common->tx_ch_num; i++) {
+ 		struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[i];
  
- 	if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_VLAN) &&
- 	    (match->key.vlan.vlan_tpid == htons(ETH_P_8021Q) ||
-@@ -76,7 +71,9 @@ static void nft_flow_rule_transfer_vlan(struct nft_offload_ctx *ctx,
- 		match->dissector.offset[FLOW_DISSECTOR_KEY_CVLAN] =
- 			offsetof(struct nft_flow_key, cvlan);
- 		match->dissector.used_keys |= BIT(FLOW_DISSECTOR_KEY_CVLAN);
--	} else {
-+	} else if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_BASIC) &&
-+		   (match->key.basic.n_proto == htons(ETH_P_8021Q) ||
-+		    match->key.basic.n_proto == htons(ETH_P_8021AD))) {
- 		match->key.basic.n_proto = match->key.vlan.vlan_tpid;
- 		match->mask.basic.n_proto = match->mask.vlan.vlan_tpid;
- 		match->key.vlan.vlan_tpid = ethertype.value;
+-		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
+-			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
+-
+ 		if (!IS_ERR_OR_NULL(tx_chn->desc_pool))
+ 			k3_cppi_desc_pool_destroy(tx_chn->desc_pool);
+ 
++		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
++			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
++
+ 		memset(tx_chn, 0, sizeof(*tx_chn));
+ 	}
+ }
+@@ -1531,12 +1531,12 @@ void am65_cpsw_nuss_remove_tx_chns(struct am65_cpsw_common *common)
+ 
+ 		netif_napi_del(&tx_chn->napi_tx);
+ 
+-		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
+-			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
+-
+ 		if (!IS_ERR_OR_NULL(tx_chn->desc_pool))
+ 			k3_cppi_desc_pool_destroy(tx_chn->desc_pool);
+ 
++		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
++			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
++
+ 		memset(tx_chn, 0, sizeof(*tx_chn));
+ 	}
+ }
+@@ -1624,11 +1624,11 @@ static void am65_cpsw_nuss_free_rx_chns(void *data)
+ 
+ 	rx_chn = &common->rx_chns;
+ 
+-	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
+-		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
+-
+ 	if (!IS_ERR_OR_NULL(rx_chn->desc_pool))
+ 		k3_cppi_desc_pool_destroy(rx_chn->desc_pool);
++
++	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
++		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
+ }
+ 
+ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
 -- 
 2.30.2
 
