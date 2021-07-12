@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDEF3C59E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E273C59D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385206AbhGLJKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:10:01 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:45264 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382897AbhGLJC3 (ORCPT
+        id S1357725AbhGLJJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:09:18 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11286 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357552AbhGLI7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:02:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1626080137; x=1628672137;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uC8cBQL1xFdGBkFPFEx8KFNhS1ChOLH8o8ZHun1kY00=;
-        b=bH8rxWtzV2H/DIIZ3MBOQc2kPIm60IM50J0Bm2EbE2gWRXG4XkmRsq5PJwlYohek
-        +n5es4yCod/CMyBGpPdAnfGIbkl56xI3ST6Z+Vc5VgGYD7rK2FxsjwIDQC6COx+J
-        MfT22lu6dLtwpalX/Ecz4qMbA5eOs1F3h340DUcZKOM=;
-X-AuditID: c39127d2-1e4f970000001daf-27-60ec03896928
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id ED.8D.07599.9830CE06; Mon, 12 Jul 2021 10:55:37 +0200 (CEST)
-Received: from lws-riedmueller.phytec.de ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021071210553709-1131636 ;
-          Mon, 12 Jul 2021 10:55:37 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 6/6] media: dt-bindings: mt9p031: Add missing required properties
-Date:   Mon, 12 Jul 2021 10:55:35 +0200
-Message-Id: <20210712085535.11907-7-s.riedmueller@phytec.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210712085535.11907-1-s.riedmueller@phytec.de>
-References: <20210712085535.11907-1-s.riedmueller@phytec.de>
+        Mon, 12 Jul 2021 04:59:21 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GNcvW6Kt1z78YD;
+        Mon, 12 Jul 2021 16:51:51 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 16:56:17 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 16:56:16 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH 1/1] fbmem: Do not delete the mode that is still in use
+Date:   Mon, 12 Jul 2021 16:55:44 +0800
+Message-ID: <20210712085544.2828-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 12.07.2021 10:55:37,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 12.07.2021 10:55:37
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWyRoCBS7eT+U2CwZ2r0hbzj5xjteicuITd
-        4vKuOWwWPRu2slos2/SHyaJ17xF2i09bvjE5sHvM7pjJ6rFpVSebx7yTgR6fN8kFsERx2aSk
-        5mSWpRbp2yVwZew8No2toI+3Yu+EgywNjB84uxg5OSQETCRef/7I1MXIxSEksI1RYur2HawQ
-        znVGibVLtjKBVLEJGEksmNYIViUi0MYoseNIM5jDLLCFUWL65eVsIFXCAiESc5eeYgGxWQRU
-        JV4vXcUMYvMK2EjsujmNBWKfvMTMS9/Zuxg5ODgFbCX2/LAECQsBlVyfv4EFolxQ4uTMJywg
-        8yUErgDNf3ibGaJXSOL04rNgNrOAtsSyha+ZJzAKzELSMwtJagEj0ypGodzM5OzUosxsvYKM
-        ypLUZL2U1E2MwAA+PFH90g7GvjkehxiZOBgPMUpwMCuJ8H7rfZUgxJuSWFmVWpQfX1Sak1p8
-        iFGag0VJnHcDb0mYkEB6YklqdmpqQWoRTJaJg1OqgTF43mvZc8sVlpQkeuwtfvDrxHub9RGv
-        Fp+d3PM24hrzx/55zIbzipc+nuy/yGfeScts58SUDQHJZfvjImWvya/YvJPH+amh0GqliL6f
-        T4z5eXKKD6/TmTZpncsn14aHno6b+mKvJZrd1jVWddNZ9v6UW8qCa56zOQxSpcpfWTgUBE/P
-        tUiwjVRiKc5INNRiLipOBAAeoPmeTgIAAA==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing required clocks and supply regulator properties for the
-sensor input clock and vdd, vdd=5Fio and vaa supply regulators.
+The execution of fb_delete_videomode() is not based on the result of the
+previous fbcon_mode_deleted(). As a result, the mode is directly deleted,
+regardless of whether it is still in use, which may cause UAF.
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+==================================================================
+BUG: KASAN: use-after-free in fb_mode_is_equal+0x36e/0x5e0 \
+drivers/video/fbdev/core/modedb.c:924
+Read of size 4 at addr ffff88807e0ddb1c by task syz-executor.0/18962
+
+CPU: 2 PID: 18962 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ...
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:118
+ print_address_description+0x6c/0x640 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
+ fb_mode_is_equal+0x36e/0x5e0 drivers/video/fbdev/core/modedb.c:924
+ fbcon_mode_deleted+0x16a/0x220 drivers/video/fbdev/core/fbcon.c:2746
+ fb_set_var+0x1e1/0xdb0 drivers/video/fbdev/core/fbmem.c:975
+ do_fb_ioctl+0x4d9/0x6e0 drivers/video/fbdev/core/fbmem.c:1108
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 18960:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x108/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1541 [inline]
+ slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1574
+ slab_free mm/slub.c:3139 [inline]
+ kfree+0xca/0x3d0 mm/slub.c:4121
+ fb_delete_videomode+0x56a/0x820 drivers/video/fbdev/core/modedb.c:1104
+ fb_set_var+0x1f3/0xdb0 drivers/video/fbdev/core/fbmem.c:978
+ do_fb_ioctl+0x4d9/0x6e0 drivers/video/fbdev/core/fbmem.c:1108
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: 13ff178ccd6d ("fbcon: Call fbcon_mode_deleted/new_modelist directly")
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- .../bindings/media/i2c/aptina,mt9p031.yaml    | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/video/fbdev/core/fbmem.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yam=
-l b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-index ad9a2db73d86..487a3facfcbc 100644
---- a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-@@ -24,6 +24,18 @@ properties:
-     description: I2C device address
-     maxItems: 1
-=20
-+  clocks:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Digital supply voltage, 1.8 V
-+
-+  vdd=5Fio-supply:
-+    description: I/O supply voltage, 1.8 or 2.8 V
-+
-+  vaa-supply:
-+    description: Analog supply voltage, 2.8 V
-+
-   reset-gpios:
-     maxItems: 1
-     description: Chip reset GPIO
-@@ -48,6 +60,10 @@ properties:
- required:
-   - compatible
-   - reg
-+  - clocks
-+  - vdd-supply
-+  - vdd=5Fio-supply
-+  - vaa-supply
-   - port
-=20
- additionalProperties: false
-@@ -63,6 +79,12 @@ examples:
-             reg =3D <0x5d>;
-             reset-gpios =3D <&gpio=5Fsensor 0 0>;
-=20
-+            clocks =3D <&sensor=5Fclk>;
-+
-+            vdd-supply =3D <&reg=5Fvdd>;
-+            vdd=5Fio-supply =3D <&reg=5Fvdd=5Fio>;
-+            vaa-supply =3D <&reg=5Fvaa>;
-+
-             port {
-                 mt9p031=5F1: endpoint {
-                     input-clock-frequency =3D <6000000>;
---=20
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 98f193078c05..1c855145711b 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -970,13 +970,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+ 		fb_var_to_videomode(&mode2, &info->var);
+ 		/* make sure we don't delete the videomode of current var */
+ 		ret = fb_mode_is_equal(&mode1, &mode2);
+-
+-		if (!ret)
+-			fbcon_mode_deleted(info, &mode1);
+-
+-		if (!ret)
+-			fb_delete_videomode(&mode1, &info->modelist);
+-
++		if (!ret) {
++			ret = fbcon_mode_deleted(info, &mode1);
++			if (!ret)
++				fb_delete_videomode(&mode1, &info->modelist);
++		}
+ 
+ 		return ret ? -EINVAL : 0;
+ 	}
+-- 
 2.25.1
+
 
