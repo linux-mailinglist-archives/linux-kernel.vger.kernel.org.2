@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB94C3C5CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6608D3C5CBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhGLNDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 09:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbhGLNDB (ORCPT
+        id S230255AbhGLNAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 09:00:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39651 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230458AbhGLNAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 09:03:01 -0400
-X-Greylist: delayed 492 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 12 Jul 2021 06:00:10 PDT
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04730C0613DD;
-        Mon, 12 Jul 2021 06:00:10 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id EF829588A40E6; Mon, 12 Jul 2021 14:51:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id E9F8D60C36094;
-        Mon, 12 Jul 2021 14:51:54 +0200 (CEST)
-Date:   Mon, 12 Jul 2021 14:51:54 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Suren Baghdasaryan <surenb@google.com>
-cc:     Florian Weimer <fweimer@redhat.com>,
+        Mon, 12 Jul 2021 09:00:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626094646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OfW+EDPD3i0ZuVRk8dA4AgPw3FcJtell4MQHZyZqUjs=;
+        b=aun3HrHpLRIWO19AbGy+9z8m4/oHm0CJKmpvc0n2/FNW6OE4yx2kaqc/xePpb4BztvjYMo
+        e2KtpVI0IH2lw4aglq7T3spL8X2v/k5LMMjWyRWnpe2Xge4RJqdHgVBxCbgLxeiqrWy/TB
+        ks9y1RnZONxxyWHFA6umVnSRllGCIQ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-1RenpcKJPPaF_RQuClAC-A-1; Mon, 12 Jul 2021 08:57:24 -0400
+X-MC-Unique: 1RenpcKJPPaF_RQuClAC-A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55DCB1060DFD;
+        Mon, 12 Jul 2021 12:57:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-19.rdu2.redhat.com [10.10.118.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 15E931971B;
+        Mon, 12 Jul 2021 12:57:11 +0000 (UTC)
+Subject: [PATCH 0/3] afs: Miscellaneous fixes
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Tom Rix <trix@redhat.com>,
+        "Alexey Dobriyan (SK hynix)" <adobriyan@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
-In-Reply-To: <CAJuCfpFt55Dw1uW3S6_AincNfPaAtwdi6iXYVvFr7x3fvt4uzw@mail.gmail.com>
-Message-ID: <q2s48op3-n660-p8r4-op50-po43r2249r24@vanv.qr>
-References: <20210623192822.3072029-1-surenb@google.com> <87sg0qa22l.fsf@oldenburg.str.redhat.com> <CAJuCfpEWpvw+gW+NvBPOdGqUOEyucFoT8gdC2uk18dMBQFbhqw@mail.gmail.com> <87wnq1z7kl.fsf@oldenburg.str.redhat.com>
- <CAJuCfpFt55Dw1uW3S6_AincNfPaAtwdi6iXYVvFr7x3fvt4uzw@mail.gmail.com>
-User-Agent: Alpine 2.24 (LSU 510 2020-10-10)
+        Abaci Robot <abaci@linux.alibaba.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 12 Jul 2021 13:57:11 +0100
+Message-ID: <162609463116.3133237.11899334298425929820.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thursday 2021-07-08 08:05, Suren Baghdasaryan wrote:
->>
->> That explains very clearly the requirement, but it raises the question
->> why this isn't an si_code flag for rt_sigqueueinfo, reusing the existing
->> system call.
->
->I think you are suggesting to use sigqueue() to deliver the signal and
->perform the reaping when a special value accompanies it. This would be
->somewhat similar to my early suggestion to use a flag in
->pidfd_send_signal() (see:
->https://lore.kernel.org/patchwork/patch/1060407) to implement memory
->reaping which has another advantage of operation on PIDFDs instead of
->PIDs which can be recycled.
->kill()/pidfd_send_signal()/sigqueue() are supposed to deliver the
->signal and return without blocking. Changing that behavior was
->considered unacceptable in these discussions.
+Here are some fixes for AFS:
 
-The way I understood the request is that a userspace program (or perhaps two,
-if so desired) should issue _two_ calls, one to deliver the signal,
-one to perform the reap portion:
+ (1) Fix a tracepoint that causes one of the tracing subsystem query files
+     to crash if the module is loaded[1].
 
-	uinfo.si_code = SI_QUEUE;
-	sigqueue(pid, SIGKILL, &uinfo);
-	uinfo.si_code = SI_REAP;
-	sigqueue(pid, SIGKILL, &uinfo);
+ (2) Fix afs_writepages() to take account of whether the storage rpc
+     actually succeeded when updating the cyclic writeback counter[2].
+
+ (3) Fix some error code propagation/handling[3].
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
+
+Link: https://lore.kernel.org/r/162430903582.2896199.6098150063997983353.stgit@warthog.procyon.org.uk/ [1]
+Link: https://lore.kernel.org/r/20210430155031.3287870-1-trix@redhat.com [2]
+Link: https://lore.kernel.org/r/1619691492-83866-1-git-send-email-jiapeng.chong@linux.alibaba.com [3]
+
+---
+David Howells (1):
+      afs: Fix tracepoint string placement with built-in AFS
+
+Jiapeng Chong (1):
+      afs: Remove redundant assignment to ret
+
+Tom Rix (1):
+      afs: check function return
+
+
+ fs/afs/dir.c   | 10 ++++++----
+ fs/afs/write.c |  2 +-
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+
