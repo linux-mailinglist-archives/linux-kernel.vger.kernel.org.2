@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB00C3C4A0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050A43C50B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhGLGsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:48:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
+        id S1347114AbhGLHe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236751AbhGLGhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:37:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A0DE6113C;
-        Mon, 12 Jul 2021 06:33:50 +0000 (UTC)
+        id S241882AbhGLHGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:06:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65ADC6124B;
+        Mon, 12 Jul 2021 07:03:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071631;
-        bh=BlGq8KKuCkSpLMk5NR9JZxmkyEyOdfvm0EvyJwhVNFY=;
+        s=korg; t=1626073391;
+        bh=YjqY58vLbJulwVN1zKTvM6mUZHaqMT+0DFI+1p8t4Bs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZMUW3U7ScburKl/REsyOi2XGFl1LABZL4S8y5IunmQ9353etanvHOmq/ek6KACYo
-         26sdSMhPB1dpgPDXB0xm4+y44r56eyFqFNR5jAdpNQQLDnXg7R0um/ww6N4ld4xckT
-         ekC+Q2bqTYOLzi2sRge67ii2fAicBBLAqvoukXkY=
+        b=0PCJ2I+qO7clRBbYoZCrswB3I8uJ1M/bQcQepyD7xUvcN59Z5g4nP39grvF24cTyv
+         GpLYxHYi+niD5mizTvB+l6GWHMUIs/8eFnRnxkzrpeBgaQpf45zMFdCi6Q2+AUfafE
+         XHiWpuCFZd5emchMT6WuIA7dUrGkTnRlrph6K+vo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 150/593] media: siano: fix device register error path
+Subject: [PATCH 5.12 227/700] EDAC/Intel: Do not load EDAC driver when running as a guest
 Date:   Mon, 12 Jul 2021 08:05:10 +0200
-Message-Id: <20210712060859.522750633@linuxfoundation.org>
+Message-Id: <20210712060958.921382590@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Luck, Tony <tony.luck@intel.com>
 
-[ Upstream commit 5368b1ee2939961a16e74972b69088433fc52195 ]
+[ Upstream commit f0a029fff4a50eb01648810a77ba1873e829fdd4 ]
 
-As reported by smatch:
-	drivers/media/common/siano/smsdvb-main.c:1231 smsdvb_hotplug() warn: '&client->entry' not removed from list
+There's little to no point in loading an EDAC driver running in a guest:
+1) The CPU model reported by CPUID may not represent actual h/w
+2) The hypervisor likely does not pass in access to memory controller devices
+3) Hypervisors generally do not pass corrected error details to guests
 
-If an error occur at the end of the registration logic, it won't
-drop the device from the list.
+Add a check in each of the Intel EDAC drivers for X86_FEATURE_HYPERVISOR
+and simply return -ENODEV in the init routine.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Acked-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210615174419.GA1087688@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/siano/smsdvb-main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/edac/i10nm_base.c | 3 +++
+ drivers/edac/pnd2_edac.c  | 3 +++
+ drivers/edac/sb_edac.c    | 3 +++
+ drivers/edac/skx_base.c   | 3 +++
+ 4 files changed, 12 insertions(+)
 
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index ae17407e477a..7cc654bc52d3 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1176,6 +1176,10 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	return 0;
+diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
+index 238a4ad1e526..37b4e875420e 100644
+--- a/drivers/edac/i10nm_base.c
++++ b/drivers/edac/i10nm_base.c
+@@ -278,6 +278,9 @@ static int __init i10nm_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
- media_graph_error:
-+	mutex_lock(&g_smsdvb_clientslock);
-+	list_del(&client->entry);
-+	mutex_unlock(&g_smsdvb_clientslock);
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
 +
- 	smsdvb_debugfs_release(client);
+ 	id = x86_match_cpu(i10nm_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/pnd2_edac.c b/drivers/edac/pnd2_edac.c
+index 928f63a374c7..c94ca1f790c4 100644
+--- a/drivers/edac/pnd2_edac.c
++++ b/drivers/edac/pnd2_edac.c
+@@ -1554,6 +1554,9 @@ static int __init pnd2_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
- client_error:
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(pnd2_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+index 93daa4297f2e..4c626fcd4dcb 100644
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -3510,6 +3510,9 @@ static int __init sbridge_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(sbridge_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/skx_base.c b/drivers/edac/skx_base.c
+index 6a4f0b27c654..4dbd46575bfb 100644
+--- a/drivers/edac/skx_base.c
++++ b/drivers/edac/skx_base.c
+@@ -656,6 +656,9 @@ static int __init skx_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(skx_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
 -- 
 2.30.2
 
