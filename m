@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805E73C5058
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B603C5743
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347068AbhGLHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39708 "EHLO mail.kernel.org"
+        id S1376782AbhGLIa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242955AbhGLHET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24450610FA;
-        Mon, 12 Jul 2021 07:01:29 +0000 (UTC)
+        id S245742AbhGLHne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7FB461154;
+        Mon, 12 Jul 2021 07:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073290;
-        bh=2Wi38nQN3VKnV4ahUhGFIElpkM/7DNUZ3EbizulaLTc=;
+        s=korg; t=1626075622;
+        bh=YezxmHkVKlaq8LJoW49npvt6RvVWcow9De0XHBKCEk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iEphu6tmxBE0yvCZRKAxQv5SVVXGa8BOPaw1klMlr47ZjLHWs32Pu8fxTQxxx2yXh
-         ayaZeJJ2sC4rfdBFEPpHC1Tm5V4mQeuBkGkCAbKnoSA+Lx3X2eHyz+Dh+eBGCSYfND
-         K2TDb8/ih04ruin0mpOEdWP/T55rgTXH0n7/KHug=
+        b=nnDXJ7iV11ygdLy+vsCUKJn8wK+2XA9vfEhOIwgJ5wgEqep1qeCuJas/oW1nqmsxP
+         Zfdc8fNk6SHoanK0m+SHPkbZbF17l/ZCTzyxBjbbEz1RoEsesRLpRqB0QU7VXwjAri
+         wmJjVGV3YexS19P7RdWhdWRREJJUJn5oIjEatsPE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 191/700] KVM: s390: get rid of register asm usage
+        stable@vger.kernel.org, Luca Mariotti <mariottiluca1@hotmail.it>,
+        Paolo Valente <paolo.valente@unimore.it>,
+        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 251/800] block, bfq: fix delayed stable merge check
 Date:   Mon, 12 Jul 2021 08:04:34 +0200
-Message-Id: <20210712060953.823500083@linuxfoundation.org>
+Message-Id: <20210712060949.189283381@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,76 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Luca Mariotti <mariottiluca1@hotmail.it>
 
-[ Upstream commit 4fa3b91bdee1b08348c82660668ca0ca34e271ad ]
+[ Upstream commit e03f2ab78a4a673e4af23c3b855591c48b9de4d7 ]
 
-Using register asm statements has been proven to be very error prone,
-especially when using code instrumentation where gcc may add function
-calls, which clobbers register contents in an unexpected way.
+When attempting to schedule a merge of a given bfq_queue with the currently
+in-service bfq_queue or with a cooperating bfq_queue among the scheduled
+bfq_queues, delayed stable merge is checked for rotational or non-queueing
+devs. For this stable merge to be performed, some conditions must be met.
+If the current bfq_queue underwent some split from some merged bfq_queue,
+one of these conditions is that two hundred milliseconds must elapse from
+split, otherwise this condition is always met.
 
-Therefore get rid of register asm statements in kvm code, even though
-there is currently nothing wrong with them. This way we know for sure
-that this bug class won't be introduced here.
+Unfortunately, by mistake, time_is_after_jiffies() was written instead of
+time_is_before_jiffies() for this check, verifying that less than two
+hundred milliseconds have elapsed instead of verifying that at least two
+hundred milliseconds have elapsed.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Thomas Huth <thuth@redhat.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210621140356.1210771-1-hca@linux.ibm.com
-[borntraeger@de.ibm.com: checkpatch strict fix]
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Fix this issue by replacing time_is_after_jiffies() with
+time_is_before_jiffies().
+
+Signed-off-by: Luca Mariotti <mariottiluca1@hotmail.it>
+Signed-off-by: Paolo Valente <paolo.valente@unimore.it>
+Signed-off-by: Pietro Pedroni <pedroni.pietro.96@gmail.com>
+Link: https://lore.kernel.org/r/20210619140948.98712-3-paolo.valente@linaro.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/kvm-s390.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ block/bfq-iosched.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 24ad447e648c..dd7136b3ed9a 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -323,31 +323,31 @@ static void allow_cpu_feat(unsigned long nr)
- 
- static inline int plo_test_bit(unsigned char nr)
- {
--	register unsigned long r0 asm("0") = (unsigned long) nr | 0x100;
-+	unsigned long function = (unsigned long)nr | 0x100;
- 	int cc;
- 
- 	asm volatile(
-+		"	lgr	0,%[function]\n"
- 		/* Parameter registers are ignored for "test bit" */
- 		"	plo	0,0,0,0(0)\n"
- 		"	ipm	%0\n"
- 		"	srl	%0,28\n"
- 		: "=d" (cc)
--		: "d" (r0)
--		: "cc");
-+		: [function] "d" (function)
-+		: "cc", "0");
- 	return cc == 0;
- }
- 
- static __always_inline void __insn32_query(unsigned int opcode, u8 *query)
- {
--	register unsigned long r0 asm("0") = 0;	/* query function */
--	register unsigned long r1 asm("1") = (unsigned long) query;
--
- 	asm volatile(
--		/* Parameter regs are ignored */
-+		"	lghi	0,0\n"
-+		"	lgr	1,%[query]\n"
-+		/* Parameter registers are ignored */
- 		"	.insn	rrf,%[opc] << 16,2,4,6,0\n"
- 		:
--		: "d" (r0), "a" (r1), [opc] "i" (opcode)
--		: "cc", "memory");
-+		: [query] "d" ((unsigned long)query), [opc] "i" (opcode)
-+		: "cc", "memory", "0", "1");
- }
- 
- #define INSN_SORTL 0xb938
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index acd1f881273e..2adb1e69c9d2 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2697,7 +2697,7 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	if (unlikely(!bfqd->nonrot_with_queueing)) {
+ 		if (bic->stable_merge_bfqq &&
+ 		    !bfq_bfqq_just_created(bfqq) &&
+-		    time_is_after_jiffies(bfqq->split_time +
++		    time_is_before_jiffies(bfqq->split_time +
+ 					  msecs_to_jiffies(200))) {
+ 			struct bfq_queue *stable_merge_bfqq =
+ 				bic->stable_merge_bfqq;
 -- 
 2.30.2
 
