@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275CB3C54E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0011E3C4E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344178AbhGLIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43378 "EHLO mail.kernel.org"
+        id S245245AbhGLHT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343542AbhGLH2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:28:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D5461441;
-        Mon, 12 Jul 2021 07:23:58 +0000 (UTC)
+        id S241460AbhGLGzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37D6D6052B;
+        Mon, 12 Jul 2021 06:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074639;
-        bh=tqEi458EYzW0aKgGuY+eftvi0L8fTnCvQLibTMABUmo=;
+        s=korg; t=1626072735;
+        bh=2n3DZGOxfp4+EEijzFe09B/2zFAHlnQwax+cbtXPboY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kaJIhdMDykc3v1Mku60RAH7ttnj3lej1Jh2DjNaIhgdAFeo+h4uUfzvPBNy5j/eE+
-         eYdcxA3yXDbn5/tL5KVTcYybfTHHwW52tF9SBrdCql/WILKoXmP9sqe7NkMhD0v8LG
-         bntWcH7yOWkyT5426JlKfNE0l756U/gfMJzmAF3g=
+        b=X9txFVxMzDqTpCaXC3pmEzKSVgB4hYibKyq6HG3pnjCpredhQtKp1fXL0OhIifvLP
+         FKAiVhC5msBktRij9xn6Q6s4pIDY/aa4MbiDDnmsYRQelNNWZENm1Yo5qhI42ri8Ia
+         PZ38fQPP4kCRPItLOeTQNcF5pclMEWtPLSyjD7vQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>, Bard Liao <bard.liao@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 647/700] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
-Date:   Mon, 12 Jul 2021 08:12:10 +0200
-Message-Id: <20210712061044.708629406@linuxfoundation.org>
+Subject: [PATCH 5.10 571/593] mm/z3fold: fix potential memory leak in z3fold_destroy_pool()
+Date:   Mon, 12 Jul 2021 08:12:11 +0200
+Message-Id: <20210712060957.765679086@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 03effde3a2ea1d82c4dd6b634fc6174545d2c34f ]
+[ Upstream commit dac0d1cfda56472378d330b1b76b9973557a7b1d ]
 
-Brya is another ADL-P product.
+There is a memory leak in z3fold_destroy_pool() as it forgets to
+free_percpu pool->unbuddied.  Call free_percpu for pool->unbuddied to fix
+this issue.
 
-AlderLake has support for Bluetooth audio offload capability.
-Enable the BT-offload quirk for ADL-P Brya and the Intel RVP.
-
-Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210521155632.3736393-2-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lkml.kernel.org/r/20210619093151.1492174-6-linmiaohe@huawei.com
+Fixes: d30561c56f41 ("z3fold: use per-cpu unbuddied lists")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Cc: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ mm/z3fold.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index dfad2ad129ab..35ad448902c7 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -197,7 +197,21 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
- 					SOF_SDW_TGL_HDMI |
- 					SOF_RT715_DAI_ID_FIX |
--					SOF_SDW_PCH_DMIC),
-+					SOF_SDW_PCH_DMIC |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
-+	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Brya"),
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					SOF_SDW_PCH_DMIC |
-+					SOF_SDW_FOUR_SPK |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
- 	{}
- };
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 8ae944eeb8e2..636a71c291bf 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -1063,6 +1063,7 @@ static void z3fold_destroy_pool(struct z3fold_pool *pool)
+ 	destroy_workqueue(pool->compact_wq);
+ 	destroy_workqueue(pool->release_wq);
+ 	z3fold_unregister_migration(pool);
++	free_percpu(pool->unbuddied);
+ 	kfree(pool);
+ }
+ 
 -- 
 2.30.2
 
