@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ED83C4BC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C003A3C52F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242096AbhGLG7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39704 "EHLO mail.kernel.org"
+        id S1351161AbhGLHva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238954AbhGLGob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5845961008;
-        Mon, 12 Jul 2021 06:40:27 +0000 (UTC)
+        id S243656AbhGLHQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:16:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5BDB6144C;
+        Mon, 12 Jul 2021 07:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072027;
-        bh=MZzqfv3cG0jwKxocEjfCzBeR/+AZnBvF9fr5yZCQoZA=;
+        s=korg; t=1626074034;
+        bh=LfojesEne9kT7QOl6Hk3evd0yWzDxdJJCl5+B0grj8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WrR3LkDYM5URW0O+q9tfj6gqDyf9efacARuTq/xXRLBSPgNAxcr/bSzoImOCfuVKU
-         4SGN1zF4tGpz8PAsbU35Ey7r7keF3T4fdarqitfNNWwzhmrzkxj82o+WzwTtoPQJNS
-         EipH4sJgyPxvzuWyvC9USXbe4w6MQRbGNHpO0tjc=
+        b=081QVQB8z46FZ3wpXQYek+MHXlWFVwAJg7bqB1WRBhzcJDvJRXy04ClFxqrla1wpD
+         OJA9Ln3+6JkSZC902QnC9aUl9Hn0pIcKNdOtQxCbI2OCsrc8YESef1plfRZLpHKHHe
+         GCs6Su3nBbfOKDP3cdoWIlTGU8qMkD55pdORiCK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 322/593] RDMA/rtrs-clt: Check state of the rtrs_clt_sess before reading its stats
+Subject: [PATCH 5.12 399/700] drm: qxl: ensure surf.data is ininitialized
 Date:   Mon, 12 Jul 2021 08:08:02 +0200
-Message-Id: <20210712060921.052077478@linuxfoundation.org>
+Message-Id: <20210712061018.835181763@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 41db63a7efe1c8c2dd282c1849a6ebfbbedbaf67 ]
+[ Upstream commit fbbf23ddb2a1cc0c12c9f78237d1561c24006f50 ]
 
-When get_next_path_min_inflight is called to select the next path, it
-iterates over the list of available rtrs_clt_sess (paths). It then reads
-the number of inflight IOs for that path to select one which has the least
-inflight IO.
+The object surf is not fully initialized and the uninitialized
+field surf.data is being copied by the call to qxl_bo_create
+via the call to qxl_gem_object_create. Set surf.data to zero
+to ensure garbage data from the stack is not being copied.
 
-But it may so happen that rtrs_clt_sess (path) is no longer in the
-connected state because closing or error recovery paths can change the status
-of the rtrs_clt_Sess.
-
-For example, the client sent the heart-beat and did not get the
-response, it would change the session status and stop IO processing.
-The added checking of this patch can prevent accessing the broken path
-and generating duplicated error messages.
-
-It is ok if the status is changed after checking the status because
-the error recovery path does not free memory and only tries to
-reconnection. And also it is ok if the session is closed after checking
-the status because closing the session changes the session status and
-flush all IO beforing free memory. If the session is being accessed for
-IO processing, the closing session will wait.
-
-Fixes: 6a98d71daea18 ("RDMA/rtrs: client: main functionality")
-Link: https://lore.kernel.org/r/20210528113018.52290-13-jinpu.wang@ionos.com
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: f64122c1f6ad ("drm: add new QXL driver. (v1.4)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210608161313.161922-1-colin.king@canonical.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/qxl/qxl_dumb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 7db550ba25d7..7d7dcc0a0458 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -811,6 +811,9 @@ static struct rtrs_clt_sess *get_next_path_min_inflight(struct path_it *it)
- 	int inflight;
- 
- 	list_for_each_entry_rcu(sess, &clt->paths_list, s.entry) {
-+		if (unlikely(READ_ONCE(sess->state) != RTRS_CLT_CONNECTED))
-+			continue;
+diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_dumb.c
+index c04cd5a2553c..e377bdbff90d 100644
+--- a/drivers/gpu/drm/qxl/qxl_dumb.c
++++ b/drivers/gpu/drm/qxl/qxl_dumb.c
+@@ -58,6 +58,8 @@ int qxl_mode_dumb_create(struct drm_file *file_priv,
+ 	surf.height = args->height;
+ 	surf.stride = pitch;
+ 	surf.format = format;
++	surf.data = 0;
 +
- 		if (unlikely(!list_empty(raw_cpu_ptr(sess->mp_skip_entry))))
- 			continue;
- 
+ 	r = qxl_gem_object_create_with_handle(qdev, file_priv,
+ 					      QXL_GEM_DOMAIN_SURFACE,
+ 					      args->size, &surf, &qobj,
 -- 
 2.30.2
 
