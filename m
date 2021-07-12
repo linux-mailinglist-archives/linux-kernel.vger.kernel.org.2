@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EF43C494A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6EA3C5011
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238068AbhGLGnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53450 "EHLO mail.kernel.org"
+        id S1346313AbhGLHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237653AbhGLGen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E2BA61175;
-        Mon, 12 Jul 2021 06:31:12 +0000 (UTC)
+        id S241864AbhGLHDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:03:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D94E6113E;
+        Mon, 12 Jul 2021 07:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071473;
-        bh=8xG8nUNhpybY9cQUvP2T6D9544SiSdMnpuMukcWwowg=;
+        s=korg; t=1626073211;
+        bh=k6FFS/KA2Q+CKN1NE/2N+LNS14D2bJG97qZEbgZw+dQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t6LFdehBn6cJXu0k5zO7XIrf4ZRKO1VXROC25uhgxUhwZfLJ7OpyqNOCwP/j65/lg
-         HKaNFJRW95nDT09KE9+E2fD9veBdw2naaZPM2h+FwNQpxshu9rjgaHti2GpWLxFVKi
-         TXGs0MPwiRokA8gFCcv7aRop9j9ztPu6HPsvz/WE=
+        b=tbtAHKvPo9QyuD8hMfsG4lWCyM2UIC9hxg51qu0Q5MJ5wFgDHfUiSit2owcsXKW2p
+         WZojzxzJh92eWZaIWTttn50LIbku71WXD/or/hpDdIEuqZ1eFa6f5fUursmVlp8NLt
+         05hHRPqM/CC4qOcqPyNCv9Pk+JVeXmkstfDB5V4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.10 085/593] rsi: fix AP mode with WPA failure due to encrypted EAPOL
+        stable@vger.kernel.org, Kai Ye <yekai13@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 162/700] crypto: hisilicon/sec - fixup 3des minimum key size declaration
 Date:   Mon, 12 Jul 2021 08:04:05 +0200
-Message-Id: <20210712060852.508250757@linuxfoundation.org>
+Message-Id: <20210712060948.522563918@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,115 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fuzzey <martin.fuzzey@flowbird.group>
+From: Kai Ye <yekai13@huawei.com>
 
-commit 314538041b5632ffaf64798faaeabaf2793fe029 upstream.
+[ Upstream commit 6161f40c630bd7ced5f236cd5fbabec06e47afae ]
 
-In AP mode WPA2-PSK connections were not established.
+Fixup the 3des algorithm  minimum key size declaration.
 
-The reason was that the AP was sending the first message
-of the 4 way handshake encrypted, even though no pairwise
-key had (correctly) yet been set.
-
-Encryption was enabled if the "security_enable" driver flag
-was set and encryption was not explicitly disabled by
-IEEE80211_TX_INTFL_DONT_ENCRYPT.
-
-However security_enable was set when *any* key, including
-the AP GTK key, had been set which was causing unwanted
-encryption even if no key was avaialble for the unicast
-packet to be sent.
-
-Fix this by adding a check that we have a key and drop
-the old security_enable driver flag which is insufficient
-and redundant.
-
-The Redpine downstream out of tree driver does it this way too.
-
-Regarding the Fixes tag the actual code being modified was
-introduced earlier, with the original driver submission, in
-dad0d04fa7ba ("rsi: Add RS9113 wireless driver"), however
-at that time AP mode was not yet supported so there was
-no bug at that point.
-
-So I have tagged the introduction of AP support instead
-which was part of the patch set "rsi: support for AP mode" [1]
-
-It is not clear whether AP WPA has ever worked, I can see nothing
-on the kernel side that broke it afterwards yet the AP support
-patch series says "Tests are performed to confirm aggregation,
-connections in WEP and WPA/WPA2 security."
-
-One possibility is that the initial tests were done with a modified
-userspace (hostapd).
-
-[1] https://www.spinics.net/lists/linux-wireless/msg165302.html
-
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-Fixes: 38ef62353acb ("rsi: security enhancements for AP mode")
-CC: stable@vger.kernel.org
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1622564459-24430-1-git-send-email-martin.fuzzey@flowbird.group
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Kai Ye <yekai13@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c      |    2 +-
- drivers/net/wireless/rsi/rsi_91x_mac80211.c |    3 ---
- drivers/net/wireless/rsi/rsi_91x_mgmt.c     |    3 +--
- drivers/net/wireless/rsi/rsi_main.h         |    1 -
- 4 files changed, 2 insertions(+), 7 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -203,7 +203,7 @@ int rsi_prepare_data_desc(struct rsi_com
- 		wh->frame_control |= cpu_to_le16(RSI_SET_PS_ENABLE);
+diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+index 8adcbb327126..c86b01abd0a6 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
++++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+@@ -1513,11 +1513,11 @@ static struct skcipher_alg sec_skciphers[] = {
+ 			 AES_BLOCK_SIZE, AES_BLOCK_SIZE)
  
- 	if ((!(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)) &&
--	    (common->secinfo.security_enable)) {
-+	    info->control.hw_key) {
- 		if (rsi_is_cipher_wep(common))
- 			ieee80211_size += 4;
- 		else
---- a/drivers/net/wireless/rsi/rsi_91x_mac80211.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
-@@ -1028,7 +1028,6 @@ static int rsi_mac80211_set_key(struct i
- 	mutex_lock(&common->mutex);
- 	switch (cmd) {
- 	case SET_KEY:
--		secinfo->security_enable = true;
- 		status = rsi_hal_key_config(hw, vif, key, sta);
- 		if (status) {
- 			mutex_unlock(&common->mutex);
-@@ -1047,8 +1046,6 @@ static int rsi_mac80211_set_key(struct i
- 		break;
+ 	SEC_SKCIPHER_ALG("ecb(des3_ede)", sec_setkey_3des_ecb,
+-			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
++			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
+ 			 DES3_EDE_BLOCK_SIZE, 0)
  
- 	case DISABLE_KEY:
--		if (vif->type == NL80211_IFTYPE_STATION)
--			secinfo->security_enable = false;
- 		rsi_dbg(ERR_ZONE, "%s: RSI del key\n", __func__);
- 		memset(key, 0, sizeof(struct ieee80211_key_conf));
- 		status = rsi_hal_key_config(hw, vif, key, sta);
---- a/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-@@ -1803,8 +1803,7 @@ int rsi_send_wowlan_request(struct rsi_c
- 			RSI_WIFI_MGMT_Q);
- 	cmd_frame->desc.desc_dword0.frame_type = WOWLAN_CONFIG_PARAMS;
- 	cmd_frame->host_sleep_status = sleep_status;
--	if (common->secinfo.security_enable &&
--	    common->secinfo.gtk_cipher)
-+	if (common->secinfo.gtk_cipher)
- 		flags |= RSI_WOW_GTK_REKEY;
- 	if (sleep_status)
- 		cmd_frame->wow_flags = flags;
---- a/drivers/net/wireless/rsi/rsi_main.h
-+++ b/drivers/net/wireless/rsi/rsi_main.h
-@@ -151,7 +151,6 @@ enum edca_queue {
- };
+ 	SEC_SKCIPHER_ALG("cbc(des3_ede)", sec_setkey_3des_cbc,
+-			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
++			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
+ 			 DES3_EDE_BLOCK_SIZE, DES3_EDE_BLOCK_SIZE)
  
- struct security_info {
--	bool security_enable;
- 	u32 ptk_cipher;
- 	u32 gtk_cipher;
- };
+ 	SEC_SKCIPHER_ALG("xts(sm4)", sec_setkey_sm4_xts,
+-- 
+2.30.2
+
 
 
