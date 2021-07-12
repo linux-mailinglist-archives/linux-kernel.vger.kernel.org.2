@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECE43C49A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246763C5710
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233971AbhGLGpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
+        id S1347568AbhGLI1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:27:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236630AbhGLGfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0061B610CD;
-        Mon, 12 Jul 2021 06:32:15 +0000 (UTC)
+        id S1347853AbhGLHkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FAAF61469;
+        Mon, 12 Jul 2021 07:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071536;
-        bh=vzE+OBnD7NeBjzxA/wmC7jhzZnfZH8OmraS2hjnEYN4=;
+        s=korg; t=1626075395;
+        bh=Vpgq6X5cPfItKhrQdkf+YbXlVg8r9CqVZm+PqciBKyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x/3ggcUNWqVKNAYT5911VOzHUlHpm2GmgHMhIpOcoGR3uyzoQkNDNJqsMldofdf5u
-         Suun7j/Yf3JLtwqcbbF+cSyN6Bd1G6IkNEkCh/asYbHyNrLmlcmhcTZXv+ZQ9691ig
-         i+TXK+MHtNqOLpxAiN7JEcP8ykl3KWEdDwB266v0=
+        b=0GQwZaOeEVaKT9J2pHzs5Cte+8xregFRMTaSOxD+nYHrFer4v7xi4Xmru8ycRXoWC
+         pcCHDVHgO2Z+JE8DC0KjGN09zSjfHrKw/85HOprBaILI3bTjxpT9O9nJGKUZs6lANP
+         qaoQqkRvqdJsWtBFpqbI7cNP56YoaTLKg2C4kcK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.10 069/593] clk: agilex/stratix10: remove noc_clk
-Date:   Mon, 12 Jul 2021 08:03:49 +0200
-Message-Id: <20210712060850.748945078@linuxfoundation.org>
+        stable@vger.kernel.org, Rodrigo Campos <rodrigo@kinvolk.io>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 207/800] seccomp: Support atomic "addfd + send reply"
+Date:   Mon, 12 Jul 2021 08:03:50 +0200
+Message-Id: <20210712060942.387895844@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,135 +43,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Rodrigo Campos <rodrigo@kinvolk.io>
 
-commit efbe21df3e889c0f4bf682c2b7e2465d60b0127c upstream.
+[ Upstream commit 0ae71c7720e3ae3aabd2e8a072d27f7bd173d25c ]
 
-Early documentation had a noc_clk, but in reality, it's just the
-noc_free_clk. Remove the noc_clk clock and just use the noc_free_clk.
+Alban Crequy reported a race condition userspace faces when we want to
+add some fds and make the syscall return them[1] using seccomp notify.
 
-Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lore.kernel.org/r/20210611025201.118799-1-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The problem is that currently two different ioctl() calls are needed by
+the process handling the syscalls (agent) for another userspace process
+(target): SECCOMP_IOCTL_NOTIF_ADDFD to allocate the fd and
+SECCOMP_IOCTL_NOTIF_SEND to return that value. Therefore, it is possible
+for the agent to do the first ioctl to add a file descriptor but the
+target is interrupted (EINTR) before the agent does the second ioctl()
+call.
 
+This patch adds a flag to the ADDFD ioctl() so it adds the fd and
+returns that value atomically to the target program, as suggested by
+Kees Cook[2]. This is done by simply allowing
+seccomp_do_user_notification() to add the fd and return it in this case.
+Therefore, in this case the target wakes up from the wait in
+seccomp_do_user_notification() either to interrupt the syscall or to add
+the fd and return it.
+
+This "allocate an fd and return" functionality is useful for syscalls
+that return a file descriptor only, like connect(2). Other syscalls that
+return a file descriptor but not as return value (or return more than
+one fd), like socketpair(), pipe(), recvmsg with SCM_RIGHTs, will not
+work with this flag.
+
+This effectively combines SECCOMP_IOCTL_NOTIF_ADDFD and
+SECCOMP_IOCTL_NOTIF_SEND into an atomic opteration. The notification's
+return value, nor error can be set by the user. Upon successful invocation
+of the SECCOMP_IOCTL_NOTIF_ADDFD ioctl with the SECCOMP_ADDFD_FLAG_SEND
+flag, the notifying process's errno will be 0, and the return value will
+be the file descriptor number that was installed.
+
+[1]: https://lore.kernel.org/lkml/CADZs7q4sw71iNHmV8EOOXhUKJMORPzF7thraxZYddTZsxta-KQ@mail.gmail.com/
+[2]: https://lore.kernel.org/lkml/202012011322.26DCBC64F2@keescook/
+
+Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
+Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+Acked-by: Tycho Andersen <tycho@tycho.pizza>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210517193908.3113-4-sargun@sargun.me
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-agilex.c |   32 +++++++++++++++-----------------
- drivers/clk/socfpga/clk-s10.c    |   32 +++++++++++++++-----------------
- 2 files changed, 30 insertions(+), 34 deletions(-)
+ .../userspace-api/seccomp_filter.rst          | 12 +++++
+ include/uapi/linux/seccomp.h                  |  1 +
+ kernel/seccomp.c                              | 51 ++++++++++++++++---
+ 3 files changed, 58 insertions(+), 6 deletions(-)
 
---- a/drivers/clk/socfpga/clk-agilex.c
-+++ b/drivers/clk/socfpga/clk-agilex.c
-@@ -211,11 +211,9 @@ static const struct stratix10_perip_cnt_
- 	{ AGILEX_MPU_FREE_CLK, "mpu_free_clk", NULL, mpu_free_mux, ARRAY_SIZE(mpu_free_mux),
- 	   0, 0x3C, 0, 0, 0},
- 	{ AGILEX_NOC_FREE_CLK, "noc_free_clk", NULL, noc_free_mux, ARRAY_SIZE(noc_free_mux),
--	  0, 0x40, 0, 0, 1},
--	{ AGILEX_L4_SYS_FREE_CLK, "l4_sys_free_clk", "noc_free_clk", NULL, 1, 0,
--	  0, 4, 0, 0},
--	{ AGILEX_NOC_CLK, "noc_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux),
--	  0, 0, 0, 0x30, 1},
-+	  0, 0x40, 0, 0, 0},
-+	{ AGILEX_L4_SYS_FREE_CLK, "l4_sys_free_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0,
-+	  0, 4, 0x30, 1},
- 	{ AGILEX_EMAC_A_FREE_CLK, "emaca_free_clk", NULL, emaca_free_mux, ARRAY_SIZE(emaca_free_mux),
- 	  0, 0xD4, 0, 0x88, 0},
- 	{ AGILEX_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
-@@ -241,24 +239,24 @@ static const struct stratix10_gate_clock
- 	  0, 0, 0, 0, 0, 0, 4},
- 	{ AGILEX_MPU_CCU_CLK, "mpu_ccu_clk", "mpu_clk", NULL, 1, 0, 0x24,
- 	  0, 0, 0, 0, 0, 0, 2},
--	{ AGILEX_L4_MAIN_CLK, "l4_main_clk", "noc_clk", NULL, 1, 0, 0x24,
--	  1, 0x44, 0, 2, 0, 0, 0},
--	{ AGILEX_L4_MP_CLK, "l4_mp_clk", "noc_clk", NULL, 1, 0, 0x24,
--	  2, 0x44, 8, 2, 0, 0, 0},
-+	{ AGILEX_L4_MAIN_CLK, "l4_main_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
-+	  1, 0x44, 0, 2, 0x30, 1, 0},
-+	{ AGILEX_L4_MP_CLK, "l4_mp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
-+	  2, 0x44, 8, 2, 0x30, 1, 0},
+diff --git a/Documentation/userspace-api/seccomp_filter.rst b/Documentation/userspace-api/seccomp_filter.rst
+index 6efb41cc8072..d61219889e49 100644
+--- a/Documentation/userspace-api/seccomp_filter.rst
++++ b/Documentation/userspace-api/seccomp_filter.rst
+@@ -259,6 +259,18 @@ and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
+ returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
+ be the same ``id`` as in ``struct seccomp_notif``.
+ 
++Userspace can also add file descriptors to the notifying process via
++``ioctl(SECCOMP_IOCTL_NOTIF_ADDFD)``. The ``id`` member of
++``struct seccomp_notif_addfd`` should be the same ``id`` as in
++``struct seccomp_notif``. The ``newfd_flags`` flag may be used to set flags
++like O_EXEC on the file descriptor in the notifying process. If the supervisor
++wants to inject the file descriptor with a specific number, the
++``SECCOMP_ADDFD_FLAG_SETFD`` flag can be used, and set the ``newfd`` member to
++the specific number to use. If that file descriptor is already open in the
++notifying process it will be replaced. The supervisor can also add an FD, and
++respond atomically by using the ``SECCOMP_ADDFD_FLAG_SEND`` flag and the return
++value will be the injected file descriptor number.
++
+ It is worth noting that ``struct seccomp_data`` contains the values of register
+ arguments to the syscall, but does not contain pointers to memory. The task's
+ memory is accessible to suitably privileged traces via ``ptrace()`` or
+diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+index 6ba18b82a02e..78074254ab98 100644
+--- a/include/uapi/linux/seccomp.h
++++ b/include/uapi/linux/seccomp.h
+@@ -115,6 +115,7 @@ struct seccomp_notif_resp {
+ 
+ /* valid flags for seccomp_notif_addfd */
+ #define SECCOMP_ADDFD_FLAG_SETFD	(1UL << 0) /* Specify remote fd */
++#define SECCOMP_ADDFD_FLAG_SEND		(1UL << 1) /* Addfd and return it, atomically */
+ 
+ /**
+  * struct seccomp_notif_addfd
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 9f58049ac16d..057e17f3215d 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -107,6 +107,7 @@ struct seccomp_knotif {
+  *      installing process should allocate the fd as normal.
+  * @flags: The flags for the new file descriptor. At the moment, only O_CLOEXEC
+  *         is allowed.
++ * @ioctl_flags: The flags used for the seccomp_addfd ioctl.
+  * @ret: The return value of the installing process. It is set to the fd num
+  *       upon success (>= 0).
+  * @completion: Indicates that the installing process has completed fd
+@@ -118,6 +119,7 @@ struct seccomp_kaddfd {
+ 	struct file *file;
+ 	int fd;
+ 	unsigned int flags;
++	__u32 ioctl_flags;
+ 
+ 	union {
+ 		bool setfd;
+@@ -1065,18 +1067,37 @@ static u64 seccomp_next_notify_id(struct seccomp_filter *filter)
+ 	return filter->notif->next_id++;
+ }
+ 
+-static void seccomp_handle_addfd(struct seccomp_kaddfd *addfd)
++static void seccomp_handle_addfd(struct seccomp_kaddfd *addfd, struct seccomp_knotif *n)
+ {
++	int fd;
++
  	/*
- 	 * The l4_sp_clk feeds a 100 MHz clock to various peripherals, one of them
- 	 * being the SP timers, thus cannot get gated.
+ 	 * Remove the notification, and reset the list pointers, indicating
+ 	 * that it has been handled.
  	 */
--	{ AGILEX_L4_SP_CLK, "l4_sp_clk", "noc_clk", NULL, 1, CLK_IS_CRITICAL, 0x24,
--	  3, 0x44, 16, 2, 0, 0, 0},
--	{ AGILEX_CS_AT_CLK, "cs_at_clk", "noc_clk", NULL, 1, 0, 0x24,
--	  4, 0x44, 24, 2, 0, 0, 0},
--	{ AGILEX_CS_TRACE_CLK, "cs_trace_clk", "noc_clk", NULL, 1, 0, 0x24,
--	  4, 0x44, 26, 2, 0, 0, 0},
-+	{ AGILEX_L4_SP_CLK, "l4_sp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), CLK_IS_CRITICAL, 0x24,
-+	  3, 0x44, 16, 2, 0x30, 1, 0},
-+	{ AGILEX_CS_AT_CLK, "cs_at_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
-+	  4, 0x44, 24, 2, 0x30, 1, 0},
-+	{ AGILEX_CS_TRACE_CLK, "cs_trace_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
-+	  4, 0x44, 26, 2, 0x30, 1, 0},
- 	{ AGILEX_CS_PDBG_CLK, "cs_pdbg_clk", "cs_at_clk", NULL, 1, 0, 0x24,
- 	  4, 0x44, 28, 1, 0, 0, 0},
--	{ AGILEX_CS_TIMER_CLK, "cs_timer_clk", "noc_clk", NULL, 1, 0, 0x24,
--	  5, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_CS_TIMER_CLK, "cs_timer_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
-+	  5, 0, 0, 0, 0x30, 1, 0},
- 	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_usr0_mux, ARRAY_SIZE(s2f_usr0_mux), 0, 0x24,
- 	  6, 0, 0, 0, 0, 0, 0},
- 	{ AGILEX_EMAC0_CLK, "emac0_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
---- a/drivers/clk/socfpga/clk-s10.c
-+++ b/drivers/clk/socfpga/clk-s10.c
-@@ -167,7 +167,7 @@ static const struct stratix10_perip_cnt_
- 	{ STRATIX10_MPU_FREE_CLK, "mpu_free_clk", NULL, mpu_free_mux, ARRAY_SIZE(mpu_free_mux),
- 	   0, 0x48, 0, 0, 0},
- 	{ STRATIX10_NOC_FREE_CLK, "noc_free_clk", NULL, noc_free_mux, ARRAY_SIZE(noc_free_mux),
--	  0, 0x4C, 0, 0, 0},
-+	  0, 0x4C, 0, 0x3C, 1},
- 	{ STRATIX10_MAIN_EMACA_CLK, "main_emaca_clk", "main_noc_base_clk", NULL, 1, 0,
- 	  0x50, 0, 0, 0},
- 	{ STRATIX10_MAIN_EMACB_CLK, "main_emacb_clk", "main_noc_base_clk", NULL, 1, 0,
-@@ -200,10 +200,8 @@ static const struct stratix10_perip_cnt_
- 	  0, 0xD4, 0, 0, 0},
- 	{ STRATIX10_PERI_PSI_REF_CLK, "peri_psi_ref_clk", "peri_noc_base_clk", NULL, 1, 0,
- 	  0xD8, 0, 0, 0},
--	{ STRATIX10_L4_SYS_FREE_CLK, "l4_sys_free_clk", "noc_free_clk", NULL, 1, 0,
--	  0, 4, 0, 0},
--	{ STRATIX10_NOC_CLK, "noc_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux),
--	  0, 0, 0, 0x3C, 1},
-+	{ STRATIX10_L4_SYS_FREE_CLK, "l4_sys_free_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0,
-+	  0, 4, 0x3C, 1},
- 	{ STRATIX10_EMAC_A_FREE_CLK, "emaca_free_clk", NULL, emaca_free_mux, ARRAY_SIZE(emaca_free_mux),
- 	  0, 0, 2, 0xB0, 0},
- 	{ STRATIX10_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
-@@ -227,20 +225,20 @@ static const struct stratix10_gate_clock
- 	  0, 0, 0, 0, 0, 0, 4},
- 	{ STRATIX10_MPU_L2RAM_CLK, "mpu_l2ram_clk", "mpu_clk", NULL, 1, 0, 0x30,
- 	  0, 0, 0, 0, 0, 0, 2},
--	{ STRATIX10_L4_MAIN_CLK, "l4_main_clk", "noc_clk", NULL, 1, 0, 0x30,
--	  1, 0x70, 0, 2, 0, 0, 0},
--	{ STRATIX10_L4_MP_CLK, "l4_mp_clk", "noc_clk", NULL, 1, 0, 0x30,
--	  2, 0x70, 8, 2, 0, 0, 0},
--	{ STRATIX10_L4_SP_CLK, "l4_sp_clk", "noc_clk", NULL, 1, CLK_IS_CRITICAL, 0x30,
--	  3, 0x70, 16, 2, 0, 0, 0},
--	{ STRATIX10_CS_AT_CLK, "cs_at_clk", "noc_clk", NULL, 1, 0, 0x30,
--	  4, 0x70, 24, 2, 0, 0, 0},
--	{ STRATIX10_CS_TRACE_CLK, "cs_trace_clk", "noc_clk", NULL, 1, 0, 0x30,
--	  4, 0x70, 26, 2, 0, 0, 0},
-+	{ STRATIX10_L4_MAIN_CLK, "l4_main_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
-+	  1, 0x70, 0, 2, 0x3C, 1, 0},
-+	{ STRATIX10_L4_MP_CLK, "l4_mp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
-+	  2, 0x70, 8, 2, 0x3C, 1, 0},
-+	{ STRATIX10_L4_SP_CLK, "l4_sp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), CLK_IS_CRITICAL, 0x30,
-+	  3, 0x70, 16, 2, 0x3C, 1, 0},
-+	{ STRATIX10_CS_AT_CLK, "cs_at_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
-+	  4, 0x70, 24, 2, 0x3C, 1, 0},
-+	{ STRATIX10_CS_TRACE_CLK, "cs_trace_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
-+	  4, 0x70, 26, 2, 0x3C, 1, 0},
- 	{ STRATIX10_CS_PDBG_CLK, "cs_pdbg_clk", "cs_at_clk", NULL, 1, 0, 0x30,
- 	  4, 0x70, 28, 1, 0, 0, 0},
--	{ STRATIX10_CS_TIMER_CLK, "cs_timer_clk", "noc_clk", NULL, 1, 0, 0x30,
--	  5, 0, 0, 0, 0, 0, 0},
-+	{ STRATIX10_CS_TIMER_CLK, "cs_timer_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
-+	  5, 0, 0, 0, 0x3C, 1, 0},
- 	{ STRATIX10_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_usr0_mux, ARRAY_SIZE(s2f_usr0_mux), 0, 0x30,
- 	  6, 0, 0, 0, 0, 0, 0},
- 	{ STRATIX10_EMAC0_CLK, "emac0_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0xA4,
+ 	list_del_init(&addfd->list);
+ 	if (!addfd->setfd)
+-		addfd->ret = receive_fd(addfd->file, addfd->flags);
++		fd = receive_fd(addfd->file, addfd->flags);
+ 	else
+-		addfd->ret = receive_fd_replace(addfd->fd, addfd->file,
+-						addfd->flags);
++		fd = receive_fd_replace(addfd->fd, addfd->file, addfd->flags);
++	addfd->ret = fd;
++
++	if (addfd->ioctl_flags & SECCOMP_ADDFD_FLAG_SEND) {
++		/* If we fail reset and return an error to the notifier */
++		if (fd < 0) {
++			n->state = SECCOMP_NOTIFY_SENT;
++		} else {
++			/* Return the FD we just added */
++			n->flags = 0;
++			n->error = 0;
++			n->val = fd;
++		}
++	}
++
++	/*
++	 * Mark the notification as completed. From this point, addfd mem
++	 * might be invalidated and we can't safely read it anymore.
++	 */
+ 	complete(&addfd->completion);
+ }
+ 
+@@ -1120,7 +1141,7 @@ static int seccomp_do_user_notification(int this_syscall,
+ 						 struct seccomp_kaddfd, list);
+ 		/* Check if we were woken up by a addfd message */
+ 		if (addfd)
+-			seccomp_handle_addfd(addfd);
++			seccomp_handle_addfd(addfd, &n);
+ 
+ 	}  while (n.state != SECCOMP_NOTIFY_REPLIED);
+ 
+@@ -1581,7 +1602,7 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
+ 	if (addfd.newfd_flags & ~O_CLOEXEC)
+ 		return -EINVAL;
+ 
+-	if (addfd.flags & ~SECCOMP_ADDFD_FLAG_SETFD)
++	if (addfd.flags & ~(SECCOMP_ADDFD_FLAG_SETFD | SECCOMP_ADDFD_FLAG_SEND))
+ 		return -EINVAL;
+ 
+ 	if (addfd.newfd && !(addfd.flags & SECCOMP_ADDFD_FLAG_SETFD))
+@@ -1591,6 +1612,7 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
+ 	if (!kaddfd.file)
+ 		return -EBADF;
+ 
++	kaddfd.ioctl_flags = addfd.flags;
+ 	kaddfd.flags = addfd.newfd_flags;
+ 	kaddfd.setfd = addfd.flags & SECCOMP_ADDFD_FLAG_SETFD;
+ 	kaddfd.fd = addfd.newfd;
+@@ -1616,6 +1638,23 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
+ 		goto out_unlock;
+ 	}
+ 
++	if (addfd.flags & SECCOMP_ADDFD_FLAG_SEND) {
++		/*
++		 * Disallow queuing an atomic addfd + send reply while there are
++		 * some addfd requests still to process.
++		 *
++		 * There is no clear reason to support it and allows us to keep
++		 * the loop on the other side straight-forward.
++		 */
++		if (!list_empty(&knotif->addfd)) {
++			ret = -EBUSY;
++			goto out_unlock;
++		}
++
++		/* Allow exactly only one reply */
++		knotif->state = SECCOMP_NOTIFY_REPLIED;
++	}
++
+ 	list_add(&kaddfd.list, &knotif->addfd);
+ 	complete(&knotif->ready);
+ 	mutex_unlock(&filter->notify_lock);
+-- 
+2.30.2
+
 
 
