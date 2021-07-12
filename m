@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FA53C5E8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8213C5E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235241AbhGLOrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 10:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235031AbhGLOro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:47:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26BDC0613DD;
-        Mon, 12 Jul 2021 07:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=EB6pq64nXJnPrEFCHroVUkFxPf+D61J6AzYGlTxsJok=; b=ksIprcA9uVFqqagxuFBNbkz/v
-        TxgTlx34RX2TWQrp7WiIzCugWGX2kiTYR1pTPAPCX/AGj9hWIDgiZW+nlAY34IqmpRAe46iwBU5L+
-        /72leq4Gsl/zQm3ePsqvJp8xvfapl++LvBmw4GhSHOh0b/pEQksj9tqc+fBHvTrNmLTidcv2Mtn3b
-        TlwzSj0AjND4UG3dpm6BT+0mvbwQPu+xud6unscwCf9zTsc+q3vDkp9q1Xz8WkE3FjhDM9Y9Agpne
-        HHGVxzbythLNAE65EyBM3WxuxVMKNK+E2591OKcxtBRjtNSqqG5wyDoU0RicN4dgkmFftIcg4xLcm
-        UhUJ954SA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46018)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m2xAN-0004ua-MH; Mon, 12 Jul 2021 15:44:15 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m2xAJ-0007r6-1c; Mon, 12 Jul 2021 15:44:11 +0100
-Date:   Mon, 12 Jul 2021 15:44:11 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-Message-ID: <20210712144410.GE22278@shell.armlinux.org.uk>
-References: <20210711104105.505728-1-leo.yan@linaro.org>
- <20210711104105.505728-12-leo.yan@linaro.org>
+        id S235249AbhGLOuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 10:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230363AbhGLOuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 10:50:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E4C611C1;
+        Mon, 12 Jul 2021 14:47:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626101251;
+        bh=GNc7iEYnBjS+TNAD0DgnhNoeKiMhXXlDvGKvY8DoZQs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hfzOTcL4oK1IocXnx1Wq7lqzjwGJwnbHvjCA3/7lrwqKbAJ/ScbvxhKybAAaQ/Gi6
+         4KqLLt9Q9s+DD5gcsJObTWDN23anRPJYI22GiDJjj+tfSK9ePDv7wk0OKb/aPBo79a
+         0oCLEMOU/AJiY4MFIlbWzHNzzGdhnBCEILwbyY4LGVptCpVjAgDjisuNqzHSGp5l2q
+         1MgzktbTqbyMNF44av/NHwXX6DKmKeelHjbsMCXq+alV734bnq0HCcNDC7YLg1dnZG
+         Eq3lebipgdKtxN7aZ8uZdA4zWYjbtyIpuqEUwnM9Ji1sUAD3Q6MqaUsKcEstj2QYuo
+         l2A8RNOg9eb1Q==
+Received: by mail-ej1-f42.google.com with SMTP id he13so35051653ejc.11;
+        Mon, 12 Jul 2021 07:47:30 -0700 (PDT)
+X-Gm-Message-State: AOAM531Y1N8OTRuM+yuB04Up492+txVCgDJ0yge6gpUnpzFwKeeqfAx6
+        lUbQabkGsL2es5fIrjJiBEvqSdxqsj9IFybzRA==
+X-Google-Smtp-Source: ABdhPJz9wP8zZM8xJ1hflPWLyv4neAHs8saPkzoZPDHElB1yvcecZ7bIL4bSeSE95OMDgqTedtJuc4UOl39QeqziLFw=
+X-Received: by 2002:a17:907:62a1:: with SMTP id nd33mr53383549ejc.303.1626101249542;
+ Mon, 12 Jul 2021 07:47:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210711104105.505728-12-leo.yan@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <1625986431-27399-1-git-send-email-yongqiang.niu@mediatek.com> <1625986431-27399-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1625986431-27399-2-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 12 Jul 2021 22:47:18 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-15k_Fq4svKfaKukuYxc4DRfqP1kRudR9wgSrkc-+ZoQ@mail.gmail.com>
+Message-ID: <CAAOTY_-15k_Fq4svKfaKukuYxc4DRfqP1kRudR9wgSrkc-+ZoQ@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/mediatek: adjust rdma fifo threshold calculate formula
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 06:41:05PM +0800, Leo Yan wrote:
-> When perf runs in compat mode (kernel in 64-bit mode and the perf is in
-> 32-bit mode), the 64-bit value atomicity in the user space cannot be
-> assured, E.g. on some architectures, the 64-bit value accessing is split
-> into two instructions, one is for the low 32-bit word accessing and
-> another is for the high 32-bit word.
+Hi, Yongqiang:
 
-Does this apply to 32-bit ARM code on aarch64? I would not have thought
-it would, as the structure member is a __u64 and
-compat_auxtrace_mmap__read_head() doesn't seem to be marking anything
-as packed, so the compiler _should_ be able to use a LDRD instruction
-to load the value.
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=
+=8811=E6=97=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=882:54=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> the orginal formula will caused rdma fifo threshold config overflow
+> and no one could come out a solution for all SoC,
+> set threshold to 70% of max fifo size to make sure it will
+> not overflow, and 70% is a empirical value
 
-Is this a problem noticed on non-ARM architectures?
+Applied to mediatek-drm-next [1], thanks.
 
-Thanks.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Regards,
+Chun-Kuang.
+
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/m=
+ediatek/mtk_disp_rdma.c
+> index f123fc0..f1f6a2e 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+> @@ -164,10 +164,10 @@ void mtk_rdma_config(struct device *dev, unsigned i=
+nt width,
+>         /*
+>          * Enable FIFO underflow since DSI and DPI can't be blocked.
+>          * Keep the FIFO pseudo size reset default of 8 KiB. Set the
+> -        * output threshold to 6 microseconds with 7/6 overhead to
+> -        * account for blanking, and with a pixel depth of 4 bytes:
+> +        * output threshold to 70% of max fifo size to make sure the
+> +        * threhold will not overflow
+>          */
+> -       threshold =3D width * height * vrefresh * 4 * 7 / 1000000;
+> +       threshold =3D rdma_fifo_size * 7 / 10;
+>         reg =3D RDMA_FIFO_UNDERFLOW_EN |
+>               RDMA_FIFO_PSEUDO_SIZE(rdma_fifo_size) |
+>               RDMA_OUTPUT_VALID_FIFO_THRESHOLD(threshold);
+> --
+> 1.8.1.1.dirty
+>
