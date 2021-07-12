@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D593C596F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8823C5915
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383860AbhGLJD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:03:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
+        id S1356744AbhGLI5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:57:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353747AbhGLICt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353734AbhGLICt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3CA61879;
-        Mon, 12 Jul 2021 07:57:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C27261D01;
+        Mon, 12 Jul 2021 07:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076624;
-        bh=x/ZAvooZq+6qW7aleeg580YEvCOUqRUUXFjKFwpw0+g=;
+        s=korg; t=1626076626;
+        bh=yl34efDrb24XuT3VJb6DWVhzQpYKxDJ2cvWcVXrEse8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d+dQ8tzb8Zr4xMai5N4do1PybuY3SLUndLhSoLJxiP5pTFjlUfVbIfTPlzfB6Bzxu
-         L5rzZak2XjXN9qZYvpLxDKEc5Wv41eQRYoWIUDUT383IVNM8xx6OZd39f1W21YuOPc
-         p4dyJiKASKGDRGmn1mC/2T0z9N7HN9qJe3ZMb9X8=
+        b=DuaTUcvRAGICzShtQBh9e+NDohBDFehD/lBdEraNCWl8biF89PRNpUGvjFFkyoZCm
+         5/u7FVBUU9H7t3i0xKhQCeWzvsY0DlFNiRaW7msc2bQNP6UAPnlk4H1emZ8+iona/Y
+         2+aKZGI9zSz329swGofzp8pKuVUkU4CvSuqQydYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 723/800] usb: phy: tegra: Correct definition of B_SESS_VLD_WAKEUP_EN bit
-Date:   Mon, 12 Jul 2021 08:12:26 +0200
-Message-Id: <20210712061043.659315195@linuxfoundation.org>
+Subject: [PATCH 5.13 724/800] serial: 8250: Actually allow UPF_MAGIC_MULTIPLIER baud rates
+Date:   Mon, 12 Jul 2021 08:12:27 +0200
+Message-Id: <20210712061043.779446371@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -39,49 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-[ Upstream commit 7917e90667bc8dce02daa3c2e6df47f6fc9481f7 ]
+[ Upstream commit 78bcae8616ac277d6cb7f38e211493948ed73e30 ]
 
-The B_SESS_VLD_WAKEUP_EN bit 6 was added by a mistake in a previous
-commit. This bit corresponds to B_SESS_END_WAKEUP_EN, which we don't use.
-The B_VBUS_VLD_WAKEUP_EN doesn't exist at all and B_SESS_VLD_WAKEUP_EN
-needs to be in place of it. We don't utilize B-sensors in the driver,
-so it never was a problem, nevertheless let's correct the definition of
-the bits.
+Support for magic baud rate divisors of 32770 and 32769 used with SMSC
+Super I/O chips for extra baud rates of 230400 and 460800 respectively
+where base rate is 115200[1] has been added around Linux 2.5.64, which
+predates our repo history, but the origin could be identified as commit
+2a717aad772f ("Merge with Linux 2.5.64.") with the old MIPS/Linux repo
+also at: <git://git.kernel.org/pub/scm/linux/kernel/git/ralf/linux.git>.
 
-Fixes: 35192007d28d ("usb: phy: tegra: Support waking up from a low power mode")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210613145936.9902-2-digetx@gmail.com
+Code that is now in `serial8250_do_get_divisor' was added back then to
+`serial8250_get_divisor', but that code would only ever trigger if one
+of the higher baud rates was actually requested, and that cannot ever
+happen, because the earlier call to `serial8250_get_baud_rate' never
+returns them.  This is because it calls `uart_get_baud_rate' with the
+maximum requested being the base rate, that is clk/16 or 115200 for SMSC
+chips at their nominal clock rate.
+
+Fix it then and allow UPF_MAGIC_MULTIPLIER baud rates to be selected, by
+requesting the maximum baud rate of clk/4 rather than clk/16 if the flag
+has been set.  Also correct the minimum baud rate, observing that these
+ports only support actual (non-magic) divisors of up to 32767 only.
+
+
+[1] "FDC37M81x, PC98/99 Compliant Enhanced Super I/O Controller with
+    Keyboard/Mouse Wake-Up", Standard Microsystems Corporation, Rev.
+    03/27/2000, Table 31 - "Baud Rates", p. 77
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Link: https://lore.kernel.org/r/alpine.DEB.2.21.2105190412280.29169@angie.orcam.me.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-tegra-usb.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/tty/serial/8250/8250_port.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-index 10fafcf9801b..c0f432d509aa 100644
---- a/drivers/usb/phy/phy-tegra-usb.c
-+++ b/drivers/usb/phy/phy-tegra-usb.c
-@@ -58,8 +58,7 @@
- #define   USB_WAKEUP_DEBOUNCE_COUNT(x)		(((x) & 0x7) << 16)
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index fc5ab2032282..ff3f13693def 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2629,6 +2629,21 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 					     struct ktermios *old)
+ {
+ 	unsigned int tolerance = port->uartclk / 100;
++	unsigned int min;
++	unsigned int max;
++
++	/*
++	 * Handle magic divisors for baud rates above baud_base on SMSC
++	 * Super I/O chips.  Enable custom rates of clk/4 and clk/8, but
++	 * disable divisor values beyond 32767, which are unavailable.
++	 */
++	if (port->flags & UPF_MAGIC_MULTIPLIER) {
++		min = port->uartclk / 16 / UART_DIV_MAX >> 1;
++		max = (port->uartclk + tolerance) / 4;
++	} else {
++		min = port->uartclk / 16 / UART_DIV_MAX;
++		max = (port->uartclk + tolerance) / 16;
++	}
  
- #define USB_PHY_VBUS_SENSORS			0x404
--#define   B_SESS_VLD_WAKEUP_EN			BIT(6)
--#define   B_VBUS_VLD_WAKEUP_EN			BIT(14)
-+#define   B_SESS_VLD_WAKEUP_EN			BIT(14)
- #define   A_SESS_VLD_WAKEUP_EN			BIT(22)
- #define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
+ 	/*
+ 	 * Ask the core to calculate the divisor for us.
+@@ -2636,9 +2651,7 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 	 * slower than nominal still match standard baud rates without
+ 	 * causing transmission errors.
+ 	 */
+-	return uart_get_baud_rate(port, termios, old,
+-				  port->uartclk / 16 / UART_DIV_MAX,
+-				  (port->uartclk + tolerance) / 16);
++	return uart_get_baud_rate(port, termios, old, min, max);
+ }
  
-@@ -545,7 +544,7 @@ static int utmi_phy_power_on(struct tegra_usb_phy *phy)
- 
- 		val = readl_relaxed(base + USB_PHY_VBUS_SENSORS);
- 		val &= ~(A_VBUS_VLD_WAKEUP_EN | A_SESS_VLD_WAKEUP_EN);
--		val &= ~(B_VBUS_VLD_WAKEUP_EN | B_SESS_VLD_WAKEUP_EN);
-+		val &= ~(B_SESS_VLD_WAKEUP_EN);
- 		writel_relaxed(val, base + USB_PHY_VBUS_SENSORS);
- 
- 		val = readl_relaxed(base + UTMIP_BAT_CHRG_CFG0);
+ /*
 -- 
 2.30.2
 
