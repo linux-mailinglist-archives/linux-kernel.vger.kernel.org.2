@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87243C570C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9BC3C4FEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359690AbhGLI1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
+        id S1343974AbhGLH3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347722AbhGLHkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBEF616EC;
-        Mon, 12 Jul 2021 07:35:57 +0000 (UTC)
+        id S242557AbhGLHBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 160BD6143E;
+        Mon, 12 Jul 2021 06:58:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075357;
-        bh=Y79Tu5inYouxog4c2RHMq8XZy2RswmsWUHasd3uD/K4=;
+        s=korg; t=1626073113;
+        bh=e2wUdKA/rihN5z/IX17H+YOU3f3Amu9iTjD4IPdUo38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lmrJ+5rjaw/NfpT1e9gm4bkaE7uiOAmEv3B9B1omC1dATXa/4v19VD+p5BljhraIH
-         ONzazDUVYPZP2caAzuLF1b2Y8VWhKXeo8TEkn6AAm3RV1TnZKx+WoJJ0ncr/54F9vX
-         L4zqKb28dO0CVONIC0LMaWdoCLDPi936j0VdfSW8=
+        b=xxLvpfTch9JsZBrbV9n2Cayp/IpxOIAe3YFewgvB/pYcbQobJblBCHZRV4o4Lvdmb
+         L8oTNiRjE7U1EigOXA2m2xgwKGJdQZR7+V7YSA98seEMBF1vx/EKv1vMgPw7tFS0n9
+         Jn6HD2/0+6ELaRriKkaoUwFNMm1n7v6FEGraP3Og=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 191/800] perf/x86: Reset the dirty counter to prevent the leak for an RDPMC task
-Date:   Mon, 12 Jul 2021 08:03:34 +0200
-Message-Id: <20210712060939.904668662@linuxfoundation.org>
+Subject: [PATCH 5.12 132/700] media: exynos4-is: fix pm_runtime_get_sync() usage count
+Date:   Mon, 12 Jul 2021 08:03:35 +0200
+Message-Id: <20210712060944.016116647@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,230 +41,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 5471eea5d3bf850316f1064a6f57b34c444bce67 ]
+[ Upstream commit 59f96244af9403ddf4810ec5c0fbe8920857634e ]
 
-The counter value of a perf task may leak to another RDPMC task.
-For example, a perf stat task as below is running on CPU 0.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
 
-    perf stat -e 'branches,cycles' -- taskset -c 0 ./workload
+On some places, this is ok, but on others the usage count
+ended being unbalanced on failures.
 
-In the meantime, an RDPMC task, which is also running on CPU 0, may read
-the GP counters periodically. (The RDPMC task creates a fixed event,
-but read four GP counters.)
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-    $./rdpmc_read_all_counters
-    index 0x0 value 0x8001e5970f99
-    index 0x1 value 0x8005d750edb6
-    index 0x2 value 0x0
-    index 0x3 value 0x0
+As a bonus, such function always return zero on success. So,
+some code can be simplified.
 
-    index 0x0 value 0x8002358e48a5
-    index 0x1 value 0x8006bd1e3bc9
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-It is a potential security issue. Once the attacker knows what the other
-thread is counting. The PerfMon counter can be used as a side-channel to
-attack cryptosystems.
-
-The counter value of the perf stat task leaks to the RDPMC task because
-perf never clears the counter when it's stopped.
-
-Three methods were considered to address the issue.
-
- - Unconditionally reset the counter in x86_pmu_del(). It can bring extra
-   overhead even when there is no RDPMC task running.
-
- - Only reset the un-assigned dirty counters when the RDPMC task is
-   scheduled in via sched_task(). It fails for the below case.
-
-	Thread A			Thread B
-
-	clone(CLONE_THREAD) --->
-	set_affine(0)
-					set_affine(1)
-					while (!event-enabled)
-						;
-	event = perf_event_open()
-	mmap(event)
-	ioctl(event, IOC_ENABLE); --->
-					RDPMC
-
-   Counters are still leaked to the thread B.
-
- - Only reset the un-assigned dirty counters before updating the CR4.PCE
-   bit. The method is implemented here.
-
-The dirty counter is a counter, on which the assigned event has been
-deleted, but the counter is not reset. To track the dirty counters,
-add a 'dirty' variable in the struct cpu_hw_events.
-
-The security issue can only be found with an RDPMC task. To enable the
-RDMPC, the CR4.PCE bit has to be updated. Add a
-perf_clear_dirty_counters() right before updating the CR4.PCE bit to
-clear the existing dirty counters. Only the current un-assigned dirty
-counters are reset, because the RDPMC assigned dirty counters will be
-updated soon.
-
-After applying the patch,
-
-        $ ./rdpmc_read_all_counters
-        index 0x0 value 0x0
-        index 0x1 value 0x0
-        index 0x2 value 0x0
-        index 0x3 value 0x0
-
-        index 0x0 value 0x0
-        index 0x1 value 0x0
-        index 0x2 value 0x0
-        index 0x3 value 0x0
-
-Performance
-
-The performance of a context switch only be impacted when there are two
-or more perf users and one of the users must be an RDPMC user. In other
-cases, there is no performance impact.
-
-The worst-case occurs when there are two users: the RDPMC user only
-uses one counter; while the other user uses all available counters.
-When the RDPMC task is scheduled in, all the counters, other than the
-RDPMC assigned one, have to be reset.
-
-Test results for the worst-case, using a modified lat_ctx as measured
-on an Ice Lake platform, which has 8 GP and 3 FP counters (ignoring
-SLOTS).
-
-    lat_ctx -s 128K -N 1000 processes 2
-
-Without the patch:
-  The context switch time is 4.97 us
-
-With the patch:
-  The context switch time is 5.16 us
-
-There is ~4% performance drop for the context switching time in the
-worst-case.
-
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1623693582-187370-1-git-send-email-kan.liang@linux.intel.com
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/core.c            | 28 +++++++++++++++++++++++++++-
- arch/x86/events/perf_event.h      |  1 +
- arch/x86/include/asm/perf_event.h |  1 +
- arch/x86/mm/tlb.c                 | 10 ++++++++--
- 4 files changed, 37 insertions(+), 3 deletions(-)
+ drivers/media/platform/exynos4-is/fimc-capture.c   |  6 ++----
+ drivers/media/platform/exynos4-is/fimc-is.c        |  4 ++--
+ drivers/media/platform/exynos4-is/fimc-isp-video.c |  3 +--
+ drivers/media/platform/exynos4-is/fimc-isp.c       |  7 +++----
+ drivers/media/platform/exynos4-is/fimc-lite.c      |  5 +++--
+ drivers/media/platform/exynos4-is/fimc-m2m.c       |  5 +----
+ drivers/media/platform/exynos4-is/media-dev.c      |  9 +++------
+ drivers/media/platform/exynos4-is/mipi-csis.c      | 10 ++++------
+ 8 files changed, 19 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 8f71dd72ef95..1eb45139fcc6 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1626,6 +1626,8 @@ static void x86_pmu_del(struct perf_event *event, int flags)
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		goto do_del;
+diff --git a/drivers/media/platform/exynos4-is/fimc-capture.c b/drivers/media/platform/exynos4-is/fimc-capture.c
+index 13c838d3f947..0da36443173c 100644
+--- a/drivers/media/platform/exynos4-is/fimc-capture.c
++++ b/drivers/media/platform/exynos4-is/fimc-capture.c
+@@ -478,11 +478,9 @@ static int fimc_capture_open(struct file *file)
+ 		goto unlock;
  
-+	__set_bit(event->hw.idx, cpuc->dirty);
+ 	set_bit(ST_CAPT_BUSY, &fimc->state);
+-	ret = pm_runtime_get_sync(&fimc->pdev->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_sync(&fimc->pdev->dev);
++	ret = pm_runtime_resume_and_get(&fimc->pdev->dev);
++	if (ret < 0)
+ 		goto unlock;
+-	}
+ 
+ 	ret = v4l2_fh_open(file);
+ 	if (ret) {
+diff --git a/drivers/media/platform/exynos4-is/fimc-is.c b/drivers/media/platform/exynos4-is/fimc-is.c
+index 972d9601d236..1b24f5bfc4af 100644
+--- a/drivers/media/platform/exynos4-is/fimc-is.c
++++ b/drivers/media/platform/exynos4-is/fimc-is.c
+@@ -828,9 +828,9 @@ static int fimc_is_probe(struct platform_device *pdev)
+ 			goto err_irq;
+ 	}
+ 
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0)
+-		goto err_pm;
++		goto err_irq;
+ 
+ 	vb2_dma_contig_set_max_seg_size(dev, DMA_BIT_MASK(32));
+ 
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+index 612b9872afc8..8d9dc597deaa 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+@@ -275,7 +275,7 @@ static int isp_video_open(struct file *file)
+ 	if (ret < 0)
+ 		goto unlock;
+ 
+-	ret = pm_runtime_get_sync(&isp->pdev->dev);
++	ret = pm_runtime_resume_and_get(&isp->pdev->dev);
+ 	if (ret < 0)
+ 		goto rel_fh;
+ 
+@@ -293,7 +293,6 @@ static int isp_video_open(struct file *file)
+ 	if (!ret)
+ 		goto unlock;
+ rel_fh:
+-	pm_runtime_put_noidle(&isp->pdev->dev);
+ 	v4l2_fh_release(file);
+ unlock:
+ 	mutex_unlock(&isp->video_lock);
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp.c b/drivers/media/platform/exynos4-is/fimc-isp.c
+index a77c49b18511..74b49d30901e 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp.c
+@@ -304,11 +304,10 @@ static int fimc_isp_subdev_s_power(struct v4l2_subdev *sd, int on)
+ 	pr_debug("on: %d\n", on);
+ 
+ 	if (on) {
+-		ret = pm_runtime_get_sync(&is->pdev->dev);
+-		if (ret < 0) {
+-			pm_runtime_put(&is->pdev->dev);
++		ret = pm_runtime_resume_and_get(&is->pdev->dev);
++		if (ret < 0)
+ 			return ret;
+-		}
 +
- 	/*
- 	 * Not a TXN, therefore cleanup properly.
- 	 */
-@@ -2474,6 +2476,31 @@ static int x86_pmu_event_init(struct perf_event *event)
- 	return err;
+ 		set_bit(IS_ST_PWR_ON, &is->state);
+ 
+ 		ret = fimc_is_start_firmware(is);
+diff --git a/drivers/media/platform/exynos4-is/fimc-lite.c b/drivers/media/platform/exynos4-is/fimc-lite.c
+index fe20af3a7178..4d8b18078ff3 100644
+--- a/drivers/media/platform/exynos4-is/fimc-lite.c
++++ b/drivers/media/platform/exynos4-is/fimc-lite.c
+@@ -469,9 +469,9 @@ static int fimc_lite_open(struct file *file)
+ 	}
+ 
+ 	set_bit(ST_FLITE_IN_USE, &fimc->state);
+-	ret = pm_runtime_get_sync(&fimc->pdev->dev);
++	ret = pm_runtime_resume_and_get(&fimc->pdev->dev);
+ 	if (ret < 0)
+-		goto err_pm;
++		goto err_in_use;
+ 
+ 	ret = v4l2_fh_open(file);
+ 	if (ret < 0)
+@@ -499,6 +499,7 @@ static int fimc_lite_open(struct file *file)
+ 	v4l2_fh_release(file);
+ err_pm:
+ 	pm_runtime_put_sync(&fimc->pdev->dev);
++err_in_use:
+ 	clear_bit(ST_FLITE_IN_USE, &fimc->state);
+ unlock:
+ 	mutex_unlock(&fimc->lock);
+diff --git a/drivers/media/platform/exynos4-is/fimc-m2m.c b/drivers/media/platform/exynos4-is/fimc-m2m.c
+index c9704a147e5c..df8e2aa454d8 100644
+--- a/drivers/media/platform/exynos4-is/fimc-m2m.c
++++ b/drivers/media/platform/exynos4-is/fimc-m2m.c
+@@ -73,17 +73,14 @@ static void fimc_m2m_shutdown(struct fimc_ctx *ctx)
+ static int start_streaming(struct vb2_queue *q, unsigned int count)
+ {
+ 	struct fimc_ctx *ctx = q->drv_priv;
+-	int ret;
+ 
+-	ret = pm_runtime_get_sync(&ctx->fimc_dev->pdev->dev);
+-	return ret > 0 ? 0 : ret;
++	return pm_runtime_resume_and_get(&ctx->fimc_dev->pdev->dev);
  }
  
-+void perf_clear_dirty_counters(void)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	int i;
-+
-+	 /* Don't need to clear the assigned counter. */
-+	for (i = 0; i < cpuc->n_events; i++)
-+		__clear_bit(cpuc->assign[i], cpuc->dirty);
-+
-+	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
-+		return;
-+
-+	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
-+		/* Metrics and fake events don't have corresponding HW counters. */
-+		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
-+			continue;
-+		else if (i >= INTEL_PMC_IDX_FIXED)
-+			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
-+		else
-+			wrmsrl(x86_pmu_event_addr(i), 0);
-+	}
-+
-+	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
-+}
-+
- static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ static void stop_streaming(struct vb2_queue *q)
  {
- 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
-@@ -2497,7 +2524,6 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ 	struct fimc_ctx *ctx = q->drv_priv;
  
- static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
- {
 -
- 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
- 		return;
+ 	fimc_m2m_shutdown(ctx);
+ 	fimc_m2m_job_finish(ctx, VB2_BUF_STATE_ERROR);
+ 	pm_runtime_put(&ctx->fimc_dev->pdev->dev);
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index 8e1e892085ec..4424050a22e4 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -510,11 +510,9 @@ static int fimc_md_register_sensor_entities(struct fimc_md *fmd)
+ 	if (!fmd->pmf)
+ 		return -ENXIO;
  
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index ad87cb36f7c8..2bf1c7ea2758 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -229,6 +229,7 @@ struct cpu_hw_events {
- 	 */
- 	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
- 	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
-+	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
- 	int			enabled;
+-	ret = pm_runtime_get_sync(fmd->pmf);
+-	if (ret < 0) {
+-		pm_runtime_put(fmd->pmf);
++	ret = pm_runtime_resume_and_get(fmd->pmf);
++	if (ret < 0)
+ 		return ret;
+-	}
  
- 	int			n_events; /* the # of events in the below arrays */
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 544f41a179fb..8fc1b5003713 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -478,6 +478,7 @@ struct x86_pmu_lbr {
+ 	fmd->num_sensors = 0;
  
- extern void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap);
- extern void perf_check_microcode(void);
-+extern void perf_clear_dirty_counters(void);
- extern int x86_perf_rdpmc_index(struct perf_event *event);
- #else
- static inline void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap)
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 78804680e923..cfe6b1e85fa6 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -14,6 +14,7 @@
- #include <asm/nospec-branch.h>
- #include <asm/cache.h>
- #include <asm/apic.h>
-+#include <asm/perf_event.h>
+@@ -1289,8 +1287,7 @@ static int cam_clk_prepare(struct clk_hw *hw)
+ 	if (camclk->fmd->pmf == NULL)
+ 		return -ENODEV;
  
- #include "mm_internal.h"
- 
-@@ -404,9 +405,14 @@ static inline void cr4_update_pce_mm(struct mm_struct *mm)
- {
- 	if (static_branch_unlikely(&rdpmc_always_available_key) ||
- 	    (!static_branch_unlikely(&rdpmc_never_available_key) &&
--	     atomic_read(&mm->context.perf_rdpmc_allowed)))
-+	     atomic_read(&mm->context.perf_rdpmc_allowed))) {
-+		/*
-+		 * Clear the existing dirty counters to
-+		 * prevent the leak for an RDPMC task.
-+		 */
-+		perf_clear_dirty_counters();
- 		cr4_set_bits_irqsoff(X86_CR4_PCE);
--	else
-+	} else
- 		cr4_clear_bits_irqsoff(X86_CR4_PCE);
+-	ret = pm_runtime_get_sync(camclk->fmd->pmf);
+-	return ret < 0 ? ret : 0;
++	return pm_runtime_resume_and_get(camclk->fmd->pmf);
  }
  
+ static void cam_clk_unprepare(struct clk_hw *hw)
+diff --git a/drivers/media/platform/exynos4-is/mipi-csis.c b/drivers/media/platform/exynos4-is/mipi-csis.c
+index 1aac167abb17..ebf39c856894 100644
+--- a/drivers/media/platform/exynos4-is/mipi-csis.c
++++ b/drivers/media/platform/exynos4-is/mipi-csis.c
+@@ -494,7 +494,7 @@ static int s5pcsis_s_power(struct v4l2_subdev *sd, int on)
+ 	struct device *dev = &state->pdev->dev;
+ 
+ 	if (on)
+-		return pm_runtime_get_sync(dev);
++		return pm_runtime_resume_and_get(dev);
+ 
+ 	return pm_runtime_put_sync(dev);
+ }
+@@ -509,11 +509,9 @@ static int s5pcsis_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 	if (enable) {
+ 		s5pcsis_clear_counters(state);
+-		ret = pm_runtime_get_sync(&state->pdev->dev);
+-		if (ret && ret != 1) {
+-			pm_runtime_put_noidle(&state->pdev->dev);
++		ret = pm_runtime_resume_and_get(&state->pdev->dev);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 	}
+ 
+ 	mutex_lock(&state->lock);
+@@ -535,7 +533,7 @@ unlock:
+ 	if (!enable)
+ 		pm_runtime_put(&state->pdev->dev);
+ 
+-	return ret == 1 ? 0 : ret;
++	return ret;
+ }
+ 
+ static int s5pcsis_enum_mbus_code(struct v4l2_subdev *sd,
 -- 
 2.30.2
 
