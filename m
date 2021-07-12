@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830293C4901
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9623C56E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236662AbhGLGli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
+        id S1358247AbhGLIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237105AbhGLGeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1BEA61152;
-        Mon, 12 Jul 2021 06:30:19 +0000 (UTC)
+        id S1348948AbhGLHla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22256601FE;
+        Mon, 12 Jul 2021 07:38:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071420;
-        bh=Mc2o0mKA+e5b0/Jg87QMiGwTum9UxfWN2g2j+WJ9h+U=;
+        s=korg; t=1626075522;
+        bh=2CIrVI1YzK3jp96DVafypQSQJSfLozbtdnN2bMEp3Dc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kABtg5/MnFXf2Nlp72NJpXYBh/KvmyRQpHY4C5onLC4C7MOqvzpNESNCjZdSVLW+J
-         G3Yjdgf6VX5H0/8KQl8/XKYmJYc1Xuav2fDgE3Xl9sEDTxwb4Q7ICAw4t2sAx03s4s
-         s1kizCisMZLzagn4/1mQfkLlFeb0aJoCb7BEV5Ro=
+        b=gUPFW57KvOuT/E3Z2XPLB84vhwJziguEA1CyTA/KHYTrzG1t6yHzBmwpdw2+J98Oi
+         2u6i2zuaaU7UOxcQipNasJqCyiOjzH5o/QyompXPV3cIQ5en9m5iahF5XQMHSi+BkC
+         mGqxuF7JpHt7/Huw0T0utlY3JK69KSRwY1SFnM+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 060/593] perf/smmuv3: Dont trample existing events with global filter
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 197/800] btrfs: always abort the transaction if we abort a trans handle
 Date:   Mon, 12 Jul 2021 08:03:40 +0200
-Message-Id: <20210712060849.751800106@linuxfoundation.org>
+Message-Id: <20210712060940.872890186@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +40,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 4c1daba15c209b99d192f147fea3dade30f72ed2 upstream.
+[ Upstream commit 5963ffcaf383134985a5a2d8a4baa582d3999e0a ]
 
-With global filtering, we only allow an event to be scheduled if its
-filter settings exactly match those of any existing events, therefore
-it is pointless to reapply the filter in that case. Much worse, though,
-is that in doing that we trample the event type of counter 0 if it's
-already active, and never touch the appropriate PMEVTYPERn so the new
-event is likely not counting the right thing either. Don't do that.
+While stress testing our error handling I noticed that sometimes we
+would still commit the transaction even though we had aborted the
+transaction.
 
-CC: stable@vger.kernel.org
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/32c80c0e46237f49ad8da0c9f8864e13c4a803aa.1623153312.git.robin.murphy@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Currently we track if a trans handle has dirtied any metadata, and if it
+hasn't we mark the filesystem as having an error (so no new transactions
+can be started), but we will allow the current transaction to complete
+as we do not mark the transaction itself as having been aborted.
 
+This sounds good in theory, but we were not properly tracking IO errors
+in btrfs_finish_ordered_io, and thus committing the transaction with
+bogus free space data.  This isn't necessarily a problem per-se with the
+free space cache, as the other guards in place would have kept us from
+accepting the free space cache as valid, but highlights a real world
+case where we had a bug and could have corrupted the filesystem because
+of it.
+
+This "skip abort on empty trans handle" is nice in theory, but assumes
+we have perfect error handling everywhere, which we clearly do not.
+Also we do not allow further transactions to be started, so all this
+does is save the last transaction that was happening, which doesn't
+necessarily gain us anything other than the potential for real
+corruption.
+
+Remove this particular bit of code, if we decide we need to abort the
+transaction then abort the current one and keep us from doing real harm
+to the file system, regardless of whether this specific trans handle
+dirtied anything or not.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/arm_smmuv3_pmu.c |   18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/btrfs/ctree.c       |  5 +----
+ fs/btrfs/extent-tree.c |  1 -
+ fs/btrfs/super.c       | 11 -----------
+ fs/btrfs/transaction.c |  8 --------
+ fs/btrfs/transaction.h |  1 -
+ 5 files changed, 1 insertion(+), 25 deletions(-)
 
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -275,7 +275,7 @@ static int smmu_pmu_apply_event_filter(s
- 				       struct perf_event *event, int idx)
- {
- 	u32 span, sid;
--	unsigned int num_ctrs = smmu_pmu->num_counters;
-+	unsigned int cur_idx, num_ctrs = smmu_pmu->num_counters;
- 	bool filter_en = !!get_filter_enable(event);
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index a484fb72a01f..4bc3ca2cbd7d 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -596,7 +596,6 @@ noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		       trans->transid, fs_info->generation);
  
- 	span = filter_en ? get_filter_span(event) :
-@@ -283,17 +283,19 @@ static int smmu_pmu_apply_event_filter(s
- 	sid = filter_en ? get_filter_stream_id(event) :
- 			   SMMU_PMCG_DEFAULT_FILTER_SID;
- 
--	/* Support individual filter settings */
--	if (!smmu_pmu->global_filter) {
-+	cur_idx = find_first_bit(smmu_pmu->used_counters, num_ctrs);
-+	/*
-+	 * Per-counter filtering, or scheduling the first globally-filtered
-+	 * event into an empty PMU so idx == 0 and it works out equivalent.
-+	 */
-+	if (!smmu_pmu->global_filter || cur_idx == num_ctrs) {
- 		smmu_pmu_set_event_filter(event, idx, span, sid);
+ 	if (!should_cow_block(trans, root, buf)) {
+-		trans->dirty = true;
+ 		*cow_ret = buf;
  		return 0;
  	}
+@@ -1788,10 +1787,8 @@ again:
+ 			 * then we don't want to set the path blocking,
+ 			 * so we test it here
+ 			 */
+-			if (!should_cow_block(trans, root, b)) {
+-				trans->dirty = true;
++			if (!should_cow_block(trans, root, b))
+ 				goto cow_done;
+-			}
  
--	/* Requested settings same as current global settings*/
--	idx = find_first_bit(smmu_pmu->used_counters, num_ctrs);
--	if (idx == num_ctrs ||
--	    smmu_pmu_check_global_filter(smmu_pmu->events[idx], event)) {
--		smmu_pmu_set_event_filter(event, 0, span, sid);
-+	/* Otherwise, must match whatever's currently scheduled */
-+	if (smmu_pmu_check_global_filter(smmu_pmu->events[cur_idx], event)) {
-+		smmu_pmu_set_evtyper(smmu_pmu, idx, get_event(event));
- 		return 0;
+ 			/*
+ 			 * must have write locks on this node and the
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 3d5c35e4cb76..d2f39a122d89 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4784,7 +4784,6 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		set_extent_dirty(&trans->transaction->dirty_pages, buf->start,
+ 			 buf->start + buf->len - 1, GFP_NOFS);
  	}
+-	trans->dirty = true;
+ 	/* this returns a buffer locked for blocking */
+ 	return buf;
+ }
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 4a396c1147f1..bc613218c8c5 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -299,17 +299,6 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
  
+ 	WRITE_ONCE(trans->aborted, errno);
+-	/* Nothing used. The other threads that have joined this
+-	 * transaction may be able to continue. */
+-	if (!trans->dirty && list_empty(&trans->new_bgs)) {
+-		const char *errstr;
+-
+-		errstr = btrfs_decode_error(errno);
+-		btrfs_warn(fs_info,
+-		           "%s:%d: Aborting unused transaction(%s).",
+-		           function, line, errstr);
+-		return;
+-	}
+ 	WRITE_ONCE(trans->transaction->aborted, errno);
+ 	/* Wake up anybody who may be waiting on this transaction */
+ 	wake_up(&fs_info->transaction_wait);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index b423d3b30173..37450c7644ca 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2076,14 +2076,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 
+ 	ASSERT(refcount_read(&trans->use_count) == 1);
+ 
+-	/*
+-	 * Some places just start a transaction to commit it.  We need to make
+-	 * sure that if this commit fails that the abort code actually marks the
+-	 * transaction as failed, so set trans->dirty to make the abort code do
+-	 * the right thing.
+-	 */
+-	trans->dirty = true;
+-
+ 	/* Stop the commit early if ->aborted is set */
+ 	if (TRANS_ABORTED(cur_trans)) {
+ 		ret = cur_trans->aborted;
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 364cfbb4c5c5..c49e2266b28b 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -143,7 +143,6 @@ struct btrfs_trans_handle {
+ 	bool allocating_chunk;
+ 	bool can_flush_pending_bgs;
+ 	bool reloc_reserved;
+-	bool dirty;
+ 	bool in_fsync;
+ 	struct btrfs_root *root;
+ 	struct btrfs_fs_info *fs_info;
+-- 
+2.30.2
+
 
 
