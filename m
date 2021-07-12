@@ -2,373 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C168C3C5992
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBF23C5993
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384937AbhGLJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245583AbhGLIGT (ORCPT
+        id S1384961AbhGLJF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:05:28 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:60826 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1355638AbhGLIKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:06:19 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED2AC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:03:23 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y42so41687519lfa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:03:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=LeU/iKFiiOjfK6kYoApvn8LC3klvjlzcItkxuxmRI6g=;
-        b=tqpUUhnDJTw0hE70E1GDyFM8sXtcvTxr4t4HTbjBlmHkcDqIF88IH41cOi8okoS9Qz
-         q93DAAoRh0CvIyA9Au/Bta5zTuR+AKCc/nI8gwyGCboUIjIz6Ya9uN5a1zye+xMIj5F4
-         gj3VUtIUyOq6rQDPGxq4T/FBgYkXHshgO17K7WAO8zliquUChEKeUchSAY7MUn1LGOrO
-         KD+lkYmaFKE3R89zpccIQXpP9nzsvQqguKsNvGdq83l6MnUnOne37G5pOVJmSWMJXUP1
-         ODZIwd5BVFwzpaIFNuZ3+00pFHQ+IT85BBL2yC/WPuKUYKR2BAoJ+gm7kmnyDlkhpwYC
-         Q2mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=LeU/iKFiiOjfK6kYoApvn8LC3klvjlzcItkxuxmRI6g=;
-        b=p7dbhBCgb6Hy6n9Bq4AEbpp97c2VaiyLIlVEhEh1HqYGWtAEhfe5Qkh3RGl1MMMMQe
-         GQeVCp870penhC2/ewQjskM0s8CIRMOXS3bVo607wVM5DGALQOHby9TIm/vQEV3pR11/
-         Fa4yK9e/u9Ys7m8rRytWKtcaAyH8pj7WeZ9EqD0uURwjtZtKbE+A++cFq+7CAXTm8H1k
-         VbGGao4xcNJREp25Jb8L8JaA5JOKh1N1EC0SKK/QkOd/BjDPMYFs7jkZIAtW3deUvbW4
-         SBVZ9FFEjX2wOaVk5N6LNWWxxu5G/C4alUqMje6OG7dhcMngg6SBrl3c31Z7AWKenxT0
-         raZg==
-X-Gm-Message-State: AOAM531lzea/ieF/wZZqx+BvcWcYvNJG2Bj8VX6/9SOBROHRTuAkFplV
-        Ipbj+QambEN/CbmiPlbFBdo=
-X-Google-Smtp-Source: ABdhPJyem3ieh37W13FAjougHL5Ev00Qqp2YmMFbO06yq7ngafrRsYlAez91tnKvE2pI4ySx0YgQWw==
-X-Received: by 2002:a19:48cd:: with SMTP id v196mr18878562lfa.269.1626077001864;
-        Mon, 12 Jul 2021 01:03:21 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id y11sm41355ljn.99.2021.07.12.01.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 01:03:21 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 11:03:10 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
+        Mon, 12 Jul 2021 04:10:10 -0400
+X-UUID: 8eab63c0825a494fb72f3489822534c5-20210712
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pYihUe16LMSA8Z5B8sReIfUro/yCMswXaige3lLlv3k=;
+        b=WH3RlvhMtzj5bi2g9GfaCo+Qjkau9BbZftNtDEhMvaunJb4wP5HVjQ9MGlDoAKJV5/RUX6mA/F0BfkDUssc72SEuowPyFrG8JNGOgS5HzMKvQvkRBzY7hW5xO4h0MQQuMQ6erTW+g4QTQvKOyYE6hf+BdfG/bMOsO/luqbrahTs=;
+X-UUID: 8eab63c0825a494fb72f3489822534c5-20210712
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 405197711; Mon, 12 Jul 2021 16:07:16 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 12 Jul 2021 16:07:08 +0800
+Received: from [10.17.3.153] (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Jul 2021 16:07:07 +0800
+Message-ID: <1626077227.7221.20.camel@mhfsdcap03>
+Subject: Re: [PATCH v1, 06/14] media: mtk-vcodec: Add irq interface for core
+ hardware
+From:   mtk12024 <yunfei.dong@mediatek.com>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+CC:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        "Tiffany Lin" <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        "Fritz Koenig" <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH 1/2] drm: add crtc background color property
-Message-ID: <20210712110310.540df27d@eldfell>
-In-Reply-To: <3c8331cf-fded-b6e6-3e25-666634f4b87a@foss.st.com>
-References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
-        <20210707084557.22443-2-raphael.gallais-pou@foss.st.com>
-        <20210709110459.79ca406a@eldfell>
-        <3c8331cf-fded-b6e6-3e25-666634f4b87a@foss.st.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Mon, 12 Jul 2021 16:07:07 +0800
+In-Reply-To: <CA+Px+wWRE0DR15GgorZnoN1xdAqoau94gkoF7-x7h2hd21ZGXg@mail.gmail.com>
+References: <20210707062157.21176-1-yunfei.dong@mediatek.com>
+         <20210707062157.21176-7-yunfei.dong@mediatek.com>
+         <CA+Px+wWRE0DR15GgorZnoN1xdAqoau94gkoF7-x7h2hd21ZGXg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/l+IJnmO2q5AI2NyYYICtU27";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/l+IJnmO2q5AI2NyYYICtU27
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+SGkgVHp1bmctQmksDQoNClRoYW5rcyBmb3IgeW91ciBkZXRhaWwgZmVlZGJhY2suDQpJIGFkZCB0
+aGUgZGVzY3JpcHRpb24gYWNjb3JkaW5nIHRvIHlvdXIgZWFjaCBjb21tZW50cy4NCg0KT24gRnJp
+LCAyMDIxLTA3LTA5IGF0IDE1OjU5ICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0KPiBPbiBX
+ZWQsIEp1bCA3LCAyMDIxIGF0IDI6MjIgUE0gWXVuZmVpIERvbmcgPHl1bmZlaS5kb25nQG1lZGlh
+dGVrLmNvbT4gd3JvdGU6DQo+ID4gK3N0YXRpYyBpbnQgbXRrX3Zjb2RlY19nZXRfaHdfY291bnQo
+c3RydWN0IG10a192Y29kZWNfZGV2ICpkZXYpDQo+ID4gK3sNCj4gPiArICAgICAgIGlmIChkZXYt
+PnZkZWNfcGRhdGEtPmh3X2FyY2ggPT0gTVRLX1ZERUNfUFVSRV9TSU5HTEVfQ09SRSkNCj4gPiAr
+ICAgICAgICAgICAgICAgcmV0dXJuIDE7DQo+ID4gKyAgICAgICBlbHNlIGlmIChkZXYtPnZkZWNf
+cGRhdGEtPmh3X2FyY2ggPT0gTVRLX1ZERUNfTEFUX1NJTkdMRV9DT1JFKQ0KPiA+ICsgICAgICAg
+ICAgICAgICByZXR1cm4gMjsNCj4gPiArICAgICAgIGVsc2UNCj4gPiArICAgICAgICAgICAgICAg
+cmV0dXJuIDA7DQo+ID4gK30NCj4gVXNlIGEgc3dpdGNoIC4uIGNhc2UgLi4gd291bGQgYmUgZWFz
+aWVyIHRvIHJlYWQuDQpZZXMNCj4gV291bGQgaXQgYmUgYmV0dGVyIHRvIHVzZSBzb21lIG1hY3Jv
+IG9yIGVudW1zIGZvciB0aGUgbWFnaWMgbnVtYmVycz8NClllcywgYWRkIGVudW1zIGZvciBtYWdp
+YyBudW1iZXJzLiANCmVudW0gbXRrX3ZkZWNfaHdfY291bnQgew0KCU1US19WREVDX05PX0hXID0g
+MCwNCglNVEtfVkRFQ19PTkVfQ09SRSwNCglNVEtfVkRFQ19PTkVfTEFUX09ORV9DT1JFLA0KCU1U
+S19WREVDX01BWF9IV19DT1VOVCwNCn07DQo+ID4gQEAgLTExMyw4ICsxMTQsNyBAQCBzdGF0aWMg
+aW50IG10a192ZGVjX2NvbXBfaW5pdF9pcnEoc3RydWN0IG10a192ZGVjX2NvbXBfZGV2ICpkZXYp
+DQo+ID4gICAgICAgICB9DQo+ID4NCj4gPiAgICAgICAgIHJldCA9IGRldm1fcmVxdWVzdF9pcnEo
+JnBkZXYtPmRldiwgZGV2LT5kZWNfaXJxLA0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgbXRrX3ZkZWNfY29tcF9pcnFfaGFuZGxlciwNCj4gPiAtICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIDAsIHBkZXYtPm5hbWUsIGRldik7DQo+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBtdGtfdmRlY19jb21wX2lycV9oYW5kbGVyLCAwLCBwZGV2LT5uYW1lLCBk
+ZXYpOw0KPiBUaGUgY2hhbmdlIGlzIGlycmVsZXZhbnQgdG8gdGhpcyBwYXRjaC4NCldpbGwgZml4
+Lg0KPiA+IEBAIC0xNTQsOCArMTU0LDEwIEBAIHN0YXRpYyBpbnQgbXRrX3ZkZWNfY29tcF9wcm9i
+ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgICAgICAgICAgICAgICBkbWFf
+c2V0X21hc2tfYW5kX2NvaGVyZW50KCZwZGV2LT5kZXYsIERNQV9CSVRfTUFTSygzNCkpOw0KPiA+
+DQo+ID4gICAgICAgICByZXQgPSBtdGtfdmRlY19jb21wX2luaXRfaXJxKGRldik7DQo+ID4gLSAg
+ICAgICBpZiAocmV0KQ0KPiA+ICsgICAgICAgaWYgKHJldCkgew0KPiA+ICsgICAgICAgICAgICAg
+ICBkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gcmVnaXN0ZXIgaXJxIGhhbmRsZXIuXG4i
+KTsNCj4gPiAgICAgICAgICAgICAgICAgZ290byBlcnI7DQo+ID4gKyAgICAgICB9DQo+IFRoZSBj
+aGFuZ2Ugc2hvdWxkbid0IGJlIGluIHRoaXMgcGF0Y2guICBJbnN0ZWFkLCBhbm90aGVyIHBhdGNo
+IHRoYXQNCj4gYWRkcyB0aGUgbXRrX3ZkZWNfY29tcF9pbml0X2lycSgpIGludm9jYXRpb24uDQo+
+IA0KPiA+ICtpbnQgbXRrX3Zjb2RlY193YWl0X2Zvcl9jb21wX2RvbmVfY3R4KHN0cnVjdCBtdGtf
+dmNvZGVjX2N0eCAgKmN0eCwNCj4gUmVtb3ZlIHRoZSBleHRyYSBzcGFjZSBiZWZvcmUgIipjdHgi
+Lg0KV2lsIGZpeC4NCg==
 
-On Fri, 9 Jul 2021 18:23:26 +0200
-Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com> wrote:
-
-> On 7/9/21 10:04 AM, Pekka Paalanen wrote:
-> > On Wed, 7 Jul 2021 08:48:47 +0000
-> > Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com> wrote:
-> > =20
-> >> Some display controllers can be programmed to present non-black colors
-> >> for pixels not covered by any plane (or pixels covered by the
-> >> transparent regions of higher planes).  Compositors that want a UI with
-> >> a solid color background can potentially save memory bandwidth by
-> >> setting the CRTC background property and using smaller planes to displ=
-ay
-> >> the rest of the content.
-> >>
-> >> To avoid confusion between different ways of encoding RGB data, we
-> >> define a standard 64-bit format that should be used for this property's
-> >> value.  Helper functions and macros are provided to generate and disse=
-ct
-> >> values in this standard format with varying component precision values.
-> >>
-> >> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-> >> Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
-> >> ---
-> >>   drivers/gpu/drm/drm_atomic_state_helper.c |  1 +
-> >>   drivers/gpu/drm/drm_atomic_uapi.c         |  4 +++
-> >>   drivers/gpu/drm/drm_blend.c               | 34 +++++++++++++++++++++=
---
-> >>   drivers/gpu/drm/drm_mode_config.c         |  6 ++++
-> >>   include/drm/drm_blend.h                   |  1 +
-> >>   include/drm/drm_crtc.h                    | 12 ++++++++
-> >>   include/drm/drm_mode_config.h             |  5 ++++
-> >>   include/uapi/drm/drm_mode.h               | 28 +++++++++++++++++++
-> >>   8 files changed, 89 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/d=
-rm/drm_atomic_state_helper.c
-> >> index ddcf5c2c8e6a..1b95a4ecdb2b 100644
-> >> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
-> >> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
-> >> @@ -72,6 +72,7 @@ __drm_atomic_helper_crtc_state_reset(struct drm_crtc=
-_state *crtc_state,
-> >>   				     struct drm_crtc *crtc)
-> >>   {
-> >>   	crtc_state->crtc =3D crtc;
-> >> +	crtc_state->bgcolor =3D drm_argb(16, 0xffff, 0, 0, 0);
-> >>   }
-> >>   EXPORT_SYMBOL(__drm_atomic_helper_crtc_state_reset);
-> >>  =20
-> >> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_a=
-tomic_uapi.c
-> >> index 438e9585b225..fea68f8f17f8 100644
-> >> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> >> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> >> @@ -483,6 +483,8 @@ static int drm_atomic_crtc_set_property(struct drm=
-_crtc *crtc,
-> >>   		set_out_fence_for_crtc(state->state, crtc, fence_ptr);
-> >>   	} else if (property =3D=3D crtc->scaling_filter_property) {
-> >>   		state->scaling_filter =3D val;
-> >> +	} else if (property =3D=3D config->bgcolor_property) {
-> >> +		state->bgcolor =3D val;
-> >>   	} else if (crtc->funcs->atomic_set_property) {
-> >>   		return crtc->funcs->atomic_set_property(crtc, state, property, val=
-);
-> >>   	} else {
-> >> @@ -520,6 +522,8 @@ drm_atomic_crtc_get_property(struct drm_crtc *crtc,
-> >>   		*val =3D 0;
-> >>   	else if (property =3D=3D crtc->scaling_filter_property)
-> >>   		*val =3D state->scaling_filter;
-> >> +	else if (property =3D=3D config->bgcolor_property)
-> >> +		*val =3D state->bgcolor;
-> >>   	else if (crtc->funcs->atomic_get_property)
-> >>   		return crtc->funcs->atomic_get_property(crtc, state, property, val=
-);
-> >>   	else
-> >> diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
-> >> index ec37cbfabb50..6692d6a6db22 100644
-> >> --- a/drivers/gpu/drm/drm_blend.c
-> >> +++ b/drivers/gpu/drm/drm_blend.c
-> >> @@ -186,8 +186,7 @@
-> >>    *		 assumed to be 1.0
-> >>    *
-> >>    * Note that all the property extensions described here apply either=
- to the
-> >> - * plane or the CRTC (e.g. for the background color, which currently =
-is not
-> >> - * exposed and assumed to be black).
-> >> + * plane or the CRTC.
-> >>    *
-> >>    * SCALING_FILTER:
-> >>    *     Indicates scaling filter to be used for plane scaler
-> >> @@ -201,6 +200,21 @@
-> >>    *
-> >>    * Drivers can set up this property for a plane by calling
-> >>    * drm_plane_create_scaling_filter_property
-> >> + * =20
-> > Hi, =20
->=20
->=20
-> Hi Pekka,
->=20
->=20
-> Many thanks for your feedback, your comments are taken into account for=20
-> a v2.
->=20
->=20
-> >
-> > I assume the below block is the UAPI documentation of this new property
-> > and that it would appear with the other UAPI docs.
-> > =20
-> >> + * BACKGROUND_COLOR:
-> >> + *	Defines the ARGB color of a full-screen layer that exists below all
-> >> + *	planes.  This color will be used for pixels not covered by any pla=
-ne
-> >> + *	and may also be blended with plane contents as allowed by a plane's
-> >> + *	alpha values.  The background color defaults to black, and is assu=
-med
-> >> + *	to be black for drivers that do not expose this property. =20
-> > All good up to here.
-> > =20
-> >>   Although
-> >> + *	background color isn't a plane, it is assumed that the color provi=
-ded
-> >> + *	here undergoes the same pipe-level degamma/CSC/gamma transformatio=
-ns
-> >> + *	that planes undergo. =20
-> > This sounds to me like it refers to the per-plane degamma/csc/gamma
-> > which are new properties in development. I believe you do not mean
-> > that, but you mean the CRTC degamma/csc/gamma and everything else which
-> > apply *after* the blending of planes. So the wording here would need
-> > clarification. =20
->=20
->=20
-> Yes, I was not sure about this, but it is effectively the general CRTC=20
-> color correction which is applicable to the background color.
->=20
-> > =20
-> >>   Note that the color value provided here includes
-> >> + *	an alpha channel...non-opaque background color values are allowed,
-> >> + *	but are generally only honored in special cases (e.g., when a memo=
-ry
-> >> + *	writeback connector is in use). =20
-> > This could be read as: if you use a non-opaque color value, it will
-> > usually be completely ignored (and the background will be e.g. black
-> > instead). Is that your intention?
-> >
-> > I think a more useful definition would be that the alpha is used in
-> > blending as always, but because we do not yet have physically
-> > transparent monitors, the final alpha value may not reach the video
-> > sink or the video sink may ignore it. =20
->=20
-> In our case, the hardware does not support alpha channel (as you can see=
-=20
-> the DRM_ARGB_TO_LTDC_RGB24 macro in the second patch).
->=20
-> For chip vendors who does support this feature, the video sink would get=
-=20
-> this transparency parameter. In the case where it is not, alpha channel=20
-> would be ignored.
->=20
->=20
-> >> + *
-> >> + *	This property is setup with drm_crtc_add_bgcolor_property(). =20
-> > You forgot to document the value format of this property. The ARGB color
-> > format needs to be defined at least to the same detail as all pixel
-> > formats in drm_fourcc.h are. If there is a suitable DRM_FORMAT_*
-> > definition already, simply saying the color is in that format would be
-> > enough. =20
->=20
->=20
-> Will do ! :)
->=20
-> I was thinking about the FourCC AR4H format. Have you something else in=20
-> mind ?
-
-Hi,
-
-if you mean DRM_FORMAT_ARGB16161616F then that is not what you are
-using right now. That is a floating-point format using 16-bit floats
-(half float). It has only 10 bits precision IIRC.
-
-As C compilers do not(?) have built-in support for halfs, using this
-format would be inconvenient for userspace (and the kernel?). Since
-it's just for one pixel value, I think using a format that is
-convenient to craft would be good.
-
-
-> > Another thing to document is whether this color value is alpha
-> > pre-multiplied or not. Planes can have the property "pixel blend mode",
-> > but because the background color is not on a plane, that property
-> > cannot apply here.
-> >
-> > The difference it makes is that if background color is both non-opaque
-> > and pre-multiplied, then the question arises what pixel values will
-> > actually be transmitted to video sink for the background. Will the
-> > alpha pre-multiplication be undone?
-> >
-> > Btw. note that "pixel blend mode" property does not document the use of
-> > background alpha at all. So if the background color can have non-opaque
-> > alpha, then you need to document the behavior in "pixel blend mode". It
-> > also does not document what alpha value will result from blending, for
-> > blending the next plane. =20
->=20
-> Those are questions that did not crossed my mind at all.
->=20
-> What would you suggest ? Instinctively I would say that in the case=20
-> where there is a non-opaque background color,
->=20
-> alpha pre-multiplication would not be taken into account, although it is=
-=20
-> maybe not the best solution.
->=20
-> As I am not quite sure, I will lookup for this.
-
-Right now, I would suggest to just dodge the whole question: define the
-background color to be opaque. Either drop the alpha channel, or
-specify that alpha must be 1.0 for now (fail ioctl if not).
-
-Let the people who actually need alpha in the background color figure
-out all the details. They would know what they want, while we don't. We
-also can't come up with a proper userspace for non-opaque alpha to
-prove that the design works.
-
-If you specify that alpha channel exists but must be 1.0, then someone
-else could later add another property that defines how the alpha would
-be used if it was less than 1.0. The existence of that other property
-would then tell userspace that non-1.0 alpha is supported and also
-define what it does. Userspace that does not understand that will just
-keep using alpha 1.0, meaning it doesn't matter what value the other
-new property has. So this seems quite future-proof to me.
-
-> > The question about full vs. limited range seems unnecessary to me, as
-> > the background color will be used as-is in the blending stage, so
-> > userspace can just program the correct value that fits the pipeline it
-> > is setting up.
-> >
-> > One more question is, as HDR exists, could we need background colors
-> > with component values greater than 1.0? =20
->=20
-> AR4H color format should cover that case, isn't it ?
-
-Yes, but with the inconvenience I mentioned.
-
-This is a genuine question though, would anyone actually need
-background color values > 1.0. I don't know of any case yet where it
-would be required. It would imply that plane blending happens in a
-color space where >1.0 values are meaningful. I'm not even sure if any
-hardware supporting that exists.
-
-Maybe it would be best to assume that only [0.0, 1.0] pixel value range
-is useful, and mention in the commit message that if someone really
-needs values outside of that, they should create another background
-color property. Then, you can pick a simple unsigned integer pixel
-format, too. (I didn't see any 16 bit-per-channel formats like that in
-drm_fourcc.h though.)
-
-
-Thanks,
-pq
-
---Sig_/l+IJnmO2q5AI2NyYYICtU27
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDr9z4ACgkQI1/ltBGq
-qqeOARAAj0YWJ+kE/oYuIEijdeKcn+rsPF7oJ427Nc9i7Fjsl0yfXYTZkKP/aztP
-Ljjr5TPAeyWFGosYSJmhaHXGk7Z6+zbL9u19XJZvbL8r8+3QJujvuXu9aG3/HaRK
-ZOP4y7etohnzJHfZ1uIFaTg5SJdYG8YNRwGNFZQjRhLGYox5fCgvk5DJGsD0HOLg
-uqxl6oO9ftm1OT0u/Mtaa6c13I3NG+/sSsIUIOI7sn4fYU/c8nLEpghocxBRnlBe
-Vpz9ABAKMfrGP3zktxUnWOiQvE2jtvAqMpHGbZWA3Tm7hpNJQ9hgtllqYS/FAeCt
-E9zZUoVPG3oooyg7+NrZncNZrooOB6j6ImWMiWHeqzqzvdCE/jC1IIeX9PmRl5ZE
-KC8chjZ+ftMFyl8Wq0N8dlNyoACgfNH5NjtKJhLw+BfAAwprbvlQ58EmyxwGruoZ
-EKnrPZrYlJ4/ABM36sPaM26SLzdgFlbLBS3rjH2KDSspotKRvQg8m5NU1dAHeTL3
-G0UoruEXAruPFvnOvIEy4dWx1V3EIQsaswt2bJXcz+DdSDh5RfyA9mt3YORU5uWb
-t5v2dCL7uQti6xFx+wDzG0KuJ6vOucdZ5xsaIygZY5BIVkSWgeieDy10DVP7QJmq
-qdVCn+ZZ13UoD6+fXgMkMLM9kj5rF6jcSWJCVvrMmrYe+qK2LmA=
-=PZnE
------END PGP SIGNATURE-----
-
---Sig_/l+IJnmO2q5AI2NyYYICtU27--
