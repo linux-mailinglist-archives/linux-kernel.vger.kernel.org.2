@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A00A3C4A07
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDB13C5737
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238005AbhGLGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:48:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
+        id S1376552AbhGLIag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236081AbhGLGhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:37:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A602661159;
-        Mon, 12 Jul 2021 06:33:43 +0000 (UTC)
+        id S1344304AbhGLHnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F41E61175;
+        Mon, 12 Jul 2021 07:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071624;
-        bh=FWdpgeLZjTV3yUDS9DmJf5529C3/nxBDlPw9YGo3gao=;
+        s=korg; t=1626075608;
+        bh=Zb8+YLuj1bpHSb/bnynV53LY/CQQUHbO+V4Sie/VhaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h4UWeaFLGQtAsRNT642a2Y+IVM8I1HitJfZSvTYYstJY7rq5a81ngYIfflXrv4YkI
-         d7X8fMlMIAa35xUMPyBznHm5sIZFDnwDvzh5h4X17Io4z8/98uUt7jDaPQWzTYumEA
-         oDiRC5rnsX8MHLBDa+jfwlIh2J+C1T8mkc5hm17A=
+        b=MqXK3lVyLXQNqVC6nGophXuwwHgYHcyK/mOxme9HMNZi6nLWK0uVv0VQ2IZ0y/PQs
+         ksF8O+kFHXqDBQ0L/1Fm/Lwve6ewxDpokuKbR26mEkmEHPxoTSbSjFBvYQoZuIhIlD
+         iUp/medkOyo2d8naxHGZ66EZgkao56hJU6Y5FBJs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hui Tang <tanghui20@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 147/593] spi: meson-spicc: fix memory leak in meson_spicc_probe
-Date:   Mon, 12 Jul 2021 08:05:07 +0200
-Message-Id: <20210712060859.211875373@linuxfoundation.org>
+Subject: [PATCH 5.13 285/800] crypto: hisilicon/hpre - fix unmapping invalid dma address
+Date:   Mon, 12 Jul 2021 08:05:08 +0200
+Message-Id: <20210712060955.077500930@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zpershuai <zpershuai@gmail.com>
+From: Hui Tang <tanghui20@huawei.com>
 
-[ Upstream commit b2d501c13470409ee7613855b17e5e5ec4111e1c ]
+[ Upstream commit 0b0553b701f830d820ba9026e5799c24e400a4b5 ]
 
-when meson_spicc_clk_init returns failed, it should goto the
-out_clk label.
+Currently, an invalid dma address may be unmapped when calling
+'xx_data_clr_all' in error path, so check dma address of sqe in/out
+if initialized before calling 'dma_free_coherent' or 'dma_unmap_single'.
 
-Signed-off-by: zpershuai <zpershuai@gmail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/1623562156-21995-1-git-send-email-zpershuai@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: a9214b0b6ed2 ("crypto: hisilicon - fix the check on dma address")
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-meson-spicc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index 51aef2c6e966..b2c4621db34d 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -752,7 +752,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	ret = meson_spicc_clk_init(spicc);
- 	if (ret) {
- 		dev_err(&pdev->dev, "clock registration failed\n");
--		goto out_master;
-+		goto out_clk;
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index a380087c83f7..782ddffa5d90 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -298,6 +298,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t tmp;
+ 
+ 	tmp = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, tmp)))
++		return;
+ 
+ 	if (src) {
+ 		if (req->src)
+@@ -307,6 +309,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
  	}
  
- 	ret = devm_spi_register_master(&pdev->dev, master);
+ 	tmp = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, tmp)))
++		return;
+ 
+ 	if (req->dst) {
+ 		if (dst)
+@@ -524,6 +528,8 @@ static int hpre_msg_request_set(struct hpre_ctx *ctx, void *req, bool is_rsa)
+ 		msg->key = cpu_to_le64(ctx->dh.dma_xa_p);
+ 	}
+ 
++	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
++	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
+ 	msg->dw0 |= cpu_to_le32(0x1 << HPRE_SQE_DONE_SHIFT);
+ 	msg->task_len1 = (ctx->key_sz >> HPRE_BITS_2_BYTES_SHIFT) - 1;
+ 	h_req->ctx = ctx;
+@@ -1372,11 +1378,15 @@ static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz << 2, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
+@@ -1431,6 +1441,8 @@ static int hpre_ecdh_msg_request_set(struct hpre_ctx *ctx,
+ 	h_req->areq.ecdh = req;
+ 	msg = &h_req->req;
+ 	memset(msg, 0, sizeof(*msg));
++	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
++	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
+ 	msg->key = cpu_to_le64(ctx->ecdh.dma_p);
+ 
+ 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
+@@ -1667,11 +1679,15 @@ static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
+@@ -1722,6 +1738,8 @@ static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
+ 	h_req->areq.curve25519 = req;
+ 	msg = &h_req->req;
+ 	memset(msg, 0, sizeof(*msg));
++	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
++	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
+ 	msg->key = cpu_to_le64(ctx->curve25519.dma_p);
+ 
+ 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
 -- 
 2.30.2
 
