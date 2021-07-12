@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55F73C61B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF6B3C61ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhGLRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:19:22 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44189 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhGLRTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:19:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626110171;
-        bh=wmB0Rr9IQPBFqwimqWcf2igVM9vM9Uvnv61KwxUy1F0=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=kDJ6GpEThEucJ6kkIwvk3MbwBQ4M+BELrFJ4RmxfFiBt/ffm2yug8OcsiF3s966QM
-         Dv3qu3+eBUi9Fx0B/BOUgzxnkXVFfRKmfyVyMVKIWEKNhgPBBgYDNA8C/d3CLgD+/Q
-         Nwh3sNdT2YYE4AUugEv7dUea4D64QgkmygtbvOXk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [157.180.225.139] ([157.180.225.139]) by web-mail.gmx.net
- (3c-app-gmx-bs28.server.lan [172.19.170.80]) (via HTTP); Mon, 12 Jul 2021
- 19:16:11 +0200
+        id S235761AbhGLRbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:31:42 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:63792 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235756AbhGLRbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:31:34 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id 730615accb33b82d; Mon, 12 Jul 2021 19:28:44 +0200
+Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 6F652669C37;
+        Mon, 12 Jul 2021 19:28:43 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Subject: [PATCH v1 0/6] ACPI: glue / driver core: Eliminate acpi_platform_notify() and split device_platform_notify()
+Date:   Mon, 12 Jul 2021 19:19:57 +0200
+Message-ID: <2780027.e9J7NaK4W3@kreacher>
 MIME-Version: 1.0
-Message-ID: <trinity-02bc17fc-b458-4d17-baca-8afe30e4c92c-1626110171249@3c-app-gmx-bs28>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
-Subject: Aw: Re: [PATCH] soc: mediatek: mmsys: fix HDMI output on
- mt7623/bananapi-r2
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 12 Jul 2021 19:16:11 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <456f0611-1fc7-75ac-ff45-9afd94190283@collabora.com>
-References: <20210710132431.265985-1-linux@fw-web.de>
- <456f0611-1fc7-75ac-ff45-9afd94190283@collabora.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:3b3zuNuyYHAQu9Aq/AFNd3jBsrHOgzDw46MqypI0YOFxUQS6/rnXzfEUHUh5ESpFXzKOO
- pD8jmMsdfLTDif/vZg/Sp51P6PqmxTJAtrm8ytcEfrP4r51/+IXGDezxKiy4wd3k5VXj6C5ol1RN
- WJ7UdDAaaqyVmqpjv1sVSplsNFQFntB+8NDilMGEoRyPy2XOdNttOpNmgnpgKXSLMcUVp6jPtZpM
- mxuLAGwRAQH291NEcQ3FGu0R9yBX58deSR0w7jJJ/6PFO6iFgY/UpYtU0S5t/xuwjZEJNthV2eV4
- gs=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eSKhF8PrMVA=:Z1dESeqor7vV5bK1IYE3ge
- 42AW+RgtomeayWkMY57YT+JHjReiHY51YMVDORTwTKbJABWbFSnLdJqnSTk17PEujXIDIMsdM
- q+vICb3ZTo7h9rMjq04RVvK8c6ZBVxohoFAOnIMchNMbQP19SendItVbb3q7yfaJkYKtawL0b
- yXtbs2id09y6w1gWw8TwL7+57Dsy9c2JWVgaX94jkTIw+wxJLDx4SH4++6ig4BcwoeXxVnlZx
- pEKHzkvNFIYMsebpwufypJmGkY3jdFhBJv04aWeho/TRBDKLuoY21U0eZhRBilhzpBI4QNXXe
- 1Qren1Tob3rF191kW/IKvY996OiQOe7ISGFuRy+x4rjieYgeKObgzdge0gdEF5JbYlJ1hCmts
- a2nz+z9Nc5ONbFlBiySoyuXPM2QJRu++PnkrYAaZ+uUOpTgW+23e4zqqxO6qYGJKwSnq92Atm
- qsecxASir6b1lK1j5gy4Od02ZCDjenDohTZHTqhCg7i8vOMueFtd+CQzj8dzP68jJSqLrPo/i
- 641ZTB4pCOCCB54py4R+F2cR8beJ6Tf8IJI6kTjq08mBwEyf1oOeX/uq0nzvQsy9Wg34K3Uh3
- hYg67X728n0ZakdmgUsC+mFfF/NoQub/voGEWo1pF6uctgA5g0DAqd50PSpfAKbbF/mGPa05q
- b2SVix7U+lhESJXw0gRR5YeqTjdEbz88HAFzgVXPlAdwE4jOXhmCgWzzFU5T3vr1AciEXqUTA
- iEbjRcGNgm9m2aonqs6YXedL4QY6ubsKadknzDrqKYwmyQH2PYoL8Dw8kF7qbXBcFwRzE1QJr
- JoXGrT3F0y4vubRbioeCvuB2b+GpNk6vUwceHs5SFra3XMXGY0=
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.45
+X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdeigedrkedvrdegheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrgeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgv
+ rhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvihhkkhhirdhkrhhoghgvrhhusheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Greg et al,
 
-it turns out that problem is the read+or of the new value
+This series doesn't change functionality (at least not intentionally), but
+it get rids of a few unneeded checks, parameter passing etc.
 
-i reverted my patch and changed
+Patches [1-2/6] simplify the ACPI "glue" code.
 
-reg = readl_relaxed(mmsys->regs + routes[i].addr) | routes[i].val;
-writel_relaxed(reg, mmsys->regs + routes[i].addr);
+Patch [3/6] renames a couple of ACPI functions to avoid name collisions going
+forward.
 
-to
+Patch [4/6] gets rid of acpi_platform_notify().
 
-writel_relaxed(routes[i].val, mmsys->regs + routes[i].addr);
+Patch [5/6] rearranges the software nodes code along the lines of what happens
+to the ACPI "glue" code in patch [4/6].
 
-and it works too, but maybe it breaks other platforms
+Patch [6/6] deals with device_platform_notify().
 
-regards Frank
+Please review and let me know if there are any concerns regarding this.
+
+Thanks!
+
+
+
