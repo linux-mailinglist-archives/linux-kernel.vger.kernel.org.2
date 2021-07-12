@@ -2,36 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E523C54DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0DB3C4E63
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355124AbhGLIF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:05:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33304 "EHLO mail.kernel.org"
+        id S244582AbhGLHSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:18:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245583AbhGLH1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:27:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AF6761864;
-        Mon, 12 Jul 2021 07:23:31 +0000 (UTC)
+        id S240359AbhGLGx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:53:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6345E61205;
+        Mon, 12 Jul 2021 06:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074612;
-        bh=KLpYMna0Mp92fE4JnC0Oo1e4UK0aKXVADn8xsAytkow=;
+        s=korg; t=1626072641;
+        bh=yBlfCSHVnzxr/lgpcNWoxC51NLzuifQ/PcaT69AZqLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TnEV0rW19frL0WIXR9eBstWBiWKQfDxcRvaHADLSMM74THlz0AjxA2B/4ZNEC8/zU
-         fB78H0hdOv/CxlKLwmUDn6H38HLLAAFEh1RuztcYEnqngJbJ/a86kHRgV1yosZ6IcF
-         6WqezUJMxe4u+q+Vl1Af/NA2s1bOE0wdpsLQ3ZfU=
+        b=zGjKqQOkkmQdIWHqPx3K+ep+8FP4dvwNM5RSbG1kYTflDEdKuAHpLKupfraOnT+h0
+         uK9WEtNu8QF4EnFugE6P/pnSVxKoo8rtUX/wzgbzSc+hgx0DDrUJ9C1yYT75qTdRO2
+         7da3E2lOHjxt9ywk+Vh03HWTloh5D932lZrzsIWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 639/700] extcon: sm5502: Drop invalid register write in sm5502_reg_data
-Date:   Mon, 12 Jul 2021 08:12:02 +0200
-Message-Id: <20210712061043.834983711@linuxfoundation.org>
+Subject: [PATCH 5.10 563/593] mm/huge_memory.c: remove dedicated macro HPAGE_CACHE_INDEX_MASK
+Date:   Mon, 12 Jul 2021 08:12:03 +0200
+Message-Id: <20210712060956.639004626@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +56,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit d25b224f8e5507879b36a769a6d1324cf163466c ]
+[ Upstream commit b2bd53f18bb7f7cfc91b3bb527d7809376700a8e ]
 
-When sm5502_init_dev_type() iterates over sm5502_reg_data to
-initialize the registers it is limited by ARRAY_SIZE(sm5502_reg_data).
-There is no need to add another empty element to sm5502_reg_data.
+Patch series "Cleanup and fixup for huge_memory:, v3.
 
-Having the additional empty element in sm5502_reg_data will just
-result in writing 0xff to register 0x00, which does not really
-make sense.
+This series contains cleanups to remove dedicated macro and remove
+unnecessary tlb_remove_page_size() for huge zero pmd.  Also this adds
+missing read-only THP checking for transparent_hugepage_enabled() and
+avoids discarding hugepage if other processes are mapping it.  More
+details can be found in the respective changelogs.
 
-Fixes: 914b881f9452 ("extcon: sm5502: Add support new SM5502 extcon device driver")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Thi patch (of 5):
+
+Rewrite the pgoff checking logic to remove macro HPAGE_CACHE_INDEX_MASK
+which is only used here to simplify the code.
+
+Link: https://lkml.kernel.org/r/20210511134857.1581273-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20210511134857.1581273-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: William Kucharski <william.kucharski@oracle.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Cc: Ralph Campbell <rcampbell@nvidia.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-sm5502.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/huge_mm.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/extcon/extcon-sm5502.c b/drivers/extcon/extcon-sm5502.c
-index 106d4da647bd..5e0718dee03b 100644
---- a/drivers/extcon/extcon-sm5502.c
-+++ b/drivers/extcon/extcon-sm5502.c
-@@ -88,7 +88,6 @@ static struct reg_data sm5502_reg_data[] = {
- 			| SM5502_REG_INTM2_MHL_MASK,
- 		.invert = true,
- 	},
--	{ }
- };
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index 10c7a80a0394..bf37fbdaa59d 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -161,15 +161,13 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
  
- /* List of detectable cables */
+ bool transparent_hugepage_enabled(struct vm_area_struct *vma);
+ 
+-#define HPAGE_CACHE_INDEX_MASK (HPAGE_PMD_NR - 1)
+-
+ static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
+ 		unsigned long haddr)
+ {
+ 	/* Don't have to check pgoff for anonymous vma */
+ 	if (!vma_is_anonymous(vma)) {
+-		if (((vma->vm_start >> PAGE_SHIFT) & HPAGE_CACHE_INDEX_MASK) !=
+-			(vma->vm_pgoff & HPAGE_CACHE_INDEX_MASK))
++		if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
++				HPAGE_PMD_NR))
+ 			return false;
+ 	}
+ 
 -- 
 2.30.2
 
