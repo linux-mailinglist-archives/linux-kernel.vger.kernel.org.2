@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D94A3C5776
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E1E3C4A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358947AbhGLIeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
+        id S239184AbhGLGta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346518AbhGLHqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:46:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30E7361154;
-        Mon, 12 Jul 2021 07:41:59 +0000 (UTC)
+        id S237842AbhGLGjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4091861156;
+        Mon, 12 Jul 2021 06:35:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075719;
-        bh=y5VGwTrzuQwT2plzHSrl2/5rCfn4r0bcXrI0UDrKkDk=;
+        s=korg; t=1626071728;
+        bh=GEowMrjmHmFNHt2m67nx+sH07SmDtZ8aC6TyyBeNdMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v4kaWNcqIqAIIn1MbU486dWnuSmFNrHznbka0BRYcgn/tYx1npOGL4DC8R7/BIifY
-         dMTxIRfxHv2FvVwN5aLPSCujmZNkqM6STVNVLAbRcYPYcX+Upz4jIbD51UlRGP8xPG
-         lwy9LzggQ9c5e7corwsMZpacW2myVsde82pXFVms=
+        b=cg2Yj7dZOZtvlytn/AVxWF/ZfcAo8Rw01eSditPZ14MIeXk+IeHltEHdrLk8rhagD
+         TGMAtFH4YZcCIjTGTbpWFse4rnyX0E5qlNRsEKsHRsllKUA37Sw5DnWdEOr5xVuVNd
+         c4wXU1qVUzMPj+3RQKKIwOdluj6PptZJ0j425Lhk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 293/800] pata_ep93xx: fix deferred probing
-Date:   Mon, 12 Jul 2021 08:05:16 +0200
-Message-Id: <20210712060956.243896857@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 157/593] btrfs: abort transaction if we fail to update the delayed inode
+Date:   Mon, 12 Jul 2021 08:05:17 +0200
+Message-Id: <20210712060900.326303012@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 5c8121262484d99bffb598f39a0df445cecd8efb ]
+[ Upstream commit 04587ad9bef6ce9d510325b4ba9852b6129eebdb ]
 
-The driver overrides the error codes returned by platform_get_irq() to
--ENXIO, so if it returns -EPROBE_DEFER, the driver would fail the probe
-permanently instead of the deferred probing.  Propagate the error code
-upstream, as it should have been done from the start...
+If we fail to update the delayed inode we need to abort the transaction,
+because we could leave an inode with the improper counts or some other
+such corruption behind.
 
-Fixes: 2fff27512600 ("PATA host controller driver for ep93xx")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Link: https://lore.kernel.org/r/509fda88-2e0d-2cc7-f411-695d7e94b136@omprussia.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_ep93xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/delayed-inode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-index badab6708893..46208ececbb6 100644
---- a/drivers/ata/pata_ep93xx.c
-+++ b/drivers/ata/pata_ep93xx.c
-@@ -928,7 +928,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		err = -ENXIO;
-+		err = irq;
- 		goto err_rel_gpio;
- 	}
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 3af06ef98b12..04422d929c23 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1073,6 +1073,14 @@ err_out:
+ 	btrfs_delayed_inode_release_metadata(fs_info, node, (ret < 0));
+ 	btrfs_release_delayed_inode(node);
  
++	/*
++	 * If we fail to update the delayed inode we need to abort the
++	 * transaction, because we could leave the inode with the improper
++	 * counts behind.
++	 */
++	if (ret && ret != -ENOENT)
++		btrfs_abort_transaction(trans, ret);
++
+ 	return ret;
+ 
+ search:
 -- 
 2.30.2
 
