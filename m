@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C41A3C4F4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713F83C4F5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245743AbhGLHYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:24:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58754 "EHLO mail.kernel.org"
+        id S1345213AbhGLHZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239422AbhGLG5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:57:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C787E610CA;
-        Mon, 12 Jul 2021 06:54:56 +0000 (UTC)
+        id S239286AbhGLG6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:58:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 518C561369;
+        Mon, 12 Jul 2021 06:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072897;
-        bh=et5R7hJzmDip0hPXtlFvP+jyGleE5oVUb1decc/omes=;
+        s=korg; t=1626072930;
+        bh=HlmL8ZEFf25jX5xlbAq1x65up61lml7RPN6niPzCn00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eTocMzMSy2XsKGYpI4ERm0eTmL5oajqp8vmMhr7SJNmpOSsgKIdIZBvn+dG69esj7
-         QR/9UJazEXGJ/UF+WBQPMx1AqvwFM3v1yTx4wmM5Zr963L/jNify9jT3fM71jXKZKE
-         FxY2sTlUJy3Xxhzvskjmtt3qo4+oDJRe0nN8r/6k=
+        b=EEOJgvLtLgbKFIPREvE4Hs4uTbOVEOt0qYhdrlsd/oERFfTmAHy5tNEw5wg/UOKgr
+         REP1+BOzw8bU2eh7VLP6w3tNYqNTolF5jITYJzFMIqP65/dUM0AUAbBLT6grE4uE0O
+         JmVubQFqZHsbB0HVVKhjb1vtANEAg6iXaw1Uj8R0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.12 031/700] gfs2: Fix error handling in init_statfs
-Date:   Mon, 12 Jul 2021 08:01:54 +0200
-Message-Id: <20210712060929.040243768@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.12 032/700] ntfs: fix validity check for file name attribute
+Date:   Mon, 12 Jul 2021 08:01:55 +0200
+Message-Id: <20210712060929.166683245@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -39,32 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit 5d49d3508b3c67201bd3e1bf7f4ef049111b7051 upstream.
+commit d98e4d95411bbde2220a7afa38dcc9c14d71acbe upstream.
 
-On an error path, init_statfs calls iput(pn) after pn has already been put.
-Fix that by setting pn to NULL after the initial iput.
+When checking the file name attribute, we want to ensure that it fits
+within the bounds of ATTR_RECORD.  To do this, we should check that (attr
+record + file name offset + file name length) < (attr record + attr record
+length).
 
-Fixes: 97fd734ba17e ("gfs2: lookup local statfs inodes prior to journal recovery")
-Cc: stable@vger.kernel.org # v5.10+
-Reported-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+However, the original check did not include the file name offset in the
+calculation.  This means that corrupted on-disk metadata might not caught
+by the incorrect file name check, and lead to an invalid memory access.
+
+An example can be seen in the crash report of a memory corruption error
+found by Syzbot:
+https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246
+
+Adding the file name offset to the validity check fixes this error and
+passes the Syzbot reproducer test.
+
+Link: https://lkml.kernel.org/r/20210614050540.289494-1-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Tested-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/ops_fstype.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ntfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -689,6 +689,7 @@ static int init_statfs(struct gfs2_sbd *
- 	}
- 
- 	iput(pn);
-+	pn = NULL;
- 	ip = GFS2_I(sdp->sd_sc_inode);
- 	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, 0,
- 				   &sdp->sd_sc_gh);
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -477,7 +477,7 @@ err_corrupt_attr:
+ 		}
+ 		file_name_attr = (FILE_NAME_ATTR*)((u8*)attr +
+ 				le16_to_cpu(attr->data.resident.value_offset));
+-		p2 = (u8*)attr + le32_to_cpu(attr->data.resident.value_length);
++		p2 = (u8 *)file_name_attr + le32_to_cpu(attr->data.resident.value_length);
+ 		if (p2 < (u8*)attr || p2 > p)
+ 			goto err_corrupt_attr;
+ 		/* This attribute is ok, but is it in the $Extend directory? */
 
 
