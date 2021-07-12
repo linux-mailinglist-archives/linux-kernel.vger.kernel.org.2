@@ -2,137 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B2D3C40C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A733C40D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhGLBIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 21:08:43 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:10350 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhGLBIm (ORCPT
+        id S231166AbhGLBTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 21:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhGLBTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 21:08:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GNQSl6vt7z78MB;
-        Mon, 12 Jul 2021 09:01:27 +0800 (CST)
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 09:05:47 +0800
-Received: from [10.174.148.223] (10.174.148.223) by
- dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 09:05:46 +0800
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-To:     Steven Sistare <steven.sistare@oracle.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-CC:     "Gonglei (Arei)" <arei.gonglei@huawei.com>, <willy@infradead.org>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
- <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
- <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Message-ID: <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
-Date:   Mon, 12 Jul 2021 09:05:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 11 Jul 2021 21:19:45 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4449C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 18:16:56 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id r16so21060665ljk.9
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 18:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=T9UuQwjHWzWGcYyCteF5pj3ITs8iH+zIJu2j9F2CpBc=;
+        b=TP32vzT4IS1OnS2ZfbYKezsMPwoKrgM58jlkcAxY+VOeaW6vMfA95BXnqB0qziZLZI
+         t9yON7TLKZOX74HwXr2EqXW0wkYitwq8whrP7niWPMM8z6IqgTDEmqGBdZReIkQft89j
+         RBpQeB+r65OJhUj1r3vblvJdg3yjvJpDnZpbBYKjJJbE87qljjHHYbg/tQyS8fuS5U+1
+         igYayd1A59LnbWftmr7WFXES21qox+7+q99+QcOVt9H6sQolG6HbEaT52UQJWBzsUZU5
+         KlmKGhXbU+G6pALktd+5UAuqzyWlFj0jQwbWYImaCKM4h4ZdxjgXVaydWv2Wi2yJTh7l
+         BfUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=T9UuQwjHWzWGcYyCteF5pj3ITs8iH+zIJu2j9F2CpBc=;
+        b=BWmHkNHiKuu6KbOEV8YU/scnZzksgH8YwTY7Z0MBViqoRga1fERfXfoM2Xpc17HbXI
+         wRYJKh3c5nMnMkpk8N0DB7KrBtkqByNvxeH4L4gKU54wiFuLYvJrHCnwm34qkSAmTarR
+         sR1M71go0Lw4fZBdDtDoI8V8mhpTEAha12DpQqZu+T3qGENeURMWppMywFDTbXg9tVJ9
+         etpQtxBg2FHQI/7A5iJL+UTuoiPLs1IYhHuUAagTbX4o+F0LFLoVe5mH2F2HVNGfJObq
+         9ujAkDY2Uy4JN6PDd1O45bJL7zJ2M62ry89G/bl3Rw0V8DxWpYlhSoRRrhmevOvyPBLD
+         bwUw==
+X-Gm-Message-State: AOAM530unlIjX09kXhtZug5czqWnECcHGCkp++kdoz4X9tKJ4Yl/19gp
+        9mNJHj9jBNWz8ToJQOA7dkWobdNYlu737HMOJ+4=
+X-Google-Smtp-Source: ABdhPJyhJD8ikHqNtwJ8Uy/ntEh4BEo0YolzPfZNOLFFb1zlGn7Q9MioUaiR5ScrqfI31VWXAwevuVoocoPvbeRrEsg=
+X-Received: by 2002:a2e:bc21:: with SMTP id b33mr5320039ljf.188.1626052615101;
+ Sun, 11 Jul 2021 18:16:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
+Received: by 2002:a05:6520:330:b029:112:7754:7197 with HTTP; Sun, 11 Jul 2021
+ 18:16:54 -0700 (PDT)
+Reply-To: mrs.bill_chantal66@europe.com
+From:   "Mrs.Bill.Chantal" <morayodoncazzy@gmail.com>
+Date:   Mon, 12 Jul 2021 03:16:54 +0200
+Message-ID: <CAPOpEHs5+UVjfCDu9_np+HUYsd7dHKvV=40Qs5LXfDw=BLqc-g@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Dear Friend
 
-在 2021/7/8 20:48, Steven Sistare 写道:
-> On 7/8/2021 5:52 AM, Longpeng (Mike, Cloud Infrastructure Service Product Dept.) wrote:
->> Hi Anthony and Steven,
->>
->> 在 2020/7/28 1:11, Anthony Yznaga 写道:
->>> This patchset adds support for preserving an anonymous memory range across
->>> exec(3) using a new madvise MADV_DOEXEC argument.  The primary benefit for
->>> sharing memory in this manner, as opposed to re-attaching to a named shared
->>> memory segment, is to ensure it is mapped at the same virtual address in
->>> the new process as it was in the old one.  An intended use for this is to
->>> preserve guest memory for guests using vfio while qemu exec's an updated
->>> version of itself.  By ensuring the memory is preserved at a fixed address,
->>> vfio mappings and their associated kernel data structures can remain valid.
->>> In addition, for the qemu use case, qemu instances that back guest RAM with
->>> anonymous memory can be updated.
->>
->> We have a requirement like yours, but ours seems more complex. We want to
->> isolate some memory regions from the VM's memory space and the start a child
->> process who will using these memory regions.
->>
->> I've wrote a draft to support this feature, but I just find that my draft is
->> pretty like yours.
->>
->> It seems that you've already abandoned this patchset, why ?
-> 
-> Hi Longpeng,
->   The reviewers did not like the proposal for several reasons, but the showstopper
-> was that they did not want to add complexity to the exec path in the kernel.  You
-> can read the email archive for details.
-> 
-I've read the archive and did some study these days, maybe this soluation is
-more sutiable for my use case.
+You have been compensated with the sum of 4 million dollars in this
+united nation the payment will be Issue into atm visa card and send to
 
-Let me describe my use case more clearly (just ignore if you're not interested
-in it):
+you from the Santander bank we need your address passport and
+yourwhatsapp number.
 
-1. Prog A mmap() 4GB memory (anon or file-mapping), suppose the allocated VA
-range is [0x40000000,0x140000000)
-
-2. Prog A specifies [0x48000000,0x50000000) and [0x80000000,0x100000000) will be
-shared by its child.
-
-3. Prog A fork() Prog B and then Prog B exec() a new ELF binary.
-
-4. Prog B notice the shared ranges (e.g. by input parameters or ...) and remap
-them to a continuous VA range.
-
-Do you have any suggestions ?
-
-> We solved part of our problem by adding new vfio interfaces: VFIO_DMA_UNMAP_FLAG_VADDR
-> and VFIO_DMA_MAP_FLAG_VADDR.  That solves the vfio problem for shared memory, but not
-> for mmap MAP_ANON memory.
-> 
-> - Steve
-> 
->>> Patches 1 and 2 ensure that loading of ELF load segments does not silently
->>> clobber existing VMAS, and remove assumptions that the stack is the only
->>> VMA in the mm when the stack is set up.  Patch 1 re-introduces the use of
->>> MAP_FIXED_NOREPLACE to load ELF binaries that addresses the previous issues
->>> and could be considered on its own.
->>>
->>> Patches 3, 4, and 5 introduce the feature and an opt-in method for its use
->>> using an ELF note.
->>>
->>> Anthony Yznaga (5):
->>>   elf: reintroduce using MAP_FIXED_NOREPLACE for elf executable mappings
->>>   mm: do not assume only the stack vma exists in setup_arg_pages()
->>>   mm: introduce VM_EXEC_KEEP
->>>   exec, elf: require opt-in for accepting preserved mem
->>>   mm: introduce MADV_DOEXEC
->>>
->>>  arch/x86/Kconfig                       |   1 +
->>>  fs/binfmt_elf.c                        | 196 +++++++++++++++++++++++++--------
->>>  fs/exec.c                              |  33 +++++-
->>>  include/linux/binfmts.h                |   7 +-
->>>  include/linux/mm.h                     |   5 +
->>>  include/uapi/asm-generic/mman-common.h |   3 +
->>>  kernel/fork.c                          |   2 +-
->>>  mm/madvise.c                           |  25 +++++
->>>  mm/mmap.c                              |  47 ++++++++
->>>  9 files changed, 266 insertions(+), 53 deletions(-)
->>>
->>
-> .
-> 
+Thanks
+Mrs. bill Chantal
