@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971833C4936
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6765E3C5006
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbhGLGmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
+        id S1345959AbhGLHaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237497AbhGLGec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF0D9610CA;
-        Mon, 12 Jul 2021 06:30:42 +0000 (UTC)
+        id S240917AbhGLHCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:02:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 441EE610A6;
+        Mon, 12 Jul 2021 06:59:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071443;
-        bh=0G7WDUneSnvB3wdCJmnVPCLfW7xqQoNe83QOSnntyTs=;
+        s=korg; t=1626073172;
+        bh=6qvfVHz8Ivbu+S8FtkH8bJH6LL/dj1fkRbuXihqrtqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAdUoluhBtltGfpUXCCbmolgsYv1CB8gAvsQUpJVb74IENIbt1g/tQv1iA/Mc6tEm
-         iS0N+vCyDr/1WPZbSnznqEzjPB5SOSElKNIOxNnejZIU61lCOuk0sT0EY6wIE0ZPJm
-         JiKpJEPj9Yhv1YyUs453fFp/Pb2mEN20rm5QFe2E=
+        b=BDKwPYISSypLjfx6HnaS46U6pc8z2xg99iaKwKkl/3lwr2MsqVSMd9I6sGg1v9s3X
+         qkAg2ycVk9/vVgbzZT5fm4DmmjDW/Mf8xqBXyZe2BjxgxrPaeUxzfNcwZkjxn5I61G
+         7b7mvptUTf8u2SqRDgucWJKT0HB8jXlxFCiplqf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, frank zago <frank@zago.net>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 073/593] iio: light: tcs3472: do not free unallocated IRQ
+        stable@vger.kernel.org, Thara Gopinath <thara.gopinath@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 150/700] crypto: qce: skcipher: Fix incorrect sg count for dma transfers
 Date:   Mon, 12 Jul 2021 08:03:53 +0200
-Message-Id: <20210712060851.173417192@linuxfoundation.org>
+Message-Id: <20210712060946.768254239@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: frank zago <frank@zago.net>
+From: Thara Gopinath <thara.gopinath@linaro.org>
 
-commit 7cd04c863f9e1655d607705455e7714f24451984 upstream.
+[ Upstream commit 1339a7c3ba05137a2d2fe75f602311bbfc6fab33 ]
 
-Allocating an IRQ is conditional to the IRQ existence, but freeing it
-was not. If no IRQ was allocate, the driver would still try to free
-IRQ 0. Add the missing checks.
+Use the sg count returned by dma_map_sg to call into
+dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
+can merge consecutive sglist entries, thus making the original sg count
+wrong. This is a fix for memory coruption issues observed while testing
+encryption/decryption of large messages using libkcapi framework.
 
-This fixes the following trace when the driver is removed:
+Patch has been tested further by running full suite of tcrypt.ko tests
+including fuzz tests.
 
-[  100.667788] Trying to free already-free IRQ 0
-[  100.667793] WARNING: CPU: 0 PID: 2315 at kernel/irq/manage.c:1826 free_irq+0x1fd/0x370
-...
-[  100.667914] Call Trace:
-[  100.667920]  tcs3472_remove+0x3a/0x90 [tcs3472]
-[  100.667927]  i2c_device_remove+0x2b/0xa0
-
-Signed-off-by: frank zago <frank@zago.net>
-Link: https://lore.kernel.org/r/20210427022017.19314-2-frank@zago.net
-Fixes: 9d2f715d592e ("iio: light: tcs3472: support out-of-threshold events")
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/tcs3472.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/crypto/qce/skcipher.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
---- a/drivers/iio/light/tcs3472.c
-+++ b/drivers/iio/light/tcs3472.c
-@@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_clie
- 	return 0;
+diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
+index a2d3da0ad95f..5a6559131eac 100644
+--- a/drivers/crypto/qce/skcipher.c
++++ b/drivers/crypto/qce/skcipher.c
+@@ -71,7 +71,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
+ 	struct scatterlist *sg;
+ 	bool diff_dst;
+ 	gfp_t gfp;
+-	int ret;
++	int dst_nents, src_nents, ret;
  
- free_irq:
--	free_irq(client->irq, indio_dev);
-+	if (client->irq)
-+		free_irq(client->irq, indio_dev);
- buffer_cleanup:
- 	iio_triggered_buffer_cleanup(indio_dev);
- 	return ret;
-@@ -559,7 +560,8 @@ static int tcs3472_remove(struct i2c_cli
- 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+ 	rctx->iv = req->iv;
+ 	rctx->ivsize = crypto_skcipher_ivsize(skcipher);
+@@ -122,21 +122,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
+ 	sg_mark_end(sg);
+ 	rctx->dst_sg = rctx->dst_tbl.sgl;
  
- 	iio_device_unregister(indio_dev);
--	free_irq(client->irq, indio_dev);
-+	if (client->irq)
-+		free_irq(client->irq, indio_dev);
- 	iio_triggered_buffer_cleanup(indio_dev);
- 	tcs3472_powerdown(iio_priv(indio_dev));
+-	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
+-	if (ret < 0)
++	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
++	if (dst_nents < 0)
+ 		goto error_free;
  
+ 	if (diff_dst) {
+-		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
+-		if (ret < 0)
++		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
++		if (src_nents < 0)
+ 			goto error_unmap_dst;
+ 		rctx->src_sg = req->src;
+ 	} else {
+ 		rctx->src_sg = rctx->dst_sg;
++		src_nents = dst_nents - 1;
+ 	}
+ 
+-	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, rctx->src_nents,
+-			       rctx->dst_sg, rctx->dst_nents,
++	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, src_nents,
++			       rctx->dst_sg, dst_nents,
+ 			       qce_skcipher_done, async_req);
+ 	if (ret)
+ 		goto error_unmap_src;
+-- 
+2.30.2
+
 
 
