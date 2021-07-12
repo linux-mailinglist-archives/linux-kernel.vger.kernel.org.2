@@ -2,123 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB113C5B7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9BD3C5B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhGLL1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:27:22 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:46009 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbhGLL1U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:27:20 -0400
-Received: by mail-vk1-f180.google.com with SMTP id j190so3897419vkg.12;
-        Mon, 12 Jul 2021 04:24:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wSI56+0wl/8uoFZkYYEX3Cn5WjSYU9NFzgAm+bp0lBU=;
-        b=TZAcxELme0KH+lXKl+7Iw9ntlmy0E2d0LvO0n4Q5956NBZbClvqIt3eL73mH46ec2f
-         p9ieGyiVbYdMJnNJUwcl/eMh0it5+nCHZHbu8yZDT7b7qGVrtFq5rmzJlwfEfefe4HVk
-         meFtdsSJXrb9YC/Q0ehQrevA1v2ldY38A0oE4cTyEsVugFuiwcpVAsAXSrYm77MP4jdZ
-         ePonhYopbSFc3yv+14Wxl7UidVi5W3K+u5FwKB3dQp21UFb9e7QMwyceDybgLbDtVXfp
-         BJM6GRWarNg+krn5r6z+RjMf0wb5I1Xiq0RxT0IVYGzRXtTKdN/eqnPmlf4UuXBLTezu
-         gmmA==
-X-Gm-Message-State: AOAM5310kBt1QV2bfIZ2hr/5QbtjB51O15ZfAJRMi01PSSpu8DEYXfu4
-        3Sv+k8zWxhUj3awhy5PSrwws2mTKlc0mA+3Pf3XykiNgCkQ=
-X-Google-Smtp-Source: ABdhPJzl+b8ID+5NtPNSzacYozt9cW/uQxXEYZQYcG4NKJ5aeR9N2kMo9YCHMcaHTF4gY4uSOKuGr5NU+gxzNe5ovNo=
-X-Received: by 2002:a1f:1a41:: with SMTP id a62mr42439346vka.5.1626089070907;
- Mon, 12 Jul 2021 04:24:30 -0700 (PDT)
+        id S230302AbhGLLjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:39:01 -0400
+Received: from david.siemens.de ([192.35.17.14]:54379 "EHLO david.siemens.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230144AbhGLLi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 07:38:59 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 16CBZkZ8021112
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Jul 2021 13:35:46 +0200
+Received: from md1za8fc.ad001.siemens.net ([139.25.0.120])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 16CBZjto003872;
+        Mon, 12 Jul 2021 13:35:45 +0200
+Date:   Mon, 12 Jul 2021 13:35:43 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
+Message-ID: <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
+In-Reply-To: <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210709201603.2625664-1-drew@beagleboard.org>
-In-Reply-To: <20210709201603.2625664-1-drew@beagleboard.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Jul 2021 13:24:19 +0200
-Message-ID: <CAMuHMdVBVAzy3cZtR1pOTNq3wTgGx+0_dvUXU118XfT+rCOSrw@mail.gmail.com>
-Subject: Re: [PATCH v3] dt-bindings: riscv: add starfive jh7100 bindings
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Wei Fu <tekkamanninja@gmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew,
+This series is basically stuck because people rightfully want me to use
+the GPIO subsystem for the LEDs and the watchdog bits that are
+connected to GPIO.
 
-On Fri, Jul 9, 2021 at 10:17 PM Drew Fustini <drew@beagleboard.org> wrote:
-> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
-> BeagleV Starlight JH7100 board [2].
->
-> [1] https://github.com/starfive-tech/beaglev_doc
-> [2] https://github.com/beagleboard/beaglev-starlight
->
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
-> v3 changes:
-> - added revision number for the board and soc after question from Palmer
+Problem is that the GPIO subsystem does not initialize on the machines
+in question. It is a combination of hidden P2SB and missing ACPI table
+entries. The GPIO subsystem (intel pinctrl) needs either P2SB or ACPI do
+come up ...
 
-Thanks for the update!
+Andy proposed some patches for initializing the intel pinctrl stuff for
+one of the machines by falling back to SoC detection in case there is
+no ACPI or visible P2SB. While that works it would need to be done for
+any Intel SoC to be consistent and discussions seem to go nowhere.
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/riscv/starfive.yaml
-> @@ -0,0 +1,27 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/riscv/starfive.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: StarFive SoC-based boards
-> +
-> +maintainers:
-> +  - Michael Zhu <michael.zhu@starfivetech.com>
-> +  - Drew Fustini <drew@beagleboard.org>
-> +
-> +description:
-> +  StarFive SoC-based boards
-> +
-> +properties:
-> +  $nodename:
-> +    const: '/'
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: beagle,beaglev-starlight-jh7100-r0
-> +          - const: starfive,jh7100-r0
+I would be willing to port over to "intel pintctl" and help with
+testing, but not so much with actual coding. Andy is that moving at all?
 
-While I can be convinced about the board revision number (probably you
-know better if there will be different board revisions that matter),
-I'm wondering if the revision number makes sense for the SoC part.
-Will there be a new revision of jh7100, or will the next revision
-be jh7110, which will use a different compatible value anyway?
-Is there an on-chip register that allows the kernel to find out the
-revision info? Might be better to use that with soc_device_register()
-and soc_device_match().
+Since my drivers do reserve the mmio regions properly and the intel
+pinctrl will never come up anyways, i do not see a conflict merging my
+proposed drivers in the current codebase. The wish to use the pinctrl
+infrastructure can not be fulfilled if that infra is not in place. Once
+intel pinctrl works, we can change those drivers to work with that.
 
-> +
-> +additionalProperties: true
-> +
-> +...
+I do not want to take shortcuts ... but also do not want to get stuck
+here. So maybe one way to serialize the merge is to allow my changes
+like proposed and rebase on intel pinctrl once that subsystem actually
+initializes on these machines. We could even have two code paths ... if
+region can not be reserved, try gpio ... or the other way around.
 
-Gr{oetje,eeting}s,
+regards,
+Henning
 
-                        Geert
+Am Wed, 7 Apr 2021 13:36:40 +0200
+schrieb Hans de Goede <hdegoede@redhat.com>:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> Hi,
+> 
+> On 3/29/21 7:49 PM, Henning Schild wrote:
+> > changes since v2:
+> > 
+> > - remove "simatic-ipc" prefix from LED names
+> > - fix style issues found in v2, mainly LED driver
+> > - fix OEM specific dmi code, and remove magic numbers
+> > - more "simatic_ipc" name prefixing
+> > - improved pmc quirk code using callbacks
+> > 
+> > changes since v1:
+> > 
+> > - fixed lots of style issues found in v1
+> >   - (debug) printing
+> >   - header ordering
+> > - fixed license issues GPLv2 and SPDX in all files
+> > - module_platform_driver instead of __init __exit
+> > - wdt simplifications cleanup
+> > - lots of fixes in wdt driver, all that was found in v1
+> > - fixed dmi length in dmi helper
+> > - changed LED names to allowed ones
+> > - move led driver to simple/
+> > - switched pmc_atom to dmi callback with global variable
+> > 
+> > --
+> > 
+> > This series adds support for watchdogs and leds of several x86
+> > devices from Siemens.
+> > 
+> > It is structured with a platform driver that mainly does
+> > identification of the machines. It might trigger loading of the
+> > actual device drivers by attaching devices to the platform bus.
+> > 
+> > The identification is vendor specific, parsing a special binary DMI
+> > entry. The implementation of that platform identification is
+> > applied on pmc_atom clock quirks in the final patch.
+> > 
+> > It is all structured in a way that we can easily add more devices
+> > and more platform drivers later. Internally we have some more code
+> > for hardware monitoring, more leds, watchdogs etc. This will follow
+> > some day.  
+> 
+> IT seems there still is significant discussion surrounding the LED
+> and watchdog drivers which use patch 1/4 as parent-driver.
+> 
+> I'm going to hold of on merging 1/4 and 4/4 until there is more
+> consensus surrounding this series.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> > 
+> > Henning Schild (4):
+> >   platform/x86: simatic-ipc: add main driver for Siemens devices
+> >   leds: simatic-ipc-leds: add new driver for Siemens Industial PCs
+> >   watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial
+> > PCs platform/x86: pmc_atom: improve critclk_systems matching for
+> > Siemens PCs
+> > 
+> >  drivers/leds/Kconfig                          |   3 +
+> >  drivers/leds/Makefile                         |   3 +
+> >  drivers/leds/simple/Kconfig                   |  11 +
+> >  drivers/leds/simple/Makefile                  |   2 +
+> >  drivers/leds/simple/simatic-ipc-leds.c        | 202
+> > ++++++++++++++++ drivers/platform/x86/Kconfig                  |
+> > 12 + drivers/platform/x86/Makefile                 |   3 +
+> >  drivers/platform/x86/pmc_atom.c               |  57 +++--
+> >  drivers/platform/x86/simatic-ipc.c            | 169 ++++++++++++++
+> >  drivers/watchdog/Kconfig                      |  11 +
+> >  drivers/watchdog/Makefile                     |   1 +
+> >  drivers/watchdog/simatic-ipc-wdt.c            | 215
+> > ++++++++++++++++++ .../platform_data/x86/simatic-ipc-base.h      |
+> > 29 +++ include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++
+> >  14 files changed, 769 insertions(+), 21 deletions(-)
+> >  create mode 100644 drivers/leds/simple/Kconfig
+> >  create mode 100644 drivers/leds/simple/Makefile
+> >  create mode 100644 drivers/leds/simple/simatic-ipc-leds.c
+> >  create mode 100644 drivers/platform/x86/simatic-ipc.c
+> >  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+> >  create mode 100644
+> > include/linux/platform_data/x86/simatic-ipc-base.h create mode
+> > 100644 include/linux/platform_data/x86/simatic-ipc.h 
+> 
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
