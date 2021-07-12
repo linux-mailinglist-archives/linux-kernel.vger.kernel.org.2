@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74543C4B88
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30033C52C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241590AbhGLG6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
+        id S1347453AbhGLHto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:49:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237523AbhGLGlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:41:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FAF2610D0;
-        Mon, 12 Jul 2021 06:38:49 +0000 (UTC)
+        id S239477AbhGLHPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8EAA61400;
+        Mon, 12 Jul 2021 07:11:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071930;
-        bh=5zlbmlvk1VlahUaiaHBzlrBgUx3osJ++wGdNjSq0qWo=;
+        s=korg; t=1626073909;
+        bh=y6z0+aKNZ1HSjDGs74IirbkHZSxxDP6hcwBliJXkb/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n3WSlQHvCkVhnBHt9hSAr3F1TttGrY/Qpyv3FDgI99ZKwmkNTg3cb3rdPcbxx0mK+
-         mGfET/X0kECUfF9Bku0QZQLL/1eBlpKJhICyJPyZYwYxps8Pj9LtjvfT6oeBaBudxk
-         vfAg3M9gz/fihD0IXGd+qGkCHu55PvpleFNoU8tA=
+        b=rPgjEuiU7bOfTc+fdsJEE0krlxqQkgZFsw7i8/xyi0TlMWuZTQAgWV57V67s2t92I
+         Yj/xfL9Mwg2jbgQMTCK2LbKg/k1VEwq1JMiDG9KOAuwTXudMoeBNfEFUfIdNT8jLbf
+         q5mSsg9dE0/r50TnN7vUofQ/6oWspjSc78fXgWl0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 280/593] clocksource/drivers/timer-ti-dm: Save and restore timer TIOCP_CFG
+Subject: [PATCH 5.12 357/700] drm/imx: ipuv3-plane: do not advertise YUV formats on planes without CSC
 Date:   Mon, 12 Jul 2021 08:07:20 +0200
-Message-Id: <20210712060914.882762279@linuxfoundation.org>
+Message-Id: <20210712061014.322433964@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,65 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit 9517c577f9f722270584cfb1a7b4e1354e408658 ]
+[ Upstream commit 06841148c570832d4d247b0f6befc1922a84120b ]
 
-As we are using cpu_pm to save and restore context, we must also save and
-restore the timer sysconfig register TIOCP_CFG. This is needed because
-we are not calling PM runtime functions at all with cpu_pm.
+Only planes that are displayed via the Display Processor (DP) path
+support color space conversion. Limit formats on planes that are
+shown via the direct Display Controller (DC) path to RGB.
 
-Fixes: b34677b0999a ("clocksource/drivers/timer-ti-dm: Implement cpu_pm notifier for context save and restore")
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Adam Ford <aford173@gmail.com>
-Cc: Andreas Kemnade <andreas@kemnade.info>
-Cc: Lokesh Vutla <lokeshvutla@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210415085506.56828-1-tony@atomide.com
+Reported-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/timer-ti-dm.c | 6 ++++++
- include/clocksource/timer-ti-dm.h | 1 +
- 2 files changed, 7 insertions(+)
+ drivers/gpu/drm/imx/ipuv3-plane.c | 41 ++++++++++++++++++++++++++++---
+ 1 file changed, 37 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
-index 33eeabf9c3d1..e5c631f1b5cb 100644
---- a/drivers/clocksource/timer-ti-dm.c
-+++ b/drivers/clocksource/timer-ti-dm.c
-@@ -78,6 +78,9 @@ static void omap_dm_timer_write_reg(struct omap_dm_timer *timer, u32 reg,
+diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+index 075508051b5f..c5ff966e2ceb 100644
+--- a/drivers/gpu/drm/imx/ipuv3-plane.c
++++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+@@ -35,7 +35,7 @@ static inline struct ipu_plane *to_ipu_plane(struct drm_plane *p)
+ 	return container_of(p, struct ipu_plane, base);
+ }
  
- static void omap_timer_restore_context(struct omap_dm_timer *timer)
- {
-+	__omap_dm_timer_write(timer, OMAP_TIMER_OCP_CFG_OFFSET,
-+			      timer->context.ocp_cfg, 0);
+-static const uint32_t ipu_plane_formats[] = {
++static const uint32_t ipu_plane_all_formats[] = {
+ 	DRM_FORMAT_ARGB1555,
+ 	DRM_FORMAT_XRGB1555,
+ 	DRM_FORMAT_ABGR1555,
+@@ -72,6 +72,31 @@ static const uint32_t ipu_plane_formats[] = {
+ 	DRM_FORMAT_BGRX8888_A8,
+ };
+ 
++static const uint32_t ipu_plane_rgb_formats[] = {
++	DRM_FORMAT_ARGB1555,
++	DRM_FORMAT_XRGB1555,
++	DRM_FORMAT_ABGR1555,
++	DRM_FORMAT_XBGR1555,
++	DRM_FORMAT_RGBA5551,
++	DRM_FORMAT_BGRA5551,
++	DRM_FORMAT_ARGB4444,
++	DRM_FORMAT_ARGB8888,
++	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_ABGR8888,
++	DRM_FORMAT_XBGR8888,
++	DRM_FORMAT_RGBA8888,
++	DRM_FORMAT_RGBX8888,
++	DRM_FORMAT_BGRA8888,
++	DRM_FORMAT_BGRX8888,
++	DRM_FORMAT_RGB565,
++	DRM_FORMAT_RGB565_A8,
++	DRM_FORMAT_BGR565_A8,
++	DRM_FORMAT_RGB888_A8,
++	DRM_FORMAT_BGR888_A8,
++	DRM_FORMAT_RGBX8888_A8,
++	DRM_FORMAT_BGRX8888_A8,
++};
 +
- 	omap_dm_timer_write_reg(timer, OMAP_TIMER_WAKEUP_EN_REG,
- 				timer->context.twer);
- 	omap_dm_timer_write_reg(timer, OMAP_TIMER_COUNTER_REG,
-@@ -95,6 +98,9 @@ static void omap_timer_restore_context(struct omap_dm_timer *timer)
+ static const uint64_t ipu_format_modifiers[] = {
+ 	DRM_FORMAT_MOD_LINEAR,
+ 	DRM_FORMAT_MOD_INVALID
+@@ -822,16 +847,24 @@ struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
+ 	struct ipu_plane *ipu_plane;
+ 	const uint64_t *modifiers = ipu_format_modifiers;
+ 	unsigned int zpos = (type == DRM_PLANE_TYPE_PRIMARY) ? 0 : 1;
++	unsigned int format_count;
++	const uint32_t *formats;
+ 	int ret;
  
- static void omap_timer_save_context(struct omap_dm_timer *timer)
- {
-+	timer->context.ocp_cfg =
-+		__omap_dm_timer_read(timer, OMAP_TIMER_OCP_CFG_OFFSET, 0);
-+
- 	timer->context.tclr =
- 			omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
- 	timer->context.twer =
-diff --git a/include/clocksource/timer-ti-dm.h b/include/clocksource/timer-ti-dm.h
-index 4c61dade8835..f6da8a132639 100644
---- a/include/clocksource/timer-ti-dm.h
-+++ b/include/clocksource/timer-ti-dm.h
-@@ -74,6 +74,7 @@
- #define OMAP_TIMER_ERRATA_I103_I767			0x80000000
+ 	DRM_DEBUG_KMS("channel %d, dp flow %d, possible_crtcs=0x%x\n",
+ 		      dma, dp, possible_crtcs);
  
- struct timer_regs {
-+	u32 ocp_cfg;
- 	u32 tidr;
- 	u32 tier;
- 	u32 twer;
++	if (dp == IPU_DP_FLOW_SYNC_BG || dp == IPU_DP_FLOW_SYNC_FG) {
++		formats = ipu_plane_all_formats;
++		format_count = ARRAY_SIZE(ipu_plane_all_formats);
++	} else {
++		formats = ipu_plane_rgb_formats;
++		format_count = ARRAY_SIZE(ipu_plane_rgb_formats);
++	}
+ 	ipu_plane = drmm_universal_plane_alloc(dev, struct ipu_plane, base,
+ 					       possible_crtcs, &ipu_plane_funcs,
+-					       ipu_plane_formats,
+-					       ARRAY_SIZE(ipu_plane_formats),
+-					       modifiers, type, NULL);
++					       formats, format_count, modifiers,
++					       type, NULL);
+ 	if (IS_ERR(ipu_plane)) {
+ 		DRM_ERROR("failed to allocate and initialize %s plane\n",
+ 			  zpos ? "overlay" : "primary");
 -- 
 2.30.2
 
