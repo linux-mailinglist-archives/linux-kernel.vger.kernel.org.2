@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF483C5378
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257013C58AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352454AbhGLHyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:54:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58938 "EHLO mail.kernel.org"
+        id S1380058AbhGLIvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234094AbhGLHVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:21:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD1B1613F3;
-        Mon, 12 Jul 2021 07:18:15 +0000 (UTC)
+        id S1348161AbhGLHzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:55:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F359761220;
+        Mon, 12 Jul 2021 07:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074296;
-        bh=/La4oKzyrPz40tW9dXkKEkKQoswgcRbVeaCKYeCLnI0=;
+        s=korg; t=1626076314;
+        bh=OCif2ZsNIOhHAWJltQSZzdH7Ucun+7oFwwXTFZNaHWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VeTeRyBwK0bmyVTAMPiycvPeg412xlDbTkYSEatkDkLGmuZEclgVtKceKbcAPcvqE
-         OuBMoiIslZxTkoarwEfzrRuMV9kJVdjl+CvrVAukgtPYd4z1gLQ0O8tUNPN65S30mR
-         r47jfuMmNqhDdK08j9Xw/mL7+F97itCYzbbRtFYY=
+        b=oMDFHcMPoo4wlx14SedsWPkxHhhql/U1ChETUHhRUcb2FqPTQmyu2JpYjYbof+lVO
+         kUf2D7YTKtqmS4sFxbRsq0+pQPTpAhNNEYkTdTTzETSqQbEYsNMNghMnD9/aD6D/b3
+         ZAvv/v/k+xTtYp2CguKentoJtVuCMhMSKiqUBT9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Nuno Sa <nuno.sa@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 530/700] iio: adis16400: do not return ints in irq handlers
+Subject: [PATCH 5.13 590/800] clk: si5341: Wait for DEVICE_READY on startup
 Date:   Mon, 12 Jul 2021 08:10:13 +0200
-Message-Id: <20210712061032.894677198@linuxfoundation.org>
+Message-Id: <20210712061030.061914999@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sa <nuno.sa@analog.com>
+From: Robert Hancock <robert.hancock@calian.com>
 
-[ Upstream commit ab3df79782e7d8a27a58576c9b4e8c6c4879ad79 ]
+[ Upstream commit 6e7d2de1e000d36990923ed80d2e78dfcb545cee ]
 
-On an IRQ handler we should not return normal error codes as 'irqreturn_t'
-is expected.
+The Si5341 datasheet warns that before accessing any other registers,
+including the PAGE register, we need to wait for the DEVICE_READY register
+to indicate the device is ready, or the process of the device loading its
+state from NVM can be corrupted. Wait for DEVICE_READY on startup before
+continuing initialization. This is done using a raw I2C register read
+prior to setting up regmap to avoid any potential unwanted automatic PAGE
+register accesses from regmap at this stage.
 
-Not necessary to apply to stable as the original check cannot fail and
-as such the bug cannot actually occur.
-
-Fixes: 5eda3550a3cc1 ("staging:iio:adis16400: Preallocate transfer message")
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210422101911.135630-3-nuno.sa@analog.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
+Signed-off-by: Robert Hancock <robert.hancock@calian.com>
+Link: https://lore.kernel.org/r/20210325192643.2190069-3-robert.hancock@calian.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/imu/adis16400.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/clk/clk-si5341.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/iio/imu/adis16400.c b/drivers/iio/imu/adis16400.c
-index 785a4ce606d8..4aff16466da0 100644
---- a/drivers/iio/imu/adis16400.c
-+++ b/drivers/iio/imu/adis16400.c
-@@ -647,9 +647,6 @@ static irqreturn_t adis16400_trigger_handler(int irq, void *p)
- 	void *buffer;
- 	int ret;
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index e0446e66fa64..b8a960e927bc 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -94,6 +94,7 @@ struct clk_si5341_output_config {
+ #define SI5341_STATUS		0x000C
+ #define SI5341_SOFT_RST		0x001C
+ #define SI5341_IN_SEL		0x0021
++#define SI5341_DEVICE_READY	0x00FE
+ #define SI5341_XAXB_CFG		0x090E
+ #define SI5341_IN_EN		0x0949
+ #define SI5341_INX_TO_PFD_EN	0x094A
+@@ -1189,6 +1190,32 @@ static const struct regmap_range_cfg si5341_regmap_ranges[] = {
+ 	},
+ };
  
--	if (!adis->buffer)
--		return -ENOMEM;
--
- 	if (!(st->variant->flags & ADIS16400_NO_BURST) &&
- 		st->adis.spi->max_speed_hz > ADIS16400_SPI_BURST) {
- 		st->adis.spi->max_speed_hz = ADIS16400_SPI_BURST;
++static int si5341_wait_device_ready(struct i2c_client *client)
++{
++	int count;
++
++	/* Datasheet warns: Any attempt to read or write any register other
++	 * than DEVICE_READY before DEVICE_READY reads as 0x0F may corrupt the
++	 * NVM programming and may corrupt the register contents, as they are
++	 * read from NVM. Note that this includes accesses to the PAGE register.
++	 * Also: DEVICE_READY is available on every register page, so no page
++	 * change is needed to read it.
++	 * Do this outside regmap to avoid automatic PAGE register access.
++	 * May take up to 300ms to complete.
++	 */
++	for (count = 0; count < 15; ++count) {
++		s32 result = i2c_smbus_read_byte_data(client,
++						      SI5341_DEVICE_READY);
++		if (result < 0)
++			return result;
++		if (result == 0x0F)
++			return 0;
++		msleep(20);
++	}
++	dev_err(&client->dev, "timeout waiting for DEVICE_READY\n");
++	return -EIO;
++}
++
+ static const struct regmap_config si5341_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -1385,6 +1412,11 @@ static int si5341_probe(struct i2c_client *client,
+ 
+ 	data->i2c_client = client;
+ 
++	/* Must be done before otherwise touching hardware */
++	err = si5341_wait_device_ready(client);
++	if (err)
++		return err;
++
+ 	for (i = 0; i < SI5341_NUM_INPUTS; ++i) {
+ 		input = devm_clk_get(&client->dev, si5341_input_clock_names[i]);
+ 		if (IS_ERR(input)) {
 -- 
 2.30.2
 
