@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429A93C4C74
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65F83C5308
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243163AbhGLHEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
+        id S1351760AbhGLHwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:52:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238090AbhGLGqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:46:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF348610D0;
-        Mon, 12 Jul 2021 06:42:47 +0000 (UTC)
+        id S243632AbhGLHR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:17:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DB54613D2;
+        Mon, 12 Jul 2021 07:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072168;
-        bh=zvhFL83RE0xo+7bPMo0qIzV/DPNi7+mchRQV0jprd1k=;
+        s=korg; t=1626074080;
+        bh=E+KlYLFRl/zKyIxAOauDhXrjpa6pnYVc+OcOTgqS354=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djkI3khsolrRBbqfn0xkCcDxsYEjmkfK+EBihvKkE0zx86Jd8UvEhHBtc35uCvI/T
-         EgVN84hNP2XHbmRX1AVNnEuwBxhhopKP77I6bskE0P6ixfXPk/ta8cC70FgX3t4iVT
-         LHZ8TrGoM/D4iQRGSzgZHdIQ9HBlwV8xGkIvABy0=
+        b=hs+dbARqaqDqKvrmRRoC2go5ZeRvBd/8J03Fw+45JKaPQxSbma+MJHga4ccHZlar2
+         SENuxhY29fWLY/IgAX8rpLQ9ZlhCjAeffDb3ynlRv40dX5nla6dWtfDrHhVN/iys63
+         AGHG25yCmfqdgXGrKtyr3bPkWghSOPSLIWTTyTK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Bui Quang Minh <minhquangbui99@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 381/593] vxlan: add missing rcu_read_lock() in neigh_reduce()
-Date:   Mon, 12 Jul 2021 08:09:01 +0200
-Message-Id: <20210712060928.891937621@linuxfoundation.org>
+Subject: [PATCH 5.12 459/700] bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
+Date:   Mon, 12 Jul 2021 08:09:02 +0200
+Message-Id: <20210712061025.390500218@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Bui Quang Minh <minhquangbui99@gmail.com>
 
-[ Upstream commit 85e8b032d6ebb0f698a34dd22c2f13443d905888 ]
+[ Upstream commit 7dd5d437c258bbf4cc15b35229e5208b87b8b4e0 ]
 
-syzbot complained in neigh_reduce(), because rcu_read_lock_bh()
-is treated differently than rcu_read_lock()
+In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+the expression becomes the multiplication between 2 32-bit integer which
+can potentially leads to integer overflow. As a result,
+bpf_map_area_alloc() allocates less memory than needed.
 
-WARNING: suspicious RCU usage
-5.13.0-rc6-syzkaller #0 Not tainted
------------------------------
-include/net/addrconf.h:313 suspicious rcu_dereference_check() usage!
+Fix this by casting 1 operand to u64.
 
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-3 locks held by kworker/0:0/5:
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2247
- #1: ffffc90000ca7da8 ((work_completion)(&port->wq)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2251
- #2: ffffffff8bf795c0 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1da/0x3130 net/core/dev.c:4180
-
-stack backtrace:
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.13.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events ipvlan_process_multicast
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- __in6_dev_get include/net/addrconf.h:313 [inline]
- __in6_dev_get include/net/addrconf.h:311 [inline]
- neigh_reduce drivers/net/vxlan.c:2167 [inline]
- vxlan_xmit+0x34d5/0x4c30 drivers/net/vxlan.c:2919
- __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
- netdev_start_xmit include/linux/netdevice.h:4958 [inline]
- xmit_one net/core/dev.c:3654 [inline]
- dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3670
- __dev_queue_xmit+0x2133/0x3130 net/core/dev.c:4246
- ipvlan_process_multicast+0xa99/0xd70 drivers/net/ipvlan/ipvlan_core.c:287
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Fixes: f564f45c4518 ("vxlan: add ipv6 proxy support")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0d2c4f964050 ("bpf: Eliminate rlimit-based memory accounting for sockmap and sockhash maps")
+Fixes: 99c51064fb06 ("devmap: Use bpf_map_area_alloc() for allocating hash buckets")
+Fixes: 546ac1ffb70d ("bpf: add devmap, a map for storing net device references")
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20210613143440.71975-1-minhquangbui99@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vxlan.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/bpf/devmap.c | 4 ++--
+ net/core/sock_map.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index d3b698d9e2e6..48fbdce6a70e 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -2163,6 +2163,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
- 	struct neighbour *n;
- 	struct nd_msg *msg;
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 85d9d1b72a33..b0ab5b915e6d 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -92,7 +92,7 @@ static struct hlist_head *dev_map_create_hash(unsigned int entries,
+ 	int i;
+ 	struct hlist_head *hash;
  
-+	rcu_read_lock();
- 	in6_dev = __in6_dev_get(dev);
- 	if (!in6_dev)
- 		goto out;
-@@ -2214,6 +2215,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
- 	}
+-	hash = bpf_map_area_alloc(entries * sizeof(*hash), numa_node);
++	hash = bpf_map_area_alloc((u64) entries * sizeof(*hash), numa_node);
+ 	if (hash != NULL)
+ 		for (i = 0; i < entries; i++)
+ 			INIT_HLIST_HEAD(&hash[i]);
+@@ -143,7 +143,7 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
  
- out:
-+	rcu_read_unlock();
- 	consume_skb(skb);
- 	return NETDEV_TX_OK;
- }
+ 		spin_lock_init(&dtab->index_lock);
+ 	} else {
+-		dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
++		dtab->netdev_map = bpf_map_area_alloc((u64) dtab->map.max_entries *
+ 						      sizeof(struct bpf_dtab_netdev *),
+ 						      dtab->map.numa_node);
+ 		if (!dtab->netdev_map)
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index d758fb83c884..ae62e6f96a95 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -44,7 +44,7 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
+ 	bpf_map_init_from_attr(&stab->map, attr);
+ 	raw_spin_lock_init(&stab->lock);
+ 
+-	stab->sks = bpf_map_area_alloc(stab->map.max_entries *
++	stab->sks = bpf_map_area_alloc((u64) stab->map.max_entries *
+ 				       sizeof(struct sock *),
+ 				       stab->map.numa_node);
+ 	if (!stab->sks) {
 -- 
 2.30.2
 
