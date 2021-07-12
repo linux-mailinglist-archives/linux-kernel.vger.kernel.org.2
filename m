@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B13F3C6245
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E04E3C629C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbhGLR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232912AbhGLR4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:56:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D74C4611C1;
-        Mon, 12 Jul 2021 17:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626112391;
-        bh=jGnGoxaC8d6Hqlp8ntm0TMB+F435psYQrUnJQ6yH8Fg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tKcGOXhjv5y8WBuGgOpO2/9LW+uwSf8AcaONcpUWvgtJirzHf/3B6HxLT0uSpEGRo
-         IiY+yQR2ZGmqXPY8zzsGikUt626qB8vM2CfUMzYJts/Ra9jdZGixSjQFx3AfZLWFba
-         H81jRYxAkutbDiOHNMriOCpQDHj66mROHl0yfWFcWPP/xTNfXotv380OvJePaARwpL
-         aJusHZSo632ilnBvYjd266deXjDXMb9DKeupXhtFgbCX1EIHCwKduqCzRcf2cLFs/Z
-         6yzN0/B1HO+Ji6nalpNzmI/aeDJz7dBanuHiRI/3N851UxYH0sMezsSOVybnSlsi8Z
-         YiI8KDsySZwpA==
-Date:   Mon, 12 Jul 2021 10:53:10 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org,
-        Joerg Reuter <jreuter@yaina.de>,
-        Ralf Baechle <ralf@linux-mips.org>, linux-hams@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH NET 1/7] skbuff: introduce pskb_realloc_headroom()
-Message-ID: <20210712105310.46d265a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <8049e16b-3d7a-64c3-c948-ec504590a136@virtuozzo.com>
-References: <74e90fba-df9f-5078-13de-41df54d2b257@virtuozzo.com>
-        <cover.1626093470.git.vvs@virtuozzo.com>
-        <8049e16b-3d7a-64c3-c948-ec504590a136@virtuozzo.com>
+        id S235797AbhGLSat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 14:30:49 -0400
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:58846 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhGLSas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 14:30:48 -0400
+X-Greylist: delayed 2346 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Jul 2021 14:30:48 EDT
+Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=rainbowdash)
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1m3032-0000CA-0D; Mon, 12 Jul 2021 18:48:52 +0100
+Received: from ben by rainbowdash with local (Exim 4.94.2)
+        (envelope-from <ben@rainbowdash>)
+        id 1m3030-009EvY-Q4; Mon, 12 Jul 2021 18:48:50 +0100
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     linux-kernel@lists.codethink.co.uk, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH] riscv: add correct as-options for assembly in modules
+Date:   Mon, 12 Jul 2021 18:48:49 +0100
+Message-Id: <20210712174849.2202287-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 16:26:44 +0300 Vasily Averin wrote:
->  /**
-> + *	pskb_realloc_headroom - reallocate header of &sk_buff
-> + *	@skb: buffer to reallocate
-> + *	@headroom: needed headroom
-> + *
-> + *	Unlike skb_realloc_headroom, this one does not allocate a new skb
-> + *	if possible; copies skb->sk to new skb as needed
-> + *	and frees original scb in case of failures.
-> + *
-> + *	It expect increased headroom, and generates warning otherwise.
-> + */
-> +
-> +struct sk_buff *pskb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+When trying to load modules built for riscv which include assembly
+the kernel loader errors with "unexpected relocation type 'R_RISCV_ALIGN'"
+due to R_RISCV_ALIGN relocations being generated by the assembler.
 
-I saw you asked about naming in a different sub-thread, what do you
-mean by "'pskb_expand_head' have different semantic"? AFAIU the 'p'
-in pskb stands for "private", meaning not shared. In fact
-skb_realloc_headroom() should really be pskb... but it predates the 
-'pskb' naming pattern by quite a while. Long story short
-skb_expand_head() seems like a good name. With the current patch
-pskb_realloc_headroom() vs skb_realloc_headroom() would give people
-exactly the opposite intuition of what the code does.
+In commit 7a8e7da42250138 ("RISC-V: Fixes to module loading")
+the fix for gcc adds -mno-relax to the command line when building
+C files. However this was never applied to assembly flags, and gcc
+does no pass -mno-relax to gas when presented with a .S file.
+
+The fix (other than making gcc always pass -mno-relax to gas) is
+to add -Wa,-mno-relax to gcc to make sure the as is invoked with
+the right options.
+
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+---
+ arch/riscv/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 1f5c03082976..fca40511a8c6 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -60,6 +60,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
+ endif
+ 
+ KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-relax)
++KBUILD_AFLAGS_MODULE += $(call as-option,-Wa$(comma)-mno-relax)
+ 
+ # GCC versions that support the "-mstrict-align" option default to allowing
+ # unaligned accesses.  While unaligned accesses are explicitly allowed in the
+-- 
+2.30.2
+
