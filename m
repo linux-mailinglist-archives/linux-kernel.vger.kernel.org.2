@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934B83C6672
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296EF3C6676
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhGLWjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 18:39:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59066 "EHLO mail.kernel.org"
+        id S231891AbhGLWmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 18:42:52 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33455 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhGLWjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 18:39:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 303CF61183;
-        Mon, 12 Jul 2021 22:36:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626129393;
-        bh=ZLUAxjTwJuR1eoy9AUGR/u9jh4N+I5I/fJ261D+fEQk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HOmcKa4Z9wxBEQ9WYqiglwEhp3GIsvbMPGxKk8yReBkc9xoCypcbo8DSB3XreUBAs
-         x/q8pHobaTJlwT2XnfKGKWOSDuDFyfSmy+RKeymJeBo8ZHFgH0CDiriZqFdMOkavis
-         TipwjcettlCG9w5QkkFlwwdsQESA5PIIGM82CDaMqfVOoNn17hkXW5+9OaVUhZ4WfL
-         txUY8Ocbzw5NSfvRvSb0Pu9L2onlsZxpnSn12qAYxFV17HahRbaWSTqFsMHJTPCow1
-         aeJZd718H+PvQAUC07Hb6JoxXv2OCMes/TMU18gflDEcFMcHkYuqX64Hh/qqVBUlbU
-         A86c7L4B6Qhcg==
-Date:   Mon, 12 Jul 2021 17:36:31 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>, bjorn@helgaas.com,
-        andy@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v1] gpio: ml: ioh: Convert to
- dev_pm_ops
-Message-ID: <20210712223631.GA1682719@bjorn-Precision-5520>
+        id S229931AbhGLWmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 18:42:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GNzH519N2z9sRN;
+        Tue, 13 Jul 2021 08:40:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626129601;
+        bh=pUinegmw/I69ijKK5Z5PXZv317Tsr9Eyo6sOYjk6PqI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kdCTvOww8I1iYzb+0SUqW42mHPTENYBRSyQ9OUN9kgWFAuAG2yIzUV+df3fIiB7tu
+         Az3Wwv/XPFiCxjGSox76oMuPp3ujbP9PGPDWipb4XGvs4PY0kaM1Iigt1FdHnVR4Eg
+         MDShzrQlZJykCpm/FUaktNouikvY4Zmm3dcuWapNaJ5LqaHUemMe58xbCJfJWkGLZ0
+         nUKzD8fENJjXinBIEGoIryHwd5/lJDCzeTNvebh5OPqhQOrOD4kcH+YrNJW2XoO0y5
+         iJNY/TVecRvgDH2A1uojB0r1V/ouSXu1BCIg+wY7S9xy46qAse6WNlUQCL+fg8eYIb
+         eLr6kBtOeke+A==
+Date:   Tue, 13 Jul 2021 08:39:58 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc:     linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: linux-next: removed trees
+Message-ID: <20210713083958.413e85b7@canb.auug.org.au>
+In-Reply-To: <20210705215743.40b26667@kant>
+References: <20210514123221.7c21393f@canb.auug.org.au>
+        <20210705215743.40b26667@kant>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOwr/GMIExCoNjeZ@smile.fi.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/T7D/pkuNwrusp=tD+pC6OAn";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 02:48:12PM +0300, Andy Shevchenko wrote:
-> On Thu, Jul 08, 2021 at 04:47:06PM -0500, Bjorn Helgaas wrote:
-> > On Thu, Apr 02, 2020 at 11:23:27PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Apr 2, 2020 at 11:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Thu, Apr 02, 2020 at 09:33:46PM +0300, Andy Shevchenko wrote:
-> > > > > On Thu, Apr 2, 2020 at 6:52 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
-> > > > > >
-> > > > > > Convert the legacy callback .suspend() and .resume()
-> > > > > > to the generic ones.
-> > > > >
-> > > > > Thank you for the patch.
-> > > > >
-> > > > > Rather then doing this I think the best approach is to unify gpio-pch
-> > > > > and gpio-ml-ioh together.
-> > > > > Under umbrella of the task, the clean ups like above are highly
-> > > > > appreciated.
-> > > >
-> > > > I'd be all in favor of that, but what Vaibhav is working toward is
-> > > > eliminating use of legacy PM in PCI drivers.  I think unifying drivers
-> > > > is really out of scope for that project.
-> > > >
-> > > > If you'd rather leave gpio-ml-ioh.c alone for now, I suggest that
-> > > > Vaibhav move on to other PCI drivers that use legacy PM.  If we
-> > > > convert all the others away from legacy PM and gpio-ml-ioh.c is the
-> > > > only one remaining, then I guess we can revisit this :)
-> > > 
-> > > Then skip this driver for good.
-> > > 
-> > > > Or, maybe converting gpio-ml-ioh.c now, along the lines of
-> > > > 226e6b866d74 ("gpio: pch: Convert to dev_pm_ops"), would be one small
-> > > > step towards the eventual unification, by making gpio-pch and
-> > > > gpio-ml-ioh a little more similar.
-> > > 
-> > > I think it will delay the real work here (very old code motivates
-> > > better to get rid of it then semi-fixed one).
-> > 
-> > With respect, I think it is unreasonable to use the fact that
-> > gpio-ml-ioh and gpio-pch should be unified to hold up the conversion
-> > of gpio-ml-ioh to generic power management.
-> > 
-> > I do not want to skip gpio-ml-ioh for good, because it is one of the
-> > few remaining drivers that use the legacy PCI PM interfaces.  We are
-> > very close to being able to remove a significant amount of ugly code
-> > from the PCI core.
-> 
-> Makes sense (1).
-> 
-> > gpio-ml-ioh and gpio-pch do look quite similar, and no doubt it would
-> > be great to unify them.  But without datasheets or hardware to test,
-> 
-> Datasheets are publicly available (at least one may google and find some
-> information about those PCH chips). I have in possession the hardware for
-> gpio-pch. I can easily test that part at least.
+--Sig_/T7D/pkuNwrusp=tD+pC6OAn
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If you have a URL for those datasheets, can you share it?  I spent
-some time looking but all I found was 1-2 page marketing brochures.
+Hi Stefan,
 
-> > that's not a trivial task, and I don't think that burden should fall
-> > on anyone who wants to make any improvements to these drivers.
-> 
-> > Another alternative would be to remove legacy PCI PM usage
-> > (ioh_gpio_suspend() and ioh_gpio_resume()) from gpio-ml-ioh.  That
-> > would mean gpio-ml-ioh wouldn't support power management at all, which
-> > isn't a good thing, but maybe it would be even more motivation to
-> > unify it with gpio-pch (which has already been converted by
-> > 226e6b866d74 ("gpio: pch: Convert to dev_pm_ops"))?
-> 
-> With regard to (1) probably we may exceptionally accept the fix to
-> gpio-ml-ioh, but I really prefer to do the much more _useful_ job on
-> it by unifying the two.
+On Mon, 5 Jul 2021 21:57:43 +0200 Stefan Richter <stefanr@s5r6.in-berlin.de=
+> wrote:
+>
 
-Should Vaibhav re-post this patch, or do you want to pull it from the
-archives?  I just checked and it still applies cleanly to v5.14-rc1.
 
-Here it is for reference:
-  https://lore.kernel.org/lkml/20200402155057.30667-1-vaibhavgupta40@gmail.com/
+> Would you be OK with adding linux1394.git (for-next branch) back to
+> linux-next?  There are two patches queued and I am finally aiming to get
+> them merged. :-)
+>=20
+> Christophe JAILLET (1):
+>       firewire: nosy: switch from 'pci_' to 'dma_' API
+>=20
+> YueHaibing (1):
+>       firewire: net: remove set but not used variable 'guid'
+>
 
-I'll post a couple small patches toward unifying them.  They don't do
-the whole job but they're baby steps.
+Readded from today.
 
-Bjorn
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--Sig_/T7D/pkuNwrusp=tD+pC6OAn
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDsxL4ACgkQAVBC80lX
+0Gz3Rwf/Y3fCj4Rj1PZGIKXhn2fjUP2q7kuSBDeh+s5MtRbSJcqJgicBI8+LX/rv
+nARA0xFLtjkm0DP/zPUpP2uVzgIJd5ZRaGdyiiLvl4KCHZ/IkEC9YDq2N5cuWJgm
+MrRywd4Y+/3Xdq+RcoC69vKsL9Kx3CiOty7W2PhkJ2jJTo43K8ndNSQf7rN/1aTJ
+/LDgqXfJ0/jX6LzhUY8eXAblgnlyGa8CsgD/llG3AXYG+YC4JressQ1dRzV+IQhf
+ICTKO2Dfaw5fb3SfJatN2X8xK4E14wwwBF4iWYaicY8FOiIhp7sQ5jR/raNk5nYN
+GPlQuhtZyGJ12oG5waBGonYhqvb61g==
+=BNg4
+-----END PGP SIGNATURE-----
+
+--Sig_/T7D/pkuNwrusp=tD+pC6OAn--
