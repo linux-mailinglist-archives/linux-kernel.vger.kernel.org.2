@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CAE3C62E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C830E3C62E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhGLSsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 14:48:25 -0400
-Received: from relay.sw.ru ([185.231.240.75]:55846 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234000AbhGLSsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 14:48:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=iAEZINJDepSq91s49rJlKY2GlIRP1NxaA+57Jcf/IuU=; b=UaNeQisPHAhOQk6p0
-        R/9EJQTjFYSh2IJceO9Hc061xF5a/sUDJn9crRZpai/N012INLJB0oqw8nDXnjkyzP6Ione0d+Pj1
-        1IOuh5ejnGq0uiq9sSQrEN4CA2BgWiHBbfVdPXL7S+bMj52C8x5H7F9IgSyAzNLJyZY+Jm4aYZTY0
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m30vo-003k5b-Pt; Mon, 12 Jul 2021 21:45:28 +0300
-Subject: Re: [PATCH NET 1/7] skbuff: introduce pskb_realloc_headroom()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org,
-        Joerg Reuter <jreuter@yaina.de>,
-        Ralf Baechle <ralf@linux-mips.org>, linux-hams@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <74e90fba-df9f-5078-13de-41df54d2b257@virtuozzo.com>
- <cover.1626093470.git.vvs@virtuozzo.com>
- <8049e16b-3d7a-64c3-c948-ec504590a136@virtuozzo.com>
- <20210712105310.46d265a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
-Date:   Mon, 12 Jul 2021 21:45:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236003AbhGLStA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 14:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234000AbhGLSs6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 14:48:58 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A2AC0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:46:10 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id n14so45209916lfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gxxKGdA+5qR/PqDl5JcB6bRGhDZ950mjZMdzjeHwe9A=;
+        b=v+epGUGrho+waSY/qXypfEen9g1FP1Y1I3VGFmt+FSd8NqjlYzx0xWVOhBij1bXxVe
+         1rOMkUh+FfFAQKz6Akh9cS91jlTHunIs6MU8tC+0vMNPOFx98/BXd7VJi6NojikBw66S
+         xuwJowHMP2SBEQFM0RFdRoPaFvfDUyTB7fKOIxuLad2FbLmwa9di03QUYyalRYiFy63E
+         OoZWfSLwumDFV/ZpiHpbtTOWfBntcWKDkqVeu+r2G9Hf0MXJoq259JaXexCZPI/Usx02
+         XIW38qdRKAXxDFSmfWCH6K/zlOqcrI8i7CPB7Euz7D0RucnOFsrWxxu0vLIJA0aOG0xp
+         4vjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gxxKGdA+5qR/PqDl5JcB6bRGhDZ950mjZMdzjeHwe9A=;
+        b=tNPQ4wmVyGRkl7bdEg8E+5ggYxPn78YBbQGnca40iv9gU9pTMehKKvyJ5UkCg008Oy
+         CkDRIEe7ORNFUofn5xMNEWi55p9bLdU/IgyqtJutyhGeZVazmCo66BSHIIuZ0lJGJi19
+         MBiHndYxvE8WNtUOY4uPiNAP4WjJg5P6K7GaMKNDHvAdov/BWaJ6QgCtuGLgPUc1BO9u
+         Ch8cv3/WhNHlVECevAGk+fV+wG8TLWsqugzOLhEQuk9k23bNlXAgzeq/rT/lLJ0c6/Q6
+         1UfrkYH1Nt6vEepDSLYhYJ+FZZWR0ElraoHFplWAVfrLpOXGVXA0X/x5CIBhzoMi9GTa
+         OnGA==
+X-Gm-Message-State: AOAM5336LGvZnqy/f/1hF4fmSli2en35c+akdambDTUe70WNrtimrsAu
+        mnp+qtwcSg9NOwllNM29JyerLCqZD/rJ0JLD8/c6yw==
+X-Google-Smtp-Source: ABdhPJzsnk7g8zQbTcCI707MmRveOtRone01I/489DLAAbH6SqY0xHeKZ2mm1i8batQMfCx2LW4ztu4s6lovd6kKRS4=
+X-Received: by 2002:a19:f710:: with SMTP id z16mr115428lfe.455.1626115568191;
+ Mon, 12 Jul 2021 11:46:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210712105310.46d265a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210707183616.5620-1-brijesh.singh@amd.com> <20210707183616.5620-24-brijesh.singh@amd.com>
+In-Reply-To: <20210707183616.5620-24-brijesh.singh@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Mon, 12 Jul 2021 12:45:56 -0600
+Message-ID: <CAMkAt6q5Zjyn798fbhyQhmy+2drwSVRnCzMWxTUR-QUFzY9kEg@mail.gmail.com>
+Subject: Re: [PATCH Part2 RFC v4 23/40] KVM: SVM: Add KVM_SEV_SNP_LAUNCH_START command
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        brijesh.ksingh@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 8:53 PM, Jakub Kicinski wrote:
-> I saw you asked about naming in a different sub-thread, what do you
-> mean by "'pskb_expand_head' have different semantic"? AFAIU the 'p'
-> in pskb stands for "private", meaning not shared. In fact
-> skb_realloc_headroom() should really be pskb... but it predates the 
-> 'pskb' naming pattern by quite a while. Long story short
-> skb_expand_head() seems like a good name. With the current patch
-> pskb_realloc_headroom() vs skb_realloc_headroom() would give people
-> exactly the opposite intuition of what the code does.
+>
+> +static int snp_decommission_context(struct kvm *kvm)
+> +{
+> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +       struct sev_data_snp_decommission data = {};
+> +       int ret;
+> +
+> +       /* If context is not created then do nothing */
+> +       if (!sev->snp_context)
+> +               return 0;
+> +
+> +       data.gctx_paddr = __sme_pa(sev->snp_context);
+> +       ret = snp_guest_decommission(&data, NULL);
+> +       if (ret)
+> +               return ret;
 
-Thank you for feedback,
-I'll change helper name back to skb_expand_head() in next patch version.
+Should we WARN or pr_err here? I see in the case of
+snp_launch_start's e_free_context we do not warn the user they have
+leaked a firmware page.
 
-	Vasily Averin
+>
+> +
+> +       /* free the context page now */
+> +       snp_free_firmware_page(sev->snp_context);
+> +       sev->snp_context = NULL;
+> +
+> +       return 0;
+> +}
+> +
+>  void sev_vm_destroy(struct kvm *kvm)
+>  {
+>         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> @@ -1847,7 +1969,15 @@ void sev_vm_destroy(struct kvm *kvm)
+>
+>         mutex_unlock(&kvm->lock);
+>
+> -       sev_unbind_asid(kvm, sev->handle);
+> +       if (sev_snp_guest(kvm)) {
+> +               if (snp_decommission_context(kvm)) {
+> +                       pr_err("Failed to free SNP guest context, leaking asid!\n");
+
+Should these errors be a WARN since we are leaking some state?
+
+
+> +                       return;
+> +               }
+> +       } else {
+> +               sev_unbind_asid(kvm, sev->handle);
+> +       }
+> +
+>         sev_asid_free(sev);
+>  }
+>
