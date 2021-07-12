@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5611C3C6577
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841503C657B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234693AbhGLVby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhGLVby (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:31:54 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D84C0613E5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:29:05 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d1so4741871plg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BkrEyH8mx/bHbUobUw8cYQvGucPnsXvj9PS56zkSVhs=;
-        b=i86YDTFrzCB8hKMQLuztVM4IusV7JV7AaSwYHZ+aEweXflP4cc43CdY27Su2zLewUQ
-         +U6QNy+rkr4apla529EPqkEN+6fSW4CjZE2ATIBrHN+TYcGXy0oXtmvtyGywGViYO3s9
-         8VHlNR4DghsQIqknI4wlrSquEuXpHr6Hu1tdVAnqOZv12yfM0Z7ItkOH+hd69AsCuyr6
-         3bJ+BG9pVaiYgwBvvpeFoRZxmeMKeyMHw+Gy6Uf09I+yANMzw+mXxDObIcqbbqbxMHuu
-         V6PXQiLcBuQrypfTuLNtaotbtfRrumV9nu8zLWCotFefk9W3p2r0ktYzpEDulg2kKJ63
-         sFsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BkrEyH8mx/bHbUobUw8cYQvGucPnsXvj9PS56zkSVhs=;
-        b=EfhbCMJ2712BcN6IcQdQAQvjLJQMItwECbRckmdQFT2AMXEiSV8asmJ3OxHwthkoze
-         2UQAAe5ycj6XvYPhEDmkRdiGsMXDTWtv8li6s5LqYBTeM/POu5VDksDjoPs/cOImTpzD
-         rl1qqMAETs9JC52VVD4/pL3nj7ifOmPag+V0dpJSZeWGDh9+usYyIida7pYnGglp7/ek
-         hp3QRebaSZXviQJC3CEHMX+lkCFuhhr6bK/UIjA3fIjwMG2aWkZWUFHosjlJX6yr8IUX
-         73zdx1oLRz4mBliPl7937oBciBjNNCCwA/Ay7I3sPhlbbTPkrQyVpeeyOJp3ovW1iCyy
-         fVfA==
-X-Gm-Message-State: AOAM530bKRFBzfLtBGgjnvM1RIS7fhYMazwzRSQdr/MoOnXiAUuqhaB/
-        9v7BTdC/r6GXze6f2PvghDBekg==
-X-Google-Smtp-Source: ABdhPJzM5mRK5WKvI7tk2x+HHSfWaCY9yOC0KVUP5/4gSTGmva0r7029DXc44BBlofnA+O9mlULWaA==
-X-Received: by 2002:a17:902:8c81:b029:129:a9a8:67f9 with SMTP id t1-20020a1709028c81b0290129a9a867f9mr835809plo.79.1626125344703;
-        Mon, 12 Jul 2021 14:29:04 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a6sm15660458pfn.1.2021.07.12.14.29.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 14:29:04 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 21:29:00 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     syzbot <syzbot+a3fcd59df1b372066f5a@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
-        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        pbonzini@redhat.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org,
-        sedat.dilek@gmail.com, syzkaller-bugs@googlegroups.com,
-        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, x86@kernel.org
-Subject: Re: [syzbot] general protection fault in try_grab_compound_head
-Message-ID: <YOy0HAnhsXJ4W210@google.com>
-References: <0000000000009e89e205c63dda94@google.com>
- <87fswpot3i.ffs@nanos.tec.linutronix.de>
+        id S234233AbhGLVew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:34:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:33138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231878AbhGLVew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 17:34:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31BD26D;
+        Mon, 12 Jul 2021 14:32:03 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFFCA3F694;
+        Mon, 12 Jul 2021 14:32:01 -0700 (PDT)
+Subject: Re: [PATCH] drm/of: free the iterator object on failure
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210712155758.48286-1-steven.price@arm.com>
+ <YOxyvIoJcZFAgUz5@pendragon.ideasonboard.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <b420a4e6-8038-6c1e-7c97-75ef3bea3c21@arm.com>
+Date:   Mon, 12 Jul 2021 22:31:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fswpot3i.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <YOxyvIoJcZFAgUz5@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021, Thomas Gleixner wrote:
-> On Sat, Jul 03 2021 at 13:24, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-> > Author: Mark Rutland <mark.rutland@arm.com>
-> > Date:   Mon Jan 11 15:37:07 2021 +0000
-> >
-> >     lockdep: report broken irq restoration
+On 12/07/2021 17:50, Laurent Pinchart wrote:
+> Hi Steven,
 > 
-> That's the commit which makes the underlying problem visible:
+> Thank you for the patch.
 > 
->        raw_local_irq_restore() called with IRQs enabled
+> On Mon, Jul 12, 2021 at 04:57:58PM +0100, Steven Price wrote:
+>> When bailing out due to the sanity check the iterator value needs to be
+>> freed because the early return prevents for_each_child_of_node() from
+>> doing the dereference itself.
+>>
+>> Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
 > 
-> and is triggered by this call chain:
-> 
->  kvm_wait arch/x86/kernel/kvm.c:860 [inline]
->  kvm_wait+0xc3/0xe0 arch/x86/kernel/kvm.c:837
+> I don't think the Fixes tag is correct, the issue was already present
+> before 4ee48cc5586b. The fix looks right though.
 
-And the bug in kvm_wait() was fixed by commit f4e61f0c9add ("x86/kvm: Fix broken
-irq restoration in kvm_wait").  The bisection is bad, syzbot happened into the
-kvm_wait() WARN and got distracted.  The original #GP looks stable, if someone
-from mm land has bandwidth.
+I'm not sure quite what you mean by "already present". As I understand
+it the timeline was:
+
+1. 6529007522de drm: of: Add drm_of_lvds_get_dual_link_pixel_order
+   The function was originally added. This made the mistake twice of
+   calling of_node_put() on the wrong variable (remote_port rather than
+   endpoint).
+
+2. 4ee48cc5586b drm: of: Fix double-free bug
+   One of the of_node_put() calls was removed as it was a double-free.
+   This left the first incorrect of_node_put() in place, and the second
+   is now a straight leak.
+
+3. b557a5f8da57 drm/of: free the right object
+   This (correctly) fixes the first of_node_put() to free endpoint. And
+   the post from Daniel was what caused me to look.
+
+4. This patch
+   Reintroduces the of_node_put() removed in (2) but putting endpoint
+   rather than remote_port.
+
+I've put (2) in the Fixes line as this patch is fixing the leak
+introduced by that patch, but that in itself was of course 'fixing' the
+double free of the original patch.
+
+Steve
+
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>  drivers/gpu/drm/drm_of.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> Daniel's email[1] made me take a look at this function and it appears
+>> that for_each_child_of_node()'s interface had caused a bad bug fix due
+>> to the hidden reference counting in the iterator.
+>>
+>> [1] https://lore.kernel.org/r/YOxQ5TbkNrqCGBDJ%40phenom.ffwll.local
+>>
+>> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
+>> index 197c57477344..997b8827fed2 100644
+>> --- a/drivers/gpu/drm/drm_of.c
+>> +++ b/drivers/gpu/drm/drm_of.c
+>> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
+>>  		 * configurations by passing the endpoints explicitly to
+>>  		 * drm_of_lvds_get_dual_link_pixel_order().
+>>  		 */
+>> -		if (!current_pt || pixels_type != current_pt)
+>> +		if (!current_pt || pixels_type != current_pt) {
+>> +			of_node_put(endpoint);
+>>  			return -EINVAL;
+>> +		}
+>>  	}
+>>  
+>>  	return pixels_type;
+> 
+
