@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A73D3C4EA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEEE63C565A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344168AbhGLHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57034 "EHLO mail.kernel.org"
+        id S1357391AbhGLIRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239124AbhGLGzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:55:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C569961283;
-        Mon, 12 Jul 2021 06:52:52 +0000 (UTC)
+        id S243100AbhGLHdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:33:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11089613DC;
+        Mon, 12 Jul 2021 07:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072773;
-        bh=NKi9if7MEdzqdqSUaIXGIG/+7gMqhQGY9or/8QqKbq4=;
+        s=korg; t=1626075031;
+        bh=DSZyYzhJotfCKGAIacXj6L5zB78kS4zPwJGJEBxsjF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zu52XUislTwviYPIhRtiGnGp7kgvsOYXu2RV9YlvhDZzPS6KEs15oOteA4EiO45bE
-         /VZKzMDTSiXWCmhDMIoH4hrdcLpmpgag5BoLLWEvzCAs3khOh9pjOUumrQtJEqIBq2
-         ssAPGsQsB8gvqg8Lc6vGya1l9VkXAMNQEkdxpHIM=
+        b=dpBJXO/sUt6BQ31/iTqRRwwr9Ciyq0MvZ9+yCjdCf928QtLejbMbN1aX5Mt09d4dK
+         kD4NuIZPsl2npkdsSER15yBBHf3dxONK0R8G4ptKMz5RSHurmyQKCnCRMB7fU5ClGP
+         ORZn2fqrXDIeYaZxxwjHQAlc/c/Vr5L0VDe4OqIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 017/700] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook 830 G8 Notebook PC
-Date:   Mon, 12 Jul 2021 08:01:40 +0200
-Message-Id: <20210712060927.205779918@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.13 078/800] KVM: x86/mmu: Use MMUs role to detect CR4.SMEP value in nested NPT walk
+Date:   Mon, 12 Jul 2021 08:01:41 +0200
+Message-Id: <20210712060924.109814849@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Szu <jeremy.szu@canonical.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit dfc2e8ae4066a95c7f9c2bb2dfa26651feaa6b83 upstream.
+commit ef318b9edf66a082f23d00d79b70c17b4c055a26 upstream.
 
-The HP EliteBook 830 G8 Notebook PC using ALC285 codec which using 0x04 to
-control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+Use the MMU's role to get its effective SMEP value when injecting a fault
+into the guest.  When walking L1's (nested) NPT while L2 is active, vCPU
+state will reflect L2, whereas NPT uses the host's (L1 in this case) CR0,
+CR4, EFER, etc...  If L1 and L2 have different settings for SMEP and
+L1 does not have EFER.NX=1, this can result in an incorrect PFEC.FETCH
+when injecting #NPF.
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210625133414.26760-1-jeremy.szu@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: e57d4a356ad3 ("KVM: Add instruction fetch checking when walking guest page table")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210622175739.3610207-5-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/mmu/paging_tmpl.h |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8355,6 +8355,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
-+	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -471,8 +471,7 @@ retry_walk:
+ 
+ error:
+ 	errcode |= write_fault | user_fault;
+-	if (fetch_fault && (mmu->nx ||
+-			    kvm_read_cr4_bits(vcpu, X86_CR4_SMEP)))
++	if (fetch_fault && (mmu->nx || mmu->mmu_role.ext.cr4_smep))
+ 		errcode |= PFERR_FETCH_MASK;
+ 
+ 	walker->fault.vector = PF_VECTOR;
 
 
