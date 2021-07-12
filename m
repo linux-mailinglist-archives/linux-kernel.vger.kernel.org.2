@@ -2,243 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10223C4132
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 04:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738B13C4135
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 04:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhGLC03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 22:26:29 -0400
-Received: from mail-m17640.qiye.163.com ([59.111.176.40]:13762 "EHLO
-        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhGLC02 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 22:26:28 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=Ci9fpDwZ3K7yMZyPzMWyS//Y1lJ4zflep6v1VhiaGTWT7yDHOGEPSNNPp6X8vRtQW4hK24uEvdNqI01iRdIG6siCCA583cKCFhEzLsdmVv2DpXghZm4N64II0E5V6C8XLhKJ09FVVxWHmYD9a16oUAilTxe+Hfm2nx+CLgZW71Y=;
-        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
-        bh=xId9UBSl2oFbEbCxkCdYFpJCM6d3AHaVjsuDzuyRqdc=;
-        h=date:mime-version:subject:message-id:from;
-Received: from NJ-11133793.vivo.xyz (unknown [36.152.145.180])
-        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id E225A5400CE;
-        Mon, 12 Jul 2021 10:23:38 +0800 (CST)
-From:   Yang Huan <link@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Yang Huan <link@vivo.com>, Alexander Lobakin <alobakin@pm.me>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     kernel@vivo.com,
-        syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com,
-        Wang Qing <wangqing@vivo.com>
-Subject: [PATCH v2] mm/page_alloc: fix alloc_pages_bulk/set_page_owner panic on irq disabled
-Date:   Mon, 12 Jul 2021 10:23:32 +0800
-Message-Id: <20210712022333.1510-1-link@vivo.com>
-X-Mailer: git-send-email 2.32.0
+        id S232527AbhGLCaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 22:30:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50054 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhGLCaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 22:30:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="190294649"
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="190294649"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 19:27:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="493246176"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP; 11 Jul 2021 19:27:28 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Sun, 11 Jul 2021 19:27:27 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Sun, 11 Jul 2021 19:27:27 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Sun, 11 Jul 2021 19:27:27 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Sun, 11 Jul 2021 19:27:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oZpbckCSj/8+rHnQ9bslF9FUMp2y8zGNebKg2fBDSC/O7ZXkqKtNhn2qyFpWan5FKGpg3Pf9PkgZwfnBQhCLY9BaWfU9bhSpMVSsOtnShORHsnMjdOGN1tr+EQ5XUiva519GORDw7br2ed+x6mtaWcGl5ZZSzbcIcRlLc8AYG+OYJJRxiZhvAt2UiqZ3pJbu0sbcRCjmohIaL0u9HHDO0yBvUjjmrjC1ReRgtOkrEjMIiCZd6xPldG/AG1GiP3epaNPqWQQtaysldRpYitS1Ipjr7EUeVjhUtX4IXI7xS1WKRhOW762zd7M6jBpATLd6ko0XA45KMAy62ICpd8hQ4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PYanOiqs41ZLoh4DhzSiNeXoeMkYOipSchrssqNjEHQ=;
+ b=V+WDiBlyCYllU1rg8GeLd4MTXxNqmmdUsGHuZi6sS9fqgnWqSyBCBxNKyo4fkENk43SWOWkVq/PMDVhmLH1LSIKu2piiV8L/iKsS68pVWrUzszUM5hoR8JuUGrzI8DvhoO1juk9Foq+qzhefgJPV+2Y1wsYERpkX+O3k2QrVQUzIoy/x/i8djwDGSFdXPreAgBYZl4HlDiPCKijAvZlHCkQs2PBPH+oPie+f3L/d8b/rMxAnfmiIGjbtPlDDdD7Gh8rfNfEgc22jn9X4mza2Z3OxajjsWpIk20r6DNZ3wpY7PlNSisNY207FJvkGUEGVg3zQHEKBenvqGYWHVFdUNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PYanOiqs41ZLoh4DhzSiNeXoeMkYOipSchrssqNjEHQ=;
+ b=SRH0BxqsiXJw693iOZTB8V3wHJn1IrrSO2dept3ab2ES4p1Mj7tq7hr0IV8QebSP0/8+w+UupSA9BLXXWil5gQT7fpkZv6l9z0YY8NnaoF3OSaGIIFNbm99426lbyfkOjmQ4/U1SWtxYMoDvRDZfXZkkO/OJGyEzEwwhZ18bq80=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM4PR11MB5421.namprd11.prod.outlook.com (2603:10b6:5:398::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.22; Mon, 12 Jul
+ 2021 02:27:24 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::3dc3:868b:cec3:513b]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::3dc3:868b:cec3:513b%6]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
+ 02:27:24 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     Kajol Jain <kjain@linux.ibm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>
+CC:     "trix@redhat.com" <trix@redhat.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "maddy@linux.ibm.com" <maddy@linux.ibm.com>,
+        "atrajeev@linux.vnet.ibm.com" <atrajeev@linux.vnet.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "rnsastry@linux.ibm.com" <rnsastry@linux.ibm.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2] fpga: dfl: fme: Fix cpu hotplug issue in performance
+ reporting
+Thread-Topic: [PATCH v2] fpga: dfl: fme: Fix cpu hotplug issue in performance
+ reporting
+Thread-Index: AQHXdJ6Olv3FhDOpC0+B/jPwvOSEk6s+nwpQ
+Date:   Mon, 12 Jul 2021 02:27:24 +0000
+Message-ID: <DM6PR11MB38197304C3BC02672304201A85159@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20210709084319.33776-1-kjain@linux.ibm.com>
+In-Reply-To: <20210709084319.33776-1-kjain@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2035c0bc-912a-418c-ec0b-08d944dc95c6
+x-ms-traffictypediagnostic: DM4PR11MB5421:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM4PR11MB5421358E4E61549C22E2CA1C85159@DM4PR11MB5421.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EfJ74BvqUQwxKb5rkukTCxDwHDQ9YqyCJc6hgE7hcL0KlEgvPq94eqH17tfv7upu/tSu2PY13xTnYgP8nGEnr3ALQNRrI+sQNztprK3ih+6Um68eAmB5GE1j/dyFrGz56gjrgS++ec6dSad8R2qLQSJCEf6Rkg/IYR2xmC4RNoBcJEuNDFzfag1MtGJQ/sAnP1VJ2Z/lIDF/5+JZBxsS594WKbVA6o87N1lyabqmILU3I7hgPDFYTU5olj3aVmI7/Xufc+sevyxHko0Wu61lCZiKheDtFC8WvYvVLx2IMwhb2tbnoFLinwD1nQWT/fgsrFOOdcxuVoK3HRAJf2vruH8RHYxoRt3CbO8H0jpOwoaY30jgcw09Eb3cM12o2LPquDRMQQBv/TFapfDKLJATuh9Gaxd0MFDG2uYj4UWH0YfkIrBmFD3KFAJKmawgpF8zyVLqZ+0osfvcNh6ka+sPBEI7ApQy3yNNrOX9zLO0sytRJFQFYsqA+x0MDtNt9xGPCwTp/farAYiQ6PEzZu/mX2M5VYCyx/z45KBVz7m8wMiXJzPeRyG58fp88EL6ENDgJvn5S/lHzC/3raPJ4pSJzYXdOP/1x2m/Z0oyzcYPwqz2dKlGDFf8dIBG2apJXVS0Q5QQu7QLr96eKWBDWyUKYpkKlJthbbI42GiIwhou04TROnGz5/vKXApijz+47hzFSHfdMRVUI5tes8iIAK1nAi5u2FTsAWbc3ReEuylBHMg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(396003)(376002)(39860400002)(86362001)(9686003)(7416002)(186003)(6636002)(26005)(64756008)(83380400001)(6506007)(5660300002)(33656002)(76116006)(8936002)(52536014)(478600001)(966005)(2906002)(110136005)(122000001)(66556008)(71200400001)(55016002)(8676002)(38100700002)(66446008)(66946007)(66476007)(4326008)(54906003)(7696005)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4ugT/pDLy5EV6tDElHTJkUbmxnq5I55BCDt1yYNF7H4uEkqeGrx5iFIrOE2s?=
+ =?us-ascii?Q?803yNQ48bgjDn+gj0hHNJM9DyYk9s6JnCWcBN+WeGznGuBN4/kxt45WRq8fc?=
+ =?us-ascii?Q?XdtXuhAkzuVcxLhg2spVQtIa9teby7To8ire/K29OJNM/pVvhlsLMOvwpmDA?=
+ =?us-ascii?Q?0TaO54CKpJapuKENAik1pyO8IB7mqJpEODcSNQwPEnSaVlpzXXS+pud5xFnC?=
+ =?us-ascii?Q?188kfY5iHyG2BjOVxZndrR3LH/tDw1jkR9OjRokCdLfd+1m4Tfw6hcGqCaya?=
+ =?us-ascii?Q?FN6fSPQEODpIxXahdL75cId3SyVmd0Fs9OxJ0ujEEFU4jcAeQNH7z19MsTf4?=
+ =?us-ascii?Q?nV63iNuKrzWtgjpYcQe6zLL+sGubC36gFZf6p3IwVt+J5JB61RYko571FYG8?=
+ =?us-ascii?Q?zv5aj+iFSpERN1lwu7EMdApBIMEfzJtnjNx5DiQgz9I1wRlk0B4HXhZnI0MT?=
+ =?us-ascii?Q?Q3f+9eZxP1LLab6rnMo+tDJGhqYA0JQANbGGrUNoLienChYutzpPUA0vnT6O?=
+ =?us-ascii?Q?qbHMyiti0uNUnXm8+Y2pXsDL4IbQY3Eb6ZLlBH+X8P98j/c6SV+TSPhxYaBf?=
+ =?us-ascii?Q?YAzM0qnWOhD8XpLac52Ud8DVaFhqOn4SCdMxKw9CCP+aTesy8IJMlVz+egi6?=
+ =?us-ascii?Q?bgfqW5WEx3PJgi/0HJo7B/Vc2L3sCjNOzce0G0fA3tSYQWIbvRHVqzOq1ibP?=
+ =?us-ascii?Q?ZCcuEZaGRn5Ejatx1HuYTbwvS2dlHk+YtLnRCFhQVwAk5SyAwcCiNpN6Jqbb?=
+ =?us-ascii?Q?LmIRw5lExZGEofvBmniVLFopvmHIW8qH4h5VRG9bnloHTedRZTgnNcFpVhfs?=
+ =?us-ascii?Q?k28d43RNajRKEe796wlQCX7kLS1cRLBkSfubGNcBcQr/RKTepdesJkJb9rx7?=
+ =?us-ascii?Q?Xw8tj4wls4zLYB3yXR8njmd1KAcvk5mLNtPZb8cqqGfGfdHDL2owBVZliuU6?=
+ =?us-ascii?Q?uZk/y6TGyGoCqo+4Xn+zrCTR16O/+Durgk5+T1YtS525/PUQdGFz0IkSNT08?=
+ =?us-ascii?Q?dztjtG+UOOp0RX7tKJI9WIFu3LpuJB5SU9U2RULSan+T2wI2sh4YbjzgRrWO?=
+ =?us-ascii?Q?XyVULntuUeMiNAIveP2NrZOrWUyDObxp4+riUIRwoHWiysSJSD1RFfeLBKmg?=
+ =?us-ascii?Q?USTPGMxDOnXiqRX4GyZu3uY/0TAcIpb1zdbgB1rKuqZqCLwLimAwI17U+aC1?=
+ =?us-ascii?Q?IwJdygB4YswILzSPOkNm4nt4dridffg7oHRgXpJX3JphaTTlqVnemky9MFo0?=
+ =?us-ascii?Q?DNOTud2n3PNKH1r+a6LPvECNzww9b5/PpGAITSom9os4nSNwHM4tw4Yi3HTJ?=
+ =?us-ascii?Q?rGibxLJ+ZhJeIHXWF84qQWUj?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkNLTVYYQk5PTkoYSExLSEpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OC46GRw*Qz8MOhcSLjoKS0hK
-        LlYKC1FVSlVKTUlNS05NTUpCT01LVTMWGhIXVRcSFRA7DRINFFUYFBZFWVdZEgtZQVlITVVKTklV
-        Sk9OVUpDS1lXWQgBWUFCS01JNwY+
-X-HM-Tid: 0a7a9886f471d995kuwse225a5400ce
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2035c0bc-912a-418c-ec0b-08d944dc95c6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2021 02:27:24.5221
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rtPEcShbylyS4W+xJs4OlJcmTG7iw/+Df/JFHZo1LkUVGaVXsmUCHAllGOT7Uocl8K426C72NBT9Wt/wUtIv2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5421
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+> Subject: [PATCH v2] fpga: dfl: fme: Fix cpu hotplug issue in performance
+> reporting
+>=20
+> The performance reporting driver added cpu hotplug
+> feature but it didn't add pmu migration call in cpu
+> offline function.
+> This can create an issue incase the current designated
+> cpu being used to collect fme pmu data got offline,
+> as based on current code we are not migrating fme pmu to
+> new target cpu. Because of that perf will still try to
+> fetch data from that offline cpu and hence we will not
+> get counter data.
+>=20
+> Patch fixed this issue by adding pmu_migrate_context call
+> in fme_perf_offline_cpu function.
+>=20
+> Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
+> Tested-by: Xu Yilun <yilun.xu@intel.com>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 
-__dump_stack lib/dump_stack.c:79 [inline]
-dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
-___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
-prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
-__alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-save_stack+0x15e/0x1e0 mm/page_owner.c:120
-__set_page_owner+0x50/0x290 mm/page_owner.c:181
-prep_new_page mm/page_alloc.c:2445 [inline]
-__alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+Thanks for this fixing! And thanks Yilun for the verification too. : )
 
-The problem is caused by set_page_owner alloc memory to save stack with
-GFP_KERNEL in local_riq disabled.
-So, we just can't assume that alloc flags should be same with new page,
-prep_new_page should prep/trace the page gfp, but shouldn't use the same
-gfp to get memory, let's depend on caller.
-So, here is two gfp flags, alloc_gfp used to alloc memory, depend on
-caller, page_gfp_mask is page's gfp, used to trace/prep itself
-But in most situation, same is ok, in alloc_pages_bulk, use GFP_ATOMIC
-is ok.(even if set_page_owner save backtrace failed, limited impact)
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/fpga/dfl-fme-perf.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> ---
+> Changelog:
+> v1 -> v2:
+> - Add stable@vger.kernel.org in cc list
+>=20
+> RFC -> PATCH v1
+> - Remove RFC tag
+> - Did nits changes on subject and commit message as suggested by Xu Yilun
+> - Added Tested-by tag
+> - Link to rfc patch: https://lkml.org/lkml/2021/6/28/112
+> ---
+> diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
+> index 4299145ef347..b9a54583e505 100644
+> --- a/drivers/fpga/dfl-fme-perf.c
+> +++ b/drivers/fpga/dfl-fme-perf.c
+> @@ -953,6 +953,10 @@ static int fme_perf_offline_cpu(unsigned int cpu, st=
+ruct
+> hlist_node *node)
+>  		return 0;
+>=20
+>  	priv->cpu =3D target;
+> +
+> +	/* Migrate fme_perf pmu events to the new target cpu */
 
-v2:
-- add more description.
+Only one minor item, this line is not needed. : )
 
-Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
-Reported-by: syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com
-Suggested-by: Wang Qing <wangqing@vivo.com>
-Signed-off-by: Yang Huan <link@vivo.com>
----
- include/linux/page_owner.h |  8 ++++----
- mm/compaction.c            |  2 +-
- mm/internal.h              |  2 +-
- mm/page_alloc.c            | 21 +++++++++++----------
- mm/page_owner.c            |  6 +++---
- 5 files changed, 20 insertions(+), 19 deletions(-)
+After remove it,=20
+Acked-by: Wu Hao <hao.wu@intel.com>
 
-diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-index 3468794f83d2..c930a63e149b 100644
---- a/include/linux/page_owner.h
-+++ b/include/linux/page_owner.h
-@@ -10,7 +10,7 @@ extern struct page_ext_operations page_owner_ops;
- 
- extern void __reset_page_owner(struct page *page, unsigned int order);
- extern void __set_page_owner(struct page *page,
--			unsigned int order, gfp_t gfp_mask);
-+			unsigned int order, gfp_t alloc_gfp, gfp_t page_gfp_mask);
- extern void __split_page_owner(struct page *page, unsigned int nr);
- extern void __copy_page_owner(struct page *oldpage, struct page *newpage);
- extern void __set_page_owner_migrate_reason(struct page *page, int reason);
-@@ -25,10 +25,10 @@ static inline void reset_page_owner(struct page *page, unsigned int order)
- }
- 
- static inline void set_page_owner(struct page *page,
--			unsigned int order, gfp_t gfp_mask)
-+			unsigned int order, gfp_t alloc_gfp, gfp_t page_gfp_mask)
- {
- 	if (static_branch_unlikely(&page_owner_inited))
--		__set_page_owner(page, order, gfp_mask);
-+		__set_page_owner(page, order, alloc_gfp, page_gfp_mask);
- }
- 
- static inline void split_page_owner(struct page *page, unsigned int nr)
-@@ -56,7 +56,7 @@ static inline void reset_page_owner(struct page *page, unsigned int order)
- {
- }
- static inline void set_page_owner(struct page *page,
--			unsigned int order, gfp_t gfp_mask)
-+			unsigned int order, gfp_t alloc_gfp, gfp_t page_gfp_mask)
- {
- }
- static inline void split_page_owner(struct page *page,
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 84fde270ae74..a3bc69dceb1d 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -96,7 +96,7 @@ static void split_map_pages(struct list_head *list)
- 		order = page_private(page);
- 		nr_pages = 1 << order;
- 
--		post_alloc_hook(page, order, __GFP_MOVABLE);
-+		post_alloc_hook(page, order, __GFP_MOVABLE, __GFP_MOVABLE);
- 		if (order)
- 			split_page(page, order);
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index e8fdb531f887..9d0cd0840f58 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -195,7 +195,7 @@ extern void memblock_free_pages(struct page *page, unsigned long pfn,
- extern void __free_pages_core(struct page *page, unsigned int order);
- extern void prep_compound_page(struct page *page, unsigned int order);
- extern void post_alloc_hook(struct page *page, unsigned int order,
--					gfp_t gfp_flags);
-+					gfp_t alloc_gfp, gfp_t page_gfp_mask);
- extern int user_min_free_kbytes;
- 
- extern void free_unref_page(struct page *page);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d1f5de1c1283..bdd057e20376 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2322,7 +2322,7 @@ static bool check_new_pages(struct page *page, unsigned int order)
- }
- 
- inline void post_alloc_hook(struct page *page, unsigned int order,
--				gfp_t gfp_flags)
-+				gfp_t alloc_gfp, gfp_t page_gfp_mask)
- {
- 	bool init;
- 
-@@ -2344,20 +2344,21 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
- 	 * kasan_alloc_pages and kernel_init_free_pages must be
- 	 * kept together to avoid discrepancies in behavior.
- 	 */
--	init = !want_init_on_free() && want_init_on_alloc(gfp_flags);
-+	init = !want_init_on_free() && want_init_on_alloc(page_gfp_mask);
- 	kasan_alloc_pages(page, order, init);
- 	if (init && !kasan_has_integrated_init())
- 		kernel_init_free_pages(page, 1 << order);
- 
--	set_page_owner(page, order, gfp_flags);
-+	set_page_owner(page, order, alloc_gfp, page_gfp_mask);
- }
- 
--static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags,
--							unsigned int alloc_flags)
-+static void prep_new_page(struct page *page, unsigned int order,
-+			  gfp_t alloc_gfp, gfp_t page_gfp_mask,
-+			  unsigned int alloc_flags)
- {
--	post_alloc_hook(page, order, gfp_flags);
-+	post_alloc_hook(page, order, alloc_gfp, page_gfp_mask);
- 
--	if (order && (gfp_flags & __GFP_COMP))
-+	if (order && (page_gfp_mask & __GFP_COMP))
- 		prep_compound_page(page, order);
- 
- 	/*
-@@ -3991,7 +3992,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- 		page = rmqueue(ac->preferred_zoneref->zone, zone, order,
- 				gfp_mask, alloc_flags, ac->migratetype);
- 		if (page) {
--			prep_new_page(page, order, gfp_mask, alloc_flags);
-+			prep_new_page(page, order, gfp_mask, gfp_mask, alloc_flags);
- 
- 			/*
- 			 * If this is a high-order atomic allocation then check
-@@ -4211,7 +4212,7 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
- 
- 	/* Prep a captured page if available */
- 	if (page)
--		prep_new_page(page, order, gfp_mask, alloc_flags);
-+		prep_new_page(page, order, gfp_mask, gfp_mask, alloc_flags);
- 
- 	/* Try get a page from the freelist if available */
- 	if (!page)
-@@ -5127,7 +5128,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		__count_zid_vm_events(PGALLOC, zone_idx(zone), 1);
- 		zone_statistics(ac.preferred_zoneref->zone, zone);
- 
--		prep_new_page(page, 0, gfp, 0);
-+		prep_new_page(page, 0, GFP_ATOMIC, gfp, 0);
- 		if (page_list)
- 			list_add(&page->lru, page_list);
- 		else
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index adfabb560eb9..22948724ca64 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -170,7 +170,7 @@ static inline void __set_page_owner_handle(struct page_ext *page_ext,
- }
- 
- noinline void __set_page_owner(struct page *page, unsigned int order,
--					gfp_t gfp_mask)
-+					gfp_t alloc_gfp, gfp_t page_gfp_mask)
- {
- 	struct page_ext *page_ext = lookup_page_ext(page);
- 	depot_stack_handle_t handle;
-@@ -178,8 +178,8 @@ noinline void __set_page_owner(struct page *page, unsigned int order,
- 	if (unlikely(!page_ext))
- 		return;
- 
--	handle = save_stack(gfp_mask);
--	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
-+	handle = save_stack(alloc_gfp);
-+	__set_page_owner_handle(page_ext, handle, order, page_gfp_mask);
- }
- 
- void __set_page_owner_migrate_reason(struct page *page, int reason)
--- 
-2.32.0
+Thanks
+Hao
+
+> +	perf_pmu_migrate_context(&priv->pmu, cpu, target);
+> +
+>  	return 0;
+>  }
+>=20
+> --
+> 2.31.1
 
