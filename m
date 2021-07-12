@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65F83C5308
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B313C5803
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351760AbhGLHwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:52:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
+        id S1378533AbhGLIkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:40:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243632AbhGLHR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:17:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DB54613D2;
-        Mon, 12 Jul 2021 07:14:39 +0000 (UTC)
+        id S240075AbhGLHwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FBC36117A;
+        Mon, 12 Jul 2021 07:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074080;
-        bh=E+KlYLFRl/zKyIxAOauDhXrjpa6pnYVc+OcOTgqS354=;
+        s=korg; t=1626076188;
+        bh=Guh+s9liG/aVqNGwwFFHnMbyYB8Vwl30wTT8M6R8xZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hs+dbARqaqDqKvrmRRoC2go5ZeRvBd/8J03Fw+45JKaPQxSbma+MJHga4ccHZlar2
-         SENuxhY29fWLY/IgAX8rpLQ9ZlhCjAeffDb3ynlRv40dX5nla6dWtfDrHhVN/iys63
-         AGHG25yCmfqdgXGrKtyr3bPkWghSOPSLIWTTyTK4=
+        b=bCWjZ4ZhYWO9g6AlarsJ61p5KXDfAc9eNG+5WWxSpCuZbSAUpR/9N2TOEOKZ83WEW
+         j/gsWFK/xqfJ6m62PctdlzFH8Nc+96p9hKoLmWItjk2ZVk6HDbiEhdgBjhnhzlDLMg
+         bAG4aKqSUP+XDIfx1MCEGoIGQdhlhjb1fEV1Cbuc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bui Quang Minh <minhquangbui99@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Vadim Fedorenko <vfedorenko@novek.ru>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 459/700] bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
+Subject: [PATCH 5.13 519/800] selftests: tls: clean up uninitialized warnings
 Date:   Mon, 12 Jul 2021 08:09:02 +0200
-Message-Id: <20210712061025.390500218@linuxfoundation.org>
+Message-Id: <20210712061022.465034304@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bui Quang Minh <minhquangbui99@gmail.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 7dd5d437c258bbf4cc15b35229e5208b87b8b4e0 ]
+[ Upstream commit baa00119d69e3318da8d99867fc1170ebddf09ce ]
 
-In 32-bit architecture, the result of sizeof() is a 32-bit integer so
-the expression becomes the multiplication between 2 32-bit integer which
-can potentially leads to integer overflow. As a result,
-bpf_map_area_alloc() allocates less memory than needed.
+A bunch of tests uses uninitialized stack memory as random
+data to send. This is harmless but generates compiler warnings.
+Explicitly init the buffers with random data.
 
-Fix this by casting 1 operand to u64.
-
-Fixes: 0d2c4f964050 ("bpf: Eliminate rlimit-based memory accounting for sockmap and sockhash maps")
-Fixes: 99c51064fb06 ("devmap: Use bpf_map_area_alloc() for allocating hash buckets")
-Fixes: 546ac1ffb70d ("bpf: add devmap, a map for storing net device references")
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210613143440.71975-1-minhquangbui99@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/devmap.c | 4 ++--
- net/core/sock_map.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/net/tls.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 85d9d1b72a33..b0ab5b915e6d 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -92,7 +92,7 @@ static struct hlist_head *dev_map_create_hash(unsigned int entries,
+diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+index 426d07875a48..58fea6eb588d 100644
+--- a/tools/testing/selftests/net/tls.c
++++ b/tools/testing/selftests/net/tls.c
+@@ -25,6 +25,18 @@
+ #define TLS_PAYLOAD_MAX_LEN 16384
+ #define SOL_TLS 282
+ 
++static void memrnd(void *s, size_t n)
++{
++	int *dword = s;
++	char *byte;
++
++	for (; n >= 4; n -= 4)
++		*dword++ = rand();
++	byte = (void *)dword;
++	while (n--)
++		*byte++ = rand();
++}
++
+ FIXTURE(tls_basic)
+ {
+ 	int fd, cfd;
+@@ -308,6 +320,8 @@ TEST_F(tls, recv_max)
+ 	char recv_mem[TLS_PAYLOAD_MAX_LEN];
+ 	char buf[TLS_PAYLOAD_MAX_LEN];
+ 
++	memrnd(buf, sizeof(buf));
++
+ 	EXPECT_GE(send(self->fd, buf, send_len, 0), 0);
+ 	EXPECT_NE(recv(self->cfd, recv_mem, send_len, 0), -1);
+ 	EXPECT_EQ(memcmp(buf, recv_mem, send_len), 0);
+@@ -588,6 +602,8 @@ TEST_F(tls, recvmsg_single_max)
+ 	struct iovec vec;
+ 	struct msghdr hdr;
+ 
++	memrnd(send_mem, sizeof(send_mem));
++
+ 	EXPECT_EQ(send(self->fd, send_mem, send_len, 0), send_len);
+ 	vec.iov_base = (char *)recv_mem;
+ 	vec.iov_len = TLS_PAYLOAD_MAX_LEN;
+@@ -610,6 +626,8 @@ TEST_F(tls, recvmsg_multiple)
+ 	struct msghdr hdr;
  	int i;
- 	struct hlist_head *hash;
  
--	hash = bpf_map_area_alloc(entries * sizeof(*hash), numa_node);
-+	hash = bpf_map_area_alloc((u64) entries * sizeof(*hash), numa_node);
- 	if (hash != NULL)
- 		for (i = 0; i < entries; i++)
- 			INIT_HLIST_HEAD(&hash[i]);
-@@ -143,7 +143,7 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
++	memrnd(buf, sizeof(buf));
++
+ 	EXPECT_EQ(send(self->fd, buf, send_len, 0), send_len);
+ 	for (i = 0; i < msg_iovlen; i++) {
+ 		iov_base[i] = (char *)malloc(iov_len);
+@@ -634,6 +652,8 @@ TEST_F(tls, single_send_multiple_recv)
+ 	char send_mem[TLS_PAYLOAD_MAX_LEN * 2];
+ 	char recv_mem[TLS_PAYLOAD_MAX_LEN * 2];
  
- 		spin_lock_init(&dtab->index_lock);
- 	} else {
--		dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
-+		dtab->netdev_map = bpf_map_area_alloc((u64) dtab->map.max_entries *
- 						      sizeof(struct bpf_dtab_netdev *),
- 						      dtab->map.numa_node);
- 		if (!dtab->netdev_map)
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index d758fb83c884..ae62e6f96a95 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -44,7 +44,7 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
- 	bpf_map_init_from_attr(&stab->map, attr);
- 	raw_spin_lock_init(&stab->lock);
++	memrnd(send_mem, sizeof(send_mem));
++
+ 	EXPECT_GE(send(self->fd, send_mem, total_len, 0), 0);
+ 	memset(recv_mem, 0, total_len);
  
--	stab->sks = bpf_map_area_alloc(stab->map.max_entries *
-+	stab->sks = bpf_map_area_alloc((u64) stab->map.max_entries *
- 				       sizeof(struct sock *),
- 				       stab->map.numa_node);
- 	if (!stab->sks) {
 -- 
 2.30.2
 
