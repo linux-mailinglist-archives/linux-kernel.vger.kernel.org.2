@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30E43C5007
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D195B3C49B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345990AbhGLHaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
+        id S235320AbhGLGqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240869AbhGLHCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:02:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 239CD610CD;
-        Mon, 12 Jul 2021 06:59:34 +0000 (UTC)
+        id S237548AbhGLGeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44A6961156;
+        Mon, 12 Jul 2021 06:30:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073175;
-        bh=Vys9mD3EkaYftCei4LNcZ76AI27GxMfOdMxo5nT9LRM=;
+        s=korg; t=1626071445;
+        bh=oy3KLG7O4RGLwE+4QEYQG92pZCKMBsd6z1Ea1INhmY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TzPg3Hgpf8SLrgoWkpOI+t8bPcSGbrOx+ieMlGvs8NLlgwGgPOIALgOSmRoQIDhpY
-         Lvvdr7lXp3uPNbJwanE0acETCIz0iokUau9vZyXzpHN9hFMr1TEeM2jCfVR/6D6Q3G
-         oi7pWmjB7ULBv60pqV2IEphmXh+LxbAWMV2itva0=
+        b=WclbI/L5MwFAzJn0H07EKbQw6S1znMrKJakMGIJtmr0r7zbeLFjBUoKGO5JJyELEy
+         irk5m5s0KwYHvdVra7xUhOIldnZQ0mt/vHa8NMqZQR9pEaGD0xhmNOTm2tMoxDY7xI
+         YWusJfWIJjEWO46fZICs16ik6SqsnJWCvnXM+K0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 151/700] arm64: perf: Convert snprintf to sysfs_emit
+        stable@vger.kernel.org,
+        Oliver Lang <Oliver.Lang@gossenmetrawatt.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH 5.10 074/593] iio: ltr501: mark register holding upper 8 bits of ALS_DATA{0,1} and PS_DATA as volatile, too
 Date:   Mon, 12 Jul 2021 08:03:54 +0200
-Message-Id: <20210712060946.912603481@linuxfoundation.org>
+Message-Id: <20210712060851.277965899@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tian Tao <tiantao6@hisilicon.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit a5740e955540181f4ab8f076cc9795c6bbe4d730 ]
+commit 2ac0b029a04b673ce83b5089368f467c5dca720c upstream.
 
-Use sysfs_emit instead of snprintf to avoid buf overrun,because in
-sysfs_emit it strictly checks whether buf is null or buf whether
-pagesize aligned, otherwise it returns an error.
+The regmap is configured for 8 bit registers, uses a RB-Tree cache and
+marks several registers as volatile (i.e. do not cache).
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Link: https://lore.kernel.org/r/1621497585-30887-1-git-send-email-tiantao6@hisilicon.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The ALS and PS data registers in the chip are 16 bit wide and spans
+two regmap registers. In the current driver only the base register is
+marked as volatile, resulting in the upper register only read once.
+
+Further the data sheet notes:
+
+| When the I2C read operation starts, all four ALS data registers are
+| locked until the I2C read operation of register 0x8B is completed.
+
+Which results in the registers never update after the 2nd read.
+
+This patch fixes the problem by marking the upper 8 bits of the ALS
+and PS registers as volatile, too.
+
+Fixes: 2f2c96338afc ("iio: ltr501: Add regmap support.")
+Reported-by: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Tested-by: Nikita Travkin <nikita@trvn.ru> # ltr559
+Link: https://lore.kernel.org/r/20210610134619.2101372-2-mkl@pengutronix.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/kernel/perf_event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/light/ltr501.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 4658fcf88c2b..3baca49fcf6b 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -312,7 +312,7 @@ static ssize_t slots_show(struct device *dev, struct device_attribute *attr,
- 	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
- 	u32 slots = cpu_pmu->reg_pmmir & ARMV8_PMU_SLOTS_MASK;
- 
--	return snprintf(page, PAGE_SIZE, "0x%08x\n", slots);
-+	return sysfs_emit(page, "0x%08x\n", slots);
- }
- 
- static DEVICE_ATTR_RO(slots);
--- 
-2.30.2
-
+--- a/drivers/iio/light/ltr501.c
++++ b/drivers/iio/light/ltr501.c
+@@ -32,9 +32,12 @@
+ #define LTR501_PART_ID 0x86
+ #define LTR501_MANUFAC_ID 0x87
+ #define LTR501_ALS_DATA1 0x88 /* 16-bit, little endian */
++#define LTR501_ALS_DATA1_UPPER 0x89 /* upper 8 bits of LTR501_ALS_DATA1 */
+ #define LTR501_ALS_DATA0 0x8a /* 16-bit, little endian */
++#define LTR501_ALS_DATA0_UPPER 0x8b /* upper 8 bits of LTR501_ALS_DATA0 */
+ #define LTR501_ALS_PS_STATUS 0x8c
+ #define LTR501_PS_DATA 0x8d /* 16-bit, little endian */
++#define LTR501_PS_DATA_UPPER 0x8e /* upper 8 bits of LTR501_PS_DATA */
+ #define LTR501_INTR 0x8f /* output mode, polarity, mode */
+ #define LTR501_PS_THRESH_UP 0x90 /* 11 bit, ps upper threshold */
+ #define LTR501_PS_THRESH_LOW 0x92 /* 11 bit, ps lower threshold */
+@@ -1354,9 +1357,12 @@ static bool ltr501_is_volatile_reg(struc
+ {
+ 	switch (reg) {
+ 	case LTR501_ALS_DATA1:
++	case LTR501_ALS_DATA1_UPPER:
+ 	case LTR501_ALS_DATA0:
++	case LTR501_ALS_DATA0_UPPER:
+ 	case LTR501_ALS_PS_STATUS:
+ 	case LTR501_PS_DATA:
++	case LTR501_PS_DATA_UPPER:
+ 		return true;
+ 	default:
+ 		return false;
 
 
