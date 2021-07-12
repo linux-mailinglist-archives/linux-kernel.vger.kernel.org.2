@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79E13C5359
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D89C3C58A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352321AbhGLHyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:54:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58586 "EHLO mail.kernel.org"
+        id S1379928AbhGLIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:51:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344791AbhGLHUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:20:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E84D0613D2;
-        Mon, 12 Jul 2021 07:18:03 +0000 (UTC)
+        id S1348237AbhGLHzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:55:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A551561165;
+        Mon, 12 Jul 2021 07:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074284;
-        bh=QFMxR+186mchFWrSXA9thaaBEdEdiezx6en5O1R/D9Y=;
+        s=korg; t=1626076305;
+        bh=osEe53rcdbRdc77matoHXJOjQFg4acVBYqv9Yb7VUY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8IdplxPuz0c29EtS/aQ52QCjxqidMFBp6r9iJDegagoNFhyA4ZqCE79TVtWQASYR
-         XeBsW1wmSGNVCF/uqTpAibnGc/SFMR644U3jH/0/CLgjDiWa7SyENQr7F3xBYW49Wm
-         Av7vZmbdJPxCUepDQAGkp0kDF3IeRVWVtLDZIFKM=
+        b=yQeDLe/g9v2t9evmO5VJCWsjsZ/jHrEgktqKxAIrKYmYgKHBst9GLLeXOPKC6rNHT
+         Sj1WbWhOw/ALl7kA01hsqAyaVfNlBks7XbwftJpp7DVxs/zwIskgMXDj3noORHGW9w
+         H4pHEvRdqL9ulSsl0wZ3VUMVBVbqULH8Wt2WGkOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 526/700] tty: nozomi: Fix a resource leak in an error handling function
+Subject: [PATCH 5.13 586/800] clk: actions: Fix SD clocks factor table on Owl S500 SoC
 Date:   Mon, 12 Jul 2021 08:10:09 +0200
-Message-Id: <20210712061032.389563013@linuxfoundation.org>
+Message-Id: <20210712061029.624342241@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit 31a9a318255960d32ae183e95d0999daf2418608 ]
+[ Upstream commit fe1f71e338d77814da3ef44e9f64d32981a6ccdf ]
 
-A 'request_irq()' call is not balanced by a corresponding 'free_irq()' in
-the error handling path, as already done in the remove function.
+Drop the unsupported entries in the factor table used for the SD[0-2]
+clocks definitions on the Actions Semi Owl S500 SoC.
 
-Add it.
-
-Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/4f0d2b3038e82f081d370ccb0cade3ad88463fe7.1620580838.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/196c948d708a22b8198c95f064a0f6b6820f9980.1623354574.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/nozomi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/actions/owl-s500.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-index 861e95043191..0b10c2da4364 100644
---- a/drivers/tty/nozomi.c
-+++ b/drivers/tty/nozomi.c
-@@ -1433,6 +1433,7 @@ err_free_tty:
- 		tty_unregister_device(ntty_driver, dc->index_start + i);
- 		tty_port_destroy(&dc->port[i].port);
- 	}
-+	free_irq(pdev->irq, dc);
- err_free_kfifo:
- 	for (i = 0; i < MAX_PORT; i++)
- 		kfifo_free(&dc->port[i].fifo_ul);
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 75b7186185b0..42abdf964044 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -127,8 +127,7 @@ static struct clk_factor_table sd_factor_table[] = {
+ 	{ 12, 1, 13 }, { 13, 1, 14 }, { 14, 1, 15 }, { 15, 1, 16 },
+ 	{ 16, 1, 17 }, { 17, 1, 18 }, { 18, 1, 19 }, { 19, 1, 20 },
+ 	{ 20, 1, 21 }, { 21, 1, 22 }, { 22, 1, 23 }, { 23, 1, 24 },
+-	{ 24, 1, 25 }, { 25, 1, 26 }, { 26, 1, 27 }, { 27, 1, 28 },
+-	{ 28, 1, 29 }, { 29, 1, 30 }, { 30, 1, 31 }, { 31, 1, 32 },
++	{ 24, 1, 25 },
+ 
+ 	/* bit8: /128 */
+ 	{ 256, 1, 1 * 128 }, { 257, 1, 2 * 128 }, { 258, 1, 3 * 128 }, { 259, 1, 4 * 128 },
+@@ -137,8 +136,7 @@ static struct clk_factor_table sd_factor_table[] = {
+ 	{ 268, 1, 13 * 128 }, { 269, 1, 14 * 128 }, { 270, 1, 15 * 128 }, { 271, 1, 16 * 128 },
+ 	{ 272, 1, 17 * 128 }, { 273, 1, 18 * 128 }, { 274, 1, 19 * 128 }, { 275, 1, 20 * 128 },
+ 	{ 276, 1, 21 * 128 }, { 277, 1, 22 * 128 }, { 278, 1, 23 * 128 }, { 279, 1, 24 * 128 },
+-	{ 280, 1, 25 * 128 }, { 281, 1, 26 * 128 }, { 282, 1, 27 * 128 }, { 283, 1, 28 * 128 },
+-	{ 284, 1, 29 * 128 }, { 285, 1, 30 * 128 }, { 286, 1, 31 * 128 }, { 287, 1, 32 * 128 },
++	{ 280, 1, 25 * 128 },
+ 	{ 0, 0, 0 },
+ };
+ 
 -- 
 2.30.2
 
