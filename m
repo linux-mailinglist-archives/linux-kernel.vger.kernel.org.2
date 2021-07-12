@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EED3C57E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE593C5307
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378018AbhGLIj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:39:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40074 "EHLO mail.kernel.org"
+        id S1351722AbhGLHwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:52:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351895AbhGLHwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F42260FF1;
-        Mon, 12 Jul 2021 07:49:22 +0000 (UTC)
+        id S244284AbhGLHR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:17:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5147B60FF1;
+        Mon, 12 Jul 2021 07:14:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076163;
-        bh=d34LXbSGPpPRbMyO7h2/vEZi5O4P4JPPhh6R+acCnt8=;
+        s=korg; t=1626074077;
+        bh=qPRrfG24hPBmZCc9nBR426HAh1SjSbrJ3pbGfqxvprI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bi1Q/KmTZyvb8my/fl31Ed7hW4cZq2j1isHMhL1j0gwOxZrrBQUvrEc0qag5QjZ+J
-         h38BoHNyKD4UyWaCGH6s9SdKtN5AodJjtcpXsmkoPlJrjM/g4S3R4zJsEJy8E31m6T
-         SkwnMAB2CZpy+fboNabCqmdYaHFpCoj/Iy82d7n0=
+        b=nJs4Ni2fAcmzO9ewLTYlrKfoS+fOlnIu/XfaIq/q1N40ZxUhbLc3t0lhH7tlTZPs0
+         Xh/1ECEoqogMG0GZfk4bsJP4nGiWuxemlItYAak/f/oDv9rcWp55x6ayJAc7YBATBy
+         xhtc/lWqSUxUipDLoUlnyBOdcllT6ei/zEDCEbIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 518/800] net: sched: add barrier to ensure correct ordering for lockless qdisc
+Subject: [PATCH 5.12 458/700] vxlan: add missing rcu_read_lock() in neigh_reduce()
 Date:   Mon, 12 Jul 2021 08:09:01 +0200
-Message-Id: <20210712061022.342857507@linuxfoundation.org>
+Message-Id: <20210712061025.272679681@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 89837eb4b2463c556a123437f242d6c2bc62ce81 ]
+[ Upstream commit 85e8b032d6ebb0f698a34dd22c2f13443d905888 ]
 
-The spin_trylock() was assumed to contain the implicit
-barrier needed to ensure the correct ordering between
-STATE_MISSED setting/clearing and STATE_MISSED checking
-in commit a90c57f2cedd ("net: sched: fix packet stuck
-problem for lockless qdisc").
+syzbot complained in neigh_reduce(), because rcu_read_lock_bh()
+is treated differently than rcu_read_lock()
 
-But it turns out that spin_trylock() only has load-acquire
-semantic, for strongly-ordered system(like x86), the compiler
-barrier implicitly contained in spin_trylock() seems enough
-to ensure the correct ordering. But for weakly-orderly system
-(like arm64), the store-release semantic is needed to ensure
-the correct ordering as clear_bit() and test_bit() is store
-operation, see queued_spin_lock().
+WARNING: suspicious RCU usage
+5.13.0-rc6-syzkaller #0 Not tainted
+-----------------------------
+include/net/addrconf.h:313 suspicious rcu_dereference_check() usage!
 
-So add the explicit barrier to ensure the correct ordering
-for the above case.
+other info that might help us debug this:
 
-Fixes: a90c57f2cedd ("net: sched: fix packet stuck problem for lockless qdisc")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+rcu_scheduler_active = 2, debug_locks = 1
+3 locks held by kworker/0:0/5:
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2247
+ #1: ffffc90000ca7da8 ((work_completion)(&port->wq)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2251
+ #2: ffffffff8bf795c0 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1da/0x3130 net/core/dev.c:4180
+
+stack backtrace:
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.13.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events ipvlan_process_multicast
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ __in6_dev_get include/net/addrconf.h:313 [inline]
+ __in6_dev_get include/net/addrconf.h:311 [inline]
+ neigh_reduce drivers/net/vxlan.c:2167 [inline]
+ vxlan_xmit+0x34d5/0x4c30 drivers/net/vxlan.c:2919
+ __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4958 [inline]
+ xmit_one net/core/dev.c:3654 [inline]
+ dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3670
+ __dev_queue_xmit+0x2133/0x3130 net/core/dev.c:4246
+ ipvlan_process_multicast+0xa99/0xd70 drivers/net/ipvlan/ipvlan_core.c:287
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Fixes: f564f45c4518 ("vxlan: add ipv6 proxy support")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sch_generic.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/vxlan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 1e625519ae96..57710303908c 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -163,6 +163,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		if (spin_trylock(&qdisc->seqlock))
- 			goto nolock_empty;
+diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
+index 53dbc67e8a34..a3ec03ce3343 100644
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -2164,6 +2164,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
+ 	struct neighbour *n;
+ 	struct nd_msg *msg;
  
-+		/* Paired with smp_mb__after_atomic() to make sure
-+		 * STATE_MISSED checking is synchronized with clearing
-+		 * in pfifo_fast_dequeue().
-+		 */
-+		smp_mb__before_atomic();
-+
- 		/* If the MISSED flag is set, it means other thread has
- 		 * set the MISSED flag before second spin_trylock(), so
- 		 * we can return false here to avoid multi cpus doing
-@@ -180,6 +186,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		 */
- 		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
++	rcu_read_lock();
+ 	in6_dev = __in6_dev_get(dev);
+ 	if (!in6_dev)
+ 		goto out;
+@@ -2215,6 +2216,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
+ 	}
  
-+		/* spin_trylock() only has load-acquire semantic, so use
-+		 * smp_mb__after_atomic() to ensure STATE_MISSED is set
-+		 * before doing the second spin_trylock().
-+		 */
-+		smp_mb__after_atomic();
-+
- 		/* Retry again in case other CPU may not see the new flag
- 		 * after it releases the lock at the end of qdisc_run_end().
- 		 */
+ out:
++	rcu_read_unlock();
+ 	consume_skb(skb);
+ 	return NETDEV_TX_OK;
+ }
 -- 
 2.30.2
 
