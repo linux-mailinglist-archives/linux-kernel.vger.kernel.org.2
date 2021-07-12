@@ -2,148 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591443C481F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85173C482F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236617AbhGLGgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237388AbhGLGa5 (ORCPT
+        id S234942AbhGLGgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:36:42 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:33578
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236618AbhGLGaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:30:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB5CC08EBB1;
-        Sun, 11 Jul 2021 23:26:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=O5uvaUdSp6FqM7+gNK9rRhzVPwV15QaVwrDrGAsNxTE=; b=MPGmLxDmFoDvPr/4xVjyljFCs6
-        PDpD7Wh/Kz3P1srVFgaLrTGJFNPSNDy5RwoYZmGin1LSUarfbaXpHeoi0PlOQasi/bNJEi/FGBxdY
-        J0s+qJzBJgLR2eWdUTlq5NcTRoUgqMDtMB2vGqg28SBuMQc/Pbf/df7DTTN5UE0QVVXB3ms1rsyQG
-        alV6Bd37KPiIk9iWHzeF7V8vWN5OimVFPnperLg0u9w9XiIpy0DC6zrZi1qsfOYbhXjBWLD5MBOHn
-        S4db/57uJgbhhrh1a28hv2/7X9dLOgYWBZvg4rFITMtbIAPpW//hur9uDqM+hvIhj96jqsJt3Qeio
-        eK3oWRwg==;
-Received: from [2001:4bb8:184:8b7c:bd9:61b8:39ba:d78a] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m2pNR-00Gxne-2Z; Mon, 12 Jul 2021 06:25:36 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     iommu@lists.linux-foundation.org,
-        Russell King <linux@armlinux.org.uk>,
-        Brian Cain <bcain@codeaurora.org>
-Cc:     Dillon Min <dillon.minfei@gmail.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] hexagon: use the generic global coherent pool
-Date:   Mon, 12 Jul 2021 08:17:04 +0200
-Message-Id: <20210712061704.4162464-8-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210712061704.4162464-1-hch@lst.de>
-References: <20210712061704.4162464-1-hch@lst.de>
+        Mon, 12 Jul 2021 02:30:19 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 33D8C40572
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 06:18:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626070733;
+        bh=RtjiaRn1J7xnCAz5c64rPrmdY4IFZ2fXVXNphP7I2r8=;
+        h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
+        b=PoX5OFR7zV/EXf4ZNdAc032FnewFZ/pp6OdMII1B5zpKdVRvFhRZ0ylihk8Pcuwwz
+         YdJHoQ90QCstPdnhBpHFJB2pw6iWEE2ai4FBcZcAbSyvCjFRq8uNuPNlHFJffyQNHZ
+         DUSSaqDeJdGLxIqlJw1MislG1CrK464zg6oypM5OHQOrJyaHwULJ1Ep0OpXB8c7nmg
+         g9rpCXMdLZChLCiKBLPKmUqvdfRspdMT6/R7VcS+0X/iZzG4wSamZz/TNSuW67cUKi
+         6oBwovC0y2Xs7nfXVMcKb94j6lB7L5vudKCmPiwDAheDguZ9QOLhnoh3wS6Xl7zldt
+         8v23Pdn9bGmMg==
+Received: by mail-oo1-f70.google.com with SMTP id g4-20020a4adc840000b029025e89d69142so979418oou.8
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 23:18:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RtjiaRn1J7xnCAz5c64rPrmdY4IFZ2fXVXNphP7I2r8=;
+        b=LZ9WuVbcb6ZHKI17YtlG+5VWokMMVReTknl6Fj2NcaZ1blQ0UKG2OxYHt4P8UQEDsl
+         +kYSgJzS0jwQqSoFWaACpucXvzcYOnA3TEPNDu91+0CCjdB6FExIK5o2YWQN7fqCNohx
+         +93XLb3Dc295egZWqi+PkM5b9reT8V8eVmUQQkbL1psGm0AFv8zltjroP2XWHYkoT+xj
+         /1mE1Bz5z7yOnfDegXUbOFYBLj6GUzgtxUMexsE++SuX4x/u2jndR4iN+RjwdOkOS6Kp
+         aYuPvAgV8/v15ICDmgw7SxyfHJOn3pU05Vmn8TuJ3rur+St+ms6VRUY/dkIn3a/witWZ
+         q/SQ==
+X-Gm-Message-State: AOAM532RIcgqO+lIfNHZ1bZjDmhEh9V8Wl8lB9sIrogP6a64sRU/QYiw
+        y2Fsw6Ty7N2zoFQZOoYgZNby2qWcSWI4/NOZ1EvS8BHFMUiStPlj/3tMOVoTPzkKZ/bZ4OgQN2G
+        AhhpVYL3s4JwViwmUxIacIOcvzep7qCfI7Maq91ufXXe7J9ilVhvVCxpW4A==
+X-Received: by 2002:a9d:3406:: with SMTP id v6mr37766044otb.347.1626070732030;
+        Sun, 11 Jul 2021 23:18:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxA9Jql3O6KfluSO4TvCntaJA5kid7yqtgXbiloZZlEKG/c+AOhPizZ/fhkrmAaj++s8A8feLipZuakBYlhZ8=
+X-Received: by 2002:a9d:3406:: with SMTP id v6mr37766029otb.347.1626070731813;
+ Sun, 11 Jul 2021 23:18:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210630160151.28227-1-chris.chiu@canonical.com>
+In-Reply-To: <20210630160151.28227-1-chris.chiu@canonical.com>
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Mon, 12 Jul 2021 14:18:41 +0800
+Message-ID: <CABTNMG1FJYP4O021mWgVU0ZJZJmBTvm-x3sM0_dHCfa0LbOYDA@mail.gmail.com>
+Subject: Re: [PATCH] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
+To:     Jes.Sorensen@gmail.com, Kalle Valo <kvalo@codeaurora.org>,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch hexagon to use the generic code for dma_alloc_coherent from
-a global pre-filled pool.
+On Thu, Jul 1, 2021 at 12:02 AM <chris.chiu@canonical.com> wrote:
+>
+> From: Chris Chiu <chris.chiu@canonical.com>
+>
+> The TX A-MPDU aggregation is not handled in the driver since the
+> ieee80211_start_tx_ba_session has never been started properly.
+> Start and stop the TX BA session by tracking the TX aggregation
+> status of each TID. Fix the ampdu_action and the tx descriptor
+> accordingly with the given TID.
+>
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> ---
+>  .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  |  2 ++
+>  .../wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 33 ++++++++++++++-----
+>  2 files changed, 26 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+> index d1a566cc0c9e..3f7ff84f2056 100644
+> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+> @@ -1383,6 +1383,8 @@ struct rtl8xxxu_priv {
+>         u8 no_pape:1;
+>         u8 int_buf[USB_INTR_CONTENT_LENGTH];
+>         u8 rssi_level;
+> +       bool tx_aggr_started[IEEE80211_NUM_TIDS];
+> +       DECLARE_BITMAP(tid_bitmap, IEEE80211_NUM_TIDS);
+>         /*
+>          * Only one virtual interface permitted because only STA mode
+>          * is supported and no iface_combinations are provided.
+> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+> index 9ff09cf7eb62..03c6ed7efe06 100644
+> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+> @@ -4805,6 +4805,8 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+>         struct ieee80211_rate *tx_rate = ieee80211_get_tx_rate(hw, tx_info);
+>         struct rtl8xxxu_priv *priv = hw->priv;
+>         struct device *dev = &priv->udev->dev;
+> +       u8 *qc = ieee80211_get_qos_ctl(hdr);
+> +       u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+>         u32 rate;
+>         u16 rate_flags = tx_info->control.rates[0].flags;
+>         u16 seq_number;
+> @@ -4828,7 +4830,7 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+>
+>         tx_desc->txdw3 = cpu_to_le32((u32)seq_number << TXDESC32_SEQ_SHIFT);
+>
+> -       if (ampdu_enable)
+> +       if (ampdu_enable && test_bit(tid, priv->tid_bitmap))
+>                 tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_ENABLE);
+>         else
+>                 tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_BREAK);
+> @@ -4876,6 +4878,8 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+>         struct rtl8xxxu_priv *priv = hw->priv;
+>         struct device *dev = &priv->udev->dev;
+>         struct rtl8xxxu_txdesc40 *tx_desc40;
+> +       u8 *qc = ieee80211_get_qos_ctl(hdr);
+> +       u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+>         u32 rate;
+>         u16 rate_flags = tx_info->control.rates[0].flags;
+>         u16 seq_number;
+> @@ -4902,7 +4906,7 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+>
+>         tx_desc40->txdw9 = cpu_to_le32((u32)seq_number << TXDESC40_SEQ_SHIFT);
+>
+> -       if (ampdu_enable)
+> +       if (ampdu_enable && test_bit(tid, priv->tid_bitmap))
+>                 tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_ENABLE);
+>         else
+>                 tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_BREAK);
+> @@ -5015,12 +5019,19 @@ static void rtl8xxxu_tx(struct ieee80211_hw *hw,
+>         if (ieee80211_is_data_qos(hdr->frame_control) && sta) {
+>                 if (sta->ht_cap.ht_supported) {
+>                         u32 ampdu, val32;
+> +                       u8 *qc = ieee80211_get_qos_ctl(hdr);
+> +                       u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+>
+>                         ampdu = (u32)sta->ht_cap.ampdu_density;
+>                         val32 = ampdu << TXDESC_AMPDU_DENSITY_SHIFT;
+>                         tx_desc->txdw2 |= cpu_to_le32(val32);
+>
+>                         ampdu_enable = true;
+> +
+> +                       if (!priv->tx_aggr_started[tid] &&
+> +                               !(skb->protocol == cpu_to_be16(ETH_P_PAE)))
+> +                               if (!ieee80211_start_tx_ba_session(sta, tid, 0))
+> +                                       priv->tx_aggr_started[tid] = true;
+>                 }
+>         }
+>
+> @@ -6089,6 +6100,7 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+>         struct device *dev = &priv->udev->dev;
+>         u8 ampdu_factor, ampdu_density;
+>         struct ieee80211_sta *sta = params->sta;
+> +       u16 tid = params->tid;
+>         enum ieee80211_ampdu_mlme_action action = params->action;
+>
+>         switch (action) {
+> @@ -6101,17 +6113,20 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+>                 dev_dbg(dev,
+>                         "Changed HT: ampdu_factor %02x, ampdu_density %02x\n",
+>                         ampdu_factor, ampdu_density);
+> -               break;
+> +               return IEEE80211_AMPDU_TX_START_IMMEDIATE;
+> +       case IEEE80211_AMPDU_TX_STOP_CONT:
+>         case IEEE80211_AMPDU_TX_STOP_FLUSH:
+> -               dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH\n", __func__);
+> -               rtl8xxxu_set_ampdu_factor(priv, 0);
+> -               rtl8xxxu_set_ampdu_min_space(priv, 0);
+> -               break;
+>         case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+> -               dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH_CONT\n",
+> -                        __func__);
+> +               dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP\n", __func__);
+>                 rtl8xxxu_set_ampdu_factor(priv, 0);
+>                 rtl8xxxu_set_ampdu_min_space(priv, 0);
+> +               priv->tx_aggr_started[tid] = false;
+> +               clear_bit(tid, priv->tid_bitmap);
+> +               ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
+> +               break;
+> +       case IEEE80211_AMPDU_TX_OPERATIONAL:
+> +               dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_OPERATIONAL\n", __func__);
+> +               set_bit(tid, priv->tid_bitmap);
+>                 break;
+>         case IEEE80211_AMPDU_RX_START:
+>                 dev_dbg(dev, "%s: IEEE80211_AMPDU_RX_START\n", __func__);
+> --
+> 2.20.1
+>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/hexagon/Kconfig      |  1 +
- arch/hexagon/kernel/dma.c | 57 ++++++++-------------------------------
- 2 files changed, 12 insertions(+), 46 deletions(-)
+Gentle ping. Any suggestion is welcome. Thanks
 
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index e5a852080730..aab1a40eb653 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -7,6 +7,7 @@ config HEXAGON
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_NO_PREEMPT
-+	select DMA_GLOBAL_POOL
- 	# Other pending projects/to-do items.
- 	# select HAVE_REGS_AND_STACK_ACCESS_API
- 	# select HAVE_HW_BREAKPOINT if PERF_EVENTS
-diff --git a/arch/hexagon/kernel/dma.c b/arch/hexagon/kernel/dma.c
-index 00b9a81075dd..882680e81a30 100644
---- a/arch/hexagon/kernel/dma.c
-+++ b/arch/hexagon/kernel/dma.c
-@@ -7,54 +7,8 @@
- 
- #include <linux/dma-map-ops.h>
- #include <linux/memblock.h>
--#include <linux/genalloc.h>
--#include <linux/module.h>
- #include <asm/page.h>
- 
--static struct gen_pool *coherent_pool;
--
--
--/* Allocates from a pool of uncached memory that was reserved at boot time */
--
--void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *dma_addr,
--		gfp_t flag, unsigned long attrs)
--{
--	void *ret;
--
--	/*
--	 * Our max_low_pfn should have been backed off by 16MB in
--	 * mm/init.c to create DMA coherent space.  Use that as the VA
--	 * for the pool.
--	 */
--
--	if (coherent_pool == NULL) {
--		coherent_pool = gen_pool_create(PAGE_SHIFT, -1);
--
--		if (coherent_pool == NULL)
--			panic("Can't create %s() memory pool!", __func__);
--		else
--			gen_pool_add(coherent_pool,
--				(unsigned long)pfn_to_virt(max_low_pfn),
--				hexagon_coherent_pool_size, -1);
--	}
--
--	ret = (void *) gen_pool_alloc(coherent_pool, size);
--
--	if (ret) {
--		memset(ret, 0, size);
--		*dma_addr = (dma_addr_t) virt_to_phys(ret);
--	} else
--		*dma_addr = ~0;
--
--	return ret;
--}
--
--void arch_dma_free(struct device *dev, size_t size, void *vaddr,
--		dma_addr_t dma_addr, unsigned long attrs)
--{
--	gen_pool_free(coherent_pool, (unsigned long) vaddr, size);
--}
--
- void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
- 		enum dma_data_direction dir)
- {
-@@ -77,3 +31,14 @@ void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
- 		BUG();
- 	}
- }
-+
-+/*
-+ * Our max_low_pfn should have been backed off by 16MB in mm/init.c to create
-+ * DMA coherent space.  Use that for the pool.
-+ */
-+static int __init hexagon_dma_init(void)
-+{
-+	return dma_init_global_coherent(PFN_PHYS(max_low_pfn),
-+					hexagon_coherent_pool_size);
-+}
-+core_initcall(hexagon_dma_init);
--- 
-2.30.2
-
+Chris
