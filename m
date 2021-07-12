@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58F83C5883
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344C93C4CE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357385AbhGLItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42062 "EHLO mail.kernel.org"
+        id S244212AbhGLHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245745AbhGLHxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3575661158;
-        Mon, 12 Jul 2021 07:50:23 +0000 (UTC)
+        id S235650AbhGLGsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:48:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 011166100B;
+        Mon, 12 Jul 2021 06:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076223;
-        bh=kIZ60M1nZfkEOjXB8kpvTant4ngMp9YGmo5D06dDtss=;
+        s=korg; t=1626072243;
+        bh=c5j3EHFQ1Uz2hO9RdP9Fr7Er0U4ZMMPMDvUCIvdSMgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KFiuyQcksQOlrFF9wlCj7cihb9NKjzEDk/DrimXHfF1xxt6TG20m2dU05G0y0+yXe
-         KHd4SKAZrWqJPnEVkKnCn0R0n87P9rVS3S4UcEvLDBq0HzQD96Bo/3vXHLVN8xwGlS
-         O6wTL/u7cHVbxnldvF20y0zlt24HYuLXlsAaxKFw=
+        b=GOzrsBGcZ3bFdOVYESboEjagv8E8pYcR1jjobeF6Bxhw3gG6ceLM5W4r28s0ReExw
+         AjcO1KIKDP0U9ZjSizH+/XCVmDd19vw6Rm1fq0ZAXZa8WtxwjxyOK3o2N6x7F0GWAi
+         2wfdWU2LYRIf8Lp8VHfiy/L+RCm5F/DoV9WG5LWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 550/800] drm/msm: Fix error return code in msm_drm_init()
-Date:   Mon, 12 Jul 2021 08:09:33 +0200
-Message-Id: <20210712061025.889215075@linuxfoundation.org>
+Subject: [PATCH 5.10 414/593] Bluetooth: Fix not sending Set Extended Scan Response
+Date:   Mon, 12 Jul 2021 08:09:34 +0200
+Message-Id: <20210712060933.575604580@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit a1c9b1e3bdd6d8dc43c18699772fb6cf4497d45a ]
+[ Upstream commit a76a0d365077711594ce200a9553ed6d1ff40276 ]
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+Current code is actually failing on the following tests of mgmt-tester
+because get_adv_instance_scan_rsp_len did not account for flags that
+cause scan response data to be included resulting in non-scannable
+instance when in fact it should be scannable.
 
-Fixes: 7f9743abaa79 ("drm/msm: validate display and event threads")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210508022836.1777-1-thunder.leizhen@huawei.com
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/bluetooth/hci_request.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index fe7d17cd35ec..afd555b0c105 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -523,6 +523,7 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- 		priv->event_thread[i].worker = kthread_create_worker(0,
- 			"crtc_event:%d", priv->event_thread[i].crtc_id);
- 		if (IS_ERR(priv->event_thread[i].worker)) {
-+			ret = PTR_ERR(priv->event_thread[i].worker);
- 			DRM_DEV_ERROR(dev, "failed to create crtc_event kthread\n");
- 			goto err_msm_uninit;
- 		}
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 161ea93a5382..33dc78c24b73 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1060,9 +1060,10 @@ static u8 get_adv_instance_scan_rsp_len(struct hci_dev *hdev, u8 instance)
+ 	if (!adv_instance)
+ 		return 0;
+ 
+-	/* TODO: Take into account the "appearance" and "local-name" flags here.
+-	 * These are currently being ignored as they are not supported.
+-	 */
++	if (adv_instance->flags & MGMT_ADV_FLAG_APPEARANCE ||
++	    adv_instance->flags & MGMT_ADV_FLAG_LOCAL_NAME)
++		return 1;
++
+ 	return adv_instance->scan_rsp_len;
+ }
+ 
+@@ -1599,14 +1600,11 @@ void __hci_req_update_scan_rsp_data(struct hci_request *req, u8 instance)
+ 
+ 		memset(&cp, 0, sizeof(cp));
+ 
+-		/* Extended scan response data doesn't allow a response to be
+-		 * set if the instance isn't scannable.
+-		 */
+-		if (get_adv_instance_scan_rsp_len(hdev, instance))
++		if (instance)
+ 			len = create_instance_scan_rsp_data(hdev, instance,
+ 							    cp.data);
+ 		else
+-			len = 0;
++			len = create_default_scan_rsp_data(hdev, cp.data);
+ 
+ 		if (hdev->scan_rsp_data_len == len &&
+ 		    !memcmp(cp.data, hdev->scan_rsp_data, len))
 -- 
 2.30.2
 
