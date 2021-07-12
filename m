@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A235C3C5700
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4AD3C4FE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359464AbhGLI0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:26:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46040 "EHLO mail.kernel.org"
+        id S1343798AbhGLH2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:28:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347405AbhGLHjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:39:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 169C8611F2;
-        Mon, 12 Jul 2021 07:34:50 +0000 (UTC)
+        id S241744AbhGLG7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D9BD61156;
+        Mon, 12 Jul 2021 06:56:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075291;
-        bh=ZptdSvTsaDQgc709i4bznaO+Cpu4QV9ScxZjMqvcgDY=;
+        s=korg; t=1626072998;
+        bh=yfM7ZqWbO13YvsM+/LpAFuOCbcq//zsYf8iFiW3mizg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QR/z58nIauHlYIts7i00+2ngHMljlQ7rSGNgU7YHm8UdK3uLPQduJc3EXnot4IQzR
-         7WCM6w/3Rmnw5M60zQbgRILycFXa0iE9zqS4mkkpajqrGi7GEzLeH+ftfiZaFwEA2Z
-         XByRoUEKGNNgC2Lx+jf8z9VDfOWdL2iVi3QJZuKg=
+        b=QjYrAQ84zVzSbmsipFJ6sv0DnyiiiWPP4gcwyAW9/PB8Went1Fl8sQRPPwMECcll3
+         2HYvXZE2UcAeNhttkn78Leov1rFkFYQSNvtuj+fmz5qoOYao9/2MQsel9L5VUg64hH
+         yVvIiQ8KJGVpEvgdiny7IgKkaW6CyNfNLI+Jn18k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 153/800] media: hevc: Fix dependent slice segment flags
+        stable@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.12 093/700] iio: accel: bmc150: Dont make the remove function of the second accelerometer unregister itself
 Date:   Mon, 12 Jul 2021 08:02:56 +0200
-Message-Id: <20210712060934.534260627@linuxfoundation.org>
+Message-Id: <20210712060937.914051025@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,88 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 67a7e53d5b21f3a84efc03a4e62db7caf97841ef ]
+commit f407e2dca0f559621114eeaf657880d83f237fbd upstream.
 
-Dependent slice segment flag for PPS control is misnamed. It should have
-"enabled" at the end. It only tells if this flag is present in slice
-header or not and not the actual value.
+On machines with dual accelerometers described in a single ACPI fwnode,
+the bmc150_accel_probe() instantiates a second i2c-client for the second
+accelerometer.
 
-Fix this by renaming the PPS flag and introduce another flag for slice
-control which tells actual value.
+A pointer to this manually instantiated second i2c-client is stored
+inside the iio_dev's private-data through bmc150_set_second_device(),
+so that the i2c-client can be unregistered from bmc150_accel_remove().
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Before this commit bmc150_set_second_device() took only 1 argument so it
+would store the pointer in private-data of the iio_dev belonging to the
+manually instantiated i2c-client, leading to the bmc150_accel_remove()
+call for the second_dev trying to unregister *itself* while it was
+being removed, leading to a deadlock and rmmod hanging.
+
+Change bmc150_set_second_device() to take 2 arguments: 1. The i2c-client
+which is instantiating the second i2c-client for the 2nd accelerometer and
+2. The second-device pointer itself (which also is an i2c-client).
+
+This will store the second_device pointer in the private data of the
+iio_dev belonging to the (ACPI instantiated) i2c-client for the first
+accelerometer and will make bmc150_accel_remove() unregister the
+second_device i2c-client when called for the first client,
+avoiding the deadlock.
+
+Fixes: 5bfb3a4bd8f6 ("iio: accel: bmc150: Check for a second ACPI device for BOSC0200")
+Cc: Jeremy Cline <jeremy@jcline.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
- drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
- include/media/hevc-ctrls.h                                | 3 ++-
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/iio/accel/bmc150-accel-core.c |    4 ++--
+ drivers/iio/accel/bmc150-accel-i2c.c  |    2 +-
+ drivers/iio/accel/bmc150-accel.h      |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index b0de4e6e7ebd..514b334470ea 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -3053,7 +3053,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     :stub-columns: 0
-     :widths:       1 1 2
+--- a/drivers/iio/accel/bmc150-accel-core.c
++++ b/drivers/iio/accel/bmc150-accel-core.c
+@@ -1811,11 +1811,11 @@ struct i2c_client *bmc150_get_second_dev
+ }
+ EXPORT_SYMBOL_GPL(bmc150_get_second_device);
  
--    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
-       - 0x00000001
-       -
-     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
-@@ -3277,6 +3277,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED``
-       - 0x00000100
-       -
-+    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+      - 0x00000200
-+      -
+-void bmc150_set_second_device(struct i2c_client *client)
++void bmc150_set_second_device(struct i2c_client *client, struct i2c_client *second_dev)
+ {
+ 	struct bmc150_accel_data *data = iio_priv(i2c_get_clientdata(client));
  
- .. raw:: latex
+-	data->second_device = client;
++	data->second_device = second_dev;
+ }
+ EXPORT_SYMBOL_GPL(bmc150_set_second_device);
  
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-index ce497d0197df..10744fab7cea 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-@@ -477,8 +477,8 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
- 				slice_params->flags);
+--- a/drivers/iio/accel/bmc150-accel-i2c.c
++++ b/drivers/iio/accel/bmc150-accel-i2c.c
+@@ -70,7 +70,7 @@ static int bmc150_accel_probe(struct i2c
  
- 	reg |= VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDENT_SLICE_SEGMENT,
--				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
--				pps->flags);
-+				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
-+				slice_params->flags);
+ 		second_dev = i2c_acpi_new_device(&client->dev, 1, &board_info);
+ 		if (!IS_ERR(second_dev))
+-			bmc150_set_second_device(second_dev);
++			bmc150_set_second_device(client, second_dev);
+ 	}
+ #endif
  
- 	/* FIXME: For multi-slice support. */
- 	reg |= VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PIC;
-diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-index b4cb2ef02f17..226fcfa0e026 100644
---- a/include/media/hevc-ctrls.h
-+++ b/include/media/hevc-ctrls.h
-@@ -81,7 +81,7 @@ struct v4l2_ctrl_hevc_sps {
- 	__u64	flags;
- };
+--- a/drivers/iio/accel/bmc150-accel.h
++++ b/drivers/iio/accel/bmc150-accel.h
+@@ -18,7 +18,7 @@ int bmc150_accel_core_probe(struct devic
+ 			    const char *name, bool block_supported);
+ int bmc150_accel_core_remove(struct device *dev);
+ struct i2c_client *bmc150_get_second_device(struct i2c_client *second_device);
+-void bmc150_set_second_device(struct i2c_client *second_device);
++void bmc150_set_second_device(struct i2c_client *client, struct i2c_client *second_dev);
+ extern const struct dev_pm_ops bmc150_accel_pm_ops;
+ extern const struct regmap_config bmc150_regmap_conf;
  
--#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
-+#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
- #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
- #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
- #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
-@@ -160,6 +160,7 @@ struct v4l2_hevc_pred_weight_table {
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED (1ULL << 7)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL << 8)
-+#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
- 
- struct v4l2_ctrl_hevc_slice_params {
- 	__u32	bit_size;
--- 
-2.30.2
-
 
 
