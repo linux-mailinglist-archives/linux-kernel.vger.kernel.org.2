@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25483C5729
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC07C3C49D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359853AbhGLI3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:29:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50970 "EHLO mail.kernel.org"
+        id S238172AbhGLGqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244599AbhGLHmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB518601FE;
-        Mon, 12 Jul 2021 07:39:35 +0000 (UTC)
+        id S235989AbhGLGfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7813F610FB;
+        Mon, 12 Jul 2021 06:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075576;
-        bh=PmdTRyrk2fYR1G6c8lKyKUpIjHZZ4kzHvUHxo91goiw=;
+        s=korg; t=1626071568;
+        bh=roqyspRFC1/DgrllRoflMHE9bkjkXJi48MaQ1+M2RGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxUejykLI1SPeXKbGHgtdrRfLuw5gONBqJ7uTFLAyq2YK753KOjjnVP6TOJXLh6xp
-         qW2oM87Zsu/9XhdaNJuqe7s4J+4x+iFR/vFJP4m8b/JxzM/8urflNiUFcS/w1z2dvs
-         2/oJhwrz07CuYwCkLrKiKHpCZnCmg/mN3jyUgbDA=
+        b=QF1jSCloWj6H0NgyCVzInSpZTsBT0XjOGVNjA3WE3FhS2zotV9Sq6/57kZHDAlWXx
+         c9U3vbLKUs4ceJ1qLegtjQUI85ZnG9tGEUdImapYIGUznaKFE7AzQIImLj0R/OpsH/
+         0KaB26YoJ/moUr0EXthj+2Hdk6rPbYaxEhwplr30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 246/800] cifs: fix check of dfs interlinks
+Subject: [PATCH 5.10 109/593] media: s5p-jpeg: fix pm_runtime_get_sync() usage count
 Date:   Mon, 12 Jul 2021 08:04:29 +0200
-Message-Id: <20210712060948.387182958@linuxfoundation.org>
+Message-Id: <20210712060855.202433134@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 889c2a700799f3b6f82210925e1faf4a9b833c4a ]
+[ Upstream commit 10343de268d10cf07b092b8b525e12ad558ead77 ]
 
-Interlink is a special type of DFS link that resolves to a different
-DFS domain-based namespace.  To determine whether it is an interlink
-or not, check if ReferralServers and StorageServers bits are set to 1
-and 0 respectively in ReferralHeaderFlags, as specified in MS-DFSC
-3.1.5.4.5 Determining Whether a Referral Response is an Interlink.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+As a plus, pm_runtime_resume_and_get() doesn't return
+positive numbers, so the return code validation can
+be removed.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/dfs_cache.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/media/platform/s5p-jpeg/jpeg-core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/cifs/dfs_cache.c b/fs/cifs/dfs_cache.c
-index b1fa30fefe1f..8e16ee1e5fd1 100644
---- a/fs/cifs/dfs_cache.c
-+++ b/fs/cifs/dfs_cache.c
-@@ -25,8 +25,7 @@
- #define CACHE_HTABLE_SIZE 32
- #define CACHE_MAX_ENTRIES 64
+diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+index 9b22dd8e34f4..d515eb08c3ee 100644
+--- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
++++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+@@ -2566,11 +2566,8 @@ static void s5p_jpeg_buf_queue(struct vb2_buffer *vb)
+ static int s5p_jpeg_start_streaming(struct vb2_queue *q, unsigned int count)
+ {
+ 	struct s5p_jpeg_ctx *ctx = vb2_get_drv_priv(q);
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(ctx->jpeg->dev);
  
--#define IS_INTERLINK_SET(v) ((v) & (DFSREF_REFERRAL_SERVER | \
--				    DFSREF_STORAGE_SERVER))
-+#define IS_DFS_INTERLINK(v) (((v) & DFSREF_REFERRAL_SERVER) && !((v) & DFSREF_STORAGE_SERVER))
+-	return ret > 0 ? 0 : ret;
++	return pm_runtime_resume_and_get(ctx->jpeg->dev);
+ }
  
- struct cache_dfs_tgt {
- 	char *name;
-@@ -171,7 +170,7 @@ static int dfscache_proc_show(struct seq_file *m, void *v)
- 				   "cache entry: path=%s,type=%s,ttl=%d,etime=%ld,hdr_flags=0x%x,ref_flags=0x%x,interlink=%s,path_consumed=%d,expired=%s\n",
- 				   ce->path, ce->srvtype == DFS_TYPE_ROOT ? "root" : "link",
- 				   ce->ttl, ce->etime.tv_nsec, ce->ref_flags, ce->hdr_flags,
--				   IS_INTERLINK_SET(ce->hdr_flags) ? "yes" : "no",
-+				   IS_DFS_INTERLINK(ce->hdr_flags) ? "yes" : "no",
- 				   ce->path_consumed, cache_entry_expired(ce) ? "yes" : "no");
- 
- 			list_for_each_entry(t, &ce->tlist, list) {
-@@ -240,7 +239,7 @@ static inline void dump_ce(const struct cache_entry *ce)
- 		 ce->srvtype == DFS_TYPE_ROOT ? "root" : "link", ce->ttl,
- 		 ce->etime.tv_nsec,
- 		 ce->hdr_flags, ce->ref_flags,
--		 IS_INTERLINK_SET(ce->hdr_flags) ? "yes" : "no",
-+		 IS_DFS_INTERLINK(ce->hdr_flags) ? "yes" : "no",
- 		 ce->path_consumed,
- 		 cache_entry_expired(ce) ? "yes" : "no");
- 	dump_tgts(ce);
+ static void s5p_jpeg_stop_streaming(struct vb2_queue *q)
 -- 
 2.30.2
 
