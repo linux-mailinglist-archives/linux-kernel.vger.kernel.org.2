@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDA43C5705
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239BD3C4FC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359569AbhGLI05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
+        id S242719AbhGLH1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:27:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347616AbhGLHjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:39:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 574CD613E4;
-        Mon, 12 Jul 2021 07:35:08 +0000 (UTC)
+        id S241375AbhGLHAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:00:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED35E61132;
+        Mon, 12 Jul 2021 06:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075308;
-        bh=+0RmVVSDzLNt2nkptVlfGz2MqVzeDxn8hiCZHkPC86c=;
+        s=korg; t=1626073074;
+        bh=UKL06wvXO3538xb+FDZ9uGdySxRC3q9rHRHGC0tZ+1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QEeYArG52QLCHQ2bboXBsW4knxiOqcy20s/wLXyVExszyKJVuOEjmVA7rsbyFKU4K
-         Y9G+akiiVLM1lkyFavJ8gRCUDhw8ZrU6LLrsHpZVhijqbXYvBVk/9WJOTMAz35OaEW
-         3IIRRUVNYnUelkYfknqkrZnX5lM2BMyR09xNvteE=
+        b=WKVPzm2QK10BfNzEowhnniApywYjrgaECBXeEkVnxwfdjC+bRHzs5KIhMjDL+CBbJ
+         ujv2KanyxxMIcRk5BpIlFRUxJMNxowHG0+5r8uzEQ9DsLh9lCvfDBjlVzITxmWJHjh
+         nenqHJyyUVAvwcyexm1WkxG4eg3PMEF+PjWhvX9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 176/800] memstick: rtsx_usb_ms: fix UAF
+        stable@vger.kernel.org, Pradeep P V K <pragalla@codeaurora.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.12 116/700] fuse: check connected before queueing on fpq->io
 Date:   Mon, 12 Jul 2021 08:03:19 +0200
-Message-Id: <20210712060937.720306444@linuxfoundation.org>
+Message-Id: <20210712060941.323374142@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,89 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 42933c8aa14be1caa9eda41f65cde8a3a95d3e39 ]
+commit 80ef08670d4c28a06a3de954bd350368780bcfef upstream.
 
-This patch fixes the following issues:
-1. memstick_free_host() will free the host, so the use of ms_dev(host) after
-it will be a problem. To fix this, move memstick_free_host() after when we
-are done with ms_dev(host).
-2. In rtsx_usb_ms_drv_remove(), pm need to be disabled before we remove
-and free host otherwise memstick_check will be called and UAF will
-happen.
+A request could end up on the fpq->io list after fuse_abort_conn() has
+reset fpq->connected and aborted requests on that list:
 
-[   11.351173] BUG: KASAN: use-after-free in rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
-[   11.357077]  rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
-[   11.357376]  platform_remove+0x2a/0x50
-[   11.367531] Freed by task 298:
-[   11.368537]  kfree+0xa4/0x2a0
-[   11.368711]  device_release+0x51/0xe0
-[   11.368905]  kobject_put+0xa2/0x120
-[   11.369090]  rtsx_usb_ms_drv_remove+0x8c/0x140 [rtsx_usb_ms]
-[   11.369386]  platform_remove+0x2a/0x50
+Thread-1			  Thread-2
+========			  ========
+->fuse_simple_request()           ->shutdown
+  ->__fuse_request_send()
+    ->queue_request()		->fuse_abort_conn()
+->fuse_dev_do_read()                ->acquire(fpq->lock)
+  ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
+				  ->release(fpq->lock)
+  ->acquire(fpq->lock)
+  ->add req to fpq->io
 
-[   12.038408] BUG: KASAN: use-after-free in __mutex_lock.isra.0+0x3ec/0x7c0
-[   12.045432]  mutex_lock+0xc9/0xd0
-[   12.046080]  memstick_check+0x6a/0x578 [memstick]
-[   12.046509]  process_one_work+0x46d/0x750
-[   12.052107] Freed by task 297:
-[   12.053115]  kfree+0xa4/0x2a0
-[   12.053272]  device_release+0x51/0xe0
-[   12.053463]  kobject_put+0xa2/0x120
-[   12.053647]  rtsx_usb_ms_drv_remove+0xc4/0x140 [rtsx_usb_ms]
-[   12.053939]  platform_remove+0x2a/0x50
+After the userspace copy is done the request will be ended, but
+req->out.h.error will remain uninitialized.  Also the copy might block
+despite being already aborted.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Co-developed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Link: https://lore.kernel.org/r/20210511163944.1233295-1-ztong0001@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix both issues by not allowing the request to be queued on the fpq->io
+list after fuse_abort_conn() has processed this list.
+
+Reported-by: Pradeep P V K <pragalla@codeaurora.org>
+Fixes: fd22d62ed0c3 ("fuse: no fc->lock for iqueue parts")
+Cc: <stable@vger.kernel.org> # v4.2
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/memstick/host/rtsx_usb_ms.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ fs/fuse/dev.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/memstick/host/rtsx_usb_ms.c b/drivers/memstick/host/rtsx_usb_ms.c
-index 102dbb8080da..29271ad4728a 100644
---- a/drivers/memstick/host/rtsx_usb_ms.c
-+++ b/drivers/memstick/host/rtsx_usb_ms.c
-@@ -799,9 +799,9 @@ static int rtsx_usb_ms_drv_probe(struct platform_device *pdev)
- 
- 	return 0;
- err_out:
--	memstick_free_host(msh);
- 	pm_runtime_disable(ms_dev(host));
- 	pm_runtime_put_noidle(ms_dev(host));
-+	memstick_free_host(msh);
- 	return err;
- }
- 
-@@ -828,9 +828,6 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -1272,6 +1272,15 @@ static ssize_t fuse_dev_do_read(struct f
+ 		goto restart;
  	}
- 	mutex_unlock(&host->host_mutex);
- 
--	memstick_remove_host(msh);
--	memstick_free_host(msh);
--
- 	/* Balance possible unbalanced usage count
- 	 * e.g. unconditional module removal
- 	 */
-@@ -838,10 +835,11 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
- 		pm_runtime_put(ms_dev(host));
- 
- 	pm_runtime_disable(ms_dev(host));
--	platform_set_drvdata(pdev, NULL);
--
-+	memstick_remove_host(msh);
- 	dev_dbg(ms_dev(host),
- 		": Realtek USB Memstick controller has been removed\n");
-+	memstick_free_host(msh);
-+	platform_set_drvdata(pdev, NULL);
- 
- 	return 0;
- }
--- 
-2.30.2
-
+ 	spin_lock(&fpq->lock);
++	/*
++	 *  Must not put request on fpq->io queue after having been shut down by
++	 *  fuse_abort_conn()
++	 */
++	if (!fpq->connected) {
++		req->out.h.error = err = -ECONNABORTED;
++		goto out_end;
++
++	}
+ 	list_add(&req->list, &fpq->io);
+ 	spin_unlock(&fpq->lock);
+ 	cs->req = req;
 
 
