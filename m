@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890DC3C58AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED183C4EB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379949AbhGLIvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:51:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43886 "EHLO mail.kernel.org"
+        id S1344824AbhGLHUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:20:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348364AbhGLHzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:55:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5454C611F1;
-        Mon, 12 Jul 2021 07:51:49 +0000 (UTC)
+        id S239040AbhGLGt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EBED610CC;
+        Mon, 12 Jul 2021 06:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076309;
-        bh=ZivRLk3vTNtAwKZL3S42TJm2A9EcTEfHPTEK+8QwizA=;
+        s=korg; t=1626072328;
+        bh=uLfCrMqsvIrxqcCzs2c8dhu0bVbzvqwRuC0fGYazn7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=grVzajdmJ5vMPt8My7+Z1WErs1iN1de9F2KzZYUUTKhyGXfykz/XpTazmzD5uFZHl
-         DbLC651TjumDyEycuypPW9Jw1lCLTIJrRPYCVYrHbZtxHeJ0OKbWCwa9gr1v59eXoR
-         spXl2k0WdkICTjor6MipeYAGVeEkzJHMIkPFqHMk=
+        b=dalb9ZSBB60G0A4JSHJ0KDXyJ2LxAzOOQh5rXSuzOTA67Xw2D+kXTYRztZnI+UdqH
+         SfjPGY5ttg2RoMhLA0U9XXiuyeV745ZMFsUiu1HBBwkhz3iZ0R8tJ+GVxP7N81wbV7
+         wpOv1CZxCsY2dGiSJsuJ80clZxUezMu/N6J8Lbr8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 588/800] clk: actions: Fix AHPPREDIV-H-AHB clock chain on Owl S500 SoC
+Subject: [PATCH 5.10 451/593] iio: accel: stk8ba50: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:10:11 +0200
-Message-Id: <20210712061029.850615709@linuxfoundation.org>
+Message-Id: <20210712060938.884578737@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit fd90b5b9045274360b12cea0f2ce50f3bcfb25cc ]
+[ Upstream commit 334883894bc1e145a1e0f5de1b0d1b6a1133f0e6 ]
 
-There are a few issues with the setup of the Actions Semi Owl S500 SoC's
-clock chain involving AHPPREDIV, H and AHB clocks:
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-* AHBPREDIV clock is defined as a muxer only, although it also acts as
-  a divider.
-* H clock is using a wrong divider register offset
-* AHB is defined as a multi-rate factor clock, but it is actually just
-  a fixed pass clock.
+Found during an audit of all calls of this function.
 
-Let's provide the following fixes:
-
-* Change AHBPREDIV clock to an ungated OWL_COMP_DIV definition.
-* Use the correct register shift value in the OWL_DIVIDER definition
-  for H clock
-* Drop the unneeded 'ahb_factor_table[]' and change AHB clock to an
-  ungated OWL_COMP_FIXED_FACTOR definition.
-
-Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Link: https://lore.kernel.org/r/21c1abd19a7089b65a34852ac6513961be88cbe1.1623354574.git.cristian.ciocaltea@gmail.com
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: db6a19b8251f ("iio: accel: Add trigger support for STK8BA50")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-8-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/actions/owl-s500.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/iio/accel/stk8ba50.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-index 42d6899755e6..cbeb51c804eb 100644
---- a/drivers/clk/actions/owl-s500.c
-+++ b/drivers/clk/actions/owl-s500.c
-@@ -153,11 +153,6 @@ static struct clk_factor_table hde_factor_table[] = {
- 	{ 0, 0, 0 },
+diff --git a/drivers/iio/accel/stk8ba50.c b/drivers/iio/accel/stk8ba50.c
+index 3ead378b02c9..e8087d7ee49f 100644
+--- a/drivers/iio/accel/stk8ba50.c
++++ b/drivers/iio/accel/stk8ba50.c
+@@ -91,12 +91,11 @@ struct stk8ba50_data {
+ 	u8 sample_rate_idx;
+ 	struct iio_trigger *dready_trig;
+ 	bool dready_trigger_on;
+-	/*
+-	 * 3 x 16-bit channels (10-bit data, 6-bit padding) +
+-	 * 1 x 16 padding +
+-	 * 4 x 16 64-bit timestamp
+-	 */
+-	s16 buffer[8];
++	/* Ensure timestamp is naturally aligned */
++	struct {
++		s16 chans[3];
++		s64 timetamp __aligned(8);
++	} scan;
  };
  
--static struct clk_factor_table ahb_factor_table[] = {
--	{ 1, 1, 2 }, { 2, 1, 3 },
--	{ 0, 0, 0 },
--};
--
- static struct clk_div_table rmii_ref_div_table[] = {
- 	{ 0, 4 }, { 1, 10 },
- 	{ 0, 0 },
-@@ -186,7 +181,6 @@ static struct clk_div_table nand_div_table[] = {
+ #define STK8BA50_ACCEL_CHANNEL(index, reg, axis) {			\
+@@ -324,7 +323,7 @@ static irqreturn_t stk8ba50_trigger_handler(int irq, void *p)
+ 		ret = i2c_smbus_read_i2c_block_data(data->client,
+ 						    STK8BA50_REG_XOUT,
+ 						    STK8BA50_ALL_CHANNEL_SIZE,
+-						    (u8 *)data->buffer);
++						    (u8 *)data->scan.chans);
+ 		if (ret < STK8BA50_ALL_CHANNEL_SIZE) {
+ 			dev_err(&data->client->dev, "register read failed\n");
+ 			goto err;
+@@ -337,10 +336,10 @@ static irqreturn_t stk8ba50_trigger_handler(int irq, void *p)
+ 			if (ret < 0)
+ 				goto err;
  
- /* mux clock */
- static OWL_MUX(dev_clk, "dev_clk", dev_clk_mux_p, CMU_DEVPLL, 12, 1, CLK_SET_RATE_PARENT);
--static OWL_MUX(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p, CMU_BUSCLK1, 8, 3, CLK_SET_RATE_PARENT);
- 
- /* gate clocks */
- static OWL_GATE(gpio_clk, "gpio_clk", "apb_clk", CMU_DEVCLKEN0, 18, 0, 0);
-@@ -199,16 +193,25 @@ static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
- static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
- 
- /* divider clocks */
--static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
-+static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 2, 2, NULL, 0, 0);
- static OWL_DIVIDER(apb_clk, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
- static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
- 
- /* factor clocks */
--static OWL_FACTOR(ahb_clk, "ahb_clk", "h_clk", CMU_BUSCLK1, 2, 2, ahb_factor_table, 0, 0);
- static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 4, de_factor_table, 0, 0);
- static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 4, de_factor_table, 0, 0);
- 
- /* composite clocks */
-+static OWL_COMP_DIV(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p,
-+			OWL_MUX_HW(CMU_BUSCLK1, 8, 3),
-+			{ 0 },
-+			OWL_DIVIDER_HW(CMU_BUSCLK1, 12, 2, 0, NULL),
-+			CLK_SET_RATE_PARENT);
-+
-+static OWL_COMP_FIXED_FACTOR(ahb_clk, "ahb_clk", "h_clk",
-+			{ 0 },
-+			1, 1, 0);
-+
- static OWL_COMP_FACTOR(vce_clk, "vce_clk", hde_clk_mux_p,
- 			OWL_MUX_HW(CMU_VCECLK, 4, 2),
- 			OWL_GATE_HW(CMU_DEVCLKEN0, 26, 0),
+-			data->buffer[i++] = ret;
++			data->scan.chans[i++] = ret;
+ 		}
+ 	}
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   pf->timestamp);
+ err:
+ 	mutex_unlock(&data->lock);
 -- 
 2.30.2
 
