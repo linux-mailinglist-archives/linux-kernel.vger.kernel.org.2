@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D2B3C4950
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F7D3C56CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238312AbhGLGns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
+        id S1357753AbhGLIYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:24:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237582AbhGLGej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D5B61181;
-        Mon, 12 Jul 2021 06:30:49 +0000 (UTC)
+        id S1347879AbhGLHkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 107B2614A5;
+        Mon, 12 Jul 2021 07:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071450;
-        bh=Y7MBsejTqP5jbUJzRJcT4hEOWtadSAMUvNkusXB/BjA=;
+        s=korg; t=1626075412;
+        bh=ArBWbt/aB51lICRBdHOOvY4kaHHCe9ja5MmH8SJrW5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Ny8yWHxCojIff0iCmW8rOF5SmRrvksC8GwQ4MFe0n0kMSmIXH1+9GcMW7hq1Y+au
-         hvAl9PHatbM5tea/Re9Zfe5qAA/EAtLyX8qLaLE2oPMX0lRknEN17QqFhDLKVVFW//
-         dp2EG/LZ0JcJyIS2uBS1xGURAQkl6BwnWRho+i7I=
+        b=WHwGIJyq+IUkWKRjC+6NXbNkvnQNny2Ab5t3Fom3U/WRtgDynpkNt/p7ZVp5DAxjU
+         dPZNNIUjhDTOCfMPn2gCS7OJreYx+TMwJtojUs78YsPkgHq1psmw2gcF9F733f8coN
+         NxTAaEo+R31PWaOOoWTUFeA2oeG8o1DwvYx6si7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Oliver Lang <Oliver.Lang@gossenmetrawatt.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>, Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH 5.10 076/593] iio: ltr501: ltr501_read_ps(): add missing endianness conversion
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 213/800] hv_utils: Fix passing zero to PTR_ERR warning
 Date:   Mon, 12 Jul 2021 08:03:56 +0200
-Message-Id: <20210712060851.501088191@linuxfoundation.org>
+Message-Id: <20210712060943.542118582@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit 71b33f6f93ef9462c84560e2236ed22209d26a58 upstream.
+[ Upstream commit c6a8625fa4c6b0a97860d053271660ccedc3d1b3 ]
 
-The PS ADC Channel data is spread over 2 registers in little-endian
-form. This patch adds the missing endianness conversion.
+Sparse warn this:
 
-Fixes: 2690be905123 ("iio: Add Lite-On ltr501 ambient light / proximity sensor driver")
-Signed-off-by: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Tested-by: Nikita Travkin <nikita@trvn.ru> # ltr559
-Link: https://lore.kernel.org/r/20210610134619.2101372-4-mkl@pengutronix.de
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/hv/hv_util.c:753 hv_timesync_init() warn:
+ passing zero to 'PTR_ERR'
 
+Use PTR_ERR_OR_ZERO instead of PTR_ERR to fix this.
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20210514070116.16800-1-yuehaibing@huawei.com
+[ wei: change %ld to %d ]
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/ltr501.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/hv/hv_util.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/light/ltr501.c
-+++ b/drivers/iio/light/ltr501.c
-@@ -409,18 +409,19 @@ static int ltr501_read_als(const struct
+diff --git a/drivers/hv/hv_util.c b/drivers/hv/hv_util.c
+index e4aefeb330da..136576cba26f 100644
+--- a/drivers/hv/hv_util.c
++++ b/drivers/hv/hv_util.c
+@@ -750,8 +750,8 @@ static int hv_timesync_init(struct hv_util_service *srv)
+ 	 */
+ 	hv_ptp_clock = ptp_clock_register(&ptp_hyperv_info, NULL);
+ 	if (IS_ERR_OR_NULL(hv_ptp_clock)) {
+-		pr_err("cannot register PTP clock: %ld\n",
+-		       PTR_ERR(hv_ptp_clock));
++		pr_err("cannot register PTP clock: %d\n",
++		       PTR_ERR_OR_ZERO(hv_ptp_clock));
+ 		hv_ptp_clock = NULL;
+ 	}
  
- static int ltr501_read_ps(const struct ltr501_data *data)
- {
--	int ret, status;
-+	__le16 status;
-+	int ret;
- 
- 	ret = ltr501_drdy(data, LTR501_STATUS_PS_RDY);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = regmap_bulk_read(data->regmap, LTR501_PS_DATA,
--			       &status, 2);
-+			       &status, sizeof(status));
- 	if (ret < 0)
- 		return ret;
- 
--	return status;
-+	return le16_to_cpu(status);
- }
- 
- static int ltr501_read_intr_prst(const struct ltr501_data *data,
+-- 
+2.30.2
+
 
 
