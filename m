@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9523C4AF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAF93C5179
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237985AbhGLGzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:55:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
+        id S1348830AbhGLHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:41:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238470AbhGLGkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DC060238;
-        Mon, 12 Jul 2021 06:37:26 +0000 (UTC)
+        id S244345AbhGLHKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89C7F6052B;
+        Mon, 12 Jul 2021 07:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071846;
-        bh=z7k6hZxpghgA0HTAKvvdpq0jUkfYmU0Cp8/Xt6fw0Js=;
+        s=korg; t=1626073670;
+        bh=ONwR6GIp6AWuHc/W2qm3Dsm3wMyhQ7b21oIuAaqXs3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pQqtKYl9HRrVwkm64D0rVXVFtTC/BN5UQu5Vj1NrtdOja4bwUxUIVlQxb1QrvWgKB
-         cmWWFQbHfz29iSrXLOzYT7vpPLpRLTAolsL/+KPrf/FO3zCAZ//eI11RPPjMfIvNNm
-         jym+R7LQZ0CS50FxAdIbq/0omXaE4tiAmb+rQCFk=
+        b=o84rBMCA/uwOlKI6YThWJ0/xbta2mfCnlUDCvnFOad0Og1+Ylwg0CGIsy5alhhIMf
+         m41qsb+DrnkgP4FEUy/3lEovWHnIn6g/Mv3hzNKNSHvcH4NzEPl5Wxn8Y9/qzwJr5F
+         mw+QKUudwM/ecMpHmv39oJcIFNGqJ3XXR7EeG7QQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 243/593] crypto: sm2 - remove unnecessary reset operations
-Date:   Mon, 12 Jul 2021 08:06:43 +0200
-Message-Id: <20210712060909.626305937@linuxfoundation.org>
+Subject: [PATCH 5.12 321/700] media: mtk-vpu: on suspend, read/write regs only if vpu is running
+Date:   Mon, 12 Jul 2021 08:06:44 +0200
+Message-Id: <20210712061010.533722194@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,135 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
 
-[ Upstream commit 1bc608b4655b8b1491fb100f4cf4f15ae64a8698 ]
+[ Upstream commit 11420749c6b4b237361750de3d5b5579175f8622 ]
 
-This is an algorithm optimization. The reset operation when
-setting the public key is repeated and redundant, so remove it.
-At the same time, `sm2_ecc_os2ec()` is optimized to make the
-function more simpler and more in line with the Linux code style.
+If the vpu is not running, we should not rely on VPU_IDLE_REG
+value. In this case, the suspend cb should only unprepare the
+clock. This fixes a system-wide suspend to ram failure:
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+[  273.073363] PM: suspend entry (deep)
+[  273.410502] mtk-msdc 11230000.mmc: phase: [map:ffffffff] [maxlen:32] [final:10]
+[  273.455926] Filesystems sync: 0.378 seconds
+[  273.589707] Freezing user space processes ... (elapsed 0.003 seconds) done.
+[  273.600104] OOM killer disabled.
+[  273.603409] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  273.613361] mwifiex_sdio mmc2:0001:1: None of the WOWLAN triggers enabled
+[  274.784952] mtk_vpu 10020000.vpu: vpu idle timeout
+[  274.789764] PM: dpm_run_callback(): platform_pm_suspend+0x0/0x70 returns -5
+[  274.796740] mtk_vpu 10020000.vpu: PM: failed to suspend: error -5
+[  274.802842] PM: Some devices failed to suspend, or early wake event detected
+[  275.426489] OOM killer enabled.
+[  275.429718] Restarting tasks ...
+[  275.435765] done.
+[  275.447510] PM: suspend exit
+
+Fixes: 1f565e263c3e ("media: mtk-vpu: VPU should be in idle state before system is suspended")
+Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/sm2.c | 75 ++++++++++++++++++++--------------------------------
- 1 file changed, 29 insertions(+), 46 deletions(-)
+ drivers/media/platform/mtk-vpu/mtk_vpu.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/crypto/sm2.c b/crypto/sm2.c
-index 767e160333f6..b21addc3ac06 100644
---- a/crypto/sm2.c
-+++ b/crypto/sm2.c
-@@ -119,12 +119,6 @@ static void sm2_ec_ctx_deinit(struct mpi_ec_ctx *ec)
- 	memset(ec, 0, sizeof(*ec));
- }
+diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+index 043894f7188c..f49f6d53a941 100644
+--- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
++++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+@@ -987,6 +987,12 @@ static int mtk_vpu_suspend(struct device *dev)
+ 		return ret;
+ 	}
  
--static int sm2_ec_ctx_reset(struct mpi_ec_ctx *ec)
--{
--	sm2_ec_ctx_deinit(ec);
--	return sm2_ec_ctx_init(ec);
--}
--
- /* RESULT must have been initialized and is set on success to the
-  * point given by VALUE.
-  */
-@@ -132,55 +126,48 @@ static int sm2_ecc_os2ec(MPI_POINT result, MPI value)
- {
- 	int rc;
- 	size_t n;
--	const unsigned char *buf;
--	unsigned char *buf_memory;
-+	unsigned char *buf;
- 	MPI x, y;
- 
--	n = (mpi_get_nbits(value)+7)/8;
--	buf_memory = kmalloc(n, GFP_KERNEL);
--	rc = mpi_print(GCRYMPI_FMT_USG, buf_memory, n, &n, value);
--	if (rc) {
--		kfree(buf_memory);
--		return rc;
--	}
--	buf = buf_memory;
-+	n = MPI_NBYTES(value);
-+	buf = kmalloc(n, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
- 
--	if (n < 1) {
--		kfree(buf_memory);
--		return -EINVAL;
--	}
--	if (*buf != 4) {
--		kfree(buf_memory);
--		return -EINVAL; /* No support for point compression.  */
--	}
--	if (((n-1)%2)) {
--		kfree(buf_memory);
--		return -EINVAL;
--	}
--	n = (n-1)/2;
-+	rc = mpi_print(GCRYMPI_FMT_USG, buf, n, &n, value);
-+	if (rc)
-+		goto err_freebuf;
++	if (!vpu_running(vpu)) {
++		vpu_clock_disable(vpu);
++		clk_unprepare(vpu->clk);
++		return 0;
++	}
 +
-+	rc = -EINVAL;
-+	if (n < 1 || ((n - 1) % 2))
-+		goto err_freebuf;
-+	/* No support for point compression */
-+	if (*buf != 0x4)
-+		goto err_freebuf;
-+
-+	rc = -ENOMEM;
-+	n = (n - 1) / 2;
- 	x = mpi_read_raw_data(buf + 1, n);
--	if (!x) {
--		kfree(buf_memory);
--		return -ENOMEM;
--	}
-+	if (!x)
-+		goto err_freebuf;
- 	y = mpi_read_raw_data(buf + 1 + n, n);
--	kfree(buf_memory);
--	if (!y) {
--		mpi_free(x);
--		return -ENOMEM;
--	}
-+	if (!y)
-+		goto err_freex;
- 
- 	mpi_normalize(x);
- 	mpi_normalize(y);
--
- 	mpi_set(result->x, x);
- 	mpi_set(result->y, y);
- 	mpi_set_ui(result->z, 1);
- 
--	mpi_free(x);
--	mpi_free(y);
-+	rc = 0;
- 
--	return 0;
-+	mpi_free(y);
-+err_freex:
-+	mpi_free(x);
-+err_freebuf:
-+	kfree(buf);
-+	return rc;
- }
- 
- struct sm2_signature_ctx {
-@@ -399,10 +386,6 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
- 	MPI a;
- 	int rc;
- 
--	rc = sm2_ec_ctx_reset(ec);
--	if (rc)
--		return rc;
--
- 	ec->Q = mpi_point_new(0);
- 	if (!ec->Q)
- 		return -ENOMEM;
+ 	mutex_lock(&vpu->vpu_mutex);
+ 	/* disable vpu timer interrupt */
+ 	vpu_cfg_writel(vpu, vpu_cfg_readl(vpu, VPU_INT_STATUS) | VPU_IDLE_STATE,
 -- 
 2.30.2
 
