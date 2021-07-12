@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1C63C5890
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446703C5324
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379320AbhGLIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
+        id S243380AbhGLHxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347681AbhGLHxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AE7C613D2;
-        Mon, 12 Jul 2021 07:50:53 +0000 (UTC)
+        id S245549AbhGLHTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:19:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8873261153;
+        Mon, 12 Jul 2021 07:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076253;
-        bh=ln+t5VxhROXKBz66MmlU7JLtuWd1efLc+sppj0XjlUY=;
+        s=korg; t=1626074208;
+        bh=mUdufkRP5E+hO8OzuCj/d6SoF7ztqQYiiolxwrrMVhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ec58xoK7DPVZ1yGrqOgiWfs/BcBCB+Akbd4GyEn53toIpizaP0VsGrZLnArp+TAR5
-         lIYjmXmIuy0KK93moTVP67d05NNgmRciBxEXySZOp7C88t3iLSoJFhTJ/T+rILiA78
-         UZkqVXzRmuPwevC1dti/tKebR5BbflDr2Y2Y+H7M=
+        b=BF95nKNvoiuWmPp5HzKpPwfvBuZPpF17sOL5z+xGR8TGL95yt/exPWfCy8MBdAO55
+         /fQu24Kh+vTnfdDHwTQWTUcLJLZnOB9JcWWYqTy2rI6zA2qiDOOoWlkNBTC0EtkU7G
+         ofoFxu8rbNXHRbKUxg0maQG2vqbVxe2C8mwImWtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 562/800] Revert "ibmvnic: simplify reset_long_term_buff function"
+Subject: [PATCH 5.12 502/700] clk: actions: Fix UART clock dividers on Owl S500 SoC
 Date:   Mon, 12 Jul 2021 08:09:45 +0200
-Message-Id: <20210712061027.223197681@linuxfoundation.org>
+Message-Id: <20210712061029.905029467@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,118 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit 0ec13aff058a82426c8d44b688c804cc4a5a0a3d ]
+[ Upstream commit 2dca2a619a907579e3e65e7c1789230c2b912e88 ]
 
-This reverts commit 1c7d45e7b2c29080bf6c8cd0e213cc3cbb62a054.
+Use correct divider registers for the Actions Semi Owl S500 SoC's UART
+clocks.
 
-We tried to optimize the number of hcalls we send and skipped sending
-the REQUEST_MAP calls for some maps. However during resets, we need to
-resend all the maps to the VIOS since the VIOS does not remember the
-old values. In fact we may have failed over to a new VIOS which will
-not have any of the mappings.
-
-When we send packets with map ids the VIOS does not know about, it
-triggers a FATAL reset. While the client does recover from the FATAL
-error reset, we are seeing a large number of such resets. Handling
-FATAL resets is lot more unnecessary work than issuing a few more
-hcalls so revert the commit and resend the maps to the VIOS.
-
-Fixes: 1c7d45e7b2c ("ibmvnic: simplify reset_long_term_buff function")
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/4714d05982b19ac5fec2ed74f54be42d8238e392.1623354574.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 46 ++++++++++++++++++++++++------
- 1 file changed, 38 insertions(+), 8 deletions(-)
+ drivers/clk/actions/owl-s500.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 5788bb956d73..4b4eccc496a8 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -257,12 +257,40 @@ static void free_long_term_buff(struct ibmvnic_adapter *adapter,
- 	dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
- }
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 61bb224f6330..75b7186185b0 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -305,7 +305,7 @@ static OWL_COMP_FIXED_FACTOR(i2c3_clk, "i2c3_clk", "ethernet_pll_clk",
+ static OWL_COMP_DIV(uart0_clk, "uart0_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART0CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 6, 0),
+-			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
++			OWL_DIVIDER_HW(CMU_UART0CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+ 			CLK_IGNORE_UNUSED);
  
--static int reset_long_term_buff(struct ibmvnic_long_term_buff *ltb)
-+static int reset_long_term_buff(struct ibmvnic_adapter *adapter,
-+				struct ibmvnic_long_term_buff *ltb)
- {
--	if (!ltb->buff)
--		return -EINVAL;
-+	struct device *dev = &adapter->vdev->dev;
-+	int rc;
+ static OWL_COMP_DIV(uart1_clk, "uart1_clk", uart_clk_mux_p,
+@@ -317,31 +317,31 @@ static OWL_COMP_DIV(uart1_clk, "uart1_clk", uart_clk_mux_p,
+ static OWL_COMP_DIV(uart2_clk, "uart2_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART2CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 8, 0),
+-			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
++			OWL_DIVIDER_HW(CMU_UART2CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+ 			CLK_IGNORE_UNUSED);
  
- 	memset(ltb->buff, 0, ltb->size);
-+
-+	mutex_lock(&adapter->fw_lock);
-+	adapter->fw_done_rc = 0;
-+
-+	reinit_completion(&adapter->fw_done);
-+	rc = send_request_map(adapter, ltb->addr, ltb->size, ltb->map_id);
-+	if (rc) {
-+		mutex_unlock(&adapter->fw_lock);
-+		return rc;
-+	}
-+
-+	rc = ibmvnic_wait_for_completion(adapter, &adapter->fw_done, 10000);
-+	if (rc) {
-+		dev_info(dev,
-+			 "Reset failed, long term map request timed out or aborted\n");
-+		mutex_unlock(&adapter->fw_lock);
-+		return rc;
-+	}
-+
-+	if (adapter->fw_done_rc) {
-+		dev_info(dev,
-+			 "Reset failed, attempting to free and reallocate buffer\n");
-+		free_long_term_buff(adapter, ltb);
-+		mutex_unlock(&adapter->fw_lock);
-+		return alloc_long_term_buff(adapter, ltb, ltb->size);
-+	}
-+	mutex_unlock(&adapter->fw_lock);
- 	return 0;
- }
+ static OWL_COMP_DIV(uart3_clk, "uart3_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART3CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 19, 0),
+-			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
++			OWL_DIVIDER_HW(CMU_UART3CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+ 			CLK_IGNORE_UNUSED);
  
-@@ -484,7 +512,8 @@ static int reset_rx_pools(struct ibmvnic_adapter *adapter)
- 						  rx_pool->size *
- 						  rx_pool->buff_size);
- 		} else {
--			rc = reset_long_term_buff(&rx_pool->long_term_buff);
-+			rc = reset_long_term_buff(adapter,
-+						  &rx_pool->long_term_buff);
- 		}
+ static OWL_COMP_DIV(uart4_clk, "uart4_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART4CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 20, 0),
+-			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
++			OWL_DIVIDER_HW(CMU_UART4CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+ 			CLK_IGNORE_UNUSED);
  
- 		if (rc)
-@@ -607,11 +636,12 @@ static int init_rx_pools(struct net_device *netdev)
- 	return 0;
- }
+ static OWL_COMP_DIV(uart5_clk, "uart5_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART5CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 21, 0),
+-			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
++			OWL_DIVIDER_HW(CMU_UART5CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+ 			CLK_IGNORE_UNUSED);
  
--static int reset_one_tx_pool(struct ibmvnic_tx_pool *tx_pool)
-+static int reset_one_tx_pool(struct ibmvnic_adapter *adapter,
-+			     struct ibmvnic_tx_pool *tx_pool)
- {
- 	int rc, i;
+ static OWL_COMP_DIV(uart6_clk, "uart6_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART6CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 18, 0),
+-			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
++			OWL_DIVIDER_HW(CMU_UART6CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
+ 			CLK_IGNORE_UNUSED);
  
--	rc = reset_long_term_buff(&tx_pool->long_term_buff);
-+	rc = reset_long_term_buff(adapter, &tx_pool->long_term_buff);
- 	if (rc)
- 		return rc;
- 
-@@ -638,10 +668,10 @@ static int reset_tx_pools(struct ibmvnic_adapter *adapter)
- 
- 	tx_scrqs = adapter->num_active_tx_pools;
- 	for (i = 0; i < tx_scrqs; i++) {
--		rc = reset_one_tx_pool(&adapter->tso_pool[i]);
-+		rc = reset_one_tx_pool(adapter, &adapter->tso_pool[i]);
- 		if (rc)
- 			return rc;
--		rc = reset_one_tx_pool(&adapter->tx_pool[i]);
-+		rc = reset_one_tx_pool(adapter, &adapter->tx_pool[i]);
- 		if (rc)
- 			return rc;
- 	}
+ static OWL_COMP_DIV(i2srx_clk, "i2srx_clk", i2s_clk_mux_p,
 -- 
 2.30.2
 
