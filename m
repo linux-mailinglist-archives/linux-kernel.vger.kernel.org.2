@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECB63C5657
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CA63C5659
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357278AbhGLIRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:17:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
+        id S1357356AbhGLIRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:17:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244644AbhGLHdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:33:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF55A60FF1;
-        Mon, 12 Jul 2021 07:30:24 +0000 (UTC)
+        id S244848AbhGLHdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:33:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3AE260FF3;
+        Mon, 12 Jul 2021 07:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075025;
-        bh=Fyc4kmRbFFjK/m9dPgf4SN5B8TxWzKkPORGJvz+HkxM=;
+        s=korg; t=1626075028;
+        bh=xqwa26HKMkIS43izkXldqaP25XIeWFRozEGyYOLo3MA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DI9O+x9J1uL2vxOLZ447cuefoSIIre8K2D6nPtJMhMke/AH211wrbbez2SuJumaua
-         1drhQViw7l1o2aIUNyDVfx+ESKff/I2Zy4OIpTP2wEu1S9Zr4lUSCzbKqsXnd+6hNe
-         yR63InoO1rjZPPGuuoBCTCIHWydccXfQ/wAYhoow=
+        b=Oh+jl/908hWgK3osdNTmRQ30R9haqmRwxVeaJSIQgX8qxToRiuqccI7bxcM23ZLV+
+         bF4c0ReIjbAKEeQdyYZB51UysbEO7eQDGodlh5CSQYG+lu52fDRzadjnr9cYAXX9lq
+         6yqonyBIDqQ4e2vzZwDW6Fy2UHOUTNVC4/n5hMlI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.13 076/800] KVM: x86/mmu: Remove broken WARN that fires on 32-bit KVM w/ nested EPT
-Date:   Mon, 12 Jul 2021 08:01:39 +0200
-Message-Id: <20210712060923.824263014@linuxfoundation.org>
+Subject: [PATCH 5.13 077/800] KVM: x86/mmu: Treat NX as used (not reserved) for all !TDP shadow MMUs
+Date:   Mon, 12 Jul 2021 08:01:40 +0200
+Message-Id: <20210712060923.961879850@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,49 +41,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-commit f0d4379087d8a83f478b371ff7786e8df0cc2314 upstream.
+commit 112022bdb5bc372e00e6e43cb88ee38ea67b97bd upstream.
 
-Remove a misguided WARN that attempts to detect the scenario where using
-a special A/D tracking flag will set reserved bits on a non-MMIO spte.
-The WARN triggers false positives when using EPT with 32-bit KVM because
-of the !64-bit clause, which is just flat out wrong.  The whole A/D
-tracking goo is specific to EPT, and one of the big selling points of EPT
-is that EPT is decoupled from the host's native paging mode.
+Mark NX as being used for all non-nested shadow MMUs, as KVM will set the
+NX bit for huge SPTEs if the iTLB mutli-hit mitigation is enabled.
+Checking the mitigation itself is not sufficient as it can be toggled on
+at any time and KVM doesn't reset MMU contexts when that happens.  KVM
+could reset the contexts, but that would require purging all SPTEs in all
+MMUs, for no real benefit.  And, KVM already forces EFER.NX=1 when TDP is
+disabled (for WP=0, SMEP=1, NX=0), so technically NX is never reserved
+for shadow MMUs.
 
-Drop the WARN instead of trying to salvage the check.  Keeping a check
-specific to A/D tracking bits would essentially regurgitate the same code
-that led to KVM needed the tracking bits in the first place.
-
-A better approach would be to add a generic WARN on reserved bits being
-set, which would naturally cover the A/D tracking bits, work for all
-flavors of paging, and be self-documenting to some extent.
-
-Fixes: 8a406c89532c ("KVM: x86/mmu: Rename and document A/D scheme for TDP SPTEs")
+Fixes: b8e8c8303ff2 ("kvm: mmu: ITLB_MULTIHIT mitigation")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210622175739.3610207-2-seanjc@google.com>
+Message-Id: <20210622175739.3610207-3-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/mmu/spte.c |    7 -------
- 1 file changed, 7 deletions(-)
+ arch/x86/kvm/mmu/mmu.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -103,13 +103,6 @@ int make_spte(struct kvm_vcpu *vcpu, uns
- 		spte |= SPTE_TDP_AD_WRPROT_ONLY_MASK;
- 
- 	/*
--	 * Bits 62:52 of PAE SPTEs are reserved.  WARN if said bits are set
--	 * if PAE paging may be employed (shadow paging or any 32-bit KVM).
--	 */
--	WARN_ON_ONCE((!tdp_enabled || !IS_ENABLED(CONFIG_X86_64)) &&
--		     (spte & SPTE_TDP_AD_MASK));
--
--	/*
- 	 * For the EPT case, shadow_present_mask is 0 if hardware
- 	 * supports exec-only page table entries.  In that case,
- 	 * ACC_USER_MASK and shadow_user_mask are used to represent
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4168,7 +4168,15 @@ static inline u64 reserved_hpa_bits(void
+ void
+ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+ {
+-	bool uses_nx = context->nx ||
++	/*
++	 * KVM uses NX when TDP is disabled to handle a variety of scenarios,
++	 * notably for huge SPTEs if iTLB multi-hit mitigation is enabled and
++	 * to generate correct permissions for CR0.WP=0/CR4.SMEP=1/EFER.NX=0.
++	 * The iTLB multi-hit workaround can be toggled at any time, so assume
++	 * NX can be used by any non-nested shadow MMU to avoid having to reset
++	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
++	 */
++	bool uses_nx = context->nx || !tdp_enabled ||
+ 		context->mmu_role.base.smep_andnot_wp;
+ 	struct rsvd_bits_validate *shadow_zero_check;
+ 	int i;
 
 
