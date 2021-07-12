@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B2F3C4577
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE513C4578
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhGLGZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:25:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S234490AbhGLGZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:25:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235020AbhGLGY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6E3D61186;
-        Mon, 12 Jul 2021 06:21:03 +0000 (UTC)
+        id S235059AbhGLGY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:24:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5689A61166;
+        Mon, 12 Jul 2021 06:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070864;
-        bh=n+KLKmhYLsIkH/9PCdHkKTuX0Vlmc6T3wEKfw8lSxsU=;
+        s=korg; t=1626070868;
+        bh=+ilQCIlE2y3de7ZS9NMuQr591m8ljn399G6pW+yPewM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hq+JPOC3TPuZU/EgTbMWUo5YfIkkDijGUT4t2BmQlZYyxY5bxvkCia2NZgGxRmNmI
-         itxtXCPLNOtHiNVhWFqPcE8lY00NxVHqKxek4lPPM749uDWeYFC4PgJK9z0H4O7ell
-         irCP22S35xaf/5z/Ei3Hyc2fezLMNfscOJOjyX3A=
+        b=bodp3IEb67wD31kpdYUVowKxmmrCmJWRS2bF81cvttroTN+GlUmdN6GubLc8jVk2v
+         pVZc1GKz1C5aazC78thDTK8vrO7mie/iq8NSY+mVNNEB/F4brk6y55SibLdRM0Llsb
+         2lu4M6Cxull9hJCa4AjjRE1dp2IHksGMtsRQoGY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 174/348] crypto: nx - Fix RCU warning in nx842_OF_upd_status
-Date:   Mon, 12 Jul 2021 08:09:18 +0200
-Message-Id: <20210712060723.991457019@linuxfoundation.org>
+Subject: [PATCH 5.4 176/348] extcon: extcon-max8997: Fix IRQ freeing at error path
+Date:   Mon, 12 Jul 2021 08:09:20 +0200
+Message-Id: <20210712060724.257904861@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -39,59 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-[ Upstream commit 2a96726bd0ccde4f12b9b9a9f61f7b1ac5af7e10 ]
+[ Upstream commit 610bdc04830a864115e6928fc944f1171dfff6f3 ]
 
-The function nx842_OF_upd_status triggers a sparse RCU warning when
-it directly dereferences the RCU-protected devdata.  This appears
-to be an accident as there was another variable of the same name
-that was passed in from the caller.
+If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
+without freeing the requested IRQs.
 
-After it was removed (because the main purpose of using it, to
-update the status member was itself removed) the global variable
-unintenionally stood in as its replacement.
+Free the IRQs prior returning if reading the status fails.
 
-This patch restores the devdata parameter.
-
-Fixes: 90fd73f912f0 ("crypto: nx - remove pSeries NX 'status' field")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Link: https://lore.kernel.org/r/27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/nx/nx-842-pseries.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/extcon/extcon-max8997.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
-index 258c5e38a551..c5ec50a28f30 100644
---- a/drivers/crypto/nx/nx-842-pseries.c
-+++ b/drivers/crypto/nx/nx-842-pseries.c
-@@ -538,13 +538,15 @@ static int nx842_OF_set_defaults(struct nx842_devdata *devdata)
-  * The status field indicates if the device is enabled when the status
-  * is 'okay'.  Otherwise the device driver will be disabled.
-  *
-- * @prop - struct property point containing the maxsyncop for the update
-+ * @devdata: struct nx842_devdata to use for dev_info
-+ * @prop: struct property point containing the maxsyncop for the update
-  *
-  * Returns:
-  *  0 - Device is available
-  *  -ENODEV - Device is not available
-  */
--static int nx842_OF_upd_status(struct property *prop)
-+static int nx842_OF_upd_status(struct nx842_devdata *devdata,
-+			       struct property *prop)
- {
- 	const char *status = (const char *)prop->value;
- 
-@@ -758,7 +760,7 @@ static int nx842_OF_upd(struct property *new_prop)
- 		goto out;
- 
- 	/* Perform property updates */
--	ret = nx842_OF_upd_status(status);
-+	ret = nx842_OF_upd_status(new_devdata, status);
- 	if (ret)
- 		goto error_out;
- 
+diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
+index 172e116ac1ce..ac1633adb55d 100644
+--- a/drivers/extcon/extcon-max8997.c
++++ b/drivers/extcon/extcon-max8997.c
+@@ -729,7 +729,7 @@ static int max8997_muic_probe(struct platform_device *pdev)
+ 				2, info->status);
+ 	if (ret) {
+ 		dev_err(info->dev, "failed to read MUIC register\n");
+-		return ret;
++		goto err_irq;
+ 	}
+ 	cable_type = max8997_muic_get_cable_type(info,
+ 					   MAX8997_CABLE_GROUP_ADC, &attached);
 -- 
 2.30.2
 
