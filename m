@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0E13C5398
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FFA3C4CE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348181AbhGLHzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
+        id S244273AbhGLHKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245003AbhGLHTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 886E9613C7;
-        Mon, 12 Jul 2021 07:16:30 +0000 (UTC)
+        id S236706AbhGLGsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:48:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC89D6112D;
+        Mon, 12 Jul 2021 06:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074190;
-        bh=mnc3HnjhywSJDp5rW3/0SkA46lf//5+ozcBkRiPDFUY=;
+        s=korg; t=1626072255;
+        bh=pXn31TkCyFWQq5xPePd9IsCjXV2Uf7TMp52YGIPBvuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTEOGlpnndzpi1LwfYoa55+V+tdme6ss46T/jUewcFyBbNU+NUuiY5SZedp5MEA/x
-         92RBBYYykg83t4m+zMDkG3AMwcYxmN8y7a9uzKhIl6GfGo8l8l8kWXjmJAfqTF5axg
-         YVtfPHh+Svfbn6eru/54gEryjGWVdk3NxxPHqeow=
+        b=cHP3QN03WJHIucxl+cFVyHhZgAlevP/QmORQw+sboJu2oDZCuht9a1xWmUNNpwFXx
+         6/p/icQth/WaRGnydt/dneMSbA4cJtaNHrFw6/GWdrlNLzlRcI6uFKXFq0eC/94auV
+         H3ydySnbGpJsU2YN8egy3M1TRxo5PBeVOayK+Un8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bailey Forrest <bcf@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 496/700] gve: Fix swapped vars when fetching max queues
+Subject: [PATCH 5.10 419/593] clk: actions: Fix bisp_factor_table based clocks on Owl S500 SoC
 Date:   Mon, 12 Jul 2021 08:09:39 +0200
-Message-Id: <20210712061029.266539291@linuxfoundation.org>
+Message-Id: <20210712060934.273156110@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +42,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bailey Forrest <bcf@google.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit 1db1a862a08f85edc36aad091236ac9b818e949e ]
+[ Upstream commit a8f1f03caa51aa7a69c671aa87c475034db7d368 ]
 
-Fixes: 893ce44df565 ("gve: Add basic driver framework for Compute Engine Virtual NIC")
-Signed-off-by: Bailey Forrest <bcf@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The following clocks of the Actions Semi Owl S500 SoC have been defined
+to use a shared clock factor table 'bisp_factor_table[]': DE[1-2], VCE,
+VDE, BISP, SENSOR[0-1]
+
+There are several issues involved in this approach:
+
+* 'bisp_factor_table[]' describes the configuration of a regular 8-rates
+  divider, so its usage is redundant. Additionally, judging by the BISP
+  clock context, it is incomplete since it maps only 8 out of 12
+  possible entries.
+
+* The clocks mentioned above are not identical in terms of the available
+  rates, therefore cannot rely on the same factor table. Specifically,
+  BISP and SENSOR* are standard 12-rate dividers so their configuration
+  should rely on a proper clock div table, while VCE and VDE require a
+  factor table that is a actually a subset of the one needed for DE[1-2]
+  clocks.
+
+Let's fix this by implementing the following:
+
+* Add new factor tables 'de_factor_table' and 'hde_factor_table' to
+  properly handle DE[1-2], VCE and VDE clocks.
+
+* Add a common div table 'std12rate_div_table' for BISP and SENSOR[0-1]
+  clocks converted to OWL_COMP_DIV.
+
+* Drop the now unused 'bisp_factor_table[]'.
+
+Additionally, drop the CLK_IGNORE_UNUSED flag for SENSOR[0-1] since
+there is no reason to always keep ON those clocks.
+
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/e675820a46cd9930d8d576c6cae61d41c1a8416f.1623354574.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/actions/owl-s500.c | 44 ++++++++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index bbc423e93122..79cefe85a799 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1295,8 +1295,8 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 42abdf964044..42d6899755e6 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -140,9 +140,16 @@ static struct clk_factor_table sd_factor_table[] = {
+ 	{ 0, 0, 0 },
+ };
  
- 	gve_write_version(&reg_bar->driver_version);
- 	/* Get max queues to alloc etherdev */
--	max_rx_queues = ioread32be(&reg_bar->max_tx_queues);
--	max_tx_queues = ioread32be(&reg_bar->max_rx_queues);
-+	max_tx_queues = ioread32be(&reg_bar->max_tx_queues);
-+	max_rx_queues = ioread32be(&reg_bar->max_rx_queues);
- 	/* Alloc and setup the netdev and priv */
- 	dev = alloc_etherdev_mqs(sizeof(*priv), max_tx_queues, max_rx_queues);
- 	if (!dev) {
+-static struct clk_factor_table bisp_factor_table[] = {
+-	{ 0, 1, 1 }, { 1, 1, 2 }, { 2, 1, 3 }, { 3, 1, 4 },
+-	{ 4, 1, 5 }, { 5, 1, 6 }, { 6, 1, 7 }, { 7, 1, 8 },
++static struct clk_factor_table de_factor_table[] = {
++	{ 0, 1, 1 }, { 1, 2, 3 }, { 2, 1, 2 }, { 3, 2, 5 },
++	{ 4, 1, 3 }, { 5, 1, 4 }, { 6, 1, 6 }, { 7, 1, 8 },
++	{ 8, 1, 12 },
++	{ 0, 0, 0 },
++};
++
++static struct clk_factor_table hde_factor_table[] = {
++	{ 0, 1, 1 }, { 1, 2, 3 }, { 2, 1, 2 }, { 3, 2, 5 },
++	{ 4, 1, 3 }, { 5, 1, 4 }, { 6, 1, 6 }, { 7, 1, 8 },
+ 	{ 0, 0, 0 },
+ };
+ 
+@@ -156,6 +163,13 @@ static struct clk_div_table rmii_ref_div_table[] = {
+ 	{ 0, 0 },
+ };
+ 
++static struct clk_div_table std12rate_div_table[] = {
++	{ 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 4 },
++	{ 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 8 },
++	{ 8, 9 }, { 9, 10 }, { 10, 11 }, { 11, 12 },
++	{ 0, 0 },
++};
++
+ static struct clk_div_table i2s_div_table[] = {
+ 	{ 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 4 },
+ 	{ 4, 6 }, { 5, 8 }, { 6, 12 }, { 7, 16 },
+@@ -191,39 +205,39 @@ static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNE
+ 
+ /* factor clocks */
+ static OWL_FACTOR(ahb_clk, "ahb_clk", "h_clk", CMU_BUSCLK1, 2, 2, ahb_factor_table, 0, 0);
+-static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 3, bisp_factor_table, 0, 0);
+-static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 3, bisp_factor_table, 0, 0);
++static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 4, de_factor_table, 0, 0);
++static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 4, de_factor_table, 0, 0);
+ 
+ /* composite clocks */
+ static OWL_COMP_FACTOR(vce_clk, "vce_clk", hde_clk_mux_p,
+ 			OWL_MUX_HW(CMU_VCECLK, 4, 2),
+ 			OWL_GATE_HW(CMU_DEVCLKEN0, 26, 0),
+-			OWL_FACTOR_HW(CMU_VCECLK, 0, 3, 0, bisp_factor_table),
++			OWL_FACTOR_HW(CMU_VCECLK, 0, 3, 0, hde_factor_table),
+ 			0);
+ 
+ static OWL_COMP_FACTOR(vde_clk, "vde_clk", hde_clk_mux_p,
+ 			OWL_MUX_HW(CMU_VDECLK, 4, 2),
+ 			OWL_GATE_HW(CMU_DEVCLKEN0, 25, 0),
+-			OWL_FACTOR_HW(CMU_VDECLK, 0, 3, 0, bisp_factor_table),
++			OWL_FACTOR_HW(CMU_VDECLK, 0, 3, 0, hde_factor_table),
+ 			0);
+ 
+-static OWL_COMP_FACTOR(bisp_clk, "bisp_clk", bisp_clk_mux_p,
++static OWL_COMP_DIV(bisp_clk, "bisp_clk", bisp_clk_mux_p,
+ 			OWL_MUX_HW(CMU_BISPCLK, 4, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN0, 14, 0),
+-			OWL_FACTOR_HW(CMU_BISPCLK, 0, 3, 0, bisp_factor_table),
++			OWL_DIVIDER_HW(CMU_BISPCLK, 0, 4, 0, std12rate_div_table),
+ 			0);
+ 
+-static OWL_COMP_FACTOR(sensor0_clk, "sensor0_clk", sensor_clk_mux_p,
++static OWL_COMP_DIV(sensor0_clk, "sensor0_clk", sensor_clk_mux_p,
+ 			OWL_MUX_HW(CMU_SENSORCLK, 4, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN0, 14, 0),
+-			OWL_FACTOR_HW(CMU_SENSORCLK, 0, 3, 0, bisp_factor_table),
+-			CLK_IGNORE_UNUSED);
++			OWL_DIVIDER_HW(CMU_SENSORCLK, 0, 4, 0, std12rate_div_table),
++			0);
+ 
+-static OWL_COMP_FACTOR(sensor1_clk, "sensor1_clk", sensor_clk_mux_p,
++static OWL_COMP_DIV(sensor1_clk, "sensor1_clk", sensor_clk_mux_p,
+ 			OWL_MUX_HW(CMU_SENSORCLK, 4, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN0, 14, 0),
+-			OWL_FACTOR_HW(CMU_SENSORCLK, 8, 3, 0, bisp_factor_table),
+-			CLK_IGNORE_UNUSED);
++			OWL_DIVIDER_HW(CMU_SENSORCLK, 8, 4, 0, std12rate_div_table),
++			0);
+ 
+ static OWL_COMP_FACTOR(sd0_clk, "sd0_clk", sd_clk_mux_p,
+ 			OWL_MUX_HW(CMU_SD0CLK, 9, 1),
 -- 
 2.30.2
 
