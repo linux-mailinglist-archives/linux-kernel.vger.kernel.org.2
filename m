@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7183C57A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3905D3C4B70
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377709AbhGLIgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
+        id S240206AbhGLG5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350376AbhGLHu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6EF614A7;
-        Mon, 12 Jul 2021 07:44:44 +0000 (UTC)
+        id S236921AbhGLGlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:41:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 032AF6052B;
+        Mon, 12 Jul 2021 06:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075885;
-        bh=7Yg+r15AMz/DCNPhSSl49mMUAuoRK2BGZGtJvKaYNvs=;
+        s=korg; t=1626071904;
+        bh=n+KLKmhYLsIkH/9PCdHkKTuX0Vlmc6T3wEKfw8lSxsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w5YifSSWewOlXz8lKo5MtPPAG9HmJhMMiRACGvNkvoeA94XdJW1mBLVfbTC+3RxRb
-         xXicAErLvLzNzstUXS8D5pZd1ahp+dUuDGv2fgMGz2TcIvRGythG0Gj2cYoglTfDK1
-         3bA2XXZ7+4RpBkyUw6RzQF+/UiGWQVyupiC1sOdU=
+        b=1+Dw1oNre7fRsCnbR+5oZ6yLjs0+5JD9RFlmOyZg5Cv3Lc3iDF3+k8ldCwp12E9cA
+         LA1T+VbpkdkYC65/vlVAUYcKlrMiyXTvxMddNtsfoR191PDQxWllSj4uQtP8g9WQyP
+         5ftJ/LA/vslbXjj+pfVZrksF7+/LlAYkGnCC0yzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 406/800] libbpf: Fix ELF symbol visibility update logic
-Date:   Mon, 12 Jul 2021 08:07:09 +0200
-Message-Id: <20210712061010.364789174@linuxfoundation.org>
+Subject: [PATCH 5.10 270/593] crypto: nx - Fix RCU warning in nx842_OF_upd_status
+Date:   Mon, 12 Jul 2021 08:07:10 +0200
+Message-Id: <20210712060913.272364820@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 247b8634e6446dbc8024685f803290501cba226f ]
+[ Upstream commit 2a96726bd0ccde4f12b9b9a9f61f7b1ac5af7e10 ]
 
-Fix silly bug in updating ELF symbol's visibility.
+The function nx842_OF_upd_status triggers a sparse RCU warning when
+it directly dereferences the RCU-protected devdata.  This appears
+to be an accident as there was another variable of the same name
+that was passed in from the caller.
 
-Fixes: a46349227cd8 ("libbpf: Add linker extern resolution support for functions and global variables")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210507054119.270888-6-andrii@kernel.org
+After it was removed (because the main purpose of using it, to
+update the status member was itself removed) the global variable
+unintenionally stood in as its replacement.
+
+This patch restores the devdata parameter.
+
+Fixes: 90fd73f912f0 ("crypto: nx - remove pSeries NX 'status' field")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/linker.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/nx/nx-842-pseries.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 9de084b1c699..f44f8a37f780 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -1780,7 +1780,7 @@ static void sym_update_visibility(Elf64_Sym *sym, int sym_vis)
- 	/* libelf doesn't provide setters for ST_VISIBILITY,
- 	 * but it is stored in the lower 2 bits of st_other
- 	 */
--	sym->st_other &= 0x03;
-+	sym->st_other &= ~0x03;
- 	sym->st_other |= sym_vis;
- }
+diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
+index 258c5e38a551..c5ec50a28f30 100644
+--- a/drivers/crypto/nx/nx-842-pseries.c
++++ b/drivers/crypto/nx/nx-842-pseries.c
+@@ -538,13 +538,15 @@ static int nx842_OF_set_defaults(struct nx842_devdata *devdata)
+  * The status field indicates if the device is enabled when the status
+  * is 'okay'.  Otherwise the device driver will be disabled.
+  *
+- * @prop - struct property point containing the maxsyncop for the update
++ * @devdata: struct nx842_devdata to use for dev_info
++ * @prop: struct property point containing the maxsyncop for the update
+  *
+  * Returns:
+  *  0 - Device is available
+  *  -ENODEV - Device is not available
+  */
+-static int nx842_OF_upd_status(struct property *prop)
++static int nx842_OF_upd_status(struct nx842_devdata *devdata,
++			       struct property *prop)
+ {
+ 	const char *status = (const char *)prop->value;
+ 
+@@ -758,7 +760,7 @@ static int nx842_OF_upd(struct property *new_prop)
+ 		goto out;
+ 
+ 	/* Perform property updates */
+-	ret = nx842_OF_upd_status(status);
++	ret = nx842_OF_upd_status(new_devdata, status);
+ 	if (ret)
+ 		goto error_out;
  
 -- 
 2.30.2
