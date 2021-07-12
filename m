@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89E73C5ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD263C5AE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhGLKlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhGLKll (ORCPT
+        id S233627AbhGLKmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:42:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6917 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233445AbhGLKma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:41:41 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5E5C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:38:52 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so18368839otq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Abpkrmbi7hM6v18oMOHQaKzwxHKtd7V69lS8CcVKxk=;
-        b=hkLnZ+MPLYfwtzuVihIRqHJWlhF88H7TrpHAe9DNC1bRPlV9FsOrn5x15A3sx5F/UT
-         9P6CtDdi1xDlX0T9xo87ri+bvrW/gv/OiUzZCz+E+rdMKJlnTCnYIookcoyzHrzLYOSN
-         AVW/wnIxALKLy0YnIXl1swwbrFMysQ/7mlNZzJrBq0uwqLHn2Z8JRQAFcLITBYco3dMd
-         rHMIyxJC3VkjUEfrO3YYlgONpFOl42RMvRzNrdC9JQwmMu+18UiEmRmnw7iqn6gsn8Ff
-         1tu2h/gJ7TyRlDH4ITsA3O/B7YzJg4UpeHcZxcl7uCZLxtCoaEEYQs1b4uo+mjOViPSz
-         /MEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Abpkrmbi7hM6v18oMOHQaKzwxHKtd7V69lS8CcVKxk=;
-        b=dVfSQjMnbRtn1B2iPXW0lSlBi/4VmV6ozauFAU2wzesXl+9kWKLDHVmamdXzfUdCKQ
-         9a/b3CcOr4ubG+k/aDm7tCLYale+ZdEFEFMP9/NwovZ1Y4MkB3Qpg2LrP98llerJvbdl
-         y4TMMHFFR55JgERnEs37RzQ58EAxR48IuJ59HILwC7ABv3zPdpmqWK4hj13MdHxJL0tq
-         aZ8oh2ljivtrMrH+y8IdHoQwAqSl/hXfhPz6vncQ7OZuiQjblWCtKVvdY0rUuzta7oux
-         TdC8rmzJgDovwgiUBHEp9+59JmGu2kWFXXKptfH7Q7qRMgfbV4fXUbxTwKe6Cjo01wC2
-         sxiQ==
-X-Gm-Message-State: AOAM5306+3Tj4aYvwKqZoUpdCwrRBOsPAoTex1e1Z5Z5UmlX8k116+hM
-        PAR5tbLvJFFUs5p2Vn4ddZdbpbwPUlJWNbIsIr7gzQ==
-X-Google-Smtp-Source: ABdhPJzwqcdegrxmwogsl63GhPad+XspOkXNK1DJOlDJqP68fy3nXb8QhuLEr/J6GvNpa7CuHniwTnMsgznbLI4sr2o=
-X-Received: by 2002:a05:6830:905:: with SMTP id v5mr8700538ott.17.1626086331832;
- Mon, 12 Jul 2021 03:38:51 -0700 (PDT)
+        Mon, 12 Jul 2021 06:42:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GNgCq4szZz7BcH;
+        Mon, 12 Jul 2021 18:36:07 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 18:39:39 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 12 Jul
+ 2021 18:39:38 +0800
+Subject: Re: [Linuxarm] [PATCH rfc v3 0/4] add frag page support in page pool
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
+        <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <1626081581-54524-1-git-send-email-linyunsheng@huawei.com>
+Message-ID: <22579591-606c-9967-42e5-fcfe18875026@huawei.com>
+Date:   Mon, 12 Jul 2021 18:39:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20210429190734.624918-1-elver@google.com> <20210429190734.624918-3-elver@google.com>
- <20210526174217.GB19898@willie-the-truck> <CANpmjNOOW6-8su=VNipvb7ztQ0TdF9THn+yeWepz7D7BAL418Q@mail.gmail.com>
- <20210526182937.GA20055@willie-the-truck> <CANpmjNN6D7MQJN5oDuLzmG3wxuFvc-ORBoHPLPhWo+f6cOH2cA@mail.gmail.com>
-In-Reply-To: <CANpmjNN6D7MQJN5oDuLzmG3wxuFvc-ORBoHPLPhWo+f6cOH2cA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 12 Jul 2021 12:38:40 +0200
-Message-ID: <CANpmjNNR8iAzrUT56tNP=Vp9F=97J2-5idtPrindciVTojt5Aw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: Add compile-time asserts for siginfo_t offsets
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1626081581-54524-1-git-send-email-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 10:51, Marco Elver <elver@google.com> wrote:
-> On Wed, 26 May 2021 at 20:29, Will Deacon <will@kernel.org> wrote:
-> > On Wed, May 26, 2021 at 07:50:41PM +0200, Marco Elver wrote:
-> > > On Wed, 26 May 2021 at 19:42, Will Deacon <will@kernel.org> wrote:
-> > > > Hi Marco,
-> > > >
-> > > > On Thu, Apr 29, 2021 at 09:07:34PM +0200, Marco Elver wrote:
-> > > > > To help catch ABI breaks at compile-time, add compile-time assertions to
-> > > > > verify the siginfo_t layout.
-> > > > >
-> > > > > Signed-off-by: Marco Elver <elver@google.com>
-> > > > > ---
-> > > > >  arch/arm64/kernel/signal.c   | 36 ++++++++++++++++++++++++++++++++++++
-> > > > >  arch/arm64/kernel/signal32.c | 36 ++++++++++++++++++++++++++++++++++++
-> > > > >  2 files changed, 72 insertions(+)
-> > > >
-> > > > Do you want me to queue this patch in the arm64 tree, or is the series all
-> > > > going together via another route?
-> > >
-> > > I think Eric will queue them together with a bunch of other cleanups,
-> > > because as-is these patches are out-of-date as of:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a0e31f3a38e77612ed8967aaad28db6d3ee674b5
-> >
-> > Ok, thanks. I will ignore this then :)
->
-> Eric, are these static_assert patches being sent this merge-window
-> along with the other cleanups?
+Please ignore this patch set, will send out a new series
+without duplicated patch 3 and fix a bug for a corner case.
 
-I'm happy to send out a rebased version of this series only. I'll go
-ahead and do that later in the week if I don't hear objections.
-
-Thanks,
--- Marco
+On 2021/7/12 17:19, Yunsheng Lin wrote:
+> This patchset adds frag page support in page pool and
+> enable skb's page frag recycling based on page pool in
+> hns3 drvier.
+> 
+> RFC v3:
+> 1. Implement the semantic of "page recycling only wait for the
+>    page pool user instead of all user of a page" 
+> 2. Support the frag allocation of different sizes
+> 3. Merge patch 4 & 5 to one patch as it does not make sense to
+>    use page_pool_dev_alloc_pages() API directly with elevated
+>    refcnt.
+> 4. other minor comment suggested by Alexander.
+> 
+> RFC v2:
+> 1. Split patch 1 to more reviewable one.
+> 2. Repurpose the lower 12 bits of the dma address to store the
+>    pagecnt_bias as suggested by Alexander.
+> 3. support recycling to pool->alloc for elevated refcnt case
+>    too.
+> 
+> 
+> Yunsheng Lin (4):
+>   page_pool: keep pp info as long as page pool owns the page
+>   page_pool: add interface for getting and setting pagecnt_bias
+>   page_pool: add frag page recycling support in page pool
+>   net: hns3: support skb's frag page recycling based on page pool
+> 
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |  79 ++++++++++++-
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |   3 +
+>  drivers/net/ethernet/marvell/mvneta.c           |   6 +-
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   2 +-
+>  drivers/net/ethernet/ti/cpsw.c                  |   2 +-
+>  drivers/net/ethernet/ti/cpsw_new.c              |   2 +-
+>  include/linux/skbuff.h                          |   4 +-
+>  include/net/page_pool.h                         |  58 +++++++--
+>  net/core/page_pool.c                            | 150 +++++++++++++++++++++---
+>  9 files changed, 262 insertions(+), 44 deletions(-)
+> 
