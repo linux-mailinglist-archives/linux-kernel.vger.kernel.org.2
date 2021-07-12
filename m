@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E8E3C535F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30D83C5365
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352345AbhGLHyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58710 "EHLO mail.kernel.org"
+        id S1352370AbhGLHyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:54:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344823AbhGLHUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:20:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5F0613EE;
-        Mon, 12 Jul 2021 07:18:06 +0000 (UTC)
+        id S1344847AbhGLHU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:20:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16F65613C7;
+        Mon, 12 Jul 2021 07:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074287;
-        bh=bT4EosgojYYWWfe1LE0k8EGOtS8u7HuIbVZ8jzUJbsQ=;
+        s=korg; t=1626074290;
+        bh=hmRurIbqpU3suHtsvoRkZjjK8IEUMAk/gBQlJcPZB9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JxrsB4a49b7wYJPLiOyDC/FUmNjq9QIf0Xwh+BD/WrYduTRqqk2BrPz4luTtwbQ8h
-         nxbH7a41J8BQuT6T/nj57G1UqpXpew3hLUKaRZdUjXvSsKQy0nSP8JRdaVlx+t0ndr
-         I2mZwuxE/4cXaLpIIGmamg091r+1nICZ2SUVGeZc=
+        b=CL25UKn69HhMUdjbpGBgIRRlIeJ2h7mnj/5eeHIKROR23SUTXZsClBMDkS8qKo9UV
+         +REAxUqOdydkLV7Z2ekVAp+ev02eWwejkfHzqJbJUCpM961qnH0NlVANk64ey1My3i
+         IzJMDtoZ/uJiVz8+8vbLOPjlcrHNEl+MATb6XOgg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 527/700] phy: ralink: phy-mt7621-pci: properly print pointer address
-Date:   Mon, 12 Jul 2021 08:10:10 +0200
-Message-Id: <20210712061032.609923379@linuxfoundation.org>
+        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 528/700] mwifiex: re-fix for unaligned accesses
+Date:   Mon, 12 Jul 2021 08:10:11 +0200
+Message-Id: <20210712061032.725217517@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -40,41 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 652a6a2e3824ce2ebf79a2d5326940d05c4db036 ]
+[ Upstream commit 8f4e3d48bb50765ab27ae5bebed2595b20de80a1 ]
 
-The way of printing the pointer address for the 'port_base'
-address got into compile warnings on some architectures
-[-Wpointer-to-int-cast]. Instead of use '%08x' and cast
-to an 'unsigned int' just make use of '%px' and avoid the
-cast. To avoid not really needed driver verbosity on normal
-behaviour change also from 'dev_info' to 'dev_dbg'.
+A patch from 2017 changed some accesses to DMA memory to use
+get_unaligned_le32() and similar interfaces, to avoid problems
+with doing unaligned accesson uncached memory.
 
-Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Link: https://lore.kernel.org/r/20210508070930.5290-7-sergio.paracuellos@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+However, the change in the mwifiex_pcie_alloc_sleep_cookie_buf()
+function ended up changing the size of the access instead,
+as it operates on a pointer to u8.
+
+Change this function back to actually access the entire 32 bits.
+Note that the pointer is aligned by definition because it came
+from dma_alloc_coherent().
+
+Fixes: 92c70a958b0b ("mwifiex: fix for unaligned reads")
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ralink/phy-mt7621-pci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/pcie.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
-index 753cb5bab930..88e82ab81b61 100644
---- a/drivers/phy/ralink/phy-mt7621-pci.c
-+++ b/drivers/phy/ralink/phy-mt7621-pci.c
-@@ -272,8 +272,8 @@ static struct phy *mt7621_pcie_phy_of_xlate(struct device *dev,
+diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
+index 94228b316df1..46517515ba72 100644
+--- a/drivers/net/wireless/marvell/mwifiex/pcie.c
++++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+@@ -1231,7 +1231,7 @@ static int mwifiex_pcie_delete_cmdrsp_buf(struct mwifiex_adapter *adapter)
+ static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
+ {
+ 	struct pcie_service_card *card = adapter->card;
+-	u32 tmp;
++	u32 *cookie;
  
- 	mt7621_phy->has_dual_port = args->args[0];
+ 	card->sleep_cookie_vbase = dma_alloc_coherent(&card->dev->dev,
+ 						      sizeof(u32),
+@@ -1242,13 +1242,11 @@ static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
+ 			    "dma_alloc_coherent failed!\n");
+ 		return -ENOMEM;
+ 	}
++	cookie = (u32 *)card->sleep_cookie_vbase;
+ 	/* Init val of Sleep Cookie */
+-	tmp = FW_AWAKE_COOKIE;
+-	put_unaligned(tmp, card->sleep_cookie_vbase);
++	*cookie = FW_AWAKE_COOKIE;
  
--	dev_info(dev, "PHY for 0x%08x (dual port = %d)\n",
--		 (unsigned int)mt7621_phy->port_base, mt7621_phy->has_dual_port);
-+	dev_dbg(dev, "PHY for 0x%px (dual port = %d)\n",
-+		mt7621_phy->port_base, mt7621_phy->has_dual_port);
+-	mwifiex_dbg(adapter, INFO,
+-		    "alloc_scook: sleep cookie=0x%x\n",
+-		    get_unaligned(card->sleep_cookie_vbase));
++	mwifiex_dbg(adapter, INFO, "alloc_scook: sleep cookie=0x%x\n", *cookie);
  
- 	return mt7621_phy->phy;
+ 	return 0;
  }
 -- 
 2.30.2
