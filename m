@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1C3C4FC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E803C48C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244481AbhGLH1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:27:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
+        id S236499AbhGLGk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242137AbhGLG7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:59:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D66E61004;
-        Mon, 12 Jul 2021 06:56:58 +0000 (UTC)
+        id S236963AbhGLGcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:32:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D591660FD8;
+        Mon, 12 Jul 2021 06:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073019;
-        bh=WZZT5w4Bkeo+YwtsfIDG7WBHhky+Y/drB2kLyflO1ig=;
+        s=korg; t=1626071366;
+        bh=nucrAFs0kQP9IRBcjH0nakZVfYgdC/gs8SR+BZz4lzw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NY+q1I8wg2pLVxMHJdSnlB69Tsn0DoFxKuX2mt9H8MkG+Ns8Dr9E7LF1Ap80Gxlu/
-         Cg94lTE56px5h5LeVU0T60YYQNBT58I4IGGdx8Z+KcXtun+An5kc8u9+5RSJkUKeLg
-         rIfb8UrI9P3yTo2lXLx7seQckHtlEkHx1xdYV5U4=
+        b=gomcs/lGkMB5VuazJO5s0Sf8wMWIC9sUBbHI7Mgby8OAKrA8K1bbtzFHsv8EWWnc+
+         M0vKEaBVgxyy3nwsQS7ROvOuXdN/5Vjy86pasPKqIbFn3Pr0s2SBxCjiCPtw3L+I2x
+         brbT2IAbVOK9L1EKKjhGqjvdkfKKbwVTR+kgzf/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.12 099/700] ssb: sdio: Dont overwrite const buffer if block_write fails
+        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.10 022/593] usb: renesas-xhci: Fix handling of unknown ROM state
 Date:   Mon, 12 Jul 2021 08:03:02 +0200
-Message-Id: <20210712060938.819929554@linuxfoundation.org>
+Message-Id: <20210712060845.644006882@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Buesch <m@bues.ch>
+From: Moritz Fischer <mdf@kernel.org>
 
-commit 47ec636f7a25aa2549e198c48ecb6b1c25d05456 upstream.
+commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
 
-It doesn't make sense to clobber the const driver-side buffer, if a
-write-to-device attempt failed. All other SSB variants (PCI, PCMCIA and SoC)
-also don't corrupt the buffer on any failure in block_write.
-Therefore, remove this memset from the SDIO variant.
+The ROM load sometimes seems to return an unknown status
+(RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
 
-Signed-off-by: Michael Büsch <m@bues.ch>
+If the ROM load indeed failed this leads to failures when trying to
+communicate with the controller later on.
+
+Attempt to load firmware using RAM load in those cases.
+
+Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
 Cc: stable@vger.kernel.org
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210515210252.318be2ba@wiggum
+Cc: Mathias Nyman <mathias.nyman@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Tested-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/ssb/sdio.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/usb/host/xhci-pci-renesas.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/ssb/sdio.c
-+++ b/drivers/ssb/sdio.c
-@@ -411,7 +411,6 @@ static void ssb_sdio_block_write(struct
- 	sdio_claim_host(bus->host_sdio);
- 	if (unlikely(ssb_sdio_switch_core(bus, dev))) {
- 		error = -EIO;
--		memset((void *)buffer, 0xff, count);
- 		goto err_out;
- 	}
- 	offset |= bus->sdio_sbaddr & 0xffff;
+--- a/drivers/usb/host/xhci-pci-renesas.c
++++ b/drivers/usb/host/xhci-pci-renesas.c
+@@ -207,7 +207,8 @@ static int renesas_check_rom_state(struc
+ 			return 0;
+ 
+ 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
+-			return 0;
++			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
++			break;
+ 
+ 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
+ 		default: /* All other states are marked as "Reserved states" */
+@@ -224,13 +225,12 @@ static int renesas_fw_check_running(stru
+ 	u8 fw_state;
+ 	int err;
+ 
+-	/* Check if device has ROM and loaded, if so skip everything */
+-	err = renesas_check_rom(pdev);
+-	if (err) { /* we have rom */
+-		err = renesas_check_rom_state(pdev);
+-		if (!err)
+-			return err;
+-	}
++	/*
++	 * Only if device has ROM and loaded FW we can skip loading and
++	 * return success. Otherwise (even unknown state), attempt to load FW.
++	 */
++	if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
++		return 0;
+ 
+ 	/*
+ 	 * Test if the device is actually needing the firmware. As most
 
 
