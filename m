@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CF63C5319
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3A63C4C89
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242163AbhGLHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55012 "EHLO mail.kernel.org"
+        id S241880AbhGLHGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:06:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244199AbhGLHS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:18:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FA3261442;
-        Mon, 12 Jul 2021 07:15:33 +0000 (UTC)
+        id S234434AbhGLGrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A381E60FD8;
+        Mon, 12 Jul 2021 06:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074134;
-        bh=QPJpTckAorXEJTBysmv29wSwQfq/KTpv4uOFTC6J5HQ=;
+        s=korg; t=1626072201;
+        bh=Zo2SC+5Tg+B8mdzN8PtzRgas9TX29Y8shY2nFICaqfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IbgepoHLZJ+7VCwHdVU0rWeyrnW/lhWRFGShAYMrcjHy/rwOMnXPWOOVtA5pyV1kX
-         QiwVrtZybxwyzd9x64+EWd9cE7DCYwZmqB+3a0cTMMrvXRbH/LUO6WL+Q9e39660LH
-         jhEhY5rU9jrJHM8rwZNWhKUWRwCEQuE0Hj+SvXsc=
+        b=yOpi0iSCJE2G2i64DaFWNz/il5qq7/ki6MQ3Ey7KSYr8585KBwBWMvSuRaRL1JCpX
+         Zj5dKSZGpKhhsoD1t2j9LmTnvGRlc2TlxEAdQd3yVzSfe8KBo1CrAW3+z4DuYsX6i9
+         dtHbRnJEdQAXNTf165YDDs0GtDgnvL8efLSyAymI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Tom Herbert <tom@quantonium.net>,
-        Coco Li <lixiaoyan@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jan Sokolowski <jan.sokolowski@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 475/700] ipv6: exthdrs: do not blindly use init_net
+Subject: [PATCH 5.10 398/593] i40e: Fix missing rtnl locking when setting up pf switch
 Date:   Mon, 12 Jul 2021 08:09:18 +0200
-Message-Id: <20210712061027.128129802@linuxfoundation.org>
+Message-Id: <20210712060931.309956982@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +42,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jan Sokolowski <jan.sokolowski@intel.com>
 
-[ Upstream commit bcc3f2a829b9edbe3da5fb117ee5a63686d31834 ]
+[ Upstream commit 956e759d5f8e0859e86b951a8779c60af633aafd ]
 
-I see no reason why max_dst_opts_cnt and max_hbh_opts_cnt
-are fetched from the initial net namespace.
+A recent change that made i40e use new udp_tunnel infrastructure
+uses a method that expects to be called under rtnl lock.
 
-The other sysctls (max_dst_opts_len & max_hbh_opts_len)
-are in fact already using the current ns.
+However, not all codepaths do the lock prior to calling
+i40e_setup_pf_switch.
 
-Note: it is not clear why ipv6_destopt_rcv() use two ways to
-get to the netns :
+Fix that by adding additional rtnl locking and unlocking.
 
- 1) dev_net(dst->dev)
-    Originally used to increment IPSTATS_MIB_INHDRERRORS
-
- 2) dev_net(skb->dev)
-     Tom used this variant in his patch.
-
-Maybe this calls to use ipv6_skb_net() instead ?
-
-Fixes: 47d3d7ac656a ("ipv6: Implement limits on Hop-by-Hop and Destination options")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Tom Herbert <tom@quantonium.net>
-Cc: Coco Li <lixiaoyan@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 40a98cb6f01f ("i40e: convert to new udp_tunnel infrastructure")
+Signed-off-by: Jan Sokolowski <jan.sokolowski@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/exthdrs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
-index 6126f8bf94b3..a9e1d7918d14 100644
---- a/net/ipv6/exthdrs.c
-+++ b/net/ipv6/exthdrs.c
-@@ -306,7 +306,7 @@ fail_and_free:
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index f2ba8ad9b6aa..52e31f712a54 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -31,7 +31,7 @@ static void i40e_vsi_reinit_locked(struct i40e_vsi *vsi);
+ static void i40e_handle_reset_warning(struct i40e_pf *pf, bool lock_acquired);
+ static int i40e_add_vsi(struct i40e_vsi *vsi);
+ static int i40e_add_veb(struct i40e_veb *veb, struct i40e_vsi *vsi);
+-static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit);
++static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acquired);
+ static int i40e_setup_misc_vector(struct i40e_pf *pf);
+ static void i40e_determine_queue_usage(struct i40e_pf *pf);
+ static int i40e_setup_pf_filter_control(struct i40e_pf *pf);
+@@ -10114,7 +10114,7 @@ static void i40e_rebuild(struct i40e_pf *pf, bool reinit, bool lock_acquired)
+ 	/* do basic switch setup */
+ 	if (!lock_acquired)
+ 		rtnl_lock();
+-	ret = i40e_setup_pf_switch(pf, reinit);
++	ret = i40e_setup_pf_switch(pf, reinit, true);
+ 	if (ret)
+ 		goto end_unlock;
+ 
+@@ -14169,10 +14169,11 @@ int i40e_fetch_switch_configuration(struct i40e_pf *pf, bool printconfig)
+  * i40e_setup_pf_switch - Setup the HW switch on startup or after reset
+  * @pf: board private structure
+  * @reinit: if the Main VSI needs to re-initialized.
++ * @lock_acquired: indicates whether or not the lock has been acquired
+  *
+  * Returns 0 on success, negative value on failure
+  **/
+-static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit)
++static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acquired)
+ {
+ 	u16 flags = 0;
+ 	int ret;
+@@ -14274,9 +14275,15 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit)
+ 
+ 	i40e_ptp_init(pf);
+ 
++	if (!lock_acquired)
++		rtnl_lock();
++
+ 	/* repopulate tunnel port filters */
+ 	udp_tunnel_nic_reset_ntf(pf->vsi[pf->lan_vsi]->netdev);
+ 
++	if (!lock_acquired)
++		rtnl_unlock();
++
+ 	return ret;
+ }
+ 
+@@ -15048,7 +15055,7 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
+ 	}
  #endif
- 
- 	if (ip6_parse_tlv(tlvprocdestopt_lst, skb,
--			  init_net.ipv6.sysctl.max_dst_opts_cnt)) {
-+			  net->ipv6.sysctl.max_dst_opts_cnt)) {
- 		skb->transport_header += extlen;
- 		opt = IP6CB(skb);
- #if IS_ENABLED(CONFIG_IPV6_MIP6)
-@@ -1036,7 +1036,7 @@ fail_and_free:
- 
- 	opt->flags |= IP6SKB_HOPBYHOP;
- 	if (ip6_parse_tlv(tlvprochopopt_lst, skb,
--			  init_net.ipv6.sysctl.max_hbh_opts_cnt)) {
-+			  net->ipv6.sysctl.max_hbh_opts_cnt)) {
- 		skb->transport_header += extlen;
- 		opt = IP6CB(skb);
- 		opt->nhoff = sizeof(struct ipv6hdr);
+-	err = i40e_setup_pf_switch(pf, false);
++	err = i40e_setup_pf_switch(pf, false, false);
+ 	if (err) {
+ 		dev_info(&pdev->dev, "setup_pf_switch failed: %d\n", err);
+ 		goto err_vsis;
 -- 
 2.30.2
 
