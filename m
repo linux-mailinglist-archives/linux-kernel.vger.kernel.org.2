@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5618F3C4A04
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC813C5732
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237861AbhGLGsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        id S1376451AbhGLIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235908AbhGLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5748461166;
-        Mon, 12 Jul 2021 06:33:34 +0000 (UTC)
+        id S242432AbhGLHmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:42:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 927A561153;
+        Mon, 12 Jul 2021 07:39:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071614;
-        bh=n/WkJqG640sU3Rw25PR1ZhW2yBejxV5O1AiUCuchfeg=;
+        s=korg; t=1626075597;
+        bh=ZHwbTKAGDlUr80ZGjl7vKH9WE2jw66phHJ2I0Sgvrh4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ya7gGQbMAsPbeo0SriTuKGnwT8b4mJbdqMDHoGiaPQvfSWFYcKQtIfVx11GfcFYIf
-         7+QpXsZ2xceDYkziQf+v7BgWs8CKNs+ujMcwYJwuv3p4DcMp3Aihh5NYcp4oC4uig3
-         jC2OVNLT4U4eg6g20avl0dmadP0UOAa1iCdZCm94=
+        b=x/FLo91dIBSzJYj2XGQSG3UEVy1eWQJ2+Zl3bmB5PyVgvC5mH5x/jKE/B3v5PStaV
+         e5U2DzX5nXkQ9x+byVPn32M6Ta/ozKE67o7klPTwPqoD+LiT1wO4npvvpRMUbKz4Ze
+         HJ2ZgrmtCO0pZep5nyUwhMpcAJZftAs4Xv6ZeADw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 144/593] mmc: sdhci-sprd: use sdhci_sprd_writew
+Subject: [PATCH 5.13 281/800] kbuild: Fix objtool dependency for OBJECT_FILES_NON_STANDARD_<obj> := n
 Date:   Mon, 12 Jul 2021 08:05:04 +0200
-Message-Id: <20210712060858.894961451@linuxfoundation.org>
+Message-Id: <20210712060954.476705525@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 961470820021e6f9d74db4837bd6831a1a30341b ]
+[ Upstream commit 8852c552402979508fdc395ae07aa8761aa46045 ]
 
-The sdhci_sprd_writew() was defined by never used in sdhci_ops:
+"OBJECT_FILES_NON_STANDARD_vma.o := n" has a dependency bug.  When
+objtool source is updated, the affected object doesn't get re-analyzed
+by objtool.
 
-    drivers/mmc/host/sdhci-sprd.c:134:20: warning: unused function 'sdhci_sprd_writew'
+Peter's new variable-sized jump label feature relies on objtool
+rewriting the object file.  Otherwise the system can fail to boot.  That
+effectively upgrades this minor dependency issue to a major bug.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210601095403.236007-2-krzysztof.kozlowski@canonical.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+The problem is that variables in prerequisites are expanded early,
+during the read-in phase.  The '$(objtool_dep)' variable indirectly uses
+'$@', which isn't yet available when the target prerequisites are
+evaluated.
+
+Use '.SECONDEXPANSION:' which causes '$(objtool_dep)' to be expanded in
+a later phase, after the target-specific '$@' variable has been defined.
+
+Fixes: b9ab5ebb14ec ("objtool: Add CONFIG_STACK_VALIDATION option")
+Fixes: ab3257042c26 ("jump_label, x86: Allow short NOPs")
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-sprd.c | 1 +
- 1 file changed, 1 insertion(+)
+ scripts/Makefile.build | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-index 19cbb6171b35..9cd8862e6cbd 100644
---- a/drivers/mmc/host/sdhci-sprd.c
-+++ b/drivers/mmc/host/sdhci-sprd.c
-@@ -393,6 +393,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
- static struct sdhci_ops sdhci_sprd_ops = {
- 	.read_l = sdhci_sprd_readl,
- 	.write_l = sdhci_sprd_writel,
-+	.write_w = sdhci_sprd_writew,
- 	.write_b = sdhci_sprd_writeb,
- 	.set_clock = sdhci_sprd_set_clock,
- 	.get_max_clock = sdhci_sprd_get_max_clock,
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 949f723efe53..34d257653fb4 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -268,7 +268,8 @@ define rule_as_o_S
+ endef
+ 
+ # Built-in and composite module parts
+-$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
++.SECONDEXPANSION:
++$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
+ 
+@@ -349,7 +350,7 @@ cmd_modversions_S =								\
+ 	fi
+ endif
+ 
+-$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
++$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,as_o_S)
+ 
+ targets += $(filter-out $(subdir-builtin), $(real-obj-y))
 -- 
 2.30.2
 
