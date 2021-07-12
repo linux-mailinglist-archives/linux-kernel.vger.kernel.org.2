@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBF83C4FFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCA43C4972
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345411AbhGLH3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:29:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37154 "EHLO mail.kernel.org"
+        id S235505AbhGLGpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242651AbhGLHBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:01:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B409A6124B;
-        Mon, 12 Jul 2021 06:59:02 +0000 (UTC)
+        id S237858AbhGLGez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF7EC6101E;
+        Mon, 12 Jul 2021 06:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073143;
-        bh=EKY1OlRJO93TJiFmqfgVZB3HH1bgpwa6v7NyZcI16Qg=;
+        s=korg; t=1626071513;
+        bh=pxm+5E2MzlZ76Kf7O9bboxW2zMBSR9F8JFSKdSTSUxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwmu0DKRTA455mTJn45FrfDjyjVjwtM6vpZcAJgChIcd7NTw1U5/blLFJ48PEa3wW
-         SKxX0K89cAxR4cvjguUdAFISu64Ab3Ma7Ric9dGIbuKa5riL03I5Wr87uJ+nHPrWWP
-         LrqEhN3FTtKaJvbmOdqguzitUNJkEtvEVkLXwBmc=
+        b=ZzJSbSScLPPPBkGUaV1550b6Go+sGzqVjUPzYGRSmSvjqJrxlZawQwM37xMFEWVbS
+         XS2PF7EcV6Bfl0uBEqKPaX0oma19bGn2HO8Y7+1wfO4rw+lmrBXj8VV3hexuZORHTJ
+         Io187bSYvop44JOgsol92HRi8ojdHRXH8Kc81tJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 141/700] media: sti: fix obj-$(config) targets
-Date:   Mon, 12 Jul 2021 08:03:44 +0200
-Message-Id: <20210712060945.472354992@linuxfoundation.org>
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.10 065/593] s390/cio: dont call css_wait_for_slow_path() inside a lock
+Date:   Mon, 12 Jul 2021 08:03:45 +0200
+Message-Id: <20210712060850.334335106@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-[ Upstream commit 56c1f0876293888f686e31278d183d4af2cac3c3 ]
+commit c749d8c018daf5fba6dfac7b6c5c78b27efd7d65 upstream.
 
-The right thing to do is to add a new object to the building
-system when a certain config option is selected, and *not*
-override them.
+Currently css_wait_for_slow_path() gets called inside the chp->lock.
+The path-verification-loop of slowpath inside this lock could lead to
+deadlock as reported by the lockdep validator.
 
-So, fix obj-$(config) logic at sti makefiles, using "+=",
-instead of ":=".
+The ccw_device_get_chp_desc() during the instance of a device-set-online
+would try to acquire the same 'chp->lock' to read the chp->desc.
+The instance of this function can get called from multiple scenario,
+like probing or setting-device online manually. This could, in some
+corner-cases lead to the deadlock.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+lockdep validator reported this as,
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(&chp->lock);
+                                lock(kn->active#43);
+                                lock(&chp->lock);
+   lock((wq_completion)cio);
+
+The chp->lock was introduced to serialize the access of struct
+channel_path. This lock is not needed for the css_wait_for_slow_path()
+function, so invoke the slow-path function outside this lock.
+
+Fixes: b730f3a93395 ("[S390] cio: add lock to struct channel_path")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/media/platform/sti/bdisp/Makefile | 2 +-
- drivers/media/platform/sti/delta/Makefile | 2 +-
- drivers/media/platform/sti/hva/Makefile   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/s390/cio/chp.c  |    3 +++
+ drivers/s390/cio/chsc.c |    2 --
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/sti/bdisp/Makefile b/drivers/media/platform/sti/bdisp/Makefile
-index caf7ccd193ea..39ade0a34723 100644
---- a/drivers/media/platform/sti/bdisp/Makefile
-+++ b/drivers/media/platform/sti/bdisp/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_BDISP) := bdisp.o
-+obj-$(CONFIG_VIDEO_STI_BDISP) += bdisp.o
+--- a/drivers/s390/cio/chp.c
++++ b/drivers/s390/cio/chp.c
+@@ -255,6 +255,9 @@ static ssize_t chp_status_write(struct d
+ 	if (!num_args)
+ 		return count;
  
- bdisp-objs := bdisp-v4l2.o bdisp-hw.o bdisp-debug.o
-diff --git a/drivers/media/platform/sti/delta/Makefile b/drivers/media/platform/sti/delta/Makefile
-index 92b37e216f00..32412fa4c632 100644
---- a/drivers/media/platform/sti/delta/Makefile
-+++ b/drivers/media/platform/sti/delta/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) := st-delta.o
-+obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) += st-delta.o
- st-delta-y := delta-v4l2.o delta-mem.o delta-ipc.o delta-debug.o
++	/* Wait until previous actions have settled. */
++	css_wait_for_slow_path();
++
+ 	if (!strncasecmp(cmd, "on", 2) || !strcmp(cmd, "1")) {
+ 		mutex_lock(&cp->lock);
+ 		error = s390_vary_chpid(cp->chpid, 1);
+--- a/drivers/s390/cio/chsc.c
++++ b/drivers/s390/cio/chsc.c
+@@ -757,8 +757,6 @@ int chsc_chp_vary(struct chp_id chpid, i
+ {
+ 	struct channel_path *chp = chpid_to_chp(chpid);
  
- # MJPEG support
-diff --git a/drivers/media/platform/sti/hva/Makefile b/drivers/media/platform/sti/hva/Makefile
-index 74b41ec52f97..b5a5478bdd01 100644
---- a/drivers/media/platform/sti/hva/Makefile
-+++ b/drivers/media/platform/sti/hva/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_HVA) := st-hva.o
-+obj-$(CONFIG_VIDEO_STI_HVA) += st-hva.o
- st-hva-y := hva-v4l2.o hva-hw.o hva-mem.o hva-h264.o
- st-hva-$(CONFIG_VIDEO_STI_HVA_DEBUGFS) += hva-debugfs.o
--- 
-2.30.2
-
+-	/* Wait until previous actions have settled. */
+-	css_wait_for_slow_path();
+ 	/*
+ 	 * Redo PathVerification on the devices the chpid connects to
+ 	 */
 
 
