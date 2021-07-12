@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8423C4A32
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D94A3C5776
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238795AbhGLGtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        id S1358947AbhGLIeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237345AbhGLGjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF7D6610A6;
-        Mon, 12 Jul 2021 06:35:02 +0000 (UTC)
+        id S1346518AbhGLHqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:46:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30E7361154;
+        Mon, 12 Jul 2021 07:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071703;
-        bh=rlvV/JhLZudQmHtFQLEX4Mi1rHrSwgdrLrMFQxZOZQU=;
+        s=korg; t=1626075719;
+        bh=y5VGwTrzuQwT2plzHSrl2/5rCfn4r0bcXrI0UDrKkDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iFGCfvQBUoUW6q63ku/4En4YrtrzH3VRYdjYhg8YL3mq/DfuOCSeCOAquTxFoSZWd
-         sq4iqunDCghNStat0jHIB2SJx4o6auYjVTn8T+4ERugdZGCLs+zLN7QU5+eIwt4ClB
-         9iWr4EhWP4c/j+KvEsWD3Po+rUm0ej5YQn63weYg=
+        b=v4kaWNcqIqAIIn1MbU486dWnuSmFNrHznbka0BRYcgn/tYx1npOGL4DC8R7/BIifY
+         dMTxIRfxHv2FvVwN5aLPSCujmZNkqM6STVNVLAbRcYPYcX+Upz4jIbD51UlRGP8xPG
+         lwy9LzggQ9c5e7corwsMZpacW2myVsde82pXFVms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 156/593] btrfs: fix error handling in __btrfs_update_delayed_inode
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 293/800] pata_ep93xx: fix deferred probing
 Date:   Mon, 12 Jul 2021 08:05:16 +0200
-Message-Id: <20210712060900.202640153@linuxfoundation.org>
+Message-Id: <20210712060956.243896857@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit bb385bedded3ccbd794559600de4a09448810f4a ]
+[ Upstream commit 5c8121262484d99bffb598f39a0df445cecd8efb ]
 
-If we get an error while looking up the inode item we'll simply bail
-without cleaning up the delayed node.  This results in this style of
-warning happening on commit:
+The driver overrides the error codes returned by platform_get_irq() to
+-ENXIO, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing.  Propagate the error code
+upstream, as it should have been done from the start...
 
-  WARNING: CPU: 0 PID: 76403 at fs/btrfs/delayed-inode.c:1365 btrfs_assert_delayed_root_empty+0x5b/0x90
-  CPU: 0 PID: 76403 Comm: fsstress Tainted: G        W         5.13.0-rc1+ #373
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  RIP: 0010:btrfs_assert_delayed_root_empty+0x5b/0x90
-  RSP: 0018:ffffb8bb815a7e50 EFLAGS: 00010286
-  RAX: 0000000000000000 RBX: ffff95d6d07e1888 RCX: ffff95d6c0fa3000
-  RDX: 0000000000000002 RSI: 000000000029e91c RDI: ffff95d6c0fc8060
-  RBP: ffff95d6c0fc8060 R08: 00008d6d701a2c1d R09: 0000000000000000
-  R10: ffff95d6d1760ea0 R11: 0000000000000001 R12: ffff95d6c15a4d00
-  R13: ffff95d6c0fa3000 R14: 0000000000000000 R15: ffffb8bb815a7e90
-  FS:  00007f490e8dbb80(0000) GS:ffff95d73bc00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f6e75555cb0 CR3: 00000001101ce001 CR4: 0000000000370ef0
-  Call Trace:
-   btrfs_commit_transaction+0x43c/0xb00
-   ? finish_wait+0x80/0x80
-   ? vfs_fsync_range+0x90/0x90
-   iterate_supers+0x8c/0x100
-   ksys_sync+0x50/0x90
-   __do_sys_sync+0xa/0x10
-   do_syscall_64+0x3d/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Because the iref isn't dropped and this leaves an elevated node->count,
-so any release just re-queues it onto the delayed inodes list.  Fix this
-by going to the out label to handle the proper cleanup of the delayed
-node.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 2fff27512600 ("PATA host controller driver for ep93xx")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Link: https://lore.kernel.org/r/509fda88-2e0d-2cc7-f411-695d7e94b136@omprussia.ru
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/delayed-inode.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/ata/pata_ep93xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 4e2cce5ca7f6..3af06ef98b12 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1032,12 +1032,10 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_lookup_inode(trans, root, path, &key, mod);
- 	memalloc_nofs_restore(nofs_flag);
--	if (ret > 0) {
--		btrfs_release_path(path);
--		return -ENOENT;
--	} else if (ret < 0) {
--		return ret;
--	}
-+	if (ret > 0)
-+		ret = -ENOENT;
-+	if (ret < 0)
-+		goto out;
+diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
+index badab6708893..46208ececbb6 100644
+--- a/drivers/ata/pata_ep93xx.c
++++ b/drivers/ata/pata_ep93xx.c
+@@ -928,7 +928,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
+ 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		err = -ENXIO;
++		err = irq;
+ 		goto err_rel_gpio;
+ 	}
  
- 	leaf = path->nodes[0];
- 	inode_item = btrfs_item_ptr(leaf, path->slots[0],
 -- 
 2.30.2
 
