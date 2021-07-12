@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6765E3C5006
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130363C56C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345959AbhGLHaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36860 "EHLO mail.kernel.org"
+        id S1352329AbhGLIYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240917AbhGLHCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:02:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 441EE610A6;
-        Mon, 12 Jul 2021 06:59:32 +0000 (UTC)
+        id S1347868AbhGLHkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 427CD6147D;
+        Mon, 12 Jul 2021 07:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073172;
-        bh=6qvfVHz8Ivbu+S8FtkH8bJH6LL/dj1fkRbuXihqrtqk=;
+        s=korg; t=1626075406;
+        bh=KYrel9vZjou8q2YD8CLX7wykrHrAPEfScafdShKTmig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BDKwPYISSypLjfx6HnaS46U6pc8z2xg99iaKwKkl/3lwr2MsqVSMd9I6sGg1v9s3X
-         qkAg2ycVk9/vVgbzZT5fm4DmmjDW/Mf8xqBXyZe2BjxgxrPaeUxzfNcwZkjxn5I61G
-         7b7mvptUTf8u2SqRDgucWJKT0HB8jXlxFCiplqf0=
+        b=bgUxprUADX1vd2LLT924+mbE42eYWyQhj6SzEZhPbaUUEpoUv561njdrs2/JZg8+b
+         wB+j0U7XXu0pkKrKiOIFrG3HtcBrWhyt+Hih5XbwoJhUy+O8qXr5UVyoORZ+FIFpkE
+         R1DSW+6riHWfURn8W+cbCsUOQj4GmGAk5HF4GwK0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thara Gopinath <thara.gopinath@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 150/700] crypto: qce: skcipher: Fix incorrect sg count for dma transfers
-Date:   Mon, 12 Jul 2021 08:03:53 +0200
-Message-Id: <20210712060946.768254239@linuxfoundation.org>
+Subject: [PATCH 5.13 211/800] ACPI: scan: Rearrange dep_unmet initialization
+Date:   Mon, 12 Jul 2021 08:03:54 +0200
+Message-Id: <20210712060943.163013119@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +41,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thara Gopinath <thara.gopinath@linaro.org>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 1339a7c3ba05137a2d2fe75f602311bbfc6fab33 ]
+[ Upstream commit 6d27975851b134be8d2a170437210c9719e524aa ]
 
-Use the sg count returned by dma_map_sg to call into
-dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
-can merge consecutive sglist entries, thus making the original sg count
-wrong. This is a fix for memory coruption issues observed while testing
-encryption/decryption of large messages using libkcapi framework.
+The dep_unmet field in struct acpi_device is used to store the
+number of unresolved _DEP dependencies (that is, operation region
+dependencies for which there are no drivers present) for the ACPI
+device object represented by it.
 
-Patch has been tested further by running full suite of tcrypt.ko tests
-including fuzz tests.
+That field is initialized to 1 for all ACPI device objects in
+acpi_add_single_object(), via acpi_init_device_object(), so as to
+avoid evaluating _STA prematurely for battery device objects in
+acpi_scan_init_status(), and it is "fixed up" in acpi_bus_check_add()
+after the acpi_add_single_object() called by it has returned.
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This is not particularly straightforward and causes dep_unmet to
+remain 1 for device objects without dependencies created by invoking
+acpi_add_single_object() directly, outside acpi_bus_check_add().
+
+For this reason, rearrange acpi_add_single_object() to initialize
+dep_unmet completely before calling acpi_scan_init_status(), which
+requires passing one extra bool argument to it, and update all of
+its callers accordingly.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qce/skcipher.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/acpi/scan.c | 60 +++++++++++++++++++++------------------------
+ 1 file changed, 28 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index a2d3da0ad95f..5a6559131eac 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -71,7 +71,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	struct scatterlist *sg;
- 	bool diff_dst;
- 	gfp_t gfp;
--	int ret;
-+	int dst_nents, src_nents, ret;
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index e10d38ac7cf2..438df8da6d12 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1671,8 +1671,20 @@ void acpi_init_device_object(struct acpi_device *device, acpi_handle handle,
+ 	device_initialize(&device->dev);
+ 	dev_set_uevent_suppress(&device->dev, true);
+ 	acpi_init_coherency(device);
+-	/* Assume there are unmet deps to start with. */
+-	device->dep_unmet = 1;
++}
++
++static void acpi_scan_dep_init(struct acpi_device *adev)
++{
++	struct acpi_dep_data *dep;
++
++	mutex_lock(&acpi_dep_list_lock);
++
++	list_for_each_entry(dep, &acpi_dep_list, node) {
++		if (dep->consumer == adev->handle)
++			adev->dep_unmet++;
++	}
++
++	mutex_unlock(&acpi_dep_list_lock);
+ }
  
- 	rctx->iv = req->iv;
- 	rctx->ivsize = crypto_skcipher_ivsize(skcipher);
-@@ -122,21 +122,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	sg_mark_end(sg);
- 	rctx->dst_sg = rctx->dst_tbl.sgl;
+ void acpi_device_add_finalize(struct acpi_device *device)
+@@ -1688,7 +1700,7 @@ static void acpi_scan_init_status(struct acpi_device *adev)
+ }
  
--	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
--	if (ret < 0)
-+	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
-+	if (dst_nents < 0)
- 		goto error_free;
+ static int acpi_add_single_object(struct acpi_device **child,
+-				  acpi_handle handle, int type)
++				  acpi_handle handle, int type, bool dep_init)
+ {
+ 	struct acpi_device *device;
+ 	int result;
+@@ -1703,8 +1715,12 @@ static int acpi_add_single_object(struct acpi_device **child,
+ 	 * acpi_bus_get_status() and use its quirk handling.  Note that
+ 	 * this must be done before the get power-/wakeup_dev-flags calls.
+ 	 */
+-	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR)
++	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR) {
++		if (dep_init)
++			acpi_scan_dep_init(device);
++
+ 		acpi_scan_init_status(device);
++	}
  
- 	if (diff_dst) {
--		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
--		if (ret < 0)
-+		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
-+		if (src_nents < 0)
- 			goto error_unmap_dst;
- 		rctx->src_sg = req->src;
- 	} else {
- 		rctx->src_sg = rctx->dst_sg;
-+		src_nents = dst_nents - 1;
+ 	acpi_bus_get_power_flags(device);
+ 	acpi_bus_get_wakeup_device_flags(device);
+@@ -1886,22 +1902,6 @@ static u32 acpi_scan_check_dep(acpi_handle handle, bool check_dep)
+ 	return count;
+ }
+ 
+-static void acpi_scan_dep_init(struct acpi_device *adev)
+-{
+-	struct acpi_dep_data *dep;
+-
+-	adev->dep_unmet = 0;
+-
+-	mutex_lock(&acpi_dep_list_lock);
+-
+-	list_for_each_entry(dep, &acpi_dep_list, node) {
+-		if (dep->consumer == adev->handle)
+-			adev->dep_unmet++;
+-	}
+-
+-	mutex_unlock(&acpi_dep_list_lock);
+-}
+-
+ static bool acpi_bus_scan_second_pass;
+ 
+ static acpi_status acpi_bus_check_add(acpi_handle handle, bool check_dep,
+@@ -1949,19 +1949,15 @@ static acpi_status acpi_bus_check_add(acpi_handle handle, bool check_dep,
+ 		return AE_OK;
  	}
  
--	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, rctx->src_nents,
--			       rctx->dst_sg, rctx->dst_nents,
-+	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, src_nents,
-+			       rctx->dst_sg, dst_nents,
- 			       qce_skcipher_done, async_req);
- 	if (ret)
- 		goto error_unmap_src;
+-	acpi_add_single_object(&device, handle, type);
+-	if (!device)
+-		return AE_CTRL_DEPTH;
+-
+-	acpi_scan_init_hotplug(device);
+ 	/*
+ 	 * If check_dep is true at this point, the device has no dependencies,
+ 	 * or the creation of the device object would have been postponed above.
+ 	 */
+-	if (check_dep)
+-		device->dep_unmet = 0;
+-	else
+-		acpi_scan_dep_init(device);
++	acpi_add_single_object(&device, handle, type, !check_dep);
++	if (!device)
++		return AE_CTRL_DEPTH;
++
++	acpi_scan_init_hotplug(device);
+ 
+ out:
+ 	if (!*adev_p)
+@@ -2223,7 +2219,7 @@ int acpi_bus_register_early_device(int type)
+ 	struct acpi_device *device = NULL;
+ 	int result;
+ 
+-	result = acpi_add_single_object(&device, NULL, type);
++	result = acpi_add_single_object(&device, NULL, type, false);
+ 	if (result)
+ 		return result;
+ 
+@@ -2243,7 +2239,7 @@ static int acpi_bus_scan_fixed(void)
+ 		struct acpi_device *device = NULL;
+ 
+ 		result = acpi_add_single_object(&device, NULL,
+-						ACPI_BUS_TYPE_POWER_BUTTON);
++						ACPI_BUS_TYPE_POWER_BUTTON, false);
+ 		if (result)
+ 			return result;
+ 
+@@ -2259,7 +2255,7 @@ static int acpi_bus_scan_fixed(void)
+ 		struct acpi_device *device = NULL;
+ 
+ 		result = acpi_add_single_object(&device, NULL,
+-						ACPI_BUS_TYPE_SLEEP_BUTTON);
++						ACPI_BUS_TYPE_SLEEP_BUTTON, false);
+ 		if (result)
+ 			return result;
+ 
 -- 
 2.30.2
 
