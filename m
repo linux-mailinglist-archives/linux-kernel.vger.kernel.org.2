@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9313C5754
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20A03C4A2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347879AbhGLIbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S238063AbhGLGtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349800AbhGLHoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32C4C61370;
-        Mon, 12 Jul 2021 07:41:10 +0000 (UTC)
+        id S237223AbhGLGjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E0D461184;
+        Mon, 12 Jul 2021 06:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075670;
-        bh=mVXKZSbt6sNXN4b9AvYG+zVYC6YHgMGjeAw7EmFRtnU=;
+        s=korg; t=1626071691;
+        bh=+GLCrOlqm+ecTRN01ebH+RNaYpzSgm+wgO5kZtnb/hY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s1AFik0bvi1JPpFi6rnRzN+2VLxoU8ALYayipITU6uS6ZkARYexcAlr6GgEhuBLY/
-         8/J1v1Db4n8dXTPUL1S3Lo+efiRkMNF0RcOeA8wj94HpcLXV8tDht0qZsMqX7s5vxh
-         GLVac/pSFzDT0MU8LRTSA48HNTcTySSMwYkDOpqI=
+        b=cFtSpdcLnethd2WRByppd+XKZGyCb1uTm52lnmjcZJMLiklz4TrzsWEjylqHVqQn+
+         H+NnEaNIyV0GlASn0nykHHnUWM533bCSHhYSKHBlLDKwZ7sxuqGRLCxSsTsJoJFX7T
+         5v9Xi6a4N2A815dpyJccrC5ieTVkXHuYdFqqA5gE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 314/800] arm64/mm: Fix ttbr0 values stored in struct thread_info for software-pan
-Date:   Mon, 12 Jul 2021 08:05:37 +0200
-Message-Id: <20210712060959.041008091@linuxfoundation.org>
+Subject: [PATCH 5.10 178/593] blk-mq: grab rq->refcount before calling ->fn in blk_mq_tagset_busy_iter
+Date:   Mon, 12 Jul 2021 08:05:38 +0200
+Message-Id: <20210712060902.600525746@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +42,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 9163f01130304fab1f74683d7d44632da7bda637 ]
+[ Upstream commit 2e315dc07df009c3e29d6926871f62a30cfae394 ]
 
-When using CONFIG_ARM64_SW_TTBR0_PAN, a task's thread_info::ttbr0 must be
-the TTBR0_EL1 value used to run userspace. With 52-bit PAs, the PA must be
-packed into the TTBR using phys_to_ttbr(), but we forget to do this in some
-of the SW PAN code. Thus, if the value is installed into TTBR0_EL1 (as may
-happen in the uaccess routines), this could result in UNPREDICTABLE
-behaviour.
+Grab rq->refcount before calling ->fn in blk_mq_tagset_busy_iter(), and
+this way will prevent the request from being re-used when ->fn is
+running. The approach is same as what we do during handling timeout.
 
-Since hardware with 52-bit PA support almost certainly has HW PAN, which
-will be used in preference, this shouldn't be a practical issue, but let's
-fix this for consistency.
+Fix request use-after-free(UAF) related with completion race or queue
+releasing:
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Fixes: 529c4b05a3cb ("arm64: handle 52-bit addresses in TTBR")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/1623749578-11231-1-git-send-email-anshuman.khandual@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+- If one rq is referred before rq->q is frozen, then queue won't be
+frozen before the request is released during iteration.
+
+- If one rq is referred after rq->q is frozen, refcount_inc_not_zero()
+will return false, and we won't iterate over this request.
+
+However, still one request UAF not covered: refcount_inc_not_zero() may
+read one freed request, and it will be handled in next patch.
+
+Tested-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210511152236.763464-3-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/mmu_context.h | 4 ++--
- arch/arm64/kernel/setup.c            | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ block/blk-mq-tag.c | 44 +++++++++++++++++++++++++++++++++-----------
+ block/blk-mq.c     | 14 +++++++++-----
+ block/blk-mq.h     |  1 +
+ 3 files changed, 43 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index d3cef9133539..eeb210997149 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -177,9 +177,9 @@ static inline void update_saved_ttbr0(struct task_struct *tsk,
- 		return;
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 9c92053e704d..6772c3728865 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -199,6 +199,16 @@ struct bt_iter_data {
+ 	bool reserved;
+ };
  
- 	if (mm == &init_mm)
--		ttbr = __pa_symbol(reserved_pg_dir);
-+		ttbr = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
- 	else
--		ttbr = virt_to_phys(mm->pgd) | ASID(mm) << 48;
-+		ttbr = phys_to_ttbr(virt_to_phys(mm->pgd)) | ASID(mm) << 48;
++static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
++		unsigned int bitnr)
++{
++	struct request *rq = tags->rqs[bitnr];
++
++	if (!rq || !refcount_inc_not_zero(&rq->ref))
++		return NULL;
++	return rq;
++}
++
+ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ {
+ 	struct bt_iter_data *iter_data = data;
+@@ -206,18 +216,22 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	struct blk_mq_tags *tags = hctx->tags;
+ 	bool reserved = iter_data->reserved;
+ 	struct request *rq;
++	bool ret = true;
  
- 	WRITE_ONCE(task_thread_info(tsk)->ttbr0, ttbr);
- }
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 61845c0821d9..68b30e8c22db 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -381,7 +381,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	 * faults in case uaccess_enable() is inadvertently called by the init
- 	 * thread.
+ 	if (!reserved)
+ 		bitnr += tags->nr_reserved_tags;
+-	rq = tags->rqs[bitnr];
+-
+ 	/*
+ 	 * We can hit rq == NULL here, because the tagging functions
+ 	 * test and set the bit before assigning ->rqs[].
  	 */
--	init_task.thread_info.ttbr0 = __pa_symbol(reserved_pg_dir);
-+	init_task.thread_info.ttbr0 = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
- #endif
+-	if (rq && rq->q == hctx->queue && rq->mq_hctx == hctx)
+-		return iter_data->fn(hctx, rq, iter_data->data, reserved);
+-	return true;
++	rq = blk_mq_find_and_get_req(tags, bitnr);
++	if (!rq)
++		return true;
++
++	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
++		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
++	blk_mq_put_rq_ref(rq);
++	return ret;
+ }
  
- 	if (boot_args[1] || boot_args[2] || boot_args[3]) {
+ /**
+@@ -264,6 +278,8 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	struct blk_mq_tags *tags = iter_data->tags;
+ 	bool reserved = iter_data->flags & BT_TAG_ITER_RESERVED;
+ 	struct request *rq;
++	bool ret = true;
++	bool iter_static_rqs = !!(iter_data->flags & BT_TAG_ITER_STATIC_RQS);
+ 
+ 	if (!reserved)
+ 		bitnr += tags->nr_reserved_tags;
+@@ -272,16 +288,19 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	 * We can hit rq == NULL here, because the tagging functions
+ 	 * test and set the bit before assigning ->rqs[].
+ 	 */
+-	if (iter_data->flags & BT_TAG_ITER_STATIC_RQS)
++	if (iter_static_rqs)
+ 		rq = tags->static_rqs[bitnr];
+ 	else
+-		rq = tags->rqs[bitnr];
++		rq = blk_mq_find_and_get_req(tags, bitnr);
+ 	if (!rq)
+ 		return true;
+-	if ((iter_data->flags & BT_TAG_ITER_STARTED) &&
+-	    !blk_mq_request_started(rq))
+-		return true;
+-	return iter_data->fn(rq, iter_data->data, reserved);
++
++	if (!(iter_data->flags & BT_TAG_ITER_STARTED) ||
++	    blk_mq_request_started(rq))
++		ret = iter_data->fn(rq, iter_data->data, reserved);
++	if (!iter_static_rqs)
++		blk_mq_put_rq_ref(rq);
++	return ret;
+ }
+ 
+ /**
+@@ -348,6 +367,9 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+  *		indicates whether or not @rq is a reserved request. Return
+  *		true to continue iterating tags, false to stop.
+  * @priv:	Will be passed as second argument to @fn.
++ *
++ * We grab one request reference before calling @fn and release it after
++ * @fn returns.
+  */
+ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+ 		busy_tag_iter_fn *fn, void *priv)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 4bf9449b4586..50d3527a5d97 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -927,6 +927,14 @@ static bool blk_mq_req_expired(struct request *rq, unsigned long *next)
+ 	return false;
+ }
+ 
++void blk_mq_put_rq_ref(struct request *rq)
++{
++	if (is_flush_rq(rq, rq->mq_hctx))
++		rq->end_io(rq, 0);
++	else if (refcount_dec_and_test(&rq->ref))
++		__blk_mq_free_request(rq);
++}
++
+ static bool blk_mq_check_expired(struct blk_mq_hw_ctx *hctx,
+ 		struct request *rq, void *priv, bool reserved)
+ {
+@@ -960,11 +968,7 @@ static bool blk_mq_check_expired(struct blk_mq_hw_ctx *hctx,
+ 	if (blk_mq_req_expired(rq, next))
+ 		blk_mq_rq_timed_out(rq, reserved);
+ 
+-	if (is_flush_rq(rq, hctx))
+-		rq->end_io(rq, 0);
+-	else if (refcount_dec_and_test(&rq->ref))
+-		__blk_mq_free_request(rq);
+-
++	blk_mq_put_rq_ref(rq);
+ 	return true;
+ }
+ 
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index d2359f7cfd5f..f792a0920ebb 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -47,6 +47,7 @@ void blk_mq_add_to_requeue_list(struct request *rq, bool at_head,
+ void blk_mq_flush_busy_ctxs(struct blk_mq_hw_ctx *hctx, struct list_head *list);
+ struct request *blk_mq_dequeue_from_ctx(struct blk_mq_hw_ctx *hctx,
+ 					struct blk_mq_ctx *start);
++void blk_mq_put_rq_ref(struct request *rq);
+ 
+ /*
+  * Internal helpers for allocating/freeing the request map
 -- 
 2.30.2
 
