@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A513C54D0
+	by mail.lfdr.de (Postfix) with ESMTP id B4F623C54D1
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354800AbhGLIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35402 "EHLO mail.kernel.org"
+        id S1354836AbhGLIEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:04:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243423AbhGLH0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:26:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52237613FE;
-        Mon, 12 Jul 2021 07:22:53 +0000 (UTC)
+        id S244099AbhGLH0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:26:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3141C61419;
+        Mon, 12 Jul 2021 07:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074573;
-        bh=Ss3r1Xszb6PDA6klpcWI/FUjc4crWvIyQEIVLiYKJGg=;
+        s=korg; t=1626074576;
+        bh=yFRsu7/el9VAy3vECFtyMjZl9iQtJDhiAzWNQocLCjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RtKdi+cnuXxPSohMQZ4zhuRDWcnRbdefWj4+skkpOt+NVHBwOVKOp9VUVHd+u4j83
-         7exKrbwkFirK3wFdXjz3uPIMcr1pgAuG4bROauK0YBxENLH3QYOu3UnW2heEebjAVZ
-         P8bOtFytYOotJVyAJKGa6KSyzc+o42FA6+nK+Bs0=
+        b=OvCvYY4ArHynqFCsv+WfIY1TO8pE1gB29+VhpxmoYOS3oqeP7Dq1rl/ixkisHGuTL
+         LNpRQK2Vj15FxKFqbIAC1/CX5ZSJfGVpENMnn5Kj2eONsiVfNsSTryMVMRoYAu8GvQ
+         DwQ+qD89cnBDQvSSosvWQDU5VLdw8eSBNkcUNkzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 582/700] scsi: iscsi: Flush block work before unblock
-Date:   Mon, 12 Jul 2021 08:11:05 +0200
-Message-Id: <20210712061037.953677856@linuxfoundation.org>
+Subject: [PATCH 5.12 583/700] mfd: mp2629: Select MFD_CORE to fix build error
+Date:   Mon, 12 Jul 2021 08:11:06 +0200
+Message-Id: <20210712061038.054887087@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,41 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 7ce9fc5ecde0d8bd64c29baee6c5e3ce7074ec9a ]
+[ Upstream commit a933272041d852a1ef1c85f0c18b93e9999a41fa ]
 
-We set the max_active iSCSI EH works to 1, so all work is going to execute
-in order by default. However, userspace can now override this in sysfs. If
-max_active > 1, we can end up with the block_work on CPU1 and
-iscsi_unblock_session running the unblock_work on CPU2 and the session and
-target/device state will end up out of sync with each other.
+MFD_MP2629 should select MFD_CORE to a prevent build error:
 
-This adds a flush of the block_work in iscsi_unblock_session.
+ERROR: modpost: "devm_mfd_add_devices" [drivers/mfd/mp2629.ko] undefined!
 
-Link: https://lore.kernel.org/r/20210525181821.7617-17-michael.christie@oracle.com
-Fixes: 1d726aa6ef57 ("scsi: iscsi: Optimize work queue flush use")
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 06081646450e ("mfd: mp2629: Add support for mps battery charger")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mfd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index b8a93e607891..6ce1cc992d1d 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -1969,6 +1969,8 @@ static void __iscsi_unblock_session(struct work_struct *work)
-  */
- void iscsi_unblock_session(struct iscsi_cls_session *session)
- {
-+	flush_work(&session->block_work);
-+
- 	queue_work(iscsi_eh_timer_workq, &session->unblock_work);
- 	/*
- 	 * Blocking the session can be done from any context so we only
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index b74efa469e90..8b421b21a232 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -465,6 +465,7 @@ config MFD_MP2629
+ 	tristate "Monolithic Power Systems MP2629 ADC and Battery charger"
+ 	depends on I2C
+ 	select REGMAP_I2C
++	select MFD_CORE
+ 	help
+ 	  Select this option to enable support for Monolithic Power Systems
+ 	  battery charger. This provides ADC, thermal and battery charger power
 -- 
 2.30.2
 
