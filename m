@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911723C591F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EA03C5919
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353051AbhGLI6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:58:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55048 "EHLO mail.kernel.org"
+        id S1356496AbhGLI5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:57:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353753AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1697F61D05;
-        Mon, 12 Jul 2021 07:57:12 +0000 (UTC)
+        id S1353743AbhGLICt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 642A261D06;
+        Mon, 12 Jul 2021 07:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076633;
-        bh=SQVjfmZXtgb5jgyoYc2W6HhNyxujFa+RVfFV3/w9Cjg=;
+        s=korg; t=1626076635;
+        bh=M5cELWOCOfWzIgwHaTKOHBHljuuaZ28F1EZg6kJGlic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a4ayX66t7jI4XJODTypB4JNIg2bw+n0WvPrV9bir4CmvmjocxQde2RkQjUjj02ejr
-         DBGWs4A6K61a2n/lyBScDoCiPQrzY2BqbENcFrWfAU9Wma1jmYvZbJ+M32CTCtArc/
-         knZtH7KYSCzUHOZdm8FdhEvbYW5dEZmWwLr9LAic=
+        b=z+dT2qVTg8mAZLBr53B/hbVE5cfc8IdGyv5T6rcZkffuKBi9AE/yk10OCBh8z5HZF
+         l1FG+LueD/N1HwjCKZeUh188KWepmKa2Wos8BvO9+FT4WiypbCTPlAsoPvCE62NMdp
+         XzkpriXWeFL+YWQy4aKSNB6cyxLSst8PEc/yslnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 727/800] ASoC: cs42l42: Correct definition of CS42L42_ADC_PDN_MASK
-Date:   Mon, 12 Jul 2021 08:12:30 +0200
-Message-Id: <20210712061044.140617272@linuxfoundation.org>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 728/800] of: Fix truncation of memory sizes on 32-bit platforms
+Date:   Mon, 12 Jul 2021 08:12:31 +0200
+Message-Id: <20210712061044.254165775@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,35 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit fac165f22ac947b55407cd3a60a2a9824f905235 ]
+[ Upstream commit 2892d8a00d23d511a0591ac4b2ff3f050ae1f004 ]
 
-The definition of CS42L42_ADC_PDN_MASK was incorrectly defined
-as the HP_PDN bit.
+Variable "size" has type "phys_addr_t", which can be either 32-bit or
+64-bit on 32-bit systems, while "unsigned long" is always 32-bit on
+32-bit systems.  Hence the cast in
 
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210616135604.19363-1-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+    (unsigned long)size / SZ_1M
+
+may truncate a 64-bit size to 32-bit, as casts have a higher operator
+precedence than divisions.
+
+Fix this by inverting the order of the cast and division, which should
+be safe for memory blocks smaller than 4 PiB.  Note that the division is
+actually a shift, as SZ_1M is a power-of-two constant, hence there is no
+need to use div_u64().
+
+While at it, use "%lu" to format "unsigned long".
+
+Fixes: e8d9d1f5485b52ec ("drivers: of: add initialization code for static reserved memory")
+Fixes: 3f0c8206644836e4 ("drivers: of: add initialization code for dynamic reserved memory")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/4a1117e72d13d26126f57be034c20dac02f1e915.1623835273.git.geert+renesas@glider.be
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/of/fdt.c             | 8 ++++----
+ drivers/of/of_reserved_mem.c | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 36b763f0d1a0..386c40f9ed31 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -79,7 +79,7 @@
- #define CS42L42_HP_PDN_SHIFT		3
- #define CS42L42_HP_PDN_MASK		(1 << CS42L42_HP_PDN_SHIFT)
- #define CS42L42_ADC_PDN_SHIFT		2
--#define CS42L42_ADC_PDN_MASK		(1 << CS42L42_HP_PDN_SHIFT)
-+#define CS42L42_ADC_PDN_MASK		(1 << CS42L42_ADC_PDN_SHIFT)
- #define CS42L42_PDN_ALL_SHIFT		0
- #define CS42L42_PDN_ALL_MASK		(1 << CS42L42_PDN_ALL_SHIFT)
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index ba17a80b8c79..cc71e0b3eed9 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -510,11 +510,11 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
  
+ 		if (size &&
+ 		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
+-			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %ld MiB\n",
+-				uname, &base, (unsigned long)size / SZ_1M);
++			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
++				uname, &base, (unsigned long)(size / SZ_1M));
+ 		else
+-			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %ld MiB\n",
+-				uname, &base, (unsigned long)size / SZ_1M);
++			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
++				uname, &base, (unsigned long)(size / SZ_1M));
+ 
+ 		len -= t_len;
+ 		if (first) {
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 15e2417974d6..3502ba522c39 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -134,9 +134,9 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
+ 			ret = early_init_dt_alloc_reserved_memory_arch(size,
+ 					align, start, end, nomap, &base);
+ 			if (ret == 0) {
+-				pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
++				pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
+ 					uname, &base,
+-					(unsigned long)size / SZ_1M);
++					(unsigned long)(size / SZ_1M));
+ 				break;
+ 			}
+ 			len -= t_len;
+@@ -146,8 +146,8 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
+ 		ret = early_init_dt_alloc_reserved_memory_arch(size, align,
+ 							0, 0, nomap, &base);
+ 		if (ret == 0)
+-			pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
+-				uname, &base, (unsigned long)size / SZ_1M);
++			pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
++				uname, &base, (unsigned long)(size / SZ_1M));
+ 	}
+ 
+ 	if (base == 0) {
 -- 
 2.30.2
 
