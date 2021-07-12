@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9743C64B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39A53C64C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhGLUIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhGLUIM (ORCPT
+        id S236692AbhGLUJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:09:59 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:40729 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231693AbhGLUJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:08:12 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B06C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 13:05:24 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id s18so19459587pgg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 13:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gFiQIMdbMlGiV4kNbAs8pfFngiJ6QhnK3Hudjk2XiOU=;
-        b=SK++E2Zrabb9y24MNbsqgpf5V9FrMpggUlk9wC5vd7xfg1lLfLcJKNzdWVFHmIVrxM
-         +MBMMeIz4XkqO2EKkpXz04sPF+JQ7je9mpilzkCKfS8n3j4lDqgAtfcArwbycRCv+IzH
-         bbGykPzDaHBAogdGlGSv8CyULO7rjGUookBWyZBmaYv+nO3qWoYyX6lOrYCgKbdkt7d3
-         F85DFhO/zv3Malp4LqnML+D8Y18E2MECcss5TZjHFGPZVLoOvydbWe+2uhT+4J4q/T4U
-         mdCyLOX2eDX5AcNcag1QkW1p9cx3f2GgI4yzIrDlfeC7y7zDpr2+3xd+WdQilqYjsnYG
-         NOsg==
+        Mon, 12 Jul 2021 16:09:58 -0400
+Received: by mail-il1-f180.google.com with SMTP id b14so7711819ilf.7;
+        Mon, 12 Jul 2021 13:07:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gFiQIMdbMlGiV4kNbAs8pfFngiJ6QhnK3Hudjk2XiOU=;
-        b=iotwlzzZnAUu0pfxN4gnDnB6fSpJILVU/2vghTTdfAr4Zp6Pz9fnPaJ57l5vFA77eu
-         2JUdBV40anPdR+GddNoteC7jIkNKjxeKwoo4Sbov2ZUuWAH8Z2O+Jncn/be/W+Dqw+7A
-         SQJUbnY8/BgO6w+DcXdRH0VTTg0uvmOxYJifdamX9vdWcdB0ghAalUDIAKhypaIFPyGq
-         zuJz0kCP7tMAENjytMOZP2uBx7PrGtmaKafJeUY1b4oaYnm0igJiGWupX1AhgFY5oqCw
-         ZfhQ7oIsMKKfWTAA6cabzEnqoLI/MH3RvClDIfdtm3objG+us1bAVCBuwKFiCEMgh1fs
-         R0bg==
-X-Gm-Message-State: AOAM53133GHP7FiuT/0nHBNq7hEH0jaPbw5WXWSU1LoDP6J230pX8DgW
-        7Hbc3Qs8jg0QchB1zukmat5jzQ==
-X-Google-Smtp-Source: ABdhPJzriLGXnQ37c8bvZnrfu5DlMt6tQKsjaPZcm40N4NMtTsgw75jNUkxFv5acnZULsUz1oSMJhw==
-X-Received: by 2002:a62:442:0:b029:31d:2e52:f1c4 with SMTP id 63-20020a6204420000b029031d2e52f1c4mr772777pfe.14.1626120323694;
-        Mon, 12 Jul 2021 13:05:23 -0700 (PDT)
-Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
-        by smtp.gmail.com with ESMTPSA id fv8sm14557493pjb.21.2021.07.12.13.05.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XaY5P13QTe8euUqHWNilvxRWXAenzeNcAcuUtAh0nfg=;
+        b=Adr6xfzQCQpRLVZ7NkcMZn/aZPTovIRz2nBAcGZj09wvq/qgM/yXEWudU8id1hhb/L
+         dlPq/EYhECl+oksWcBGUmZjtZjbc2bcGMKB6rSLKW5Y3t4mHdsBIPuLH3OvewvZY3Iyj
+         6njkgRAruLQaJQRFOnsTRW3XmcqKVoWqdoIWBX4iQH5i+w+AjJyJkhDrGdaxGUJyIbTo
+         iS3Geuj+mMqav0U5Pj0fKYM+a+mPqLCIoT1mtOn7orRPZxMtIxgLYsm14/29YaCX/iER
+         hA3yl6PCx8fbVudGwXnP6dT29g6iQDH6pJWvb348aACKFJbPzyDpmoGKJnHUXdDMv5Tm
+         QVMA==
+X-Gm-Message-State: AOAM53065UYCrzqc3IzueJkVE0kknUyov8RLq89H34R/C0I1G2dNJ/Qj
+        tPW1N0ZILN3GrtO6tScnwA==
+X-Google-Smtp-Source: ABdhPJxtJIaEfT9Jfk2r9Q+q7xvAKbTSyWLDAuftGR8HZNIueK4kNBCA72i9T2wC8qD9sW/Xk3exTw==
+X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr412433ilh.9.1626120429493;
+        Mon, 12 Jul 2021 13:07:09 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id k19sm7559760ilh.60.2021.07.12.13.07.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 13:05:23 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 13:05:20 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     kevin.curtis@farsite.co.uk, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] replace for loop with array initializer
-Message-ID: <20210712130520.748b6e3a@hermes.local>
-In-Reply-To: <20210712192450.GA1153790@pc>
-References: <20210712192450.GA1153790@pc>
+        Mon, 12 Jul 2021 13:07:08 -0700 (PDT)
+Received: (nullmailer pid 2401065 invoked by uid 1000);
+        Mon, 12 Jul 2021 20:07:06 -0000
+Date:   Mon, 12 Jul 2021 14:07:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 1/5] dt-bindings: Add doc for ROCK Pi 4 A+ and B+
+Message-ID: <20210712200706.GA2401021@robh.at.kernel.org>
+References: <20210618181256.27992-1-knaerzche@gmail.com>
+ <20210618181256.27992-2-knaerzche@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618181256.27992-2-knaerzche@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 20:24:50 +0100
-Salah Triki <salah.triki@gmail.com> wrote:
+On Fri, 18 Jun 2021 20:12:52 +0200, Alex Bee wrote:
+> ROCK Pi 4 got 2 more variants called A+ and B+.
+> Add the dt-bindings documentation for it.
+> 
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/rockchip.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-> diff --git a/drivers/net/wan/farsync.c b/drivers/net/wan/farsync.c
-> index b3466e084e84..a90d3b9a8170 100644
-> --- a/drivers/net/wan/farsync.c
-> +++ b/drivers/net/wan/farsync.c
-> @@ -567,7 +567,7 @@ static void fst_process_int_work_q(struct tasklet_struct *unused);
->  static DECLARE_TASKLET(fst_tx_task, fst_process_tx_work_q);
->  static DECLARE_TASKLET(fst_int_task, fst_process_int_work_q);
->  
-> -static struct fst_card_info *fst_card_array[FST_MAX_CARDS];
-> +static struct fst_card_info *fst_card_array[FST_MAX_CARDS] = { [0 ... FST_MAX_CARDS-1] = NULL };
-
-Why bother, the default initialization in C is 0 (ie. NULL).
-In fact, checkpatch should complain about useless array initialization for this.
+Acked-by: Rob Herring <robh@kernel.org>
