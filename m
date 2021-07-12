@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF923C5A2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEABF3C5A33
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236786AbhGLJhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:37:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50715 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236653AbhGLJhD (ORCPT
+        id S237265AbhGLJit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:38:49 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59678 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237197AbhGLJis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:37:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626082452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gdA+S+3YSWLYResZwMQhyDJvMFxlp9J0PZNAibvseEU=;
-        b=URWCQ9H/BAqBhxSJm8RriRADhUJFhMaa7Iza8QAd/L/giBSy3IhHv7VSD+tLuUuIv10Z1+
-        mwpL1yY82utTQmbdZ9S4Ypd5pKgYEvrGZZLDJXp3eNUYINhZTvxT4g8+q01PyiqmUh5wSP
-        sXq5J169l7n9VvqT+/mL7X24jOy2ta4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-DsTtSTTPN3Oc37bTxBzuIg-1; Mon, 12 Jul 2021 05:34:08 -0400
-X-MC-Unique: DsTtSTTPN3Oc37bTxBzuIg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7F0E800D62;
-        Mon, 12 Jul 2021 09:34:06 +0000 (UTC)
-Received: from localhost (ovpn-112-230.ams2.redhat.com [10.36.112.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98C5B604CF;
-        Mon, 12 Jul 2021 09:34:02 +0000 (UTC)
-Date:   Mon, 12 Jul 2021 10:34:01 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Wenchao Hao <haowenchao@huawei.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-scsi@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        Wu Bo <wubo40@huawei.com>, linfeilong@huawei.com,
-        yuzhanzhan@huawei.com
-Subject: Re: [bug report]scsi: drive letter drift problem
-Message-ID: <YOwMiYRmGYskOn7A@stefanha-x1.localdomain>
-References: <7ae2293e-71a9-f68e-0bfb-b4a70ecf493e@huawei.com>
+        Mon, 12 Jul 2021 05:38:48 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 143041C0B7C; Mon, 12 Jul 2021 11:35:59 +0200 (CEST)
+Date:   Mon, 12 Jul 2021 11:35:58 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/593] 5.10.50-rc1 review
+Message-ID: <20210712093558.GB23916@duo.ucw.cz>
+References: <20210712060843.180606720@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fuPUrc/TQtUWERHW"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
 Content-Disposition: inline
-In-Reply-To: <7ae2293e-71a9-f68e-0bfb-b4a70ecf493e@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---fuPUrc/TQtUWERHW
+--MW5yreqqjyrRcusr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 12, 2021 at 12:47:05PM +0800, Wenchao Hao wrote:
-> We deploy two SCSI disk in one SCSI host(virtio-scsi bus) for one machine,
-> whose ids are [0:0:0:0] and [0:0:1:0].
->=20
-> Mostly, the device letter are assigned as following after reboot:
-> [0:0:0:0] --> sda
-> [0:0:1:0] --> sdb
->=20
-> While in rare cases, the device letter shown as following:
-> [0:0:0:0] --> sdb
-> [0:0:1:0] --> sda
->=20
-> Could we guarantee "sda" is assigned to [0:0:0:0] and "sdb" is assigned to
-> [0:0:1:0] or not?
-> If we can, then how?
+Hi!
 
-Is there a stable ID that you can use in /dev/disk/by-*?
+> This is the start of the stable review cycle for the 5.10.50 release.
+> There are 593 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-Stefan
+CIP testing did not find any problems here:
 
---fuPUrc/TQtUWERHW
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--MW5yreqqjyrRcusr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDsDIkACgkQnKSrs4Gr
-c8hdnQf/Rs2fRaJYaSbQa32JKf0l4C/g6F+qFtbfnjBx97dzW6wb0+PPyavNMGmp
-tWbISz6bIz3StkRv8oOstrJA1px9caorIZJTvXXBf036EJFtnOuZq9HF1enjybNw
-RLFknEaavVlj6ay2ZkdxkIwCjGJtUcU/U6lXFGrWkwqScP6TOmhnV+l7nkcH74Kq
-lffTF6TC6rqGMQNVpPzK4PueRMSuBzWL4TAol61w9o6pwGYnxCObOnQIF4QGj6cE
-LKY89s8dbJG8SEN1LkUrqsd9NkV9Kd4lT67QEJd/qoWCBXFmL4mbF+ceJ5B0kL13
-RM9O4ybPKVXqiWhprpNon4qvBfwo3w==
-=0+Ee
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYOwM/gAKCRAw5/Bqldv6
+8tcyAJwN03CyRnozvLhLFQqeMuh8U8n3pgCfXWF4FJJK0MtkO4LW0rvza63miCQ=
+=ORXa
 -----END PGP SIGNATURE-----
 
---fuPUrc/TQtUWERHW--
-
+--MW5yreqqjyrRcusr--
