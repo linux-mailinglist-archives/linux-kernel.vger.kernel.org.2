@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08443C4D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD7D3C549A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242712AbhGLHMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49830 "EHLO mail.kernel.org"
+        id S1353179AbhGLIBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:01:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239823AbhGLGuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F16C60FE3;
-        Mon, 12 Jul 2021 06:47:14 +0000 (UTC)
+        id S238668AbhGLHXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:23:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 978DE613B5;
+        Mon, 12 Jul 2021 07:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072435;
-        bh=8BEMKaS714OT+apHIX5solBA0W7/5V5TO7cFAvn5F28=;
+        s=korg; t=1626074426;
+        bh=HTJqpn40mcfBkEgWdKi/YdgVL0bQEle/cZVol9slRp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mwOuJuRfigOJkKXcXfLrh5xiCycS6GrkLm0hliHA0brYi1hYasafi0UtFWBoODsSy
-         bZSzaZ647qTFoHFL9+7FiZorRkejtVwn5luqdo833RuwTHUCPfencaFu64mLJN8i+K
-         KaOn118or45CwOu+islYC0e2BGVdiVTgOMiCM2r0=
+        b=tRp6jrn21tYyHji9cVF9AsjvI13GXif/SaEjLT6rgNZZCBIghAapHbw8ajMY8Gtsk
+         xSejUjlpz4mh770N8UCpEHI4lqKxhYNcTX9oXZSByKw5mC4zfHqiRtAL7wGTbzOCGs
+         fMDedsdSI9Af4uAGVzEqYMHkO75vsh3R/Tc7ePUE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 496/593] s390/irq: select HAVE_IRQ_EXIT_ON_IRQ_STACK
-Date:   Mon, 12 Jul 2021 08:10:56 +0200
-Message-Id: <20210712060945.973018175@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 574/700] leds: lm3697: Dont spam logs when probe is deferred
+Date:   Mon, 12 Jul 2021 08:10:57 +0200
+Message-Id: <20210712061037.131569268@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 9ceed9988a8e6a1656ed2bdaa30501cf0f3dd925 ]
+[ Upstream commit 807553f8bf4afa673750e52905e0f9488179112f ]
 
-irq_exit() is always called on async stack. Therefore select
-HAVE_IRQ_EXIT_ON_IRQ_STACK and get a tiny optimization in
-invoke_softirq().
+When requesting GPIO line the probe can be deferred.
+In such case don't spam logs with an error message.
+This can be achieved by switching to dev_err_probe().
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: 5c1d824cda9f ("leds: lm3697: Introduce the lm3697 driver")
+Cc: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/leds/leds-lm3697.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 4a2a12be04c9..dc5c3e6fd200 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -154,6 +154,7 @@ config S390
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO
-+	select HAVE_IRQ_EXIT_ON_IRQ_STACK
- 	select HAVE_KERNEL_BZIP2
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZ4
+diff --git a/drivers/leds/leds-lm3697.c b/drivers/leds/leds-lm3697.c
+index 7d216cdb91a8..912e8bb22a99 100644
+--- a/drivers/leds/leds-lm3697.c
++++ b/drivers/leds/leds-lm3697.c
+@@ -203,11 +203,9 @@ static int lm3697_probe_dt(struct lm3697 *priv)
+ 
+ 	priv->enable_gpio = devm_gpiod_get_optional(dev, "enable",
+ 						    GPIOD_OUT_LOW);
+-	if (IS_ERR(priv->enable_gpio)) {
+-		ret = PTR_ERR(priv->enable_gpio);
+-		dev_err(dev, "Failed to get enable gpio: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(priv->enable_gpio))
++		return dev_err_probe(dev, PTR_ERR(priv->enable_gpio),
++					  "Failed to get enable GPIO\n");
+ 
+ 	priv->regulator = devm_regulator_get(dev, "vled");
+ 	if (IS_ERR(priv->regulator))
 -- 
 2.30.2
 
