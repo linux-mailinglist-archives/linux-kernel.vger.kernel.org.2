@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2128D3C61E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B50F3C6201
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbhGLRb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:31:26 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61526 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234742AbhGLRbY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:31:24 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
- id e09e8c5f6ca796ac; Mon, 12 Jul 2021 19:28:35 +0200
-Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 2E631669C37;
-        Mon, 12 Jul 2021 19:28:34 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Subject: [PATCH v1 6/6] driver core: Split device_platform_notify()
-Date:   Mon, 12 Jul 2021 19:28:16 +0200
-Message-ID: <7971483.NyiUUSuA9g@kreacher>
-In-Reply-To: <2780027.e9J7NaK4W3@kreacher>
-References: <2780027.e9J7NaK4W3@kreacher>
+        id S235746AbhGLRfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:35:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235721AbhGLRfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:35:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78517606A5;
+        Mon, 12 Jul 2021 17:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626111163;
+        bh=VtGEF+ZZROmXiAjI6Vgr8SHZ3R5D6D8GlzKCE5P9jNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gU5DP/H6vV/hR98Y71TuN3Sf5Lc4/CFIim5CLt2kqn/gVAuVkJdTi80w56phLHXi/
+         vvoht6AyduTE13L4uvzrEdGc5O9JnnTltLyOC7wj9xsKDbBWNzqseHNN1fNbP+31Ax
+         hoh92BovgXHy9AvlleHw9KXX5tkru6ekx8W4MRomclMoqLyRXPfUP7EP391yHjVWaw
+         43uOhGIHZqOGz9+4ORtbP1oJRPHKhMlzTrSHjTBqMZkR3xkE4EVbByWv2ADzhCtOOd
+         hbUN6Vx+hj6l66SNffZxot+EOJU9L0JoTUKZKzNao2SaFNpvFuEjjo5gJQYIt5gUlN
+         U+JcXeqWryCWg==
+Date:   Mon, 12 Jul 2021 18:32:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, hdegoede@redhat.com,
+        mgross@linux.intel.com, luzmaximilian@gmail.com,
+        lgirdwood@gmail.com, andy.shevchenko@gmail.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+Message-ID: <20210712173206.GH4435@sirena.org.uk>
+References: <20210708224226.457224-1-djrscally@gmail.com>
+ <20210709170426.GC4112@sirena.org.uk>
+ <c95da883-581b-d1f4-4c8a-2162b8b58b64@gmail.com>
+ <20210712141528.GE4435@sirena.org.uk>
+ <YOxz+b/giZTKoJkk@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.82.45
-X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedvrdegheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrgeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
- ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvihhkkhhirdhkrhhoghgvrhhusheslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Uu2n37VG4rOBDVuR"
+Content-Disposition: inline
+In-Reply-To: <YOxz+b/giZTKoJkk@pendragon.ideasonboard.com>
+X-Cookie: Hailing frequencies open, Captain.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Split device_platform_notify_remove) out of device_platform_notify()
-and call the latter on device addition and the former on device
-removal.
+--Uu2n37VG4rOBDVuR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No intentional functional impact.
+On Mon, Jul 12, 2021 at 07:55:21PM +0300, Laurent Pinchart wrote:
+> On Mon, Jul 12, 2021 at 03:15:28PM +0100, Mark Brown wrote:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/base/core.c |   37 +++++++++++++++++--------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
+> > Like I said elsewhere it seems a lot easier to just have the I2C driver
+> > set platform data based on parsing DMI information like we do elsewhere.
+> > I really don't see any benefit to introducing an additional layer of
+> > abstraction and binding here, it just seems to be making things more
+> > fragile.
 
-Index: linux-pm/drivers/base/core.c
-===================================================================
---- linux-pm.orig/drivers/base/core.c
-+++ linux-pm/drivers/base/core.c
-@@ -2000,24 +2000,24 @@ static inline int device_is_not_partitio
- }
- #endif
- 
--static int
--device_platform_notify(struct device *dev, enum kobject_action action)
-+static void device_platform_notify(struct device *dev)
- {
--	if (action == KOBJ_ADD)
--		acpi_device_notify(dev);
--	else if (action == KOBJ_REMOVE)
--		acpi_device_notify_remove(dev);
--
--	if (action == KOBJ_ADD)
--		software_node_notify(dev);
--	else if (action == KOBJ_REMOVE)
--		software_node_notify_remove(dev);
-+	acpi_device_notify(dev);
- 
--	if (platform_notify && action == KOBJ_ADD)
-+	software_node_notify(dev);
-+
-+	if (platform_notify)
- 		platform_notify(dev);
--	else if (platform_notify_remove && action == KOBJ_REMOVE)
-+}
-+
-+static void device_platform_notify_remove(struct device *dev)
-+{
-+	acpi_device_notify_remove(dev);
-+
-+	software_node_notify_remove(dev);
-+
-+	if (platform_notify_remove)
- 		platform_notify_remove(dev);
--	return 0;
- }
- 
- /**
-@@ -3289,9 +3289,7 @@ int device_add(struct device *dev)
- 	}
- 
- 	/* notify platform of device entry */
--	error = device_platform_notify(dev, KOBJ_ADD);
--	if (error)
--		goto platform_error;
-+	device_platform_notify(dev);
- 
- 	error = device_create_file(dev, &dev_attr_uevent);
- 	if (error)
-@@ -3394,8 +3392,7 @@ done:
-  SymlinkError:
- 	device_remove_file(dev, &dev_attr_uevent);
-  attrError:
--	device_platform_notify(dev, KOBJ_REMOVE);
--platform_error:
-+	device_platform_notify_remove(dev);
- 	kobject_uevent(&dev->kobj, KOBJ_REMOVE);
- 	glue_dir = get_glue_dir(dev);
- 	kobject_del(&dev->kobj);
-@@ -3540,7 +3537,7 @@ void device_del(struct device *dev)
- 	bus_remove_device(dev);
- 	device_pm_remove(dev);
- 	driver_deferred_probe_del(dev);
--	device_platform_notify(dev, KOBJ_REMOVE);
-+	device_platform_notify_remove(dev);
- 	device_remove_properties(dev);
- 	device_links_purge(dev);
- 
+> The idea behind software nodes is that individual device drivers
+> shouldn't care about where platform-specific data come from. They can
+> use the same fwnode API, regardless of whether the device is described
+> through OF, ACPI, or software nodes created by a board file in the
 
+That's much more fwnode than swnode.  fwnode is a cute hack for letting
+ACPI based systems that don't fit the ACPI model reuse DT bindings which
+can work well for some things which are just outside the scope of ACPI
+completely but is a really bad idea for things where there's specific
+firmware modelling for the thing being handled, in those cases it should
+be avoided and firmware specific handling used instead.  Power handling
+(including regulators) is one of those areas - ACPI has really strong
+opinions on how it should be done and we don't want to be encouraging
+systems to go against that model.  AFAICT swnode is mostly just a way of
+patching up firmware that could be getting away with fwnode but didn't
+for some reason, in this case we don't want to ever see ACPI systems
+trying to use the DT regulator bindings in their firmware descriptions.
 
+> kernel. It allows grouping all platform data that should be provided by
+> firmware in a single place, conditioned by a DMI match, instead of
+> distributing DMI matches to lots of drivers.
 
+Like I said in reply to Andy's mail if we're essentially filling in a C
+struct through a massive pile of indirection involving writing C code
+containing a bunch of static initialisations of less specific structs
+that doesn't seem great.  We can probably arrange to pass the init_data
+=66rom different files rather than putting the quirks in the driver,
+that'd be fine if a bit more work, but swnodes only seem to be adding
+problems here.
+
+--Uu2n37VG4rOBDVuR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDsfJUACgkQJNaLcl1U
+h9Abjgf/Vk3i0rqEkOhCAV+ivVYXecph/yluBT06Xil1LFQhiK9prVwCfZJ93k0S
+D6dkPcnM1RZKmFQq3uRBfDY/5SNQlka3uoCrZqJuNhMnphjOviUgOp6HxTXVnalQ
+Fsx3Pp/khYOcwjmt7Me3i8xKcIrvphG2FddKYqGTrH3R5MuDDVRvFmtF9Ay74BMG
+6+g2XUmTLF8G4MhVMHH3SS9U0bzkbhNaFzFrShf/aVtjgZVo5RL858KqsQZ2PSr7
+H4h7d0nJxvjqMQUo0pkH5VB+tiX+tUvo52nnAIYpo3gi1abz6IpuhXIAfY0vNoCD
+WTNUTLOqkY4/N7AOKj8dvfFlOft15Q==
+=BBO2
+-----END PGP SIGNATURE-----
+
+--Uu2n37VG4rOBDVuR--
