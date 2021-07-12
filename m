@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455F83C4BD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A893C5801
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242583AbhGLHAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41250 "EHLO mail.kernel.org"
+        id S1378501AbhGLIku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238824AbhGLGoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 538106115C;
-        Mon, 12 Jul 2021 06:40:06 +0000 (UTC)
+        id S1350620AbhGLHvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E274F6140C;
+        Mon, 12 Jul 2021 07:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072006;
-        bh=W2E3q35qxS55DI6wmGPBwPjoB5V9DwN3GD2jzUpwYmA=;
+        s=korg; t=1626075992;
+        bh=PzEQanErQby50e1hChNgY74Y8p6+VUwcFMVmNlBaGz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dOnUibCPgfPsb9QZrfk+0boEQk0dgxchKQzU59TOyvL8CaZbVlCkHjYJzQU9FiR5f
-         o6GQC7S8SZpTMuCt08ospGtxLQaeyenGzIaJtzmDK1ZNqWPCJht/WmesvWJZSA61P0
-         TTcpv3h0oks/+dznu6sfL9VvHjdLvt0t1+wVQgJ4=
+        b=K3zIy3sF29KE253TeXI9Ffm4AvsD701kVZcXW3Plsb4jUCrwqOhMVTSW24tJHhskB
+         a0SRSyoeA5jNtrp9pFqFkj73qYjA+sfkhIqQrCtQXiTRWIBKnb4vUmZimjumIuPhyO
+         BR9DmxPhByFGQXZcJaAc6fyY1RBEBzQ8LW8q9AR0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 314/593] drm: rockchip: set alpha_en to 0 if it is not used
-Date:   Mon, 12 Jul 2021 08:07:54 +0200
-Message-Id: <20210712060919.898619493@linuxfoundation.org>
+Subject: [PATCH 5.13 452/800] tools/bpftool: Fix error return code in do_batch()
+Date:   Mon, 12 Jul 2021 08:07:55 +0200
+Message-Id: <20210712061015.229138751@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Bee <knaerzche@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 046e0db975695540c9d9898cdbf0b60533d28afb ]
+[ Upstream commit ca16b429f39b4ce013bfa7e197f25681e65a2a42 ]
 
-alpha_en should be set to 0 if it is not used, i.e. to disable alpha
-blending if it was enabled before and should be disabled now.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 2aae8ed1f390 ("drm/rockchip: Add per-pixel alpha support for the PX30 VOP")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210528130554.72191-6-knaerzche@gmail.com
+Fixes: 668da745af3c2 ("tools: bpftool: add support for quotations ...")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Link: https://lore.kernel.org/bpf/20210609115916.2186872-1-chengzhihao1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/bpf/bpftool/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-index c80f7d9fd13f..0f23144491e4 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-@@ -1013,6 +1013,7 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
- 		VOP_WIN_SET(vop, win, alpha_en, 1);
- 	} else {
- 		VOP_WIN_SET(vop, win, src_alpha_ctl, SRC_ALPHA_EN(0));
-+		VOP_WIN_SET(vop, win, alpha_en, 0);
- 	}
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index d9afb730136a..0f36b9edd3f5 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -340,8 +340,10 @@ static int do_batch(int argc, char **argv)
+ 		n_argc = make_args(buf, n_argv, BATCH_ARG_NB_MAX, lines);
+ 		if (!n_argc)
+ 			continue;
+-		if (n_argc < 0)
++		if (n_argc < 0) {
++			err = n_argc;
+ 			goto err_close;
++		}
  
- 	VOP_WIN_SET(vop, win, enable, 1);
+ 		if (json_output) {
+ 			jsonw_start_object(json_wtr);
 -- 
 2.30.2
 
