@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDBC3C5811
+	by mail.lfdr.de (Postfix) with ESMTP id 0806D3C5810
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378778AbhGLIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
+        id S1378763AbhGLIlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350207AbhGLHup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9989A6194C;
-        Mon, 12 Jul 2021 07:44:07 +0000 (UTC)
+        id S1350219AbhGLHuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9024619A8;
+        Mon, 12 Jul 2021 07:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075847;
-        bh=8c2iwcLox+yRX+nWX8MOd7zU7G7Qd/nNkT3n2ovEeQw=;
+        s=korg; t=1626075850;
+        bh=pMyYFDtfX5GiJ4MJlfvITZ+k3OY0N/qMEdULP036w3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iutkQcXPRKjIvz5qFaZ25j3nru98NUtw5VvVIB5UZgXYOO83pnALeutFttvgIDV7O
-         RV73W2TrcmbKqpJDGhxHkjKPusmULcqAQ2L9DOPcFKMh7RmGRiD6TDyAHg2y5Z3m2l
-         K+o2IjYqHHE4u85MY93mC4OGC1szbklWe3/e/4Rs=
+        b=PUJeaasN6PHj5oIY9A8HA9qWMaZ27ix2ekcmFapVtbUxuZ85bBNtmXr1fKujn7GD2
+         3R3DdeYixQ65dgaNPAhi7ZrQkYb/QayBqCTDmbhMEQckQPp/zqenskL+kOZBX7OE/1
+         fJEeVwPJ2P71p/m4/VgY7Z33t3PzALe+ZvUUzqHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yingjie Wang <wangyingjie55@126.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 391/800] drm/amd/dc: Fix a missing check bug in dm_dp_mst_detect()
-Date:   Mon, 12 Jul 2021 08:06:54 +0200
-Message-Id: <20210712061008.803368167@linuxfoundation.org>
+Subject: [PATCH 5.13 392/800] drm/ast: Fix missing conversions to managed API
+Date:   Mon, 12 Jul 2021 08:06:55 +0200
+Message-Id: <20210712061008.902205826@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,36 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 655c0ed19772d92c9665ed08bdc5202acc096dda ]
+[ Upstream commit 9ea172a9a3f4a7c5e876469509fc18ddefc7d49d ]
 
-In dm_dp_mst_detect(), We should check whether or not @connector
-has been unregistered from userspace. If the connector is unregistered,
-we should return disconnected status.
+The commit 7cbb93d89838 ("drm/ast: Use managed pci functions")
+converted a few PCI accessors to the managed API and dropped the
+manual pci_iounmap() calls, but it seems to have forgotten converting
+pci_iomap() to the managed one.  It resulted in the leftover resources
+after the driver unbind.  Let's fix them.
 
-Fixes: 4562236b3bc0 ("drm/amd/dc: Add dc display driver (v2)")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 7cbb93d89838 ("drm/ast: Use managed pci functions")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210421170458.21178-1-tiwai@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/ast/ast_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-index 9b221db526dc..d62460b69d95 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-@@ -278,6 +278,9 @@ dm_dp_mst_detect(struct drm_connector *connector,
- 	struct amdgpu_dm_connector *aconnector = to_amdgpu_dm_connector(connector);
- 	struct amdgpu_dm_connector *master = aconnector->mst_port;
+diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+index 0ac3c2039c4b..c29cc7f19863 100644
+--- a/drivers/gpu/drm/ast/ast_main.c
++++ b/drivers/gpu/drm/ast/ast_main.c
+@@ -413,7 +413,7 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
  
-+	if (drm_connector_is_unregistered(connector))
-+		return connector_status_disconnected;
-+
- 	return drm_dp_mst_detect_port(connector, ctx, &master->mst_mgr,
- 				      aconnector->port);
- }
+ 	pci_set_drvdata(pdev, dev);
+ 
+-	ast->regs = pci_iomap(pdev, 1, 0);
++	ast->regs = pcim_iomap(pdev, 1, 0);
+ 	if (!ast->regs)
+ 		return ERR_PTR(-EIO);
+ 
+@@ -429,7 +429,7 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
+ 
+ 	/* "map" IO regs if the above hasn't done so already */
+ 	if (!ast->ioregs) {
+-		ast->ioregs = pci_iomap(pdev, 2, 0);
++		ast->ioregs = pcim_iomap(pdev, 2, 0);
+ 		if (!ast->ioregs)
+ 			return ERR_PTR(-EIO);
+ 	}
 -- 
 2.30.2
 
