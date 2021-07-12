@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278403C56A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267E63C4F7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345719AbhGLIVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46042 "EHLO mail.kernel.org"
+        id S243660AbhGLH0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:26:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345884AbhGLHjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:39:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9578611F1;
-        Mon, 12 Jul 2021 07:33:56 +0000 (UTC)
+        id S241647AbhGLG7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:59:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDFF6124B;
+        Mon, 12 Jul 2021 06:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075237;
-        bh=iz1M8G4Rkg9R4yfZGQBVGAgTrAORS7PKhFf9EU4R4GU=;
+        s=korg; t=1626072992;
+        bh=18+Jc0PhP/E+IytzuLC/A+R7EcaqVMwDvZg9ifROpSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bpNBG0II1iho3aEkEunH1cc6o0OquUu/tItnHEEkmQA8oFp3DJ7Vl20t9QlRSXZxx
-         dhBI+K7LOeyOT38WDlGKLZnCGOwmB+WCqSNmG/SXaztRcZxbSz9Zgt/LgoO9FT3zd3
-         +3V9eoTkPs7R/lZKDNj8M2XTl0T3SIV0WBUzzWw0=
+        b=OBeaZqomko2wI1ueJ3XQ5nXuUZok4HGnk9gW7+BVjQunMZ2XQ3lendYllDIC3Mav/
+         NZzCpLR37KPLyhgWmxhforqzK6vB7WyB028RrnamPdApBzAbUhAq2hBaiSHbzMJRGv
+         BwBeiX7VFkFdjlSfEAYJK1SKNgLveCpfNAO2Wp4g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 150/800] sched: Make the idle task quack like a per-CPU kthread
-Date:   Mon, 12 Jul 2021 08:02:53 +0200
-Message-Id: <20210712060934.142571157@linuxfoundation.org>
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.12 091/700] iio: accel: bmc150: Fix bma222 scale unit
+Date:   Mon, 12 Jul 2021 08:02:54 +0200
+Message-Id: <20210712060937.602105694@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,144 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 00b89fe0197f0c55a045775c11553c0cdb7082fe ]
+commit 6e2a90af0b8d757e850cc023d761ee9a9492e2fe upstream.
 
-For all intents and purposes, the idle task is a per-CPU kthread. It isn't
-created via the same route as other pcpu kthreads however, and as a result
-it is missing a few bells and whistles: it fails kthread_is_per_cpu() and
-it doesn't have PF_NO_SETAFFINITY set.
+According to sysfs-bus-iio documentation the unit for accelerometer
+values after applying scale/offset should be m/s^2, not g, which explains
+why the scale values for the other variants in bmc150-accel do not match
+exactly the values given in the datasheet.
 
-Fix the former by giving the idle task a kthread struct along with the
-KTHREAD_IS_PER_CPU flag. This requires some extra iffery as init_idle()
-call be called more than once on the same idle task.
+To get the correct values, we need to multiply the BMA222 scale values
+by g = 9.80665 m/s^2.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210510151024.2448573-2-valentin.schneider@arm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a1a210bf29a1 ("iio: accel: bmc150-accel: Add support for BMA222")
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20210611080903.14384-2-stephan@gerhold.net
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/linux/kthread.h |  2 ++
- kernel/kthread.c        | 30 ++++++++++++++++++------------
- kernel/sched/core.c     | 21 +++++++++++++++------
- 3 files changed, 35 insertions(+), 18 deletions(-)
+ drivers/iio/accel/bmc150-accel-core.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 2484ed97e72f..d9133d6db308 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -33,6 +33,8 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- 					  unsigned int cpu,
- 					  const char *namefmt);
- 
-+void set_kthread_struct(struct task_struct *p);
-+
- void kthread_set_per_cpu(struct task_struct *k, int cpu);
- bool kthread_is_per_cpu(struct task_struct *k);
- 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 0fccf7d0c6a1..6e02094849d3 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -68,16 +68,6 @@ enum KTHREAD_BITS {
- 	KTHREAD_SHOULD_PARK,
- };
- 
--static inline void set_kthread_struct(void *kthread)
--{
--	/*
--	 * We abuse ->set_child_tid to avoid the new member and because it
--	 * can't be wrongly copied by copy_process(). We also rely on fact
--	 * that the caller can't exec, so PF_KTHREAD can't be cleared.
--	 */
--	current->set_child_tid = (__force void __user *)kthread;
--}
--
- static inline struct kthread *to_kthread(struct task_struct *k)
- {
- 	WARN_ON(!(k->flags & PF_KTHREAD));
-@@ -103,6 +93,22 @@ static inline struct kthread *__to_kthread(struct task_struct *p)
- 	return kthread;
- }
- 
-+void set_kthread_struct(struct task_struct *p)
-+{
-+	struct kthread *kthread;
-+
-+	if (__to_kthread(p))
-+		return;
-+
-+	kthread = kzalloc(sizeof(*kthread), GFP_KERNEL);
-+	/*
-+	 * We abuse ->set_child_tid to avoid the new member and because it
-+	 * can't be wrongly copied by copy_process(). We also rely on fact
-+	 * that the caller can't exec, so PF_KTHREAD can't be cleared.
-+	 */
-+	p->set_child_tid = (__force void __user *)kthread;
-+}
-+
- void free_kthread_struct(struct task_struct *k)
- {
- 	struct kthread *kthread;
-@@ -272,8 +278,8 @@ static int kthread(void *_create)
- 	struct kthread *self;
- 	int ret;
- 
--	self = kzalloc(sizeof(*self), GFP_KERNEL);
--	set_kthread_struct(self);
-+	set_kthread_struct(current);
-+	self = to_kthread(current);
- 
- 	/* If user was SIGKILLed, I release the structure. */
- 	done = xchg(&create->done, NULL);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 0a90d4d7663b..9724dd30ad44 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7440,12 +7440,25 @@ void __init init_idle(struct task_struct *idle, int cpu)
- 
- 	__sched_fork(0, idle);
- 
-+	/*
-+	 * The idle task doesn't need the kthread struct to function, but it
-+	 * is dressed up as a per-CPU kthread and thus needs to play the part
-+	 * if we want to avoid special-casing it in code that deals with per-CPU
-+	 * kthreads.
-+	 */
-+	set_kthread_struct(idle);
-+
- 	raw_spin_lock_irqsave(&idle->pi_lock, flags);
- 	raw_spin_lock(&rq->lock);
- 
- 	idle->state = TASK_RUNNING;
- 	idle->se.exec_start = sched_clock();
--	idle->flags |= PF_IDLE;
-+	/*
-+	 * PF_KTHREAD should already be set at this point; regardless, make it
-+	 * look like a proper per-CPU kthread.
-+	 */
-+	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
-+	kthread_set_per_cpu(idle, cpu);
- 
- 	scs_task_reset(idle);
- 	kasan_unpoison_task_stack(idle);
-@@ -7662,12 +7675,8 @@ static void balance_push(struct rq *rq)
- 	/*
- 	 * Both the cpu-hotplug and stop task are in this case and are
- 	 * required to complete the hotplug process.
--	 *
--	 * XXX: the idle task does not match kthread_is_per_cpu() due to
--	 * histerical raisins.
- 	 */
--	if (rq->idle == push_task ||
--	    kthread_is_per_cpu(push_task) ||
-+	if (kthread_is_per_cpu(push_task) ||
- 	    is_migration_disabled(push_task)) {
- 
+--- a/drivers/iio/accel/bmc150-accel-core.c
++++ b/drivers/iio/accel/bmc150-accel-core.c
+@@ -1171,11 +1171,12 @@ static const struct bmc150_accel_chip_in
  		/*
--- 
-2.30.2
-
+ 		 * The datasheet page 17 says:
+ 		 * 15.6, 31.3, 62.5 and 125 mg per LSB.
++		 * IIO unit is m/s^2 so multiply by g = 9.80665 m/s^2.
+ 		 */
+-		.scale_table = { {156000, BMC150_ACCEL_DEF_RANGE_2G},
+-				 {313000, BMC150_ACCEL_DEF_RANGE_4G},
+-				 {625000, BMC150_ACCEL_DEF_RANGE_8G},
+-				 {1250000, BMC150_ACCEL_DEF_RANGE_16G} },
++		.scale_table = { {152984, BMC150_ACCEL_DEF_RANGE_2G},
++				 {306948, BMC150_ACCEL_DEF_RANGE_4G},
++				 {612916, BMC150_ACCEL_DEF_RANGE_8G},
++				 {1225831, BMC150_ACCEL_DEF_RANGE_16G} },
+ 	},
+ 	[bma222e] = {
+ 		.name = "BMA222E",
 
 
