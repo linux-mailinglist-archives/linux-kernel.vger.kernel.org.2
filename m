@@ -2,178 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524EB3C441C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216C03C44A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhGLGQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:16:55 -0400
-Received: from mxout70.expurgate.net ([91.198.224.70]:42757 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbhGLGQy (ORCPT
+        id S234199AbhGLGUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:20:31 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:35651 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233815AbhGLGTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:16:54 -0400
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1m2pCR-000P9f-Dr; Mon, 12 Jul 2021 08:13:51 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1m2pCQ-000GZR-9g; Mon, 12 Jul 2021 08:13:50 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id D9BFD240041;
-        Mon, 12 Jul 2021 08:13:49 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 376CF240040;
-        Mon, 12 Jul 2021 08:13:49 +0200 (CEST)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 62B242029C;
-        Mon, 12 Jul 2021 08:13:48 +0200 (CEST)
+        Mon, 12 Jul 2021 02:19:48 -0400
+Received: by mail-ej1-f44.google.com with SMTP id gn32so32412879ejc.2;
+        Sun, 11 Jul 2021 23:17:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7N3COHVanOoq2NqDALRISOxelpiFVKDsdjBIXAkabCI=;
+        b=OAo/3RVfUAnbWkPURwCcEjs2YF8/+SxGNKULxzad0FpD2fd3DjTPfoF+Xn361aCB2w
+         5W060tDF0l9nNZVojpnI4kGq5kuzxngLpNEXBM5DIrsCtKOzEbwqSNVd4oRPUR3owJ3V
+         mwIJ0mX+kLX9oDfVXblBSiu7X6jdlDNLiyhHv5sSZoBbMrkR8lfa4a9i2BFjd59bf/tF
+         6e313DhlQbXqhHzGMemvVSsRGKQeIZ2ZH+LpKVMAVBcxybDbQISbppJDzUWBKwjCOzeX
+         1GLJlTRT+eoLGPtjHGLmVIuVh//F9XvwN7/kzidjROwCrJW7sqbLCRzidQnE+FvxnwpA
+         PUWw==
+X-Gm-Message-State: AOAM530A/ewRxHshkchKxtAnesnVHFDj9XA+qjo3zqwlitr7nH1ZdjBG
+        Eyj6Ii9a01Tvtl6b7Bzkl6czGb+gQ+jIPQ==
+X-Google-Smtp-Source: ABdhPJwogpbLDNWeijXHKxO8znPZm1ZbJ2A0BBQN27+YhZ6AhhuTnmzbJzL03GX4M02ygocQ7E4pjw==
+X-Received: by 2002:a17:907:70c6:: with SMTP id yk6mr22255241ejb.42.1626070619226;
+        Sun, 11 Jul 2021 23:16:59 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id y17sm5759163ejd.16.2021.07.11.23.16.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jul 2021 23:16:58 -0700 (PDT)
+Subject: Re: [PATCH] tty: serial: jsm: hold port lock when reporting modem
+ line changes
+To:     Zheyu Ma <zheyuma97@gmail.com>, gregkh@linuxfoundation.org,
+        rclemsmith@gmail.com
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1625925959-11086-1-git-send-email-zheyuma97@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <014b511a-0542-d85d-e1dc-943e5463da17@kernel.org>
+Date:   Mon, 12 Jul 2021 08:16:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1625925959-11086-1-git-send-email-zheyuma97@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 12 Jul 2021 08:13:48 +0200
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>, f.fainelli@gmail.com,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] net: phy: intel-xway: Add RGMII internal
- delay configuration
-Organization: TDT AG
-In-Reply-To: <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
-References: <20210709164216.18561-1-ms@dev.tdt.de>
- <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
-Message-ID: <fcb3203ea82d1180a6e471f22e39e817@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1626070431-000012BD-2E8A553B/0/0
-X-purgate-type: clean
-X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-09 20:31, Martin Blumenstingl wrote:
-> Hi Martin,
+On 10. 07. 21, 16:05, Zheyu Ma wrote:
+> uart_handle_dcd_change() requires a port lock to be held and will emit a
+> warning when lockdep is enabled.
+
+Please attach an excerpt from the warning to the commit log.
+
+> Held corresponding lock to fix warnings.
 > 
-> overall this is looking good.
-> A few comments below - I think none of them is a "must change" in my 
-> opinion.
+> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+> ---
+>   drivers/tty/serial/jsm/jsm_neo.c | 2 ++
+>   drivers/tty/serial/jsm/jsm_tty.c | 3 +++
+>   2 files changed, 5 insertions(+)
 > 
-> On Fri, Jul 9, 2021 at 6:42 PM Martin Schiller <ms@dev.tdt.de> wrote:
->> 
->> This adds the posibility to configure the RGMII RX/TX clock skew via
-> typo: posibility -> possibility
-> 
-
-Thanks. I'll fix that.
-
-> [...]
->> +#define XWAY_MDIO_MIICTRL_RXSKEW_MASK  GENMASK(14, 12)
->> +#define XWAY_MDIO_MIICTRL_RXSKEW_SHIFT 12
-> if you use
-> - FIELD_PREP(XWAY_MDIO_MIICTRL_RXSKEW_MASK, rxskew); (as for example 
-> [0] does)
-> - and FIELD_GET(XWAY_MDIO_MIICTRL_RXSKEW_MASK, val);
-> below then you can drop the _SHIFT #define
-> this is purely cosmetic though, so nothing which blocks this from being 
-> merged
-> 
->> +#define XWAY_MDIO_MIICTRL_TXSKEW_MASK  GENMASK(10, 8)
->> +#define XWAY_MDIO_MIICTRL_TXSKEW_SHIFT 8
-> same as above
-> 
-
-Thanks for the hint. I'll switch to the FIELD_... macros.
-
-> [...]
->> +#if IS_ENABLED(CONFIG_OF_MDIO)
-> is there any particular reason why we need to guard this with 
-> CONFIG_OF_MDIO?
-> The dp83822 driver does not use this #if either (as far as I
-> understand at least)
-> 
-
-It makes no sense to retrieve properties from the device tree if we are
-compiling for a target that does not support a device tree.
-At least that is my understanding of this condition.
-
-> [...]
->> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
->> +{
->> +       struct device *dev = &phydev->mdio.dev;
->> +       int delay_size = ARRAY_SIZE(xway_internal_delay);
-> Some people in the kernel community are working on automatically
-> detecting and fixing signedness issues.
-> I am not sure if they would find this at some point suggesting that it
-> can be an "unsigned int".
-> 
-
-OK, I'll change that.
-
->> +       s32 rx_int_delay;
->> +       s32 tx_int_delay;
-> xway_gphy14_config_aneg() below defines two variables in one line, so
-> to be consistent this would be:
->     s32 rx_int_delay, tx_int_delay;
-> another option is to just re-use one "int_delay" variable (as it seems
-> that they're both used in different code-paths).
+> diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
+> index bf0e2a4cb0ce..c6f927a76c3b 100644
+> --- a/drivers/tty/serial/jsm/jsm_neo.c
+> +++ b/drivers/tty/serial/jsm/jsm_neo.c
+> @@ -815,7 +815,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
+>   		/* Parse any modem signal changes */
+>   		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
+>   			"MOD_STAT: sending to parse_modem_sigs\n");
+> +		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
+>   		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
+> +		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
+>   	}
+>   }
+>   
+> diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+> index 8e42a7682c63..d74cbbbf33c6 100644
+> --- a/drivers/tty/serial/jsm/jsm_tty.c
+> +++ b/drivers/tty/serial/jsm/jsm_tty.c
+> @@ -187,6 +187,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
+>   
+>   static int jsm_tty_open(struct uart_port *port)
+>   {
+> +	unsigned long lock_flags;
+>   	struct jsm_board *brd;
+>   	struct jsm_channel *channel =
+>   		container_of(port, struct jsm_channel, uart_port);
+> @@ -240,6 +241,7 @@ static int jsm_tty_open(struct uart_port *port)
+>   	channel->ch_cached_lsr = 0;
+>   	channel->ch_stops_sent = 0;
+>   
+> +	spin_lock_irqsave(&port->lock, lock_flags);
+>   	termios = &port->state->port.tty->termios;
+>   	channel->ch_c_cflag	= termios->c_cflag;
+>   	channel->ch_c_iflag	= termios->c_iflag;
+> @@ -259,6 +261,7 @@ static int jsm_tty_open(struct uart_port *port)
+>   	jsm_carrier(channel);
+>   
+>   	channel->ch_open_count++;
+> +	spin_unlock_irqrestore(&port->lock, lock_flags);
+>   
+>   	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
+>   	return 0;
 > 
 
-I'll switch to use one "int_delay".
 
->> +       u16 mask = 0;
-> I think this should be dropped and the phy_modify() call below should 
-> read:
->     return phy_modify(phydev, XWAY_MDIO_MIICTRL,
->                                   XWAY_MDIO_MIICTRL_RXSKEW_MASK |
->                                   XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
-> For rgmii-txid the RX delay might be provided by the MAC or PCB trace
-> length so the PHY should not add any RX delay.
-> Similarly for rgmii-rxid the TX delay might be provided by the MAC or
-> PCB trace length so the PHY should not add any TX delay.
-> That means we always need to mask the RX and TX skew bits, regardless
-> of what we're setting later on (as phy_modify is only called for one
-> of: rgmii-id, rgmii-txid, rgmii-rxid).
-> 
-
-Yes, you are right. I'll change that as suggested.
-
-> [...]
->> +       if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
->> +           phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
->> +               rx_int_delay = phy_get_internal_delay(phydev, dev,
->> +                                                     
->> &xway_internal_delay[0],
-> I think above line can be simplified as:
->     xway_internal_delay,
-
-I've copied that from dp83869.c, but yes, I can change it.
-
-
-> 
-> [...]
->> +       if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
->> +           phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
->> +               tx_int_delay = phy_get_internal_delay(phydev, dev,
->> +                                                     
->> &xway_internal_delay[0],
-> same as above
-> 
-
-dito.
-
-> 
-> Best regards,
-> Martin
-> 
-> 
-> [0] 
-> https://elixir.bootlin.com/linux/v5.13/source/drivers/net/phy/dp83867.c#L438
+-- 
+js
+suse labs
