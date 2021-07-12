@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9043C56E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0713C49A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358337AbhGLIZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49536 "EHLO mail.kernel.org"
+        id S236996AbhGLGqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349095AbhGLHlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B9160FF3;
-        Mon, 12 Jul 2021 07:38:49 +0000 (UTC)
+        id S236656AbhGLGfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 468B36113C;
+        Mon, 12 Jul 2021 06:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075529;
-        bh=I8wdIfFGfFwk8ZHmzi/UfXFOalguRc+26UAZKv1x+2I=;
+        s=korg; t=1626071545;
+        bh=L84IKwINJa6zxkGcFITCnz9nOjuWJ1IN5joGhHT235s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WeMU/GBuP6wC03r4SF0WEHABNm8Wm8eZgj+PdksBk12DtFiFtWEQ+U1Z2OnwAEm7
-         6XhbPPEhhpbP+oQ39AZ4srHd92qLlrAjz6UA5HRyjNwzrFpXdfbzjnrbtHI4BpRe2H
-         yuE3836rYSoD8D5Ib0UfKhaQ9vlSHXV1Qvv6+Vz4=
+        b=a1qdAxDWKrSwetUStsiK8C+2s1HzQSyeSf6uFCSU7V3c/SWiufBFtC9hWpVfvpcPz
+         QMNmhev6te2KQqkc1z5S0GXXNReQ7c6yPfLv2mRk86F0T3DQnmCDwacdcDpVeE/aT2
+         oYwbQRHCmo8666jmvlc9OLseASeyjk5PyDUCzlHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Wellbrock <a.wellbrock@mailbox.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 254/800] tpm_tis_spi: add missing SPI device ID entries
+Subject: [PATCH 5.10 117/593] regulator: uniphier: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 12 Jul 2021 08:04:37 +0200
-Message-Id: <20210712060949.809603101@linuxfoundation.org>
+Message-Id: <20210712060856.048488411@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javier Martinez Canillas <javierm@redhat.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit c46ed2281bbe4b84e6f3d4bdfb0e4e9ab813fa9d ]
+[ Upstream commit d019f38a1af3c6015cde6a47951a3ec43beeed80 ]
 
-The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
-registered via OF. This means that this module won't auto-load if a DT has
-for example has a node with a compatible "infineon,slb9670" string.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-In that case kmod will expect a "MODALIAS=of:N*T*Cinfineon,slb9670" uevent
-but instead will get a "MODALIAS=spi:slb9670", which is not present in the
-kernel module aliases:
-
-$ modinfo drivers/char/tpm/tpm_tis_spi.ko | grep alias
-alias:          of:N*T*Cgoogle,cr50C*
-alias:          of:N*T*Cgoogle,cr50
-alias:          of:N*T*Ctcg,tpm_tis-spiC*
-alias:          of:N*T*Ctcg,tpm_tis-spi
-alias:          of:N*T*Cinfineon,slb9670C*
-alias:          of:N*T*Cinfineon,slb9670
-alias:          of:N*T*Cst,st33htpm-spiC*
-alias:          of:N*T*Cst,st33htpm-spi
-alias:          spi:cr50
-alias:          spi:tpm_tis_spi
-alias:          acpi*:SMO0768:*
-
-To workaround this issue, add in the SPI device ID table all the entries
-that are present in the OF device ID table.
-
-Reported-by: Alexander Wellbrock <a.wellbrock@mailbox.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-Tested-by: Peter Robinson <pbrobinson@gmail.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620705198-104566-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_tis_spi_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/regulator/uniphier-regulator.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-index 3856f6ebcb34..de4209003a44 100644
---- a/drivers/char/tpm/tpm_tis_spi_main.c
-+++ b/drivers/char/tpm/tpm_tis_spi_main.c
-@@ -260,6 +260,8 @@ static int tpm_tis_spi_remove(struct spi_device *dev)
- }
+diff --git a/drivers/regulator/uniphier-regulator.c b/drivers/regulator/uniphier-regulator.c
+index 2e02e26b516c..e75b0973e325 100644
+--- a/drivers/regulator/uniphier-regulator.c
++++ b/drivers/regulator/uniphier-regulator.c
+@@ -201,6 +201,7 @@ static const struct of_device_id uniphier_regulator_match[] = {
+ 	},
+ 	{ /* Sentinel */ },
+ };
++MODULE_DEVICE_TABLE(of, uniphier_regulator_match);
  
- static const struct spi_device_id tpm_tis_spi_id[] = {
-+	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
-+	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
- 	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
- 	{ "cr50", (unsigned long)cr50_spi_probe },
- 	{}
+ static struct platform_driver uniphier_regulator_driver = {
+ 	.probe = uniphier_regulator_probe,
 -- 
 2.30.2
 
