@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7DD3C58C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598973C58C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381116AbhGLIwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
+        id S1380943AbhGLIwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348756AbhGLH6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348745AbhGLH6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 03:58:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1A6B6194D;
-        Mon, 12 Jul 2021 07:52:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 160456198E;
+        Mon, 12 Jul 2021 07:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076379;
-        bh=bm1pnfmDPDJnVPwrSCwKjgo8fbbJlg/tOCZ0bstIWe8=;
+        s=korg; t=1626076381;
+        bh=0fcFkfXS++S6LeXO+H5NPjukED37EQGbjqkPhxBQZYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R4sa9+RT7FzC6UB1rsk9DOo8VxYkHXOT1XD2kXIx9zSdur08jrhIn87aNi1/FRber
-         jtVUa0+9xhGm0mkq6n0QAjAlq8oVoMjg2d35eklBPiDXv6M1cW7pocZSevZ/jrJQDY
-         CNliYLVeYJ6maR0HP6wQ7GnVLp1uK9qQDK7H+Pzw=
+        b=MoTcOVX5rQsLOP790JmrZt4/C/uzJ9tdj81und2SnmLMj0dN/XEA74qFhPInlWwWI
+         5xWivBtSCVT65UAZgoUBmV49bZveyBxVcG6RubX8rIaxaH4QrkEEtwjGHR72EgYR7B
+         QZSGwgQZCvVeBv0lCEVOWe1vCO/yznD95+Ah5nrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 619/800] iio: accel: kxcjk-1013: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:42 +0200
-Message-Id: <20210712061033.149720112@linuxfoundation.org>
+Subject: [PATCH 5.13 620/800] iio: accel: mxc4005: Fix overread of data and alignment issue.
+Date:   Mon, 12 Jul 2021 08:10:43 +0200
+Message-Id: <20210712061033.249258721@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -44,83 +43,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 3ab3aa2e7bd57497f9a7c6275c00dce237d2c9ba ]
+[ Upstream commit f65802284a3a337510d7f8f916c97d66c74f2e71 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+The bulk read size is based on the size of an array that also has
+space for the timestamp alongside the channels.
+Fix that and also fix alignment of the buffer passed
+to iio_push_to_buffers_with_timestamp.
 
-Found during an audit of all calls of this function.
+Found during an audit of all calls to this function.
 
-Fixes: 1a4fbf6a9286 ("iio: accel: kxcjk1013 3-axis accelerometer driver")
+Fixes: 1ce0eda0f757 ("iio: mxc4005: add triggered buffer mode for mxc4005")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-5-jic23@kernel.org
+Link: https://lore.kernel.org/r/20210501170121.512209-6-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/kxcjk-1013.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ drivers/iio/accel/mxc4005.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
-index ff724bc17a45..f6720dbba0aa 100644
---- a/drivers/iio/accel/kxcjk-1013.c
-+++ b/drivers/iio/accel/kxcjk-1013.c
-@@ -133,6 +133,13 @@ enum kx_acpi_type {
- 	ACPI_KIOX010A,
- };
- 
-+enum kxcjk1013_axis {
-+	AXIS_X,
-+	AXIS_Y,
-+	AXIS_Z,
-+	AXIS_MAX
-+};
-+
- struct kxcjk1013_data {
- 	struct regulator_bulk_data regulators[2];
- 	struct i2c_client *client;
-@@ -140,7 +147,11 @@ struct kxcjk1013_data {
- 	struct iio_trigger *motion_trig;
- 	struct iio_mount_matrix orientation;
+diff --git a/drivers/iio/accel/mxc4005.c b/drivers/iio/accel/mxc4005.c
+index fb3cbaa62bd8..0f90e6ec01e1 100644
+--- a/drivers/iio/accel/mxc4005.c
++++ b/drivers/iio/accel/mxc4005.c
+@@ -56,7 +56,11 @@ struct mxc4005_data {
  	struct mutex mutex;
--	s16 buffer[8];
-+	/* Ensure timestamp naturally aligned */
+ 	struct regmap *regmap;
+ 	struct iio_trigger *dready_trig;
+-	__be16 buffer[8];
++	/* Ensure timestamp is naturally aligned */
 +	struct {
-+		s16 chans[AXIS_MAX];
++		__be16 chans[3];
 +		s64 timestamp __aligned(8);
 +	} scan;
- 	u8 odr_bits;
- 	u8 range;
- 	int wake_thres;
-@@ -154,13 +165,6 @@ struct kxcjk1013_data {
- 	enum kx_acpi_type acpi_type;
+ 	bool trigger_enabled;
  };
  
--enum kxcjk1013_axis {
--	AXIS_X,
--	AXIS_Y,
--	AXIS_Z,
--	AXIS_MAX,
--};
--
- enum kxcjk1013_mode {
- 	STANDBY,
- 	OPERATION,
-@@ -1094,12 +1098,12 @@ static irqreturn_t kxcjk1013_trigger_handler(int irq, void *p)
- 	ret = i2c_smbus_read_i2c_block_data_or_emulated(data->client,
- 							KXCJK1013_REG_XOUT_L,
- 							AXIS_MAX * 2,
--							(u8 *)data->buffer);
-+							(u8 *)data->scan.chans);
- 	mutex_unlock(&data->mutex);
+@@ -135,7 +139,7 @@ static int mxc4005_read_xyz(struct mxc4005_data *data)
+ 	int ret;
+ 
+ 	ret = regmap_bulk_read(data->regmap, MXC4005_REG_XOUT_UPPER,
+-			       data->buffer, sizeof(data->buffer));
++			       data->scan.chans, sizeof(data->scan.chans));
+ 	if (ret < 0) {
+ 		dev_err(data->dev, "failed to read axes\n");
+ 		return ret;
+@@ -301,7 +305,7 @@ static irqreturn_t mxc4005_trigger_handler(int irq, void *private)
  	if (ret < 0)
  		goto err;
  
 -	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
 +	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   data->timestamp);
+ 					   pf->timestamp);
+ 
  err:
- 	iio_trigger_notify_done(indio_dev->trig);
 -- 
 2.30.2
 
