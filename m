@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90623C5244
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D7F3C4B8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242815AbhGLHpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
+        id S239563AbhGLG6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241917AbhGLHMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:12:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E237610E5;
-        Mon, 12 Jul 2021 07:09:42 +0000 (UTC)
+        id S238676AbhGLGlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:41:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5708460FD8;
+        Mon, 12 Jul 2021 06:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073782;
-        bh=oXlNljP0PTnDuISjTEYkw5/XFI2BejBSvfy5rtfo7/s=;
+        s=korg; t=1626071934;
+        bh=k3kZ2VEBrJ7CdTD5g3GNvFDitEJ7OpDfeIsF0NqydwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FCgaEFLDmOCDRxdO209BGhET07DbvL3zgZXkrDtnuOu+MQF5buwgdA0fGEUHBDmWd
-         usACBEarDGvoB3Zi9SQliJWXmRcrn6olCChDbMG6cysi1URn/b/Swyg2m7GPRMFyZM
-         NCS69qdAX/BeoOjhzVY5NvOu35FDi7gMoWnpQWA0=
+        b=QzXW90t8DKdTGaTUL3eIOmVHyO+RuV+fL96WsaHLC6ckOEGnfAEwvhUa6UyYtwcjO
+         Ps49a4+o2mpL7c/5Bzslmv8SZbSF88zvMnUycwa4zKR02RY2zaVkwHzz3BjDlsF7Zl
+         FjgIxIXy5ZRPrxKOqBwyuRCdRPemWQbJgm9KXpYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Xiaofei Tan <tanxiaofei@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 359/700] net: mvpp2: Put fwnode in error case during ->probe()
+Subject: [PATCH 5.10 282/593] ACPI: APEI: fix synchronous external aborts in user-mode
 Date:   Mon, 12 Jul 2021 08:07:22 +0200
-Message-Id: <20210712061014.531551242@linuxfoundation.org>
+Message-Id: <20210712060915.198149954@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Xiaofei Tan <tanxiaofei@huawei.com>
 
-[ Upstream commit 71f0891c84dfdc448736082ab0a00acd29853896 ]
+[ Upstream commit ccb5ecdc2ddeaff744ee075b54cdff8a689e8fa7 ]
 
-In each iteration fwnode_for_each_available_child_node() bumps a reference
-counting of a loop variable followed by dropping in on a next iteration,
+Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+synchronise with APEI's irq work"), do_sea() would unconditionally
+signal the affected task from the arch code. Since that change,
+the GHES driver sends the signals.
 
-Since in error case the loop is broken, we have to drop a reference count
-by ourselves. Do it for port_fwnode in error case during ->probe().
+This exposes a problem as errors the GHES driver doesn't understand
+or doesn't handle effectively are silently ignored. It will cause
+the errors get taken again, and circulate endlessly. User-space task
+get stuck in this loop.
 
-Fixes: 248122212f68 ("net: mvpp2: use device_*/fwnode_* APIs instead of of_*")
-Cc: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Existing firmware on Kunpeng9xx systems reports cache errors with the
+'ARM Processor Error' CPER records.
+
+Do memory failure handling for ARM Processor Error Section just like
+for Memory Error Section.
+
+Fixes: 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise with APEI's irq work")
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+Reviewed-by: James Morse <james.morse@arm.com>
+[ rjw: Subject edit ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/acpi/apei/ghes.c | 81 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 64 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 6c81e4f175ac..bf06f2d785db 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -7589,6 +7589,8 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index fce7ade2aba9..0c8330ed1ffd 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+ 	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+ }
  
- err_port_probe:
-+	fwnode_handle_put(port_fwnode);
+-static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+-				       int sev)
++static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+ {
+ 	unsigned long pfn;
+-	int flags = -1;
+-	int sec_sev = ghes_severity(gdata->error_severity);
+-	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+ 
+ 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+ 		return false;
+ 
+-	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+-		return false;
+-
+-	pfn = mem_err->physical_addr >> PAGE_SHIFT;
++	pfn = PHYS_PFN(physical_addr);
+ 	if (!pfn_valid(pfn)) {
+ 		pr_warn_ratelimited(FW_WARN GHES_PFX
+ 		"Invalid address in generic error data: %#llx\n",
+-		mem_err->physical_addr);
++		physical_addr);
+ 		return false;
+ 	}
+ 
++	memory_failure_queue(pfn, flags);
++	return true;
++}
 +
- 	i = 0;
- 	fwnode_for_each_available_child_node(fwnode, port_fwnode) {
- 		if (priv->port_list[i])
++static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
++				       int sev)
++{
++	int flags = -1;
++	int sec_sev = ghes_severity(gdata->error_severity);
++	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
++
++	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
++		return false;
++
+ 	/* iff following two events can be handled properly by now */
+ 	if (sec_sev == GHES_SEV_CORRECTED &&
+ 	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+@@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+ 	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+ 		flags = 0;
+ 
+-	if (flags != -1) {
+-		memory_failure_queue(pfn, flags);
+-		return true;
+-	}
++	if (flags != -1)
++		return ghes_do_memory_failure(mem_err->physical_addr, flags);
+ 
+ 	return false;
+ }
+ 
++static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
++{
++	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
++	bool queued = false;
++	int sec_sev, i;
++	char *p;
++
++	log_arm_hw_error(err);
++
++	sec_sev = ghes_severity(gdata->error_severity);
++	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
++		return false;
++
++	p = (char *)(err + 1);
++	for (i = 0; i < err->err_info_num; i++) {
++		struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
++		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
++		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
++		const char *error_type = "unknown error";
++
++		/*
++		 * The field (err_info->error_info & BIT(26)) is fixed to set to
++		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
++		 * firmware won't mix corrected errors in an uncorrected section,
++		 * and don't filter out 'corrected' error here.
++		 */
++		if (is_cache && has_pa) {
++			queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
++			p += err_info->length;
++			continue;
++		}
++
++		if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
++			error_type = cper_proc_error_type_strs[err_info->type];
++
++		pr_warn_ratelimited(FW_WARN GHES_PFX
++				    "Unhandled processor error type: %s\n",
++				    error_type);
++		p += err_info->length;
++	}
++
++	return queued;
++}
++
+ /*
+  * PCIe AER errors need to be sent to the AER driver for reporting and
+  * recovery. The GHES severities map to the following AER severities and
+@@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+ 			ghes_handle_aer(gdata);
+ 		}
+ 		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+-			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+-
+-			log_arm_hw_error(err);
++			queued = ghes_handle_arm_hw_error(gdata, sev);
+ 		} else {
+ 			void *err = acpi_hest_get_payload(gdata);
+ 
 -- 
 2.30.2
 
