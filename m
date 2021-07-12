@@ -2,162 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7143C5FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9111E3C6001
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbhGLQEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:04:00 -0400
-Received: from mga04.intel.com ([192.55.52.120]:5970 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhGLQD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:03:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="208187470"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="208187470"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 09:01:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="459231372"
-Received: from kpurma-mobl.amr.corp.intel.com (HELO [10.212.163.17]) ([10.212.163.17])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 09:00:59 -0700
-Subject: Re: [PATCH Part2 RFC v4 10/40] x86/fault: Add support to handle the
- RMP fault for user address
-To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-11-brijesh.singh@amd.com>
- <3c6b6fc4-05b2-8d18-2eb8-1bd1a965c632@intel.com>
- <2b4accb6-b68e-02d3-6fed-975f90558099@amd.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <a249b101-87d1-2e66-d7d6-af737c045cc3@intel.com>
-Date:   Mon, 12 Jul 2021 09:00:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229996AbhGLQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhGLQFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:05:33 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42034C0613DD;
+        Mon, 12 Jul 2021 09:02:44 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id i20so35573319ejw.4;
+        Mon, 12 Jul 2021 09:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yASdFe7xYmlRxSElpuTuPr8cxfmHnIT8PrgFH3o60h4=;
+        b=e+zZayXoNQo9VWz+tZHnI2zHtRNCMfp3pIfi5Sgk53DDp5lpwyHgpSi0jqC/RNPTFV
+         IGXUf+zE54xTsCFnGeZcsN+ShhKmzA3pO76wJIMAuG6qmL9kIQrmrf0grmBREpZMLJjg
+         To09hSnWDZ8uP7RTQKAI9i/847y5ZNK78mm1ojK2ddadyE6kUbTAnewvDPIHdKtGCplQ
+         yJXDbBMti4v30fR0LbhxLXOrEVd7DEaZxzRpzlYeeS+4Ef5SpD00g0DzYMLOlJjKK7kP
+         Uggn265kEF1/Qn4fUdaBGf/yuSww1wD1JjalrwdjXNlQc3kBjyCXLODkS8ToFO7D4Ire
+         k2QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yASdFe7xYmlRxSElpuTuPr8cxfmHnIT8PrgFH3o60h4=;
+        b=GqI2yNzoLsGF0bg+xTup9TT7urXHv6McH8SUKI5SexXCg80Qs6DmiZKPa74lIcVJWf
+         YluOQLGcVVgCUVVchEoOtATgFZbp432dpf6AgTkRL4spR5VZujrkd/RfzavVqsQ+ap0E
+         dYpgNH/lsgNnNzgVBqR4l3DKq9EXq1gLHuV06AFDbqZ60xs9Q3NEdIr/wV4tVh6mumYZ
+         1kOqClMxVGWCvhglyo8DyhRBtIKWyrAYotM8WewoPNUdqaDymYQ4R1xIk577lcF+RhQW
+         YoZ0e/2nEpyCF4VWuW+IYMDY+Hi9L+qXNnHbTmKrKlZIolRvza0iagfHLIhBY4wW9CVK
+         Fy2A==
+X-Gm-Message-State: AOAM531XGVQg4YtlH5u2YUVTzYXNjsJUYP4NIRH5DlYMreL991lkebJ3
+        ZI+1N9C19937iwoKo5/M0synGXL8f92Jwg2XQ9w=
+X-Google-Smtp-Source: ABdhPJwzXOENkXmBa4UTeOnWv/u0+TRdQjmXj/CeSutFRfag8CJJciAOdp8+UV+3fzTJqvGysro8BTXgYbLS5P5YDp0=
+X-Received: by 2002:a17:906:bc2:: with SMTP id y2mr53431206ejg.489.1626105762727;
+ Mon, 12 Jul 2021 09:02:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2b4accb6-b68e-02d3-6fed-975f90558099@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com> <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 12 Jul 2021 09:02:31 -0700
+Message-ID: <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
+Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
+ setting pagecnt_bias
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 8:43 AM, Brijesh Singh wrote:
->>> +    /*
->>> +     * The backing page level is higher than the RMP page level,
->>> request
->>> +     * to split the page.
->>> +     */
->>> +    if (level > rmp_level)
->>> +        return RMP_FAULT_PAGE_SPLIT;
->>
->> This can theoretically trigger on a hugetlbfs page.  Right?
-> 
-> Yes, theoretically.
-> 
-> In the current implementation, the VMM is enlightened to not use the
-> hugetlbfs for backing page when creating the SEV-SNP guests.
+On Mon, Jul 12, 2021 at 5:17 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> As suggested by Alexander, "A DMA mapping should be page
+> aligned anyway so the lower 12 bits would be reserved 0",
+> so it might make more sense to repurpose the lower 12 bits
+> of the dma address to store the pagecnt_bias for frag page
+> support in page pool.
+>
+> As newly added page_pool_get_pagecnt_bias() may be called
+> outside of the softirq context, so annotate the access to
+> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
+>
+> And page_pool_get_pagecnt_bias_ptr() is added to implement
+> the pagecnt_bias atomic updating when a page is passsed to
+> the user.
+>
+> Other three interfaces using page->dma_addr[0] is only called
+> in the softirq context during normal rx processing, hopefully
+> the barrier in the rx processing will ensure the correct order
+> between getting and setting pagecnt_bias.
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+>  include/net/page_pool.h | 29 +++++++++++++++++++++++++++--
+>  net/core/page_pool.c    |  8 +++++++-
+>  2 files changed, 34 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index 8d7744d..84cd972 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -200,17 +200,42 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>
+>  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>  {
+> -       dma_addr_t ret = page->dma_addr[0];
+> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
+>         if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+>         return ret;
+>  }
+>
+> -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>  {
+> +       if (WARN_ON(addr & ~PAGE_MASK))
+> +               return false;
+> +
+>         page->dma_addr[0] = addr;
+>         if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>                 page->dma_addr[1] = upper_32_bits(addr);
+> +
+> +       return true;
+> +}
+> +
 
-"The VMM"?
+Rather than making this a part of the check here it might make more
+sense to pull this out and perform the WARN_ON after the check for
+dma_mapping_error.
 
-We try to write kernel code so that it "works" and doesn't do unexpected
-things with whatever userspace might throw at it.  This seems to be
-written with an assumption that no VMM will ever use hugetlbfs with SEV-SNP.
+Also it occurs to me that we only really have to do this in the case
+where dma_addr_t is larger than the size of a long. Otherwise we could
+just have the code split things so that dma_addr[0] is the dma_addr
+and dma_addr[1] is our pagecnt_bias value in which case we could
+probably just skip the check.
 
-That worries me.  Not only because someone is sure to try it, but it's
-the kind of assumption that an attacker or a fuzzer might try.
+> +static inline int page_pool_get_pagecnt_bias(struct page *page)
+> +{
+> +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
+> +}
+> +
+> +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
+> +{
+> +       return page->dma_addr;
+> +}
+> +
+> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
+> +{
+> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
+> +
+> +       dma_addr_0 &= PAGE_MASK;
+> +       dma_addr_0 |= bias;
+> +
+> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+>  }
+>
+>  static inline bool is_page_pool_compiled_in(void)
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 78838c6..1abefc6 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+>         if (dma_mapping_error(pool->p.dev, dma))
+>                 return false;
+>
 
-Could you please test this kernel code in practice with hugetblfs?
+So instead of adding to the function below you could just add your
+WARN_ON check here with the unmapping call.
 
->> I also suspect you can just set VM_FAULT_SIGBUS and let the do_sigbus()
->> call later on in the function do its work.
->>>   +static int handle_split_page_fault(struct vm_fault *vmf)
->>> +{
->>> +    if (!IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
->>> +        return VM_FAULT_SIGBUS;
->>> +
->>> +    __split_huge_pmd(vmf->vma, vmf->pmd, vmf->address, false, NULL);
->>> +    return 0;
->>> +}
->>
->> What will this do when you hand it a hugetlbfs page?
-> 
-> VMM is updated to not use the hugetlbfs when creating SEV-SNP guests.
-> So, we should not run into it.
-
-Please fix this code to handle hugetlbfs along with any other non-THP
-source of level>0 mappings.  DAX comes to mind.  "Handle" can mean
-rejecting these.  You don't have to find some way to split them and make
-the VM work, just fail safely, ideally as early as possible.
-
-To me, this is a fundamental requirement before this code can be accepted.
-
-How many more parts of this series are predicated on the behavior of the
-VMM like this?
+> -       page_pool_set_dma_addr(page, dma);
+> +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
+> +               dma_unmap_page_attrs(pool->p.dev, dma,
+> +                                    PAGE_SIZE << pool->p.order,
+> +                                    pool->p.dma_dir,
+> +                                    DMA_ATTR_SKIP_CPU_SYNC);
+> +               return false;
+> +       }
+>
+>         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+>                 page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+> --
+> 2.7.4
+>
