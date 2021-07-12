@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575533C5722
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6313C49A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352731AbhGLI2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:28:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49730 "EHLO mail.kernel.org"
+        id S237052AbhGLGqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349245AbhGLHls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AFFC601FE;
-        Mon, 12 Jul 2021 07:38:58 +0000 (UTC)
+        id S236714AbhGLGf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 896FF610CC;
+        Mon, 12 Jul 2021 06:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075539;
-        bh=FYBXNPI5000GtCRWi1TdV8XyZSAiQkkynRDwbj0rBQc=;
+        s=korg; t=1626071555;
+        bh=EKY1OlRJO93TJiFmqfgVZB3HH1bgpwa6v7NyZcI16Qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lUFrEURdJEc2swqrlDBCHd8Af8bvpZNa4OsXTn3ni80HkMCGd1AT58iAiNadIx3x/
-         uzHCr4BPujYOzPLZIiyiLZvdsiBGDDNBdefPeXN8UuAzg88evwqc1bQP6VhLNcMfz3
-         NyGOU+G6ZPmV9WSlElCGFTeK+drBsgU71kushILY=
+        b=QUXm6etrK2iO0esrCcGBqoxQzFE/nUL4789gUqEZ74wmW6Ytw9uKCYygXH6fktGYn
+         XMpH3aGRvhc3dUSIyH9U3j56TghBKOH5SH6LP7uWtUYtVAQlvkywpTHQVpmMgf6W5S
+         HcU0mmtpIqd8yFSs5B0lIKoeFj2IG+B6USf2I6x0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 258/800] cifs: fix missing spinlock around update to ses->status
+Subject: [PATCH 5.10 121/593] media: sti: fix obj-$(config) targets
 Date:   Mon, 12 Jul 2021 08:04:41 +0200
-Message-Id: <20210712060950.673704786@linuxfoundation.org>
+Message-Id: <20210712060856.461874391@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 0060a4f28a9ef45ae8163c0805e944a2b1546762 ]
+[ Upstream commit 56c1f0876293888f686e31278d183d4af2cac3c3 ]
 
-In the other places where we update ses->status we protect the
-updates via GlobalMid_Lock. So to be consistent add the same
-locking around it in cifs_put_smb_ses where it was missing.
+The right thing to do is to add a new object to the building
+system when a certain config option is selected, and *not*
+override them.
 
-Addresses-Coverity: 1268904 ("Data race condition")
-Signed-off-by: Steve French <stfrench@microsoft.com>
+So, fix obj-$(config) logic at sti makefiles, using "+=",
+instead of ":=".
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifsglob.h | 3 ++-
- fs/cifs/connect.c  | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/platform/sti/bdisp/Makefile | 2 +-
+ drivers/media/platform/sti/delta/Makefile | 2 +-
+ drivers/media/platform/sti/hva/Makefile   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index 8488d7024462..706a2aeba1de 100644
---- a/fs/cifs/cifsglob.h
-+++ b/fs/cifs/cifsglob.h
-@@ -896,7 +896,7 @@ struct cifs_ses {
- 	struct mutex session_mutex;
- 	struct TCP_Server_Info *server;	/* pointer to server info */
- 	int ses_count;		/* reference counter */
--	enum statusEnum status;
-+	enum statusEnum status;  /* updates protected by GlobalMid_Lock */
- 	unsigned overrideSecFlg;  /* if non-zero override global sec flags */
- 	char *serverOS;		/* name of operating system underlying server */
- 	char *serverNOS;	/* name of network operating system of server */
-@@ -1795,6 +1795,7 @@ require use of the stronger protocol */
-  *	list operations on pending_mid_q and oplockQ
-  *      updates to XID counters, multiplex id  and SMB sequence numbers
-  *      list operations on global DnotifyReqList
-+ *      updates to ses->status
-  *  tcp_ses_lock protects:
-  *	list operations on tcp and SMB session lists
-  *  tcon->open_file_lock protects the list of open files hanging off the tcon
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 495c395f9def..eb6c10fa6741 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -1617,9 +1617,12 @@ void cifs_put_smb_ses(struct cifs_ses *ses)
- 		spin_unlock(&cifs_tcp_ses_lock);
- 		return;
- 	}
-+	spin_unlock(&cifs_tcp_ses_lock);
-+
-+	spin_lock(&GlobalMid_Lock);
- 	if (ses->status == CifsGood)
- 		ses->status = CifsExiting;
--	spin_unlock(&cifs_tcp_ses_lock);
-+	spin_unlock(&GlobalMid_Lock);
+diff --git a/drivers/media/platform/sti/bdisp/Makefile b/drivers/media/platform/sti/bdisp/Makefile
+index caf7ccd193ea..39ade0a34723 100644
+--- a/drivers/media/platform/sti/bdisp/Makefile
++++ b/drivers/media/platform/sti/bdisp/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_VIDEO_STI_BDISP) := bdisp.o
++obj-$(CONFIG_VIDEO_STI_BDISP) += bdisp.o
  
- 	cifs_free_ipc(ses);
+ bdisp-objs := bdisp-v4l2.o bdisp-hw.o bdisp-debug.o
+diff --git a/drivers/media/platform/sti/delta/Makefile b/drivers/media/platform/sti/delta/Makefile
+index 92b37e216f00..32412fa4c632 100644
+--- a/drivers/media/platform/sti/delta/Makefile
++++ b/drivers/media/platform/sti/delta/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) := st-delta.o
++obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) += st-delta.o
+ st-delta-y := delta-v4l2.o delta-mem.o delta-ipc.o delta-debug.o
  
+ # MJPEG support
+diff --git a/drivers/media/platform/sti/hva/Makefile b/drivers/media/platform/sti/hva/Makefile
+index 74b41ec52f97..b5a5478bdd01 100644
+--- a/drivers/media/platform/sti/hva/Makefile
++++ b/drivers/media/platform/sti/hva/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_VIDEO_STI_HVA) := st-hva.o
++obj-$(CONFIG_VIDEO_STI_HVA) += st-hva.o
+ st-hva-y := hva-v4l2.o hva-hw.o hva-mem.o hva-h264.o
+ st-hva-$(CONFIG_VIDEO_STI_HVA_DEBUGFS) += hva-debugfs.o
 -- 
 2.30.2
 
