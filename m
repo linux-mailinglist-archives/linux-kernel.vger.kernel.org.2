@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAE93C5778
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E419B3C4AE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359087AbhGLIeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51288 "EHLO mail.kernel.org"
+        id S240944AbhGLGyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:54:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34399 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346514AbhGLHqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:46:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7935B61152;
-        Mon, 12 Jul 2021 07:41:54 +0000 (UTC)
+        id S237880AbhGLGjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5CB661158;
+        Mon, 12 Jul 2021 06:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075715;
-        bh=rQrYfrm0nXM2qJBQkx21iUm4Z/fRcEmyrGKvSsAnrWA=;
+        s=korg; t=1626071733;
+        bh=E8sPoA8vsSi2KuwTNgsfdxDTeOsRs27sDlWG2rQHN5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bJ2+t2qOrtBRLNmOJ3VbYyi5BG+ZkH1s96pX7VWD28cS+tRSHiJh5yU654RNz1pBy
-         SJd4tqBPZzEMw5MtIOHUfRXXzzsQHmw1NU4J4yo8Xt4TJGUa/GbDQezAi1DubGvr2L
-         qJkfYX/8GAcvuCEjjV747w5toXuowV7QgwbkAXoc=
+        b=AvYsP7Ea76DyVMxx6LUK18kXLAMi1u2+ACh8OaDPWu3Y+5iH2W19d6GhQaNDHho+M
+         vK/putyvz/eumXWtKGfyBZfcKlcLwAZcbspu7D4VmMoCgRBSWXPeijVOIieCxwTrv5
+         4XbcaTi501tEAP194Cj5KoCzMxUVw95u00aepVi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 331/800] KVM: arm64: Dont zero the cycle count register when PMCR_EL0.P is set
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 194/593] EDAC/Intel: Do not load EDAC driver when running as a guest
 Date:   Mon, 12 Jul 2021 08:05:54 +0200
-Message-Id: <20210712061001.672970087@linuxfoundation.org>
+Message-Id: <20210712060904.339989848@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Elisei <alexandru.elisei@arm.com>
+From: Luck, Tony <tony.luck@intel.com>
 
-[ Upstream commit 2a71fabf6a1bc9162a84e18d6ab991230ca4d588 ]
+[ Upstream commit f0a029fff4a50eb01648810a77ba1873e829fdd4 ]
 
-According to ARM DDI 0487G.a, page D13-3895, setting the PMCR_EL0.P bit to
-1 has the following effect:
+There's little to no point in loading an EDAC driver running in a guest:
+1) The CPU model reported by CPUID may not represent actual h/w
+2) The hypervisor likely does not pass in access to memory controller devices
+3) Hypervisors generally do not pass corrected error details to guests
 
-"Reset all event counters accessible in the current Exception level, not
-including PMCCNTR_EL0, to zero."
+Add a check in each of the Intel EDAC drivers for X86_FEATURE_HYPERVISOR
+and simply return -ENODEV in the init routine.
 
-Similar behaviour is described for AArch32 on page G8-7022. Make it so.
-
-Fixes: c01d6a18023b ("KVM: arm64: pmu: Only handle supported event counters")
-Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210618105139.83795-1-alexandru.elisei@arm.com
+Acked-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210615174419.GA1087688@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/pmu-emul.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/edac/i10nm_base.c | 3 +++
+ drivers/edac/pnd2_edac.c  | 3 +++
+ drivers/edac/sb_edac.c    | 3 +++
+ drivers/edac/skx_base.c   | 3 +++
+ 4 files changed, 12 insertions(+)
 
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index a0bbb7111f57..f33825c995cb 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -578,6 +578,7 @@ void kvm_pmu_handle_pmcr(struct kvm_vcpu *vcpu, u64 val)
- 		kvm_pmu_set_counter_value(vcpu, ARMV8_PMU_CYCLE_IDX, 0);
+diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
+index 7b52691c45d2..4912a7b88380 100644
+--- a/drivers/edac/i10nm_base.c
++++ b/drivers/edac/i10nm_base.c
+@@ -263,6 +263,9 @@ static int __init i10nm_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
- 	if (val & ARMV8_PMU_PMCR_P) {
-+		mask &= ~BIT(ARMV8_PMU_CYCLE_IDX);
- 		for_each_set_bit(i, &mask, 32)
- 			kvm_pmu_set_counter_value(vcpu, i, 0);
- 	}
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(i10nm_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/pnd2_edac.c b/drivers/edac/pnd2_edac.c
+index 928f63a374c7..c94ca1f790c4 100644
+--- a/drivers/edac/pnd2_edac.c
++++ b/drivers/edac/pnd2_edac.c
+@@ -1554,6 +1554,9 @@ static int __init pnd2_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(pnd2_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+index 93daa4297f2e..4c626fcd4dcb 100644
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -3510,6 +3510,9 @@ static int __init sbridge_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(sbridge_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/skx_base.c b/drivers/edac/skx_base.c
+index 2c7db95df326..f887e3166651 100644
+--- a/drivers/edac/skx_base.c
++++ b/drivers/edac/skx_base.c
+@@ -656,6 +656,9 @@ static int __init skx_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(skx_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
 -- 
 2.30.2
 
