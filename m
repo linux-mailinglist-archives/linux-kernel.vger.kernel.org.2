@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A8F3C5765
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB19E3C4AC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352607AbhGLIc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:32:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53510 "EHLO mail.kernel.org"
+        id S240539AbhGLGxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:53:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349826AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96DB6613E0;
-        Mon, 12 Jul 2021 07:41:31 +0000 (UTC)
+        id S237422AbhGLGj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B47EB6113A;
+        Mon, 12 Jul 2021 06:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075692;
-        bh=4ZFQWM60tEvQKLbT6TdHu5+XbApjP44VhT8H+V9pRf4=;
+        s=korg; t=1626071710;
+        bh=Hi72H4vpydvpusMY78ye/fDIfPcyxsKCW15xwy/CiO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XB4ThPXjX9BTpDQ3K5BKzk0etopC4pjvcvVWiFS8LOc9LpVdp1wwkmLvBsI/f8UpB
-         ONggTfjlMm6BV4n2X5G2mHKTmrbMjgVwV7RPDg5mvb94x8jetfhbJpiIrrX9aS5Smj
-         /kCppk201bE9Xoxee/k3N1+aU0YIBskm9DXOg7nk=
+        b=B8RcB0BElt0HJxsTdbg/cCMPDlzSUI2aXsbTNmKN00hySPBY94RcBQ9e38J1gT9KV
+         X3IEXzVHseUZKgx/PWhDMjyEk/Ma+XmqGFDelN47+SBiHkI3NgOyL/Y1UDlgnhDtwq
+         UX1c6KEbbyXwX+SHM08KodHxAtjkHEAjSZr35hE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 322/800] hwmon: (max31722) Remove non-standard ACPI device IDs
+Subject: [PATCH 5.10 185/593] ACPICA: Fix memory leak caused by _CID repair function
 Date:   Mon, 12 Jul 2021 08:05:45 +0200
-Message-Id: <20210712061000.363077544@linuxfoundation.org>
+Message-Id: <20210712060903.356631530@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,56 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Erik Kaneda <erik.kaneda@intel.com>
 
-[ Upstream commit 97387c2f06bcfd79d04a848d35517b32ee6dca7c ]
+[ Upstream commit c27bac0314131b11bccd735f7e8415ac6444b667 ]
 
-Valid Maxim Integrated ACPI device IDs would start with MXIM,
-not with MAX1. On top of that, ACPI device IDs reflecting chip names
-are almost always invalid.
+ACPICA commit 180cb53963aa876c782a6f52cc155d951b26051a
 
-Remove the invalid ACPI IDs.
+According to the ACPI spec, _CID returns a package containing
+hardware ID's. Each element of an ASL package contains a reference
+count from the parent package as well as the element itself.
 
-Fixes: 04e1e70afec6 ("hwmon: (max31722) Add support for MAX31722/MAX31723 temperature sensors")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Name (TEST, Package() {
+    "String object" // this package element has a reference count of 2
+})
+
+A memory leak was caused in the _CID repair function because it did
+not decrement the reference count created by the package. Fix the
+memory leak by calling acpi_ut_remove_reference on _CID package elements
+that represent a hardware ID (_HID).
+
+Link: https://github.com/acpica/acpica/commit/180cb539
+Tested-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/max31722.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/acpi/acpica/nsrepair2.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/hwmon/max31722.c b/drivers/hwmon/max31722.c
-index 062eceb7be0d..613338cbcb17 100644
---- a/drivers/hwmon/max31722.c
-+++ b/drivers/hwmon/max31722.c
-@@ -6,7 +6,6 @@
-  * Copyright (c) 2016, Intel Corporation.
-  */
+diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
+index 125143c41bb8..8768594c79e5 100644
+--- a/drivers/acpi/acpica/nsrepair2.c
++++ b/drivers/acpi/acpica/nsrepair2.c
+@@ -375,6 +375,13 @@ acpi_ns_repair_CID(struct acpi_evaluate_info *info,
  
--#include <linux/acpi.h>
- #include <linux/hwmon.h>
- #include <linux/hwmon-sysfs.h>
- #include <linux/kernel.h>
-@@ -133,20 +132,12 @@ static const struct spi_device_id max31722_spi_id[] = {
- 	{"max31723", 0},
- 	{}
- };
--
--static const struct acpi_device_id __maybe_unused max31722_acpi_id[] = {
--	{"MAX31722", 0},
--	{"MAX31723", 0},
--	{}
--};
--
- MODULE_DEVICE_TABLE(spi, max31722_spi_id);
+ 			(*element_ptr)->common.reference_count =
+ 			    original_ref_count;
++
++			/*
++			 * The original_element holds a reference from the package object
++			 * that represents _HID. Since a new element was created by _HID,
++			 * remove the reference from the _CID package.
++			 */
++			acpi_ut_remove_reference(original_element);
+ 		}
  
- static struct spi_driver max31722_driver = {
- 	.driver = {
- 		.name = "max31722",
- 		.pm = &max31722_pm_ops,
--		.acpi_match_table = ACPI_PTR(max31722_acpi_id),
- 	},
- 	.probe =            max31722_probe,
- 	.remove =           max31722_remove,
+ 		element_ptr++;
 -- 
 2.30.2
 
