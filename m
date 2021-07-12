@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB0E3C576E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CB93C515E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357970AbhGLIdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51704 "EHLO mail.kernel.org"
+        id S1347903AbhGLHkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345585AbhGLHpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:45:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFF296124C;
-        Mon, 12 Jul 2021 07:41:40 +0000 (UTC)
+        id S240846AbhGLHIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:08:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12CCA61245;
+        Mon, 12 Jul 2021 07:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075701;
-        bh=wZotuakH7TeQd7N/SZBUvTmK8QPSopfKoUtA8RCOTUU=;
+        s=korg; t=1626073506;
+        bh=bqZwh+M0iKXU3uZ7K0nQ6XpjpxVPA50AEV6Jo6bsYaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPhQDTHJ/EaHEqKYZmmA4HeT+os23MsDmItF5u6zuJqS5Dh+XmuJDUgApftq6/KyV
-         4r7b8u74YndnBP5y/atmrjhGTska0wRFEeQGeZqFaNzkRak3kWUU+/XjwrtnavEnjz
-         IhYKpY2HZjpACZAQSVKlm65R8Eq8Uajaeaw8gg9U=
+        b=DvNMk7cYF2H6Sloy8Cv4SFdD97+xp6lHRehwhUAaLhyPUIH30Z1ZeBETN5Qaal/03
+         opKLrMS9VLp+D11xc6SqeD+zPxXYQDZuIW0RExXARyVoaubPx3iK6ZYg01iAAf76A7
+         vfRp652/m3H2Unxrvwd1o/YsrfYcy1l5Mz85xq00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 326/800] KVM: nVMX: Ensure 64-bit shift when checking VMFUNC bitmap
+Subject: [PATCH 5.12 266/700] crypto: sa2ul - Fix leaks on failure paths with sa_dma_init()
 Date:   Mon, 12 Jul 2021 08:05:49 +0200
-Message-Id: <20210712061000.929333188@linuxfoundation.org>
+Message-Id: <20210712061004.510871392@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Suman Anna <s-anna@ti.com>
 
-[ Upstream commit 0e75225dfa4c5d5d51291f54a3d2d5895bad38da ]
+[ Upstream commit 4c0716ee1d973f6504d13f0e8d4d10350c85ad37 ]
 
-Use BIT_ULL() instead of an open-coded shift to check whether or not a
-function is enabled in L1's VMFUNC bitmap.  This is a benign bug as KVM
-supports only bit 0, and will fail VM-Enter if any other bits are set,
-i.e. bits 63:32 are guaranteed to be zero.
+The sa_dma_init() function doesn't release the requested dma channels
+on all failure paths. Any failure in this function also ends up
+leaking the dma pool created in sa_init_mem() in the sa_ul_probe()
+function. Fix all of these issues.
 
-Note, "function" is bounded by hardware as VMFUNC will #UD before taking
-a VM-Exit if the function is greater than 63.
-
-Before:
-  if ((vmcs12->vm_function_control & (1 << function)) == 0)
-   0x000000000001a916 <+118>:	mov    $0x1,%eax
-   0x000000000001a91b <+123>:	shl    %cl,%eax
-   0x000000000001a91d <+125>:	cltq
-   0x000000000001a91f <+127>:	and    0x128(%rbx),%rax
-
-After:
-  if (!(vmcs12->vm_function_control & BIT_ULL(function & 63)))
-   0x000000000001a955 <+117>:	mov    0x128(%rbx),%rdx
-   0x000000000001a95c <+124>:	bt     %rax,%rdx
-
-Fixes: 27c42a1bb867 ("KVM: nVMX: Enable VMFUNC for the L1 hypervisor")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210609234235.1244004-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
+Signed-off-by: Suman Anna <s-anna@ti.com>
+Reviewed-by: Tero Kristo <kristo@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/vmx/nested.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/sa2ul.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 1dd092d35cae..ba82b8563b07 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5540,7 +5540,7 @@ static int handle_vmfunc(struct kvm_vcpu *vcpu)
+diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
+index b0f0502a5bb0..efde3e96f62d 100644
+--- a/drivers/crypto/sa2ul.c
++++ b/drivers/crypto/sa2ul.c
+@@ -2275,9 +2275,9 @@ static int sa_dma_init(struct sa_crypto_data *dd)
+ 
+ 	dd->dma_rx2 = dma_request_chan(dd->dev, "rx2");
+ 	if (IS_ERR(dd->dma_rx2)) {
+-		dma_release_channel(dd->dma_rx1);
+-		return dev_err_probe(dd->dev, PTR_ERR(dd->dma_rx2),
+-				     "Unable to request rx2 DMA channel\n");
++		ret = dev_err_probe(dd->dev, PTR_ERR(dd->dma_rx2),
++				    "Unable to request rx2 DMA channel\n");
++		goto err_dma_rx2;
  	}
  
- 	vmcs12 = get_vmcs12(vcpu);
--	if ((vmcs12->vm_function_control & (1 << function)) == 0)
-+	if (!(vmcs12->vm_function_control & BIT_ULL(function)))
- 		goto fail;
+ 	dd->dma_tx = dma_request_chan(dd->dev, "tx");
+@@ -2298,28 +2298,31 @@ static int sa_dma_init(struct sa_crypto_data *dd)
+ 	if (ret) {
+ 		dev_err(dd->dev, "can't configure IN dmaengine slave: %d\n",
+ 			ret);
+-		return ret;
++		goto err_dma_config;
+ 	}
  
- 	switch (function) {
+ 	ret = dmaengine_slave_config(dd->dma_rx2, &cfg);
+ 	if (ret) {
+ 		dev_err(dd->dev, "can't configure IN dmaengine slave: %d\n",
+ 			ret);
+-		return ret;
++		goto err_dma_config;
+ 	}
+ 
+ 	ret = dmaengine_slave_config(dd->dma_tx, &cfg);
+ 	if (ret) {
+ 		dev_err(dd->dev, "can't configure OUT dmaengine slave: %d\n",
+ 			ret);
+-		return ret;
++		goto err_dma_config;
+ 	}
+ 
+ 	return 0;
+ 
++err_dma_config:
++	dma_release_channel(dd->dma_tx);
+ err_dma_tx:
+-	dma_release_channel(dd->dma_rx1);
+ 	dma_release_channel(dd->dma_rx2);
++err_dma_rx2:
++	dma_release_channel(dd->dma_rx1);
+ 
+ 	return ret;
+ }
+@@ -2364,7 +2367,7 @@ static int sa_ul_probe(struct platform_device *pdev)
+ 	sa_init_mem(dev_data);
+ 	ret = sa_dma_init(dev_data);
+ 	if (ret)
+-		goto disable_pm_runtime;
++		goto destroy_dma_pool;
+ 
+ 	spin_lock_init(&dev_data->scid_lock);
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -2394,9 +2397,9 @@ release_dma:
+ 	dma_release_channel(dev_data->dma_rx1);
+ 	dma_release_channel(dev_data->dma_tx);
+ 
++destroy_dma_pool:
+ 	dma_pool_destroy(dev_data->sc_pool);
+ 
+-disable_pm_runtime:
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
 -- 
 2.30.2
 
