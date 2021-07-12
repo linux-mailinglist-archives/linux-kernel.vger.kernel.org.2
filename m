@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094553C514C
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8473C514D
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346222AbhGLHj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45146 "EHLO mail.kernel.org"
+        id S1346299AbhGLHjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:39:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244274AbhGLHKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0EBE610A6;
-        Mon, 12 Jul 2021 07:07:44 +0000 (UTC)
+        id S244299AbhGLHKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46419610E5;
+        Mon, 12 Jul 2021 07:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073665;
-        bh=QEU95OBl1wa7Ix8cCNHen/j2cLQYlv1H8ToXGIkwAFA=;
+        s=korg; t=1626073667;
+        bh=XoYj5fhINhNpIdEDgjtheWTTZEuJBpJiCzs98xY8jtw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tNc6aBIqYUkxscB7fr3ur3NxFSVfo+I3zlR3TAxfrzohfnAKOv7GE8CsnA5ab5VW9
-         iAzq/NbUzxqrMEJFpSK/5hH4Rk3At/qNAVG4LDbcCgLm/CelYR8R3slIuJrWaoOIN8
-         bBVRRg7neY/vDguXFVNy27xPPkAlLnuARC+PWbYI=
+        b=hm7uQQQFOHpEAc9BZv7F9dxeYmjOtMUYON2MWVI3MmikeevTa0usNZ8zMn5y4P2ro
+         tQlF+8C8UXgbmXAsympMO5sAc/0IzDqahK2NcGzhU5+60FLjlLaIM7XHEMRQ6woQFp
+         p8KxFgjlKJUKlKPpKjCSaN8pYLd6JYW0X0/Oyl4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 319/700] KVM: selftests: Remove errant asm/barrier.h include to fix arm64 build
-Date:   Mon, 12 Jul 2021 08:06:42 +0200
-Message-Id: <20210712061010.316573731@linuxfoundation.org>
+Subject: [PATCH 5.12 320/700] media: video-mux: Skip dangling endpoints
+Date:   Mon, 12 Jul 2021 08:06:43 +0200
+Message-Id: <20210712061010.413514088@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,46 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit ecc3a92c6f4953c134a9590c762755e6593f507c ]
+[ Upstream commit 95778c2d0979618e3349b1d2324ec282a5a6adbf ]
 
-Drop an unnecessary include of asm/barrier.h from dirty_log_test.c to
-allow the test to build on arm64.  arm64, s390, and x86 all build cleanly
-without the include (PPC and MIPS aren't supported in KVM's selftests).
+i.MX6 device tree include files contain dangling endpoints for the
+board device tree writers' convenience. These are still included in
+many existing device trees.
+Treat dangling endpoints as non-existent to support them.
 
-arm64's barrier.h includes linux/kasan-checks.h, which is not copied
-into tools/.
-
-  In file included from ../../../../tools/include/asm/barrier.h:8,
-                   from dirty_log_test.c:19:
-     .../arm64/include/asm/barrier.h:12:10: fatal error: linux/kasan-checks.h: No such file or directory
-     12 | #include <linux/kasan-checks.h>
-        |          ^~~~~~~~~~~~~~~~~~~~~~
-  compilation terminated.
-
-Fixes: 84292e565951 ("KVM: selftests: Add dirty ring buffer test")
-Cc: Peter Xu <peterx@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210622200529.3650424-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 612b385efb1e ("media: video-mux: Create media links in bound notifier")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/dirty_log_test.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/media/platform/video-mux.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index 81edbd23d371..b4d24f50aca6 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -16,7 +16,6 @@
- #include <errno.h>
- #include <linux/bitmap.h>
- #include <linux/bitops.h>
--#include <asm/barrier.h>
- #include <linux/atomic.h>
+diff --git a/drivers/media/platform/video-mux.c b/drivers/media/platform/video-mux.c
+index 133122e38515..9bc0b4d8de09 100644
+--- a/drivers/media/platform/video-mux.c
++++ b/drivers/media/platform/video-mux.c
+@@ -362,7 +362,7 @@ static int video_mux_async_register(struct video_mux *vmux,
  
- #include "kvm_util.h"
+ 	for (i = 0; i < num_input_pads; i++) {
+ 		struct v4l2_async_subdev *asd;
+-		struct fwnode_handle *ep;
++		struct fwnode_handle *ep, *remote_ep;
+ 
+ 		ep = fwnode_graph_get_endpoint_by_id(
+ 			dev_fwnode(vmux->subdev.dev), i, 0,
+@@ -370,6 +370,14 @@ static int video_mux_async_register(struct video_mux *vmux,
+ 		if (!ep)
+ 			continue;
+ 
++		/* Skip dangling endpoints for backwards compatibility */
++		remote_ep = fwnode_graph_get_remote_endpoint(ep);
++		if (!remote_ep) {
++			fwnode_handle_put(ep);
++			continue;
++		}
++		fwnode_handle_put(remote_ep);
++
+ 		asd = v4l2_async_notifier_add_fwnode_remote_subdev(
+ 			&vmux->notifier, ep, struct v4l2_async_subdev);
+ 
 -- 
 2.30.2
 
