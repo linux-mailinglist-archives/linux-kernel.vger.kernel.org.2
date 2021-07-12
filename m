@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459963C4DB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050B13C58B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240316AbhGLHOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:14:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48266 "EHLO mail.kernel.org"
+        id S1380515AbhGLIvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:51:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239060AbhGLGt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3078861166;
-        Mon, 12 Jul 2021 06:45:56 +0000 (UTC)
+        id S1349193AbhGLH4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:56:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D138613E4;
+        Mon, 12 Jul 2021 07:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072356;
-        bh=FMiubnISiMI2iY0NdN5wTlY0ucMqsT2sp82WSl3hFSE=;
+        s=korg; t=1626076339;
+        bh=iEvtYpsaHqh5Cn96sSfMZTS2D/n1Pw29uI5uAlAXdCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uFZJxZqKe3UMrZNqtUQmfK/y7ugyVgruATsc2Gu2nNuzMjR6FxmtSoRDKwwsnbIIy
-         zlioOAT/lBr5OVTAOhjqc8H39Ni8PKIaxqO916C6Mva4N1jMLjXhcIouSEUSeryJwm
-         yiIFaa6Mfq3Ha2UwEErPQUq3JZeesM2565sRX19c=
+        b=gtLoAgFzKiDMyCTrerHAyiU6TS52sCDPrhuJbJseDLkqqpnJ+YbSR1bGn/aET3D2F
+         3+tUI/M7UMHIj2NiFksKfSHNUdl+2AIdBYfRu/fwdWnBnpTL6JqlD5Ra+6tnb48VH/
+         hHYEUsfUf09jhNKIBzCTekkkB1MqQVF0j5qWsfKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 462/593] iio: light: tcs3414: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:22 +0200
-Message-Id: <20210712060940.436031367@linuxfoundation.org>
+Subject: [PATCH 5.13 600/800] RDMA/core: Always release restrack object
+Date:   Mon, 12 Jul 2021 08:10:23 +0200
+Message-Id: <20210712061031.182595458@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit ff08fbc22ab32ccc6690c21b0e5e1d402dcc076f ]
+[ Upstream commit 3d8287544223a3d2f37981c1f9ffd94d0b5e9ffc ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+Change location of rdma_restrack_del() to fix the bug where
+task_struct was acquired but not released, causing to resource leak.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
+  ucma_create_id() {
+    ucma_alloc_ctx();
+    rdma_create_user_id() {
+      rdma_restrack_new();
+      rdma_restrack_set_name() {
+        rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
+      }
+    }
+    ucma_destroy_private_ctx() {
+      ucma_put_ctx();
+      rdma_destroy_id() {
+        _destroy_id()                       <--- id_priv was freed
+      }
+    }
+  }
 
-Fixes: a244e7b57f0f ("iio: Add driver for AMS/TAOS tcs3414 digital color sensor")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-19-jic23@kernel.org
+Fixes: 889d916b6f8a ("RDMA/core: Don't access cm_id after its destruction")
+Link: https://lore.kernel.org/r/073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com
+Reported-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/tcs3414.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/cma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/light/tcs3414.c b/drivers/iio/light/tcs3414.c
-index 6fe5d46f80d4..0593abd600ec 100644
---- a/drivers/iio/light/tcs3414.c
-+++ b/drivers/iio/light/tcs3414.c
-@@ -53,7 +53,11 @@ struct tcs3414_data {
- 	u8 control;
- 	u8 gain;
- 	u8 timing;
--	u16 buffer[8]; /* 4x 16-bit + 8 bytes timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u16 chans[4];
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 8bbffa04fb48..ad9a9ba5f00d 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -1852,6 +1852,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ {
+ 	cma_cancel_operation(id_priv, state);
  
- #define TCS3414_CHANNEL(_color, _si, _addr) { \
-@@ -209,10 +213,10 @@ static irqreturn_t tcs3414_trigger_handler(int irq, void *p)
- 		if (ret < 0)
- 			goto done;
- 
--		data->buffer[j++] = ret;
-+		data->scan.chans[j++] = ret;
++	rdma_restrack_del(&id_priv->res);
+ 	if (id_priv->cma_dev) {
+ 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
+ 			if (id_priv->cm_id.ib)
+@@ -1861,7 +1862,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ 				iw_destroy_cm_id(id_priv->cm_id.iw);
+ 		}
+ 		cma_leave_mc_groups(id_priv);
+-		rdma_restrack_del(&id_priv->res);
+ 		cma_release_dev(id_priv);
  	}
  
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 		iio_get_time_ns(indio_dev));
- 
- done:
 -- 
 2.30.2
 
