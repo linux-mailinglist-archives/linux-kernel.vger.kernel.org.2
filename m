@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4ADB3C54AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3913C4E2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353611AbhGLICh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:02:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33304 "EHLO mail.kernel.org"
+        id S243771AbhGLHRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344183AbhGLHY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:24:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C90B361221;
-        Mon, 12 Jul 2021 07:21:31 +0000 (UTC)
+        id S239249AbhGLGwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:52:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3D7C61208;
+        Mon, 12 Jul 2021 06:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074492;
-        bh=rT08U/FPIup2idCnowpyZrlo2Naoyv/qPZWHmJioUiA=;
+        s=korg; t=1626072593;
+        bh=Iqvn7ZXyhwLb+to3C2EGC2YNWh49EeXgJRaOWtLVBQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nv4VJU/F6FN/J0W4CwFUqDyBOklwoSt7SF1lQ5Yg69zwVcF/pj8tdGRL6yNHalXZp
-         Rfm3pD34fy64kFhq+tlJgFh6DgBDYzcNcHaVw6cRe1MQGo8iLZW6nBdYI5k6ZQ2q5y
-         Qg0oyZhL2lPLlSdYE7ghzTNOyobmLgTnTFsQaEA0=
+        b=lVKtNiD2QXBdznJWVyeuIhtTo+5GGSSDB/4nS+QdFuxjVrdEeAeK2X7dNs6/9Cx0S
+         e+NRDP1ONgcEDbGHbWHVD/15ns1URv8jBlhUiMwsUo6i3Qqm2uYmPcUp/LRQryITMz
+         1U6IGqAEOaid2qtgfzL7JfW6j2PWZbzVKR2FJw1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 598/700] ASoC: rt1308-sdw: use first_hw_init flag on resume
-Date:   Mon, 12 Jul 2021 08:11:21 +0200
-Message-Id: <20210712061039.564118402@linuxfoundation.org>
+Subject: [PATCH 5.10 522/593] staging: gdm724x: check for buffer overflow in gdm_lte_multi_sdu_pkt()
+Date:   Mon, 12 Jul 2021 08:11:22 +0200
+Message-Id: <20210712060950.189575677@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 30e102dab5fad1db71684f8ac5e1ac74e49da06d ]
+[ Upstream commit 4a36e160856db8a8ddd6a3d2e5db5a850ab87f82 ]
 
-The intent of the status check on resume was to verify if a SoundWire
-peripheral reported ATTACHED before waiting for the initialization to
-complete. This is required to avoid timeouts that will happen with
-'ghost' devices that are exposed in the platform firmware but are not
-populated in hardware.
+There needs to be a check to verify that we don't read beyond the end
+of "buf".  This function is called from do_rx().  The "buf" is the USB
+transfer_buffer and "len" is "urb->actual_length".
 
-Unfortunately we used 'hw_init' instead of 'first_hw_init'. Due to
-another error, the resume operation never timed out, but the volume
-settings were not properly restored.
-
-BugLink: https://github.com/thesofproject/linux/issues/2908
-BugLink: https://github.com/thesofproject/linux/issues/2637
-Fixes: a87a6653a28c0 ('ASoC: rt1308-sdw: add rt1308 SdW amplifier driver')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Link: https://lore.kernel.org/r/20210607222239.582139-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 61e121047645 ("staging: gdm7240: adding LTE USB driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YMcnl4zCwGWGDVMG@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt1308-sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/gdm724x/gdm_lte.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index afd2c3b687cc..0ec741cf70fc 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -709,7 +709,7 @@ static int __maybe_unused rt1308_dev_resume(struct device *dev)
- 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
- 	unsigned long time;
+diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
+index 571f47d39484..a41af7aa74ec 100644
+--- a/drivers/staging/gdm724x/gdm_lte.c
++++ b/drivers/staging/gdm724x/gdm_lte.c
+@@ -677,6 +677,7 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 	struct sdu *sdu = NULL;
+ 	u8 endian = phy_dev->get_endian(phy_dev->priv_dev);
+ 	u8 *data = (u8 *)multi_sdu->data;
++	int copied;
+ 	u16 i = 0;
+ 	u16 num_packet;
+ 	u16 hci_len;
+@@ -688,6 +689,12 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 	num_packet = gdm_dev16_to_cpu(endian, multi_sdu->num_packet);
  
--	if (!rt1308->hw_init)
-+	if (!rt1308->first_hw_init)
- 		return 0;
+ 	for (i = 0; i < num_packet; i++) {
++		copied = data - multi_sdu->data;
++		if (len < copied + sizeof(*sdu)) {
++			pr_err("rx prevent buffer overflow");
++			return;
++		}
++
+ 		sdu = (struct sdu *)data;
  
- 	if (!slave->unattach_request)
+ 		cmd_evt  = gdm_dev16_to_cpu(endian, sdu->cmd_evt);
+@@ -698,7 +705,8 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 			pr_err("rx sdu wrong hci %04x\n", cmd_evt);
+ 			return;
+ 		}
+-		if (hci_len < 12) {
++		if (hci_len < 12 ||
++		    len < copied + sizeof(*sdu) + (hci_len - 12)) {
+ 			pr_err("rx sdu invalid len %d\n", hci_len);
+ 			return;
+ 		}
 -- 
 2.30.2
 
