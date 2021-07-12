@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EDC3C595C
+	by mail.lfdr.de (Postfix) with ESMTP id 937423C595D
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383031AbhGLJCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
+        id S1383072AbhGLJCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353409AbhGLICI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353408AbhGLICI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D4461C86;
-        Mon, 12 Jul 2021 07:55:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6350B61C9C;
+        Mon, 12 Jul 2021 07:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076503;
-        bh=vn/VPJBysEMnVybQe14G/wmQ9C23wb6BVbVn/IuU1J0=;
+        s=korg; t=1626076505;
+        bh=e33QCnnL0z5RpCbJkLykSisptElZJRtiiKx0O3dBusw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLp4OLrbEUnQ/z8ZDpqoySFGSGWNFckQMihdpVAFs9x4Ss+9PZ5viPKSIAbHtlFm5
-         WUxv/g0Ohau946MSeb+mPrXRwTz65TvAJX1d9NSjeOMqpyVrTlse3BDsH+IDDkiWqt
-         zGSUhCIeKx4WL40qCE/QjdUgtMKEE2ojzxJb2Ms4=
+        b=S1vCQje9x7ihZU/zmI932f/EHKVlvHUT2byJZyxYnqKgGt7YLFIoXwZjx/b4Pkv/L
+         x4JTLlZKBiHP2WTP9JdbqEoKsYJlDRl3HYCE1T0tW7atNM8B7Z3t3vgDEbHvkl9SVR
+         YRg2rqFCs3XUZK9gBHcd8nj2iNojevKPDyalTY0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
         Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 672/800] fsi: scom: Reset the FSI2PIB engine for any error
-Date:   Mon, 12 Jul 2021 08:11:35 +0200
-Message-Id: <20210712061038.444589198@linuxfoundation.org>
+Subject: [PATCH 5.13 673/800] fsi: occ: Dont accept response from un-initialized OCC
+Date:   Mon, 12 Jul 2021 08:11:36 +0200
+Message-Id: <20210712061038.541790081@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,59 +41,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eddie James <eajames@linux.ibm.com>
 
-[ Upstream commit a5c317dac5567206ca7b6bc9d008dd6890c8bced ]
+[ Upstream commit 8a4659be08576141f47d47d94130eb148cb5f0df ]
 
-The error bits in the FSI2PIB status are only cleared by a reset. So
-the driver needs to perform a reset after seeing any of the FSI2PIB
-errors, otherwise subsequent operations will also look like failures.
+If the OCC is not initialized and responds as such, the driver
+should continue waiting for a valid response until the timeout
+expires.
 
-Fixes: 6b293258cded ("fsi: scom: Major overhaul")
 Signed-off-by: Eddie James <eajames@linux.ibm.com>
 Reviewed-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20210329151344.14246-1-eajames@linux.ibm.com
+Fixes: 7ed98dddb764 ("fsi: Add On-Chip Controller (OCC) driver")
+Link: https://lore.kernel.org/r/20210209171235.20624-2-eajames@linux.ibm.com
 Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fsi/fsi-scom.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/fsi/fsi-occ.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
-index b45bfab7b7f5..75d1389e2626 100644
---- a/drivers/fsi/fsi-scom.c
-+++ b/drivers/fsi/fsi-scom.c
-@@ -38,9 +38,10 @@
- #define SCOM_STATUS_PIB_RESP_MASK	0x00007000
- #define SCOM_STATUS_PIB_RESP_SHIFT	12
+diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
+index 10ca2e290655..cb05b6dacc9d 100644
+--- a/drivers/fsi/fsi-occ.c
++++ b/drivers/fsi/fsi-occ.c
+@@ -495,6 +495,7 @@ int fsi_occ_submit(struct device *dev, const void *request, size_t req_len,
+ 			goto done;
  
--#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_PROTECTION | \
--					 SCOM_STATUS_PARITY |	  \
--					 SCOM_STATUS_PIB_ABORT | \
-+#define SCOM_STATUS_FSI2PIB_ERROR	(SCOM_STATUS_PROTECTION |	\
-+					 SCOM_STATUS_PARITY |		\
-+					 SCOM_STATUS_PIB_ABORT)
-+#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_FSI2PIB_ERROR |	\
- 					 SCOM_STATUS_PIB_RESP_MASK)
- /* SCOM address encodings */
- #define XSCOM_ADDR_IND_FLAG		BIT_ULL(63)
-@@ -240,13 +241,14 @@ static int handle_fsi2pib_status(struct scom_device *scom, uint32_t status)
- {
- 	uint32_t dummy = -1;
+ 		if (resp->return_status == OCC_RESP_CMD_IN_PRG ||
++		    resp->return_status == OCC_RESP_CRIT_INIT ||
+ 		    resp->seq_no != seq_no) {
+ 			rc = -ETIMEDOUT;
  
--	if (status & SCOM_STATUS_PROTECTION)
--		return -EPERM;
--	if (status & SCOM_STATUS_PARITY) {
-+	if (status & SCOM_STATUS_FSI2PIB_ERROR)
- 		fsi_device_write(scom->fsi_dev, SCOM_FSI2PIB_RESET_REG, &dummy,
- 				 sizeof(uint32_t));
-+
-+	if (status & SCOM_STATUS_PROTECTION)
-+		return -EPERM;
-+	if (status & SCOM_STATUS_PARITY)
- 		return -EIO;
--	}
- 	/* Return -EBUSY on PIB abort to force a retry */
- 	if (status & SCOM_STATUS_PIB_ABORT)
- 		return -EBUSY;
 -- 
 2.30.2
 
