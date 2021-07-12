@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6117B3C5B4B
+	by mail.lfdr.de (Postfix) with ESMTP id A94C53C5B4C
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhGLLMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhGLLML (ORCPT
+        id S233610AbhGLLM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:12:56 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:11262 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231955AbhGLLMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:12:11 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F0AC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 04:09:23 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 17so16077339pfz.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 04:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6lUy469xn93hCfPaZmGpgx+R1HMy/dgOdulccySigII=;
-        b=wASbzIwqLYXl8KSzuf55+l20joE47Hs8wXna1poxH1tL14MmrWD5C2hZvvCQVYKfEa
-         1yL8XystJAYPw2Nm0URlpDZk04jF5XTzcTpVJIxjKsKBI9eH0KOWilg+KnujNa89E5Fj
-         W8iBssqkx2RcyTSnHaLP6wFfTxmPL8kC9ncYsnLd0/q/POM5ORPwh9umqyLMs1KhIemX
-         jGzPi/EXwLAb0FnX/mvb9DEwUi4m2LMlHoyUx040XueVWufn1FElyyZLXkX7ykfmDGjd
-         d8kUAJfFbqzPSc77FNKp0KVjk5RjwzrhXRlRmoEI5ENSeUU9XVLsdIPz2CP20QbfhVGR
-         X56Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6lUy469xn93hCfPaZmGpgx+R1HMy/dgOdulccySigII=;
-        b=ZCuHPx7E1zg1AUyQARgNE1pnf96aBjlDQXjznqf716j9hzyZI6eI79MCsel7WYjKo3
-         OWQ+peIZwbwHwhzR15d87dH0j7lQkbKhozvDVPGY6OSALi8JHy78XFGgwvImNYgv96VD
-         VnYJVREawot+ASNLwgLD3KqkOIRNtT3id6KLyySnJ9TjqaW90wNofoUFLrj4RpM78+Pd
-         aSw5gk7ccUCCoS4covWQFbaCO4CVRDl6OkGhYfLlDxLE5wHvglR42pYoXKtLKbNjbvPg
-         0iaMWfKzF7A9KgVoYf7RLonCB8jz0SDIo1vV/S1toc9K73JsdI3Axobwxvtv4J3/pZk6
-         fRNA==
-X-Gm-Message-State: AOAM531kfYbz2h3ZqEP+s1QWEB6cw9ywMP+tl4hGMmAHs3tu9js+GzhV
-        gasoQBgFsWChwj/MJpr0bdZ4Mg==
-X-Google-Smtp-Source: ABdhPJwceYGKhorIjk3Ec8U2rp2c/7zJyhpZg/ZvIvowfOvlu2KczPGOZkBQnrGzASEYvFxL0zeptA==
-X-Received: by 2002:a65:614d:: with SMTP id o13mr52781496pgv.351.1626088162760;
-        Mon, 12 Jul 2021 04:09:22 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id f3sm1169549pjt.19.2021.07.12.04.09.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 04:09:22 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 19:09:16 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] coresight: tmc-etr: Speed up for bounce buffer in
- flat mode
-Message-ID: <20210712110916.GB704210@leoy-ThinkPad-X240s>
-References: <20210710070115.462674-1-leo.yan@linaro.org>
- <f17065d6-5083-74c9-d9ca-a467b640aed3@arm.com>
+        Mon, 12 Jul 2021 07:12:55 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GNgrX6KKwz1CJ5j;
+        Mon, 12 Jul 2021 19:04:28 +0800 (CST)
+Received: from [10.174.178.125] (10.174.178.125) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 19:10:03 +0800
+Subject: Re: [PATCH 2/5] mm/vmscan: remove misleading setting to sc->priority
+To:     Michal Hocko <mhocko@suse.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <vbabka@suse.cz>, <axboe@kernel.dk>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <apopple@nvidia.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <david@redhat.com>, <shli@fb.com>,
+        <hillf.zj@alibaba-inc.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210710100329.49174-1-linmiaohe@huawei.com>
+ <20210710100329.49174-3-linmiaohe@huawei.com>
+ <YOvuKZ4kZ/1BJ5VC@dhcp22.suse.cz>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <af188933-9677-c733-00f4-1d042425522f@huawei.com>
+Date:   Mon, 12 Jul 2021 19:10:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f17065d6-5083-74c9-d9ca-a467b640aed3@arm.com>
+In-Reply-To: <YOvuKZ4kZ/1BJ5VC@dhcp22.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.125]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
-
-On Mon, Jul 12, 2021 at 10:55:32AM +0100, Suzuki Kuruppassery Poulose wrote:
-
-[...]
-
-> >   static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
-> >   {
-> > +	struct etr_flat_buf *flat_buf = etr_buf->private;
-> > +	struct device *real_dev = flat_buf->dev->parent;
-> > +
-> >   	/*
-> >   	 * Adjust the buffer to point to the beginning of the trace data
-> >   	 * and update the available trace data.
-> > @@ -648,6 +668,28 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
-> >   		etr_buf->len = etr_buf->size;
-> >   	else
-> >   		etr_buf->len = rwp - rrp;
-> > +
-> > +	if (etr_buf->offset + etr_buf->len > etr_buf->size) {
-> > +		int len1, len2;
-> > +
-> > +		/*
-> > +		 * If trace data is wrapped around, sync AUX bounce buffer
-> > +		 * for two chunks: "len1" is for the trace date length at
-> > +		 * the tail of bounce buffer, and "len2" is the length from
-> > +		 * the start of the buffer after wrapping around.
-> > +		 */
-> > +		len1 = etr_buf->size - etr_buf->offset;
-> > +		len2 = etr_buf->len - len1;
-> > +		dma_sync_single_for_cpu(real_dev,
-> > +					flat_buf->daddr + etr_buf->offset,
-> > +					len1, DMA_FROM_DEVICE);
-> > +		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
-> > +					len2, DMA_FROM_DEVICE);
+On 2021/7/12 15:24, Michal Hocko wrote:
+> On Sat 10-07-21 18:03:26, Miaohe Lin wrote:
+>> The priority field of sc is used to control how many pages we should scan
+>> at once while we always traverse the list to shrink the pages in these
+>> functions. So these settings are unneeded and misleading.
 > 
-> We always start tracing at the beginning of the buffer and the only reason
-> why we would get a wrap around, is when the buffer is full.
-> So you could as well sync the entire buffer in one go
+> I dunno. I agree that priority is not really used as these operate on
+> page lists but I am not sure this is worth touching.
+
+When I investigated the vmscan code, I thought the order here would control the
+proportion of the pages in the list to shrink. So I prefer to remove these.
+
+Thanks a lot for review and reply!
+
 > 
-> 		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
-> 					etr_buf->len, DMA_FROM_DEVICE);
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/vmscan.c | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 6483fe0e2065..fbe53e60b248 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1702,7 +1702,6 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>>  {
+>>  	struct scan_control sc = {
+>>  		.gfp_mask = GFP_KERNEL,
+>> -		.priority = DEF_PRIORITY,
+>>  		.may_unmap = 1,
+>>  	};
+>>  	struct reclaim_stat stat;
+>> @@ -2327,7 +2326,6 @@ unsigned long reclaim_pages(struct list_head *page_list)
+>>  	unsigned int noreclaim_flag;
+>>  	struct scan_control sc = {
+>>  		.gfp_mask = GFP_KERNEL,
+>> -		.priority = DEF_PRIORITY,
+>>  		.may_writepage = 1,
+>>  		.may_unmap = 1,
+>>  		.may_swap = 1,
+>> -- 
+>> 2.23.0
+> 
 
-I am doubt why you conclude "always start tracing at the beginning of
-the buffer"?  I read the driver but cannot find any code in the driver
-to reset rrp and rwp after fetching the trace data, or there have any
-implict operation to reset pointers?
-
-Just want to double check for this, in case I miss anything.  Thanks
-for the review.
-
-Leo
