@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145403C578E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858033C4A4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377152AbhGLIfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:35:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35486 "EHLO mail.kernel.org"
+        id S240207AbhGLGux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344699AbhGLHsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:48:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 609CB61443;
-        Mon, 12 Jul 2021 07:43:04 +0000 (UTC)
+        id S237984AbhGLGjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5CC611CB;
+        Mon, 12 Jul 2021 06:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075784;
-        bh=i91Omo19MI1NG/tpwDfQEDOsRbL9zPp7KzLZxmOrBDs=;
+        s=korg; t=1626071758;
+        bh=I8wdIfFGfFwk8ZHmzi/UfXFOalguRc+26UAZKv1x+2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fyORkugBs6FvuiXBElGJsBeZoTwgY7HIiEC/UijRCd3NdfqQviJ7ymxwvm4JqWTZG
-         o/E4CQVuV8LVPzk8OqVxfngY/1wmmRHPFF+D9QoJSWdJ7ByYXvSUFINV26ewYGH4QB
-         iMmZi5o+0Ti2Gi1i5R04qVNRMs/7NCqJCtbswv6U=
+        b=h7UuH0YUKpfc8RiQGKO19i4Rr4Xu2zPHXlqzC7VZBmTXwnGYubbdMShBYZxG9Hcws
+         szIphbkm3JZwEnMKywKXgANpkYUWNlZiPWNjWJEw9tVaBCV8orPfdsePpiOlKV4pn7
+         Us0ulwkofC2OFwxgHwn4LNkDrh9ZHU3S6bKurGt4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        Alexander Wellbrock <a.wellbrock@mailbox.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 336/800] btrfs: clear log tree recovering status if starting transaction fails
-Date:   Mon, 12 Jul 2021 08:05:59 +0200
-Message-Id: <20210712061002.383404242@linuxfoundation.org>
+Subject: [PATCH 5.10 200/593] tpm_tis_spi: add missing SPI device ID entries
+Date:   Mon, 12 Jul 2021 08:06:00 +0200
+Message-Id: <20210712060905.025811362@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Javier Martinez Canillas <javierm@redhat.com>
 
-[ Upstream commit 1aeb6b563aea18cd55c73cf666d1d3245a00f08c ]
+[ Upstream commit c46ed2281bbe4b84e6f3d4bdfb0e4e9ab813fa9d ]
 
-When a log recovery is in progress, lots of operations have to take that
-into account, so we keep this status per tree during the operation. Long
-time ago error handling revamp patch 79787eaab461 ("btrfs: replace many
-BUG_ONs with proper error handling") removed clearing of the status in
-an error branch. Add it back as was intended in e02119d5a7b4 ("Btrfs:
-Add a write ahead tree log to optimize synchronous operations").
+The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
+registered via OF. This means that this module won't auto-load if a DT has
+for example has a node with a compatible "infineon,slb9670" string.
 
-There are probably no visible effects, log replay is done only during
-mount and if it fails all structures are cleared so the stale status
-won't be kept.
+In that case kmod will expect a "MODALIAS=of:N*T*Cinfineon,slb9670" uevent
+but instead will get a "MODALIAS=spi:slb9670", which is not present in the
+kernel module aliases:
 
-Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error handling")
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+$ modinfo drivers/char/tpm/tpm_tis_spi.ko | grep alias
+alias:          of:N*T*Cgoogle,cr50C*
+alias:          of:N*T*Cgoogle,cr50
+alias:          of:N*T*Ctcg,tpm_tis-spiC*
+alias:          of:N*T*Ctcg,tpm_tis-spi
+alias:          of:N*T*Cinfineon,slb9670C*
+alias:          of:N*T*Cinfineon,slb9670
+alias:          of:N*T*Cst,st33htpm-spiC*
+alias:          of:N*T*Cst,st33htpm-spi
+alias:          spi:cr50
+alias:          spi:tpm_tis_spi
+alias:          acpi*:SMO0768:*
+
+To workaround this issue, add in the SPI device ID table all the entries
+that are present in the OF device ID table.
+
+Reported-by: Alexander Wellbrock <a.wellbrock@mailbox.org>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Tested-by: Peter Robinson <pbrobinson@gmail.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/tpm/tpm_tis_spi_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index dbcf8bb2f3b9..760d950752f5 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -6371,6 +6371,7 @@ next:
- error:
- 	if (wc.trans)
- 		btrfs_end_transaction(wc.trans);
-+	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
- 	btrfs_free_path(path);
- 	return ret;
+diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
+index 3856f6ebcb34..de4209003a44 100644
+--- a/drivers/char/tpm/tpm_tis_spi_main.c
++++ b/drivers/char/tpm/tpm_tis_spi_main.c
+@@ -260,6 +260,8 @@ static int tpm_tis_spi_remove(struct spi_device *dev)
  }
+ 
+ static const struct spi_device_id tpm_tis_spi_id[] = {
++	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
++	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
+ 	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
+ 	{ "cr50", (unsigned long)cr50_spi_probe },
+ 	{}
 -- 
 2.30.2
 
