@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7303C49FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8543C50B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhGLGr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:47:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
+        id S1346615AbhGLHeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:34:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235897AbhGLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A48B061106;
-        Mon, 12 Jul 2021 06:33:36 +0000 (UTC)
+        id S238040AbhGLHGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:06:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 188D1611CE;
+        Mon, 12 Jul 2021 07:02:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071617;
-        bh=mxQe9Fj1he7F+yRFlVg9J01sazLPflZ2lsIaOAnRvro=;
+        s=korg; t=1626073380;
+        bh=SigykbvGno2/8AsIgHQrBw+L1zmaQshSfTYwuD08c60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h936zLfA+j4LUYErX14es5KK919JcNkB0bVIWio4kHOZmpYA2PmEg/JOlPQCNL6Uo
-         SrLLKT6B9KbwP4N9eFpNKRsEBSTbX7+Ry+W3x/ploxeuRX32LIQc8K1GCu02YBc5g4
-         +Hmiv99R5Cz1enItfZ8UmDGA3SnwlTXvl8gm2+Ts=
+        b=e6HpGuV6nHzCPAtv8PylTuEqt+xz/5xqLWQ8DvBHN26lAt1q6V6tS+doirwH/XkoA
+         MxNIGl5JrCze502Wf8gj3MEbPyGvqtE80qb3PsVdEf1UVCr5iuAivIw9dXbaS6deHy
+         Q7uPQw8L7/PTy/tDqD9ab0dCpdThcLZYH5ItkAKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, "Luke D. Jones" <luke@ljones.dev>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 145/593] mmc: via-sdmmc: add a check against NULL pointer dereference
-Date:   Mon, 12 Jul 2021 08:05:05 +0200
-Message-Id: <20210712060858.996289396@linuxfoundation.org>
+Subject: [PATCH 5.12 223/700] platform/x86: asus-nb-wmi: Revert "add support for ASUS ROG Zephyrus G14 and G15"
+Date:   Mon, 12 Jul 2021 08:05:06 +0200
+Message-Id: <20210712060958.383286873@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,138 +40,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Luke D. Jones <luke@ljones.dev>
 
-[ Upstream commit 45c8ddd06c4b729c56a6083ab311bfbd9643f4a6 ]
+[ Upstream commit 28117f3a5c3c8375a3304af76357d5bf9cf30f0b ]
 
-Before referencing 'host->data', the driver needs to check whether it is
-null pointer, otherwise it will cause a null pointer reference.
+The quirks added to asus-nb-wmi for the ASUS ROG Zephyrus G14 and G15 are
+wrong, they tell the asus-wmi code to use the vendor specific WMI backlight
+interface. But there is no such interface on these laptops.
 
-This log reveals it:
+As a side effect, these quirks stop the acpi_video driver to register since
+they make acpi_video_get_backlight_type() return acpi_backlight_vendor,
+leaving only the native AMD backlight driver in place, which is the one we
+want. This happy coincidence is being replaced with a new quirk in
+drivers/acpi/video_detect.c which actually sets the backlight_type to
+acpi_backlight_native fixinf this properly. This reverts
+commit 13bceda68fb9 ("platform/x86: asus-nb-wmi: add support for ASUS ROG
+Zephyrus G14 and G15").
 
-[   29.355199] BUG: kernel NULL pointer dereference, address:
-0000000000000014
-[   29.357323] #PF: supervisor write access in kernel mode
-[   29.357706] #PF: error_code(0x0002) - not-present page
-[   29.358088] PGD 0 P4D 0
-[   29.358280] Oops: 0002 [#1] PREEMPT SMP PTI
-[   29.358595] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 5.12.4-
-g70e7f0549188-dirty #102
-[   29.359164] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[   29.359978] RIP: 0010:via_sdc_isr+0x21f/0x410
-[   29.360314] Code: ff ff e8 84 aa d0 fd 66 45 89 7e 28 66 41 f7 c4 00
-10 75 56 e8 72 aa d0 fd 66 41 f7 c4 00 c0 74 10 e8 65 aa d0 fd 48 8b 43
-18 <c7> 40 14 ac ff ff ff e8 55 aa d0 fd 48 89 df e8 ad fb ff ff e9 77
-[   29.361661] RSP: 0018:ffffc90000118e98 EFLAGS: 00010046
-[   29.362042] RAX: 0000000000000000 RBX: ffff888107d77880
-RCX: 0000000000000000
-[   29.362564] RDX: 0000000000000000 RSI: ffffffff835d20bb
-RDI: 00000000ffffffff
-[   29.363085] RBP: ffffc90000118ed8 R08: 0000000000000001
-R09: 0000000000000001
-[   29.363604] R10: 0000000000000000 R11: 0000000000000001
-R12: 0000000000008600
-[   29.364128] R13: ffff888107d779c8 R14: ffffc90009c00200
-R15: 0000000000008000
-[   29.364651] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000)
-knlGS:0000000000000000
-[   29.365235] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   29.365655] CR2: 0000000000000014 CR3: 0000000005a2e000
-CR4: 00000000000006e0
-[   29.366170] DR0: 0000000000000000 DR1: 0000000000000000
-DR2: 0000000000000000
-[   29.366683] DR3: 0000000000000000 DR6: 00000000fffe0ff0
-DR7: 0000000000000400
-[   29.367197] Call Trace:
-[   29.367381]  <IRQ>
-[   29.367537]  __handle_irq_event_percpu+0x53/0x3e0
-[   29.367916]  handle_irq_event_percpu+0x35/0x90
-[   29.368247]  handle_irq_event+0x39/0x60
-[   29.368632]  handle_fasteoi_irq+0xc2/0x1d0
-[   29.368950]  __common_interrupt+0x7f/0x150
-[   29.369254]  common_interrupt+0xb4/0xd0
-[   29.369547]  </IRQ>
-[   29.369708]  asm_common_interrupt+0x1e/0x40
-[   29.370016] RIP: 0010:native_safe_halt+0x17/0x20
-[   29.370360] Code: 07 0f 00 2d db 80 43 00 f4 5d c3 0f 1f 84 00 00 00
-00 00 8b 05 c2 37 e5 01 55 48 89 e5 85 c0 7e 07 0f 00 2d bb 80 43 00 fb
-f4 <5d> c3 cc cc cc cc cc cc cc 55 48 89 e5 e8 67 53 ff ff 8b 0d f9 91
-[   29.371696] RSP: 0018:ffffc9000008fe90 EFLAGS: 00000246
-[   29.372079] RAX: 0000000000000000 RBX: 0000000000000002
-RCX: 0000000000000000
-[   29.372595] RDX: 0000000000000000 RSI: ffffffff854f67a4
-RDI: ffffffff85403406
-[   29.373122] RBP: ffffc9000008fe90 R08: 0000000000000001
-R09: 0000000000000001
-[   29.373646] R10: 0000000000000000 R11: 0000000000000001
-R12: ffffffff86009188
-[   29.374160] R13: 0000000000000000 R14: 0000000000000000
-R15: ffff888100258000
-[   29.374690]  default_idle+0x9/0x10
-[   29.374944]  arch_cpu_idle+0xa/0x10
-[   29.375198]  default_idle_call+0x6e/0x250
-[   29.375491]  do_idle+0x1f0/0x2d0
-[   29.375740]  cpu_startup_entry+0x18/0x20
-[   29.376034]  start_secondary+0x11f/0x160
-[   29.376328]  secondary_startup_64_no_verify+0xb0/0xbb
-[   29.376705] Modules linked in:
-[   29.376939] Dumping ftrace buffer:
-[   29.377187]    (ftrace buffer empty)
-[   29.377460] CR2: 0000000000000014
-[   29.377712] ---[ end trace 51a473dffb618c47 ]---
-[   29.378056] RIP: 0010:via_sdc_isr+0x21f/0x410
-[   29.378380] Code: ff ff e8 84 aa d0 fd 66 45 89 7e 28 66 41 f7 c4 00
-10 75 56 e8 72 aa d0 fd 66 41 f7 c4 00 c0 74 10 e8 65 aa d0 fd 48 8b 43
-18 <c7> 40 14 ac ff ff ff e8 55 aa d0 fd 48 89 df e8 ad fb ff ff e9 77
-[   29.379714] RSP: 0018:ffffc90000118e98 EFLAGS: 00010046
-[   29.380098] RAX: 0000000000000000 RBX: ffff888107d77880
-RCX: 0000000000000000
-[   29.380614] RDX: 0000000000000000 RSI: ffffffff835d20bb
-RDI: 00000000ffffffff
-[   29.381134] RBP: ffffc90000118ed8 R08: 0000000000000001
-R09: 0000000000000001
-[   29.381653] R10: 0000000000000000 R11: 0000000000000001
-R12: 0000000000008600
-[   29.382176] R13: ffff888107d779c8 R14: ffffc90009c00200
-R15: 0000000000008000
-[   29.382697] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000)
-knlGS:0000000000000000
-[   29.383277] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   29.383697] CR2: 0000000000000014 CR3: 0000000005a2e000
-CR4: 00000000000006e0
-[   29.384223] DR0: 0000000000000000 DR1: 0000000000000000
-DR2: 0000000000000000
-[   29.384736] DR3: 0000000000000000 DR6: 00000000fffe0ff0
-DR7: 0000000000000400
-[   29.385260] Kernel panic - not syncing: Fatal exception in interrupt
-[   29.385882] Dumping ftrace buffer:
-[   29.386135]    (ftrace buffer empty)
-[   29.386401] Kernel Offset: disabled
-[   29.386656] Rebooting in 1 seconds..
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Link: https://lore.kernel.org/r/1622727200-15808-1-git-send-email-zheyuma97@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+Link: https://lore.kernel.org/r/20210419074915.393433-3-luke@ljones.dev
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/via-sdmmc.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/platform/x86/asus-nb-wmi.c | 82 ------------------------------
+ 1 file changed, 82 deletions(-)
 
-diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-index 9b755ea0fa03..f07c71db3caf 100644
---- a/drivers/mmc/host/via-sdmmc.c
-+++ b/drivers/mmc/host/via-sdmmc.c
-@@ -857,6 +857,9 @@ static void via_sdc_data_isr(struct via_crdr_mmc_host *host, u16 intmask)
- {
- 	BUG_ON(intmask == 0);
+diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+index b07b1288346e..0cb927f0f301 100644
+--- a/drivers/platform/x86/asus-nb-wmi.c
++++ b/drivers/platform/x86/asus-nb-wmi.c
+@@ -110,16 +110,6 @@ static struct quirk_entry quirk_asus_forceals = {
+ 	.wmi_force_als_set = true,
+ };
  
-+	if (!host->data)
-+		return;
-+
- 	if (intmask & VIA_CRDR_SDSTS_DT)
- 		host->data->error = -ETIMEDOUT;
- 	else if (intmask & (VIA_CRDR_SDSTS_RC | VIA_CRDR_SDSTS_WC))
+-static struct quirk_entry quirk_asus_ga401i = {
+-	.wmi_backlight_power = true,
+-	.wmi_backlight_set_devstate = true,
+-};
+-
+-static struct quirk_entry quirk_asus_ga502i = {
+-	.wmi_backlight_power = true,
+-	.wmi_backlight_set_devstate = true,
+-};
+-
+ static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
+ 	.use_kbd_dock_devid = true,
+ };
+@@ -430,78 +420,6 @@ static const struct dmi_system_id asus_quirks[] = {
+ 		},
+ 		.driver_data = &quirk_asus_forceals,
+ 	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA401IH",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IH"),
+-		},
+-		.driver_data = &quirk_asus_ga401i,
+-	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA401II",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA401II"),
+-		},
+-		.driver_data = &quirk_asus_ga401i,
+-	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA401IU",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IU"),
+-		},
+-		.driver_data = &quirk_asus_ga401i,
+-	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA401IV",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IV"),
+-		},
+-		.driver_data = &quirk_asus_ga401i,
+-	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA401IVC",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IVC"),
+-		},
+-		.driver_data = &quirk_asus_ga401i,
+-	},
+-		{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA502II",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA502II"),
+-		},
+-		.driver_data = &quirk_asus_ga502i,
+-	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA502IU",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IU"),
+-		},
+-		.driver_data = &quirk_asus_ga502i,
+-	},
+-	{
+-		.callback = dmi_matched,
+-		.ident = "ASUSTeK COMPUTER INC. GA502IV",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IV"),
+-		},
+-		.driver_data = &quirk_asus_ga502i,
+-	},
+ 	{
+ 		.callback = dmi_matched,
+ 		.ident = "Asus Transformer T100TA / T100HA / T100CHI",
 -- 
 2.30.2
 
