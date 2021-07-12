@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569C33C5957
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955853C5955
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382857AbhGLJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
+        id S1382819AbhGLJCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352933AbhGLIAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:00:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63BF961C44;
-        Mon, 12 Jul 2021 07:53:57 +0000 (UTC)
+        id S1353133AbhGLIBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:01:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C6E61C50;
+        Mon, 12 Jul 2021 07:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076437;
-        bh=krQEekz+xGXC4oBXdWpzNl12PyKLo+4Onj6x+/Cdqwg=;
+        s=korg; t=1626076459;
+        bh=Q2FOvnjICuD6VGslWPL85LRcJm03rb1WO9PQ2VacMHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xmPrRFr1o+I6hIOYVIWiazEqlPKNCNDdnk/p6uRgEDAlhy7Pl4xOwXfgPZW2r9QTR
-         wiena/XlNcdN22gaNfqDL7RyjfscasEqIcHlLkVXdYHhpjHW5MO9VnWs5PTufZhEzg
-         9M9LIcr94uE0yU+C7bSII7vVI2r67zzhSm6QVtZM=
+        b=BUq/zmCJJkTZCrwGiP+sQn+8mdaz2a6deBwjFAJaK+V/k9FMNZrSPBVQv+C0fRVWU
+         j39h4rFrSE87waIFtbZ0RZ02Bcq4y9OUGhb9REyMkbWnBaFqRiTkkmRDbO/WHpTnrL
+         z8VXaYsRDw8R0Jd55C5NlMfgZs85H8rxOC0ZTarg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 642/800] ASoC: rsnd: tidyup loop on rsnd_adg_clk_query()
-Date:   Mon, 12 Jul 2021 08:11:05 +0200
-Message-Id: <20210712061035.383158207@linuxfoundation.org>
+Subject: [PATCH 5.13 650/800] misc/pvpanic-pci: Fix error handling in pvpanic_pci_probe()
+Date:   Mon, 12 Jul 2021 08:11:13 +0200
+Message-Id: <20210712061036.174665211@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,47 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit cf9d5c6619fadfc41cf8f5154cb990cc38e3da85 ]
+[ Upstream commit 372dae89972594393b57f29ec44e351fa7eedbbe ]
 
-commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under
-atomic context") used saved clk_rate, thus for_each_rsnd_clk()
-is no longer needed. This patch fixes it.
+There is no error handling path in the probe function.
+Switch to managed resource so that errors in the probe are handled easily
+and simplify the remove function accordingly.
 
-Fixes: 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under atomic context")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87v978oe2u.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: db3a4f0abefd ("misc/pvpanic: add PCI driver")
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/ab071b1f4ed6e1174f9199095fb16a58bb406090.1621665058.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/misc/pvpanic/pvpanic-pci.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 0b8ae3eee148..93751099465d 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -290,7 +290,6 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
- int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
- {
- 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
--	struct clk *clk;
- 	int i;
- 	int sel_table[] = {
- 		[CLKA] = 0x1,
-@@ -303,10 +302,9 @@ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
- 	 * find suitable clock from
- 	 * AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC/AUDIO_CLKI.
- 	 */
--	for_each_rsnd_clk(clk, adg, i) {
-+	for (i = 0; i < CLKMAX; i++)
- 		if (rate == adg->clk_rate[i])
- 			return sel_table[i];
--	}
+diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
+index 9ecc4e8559d5..046ce4ecc195 100644
+--- a/drivers/misc/pvpanic/pvpanic-pci.c
++++ b/drivers/misc/pvpanic/pvpanic-pci.c
+@@ -78,15 +78,15 @@ static int pvpanic_pci_probe(struct pci_dev *pdev,
+ 	void __iomem *base;
+ 	int ret;
  
- 	/*
- 	 * find divided clock from BRGA/BRGB
+-	ret = pci_enable_device(pdev);
++	ret = pcim_enable_device(pdev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	base = pci_iomap(pdev, 0, 0);
++	base = pcim_iomap(pdev, 0, 0);
+ 	if (!base)
+ 		return -ENOMEM;
+ 
+-	pi = kmalloc(sizeof(*pi), GFP_ATOMIC);
++	pi = devm_kmalloc(&pdev->dev, sizeof(*pi), GFP_ATOMIC);
+ 	if (!pi)
+ 		return -ENOMEM;
+ 
+@@ -107,9 +107,6 @@ static void pvpanic_pci_remove(struct pci_dev *pdev)
+ 	struct pvpanic_instance *pi = dev_get_drvdata(&pdev->dev);
+ 
+ 	pvpanic_remove(pi);
+-	iounmap(pi->base);
+-	kfree(pi);
+-	pci_disable_device(pdev);
+ }
+ 
+ static struct pci_driver pvpanic_pci_driver = {
 -- 
 2.30.2
 
