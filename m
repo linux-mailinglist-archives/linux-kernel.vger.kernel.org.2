@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29B93C5A81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469E13C5A82
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237991AbhGLKGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237894AbhGLKGI (ORCPT
+        id S238019AbhGLKGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:06:16 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:18708 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237971AbhGLKGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:06:08 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7289DC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:03:20 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so17515543otf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9QvgAnoI2kPhaZ/+n+bQkw4ACvsVb9pav6Lb/tlx3m8=;
-        b=nS5X1ma78tZUkAIXCfDp3a8xVJt/VvHEYep44ptY71kKl0YEHx+oBUtr6Zz1azRAr/
-         CcLqtFi3wFbu+j+TpshqXoh8MvviI8LJOus0njsV6RBuLthgADwE6tJ00hnZoc6rvkS4
-         nPT/pYipkn8urjIdRVIJcTp1fH65fctXLbFymE/KcAYXffQgdC4f2K9HHkeaFx5cAGHM
-         CV9eVUdu+7ksEtwSsf6/Z12oH3ktaNVFK+08Et10h9vLBZU6OECiIHOsWZgKc2jH9ZUY
-         sHvL34U9IZQ0xFndB3dSItRjerjJJxdRYEpys9yjeyYH8l5A5skJXsVC9ceR3cFfJbx3
-         nVtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9QvgAnoI2kPhaZ/+n+bQkw4ACvsVb9pav6Lb/tlx3m8=;
-        b=H6a1QG2PkLjhdf31UFJ7fZ/zqqTM/CsXk6zZSYogYa2e4N/Oll8Nfp5/1S+foiqXDW
-         ocbS1hCzb54gwsx3DszctmzNk8AqRZfuqfvYgZngmJocnH4yb7oIvnnkaq0mKe1kAltV
-         xM+SWAIDTdaWLbsw5yknNzrwA7epNA6rJc4wHApRsjvu6cXqfRncxNI8vzv0aCuer/FT
-         JS9RH9Uv7E4f38SwuHR0cjln8aPcyYhER1YYiqw8LjdfqXjLU7stMzImC7DaIBWilxIW
-         UuSkui1veiM4FLRyjCkxuSHuN8NWrjjn7PVNBc84pMWSpQ1t0lvUXnahNT1Jm1+gG/Xm
-         uNHw==
-X-Gm-Message-State: AOAM531a6HUQxTjVLxGk+u/VtRH8RNemFqIBNNKWNDDRCfayrWqMqHjk
-        YGhsmr4RtgEYuGN9ipRHICuLh05AlBdi20y72JuQeg==
-X-Google-Smtp-Source: ABdhPJx9cVqiaLWwM84FC2PwZhfKEQn3biHZZj0dyJ4upo16KWyhBj1bd552alA2pVIa7/nYudoBocwhHa0lsFY9w60=
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr41889857oti.251.1626084199532;
- Mon, 12 Jul 2021 03:03:19 -0700 (PDT)
+        Mon, 12 Jul 2021 06:06:14 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 16C9lOl5099565;
+        Mon, 12 Jul 2021 17:47:24 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Jul
+ 2021 18:03:18 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
+        <ryan_chen@aspeedtech.com>, <billy_tsai@aspeedtech.com>
+Subject: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
+Date:   Mon, 12 Jul 2021 18:03:07 +0800
+Message-ID: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210708144411.25467-1-mark.rutland@arm.com> <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
- <20210712095832.GA27643@willie-the-truck>
-In-Reply-To: <20210712095832.GA27643@willie-the-truck>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 12 Jul 2021 12:03:06 +0200
-Message-ID: <CANpmjNObTgULimfcVvwCnCEUknTpD+Q8DyoMfiROejYjB2EL5g@mail.gmail.com>
-Subject: Re: [PATCH] kasan: fix build for CONFIG_KASAN_HW_TAGS
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sam Tebbs <sam.tebbs@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 16C9lOl5099565
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 at 11:58, Will Deacon <will@kernel.org> wrote:
-> On Sat, Jul 10, 2021 at 09:16:14PM +0200, Andrey Konovalov wrote:
-> > On Thu, Jul 8, 2021 at 4:44 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > >
-> > > When CONFIG_KASAN_HW_TAGS is selected, <linux/kasan.h> uses _RET_IP_,
-> > > but doesn't explicitly include <linux/kernel.h> where this is defined.
-> > >
-> > > We used to get this via a transitive include, but since commit:
-> > >
-> > >   f39650de687e3576 ("kernel.h: split out panic and oops helpers")
-> > >
-> > > ... this is no longer the case, and so we get a build failure:
-> > >
-> > > |   CC      arch/arm64/mm/kasan_init.o
-> > > | In file included from arch/arm64/mm/kasan_init.c:10:
-> > > | ./include/linux/kasan.h: In function 'kasan_slab_free':
-> > > | ./include/linux/kasan.h:211:39: error: '_RET_IP_' undeclared (first use in this function)
-> > > |   211 |   return __kasan_slab_free(s, object, _RET_IP_, init);
-> > > |       |                                       ^~~~~~~~
-> > > | ./include/linux/kasan.h:211:39: note: each undeclared identifier is reported only once for each function it appears in
-> > > | ./include/linux/kasan.h: In function 'kasan_kfree_large':
-> > > | ./include/linux/kasan.h:219:28: error: '_RET_IP_' undeclared (first use in this function)
-> > > |   219 |   __kasan_kfree_large(ptr, _RET_IP_);
-> > > |       |                            ^~~~~~~~
-> > > | ./include/linux/kasan.h: In function 'kasan_slab_free_mempool':
-> > > | ./include/linux/kasan.h:226:34: error: '_RET_IP_' undeclared (first use in this function)
-> > > |   226 |   __kasan_slab_free_mempool(ptr, _RET_IP_);
-> > > |       |                                  ^~~~~~~~
-> > > | ./include/linux/kasan.h: In function 'kasan_check_byte':
-> > > | ./include/linux/kasan.h:277:35: error: '_RET_IP_' undeclared (first use in this function)
-> > > |   277 |   return __kasan_check_byte(addr, _RET_IP_);
-> > > |       |                                   ^~~~~~~~
-> > >
-> > > Fix this by including <linux/kernel.h> explicitly.
-> >
-> > Hi Mark,
-> >
-> > Marco already sent a fix for this. It should be in the mm tree.
-> > (Although the link to it in the Andrew's notification email doesn't
-> > work. But they rarely do :)
->
-> Do you have a link to the patch? I couldn't spot it in linux-next.
+AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
+supports up to 80 pins.
+In the current driver design, the max number of sgpio pins is hardcoded
+in macro MAX_NR_HW_SGPIO and the value is 80.
 
-https://lkml.kernel.org/r/20210705072716.2125074-1-elver@google.com
-( https://lore.kernel.org/mm-commits/20210706204723.O1wZ2%25akpm@linux-foundation.org/
-)
+For supporting sgpio master interfaces of AST2600 SoC, the patch series
+contains the following enhancement:
+- Convert txt dt-bindings to yaml.
+- Update aspeed-g6 dtsi to support the enhanced sgpio.
+- Support muiltiple SGPIO master interfaces.
+- Support up to 128 pins by dts ngpios property.
+- Pair input/output GPIOs instead of using 0 as GPIO input pin base and
+  MAX_NR_HW_SGPIO as GPIO output pin base.
+- Support wdt reset tolerance.
+- Fix irq_chip issues which causes multiple sgpio devices use the same
+  irq_chip data.
+- Replace all of_*() APIs with device_*().
 
-Looks like latest -mm is not yet reflected in -next.
+Changes from v5:
+* Squash v5 patch-05 and patch-06 to one patch.
+* Remove MAX_NR_HW_SGPIO and corresponding design to make the gpio
+  input/output pin base are determined by ngpios.
+  For example, if MAX_NR_HW_SGPIO is 80 and ngpios is 10, the original
+  pin order is as follows:
+    Input:
+    0 1 2 3 ... 9
+    Output:
+    80 81 82 ... 89
+
+  With the new design, pin order is changed as follows:
+    Input:
+    0 2 4 6 ... 18(ngpios * 2 - 2)
+    Output:
+    1 3 5 7 ... 19(ngpios * 2 - 1)
+* Replace ast2600-sgpiom-128 and ast2600-sgpiom-80 compatibles by
+  ast2600-sgpiom.
+* Fix coding style issues.
+
+Changes from v4:
+* Remove ngpios from dtsi
+* Add ast2400 and ast2500 platform data.
+* Remove unused macros.
+* Add ngpios check in a separate patch.
+* Fix coding style issues.
+
+Changes from v3:
+* Split dt-bindings patch to 2 patches
+* Rename ast2600-sgpiom1 compatible with ast2600-sgiom-128
+* Rename ast2600-sgpiom2 compatible with ast2600-sgiom-80
+* Correct the typo in commit messages.
+* Fix coding style issues.
+* Replace all of_*() APIs with device_*().
+
+Changes from v2:
+* Remove maximum/minimum of ngpios from bindings.
+* Remove max-ngpios from bindings and dtsi.
+* Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
+  driver.
+* Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
+  number of available gpio pins are different.
+* Modify functions to pass aspeed_sgpio struct instead of passing
+  max_ngpios.
+* Split sgpio driver patch to 3 patches
+
+Changes from v1:
+* Fix yaml format issues.
+* Fix issues reported by kernel test robot.
+
+Please help to review.
+
+Thanks,
+Steven
+
+Steven Lee (9):
+  dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
+  dt-bindings: aspeed-sgpio: Add ast2600 sgpio
+  ARM: dts: aspeed-g6: Add SGPIO node.
+  ARM: dts: aspeed-g5: Remove ngpios from sgpio node.
+  gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+  gpio: gpio-aspeed-sgpio: Add set_config function
+  gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
+  gpio: gpio-aspeed-sgpio: Use generic device property APIs
+  gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
+
+ .../bindings/gpio/aspeed,sgpio.yaml           |  77 ++++++++
+ .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
+ arch/arm/boot/dts/aspeed-g5.dtsi              |   1 -
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  28 +++
+ drivers/gpio/gpio-aspeed-sgpio.c              | 178 +++++++++++-------
+ 5 files changed, 215 insertions(+), 115 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+ delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+
+--
+2.17.1
+
