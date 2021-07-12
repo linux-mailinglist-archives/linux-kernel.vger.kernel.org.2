@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774D63C4C2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B8B3C52E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238560AbhGLHCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
+        id S1350301AbhGLHut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:50:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236068AbhGLGpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:45:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6267061208;
-        Mon, 12 Jul 2021 06:41:18 +0000 (UTC)
+        id S242009AbhGLHQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:16:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01C17613BE;
+        Mon, 12 Jul 2021 07:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072078;
-        bh=HH/oR1MAak1gZXBUdVPQsHiHbw5NhvczZv1qs8GQY2E=;
+        s=korg; t=1626073983;
+        bh=Z7Qs7WuPbiefhYwHh6FUL/C56yKfnvQpL9jl4ULb0Ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k1J/siQSJtFLpCoPCSSF+QKWFsy75Xge+LopwiRtUECzo2FpHIr4YkyvC4ZvIj0qB
-         pHBLLMb2cD4caejDN1O8qFphTYBvw3ZSp3eMaAUYWSNWCJuEqv3op0ytEzpsFOX1mg
-         9q001aSK8IqaSZ4p+Hdbz9s+Ofva/lKHEDoazqHE=
+        b=XkWQUNUXtk/M6oy5Kc6deEUn0FR2+yqmoqAMH5qK5jPRhltZISHs8ZACV7SYECEzc
+         7xe51s+PI03Hx5ztOaME7k8Ck9Tq9BArDcvwWgCzsh6WvXDRngjoSWfHf3x5rNVPAj
+         kN9sqxL63mOyW/dAbZnM7PK53LfRxRbEMSKb67Ck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 346/593] ssb: Fix error return code in ssb_bus_scan()
-Date:   Mon, 12 Jul 2021 08:08:26 +0200
-Message-Id: <20210712060924.165721204@linuxfoundation.org>
+Subject: [PATCH 5.12 424/700] selftests/bpf: Whitelist test_progs.h from .gitignore
+Date:   Mon, 12 Jul 2021 08:08:27 +0200
+Message-Id: <20210712061021.495603078@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Daniel Xu <dxu@dxuuu.xyz>
 
-[ Upstream commit 77a0989baa427dbd242c5784d05a53ca3d197d43 ]
+[ Upstream commit 809ed84de8b3f2fd7b1d06efb94bf98fd318a7d7 ]
 
-Fix to return -EINVAL from the error handling case instead of 0, as done
-elsewhere in this function.
+Somehow test_progs.h was being included by the existing rule:
 
-Fixes: 61e115a56d1a ("[SSB]: add Sonics Silicon Backplane bus support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Acked-by: Michael Büsch <m@bues.ch>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210515072949.7151-1-thunder.leizhen@huawei.com
+    /test_progs*
+
+This is bad because:
+
+    1) test_progs.h is a checked in file
+    2) grep-like tools like ripgrep[0] respect gitignore and
+       test_progs.h was being hidden from searches
+
+[0]: https://github.com/BurntSushi/ripgrep
+
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule")
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/a46f64944bf678bc652410ca6028d3450f4f7f4b.1623880296.git.dxu@dxuuu.xyz
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ssb/scan.c | 1 +
+ tools/testing/selftests/bpf/.gitignore | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/ssb/scan.c b/drivers/ssb/scan.c
-index f49ab1aa2149..4161e5d1f276 100644
---- a/drivers/ssb/scan.c
-+++ b/drivers/ssb/scan.c
-@@ -325,6 +325,7 @@ int ssb_bus_scan(struct ssb_bus *bus,
- 	if (bus->nr_devices > ARRAY_SIZE(bus->devices)) {
- 		pr_err("More than %d ssb cores found (%d)\n",
- 		       SSB_MAX_NR_CORES, bus->nr_devices);
-+		err = -EINVAL;
- 		goto err_unmap;
- 	}
- 	if (bus->bustype == SSB_BUSTYPE_SSB) {
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index c0c48fdb9ac1..76d495fe3a17 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -8,6 +8,7 @@ FEATURE-DUMP.libbpf
+ fixdep
+ test_dev_cgroup
+ /test_progs*
++!test_progs.h
+ test_verifier_log
+ feature
+ test_sock
 -- 
 2.30.2
 
