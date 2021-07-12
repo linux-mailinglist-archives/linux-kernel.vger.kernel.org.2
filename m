@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AD93C58D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604CF3C5497
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381345AbhGLIwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S1353121AbhGLIBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352619AbhGLH7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B43BC61186;
-        Mon, 12 Jul 2021 07:53:31 +0000 (UTC)
+        id S240236AbhGLHXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:23:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 925E36136D;
+        Mon, 12 Jul 2021 07:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076412;
-        bh=q0kgSQ+nvfk1kPn0gHqgc8Mtyw07CI6RK73Q2udLmDI=;
+        s=korg; t=1626074423;
+        bh=Z2P7qrfrAgc1aezjJxPNFbCWzvfeh9Bh8dU1w8jdcp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ParyDvLG43TCNApmcz4vzeRRCkIyuj8/kS8+xHAnk7fppA9+SmuE96fqctGeX5mUK
-         kT3sdJUccRa45GyR6W0O/JRBA2l5wKY15LIcpCU2ZMs+wxjclSEtRPWU+yE8R7LXRA
-         mDmSjWAvlmRWhfl+tDsUMJWdm7YfNWYSpS/cO2Pc=
+        b=huj93dKxVPXYkgfuwFuf03yRpIO2QYXQ+CKlXNUoe/Hm35J30Pje38tE5JiGWwmtD
+         q1vHEDL3Rlf5UIMKBBJv/dKw4AWlbKMsLCekUvxqso0+TgRhK2/Xmdy8LmmzgumzMc
+         3e+Q61vKM9AEek3z95SsM0PYNA11cFnhCxg+5F+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 632/800] iio: light: isl29125: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:55 +0200
-Message-Id: <20210712061034.403312286@linuxfoundation.org>
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 573/700] leds: lm3692x: Put fwnode in any case during ->probe()
+Date:   Mon, 12 Jul 2021 08:10:56 +0200
+Message-Id: <20210712061037.031626368@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-[ Upstream commit 3d4725194de6935dba2ad7c9cc075c885008f747 ]
+[ Upstream commit f55db1c7fadc2a29c9fa4ff3aec98dbb111f2206 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+device_get_next_child_node() bumps a reference counting of a returned variable.
+We have to balance it whenever we return to the caller.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
-
-Fixes: 6c25539cbc46 ("iio: Add Intersil isl29125 digital color light sensor driver")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-18-jic23@kernel.org
+Fixes: 9a5c1c64ac0a ("leds: lm3692x: Change DT calls to fwnode calls")
+Cc: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/isl29125.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/leds/leds-lm3692x.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/light/isl29125.c b/drivers/iio/light/isl29125.c
-index b93b85dbc3a6..ba53b50d711a 100644
---- a/drivers/iio/light/isl29125.c
-+++ b/drivers/iio/light/isl29125.c
-@@ -51,7 +51,11 @@
- struct isl29125_data {
- 	struct i2c_client *client;
- 	u8 conf1;
--	u16 buffer[8]; /* 3x 16-bit, padding, 8 bytes timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u16 chans[3];
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+diff --git a/drivers/leds/leds-lm3692x.c b/drivers/leds/leds-lm3692x.c
+index e945de45388c..55e6443997ec 100644
+--- a/drivers/leds/leds-lm3692x.c
++++ b/drivers/leds/leds-lm3692x.c
+@@ -435,6 +435,7 @@ static int lm3692x_probe_dt(struct lm3692x_led *led)
  
- #define ISL29125_CHANNEL(_color, _si) { \
-@@ -184,10 +188,10 @@ static irqreturn_t isl29125_trigger_handler(int irq, void *p)
- 		if (ret < 0)
- 			goto done;
- 
--		data->buffer[j++] = ret;
-+		data->scan.chans[j++] = ret;
+ 	ret = fwnode_property_read_u32(child, "reg", &led->led_enable);
+ 	if (ret) {
++		fwnode_handle_put(child);
+ 		dev_err(&led->client->dev, "reg DT property missing\n");
+ 		return ret;
  	}
+@@ -449,12 +450,11 @@ static int lm3692x_probe_dt(struct lm3692x_led *led)
  
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 		iio_get_time_ns(indio_dev));
+ 	ret = devm_led_classdev_register_ext(&led->client->dev, &led->led_dev,
+ 					     &init_data);
+-	if (ret) {
++	if (ret)
+ 		dev_err(&led->client->dev, "led register err: %d\n", ret);
+-		return ret;
+-	}
  
- done:
+-	return 0;
++	fwnode_handle_put(init_data.fwnode);
++	return ret;
+ }
+ 
+ static int lm3692x_probe(struct i2c_client *client,
 -- 
 2.30.2
 
