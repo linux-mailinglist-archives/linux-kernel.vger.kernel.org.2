@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0B13C4C7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4888C3C57D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243550AbhGLHFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:05:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
+        id S1355208AbhGLIik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:38:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238305AbhGLGrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:47:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77AD161222;
-        Mon, 12 Jul 2021 06:42:59 +0000 (UTC)
+        id S1350702AbhGLHvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 118166194F;
+        Mon, 12 Jul 2021 07:47:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072179;
-        bh=N8/33mR8ZNLEt5zuXLYaFUE+geiMIYi5B0boD7dJbEw=;
+        s=korg; t=1626076062;
+        bh=U2F2FPZ6+Qt+2IdVIgvPY5wBKgz4V1Wmu1GImP/l64A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q8hV9rObyPOglcGLVl99oThVG6abUXIB2sL3ySKPYZKgThESq1rMVDNSPV+gSYCWx
-         rvnX6Nj1oBucRMMWQILa3UhHObkiCTV0LMHwTqpBlPlA2SWWSAeGhiOGt2R9MDl6Ie
-         wOlg38zYiXXd01gRPVUZpmENIaCIcpbLGjQOKgB4=
+        b=bF0Ybsu9yXxE8HPwYlkRQMv4xmmo1ylWZE/DZYTeDIbMGAOT8YQ/Er9ukNQ9+LVXV
+         fc5SebABzecNM+kefcCH8o4uWkCrjI5uoRfBTQo7j/Y1o/+U0TrQ5bKE39I4A3qE+m
+         GNDGS8n7xuQnzEg6nJJ1UWvNpNchCJfFNNAUBih4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 345/593] wcn36xx: Move hal_buf allocation to devm_kmalloc in probe
-Date:   Mon, 12 Jul 2021 08:08:25 +0200
-Message-Id: <20210712060924.033741450@linuxfoundation.org>
+Subject: [PATCH 5.13 483/800] RDMA/rtrs-srv: Set minimal max_send_wr and max_recv_wr
+Date:   Mon, 12 Jul 2021 08:08:26 +0200
+Message-Id: <20210712061018.580808894@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +43,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-[ Upstream commit ef48667557c53d4b51a1ee3090eab7699324c9de ]
+[ Upstream commit 5e91eabf66c854f16ca2e954e5c68939bc81601e ]
 
-Right now wcn->hal_buf is allocated in wcn36xx_start(). This is a problem
-since we should have setup all of the buffers we required by the time
-ieee80211_register_hw() is called.
+Currently rtrs when create_qp use a coarse numbers (bigger in general),
+which leads to hardware create more resources which only waste memory with
+no benefits.
 
-struct ieee80211_ops callbacks may run prior to mac_start() and therefore
-wcn->hal_buf must be initialized.
+For max_send_wr, we don't really need alway max_qp_wr size when creating
+qp, reduce it to cq_size.
 
-This is easily remediated by moving the allocation to probe() taking the
-opportunity to tidy up freeing memory by using devm_kmalloc().
+For max_recv_wr,  cq_size is enough.
 
-Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210605173347.2266003-1-bryan.odonoghue@linaro.org
+With the patch when sess_queue_depth=128, per session (2 paths) memory
+consumption reduced from 188 MB to 65MB
+
+When always_invalidate is enabled, we need send more wr, so treat it
+special.
+
+Fixes: 9cb837480424e ("RDMA/rtrs: server: main functionality")
+Link: https://lore.kernel.org/r/20210614090337.29557-2-jinpu.wang@ionos.com
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wcn36xx/main.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 38 +++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
-index 706728fba72d..9f8e44210e89 100644
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -293,23 +293,16 @@ static int wcn36xx_start(struct ieee80211_hw *hw)
- 		goto out_free_dxe_pool;
- 	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 62f59ccb327c..8a9099684b8e 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1605,7 +1605,7 @@ static int create_con(struct rtrs_srv_sess *sess,
+ 	struct rtrs_sess *s = &sess->s;
+ 	struct rtrs_srv_con *con;
  
--	wcn->hal_buf = kmalloc(WCN36XX_HAL_BUF_SIZE, GFP_KERNEL);
--	if (!wcn->hal_buf) {
--		wcn36xx_err("Failed to allocate smd buf\n");
--		ret = -ENOMEM;
--		goto out_free_dxe_ctl;
--	}
--
- 	ret = wcn36xx_smd_load_nv(wcn);
- 	if (ret) {
- 		wcn36xx_err("Failed to push NV to chip\n");
--		goto out_free_smd_buf;
-+		goto out_free_dxe_ctl;
- 	}
+-	u32 cq_size, wr_queue_size;
++	u32 cq_size, max_send_wr, max_recv_wr, wr_limit;
+ 	int err, cq_vector;
  
- 	ret = wcn36xx_smd_start(wcn);
- 	if (ret) {
- 		wcn36xx_err("Failed to start chip\n");
--		goto out_free_smd_buf;
-+		goto out_free_dxe_ctl;
- 	}
- 
- 	if (!wcn36xx_is_fw_version(wcn, 1, 2, 2, 24)) {
-@@ -336,8 +329,6 @@ static int wcn36xx_start(struct ieee80211_hw *hw)
- 
- out_smd_stop:
- 	wcn36xx_smd_stop(wcn);
--out_free_smd_buf:
--	kfree(wcn->hal_buf);
- out_free_dxe_ctl:
- 	wcn36xx_dxe_free_ctl_blks(wcn);
- out_free_dxe_pool:
-@@ -372,8 +363,6 @@ static void wcn36xx_stop(struct ieee80211_hw *hw)
- 
- 	wcn36xx_dxe_free_mem_pools(wcn);
- 	wcn36xx_dxe_free_ctl_blks(wcn);
--
--	kfree(wcn->hal_buf);
- }
- 
- static void wcn36xx_change_ps(struct wcn36xx *wcn, bool enable)
-@@ -1398,6 +1387,12 @@ static int wcn36xx_probe(struct platform_device *pdev)
- 	mutex_init(&wcn->hal_mutex);
- 	mutex_init(&wcn->scan_lock);
- 
-+	wcn->hal_buf = devm_kmalloc(wcn->dev, WCN36XX_HAL_BUF_SIZE, GFP_KERNEL);
-+	if (!wcn->hal_buf) {
-+		ret = -ENOMEM;
-+		goto out_wq;
-+	}
+ 	con = kzalloc(sizeof(*con), GFP_KERNEL);
+@@ -1626,30 +1626,42 @@ static int create_con(struct rtrs_srv_sess *sess,
+ 		 * All receive and all send (each requiring invalidate)
+ 		 * + 2 for drain and heartbeat
+ 		 */
+-		wr_queue_size = SERVICE_CON_QUEUE_DEPTH * 3 + 2;
+-		cq_size = wr_queue_size;
++		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
++		max_recv_wr = SERVICE_CON_QUEUE_DEPTH + 2;
++		cq_size = max_send_wr + max_recv_wr;
+ 	} else {
+-		/*
+-		 * If we have all receive requests posted and
+-		 * all write requests posted and each read request
+-		 * requires an invalidate request + drain
+-		 * and qp gets into error state.
+-		 */
+-		cq_size = srv->queue_depth * 3 + 1;
+ 		/*
+ 		 * In theory we might have queue_depth * 32
+ 		 * outstanding requests if an unsafe global key is used
+ 		 * and we have queue_depth read requests each consisting
+ 		 * of 32 different addresses. div 3 for mlx5.
+ 		 */
+-		wr_queue_size = sess->s.dev->ib_dev->attrs.max_qp_wr / 3;
++		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr / 3;
++		/* when always_invlaidate enalbed, we need linv+rinv+mr+imm */
++		if (always_invalidate)
++			max_send_wr =
++				min_t(int, wr_limit,
++				      srv->queue_depth * (1 + 4) + 1);
++		else
++			max_send_wr =
++				min_t(int, wr_limit,
++				      srv->queue_depth * (1 + 2) + 1);
 +
- 	ret = dma_set_mask_and_coherent(wcn->dev, DMA_BIT_MASK(32));
- 	if (ret < 0) {
- 		wcn36xx_err("failed to set DMA mask: %d\n", ret);
++		max_recv_wr = srv->queue_depth + 1;
++		/*
++		 * If we have all receive requests posted and
++		 * all write requests posted and each read request
++		 * requires an invalidate request + drain
++		 * and qp gets into error state.
++		 */
++		cq_size = max_send_wr + max_recv_wr;
+ 	}
+-	atomic_set(&con->sq_wr_avail, wr_queue_size);
++	atomic_set(&con->sq_wr_avail, max_send_wr);
+ 	cq_vector = rtrs_srv_get_next_cq_vector(sess);
+ 
+ 	/* TODO: SOFTIRQ can be faster, but be careful with softirq context */
+ 	err = rtrs_cq_qp_create(&sess->s, &con->c, 1, cq_vector, cq_size,
+-				 wr_queue_size, wr_queue_size,
++				 max_send_wr, max_recv_wr,
+ 				 IB_POLL_WORKQUEUE);
+ 	if (err) {
+ 		rtrs_err(s, "rtrs_cq_qp_create(), err: %d\n", err);
 -- 
 2.30.2
 
