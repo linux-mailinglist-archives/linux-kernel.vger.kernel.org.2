@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329ED3C56EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7468B3C49AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358527AbhGLI0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:26:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49838 "EHLO mail.kernel.org"
+        id S237298AbhGLGqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349308AbhGLHlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D65F760724;
-        Mon, 12 Jul 2021 07:39:03 +0000 (UTC)
+        id S236227AbhGLGfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27ED2610D0;
+        Mon, 12 Jul 2021 06:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075544;
-        bh=1O+RB0jGz8d34aGUcynhQQb25IT28EtM/dWmHEG+1f8=;
+        s=korg; t=1626071559;
+        bh=QscHBCdwyz845ByNO9AmsX1v5TFqG9DVE99wooaq7oI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sHZUQsyID3ZjzLCSCqqItHqBLmKhPstSTG7ElNcoxY295Zdd7zgvHtnqVuzmvmOX5
-         ng555So43Q7uVWk8OFPh4WxPSd+gl+mkZlwjBlp6rXmlCWuLEqPLx8nBn5EO7BCQoS
-         QXFKqqp1Ot/4/b/1jRwL5rJCLG1C6pVDjVdKQB8s=
+        b=ClIv2BihJ3wlJxCdLlt+Ac7WNn+QUjBtyPJamXqekR1EYbBpTGFgAEIqqFQtee1xK
+         baYs5MnwPicu+vAb35wU6pHLzpKRluokTjRVxNHrhOQKnc9/BnYdrvlBqIBbZE+xwm
+         zOOqbupj1Tfz01t5LijJI4J9Bj+e8npdYX90B0v8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 260/800] mailbox: qcom: Use PLATFORM_DEVID_AUTO to register platform device
+Subject: [PATCH 5.10 123/593] media: cobalt: fix race condition in setting HPD
 Date:   Mon, 12 Jul 2021 08:04:43 +0200
-Message-Id: <20210712060951.062640785@linuxfoundation.org>
+Message-Id: <20210712060856.696488657@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 96e39e95c01283ff5695dafe659df88ada802159 ]
+[ Upstream commit 3d37ef41bed0854805ab9af22c422267510e1344 ]
 
-In adding APCS clock support for MSM8939, the second clock registration
-fails due to duplicate device name like below.
+The cobalt_s_bit_sysctrl reads the old register value over PCI,
+then changes a bit and sets writes the new value to the register.
 
-[    0.519657] sysfs: cannot create duplicate filename '/bus/platform/devices/qcom-apcs-msm8916-clk'
-...
-[    0.661158] qcom_apcs_ipc b111000.mailbox: failed to register APCS clk
+This is used among other things for setting the HPD output pin.
 
-This is because MSM8939 has 3 APCS instances for Cluster0 (little cores),
-Cluster1 (big cores) and CCI (Cache Coherent Interconnect).  Although
-only APCS of Cluster0 and Cluster1 have IPC bits, each of 3 APCS has
-A53PLL clock control bits.  That said, 3 'qcom-apcs-msm8916-clk' devices
-need to be registered to instantiate all 3 clocks.  Use PLATFORM_DEVID_AUTO
-rather than PLATFORM_DEVID_NONE for platform_device_register_data() call
-to fix the issue above.
+But if the HPD is changed for multiple inputs at the same time,
+then this causes a race condition where a stale value is read.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+Serialize this function with a mutex.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/qcom-apcs-ipc-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/cobalt/cobalt-driver.c | 1 +
+ drivers/media/pci/cobalt/cobalt-driver.h | 7 ++++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-index f25324d03842..15236d729625 100644
---- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-+++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-@@ -132,7 +132,7 @@ static int qcom_apcs_ipc_probe(struct platform_device *pdev)
- 	if (apcs_data->clk_name) {
- 		apcs->clk = platform_device_register_data(&pdev->dev,
- 							  apcs_data->clk_name,
--							  PLATFORM_DEVID_NONE,
-+							  PLATFORM_DEVID_AUTO,
- 							  NULL, 0);
- 		if (IS_ERR(apcs->clk))
- 			dev_err(&pdev->dev, "failed to register APCS clk\n");
+diff --git a/drivers/media/pci/cobalt/cobalt-driver.c b/drivers/media/pci/cobalt/cobalt-driver.c
+index 0695078ef812..1bd8bbe57a30 100644
+--- a/drivers/media/pci/cobalt/cobalt-driver.c
++++ b/drivers/media/pci/cobalt/cobalt-driver.c
+@@ -667,6 +667,7 @@ static int cobalt_probe(struct pci_dev *pci_dev,
+ 		return -ENOMEM;
+ 	cobalt->pci_dev = pci_dev;
+ 	cobalt->instance = i;
++	mutex_init(&cobalt->pci_lock);
+ 
+ 	retval = v4l2_device_register(&pci_dev->dev, &cobalt->v4l2_dev);
+ 	if (retval) {
+diff --git a/drivers/media/pci/cobalt/cobalt-driver.h b/drivers/media/pci/cobalt/cobalt-driver.h
+index bca68572b324..12c33e035904 100644
+--- a/drivers/media/pci/cobalt/cobalt-driver.h
++++ b/drivers/media/pci/cobalt/cobalt-driver.h
+@@ -251,6 +251,8 @@ struct cobalt {
+ 	int instance;
+ 	struct pci_dev *pci_dev;
+ 	struct v4l2_device v4l2_dev;
++	/* serialize PCI access in cobalt_s_bit_sysctrl() */
++	struct mutex pci_lock;
+ 
+ 	void __iomem *bar0, *bar1;
+ 
+@@ -320,10 +322,13 @@ static inline u32 cobalt_g_sysctrl(struct cobalt *cobalt)
+ static inline void cobalt_s_bit_sysctrl(struct cobalt *cobalt,
+ 					int bit, int val)
+ {
+-	u32 ctrl = cobalt_read_bar1(cobalt, COBALT_SYS_CTRL_BASE);
++	u32 ctrl;
+ 
++	mutex_lock(&cobalt->pci_lock);
++	ctrl = cobalt_read_bar1(cobalt, COBALT_SYS_CTRL_BASE);
+ 	cobalt_write_bar1(cobalt, COBALT_SYS_CTRL_BASE,
+ 			(ctrl & ~(1UL << bit)) | (val << bit));
++	mutex_unlock(&cobalt->pci_lock);
+ }
+ 
+ static inline u32 cobalt_g_sysstat(struct cobalt *cobalt)
 -- 
 2.30.2
 
