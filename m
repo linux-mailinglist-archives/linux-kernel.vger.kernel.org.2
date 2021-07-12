@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959323C516A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7243C5130
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348283AbhGLHkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
+        id S1344900AbhGLHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244132AbhGLHK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244133AbhGLHK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 03:10:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0CA61107;
-        Mon, 12 Jul 2021 07:06:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E64261186;
+        Mon, 12 Jul 2021 07:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073577;
-        bh=e6MK2jsGWoD0XBWHwwKu4MHpih1TgeMFmpbHGInaer0=;
+        s=korg; t=1626073580;
+        bh=BtWqfh2M0s3HQoGaomlcmC8sxmlBexek3yVLfsONMas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gD7zSXKYlvOIXKNlH2BZaT7jPzGtm06lRV72658jsOu3HjyJpWYYlL4pvxAj7qFDB
-         bsfZjBTvdjLXGaFnhFSbHfpuWPKb6rMrpv7z5Vy2dXYleuNV/35eXLmZ9p9Z0ncpO8
-         6Q2hxg6qow7KMhDDqKp4bXeNqEP82QPKrXymyqFI=
+        b=m3U5bpdF9Y5wyzL+CSP1UesvwWfIEnOEQPwTg7Ygk8rr8pE5qB8hNK/eBkv06lRMl
+         PtQ+9Z2xyETtQSzEwcMiDNULLr8d2UlvVUy6yd7WGsK8SC1TeyneWDDHhwM8b/Lynj
+         t4IbQ4mpxqR4TlcGfgHNvjsftpWYFM21xTUKI8Sw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        stable@vger.kernel.org,
+        syzbot+142888ffec98ab194028@syzkaller.appspotmail.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 288/700] arm64/mm: Fix ttbr0 values stored in struct thread_info for software-pan
-Date:   Mon, 12 Jul 2021 08:06:11 +0200
-Message-Id: <20210712061006.862869089@linuxfoundation.org>
+Subject: [PATCH 5.12 289/700] media: v4l2-core: ignore native time32 ioctls on 64-bit
+Date:   Mon, 12 Jul 2021 08:06:12 +0200
+Message-Id: <20210712061006.977668145@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -44,67 +44,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 9163f01130304fab1f74683d7d44632da7bda637 ]
+[ Upstream commit c344f07aa1b4ba38ca8fabe407a2afe2f436323c ]
 
-When using CONFIG_ARM64_SW_TTBR0_PAN, a task's thread_info::ttbr0 must be
-the TTBR0_EL1 value used to run userspace. With 52-bit PAs, the PA must be
-packed into the TTBR using phys_to_ttbr(), but we forget to do this in some
-of the SW PAN code. Thus, if the value is installed into TTBR0_EL1 (as may
-happen in the uaccess routines), this could result in UNPREDICTABLE
-behaviour.
+Syzbot found that passing ioctl command 0xc0505609 into a 64-bit
+kernel from a 32-bit process causes uninitialized kernel memory to
+get passed to drivers instead of the user space data:
 
-Since hardware with 52-bit PA support almost certainly has HW PAN, which
-will be used in preference, this shouldn't be a practical issue, but let's
-fix this for consistency.
+BUG: KMSAN: uninit-value in check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
+BUG: KMSAN: uninit-value in video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
+CPU: 0 PID: 19595 Comm: syz-executor.4 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
+ video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
+ video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
+ v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
+ v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
+ __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
+ __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
+ __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Fixes: 529c4b05a3cb ("arm64: handle 52-bit addresses in TTBR")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/1623749578-11231-1-git-send-email-anshuman.khandual@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+The time32 commands are defined but were never meant to be called on
+64-bit machines, as those have always used time64 interfaces.  I missed
+this in my patch that introduced the time64 handling on 32-bit platforms.
+
+The problem in this case is the mismatch of one function checking for
+the numeric value of the command and another function checking for the
+type of process (native vs compat) instead, with the result being that
+for this combination, nothing gets copied into the buffer at all.
+
+Avoid this by only trying to convert the time32 commands when running
+on a 32-bit kernel where these are defined in a meaningful way.
+
+[hverkuil: fix 3 warnings: switch with no cases]
+
+Fixes: 577c89b0ce72 ("media: v4l2-core: fix v4l2_buffer handling for time64 ABI")
+Reported-by: syzbot+142888ffec98ab194028@syzkaller.appspotmail.com
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/mmu_context.h | 4 ++--
- arch/arm64/kernel/setup.c            | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/media/v4l2-core/v4l2-ioctl.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index bd02e99b1a4c..44dceac442fc 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -177,9 +177,9 @@ static inline void update_saved_ttbr0(struct task_struct *tsk,
- 		return;
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 31d1342e61e8..7e8bf4b1ab2e 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -3114,8 +3114,8 @@ static int check_array_args(unsigned int cmd, void *parg, size_t *array_size,
  
- 	if (mm == &init_mm)
--		ttbr = __pa_symbol(reserved_pg_dir);
-+		ttbr = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
- 	else
--		ttbr = virt_to_phys(mm->pgd) | ASID(mm) << 48;
-+		ttbr = phys_to_ttbr(virt_to_phys(mm->pgd)) | ASID(mm) << 48;
+ static unsigned int video_translate_cmd(unsigned int cmd)
+ {
++#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
+ 	switch (cmd) {
+-#ifdef CONFIG_COMPAT_32BIT_TIME
+ 	case VIDIOC_DQEVENT_TIME32:
+ 		return VIDIOC_DQEVENT;
+ 	case VIDIOC_QUERYBUF_TIME32:
+@@ -3126,8 +3126,8 @@ static unsigned int video_translate_cmd(unsigned int cmd)
+ 		return VIDIOC_DQBUF;
+ 	case VIDIOC_PREPARE_BUF_TIME32:
+ 		return VIDIOC_PREPARE_BUF;
+-#endif
+ 	}
++#endif
+ 	if (in_compat_syscall())
+ 		return v4l2_compat_translate_cmd(cmd);
  
- 	WRITE_ONCE(task_thread_info(tsk)->ttbr0, ttbr);
+@@ -3168,8 +3168,8 @@ static int video_get_user(void __user *arg, void *parg,
+ 	} else if (in_compat_syscall()) {
+ 		err = v4l2_compat_get_user(arg, parg, cmd);
+ 	} else {
++#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
+ 		switch (cmd) {
+-#ifdef CONFIG_COMPAT_32BIT_TIME
+ 		case VIDIOC_QUERYBUF_TIME32:
+ 		case VIDIOC_QBUF_TIME32:
+ 		case VIDIOC_DQBUF_TIME32:
+@@ -3197,8 +3197,8 @@ static int video_get_user(void __user *arg, void *parg,
+ 			};
+ 			break;
+ 		}
+-#endif
+ 		}
++#endif
+ 	}
+ 
+ 	/* zero out anything we don't copy from userspace */
+@@ -3223,8 +3223,8 @@ static int video_put_user(void __user *arg, void *parg,
+ 	if (in_compat_syscall())
+ 		return v4l2_compat_put_user(arg, parg, cmd);
+ 
++#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
+ 	switch (cmd) {
+-#ifdef CONFIG_COMPAT_32BIT_TIME
+ 	case VIDIOC_DQEVENT_TIME32: {
+ 		struct v4l2_event *ev = parg;
+ 		struct v4l2_event_time32 ev32;
+@@ -3272,8 +3272,8 @@ static int video_put_user(void __user *arg, void *parg,
+ 			return -EFAULT;
+ 		break;
+ 	}
+-#endif
+ 	}
++#endif
+ 
+ 	return 0;
  }
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 61845c0821d9..68b30e8c22db 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -381,7 +381,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	 * faults in case uaccess_enable() is inadvertently called by the init
- 	 * thread.
- 	 */
--	init_task.thread_info.ttbr0 = __pa_symbol(reserved_pg_dir);
-+	init_task.thread_info.ttbr0 = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
- #endif
- 
- 	if (boot_args[1] || boot_args[2] || boot_args[3]) {
 -- 
 2.30.2
 
