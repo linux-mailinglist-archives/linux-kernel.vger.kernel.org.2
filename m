@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7572A3C5492
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DD13C58CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353018AbhGLIA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:00:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
+        id S1381205AbhGLIwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:52:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240593AbhGLHWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:22:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E850A611CB;
-        Mon, 12 Jul 2021 07:19:54 +0000 (UTC)
+        id S1352429AbhGLH7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFF6E613D6;
+        Mon, 12 Jul 2021 07:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074395;
-        bh=7lAdnIC+IS9y3dqbml/aSQCH1+mOE6hdrUUPm9pLZf0=;
+        s=korg; t=1626076393;
+        bh=HJtyBbowZ8yR61CU1kIwhtfWAHhQF0Ef5X+1SRF6nR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fuZfAZYvnm0m2p7lO1vqKfaI5+JYIyGMmhOp5+Ii6FK+kyvwrUoNG9xvDovhWr0rZ
-         v2fnu46r+M2lYEmOrvQ0fl61njuSeqTZ9sbguYBfYjMUL2nypNdQF4ia7owyUIleAM
-         0o98LpvKqKW9VNAIVa/XMd0Fns9yDoxi+nLwIuxE=
+        b=WSO5GTcFM08X0a3EcQBoq7oqSksrOMmzNC7C9lI327ujcL/Kvz33ansxKOSK8e70c
+         IA+RlpNFMFDeML9IRDxLbgW5BonTDzF/nNtCrwpcMzXLEE7HrbXEsNw301cXtnBcXT
+         fvKTBuCKqVYBRh/sMoLHDNNDDuk6OE+588mJ74a0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 565/700] char: pcmcia: error out if num_bytes_read is greater than 4 in set_protocol()
+Subject: [PATCH 5.13 625/800] iio: gyro: bmg160: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:10:48 +0200
-Message-Id: <20210712061036.283146248@linuxfoundation.org>
+Message-Id: <20210712061033.735195814@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 37188559c610f1b7eec83c8e448936c361c578de ]
+[ Upstream commit 06778d881f3798ce93ffbbbf801234292250b598 ]
 
-Theoretically, it will cause index out of bounds error if
-'num_bytes_read' is greater than 4. As we expect it(and was tested)
-never to be greater than 4, error out if it happens.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20210521120617.138396-1-yukuai3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Found during an audit of all calls of uses of
+iio_push_to_buffers_with_timestamp()
+
+Fixes: 13426454b649 ("iio: bmg160: Separate i2c and core driver")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-11-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/pcmcia/cm4000_cs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/iio/gyro/bmg160_core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
-index 89681f07bc78..9468e9520cee 100644
---- a/drivers/char/pcmcia/cm4000_cs.c
-+++ b/drivers/char/pcmcia/cm4000_cs.c
-@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
- 		io_read_num_rec_bytes(iobase, &num_bytes_read);
- 		if (num_bytes_read >= 4) {
- 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
-+			if (num_bytes_read > 4) {
-+				rc = -EIO;
-+				goto exit_setprotocol;
-+			}
- 			break;
- 		}
- 		usleep_range(10000, 11000);
+diff --git a/drivers/iio/gyro/bmg160_core.c b/drivers/iio/gyro/bmg160_core.c
+index b11ebd9bb7a4..7bc13ff2c3ac 100644
+--- a/drivers/iio/gyro/bmg160_core.c
++++ b/drivers/iio/gyro/bmg160_core.c
+@@ -98,7 +98,11 @@ struct bmg160_data {
+ 	struct iio_trigger *motion_trig;
+ 	struct iio_mount_matrix orientation;
+ 	struct mutex mutex;
+-	s16 buffer[8];
++	/* Ensure naturally aligned timestamp */
++	struct {
++		s16 chans[3];
++		s64 timestamp __aligned(8);
++	} scan;
+ 	u32 dps_range;
+ 	int ev_enable_state;
+ 	int slope_thres;
+@@ -882,12 +886,12 @@ static irqreturn_t bmg160_trigger_handler(int irq, void *p)
+ 
+ 	mutex_lock(&data->mutex);
+ 	ret = regmap_bulk_read(data->regmap, BMG160_REG_XOUT_L,
+-			       data->buffer, AXIS_MAX * 2);
++			       data->scan.chans, AXIS_MAX * 2);
+ 	mutex_unlock(&data->mutex);
+ 	if (ret < 0)
+ 		goto err;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   pf->timestamp);
+ err:
+ 	iio_trigger_notify_done(indio_dev->trig);
 -- 
 2.30.2
 
