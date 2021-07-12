@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843BB3C5BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D153C5BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhGLMMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        id S233729AbhGLMMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhGLMMc (ORCPT
+        with ESMTP id S230074AbhGLMMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:12:32 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF39C0613DD;
-        Mon, 12 Jul 2021 05:09:43 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id a2so17991510pgi.6;
-        Mon, 12 Jul 2021 05:09:43 -0700 (PDT)
+        Mon, 12 Jul 2021 08:12:38 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EBDC0613DD;
+        Mon, 12 Jul 2021 05:09:49 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id c17so34036543ejk.13;
+        Mon, 12 Jul 2021 05:09:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QDqsbSw5ub3US40KaqnvHwW7Q3ZUM55LG73YWMhDPxQ=;
-        b=mfWDH2Fms6O77tl7wv+7hMAX1RU4P0QEfO1Kmzpexc6rH6UNwVpt0vGgWJbqIg5qkk
-         5YQUiIUeTIJzTiViGp9DuxeFVP1B022YomDIm9CglhGDsn+NsaiX1m1vbBj+V6oAYEmc
-         e+sTi4ArEEcfPBD2W9H3oJPfiaS7yjUW0fPTou/DnYksVFm+qbJ12a4huv7hioJ7K0pa
-         KFqiBNeMPtlUClcOXMhBrOai8YuIWPfBwGY31SItmKOYLTUPpU9R/DbsXpwfwT68bm9G
-         ID1Azzz3TXFDAMXNdcb36mrb/+7KGIe2gHUGObL5Lfc2OPLUm5BCBW/aRIah2wYc2yST
-         Cc5g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LWC9vWw5LFhroZhy6pnYOxWW9Jdfs8ytgrsX7MK/bic=;
+        b=AMdymw1m28Ue43yTNsnrtX/Xp7WScZz8ab++pF3FqYYrnYXjPoes39z/eRBwnBCQvn
+         MQd2F7w4LSmb9h4SxIZFmQzgqGU+HjO1eqLnHqFb8He88LSuQ0yerZR+irSAzh4/ojyF
+         gJMa4iQAdscNaRGsUKue6WMrCP6RFOOpkFHFXv1hntgmclOanPptt+o3t+fvxtldK3C5
+         ql/2ZnNb+3a6jFz56l9ZpQZKpmd3qR7LIaoHA8gOS5RNhQPs1DHvR8qR5yu5PzDPUI1U
+         obSdyYOelxHdBlvRMiqrAv6xE5BWTjtZRRZ3i6Yf6DBiP6dYnJwti4kOBvgix25kWLHZ
+         Ov1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QDqsbSw5ub3US40KaqnvHwW7Q3ZUM55LG73YWMhDPxQ=;
-        b=JogmtmvwkRyJkfQkAI4yGV0LAKxJa5QiVgYAV2w2mJ09SH4NT3O+bMvIksfl473wmd
-         T9tK9RFoYGlW5Hm/VrzRUm1NRQMkYi9i/+PMOKbdRNvEPGcn5w+TlHwhNYMQGm0PHJfH
-         ETW6z+2Ha/R+uF3748jHs7SdoSzlkCLvhfpvyUYFCr5rYbA0aYrdx+5JtPV5QsEPBFuw
-         MRDYizhrvMt8QwZMz4HU/37lQevV4dtYCoMJysxc1s5hli+kEeouB+84nJy3DZIVFvqT
-         3/U4rb1OF3GcgDYzCBQhfZiHRP5v90oB5qexOEjGoJN8fX00xmQml8mH72AaJwy1B/6O
-         lBtA==
-X-Gm-Message-State: AOAM533an0uLYtKzAni/nzcSMfnrtIqK9+1OcX2B5M7PtGAjaVUTCx2E
-        zs6EsC7eFnrK60F4VJcIJWm69vIvz/OCt8FDpQc=
-X-Google-Smtp-Source: ABdhPJyDjntb09x1C4LNuWLUIWPpFwCw5HCcLsIodv8EQmaB5UiwWsDJXRzveYM2Mk/WiI6F1Jl4rE+HqPHUtzWTXQ0=
-X-Received: by 2002:a63:d014:: with SMTP id z20mr53104677pgf.203.1626091783250;
- Mon, 12 Jul 2021 05:09:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LWC9vWw5LFhroZhy6pnYOxWW9Jdfs8ytgrsX7MK/bic=;
+        b=YfpeGP2pyH4QJb8PYSKbjdsHLOTwtpYpRTQCp1pZOQ+CN7an2CZAdSE03e5+JjAhSa
+         HIHWtMlvQznkb8YwqJvcOpAyI/rxiN4jzeYeXIcOusttPQ5UGEtzmG8f6qq7R/2l4fyz
+         cqLysvTrkyPUUbEI9qy83imBw7G5Uh7U7K+1xyECR0wYZj7x69Hynf0RD366YIie7gmt
+         N2UUhbAgGCIVaE4zHAdMuNsfTH9uR2nuRuyljt0BLUOLFHCzRKMxyMu31CrEdn3wfW1Q
+         MRXvZcHYezI2FDxqyvrp7mz5wOTnyqMQxqKueL7ezy7Bi4MXMg10r4T9Qg6x/K4j5Kau
+         zX4Q==
+X-Gm-Message-State: AOAM533Cs6VFPgcxAsBR7b/BIs9sGnH/eive0qRPPzoXfLcnznDcQFtz
+        ooCBl7WVMmLFq7tTYCK4Kxg=
+X-Google-Smtp-Source: ABdhPJzoaBRIltWR3pH1Ao00DXwI0zgNKavD2cac/UUKczGIdMDMg8ua5eWWa/X5TGRHqTyfnh4sDA==
+X-Received: by 2002:a17:906:3cc:: with SMTP id c12mr50622142eja.268.1626091788363;
+        Mon, 12 Jul 2021 05:09:48 -0700 (PDT)
+Received: from pc ([196.235.212.194])
+        by smtp.gmail.com with ESMTPSA id br4sm6403609ejb.110.2021.07.12.05.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 05:09:47 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 13:09:45 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
+        james.morse@arm.com, rric@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND] edac: replace sprintf() by scnprintf()
+Message-ID: <20210712120945.GA777994@pc>
+References: <20210710163505.GA689509@pc>
+ <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
 MIME-Version: 1.0
-References: <20210329174928.18816-1-henning.schild@siemens.com>
- <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com> <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 12 Jul 2021 15:09:04 +0300
-Message-ID: <CAHp75VfvVD20pZng_BG-ptZiYo9VBfHFe2OABo8VmtYcarfcSw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 2:35 PM Henning Schild
-<henning.schild@siemens.com> wrote:
->
-> This series is basically stuck because people rightfully want me to use
-> the GPIO subsystem for the LEDs and the watchdog bits that are
-> connected to GPIO.
->
-> Problem is that the GPIO subsystem does not initialize on the machines
-> in question. It is a combination of hidden P2SB and missing ACPI table
-> entries. The GPIO subsystem (intel pinctrl) needs either P2SB or ACPI do
-> come up ...
->
-> Andy proposed some patches for initializing the intel pinctrl stuff for
-> one of the machines by falling back to SoC detection in case there is
-> no ACPI or visible P2SB. While that works it would need to be done for
-> any Intel SoC to be consistent and discussions seem to go nowhere.
->
-> I would be willing to port over to "intel pintctl" and help with
-> testing, but not so much with actual coding. Andy is that moving at all?
->
-> Since my drivers do reserve the mmio regions properly and the intel
-> pinctrl will never come up anyways, i do not see a conflict merging my
-> proposed drivers in the current codebase. The wish to use the pinctrl
-> infrastructure can not be fulfilled if that infra is not in place. Once
-> intel pinctrl works, we can change those drivers to work with that.
->
-> I do not want to take shortcuts ... but also do not want to get stuck
-> here. So maybe one way to serialize the merge is to allow my changes
-> like proposed and rebase on intel pinctrl once that subsystem actually
-> initializes on these machines. We could even have two code paths ... if
-> region can not be reserved, try gpio ... or the other way around.
+On Sat, Jul 10, 2021 at 09:58:46AM -0700, Joe Perches wrote:
+> On Sat, 2021-07-10 at 17:35 +0100, Salah Triki wrote:
+> > Replace sprintf() by scnprintf() in order to avoid buffer overflows.
+> 
+> While of course safe, this is not strictly necessary as the
+> maximum length of any edac_layer_name is 8 bytes.
+> 
+> drivers/edac/edac_mc.c:const char *edac_layer_name[] = {
+> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_BRANCH] = "branch",
+> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHANNEL] = "channel",
+> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_SLOT] = "slot",
+> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHIP_SELECT] = "csrow",
+> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_ALL_MEM] = "memory",
+> drivers/edac/edac_mc.c-};
+> 
+> And name is:
+> 
+> 		char name[80];
+> 
+> I suppose name[80] could be changed to name[32] or so
+> at the same time to reduce stack usage.
+> 
+> Maybe name should be moved into the loop too.
+> 
+> ---
+>  drivers/edac/debugfs.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/edac/debugfs.c b/drivers/edac/debugfs.c
+> index 4804332d99465..a41071f2ad428 100644
+> --- a/drivers/edac/debugfs.c
+> +++ b/drivers/edac/debugfs.c
+> @@ -55,14 +55,15 @@ void edac_debugfs_exit(void)
+>  void edac_create_debugfs_nodes(struct mem_ctl_info *mci)
+>  {
+>  	struct dentry *parent;
+> -	char name[80];
+>  	int i;
+>  
+>  	parent = debugfs_create_dir(mci->dev.kobj.name, edac_debugfs);
+>  
+>  	for (i = 0; i < mci->n_layers; i++) {
+> -		sprintf(name, "fake_inject_%s",
+> -			     edac_layer_name[mci->layers[i].type]);
+> +		char name[32];
+> +
+> +		scnprintf(name, sizeof(name), "fake_inject_%s",
+> +			  edac_layer_name[mci->layers[i].type]);
+>  		debugfs_create_u8(name, S_IRUGO | S_IWUSR, parent,
+>  				  &mci->fake_inject_layer[i]);
+>  	}
+> 
+> 
 
-Bjorn suggested exercising the IORESOURCE_PCI_FIXED on top of the
-early PCI quirk that unhides P2SB for the entire run time. But I have
-had no time to actually patch the kernel this way. Have tried the
-proposed approach on your side?
+I think name should be [20] since len("fake_inject_") is 12 and maximum 
+length of any edac_layer_name is 7 bytes. In addition, for moving the
+declaration of name inside the loop we need to compile the source in 
+C99 mode.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanx
