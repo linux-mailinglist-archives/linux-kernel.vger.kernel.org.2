@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4434D3C5696
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D285B3C4F60
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356140AbhGLIUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57120 "EHLO mail.kernel.org"
+        id S1345261AbhGLHZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:25:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234373AbhGLHgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:36:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA2D6190A;
-        Mon, 12 Jul 2021 07:32:48 +0000 (UTC)
+        id S239767AbhGLG63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:58:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A6E61132;
+        Mon, 12 Jul 2021 06:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075169;
-        bh=HZKz708QQAe/6KtyqJ8F5LJ5x4ZN6OM3xsa305vbhbM=;
+        s=korg; t=1626072939;
+        bh=y7DZnX6J1qczp9U51K6H7G4dTyrIFHBrcBZ229g6Ct0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cx5topg7EPz0MzGOJRLFYqE3bAEBJLNd2/3ie0xldaXELcr8Da4ioCrQN/cc2a0r2
-         W78DO6a1gsXzBB2CnyXiP/alWNoimQS6xh5skqZnqaIf1pF6i0GS4YlHPNbrmwDazX
-         8SkGdQkTBdcV8Lb2po2jPuTGf0ycutyUaMuKOomA=
+        b=H7JQQylJhLDRUP3WYKlqWqI8Bh/FI5+9NxUfg/p1VPmJR9DQoSGEfrRbng6/217gF
+         w+iHOcR7AtsDYSdxB1q8v84ktGHrZvLeKXNKLreNyRLaHUltoM/NVu3G4l+PtIDU2g
+         Md8nPJ1y/3tvi9B5cHrqQpKa8jLy6v8vLvzdRyH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 129/800] staging: media: rkvdec: fix pm_runtime_get_sync() usage count
-Date:   Mon, 12 Jul 2021 08:02:32 +0200
-Message-Id: <20210712060931.150990232@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.12 070/700] KVM: nVMX: Handle split-lock #AC exceptions that happen in L2
+Date:   Mon, 12 Jul 2021 08:02:33 +0200
+Message-Id: <20210712060934.617562085@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit e90812c47b958407b54d05780dc483fdc1b57a93 ]
+commit b33bb78a1fada6445c265c585ee0dd0fc6279102 upstream.
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
-Replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
+Mark #ACs that won't be reinjected to the guest as wanted by L0 so that
+KVM handles split-lock #AC from L2 instead of forwarding the exception to
+L1.  Split-lock #AC isn't yet virtualized, i.e. L1 will treat it like a
+regular #AC and do the wrong thing, e.g. reinject it into L2.
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e6f8b6c12f03 ("KVM: VMX: Extend VMXs #AC interceptor to handle split lock #AC in guest")
+Cc: Xiaoyao Li <xiaoyao.li@intel.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210622172244.3561540-1-seanjc@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/staging/media/rkvdec/rkvdec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/vmx/nested.c |    3 +++
+ arch/x86/kvm/vmx/vmcs.h   |    5 +++++
+ arch/x86/kvm/vmx/vmx.c    |    4 ++--
+ arch/x86/kvm/vmx/vmx.h    |    1 +
+ 4 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index d821661d30f3..8c17615f3a7a 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -658,7 +658,7 @@ static void rkvdec_device_run(void *priv)
- 	if (WARN_ON(!desc))
- 		return;
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -5775,6 +5775,9 @@ static bool nested_vmx_l0_wants_exit(str
+ 		else if (is_breakpoint(intr_info) &&
+ 			 vcpu->guest_debug & KVM_GUESTDBG_USE_SW_BP)
+ 			return true;
++		else if (is_alignment_check(intr_info) &&
++			 !vmx_guest_inject_ac(vcpu))
++			return true;
+ 		return false;
+ 	case EXIT_REASON_EXTERNAL_INTERRUPT:
+ 		return true;
+--- a/arch/x86/kvm/vmx/vmcs.h
++++ b/arch/x86/kvm/vmx/vmcs.h
+@@ -117,6 +117,11 @@ static inline bool is_gp_fault(u32 intr_
+ 	return is_exception_n(intr_info, GP_VECTOR);
+ }
  
--	ret = pm_runtime_get_sync(rkvdec->dev);
-+	ret = pm_runtime_resume_and_get(rkvdec->dev);
- 	if (ret < 0) {
- 		rkvdec_job_finish_no_pm(ctx, VB2_BUF_STATE_ERROR);
- 		return;
--- 
-2.30.2
-
++static inline bool is_alignment_check(u32 intr_info)
++{
++	return is_exception_n(intr_info, AC_VECTOR);
++}
++
+ static inline bool is_machine_check(u32 intr_info)
+ {
+ 	return is_exception_n(intr_info, MC_VECTOR);
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4796,7 +4796,7 @@ static int handle_machine_check(struct k
+  *  - Guest has #AC detection enabled in CR0
+  *  - Guest EFLAGS has AC bit set
+  */
+-static inline bool guest_inject_ac(struct kvm_vcpu *vcpu)
++bool vmx_guest_inject_ac(struct kvm_vcpu *vcpu)
+ {
+ 	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
+ 		return true;
+@@ -4905,7 +4905,7 @@ static int handle_exception_nmi(struct k
+ 		kvm_run->debug.arch.exception = ex_no;
+ 		break;
+ 	case AC_VECTOR:
+-		if (guest_inject_ac(vcpu)) {
++		if (vmx_guest_inject_ac(vcpu)) {
+ 			kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
+ 			return 1;
+ 		}
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -379,6 +379,7 @@ void vmx_set_segment(struct kvm_vcpu *vc
+ u64 construct_eptp(struct kvm_vcpu *vcpu, unsigned long root_hpa,
+ 		   int root_level);
+ 
++bool vmx_guest_inject_ac(struct kvm_vcpu *vcpu);
+ void vmx_update_exception_bitmap(struct kvm_vcpu *vcpu);
+ void vmx_update_msr_bitmap(struct kvm_vcpu *vcpu);
+ bool vmx_nmi_blocked(struct kvm_vcpu *vcpu);
 
 
