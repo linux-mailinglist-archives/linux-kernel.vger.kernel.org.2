@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4C63C56D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99ED3C4923
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349409AbhGLIZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
+        id S238044AbhGLGmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347999AbhGLHka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C48161132;
-        Mon, 12 Jul 2021 07:37:27 +0000 (UTC)
+        id S237661AbhGLGep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDF05611AF;
+        Mon, 12 Jul 2021 06:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075448;
-        bh=csfxoKmzrHeJmjCAIHQ484RFD0PPN1Sp7qtZ5dj0pAw=;
+        s=korg; t=1626071478;
+        bh=pBqW0GeW4mVLscv88WZPCwSX7+B2z2hcZVOKIy/gV50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LnkA1zxXvDGNZpqFlBvGufJpOu/hXOzS5vTMKEyxSqMnBHWBRMSvQ4OSSQoebil+H
-         fUIj4pVPRj6vS7qE7AvbRBRmiVHydnmO1zlc70Dc6M9kcwGTAsE0xxVfqiGGRmxnIH
-         PBEsDoKJsvzrynPjWj+f59hcKf669hDT79FbL+cM=
+        b=luJzr0axjmd69hjf+x16JCwTWKsaB2mFXqP/R5kqAqPn1zqhUnT3oq71J+tdqwrnF
+         zkC2YQ74s6/dHiG5JZzTzcTeJUQzck/dwO4X4Q1tfMEdjdfrQ07Pnen0V+dwKe/ds4
+         kDEXk/VKkZMP5gQtFPMbhGpvmJqxPvlERaoPt0Yc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 224/800] fs: dlm: cancel work sync othercon
+        stable@vger.kernel.org,
+        syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 087/593] tracepoint: Add tracepoint_probe_register_may_exist() for BPF tracing
 Date:   Mon, 12 Jul 2021 08:04:07 +0200
-Message-Id: <20210712060945.373633998@linuxfoundation.org>
+Message-Id: <20210712060852.745328556@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit c6aa00e3d20c2767ba3f57b64eb862572b9744b3 ]
+commit 9913d5745bd720c4266805c8d29952a3702e4eca upstream.
 
-These rx tx flags arguments are for signaling close_connection() from
-which worker they are called. Obviously the receive worker cannot cancel
-itself and vice versa for swork. For the othercon the receive worker
-should only be used, however to avoid deadlocks we should pass the same
-flags as the original close_connection() was called.
+All internal use cases for tracepoint_probe_register() is set to not ever
+be called with the same function and data. If it is, it is considered a
+bug, as that means the accounting of handling tracepoints is corrupted.
+If the function and data for a tracepoint is already registered when
+tracepoint_probe_register() is called, it will call WARN_ON_ONCE() and
+return with EEXISTS.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The BPF system call can end up calling tracepoint_probe_register() with
+the same data, which now means that this can trigger the warning because
+of a user space process. As WARN_ON_ONCE() should not be called because
+user space called a system call with bad data, there needs to be a way to
+register a tracepoint without triggering a warning.
+
+Enter tracepoint_probe_register_may_exist(), which can be called, but will
+not cause a WARN_ON() if the probe already exists. It will still error out
+with EEXIST, which will then be sent to the user space that performed the
+BPF system call.
+
+This keeps the previous testing for issues with other users of the
+tracepoint code, while letting BPF call it with duplicated data and not
+warn about it.
+
+Link: https://lore.kernel.org/lkml/20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp/
+Link: https://syzkaller.appspot.com/bug?id=41f4318cf01762389f4d1c1c459da4f542fe5153
+
+Cc: stable@vger.kernel.org
+Fixes: c4f6699dfcb85 ("bpf: introduce BPF_RAW_TRACEPOINT")
+Reported-by: syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot+721aa903751db87aa244@syzkaller.appspotmail.com
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/dlm/lowcomms.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/tracepoint.h |   10 ++++++++++
+ kernel/trace/bpf_trace.c   |    3 ++-
+ kernel/tracepoint.c        |   33 ++++++++++++++++++++++++++++++---
+ 3 files changed, 42 insertions(+), 4 deletions(-)
 
-diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
-index cdc50e9a5ab0..138e8236ff6e 100644
---- a/fs/dlm/lowcomms.c
-+++ b/fs/dlm/lowcomms.c
-@@ -715,7 +715,7 @@ static void close_connection(struct connection *con, bool and_other,
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -41,7 +41,17 @@ extern int
+ tracepoint_probe_register_prio(struct tracepoint *tp, void *probe, void *data,
+ 			       int prio);
+ extern int
++tracepoint_probe_register_prio_may_exist(struct tracepoint *tp, void *probe, void *data,
++					 int prio);
++extern int
+ tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data);
++static inline int
++tracepoint_probe_register_may_exist(struct tracepoint *tp, void *probe,
++				    void *data)
++{
++	return tracepoint_probe_register_prio_may_exist(tp, probe, data,
++							TRACEPOINT_DEFAULT_PRIO);
++}
+ extern void
+ for_each_kernel_tracepoint(void (*fct)(struct tracepoint *tp, void *priv),
+ 		void *priv);
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2106,7 +2106,8 @@ static int __bpf_probe_register(struct b
+ 	if (prog->aux->max_tp_access > btp->writable_size)
+ 		return -EINVAL;
  
- 	if (con->othercon && and_other) {
- 		/* Will only re-enter once. */
--		close_connection(con->othercon, false, true, true);
-+		close_connection(con->othercon, false, tx, rx);
+-	return tracepoint_probe_register(tp, (void *)btp->bpf_func, prog);
++	return tracepoint_probe_register_may_exist(tp, (void *)btp->bpf_func,
++						   prog);
+ }
+ 
+ int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -294,7 +294,8 @@ static void tracepoint_update_call(struc
+  * Add the probe function to a tracepoint.
+  */
+ static int tracepoint_add_func(struct tracepoint *tp,
+-			       struct tracepoint_func *func, int prio)
++			       struct tracepoint_func *func, int prio,
++			       bool warn)
+ {
+ 	struct tracepoint_func *old, *tp_funcs;
+ 	int ret;
+@@ -309,7 +310,7 @@ static int tracepoint_add_func(struct tr
+ 			lockdep_is_held(&tracepoints_mutex));
+ 	old = func_add(&tp_funcs, func, prio);
+ 	if (IS_ERR(old)) {
+-		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
++		WARN_ON_ONCE(warn && PTR_ERR(old) != -ENOMEM);
+ 		return PTR_ERR(old);
  	}
  
- 	con->rx_leftover = 0;
--- 
-2.30.2
-
+@@ -365,6 +366,32 @@ static int tracepoint_remove_func(struct
+ }
+ 
+ /**
++ * tracepoint_probe_register_prio_may_exist -  Connect a probe to a tracepoint with priority
++ * @tp: tracepoint
++ * @probe: probe handler
++ * @data: tracepoint data
++ * @prio: priority of this function over other registered functions
++ *
++ * Same as tracepoint_probe_register_prio() except that it will not warn
++ * if the tracepoint is already registered.
++ */
++int tracepoint_probe_register_prio_may_exist(struct tracepoint *tp, void *probe,
++					     void *data, int prio)
++{
++	struct tracepoint_func tp_func;
++	int ret;
++
++	mutex_lock(&tracepoints_mutex);
++	tp_func.func = probe;
++	tp_func.data = data;
++	tp_func.prio = prio;
++	ret = tracepoint_add_func(tp, &tp_func, prio, false);
++	mutex_unlock(&tracepoints_mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(tracepoint_probe_register_prio_may_exist);
++
++/**
+  * tracepoint_probe_register_prio -  Connect a probe to a tracepoint with priority
+  * @tp: tracepoint
+  * @probe: probe handler
+@@ -387,7 +414,7 @@ int tracepoint_probe_register_prio(struc
+ 	tp_func.func = probe;
+ 	tp_func.data = data;
+ 	tp_func.prio = prio;
+-	ret = tracepoint_add_func(tp, &tp_func, prio);
++	ret = tracepoint_add_func(tp, &tp_func, prio, true);
+ 	mutex_unlock(&tracepoints_mutex);
+ 	return ret;
+ }
 
 
