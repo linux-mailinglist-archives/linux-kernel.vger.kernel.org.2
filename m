@@ -2,460 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948733C539E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2223C5410
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348219AbhGLHzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
+        id S1344133AbhGLH4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244993AbhGLHTR (ORCPT
+        with ESMTP id S245234AbhGLHT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:17 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95897C06119C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:06:41 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id n14so41316640lfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:06:41 -0700 (PDT)
+        Mon, 12 Jul 2021 03:19:27 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5520AC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:08:41 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id i11so4150237qvv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:08:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bzw8eGiTQ9ZfwmOD421rbwDrq+4AlCm04iq4FA/PsEQ=;
-        b=E5ri+lATuGN+Ju+8PAyASi0H3mDgEwkR0o8yAFH/tVPrpJK0UdHeQ9HJUfDY1NucRu
-         3Y6JVk1ofHqs0OQQcHI+TnykiZtK8GWjfScDBtxsttOiVszxca+yhZtMWSuHbkmhjpjn
-         E4fPsqp0kD9+k51bEStKC3zwx/Z+aqFS9lMGk=
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:organization:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xsKy2MEvRih1s1FWBewjGAjD5nRKNW1X0A5UBhutlc0=;
+        b=M/J/ghFoq8wgoyP88KmDvCIfGCmv/IQeWy0pyRcnf7mMXD8PjME6oRUyFYShSTvfJI
+         RhS5s9VVYT/2M6sxnect5hfrx3DmbdgkDLndJsBXy3Ho49b5c+YxMndiiGlA+GRIq5wB
+         V9kQDXE1dTmrmOsSD2vRJN4jgby1AI5qI9nB28SrapSekfCCvyG1ayIEb28D7wkjvAzA
+         FfaDaUbFGIDo/pOvbLUj1TxENdUTZ/AklByV8i1Zdqlpc4Dax5sXQ8L6XVWozUO3X1qL
+         iYg7IshrA5COPtIZml1zj2MrsAPhl+1NW1Ct+3ppYxGJup+/0DvrdgRZhmy/2011vm7R
+         q+Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bzw8eGiTQ9ZfwmOD421rbwDrq+4AlCm04iq4FA/PsEQ=;
-        b=K160ISnASdsqllHlelcQgmlM51nrUfzHn5uzoaOMASRk7kYWg/7ebODBsc5wgZYyIE
-         wYKMoBC3Ef9a9dksKud1JpmKWtbOByWcGAYUgX1R/h+v0elw8GAisEzyoOmA3aMszAH5
-         mGRPgp6EHn6GsTOB6j2gCIFDGo9rpJrIvAMe1Ex6D5FJlEJ9HktLLTj2n5CpORkkrgWe
-         2wPLi9wQFdOzmBoOttCr03JMm8+AMo/DccqTi/A/RMHLcH05+ywAKyuSDiDU37x7OR4q
-         pD+FPboTkDpFVCDqdAc7oTLPLCmNHG8Wt2pZpZztYMOiPTA44VHaPy8cHmJ9isCCIwFq
-         jV7g==
-X-Gm-Message-State: AOAM533mECdD7f4rjgHz0BbA7odIaD/OvPqc1/BSQ1FG9TY1tPMb2uUG
-        Auq/0pKpFslB9pVTC6ni95avjOodPZIcY4AL3Ln6zQ==
-X-Google-Smtp-Source: ABdhPJyTVkhd5XY7VSQs4Oa7s61drO0U70G12qZAzkOnxAtXTuQjWQd5ptfPauzmKdtLIHSBf6AYXx3M9KXAIYVI8Uc=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr41707500lfh.342.1626073599796;
- Mon, 12 Jul 2021 00:06:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=xsKy2MEvRih1s1FWBewjGAjD5nRKNW1X0A5UBhutlc0=;
+        b=jjVvP693ExGxet4JHxNVj2OvmAhl91MHspbfIrJO+wMjGUB+eK9gO0ap9LjE5sQ3wW
+         wK5rwgIG77gNw02XCOwkc33Y2MMj6SXGdHsiQFjYtLM3e857UNLsT9H9aQx3CNCRfQKx
+         qS9bRTWl46xea2hm5F0SZGN5hs1gcXuXYJ/CHB6R1F6pyXf7p477kOuawjCxWaxyAo8m
+         3qwIVaUw3G56609eNydfeusCI1rBmkq1huUG0+WYAdFZO47G0RW+rtRI7/qUrF69R4Cl
+         OUjYMaCXbvYX+D3VeZ7eSk9Rf+zx46y9524OqVtD2VCrjjLnZ3H16nWB01+z9wjO+E0y
+         LfHA==
+X-Gm-Message-State: AOAM530pt5tZlLSuIdBu9Lzabmkm+yXgeoHEKT0MBU5ZKAro7k+BiLE+
+        SRqsD+pkTPpwGqrebm0T/pbrX70b5uhhA3Zb
+X-Google-Smtp-Source: ABdhPJw1JEWvJIWVWMeujvI3k8zfoULVFSdC9lyGddeGItLHnxLr2rTjp3qtWWxKJkIYxdtUPGQyAg==
+X-Received: by 2002:a05:6214:27e7:: with SMTP id jt7mr1009181qvb.28.1626073720302;
+        Mon, 12 Jul 2021 00:08:40 -0700 (PDT)
+Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id o123sm6230515qkd.6.2021.07.12.00.08.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 00:08:39 -0700 (PDT)
+Subject: Re: Linux 5.14-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wjB5XBk4obhMPfrU3mnOakV9VgHAYOo-ZGJnB2X0DnBWA@mail.gmail.com>
+From:   Jon Masters <jcm@jonmasters.org>
+Organization: World Organi{s,z}ation of Broken Dreams
+Message-ID: <a9473821-1d53-0037-7590-aeaf8e85e72a@jonmasters.org>
+Date:   Mon, 12 Jul 2021 03:08:14 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
- <20210616224743.5109-6-chun-jie.chen@mediatek.com> <YOLKxrJin5kkwiIl@google.com>
- <3b52d1781db5b67a04cdbd18852e0857f8b73a38.camel@mediatek.com>
- <CAGXv+5FRc_hj03aqW-3XqqP5FpLX7zGwZ79-473a_HNOgrJQNA@mail.gmail.com> <c05485ad5db717afc8abb5070b33611c4d6a156f.camel@mediatek.com>
-In-Reply-To: <c05485ad5db717afc8abb5070b33611c4d6a156f.camel@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 12 Jul 2021 15:06:28 +0800
-Message-ID: <CAGXv+5FCpXfq7nN0AhW4wg47XMzRdOd6DWnEpvwiBUqU8s1VDQ@mail.gmail.com>
-Subject: Re: [PATCH 05/22] clk: mediatek: Add MT8195 audio clock support
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Trevor Wu <trevor.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wjB5XBk4obhMPfrU3mnOakV9VgHAYOo-ZGJnB2X0DnBWA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:35 PM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> On Mon, 2021-07-12 at 10:09 +0800, Chen-Yu Tsai wrote:
-> > Hi,
-> >
-> > On Mon, Jul 12, 2021 at 9:26 AM Chun-Jie Chen
-> > <chun-jie.chen@mediatek.com> wrote:
-> > >
-> > > On Mon, 2021-07-05 at 17:03 +0800, Chen-Yu Tsai wrote:
-> > > > Hi,
-> > > >
-> > > > On Thu, Jun 17, 2021 at 06:47:26AM +0800, Chun-Jie Chen wrote:
-> > > > > Add MT8195 audio clock provider
-> > > > >
-> > > > > Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> > > > > ---
-> > > > >  drivers/clk/mediatek/Kconfig          |   6 +
-> > > > >  drivers/clk/mediatek/Makefile         |   1 +
-> > > > >  drivers/clk/mediatek/clk-mt8195-aud.c | 198
-> > > > > ++++++++++++++++++++++++++
-> > > > >  3 files changed, 205 insertions(+)
-> > > > >  create mode 100644 drivers/clk/mediatek/clk-mt8195-aud.c
-> > > > >
-> > > > > diff --git a/drivers/clk/mediatek/Kconfig
-> > > > > b/drivers/clk/mediatek/Kconfig
-> > > > > index 6707aba3d500..e2bae9d490a4 100644
-> > > > > --- a/drivers/clk/mediatek/Kconfig
-> > > > > +++ b/drivers/clk/mediatek/Kconfig
-> > > > > @@ -588,6 +588,12 @@ config COMMON_CLK_MT8195
-> > > > >     help
-> > > > >       This driver supports MediaTek MT8195 basic clocks.
-> > > > >
-> > > > > +config COMMON_CLK_MT8195_AUDSYS
-> > > > > +   bool "Clock driver for MediaTek MT8195 audsys"
-> > > > > +   depends on COMMON_CLK_MT8195
-> > > > > +   help
-> > > > > +     This driver supports MediaTek MT8195 audsys clocks.
-> > > > > +
-> > > >
-> > > > The clock modules aren't shared between different chips, so
-> > > > either we
-> > > > enable support for all clock hardware in one chip or we don't. It
-> > > > doesn't make sense to support just some of them. So having just
-> > > > one
-> > > > Kconfig option and having all drivers under it is better.
-> > > >
-> > > > >  config COMMON_CLK_MT8516
-> > > > >     bool "Clock driver for MediaTek MT8516"
-> > > > >     depends on ARCH_MEDIATEK || COMPILE_TEST
-> > > > > diff --git a/drivers/clk/mediatek/Makefile
-> > > > > b/drivers/clk/mediatek/Makefile
-> > > > > index f8002d8966e1..f27c04314186 100644
-> > > > > --- a/drivers/clk/mediatek/Makefile
-> > > > > +++ b/drivers/clk/mediatek/Makefile
-> > > > > @@ -81,5 +81,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) +=
-> > > > > clk-
-> > > > > mt8192-scp_adsp.o
-> > > > >  obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
-> > > > >  obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
-> > > > >  obj-$(CONFIG_COMMON_CLK_MT8195) += clk-mt8195.o
-> > > > > +obj-$(CONFIG_COMMON_CLK_MT8195_AUDSYS) += clk-mt8195-aud.o
-> > > > >  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
-> > > > >  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-> > > > > diff --git a/drivers/clk/mediatek/clk-mt8195-aud.c
-> > > > > b/drivers/clk/mediatek/clk-mt8195-aud.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..db5f80d41de0
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/clk/mediatek/clk-mt8195-aud.c
-> > > > > @@ -0,0 +1,198 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +//
-> > > > > +// Copyright (c) 2021 MediaTek Inc.
-> > > > > +// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> > > > > +
-> > > > > +#include <linux/clk-provider.h>
-> > > > > +#include <linux/of_platform.h>
-> > > > > +#include <linux/platform_device.h>
-> > > > > +
-> > > > > +#include "clk-mtk.h"
-> > > > > +#include "clk-gate.h"
-> > > > > +
-> > > > > +#include <dt-bindings/clock/mt8195-clk.h>
-> > > > > +
-> > > > > +static const struct mtk_gate_regs aud0_cg_regs = {
-> > > > > +   .set_ofs = 0x0,
-> > > > > +   .clr_ofs = 0x0,
-> > > > > +   .sta_ofs = 0x0,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct mtk_gate_regs aud1_cg_regs = {
-> > > > > +   .set_ofs = 0x10,
-> > > > > +   .clr_ofs = 0x10,
-> > > > > +   .sta_ofs = 0x10,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct mtk_gate_regs aud2_cg_regs = {
-> > > > > +   .set_ofs = 0x14,
-> > > > > +   .clr_ofs = 0x14,
-> > > > > +   .sta_ofs = 0x14,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct mtk_gate_regs aud3_cg_regs = {
-> > > > > +   .set_ofs = 0x18,
-> > > > > +   .clr_ofs = 0x18,
-> > > > > +   .sta_ofs = 0x18,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct mtk_gate_regs aud4_cg_regs = {
-> > > > > +   .set_ofs = 0x4,
-> > > > > +   .clr_ofs = 0x4,
-> > > > > +   .sta_ofs = 0x4,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct mtk_gate_regs aud5_cg_regs = {
-> > > > > +   .set_ofs = 0xc,
-> > > > > +   .clr_ofs = 0xc,
-> > > > > +   .sta_ofs = 0xc,
-> > > > > +};
-> > > > > +
-> > > > > +#define GATE_AUD0(_id, _name, _parent, _shift)
-> > > > > \
-> > > > > +   GATE_MTK(_id, _name, _parent, &aud0_cg_regs, _shift,
-> > > > > &mtk_clk_gate_ops_no_setclr)
-> > > > > +
-> > > > > +#define GATE_AUD1(_id, _name, _parent, _shift)
-> > > > > \
-> > > > > +   GATE_MTK(_id, _name, _parent, &aud1_cg_regs, _shift,
-> > > > > &mtk_clk_gate_ops_no_setclr)
-> > > > > +
-> > > > > +#define GATE_AUD2(_id, _name, _parent, _shift)
-> > > > > \
-> > > > > +   GATE_MTK(_id, _name, _parent, &aud2_cg_regs, _shift,
-> > > > > &mtk_clk_gate_ops_no_setclr)
-> > > > > +
-> > > > > +#define GATE_AUD3(_id, _name, _parent, _shift)
-> > > > > \
-> > > > > +   GATE_MTK(_id, _name, _parent, &aud3_cg_regs, _shift,
-> > > > > &mtk_clk_gate_ops_no_setclr)
-> > > > > +
-> > > > > +#define GATE_AUD4(_id, _name, _parent, _shift)
-> > > > > \
-> > > > > +   GATE_MTK(_id, _name, _parent, &aud4_cg_regs, _shift,
-> > > > > &mtk_clk_gate_ops_no_setclr)
-> > > > > +
-> > > > > +#define GATE_AUD5(_id, _name, _parent, _shift)
-> > > > > \
-> > > > > +   GATE_MTK(_id, _name, _parent, &aud5_cg_regs, _shift,
-> > > > > &mtk_clk_gate_ops_no_setclr)
-> > > > > +
-> > > > > +static const struct mtk_gate aud_clks[] = {
-> > > > > +   /* AUD0 */
-> > > > > +   GATE_AUD0(CLK_AUD_AFE, "aud_afe", "a1sys_hp_sel", 2),
-> > > > > +   GATE_AUD0(CLK_AUD_LRCK_CNT, "aud_lrck_cnt", "a1sys_hp_sel",
-> > > > > 4),
-> > > > > +   GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_APLL,
-> > > > > "aud_spdifin_tuner_apll",
-> > > > > "apll4_sel", 10),
-> > > > > +   GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_DBG,
-> > > > > "aud_spdifin_tuner_dbg",
-> > > > > "apll4_sel", 11),
-> > > > > +   GATE_AUD0(CLK_AUD_UL_TML, "aud_ul_tml", "a1sys_hp_sel",
-> > > > > 18),
-> > > > > +   GATE_AUD0(CLK_AUD_APLL1_TUNER, "aud_apll1_tuner",
-> > > > > "apll1_sel",
-> > > > > 19),
-> > > > > +   GATE_AUD0(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner",
-> > > > > "apll2_sel",
-> > > > > 20),
-> > > > > +   GATE_AUD0(CLK_AUD_TOP0_SPDF, "aud_top0_spdf",
-> > > > > "aud_iec_sel",
-> > > > > 21),
-> > > > > +   GATE_AUD0(CLK_AUD_APLL, "aud_apll", "apll1_sel", 23),
-> > > > > +   GATE_AUD0(CLK_AUD_APLL2, "aud_apll2", "apll2_sel", 24),
-> > > > > +   GATE_AUD0(CLK_AUD_DAC, "aud_dac", "a1sys_hp_sel", 25),
-> > > > > +   GATE_AUD0(CLK_AUD_DAC_PREDIS, "aud_dac_predis",
-> > > > > "a1sys_hp_sel",
-> > > > > 26),
-> > > > > +   GATE_AUD0(CLK_AUD_TML, "aud_tml", "a1sys_hp_sel", 27),
-> > > > > +   GATE_AUD0(CLK_AUD_ADC, "aud_adc", "a1sys_hp_sel", 28),
-> > > > > +   GATE_AUD0(CLK_AUD_DAC_HIRES, "aud_dac_hires",
-> > > > > "audio_h_sel",
-> > > > > 31),
-> > > > > +   /* AUD1 */
-> > > > > +   GATE_AUD1(CLK_AUD_I2SIN, "aud_i2sin", "a1sys_hp_sel", 0),
-> > > > > +   GATE_AUD1(CLK_AUD_TDM_IN, "aud_tdm_in", "a1sys_hp_sel", 1),
-> > > > > +   GATE_AUD1(CLK_AUD_I2S_OUT, "aud_i2s_out", "a1sys_hp_sel",
-> > > > > 6),
-> > > > > +   GATE_AUD1(CLK_AUD_TDM_OUT, "aud_tdm_out", "a1sys_hp_sel",
-> > > > > 7),
-> > > > > +   GATE_AUD1(CLK_AUD_HDMI_OUT, "aud_hdmi_out", "a1sys_hp_sel",
-> > > > > 8),
-> > > > > +   GATE_AUD1(CLK_AUD_ASRC11, "aud_asrc11", "a1sys_hp_sel",
-> > > > > 16),
-> > > > > +   GATE_AUD1(CLK_AUD_ASRC12, "aud_asrc12", "a1sys_hp_sel",
-> > > > > 17),
-> > > > > +   GATE_AUD1(CLK_AUD_MULTI_IN, "aud_multi_in",
-> > > > > "mphone_slave_b",
-> > > > > 19),
-> > > > > +   GATE_AUD1(CLK_AUD_INTDIR, "aud_intdir", "intdir_sel", 20),
-> > > > > +   GATE_AUD1(CLK_AUD_A1SYS, "aud_a1sys", "a1sys_hp_sel", 21),
-> > > > > +   GATE_AUD1(CLK_AUD_A2SYS, "aud_a2sys", "a2sys_sel", 22),
-> > > > > +   GATE_AUD1(CLK_AUD_PCMIF, "aud_pcmif", "a1sys_hp_sel", 24),
-> > > > > +   GATE_AUD1(CLK_AUD_A3SYS, "aud_a3sys", "a3sys_sel", 30),
-> > > > > +   GATE_AUD1(CLK_AUD_A4SYS, "aud_a4sys", "a4sys_sel", 31),
-> > > > > +   /* AUD2 */
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL1, "aud_memif_ul1",
-> > > > > "a1sys_hp_sel",
-> > > > > 0),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL2, "aud_memif_ul2",
-> > > > > "a1sys_hp_sel",
-> > > > > 1),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL3, "aud_memif_ul3",
-> > > > > "a1sys_hp_sel",
-> > > > > 2),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL4, "aud_memif_ul4",
-> > > > > "a1sys_hp_sel",
-> > > > > 3),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL5, "aud_memif_ul5",
-> > > > > "a1sys_hp_sel",
-> > > > > 4),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL6, "aud_memif_ul6",
-> > > > > "a1sys_hp_sel",
-> > > > > 5),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL8, "aud_memif_ul8",
-> > > > > "a1sys_hp_sel",
-> > > > > 7),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL9, "aud_memif_ul9",
-> > > > > "a1sys_hp_sel",
-> > > > > 8),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_UL10, "aud_memif_ul10",
-> > > > > "a1sys_hp_sel",
-> > > > > 9),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL2, "aud_memif_dl2",
-> > > > > "a1sys_hp_sel",
-> > > > > 18),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL3, "aud_memif_dl3",
-> > > > > "a1sys_hp_sel",
-> > > > > 19),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL6, "aud_memif_dl6",
-> > > > > "a1sys_hp_sel",
-> > > > > 22),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL7, "aud_memif_dl7",
-> > > > > "a1sys_hp_sel",
-> > > > > 23),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL8, "aud_memif_dl8",
-> > > > > "a1sys_hp_sel",
-> > > > > 24),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL10, "aud_memif_dl10",
-> > > > > "a1sys_hp_sel",
-> > > > > 26),
-> > > > > +   GATE_AUD2(CLK_AUD_MEMIF_DL11, "aud_memif_dl11",
-> > > > > "a1sys_hp_sel",
-> > > > > 27),
-> > > > > +   /* AUD3 */
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC0, "aud_gasrc0", "asm_h_sel", 0),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC1, "aud_gasrc1", "asm_h_sel", 1),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC2, "aud_gasrc2", "asm_h_sel", 2),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC3, "aud_gasrc3", "asm_h_sel", 3),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC4, "aud_gasrc4", "asm_h_sel", 4),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC5, "aud_gasrc5", "asm_h_sel", 5),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC6, "aud_gasrc6", "asm_h_sel", 6),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC7, "aud_gasrc7", "asm_h_sel", 7),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC8, "aud_gasrc8", "asm_h_sel", 8),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC9, "aud_gasrc9", "asm_h_sel", 9),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC10, "aud_gasrc10", "asm_h_sel", 10),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC11, "aud_gasrc11", "asm_h_sel", 11),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC12, "aud_gasrc12", "asm_h_sel", 12),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC13, "aud_gasrc13", "asm_h_sel", 13),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC14, "aud_gasrc14", "asm_h_sel", 14),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC15, "aud_gasrc15", "asm_h_sel", 15),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC16, "aud_gasrc16", "asm_h_sel", 16),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC17, "aud_gasrc17", "asm_h_sel", 17),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC18, "aud_gasrc18", "asm_h_sel", 18),
-> > > > > +   GATE_AUD3(CLK_AUD_GASRC19, "aud_gasrc19", "asm_h_sel", 19),
-> > > > > +   /* AUD4 */
-> > > > > +   GATE_AUD4(CLK_AUD_A1SYS_HP, "aud_a1sys_hp", "a1sys_hp_sel",
-> > > > > 2),
-> > > > > +   GATE_AUD4(CLK_AUD_AFE_DMIC1, "aud_afe_dmic1",
-> > > > > "a1sys_hp_sel",
-> > > > > 10),
-> > > > > +   GATE_AUD4(CLK_AUD_AFE_DMIC2, "aud_afe_dmic2",
-> > > > > "a1sys_hp_sel",
-> > > > > 11),
-> > > > > +   GATE_AUD4(CLK_AUD_AFE_DMIC3, "aud_afe_dmic3",
-> > > > > "a1sys_hp_sel",
-> > > > > 12),
-> > > > > +   GATE_AUD4(CLK_AUD_AFE_DMIC4, "aud_afe_dmic4",
-> > > > > "a1sys_hp_sel",
-> > > > > 13),
-> > > > > +   GATE_AUD4(CLK_AUD_AFE_26M_DMIC_TM, "aud_afe_26m_dmic_tm",
-> > > > > "a1sys_hp_sel", 14),
-> > > > > +   GATE_AUD4(CLK_AUD_UL_TML_HIRES, "aud_ul_tml_hires",
-> > > > > "audio_h_sel", 16),
-> > > > > +   GATE_AUD4(CLK_AUD_ADC_HIRES, "aud_adc_hires",
-> > > > > "audio_h_sel",
-> > > > > 17),
-> > > > > +   GATE_AUD4(CLK_AUD_ADDA6_ADC, "aud_adda6_adc",
-> > > > > "a1sys_hp_sel",
-> > > > > 18),
-> > > > > +   GATE_AUD4(CLK_AUD_ADDA6_ADC_HIRES, "aud_adda6_adc_hires",
-> > > > > "audio_h_sel", 19),
-> > > > > +   /* AUD5 */
-> > > > > +   GATE_AUD5(CLK_AUD_LINEIN_TUNER, "aud_linein_tuner",
-> > > > > "apll5_sel", 5),
-> > > > > +   GATE_AUD5(CLK_AUD_EARC_TUNER, "aud_earc_tuner",
-> > > > > "apll3_sel",
-> > > > > 7),
-> > > > > +};
-> > > >
-> > > > These are all clock gates, and are all internal to the audio
-> > > > hardware,
-> > > > i.e. not used by other drivers or modules.
-> > > >
-> > > > So these don't actually need to be in a separate clk driver. They
-> > > > can
-> > > > be
-> > > > modelled within ASoC as supplies that are automatically managed
-> > > > by
-> > > > ASoC
-> > > > core. Otherwise just have them as bits that are toggled by the
-> > > > audio
-> > > > driver's start/stop sequencing code, like they are now, but
-> > > > through
-> > > > vastly more complicated plumbing.
-> > > >
-> > > > Please work with the audio driver owner to see if this can be
-> > > > moved
-> > > > into
-> > > > the audio driver.
-> > > >
-> > > > Regards
-> > > > ChenYu
-> > > >
-> > >
-> > > The afe device will be the child of audsys clock provider node and
-> > > audsys clock driver will use devm_of_platform_populate() to
-> > > populate
-> > > afe device when audsys clock gates are registered successfully,
-> > > It means afe will be toggled by audsys clock, do you suggest to
-> > > change
-> > > the toggled order?
-> >
-> > What I'm saying is that they shouldn't be represented as two drivers
-> > and two devices in Linux. They are in the same address space, and the
-> > clocks aren't used by any other hardware block. In the device tree we
-> > should represent them as one unified device, unless there is a good
-> > reason, such as hardware design, not to do so. In the drivers, we can
-> > actually just get rid of the audsys clock driver, and have the afe
-> > driver toggle the clock enable bits directly. Treat them as any other
-> > "enable bits" that exist in any hardware.
-> >
-> >
-> > ChenYu
->
-> Because the parent source of audio clock gate is other clocks model in
-> CCF, if we get rid of the audsys clock driver then audio driver need to
-> guarantee the clock dependence by itself, that makes the control of
-> audsys clock gate more complicated.
+On 7/11/21 6:49 PM, Linus Torvalds wrote:
+> You all know the drill by now. It's been the usual two weeks of merge
+> window, and not it's closed, and 5.14-rc1 is out there.
 
-Could you elaborate on "guarantee clock dependence"?
+I happened to be installing a Fedora 34 (x86) VM for something and did a 
+test kernel compile that hung on boot. Setting up a serial console I get 
+the below backtrace from ttm but I have not had chance to look at it.
 
-There is no need to model the audio clock gates in the CCF. That is
-actually overcomplicating things. If you really wanted to you could
-still do it in the audio driver, either using the CCF, only using
-ASoC supplies. The whole audio subsystem hardware is self-contained,
-so the representation and driver should be as well, unless there is
-a very good reason to split it up.
+Fedora 34 (Server Edition)
+Kernel 5.14.0-rc1 on an x86_64 (ttyS0)
 
-Also, if a clock driver is present, then maybe it should model all
-clocks, not just some of them? For example, the PLLs in the audio
-subsystem aren't modeled here, but handled internally in the audio
-driver. So why can't the clock gates be handled there as well?
+Web console: https://fedora:9090/ or https://192.168.1.91:9090/
 
-And the audio driver is already reaching into the other clock controllers
-with direct references to PLLs and other clock parents, which IMO is a bad
-representation. The only clocks the audio driver should reference are the
-ones that actually feed the hardware directly. Anything before that should
-be handled by the parent clock driver. If a specific clock rate needs to
-be set, the audio driver should set it on the clock that feeds it, and
-the CCF, though the CLK_SET_RATE_PARENT flag, passed the request up the
-clock tree. Same thing for reparenting, it should be automatic.
+fedora login: [   11.263539] BUG: kernel NULL pointer dereference, 
+address: 0000000000000010
+[   11.266355] #PF: supervisor read access in kernel mode
+[   11.268409] #PF: error_code(0x0000) - not-present page
+[   11.270456] PGD 0 P4D 0
+[   11.271506] Oops: 0000 [#1] SMP PTI
+[   11.272903] CPU: 1 PID: 41 Comm: kworker/1:1 Not tainted 5.14.0-rc1 #1
+[   11.275488] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
+0.0.0 02/06/2015
+[   11.278274] Workqueue: events ttm_device_delayed_workqueue [ttm]
+[   11.279865] RIP: 0010:qxl_bo_delete_mem_notify+0x19/0x40 [qxl]
+[   11.281404] Code: 89 e7 45 31 e4 e8 67 bf f6 dc eb ea 0f 1f 44 00 00 
+0f 1f 44 00 00 55 48 89 fd e8 a2 02 00 00 84 c0 74 0d 48 8b 85 68 01 00 
+00 <83> 78 10 03 74 02 5d c3 8b 85 64 02 00 00 85 c0 74 f4 48 8b 7d 08
+[   11.286271] RSP: 0018:ffffb7a24017fdd0 EFLAGS: 00010202
+[   11.287616] RAX: 0000000000000000 RBX: ffff9da7c08e8670 RCX: 
+ffff9da7c0b30000
+[   11.288978] RDX: ffff9da7c27f7990 RSI: ffff9da7c27f7990 RDI: 
+ffff9da7c27f7800
+[   11.290332] RBP: ffff9da7c27f7800 R08: ffff9da7c27f7990 R09: 
+0000000000000000
+[   11.291690] R10: ffff9da7c991ec00 R11: 0000000000000000 R12: 
+ffff9da7c27f7990
+[   11.293021] R13: ffff9da7c27f7800 R14: ffff9da7c27f7960 R15: 
+ffff9da7c27f7990
+[   11.294349] FS:  0000000000000000(0000) GS:ffff9da937c80000(0000) 
+knlGS:0000000000000000
+[   11.295853] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   11.296935] CR2: 0000000000000010 CR3: 000000010c178004 CR4: 
+0000000000370ee0
+[   11.298111] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[   11.299120] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+0000000000000400
+[   11.300130] Call Trace:
+[   11.300489]  ttm_bo_cleanup_memtype_use+0x22/0x60 [ttm]
+[   11.301256]  ttm_bo_release+0x1a1/0x300 [ttm]
+[   11.301879]  ttm_bo_delayed_delete+0x1be/0x220 [ttm]
+[   11.302587]  ttm_device_delayed_workqueue+0x18/0x40 [ttm]
+[   11.303358]  process_one_work+0x1ec/0x390
+[   11.303941]  worker_thread+0x53/0x3e0
+[   11.304464]  ? process_one_work+0x390/0x390
+[   11.305066]  kthread+0x127/0x150
+[   11.305535]  ? set_kthread_struct+0x40/0x40
+[   11.306188]  ret_from_fork+0x22/0x30
+[   11.306749] Modules linked in: nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 
+nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct 
+nft_chain_nat ip6table_nat ip6table_mangle ip6table_raw 
+ip6table_security iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 
+nf_defrag_ipv4 iptable_mangle iptable_raw iptable_security ip_set 
+nf_tables rfkill nfnetlink ip6table_filter ip6_tables iptable_filter 
+sunrpc vfat fat snd_hda_codec_generic intel_rapl_msr snd_hda_intel 
+intel_rapl_common snd_intel_dspcfg snd_hda_codec isst_if_common 
+snd_hwdep snd_hda_core iTCO_wdt intel_pmc_bxt iTCO_vendor_support 
+kvm_intel snd_seq snd_seq_device snd_pcm kvm joydev irqbypass i2c_i801 
+rapl i2c_smbus snd_timer snd virtio_balloon lpc_ich soundcore fuse zram 
+ip_tables xfs qxl drm_ttm_helper ttm drm_kms_helper crct10dif_pclmul 
+crc32_pclmul crc32c_intel cec drm ghash_clmulni_intel serio_raw 
+virtio_blk qemu_fw_cfg virtio_net virtio_console net_failover failover 
+pkcs8_key_parser
+[   11.318215] CR2: 0000000000000010
+[   11.318670] ---[ end trace 20fb2a3e9bc19a76 ]---
+[   11.319300] RIP: 0010:qxl_bo_delete_mem_notify+0x19/0x40 [qxl]
+[   11.320090] Code: 89 e7 45 31 e4 e8 67 bf f6 dc eb ea 0f 1f 44 00 00 
+0f 1f 44 00 00 55 48 89 fd e8 a2 02 00 00 84 c0 74 0d 48 8b 85 68 01 00 
+00 <83> 78 10 03 74 02 5d c3 8b 85 64 02 00 00 85 c0 74 f4 48 8b 7d 08
+[   11.322574] RSP: 0018:ffffb7a24017fdd0 EFLAGS: 00010202
+[   11.323271] RAX: 0000000000000000 RBX: ffff9da7c08e8670 RCX: 
+ffff9da7c0b30000
+[   11.324226] RDX: ffff9da7c27f7990 RSI: ffff9da7c27f7990 RDI: 
+ffff9da7c27f7800
+[   11.325186] RBP: ffff9da7c27f7800 R08: ffff9da7c27f7990 R09: 
+0000000000000000
+[   11.326145] R10: ffff9da7c991ec00 R11: 0000000000000000 R12: 
+ffff9da7c27f7990
+[   11.327092] R13: ffff9da7c27f7800 R14: ffff9da7c27f7960 R15: 
+ffff9da7c27f7990
+[   11.328032] FS:  0000000000000000(0000) GS:ffff9da937c80000(0000) 
+knlGS:0000000000000000
+[   11.329086] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   11.329848] CR2: 0000000000000010 CR3: 000000010c178004 CR4: 
+0000000000370ee0
+[   11.330810] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[   11.331746] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+0000000000000400
 
 
-Regards
-ChenYu
+-- 
+Computer Architect
