@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5883C66DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479B43C66DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231998AbhGLXVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 19:21:32 -0400
-Received: from ozlabs.org ([203.11.71.1]:57819 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230458AbhGLXVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 19:21:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GP07Q11LBz9sWd;
-        Tue, 13 Jul 2021 09:18:26 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626131906;
-        bh=r1OHkWV4zheiEUGH6zfhSkdiBAPokmU2n6vmXLRpy7I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Z2jTWAHnugmJwnK/XQ+fxeb4vL52TXnsC36T8wClBcWLP708yUBWbs/u32ziYWk7E
-         8zxy4DOx7biFxQ6rZSh2VcQnBixH1BXpoS63/wZfl+aRRvtMGae62HCvKLyI0fWO6E
-         UxMdvfgVbtlWGnggPnydItpaZ+IjEYKQ+geUNXRwol8Q6wGgTb05Z1i7dos5t+9/rN
-         CMVtnwobTO9Yv2T9gH2gH7YDEm8K3Gzi+NFGYcI7VkKAkqi9+TCiDvPOZ5EK/N8y1P
-         dbZE3PVtJs/iF5Z02d5llFxa6nSw8ad6cfKlJFjRcw3lf1zn63cO1wbBA5PvpIChid
-         SfQ+faFOC7R3A==
-Date:   Tue, 13 Jul 2021 09:18:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the workqueues tree
-Message-ID: <20210713091825.7cfaf3fb@canb.auug.org.au>
+        id S232972AbhGLXWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 19:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232122AbhGLXWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 19:22:07 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1634DC0613DD;
+        Mon, 12 Jul 2021 16:19:18 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id s15so30413630edt.13;
+        Mon, 12 Jul 2021 16:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=VBbhEWvbus7ziJpvb/XYH0OM683tiVzU4891qJ5jW4U=;
+        b=lemSPLuV5IaA49HyZM/afkD+OgNcBUvIJauIxkInOvd4rnovqj3+gKZfSRrxj6fT2C
+         1fMNmcNF52bK3nvqP1a0BTcDcKWOAb9x4uZBaHgv8gajItD/T1cQH+1Ux4JaSLNumzsC
+         EuHqf0Kg5BSClTi60HMrLHy30v2msKCJ19bwDeypVU+IQ47DDaRNmuoDWvTGD9Vht5CT
+         ZmKa5PeMIGz2+0RvavO6uIeSKDm71/BFljpMu9kwUGHR/Y/DxXmlYmzbpSQYJuk+7Mxi
+         78a5MuBMHWqC3LSsNPPg0QBgSDQWUp2ejhH/zhIB1F+y1z6gXlMf/u4zhrQVj674LKFw
+         lAhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=VBbhEWvbus7ziJpvb/XYH0OM683tiVzU4891qJ5jW4U=;
+        b=Mndgknk0kGYv9Q05zAiQXAaNdFa+vTRbcjlmplTQH8srohpKEVbcjJ5hWvjRCMjlzI
+         CqILdyB4qv3Y3wqhZGNQhRPjUak/MZ3vEc8ICLGux3nqk3idxMz1V6TJLkD2F8vEe8pH
+         ghsrtrxqdYNX7C84/Bsd8h0HLKlb/K2hc2O97YcHIudFdmm563hBrFYYw4CjP8QcuLSm
+         D+FpLczEdfP3i+qYfrdfG0nmdbTWK8OohfjzEPBF5ij2qFx+y8HSJ5r8dBLCZTjs7LdO
+         +LV86aGyRSfKjc2z6c3IrROFUgTeb/JdMEX4upFW2zCYaCJxt3SFXUHaQsYVpUizs93/
+         gShg==
+X-Gm-Message-State: AOAM530p8UveW3GCEHC7iRVm94P700BTH6rNSddMZAgAh+r7VzbpfHsf
+        ctWT9QoiYW7LihqGpGbWbw4=
+X-Google-Smtp-Source: ABdhPJxaNoFn9O1IGfp71lScAWRvRQMBo74KvcqChM8BUYAhSFoXmB3BCa2ZOxHlKrWpZgeMLi/W3Q==
+X-Received: by 2002:aa7:cfcf:: with SMTP id r15mr1594999edy.161.1626131956606;
+        Mon, 12 Jul 2021 16:19:16 -0700 (PDT)
+Received: from pc ([196.235.212.194])
+        by smtp.gmail.com with ESMTPSA id e24sm6983837ejx.100.2021.07.12.16.19.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 16:19:16 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 00:19:10 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     fabrice.gasnier@foss.st.com, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com
+Cc:     linux-pwm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] divide by 3*sizeof(u32) when computing array_size
+Message-ID: <20210712231910.GA1831270@pc>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oXn_iJ.xCgNXgASxB7sqQgl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oXn_iJ.xCgNXgASxB7sqQgl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Divide by 3*sizeof(u32) when computing array_size, since stm32_breakinput
+has 3 fields of type u32.
 
-Hi all,
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/pwm/pwm-stm32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Commit
+diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+index 794ca5b02968..fb21bc2b2dd6 100644
+--- a/drivers/pwm/pwm-stm32.c
++++ b/drivers/pwm/pwm-stm32.c
+@@ -544,7 +544,7 @@ static int stm32_pwm_probe_breakinputs(struct stm32_pwm *priv,
+ 		return -EINVAL;
+ 
+ 	priv->num_breakinputs = nb;
+-	array_size = nb * sizeof(struct stm32_breakinput) / sizeof(u32);
++	array_size = nb * sizeof(struct stm32_breakinput) / (3 * sizeof(u32));
+ 	ret = of_property_read_u32_array(np, "st,breakinput",
+ 					 (u32 *)priv->breakinputs, array_size);
+ 	if (ret)
+-- 
+2.25.1
 
-  65160ab66cb6 ("cgroup1: fix leaked context root causing sporadic NULL der=
-ef in LTP")
-
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oXn_iJ.xCgNXgASxB7sqQgl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDszcEACgkQAVBC80lX
-0Gz9rggAllIceh8eEhxtQdK3t+9TNHz92snWMEfzouZIS7aoAgHv9kWmRLmzTDtW
-BZ/uAeGuyKuYbZVg1nt00BO5UBsxrXzlDQQAt0CyvV1ANE2DoQUqqgSNai59Sxzh
-YYAeyRPU9zm5COt7J4mOZCwGJFno13xh5JOPQ1vZZ16LAUu9RMxgCsxwxnz/Vdov
-+j3xDt1B3ylHbhQhAZrHOIlYyRuuNiDbMzn4loL//SaX1mkzgjkixIYRPTV+3KwM
-71APDCu/29HArO1sAP6we6cm+T3w9nVOifp1hgOSIK4njnwE+ogDsILr9leVeBQ7
-FAfR2ihVCbVYBTbQhV7JSC3a9JNWBQ==
-=dHpz
------END PGP SIGNATURE-----
-
---Sig_/oXn_iJ.xCgNXgASxB7sqQgl--
