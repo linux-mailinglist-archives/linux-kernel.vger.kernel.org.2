@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F613C5151
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E593C4A35
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346991AbhGLHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:39:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
+        id S239001AbhGLGt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244209AbhGLHKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C560B613D8;
-        Mon, 12 Jul 2021 07:07:09 +0000 (UTC)
+        id S237459AbhGLGj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5DB61132;
+        Mon, 12 Jul 2021 06:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073630;
-        bh=nQzECD12SbSXSO/QoQaLi2QiMJtbw7y0eR33txf8RfA=;
+        s=korg; t=1626071714;
+        bh=UbSqRmPUS/rnpfuTauuDPfRftV60XW2KR7pGLS8h1Bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NbRml3gHS0hpA5BYIdYzLngchcD+rfLhzCVRhJETG3yrA3EJ2omh8L+cCFQ94G8gm
-         mN7E1rtTDiiMNSQXiYhrFxWPygM3cnC0EnJkpsOp7QA5ek0vh1i8Fz1XwNST6h8kfQ
-         Y4gVgSWKTtzrt2mSBlIPTu/hRJSW3VzD/cv/LC3U=
+        b=I1Xkjhf7Eh2yNfa8pQ7faHRMLWQXTiqrTK4bDRUzTmRdcTweyQSgeIn9G7JbvXteG
+         jE147zaePDnR96uJdtz1PROC3HbC5wSawrpQJfQhp6lRtfhH1LDYnHLh6Nf1S5U6dY
+         cfImEf5Drlcnz/ugdiFIWLt7sjau/f1kCwBQk/iM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 263/700] pata_octeon_cf: avoid WARN_ON() in ata_host_activate()
-Date:   Mon, 12 Jul 2021 08:05:46 +0200
-Message-Id: <20210712061004.169644433@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Manuel Krause <manuelkrause@netscape.net>,
+        Hui Wang <hui.wang@canonical.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 187/593] ACPI: resources: Add checks for ACPI IRQ override
+Date:   Mon, 12 Jul 2021 08:05:47 +0200
+Message-Id: <20210712060903.591188609@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit bfc1f378c8953e68ccdbfe0a8c20748427488b80 ]
+[ Upstream commit 0ec4e55e9f571f08970ed115ec0addc691eda613 ]
 
-Iff platform_get_irq() fails (or returns IRQ0) and thus the polling mode
-has to be used, ata_host_activate() hits the WARN_ON() due to 'irq_handler'
-parameter being non-NULL if the polling mode is selected.  Let's only set
-the pointer to the driver's IRQ handler if platform_get_irq() returns a
-valid IRQ # -- this should avoid the unnecessary WARN_ON()...
+The laptop keyboard doesn't work on many MEDION notebooks, but the
+keyboard works well under Windows and Unix.
 
-Fixes: 43f01da0f279 ("MIPS/OCTEON/ata: Convert pata_octeon_cf.c to use device tree.")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/3a241167-f84d-1d25-5b9b-be910afbe666@omp.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Through debugging, we found this log in the dmesg:
+
+ ACPI: IRQ 1 override to edge, high
+ pnp 00:03: Plug and Play ACPI device, IDs PNP0303 (active)
+
+ And we checked the IRQ definition in the DSDT, it is:
+
+    IRQ (Level, ActiveLow, Exclusive, )
+        {1}
+
+So the BIOS defines the keyboard IRQ to Level_Low, but the Linux
+kernel override it to Edge_High. If the Linux kernel is modified
+to skip the IRQ override, the keyboard will work normally.
+
+>From the existing comment in acpi_dev_get_irqresource(), the override
+function only needs to be called when IRQ() or IRQNoFlags() is used
+to populate the resource descriptor, and according to Section 6.4.2.1
+of ACPI 6.4 [1], if IRQ() is empty or IRQNoFlags() is used, the IRQ
+is High true, edge sensitive and non-shareable. ACPICA also assumes
+that to be the case (see acpi_rs_set_irq[] in rsirq.c).
+
+In accordance with the above, check 3 additional conditions
+(EdgeSensitive, ActiveHigh and Exclusive) when deciding whether or
+not to treat an ACPI_RESOURCE_TYPE_IRQ resource as "legacy", in which
+case the IRQ override is applicable to it.
+
+Link: https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#irq-descriptor # [1]
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213031
+BugLink: http://bugs.launchpad.net/bugs/1909814
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reported-by: Manuel Krause <manuelkrause@netscape.net>
+Tested-by: Manuel Krause <manuelkrause@netscape.net>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+[ rjw: Subject rewrite, changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_octeon_cf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/acpi/resource.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/pata_octeon_cf.c b/drivers/ata/pata_octeon_cf.c
-index bd87476ab481..b5a3f710d76d 100644
---- a/drivers/ata/pata_octeon_cf.c
-+++ b/drivers/ata/pata_octeon_cf.c
-@@ -898,10 +898,11 @@ static int octeon_cf_probe(struct platform_device *pdev)
- 					return -EINVAL;
- 				}
+diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
+index f2f5f1dc7c61..9d82440a1d75 100644
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -430,6 +430,13 @@ static void acpi_dev_get_irqresource(struct resource *res, u32 gsi,
+ 	}
+ }
  
--				irq_handler = octeon_cf_interrupt;
- 				i = platform_get_irq(dma_dev, 0);
--				if (i > 0)
-+				if (i > 0) {
- 					irq = i;
-+					irq_handler = octeon_cf_interrupt;
-+				}
- 			}
- 			of_node_put(dma_node);
++static bool irq_is_legacy(struct acpi_resource_irq *irq)
++{
++	return irq->triggering == ACPI_EDGE_SENSITIVE &&
++		irq->polarity == ACPI_ACTIVE_HIGH &&
++		irq->shareable == ACPI_EXCLUSIVE;
++}
++
+ /**
+  * acpi_dev_resource_interrupt - Extract ACPI interrupt resource information.
+  * @ares: Input ACPI resource object.
+@@ -468,7 +475,7 @@ bool acpi_dev_resource_interrupt(struct acpi_resource *ares, int index,
  		}
+ 		acpi_dev_get_irqresource(res, irq->interrupts[index],
+ 					 irq->triggering, irq->polarity,
+-					 irq->shareable, true);
++					 irq->shareable, irq_is_legacy(irq));
+ 		break;
+ 	case ACPI_RESOURCE_TYPE_EXTENDED_IRQ:
+ 		ext_irq = &ares->data.extended_irq;
 -- 
 2.30.2
 
