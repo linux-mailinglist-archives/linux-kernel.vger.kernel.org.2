@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5C63C61D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FD73C61E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235373AbhGLR1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhGLR1a (ORCPT
+        id S235722AbhGLRbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:31:31 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50048 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235715AbhGLRb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:27:30 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A437CC0613DD;
-        Mon, 12 Jul 2021 10:24:41 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id p22so4099296pfh.8;
-        Mon, 12 Jul 2021 10:24:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bQLyPAi8R6ObnBNw0JvkyaT5QRGtNynnb0GtY60cgIA=;
-        b=jWjFxAzmIhh51jU7LuzO6yqSbYW9dIShinNo85R7JhEuSgW+nHApq7ybXj+C16iycd
-         De5KLFsl6m2I3EDx15RtWIOlIK68Py0UY6LaML3rBxNVIrBfXTPjW2silGUE9TJXqqdg
-         vuCh14CwIfmjK0Mpx96EGJCUw9062nocGU3oEm2EuY70XAjX9uQnfC9zhkvG3CLlBr49
-         pxd289auR/JaxkG/h210M0h32iBadKrQGw4I6wlrm5nbu+PhWOy1M7i7MCSGtc3QUAsu
-         IunQt7Sg++xMDpiPMGDLLY20HHKB1yAizkJ1SGj+eR+fww+H9x4GqUrxICjFIIwTsuLc
-         2P6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bQLyPAi8R6ObnBNw0JvkyaT5QRGtNynnb0GtY60cgIA=;
-        b=l4yubW8hbMGTY56e8UrXKrXfuZ5+9bYZsv120SlLfZTfzGrifAWQJcX2E+VtFtpD7Y
-         /XhVLsnR1IjJGrbyL2HG8+m7WnxqZmnUCBnlxxm1N1SnKalp5zoK1oDE8ITDHx8+PrnV
-         wMuNYwdQhDeQ6liyMWIiI8PliUanM/+s27uf1C5kXoIVcBso53DMna4FmUB7PkNiMOjY
-         cvOGfNvZD+g1uybikhuXA4NOkAQk+ghRJSyKIF9zCMkEWpqUwEOsLCGyrxWNgFY/B26p
-         4bDhuTJBc6C0dzFWwP1FYRB33wovQpxfaAI4/NaypkR6chnGalmOJVVKneM9SAUAP084
-         M/fQ==
-X-Gm-Message-State: AOAM533WowrlUSy/q1wyGVtePl58gCUCjMSGk8GomeKfskRUuyrmcy0a
-        IGCeN/4EY3cGW629FKIqdHVSo2lYeB4afg==
-X-Google-Smtp-Source: ABdhPJxuZhQBVgJqKHkQo/ebXqauxxMDWNfnu+rr1qS0fRdoQY+lZWlDTGucXYK8MBj4AdFvc8IitQ==
-X-Received: by 2002:a63:f54f:: with SMTP id e15mr226793pgk.64.1626110680672;
-        Mon, 12 Jul 2021 10:24:40 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id j2sm16284453pfi.111.2021.07.12.10.24.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 10:24:40 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210712060912.995381202@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f5a7bd6e-8242-c16d-ac4b-6ac8d77a51de@gmail.com>
-Date:   Mon, 12 Jul 2021 10:24:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 13:31:29 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id 076ee53e60d13b75; Mon, 12 Jul 2021 19:28:39 +0200
+Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C410C669C38;
+        Mon, 12 Jul 2021 19:28:38 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Subject: [PATCH v1 3/6] ACPI: bus: Rename functions to avoid name collision
+Date:   Mon, 12 Jul 2021 19:24:50 +0200
+Message-ID: <3605918.kQq0lBPeGt@kreacher>
+In-Reply-To: <2780027.e9J7NaK4W3@kreacher>
+References: <2780027.e9J7NaK4W3@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.45
+X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedvrdegheenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrgeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
+ ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvihhkkhhirdhkrhhoghgvrhhusheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 11:00 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.2 release.
-> There are 800 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+There is a name collision between acpi_device_notify() defined in
+bus.c and another static function defined in glue.c.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Since the latter is going to be exported from that file, rename the
+former to acpi_notify_device() and rename acpi_device_notify_fixed()
+to follow the same naming pattern.
+
+No functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/bus.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+Index: linux-pm/drivers/acpi/bus.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/bus.c
++++ linux-pm/drivers/acpi/bus.c
+@@ -498,24 +498,24 @@ static void acpi_bus_notify(acpi_handle
+ 	acpi_evaluate_ost(handle, type, ost_code, NULL);
+ }
+ 
+-static void acpi_device_notify(acpi_handle handle, u32 event, void *data)
++static void acpi_notify_device(acpi_handle handle, u32 event, void *data)
+ {
+ 	struct acpi_device *device = data;
+ 
+ 	device->driver->ops.notify(device, event);
+ }
+ 
+-static void acpi_device_notify_fixed(void *data)
++static void acpi_notify_device_fixed(void *data)
+ {
+ 	struct acpi_device *device = data;
+ 
+ 	/* Fixed hardware devices have no handles */
+-	acpi_device_notify(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
++	acpi_notify_device(NULL, ACPI_FIXED_HARDWARE_EVENT, device);
+ }
+ 
+ static u32 acpi_device_fixed_event(void *data)
+ {
+-	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_device_notify_fixed, data);
++	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_notify_device_fixed, data);
+ 	return ACPI_INTERRUPT_HANDLED;
+ }
+ 
+@@ -536,7 +536,7 @@ static int acpi_device_install_notify_ha
+ 	else
+ 		status = acpi_install_notify_handler(device->handle,
+ 						     ACPI_DEVICE_NOTIFY,
+-						     acpi_device_notify,
++						     acpi_notify_device,
+ 						     device);
+ 
+ 	if (ACPI_FAILURE(status))
+@@ -554,7 +554,7 @@ static void acpi_device_remove_notify_ha
+ 						acpi_device_fixed_event);
+ 	else
+ 		acpi_remove_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
+-					   acpi_device_notify);
++					   acpi_notify_device);
+ }
+ 
+ /* Handle events targeting \_SB device (at present only graceful shutdown) */
+
+
+
