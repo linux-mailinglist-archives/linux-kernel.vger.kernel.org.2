@@ -2,172 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F413C59A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E542C3C59AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350361AbhGLJG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350529AbhGLIWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:22:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 192B56115A;
-        Mon, 12 Jul 2021 08:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626077992;
-        bh=oiAKFE0F6sF9YhyTJBg+1E7QA8xdjUhbMNjBvBqhUp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H9jyRPsSgBpbzr0U7ugKnFGzSoeoZh5NLAuVVLjzojjgZMF9Bi7QDBe63AvxT6u1Q
-         I26ah/GCPI4ObdZlhUbfZsw2J48Uv6FHO/57yuvvkf1iqhzFqkDJ0ZYWtFTOzpfRct
-         fXjUl2cqjppSFPFC645Ij1uroFqSCsRaowmOiiOcgg2q2Chml5QMW3eT4LXyqWNxcm
-         lfBvRHbUZ9U4pQzokko9yBubUmZNweaq6btX9sIpLoqPBuUcp87VAAMrtfGygEhYUb
-         jtzdtZg6HZdC+EMQsLx5b3WGiinShYyUoq2Js3uYe5CNiRgL+yZSq9kJ1Sf++HbRMj
-         7hMLbk6aSYnpg==
-Date:   Mon, 12 Jul 2021 13:49:44 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v3 0/9] Add support for Hikey 970 PCIe
-Message-ID: <20210712081944.GC8113@workstation>
-References: <cover.1625826353.git.mchehab+huawei@kernel.org>
+        id S1356420AbhGLJHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359281AbhGLI0j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:26:39 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FBAC04FB37
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:20:15 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id k4so18061338wrc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QHlXmzgYCLaFP1mLbFA9jYRGoFSwRmofbpKvixQG/EI=;
+        b=yMbiRrkK9/p9xrQb7LoiVYsjj5zamGuNpJL7hkzXR9PRv/PUPitBCo++JtpQmmd/ka
+         6qHtckH08lUFQSMSHh3dAIHIAhkr6AmICHeSISiWigsFjtxk00z0rCEiT9B54Bp9VwuD
+         bB/lI+v+JXFE5zi10vUQ+vl254Sb88K4amHRiChE4IvI7FJr5dogbHAGJZFBv+qUlery
+         crUa7mjG/txRYUi8qXATkeKsJ6TAIWifROmMeJgJPZ+JL9FuNHHlr4YxJYWA+FWJyGCq
+         K1mYySgLKsrQohHHKztgKDa+wIQ1hnDTNSBpNMlR2F93lpjWz9uYcvYxXU36gNzk16jM
+         9nhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QHlXmzgYCLaFP1mLbFA9jYRGoFSwRmofbpKvixQG/EI=;
+        b=LC5Z5Tg9uhkqzDIWjCJOrlkvHOfSFVVNZ/a6+pFn4jue2CIdsfUun/5iHNbIaW57G5
+         yt0FRjpz4faar+MWnPhepliG4CU5iBaoDYWxq0A5wFlN/0CExNWllwze8tVl6K8Jyfv3
+         JJDzFwRypgNFJjAjO/OQoYGvprYI32cggR7IqpncYMnz8DqndsdV4qu0/4H380elr/mx
+         Ux6z5rhzG0vOOY8P3X64m6ZCZ+5sp7/KARZeBkXKg1KbVik+NX4fwDT++b9JZDnGn30B
+         +4ylMbDT4kfzcUMp4J7wIW1Yf8mShDe+gYlAmBvTWQAq1zuW41LKFlfAQWr+Deid+Ll+
+         vUMw==
+X-Gm-Message-State: AOAM533IzYhgX50O90X09/pAphLvNcSOcgPsQmO0oprDxPVFNhptsXbA
+        49nXoUTx6IL/1Yarz0LJUcS8ow==
+X-Google-Smtp-Source: ABdhPJwXbve+EIZD2sZS7vVy/bCi0g4V0ei7/8Nc18Ft9JjOtidUjF8kMuubnSPz+I1noFhLENLjOw==
+X-Received: by 2002:a5d:48ca:: with SMTP id p10mr57074091wrs.87.1626078014116;
+        Mon, 12 Jul 2021 01:20:14 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id 11sm2767584wmo.10.2021.07.12.01.20.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Jul 2021 01:20:13 -0700 (PDT)
+Subject: Re: [RFC PATCH 03/13] ASoC: qcom: dt-bindings: add bindings Audio
+ Processing manager
+To:     Rob Herring <robh@kernel.org>
+Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
+        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
+        perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        bgoswami@codeaurora.org
+References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
+ <20210607152836.17154-4-srinivas.kandagatla@linaro.org>
+ <20210618201621.GA2801502@robh.at.kernel.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <1a152ccf-f51c-a59c-c530-f3f51f3cc75c@linaro.org>
+Date:   Mon, 12 Jul 2021 09:20:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1625826353.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210618201621.GA2801502@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
 
-On Fri, Jul 09, 2021 at 12:41:36PM +0200, Mauro Carvalho Chehab wrote:
-> As requested by Rob Herring, this series split the PHY part into a separate driver.
-> Then, it adds support for Kirin 970 on a single patch.
-> 
-> With this change, the PHY-specific device tree bindings for Kirin 960 moved
-> to its own PHY properties.
-> 
-> Manivannan,
-> 
-> Please notice that the last two patches are marked as co-developed:
-> 
-> 	phy: hisilicon: add driver for Kirin 970 PCIe PHY
-> 	arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller hardware
-> 
-> The first one contains the code you submitted in the past adding
-> support for Kirin 970 at the pcie-kirin driver, modified by me and
-> moved to a separate driver.
-> 
-> The second one is the DTS file, also modified by me in order to split the PHY
-> properties from the PCIe ones.
-> 
-> Please send your SoB to confirm that both changes are OK for you.
-> 
 
-I'm fine with the changes. The dts patch already has my s-o-b as you
-preserved my authorship and I've sent my s-o-b for the driver patch.
-I used my korg address for the driver patch but that's fine as all these
-efforts were done in my spare time.
+On 18/06/2021 21:16, Rob Herring wrote:
+> On Mon, Jun 07, 2021 at 04:28:26PM +0100, Srinivas Kandagatla wrote:
+>> This patch adds bindings support for Qualcomm Audio Processing Manager
+>> service in Audio DSP.
+>>
+>> Audio Process Manager is one of the static service in DSP which is
+>> responsible for Command/response handling, graph Management
+>> and Control/Event management between modules.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   .../devicetree/bindings/sound/qcom,q6apm.yaml | 72 +++++++++++++++++++
+>>   1 file changed, 72 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+>> new file mode 100644
+>> index 000000000000..9906ef935206
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+>> @@ -0,0 +1,72 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/sound/qcom,q6apm.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: Qualcomm Audio Process Manager binding
+>> +
+>> +maintainers:
+>> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> +
+>> +description: |
+>> +  This binding describes the Qualcomm Audio Process Manager service in DSP
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: qcom,q6apm
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +#APM Services
+>> +patternProperties:
+>> +  "^.*@[0-9a-f]+$":
+> 
+> You can drop '^.*'.
 
-Thanks,
-Mani
+Thanks Rob for review,
 
-> Tested on Hikey970:
+will fix this along other comments in next spin.
+
+--srini
+
 > 
->   $ lspci
->   00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
->   01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
+>> +    type: object
+>> +    description:
+>> +      APM devices use subnodes for services.
+>> +
+>> +    properties:
+>> +      compatible:
+>> +        enum:
+>> +          - qcom,q6apm-dai
+>> +          - qcom,q6apm-bedai
+>> +
+>> +      iommus:
+>> +        maxItems: 1
+>> +
+>> +      "#sound-dai-cels":
 > 
->   $ ethtool enp6s0
->   Settings for enp6s0:
-> 	Supported ports: [ TP	 MII ]
-> 	Supported link modes:   10baseT/Half 10baseT/Full
-> 	                        100baseT/Half 100baseT/Full
-> 	                        1000baseT/Half 1000baseT/Full
-> 	Supported pause frame use: Symmetric Receive-only
-> 	Supports auto-negotiation: Yes
-> 	Supported FEC modes: Not reported
-> 	Advertised link modes:  10baseT/Half 10baseT/Full
-> 	                        100baseT/Half 100baseT/Full
-> 	                        1000baseT/Half 1000baseT/Full
-> 	Advertised pause frame use: Symmetric Receive-only
-> 	Advertised auto-negotiation: Yes
-> 	Advertised FEC modes: Not reported
-> 	Link partner advertised link modes:  10baseT/Half 10baseT/Full
-> 	                                     100baseT/Half 100baseT/Full
-> 	Link partner advertised pause frame use: Symmetric Receive-only
-> 	Link partner advertised auto-negotiation: Yes
-> 	Link partner advertised FEC modes: Not reported
-> 	Speed: 100Mb/s
-> 	Duplex: Full
-> 	Auto-negotiation: on
-> 	master-slave cfg: preferred slave
-> 	master-slave status: slave
-> 	Port: Twisted Pair
-> 	PHYAD: 0
-> 	Transceiver: external
-> 	MDI-X: Unknown
->   netlink error: Operation not permitted
-> 	Link detected: yes
+> cells?
 > 
-> Partially tested on Hikey 960[1]:
+> How is this optional?
 > 
->   $ lspci
->   00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
+>> +        const: 1
+>> +
+>> +    required:
+>> +      - compatible
+>> +      - reg
+>> +
+>> +    additionalProperties: false
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: true
 > 
-> [1] The Hikey 960 doesn't come with any internal PCIe device.
->     Its hardware supports just an external device via a M.2 slot that
->     doesn't support SATA. I ordered a NVMe device to test, but the vendor
->     is currently out of supply. It should take 4-5 weeks to arrive here. I'll
->     run an extra test on it once it arrives.
+> This needs to be false and fix whatever is missing.
 > 
-> Manivannan Sadhasivam (1):
->   arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller
->     hardware
+>> +
+>> +examples:
+>> +  - |
+>> +    gpr {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +        gprservice@1 {
+>> +          compatible = "qcom,q6apm";
+>> +          reg = <1>;
+>> +
+>> +          q6apm-dai {
 > 
-> Mauro Carvalho Chehab (8):
->   dt-bindings: phy: add bindings for Hikey 960 PCIe PHY
->   dt-bindings: phy: add bindings for Hikey 970 PCIe PHY
->   dt-bindings: PCI: kirin: fix compatible string
->   dt-bindings: PCI: kirin: drop PHY properties
->   phy: hisilicon: add a PHY driver for Kirin 960
->   PCI: kirin: drop the PHY logic from the driver
->   PCI: kirin: use regmap for APB registers
->   phy: hisilicon: add driver for Kirin 970 PCIe PHY
+> This doesn't match what you have in the schema at all.
 > 
->  .../devicetree/bindings/pci/kirin-pcie.txt    |  21 +-
->  .../phy/hisilicon,phy-hi3660-pcie.yaml        |  82 ++
->  .../phy/hisilicon,phy-hi3670-pcie.yaml        | 101 ++
->  arch/arm64/boot/dts/hisilicon/hi3660.dtsi     |  29 +-
->  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  72 ++
->  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |   1 -
->  drivers/pci/controller/dwc/pcie-kirin.c       | 298 ++----
->  drivers/phy/hisilicon/Kconfig                 |  20 +
->  drivers/phy/hisilicon/Makefile                |   2 +
->  drivers/phy/hisilicon/phy-hi3660-pcie.c       | 325 +++++++
->  drivers/phy/hisilicon/phy-hi3670-pcie.c       | 892 ++++++++++++++++++
->  11 files changed, 1572 insertions(+), 271 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml
->  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
->  create mode 100644 drivers/phy/hisilicon/phy-hi3660-pcie.c
->  create mode 100644 drivers/phy/hisilicon/phy-hi3670-pcie.c
-> 
-> -- 
-> 2.31.1
-> 
-> 
+>> +            compatible = "qcom,q6apm-dai";
+>> +            #sound-dai-cels = <1>;
+>> +          };
+>> +
+>> +          q6apm-bedai {
+>> +            compatible = "qcom,q6apm-bedai";
+>> +            #sound-dai-cels = <1>;
+>> +          };
+>> +        };
+>> +    };
+>> -- 
+>> 2.21.0
+>>
+>>
