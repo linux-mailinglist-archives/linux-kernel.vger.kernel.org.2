@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30D33C5723
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676D93C49A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352894AbhGLI3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:29:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49730 "EHLO mail.kernel.org"
+        id S234163AbhGLGpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349397AbhGLHl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC9E8601FE;
-        Mon, 12 Jul 2021 07:39:10 +0000 (UTC)
+        id S236582AbhGLGfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAFC661151;
+        Mon, 12 Jul 2021 06:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075551;
-        bh=YiVkQDLRAapwLNvBwX9UK9D5pXW8BaYdNU8onEnEyeM=;
+        s=korg; t=1626071543;
+        bh=uAPpcxsYPuPDVvfQ114HosmJn/2knSHCbfPiPY2r8DQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VUcJ8YF+5rDnv4mIlH13ivon25XETuR2fqDt+Q5vDnWhDLJb9vXPrAJmbHTUZab0x
-         SQlqPQwK86ZFRv0Eq93o5O8RjY/cZzIEUj1wnWVRfO7MDmnZZrfegwUIe7f8j6egOn
-         mJNhnNg3mlGDihNIHFE6AJhOXGP+Prg16kDFEM1I=
+        b=hp3TBouqexL12AFmF89z7qjC4pbfXE9gpqijhRlrfRrMZuhosjkgmYetQlAxn8B20
+         6xNNVC189MciO/djdJXQ9t0U5Qi3BfvUFaibmsf87dfgRarJSxktaNVnhOM6dhaSvC
+         8svHzlHVcr0kJVeYzlkj9ozpCiOD0vpj90jPTGYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Aurelien Aptel <aaptel@suse.com>,
-        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 245/800] cifs: improve fallocate emulation
+Subject: [PATCH 5.10 108/593] media: mtk-vcodec: fix PM runtime get logic
 Date:   Mon, 12 Jul 2021 08:04:28 +0200
-Message-Id: <20210712060948.254167108@linuxfoundation.org>
+Message-Id: <20210712060855.092608032@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,189 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 966a3cb7c7db786452a87afdc3b48858fc4d4d6b ]
+[ Upstream commit 908711f542c17fe61e5d653da1beb8e5ab5c7b50 ]
 
-RHBZ: 1866684
+Currently, the driver just assumes that PM runtime logic
+succeded resuming the device.
 
-We don't have a real fallocate in the SMB2 protocol so we used to emulate fallocate
-by simply switching the file to become non-sparse. But as that could potantially consume
-a lot more data than we intended to fallocate (large sparse file and fallocating a thin
-slice in the middle) we would only do this IFF the fallocate request was for virtually
-the entire file.
+That may not be the case, as pm_runtime_get_sync()
+can fail (but keeping the usage count incremented).
 
-This patch improves this and starts allowing us to fallocate smaller chunks of a file by
-overwriting the region with 0, for the parts that are unallocated.
+Replace the code to use pm_runtime_resume_and_get(),
+and letting it return the error code.
 
-The method used is to first query the server for FSCTL_QUERY_ALLOCATED_RANGES to find what
-is unallocated in the fallocate range and then to only overwrite-with-zero the unallocated
-ranges to fill in the holes.
+This way, if mtk_vcodec_dec_pw_on() fails, the logic
+under fops_vcodec_open() will do the right thing and
+return an error, instead of just assuming that the
+device is ready to be used.
 
-As overwriting-with-zero is different from just allocating blocks, and potentially much
-more expensive, we limit this to only allow fallocate ranges up to 1Mb in size.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Acked-by: Aurelien Aptel <aaptel@suse.com>
-Acked-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c | 133 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 133 insertions(+)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c | 4 +++-
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c  | 8 +++++---
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h  | 2 +-
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 21ef51d338e0..b68ba92893b6 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3601,6 +3601,119 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
- 	return rc;
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+index 145686d2c219..f59ef8c8c9db 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+@@ -126,7 +126,9 @@ static int fops_vcodec_open(struct file *file)
+ 	mtk_vcodec_dec_set_default_params(ctx);
+ 
+ 	if (v4l2_fh_is_singular(&ctx->fh)) {
+-		mtk_vcodec_dec_pw_on(&dev->pm);
++		ret = mtk_vcodec_dec_pw_on(&dev->pm);
++		if (ret < 0)
++			goto err_load_fw;
+ 		/*
+ 		 * Does nothing if firmware was already loaded.
+ 		 */
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+index ddee7046ce42..6038db96f71c 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+@@ -88,13 +88,15 @@ void mtk_vcodec_release_dec_pm(struct mtk_vcodec_dev *dev)
+ 	put_device(dev->pm.larbvdec);
  }
  
-+static int smb3_simple_fallocate_write_range(unsigned int xid,
-+					     struct cifs_tcon *tcon,
-+					     struct cifsFileInfo *cfile,
-+					     loff_t off, loff_t len,
-+					     char *buf)
-+{
-+	struct cifs_io_parms io_parms = {0};
-+	int nbytes;
-+	struct kvec iov[2];
-+
-+	io_parms.netfid = cfile->fid.netfid;
-+	io_parms.pid = current->tgid;
-+	io_parms.tcon = tcon;
-+	io_parms.persistent_fid = cfile->fid.persistent_fid;
-+	io_parms.volatile_fid = cfile->fid.volatile_fid;
-+	io_parms.offset = off;
-+	io_parms.length = len;
-+
-+	/* iov[0] is reserved for smb header */
-+	iov[1].iov_base = buf;
-+	iov[1].iov_len = io_parms.length;
-+	return SMB2_write(xid, &io_parms, &nbytes, iov, 1);
-+}
-+
-+static int smb3_simple_fallocate_range(unsigned int xid,
-+				       struct cifs_tcon *tcon,
-+				       struct cifsFileInfo *cfile,
-+				       loff_t off, loff_t len)
-+{
-+	struct file_allocated_range_buffer in_data, *out_data = NULL, *tmp_data;
-+	u32 out_data_len;
-+	char *buf = NULL;
-+	loff_t l;
-+	int rc;
-+
-+	in_data.file_offset = cpu_to_le64(off);
-+	in_data.length = cpu_to_le64(len);
-+	rc = SMB2_ioctl(xid, tcon, cfile->fid.persistent_fid,
-+			cfile->fid.volatile_fid,
-+			FSCTL_QUERY_ALLOCATED_RANGES, true,
-+			(char *)&in_data, sizeof(in_data),
-+			1024 * sizeof(struct file_allocated_range_buffer),
-+			(char **)&out_data, &out_data_len);
-+	if (rc)
-+		goto out;
-+	/*
-+	 * It is already all allocated
-+	 */
-+	if (out_data_len == 0)
-+		goto out;
-+
-+	buf = kzalloc(1024 * 1024, GFP_KERNEL);
-+	if (buf == NULL) {
-+		rc = -ENOMEM;
-+		goto out;
-+	}
-+
-+	tmp_data = out_data;
-+	while (len) {
-+		/*
-+		 * The rest of the region is unmapped so write it all.
-+		 */
-+		if (out_data_len == 0) {
-+			rc = smb3_simple_fallocate_write_range(xid, tcon,
-+					       cfile, off, len, buf);
-+			goto out;
-+		}
-+
-+		if (out_data_len < sizeof(struct file_allocated_range_buffer)) {
-+			rc = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (off < le64_to_cpu(tmp_data->file_offset)) {
-+			/*
-+			 * We are at a hole. Write until the end of the region
-+			 * or until the next allocated data,
-+			 * whichever comes next.
-+			 */
-+			l = le64_to_cpu(tmp_data->file_offset) - off;
-+			if (len < l)
-+				l = len;
-+			rc = smb3_simple_fallocate_write_range(xid, tcon,
-+					       cfile, off, l, buf);
-+			if (rc)
-+				goto out;
-+			off = off + l;
-+			len = len - l;
-+			if (len == 0)
-+				goto out;
-+		}
-+		/*
-+		 * We are at a section of allocated data, just skip forward
-+		 * until the end of the data or the end of the region
-+		 * we are supposed to fallocate, whichever comes first.
-+		 */
-+		l = le64_to_cpu(tmp_data->length);
-+		if (len < l)
-+			l = len;
-+		off += l;
-+		len -= l;
-+
-+		tmp_data = &tmp_data[1];
-+		out_data_len -= sizeof(struct file_allocated_range_buffer);
-+	}
-+
-+ out:
-+	kfree(out_data);
-+	kfree(buf);
-+	return rc;
-+}
-+
-+
- static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
- 			    loff_t off, loff_t len, bool keep_size)
+-void mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm)
++int mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm)
  {
-@@ -3661,6 +3774,26 @@ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
- 	}
+ 	int ret;
  
- 	if ((keep_size == true) || (i_size_read(inode) >= off + len)) {
-+		/*
-+		 * At this point, we are trying to fallocate an internal
-+		 * regions of a sparse file. Since smb2 does not have a
-+		 * fallocate command we have two otions on how to emulate this.
-+		 * We can either turn the entire file to become non-sparse
-+		 * which we only do if the fallocate is for virtually
-+		 * the whole file,  or we can overwrite the region with zeroes
-+		 * using SMB2_write, which could be prohibitevly expensive
-+		 * if len is large.
-+		 */
-+		/*
-+		 * We are only trying to fallocate a small region so
-+		 * just write it with zero.
-+		 */
-+		if (len <= 1024 * 1024) {
-+			rc = smb3_simple_fallocate_range(xid, tcon, cfile,
-+							 off, len);
-+			goto out;
-+		}
+-	ret = pm_runtime_get_sync(pm->dev);
++	ret = pm_runtime_resume_and_get(pm->dev);
+ 	if (ret)
+-		mtk_v4l2_err("pm_runtime_get_sync fail %d", ret);
++		mtk_v4l2_err("pm_runtime_resume_and_get fail %d", ret);
 +
- 		/*
- 		 * Check if falloc starts within first few pages of file
- 		 * and ends within a few pages of the end of file to
++	return ret;
+ }
+ 
+ void mtk_vcodec_dec_pw_off(struct mtk_vcodec_pm *pm)
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h
+index 872d8bf8cfaf..280aeaefdb65 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.h
+@@ -12,7 +12,7 @@
+ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *dev);
+ void mtk_vcodec_release_dec_pm(struct mtk_vcodec_dev *dev);
+ 
+-void mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm);
++int mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm);
+ void mtk_vcodec_dec_pw_off(struct mtk_vcodec_pm *pm);
+ void mtk_vcodec_dec_clock_on(struct mtk_vcodec_pm *pm);
+ void mtk_vcodec_dec_clock_off(struct mtk_vcodec_pm *pm);
 -- 
 2.30.2
 
