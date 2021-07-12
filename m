@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E131D3C5715
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339103C493F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348029AbhGLI1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:27:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46906 "EHLO mail.kernel.org"
+        id S237166AbhGLGnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348017AbhGLHkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20BB461164;
-        Mon, 12 Jul 2021 07:37:39 +0000 (UTC)
+        id S237683AbhGLGeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A751F60FD8;
+        Mon, 12 Jul 2021 06:31:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075460;
-        bh=xrZQXGqRJvGdNcdItfEotkKMXNf9hOca8ma1npbSJYY=;
+        s=korg; t=1626071485;
+        bh=ncFe/9efYb9vykiPBpuZ6xpCFkcgc1CsfK81nIWM6ko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Im9dbkEi3gHL9d0jMphCzczUkZIyIt+nGSj9agkP2SbCP7B1fUryOXRx1M2g71Z4p
-         5jX+1p7MHAe81hW9AVAWuuVzFm0yoQaldSsCR8mR2kl2PJ6R3hoN6X0XmmoxH7A6w3
-         4HPT0mtw/rJmZwbwZ6V0uvuktW4/dfgsK64VBiOk=
+        b=AB/DeL5hyYdFmSKj6au1Iv5v9agUyiFgSveRMDFQFElwa03lyUgNAcU3l9nlJpWJ9
+         OXYUJ5IOOUREA1RqKP/DofkRO0ZHR26zuHr0htJK8DC8J8KBF2A5NVuRcgCgUS3vWE
+         SJXverJsQykXjwehYLfUXUi24Ov3qLUOCSI0sPDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Richard Guy Briggs <rgb@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 227/800] open: dont silently ignore unknown O-flags in openat2()
+        stable@vger.kernel.org, Kristian Klausen <kristian@klausen.dk>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 090/593] loop: Fix missing discard support when using LOOP_CONFIGURE
 Date:   Mon, 12 Jul 2021 08:04:10 +0200
-Message-Id: <20210712060945.789484215@linuxfoundation.org>
+Message-Id: <20210712060853.104528720@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,108 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+From: Kristian Klausen <kristian@klausen.dk>
 
-[ Upstream commit cfe80306a0dd6d363934913e47c3f30d71b721e5 ]
+commit 2b9ac22b12a266eb4fec246a07b504dd4983b16b upstream.
 
-The new openat2() syscall verifies that no unknown O-flag values are
-set and returns an error to userspace if they are while the older open
-syscalls like open() and openat() simply ignore unknown flag values:
+Without calling loop_config_discard() the discard flag and parameters
+aren't set/updated for the loop device and worst-case they could
+indicate discard support when it isn't the case (ex: if the
+LOOP_SET_STATUS ioctl was used with a different file prior to
+LOOP_CONFIGURE).
 
-  #define O_FLAG_CURRENTLY_INVALID (1 << 31)
-  struct open_how how = {
-          .flags = O_RDONLY | O_FLAG_CURRENTLY_INVALID,
-          .resolve = 0,
-  };
+Cc: <stable@vger.kernel.org> # 5.8.x-
+Fixes: 3448914e8cc5 ("loop: Add LOOP_CONFIGURE ioctl")
+Signed-off-by: Kristian Klausen <kristian@klausen.dk>
+Link: https://lore.kernel.org/r/20210618115157.31452-1-kristian@klausen.dk
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  /* fails */
-  fd = openat2(-EBADF, "/dev/null", &how, sizeof(how));
-
-  /* succeeds */
-  fd = openat(-EBADF, "/dev/null", O_RDONLY | O_FLAG_CURRENTLY_INVALID);
-
-However, openat2() silently truncates the upper 32 bits meaning:
-
-  #define O_FLAG_CURRENTLY_INVALID_LOWER32 (1 << 31)
-  #define O_FLAG_CURRENTLY_INVALID_UPPER32 (1 << 40)
-
-  struct open_how how_lowe32 = {
-          .flags = O_RDONLY | O_FLAG_CURRENTLY_INVALID_LOWER32,
-  };
-
-  struct open_how how_upper32 = {
-          .flags = O_RDONLY | O_FLAG_CURRENTLY_INVALID_UPPER32,
-  };
-
-  /* fails */
-  fd = openat2(-EBADF, "/dev/null", &how_lower32, sizeof(how_lower32));
-
-  /* succeeds */
-  fd = openat2(-EBADF, "/dev/null", &how_upper32, sizeof(how_upper32));
-
-Fix this by preventing the immediate truncation in build_open_flags().
-
-There's a snafu here though stripping FMODE_* directly from flags would
-cause the upper 32 bits to be truncated as well due to integer promotion
-rules since FMODE_* is unsigned int, O_* are signed ints (yuck).
-
-In addition, struct open_flags currently defines flags to be 32 bit
-which is reasonable. If we simply were to bump it to 64 bit we would
-need to change a lot of code preemptively which doesn't seem worth it.
-So simply add a compile-time check verifying that all currently known
-O_* flags are within the 32 bit range and fail to build if they aren't
-anymore.
-
-This change shouldn't regress old open syscalls since they silently
-truncate any unknown values anyway. It is a tiny semantic change for
-openat2() but it is very unlikely people pass ing > 32 bit unknown flags
-and the syscall is relatively new too.
-
-Link: https://lore.kernel.org/r/20210528092417.3942079-3-brauner@kernel.org
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Aleksa Sarai <cyphar@cyphar.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Reported-by: Richard Guy Briggs <rgb@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/open.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/block/loop.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/open.c b/fs/open.c
-index e53af13b5835..53bc0573c0ec 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1002,12 +1002,20 @@ inline struct open_how build_open_how(int flags, umode_t mode)
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -1161,6 +1161,7 @@ static int loop_configure(struct loop_de
+ 	blk_queue_physical_block_size(lo->lo_queue, bsize);
+ 	blk_queue_io_min(lo->lo_queue, bsize);
  
- inline int build_open_flags(const struct open_how *how, struct open_flags *op)
- {
--	int flags = how->flags;
-+	u64 flags = how->flags;
-+	u64 strip = FMODE_NONOTIFY | O_CLOEXEC;
- 	int lookup_flags = 0;
- 	int acc_mode = ACC_MODE(flags);
- 
--	/* Must never be set by userspace */
--	flags &= ~(FMODE_NONOTIFY | O_CLOEXEC);
-+	BUILD_BUG_ON_MSG(upper_32_bits(VALID_OPEN_FLAGS),
-+			 "struct open_flags doesn't yet handle flags > 32 bits");
-+
-+	/*
-+	 * Strip flags that either shouldn't be set by userspace like
-+	 * FMODE_NONOTIFY or that aren't relevant in determining struct
-+	 * open_flags like O_CLOEXEC.
-+	 */
-+	flags &= ~strip;
- 
- 	/*
- 	 * Older syscalls implicitly clear all of the invalid flags or argument
--- 
-2.30.2
-
++	loop_config_discard(lo);
+ 	loop_update_rotational(lo);
+ 	loop_update_dio(lo);
+ 	loop_sysfs_init(lo);
 
 
