@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522A13C5452
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817DA3C4DAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348512AbhGLH5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58292 "EHLO mail.kernel.org"
+        id S239429AbhGLHNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344226AbhGLHUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 338EA61153;
-        Mon, 12 Jul 2021 07:17:36 +0000 (UTC)
+        id S238679AbhGLGtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B62FD611AF;
+        Mon, 12 Jul 2021 06:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074256;
-        bh=8gW7JFX5rK52QRputCNKEUye20hYvArEIkpGCgB/JgI=;
+        s=korg; t=1626072302;
+        bh=+BaG+O+HH2eqv/ZDX0AipjN2/iaq3ltAmZrXeJnTILw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z5EMPHF3czmmtAU4SY0Lc1sfpGQilbuwf2ETiw0O/ZFHTBX7Vjj771HIgaQSM1kRh
-         RVEdGJKoFAI9YUCbxZvG4TmqEy1mkuFTFyJKt4r2+xyRhjpTvV+qb4uTzBDBfQ7nB/
-         2U+glWhzxM7XI0OKMHKUb8PEWi0ZuF3A/rMy5gyo=
+        b=Mxqp2PZnf4yiQTLGXJ+28Y7d/6K56Ip//72cbKL/GaPe2g10oih9yxNOOuOgFlChh
+         v0zbiZKVdeTYiFBsJaremGMuKGH6ls8MVzy4FRkuNVfsRb/t1ol98ArpTiYsaGlFyE
+         boVaHEvKe37ogxSRjm7V6PDWZ9yyYKz7sQ5aia1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 517/700] RDMA/core: Always release restrack object
-Date:   Mon, 12 Jul 2021 08:10:00 +0200
-Message-Id: <20210712061031.488968752@linuxfoundation.org>
+        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 441/593] mwifiex: re-fix for unaligned accesses
+Date:   Mon, 12 Jul 2021 08:10:01 +0200
+Message-Id: <20210712060937.372889464@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 3d8287544223a3d2f37981c1f9ffd94d0b5e9ffc ]
+[ Upstream commit 8f4e3d48bb50765ab27ae5bebed2595b20de80a1 ]
 
-Change location of rdma_restrack_del() to fix the bug where
-task_struct was acquired but not released, causing to resource leak.
+A patch from 2017 changed some accesses to DMA memory to use
+get_unaligned_le32() and similar interfaces, to avoid problems
+with doing unaligned accesson uncached memory.
 
-  ucma_create_id() {
-    ucma_alloc_ctx();
-    rdma_create_user_id() {
-      rdma_restrack_new();
-      rdma_restrack_set_name() {
-        rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
-      }
-    }
-    ucma_destroy_private_ctx() {
-      ucma_put_ctx();
-      rdma_destroy_id() {
-        _destroy_id()                       <--- id_priv was freed
-      }
-    }
-  }
+However, the change in the mwifiex_pcie_alloc_sleep_cookie_buf()
+function ended up changing the size of the access instead,
+as it operates on a pointer to u8.
 
-Fixes: 889d916b6f8a ("RDMA/core: Don't access cm_id after its destruction")
-Link: https://lore.kernel.org/r/073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com
-Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Change this function back to actually access the entire 32 bits.
+Note that the pointer is aligned by definition because it came
+from dma_alloc_coherent().
+
+Fixes: 92c70a958b0b ("mwifiex: fix for unaligned reads")
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/marvell/mwifiex/pcie.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 68bbcecb0a6a..bb46f794f324 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1856,6 +1856,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
+index 33cf952cc01d..b2de8d03c5fa 100644
+--- a/drivers/net/wireless/marvell/mwifiex/pcie.c
++++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+@@ -1232,7 +1232,7 @@ static int mwifiex_pcie_delete_cmdrsp_buf(struct mwifiex_adapter *adapter)
+ static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
  {
- 	cma_cancel_operation(id_priv, state);
+ 	struct pcie_service_card *card = adapter->card;
+-	u32 tmp;
++	u32 *cookie;
  
-+	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
- 			if (id_priv->cm_id.ib)
-@@ -1865,7 +1866,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- 				iw_destroy_cm_id(id_priv->cm_id.iw);
- 		}
- 		cma_leave_mc_groups(id_priv);
--		rdma_restrack_del(&id_priv->res);
- 		cma_release_dev(id_priv);
+ 	card->sleep_cookie_vbase = dma_alloc_coherent(&card->dev->dev,
+ 						      sizeof(u32),
+@@ -1243,13 +1243,11 @@ static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
+ 			    "dma_alloc_coherent failed!\n");
+ 		return -ENOMEM;
  	}
++	cookie = (u32 *)card->sleep_cookie_vbase;
+ 	/* Init val of Sleep Cookie */
+-	tmp = FW_AWAKE_COOKIE;
+-	put_unaligned(tmp, card->sleep_cookie_vbase);
++	*cookie = FW_AWAKE_COOKIE;
  
+-	mwifiex_dbg(adapter, INFO,
+-		    "alloc_scook: sleep cookie=0x%x\n",
+-		    get_unaligned(card->sleep_cookie_vbase));
++	mwifiex_dbg(adapter, INFO, "alloc_scook: sleep cookie=0x%x\n", *cookie);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
