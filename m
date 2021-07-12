@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DA93C52ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC4C3C4C36
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350719AbhGLHvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:51:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S240717AbhGLHCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:02:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238953AbhGLHQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:16:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1C76142D;
-        Mon, 12 Jul 2021 07:13:20 +0000 (UTC)
+        id S237203AbhGLGqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4252E6100B;
+        Mon, 12 Jul 2021 06:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074001;
-        bh=gUzq2IjmFBRj8Bn3SaMRAvX7FiAS7IiS1R+qQzJnQVI=;
+        s=korg; t=1626072097;
+        bh=Hb0X96TtFC3R0pPPrAHar0xCDOv8khGvI88Qwm/fut4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g7EkCuAfxYvHveX15djT5k2Ae2CYKs+nbgeLP60lL+haCieS4MEOX7t0anb6ZteFG
-         hfxXGLqFYeHrt+d15rBsLQ6ki0NaKdJe6E2RjMD39o5UpOyAp+eLe6MrjOLcDiEee/
-         ctEQuMgTgJ8g8+2ramVE0iSuiipL5W/7DG+GBjz0=
+        b=Xkhn0cm1CTvJAksoFrlg782AaMjxF2DEe1c+WonqeFpytJkSjILrfCxwgm1DdZpQq
+         evFfn0m0iaOncoFmAVJROwzrP79UMFW6/GIfyJw4WqhgM4ACNUrqV1qjBn7UDqxbJW
+         shyVckPiUbxPxfcp9K/3NElwBv6EbGj3P0L25iIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Hai <wanghai38@huawei.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org,
+        Seevalamuthu Mariappan <seevalam@codeaurora.org>,
+        Sven Eckelmann <sven@narfation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 430/700] samples/bpf: Fix the error return code of xdp_redirects main()
-Date:   Mon, 12 Jul 2021 08:08:33 +0200
-Message-Id: <20210712061022.176418065@linuxfoundation.org>
+Subject: [PATCH 5.10 354/593] ath11k: send beacon template after vdev_start/restart during csa
+Date:   Mon, 12 Jul 2021 08:08:34 +0200
+Message-Id: <20210712060925.240233592@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Seevalamuthu Mariappan <seevalam@codeaurora.org>
 
-[ Upstream commit 7c6090ee2a7b3315410cfc83a94c3eb057407b25 ]
+[ Upstream commit 979ebc54cf13bd1e3eb6e21766d208d5de984fb8 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Firmware has added assert if beacon template is received after
+vdev_down. Firmware expects beacon template after vdev_start
+and before vdev_up. This change is needed to support MBSSID EMA
+cases in firmware.
 
-If bpf_map_update_elem() failed, main() should return a negative error.
+Hence, Change the sequence in ath11k as expected from firmware.
+This new change is not causing any issues with older
+firmware.
 
-Fixes: 832622e6bd18 ("xdp: sample program for new bpf_redirect helper")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210616042534.315097-1-wanghai38@huawei.com
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.5.0.1.r3-00011-QCAHKSWPL_SILICONZ-1
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.5.0.1.r4-00008-QCAHKSWPL_SILICONZ-1
+
+Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
+Signed-off-by: Seevalamuthu Mariappan <seevalam@codeaurora.org>
+[sven@narfation.org: added tested-on/fixes information]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210525133028.2805615-1-sven@narfation.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/xdp_redirect_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/mac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_user.c
-index eb876629109a..93854e135134 100644
---- a/samples/bpf/xdp_redirect_user.c
-+++ b/samples/bpf/xdp_redirect_user.c
-@@ -213,5 +213,5 @@ int main(int argc, char **argv)
- 	poll_stats(2, ifindex_out);
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index 0738c784616f..cc0c30ceaa0d 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -5123,11 +5123,6 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
+ 		if (WARN_ON(!arvif->is_up))
+ 			continue;
  
- out:
--	return 0;
-+	return ret;
- }
+-		ret = ath11k_mac_setup_bcn_tmpl(arvif);
+-		if (ret)
+-			ath11k_warn(ab, "failed to update bcn tmpl during csa: %d\n",
+-				    ret);
+-
+ 		ret = ath11k_mac_vdev_restart(arvif, &vifs[i].new_ctx->def);
+ 		if (ret) {
+ 			ath11k_warn(ab, "failed to restart vdev %d: %d\n",
+@@ -5135,6 +5130,11 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
+ 			continue;
+ 		}
+ 
++		ret = ath11k_mac_setup_bcn_tmpl(arvif);
++		if (ret)
++			ath11k_warn(ab, "failed to update bcn tmpl during csa: %d\n",
++				    ret);
++
+ 		ret = ath11k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
+ 					 arvif->bssid);
+ 		if (ret) {
 -- 
 2.30.2
 
