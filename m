@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7403C493A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D88C3C56CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237103AbhGLGnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
+        id S1357772AbhGLIYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:24:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237645AbhGLGen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC13C610CD;
-        Mon, 12 Jul 2021 06:31:03 +0000 (UTC)
+        id S1347957AbhGLHk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AFB5611BF;
+        Mon, 12 Jul 2021 07:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071464;
-        bh=11e79BYCykY3Xlp9T9o1wLSDCXnc/EQFQCNn87jw2ts=;
+        s=korg; t=1626075431;
+        bh=MPFBS+A6c3odh1pN+vIUijy2uFTRPT9dQxfejmj/eSU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mB7W1bTc8Kzg9JsSRkskfdSlfgOVupu5UK3VoCq1h0rAN+Iu0VP/NF3iMOAsXTW7W
-         02Ec3G8EoBD8x4C25Pq7/qMIVHRhpCVfr47ANWxhvnwXfsR679hywjHlCJr5tO7T/w
-         qi4AK36OEhi6S/5PFfc9p4APfqWL5JwivpfsieGA=
+        b=rXunoqp22y0On+k1vs5YGsSMEyL6t6OLlU+fMEmkwmZYaKAjfn73/nIp2/NyO7WkK
+         +56V1Ze6X3sRvUslHizsuCHcyQ8EHcJx4TJiiSs+pv7phXvfGX/vVVPaIyqtjuLVTJ
+         PhrYweWPw4onRFPCH3WxJExpHLLsZaBzvbO5z7VI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Zary <linux@zary.sk>
-Subject: [PATCH 5.10 081/593] serial_cs: remove wrong GLOBETROTTER.cis entry
+        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 218/800] ACPI: EC: Make more Asus laptops use ECDT _GPE
 Date:   Mon, 12 Jul 2021 08:04:01 +0200
-Message-Id: <20210712060852.057917017@linuxfoundation.org>
+Message-Id: <20210712060944.422540136@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,51 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Zary <linux@zary.sk>
+From: Chris Chiu <chris.chiu@canonical.com>
 
-commit 11b1d881a90fc184cc7d06e9804eb288c24a2a0d upstream.
+[ Upstream commit 6306f0431914beaf220634ad36c08234006571d5 ]
 
-The GLOBETROTTER.cis entry in serial_cs matches more devices than
-intended and breaks them. Remove it.
+More ASUS laptops have the _GPE define in the DSDT table with a
+different value than the _GPE number in the ECDT.
 
-Example: # pccardctl info
-PRODID_1="Option International
-"
-PRODID_2="GSM-Ready 56K/ISDN
-"
-PRODID_3="021
-"
-PRODID_4="A
-"
-MANFID=0013,0000
-FUNCID=0
+This is causing media keys not working on ASUS X505BA/BP, X542BA/BP
 
-result:
-pcmcia 0.0: Direct firmware load for cis/GLOBETROTTER.cis failed with error -2
+Add model info to the quirks list.
 
-The GLOBETROTTER.cis is nowhere to be found. There's GLOBETROTTER.cis.ihex at
-https://netdev.vger.kernel.narkive.com/h4inqdxM/patch-axnet-cs-fix-phy-id-detection-for-bogus-asix-chip#post41
-It's from completely diffetent card:
-vers_1 4.1, "Option International", "GSM/GPRS GlobeTrotter", "001", "A"
-
-Signed-off-by: Ondrej Zary <linux@zary.sk>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210611201940.23898-1-linux@zary.sk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/serial_cs.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/acpi/ec.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/drivers/tty/serial/8250/serial_cs.c
-+++ b/drivers/tty/serial/8250/serial_cs.c
-@@ -808,7 +808,6 @@ static const struct pcmcia_device_id ser
- 	PCMCIA_DEVICE_CIS_PROD_ID12("ADVANTECH", "COMpad-32/85B-4", 0x96913a85, 0xcec8f102, "cis/COMpad4.cis"),
- 	PCMCIA_DEVICE_CIS_PROD_ID123("ADVANTECH", "COMpad-32/85", "1.0", 0x96913a85, 0x8fbe92ae, 0x0877b627, "cis/COMpad2.cis"),
- 	PCMCIA_DEVICE_CIS_PROD_ID2("RS-COM 2P", 0xad20b156, "cis/RS-COM-2P.cis"),
--	PCMCIA_DEVICE_CIS_MANF_CARD(0x0013, 0x0000, "cis/GLOBETROTTER.cis"),
- 	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL CARD: SL100  1.00.", 0x19ca78af, 0xf964f42b),
- 	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL CARD: SL100", 0x19ca78af, 0x71d98e83),
- 	PCMCIA_DEVICE_PROD_ID12("ELAN DIGITAL SYSTEMS LTD, c1997.", "SERIAL CARD: SL232  1.00.", 0x19ca78af, 0x69fb7490),
+diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+index 13565629ce0a..e8c5da2b964a 100644
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -1846,6 +1846,22 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
+ 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 	DMI_MATCH(DMI_PRODUCT_NAME, "GL702VMK"),}, NULL},
+ 	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BA", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X505BA"),}, NULL},
++	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BP", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X505BP"),}, NULL},
++	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BA", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X542BA"),}, NULL},
++	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BP", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X542BP"),}, NULL},
++	{
+ 	ec_honor_ecdt_gpe, "ASUS X550VXK", {
+ 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 	DMI_MATCH(DMI_PRODUCT_NAME, "X550VXK"),}, NULL},
+-- 
+2.30.2
+
 
 
