@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C883C60A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9D73C60A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhGLQdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:33:03 -0400
-Received: from smtprelay0073.hostedemail.com ([216.40.44.73]:43644 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229848AbhGLQdA (ORCPT
+        id S233713AbhGLQe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:34:56 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:54973 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhGLQe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:33:00 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 60D3322AC5;
-        Mon, 12 Jul 2021 16:30:10 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id EA34B1124FC;
-        Mon, 12 Jul 2021 16:30:08 +0000 (UTC)
-Message-ID: <e66313dfc4ff30b745a29c76d9f04049f3aeb6ce.camel@perches.com>
-Subject: Re: [RESEND] edac: replace sprintf() by scnprintf()
-From:   Joe Perches <joe@perches.com>
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rric@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 12 Jul 2021 09:30:07 -0700
-In-Reply-To: <20210712120945.GA777994@pc>
-References: <20210710163505.GA689509@pc>
-         <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
-         <20210712120945.GA777994@pc>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Mon, 12 Jul 2021 12:34:56 -0400
+Received: by mail-io1-f69.google.com with SMTP id m14-20020a5d898e0000b02904f7957d92b5so12163895iol.21
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:32:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=g1EnsL14HF8LdZjkBNd6tkp4dBn0hH7K4Mtz8YY7q50=;
+        b=CF3XWRSi/8qi4Wh1ohnGsgmZeh7vfUHFDpr4BEgsC87kWBc9QAIe4DCDaeyCdwl/3k
+         vQJRutpjvEiGBNkEqCCeSiyPMd8DBfRM03UfPlNTsYYhhEf9FBqHyyemT4YXMuTKzOpS
+         XqlHXJ37dCfn/idvPibWLNMKadAxjp/N2QNBssa0HTOwME1ZGgyZwujkmeLpWZOQpeP4
+         5za6VbPywwcRuqmfW0LNI9/TygRTDxLe4KoEwKBbpKILtYjW9l+nLikWqymx5NoHGarY
+         Psv2G4Y8VJyDob+icUBoQnrQyHgzbAOwu1l7DfRQulO8FmNJkbLDYTWq94zAYKQDzdhB
+         mBjA==
+X-Gm-Message-State: AOAM531gRm49TF3lONkYKy/RIGJ0MV+vmHX+4ITpX7sAMjTo2rJ/lx4v
+        Q6LeYEjn5H/WH5z3JOBYMJQt65fgneYJH6A9o4sGrnh4u63q
+X-Google-Smtp-Source: ABdhPJx1HhlhyKyd/XTamXxBtDH5sKiC6WYruOEUPDeaHoqYYaVScDTEIO+gdoCm1CaNZ7P/F+GIzgfdUW5rTygF+IPU2D3pshZS
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: EA34B1124FC
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: wjtbxdjhp6ep6wtwepef198ee96pcjqk
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX182w6M9EvDj0DusiyTsO0pSTMh9wkPUFdk=
-X-HE-Tag: 1626107408-422958
+X-Received: by 2002:a02:9f89:: with SMTP id a9mr13383499jam.51.1626107527446;
+ Mon, 12 Jul 2021 09:32:07 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 09:32:07 -0700
+In-Reply-To: <20210712161445.GA321728@rowland.harvard.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008a429705c6efa94c@google.com>
+Subject: Re: [syzbot] WARNING in do_proc_control/usb_submit_urb
+From:   syzbot <syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-12 at 13:09 +0100, Salah Triki wrote:
-> On Sat, Jul 10, 2021 at 09:58:46AM -0700, Joe Perches wrote:
-> > On Sat, 2021-07-10 at 17:35 +0100, Salah Triki wrote:
-> > > Replace sprintf() by scnprintf() in order to avoid buffer overflows.
-> > Maybe name should be moved into the loop too.
-> In addition, for moving the
-> declaration of name inside the loop we need to compile the source in 
-> C99 mode.
+Hello,
 
-You need to read the c90 spec.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
+Reported-and-tested-by: syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         ee268dee Add linux-next specific files for 20210707
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59e1e3bbc3afca75
+dashboard link: https://syzkaller.appspot.com/bug?extid=72af3105289dcb4c055b
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14b945d8300000
+
+Note: testing is done by a robot and is best-effort only.
