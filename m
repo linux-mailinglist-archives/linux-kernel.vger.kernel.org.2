@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D487A3C5917
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897CD3C596C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356806AbhGLI5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
+        id S1383759AbhGLJDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:03:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353746AbhGLICt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A73A61CFC;
-        Mon, 12 Jul 2021 07:56:54 +0000 (UTC)
+        id S1353749AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0272F61D09;
+        Mon, 12 Jul 2021 07:57:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076615;
-        bh=p8bNnxJwgHMycf5P+nl2Gg916UtFZkNQDNpHCCG8iMQ=;
+        s=korg; t=1626076640;
+        bh=/B1RIRLSt4RjsDEo3xrgyfXm9+IGRlzknx9Yfryjoyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=odIS9GVneTEq1cFqJVGgJ4NaDhKMmuuAu0Bsfa2DqJOrtCIefjKfQtt1v+6fv5wuM
-         jNhRPuXBM62Z/pmjxaESVCquMajvtuiyEJvfAWMTkMZiwwzJqf9wwzhNSnYEzVQzR1
-         P95lALi8G+MQhX0onrL8T4gcGOtcULGRwmRaKLHU=
+        b=TNxgnsfNiYUd3uj4Fcmiok0EqxieodPtYXR3eJbTuZsoLDBlwWC/qTv4fX6SNfAge
+         coSzNUmqUNMqDzuh9LKIVPuwXFdWmZ5MPH3DoqWmT6nYlm3c5WGkwOQwTFKE9pc8Oz
+         s/OA50QYQsZSyC4+tGd+7Qdlo8A/KkmQTmfZyqVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huy Duong <qhuyduong@hotmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 702/800] eeprom: idt_89hpesx: Restore printing the unsupported fwnode name
-Date:   Mon, 12 Jul 2021 08:12:05 +0200
-Message-Id: <20210712061041.469577704@linuxfoundation.org>
+Subject: [PATCH 5.13 703/800] mtd: spi-nor: otp: fix access to security registers in 4 byte mode
+Date:   Mon, 12 Jul 2021 08:12:06 +0200
+Message-Id: <20210712061041.571554128@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,44 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit e0db3deea73ba418bf5dc21f5a4e32ca87d16dde ]
+[ Upstream commit b97b1a769849beb6b40b740817b06f1a50e1c589 ]
 
-When iterating over child firmware nodes restore printing the name of ones
-that are not supported.
+The security registers either take a 3 byte or a 4 byte address offset,
+depending on the address mode of the flash. Thus just leave the
+nor->addr_width as is.
 
-While at it, refactor loop body to clearly show that we stop at the first match.
-
-Fixes: db15d73e5f0e ("eeprom: idt_89hpesx: Support both ACPI and OF probing")
-Cc: Huy Duong <qhuyduong@hotmail.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210607221757.81465-2-andy.shevchenko@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: cad3193fe9d1 ("mtd: spi-nor: implement OTP support for Winbond and similar flashes")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/eeprom/idt_89hpesx.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/otp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
-index 45a61a1f9e98..3e4a594c110b 100644
---- a/drivers/misc/eeprom/idt_89hpesx.c
-+++ b/drivers/misc/eeprom/idt_89hpesx.c
-@@ -1126,11 +1126,10 @@ static void idt_get_fw_data(struct idt_89hpesx_dev *pdev)
+diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+index fcf38d260345..5c51a2c9be61 100644
+--- a/drivers/mtd/spi-nor/otp.c
++++ b/drivers/mtd/spi-nor/otp.c
+@@ -40,7 +40,6 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
+ 	rdesc = nor->dirmap.rdesc;
  
- 	device_for_each_child_node(dev, fwnode) {
- 		ee_id = idt_ee_match_id(fwnode);
--		if (!ee_id) {
--			dev_warn(dev, "Skip unsupported EEPROM device");
--			continue;
--		} else
-+		if (ee_id)
- 			break;
-+
-+		dev_warn(dev, "Skip unsupported EEPROM device %pfw\n", fwnode);
- 	}
+ 	nor->read_opcode = SPINOR_OP_RSECR;
+-	nor->addr_width = 3;
+ 	nor->read_dummy = 8;
+ 	nor->read_proto = SNOR_PROTO_1_1_1;
+ 	nor->dirmap.rdesc = NULL;
+@@ -84,7 +83,6 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+ 	wdesc = nor->dirmap.wdesc;
  
- 	/* If there is no fwnode EEPROM device, then set zero size */
+ 	nor->program_opcode = SPINOR_OP_PSECR;
+-	nor->addr_width = 3;
+ 	nor->write_proto = SNOR_PROTO_1_1_1;
+ 	nor->dirmap.wdesc = NULL;
+ 
 -- 
 2.30.2
 
