@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFAF3C4ABA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADC73C5156
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240203AbhGLGxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
+        id S1347656AbhGLHj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:39:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237240AbhGLGjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D8E661185;
-        Mon, 12 Jul 2021 06:34:53 +0000 (UTC)
+        id S241121AbhGLHIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:08:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 609276121F;
+        Mon, 12 Jul 2021 07:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071694;
-        bh=1gAzKclJqXIFGVlkDDdMp+ulq/FMKN39+IusWIkZcZ0=;
+        s=korg; t=1626073504;
+        bh=/N163FbOFkeOnHGwWMlvRyt7ZOWldUnix3Qi+8OqLzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ziNiMWCYrc/f0JM6dvkN1XSzYA0DdXygnfLkmgDpFxCZE9zO0wmoKNkMA21GWU/V7
-         QvcQBuGDODxpyZLyz3cnI90jUShoVnmJeOvaXv+nqlryZUjjvX0uHyD5widk4bMViW
-         47snd+o6gUWDxMqhss77FvVE2Gkzsol+BicqJpwc=
+        b=Tjd7YIMcpULfhAXPuh6e/EM3SmSRn/4cVhHW7HYCgH04C0Bdfwc4skSm0dmNOM79X
+         sFN3Lmwx8y4c0SIQP8LcgMRvTFIquPB17dqsoeFF/c+TcNxz5kR6iMjJOVraTkFdKc
+         XS+pftJrDys+eQp9ohUvJYHOg6IlyMGFDneNtJwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        David Jeffery <djeffery@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 179/593] blk-mq: clear stale request in tags->rq[] before freeing one request pool
-Date:   Mon, 12 Jul 2021 08:05:39 +0200
-Message-Id: <20210712060902.726273702@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 257/700] sata_highbank: fix deferred probing
+Date:   Mon, 12 Jul 2021 08:05:40 +0200
+Message-Id: <20210712061003.378009486@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,159 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit bd63141d585bef14f4caf111f6d0e27fe2300ec6 ]
+[ Upstream commit 4a24efa16e7db02306fb5db84518bb0a7ada5a46 ]
 
-refcount_inc_not_zero() in bt_tags_iter() still may read one freed
-request.
+The driver overrides the error codes returned by platform_get_irq() to
+-EINVAL, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing. Switch to propagating the
+error code upstream, still checking/overriding IRQ0 as libata regards it
+as "no IRQ" (thus polling) anyway...
 
-Fix the issue by the following approach:
-
-1) hold a per-tags spinlock when reading ->rqs[tag] and calling
-refcount_inc_not_zero in bt_tags_iter()
-
-2) clearing stale request referred via ->rqs[tag] before freeing
-request pool, the per-tags spinlock is held for clearing stale
-->rq[tag]
-
-So after we cleared stale requests, bt_tags_iter() won't observe
-freed request any more, also the clearing will wait for pending
-request reference.
-
-The idea of clearing ->rqs[] is borrowed from John Garry's previous
-patch and one recent David's patch.
-
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: David Jeffery <djeffery@redhat.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210511152236.763464-4-ming.lei@redhat.com
+Fixes: 9ec36cafe43b ("of/irq: do irq resolution in platform_get_irq")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Link: https://lore.kernel.org/r/105b456d-1199-f6e9-ceb7-ffc5ba551d1a@omprussia.ru
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq-tag.c |  9 +++++++--
- block/blk-mq-tag.h |  6 ++++++
- block/blk-mq.c     | 46 +++++++++++++++++++++++++++++++++++++++++-----
- 3 files changed, 54 insertions(+), 7 deletions(-)
+ drivers/ata/sata_highbank.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 6772c3728865..c4f2f6c123ae 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -202,10 +202,14 @@ struct bt_iter_data {
- static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
- 		unsigned int bitnr)
- {
--	struct request *rq = tags->rqs[bitnr];
-+	struct request *rq;
-+	unsigned long flags;
- 
-+	spin_lock_irqsave(&tags->lock, flags);
-+	rq = tags->rqs[bitnr];
- 	if (!rq || !refcount_inc_not_zero(&rq->ref))
--		return NULL;
-+		rq = NULL;
-+	spin_unlock_irqrestore(&tags->lock, flags);
- 	return rq;
- }
- 
-@@ -538,6 +542,7 @@ struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
- 
- 	tags->nr_tags = total_tags;
- 	tags->nr_reserved_tags = reserved_tags;
-+	spin_lock_init(&tags->lock);
- 
- 	if (flags & BLK_MQ_F_TAG_HCTX_SHARED)
- 		return tags;
-diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
-index 7d3e6b333a4a..f887988e5ef6 100644
---- a/block/blk-mq-tag.h
-+++ b/block/blk-mq-tag.h
-@@ -20,6 +20,12 @@ struct blk_mq_tags {
- 	struct request **rqs;
- 	struct request **static_rqs;
- 	struct list_head page_list;
-+
-+	/*
-+	 * used to clear request reference in rqs[] before freeing one
-+	 * request pool
-+	 */
-+	spinlock_t lock;
- };
- 
- extern struct blk_mq_tags *blk_mq_init_tags(unsigned int nr_tags,
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 50d3527a5d97..00d6ed2fe812 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2276,6 +2276,45 @@ queue_exit:
- 	return BLK_QC_T_NONE;
- }
- 
-+static size_t order_to_size(unsigned int order)
-+{
-+	return (size_t)PAGE_SIZE << order;
-+}
-+
-+/* called before freeing request pool in @tags */
-+static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
-+		struct blk_mq_tags *tags, unsigned int hctx_idx)
-+{
-+	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
-+	struct page *page;
-+	unsigned long flags;
-+
-+	list_for_each_entry(page, &tags->page_list, lru) {
-+		unsigned long start = (unsigned long)page_address(page);
-+		unsigned long end = start + order_to_size(page->private);
-+		int i;
-+
-+		for (i = 0; i < set->queue_depth; i++) {
-+			struct request *rq = drv_tags->rqs[i];
-+			unsigned long rq_addr = (unsigned long)rq;
-+
-+			if (rq_addr >= start && rq_addr < end) {
-+				WARN_ON_ONCE(refcount_read(&rq->ref) != 0);
-+				cmpxchg(&drv_tags->rqs[i], rq, NULL);
-+			}
-+		}
-+	}
-+
-+	/*
-+	 * Wait until all pending iteration is done.
-+	 *
-+	 * Request reference is cleared and it is guaranteed to be observed
-+	 * after the ->lock is released.
-+	 */
-+	spin_lock_irqsave(&drv_tags->lock, flags);
-+	spin_unlock_irqrestore(&drv_tags->lock, flags);
-+}
-+
- void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
- 		     unsigned int hctx_idx)
- {
-@@ -2294,6 +2333,8 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
- 		}
+diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
+index 64b2ef15ec19..8440203e835e 100644
+--- a/drivers/ata/sata_highbank.c
++++ b/drivers/ata/sata_highbank.c
+@@ -469,10 +469,12 @@ static int ahci_highbank_probe(struct platform_device *pdev)
  	}
  
-+	blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-+
- 	while (!list_empty(&tags->page_list)) {
- 		page = list_first_entry(&tags->page_list, struct page, lru);
- 		list_del_init(&page->lru);
-@@ -2353,11 +2394,6 @@ struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
- 	return tags;
- }
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0) {
++	if (irq < 0) {
+ 		dev_err(dev, "no irq\n");
+-		return -EINVAL;
++		return irq;
+ 	}
++	if (!irq)
++		return -EINVAL;
  
--static size_t order_to_size(unsigned int order)
--{
--	return (size_t)PAGE_SIZE << order;
--}
--
- static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
- 			       unsigned int hctx_idx, int node)
- {
+ 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
+ 	if (!hpriv) {
 -- 
 2.30.2
 
