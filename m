@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A143C4FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4203C571C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345552AbhGLH36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37246 "EHLO mail.kernel.org"
+        id S1348266AbhGLI2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:28:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241185AbhGLHB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:01:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8668E613C2;
-        Mon, 12 Jul 2021 06:59:05 +0000 (UTC)
+        id S1348753AbhGLHlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB8BB60724;
+        Mon, 12 Jul 2021 07:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073146;
-        bh=SodTYBS+nkhTYIaTFCakuqhJ3rhlLOR54Z4vuce8TuA=;
+        s=korg; t=1626075513;
+        bh=mqd9n6vs1xgm7ByR8C/nW5XpQdznqzFjhFlNcwkIRYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V30ug1F6Akoe8+nFMpYHIAn2yZS2m+WQrW6MMuObsy2JuzhaABcJ/p8cSoGepjkI0
-         la8fat042JvX2/rjPBMBusTSwhnkhMrC3bhdo/sZ0GZt8WRxjpQsMWwOxmnuDLCYqg
-         8sJhT7xlDVLpFIaSr4iolkNhfyOdz1lwgBj/GUro=
+        b=pNiPqysGwarFWOjPYw6/RbetPpBz+cVbnElM3KK4szN1NMA7qtOcFg8ICJcfby1Nv
+         ikPEwHMaJ/LZXh+JB1FWzBCpcofBPkJHzocQsf5T+mQzv2WwnfmmL9VtGW3SgXfoBV
+         AsVPhROBpeBQNecKs9XXPvgrYSgcuuUhcaZYb7oU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 142/700] sched: Make the idle task quack like a per-CPU kthread
-Date:   Mon, 12 Jul 2021 08:03:45 +0200
-Message-Id: <20210712060945.607511725@linuxfoundation.org>
+Subject: [PATCH 5.13 203/800] KVM: s390: get rid of register asm usage
+Date:   Mon, 12 Jul 2021 08:03:46 +0200
+Message-Id: <20210712060941.778494085@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,142 +43,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 00b89fe0197f0c55a045775c11553c0cdb7082fe ]
+[ Upstream commit 4fa3b91bdee1b08348c82660668ca0ca34e271ad ]
 
-For all intents and purposes, the idle task is a per-CPU kthread. It isn't
-created via the same route as other pcpu kthreads however, and as a result
-it is missing a few bells and whistles: it fails kthread_is_per_cpu() and
-it doesn't have PF_NO_SETAFFINITY set.
+Using register asm statements has been proven to be very error prone,
+especially when using code instrumentation where gcc may add function
+calls, which clobbers register contents in an unexpected way.
 
-Fix the former by giving the idle task a kthread struct along with the
-KTHREAD_IS_PER_CPU flag. This requires some extra iffery as init_idle()
-call be called more than once on the same idle task.
+Therefore get rid of register asm statements in kvm code, even though
+there is currently nothing wrong with them. This way we know for sure
+that this bug class won't be introduced here.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210510151024.2448573-2-valentin.schneider@arm.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Thomas Huth <thuth@redhat.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210621140356.1210771-1-hca@linux.ibm.com
+[borntraeger@de.ibm.com: checkpatch strict fix]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/kthread.h |  2 ++
- kernel/kthread.c        | 30 ++++++++++++++++++------------
- kernel/sched/core.c     | 21 +++++++++++++++------
- 3 files changed, 35 insertions(+), 18 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 2484ed97e72f..d9133d6db308 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -33,6 +33,8 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- 					  unsigned int cpu,
- 					  const char *namefmt);
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 1296fc10f80c..876fc1f7282a 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -329,31 +329,31 @@ static void allow_cpu_feat(unsigned long nr)
  
-+void set_kthread_struct(struct task_struct *p);
-+
- void kthread_set_per_cpu(struct task_struct *k, int cpu);
- bool kthread_is_per_cpu(struct task_struct *k);
- 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 4fdf2bd9b558..e8da89c714f5 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -68,16 +68,6 @@ enum KTHREAD_BITS {
- 	KTHREAD_SHOULD_PARK,
- };
- 
--static inline void set_kthread_struct(void *kthread)
--{
--	/*
--	 * We abuse ->set_child_tid to avoid the new member and because it
--	 * can't be wrongly copied by copy_process(). We also rely on fact
--	 * that the caller can't exec, so PF_KTHREAD can't be cleared.
--	 */
--	current->set_child_tid = (__force void __user *)kthread;
--}
--
- static inline struct kthread *to_kthread(struct task_struct *k)
+ static inline int plo_test_bit(unsigned char nr)
  {
- 	WARN_ON(!(k->flags & PF_KTHREAD));
-@@ -103,6 +93,22 @@ static inline struct kthread *__to_kthread(struct task_struct *p)
- 	return kthread;
+-	register unsigned long r0 asm("0") = (unsigned long) nr | 0x100;
++	unsigned long function = (unsigned long)nr | 0x100;
+ 	int cc;
+ 
+ 	asm volatile(
++		"	lgr	0,%[function]\n"
+ 		/* Parameter registers are ignored for "test bit" */
+ 		"	plo	0,0,0,0(0)\n"
+ 		"	ipm	%0\n"
+ 		"	srl	%0,28\n"
+ 		: "=d" (cc)
+-		: "d" (r0)
+-		: "cc");
++		: [function] "d" (function)
++		: "cc", "0");
+ 	return cc == 0;
  }
  
-+void set_kthread_struct(struct task_struct *p)
-+{
-+	struct kthread *kthread;
-+
-+	if (__to_kthread(p))
-+		return;
-+
-+	kthread = kzalloc(sizeof(*kthread), GFP_KERNEL);
-+	/*
-+	 * We abuse ->set_child_tid to avoid the new member and because it
-+	 * can't be wrongly copied by copy_process(). We also rely on fact
-+	 * that the caller can't exec, so PF_KTHREAD can't be cleared.
-+	 */
-+	p->set_child_tid = (__force void __user *)kthread;
-+}
-+
- void free_kthread_struct(struct task_struct *k)
+ static __always_inline void __insn32_query(unsigned int opcode, u8 *query)
  {
- 	struct kthread *kthread;
-@@ -272,8 +278,8 @@ static int kthread(void *_create)
- 	struct kthread *self;
- 	int ret;
+-	register unsigned long r0 asm("0") = 0;	/* query function */
+-	register unsigned long r1 asm("1") = (unsigned long) query;
+-
+ 	asm volatile(
+-		/* Parameter regs are ignored */
++		"	lghi	0,0\n"
++		"	lgr	1,%[query]\n"
++		/* Parameter registers are ignored */
+ 		"	.insn	rrf,%[opc] << 16,2,4,6,0\n"
+ 		:
+-		: "d" (r0), "a" (r1), [opc] "i" (opcode)
+-		: "cc", "memory");
++		: [query] "d" ((unsigned long)query), [opc] "i" (opcode)
++		: "cc", "memory", "0", "1");
+ }
  
--	self = kzalloc(sizeof(*self), GFP_KERNEL);
--	set_kthread_struct(self);
-+	set_kthread_struct(current);
-+	self = to_kthread(current);
- 
- 	/* If user was SIGKILLed, I release the structure. */
- 	done = xchg(&create->done, NULL);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e25b2d8ec18d..17f612045271 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7435,12 +7435,25 @@ void __init init_idle(struct task_struct *idle, int cpu)
- 
- 	__sched_fork(0, idle);
- 
-+	/*
-+	 * The idle task doesn't need the kthread struct to function, but it
-+	 * is dressed up as a per-CPU kthread and thus needs to play the part
-+	 * if we want to avoid special-casing it in code that deals with per-CPU
-+	 * kthreads.
-+	 */
-+	set_kthread_struct(idle);
-+
- 	raw_spin_lock_irqsave(&idle->pi_lock, flags);
- 	raw_spin_lock(&rq->lock);
- 
- 	idle->state = TASK_RUNNING;
- 	idle->se.exec_start = sched_clock();
--	idle->flags |= PF_IDLE;
-+	/*
-+	 * PF_KTHREAD should already be set at this point; regardless, make it
-+	 * look like a proper per-CPU kthread.
-+	 */
-+	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
-+	kthread_set_per_cpu(idle, cpu);
- 
- 	scs_task_reset(idle);
- 	kasan_unpoison_task_stack(idle);
-@@ -7647,12 +7660,8 @@ static void balance_push(struct rq *rq)
- 	/*
- 	 * Both the cpu-hotplug and stop task are in this case and are
- 	 * required to complete the hotplug process.
--	 *
--	 * XXX: the idle task does not match kthread_is_per_cpu() due to
--	 * histerical raisins.
- 	 */
--	if (rq->idle == push_task ||
--	    kthread_is_per_cpu(push_task) ||
-+	if (kthread_is_per_cpu(push_task) ||
- 	    is_migration_disabled(push_task)) {
- 
- 		/*
+ #define INSN_SORTL 0xb938
 -- 
 2.30.2
 
