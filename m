@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C703C6176
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B680D3C617A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbhGLRHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        id S235686AbhGLRH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbhGLRHT (ORCPT
+        with ESMTP id S234179AbhGLRH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:07:19 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38609C0613DD;
-        Mon, 12 Jul 2021 10:04:31 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E35772ED;
-        Mon, 12 Jul 2021 17:04:30 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E35772ED
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1626109471; bh=rNbc78ySoW7E4zNHWiKuoKaf/P5JAEEohrvKvz8M1cg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=gEM/cQUTOgK+5w0wE4y/0uBAtHjN9kKQbjqDua+uedungtXokJNDzCi3keODXdPxp
-         EIGm0YDx0abvyHga1hV13In/eip5z24XaRBZojLBWkFMduvu1vgGuoVehnN64O3AZH
-         G2WTvs9OG/8Yqmdk5+JUKfs6pp+LnjCe2hUwfsv8PC6rQir08Wab/F0LzV5LFkxOFV
-         TplCiipQI6D2TrbJg3QRnWPS5JP2tEXEKy/c039Sx1DZ7vQ+//l2EL39sh4ta7hG6E
-         nZgx1h9OQoEI7qKBADQg0sThLw6zdge+4Tuwk7LzwqWfEnjsBYswKuiUgu9yJrMvpv
-         o2fw8CpvsVg0Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cengiz Can <cengiz@kernel.wtf>
-Subject: Re: [PATCH] Documentation: sysrq: convert to third person
-In-Reply-To: <20210629141508.52229-1-cengiz@kernel.wtf>
-References: <20210629141508.52229-1-cengiz@kernel.wtf>
-Date:   Mon, 12 Jul 2021 11:04:30 -0600
-Message-ID: <87v95fpiox.fsf@meer.lwn.net>
+        Mon, 12 Jul 2021 13:07:57 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31C6C0613E5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:05:07 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id h9so10048861ljm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1jZJrPjdUgS0Z2yjiY7d2Ru0LXr08Vx68ecg4BC7Ua4=;
+        b=aApE6SaBO1NCqzN+Y+rt7z6fN0BXqBIFpki02LcooX1S2tukO+SE+R9UxryeAlm4WB
+         sPCfxIOjxHogBt22liggY3RaXDnGpGjqhcUvoRs3h7jl7tADKQdBqNSIQzZgrqqrLcjT
+         6g//HO41mUvaQnOay897rSY66FJ95ap29a+QMCSj886YtYyy7mTMhQWj81Eo3o5v0RR5
+         oHvd0ascdQQ2ZYBMy2cctQ4Ta7C9mUGpbngyUrRzNryVo48sBs1i6I315eq71dsHSkmm
+         +MOT4q4nIx+dod7RIQKFbAPQ/A1ZXNfttgGwZn/I3o3BxEUiBkYJtXKNRu3MhOGLY/1+
+         /SVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1jZJrPjdUgS0Z2yjiY7d2Ru0LXr08Vx68ecg4BC7Ua4=;
+        b=RQS51TKLljywXnMCCtaZ5hp0pFfAGHBswVigl2gNy+kGAVD3d5iQCygHo8Yzvch2Ki
+         qcfmFdlAadq9fiqebWZDR9RPNPbU3kHVlrD3Jtq8KD2gkQ/c5vMR0b/+UcGenbqoK90W
+         +XsFm/mUXoEt9JnGMWAm+wshakY0q2LQNmo3nQpjTrfqwqV2IijXeocIqnsgREYYfkqE
+         SKOGtwcNQh779R2x90MGbMeleUXimR8GDiHk9bF8LxpC4obxvb6OHBCxensF8oK8Psji
+         xVdRNYHZK6LkVaMmXEKpJLJEnDfJ6eeLYfz0UJeOxLp63YsthzbD7G4BIZu3Ue+aJKe1
+         3mzg==
+X-Gm-Message-State: AOAM530EAP+u+8wI91ukRH3TVFPOLmxW902soCWDV9CCcvNXpYoHeo7T
+        SjbwuS8+ztbBUJVVQx1gIj0GYpZoH9Tt1dWUUcsxwA==
+X-Google-Smtp-Source: ABdhPJxx+92gYgmWRSE9Ff7IhXrpo9eWuoPvzLLVHBgY2lYEbvSUyYavE7titIQRQ7+zkGwfoL3juX1GQjWeoBNgCiQ=
+X-Received: by 2002:a2e:b5b5:: with SMTP id f21mr139300ljn.479.1626109505737;
+ Mon, 12 Jul 2021 10:05:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210709000627.3183718-1-nathan@kernel.org> <20210712122433.GA28536@willie-the-truck>
+In-Reply-To: <20210712122433.GA28536@willie-the-truck>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 12 Jul 2021 10:04:54 -0700
+Message-ID: <CAKwvOdmGhMbvtko2EVARg2E8zSX-LQKSPfdj6fbbAsCK4nw_Qg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: Restrict ARM64_BTI_KERNEL to clang 12.0.0 and newer
+To:     Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cengiz Can <cengiz@kernel.wtf> writes:
-
-> Two parts of the sysrq documentation have sentences written from a first
-> person's point of view.
+On Mon, Jul 12, 2021 at 5:24 AM Will Deacon <will@kernel.org> wrote:
 >
-> Documentation is generally written from a third person's view in a
-> formal way.
+> Hi Nathan,
 >
-> Convert those senteces to be less personal and generic.
-
-So this seems like a fine change, but I have one little gripe...
-
-> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-> ---
->  Documentation/admin-guide/sysrq.rst | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+> On Thu, Jul 08, 2021 at 05:06:27PM -0700, Nathan Chancellor wrote:
+> > Commit 97fed779f2a6 ("arm64: bti: Provide Kconfig for kernel mode BTI")
+> > disabled CONFIG_ARM64_BTI_KERNEL when CONFIG_GCOV_KERNEL was enabled and
+> > compilign with clang because of warnings that occur because LLVM was not
 >
-> diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
-> index 60ce5f5ebab6..0a178ef0111d 100644
-> --- a/Documentation/admin-guide/sysrq.rst
-> +++ b/Documentation/admin-guide/sysrq.rst
-> @@ -72,7 +72,7 @@ On PowerPC
->  
->  On other
->  	If you know of the key combos for other architectures, please
-> -        let me know so I can add them to this section.
-> +	submit a patch to be included in this section.
->  
->  On all
->  	Write a character to /proc/sysrq-trigger.  e.g.::
-> @@ -205,10 +205,12 @@ frozen (probably root) filesystem via the FIFREEZE ioctl.
->  Sometimes SysRq seems to get 'stuck' after using it, what can I do?
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  
-> -That happens to me, also. I've found that tapping shift, alt, and control
-> -on both sides of the keyboard, and hitting an invalid sysrq sequence again
-> -will fix the problem. (i.e., something like :kbd:`alt-sysrq-z`). Switching to
-> -another virtual console (:kbd:`ALT+Fn`) and then back again should also help.
-> +When this happens, try tapping shift, alt and control on both sides of the
-> +keyboard, and hitting an invalid sysrq sequence again. (i.e., something like
-> +:kbd:`alt-sysrq-z`).
-> +
-> +Switching to another virtual console (:kbd:`ALT+Fn`) and then back again
-> +should also help.
+> Typo: "compilign"
+>
+> > emitting PAC/BTI instructions for compiler generated functions.
+> >
+> > This was an adequate fix to avoid the warnings with allmodconfig until
+> > commit 51c2ee6d121c ("Kconfig: Introduce ARCH_WANTS_NO_INSTR and
+> > CC_HAS_NO_PROFILE_FN_ATTR"), which prevented CONFIG_GCOV_KERNEL from
+> > being selected with clang 12.0.0 and older because it does not support
+> > the no_profile_instrument_function attribute. As a result,
+> > CONFIG_ARM64_BTI_KERNEL gets enabled and there are more warnings of this
+> > nature.
+>
+> I'm half asleep today, but I'm struggling to follow what GCOV_KERNEL has
+> to do with the warnings here. Prior to 51c2ee6d121c, you could still go
+> and turn that option off and so wouldn't the same warnings be triggered
+> in that configuration?
 
-The :kbd: stuff is a pretty good example of the sort of extra markup we
-try to avoid when we can.  It adds little to the formatted docs and
-worsens the reading experience for plain-text.  It sure would be nice if
-we could make that kind of stuff go away when we're in the neighborhood.
+Nathan, consider if any of the below can be reused to reword the commit message?
+```
+Prior to 51c2ee6d121c, allmodconfig with clang-11 would not select
+ARM64_BTI_KERNEL because GCOV_KERNEL already had been.
 
-Anyway, I've applied the patch.
+After 51c2ee6d121c, allmodconfig with clang-11 does select
+ARM64_BTI_KERNEL because GCOV_KERNEL cannot be selected.
 
+clang-11 had basic support for BTI, but failed to instrument compiler
+generated functions properly.  This produces the following stream of
+warnings for clang-11 allmodconfig builds of ARCH=arm64:
+
+warning: some functions compiled with BTI and some compiled without BTI
+warning: not setting BTI in feature flags
+
+This was fixed in clang-12 via https://reviews.llvm.org/D85649.
+```
+Perhaps its of interest to find which config in (allmodconfig minus
+GCOV_KERNEL) but not in (defconfig) produces these, since I don't
+think we see them in defconfig builds of clang-11?
+https://github.com/ClangBuiltLinux/continuous-integration2/runs/3009146591?check_suite_focus=true
+
+>
+> In other words, I think there are two aspects to this patch:
+>
+>         1. Removing the (now useless) !GCOV_KERNEL dependency
+>         2. Requiring Clang >= version 12
+>
+> but the commit message doesn't really say where these warnings are coming
+> from or why Clang 12 gets rid of them.
+>
+> Thanks,
+>
+> Will
+
+
+
+-- 
 Thanks,
-
-jon
+~Nick Desaulniers
