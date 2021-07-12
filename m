@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5313C4DC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEA83C5499
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242922AbhGLHOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:14:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
+        id S1353161AbhGLIBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:01:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239695AbhGLGt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE2C60FD8;
-        Mon, 12 Jul 2021 06:47:10 +0000 (UTC)
+        id S240231AbhGLHXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:23:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC54611AF;
+        Mon, 12 Jul 2021 07:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072430;
-        bh=YS150Zw3EMrfbg7HTU/kACgheRdPjXylbhg3QzhH4fA=;
+        s=korg; t=1626074417;
+        bh=npUCgBotvC7g50sxRQ8mv5F5Iv7WgH9ZXNco0MCndDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTJvODdhQNt67liwnVLfOZsSm0IUzHVU7a9W43MrdEvaOgYFv8IVGeIbLLggQ+hIa
-         HnHi2U/JsJfAob0WV15LQYREqmVhgSLKJtWL/da4n3z7LCSliipbfYDmAtSSTn1tCk
-         v7jr1PTnCaq2P+Jfcstjm2z9mm3R1L2i90weyfE8=
+        b=0DcSNCOoUZaa04qym04VSTOuFCzJp34Dr9llX24ewDQmA4nVW9fAduFZ8pilhFhaB
+         9HFWagpuEXmFa8y3yj+95nPvhcbZwmJo5P92k35vNUTVez/9G8/4Kwyb9ELxkSIjBY
+         ot6FXuFqnvv0vmSL4ojrwIABiZpN9F22blrlG5AM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 494/593] visorbus: fix error return code in visorchipset_init()
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 571/700] leds: lm3532: select regmap I2C API
 Date:   Mon, 12 Jul 2021 08:10:54 +0200
-Message-Id: <20210712060945.701003257@linuxfoundation.org>
+Message-Id: <20210712061036.838936292@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-[ Upstream commit ce52ec5beecc1079c251f60e3973b3758f60eb59 ]
+[ Upstream commit 99be74f61cb0292b518f5e6d7e5c6611555c2ec7 ]
 
-Commit 1366a3db3dcf ("staging: unisys: visorbus: visorchipset_init clean
-up gotos") assigns the initial value -ENODEV to the local variable 'err',
-and the first several error branches will return this value after "goto
-error". But commit f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate
-controlvm channel creation.") overwrites 'err' in the middle of the way.
-As a result, some error branches do not successfully return the initial
-value -ENODEV of 'err', but return 0.
+Regmap APIs should be selected, otherwise link can fail
 
-In addition, when kzalloc() fails, -ENOMEM should be returned instead of
--ENODEV.
+ERROR: modpost: "__devm_regmap_init_i2c" [drivers/leds/leds-lm3532.ko] undefined!
 
-Fixes: f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate controlvm channel creation.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210528082614.9337-1-thunder.leizhen@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bc1b8492c764 ("leds: lm3532: Introduce the lm3532 LED driver")
+Cc: Dan Murphy <dmurphy@ti.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/visorbus/visorchipset.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/leds/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/visorbus/visorchipset.c b/drivers/visorbus/visorchipset.c
-index cb1eb7e05f87..5668cad86e37 100644
---- a/drivers/visorbus/visorchipset.c
-+++ b/drivers/visorbus/visorchipset.c
-@@ -1561,7 +1561,7 @@ schedule_out:
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index b6742b4231bf..258247dd5e3d 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -199,6 +199,7 @@ config LEDS_LM3530
  
- static int visorchipset_init(struct acpi_device *acpi_device)
- {
--	int err = -ENODEV;
-+	int err = -ENOMEM;
- 	struct visorchannel *controlvm_channel;
- 
- 	chipset_dev = kzalloc(sizeof(*chipset_dev), GFP_KERNEL);
-@@ -1584,8 +1584,10 @@ static int visorchipset_init(struct acpi_device *acpi_device)
- 				 "controlvm",
- 				 sizeof(struct visor_controlvm_channel),
- 				 VISOR_CONTROLVM_CHANNEL_VERSIONID,
--				 VISOR_CHANNEL_SIGNATURE))
-+				 VISOR_CHANNEL_SIGNATURE)) {
-+		err = -ENODEV;
- 		goto error_delete_groups;
-+	}
- 	/* if booting in a crash kernel */
- 	if (is_kdump_kernel())
- 		INIT_DELAYED_WORK(&chipset_dev->periodic_controlvm_work,
+ config LEDS_LM3532
+ 	tristate "LCD Backlight driver for LM3532"
++	select REGMAP_I2C
+ 	depends on LEDS_CLASS
+ 	depends on I2C
+ 	help
 -- 
 2.30.2
 
