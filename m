@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B713C4BB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80453C517A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240837AbhGLG6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:58:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
+        id S1348886AbhGLHl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237571AbhGLGnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:43:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD3006100B;
-        Mon, 12 Jul 2021 06:39:26 +0000 (UTC)
+        id S244385AbhGLHKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 488EC60FF0;
+        Mon, 12 Jul 2021 07:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071967;
-        bh=lyu8th6dsieXuaidPYvsAExlMqh1296PAjIaPJrI9BI=;
+        s=korg; t=1626073676;
+        bh=e84PWtKvoCNX6p7L4TdyopFXQ0wsnRv0+CAu2wwhLbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V3ynGIyO+Q2iYYSqmu0LkOMyzsGNg7coQchCf+fax1s9gbx+GxT7Wm3L+4X2ld7DT
-         lNaJIYB4b9PgYbN6K4YqdnoeWiiOIzc/SRh5blFLO/E7bA0OK6o8iunktOl8BYGRYP
-         qIEZfTV1co9nht1Wxa6ihGsUEUcV0cHzwfD7khpQ=
+        b=u34ItzA8j3W9Jk+E8ra2bCarbGLaiuATLyYU48f1XxZF76I/e/RQjvryFHhp6hMJE
+         H0rpMbp4P1miLmpPdFdP72Z++BqWLSVujTdSUXCF3YSHuFJ0CygWvZOPeaN852yWuU
+         v48jpAKV3hVfU/eBeAzQgOWKaPM5Frw38LPH4oWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hongbo Li <herberthbli@tencent.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@suse.de>, Andrew Jeffery <andrew@aj.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 244/593] crypto: sm2 - fix a memory leak in sm2
-Date:   Mon, 12 Jul 2021 08:06:44 +0200
-Message-Id: <20210712060909.734018362@linuxfoundation.org>
+Subject: [PATCH 5.12 322/700] EDAC/aspeed: Use proper format string for printing resource
+Date:   Mon, 12 Jul 2021 08:06:45 +0200
+Message-Id: <20210712061010.637439574@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 5cd259ca5d466f65ffd21e2e2fa00fb648a8c555 ]
+[ Upstream commit 2e2f16d5cdb33e5f6fc53b7ad66c9f456d5f2950 ]
 
-SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-test_akcipher_one(), it will set public key for every test vector,
-and don't free ec->Q. This will cause a memory leak.
+On ARMv7, resource_size_t can be 64-bit, which breaks printing
+it as %x:
 
-This patch alloc ec->Q in sm2_ec_ctx_init().
+  drivers/edac/aspeed_edac.c: In function 'init_csrows':
+  drivers/edac/aspeed_edac.c:257:28: error: format '%x' expects argument of \
+    type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long \
+    long unsigned int'} [-Werror=format=]
+  257 |         dev_dbg(mci->pdev, "dt: /memory node resources: first page \
+    r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
 
-Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
-Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Use the special %pR format string to pretty-print the entire resource
+instead.
+
+Fixes: edfc2d73ca45 ("EDAC/aspeed: Add support for AST2400 and AST2600")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Link: https://lkml.kernel.org/r/20210421135500.3518661-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/sm2.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ drivers/edac/aspeed_edac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/sm2.c b/crypto/sm2.c
-index b21addc3ac06..db8a4a265669 100644
---- a/crypto/sm2.c
-+++ b/crypto/sm2.c
-@@ -79,10 +79,17 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
- 		goto free;
- 
- 	rc = -ENOMEM;
-+
-+	ec->Q = mpi_point_new(0);
-+	if (!ec->Q)
-+		goto free;
-+
- 	/* mpi_ec_setup_elliptic_curve */
- 	ec->G = mpi_point_new(0);
--	if (!ec->G)
-+	if (!ec->G) {
-+		mpi_point_release(ec->Q);
- 		goto free;
-+	}
- 
- 	mpi_set(ec->G->x, x);
- 	mpi_set(ec->G->y, y);
-@@ -91,6 +98,7 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
- 	rc = -EINVAL;
- 	ec->n = mpi_scanval(ecp->n);
- 	if (!ec->n) {
-+		mpi_point_release(ec->Q);
- 		mpi_point_release(ec->G);
- 		goto free;
+diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
+index a46da56d6d54..6bd5f8815919 100644
+--- a/drivers/edac/aspeed_edac.c
++++ b/drivers/edac/aspeed_edac.c
+@@ -254,8 +254,8 @@ static int init_csrows(struct mem_ctl_info *mci)
+ 		return rc;
  	}
-@@ -386,27 +394,15 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
- 	MPI a;
- 	int rc;
  
--	ec->Q = mpi_point_new(0);
--	if (!ec->Q)
--		return -ENOMEM;
--
- 	/* include the uncompressed flag '0x04' */
--	rc = -ENOMEM;
- 	a = mpi_read_raw_data(key, keylen);
- 	if (!a)
--		goto error;
-+		return -ENOMEM;
+-	dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+-		r.start, resource_size(&r), PAGE_SHIFT);
++	dev_dbg(mci->pdev, "dt: /memory node resources: first page %pR, PAGE_SHIFT macro=0x%x\n",
++		&r, PAGE_SHIFT);
  
- 	mpi_normalize(a);
- 	rc = sm2_ecc_os2ec(ec->Q, a);
- 	mpi_free(a);
--	if (rc)
--		goto error;
--
--	return 0;
- 
--error:
--	mpi_point_release(ec->Q);
--	ec->Q = NULL;
- 	return rc;
- }
- 
+ 	csrow->first_page = r.start >> PAGE_SHIFT;
+ 	nr_pages = resource_size(&r) >> PAGE_SHIFT;
 -- 
 2.30.2
 
