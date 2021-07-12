@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CDD3C5996
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C373C5995
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385011AbhGLJFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
+        id S1384994AbhGLJFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:05:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355721AbhGLIKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:10:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD58613D6;
-        Mon, 12 Jul 2021 08:07:27 +0000 (UTC)
+        id S1355684AbhGLIKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 762E8613DB;
+        Mon, 12 Jul 2021 08:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626077248;
-        bh=rHMgeEThFU7Asacvj0hdBeeV4VGoqioVnetuaFcfwyo=;
+        s=korg; t=1626077243;
+        bh=xcVBS5NR2/kTAx0CnPSNv/gVAuYNRhkMw/yRU9TTFh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V98Qweob9sZq6JgESB5EfxjOuYuuicqzLw3UWZQl2RVY+MZEq25MeIWBYv2mAXvDr
-         m1mbuiE2txdtDRyIRmmZLJAk6giPMelx9fJ2ao6f8EZ/Fjv7msMx6NvjwOeD/rRV/O
-         M1TV8vDSylQZehzjQFKfWmBLFpnjTvf4UFlte7Ig=
+        b=YevUDwTKkU+tE+dX/0R/5TGREOMUC+rXYjhrwrrJKDpxMIeDfjUlrjeD6/JM8yAZR
+         P4UZNots4JzHxstPn2eKVnNy2elDR5xRLf93M0WT/edv1AYzR7PyY8VYc2GaDqXP8l
+         LVANxSy/rKuhAUuuDADxH0ZwfOQA5qKS/kTsXBUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>, Chen <leo881003@gmail.com>
-Subject: [PATCH 5.12 233/700] ACPI: EC: trust DSDT GPE for certain HP laptop
-Date:   Mon, 12 Jul 2021 08:05:16 +0200
-Message-Id: <20210712060959.833218364@linuxfoundation.org>
+Subject: [PATCH 5.10 197/593] ACPI: EC: trust DSDT GPE for certain HP laptop
+Date:   Mon, 12 Jul 2021 08:05:57 +0200
+Message-Id: <20210712060904.683308055@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,7 +64,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index e8c5da2b964a..87c3b4a099b9 100644
+index 32f3b6d268f5..be3e0921a6c0 100644
 --- a/drivers/acpi/ec.c
 +++ b/drivers/acpi/ec.c
 @@ -183,6 +183,7 @@ static struct workqueue_struct *ec_query_wq;
@@ -75,7 +75,7 @@ index e8c5da2b964a..87c3b4a099b9 100644
  static int EC_FLAGS_CLEAR_ON_RESUME; /* Needs acpi_ec_clear() on boot/resume */
  
  /* --------------------------------------------------------------------------
-@@ -1593,7 +1594,8 @@ static int acpi_ec_add(struct acpi_device *device)
+@@ -1606,7 +1607,8 @@ static int acpi_ec_add(struct acpi_device *device)
  		}
  
  		if (boot_ec && ec->command_addr == boot_ec->command_addr &&
@@ -85,7 +85,7 @@ index e8c5da2b964a..87c3b4a099b9 100644
  			/*
  			 * Trust PNP0C09 namespace location rather than
  			 * ECDT ID. But trust ECDT GPE rather than _GPE
-@@ -1816,6 +1818,18 @@ static int ec_correct_ecdt(const struct dmi_system_id *id)
+@@ -1829,6 +1831,18 @@ static int ec_correct_ecdt(const struct dmi_system_id *id)
  	return 0;
  }
  
@@ -104,7 +104,7 @@ index e8c5da2b964a..87c3b4a099b9 100644
  /*
   * Some DSDTs contain wrong GPE setting.
   * Asus FX502VD/VE, GL702VMK, X550VXK, X580VD
-@@ -1870,6 +1884,11 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
+@@ -1883,6 +1897,11 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
  	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
  	DMI_MATCH(DMI_PRODUCT_NAME, "X580VD"),}, NULL},
  	{
