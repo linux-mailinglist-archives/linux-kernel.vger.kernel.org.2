@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7A23C49A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335563C5000
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236041AbhGLGpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        id S1345689AbhGLHaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235741AbhGLGfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE3061106;
-        Mon, 12 Jul 2021 06:32:18 +0000 (UTC)
+        id S238000AbhGLHCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:02:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C1761413;
+        Mon, 12 Jul 2021 06:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071538;
-        bh=5o7mChQOhAcXX0gJmZ5pdyx0Oi6xni6Jpc6iEBQqxGU=;
+        s=korg; t=1626073161;
+        bh=blSUrCHVrYlhxAjHBXiA6vK7MC0HkdPG4e7MmiYgXOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cndqG3lTFGp7JGuZcUf8XKOWSdEqpeqbQlw3c5YaggJKQo+ANw+vk7vMH/u4ucuk3
-         2/xikWB8x6nDVmeU/Bc1oBOpgkuv39AV9q2ax3ajU697esVYNQVxSplf/NL50FNUgD
-         nKBzT+qgLyY45FnGRmGbmkAEqcMulBh7VVcLdMro=
+        b=P2onF5FXSCZC+KBkszR5Cg9IJIv3aAbXoLoGj/ucwAcUx1MukYSuJMWX7nNFCVJhx
+         egRJ1dQyuTBfNENyuuA1aqfhdjwg/0MV37xQgcWM1yaOGkzlRc8G80oPRnixPlk2hF
+         Al3w+iICLT6ulIoB/dpcjg8Yw/8QstTTUPXSCfDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.10 070/593] clk: agilex/stratix10: fix bypass representation
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 147/700] media: imx: imx7_mipi_csis: Fix logging of only error event counters
 Date:   Mon, 12 Jul 2021 08:03:50 +0200
-Message-Id: <20210712060850.863459956@linuxfoundation.org>
+Message-Id: <20210712060946.326133057@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,178 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-commit 6855ee839699bdabb4b16cf942557fd763bcb1fa upstream.
+[ Upstream commit d2fcc9c2de1191ea80366e3658711753738dd10a ]
 
-Each of these clocks(s2f_usr0/1, sdmmc_clk, gpio_db, emac_ptp,
-emac0/1/2) have a bypass setting that can use the boot_clk. The
-previous representation was not correct.
+The mipi_csis_events array ends with 6 non-error events, not 4. Update
+mipi_csis_log_counters() accordingly. While at it, log event counters in
+forward order, as there's no reason to log them backward.
 
-Fix the representation.
-
-Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lore.kernel.org/r/20210611025201.118799-2-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-agilex.c |   57 +++++++++++++++++++++++++++++++--------
- drivers/clk/socfpga/clk-s10.c    |   55 ++++++++++++++++++++++++++++++-------
- 2 files changed, 91 insertions(+), 21 deletions(-)
+ drivers/staging/media/imx/imx7-mipi-csis.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/clk/socfpga/clk-agilex.c
-+++ b/drivers/clk/socfpga/clk-agilex.c
-@@ -186,6 +186,41 @@ static const struct clk_parent_data noc_
- 	  .name = "boot_clk", },
- };
+diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
+index a01a7364b4b9..b365790256e4 100644
+--- a/drivers/staging/media/imx/imx7-mipi-csis.c
++++ b/drivers/staging/media/imx/imx7-mipi-csis.c
+@@ -597,13 +597,15 @@ static void mipi_csis_clear_counters(struct csi_state *state)
  
-+static const struct clk_parent_data sdmmc_mux[] = {
-+	{ .fw_name = "sdmmc_free_clk",
-+	  .name = "sdmmc_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data s2f_user1_mux[] = {
-+	{ .fw_name = "s2f_user1_free_clk",
-+	  .name = "s2f_user1_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data psi_mux[] = {
-+	{ .fw_name = "psi_ref_free_clk",
-+	  .name = "psi_ref_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data gpio_db_mux[] = {
-+	{ .fw_name = "gpio_db_free_clk",
-+	  .name = "gpio_db_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data emac_ptp_mux[] = {
-+	{ .fw_name = "emac_ptp_free_clk",
-+	  .name = "emac_ptp_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
- /* clocks in AO (always on) controller */
- static const struct stratix10_pll_clock agilex_pll_clks[] = {
- 	{ AGILEX_BOOT_CLK, "boot_clk", boot_mux, ARRAY_SIZE(boot_mux), 0,
-@@ -223,7 +258,7 @@ static const struct stratix10_perip_cnt_
- 	{ AGILEX_GPIO_DB_FREE_CLK, "gpio_db_free_clk", NULL, gpio_db_free_mux,
- 	  ARRAY_SIZE(gpio_db_free_mux), 0, 0xE0, 0, 0x88, 3},
- 	{ AGILEX_SDMMC_FREE_CLK, "sdmmc_free_clk", NULL, sdmmc_free_mux,
--	  ARRAY_SIZE(sdmmc_free_mux), 0, 0xE4, 0, 0x88, 4},
-+	  ARRAY_SIZE(sdmmc_free_mux), 0, 0xE4, 0, 0, 0},
- 	{ AGILEX_S2F_USER0_FREE_CLK, "s2f_user0_free_clk", NULL, s2f_usr0_free_mux,
- 	  ARRAY_SIZE(s2f_usr0_free_mux), 0, 0xE8, 0, 0, 0},
- 	{ AGILEX_S2F_USER1_FREE_CLK, "s2f_user1_free_clk", NULL, s2f_usr1_free_mux,
-@@ -265,16 +300,16 @@ static const struct stratix10_gate_clock
- 	  1, 0, 0, 0, 0x94, 27, 0},
- 	{ AGILEX_EMAC2_CLK, "emac2_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
- 	  2, 0, 0, 0, 0x94, 28, 0},
--	{ AGILEX_EMAC_PTP_CLK, "emac_ptp_clk", "emac_ptp_free_clk", NULL, 1, 0, 0x7C,
--	  3, 0, 0, 0, 0, 0, 0},
--	{ AGILEX_GPIO_DB_CLK, "gpio_db_clk", "gpio_db_free_clk", NULL, 1, 0, 0x7C,
--	  4, 0x98, 0, 16, 0, 0, 0},
--	{ AGILEX_SDMMC_CLK, "sdmmc_clk", "sdmmc_free_clk", NULL, 1, 0, 0x7C,
--	  5, 0, 0, 0, 0, 0, 4},
--	{ AGILEX_S2F_USER1_CLK, "s2f_user1_clk", "s2f_user1_free_clk", NULL, 1, 0, 0x7C,
--	  6, 0, 0, 0, 0, 0, 0},
--	{ AGILEX_PSI_REF_CLK, "psi_ref_clk", "psi_ref_free_clk", NULL, 1, 0, 0x7C,
--	  7, 0, 0, 0, 0, 0, 0},
-+	{ AGILEX_EMAC_PTP_CLK, "emac_ptp_clk", NULL, emac_ptp_mux, ARRAY_SIZE(emac_ptp_mux), 0, 0x7C,
-+	  3, 0, 0, 0, 0x88, 2, 0},
-+	{ AGILEX_GPIO_DB_CLK, "gpio_db_clk", NULL, gpio_db_mux, ARRAY_SIZE(gpio_db_mux), 0, 0x7C,
-+	  4, 0x98, 0, 16, 0x88, 3, 0},
-+	{ AGILEX_SDMMC_CLK, "sdmmc_clk", NULL, sdmmc_mux, ARRAY_SIZE(sdmmc_mux), 0, 0x7C,
-+	  5, 0, 0, 0, 0x88, 4, 4},
-+	{ AGILEX_S2F_USER1_CLK, "s2f_user1_clk", NULL, s2f_user1_mux, ARRAY_SIZE(s2f_user1_mux), 0, 0x7C,
-+	  6, 0, 0, 0, 0x88, 5, 0},
-+	{ AGILEX_PSI_REF_CLK, "psi_ref_clk", NULL, psi_mux, ARRAY_SIZE(psi_mux), 0, 0x7C,
-+	  7, 0, 0, 0, 0x88, 6, 0},
- 	{ AGILEX_USB_CLK, "usb_clk", "l4_mp_clk", NULL, 1, 0, 0x7C,
- 	  8, 0, 0, 0, 0, 0, 0},
- 	{ AGILEX_SPI_M_CLK, "spi_m_clk", "l4_mp_clk", NULL, 1, 0, 0x7C,
---- a/drivers/clk/socfpga/clk-s10.c
-+++ b/drivers/clk/socfpga/clk-s10.c
-@@ -144,6 +144,41 @@ static const struct clk_parent_data mpu_
- 	  .name = "f2s-free-clk", },
- };
+ static void mipi_csis_log_counters(struct csi_state *state, bool non_errors)
+ {
+-	int i = non_errors ? MIPI_CSIS_NUM_EVENTS : MIPI_CSIS_NUM_EVENTS - 4;
++	unsigned int num_events = non_errors ? MIPI_CSIS_NUM_EVENTS
++				: MIPI_CSIS_NUM_EVENTS - 6;
+ 	struct device *dev = &state->pdev->dev;
+ 	unsigned long flags;
++	unsigned int i;
  
-+static const struct clk_parent_data sdmmc_mux[] = {
-+	{ .fw_name = "sdmmc_free_clk",
-+	  .name = "sdmmc_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data s2f_user1_mux[] = {
-+	{ .fw_name = "s2f_user1_free_clk",
-+	  .name = "s2f_user1_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data psi_mux[] = {
-+	{ .fw_name = "psi_ref_free_clk",
-+	  .name = "psi_ref_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data gpio_db_mux[] = {
-+	{ .fw_name = "gpio_db_free_clk",
-+	  .name = "gpio_db_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
-+static const struct clk_parent_data emac_ptp_mux[] = {
-+	{ .fw_name = "emac_ptp_free_clk",
-+	  .name = "emac_ptp_free_clk", },
-+	{ .fw_name = "boot_clk",
-+	  .name = "boot_clk", },
-+};
-+
- /* clocks in AO (always on) controller */
- static const struct stratix10_pll_clock s10_pll_clks[] = {
- 	{ STRATIX10_BOOT_CLK, "boot_clk", boot_mux, ARRAY_SIZE(boot_mux), 0,
-@@ -247,16 +282,16 @@ static const struct stratix10_gate_clock
- 	  1, 0, 0, 0, 0xDC, 27, 0},
- 	{ STRATIX10_EMAC2_CLK, "emac2_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0xA4,
- 	  2, 0, 0, 0, 0xDC, 28, 0},
--	{ STRATIX10_EMAC_PTP_CLK, "emac_ptp_clk", "emac_ptp_free_clk", NULL, 1, 0, 0xA4,
--	  3, 0, 0, 0, 0, 0, 0},
--	{ STRATIX10_GPIO_DB_CLK, "gpio_db_clk", "gpio_db_free_clk", NULL, 1, 0, 0xA4,
--	  4, 0xE0, 0, 16, 0, 0, 0},
--	{ STRATIX10_SDMMC_CLK, "sdmmc_clk", "sdmmc_free_clk", NULL, 1, 0, 0xA4,
--	  5, 0, 0, 0, 0, 0, 4},
--	{ STRATIX10_S2F_USER1_CLK, "s2f_user1_clk", "s2f_user1_free_clk", NULL, 1, 0, 0xA4,
--	  6, 0, 0, 0, 0, 0, 0},
--	{ STRATIX10_PSI_REF_CLK, "psi_ref_clk", "psi_ref_free_clk", NULL, 1, 0, 0xA4,
--	  7, 0, 0, 0, 0, 0, 0},
-+	{ STRATIX10_EMAC_PTP_CLK, "emac_ptp_clk", NULL, emac_ptp_mux, ARRAY_SIZE(emac_ptp_mux), 0, 0xA4,
-+	  3, 0, 0, 0, 0xB0, 2, 0},
-+	{ STRATIX10_GPIO_DB_CLK, "gpio_db_clk", NULL, gpio_db_mux, ARRAY_SIZE(gpio_db_mux), 0, 0xA4,
-+	  4, 0xE0, 0, 16, 0xB0, 3, 0},
-+	{ STRATIX10_SDMMC_CLK, "sdmmc_clk", NULL, sdmmc_mux, ARRAY_SIZE(sdmmc_mux), 0, 0xA4,
-+	  5, 0, 0, 0, 0xB0, 4, 4},
-+	{ STRATIX10_S2F_USER1_CLK, "s2f_user1_clk", NULL, s2f_user1_mux, ARRAY_SIZE(s2f_user1_mux), 0, 0xA4,
-+	  6, 0, 0, 0, 0xB0, 5, 0},
-+	{ STRATIX10_PSI_REF_CLK, "psi_ref_clk", NULL, psi_mux, ARRAY_SIZE(psi_mux), 0, 0xA4,
-+	  7, 0, 0, 0, 0xB0, 6, 0},
- 	{ STRATIX10_USB_CLK, "usb_clk", "l4_mp_clk", NULL, 1, 0, 0xA4,
- 	  8, 0, 0, 0, 0, 0, 0},
- 	{ STRATIX10_SPI_M_CLK, "spi_m_clk", "l4_mp_clk", NULL, 1, 0, 0xA4,
+ 	spin_lock_irqsave(&state->slock, flags);
+ 
+-	for (i--; i >= 0; i--) {
++	for (i = 0; i < num_events; ++i) {
+ 		if (state->events[i].counter > 0 || state->debug)
+ 			dev_info(dev, "%s events: %d\n", state->events[i].name,
+ 				 state->events[i].counter);
+-- 
+2.30.2
+
 
 
