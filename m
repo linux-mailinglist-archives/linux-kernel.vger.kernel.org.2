@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587D83C4A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432E03C580E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240728AbhGLGwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
+        id S1378724AbhGLIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238371AbhGLGkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C130860FD8;
-        Mon, 12 Jul 2021 06:37:00 +0000 (UTC)
+        id S1343491AbhGLHtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:49:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CBAE619A2;
+        Mon, 12 Jul 2021 07:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071821;
-        bh=E5BnYOzIC2rS0Shxh1oJ1QRMJjd/fLnsEcaEPllvfao=;
+        s=korg; t=1626075803;
+        bh=h203D9ggF30OzZ/Sw/HtKRuHHn+P2MJqvACM7Zx9IO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aAYebhG2xBI2zPDtYySHXjItBbmF6JDH1H6z+v7lYgBRK7uHv5ebWLQ5n9fpo15hw
-         jaZhLKVG4dWzmoQw7gs/dY3Z8DnAOxrKXW8wq1ZnmhqazFUTSQkCfAJtVaLSuhQI52
-         NhaoyXWxRyURjc8hZPDkY18mAcncqrryxGXj8eAI=
+        b=0c6VmZK7DF39KeMhWoPKAlOKgT9ILUmHGqwpzKHfILtFgqTNb0GDQnc+7UEyVNLf9
+         vC537geY0Bpn4A0R9QUqBBIF64qU1eZsyyOz5wb5z88Ve08vxLHFAimzm2Wv8v/s4W
+         k0YkfpQm2fzrwAKzIwdza9ZgYN/L11WbA5KgNvB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 233/593] media: exynos4-is: Fix a use after free in isp_video_release
+Subject: [PATCH 5.13 370/800] EDAC/igen6: fix core dependency
 Date:   Mon, 12 Jul 2021 08:06:33 +0200
-Message-Id: <20210712060908.540696907@linuxfoundation.org>
+Message-Id: <20210712061006.417035354@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 01fe904c9afd26e79c1f73aa0ca2e3d785e5e319 ]
+[ Upstream commit 0a9ece9ba154dd6205709108180952c55e630833 ]
 
-In isp_video_release, file->private_data is freed via
-_vb2_fop_release()->v4l2_fh_release(). But the freed
-file->private_data is still used in v4l2_fh_is_singular_file()
-->v4l2_fh_is_singular(file->private_data), which is a use
-after free bug.
+igen6_edac needs mce_register()/unregister() functions,
+so it should depend on X86_MCE (or X86_MCE_INTEL).
 
-My patch uses a variable 'is_singular_file' to avoid the uaf.
-v3: https://lore.kernel.org/patchwork/patch/1419058/
+That change prevents these build errors:
 
-Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+ld: drivers/edac/igen6_edac.o: in function `igen6_remove':
+igen6_edac.c:(.text+0x494): undefined reference to `mce_unregister_decode_chain'
+ld: drivers/edac/igen6_edac.o: in function `igen6_probe':
+igen6_edac.c:(.text+0xf5b): undefined reference to `mce_register_decode_chain'
+
+Fixes: 10590a9d4f23e ("EDAC/igen6: Add EDAC driver for Intel client SoCs using IBECC")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210619160203.2026-1-rdunlap@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/fimc-isp-video.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/edac/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index 8d9dc597deaa..83688a7982f7 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-@@ -305,17 +305,20 @@ static int isp_video_release(struct file *file)
- 	struct fimc_is_video *ivc = &isp->video_capture;
- 	struct media_entity *entity = &ivc->ve.vdev.entity;
- 	struct media_device *mdev = entity->graph_obj.mdev;
-+	bool is_singular_file;
+diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
+index 1e836e320edd..91164c5f0757 100644
+--- a/drivers/edac/Kconfig
++++ b/drivers/edac/Kconfig
+@@ -270,7 +270,8 @@ config EDAC_PND2
  
- 	mutex_lock(&isp->video_lock);
- 
--	if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
-+	is_singular_file = v4l2_fh_is_singular_file(file);
-+
-+	if (is_singular_file && ivc->streaming) {
- 		media_pipeline_stop(entity);
- 		ivc->streaming = 0;
- 	}
- 
- 	_vb2_fop_release(file, NULL);
- 
--	if (v4l2_fh_is_singular_file(file)) {
-+	if (is_singular_file) {
- 		fimc_pipeline_call(&ivc->ve, close);
- 
- 		mutex_lock(&mdev->graph_mutex);
+ config EDAC_IGEN6
+ 	tristate "Intel client SoC Integrated MC"
+-	depends on PCI && X86_64 && PCI_MMCONFIG && ARCH_HAVE_NMI_SAFE_CMPXCHG
++	depends on PCI && PCI_MMCONFIG && ARCH_HAVE_NMI_SAFE_CMPXCHG
++	depends on X64_64 && X86_MCE_INTEL
+ 	help
+ 	  Support for error detection and correction on the Intel
+ 	  client SoC Integrated Memory Controller using In-Band ECC IP.
 -- 
 2.30.2
 
