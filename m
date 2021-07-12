@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1643C54ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A033C4E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345508AbhGLIHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45000 "EHLO mail.kernel.org"
+        id S245697AbhGLHTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344054AbhGLH3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52B6F61006;
-        Mon, 12 Jul 2021 07:24:46 +0000 (UTC)
+        id S241053AbhGLGyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:54:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 707236052B;
+        Mon, 12 Jul 2021 06:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074687;
-        bh=h+uCLY5WebMdysL7D+A/LBInEOS1C7l8yD+elfE7Fug=;
+        s=korg; t=1626072703;
+        bh=vbIdOpqykdVZ+lcvBjxFFpJ7AefLJLkRFPmxWAZWWuU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rE2WWqim6T8lwvSikR8Y7T1Ytsp+bNYgauJExhNTxWhZRNVGZvcLXv5PCvNG6Qbsq
-         d+w5zldrqSl0qa4ceUhK3S8LiiQxiuGD5zLUnjeqjxpXaXOYojfp+TjggSDOu5An9R
-         Mki9pzMOAgSpQLzm5dcKh0QLqw1qqybeUPE06teQ=
+        b=jZuNuY7cfI1z1RgL+vPq09bF8/UnCf5xfF/D3sTsRRW57x884iqNaIkey4rppd4/Q
+         A3xm0Djru7rz0h3PP5XY+Az2LThzembOtSKxTArB1/lL/FG+uIjQP0yV6Rro+IVC8Z
+         pRqOzKeFu1bjzOXREKQIfZOygvXZCaiGepEPtBFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 662/700] arm64: dts: marvell: armada-37xx: Fix reg for standard variant of UART
-Date:   Mon, 12 Jul 2021 08:12:25 +0200
-Message-Id: <20210712061046.334128186@linuxfoundation.org>
+        stable@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 5.10 586/593] tpm: Replace WARN_ONCE() with dev_err_once() in tpm_tis_status()
+Date:   Mon, 12 Jul 2021 08:12:26 +0200
+Message-Id: <20210712060959.956214196@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +38,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Jarkko Sakkinen <jarkko@kernel.org>
 
-[ Upstream commit 2cbfdedef39fb5994b8f1e1df068eb8440165975 ]
+commit 0178f9d0f60ba07e09bab57381a3ef18e2c1fd7f upstream.
 
-UART1 (standard variant with DT node name 'uart0') has register space
-0x12000-0x12018 and not whole size 0x200. So fix also this in example.
+Do not tear down the system when getting invalid status from a TPM chip.
+This can happen when panic-on-warn is used.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: c737abc193d1 ("arm64: dts: marvell: Fix A37xx UART0 register size")
-Link: https://lore.kernel.org/r/20210624224909.6350-6-pali@kernel.org
+Instead, introduce TPM_TIS_INVALID_STATUS bitflag and use it to trigger
+once the error reporting per chip. In addition, print out the value of
+TPM_STS for improved forensics.
+
+Link: https://lore.kernel.org/keyrings/YKzlTR1AzUigShtZ@kroah.com/
+Fixes: 55707d531af6 ("tpm_tis: Add a check for invalid status")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/tpm/tpm_tis_core.c |   25 ++++++++++++++++++-------
+ drivers/char/tpm/tpm_tis_core.h |    3 ++-
+ 2 files changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index 456dcd4a7793..6ffbb099fcac 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -134,7 +134,7 @@
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -196,13 +196,24 @@ static u8 tpm_tis_status(struct tpm_chip
+ 		return 0;
  
- 			uart0: serial@12000 {
- 				compatible = "marvell,armada-3700-uart";
--				reg = <0x12000 0x200>;
-+				reg = <0x12000 0x18>;
- 				clocks = <&xtalclk>;
- 				interrupts =
- 				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
--- 
-2.30.2
-
+ 	if (unlikely((status & TPM_STS_READ_ZERO) != 0)) {
+-		/*
+-		 * If this trips, the chances are the read is
+-		 * returning 0xff because the locality hasn't been
+-		 * acquired.  Usually because tpm_try_get_ops() hasn't
+-		 * been called before doing a TPM operation.
+-		 */
+-		WARN_ONCE(1, "TPM returned invalid status\n");
++		if  (!test_and_set_bit(TPM_TIS_INVALID_STATUS, &priv->flags)) {
++			/*
++			 * If this trips, the chances are the read is
++			 * returning 0xff because the locality hasn't been
++			 * acquired.  Usually because tpm_try_get_ops() hasn't
++			 * been called before doing a TPM operation.
++			 */
++			dev_err(&chip->dev, "invalid TPM_STS.x 0x%02x, dumping stack for forensics\n",
++				status);
++
++			/*
++			 * Dump stack for forensics, as invalid TPM_STS.x could be
++			 * potentially triggered by impaired tpm_try_get_ops() or
++			 * tpm_find_get_ops().
++			 */
++			dump_stack();
++		}
++
+ 		return 0;
+ 	}
+ 
+--- a/drivers/char/tpm/tpm_tis_core.h
++++ b/drivers/char/tpm/tpm_tis_core.h
+@@ -83,6 +83,7 @@ enum tis_defaults {
+ 
+ enum tpm_tis_flags {
+ 	TPM_TIS_ITPM_WORKAROUND		= BIT(0),
++	TPM_TIS_INVALID_STATUS		= BIT(1),
+ };
+ 
+ struct tpm_tis_data {
+@@ -90,7 +91,7 @@ struct tpm_tis_data {
+ 	int locality;
+ 	int irq;
+ 	bool irq_tested;
+-	unsigned int flags;
++	unsigned long flags;
+ 	void __iomem *ilb_base_addr;
+ 	u16 clkrun_enabled;
+ 	wait_queue_head_t int_queue;
 
 
