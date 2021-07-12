@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64BB3C52D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4CF3C4C6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349716AbhGLHuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:50:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49492 "EHLO mail.kernel.org"
+        id S242794AbhGLHEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:04:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243406AbhGLHPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:15:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4044D61411;
-        Mon, 12 Jul 2021 07:12:36 +0000 (UTC)
+        id S237187AbhGLGqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A4A6113B;
+        Mon, 12 Jul 2021 06:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073956;
-        bh=gwUDdu/CE31szvQnPH4cwGXPPoZIgG5LwrLvDc1Q7I4=;
+        s=korg; t=1626072154;
+        bh=RbUQ+fDtKd5nZBrJx4XGFRbRXRwuWcygjPjRHOCNcTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HEXrIaRNTJYoz7ttBj4Y0Wi0OH0WJsXFYWk0pt9YMbJJ9faGscjYXhHM9m6Nj/Npp
-         EjIL1z+R+w9xLqCiWDLoScYryqhG71z7a3oI8xuTZ01mNXaDRzuJAKoWtStB0DH1hA
-         KReTSviRHOll6XX/+i2620SLiOxCxUwZPpwh7zxc=
+        b=ieGN5drTQOIyrhFKPaMTb4lWbrQuNeRINsE5IokBjj+JbcBsWHCo5xppS/hV3ohSQ
+         Krdl0FTdCypx+PhTlZXeA5Aup2ZAEFE3ZRfoEcApb7OkZVLPtA5ZssmrmG5uInvKo4
+         n0OmpnH6NcdlJjvojyPKdzPnbtfDzdDh6nbKAKpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Seevalamuthu Mariappan <seevalam@codeaurora.org>,
-        Sven Eckelmann <sven@narfation.org>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 416/700] ath11k: send beacon template after vdev_start/restart during csa
-Date:   Mon, 12 Jul 2021 08:08:19 +0200
-Message-Id: <20210712061020.638482160@linuxfoundation.org>
+Subject: [PATCH 5.10 340/593] ath10k: go to path err_unsupported when chip id is not supported
+Date:   Mon, 12 Jul 2021 08:08:20 +0200
+Message-Id: <20210712060923.409072040@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,61 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seevalamuthu Mariappan <seevalam@codeaurora.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 979ebc54cf13bd1e3eb6e21766d208d5de984fb8 ]
+[ Upstream commit 9e88dd431d2345acdb7a549f3e88aaf4c2a307a1 ]
 
-Firmware has added assert if beacon template is received after
-vdev_down. Firmware expects beacon template after vdev_start
-and before vdev_up. This change is needed to support MBSSID EMA
-cases in firmware.
+When chip id is not supported, it go to path err_unsupported
+to print the error message.
 
-Hence, Change the sequence in ath11k as expected from firmware.
-This new change is not causing any issues with older
-firmware.
-
-Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.5.0.1.r3-00011-QCAHKSWPL_SILICONZ-1
-Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.5.0.1.r4-00008-QCAHKSWPL_SILICONZ-1
-
-Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
-Signed-off-by: Seevalamuthu Mariappan <seevalam@codeaurora.org>
-[sven@narfation.org: added tested-on/fixes information]
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Fixes: f8914a14623a ("ath10k: restore QCA9880-AR1A (v1) detection")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210525133028.2805615-1-sven@narfation.org
+Link: https://lore.kernel.org/r/20210522105822.1091848-2-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/mac.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-index 7ad0383affcb..a0e7bc6dd8c7 100644
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -5311,11 +5311,6 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
- 		if (WARN_ON(!arvif->is_up))
- 			continue;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 36426efdb2ea..55f483d22b6d 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3700,7 +3700,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_unsupported;
  
--		ret = ath11k_mac_setup_bcn_tmpl(arvif);
--		if (ret)
--			ath11k_warn(ab, "failed to update bcn tmpl during csa: %d\n",
--				    ret);
--
- 		ret = ath11k_mac_vdev_restart(arvif, &vifs[i].new_ctx->def);
- 		if (ret) {
- 			ath11k_warn(ab, "failed to restart vdev %d: %d\n",
-@@ -5323,6 +5318,11 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
- 			continue;
- 		}
+ 	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
+-		goto err_free_irq;
++		goto err_unsupported;
  
-+		ret = ath11k_mac_setup_bcn_tmpl(arvif);
-+		if (ret)
-+			ath11k_warn(ab, "failed to update bcn tmpl during csa: %d\n",
-+				    ret);
-+
- 		ret = ath11k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
- 					 arvif->bssid);
- 		if (ret) {
+ 	ret = ath10k_core_register(ar, &bus_params);
+ 	if (ret) {
 -- 
 2.30.2
 
