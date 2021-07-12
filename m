@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38703C4A47
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822B83C512A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240044AbhGLGum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34398 "EHLO mail.kernel.org"
+        id S1344947AbhGLHiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:38:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238138AbhGLGj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 428A9611CE;
-        Mon, 12 Jul 2021 06:36:19 +0000 (UTC)
+        id S244139AbhGLHK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35814613BE;
+        Mon, 12 Jul 2021 07:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071779;
-        bh=/N163FbOFkeOnHGwWMlvRyt7ZOWldUnix3Qi+8OqLzs=;
+        s=korg; t=1626073596;
+        bh=WF1o1BNDVfyRUhkdNwe1t1ceJv4yBBYYlDm+gtp63fY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q0KzLVp68AG06CjV3XGwCdiZMuzP7ai05RpudBtQT/wkz9Xr/acOvizMVAM4SMqqF
-         DtNPZOOu2sBTVfYi7rk2mZyYadb4QXB2Y+YbapBdXlTcq44+uk7o+GW5ueKlyQSpAG
-         /d+4JEX2t5/50IurqKYlKgJNmo9/GzlQMopdRLfg=
+        b=LFCW7wv8ABMDji7OQ6rp7dX3+I1xIprJMWESCSW1jemyL1k+V05VOIUlbCz0YWBfZ
+         JSzBJP3Ht2hrhcgitIC5QkVKJf1FLeJqvP811n0RdarAZzRjWlVKqwjbdDfAkOZ/2V
+         70G5cmRR0JURUBhOxiYmsFpmWxkNNVz9n8IvQRsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 217/593] sata_highbank: fix deferred probing
+        stable@vger.kernel.org, Andrej Picej <andpicej@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 294/700] hwmon: (lm70) Revert "hwmon: (lm70) Add support for ACPI"
 Date:   Mon, 12 Jul 2021 08:06:17 +0200
-Message-Id: <20210712060906.789580707@linuxfoundation.org>
+Message-Id: <20210712061007.554077283@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 4a24efa16e7db02306fb5db84518bb0a7ada5a46 ]
+[ Upstream commit ac61c8aae446b9c0fe18981fe721d4a43e283ad6 ]
 
-The driver overrides the error codes returned by platform_get_irq() to
--EINVAL, so if it returns -EPROBE_DEFER, the driver would fail the probe
-permanently instead of the deferred probing. Switch to propagating the
-error code upstream, still checking/overriding IRQ0 as libata regards it
-as "no IRQ" (thus polling) anyway...
+This reverts commit b58bd4c6dfe709646ed9efcbba2a70643f9bc873.
 
-Fixes: 9ec36cafe43b ("of/irq: do irq resolution in platform_get_irq")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Link: https://lore.kernel.org/r/105b456d-1199-f6e9-ceb7-ffc5ba551d1a@omprussia.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+None of the ACPI IDs introduced with the reverted patch is a valid ACPI
+device ID. Any ACPI users of this driver are advised to use PRP0001 and
+a devicetree-compatible device identification.
+
+Fixes: b58bd4c6dfe7 ("hwmon: (lm70) Add support for ACPI")
+Cc: Andrej Picej <andpicej@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/sata_highbank.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/hwmon/lm70.c | 26 +-------------------------
+ 1 file changed, 1 insertion(+), 25 deletions(-)
 
-diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
-index 64b2ef15ec19..8440203e835e 100644
---- a/drivers/ata/sata_highbank.c
-+++ b/drivers/ata/sata_highbank.c
-@@ -469,10 +469,12 @@ static int ahci_highbank_probe(struct platform_device *pdev)
- 	}
+diff --git a/drivers/hwmon/lm70.c b/drivers/hwmon/lm70.c
+index 40eab3349904..6b884ea00987 100644
+--- a/drivers/hwmon/lm70.c
++++ b/drivers/hwmon/lm70.c
+@@ -22,10 +22,10 @@
+ #include <linux/hwmon.h>
+ #include <linux/mutex.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/of.h>
+ #include <linux/property.h>
+ #include <linux/spi/spi.h>
+ #include <linux/slab.h>
+-#include <linux/acpi.h>
  
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
-+	if (irq < 0) {
- 		dev_err(dev, "no irq\n");
--		return -EINVAL;
-+		return irq;
- 	}
-+	if (!irq)
-+		return -EINVAL;
+ #define DRVNAME		"lm70"
  
- 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
- 	if (!hpriv) {
+@@ -148,29 +148,6 @@ static const struct of_device_id lm70_of_ids[] = {
+ MODULE_DEVICE_TABLE(of, lm70_of_ids);
+ #endif
+ 
+-#ifdef CONFIG_ACPI
+-static const struct acpi_device_id lm70_acpi_ids[] = {
+-	{
+-		.id = "LM000070",
+-		.driver_data = LM70_CHIP_LM70,
+-	},
+-	{
+-		.id = "TMP00121",
+-		.driver_data = LM70_CHIP_TMP121,
+-	},
+-	{
+-		.id = "LM000071",
+-		.driver_data = LM70_CHIP_LM71,
+-	},
+-	{
+-		.id = "LM000074",
+-		.driver_data = LM70_CHIP_LM74,
+-	},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(acpi, lm70_acpi_ids);
+-#endif
+-
+ static int lm70_probe(struct spi_device *spi)
+ {
+ 	struct device *hwmon_dev;
+@@ -217,7 +194,6 @@ static struct spi_driver lm70_driver = {
+ 	.driver = {
+ 		.name	= "lm70",
+ 		.of_match_table	= of_match_ptr(lm70_of_ids),
+-		.acpi_match_table = ACPI_PTR(lm70_acpi_ids),
+ 	},
+ 	.id_table = lm70_ids,
+ 	.probe	= lm70_probe,
 -- 
 2.30.2
 
