@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37493C5400
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0C93C57E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350254AbhGLH4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
+        id S1377828AbhGLIj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240785AbhGLHTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 575386144A;
-        Mon, 12 Jul 2021 07:16:15 +0000 (UTC)
+        id S1351228AbhGLHve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B25960241;
+        Mon, 12 Jul 2021 07:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074176;
-        bh=BZg1ZmptamxlKGDCux2iZ+5DEortB9FdmYQHKVSzNrM=;
+        s=korg; t=1626076125;
+        bh=h6Di41b9GA4zFirPJoXGeizNZ7C6m27vN/RfcFp+FFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eakU5Q5I3PSlQzMFIzOukgX1SIF1kwaaOsClsJgqnjPzRjufCJW5YOuqObwI9F54f
-         GRQY3W5UdBIV+GRCPznJzmS9778eBD4wuRcore7UAT4nRxP5VTPRhEpnm+g3KAsLfj
-         w3mfYVLhaAUFbQVZcQV1d90Z5TV7UGTxXm1MZp8g=
+        b=DaKuEuizTSnD1Gm+OyFqUUD2etc2CK09yapiT4L7Y0keKk2zf3jtxatks7cIwSdoD
+         RI2BHYWJBSPDc3S9owAIHCM8qvxD+HmsHderqV13cQFfsgKGsh+hHE0zrVcSZfDGpm
+         Ok5/HPxVNxf0AytCkFAoC4FZaDIFbWHPMc/dD7S8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 448/700] tls: prevent oversized sendfile() hangs by ignoring MSG_MORE
+        stable@vger.kernel.org, YN Chen <YN.Chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 508/800] mt76: mt7921: fix the coredump is being truncated
 Date:   Mon, 12 Jul 2021 08:08:51 +0200
-Message-Id: <20210712061024.193653185@linuxfoundation.org>
+Message-Id: <20210712061021.247427276@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Sean Wang <sean.wang@mediatek.com>
 
-[ Upstream commit d452d48b9f8b1a7f8152d33ef52cfd7fe1735b0a ]
+[ Upstream commit 723885a6750102e5d807429b3d06aa6b0d29cc66 ]
 
-We got multiple reports that multi_chunk_sendfile test
-case from tls selftest fails. This was sort of expected,
-as the original fix was never applied (see it in the first
-Link:). The test in question uses sendfile() with count
-larger than the size of the underlying file. This will
-make splice set MSG_MORE on all sendpage calls, meaning
-TLS will never close and flush the last partial record.
+Fix the maximum size of the coredump generated with current mt7921
+firmware. Otherwise, a truncated coredump would be reported to userland
+via dev_coredumpv.
 
-Eric seem to have addressed a similar problem in
-commit 35f9c09fe9c7 ("tcp: tcp_sendpages() should call tcp_push() once")
-by introducing MSG_SENDPAGE_NOTLAST. Unlike MSG_MORE
-MSG_SENDPAGE_NOTLAST is not set on the last call
-of a "pipefull" of data (PIPE_DEF_BUFFERS == 16,
-so every 16 pages or whenever we run out of data).
+Also, there is an additional error handling enhanced in the patch to avoid
+the possible invalid buffer access when the system failed to create the
+buffer to hold the coredump.
 
-Having a break every 16 pages should be fine, TLS
-can pack exactly 4 pages into a record, so for
-aligned reads there should be no difference,
-unaligned may see one extra record per sendpage().
-
-Sticking to TCP semantics seems preferable to modifying
-splice, but we can revisit it if real life scenarios
-show a regression.
-
-Reported-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Reported-by: Seth Forshee <seth.forshee@canonical.com>
-Link: https://lore.kernel.org/netdev/1591392508-14592-1-git-send-email-pooja.trivedi@stackpath.com/
-Fixes: 3c4d7559159b ("tls: kernel TLS support")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Tested-by: Seth Forshee <seth.forshee@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0da3c795d07b ("mt76: mt7921: add coredump support")
+Co-developed-by: YN Chen <YN.Chen@mediatek.com>
+Signed-off-by: YN Chen <YN.Chen@mediatek.com>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tls/tls_sw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/mt76_connac.h | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7921/mac.c  | 9 ++++++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 6086cf4f10a7..60d2ff13fa9e 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1153,7 +1153,7 @@ static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
- 	int ret = 0;
- 	bool eor;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac.h b/drivers/net/wireless/mediatek/mt76/mt76_connac.h
+index 63c1d1a68a70..c26cfef425ed 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac.h
+@@ -12,7 +12,7 @@
+ #define MT76_CONNAC_MAX_SCAN_MATCH		16
  
--	eor = !(flags & (MSG_MORE | MSG_SENDPAGE_NOTLAST));
-+	eor = !(flags & MSG_SENDPAGE_NOTLAST);
- 	sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
+ #define MT76_CONNAC_COREDUMP_TIMEOUT		(HZ / 20)
+-#define MT76_CONNAC_COREDUMP_SZ			(128 * 1024)
++#define MT76_CONNAC_COREDUMP_SZ			(1300 * 1024)
  
- 	/* Call the sk_stream functions to manage the sndbuf mem. */
+ enum {
+ 	CMD_CBW_20MHZ = IEEE80211_STA_RX_BW_20,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index 853db0a52181..493c2aba2f79 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -1504,7 +1504,7 @@ void mt7921_coredump_work(struct work_struct *work)
+ 			break;
+ 
+ 		skb_pull(skb, sizeof(struct mt7921_mcu_rxd));
+-		if (data + skb->len - dump > MT76_CONNAC_COREDUMP_SZ) {
++		if (!dump || data + skb->len - dump > MT76_CONNAC_COREDUMP_SZ) {
+ 			dev_kfree_skb(skb);
+ 			continue;
+ 		}
+@@ -1514,7 +1514,10 @@ void mt7921_coredump_work(struct work_struct *work)
+ 
+ 		dev_kfree_skb(skb);
+ 	}
+-	dev_coredumpv(dev->mt76.dev, dump, MT76_CONNAC_COREDUMP_SZ,
+-		      GFP_KERNEL);
++
++	if (dump)
++		dev_coredumpv(dev->mt76.dev, dump, MT76_CONNAC_COREDUMP_SZ,
++			      GFP_KERNEL);
++
+ 	mt7921_reset(&dev->mt76);
+ }
 -- 
 2.30.2
 
