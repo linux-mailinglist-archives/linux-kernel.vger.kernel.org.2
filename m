@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CF83C51F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737EE3C58A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349616AbhGLHoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:44:22 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3898 "EHLO mga06.intel.com"
+        id S1379866AbhGLIvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:51:03 -0400
+Received: from mga05.intel.com ([192.55.52.43]:50708 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242426AbhGLHMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:12:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="271046575"
+        id S240994AbhGLHzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:55:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="295581498"
 X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="271046575"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 00:09:19 -0700
+   d="scan'208";a="295581498"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 00:52:29 -0700
 X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="459091754"
-Received: from xshen14-linux.bj.intel.com ([10.238.155.105])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 00:09:16 -0700
-From:   Xiaochen Shen <xiaochen.shen@intel.com>
-To:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
-        sashal@kernel.org
-Cc:     shuah@kernel.org, tony.luck@intel.com, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
-        xiaochen.shen@intel.com
-Subject: [PATCH 5.10] selftests/resctrl: Fix incorrect parsing of option "-t"
-Date:   Mon, 12 Jul 2021 15:51:50 +0800
-Message-Id: <1626076310-576-1-git-send-email-xiaochen.shen@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <162600876912955@kroah.com>
-References: <162600876912955@kroah.com>
+   d="scan'208";a="491930905"
+Received: from chenhan1-mobl2.ccr.corp.intel.com (HELO localhost) ([10.249.172.167])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 00:52:26 -0700
+Date:   Mon, 12 Jul 2021 15:52:23 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "KVM: x86: WARN and reject loading KVM if NX is
+ supported but not enabled"
+Message-ID: <20210712075223.hqqoi4yp4fkkhrt5@linux.intel.com>
+References: <20210625001853.318148-1-seanjc@google.com>
+ <28ec9d07-756b-f546-dad1-0af751167838@redhat.com>
+ <YOiFsB9vZgMcpJZu@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOiFsB9vZgMcpJZu@google.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 1421ec684a43379b2aa3cfda20b03d38282dc990 upstream.
+On Fri, Jul 09, 2021 at 05:21:52PM +0000, Sean Christopherson wrote:
+> On Thu, Jul 08, 2021, Paolo Bonzini wrote:
+> > On 25/06/21 02:18, Sean Christopherson wrote:
+> > > Let KVM load if EFER.NX=0 even if NX is supported, the analysis and
+> > > testing (or lack thereof) for the non-PAE host case was garbage.
+> > > 
+> > > If the kernel won't be using PAE paging, .Ldefault_entry in head_32.S
+> > > skips over the entire EFER sequence.  Hopefully that can be changed in
+> > > the future to allow KVM to require EFER.NX, but the motivation behind
+> > > KVM's requirement isn't yet merged.  Reverting and revisiting the mess
+> > > at a later date is by far the safest approach.
+> > > 
+> > > This reverts commit 8bbed95d2cb6e5de8a342d761a89b0a04faed7be.
+> > > 
+> > > Fixes: 8bbed95d2cb6 ("KVM: x86: WARN and reject loading KVM if NX is supported but not enabled")
+> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > ---
+> > > 
+> > > Hopefully it's not too late to just drop the original patch...
+> > > 
+> > >   arch/x86/kvm/x86.c | 3 ---
+> > >   1 file changed, 3 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 4a597aafe637..1cc02a3685d0 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -10981,9 +10981,6 @@ int kvm_arch_hardware_setup(void *opaque)
+> > >   	int r;
+> > >   	rdmsrl_safe(MSR_EFER, &host_efer);
+> > > -	if (WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_NX) &&
+> > > -			 !(host_efer & EFER_NX)))
+> > > -		return -EIO;
+> > >   	if (boot_cpu_has(X86_FEATURE_XSAVES))
+> > >   		rdmsrl(MSR_IA32_XSS, host_xss);
+> > > 
+> > 
+> > So do we want this or "depends on X86_64 || X86_PAE"?
+> 
+> Hmm, I'm leaning towards keeping !PAE support purely for testing the !PAE<->PAE
+> MMU transitions for nested virtualization.  It's not much coverage, and the !PAE
 
-Resctrl test suite accepts command line argument "-t" to specify the
-unit tests to run in the test list (e.g., -t mbm,mba,cmt,cat) as
-documented in the help.
+May I ask what "!PAE<->PAE MMU transition for nested virtualization" means?
+Running L1 KVM with !PAE and L0 in PAE? I had thought KVM can only function
+with PAE set(though I did not see any check of CR4 in kvm_arch_init()). Did
+I miss something?
 
-When calling strtok() to parse the option, the incorrect delimiters
-argument ":\t" is used. As a result, passing "-t mbm,mba,cmt,cat" throws
-an invalid option error.
+> NPT horror is a much bigger testing gap (because KVM doesn't support it), but on
+> the other hand setting EFER.NX for !PAE kernels appears to be trivial, e.g.
+> 
+> diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
+> index 67f590425d90..bfbea25a9fe8 100644
+> --- a/arch/x86/kernel/head_32.S
+> +++ b/arch/x86/kernel/head_32.S
+> @@ -214,12 +214,6 @@ SYM_FUNC_START(startup_32_smp)
+>         andl $~1,%edx                   # Ignore CPUID.FPU
+>         jz .Lenable_paging              # No flags or only CPUID.FPU = no CR4
+> 
+> -       movl pa(mmu_cr4_features),%eax
+> -       movl %eax,%cr4
+> -
+> -       testb $X86_CR4_PAE, %al         # check if PAE is enabled
+> -       jz .Lenable_paging
+> -
+>         /* Check if extended functions are implemented */
+>         movl $0x80000000, %eax
+>         cpuid
+> 
+> My only hesitation is the risk of somehow breaking ancient CPUs by falling into
+> the NX path.  Maybe try forcing EFER.NX=1 for !PAE, and fall back to requiring
+> PAE if that gets NAK'd or needs to be reverted for whatever reason?
+> 
 
-Fix this by using delimiters argument "," instead of ":\t" for parsing
-of unit tests list. At the same time, remove the unnecessary "spaces"
-between the unit tests in help documentation to prevent confusion.
+One more dumb question: are you planning to set NX for linux with !PAE? Why do
+we need EFER in that case? Thanks! :)
 
-Fixes: 790bf585b0ee ("selftests/resctrl: Add Cache Allocation Technology (CAT) selftest")
-Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
-Fixes: ecdbb911f22d ("selftests/resctrl: Add MBM test")
-Fixes: 034c7678dd2c ("selftests/resctrl: Add README for resctrl tests")
-Cc: stable@vger.kernel.org
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/testing/selftests/resctrl/README          | 2 +-
- tools/testing/selftests/resctrl/resctrl_tests.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/resctrl/README b/tools/testing/selftests/resctrl/README
-index 6e5a0ff..20502cb 100644
---- a/tools/testing/selftests/resctrl/README
-+++ b/tools/testing/selftests/resctrl/README
-@@ -47,7 +47,7 @@ Parameter '-h' shows usage information.
- 
- usage: resctrl_tests [-h] [-b "benchmark_cmd [options]"] [-t test list] [-n no_of_bits]
-         -b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CQM default benchmark is builtin fill_buf
--        -t test list: run tests specified in the test list, e.g. -t mbm, mba, cqm, cat
-+        -t test list: run tests specified in the test list, e.g. -t mbm,mba,cqm,cat
-         -n no_of_bits: run cache tests using specified no of bits in cache bit mask
-         -p cpu_no: specify CPU number to run the test. 1 is default
-         -h: help
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index ac22696..bd98746 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -40,7 +40,7 @@ static void cmd_help(void)
- 	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CQM");
- 	printf("\t default benchmark is builtin fill_buf\n");
- 	printf("\t-t test list: run tests specified in the test list, ");
--	printf("e.g. -t mbm, mba, cqm, cat\n");
-+	printf("e.g. -t mbm,mba,cqm,cat\n");
- 	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
- 	printf("\t-p cpu_no: specify CPU number to run the test. 1 is default\n");
- 	printf("\t-h: help\n");
-@@ -98,7 +98,7 @@ int main(int argc, char **argv)
- 
- 					return -1;
- 				}
--				token = strtok(NULL, ":\t");
-+				token = strtok(NULL, ",");
- 			}
- 			break;
- 		case 'p':
--- 
-1.8.3.1
+B.R.
+Yu
 
