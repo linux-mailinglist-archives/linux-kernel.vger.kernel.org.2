@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA2D3C5A80
+	by mail.lfdr.de (Postfix) with ESMTP id F29B93C5A81
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237814AbhGLKFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:05:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:52536 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233683AbhGLKFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:05:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 919D21FB;
-        Mon, 12 Jul 2021 03:02:47 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 765B13F694;
-        Mon, 12 Jul 2021 03:02:46 -0700 (PDT)
-Subject: Re: [PATCH v3] drm/panfrost:fix the exception name always "UNKNOWN"
-To:     ChunyouTang <tangchunyou@163.com>
-Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com,
-        ChunyouTang <tangchunyou@icubecorp.cn>
-References: <20210708073407.2015-1-tangchunyou@163.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <814ae174-a247-bcd8-b2d6-847982a9fc6b@arm.com>
-Date:   Mon, 12 Jul 2021 11:02:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237991AbhGLKGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237894AbhGLKGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:06:08 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7289DC061788
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:03:20 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so17515543otf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:03:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9QvgAnoI2kPhaZ/+n+bQkw4ACvsVb9pav6Lb/tlx3m8=;
+        b=nS5X1ma78tZUkAIXCfDp3a8xVJt/VvHEYep44ptY71kKl0YEHx+oBUtr6Zz1azRAr/
+         CcLqtFi3wFbu+j+TpshqXoh8MvviI8LJOus0njsV6RBuLthgADwE6tJ00hnZoc6rvkS4
+         nPT/pYipkn8urjIdRVIJcTp1fH65fctXLbFymE/KcAYXffQgdC4f2K9HHkeaFx5cAGHM
+         CV9eVUdu+7ksEtwSsf6/Z12oH3ktaNVFK+08Et10h9vLBZU6OECiIHOsWZgKc2jH9ZUY
+         sHvL34U9IZQ0xFndB3dSItRjerjJJxdRYEpys9yjeyYH8l5A5skJXsVC9ceR3cFfJbx3
+         nVtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9QvgAnoI2kPhaZ/+n+bQkw4ACvsVb9pav6Lb/tlx3m8=;
+        b=H6a1QG2PkLjhdf31UFJ7fZ/zqqTM/CsXk6zZSYogYa2e4N/Oll8Nfp5/1S+foiqXDW
+         ocbS1hCzb54gwsx3DszctmzNk8AqRZfuqfvYgZngmJocnH4yb7oIvnnkaq0mKe1kAltV
+         xM+SWAIDTdaWLbsw5yknNzrwA7epNA6rJc4wHApRsjvu6cXqfRncxNI8vzv0aCuer/FT
+         JS9RH9Uv7E4f38SwuHR0cjln8aPcyYhER1YYiqw8LjdfqXjLU7stMzImC7DaIBWilxIW
+         UuSkui1veiM4FLRyjCkxuSHuN8NWrjjn7PVNBc84pMWSpQ1t0lvUXnahNT1Jm1+gG/Xm
+         uNHw==
+X-Gm-Message-State: AOAM531a6HUQxTjVLxGk+u/VtRH8RNemFqIBNNKWNDDRCfayrWqMqHjk
+        YGhsmr4RtgEYuGN9ipRHICuLh05AlBdi20y72JuQeg==
+X-Google-Smtp-Source: ABdhPJx9cVqiaLWwM84FC2PwZhfKEQn3biHZZj0dyJ4upo16KWyhBj1bd552alA2pVIa7/nYudoBocwhHa0lsFY9w60=
+X-Received: by 2002:a9d:d04:: with SMTP id 4mr41889857oti.251.1626084199532;
+ Mon, 12 Jul 2021 03:03:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210708073407.2015-1-tangchunyou@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210708144411.25467-1-mark.rutland@arm.com> <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
+ <20210712095832.GA27643@willie-the-truck>
+In-Reply-To: <20210712095832.GA27643@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 12 Jul 2021 12:03:06 +0200
+Message-ID: <CANpmjNObTgULimfcVvwCnCEUknTpD+Q8DyoMfiROejYjB2EL5g@mail.gmail.com>
+Subject: Re: [PATCH] kasan: fix build for CONFIG_KASAN_HW_TAGS
+To:     Will Deacon <will@kernel.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sam Tebbs <sam.tebbs@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/07/2021 08:34, ChunyouTang wrote:
-> From: ChunyouTang <tangchunyou@icubecorp.cn>
-> 
-> The exception_code in register is only 8 bits,So if
-> fault_status in panfrost_gpu_irq_handler() don't
-> (& 0xFF),it can't get correct exception reason.
-> 
-> and it's better to show all of the register value
-> to custom,so it's better fault_status don't (& 0xFF).
-> 
-> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+On Mon, 12 Jul 2021 at 11:58, Will Deacon <will@kernel.org> wrote:
+> On Sat, Jul 10, 2021 at 09:16:14PM +0200, Andrey Konovalov wrote:
+> > On Thu, Jul 8, 2021 at 4:44 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > >
+> > > When CONFIG_KASAN_HW_TAGS is selected, <linux/kasan.h> uses _RET_IP_,
+> > > but doesn't explicitly include <linux/kernel.h> where this is defined.
+> > >
+> > > We used to get this via a transitive include, but since commit:
+> > >
+> > >   f39650de687e3576 ("kernel.h: split out panic and oops helpers")
+> > >
+> > > ... this is no longer the case, and so we get a build failure:
+> > >
+> > > |   CC      arch/arm64/mm/kasan_init.o
+> > > | In file included from arch/arm64/mm/kasan_init.c:10:
+> > > | ./include/linux/kasan.h: In function 'kasan_slab_free':
+> > > | ./include/linux/kasan.h:211:39: error: '_RET_IP_' undeclared (first use in this function)
+> > > |   211 |   return __kasan_slab_free(s, object, _RET_IP_, init);
+> > > |       |                                       ^~~~~~~~
+> > > | ./include/linux/kasan.h:211:39: note: each undeclared identifier is reported only once for each function it appears in
+> > > | ./include/linux/kasan.h: In function 'kasan_kfree_large':
+> > > | ./include/linux/kasan.h:219:28: error: '_RET_IP_' undeclared (first use in this function)
+> > > |   219 |   __kasan_kfree_large(ptr, _RET_IP_);
+> > > |       |                            ^~~~~~~~
+> > > | ./include/linux/kasan.h: In function 'kasan_slab_free_mempool':
+> > > | ./include/linux/kasan.h:226:34: error: '_RET_IP_' undeclared (first use in this function)
+> > > |   226 |   __kasan_slab_free_mempool(ptr, _RET_IP_);
+> > > |       |                                  ^~~~~~~~
+> > > | ./include/linux/kasan.h: In function 'kasan_check_byte':
+> > > | ./include/linux/kasan.h:277:35: error: '_RET_IP_' undeclared (first use in this function)
+> > > |   277 |   return __kasan_check_byte(addr, _RET_IP_);
+> > > |       |                                   ^~~~~~~~
+> > >
+> > > Fix this by including <linux/kernel.h> explicitly.
+> >
+> > Hi Mark,
+> >
+> > Marco already sent a fix for this. It should be in the mm tree.
+> > (Although the link to it in the Andrew's notification email doesn't
+> > work. But they rarely do :)
+>
+> Do you have a link to the patch? I couldn't spot it in linux-next.
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+https://lkml.kernel.org/r/20210705072716.2125074-1-elver@google.com
+( https://lore.kernel.org/mm-commits/20210706204723.O1wZ2%25akpm@linux-foundation.org/
+)
 
-Boris's change has actually modified panfrost_exception_name() to no
-longer take pfdev in drm-misc-next. However, I'll just fix this up when
-I apply it.
-
-Thanks,
-
-Steve
-
-> ---
->  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index 1fffb6a0b24f..d2d287bbf4e7 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
->  		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
->  
->  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
-> -			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
-> +			 fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
->  			 address);
->  
->  		if (state & GPU_IRQ_MULTIPLE_FAULT)
-> 
-
+Looks like latest -mm is not yet reflected in -next.
