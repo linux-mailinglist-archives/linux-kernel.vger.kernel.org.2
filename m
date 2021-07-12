@@ -2,210 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA1F3C5FEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9D13C5FF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbhGLQAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234581AbhGLQA2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:00:28 -0400
-Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fa8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74496C0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:57:39 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GNpLn0rWfzMprhw;
-        Mon, 12 Jul 2021 17:57:37 +0200 (CEST)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4GNpLm62YPzlh8mk;
-        Mon, 12 Jul 2021 17:57:36 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        landlock@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v2 4/4] landlock_restrict_self.2: Document new syscall
-Date:   Mon, 12 Jul 2021 17:57:45 +0200
-Message-Id: <20210712155745.831580-5-mic@digikod.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712155745.831580-1-mic@digikod.net>
-References: <20210712155745.831580-1-mic@digikod.net>
+        id S235657AbhGLQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:01:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:57548 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232979AbhGLQBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:01:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DEBB31B;
+        Mon, 12 Jul 2021 08:58:17 -0700 (PDT)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86FDA3F774;
+        Mon, 12 Jul 2021 08:58:15 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Steven Price <steven.price@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH] drm/of: free the iterator object on failure
+Date:   Mon, 12 Jul 2021 16:57:58 +0100
+Message-Id: <20210712155758.48286-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+When bailing out due to the sanity check the iterator value needs to be
+freed because the early return prevents for_each_child_of_node() from
+doing the dereference itself.
 
-This is an adaptation of
-https://www.kernel.org/doc/html/v5.13/userspace-api/landlock.html
-
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210712155745.831580-5-mic@digikod.net
+Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
+Signed-off-by: Steven Price <steven.price@arm.com>
 ---
+ drivers/gpu/drm/drm_of.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changes since v1:
-* Replace all ".I" with ".IR", except when used for titles.
-* Append punctuation to ".IR" and ".BR" when it makes sense (requested
-  by Alejandro Colomar).
-* Cut lines according to the semantic newline rules (requested by
-  Alejandro Colomar).
-* Remove roman style from ".TP" section titles (requested by Alejandro
-  Colomar).
-* Add comma after "i.e." and "e.g.".
-* Add a "CONFORMING TO" section.
-* Replace "(2)" with "()" for the described syscall name.
----
- man2/landlock_restrict_self.2 | 130 ++++++++++++++++++++++++++++++++++
- 1 file changed, 130 insertions(+)
- create mode 100644 man2/landlock_restrict_self.2
+Daniel's email[1] made me take a look at this function and it appears
+that for_each_child_of_node()'s interface had caused a bad bug fix due
+to the hidden reference counting in the iterator.
 
-diff --git a/man2/landlock_restrict_self.2 b/man2/landlock_restrict_self.2
-new file mode 100644
-index 000000000000..41b21278905a
---- /dev/null
-+++ b/man2/landlock_restrict_self.2
-@@ -0,0 +1,130 @@
-+.\" Copyright © 2017-2020 Mickaël Salaün <mic@digikod.net>
-+.\" Copyright © 2019-2020 ANSSI
-+.\" Copyright © 2021 Microsoft Corporation
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.TH LANDLOCK_RESTRICT_SELF 2 2021-06-27 Linux "Linux Programmer's Manual"
-+.SH NAME
-+landlock_restrict_self \- enforce a Landlock ruleset
-+.SH SYNOPSIS
-+.nf
-+.BR "#include <linux/landlock.h>" "  /* Definition of " LANDLOCK_* " constants */"
-+.BR "#include <sys/syscall.h>" "     /* Definition of " SYS_* " constants */"
-+.PP
-+.BI "int syscall(SYS_landlock_restrict_self, int " ruleset_fd ,
-+.BI "            __u32 " flags );
-+.SH DESCRIPTION
-+Once a Landlock ruleset is populated with the desired rules, the
-+.BR landlock_restrict_self ()
-+system call enables enforcing this ruleset on the calling thread.
-+See
-+.BR landlock (7)
-+for a global overview.
-+.PP
-+A thread can be restricted with multiple rulesets that are then composed
-+together to form the thread's Landlock domain.
-+This can be seen as a stack of rulesets but it is implemented in a more
-+efficient way.
-+A domain can only be updated in such a way that the constraints of each
-+past and future composed rulesets will restrict the thread and its future
-+children for their entire life.
-+It is then possible to gradually enforce tailored access control policies
-+with multiple independant rulesets coming from different sources
-+(e.g., init system configuration, user session policy,
-+built-in application policy).
-+However, most applications should only need one call to
-+.BR landlock_restrict_self ()
-+and they should avoid arbitrary numbers of such calls because of the
-+composed rulesets limit.
-+Instead, developers are encouraged to build a tailored ruleset thanks to
-+multiple calls to
-+.BR landlock_add_rule (2).
-+.PP
-+In order to enforce a ruleset, either the caller must have the
-+.BR CAP_SYS_ADMIN
-+capability in its user namespace, or the thread must already have the
-+.IR no_new_privs
-+bit set.
-+As for
-+.BR seccomp (2),
-+this avoids scenarios where unprivileged processes can affect the behavior
-+of privileged children (e.g., because of set-user-ID binaries).
-+If that bit was not already set by an ancestor of this thread,
-+the thread must make the following call:
-+.IP
-+.EX
-+prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+.EE
-+.PP
-+.IR ruleset_fd
-+is a Landlock ruleset file descriptor obtained with
-+.BR landlock_create_ruleset (2)
-+and fully populated with a set of calls to
-+.BR landlock_add_rule (2).
-+.PP
-+.IR flags
-+must be 0.
-+.SH RETURN VALUE
-+On success,
-+.BR landlock_restrict_self ()
-+returns 0.
-+.SH ERRORS
-+.BR landlock_restrict_self ()
-+can failed for the following reasons:
-+.TP
-+.B EOPNOTSUPP
-+Landlock is supported by the kernel but disabled at boot time.
-+.TP
-+.B EINVAL
-+.IR flags
-+is not 0.
-+.TP
-+.B EBADF
-+.IR ruleset_fd
-+is not a file descriptor for the current thread.
-+.TP
-+.B EBADFD
-+.IR ruleset_fd
-+is not a ruleset file descriptor.
-+.TP
-+.B EPERM
-+.IR ruleset_fd
-+has no read access to the underlying ruleset,
-+or the calling thread is not running with
-+.IR no_new_privs ,
-+or it doesn't have the
-+.BR CAP_SYS_ADMIN
-+in its user namespace.
-+.TP
-+.B E2BIG
-+The maximum number of composed rulesets is reached for the calling thread.
-+This limit is currently 64.
-+.SH VERSIONS
-+Landlock was added in Linux 5.13.
-+.SH CONFORMING TO
-+This system call is Linux-specific.
-+.SH SEE ALSO
-+.BR landlock (7),
-+.BR landlock_create_ruleset (2),
-+.BR landlock_add_rule (2)
+[1] https://lore.kernel.org/r/YOxQ5TbkNrqCGBDJ%40phenom.ffwll.local
+
+diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
+index 197c57477344..997b8827fed2 100644
+--- a/drivers/gpu/drm/drm_of.c
++++ b/drivers/gpu/drm/drm_of.c
+@@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
+ 		 * configurations by passing the endpoints explicitly to
+ 		 * drm_of_lvds_get_dual_link_pixel_order().
+ 		 */
+-		if (!current_pt || pixels_type != current_pt)
++		if (!current_pt || pixels_type != current_pt) {
++			of_node_put(endpoint);
+ 			return -EINVAL;
++		}
+ 	}
+ 
+ 	return pixels_type;
 -- 
-2.32.0
+2.20.1
 
