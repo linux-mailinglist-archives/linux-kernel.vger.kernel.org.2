@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCF83C55A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078483C562A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhGLILc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346687AbhGLHbD (ORCPT
+        id S1355358AbhGLIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:15:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33926 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345448AbhGLH3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:31:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332DEC005F24;
-        Mon, 12 Jul 2021 00:25:44 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626074738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 12 Jul 2021 03:29:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7B9C31FD58;
+        Mon, 12 Jul 2021 07:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626074820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=icbIB7QTKPXqI/o8Y0H/OIL5w65Qd9ZrzW3+ozldd6k=;
-        b=KIY5hoSrZleZkQd3Hr1NDdrVjxzCLM/ECRW+fWSNVeFZ6HqiY81KzsQV6Y2/NAwhLIMfO4
-        pFw+tsKXA4mQLwuu1N3BHyRE/fgIHsmizXnInfHdl11nLJay6Lxn8mmoPTYmwTC3RQyyz4
-        bfdEcJ7aRhCw6TIo99cnjO656sfcCBi3TSBURBmEKr1IZcfzKuYB3fEsP7OklV//9GbhMI
-        UmPth8dCaBnPpW2rO3RaK3ZXcx0I2ArXu+Hi4RcCJzJwvX9EaKc6F9r9ess7ZLOkzi0IUA
-        qAkOt8SeYYVF3CKtsYSjzLpS+GBn0/aCny4A1zBOxpUG0y9CgwfWVMq3fhHNPA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626074738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=icbIB7QTKPXqI/o8Y0H/OIL5w65Qd9ZrzW3+ozldd6k=;
-        b=6SAQG5Jk/rtsvH7besLKDUpbdQKd3pcgfIe1n8Dl3FCahXf4nMtBqM5NuHtS2n4GIMFhIh
-        +cYaVHiOn8aJtBDA==
-To:     Linux <zhaoyan.liao@linux.alibaba.com>
-Cc:     mingo@redhat.com, hpa@zytor.com, dwmw@amazon.co.uk,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        songmuchun@bytedance.com, likunkun@bytedance.com,
-        guancheng.rjk@alibaba-inc.com, duanxiongchun@bytedance.com,
-        wenan.mao@linux.alibaba.com
-Subject: Re: [PATCH] use 64bit timer for hpet
-In-Reply-To: <2CC6F5DA-B186-4A06-92B4-B763386F0D0A@linux.alibaba.com>
-References: <1625213625-25745-1-git-send-email-zhaoyan.liao@linux.alibaba.com> <875yxmqw2s.ffs@nanos.tec.linutronix.de> <8A96C0F7-FBE4-4B23-8565-E814401BF927@linux.alibaba.com> <87o8bdoy11.ffs@nanos.tec.linutronix.de> <2CC6F5DA-B186-4A06-92B4-B763386F0D0A@linux.alibaba.com>
-Date:   Mon, 12 Jul 2021 09:25:38 +0200
-Message-ID: <875yxgngct.ffs@nanos.tec.linutronix.de>
+        bh=mrXLVKgGxcciBhrAVE82pjymkc7+kaj0uY7L/HhEPz4=;
+        b=cldL1mRfnI2IiITmu8CUFzpzC6f4N4MUHBTs1zi9gsvVEU5TFyRXEuXg7i2bk7oU0LE7Zi
+        kdHKcaYMvt+/CG+AUQxjKgxZuMsOSI0X/yA13/xPU6LGHmtAc0FJteHL2AAwWa1N8DBUfn
+        zEn9clHDLGjUT/niCx4bxLw3jCE0Gbo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4B7C5A4505;
+        Mon, 12 Jul 2021 07:27:00 +0000 (UTC)
+Date:   Mon, 12 Jul 2021 09:26:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, vbabka@suse.cz,
+        axboe@kernel.dk, iamjoonsoo.kim@lge.com, alexs@kernel.org,
+        apopple@nvidia.com, willy@infradead.org, minchan@kernel.org,
+        david@redhat.com, shli@fb.com, hillf.zj@alibaba-inc.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] mm/vmscan: add 'else' to remove check_pending label
+Message-ID: <YOvuw6oLGOSm8Yuj@dhcp22.suse.cz>
+References: <20210710100329.49174-1-linmiaohe@huawei.com>
+ <20210710100329.49174-5-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210710100329.49174-5-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Liao,
+On Sat 10-07-21 18:03:28, Miaohe Lin wrote:
+> We could add 'else' to remove the somewhat odd check_pending label to
+> make code core succinct.
 
-On Mon, Jul 12 2021 at 12:52, Linux wrote:
->> Sorry, keeping the softirq from running for 3 minutes is simply out of
->> spec. If the sysadmin decides to do so, then he can keep the pieces.
->
-> It is because the kernel thread is busy that the clocksource_watchdog 
-> thread is not scheduled, not softirq.
+Yes, this makes the code easier to follow. The two modes of throttling
+depending on the fs reclaim mode is more obvious now.
 
-Which thread?
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-The clocksource watchdog runs from a timer_list timer callback in
-softirq context. Even if the softirq is switched to the softirq thread
-then still my argument of starving that for 3 minutes still stands.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-This is _not_ a kernel problem. Overcommitment is a admin problem.
+Thanks!
 
-Thanks,
+> ---
+>  mm/vmscan.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index c580bef6b885..a74760c48bd8 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -3428,18 +3428,14 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
+>  	 * blocked waiting on the same lock. Instead, throttle for up to a
+>  	 * second before continuing.
+>  	 */
+> -	if (!(gfp_mask & __GFP_FS)) {
+> +	if (!(gfp_mask & __GFP_FS))
+>  		wait_event_interruptible_timeout(pgdat->pfmemalloc_wait,
+>  			allow_direct_reclaim(pgdat), HZ);
+> +	else
+> +		/* Throttle until kswapd wakes the process */
+> +		wait_event_killable(zone->zone_pgdat->pfmemalloc_wait,
+> +			allow_direct_reclaim(pgdat));
+>  
+> -		goto check_pending;
+> -	}
+> -
+> -	/* Throttle until kswapd wakes the process */
+> -	wait_event_killable(zone->zone_pgdat->pfmemalloc_wait,
+> -		allow_direct_reclaim(pgdat));
+> -
+> -check_pending:
+>  	if (fatal_signal_pending(current))
+>  		return true;
+>  
+> -- 
+> 2.23.0
 
-        tglx
+-- 
+Michal Hocko
+SUSE Labs
