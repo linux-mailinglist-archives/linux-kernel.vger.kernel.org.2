@@ -2,156 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329163C56DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976543C573C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358090AbhGLIZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348593AbhGLHlH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:07 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAC3C022593;
-        Mon, 12 Jul 2021 00:32:52 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id z12so13273584qtj.3;
-        Mon, 12 Jul 2021 00:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7516QFKCbONFu1K4UM0Mfb3rZBvmchK7pEHlv8tiP/s=;
-        b=mszEFKbKWeSyvVifSeriXR9rZ/pP1xKlJ1f9aqWHLsS9QilBHOzMbxSVcxTYO/ORTX
-         fKW3ZRa2hH9EoQETxAARImaA5+BbHDOQcsTyfTd8PiOZyCi4oo17USOvj1Dhu/ECKj4C
-         7JokpZHgNdsGD5h3SkvSfmsAZ94tNbr1DYbNcCLc+PHMkllsCaRrEa5A3BcMUs1HfziK
-         64rckuHCtvBWsAZfMhIiT8cA61vvdAI+81JcE6hRnYqzEJmERECBFI8sb+kYvNF30WW8
-         l+Sxfj7224hfw66/kMH9fhkjt34rtKmufNox/qCDdf/KQ2x1fK4Fmpz5ud6EOHKOFlG1
-         Md6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7516QFKCbONFu1K4UM0Mfb3rZBvmchK7pEHlv8tiP/s=;
-        b=kcOL52n0GASLnG4YJt33cpVho87MhbiM0CEWg4ESrYXIcC0JH4is+pKShXI0R5iztd
-         jurNpxU/H9mY3sewpQ2o+WQ4DAac1xUhj0k5LsYvgO+59NzPs2yWULM0ZTGk/u1FcAnL
-         bISjYag7hOE6yFyInuxHNYhdMZ7gqbQl3+MUXTG+GkrVBn47nxtU6jrFjRsuQi/Bfy3i
-         dp5Y0LboLmptmsQU4VbNfh80LL8CwanFm7T4Za6RCpoGMhteSYKg/cPGBrM1YScb0b3m
-         mZEzFpDrTMr0AvJeKaxvqF/Q8xPcik0Pa8CR8TzrlqW+PKRIOgckA+/cgGpWih4eWAi0
-         6Qlg==
-X-Gm-Message-State: AOAM532j6ZD4TN53aRpTRS6M3hCECvrlnMRmZfTag1gaIkTU9F78X33G
-        yHk2Sm6QQgsrmIil59BGKI3Fi1ZTvcN9RA==
-X-Google-Smtp-Source: ABdhPJztwwA6gBbpAgnr9bsX/jzhs+KGYK2+qzRHsVjmFIVLg5t6C11wlA9R8SRUWkhQNIzXIiaSgQ==
-X-Received: by 2002:ac8:74b:: with SMTP id k11mr19647039qth.19.1626075171270;
-        Mon, 12 Jul 2021 00:32:51 -0700 (PDT)
-Received: from localhost.localdomain ([194.110.112.30])
-        by smtp.gmail.com with ESMTPSA id o18sm1654750qko.63.2021.07.12.00.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 00:32:50 -0700 (PDT)
-From:   Forest Crossman <cyrozap@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        matthias.bgg@gmail.com
-Cc:     Forest Crossman <cyrozap@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] Bluetooth: btusb: Add support for LG LGSBWAC92/TWCM-K505D
-Date:   Mon, 12 Jul 2021 02:32:20 -0500
-Message-Id: <20210712073220.200414-1-cyrozap@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20201021030521.1121268-1-cyrozap@gmail.com>
-References: <20201021030521.1121268-1-cyrozap@gmail.com>
+        id S1376645AbhGLIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:5999 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343711AbhGLHnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="271050580"
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="271050580"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 00:40:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="459099758"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga008.jf.intel.com with SMTP; 12 Jul 2021 00:40:37 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 12 Jul 2021 10:40:36 +0300
+Date:   Mon, 12 Jul 2021 10:40:36 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        intel-gfx@lists.freedesktop.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] drm/i915: Invoke another _DSM to enable MUX on HP
+ Workstation laptops
+Message-ID: <YOvx9PdqifXWIV1K@intel.com>
+References: <20210520065832.614245-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520065832.614245-1-kai.heng.feng@canonical.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LG LGSBWAC92/TWCM-K505D/EAT64454801/EAT64454802 (it goes by many
-names) is a combo WiFi/Bluetooth module that's used in several models of
-LG TVs. It uses the MediaTek MT7668AUN, which is already supported in
-btusb, but this device has a non-MediaTek VID:PID pair so to get it to
-work we just need to add it to the list of devices to probe.
+On Thu, May 20, 2021 at 02:58:20PM +0800, Kai-Heng Feng wrote:
+> On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+> to discrete GFX after S3. This is not desirable, because userspace will
+> treat connected display as a new one, losing display settings.
+> 
+> The expected behavior is to let discrete GFX drives all external
+> displays.
+> 
+> The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+> The method is inside the another _DSM, so add the _DSM and call it
+> accordingly.
+> 
+> I also tested some MUX-less and iGPU only laptops with that _DSM, no
+> regression was found.
+> 
+> v4:
+>  - Rebase.
+>  - Change the DSM name to avoid confusion.
+>  - Move the function call to intel_opregion.
+> 
+> v3:
+>  - Remove BXT from names.
+>  - Change the parameter type.
+>  - Fold the function into intel_modeset_init_hw().
+> 
+> v2:
+>  - Forward declare struct pci_dev.
+> 
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+> References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Device from /sys/kernel/debug/usb/devices:
+Thanks. Pushed to drm-intel-next. And sorry for the lag.
 
-T:  Bus=09 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#=  6 Spd=480  MxCh= 0
-D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=043e ProdID=3109 Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-I:* If#= 2 Alt= 0 #EPs= 8 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=08(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=07(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=09(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> ---
+>  drivers/gpu/drm/i915/display/intel_acpi.c     | 19 +++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_acpi.h     |  3 +++
+>  drivers/gpu/drm/i915/display/intel_opregion.c |  3 +++
+>  3 files changed, 25 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> index 833d0c1be4f1..7cfe91fc05f2 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> @@ -19,6 +19,12 @@ static const guid_t intel_dsm_guid =
+>  	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+>  		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+>  
+> +#define INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED 0 /* No args */
+> +
+> +static const guid_t intel_dsm_guid2 =
+> +	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
+> +		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
+> +
+>  static char *intel_dsm_port_name(u8 id)
+>  {
+>  	switch (id) {
+> @@ -176,6 +182,19 @@ void intel_unregister_dsm_handler(void)
+>  {
+>  }
+>  
+> +void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
+> +	acpi_handle dhandle;
+> +
+> +	dhandle = ACPI_HANDLE(&pdev->dev);
+> +	if (!dhandle)
+> +		return;
+> +
+> +	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
+> +			  INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
+> +}
+> +
+>  /*
+>   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
+>   * Attached to the Display Adapter).
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
+> index e8b068661d22..9f197401c313 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.h
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
+> @@ -11,11 +11,14 @@ struct drm_i915_private;
+>  #ifdef CONFIG_ACPI
+>  void intel_register_dsm_handler(void);
+>  void intel_unregister_dsm_handler(void);
+> +void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915);
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915);
+>  #else
+>  static inline void intel_register_dsm_handler(void) { return; }
+>  static inline void intel_unregister_dsm_handler(void) { return; }
+>  static inline
+> +void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915) { return; }
+> +static inline
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
+>  #endif /* CONFIG_ACPI */
+>  
+> diff --git a/drivers/gpu/drm/i915/display/intel_opregion.c b/drivers/gpu/drm/i915/display/intel_opregion.c
+> index dfd724e506b5..3855fba70980 100644
+> --- a/drivers/gpu/drm/i915/display/intel_opregion.c
+> +++ b/drivers/gpu/drm/i915/display/intel_opregion.c
+> @@ -1078,6 +1078,9 @@ void intel_opregion_resume(struct drm_i915_private *i915)
+>  		opregion->asle->ardy = ASLE_ARDY_READY;
+>  	}
+>  
+> +	/* Some platforms abuse the _DSM to enable MUX */
+> +	intel_dsm_get_bios_data_funcs_supported(i915);
+> +
+>  	intel_opregion_notify_adapter(i915, PCI_D0);
+>  }
+>  
+> -- 
+> 2.31.1
 
-Signed-off-by: Forest Crossman <cyrozap@gmail.com>
----
-
-Changes from v2:
- - Specify device with USB_DEVICE again, to match the other "Additional
-   MediaTek Bluetooth devices".
- - Add BTUSB_WIDEBAND_SPEECH and BTUSB_VALID_LE_STATES flags to the
-   driver_info, since this device would otherwise have them applied were
-   it not for the non-MediaTek vendor ID.
-
-Changes from v1:
- - Added /sys/kernel/debug/usb/devices info.
- - Specify device with USB_DEVICE_AND_INTERFACE_INFO instead of just
-   USB_DEVICE.
-
----
- drivers/bluetooth/btusb.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index a9855a2dd561..d644e704a460 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -410,6 +410,11 @@ static const struct usb_device_id blacklist_table[] = {
- 	/* Additional MediaTek MT7615E Bluetooth devices */
- 	{ USB_DEVICE(0x13d3, 0x3560), .driver_info = BTUSB_MEDIATEK},
- 
-+	/* Additional MediaTek MT7668 Bluetooth devices */
-+	{ USB_DEVICE(0x043e, 0x3109), .driver_info = BTUSB_MEDIATEK |
-+						     BTUSB_WIDEBAND_SPEECH |
-+						     BTUSB_VALID_LE_STATES },
-+
- 	/* Additional MediaTek MT7921 Bluetooth devices */
- 	{ USB_DEVICE(0x04ca, 0x3802), .driver_info = BTUSB_MEDIATEK |
- 						     BTUSB_WIDEBAND_SPEECH |
 -- 
-2.20.1
-
+Ville Syrjälä
+Intel
