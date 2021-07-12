@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223333C4C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39F03C52D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242169AbhGLHBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37274 "EHLO mail.kernel.org"
+        id S1350034AbhGLHu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239151AbhGLGot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44B6C611C2;
-        Mon, 12 Jul 2021 06:40:48 +0000 (UTC)
+        id S243440AbhGLHPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3806661248;
+        Mon, 12 Jul 2021 07:12:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072048;
-        bh=T1wAeuWT7+y5rbqoxQHr4a1GsyCW465NMBfjnELrFLY=;
+        s=korg; t=1626073929;
+        bh=e4r82FMF+fsJvb11Ykv3Vv12QYqvKz9mtZ36TyZ/AKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zjRveHJBD6dMXPsdbWSxmSewqkisn7tc65F3sEm6XCOsFPJkfkp8ph+pWHd/fLRXF
-         GysYLIP96vdvsNySRZh6One8I6snrq+ijSiMFPHrfb578wS//yVQlYRAL9jkvKtII4
-         N5OnFxlKw+JX/G1QMyI1MgzWy05E26ivATGnOn5E=
+        b=JDiLmIH6BYrG1r1PY6LyNcULpgpmZFP5vuK6+G06p457KLaqq+9FbvopBEsVMlrYV
+         EHn0ZFd/DMulsQrdBRgyGFWgt+gkGl8NcVVumVvfWnSy8ewb1ID7rMhrrnJkstxphp
+         cl08ihuZlKA37jAdR90T7fVH3qRGvpjvXulB/CbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 330/593] xfrm: remove the fragment check for ipv6 beet mode
-Date:   Mon, 12 Jul 2021 08:08:10 +0200
-Message-Id: <20210712060922.100797377@linuxfoundation.org>
+Subject: [PATCH 5.12 408/700] brcmfmac: fix setting of station info chains bitmask
+Date:   Mon, 12 Jul 2021 08:08:11 +0200
+Message-Id: <20210712061019.794904495@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Alvin Šipraga <ALSI@bang-olufsen.dk>
 
-[ Upstream commit eebd49a4ffb420a991c606e54aa3c9f02857a334 ]
+[ Upstream commit feb45643762172110cb3a44f99dd54304f33b711 ]
 
-In commit 68dc022d04eb ("xfrm: BEET mode doesn't support fragments
-for inner packets"), it tried to fix the issue that in TX side the
-packet is fragmented before the ESP encapping while in the RX side
-the fragments always get reassembled before decapping with ESP.
+The sinfo->chains field is a bitmask for filled values in chain_signal
+and chain_signal_avg, not a count. Treat it as such so that the driver
+can properly report per-chain RSSI information.
 
-This is not true for IPv6. IPv6 is different, and it's using exthdr
-to save fragment info, as well as the ESP info. Exthdrs are added
-in TX and processed in RX both in order. So in the above case, the
-ESP decapping will be done earlier than the fragment reassembling
-in TX side.
+Before (MIMO mode):
 
-Here just remove the fragment check for the IPv6 inner packets to
-recover the fragments support for BEET mode.
+  $ iw dev wlan0 station dump
+      ...
+      signal: -51 [-51] dBm
 
-Fixes: 68dc022d04eb ("xfrm: BEET mode doesn't support fragments for inner packets")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+After (MIMO mode):
+
+  $ iw dev wlan0 station dump
+      ...
+      signal: -53 [-53, -54] dBm
+
+Fixes: cae355dc90db ("brcmfmac: Add RSSI information to get_station.")
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210506132010.3964484-1-alsi@bang-olufsen.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_output.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
-index e4cb0ff4dcf4..ac907b9d32d1 100644
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -711,15 +711,8 @@ out:
- static int xfrm6_extract_output(struct xfrm_state *x, struct sk_buff *skb)
- {
- #if IS_ENABLED(CONFIG_IPV6)
--	unsigned int ptr = 0;
- 	int err;
- 
--	if (x->outer_mode.encap == XFRM_MODE_BEET &&
--	    ipv6_find_hdr(skb, &ptr, NEXTHDR_FRAGMENT, NULL, NULL) >= 0) {
--		net_warn_ratelimited("BEET mode doesn't support inner IPv6 fragments\n");
--		return -EAFNOSUPPORT;
--	}
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index f4405d7861b6..afa75cb83221 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -2838,6 +2838,7 @@ brcmf_cfg80211_get_station(struct wiphy *wiphy, struct net_device *ndev,
+ 		count_rssi = 0;
+ 		for (i = 0; i < BRCMF_ANT_MAX; i++) {
+ 			if (sta_info_le.rssi[i]) {
++				sinfo->chains |= BIT(count_rssi);
+ 				sinfo->chain_signal_avg[count_rssi] =
+ 					sta_info_le.rssi[i];
+ 				sinfo->chain_signal[count_rssi] =
+@@ -2848,8 +2849,6 @@ brcmf_cfg80211_get_station(struct wiphy *wiphy, struct net_device *ndev,
+ 		}
+ 		if (count_rssi) {
+ 			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_CHAIN_SIGNAL);
+-			sinfo->chains = count_rssi;
 -
- 	err = xfrm6_tunnel_check_size(skb);
- 	if (err)
- 		return err;
+ 			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_SIGNAL);
+ 			total_rssi /= count_rssi;
+ 			sinfo->signal = total_rssi;
 -- 
 2.30.2
 
