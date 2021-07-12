@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2263C50B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ACD3C4A4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347206AbhGLHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:34:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40594 "EHLO mail.kernel.org"
+        id S240284AbhGLGuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:50:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241933AbhGLHGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30EB61279;
-        Mon, 12 Jul 2021 07:03:16 +0000 (UTC)
+        id S237949AbhGLGjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEE90611C0;
+        Mon, 12 Jul 2021 06:35:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073397;
-        bh=cGwUjEPu6GVrJ4vuw2Vln/bkM7M4tBAEK+eA5D8vZi0=;
+        s=korg; t=1626071756;
+        bh=eTrAhuEnhf1jwS563QR50Re9w5Dovg9QzGL1lL+ozPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GyPcvX1tgIUfTLuXARti7DdUbn2TZe/BTPNuFUBnfwKND2tSvTPU1IECiXjPC3DFV
-         wTJgOUGPLjlwqWAJABdL5OHlrb/TUCR+24FR/xeJkA4D8xhMUNZlfccpLBd5txo2bC
-         fFuhPmiOylfmZPF2fCNJ8O5x+dQWh5gjHAO0NiZg=
+        b=qZZAqq7DTiazJ/UJXQO6vZGCH2lkdq33UxyoLVK6iJ9PeD8LbduKOF1BwYsMHdtCU
+         UvX/8IDZMPgJRkDGQUH+haYJSUwg4hVYhhbuHBLsOSL6Xeh9GxXeIvohITjE6veTUG
+         a605EnPRANIROe+PaoFv7binVN20q3zIG16x4NFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
-Subject: [PATCH 5.12 229/700] PCI: hv: Add check for hyperv_initialized in init_hv_pci_drv()
-Date:   Mon, 12 Jul 2021 08:05:12 +0200
-Message-Id: <20210712060959.209095778@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 153/593] hwmon: (max31790) Fix pwmX_enable attributes
+Date:   Mon, 12 Jul 2021 08:05:13 +0200
+Message-Id: <20210712060859.875041721@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiyang Zhang <haiyangz@microsoft.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 7d815f4afa87f2032b650ae1bba7534b550a6b8b ]
+[ Upstream commit 148c847c9e5a54b99850617bf9c143af9a344f92 ]
 
-Add check for hv_is_hyperv_initialized() at the top of
-init_hv_pci_drv(), so if the pci-hyperv driver is force-loaded on non
-Hyper-V platforms, the init_hv_pci_drv() will exit immediately, without
-any side effects, like assignments to hvpci_block_ops, etc.
+pwmX_enable supports three possible values:
 
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reported-and-tested-by: Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
-Link: https://lore.kernel.org/r/1621984653-1210-1-git-send-email-haiyangz@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+0: Fan control disabled. Duty cycle is fixed to 0%
+1: Fan control enabled, pwm mode. Duty cycle is determined by
+   values written into Target Duty Cycle registers.
+2: Fan control enabled, rpm mode
+   Duty cycle is adjusted such that fan speed matches
+   the values in Target Count registers
+
+The current code does not do this; instead, it mixes pwm control
+configuration with fan speed monitoring configuration. Worse, it
+reports that pwm control would be disabled (pwmX_enable==0) when
+it is in fact enabled in pwm mode. Part of the problem may be that
+the chip sets the "TACH input enable" bit on its own whenever the
+mode bit is set to RPM mode, but that doesn't mean that "TACH input
+enable" accurately reflects the pwm mode.
+
+Fix it up and only handle pwm control with the pwmX_enable attributes.
+In the documentation, clarify that disabling pwm control (pwmX_enable=0)
+sets the pwm duty cycle to 0%. In the code, explain why TACH_INPUT_EN
+is set together with RPM_MODE.
+
+While at it, only update the configuration register if the configuration
+has changed, and only update the cached configuration if updating the
+chip configuration was successful.
+
+Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
+Cc: Václav Kubernát <kubernat@cesnet.cz>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Václav Kubernát <kubernat@cesnet.cz>
+Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Link: https://lore.kernel.org/r/20210526154022.3223012-4-linux@roeck-us.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-hyperv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/hwmon/max31790.rst |  2 +-
+ drivers/hwmon/max31790.c         | 41 ++++++++++++++++++++------------
+ 2 files changed, 27 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 27a17a1e4a7c..7479edf3676c 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -3480,6 +3480,9 @@ static void __exit exit_hv_pci_drv(void)
+diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
+index 54ff0f49e28f..7b097c3b9b90 100644
+--- a/Documentation/hwmon/max31790.rst
++++ b/Documentation/hwmon/max31790.rst
+@@ -38,7 +38,7 @@ Sysfs entries
+ fan[1-12]_input    RO  fan tachometer speed in RPM
+ fan[1-12]_fault    RO  fan experienced fault
+ fan[1-6]_target    RW  desired fan speed in RPM
+-pwm[1-6]_enable    RW  regulator mode, 0=disabled, 1=manual mode, 2=rpm mode
++pwm[1-6]_enable    RW  regulator mode, 0=disabled (duty cycle=0%), 1=manual mode, 2=rpm mode
+ pwm[1-6]           RW  read: current pwm duty cycle,
+                        write: target pwm duty cycle (0-255)
+ ================== === =======================================================
+diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+index 8ad7a45bfe68..76aa96f5b984 100644
+--- a/drivers/hwmon/max31790.c
++++ b/drivers/hwmon/max31790.c
+@@ -27,6 +27,7 @@
  
- static int __init init_hv_pci_drv(void)
- {
-+	if (!hv_is_hyperv_initialized())
-+		return -ENODEV;
-+
- 	/* Set the invalid domain number's bit, so it will not be used */
- 	set_bit(HVPCI_DOM_INVALID, hvpci_dom_map);
+ /* Fan Config register bits */
+ #define MAX31790_FAN_CFG_RPM_MODE	0x80
++#define MAX31790_FAN_CFG_CTRL_MON	0x10
+ #define MAX31790_FAN_CFG_TACH_INPUT_EN	0x08
+ #define MAX31790_FAN_CFG_TACH_INPUT	0x01
  
+@@ -271,12 +272,12 @@ static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
+ 		*val = data->pwm[channel] >> 8;
+ 		return 0;
+ 	case hwmon_pwm_enable:
+-		if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
++		if (fan_config & MAX31790_FAN_CFG_CTRL_MON)
++			*val = 0;
++		else if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
+ 			*val = 2;
+-		else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
+-			*val = 1;
+ 		else
+-			*val = 0;
++			*val = 1;
+ 		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+@@ -307,23 +308,33 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+ 	case hwmon_pwm_enable:
+ 		fan_config = data->fan_config[channel];
+ 		if (val == 0) {
+-			fan_config &= ~(MAX31790_FAN_CFG_TACH_INPUT_EN |
+-					MAX31790_FAN_CFG_RPM_MODE);
++			fan_config |= MAX31790_FAN_CFG_CTRL_MON;
++			/*
++			 * Disable RPM mode; otherwise disabling fan speed
++			 * monitoring is not possible.
++			 */
++			fan_config &= ~MAX31790_FAN_CFG_RPM_MODE;
+ 		} else if (val == 1) {
+-			fan_config = (fan_config |
+-				      MAX31790_FAN_CFG_TACH_INPUT_EN) &
+-				     ~MAX31790_FAN_CFG_RPM_MODE;
++			fan_config &= ~(MAX31790_FAN_CFG_CTRL_MON | MAX31790_FAN_CFG_RPM_MODE);
+ 		} else if (val == 2) {
+-			fan_config |= MAX31790_FAN_CFG_TACH_INPUT_EN |
+-				      MAX31790_FAN_CFG_RPM_MODE;
++			fan_config &= ~MAX31790_FAN_CFG_CTRL_MON;
++			/*
++			 * The chip sets MAX31790_FAN_CFG_TACH_INPUT_EN on its
++			 * own if MAX31790_FAN_CFG_RPM_MODE is set.
++			 * Do it here as well to reflect the actual register
++			 * value in the cache.
++			 */
++			fan_config |= (MAX31790_FAN_CFG_RPM_MODE | MAX31790_FAN_CFG_TACH_INPUT_EN);
+ 		} else {
+ 			err = -EINVAL;
+ 			break;
+ 		}
+-		data->fan_config[channel] = fan_config;
+-		err = i2c_smbus_write_byte_data(client,
+-					MAX31790_REG_FAN_CONFIG(channel),
+-					fan_config);
++		if (fan_config != data->fan_config[channel]) {
++			err = i2c_smbus_write_byte_data(client, MAX31790_REG_FAN_CONFIG(channel),
++							fan_config);
++			if (!err)
++				data->fan_config[channel] = fan_config;
++		}
+ 		break;
+ 	default:
+ 		err = -EOPNOTSUPP;
 -- 
 2.30.2
 
