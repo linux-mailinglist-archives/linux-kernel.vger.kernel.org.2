@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815873C63D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B8E3C63DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbhGLTp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236414AbhGLTp0 (ORCPT
+        id S236450AbhGLTr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:47:26 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:61964 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230199AbhGLTrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:45:26 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C53C0613E5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:42:36 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id o8so9991839ilf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=miTV5hqnW4EPZWVXufx2n/PRXkTcJW4p7CWdR36CIew=;
-        b=LMSzFCaiR4GD3YI1boTGrHQJHxKnm8Ougeao4dN2yHS0QKhB4xUL1ZCfjic3q2Lv2V
-         w+OTnd6oxZJdqe0O+uu9DnqfLndb0oPX6nMefi/FkHZgthaj5lM1/w8YBCl5smhTu5hS
-         fQEO2g4RSJNMfwMs90sdR2uFF+MEAAVoi+P48=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=miTV5hqnW4EPZWVXufx2n/PRXkTcJW4p7CWdR36CIew=;
-        b=Dy4gtxpSY3TmsUPVlxVIgZTdsJIyRBY8o6uhPT3ymw5OCq6IHoaEx+d447ZYwDB2mW
-         Cnd4lPC+DbDu54Qb5LCkM5fnhqtfF4FRpUaNq+yN8EjoRLlQCHVUymTcTHPMkQeFWNrO
-         +ykJ8rQ8SHZBoENXP11tRfTWBhWYvK9DAbiONMehpxunoHE4o8xiRCUdD1r5JAmQu2AK
-         xf1cdpkjnzTyaEX3Ga3emFcBBOBQdYMP55LlF02Ds23Y9WssfADLhprAxGbiLi9xqJeu
-         qFnZX1NXvhZz+HblZOxfjTKXpJ3l8BMICHQdLWoqA22fvlL+YRITnkjZDdpo7IROfd6E
-         njmw==
-X-Gm-Message-State: AOAM531HwycyHt+5I0696FuZnEW2xAgq8K5A2y9Q6ZEJKdP7Oh2VLDyN
-        X41/iZwezoCVa9Dza0Rzl8ZMIA==
-X-Google-Smtp-Source: ABdhPJw+D9Y0t0uSlGkP9VzCV9UbbIM3ffohaXASpJ/ygzivQ+RnraMTivofQpig2E8WneA/SSmY4A==
-X-Received: by 2002:a92:360e:: with SMTP id d14mr361226ila.106.1626118955879;
-        Mon, 12 Jul 2021 12:42:35 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e14sm8606044ile.2.2021.07.12.12.42.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 12:42:35 -0700 (PDT)
-Subject: Re: [PATCH v2] kunit: tool: Assert the version requirement
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        SeongJae Park <sj38.park@gmail.com>
-Cc:     dlatypov@google.com, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210617073937.16281-1-sjpark@amazon.de>
- <20210617074638.16583-1-sjpark@amazon.de>
- <CAFd5g44Y0a6HneG+RA-brhJSG+S7GEJSuwGgHCkFssy9vbmuzg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6fb4706b-ce58-a397-d777-10338c2a8d4e@linuxfoundation.org>
-Date:   Mon, 12 Jul 2021 13:42:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CAFd5g44Y0a6HneG+RA-brhJSG+S7GEJSuwGgHCkFssy9vbmuzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 12 Jul 2021 15:47:23 -0400
+X-IronPort-AV: E=Sophos;i="5.84,234,1620658800"; 
+   d="scan'208";a="87354838"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 13 Jul 2021 04:44:33 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5FE5840E011B;
+        Tue, 13 Jul 2021 04:44:30 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/5] pin and gpio controller driver for Renesas RZ/G2L
+Date:   Mon, 12 Jul 2021 20:44:17 +0100
+Message-Id: <20210712194422.12405-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 1:41 PM, Brendan Higgins wrote:
-> On Thu, Jun 17, 2021 at 12:46 AM SeongJae Park <sj38.park@gmail.com> wrote:
->>
->> Commit 87c9c1631788 ("kunit: tool: add support for QEMU") on the 'next'
->> tree adds 'from __future__ import annotations' in 'kunit_kernel.py'.
->> Because it is supported on only >=3.7 Python, people using older Python
->> will get below error:
->>
->>      Traceback (most recent call last):
->>        File "./tools/testing/kunit/kunit.py", line 20, in <module>
->>          import kunit_kernel
->>        File "/home/sjpark/linux/tools/testing/kunit/kunit_kernel.py", line 9
->>          from __future__ import annotations
->>          ^
->>      SyntaxError: future feature annotations is not defined
->>
->> This commit adds a version assertion in 'kunit.py', so that people get
->> more explicit error message like below:
->>
->>      Traceback (most recent call last):
->>        File "./tools/testing/kunit/kunit.py", line 15, in <module>
->>          assert sys.version_info >= (3, 7), "Python version is too old"
->>      AssertionError: Python version is too old
->>
->> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Hi All,
 
-Your from and Signed-off-by email addresses don't match.
+This patch series adds pin and gpio controller driver for Renesas RZ/G2L
+SoC. RZ/G2L has a simple pin and GPIO controller combined similar to RZ/A2.
 
-Please resend the patch with the correction.
+This patch series applies on top of https://git.kernel.org/pub/scm/linux/
+kernel/git/geert/renesas-drivers.git/log/?h=topic/rzg2l-update-clock-defs-v4
 
-thanks,
--- Shuah
+Cheers,
+Prabhakar
+
+Changes for v2:
+* Added support for per pin pinmux support
+* Added support for pins to set configs
+* Dropped pfc-r9a07g044.c/h
+* Fixed review comments pointed by Geert
+* Included clock/reset changes
+* Included DTS/I changes
+
+Lad Prabhakar (5):
+  dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add DT bindings for
+    RZ/G2L pinctrl
+  pinctrl: renesas: Add RZ/G2L pin and gpio controller driver
+  drivers: clk: renesas: r9a07g044-cpg: Add GPIO clock and reset entries
+  arm64: dts: renesas: r9a07g044: Add pinctrl node
+  arm64: dts: renesas: rzg2l-smarc: Add scif0 pins
+
+ .../pinctrl/renesas,rzg2l-pinctrl.yaml        |  155 +++
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |   13 +
+ arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  |   10 +
+ drivers/clk/renesas/r9a07g044-cpg.c           |    5 +
+ drivers/pinctrl/renesas/Kconfig               |   11 +
+ drivers/pinctrl/renesas/Makefile              |    1 +
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       | 1196 +++++++++++++++++
+ include/dt-bindings/pinctrl/rzg2l-pinctrl.h   |   23 +
+ 8 files changed, 1414 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/renesas/pinctrl-rzg2l.c
+ create mode 100644 include/dt-bindings/pinctrl/rzg2l-pinctrl.h
+
+
+base-commit: 06c1e6911a7a76b446e4b00fc8bad5d8465932f8
+-- 
+2.17.1
+
