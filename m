@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9163C4908
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F298C3C4FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236325AbhGLGlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53450 "EHLO mail.kernel.org"
+        id S244295AbhGLH0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237154AbhGLGeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C62F610FA;
-        Mon, 12 Jul 2021 06:30:31 +0000 (UTC)
+        id S242485AbhGLHAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95A8461156;
+        Mon, 12 Jul 2021 06:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071431;
-        bh=HlmL8ZEFf25jX5xlbAq1x65up61lml7RPN6niPzCn00=;
+        s=korg; t=1626073042;
+        bh=8VWhnlooXYMQHdbWzrlpCM6p2aSc25q8pmPyeBK0T2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0A1y/Oafo0/ersXSY96xh8hvpOKHwoGulGdlMffBEm/FMunmYvPbtLDl9qjFeogS
-         Sb4u9D+gxBezUQ20+hGjjeI4Xk9cpvK/dsQrkLIeE7bE/TDdceAOV35ofHTDoZGgRi
-         w2tDEJWfFlbaXI/MLHkIy5FPt9dBPr8NR/sA2tY0=
+        b=UGhQMGi9IP36K7FyKNOvrU65YgCAvGDPlFbnXFgg4n+UT0K3SzdTDkxpJEbB8fzbV
+         1Mo4Kv1jNaAB+/CtI6Ct5/+7hEOFEoUuC03rUGeEJE9XThEYsOIQhcgsDB3htMF3OX
+         YBKbtUfB/DPD7pqrXrS9LL0Sd9jBGoKrGt/m8eiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 029/593] ntfs: fix validity check for file name attribute
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH 5.12 106/700] x86/gpu: add JasperLake to gen11 early quirks
 Date:   Mon, 12 Jul 2021 08:03:09 +0200
-Message-Id: <20210712060846.378989803@linuxfoundation.org>
+Message-Id: <20210712060939.810011284@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
 
-commit d98e4d95411bbde2220a7afa38dcc9c14d71acbe upstream.
+commit 31b77c70d9bc04d3b024ea56c129523f9edc1328 upstream.
 
-When checking the file name attribute, we want to ensure that it fits
-within the bounds of ATTR_RECORD.  To do this, we should check that (attr
-record + file name offset + file name length) < (attr record + attr record
-length).
+Let's reserve JSL stolen memory for graphics.
 
-However, the original check did not include the file name offset in the
-calculation.  This means that corrupted on-disk metadata might not caught
-by the incorrect file name check, and lead to an invalid memory access.
+JasperLake is a gen11 platform which is compatible with
+ICL/EHL changes.
 
-An example can be seen in the crash report of a memory corruption error
-found by Syzbot:
-https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246
+This was missed in commit 24ea098b7c0d ("drm/i915/jsl: Split
+EHL/JSL platform info and PCI ids")
 
-Adding the file name offset to the validity check fixes this error and
-passes the Syzbot reproducer test.
+V2:
+    - Added maintainer list in cc
+    - Added patch ref in commit message
+V1:
+    - Added Cc: x86@kernel.org
 
-Link: https://lkml.kernel.org/r/20210614050540.289494-1-desmondcheongzx@gmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
-Tested-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
-Acked-by: Anton Altaparmakov <anton@tuxera.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 24ea098b7c0d ("drm/i915/jsl: Split EHL/JSL platform info and PCI ids")
+Cc: <stable@vger.kernel.org> # v5.11+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: x86@kernel.org
+Cc: José Roberto de Souza <jose.souza@intel.com>
+Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210608053411.394166-1-tejaskumarx.surendrakumar.upadhyay@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ntfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/early-quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -477,7 +477,7 @@ err_corrupt_attr:
- 		}
- 		file_name_attr = (FILE_NAME_ATTR*)((u8*)attr +
- 				le16_to_cpu(attr->data.resident.value_offset));
--		p2 = (u8*)attr + le32_to_cpu(attr->data.resident.value_length);
-+		p2 = (u8 *)file_name_attr + le32_to_cpu(attr->data.resident.value_length);
- 		if (p2 < (u8*)attr || p2 > p)
- 			goto err_corrupt_attr;
- 		/* This attribute is ok, but is it in the $Extend directory? */
+--- a/arch/x86/kernel/early-quirks.c
++++ b/arch/x86/kernel/early-quirks.c
+@@ -549,6 +549,7 @@ static const struct pci_device_id intel_
+ 	INTEL_CNL_IDS(&gen9_early_ops),
+ 	INTEL_ICL_11_IDS(&gen11_early_ops),
+ 	INTEL_EHL_IDS(&gen11_early_ops),
++	INTEL_JSL_IDS(&gen11_early_ops),
+ 	INTEL_TGL_12_IDS(&gen11_early_ops),
+ 	INTEL_RKL_IDS(&gen11_early_ops),
+ };
 
 
