@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9683C4E9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893A83C54AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343995AbhGLHUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49538 "EHLO mail.kernel.org"
+        id S1353691AbhGLICq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:02:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239359AbhGLGtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8243F60233;
-        Mon, 12 Jul 2021 06:46:53 +0000 (UTC)
+        id S237935AbhGLHWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:22:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BEE7610D1;
+        Mon, 12 Jul 2021 07:19:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072414;
-        bh=0+OH/vI1Bevi7igOYXquW2fiV3TYkeCHp/4v3vimOZg=;
+        s=korg; t=1626074399;
+        bh=kuRrX1MUViblMIKwP9n3Eom3QwTmuiW3slBjQxbYPpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VvFKEBXwthL7ovWUQk6ouU+S8qpnzz53gz/QR+ZPuUXNZWhTQwKhOAZ8to4voWmP0
-         ttMuuYyK5ft0GTPq/pgK1znomT8VoKY59gXyaFv+29kWOv7P7AbCTwpQbuKhPBgkNj
-         i8Gq37NfIUP9z3nlXIr4Meby+yEwPKKWFah5kllk=
+        b=QBWobdcL8Zi1sn+qbvmtkFoE3P9xJZOtfqY0nMG1gxC/yja23mKkEx5FJiSh3bE1M
+         UxmlkhoSXT7XMewZSyE6SPmoFp3FcVSd/PcIFZxiXjRwmOhW+wHbYaMofrsEU1poTG
+         3+BqMF8jsoTsMqGpQtOqD14EnJX5HRePxp0hznhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Kemnade <andreas@kemnade.info>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 488/593] mfd: rn5t618: Fix IRQ trigger by changing it to level mode
-Date:   Mon, 12 Jul 2021 08:10:48 +0200
-Message-Id: <20210712060944.865747590@linuxfoundation.org>
+Subject: [PATCH 5.12 566/700] firmware: stratix10-svc: Fix a resource leak in an error handling path
+Date:   Mon, 12 Jul 2021 08:10:49 +0200
+Message-Id: <20210712061036.377955990@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Kemnade <andreas@kemnade.info>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit a1649a5260631979c68e5b2012f60f90300e646f ]
+[ Upstream commit d99247f9b542533ddbf87a3481a05473b8e48194 ]
 
-During more massive generation of interrupts, the IRQ got stuck,
-and the subdevices did not see any new interrupts. That happens
-especially at wonky USB supply in combination with ADC reads.
-To fix that trigger the IRQ at level low instead of falling edge.
+If an error occurs after a successful 'kfifo_alloc()' call, it must be
+undone by a corresponding 'kfifo_free()' call, as already done in the
+remove function.
 
-Fixes: 0c81604516af ("mfd: rn5t618: Add IRQ support")
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+While at it, move the 'platform_device_put()' call to this new error
+handling path and explicitly return 0 in the success path.
+
+Fixes: b5dc75c915cd ("firmware: stratix10-svc: extend svc to support new RSU features")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/0ca3f3ab139c53e846804455a1e7599ee8ae896a.1621621271.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/rn5t618.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/stratix10-svc.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
-index dc452df1f1bf..652a5e60067f 100644
---- a/drivers/mfd/rn5t618.c
-+++ b/drivers/mfd/rn5t618.c
-@@ -104,7 +104,7 @@ static int rn5t618_irq_init(struct rn5t618 *rn5t618)
+diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+index 3aa489dba30a..2a7687911c09 100644
+--- a/drivers/firmware/stratix10-svc.c
++++ b/drivers/firmware/stratix10-svc.c
+@@ -1034,24 +1034,32 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
  
- 	ret = devm_regmap_add_irq_chip(rn5t618->dev, rn5t618->regmap,
- 				       rn5t618->irq,
--				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
- 				       0, irq_chip, &rn5t618->irq_data);
- 	if (ret)
- 		dev_err(rn5t618->dev, "Failed to register IRQ chip\n");
+ 	/* add svc client device(s) */
+ 	svc = devm_kzalloc(dev, sizeof(*svc), GFP_KERNEL);
+-	if (!svc)
+-		return -ENOMEM;
++	if (!svc) {
++		ret = -ENOMEM;
++		goto err_free_kfifo;
++	}
+ 
+ 	svc->stratix10_svc_rsu = platform_device_alloc(STRATIX10_RSU, 0);
+ 	if (!svc->stratix10_svc_rsu) {
+ 		dev_err(dev, "failed to allocate %s device\n", STRATIX10_RSU);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_free_kfifo;
+ 	}
+ 
+ 	ret = platform_device_add(svc->stratix10_svc_rsu);
+-	if (ret) {
+-		platform_device_put(svc->stratix10_svc_rsu);
+-		return ret;
+-	}
++	if (ret)
++		goto err_put_device;
++
+ 	dev_set_drvdata(dev, svc);
+ 
+ 	pr_info("Intel Service Layer Driver Initialized\n");
+ 
++	return 0;
++
++err_put_device:
++	platform_device_put(svc->stratix10_svc_rsu);
++err_free_kfifo:
++	kfifo_free(&controller->svc_fifo);
+ 	return ret;
+ }
+ 
 -- 
 2.30.2
 
