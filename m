@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837493C5EC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A323C5ECA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235373AbhGLPGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
+        id S235409AbhGLPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235372AbhGLPGE (ORCPT
+        with ESMTP id S235314AbhGLPG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:06:04 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A912FC0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:03:15 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id t3so28456436edt.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:03:15 -0700 (PDT)
+        Mon, 12 Jul 2021 11:06:57 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD92DC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:04:08 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id r17so3166796qtp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=e1cRp1VWHZe1p2M78fCVodbc0nQVrykOATx459rHnfg=;
-        b=2SK+S5tCOVGYy34JELKrYSvjyivDlFptBxUOgGUP6ayfifklBOtmpfjQFzXzn5gP2c
-         RohYGrmiihMozczcGIsJCMW+h4bDnTRafPmryc99DiJy3/YMhujbydnlD6VUIuU4jpkf
-         J5P+iLBj9C6PCrctj2YJ6Ak3fc8AZTdREx/X+7UIfE9Nasc9ynos4CoBSvALkb4XSpi8
-         HZv4LALQf2ASBc/DHEV3IJNHRbQE1NuHRtDK3d7T7aoM3/kbzTR4OHJ2VKt6haRIVQTd
-         Zpg8ltNKKx6wZziX4BmA6/DtSVVCgUgJ6/29txsaXv95FX71/iVVOBAeBELIS7+HNfg/
-         UPzg==
+        bh=isd/llWwr/Y0cL0WxQwwfUZGS9+zFVVnxXEoNVeoRKQ=;
+        b=JTqNDAZEgzekdEwusOKFc/BA38hvqh2Q/Y0osda98t33A9XhabVx51fuWMSUG2X2k8
+         PUGz839O2kQ17hLlv8qrvpsoe7ZeNnGZVrAq9ZhuzGIU+esN4VCDCF1WiRU2r5Y8eeX9
+         waoFggrUUaK1Yrpp6/HAPHxdJAyUhC4iVEqJg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=e1cRp1VWHZe1p2M78fCVodbc0nQVrykOATx459rHnfg=;
-        b=sM1WV4bT4hM/X4EcpbJBnzQykVZs9sCkJ1d1PjdUoChhjnB7TvYa1fNuBlWQnzu74w
-         HkLjg2FxO7DQeDe9c1t6mEM8LLY+2bRD25yjC9zh7VowKaIHOY2NxcTDLXxRGINb9n97
-         nLQog1Ir2oZd48MepEPs+I2Y2N0tIuFwXa/DxeNW2HIJE9q63ff7nTAbyEB9lUoaJB6B
-         7cNQDdGJAy0c6L2yDc26J+vP2gZc9X56dLmAQd1wxnVmJovwgjs+xAlSn5xNQxUJ7s6H
-         FCtLz6mjKq4th/aH8qasCuY5mdgYEuCqAmEqa3HSN8hjyhf+tBnodYJ4VQuTWD885ZTB
-         kszQ==
-X-Gm-Message-State: AOAM530u9zCGNRdPPJN9hfv0Sk41TAOsTVhBhv6qQuLLzLJeG0EWp38T
-        m0IcKpG/svLT01kjgZ9WSG6B87az8aA/LlDpuVF3
-X-Google-Smtp-Source: ABdhPJzcVKQ+at0A9nCuq8G+Bhgagor5un7zhKC1jZz6V691bOQeaUhB54EowXP3K4xo+95lyINwu3+N+EZg21m3YTk=
-X-Received: by 2002:aa7:d04d:: with SMTP id n13mr5334758edo.31.1626102194142;
- Mon, 12 Jul 2021 08:03:14 -0700 (PDT)
+        bh=isd/llWwr/Y0cL0WxQwwfUZGS9+zFVVnxXEoNVeoRKQ=;
+        b=a2ildmyUgppjah7MYX0xuOT8PXwsD2ux73Y3X9eXAeeMqM3eWBq12JEUjzOk8iWMEs
+         YAJbWe15/p4QHHZRRtl5/MEuoqBe/AiqoBQy/Zu+ziDy2vLJGk+idP1qJfA8/BGDICy0
+         s+gIVpDzD5aQLQL6xqABlNOQKg+FHHAhrEhEWz5vsWlU6vYv3REDZKXZx+Uvqsb/FrD6
+         TIK7eJx3fBl8G1b8/Tjj42PjSdEMghLGgCd4c8tfWHRuLe3alZ2jmm3Gtpwmcppvu2kJ
+         Wj3lwZwvzsPHgphs83uYOAEgFxjcfnYBA3Gj0cViXa0saziw43t6FKvGOtmBGVgipZH0
+         3HpQ==
+X-Gm-Message-State: AOAM531nDQvW4C2p3xB47Fo3eqRnvUktPfkLSEsg04d4Rj5a6BUto0hl
+        Ee+H1m4pmRzue2w0TcIZS45u0OVMzPOnZA==
+X-Google-Smtp-Source: ABdhPJycY4+mXlLN7jPP4IGGj51VwRqYzov5s7tYn/xG1XCoI3EPxfnPuH1JPDRZjbx0i7OEwt2zZQ==
+X-Received: by 2002:a05:622a:1646:: with SMTP id y6mr10106366qtj.146.1626102247935;
+        Mon, 12 Jul 2021 08:04:07 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id 197sm1332931qkn.64.2021.07.12.08.04.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 08:04:07 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id o139so29409250ybg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:04:06 -0700 (PDT)
+X-Received: by 2002:a25:cc52:: with SMTP id l79mr63888238ybf.476.1626102245460;
+ Mon, 12 Jul 2021 08:04:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1625900431.git.paskripkin@gmail.com> <53de0ccd1aa3fffa6bce2a2ae7a5ca07e0af6d3a.1625900431.git.paskripkin@gmail.com>
-In-Reply-To: <53de0ccd1aa3fffa6bce2a2ae7a5ca07e0af6d3a.1625900431.git.paskripkin@gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 12 Jul 2021 11:03:03 -0400
-Message-ID: <CAHC9VhS-bhpsKAhFwvQzkfAupbffKcb4sR6EDa1kMgdurnOiEg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: cipso: fix warnings in netlbl_cipsov4_add_std
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
+References: <1624726268-14869-1-git-send-email-rajeevny@codeaurora.org>
+ <1624726268-14869-2-git-send-email-rajeevny@codeaurora.org>
+ <7f8562df-7e1f-dcfb-1c58-f1edd9dcc606@suse.de> <CAD=FV=V8CaKObbQTCsX2GrP=O8aJUaWLZY3zgBMRATtSn6Be4g@mail.gmail.com>
+In-Reply-To: <CAD=FV=V8CaKObbQTCsX2GrP=O8aJUaWLZY3zgBMRATtSn6Be4g@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 12 Jul 2021 08:03:53 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wij=nih9c1Dxmh=3UFXsOvdbTHBqwXxsUa+rQfpuf4Wg@mail.gmail.com>
+Message-ID: <CAD=FV=Wij=nih9c1Dxmh=3UFXsOvdbTHBqwXxsUa+rQfpuf4Wg@mail.gmail.com>
+Subject: Re: [v8 1/6] drm/panel: add basic DP AUX backlight support
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>, linux-fbdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 3:03 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
+Hi,
+
+On Mon, Jul 12, 2021 at 6:39 AM Doug Anderson <dianders@chromium.org> wrote:
 >
-> Syzbot reported warning in netlbl_cipsov4_add(). The
-> problem was in too big doi_def->map.std->lvl.local_size
-> passed to kcalloc(). Since this value comes from userpace there is
-> no need to warn if value is not correct.
+> Hi,
 >
-> The same problem may occur with other kcalloc() calls in
-> this function, so, I've added __GFP_NOWARN flag to all
-> kcalloc() calls there.
+> On Mon, Jul 12, 2021 at 2:41 AM Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> >
+> > > +     ret = drm_dp_dpcd_read(aux, DP_EDP_DPCD_REV, edp_dpcd,
+> > > +                            EDP_DISPLAY_CTL_CAP_SIZE);
+> >
+> > This creates a cyclic dependency between drm_kms_helper-ko and drm.ko.
+> > drm_panel.c is in the latter, while drm_dp_dpcd_read() in
+> > drm_dp_helper.c is in the former. Please fix.
 >
-> Reported-and-tested-by: syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
-> Fixes: 96cb8e3313c7 ("[NetLabel]: CIPSOv4 and Unlabeled packet integration")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  net/netlabel/netlabel_cipso_v4.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Yeah, this was reported Friday and I posted a patch to try to fix it:
+>
+> https://lore.kernel.org/lkml/20210709152909.1.I23eb4cc5a680341e7b3e791632a635566fa5806a@changeid/
+>
+> I see Rajeev had some feedback on it. Once I've dug out of my weekend
+> email hole I'll take a look at plan to post a v2 ASAP.
 
-This seems fine to me, callers will get a ENOMEM error code too so it
-isn't like the failure is going to be a mystery, especially in the
-case where an obscenely large translation mapping is being attempted.
+Breadcrumbs: v2 of the fix is at:
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+https://lore.kernel.org/lkml/20210712075933.v2.1.I23eb4cc5a680341e7b3e791632a635566fa5806a@changeid/
 
-As an aside, I see no reason why this patch can't be merged and 2/2
-simply dropped as already in-tree.  As has already been pointed out,
-patch 2/2 is a duplicate; the in-tree commit is d612c3f3fae2 ("net:
-ipv4: fix memory leak in netlbl_cipsov4_add_std").
+I'm hoping this looks OK so we can get this resolved before it trips
+too many people up.
 
-> diff --git a/net/netlabel/netlabel_cipso_v4.c b/net/netlabel/netlabel_cipso_v4.c
-> index 4f50a64315cf..50f40943c815 100644
-> --- a/net/netlabel/netlabel_cipso_v4.c
-> +++ b/net/netlabel/netlabel_cipso_v4.c
-> @@ -187,14 +187,14 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
->                 }
->         doi_def->map.std->lvl.local = kcalloc(doi_def->map.std->lvl.local_size,
->                                               sizeof(u32),
-> -                                             GFP_KERNEL);
-> +                                             GFP_KERNEL | __GFP_NOWARN);
->         if (doi_def->map.std->lvl.local == NULL) {
->                 ret_val = -ENOMEM;
->                 goto add_std_failure;
->         }
->         doi_def->map.std->lvl.cipso = kcalloc(doi_def->map.std->lvl.cipso_size,
->                                               sizeof(u32),
-> -                                             GFP_KERNEL);
-> +                                             GFP_KERNEL | __GFP_NOWARN);
->         if (doi_def->map.std->lvl.cipso == NULL) {
->                 ret_val = -ENOMEM;
->                 goto add_std_failure;
-> @@ -263,7 +263,7 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
->                 doi_def->map.std->cat.local = kcalloc(
->                                               doi_def->map.std->cat.local_size,
->                                               sizeof(u32),
-> -                                             GFP_KERNEL);
-> +                                             GFP_KERNEL | __GFP_NOWARN);
->                 if (doi_def->map.std->cat.local == NULL) {
->                         ret_val = -ENOMEM;
->                         goto add_std_failure;
-> @@ -271,7 +271,7 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
->                 doi_def->map.std->cat.cipso = kcalloc(
->                                               doi_def->map.std->cat.cipso_size,
->                                               sizeof(u32),
-> -                                             GFP_KERNEL);
-> +                                             GFP_KERNEL | __GFP_NOWARN);
->                 if (doi_def->map.std->cat.cipso == NULL) {
->                         ret_val = -ENOMEM;
->                         goto add_std_failure;
-> --
-> 2.32.0
-
--- 
-paul moore
-www.paul-moore.com
+-Doug
