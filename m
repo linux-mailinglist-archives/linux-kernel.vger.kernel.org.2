@@ -2,179 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7A63C656A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5053C655A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbhGLV11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:27:27 -0400
-Received: from mx.ungleich.ch ([185.203.112.16]:44392 "EHLO smtp.ungleich.ch"
+        id S232060AbhGLVXh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Jul 2021 17:23:37 -0400
+Received: from aposti.net ([89.234.176.197]:58580 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230087AbhGLV10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:27:26 -0400
-X-Greylist: delayed 461 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Jul 2021 17:27:26 EDT
-Received: from nb3.localdomain (localhost [IPv6:::1])
-        by smtp.ungleich.ch (Postfix) with ESMTP id D72791FE49;
-        Mon, 12 Jul 2021 23:16:47 +0200 (CEST)
-Received: by nb3.localdomain (Postfix, from userid 1000)
-        id A9A4814CC252; Mon, 12 Jul 2021 23:17:35 +0200 (CEST)
-References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com>
- <YOyGrUvA4LjydcP3@kroah.com>
- <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
- <YOyVH3qD9O3qsNUL@kroah.com>
- <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com>
-User-agent: mu4e 1.4.15; emacs 27.2
-From:   Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] scripts/setlocalversion: fix a bug when LOCALVERSION
- is empty
-In-reply-to: <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com>
-Date:   Mon, 12 Jul 2021 23:17:35 +0200
-Message-ID: <87tukzgrkg.fsf@ungleich.ch>
+        id S230087AbhGLVXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 17:23:36 -0400
+Date:   Mon, 12 Jul 2021 22:20:33 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] MIPS: Ingenic: Add system type for new Ingenic SoCs.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     tsbogend@alpha.franken.de, paulburton@kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cand@gmx.com, git@xen0n.name, chenhuacai@kernel.org,
+        maoxiaochuan@loongson.cn, f.fainelli@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+Message-Id: <9YH5WQ.JHPWOQWG7E3R@crapouillou.net>
+In-Reply-To: <1625764602-67310-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1625764602-67310-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Zhou,
 
-Sorry to say, but I am not convinced by the patch.
+Le ven., juil. 9 2021 at 01:16:42 +0800, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> Add JZ4730, JZ4760, JZ4760B, X2000H, and X2100 system type for
+> cat /proc/cpuinfo to give out JZ4730, JZ4760, JZ4760B, X2000H,
+> and X2100.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-While yes, we might have changed the behaviour slightly, reading
-something on the line of
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
-if [ -z ... ]
+You could add JZ4750 and JZ4755 too, while you're at it. (Or not, I'm 
+fine with both).
 
-is significantly more simple, elegant and easier to maintain, than
-a rather atypical special case for setting a variable to empty,
-using
+Cheers,
+-Paul
 
-if [ "${LOCALVERSION+set}" != "set" ] ..
-
-*and* because it is so atypical, adding a long comment for it, too.
-
-Additonally, -z should be correct if the variable *is* truly empty. I
-assume it actually isn't and contains whitespace, which is not the same
-as being set and empty.
-
-Instead of re-adding complexity, could you consider changing the build
-flow so that LOCALVERSION is either unset or empty?
-
-Nico
-
-Executed in bash:
-
-% touch empty
-% a=$(cat empty)
-% [ -z "$a" ]  && echo "really empty"
-really empty
-
-
-Mikulas Patocka <mpatocka@redhat.com> writes:
-
-> On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
->
->> On Mon, Jul 12, 2021 at 03:06:48PM -0400, Mikulas Patocka wrote:
->> >
->> >
->> > On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
->> >
->> > > On Mon, Jul 12, 2021 at 10:00:59AM -0400, Mikulas Patocka wrote:
->> > > > The patch 042da426f8ebde012be9429ff705232af7ad7469
->> > > > ("scripts/setlocalversion: simplify the short version part") reduces the
->> > > > indentation. Unfortunatelly, it also changes behavior in a subtle way - if
->> > > > the user has empty "LOCALVERSION" variable, the plus sign is appended to
->> > > > the kernel version. It wasn't appended before.
->> > > >
->> > > > This patch reverts to the old behavior - we append the plus sign only if
->> > > > the LOCALVERSION variable is not set.
->> > > >
->> > > > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
->> > > > Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
->> > > >
->> > > > ---
->> > > >  scripts/setlocalversion |    2 +-
->> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
->> > > >
->> > > > Index: linux-2.6/scripts/setlocalversion
->> > > > ===================================================================
->> > > > --- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
->> > > > +++ linux-2.6/scripts/setlocalversion	2021-07-12 15:50:29.000000000 +0200
->> > > > @@ -131,7 +131,7 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
->> > > >  if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
->> > > >  	# full scm version string
->> > > >  	res="$res$(scm_version)"
->> > > > -elif [ -z "${LOCALVERSION}" ]; then
->> > > > +elif [ "${LOCALVERSION+set}" != "set" ]; then
->> > >
->> > > That's really subtle, can you add a comment here that this handles an
->> > > empty file?
->> > >
->> > > thanks,
->> > >
->> > > greg k-h
->> >
->> > OK.
->> >
->> >
->> > From: Mikulas Patocka <mpatocka@redhat.com>
->> >
->>
->> I can't take a patch like this :(
->>
->> > The patch 042da426f8ebde012be9429ff705232af7ad7469
->> > ("scripts/setlocalversion: simplify the short version part") reduces
->>
->> Properly quote commits, the documentation says you do not need to use
->> the full sha1.
->
->
->
-> From: Mikulas Patocka <mpatocka@redhat.com>
->
-> The commit 042da426f8eb ("scripts/setlocalversion: simplify the short
-> version part") reduces indentation. Unfortunately, it also changes behavior
-> in a subtle way - if the user has empty "LOCALVERSION" variable, the plus
-> sign is appended to the kernel version. It wasn't appended before.
->
-> This patch reverts to the old behavior - we append the plus sign only if
-> the LOCALVERSION variable is not set.
->
-> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
->
 > ---
->  scripts/setlocalversion |   13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
->
-> Index: linux-2.6/scripts/setlocalversion
-> ===================================================================
-> --- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
-> +++ linux-2.6/scripts/setlocalversion	2021-07-12 21:00:59.000000000 +0200
-> @@ -131,11 +131,14 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
->  if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
->  	# full scm version string
->  	res="$res$(scm_version)"
-> -elif [ -z "${LOCALVERSION}" ]; then
-> -	# append a plus sign if the repository is not in a clean
-> -	# annotated or signed tagged state (as git describe only
-> -	# looks at signed or annotated tags - git tag -a/-s) and
-> -	# LOCALVERSION= is not specified
-> +elif [ "${LOCALVERSION+set}" != "set" ]; then
-> +	# If the variable LOCALVERSION is not set, append a plus
-> +	# sign if the repository is not in a clean annotated or
-> +	# signed tagged state (as git describe only looks at signed
-> +	# or annotated tags - git tag -a/-s).
-> +	#
-> +	# If the variable LOCALVERSION is set (including being set
-> +	# to an empty string), we don't want to append a plus sign.
->  	scm=$(scm_version --short)
->  	res="$res${scm:++}"
->  fi
+>  arch/mips/generic/board-ingenic.c | 15 +++++++++++++++
+>  arch/mips/include/asm/bootinfo.h  |  3 +++
+>  arch/mips/include/asm/cpu.h       |  4 ++--
+>  3 files changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/generic/board-ingenic.c 
+> b/arch/mips/generic/board-ingenic.c
+> index 0cec0be..303bee6 100644
+> --- a/arch/mips/generic/board-ingenic.c
+> +++ b/arch/mips/generic/board-ingenic.c
+> @@ -21,6 +21,10 @@
+>  static __init char *ingenic_get_system_type(unsigned long machtype)
+>  {
+>  	switch (machtype) {
+> +	case MACH_INGENIC_X2100:
+> +		return "X2100";
+> +	case MACH_INGENIC_X2000H:
+> +		return "X2000H";
+>  	case MACH_INGENIC_X2000E:
+>  		return "X2000E";
+>  	case MACH_INGENIC_X2000:
+> @@ -37,8 +41,14 @@ static __init char 
+> *ingenic_get_system_type(unsigned long machtype)
+>  		return "JZ4775";
+>  	case MACH_INGENIC_JZ4770:
+>  		return "JZ4770";
+> +	case MACH_INGENIC_JZ4760B:
+> +		return "JZ4760B";
+> +	case MACH_INGENIC_JZ4760:
+> +		return "JZ4760";
+>  	case MACH_INGENIC_JZ4725B:
+>  		return "JZ4725B";
+> +	case MACH_INGENIC_JZ4730:
+> +		return "JZ4730";
+>  	default:
+>  		return "JZ4740";
+>  	}
+> @@ -61,8 +71,11 @@ static __init const void *ingenic_fixup_fdt(const 
+> void *fdt, const void *match_d
+>  }
+> 
+>  static const struct of_device_id ingenic_of_match[] __initconst = {
+> +	{ .compatible = "ingenic,jz4730", .data = (void 
+> *)MACH_INGENIC_JZ4730 },
+>  	{ .compatible = "ingenic,jz4740", .data = (void 
+> *)MACH_INGENIC_JZ4740 },
+>  	{ .compatible = "ingenic,jz4725b", .data = (void 
+> *)MACH_INGENIC_JZ4725B },
+> +	{ .compatible = "ingenic,jz4760", .data = (void 
+> *)MACH_INGENIC_JZ4760 },
+> +	{ .compatible = "ingenic,jz4760b", .data = (void 
+> *)MACH_INGENIC_JZ4760B },
+>  	{ .compatible = "ingenic,jz4770", .data = (void 
+> *)MACH_INGENIC_JZ4770 },
+>  	{ .compatible = "ingenic,jz4775", .data = (void 
+> *)MACH_INGENIC_JZ4775 },
+>  	{ .compatible = "ingenic,jz4780", .data = (void 
+> *)MACH_INGENIC_JZ4780 },
+> @@ -71,6 +84,8 @@ static const struct of_device_id ingenic_of_match[] 
+> __initconst = {
+>  	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 
+> },
+>  	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 
+> },
+>  	{ .compatible = "ingenic,x2000e", .data = (void 
+> *)MACH_INGENIC_X2000E },
+> +	{ .compatible = "ingenic,x2000h", .data = (void 
+> *)MACH_INGENIC_X2000H },
+> +	{ .compatible = "ingenic,x2100", .data = (void *)MACH_INGENIC_X2100 
+> },
+>  	{}
+>  };
+> 
+> diff --git a/arch/mips/include/asm/bootinfo.h 
+> b/arch/mips/include/asm/bootinfo.h
+> index 4c2e817..2128ba9 100644
+> --- a/arch/mips/include/asm/bootinfo.h
+> +++ b/arch/mips/include/asm/bootinfo.h
+> @@ -75,6 +75,7 @@ enum ingenic_machine_type {
+>  	MACH_INGENIC_JZ4750,
+>  	MACH_INGENIC_JZ4755,
+>  	MACH_INGENIC_JZ4760,
+> +	MACH_INGENIC_JZ4760B,
+>  	MACH_INGENIC_JZ4770,
+>  	MACH_INGENIC_JZ4775,
+>  	MACH_INGENIC_JZ4780,
+> @@ -83,6 +84,8 @@ enum ingenic_machine_type {
+>  	MACH_INGENIC_X1830,
+>  	MACH_INGENIC_X2000,
+>  	MACH_INGENIC_X2000E,
+> +	MACH_INGENIC_X2000H,
+> +	MACH_INGENIC_X2100,
+>  };
+> 
+>  extern char *system_type;
+> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+> index 9e6211e..c70cac7 100644
+> --- a/arch/mips/include/asm/cpu.h
+> +++ b/arch/mips/include/asm/cpu.h
+> @@ -46,8 +46,8 @@
+>  #define PRID_COMP_NETLOGIC	0x0c0000
+>  #define PRID_COMP_CAVIUM	0x0d0000
+>  #define PRID_COMP_LOONGSON	0x140000
+> -#define PRID_COMP_INGENIC_13	0x130000	/* X2000 */
+> -#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4740, JZ4750, X1830 */
+> +#define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
+> +#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, 
+> JZ4760, X1830 */
+>  #define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
+>  #define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
+> 
+> --
+> 2.7.4
+> 
 
 
---
-Sustainable and modern Infrastructures by ungleich.ch
