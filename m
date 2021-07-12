@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B9C3C60D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F283C60DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhGLQzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:55:04 -0400
-Received: from ms.lwn.net ([45.79.88.28]:42842 "EHLO ms.lwn.net"
+        id S234698AbhGLQzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232710AbhGLQzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:55:03 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 3C6B02ED;
-        Mon, 12 Jul 2021 16:52:15 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3C6B02ED
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1626108735; bh=Ht0oyzdlSiXVIXNy6859nQqTmXf4s3iJH3pkY4b8KJA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=VB6s9kMqtzwaBWywvSSxp/NhuT7GjnJUm3jJIMlod5oQpThVi//qYMVQWFfJmMseZ
-         3tBeIlaonKYx/Ll038+TDk+pMAQSB7zTor81u5VmhmCi7lm2aSnNPVXf2tscP4kkkB
-         Q8xLp1MnmdNwddJ7l9DxhmE5GKK/1c77Wx9/ZAr4lPEqlFFBe83A/27S23ScV1QDUy
-         OPhqruA0TdZ+aDcd3uLqFFS73qryy6M/xs47rf5/DkLhZcCg7Q3WrB64UGoFWPjwfN
-         zVOWuDFKOMj8H4PJGWawZuqFjrCH1MVgNemsoj38yTRMLZ6jUsWJ+eB2LTRgNOSUom
-         WOZ4QXG3WPR3g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "Wu X.C." <bobwxc@email.cn>
-Cc:     Alex Shi <alexs@kernel.org>, Wu XiangCheng <bobwxc@email.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] docs/zh_CN: create new translations for
- zh_CN/dev-tools/testing-overview
-In-Reply-To: <20210620052841.GA22083@bobwxc.top>
-References: <20210617070051.32794-1-src.res@email.cn>
- <20210620052841.GA22083@bobwxc.top>
-Date:   Mon, 12 Jul 2021 10:52:14 -0600
-Message-ID: <878s2bqxtt.fsf@meer.lwn.net>
+        id S232710AbhGLQzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:55:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9114B60FF3;
+        Mon, 12 Jul 2021 16:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626108742;
+        bh=7PA9T4ztHxOhgBCB8sQ5ExrO4Ozk846zDZeaKJ8RHac=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=RWyIORS+4H5zY6ZjBkzga+X1zqSL1ArvZninJVErcXMIjFZvLaMjB6ivhxTgqPMW0
+         ubGYbLe2Ww++YTj+qIJseRu6fAgPZrGYrk7LxBfKcdhfNglXAMqLQge2mK3ogHr8Rt
+         17ScldlFy755U7xlEdfO/w+tdKhFgiVS8zpmNMFA0d1HuoR/Y5DrOgIweUTbkLKysD
+         hb6xY6hVnViQsg6if5Y3/XMyWm3EK35yJEN2DW9PHtEvTb+sRfV7vFh3UajtWyRpWm
+         emMfS9JAVvqxB9gRFLf8FN3NVLYstmywcDVZNJTiTX4fL9HGoPRNdXfFfth4HhrV30
+         RVW15PvWgF3og==
+Date:   Mon, 12 Jul 2021 11:52:21 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v3 0/9] Add support for Hikey 970 PCIe
+Message-ID: <20210712165221.GA1654345@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1625826353.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Wu X.C." <bobwxc@email.cn> writes:
+On Fri, Jul 09, 2021 at 12:41:36PM +0200, Mauro Carvalho Chehab wrote:
+> ...
+> Manivannan Sadhasivam (1):
+>   arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller
+>     hardware
 
-> From: Hu Haowen <src.res@email.cn>
->
-> Create new translations for dev-tools/testing-overview.rst and link it
-> to dev-tools/index.rst with TODOList modifications.
->
-> Signed-off-by: Hu Haowen <src.res@email.cn>
-> Reviewed-by: Wu XiangCheng <bobwxc@email.cn>
-> Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
-> Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
-> ---
-> Jon, sorry for previous inconvience.
-> v6: fix link tag
->     rebase to newest docs-next
->
->  .../translations/zh_CN/dev-tools/index.rst    |   5 +
->  .../zh_CN/dev-tools/testing-overview.rst      | 108 ++++++++++++++++++
->  2 files changed, 113 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+FWIW, this didn't apply cleanly for me to v5.14-rc1.
 
-Applied, thanks.
+> Mauro Carvalho Chehab (8):
+>   dt-bindings: phy: add bindings for Hikey 960 PCIe PHY
+>   dt-bindings: phy: add bindings for Hikey 970 PCIe PHY
+>   dt-bindings: PCI: kirin: fix compatible string
+>   dt-bindings: PCI: kirin: drop PHY properties
+>   phy: hisilicon: add a PHY driver for Kirin 960
 
-jon
+>   PCI: kirin: drop the PHY logic from the driver
+>   PCI: kirin: use regmap for APB registers
+
+If/when you repost this, please update these subject lines to match the
+historical style:
+
+  PCI: kirin: Drop PHY logic from the driver
+  PCI: kirin: Use regmap for APB registers
+
+Also, please update subject lines, commit logs, Kconfig menu and help
+text, comments, etc throughout to capitalize "HiKey" and "HiSilicon"
+as the vendor does.
+
+>   phy: hisilicon: add driver for Kirin 970 PCIe PHY
