@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98343C4962
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1884F3C5718
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238922AbhGLGo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
+        id S1351746AbhGLI1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:27:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237852AbhGLGez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01E316112D;
-        Mon, 12 Jul 2021 06:31:47 +0000 (UTC)
+        id S1348320AbhGLHkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8717560FF3;
+        Mon, 12 Jul 2021 07:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071508;
-        bh=bzbaR6zHyOg6xGHCETQ8JeXmpT3Bz2gN55FB7i7Rvsg=;
+        s=korg; t=1626075487;
+        bh=hEXybyKNzNQh9GIrfXSwiHb+N8bB+QE1nn7cGPVvTAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PqVxmR4SVx6/KHa+6U1YqF2Cplkj4Fuc1BoxDD/LOxBhKcEUKGVmfdiyJm8MFk2fu
-         SbiXwjPJeSrPfVw574ZHQ0yegqv99yVKTLiITmZ84QkeKVieRl7H3OjvpofepRdHqe
-         AB0LfCNwwKifpG6iC8WCZ3P5OR4Mj6kmstiyp5X4=
+        b=ASH31JpICGfvWsSBjbNQ16a8NU1v9JjhycnYPQUsdbnxnY8hGKNVjnxYN2K0i9Lak
+         81GxEzwilo2G5BXs5vr2yUlwPULavALlisIbcrTqnE3inQMqoJ8PfSYj/s7jmh1KKm
+         OXBHI9mnLzQHcHPeRTxtsVq9l1xHODKQT3IoOGao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 099/593] thermal/cpufreq_cooling: Update offline CPUs per-cpu thermal_pressure
+Subject: [PATCH 5.13 236/800] block: fix race between adding/removing rq qos and normal IO
 Date:   Mon, 12 Jul 2021 08:04:19 +0200
-Message-Id: <20210712060854.110003059@linuxfoundation.org>
+Message-Id: <20210712060947.004796249@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +41,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukasz Luba <lukasz.luba@arm.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 2ad8ccc17d1e4270cf65a3f2a07a7534aa23e3fb ]
+[ Upstream commit 2cafe29a8d03f02a3d16193bdaae2f3e82a423f9 ]
 
-The thermal pressure signal gives information to the scheduler about
-reduced CPU capacity due to thermal. It is based on a value stored in
-a per-cpu 'thermal_pressure' variable. The online CPUs will get the
-new value there, while the offline won't. Unfortunately, when the CPU
-is back online, the value read from per-cpu variable might be wrong
-(stale data).  This might affect the scheduler decisions, since it
-sees the CPU capacity differently than what is actually available.
+Yi reported several kernel panics on:
 
-Fix it by making sure that all online+offline CPUs would get the
-proper value in their per-cpu variable when thermal framework sets
-capping.
+[16687.001777] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+...
+[16687.163549] pc : __rq_qos_track+0x38/0x60
 
-Fixes: f12e4f66ab6a3 ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Link: https://lore.kernel.org/r/20210614191030.22241-1-lukasz.luba@arm.com
+or
+
+[  997.690455] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+...
+[  997.850347] pc : __rq_qos_done+0x2c/0x50
+
+Turns out it is caused by race between adding rq qos(wbt) and normal IO
+because rq_qos_add can be run when IO is being submitted, fix this issue
+by freezing queue before adding/deleting rq qos to queue.
+
+rq_qos_exit() needn't to freeze queue because it is called after queue
+has been frozen.
+
+iolatency calls rq_qos_add() during allocating queue, so freezing won't
+add delay because queue usage refcount works at atomic mode at that
+time.
+
+iocost calls rq_qos_add() when writing cgroup attribute file, that is
+fine to freeze queue at that time since we usually freeze queue when
+storing to queue sysfs attribute, meantime iocost only exists on the
+root cgroup.
+
+wbt_init calls it in blk_register_queue() and queue sysfs attribute
+store(queue_wb_lat_store() when write it 1st time in case of !BLK_WBT_MQ),
+the following patch will speedup the queue freezing in wbt_init.
+
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Link: https://lore.kernel.org/r/20210609015822.103433-2-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/cpufreq_cooling.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-rq-qos.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index 3f6a69ccc173..6e1d6a31ee4f 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -443,7 +443,7 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
- 	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
- 	if (ret >= 0) {
- 		cpufreq_cdev->cpufreq_state = state;
--		cpus = cpufreq_cdev->policy->cpus;
-+		cpus = cpufreq_cdev->policy->related_cpus;
- 		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
- 		capacity = frequency * max_capacity;
- 		capacity /= cpufreq_cdev->policy->cpuinfo.max_freq;
+diff --git a/block/blk-rq-qos.h b/block/blk-rq-qos.h
+index 2bc43e94f4c4..2bcb3495e376 100644
+--- a/block/blk-rq-qos.h
++++ b/block/blk-rq-qos.h
+@@ -7,6 +7,7 @@
+ #include <linux/blk_types.h>
+ #include <linux/atomic.h>
+ #include <linux/wait.h>
++#include <linux/blk-mq.h>
+ 
+ #include "blk-mq-debugfs.h"
+ 
+@@ -99,8 +100,21 @@ static inline void rq_wait_init(struct rq_wait *rq_wait)
+ 
+ static inline void rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+ {
++	/*
++	 * No IO can be in-flight when adding rqos, so freeze queue, which
++	 * is fine since we only support rq_qos for blk-mq queue.
++	 *
++	 * Reuse ->queue_lock for protecting against other concurrent
++	 * rq_qos adding/deleting
++	 */
++	blk_mq_freeze_queue(q);
++
++	spin_lock_irq(&q->queue_lock);
+ 	rqos->next = q->rq_qos;
+ 	q->rq_qos = rqos;
++	spin_unlock_irq(&q->queue_lock);
++
++	blk_mq_unfreeze_queue(q);
+ 
+ 	if (rqos->ops->debugfs_attrs)
+ 		blk_mq_debugfs_register_rqos(rqos);
+@@ -110,12 +124,22 @@ static inline void rq_qos_del(struct request_queue *q, struct rq_qos *rqos)
+ {
+ 	struct rq_qos **cur;
+ 
++	/*
++	 * See comment in rq_qos_add() about freezing queue & using
++	 * ->queue_lock.
++	 */
++	blk_mq_freeze_queue(q);
++
++	spin_lock_irq(&q->queue_lock);
+ 	for (cur = &q->rq_qos; *cur; cur = &(*cur)->next) {
+ 		if (*cur == rqos) {
+ 			*cur = rqos->next;
+ 			break;
+ 		}
+ 	}
++	spin_unlock_irq(&q->queue_lock);
++
++	blk_mq_unfreeze_queue(q);
+ 
+ 	blk_mq_debugfs_unregister_rqos(rqos);
+ }
 -- 
 2.30.2
 
