@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAC13C6324
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2823C632D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhGLTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:07:39 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:45799 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236037AbhGLTHi (ORCPT
+        id S236141AbhGLTJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:09:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236056AbhGLTJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:07:38 -0400
-Received: by mail-ot1-f44.google.com with SMTP id 75-20020a9d08510000b02904acfe6bcccaso19913797oty.12;
-        Mon, 12 Jul 2021 12:04:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=reEJf1bmElX4/0DK2loR9L7DpxWf5DpKVb/0nheNJZA=;
-        b=n/eVYPEsUOJEIcaGvLhXqSokYCdbaB4lNf4loc4/KQBpJKk3+XBjoMr3eQrVFPZVvi
-         4cEqIy1GtssldzZxDPsbmxK5dJMw8ifqV0Wa6cafgQfhysuCRitaILzbQK+EOorqogyM
-         4a0L35h6f1GpJsdBnhv0TZQ0tEmvLOr9/54WkwDj3O9zNyAtYbgbACUIZIFtg5DOdaw3
-         NeqshNDWT7aVSLWs88LEim+xXOv96aSrqfLQfb3G3RRJBy6R9CIIlwAnJ296AdnQAzKU
-         wfO8ubj2KRUezsd5i5+ctTqrWLEvCGmrwAwjE6IYnlPoCumKE89XLw1+hEHEyGFcvvIQ
-         Hwug==
-X-Gm-Message-State: AOAM533nurr5XRtOKE1tukWSaDHcahCq97D0tWG6a9xaj/y4H1CJF5Vn
-        qLVnu21aXTzO85iGFn4jAsZS340pEeYs/lHfXDwHKxPg
-X-Google-Smtp-Source: ABdhPJyQ8aCvZedt0gS7+ZoS4te5VHnzm3uHQ0+dHpBCKXjAZWwuKG16pDhnFV547DTrombI9BFXMSdkV2oJpJDlEAQ=
-X-Received: by 2002:a9d:604e:: with SMTP id v14mr404882otj.260.1626116689419;
- Mon, 12 Jul 2021 12:04:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <2780027.e9J7NaK4W3@kreacher> <5627033.MhkbZ0Pkbq@kreacher>
- <YOyD/4kdvd77PzLy@kroah.com> <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
- <YOyQrK3b2dhb2wTF@kroah.com>
-In-Reply-To: <YOyQrK3b2dhb2wTF@kroah.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 12 Jul 2021 21:04:38 +0200
-Message-ID: <CAJZ5v0j8RUviZRTgsYNis5vc+6g0ACLGiOm84Y+ocPpHBXgLoA@mail.gmail.com>
-Subject: Re: [PATCH v1 5/6] software nodes: Split software_node_notify()
+        Mon, 12 Jul 2021 15:09:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626116811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RuvuU3GhSaqw/r7Yuommk/4GGO9Nhx9WohfFfrBNtSM=;
+        b=AtoFVQziX1VaHW9pkptl6mLZuTQLyq0ej/pRae3THL2h4npo+3OfW7XegRq6U7FUDKgmZA
+        p5AmnO17KqWbSil41GpAb55YFeHypjSTWBdJNrKRNFzFeNR9wW+mcRdLdCHmV2dtibTc3f
+        Lw8uIqog6AXs781JdELanbPG+2LaqmY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-gycIbtb7NTq2KdvSZ2VXyw-1; Mon, 12 Jul 2021 15:06:50 -0400
+X-MC-Unique: gycIbtb7NTq2KdvSZ2VXyw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 751E9A40C0;
+        Mon, 12 Jul 2021 19:06:49 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D8A518B42;
+        Mon, 12 Jul 2021 19:06:49 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 16CJ6mnl010769;
+        Mon, 12 Jul 2021 15:06:48 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 16CJ6mLW010765;
+        Mon, 12 Jul 2021 15:06:48 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Mon, 12 Jul 2021 15:06:48 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
+        linux-kernel@vger.kernel.org
+Subject:  [PATCH v2] scripts/setlocalversion: fix a bug when LOCALVERSION is
+ empty
+In-Reply-To: <YOyGrUvA4LjydcP3@kroah.com>
+Message-ID: <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com> <YOyGrUvA4LjydcP3@kroah.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 8:57 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jul 12, 2021 at 08:30:06PM +0200, Rafael J. Wysocki wrote:
-> > On Mon, Jul 12, 2021 at 8:03 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Mon, Jul 12, 2021 at 07:27:12PM +0200, Rafael J. Wysocki wrote:
-> > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > >
-> > > > Split software_node_notify_remove) out of software_node_notify()
-> > > > and make device_platform_notify() call the latter on device addition
-> > > > and the former on device removal.
-> > > >
-> > > > While at it, put the headers of the above functions into base.h,
-> > > > because they don't need to be present in a global header file.
-> > > >
-> > > > No intentional functional impact.
-> > > >
-> > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > ---
-> > > >  drivers/base/base.h      |    3 ++
-> > > >  drivers/base/core.c      |    9 +++---
-> > > >  drivers/base/swnode.c    |   61 ++++++++++++++++++++++++-----------------------
-> > > >  include/linux/property.h |    2 -
-> > > >  4 files changed, 39 insertions(+), 36 deletions(-)
-> > > >
-> > > > Index: linux-pm/drivers/base/swnode.c
-> > > > ===================================================================
-> > > > --- linux-pm.orig/drivers/base/swnode.c
-> > > > +++ linux-pm/drivers/base/swnode.c
-> > > > @@ -11,6 +11,8 @@
-> > > >  #include <linux/property.h>
-> > > >  #include <linux/slab.h>
-> > > >
-> > > > +#include "base.h"
-> > > > +
-> > > >  struct swnode {
-> > > >       struct kobject kobj;
-> > > >       struct fwnode_handle fwnode;
-> > > > @@ -1053,7 +1055,7 @@ int device_add_software_node(struct devi
-> > > >        * balance.
-> > > >        */
-> > > >       if (device_is_registered(dev))
-> > > > -             software_node_notify(dev, KOBJ_ADD);
-> > > > +             software_node_notify(dev);
-> > >
-> > > Should this now be called "software_node_notify_add()" to match up with:
-> > >
-> > > >       if (device_is_registered(dev))
-> > > > -             software_node_notify(dev, KOBJ_REMOVE);
-> > > > +             software_node_notify_remove(dev);
-> > >
-> > > The other being called "_remove"?
-> > >
-> > > Makes it more obvious to me :)
-> >
-> > The naming convention used here follows platform_notify() and
-> > platform_notify_remove(), and the analogous function names in ACPI for
-> > that matter.
-> >
-> > I thought that adding _add in just one case would be sort of odd, but
-> > of course I can do that, so please let me know what you want me to do.
->
-> Ah, ok, that makes more sense, let's just leave it as-is then:
->
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Thanks!
+
+On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+
+> On Mon, Jul 12, 2021 at 10:00:59AM -0400, Mikulas Patocka wrote:
+> > The patch 042da426f8ebde012be9429ff705232af7ad7469 
+> > ("scripts/setlocalversion: simplify the short version part") reduces the 
+> > indentation. Unfortunatelly, it also changes behavior in a subtle way - if 
+> > the user has empty "LOCALVERSION" variable, the plus sign is appended to 
+> > the kernel version. It wasn't appended before.
+> > 
+> > This patch reverts to the old behavior - we append the plus sign only if
+> > the LOCALVERSION variable is not set.
+> > 
+> > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> > Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
+> > 
+> > ---
+> >  scripts/setlocalversion |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > Index: linux-2.6/scripts/setlocalversion
+> > ===================================================================
+> > --- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
+> > +++ linux-2.6/scripts/setlocalversion	2021-07-12 15:50:29.000000000 +0200
+> > @@ -131,7 +131,7 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
+> >  if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
+> >  	# full scm version string
+> >  	res="$res$(scm_version)"
+> > -elif [ -z "${LOCALVERSION}" ]; then
+> > +elif [ "${LOCALVERSION+set}" != "set" ]; then
+> 
+> That's really subtle, can you add a comment here that this handles an
+> empty file?
+> 
+> thanks,
+> 
+> greg k-h
+
+OK.
+
+
+From: Mikulas Patocka <mpatocka@redhat.com>
+
+The patch 042da426f8ebde012be9429ff705232af7ad7469
+("scripts/setlocalversion: simplify the short version part") reduces
+indentation. Unfortunatelly, it also changes behavior in a subtle way - if
+the user has empty "LOCALVERSION" variable, the plus sign is appended to
+the kernel version. It wasn't appended before.
+
+This patch reverts to the old behavior - we append the plus sign only if
+the LOCALVERSION variable is not set.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
+
+---
+ scripts/setlocalversion |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+Index: linux-2.6/scripts/setlocalversion
+===================================================================
+--- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
++++ linux-2.6/scripts/setlocalversion	2021-07-12 21:00:59.000000000 +0200
+@@ -131,11 +131,14 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
+ if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
+ 	# full scm version string
+ 	res="$res$(scm_version)"
+-elif [ -z "${LOCALVERSION}" ]; then
+-	# append a plus sign if the repository is not in a clean
+-	# annotated or signed tagged state (as git describe only
+-	# looks at signed or annotated tags - git tag -a/-s) and
+-	# LOCALVERSION= is not specified
++elif [ "${LOCALVERSION+set}" != "set" ]; then
++	# If the variable LOCALVERSION is not set, append a plus
++	# sign if the repository is not in a clean annotated or
++	# signed tagged state (as git describe only looks at signed
++	# or annotated tags - git tag -a/-s).
++	#
++	# If the variable LOCALVERSION is set (including being set
++	# to an empty string), we don't want to append a plus sign.
+ 	scm=$(scm_version --short)
+ 	res="$res${scm:++}"
+ fi
+
