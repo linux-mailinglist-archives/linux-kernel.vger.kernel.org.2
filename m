@@ -2,202 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9111E3C6001
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE663C600C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhGLQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        id S230182AbhGLQGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhGLQFd (ORCPT
+        with ESMTP id S229891AbhGLQGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:05:33 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42034C0613DD;
-        Mon, 12 Jul 2021 09:02:44 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id i20so35573319ejw.4;
-        Mon, 12 Jul 2021 09:02:44 -0700 (PDT)
+        Mon, 12 Jul 2021 12:06:40 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0880C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:03:51 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id w194so1650494oie.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yASdFe7xYmlRxSElpuTuPr8cxfmHnIT8PrgFH3o60h4=;
-        b=e+zZayXoNQo9VWz+tZHnI2zHtRNCMfp3pIfi5Sgk53DDp5lpwyHgpSi0jqC/RNPTFV
-         IGXUf+zE54xTsCFnGeZcsN+ShhKmzA3pO76wJIMAuG6qmL9kIQrmrf0grmBREpZMLJjg
-         To09hSnWDZ8uP7RTQKAI9i/847y5ZNK78mm1ojK2ddadyE6kUbTAnewvDPIHdKtGCplQ
-         yJXDbBMti4v30fR0LbhxLXOrEVd7DEaZxzRpzlYeeS+4Ef5SpD00g0DzYMLOlJjKK7kP
-         Uggn265kEF1/Qn4fUdaBGf/yuSww1wD1JjalrwdjXNlQc3kBjyCXLODkS8ToFO7D4Ire
-         k2QA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VYQdhl8WGpNZn7IHwYKLRg9DV0FPfiQGFVFR4KPgX0c=;
+        b=XSGbCrKyqK3ndOMFIBRp2HQGP9z52L4aOKWsy8RvSGGGFh+fx3biWqeYIqZwHykyu+
+         Jcz6zYKUDqSUwEDhLxYnftrY/LDZX+WEpNDBmyv5I2nyjHXPMnqLTTSz3nxLEFV4QbBA
+         OzW8SlBs5mCHHjCVVZp+b4mYvXXm94EtBVfHm8v4IbrykDmgM3De6gIKrVvbt8W/A/V6
+         beYDXOsm92b/ca0dXkn3rruOtDznbLyGfWxJ+Sd15Rnj7dUS6BJDVG6yFhb5jqSr3Bk8
+         OmDrAWqDlaIC5k70/KHUtRyrmVlHJQjkgnK05uzjpXXYWEeIXFNV0SDmJaLPUVr5vAIX
+         131Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yASdFe7xYmlRxSElpuTuPr8cxfmHnIT8PrgFH3o60h4=;
-        b=GqI2yNzoLsGF0bg+xTup9TT7urXHv6McH8SUKI5SexXCg80Qs6DmiZKPa74lIcVJWf
-         YluOQLGcVVgCUVVchEoOtATgFZbp432dpf6AgTkRL4spR5VZujrkd/RfzavVqsQ+ap0E
-         dYpgNH/lsgNnNzgVBqR4l3DKq9EXq1gLHuV06AFDbqZ60xs9Q3NEdIr/wV4tVh6mumYZ
-         1kOqClMxVGWCvhglyo8DyhRBtIKWyrAYotM8WewoPNUdqaDymYQ4R1xIk577lcF+RhQW
-         YoZ0e/2nEpyCF4VWuW+IYMDY+Hi9L+qXNnHbTmKrKlZIolRvza0iagfHLIhBY4wW9CVK
-         Fy2A==
-X-Gm-Message-State: AOAM531XGVQg4YtlH5u2YUVTzYXNjsJUYP4NIRH5DlYMreL991lkebJ3
-        ZI+1N9C19937iwoKo5/M0synGXL8f92Jwg2XQ9w=
-X-Google-Smtp-Source: ABdhPJwzXOENkXmBa4UTeOnWv/u0+TRdQjmXj/CeSutFRfag8CJJciAOdp8+UV+3fzTJqvGysro8BTXgYbLS5P5YDp0=
-X-Received: by 2002:a17:906:bc2:: with SMTP id y2mr53431206ejg.489.1626105762727;
- Mon, 12 Jul 2021 09:02:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VYQdhl8WGpNZn7IHwYKLRg9DV0FPfiQGFVFR4KPgX0c=;
+        b=kXQWUepUUputXM+83OUKXolhB4Vf3KvgNKkjI+HSOgh9dyAKC4GWEjcWi1AeFAhyFC
+         uMvaCGMsq6ND5HRvG5Nr9+eZcyNygeehUfsJVO3G0ym69CvxwwaIDh3RYqh8GATkSaee
+         AMaeJ/FaOHzWaZ32VnL4GZa9RXB8q58WGaQD9OSjQM7tLxqSo6GAQCwHIW0GRM2R9T1X
+         Y5N3umxXV0j6FzIGuxr+eudM0tcp6gkN+701lDIx4kBrW/sdQs7LCpwGj8Qwcbu8Ua68
+         PEYIaiNkhHuxPMAimzPr574CTE1viKmCjLTxp3cXWo1fPKvnefMlIHabD+ekZaZhLxiS
+         4p1Q==
+X-Gm-Message-State: AOAM533B1IX75b+GhpvqlnyaX+C6RpNvAXZBc7OvxFysDf/kkR2MNVBa
+        biq84dcZ/ZCZTs13a200qF+Bbg==
+X-Google-Smtp-Source: ABdhPJxWVvHGQqmw4XVHZ9oLKOii3peGSB6g8nki90kRoK68heA+KbKagj74e1DGjUmoUOwQsea0jA==
+X-Received: by 2002:aca:acc5:: with SMTP id v188mr10863888oie.167.1626105831020;
+        Mon, 12 Jul 2021 09:03:51 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z5sm3229154oib.14.2021.07.12.09.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 09:03:50 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 11:03:48 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
+        swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
+        dianders@chromium.org, mka@chromium.org, sanm@codeaurora.org
+Subject: Re: [PATCH v3 4/4] PCIe: qcom: Add support to control pipe clk mux
+Message-ID: <YOxn5GWQsEH/+bSm@yoga>
+References: <1624377651-30604-1-git-send-email-pmaliset@codeaurora.org>
+ <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
 MIME-Version: 1.0
-References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com> <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 12 Jul 2021 09:02:31 -0700
-Message-ID: <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
-Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
- setting pagecnt_bias
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=windows-1252
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 5:17 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> As suggested by Alexander, "A DMA mapping should be page
-> aligned anyway so the lower 12 bits would be reserved 0",
-> so it might make more sense to repurpose the lower 12 bits
-> of the dma address to store the pagecnt_bias for frag page
-> support in page pool.
->
-> As newly added page_pool_get_pagecnt_bias() may be called
-> outside of the softirq context, so annotate the access to
-> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
->
-> And page_pool_get_pagecnt_bias_ptr() is added to implement
-> the pagecnt_bias atomic updating when a page is passsed to
-> the user.
->
-> Other three interfaces using page->dma_addr[0] is only called
-> in the softirq context during normal rx processing, hopefully
-> the barrier in the rx processing will ensure the correct order
-> between getting and setting pagecnt_bias.
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+On Tue 22 Jun 11:00 CDT 2021, Prasad Malisetty wrote:
+
+> pipe-clk mux needs to switch between pipe_clk
+
+If you spell "pipe-clk mux" as "gcc_pcie_N_pipe_clk_src" there's no
+ambiguity in which clock you refer to.
+
+> and XO as part of LPM squence. This is done by setting
+> pipe_clk mux as parent of pipe_clk after phy init.
+
+I thought the two possible cases where:
+
+xo -> gcc_pcie_N_pipe_clk_src -> gcc_pcie_N_pipe_clk
+PHY::pipe_clk -> gcc_pcie_N_pipe_clk_src -> gcc_pcie_N_pipe_clk
+
+But here you're saying that you're setting the parent of PHY::pipe_clk
+to gcc_pcie_N_pipe_clk?
+
+> This is a new requirement for sc7280.
+> For accessing to DBI registers during L23,
+> need to switch the pipe clock with free-running
+> clock (TCXO) using GCC’s registers
+
+So in previous platforms we could access DBI registers, in L23, without
+any clock?
+
+What happens if we use xo as parent for the pipe clock
+
+> 
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
 > ---
->  include/net/page_pool.h | 29 +++++++++++++++++++++++++++--
->  net/core/page_pool.c    |  8 +++++++-
->  2 files changed, 34 insertions(+), 3 deletions(-)
->
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index 8d7744d..84cd972 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -200,17 +200,42 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->  {
-> -       dma_addr_t ret = page->dma_addr[0];
-> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
->         if (sizeof(dma_addr_t) > sizeof(unsigned long))
->                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
->         return ret;
+>  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8a7a300..80e9ee4 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
+>  	struct regulator_bulk_data supplies[2];
+>  	struct reset_control *pci_reset;
+>  	struct clk *pipe_clk;
+> +	struct clk *pipe_clk_mux;
+> +	struct clk *pipe_ext_src;
+> +	struct clk *ref_clk_src;
+>  };
+>  
+>  union qcom_pcie_resources {
+> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+
+So this is the first 2.7.0 that has this need? Are we just going to add
+more compatibles to this list going forward?
+
+> +		res->pipe_clk_mux = devm_clk_get(dev, "pipe_mux");
+> +		if (IS_ERR(res->pipe_clk_mux))
+> +			return PTR_ERR(res->pipe_clk_mux);
+
+So this is gcc_pcie_N_pipe_clk_src?
+
+> +
+> +		res->pipe_ext_src = devm_clk_get(dev, "phy_pipe");
+> +		if (IS_ERR(res->pipe_ext_src))
+> +			return PTR_ERR(res->pipe_ext_src);
+
+And this is the pipe_clk coming out of the PHY (What I call
+PHY::pipe_clk above)?
+
+> +
+> +		res->ref_clk_src = devm_clk_get(dev, "ref");
+> +		if (IS_ERR(res->ref_clk_src))
+> +			return PTR_ERR(res->ref_clk_src);
+
+And this is TCXO?
+
+> +	}
+> +
+>  	res->pipe_clk = devm_clk_get(dev, "pipe");
+>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
 >  }
->
-> -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
 >  {
-> +       if (WARN_ON(addr & ~PAGE_MASK))
-> +               return false;
+>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+> +	struct dw_pcie *pci = pcie->pci;
+> +	struct device *dev = pci->dev;
 > +
->         page->dma_addr[0] = addr;
->         if (sizeof(dma_addr_t) > sizeof(unsigned long))
->                 page->dma_addr[1] = upper_32_bits(addr);
-> +
-> +       return true;
-> +}
-> +
+> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
+> +		clk_set_parent(res->pipe_clk_mux, res->pipe_ext_src);
+>  
 
-Rather than making this a part of the check here it might make more
-sense to pull this out and perform the WARN_ON after the check for
-dma_mapping_error.
+So after phy_power_on() (not "phy init" as you say in the commit
+message, perhaps you don't mean phy_init() but in general terms "phy
+initialization") you need to make sure that gcc_pcie_N_pipe_clk_src is
+actually fed by PHY::pipe_clk?
 
-Also it occurs to me that we only really have to do this in the case
-where dma_addr_t is larger than the size of a long. Otherwise we could
-just have the code split things so that dma_addr[0] is the dma_addr
-and dma_addr[1] is our pagecnt_bias value in which case we could
-probably just skip the check.
+1) What's the gcc_pcie_N_pipe_clk_src parent before this?
 
-> +static inline int page_pool_get_pagecnt_bias(struct page *page)
-> +{
-> +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
-> +}
-> +
-> +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
-> +{
-> +       return page->dma_addr;
-> +}
-> +
-> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
-> +{
-> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
-> +
-> +       dma_addr_0 &= PAGE_MASK;
-> +       dma_addr_0 |= bias;
-> +
-> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+2) Will the PHY initialization really succeed if the pipe_clk feeding
+back from gcc isn't based on the PHY's pipe_clk? Is this a change in
+sc7280?
+
+3) In the commit message you're talking about the need to make XO the
+parent of gcc_pcie_N_pipe_clk_src during L23, where in this patch does
+that happen?
+
+Regards,
+Bjorn
+
+>  	return clk_prepare_enable(res->pipe_clk);
 >  }
->
->  static inline bool is_page_pool_compiled_in(void)
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 78838c6..1abefc6 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->         if (dma_mapping_error(pool->p.dev, dma))
->                 return false;
->
-
-So instead of adding to the function below you could just add your
-WARN_ON check here with the unmapping call.
-
-> -       page_pool_set_dma_addr(page, dma);
-> +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
-> +               dma_unmap_page_attrs(pool->p.dev, dma,
-> +                                    PAGE_SIZE << pool->p.order,
-> +                                    pool->p.dma_dir,
-> +                                    DMA_ATTR_SKIP_CPU_SYNC);
-> +               return false;
-> +       }
->
->         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->                 page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-> --
-> 2.7.4
->
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
