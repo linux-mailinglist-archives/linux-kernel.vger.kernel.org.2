@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32033C4953
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169153C5002
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238362AbhGLGnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54054 "EHLO mail.kernel.org"
+        id S1345766AbhGLHaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237252AbhGLGeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3768D61178;
-        Mon, 12 Jul 2021 06:30:38 +0000 (UTC)
+        id S238238AbhGLHCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:02:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 734E061004;
+        Mon, 12 Jul 2021 06:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071438;
-        bh=I+m9Xmztvswkqnx/OgxmcxrQUD42OS7yHXFVcRfIjro=;
+        s=korg; t=1626073164;
+        bh=FzXwPdNNUN1+bbWVulgsQZBbjZaP73QD17PYhjK13DA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16tgekHrFKqd5sP9KzTsTumUWF554fsi7gg+hqTLfrWE2GwH+VL2ZHMXZzJB49SIB
-         fqugzryy8jJF/A+Js27vlKophbSFH5UdBGMCq3qYYtTcPOPK01PD9uEgoKZ8G2Rfw/
-         3CDRRUQpzMJA6pdOKeWvolN7df5ta6/qpVN5ci8E=
+        b=kNIIdotH/mkuqNfZEqGkUt5MWPflST7c7Bw7hzmtSJT4/ld033Xy4VxWGZx/Pomei
+         Rr9nLMVibIIRDnNvrOCEHN+okS98AOVAvRaIFvdwmYKc6vpUGkomZKkOoi78SHeMfR
+         ZFbitDkaZovs4KF7BPdjYAwrydmAEVWvNvQwCO04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 5.10 071/593] rtc: stm32: Fix unbalanced clk_disable_unprepare() on probe error path
+        stable@vger.kernel.org, Jack Xu <jack.xu@intel.com>,
+        Zhehui Xiang <zhehui.xiang@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 148/700] crypto: qat - check return code of qat_hal_rd_rel_reg()
 Date:   Mon, 12 Jul 2021 08:03:51 +0200
-Message-Id: <20210712060850.958809290@linuxfoundation.org>
+Message-Id: <20210712060946.465997641@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,77 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fuzzey <martin.fuzzey@flowbird.group>
+From: Jack Xu <jack.xu@intel.com>
 
-commit 950ac33dbe6ff656a623d862022f0762ec061ba7 upstream.
+[ Upstream commit 96b57229209490c8bca4335b01a426a96173dc56 ]
 
-The STM32MP1 RTC may have 2 clocks, the pclk and the rtc_ck.
+Check the return code of the function qat_hal_rd_rel_reg() and return it
+to the caller.
 
-If clk_prepare_enable() fails for the second clock (rtc_ck) we must only
-call clk_disable_unprepare() for the first clock (pclk) but currently we
-call it on both leading to a WARN:
+This is to fix the following warning when compiling the driver with
+clang scan-build:
 
-[   15.629568] WARNING: CPU: 0 PID: 146 at drivers/clk/clk.c:958 clk_core_disable+0xb0/0xc8
-[   15.637620] ck_rtc already disabled
-[   15.663322] CPU: 0 PID: 146 Comm: systemd-udevd Not tainted 5.4.77-pknbsp-svn5759-atag-v5.4.77-204-gea4235203137-dirty #2413
-[   15.674510] Hardware name: STM32 (Device Tree Support)
-[   15.679658] [<c0111148>] (unwind_backtrace) from [<c010c0b8>] (show_stack+0x10/0x14)
-[   15.687371] [<c010c0b8>] (show_stack) from [<c0ab3d28>] (dump_stack+0xc0/0xe0)
-[   15.694574] [<c0ab3d28>] (dump_stack) from [<c012360c>] (__warn+0xc8/0xf0)
-[   15.701428] [<c012360c>] (__warn) from [<c0123694>] (warn_slowpath_fmt+0x60/0x94)
-[   15.708894] [<c0123694>] (warn_slowpath_fmt) from [<c053b518>] (clk_core_disable+0xb0/0xc8)
-[   15.717230] [<c053b518>] (clk_core_disable) from [<c053c190>] (clk_core_disable_lock+0x18/0x24)
-[   15.725924] [<c053c190>] (clk_core_disable_lock) from [<bf0adc44>] (stm32_rtc_probe+0x124/0x5e4 [rtc_stm32])
-[   15.735739] [<bf0adc44>] (stm32_rtc_probe [rtc_stm32]) from [<c05f7d4c>] (platform_drv_probe+0x48/0x98)
-[   15.745095] [<c05f7d4c>] (platform_drv_probe) from [<c05f5cec>] (really_probe+0x1f0/0x458)
-[   15.753338] [<c05f5cec>] (really_probe) from [<c05f61c4>] (driver_probe_device+0x70/0x1c4)
-[   15.761584] [<c05f61c4>] (driver_probe_device) from [<c05f6580>] (device_driver_attach+0x58/0x60)
-[   15.770439] [<c05f6580>] (device_driver_attach) from [<c05f6654>] (__driver_attach+0xcc/0x170)
-[   15.779032] [<c05f6654>] (__driver_attach) from [<c05f40d8>] (bus_for_each_dev+0x58/0x7c)
-[   15.787191] [<c05f40d8>] (bus_for_each_dev) from [<c05f4ffc>] (bus_add_driver+0xdc/0x1f8)
-[   15.795352] [<c05f4ffc>] (bus_add_driver) from [<c05f6ed8>] (driver_register+0x7c/0x110)
-[   15.803425] [<c05f6ed8>] (driver_register) from [<c01027bc>] (do_one_initcall+0x70/0x1b8)
-[   15.811588] [<c01027bc>] (do_one_initcall) from [<c01a1094>] (do_init_module+0x58/0x1f8)
-[   15.819660] [<c01a1094>] (do_init_module) from [<c01a0074>] (load_module+0x1e58/0x23c8)
-[   15.827646] [<c01a0074>] (load_module) from [<c01a0860>] (sys_finit_module+0xa0/0xd4)
-[   15.835459] [<c01a0860>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+    drivers/crypto/qat/qat_common/qat_hal.c:1436:2: warning: 6th function call argument is an uninitialized value
 
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-Fixes: 4e64350f42e2 ("rtc: add STM32 RTC driver")
-Cc: stable@vger.kernel.org
-Reviewed-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jack Xu <jack.xu@intel.com>
+Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-stm32.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/crypto/qat/qat_common/qat_hal.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/rtc/rtc-stm32.c
-+++ b/drivers/rtc/rtc-stm32.c
-@@ -754,7 +754,7 @@ static int stm32_rtc_probe(struct platfo
- 
- 	ret = clk_prepare_enable(rtc->rtc_ck);
- 	if (ret)
--		goto err;
-+		goto err_no_rtc_ck;
- 
- 	if (rtc->data->need_dbp)
- 		regmap_update_bits(rtc->dbp, rtc->dbp_reg,
-@@ -830,10 +830,12 @@ static int stm32_rtc_probe(struct platfo
+diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
+index bd3028126cbe..069f51621f0e 100644
+--- a/drivers/crypto/qat/qat_common/qat_hal.c
++++ b/drivers/crypto/qat/qat_common/qat_hal.c
+@@ -1417,7 +1417,11 @@ static int qat_hal_put_rel_wr_xfer(struct icp_qat_fw_loader_handle *handle,
+ 		pr_err("QAT: bad xfrAddr=0x%x\n", xfr_addr);
+ 		return -EINVAL;
  	}
- 
- 	return 0;
-+
- err:
-+	clk_disable_unprepare(rtc->rtc_ck);
-+err_no_rtc_ck:
- 	if (rtc->data->has_pclk)
- 		clk_disable_unprepare(rtc->pclk);
--	clk_disable_unprepare(rtc->rtc_ck);
- 
- 	if (rtc->data->need_dbp)
- 		regmap_update_bits(rtc->dbp, rtc->dbp_reg, rtc->dbp_mask, 0);
+-	qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
++	status = qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
++	if (status) {
++		pr_err("QAT: failed to read register");
++		return status;
++	}
+ 	gpr_addr = qat_hal_get_reg_addr(ICP_GPB_REL, gprnum);
+ 	data16low = 0xffff & data;
+ 	data16hi = 0xffff & (data >> 0x10);
+-- 
+2.30.2
+
 
 
