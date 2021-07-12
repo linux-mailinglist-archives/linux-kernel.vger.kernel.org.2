@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725CE3C4EC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F753C587F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344885AbhGLHV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:21:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        id S1357111AbhGLIsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238118AbhGLGtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E770561167;
-        Mon, 12 Jul 2021 06:44:49 +0000 (UTC)
+        id S244612AbhGLHxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:53:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE313610D1;
+        Mon, 12 Jul 2021 07:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072290;
-        bh=Ygo3Kp9OmH6W+A2OxYSc8ct0JaQwdeRUIkC0i60QSCg=;
+        s=korg; t=1626076214;
+        bh=dUnfEYdCnzav6JuAymT1HVAkcNz9jqlKCpblGKHx1hA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BU6ka5JyHOcrlAG25p37sHZmQsQ/MfhQe4lHsXIi7b9fy9v07xwkKd1yC8tbMeoYJ
-         os3afhdsp/WZn6gsE2RgqhJNCdTOiGry1GlpIo8mimn+8ZqUUdWqEhu+qMl6wpB60Z
-         m5JapGQcfFgsPIwLYKI2RkNaR2usPHSVMX8LzYWE=
+        b=VxY2oBi2Baanep3MVewVRK34Olc7fNMG1jGHnmZXGa2wN3ijpeQirBi5niu0Gt2/l
+         qChF7PqKT1u2nEZw8andHsP7+CCqsw5jYdZWGg98MNIaWlF451KkLVJCiSSiY90Uz+
+         QEdbtHEuvrReNZVcFUDY74ZVyQKdwUda97qUjhHw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Vadim Fedorenko <vfedorenko@novek.ru>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 382/593] ip6_tunnel: fix GRE6 segmentation
-Date:   Mon, 12 Jul 2021 08:09:02 +0200
-Message-Id: <20210712060929.018474698@linuxfoundation.org>
+Subject: [PATCH 5.13 520/800] selftests: tls: fix chacha+bidir tests
+Date:   Mon, 12 Jul 2021 08:09:03 +0200
+Message-Id: <20210712061022.563116245@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,143 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit a6e3f2985a80ef6a45a17d2d9d9151f17ea3ce07 ]
+[ Upstream commit 291c53e4dacd3a2cc3152d8af37f07f8496c594a ]
 
-Commit 6c11fbf97e69 ("ip6_tunnel: add MPLS transmit support")
-moved assiging inner_ipproto down from ipxip6_tnl_xmit() to
-its callee ip6_tnl_xmit(). The latter is also used by GRE.
+ChaCha support did not adjust the bidirectional test.
+We need to set up KTLS in reverse direction correctly,
+otherwise these two cases will fail:
 
-Since commit 38720352412a ("gre: Use inner_proto to obtain inner
-header protocol") GRE had been depending on skb->inner_protocol
-during segmentation. It sets it in gre_build_header() and reads
-it in gre_gso_segment(). Changes to ip6_tnl_xmit() overwrite
-the protocol, resulting in GSO skbs getting dropped.
+  tls.12_chacha.bidir
+  tls.13_chacha.bidir
 
-Note that inner_protocol is a union with inner_ipproto,
-GRE uses the former while the change switched it to the latter
-(always setting it to just IPPROTO_GRE).
-
-Restore the original location of skb_set_inner_ipproto(),
-it is unclear why it was moved in the first place.
-
-Fixes: 6c11fbf97e69 ("ip6_tunnel: add MPLS transmit support")
+Fixes: 4f336e88a870 ("selftests/tls: add CHACHA20-POLY1305 to tls selftests")
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Tested-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Acked-by: Vadim Fedorenko <vfedorenko@novek.ru>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ip6_tunnel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/tls.c | 67 ++++++++++++++++++-------------
+ 1 file changed, 39 insertions(+), 28 deletions(-)
 
-diff --git a/net/ipv6/ip6_tunnel.c b/net/ipv6/ip6_tunnel.c
-index 42ca2d05c480..08441f06afd4 100644
---- a/net/ipv6/ip6_tunnel.c
-+++ b/net/ipv6/ip6_tunnel.c
-@@ -1270,8 +1270,6 @@ route_lookup:
- 	if (max_headroom > dev->needed_headroom)
- 		dev->needed_headroom = max_headroom;
+diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+index 58fea6eb588d..112d41d01b12 100644
+--- a/tools/testing/selftests/net/tls.c
++++ b/tools/testing/selftests/net/tls.c
+@@ -25,6 +25,35 @@
+ #define TLS_PAYLOAD_MAX_LEN 16384
+ #define SOL_TLS 282
  
--	skb_set_inner_ipproto(skb, proto);
--
- 	err = ip6_tnl_encap(skb, t, &proto, fl6);
- 	if (err)
- 		return err;
-@@ -1408,6 +1406,8 @@ ipxip6_tnl_xmit(struct sk_buff *skb, struct net_device *dev,
- 	if (iptunnel_handle_offloads(skb, SKB_GSO_IPXIP6))
- 		return -1;
- 
-+	skb_set_inner_ipproto(skb, protocol);
++struct tls_crypto_info_keys {
++	union {
++		struct tls12_crypto_info_aes_gcm_128 aes128;
++		struct tls12_crypto_info_chacha20_poly1305 chacha20;
++	};
++	size_t len;
++};
 +
- 	err = ip6_tnl_xmit(skb, dev, dsfield, &fl6, encap_limit, &mtu,
- 			   protocol);
- 	if (err != 0) {
++static void tls_crypto_info_init(uint16_t tls_version, uint16_t cipher_type,
++				 struct tls_crypto_info_keys *tls12)
++{
++	memset(tls12, 0, sizeof(*tls12));
++
++	switch (cipher_type) {
++	case TLS_CIPHER_CHACHA20_POLY1305:
++		tls12->len = sizeof(struct tls12_crypto_info_chacha20_poly1305);
++		tls12->chacha20.info.version = tls_version;
++		tls12->chacha20.info.cipher_type = cipher_type;
++		break;
++	case TLS_CIPHER_AES_GCM_128:
++		tls12->len = sizeof(struct tls12_crypto_info_aes_gcm_128);
++		tls12->aes128.info.version = tls_version;
++		tls12->aes128.info.cipher_type = cipher_type;
++		break;
++	default:
++		break;
++	}
++}
++
+ static void memrnd(void *s, size_t n)
+ {
+ 	int *dword = s;
+@@ -145,33 +174,16 @@ FIXTURE_VARIANT_ADD(tls, 13_chacha)
+ 
+ FIXTURE_SETUP(tls)
+ {
+-	union {
+-		struct tls12_crypto_info_aes_gcm_128 aes128;
+-		struct tls12_crypto_info_chacha20_poly1305 chacha20;
+-	} tls12;
++	struct tls_crypto_info_keys tls12;
+ 	struct sockaddr_in addr;
+ 	socklen_t len;
+ 	int sfd, ret;
+-	size_t tls12_sz;
+ 
+ 	self->notls = false;
+ 	len = sizeof(addr);
+ 
+-	memset(&tls12, 0, sizeof(tls12));
+-	switch (variant->cipher_type) {
+-	case TLS_CIPHER_CHACHA20_POLY1305:
+-		tls12_sz = sizeof(struct tls12_crypto_info_chacha20_poly1305);
+-		tls12.chacha20.info.version = variant->tls_version;
+-		tls12.chacha20.info.cipher_type = variant->cipher_type;
+-		break;
+-	case TLS_CIPHER_AES_GCM_128:
+-		tls12_sz = sizeof(struct tls12_crypto_info_aes_gcm_128);
+-		tls12.aes128.info.version = variant->tls_version;
+-		tls12.aes128.info.cipher_type = variant->cipher_type;
+-		break;
+-	default:
+-		tls12_sz = 0;
+-	}
++	tls_crypto_info_init(variant->tls_version, variant->cipher_type,
++			     &tls12);
+ 
+ 	addr.sin_family = AF_INET;
+ 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+@@ -199,7 +211,7 @@ FIXTURE_SETUP(tls)
+ 
+ 	if (!self->notls) {
+ 		ret = setsockopt(self->fd, SOL_TLS, TLS_TX, &tls12,
+-				 tls12_sz);
++				 tls12.len);
+ 		ASSERT_EQ(ret, 0);
+ 	}
+ 
+@@ -212,7 +224,7 @@ FIXTURE_SETUP(tls)
+ 		ASSERT_EQ(ret, 0);
+ 
+ 		ret = setsockopt(self->cfd, SOL_TLS, TLS_RX, &tls12,
+-				 tls12_sz);
++				 tls12.len);
+ 		ASSERT_EQ(ret, 0);
+ 	}
+ 
+@@ -854,18 +866,17 @@ TEST_F(tls, bidir)
+ 	int ret;
+ 
+ 	if (!self->notls) {
+-		struct tls12_crypto_info_aes_gcm_128 tls12;
++		struct tls_crypto_info_keys tls12;
+ 
+-		memset(&tls12, 0, sizeof(tls12));
+-		tls12.info.version = variant->tls_version;
+-		tls12.info.cipher_type = TLS_CIPHER_AES_GCM_128;
++		tls_crypto_info_init(variant->tls_version, variant->cipher_type,
++				     &tls12);
+ 
+ 		ret = setsockopt(self->fd, SOL_TLS, TLS_RX, &tls12,
+-				 sizeof(tls12));
++				 tls12.len);
+ 		ASSERT_EQ(ret, 0);
+ 
+ 		ret = setsockopt(self->cfd, SOL_TLS, TLS_TX, &tls12,
+-				 sizeof(tls12));
++				 tls12.len);
+ 		ASSERT_EQ(ret, 0);
+ 	}
+ 
 -- 
 2.30.2
 
