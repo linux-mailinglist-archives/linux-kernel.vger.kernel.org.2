@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253B63C56C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A126B3C4961
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351539AbhGLIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:24:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
+        id S238896AbhGLGo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347782AbhGLHkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27FD86193A;
-        Mon, 12 Jul 2021 07:36:07 +0000 (UTC)
+        id S236730AbhGLGeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B250610A7;
+        Mon, 12 Jul 2021 06:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075368;
-        bh=v9NfhrdmT/yY3Jyhz3QV5NgnWhv//Ot5pm9nThVIXMo=;
+        s=korg; t=1626071415;
+        bh=6rehgkk6c0Q/VSE3KGmObeul32/8wNq14hF6Au8PopE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UGEr6bxZm5cBa8VKd6SOWEzFlxseng3leZz2SHawj7aR6hl3pgfhwGYnpw5GncUJp
-         Rp8EGv/eKRIpNWKJOojtb6NJcE8M4uTLkLEqfO+FTsZozVpMWKVCCl4wI6UCGP1ayb
-         zZmaucPgrf8EAenMSPsEKlXauaMOOBrzhYVQAcrM=
+        b=Rt7ZgOz4GpgnSXUmTjJBHy2BoZRgrnceifAdqZARk6WPsqWGwAguOqDd4zBIreBHB
+         nKfEuhUsWdd+7Yw/x/DOYh1hClh8c86EWcf2CURyvD6dQekinF+Cl0+ereJgs3VyVE
+         Xwpm8zgGaAmb4dvGKhvVQjwJrdejrImN00cFDJw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 195/800] btrfs: fix error handling in __btrfs_update_delayed_inode
-Date:   Mon, 12 Jul 2021 08:03:38 +0200
-Message-Id: <20210712060940.534636589@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 059/593] mm/gup: fix try_grab_compound_head() race with split_huge_page()
+Date:   Mon, 12 Jul 2021 08:03:39 +0200
+Message-Id: <20210712060849.625402990@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,73 +44,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Jann Horn <jannh@google.com>
 
-[ Upstream commit bb385bedded3ccbd794559600de4a09448810f4a ]
+commit c24d37322548a6ec3caec67100d28b9c1f89f60a upstream.
 
-If we get an error while looking up the inode item we'll simply bail
-without cleaning up the delayed node.  This results in this style of
-warning happening on commit:
+try_grab_compound_head() is used to grab a reference to a page from
+get_user_pages_fast(), which is only protected against concurrent freeing
+of page tables (via local_irq_save()), but not against concurrent TLB
+flushes, freeing of data pages, or splitting of compound pages.
 
-  WARNING: CPU: 0 PID: 76403 at fs/btrfs/delayed-inode.c:1365 btrfs_assert_delayed_root_empty+0x5b/0x90
-  CPU: 0 PID: 76403 Comm: fsstress Tainted: G        W         5.13.0-rc1+ #373
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  RIP: 0010:btrfs_assert_delayed_root_empty+0x5b/0x90
-  RSP: 0018:ffffb8bb815a7e50 EFLAGS: 00010286
-  RAX: 0000000000000000 RBX: ffff95d6d07e1888 RCX: ffff95d6c0fa3000
-  RDX: 0000000000000002 RSI: 000000000029e91c RDI: ffff95d6c0fc8060
-  RBP: ffff95d6c0fc8060 R08: 00008d6d701a2c1d R09: 0000000000000000
-  R10: ffff95d6d1760ea0 R11: 0000000000000001 R12: ffff95d6c15a4d00
-  R13: ffff95d6c0fa3000 R14: 0000000000000000 R15: ffffb8bb815a7e90
-  FS:  00007f490e8dbb80(0000) GS:ffff95d73bc00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f6e75555cb0 CR3: 00000001101ce001 CR4: 0000000000370ef0
-  Call Trace:
-   btrfs_commit_transaction+0x43c/0xb00
-   ? finish_wait+0x80/0x80
-   ? vfs_fsync_range+0x90/0x90
-   iterate_supers+0x8c/0x100
-   ksys_sync+0x50/0x90
-   __do_sys_sync+0xa/0x10
-   do_syscall_64+0x3d/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+Because no reference is held to the page when try_grab_compound_head() is
+called, the page may have been freed and reallocated by the time its
+refcount has been elevated; therefore, once we're holding a stable
+reference to the page, the caller re-checks whether the PTE still points
+to the same page (with the same access rights).
 
-Because the iref isn't dropped and this leaves an elevated node->count,
-so any release just re-queues it onto the delayed inodes list.  Fix this
-by going to the out label to handle the proper cleanup of the delayed
-node.
+The problem is that try_grab_compound_head() has to grab a reference on
+the head page; but between the time we look up what the head page is and
+the time we actually grab a reference on the head page, the compound page
+may have been split up (either explicitly through split_huge_page() or by
+freeing the compound page to the buddy allocator and then allocating its
+individual order-0 pages).  If that happens, get_user_pages_fast() may end
+up returning the right page but lifting the refcount on a now-unrelated
+page, leading to use-after-free of pages.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+To fix it: Re-check whether the pages still belong together after lifting
+the refcount on the head page.  Move anything else that checks
+compound_head(page) below the refcount increment.
+
+This can't actually happen on bare-metal x86 (because there, disabling
+IRQs locks out remote TLB flushes), but it can happen on virtualized x86
+(e.g.  under KVM) and probably also on arm64.  The race window is pretty
+narrow, and constantly allocating and shattering hugepages isn't exactly
+fast; for now I've only managed to reproduce this in an x86 KVM guest with
+an artificially widened timing window (by adding a loop that repeatedly
+calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits, so
+that PV TLB flushes are used instead of IPIs).
+
+As requested on the list, also replace the existing VM_BUG_ON_PAGE() with
+a warning and bailout.  Since the existing code only performed the BUG_ON
+check on DEBUG_VM kernels, ensure that the new code also only performs the
+check under that configuration - I don't want to mix two logically
+separate changes together too much.  The macro VM_WARN_ON_ONCE_PAGE()
+doesn't return a value on !DEBUG_VM, so wrap the whole check in an #ifdef
+block.  An alternative would be to change the VM_WARN_ON_ONCE_PAGE()
+definition for !DEBUG_VM such that it always returns false, but since that
+would differ from the behavior of the normal WARN macros, it might be too
+confusing for readers.
+
+Link: https://lkml.kernel.org/r/20210615012014.1100672-1-jannh@google.com
+Fixes: 7aef4172c795 ("mm: handle PTE-mapped tail pages in gerneric fast gup implementaiton")
+Signed-off-by: Jann Horn <jannh@google.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: Jan Kara <jack@suse.cz>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/btrfs/delayed-inode.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ mm/gup.c |   58 +++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 43 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 1a88f6214ebc..3091540fc22a 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1009,12 +1009,10 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	nofs_flag = memalloc_nofs_save();
- 	ret = btrfs_lookup_inode(trans, root, path, &key, mod);
- 	memalloc_nofs_restore(nofs_flag);
--	if (ret > 0) {
--		btrfs_release_path(path);
--		return -ENOENT;
--	} else if (ret < 0) {
--		return ret;
--	}
-+	if (ret > 0)
-+		ret = -ENOENT;
-+	if (ret < 0)
-+		goto out;
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -44,6 +44,23 @@ static void hpage_pincount_sub(struct pa
+ 	atomic_sub(refs, compound_pincount_ptr(page));
+ }
  
- 	leaf = path->nodes[0];
- 	inode_item = btrfs_item_ptr(leaf, path->slots[0],
--- 
-2.30.2
-
++/* Equivalent to calling put_page() @refs times. */
++static void put_page_refs(struct page *page, int refs)
++{
++#ifdef CONFIG_DEBUG_VM
++	if (VM_WARN_ON_ONCE_PAGE(page_ref_count(page) < refs, page))
++		return;
++#endif
++
++	/*
++	 * Calling put_page() for each ref is unnecessarily slow. Only the last
++	 * ref needs a put_page().
++	 */
++	if (refs > 1)
++		page_ref_sub(page, refs - 1);
++	put_page(page);
++}
++
+ /*
+  * Return the compound head page with ref appropriately incremented,
+  * or NULL if that failed.
+@@ -56,6 +73,21 @@ static inline struct page *try_get_compo
+ 		return NULL;
+ 	if (unlikely(!page_cache_add_speculative(head, refs)))
+ 		return NULL;
++
++	/*
++	 * At this point we have a stable reference to the head page; but it
++	 * could be that between the compound_head() lookup and the refcount
++	 * increment, the compound page was split, in which case we'd end up
++	 * holding a reference on a page that has nothing to do with the page
++	 * we were given anymore.
++	 * So now that the head page is stable, recheck that the pages still
++	 * belong together.
++	 */
++	if (unlikely(compound_head(page) != head)) {
++		put_page_refs(head, refs);
++		return NULL;
++	}
++
+ 	return head;
+ }
+ 
+@@ -96,6 +128,14 @@ static __maybe_unused struct page *try_g
+ 			return NULL;
+ 
+ 		/*
++		 * CAUTION: Don't use compound_head() on the page before this
++		 * point, the result won't be stable.
++		 */
++		page = try_get_compound_head(page, refs);
++		if (!page)
++			return NULL;
++
++		/*
+ 		 * When pinning a compound page of order > 1 (which is what
+ 		 * hpage_pincount_available() checks for), use an exact count to
+ 		 * track it, via hpage_pincount_add/_sub().
+@@ -103,15 +143,10 @@ static __maybe_unused struct page *try_g
+ 		 * However, be sure to *also* increment the normal page refcount
+ 		 * field at least once, so that the page really is pinned.
+ 		 */
+-		if (!hpage_pincount_available(page))
+-			refs *= GUP_PIN_COUNTING_BIAS;
+-
+-		page = try_get_compound_head(page, refs);
+-		if (!page)
+-			return NULL;
+-
+ 		if (hpage_pincount_available(page))
+ 			hpage_pincount_add(page, refs);
++		else
++			page_ref_add(page, refs * (GUP_PIN_COUNTING_BIAS - 1));
+ 
+ 		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
+ 				    orig_refs);
+@@ -135,14 +170,7 @@ static void put_compound_head(struct pag
+ 			refs *= GUP_PIN_COUNTING_BIAS;
+ 	}
+ 
+-	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
+-	/*
+-	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+-	 * ref needs a put_page().
+-	 */
+-	if (refs > 1)
+-		page_ref_sub(page, refs - 1);
+-	put_page(page);
++	put_page_refs(page, refs);
+ }
+ 
+ /**
 
 
