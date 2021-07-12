@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BA73C5025
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EB93C4A0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346985AbhGLHbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
+        id S238179AbhGLGs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242762AbhGLHEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF8C610E6;
-        Mon, 12 Jul 2021 07:01:21 +0000 (UTC)
+        id S236121AbhGLGhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:37:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5044361151;
+        Mon, 12 Jul 2021 06:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073281;
-        bh=9brvtHm5P1xX4on/zdIiSZ+3b4pLzhJ4IaEBj2zRwds=;
+        s=korg; t=1626071621;
+        bh=GS4HYO8RAoaqM24bOqToIKV1uzxOx5AOdFP2Shpm7f4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BE6HjXSvh1QRN8Kk7HN8r8zn+zVgiFU23dzgpbTVGtNgbOUjvpm8ZMjOqWdpVJGlk
-         i5sWbaN8p+NLfTJ4Q/ROoI02VboziQFA2Uh9ogwPaHNvkP2Mq4gV161DR6n7kAqEZ9
-         mqL30/4Ajlq2dRQ65WR5O6z2cysE3Yr0DVz1qIDs=
+        b=2fa5ZRhGDKyXm5980xDwlvIrSnFMoV0fQENTSkDPoYGeYZaCoj8RYgUJxzFvksTyr
+         KV11A1IFaceT0jU6wMaFQq0CiFUsTlYqjif8L0m53rkOgq6gHaZMYlkLC0QU0dKGG9
+         HGFM3j/JQKnAtm9b+J4EIQFnN1IHws2pSCjyBqnA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 188/700] btrfs: disable build on platforms having page size 256K
+Subject: [PATCH 5.10 111/593] media: sti/bdisp: fix pm_runtime_get_sync() usage count
 Date:   Mon, 12 Jul 2021 08:04:31 +0200
-Message-Id: <20210712060953.371952153@linuxfoundation.org>
+Message-Id: <20210712060855.403183265@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit b05fbcc36be1f8597a1febef4892053a0b2f3f60 ]
+[ Upstream commit c44eac5b72e23c31eefc0e10a71d9650036b8341 ]
 
-With a config having PAGE_SIZE set to 256K, BTRFS build fails
-with the following message
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
 
-  include/linux/compiler_types.h:326:38: error: call to
-  '__compiletime_assert_791' declared with attribute error:
-  BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+The bdisp_start_streaming() doesn't take it into account, which
+would unbalance PM usage counter at bdisp_stop_streaming().
 
-BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
-256K pages at the time being.
+The logic at bdisp_probe() is correct, but the best is to use
+the same call along the driver.
 
-There are two platforms that can select 256K pages:
- - hexagon
- - powerpc
+So, replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Disable BTRFS when 256K page size is selected. Supporting this would
-require changes to the subpage mode that's currently being developed.
-Given that 256K is many times larger than page sizes commonly used and
-for what the algorithms and structures have been tuned, it's out of
-scope and disabling build is a reasonable option.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[ update changelog ]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/platform/sti/bdisp/bdisp-v4l2.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 68b95ad82126..520a0f6a7d9e 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -18,6 +18,8 @@ config BTRFS_FS
- 	select RAID6_PQ
- 	select XOR_BLOCKS
- 	select SRCU
-+	depends on !PPC_256K_PAGES	# powerpc
-+	depends on !PAGE_SIZE_256KB	# hexagon
+diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
+index 060ca85f64d5..85288da9d2ae 100644
+--- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
++++ b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
+@@ -499,7 +499,7 @@ static int bdisp_start_streaming(struct vb2_queue *q, unsigned int count)
+ {
+ 	struct bdisp_ctx *ctx = q->drv_priv;
+ 	struct vb2_v4l2_buffer *buf;
+-	int ret = pm_runtime_get_sync(ctx->bdisp_dev->dev);
++	int ret = pm_runtime_resume_and_get(ctx->bdisp_dev->dev);
  
- 	help
- 	  Btrfs is a general purpose copy-on-write filesystem with extents,
+ 	if (ret < 0) {
+ 		dev_err(ctx->bdisp_dev->dev, "failed to set runtime PM\n");
+@@ -1364,10 +1364,10 @@ static int bdisp_probe(struct platform_device *pdev)
+ 
+ 	/* Power management */
+ 	pm_runtime_enable(dev);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "failed to set PM\n");
+-		goto err_pm;
++		goto err_remove;
+ 	}
+ 
+ 	/* Filters */
+@@ -1395,6 +1395,7 @@ err_filter:
+ 	bdisp_hw_free_filters(bdisp->dev);
+ err_pm:
+ 	pm_runtime_put(dev);
++err_remove:
+ 	bdisp_debugfs_remove(bdisp);
+ 	v4l2_device_unregister(&bdisp->v4l2_dev);
+ err_clk:
 -- 
 2.30.2
 
