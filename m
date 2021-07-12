@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04273C5BDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843BB3C5BE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233570AbhGLMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:10:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233391AbhGLMKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:10:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82E816044F;
-        Mon, 12 Jul 2021 12:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626091663;
-        bh=ws7c32By7Yah23i6ZVsT0SmTg7GkCW7FLFsyG2F4VNg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZPA3LXKZGgJ8c3NoWfjSakxf78YpaMM9laNSMM3xyM5Urd9hW8oKVEoThV/qD16UM
-         Z4fm8lMLJuLSjvINhe+2vCdFeV4qrZ3gHVK5p1fQO6K2l/FMUbetLUW8234i06366p
-         xUdhaGjugZxV+dQ+TMZZiuvqMio8VJS6gewCe1NVJ2NM0YdEEiXn3Dd8Shjr4bXwOR
-         JD6CwyCh7T8MlyY0Vk0w1PTdrBjwFnUstVMdzyBZjTwF+NXJ4QXc1Rel9z19ehCJvd
-         YpUZHmERHFEK+uabZRHYgBh/WK8czjHG8cCxaJiz8w/kBVW5LujAIsXdE+obXzceLJ
-         lKyNAP4BgltFg==
-From:   Mark Brown <broonie@kernel.org>
-To:     tytso@mit.edu
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH] random: Document add_hwgenerator_randomness() with other input functions
-Date:   Mon, 12 Jul 2021 13:07:03 +0100
-Message-Id: <20210712120703.53661-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S233660AbhGLMMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhGLMMc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 08:12:32 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF39C0613DD;
+        Mon, 12 Jul 2021 05:09:43 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id a2so17991510pgi.6;
+        Mon, 12 Jul 2021 05:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QDqsbSw5ub3US40KaqnvHwW7Q3ZUM55LG73YWMhDPxQ=;
+        b=mfWDH2Fms6O77tl7wv+7hMAX1RU4P0QEfO1Kmzpexc6rH6UNwVpt0vGgWJbqIg5qkk
+         5YQUiIUeTIJzTiViGp9DuxeFVP1B022YomDIm9CglhGDsn+NsaiX1m1vbBj+V6oAYEmc
+         e+sTi4ArEEcfPBD2W9H3oJPfiaS7yjUW0fPTou/DnYksVFm+qbJ12a4huv7hioJ7K0pa
+         KFqiBNeMPtlUClcOXMhBrOai8YuIWPfBwGY31SItmKOYLTUPpU9R/DbsXpwfwT68bm9G
+         ID1Azzz3TXFDAMXNdcb36mrb/+7KGIe2gHUGObL5Lfc2OPLUm5BCBW/aRIah2wYc2yST
+         Cc5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QDqsbSw5ub3US40KaqnvHwW7Q3ZUM55LG73YWMhDPxQ=;
+        b=JogmtmvwkRyJkfQkAI4yGV0LAKxJa5QiVgYAV2w2mJ09SH4NT3O+bMvIksfl473wmd
+         T9tK9RFoYGlW5Hm/VrzRUm1NRQMkYi9i/+PMOKbdRNvEPGcn5w+TlHwhNYMQGm0PHJfH
+         ETW6z+2Ha/R+uF3748jHs7SdoSzlkCLvhfpvyUYFCr5rYbA0aYrdx+5JtPV5QsEPBFuw
+         MRDYizhrvMt8QwZMz4HU/37lQevV4dtYCoMJysxc1s5hli+kEeouB+84nJy3DZIVFvqT
+         3/U4rb1OF3GcgDYzCBQhfZiHRP5v90oB5qexOEjGoJN8fX00xmQml8mH72AaJwy1B/6O
+         lBtA==
+X-Gm-Message-State: AOAM533an0uLYtKzAni/nzcSMfnrtIqK9+1OcX2B5M7PtGAjaVUTCx2E
+        zs6EsC7eFnrK60F4VJcIJWm69vIvz/OCt8FDpQc=
+X-Google-Smtp-Source: ABdhPJyDjntb09x1C4LNuWLUIWPpFwCw5HCcLsIodv8EQmaB5UiwWsDJXRzveYM2Mk/WiI6F1Jl4rE+HqPHUtzWTXQ0=
+X-Received: by 2002:a63:d014:: with SMTP id z20mr53104677pgf.203.1626091783250;
+ Mon, 12 Jul 2021 05:09:43 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1063; h=from:subject; bh=ws7c32By7Yah23i6ZVsT0SmTg7GkCW7FLFsyG2F4VNg=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBg7DAphEo8BBfrrHunfNTtN1+8Ts0dvrGerDp0GBnn NUPqmGWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYOwwKQAKCRAk1otyXVSH0HNfB/ 9KfBEEV9Z9gIrT4tyD05Nh1QAydFUbRbgvEUVLy/JWUsN9mk5XWlVtdZd+8W3OeZV53GdT2n2dIrIa eW4Dmw61LjYHny5CT0oqrxtIFjZo40U5AV+XoDp1096tNmMtHb51+rU2VHmq6NqCXR6vr3uthpsSxU uoXZobdCoRR+mlO3ggrWm46e0qRUHJA1bhkPhTZeF/70+19RjR0ibt7OZvl/SKp44vMXAxbP3q0mHP Ht7W8hbdX827x9BA5EqbI/oZtyDcDPILM1zd5O3v0lpn7+I89+co2TDy8ZAr1TvesVpqCzE08uB822 hdVM3JPhNQfT84oT2jtJsD3XDTYQGd
-X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+ <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com> <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 12 Jul 2021 15:09:04 +0300
+Message-ID: <CAHp75VfvVD20pZng_BG-ptZiYo9VBfHFe2OABo8VmtYcarfcSw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The section at the top of random.c which documents the input functions
-available does not document add_hwgenerator_randomness() which might lead
-a reader to overlook it. Add a brief note about it.
+On Mon, Jul 12, 2021 at 2:35 PM Henning Schild
+<henning.schild@siemens.com> wrote:
+>
+> This series is basically stuck because people rightfully want me to use
+> the GPIO subsystem for the LEDs and the watchdog bits that are
+> connected to GPIO.
+>
+> Problem is that the GPIO subsystem does not initialize on the machines
+> in question. It is a combination of hidden P2SB and missing ACPI table
+> entries. The GPIO subsystem (intel pinctrl) needs either P2SB or ACPI do
+> come up ...
+>
+> Andy proposed some patches for initializing the intel pinctrl stuff for
+> one of the machines by falling back to SoC detection in case there is
+> no ACPI or visible P2SB. While that works it would need to be done for
+> any Intel SoC to be consistent and discussions seem to go nowhere.
+>
+> I would be willing to port over to "intel pintctl" and help with
+> testing, but not so much with actual coding. Andy is that moving at all?
+>
+> Since my drivers do reserve the mmio regions properly and the intel
+> pinctrl will never come up anyways, i do not see a conflict merging my
+> proposed drivers in the current codebase. The wish to use the pinctrl
+> infrastructure can not be fulfilled if that infra is not in place. Once
+> intel pinctrl works, we can change those drivers to work with that.
+>
+> I do not want to take shortcuts ... but also do not want to get stuck
+> here. So maybe one way to serialize the merge is to allow my changes
+> like proposed and rebase on intel pinctrl once that subsystem actually
+> initializes on these machines. We could even have two code paths ... if
+> region can not be reserved, try gpio ... or the other way around.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/char/random.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Bjorn suggested exercising the IORESOURCE_PCI_FIXED on top of the
+early PCI quirk that unhides P2SB for the entire run time. But I have
+had no time to actually patch the kernel this way. Have tried the
+proposed approach on your side?
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 605969ed0f96..456a4f43d935 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -228,6 +228,14 @@
-  * particular randomness source.  They do this by keeping track of the
-  * first and second order deltas of the event timings.
-  *
-+ * There is also an interface for true hardware RNGs:
-+ *
-+ *	void add_hwgenerator_randomness(const char *buffer, size_t count,
-+ *				size_t entropy);
-+ *
-+ * This will credit entropy as specified by the caller, if the entropy
-+ * pool is full it will block until more entropy is needed.
-+ *
-  * Ensuring unpredictability at system startup
-  * ============================================
-  *
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
