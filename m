@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AB23C48CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFCB3C4FC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237839AbhGLGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
+        id S240839AbhGLH1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:27:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236938AbhGLGcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:32:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 303526052B;
-        Mon, 12 Jul 2021 06:29:28 +0000 (UTC)
+        id S241431AbhGLHAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:00:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCDEA61004;
+        Mon, 12 Jul 2021 06:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071368;
-        bh=otGD2ARCskogymtuvkdl2jSshSk8OnBkPnOGZOfKfI0=;
+        s=korg; t=1626073077;
+        bh=NNahF+fov1ZaCOcTBuZtRh7Qg7VDLkUNy31LawXhav4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hUSjHPY8B8GLvLq/3da87mb8Zr++ViEHdNkt1XAru/HDiZdptjUe5YKT4ajYVAERm
-         hmja2/SBM7mHHH0kf2D9i1i6ZiMFuRKU5RLC1Jugo6BSU2E0RJabTYtO6jFmuRBtfN
-         3KObjLH/GUcEWjel7/kAnro3xstxe1TVjs451+G8=
+        b=LgHBrF1EkZPuYJU8/Z4MKE9hkRsPj0IFTJuVwAoU0c6wb/yriTJ14L19oAoAx+jsy
+         Pjwt1kGtppUol3uXNe/oBlQ9QGk/Q/0XXjj3czlb2oybikNNstEnKoEbAlvETWTcO3
+         GdGho/T0+6kDG8orWDs8+bbElMvRkfW8R4FFWkrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 040/593] btrfs: compression: dont try to compress if we dont have enough pages
+        stable@vger.kernel.org,
+        Anatoly Trosinenko <anatoly.trosinenko@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.12 117/700] fuse: reject internal errno
 Date:   Mon, 12 Jul 2021 08:03:20 +0200
-Message-Id: <20210712060847.591981655@linuxfoundation.org>
+Message-Id: <20210712060941.472655185@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,38 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit f2165627319ffd33a6217275e5690b1ab5c45763 upstream.
+commit 49221cf86d18bb66fe95d3338cb33bd4b9880ca5 upstream.
 
-The early check if we should attempt compression does not take into
-account the number of input pages. It can happen that there's only one
-page, eg. a tail page after some ranges of the BTRFS_MAX_UNCOMPRESSED
-have been processed, or an isolated page that won't be converted to an
-inline extent.
+Don't allow userspace to report errors that could be kernel-internal.
 
-The single page would be compressed but a later check would drop it
-again because the result size must be at least one block shorter than
-the input. That can never work with just one page.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
+Fixes: 334f485df85a ("[PATCH] FUSE - device functions")
+Cc: <stable@vger.kernel.org> # v2.6.14
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/inode.c |    2 +-
+ fs/fuse/dev.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -547,7 +547,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (inode_need_compress(BTRFS_I(inode), start, end)) {
-+	if (nr_pages > 1 && inode_need_compress(BTRFS_I(inode), start, end)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -1867,7 +1867,7 @@ static ssize_t fuse_dev_do_write(struct
+ 	}
+ 
+ 	err = -EINVAL;
+-	if (oh.error <= -1000 || oh.error > 0)
++	if (oh.error <= -512 || oh.error > 0)
+ 		goto copy_finish;
+ 
+ 	spin_lock(&fpq->lock);
 
 
