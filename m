@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77AB3C5180
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7333C4B44
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349086AbhGLHlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45630 "EHLO mail.kernel.org"
+        id S239519AbhGLG4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245022AbhGLHLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:11:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC4860FF0;
-        Mon, 12 Jul 2021 07:08:31 +0000 (UTC)
+        id S236209AbhGLGkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B0F61158;
+        Mon, 12 Jul 2021 06:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073712;
-        bh=jLagBNkpwz2CdsX2bpqc1aEG1+0SE3pWJkgr5G3y5Pw=;
+        s=korg; t=1626071869;
+        bh=snxuVAQdJaGJUmErd/dkBw9lbfOuMsq1syOtgVSthOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vkIo9rm3C+QNnczLFK/857xfQtJNVESTgMcBQYKMaL8sUHXgBgJWTM9T15i51+vG2
-         rRgsHg2RQFq0YiKJq7XVe7BLD5a32HHJ33v6rCWNSUC67dg7oUOKQWqGyXmcjZ5m15
-         N6D3x17Nb9nNcRD9ICVu5XZXHeeP1P5SwWxEf5+8=
+        b=rTGl2ubuJdX5p5gcgoX8VGw3TX+sO1gI7dBpFmoknT5arwcodgNZyWzmqMAQhq9b1
+         7yOz5lBqRp/d9/AJQ4at5Hxvax+C2TNTdummIrZ/ZynO32IYRmTHZjncLBOBOwsfi1
+         TQZPveyihoFXZCLqqejEWQQGq6raQXsVeQKyXmhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 333/700] extcon: extcon-max8997: Fix IRQ freeing at error path
+Subject: [PATCH 5.10 256/593] KVM: nVMX: Dont clobber nested MMUs A/D status on EPTP switch
 Date:   Mon, 12 Jul 2021 08:06:56 +0200
-Message-Id: <20210712061011.830294109@linuxfoundation.org>
+Message-Id: <20210712060911.242682972@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 610bdc04830a864115e6928fc944f1171dfff6f3 ]
+[ Upstream commit 272b0a998d084e7667284bdd2d0c675c6a2d11de ]
 
-If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
-without freeing the requested IRQs.
+Drop bogus logic that incorrectly clobbers the accessed/dirty enabling
+status of the nested MMU on an EPTP switch.  When nested EPT is enabled,
+walk_mmu points at L2's _legacy_ page tables, not L1's EPT for L2.
 
-Free the IRQs prior returning if reading the status fails.
+This is likely a benign bug, as mmu->ept_ad is never consumed (since the
+MMU is not a nested EPT MMU), and stuffing mmu_role.base.ad_disabled will
+never propagate into future shadow pages since the nested MMU isn't used
+to map anything, just to walk L2's page tables.
 
-Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Link: https://lore.kernel.org/r/27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Note, KVM also does a full MMU reload, i.e. the guest_mmu will be
+recreated using the new EPTP, and thus any change in A/D enabling will be
+properly recognized in the relevant MMU.
+
+Fixes: 41ab93727467 ("KVM: nVMX: Emulate EPTP switching for the L1 hypervisor")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210609234235.1244004-4-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-max8997.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/vmx/nested.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index 337b0eea4e62..5c4f7746cbee 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -729,7 +729,7 @@ static int max8997_muic_probe(struct platform_device *pdev)
- 				2, info->status);
- 	if (ret) {
- 		dev_err(info->dev, "failed to read MUIC register\n");
--		return ret;
-+		goto err_irq;
- 	}
- 	cable_type = max8997_muic_get_cable_type(info,
- 					   MAX8997_CABLE_GROUP_ADC, &attached);
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 8f1319b7d3bd..67554bc7adb2 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -5484,8 +5484,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ {
+ 	u32 index = kvm_rcx_read(vcpu);
+ 	u64 new_eptp;
+-	bool accessed_dirty;
+-	struct kvm_mmu *mmu = vcpu->arch.walk_mmu;
+ 
+ 	if (!nested_cpu_has_eptp_switching(vmcs12) ||
+ 	    !nested_cpu_has_ept(vmcs12))
+@@ -5494,13 +5492,10 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ 	if (index >= VMFUNC_EPTP_ENTRIES)
+ 		return 1;
+ 
+-
+ 	if (kvm_vcpu_read_guest_page(vcpu, vmcs12->eptp_list_address >> PAGE_SHIFT,
+ 				     &new_eptp, index * 8, 8))
+ 		return 1;
+ 
+-	accessed_dirty = !!(new_eptp & VMX_EPTP_AD_ENABLE_BIT);
+-
+ 	/*
+ 	 * If the (L2) guest does a vmfunc to the currently
+ 	 * active ept pointer, we don't have to do anything else
+@@ -5509,8 +5504,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
+ 		if (!nested_vmx_check_eptp(vcpu, new_eptp))
+ 			return 1;
+ 
+-		mmu->ept_ad = accessed_dirty;
+-		mmu->mmu_role.base.ad_disabled = !accessed_dirty;
+ 		vmcs12->ept_pointer = new_eptp;
+ 
+ 		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
 -- 
 2.30.2
 
