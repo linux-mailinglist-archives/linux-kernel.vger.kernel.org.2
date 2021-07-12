@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272E13C54C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3B23C58E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354527AbhGLIEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:04:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
+        id S1381776AbhGLIxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345330AbhGLHZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:25:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5618A61364;
-        Mon, 12 Jul 2021 07:22:11 +0000 (UTC)
+        id S1353402AbhGLICI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7589861222;
+        Mon, 12 Jul 2021 07:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074531;
-        bh=2RKsoqzOpkwGZoidnAJECty77Z17DJBi4cGvckbFOcM=;
+        s=korg; t=1626076498;
+        bh=9mTz9qCOuj4S8M3/VIJtVbByzHuDYY0u+y6Uu0rnKn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eYD8Wi6nQ6+Myma65xNA3NKFv4l93YN5M70Ka7HZzEICZUf8sNYHD7FannVAawBz8
-         HK5+WL+dm5BhaOeWt0tjRhHOaVKlrbTJ992+qWauQl3jFoMUsu3vGEevYPOKedsd6V
-         Z2Uf9+0mmdFtXsHDeqYI0uu0hJt2lAzfREqr70xA=
+        b=vV5834+p+TQYfFSiewrFKR/EewfUx2Sm9zFiEwuZSKDjnQq+oJ//CnTFDtgdTvn1G
+         pLGESuWvRzTAOITcK2j2a8A3iC8pIA23Ye6nR74rTJD7gdxk15FfzPqvwqj+nG06HT
+         RtqHrIn8EjusQyofjgITvgKjFd+YQei2aeACgS3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org, Andreas Kemnade <andreas@kemnade.info>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 610/700] thunderbolt: Bond lanes only when dual_link_port != NULL in alloc_dev_default()
+Subject: [PATCH 5.13 670/800] mfd: rn5t618: Fix IRQ trigger by changing it to level mode
 Date:   Mon, 12 Jul 2021 08:11:33 +0200
-Message-Id: <20210712061040.854898373@linuxfoundation.org>
+Message-Id: <20210712061038.229585665@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Andreas Kemnade <andreas@kemnade.info>
 
-[ Upstream commit a0d36fa1065901f939b04587a09c65303a64ac88 ]
+[ Upstream commit a1649a5260631979c68e5b2012f60f90300e646f ]
 
-We should not dereference ->dual_link_port if it is NULL and lane bonding
-is requested. For this reason move lane bonding configuration happen
-inside the block where ->dual_link_port != NULL.
+During more massive generation of interrupts, the IRQ got stuck,
+and the subdevices did not see any new interrupts. That happens
+especially at wonky USB supply in combination with ADC reads.
+To fix that trigger the IRQ at level low instead of falling edge.
 
-Fixes: 54509f5005ca ("thunderbolt: Add KUnit tests for path walking")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Yehezkel Bernat <YehezkelShB@gmail.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fixes: 0c81604516af ("mfd: rn5t618: Add IRQ support")
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thunderbolt/test.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mfd/rn5t618.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/thunderbolt/test.c b/drivers/thunderbolt/test.c
-index 464c2d37b992..e254f8c37cb7 100644
---- a/drivers/thunderbolt/test.c
-+++ b/drivers/thunderbolt/test.c
-@@ -259,14 +259,14 @@ static struct tb_switch *alloc_dev_default(struct kunit *test,
- 	if (port->dual_link_port && upstream_port->dual_link_port) {
- 		port->dual_link_port->remote = upstream_port->dual_link_port;
- 		upstream_port->dual_link_port->remote = port->dual_link_port;
--	}
+diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+index 6ed04e6dbc78..384acb459427 100644
+--- a/drivers/mfd/rn5t618.c
++++ b/drivers/mfd/rn5t618.c
+@@ -107,7 +107,7 @@ static int rn5t618_irq_init(struct rn5t618 *rn5t618)
  
--	if (bonded) {
--		/* Bonding is used */
--		port->bonded = true;
--		port->dual_link_port->bonded = true;
--		upstream_port->bonded = true;
--		upstream_port->dual_link_port->bonded = true;
-+		if (bonded) {
-+			/* Bonding is used */
-+			port->bonded = true;
-+			port->dual_link_port->bonded = true;
-+			upstream_port->bonded = true;
-+			upstream_port->dual_link_port->bonded = true;
-+		}
- 	}
- 
- 	return sw;
+ 	ret = devm_regmap_add_irq_chip(rn5t618->dev, rn5t618->regmap,
+ 				       rn5t618->irq,
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 				       0, irq_chip, &rn5t618->irq_data);
+ 	if (ret)
+ 		dev_err(rn5t618->dev, "Failed to register IRQ chip\n");
 -- 
 2.30.2
 
