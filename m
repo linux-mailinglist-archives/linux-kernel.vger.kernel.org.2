@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067C83C484D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE513C4872
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236756AbhGLGhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53376 "EHLO mail.kernel.org"
+        id S235209AbhGLGi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235415AbhGLGba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:31:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6C5F61107;
-        Mon, 12 Jul 2021 06:28:36 +0000 (UTC)
+        id S236102AbhGLGbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:31:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 354C06101E;
+        Mon, 12 Jul 2021 06:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071317;
-        bh=A29uD9TBdOrxuQCtmEDMiw/lcIFpE7XKAb7R6qb5EG4=;
+        s=korg; t=1626071340;
+        bh=xET+Qh1BEwM+kOZpMUJLhJanoXL7XBuBzswcNMI63Hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=loTgQF6TGtCo2uTaru+F7OwV7huTyXbix8U8utA2wTL4BbbH99elQ3uWFi88tbOTe
-         Asr+FRhlLav4Du2Dp06PQ2q/A2f2ukS59PhkXiqqIsV57HrtPastQYkdmsSdmyqwyn
-         MOyhihmf1O+LKhTnRYhL5TEQIKWHJXcNPglxvhuY=
+        b=HRmzyv87fk0hrnYuFIQXRZfdPzV12g81PPDEdd3tW1DVeQzA3J4EO4G0SuCMsim+G
+         tlqqHY6t93bg0l+hx8zyWpqh71lcmJlS/1OfRUyLwOupv5CCshA0eJ12y8RJe93h1F
+         BSzsbOEFR3ARkWYy1mlwd/62fMkHo8AkvAC6g8VM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.10 019/593] Input: usbtouchscreen - fix control-request directions
-Date:   Mon, 12 Jul 2021 08:02:59 +0200
-Message-Id: <20210712060845.312426100@linuxfoundation.org>
+        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
+Subject: [PATCH 5.10 021/593] usb: gadget: eem: fix echo command packet response issue
+Date:   Mon, 12 Jul 2021 08:03:01 +0200
+Message-Id: <20210712060845.545018422@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -39,66 +38,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Linyu Yuan <linyyuan@codeaurora.com>
 
-commit 41e81022a04a0294c55cfa7e366bc14b9634c66e upstream.
+commit 4249d6fbc10fd997abdf8a1ea49c0389a0edf706 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+when receive eem echo command, it will send a response,
+but queue this response to the usb request which allocate
+from gadget device endpoint zero,
+and transmit the request to IN endpoint of eem interface.
 
-Fix the four control requests which erroneously used usb_rcvctrlpipe().
+on dwc3 gadget, it will trigger following warning in function
+__dwc3_gadget_ep_queue(),
 
-Fixes: 1d3e20236d7a ("[PATCH] USB: usbtouchscreen: unified USB touchscreen driver")
-Fixes: 24ced062a296 ("usbtouchscreen: add support for DMC TSC-10/25 devices")
-Fixes: 9e3b25837a20 ("Input: usbtouchscreen - add support for e2i touchscreen controller")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Cc: stable@vger.kernel.org      # 2.6.17
-Link: https://lore.kernel.org/r/20210524092048.4443-1-johan@kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+	if (WARN(req->dep != dep, "request %pK belongs to '%s'\n",
+				&req->request, req->dep->name))
+		return -EINVAL;
+
+fix it by allocating a usb request from IN endpoint of eem interface,
+and transmit the usb request to same IN endpoint of eem interface.
+
+Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210616115142.34075-1-linyyuan@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/touchscreen/usbtouchscreen.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/function/f_eem.c |   43 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
---- a/drivers/input/touchscreen/usbtouchscreen.c
-+++ b/drivers/input/touchscreen/usbtouchscreen.c
-@@ -251,7 +251,7 @@ static int e2i_init(struct usbtouch_usb
- 	int ret;
- 	struct usb_device *udev = interface_to_usbdev(usbtouch->interface);
+--- a/drivers/usb/gadget/function/f_eem.c
++++ b/drivers/usb/gadget/function/f_eem.c
+@@ -30,6 +30,11 @@ struct f_eem {
+ 	u8				ctrl_id;
+ };
  
--	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
-+	ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 	                      0x01, 0x02, 0x0000, 0x0081,
- 	                      NULL, 0, USB_CTRL_SET_TIMEOUT);
++struct in_context {
++	struct sk_buff	*skb;
++	struct usb_ep	*ep;
++};
++
+ static inline struct f_eem *func_to_eem(struct usb_function *f)
+ {
+ 	return container_of(f, struct f_eem, port.func);
+@@ -320,9 +325,12 @@ fail:
  
-@@ -531,7 +531,7 @@ static int mtouch_init(struct usbtouch_u
- 	if (ret)
- 		return ret;
+ static void eem_cmd_complete(struct usb_ep *ep, struct usb_request *req)
+ {
+-	struct sk_buff *skb = (struct sk_buff *)req->context;
++	struct in_context *ctx = req->context;
  
--	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
-+	ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 	                      MTOUCHUSB_RESET,
- 	                      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 	                      1, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
-@@ -543,7 +543,7 @@ static int mtouch_init(struct usbtouch_u
- 	msleep(150);
+-	dev_kfree_skb_any(skb);
++	dev_kfree_skb_any(ctx->skb);
++	kfree(req->buf);
++	usb_ep_free_request(ctx->ep, req);
++	kfree(ctx);
+ }
  
- 	for (i = 0; i < 3; i++) {
--		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
-+		ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 				      MTOUCHUSB_ASYNC_REPORT,
- 				      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				      1, 1, NULL, 0, USB_CTRL_SET_TIMEOUT);
-@@ -722,7 +722,7 @@ static int dmc_tsc10_init(struct usbtouc
- 	}
+ /*
+@@ -410,7 +418,9 @@ static int eem_unwrap(struct gether *por
+ 		 * b15:		bmType (0 == data, 1 == command)
+ 		 */
+ 		if (header & BIT(15)) {
+-			struct usb_request	*req = cdev->req;
++			struct usb_request	*req;
++			struct in_context	*ctx;
++			struct usb_ep		*ep;
+ 			u16			bmEEMCmd;
  
- 	/* start sending data */
--	ret = usb_control_msg(dev, usb_rcvctrlpipe (dev, 0),
-+	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 	                      TSC10_CMD_DATA1,
- 	                      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 	                      0, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+ 			/* EEM command packet format:
+@@ -439,11 +449,36 @@ static int eem_unwrap(struct gether *por
+ 				skb_trim(skb2, len);
+ 				put_unaligned_le16(BIT(15) | BIT(11) | len,
+ 							skb_push(skb2, 2));
++
++				ep = port->in_ep;
++				req = usb_ep_alloc_request(ep, GFP_ATOMIC);
++				if (!req) {
++					dev_kfree_skb_any(skb2);
++					goto next;
++				}
++
++				req->buf = kmalloc(skb2->len, GFP_KERNEL);
++				if (!req->buf) {
++					usb_ep_free_request(ep, req);
++					dev_kfree_skb_any(skb2);
++					goto next;
++				}
++
++				ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
++				if (!ctx) {
++					kfree(req->buf);
++					usb_ep_free_request(ep, req);
++					dev_kfree_skb_any(skb2);
++					goto next;
++				}
++				ctx->skb = skb2;
++				ctx->ep = ep;
++
+ 				skb_copy_bits(skb2, 0, req->buf, skb2->len);
+ 				req->length = skb2->len;
+ 				req->complete = eem_cmd_complete;
+ 				req->zero = 1;
+-				req->context = skb2;
++				req->context = ctx;
+ 				if (usb_ep_queue(port->in_ep, req, GFP_ATOMIC))
+ 					DBG(cdev, "echo response queue fail\n");
+ 				break;
 
 
