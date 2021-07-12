@@ -2,432 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E143C40E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5637F3C40E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbhGLBZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 21:25:05 -0400
-Received: from mga11.intel.com ([192.55.52.93]:1371 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhGLBZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 21:25:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="206894809"
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="206894809"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 18:22:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="412425274"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga003.jf.intel.com with ESMTP; 11 Jul 2021 18:22:16 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Sun, 11 Jul 2021 18:22:15 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Sun, 11 Jul 2021 18:22:15 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Sun, 11 Jul 2021 18:22:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l3nel6donUs8YkxTvl0T2psFzCsfIKQyz3uVtvafoTqG3dchQrQGVM6uKluwoWGjjMcmLcEU7waEe/IqKUrWmPwHksG2l3J7ll2Ah0Cz6/AAtJV2pQ+Z/8Z6GVGlRKlWFD6YPX8suAKeu4t6OJlQxE2P0Q0I5HWYzPIexhoSTbf8mrCDm79eNjgE/GZKz077LyOp9uoDPM7WviBdQ/nERyTOFYnRcEQO6VyGM0dcyKfXzoO+CSC6Q24mTq16wbhndTkLJF7016O6QJ3N/Ynfgy8n1Abn40gp9NQOUQvoake/hqtxfgackHN4X2wL5oCN1HAEen6iA6hLcRzr1pqfgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4CLfBs8VwUccARizQcCDxQxNQkY7kmUuTuR0m47YGiU=;
- b=kC5i4HY7hAeaFnswCXiuCApz1zfBYQoYkMH6Jzmv3vMpfcrXDe2IuskVzxzNA66yqWtZX3Mzv5wX+BxO5SxKwl/7+r+nBG2cW04LgyMghOYwuBvrT7jA39j9pnJvz4X1CSOxXyoKPVvrd4rvJCl5fFQ3ra1/WyLVn/ikThuwO6tgTt7bvhT4VgG/KX4NaQKnplTgvm+71DEf4KHO9AEZ9/F29j9tEGCuJw7o5J7EdOXRs7EfOvPtTA+ARDpZGwRaxX4FVn4QY0b8kgis1E8f3FBb2SQmC0cHTfSHbGCamqiJW0dhZyVN77nZTLLVZKjs6rFtkU/4ex988VCUsQwNxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4CLfBs8VwUccARizQcCDxQxNQkY7kmUuTuR0m47YGiU=;
- b=gQVCv2TtABku+eCtnZcWH3TWMtwBa1O2DHz0LG3fYtGSHdQCXXZMylpXqw03DukIjO1Bl0gmRb5ZCcCAhKfaEjBzsBvz3JLNfGhFgnMjV3X4KwaMWOrlDFbGX8yUMZEwVCBdxfvZgJrH6sZVYLc1eDUmbowIf4yvKg5RloX/NTM=
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
- by BN6PR11MB1940.namprd11.prod.outlook.com (2603:10b6:404:104::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Mon, 12 Jul
- 2021 01:22:11 +0000
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::fd4b:cdde:6790:134]) by BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::fd4b:cdde:6790:134%7]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
- 01:22:11 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>
-Subject: RE: [RFC v2] /dev/iommu uAPI proposal
-Thread-Topic: [RFC v2] /dev/iommu uAPI proposal
-Thread-Index: Add0lrMH87IsTsl5Rp6WN1oQU6kGMQAdcmAAAGvGIGA=
-Date:   Mon, 12 Jul 2021 01:22:11 +0000
-Message-ID: <BN9PR11MB54336FB9845649BB2D53022C8C159@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210709155052.2881f561.alex.williamson@redhat.com>
-In-Reply-To: <20210709155052.2881f561.alex.williamson@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fe8ebe52-36fc-4cc2-3fc4-08d944d37978
-x-ms-traffictypediagnostic: BN6PR11MB1940:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR11MB1940A094DF9E9A49CBF06CBD8C159@BN6PR11MB1940.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FeotRSy9hohQ+e3xsspSdszKItXCiRCW7FH9ucT381uYZfkmQRzwvZoj+D/QnJqgDPSc5Ixa9vNOZ9VYzCAqGkSiRMxbfT8hwEPJ/2FQOBnHXeBZpi5bbCJQzuGTsqJLPnS/nvbzO6xtOL4GgKuOXeV31uJrSRSOB/S7zjAGrny1KoHIeoAKNESgbis6/+t70VuKKDVvv6vzg8vg2RmGUYQDmEytrPaScDacpPqp8F/CWVAGzvYkUwFF/CJcuhpHAG/s4dCwwFg7lVdzN4Azk4/woX4TsxjWskSrBEl4xvkERlOFLnY+kJ57e+Ljf0NPQX10DvmM5biE1yuDXkbljeLVzovfiza221sgtYWwRlr2w4cWCPs9fiadNuHp5lH19iBLdMsMBVAlfFTq5Bih28wtTwWNciUw2RLu7tvodl3fGUvLZRZJkjMrph3npXKiin6sbL5mnbFjZBES5eeitWhrMl4rTl5F/eoEjKXelNuJZP8IS1WPxZ5tgyY2VwiRM+ig1GZLT7tjRxslY76pJ0/PW0dfN/zt854XtACvYByEOcGTsqrcNs0YFw9s3Xd6PsSSQVz9pzaaabn4D9AnUl4Ula6WnWl6LmFauPcfrV3cBRdNKUQ6xtkqyyMoL8pSSNqik00sBEmIxnDN/WwnlQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(366004)(86362001)(5660300002)(186003)(26005)(6506007)(7696005)(66946007)(52536014)(122000001)(66446008)(66556008)(64756008)(66476007)(71200400001)(33656002)(83380400001)(76116006)(478600001)(55016002)(8676002)(4326008)(9686003)(6916009)(316002)(38100700002)(8936002)(2906002)(7416002)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?eKCJFW9via1Za/3XRVfhQKI5l3dGJxLbgx7vdGlC8Gler3R2q+aeN3/uPUmA?=
- =?us-ascii?Q?hVe6GayPdextnp9CmbdBQUKGXKTB67QMgCLQgKHJVwBaS5qtZnnW2vO7g3DI?=
- =?us-ascii?Q?6xYijiEOM2JuzSvMNF+1RjwWRYtHnVi5WdGo8SB6FcDC1RaQfLryVQ1Erv1l?=
- =?us-ascii?Q?SxPAfVh1mWIfGTfA0chYVx6kJWfBn3JkFjoYKy7lJHxw4xw2VvsiLv19+m2x?=
- =?us-ascii?Q?hYGPmhXBCFMFsLa4uef5a4B1O+EJQYerdSvRg4oP9J8KZhixBj87cGboNaNr?=
- =?us-ascii?Q?4SgVcq2vWxmjkVk397AfXjOaKg0OQdM+84hIR/JD14oq4WYTOdwJQ3uAX6vT?=
- =?us-ascii?Q?8Z324DYOSXAMdA3ZCAblNTgmSeLZLK1z5U6+j3Iw3+VelcRRuENzvFYhXCf3?=
- =?us-ascii?Q?G32bgKEAdAOaT+AmNSjRj3OIDLyYrVfHMGZ36XCj8o/O6ysZepqvkXH9iFh0?=
- =?us-ascii?Q?Ffzuvyyim02TVGOcypd9q1KAzRxkSsw00Plg8w7lUqxM7ux0NtgJtwOnWbbf?=
- =?us-ascii?Q?cLMtwW/QC2yhe4M0rmOSQ8Zymh4H/Nc2glGIG5CIhKt0lYwluxtby8RSYEiz?=
- =?us-ascii?Q?S//aRk7z9uEAf2rpZDkguTHMjUn+qDq70NKNK1WW2TCsnvwxLZYMoE3pMbW6?=
- =?us-ascii?Q?FE0X6T7bp8W/M5ewiFFi6Chrs6SylAvbCtPURzBLiEiA4a9H0YV9K08CbeCD?=
- =?us-ascii?Q?ef69nvF5KSWSJGm8UtymHZq4q/n27lR0kAjtA2kHKNcfSAn1W5wW3cqN+iib?=
- =?us-ascii?Q?mpulrpzBkKSk+jfCt7cnu3k8/f50ymO8wi+BMIRbieYrWYo7NNslOwiEubjW?=
- =?us-ascii?Q?D2GXU3yz5r2g4WxI9NoAw6r/Yqh/4+U1CMHCYSi3cJqaacbX96uzAJ5eB71h?=
- =?us-ascii?Q?/SqCrCU1XV9S4sr0LPzRqJc6RGQ0npasNbo2rk8WhBzvPggxkV1LZtH9+T0S?=
- =?us-ascii?Q?bQOKpujstrTX3IwjzZiaeYP7IyqEB8rexMkME+JIKHlg/mniTUk0lLaqz5jV?=
- =?us-ascii?Q?2tOLF2vRhIKndolmSyXLJg0HXEPnozsxs7vgkONs5sLV0cqS5WfeO4QuId7j?=
- =?us-ascii?Q?nE5sfYPScAi/2JRaqDuhMeNTWhfp3JnOMjZsBr0KvXQAYQphqPRvSZIoWgpB?=
- =?us-ascii?Q?BtYoOvc1r6TasVwBVEAU8nIRNRP0TNEx7T+P4QRVZmtRWllrlqbmvIbaBHlG?=
- =?us-ascii?Q?SaBUFhkOHoO2UfGgptCfRWCMyxWUeRfF1MIVjV93ZfBhptJXx/Kmr3tZOFRB?=
- =?us-ascii?Q?zlR4RUlR2umQYIT7qemw23XU1l7ClWBjL0HR02KHHqY0lNhvMN6jDMH3w6hS?=
- =?us-ascii?Q?PVFcvpcdIgDBinNAB4vHIDH9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232307AbhGLB24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 21:28:56 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:57466 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229997AbhGLB2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 21:28:55 -0400
+X-UUID: 92874e047db94079ba50da9a46fc81d3-20210712
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BrVkYvul2t18VHZFlmSxM78jQXtF/EmfXqAkVip/sj8=;
+        b=JB2GlvLwajpP6+YMrynBedoM3Oo/WkjlsFe5soO0pCt+bzUxZOX476QeaShnj8ixlXwl2ry1D4JzFnwbjluS9kmPmxDzmTamIEyzWxofL3ncAkRu98mtn5OboLrJGTswcBI0ojutbMXZrxMq5stxO7ij8gHiYhb7r2xh50I1zGk=;
+X-UUID: 92874e047db94079ba50da9a46fc81d3-20210712
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 820331364; Mon, 12 Jul 2021 09:26:04 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 12 Jul 2021 09:26:03 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Jul 2021 09:26:03 +0800
+Message-ID: <3b52d1781db5b67a04cdbd18852e0857f8b73a38.camel@mediatek.com>
+Subject: Re: [PATCH 05/22] clk: mediatek: Add MT8195 audio clock support
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Chen-Yu Tsai <wenst@chromium.org>,
+        Trevor Wu <trevor.wu@mediatek.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Mon, 12 Jul 2021 09:26:03 +0800
+In-Reply-To: <YOLKxrJin5kkwiIl@google.com>
+References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
+         <20210616224743.5109-6-chun-jie.chen@mediatek.com>
+         <YOLKxrJin5kkwiIl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe8ebe52-36fc-4cc2-3fc4-08d944d37978
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2021 01:22:11.4824
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3aNK6iwGMekS9xOWuK80Z/OYFAX5Y7MvP/1HpvKZHYevhdG75WMtNHSgqCHsZbkQToQuXkFKewQoJbe7mZH8Zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1940
-X-OriginatorOrg: intel.com
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Alex Williamson <alex.williamson@redhat.com>
-> Sent: Saturday, July 10, 2021 5:51 AM
->=20
-> Hi Kevin,
->=20
-> A couple first pass comments...
->=20
-> On Fri, 9 Jul 2021 07:48:44 +0000
-> "Tian, Kevin" <kevin.tian@intel.com> wrote:
-> > 2.2. /dev/vfio device uAPI
-> > ++++++++++++++++++++++++++
-> >
-> > /*
-> >   * Bind a vfio_device to the specified IOMMU fd
-> >   *
-> >   * The user should provide a device cookie when calling this ioctl. Th=
-e
-> >   * cookie is later used in IOMMU fd for capability query, iotlb invali=
-dation
-> >   * and I/O fault handling.
-> >   *
-> >   * User is not allowed to access the device before the binding operati=
-on
-> >   * is completed.
-> >   *
-> >   * Unbind is automatically conducted when device fd is closed.
-> >   *
-> >   * Input parameters:
-> >   *	- iommu_fd;
-> >   *	- cookie;
-> >   *
-> >   * Return: 0 on success, -errno on failure.
-> >   */
-> > #define VFIO_BIND_IOMMU_FD	_IO(VFIO_TYPE, VFIO_BASE + 22)
->=20
-> I believe this is an ioctl on the device fd, therefore it should be
-> named VFIO_DEVICE_BIND_IOMMU_FD.
+T24gTW9uLCAyMDIxLTA3LTA1IGF0IDE3OjAzICswODAwLCBDaGVuLVl1IFRzYWkgd3JvdGU6DQo+
+IEhpLA0KPiANCj4gT24gVGh1LCBKdW4gMTcsIDIwMjEgYXQgMDY6NDc6MjZBTSArMDgwMCwgQ2h1
+bi1KaWUgQ2hlbiB3cm90ZToNCj4gPiBBZGQgTVQ4MTk1IGF1ZGlvIGNsb2NrIHByb3ZpZGVyDQo+
+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bi1KaWUgQ2hlbiA8Y2h1bi1qaWUuY2hlbkBtZWRp
+YXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvY2xrL21lZGlhdGVrL0tjb25maWcgICAg
+ICAgICAgfCAgIDYgKw0KPiA+ICBkcml2ZXJzL2Nsay9tZWRpYXRlay9NYWtlZmlsZSAgICAgICAg
+IHwgICAxICsNCj4gPiAgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5NS1hdWQuYyB8IDE5
+OA0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwg
+MjA1IGluc2VydGlvbnMoKykNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL21l
+ZGlhdGVrL2Nsay1tdDgxOTUtYXVkLmMNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9j
+bGsvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+IGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvS2NvbmZpZw0K
+PiA+IGluZGV4IDY3MDdhYmEzZDUwMC4uZTJiYWU5ZDQ5MGE0IDEwMDY0NA0KPiA+IC0tLSBhL2Ry
+aXZlcnMvY2xrL21lZGlhdGVrL0tjb25maWcNCj4gPiArKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRl
+ay9LY29uZmlnDQo+ID4gQEAgLTU4OCw2ICs1ODgsMTIgQEAgY29uZmlnIENPTU1PTl9DTEtfTVQ4
+MTk1DQo+ID4gIAloZWxwDQo+ID4gIAkgIFRoaXMgZHJpdmVyIHN1cHBvcnRzIE1lZGlhVGVrIE1U
+ODE5NSBiYXNpYyBjbG9ja3MuDQo+ID4gIA0KPiA+ICtjb25maWcgQ09NTU9OX0NMS19NVDgxOTVf
+QVVEU1lTDQo+ID4gKwlib29sICJDbG9jayBkcml2ZXIgZm9yIE1lZGlhVGVrIE1UODE5NSBhdWRz
+eXMiDQo+ID4gKwlkZXBlbmRzIG9uIENPTU1PTl9DTEtfTVQ4MTk1DQo+ID4gKwloZWxwDQo+ID4g
+KwkgIFRoaXMgZHJpdmVyIHN1cHBvcnRzIE1lZGlhVGVrIE1UODE5NSBhdWRzeXMgY2xvY2tzLg0K
+PiA+ICsNCj4gDQo+IFRoZSBjbG9jayBtb2R1bGVzIGFyZW4ndCBzaGFyZWQgYmV0d2VlbiBkaWZm
+ZXJlbnQgY2hpcHMsIHNvIGVpdGhlciB3ZQ0KPiBlbmFibGUgc3VwcG9ydCBmb3IgYWxsIGNsb2Nr
+IGhhcmR3YXJlIGluIG9uZSBjaGlwIG9yIHdlIGRvbid0LiBJdA0KPiBkb2Vzbid0IG1ha2Ugc2Vu
+c2UgdG8gc3VwcG9ydCBqdXN0IHNvbWUgb2YgdGhlbS4gU28gaGF2aW5nIGp1c3Qgb25lDQo+IEtj
+b25maWcgb3B0aW9uIGFuZCBoYXZpbmcgYWxsIGRyaXZlcnMgdW5kZXIgaXQgaXMgYmV0dGVyLg0K
+PiANCj4gPiAgY29uZmlnIENPTU1PTl9DTEtfTVQ4NTE2DQo+ID4gIAlib29sICJDbG9jayBkcml2
+ZXIgZm9yIE1lZGlhVGVrIE1UODUxNiINCj4gPiAgCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8
+fCBDT01QSUxFX1RFU1QNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvTWFr
+ZWZpbGUNCj4gPiBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL01ha2VmaWxlDQo+ID4gaW5kZXggZjgw
+MDJkODk2NmUxLi5mMjdjMDQzMTQxODYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9jbGsvbWVk
+aWF0ZWsvTWFrZWZpbGUNCj4gPiArKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9NYWtlZmlsZQ0K
+PiA+IEBAIC04MSw1ICs4MSw2IEBAIG9iai0kKENPTkZJR19DT01NT05fQ0xLX01UODE5Ml9TQ1Bf
+QURTUCkgKz0gY2xrLQ0KPiA+IG10ODE5Mi1zY3BfYWRzcC5vDQo+ID4gIG9iai0kKENPTkZJR19D
+T01NT05fQ0xLX01UODE5Ml9WREVDU1lTKSArPSBjbGstbXQ4MTkyLXZkZWMubw0KPiA+ICBvYmot
+JChDT05GSUdfQ09NTU9OX0NMS19NVDgxOTJfVkVOQ1NZUykgKz0gY2xrLW10ODE5Mi12ZW5jLm8N
+Cj4gPiAgb2JqLSQoQ09ORklHX0NPTU1PTl9DTEtfTVQ4MTk1KSArPSBjbGstbXQ4MTk1Lm8NCj4g
+PiArb2JqLSQoQ09ORklHX0NPTU1PTl9DTEtfTVQ4MTk1X0FVRFNZUykgKz0gY2xrLW10ODE5NS1h
+dWQubw0KPiA+ICBvYmotJChDT05GSUdfQ09NTU9OX0NMS19NVDg1MTYpICs9IGNsay1tdDg1MTYu
+bw0KPiA+ICBvYmotJChDT05GSUdfQ09NTU9OX0NMS19NVDg1MTZfQVVEU1lTKSArPSBjbGstbXQ4
+NTE2LWF1ZC5vDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgx
+OTUtYXVkLmMNCj4gPiBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTUtYXVkLmMNCj4g
+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uZGI1ZjgwZDQx
+ZGUwDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Ns
+ay1tdDgxOTUtYXVkLmMNCj4gPiBAQCAtMCwwICsxLDE5OCBAQA0KPiA+ICsvLyBTUERYLUxpY2Vu
+c2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5DQo+ID4gKy8vDQo+ID4gKy8vIENvcHlyaWdodCAo
+YykgMjAyMSBNZWRpYVRlayBJbmMuDQo+ID4gKy8vIEF1dGhvcjogQ2h1bi1KaWUgQ2hlbiA8Y2h1
+bi1qaWUuY2hlbkBtZWRpYXRlay5jb20+DQo+ID4gKw0KPiA+ICsjaW5jbHVkZSA8bGludXgvY2xr
+LXByb3ZpZGVyLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9vZl9wbGF0Zm9ybS5oPg0KPiA+ICsj
+aW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4gKw0KPiA+ICsjaW5jbHVkZSAi
+Y2xrLW10ay5oIg0KPiA+ICsjaW5jbHVkZSAiY2xrLWdhdGUuaCINCj4gPiArDQo+ID4gKyNpbmNs
+dWRlIDxkdC1iaW5kaW5ncy9jbG9jay9tdDgxOTUtY2xrLmg+DQo+ID4gKw0KPiA+ICtzdGF0aWMg
+Y29uc3Qgc3RydWN0IG10a19nYXRlX3JlZ3MgYXVkMF9jZ19yZWdzID0gew0KPiA+ICsJLnNldF9v
+ZnMgPSAweDAsDQo+ID4gKwkuY2xyX29mcyA9IDB4MCwNCj4gPiArCS5zdGFfb2ZzID0gMHgwLA0K
+PiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZ2F0ZV9yZWdzIGF1
+ZDFfY2dfcmVncyA9IHsNCj4gPiArCS5zZXRfb2ZzID0gMHgxMCwNCj4gPiArCS5jbHJfb2ZzID0g
+MHgxMCwNCj4gPiArCS5zdGFfb2ZzID0gMHgxMCwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRp
+YyBjb25zdCBzdHJ1Y3QgbXRrX2dhdGVfcmVncyBhdWQyX2NnX3JlZ3MgPSB7DQo+ID4gKwkuc2V0
+X29mcyA9IDB4MTQsDQo+ID4gKwkuY2xyX29mcyA9IDB4MTQsDQo+ID4gKwkuc3RhX29mcyA9IDB4
+MTQsDQo+ID4gK307DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19nYXRlX3Jl
+Z3MgYXVkM19jZ19yZWdzID0gew0KPiA+ICsJLnNldF9vZnMgPSAweDE4LA0KPiA+ICsJLmNscl9v
+ZnMgPSAweDE4LA0KPiA+ICsJLnN0YV9vZnMgPSAweDE4LA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAr
+c3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZ2F0ZV9yZWdzIGF1ZDRfY2dfcmVncyA9IHsNCj4gPiAr
+CS5zZXRfb2ZzID0gMHg0LA0KPiA+ICsJLmNscl9vZnMgPSAweDQsDQo+ID4gKwkuc3RhX29mcyA9
+IDB4NCwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2dhdGVf
+cmVncyBhdWQ1X2NnX3JlZ3MgPSB7DQo+ID4gKwkuc2V0X29mcyA9IDB4YywNCj4gPiArCS5jbHJf
+b2ZzID0gMHhjLA0KPiA+ICsJLnN0YV9vZnMgPSAweGMsDQo+ID4gK307DQo+ID4gKw0KPiA+ICsj
+ZGVmaW5lIEdBVEVfQVVEMChfaWQsIF9uYW1lLCBfcGFyZW50LCBfc2hpZnQpCQkJDQo+ID4gXA0K
+PiA+ICsJR0FURV9NVEsoX2lkLCBfbmFtZSwgX3BhcmVudCwgJmF1ZDBfY2dfcmVncywgX3NoaWZ0
+LA0KPiA+ICZtdGtfY2xrX2dhdGVfb3BzX25vX3NldGNscikNCj4gPiArDQo+ID4gKyNkZWZpbmUg
+R0FURV9BVUQxKF9pZCwgX25hbWUsIF9wYXJlbnQsIF9zaGlmdCkJCQkNCj4gPiBcDQo+ID4gKwlH
+QVRFX01USyhfaWQsIF9uYW1lLCBfcGFyZW50LCAmYXVkMV9jZ19yZWdzLCBfc2hpZnQsDQo+ID4g
+Jm10a19jbGtfZ2F0ZV9vcHNfbm9fc2V0Y2xyKQ0KPiA+ICsNCj4gPiArI2RlZmluZSBHQVRFX0FV
+RDIoX2lkLCBfbmFtZSwgX3BhcmVudCwgX3NoaWZ0KQkJCQ0KPiA+IFwNCj4gPiArCUdBVEVfTVRL
+KF9pZCwgX25hbWUsIF9wYXJlbnQsICZhdWQyX2NnX3JlZ3MsIF9zaGlmdCwNCj4gPiAmbXRrX2Ns
+a19nYXRlX29wc19ub19zZXRjbHIpDQo+ID4gKw0KPiA+ICsjZGVmaW5lIEdBVEVfQVVEMyhfaWQs
+IF9uYW1lLCBfcGFyZW50LCBfc2hpZnQpCQkJDQo+ID4gXA0KPiA+ICsJR0FURV9NVEsoX2lkLCBf
+bmFtZSwgX3BhcmVudCwgJmF1ZDNfY2dfcmVncywgX3NoaWZ0LA0KPiA+ICZtdGtfY2xrX2dhdGVf
+b3BzX25vX3NldGNscikNCj4gPiArDQo+ID4gKyNkZWZpbmUgR0FURV9BVUQ0KF9pZCwgX25hbWUs
+IF9wYXJlbnQsIF9zaGlmdCkJCQkNCj4gPiBcDQo+ID4gKwlHQVRFX01USyhfaWQsIF9uYW1lLCBf
+cGFyZW50LCAmYXVkNF9jZ19yZWdzLCBfc2hpZnQsDQo+ID4gJm10a19jbGtfZ2F0ZV9vcHNfbm9f
+c2V0Y2xyKQ0KPiA+ICsNCj4gPiArI2RlZmluZSBHQVRFX0FVRDUoX2lkLCBfbmFtZSwgX3BhcmVu
+dCwgX3NoaWZ0KQkJCQ0KPiA+IFwNCj4gPiArCUdBVEVfTVRLKF9pZCwgX25hbWUsIF9wYXJlbnQs
+ICZhdWQ1X2NnX3JlZ3MsIF9zaGlmdCwNCj4gPiAmbXRrX2Nsa19nYXRlX29wc19ub19zZXRjbHIp
+DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19nYXRlIGF1ZF9jbGtzW10gPSB7
+DQo+ID4gKwkvKiBBVUQwICovDQo+ID4gKwlHQVRFX0FVRDAoQ0xLX0FVRF9BRkUsICJhdWRfYWZl
+IiwgImExc3lzX2hwX3NlbCIsIDIpLA0KPiA+ICsJR0FURV9BVUQwKENMS19BVURfTFJDS19DTlQs
+ICJhdWRfbHJja19jbnQiLCAiYTFzeXNfaHBfc2VsIiwgNCksDQo+ID4gKwlHQVRFX0FVRDAoQ0xL
+X0FVRF9TUERJRklOX1RVTkVSX0FQTEwsICJhdWRfc3BkaWZpbl90dW5lcl9hcGxsIiwNCj4gPiAi
+YXBsbDRfc2VsIiwgMTApLA0KPiA+ICsJR0FURV9BVUQwKENMS19BVURfU1BESUZJTl9UVU5FUl9E
+QkcsICJhdWRfc3BkaWZpbl90dW5lcl9kYmciLA0KPiA+ICJhcGxsNF9zZWwiLCAxMSksDQo+ID4g
+KwlHQVRFX0FVRDAoQ0xLX0FVRF9VTF9UTUwsICJhdWRfdWxfdG1sIiwgImExc3lzX2hwX3NlbCIs
+IDE4KSwNCj4gPiArCUdBVEVfQVVEMChDTEtfQVVEX0FQTEwxX1RVTkVSLCAiYXVkX2FwbGwxX3R1
+bmVyIiwgImFwbGwxX3NlbCIsDQo+ID4gMTkpLA0KPiA+ICsJR0FURV9BVUQwKENMS19BVURfQVBM
+TDJfVFVORVIsICJhdWRfYXBsbDJfdHVuZXIiLCAiYXBsbDJfc2VsIiwNCj4gPiAyMCksDQo+ID4g
+KwlHQVRFX0FVRDAoQ0xLX0FVRF9UT1AwX1NQREYsICJhdWRfdG9wMF9zcGRmIiwgImF1ZF9pZWNf
+c2VsIiwNCj4gPiAyMSksDQo+ID4gKwlHQVRFX0FVRDAoQ0xLX0FVRF9BUExMLCAiYXVkX2FwbGwi
+LCAiYXBsbDFfc2VsIiwgMjMpLA0KPiA+ICsJR0FURV9BVUQwKENMS19BVURfQVBMTDIsICJhdWRf
+YXBsbDIiLCAiYXBsbDJfc2VsIiwgMjQpLA0KPiA+ICsJR0FURV9BVUQwKENMS19BVURfREFDLCAi
+YXVkX2RhYyIsICJhMXN5c19ocF9zZWwiLCAyNSksDQo+ID4gKwlHQVRFX0FVRDAoQ0xLX0FVRF9E
+QUNfUFJFRElTLCAiYXVkX2RhY19wcmVkaXMiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiAyNiksDQo+
+ID4gKwlHQVRFX0FVRDAoQ0xLX0FVRF9UTUwsICJhdWRfdG1sIiwgImExc3lzX2hwX3NlbCIsIDI3
+KSwNCj4gPiArCUdBVEVfQVVEMChDTEtfQVVEX0FEQywgImF1ZF9hZGMiLCAiYTFzeXNfaHBfc2Vs
+IiwgMjgpLA0KPiA+ICsJR0FURV9BVUQwKENMS19BVURfREFDX0hJUkVTLCAiYXVkX2RhY19oaXJl
+cyIsICJhdWRpb19oX3NlbCIsDQo+ID4gMzEpLA0KPiA+ICsJLyogQVVEMSAqLw0KPiA+ICsJR0FU
+RV9BVUQxKENMS19BVURfSTJTSU4sICJhdWRfaTJzaW4iLCAiYTFzeXNfaHBfc2VsIiwgMCksDQo+
+ID4gKwlHQVRFX0FVRDEoQ0xLX0FVRF9URE1fSU4sICJhdWRfdGRtX2luIiwgImExc3lzX2hwX3Nl
+bCIsIDEpLA0KPiA+ICsJR0FURV9BVUQxKENMS19BVURfSTJTX09VVCwgImF1ZF9pMnNfb3V0Iiwg
+ImExc3lzX2hwX3NlbCIsIDYpLA0KPiA+ICsJR0FURV9BVUQxKENMS19BVURfVERNX09VVCwgImF1
+ZF90ZG1fb3V0IiwgImExc3lzX2hwX3NlbCIsIDcpLA0KPiA+ICsJR0FURV9BVUQxKENMS19BVURf
+SERNSV9PVVQsICJhdWRfaGRtaV9vdXQiLCAiYTFzeXNfaHBfc2VsIiwgOCksDQo+ID4gKwlHQVRF
+X0FVRDEoQ0xLX0FVRF9BU1JDMTEsICJhdWRfYXNyYzExIiwgImExc3lzX2hwX3NlbCIsIDE2KSwN
+Cj4gPiArCUdBVEVfQVVEMShDTEtfQVVEX0FTUkMxMiwgImF1ZF9hc3JjMTIiLCAiYTFzeXNfaHBf
+c2VsIiwgMTcpLA0KPiA+ICsJR0FURV9BVUQxKENMS19BVURfTVVMVElfSU4sICJhdWRfbXVsdGlf
+aW4iLCAibXBob25lX3NsYXZlX2IiLA0KPiA+IDE5KSwNCj4gPiArCUdBVEVfQVVEMShDTEtfQVVE
+X0lOVERJUiwgImF1ZF9pbnRkaXIiLCAiaW50ZGlyX3NlbCIsIDIwKSwNCj4gPiArCUdBVEVfQVVE
+MShDTEtfQVVEX0ExU1lTLCAiYXVkX2Exc3lzIiwgImExc3lzX2hwX3NlbCIsIDIxKSwNCj4gPiAr
+CUdBVEVfQVVEMShDTEtfQVVEX0EyU1lTLCAiYXVkX2Eyc3lzIiwgImEyc3lzX3NlbCIsIDIyKSwN
+Cj4gPiArCUdBVEVfQVVEMShDTEtfQVVEX1BDTUlGLCAiYXVkX3BjbWlmIiwgImExc3lzX2hwX3Nl
+bCIsIDI0KSwNCj4gPiArCUdBVEVfQVVEMShDTEtfQVVEX0EzU1lTLCAiYXVkX2Ezc3lzIiwgImEz
+c3lzX3NlbCIsIDMwKSwNCj4gPiArCUdBVEVfQVVEMShDTEtfQVVEX0E0U1lTLCAiYXVkX2E0c3lz
+IiwgImE0c3lzX3NlbCIsIDMxKSwNCj4gPiArCS8qIEFVRDIgKi8NCj4gPiArCUdBVEVfQVVEMihD
+TEtfQVVEX01FTUlGX1VMMSwgImF1ZF9tZW1pZl91bDEiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiAw
+KSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVEX01FTUlGX1VMMiwgImF1ZF9tZW1pZl91bDIiLCAi
+YTFzeXNfaHBfc2VsIiwNCj4gPiAxKSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVEX01FTUlGX1VM
+MywgImF1ZF9tZW1pZl91bDMiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiAyKSwNCj4gPiArCUdBVEVf
+QVVEMihDTEtfQVVEX01FTUlGX1VMNCwgImF1ZF9tZW1pZl91bDQiLCAiYTFzeXNfaHBfc2VsIiwN
+Cj4gPiAzKSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVEX01FTUlGX1VMNSwgImF1ZF9tZW1pZl91
+bDUiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiA0KSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVEX01F
+TUlGX1VMNiwgImF1ZF9tZW1pZl91bDYiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiA1KSwNCj4gPiAr
+CUdBVEVfQVVEMihDTEtfQVVEX01FTUlGX1VMOCwgImF1ZF9tZW1pZl91bDgiLCAiYTFzeXNfaHBf
+c2VsIiwNCj4gPiA3KSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVEX01FTUlGX1VMOSwgImF1ZF9t
+ZW1pZl91bDkiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiA4KSwNCj4gPiArCUdBVEVfQVVEMihDTEtf
+QVVEX01FTUlGX1VMMTAsICJhdWRfbWVtaWZfdWwxMCIsICJhMXN5c19ocF9zZWwiLA0KPiA+IDkp
+LA0KPiA+ICsJR0FURV9BVUQyKENMS19BVURfTUVNSUZfREwyLCAiYXVkX21lbWlmX2RsMiIsICJh
+MXN5c19ocF9zZWwiLA0KPiA+IDE4KSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVEX01FTUlGX0RM
+MywgImF1ZF9tZW1pZl9kbDMiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiAxOSksDQo+ID4gKwlHQVRF
+X0FVRDIoQ0xLX0FVRF9NRU1JRl9ETDYsICJhdWRfbWVtaWZfZGw2IiwgImExc3lzX2hwX3NlbCIs
+DQo+ID4gMjIpLA0KPiA+ICsJR0FURV9BVUQyKENMS19BVURfTUVNSUZfREw3LCAiYXVkX21lbWlm
+X2RsNyIsICJhMXN5c19ocF9zZWwiLA0KPiA+IDIzKSwNCj4gPiArCUdBVEVfQVVEMihDTEtfQVVE
+X01FTUlGX0RMOCwgImF1ZF9tZW1pZl9kbDgiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiAyNCksDQo+
+ID4gKwlHQVRFX0FVRDIoQ0xLX0FVRF9NRU1JRl9ETDEwLCAiYXVkX21lbWlmX2RsMTAiLCAiYTFz
+eXNfaHBfc2VsIiwNCj4gPiAyNiksDQo+ID4gKwlHQVRFX0FVRDIoQ0xLX0FVRF9NRU1JRl9ETDEx
+LCAiYXVkX21lbWlmX2RsMTEiLCAiYTFzeXNfaHBfc2VsIiwNCj4gPiAyNyksDQo+ID4gKwkvKiBB
+VUQzICovDQo+ID4gKwlHQVRFX0FVRDMoQ0xLX0FVRF9HQVNSQzAsICJhdWRfZ2FzcmMwIiwgImFz
+bV9oX3NlbCIsIDApLA0KPiA+ICsJR0FURV9BVUQzKENMS19BVURfR0FTUkMxLCAiYXVkX2dhc3Jj
+MSIsICJhc21faF9zZWwiLCAxKSwNCj4gPiArCUdBVEVfQVVEMyhDTEtfQVVEX0dBU1JDMiwgImF1
+ZF9nYXNyYzIiLCAiYXNtX2hfc2VsIiwgMiksDQo+ID4gKwlHQVRFX0FVRDMoQ0xLX0FVRF9HQVNS
+QzMsICJhdWRfZ2FzcmMzIiwgImFzbV9oX3NlbCIsIDMpLA0KPiA+ICsJR0FURV9BVUQzKENMS19B
+VURfR0FTUkM0LCAiYXVkX2dhc3JjNCIsICJhc21faF9zZWwiLCA0KSwNCj4gPiArCUdBVEVfQVVE
+MyhDTEtfQVVEX0dBU1JDNSwgImF1ZF9nYXNyYzUiLCAiYXNtX2hfc2VsIiwgNSksDQo+ID4gKwlH
+QVRFX0FVRDMoQ0xLX0FVRF9HQVNSQzYsICJhdWRfZ2FzcmM2IiwgImFzbV9oX3NlbCIsIDYpLA0K
+PiA+ICsJR0FURV9BVUQzKENMS19BVURfR0FTUkM3LCAiYXVkX2dhc3JjNyIsICJhc21faF9zZWwi
+LCA3KSwNCj4gPiArCUdBVEVfQVVEMyhDTEtfQVVEX0dBU1JDOCwgImF1ZF9nYXNyYzgiLCAiYXNt
+X2hfc2VsIiwgOCksDQo+ID4gKwlHQVRFX0FVRDMoQ0xLX0FVRF9HQVNSQzksICJhdWRfZ2FzcmM5
+IiwgImFzbV9oX3NlbCIsIDkpLA0KPiA+ICsJR0FURV9BVUQzKENMS19BVURfR0FTUkMxMCwgImF1
+ZF9nYXNyYzEwIiwgImFzbV9oX3NlbCIsIDEwKSwNCj4gPiArCUdBVEVfQVVEMyhDTEtfQVVEX0dB
+U1JDMTEsICJhdWRfZ2FzcmMxMSIsICJhc21faF9zZWwiLCAxMSksDQo+ID4gKwlHQVRFX0FVRDMo
+Q0xLX0FVRF9HQVNSQzEyLCAiYXVkX2dhc3JjMTIiLCAiYXNtX2hfc2VsIiwgMTIpLA0KPiA+ICsJ
+R0FURV9BVUQzKENMS19BVURfR0FTUkMxMywgImF1ZF9nYXNyYzEzIiwgImFzbV9oX3NlbCIsIDEz
+KSwNCj4gPiArCUdBVEVfQVVEMyhDTEtfQVVEX0dBU1JDMTQsICJhdWRfZ2FzcmMxNCIsICJhc21f
+aF9zZWwiLCAxNCksDQo+ID4gKwlHQVRFX0FVRDMoQ0xLX0FVRF9HQVNSQzE1LCAiYXVkX2dhc3Jj
+MTUiLCAiYXNtX2hfc2VsIiwgMTUpLA0KPiA+ICsJR0FURV9BVUQzKENMS19BVURfR0FTUkMxNiwg
+ImF1ZF9nYXNyYzE2IiwgImFzbV9oX3NlbCIsIDE2KSwNCj4gPiArCUdBVEVfQVVEMyhDTEtfQVVE
+X0dBU1JDMTcsICJhdWRfZ2FzcmMxNyIsICJhc21faF9zZWwiLCAxNyksDQo+ID4gKwlHQVRFX0FV
+RDMoQ0xLX0FVRF9HQVNSQzE4LCAiYXVkX2dhc3JjMTgiLCAiYXNtX2hfc2VsIiwgMTgpLA0KPiA+
+ICsJR0FURV9BVUQzKENMS19BVURfR0FTUkMxOSwgImF1ZF9nYXNyYzE5IiwgImFzbV9oX3NlbCIs
+IDE5KSwNCj4gPiArCS8qIEFVRDQgKi8NCj4gPiArCUdBVEVfQVVENChDTEtfQVVEX0ExU1lTX0hQ
+LCAiYXVkX2Exc3lzX2hwIiwgImExc3lzX2hwX3NlbCIsIDIpLA0KPiA+ICsJR0FURV9BVUQ0KENM
+S19BVURfQUZFX0RNSUMxLCAiYXVkX2FmZV9kbWljMSIsICJhMXN5c19ocF9zZWwiLA0KPiA+IDEw
+KSwNCj4gPiArCUdBVEVfQVVENChDTEtfQVVEX0FGRV9ETUlDMiwgImF1ZF9hZmVfZG1pYzIiLCAi
+YTFzeXNfaHBfc2VsIiwNCj4gPiAxMSksDQo+ID4gKwlHQVRFX0FVRDQoQ0xLX0FVRF9BRkVfRE1J
+QzMsICJhdWRfYWZlX2RtaWMzIiwgImExc3lzX2hwX3NlbCIsDQo+ID4gMTIpLA0KPiA+ICsJR0FU
+RV9BVUQ0KENMS19BVURfQUZFX0RNSUM0LCAiYXVkX2FmZV9kbWljNCIsICJhMXN5c19ocF9zZWwi
+LA0KPiA+IDEzKSwNCj4gPiArCUdBVEVfQVVENChDTEtfQVVEX0FGRV8yNk1fRE1JQ19UTSwgImF1
+ZF9hZmVfMjZtX2RtaWNfdG0iLA0KPiA+ICJhMXN5c19ocF9zZWwiLCAxNCksDQo+ID4gKwlHQVRF
+X0FVRDQoQ0xLX0FVRF9VTF9UTUxfSElSRVMsICJhdWRfdWxfdG1sX2hpcmVzIiwNCj4gPiAiYXVk
+aW9faF9zZWwiLCAxNiksDQo+ID4gKwlHQVRFX0FVRDQoQ0xLX0FVRF9BRENfSElSRVMsICJhdWRf
+YWRjX2hpcmVzIiwgImF1ZGlvX2hfc2VsIiwNCj4gPiAxNyksDQo+ID4gKwlHQVRFX0FVRDQoQ0xL
+X0FVRF9BRERBNl9BREMsICJhdWRfYWRkYTZfYWRjIiwgImExc3lzX2hwX3NlbCIsDQo+ID4gMTgp
+LA0KPiA+ICsJR0FURV9BVUQ0KENMS19BVURfQUREQTZfQURDX0hJUkVTLCAiYXVkX2FkZGE2X2Fk
+Y19oaXJlcyIsDQo+ID4gImF1ZGlvX2hfc2VsIiwgMTkpLA0KPiA+ICsJLyogQVVENSAqLw0KPiA+
+ICsJR0FURV9BVUQ1KENMS19BVURfTElORUlOX1RVTkVSLCAiYXVkX2xpbmVpbl90dW5lciIsDQo+
+ID4gImFwbGw1X3NlbCIsIDUpLA0KPiA+ICsJR0FURV9BVUQ1KENMS19BVURfRUFSQ19UVU5FUiwg
+ImF1ZF9lYXJjX3R1bmVyIiwgImFwbGwzX3NlbCIsDQo+ID4gNyksDQo+ID4gK307DQo+IA0KPiBU
+aGVzZSBhcmUgYWxsIGNsb2NrIGdhdGVzLCBhbmQgYXJlIGFsbCBpbnRlcm5hbCB0byB0aGUgYXVk
+aW8NCj4gaGFyZHdhcmUsDQo+IGkuZS4gbm90IHVzZWQgYnkgb3RoZXIgZHJpdmVycyBvciBtb2R1
+bGVzLg0KPiANCj4gU28gdGhlc2UgZG9uJ3QgYWN0dWFsbHkgbmVlZCB0byBiZSBpbiBhIHNlcGFy
+YXRlIGNsayBkcml2ZXIuIFRoZXkgY2FuDQo+IGJlDQo+IG1vZGVsbGVkIHdpdGhpbiBBU29DIGFz
+IHN1cHBsaWVzIHRoYXQgYXJlIGF1dG9tYXRpY2FsbHkgbWFuYWdlZCBieQ0KPiBBU29DDQo+IGNv
+cmUuIE90aGVyd2lzZSBqdXN0IGhhdmUgdGhlbSBhcyBiaXRzIHRoYXQgYXJlIHRvZ2dsZWQgYnkg
+dGhlIGF1ZGlvDQo+IGRyaXZlcidzIHN0YXJ0L3N0b3Agc2VxdWVuY2luZyBjb2RlLCBsaWtlIHRo
+ZXkgYXJlIG5vdywgYnV0IHRocm91Z2gNCj4gdmFzdGx5IG1vcmUgY29tcGxpY2F0ZWQgcGx1bWJp
+bmcuDQo+IA0KPiBQbGVhc2Ugd29yayB3aXRoIHRoZSBhdWRpbyBkcml2ZXIgb3duZXIgdG8gc2Vl
+IGlmIHRoaXMgY2FuIGJlIG1vdmVkDQo+IGludG8NCj4gdGhlIGF1ZGlvIGRyaXZlci4NCj4gDQo+
+IFJlZ2FyZHMNCj4gQ2hlbll1DQo+IA0KDQpUaGUgYWZlIGRldmljZSB3aWxsIGJlIHRoZSBjaGls
+ZCBvZiBhdWRzeXMgY2xvY2sgcHJvdmlkZXIgbm9kZSBhbmQNCmF1ZHN5cyBjbG9jayBkcml2ZXIg
+d2lsbCB1c2UgZGV2bV9vZl9wbGF0Zm9ybV9wb3B1bGF0ZSgpIHRvIHBvcHVsYXRlDQphZmUgZGV2
+aWNlIHdoZW4gYXVkc3lzIGNsb2NrIGdhdGVzIGFyZSByZWdpc3RlcmVkIHN1Y2Nlc3NmdWxseSwN
+Ckl0IG1lYW5zIGFmZSB3aWxsIGJlIHRvZ2dsZWQgYnkgYXVkc3lzIGNsb2NrLCBkbyB5b3Ugc3Vn
+Z2VzdCB0byBjaGFuZ2UNCnRoZSB0b2dnbGVkIG9yZGVyPw0KDQpCZXN0IFJlZ2FyZHMsDQpDaHVu
+LUppZQ0KDQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IGNsa19tdDgxOTVfYXVkX3Byb2JlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCBjbGtfb25lY2Vs
+bF9kYXRhICpjbGtfZGF0YTsNCj4gPiArCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZSA9IHBkZXYt
+PmRldi5vZl9ub2RlOw0KPiA+ICsJaW50IHI7DQo+ID4gKw0KPiA+ICsJY2xrX2RhdGEgPSBtdGtf
+YWxsb2NfY2xrX2RhdGEoQ0xLX0FVRF9OUl9DTEspOw0KPiA+ICsJaWYgKCFjbGtfZGF0YSkNCj4g
+PiArCQlyZXR1cm4gLUVOT01FTTsNCj4gPiArDQo+ID4gKwlyID0gbXRrX2Nsa19yZWdpc3Rlcl9n
+YXRlcyhub2RlLCBhdWRfY2xrcywNCj4gPiBBUlJBWV9TSVpFKGF1ZF9jbGtzKSwgY2xrX2RhdGEp
+Ow0KPiA+ICsJaWYgKHIpDQo+ID4gKwkJcmV0dXJuIHI7DQo+ID4gKw0KPiA+ICsJciA9IG9mX2Ns
+a19hZGRfcHJvdmlkZXIobm9kZSwgb2ZfY2xrX3NyY19vbmVjZWxsX2dldCwNCj4gPiBjbGtfZGF0
+YSk7DQo+ID4gKwlpZiAocikNCj4gPiArCQlnb3RvIGVycl9jbGtfcHJvdmlkZXI7DQo+ID4gKw0K
+PiA+ICsJciA9IGRldm1fb2ZfcGxhdGZvcm1fcG9wdWxhdGUoJnBkZXYtPmRldik7DQo+ID4gKwlp
+ZiAocikNCj4gPiArCQlnb3RvIGVycl9wbGF0X3BvcHVsYXRlOw0KPiA+ICsNCj4gPiArCXJldHVy
+biAwOw0KPiA+ICsNCj4gPiArZXJyX3BsYXRfcG9wdWxhdGU6DQo+ID4gKwlvZl9jbGtfZGVsX3By
+b3ZpZGVyKG5vZGUpOw0KPiA+ICtlcnJfY2xrX3Byb3ZpZGVyOg0KPiA+ICsJcmV0dXJuIHI7DQo+
+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG9mX21h
+dGNoX2Nsa19tdDgxOTVfYXVkW10gPSB7DQo+ID4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVr
+LG10ODE5NS1hdWRzeXMiLCB9LA0KPiA+ICsJe30NCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRp
+YyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGNsa19tdDgxOTVfYXVkX2RydiA9IHsNCj4gPiArCS5w
+cm9iZSA9IGNsa19tdDgxOTVfYXVkX3Byb2JlLA0KPiA+ICsJLmRyaXZlciA9IHsNCj4gPiArCQku
+bmFtZSA9ICJjbGstbXQ4MTk1LWF1ZCIsDQo+ID4gKwkJLm9mX21hdGNoX3RhYmxlID0gb2ZfbWF0
+Y2hfY2xrX210ODE5NV9hdWQsDQo+ID4gKwl9LA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArYnVpbHRp
+bl9wbGF0Zm9ybV9kcml2ZXIoY2xrX210ODE5NV9hdWRfZHJ2KTsNCj4gPiAtLSANCj4gPiAyLjE4
+LjANCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0K
+PiA+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiA+IExpbnV4LW1lZGlhdGVrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW1lZGlhdGVrDQo=
 
-make sense.
-
->=20
-> >
-> >
-> > /*
-> >   * Report vPASID info to userspace via VFIO_DEVICE_GET_INFO
-> >   *
-> >   * Add a new device capability. The presence indicates that the user
-> >   * is allowed to create multiple I/O address spaces on this device. Th=
-e
-> >   * capability further includes following flags:
-> >   *
-> >   *	- PASID_DELEGATED, if clear every vPASID must be registered to
-> >   *	  the kernel;
-> >   *	- PASID_CPU, if set vPASID is allowed to be carried in the CPU
-> >   *	  instructions (e.g. ENQCMD);
-> >   *	- PASID_CPU_VIRT, if set require vPASID translation in the CPU;
-> >   *
-> >   * The user must check that all devices with PASID_CPU set have the
-> >   * same setting on PASID_CPU_VIRT. If mismatching, it should enable
-> >   * vPASID only in one category (all set, or all clear).
-> >   *
-> >   * When the user enables vPASID on the device with PASID_CPU_VIRT
-> >   * set, it must enable vPASID CPU translation via kvm fd before attemp=
-ting
-> >   * to use ENQCMD to submit work items. The command portal is blocked
-> >   * by the kernel until the CPU translation is enabled.
-> >   */
-> > #define VFIO_DEVICE_INFO_CAP_PASID		5
-> >
-> >
-> > /*
-> >   * Attach a vfio device to the specified IOASID
-> >   *
-> >   * Multiple vfio devices can be attached to the same IOASID, and vice
-> >   * versa.
-> >   *
-> >   * User may optionally provide a "virtual PASID" to mark an I/O page
-> >   * table on this vfio device, if PASID_DELEGATED is not set in device =
-info.
-> >   * Whether the virtual PASID is physically used or converted to anothe=
-r
-> >   * kernel-allocated PASID is a policy in the kernel.
-> >   *
-> >   * Because one device is allowed to bind to multiple IOMMU fd's, the
-> >   * user should provide both iommu_fd and ioasid for this attach operat=
-ion.
-> >   *
-> >   * Input parameter:
-> >   *	- iommu_fd;
-> >   *	- ioasid;
-> >   *	- flag;
-> >   *	- vpasid (if specified);
-> >   *
-> >   * Return: 0 on success, -errno on failure.
-> >   */
-> > #define VFIO_ATTACH_IOASID		_IO(VFIO_TYPE, VFIO_BASE +
-> 23)
-> > #define VFIO_DETACH_IOASID		_IO(VFIO_TYPE, VFIO_BASE +
-> 24)
->=20
-> Likewise, VFIO_DEVICE_{ATTACH,DETACH}_IOASID
->=20
-> ...
-> > 3. Sample structures and helper functions
-> > --------------------------------------------------------
-> >
-> > Three helper functions are provided to support VFIO_BIND_IOMMU_FD:
-> >
-> > 	struct iommu_ctx *iommu_ctx_fdget(int fd);
-> > 	struct iommu_dev *iommu_register_device(struct iommu_ctx *ctx,
-> > 		struct device *device, u64 cookie);
-> > 	int iommu_unregister_device(struct iommu_dev *dev);
-> >
-> > An iommu_ctx is created for each fd:
-> >
-> > 	struct iommu_ctx {
-> > 		// a list of allocated IOASID data's
-> > 		struct xarray		ioasid_xa;
-> >
-> > 		// a list of registered devices
-> > 		struct xarray		dev_xa;
-> > 	};
-> >
-> > Later some group-tracking fields will be also introduced to support
-> > multi-devices group.
-> >
-> > Each registered device is represented by iommu_dev:
-> >
-> > 	struct iommu_dev {
-> > 		struct iommu_ctx	*ctx;
-> > 		// always be the physical device
-> > 		struct device 		*device;
-> > 		u64			cookie;
-> > 		struct kref		kref;
-> > 	};
-> >
-> > A successful binding establishes a security context for the bound
-> > device and returns struct iommu_dev pointer to the caller. After this
-> > point, the user is allowed to query device capabilities via IOMMU_
-> > DEVICE_GET_INFO.
->=20
-> If we have an initial singleton group only restriction, I assume that
-> both iommu_register_device() would fail for any devices that are not in
-> a singleton group and vfio would only expose direct device files for
-> the devices in singleton groups.  The latter implementation could
-> change when multi-device group support is added so that userspace can
-> assume that if the vfio device file exists, this interface is available.
-> I think this is confirmed further below.
-
-Exactly. Will elaborate this assumption in next version.
-
->=20
-> > For mdev the struct device should be the pointer to the parent device.
->=20
-> I don't get how iommu_register_device() differentiates an mdev from a
-> pdev in this case.
-
-via device cookie.
-
->=20
-> ...
-> > 4.3. IOASID nesting (software)
-> > ++++++++++++++++++++++++++++++
-> >
-> > Same usage scenario as 4.2, with software-based IOASID nesting
-> > available. In this mode it is the kernel instead of user to create the
-> > shadow mapping.
-> >
-> > The flow before guest boots is same as 4.2, except one point. Because
-> > giova_ioasid is nested on gpa_ioasid, locked accounting is only
-> > conducted for gpa_ioasid which becomes the only root.
-> >
-> > There could be a case where different gpa_ioasids are created due
-> > to incompatible format between dev1/dev2 (e.g. about IOMMU
-> > enforce-snoop). In such case the user could further created a dummy
-> > IOASID (HVA->HVA) as the root parent for two gpa_ioasids to avoid
-> > duplicated accounting. But this scenario is not covered in following
-> > flows.
->=20
-> This use case has been noted several times in the proposal, it probably
-> deserves an example.
-
-will do.
-
->=20
-> >
-> > To save space we only list the steps after boots (i.e. both dev1/dev2
-> > have been attached to gpa_ioasid before guest boots):
-> >
-> > 	/* After boots */
-> > 	/* Create GIOVA space nested on GPA space
-> > 	 * Both page tables are managed by the kernel
-> > 	 */
-> > 	alloc_data =3D {.user_pgtable =3D false; .parent =3D gpa_ioasid};
-> > 	giova_ioasid =3D ioctl(iommu_fd, IOMMU_IOASID_ALLOC, &alloc_data);
->=20
-> So the user would use IOMMU_DEVICE_GET_INFO on the iommu_fd with
-> device
-> cookie2 after the VFIO_DEVICE_BIND_IOMMU_FD to learn that software
-> nesting is supported before proceeding down this path?
-
-yes. If this capability is not available, the user should fall back to the
-flow in 4.2, i.e. generating shadow mappings in userspace.
-
->=20
-> >
-> > 	/* Attach dev2 to the new address space (child)
-> > 	 * Note dev2 is still attached to gpa_ioasid (parent)
-> > 	 */
-> > 	at_data =3D { .fd =3D iommu_fd; .ioasid =3D giova_ioasid};
-> > 	ioctl(device_fd2, VFIO_ATTACH_IOASID, &at_data);
-> >
-> > 	/* Setup a GIOVA [0x2000] ->GPA [0x1000] mapping for giova_ioasid,
-> > 	 * based on the vIOMMU page table. The kernel is responsible for
-> > 	 * creating the shadow mapping GIOVA [0x2000] -> HVA [0x40001000]
-> > 	 * by walking the parent's I/O page table to find out GPA [0x1000] ->
-> > 	 * HVA [0x40001000].
-> > 	 */
-> > 	dma_map =3D {
-> > 		.ioasid	=3D giova_ioasid;
-> > 		.iova	=3D 0x2000;	// GIOVA
-> > 		.vaddr	=3D 0x1000;	// GPA
-> > 		.size	=3D 4KB;
-> > 	};
-> > 	ioctl(iommu_fd, IOMMU_MAP_DMA, &dma_map);
-> >
-> > 4.4. IOASID nesting (hardware)
-> > ++++++++++++++++++++++++++++++
-> >
-> > Same usage scenario as 4.2, with hardware-based IOASID nesting
-> > available. In this mode the I/O page table is managed by userspace
-> > thus an invalidation interface is used for the user to request iotlb
-> > invalidation.
-> >
-> > 	/* After boots */
-> > 	/* Create GIOVA space nested on GPA space.
-> > 	 * Claim it's an user-managed I/O page table.
-> > 	 */
-> > 	alloc_data =3D {
-> > 		.user_pgtable	=3D true;
-> > 		.parent		=3D gpa_ioasid;
-> > 		.addr		=3D giova_pgtable;
-> > 		// and format information;
-> > 	};
-> > 	giova_ioasid =3D ioctl(iommu_fd, IOMMU_IOASID_ALLOC, &alloc_data);
-> >
-> > 	/* Attach dev2 to the new address space (child)
-> > 	 * Note dev2 is still attached to gpa_ioasid (parent)
-> > 	 */
-> > 	at_data =3D { .fd =3D iommu_fd; .ioasid =3D giova_ioasid};
-> > 	ioctl(device_fd2, VFIO_ATTACH_IOASID, &at_data);
-> >
-> > 	/* Invalidate IOTLB when required */
-> > 	inv_data =3D {
-> > 		.ioasid	=3D giova_ioasid;
-> > 		// granular/cache type information
-> > 	};
-> > 	ioctl(iommu_fd, IOMMU_INVALIDATE_CACHE, &inv_data);
-> >
-> > 	/* See 4.6 for I/O page fault handling */
-> >
-> > 4.5. Guest SVA (vSVA)
-> > +++++++++++++++++++++
-> >
-> > After boots the guest further creates a GVA address spaces (vpasid1) on
-> > dev1. Dev2 is not affected (still attached to giova_ioasid).
-> >
-> > As explained in section 1.4, the user should check the PASID capability
-> > exposed via VFIO_DEVICE_GET_INFO and follow the required uAPI
-> > semantics when doing the attaching call:
->=20
-> And this characteristic lives in VFIO_DEVICE_GET_INFO rather than
-> IOMMU_DEVICE_GET_INFO because this is a characteristic known by the
-> vfio device driver rather than the system IOMMU, right?  Thanks,
->=20
-
-yes.=20
-
-Thanks
-Kevin
