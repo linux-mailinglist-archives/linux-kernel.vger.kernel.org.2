@@ -2,224 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CA53C5A75
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7358E3C5A7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240197AbhGLJ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:58:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:52442 "EHLO foss.arm.com"
+        id S234895AbhGLKB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239933AbhGLJ6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:58:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D4721FB;
-        Mon, 12 Jul 2021 02:55:35 -0700 (PDT)
-Received: from [10.57.35.32] (unknown [10.57.35.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44DB43F694;
-        Mon, 12 Jul 2021 02:55:34 -0700 (PDT)
-Subject: Re: [PATCH v2] coresight: tmc-etr: Speed up for bounce buffer in flat
- mode
-To:     Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210710070115.462674-1-leo.yan@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <f17065d6-5083-74c9-d9ca-a467b640aed3@arm.com>
-Date:   Mon, 12 Jul 2021 10:55:32 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S234878AbhGLKB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:01:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 483AA61002;
+        Mon, 12 Jul 2021 09:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626083918;
+        bh=tAO2c2XXve5OQIfwuwmw8NDac9gYcA9t8R4T8p3VA0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sp0gWhgawuzzkSTZB9An1dEpC06L7mSKerBgmHNsBuQEZqcX7v/G/eqD1eXNqzWe4
+         yZAkZzS6Jq5C0os3RCAFe1lMoJqAY+DAPY2CpxU4/0RukVap9iaXoSgjoHUaZz7PfF
+         p6cCtj476QWfjI+v+DjtN/6VgQUdHDWlK9/akaQFyv9Jv7bhQ5OxzaVbvD69pX4stF
+         +7Di9KazK8Wt2lnWl3MXvN24QJtGwNkSpiH0cuXUm3lOPnGNAKAwUHUBj4pWWqcjHW
+         sOOQNC+TOsXyJqjR+Bu5As4jU8sJnn23PPD6Pw13Nr+3iDT9TTBLnemK86jOnQsmN7
+         VzQWv0FdIsWmA==
+Date:   Mon, 12 Jul 2021 10:58:32 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Sam Tebbs <sam.tebbs@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH] kasan: fix build for CONFIG_KASAN_HW_TAGS
+Message-ID: <20210712095832.GA27643@willie-the-truck>
+References: <20210708144411.25467-1-mark.rutland@arm.com>
+ <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210710070115.462674-1-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leo,
+On Sat, Jul 10, 2021 at 09:16:14PM +0200, Andrey Konovalov wrote:
+> On Thu, Jul 8, 2021 at 4:44 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > When CONFIG_KASAN_HW_TAGS is selected, <linux/kasan.h> uses _RET_IP_,
+> > but doesn't explicitly include <linux/kernel.h> where this is defined.
+> >
+> > We used to get this via a transitive include, but since commit:
+> >
+> >   f39650de687e3576 ("kernel.h: split out panic and oops helpers")
+> >
+> > ... this is no longer the case, and so we get a build failure:
+> >
+> > |   CC      arch/arm64/mm/kasan_init.o
+> > | In file included from arch/arm64/mm/kasan_init.c:10:
+> > | ./include/linux/kasan.h: In function 'kasan_slab_free':
+> > | ./include/linux/kasan.h:211:39: error: '_RET_IP_' undeclared (first use in this function)
+> > |   211 |   return __kasan_slab_free(s, object, _RET_IP_, init);
+> > |       |                                       ^~~~~~~~
+> > | ./include/linux/kasan.h:211:39: note: each undeclared identifier is reported only once for each function it appears in
+> > | ./include/linux/kasan.h: In function 'kasan_kfree_large':
+> > | ./include/linux/kasan.h:219:28: error: '_RET_IP_' undeclared (first use in this function)
+> > |   219 |   __kasan_kfree_large(ptr, _RET_IP_);
+> > |       |                            ^~~~~~~~
+> > | ./include/linux/kasan.h: In function 'kasan_slab_free_mempool':
+> > | ./include/linux/kasan.h:226:34: error: '_RET_IP_' undeclared (first use in this function)
+> > |   226 |   __kasan_slab_free_mempool(ptr, _RET_IP_);
+> > |       |                                  ^~~~~~~~
+> > | ./include/linux/kasan.h: In function 'kasan_check_byte':
+> > | ./include/linux/kasan.h:277:35: error: '_RET_IP_' undeclared (first use in this function)
+> > |   277 |   return __kasan_check_byte(addr, _RET_IP_);
+> > |       |                                   ^~~~~~~~
+> >
+> > Fix this by including <linux/kernel.h> explicitly.
+> 
+> Hi Mark,
+> 
+> Marco already sent a fix for this. It should be in the mm tree.
+> (Although the link to it in the Andrew's notification email doesn't
+> work. But they rarely do :)
 
-On 10/07/2021 08:01, Leo Yan wrote:
-> The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
-> low level's architecture code, e.g. for Arm64, it maps the memory with
-> the attribution "Normal non-cacheable"; this can be concluded from the
-> definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
-> 
-> Later when access the AUX bounce buffer, since the memory mapping is
-> non-cacheable, it's low efficiency due to every load instruction must
-> reach out DRAM.
-> 
-> This patch changes to allocate pages with alloc_pages_node(), thus the
-> driver can access the memory with cacheable mapping in the kernel linear
-> virtual address; therefore, because load instructions can fetch data
-> from cache lines rather than always read data from DRAM, the driver can
-> boost memory coping performance.  After using the cacheable mapping, the
-> driver uses dma_sync_single_for_cpu() to invalidate cacheline prior to
-> read bounce buffer so can avoid read stale trace data.
-> 
-> By measurement the duration for function tmc_update_etr_buffer() with
-> ftrace function_graph tracer, it shows the performance significant
-> improvement for copying 4MiB data from bounce buffer:
-> 
->    # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
->    # echo tmc_update_etr_buffer > set_graph_function
->    # echo function_graph > current_tracer
-> 
->    before:
-> 
->    # CPU  DURATION                  FUNCTION CALLS
->    # |     |   |                     |   |   |   |
->    2)               |    tmc_update_etr_buffer() {
->    ...
->    2) # 8148.320 us |    }
-> 
->    after:
-> 
->    # CPU  DURATION                  FUNCTION CALLS
->    # |     |   |                     |   |   |   |
->    2)               |  tmc_update_etr_buffer() {
->    ...
->    2) # 2463.980 us |  }
+Do you have a link to the patch? I couldn't spot it in linux-next.
 
-Thats a good speed up ! Thanks for the patch. One minor comment
-below.
+Thanks,
 
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
-> 
-> Changes from v1:
-> Set "flat_buf->daddr" to 0 when fails to map DMA region; and dropped the
-> unexpected if condition change in tmc_etr_free_flat_buf().
-> 
->   .../hwtracing/coresight/coresight-tmc-etr.c   | 56 ++++++++++++++++---
->   1 file changed, 49 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> index acdb59e0e661..888b0f929d33 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> @@ -21,6 +21,7 @@
->   
->   struct etr_flat_buf {
->   	struct device	*dev;
-> +	struct page	*pages;
->   	dma_addr_t	daddr;
->   	void		*vaddr;
->   	size_t		size;
-> @@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
->   {
->   	struct etr_flat_buf *flat_buf;
->   	struct device *real_dev = drvdata->csdev->dev.parent;
-> +	ssize_t	aligned_size;
->   
->   	/* We cannot reuse existing pages for flat buf */
->   	if (pages)
-> @@ -609,11 +611,18 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
->   	if (!flat_buf)
->   		return -ENOMEM;
->   
-> -	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
-> -					     &flat_buf->daddr, GFP_KERNEL);
-> -	if (!flat_buf->vaddr) {
-> -		kfree(flat_buf);
-> -		return -ENOMEM;
-> +	aligned_size = PAGE_ALIGN(etr_buf->size);
-> +	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
-> +					   get_order(aligned_size));
-> +	if (!flat_buf->pages)
-> +		goto fail_alloc_pages;
-> +
-> +	flat_buf->vaddr = page_address(flat_buf->pages);
-> +	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
-> +				       aligned_size, DMA_FROM_DEVICE);
-> +	if (dma_mapping_error(real_dev, flat_buf->daddr)) {
-> +		flat_buf->daddr = 0;
-> +		goto fail_dma_map_page;
->   	}
->   
->   	flat_buf->size = etr_buf->size;
-> @@ -622,6 +631,12 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
->   	etr_buf->mode = ETR_MODE_FLAT;
->   	etr_buf->private = flat_buf;
->   	return 0;
-> +
-> +fail_dma_map_page:
-> +	__free_pages(flat_buf->pages, get_order(aligned_size));
-> +fail_alloc_pages:
-> +	kfree(flat_buf);
-> +	return -ENOMEM;
->   }
->   
->   static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
-> @@ -630,15 +645,20 @@ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
->   
->   	if (flat_buf && flat_buf->daddr) {
->   		struct device *real_dev = flat_buf->dev->parent;
-> +		ssize_t aligned_size = PAGE_ALIGN(etr_buf->size);
->   
-> -		dma_free_coherent(real_dev, flat_buf->size,
-> -				  flat_buf->vaddr, flat_buf->daddr);
-> +		dma_unmap_page(real_dev, flat_buf->daddr, aligned_size,
-> +			       DMA_FROM_DEVICE);
-> +		__free_pages(flat_buf->pages, get_order(aligned_size));
->   	}
->   	kfree(flat_buf);
->   }
->   
->   static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
->   {
-> +	struct etr_flat_buf *flat_buf = etr_buf->private;
-> +	struct device *real_dev = flat_buf->dev->parent;
-> +
->   	/*
->   	 * Adjust the buffer to point to the beginning of the trace data
->   	 * and update the available trace data.
-> @@ -648,6 +668,28 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
->   		etr_buf->len = etr_buf->size;
->   	else
->   		etr_buf->len = rwp - rrp;
-> +
-> +	if (etr_buf->offset + etr_buf->len > etr_buf->size) {
-> +		int len1, len2;
-> +
-> +		/*
-> +		 * If trace data is wrapped around, sync AUX bounce buffer
-> +		 * for two chunks: "len1" is for the trace date length at
-> +		 * the tail of bounce buffer, and "len2" is the length from
-> +		 * the start of the buffer after wrapping around.
-> +		 */
-> +		len1 = etr_buf->size - etr_buf->offset;
-> +		len2 = etr_buf->len - len1;
-> +		dma_sync_single_for_cpu(real_dev,
-> +					flat_buf->daddr + etr_buf->offset,
-> +					len1, DMA_FROM_DEVICE);
-> +		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
-> +					len2, DMA_FROM_DEVICE);
-
-We always start tracing at the beginning of the buffer and the only 
-reason why we would get a wrap around, is when the buffer is full.
-So you could as well sync the entire buffer in one go
-
-		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
-					etr_buf->len, DMA_FROM_DEVICE);
-
-
-> +	} else {
-> +		dma_sync_single_for_cpu(real_dev,
-> +					flat_buf->daddr + etr_buf->offset,
-> +					etr_buf->len, DMA_FROM_DEVICE);
-> +	}
->   }
->   
->   static ssize_t tmc_etr_get_data_flat_buf(struct etr_buf *etr_buf,
-> 
-
-
-
-Eitherways,
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Will
