@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A414E3C4E7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F683C4E91
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245049AbhGLHTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:19:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
+        id S1343593AbhGLHT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240973AbhGLGyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240966AbhGLGyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 02:54:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6367611B0;
-        Mon, 12 Jul 2021 06:51:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C001E611BF;
+        Mon, 12 Jul 2021 06:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072688;
-        bh=VrPXUm0PKzWrgMxxobE5j99PE4NAJHQyapS/YeWsxBM=;
+        s=korg; t=1626072691;
+        bh=sooO2MLxM7bLD2+xTCs+FYPJ7Y621Jb1smqCOhz/UK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtBIOc23Z4byUamIv2j+DVSRwkXEVm9vo44q6/3epHGq5vKj0Hwjl5P6K9AEXaYlX
-         Fnj16znaD1qh2xCtoHiM9WIE/v2GTYAGnnMnABNGTuUh8BTp3QAWoTtmWpuPyQcOis
-         6+W1FNMd9aHgLVB0q/GlnJXU8AsSEkaQThxCrW4Y=
+        b=ABKL29QTyvwVejOJ05keY8WOXpCs1YrqpWuuLpABMHp3vtjtQWC5zDeFJD7NnMKPH
+         zu/1SkqaChUfwLipHoZan1710JYlqTp8WOU0i/gBjo6xfAJ20dh/w9X3jZg9Z8wORQ
+         Q0Ci0c2o6AOUUatcNVGk60/RelKXtlqU4WIJgpo8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Varun Prakash <varun@chelsio.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 582/593] scsi: target: cxgbit: Unmap DMA buffer before calling target_execute_cmd()
-Date:   Mon, 12 Jul 2021 08:12:22 +0200
-Message-Id: <20210712060959.242606314@linuxfoundation.org>
+        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Subject: [PATCH 5.10 583/593] mailbox: qcom-ipcc: Fix IPCC mbox channel exhaustion
+Date:   Mon, 12 Jul 2021 08:12:23 +0200
+Message-Id: <20210712060959.403177928@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -39,116 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Varun Prakash <varun@chelsio.com>
+From: Sibi Sankar <sibis@codeaurora.org>
 
-commit 6ecdafaec79d4b3388a5b017245f23a0ff9d852d upstream.
+commit d6fbfdbc12745ce24bcd348dbf7e652353b3e59c upstream.
 
-Instead of calling dma_unmap_sg() after completing WRITE I/O, call
-dma_unmap_sg() before calling target_execute_cmd() to sync the DMA buffer.
+Fix IPCC (Inter-Processor Communication Controller) channel exhaustion by
+setting the channel private data to NULL on mbox shutdown.
 
-Link: https://lore.kernel.org/r/1618403949-3443-1-git-send-email-varun@chelsio.com
-Cc: <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Varun Prakash <varun@chelsio.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Err Logs:
+remoteproc: MBA booted without debug policy, loading mpss
+remoteproc: glink-edge: failed to acquire IPC channel
+remoteproc: failed to probe subdevices for remoteproc: -16
+
+Fixes: fa74a0257f45 ("mailbox: Add support for Qualcomm IPCC")
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Cc: stable@vger.kernel.org
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/target/iscsi/cxgbit/cxgbit_ddp.c    |   19 ++++++++++---------
- drivers/target/iscsi/cxgbit/cxgbit_target.c |   21 ++++++++++++++++++---
- 2 files changed, 28 insertions(+), 12 deletions(-)
+ drivers/mailbox/qcom-ipcc.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/target/iscsi/cxgbit/cxgbit_ddp.c
-+++ b/drivers/target/iscsi/cxgbit/cxgbit_ddp.c
-@@ -265,12 +265,13 @@ void cxgbit_unmap_cmd(struct iscsi_conn
- 	struct cxgbit_cmd *ccmd = iscsit_priv_cmd(cmd);
- 
- 	if (ccmd->release) {
--		struct cxgbi_task_tag_info *ttinfo = &ccmd->ttinfo;
--
--		if (ttinfo->sgl) {
-+		if (cmd->se_cmd.se_cmd_flags & SCF_PASSTHROUGH_SG_TO_MEM_NOALLOC) {
-+			put_page(sg_page(&ccmd->sg));
-+		} else {
- 			struct cxgbit_sock *csk = conn->context;
- 			struct cxgbit_device *cdev = csk->com.cdev;
- 			struct cxgbi_ppm *ppm = cdev2ppm(cdev);
-+			struct cxgbi_task_tag_info *ttinfo = &ccmd->ttinfo;
- 
- 			/* Abort the TCP conn if DDP is not complete to
- 			 * avoid any possibility of DDP after freeing
-@@ -280,14 +281,14 @@ void cxgbit_unmap_cmd(struct iscsi_conn
- 				     cmd->se_cmd.data_length))
- 				cxgbit_abort_conn(csk);
- 
-+			if (unlikely(ttinfo->sgl)) {
-+				dma_unmap_sg(&ppm->pdev->dev, ttinfo->sgl,
-+					     ttinfo->nents, DMA_FROM_DEVICE);
-+				ttinfo->nents = 0;
-+				ttinfo->sgl = NULL;
-+			}
- 			cxgbi_ppm_ppod_release(ppm, ttinfo->idx);
--
--			dma_unmap_sg(&ppm->pdev->dev, ttinfo->sgl,
--				     ttinfo->nents, DMA_FROM_DEVICE);
--		} else {
--			put_page(sg_page(&ccmd->sg));
- 		}
--
- 		ccmd->release = false;
- 	}
+--- a/drivers/mailbox/qcom-ipcc.c
++++ b/drivers/mailbox/qcom-ipcc.c
+@@ -155,6 +155,11 @@ static int qcom_ipcc_mbox_send_data(stru
+ 	return 0;
  }
---- a/drivers/target/iscsi/cxgbit/cxgbit_target.c
-+++ b/drivers/target/iscsi/cxgbit/cxgbit_target.c
-@@ -997,17 +997,18 @@ static int cxgbit_handle_iscsi_dataout(s
- 	struct scatterlist *sg_start;
- 	struct iscsi_conn *conn = csk->conn;
- 	struct iscsi_cmd *cmd = NULL;
-+	struct cxgbit_cmd *ccmd;
-+	struct cxgbi_task_tag_info *ttinfo;
- 	struct cxgbit_lro_pdu_cb *pdu_cb = cxgbit_rx_pdu_cb(csk->skb);
- 	struct iscsi_data *hdr = (struct iscsi_data *)pdu_cb->hdr;
- 	u32 data_offset = be32_to_cpu(hdr->offset);
--	u32 data_len = pdu_cb->dlen;
-+	u32 data_len = ntoh24(hdr->dlength);
- 	int rc, sg_nents, sg_off;
- 	bool dcrc_err = false;
  
- 	if (pdu_cb->flags & PDUCBF_RX_DDP_CMP) {
- 		u32 offset = be32_to_cpu(hdr->offset);
- 		u32 ddp_data_len;
--		u32 payload_length = ntoh24(hdr->dlength);
- 		bool success = false;
- 
- 		cmd = iscsit_find_cmd_from_itt_or_dump(conn, hdr->itt, 0);
-@@ -1022,7 +1023,7 @@ static int cxgbit_handle_iscsi_dataout(s
- 		cmd->data_sn = be32_to_cpu(hdr->datasn);
- 
- 		rc = __iscsit_check_dataout_hdr(conn, (unsigned char *)hdr,
--						cmd, payload_length, &success);
-+						cmd, data_len, &success);
- 		if (rc < 0)
- 			return rc;
- 		else if (!success)
-@@ -1060,6 +1061,20 @@ static int cxgbit_handle_iscsi_dataout(s
- 		cxgbit_skb_copy_to_sg(csk->skb, sg_start, sg_nents, skip);
- 	}
- 
-+	ccmd = iscsit_priv_cmd(cmd);
-+	ttinfo = &ccmd->ttinfo;
++static void qcom_ipcc_mbox_shutdown(struct mbox_chan *chan)
++{
++	chan->con_priv = NULL;
++}
 +
-+	if (ccmd->release && ttinfo->sgl &&
-+	    (cmd->se_cmd.data_length ==	(cmd->write_data_done + data_len))) {
-+		struct cxgbit_device *cdev = csk->com.cdev;
-+		struct cxgbi_ppm *ppm = cdev2ppm(cdev);
-+
-+		dma_unmap_sg(&ppm->pdev->dev, ttinfo->sgl, ttinfo->nents,
-+			     DMA_FROM_DEVICE);
-+		ttinfo->nents = 0;
-+		ttinfo->sgl = NULL;
-+	}
-+
- check_payload:
+ static struct mbox_chan *qcom_ipcc_mbox_xlate(struct mbox_controller *mbox,
+ 					const struct of_phandle_args *ph)
+ {
+@@ -184,6 +189,7 @@ static struct mbox_chan *qcom_ipcc_mbox_
  
- 	rc = iscsit_check_dataout_payload(cmd, hdr, dcrc_err);
+ static const struct mbox_chan_ops ipcc_mbox_chan_ops = {
+ 	.send_data = qcom_ipcc_mbox_send_data,
++	.shutdown = qcom_ipcc_mbox_shutdown,
+ };
+ 
+ static int qcom_ipcc_setup_mbox(struct qcom_ipcc *ipcc)
 
 
