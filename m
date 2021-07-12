@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4343C4F67
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719E83C56F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345394AbhGLHZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:25:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33242 "EHLO mail.kernel.org"
+        id S1358938AbhGLI0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240083AbhGLG6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:58:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 308FC6124B;
-        Mon, 12 Jul 2021 06:55:46 +0000 (UTC)
+        id S243941AbhGLHhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:37:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DF2461939;
+        Mon, 12 Jul 2021 07:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072947;
-        bh=DSZyYzhJotfCKGAIacXj6L5zB78kS4zPwJGJEBxsjF4=;
+        s=korg; t=1626075187;
+        bh=WoXSq2ICM3efq+BWozC2CMUcabEJzzaMVOvVVaY7IjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aVBJnNjee4KGKbX+pYmRqTeE2eWw7lPzbfu86p4Ityre9jYrb/mWN/AGzgfAq82vf
-         TSSKEJYZKtDv1DinYjSGPZZ0Xu0Iy2VeJCG+q+C3VR0a3OufuaFeC/lyOee9Lw6vml
-         P4BXtq7fHmqtLPRWcC2x4i+jSn/lAZ1XnRdYTl8Y=
+        b=oNzRDO3Wf4n1hJ9gu4bKYrwEgosUiUuGj7A+JiZKCRCi6m17+ed5UHBO+Q+lZfvGF
+         J+RgvaaIkubWpjpYrkxXZXSGx7XWfCBVLg409cLSrVQ/mbx9xZjq3McoGdJnuWG6rP
+         opktQs/kbqqblPzMxWiIs26dfWK2tO1v3gPTyOpc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 073/700] KVM: x86/mmu: Use MMUs role to detect CR4.SMEP value in nested NPT walk
-Date:   Mon, 12 Jul 2021 08:02:36 +0200
-Message-Id: <20210712060935.020357020@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 134/800] media: am437x: fix pm_runtime_get_sync() usage count
+Date:   Mon, 12 Jul 2021 08:02:37 +0200
+Message-Id: <20210712060931.895738602@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit ef318b9edf66a082f23d00d79b70c17b4c055a26 upstream.
+[ Upstream commit c41e02493334985cca1a22efd5ca962ce3abb061 ]
 
-Use the MMU's role to get its effective SMEP value when injecting a fault
-into the guest.  When walking L1's (nested) NPT while L2 is active, vCPU
-state will reflect L2, whereas NPT uses the host's (L1 in this case) CR0,
-CR4, EFER, etc...  If L1 and L2 have different settings for SMEP and
-L1 does not have EFER.NX=1, this can result in an incorrect PFEC.FETCH
-when injecting #NPF.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Fixes: e57d4a356ad3 ("KVM: Add instruction fetch checking when walking guest page table")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210622175739.3610207-5-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+While here, ensure that the driver will check if PM runtime
+resumed at vpfe_initialize_device().
 
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/paging_tmpl.h |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/platform/am437x/am437x-vpfe.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -471,8 +471,7 @@ retry_walk:
+diff --git a/drivers/media/platform/am437x/am437x-vpfe.c b/drivers/media/platform/am437x/am437x-vpfe.c
+index 6cdc77dda0e4..1c9cb9e05fdf 100644
+--- a/drivers/media/platform/am437x/am437x-vpfe.c
++++ b/drivers/media/platform/am437x/am437x-vpfe.c
+@@ -1021,7 +1021,9 @@ static int vpfe_initialize_device(struct vpfe_device *vpfe)
+ 	if (ret)
+ 		return ret;
  
- error:
- 	errcode |= write_fault | user_fault;
--	if (fetch_fault && (mmu->nx ||
--			    kvm_read_cr4_bits(vcpu, X86_CR4_SMEP)))
-+	if (fetch_fault && (mmu->nx || mmu->mmu_role.ext.cr4_smep))
- 		errcode |= PFERR_FETCH_MASK;
+-	pm_runtime_get_sync(vpfe->pdev);
++	ret = pm_runtime_resume_and_get(vpfe->pdev);
++	if (ret < 0)
++		return ret;
  
- 	walker->fault.vector = PF_VECTOR;
+ 	vpfe_config_enable(&vpfe->ccdc, 1);
+ 
+@@ -2443,7 +2445,11 @@ static int vpfe_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	/* for now just enable it here instead of waiting for the open */
+-	pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
++	if (ret < 0) {
++		vpfe_err(vpfe, "Unable to resume device.\n");
++		goto probe_out_v4l2_unregister;
++	}
+ 
+ 	vpfe_ccdc_config_defaults(ccdc);
+ 
+@@ -2530,6 +2536,11 @@ static int vpfe_suspend(struct device *dev)
+ 
+ 	/* only do full suspend if streaming has started */
+ 	if (vb2_start_streaming_called(&vpfe->buffer_queue)) {
++		/*
++		 * ignore RPM resume errors here, as it is already too late.
++		 * A check like that should happen earlier, either at
++		 * open() or just before start streaming.
++		 */
+ 		pm_runtime_get_sync(dev);
+ 		vpfe_config_enable(ccdc, 1);
+ 
+-- 
+2.30.2
+
 
 
