@@ -2,45 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647AB3C56EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89013C49C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358784AbhGLI0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:26:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
+        id S237652AbhGLGqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349479AbhGLHmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64132610D1;
-        Mon, 12 Jul 2021 07:39:17 +0000 (UTC)
+        id S235969AbhGLGfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E82B6101E;
+        Mon, 12 Jul 2021 06:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075557;
-        bh=4V6T0Wqjbe0Ofi+19Z9v/BYOwCZHmNCeEBjyNE5AHpU=;
+        s=korg; t=1626071577;
+        bh=6qvfVHz8Ivbu+S8FtkH8bJH6LL/dj1fkRbuXihqrtqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R8RJHNYk4DhGNrAkPtUNqed79XxHceemJOZ5K0VvBvyETobwsjEa16flmA2DEl3SC
-         fzoDptxI4OVPJkePRLxgvTIIT8ZrbWiOXY8hn0AlisJlnE50HDqdoABcqxeOUle170
-         h/0Dxw5UCFlw+Il7I+JbZxczA/LfwxAGkr2FP678=
+        b=v5ECzWjq600kR8a2fadVWyPKNhCr5wdfL3Ink/DUbtxq36udEQJ+0f/PiJzS6tH+n
+         PlATGUpPxMUSUoBWWGM/M/RxovIRoEmlqttzxBMXdX3zdbcsutjBWBKjrfMzHojAj7
+         sJYqQ6iurN1gkY5I7ljPXsoK+V+LSwJvQKIx420A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Axtens <dja@axtens.net>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Marco Elver <elver@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Thara Gopinath <thara.gopinath@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 265/800] mm: define default MAX_PTRS_PER_* in include/pgtable.h
-Date:   Mon, 12 Jul 2021 08:04:48 +0200
-Message-Id: <20210712060951.981808378@linuxfoundation.org>
+Subject: [PATCH 5.10 129/593] crypto: qce: skcipher: Fix incorrect sg count for dma transfers
+Date:   Mon, 12 Jul 2021 08:04:49 +0200
+Message-Id: <20210712060857.335221127@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,100 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Thara Gopinath <thara.gopinath@linaro.org>
 
-[ Upstream commit c0f8aa4fa815daacb6eca52cae04820d6aecb7c2 ]
+[ Upstream commit 1339a7c3ba05137a2d2fe75f602311bbfc6fab33 ]
 
-Commit c65e774fb3f6 ("x86/mm: Make PGDIR_SHIFT and PTRS_PER_P4D variable")
-made PTRS_PER_P4D variable on x86 and introduced MAX_PTRS_PER_P4D as a
-constant for cases which need a compile-time constant (e.g.  fixed-size
-arrays).
+Use the sg count returned by dma_map_sg to call into
+dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
+can merge consecutive sglist entries, thus making the original sg count
+wrong. This is a fix for memory coruption issues observed while testing
+encryption/decryption of large messages using libkcapi framework.
 
-powerpc likewise has boot-time selectable MMU features which can cause
-other mm "constants" to vary.  For KASAN, we have some static
-PTE/PMD/PUD/P4D arrays so we need compile-time maximums for all these
-constants.  Extend the MAX_PTRS_PER_ idiom, and place default definitions
-in include/pgtable.h.  These define MAX_PTRS_PER_x to be PTRS_PER_x unless
-an architecture has defined MAX_PTRS_PER_x in its arch headers.
+Patch has been tested further by running full suite of tcrypt.ko tests
+including fuzz tests.
 
-Clean up pgtable-nop4d.h and s390's MAX_PTRS_PER_P4D definitions while
-we're at it: both can just pick up the default now.
-
-Link: https://lkml.kernel.org/r/20210624034050.511391-4-dja@axtens.net
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-Acked-by: Andrey Konovalov <andreyknvl@gmail.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Marco Elver <elver@google.com>
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Cc: Balbir Singh <bsingharora@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/pgtable.h     |  2 --
- include/asm-generic/pgtable-nop4d.h |  1 -
- include/linux/pgtable.h             | 22 ++++++++++++++++++++++
- 3 files changed, 22 insertions(+), 3 deletions(-)
+ drivers/crypto/qce/skcipher.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 29c7ecd5ad1d..b38f7b781564 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -344,8 +344,6 @@ static inline int is_module_addr(void *addr)
- #define PTRS_PER_P4D	_CRST_ENTRIES
- #define PTRS_PER_PGD	_CRST_ENTRIES
+diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
+index a2d3da0ad95f..5a6559131eac 100644
+--- a/drivers/crypto/qce/skcipher.c
++++ b/drivers/crypto/qce/skcipher.c
+@@ -71,7 +71,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
+ 	struct scatterlist *sg;
+ 	bool diff_dst;
+ 	gfp_t gfp;
+-	int ret;
++	int dst_nents, src_nents, ret;
  
--#define MAX_PTRS_PER_P4D	PTRS_PER_P4D
--
- /*
-  * Segment table and region3 table entry encoding
-  * (R = read-only, I = invalid, y = young bit):
-diff --git a/include/asm-generic/pgtable-nop4d.h b/include/asm-generic/pgtable-nop4d.h
-index ce2cbb3c380f..2f6b1befb129 100644
---- a/include/asm-generic/pgtable-nop4d.h
-+++ b/include/asm-generic/pgtable-nop4d.h
-@@ -9,7 +9,6 @@
- typedef struct { pgd_t pgd; } p4d_t;
+ 	rctx->iv = req->iv;
+ 	rctx->ivsize = crypto_skcipher_ivsize(skcipher);
+@@ -122,21 +122,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
+ 	sg_mark_end(sg);
+ 	rctx->dst_sg = rctx->dst_tbl.sgl;
  
- #define P4D_SHIFT		PGDIR_SHIFT
--#define MAX_PTRS_PER_P4D	1
- #define PTRS_PER_P4D		1
- #define P4D_SIZE		(1UL << P4D_SHIFT)
- #define P4D_MASK		(~(P4D_SIZE-1))
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index a43047b1030d..c32600c9e1ad 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1592,4 +1592,26 @@ typedef unsigned int pgtbl_mod_mask;
- #define pte_leaf_size(x) PAGE_SIZE
- #endif
+-	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
+-	if (ret < 0)
++	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
++	if (dst_nents < 0)
+ 		goto error_free;
  
-+/*
-+ * Some architectures have MMUs that are configurable or selectable at boot
-+ * time. These lead to variable PTRS_PER_x. For statically allocated arrays it
-+ * helps to have a static maximum value.
-+ */
-+
-+#ifndef MAX_PTRS_PER_PTE
-+#define MAX_PTRS_PER_PTE PTRS_PER_PTE
-+#endif
-+
-+#ifndef MAX_PTRS_PER_PMD
-+#define MAX_PTRS_PER_PMD PTRS_PER_PMD
-+#endif
-+
-+#ifndef MAX_PTRS_PER_PUD
-+#define MAX_PTRS_PER_PUD PTRS_PER_PUD
-+#endif
-+
-+#ifndef MAX_PTRS_PER_P4D
-+#define MAX_PTRS_PER_P4D PTRS_PER_P4D
-+#endif
-+
- #endif /* _LINUX_PGTABLE_H */
+ 	if (diff_dst) {
+-		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
+-		if (ret < 0)
++		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
++		if (src_nents < 0)
+ 			goto error_unmap_dst;
+ 		rctx->src_sg = req->src;
+ 	} else {
+ 		rctx->src_sg = rctx->dst_sg;
++		src_nents = dst_nents - 1;
+ 	}
+ 
+-	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, rctx->src_nents,
+-			       rctx->dst_sg, rctx->dst_nents,
++	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, src_nents,
++			       rctx->dst_sg, dst_nents,
+ 			       qce_skcipher_done, async_req);
+ 	if (ret)
+ 		goto error_unmap_src;
 -- 
 2.30.2
 
