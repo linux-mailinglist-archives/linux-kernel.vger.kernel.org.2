@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CC03C62FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109553C6308
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236072AbhGLS5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 14:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52534 "EHLO mail.kernel.org"
+        id S235226AbhGLTAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:00:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236052AbhGLS5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 14:57:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C6F61221;
-        Mon, 12 Jul 2021 18:54:20 +0000 (UTC)
+        id S230409AbhGLTAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 15:00:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C676120A;
+        Mon, 12 Jul 2021 18:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626116061;
-        bh=6FlVRup+haoO14SFNrM2GwJKIqFzhrX/it8SC/NvuCE=;
+        s=korg; t=1626116271;
+        bh=P4x4u3W+TsFok4fGyNrfpkXYKrxbAAG8fhhPCl/58dM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FGqsXp01a4HmETyFhL+5ojrVBu1PHy/oUWEMDQGceuUhKe0uTr0NW7LZs0zMyQdZ4
-         Bj5paSOO1/wVDb7PDwzwma/FRnSUd2xVjzCypLrGPLW1MrF938t0IWu5j8LVcUh/AZ
-         W+IORi0Ahm6obq3zz797NtxVXY6cTyGwraeQiqfM=
-Date:   Mon, 12 Jul 2021 20:54:19 +0200
+        b=o8dVLW3ZHOzMIO61CZfvi7WbSL4XKXcBuWThED5UfMeXbyoojpQP12fb0YP75amnF
+         44OJpkAx8uqaV2fe5ErzBym9guajnYBiuavAaMyksuRLumYLQWDcE8ZPHcr7HAG65B
+         VCqUWFaOiFyhHFwQCjXuWp2t8bU5asDqGGQ5b9gI=
+Date:   Mon, 12 Jul 2021 20:57:48 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>, nathanl@linux.ibm.com
-Subject: Re: [PATCH 5.4 000/348] 5.4.132-rc1 review
-Message-ID: <YOyP28+HzWMTVghS@kroah.com>
-References: <20210712060659.886176320@linuxfoundation.org>
- <CA+G9fYu6+hex77zTHTCopRvSVpCfxPjLydEL3Ew+92poZkncSw@mail.gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 5/6] software nodes: Split software_node_notify()
+Message-ID: <YOyQrK3b2dhb2wTF@kroah.com>
+References: <2780027.e9J7NaK4W3@kreacher>
+ <5627033.MhkbZ0Pkbq@kreacher>
+ <YOyD/4kdvd77PzLy@kroah.com>
+ <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYu6+hex77zTHTCopRvSVpCfxPjLydEL3Ew+92poZkncSw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 06:37:26PM +0530, Naresh Kamboju wrote:
-> On Mon, 12 Jul 2021 at 11:45, Greg Kroah-Hartman
+On Mon, Jul 12, 2021 at 08:30:06PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Jul 12, 2021 at 8:03 PM Greg Kroah-Hartman
 > <gregkh@linuxfoundation.org> wrote:
 > >
-> > This is the start of the stable review cycle for the 5.4.132 release.
-> > There are 348 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+> > On Mon, Jul 12, 2021 at 07:27:12PM +0200, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Split software_node_notify_remove) out of software_node_notify()
+> > > and make device_platform_notify() call the latter on device addition
+> > > and the former on device removal.
+> > >
+> > > While at it, put the headers of the above functions into base.h,
+> > > because they don't need to be present in a global header file.
+> > >
+> > > No intentional functional impact.
+> > >
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >  drivers/base/base.h      |    3 ++
+> > >  drivers/base/core.c      |    9 +++---
+> > >  drivers/base/swnode.c    |   61 ++++++++++++++++++++++++-----------------------
+> > >  include/linux/property.h |    2 -
+> > >  4 files changed, 39 insertions(+), 36 deletions(-)
+> > >
+> > > Index: linux-pm/drivers/base/swnode.c
+> > > ===================================================================
+> > > --- linux-pm.orig/drivers/base/swnode.c
+> > > +++ linux-pm/drivers/base/swnode.c
+> > > @@ -11,6 +11,8 @@
+> > >  #include <linux/property.h>
+> > >  #include <linux/slab.h>
+> > >
+> > > +#include "base.h"
+> > > +
+> > >  struct swnode {
+> > >       struct kobject kobj;
+> > >       struct fwnode_handle fwnode;
+> > > @@ -1053,7 +1055,7 @@ int device_add_software_node(struct devi
+> > >        * balance.
+> > >        */
+> > >       if (device_is_registered(dev))
+> > > -             software_node_notify(dev, KOBJ_ADD);
+> > > +             software_node_notify(dev);
 > >
-> > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> > Anything received after that time might be too late.
+> > Should this now be called "software_node_notify_add()" to match up with:
 > >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.132-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
+> > >       if (device_is_registered(dev))
+> > > -             software_node_notify(dev, KOBJ_REMOVE);
+> > > +             software_node_notify_remove(dev);
 > >
-> > thanks,
+> > The other being called "_remove"?
 > >
-> > greg k-h
-> >
+> > Makes it more obvious to me :)
 > 
-> Results from Linaro’s test farm.
+> The naming convention used here follows platform_notify() and
+> platform_notify_remove(), and the analogous function names in ACPI for
+> that matter.
 > 
-> Regressions found on powerpc:
-> 
->  - build/gcc-10-cell_defconfig
->  - build/gcc-8-defconfig
->  - build/gcc-10-defconfig
->  - build/gcc-9-defconfig
->  - build/gcc-9-maple_defconfig
->  - build/gcc-8-maple_defconfig
->  - build/gcc-8-cell_defconfig
->  - build/gcc-10-maple_defconfig
->  - build/gcc-9-cell_defconfig
-> 
-> The following patch caused build warnings / errors on powerpc.
-> 
-> > Michael Ellerman <mpe@ellerman.id.au>
-> >     powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()
-> 
-> 
-> Build error:
-> ------------
-> arch/powerpc/kernel/stacktrace.c: In function 'raise_backtrace_ipi':
-> arch/powerpc/kernel/stacktrace.c:248:5: error: implicit declaration of
-> function 'udelay' [-Werror=implicit-function-declaration]
->   248 |     udelay(1);
->       |     ^~~~~~
-> cc1: all warnings being treated as errors
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> steps to reproduce:
-> -------------------------
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
-> 
-> tuxmake --runtime podman --target-arch powerpc --toolchain gcc-10
-> --kconfig defconfig
-> 
-> 
-> build log link,
-> https://builds.tuxbuild.com/1vChzZyzmKmQCN2cLMtRBR5kbdI/
+> I thought that adding _add in just one case would be sort of odd, but
+> of course I can do that, so please let me know what you want me to do.
 
-Pushed out a -rc2.
+Ah, ok, that makes more sense, let's just leave it as-is then:
 
-thanks,
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
