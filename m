@@ -2,66 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3673C515C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07263C5159
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347851AbhGLHkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
+        id S1347766AbhGLHkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244760AbhGLHLI (ORCPT
+        with ESMTP id S245103AbhGLHLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:11:08 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D87C09B08F
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:00:18 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id m83so7849336pfd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:00:18 -0700 (PDT)
+        Mon, 12 Jul 2021 03:11:25 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CDCC0225B2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:01:40 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id a18so22468089ljk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/b2+FxsIGAs9cSe64CoH7kVEIr1XESKqHrRJCImx39U=;
-        b=NAfZc7WU6uZ1nSiM6exbPzNzvtVnCF1S+wtjIuSSeT9m0YCF3cVgVJRMq7sZ7i7AEm
-         KDRsFvQ6g84ewUiIxVBu5PKLr88gu9GTlyKNkg6nLys3DpFSaLzAERtBq9BOnJ8TZxm5
-         r7e6qpwm+XSbDz9hzEQ/VIqeGbtuPhNNs8uj7VURK/UDQH75I2yaI7Zl0SbiZuR1ncKR
-         2AdQsoua3IzREZaPF8oM6xOvuOUpf5UOSU4V1qEiF3uk9zoFfPYf15gbQUOkx6yg//TU
-         3CfdWqS7cUGFrU3QSChPEKM4gVl6S4WS7gCfIlZ8awwo5tRdds2gkb+s37MugDHIdyoM
-         6GTg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VYxdyspSXWiwtPigXq/rsDU61HEXCt6NK9gvUcQWdw8=;
+        b=j9Vqu0fE81dKuB+kJrj1mFKs1Q4XuZf15mdQ7y/28wrgXUmux6EGDh3Kqzc0D6Soyh
+         x4glUdP6MiOg1LSsMctR2/tU3EPVNIM5mAtqztMYzmeGxNhimHPfdbtt9VU6ew3ecE7A
+         7ZhwHClVVPOUnoVqqTpfiHDdu1GFefzp/GoZE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/b2+FxsIGAs9cSe64CoH7kVEIr1XESKqHrRJCImx39U=;
-        b=AB0+F4A59b9t20ok9fgmJNC2O7N/DLfKw97dzc8xSb/0k1JqHJS9ECkOuR77NY7zyt
-         HVOZa0hBQ6nM3dMBYIRmIsD4X0MRQTUG+vCAaPFK05jMrD/Ca7fj8UHKz/PmkMo502uz
-         qXgICWd3l0BTxU9B9vP1fpuytCNcmJ3e511xmT5u41hjsM4OuFvVNxoQ4v1ojFrLJAlm
-         k7Q2dGPtE0jr4tYJqpTy4OFKiG8ydJDdwrMOI0RzfOqmzmn5wheVBaThIbBPPMWI74vV
-         IQDYBIbomVWpgpY5oM+UHrey+bKZFd3haKzqKdSHynhrd/hUJHSMUEg6Mssx3fg8t5iH
-         2ZGQ==
-X-Gm-Message-State: AOAM531fDH2IxVzfS66T2iPzAOLzRCjus47ZunjAx35wM34/pyQNqbq9
-        g8urSUJfhbvWnfXzcNftqmpD4SInhzFAfROnpX8=
-X-Google-Smtp-Source: ABdhPJybkEdHkEl/BxxexgKeivj/Z156vGXaaRRgohHIQW4q+JiVTkO8UamYrMs+PO/eZZ7V/OlYgIMN5UN5flfPMGY=
-X-Received: by 2002:a62:4e97:0:b029:312:7b4c:55b7 with SMTP id
- c145-20020a624e970000b02903127b4c55b7mr50737419pfb.47.1626073217842; Mon, 12
- Jul 2021 00:00:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VYxdyspSXWiwtPigXq/rsDU61HEXCt6NK9gvUcQWdw8=;
+        b=S2y+JMEVEVcAW5uGGNdxLGiLd85et1g2dsPL1y0im7hy4/SRCAyJlQWhlEY6Suxs9F
+         H9uZlDhlvQOF6hBXIqX5X5RmgbLTzHWdjHOlTn+ie+UGx41Rq3jBZ65ad0QuRYjW6TV4
+         R8aY814zdtUPTblj9RDsNjHgs3QdIkil4akXo29px640hynlqDoZ4ULepFqTY8e3phOL
+         aXWfbVujDvATCpHUg3Qcn/pMcZfWSHJChvHscIVpGKOdViTYxd5Vh8XK7utjha9RrUhR
+         C76fiqrcu4SXc+EaQ0VOdRoc6QPfMGE38orv5S/Iy1XA4H0/PGZi7sX5xNK3ouedOCP9
+         ccAA==
+X-Gm-Message-State: AOAM533Q6r7DYK09oRl+ce1QkY84VrlvyQzwLG5ScSHxq2l38044umzT
+        +VuFd/9KHFfJuQg5/BpLus5mR1fovtzvF8oR0q4HWg==
+X-Google-Smtp-Source: ABdhPJyfLdmeFKBf+PLnkJ30PFYffQcwVgdTfzPp/i11j8aApmws194sn2QFP1ISlk6TVNbu9PCbxv1IXO8m7OC1XiY=
+X-Received: by 2002:a2e:a583:: with SMTP id m3mr41042486ljp.305.1626073298718;
+ Mon, 12 Jul 2021 00:01:38 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:689:0:0:0:0 with HTTP; Mon, 12 Jul 2021 00:00:16
- -0700 (PDT)
-Reply-To: mr.sulamanekante@gmail.com
-From:   sulaman Kante <justinalaboso79@gmail.com>
-Date:   Mon, 12 Jul 2021 09:00:16 +0200
-Message-ID: <CAKEENoLmHcZkboXikpJSNEEjJwxaRvLhJU-7cL2RxAe8ZuNGjw@mail.gmail.com>
-Subject: Your Assistance Is Needed Please
-To:     undisclosed-recipients:;
+References: <20210710122446.5439-1-tinghan.shen@mediatek.com>
+ <CA+Px+wUVsY6CYwEdfSeK+KQGmvb224hvchgnTwX0rgBzMvXfqw@mail.gmail.com> <CAGXv+5EtUqe=HECJFkZXdDX9cV_wMp0OykHDOBJVWPF3MwA4ZQ@mail.gmail.com>
+In-Reply-To: <CAGXv+5EtUqe=HECJFkZXdDX9cV_wMp0OykHDOBJVWPF3MwA4ZQ@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 12 Jul 2021 15:01:27 +0800
+Message-ID: <CAGXv+5Hww-fgvEkjOtLQod6wbnThgdg0eiEx=45nQVY2wtWHcQ@mail.gmail.com>
+Subject: Re: [v2 1/2] dt-bindings: remoteproc: mediatek: Add binding for
+ mt8195 scp
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Tinghan Shen <tinghan.shen@mediatek.com>, ohad@wizery.com,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day To You
+On Mon, Jul 12, 2021 at 2:59 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+>
+> On Mon, Jul 12, 2021 at 2:06 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+> >
+> > On Sat, Jul 10, 2021 at 8:25 PM Tinghan Shen <tinghan.shen@mediatek.com> wrote:
+> > > @@ -5,13 +5,15 @@ This binding provides support for ARM Cortex M4 Co-processor found on some
+> > >  Mediatek SoCs.
+> > >
+> > >  Required properties:
+> > > -- compatible           Should be "mediatek,mt8183-scp"
+> > > +- compatible           Should be one of:
+> > > +                               "mediatek,mt8183-scp"
+> > > +                               "mediatek,mt8195-scp"
+> > Just realized we forgot to add DT bindings for mediatek,mt8192-scp[1].
+> > Could you send another patch for adding the missing property?
+> >
+> > [1]: https://elixir.bootlin.com/linux/v5.13.1/source/drivers/remoteproc/mtk_scp.c#L879
+> >
+> > > -- clocks               Clock for co-processor (See: ../clock/clock-bindings.txt)
+> > > -- clock-names          Contains the corresponding name for the clock. This
+> > > +- clocks               Required by mt8183. Clock for co-processor (See: ../clock/clock-bindings.txt)
+> > > +- clock-names          Required by mt8183. Contains the corresponding name for the clock. This
+> > >                         should be named "main".
+> > Let's move clocks and clock-names to "Optional properties".  See [2]
+> > for your reference.  I guess it doesn't need to mention which chip
+> > needs the properties.  For those chips that need the clock properties,
+> > they won't work correctly without correct clock properties.
+>
+> I would suggest still adding them. We will need to describe the requirements
+> anyway then the binding is converted to DT schema.
 
-Please i need your kind Assistance. I will be very glad if you can
-assist me to receive this sum of ( $22. Million US dollars.) into your
-bank account for the benefit of our both families, reply me if you are
-ready to receive this fund.
-sulaman Kante
+Also, a coprocessor without any clock feeding it makes little sense.
+Any processor requires a running clock. Whether that clock is controllable
+is beside the point.
+
+> ChenYu
+>
+> > [2]: https://elixir.bootlin.com/linux/v5.13.1/source/Documentation/devicetree/bindings/remoteproc/ti,keystone-rproc.txt#L87
+> >
+> >
+> > Suggested to provide a cover letter for the series next time.
+> >
+> > nit: other patches usually use "[PATCH v2 1/2]" in the email title
+> > instead of the one used in the mail.
+> >
+> > _______________________________________________
+> > Linux-mediatek mailing list
+> > Linux-mediatek@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
