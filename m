@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171D53C5724
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F060B3C49E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353138AbhGLI3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:29:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
+        id S238364AbhGLGrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244140AbhGLHmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC42861158;
-        Mon, 12 Jul 2021 07:39:28 +0000 (UTC)
+        id S235282AbhGLGgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7BBF61107;
+        Mon, 12 Jul 2021 06:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075569;
-        bh=U0O14NrXACBSK7rFxbwEOy4mIvgVCNB8sB5mzb6xcBg=;
+        s=korg; t=1626071586;
+        bh=hF4Q/9GmtMFqpmdZrRJtN6H6n90Vyg18Ug/dsbuAqHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jP2iZ26k5yPQmhGVq0NFi3Gvql3EspcTrYjaUS5fybOoqEiSsLkzUCm7A3MbWBcKZ
-         s4ahUSISY5zVZHLB3Pd/z0ypkOwAk303VFoza7cjWO2MjNyes2ZK0+Lmyd34QfIsP8
-         nNbg0xghBpvzK8AzZaki9a5V/yGi0pR1xcgIfNvg=
+        b=T6Z/+W69fTUplVaZSAzhkGgoXsZ0h/BQPaGroj0TefZx1uAVClOHYh1k2OG7Hv2zr
+         NcLZDG9M+jlt+5tcBI+iM+xOMIg8bxBBBgiUSXgF6utEKLD0COAaMtzepNQi8/wy9j
+         2V7TXj79Eh4lYdrnBBxylMTjduSstHS2qM4iEUgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 270/800] media: s5p_cec: decrement usage count if disabled
+Subject: [PATCH 5.10 133/593] media: bt878: do not schedule tasklet when it is not setup
 Date:   Mon, 12 Jul 2021 08:04:53 +0200
-Message-Id: <20210712060952.814942309@linuxfoundation.org>
+Message-Id: <20210712060857.747111356@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 747bad54a677d8633ec14b39dfbeb859c821d7f2 ]
+[ Upstream commit a3a54bf4bddaecda8b5767209cfc703f0be2841d ]
 
-There's a bug at s5p_cec_adap_enable(): if called to
-disable the device, it should call pm_runtime_put()
-instead of pm_runtime_disable(), as the goal here is to
-decrement the usage_count and not to disable PM runtime.
+There is a problem with the tasklet in bt878. bt->tasklet is set by
+dvb-bt8xx.ko, and bt878.ko can be loaded independently.
+In this case if interrupt comes it may cause null-ptr-dereference.
+To solve this issue, we check if the tasklet is actually set before
+calling tasklet_schedule.
 
-Reported-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Fixes: 1bcbf6f4b6b0 ("[media] cec: s5p-cec: Add s5p-cec driver")
+[    1.750438] bt878(0): irq FDSR FBUS risc_pc=
+[    1.750728] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[    1.752969] RIP: 0010:0x0
+[    1.757526] Call Trace:
+[    1.757659]  <IRQ>
+[    1.757770]  tasklet_action_common.isra.0+0x107/0x110
+[    1.758041]  tasklet_action+0x22/0x30
+[    1.758237]  __do_softirq+0xe0/0x29b
+[    1.758430]  irq_exit_rcu+0xa4/0xb0
+[    1.758618]  common_interrupt+0x8d/0xa0
+[    1.758824]  </IRQ>
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/platform/s5p/s5p_cec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/bt8xx/bt878.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
-index 2250c1cbc64e..028a09a7531e 100644
---- a/drivers/media/cec/platform/s5p/s5p_cec.c
-+++ b/drivers/media/cec/platform/s5p/s5p_cec.c
-@@ -54,7 +54,7 @@ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
- 	} else {
- 		s5p_cec_mask_tx_interrupts(cec);
- 		s5p_cec_mask_rx_interrupts(cec);
--		pm_runtime_disable(cec->dev);
-+		pm_runtime_put(cec->dev);
- 	}
- 
- 	return 0;
+diff --git a/drivers/media/pci/bt8xx/bt878.c b/drivers/media/pci/bt8xx/bt878.c
+index 79ba15a9385a..69a304e0db11 100644
+--- a/drivers/media/pci/bt8xx/bt878.c
++++ b/drivers/media/pci/bt8xx/bt878.c
+@@ -300,7 +300,8 @@ static irqreturn_t bt878_irq(int irq, void *dev_id)
+ 		}
+ 		if (astat & BT878_ARISCI) {
+ 			bt->finished_block = (stat & BT878_ARISCS) >> 28;
+-			tasklet_schedule(&bt->tasklet);
++			if (bt->tasklet.callback)
++				tasklet_schedule(&bt->tasklet);
+ 			break;
+ 		}
+ 		count++;
 -- 
 2.30.2
 
