@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69BE3C5E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8268E3C5E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhGLONr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 10:13:47 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19690 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231510AbhGLONn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:13:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="209961572"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="209961572"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 07:10:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="459191111"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 12 Jul 2021 07:10:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CA9BFFF; Mon, 12 Jul 2021 17:11:20 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>
-Subject: [PATCH v2 1/1] i2c: parport: Switch to use module_parport_driver()
-Date:   Mon, 12 Jul 2021 17:11:19 +0300
-Message-Id: <20210712141119.22426-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234884AbhGLOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 10:15:54 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:35797 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234435AbhGLOPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 10:15:52 -0400
+Received: by mail-il1-f171.google.com with SMTP id a11so19639618ilf.2;
+        Mon, 12 Jul 2021 07:13:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=k8igawHCplNtH/pRw0xjDqXjVsOZEfLMKg3MUaxXh5g=;
+        b=GEZ1y0RNESUsEhq9eNvqOmsR32D41v8vjftI1oGWijdQ7Ag0ud4Mn1EzdzIoIHpBfa
+         /W8grpvzX4PWyBs9Zp5pFU7sBtGr1aa4ghdkVyp/LvwpWTaNDe4jD+ZXlDgJSapSGuO6
+         ZQO03E73q2NT/hEcYVroNW9qlhgR723nCN2IpgSwpD6LOfcCoSsRHFY8WfdUe+ukpJRF
+         uRBrHwGqtmO9Xw7Rn3VlfRfZmXvB7ayAq7Wz1CiIz2S8iXs6fBapf1kxOBhdW5v4JSmu
+         qmct+g5wjgkyyGNJS6II1+Qvo3aMOrtvBGG9Pl34mG0fmFd+fKopmH/sOQE9w7g/xYqL
+         OERA==
+X-Gm-Message-State: AOAM532JRYQKPFJ3OvVy8KijdoYtMbuCedUF+nfzBX6EqbN1nTaCi/qc
+        /YE0GmCnrvrSKg6JWddbAw==
+X-Google-Smtp-Source: ABdhPJwlSCyGZShHWxRoAHp6sVQ0HFvFTi+uc+SK/Qy0mlZMPuHyoGu/+I/X9H0ledRrAXAX2AqTJQ==
+X-Received: by 2002:a05:6e02:c2e:: with SMTP id q14mr38126331ilg.2.1626099183211;
+        Mon, 12 Jul 2021 07:13:03 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id g1sm7386544ilq.13.2021.07.12.07.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 07:13:02 -0700 (PDT)
+Received: (nullmailer pid 1850545 invoked by uid 1000);
+        Mon, 12 Jul 2021 14:12:53 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     alexandru.tachici@analog.com
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux@armlinux.org.uk, hkallweit1@gmail.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, andrew@lunn.ch,
+        robh+dt@kernel.org, davem@davemloft.net
+In-Reply-To: <20210712130631.38153-8-alexandru.tachici@analog.com>
+References: <20210712130631.38153-1-alexandru.tachici@analog.com> <20210712130631.38153-8-alexandru.tachici@analog.com>
+Subject: Re: [PATCH v2 7/7] dt-bindings: adin1100: Add binding for ADIN1100 Ethernet PHY
+Date:   Mon, 12 Jul 2021 08:12:53 -0600
+Message-Id: <1626099173.624231.1850544.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use module_parport_driver() to reduce boilerplate code.
+On Mon, 12 Jul 2021 16:06:31 +0300, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> DT bindings for the ADIN1100 10BASE-T1L Ethernet PHY.
+> 
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> ---
+>  .../devicetree/bindings/net/adi,adin1100.yaml | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/adi,adin1100.yaml
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed compilation error (Jean, LKP)
- drivers/i2c/busses/i2c-parport.c | 36 ++++++++++----------------------
- 1 file changed, 11 insertions(+), 25 deletions(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-parport.c
-index a535889acca6..231145c48728 100644
---- a/drivers/i2c/busses/i2c-parport.c
-+++ b/drivers/i2c/busses/i2c-parport.c
-@@ -267,6 +267,16 @@ static void i2c_parport_attach(struct parport *port)
- 	int i;
- 	struct pardev_cb i2c_parport_cb;
- 
-+	if (type < 0) {
-+		pr_warn("adapter type unspecified\n");
-+		return;
-+	}
-+
-+	if (type >= ARRAY_SIZE(adapter_parm)) {
-+		pr_warn("invalid type (%d)\n", type);
-+		return;
-+	}
-+
- 	for (i = 0; i < MAX_DEVICE; i++) {
- 		if (parport[i] == -1)
- 			continue;
-@@ -392,32 +402,8 @@ static struct parport_driver i2c_parport_driver = {
- 	.detach = i2c_parport_detach,
- 	.devmodel = true,
- };
--
--/* ----- Module loading, unloading and information ------------------------ */
--
--static int __init i2c_parport_init(void)
--{
--	if (type < 0) {
--		pr_warn("adapter type unspecified\n");
--		return -ENODEV;
--	}
--
--	if (type >= ARRAY_SIZE(adapter_parm)) {
--		pr_warn("invalid type (%d)\n", type);
--		return -ENODEV;
--	}
--
--	return parport_register_driver(&i2c_parport_driver);
--}
--
--static void __exit i2c_parport_exit(void)
--{
--	parport_unregister_driver(&i2c_parport_driver);
--}
-+module_parport_driver(i2c_parport_driver);
- 
- MODULE_AUTHOR("Jean Delvare <jdelvare@suse.de>");
- MODULE_DESCRIPTION("I2C bus over parallel port");
- MODULE_LICENSE("GPL");
--
--module_init(i2c_parport_init);
--module_exit(i2c_parport_exit);
--- 
-2.30.2
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/net/adi,adin1100.example.dt.yaml:0:0: /example-0/ethernet@e000c000: failed to match any schema with compatible: ['cdns,zynq-gem', 'cdns,gem']
+Documentation/devicetree/bindings/net/adi,adin1100.example.dt.yaml:0:0: /example-0/ethernet@e000c000: failed to match any schema with compatible: ['cdns,zynq-gem', 'cdns,gem']
+\ndoc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1503981
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
