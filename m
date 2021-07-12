@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4DD3C4DF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEBF3C54CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242994AbhGLHQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:16:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51558 "EHLO mail.kernel.org"
+        id S1354673AbhGLIEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240779AbhGLGwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:52:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38BD360233;
-        Mon, 12 Jul 2021 06:49:26 +0000 (UTC)
+        id S1345396AbhGLHZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:25:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DDA3611AF;
+        Mon, 12 Jul 2021 07:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072566;
-        bh=PgTNhqs4cDl1YnDE64xUwNsF4Jh814qj7KiMW9vhU/c=;
+        s=korg; t=1626074559;
+        bh=CO02HGpR4gwSOc93xPDJUXZ4YgGAb9nP2Ad9BgTe4B0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KIe3+yJR02Va8uLmAPi73dt86dkQlcT7jRW9unnshngVFd2+ZwHFGy793cVOq+WVZ
-         VOjGAe2hqBqOO74jlxwOyFksaXH1PDk7EWl4dRdAUeve2YPyUrmJ0jMLRvj6pakj+1
-         OFQ2/cZIyXx9t+oKunyxbuAy/IMxviDsEyncZywc=
+        b=uLglfNtngbEqUGfKAiij62J/M+GPL3UaTSqHOoRnHPrwnKB2g5XEtUY/XGXntlIHp
+         Ix0AKs+zScW6Oi3dyhsIn/gTa+EX4nDAGmOySiF2F0Qf6SVaQTDaN9hVVZejYJf4Zz
+         Mcx5IO3Sx3lKEx7DF4uAMZ5vbq3EETrTCmuU23Ho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mathieu Othacehe <m.othacehe@gmail.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 540/593] extcon: max8997: Add missing modalias string
-Date:   Mon, 12 Jul 2021 08:11:40 +0200
-Message-Id: <20210712060953.305849838@linuxfoundation.org>
+Subject: [PATCH 5.12 618/700] iio: light: vcnl4000: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:11:41 +0200
+Message-Id: <20210712061041.614826553@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,31 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit dc11fc2991e9efbceef93912b83e333d2835fb19 ]
+[ Upstream commit dce793c0ab00c35039028fdcd5ce123805a01361 ]
 
-The platform device driver name is "max8997-muic", so advertise it
-properly in the modalias string. This fixes automated module loading when
-this driver is compiled as a module.
+Add __aligned(8) to ensure the buffer passed to
+iio_push_to_buffers_with_timestamp() is suitable for the naturally
+aligned timestamp that will be inserted.
 
-Fixes: b76668ba8a77 ("Extcon: add MAX8997 extcon driver")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Here an explicit structure is not used, because the holes would
+necessitate the addition of an explict memset(), to avoid a kernel
+data leak, making for a less minimal fix.
+
+Found during an audit of all callers of iio_push_to_buffers_with_timestamp()
+
+Fixes: 8fe78d5261e7 ("iio: vcnl4000: Add buffer support for VCNL4010/20.")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Mathieu Othacehe <m.othacehe@gmail.com>
+Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210613152301.571002-7-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-max8997.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/light/vcnl4000.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index 5c4f7746cbee..64008808675e 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -784,3 +784,4 @@ module_platform_driver(max8997_muic_driver);
- MODULE_DESCRIPTION("Maxim MAX8997 Extcon driver");
- MODULE_AUTHOR("Donggeun Kim <dg77.kim@samsung.com>");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:max8997-muic");
+diff --git a/drivers/iio/light/vcnl4000.c b/drivers/iio/light/vcnl4000.c
+index fff4b36b8b58..f4feb44903b3 100644
+--- a/drivers/iio/light/vcnl4000.c
++++ b/drivers/iio/light/vcnl4000.c
+@@ -910,7 +910,7 @@ static irqreturn_t vcnl4010_trigger_handler(int irq, void *p)
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct vcnl4000_data *data = iio_priv(indio_dev);
+ 	const unsigned long *active_scan_mask = indio_dev->active_scan_mask;
+-	u16 buffer[8] = {0}; /* 1x16-bit + ts */
++	u16 buffer[8] __aligned(8) = {0}; /* 1x16-bit + naturally aligned ts */
+ 	bool data_read = false;
+ 	unsigned long isr;
+ 	int val = 0;
 -- 
 2.30.2
 
