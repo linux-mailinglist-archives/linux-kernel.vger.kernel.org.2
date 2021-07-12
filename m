@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC503C595E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2DB3C5960
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383102AbhGLJCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
+        id S1383169AbhGLJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353417AbhGLICI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B239261CA4;
-        Mon, 12 Jul 2021 07:55:07 +0000 (UTC)
+        id S1353471AbhGLICU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A963C61242;
+        Mon, 12 Jul 2021 07:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076508;
-        bh=jsTkd2JjJ9CYwmy06dpRp8yB6q7ul0/a4TE2LckToqM=;
+        s=korg; t=1626076515;
+        bh=YS150Zw3EMrfbg7HTU/kACgheRdPjXylbhg3QzhH4fA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YSVo2gmmV0nxA0GVL7nsyVFfMi/OsVAoRe8+O7asOxOfP/MaUv6EGKpU2MrB6nyj2
-         MmGEYbjQCsA10fu/NFCrCFPG4szcnriM0Hvuc/CAdQSpL/1m7gitUrc4qlgiZb7BZp
-         q55qd6fccz+dENEu7FQMpeVoJAQi7q1Tf9p50m0M=
+        b=KkHQQZUzmAFS0ByyTl2CPp+ROo32LRBNyI8ZFtIZi8wmbuTQ7sy3SfJXJ588jWyUS
+         RX7klx0QMuaSyLK/YXn13+cARzbUugSLWecJFy3s19yisEYt+Ob2Wu21MAabEGxen8
+         2HoGrrr95FA/Nmq/S7DJJR/nBV0F6G+WcLmVvMUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joachim Fenkes <FENKES@de.ibm.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 674/800] fsi/sbefifo: Clean up correct FIFO when receiving reset request from SBE
-Date:   Mon, 12 Jul 2021 08:11:37 +0200
-Message-Id: <20210712061038.635471732@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 676/800] visorbus: fix error return code in visorchipset_init()
+Date:   Mon, 12 Jul 2021 08:11:39 +0200
+Message-Id: <20210712061038.825369121@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -39,36 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joachim Fenkes <FENKES@de.ibm.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 95152433e46fdb36652ebdbea442356a16ae1fa6 ]
+[ Upstream commit ce52ec5beecc1079c251f60e3973b3758f60eb59 ]
 
-When the SBE requests a reset via the down FIFO, that is also the
-FIFO we should go and reset ;)
+Commit 1366a3db3dcf ("staging: unisys: visorbus: visorchipset_init clean
+up gotos") assigns the initial value -ENODEV to the local variable 'err',
+and the first several error branches will return this value after "goto
+error". But commit f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate
+controlvm channel creation.") overwrites 'err' in the middle of the way.
+As a result, some error branches do not successfully return the initial
+value -ENODEV of 'err', but return 0.
 
-Fixes: 9f4a8a2d7f9d ("fsi/sbefifo: Add driver for the SBE FIFO")
-Signed-off-by: Joachim Fenkes <FENKES@de.ibm.com>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20200724071518.430515-2-joel@jms.id.au
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+In addition, when kzalloc() fails, -ENOMEM should be returned instead of
+-ENODEV.
+
+Fixes: f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate controlvm channel creation.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210528082614.9337-1-thunder.leizhen@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fsi/fsi-sbefifo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/visorbus/visorchipset.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-index bfd5e5da8020..de27c435d706 100644
---- a/drivers/fsi/fsi-sbefifo.c
-+++ b/drivers/fsi/fsi-sbefifo.c
-@@ -400,7 +400,7 @@ static int sbefifo_cleanup_hw(struct sbefifo *sbefifo)
- 	/* The FIFO already contains a reset request from the SBE ? */
- 	if (down_status & SBEFIFO_STS_RESET_REQ) {
- 		dev_info(dev, "Cleanup: FIFO reset request set, resetting\n");
--		rc = sbefifo_regw(sbefifo, SBEFIFO_UP, SBEFIFO_PERFORM_RESET);
-+		rc = sbefifo_regw(sbefifo, SBEFIFO_DOWN, SBEFIFO_PERFORM_RESET);
- 		if (rc) {
- 			sbefifo->broken = true;
- 			dev_err(dev, "Cleanup: Reset reg write failed, rc=%d\n", rc);
+diff --git a/drivers/visorbus/visorchipset.c b/drivers/visorbus/visorchipset.c
+index cb1eb7e05f87..5668cad86e37 100644
+--- a/drivers/visorbus/visorchipset.c
++++ b/drivers/visorbus/visorchipset.c
+@@ -1561,7 +1561,7 @@ schedule_out:
+ 
+ static int visorchipset_init(struct acpi_device *acpi_device)
+ {
+-	int err = -ENODEV;
++	int err = -ENOMEM;
+ 	struct visorchannel *controlvm_channel;
+ 
+ 	chipset_dev = kzalloc(sizeof(*chipset_dev), GFP_KERNEL);
+@@ -1584,8 +1584,10 @@ static int visorchipset_init(struct acpi_device *acpi_device)
+ 				 "controlvm",
+ 				 sizeof(struct visor_controlvm_channel),
+ 				 VISOR_CONTROLVM_CHANNEL_VERSIONID,
+-				 VISOR_CHANNEL_SIGNATURE))
++				 VISOR_CHANNEL_SIGNATURE)) {
++		err = -ENODEV;
+ 		goto error_delete_groups;
++	}
+ 	/* if booting in a crash kernel */
+ 	if (is_kdump_kernel())
+ 		INIT_DELAYED_WORK(&chipset_dev->periodic_controlvm_work,
 -- 
 2.30.2
 
