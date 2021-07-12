@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B39A3C4EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175C83C564B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242578AbhGLHWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:22:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        id S1356823AbhGLIQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:16:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235645AbhGLG4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:56:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 861316102A;
-        Mon, 12 Jul 2021 06:53:28 +0000 (UTC)
+        id S241869AbhGLHct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:32:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 356C360FF1;
+        Mon, 12 Jul 2021 07:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072809;
-        bh=FGQZWijx7yrvwMhQHy6HcMcMeU6oKxJ9j9twvjjMCsY=;
+        s=korg; t=1626074986;
+        bh=isnSSOi9t/7E3k0sfD83D9sSb2OIubB7DPFcAezP1fU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0J1FXIkzrAR44VXWuIfX9SNEjBW560kJ43j8VzIMG5rmnxLS6y1aaOW1cNwE59/oI
-         z2i8yrSUovs+Yv16idbPiFK3iZo/htqVgRFO9s7aaEoRlK2K8Rlg21Dmib9DMoX/w/
-         sgPIsiBEVRVVlcrBr8daiyKeqU1sVX/hu3uZsJPY=
+        b=bVnt4B2PuWGBCSfaecLPJLfYe3hXA4tUH170ouuik9635QfrhfwdskdfsLTyw5XDT
+         PL6dgl8mxjvMDthIeW0icNvvBhHy42W+DBJi3XZ5Sk1IP1VAAY7Ma05V2YUZAt3dx2
+         /UgX/789+s2jRovXmCK39jvMU1Om/AdXqMXnczoI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Szymon Janc <szymon.janc@codecoup.pl>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.12 003/700] Bluetooth: Remove spurious error message
-Date:   Mon, 12 Jul 2021 08:01:26 +0200
-Message-Id: <20210712060925.279456632@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.13 064/800] can: peak_pciefd: pucan_handle_status(): fix a potential starvation issue in TX path
+Date:   Mon, 12 Jul 2021 08:01:27 +0200
+Message-Id: <20210712060922.311754736@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,91 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Szymon Janc <szymon.janc@codecoup.pl>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-commit 1c58e933aba23f68c0d3f192f7cc6eed8fabd694 upstream.
+commit b17233d385d0b6b43ecf81d43008cb1bbb008166 upstream.
 
-Even with rate limited reporting this is very spammy and since
-it is remote device that is providing bogus data there is no
-need to report this as error.
+Rather than just indicating that transmission can start, this patch
+requires the explicit flushing of the network TX queue when the driver
+is informed by the device that it can transmit, next to its
+configuration.
 
-Since real_len variable was used only to allow conditional error
-message it is now also removed.
+In this way, if frames have already been written by the application,
+they will actually be transmitted.
 
-[72454.143336] bt_err_ratelimited: 10 callbacks suppressed
-[72454.143337] Bluetooth: hci0: advertising data len corrected
-[72454.296314] Bluetooth: hci0: advertising data len corrected
-[72454.892329] Bluetooth: hci0: advertising data len corrected
-[72455.051319] Bluetooth: hci0: advertising data len corrected
-[72455.357326] Bluetooth: hci0: advertising data len corrected
-[72455.663295] Bluetooth: hci0: advertising data len corrected
-[72455.787278] Bluetooth: hci0: advertising data len corrected
-[72455.942278] Bluetooth: hci0: advertising data len corrected
-[72456.094276] Bluetooth: hci0: advertising data len corrected
-[72456.249137] Bluetooth: hci0: advertising data len corrected
-[72459.416333] bt_err_ratelimited: 13 callbacks suppressed
-[72459.416334] Bluetooth: hci0: advertising data len corrected
-[72459.721334] Bluetooth: hci0: advertising data len corrected
-[72460.011317] Bluetooth: hci0: advertising data len corrected
-[72460.327171] Bluetooth: hci0: advertising data len corrected
-[72460.638294] Bluetooth: hci0: advertising data len corrected
-[72460.946350] Bluetooth: hci0: advertising data len corrected
-[72461.225320] Bluetooth: hci0: advertising data len corrected
-[72461.690322] Bluetooth: hci0: advertising data len corrected
-[72462.118318] Bluetooth: hci0: advertising data len corrected
-[72462.427319] Bluetooth: hci0: advertising data len corrected
-[72464.546319] bt_err_ratelimited: 7 callbacks suppressed
-[72464.546319] Bluetooth: hci0: advertising data len corrected
-[72464.857318] Bluetooth: hci0: advertising data len corrected
-[72465.163332] Bluetooth: hci0: advertising data len corrected
-[72465.278331] Bluetooth: hci0: advertising data len corrected
-[72465.432323] Bluetooth: hci0: advertising data len corrected
-[72465.891334] Bluetooth: hci0: advertising data len corrected
-[72466.045334] Bluetooth: hci0: advertising data len corrected
-[72466.197321] Bluetooth: hci0: advertising data len corrected
-[72466.340318] Bluetooth: hci0: advertising data len corrected
-[72466.498335] Bluetooth: hci0: advertising data len corrected
-[72469.803299] bt_err_ratelimited: 10 callbacks suppressed
-
-Signed-off-by: Szymon Janc <szymon.janc@codecoup.pl>
-Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=203753
-Cc: stable@vger.kernel.org
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: ffd137f7043c ("can: peak/pcie_fd: remove useless code when interface starts")
+Link: https://lore.kernel.org/r/20210623142600.149904-1-s.grosjean@peak-system.com
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/bluetooth/hci_event.c |   14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/net/can/peak_canfd/peak_canfd.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5416,7 +5416,7 @@ static void process_adv_report(struct hc
- 	struct hci_conn *conn;
- 	bool match;
- 	u32 flags;
--	u8 *ptr, real_len;
-+	u8 *ptr;
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -351,8 +351,8 @@ static int pucan_handle_status(struct pe
+ 				return err;
+ 		}
  
- 	switch (type) {
- 	case LE_ADV_IND:
-@@ -5447,14 +5447,10 @@ static void process_adv_report(struct hc
- 			break;
+-		/* start network queue (echo_skb array is empty) */
+-		netif_start_queue(ndev);
++		/* wake network queue up (echo_skb array is empty) */
++		netif_wake_queue(ndev);
+ 
+ 		return 0;
  	}
- 
--	real_len = ptr - data;
--
--	/* Adjust for actual length */
--	if (len != real_len) {
--		bt_dev_err_ratelimited(hdev, "advertising data len corrected %u -> %u",
--				       len, real_len);
--		len = real_len;
--	}
-+	/* Adjust for actual length. This handles the case when remote
-+	 * device is advertising with incorrect data length.
-+	 */
-+	len = ptr - data;
- 
- 	/* If the direct address is present, then this report is from
- 	 * a LE Direct Advertising Report event. In that case it is
 
 
