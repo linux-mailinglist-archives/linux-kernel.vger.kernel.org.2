@@ -2,216 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472003C59B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2543C59BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357704AbhGLJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:07:44 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:44462 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376777AbhGLIa4 (ORCPT
+        id S1351333AbhGLJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:07:49 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:55290 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345454AbhGLIbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1626078486; x=1628670486;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=8hoW/GhfyUrChjpey0ODMf2f5npo87UEOh/wmdfFoMA=;
-        b=UKn+TjxNOaDKElWaYVh6e1AgyEcvlyUDrkUT0Gf6zu/hd1drHstj7DyfcXZYq2PG
-        790f56/Yh0wpGdsTa4uf80fH8XGJSIDw3VniPog+SobdQioCgnOnyrIrqRMhdOwf
-        UeEfVMDNz3Fv3ONu0irw6/HibqQlwwe5K3DZ9MS2MC8=;
-X-AuditID: c39127d2-1e4f970000001daf-81-60ebfd16d06e
-Received: from Diagnostix.phytec.de (Diagnostix.phytec.de [172.16.0.119])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id EE.4D.07599.61DFBE06; Mon, 12 Jul 2021 10:28:06 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Diagnostix.phytec.de
- (172.16.0.119) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 12 Jul
- 2021 10:28:06 +0200
-Received: from Berlix.phytec.de ([fe80::c131:350d:c471:aafd]) by
- berlix.phytec.de ([fe80::c131:350d:c471:aafd%3]) with mapi id 15.01.2308.008;
- Mon, 12 Jul 2021 10:28:06 +0200
-From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To:     "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>
-CC:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 5/6] media: dt-bindings: mt9p031: Convert bindings to
- yaml
-Thread-Topic: [PATCH v4 5/6] media: dt-bindings: mt9p031: Convert bindings to
- yaml
-Thread-Index: AQHXc9pX2TiPqEDsxkK7azMWGvOkg6s4zguAgAAkn4CAAAfogIAF696A
-Date:   Mon, 12 Jul 2021 08:28:06 +0000
-Message-ID: <e0748c01833c0c3f706dda2dd1a2dd9ad76b146e.camel@phytec.de>
-References: <20210708091922.5508-1-s.riedmueller@phytec.de>
-         <20210708091922.5508-6-s.riedmueller@phytec.de>
-         <20210708112313.GA3@paasikivi.fi.intel.com>
-         <b588b43347afe377b6fda03c54855f97a421d89f.camel@phytec.de>
-         <20210708140235.GB3@paasikivi.fi.intel.com>
-In-Reply-To: <20210708140235.GB3@paasikivi.fi.intel.com>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BCEDFF358392A74C858F0C1E5D26FACE@phytec.de>
-Content-Transfer-Encoding: base64
+        Mon, 12 Jul 2021 04:31:40 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id A71A2B2D645;
+        Mon, 12 Jul 2021 10:28:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626078528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fyjZBcXA93B1OVVzUicTd579FE8mJ+9/BOnPDTG7Ju8=;
+        b=XTgQ9cjj0D3fjAgZ+s1ni5ku7a8l097Xj2NuQXusSGx3+xQvD2r0GwZqmzM6KvoKBygQ8x
+        lZEI+TgcEvVFcCBqmOp7PvKt3KFMSxQJUMXDa1/kLhlOGMOANDe6IE9wz/Ayp7os54V3D3
+        S4UgyB/om+OTnh04K3fe9XxLvBFOqFg=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-fsdevel@vger.kernel.org,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kari.argillander@gmail.com,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: Re: [PATCH v26 04/10] fs/ntfs3: Add file operations and implementation
+Date:   Mon, 12 Jul 2021 10:28:44 +0200
+Message-ID: <1963819.OlitOqP6fi@spock>
+In-Reply-To: <20210402155347.64594-5-almaz.alexandrovich@paragon-software.com>
+References: <20210402155347.64594-1-almaz.alexandrovich@paragon-software.com> <20210402155347.64594-5-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsWyRoChXFfs7+sEg13/FCzmHznHatE5cQm7
-        xeVdc9gsejZsZbVYtukPk0Xr3iPsFp+2fGNyYPeY3TGT1WPTqk42j3knAz0+b5ILYInisklJ
-        zcksSy3St0vgylj4NbrgQmDFigUHWBsYj/h3MXJwSAiYSJz+kdzFyMkhJLCeSWL+bOkuRi4g
-        +ymjxM4NJ9ggnE2MEh1nXrOAVLEJuEh8bvvGBmKLCDhKzHr+hRWkiFngEZPE309HmECmCgsE
-        S7Tdy4eoCZFYu/M/K4TtJvG1dR8TiM0ioCrR+WoLO4jNCxRf0vydBWJZF5PE7XdNzCAJTgEL
-        iRkPzoItYxSQlehseAfWzCwgLrHp2XewoRICAhJL9pxnhrBFJV4+/gcVV5Bo6+kEu4dZQFNi
-        /S59CNNCYuJbT4gpihJTuh9CnSAocXLmE5YJjOKzkCyYhdA8C6F5FpLmWUiaFzCyrmIUys1M
-        zk4tyszWK8ioLElN1ktJ3cQIjNHDE9Uv7WDsm+NxiJGJg/EQowQHs5II77feVwlCvCmJlVWp
-        RfnxRaU5qcWHGKU5WJTEeTfwloQJCaQnlqRmp6YWpBbBZJk4OKUaGJfG2+u1bruVLfj8JoeH
-        yE0pq7NrvLhn3V2+zE9dIGvWDN2KcttlzCJ+i9/F9k6+8fncB/lc9i2/DTf9KXD8zvyaQSt2
-        wiKDaXJ8+QLn9Pk5OwIPTEooNP3z3m21teeEm0tviC9NWdGqai7zNp13jSf/5Kjmh6tVjk+Q
-        VrKuqYzeyRweUxHUrsRSnJFoqMVcVJwIAOxPAoe/AgAA
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2FrYXJpLA0KDQpPbiBUaHUsIDIwMjEtMDctMDggYXQgMTc6MDIgKzAzMDAsIHNha2FyaS5h
-aWx1c0BsaW51eC5pbnRlbC5jb20gd3JvdGU6DQo+IEhpIFN0ZWZhbiwNCj4gDQo+IE9uIFRodSwg
-SnVsIDA4LCAyMDIxIGF0IDAxOjM0OjE3UE0gKzAwMDAsIFN0ZWZhbiBSaWVkbcO8bGxlciB3cm90
-ZToNCj4gPiBIaSBTYWthcmksDQo+ID4gDQo+ID4gT24gVGh1LCAyMDIxLTA3LTA4IGF0IDE0OjIz
-ICswMzAwLCBTYWthcmkgQWlsdXMgd3JvdGU6DQo+ID4gPiBIaSBTdGVmYW4sDQo+ID4gPiANCj4g
-PiA+IFRoYW5rcyBmb3IgdGhlIHBhdGNoLg0KPiA+IA0KPiA+IFRoYW5rcyBmb3IgeW91ciBmZWVk
-YmFjayENCj4gDQo+IFlvdSdyZSB3ZWxjb21lIQ0KPiANCj4gPiA+IE9uIFRodSwgSnVsIDA4LCAy
-MDIxIGF0IDExOjE5OjIxQU0gKzAyMDAsIFN0ZWZhbiBSaWVkbXVlbGxlciB3cm90ZToNCj4gPiA+
-ID4gQ29udmVydCBtdDlwMDMxIHNlbnNvciBiaW5kaW5ncyB0byB5YW1sIHNjaGVtYS4gQWxzbyB1
-cGRhdGUgdGhlDQo+ID4gPiA+IE1BSU5UQUlORVJTIGVudHJ5Lg0KPiA+ID4gPiANCj4gPiA+ID4g
-U2lnbmVkLW9mZi1ieTogU3RlZmFuIFJpZWRtdWVsbGVyIDxzLnJpZWRtdWVsbGVyQHBoeXRlYy5k
-ZT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICAuLi4vYmluZGluZ3MvbWVkaWEvaTJjL2FwdGluYSxt
-dDlwMDMxLnlhbWwgICAgfCA3NQ0KPiA+ID4gPiArKysrKysrKysrKysrKysrKysrDQo+ID4gPiA+
-ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9pMmMvbXQ5cDAzMS50eHQgfCA0MCAtLS0t
-LS0tLS0tDQo+ID4gPiA+ICBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgMSArDQo+ID4gPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDc2IGluc2VydGlvbnMoKyks
-IDQwIGRlbGV0aW9ucygtKQ0KPiA+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+ID4gPiA+IERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9pMmMvYXB0aW5hLG10OXAwMzEu
-eWFtbA0KPiA+ID4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0DQo+ID4gPiA+IERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9pMmMvbXQ5cDAzMS50eHQNCj4gPiA+ID4gDQo+ID4g
-PiA+IGRpZmYgLS1naXQNCj4gPiA+ID4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvbWVkaWEvaTJjL2FwdGluYSxtdDlwMDMxLnlhbWwNCj4gPiA+ID4gYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvaTJjL2FwdGluYSxtdDlwMDMxLnlhbWwNCj4gPiA+
-ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiA+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi43ZGU2
-MmUzMzk4OTUNCj4gPiA+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ID4gPiArKysgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvaTJjL2FwdGluYSxtdDlwMDMxLnlhbWwNCj4g
-PiA+ID4gQEAgLTAsMCArMSw3NSBAQA0KPiA+ID4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpDQo+ID4gPiA+ICslWUFNTCAxLjINCj4g
-PiA+ID4gKy0tLQ0KPiA+ID4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9t
-ZWRpYS9pMmMvbXQ5cDAzMS55YW1sIw0KPiA+ID4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRy
-ZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4gPiA+ICsNCj4gPiA+ID4gK3RpdGxl
-OiBBcHRpbmEgMS8yLjUtSW5jaCA1TXAgQ01PUyBEaWdpdGFsIEltYWdlIFNlbnNvcg0KPiA+ID4g
-PiArDQo+ID4gPiA+ICttYWludGFpbmVyczoNCj4gPiA+ID4gKyAgLSBMYXVyZW50IFBpbmNoYXJ0
-IDxsYXVyZW50LnBpbmNoYXJ0QGlkZWFzb25ib2FyZC5jb20+DQo+ID4gPiA+ICsNCj4gPiA+ID4g
-K2Rlc2NyaXB0aW9uOiB8DQo+ID4gPiA+ICsgIFRoZSBBcHRpbmEgTVQ5UDAzMSBpcyBhIDEvMi41
-LWluY2ggQ01PUyBhY3RpdmUgcGl4ZWwgZGlnaXRhbCBpbWFnZQ0KPiA+ID4gPiBzZW5zb3INCj4g
-PiA+ID4gKyAgd2l0aCBhbiBhY3RpdmUgYXJyYXkgc2l6ZSBvZiAyNTkySCB4IDE5NDRWLiBJdCBp
-cyBwcm9ncmFtbWFibGUNCj4gPiA+ID4gdGhyb3VnaA0KPiA+ID4gPiBhDQo+ID4gPiA+ICsgIHNp
-bXBsZSB0d28td2lyZSBzZXJpYWwgaW50ZXJmYWNlLg0KPiA+ID4gPiArDQo+ID4gPiA+ICtwcm9w
-ZXJ0aWVzOg0KPiA+ID4gPiArICBjb21wYXRpYmxlOg0KPiA+ID4gPiArICAgIGVudW06DQo+ID4g
-PiA+ICsgICAgICAtIGFwdGluYSxtdDlwMDMxDQo+ID4gPiA+ICsgICAgICAtIGFwdGluYSxtdDlw
-MDMxbQ0KPiA+ID4gPiArDQo+ID4gPiA+ICsgIHJlZzoNCj4gPiA+ID4gKyAgICBkZXNjcmlwdGlv
-bjogSTJDIGRldmljZSBhZGRyZXNzDQo+ID4gPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiA+ID4g
-Kw0KPiA+ID4gPiArICByZXNldC1ncGlvczoNCj4gPiA+ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+
-ID4gPiArICAgIGRlc2NyaXB0aW9uOiBDaGlwIHJlc2V0IEdQSU8NCj4gPiA+ID4gKw0KPiA+ID4g
-PiArICBwb3J0Og0KPiA+ID4gPiArICAgICRyZWY6IC9zY2hlbWFzL2dyYXBoLnlhbWwjL3Byb3Bl
-cnRpZXMvcG9ydA0KPiA+ID4gDQo+ID4gPiBUaGlzIHNob3VsZCBwcm9iYWJseSBiZToNCj4gPiA+
-IA0KPiA+ID4gCSRyZWY6IC9zY2hlbWFzL2dyYXBoLnlhbWwjLyRkZWZzL3BvcnQtYmFzZQ0KPiA+
-IA0KPiA+IEkgYWN0dWFsbHkgd2FzIG5vdCBzdXJlIHdoaWNoIG9uZSBvZiB0aGVzZSB0byB1c2Ug
-YmVjYXVzZSBJIGZvdW5kIGJvdGggaW4NCj4gPiBleGlzdGluZyBiaW5kaW5ncy4gQWxzbyAvc2No
-ZW1hcy9ncmFwaC55YW1sIy9wcm9wZXJ0aWVzL3BvcnQgaGFzIGENCj4gPiByZWZlcmVuY2UNCj4g
-PiB0byAkZGVmcy9wb3J0LWJhc2UuIEl0IHdvdWxkIGJlIG5pY2UgaWYgeW91IG9yIHNvbWVvbmUg
-ZWxzZSBjb3VsZCBnaXZlIG1lDQo+ID4gYQ0KPiA+IGhpbnQgd2h5IC9zY2hlbWFzL2dyYXBoLnlh
-bWwjLyRkZWZzL3BvcnQtYmFzZSB3b3VsZCBiZSB0aGUgY29ycmVjdCBvbmUNCj4gPiBoZXJlLg0K
-PiANCj4gSSBoYXZlbid0IGR1ZyBpbnRvIHRoZSBkZXRhaWxzIGJ1dDoNCj4gDQo+IDxVUkw6DQo+
-IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW1lZGlhLzIwMjEwNjIzMTY0MzQ0LjI1NzEw
-NDMtMS1yb2JoQGtlcm5lbC5vcmcvVC8NCj4gPg0KDQpUaGF0J3Mgd2hhdCBJIHdhcyBsb29raW5n
-IGZvciwgdGhhbmtzIQ0KDQpJJ2xsIHNlbmQgYSBuZXcgdmVyc2lvbi4NCg0KUmVnYXJkcywNClN0
-ZWZhbg0KDQo+IA0KPiA+ID4gPiArICAgIGFkZGl0dGlvbmFsUHJvZXBydGllczogZmFsc2UNCj4g
-PiA+IA0KPiA+ID4gQ291bGQgeW91IHJ1bg0KPiA+ID4gDQo+ID4gPiAJbWFrZSBkdF9iaW5kaW5n
-X2NoZWNrDQo+ID4gPiBEVF9TQ0hFTUFfRklMRVM9RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL21lZGlhL2kyYy9hcHRpbmEsbXQ5cDANCj4gPiA+IDMxLnkNCj4gPiA+IGFtbA0KPiA+
-ID4gDQo+ID4gPiBwbGVhc2U/DQo+ID4gDQo+ID4gU29ycnksIEkgdG90YWxseSBmb3Jnb3QgYWJv
-dXQgdGhpcy4gSSdsbCBkbyBzbyBiZWZvcmUgc2VuZGluZyB0aGUgbmV4dA0KPiA+IHZlcnNpb24u
-DQo+IA0KPiBObyB3b3JyaWVzLg0KPiANCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgIHByb3BlcnRp
-ZXM6DQo+ID4gPiA+ICsgICAgICBlbmRwb2ludDoNCj4gPiA+ID4gKyAgICAgICAgJHJlZjogL3Nj
-aGVtYXMvbWVkaWEvdmlkZW8taW50ZXJmYWNlcy55YW1sIw0KPiA+ID4gPiArICAgICAgICB1bmV2
-YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICAgcHJv
-cGVydGllczoNCj4gPiA+ID4gKyAgICAgICAgICBpbnB1dC1jbG9jay1mcmVxdWVuY3k6IHRydWUN
-Cj4gPiA+ID4gKyAgICAgICAgICBwaXhlbC1jbG9jay1mcmVxdWVuY3k6IHRydWUNCj4gPiA+IA0K
-PiA+ID4gVGhlc2UgdHdvIGxlZ2FjeSBwcm9wZXJ0aWVzIHdlcmUgbm90IGluIHRoZSBlbmRwb2lu
-dCBwcmV2aW91c2x5Lg0KPiA+IA0KPiA+IFRoYXQncyByaWdodCwgYnV0IHRoZXkgYXJlIGJlaW5n
-IHBhcnNlZCBmcm9tIHRoZSBlbmRwb2ludCBzbyBJIGZpZ3VyZWQNCj4gPiB0aGV5DQo+ID4gYmVs
-b25nIGhlcmUuIFNob3VsZCBJIG1lbnRpb24gdGhpcyBpbiB0aGUgY29tbWl0IG1lc3NhZ2U/DQo+
-IA0KPiBQbGVhc2UgZG8uIEkgbWlzc2VkIHRoZSBkcml2ZXIgZGlkIHRoaXMuDQo+IA0KPiBJZGVh
-bGx5IHRoZSBkcml2ZXIgd291bGQgdXNlIHRoZSBjb21tb24gcHJvcGVydGllcyBidXQgaXQncyBv
-bGQgYW5kDQo+IHVubGlrZWx5IHRvIGJlIHVzZWQgaW4gbmV3IGJvYXJkcyBhbnl3YXkgSSBndWVz
-cy4NCj4gDQo+ID4gVGhhbmtzLA0KPiA+IFN0ZWZhbg0KPiA+IA0KPiA+ID4gPiArDQo+ID4gPiA+
-ICsgICAgICAgIHJlcXVpcmVkOg0KPiA+ID4gPiArICAgICAgICAgIC0gaW5wdXQtY2xvY2stZnJl
-cXVlbmN5DQo+ID4gPiA+ICsgICAgICAgICAgLSBwaXhlbC1jbG9jay1mcmVxdWVuY3kNCj4gPiA+
-ID4gKw0KPiA+ID4gPiArcmVxdWlyZWQ6DQo+ID4gPiA+ICsgIC0gY29tcGF0aWJsZQ0KPiA+ID4g
-PiArICAtIHJlZw0KPiA+ID4gPiArICAtIHBvcnQNCj4gPiA+ID4gKw0KPiA+ID4gPiArYWRkaXRp
-b25hbFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gPiA+ICsNCj4gPiA+ID4gK2V4YW1wbGVzOg0KPiA+
-ID4gPiArICAtIHwNCj4gPiA+ID4gKyAgICBpMmMwIHsNCj4gPiA+ID4gKyAgICAgICAgI2FkZHJl
-c3MtY2VsbHMgPSA8MT47DQo+ID4gPiA+ICsgICAgICAgICNzaXplLWNlbGxzID0gPDA+Ow0KPiA+
-ID4gPiArDQo+ID4gPiA+ICsgICAgICAgIG10OXAwMzFANWQgew0KPiA+ID4gPiArICAgICAgICAg
-ICAgY29tcGF0aWJsZSA9ICJhcHRpbmEsbXQ5cDAzMSI7DQo+ID4gPiA+ICsgICAgICAgICAgICBy
-ZWcgPSA8MHg1ZD47DQo+ID4gPiA+ICsgICAgICAgICAgICByZXNldC1ncGlvcyA9IDwmZ3Bpb19z
-ZW5zb3IgMCAwPjsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgcG9ydCB7DQo+ID4g
-PiA+ICsgICAgICAgICAgICAgICAgbXQ5cDAzMV8xOiBlbmRwb2ludCB7DQo+ID4gPiA+ICsgICAg
-ICAgICAgICAgICAgICAgIGlucHV0LWNsb2NrLWZyZXF1ZW5jeSA9IDw2MDAwMDAwPjsNCj4gPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgcGl4ZWwtY2xvY2stZnJlcXVlbmN5ID0gPDk2MDAwMDAw
-PjsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICB9Ow0KPiA+ID4gPiArICAgICAgICAgICAgfTsN
-Cj4gPiA+ID4gKyAgICAgICAgfToNCj4gPiA+ID4gKyAgICB9Ow0KPiA+ID4gPiArDQo+ID4gPiA+
-ICsuLi4NCj4gPiA+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tZWRpYS9pMmMvbXQ5cDAzMS50eHQNCj4gPiA+ID4gYi9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvbWVkaWEvaTJjL210OXAwMzEudHh0DQo+ID4gPiA+IGRlbGV0ZWQgZmls
-ZSBtb2RlIDEwMDY0NA0KPiA+ID4gPiBpbmRleCBjYjYwNDQzZmY3OGYuLjAwMDAwMDAwMDAwMA0K
-PiA+ID4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvaTJj
-L210OXAwMzEudHh0DQo+ID4gPiA+ICsrKyAvZGV2L251bGwNCj4gPiA+ID4gQEAgLTEsNDAgKzAs
-MCBAQA0KPiA+ID4gPiAtKiBBcHRpbmEgMS8yLjUtSW5jaCA1TXAgQ01PUyBEaWdpdGFsIEltYWdl
-IFNlbnNvcg0KPiA+ID4gPiAtDQo+ID4gPiA+IC1UaGUgQXB0aW5hIE1UOVAwMzEgaXMgYSAxLzIu
-NS1pbmNoIENNT1MgYWN0aXZlIHBpeGVsIGRpZ2l0YWwgaW1hZ2UNCj4gPiA+ID4gc2Vuc29yDQo+
-ID4gPiA+IHdpdGgNCj4gPiA+ID4gLWFuIGFjdGl2ZSBhcnJheSBzaXplIG9mIDI1OTJIIHggMTk0
-NFYuIEl0IGlzIHByb2dyYW1tYWJsZSB0aHJvdWdoIGENCj4gPiA+ID4gc2ltcGxlDQo+ID4gPiA+
-IC10d28td2lyZSBzZXJpYWwgaW50ZXJmYWNlLg0KPiA+ID4gPiAtDQo+ID4gPiA+IC1SZXF1aXJl
-ZCBQcm9wZXJ0aWVzOg0KPiA+ID4gPiAtLSBjb21wYXRpYmxlOiB2YWx1ZSBzaG91bGQgYmUgZWl0
-aGVyIG9uZSBhbW9uZyB0aGUgZm9sbG93aW5nDQo+ID4gPiA+IC0JKGEpICJhcHRpbmEsbXQ5cDAz
-MSIgZm9yIG10OXAwMzEgc2Vuc29yDQo+ID4gPiA+IC0JKGIpICJhcHRpbmEsbXQ5cDAzMW0iIGZv
-ciBtdDlwMDMxbSBzZW5zb3INCj4gPiA+ID4gLQ0KPiA+ID4gPiAtLSBpbnB1dC1jbG9jay1mcmVx
-dWVuY3k6IElucHV0IGNsb2NrIGZyZXF1ZW5jeS4NCj4gPiA+ID4gLQ0KPiA+ID4gPiAtLSBwaXhl
-bC1jbG9jay1mcmVxdWVuY3k6IFBpeGVsIGNsb2NrIGZyZXF1ZW5jeS4NCj4gPiA+ID4gLQ0KPiA+
-ID4gPiAtT3B0aW9uYWwgUHJvcGVydGllczoNCj4gPiA+ID4gLS0gcmVzZXQtZ3Bpb3M6IENoaXAg
-cmVzZXQgR1BJTw0KPiA+ID4gPiAtDQo+ID4gPiA+IC1Gb3IgZnVydGhlciByZWFkaW5nIG9uIHBv
-cnQgbm9kZSByZWZlciB0bw0KPiA+ID4gPiAtRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL21lZGlhL3ZpZGVvLWludGVyZmFjZXMudHh0Lg0KPiA+ID4gPiAtDQo+ID4gPiA+IC1FeGFt
-cGxlOg0KPiA+ID4gPiAtDQo+ID4gPiA+IC0JaTJjMEAxYzIyMDAwIHsNCj4gPiA+ID4gLQkJLi4u
-DQo+ID4gPiA+IC0JCS4uLg0KPiA+ID4gPiAtCQltdDlwMDMxQDVkIHsNCj4gPiA+ID4gLQkJCWNv
-bXBhdGlibGUgPSAiYXB0aW5hLG10OXAwMzEiOw0KPiA+ID4gPiAtCQkJcmVnID0gPDB4NWQ+Ow0K
-PiA+ID4gPiAtCQkJcmVzZXQtZ3Bpb3MgPSA8JmdwaW8zIDMwIDA+Ow0KPiA+ID4gPiAtDQo+ID4g
-PiA+IC0JCQlwb3J0IHsNCj4gPiA+ID4gLQkJCQltdDlwMDMxXzE6IGVuZHBvaW50IHsNCj4gPiA+
-ID4gLQkJCQkJaW5wdXQtY2xvY2stZnJlcXVlbmN5ID0NCj4gPiA+ID4gPDYwMDAwMDA+Ow0KPiA+
-ID4gPiAtCQkJCQlwaXhlbC1jbG9jay1mcmVxdWVuY3kgPQ0KPiA+ID4gPiA8OTYwMDAwMDA+Ow0K
-PiA+ID4gPiAtCQkJCX07DQo+ID4gPiA+IC0JCQl9Ow0KPiA+ID4gPiAtCQl9Ow0KPiA+ID4gPiAt
-CQkuLi4NCj4gPiA+ID4gLQl9Ow0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5FUlMgYi9N
-QUlOVEFJTkVSUw0KPiA+ID4gPiBpbmRleCBjNzQ1Njc3NmFjZTUuLmYyMTIzMjI2YmFhZSAxMDA2
-NDQNCj4gPiA+ID4gLS0tIGEvTUFJTlRBSU5FUlMNCj4gPiA+ID4gKysrIGIvTUFJTlRBSU5FUlMN
-Cj4gPiA+ID4gQEAgLTEyNjEwLDYgKzEyNjEwLDcgQEAgTToJTGF1cmVudCBQaW5jaGFydCA8DQo+
-ID4gPiA+IGxhdXJlbnQucGluY2hhcnRAaWRlYXNvbmJvYXJkLmNvbT4NCj4gPiA+ID4gIEw6CWxp
-bnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZw0KPiA+ID4gPiAgUzoJTWFpbnRhaW5lZA0KPiA+ID4g
-PiAgVDoJZ2l0IGdpdDovL2xpbnV4dHYub3JnL21lZGlhX3RyZWUuZ2l0DQo+ID4gPiA+ICtGOglE
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvaTJjL2FwdGluYSxtdDlwMDMx
-LnlhbQ0KPiA+ID4gPiBsDQo+ID4gPiA+ICBGOglkcml2ZXJzL21lZGlhL2kyYy9tdDlwMDMxLmMN
-Cj4gPiA+ID4gIEY6CWluY2x1ZGUvbWVkaWEvaTJjL210OXAwMzEuaA0KPiA+ID4gPiAgDQo=
+Hello.
+
+On p=E1tek 2. dubna 2021 17:53:41 CEST Konstantin Komarov wrote:
+> ...
+> +/*helper for ntfs_file_write_iter (compressed files)*/
+> +static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter
+> *from) +{
+> +	int err;
+> +	struct file *file =3D iocb->ki_filp;
+> +	size_t count =3D iov_iter_count(from);
+> +	loff_t pos =3D iocb->ki_pos;
+> +	struct inode *inode =3D file_inode(file);
+> +	loff_t i_size =3D inode->i_size;
+> +	struct address_space *mapping =3D inode->i_mapping;
+> +	struct ntfs_inode *ni =3D ntfs_i(inode);
+> +	u64 valid =3D ni->i_valid;
+> +	struct ntfs_sb_info *sbi =3D ni->mi.sbi;
+> +	struct page *page, **pages =3D NULL;
+> +	size_t written =3D 0;
+> +	u8 frame_bits =3D NTFS_LZNT_CUNIT + sbi->cluster_bits;
+> +	u32 frame_size =3D 1u << frame_bits;
+> +	u32 pages_per_frame =3D frame_size >> PAGE_SHIFT;
+> +	u32 ip, off;
+> +	CLST frame;
+> +	u64 frame_vbo;
+> +	pgoff_t index;
+> +	bool frame_uptodate;
+> +
+> +	if (frame_size < PAGE_SIZE) {
+> +		/*
+> +		 * frame_size =3D=3D 8K if cluster 512
+> +		 * frame_size =3D=3D 64K if cluster 4096
+> +		 */
+> +		ntfs_inode_warn(inode, "page size is bigger than frame size");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	pages =3D ntfs_malloc(pages_per_frame * sizeof(struct page *));
+> +	if (!pages)
+> +		return -ENOMEM;
+> +
+> +	current->backing_dev_info =3D inode_to_bdi(inode);
+> +	err =3D file_remove_privs(file);
+> +	if (err)
+> +		goto out;
+> +
+> +	err =3D file_update_time(file);
+> +	if (err)
+> +		goto out;
+> +
+> +	/* zero range [valid : pos) */
+> +	while (valid < pos) {
+> +		CLST lcn, clen;
+> +
+> +		frame =3D valid >> frame_bits;
+> +		frame_vbo =3D valid & ~(frame_size - 1);
+> +		off =3D valid & (frame_size - 1);
+> +
+> +		err =3D attr_data_get_block(ni, frame << NTFS_LZNT_CUNIT, 0,=20
+&lcn,
+> +					  &clen, NULL);
+> +		if (err)
+> +			goto out;
+> +
+> +		if (lcn =3D=3D SPARSE_LCN) {
+> +			ni->i_valid =3D valid =3D
+> +				frame_vbo + ((u64)clen << sbi->cluster_bits);
+> +			continue;
+> +		}
+> +
+> +		/* Load full frame */
+> +		err =3D ntfs_get_frame_pages(mapping, frame_vbo >> PAGE_SHIFT,
+> +					   pages, pages_per_frame,
+> +					   &frame_uptodate);
+> +		if (err)
+> +			goto out;
+> +
+> +		if (!frame_uptodate && off) {
+> +			err =3D ni_read_frame(ni, frame_vbo, pages,
+> +					    pages_per_frame);
+> +			if (err) {
+> +				for (ip =3D 0; ip < pages_per_frame; ip++) {
+> +					page =3D pages[ip];
+> +					unlock_page(page);
+> +					put_page(page);
+> +				}
+> +				goto out;
+> +			}
+> +		}
+> +
+> +		ip =3D off >> PAGE_SHIFT;
+> +		off =3D offset_in_page(valid);
+> +		for (; ip < pages_per_frame; ip++, off =3D 0) {
+> +			page =3D pages[ip];
+> +			zero_user_segment(page, off, PAGE_SIZE);
+> +			flush_dcache_page(page);
+> +			SetPageUptodate(page);
+> +		}
+> +
+> +		ni_lock(ni);
+> +		err =3D ni_write_frame(ni, pages, pages_per_frame);
+> +		ni_unlock(ni);
+> +
+> +		for (ip =3D 0; ip < pages_per_frame; ip++) {
+> +			page =3D pages[ip];
+> +			SetPageUptodate(page);
+> +			unlock_page(page);
+> +			put_page(page);
+> +		}
+> +
+> +		if (err)
+> +			goto out;
+> +
+> +		ni->i_valid =3D valid =3D frame_vbo + frame_size;
+> +	}
+> +
+> +	/* copy user data [pos : pos + count) */
+> +	while (count) {
+> +		size_t copied, bytes;
+> +
+> +		off =3D pos & (frame_size - 1);
+> +		bytes =3D frame_size - off;
+> +		if (bytes > count)
+> +			bytes =3D count;
+> +
+> +		frame =3D pos >> frame_bits;
+> +		frame_vbo =3D pos & ~(frame_size - 1);
+> +		index =3D frame_vbo >> PAGE_SHIFT;
+> +
+> +		if (unlikely(iov_iter_fault_in_readable(from, bytes))) {
+> +			err =3D -EFAULT;
+> +			goto out;
+> +		}
+> +
+> +		/* Load full frame */
+> +		err =3D ntfs_get_frame_pages(mapping, index, pages,
+> +					   pages_per_frame, &frame_uptodate);
+> +		if (err)
+> +			goto out;
+> +
+> +		if (!frame_uptodate) {
+> +			loff_t to =3D pos + bytes;
+> +
+> +			if (off || (to < i_size && (to & (frame_size - 1)))) {
+> +				err =3D ni_read_frame(ni, frame_vbo, pages,
+> +						    pages_per_frame);
+> +				if (err) {
+> +					for (ip =3D 0; ip < pages_per_frame;
+> +					     ip++) {
+> +						page =3D pages[ip];
+> +						unlock_page(page);
+> +						put_page(page);
+> +					}
+> +					goto out;
+> +				}
+> +			}
+> +		}
+> +
+> +		WARN_ON(!bytes);
+> +		copied =3D 0;
+> +		ip =3D off >> PAGE_SHIFT;
+> +		off =3D offset_in_page(pos);
+> +
+> +		/* copy user data to pages */
+> +		for (;;) {
+> +			size_t cp, tail =3D PAGE_SIZE - off;
+> +
+> +			page =3D pages[ip];
+> +			cp =3D iov_iter_copy_from_user_atomic(page, from, off,
+> +							    min(tail, bytes));
+
+=46or 5.14, iov_iter_copy_from_user_atomic() has to be replaced by=20
+copy_page_from_iter_atomic().
+
+> +			flush_dcache_page(page);
+> +			iov_iter_advance(from, cp);
+
+And iov_iter_advance() should be removed then.
+
+Please see upstream commit f0b65f39ac505e8f1dcdaa165aa7b8c0bd6fd454 for=20
+detailed explanation.
+
+> +			copied +=3D cp;
+> +			bytes -=3D cp;
+> +			if (!bytes || !cp)
+> +				break;
+> +
+> +			if (cp < tail) {
+> +				off +=3D cp;
+> +			} else {
+> +				ip++;
+> +				off =3D 0;
+> +			}
+> +		}
+> +
+> +		ni_lock(ni);
+> +		err =3D ni_write_frame(ni, pages, pages_per_frame);
+> +		ni_unlock(ni);
+> +
+> +		for (ip =3D 0; ip < pages_per_frame; ip++) {
+> +			page =3D pages[ip];
+> +			ClearPageDirty(page);
+> +			SetPageUptodate(page);
+> +			unlock_page(page);
+> +			put_page(page);
+> +		}
+> +
+> +		if (err)
+> +			goto out;
+> +
+> +		/*
+> +		 * We can loop for a long time in here. Be nice and allow
+> +		 * us to schedule out to avoid softlocking if preempt
+> +		 * is disabled.
+> +		 */
+> +		cond_resched();
+> +
+> +		pos +=3D copied;
+> +		written +=3D copied;
+> +
+> +		count =3D iov_iter_count(from);
+> +	}
+> +
+> +out:
+> +	ntfs_free(pages);
+> +
+> +	current->backing_dev_info =3D NULL;
+> +
+> +	if (err < 0)
+> +		return err;
+> +
+> +	iocb->ki_pos +=3D written;
+> +	if (iocb->ki_pos > ni->i_valid)
+> +		ni->i_valid =3D iocb->ki_pos;
+> +
+> +	return written;
+> +}
+> ...
+
+Thanks.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
