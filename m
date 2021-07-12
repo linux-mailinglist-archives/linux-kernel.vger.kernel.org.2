@@ -2,165 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45463C62D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD483C62DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236017AbhGLSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 14:44:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59368 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233973AbhGLSon (ORCPT
+        id S235928AbhGLSra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 14:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235457AbhGLSr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 14:44:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626115314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rz8zwYlKIBwilT7nuaKV92zNGRhD3wv0rHn55OLUrN8=;
-        b=HBRCvuJoYtCL3w+DDft5SuLL8CK1BpQqw059rFkTTjej9hUenF51hLFivjlM6vAZqid4G0
-        +hwxburtBZts3N5nTjAIYZdyEIa7XqYUxvHN1FElJHmB1Ci/QMC6JU09oZAsyp9/IfVTRI
-        OqvrfXQ9hkykn4AzCo0R7u4EpvlaIBw=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-ZBNbG0CWMSyS-0RUqn_jJw-1; Mon, 12 Jul 2021 14:41:53 -0400
-X-MC-Unique: ZBNbG0CWMSyS-0RUqn_jJw-1
-Received: by mail-ot1-f72.google.com with SMTP id a60-20020a9d26420000b0290448d2be15e6so13800060otb.23
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:41:53 -0700 (PDT)
+        Mon, 12 Jul 2021 14:47:27 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4A4C0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:44:37 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id y42so45281334lfa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PiEei4/RLF9jTsxsrsUBV60BJotPkybau7lkhBzo5/I=;
+        b=s5pTurZ13T3fHlyrCaThZOVUofr0Cky2/zld5yC8l0myWNX69BvnBNc9Opj6HMkCfc
+         y3CjiuyOByMOeSBVV+o4qu5xJGAw4E/i0pQADCVD/2UOoJrIHi3478hpZZLuoqg1WGst
+         OcCnt2jSO0vJrOopZchNBQ9+MjglGj0qNJPE/zKAtnQq1YJa/gtnDpyh4R1JAsZBUefy
+         UEn4mtsvyV/dfykaoHSxiB9rtcJ7XqsA3Zf+EHYgfdQgNtp/YlSs2jWfDZvn7iwNgCp8
+         ndBvPbOGbkTvsCYluNITw35znBdI+ATFOMw1rixRW4qkI/Kx/zacoIs85goZ2XGThimw
+         JBFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rz8zwYlKIBwilT7nuaKV92zNGRhD3wv0rHn55OLUrN8=;
-        b=TU8bSC4XTGfOdVKXFK7PbR2UsewaRn5EmYx0QJt9y5HCeok9Lx5gyPgXGh7csUZDtM
-         jU3egK4chwHuggWVVILuTYzkFtbh3Oc80knWLZ0aCS45kH41EWhHK6amVQTsGWvOCXdP
-         ythY3YvNfHPTVDTcrnjv2AI6suxtmOzChhHmd5PZ/N7zMWY0a4G7WcRxn46RCEVfpPEA
-         wEbC5sfZcNoDs6F5/e7t7Qo3Pd9unReCYAiiwUnO2aP8a6LAK6NEXd07hyjFhmP4SPIc
-         wkZrpgCxiKn4ckyLaUYhFmbo+ehkkuY6e1sktlBnBYPS+xPxboZr+aavfH88jfnjk/8/
-         HO/w==
-X-Gm-Message-State: AOAM530+rusR5urFkLVoe83HhsIUvgekjgNo+ZWBzh6ZeVEH6JrYFDJH
-        SuJ3pcfJ/qP2ySchp3CiENbTbz7Xu8vDxzerbuGt+qxB/e5PIPxmvBe16SjxHi++yms1ZdQXLKb
-        Bi+DiX7iYG0LdXaK7hDT4jHVD
-X-Received: by 2002:aca:59c3:: with SMTP id n186mr158956oib.98.1626115312781;
-        Mon, 12 Jul 2021 11:41:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwoabeJODq5qo6mubZ8IkE3585WLLaxnVDFrK1i442BlsHLyAD65SVY+xLexK9+lGo6s2ymfw==
-X-Received: by 2002:aca:59c3:: with SMTP id n186mr158927oib.98.1626115312574;
-        Mon, 12 Jul 2021 11:41:52 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id o9sm1221754oiw.49.2021.07.12.11.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 11:41:52 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 12:41:50 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-Message-ID: <20210712124150.2bf421d1.alex.williamson@redhat.com>
-In-Reply-To: <BN9PR11MB54336FB9845649BB2D53022C8C159@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
-        <20210709155052.2881f561.alex.williamson@redhat.com>
-        <BN9PR11MB54336FB9845649BB2D53022C8C159@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PiEei4/RLF9jTsxsrsUBV60BJotPkybau7lkhBzo5/I=;
+        b=dSt4JPLHNuws88e76le3IepaWKVWl6A5KO7yqktpNuG+bI7mz6/t0JQGEm+YhI/5dS
+         ETCfcPF1esa3BApUQKXtKjfT235wDWrYAJDo0CsjYZpuU7gI2xf5yxXKg3FW4oLk3HiD
+         TgNg/nvFiSCxsfGkOZNAc3K3s2PMBDawPVwMPS51LVZuQ8DNNCXyFIsxdj4ubhyfMGx2
+         pBWqTV4Yp71Q/qBXAI3wsPlaK2G77gUz2cckjN3+F/PTkRxR7TXdZ5HQd9bALwoHEHWd
+         x2GaLWuzHmrRgiCbRP9I3AosY4bUkdsp9MBz6crogV65aFEX5zRUfNt4XVp+3cgDmcDu
+         HJvA==
+X-Gm-Message-State: AOAM531YP7hR1xFQnG6yb5Xhx9u/08zU/3AITXoiNwfUfi1ZJqLE85Zl
+        ov+ROXSTPx9ETHhMXIHQs/gJwccJXloY7gxv9jiX7w==
+X-Google-Smtp-Source: ABdhPJw+0tMpJcSV02e9y5OpgohRH2ByLJzW2eRxTjnkHhxkF0WhBTLMKzB5LpXi+sxeGsfF6oUSnjAO+65wVmAaEuA=
+X-Received: by 2002:ac2:5b1e:: with SMTP id v30mr136916lfn.226.1626115475779;
+ Mon, 12 Jul 2021 11:44:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210707183616.5620-1-brijesh.singh@amd.com> <20210707183616.5620-7-brijesh.singh@amd.com>
+In-Reply-To: <20210707183616.5620-7-brijesh.singh@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Mon, 12 Jul 2021 12:44:24 -0600
+Message-ID: <CAMkAt6quzRMiEJ=iYDocRvpaYuNcV5vm=swbowK+KG=j7FjyKA@mail.gmail.com>
+Subject: Re: [PATCH Part2 RFC v4 06/40] x86/sev: Add helper functions for
+ RMPUPDATE and PSMASH instruction
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        brijesh.ksingh@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 01:22:11 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Saturday, July 10, 2021 5:51 AM
-> > On Fri, 9 Jul 2021 07:48:44 +0000
-> > "Tian, Kevin" <kevin.tian@intel.com> wrote:  
- 
-> > > For mdev the struct device should be the pointer to the parent device.  
-> > 
-> > I don't get how iommu_register_device() differentiates an mdev from a
-> > pdev in this case.  
-> 
-> via device cookie.
+> +int psmash(struct page *page)
+> +{
+> +       unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
+> +       int ret;
+> +
+> +       if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +               return -ENXIO;
+> +
+> +       /* Retry if another processor is modifying the RMP entry. */
+> +       do {
+> +               /* Binutils version 2.36 supports the PSMASH mnemonic. */
+> +               asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
+> +                             : "=a"(ret)
+> +                             : "a"(spa)
+> +                             : "memory", "cc");
+> +       } while (ret == FAIL_INUSE);
 
+Should there be some retry limit here for safety? Or do we know that
+we'll never be stuck in this loop? Ditto for the loop in rmpupdate.
 
-Let me re-add this section for more context:
-
-> 3. Sample structures and helper functions
-> --------------------------------------------------------
-> 
-> Three helper functions are provided to support VFIO_BIND_IOMMU_FD:
-> 
-> 	struct iommu_ctx *iommu_ctx_fdget(int fd);
-> 	struct iommu_dev *iommu_register_device(struct iommu_ctx *ctx,
-> 		struct device *device, u64 cookie);
-> 	int iommu_unregister_device(struct iommu_dev *dev);
-> 
-> An iommu_ctx is created for each fd:
-> 
-> 	struct iommu_ctx {
-> 		// a list of allocated IOASID data's
-> 		struct xarray		ioasid_xa;
-> 
-> 		// a list of registered devices
-> 		struct xarray		dev_xa;
-> 	};
-> 
-> Later some group-tracking fields will be also introduced to support 
-> multi-devices group.
-> 
-> Each registered device is represented by iommu_dev:
-> 
-> 	struct iommu_dev {
-> 		struct iommu_ctx	*ctx;
-> 		// always be the physical device
-> 		struct device 		*device;
-> 		u64			cookie;
-> 		struct kref		kref;
-> 	};
-> 
-> A successful binding establishes a security context for the bound
-> device and returns struct iommu_dev pointer to the caller. After this
-> point, the user is allowed to query device capabilities via IOMMU_
-> DEVICE_GET_INFO.
-> 
-> For mdev the struct device should be the pointer to the parent device. 
-
-
-So we'll have a VFIO_DEVICE_BIND_IOMMU_FD ioctl where the user provides
-the iommu_fd and a cookie.  vfio will use iommu_ctx_fdget() to get an
-iommu_ctx* for that iommu_fd, then we'll call iommu_register_device()
-using that iommu_ctx* we got from the iommu_fd, the cookie provided by
-the user, and for an mdev, the parent of the device the user owns
-(the device_fd on which this ioctl is called)...
-
-How does an arbitrary user provided cookie let you differentiate that
-the request is actually for an mdev versus the parent device itself?
-
-For instance, how can the IOMMU layer distinguish GVT-g (mdev) vs GVT-d
-(direct assignment) when both use the same struct device* and cookie is
-just a user provided value?  Still confused.  Thanks,
-
-Alex
-
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(psmash);
+>
