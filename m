@@ -2,165 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5152B3C5A74
+	by mail.lfdr.de (Postfix) with ESMTP id 99CA53C5A75
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhGLJ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239338AbhGLJ6A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:58:00 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8B5C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 02:55:10 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id v1so27111535edt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 02:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HSX1sBNAaLK7Zbgo2gu6wsmdyizmWwHFhYTRcpp9m6M=;
-        b=JW0h/v3AfECEXpS5s4vs1K0lQPgrdLBaY7n2ZaXCDNVfluW/W3BhGazMDtSISF7j0b
-         AO3qpx+SVpDVhiCk/FEq0nRRiq7Gn9uHrufJRNjrXG33m3DeoebKX8a/xnOFtE6aWOti
-         MTcDw6t/EzZ6bRoxPu9iEtLymPOjiV8Ylzm/8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HSX1sBNAaLK7Zbgo2gu6wsmdyizmWwHFhYTRcpp9m6M=;
-        b=nnlqgI0h4qvebzyMI57e324fyJUCJtJlkvK/Hw9mB7yfgdaf78vQIUTtXhij5Oh2WY
-         UPeWh8VKrMa3U29ibKW4vobwcBDjDZiJR6t0x1s6eGm3UDsHZtO+EWQCpE2ifilxwexk
-         d9fZ1RrzRzCZXlaWkH7m2W4893zaWKahpdv91l5HF+WVDKNvsW1+TRwt6lbOdvkAcacE
-         6ppwrtl+PnsoD9KHeGQ79lOP/+HAWeiKz/dRPnNNwe8d8kijGEhp7PgKWMDfHGiSfgy3
-         WoS7Aa26SydaCkYWIKwbBNCQWaB7J3yii8V65mfX4rR+fN2RA5LbPJOjlKcS4AJjTvXd
-         EbyA==
-X-Gm-Message-State: AOAM531LcADTgnCyxvkZJmqPs9An5A+xBOekYKls/y+bo1SJCVC3f8X/
-        ooBcXEgVM6LpDe7bZz63oa/eU277JmjkgeFp8mOUaw==
-X-Google-Smtp-Source: ABdhPJwmkJ4mD3QUFTrqYXkhrrLXNnNFtH3iGIS+1fwkpFMqgJUg3Z4fCjGJva6btnTIPBF84Um8p7B24vYodh7ExsU=
-X-Received: by 2002:aa7:c799:: with SMTP id n25mr61959734eds.16.1626083709449;
- Mon, 12 Jul 2021 02:55:09 -0700 (PDT)
+        id S240197AbhGLJ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:58:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:52442 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239933AbhGLJ6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 05:58:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D4721FB;
+        Mon, 12 Jul 2021 02:55:35 -0700 (PDT)
+Received: from [10.57.35.32] (unknown [10.57.35.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44DB43F694;
+        Mon, 12 Jul 2021 02:55:34 -0700 (PDT)
+Subject: Re: [PATCH v2] coresight: tmc-etr: Speed up for bounce buffer in flat
+ mode
+To:     Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210710070115.462674-1-leo.yan@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <f17065d6-5083-74c9-d9ca-a467b640aed3@arm.com>
+Date:   Mon, 12 Jul 2021 10:55:32 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
- <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
- <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
- <CALgW_8VUk0us_umLncUv2DUMkOi3qixmT+YkHV4Dhpt_nNMZHw@mail.gmail.com>
- <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com> <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
-In-Reply-To: <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
-From:   Alexander Mihalicyn <alexander@mihalicyn.com>
-Date:   Mon, 12 Jul 2021 12:54:58 +0300
-Message-ID: <CAJqdLrpxnMThqersqiVsTNr1Y25V8jmDcW_sKWi0ziJXCsi2gw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace
- was changed
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milton Miller <miltonm@bga.com>,
-        Jack Miller <millerjo@us.ibm.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Christian Brauner <christian@brauner.io>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210710070115.462674-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Manfred,
+Leo,
 
-On Sun, Jul 11, 2021 at 2:47 PM Manfred Spraul <manfred@colorfullife.com> wrote:
->
-> Hi Alex,
->
->
-> Am Sonntag, 11. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
-> >
-> > Hi, Manfred,
-> >
-> > On Sun, Jul 11, 2021 at 12:13 PM Manfred Spraul
-> > <manfred@colorfullife.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > >
-> > > Am Samstag, 10. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
-> > >>
-> > >>
-> > >> Now, using setns() syscall, we can construct situation when on
-> > >> task->sysvshm.shm_clist list
-> > >> we have shm items from several (!) IPC namespaces.
-> > >>
-> > >>
-> > > Does this imply that locking ist affected as well? According to the initial patch, accesses to shm_clist are protected by "the" IPC shm namespace rwsem. This can't work if the list contains objects from several namespaces.
-> >
-> > Of course, you are right. I've to rework this part -> I can add check into
-> > static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
-> > function and before adding new shm into task list check that list is empty OR
-> > an item which is present on the list from the same namespace as
-> > current->nsproxy->ipc_ns.
-> >
-> Ok. (Sorry, I have only smartphone internet, thus I could not check
-> the patch fully)
->
-> > >> I've proposed a change which keeps the old behaviour of setns() but
-> > >> fixes double free.
-> > >>
-> > > Assuming that locking works, I would consider this as a namespace design question: Do we want to support that a task contains shm objects from several ipc namespaces?
-> >
-> > This depends on what we mean by "task contains shm objects from
-> > several ipc namespaces". There are two meanings:
-> >
-> > 1. Task has attached shm object from different ipc namespaces
-> >
-> > We already support that by design. When we doing a change of namespace
-> > using unshare(CLONE_NEWIPC) even with
-> > sysctl shm_rmid_forced=1 we not detach all ipc's from task!
->
-> OK. Thus shm and sem have different behavior anyways.
->
-> >
-> > 2. Task task->sysvshm.shm_clist list has items from different IPC namespaces.
-> >
-> > I'm not sure, do we need that or not. But I'm ready to prepare a patch
-> > for any of the options which we choose:
-> > a) just add exit_shm(current)+shm_init_task(current);
-> > b) prepare PATCHv2 with appropriate check in the newseg() to prevent
-> > adding new items from different namespace to the list
-> > c) rework algorithm so we can safely have items from different
-> > namespaces in task->sysvshm.shm_clist
-> >
-> Before you write something, let's wait what the others say. I don't
-> qualify AS shm expert
->
-> a) is user space visible, without any good excuse
+On 10/07/2021 08:01, Leo Yan wrote:
+> The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
+> low level's architecture code, e.g. for Arm64, it maps the memory with
+> the attribution "Normal non-cacheable"; this can be concluded from the
+> definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
+> 
+> Later when access the AUX bounce buffer, since the memory mapping is
+> non-cacheable, it's low efficiency due to every load instruction must
+> reach out DRAM.
+> 
+> This patch changes to allocate pages with alloc_pages_node(), thus the
+> driver can access the memory with cacheable mapping in the kernel linear
+> virtual address; therefore, because load instructions can fetch data
+> from cache lines rather than always read data from DRAM, the driver can
+> boost memory coping performance.  After using the cacheable mapping, the
+> driver uses dma_sync_single_for_cpu() to invalidate cacheline prior to
+> read bounce buffer so can avoid read stale trace data.
+> 
+> By measurement the duration for function tmc_update_etr_buffer() with
+> ftrace function_graph tracer, it shows the performance significant
+> improvement for copying 4MiB data from bounce buffer:
+> 
+>    # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
+>    # echo tmc_update_etr_buffer > set_graph_function
+>    # echo function_graph > current_tracer
+> 
+>    before:
+> 
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    2)               |    tmc_update_etr_buffer() {
+>    ...
+>    2) # 8148.320 us |    }
+> 
+>    after:
+> 
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    2)               |  tmc_update_etr_buffer() {
+>    ...
+>    2) # 2463.980 us |  }
 
-yes, but maybe we decide that this is not so critical?
-We need more people here :)
+Thats a good speed up ! Thanks for the patch. One minor comment
+below.
 
-> c) is probably highest amount of Changes
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+> 
+> Changes from v1:
+> Set "flat_buf->daddr" to 0 when fails to map DMA region; and dropped the
+> unexpected if condition change in tmc_etr_free_flat_buf().
+> 
+>   .../hwtracing/coresight/coresight-tmc-etr.c   | 56 ++++++++++++++++---
+>   1 file changed, 49 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> index acdb59e0e661..888b0f929d33 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> @@ -21,6 +21,7 @@
+>   
+>   struct etr_flat_buf {
+>   	struct device	*dev;
+> +	struct page	*pages;
+>   	dma_addr_t	daddr;
+>   	void		*vaddr;
+>   	size_t		size;
+> @@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>   {
+>   	struct etr_flat_buf *flat_buf;
+>   	struct device *real_dev = drvdata->csdev->dev.parent;
+> +	ssize_t	aligned_size;
+>   
+>   	/* We cannot reuse existing pages for flat buf */
+>   	if (pages)
+> @@ -609,11 +611,18 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>   	if (!flat_buf)
+>   		return -ENOMEM;
+>   
+> -	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+> -					     &flat_buf->daddr, GFP_KERNEL);
+> -	if (!flat_buf->vaddr) {
+> -		kfree(flat_buf);
+> -		return -ENOMEM;
+> +	aligned_size = PAGE_ALIGN(etr_buf->size);
+> +	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
+> +					   get_order(aligned_size));
+> +	if (!flat_buf->pages)
+> +		goto fail_alloc_pages;
+> +
+> +	flat_buf->vaddr = page_address(flat_buf->pages);
+> +	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
+> +				       aligned_size, DMA_FROM_DEVICE);
+> +	if (dma_mapping_error(real_dev, flat_buf->daddr)) {
+> +		flat_buf->daddr = 0;
+> +		goto fail_dma_map_page;
+>   	}
+>   
+>   	flat_buf->size = etr_buf->size;
+> @@ -622,6 +631,12 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>   	etr_buf->mode = ETR_MODE_FLAT;
+>   	etr_buf->private = flat_buf;
+>   	return 0;
+> +
+> +fail_dma_map_page:
+> +	__free_pages(flat_buf->pages, get_order(aligned_size));
+> +fail_alloc_pages:
+> +	kfree(flat_buf);
+> +	return -ENOMEM;
+>   }
+>   
+>   static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+> @@ -630,15 +645,20 @@ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+>   
+>   	if (flat_buf && flat_buf->daddr) {
+>   		struct device *real_dev = flat_buf->dev->parent;
+> +		ssize_t aligned_size = PAGE_ALIGN(etr_buf->size);
+>   
+> -		dma_free_coherent(real_dev, flat_buf->size,
+> -				  flat_buf->vaddr, flat_buf->daddr);
+> +		dma_unmap_page(real_dev, flat_buf->daddr, aligned_size,
+> +			       DMA_FROM_DEVICE);
+> +		__free_pages(flat_buf->pages, get_order(aligned_size));
+>   	}
+>   	kfree(flat_buf);
+>   }
+>   
+>   static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+>   {
+> +	struct etr_flat_buf *flat_buf = etr_buf->private;
+> +	struct device *real_dev = flat_buf->dev->parent;
+> +
+>   	/*
+>   	 * Adjust the buffer to point to the beginning of the trace data
+>   	 * and update the available trace data.
+> @@ -648,6 +668,28 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+>   		etr_buf->len = etr_buf->size;
+>   	else
+>   		etr_buf->len = rwp - rrp;
+> +
+> +	if (etr_buf->offset + etr_buf->len > etr_buf->size) {
+> +		int len1, len2;
+> +
+> +		/*
+> +		 * If trace data is wrapped around, sync AUX bounce buffer
+> +		 * for two chunks: "len1" is for the trace date length at
+> +		 * the tail of bounce buffer, and "len2" is the length from
+> +		 * the start of the buffer after wrapping around.
+> +		 */
+> +		len1 = etr_buf->size - etr_buf->offset;
+> +		len2 = etr_buf->len - len1;
+> +		dma_sync_single_for_cpu(real_dev,
+> +					flat_buf->daddr + etr_buf->offset,
+> +					len1, DMA_FROM_DEVICE);
+> +		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
+> +					len2, DMA_FROM_DEVICE);
 
-yep. but ok, I will prepare patches fast.
+We always start tracing at the beginning of the buffer and the only 
+reason why we would get a wrap around, is when the buffer is full.
+So you could as well sync the entire buffer in one go
 
-> b) Impact for me not clear. Would it mean that shm_rmid_forced would
-> stop to work after setns()
+		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
+					etr_buf->len, DMA_FROM_DEVICE);
 
-Yes, in this case this "forced" destroy will stop working on newly created shm's
-in the new IPC namespace. But for old segments all will continue work as it was.
-Not an elegant solution maybe...
 
->
-> Correct?
+> +	} else {
+> +		dma_sync_single_for_cpu(real_dev,
+> +					flat_buf->daddr + etr_buf->offset,
+> +					etr_buf->len, DMA_FROM_DEVICE);
+> +	}
+>   }
+>   
+>   static ssize_t tmc_etr_get_data_flat_buf(struct etr_buf *etr_buf,
+> 
 
-Absolutely ;)
 
->
-> --
->    Manfred
 
-Regards,
-Alex
+Eitherways,
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
