@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E923C54C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5CA3C4E03
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354469AbhGLIEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:04:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32988 "EHLO mail.kernel.org"
+        id S242506AbhGLHQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:16:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345329AbhGLHZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:25:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6793861370;
-        Mon, 12 Jul 2021 07:22:14 +0000 (UTC)
+        id S240533AbhGLGv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:51:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B87060FD8;
+        Mon, 12 Jul 2021 06:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074535;
-        bh=eeuZgFZqXknJk8cKZAzKEHL+972qgorEnHz1+s2Cng8=;
+        s=korg; t=1626072548;
+        bh=u914ErGaluc5ER9lbT6rup3s/oPVv5BAXS4dYBfNTck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yPOF+ZdZ83CiL2nlBSUFeN2XdDjZYZ3SxF38YBT8eDg1JXOO4+Cm+3RrHxOrDsMjD
-         DrCVVEyIPJHe4EPNoKGTYBPlsJ0Z1MbryKAKrLfLPdnCwf7BeQTNhrAsZ2peihWBvy
-         RwX5MkEQv1UCB0ObPt+DQ+GH5WdRblBHPj7CTKTs=
+        b=vW3O4tmgnfmfU5rQ0ig+9NGFc4cjoegD+IO4TGdbW121vPxaszub64aGpaFNj70J9
+         2EsKYZkK3JFNAzWGHR94dRWfXnq8wZjvBuTBMqxOIUUpmGvMp3f+Haib3YKkTIfYU4
+         yRUHEoOWPubUoqqAOGIN3YD0xerKSq0e8aictwX8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YouChing Lin <ycllin@mxic.com.tw>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 611/700] mtd: spinand: Fix double counting of ECC stats
-Date:   Mon, 12 Jul 2021 08:11:34 +0200
-Message-Id: <20210712061040.938131890@linuxfoundation.org>
+Subject: [PATCH 5.10 535/593] scsi: mpt3sas: Fix error return value in _scsih_expander_add()
+Date:   Mon, 12 Jul 2021 08:11:35 +0200
+Message-Id: <20210712060952.495010049@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit c93081b265735db2417f0964718516044d06b1a2 ]
+[ Upstream commit d6c2ce435ffe23ef7f395ae76ec747414589db46 ]
 
-In the raw NAND world, ECC engines increment ecc_stats and the final
-caller is responsible for returning -EBADMSG if the verification
-failed.
+When an expander does not contain any 'phys', an appropriate error code -1
+should be returned, as done elsewhere in this function. However, we
+currently do not explicitly assign this error code to 'rc'. As a result, 0
+was incorrectly returned.
 
-In the SPI-NAND world it was a bit different until now because there was
-only one possible ECC engine: the on-die one. Indeed, the
-spinand_mtd_read() call was incrementing the ecc_stats counters
-depending on the outcome of spinand_check_ecc_status() directly.
-
-So now let's split the logic like this:
-- spinand_check_ecc_status() is specific to the SPI-NAND on-die engine
-  and is kept very simple: it just returns the ECC status (bonus point:
-  the content of this helper can be overloaded).
-- spinand_ondie_ecc_finish_io_req() is the caller of
-  spinand_check_ecc_status() and will increment the counters and
-  eventually return -EBADMSG.
-- spinand_mtd_read() is not tied to the on-die ECC implementation and
-  should be able to handle results coming from other ECC engines: it has
-  the responsibility of returning the maximum number of bitflips which
-  happened during the entire operation as this is the only helper that
-  is aware that several pages may be read in a row.
-
-Fixes: 945845b54c9c ("mtd: spinand: Instantiate a SPI-NAND on-die ECC engine")
-Reported-by: YouChing Lin <ycllin@mxic.com.tw>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: YouChing Lin <ycllin@mxic.com.tw>
-Link: https://lore.kernel.org/linux-mtd/20210527084345.208215-1-miquel.raynal@bootlin.com
+Link: https://lore.kernel.org/r/20210514081300.6650-1-thunder.leizhen@huawei.com
+Fixes: f92363d12359 ("[SCSI] mpt3sas: add new driver supporting 12GB SAS")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/core.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 17f63f95f4a2..54ae540bc66b 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -290,6 +290,8 @@ static int spinand_ondie_ecc_finish_io_req(struct nand_device *nand,
- {
- 	struct spinand_ondie_ecc_conf *engine_conf = nand->ecc.ctx.priv;
- 	struct spinand_device *spinand = nand_to_spinand(nand);
-+	struct mtd_info *mtd = spinand_to_mtd(spinand);
-+	int ret;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+index 5f845d7094fc..008f734698f7 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+@@ -6007,8 +6007,10 @@ _scsih_expander_add(struct MPT3SAS_ADAPTER *ioc, u16 handle)
+ 		 handle, parent_handle,
+ 		 (u64)sas_expander->sas_address, sas_expander->num_phys);
  
- 	if (req->mode == MTD_OPS_RAW)
- 		return 0;
-@@ -299,7 +301,13 @@ static int spinand_ondie_ecc_finish_io_req(struct nand_device *nand,
- 		return 0;
- 
- 	/* Finish a page write: check the status, report errors/bitflips */
--	return spinand_check_ecc_status(spinand, engine_conf->status);
-+	ret = spinand_check_ecc_status(spinand, engine_conf->status);
-+	if (ret == -EBADMSG)
-+		mtd->ecc_stats.failed++;
-+	else if (ret > 0)
-+		mtd->ecc_stats.corrected += ret;
-+
-+	return ret;
- }
- 
- static struct nand_ecc_engine_ops spinand_ondie_ecc_engine_ops = {
-@@ -620,13 +628,10 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
- 		if (ret < 0 && ret != -EBADMSG)
- 			break;
- 
--		if (ret == -EBADMSG) {
-+		if (ret == -EBADMSG)
- 			ecc_failed = true;
--			mtd->ecc_stats.failed++;
--		} else {
--			mtd->ecc_stats.corrected += ret;
-+		else
- 			max_bitflips = max_t(unsigned int, max_bitflips, ret);
--		}
- 
- 		ret = 0;
- 		ops->retlen += iter.req.datalen;
+-	if (!sas_expander->num_phys)
++	if (!sas_expander->num_phys) {
++		rc = -1;
+ 		goto out_fail;
++	}
+ 	sas_expander->phy = kcalloc(sas_expander->num_phys,
+ 	    sizeof(struct _sas_phy), GFP_KERNEL);
+ 	if (!sas_expander->phy) {
 -- 
 2.30.2
 
