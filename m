@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DAA3C56AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F48F3C4934
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347909AbhGLIW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
+        id S237910AbhGLGmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346312AbhGLHjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:39:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5976160724;
-        Mon, 12 Jul 2021 07:34:25 +0000 (UTC)
+        id S237103AbhGLGeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0836561159;
+        Mon, 12 Jul 2021 06:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075265;
-        bh=ZqLNNHBgodSGe3XV9UyZ6+pz+SaY+pd5HC5KCRYvgLk=;
+        s=korg; t=1626071422;
+        bh=Fzt2JJGWqqOA+kL5so5Q3TuU+hirVyfpKnoG+xKTcgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5U4YAXcs/saq1Tm354csw503eh2OVacn6QoD0hhMIHXJwPQ6x80zn7EwFdntuMEy
-         Cgswa8b1gPJyUnrfeJNNeR/jvCLO+SouyI6vzvqsf2XT7wK6x+A28BFwn6unGr5C7H
-         DeUTSfJYWpIJjWSJTs/GHDHyO/jS1U63Pcrg+inw=
+        b=R3pbbttCp2EWi0J0nGfnvwb7RCM6Dmej44FPUKKOKWAhc+SbcnSm8u5nyr8HlxnvY
+         3asHnmIpDGeCI9Jdsthx3J7G9WAzEgMrkEcKom0xpPHxsobrTXiuxpyCc94zVYwFc0
+         paAjk6ItPSakrpA05ghUNq2+hp7ewt23i+F2DO7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 162/800] sched/fair: Fix ascii art by relpacing tabs
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>
+Subject: [PATCH 5.10 025/593] usb: typec: Add the missed altmode_id_remove() in typec_register_altmode()
 Date:   Mon, 12 Jul 2021 08:03:05 +0200
-Message-Id: <20210712060935.773500838@linuxfoundation.org>
+Message-Id: <20210712060845.963064128@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 08f7c2f4d0e9f4283f5796b8168044c034a1bfcb ]
+commit 03026197bb657d784220b040c6173267a0375741 upstream.
 
-When using something other than 8 spaces per tab, this ascii art
-makes not sense, and the reader might end up wondering what this
-advanced equation "is".
+typec_register_altmode() misses to call altmode_id_remove() in an error
+path. Add the missed function call to fix it.
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210518125202.78658-4-odin@uged.al
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Link: https://lore.kernel.org/r/20210617073226.47599-1-jingxiangfeng@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/sched/fair.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/typec/class.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 23663318fb81..190ae8004a22 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3139,7 +3139,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------               (1)
-- *			  \Sum grq->load.weight
-+ *                       \Sum grq->load.weight
-  *
-  * Now, because computing that sum is prohibitively expensive to compute (been
-  * there, done that) we approximate it with this average stuff. The average
-@@ -3153,7 +3153,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->avg.load_avg
-  *   ge->load.weight = ------------------------------              (3)
-- *				tg->load_avg
-+ *                             tg->load_avg
-  *
-  * Where: tg->load_avg ~= \Sum grq->avg.load_avg
-  *
-@@ -3169,7 +3169,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = ----------------------------- = tg->weight   (4)
-- *			    grp->load.weight
-+ *                         grp->load.weight
-  *
-  * That is, the sum collapses because all other CPUs are idle; the UP scenario.
-  *
-@@ -3188,7 +3188,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------		   (6)
-- *				tg_load_avg'
-+ *                             tg_load_avg'
-  *
-  * Where:
-  *
--- 
-2.30.2
-
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -446,8 +446,10 @@ typec_register_altmode(struct device *pa
+ 	int ret;
+ 
+ 	alt = kzalloc(sizeof(*alt), GFP_KERNEL);
+-	if (!alt)
++	if (!alt) {
++		altmode_id_remove(parent, id);
+ 		return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	alt->adev.svid = desc->svid;
+ 	alt->adev.mode = desc->mode;
 
 
