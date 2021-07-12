@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B7B3C4EC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACEC3C5427
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344898AbhGLHVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
+        id S1347543AbhGLH5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238653AbhGLGtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 468FC61008;
-        Mon, 12 Jul 2021 06:44:52 +0000 (UTC)
+        id S1343556AbhGLHTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:19:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DCDD610A6;
+        Mon, 12 Jul 2021 07:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072292;
-        bh=neavG15BLwfPaBn5OwNoS42sRWmGXpZ+MSJBn8JFT18=;
+        s=korg; t=1626074226;
+        bh=OCif2ZsNIOhHAWJltQSZzdH7Ucun+7oFwwXTFZNaHWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=atKnho6Jl7IYj7G8ZdeLElN2fEhKhUkb2lA11jkLOFP/xrOi7yfvFpFnJAHX0mUlb
-         OlsA1IoByb+lkbyoK9UZGpsQmNHBjalfckmSBmf/iRlTEgzQL/3Qj0zm1guhEc9EHK
-         DEO3P97i+TIAtTPXgGEo7oZmyKY3i8LtsCjShc8w=
+        b=GqZ5oWCF0gYlQryIQvq1/ki7mYoRRXgOnkEcigV/Uh5um/5EfOclatOLhGzJF4vzj
+         eXJIvfjjRPGxmTrJI7aRBBVAr7dZQelHR+/gDo3WDKDQCUr2QVp41pEqrOL/AkU/g7
+         OAy9ZMOUeT/T3HYnzsx4cHpOx6c0l6ka+8iXr4CI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 429/593] net: tipc: fix FB_MTU eat two pages
-Date:   Mon, 12 Jul 2021 08:09:49 +0200
-Message-Id: <20210712060935.656649752@linuxfoundation.org>
+Subject: [PATCH 5.12 507/700] clk: si5341: Wait for DEVICE_READY on startup
+Date:   Mon, 12 Jul 2021 08:09:50 +0200
+Message-Id: <20210712061030.457795062@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+From: Robert Hancock <robert.hancock@calian.com>
 
-[ Upstream commit 0c6de0c943dbb42831bf7502eb5c007f71e752d2 ]
+[ Upstream commit 6e7d2de1e000d36990923ed80d2e78dfcb545cee ]
 
-FB_MTU is used in 'tipc_msg_build()' to alloc smaller skb when memory
-allocation fails, which can avoid unnecessary sending failures.
+The Si5341 datasheet warns that before accessing any other registers,
+including the PAGE register, we need to wait for the DEVICE_READY register
+to indicate the device is ready, or the process of the device loading its
+state from NVM can be corrupted. Wait for DEVICE_READY on startup before
+continuing initialization. This is done using a raw I2C register read
+prior to setting up regmap to avoid any potential unwanted automatic PAGE
+register accesses from regmap at this stage.
 
-The value of FB_MTU now is 3744, and the data size will be:
-
-  (3744 + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) + \
-    SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3))
-
-which is larger than one page(4096), and two pages will be allocated.
-
-To avoid it, replace '3744' with a calculation:
-
-  (PAGE_SIZE - SKB_DATA_ALIGN(BUF_OVERHEAD) - \
-    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
-
-What's more, alloc_skb_fclone() will call SKB_DATA_ALIGN for data size,
-and it's not necessary to make alignment for buf_size in
-tipc_buf_acquire(). So, just remove it.
-
-Fixes: 4c94cc2d3d57 ("tipc: fall back to smaller MTU if allocation of local send skb fails")
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
+Signed-off-by: Robert Hancock <robert.hancock@calian.com>
+Link: https://lore.kernel.org/r/20210325192643.2190069-3-robert.hancock@calian.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/bcast.c |  2 +-
- net/tipc/msg.c   | 17 ++++++++---------
- net/tipc/msg.h   |  3 ++-
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/clk/clk-si5341.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/net/tipc/bcast.c b/net/tipc/bcast.c
-index d4beca895992..593846d25214 100644
---- a/net/tipc/bcast.c
-+++ b/net/tipc/bcast.c
-@@ -699,7 +699,7 @@ int tipc_bcast_init(struct net *net)
- 	spin_lock_init(&tipc_net(net)->bclock);
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index e0446e66fa64..b8a960e927bc 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -94,6 +94,7 @@ struct clk_si5341_output_config {
+ #define SI5341_STATUS		0x000C
+ #define SI5341_SOFT_RST		0x001C
+ #define SI5341_IN_SEL		0x0021
++#define SI5341_DEVICE_READY	0x00FE
+ #define SI5341_XAXB_CFG		0x090E
+ #define SI5341_IN_EN		0x0949
+ #define SI5341_INX_TO_PFD_EN	0x094A
+@@ -1189,6 +1190,32 @@ static const struct regmap_range_cfg si5341_regmap_ranges[] = {
+ 	},
+ };
  
- 	if (!tipc_link_bc_create(net, 0, 0, NULL,
--				 FB_MTU,
-+				 one_page_mtu,
- 				 BCLINK_WIN_DEFAULT,
- 				 BCLINK_WIN_DEFAULT,
- 				 0,
-diff --git a/net/tipc/msg.c b/net/tipc/msg.c
-index 88a3ed80094c..91dcf648d32b 100644
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -44,12 +44,15 @@
- #define MAX_FORWARD_SIZE 1024
- #ifdef CONFIG_TIPC_CRYPTO
- #define BUF_HEADROOM ALIGN(((LL_MAX_HEADER + 48) + EHDR_MAX_SIZE), 16)
--#define BUF_TAILROOM (TIPC_AES_GCM_TAG_SIZE)
-+#define BUF_OVERHEAD (BUF_HEADROOM + TIPC_AES_GCM_TAG_SIZE)
- #else
- #define BUF_HEADROOM (LL_MAX_HEADER + 48)
--#define BUF_TAILROOM 16
-+#define BUF_OVERHEAD BUF_HEADROOM
- #endif
- 
-+const int one_page_mtu = PAGE_SIZE - SKB_DATA_ALIGN(BUF_OVERHEAD) -
-+			 SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++static int si5341_wait_device_ready(struct i2c_client *client)
++{
++	int count;
 +
- static unsigned int align(unsigned int i)
- {
- 	return (i + 3) & ~3u;
-@@ -67,13 +70,8 @@ static unsigned int align(unsigned int i)
- struct sk_buff *tipc_buf_acquire(u32 size, gfp_t gfp)
- {
- 	struct sk_buff *skb;
--#ifdef CONFIG_TIPC_CRYPTO
--	unsigned int buf_size = (BUF_HEADROOM + size + BUF_TAILROOM + 3) & ~3u;
--#else
--	unsigned int buf_size = (BUF_HEADROOM + size + 3) & ~3u;
--#endif
- 
--	skb = alloc_skb_fclone(buf_size, gfp);
-+	skb = alloc_skb_fclone(BUF_OVERHEAD + size, gfp);
- 	if (skb) {
- 		skb_reserve(skb, BUF_HEADROOM);
- 		skb_put(skb, size);
-@@ -395,7 +393,8 @@ int tipc_msg_build(struct tipc_msg *mhdr, struct msghdr *m, int offset,
- 		if (unlikely(!skb)) {
- 			if (pktmax != MAX_MSG_SIZE)
- 				return -ENOMEM;
--			rc = tipc_msg_build(mhdr, m, offset, dsz, FB_MTU, list);
-+			rc = tipc_msg_build(mhdr, m, offset, dsz,
-+					    one_page_mtu, list);
- 			if (rc != dsz)
- 				return rc;
- 			if (tipc_msg_assemble(list))
-diff --git a/net/tipc/msg.h b/net/tipc/msg.h
-index 5d64596ba987..64ae4c4c44f8 100644
---- a/net/tipc/msg.h
-+++ b/net/tipc/msg.h
-@@ -99,9 +99,10 @@ struct plist;
- #define MAX_H_SIZE                60	/* Largest possible TIPC header size */
- 
- #define MAX_MSG_SIZE (MAX_H_SIZE + TIPC_MAX_USER_MSG_SIZE)
--#define FB_MTU                  3744
- #define TIPC_MEDIA_INFO_OFFSET	5
- 
-+extern const int one_page_mtu;
++	/* Datasheet warns: Any attempt to read or write any register other
++	 * than DEVICE_READY before DEVICE_READY reads as 0x0F may corrupt the
++	 * NVM programming and may corrupt the register contents, as they are
++	 * read from NVM. Note that this includes accesses to the PAGE register.
++	 * Also: DEVICE_READY is available on every register page, so no page
++	 * change is needed to read it.
++	 * Do this outside regmap to avoid automatic PAGE register access.
++	 * May take up to 300ms to complete.
++	 */
++	for (count = 0; count < 15; ++count) {
++		s32 result = i2c_smbus_read_byte_data(client,
++						      SI5341_DEVICE_READY);
++		if (result < 0)
++			return result;
++		if (result == 0x0F)
++			return 0;
++		msleep(20);
++	}
++	dev_err(&client->dev, "timeout waiting for DEVICE_READY\n");
++	return -EIO;
++}
 +
- struct tipc_skb_cb {
- 	union {
- 		struct {
+ static const struct regmap_config si5341_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -1385,6 +1412,11 @@ static int si5341_probe(struct i2c_client *client,
+ 
+ 	data->i2c_client = client;
+ 
++	/* Must be done before otherwise touching hardware */
++	err = si5341_wait_device_ready(client);
++	if (err)
++		return err;
++
+ 	for (i = 0; i < SI5341_NUM_INPUTS; ++i) {
+ 		input = devm_clk_get(&client->dev, si5341_input_clock_names[i]);
+ 		if (IS_ERR(input)) {
 -- 
 2.30.2
 
