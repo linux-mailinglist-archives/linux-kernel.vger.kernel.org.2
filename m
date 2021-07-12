@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBF73C578B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4238A3C5141
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377100AbhGLIfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35410 "EHLO mail.kernel.org"
+        id S1345693AbhGLHim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:38:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343578AbhGLHsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4915616E9;
-        Mon, 12 Jul 2021 07:42:45 +0000 (UTC)
+        id S244173AbhGLHK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79332613C3;
+        Mon, 12 Jul 2021 07:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075766;
-        bh=e84PWtKvoCNX6p7L4TdyopFXQ0wsnRv0+CAu2wwhLbQ=;
+        s=korg; t=1626073599;
+        bh=4ZFQWM60tEvQKLbT6TdHu5+XbApjP44VhT8H+V9pRf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nLoECTivsYdg9BRbsfH+39gx1uk4PRUDo/z6bElc0u3TcLgYYzWzvsf2pU9GFVTPY
-         a5aX2w2BgDAPTa5WVzeQaBz/0/22w2vXygH4z1M4QSaZtHjiAx6ZkjCdF4G0SbUQ2U
-         XraiP/K9u02EnZhfdx1swkUZEEhKpmqfDHLouDoM=
+        b=mZH7TTVVkxozH6/P9pMnfILGAjNul2epLM4dGJ+TUgz2cp1a/zSk4ZX/rwLka1HHG
+         dvIVGWzsjeAlfTXsl1YvfzEOSX0Atgl62SCJeXKhu8cWd4uXsw5vGs/ZjIisVsgi1z
+         B8hZU8y02WTGYYqnUmLb33saBzP+kMaP53rSH4IQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Borislav Petkov <bp@suse.de>, Andrew Jeffery <andrew@aj.id.au>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 355/800] EDAC/aspeed: Use proper format string for printing resource
+Subject: [PATCH 5.12 295/700] hwmon: (max31722) Remove non-standard ACPI device IDs
 Date:   Mon, 12 Jul 2021 08:06:18 +0200
-Message-Id: <20210712061004.859553627@linuxfoundation.org>
+Message-Id: <20210712061007.678142614@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 2e2f16d5cdb33e5f6fc53b7ad66c9f456d5f2950 ]
+[ Upstream commit 97387c2f06bcfd79d04a848d35517b32ee6dca7c ]
 
-On ARMv7, resource_size_t can be 64-bit, which breaks printing
-it as %x:
+Valid Maxim Integrated ACPI device IDs would start with MXIM,
+not with MAX1. On top of that, ACPI device IDs reflecting chip names
+are almost always invalid.
 
-  drivers/edac/aspeed_edac.c: In function 'init_csrows':
-  drivers/edac/aspeed_edac.c:257:28: error: format '%x' expects argument of \
-    type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long \
-    long unsigned int'} [-Werror=format=]
-  257 |         dev_dbg(mci->pdev, "dt: /memory node resources: first page \
-    r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+Remove the invalid ACPI IDs.
 
-Use the special %pR format string to pretty-print the entire resource
-instead.
-
-Fixes: edfc2d73ca45 ("EDAC/aspeed: Add support for AST2400 and AST2600")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Link: https://lkml.kernel.org/r/20210421135500.3518661-1-arnd@kernel.org
+Fixes: 04e1e70afec6 ("hwmon: (max31722) Add support for MAX31722/MAX31723 temperature sensors")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/aspeed_edac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/max31722.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
-index a46da56d6d54..6bd5f8815919 100644
---- a/drivers/edac/aspeed_edac.c
-+++ b/drivers/edac/aspeed_edac.c
-@@ -254,8 +254,8 @@ static int init_csrows(struct mem_ctl_info *mci)
- 		return rc;
- 	}
+diff --git a/drivers/hwmon/max31722.c b/drivers/hwmon/max31722.c
+index 062eceb7be0d..613338cbcb17 100644
+--- a/drivers/hwmon/max31722.c
++++ b/drivers/hwmon/max31722.c
+@@ -6,7 +6,6 @@
+  * Copyright (c) 2016, Intel Corporation.
+  */
  
--	dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
--		r.start, resource_size(&r), PAGE_SHIFT);
-+	dev_dbg(mci->pdev, "dt: /memory node resources: first page %pR, PAGE_SHIFT macro=0x%x\n",
-+		&r, PAGE_SHIFT);
+-#include <linux/acpi.h>
+ #include <linux/hwmon.h>
+ #include <linux/hwmon-sysfs.h>
+ #include <linux/kernel.h>
+@@ -133,20 +132,12 @@ static const struct spi_device_id max31722_spi_id[] = {
+ 	{"max31723", 0},
+ 	{}
+ };
+-
+-static const struct acpi_device_id __maybe_unused max31722_acpi_id[] = {
+-	{"MAX31722", 0},
+-	{"MAX31723", 0},
+-	{}
+-};
+-
+ MODULE_DEVICE_TABLE(spi, max31722_spi_id);
  
- 	csrow->first_page = r.start >> PAGE_SHIFT;
- 	nr_pages = resource_size(&r) >> PAGE_SHIFT;
+ static struct spi_driver max31722_driver = {
+ 	.driver = {
+ 		.name = "max31722",
+ 		.pm = &max31722_pm_ops,
+-		.acpi_match_table = ACPI_PTR(max31722_acpi_id),
+ 	},
+ 	.probe =            max31722_probe,
+ 	.remove =           max31722_remove,
 -- 
 2.30.2
 
