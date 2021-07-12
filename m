@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259B23C5021
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61AD3C573A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346914AbhGLHbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:31:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
+        id S1376610AbhGLIam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241822AbhGLHEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59724611C2;
-        Mon, 12 Jul 2021 07:01:18 +0000 (UTC)
+        id S1345183AbhGLHnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C06461152;
+        Mon, 12 Jul 2021 07:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073278;
-        bh=ntd7N4ODXfPVCqUQ2oiN/qWeyj26zTtzAKpfs5+tdR8=;
+        s=korg; t=1626075615;
+        bh=x64vuByuN8kJItEe+sAuXAhoznJt8trCXN6NHO1poMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IQMaebmjUb1xlhW3EhVRLVmMovroRQs1E6AGzSfM/eGm/9oFGl1FTlIhGBuhd9jzT
-         uWmF4sNE9CeshVLPMJu+1/2hb0F18qxPr5VhExqhB9du5Hlyb2xfH+x8U7dBvbjUsQ
-         XF+aBde13RFL9u+NvcdeUE6XK+ZhjFUF7dcALPO4=
+        b=2u7ZsqYcSxAodO2tqF0uXU/QT4DpvwNEiLXT0C6qVMCCT3MtZ4Cxusl07doSNsiZR
+         srti9xlLU/s8/NvF+bQCyKuaxrJNpQx9yG1W4oCKUj0yz3Ywh7hYueSU6nA9NkHnwn
+         I6oybvp6XlJqebOvnErTW6iD7TPE0eD0pPC1Jb3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH 5.12 187/700] btrfs: dont clear page extent mapped if were not invalidating the full page
-Date:   Mon, 12 Jul 2021 08:04:30 +0200
-Message-Id: <20210712060953.221916070@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Samuel Cabrero <scabrero@suse.de>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 248/800] smb3: fix uninitialized value for port in witness protocol move
+Date:   Mon, 12 Jul 2021 08:04:31 +0200
+Message-Id: <20210712060948.658924727@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit bcd77455d590eaa0422a5e84ae852007cfce574a ]
+[ Upstream commit ff93b71a3eff25fe9d4364ef13b6e01d935600c6 ]
 
-[BUG]
-With current btrfs subpage rw support, the following script can lead to
-fs hang:
+Although in practice this can not occur (since IPv4 and IPv6 are the
+only two cases currently supported), it is cleaner to avoid uninitialized
+variable warnings.
 
-  $ mkfs.btrfs -f -s 4k $dev
-  $ mount $dev -o nospace_cache $mnt
-  $ fsstress -w -n 100 -p 1 -s 1608140256 -v -d $mnt
+Addresses smatch warning:
+  fs/cifs/cifs_swn.c:468 cifs_swn_store_swn_addr() error: uninitialized symbol 'port'.
 
-The fs will hang at btrfs_start_ordered_extent().
-
-[CAUSE]
-In above test case, btrfs_invalidate() will be called with the following
-parameters:
-
-  offset = 0 length = 53248 page dirty = 1 subpage dirty bitmap = 0x2000
-
-Since @offset is 0, btrfs_invalidate() will try to invalidate the full
-page, and finally call clear_page_extent_mapped() which will detach
-subpage structure from the page.
-
-And since the page no longer has subpage structure, the subpage dirty
-bitmap will be cleared, preventing the dirty range from being written
-back, thus no way to wake up the ordered extent.
-
-[FIX]
-Just follow other filesystems, only to invalidate the page if the range
-covers the full page.
-
-There are cases like truncate_setsize() which can call
-btrfs_invalidatepage() with offset == 0 and length != 0 for the last
-page of an inode.
-
-Although the old code will still try to invalidate the full page, we are
-still safe to just wait for ordered extent to finish.
-So it shouldn't cause extra problems.
-
-Tested-by: Ritesh Harjani <riteshh@linux.ibm.com> # [ppc64]
-Tested-by: Anand Jain <anand.jain@oracle.com> # [aarch64]
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+CC: Samuel Cabrero <scabrero@suse.de>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ fs/cifs/cifs_swn.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3e7173c7660d..1b22ded1a799 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8386,7 +8386,19 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 	 */
- 	wait_on_page_writeback(page);
+diff --git a/fs/cifs/cifs_swn.c b/fs/cifs/cifs_swn.c
+index d829b8bf833e..93b47818c6c2 100644
+--- a/fs/cifs/cifs_swn.c
++++ b/fs/cifs/cifs_swn.c
+@@ -447,15 +447,13 @@ static int cifs_swn_store_swn_addr(const struct sockaddr_storage *new,
+ 				   const struct sockaddr_storage *old,
+ 				   struct sockaddr_storage *dst)
+ {
+-	__be16 port;
++	__be16 port = cpu_to_be16(CIFS_PORT);
  
--	if (offset) {
-+	/*
-+	 * For subpage case, we have call sites like
-+	 * btrfs_punch_hole_lock_range() which passes range not aligned to
-+	 * sectorsize.
-+	 * If the range doesn't cover the full page, we don't need to and
-+	 * shouldn't clear page extent mapped, as page->private can still
-+	 * record subpage dirty bits for other part of the range.
-+	 *
-+	 * For cases that can invalidate the full even the range doesn't
-+	 * cover the full page, like invalidating the last page, we're
-+	 * still safe to wait for ordered extent to finish.
-+	 */
-+	if (!(offset == 0 && length == PAGE_SIZE)) {
- 		btrfs_releasepage(page, GFP_NOFS);
- 		return;
- 	}
+ 	if (old->ss_family == AF_INET) {
+ 		struct sockaddr_in *ipv4 = (struct sockaddr_in *)old;
+ 
+ 		port = ipv4->sin_port;
+-	}
+-
+-	if (old->ss_family == AF_INET6) {
++	} else if (old->ss_family == AF_INET6) {
+ 		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)old;
+ 
+ 		port = ipv6->sin6_port;
+@@ -465,9 +463,7 @@ static int cifs_swn_store_swn_addr(const struct sockaddr_storage *new,
+ 		struct sockaddr_in *ipv4 = (struct sockaddr_in *)new;
+ 
+ 		ipv4->sin_port = port;
+-	}
+-
+-	if (new->ss_family == AF_INET6) {
++	} else if (new->ss_family == AF_INET6) {
+ 		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)new;
+ 
+ 		ipv6->sin6_port = port;
 -- 
 2.30.2
 
