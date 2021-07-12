@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11A83C5533
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96493C492E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355399AbhGLIJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345417AbhGLH3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C38261628;
-        Mon, 12 Jul 2021 07:26:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074798;
-        bh=Rchk5GyKxNH7smr36g/33Ls+CccmzIVaKmdoI39vflE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlxbtbJFEu+sNJtDxmG49nUqpAf5+/N6q4ZVPHvJ31Pw7m9EPxN6rpdNQXKAIWmz6
-         n11D3IK89qcAHEfqba6/kSWlVDV+o+/qEo+OA2BOQRik1k1cI2cnDzGu2Sk9JAI5dC
-         bpo/q/uurUpK15o4G5M9K9tAIEho2iIU6OQVLmpM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Quat Le <quat.le@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.12 700/700] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
-Date:   Mon, 12 Jul 2021 08:13:03 +0200
-Message-Id: <20210712061050.379756644@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234947AbhGLGmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236633AbhGLGcV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:32:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0B4C0613A0;
+        Sun, 11 Jul 2021 23:29:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=o5bYCY7IOLJJ+eHcIwH3lKQ4D/
+        QKoHUXTEs0b0hl7GLlm5a+5nz60nrUR4RoOFj2QTDOUNxPMFMDrJs4uAiWFgeZ+I9+XKC2r2GE3ow
+        TDEOdezPC/lBmSUvtEXYfwwZXe3L2JqY/XtV2nQfXlB5172NfdpbP1n8IozS9FZ1K+gfXe15x5cp3
+        liLIeNt0TeoqEmdsE+RBr9Gb8d+Y/xtV8RK0jxYZASxlakUn/grJARWu+//ef1+njDL2fpGxZDe8d
+        MiqmV2PGAMfeWigXgoHhCWZZT4JHRTC90Egjhg2us6bzedEddsA6SrPKH7O21ho6kYbK+6kNZMvYi
+        piSn7efQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2pQF-00Gy4c-ST; Mon, 12 Jul 2021 06:28:18 +0000
+Date:   Mon, 12 Jul 2021 07:28:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v4 3/5] block: add ioctl to read the disk sequence number
+Message-ID: <YOvg9wncSK8GvOGe@infradead.org>
+References: <20210711175415.80173-1-mcroce@linux.microsoft.com>
+ <20210711175415.80173-4-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210711175415.80173-4-mcroce@linux.microsoft.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quat Le <quat.le@oracle.com>
+Looks good,
 
-commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
-
-If the device is power-cycled, it takes time for the initiator to transmit
-the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
-respond to the primitive to become ACTIVE. Retry the I/O request to allow
-the device time to become ACTIVE.
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Quat Le <quat.le@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/scsi/scsi_lib.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -761,6 +761,7 @@ static void scsi_io_completion_action(st
- 				case 0x07: /* operation in progress */
- 				case 0x08: /* Long write in progress */
- 				case 0x09: /* self test in progress */
-+				case 0x11: /* notify (enable spinup) required */
- 				case 0x14: /* space allocation in progress */
- 				case 0x1a: /* start stop unit in progress */
- 				case 0x1b: /* sanitize in progress */
-
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
