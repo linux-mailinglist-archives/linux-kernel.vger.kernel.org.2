@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAFE3C54DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BE13C4E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355106AbhGLIF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33388 "EHLO mail.kernel.org"
+        id S244449AbhGLHSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:18:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245528AbhGLH1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:27:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E87586161C;
-        Mon, 12 Jul 2021 07:23:28 +0000 (UTC)
+        id S236674AbhGLGx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:53:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83835610D0;
+        Mon, 12 Jul 2021 06:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074609;
-        bh=LKyRcNWlFavaMgK+ergxadt35UXMZPV1wl7Y6RSbYsk=;
+        s=korg; t=1626072638;
+        bh=fsXzZU99CNoQrO+dXEfkeHAuHSfCDX2X0HKResemX5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LBXzkyhP5E8YMnyVp3bz0Alb5p8CD+InZ6LzHMLMPaxBJQjrrerrBMP9497JiaPH1
-         Fyg6ER/dgMTd2Tw+v3oqLHj60ut8CemQcBaPGWbFHlMbOFBHm1IcZHkkqJomM+vLUA
-         GCG4xVqnQRzRAlZOBeiKQTWzXy3QmsIvPuGgCEkc=
+        b=briAex5uVBS7PPMUWfoIwBqYTKnW0Rh7GCIfTsUYBIleMQ4DxrtxQuLVPj9BFfhjf
+         i94iG3uCBFp8IB5KHeQIduRYLVHTOI+a5ZhfpM3z10UHuGZTIaxLYB/7fahsvXTVj5
+         VDtr8YgR9OezGSr/1AgvAGaA1oGI2F6te0zssGKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 638/700] phy: ti: dm816x: Fix the error handling path in dm816x_usb_phy_probe()
-Date:   Mon, 12 Jul 2021 08:12:01 +0200
-Message-Id: <20210712061043.724529832@linuxfoundation.org>
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Jan Kara <jack@suse.cz>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 562/593] mm/pmem: avoid inserting hugepage PTE entry with fsdax if hugepage support is disabled
+Date:   Mon, 12 Jul 2021 08:12:02 +0200
+Message-Id: <20210712060956.508914388@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +45,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit f7eedcb8539ddcbb6fe7791f1b4ccf43f905c72f ]
+[ Upstream commit bae84953815793f68ddd8edeadd3f4e32676a2c8 ]
 
-Add an error handling path in the probe to release some resources, as
-already done in the remove function.
+Differentiate between hardware not supporting hugepages and user disabling
+THP via 'echo never > /sys/kernel/mm/transparent_hugepage/enabled'
 
-Fixes: 609adde838f4 ("phy: Add a driver for dm816x USB PHY")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/ac5136881f6bdec50be19b3bf73b3bc1b15ef1f1.1622898974.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+For the devdax namespace, the kernel handles the above via the
+supported_alignment attribute and failing to initialize the namespace if
+the namespace align value is not supported on the platform.
+
+For the fsdax namespace, the kernel will continue to initialize the
+namespace.  This can result in the kernel creating a huge pte entry even
+though the hardware don't support the same.
+
+We do want hugepage support with pmem even if the end-user disabled THP
+via sysfs file (/sys/kernel/mm/transparent_hugepage/enabled).  Hence
+differentiate between hardware/firmware lacking support vs user-controlled
+disable of THP and prevent a huge fault if the hardware lacks hugepage
+support.
+
+Link: https://lkml.kernel.org/r/20210205023956.417587-1-aneesh.kumar@linux.ibm.com
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ti/phy-dm816x-usb.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ include/linux/huge_mm.h | 15 +++++++++------
+ mm/huge_memory.c        |  6 +++++-
+ 2 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/phy/ti/phy-dm816x-usb.c b/drivers/phy/ti/phy-dm816x-usb.c
-index 57adc08a89b2..9fe6ea6fdae5 100644
---- a/drivers/phy/ti/phy-dm816x-usb.c
-+++ b/drivers/phy/ti/phy-dm816x-usb.c
-@@ -242,19 +242,28 @@ static int dm816x_usb_phy_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(phy->dev);
- 	generic_phy = devm_phy_create(phy->dev, NULL, &ops);
--	if (IS_ERR(generic_phy))
--		return PTR_ERR(generic_phy);
-+	if (IS_ERR(generic_phy)) {
-+		error = PTR_ERR(generic_phy);
-+		goto clk_unprepare;
-+	}
- 
- 	phy_set_drvdata(generic_phy, phy);
- 
- 	phy_provider = devm_of_phy_provider_register(phy->dev,
- 						     of_phy_simple_xlate);
--	if (IS_ERR(phy_provider))
--		return PTR_ERR(phy_provider);
-+	if (IS_ERR(phy_provider)) {
-+		error = PTR_ERR(phy_provider);
-+		goto clk_unprepare;
-+	}
- 
- 	usb_add_phy_dev(&phy->phy);
- 
- 	return 0;
-+
-+clk_unprepare:
-+	pm_runtime_disable(phy->dev);
-+	clk_unprepare(phy->refclk);
-+	return error;
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index ff55be011739..10c7a80a0394 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -84,6 +84,7 @@ static inline vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn,
  }
  
- static int dm816x_usb_phy_remove(struct platform_device *pdev)
+ enum transparent_hugepage_flag {
++	TRANSPARENT_HUGEPAGE_NEVER_DAX,
+ 	TRANSPARENT_HUGEPAGE_FLAG,
+ 	TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG,
+ 	TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG,
+@@ -129,6 +130,13 @@ extern unsigned long transparent_hugepage_flags;
+  */
+ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ {
++
++	/*
++	 * If the hardware/firmware marked hugepage support disabled.
++	 */
++	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_NEVER_DAX))
++		return false;
++
+ 	if (vma->vm_flags & VM_NOHUGEPAGE)
+ 		return false;
+ 
+@@ -140,12 +148,7 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 
+ 	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_FLAG))
+ 		return true;
+-	/*
+-	 * For dax vmas, try to always use hugepage mappings. If the kernel does
+-	 * not support hugepages, fsdax mappings will fallback to PAGE_SIZE
+-	 * mappings, and device-dax namespaces, that try to guarantee a given
+-	 * mapping size, will fail to enable
+-	 */
++
+ 	if (vma_is_dax(vma))
+ 		return true;
+ 
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 6301ecc1f679..f1432d4d81c7 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -375,7 +375,11 @@ static int __init hugepage_init(void)
+ 	struct kobject *hugepage_kobj;
+ 
+ 	if (!has_transparent_hugepage()) {
+-		transparent_hugepage_flags = 0;
++		/*
++		 * Hardware doesn't support hugepages, hence disable
++		 * DAX PMD support.
++		 */
++		transparent_hugepage_flags = 1 << TRANSPARENT_HUGEPAGE_NEVER_DAX;
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.30.2
 
