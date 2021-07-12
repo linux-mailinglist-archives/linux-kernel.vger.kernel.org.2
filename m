@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EA63C4BD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC6B3C57FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242809AbhGLHA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
+        id S1378429AbhGLIkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239044AbhGLGoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60E6261182;
-        Mon, 12 Jul 2021 06:40:34 +0000 (UTC)
+        id S1350656AbhGLHvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A205661C2D;
+        Mon, 12 Jul 2021 07:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072034;
-        bh=mY0ucfCFJ25AT2f3/nTpanw8SZFT4PkGQR3qlWZ9iFE=;
+        s=korg; t=1626076018;
+        bh=e4r82FMF+fsJvb11Ykv3Vv12QYqvKz9mtZ36TyZ/AKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eHeXflrQZ6/zQ00ZgwfO5LKtNoF/YUzYtPi21m0jhuXj5QSpGLRwHKyplUS5dOy/5
-         Nnct4PftBguWMZWzXUwotjV0UMK+AyeTBCmWOXXo/6Dz4zJ7rF3jjo7Y3QN01ePOGn
-         5YTeRa3ddnROygaTJ9CSdgtZuZJJpFoAV8YpmXCs=
+        b=N0STBjMrNF0wfrtcy8T5ee0csh2cRbPwmVeEZYP6hyhIL3sCtRxaXtpSOEqV02mDg
+         DAsF55Hlk0r69kcEzZJybZjfqNzgv42UYoiji2k7u+mYPMQqrte1IEGgCPRUDoYPlu
+         7yhB3tvLZELUMiJ4oSxE4cmqzVhW81f+OpCYeorA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 325/593] RDMA/rtrs-srv: Fix memory leak when having multiple sessions
+Subject: [PATCH 5.13 462/800] brcmfmac: fix setting of station info chains bitmask
 Date:   Mon, 12 Jul 2021 08:08:05 +0200
-Message-Id: <20210712060921.436712770@linuxfoundation.org>
+Message-Id: <20210712061016.286810275@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,86 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Alvin Šipraga <ALSI@bang-olufsen.dk>
 
-[ Upstream commit 6bb97a2c1aa5278a30d49abb6186d50c34c207e2 ]
+[ Upstream commit feb45643762172110cb3a44f99dd54304f33b711 ]
 
-Gioh notice memory leak below
-unreferenced object 0xffff8880acda2000 (size 2048):
-  comm "kworker/4:1", pid 77, jiffies 4295062871 (age 1270.730s)
-  hex dump (first 32 bytes):
-    00 20 da ac 80 88 ff ff 00 20 da ac 80 88 ff ff  . ....... ......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e85d85b5>] rtrs_srv_rdma_cm_handler+0x8e5/0xa90 [rtrs_server]
-    [<00000000e31a988a>] cma_ib_req_handler+0xdc5/0x2b50 [rdma_cm]
-    [<000000000eb02c5b>] cm_process_work+0x2d/0x100 [ib_cm]
-    [<00000000e1650ca9>] cm_req_handler+0x11bc/0x1c40 [ib_cm]
-    [<000000009c28818b>] cm_work_handler+0xe65/0x3cf2 [ib_cm]
-    [<000000002b53eaa1>] process_one_work+0x4bc/0x980
-    [<00000000da3499fb>] worker_thread+0x78/0x5c0
-    [<00000000167127a4>] kthread+0x191/0x1e0
-    [<0000000060802104>] ret_from_fork+0x3a/0x50
-unreferenced object 0xffff88806d595d90 (size 8):
-  comm "kworker/4:1H", pid 131, jiffies 4295062972 (age 1269.720s)
-  hex dump (first 8 bytes):
-    62 6c 61 00 6b 6b 6b a5                          bla.kkk.
-  backtrace:
-    [<000000004447d253>] kstrdup+0x2e/0x60
-    [<0000000047259793>] kobject_set_name_vargs+0x2f/0xb0
-    [<00000000c2ee3bc8>] dev_set_name+0xab/0xe0
-    [<000000002b6bdfb1>] rtrs_srv_create_sess_files+0x260/0x290 [rtrs_server]
-    [<0000000075d87bd7>] rtrs_srv_info_req_done+0x71b/0x960 [rtrs_server]
-    [<00000000ccdf1bb5>] __ib_process_cq+0x94/0x100 [ib_core]
-    [<00000000cbcb60cb>] ib_cq_poll_work+0x32/0xc0 [ib_core]
-    [<000000002b53eaa1>] process_one_work+0x4bc/0x980
-    [<00000000da3499fb>] worker_thread+0x78/0x5c0
-    [<00000000167127a4>] kthread+0x191/0x1e0
-    [<0000000060802104>] ret_from_fork+0x3a/0x50
-unreferenced object 0xffff88806d6bb100 (size 256):
-  comm "kworker/4:1H", pid 131, jiffies 4295062972 (age 1269.720s)
-  hex dump (first 32 bytes):
-    00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
-    ff ff ff ff ff ff ff ff 00 59 4d 86 ff ff ff ff  .........YM.....
-  backtrace:
-    [<00000000a18a11e4>] device_add+0x74d/0xa00
-    [<00000000a915b95f>] rtrs_srv_create_sess_files.cold+0x49/0x1fe [rtrs_server]
-    [<0000000075d87bd7>] rtrs_srv_info_req_done+0x71b/0x960 [rtrs_server]
-    [<00000000ccdf1bb5>] __ib_process_cq+0x94/0x100 [ib_core]
-    [<00000000cbcb60cb>] ib_cq_poll_work+0x32/0xc0 [ib_core]
-    [<000000002b53eaa1>] process_one_work+0x4bc/0x980
-    [<00000000da3499fb>] worker_thread+0x78/0x5c0
-    [<00000000167127a4>] kthread+0x191/0x1e0
-    [<0000000060802104>] ret_from_fork+0x3a/0x50
+The sinfo->chains field is a bitmask for filled values in chain_signal
+and chain_signal_avg, not a count. Treat it as such so that the driver
+can properly report per-chain RSSI information.
 
-The problem is we increase device refcount by get_device in process_info_req
-for each path, but only does put_deice for last path, which lead to
-memory leak.
+Before (MIMO mode):
 
-To fix it, it also calls put_device when dev_ref is not 0.
+  $ iw dev wlan0 station dump
+      ...
+      signal: -51 [-51] dBm
 
-Fixes: e2853c49477d1 ("RDMA/rtrs-srv-sysfs: fix missing put_device")
-Link: https://lore.kernel.org/r/20210528113018.52290-19-jinpu.wang@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+After (MIMO mode):
+
+  $ iw dev wlan0 station dump
+      ...
+      signal: -53 [-53, -54] dBm
+
+Fixes: cae355dc90db ("brcmfmac: Add RSSI information to get_station.")
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210506132010.3964484-1-alsi@bang-olufsen.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 39708ab4f26e..7c75e1459017 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -214,6 +214,7 @@ rtrs_srv_destroy_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
- 		device_del(&srv->dev);
- 		put_device(&srv->dev);
- 	} else {
-+		put_device(&srv->dev);
- 		mutex_unlock(&srv->paths_mutex);
- 	}
- }
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index f4405d7861b6..afa75cb83221 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -2838,6 +2838,7 @@ brcmf_cfg80211_get_station(struct wiphy *wiphy, struct net_device *ndev,
+ 		count_rssi = 0;
+ 		for (i = 0; i < BRCMF_ANT_MAX; i++) {
+ 			if (sta_info_le.rssi[i]) {
++				sinfo->chains |= BIT(count_rssi);
+ 				sinfo->chain_signal_avg[count_rssi] =
+ 					sta_info_le.rssi[i];
+ 				sinfo->chain_signal[count_rssi] =
+@@ -2848,8 +2849,6 @@ brcmf_cfg80211_get_station(struct wiphy *wiphy, struct net_device *ndev,
+ 		}
+ 		if (count_rssi) {
+ 			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_CHAIN_SIGNAL);
+-			sinfo->chains = count_rssi;
+-
+ 			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_SIGNAL);
+ 			total_rssi /= count_rssi;
+ 			sinfo->signal = total_rssi;
 -- 
 2.30.2
 
