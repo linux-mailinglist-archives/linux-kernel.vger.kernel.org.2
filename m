@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9363C56D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C537F3C4944
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357924AbhGLIZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        id S237622AbhGLGnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348009AbhGLHkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0D26115C;
-        Mon, 12 Jul 2021 07:37:30 +0000 (UTC)
+        id S237665AbhGLGep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 111A2610FB;
+        Mon, 12 Jul 2021 06:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075451;
-        bh=1zNjKWiH7mbU093/EF5182NcSXxWYuW2Pebk/hWGI3s=;
+        s=korg; t=1626071480;
+        bh=WLRr2AH/ukP99VXx1bgtGviXADj4uW/c0+gMLB3GQNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2AZc9JcXk9aahxoHNmeZtB0uRHcdSmOp8/cXyj74A6K6LTeidrxiZTZ2zslO5uIti
-         muuk/0Vc+8xfIeDCV3wsVALTq+d/dCQ955ubo3iwu222hFWuTackjhPM1AkW2ETNra
-         cxcghdPHgDthrQxNeTSqFmfs9VR6IEP2CvaWf1+M=
+        b=P3znesaDzAiQcy835zOg+WN0/7ENfJ4+y10hxrshJD0BktCjmp03JK8T8PofNctOy
+         TNE/vurrnHTWPoiVU2nDRZg2OioEMG2oS9iffRckYpP/3Xq+44VdsJwOKt1HwJo0Q/
+         uvgP4A511Oh6rakJDUc56o0yM9WpBGqjboRg5/o8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 225/800] fs: dlm: fix connection tcp EOF handling
+        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 088/593] seq_buf: Make trace_seq_putmem_hex() support data longer than 8
 Date:   Mon, 12 Jul 2021 08:04:08 +0200
-Message-Id: <20210712060945.517877038@linuxfoundation.org>
+Message-Id: <20210712060852.886868769@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,151 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Yun Zhou <yun.zhou@windriver.com>
 
-[ Upstream commit 8aa31cbf20ad168c35dd83476629402aacbf5a44 ]
+commit 6a2cbc58d6c9d90cd74288cc497c2b45815bc064 upstream.
 
-This patch fixes the EOF handling for TCP that if and EOF is received we
-will close the socket next time the writequeue runs empty. This is a
-half-closed socket functionality which doesn't exists in SCTP. The
-midcomms layer will do a half closed socket functionality on DLM side to
-solve this problem for the SCTP case. However there is still the last ack
-flying around but other reset functionality will take care of it if it got
-lost.
+Since the raw memory 'data' does not go forward, it will dump repeated
+data if the data length is more than 8. If we want to dump longer data
+blocks, we need to repeatedly call macro SEQ_PUT_HEX_FIELD. I think it
+is a bit redundant, and multiple function calls also affect the performance.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
+Link: https://lkml.kernel.org/r/20210626032156.47889-2-yun.zhou@windriver.com
+
+Cc: stable@vger.kernel.org
+Fixes: 6d2289f3faa7 ("tracing: Make trace_seq_putmem_hex() more robust")
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/dlm/lowcomms.c | 48 ++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 43 insertions(+), 5 deletions(-)
+ lib/seq_buf.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
-index 138e8236ff6e..b1dd850a4699 100644
---- a/fs/dlm/lowcomms.c
-+++ b/fs/dlm/lowcomms.c
-@@ -81,10 +81,13 @@ struct connection {
- #define CF_CONNECTED 10
- #define CF_RECONNECT 11
- #define CF_DELAY_CONNECT 12
-+#define CF_EOF 13
- 	struct list_head writequeue;  /* List of outgoing writequeue_entries */
- 	spinlock_t writequeue_lock;
-+	atomic_t writequeue_cnt;
- 	void (*connect_action) (struct connection *);	/* What to do to connect */
- 	void (*shutdown_action)(struct connection *con); /* What to do to shutdown */
-+	bool (*eof_condition)(struct connection *con); /* What to do to eof check */
- 	int retries;
- #define MAX_CONNECT_RETRIES 3
- 	struct hlist_node list;
-@@ -179,6 +182,11 @@ static struct connection *__find_con(int nodeid, int r)
- 	return NULL;
- }
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -243,12 +243,14 @@ int seq_buf_putmem_hex(struct seq_buf *s
+ 			break;
  
-+static bool tcp_eof_condition(struct connection *con)
-+{
-+	return atomic_read(&con->writequeue_cnt);
-+}
+ 		/* j increments twice per loop */
+-		len -= j / 2;
+ 		hex[j++] = ' ';
+ 
+ 		seq_buf_putmem(s, hex, j);
+ 		if (seq_buf_has_overflowed(s))
+ 			return -1;
 +
- static int dlm_con_init(struct connection *con, int nodeid)
- {
- 	con->rx_buflen = dlm_config.ci_buffer_size;
-@@ -190,6 +198,7 @@ static int dlm_con_init(struct connection *con, int nodeid)
- 	mutex_init(&con->sock_mutex);
- 	INIT_LIST_HEAD(&con->writequeue);
- 	spin_lock_init(&con->writequeue_lock);
-+	atomic_set(&con->writequeue_cnt, 0);
- 	INIT_WORK(&con->swork, process_send_sockets);
- 	INIT_WORK(&con->rwork, process_recv_sockets);
- 	init_waitqueue_head(&con->shutdown_wait);
-@@ -197,6 +206,7 @@ static int dlm_con_init(struct connection *con, int nodeid)
- 	if (dlm_config.ci_protocol == 0) {
- 		con->connect_action = tcp_connect_to_sock;
- 		con->shutdown_action = dlm_tcp_shutdown;
-+		con->eof_condition = tcp_eof_condition;
- 	} else {
- 		con->connect_action = sctp_connect_to_sock;
++		len -= start_len;
++		data += start_len;
  	}
-@@ -723,6 +733,7 @@ static void close_connection(struct connection *con, bool and_other,
- 	clear_bit(CF_CONNECTED, &con->flags);
- 	clear_bit(CF_DELAY_CONNECT, &con->flags);
- 	clear_bit(CF_RECONNECT, &con->flags);
-+	clear_bit(CF_EOF, &con->flags);
- 	mutex_unlock(&con->sock_mutex);
- 	clear_bit(CF_CLOSING, &con->flags);
+ 	return 0;
  }
-@@ -860,16 +871,26 @@ out_resched:
- 	return -EAGAIN;
- 
- out_close:
--	mutex_unlock(&con->sock_mutex);
- 	if (ret == 0) {
--		close_connection(con, false, true, false);
- 		log_print("connection %p got EOF from %d",
- 			  con, con->nodeid);
--		/* handling for tcp shutdown */
--		clear_bit(CF_SHUTDOWN, &con->flags);
--		wake_up(&con->shutdown_wait);
-+
-+		if (con->eof_condition && con->eof_condition(con)) {
-+			set_bit(CF_EOF, &con->flags);
-+			mutex_unlock(&con->sock_mutex);
-+		} else {
-+			mutex_unlock(&con->sock_mutex);
-+			close_connection(con, false, true, false);
-+
-+			/* handling for tcp shutdown */
-+			clear_bit(CF_SHUTDOWN, &con->flags);
-+			wake_up(&con->shutdown_wait);
-+		}
-+
- 		/* signal to breaking receive worker */
- 		ret = -1;
-+	} else {
-+		mutex_unlock(&con->sock_mutex);
- 	}
- 	return ret;
- }
-@@ -1020,6 +1041,7 @@ static void writequeue_entry_complete(struct writequeue_entry *e, int completed)
- 
- 	if (e->len == 0 && e->users == 0) {
- 		list_del(&e->list);
-+		atomic_dec(&e->con->writequeue_cnt);
- 		free_entry(e);
- 	}
- }
-@@ -1416,6 +1438,7 @@ static struct writequeue_entry *new_wq_entry(struct connection *con, int len,
- 
- 	*ppc = page_address(e->page);
- 	e->end += len;
-+	atomic_inc(&con->writequeue_cnt);
- 
- 	spin_lock(&con->writequeue_lock);
- 	list_add_tail(&e->list, &con->writequeue);
-@@ -1535,6 +1558,21 @@ static void send_to_sock(struct connection *con)
- 		writequeue_entry_complete(e, ret);
- 	}
- 	spin_unlock(&con->writequeue_lock);
-+
-+	/* close if we got EOF */
-+	if (test_and_clear_bit(CF_EOF, &con->flags)) {
-+		mutex_unlock(&con->sock_mutex);
-+		close_connection(con, false, false, true);
-+
-+		/* handling for tcp shutdown */
-+		clear_bit(CF_SHUTDOWN, &con->flags);
-+		wake_up(&con->shutdown_wait);
-+	} else {
-+		mutex_unlock(&con->sock_mutex);
-+	}
-+
-+	return;
-+
- out:
- 	mutex_unlock(&con->sock_mutex);
- 	return;
--- 
-2.30.2
-
 
 
