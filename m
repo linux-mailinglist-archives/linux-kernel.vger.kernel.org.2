@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1453C4E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335C53C561C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343666AbhGLHT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52482 "EHLO mail.kernel.org"
+        id S1353822AbhGLIPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:15:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240967AbhGLGyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:54:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CAD86115C;
-        Mon, 12 Jul 2021 06:51:24 +0000 (UTC)
+        id S1343804AbhGLH2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:28:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DF90611AF;
+        Mon, 12 Jul 2021 07:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072685;
-        bh=cKP4GxnIuNOR7Wrkgosk62j3gIzMRVVyIlkEuxXSyR0=;
+        s=korg; t=1626074678;
+        bh=RUgYJU9lVBC2ICShtr/4xi1A1kUmM72HxXtGzTEXXgk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FEyEOP+QNzkHdTLW0jStsAO8E0n3M+n13mMgXwq2pNX5eJmrf/0Y5+i8ohpHcgStm
-         NYceCWsLKX4qvXmmVhq2h6CXLtNBiNOYTTkoc13fvXFRBJjFP3l/xBLveRbntNCgm8
-         Co5xhMMokWCU89dI8/l8Zh8UST2T9pRuOKCRdWVg=
+        b=feBALrnxGYeW2O2NroimBUhopRl5ibLUCKhPexbEbPQTEnTOzwQoDssA96aMNa770
+         EvTFqQL+ksJ59B8SxEEbRiEj1/QVtDyHoJJSM1Noythwd/om8BveCUEw21WHhUII1h
+         LZIsjr90a3G8TDJETgT7qRPwkJy2uDKwF4d5/jKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 581/593] scsi: fc: Correct RHBA attributes length
-Date:   Mon, 12 Jul 2021 08:12:21 +0200
-Message-Id: <20210712060959.107230669@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 659/700] ALSA: firewire-lib: Fix amdtp_domain_start() when no AMDTP_OUT_STREAM stream is found
+Date:   Mon, 12 Jul 2021 08:12:22 +0200
+Message-Id: <20210712061045.990568925@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 40445fd2c9fa427297acdfcc2c573ff10493f209 upstream.
+[ Upstream commit 0cbbeaf370221fc469c95945dd3c1198865c5fe4 ]
 
-As per the FC-GS-5 specification, attribute lengths of node_name and
-manufacturer should in range of "4 to 64 Bytes" only.
+The intent here is to return an error code if we don't find what we are
+looking for in the 'list_for_each_entry()' loop.
 
-Link: https://lore.kernel.org/r/20210603101404.7841-2-jhasan@marvell.com
-Fixes: e721eb0616f6 ("scsi: scsi_transport_fc: Match HBA Attribute Length with HBAAPI V2.0 definitions")
-CC: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+'s' is not NULL if the list is empty or if we scan the complete list.
+Introduce a new 'found' variable to handle such cases.
 
+Fixes: 60dd49298ec5 ("ALSA: firewire-lib: handle several AMDTP streams in callback handler of IRQ target")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/9c9a53a4905984a570ba5672cbab84f2027dedc1.1624560484.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/scsi/fc/fc_ms.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/firewire/amdtp-stream.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/include/scsi/fc/fc_ms.h
-+++ b/include/scsi/fc/fc_ms.h
-@@ -63,8 +63,8 @@ enum fc_fdmi_hba_attr_type {
-  * HBA Attribute Length
-  */
- #define FC_FDMI_HBA_ATTR_NODENAME_LEN		8
--#define FC_FDMI_HBA_ATTR_MANUFACTURER_LEN	80
--#define FC_FDMI_HBA_ATTR_SERIALNUMBER_LEN	80
-+#define FC_FDMI_HBA_ATTR_MANUFACTURER_LEN	64
-+#define FC_FDMI_HBA_ATTR_SERIALNUMBER_LEN	64
- #define FC_FDMI_HBA_ATTR_MODEL_LEN		256
- #define FC_FDMI_HBA_ATTR_MODELDESCR_LEN		256
- #define FC_FDMI_HBA_ATTR_HARDWAREVERSION_LEN	256
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 5805c5de39fb..7a282d8e7148 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -1404,14 +1404,17 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int ir_delay_cycle)
+ 	unsigned int queue_size;
+ 	struct amdtp_stream *s;
+ 	int cycle;
++	bool found = false;
+ 	int err;
+ 
+ 	// Select an IT context as IRQ target.
+ 	list_for_each_entry(s, &d->streams, list) {
+-		if (s->direction == AMDTP_OUT_STREAM)
++		if (s->direction == AMDTP_OUT_STREAM) {
++			found = true;
+ 			break;
++		}
+ 	}
+-	if (!s)
++	if (!found)
+ 		return -ENXIO;
+ 	d->irq_target = s;
+ 
+-- 
+2.30.2
+
 
 
