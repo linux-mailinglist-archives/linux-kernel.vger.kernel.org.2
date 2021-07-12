@@ -2,185 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215F03C66C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321623C66CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhGLXMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 19:12:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36611 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229953AbhGLXMN (ORCPT
+        id S233530AbhGLXMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 19:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233227AbhGLXMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 19:12:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626131364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pQP+qtN0tfA18/8MgoFuBtUXbYJF/jq+trCW5RaJtbg=;
-        b=Kd/DaHhdi9wf75KpEeUYr9tVdWnZ6iC0H9SIlOmiQt9e1BTQQoKtw3U6FQRn6mImM+vr1c
-        LP2HgVlmxj6Q/HaW84HkX3VhTS+xderHGW3MLGbZVoVSLktkhFJztdPLUIFaXWM4wgU+lh
-        IkpyJlLjN5f9BX4vAowdSr9gV7EZdtY=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-cbHYcbhbP4OvH0zREQEV1w-1; Mon, 12 Jul 2021 19:09:23 -0400
-X-MC-Unique: cbHYcbhbP4OvH0zREQEV1w-1
-Received: by mail-ot1-f72.google.com with SMTP id 42-20020a9d062d0000b02904b7c1fa2d7cso6669082otn.16
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 16:09:23 -0700 (PDT)
+        Mon, 12 Jul 2021 19:12:22 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC90C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 16:09:32 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id a13so27815711wrf.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 16:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Xdhpm2k+PKRkOIMYXDY5v+obTyo9rMVta8zQ2xLsEM=;
+        b=LRZ4pIfVQNhzO8j8z2cEGVZJSb/PzLVQFh0JK+gwR9WlTY8rkZjDfTSbsY4osLWZpG
+         BP5Hyo/U6O/oLwFIC31LlQG/l6I6gEeD9/boLKrXAmYPVpBzkuAXy/lWv/d/TdwQUzxO
+         50Xj30NItIfbm35fZyNdvUVW6Obvli/3iQZmeKTLhXhIO6KJQMh74upz4lyt4pUWVef6
+         DReNN6dZsD2MvNezmR0qPpD0mtgjMufbB8p5Q4woJOts2k7Os1AGxtFCkoZpZ0gcXALx
+         qEgCHljbPRI5XkAAB3//pRohbxeTlAJtf731ZkEeLpcKApnINtmiAE5TuY2hbAPWJGMt
+         CnRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pQP+qtN0tfA18/8MgoFuBtUXbYJF/jq+trCW5RaJtbg=;
-        b=JJsz1u40ZUBty38hLzBRFm5UytNS6Qx9ztQTUIqGbch0MDqCB5Bk92JiFmKcufyTdE
-         ELYpzo90qrEXgleXRiMhenbEwN+6WL61s/OHMxRK5JY9EFgk3IzILEBOu7I5dhp2Vfb1
-         NFbOF+Y71t5gRCL5leW3MLVPY220/4UOh69YA4rtODetrkyxl0ikaKuKZErA12cM8O7J
-         Qx+FITc7FpbmivxLxgoDA037CrRqNIR2fNiXiFDT5v0+4HESBQ9RXCbHcMLt+Hx/5fNC
-         93ltsEBx9KRhSwdaeWXcz8kK004Jo52alKPZTv1vt6q85FFol+mlSqjQWUytqER4YjLJ
-         ljYw==
-X-Gm-Message-State: AOAM5319LClBHC/lPWHS5HYvvqkPYiUwBVoS5pF50ejxoZSRIiqAwrf+
-        FPlMoYqh13bhVuy5+9p8St/WrBWX8RP4SnzkEaoHKRc8z7z+TovUQPPP4XTPQd72tbL2iQnCVa7
-        0IQ/zUZ+TShuDv/4BaXetZ+3V
-X-Received: by 2002:a05:6830:1e8f:: with SMTP id n15mr1057058otr.339.1626131362476;
-        Mon, 12 Jul 2021 16:09:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwhcTOde2jQsNFlY8x8e8K/8yPXg4c8JBdQ4xOIMyXytc1XHrpEbyrJWE+VOYiElovegOVvg==
-X-Received: by 2002:a05:6830:1e8f:: with SMTP id n15mr1057038otr.339.1626131362199;
-        Mon, 12 Jul 2021 16:09:22 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id g1sm3330802otk.21.2021.07.12.16.09.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Xdhpm2k+PKRkOIMYXDY5v+obTyo9rMVta8zQ2xLsEM=;
+        b=DefP6H18OthONOe3mieMoPtqnk1XHxSsTf1FQMH6iJnqu6PR1ybxT8Hyk/7oKA5Fm2
+         fyigHH2VYgYwo4VBEdMP27EwI+0dKYTGIQhH436lxDdH2vsf81cUmPE9RFBAPKeti884
+         6xutcOJyy5FzEIbhsmTypDcvhJFC/mmPtpEuaBrWGTvCvj9w0zWCaCXChFx/uPPUT+D2
+         xl8MApPhNviLJUuHkpi+1HWiMOhhm6+CGGpWVPvjbd/swBhCD/107M2vQ0w8spaFZHKJ
+         OVJBaQZ1jEGNbWLXRGNKCeX/xbK85ppXe8szI++fjaheg2fS9V2tSlEEsrIp0F4284qQ
+         2V9A==
+X-Gm-Message-State: AOAM5325EJfPnp4moVnwZxPd9nlq85NGIE/kO6A4TTqDZRUHMzvQ+SK6
+        UEUpV/bPYnd6PKg18unBo1WxwQ==
+X-Google-Smtp-Source: ABdhPJzIiD9WPsehSCMUgX5KJ0YdnCtcsN51Kt+0ATroWJPkyNbRsaJljzE1MpYunlb5xDWuliAgiw==
+X-Received: by 2002:a05:6000:18c8:: with SMTP id w8mr1676533wrq.90.1626131371374;
+        Mon, 12 Jul 2021 16:09:31 -0700 (PDT)
+Received: from localhost.localdomain (30.34.155.90.in-addr.arpa. [90.155.34.30])
+        by smtp.gmail.com with ESMTPSA id b8sm657939wmb.20.2021.07.12.16.09.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 16:09:21 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 17:09:20 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shanker Donthineni <sdonthineni@nvidia.com>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 7/8] PCI: Add support for ACPI _RST reset method
-Message-ID: <20210712170920.2a0868ac.alex.williamson@redhat.com>
-In-Reply-To: <20210709123813.8700-8-ameynarkhede03@gmail.com>
-References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
-        <20210709123813.8700-8-ameynarkhede03@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 12 Jul 2021 16:09:30 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH] staging: rtl8188eu: move all source files from core subdirectory
+Date:   Tue, 13 Jul 2021 00:09:30 +0100
+Message-Id: <20210712230930.6975-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Jul 2021 18:08:12 +0530
-Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+Move all C source files from the core subdirectory to the root
+folder of the driver, and adjust Makefile accordingly. The ultmate
+goal is to remove hal layer and fold its functionalty into the main
+sources. At this point, the distinction between hal and core will be
+meaningless, so this is the first step towards simplifying the file
+layout.
 
-> From: Shanker Donthineni <sdonthineni@nvidia.com>
-> 
-> The _RST is a standard method specified in the ACPI specification. It
-> provides a function level reset when it is described in the acpi_device
-> context associated with PCI-device. Implement a new reset function
-> pci_dev_acpi_reset() for probing RST method and execute if it is defined
-> in the firmware.
-> 
-> The default priority of the ACPI reset is set to below device-specific
-> and above hardware resets.
-> 
-> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
-> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> Reviewed-by: Sinan Kaya <okaya@kernel.org>
-> ---
->  drivers/pci/pci-acpi.c | 23 +++++++++++++++++++++++
->  drivers/pci/pci.c      |  1 +
->  drivers/pci/pci.h      |  6 ++++++
->  include/linux/pci.h    |  2 +-
->  4 files changed, 31 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index dae021322..b6de71d15 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -941,6 +941,29 @@ void pci_set_acpi_fwnode(struct pci_dev *dev)
->  				   acpi_pci_find_companion(&dev->dev));
->  }
->  
-> +/**
-> + * pci_dev_acpi_reset - do a function level reset using _RST method
-> + * @dev: device to reset
-> + * @probe: check if _RST method is included in the acpi_device context.
-> + */
-> +int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-> +{
-> +	acpi_handle handle = ACPI_HANDLE(&dev->dev);
-> +
-> +	if (!handle || !acpi_has_method(handle, "_RST"))
-> +		return -ENOTTY;
-> +
-> +	if (probe)
-> +		return 0;
-> +
-> +	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
-> +		pci_warn(dev, "ACPI _RST failed\n");
-> +		return -EINVAL;
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/rtl8188eu/Makefile            | 34 +++++++++----------
+ drivers/staging/rtl8188eu/{core => }/rtw_ap.c |  0
+ .../staging/rtl8188eu/{core => }/rtw_cmd.c    |  0
+ .../staging/rtl8188eu/{core => }/rtw_efuse.c  |  0
+ .../rtl8188eu/{core => }/rtw_ieee80211.c      |  0
+ .../rtl8188eu/{core => }/rtw_ioctl_set.c      |  0
+ .../staging/rtl8188eu/{core => }/rtw_iol.c    |  0
+ .../staging/rtl8188eu/{core => }/rtw_led.c    |  0
+ .../staging/rtl8188eu/{core => }/rtw_mlme.c   |  0
+ .../rtl8188eu/{core => }/rtw_mlme_ext.c       |  0
+ .../rtl8188eu/{core => }/rtw_pwrctrl.c        |  0
+ .../staging/rtl8188eu/{core => }/rtw_recv.c   |  0
+ drivers/staging/rtl8188eu/{core => }/rtw_rf.c |  0
+ .../rtl8188eu/{core => }/rtw_security.c       |  0
+ .../staging/rtl8188eu/{core => }/rtw_sreset.c |  0
+ .../rtl8188eu/{core => }/rtw_sta_mgt.c        |  0
+ .../rtl8188eu/{core => }/rtw_wlan_util.c      |  0
+ .../staging/rtl8188eu/{core => }/rtw_xmit.c   |  0
+ 18 files changed, 17 insertions(+), 17 deletions(-)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_ap.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_cmd.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_efuse.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_ieee80211.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_ioctl_set.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_iol.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_led.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_mlme.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_mlme_ext.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_pwrctrl.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_recv.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_rf.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_security.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_sreset.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_sta_mgt.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_wlan_util.c (100%)
+ rename drivers/staging/rtl8188eu/{core => }/rtw_xmit.c (100%)
 
-
-Should we return -ENOTTY here instead to give a possible secondary
-reset method a chance?  Thanks,
-
-Alex
-
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static bool acpi_pci_bridge_d3(struct pci_dev *dev)
->  {
->  	const struct fwnode_handle *fwnode;
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index d5c16492c..1e64dbd3e 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -5115,6 +5115,7 @@ static void pci_dev_restore(struct pci_dev *dev)
->  const struct pci_reset_fn_method pci_reset_fn_methods[] = {
->  	{ },
->  	{ &pci_dev_specific_reset, .name = "device_specific" },
-> +	{ &pci_dev_acpi_reset, .name = "acpi" },
->  	{ &pcie_reset_flr, .name = "flr" },
->  	{ &pci_af_flr, .name = "af_flr" },
->  	{ &pci_pm_reset, .name = "pm" },
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 990b73e90..2c12017ed 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -705,7 +705,13 @@ static inline int pci_aer_raw_clear_status(struct pci_dev *dev) { return -EINVAL
->  int pci_acpi_program_hp_params(struct pci_dev *dev);
->  extern const struct attribute_group pci_dev_acpi_attr_group;
->  void pci_set_acpi_fwnode(struct pci_dev *dev);
-> +int pci_dev_acpi_reset(struct pci_dev *dev, int probe);
->  #else
-> +static inline int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-> +{
-> +	return -ENOTTY;
-> +}
-> +
->  static inline void pci_set_acpi_fwnode(struct pci_dev *dev) {}
->  static inline int pci_acpi_program_hp_params(struct pci_dev *dev)
->  {
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index f34563831..c3b0d771c 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -50,7 +50,7 @@
->  			       PCI_STATUS_PARITY)
->  
->  /* Number of reset methods used in pci_reset_fn_methods array in pci.c */
-> -#define PCI_NUM_RESET_METHODS 6
-> +#define PCI_NUM_RESET_METHODS 7
->  
->  /*
->   * The PCI interface treats multi-function devices as independent
+diff --git a/drivers/staging/rtl8188eu/Makefile b/drivers/staging/rtl8188eu/Makefile
+index 28b936e8be0a..2dad13bdbdeb 100644
+--- a/drivers/staging/rtl8188eu/Makefile
++++ b/drivers/staging/rtl8188eu/Makefile
+@@ -1,22 +1,22 @@
+ # SPDX-License-Identifier: GPL-2.0
+ r8188eu-y :=				\
+-		core/rtw_ap.o		\
+-		core/rtw_cmd.o		\
+-		core/rtw_efuse.o	\
+-		core/rtw_ieee80211.o	\
+-		core/rtw_ioctl_set.o	\
+-		core/rtw_iol.o		\
+-		core/rtw_led.o		\
+-		core/rtw_mlme.o		\
+-		core/rtw_mlme_ext.o	\
+-		core/rtw_pwrctrl.o	\
+-		core/rtw_recv.o		\
+-		core/rtw_rf.o		\
+-		core/rtw_security.o	\
+-		core/rtw_sreset.o	\
+-		core/rtw_sta_mgt.o	\
+-		core/rtw_wlan_util.o	\
+-		core/rtw_xmit.o		\
++		rtw_ap.o		\
++		rtw_cmd.o		\
++		rtw_efuse.o		\
++		rtw_ieee80211.o		\
++		rtw_ioctl_set.o		\
++		rtw_iol.o		\
++		rtw_led.o		\
++		rtw_mlme.o		\
++		rtw_mlme_ext.o		\
++		rtw_pwrctrl.o		\
++		rtw_recv.o		\
++		rtw_rf.o		\
++		rtw_security.o		\
++		rtw_sreset.o		\
++		rtw_sta_mgt.o		\
++		rtw_wlan_util.o		\
++		rtw_xmit.o		\
+ 		hal/fw.o	\
+ 		hal/mac_cfg.o \
+ 		hal/bb_cfg.o \
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ap.c b/drivers/staging/rtl8188eu/rtw_ap.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_ap.c
+rename to drivers/staging/rtl8188eu/rtw_ap.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_cmd.c b/drivers/staging/rtl8188eu/rtw_cmd.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_cmd.c
+rename to drivers/staging/rtl8188eu/rtw_cmd.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_efuse.c b/drivers/staging/rtl8188eu/rtw_efuse.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_efuse.c
+rename to drivers/staging/rtl8188eu/rtw_efuse.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ieee80211.c b/drivers/staging/rtl8188eu/rtw_ieee80211.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_ieee80211.c
+rename to drivers/staging/rtl8188eu/rtw_ieee80211.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c b/drivers/staging/rtl8188eu/rtw_ioctl_set.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
+rename to drivers/staging/rtl8188eu/rtw_ioctl_set.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_iol.c b/drivers/staging/rtl8188eu/rtw_iol.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_iol.c
+rename to drivers/staging/rtl8188eu/rtw_iol.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_led.c b/drivers/staging/rtl8188eu/rtw_led.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_led.c
+rename to drivers/staging/rtl8188eu/rtw_led.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c b/drivers/staging/rtl8188eu/rtw_mlme.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_mlme.c
+rename to drivers/staging/rtl8188eu/rtw_mlme.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/rtw_mlme_ext.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+rename to drivers/staging/rtl8188eu/rtw_mlme_ext.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_pwrctrl.c b/drivers/staging/rtl8188eu/rtw_pwrctrl.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_pwrctrl.c
+rename to drivers/staging/rtl8188eu/rtw_pwrctrl.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/rtw_recv.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_recv.c
+rename to drivers/staging/rtl8188eu/rtw_recv.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_rf.c b/drivers/staging/rtl8188eu/rtw_rf.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_rf.c
+rename to drivers/staging/rtl8188eu/rtw_rf.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/rtw_security.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_security.c
+rename to drivers/staging/rtl8188eu/rtw_security.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_sreset.c b/drivers/staging/rtl8188eu/rtw_sreset.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_sreset.c
+rename to drivers/staging/rtl8188eu/rtw_sreset.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c b/drivers/staging/rtl8188eu/rtw_sta_mgt.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+rename to drivers/staging/rtl8188eu/rtw_sta_mgt.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_wlan_util.c b/drivers/staging/rtl8188eu/rtw_wlan_util.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_wlan_util.c
+rename to drivers/staging/rtl8188eu/rtw_wlan_util.c
+diff --git a/drivers/staging/rtl8188eu/core/rtw_xmit.c b/drivers/staging/rtl8188eu/rtw_xmit.c
+similarity index 100%
+rename from drivers/staging/rtl8188eu/core/rtw_xmit.c
+rename to drivers/staging/rtl8188eu/rtw_xmit.c
+-- 
+2.31.1
 
