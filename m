@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C103C52EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4EE3C52E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350676AbhGLHvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:51:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48598 "EHLO mail.kernel.org"
+        id S1350520AbhGLHvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243158AbhGLHQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243157AbhGLHQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 03:16:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DB4461431;
-        Mon, 12 Jul 2021 07:13:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F782613F5;
+        Mon, 12 Jul 2021 07:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074004;
-        bh=6Q0bYbZ/LCLjIbPjH8qN3MhcJlS+wA/HzdsX9PqEgb8=;
+        s=korg; t=1626074007;
+        bh=69RPPToncMqxEJ+fpXagrHdwkF0W/7oDil5tkujFfdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWOplajxNMTotfnNsC3YCArvV9ZPXbv7ZejZ+O32CBTL41LETjj12dSCUoXGjJ9Fq
-         mxI+EAyGlmXNpN4yl+3ciQ4kO9s7MhgWd2wC2mlLoRKx6ULDTg/1/mr6t4VbuM8tWe
-         OR9K8fPAUFnMQ5+f3shGwiiyI7XJFiAgHMhlQVHU=
+        b=tw34w5l/8gDv9+pqz/EAQZjMEab+y5NVHyYyTOXSAd7UeJspQKJx6Cx0kParay7Cr
+         nuZhE6Wt3lte+u0plvjwIAM5OlgGLjxa3Te4nmVs3hji084j6O1tTMY7oIenW1Z8Dy
+         rU8nDCDp3gblTarvmIgRRxBCadbWKQBTkEJBJCMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 431/700] net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
-Date:   Mon, 12 Jul 2021 08:08:34 +0200
-Message-Id: <20210712061022.287459647@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 432/700] mt76: fix possible NULL pointer dereference in mt76_tx
+Date:   Mon, 12 Jul 2021 08:08:35 +0200
+Message-Id: <20210712061022.404385138@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -40,41 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek <pavel@denx.de>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit bd70957438f0cc4879cbdff8bbc8614bc1cddf49 ]
+[ Upstream commit d7400a2f3e295b8cee692c7a66e10f60015a3c37 ]
 
-Commit 0571a753cb07 cancelled delayed work too late, keeping small
-race. Cancel work sooner to close it completely.
+Even if this is not a real issue since mt76_tx is never run with wcid set
+to NULL, fix a theoretical NULL pointer dereference in mt76_tx routine
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Fixes: 0571a753cb07 ("net: pxa168_eth: Fix a potential data race in pxa168_eth_remove")
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: db9f11d3433f7 ("mt76: store wcid tx rate info in one u32 reduce locking")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/pxa168_eth.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/tx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/pxa168_eth.c b/drivers/net/ethernet/marvell/pxa168_eth.c
-index 3712e1786091..406fdfe968bf 100644
---- a/drivers/net/ethernet/marvell/pxa168_eth.c
-+++ b/drivers/net/ethernet/marvell/pxa168_eth.c
-@@ -1533,6 +1533,7 @@ static int pxa168_eth_remove(struct platform_device *pdev)
- 	struct net_device *dev = platform_get_drvdata(pdev);
- 	struct pxa168_eth_private *pep = netdev_priv(dev);
+diff --git a/drivers/net/wireless/mediatek/mt76/tx.c b/drivers/net/wireless/mediatek/mt76/tx.c
+index 451ed60c6296..802e3d733959 100644
+--- a/drivers/net/wireless/mediatek/mt76/tx.c
++++ b/drivers/net/wireless/mediatek/mt76/tx.c
+@@ -285,7 +285,7 @@ mt76_tx(struct mt76_phy *phy, struct ieee80211_sta *sta,
+ 		skb_set_queue_mapping(skb, qid);
+ 	}
  
-+	cancel_work_sync(&pep->tx_timeout_task);
- 	if (pep->htpr) {
- 		dma_free_coherent(pep->dev->dev.parent, HASH_ADDR_TABLE_SIZE,
- 				  pep->htpr, pep->htpr_dma);
-@@ -1544,7 +1545,6 @@ static int pxa168_eth_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(pep->clk);
- 	mdiobus_unregister(pep->smi_bus);
- 	mdiobus_free(pep->smi_bus);
--	cancel_work_sync(&pep->tx_timeout_task);
- 	unregister_netdev(dev);
- 	free_netdev(dev);
- 	return 0;
+-	if (!(wcid->tx_info & MT_WCID_TX_INFO_SET))
++	if (wcid && !(wcid->tx_info & MT_WCID_TX_INFO_SET))
+ 		ieee80211_get_tx_rates(info->control.vif, sta, skb,
+ 				       info->control.rates, 1);
+ 
 -- 
 2.30.2
 
