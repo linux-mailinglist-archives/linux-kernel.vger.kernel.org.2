@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C2E3C422C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EA23C422F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhGLDrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 23:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S233346AbhGLDsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 23:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbhGLDrP (ORCPT
+        with ESMTP id S232755AbhGLDr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 23:47:15 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D532C0613DD;
-        Sun, 11 Jul 2021 20:44:28 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x16so15093304pfa.13;
-        Sun, 11 Jul 2021 20:44:28 -0700 (PDT)
+        Sun, 11 Jul 2021 23:47:59 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387C6C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:45:12 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id x192so26639897ybe.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FNaAgJi+fq8ys+9B4sOf2Hdg4MkZwkLSB0lQ2Ck2TCQ=;
-        b=MlypPXS4oN/FOvVKZJObV515kSpjtrHQAyEhmUy6GubTrZv9qB52SgcVTeO+nUkfSk
-         wSaw1+dFmS5ay8WcsyjgOeTLfBnYfXPtSnqZOYnJuJNHUvq2ip7Ph4++4LkMLxqBnLR+
-         R5kQEQexTWga7ky6Z8Q1AZc+sB6yx5On1mqOcgOPrSuB211PMdQZ+r1hKCdyOxXTF9E6
-         8Hfudo3501rVSMUgNpq9CeifYmj70lhyS4HlLexxI3FmL80RuJMDn2GNKXkgIMOm0TV1
-         XKqLZY84+FjId+jzErP9mQeWTjA2wcoAb/IC27dmOSwcvUpR1ELQaYfY4+vbIKLIH6oJ
-         drdg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=L8ABxoOXKbcQzRy9ZMSwc0rHcel/3PapmdQiNjhjtyM=;
+        b=B4hu6mCh97PyyC0CX0GpULhun7wNTh/YyLK6fVp/yoRmNEIb48LQI18vts7fhdPc53
+         27851wxAL41qLj0Au2accSnJ9eMspcUQrpVAVNer+7aAYsQHfolpe5v/5lYH+m/MlpiQ
+         Eu1ar5nGEjnJWNK1pfWi5/11J4hdFMrKQxiYbgloMfJsEDt/Y5N75Oz1j2sFv7TXdJqc
+         NwIAEOV4AtbjZDyjjJaPv0BdyzFH3vZSQWxuB4rkixXx6TdP+CwawbNFXRh+N8SkWTV+
+         uUgiCJJZyuaE6bnqZz/ldxusHLctuMSqBD+e9/52wKvl1Rem4eDoOahfBKS/y3i3Mscx
+         d7ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FNaAgJi+fq8ys+9B4sOf2Hdg4MkZwkLSB0lQ2Ck2TCQ=;
-        b=cC8I/x8z/DVHYR7hHVspXDb/tF+kdC/RkUZNq9EO+pDt2JmyNnC0gyVVlkIiTQwLv/
-         e9Pqdl719q1zkHnG7BK+POYICg8xNcQuDLcCEcuVPfcjWfQcCFAdRhiYA41QIjIjGK4o
-         RrNaEOMLSTg43KY65wdbZLwg1qayWhIRSjgkAGvtWEbhxKUrZlb7Y8e01R7MnhXNdg87
-         8/LYy8NdcFh77x4MaeUgWbq2P31iW6biI8kEJWVIFtrfIzeFnnE8bwOyE8/nB3dvo2w+
-         3edAsFkpBL0/e6zR4NoHlkK8XODGedqbt65JB1v2ZfsHj5u74SGCfCz4cIBsO1H6VfSt
-         gEpw==
-X-Gm-Message-State: AOAM530Pm56fQE0lnJLUADXK5Nkx18otW/GNLT/fbGD6eVt3x6wT+kz3
-        yixpb5ydeZ45DA5LZQyMptM=
-X-Google-Smtp-Source: ABdhPJxukrtTl1CmLq/d2mkQUUHjHE5g8ToQNxoiDxGY2puyJUtmIg6Ns89+jzm67se3ZsVZE06W0w==
-X-Received: by 2002:a63:5904:: with SMTP id n4mr50761789pgb.176.1626061467376;
-        Sun, 11 Jul 2021 20:44:27 -0700 (PDT)
-Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
-        by smtp.gmail.com with ESMTPSA id x23sm12881302pgk.90.2021.07.11.20.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 20:44:26 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 09:14:22 +0530
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     rkovhaev@gmail.com, reiserfs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Verify the items that we read from blocks
-Message-ID: <YOu6lkM2rmL2dKif@fedora>
-References: <YN8rRYxhZvAa+VxU@fedora>
- <20210705113329.GE15373@quack2.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L8ABxoOXKbcQzRy9ZMSwc0rHcel/3PapmdQiNjhjtyM=;
+        b=LyGz7A3C/72Ltcdv+hNdMchF33BXSspQ5Z+W7Qt2E5etpNBTbpmZI9nYmT6L39KIsc
+         qWJ67Gg6uAxlg5VmHLsv2OzbmDz/UKAe0v/hkn7Ax1EeILSISTgSGbDr3uu1Fpy6/1P/
+         cdAwaLNsHwtBQsVCpwrfiShcYLqUo6iPDmfOKFAfe6yGXENe0NtTmb03Ok0ZDOVidk4T
+         8Mp4+cBVOKC2YQ7jf6BlLuaxkmtzeKF0H3aX77+C3lxG/dB+YLYsgtISsNnM8PgbRfYz
+         hfzch17I7ROD/fw/8qMB9halBvzv0UokXiQBzNfMB4BogDD31ylnDCuY+7LR6r+P0UzH
+         WeMg==
+X-Gm-Message-State: AOAM531HYRPKfnM7JYK4+eWuG4p68IsNUxvFvcmYQSflqcSfqcIeRXWn
+        r0wFWqHtPBm2uq4C+LlOQ/dYKnzFtDH/4Z0JiK0=
+X-Google-Smtp-Source: ABdhPJwbOaa/J7hh7brEK3NBXjhdYcR4Vn9F1p4kGCr4bIx44+TWX7DQMi8Sc1Kf7CsMLD+cPG/B9Ohg5spQSRRANac=
+X-Received: by 2002:a25:8143:: with SMTP id j3mr62233680ybm.237.1626061511524;
+ Sun, 11 Jul 2021 20:45:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705113329.GE15373@quack2.suse.cz>
+References: <20210709122712.42844-1-yaozhenguo1@gmail.com> <872612b5-b9c6-43aa-a167-1c204d0f1c5a@kernel.dk>
+ <CA+WzARnFgohHZ=BhL4OaCagB_c1uB6a=Bv7vM_zRUJeANHksEg@mail.gmail.com> <db2410e2-1f1a-b396-10d1-1df3ec061b78@kernel.dk>
+In-Reply-To: <db2410e2-1f1a-b396-10d1-1df3ec061b78@kernel.dk>
+From:   zhenguo yao <yaozhenguo1@gmail.com>
+Date:   Mon, 12 Jul 2021 11:45:00 +0800
+Message-ID: <CA+WzARkyhLrntJfZ2cCB+Z5kiiLAB=OzhERgWQ66bVKr++Yk-A@mail.gmail.com>
+Subject: Re: [PATCH] task_work: return -EBUSY when adding same work
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     oleg@redhat.com, linux-kernel@vger.kernel.org, yaozhenguo@jd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This issue happens in a stress test of memory UE injection. It has
+more than once UEs reported to the OS at the same moment in the test.
+So  do_machine_check-->queue_task_work is called many times.
+mce_kill_me work is added to list many times.  When mce_kill_me is add
+to the list,  it becomes the list header and then another mce_kill_me
+is added to the list before task_work_run is called.  The list becomes
+a dead loop: task->task_works =3D mce_kill_me, mce_kill_me->next =3D
+mce_kill_me.  When the task want to  return to user mode and run
+task_work_run.  It becomes a dead loop and never return to user mode
+and process signal SIGBUS that mce_kill_me sent to him. I fix this by
+following patch
+--
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.=
+c
+index 22791aa..9333696 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1299,7 +1299,9 @@ static void queue_task_work(struct mce *m, int
+kill_current_task)
+        else
+                current->mce_kill_me.func =3D kill_me_maybe;
 
-I thought that my last email wasn't an appropriate response, since to me
-it looked as if I hadn't read your suggestions before sending a
-response. (Couldn't quote anything because I wasn't able to find the email on
-mutt (messed up filters,) and had to write a quick email with the
-in-reply-to option.) So I thought I'd resend the response after I've
-fixed my inbox.
+-       task_work_add(current, &current->mce_kill_me, TWA_RESUME);
++       /* Avoid endless loops when task_work_run is running */
++       if (READ_ONCE(current->task_works) !=3D &current->mce_kill_me)
++               task_work_add(current, &current->mce_kill_me, TWA_RESUME);
+ }
+--
+But I think it is better return an error in task_work_add when same
+work is added to the list. Similar problem may happen in other scenes.
+It is hard to debug when it is a seldom issue.
 
-On Mon, Jul 05, 2021 at 01:33:29PM +0200, Jan Kara wrote:
-> Hello!
-> 
-> On Fri 02-07-21 20:35:41, Shreyansh Chouhan wrote:
-> > I was trying to work on this[1] bug. After a lot of reading the code and
-> > running it under gdb, I found out that the error happens because
-> > syzkaller creates a segment with raw binary data in the reproducer[2],
-> > that has the wrong deh_location for the `..` directory item. (The value
-> > is 0x5d (93), where as it should have been 0x20 (32).)
-> 
-> First, I'd like to note that reiserfs is a legacy filesystem which gets
-> little maintenance and I think distributions are close to disabling it in
-> their default kernels if they didn't do it already. So I'm not sure how
-> much is it worth it to do any larger fixes to it. But if you have a
-> personal passion for reiserfs feel free to go ahead and try to fix these
-> issues.
-> 
-
-I had already spent a considerable amount of time on the debugging
-portion, (to find an obvious mistake, now that I look back at it in
-hindsight,) so I thought I'd just send in a patch.
-
-> > I think that the solution would involve checking the items that we read,
-> > and verify that they are actually valid. But this check could actually
-> > happen in two places:
-> > 
-> > - First idea would be to check as soon as we read a
-> >   block, and one way of doing that would be adding a wrapper around
-> >   ll_rw_block that validates the leaf node blocks that we read. The
-> >   benifits to this would be that since we're solving the problem at it's
-> >   root, very few functions would have to be changed. But I don't know
-> >   how much of a performance hit would it be.
-> 
-> It depends on how heavy the checks are going to be but generally checking
-> when loading from the disk is the way how most filesystems handle this.
-> 
-
-The checks would be an O(n) traversal of directory headers, which
-themselves check if the deh_location is greater than item length. The
-item header checks were already present in the `is_leaf`(?) function.
-
-> > - Second idea would be to do these validation checks lazily. This should
-> >   be faster than the first idea, but this would involve changing the
-> >   code at more places than in the first idea.
-> > 
-> > For how the validation happens, the first idea that comes to mind is
-> > reading the item headers from the block that we read and verifying if
-> > the header is valid, and if the items themselves are valid according to
-> > the header.
-> 
-> Looks sound.
-> 
-
-I have added the implementation for the above idea to the `is_leaf`
-function. Thanks a lot for your suggestions.
-
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
-
-Thanks,
-Shreyansh Chouhan
+Jens Axboe <axboe@kernel.dk> =E4=BA=8E2021=E5=B9=B47=E6=9C=8812=E6=97=A5=E5=
+=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8810:44=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 7/11/21 8:13 PM, zhenguo yao wrote:
+> > Yes I hit this condition.  The caller is queue_task_work in
+> > arch/x86/kernel/cpu/mce/core.c.
+> > It is really a BUG. I have submitted another patch to fix it:
+> > https://lkml.org/lkml/2021/7/9/186.
+>
+> That patch seems broken, what happens if mce_kill_me is added already,
+> but it isn't the first work item in the list?
+>
+> --
+> Jens Axboe
+>
