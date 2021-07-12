@@ -2,297 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2543C59BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67783C59C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351333AbhGLJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:07:49 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:55290 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345454AbhGLIbk (ORCPT
+        id S1351463AbhGLJH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354126AbhGLIcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:31:40 -0400
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id A71A2B2D645;
-        Mon, 12 Jul 2021 10:28:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626078528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fyjZBcXA93B1OVVzUicTd579FE8mJ+9/BOnPDTG7Ju8=;
-        b=XTgQ9cjj0D3fjAgZ+s1ni5ku7a8l097Xj2NuQXusSGx3+xQvD2r0GwZqmzM6KvoKBygQ8x
-        lZEI+TgcEvVFcCBqmOp7PvKt3KFMSxQJUMXDa1/kLhlOGMOANDe6IE9wz/Ayp7os54V3D3
-        S4UgyB/om+OTnh04K3fe9XxLvBFOqFg=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-fsdevel@vger.kernel.org,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, kari.argillander@gmail.com,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: Re: [PATCH v26 04/10] fs/ntfs3: Add file operations and implementation
-Date:   Mon, 12 Jul 2021 10:28:44 +0200
-Message-ID: <1963819.OlitOqP6fi@spock>
-In-Reply-To: <20210402155347.64594-5-almaz.alexandrovich@paragon-software.com>
-References: <20210402155347.64594-1-almaz.alexandrovich@paragon-software.com> <20210402155347.64594-5-almaz.alexandrovich@paragon-software.com>
+        Mon, 12 Jul 2021 04:32:15 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36C7C061787;
+        Mon, 12 Jul 2021 01:29:20 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id o3-20020a17090a6783b0290173ce472b8aso1182689pjj.2;
+        Mon, 12 Jul 2021 01:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=53AxaG4tWABZBbJg99NxUsd0zCLnow37/ltA2An2gfE=;
+        b=X6NoiOpnCB6DO60lVY3/HVL1mTycidMikYuz5wMEvAI3Fm6vPrRcg0dUMqpS7YZzd2
+         wMT/f7BJo0b5P/ujHsufa9xjaCI5qVGB/Bk+dI3rsktV25dGZdykCKGmjC78cI/L+aMO
+         TtyfFoCdd3X1ezKyyhpCfNGdWCohe12hpmLVT4DVWtAEjsOPJEyiDkE7xGU5yocVFcyC
+         zsQVXZVdqPT1MUvk1EYtEtTG81A3mc7sC5Fchpa/lW2kEI49XMsCtwpKjBr98SR/egNZ
+         zyqyZ+WLjeL0Tvn8dXmrYO8InVkmSDF6wwuTj1djMf4qvOCISiL9JmCgzPrbcUiwf2Yr
+         72cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=53AxaG4tWABZBbJg99NxUsd0zCLnow37/ltA2An2gfE=;
+        b=RdM26UjmB0QxqkIV0I+EE2OGFSDdODf0BeI2VgVvfJsFqiuVCIXHn2NNMMJzE7Ll91
+         psW3WIPvYgeX/+iHATS/9iFhFnicltAtGC4gAqTj7eg+PPU6yUt+ej0pax6zOkU29v+K
+         6CP+sBu2DpgLvMaoQRXBvDQCYzdH72dBO8cv3HJ/1EyqnFvLjvsB//XYmyOC5osXXQ0p
+         O+A75eEhlWG2G1qp7zfn3QWCZsYarqgTc1h6g8Q9Zz1/zWCUKT/0YPhUcuLZaHB/tl/U
+         b/V7ZQD+bbRu4odrY39NGVcijNWcN4epIlLVzjw0ZJxVtqb6soHNPnlyLnySMaceyH0Z
+         GvSg==
+X-Gm-Message-State: AOAM530eeXMQ5QIEjc+mWOVNf7zAu4UrswqdXPA5p27EesdSZ+vsGLEv
+        PGhliVY8SKJYtB97lvXwdg0=
+X-Google-Smtp-Source: ABdhPJz1fRXGatPhJ05EB+Y18kO9d9DI2Ly3Gpzh15FfCPXHpDxqTajhrCx4zKFIMhU5lGHlgrPgiQ==
+X-Received: by 2002:a17:90a:4cc4:: with SMTP id k62mr2427581pjh.110.1626078560408;
+        Mon, 12 Jul 2021 01:29:20 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id k5sm14671775pfu.202.2021.07.12.01.29.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 01:29:20 -0700 (PDT)
+Subject: Re: [syzbot] possible deadlock in loop_add
+To:     Christoph Hellwig <hch@lst.de>, Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+118992efda475c16dfb0@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+References: <000000000000ec01e405c6c2cee3@google.com>
+ <20210710131638.605-1-hdanton@sina.com> <20210712052740.GA8599@lst.de>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <c3d4ebd5-5679-cd81-d1de-4f5f2cbe13db@gmail.com>
+Date:   Mon, 12 Jul 2021 16:29:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20210712052740.GA8599@lst.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On 12/7/21 1:27 pm, Christoph Hellwig wrote:
+> On Sat, Jul 10, 2021 at 09:16:38PM +0800, Hillf Danton wrote:
+>> To break the lock chain, un/register blkdev without mtd_table_mutex held.
+> 
+> Yes, Desmond Cheong Zhi Xi sent pretty much the same patch on June 18th
+> (mtd: break circular locks in register_mtd_blktrans), but it did not get
+> picked up.
+> 
 
-On p=E1tek 2. dubna 2021 17:53:41 CEST Konstantin Komarov wrote:
-> ...
-> +/*helper for ntfs_file_write_iter (compressed files)*/
-> +static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter
-> *from) +{
-> +	int err;
-> +	struct file *file =3D iocb->ki_filp;
-> +	size_t count =3D iov_iter_count(from);
-> +	loff_t pos =3D iocb->ki_pos;
-> +	struct inode *inode =3D file_inode(file);
-> +	loff_t i_size =3D inode->i_size;
-> +	struct address_space *mapping =3D inode->i_mapping;
-> +	struct ntfs_inode *ni =3D ntfs_i(inode);
-> +	u64 valid =3D ni->i_valid;
-> +	struct ntfs_sb_info *sbi =3D ni->mi.sbi;
-> +	struct page *page, **pages =3D NULL;
-> +	size_t written =3D 0;
-> +	u8 frame_bits =3D NTFS_LZNT_CUNIT + sbi->cluster_bits;
-> +	u32 frame_size =3D 1u << frame_bits;
-> +	u32 pages_per_frame =3D frame_size >> PAGE_SHIFT;
-> +	u32 ip, off;
-> +	CLST frame;
-> +	u64 frame_vbo;
-> +	pgoff_t index;
-> +	bool frame_uptodate;
-> +
-> +	if (frame_size < PAGE_SIZE) {
-> +		/*
-> +		 * frame_size =3D=3D 8K if cluster 512
-> +		 * frame_size =3D=3D 64K if cluster 4096
-> +		 */
-> +		ntfs_inode_warn(inode, "page size is bigger than frame size");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	pages =3D ntfs_malloc(pages_per_frame * sizeof(struct page *));
-> +	if (!pages)
-> +		return -ENOMEM;
-> +
-> +	current->backing_dev_info =3D inode_to_bdi(inode);
-> +	err =3D file_remove_privs(file);
-> +	if (err)
-> +		goto out;
-> +
-> +	err =3D file_update_time(file);
-> +	if (err)
-> +		goto out;
-> +
-> +	/* zero range [valid : pos) */
-> +	while (valid < pos) {
-> +		CLST lcn, clen;
-> +
-> +		frame =3D valid >> frame_bits;
-> +		frame_vbo =3D valid & ~(frame_size - 1);
-> +		off =3D valid & (frame_size - 1);
-> +
-> +		err =3D attr_data_get_block(ni, frame << NTFS_LZNT_CUNIT, 0,=20
-&lcn,
-> +					  &clen, NULL);
-> +		if (err)
-> +			goto out;
-> +
-> +		if (lcn =3D=3D SPARSE_LCN) {
-> +			ni->i_valid =3D valid =3D
-> +				frame_vbo + ((u64)clen << sbi->cluster_bits);
-> +			continue;
-> +		}
-> +
-> +		/* Load full frame */
-> +		err =3D ntfs_get_frame_pages(mapping, frame_vbo >> PAGE_SHIFT,
-> +					   pages, pages_per_frame,
-> +					   &frame_uptodate);
-> +		if (err)
-> +			goto out;
-> +
-> +		if (!frame_uptodate && off) {
-> +			err =3D ni_read_frame(ni, frame_vbo, pages,
-> +					    pages_per_frame);
-> +			if (err) {
-> +				for (ip =3D 0; ip < pages_per_frame; ip++) {
-> +					page =3D pages[ip];
-> +					unlock_page(page);
-> +					put_page(page);
-> +				}
-> +				goto out;
-> +			}
-> +		}
-> +
-> +		ip =3D off >> PAGE_SHIFT;
-> +		off =3D offset_in_page(valid);
-> +		for (; ip < pages_per_frame; ip++, off =3D 0) {
-> +			page =3D pages[ip];
-> +			zero_user_segment(page, off, PAGE_SIZE);
-> +			flush_dcache_page(page);
-> +			SetPageUptodate(page);
-> +		}
-> +
-> +		ni_lock(ni);
-> +		err =3D ni_write_frame(ni, pages, pages_per_frame);
-> +		ni_unlock(ni);
-> +
-> +		for (ip =3D 0; ip < pages_per_frame; ip++) {
-> +			page =3D pages[ip];
-> +			SetPageUptodate(page);
-> +			unlock_page(page);
-> +			put_page(page);
-> +		}
-> +
-> +		if (err)
-> +			goto out;
-> +
-> +		ni->i_valid =3D valid =3D frame_vbo + frame_size;
-> +	}
-> +
-> +	/* copy user data [pos : pos + count) */
-> +	while (count) {
-> +		size_t copied, bytes;
-> +
-> +		off =3D pos & (frame_size - 1);
-> +		bytes =3D frame_size - off;
-> +		if (bytes > count)
-> +			bytes =3D count;
-> +
-> +		frame =3D pos >> frame_bits;
-> +		frame_vbo =3D pos & ~(frame_size - 1);
-> +		index =3D frame_vbo >> PAGE_SHIFT;
-> +
-> +		if (unlikely(iov_iter_fault_in_readable(from, bytes))) {
-> +			err =3D -EFAULT;
-> +			goto out;
-> +		}
-> +
-> +		/* Load full frame */
-> +		err =3D ntfs_get_frame_pages(mapping, index, pages,
-> +					   pages_per_frame, &frame_uptodate);
-> +		if (err)
-> +			goto out;
-> +
-> +		if (!frame_uptodate) {
-> +			loff_t to =3D pos + bytes;
-> +
-> +			if (off || (to < i_size && (to & (frame_size - 1)))) {
-> +				err =3D ni_read_frame(ni, frame_vbo, pages,
-> +						    pages_per_frame);
-> +				if (err) {
-> +					for (ip =3D 0; ip < pages_per_frame;
-> +					     ip++) {
-> +						page =3D pages[ip];
-> +						unlock_page(page);
-> +						put_page(page);
-> +					}
-> +					goto out;
-> +				}
-> +			}
-> +		}
-> +
-> +		WARN_ON(!bytes);
-> +		copied =3D 0;
-> +		ip =3D off >> PAGE_SHIFT;
-> +		off =3D offset_in_page(pos);
-> +
-> +		/* copy user data to pages */
-> +		for (;;) {
-> +			size_t cp, tail =3D PAGE_SIZE - off;
-> +
-> +			page =3D pages[ip];
-> +			cp =3D iov_iter_copy_from_user_atomic(page, from, off,
-> +							    min(tail, bytes));
+I believe Miquèl was waiting for -rc1 to apply it.
 
-=46or 5.14, iov_iter_copy_from_user_atomic() has to be replaced by=20
-copy_page_from_iter_atomic().
+But taking a closer look, although the fix for the register path is the 
+same, Hillf Danton's proposed patch additionally avoids inverting the 
+lock hierarchy on the unregister path. So I believe this new patch 
+should be more robust.
 
-> +			flush_dcache_page(page);
-> +			iov_iter_advance(from, cp);
-
-And iov_iter_advance() should be removed then.
-
-Please see upstream commit f0b65f39ac505e8f1dcdaa165aa7b8c0bd6fd454 for=20
-detailed explanation.
-
-> +			copied +=3D cp;
-> +			bytes -=3D cp;
-> +			if (!bytes || !cp)
-> +				break;
-> +
-> +			if (cp < tail) {
-> +				off +=3D cp;
-> +			} else {
-> +				ip++;
-> +				off =3D 0;
-> +			}
-> +		}
-> +
-> +		ni_lock(ni);
-> +		err =3D ni_write_frame(ni, pages, pages_per_frame);
-> +		ni_unlock(ni);
-> +
-> +		for (ip =3D 0; ip < pages_per_frame; ip++) {
-> +			page =3D pages[ip];
-> +			ClearPageDirty(page);
-> +			SetPageUptodate(page);
-> +			unlock_page(page);
-> +			put_page(page);
-> +		}
-> +
-> +		if (err)
-> +			goto out;
-> +
-> +		/*
-> +		 * We can loop for a long time in here. Be nice and allow
-> +		 * us to schedule out to avoid softlocking if preempt
-> +		 * is disabled.
-> +		 */
-> +		cond_resched();
-> +
-> +		pos +=3D copied;
-> +		written +=3D copied;
-> +
-> +		count =3D iov_iter_count(from);
-> +	}
-> +
-> +out:
-> +	ntfs_free(pages);
-> +
-> +	current->backing_dev_info =3D NULL;
-> +
-> +	if (err < 0)
-> +		return err;
-> +
-> +	iocb->ki_pos +=3D written;
-> +	if (iocb->ki_pos > ni->i_valid)
-> +		ni->i_valid =3D iocb->ki_pos;
-> +
-> +	return written;
-> +}
-> ...
-
-Thanks.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
-
+Best wishes,
+Desmond
