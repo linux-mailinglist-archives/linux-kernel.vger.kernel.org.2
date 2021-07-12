@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F298C3C4FA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF263C56AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244295AbhGLH0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34640 "EHLO mail.kernel.org"
+        id S1350559AbhGLIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242485AbhGLHAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:00:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95A8461156;
-        Mon, 12 Jul 2021 06:57:21 +0000 (UTC)
+        id S1346520AbhGLHjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E7EB61164;
+        Mon, 12 Jul 2021 07:34:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073042;
-        bh=8VWhnlooXYMQHdbWzrlpCM6p2aSc25q8pmPyeBK0T2E=;
+        s=korg; t=1626075280;
+        bh=I9lQf2lDW0MnmYwEu18O4W4OVDj02bCrE5JB6PVuLSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UGhQMGi9IP36K7FyKNOvrU65YgCAvGDPlFbnXFgg4n+UT0K3SzdTDkxpJEbB8fzbV
-         1Mo4Kv1jNaAB+/CtI6Ct5/+7hEOFEoUuC03rUGeEJE9XThEYsOIQhcgsDB3htMF3OX
-         YBKbtUfB/DPD7pqrXrS9LL0Sd9jBGoKrGt/m8eiw=
+        b=WCGeez5bDUy6EeRB3hKuuv5tRIVGfqkOHiOsCI8M9yKmMg7AuUjPoHmCqCxA/8iPw
+         bMlFjf64Vtnl5uDyMW2ZgWJUUWStIf3DVMHKY1zn9M/FD0AqW6QOtg2pP0Or51ymoi
+         JaKqbf0ZpMGpbuVjzpeLgTuJNmlGanRP3E9WXbZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 5.12 106/700] x86/gpu: add JasperLake to gen11 early quirks
-Date:   Mon, 12 Jul 2021 08:03:09 +0200
-Message-Id: <20210712060939.810011284@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 167/800] media: hantro: Fix .buf_prepare
+Date:   Mon, 12 Jul 2021 08:03:10 +0200
+Message-Id: <20210712060936.471451676@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-commit 31b77c70d9bc04d3b024ea56c129523f9edc1328 upstream.
+[ Upstream commit 082aaecff35fbe1937531057911b1dd1fc6b496e ]
 
-Let's reserve JSL stolen memory for graphics.
+The driver should only set the payload on .buf_prepare if the
+buffer is CAPTURE type. If an OUTPUT buffer has a zero bytesused
+set by userspace then v4l2-core will set it to buffer length.
 
-JasperLake is a gen11 platform which is compatible with
-ICL/EHL changes.
+If we overwrite bytesused for OUTPUT buffers, too, then
+vb2_get_plane_payload() will return incorrect value which might be then
+written to hw registers by the driver in hantro_g1_h264_dec.c.
 
-This was missed in commit 24ea098b7c0d ("drm/i915/jsl: Split
-EHL/JSL platform info and PCI ids")
-
-V2:
-    - Added maintainer list in cc
-    - Added patch ref in commit message
-V1:
-    - Added Cc: x86@kernel.org
-
-Fixes: 24ea098b7c0d ("drm/i915/jsl: Split EHL/JSL platform info and PCI ids")
-Cc: <stable@vger.kernel.org> # v5.11+
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: José Roberto de Souza <jose.souza@intel.com>
-Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210608053411.394166-1-tejaskumarx.surendrakumar.upadhyay@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/early-quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/media/hantro/hantro_v4l2.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/early-quirks.c
-+++ b/arch/x86/kernel/early-quirks.c
-@@ -549,6 +549,7 @@ static const struct pci_device_id intel_
- 	INTEL_CNL_IDS(&gen9_early_ops),
- 	INTEL_ICL_11_IDS(&gen11_early_ops),
- 	INTEL_EHL_IDS(&gen11_early_ops),
-+	INTEL_JSL_IDS(&gen11_early_ops),
- 	INTEL_TGL_12_IDS(&gen11_early_ops),
- 	INTEL_RKL_IDS(&gen11_early_ops),
- };
+diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+index 1bc118e375a1..7ccc6405036a 100644
+--- a/drivers/staging/media/hantro/hantro_v4l2.c
++++ b/drivers/staging/media/hantro/hantro_v4l2.c
+@@ -639,7 +639,14 @@ static int hantro_buf_prepare(struct vb2_buffer *vb)
+ 	ret = hantro_buf_plane_check(vb, pix_fmt);
+ 	if (ret)
+ 		return ret;
+-	vb2_set_plane_payload(vb, 0, pix_fmt->plane_fmt[0].sizeimage);
++	/*
++	 * Buffer's bytesused must be written by driver for CAPTURE buffers.
++	 * (for OUTPUT buffers, if userspace passes 0 bytesused, v4l2-core sets
++	 * it to buffer length).
++	 */
++	if (V4L2_TYPE_IS_CAPTURE(vq->type))
++		vb2_set_plane_payload(vb, 0, pix_fmt->plane_fmt[0].sizeimage);
++
+ 	return 0;
+ }
+ 
+-- 
+2.30.2
+
 
 
