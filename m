@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391C03C58EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D613C4DEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348237AbhGLIxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:53:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55668 "EHLO mail.kernel.org"
+        id S243476AbhGLHPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353470AbhGLICS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B2161C1C;
-        Mon, 12 Jul 2021 07:55:12 +0000 (UTC)
+        id S238285AbhGLGwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:52:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FFB360FD8;
+        Mon, 12 Jul 2021 06:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076512;
-        bh=1MIAf3d4QGmYMvT3UMfZo+tSyjLWakCaiTgLJlb/o8M=;
+        s=korg; t=1626072558;
+        bh=LKyRcNWlFavaMgK+ergxadt35UXMZPV1wl7Y6RSbYsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wciNWlFARPNcqpDXUrXnybOX1bsjE1t81SYyLrMlZEnVwfgaNgOsJ8RdORbmtZ5+J
-         kEsn5cFAQaGggwLzs9u2B2CMgiS0eyUSJZidS5TUmAT6DbyT/y2f+vPqqFvobw88uq
-         NKIousOyPb3bwYb0qqjZtc5M0o+E+89h6ZoPuc3Y=
+        b=wS6KeRMPGyqqn8KIfvprn8rFGjslHXbkCH768618TNTyy/t2bdkxc+NJTVMn1ru5I
+         Lm7fC11XfNRUgzYmenqUndESaKB8p4GKfZ17zZ2nNYmP29S5oo0QQ03Qks/4Qat9Ku
+         iTxYJLDM+YPV9YdzRpS//0hW/f66WPvyo+aQkscs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joachim Fenkes <fenkes@de.ibm.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 675/800] fsi/sbefifo: Fix reset timeout
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 538/593] phy: ti: dm816x: Fix the error handling path in dm816x_usb_phy_probe()
 Date:   Mon, 12 Jul 2021 08:11:38 +0200
-Message-Id: <20210712061038.729054604@linuxfoundation.org>
+Message-Id: <20210712060953.029949150@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joachim Fenkes <FENKES@de.ibm.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 9ab1428dfe2c66b51e0b41337cd0164da0ab6080 ]
+[ Upstream commit f7eedcb8539ddcbb6fe7791f1b4ccf43f905c72f ]
 
-On BMCs with lower timer resolution than 1ms, msleep(1) will take
-way longer than 1ms, so looping 10k times won't wait for 10s but
-significantly longer.
+Add an error handling path in the probe to release some resources, as
+already done in the remove function.
 
-Fix this by using jiffies like the rest of the code.
-
-Fixes: 9f4a8a2d7f9d ("fsi/sbefifo: Add driver for the SBE FIFO")
-Signed-off-by: Joachim Fenkes <fenkes@de.ibm.com>
-Link: https://lore.kernel.org/r/20200724071518.430515-3-joel@jms.id.au
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Fixes: 609adde838f4 ("phy: Add a driver for dm816x USB PHY")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/ac5136881f6bdec50be19b3bf73b3bc1b15ef1f1.1622898974.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fsi/fsi-sbefifo.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/phy/ti/phy-dm816x-usb.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-index de27c435d706..84cb965bfed5 100644
---- a/drivers/fsi/fsi-sbefifo.c
-+++ b/drivers/fsi/fsi-sbefifo.c
-@@ -325,7 +325,8 @@ static int sbefifo_up_write(struct sbefifo *sbefifo, __be32 word)
- static int sbefifo_request_reset(struct sbefifo *sbefifo)
- {
- 	struct device *dev = &sbefifo->fsi_dev->dev;
--	u32 status, timeout;
-+	unsigned long end_time;
-+	u32 status;
- 	int rc;
+diff --git a/drivers/phy/ti/phy-dm816x-usb.c b/drivers/phy/ti/phy-dm816x-usb.c
+index 57adc08a89b2..9fe6ea6fdae5 100644
+--- a/drivers/phy/ti/phy-dm816x-usb.c
++++ b/drivers/phy/ti/phy-dm816x-usb.c
+@@ -242,19 +242,28 @@ static int dm816x_usb_phy_probe(struct platform_device *pdev)
  
- 	dev_dbg(dev, "Requesting FIFO reset\n");
-@@ -341,7 +342,8 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
- 	}
+ 	pm_runtime_enable(phy->dev);
+ 	generic_phy = devm_phy_create(phy->dev, NULL, &ops);
+-	if (IS_ERR(generic_phy))
+-		return PTR_ERR(generic_phy);
++	if (IS_ERR(generic_phy)) {
++		error = PTR_ERR(generic_phy);
++		goto clk_unprepare;
++	}
  
- 	/* Wait for it to complete */
--	for (timeout = 0; timeout < SBEFIFO_RESET_TIMEOUT; timeout++) {
-+	end_time = jiffies + msecs_to_jiffies(SBEFIFO_RESET_TIMEOUT);
-+	while (!time_after(jiffies, end_time)) {
- 		rc = sbefifo_regr(sbefifo, SBEFIFO_UP | SBEFIFO_STS, &status);
- 		if (rc) {
- 			dev_err(dev, "Failed to read UP fifo status during reset"
-@@ -355,7 +357,7 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
- 			return 0;
- 		}
+ 	phy_set_drvdata(generic_phy, phy);
  
--		msleep(1);
-+		cond_resched();
- 	}
- 	dev_err(dev, "FIFO reset timed out\n");
+ 	phy_provider = devm_of_phy_provider_register(phy->dev,
+ 						     of_phy_simple_xlate);
+-	if (IS_ERR(phy_provider))
+-		return PTR_ERR(phy_provider);
++	if (IS_ERR(phy_provider)) {
++		error = PTR_ERR(phy_provider);
++		goto clk_unprepare;
++	}
  
+ 	usb_add_phy_dev(&phy->phy);
+ 
+ 	return 0;
++
++clk_unprepare:
++	pm_runtime_disable(phy->dev);
++	clk_unprepare(phy->refclk);
++	return error;
+ }
+ 
+ static int dm816x_usb_phy_remove(struct platform_device *pdev)
 -- 
 2.30.2
 
