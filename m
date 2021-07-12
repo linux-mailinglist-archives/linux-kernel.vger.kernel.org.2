@@ -2,139 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1D63C4280
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 06:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BCB3C41E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhGLEDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 00:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        id S233233AbhGLDdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 23:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhGLEDM (ORCPT
+        with ESMTP id S232507AbhGLDds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 00:03:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B1AC0613DD;
-        Sun, 11 Jul 2021 21:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=HQqE213t09Jer832hRItwdruUECZ/N6RyJ/+VNJTVco=; b=Va8/imOROLjMOcwoFsBDwibVcC
-        LtUlx38bpOBDN9+BWpK/BjFTNi7B3n5AxNpJEPN8vBQWVGxtz1d10jhyOqCZwYMqmT+EL/rKaf6Fe
-        Ccj8J3u1SUBosqRtbMhPEgxFXFyeUmeHWMw8i1oRK4wdbM4ZTbKfXNQIhf6IemmGqpz6GK5/H63gq
-        vhaNjizS6y18xY8hiSk0V44GTg93TGmaquN9AsBBLHCX7v2OFLkOvRNwQZDasCbaRxagspDJDy55i
-        e9LZ8aVYkeIs8+uRCMrDpeQiP93OO3RjuRt9NYQCkBxUCT08H0oyEROvUp0GWPfNXOVXVRnV/mgAL
-        s2WpgCBg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m2n6c-00GqUp-QM; Mon, 12 Jul 2021 03:59:49 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v13 100/137] iomap: Convert iomap_page_mkwrite to use a folio
-Date:   Mon, 12 Jul 2021 04:06:24 +0100
-Message-Id: <20210712030701.4000097-101-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210712030701.4000097-1-willy@infradead.org>
-References: <20210712030701.4000097-1-willy@infradead.org>
+        Sun, 11 Jul 2021 23:33:48 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D68C0613DD;
+        Sun, 11 Jul 2021 20:31:00 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id dj21so5797005edb.0;
+        Sun, 11 Jul 2021 20:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7DJb5zdwKGROhdoFv50zrkRCj7TCgmob56fldHVm5S0=;
+        b=Mrxmr3EqqmDfeBXsY/V6WelqqFHbuM8zDFZYRCJH3gyKJkVblxSqOy+ww5QdwWzTNc
+         on2CdsaKKx3wRn/tuwpTHm8qZ32lBAbgvUbhLPLuf1itXF2P4u+UcduaNUm/DxVqvHQr
+         UpkTLIkbfKlYKfYWBn1yIr6yYDacQswmm40WuYjigD0SHCAes/Arh35UlM3mNC127957
+         OzTobS+E1jzEHnEngMItx6ffcqe/r5jQNQ4J0qyQxR+jPpM+W605KXyBH3mvqdKCUbG9
+         4z/bozNkX6cFZOnyCOp8KAADZUfMXtUEaFXiMLJx7x6Vim+klVNvmw7rz5Af0qbbL0t5
+         0C1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7DJb5zdwKGROhdoFv50zrkRCj7TCgmob56fldHVm5S0=;
+        b=qiwacmlXsQGLa3HELdNAkg/jiW1gypc30Z56itoellvC05nyJbdYEXw/rkQC8RjQ6l
+         K6uYG323SaxtC3IDb9JuX8SD7Bmh9T75bpgW8A8l2ywDbH4OgxL9h3kevJPbG2QhcwpC
+         Eb/AwEGEM5yxnvLjrXBnclLKEKlhadwuT7SIlz/6LS9YlMrQSGB//m5SUcl5NY9RDqME
+         x6EMju6MdAgneJgVgR7ZhxIdI6OMhoFbKTXTKNtwpY/uE1G1m+ewPAXADKrWKKZU+Hsk
+         4uoCQZpz6KS6N8zSB4XAQMBkf2RcTN5trImM3YgLMVlikn1ej30iQqlclrM9lyzggTfA
+         gN0Q==
+X-Gm-Message-State: AOAM533IeUz7cSQkJq8NvgP7+tvJ2ouN0Ak94T9pkq3v2l0hMVqm6I7a
+        5pDQNLK1yuPUpG5tha2yJRKepWG30Upz4Vu7mw4=
+X-Google-Smtp-Source: ABdhPJzpyHVnSetWPQB1vOrZPwkuLJUCJ1fCgdR2DAxxSBVu/6hBhBgsDda06lZIxceY0kN3GSLboeqUnJ2Fdqjtdto=
+X-Received: by 2002:a05:6402:3089:: with SMTP id de9mr9201653edb.69.1626060658742;
+ Sun, 11 Jul 2021 20:30:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com>
+ <1625903002-31619-4-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Udnb_KgHyWiwxDF+r+DkytgZd4CQJz4QR85JpinhZAJzw@mail.gmail.com> <d45619d1-5235-9dd4-77aa-497fa1115c80@huawei.com>
+In-Reply-To: <d45619d1-5235-9dd4-77aa-497fa1115c80@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Sun, 11 Jul 2021 20:30:47 -0700
+Message-ID: <CAKgT0Uf1FJrg515QuTk9bB4t3R+5GvnONyEVR_eKYk-OMun_DA@mail.gmail.com>
+Subject: Re: [PATCH rfc v2 3/5] page_pool: add page recycling support based on
+ elevated refcnt
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we write to any page in a folio, we have to mark the entire
-folio as dirty, and potentially COW the entire folio, because it'll
-all get written back as one unit.
+On Sun, Jul 11, 2021 at 7:06 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2021/7/11 1:31, Alexander Duyck wrote:
+> > On Sat, Jul 10, 2021 at 12:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> > <snip>
+> >> @@ -419,6 +471,20 @@ static __always_inline struct page *
+> >>  __page_pool_put_page(struct page_pool *pool, struct page *page,
+> >>                      unsigned int dma_sync_size, bool allow_direct)
+> >>  {
+> >> +       int bias = page_pool_get_pagecnt_bias(page);
+> >> +
+> >> +       /* Handle the elevated refcnt case first */
+> >> +       if (bias) {
+> >> +               /* It is not the last user yet */
+> >> +               if (!page_pool_bias_page_recyclable(page, bias))
+> >> +                       return NULL;
+> >> +
+> >> +               if (likely(!page_is_pfmemalloc(page)))
+> >> +                       goto recyclable;
+> >> +               else
+> >> +                       goto unrecyclable;
+> >> +       }
+> >> +
+> >
+> > So this part is still broken. Anything that takes a reference to the
+> > page and holds it while this is called will cause it to break. For
+> > example with the recent fixes we put in place all it would take is a
+> > skb_clone followed by pskb_expand_head and this starts leaking memory.
+>
+> Ok, it seems the fix is confilcting with the expectation this patch is
+> based, which is "the last user will always call page_pool_put_full_page()
+> in order to do the recycling or do the resource cleanup(dma unmaping..etc)
+> and freeing.".
+>
+> As the user of the new skb after skb_clone() and pskb_expand_head() is
+> not aware of that their frag page may still be in the page pool after
+> the fix?
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/iomap/buffered-io.c | 42 +++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+No it isn't the fix that is conflicting. It is the fundamental
+assumption that is flawed.
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index bdce467ed5d3..2ecfebdd1f4f 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -951,23 +951,23 @@ iomap_truncate_page(struct inode *inode, loff_t pos, bool *did_zero,
- }
- EXPORT_SYMBOL_GPL(iomap_truncate_page);
- 
--static loff_t
--iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
--		void *data, struct iomap *iomap, struct iomap *srcmap)
-+static loff_t iomap_folio_mkwrite_actor(struct inode *inode, loff_t pos,
-+		loff_t length, void *data, struct iomap *iomap,
-+		struct iomap *srcmap)
- {
--	struct page *page = data;
--	struct folio *folio = page_folio(page);
-+	struct folio *folio = data;
- 	int ret;
- 
- 	if (iomap->flags & IOMAP_F_BUFFER_HEAD) {
--		ret = __block_write_begin_int(page, pos, length, NULL, iomap);
-+		ret = __block_write_begin_int(&folio->page, pos, length, NULL,
-+						iomap);
- 		if (ret)
- 			return ret;
--		block_commit_write(page, 0, length);
-+		block_commit_write(&folio->page, 0, length);
- 	} else {
--		WARN_ON_ONCE(!PageUptodate(page));
-+		WARN_ON_ONCE(!folio_uptodate(folio));
- 		iomap_page_create(inode, folio);
--		set_page_dirty(page);
-+		folio_mark_dirty(folio);
- 	}
- 
- 	return length;
-@@ -975,33 +975,33 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
- 
- vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
- {
--	struct page *page = vmf->page;
-+	struct folio *folio = page_folio(vmf->page);
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
--	unsigned long length;
--	loff_t offset;
-+	size_t length;
-+	loff_t pos;
- 	ssize_t ret;
- 
--	lock_page(page);
--	ret = page_mkwrite_check_truncate(page, inode);
-+	folio_lock(folio);
-+	ret = folio_mkwrite_check_truncate(folio, inode);
- 	if (ret < 0)
- 		goto out_unlock;
- 	length = ret;
- 
--	offset = page_offset(page);
-+	pos = folio_pos(folio);
- 	while (length > 0) {
--		ret = iomap_apply(inode, offset, length,
--				IOMAP_WRITE | IOMAP_FAULT, ops, page,
--				iomap_page_mkwrite_actor);
-+		ret = iomap_apply(inode, pos, length,
-+				IOMAP_WRITE | IOMAP_FAULT, ops, folio,
-+				iomap_folio_mkwrite_actor);
- 		if (unlikely(ret <= 0))
- 			goto out_unlock;
--		offset += ret;
-+		pos += ret;
- 		length -= ret;
- 	}
- 
--	wait_for_stable_page(page);
-+	folio_wait_stable(folio);
- 	return VM_FAULT_LOCKED;
- out_unlock:
--	unlock_page(page);
-+	folio_unlock(folio);
- 	return block_page_mkwrite_return(ret);
- }
- EXPORT_SYMBOL_GPL(iomap_page_mkwrite);
--- 
-2.30.2
+We cannot guarantee that some other entity will not take a reference
+on the page. In order for this to work you have to guarantee that no
+other entity will use get_page/put_page on this page while you are
+using it.
 
+This is the reason why all the other implementations that do
+pagecnt_bias always remove the leftover count once they are done with
+the page. What was throwing me off before is that I was assuming you
+were doing that somewhere and you weren't. Instead this patch
+effectively turned the page count into a ticket lock of sorts and the
+problem is this approach only works as long as no other entities can
+take a reference on the page.
+
+> >
+> > One of the key bits in order for pagecnt_bias to work is that you have
+> > to deduct the bias once there are no more parties using it. Otherwise
+> > you leave the reference count artificially inflated and the page will
+> > never be freed. It works fine for the single producer single consumer
+> > case but once you introduce multiple consumers this is going to fall
+> > apart.
+>
+> It seems we have diffferent understanding about consumer, I treat the
+> above user of new skb after skb_clone() and pskb_expand_head() as the
+> consumer of the page pool too, so that new skb should keep the recycle
+> bit in order for that to happen.
+
+The problem is updating pskb_expand_head to call
+page_pool_return_skb_page still wouldn't resolve the issue. The
+fundamental assumption is flawed that the thread holding the skb will
+always be the last one to free the page.
+
+> If the semantic is "the new user of a page should not be handled by page
+> pool if page pool is not aware of the new user(the new user is added by
+> calling page allocator API instead of calling the page pool API, like the
+> skb_clone() and pskb_expand_head() above) ", I suppose I am ok with that
+> semantic too as long as the above semantic is aligned with the people
+> involved.
+
+The bigger issue is that this use of the page_ref_count violates how
+the page struct is meant to be used. The count is meant to be atomic
+and capable of getting to 0. The fact that we are now leaving the bias
+floating is going to introduce a number of issues.
+
+> Also, it seems _refcount and dma_addr in "struct page" is in the same cache
+> line, which means there is already cache line bouncing already between _refcount
+> and dma_addr updating, so it may makes senses to only use bias to indicate
+> number of the page pool user for a page, instead of using "bias - page_ref_count",
+> as the page_ref_count is not reliable if somebody is using the page allocator API
+> directly.
+>
+> And the trick part seems to be how to make the bias atomic for allocating and
+> freeing.
+
+What we end up essentially needing to do is duplicate that
+page_ref_count as a page_frag_count and just leave the original
+page_ref_count at 1. If we do that and then just decrement that new
+count instead it would allow us to defer the unmapping/recycling and
+we just fall back into the original path when we finally hit 0.
+
+The only limitation then is the fact that we would be looking at
+potentially 2 atomic operations in the worst case if we release the
+page as you would need one to get the frag_count to 0, and then
+another to decrement the ref_count. For the standard case that would
+work about the same as what you already had though, as you were
+already having to perform an atomic_dec_and_test on the page_ref_count
+anyway.
