@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DA23C49C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2954D3C56F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237632AbhGLGql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
+        id S1358891AbhGLI0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236088AbhGLGfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3955610A7;
-        Mon, 12 Jul 2021 06:32:58 +0000 (UTC)
+        id S241485AbhGLHmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:42:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBAEC60FF3;
+        Mon, 12 Jul 2021 07:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071579;
-        bh=kUZsgb8dfS/8kleJfRU5m1xSp/sKoanlCexjaXBYWZo=;
+        s=korg; t=1626075562;
+        bh=wuYBQikMXNYd05AGJgDvwASn3Bsn0eVghu0dotM456Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R6ks/sYiV3LtQ55qxpndu6L5xyjO9QnvGBDyhL0QqxoLeUSPAZd3wnvw2dBNGVe2g
-         9sbtfrXFB3EeVtUfKllsAloiAXNRr0fRXPrTuKby7HebHUxdbfEm4wwWUTP5c9s4yI
-         2JSnVONJeAAT2EzCx7azYLrwD+oFWYlIKeTU1zjc=
+        b=QxAdbgXfcqYDssR2dtcCyJCx7ZcauccGvWVe4c5NN11kH/ycFn0u+nv75++EjyXHp
+         GbrvXxlCQTxcQDmPRj+RO5dWAiVYM6eY9kCcbdINtb9wLsN2hffcV880Hvg4h4QH29
+         3yVm5qCSoR2BbtFmq64lMjG0Np3TpxPgrKOFFlmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 130/593] arm64: perf: Convert snprintf to sysfs_emit
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 267/800] spi: Allow to have all native CSs in use along with GPIOs
 Date:   Mon, 12 Jul 2021 08:04:50 +0200
-Message-Id: <20210712060857.436400368@linuxfoundation.org>
+Message-Id: <20210712060952.294609846@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tian Tao <tiantao6@hisilicon.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit a5740e955540181f4ab8f076cc9795c6bbe4d730 ]
+[ Upstream commit dbaca8e56ea3f23fa215f48c2d46dd03ede06e02 ]
 
-Use sysfs_emit instead of snprintf to avoid buf overrun,because in
-sysfs_emit it strictly checks whether buf is null or buf whether
-pagesize aligned, otherwise it returns an error.
+The commit 7d93aecdb58d ("spi: Add generic support for unused native cs
+with cs-gpios") excludes the valid case for the controllers that doesn't
+need to switch native CS in order to perform the transfer, i.e. when
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Link: https://lore.kernel.org/r/1621497585-30887-1-git-send-email-tiantao6@hisilicon.com
-Signed-off-by: Will Deacon <will@kernel.org>
+  0		native
+  ...		...
+  <n> - 1	native
+  <n>		GPIO
+  <n> + 1	GPIO
+  ...		...
+
+where <n> defines maximum of native CSs supported by the controller.
+
+To allow this, bail out from spi_get_gpio_descs() conditionally for
+the controllers which explicitly marked with SPI_MASTER_GPIO_SS.
+
+Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210420164425.40287-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/perf_event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 11852e05ee32..cdb3d4549b3a 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -312,7 +312,7 @@ static ssize_t slots_show(struct device *dev, struct device_attribute *attr,
- 	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
- 	u32 slots = cpu_pmu->reg_pmmir & ARMV8_PMU_SLOTS_MASK;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index d83f91a6ab13..ae04ae79e56a 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2623,8 +2623,9 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
+ 	}
  
--	return snprintf(page, PAGE_SIZE, "0x%08x\n", slots);
-+	return sysfs_emit(page, "0x%08x\n", slots);
- }
- 
- static DEVICE_ATTR_RO(slots);
+ 	ctlr->unused_native_cs = ffz(native_cs_mask);
+-	if (num_cs_gpios && ctlr->max_native_cs &&
+-	    ctlr->unused_native_cs >= ctlr->max_native_cs) {
++
++	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
++	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
+ 		dev_err(dev, "No unused native chip select available\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.30.2
 
