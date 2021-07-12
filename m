@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F073C58A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1F03C4CEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379759AbhGLIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45368 "EHLO mail.kernel.org"
+        id S244575AbhGLHK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352420AbhGLHyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:54:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF621611CE;
-        Mon, 12 Jul 2021 07:51:37 +0000 (UTC)
+        id S238767AbhGLGtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 110B961132;
+        Mon, 12 Jul 2021 06:45:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076298;
-        bh=K6eGsZeGy1e/5tzc4Zyk2ld5baCKOcec3R5juuOrKd8=;
+        s=korg; t=1626072314;
+        bh=+lfO5Mra7CXAT9kFyiufjx760HDX/3j3Uo37TVVnrak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qSGjKALUhnsB/NPXwnGnqYpsC9fBbgLYBOdF2DVS+TZILwlx+apY30J4Qztb8PSlT
-         fYKrwBtJFdcTx7LSdkLUoCR+UnnalhaiV3jk21K/tEmkhL5ZjmM86XWAIWoPx66FWf
-         rz9AYaeH3wMJ5cz0RbcqSbckSzwkFXWoTOZl5ymE=
+        b=t/XB1hcNNcckMAmv4RjCLrf2DHrjWoQw0Rm9eppwE6PzZW5YEAzVnovM/2R5QKKy5
+         Ms7hiP3PlhZ1siXBwMLOLu0Do2W9tliPs4qzv34cB8VV8HxlF2n6uGA/6DQyW5/nto
+         iaXIjn6UUGC/WwdmhLWFzMW/3iH1PVJ8wET/+qF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 583/800] Bluetooth: Fix handling of HCI_LE_Advertising_Set_Terminated event
+Subject: [PATCH 5.10 446/593] iio: accel: bma220: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:10:06 +0200
-Message-Id: <20210712061029.323743296@linuxfoundation.org>
+Message-Id: <20210712060938.128944045@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 23837a6d7a1a61818ed94a6b8af552d6cf7d32d5 ]
+[ Upstream commit 151dbf0078da98206817ee0b87d499035479ef11 ]
 
-Error status of this event means that it has ended due reasons other
-than a connection:
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
- 'If advertising has terminated as a result of the advertising duration
- elapsing, the Status parameter shall be set to the error code
- Advertising Timeout (0x3C).'
+Found during an audit of all calls of this function.
 
- 'If advertising has terminated because the
- Max_Extended_Advertising_Events was reached, the Status parameter
- shall be set to the error code Limit Reached (0x43).'
-
-Fixes: acf0aeae431a0 ("Bluetooth: Handle ADv set terminated event")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 194dc4c71413 ("iio: accel: Add triggered buffer support for BMA220")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-3-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/iio/accel/bma220_spi.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 7d05f6c476d6..b077d150ac52 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5296,8 +5296,19 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+diff --git a/drivers/iio/accel/bma220_spi.c b/drivers/iio/accel/bma220_spi.c
+index 3c9b0c6954e6..e8a9db1a82ad 100644
+--- a/drivers/iio/accel/bma220_spi.c
++++ b/drivers/iio/accel/bma220_spi.c
+@@ -63,7 +63,11 @@ static const int bma220_scale_table[][2] = {
+ struct bma220_data {
+ 	struct spi_device *spi_device;
+ 	struct mutex lock;
+-	s8 buffer[16]; /* 3x8-bit channels + 5x8 padding + 8x8 timestamp */
++	struct {
++		s8 chans[3];
++		/* Ensure timestamp is naturally aligned. */
++		s64 timestamp __aligned(8);
++	} scan;
+ 	u8 tx_buf[2] ____cacheline_aligned;
+ };
  
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
+@@ -94,12 +98,12 @@ static irqreturn_t bma220_trigger_handler(int irq, void *p)
  
--	if (ev->status)
-+	if (ev->status) {
-+		struct adv_info *adv;
-+
-+		adv = hci_find_adv_instance(hdev, ev->handle);
-+		if (!adv)
-+			return;
-+
-+		/* Remove advertising as it has been terminated */
-+		hci_remove_adv_instance(hdev, ev->handle);
-+		mgmt_advertising_removed(NULL, hdev, ev->handle);
-+
- 		return;
-+	}
+ 	mutex_lock(&data->lock);
+ 	data->tx_buf[0] = BMA220_REG_ACCEL_X | BMA220_READ_MASK;
+-	ret = spi_write_then_read(spi, data->tx_buf, 1, data->buffer,
++	ret = spi_write_then_read(spi, data->tx_buf, 1, &data->scan.chans,
+ 				  ARRAY_SIZE(bma220_channels) - 1);
+ 	if (ret < 0)
+ 		goto err;
  
- 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(ev->conn_handle));
- 	if (conn) {
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   pf->timestamp);
+ err:
+ 	mutex_unlock(&data->lock);
 -- 
 2.30.2
 
