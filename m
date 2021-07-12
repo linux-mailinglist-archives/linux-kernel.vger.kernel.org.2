@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB6C3C4BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F113C4BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241724AbhGLG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38480 "EHLO mail.kernel.org"
+        id S242551AbhGLHAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:00:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238718AbhGLGoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BCCC61004;
-        Mon, 12 Jul 2021 06:39:52 +0000 (UTC)
+        id S238733AbhGLGoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:44:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC445611AF;
+        Mon, 12 Jul 2021 06:39:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071992;
-        bh=a2tIk9dXJdPFxZOQLyb/5pEBKjRb+ibBT0yX6tiqtj0=;
+        s=korg; t=1626071997;
+        bh=zyfh1XtR0ONsG//v+CK6t5EH1+y76L+PvkwBHzOQGGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOTP2Sp3HXFLIwmIjdWwDKwLlNzVtHV+uYEP7Re9NpQc75ZKCm7DmkiyO9t44wLN7
-         9Tizi1whVJcOxJEtw9MABvACUgIpjAJgf2dbdThvHP+s9HoWElT9Hg/r+9i6tm2C4I
-         5bBchHGT38pMYFyTC29ynUI7+rf92khc2BFeOob0=
+        b=GFiBxvghssPPNr0yiqAchJx7sMTNtL2SouTEO1leY4VurCbJserJmOHXVGOPWoNhT
+         jkb8x9hATz1o0xJxTSZekDnxUVQ06rcfzm9F7mgVamebk8v81FCfEMxLbPeymA3xk1
+         6uJTCgMxs7pjLQa40vGlaBXqffn6Ihy8yuFYMlHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Charmaine Lee <charmainel@vmware.com>,
         Roland Scheidegger <sroland@vmware.com>,
         Zack Rusin <zackr@vmware.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 309/593] drm/vmwgfx: Mark a surface gpu-dirty after the SVGA3dCmdDXGenMips command
-Date:   Mon, 12 Jul 2021 08:07:49 +0200
-Message-Id: <20210712060919.179443722@linuxfoundation.org>
+Subject: [PATCH 5.10 310/593] drm/vmwgfx: Fix cpu updates of coherent multisample surfaces
+Date:   Mon, 12 Jul 2021 08:07:50 +0200
+Message-Id: <20210712060919.316415192@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -43,62 +43,105 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Hellstrom <thellstrom@vmware.com>
 
-[ Upstream commit 75156a887b6cea6e09d83ec19f4ebfd7c86265f0 ]
+[ Upstream commit 88509f698c4e38e287e016e86a0445547824135c ]
 
-The SVGA3dCmdDXGenMips command uses a shader-resource view to access
-the underlying surface. Normally accesses using that view-type are not
-dirtying the underlying surface, but that particular command is an
-exception.
-Mark the surface gpu-dirty after a SVGA3dCmdDXGenMips command has been
-submitted.
+In cases where the dirty linear memory range spans multiple sample sheets
+in a surface, the dirty surface region is incorrectly computed.
+To do this correctly and in an optimized fashion  we would have to compute
+the dirty region of each sample sheet and compute the union of those
+regions.
 
-This fixes the piglit getteximage-formats test run with
-SVGA_FORCE_COHERENT=1
+But assuming that cpu writing to a multisample surface is rather a corner
+case than a common case, just set the dirty region to the full surface.
 
-Fixes: a9f58c456e9d ("drm/vmwgfx: Be more restrictive when dirtying resources")
+This fixes OpenGL piglit errors with SVGA_FORCE_COHERENT=1
+and the piglit test:
+
+fbo-depthstencil blit default_fb -samples=2 -auto
+
+Fixes: 9ca7d19ff8ba ("drm/vmwgfx: Add surface dirty-tracking callbacks")
 Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
 Reviewed-by: Charmaine Lee <charmainel@vmware.com>
 Reviewed-by: Roland Scheidegger <sroland@vmware.com>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210505035740.286923-3-zackr@vmware.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20210505035740.286923-4-zackr@vmware.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ .../drm/vmwgfx/device_include/svga3d_surfacedefs.h  |  8 ++++++--
+ drivers/gpu/drm/vmwgfx/vmwgfx_surface.c             | 13 +++++++++++++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-index e67e2e8f6e6f..83e1b54eb864 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-@@ -2759,12 +2759,24 @@ static int vmw_cmd_dx_genmips(struct vmw_private *dev_priv,
- {
- 	VMW_DECLARE_CMD_VAR(*cmd, SVGA3dCmdDXGenMips) =
- 		container_of(header, typeof(*cmd), header);
--	struct vmw_resource *ret;
-+	struct vmw_resource *view;
-+	struct vmw_res_cache_entry *rcache;
- 
--	ret = vmw_view_id_val_add(sw_context, vmw_view_sr,
--				  cmd->body.shaderResourceViewId);
-+	view = vmw_view_id_val_add(sw_context, vmw_view_sr,
-+				   cmd->body.shaderResourceViewId);
-+	if (IS_ERR(view))
-+		return PTR_ERR(view);
- 
--	return PTR_ERR_OR_ZERO(ret);
-+	/*
-+	 * Normally the shader-resource view is not gpu-dirtying, but for
-+	 * this particular command it is...
-+	 * So mark the last looked-up surface, which is the surface
-+	 * the view points to, gpu-dirty.
-+	 */
-+	rcache = &sw_context->res_cache[vmw_res_surface];
-+	vmw_validation_res_set_dirty(sw_context->ctx, rcache->private,
-+				     VMW_RES_DIRTY_SET);
-+	return 0;
- }
+diff --git a/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h b/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h
+index 4db25bd9fa22..127eaf0a0a58 100644
+--- a/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h
++++ b/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h
+@@ -1467,6 +1467,7 @@ struct svga3dsurface_cache {
  
  /**
+  * struct svga3dsurface_loc - Surface location
++ * @sheet: The multisample sheet.
+  * @sub_resource: Surface subresource. Defined as layer * num_mip_levels +
+  * mip_level.
+  * @x: X coordinate.
+@@ -1474,6 +1475,7 @@ struct svga3dsurface_cache {
+  * @z: Z coordinate.
+  */
+ struct svga3dsurface_loc {
++	u32 sheet;
+ 	u32 sub_resource;
+ 	u32 x, y, z;
+ };
+@@ -1566,8 +1568,8 @@ svga3dsurface_get_loc(const struct svga3dsurface_cache *cache,
+ 	u32 layer;
+ 	int i;
+ 
+-	if (offset >= cache->sheet_bytes)
+-		offset %= cache->sheet_bytes;
++	loc->sheet = offset / cache->sheet_bytes;
++	offset -= loc->sheet * cache->sheet_bytes;
+ 
+ 	layer = offset / cache->mip_chain_bytes;
+ 	offset -= layer * cache->mip_chain_bytes;
+@@ -1631,6 +1633,7 @@ svga3dsurface_min_loc(const struct svga3dsurface_cache *cache,
+ 		      u32 sub_resource,
+ 		      struct svga3dsurface_loc *loc)
+ {
++	loc->sheet = 0;
+ 	loc->sub_resource = sub_resource;
+ 	loc->x = loc->y = loc->z = 0;
+ }
+@@ -1652,6 +1655,7 @@ svga3dsurface_max_loc(const struct svga3dsurface_cache *cache,
+ 	const struct drm_vmw_size *size;
+ 	u32 mip;
+ 
++	loc->sheet = 0;
+ 	loc->sub_resource = sub_resource + 1;
+ 	mip = sub_resource % cache->num_mip_levels;
+ 	size = &cache->mip[mip].size;
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+index 3914bfee0533..f493b20c7a38 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+@@ -1802,6 +1802,19 @@ static void vmw_surface_tex_dirty_range_add(struct vmw_resource *res,
+ 	svga3dsurface_get_loc(cache, &loc2, end - 1);
+ 	svga3dsurface_inc_loc(cache, &loc2);
+ 
++	if (loc1.sheet != loc2.sheet) {
++		u32 sub_res;
++
++		/*
++		 * Multiple multisample sheets. To do this in an optimized
++		 * fashion, compute the dirty region for each sheet and the
++		 * resulting union. Since this is not a common case, just dirty
++		 * the whole surface.
++		 */
++		for (sub_res = 0; sub_res < dirty->num_subres; ++sub_res)
++			vmw_subres_dirty_full(dirty, sub_res);
++		return;
++	}
+ 	if (loc1.sub_resource + 1 == loc2.sub_resource) {
+ 		/* Dirty range covers a single sub-resource */
+ 		vmw_subres_dirty_add(dirty, &loc1, &loc2);
 -- 
 2.30.2
 
