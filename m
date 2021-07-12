@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E1D3C590D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E4F3C590C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356293AbhGLI4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        id S1356249AbhGLIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:55:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353493AbhGLIC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0671613C8;
-        Mon, 12 Jul 2021 07:55:21 +0000 (UTC)
+        id S1353516AbhGLICa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F7E661C2A;
+        Mon, 12 Jul 2021 07:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076522;
-        bh=GZc5QVdPl7a9qD96XshCqXjerR4gdZP2yFYtXNr4CiU=;
+        s=korg; t=1626076526;
+        bh=DUgcB785XMcpeEq5Yt6WrbqQKAkHFMhqCwGsYbSv/5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O14/oZPgNp8HEpf0/mpEzoW2SfCwI+Baw3tU6R46mXR5L/F/yjt/2MfTXc0BUR9zT
-         uiN5WPkGPFJGV+WesAhKMjJ5bWNbotyi8xjJGwo3T/ylV1icYpukHbCoInu5urzLAf
-         UKn0Qd+h05U2bZ/2NK44aP88vvgZSh7mlRyU4/4c=
+        b=j1JcJUUppr/RVlqpnOfe9P7XznUTQqUi48uoe52fe1H/TgAiuFXnaaHeKMJK/J8FG
+         IPVuPSxTkfi1WgKgPmo7Bj3bVBmIbjFrnHnmkuP8lBrR9FnG7gLmXgHFMJa+dEy6UE
+         cCCeX/2KEBkFHurA4zASY1nas+8jGAzghDUTw+1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 679/800] s390: enable HAVE_IOREMAP_PROT
-Date:   Mon, 12 Jul 2021 08:11:42 +0200
-Message-Id: <20210712061039.119245019@linuxfoundation.org>
+Subject: [PATCH 5.13 681/800] selftests: splice: Adjust for handler fallback removal
+Date:   Mon, 12 Jul 2021 08:11:44 +0200
+Message-Id: <20210712061039.314181276@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,77 +42,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <schnelle@linux.ibm.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit d460bb6c6417588dd8b0907d34f69b237918812a ]
+[ Upstream commit 6daf076b717d189f4d02a303d45edd5732341ec1 ]
 
-In commit b02002cc4c0f ("s390/pci: Implement ioremap_wc/prot() with
-MIO") we implemented both ioremap_wc() and ioremap_prot() however until
-now we had not set HAVE_IOREMAP_PROT in Kconfig, do so now.
+Some pseudo-filesystems do not have an explicit splice fops since adding
+commit 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops"),
+and now will reject attempts to use splice() in those filesystem paths.
 
-This also requires implementing pte_pgprot() as this is used in the
-generic_access_phys() code enabled by CONFIG_HAVE_IOREMAP_PROT. As with
-ioremap_wc() we need to take the MMIO Write Back bit index into account.
-
-Moreover since the pgprot value returned from pte_pgprot() is to be used
-for mappings into kernel address space we must make sure that it uses
-appropriate kernel page table protection bits. In particular a pgprot
-value originally coming from userspace could have the _PAGE_PROTECT
-bit set to enable fault based dirty bit accounting which would then make
-the mapping inaccessible when used in kernel address space.
-
-Fixes: b02002cc4c0f ("s390/pci: Implement ioremap_wc/prot() with MIO")
-Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Link: https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/Kconfig               |  1 +
- arch/s390/include/asm/pgtable.h | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+)
+ .../selftests/splice/short_splice_read.sh     | 119 ++++++++++++++----
+ 1 file changed, 98 insertions(+), 21 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b4c7c34069f8..d6582f57e0a1 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -164,6 +164,7 @@ config S390
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO
-+	select HAVE_IOREMAP_PROT if PCI
- 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
- 	select HAVE_KERNEL_BZIP2
- 	select HAVE_KERNEL_GZIP
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index b38f7b781564..adea53f69bfd 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -863,6 +863,25 @@ static inline int pte_unused(pte_t pte)
- 	return pte_val(pte) & _PAGE_UNUSED;
- }
+diff --git a/tools/testing/selftests/splice/short_splice_read.sh b/tools/testing/selftests/splice/short_splice_read.sh
+index 7810d3589d9a..22b6c8910b18 100755
+--- a/tools/testing/selftests/splice/short_splice_read.sh
++++ b/tools/testing/selftests/splice/short_splice_read.sh
+@@ -1,21 +1,87 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
++#
++# Test for mishandling of splice() on pseudofilesystems, which should catch
++# bugs like 11990a5bd7e5 ("module: Correctly truncate sysfs sections output")
++#
++# Since splice fallback was removed as part of the set_fs() rework, many of these
++# tests expect to fail now. See https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+ set -e
  
-+/*
-+ * Extract the pgprot value from the given pte while at the same time making it
-+ * usable for kernel address space mappings where fault driven dirty and
-+ * young/old accounting is not supported, i.e _PAGE_PROTECT and _PAGE_INVALID
-+ * must not be set.
-+ */
-+static inline pgprot_t pte_pgprot(pte_t pte)
++DIR=$(dirname "$0")
++
+ ret=0
+ 
++expect_success()
 +{
-+	unsigned long pte_flags = pte_val(pte) & _PAGE_CHG_MASK;
++	title="$1"
++	shift
 +
-+	if (pte_write(pte))
-+		pte_flags |= pgprot_val(PAGE_KERNEL);
-+	else
-+		pte_flags |= pgprot_val(PAGE_KERNEL_RO);
-+	pte_flags |= pte_val(pte) & mio_wb_bit_mask;
++	echo "" >&2
++	echo "$title ..." >&2
 +
-+	return __pgprot(pte_flags);
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "ok: $title succeeded" >&2
++		;;
++	1)
++		echo "FAIL: $title should work" >&2
++		ret=$(( ret + 1 ))
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
 +}
 +
- /*
-  * pgd/pmd/pte modification functions
-  */
++expect_failure()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "FAIL: $title unexpectedly worked" >&2
++		ret=$(( ret + 1 ))
++		;;
++	1)
++		echo "ok: $title correctly failed" >&2
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
+ do_splice()
+ {
+ 	filename="$1"
+ 	bytes="$2"
+ 	expected="$3"
++	report="$4"
+ 
+-	out=$(./splice_read "$filename" "$bytes" | cat)
++	out=$("$DIR"/splice_read "$filename" "$bytes" | cat)
+ 	if [ "$out" = "$expected" ] ; then
+-		echo "ok: $filename $bytes"
++		echo "      matched $report" >&2
++		return 0
+ 	else
+-		echo "FAIL: $filename $bytes"
+-		ret=1
++		echo "      no match: '$out' vs $report" >&2
++		return 1
+ 	fi
+ }
+ 
+@@ -23,34 +89,45 @@ test_splice()
+ {
+ 	filename="$1"
+ 
++	echo "  checking $filename ..." >&2
++
+ 	full=$(cat "$filename")
++	rc=$?
++	if [ $rc -ne 0 ] ; then
++		return 2
++	fi
++
+ 	two=$(echo "$full" | grep -m1 . | cut -c-2)
+ 
+ 	# Make sure full splice has the same contents as a standard read.
+-	do_splice "$filename" 4096 "$full"
++	echo "    splicing 4096 bytes ..." >&2
++	if ! do_splice "$filename" 4096 "$full" "full read" ; then
++		return 1
++	fi
+ 
+ 	# Make sure a partial splice see the first two characters.
+-	do_splice "$filename" 2 "$two"
++	echo "    splicing 2 bytes ..." >&2
++	if ! do_splice "$filename" 2 "$two" "'$two'" ; then
++		return 1
++	fi
++
++	return 0
+ }
+ 
+-# proc_single_open(), seq_read()
+-test_splice /proc/$$/limits
+-# special open, seq_read()
+-test_splice /proc/$$/comm
++### /proc/$pid/ has no splice interface; these should all fail.
++expect_failure "proc_single_open(), seq_read() splice" test_splice /proc/$$/limits
++expect_failure "special open(), seq_read() splice" test_splice /proc/$$/comm
+ 
+-# proc_handler, proc_dointvec_minmax
+-test_splice /proc/sys/fs/nr_open
+-# proc_handler, proc_dostring
+-test_splice /proc/sys/kernel/modprobe
+-# proc_handler, special read
+-test_splice /proc/sys/kernel/version
++### /proc/sys/ has a splice interface; these should all succeed.
++expect_success "proc_handler: proc_dointvec_minmax() splice" test_splice /proc/sys/fs/nr_open
++expect_success "proc_handler: proc_dostring() splice" test_splice /proc/sys/kernel/modprobe
++expect_success "proc_handler: special read splice" test_splice /proc/sys/kernel/version
+ 
++### /sys/ has no splice interface; these should all fail.
+ if ! [ -d /sys/module/test_module/sections ] ; then
+-	modprobe test_module
++	expect_success "test_module kernel module load" modprobe test_module
+ fi
+-# kernfs, attr
+-test_splice /sys/module/test_module/coresize
+-# kernfs, binattr
+-test_splice /sys/module/test_module/sections/.init.text
++expect_failure "kernfs attr splice" test_splice /sys/module/test_module/coresize
++expect_failure "kernfs binattr splice" test_splice /sys/module/test_module/sections/.init.text
+ 
+ exit $ret
 -- 
 2.30.2
 
