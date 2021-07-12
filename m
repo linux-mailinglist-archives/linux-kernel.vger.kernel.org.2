@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0835E3C4929
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5FC3C56BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbhGLGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:42:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
+        id S1348450AbhGLIXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:23:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235749AbhGLGcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:32:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E15B1610E6;
-        Mon, 12 Jul 2021 06:29:46 +0000 (UTC)
+        id S1347703AbhGLHkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA2F961482;
+        Mon, 12 Jul 2021 07:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071387;
-        bh=+sZEZrHmHmdqH8UCcxerHUyNuFkWGKJIk6DG+Yq6UfM=;
+        s=korg; t=1626075337;
+        bh=Oc/muHyp/WkHhV5wU9XuA3AaY1FnzFrQ4sTl6k/RmDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LW4fw1dRJyAtmAvcT7HFCNbf9YsXSAww3N/sEA1tkQ7hI9wkv8khojkuXFJ3ADe0D
-         zt7J9PzkVLJ9I4Dfotz463jawlEKc8wezn+QYhTl66vqtDKVElmWd5kMi9fZspodka
-         h/pqeCMUhJY7VgfkO4fWWPPsfwuJNFhYCF0Az/NY=
+        b=VjYEEhTDY+JP+a0IbmGdSJpo1hc19pE+unQAHieELgypy+v0NfwUs8DkvtO9hRNor
+         Ota6eafNTEPQKUKYqr9JhBzTdNjwvTdd2GmgQYE4EqS3mQJ2AMhxhMm/WAlWxP8Uzs
+         pCTkPgUUlvPBf3R5NKwkMG1wZ0pP6y1/B5ehmEvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Pan Dong <pandong.peter@bytedance.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 048/593] ext4: fix avefreec in find_group_orlov
+        stable@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 185/800] media: dvbdev: fix error logic at dvb_register_device()
 Date:   Mon, 12 Jul 2021 08:03:28 +0200
-Message-Id: <20210712060848.419000877@linuxfoundation.org>
+Message-Id: <20210712060939.065588098@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Dong <pandong.peter@bytedance.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit c89849cc0259f3d33624cc3bd127685c3c0fa25d upstream.
+[ Upstream commit 1fec2ecc252301110e4149e6183fa70460d29674 ]
 
-The avefreec should be average free clusters instead
-of average free blocks, otherwize Orlov's allocator
-will not work properly when bigalloc enabled.
+As reported by smatch:
 
-Cc: stable@kernel.org
-Signed-off-by: Pan Dong <pandong.peter@bytedance.com>
-Link: https://lore.kernel.org/r/20210525073656.31594-1-pandong.peter@bytedance.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:510 dvb_register_device() warn: '&dvbdev->list_head' not removed from list
+	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:530 dvb_register_device() warn: '&dvbdev->list_head' not removed from list
+	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:545 dvb_register_device() warn: '&dvbdev->list_head' not removed from list
 
+The error logic inside dvb_register_device() doesn't remove
+devices from the dvb_adapter_list in case of errors.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/ialloc.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/media/dvb-core/dvbdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -402,7 +402,7 @@ static void get_orlov_stats(struct super
-  *
-  * We always try to spread first-level directories.
-  *
-- * If there are blockgroups with both free inodes and free blocks counts
-+ * If there are blockgroups with both free inodes and free clusters counts
-  * not worse than average we return one with smallest directory count.
-  * Otherwise we simply return a random group.
-  *
-@@ -411,7 +411,7 @@ static void get_orlov_stats(struct super
-  * It's OK to put directory into a group unless
-  * it has too many directories already (max_dirs) or
-  * it has too few free inodes left (min_inodes) or
-- * it has too few free blocks left (min_blocks) or
-+ * it has too few free clusters left (min_clusters) or
-  * Parent's group is preferred, if it doesn't satisfy these
-  * conditions we search cyclically through the rest. If none
-  * of the groups look good we just look for a group with more
-@@ -427,7 +427,7 @@ static int find_group_orlov(struct super
- 	ext4_group_t real_ngroups = ext4_get_groups_count(sb);
- 	int inodes_per_group = EXT4_INODES_PER_GROUP(sb);
- 	unsigned int freei, avefreei, grp_free;
--	ext4_fsblk_t freeb, avefreec;
-+	ext4_fsblk_t freec, avefreec;
- 	unsigned int ndirs;
- 	int max_dirs, min_inodes;
- 	ext4_grpblk_t min_clusters;
-@@ -446,9 +446,8 @@ static int find_group_orlov(struct super
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index 3862ddc86ec4..795d9bfaba5c 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -506,6 +506,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 			break;
  
- 	freei = percpu_counter_read_positive(&sbi->s_freeinodes_counter);
- 	avefreei = freei / ngroups;
--	freeb = EXT4_C2B(sbi,
--		percpu_counter_read_positive(&sbi->s_freeclusters_counter));
--	avefreec = freeb;
-+	freec = percpu_counter_read_positive(&sbi->s_freeclusters_counter);
-+	avefreec = freec;
- 	do_div(avefreec, ngroups);
- 	ndirs = percpu_counter_read_positive(&sbi->s_dirs_counter);
+ 	if (minor == MAX_DVB_MINORS) {
++		list_del (&dvbdev->list_head);
+ 		kfree(dvbdevfops);
+ 		kfree(dvbdev);
+ 		up_write(&minor_rwsem);
+@@ -526,6 +527,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		      __func__);
  
+ 		dvb_media_device_free(dvbdev);
++		list_del (&dvbdev->list_head);
+ 		kfree(dvbdevfops);
+ 		kfree(dvbdev);
+ 		mutex_unlock(&dvbdev_register_lock);
+@@ -541,6 +543,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		pr_err("%s: failed to create device dvb%d.%s%d (%ld)\n",
+ 		       __func__, adap->num, dnames[type], id, PTR_ERR(clsdev));
+ 		dvb_media_device_free(dvbdev);
++		list_del (&dvbdev->list_head);
+ 		kfree(dvbdevfops);
+ 		kfree(dvbdev);
+ 		return PTR_ERR(clsdev);
+-- 
+2.30.2
+
 
 
