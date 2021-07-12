@@ -2,154 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D8E3C5F80
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92F13C5F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235605AbhGLPoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:44:34 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:34535 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235453AbhGLPob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:44:31 -0400
-Received: by mail-io1-f51.google.com with SMTP id g22so23283402iom.1;
-        Mon, 12 Jul 2021 08:41:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=So363S9K1xaiE2gvVFLgGJk4L6cIe1WtHli+BpBLUGQ=;
-        b=ELZ85nUOfBHoC+9bQeCIJMUsYbix6UihzlX9qtCf+/B10hg37s/s/6g5mT6qAd974k
-         igKVAxfuFCVgTygOgooh8yCSSh+a9EYLWxt1dQIq127nv9ScvCgGamaadUYhrZOZQqTR
-         2stOLPt8q4W6wtAn1ouGQWKkhwD8WdnTDDLBxNdl0pMttwgA5fjloeGpDpQFoPENHZt5
-         Qj+vDyvMHsTGYS2lDAczdWyU/OFqHf8Lbr8rCsNa1aWnZ0qaMcYJhTrOSQiCeFqVxu7p
-         BD6iqpx9VMLMP+xGo73LO/SpR9cZlkksy1Sv4J8s6G+U/AzguGDSJKLeTfG49rqq5LA3
-         9tgg==
-X-Gm-Message-State: AOAM533CA7PEyDyGunW56KAaMOFkYH3kWHtv2Fsh3WLQOSZuL3M4D1Ty
-        8QX5QUlutLWJEKMcxRKssA==
-X-Google-Smtp-Source: ABdhPJyUUnj2N0PKw9pZrLgUyzMldZX4nOEnjK8oCSzeWh+u0g8DYR7jYAAEvMLGhlVWNzAxTUh2Qg==
-X-Received: by 2002:a02:93a3:: with SMTP id z32mr14042078jah.33.1626104501779;
-        Mon, 12 Jul 2021 08:41:41 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id t11sm8223332iob.5.2021.07.12.08.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 08:41:40 -0700 (PDT)
-Received: (nullmailer pid 1987378 invoked by uid 1000);
-        Mon, 12 Jul 2021 15:41:39 -0000
-Date:   Mon, 12 Jul 2021 09:41:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v3 02/12] dt-bindings: phy: tegra20-usb-phy: Document
- properties needed for OTG mode
-Message-ID: <20210712154139.GB1980362@robh.at.kernel.org>
-References: <20210704225433.32029-1-digetx@gmail.com>
- <20210704225433.32029-3-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210704225433.32029-3-digetx@gmail.com>
+        id S235498AbhGLPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233166AbhGLPp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 11:45:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B4B260FF1;
+        Mon, 12 Jul 2021 15:42:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m2y4r-00CrUG-LJ; Mon, 12 Jul 2021 16:42:37 +0100
+Date:   Mon, 12 Jul 2021 16:42:37 +0100
+Message-ID: <877dhv35ea.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
+In-Reply-To: <20210709043713.887098-3-senozhatsky@chromium.org>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+        <20210709043713.887098-3-senozhatsky@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: senozhatsky@chromium.org, will@kernel.org, suleiman@google.com, joelaf@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 01:54:23AM +0300, Dmitry Osipenko wrote:
-> In order to support OTG mode we need these new properties:
+On Fri, 09 Jul 2021 05:37:11 +0100,
+Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
 > 
-> 	- interrupt
-> 	- nvidia,pmc
-> 	- nvidia,phy-instance
+> PV-vcpu-state is a per-CPU struct, which, for the time being,
+> holds boolean `preempted' vCPU state. During the startup,
+> given that host supports PV-state, each guest vCPU sends
+> a pointer to its per-CPU variable to the host as a payload
+
+What is the expected memory type for this memory region? What is its
+life cycle? Where is it allocated from?
+
+> with the SMCCC HV call, so that host can update vCPU state
+> when it puts or loads vCPU.
 > 
-> The nvidia,phy-instance isn't strictly needed for the OTG mode since we
-> know that only first controller supports it in practice, but it will be
-> needed in general for supporting more complex hardware features that
-> require knowledge of the PHY offset within common registers of the Power
-> Management controller (PMC).
+> This has impact on the guest's scheduler:
 > 
-> Add the new properties to the bindings.
+> [..]
+>   wake_up_process()
+>    try_to_wake_up()
+>     select_task_rq_fair()
+>      available_idle_cpu()
+>       vcpu_is_preempted()
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Some sched benchmarks data is available on the github page [0].
+> 
+> [0] https://github.com/sergey-senozhatsky/arm64-vcpu_is_preempted
+
+Please include these results in the cover letter. I tend to reply to
+email while offline, and I can't comment on GH.
+
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 > ---
->  .../bindings/phy/nvidia,tegra20-usb-phy.yaml  | 20 +++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  arch/arm64/include/asm/paravirt.h | 19 +++++++
+>  arch/arm64/kernel/paravirt.c      | 94 +++++++++++++++++++++++++++++++
+>  arch/arm64/kernel/smp.c           |  4 ++
+>  3 files changed, 117 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml b/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
-> index 593187234e6a..a108f1552042 100644
-> --- a/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
-> @@ -77,6 +77,9 @@ properties:
->            - const: timer
->            - const: utmi-pads
+> diff --git a/arch/arm64/include/asm/paravirt.h b/arch/arm64/include/asm/paravirt.h
+> index 9aa193e0e8f2..a3f7665dff38 100644
+> --- a/arch/arm64/include/asm/paravirt.h
+> +++ b/arch/arm64/include/asm/paravirt.h
+> @@ -2,6 +2,11 @@
+>  #ifndef _ASM_ARM64_PARAVIRT_H
+>  #define _ASM_ARM64_PARAVIRT_H
 >  
-> +  interrupts:
-> +    maxItems: 1
-> +
->    resets:
->      oneOf:
->        - maxItems: 1
-> @@ -199,6 +202,17 @@ properties:
->      maxItems: 1
->      description: GPIO used to reset the PHY.
->  
-> +  nvidia,pmc:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to Power Management controller.
-> +
+> +struct vcpu_state {
 
-Add a cell to this for the PHY reg offset and then get rid of the index:
+If this is KVM specific (which it most likely is), please name-space
+it correctly, and move it to a KVM-specific location.
 
-> +  nvidia,phy-instance:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 2
-> +    description: Unique hardware ID.
+> +	bool	preempted;
+> +	u8	reserved[63];
+
+Why 63? Do you attach any particular meaning to a 64byte structure
+(and before you say "cache line size", please look at some of the
+cache line sizes we have to deal with...).
+
+This should also be versioned from day-1, one way or another.
+
+> +};
 > +
->  required:
->    - compatible
->    - reg
-> @@ -320,6 +334,7 @@ examples:
->          compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
->          reg = <0x7d008000 0x4000>,
->                <0x7d000000 0x4000>;
-> +        interrupts = <0 97 4>;
->          phy_type = "utmi";
->          clocks = <&tegra_car TEGRA124_CLK_USB3>,
->                   <&tegra_car TEGRA124_CLK_PLL_U>,
-> @@ -338,6 +353,8 @@ examples:
->          nvidia,hssquelch-level = <2>;
->          nvidia,hsdiscon-level = <5>;
->          nvidia,xcvr-hsslew = <12>;
-> +        nvidia,pmc = <&tegra_pmc>;
-> +        nvidia,phy-instance= <2>;
->      };
+>  #ifdef CONFIG_PARAVIRT
+>  #include <linux/static_call_types.h>
 >  
->    - |
-> @@ -346,6 +363,7 @@ examples:
->      usb-phy@c5004000 {
->          compatible = "nvidia,tegra20-usb-phy";
->          reg = <0xc5004000 0x4000>;
-> +        interrupts = <0 21 4>;
->          phy_type = "ulpi";
->          clocks = <&tegra_car TEGRA20_CLK_USB2>,
->                   <&tegra_car TEGRA20_CLK_PLL_U>,
-> @@ -354,4 +372,6 @@ examples:
->          resets = <&tegra_car 58>, <&tegra_car 22>;
->          reset-names = "usb", "utmi-pads";
->          #phy-cells = <0>;
-> +        nvidia,pmc = <&tegra_pmc>;
-> +        nvidia,phy-instance= <1>;
->      };
-> -- 
-> 2.32.0
-> 
-> 
+> @@ -20,8 +25,22 @@ static inline u64 paravirt_steal_clock(int cpu)
+>  
+>  int __init pv_time_init(void);
+>  
+> +bool dummy_vcpu_is_preempted(unsigned int cpu);
+> +
+> +extern struct static_key pv_vcpu_is_preempted_enabled;
+> +DECLARE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> +
+> +static inline bool paravirt_vcpu_is_preempted(unsigned int cpu)
+> +{
+> +	return static_call(pv_vcpu_is_preempted)(cpu);
+> +}
+> +
+> +int __init pv_vcpu_state_init(void);
+> +
+>  #else
+>  
+> +#define pv_vcpu_state_init() do {} while (0)
+> +
+>  #define pv_time_init() do {} while (0)
+>  
+>  #endif // CONFIG_PARAVIRT
+> diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
+> index 75fed4460407..d8fc46795d94 100644
+> --- a/arch/arm64/kernel/paravirt.c
+> +++ b/arch/arm64/kernel/paravirt.c
+> @@ -40,6 +40,11 @@ struct pv_time_stolen_time_region {
+>  
+>  static DEFINE_PER_CPU(struct pv_time_stolen_time_region, stolen_time_region);
+>  
+> +static DEFINE_PER_CPU(struct vcpu_state, vcpus_states);
+
+nit: there is only one 'state' structure per CPU, so I'd prefer the
+singular form.
+
+> +struct static_key pv_vcpu_is_preempted_enabled;
+> +
+> +DEFINE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> +
+>  static bool steal_acc = true;
+>  static int __init parse_no_stealacc(char *arg)
+>  {
+> @@ -165,3 +170,92 @@ int __init pv_time_init(void)
+>  
+>  	return 0;
+>  }
+> +
+> +bool dummy_vcpu_is_preempted(unsigned int cpu)
+
+Why does this have to be global?
+
+> +{
+> +	return false;
+> +}
+> +
+> +static bool __vcpu_is_preempted(unsigned int cpu)
+> +{
+> +	struct vcpu_state *st;
+> +
+> +	st = &per_cpu(vcpus_states, cpu);
+> +	return READ_ONCE(st->preempted);
+> +}
+> +
+> +static bool has_pv_vcpu_state(void)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	/* To detect the presence of PV time support we require SMCCC 1.1+ */
+> +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+> +		return false;
+> +
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
+> +			     ARM_SMCCC_HV_PV_VCPU_STATE_FEATURES,
+> +			     &res);
+> +
+> +	if (res.a0 != SMCCC_RET_SUCCESS)
+> +		return false;
+> +	return true;
+
+Please move all this over the the KVM-specific discovery mechanism.
+
+> +}
+> +
+> +static int __pv_vcpu_state_hook(unsigned int cpu, int event)
+> +{
+> +	struct arm_smccc_res res;
+> +	struct vcpu_state *st;
+> +
+> +	st = &per_cpu(vcpus_states, cpu);
+> +	arm_smccc_1_1_invoke(event, virt_to_phys(st), &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS)
+> +		return -EINVAL;
+> +	return 0;
+> +}
+> +
+> +static int vcpu_state_init(unsigned int cpu)
+> +{
+> +	int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_INIT);
+> +
+> +	if (ret)
+> +		pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_INIT\n");
+
+pr_warn_once(), please.
+
+> +	return ret;
+> +}
+> +
+> +static int vcpu_state_release(unsigned int cpu)
+> +{
+> +	int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_RELEASE);
+> +
+> +	if (ret)
+> +		pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_RELEASE\n");
+> +	return ret;
+> +}
+> +
+> +static int pv_vcpu_state_register_hooks(void)
+> +{
+> +	int ret;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> +				"hypervisor/arm/pvstate:starting",
+> +				vcpu_state_init,
+> +				vcpu_state_release);
+> +	if (ret < 0)
+> +		pr_warn("Failed to register CPU hooks\n");
+> +	return 0;
+> +}
+> +
+> +int __init pv_vcpu_state_init(void)
+> +{
+> +	int ret;
+> +
+> +	if (!has_pv_vcpu_state())
+> +		return 0;
+> +
+> +	ret = pv_vcpu_state_register_hooks();
+> +	if (ret)
+> +		return ret;
+> +
+> +	static_call_update(pv_vcpu_is_preempted, __vcpu_is_preempted);
+> +	static_key_slow_inc(&pv_vcpu_is_preempted_enabled);
+> +	return 0;
+> +}
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 6f6ff072acbd..20d42e0f2a99 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -50,6 +50,7 @@
+>  #include <asm/tlbflush.h>
+>  #include <asm/ptrace.h>
+>  #include <asm/virt.h>
+> +#include <asm/paravirt.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/ipi.h>
+> @@ -756,6 +757,9 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
+>  	numa_store_cpu_info(this_cpu);
+>  	numa_add_cpu(this_cpu);
+>  
+> +	/* Init paravirt CPU state */
+> +	pv_vcpu_state_init();
+> +
+>  	/*
+>  	 * If UP is mandated by "nosmp" (which implies "maxcpus=0"), don't set
+>  	 * secondary CPUs present.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
