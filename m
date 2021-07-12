@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996023C5B72
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EF03C5B63
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236672AbhGLLWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:22:05 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3387 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238712AbhGLLUA (ORCPT
+        id S235822AbhGLLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:21:20 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:37721 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237507AbhGLLTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:20:00 -0400
-Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GNgtS1T7Tz6GFgJ;
-        Mon, 12 Jul 2021 19:06:08 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 13:17:10 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 12:17:07 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <joro@8bytes.org>, <will@kernel.org>, <dwmw2@infradead.org>,
-        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>,
-        <corbet@lwn.net>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        <chenxiang66@hisilicon.com>, <linux-doc@vger.kernel.org>,
-        <dianders@chromium.org>, John Garry <john.garry@huawei.com>
-Subject: [PATCH v15 6/6] iommu: Remove mode argument from iommu_set_dma_strict()
-Date:   Mon, 12 Jul 2021 19:12:20 +0800
-Message-ID: <1626088340-5838-7-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1626088340-5838-1-git-send-email-john.garry@huawei.com>
-References: <1626088340-5838-1-git-send-email-john.garry@huawei.com>
+        Mon, 12 Jul 2021 07:19:17 -0400
+Received: by mail-vs1-f48.google.com with SMTP id bf5so2649668vsb.4;
+        Mon, 12 Jul 2021 04:16:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wb2gUE9RppEYjBtkun4RSMhw4ORgLmf2nLZuAw7U5rs=;
+        b=StPlbCjAFgQdBd0aTM1bWpS0OvScsaQmYapsRIMhn174Fud8LhKNm+u71Zlg9DqEs8
+         64GRj+RyaOXTeCOKUmnpxgSE03ayMzuqO0NxjEH0zzXJwP8634yn9siQaw/7MqDa4LmD
+         SMUMcD//lUlzGhfbYOw1qWQJtON/202hr/owRoU//gh0QBp7z5Nzij8+8Gr2xtumA6BO
+         ZIqv57XLia74g8srgrg9Kmz4Nwqn3qesWKLrr7XKyOByuk+nwQCJC7Vrfas27IbFVGf7
+         a1vAcCBXeQCzilFtYoepkS8en5iABu6668OUezUbjXnEl8m+LPRcNWQd01g6FrALdn71
+         9pXw==
+X-Gm-Message-State: AOAM531mdFxOMVLfommr9UjjDsUGAC71n7tBwld6xrvkCQOrsRr6ggCN
+        1bzsJsCkOiputudnHKII2xmNM0fP0QleRFAwRew=
+X-Google-Smtp-Source: ABdhPJz0UtKPrQqYn0Fh3Lvo66wMSx+CxMp4eWOcF50Zng7y+eFTenh5uXzhQL0cCTFvRF5k0AF5lklpAfR2sB4/kAY=
+X-Received: by 2002:a67:f98c:: with SMTP id b12mr47329347vsq.40.1626088588696;
+ Mon, 12 Jul 2021 04:16:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210709010055.86663-1-someguy@effective-light.com>
+ <CAMuHMdWhs4en-yR9ic+d4V9M_0BUFX40rP0M=tZRGMaUy2wv3g@mail.gmail.com> <UBYZVQ.O83H1QJFD7TX@effective-light.com>
+In-Reply-To: <UBYZVQ.O83H1QJFD7TX@effective-light.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 12 Jul 2021 13:16:17 +0200
+Message-ID: <CAMuHMdUpGDarCkvAxe1V0c4kn68dHZozdDOq+Tyx9qsCWWZU6w@mail.gmail.com>
+Subject: Re: [PATCH] fbcon: garbage collect fbdev scrolling acceleration
+To:     Hamza Mahfooz <someguy@effective-light.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only ever now set strict mode enabled in iommu_set_dma_strict(), so
-just remove the argument.
+Hi Hamza,
 
-Signed-off-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/amd/init.c    | 2 +-
- drivers/iommu/intel/iommu.c | 6 +++---
- drivers/iommu/iommu.c       | 5 ++---
- include/linux/iommu.h       | 2 +-
- 4 files changed, 7 insertions(+), 8 deletions(-)
+On Fri, Jul 9, 2021 at 11:28 PM Hamza Mahfooz
+<someguy@effective-light.com> wrote:
+> On Fri, Jul 9 2021 at 09:49:02 AM +0200, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > Bummer, more code to revert to re-enable acceleration in the _56_
+> > fbdev drivers using acceleration (some of them unusable without),
+> > despite commit 39aead8373b3 claiming "No other driver supportes
+> > accelerated fbcon"...
+> Should they be refactored to DRM drivers? (I don't mind looking into it
+> if you believe it's worthwhile.)
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 1e641cb6dddc..6e12a615117b 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -3099,7 +3099,7 @@ static int __init parse_amd_iommu_options(char *str)
- 	for (; *str; ++str) {
- 		if (strncmp(str, "fullflush", 9) == 0) {
- 			pr_warn("amd_iommu=fullflush deprecated; use iommu.strict=1 instead\n");
--			iommu_set_dma_strict(true);
-+			iommu_set_dma_strict();
- 		}
- 		if (strncmp(str, "force_enable", 12) == 0)
- 			amd_iommu_force_enable = true;
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d06e8f71c259..6666089c2607 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -454,7 +454,7 @@ static int __init intel_iommu_setup(char *str)
- 			iommu_dma_forcedac = true;
- 		} else if (!strncmp(str, "strict", 6)) {
- 			pr_warn("intel_iommu=strict deprecated; use iommu.strict=1 instead\n");
--			iommu_set_dma_strict(true);
-+			iommu_set_dma_strict();
- 		} else if (!strncmp(str, "sp_off", 6)) {
- 			pr_info("Disable supported super page\n");
- 			intel_iommu_superpage = 0;
-@@ -4382,7 +4382,7 @@ int __init intel_iommu_init(void)
- 		 */
- 		if (cap_caching_mode(iommu->cap)) {
- 			pr_info_once("IOMMU batching disallowed due to virtualization\n");
--			iommu_set_dma_strict(true);
-+			iommu_set_dma_strict();
- 		}
- 		iommu_device_sysfs_add(&iommu->iommu, NULL,
- 				       intel_iommu_groups,
-@@ -5700,7 +5700,7 @@ static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
- 	} else if (dmar_map_gfx) {
- 		/* we have to ensure the gfx device is idle before we flush */
- 		pci_info(dev, "Disabling batched IOTLB flush on Ironlake\n");
--		iommu_set_dma_strict(true);
-+		iommu_set_dma_strict();
- 	}
- }
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0040, quirk_calpella_no_shadow_gtt);
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 60b1ec42e73b..ff221d3ddcbc 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
- }
- early_param("iommu.strict", iommu_dma_setup);
- 
--void iommu_set_dma_strict(bool strict)
-+void iommu_set_dma_strict(void)
- {
--	if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
--		iommu_dma_strict = strict;
-+	iommu_dma_strict = true;
- }
- 
- bool iommu_get_dma_strict(struct iommu_domain *domain)
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 32d448050bf7..754f67d6dd90 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain *domain);
- int iommu_set_pgtable_quirks(struct iommu_domain *domain,
- 		unsigned long quirks);
- 
--void iommu_set_dma_strict(bool val);
-+void iommu_set_dma_strict(void);
- bool iommu_get_dma_strict(struct iommu_domain *domain);
- 
- extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
+Probably some of them can be converted.
+Others must wait for DRM to gain e.g. more "low color" support
+(plus whatever other dead bodies to be found during the conversion).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
