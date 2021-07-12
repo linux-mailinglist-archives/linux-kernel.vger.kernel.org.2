@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53283C4BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE7E3C5828
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242912AbhGLHA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41756 "EHLO mail.kernel.org"
+        id S1379198AbhGLImH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:42:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239178AbhGLGow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABCF1611ED;
-        Mon, 12 Jul 2021 06:41:06 +0000 (UTC)
+        id S1350502AbhGLHvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E55BD619D4;
+        Mon, 12 Jul 2021 07:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072067;
-        bh=jrROJwRekfV1PhsB5i4U1snoZVNxzMGnJYLoh/kha5I=;
+        s=korg; t=1626075950;
+        bh=Pt7eBWdqrvNBJ79+B11Hry5bKq0TZlBclvPZVYmnRL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hhVkr8mUPHpV90ZiVulHLRonyyw3BkVKtVy4/qSPAIVufmcQHaguds9nu3oTc+o7M
-         gl1PNFevcTRPp5ZVEbZ7cKZLjrbCkS7p/lI59B5N6/Jsrp99qu6Ik1cpl7BgmNEUU+
-         jqXGSeJJzwRjjBWOMXTNKx33MujygBPAM3veovOs=
+        b=YyRNdFyD7uPrI/sbb8b9tSBgzEfN3KJX+5tsfeQ0gGu2wsY9LKPNpF6VA+1401YJN
+         7h521ZwPshPxdj4D6qgPpJvCQLALIOEzuJj0X4dKb0F03RXPTOh+YFPzfqb/IAGDzY
+         +ixqxXa/bJnKsEY5RXsSEVOL9D39jfhfxRR4fJXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>,
-        Baoquan He <bhe@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 297/593] mm: page_alloc: refactor setup_per_zone_lowmem_reserve()
-Date:   Mon, 12 Jul 2021 08:07:37 +0200
-Message-Id: <20210712060917.348730375@linuxfoundation.org>
+Subject: [PATCH 5.13 435/800] ehea: fix error return code in ehea_restart_qps()
+Date:   Mon, 12 Jul 2021 08:07:38 +0200
+Message-Id: <20210712061013.346026361@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Stoakes <lstoakes@gmail.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 470c61d70299b1826f56ff5fede10786798e3c14 ]
+[ Upstream commit 015dbf5662fd689d581c0bc980711b073ca09a1a ]
 
-setup_per_zone_lowmem_reserve() iterates through each zone setting
-zone->lowmem_reserve[j] = 0 (where j is the zone's index) then iterates
-backwards through all preceding zones, setting
-lower_zone->lowmem_reserve[j] = sum(managed pages of higher zones) /
-lowmem_reserve_ratio[idx] for each (where idx is the lower zone's index).
+Fix to return -EFAULT from the error handling case instead of 0, as done
+elsewhere in this function.
 
-If the lower zone has no managed pages or its ratio is 0 then all of its
-lowmem_reserve[] entries are effectively zeroed.
+By the way, when get_zeroed_page() fails, directly return -ENOMEM to
+simplify code.
 
-As these arrays are only assigned here and all lowmem_reserve[] entries
-for index < this zone's index are implicitly assumed to be 0 (as these are
-specifically output in show_free_areas() and zoneinfo_show_print() for
-example) there is no need to additionally zero index == this zone's index
-too.  This patch avoids zeroing unnecessarily.
-
-Rather than iterating through zones and setting lowmem_reserve[j] for each
-lower zone this patch reverse the process and populates each zone's
-lowmem_reserve[] values in ascending order.
-
-This clarifies what is going on especially in the case of zero managed
-pages or ratio which is now explicitly shown to clear these values.
-
-Link: https://lkml.kernel.org/r/20201129162758.115907-1-lstoakes@gmail.com
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Roman Gushchin <guro@fb.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 2c69448bbced ("ehea: DLPAR memory add fix")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210528085555.9390-1-thunder.leizhen@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/page_alloc.c | 35 ++++++++++++++---------------------
- 1 file changed, 14 insertions(+), 21 deletions(-)
+ drivers/net/ethernet/ibm/ehea/ehea_main.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 81cc7fdc9c8f..f955610fb552 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7788,31 +7788,24 @@ static void calculate_totalreserve_pages(void)
- static void setup_per_zone_lowmem_reserve(void)
- {
- 	struct pglist_data *pgdat;
--	enum zone_type j, idx;
-+	enum zone_type i, j;
+diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+index ea55314b209d..d105bfbc7c1c 100644
+--- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
++++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+@@ -2618,10 +2618,8 @@ static int ehea_restart_qps(struct net_device *dev)
+ 	u16 dummy16 = 0;
  
- 	for_each_online_pgdat(pgdat) {
--		for (j = 0; j < MAX_NR_ZONES; j++) {
--			struct zone *zone = pgdat->node_zones + j;
--			unsigned long managed_pages = zone_managed_pages(zone);
--
--			zone->lowmem_reserve[j] = 0;
--
--			idx = j;
--			while (idx) {
--				struct zone *lower_zone;
--
--				idx--;
--				lower_zone = pgdat->node_zones + idx;
--
--				if (!sysctl_lowmem_reserve_ratio[idx] ||
--				    !zone_managed_pages(lower_zone)) {
--					lower_zone->lowmem_reserve[j] = 0;
--					continue;
-+		for (i = 0; i < MAX_NR_ZONES - 1; i++) {
-+			struct zone *zone = &pgdat->node_zones[i];
-+			int ratio = sysctl_lowmem_reserve_ratio[i];
-+			bool clear = !ratio || !zone_managed_pages(zone);
-+			unsigned long managed_pages = 0;
-+
-+			for (j = i + 1; j < MAX_NR_ZONES; j++) {
-+				if (clear) {
-+					zone->lowmem_reserve[j] = 0;
- 				} else {
--					lower_zone->lowmem_reserve[j] =
--						managed_pages / sysctl_lowmem_reserve_ratio[idx];
-+					struct zone *upper_zone = &pgdat->node_zones[j];
-+
-+					managed_pages += zone_managed_pages(upper_zone);
-+					zone->lowmem_reserve[j] = managed_pages / ratio;
- 				}
--				managed_pages += zone_managed_pages(lower_zone);
- 			}
+ 	cb0 = (void *)get_zeroed_page(GFP_KERNEL);
+-	if (!cb0) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cb0)
++		return -ENOMEM;
+ 
+ 	for (i = 0; i < (port->num_def_qps); i++) {
+ 		struct ehea_port_res *pr =  &port->port_res[i];
+@@ -2641,6 +2639,7 @@ static int ehea_restart_qps(struct net_device *dev)
+ 					    cb0);
+ 		if (hret != H_SUCCESS) {
+ 			netdev_err(dev, "query_ehea_qp failed (1)\n");
++			ret = -EFAULT;
+ 			goto out;
  		}
- 	}
+ 
+@@ -2653,6 +2652,7 @@ static int ehea_restart_qps(struct net_device *dev)
+ 					     &dummy64, &dummy16, &dummy16);
+ 		if (hret != H_SUCCESS) {
+ 			netdev_err(dev, "modify_ehea_qp failed (1)\n");
++			ret = -EFAULT;
+ 			goto out;
+ 		}
+ 
+@@ -2661,6 +2661,7 @@ static int ehea_restart_qps(struct net_device *dev)
+ 					    cb0);
+ 		if (hret != H_SUCCESS) {
+ 			netdev_err(dev, "query_ehea_qp failed (2)\n");
++			ret = -EFAULT;
+ 			goto out;
+ 		}
+ 
 -- 
 2.30.2
 
