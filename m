@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E247D3C592E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A533C5936
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382040AbhGLJAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
+        id S1382228AbhGLJAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353920AbhGLIDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 299B461D1A;
-        Mon, 12 Jul 2021 07:58:41 +0000 (UTC)
+        id S1353963AbhGLIDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:03:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A91186145F;
+        Mon, 12 Jul 2021 07:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076721;
-        bh=lehlT4m/InziezWCU44sOcqIerWh2hOgXlby/PasnhM=;
+        s=korg; t=1626076746;
+        bh=K4wRohg7cY/fwn6n+fzVhzRCpLnCNoam6p2AAXfp8ZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QcGEohqKXnVDbWMSH1FyPtKxFnfWMSBwPHhvBWU/4ca6WUcwY3MMCSLktu7llFlXC
-         xhSXFiLz9AWpDL5Kf3bU09/d+1mbXWv0T/OuNOc2GMTmGZCDtKFoAybstZRlAyKSf1
-         95zeSGrmMA/bdwAia8k7dnbQYszMyHJhaU5Z7vWI=
+        b=bkelOGapWnxDZUpdX52bYw8RL2PSK1na2+2kEFXbpzsKHN1SXh1v59jYF1G0m2Cx0
+         GEDrHHV5my8xcHBxKKTrUG3gl27QACQEi6JC77hrwGY97NtohRFU2O7u01wjRv7ZfI
+         q9/KMzUW8nHozXocJzSJ9MzJ1ww0wYyTa5QR0pB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Tim Gardner <tim.gardner@canonical.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Shuah Khan <shuah@kernel.org>, linux-sgx@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 748/800] selftests/ftrace: fix event-no-pid on 1-core machine
-Date:   Mon, 12 Jul 2021 08:12:51 +0200
-Message-Id: <20210712061046.388103874@linuxfoundation.org>
+Subject: [PATCH 5.13 749/800] selftests/sgx: remove checks for file execute permissions
+Date:   Mon, 12 Jul 2021 08:12:52 +0200
+Message-Id: <20210712061046.497212718@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,56 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-[ Upstream commit 07b60713b57a8f952d029a2b6849d003d9c16108 ]
+[ Upstream commit 4896df9d53ae5521f3ce83751e828ad70bc65c80 ]
 
-When running event-no-pid test on small machines (e.g. cloud 1-core
-instance), other events might not happen:
+The SGX selftests can fail for a bunch of non-obvious reasons
+like 'noexec' permissions on /dev (which is the default *EVERYWHERE*
+it seems).
 
-    + cat trace
-    + cnt=0
-    + [ 0 -eq 0 ]
-    + fail No other events were recorded
-    [15] event tracing - restricts events based on pid notrace filtering [FAIL]
+A new test mistakenly also looked for +x permission on the
+/dev/sgx_enclave.  File execute permissions really only apply to
+the ability of execve() to work on a file, *NOT* on the ability
+for an application to map the file with PROT_EXEC.  SGX needs to
+mmap(PROT_EXEC), but doesn't need to execve() the device file.
 
-Schedule a simple sleep task to be sure that some other process events
-get recorded.
+Remove the check.
 
-Fixes: ebed9628f5c2 ("selftests/ftrace: Add test to test new set_event_notrace_pid file")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 4284f7acb78b ("selftests/sgx: Improve error detection and messages")
+Reported-by: Tim Gardner <tim.gardner@canonical.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: linux-sgx@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Tested-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/ftrace/test.d/event/event-no-pid.tc  | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tools/testing/selftests/sgx/load.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-index e6eb78f0b954..9933ed24f901 100644
---- a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-+++ b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
-@@ -57,6 +57,10 @@ enable_events() {
-     echo 1 > tracing_on
- }
+diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
+index f441ac34b4d4..bae78c3263d9 100644
+--- a/tools/testing/selftests/sgx/load.c
++++ b/tools/testing/selftests/sgx/load.c
+@@ -150,16 +150,6 @@ bool encl_load(const char *path, struct encl *encl)
+ 		goto err;
+ 	}
  
-+other_task() {
-+    sleep .001 || usleep 1 || sleep 1
-+}
-+
- echo 0 > options/event-fork
+-	/*
+-	 * This just checks if the /dev file has these permission
+-	 * bits set.  It does not check that the current user is
+-	 * the owner or in the owning group.
+-	 */
+-	if (!(sb.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
+-		fprintf(stderr, "no execute permissions on device file %s\n", device_path);
+-		goto err;
+-	}
+-
+ 	ptr = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, fd, 0);
+ 	if (ptr == (void *)-1) {
+ 		perror("mmap for read");
+@@ -169,13 +159,13 @@ bool encl_load(const char *path, struct encl *encl)
  
- do_reset
-@@ -94,6 +98,9 @@ child=$!
- echo "child = $child"
- wait $child
+ #define ERR_MSG \
+ "mmap() succeeded for PROT_READ, but failed for PROT_EXEC.\n" \
+-" Check that current user has execute permissions on %s and \n" \
+-" that /dev does not have noexec set: mount | grep \"/dev .*noexec\"\n" \
++" Check that /dev does not have noexec set:\n" \
++" \tmount | grep \"/dev .*noexec\"\n" \
+ " If so, remount it executable: mount -o remount,exec /dev\n\n"
  
-+# Be sure some other events will happen for small systems (e.g. 1 core)
-+other_task
-+
- echo 0 > tracing_on
- 
- cnt=`count_pid $mypid`
+ 	ptr = mmap(NULL, PAGE_SIZE, PROT_EXEC, MAP_SHARED, fd, 0);
+ 	if (ptr == (void *)-1) {
+-		fprintf(stderr, ERR_MSG, device_path);
++		fprintf(stderr, ERR_MSG);
+ 		goto err;
+ 	}
+ 	munmap(ptr, PAGE_SIZE);
 -- 
 2.30.2
 
