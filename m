@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239BD3C4FC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AB23C48CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242719AbhGLH1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:27:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35358 "EHLO mail.kernel.org"
+        id S237839AbhGLGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:41:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241375AbhGLHAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:00:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED35E61132;
-        Mon, 12 Jul 2021 06:57:53 +0000 (UTC)
+        id S236938AbhGLGcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:32:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 303526052B;
+        Mon, 12 Jul 2021 06:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073074;
-        bh=UKL06wvXO3538xb+FDZ9uGdySxRC3q9rHRHGC0tZ+1A=;
+        s=korg; t=1626071368;
+        bh=otGD2ARCskogymtuvkdl2jSshSk8OnBkPnOGZOfKfI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WKVPzm2QK10BfNzEowhnniApywYjrgaECBXeEkVnxwfdjC+bRHzs5KIhMjDL+CBbJ
-         ujv2KanyxxMIcRk5BpIlFRUxJMNxowHG0+5r8uzEQ9DsLh9lCvfDBjlVzITxmWJHjh
-         nenqHJyyUVAvwcyexm1WkxG4eg3PMEF+PjWhvX9o=
+        b=hUSjHPY8B8GLvLq/3da87mb8Zr++ViEHdNkt1XAru/HDiZdptjUe5YKT4ajYVAERm
+         hmja2/SBM7mHHH0kf2D9i1i6ZiMFuRKU5RLC1Jugo6BSU2E0RJabTYtO6jFmuRBtfN
+         3KObjLH/GUcEWjel7/kAnro3xstxe1TVjs451+G8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pradeep P V K <pragalla@codeaurora.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.12 116/700] fuse: check connected before queueing on fpq->io
-Date:   Mon, 12 Jul 2021 08:03:19 +0200
-Message-Id: <20210712060941.323374142@linuxfoundation.org>
+        stable@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 040/593] btrfs: compression: dont try to compress if we dont have enough pages
+Date:   Mon, 12 Jul 2021 08:03:20 +0200
+Message-Id: <20210712060847.591981655@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +38,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: David Sterba <dsterba@suse.com>
 
-commit 80ef08670d4c28a06a3de954bd350368780bcfef upstream.
+commit f2165627319ffd33a6217275e5690b1ab5c45763 upstream.
 
-A request could end up on the fpq->io list after fuse_abort_conn() has
-reset fpq->connected and aborted requests on that list:
+The early check if we should attempt compression does not take into
+account the number of input pages. It can happen that there's only one
+page, eg. a tail page after some ranges of the BTRFS_MAX_UNCOMPRESSED
+have been processed, or an isolated page that won't be converted to an
+inline extent.
 
-Thread-1			  Thread-2
-========			  ========
-->fuse_simple_request()           ->shutdown
-  ->__fuse_request_send()
-    ->queue_request()		->fuse_abort_conn()
-->fuse_dev_do_read()                ->acquire(fpq->lock)
-  ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
-				  ->release(fpq->lock)
-  ->acquire(fpq->lock)
-  ->add req to fpq->io
+The single page would be compressed but a later check would drop it
+again because the result size must be at least one block shorter than
+the input. That can never work with just one page.
 
-After the userspace copy is done the request will be ended, but
-req->out.h.error will remain uninitialized.  Also the copy might block
-despite being already aborted.
-
-Fix both issues by not allowing the request to be queued on the fpq->io
-list after fuse_abort_conn() has processed this list.
-
-Reported-by: Pradeep P V K <pragalla@codeaurora.org>
-Fixes: fd22d62ed0c3 ("fuse: no fc->lock for iqueue parts")
-Cc: <stable@vger.kernel.org> # v4.2
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fuse/dev.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/btrfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1272,6 +1272,15 @@ static ssize_t fuse_dev_do_read(struct f
- 		goto restart;
- 	}
- 	spin_lock(&fpq->lock);
-+	/*
-+	 *  Must not put request on fpq->io queue after having been shut down by
-+	 *  fuse_abort_conn()
-+	 */
-+	if (!fpq->connected) {
-+		req->out.h.error = err = -ECONNABORTED;
-+		goto out_end;
-+
-+	}
- 	list_add(&req->list, &fpq->io);
- 	spin_unlock(&fpq->lock);
- 	cs->req = req;
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -547,7 +547,7 @@ again:
+ 	 * inode has not been flagged as nocompress.  This flag can
+ 	 * change at any time if we discover bad compression ratios.
+ 	 */
+-	if (inode_need_compress(BTRFS_I(inode), start, end)) {
++	if (nr_pages > 1 && inode_need_compress(BTRFS_I(inode), start, end)) {
+ 		WARN_ON(pages);
+ 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+ 		if (!pages) {
 
 
