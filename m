@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D413C6025
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9B33C6034
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhGLQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:12:19 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43549 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231651AbhGLQMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:12:16 -0400
-Received: by mail-il1-f199.google.com with SMTP id e16-20020a056e0204b0b029020c886c9370so2574051ils.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:09:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vJplYivQzcGWjNSabykUkuqB126rvR4luN1jl8jmks8=;
-        b=L+LeTWuW3jagDs3HmZJ6G/xdjo9Ul5RFhDumF3ptTZUWtSj2D/nieNE364bjQWERBM
-         XpdIM0BtWHOf4L6phbS1QYsJ/S6jBS4eSqlwdjep8ozGqqK10jiosgpGtCUiaxXfe6Q7
-         Xwf0SiJgRcKND41Rs5MboUL1uzi1IBGLtH596rkJ3z1+PQ/1Ca1RTKlqr0FP/vFmy1id
-         EHwGM8vUOsNJcy1dGOCMExpcqodkFrxsFj9Lmm7Lc8N5waFx1CupjmLIx+ULbtsVMGuP
-         pYZgRoSZfL2GzzsgaLtBXLFgHy48I6p3mV7eCdOcIeJWxD2wyLlCymc0eehXUciILJrj
-         uR4A==
-X-Gm-Message-State: AOAM530G2+idk3lHq914oW8Gcerbp7RXQFiL5L3OnbTL/oiXDD9PnKgQ
-        2StnXWiDUl15cf+vU5GOPSyKXE61Dqh7omqFMk9FVL/WjdP6
-X-Google-Smtp-Source: ABdhPJxALuS94+Q/I/hiCV+3ZiAT2NU4QR0ESCCCi5V6qrcsqwXFD7dVEBUny3mN3H9f5y3ngY6F30zDOHN1pBzx2bis+6HOFVF6
+        id S233268AbhGLQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:15:03 -0400
+Received: from thoth.sbs.de ([192.35.17.2]:45663 "EHLO thoth.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhGLQPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:15:02 -0400
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 16CGBjpl020872
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Jul 2021 18:11:45 +0200
+Received: from md1za8fc.ad001.siemens.net ([139.25.0.120])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 16CGBjgr006558;
+        Mon, 12 Jul 2021 18:11:45 +0200
+Date:   Mon, 12 Jul 2021 18:11:43 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
+Message-ID: <20210712181143.4e03ba9b@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VfvVD20pZng_BG-ptZiYo9VBfHFe2OABo8VmtYcarfcSw@mail.gmail.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com>
+        <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
+        <CAHp75VfvVD20pZng_BG-ptZiYo9VBfHFe2OABo8VmtYcarfcSw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a92:6f0a:: with SMTP id k10mr37377927ilc.105.1626106167835;
- Mon, 12 Jul 2021 09:09:27 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 09:09:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000080403805c6ef586d@google.com>
-Subject: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
-From:   syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Am Mon, 12 Jul 2021 15:09:04 +0300
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-syzbot found the following issue on:
+> On Mon, Jul 12, 2021 at 2:35 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> >
+> > This series is basically stuck because people rightfully want me to
+> > use the GPIO subsystem for the LEDs and the watchdog bits that are
+> > connected to GPIO.
+> >
+> > Problem is that the GPIO subsystem does not initialize on the
+> > machines in question. It is a combination of hidden P2SB and
+> > missing ACPI table entries. The GPIO subsystem (intel pinctrl)
+> > needs either P2SB or ACPI do come up ...
+> >
+> > Andy proposed some patches for initializing the intel pinctrl stuff
+> > for one of the machines by falling back to SoC detection in case
+> > there is no ACPI or visible P2SB. While that works it would need to
+> > be done for any Intel SoC to be consistent and discussions seem to
+> > go nowhere.
+> >
+> > I would be willing to port over to "intel pintctl" and help with
+> > testing, but not so much with actual coding. Andy is that moving at
+> > all?
+> >
+> > Since my drivers do reserve the mmio regions properly and the intel
+> > pinctrl will never come up anyways, i do not see a conflict merging
+> > my proposed drivers in the current codebase. The wish to use the
+> > pinctrl infrastructure can not be fulfilled if that infra is not in
+> > place. Once intel pinctrl works, we can change those drivers to
+> > work with that.
+> >
+> > I do not want to take shortcuts ... but also do not want to get
+> > stuck here. So maybe one way to serialize the merge is to allow my
+> > changes like proposed and rebase on intel pinctrl once that
+> > subsystem actually initializes on these machines. We could even
+> > have two code paths ... if region can not be reserved, try gpio ...
+> > or the other way around.  
+> 
+> Bjorn suggested exercising the IORESOURCE_PCI_FIXED on top of the
+> early PCI quirk that unhides P2SB for the entire run time. But I have
+> had no time to actually patch the kernel this way. Have tried the
+> proposed approach on your side?
 
-HEAD commit:    e73f0f0e Linux 5.14-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=172196d2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5e73542d774430b
-dashboard link: https://syzkaller.appspot.com/bug?extid=e08a83a1940ec3846cd5
-compiler:       Debian clang version 11.0.1-2
+Unhiding the P2SB (even if permanent and fixed) alone will not trigger
+pinctrl to initialize. One would still need something along the lines
+of "mfd: lpc_ich: Add support for pinctrl in non-ACPI system" for all
+SoCs.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I guess it could be an improvement to your series, but i honestly do
+not see all fitting together too soon. Since your p2sb series still
+initializes the GPIO with two different names (depending on whether it
+was PCI or ACPI) and only for one SoC, while this series would need two
+... and a consistent solution many more.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in call_rcu / rcu_gp_kthread
-
-write to 0xffffffff837328a0 of 8 bytes by task 11 on cpu 0:
- rcu_gp_fqs kernel/rcu/tree.c:1949 [inline]
- rcu_gp_fqs_loop kernel/rcu/tree.c:2010 [inline]
- rcu_gp_kthread+0xd78/0xec0 kernel/rcu/tree.c:2169
- kthread+0x262/0x280 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-read to 0xffffffff837328a0 of 8 bytes by task 30193 on cpu 1:
- __call_rcu_core kernel/rcu/tree.c:2946 [inline]
- __call_rcu kernel/rcu/tree.c:3062 [inline]
- call_rcu+0x4b0/0x6c0 kernel/rcu/tree.c:3109
- file_free fs/file_table.c:58 [inline]
- __fput+0x43e/0x4e0 fs/file_table.c:298
- ____fput+0x11/0x20 fs/file_table.c:313
- task_work_run+0xae/0x130 kernel/task_work.c:164
- get_signal+0x156c/0x15e0 kernel/signal.c:2581
- arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:302
- do_syscall_64+0x49/0x90 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x0000000000000f57 -> 0x0000000000000f58
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 30193 Comm: syz-executor.5 Tainted: G        W         5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
+Henning
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
