@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699AE3C53B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002F43C4C82
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348486AbhGLHzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
+        id S243794AbhGLHFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:05:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244375AbhGLHSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:18:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A73836147E;
-        Mon, 12 Jul 2021 07:15:27 +0000 (UTC)
+        id S236128AbhGLGre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4937361166;
+        Mon, 12 Jul 2021 06:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074128;
-        bh=JrU/w6ibrI5CvIB8ew/Z264rC8h12/zrkK4QVi/N/5M=;
+        s=korg; t=1626072198;
+        bh=4Himyv58s9jEYb1+oyD4uGF13VwJMRLAqAhHOxs802A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UX2NLC8/1SWc4EH5yOj+/AajRkyvyhzRMaHZn6LzjRXkz0OcnseuZ4jNHzuWddLep
-         nUmayXBQXl+afAbc6G3B3n5QfNg6bGRGTAM0wcWsV/NigdvQOMX1406Em/C9TId3RK
-         ql8WwXQKP2fu+GyfdMADjlFHgT22paZZHhVDh+jY=
+        b=eiQrpau4ZlfBi3xN1xqr9dqy652e6+Wla7utPvsDHhmBTYnNTSBHBlDrJjt9K7hdM
+         woPMgaLtwvUzaYV/rvCE/p6zXUboFX2twe6G+R4g0OhFLA443PboYeViZ4Bn7yTP9y
+         3Kx+jTReHwIphtAaKQ+Jxtzpinv/UOffEKEDBTXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Karen Sornek <karen.sornek@intel.com>,
+        Dawid Lukwinski <dawid.lukwinski@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 473/700] mac80211: remove iwlwifi specific workaround NDPs of null_response
-Date:   Mon, 12 Jul 2021 08:09:16 +0200
-Message-Id: <20210712061026.901460834@linuxfoundation.org>
+Subject: [PATCH 5.10 397/593] i40e: Fix autoneg disabling for non-10GBaseT links
+Date:   Mon, 12 Jul 2021 08:09:17 +0200
+Message-Id: <20210712060931.163808178@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ping-Ke Shih <pkshih@realtek.com>
+From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-[ Upstream commit 744757e46bf13ec3a7b3507d17ab3faab9516d43 ]
+[ Upstream commit 9262793e59f0423437166a879a73d056b1fe6f9a ]
 
-Remove the remaining workaround that is not removed by the
-commit e41eb3e408de ("mac80211: remove iwlwifi specific workaround
-that broke sta NDP tx")
+Disabling autonegotiation was allowed only for 10GBaseT PHY.
+The condition was changed to check if link media type is BaseT.
 
-Fixes: 41cbb0f5a295 ("mac80211: add support for HE")
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Link: https://lore.kernel.org/r/20210623134826.10318-1-pkshih@realtek.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 3ce12ee9d8f9 ("i40e: Fix order of checks when enabling/disabling autoneg in ethtool")
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Reviewed-by: Karen Sornek <karen.sornek@intel.com>
+Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/sta_info.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
-index f2fb69da9b6e..13250cadb420 100644
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -1398,11 +1398,6 @@ static void ieee80211_send_null_response(struct sta_info *sta, int tid,
- 	struct ieee80211_tx_info *info;
- 	struct ieee80211_chanctx_conf *chanctx_conf;
- 
--	/* Don't send NDPs when STA is connected HE */
--	if (sdata->vif.type == NL80211_IFTYPE_STATION &&
--	    !(sdata->u.mgd.flags & IEEE80211_STA_DISABLE_HE))
--		return;
--
- 	if (qos) {
- 		fc = cpu_to_le16(IEEE80211_FTYPE_DATA |
- 				 IEEE80211_STYPE_QOS_NULLFUNC |
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 5d48bc0c3f6c..874073f7f024 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -1262,8 +1262,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
+ 			if (ethtool_link_ksettings_test_link_mode(&safe_ks,
+ 								  supported,
+ 								  Autoneg) &&
+-			    hw->phy.link_info.phy_type !=
+-			    I40E_PHY_TYPE_10GBASE_T) {
++			    hw->phy.media_type != I40E_MEDIA_TYPE_BASET) {
+ 				netdev_info(netdev, "Autoneg cannot be disabled on this phy\n");
+ 				err = -EINVAL;
+ 				goto done;
 -- 
 2.30.2
 
