@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF1B3C52AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A7A3C52BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344521AbhGLHsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:48:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48498 "EHLO mail.kernel.org"
+        id S240798AbhGLHtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:49:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240155AbhGLHOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:14:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77FDB61205;
-        Mon, 12 Jul 2021 07:11:12 +0000 (UTC)
+        id S241516AbhGLHOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:14:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D42461361;
+        Mon, 12 Jul 2021 07:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073873;
-        bh=R+gnsuVLPkqnR5a2NJDRSttCd5SO7UgPTFlJRHvvTnU=;
+        s=korg; t=1626073879;
+        bh=3Q03T6fAnRzEh1tXlxIKGBLf4oJzhCVQrPQqXO6N0/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q+FSxbopRjcvtgd3c5u/j8QlBlTBmUY9AGkSOXvxfAxXQeIuCWxg1refEUnY6aG9j
-         CF9FW2UPKZ4Gi+1nmuHiYZQa7oQJk1xNh0Orvu6udbjT4WH48ui5brtaQgNduqQteU
-         82IQvJpHJxpBw7a8H9tSB8vchzTD1CKpvVb+M5rU=
+        b=HoyziXcMzhjGaqd7OgjRnNh+zrtZ9bBOaJPkzOdw8C4SGYnJ6JhCUEc3Qh/c68XK3
+         SHj+15rtbhhZsivG8e8OS/kWRwpg5GCbQOKVT5zJ3BYZYYeCCzX91I9U1Xrl2bhp9z
+         geJ3i6OKCTnQnBRL4UqyWPIg6Cv/kM9J9iKN4Sl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
+        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
         Jack Wang <jinpu.wang@ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 387/700] RDMA/rtrs-clt: Check if the queue_depth has changed during a reconnection
-Date:   Mon, 12 Jul 2021 08:07:50 +0200
-Message-Id: <20210712061017.567081081@linuxfoundation.org>
+Subject: [PATCH 5.12 388/700] RDMA/rtrs-clt: Fix memory leak of not-freed sess->stats and stats->pcpu_stats
+Date:   Mon, 12 Jul 2021 08:07:51 +0200
+Message-Id: <20210712061017.676800579@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -42,75 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-[ Upstream commit 5b73b799c25c68a4703cd6c5ac4518006d9865b8 ]
+[ Upstream commit 7ecd7e290bee0ab9cf75b79a367a4cc113cf8292 ]
 
-The queue_depth is a module parameter for rtrs_server. It is used on the
-client side to determing the queue_depth of the request queue for the RNBD
-virtual block device.
+sess->stats and sess->stats->pcpu_stats objects are freed
+when sysfs entry is removed. If something wrong happens and
+session is closed before sysfs entry is created,
+sess->stats and sess->stats->pcpu_stats objects are not freed.
 
-During a reconnection event for an already mapped device, in case the
-rtrs_server module queue_depth has changed, fail the reconnect attempt.
+This patch adds freeing of them at three places:
+1. When client uses wrong address and session creation fails.
+2. When client fails to create a sysfs entry.
+3. When client adds wrong address via sysfs add_path.
 
-Also stop further auto reconnection attempts. A manual reconnect via
-sysfs has to be triggerred.
-
-Fixes: 6a98d71daea18 ("RDMA/rtrs: client: main functionality")
-Link: https://lore.kernel.org/r/20210528113018.52290-20-jinpu.wang@ionos.com
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Fixes: 215378b838df0 ("RDMA/rtrs: client: sysfs interface functions")
+Link: https://lore.kernel.org/r/20210528113018.52290-21-jinpu.wang@ionos.com
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index cb6f5c7610a0..1c581c4faacd 100644
+index 1c581c4faacd..49d12dd4a503 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1716,7 +1716,19 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
- 				  queue_depth);
- 			return -ECONNRESET;
+@@ -2689,6 +2689,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 		if (err) {
+ 			list_del_rcu(&sess->s.entry);
+ 			rtrs_clt_close_conns(sess, true);
++			free_percpu(sess->stats->pcpu_stats);
++			kfree(sess->stats);
+ 			free_sess(sess);
+ 			goto close_all_sess;
  		}
--		if (!sess->rbufs || sess->queue_depth < queue_depth) {
-+		if (sess->queue_depth > 0 && queue_depth != sess->queue_depth) {
-+			rtrs_err(clt, "Error: queue depth changed\n");
-+
-+			/*
-+			 * Stop any more reconnection attempts
-+			 */
-+			sess->reconnect_attempts = -1;
-+			rtrs_err(clt,
-+				"Disabling auto-reconnect. Trigger a manual reconnect after issue is resolved\n");
-+			return -ECONNRESET;
-+		}
-+
-+		if (!sess->rbufs) {
- 			kfree(sess->rbufs);
- 			sess->rbufs = kcalloc(queue_depth, sizeof(*sess->rbufs),
- 					      GFP_KERNEL);
-@@ -1730,7 +1742,7 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
- 		sess->chunk_size = sess->max_io_size + sess->max_hdr_size;
+@@ -2697,6 +2699,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 		if (err) {
+ 			list_del_rcu(&sess->s.entry);
+ 			rtrs_clt_close_conns(sess, true);
++			free_percpu(sess->stats->pcpu_stats);
++			kfree(sess->stats);
+ 			free_sess(sess);
+ 			goto close_all_sess;
+ 		}
+@@ -2954,6 +2958,8 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
+ close_sess:
+ 	rtrs_clt_remove_path_from_arr(sess);
+ 	rtrs_clt_close_conns(sess, true);
++	free_percpu(sess->stats->pcpu_stats);
++	kfree(sess->stats);
+ 	free_sess(sess);
  
- 		/*
--		 * Global queue depth and IO size is always a minimum.
-+		 * Global IO size is always a minimum.
- 		 * If while a reconnection server sends us a value a bit
- 		 * higher - client does not care and uses cached minimum.
- 		 *
-@@ -1738,8 +1750,7 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
- 		 * connections in parallel, use lock.
- 		 */
- 		mutex_lock(&clt->paths_mutex);
--		clt->queue_depth = min_not_zero(sess->queue_depth,
--						clt->queue_depth);
-+		clt->queue_depth = sess->queue_depth;
- 		clt->max_io_size = min_not_zero(sess->max_io_size,
- 						clt->max_io_size);
- 		mutex_unlock(&clt->paths_mutex);
+ 	return err;
 -- 
 2.30.2
 
