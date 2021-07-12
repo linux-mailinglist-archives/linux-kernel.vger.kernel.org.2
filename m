@@ -2,91 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A232D3C410B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BCC3C4110
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhGLBnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 21:43:20 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54574 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhGLBnT (ORCPT
+        id S232466AbhGLBqj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 11 Jul 2021 21:46:39 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:53672 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhGLBqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 21:43:19 -0400
-Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 16C1eRvc024402;
-        Mon, 12 Jul 2021 10:40:27 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
- Mon, 12 Jul 2021 10:40:27 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 16C1eRgP024399
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 12 Jul 2021 10:40:27 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: [5.14-rc1] kbuild: stdout from cmd should not be discarded
-Message-ID: <c4d2f929-9a1f-d816-5a24-e2bf8a64fa8f@i-love.sakura.ne.jp>
-Date:   Mon, 12 Jul 2021 10:40:27 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 11 Jul 2021 21:46:36 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16C1hI9l9017941, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16C1hI9l9017941
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 12 Jul 2021 09:43:18 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 12 Jul 2021 09:43:17 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 12 Jul 2021 09:43:17 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
+ RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
+ 15.01.2106.013; Mon, 12 Jul 2021 09:43:17 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     Len Baker <len.baker@gmx.com>,
+        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Stanislaw Gruszka <sgruszka@redhat.com>,
+        Brian Norris <briannorris@chromium.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] rtw88: Fix out-of-bounds write
+Thread-Topic: [PATCH] rtw88: Fix out-of-bounds write
+Thread-Index: AQHXdl+EGA/su576nUeih433YVyLrqs+jtWA
+Date:   Mon, 12 Jul 2021 01:43:16 +0000
+Message-ID: <b0811e08c4a04d2093f3251c55c0edb8@realtek.com>
+References: <20210711141634.6133-1-len.baker@gmx.com>
+In-Reply-To: <20210711141634.6133-1-len.baker@gmx.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.146]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/7/11_=3F=3F_01:07:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?us-ascii?Q?Clean,_bases:_2021/7/12_=3F=3F_12:23:00?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/12/2021 01:29:20
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164962 [Jul 11 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_exist}
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/12/2021 01:32:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 174a1dcc96429efc ("kbuild: sink stdout from cmd for silent build")
-confuses users by sending prompt messages from
 
-  scripts/kconfig/conf -s --syncconfig
+> -----Original Message-----
+> From: Len Baker [mailto:len.baker@gmx.com]
+> Sent: Sunday, July 11, 2021 10:17 PM
+> To: Yan-Hsuan Chuang; Kalle Valo; David S. Miller; Jakub Kicinski
+> Cc: Len Baker; Stanislaw Gruszka; Brian Norris; linux-wireless@vger.kernel.org; netdev@vger.kernel.org;
+> linux-kernel@vger.kernel.org; stable@vger.kernel.org
+> Subject: [PATCH] rtw88: Fix out-of-bounds write
+> 
+> In the rtw_pci_init_rx_ring function the "if (len > TRX_BD_IDX_MASK)"
+> statement guarantees that len is less than or equal to GENMASK(11, 0) or
+> in other words that len is less than or equal to 4095. However the
+> rx_ring->buf has a size of RTK_MAX_RX_DESC_NUM (defined as 512). This
+> way it is possible an out-of-bounds write in the for statement due to
+> the i variable can exceed the rx_ring->buff size.
+> 
+> Fix it using the ARRAY_SIZE macro.
+> 
+> Cc: stable@vger.kernel.org
+> Addresses-Coverity-ID: 1461515 ("Out-of-bounds write")
+> Fixes: e3037485c68ec ("rtw88: new Realtek 802.11ac driver")
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  drivers/net/wireless/realtek/rtw88/pci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
+> index e7d17ab8f113..b9d8c049e776 100644
+> --- a/drivers/net/wireless/realtek/rtw88/pci.c
+> +++ b/drivers/net/wireless/realtek/rtw88/pci.c
+> @@ -280,7 +280,7 @@ static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
 
-to /dev/null before start waiting for response to prompt messages
-when building with "make -s". Reverting that commit fixes this problem.
+I think "if (len > TRX_BD_IDX_MASK)" you mentioned is
 
-----------
-$ make
-  SYNC    include/config/auto.conf.cmd
-*
-* Restart config...
-*
-*
-* General setup
-*
-Compile also drivers which will not load (COMPILE_TEST) [N/y/?] n
-Local version - append to kernel release (LOCALVERSION) []
-Automatically append version information to the version string (LOCALVERSION_AUTO) [N/y/?] n
-Build ID Salt (BUILD_SALT) []
-Kernel compression mode
-> 1. Gzip (KERNEL_GZIP)
-  2. Bzip2 (KERNEL_BZIP2)
-  3. LZMA (KERNEL_LZMA)
-  4. XZ (KERNEL_XZ)
-  5. LZO (KERNEL_LZO)
-  6. LZ4 (KERNEL_LZ4)
-  7. ZSTD (KERNEL_ZSTD)
-choice[1-7?]: 1
-Default init path (DEFAULT_INIT) []
-Default hostname (DEFAULT_HOSTNAME) [(none)] (none)
-Support for paging of anonymous memory (swap) (SWAP) [Y/n/?] y
-System V IPC (SYSVIPC) [Y/n/?] y
-POSIX Message Queues (POSIX_MQUEUE) [Y/n/?] y
-General notification queue (WATCH_QUEUE) [Y/n/?] y
-Enable process_vm_readv/writev syscalls (CROSS_MEMORY_ATTACH) [Y/n/?] y
-uselib syscall (USELIB) [Y/n/?] y
-Auditing support (AUDIT) [Y/n/?] y
-Preemption Model
-  1. No Forced Preemption (Server) (PREEMPT_NONE)
-  2. Voluntary Kernel Preemption (Desktop) (PREEMPT_VOLUNTARY)
-> 3. Preemptible Kernel (Low-Latency Desktop) (PREEMPT)
-choice[1-3?]: 3
-Core Scheduling for SMT (SCHED_CORE) [N/y/?] (NEW) ^Cmake[2]: *** [scripts/kconfig/Makefile:77: syncconfig] Interrupt
-make[1]: *** [Makefile:626: syncconfig] Interrupt
-make: *** [Makefile:735: include/config/auto.conf.cmd] Interrupt
+	if (len > TRX_BD_IDX_MASK) {
+		rtw_err(rtwdev, "len %d exceeds maximum RX entries\n", len);
+		return -EINVAL;
+	}
+
+This statement is used to ensure the length doesn't exceed hardware capability.
+
+To prevent the 'len' argument from exceeding the array size of rx_ring->buff, I
+suggest to add another checking statement, like
+
+	if (len > ARRAY_SIZE(rx_ring->buf)) {
+		rtw_err(rtwdev, "len %d exceeds maximum RX ring buffer\n", len);
+		return -EINVAL;
+	}
+
+But, I wonder if this a false alarm because 'len' is equal to ARRAY_SIZE(rx_ring->buf)
+for now.
+
+
+>  	}
+>  	rx_ring->r.head = head;
+> 
+> -	for (i = 0; i < len; i++) {
+> +	for (i = 0; i < ARRAY_SIZE(rx_ring->buf); i++) {
+>  		skb = dev_alloc_skb(buf_sz);
+>  		if (!skb) {
+>  			allocated = i;
+> --
+> 2.25.1
+
+--
+Ping-Ke
+
