@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F943C58CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5313C4DC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381328AbhGLIwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
+        id S242922AbhGLHOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352612AbhGLH7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F62A61179;
-        Mon, 12 Jul 2021 07:53:29 +0000 (UTC)
+        id S239695AbhGLGt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE2C60FD8;
+        Mon, 12 Jul 2021 06:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076409;
-        bh=PWU2nR3R00QI77hwPsUT04DykDt4M+oAgY0uToP8OAE=;
+        s=korg; t=1626072430;
+        bh=YS150Zw3EMrfbg7HTU/kACgheRdPjXylbhg3QzhH4fA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JHMg3z0uTdTLaIm/+Jym1JT3YZhdAlNq7hKUAWfKoR4Od6utCn1DLV4lYK8xuW/pG
-         89YLGOXw56GL/uyUcNR2F91hMhnOfo05qH9oGzJSP2dpI5+eaVAwiFSP6Tz795UXxy
-         hUu5OUZiuKI7FBfZkRWPBjfXkGTLXsS7agE+3lJo=
+        b=FTJvODdhQNt67liwnVLfOZsSm0IUzHVU7a9W43MrdEvaOgYFv8IVGeIbLLggQ+hIa
+         HnHi2U/JsJfAob0WV15LQYREqmVhgSLKJtWL/da4n3z7LCSliipbfYDmAtSSTn1tCk
+         v7jr1PTnCaq2P+Jfcstjm2z9mm3R1L2i90weyfE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 631/800] iio: magn: bmc150: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Subject: [PATCH 5.10 494/593] visorbus: fix error return code in visorchipset_init()
 Date:   Mon, 12 Jul 2021 08:10:54 +0200
-Message-Id: <20210712061034.305735205@linuxfoundation.org>
+Message-Id: <20210712060945.701003257@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 7692088f72865c41b6b531fd09486ee99a5da930 ]
+[ Upstream commit ce52ec5beecc1079c251f60e3973b3758f60eb59 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+Commit 1366a3db3dcf ("staging: unisys: visorbus: visorchipset_init clean
+up gotos") assigns the initial value -ENODEV to the local variable 'err',
+and the first several error branches will return this value after "goto
+error". But commit f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate
+controlvm channel creation.") overwrites 'err' in the middle of the way.
+As a result, some error branches do not successfully return the initial
+value -ENODEV of 'err', but return 0.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
+In addition, when kzalloc() fails, -ENOMEM should be returned instead of
+-ENODEV.
 
-Fixes: c91746a2361d ("iio: magn: Add support for BMC150 magnetometer")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Stephan Gerhold <stephan@gerhold.net>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-17-jic23@kernel.org
+Fixes: f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate controlvm channel creation.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210528082614.9337-1-thunder.leizhen@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/magnetometer/bmc150_magn.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/visorbus/visorchipset.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/magnetometer/bmc150_magn.c b/drivers/iio/magnetometer/bmc150_magn.c
-index 00f9766bad5c..d534f4f3909e 100644
---- a/drivers/iio/magnetometer/bmc150_magn.c
-+++ b/drivers/iio/magnetometer/bmc150_magn.c
-@@ -138,8 +138,11 @@ struct bmc150_magn_data {
- 	struct regmap *regmap;
- 	struct regulator_bulk_data regulators[2];
- 	struct iio_mount_matrix orientation;
--	/* 4 x 32 bits for x, y z, 4 bytes align, 64 bits timestamp */
--	s32 buffer[6];
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		s32 chans[3];
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	struct iio_trigger *dready_trig;
- 	bool dready_trigger_on;
- 	int max_odr;
-@@ -675,11 +678,11 @@ static irqreturn_t bmc150_magn_trigger_handler(int irq, void *p)
- 	int ret;
+diff --git a/drivers/visorbus/visorchipset.c b/drivers/visorbus/visorchipset.c
+index cb1eb7e05f87..5668cad86e37 100644
+--- a/drivers/visorbus/visorchipset.c
++++ b/drivers/visorbus/visorchipset.c
+@@ -1561,7 +1561,7 @@ schedule_out:
  
- 	mutex_lock(&data->mutex);
--	ret = bmc150_magn_read_xyz(data, data->buffer);
-+	ret = bmc150_magn_read_xyz(data, data->scan.chans);
- 	if (ret < 0)
- 		goto err;
+ static int visorchipset_init(struct acpi_device *acpi_device)
+ {
+-	int err = -ENODEV;
++	int err = -ENOMEM;
+ 	struct visorchannel *controlvm_channel;
  
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- 
- err:
+ 	chipset_dev = kzalloc(sizeof(*chipset_dev), GFP_KERNEL);
+@@ -1584,8 +1584,10 @@ static int visorchipset_init(struct acpi_device *acpi_device)
+ 				 "controlvm",
+ 				 sizeof(struct visor_controlvm_channel),
+ 				 VISOR_CONTROLVM_CHANNEL_VERSIONID,
+-				 VISOR_CHANNEL_SIGNATURE))
++				 VISOR_CHANNEL_SIGNATURE)) {
++		err = -ENODEV;
+ 		goto error_delete_groups;
++	}
+ 	/* if booting in a crash kernel */
+ 	if (is_kdump_kernel())
+ 		INIT_DELAYED_WORK(&chipset_dev->periodic_controlvm_work,
 -- 
 2.30.2
 
