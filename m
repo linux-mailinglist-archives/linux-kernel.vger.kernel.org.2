@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296EF3C6676
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8013C6679
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhGLWmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 18:42:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33455 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhGLWmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 18:42:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GNzH519N2z9sRN;
-        Tue, 13 Jul 2021 08:40:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626129601;
-        bh=pUinegmw/I69ijKK5Z5PXZv317Tsr9Eyo6sOYjk6PqI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kdCTvOww8I1iYzb+0SUqW42mHPTENYBRSyQ9OUN9kgWFAuAG2yIzUV+df3fIiB7tu
-         Az3Wwv/XPFiCxjGSox76oMuPp3ujbP9PGPDWipb4XGvs4PY0kaM1Iigt1FdHnVR4Eg
-         MDShzrQlZJykCpm/FUaktNouikvY4Zmm3dcuWapNaJ5LqaHUemMe58xbCJfJWkGLZ0
-         nUKzD8fENJjXinBIEGoIryHwd5/lJDCzeTNvebh5OPqhQOrOD4kcH+YrNJW2XoO0y5
-         iJNY/TVecRvgDH2A1uojB0r1V/ouSXu1BCIg+wY7S9xy46qAse6WNlUQCL+fg8eYIb
-         eLr6kBtOeke+A==
-Date:   Tue, 13 Jul 2021 08:39:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: linux-next: removed trees
-Message-ID: <20210713083958.413e85b7@canb.auug.org.au>
-In-Reply-To: <20210705215743.40b26667@kant>
-References: <20210514123221.7c21393f@canb.auug.org.au>
-        <20210705215743.40b26667@kant>
+        id S231948AbhGLWoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 18:44:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50468 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhGLWoL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 18:44:11 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8FCFD1C0B77; Tue, 13 Jul 2021 00:41:21 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 00:41:21 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/598] 5.10.50-rc2 review
+Message-ID: <20210712224121.GA27365@duo.ucw.cz>
+References: <20210712184832.376480168@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T7D/pkuNwrusp=tD+pC6OAn";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Disposition: inline
+In-Reply-To: <20210712184832.376480168@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T7D/pkuNwrusp=tD+pC6OAn
-Content-Type: text/plain; charset=US-ASCII
+
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Stefan,
+Hi!
 
-On Mon, 5 Jul 2021 21:57:43 +0200 Stefan Richter <stefanr@s5r6.in-berlin.de=
-> wrote:
->
+> This is the start of the stable review cycle for the 5.10.50 release.
+> There are 598 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
+CIP testing did not find any problems here:
 
-> Would you be OK with adding linux1394.git (for-next branch) back to
-> linux-next?  There are two patches queued and I am finally aiming to get
-> them merged. :-)
->=20
-> Christophe JAILLET (1):
->       firewire: nosy: switch from 'pci_' to 'dma_' API
->=20
-> YueHaibing (1):
->       firewire: net: remove set but not used variable 'guid'
->
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
 
-Readded from today.
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
+Best regards,
+                                                                Pavel
 --=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---Sig_/T7D/pkuNwrusp=tD+pC6OAn
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDsxL4ACgkQAVBC80lX
-0Gz3Rwf/Y3fCj4Rj1PZGIKXhn2fjUP2q7kuSBDeh+s5MtRbSJcqJgicBI8+LX/rv
-nARA0xFLtjkm0DP/zPUpP2uVzgIJd5ZRaGdyiiLvl4KCHZ/IkEC9YDq2N5cuWJgm
-MrRywd4Y+/3Xdq+RcoC69vKsL9Kx3CiOty7W2PhkJ2jJTo43K8ndNSQf7rN/1aTJ
-/LDgqXfJ0/jX6LzhUY8eXAblgnlyGa8CsgD/llG3AXYG+YC4JressQ1dRzV+IQhf
-ICTKO2Dfaw5fb3SfJatN2X8xK4E14wwwBF4iWYaicY8FOiIhp7sQ5jR/raNk5nYN
-GPlQuhtZyGJ12oG5waBGonYhqvb61g==
-=BNg4
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYOzFEQAKCRAw5/Bqldv6
+8saIAJ9s5lrzHsXKT4l1JxaFw4/CWGfKpwCfSfUCwgXtjRIPRp863xxRkPAkTfY=
+=QQSq
 -----END PGP SIGNATURE-----
 
---Sig_/T7D/pkuNwrusp=tD+pC6OAn--
+--zhXaljGHf11kAtnf--
