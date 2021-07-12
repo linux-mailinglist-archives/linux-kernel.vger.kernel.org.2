@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41993C4EB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02523C5325
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344805AbhGLHUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48258 "EHLO mail.kernel.org"
+        id S1347628AbhGLHxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239035AbhGLGt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B3C061289;
-        Mon, 12 Jul 2021 06:45:44 +0000 (UTC)
+        id S1343605AbhGLHT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:19:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D5E661153;
+        Mon, 12 Jul 2021 07:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072345;
-        bh=t+jresWZQupaAwt3R2oqvu3vRilrsFqM2IFw6eJD0sY=;
+        s=korg; t=1626074229;
+        bh=MGEh1O1qKzCFtLhgi4S3slEZspl1zlmNDy1nhzEn1FY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyZJIlCYpDQKdTv1nnHumFgoefWW+T0SIIIo5we169C0Ma0qS3yOSB43jfoQ+7D0F
-         Noemrbn+RSTwtPdGP1pQs+d5iZwAnPl/GNjxQa1JWpefBqSVak6TSnX/NR0ZaDE/9+
-         vfcwoyABZprBptn/ZPwHM/SjzYHgrqgpTU4OtrKY=
+        b=aLPEvcJU+P7u1oSYgFdh2m0ARJAX/MevGu7Ddfs/c4zmTk7kUJ1qtqnbXjku3o+H0
+         TEjTc1H2iVVgtYxucXwrdFG8Xtidxdlaa+SpPUTKuugUwIRL8ZjQtVKrx59iJYv4eP
+         ro/L3mEhoNLw37T0lXZjYhxyL1Qpz0VcAenp20tE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 431/593] RDMA/core: Always release restrack object
+Subject: [PATCH 5.12 508/700] clk: si5341: Avoid divide errors due to bogus register contents
 Date:   Mon, 12 Jul 2021 08:09:51 +0200
-Message-Id: <20210712060935.932124547@linuxfoundation.org>
+Message-Id: <20210712061030.563279073@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Robert Hancock <robert.hancock@calian.com>
 
-[ Upstream commit 3d8287544223a3d2f37981c1f9ffd94d0b5e9ffc ]
+[ Upstream commit 78f6f406026d688868223d5dbeb197a4f7e9a9fd ]
 
-Change location of rdma_restrack_del() to fix the bug where
-task_struct was acquired but not released, causing to resource leak.
+If the Si5341 is being initially programmed and has no stored NVM
+configuration, some of the register contents may contain unexpected
+values, such as zeros, which could cause divide by zero errors during
+driver initialization. Trap errors caused by zero registers or zero clock
+rates which could result in divide errors later in the code.
 
-  ucma_create_id() {
-    ucma_alloc_ctx();
-    rdma_create_user_id() {
-      rdma_restrack_new();
-      rdma_restrack_set_name() {
-        rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
-      }
-    }
-    ucma_destroy_private_ctx() {
-      ucma_put_ctx();
-      rdma_destroy_id() {
-        _destroy_id()                       <--- id_priv was freed
-      }
-    }
-  }
-
-Fixes: 889d916b6f8a ("RDMA/core: Don't access cm_id after its destruction")
-Link: https://lore.kernel.org/r/073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com
-Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
+Signed-off-by: Robert Hancock <robert.hancock@calian.com>
+Link: https://lore.kernel.org/r/20210325192643.2190069-4-robert.hancock@calian.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/clk-si5341.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index be4e447134b3..0c879e40bd18 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1856,6 +1856,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index b8a960e927bc..ac1ccec2b681 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -624,6 +624,9 @@ static unsigned long si5341_synth_clk_recalc_rate(struct clk_hw *hw,
+ 			SI5341_SYNTH_N_NUM(synth->index), &n_num, &n_den);
+ 	if (err < 0)
+ 		return err;
++	/* Check for bogus/uninitialized settings */
++	if (!n_num || !n_den)
++		return 0;
+ 
+ 	/*
+ 	 * n_num and n_den are shifted left as much as possible, so to prevent
+@@ -807,6 +810,9 @@ static long si5341_output_clk_round_rate(struct clk_hw *hw, unsigned long rate,
  {
- 	cma_cancel_operation(id_priv, state);
+ 	unsigned long r;
  
-+	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
- 			if (id_priv->cm_id.ib)
-@@ -1865,7 +1866,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- 				iw_destroy_cm_id(id_priv->cm_id.iw);
- 		}
- 		cma_leave_mc_groups(id_priv);
--		rdma_restrack_del(&id_priv->res);
- 		cma_release_dev(id_priv);
- 	}
++	if (!rate)
++		return 0;
++
+ 	r = *parent_rate >> 1;
  
+ 	/* If rate is an even divisor, no changes to parent required */
+@@ -835,11 +841,16 @@ static int si5341_output_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 		unsigned long parent_rate)
+ {
+ 	struct clk_si5341_output *output = to_clk_si5341_output(hw);
+-	/* Frequency divider is (r_div + 1) * 2 */
+-	u32 r_div = (parent_rate / rate) >> 1;
++	u32 r_div;
+ 	int err;
+ 	u8 r[3];
+ 
++	if (!rate)
++		return -EINVAL;
++
++	/* Frequency divider is (r_div + 1) * 2 */
++	r_div = (parent_rate / rate) >> 1;
++
+ 	if (r_div <= 1)
+ 		r_div = 0;
+ 	else if (r_div >= BIT(24))
 -- 
 2.30.2
 
