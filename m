@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754453C5C84
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457EA3C5C86
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhGLMpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:45:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30646 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233685AbhGLMpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:45:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626093768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pXhL//ogQJi+M8+nVdHcrU68d/XzKP3Ysz4l2H7Enzo=;
-        b=EsnOiJlIlzUNM7Kf6oJ9GKG3KesDTiQ7Gwv2d5eTmw6tJWl69TJYxlVvOdPW+0dMPPlK4a
-        98zEEevcEX0YBglNFkZ8Z9/82+esZByojVfsfDlH2IzormKmnogj268LeaiQ2BmzlW+yos
-        +a8Td0us9nn/EFESAhmQHBYmQatSK7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-fIG3VmWRMnu31B8obKN8uw-1; Mon, 12 Jul 2021 08:42:46 -0400
-X-MC-Unique: fIG3VmWRMnu31B8obKN8uw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4983C804309;
-        Mon, 12 Jul 2021 12:42:41 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-111.rdu2.redhat.com [10.10.113.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AEFCA5C232;
-        Mon, 12 Jul 2021 12:42:21 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-acpi@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jia He <justin.he@arm.com>, Joe Perches <joe@perches.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH v1 4/4] ACPI: memhotplug: memory resources cannot be enabled yet
-Date:   Mon, 12 Jul 2021 14:40:52 +0200
-Message-Id: <20210712124052.26491-5-david@redhat.com>
-In-Reply-To: <20210712124052.26491-1-david@redhat.com>
-References: <20210712124052.26491-1-david@redhat.com>
+        id S234142AbhGLMps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:45:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233685AbhGLMpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 08:45:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 027E36101E;
+        Mon, 12 Jul 2021 12:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626093778;
+        bh=ZLUQlbYl3sNIYsakvpyyvP24BJXkLmZ1qwg3VR1I4aM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gKnsxXNS2n/2DGBJvyCY4Qy55w+leeUb5zJNlDaVXvdx14qKf24rKzdnUiQJC63M+
+         a0PdLdRZF72/09jk9CXPZ7AmnG9KRjN1jzUBSXeNZe38ivRtH43Nrc1excWqFbk1l1
+         p1DbbuCBO3jezX2tpSSshsswWgQILpQcOnorshcyv0erxpGYzjti7klOndYrXeEiD6
+         39cLodf/Y8kFELEygEG5/6kI8abRRji3B+w5pgzx3b74/HrBRQcHThNYv1iC5qhZJw
+         yqu4irEG79TEC3KyZofPTEUbWINZmkF7Nc4f/unExZqQeEpVBQ8SYeStx/4WO7FuCn
+         BlrOwpx3G01Xw==
+Date:   Mon, 12 Jul 2021 13:42:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, hdegoede@redhat.com,
+        mgross@linux.intel.com, luzmaximilian@gmail.com,
+        lgirdwood@gmail.com, laurent.pinchart@ideasonboard.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+Message-ID: <20210712124223.GB4435@sirena.org.uk>
+References: <20210708224226.457224-1-djrscally@gmail.com>
+ <20210709170426.GC4112@sirena.org.uk>
+ <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
+X-Cookie: Hailing frequencies open, Captain.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We allocate + initialize everything from scratch. In case enabling the
-device fails, we free all memory resourcs.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- drivers/acpi/acpi_memhotplug.c | 4 ----
- 1 file changed, 4 deletions(-)
+--IiVenqGWf+H9Y6IX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
-index 1d01d9414c40..eb4faf7c5cad 100644
---- a/drivers/acpi/acpi_memhotplug.c
-+++ b/drivers/acpi/acpi_memhotplug.c
-@@ -182,10 +182,6 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
- 	 * (i.e. memory-hot-remove function)
- 	 */
- 	list_for_each_entry(info, &mem_device->res_list, list) {
--		if (info->enabled) { /* just sanity check...*/
--			num_enabled++;
--			continue;
--		}
- 		/*
- 		 * If the memory block size is zero, please ignore it.
- 		 * Don't try to do the following memory hotplug flowchart.
--- 
-2.31.1
+On Sun, Jul 11, 2021 at 12:37:03PM +0300, Andy Shevchenko wrote:
+> On Fri, Jul 9, 2021 at 8:05 PM Mark Brown <broonie@kernel.org> wrote:
+> > On Thu, Jul 08, 2021 at 11:42:24PM +0100, Daniel Scally wrote:
 
+> > What is a software node and why would we want to use one here?
+
+> Software node is a representation of (missed and / or quirked)
+> firmware nodes in the code.
+
+> > Why are we not just using board files, what does this new abstraction
+> > solve?
+
+> Software node _is_ a board file part. The idea behind that is that the
+> driver, which requires any additional / necessary property that has
+> been missed in the firmware nodes, wouldn't need special treatment if
+> that property comes from a board file rather than firmware.
+
+This doesn't seem to correspond with what these patches are doing,
+they're creating something which bears no relation to any firmware
+interface and the code is specifically looking for swnodes.
+
+--IiVenqGWf+H9Y6IX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDsOK4ACgkQJNaLcl1U
+h9CgZgf/awL7UyQNHdgqbZR+gMkAr4D2ldjhbOFFPWziSR5jV6YsiUJFxNEfHg1E
+BwEyHB1b/AjuSY0b8wDY8qpizohjZZCZh8pyWtXGgwbOp2PAucCyrHfviehRMO1D
+cdvVJCi3Z9CaWdSBscKYhji4uAhzn8RPzd82Brfph1wsIeQZSwcr0RqraJje8JQo
+0dL5L5RJUNaU5ws/vbR61QNOMLKeqvaTPkuqGEWWOYzmHm8eFk+uUXVHn0C1a7Mt
+j+p15phNwxCL6lAHJrlkXFvvAt+awwFteMSJscyWACU2IctwqBCrgNSoCm2BcfKR
+Rx7qz92J2prvzLYIWFdh4Grfdvyfug==
+=KgX4
+-----END PGP SIGNATURE-----
+
+--IiVenqGWf+H9Y6IX--
