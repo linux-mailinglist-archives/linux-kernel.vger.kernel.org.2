@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE513C4578
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C383C43F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhGLGZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235059AbhGLGY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:24:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5689A61166;
-        Mon, 12 Jul 2021 06:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070868;
-        bh=+ilQCIlE2y3de7ZS9NMuQr591m8ljn399G6pW+yPewM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bodp3IEb67wD31kpdYUVowKxmmrCmJWRS2bF81cvttroTN+GlUmdN6GubLc8jVk2v
-         pVZc1GKz1C5aazC78thDTK8vrO7mie/iq8NSY+mVNNEB/F4brk6y55SibLdRM0Llsb
-         2lu4M6Cxull9hJCa4AjjRE1dp2IHksGMtsRQoGY4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 176/348] extcon: extcon-max8997: Fix IRQ freeing at error path
-Date:   Mon, 12 Jul 2021 08:09:20 +0200
-Message-Id: <20210712060724.257904861@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
-References: <20210712060659.886176320@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232163AbhGLGNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231351AbhGLGNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:13:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98353C0613DD;
+        Sun, 11 Jul 2021 23:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=1YkOQcBdgxi62ZhLA0NtO1y6SKPDgvnlI06PbOB4DUw=; b=cj+KTjXg8AMbD8rtYBj+8r7Cxt
+        BIPIRTp20D9LAr4qWIr6U0JC/xVHlXyiIcTpi382wli87gwzL3Ky+H3KogILv29OKGQofxk4HKyqR
+        AiEUkF3fz0flDZ/xb4lpGW1WDvCD6qxQc+HkKDLMWs17uNkI25ouMldR4GbfUgdqhRyD1eO7ejeUK
+        aRa9JYOKdeAzKqSD8RqQQWjuHagl0GUOGEO14F0eiDyAnchuvTZcMJ5utjbxVMfjBg0n7t7VaNAiA
+        Q5H0LUAnMpixjTv1WRiUcuxUg02RkZHPFt7pajAXdDqcjOppur2vp3jUMn2VfXHojK49J5ypV42jW
+        60ew9ukQ==;
+Received: from [2001:4bb8:184:8b7c:bd9:61b8:39ba:d78a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2p8D-00GwBl-3g; Mon, 12 Jul 2021 06:09:34 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc:     Russell King <linux@armlinux.org.uk>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Shi <alexs@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org
+Subject: flush_kernel_dcache_page fixes and removal
+Date:   Mon, 12 Jul 2021 08:09:22 +0200
+Message-Id: <20210712060928.4161649-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Hi all,
 
-[ Upstream commit 610bdc04830a864115e6928fc944f1171dfff6f3 ]
+while looking to convert the block layer away from kmap_atomic towards
+kmap_local_page and prefeably the helpers that abstract it away I noticed
+that a few block drivers directly or implicitly call
+flush_kernel_dcache_page before kunmapping a page that has been written
+to.  flush_kernel_dcache_page is documented to to be used in such cases,
+but flush_dcache_page is actually required when the page could be in
+the page cache and mapped to userspace, which is pretty much always the
+case when kmapping an arbitrary page.  Unfortunately the documentation
+doesn't exactly make that clear, which lead to this misused.  And it turns
+out that only the copy_strings / copy_string_kernel in the exec code
+were actually correct users of flush_kernel_dcache_page, which is why
+I think we should just remove it and eat the very minor overhead in
+exec rather than confusing poor driver writers.
 
-If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
-without freeing the requested IRQs.
-
-Free the IRQs prior returning if reading the status fails.
-
-Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Link: https://lore.kernel.org/r/27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/extcon/extcon-max8997.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index 172e116ac1ce..ac1633adb55d 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -729,7 +729,7 @@ static int max8997_muic_probe(struct platform_device *pdev)
- 				2, info->status);
- 	if (ret) {
- 		dev_err(info->dev, "failed to read MUIC register\n");
--		return ret;
-+		goto err_irq;
- 	}
- 	cable_type = max8997_muic_get_cable_type(info,
- 					   MAX8997_CABLE_GROUP_ADC, &attached);
--- 
-2.30.2
-
-
-
+Diffstat:
+ Documentation/core-api/cachetlb.rst                    |   86 +++++++----------
+ Documentation/translations/zh_CN/core-api/cachetlb.rst |    9 -
+ arch/arm/include/asm/cacheflush.h                      |    4 
+ arch/arm/mm/flush.c                                    |   33 ------
+ arch/arm/mm/nommu.c                                    |    6 -
+ arch/csky/abiv1/cacheflush.c                           |   11 --
+ arch/csky/abiv1/inc/abi/cacheflush.h                   |    4 
+ arch/mips/include/asm/cacheflush.h                     |    8 -
+ arch/nds32/include/asm/cacheflush.h                    |    3 
+ arch/nds32/mm/cacheflush.c                             |    9 -
+ arch/parisc/include/asm/cacheflush.h                   |    8 -
+ arch/parisc/kernel/cache.c                             |    3 
+ arch/sh/include/asm/cacheflush.h                       |    8 -
+ block/blk-map.c                                        |    2 
+ drivers/block/ps3disk.c                                |    2 
+ drivers/mmc/host/jz4740_mmc.c                          |    4 
+ drivers/mmc/host/mmc_spi.c                             |    2 
+ drivers/scsi/aacraid/aachba.c                          |    1 
+ fs/exec.c                                              |    6 -
+ include/linux/highmem.h                                |    5 
+ lib/scatterlist.c                                      |    5 
+ tools/testing/scatterlist/linux/mm.h                   |    1 
+ 22 files changed, 55 insertions(+), 165 deletions(-)
