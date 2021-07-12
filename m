@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F2E3C4A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF613C5741
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbhGLGsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        id S1376748AbhGLIay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237080AbhGLGiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:38:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4FC61176;
-        Mon, 12 Jul 2021 06:34:16 +0000 (UTC)
+        id S1343915AbhGLHno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F17E061166;
+        Mon, 12 Jul 2021 07:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071656;
-        bh=Auz1i9Vu8ZGHbO+T/8MnQgeUUVcxEUmWz8KkWj4sn7s=;
+        s=korg; t=1626075638;
+        bh=K0RB13v0alRNHwX75C8a5XcddkCCjo9XD092qfbXoss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W5UIVPG8mzVsPWKiRqCD2I3FhlBlBc8CW18eN6KpwKdk8rm5SNme91Q+vbhnzMic0
-         tEiHrKmbXeFacf8uO+XTTBdx39GUSm7YRQXyJKrc1/DGVKKtDMv5xqAToq/yGeQZ8K
-         1V5fSlH8HdeZWb0DC7B0q0iKOZsY7pf35/UNd+2Y=
+        b=m8O3yf2sqAK1pkVqatWMctjpEQ5Nhlkd0MmSBSM0pj0YdrLLiwQnTHRuFxbYc9egY
+         mnmTgpJSmC9man7bFXtMKqEsFskkqsVM0GrkMGrUdZl98jZ9kHDOzte+xz4A21tykb
+         R3AOlgJ4F4JHxJ5K6FB1Ay+4Hv6uQUSR/BtK2ji8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 164/593] regulator: mt6358: Fix vdram2 .vsel_mask
+Subject: [PATCH 5.13 301/800] media: tc358743: Fix error return code in tc358743_probe_of()
 Date:   Mon, 12 Jul 2021 08:05:24 +0200
-Message-Id: <20210712060901.102432900@linuxfoundation.org>
+Message-Id: <20210712060957.301466817@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 50c9462edcbf900f3d5097ca3ad60171346124de ]
+[ Upstream commit a6b1e7093f0a099571fc8836ab4a589633f956a8 ]
 
-The valid vsel value are 0 and 12, so the .vsel_mask should be 0xf.
+When the CSI bps per lane is not in the valid range, an appropriate error
+code -EINVAL should be returned. However, we currently do not explicitly
+assign this error code to 'ret'. As a result, 0 was incorrectly returned.
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Reviewed-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 256148246852 ("[media] tc358743: support probe from device tree")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/mt6358-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/i2c/tc358743.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/mt6358-regulator.c b/drivers/regulator/mt6358-regulator.c
-index 13cb6ac9a892..1d4eb5dc4fac 100644
---- a/drivers/regulator/mt6358-regulator.c
-+++ b/drivers/regulator/mt6358-regulator.c
-@@ -457,7 +457,7 @@ static struct mt6358_regulator_info mt6358_regulators[] = {
- 	MT6358_REG_FIXED("ldo_vaud28", VAUD28,
- 			 MT6358_LDO_VAUD28_CON0, 0, 2800000),
- 	MT6358_LDO("ldo_vdram2", VDRAM2, vdram2_voltages, vdram2_idx,
--		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0x10, 0),
-+		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0xf, 0),
- 	MT6358_LDO("ldo_vsim1", VSIM1, vsim_voltages, vsim_idx,
- 		   MT6358_LDO_VSIM1_CON0, 0, MT6358_VSIM1_ANA_CON0, 0xf00, 8),
- 	MT6358_LDO("ldo_vibr", VIBR, vibr_voltages, vibr_idx,
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 1b309bb743c7..f21da11caf22 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -1974,6 +1974,7 @@ static int tc358743_probe_of(struct tc358743_state *state)
+ 	bps_pr_lane = 2 * endpoint.link_frequencies[0];
+ 	if (bps_pr_lane < 62500000U || bps_pr_lane > 1000000000U) {
+ 		dev_err(dev, "unsupported bps per lane: %u bps\n", bps_pr_lane);
++		ret = -EINVAL;
+ 		goto disable_clk;
+ 	}
+ 
 -- 
 2.30.2
 
