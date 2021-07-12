@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4F53C5780
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5E23C51A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359543AbhGLIeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
+        id S1346802AbhGLHmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:42:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346675AbhGLHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:46:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3129F61158;
-        Mon, 12 Jul 2021 07:42:06 +0000 (UTC)
+        id S242324AbhGLHGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:06:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD8F66124B;
+        Mon, 12 Jul 2021 07:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075726;
-        bh=gk9wxkxzzavHAiG3JBaUottOGtuwQO1NZ4tjNWkAm4U=;
+        s=korg; t=1626073424;
+        bh=761t1zXnjurAJ1ZBS0hQIuMAU+ku6cdTBBfoofqupX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sBTa+06sqm2urXT4Gl33l3GHCYvyieBzNP5jDCC6L3basOzTInq8ZuKUBoA1r22ar
-         EQxu50dxoNFak+H2KyuGDQPI33dBkwaAj87pMhahZ0vvX2ZijPUt9LFRm5EHAqTSBc
-         Y01a32ScSS5W9mr/+eKowdE176MDOwkH0bn4w5Ow=
+        b=jytRdaNZ6cB9AdchtZmi7KH8l2Mxca3RFkT9/cLVcpDDerUlTQMUy7e3It0wNmulx
+         a1uyZkOxvQCiA2G1SGwFK7O/iXOeM5ZMNAKSkhfF6Z5Wo7SEi9kA6xPLtBAn+HOHEj
+         Z8oLDix7W8qmV4JSn4TWIcuf0TrlDkGw09fSTLcg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 296/800] media: ipu3-cio2: Fix reference counting when looping over ACPI devices
-Date:   Mon, 12 Jul 2021 08:05:19 +0200
-Message-Id: <20210712060956.632846734@linuxfoundation.org>
+Subject: [PATCH 5.12 237/700] ACPI: tables: Add custom DSDT file as makefile prerequisite
+Date:   Mon, 12 Jul 2021 08:05:20 +0200
+Message-Id: <20210712061000.454421093@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 2cb2705cf7ffe41dc5bd81290e4241bfb7f031cc ]
+[ Upstream commit d1059c1b1146870c52f3dac12cb7b6cbf39ed27f ]
 
-When we continue, due to device is disabled, loop we have to drop
-reference count. When we have an array full of devices we have to also
-drop the reference count. Note, in this case the
-cio2_bridge_unregister_sensors() is called by the caller.
+A custom DSDT file is mostly used during development or debugging,
+and in that case it is quite likely to want to rebuild the kernel
+after changing ONLY the content of the DSDT.
 
-Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Daniel Scally <djrscally@gmail.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This patch adds the custom DSDT as a prerequisite to tables.o
+to ensure a rebuild if the DSDT file is updated. Make will merge
+the prerequisites from multiple rules for the same target.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/cio2-bridge.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/acpi/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-index e8511787c1e4..4657e99df033 100644
---- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
-+++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-@@ -173,14 +173,15 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
- 	int ret;
- 
- 	for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
--		if (!adev->status.enabled)
-+		if (!adev->status.enabled) {
-+			acpi_dev_put(adev);
- 			continue;
-+		}
- 
- 		if (bridge->n_sensors >= CIO2_NUM_PORTS) {
-+			acpi_dev_put(adev);
- 			dev_err(&cio2->dev, "Exceeded available CIO2 ports\n");
--			cio2_bridge_unregister_sensors(bridge);
--			ret = -EINVAL;
--			goto err_out;
-+			return -EINVAL;
- 		}
- 
- 		sensor = &bridge->sensors[bridge->n_sensors];
-@@ -228,7 +229,6 @@ err_free_swnodes:
- 	software_node_unregister_nodes(sensor->swnodes);
- err_put_adev:
- 	acpi_dev_put(sensor->adev);
--err_out:
- 	return ret;
- }
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index 700b41adf2db..9aa82d527272 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -8,6 +8,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
+ #
+ # ACPI Boot-Time Table Parsing
+ #
++ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
++tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
++
++endif
++
+ obj-$(CONFIG_ACPI)		+= tables.o
+ obj-$(CONFIG_X86)		+= blacklist.o
  
 -- 
 2.30.2
