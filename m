@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B703C5878
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478B93C4A48
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356718AbhGLIsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:48:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
+        id S240089AbhGLGup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347164AbhGLHtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:49:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70FB9619A3;
-        Mon, 12 Jul 2021 07:43:18 +0000 (UTC)
+        id S238329AbhGLGkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3392C610FB;
+        Mon, 12 Jul 2021 06:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075798;
-        bh=C7OGH7ddA9tiWYy1nAe9MT7NLJJRtShXq9EMPKy45vM=;
+        s=korg; t=1626071816;
+        bh=eBswLedJYx/ZLEIT8tcmKoRHn3htzjnt1RXCAbktCrk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NAH/6YgqljVPMoFLiBc3CyTTTirW13j7IWSmh/+k7N7FlDjd9dYCV8Q6q2fqLi9r5
-         dJMf8XSNvyjQlQ/d5UO2jVhmCmpuziUapYhGg/aYBuzUtUPmY4s4+rxxS0Wnvq3q/t
-         3lawrjuqcp0sE984RwtTRpTTLU/selkmt15NYAHE=
+        b=TIHq1u9Kxk8udv3McrRcP/j18VRv8WKwpuFIIQiQK9aP1AdMsp/ZL819dkjR2vl3+
+         DZ7RClSiSofg+n66DtnDgiH5t8Co1A/23q+qRE+mRx2+pehbROw4H9ieZqzDvAbeEy
+         XpzoOCahUATl75xxAEIRwoSPC5kSouJp3ISoLA+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 368/800] extcon: extcon-max8997: Fix IRQ freeing at error path
+Subject: [PATCH 5.10 231/593] locking/lockdep: Reduce LOCKDEP dependency list
 Date:   Mon, 12 Jul 2021 08:06:31 +0200
-Message-Id: <20210712061006.205345771@linuxfoundation.org>
+Message-Id: <20210712060908.330626233@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 610bdc04830a864115e6928fc944f1171dfff6f3 ]
+[ Upstream commit b8e00abe7d9fe21dd13609e2e3a707e38902b105 ]
 
-If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
-without freeing the requested IRQs.
+Some arches (um, sparc64, riscv, xtensa) cause a Kconfig warning for
+LOCKDEP.
+These arch-es select LOCKDEP_SUPPORT but they are not listed as one
+of the arch-es that LOCKDEP depends on.
 
-Free the IRQs prior returning if reading the status fails.
+Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
+intend to have LOCKDEP support, replace the awkward list of
+arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
 
-Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Link: https://lore.kernel.org/r/27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+But wait. LOCKDEP_SUPPORT is included in LOCK_DEBUGGING_SUPPORT,
+which is already a dependency here, so LOCKDEP_SUPPORT is redundant
+and not needed.
+That leaves the FRAME_POINTER dependency, but it is part of an
+expression like this:
+	depends on (A && B) && (FRAME_POINTER || B')
+where B' is a dependency of B so if B is true then B' is true
+and the value of FRAME_POINTER does not matter.
+Thus we can also delete the FRAME_POINTER dependency.
+
+Fixes this kconfig warning: (for um, sparc64, riscv, xtensa)
+
+WARNING: unmet direct dependencies detected for LOCKDEP
+  Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
+  Selected by [y]:
+  - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+  - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+  - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+
+Fixes: 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Link: https://lkml.kernel.org/r/20210524224150.8009-1-rdunlap@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-max8997.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/Kconfig.debug | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index e1408075ef7d..c15a612067af 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -733,7 +733,7 @@ static int max8997_muic_probe(struct platform_device *pdev)
- 				2, info->status);
- 	if (ret) {
- 		dev_err(info->dev, "failed to read MUIC register\n");
--		return ret;
-+		goto err_irq;
- 	}
- 	cable_type = max8997_muic_get_cable_type(info,
- 					   MAX8997_CABLE_GROUP_ADC, &attached);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index dcf4a9028e16..5b7f88a2876d 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1302,7 +1302,6 @@ config LOCKDEP
+ 	bool
+ 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+ 	select STACKTRACE
+-	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+ 	select KALLSYMS
+ 	select KALLSYMS_ALL
+ 
 -- 
 2.30.2
 
