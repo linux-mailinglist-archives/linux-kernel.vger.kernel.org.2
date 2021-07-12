@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F29A3C4CED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9463C58CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244545AbhGLHK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:10:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
+        id S1381145AbhGLIwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:52:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238630AbhGLGs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:48:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 740D061151;
-        Mon, 12 Jul 2021 06:44:33 +0000 (UTC)
+        id S1348704AbhGLH6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:58:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B61E6193D;
+        Mon, 12 Jul 2021 07:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072273;
-        bh=c+FtSA1C+MkBqKGS90RHSaVnYBX/7KJM9eYZJGGEP+Q=;
+        s=korg; t=1626076374;
+        bh=lhT4yLJxY38N3h6ksBzO81cXL+0EEjoDnUdRlf2//c4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2m/moxa+685IImuefzSBH1DLsOOSpvA5k9RQl3jHXjLQmS0YFck1mGH6uSJN10+zy
-         PV/4mXuf2Y5TF/4lN4H/qEHtc7hvh1iV1C5J2vaPNgJHXQSXREJsG1BGyV4+0Blibd
-         /W2zFRztWoQMMWiux6BtRnQ8SmNxCZLyOk47uOPg=
+        b=wjxE6UXamXTNXHA+Hh1pmkfQU5omIAHOjUf/NlEHwud/OHRHLk053N5wzUN+64U0T
+         GRIzSH9XYfPEghcgyz0bnMtIRFalW8pd01SYTJ9J3EHaixXjPh7Yr/ZtxeyCIN5ZC9
+         LYPlOUEteN4ygXyhtL3QJv10vgHuzNv5ST8kYhRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 426/593] writeback: fix obtain a reference to a freeing memcg css
+        stable@vger.kernel.org, Cristobal Forno <cforno12@linux.ibm.com>,
+        Abdul Haleem <abdhalee@in.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 563/800] Revert "ibmvnic: remove duplicate napi_schedule call in open function"
 Date:   Mon, 12 Jul 2021 08:09:46 +0200
-Message-Id: <20210712060935.244487699@linuxfoundation.org>
+Message-Id: <20210712061027.337605499@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Dany Madden <drt@linux.ibm.com>
 
-[ Upstream commit 8b0ed8443ae6458786580d36b7d5f8125535c5d4 ]
+[ Upstream commit 2ca220f92878470c6ba03f9946e412323093cc94 ]
 
-The caller of wb_get_create() should pin the memcg, because
-wb_get_create() relies on this guarantee. The rcu read lock
-only can guarantee that the memcg css returned by css_from_id()
-cannot be released, but the reference of the memcg can be zero.
+This reverts commit 7c451f3ef676c805a4b77a743a01a5c21a250a73.
 
-  rcu_read_lock()
-  memcg_css = css_from_id()
-  wb_get_create(memcg_css)
-      cgwb_create(memcg_css)
-          // css_get can change the ref counter from 0 back to 1
-          css_get(memcg_css)
-  rcu_read_unlock()
+When a vnic interface is taken down and then up, connectivity is not
+restored. We bisected it to this commit. Reverting this commit until
+we can fully investigate the issue/benefit of the change.
 
-Fix it by holding a reference to the css before calling
-wb_get_create(). This is not a problem I encountered in the
-real world. Just the result of a code review.
-
-Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
-Link: https://lore.kernel.org/r/20210402091145.80635-1-songmuchun@bytedance.com
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Fixes: 7c451f3ef676 ("ibmvnic: remove duplicate napi_schedule call in open function")
+Reported-by: Cristobal Forno <cforno12@linux.ibm.com>
+Reported-by: Abdul Haleem <abdhalee@in.ibm.com>
+Signed-off-by: Dany Madden <drt@linux.ibm.com>
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fs-writeback.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index afda7a7263b7..a0869194ab73 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -510,9 +510,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
- 	/* find and pin the new wb */
- 	rcu_read_lock();
- 	memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
--	if (memcg_css)
--		isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-+	if (memcg_css && !css_tryget(memcg_css))
-+		memcg_css = NULL;
- 	rcu_read_unlock();
-+	if (!memcg_css)
-+		goto out_free;
-+
-+	isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-+	css_put(memcg_css);
- 	if (!isw->new_wb)
- 		goto out_free;
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 4b4eccc496a8..8b2f6eb8eb21 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -1210,6 +1210,11 @@ static int __ibmvnic_open(struct net_device *netdev)
  
+ 	netif_tx_start_all_queues(netdev);
+ 
++	if (prev_state == VNIC_CLOSED) {
++		for (i = 0; i < adapter->req_rx_queues; i++)
++			napi_schedule(&adapter->napi[i]);
++	}
++
+ 	adapter->state = VNIC_OPEN;
+ 	return rc;
+ }
 -- 
 2.30.2
 
