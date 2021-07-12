@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB323C4A33
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFA73C5768
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238853AbhGLGtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
+        id S1354573AbhGLIcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237347AbhGLGjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6935661183;
-        Mon, 12 Jul 2021 06:35:07 +0000 (UTC)
+        id S1349825AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:44:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49674613D8;
+        Mon, 12 Jul 2021 07:41:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071707;
-        bh=OIm63ihj85oBO1+j6fX/cBWdO9IRft/Qb4k7jt+4G1I=;
+        s=korg; t=1626075689;
+        bh=WF1o1BNDVfyRUhkdNwe1t1ceJv4yBBYYlDm+gtp63fY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zChmchVtgeQXSCZqLY1qpQZ46QRU6m2JpyodQ4TSS5FbWh/6bSayP1iMrggvHrJVr
-         0+KPI6Elaux+579hkAiVHr2UWrlsZ4UzGM0tz/FmdAun/ROyeLoBcBf93dmkR/9sBD
-         ED+e0Hq7fRgBD9LEEJwe3VpjfMk5S3xDM28R4UHk=
+        b=IWPerlh+4Imnxhrh7NFqlfDoGI9oDGBLD1AZ59+NMenGcPkM1Y9UX6zI+7iNU63oJ
+         7KmRTQDnKhogVqnk59t0+MnQ+Zo3oiqPB6YqWpA0tLUvhO0/HSk8Gp++lT22aiyZ0S
+         DF+0dqTADSBbrr3SFmGAv9+dH2Vi0fJhYNHYRh8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
+        stable@vger.kernel.org, Andrej Picej <andpicej@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 184/593] fs: dlm: fix memory leak when fenced
+Subject: [PATCH 5.13 321/800] hwmon: (lm70) Revert "hwmon: (lm70) Add support for ACPI"
 Date:   Mon, 12 Jul 2021 08:05:44 +0200
-Message-Id: <20210712060903.256522723@linuxfoundation.org>
+Message-Id: <20210712061000.209357245@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 700ab1c363c7b54c9ea3222379b33fc00ab02f7b ]
+[ Upstream commit ac61c8aae446b9c0fe18981fe721d4a43e283ad6 ]
 
-I got some kmemleak report when a node was fenced. The user space tool
-dlm_controld will therefore run some rmdir() in dlm configfs which was
-triggering some memleaks. This patch stores the sps and cms attributes
-which stores some handling for subdirectories of the configfs cluster
-entry and free them if they get released as the parent directory gets
-freed.
+This reverts commit b58bd4c6dfe709646ed9efcbba2a70643f9bc873.
 
-unreferenced object 0xffff88810d9e3e00 (size 192):
-  comm "dlm_controld", pid 342, jiffies 4294698126 (age 55438.801s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 73 70 61 63 65 73 00 00  ........spaces..
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000db8b640b>] make_cluster+0x5d/0x360
-    [<000000006a571db4>] configfs_mkdir+0x274/0x730
-    [<00000000b094501c>] vfs_mkdir+0x27e/0x340
-    [<0000000058b0adaf>] do_mkdirat+0xff/0x1b0
-    [<00000000d1ffd156>] do_syscall_64+0x40/0x80
-    [<00000000ab1408c8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-unreferenced object 0xffff88810d9e3a00 (size 192):
-  comm "dlm_controld", pid 342, jiffies 4294698126 (age 55438.801s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 63 6f 6d 6d 73 00 00 00  ........comms...
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000a7ef6ad2>] make_cluster+0x82/0x360
-    [<000000006a571db4>] configfs_mkdir+0x274/0x730
-    [<00000000b094501c>] vfs_mkdir+0x27e/0x340
-    [<0000000058b0adaf>] do_mkdirat+0xff/0x1b0
-    [<00000000d1ffd156>] do_syscall_64+0x40/0x80
-    [<00000000ab1408c8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+None of the ACPI IDs introduced with the reverted patch is a valid ACPI
+device ID. Any ACPI users of this driver are advised to use PRP0001 and
+a devicetree-compatible device identification.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
+Fixes: b58bd4c6dfe7 ("hwmon: (lm70) Add support for ACPI")
+Cc: Andrej Picej <andpicej@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/config.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/hwmon/lm70.c | 26 +-------------------------
+ 1 file changed, 1 insertion(+), 25 deletions(-)
 
-diff --git a/fs/dlm/config.c b/fs/dlm/config.c
-index 73e6643903af..18a8ffcea0aa 100644
---- a/fs/dlm/config.c
-+++ b/fs/dlm/config.c
-@@ -79,6 +79,9 @@ struct dlm_cluster {
- 	unsigned int cl_new_rsb_count;
- 	unsigned int cl_recover_callbacks;
- 	char cl_cluster_name[DLM_LOCKSPACE_LEN];
-+
-+	struct dlm_spaces *sps;
-+	struct dlm_comms *cms;
- };
+diff --git a/drivers/hwmon/lm70.c b/drivers/hwmon/lm70.c
+index 40eab3349904..6b884ea00987 100644
+--- a/drivers/hwmon/lm70.c
++++ b/drivers/hwmon/lm70.c
+@@ -22,10 +22,10 @@
+ #include <linux/hwmon.h>
+ #include <linux/mutex.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/of.h>
+ #include <linux/property.h>
+ #include <linux/spi/spi.h>
+ #include <linux/slab.h>
+-#include <linux/acpi.h>
  
- static struct dlm_cluster *config_item_to_cluster(struct config_item *i)
-@@ -379,6 +382,9 @@ static struct config_group *make_cluster(struct config_group *g,
- 	if (!cl || !sps || !cms)
- 		goto fail;
+ #define DRVNAME		"lm70"
  
-+	cl->sps = sps;
-+	cl->cms = cms;
-+
- 	config_group_init_type_name(&cl->group, name, &cluster_type);
- 	config_group_init_type_name(&sps->ss_group, "spaces", &spaces_type);
- 	config_group_init_type_name(&cms->cs_group, "comms", &comms_type);
-@@ -428,6 +434,9 @@ static void drop_cluster(struct config_group *g, struct config_item *i)
- static void release_cluster(struct config_item *i)
+@@ -148,29 +148,6 @@ static const struct of_device_id lm70_of_ids[] = {
+ MODULE_DEVICE_TABLE(of, lm70_of_ids);
+ #endif
+ 
+-#ifdef CONFIG_ACPI
+-static const struct acpi_device_id lm70_acpi_ids[] = {
+-	{
+-		.id = "LM000070",
+-		.driver_data = LM70_CHIP_LM70,
+-	},
+-	{
+-		.id = "TMP00121",
+-		.driver_data = LM70_CHIP_TMP121,
+-	},
+-	{
+-		.id = "LM000071",
+-		.driver_data = LM70_CHIP_LM71,
+-	},
+-	{
+-		.id = "LM000074",
+-		.driver_data = LM70_CHIP_LM74,
+-	},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(acpi, lm70_acpi_ids);
+-#endif
+-
+ static int lm70_probe(struct spi_device *spi)
  {
- 	struct dlm_cluster *cl = config_item_to_cluster(i);
-+
-+	kfree(cl->sps);
-+	kfree(cl->cms);
- 	kfree(cl);
- }
- 
+ 	struct device *hwmon_dev;
+@@ -217,7 +194,6 @@ static struct spi_driver lm70_driver = {
+ 	.driver = {
+ 		.name	= "lm70",
+ 		.of_match_table	= of_match_ptr(lm70_of_ids),
+-		.acpi_match_table = ACPI_PTR(lm70_acpi_ids),
+ 	},
+ 	.id_table = lm70_ids,
+ 	.probe	= lm70_probe,
 -- 
 2.30.2
 
