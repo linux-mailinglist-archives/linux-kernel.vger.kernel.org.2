@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904473C5997
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880723C5994
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385028AbhGLJFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35722 "EHLO mail.kernel.org"
+        id S1384976AbhGLJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:05:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhGLIKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:10:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C3D8613E6;
-        Mon, 12 Jul 2021 08:07:30 +0000 (UTC)
+        id S1355704AbhGLIKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:10:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C37EC613DA;
+        Mon, 12 Jul 2021 08:07:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626077250;
-        bh=oINRDXEbonTGwhQVPZYckE009Hkz2205CmXRQ/QamCQ=;
+        s=korg; t=1626077246;
+        bh=gwa2l2wOlR4lxQBDKtpMZwjzO1vv8kp3A62dQT1seww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IcecmKaLqUMm/wjXiHQ/c2M7IE9ZxWS99hazntSiIvybDKpDE9f5HpJUyj4Ix1eY5
-         XGu6TFUhFUHZ9uIbcze4/BV05cuxaT+NiEXSshXzKaMAVwu2kZakMyN7N7v1SCEZAy
-         /oKApPZYuXXoAbTcZCrOmax2XD8zQZqIS8vkws/o=
+        b=MtF3w9/YzSzmrMVUV/Vk5JxChonOZBpmMV63a2dDOkWGiszGwCkGVanoXVOc6vA82
+         CbvSuRr8Am+5sj50pF+BzMp479OYtGbEhRDlFMRL1/VcFiuBXr0HivaAUlBg42lSjt
+         KcqXvB5eGq63sSaLMJHNSM4pTRAsqRkniMsIkAH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "Yasin, Ahmad" <ahmad.yasin@intel.com>,
         Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.13 116/800] perf/x86/intel: Fix instructions:ppp support in Sapphire Rapids
-Date:   Mon, 12 Jul 2021 08:02:19 +0200
-Message-Id: <20210712060929.280776310@linuxfoundation.org>
+Subject: [PATCH 5.12 108/700] perf/x86/intel: Fix instructions:ppp support in Sapphire Rapids
+Date:   Mon, 12 Jul 2021 08:03:11 +0200
+Message-Id: <20210712060940.061563438@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,7 +72,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -4032,8 +4032,10 @@ spr_get_event_constraints(struct cpu_hw_
+@@ -3975,8 +3975,10 @@ spr_get_event_constraints(struct cpu_hw_
  	 * The :ppp indicates the Precise Distribution (PDist) facility, which
  	 * is only supported on the GP counter 0. If a :ppp event which is not
  	 * available on the GP counter 0, error out.
