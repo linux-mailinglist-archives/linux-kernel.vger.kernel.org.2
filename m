@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722613C52C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017FA3C52FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhGLHtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:49:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49268 "EHLO mail.kernel.org"
+        id S1351363AbhGLHvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241897AbhGLHOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:14:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4773A613D6;
-        Mon, 12 Jul 2021 07:11:33 +0000 (UTC)
+        id S243732AbhGLHRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:17:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03FA06140C;
+        Mon, 12 Jul 2021 07:14:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073893;
-        bh=4+7dtKjnZGuQ5I0aGaI5q+Rxqi9G/g7QWNd0uDr75do=;
+        s=korg; t=1626074048;
+        bh=q+26ziyUGgj2kiHF3QL/5cJOVVtKYvVckwkSe3TtHQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Za425rP+JdsKmNpQGk+hc47j2mBgOaQEPjgB9q5B+0MPXXw03N2cuUGzb2yImfqR8
-         wY7qClhU2Mstp1UDE6lfv2W4LU4hX6JHtCqst7nONcFIeqm4wGagbDLH0RU0OfowIi
-         fneep8YROKP1kRKlrGMryeGgOWWNEsYRgUE0zyhk=
+        b=xAVzqC1CyI43OsdSaPN4ZwUkqDsbMUUMlN8tpzGGy5VOLUxqX2aB10Gf+C0RyH1Sv
+         SSFfNLoD7C4xSQlPa0/eJi/Kt5oXVKP6hhqFSIAjdU3QHe4iAjtRpGgDhclf1qI9ZY
+         kWtvk8zi3530Y+p62zZmn6tMFfkYbQXa4dk72y68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 393/700] RDMA/core: Sanitize WQ state received from the userspace
-Date:   Mon, 12 Jul 2021 08:07:56 +0200
-Message-Id: <20210712061018.209802241@linuxfoundation.org>
+Subject: [PATCH 5.12 394/700] drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
+Date:   Mon, 12 Jul 2021 08:07:57 +0200
+Message-Id: <20210712061018.308455666@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -42,102 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit f97442887275d11c88c2899e720fe945c1f61488 ]
+[ Upstream commit 4dc7c97d04dcaa9f19482f70dcfdbeb52cc7193f ]
 
-The mlx4 and mlx5 implemented differently the WQ input checks.  Instead of
-duplicating mlx4 logic in the mlx5, let's prepare the input in the central
-place.
+Avoid randconfig build failures by requiring VEXPRESS_CONFIG:
 
-The mlx5 implementation didn't check for validity of state input.  It is
-not real bug because our FW checked that, but still worth to fix.
+aarch64-linux-gnu-ld: drivers/gpu/drm/pl111/pl111_versatile.o: in function `pl111_vexpress_clcd_init':
+pl111_versatile.c:(.text+0x220): undefined reference to `devm_regmap_init_vexpress_config'
 
-Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
-Link: https://lore.kernel.org/r/ac41ad6a81b095b1a8ad453dcf62cf8d3c5da779.1621413310.git.leonro@nvidia.com
-Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 826fc86b5903 ("drm: pl111: Move VExpress setup into versatile init")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210602215252.695994-4-keescook@chromium.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/uverbs_cmd.c | 21 +++++++++++++++++++--
- drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
- drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
- 3 files changed, 23 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/pl111/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index ab55f8b3190e..92ae454d500a 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3033,12 +3033,29 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
- 	if (!wq)
- 		return -EINVAL;
- 
--	wq_attr.curr_wq_state = cmd.curr_wq_state;
--	wq_attr.wq_state = cmd.wq_state;
- 	if (cmd.attr_mask & IB_WQ_FLAGS) {
- 		wq_attr.flags = cmd.flags;
- 		wq_attr.flags_mask = cmd.flags_mask;
- 	}
-+
-+	if (cmd.attr_mask & IB_WQ_CUR_STATE) {
-+		if (cmd.curr_wq_state > IB_WQS_ERR)
-+			return -EINVAL;
-+
-+		wq_attr.curr_wq_state = cmd.curr_wq_state;
-+	} else {
-+		wq_attr.curr_wq_state = wq->state;
-+	}
-+
-+	if (cmd.attr_mask & IB_WQ_STATE) {
-+		if (cmd.wq_state > IB_WQS_ERR)
-+			return -EINVAL;
-+
-+		wq_attr.wq_state = cmd.wq_state;
-+	} else {
-+		wq_attr.wq_state = wq_attr.curr_wq_state;
-+	}
-+
- 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
- 					&attrs->driver_udata);
- 	rdma_lookup_put_uobject(&wq->uobject->uevent.uobject,
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 651785bd57f2..18a47248e444 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -4254,13 +4254,8 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
- 	if (wq_attr_mask & IB_WQ_FLAGS)
- 		return -EOPNOTSUPP;
- 
--	cur_state = wq_attr_mask & IB_WQ_CUR_STATE ? wq_attr->curr_wq_state :
--						     ibwq->state;
--	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
--
--	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
--	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
--		return -EINVAL;
-+	cur_state = wq_attr->curr_wq_state;
-+	new_state = wq_attr->wq_state;
- 
- 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
- 		return -EINVAL;
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 843f9e7fe96f..bcaaf238b364 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -5309,10 +5309,8 @@ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
- 
- 	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
- 
--	curr_wq_state = (wq_attr_mask & IB_WQ_CUR_STATE) ?
--		wq_attr->curr_wq_state : wq->state;
--	wq_state = (wq_attr_mask & IB_WQ_STATE) ?
--		wq_attr->wq_state : curr_wq_state;
-+	curr_wq_state = wq_attr->curr_wq_state;
-+	wq_state = wq_attr->wq_state;
- 	if (curr_wq_state == IB_WQS_ERR)
- 		curr_wq_state = MLX5_RQC_STATE_ERR;
- 	if (wq_state == IB_WQS_ERR)
+diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
+index 80f6748055e3..c5210a5bef1b 100644
+--- a/drivers/gpu/drm/pl111/Kconfig
++++ b/drivers/gpu/drm/pl111/Kconfig
+@@ -2,7 +2,7 @@
+ config DRM_PL111
+ 	tristate "DRM Support for PL111 CLCD Controller"
+ 	depends on DRM
+-	depends on ARM || ARM64 || COMPILE_TEST
++	depends on VEXPRESS_CONFIG
+ 	depends on COMMON_CLK
+ 	select DRM_KMS_HELPER
+ 	select DRM_KMS_CMA_HELPER
 -- 
 2.30.2
 
