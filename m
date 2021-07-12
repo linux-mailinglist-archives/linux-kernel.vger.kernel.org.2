@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C8D3C5E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED003C5E62
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbhGLOep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 10:34:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:56486 "EHLO foss.arm.com"
+        id S235125AbhGLOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 10:34:54 -0400
+Received: from mga17.intel.com ([192.55.52.151]:60929 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234869AbhGLOeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:34:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D98391FB;
-        Mon, 12 Jul 2021 07:31:55 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.2.95])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2A683F774;
-        Mon, 12 Jul 2021 07:31:54 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 15:31:51 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: include/linux/atomic-arch-fallback.h:60:32: error: implicit
- declaration of function 'arch_cmpxchg64'; did you mean 'arch_cmpxchg'?
-Message-ID: <20210712143151.GB94622@C02TD0UTHF1T.local>
-References: <202107110643.63fELxVr-lkp@intel.com>
+        id S234869AbhGLOex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 10:34:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="190369944"
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
+   d="scan'208";a="190369944"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 07:32:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
+   d="scan'208";a="492128508"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Jul 2021 07:31:59 -0700
+Subject: Re: [PATCH v4 07/11] perf auxtrace: Remove
+ auxtrace_mmap__read_snapshot_head()
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210711104105.505728-1-leo.yan@linaro.org>
+ <20210711104105.505728-8-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <4c65b6ba-2258-ff36-2ecc-92219e61e578@intel.com>
+Date:   Mon, 12 Jul 2021 17:32:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107110643.63fELxVr-lkp@intel.com>
+In-Reply-To: <20210711104105.505728-8-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 06:44:47AM +0800, kernel test robot wrote:
-> Hi Mark,
+On 11/07/21 1:41 pm, Leo Yan wrote:
+> Since the function auxtrace_mmap__read_snapshot_head() is exactly same
+> with auxtrace_mmap__read_head(), whether the session is in snapshot mode
+> or not, it's unified to use function auxtrace_mmap__read_head() for
+> reading AUX buffer head.
 > 
-> FYI, the error/warning still remains.
-
-I thought we'd already identified that this was an existing bug, and all that
-has changed is the specific error that manifests.
-
-In v5.13 this would fail with:
-
-|   CC      drivers/iommu/io-pgtable-arm.o
-| In file included from ./include/linux/atomic.h:84,
-|                  from drivers/iommu/io-pgtable-arm.c:12:
-| drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
-| ./include/linux/atomic-fallback.h:60:27: error: implicit declaration of function 'cmpxchg64'; did you mean 'cmpxchg'? [-Werror=implicit-function-declaration]
-|    60 | #define cmpxchg64_relaxed cmpxchg64
-|       |                           ^~~~~~~~~
-| drivers/iommu/io-pgtable-arm.c:320:8: note: in expansion of macro 'cmpxchg64_relaxed'
-|   320 |  old = cmpxchg64_relaxed(ptep, curr, new);
-|       |        ^~~~~~~~~~~~~~~~~
-
-... which has the same underlying problem -- the architecture has not provided
-a cmpxchg64() implementation, but the IO pagetable code depends upon
-cmpxchg64().
-
-Thanks,
-Mark.
-
+> And the function auxtrace_mmap__read_snapshot_head() is unused so this
+> patch removes it.
 > 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   1e16624d7b4376797ede36e3c955375cf0f23298
-> commit: bccf1ec369ac126b0997d01a6e1deae00e2cf6b3 locking/atomics: atomic-instrumented: simplify ifdeffery
-> date:   6 weeks ago
-> config: arc-allyesconfig (attached as .config)
-> compiler: arceb-elf-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bccf1ec369ac126b0997d01a6e1deae00e2cf6b3
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout bccf1ec369ac126b0997d01a6e1deae00e2cf6b3
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from include/linux/atomic.h:80,
->                     from drivers/iommu/io-pgtable-arm.c:12:
->    drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
-> >> include/linux/atomic-arch-fallback.h:60:32: error: implicit declaration of function 'arch_cmpxchg64'; did you mean 'arch_cmpxchg'? [-Werror=implicit-function-declaration]
->       60 | #define arch_cmpxchg64_relaxed arch_cmpxchg64
->          |                                ^~~~~~~~~~~~~~
->    include/asm-generic/atomic-instrumented.h:1261:2: note: in expansion of macro 'arch_cmpxchg64_relaxed'
->     1261 |  arch_cmpxchg64_relaxed(__ai_ptr, __VA_ARGS__); \
->          |  ^~~~~~~~~~~~~~~~~~~~~~
->    drivers/iommu/io-pgtable-arm.c:320:8: note: in expansion of macro 'cmpxchg64_relaxed'
->      320 |  old = cmpxchg64_relaxed(ptep, curr, new);
->          |        ^~~~~~~~~~~~~~~~~
->    cc1: some warnings being treated as errors
-> 
-> 
-> vim +60 include/linux/atomic-arch-fallback.h
-> 
-> 37f8173dd84936 Peter Zijlstra 2020-01-24  56  
-> 37f8173dd84936 Peter Zijlstra 2020-01-24  57  #ifndef arch_cmpxchg64_relaxed
-> 37f8173dd84936 Peter Zijlstra 2020-01-24  58  #define arch_cmpxchg64_acquire arch_cmpxchg64
-> 37f8173dd84936 Peter Zijlstra 2020-01-24  59  #define arch_cmpxchg64_release arch_cmpxchg64
-> 29f006fdefe6f8 Peter Zijlstra 2020-08-29 @60  #define arch_cmpxchg64_relaxed arch_cmpxchg64
-> 37f8173dd84936 Peter Zijlstra 2020-01-24  61  #else /* arch_cmpxchg64_relaxed */
-> 37f8173dd84936 Peter Zijlstra 2020-01-24  62  
-> 
-> :::::: The code at line 60 was first introduced by commit
-> :::::: 29f006fdefe6f88abde973a0b0f20d2704e93fd4 asm-generic/atomic: Add try_cmpxchg() fallbacks
-> 
-> :::::: TO: Peter Zijlstra <peterz@infradead.org>
-> :::::: CC: Ingo Molnar <mingo@kernel.org>
-> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  tools/perf/util/auxtrace.c |  5 ++---
+>  tools/perf/util/auxtrace.h | 10 ----------
+>  2 files changed, 2 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index cb19669d2a5b..7958e17229ea 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -1686,13 +1686,12 @@ static int __auxtrace_mmap__read(struct mmap *map,
+>  	union perf_event ev;
+>  	void *data1, *data2;
+>  
+> +	head = auxtrace_mmap__read_head(mm);
+> +
+>  	if (snapshot) {
+> -		head = auxtrace_mmap__read_snapshot_head(mm);
+>  		if (auxtrace_record__find_snapshot(itr, mm->idx, mm, data,
+>  						   &head, &old))
 
+That leaves a nested 'if' which is not kernel style i.e. could be
+
+	if (snapshot &&
+	    auxtrace_record__find_snapshot(itr, mm->idx, mm, data, &head, &old))
+
+
+>  			return -1;
+> -	} else {
+> -		head = auxtrace_mmap__read_head(mm);
+>  	}
+>  
+>  	if (old == head)
+> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+> index 4f9176368134..d68a5e80b217 100644
+> --- a/tools/perf/util/auxtrace.h
+> +++ b/tools/perf/util/auxtrace.h
+> @@ -440,16 +440,6 @@ struct auxtrace_cache;
+>  
+>  #ifdef HAVE_AUXTRACE_SUPPORT
+>  
+> -static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+> -{
+> -	struct perf_event_mmap_page *pc = mm->userpg;
+> -	u64 head = READ_ONCE(pc->aux_head);
+> -
+> -	/* Ensure all reads are done after we read the head */
+> -	smp_rmb();
+> -	return head;
+> -}
+> -
+>  static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>  {
+>  	struct perf_event_mmap_page *pc = mm->userpg;
+> 
 
