@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60E13C61A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7823C61A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235503AbhGLRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        id S235336AbhGLRPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235321AbhGLRPP (ORCPT
+        with ESMTP id S235287AbhGLRPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:15:15 -0400
+        Mon, 12 Jul 2021 13:15:14 -0400
 Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1887AC0613E8;
-        Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id o201so11949513pfd.1;
-        Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C26AC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id a127so16999382pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WCRRaRl9ViNQYcLjj8Pvk5/hKyaKb5DkmBptNf5pL0k=;
-        b=uyatqZ5ZeHy3PJMUMFcxhxH7aTF/fb375LvlXwn8t73XShIGnvgGOgdsLYWCJQtz1s
-         KU3uHw/86BCDYGNsL8MuXFMF54RVnr5BkaXVXlKxSIG+y3BDdhS95QucB+/CEnKwyjoF
-         pC66NlwmWAu8rLVNsN2foSdk8HKDvWJNrwMhdJgy9400dAfZKcv5bQlG4/OqZmbsAEJX
-         ah3GHM5HSnUpE3tZ6KI9idxqsNo7frovW/y3FC3nI3kx8jccFYgGddIjxyp0hn+XsGu4
-         L1wcko+uKXhwuW6fJTIRH+WN4N9YRND4hqBHoiyaDIyomqqqN0QUJ5SZBmUKNeogFvV1
-         rLpA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+MqNZFYMQBihL0ZnQ18LtV00/u+f9r0ZXvs1SjqWuz8=;
+        b=UOI+YQ1yAZu5INM6vP1vhH/OD5DCgJ9TYfw7jkklZkXHQJXqRXI6kJAQa6Y05PqSWr
+         IUccdQRDCEBq75qsy+M4v5Zsa9eUPJil19UGq8aTVV1P+ugZyfPmaFCG0iHjUMvX6zy2
+         cugkR2zOKIBfOxAUtpsv5m0vZ6GWUhB/AawNejyg5ncSMAh0aEE6oiQyRx9ZiBXcd8Yl
+         r7N4wcehP3oGxrLX8yaNxu1Zg5K6t3ER8ai2c7vx24Oo5vDQYHXCn1ZHei/5hLvOf3pc
+         EoOxvARt6Brj65wkUhRspI3A++vi59u2hCcCmQHXXtKR3jWxlMsJQf3ygdaeQf+7cgti
+         uPaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WCRRaRl9ViNQYcLjj8Pvk5/hKyaKb5DkmBptNf5pL0k=;
-        b=tI0nxXkQVGStD04I9UxyFACm5AnOJRvoMl4XDu66cOvT3gaRfTkoEuyZBEhgfyjchx
-         +B6EMiPrtM7plmOqZsr+lXEjsimK6Mjw79A0+zyt6Fp1nBYjeXlLkawZLyhHLfKRcuDn
-         +8YKOjalMDAE7/Mv9f3a/aEiLIw3ftja7AN34gPmmY51aWKSvGxqGju0yL1RrdMg2fF0
-         v1txl9gg7+Q8CdYdGGBpplBiQVSpAMddzipUO7gvg1yXvCUIdxemDE0XsEoDvxTvXQgr
-         /zxioRpqgiDcsuVeuPQsSNStCLJ0H16vXoQX2nTKrHzih39PiU5a2AXlch2pwNU/ks+X
-         LtjA==
-X-Gm-Message-State: AOAM533gStTjyowaUgZ9AV250Wu/cISav+2LQxXNSKryT64roBBjn2jV
-        weD2w9KqVls8vW7/+DWAIrIgU5ytQfDbUw==
-X-Google-Smtp-Source: ABdhPJxawsD+n7HhDtAS+H52YtXnjq8g1Cp+UOxGtvqbzGMfGhWtNxOvC4+7J9fnGK+Zpe49PQsKcg==
-X-Received: by 2002:a62:2ec7:0:b029:301:fe50:7d4b with SMTP id u190-20020a622ec70000b0290301fe507d4bmr73328pfu.78.1626109945219;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=+MqNZFYMQBihL0ZnQ18LtV00/u+f9r0ZXvs1SjqWuz8=;
+        b=faajsuFgTwTz90Vnl3B3tE0d1vvV5BPaRInc6M1dKnQbOErhYluyMdXTSxMsn8/JiM
+         0lzFtieQr8iNN1p+MrNmViRc05t70Nz2Vmnm1hdfIWjY0guOyCv34RbH5hKe3s6kBrOy
+         qLUMamtEdgEgtcO+bPBc1eEHOvLD11j6ubMtDSMUqfU8C1no8dfPeRzjuYFObIkMDzZv
+         4SeZhJI9sypULkkX8VTxv1K9Bc1Yn9ksBpyE89BDylP1GkO6pBvv9obI3iDyD6f7QfJG
+         AIP0hMYIxXfdI/F/w+BPrbrhpiNDtLYLgVjJcxyZw7grxI19DwEXVKqWAyUW+uyVyauo
+         MWFQ==
+X-Gm-Message-State: AOAM531/Prx2YSHU9CGu9n7WvAIqt4F1bFnxkdJBfaGAwPidaJNTuJwQ
+        jfRwhH4ffvZPo20LVVBbV3o=
+X-Google-Smtp-Source: ABdhPJyDLtGiKc/jvV5pIAf5hdHhyx0Yiw1NIfwLJNHR7yaBik6UNF9JtK3DAbEqFHxQU/HKd02w+w==
+X-Received: by 2002:a63:7949:: with SMTP id u70mr166943pgc.168.1626109945735;
         Mon, 12 Jul 2021 10:12:25 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id bk16sm8451377pjb.54.2021.07.12.10.12.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
+        by smtp.gmail.com with ESMTPSA id l3sm23098pju.57.2021.07.12.10.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 12 Jul 2021 10:12:24 -0700 (PDT)
-Subject: Re: [PATCH 5.12 000/700] 5.12.17-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210712060924.797321836@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <46e6dd5b-ccd4-7e1f-fff5-be080c7d07a7@gmail.com>
-Date:   Mon, 12 Jul 2021 10:12:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 12 Jul 2021 07:12:23 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+        xuqiang36@huawei.com, paskripkin@gmail.com
+Subject: Re: [PATCH v2] workqueue: fix UAF in pwq_unbound_release_workfn()
+Message-ID: <YOx392cwdEHMMnD0@slm.duckdns.org>
+References: <20210709071100.4057639-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709071100.4057639-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 11:01 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.17 release.
-> There are 700 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.17-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hello, Yang.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+> +static void free_pwq(struct pool_workqueue *pwq)
+> +{
+> +	if (!pwq || --pwq->refcnt)
+> +		return;
+> +
+> +	put_unbound_pool(pwq->pool);
+> +	kmem_cache_free(pwq_cache, pwq);
+> +}
+> +
+> +static void free_wqattrs_ctx(struct apply_wqattrs_ctx *ctx)
+> +{
+> +	int node;
+> +
+> +	if (!ctx)
+> +		return;
+> +
+> +	for_each_node(node)
+> +		free_pwq(ctx->pwq_tbl[node]);
+> +	free_pwq(ctx->dfl_pwq);
+> +
+> +	free_workqueue_attrs(ctx->attrs);
+> +
+> +	kfree(ctx);
+> +}
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+It bothers me that we're partially replicating the free path including pwq
+refcnting. Does something like the following work?
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 104e3ef04e33..0c0ab363edeb 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3693,7 +3693,7 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
+ 	 * If we're the last pwq going away, @wq is already dead and no one
+ 	 * is gonna access it anymore.  Schedule RCU free.
+ 	 */
+-	if (is_last) {
++	if (is_last && !list_empty(&wq->list)) {
+ 		wq_unregister_lockdep(wq);
+ 		call_rcu(&wq->rcu, rcu_free_wq);
+ 	}
+@@ -4199,6 +4199,10 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+ 	}
+ 	put_online_cpus();
+ 
++	if (ret) {
++		flush_scheduled_work();
++	}
++
+ 	return ret;
+ }
+ 
 -- 
-Florian
+tejun
