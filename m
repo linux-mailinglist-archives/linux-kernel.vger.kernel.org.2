@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC8D3C4AEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454C83C5792
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241165AbhGLGyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:54:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        id S1377226AbhGLIfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238221AbhGLGkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53A23610CD;
-        Mon, 12 Jul 2021 06:36:35 +0000 (UTC)
+        id S1344959AbhGLHsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F26861975;
+        Mon, 12 Jul 2021 07:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071795;
-        bh=nQzECD12SbSXSO/QoQaLi2QiMJtbw7y0eR33txf8RfA=;
+        s=korg; t=1626075777;
+        bh=uXS9VuRrjIykIw6Xek2w7z/h9x5jPoTVQzARPSr4ze8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EvQNdVPR0PeLB2QtFiorq2dxs7aAurkzmBWbeaoclDcQdgjVRK6qYmBjIJfMM/9H5
-         XRJ0GXZjJBtLuTmyYdIS2Tkq7KnObbJrN6RihDMmBcvcSnw6cwjNhfGMr8t41Gy9Dw
-         4lC8MM2rQzC9nbxF7RJob+578+Jy9o7h3mMaFhIc=
+        b=ckkA4Zci/kTH9df9NbO7GNVTmHEwZvon2UkipP87afcxhYep+W4LCeCWHiT9aCZJ4
+         +cdEP6Xcmm1rqLzZxSou5ni8fVHvzw45GSYTnt0ag3881F9Ir1dcb6yh3B7mRGr8d+
+         GBSdU2KixTM3uVWNYKwP9OwnXIvd3o5FUYChRZYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 223/593] pata_octeon_cf: avoid WARN_ON() in ata_host_activate()
+        stable@vger.kernel.org, Liang Prike <Prike.Liang@amd.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 360/800] nvme-pci: look for StorageD3Enable on companion ACPI device instead
 Date:   Mon, 12 Jul 2021 08:06:23 +0200
-Message-Id: <20210712060907.477216282@linuxfoundation.org>
+Message-Id: <20210712061005.392727896@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Mario Limonciello <mario.limonciello@amd.com>
 
-[ Upstream commit bfc1f378c8953e68ccdbfe0a8c20748427488b80 ]
+[ Upstream commit e21e0243e7b0f1c2a21d21f4d115f7b37175772a ]
 
-Iff platform_get_irq() fails (or returns IRQ0) and thus the polling mode
-has to be used, ata_host_activate() hits the WARN_ON() due to 'irq_handler'
-parameter being non-NULL if the polling mode is selected.  Let's only set
-the pointer to the driver's IRQ handler if platform_get_irq() returns a
-valid IRQ # -- this should avoid the unnecessary WARN_ON()...
+The documentation around the StorageD3Enable property hints that it
+should be made on the PCI device.  This is where newer AMD systems set
+the property and it's required for S0i3 support.
 
-Fixes: 43f01da0f279 ("MIPS/OCTEON/ata: Convert pata_octeon_cf.c to use device tree.")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/3a241167-f84d-1d25-5b9b-be910afbe666@omp.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+So rather than look for nodes of the root port only present on Intel
+systems, switch to the companion ACPI device for all systems.
+David Box from Intel indicated this should work on Intel as well.
+
+Link: https://lore.kernel.org/linux-nvme/YK6gmAWqaRmvpJXb@google.com/T/#m900552229fa455867ee29c33b854845fce80ba70
+Link: https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/power-management-for-storage-hardware-devices-intro
+Fixes: df4f9bc4fb9c ("nvme-pci: add support for ACPI StorageD3Enable property")
+Suggested-by: Liang Prike <Prike.Liang@amd.com>
+Acked-by: Raul E Rangel <rrangel@chromium.org>
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Reviewed-by: David E. Box <david.e.box@linux.intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_octeon_cf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/pci.c | 24 +-----------------------
+ 1 file changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/drivers/ata/pata_octeon_cf.c b/drivers/ata/pata_octeon_cf.c
-index bd87476ab481..b5a3f710d76d 100644
---- a/drivers/ata/pata_octeon_cf.c
-+++ b/drivers/ata/pata_octeon_cf.c
-@@ -898,10 +898,11 @@ static int octeon_cf_probe(struct platform_device *pdev)
- 					return -EINVAL;
- 				}
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 2995e87ce776..42ad75ff1348 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2831,10 +2831,7 @@ static unsigned long check_vendor_combination_bug(struct pci_dev *pdev)
+ #ifdef CONFIG_ACPI
+ static bool nvme_acpi_storage_d3(struct pci_dev *dev)
+ {
+-	struct acpi_device *adev;
+-	struct pci_dev *root;
+-	acpi_handle handle;
+-	acpi_status status;
++	struct acpi_device *adev = ACPI_COMPANION(&dev->dev);
+ 	u8 val;
  
--				irq_handler = octeon_cf_interrupt;
- 				i = platform_get_irq(dma_dev, 0);
--				if (i > 0)
-+				if (i > 0) {
- 					irq = i;
-+					irq_handler = octeon_cf_interrupt;
-+				}
- 			}
- 			of_node_put(dma_node);
- 		}
+ 	/*
+@@ -2842,28 +2839,9 @@ static bool nvme_acpi_storage_d3(struct pci_dev *dev)
+ 	 * must use D3 to support deep platform power savings during
+ 	 * suspend-to-idle.
+ 	 */
+-	root = pcie_find_root_port(dev);
+-	if (!root)
+-		return false;
+ 
+-	adev = ACPI_COMPANION(&root->dev);
+ 	if (!adev)
+ 		return false;
+-
+-	/*
+-	 * The property is defined in the PXSX device for South complex ports
+-	 * and in the PEGP device for North complex ports.
+-	 */
+-	status = acpi_get_handle(adev->handle, "PXSX", &handle);
+-	if (ACPI_FAILURE(status)) {
+-		status = acpi_get_handle(adev->handle, "PEGP", &handle);
+-		if (ACPI_FAILURE(status))
+-			return false;
+-	}
+-
+-	if (acpi_bus_get_device(handle, &adev))
+-		return false;
+-
+ 	if (fwnode_property_read_u8(acpi_fwnode_handle(adev), "StorageD3Enable",
+ 			&val))
+ 		return false;
 -- 
 2.30.2
 
