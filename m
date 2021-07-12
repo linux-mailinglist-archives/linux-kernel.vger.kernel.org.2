@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FB43C52DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0B13C4C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350208AbhGLHup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46854 "EHLO mail.kernel.org"
+        id S243550AbhGLHFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:05:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242205AbhGLHQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:16:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13EFD61427;
-        Mon, 12 Jul 2021 07:12:53 +0000 (UTC)
+        id S238305AbhGLGrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77AD161222;
+        Mon, 12 Jul 2021 06:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073974;
-        bh=w5lW8TRQpb0AlwDsErNWMh5ntiQ8Z+pjScN78sBtDUg=;
+        s=korg; t=1626072179;
+        bh=N8/33mR8ZNLEt5zuXLYaFUE+geiMIYi5B0boD7dJbEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yGkYng4a19ifYfKvC8EfBt8i9ZER47kpduMeLcbFQZtx8sxgfgqqX0/Lo0oVePnQc
-         6Gl701SRmMVl5K1xP+tJPw6BcbxIKn3S58W75HFN5rdWt/8tVoDUqXl0ga4FmTA6LN
-         sDchlFjxdvAd+V69uvcCeGi1jXvE3rnuHM7ocpYo=
+        b=Q8hV9rObyPOglcGLVl99oThVG6abUXIB2sL3ySKPYZKgThESq1rMVDNSPV+gSYCWx
+         rvnX6Nj1oBucRMMWQILa3UhHObkiCTV0LMHwTqpBlPlA2SWWSAeGhiOGt2R9MDl6Ie
+         wOlg38zYiXXd01gRPVUZpmENIaCIcpbLGjQOKgB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 422/700] netfilter: nft_tproxy: restrict support to TCP and UDP transport protocols
+Subject: [PATCH 5.10 345/593] wcn36xx: Move hal_buf allocation to devm_kmalloc in probe
 Date:   Mon, 12 Jul 2021 08:08:25 +0200
-Message-Id: <20210712061021.299747826@linuxfoundation.org>
+Message-Id: <20210712060924.033741450@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit 52f0f4e178c757b3d356087376aad8bd77271828 ]
+[ Upstream commit ef48667557c53d4b51a1ee3090eab7699324c9de ]
 
-Add unfront check for TCP and UDP packets before performing further
-processing.
+Right now wcn->hal_buf is allocated in wcn36xx_start(). This is a problem
+since we should have setup all of the buffers we required by the time
+ieee80211_register_hw() is called.
 
-Fixes: 4ed8eb6570a4 ("netfilter: nf_tables: Add native tproxy support")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+struct ieee80211_ops callbacks may run prior to mac_start() and therefore
+wcn->hal_buf must be initialized.
+
+This is easily remediated by moving the allocation to probe() taking the
+opportunity to tidy up freeing memory by using devm_kmalloc().
+
+Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210605173347.2266003-1-bryan.odonoghue@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_tproxy.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/wcn36xx/main.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/net/netfilter/nft_tproxy.c b/net/netfilter/nft_tproxy.c
-index 43a5a780a6d3..37c728bdad41 100644
---- a/net/netfilter/nft_tproxy.c
-+++ b/net/netfilter/nft_tproxy.c
-@@ -30,6 +30,12 @@ static void nft_tproxy_eval_v4(const struct nft_expr *expr,
- 	__be16 tport = 0;
- 	struct sock *sk;
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index 706728fba72d..9f8e44210e89 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -293,23 +293,16 @@ static int wcn36xx_start(struct ieee80211_hw *hw)
+ 		goto out_free_dxe_pool;
+ 	}
  
-+	if (pkt->tprot != IPPROTO_TCP &&
-+	    pkt->tprot != IPPROTO_UDP) {
-+		regs->verdict.code = NFT_BREAK;
-+		return;
+-	wcn->hal_buf = kmalloc(WCN36XX_HAL_BUF_SIZE, GFP_KERNEL);
+-	if (!wcn->hal_buf) {
+-		wcn36xx_err("Failed to allocate smd buf\n");
+-		ret = -ENOMEM;
+-		goto out_free_dxe_ctl;
+-	}
+-
+ 	ret = wcn36xx_smd_load_nv(wcn);
+ 	if (ret) {
+ 		wcn36xx_err("Failed to push NV to chip\n");
+-		goto out_free_smd_buf;
++		goto out_free_dxe_ctl;
+ 	}
+ 
+ 	ret = wcn36xx_smd_start(wcn);
+ 	if (ret) {
+ 		wcn36xx_err("Failed to start chip\n");
+-		goto out_free_smd_buf;
++		goto out_free_dxe_ctl;
+ 	}
+ 
+ 	if (!wcn36xx_is_fw_version(wcn, 1, 2, 2, 24)) {
+@@ -336,8 +329,6 @@ static int wcn36xx_start(struct ieee80211_hw *hw)
+ 
+ out_smd_stop:
+ 	wcn36xx_smd_stop(wcn);
+-out_free_smd_buf:
+-	kfree(wcn->hal_buf);
+ out_free_dxe_ctl:
+ 	wcn36xx_dxe_free_ctl_blks(wcn);
+ out_free_dxe_pool:
+@@ -372,8 +363,6 @@ static void wcn36xx_stop(struct ieee80211_hw *hw)
+ 
+ 	wcn36xx_dxe_free_mem_pools(wcn);
+ 	wcn36xx_dxe_free_ctl_blks(wcn);
+-
+-	kfree(wcn->hal_buf);
+ }
+ 
+ static void wcn36xx_change_ps(struct wcn36xx *wcn, bool enable)
+@@ -1398,6 +1387,12 @@ static int wcn36xx_probe(struct platform_device *pdev)
+ 	mutex_init(&wcn->hal_mutex);
+ 	mutex_init(&wcn->scan_lock);
+ 
++	wcn->hal_buf = devm_kmalloc(wcn->dev, WCN36XX_HAL_BUF_SIZE, GFP_KERNEL);
++	if (!wcn->hal_buf) {
++		ret = -ENOMEM;
++		goto out_wq;
 +	}
 +
- 	hp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(_hdr), &_hdr);
- 	if (!hp) {
- 		regs->verdict.code = NFT_BREAK;
-@@ -91,7 +97,8 @@ static void nft_tproxy_eval_v6(const struct nft_expr *expr,
- 
- 	memset(&taddr, 0, sizeof(taddr));
- 
--	if (!pkt->tprot_set) {
-+	if (pkt->tprot != IPPROTO_TCP &&
-+	    pkt->tprot != IPPROTO_UDP) {
- 		regs->verdict.code = NFT_BREAK;
- 		return;
- 	}
+ 	ret = dma_set_mask_and_coherent(wcn->dev, DMA_BIT_MASK(32));
+ 	if (ret < 0) {
+ 		wcn36xx_err("failed to set DMA mask: %d\n", ret);
 -- 
 2.30.2
 
