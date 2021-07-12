@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FCC3C50B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0193C4A09
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347252AbhGLHem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:34:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
+        id S238062AbhGLGsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241937AbhGLHGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6FB26124C;
-        Mon, 12 Jul 2021 07:03:05 +0000 (UTC)
+        id S236129AbhGLGhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:37:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2ED561175;
+        Mon, 12 Jul 2021 06:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073386;
-        bh=mmdAldEcnqi6sXxjo3oondyAT2E/9YNScMhIXaq+oTo=;
+        s=korg; t=1626071626;
+        bh=wDNvjMGxrpeAQg0xXJVXW97Rx7+AUJ9+PX7Q1PWNhRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ExoXlsE3+ADLyNtoh6l0wzlBCChXdxYMJVTxv/94UQW+syXeoq6oxq9GfEhB0eW+3
-         3EKOixJoxtHuqigy/PVTWLRicD1Rx7Vhvmd1yfZtnaz95oz2eeHMFWdcHY7Tq7J4EX
-         HiGif0b72er8E4RoBXC+JjTlu+itOhpydlN+Mu5Q=
+        b=WEBRmtFgTZQRFJSwP+QY2CW+HmFbbTMAy7asdRWhLH4vkOiKiKXr0WVraKL+5pja0
+         lwKSayWnROg4N+Wzj0DPZKzzl+9dOXfwmNVCJex2llpNndmZeFL6UbRvh6qxSmq6dX
+         sd6ahJsxKfb91z4zmdf32grRZkN2k3p6jsO/Klho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JK Kim <jongkang.kim2@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 225/700] nvme-pci: fix var. type for increasing cq_head
+        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 148/593] crypto: shash - avoid comparing pointers to exported functions under CFI
 Date:   Mon, 12 Jul 2021 08:05:08 +0200
-Message-Id: <20210712060958.637091885@linuxfoundation.org>
+Message-Id: <20210712060859.310678475@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +43,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: JK Kim <jongkang.kim2@gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit a0aac973a26d1ac814b9e131e209eb39472a67ce ]
+[ Upstream commit 22ca9f4aaf431a9413dcc115dd590123307f274f ]
 
-nvmeq->cq_head is compared with nvmeq->q_depth and changed the value
-and cq_phase for handling the next cq db.
+crypto_shash_alg_has_setkey() is implemented by testing whether the
+.setkey() member of a struct shash_alg points to the default version,
+called shash_no_setkey(). As crypto_shash_alg_has_setkey() is a static
+inline, this requires shash_no_setkey() to be exported to modules.
 
-but, nvmeq->q_depth's type is u32 and max. value is 0x10000 when
-CQP.MSQE is 0xffff and io_queue_depth is 0x10000.
+Unfortunately, when building with CFI, function pointers are routed
+via CFI stubs which are private to each module (or to the kernel proper)
+and so this function pointer comparison may fail spuriously.
 
-current temp. variable for comparing with nvmeq->q_depth is overflowed
-when previous nvmeq->cq_head is 0xffff.
+Let's fix this by turning crypto_shash_alg_has_setkey() into an out of
+line function.
 
-in this case, nvmeq->cq_phase is not updated.
-so, fix data type for temp. variable to u32.
-
-Signed-off-by: JK Kim <jongkang.kim2@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/shash.c                 | 18 +++++++++++++++---
+ include/crypto/internal/hash.h |  8 +-------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index c92a15c3fbc5..4555e9202851 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -1027,7 +1027,7 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 2e3433ad9762..0a0a50cb694f 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -20,12 +20,24 @@
  
- static inline void nvme_update_cq_head(struct nvme_queue *nvmeq)
+ static const struct crypto_type crypto_shash_type;
+ 
+-int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
+-		    unsigned int keylen)
++static int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
++			   unsigned int keylen)
  {
--	u16 tmp = nvmeq->cq_head + 1;
-+	u32 tmp = nvmeq->cq_head + 1;
+ 	return -ENOSYS;
+ }
+-EXPORT_SYMBOL_GPL(shash_no_setkey);
++
++/*
++ * Check whether an shash algorithm has a setkey function.
++ *
++ * For CFI compatibility, this must not be an inline function.  This is because
++ * when CFI is enabled, modules won't get the same address for shash_no_setkey
++ * (if it were exported, which inlining would require) as the core kernel will.
++ */
++bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
++{
++	return alg->setkey != shash_no_setkey;
++}
++EXPORT_SYMBOL_GPL(crypto_shash_alg_has_setkey);
  
- 	if (tmp == nvmeq->q_depth) {
- 		nvmeq->cq_head = 0;
+ static int shash_setkey_unaligned(struct crypto_shash *tfm, const u8 *key,
+ 				  unsigned int keylen)
+diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
+index 0a288dddcf5b..25806141db59 100644
+--- a/include/crypto/internal/hash.h
++++ b/include/crypto/internal/hash.h
+@@ -75,13 +75,7 @@ void crypto_unregister_ahashes(struct ahash_alg *algs, int count);
+ int ahash_register_instance(struct crypto_template *tmpl,
+ 			    struct ahash_instance *inst);
+ 
+-int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
+-		    unsigned int keylen);
+-
+-static inline bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
+-{
+-	return alg->setkey != shash_no_setkey;
+-}
++bool crypto_shash_alg_has_setkey(struct shash_alg *alg);
+ 
+ static inline bool crypto_shash_alg_needs_key(struct shash_alg *alg)
+ {
 -- 
 2.30.2
 
