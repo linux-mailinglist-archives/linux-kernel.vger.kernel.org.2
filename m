@@ -2,84 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F37B3C61D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB8F3C61E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235601AbhGLR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:29:53 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:36420 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhGLR3v (ORCPT
+        id S235697AbhGLRb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:31:27 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:64670 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235646AbhGLRb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:29:51 -0400
-Received: by mail-wm1-f50.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so5123154wms.1;
-        Mon, 12 Jul 2021 10:27:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0MQqVwvutjc/uEdEJQm7ixxF9gWemfLf7asyrtfZ53I=;
-        b=DZh+Sa69wpEhKs5gWP7LxyGTLKOcEioQUNRhzNg/obtGCys5u/9MAfuKr+q5ZEAVzp
-         DocgSlwthvRVUgmfjC11UwDS5OGG8Wkb+cSrmqEkr2nYY3e75C9E9dr7LjVdNYdDRhDH
-         UQ1JtDUmHLW/ErvQ5uzS4eT9WjaF+7vcp0YrecCS995HZJT4C3FPqHgGBRx9qclftx/C
-         ND1vQrYPGvUT4u/gZ2TnclZ3xSMJh3QXbd+CSzhxIQzGBh5UG7plaRSXWn3mJJ79a7Ij
-         tZH1bseT1uC3gwjKvJCpovRoqKvngHoqyhUn6Ap5FmUo8GweYbvh4RiC6d9VfsnnVz5D
-         tjig==
-X-Gm-Message-State: AOAM533HnOcqJy96W43d2AIC4lLAHXl188G2X4O3eLRrsL+ECETMwn0h
-        yUrXb0wEbuOoeyRg1SlCBrQ=
-X-Google-Smtp-Source: ABdhPJzVd6rhjl9r5O8mGuAnl4DP6LGRPTAV/kajtCaEslDxHIUIixer64RuAlp5MTMJm++6khv1aQ==
-X-Received: by 2002:a1c:790a:: with SMTP id l10mr369013wme.8.1626110820969;
-        Mon, 12 Jul 2021 10:27:00 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id o11sm12749056wmq.1.2021.07.12.10.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 10:27:00 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 17:26:58 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH 1/1] asm-generic/hyperv: Add missing #include of nmi.h
-Message-ID: <20210712172658.l53gudfvrqxbgd76@liuwe-devbox-debian-v2>
-References: <1626058204-2106-1-git-send-email-mikelley@microsoft.com>
+        Mon, 12 Jul 2021 13:31:26 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id 3a22d4adfed6713b; Mon, 12 Jul 2021 19:28:36 +0200
+Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id A5EF8669C37;
+        Mon, 12 Jul 2021 19:28:35 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Subject: [PATCH v1 5/6] software nodes: Split software_node_notify()
+Date:   Mon, 12 Jul 2021 19:27:12 +0200
+Message-ID: <5627033.MhkbZ0Pkbq@kreacher>
+In-Reply-To: <2780027.e9J7NaK4W3@kreacher>
+References: <2780027.e9J7NaK4W3@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626058204-2106-1-git-send-email-mikelley@microsoft.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.45
+X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedvrdegheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrgeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
+ ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvihhkkhhirdhkrhhoghgvrhhusheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 07:50:04PM -0700, Michael Kelley wrote:
-> The recent move of hv_do_rep_hypercall() to this file adds
-> a reference to touch_nmi_watchdog(). Its function definition
-> is included indirectly when compiled on x86, but not when
-> compiled on ARM64. So add the explicit #include.
-> 
-> No functional change.
-> 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Applied to hyperv-next. Thanks.
+Split software_node_notify_remove) out of software_node_notify()
+and make device_platform_notify() call the latter on device addition
+and the former on device removal.
 
-> ---
->  include/asm-generic/mshyperv.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
-> index 2a187fe..60cdff3 100644
-> --- a/include/asm-generic/mshyperv.h
-> +++ b/include/asm-generic/mshyperv.h
-> @@ -22,6 +22,7 @@
->  #include <linux/atomic.h>
->  #include <linux/bitops.h>
->  #include <linux/cpumask.h>
-> +#include <linux/nmi.h>
->  #include <asm/ptrace.h>
->  #include <asm/hyperv-tlfs.h>
->  
-> -- 
-> 1.8.3.1
-> 
+While at it, put the headers of the above functions into base.h,
+because they don't need to be present in a global header file.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/base/base.h      |    3 ++
+ drivers/base/core.c      |    9 +++---
+ drivers/base/swnode.c    |   61 ++++++++++++++++++++++++-----------------------
+ include/linux/property.h |    2 -
+ 4 files changed, 39 insertions(+), 36 deletions(-)
+
+Index: linux-pm/drivers/base/swnode.c
+===================================================================
+--- linux-pm.orig/drivers/base/swnode.c
++++ linux-pm/drivers/base/swnode.c
+@@ -11,6 +11,8 @@
+ #include <linux/property.h>
+ #include <linux/slab.h>
+ 
++#include "base.h"
++
+ struct swnode {
+ 	struct kobject kobj;
+ 	struct fwnode_handle fwnode;
+@@ -1053,7 +1055,7 @@ int device_add_software_node(struct devi
+ 	 * balance.
+ 	 */
+ 	if (device_is_registered(dev))
+-		software_node_notify(dev, KOBJ_ADD);
++		software_node_notify(dev);
+ 
+ 	return 0;
+ }
+@@ -1074,7 +1076,8 @@ void device_remove_software_node(struct
+ 		return;
+ 
+ 	if (device_is_registered(dev))
+-		software_node_notify(dev, KOBJ_REMOVE);
++		software_node_notify_remove(dev);
++
+ 	set_secondary_fwnode(dev, NULL);
+ 	kobject_put(&swnode->kobj);
+ }
+@@ -1117,44 +1120,44 @@ int device_create_managed_software_node(
+ }
+ EXPORT_SYMBOL_GPL(device_create_managed_software_node);
+ 
+-int software_node_notify(struct device *dev, unsigned long action)
++void software_node_notify(struct device *dev)
+ {
+ 	struct swnode *swnode;
+ 	int ret;
+ 
+ 	swnode = dev_to_swnode(dev);
+ 	if (!swnode)
+-		return 0;
++		return;
+ 
+-	switch (action) {
+-	case KOBJ_ADD:
+-		ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
+-		if (ret)
+-			break;
++	ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
++	if (ret)
++		return;
+ 
+-		ret = sysfs_create_link(&swnode->kobj, &dev->kobj,
+-					dev_name(dev));
+-		if (ret) {
+-			sysfs_remove_link(&dev->kobj, "software_node");
+-			break;
+-		}
+-		kobject_get(&swnode->kobj);
+-		break;
+-	case KOBJ_REMOVE:
+-		sysfs_remove_link(&swnode->kobj, dev_name(dev));
++	ret = sysfs_create_link(&swnode->kobj, &dev->kobj, dev_name(dev));
++	if (ret) {
+ 		sysfs_remove_link(&dev->kobj, "software_node");
+-		kobject_put(&swnode->kobj);
+-
+-		if (swnode->managed) {
+-			set_secondary_fwnode(dev, NULL);
+-			kobject_put(&swnode->kobj);
+-		}
+-		break;
+-	default:
+-		break;
++		return;
+ 	}
+ 
+-	return 0;
++	kobject_get(&swnode->kobj);
++}
++
++void software_node_notify_remove(struct device *dev)
++{
++	struct swnode *swnode;
++
++	swnode = dev_to_swnode(dev);
++	if (!swnode)
++		return;
++
++	sysfs_remove_link(&swnode->kobj, dev_name(dev));
++	sysfs_remove_link(&dev->kobj, "software_node");
++	kobject_put(&swnode->kobj);
++
++	if (swnode->managed) {
++		set_secondary_fwnode(dev, NULL);
++		kobject_put(&swnode->kobj);
++	}
+ }
+ 
+ static int __init software_node_init(void)
+Index: linux-pm/include/linux/property.h
+===================================================================
+--- linux-pm.orig/include/linux/property.h
++++ linux-pm/include/linux/property.h
+@@ -484,8 +484,6 @@ void software_node_unregister_node_group
+ int software_node_register(const struct software_node *node);
+ void software_node_unregister(const struct software_node *node);
+ 
+-int software_node_notify(struct device *dev, unsigned long action);
+-
+ struct fwnode_handle *
+ fwnode_create_software_node(const struct property_entry *properties,
+ 			    const struct fwnode_handle *parent);
+Index: linux-pm/drivers/base/core.c
+===================================================================
+--- linux-pm.orig/drivers/base/core.c
++++ linux-pm/drivers/base/core.c
+@@ -2003,16 +2003,15 @@ static inline int device_is_not_partitio
+ static int
+ device_platform_notify(struct device *dev, enum kobject_action action)
+ {
+-	int ret;
+-
+ 	if (action == KOBJ_ADD)
+ 		acpi_device_notify(dev);
+ 	else if (action == KOBJ_REMOVE)
+ 		acpi_device_notify_remove(dev);
+ 
+-	ret = software_node_notify(dev, action);
+-	if (ret)
+-		return ret;
++	if (action == KOBJ_ADD)
++		software_node_notify(dev);
++	else if (action == KOBJ_REMOVE)
++		software_node_notify_remove(dev);
+ 
+ 	if (platform_notify && action == KOBJ_ADD)
+ 		platform_notify(dev);
+Index: linux-pm/drivers/base/base.h
+===================================================================
+--- linux-pm.orig/drivers/base/base.h
++++ linux-pm/drivers/base/base.h
+@@ -202,3 +202,6 @@ int devtmpfs_delete_node(struct device *
+ static inline int devtmpfs_create_node(struct device *dev) { return 0; }
+ static inline int devtmpfs_delete_node(struct device *dev) { return 0; }
+ #endif
++
++void software_node_notify(struct device *dev);
++void software_node_notify_remove(struct device *dev);
+
+
+
