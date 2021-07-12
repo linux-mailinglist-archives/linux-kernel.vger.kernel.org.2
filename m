@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553F23C4986
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5333C4FFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbhGLGpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
+        id S1345586AbhGLH37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237899AbhGLGe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A8EC60551;
-        Mon, 12 Jul 2021 06:32:08 +0000 (UTC)
+        id S242727AbhGLHB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D62961403;
+        Mon, 12 Jul 2021 06:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071529;
-        bh=wWJRJTiR/yYrM97bNtwEoMlpAdV7hfKPseOeLbgd8po=;
+        s=korg; t=1626073148;
+        bh=nP61IyDwMKPULtKhpyhNvfOHA4ogTEHHQM3vW2uT22k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mG1XH5pMQWQa+pouSHEaEaD1UGdBszkS2GtEX6ctOYDTZh3T5QAiy9seYkHFlqFU5
-         +ZOrD/cyLF9ZNxknkGZ6v5Ww9KzV9f4sSab40OY2mPYum3Is/pigYYZobb/1+fhGox
-         bxY1yXvDTiG3ShPDrW2OywLkAZlLv0VXSWKqAQjA=
+        b=F9vkmZRmaFg7pOMAV/ESjcxHmYLwW+rMENdaTbDm+XHqou6zKh3lJCrsOh7iRO+bf
+         Wpd0I5b9D0JRv6ty3vyJSMb3FpIdGR+l63RbyjMWqQOKdwHwGySY7EECKmiV1LqPC9
+         g2pufM4vMT9r9vcXyHcquwsIlR5qESir+H94bhyo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.10 066/593] s390: mm: Fix secure storage access exception handling
+        stable@vger.kernel.org,
+        syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 143/700] media: cpia2: fix memory leak in cpia2_usb_probe
 Date:   Mon, 12 Jul 2021 08:03:46 +0200
-Message-Id: <20210712060850.429885157@linuxfoundation.org>
+Message-Id: <20210712060945.766723254@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,134 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janosch Frank <frankja@linux.ibm.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 85b18d7b5e7ffefb2f076186511d39c4990aa005 upstream.
+[ Upstream commit be8656e62e9e791837b606a027802b504a945c97 ]
 
-Turns out that the bit 61 in the TEID is not always 1 and if that's
-the case the address space ID and the address are
-unpredictable. Without an address and its address space ID we can't
-export memory and hence we can only send a SIGSEGV to the process or
-panic the kernel depending on who caused the exception.
+syzbot reported leak in cpia2 usb driver. The problem was
+in invalid error handling.
 
-Unfortunately bit 61 is only reliable if we have the "misc" UV feature
-bit.
+v4l2_device_register() is called in cpia2_init_camera_struct(), but
+all error cases after cpia2_init_camera_struct() did not call the
+v4l2_device_unregister()
 
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Fixes: 084ea4d611a3d ("s390/mm: add (non)secure page access exceptions handlers")
-Cc: stable@vger.kernel.org
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/boot/uv.c        |    1 +
- arch/s390/include/asm/uv.h |    8 +++++++-
- arch/s390/kernel/uv.c      |   10 ++++++++++
- arch/s390/mm/fault.c       |   26 ++++++++++++++++++++++++++
- 4 files changed, 44 insertions(+), 1 deletion(-)
+ drivers/media/usb/cpia2/cpia2.h      |  1 +
+ drivers/media/usb/cpia2/cpia2_core.c | 12 ++++++++++++
+ drivers/media/usb/cpia2/cpia2_usb.c  | 13 +++++++------
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
---- a/arch/s390/boot/uv.c
-+++ b/arch/s390/boot/uv.c
-@@ -36,6 +36,7 @@ void uv_query_info(void)
- 		uv_info.max_sec_stor_addr = ALIGN(uvcb.max_guest_stor_addr, PAGE_SIZE);
- 		uv_info.max_num_sec_conf = uvcb.max_num_sec_conf;
- 		uv_info.max_guest_cpu_id = uvcb.max_guest_cpu_id;
-+		uv_info.uv_feature_indications = uvcb.uv_feature_indications;
- 	}
+diff --git a/drivers/media/usb/cpia2/cpia2.h b/drivers/media/usb/cpia2/cpia2.h
+index 50835f5f7512..57b7f1ea68da 100644
+--- a/drivers/media/usb/cpia2/cpia2.h
++++ b/drivers/media/usb/cpia2/cpia2.h
+@@ -429,6 +429,7 @@ int cpia2_send_command(struct camera_data *cam, struct cpia2_command *cmd);
+ int cpia2_do_command(struct camera_data *cam,
+ 		     unsigned int command,
+ 		     unsigned char direction, unsigned char param);
++void cpia2_deinit_camera_struct(struct camera_data *cam, struct usb_interface *intf);
+ struct camera_data *cpia2_init_camera_struct(struct usb_interface *intf);
+ int cpia2_init_camera(struct camera_data *cam);
+ int cpia2_allocate_buffers(struct camera_data *cam);
+diff --git a/drivers/media/usb/cpia2/cpia2_core.c b/drivers/media/usb/cpia2/cpia2_core.c
+index e747548ab286..b5a2d06fb356 100644
+--- a/drivers/media/usb/cpia2/cpia2_core.c
++++ b/drivers/media/usb/cpia2/cpia2_core.c
+@@ -2163,6 +2163,18 @@ static void reset_camera_struct(struct camera_data *cam)
+ 	cam->height = cam->params.roi.height;
+ }
  
- #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
---- a/arch/s390/include/asm/uv.h
-+++ b/arch/s390/include/asm/uv.h
-@@ -73,6 +73,10 @@ enum uv_cmds_inst {
- 	BIT_UVC_CMD_UNPIN_PAGE_SHARED = 22,
- };
- 
-+enum uv_feat_ind {
-+	BIT_UV_FEAT_MISC = 0,
-+};
-+
- struct uv_cb_header {
- 	u16 len;
- 	u16 cmd;	/* Command Code */
-@@ -97,7 +101,8 @@ struct uv_cb_qui {
- 	u64 max_guest_stor_addr;
- 	u8  reserved88[158 - 136];
- 	u16 max_guest_cpu_id;
--	u8  reserveda0[200 - 160];
-+	u64 uv_feature_indications;
-+	u8  reserveda0[200 - 168];
- } __packed __aligned(8);
- 
- /* Initialize Ultravisor */
-@@ -274,6 +279,7 @@ struct uv_info {
- 	unsigned long max_sec_stor_addr;
- 	unsigned int max_num_sec_conf;
- 	unsigned short max_guest_cpu_id;
-+	unsigned long uv_feature_indications;
- };
- 
- extern struct uv_info uv_info;
---- a/arch/s390/kernel/uv.c
-+++ b/arch/s390/kernel/uv.c
-@@ -364,6 +364,15 @@ static ssize_t uv_query_facilities(struc
- static struct kobj_attribute uv_query_facilities_attr =
- 	__ATTR(facilities, 0444, uv_query_facilities, NULL);
- 
-+static ssize_t uv_query_feature_indications(struct kobject *kobj,
-+					    struct kobj_attribute *attr, char *buf)
++/******************************************************************************
++ *
++ *  cpia2_init_camera_struct
++ *
++ *  Deinitialize camera struct
++ *****************************************************************************/
++void cpia2_deinit_camera_struct(struct camera_data *cam, struct usb_interface *intf)
 +{
-+	return sysfs_emit(buf, "%lx\n", uv_info.uv_feature_indications);
++	v4l2_device_unregister(&cam->v4l2_dev);
++	kfree(cam);
 +}
 +
-+static struct kobj_attribute uv_query_feature_indications_attr =
-+	__ATTR(feature_indications, 0444, uv_query_feature_indications, NULL);
-+
- static ssize_t uv_query_max_guest_cpus(struct kobject *kobj,
- 				       struct kobj_attribute *attr, char *page)
- {
-@@ -396,6 +405,7 @@ static struct kobj_attribute uv_query_ma
+ /******************************************************************************
+  *
+  *  cpia2_init_camera_struct
+diff --git a/drivers/media/usb/cpia2/cpia2_usb.c b/drivers/media/usb/cpia2/cpia2_usb.c
+index 3ab80a7b4498..76aac06f9fb8 100644
+--- a/drivers/media/usb/cpia2/cpia2_usb.c
++++ b/drivers/media/usb/cpia2/cpia2_usb.c
+@@ -844,15 +844,13 @@ static int cpia2_usb_probe(struct usb_interface *intf,
+ 	ret = set_alternate(cam, USBIF_CMDONLY);
+ 	if (ret < 0) {
+ 		ERR("%s: usb_set_interface error (ret = %d)\n", __func__, ret);
+-		kfree(cam);
+-		return ret;
++		goto alt_err;
+ 	}
  
- static struct attribute *uv_query_attrs[] = {
- 	&uv_query_facilities_attr.attr,
-+	&uv_query_feature_indications_attr.attr,
- 	&uv_query_max_guest_cpus_attr.attr,
- 	&uv_query_max_guest_vms_attr.attr,
- 	&uv_query_max_guest_addr_attr.attr,
---- a/arch/s390/mm/fault.c
-+++ b/arch/s390/mm/fault.c
-@@ -805,6 +805,32 @@ void do_secure_storage_access(struct pt_
- 	struct page *page;
- 	int rc;
  
-+	/*
-+	 * bit 61 tells us if the address is valid, if it's not we
-+	 * have a major problem and should stop the kernel or send a
-+	 * SIGSEGV to the process. Unfortunately bit 61 is not
-+	 * reliable without the misc UV feature so we need to check
-+	 * for that as well.
-+	 */
-+	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
-+	    !test_bit_inv(61, &regs->int_parm_long)) {
-+		/*
-+		 * When this happens, userspace did something that it
-+		 * was not supposed to do, e.g. branching into secure
-+		 * memory. Trigger a segmentation fault.
-+		 */
-+		if (user_mode(regs)) {
-+			send_sig(SIGSEGV, current, 0);
-+			return;
-+		}
+ 	if((ret = cpia2_init_camera(cam)) < 0) {
+ 		ERR("%s: failed to initialize cpia2 camera (ret = %d)\n", __func__, ret);
+-		kfree(cam);
+-		return ret;
++		goto alt_err;
+ 	}
+ 	LOG("  CPiA Version: %d.%02d (%d.%d)\n",
+ 	       cam->params.version.firmware_revision_hi,
+@@ -872,11 +870,14 @@ static int cpia2_usb_probe(struct usb_interface *intf,
+ 	ret = cpia2_register_camera(cam);
+ 	if (ret < 0) {
+ 		ERR("%s: Failed to register cpia2 camera (ret = %d)\n", __func__, ret);
+-		kfree(cam);
+-		return ret;
++		goto alt_err;
+ 	}
+ 
+ 	return 0;
 +
-+		/*
-+		 * The kernel should never run into this case and we
-+		 * have no way out of this situation.
-+		 */
-+		panic("Unexpected PGM 0x3d with TEID bit 61=0");
-+	}
-+
- 	switch (get_fault_type(regs)) {
- 	case USER_FAULT:
- 		mm = current->mm;
++alt_err:
++	cpia2_deinit_camera_struct(cam, intf);
++	return ret;
+ }
+ 
+ /******************************************************************************
+-- 
+2.30.2
+
 
 
