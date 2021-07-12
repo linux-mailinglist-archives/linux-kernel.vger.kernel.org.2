@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3B73C4CF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E703C54B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244795AbhGLHLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        id S1353756AbhGLICu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:02:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239042AbhGLGt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C75FD61221;
-        Mon, 12 Jul 2021 06:45:32 +0000 (UTC)
+        id S233218AbhGLHXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:23:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC8C611AD;
+        Mon, 12 Jul 2021 07:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072333;
-        bh=0vtx1rzit57snHuBv4JPMsOTKelZthfIUK7q67ljMk8=;
+        s=korg; t=1626074450;
+        bh=PGJXkvvqmAF5u/OVARzIvilvQhxzceA6Bxy6uw4LpKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D92ZZQmSleVQF+nsggXPNSDXjmbSfIX6eAY6xCozESPQ27oRLqEtPquqjPavI8aO3
-         9e09g7K7Ea4iDCPzfxpa1ADl/qgeVs+8Jt7Os9sSLksR4eO1gIXDJh8nFnhcV3NwSv
-         35pG2+a/hPj9iWMjMfv/vaHbUCMs2GMDyFS/qYYk=
+        b=lyvitLR9c/yUpTxcSnRlmn9632ZpI1l4eFGuMYXRytRdNIQ18t2vSy1PTiUK2BWAb
+         PA6l3pl0nVllACnfpfQLJsT2hqSwa+LUpFoX0FTX/0pPKEeElc63lRakhVXklg1NIw
+         WpwhX51V4wLF5OJ/qVU1DR1rzIqodrwTlPXzvqy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Nuno Sa <nuno.sa@analog.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stefan-Gabriel Mirea <stefan-gabriel.mirea@nxp.com>,
-        Sanchayan Maity <maitysanchayan@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 453/593] iio: adc: vf610: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:13 +0200
-Message-Id: <20210712060939.175443067@linuxfoundation.org>
+Subject: [PATCH 5.12 531/700] iio: adis16475: do not return ints in irq handlers
+Date:   Mon, 12 Jul 2021 08:10:14 +0200
+Message-Id: <20210712061032.986117476@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Nuno Sa <nuno.sa@analog.com>
 
-[ Upstream commit 7765dfaa22ea08abf0c175e7553826ba2a939632 ]
+[ Upstream commit 00a72db718fa198da3946286dcad222399ccd4fb ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+On an IRQ handler we should not return normal error codes as 'irqreturn_t'
+is expected.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
+This is done by jumping to the 'check_burst32' label where we return
+'IRQ_HANDLED'. Note that it is fine to do the burst32 check in this
+error path. If we have proper settings to apply burst32, we might just
+do the setup now so that the next sample already uses it.
 
-Fixes: 0010d6b44406 ("iio: adc: vf610: Add IIO buffer support for Vybrid ADC")
+Fixes: fff7352bf7a3c ("iio: imu: Add support for adis16475")
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210427085454.30616-2-nuno.sa@analog.com
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Stefan-Gabriel Mirea <stefan-gabriel.mirea@nxp.com>
-Cc: Sanchayan Maity <maitysanchayan@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-10-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/vf610_adc.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/imu/adis16475.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/vf610_adc.c b/drivers/iio/adc/vf610_adc.c
-index 1d794cf3e3f1..fd57fc43e8e5 100644
---- a/drivers/iio/adc/vf610_adc.c
-+++ b/drivers/iio/adc/vf610_adc.c
-@@ -167,7 +167,11 @@ struct vf610_adc {
- 	u32 sample_freq_avail[5];
+diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
+index 197d48240991..3c4e4deb8760 100644
+--- a/drivers/iio/imu/adis16475.c
++++ b/drivers/iio/imu/adis16475.c
+@@ -990,7 +990,7 @@ static irqreturn_t adis16475_trigger_handler(int irq, void *p)
  
- 	struct completion completion;
--	u16 buffer[8];
-+	/* Ensure the timestamp is naturally aligned */
-+	struct {
-+		u16 chan;
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+ 	ret = spi_sync(adis->spi, &adis->msg);
+ 	if (ret)
+-		return ret;
++		goto check_burst32;
  
- static const u32 vf610_hw_avgs[] = { 1, 4, 8, 16, 32 };
-@@ -579,9 +583,9 @@ static irqreturn_t vf610_adc_isr(int irq, void *dev_id)
- 	if (coco & VF610_ADC_HS_COCO0) {
- 		info->value = vf610_adc_read_data(info);
- 		if (iio_buffer_enabled(indio_dev)) {
--			info->buffer[0] = info->value;
-+			info->scan.chan = info->value;
- 			iio_push_to_buffers_with_timestamp(indio_dev,
--					info->buffer,
-+					&info->scan,
- 					iio_get_time_ns(indio_dev));
- 			iio_trigger_notify_done(indio_dev->trig);
- 		} else
+ 	adis->spi->max_speed_hz = cached_spi_speed_hz;
+ 	buffer = adis->buffer;
 -- 
 2.30.2
 
