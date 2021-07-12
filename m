@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F8E3C4BC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0463C583B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242233AbhGLG7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:59:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41894 "EHLO mail.kernel.org"
+        id S244183AbhGLInW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:43:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238953AbhGLGob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0462D61179;
-        Mon, 12 Jul 2021 06:40:24 +0000 (UTC)
+        id S1350653AbhGLHvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE14261C24;
+        Mon, 12 Jul 2021 07:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072025;
-        bh=ESdIGpwSCk/t2BjGc+wdVh2bU381kVYma1kaCdaZ64U=;
+        s=korg; t=1626076011;
+        bh=dg3B80dzVDBqk3b5MSTbXAt2f3LgBn5loF4Z/t+gt2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1BfmrTlYtm0vQsuoqqjZtqKV5mGGxLteCqJ2IIG14Amk5aiBjcRVe4S1dq/R5Ftuw
-         5OCZHsonOR4geQhzhqJfAFKpI0WH9R0gKpJsemFi34zQv6dLLsscNsN+OFJt4/SlUE
-         pzOoPrkajC4Gqv/tkuFFlc0lIWrnr3rZNm2znV4c=
+        b=f4Z/6c1u0J10ztWDNNlcTfJbBJT4rFrJuaycEQuoC2nMXVn7vXgJpR/gWiDU1u2HF
+         y8in51W41zXdfVKDsYZYGRSEYM+AKF5Ygn9B9D8/niAiefNuFU68dYJ96+h0kQe9KM
+         pB1FDkpKBMlp4p6CgJXnG7530n9nDS+QRu3v137w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Gurtovoy <maxg@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 321/593] RDMA/srp: Fix a recently introduced memory leak
-Date:   Mon, 12 Jul 2021 08:08:01 +0200
-Message-Id: <20210712060920.921983933@linuxfoundation.org>
+Subject: [PATCH 5.13 459/800] net: wwan: Fix WWAN config symbols
+Date:   Mon, 12 Jul 2021 08:08:02 +0200
+Message-Id: <20210712061015.993162635@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+[ Upstream commit 89212e160b81e778f829b89743570665810e3b13 ]
 
-[ Upstream commit 7ec2e27a3afff64c96bfe7a77685c33619db84be ]
+There is not strong reason to have both WWAN and WWAN_CORE symbols,
+Let's build the WWAN core framework when WWAN is selected, in the
+same way as for other subsystems.
 
-Only allocate a memory registration list if it will be used and if it will
-be freed.
+This fixes issue with mhi_net selecting WWAN_CORE without WWAN and
+reported by kernel test robot:
 
-Link: https://lore.kernel.org/r/20210524041211.9480-5-bvanassche@acm.org
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Fixes: f273ad4f8d90 ("RDMA/srp: Remove support for FMR memory registration")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for WWAN_CORE
+   Depends on NETDEVICES && WWAN
+   Selected by
+   - MHI_NET && NETDEVICES && NET_CORE && MHI_BUS
+
+Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/net/Kconfig       |  1 +
+ drivers/net/wwan/Kconfig  | 15 ++++++---------
+ drivers/net/wwan/Makefile |  2 +-
+ 3 files changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index a8f85993dab3..86d5c4c92b36 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -998,7 +998,6 @@ static int srp_alloc_req_data(struct srp_rdma_ch *ch)
- 	struct srp_device *srp_dev = target->srp_host->srp_dev;
- 	struct ib_device *ibdev = srp_dev->dev;
- 	struct srp_request *req;
--	void *mr_list;
- 	dma_addr_t dma_addr;
- 	int i, ret = -ENOMEM;
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 74dc8e249faa..9b12a8e110f4 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -431,6 +431,7 @@ config VSOCKMON
+ config MHI_NET
+ 	tristate "MHI network driver"
+ 	depends on MHI_BUS
++	select WWAN
+ 	help
+ 	  This is the network driver for MHI bus.  It can be used with
+ 	  QCOM based WWAN modems (like SDX55).  Say Y or M.
+diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
+index 7ad1920120bc..e9d8a1c25e43 100644
+--- a/drivers/net/wwan/Kconfig
++++ b/drivers/net/wwan/Kconfig
+@@ -3,15 +3,9 @@
+ # Wireless WAN device configuration
+ #
  
-@@ -1009,12 +1008,12 @@ static int srp_alloc_req_data(struct srp_rdma_ch *ch)
+-menuconfig WWAN
+-	bool "Wireless WAN"
+-	help
+-	  This section contains Wireless WAN configuration for WWAN framework
+-	  and drivers.
+-
+-if WWAN
++menu "Wireless WAN"
  
- 	for (i = 0; i < target->req_ring_size; ++i) {
- 		req = &ch->req_ring[i];
--		mr_list = kmalloc_array(target->mr_per_cmd, sizeof(void *),
--					GFP_KERNEL);
--		if (!mr_list)
--			goto out;
--		if (srp_dev->use_fast_reg)
--			req->fr_list = mr_list;
-+		if (srp_dev->use_fast_reg) {
-+			req->fr_list = kmalloc_array(target->mr_per_cmd,
-+						sizeof(void *), GFP_KERNEL);
-+			if (!req->fr_list)
-+				goto out;
-+		}
- 		req->indirect_desc = kmalloc(target->indirect_size, GFP_KERNEL);
- 		if (!req->indirect_desc)
- 			goto out;
+-config WWAN_CORE
++config WWAN
+ 	tristate "WWAN Driver Core"
+ 	help
+ 	  Say Y here if you want to use the WWAN driver core. This driver
+@@ -20,9 +14,10 @@ config WWAN_CORE
+ 	  To compile this driver as a module, choose M here: the module will be
+ 	  called wwan.
+ 
++if WWAN
++
+ config MHI_WWAN_CTRL
+ 	tristate "MHI WWAN control driver for QCOM-based PCIe modems"
+-	select WWAN_CORE
+ 	depends on MHI_BUS
+ 	help
+ 	  MHI WWAN CTRL allows QCOM-based PCIe modems to expose different modem
+@@ -35,3 +30,5 @@ config MHI_WWAN_CTRL
+ 	  called mhi_wwan_ctrl.
+ 
+ endif # WWAN
++
++endmenu
+diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
+index 556cd90958ca..289771a4f952 100644
+--- a/drivers/net/wwan/Makefile
++++ b/drivers/net/wwan/Makefile
+@@ -3,7 +3,7 @@
+ # Makefile for the Linux WWAN device drivers.
+ #
+ 
+-obj-$(CONFIG_WWAN_CORE) += wwan.o
++obj-$(CONFIG_WWAN) += wwan.o
+ wwan-objs += wwan_core.o
+ 
+ obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
 -- 
 2.30.2
 
