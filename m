@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBAA3C5785
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B013C4A49
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376793AbhGLIe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51636 "EHLO mail.kernel.org"
+        id S240151AbhGLGus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:50:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241414AbhGLHrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:47:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5F7261205;
-        Mon, 12 Jul 2021 07:42:24 +0000 (UTC)
+        id S237997AbhGLGjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01243611F1;
+        Mon, 12 Jul 2021 06:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075745;
-        bh=P9AkBdQ8p8sHUudNS7LV+tOVvL1HEI/xAjFO/AxkeJY=;
+        s=korg; t=1626071763;
+        bh=CE/WAWc0p896qmORqkpfmtTh5+bSqWQBq/cJKattkkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ttoTrYys0bh8S9fdMuN5lZcKM4M5KysDybLaIHWhe0C/GvKYDARBGCm8gpIvPmg9n
-         LYAhgeaxeANCotfAC/1JHs+AjakQFQErsdmR4ZJ/HQimSq1Milykj+fQ1TOq3dKUnz
-         71BDQjFhFqzyJS1gDTak68L86IRL+gDI4vbd6ksI=
+        b=hgAkUPa/eBxftNhVtO4u+LK+aOyDi5INChJoy14IVsecCrU13xX4Jr5G1BtA5nRYN
+         Lsw9QHtUhUb7Xj3T3i094Wca/9vNojSYeHQi/5oer9CtYfgzFBCLDYWyp1uXqbNbvz
+         DclZ9G35S8LXIB1S96+pFjOKdeGqG5nNWyToUwLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 347/800] crypto: nx - Fix RCU warning in nx842_OF_upd_status
+Subject: [PATCH 5.10 210/593] spi: Avoid undefined behaviour when counting unused native CSs
 Date:   Mon, 12 Jul 2021 08:06:10 +0200
-Message-Id: <20210712061003.951961803@linuxfoundation.org>
+Message-Id: <20210712060906.041255997@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2a96726bd0ccde4f12b9b9a9f61f7b1ac5af7e10 ]
+[ Upstream commit f60d7270c8a3d2beb1c23ae0da42497afa3584c2 ]
 
-The function nx842_OF_upd_status triggers a sparse RCU warning when
-it directly dereferences the RCU-protected devdata.  This appears
-to be an accident as there was another variable of the same name
-that was passed in from the caller.
+ffz(), that has been used to count unused native CSs,
+might cause undefined behaviour when called against ~0U.
+To fix that, open code it with ffs(~value) - 1.
 
-After it was removed (because the main purpose of using it, to
-update the status member was itself removed) the global variable
-unintenionally stood in as its replacement.
-
-This patch restores the devdata parameter.
-
-Fixes: 90fd73f912f0 ("crypto: nx - remove pSeries NX 'status' field")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210420164425.40287-2-andriy.shevchenko@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/nx/nx-842-pseries.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/spi/spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
-index 8ee547ee378e..9b2417ebc95a 100644
---- a/drivers/crypto/nx/nx-842-pseries.c
-+++ b/drivers/crypto/nx/nx-842-pseries.c
-@@ -538,13 +538,15 @@ static int nx842_OF_set_defaults(struct nx842_devdata *devdata)
-  * The status field indicates if the device is enabled when the status
-  * is 'okay'.  Otherwise the device driver will be disabled.
-  *
-- * @prop - struct property point containing the maxsyncop for the update
-+ * @devdata: struct nx842_devdata to use for dev_info
-+ * @prop: struct property point containing the maxsyncop for the update
-  *
-  * Returns:
-  *  0 - Device is available
-  *  -ENODEV - Device is not available
-  */
--static int nx842_OF_upd_status(struct property *prop)
-+static int nx842_OF_upd_status(struct nx842_devdata *devdata,
-+			       struct property *prop)
- {
- 	const char *status = (const char *)prop->value;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index a1a85f0baf7c..8c261eac2cee 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2614,7 +2614,7 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
+ 		native_cs_mask |= BIT(i);
+ 	}
  
-@@ -758,7 +760,7 @@ static int nx842_OF_upd(struct property *new_prop)
- 		goto out;
+-	ctlr->unused_native_cs = ffz(native_cs_mask);
++	ctlr->unused_native_cs = ffs(~native_cs_mask) - 1;
  
- 	/* Perform property updates */
--	ret = nx842_OF_upd_status(status);
-+	ret = nx842_OF_upd_status(new_devdata, status);
- 	if (ret)
- 		goto error_out;
- 
+ 	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
+ 	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
 -- 
 2.30.2
 
