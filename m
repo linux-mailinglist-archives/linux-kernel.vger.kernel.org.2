@@ -2,218 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092B23C5A73
+	by mail.lfdr.de (Postfix) with ESMTP id 5152B3C5A74
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234745AbhGLJ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
+        id S232491AbhGLJ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbhGLJ52 (ORCPT
+        with ESMTP id S239338AbhGLJ6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:57:28 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61A2C0613E8;
-        Mon, 12 Jul 2021 02:54:40 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4GNfHy2pHbzQk58;
-        Mon, 12 Jul 2021 11:54:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1626083674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+7tPSemAYvLcNGYAc+R6iylhPYCgbXPYUoGD293BwI=;
-        b=fs9YBoZK4RAQP7In8z3xC2OSwMseotD77zvLF4vGJrijiwSz47JURCEomb5gU3rGweL0NN
-        T6aXm2KDrAtD9oktSYa5nU8ALZE1GaecZJv/wsyxBGJmsA/DkvajSRVlGn3k3WerIvt3EC
-        qzVAIxKbQUm/ANyk393g/7YCuAA4nEEE5ozD/paXAZDAMbUkxFPYxMXsyE6ObmR2yxat/C
-        d7WQCQ514vqqokasH4SoqtSZUw5IfUdG51CyGvDIuXc9lH/OORHmJoYBEqb7NjLb/vLLME
-        9FJNb0VpnNA4B9xp9cdfx2y6gBqnRjTIz6fJnEcVA8VQEVuAWNTEDpPjGghqwQ==
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
-        with ESMTP id Uz5qEtT4HP5A; Mon, 12 Jul 2021 11:54:32 +0200 (CEST)
-Subject: Re: [PATCH net-next v5] net: phy: intel-xway: Add RGMII internal
- delay configuration
-To:     Martin Schiller <ms@dev.tdt.de>,
-        martin.blumenstingl@googlemail.com, f.fainelli@gmail.com,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210712072413.11490-1-ms@dev.tdt.de>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <e7b84ec3-2ef3-9ad0-b5e3-10ced20e433f@hauke-m.de>
-Date:   Mon, 12 Jul 2021 11:54:30 +0200
+        Mon, 12 Jul 2021 05:58:00 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8B5C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 02:55:10 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id v1so27111535edt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 02:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mihalicyn.com; s=mihalicyn;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HSX1sBNAaLK7Zbgo2gu6wsmdyizmWwHFhYTRcpp9m6M=;
+        b=JW0h/v3AfECEXpS5s4vs1K0lQPgrdLBaY7n2ZaXCDNVfluW/W3BhGazMDtSISF7j0b
+         AO3qpx+SVpDVhiCk/FEq0nRRiq7Gn9uHrufJRNjrXG33m3DeoebKX8a/xnOFtE6aWOti
+         MTcDw6t/EzZ6bRoxPu9iEtLymPOjiV8Ylzm/8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HSX1sBNAaLK7Zbgo2gu6wsmdyizmWwHFhYTRcpp9m6M=;
+        b=nnlqgI0h4qvebzyMI57e324fyJUCJtJlkvK/Hw9mB7yfgdaf78vQIUTtXhij5Oh2WY
+         UPeWh8VKrMa3U29ibKW4vobwcBDjDZiJR6t0x1s6eGm3UDsHZtO+EWQCpE2ifilxwexk
+         d9fZ1RrzRzCZXlaWkH7m2W4893zaWKahpdv91l5HF+WVDKNvsW1+TRwt6lbOdvkAcacE
+         6ppwrtl+PnsoD9KHeGQ79lOP/+HAWeiKz/dRPnNNwe8d8kijGEhp7PgKWMDfHGiSfgy3
+         WoS7Aa26SydaCkYWIKwbBNCQWaB7J3yii8V65mfX4rR+fN2RA5LbPJOjlKcS4AJjTvXd
+         EbyA==
+X-Gm-Message-State: AOAM531LcADTgnCyxvkZJmqPs9An5A+xBOekYKls/y+bo1SJCVC3f8X/
+        ooBcXEgVM6LpDe7bZz63oa/eU277JmjkgeFp8mOUaw==
+X-Google-Smtp-Source: ABdhPJwmkJ4mD3QUFTrqYXkhrrLXNnNFtH3iGIS+1fwkpFMqgJUg3Z4fCjGJva6btnTIPBF84Um8p7B24vYodh7ExsU=
+X-Received: by 2002:aa7:c799:: with SMTP id n25mr61959734eds.16.1626083709449;
+ Mon, 12 Jul 2021 02:55:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210712072413.11490-1-ms@dev.tdt.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.77 / 15.00 / 15.00
-X-Rspamd-Queue-Id: C82C0184A
-X-Rspamd-UID: 47149b
+References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
+ <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
+ <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
+ <CALgW_8VUk0us_umLncUv2DUMkOi3qixmT+YkHV4Dhpt_nNMZHw@mail.gmail.com>
+ <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com> <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
+In-Reply-To: <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
+From:   Alexander Mihalicyn <alexander@mihalicyn.com>
+Date:   Mon, 12 Jul 2021 12:54:58 +0300
+Message-ID: <CAJqdLrpxnMThqersqiVsTNr1Y25V8jmDcW_sKWi0ziJXCsi2gw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace
+ was changed
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milton Miller <miltonm@bga.com>,
+        Jack Miller <millerjo@us.ibm.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Christian Brauner <christian@brauner.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 9:24 AM, Martin Schiller wrote:
-> This adds the possibility to configure the RGMII RX/TX clock skew via
-> devicetree.
-> 
-> Simply set phy mode to "rgmii-id", "rgmii-rxid" or "rgmii-txid" and add
-> the "rx-internal-delay-ps" or "tx-internal-delay-ps" property to the
-> devicetree.
-> 
-> Furthermore, a warning is now issued if the phy mode is configured to
-> "rgmii" and an internal delay is set in the phy (e.g. by pin-strapping),
-> as in the dp83867 driver.
-> 
-> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+Hello Manfred,
 
-Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+On Sun, Jul 11, 2021 at 2:47 PM Manfred Spraul <manfred@colorfullife.com> wrote:
+>
+> Hi Alex,
+>
+>
+> Am Sonntag, 11. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
+> >
+> > Hi, Manfred,
+> >
+> > On Sun, Jul 11, 2021 at 12:13 PM Manfred Spraul
+> > <manfred@colorfullife.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > >
+> > > Am Samstag, 10. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
+> > >>
+> > >>
+> > >> Now, using setns() syscall, we can construct situation when on
+> > >> task->sysvshm.shm_clist list
+> > >> we have shm items from several (!) IPC namespaces.
+> > >>
+> > >>
+> > > Does this imply that locking ist affected as well? According to the initial patch, accesses to shm_clist are protected by "the" IPC shm namespace rwsem. This can't work if the list contains objects from several namespaces.
+> >
+> > Of course, you are right. I've to rework this part -> I can add check into
+> > static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
+> > function and before adding new shm into task list check that list is empty OR
+> > an item which is present on the list from the same namespace as
+> > current->nsproxy->ipc_ns.
+> >
+> Ok. (Sorry, I have only smartphone internet, thus I could not check
+> the patch fully)
+>
+> > >> I've proposed a change which keeps the old behaviour of setns() but
+> > >> fixes double free.
+> > >>
+> > > Assuming that locking works, I would consider this as a namespace design question: Do we want to support that a task contains shm objects from several ipc namespaces?
+> >
+> > This depends on what we mean by "task contains shm objects from
+> > several ipc namespaces". There are two meanings:
+> >
+> > 1. Task has attached shm object from different ipc namespaces
+> >
+> > We already support that by design. When we doing a change of namespace
+> > using unshare(CLONE_NEWIPC) even with
+> > sysctl shm_rmid_forced=1 we not detach all ipc's from task!
+>
+> OK. Thus shm and sem have different behavior anyways.
+>
+> >
+> > 2. Task task->sysvshm.shm_clist list has items from different IPC namespaces.
+> >
+> > I'm not sure, do we need that or not. But I'm ready to prepare a patch
+> > for any of the options which we choose:
+> > a) just add exit_shm(current)+shm_init_task(current);
+> > b) prepare PATCHv2 with appropriate check in the newseg() to prevent
+> > adding new items from different namespace to the list
+> > c) rework algorithm so we can safely have items from different
+> > namespaces in task->sysvshm.shm_clist
+> >
+> Before you write something, let's wait what the others say. I don't
+> qualify AS shm expert
+>
+> a) is user space visible, without any good excuse
 
-> ---
-> 
-> Changes to v4:
-> o Fix Alignment to match open parenthesis
-> 
-> Changes to v3:
-> o Fix typo in commit message
-> o use FIELD_PREP() and FIELD_GET() macros
-> o further code cleanups
-> o always mask rxskew AND txskew value in the register value
-> 
-> Changes to v2:
-> o Fix missing whitespace in warning.
-> 
-> Changes to v1:
-> o code cleanup and use phy_modify().
-> o use default of 2.0ns if delay property is absent instead of returning
->    an error.
-> 
-> ---
->   drivers/net/phy/intel-xway.c | 85 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 85 insertions(+)
-> 
-> diff --git a/drivers/net/phy/intel-xway.c b/drivers/net/phy/intel-xway.c
-> index d453ec016168..bc7e2fdb8ea7 100644
-> --- a/drivers/net/phy/intel-xway.c
-> +++ b/drivers/net/phy/intel-xway.c
-> @@ -8,11 +8,16 @@
->   #include <linux/module.h>
->   #include <linux/phy.h>
->   #include <linux/of.h>
-> +#include <linux/bitfield.h>
->   
-> +#define XWAY_MDIO_MIICTRL		0x17	/* mii control */
->   #define XWAY_MDIO_IMASK			0x19	/* interrupt mask */
->   #define XWAY_MDIO_ISTAT			0x1A	/* interrupt status */
->   #define XWAY_MDIO_LED			0x1B	/* led control */
->   
-> +#define XWAY_MDIO_MIICTRL_RXSKEW_MASK	GENMASK(14, 12)
-> +#define XWAY_MDIO_MIICTRL_TXSKEW_MASK	GENMASK(10, 8)
-> +
->   /* bit 15:12 are reserved */
->   #define XWAY_MDIO_LED_LED3_EN		BIT(11)	/* Enable the integrated function of LED3 */
->   #define XWAY_MDIO_LED_LED2_EN		BIT(10)	/* Enable the integrated function of LED2 */
-> @@ -157,6 +162,82 @@
->   #define PHY_ID_PHY11G_VR9_1_2		0xD565A409
->   #define PHY_ID_PHY22F_VR9_1_2		0xD565A419
->   
-> +#if IS_ENABLED(CONFIG_OF_MDIO)
-> +static const int xway_internal_delay[] = {0, 500, 1000, 1500, 2000, 2500,
-> +					 3000, 3500};
-> +
-> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
-> +{
-> +	struct device *dev = &phydev->mdio.dev;
-> +	unsigned int delay_size = ARRAY_SIZE(xway_internal_delay);
-> +	s32 int_delay;
-> +	int val = 0;
-> +
-> +	if (!phy_interface_is_rgmii(phydev))
-> +		return 0;
-> +
-> +	/* Existing behavior was to use default pin strapping delay in rgmii
-> +	 * mode, but rgmii should have meant no delay.  Warn existing users,
-> +	 * but do not change anything at the moment.
-> +	 */
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII) {
-> +		u16 txskew, rxskew;
-> +
-> +		val = phy_read(phydev, XWAY_MDIO_MIICTRL);
-> +		if (val < 0)
-> +			return val;
-> +
-> +		txskew = FIELD_GET(XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
-> +		rxskew = FIELD_GET(XWAY_MDIO_MIICTRL_RXSKEW_MASK, val);
-> +
-> +		if (txskew > 0 || rxskew > 0)
-> +			phydev_warn(phydev,
-> +				    "PHY has delays (e.g. via pin strapping), but phy-mode = 'rgmii'\n"
-> +				    "Should be 'rgmii-id' to use internal delays txskew:%d ps rxskew:%d ps\n",
-> +				    xway_internal_delay[txskew],
-> +				    xway_internal_delay[rxskew]);
-> +		return 0;
-> +	}
-> +
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
-> +		int_delay = phy_get_internal_delay(phydev, dev,
-> +						   xway_internal_delay,
-> +						   delay_size, true);
-> +
-> +		if (int_delay < 0) {
-> +			phydev_warn(phydev, "rx-internal-delay-ps is missing, use default of 2.0 ns\n");
-> +			int_delay = 4; /* 2000 ps */
-> +		}
-> +
-> +		val |= FIELD_PREP(XWAY_MDIO_MIICTRL_RXSKEW_MASK, int_delay);
-> +	}
-> +
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
-> +		int_delay = phy_get_internal_delay(phydev, dev,
-> +						   xway_internal_delay,
-> +						   delay_size, false);
-> +
-> +		if (int_delay < 0) {
-> +			phydev_warn(phydev, "tx-internal-delay-ps is missing, use default of 2.0 ns\n");
-> +			int_delay = 4; /* 2000 ps */
-> +		}
-> +
-> +		val |= FIELD_PREP(XWAY_MDIO_MIICTRL_TXSKEW_MASK, int_delay);
-> +	}
-> +
-> +	return phy_modify(phydev, XWAY_MDIO_MIICTRL,
-> +			  XWAY_MDIO_MIICTRL_RXSKEW_MASK |
-> +			  XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
-> +}
-> +#else
-> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_OF_MDIO */
-> +
->   static int xway_gphy_config_init(struct phy_device *phydev)
->   {
->   	int err;
-> @@ -204,6 +285,10 @@ static int xway_gphy_config_init(struct phy_device *phydev)
->   	phy_write_mmd(phydev, MDIO_MMD_VEND2, XWAY_MMD_LED2H, ledxh);
->   	phy_write_mmd(phydev, MDIO_MMD_VEND2, XWAY_MMD_LED2L, ledxl);
->   
-> +	err = xway_gphy_of_reg_init(phydev);
-> +	if (err)
-> +		return err;
-> +
->   	return 0;
->   }
->   
-> 
+yes, but maybe we decide that this is not so critical?
+We need more people here :)
 
+> c) is probably highest amount of Changes
+
+yep. but ok, I will prepare patches fast.
+
+> b) Impact for me not clear. Would it mean that shm_rmid_forced would
+> stop to work after setns()
+
+Yes, in this case this "forced" destroy will stop working on newly created shm's
+in the new IPC namespace. But for old segments all will continue work as it was.
+Not an elegant solution maybe...
+
+>
+> Correct?
+
+Absolutely ;)
+
+>
+> --
+>    Manfred
+
+Regards,
+Alex
