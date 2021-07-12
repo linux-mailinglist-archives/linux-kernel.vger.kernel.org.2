@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897CD3C596C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5573C5923
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383759AbhGLJDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:03:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
+        id S1357258AbhGLI6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353749AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0272F61D09;
-        Mon, 12 Jul 2021 07:57:19 +0000 (UTC)
+        id S1353841AbhGLIDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:03:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 826CE61D0B;
+        Mon, 12 Jul 2021 07:57:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076640;
-        bh=/B1RIRLSt4RjsDEo3xrgyfXm9+IGRlzknx9Yfryjoyo=;
+        s=korg; t=1626076666;
+        bh=KPHrZ9ww3lJkGpMednQHili0mbC2nigYJEPPavNzF8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNxgnsfNiYUd3uj4Fcmiok0EqxieodPtYXR3eJbTuZsoLDBlwWC/qTv4fX6SNfAge
-         coSzNUmqUNMqDzuh9LKIVPuwXFdWmZ5MPH3DoqWmT6nYlm3c5WGkwOQwTFKE9pc8Oz
-         s/OA50QYQsZSyC4+tGd+7Qdlo8A/KkmQTmfZyqVQ=
+        b=EktdVFLK8PMmDYI5KZalVKoI0YzQ7wKGg1Tr9uv0ppBSdMgjOo1k/hjNp5iqiPvIW
+         p8I6SToOIoh6cKpcskrZo04m6L4JswKTlxBX7iH9Id5N/9VcpwSQp2wWhXe97VoIyd
+         6Cq2ovvNtpX5j5fv+ACOikoRJWH1uvyLwwsgIOxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
         Pratyush Yadav <p.yadav@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 703/800] mtd: spi-nor: otp: fix access to security registers in 4 byte mode
-Date:   Mon, 12 Jul 2021 08:12:06 +0200
-Message-Id: <20210712061041.571554128@linuxfoundation.org>
+Subject: [PATCH 5.13 704/800] mtd: spi-nor: otp: return -EROFS if region is read-only
+Date:   Mon, 12 Jul 2021 08:12:07 +0200
+Message-Id: <20210712061041.672900696@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -44,42 +44,99 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit b97b1a769849beb6b40b740817b06f1a50e1c589 ]
+[ Upstream commit 388161ca45c911f566b71716bce5ff0119fb5522 ]
 
-The security registers either take a 3 byte or a 4 byte address offset,
-depending on the address mode of the flash. Thus just leave the
-nor->addr_width as is.
+SPI NOR flashes will just ignore program commands if the OTP region is
+locked. Thus, a user might not notice that the intended write didn't end
+up in the flash. Return -EROFS to the user in this case. From what I can
+tell, chips/cfi_cmdset_0001.c also return this error code.
 
-Fixes: cad3193fe9d1 ("mtd: spi-nor: implement OTP support for Winbond and similar flashes")
+One could optimize spi_nor_mtd_otp_range_is_locked() to read the status
+register only once and not for every OTP region, but for that we would
+need some more invasive changes. Given that this is
+one-time-programmable memory and the normal access mode is reading, we
+just live with the small overhead.
+
+By moving the code around a bit, we can just check the length before
+calling spi_nor_mtd_otp_range_is_locked() and avoid an underflow there
+if a len is 0. This way we don't need to take the lock either. We also
+skip the "*retlen = 0" assignment, mtdcore already takes care of that
+for us.
+
+Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
 Signed-off-by: Michael Walle <michael@walle.cc>
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/spi-nor/otp.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/spi-nor/otp.c | 41 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 38 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index fcf38d260345..5c51a2c9be61 100644
+index 5c51a2c9be61..d8e68120a4b1 100644
 --- a/drivers/mtd/spi-nor/otp.c
 +++ b/drivers/mtd/spi-nor/otp.c
-@@ -40,7 +40,6 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
- 	rdesc = nor->dirmap.rdesc;
+@@ -238,6 +238,29 @@ out:
+ 	return ret;
+ }
  
- 	nor->read_opcode = SPINOR_OP_RSECR;
--	nor->addr_width = 3;
- 	nor->read_dummy = 8;
- 	nor->read_proto = SNOR_PROTO_1_1_1;
- 	nor->dirmap.rdesc = NULL;
-@@ -84,7 +83,6 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 	wdesc = nor->dirmap.wdesc;
++static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor, loff_t ofs,
++					   size_t len)
++{
++	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
++	unsigned int region;
++	int locked;
++
++	/*
++	 * If any of the affected OTP regions are locked the entire range is
++	 * considered locked.
++	 */
++	for (region = spi_nor_otp_offset_to_region(nor, ofs);
++	     region <= spi_nor_otp_offset_to_region(nor, ofs + len - 1);
++	     region++) {
++		locked = ops->is_locked(nor, region);
++		/* take the branch it is locked or in case of an error */
++		if (locked)
++			return locked;
++	}
++
++	return 0;
++}
++
+ static int spi_nor_mtd_otp_read_write(struct mtd_info *mtd, loff_t ofs,
+ 				      size_t total_len, size_t *retlen,
+ 				      const u8 *buf, bool is_write)
+@@ -253,14 +276,26 @@ static int spi_nor_mtd_otp_read_write(struct mtd_info *mtd, loff_t ofs,
+ 	if (ofs < 0 || ofs >= spi_nor_otp_size(nor))
+ 		return 0;
  
- 	nor->program_opcode = SPINOR_OP_PSECR;
--	nor->addr_width = 3;
- 	nor->write_proto = SNOR_PROTO_1_1_1;
- 	nor->dirmap.wdesc = NULL;
++	/* don't access beyond the end */
++	total_len = min_t(size_t, total_len, spi_nor_otp_size(nor) - ofs);
++
++	if (!total_len)
++		return 0;
++
+ 	ret = spi_nor_lock_and_prep(nor);
+ 	if (ret)
+ 		return ret;
  
+-	/* don't access beyond the end */
+-	total_len = min_t(size_t, total_len, spi_nor_otp_size(nor) - ofs);
++	if (is_write) {
++		ret = spi_nor_mtd_otp_range_is_locked(nor, ofs, total_len);
++		if (ret < 0) {
++			goto out;
++		} else if (ret) {
++			ret = -EROFS;
++			goto out;
++		}
++	}
+ 
+-	*retlen = 0;
+ 	while (total_len) {
+ 		/*
+ 		 * The OTP regions are mapped into a contiguous area starting
 -- 
 2.30.2
 
