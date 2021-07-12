@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223343C53D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54E43C5850
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347678AbhGLH4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54930 "EHLO mail.kernel.org"
+        id S1350816AbhGLIpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:45:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244412AbhGLHSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:18:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B86B6610A6;
-        Mon, 12 Jul 2021 07:15:30 +0000 (UTC)
+        id S1352116AbhGLHwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 379CF6054E;
+        Mon, 12 Jul 2021 07:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074131;
-        bh=m593HXh605N706u9Z5K+udc58sr9qg8MiTIeO8cxRrc=;
+        s=korg; t=1626076181;
+        bh=eGzSN00GiFfqTy3Ki4+llqfOX5fkH5UApbsovZH9q50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SkluLXk4g9FuSW1CxbxNqwvhdeBjTrqm7LgdvK5TAPsXd2gSSARgELuwxJyI0a7rl
-         3iGvcC7hHPlgej/bEEddSpduzz+PSyI8q1oYkQr37jHq9KVSSU1CshZX7wDD6ymV7I
-         gB1XXKV8TZXlV1c5K3JaLTlMuUJjo8FxZ/2Cii28=
+        b=AcvLHy1J3BGrYnCBLwBKswdzb0xoH0boCIJgvgG9FLpr/YC+ZW6EiR87//K0WkUoH
+         qhKZe5wcJqV/cVOHWRW1rtoNnUU18ECliT7k59DM4z3bPth3ZqsTfKbl3RJn9Zbmkf
+         XPb+YHJXVj8fNDmWjzOvhNuCf6C/kkZEMf0pAx7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Po-Hao Huang <phhuang@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 474/700] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+Subject: [PATCH 5.13 534/800] rtw88: 8822c: fix lc calibration timing
 Date:   Mon, 12 Jul 2021 08:09:17 +0200
-Message-Id: <20210712061027.011982141@linuxfoundation.org>
+Message-Id: <20210712061024.149471871@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian-Hong Pan <jhp@endlessos.org>
+From: Po-Hao Huang <phhuang@realtek.com>
 
-[ Upstream commit b2ac9800cfe0f8da16abc4e74e003440361c112e ]
+[ Upstream commit 05684fd583e1acc34dddea283838fbfbed4904a0 ]
 
-The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too late.
-So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This leads
-GENET fail to attach the PHY as following log:
+Before this patch, we use value from 2 seconds ago to decide
+whether we should do lc calibration.
+Although this don't happen frequently, fix flow to the way it should be.
 
-bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
-...
-could not attach to PHY
-bcmgenet fd580000.ethernet eth0: failed to connect to PHY
-uart-pl011 fe201000.serial: no DMA platform data
-libphy: bcmgenet MII bus: probed
-...
-unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
-
-This patch adds the soft dependency to load mdio-bcm-unimac module
-before genet module to avoid the issue.
-
-Fixes: 9a4e79697009 ("net: bcmgenet: utilize generic Broadcom UniMAC MDIO controller driver")
-Buglink: https://bugzilla.kernel.org/show_bug.cgi?id=213485
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7ae7784ec2a8 ("rtw88: 8822c: add LC calibration for RTL8822C")
+Signed-off-by: Po-Hao Huang <phhuang@realtek.com>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210426013252.5665-3-pkshih@realtek.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/realtek/rtw88/rtw8822c.c | 22 ++++++++++---------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index fcca023f22e5..41f7f078cd27 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -4296,3 +4296,4 @@ MODULE_AUTHOR("Broadcom Corporation");
- MODULE_DESCRIPTION("Broadcom GENET Ethernet controller driver");
- MODULE_ALIAS("platform:bcmgenet");
- MODULE_LICENSE("GPL");
-+MODULE_SOFTDEP("pre: mdio-bcm-unimac");
+diff --git a/drivers/net/wireless/realtek/rtw88/rtw8822c.c b/drivers/net/wireless/realtek/rtw88/rtw8822c.c
+index 6cb593cc33c2..6d06f26a4894 100644
+--- a/drivers/net/wireless/realtek/rtw88/rtw8822c.c
++++ b/drivers/net/wireless/realtek/rtw88/rtw8822c.c
+@@ -4371,26 +4371,28 @@ static void rtw8822c_pwrtrack_set(struct rtw_dev *rtwdev, u8 rf_path)
+ 	}
+ }
+ 
+-static void rtw8822c_pwr_track_path(struct rtw_dev *rtwdev,
+-				    struct rtw_swing_table *swing_table,
+-				    u8 path)
++static void rtw8822c_pwr_track_stats(struct rtw_dev *rtwdev, u8 path)
+ {
+-	struct rtw_dm_info *dm_info = &rtwdev->dm_info;
+-	u8 thermal_value, delta;
++	u8 thermal_value;
+ 
+ 	if (rtwdev->efuse.thermal_meter[path] == 0xff)
+ 		return;
+ 
+ 	thermal_value = rtw_read_rf(rtwdev, path, RF_T_METER, 0x7e);
+-
+ 	rtw_phy_pwrtrack_avg(rtwdev, thermal_value, path);
++}
+ 
+-	delta = rtw_phy_pwrtrack_get_delta(rtwdev, path);
++static void rtw8822c_pwr_track_path(struct rtw_dev *rtwdev,
++				    struct rtw_swing_table *swing_table,
++				    u8 path)
++{
++	struct rtw_dm_info *dm_info = &rtwdev->dm_info;
++	u8 delta;
+ 
++	delta = rtw_phy_pwrtrack_get_delta(rtwdev, path);
+ 	dm_info->delta_power_index[path] =
+ 		rtw_phy_pwrtrack_get_pwridx(rtwdev, swing_table, path, path,
+ 					    delta);
+-
+ 	rtw8822c_pwrtrack_set(rtwdev, path);
+ }
+ 
+@@ -4401,12 +4403,12 @@ static void __rtw8822c_pwr_track(struct rtw_dev *rtwdev)
+ 
+ 	rtw_phy_config_swing_table(rtwdev, &swing_table);
+ 
++	for (i = 0; i < rtwdev->hal.rf_path_num; i++)
++		rtw8822c_pwr_track_stats(rtwdev, i);
+ 	if (rtw_phy_pwrtrack_need_lck(rtwdev))
+ 		rtw8822c_do_lck(rtwdev);
+-
+ 	for (i = 0; i < rtwdev->hal.rf_path_num; i++)
+ 		rtw8822c_pwr_track_path(rtwdev, &swing_table, i);
+-
+ }
+ 
+ static void rtw8822c_pwr_track(struct rtw_dev *rtwdev)
 -- 
 2.30.2
 
