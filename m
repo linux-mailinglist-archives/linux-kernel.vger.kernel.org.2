@@ -2,146 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BDD3C61E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F37B3C61D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhGLRb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:31:29 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50650 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235694AbhGLRb2 (ORCPT
+        id S235601AbhGLR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:29:53 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:36420 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233887AbhGLR3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:31:28 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
- id ce6edfc1f50ac715; Mon, 12 Jul 2021 19:28:38 +0200
-Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 4DA1A669C37;
-        Mon, 12 Jul 2021 19:28:37 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Subject: [PATCH v1 4/6] ACPI: glue: Eliminate acpi_platform_notify()
-Date:   Mon, 12 Jul 2021 19:25:55 +0200
-Message-ID: <8790139.CDJkKcVGEf@kreacher>
-In-Reply-To: <2780027.e9J7NaK4W3@kreacher>
-References: <2780027.e9J7NaK4W3@kreacher>
+        Mon, 12 Jul 2021 13:29:51 -0400
+Received: by mail-wm1-f50.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so5123154wms.1;
+        Mon, 12 Jul 2021 10:27:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0MQqVwvutjc/uEdEJQm7ixxF9gWemfLf7asyrtfZ53I=;
+        b=DZh+Sa69wpEhKs5gWP7LxyGTLKOcEioQUNRhzNg/obtGCys5u/9MAfuKr+q5ZEAVzp
+         DocgSlwthvRVUgmfjC11UwDS5OGG8Wkb+cSrmqEkr2nYY3e75C9E9dr7LjVdNYdDRhDH
+         UQ1JtDUmHLW/ErvQ5uzS4eT9WjaF+7vcp0YrecCS995HZJT4C3FPqHgGBRx9qclftx/C
+         ND1vQrYPGvUT4u/gZ2TnclZ3xSMJh3QXbd+CSzhxIQzGBh5UG7plaRSXWn3mJJ79a7Ij
+         tZH1bseT1uC3gwjKvJCpovRoqKvngHoqyhUn6Ap5FmUo8GweYbvh4RiC6d9VfsnnVz5D
+         tjig==
+X-Gm-Message-State: AOAM533HnOcqJy96W43d2AIC4lLAHXl188G2X4O3eLRrsL+ECETMwn0h
+        yUrXb0wEbuOoeyRg1SlCBrQ=
+X-Google-Smtp-Source: ABdhPJzVd6rhjl9r5O8mGuAnl4DP6LGRPTAV/kajtCaEslDxHIUIixer64RuAlp5MTMJm++6khv1aQ==
+X-Received: by 2002:a1c:790a:: with SMTP id l10mr369013wme.8.1626110820969;
+        Mon, 12 Jul 2021 10:27:00 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o11sm12749056wmq.1.2021.07.12.10.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 10:27:00 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 17:26:58 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH 1/1] asm-generic/hyperv: Add missing #include of nmi.h
+Message-ID: <20210712172658.l53gudfvrqxbgd76@liuwe-devbox-debian-v2>
+References: <1626058204-2106-1-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.82.45
-X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedvrdegheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrgeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
- ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvihhkkhhirdhkrhhoghgvrhhusheslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626058204-2106-1-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Sun, Jul 11, 2021 at 07:50:04PM -0700, Michael Kelley wrote:
+> The recent move of hv_do_rep_hypercall() to this file adds
+> a reference to touch_nmi_watchdog(). Its function definition
+> is included indirectly when compiled on x86, but not when
+> compiled on ARM64. So add the explicit #include.
+> 
+> No functional change.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-Get rid of acpi_platform_notify() which is redundant and
-make device_platform_notify() in the driver core call
-acpi_device_notify() and acpi_device_notify_remove() directly.
+Applied to hyperv-next. Thanks.
 
-No functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/glue.c  |   19 ++-----------------
- drivers/base/core.c  |    7 ++++---
- include/linux/acpi.h |   10 ++++------
- 3 files changed, 10 insertions(+), 26 deletions(-)
-
-Index: linux-pm/drivers/base/core.c
-===================================================================
---- linux-pm.orig/drivers/base/core.c
-+++ linux-pm/drivers/base/core.c
-@@ -2005,9 +2005,10 @@ device_platform_notify(struct device *de
- {
- 	int ret;
- 
--	ret = acpi_platform_notify(dev, action);
--	if (ret)
--		return ret;
-+	if (action == KOBJ_ADD)
-+		acpi_device_notify(dev);
-+	else if (action == KOBJ_REMOVE)
-+		acpi_device_notify_remove(dev);
- 
- 	ret = software_node_notify(dev, action);
- 	if (ret)
-Index: linux-pm/include/linux/acpi.h
-===================================================================
---- linux-pm.orig/include/linux/acpi.h
-+++ linux-pm/include/linux/acpi.h
-@@ -1380,13 +1380,11 @@ static inline int find_acpi_cpu_cache_to
- #endif
- 
- #ifdef CONFIG_ACPI
--extern int acpi_platform_notify(struct device *dev, enum kobject_action action);
-+extern void acpi_device_notify(struct device *dev);
-+extern void acpi_device_notify_remove(struct device *dev);
- #else
--static inline int
--acpi_platform_notify(struct device *dev, enum kobject_action action)
--{
--	return 0;
--}
-+static inline void acpi_device_notify(struct device *dev) { }
-+static inline void acpi_device_notify_remove(struct device *dev) { }
- #endif
- 
- #endif	/*_LINUX_ACPI_H*/
-Index: linux-pm/drivers/acpi/glue.c
-===================================================================
---- linux-pm.orig/drivers/acpi/glue.c
-+++ linux-pm/drivers/acpi/glue.c
-@@ -285,7 +285,7 @@ int acpi_unbind_one(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(acpi_unbind_one);
- 
--static void acpi_device_notify(struct device *dev)
-+void acpi_device_notify(struct device *dev)
- {
- 	struct acpi_bus_type *type = acpi_get_bus_type(dev);
- 	struct acpi_device *adev;
-@@ -324,7 +324,7 @@ err:
- 	dev_dbg(dev, "No ACPI support\n");
- }
- 
--static void acpi_device_notify_remove(struct device *dev)
-+void acpi_device_notify_remove(struct device *dev)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(dev);
- 	struct acpi_bus_type *type;
-@@ -340,18 +340,3 @@ static void acpi_device_notify_remove(st
- 
- 	acpi_unbind_one(dev);
- }
--
--int acpi_platform_notify(struct device *dev, enum kobject_action action)
--{
--	switch (action) {
--	case KOBJ_ADD:
--		acpi_device_notify(dev);
--		break;
--	case KOBJ_REMOVE:
--		acpi_device_notify_remove(dev);
--		break;
--	default:
--		break;
--	}
--	return 0;
--}
-
-
-
+> ---
+>  include/asm-generic/mshyperv.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+> index 2a187fe..60cdff3 100644
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -22,6 +22,7 @@
+>  #include <linux/atomic.h>
+>  #include <linux/bitops.h>
+>  #include <linux/cpumask.h>
+> +#include <linux/nmi.h>
+>  #include <asm/ptrace.h>
+>  #include <asm/hyperv-tlfs.h>
+>  
+> -- 
+> 1.8.3.1
+> 
