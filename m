@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F543C5826
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BADB3C51C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379170AbhGLImE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37842 "EHLO mail.kernel.org"
+        id S1346541AbhGLHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350314AbhGLHuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C533E60FF1;
-        Mon, 12 Jul 2021 07:44:30 +0000 (UTC)
+        id S239110AbhGLHLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:11:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA93160FE7;
+        Mon, 12 Jul 2021 07:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075871;
-        bh=06sgNDBcHMCKmxqOBly1tCbE/iQJfbG3MTHYHOOOnlU=;
+        s=korg; t=1626073736;
+        bh=+/JFy+slToYPRalqVJJOi9ffJwiRSsiakNYtXkNAREA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F7x80WpuWnDVak6vrJIX1SeAsVzZVgmlwAkNrkkVimdU/qJJ9gviWnB6HUdn/2Ztj
-         upNERF/B+uttDiOXv5FBNwn6IedWZxUVocapuprm5T0HRwjbkIA8mEJTfb4QVIGWr/
-         aGh2h/i2141h6xCSWtvEC3w3SRvYPaWwICBkrjSE=
+        b=bXkZAFIgRCjX7/ChKDECsO4m8t6F8hxabXv0PlKQingxWkukruf72EzZg8drn5odP
+         8X7+jchA0OFKa1c4KcppTXRaobfBFjswh26mJib9ko1DRIzlIdIKLe5wogY75eiVPp
+         Xy+AloDC2TEDz4cwpmE5rag0rj4f+DZXG6xJRRyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Wade Liang <wadel@synology.com>,
+        BingJing Chang <bingjingc@synology.com>,
+        Edward Hsieh <edwardh@synology.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 400/800] net: pch_gbe: Propagate error from devm_gpio_request_one()
-Date:   Mon, 12 Jul 2021 08:07:03 +0200
-Message-Id: <20210712061009.700994746@linuxfoundation.org>
+Subject: [PATCH 5.12 341/700] block: fix trace completion for chained bio
+Date:   Mon, 12 Jul 2021 08:07:04 +0200
+Message-Id: <20210712061012.579182430@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Edward Hsieh <edwardh@synology.com>
 
-[ Upstream commit 9e3617a7b84512bf96c04f9cf82d1a7257d33794 ]
+[ Upstream commit 60b6a7e6a0f4382cd689f9afdac816964fec2921 ]
 
-If GPIO controller is not available yet we need to defer
-the probe of GBE until provider will become available.
+For chained bio, trace_block_bio_complete in bio_endio is currently called
+only by the parent bio once upon all chained bio completed.
+However, the sector and size for the parent bio are modified in bio_split.
+Therefore, the size and sector of the complete events might not match the
+queue events in blktrace.
 
-While here, drop GPIOF_EXPORT because it's deprecated and
-may not be available.
+The original fix of bio completion trace <fbbaf700e7b1> ("block: trace
+completion of all bios.") wants multiple complete events to correspond
+to one queue event but missed this.
 
-Fixes: f1a26fdf5944 ("pch_gbe: Add MinnowBoard support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Flavio Suligoi <f.suligoi@asem.it>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The issue can be reproduced by md/raid5 read with bio cross chunks.
+
+To fix, move trace completion into the loop for every chained bio to call.
+
+Fixes: fbbaf700e7b1 ("block: trace completion of all bios.")
+Reviewed-by: Wade Liang <wadel@synology.com>
+Reviewed-by: BingJing Chang <bingjingc@synology.com>
+Signed-off-by: Edward Hsieh <edwardh@synology.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210624123030.27014-1-edwardh@synology.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ block/bio.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 334af49e5add..3dc29b282a88 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -2532,9 +2532,13 @@ static int pch_gbe_probe(struct pci_dev *pdev,
- 	adapter->pdev = pdev;
- 	adapter->hw.back = adapter;
- 	adapter->hw.reg = pcim_iomap_table(pdev)[PCH_GBE_PCI_BAR];
-+
- 	adapter->pdata = (struct pch_gbe_privdata *)pci_id->driver_data;
--	if (adapter->pdata && adapter->pdata->platform_init)
--		adapter->pdata->platform_init(pdev);
-+	if (adapter->pdata && adapter->pdata->platform_init) {
-+		ret = adapter->pdata->platform_init(pdev);
-+		if (ret)
-+			goto err_free_netdev;
-+	}
- 
- 	adapter->ptp_pdev =
- 		pci_get_domain_bus_and_slot(pci_domain_nr(adapter->pdev->bus),
-@@ -2629,7 +2633,7 @@ err_free_netdev:
-  */
- static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
+diff --git a/block/bio.c b/block/bio.c
+index 50e579088aca..b00c5a88a743 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1412,8 +1412,7 @@ static inline bool bio_remaining_done(struct bio *bio)
+  *
+  *   bio_endio() can be called several times on a bio that has been chained
+  *   using bio_chain().  The ->bi_end_io() function will only be called the
+- *   last time.  At this point the BLK_TA_COMPLETE tracing event will be
+- *   generated if BIO_TRACE_COMPLETION is set.
++ *   last time.
+  **/
+ void bio_endio(struct bio *bio)
  {
--	unsigned long flags = GPIOF_DIR_OUT | GPIOF_INIT_HIGH | GPIOF_EXPORT;
-+	unsigned long flags = GPIOF_OUT_INIT_HIGH;
- 	unsigned gpio = MINNOW_PHY_RESET_GPIO;
- 	int ret;
+@@ -1426,6 +1425,11 @@ again:
+ 	if (bio->bi_bdev)
+ 		rq_qos_done_bio(bio->bi_bdev->bd_disk->queue, bio);
  
++	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
++		trace_block_bio_complete(bio->bi_bdev->bd_disk->queue, bio);
++		bio_clear_flag(bio, BIO_TRACE_COMPLETION);
++	}
++
+ 	/*
+ 	 * Need to have a real endio function for chained bios, otherwise
+ 	 * various corner cases will break (like stacking block devices that
+@@ -1439,11 +1443,6 @@ again:
+ 		goto again;
+ 	}
+ 
+-	if (bio->bi_bdev && bio_flagged(bio, BIO_TRACE_COMPLETION)) {
+-		trace_block_bio_complete(bio->bi_bdev->bd_disk->queue, bio);
+-		bio_clear_flag(bio, BIO_TRACE_COMPLETION);
+-	}
+-
+ 	blk_throtl_bio_endio(bio);
+ 	/* release cgroup info */
+ 	bio_uninit(bio);
 -- 
 2.30.2
 
