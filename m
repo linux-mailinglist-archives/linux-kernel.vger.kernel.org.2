@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34043C49E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC9B3C572C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238471AbhGLGrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:47:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
+        id S1376305AbhGLIaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235244AbhGLGgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:36:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C897D610A6;
-        Mon, 12 Jul 2021 06:33:12 +0000 (UTC)
+        id S1346549AbhGLHme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:42:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 934DA61152;
+        Mon, 12 Jul 2021 07:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071593;
-        bh=TaoS9g5TrRsUhghe3xa90/jrdsLyfglBekaPaQsb4d8=;
+        s=korg; t=1626075581;
+        bh=+CKdp58e9357ToKj3WythrtuJo8PN4o3J5fRdkvJG4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pD0izl3ub+gUXdLh5qcXRkqVal8D8darechDSweH3N48E2CkOND0u1HfOfB6QZMrQ
-         HB8XrbhzScXgiGZi3QwgFijZChEvbbsGc7oiwkwMDE2yp+gUn/9W88Sa6pa9CqAo9b
-         SQoXYS6+i4x9fHYfq7QbFi5LdCCnBi/65MUwIe9c=
+        b=penfDWPZFVGlJCk/LcTDQ3HBnkICpeujGc8XYi6DZNePe65wC/bwzAZfJ2oalSRG9
+         M75+7a2WY/bGR68xI5jyjC0DWfff/eEE/ptYqBxk2ELhvBYI2cJ+3zPb/RXTq6Czoi
+         lg4xDn0tb9tpILhox1k4jOcvuBb569V3gQpQsRoY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 136/593] media: cedrus: Fix .buf_prepare
-Date:   Mon, 12 Jul 2021 08:04:56 +0200
-Message-Id: <20210712060858.067072501@linuxfoundation.org>
+Subject: [PATCH 5.13 274/800] crypto: ixp4xx - update IV after requests
+Date:   Mon, 12 Jul 2021 08:04:57 +0200
+Message-Id: <20210712060953.451809278@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit d84b9202d712309840f8b5abee0ed272506563bd ]
+[ Upstream commit e8acf011f2e7e21a7e2fae47cbaa06598e533d40 ]
 
-The driver should only set the payload on .buf_prepare if the
-buffer is CAPTURE type. If an OUTPUT buffer has a zero bytesused
-set by userspace then v4l2-core will set it to buffer length.
+Crypto selftests fail on ixp4xx since it do not update IV after skcipher
+requests.
 
-If we overwrite bytesused for OUTPUT buffers, too, then
-vb2_get_plane_payload() will return incorrect value which might be then
-written to hw registers by the driver in cedrus_h264.c or cedrus_vp8.c.
-
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 81bef0150074 ("crypto: ixp4xx - Hardware crypto support for IXP4xx CPUs")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/sunxi/cedrus/cedrus_video.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/crypto/ixp4xx_crypto.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-index 911f607d9b09..16327be904d1 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-@@ -449,7 +449,13 @@ static int cedrus_buf_prepare(struct vb2_buffer *vb)
- 	if (vb2_plane_size(vb, 0) < pix_fmt->sizeimage)
- 		return -EINVAL;
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index ed3deaa5ed2b..f577ee4afd06 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -149,6 +149,8 @@ struct crypt_ctl {
+ struct ablk_ctx {
+ 	struct buffer_desc *src;
+ 	struct buffer_desc *dst;
++	u8 iv[MAX_IVLEN];
++	bool encrypt;
+ };
  
--	vb2_set_plane_payload(vb, 0, pix_fmt->sizeimage);
-+	/*
-+	 * Buffer's bytesused must be written by driver for CAPTURE buffers.
-+	 * (for OUTPUT buffers, if userspace passes 0 bytesused, v4l2-core sets
-+	 * it to buffer length).
-+	 */
-+	if (V4L2_TYPE_IS_CAPTURE(vq->type))
-+		vb2_set_plane_payload(vb, 0, pix_fmt->sizeimage);
+ struct aead_ctx {
+@@ -381,6 +383,20 @@ static void one_packet(dma_addr_t phys)
+ 	case CTL_FLAG_PERFORM_ABLK: {
+ 		struct skcipher_request *req = crypt->data.ablk_req;
+ 		struct ablk_ctx *req_ctx = skcipher_request_ctx(req);
++		struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++		unsigned int ivsize = crypto_skcipher_ivsize(tfm);
++		unsigned int offset;
++
++		if (ivsize > 0) {
++			offset = req->cryptlen - ivsize;
++			if (req_ctx->encrypt) {
++				scatterwalk_map_and_copy(req->iv, req->dst,
++							 offset, ivsize, 0);
++			} else {
++				memcpy(req->iv, req_ctx->iv, ivsize);
++				memzero_explicit(req_ctx->iv, ivsize);
++			}
++		}
  
- 	return 0;
- }
+ 		if (req_ctx->dst) {
+ 			free_buf_chain(dev, req_ctx->dst, crypt->dst_buf);
+@@ -876,6 +892,7 @@ static int ablk_perform(struct skcipher_request *req, int encrypt)
+ 	struct ablk_ctx *req_ctx = skcipher_request_ctx(req);
+ 	struct buffer_desc src_hook;
+ 	struct device *dev = &pdev->dev;
++	unsigned int offset;
+ 	gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
+ 				GFP_KERNEL : GFP_ATOMIC;
+ 
+@@ -885,6 +902,7 @@ static int ablk_perform(struct skcipher_request *req, int encrypt)
+ 		return -EAGAIN;
+ 
+ 	dir = encrypt ? &ctx->encrypt : &ctx->decrypt;
++	req_ctx->encrypt = encrypt;
+ 
+ 	crypt = get_crypt_desc();
+ 	if (!crypt)
+@@ -900,6 +918,10 @@ static int ablk_perform(struct skcipher_request *req, int encrypt)
+ 
+ 	BUG_ON(ivsize && !req->iv);
+ 	memcpy(crypt->iv, req->iv, ivsize);
++	if (ivsize > 0 && !encrypt) {
++		offset = req->cryptlen - ivsize;
++		scatterwalk_map_and_copy(req_ctx->iv, req->src, offset, ivsize, 0);
++	}
+ 	if (req->src != req->dst) {
+ 		struct buffer_desc dst_hook;
+ 		crypt->mode |= NPE_OP_NOT_IN_PLACE;
 -- 
 2.30.2
 
