@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B6A3C53F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085683C4C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349229AbhGLH4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:56:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55872 "EHLO mail.kernel.org"
+        id S239779AbhGLHDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244877AbhGLHTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 536E6611ED;
-        Mon, 12 Jul 2021 07:16:06 +0000 (UTC)
+        id S237775AbhGLGqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B861D61154;
+        Mon, 12 Jul 2021 06:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074167;
-        bh=D4JVBun8Nz535OhTZpSvMIYusxZ5yGSJztQtN4sRSio=;
+        s=korg; t=1626072135;
+        bh=CGX4STmYmzKoBC4bYW/lXC/RX7FrsyVht2Q8keJQoYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FWnuQke97JzISMaAy1MjLQwn1AV209NXlHi/lKGREwjaw2xy2uCJ9yks8AsbAjfY5
-         S7g9C9B8zmXniB4iNfb+oq48MXFSejuGzfW2GM4N1A8oWNnrN4SE7k/FoimUcekbCS
-         SDe6LexfO9Kz6lg+EAJAI/swR6B2umHCOaNlOiZQ=
+        b=gEKxN7U9lgUBVOw8aG0TTSGyE47FKKOj9kQzyAw86/WzjvNWZv2u3Pp4pCm+erAlP
+         OQ03Zj4tiTDAWUTckKPTUXi5jzerlllx0cMr6TU6cH6gowXQ7J/t5qNm+Ru7tU3CxS
+         36aR+jhbWo+wxu9RZrXZA/z28P4H5NgnQi1Tba1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 445/700] net: sched: add barrier to ensure correct ordering for lockless qdisc
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 368/593] mt76: fix possible NULL pointer dereference in mt76_tx
 Date:   Mon, 12 Jul 2021 08:08:48 +0200
-Message-Id: <20210712061023.857168275@linuxfoundation.org>
+Message-Id: <20210712060927.117146199@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 89837eb4b2463c556a123437f242d6c2bc62ce81 ]
+[ Upstream commit d7400a2f3e295b8cee692c7a66e10f60015a3c37 ]
 
-The spin_trylock() was assumed to contain the implicit
-barrier needed to ensure the correct ordering between
-STATE_MISSED setting/clearing and STATE_MISSED checking
-in commit a90c57f2cedd ("net: sched: fix packet stuck
-problem for lockless qdisc").
+Even if this is not a real issue since mt76_tx is never run with wcid set
+to NULL, fix a theoretical NULL pointer dereference in mt76_tx routine
 
-But it turns out that spin_trylock() only has load-acquire
-semantic, for strongly-ordered system(like x86), the compiler
-barrier implicitly contained in spin_trylock() seems enough
-to ensure the correct ordering. But for weakly-orderly system
-(like arm64), the store-release semantic is needed to ensure
-the correct ordering as clear_bit() and test_bit() is store
-operation, see queued_spin_lock().
-
-So add the explicit barrier to ensure the correct ordering
-for the above case.
-
-Fixes: a90c57f2cedd ("net: sched: fix packet stuck problem for lockless qdisc")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: db9f11d3433f7 ("mt76: store wcid tx rate info in one u32 reduce locking")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sch_generic.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/wireless/mediatek/mt76/tx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 2c4f3527cc09..b070e99c412d 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -163,6 +163,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		if (spin_trylock(&qdisc->seqlock))
- 			goto nolock_empty;
+diff --git a/drivers/net/wireless/mediatek/mt76/tx.c b/drivers/net/wireless/mediatek/mt76/tx.c
+index 44ef4bc7a46e..073c29eb2ed8 100644
+--- a/drivers/net/wireless/mediatek/mt76/tx.c
++++ b/drivers/net/wireless/mediatek/mt76/tx.c
+@@ -278,7 +278,7 @@ mt76_tx(struct mt76_phy *phy, struct ieee80211_sta *sta,
+ 		skb_set_queue_mapping(skb, qid);
+ 	}
  
-+		/* Paired with smp_mb__after_atomic() to make sure
-+		 * STATE_MISSED checking is synchronized with clearing
-+		 * in pfifo_fast_dequeue().
-+		 */
-+		smp_mb__before_atomic();
-+
- 		/* If the MISSED flag is set, it means other thread has
- 		 * set the MISSED flag before second spin_trylock(), so
- 		 * we can return false here to avoid multi cpus doing
-@@ -180,6 +186,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		 */
- 		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
+-	if (!(wcid->tx_info & MT_WCID_TX_INFO_SET))
++	if (wcid && !(wcid->tx_info & MT_WCID_TX_INFO_SET))
+ 		ieee80211_get_tx_rates(info->control.vif, sta, skb,
+ 				       info->control.rates, 1);
  
-+		/* spin_trylock() only has load-acquire semantic, so use
-+		 * smp_mb__after_atomic() to ensure STATE_MISSED is set
-+		 * before doing the second spin_trylock().
-+		 */
-+		smp_mb__after_atomic();
-+
- 		/* Retry again in case other CPU may not see the new flag
- 		 * after it releases the lock at the end of qdisc_run_end().
- 		 */
 -- 
 2.30.2
 
