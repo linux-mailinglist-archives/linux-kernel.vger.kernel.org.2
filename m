@@ -2,134 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5108D3C5F78
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D8E3C5F80
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbhGLPn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhGLPn5 (ORCPT
+        id S235605AbhGLPoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:44:34 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:34535 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235453AbhGLPob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:43:57 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6C3C0613DD;
-        Mon, 12 Jul 2021 08:41:08 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id A55F76210; Mon, 12 Jul 2021 11:41:06 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org A55F76210
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1626104466;
-        bh=58qsbxGOldmXglP0XTIWP5zPM6bP3vD1mti24yWL6p4=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=b3KfNWYgyy+7ug+X4mtbJ0nB2zxIsoueTBluDdvJYz0EI9qtCIkfTUMMjALSXuG6g
-         XiLxIJUyUJ22hrnsxgWppVUz4b6S7c298HXKfUzu3VWtfh2+aWa3Uit6V1x6nKwiMq
-         CvCFga8AvZbqMbjlkCqsDKWZH3QGbznmDh5jMAPg=
-Date:   Mon, 12 Jul 2021 11:41:06 -0400
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Bruce Fields <bfields@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
-        dgilbert@redhat.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
-        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
- files
-Message-ID: <20210712154106.GB18679@fieldses.org>
-References: <20210708175738.360757-1-vgoyal@redhat.com>
- <20210708175738.360757-2-vgoyal@redhat.com>
- <20210709091915.2bd4snyfjndexw2b@wittgenstein>
- <20210709152737.GA398382@redhat.com>
- <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
- <20210709175947.GB398382@redhat.com>
- <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
- <20210712140247.GA486376@redhat.com>
+        Mon, 12 Jul 2021 11:44:31 -0400
+Received: by mail-io1-f51.google.com with SMTP id g22so23283402iom.1;
+        Mon, 12 Jul 2021 08:41:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=So363S9K1xaiE2gvVFLgGJk4L6cIe1WtHli+BpBLUGQ=;
+        b=ELZ85nUOfBHoC+9bQeCIJMUsYbix6UihzlX9qtCf+/B10hg37s/s/6g5mT6qAd974k
+         igKVAxfuFCVgTygOgooh8yCSSh+a9EYLWxt1dQIq127nv9ScvCgGamaadUYhrZOZQqTR
+         2stOLPt8q4W6wtAn1ouGQWKkhwD8WdnTDDLBxNdl0pMttwgA5fjloeGpDpQFoPENHZt5
+         Qj+vDyvMHsTGYS2lDAczdWyU/OFqHf8Lbr8rCsNa1aWnZ0qaMcYJhTrOSQiCeFqVxu7p
+         BD6iqpx9VMLMP+xGo73LO/SpR9cZlkksy1Sv4J8s6G+U/AzguGDSJKLeTfG49rqq5LA3
+         9tgg==
+X-Gm-Message-State: AOAM533CA7PEyDyGunW56KAaMOFkYH3kWHtv2Fsh3WLQOSZuL3M4D1Ty
+        8QX5QUlutLWJEKMcxRKssA==
+X-Google-Smtp-Source: ABdhPJyUUnj2N0PKw9pZrLgUyzMldZX4nOEnjK8oCSzeWh+u0g8DYR7jYAAEvMLGhlVWNzAxTUh2Qg==
+X-Received: by 2002:a02:93a3:: with SMTP id z32mr14042078jah.33.1626104501779;
+        Mon, 12 Jul 2021 08:41:41 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t11sm8223332iob.5.2021.07.12.08.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 08:41:40 -0700 (PDT)
+Received: (nullmailer pid 1987378 invoked by uid 1000);
+        Mon, 12 Jul 2021 15:41:39 -0000
+Date:   Mon, 12 Jul 2021 09:41:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v3 02/12] dt-bindings: phy: tegra20-usb-phy: Document
+ properties needed for OTG mode
+Message-ID: <20210712154139.GB1980362@robh.at.kernel.org>
+References: <20210704225433.32029-1-digetx@gmail.com>
+ <20210704225433.32029-3-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712140247.GA486376@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+In-Reply-To: <20210704225433.32029-3-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:02:47AM -0400, Vivek Goyal wrote:
-> On Fri, Jul 09, 2021 at 04:10:16PM -0400, Bruce Fields wrote:
-> > On Fri, Jul 9, 2021 at 1:59 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > > nfs seems to have some issues.
-> > 
-> > I'm not sure what the expected behavior is for nfs.  All I have for
-> > now is some generic troubleshooting ideas, sorry:
-> > 
-> > > - I can set user.foo xattr on symlink and query it back using xattr name.
-> > >
-> > >   getfattr -h -n user.foo foo-link.txt
-> > >
-> > >   But when I try to dump all xattrs on this file, user.foo is being
-> > >   filtered out it looks like. Not sure why.
-> > 
-> > Logging into the server and seeing what's set there could help confirm
-> > whether it's the client or server that's at fault.  (Or watching the
-> > traffic in wireshark; there are GET/SET/LISTXATTR ops that should be
-> > easy to spot.)
-> > 
-> > > - I can't set "user.foo" xattr on a device node on nfs and I get
-> > >   "Permission denied". I am assuming nfs server is returning this.
-> > 
-> > Wireshark should tell you whether it's the server or client doing that.
-> > 
-> > The RFC is https://datatracker.ietf.org/doc/html/rfc8276, and I don't
-> > see any explicit statement about what the server should do in the case
-> > of symlinks or device nodes, but I do see "Any regular file or
-> > directory may have a set of extended attributes", so that was clearly
-> > the assumption.  Also, NFS4ERR_WRONG_TYPE is listed as a possible
-> > error return for the xattr ops.  But on a quick skim I don't see any
-> > explicit checks in the nfsd code, so I *think* it's just relying on
-> > the vfs for any file type checks.
+On Mon, Jul 05, 2021 at 01:54:23AM +0300, Dmitry Osipenko wrote:
+> In order to support OTG mode we need these new properties:
 > 
-> Hi Bruce,
+> 	- interrupt
+> 	- nvidia,pmc
+> 	- nvidia,phy-instance
 > 
-> Thanks for the response. I am just trying to do set a user.foo xattr on
-> a device node on nfs.
+> The nvidia,phy-instance isn't strictly needed for the OTG mode since we
+> know that only first controller supports it in practice, but it will be
+> needed in general for supporting more complex hardware features that
+> require knowledge of the PHY offset within common registers of the Power
+> Management controller (PMC).
 > 
-> setfattr -n "user.foo" -v "bar" /mnt/nfs/test-dev
+> Add the new properties to the bindings.
 > 
-> and I get -EACCESS.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/phy/nvidia,tegra20-usb-phy.yaml  | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> I put some printk() statements and EACCESS is being returned from here.
-> 
-> nfs4_xattr_set_nfs4_user() {
->         if (!nfs_access_get_cached(inode, current_cred(), &cache, true)) {
->                 if (!(cache.mask & NFS_ACCESS_XAWRITE)) {
->                         return -EACCES;
->                 }
->         }
-> }
-> 
-> Value of cache.mask=0xd at the time of error.
+> diff --git a/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml b/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
+> index 593187234e6a..a108f1552042 100644
+> --- a/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
+> @@ -77,6 +77,9 @@ properties:
+>            - const: timer
+>            - const: utmi-pads
+>  
+> +  interrupts:
+> +    maxItems: 1
+> +
+>    resets:
+>      oneOf:
+>        - maxItems: 1
+> @@ -199,6 +202,17 @@ properties:
+>      maxItems: 1
+>      description: GPIO used to reset the PHY.
+>  
+> +  nvidia,pmc:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to Power Management controller.
+> +
 
-Looks like 0xd is what the server returns to access on a device node
-with mode bits rw- for the caller.
+Add a cell to this for the PHY reg offset and then get rid of the index:
 
-Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
-checks" added the ACCESS_X* bits for regular files and directories but
-not others.
-
-But you don't want to determine permission from the mode bits anyway,
-you want it to depend on the owner, so I guess we should be calling
-xattr_permission somewhere if we want that behavior.
-
-The RFC assumes user xattrs are for regular files and directories,
-without, as far as I can tell, actually explicitly forbidding them on
-other objects.  We should also raise this with the working group if we
-want to increase the chances that you'll get the behavior you want on
-non-Linux servers.
-
-The "User extended attributes" section of the xattr(7) man page will
-need updating.
-
---b.
+> +  nvidia,phy-instance:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 2
+> +    description: Unique hardware ID.
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -320,6 +334,7 @@ examples:
+>          compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
+>          reg = <0x7d008000 0x4000>,
+>                <0x7d000000 0x4000>;
+> +        interrupts = <0 97 4>;
+>          phy_type = "utmi";
+>          clocks = <&tegra_car TEGRA124_CLK_USB3>,
+>                   <&tegra_car TEGRA124_CLK_PLL_U>,
+> @@ -338,6 +353,8 @@ examples:
+>          nvidia,hssquelch-level = <2>;
+>          nvidia,hsdiscon-level = <5>;
+>          nvidia,xcvr-hsslew = <12>;
+> +        nvidia,pmc = <&tegra_pmc>;
+> +        nvidia,phy-instance= <2>;
+>      };
+>  
+>    - |
+> @@ -346,6 +363,7 @@ examples:
+>      usb-phy@c5004000 {
+>          compatible = "nvidia,tegra20-usb-phy";
+>          reg = <0xc5004000 0x4000>;
+> +        interrupts = <0 21 4>;
+>          phy_type = "ulpi";
+>          clocks = <&tegra_car TEGRA20_CLK_USB2>,
+>                   <&tegra_car TEGRA20_CLK_PLL_U>,
+> @@ -354,4 +372,6 @@ examples:
+>          resets = <&tegra_car 58>, <&tegra_car 22>;
+>          reset-names = "usb", "utmi-pads";
+>          #phy-cells = <0>;
+> +        nvidia,pmc = <&tegra_pmc>;
+> +        nvidia,phy-instance= <1>;
+>      };
+> -- 
+> 2.32.0
+> 
+> 
