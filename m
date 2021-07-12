@@ -2,302 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192293C6096
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10F53C60A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234564AbhGLQbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:31:10 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:36619 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbhGLQbJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:31:09 -0400
-Received: by mail-io1-f51.google.com with SMTP id u7so23393941ion.3;
-        Mon, 12 Jul 2021 09:28:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vtNA/NB6LmO/HpICnchTMvKV6NLDa7WSvyUr9ghzAGw=;
-        b=U3jm6VjEtC9v+coXt+FzCAqAV3VtHzaEIftAnDzICSCShCC70/64hB0dsiLyqkaCiU
-         ZMW0ueLt+w0Pb3xAuxNwaFYZJKgMataHpjZ+W3CDTkj9tw/rvaC7u/nmQoX7+RTqIF42
-         96MBhg+XqK0gqXGKhOy/DYnuY7ZqbCiXxPLxNLVRyTuxb9xDF2QXR9hgtXgrbiXjfaDJ
-         eqNuYfiTTBtQfY5rq+DF2x1uqIHd5Y1YFZ0zs7KaCgatbmuhzKnB+vNFc8eZ81Bn5NoL
-         eMbuLs2YPnz5H/n3Ru9LhKrfzQa1wfk03T7UYXmCXb67BAZtxLEPssDtXiGP7pmgeQPi
-         ittA==
-X-Gm-Message-State: AOAM531x4B/LYAQTbJKjGX/GqO0Z4TUQS5/82EzFA320qHqmMOD6j1Gx
-        B6TkJEStf/ywsCYdgaOIxQ==
-X-Google-Smtp-Source: ABdhPJzNQ7OrUXjoJbtZO9uUa3yYVt3uS4vQdxhkvDXfG8KztNvdfvkDCFhF4vwBgaGRxQyEMbIxig==
-X-Received: by 2002:a02:620a:: with SMTP id d10mr46166061jac.22.1626107299526;
-        Mon, 12 Jul 2021 09:28:19 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id m26sm7910221ioo.23.2021.07.12.09.28.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 09:28:18 -0700 (PDT)
-Received: (nullmailer pid 2059719 invoked by uid 1000);
-        Mon, 12 Jul 2021 16:28:16 -0000
-Date:   Mon, 12 Jul 2021 10:28:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alex Helms <alexander.helms.jy@renesas.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        sboyd@kernel.org, mturquette@baylibre.com, geert+renesas@glider.be,
-        david.cater.jc@renesas.com, michal.simek@xilinx.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: Add binding for Renesas 8T49N241
-Message-ID: <20210712162816.GA2050345@robh.at.kernel.org>
-References: <20210707182659.20548-1-alexander.helms.jy@renesas.com>
- <20210707182659.20548-2-alexander.helms.jy@renesas.com>
+        id S234062AbhGLQdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:33:05 -0400
+Received: from mga17.intel.com ([192.55.52.151]:7325 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232710AbhGLQdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:33:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190393113"
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
+   d="scan'208";a="190393113"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 09:29:38 -0700
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
+   d="scan'208";a="459240343"
+Received: from kpurma-mobl.amr.corp.intel.com (HELO [10.212.163.17]) ([10.212.163.17])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 09:29:36 -0700
+Subject: Re: [PATCH Part2 RFC v4 10/40] x86/fault: Add support to handle the
+ RMP fault for user address
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-11-brijesh.singh@amd.com>
+ <3c6b6fc4-05b2-8d18-2eb8-1bd1a965c632@intel.com>
+ <2b4accb6-b68e-02d3-6fed-975f90558099@amd.com>
+ <a249b101-87d1-2e66-d7d6-af737c045cc3@intel.com>
+ <5592d8ff-e2c3-6474-4a10-96abe1962d6f@amd.com>
+ <bfb857d2-8e3c-4a3b-c64e-96a16c0c6d49@intel.com>
+ <aef6be8a-c93a-1aaa-57fe-116e70483542@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c3c71a5b-8100-63f2-1792-d7b53731147c@intel.com>
+Date:   Mon, 12 Jul 2021 09:29:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707182659.20548-2-alexander.helms.jy@renesas.com>
+In-Reply-To: <aef6be8a-c93a-1aaa-57fe-116e70483542@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 11:26:58AM -0700, Alex Helms wrote:
-> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
-> The 8T49N241 accepts up to two differential or single-ended input clocks
-> and a fundamental-mode crystal input. The internal PLL can lock to either
-> of the input reference clocks or to the crystal to behave as a frequency
-> synthesizer.
+On 7/12/21 9:24 AM, Brijesh Singh wrote:
+> Apologies if I was not clear in the messaging, that's exactly what I
+> mean that we don't feed RMP entries during the page state change.
 > 
-> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
-> ---
->  .../bindings/clock/renesas,8t49n241.yaml      | 188 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 194 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> The sequence of the operation is:
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
-> new file mode 100644
-> index 000000000..4e26b3f11
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
-> @@ -0,0 +1,188 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/renesas,8t49n241.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binding for Renesas 8T49N241 Universal Frequency Translator
-> +
-> +description: |
-> +  The 8T49N241 has one fractional-feedback PLL that can be used as a
-> +  jitter attenuator and frequency translator. It is equipped with one
-> +  integer and three fractional output dividers, allowing the generation
-> +  of up to four different output frequencies, ranging from 8kHz to 1GHz.
-> +  These frequencies are completely independent of each other, the input
-> +  reference frequencies and the crystal reference frequency. The device
-> +  places virtually no constraints on input to output frequency conversion,
-> +  supporting all FEC rates, including the new revision of ITU-T
-> +  Recommendation G.709 (2009), most with 0ppm conversion error.
-> +  The outputs may select among LVPECL, LVDS, HCSL or LVCMOS output levels.
-> +
-> +  The driver can read a full register map from the DT, and will use that
-> +  register map to initialize the attached part (via I2C) when the system
-> +  boots. Any configuration not supported by the common clock framework
-> +  must be done via the full register map, including optimized settings.
-> +
-> +  The 8T49N241 accepts up to two differential or single-ended input clocks
-> +  and a fundamental-mode crystal input. The internal PLL can lock to either
-> +  of the input reference clocks or just to the crystal to behave as a
-> +  frequency synthesizer. The PLL can use the second input for redundant
-> +  backup of the primary input reference, but in this case, both input clock
-> +  references must be related in frequency.
-> +
-> +  All outputs are currently assumed to be LVDS, unless overridden in the
-> +  full register map in the DT.
-> +
-> +maintainers:
-> +  - Alex Helms <alexander.helms.jy@renesas.com>
-> +  - David Cater <david.cater.jc@renesas.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - 8t49n241
-
-Needs a vendor prefix.
-
-> +
-> +  reg:
-> +    description: I2C device address
-> +    enum: [ 0x7c, 0x6c, 0x7d, 0x6d, 0x7e, 0x6e, 0x7f, 0x6f ]
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  clock-names:
-> +    description: Name of the input clock
-
-Drop. That's every 'clock-names'.
-
-> +    minItems: 1
-> +    maxItems: 3
-> +    items:
-> +      enum: [ input-xtal, input-clk0, input-clk1 ]
-
-'input-' is redundant.
-
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  settings:
-> +    description: Optional, list of space separated ASCII numbers in hex.
-
-Huh?
-
-> +      This list is the entire register map of the product and must contain
-> +      791 items.
-
-What is this for?
-
-Seems suspect, but would need a vendor prefix and type at a minimum.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    /* 25MHz reference clock */
-> +    input_clk0: input_clk0 {
-> +      compatible = "fixed-clock";
-> +      #clock-cells = <0>;
-> +      clock-frequency = <25000000>;
-> +    };
-> +
-> +    i2c@0 {
-> +        reg = <0x0 0x100>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        renesas8t49n241_1: clock-generator@6c {
-> +            compatible = "renesas,8t49n241";
-> +            reg = <0x6c>;
-> +            #clock-cells = <1>;
-> +
-> +            clocks = <&input_clk0>;
-> +            clock-names = "input-clk0";
-> +        };
-> +    };
-> +
-> +    /* Consumer referencing the 8T49N241 Q1 */
-> +    consumer {
-> +        /* ... */
-> +        clocks = <&renesas8t49n241_1 1>;
-> +        /* ... */
-> +    };
-> +  - |
-> +    /* 40MHz crystal */
-> +    input_xtal: input_xtal {
-> +      compatible = "fixed-clock";
-> +      #clock-cells = <0>;
-> +      clock-frequency = <40000000>;
-> +    };
-> +
-> +    i2c@0 {
-> +        reg = <0x0 0x100>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        renesas8t49n241_2: clock-generator@6c {
-> +            compatible = "renesas,8t49n241";
-> +            reg = <0x6c>;
-> +            #clock-cells = <1>;
-> +
-> +            clocks = <&input_xtal>;
-> +            clock-names = "input-xtal";
-> +
-> +            settings=[
-> +                09 50 00 60 67 C5 6C FF 03 00 30 00 00 01 00 00
-> +                01 07 00 00 07 00 00 77 6D 06 00 00 00 00 00 FF
-> +                FF FF FF 00 3F 00 2A 00 16 33 33 00 01 00 00 D0
-> +                00 00 00 00 00 00 00 00 00 04 00 00 00 02 00 00
-> +                00 00 00 00 00 00 00 17 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 D7 0A 2B 20 00 00 00 0B
-> +                00 00 00 00 00 00 00 00 00 00 27 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                C3 00 08 01 00 00 00 00 00 00 00 00 00 30 00 00
-> +                00 0A 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 85 00 00 9C 01 D4 02 71 07 00 00 00
-> +                00 83 00 10 02 08 8C
-> +            ];
-> +        };
-> +    };
-> +
-> +    /* Consumer referencing the 8T49N241 Q1 */
-> +    consumer {
-> +        /* ... */
-> +        clocks = <&renesas8t49n241_2 1>;
-> +        /* ... */
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0cce91cd5..882d79ead 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15575,6 +15575,12 @@ F:	include/linux/rpmsg/
->  F:	include/uapi/linux/rpmsg.h
->  F:	samples/rpmsg/
->  
-> +RENESAS 8T49N24X DRIVER
-> +M:	Alex Helms <alexander.helms.jy@renesas.com>
-> +M:	David Cater <david.cater.jc@renesas.com>
-> +S:	Odd Fixes
-> +F:	Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
-> +
->  RENESAS CLOCK DRIVERS
->  M:	Geert Uytterhoeven <geert+renesas@glider.be>
->  L:	linux-renesas-soc@vger.kernel.org
-> -- 
-> 2.30.2
+> 1. Guest issues a VMGEXIT (page state change) to add a page in the RMP
+> 2. Hyperivosr adds the page in the RMP table.
 > 
-> 
+> The check will be inside the hypervisor (#2), to query the backing page
+> type, if the backing page is from the hugetlbfs, then don't add the page
+> in the RMP, and fail the page state change VMGEXIT.
+
+Right, but *LOOOOOONG* before that, something walked the page tables and
+stuffed the PFN into the NPT (that's the AMD equivalent of EPT, right?).
+ You could also avoid this whole mess by refusing to allow hugetblfs to
+be mapped into the guest in the first place.
