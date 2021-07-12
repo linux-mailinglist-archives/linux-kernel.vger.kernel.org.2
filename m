@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85413C5740
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C036A3C4A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376728AbhGLIaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53250 "EHLO mail.kernel.org"
+        id S239431AbhGLGto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343880AbhGLHnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:43:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 416A7611AC;
-        Mon, 12 Jul 2021 07:40:33 +0000 (UTC)
+        id S237969AbhGLGjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 903BD611AF;
+        Mon, 12 Jul 2021 06:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075633;
-        bh=E5BnYOzIC2rS0Shxh1oJ1QRMJjd/fLnsEcaEPllvfao=;
+        s=korg; t=1626071754;
+        bh=AaVeBHJ+hq/UItHnqJAyBABInzgok6huWFHNOds8KoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=saqePracgl3VEX4cPtZOypdlCz9OpbiZS796t3TG7Z9MGKkNW6ERdDp2ei1bHLYvy
-         Cmit/Zd0IbAD0YmEVezhl1Ex8zlBWsCZud9F/MaEPHBrPI0hSmNIAoZMHy2FDtMQRX
-         G5X20uGb8vZIN1PTWEEtlzTWy2VvhjGqLfVniNDo=
+        b=sK3wCGFx0Rb6uyINBEPYRcrEmR2fdCTi61wbB4wWTrnW0n564p/N0Z5I3EpE1PoT8
+         Ba3lsLJ/gHdzjOugE+AyGDf0qF00DbXilNEbuzf2XFcw6uq+uhLf4CHp0047TH8AB1
+         EWdz5EFxRRbVowoSZPnPxjhybB9TZsxW8VBc4x7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 299/800] media: exynos4-is: Fix a use after free in isp_video_release
+Subject: [PATCH 5.10 162/593] lockding/lockdep: Avoid to find wrong lock dep path in check_irq_usage()
 Date:   Mon, 12 Jul 2021 08:05:22 +0200
-Message-Id: <20210712060957.026481325@linuxfoundation.org>
+Message-Id: <20210712060900.878110304@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Boqun Feng <boqun.feng@gmail.com>
 
-[ Upstream commit 01fe904c9afd26e79c1f73aa0ca2e3d785e5e319 ]
+[ Upstream commit 7b1f8c6179769af6ffa055e1169610b51d71edd5 ]
 
-In isp_video_release, file->private_data is freed via
-_vb2_fop_release()->v4l2_fh_release(). But the freed
-file->private_data is still used in v4l2_fh_is_singular_file()
-->v4l2_fh_is_singular(file->private_data), which is a use
-after free bug.
+In the step #3 of check_irq_usage(), we seach backwards to find a lock
+whose usage conflicts the usage of @target_entry1 on safe/unsafe.
+However, we should only keep the irq-unsafe usage of @target_entry1 into
+consideration, because it could be a case where a lock is hardirq-unsafe
+but soft-safe, and in check_irq_usage() we find it because its
+hardirq-unsafe could result into a hardirq-safe-unsafe deadlock, but
+currently since we don't filter out the other usage bits, so we may find
+a lock dependency path softirq-unsafe -> softirq-safe, which in fact
+doesn't cause a deadlock. And this may cause misleading lockdep splats.
 
-My patch uses a variable 'is_singular_file' to avoid the uaf.
-v3: https://lore.kernel.org/patchwork/patch/1419058/
+Fix this by only keeping LOCKF_ENABLED_IRQ_ALL bits when we try the
+backwards search.
 
-Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210618170110.3699115-4-boqun.feng@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/fimc-isp-video.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ kernel/locking/lockdep.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index 8d9dc597deaa..83688a7982f7 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-@@ -305,17 +305,20 @@ static int isp_video_release(struct file *file)
- 	struct fimc_is_video *ivc = &isp->video_capture;
- 	struct media_entity *entity = &ivc->ve.vdev.entity;
- 	struct media_device *mdev = entity->graph_obj.mdev;
-+	bool is_singular_file;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 78b51b8ad4f6..788629c06ce9 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2764,8 +2764,18 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
+ 	 * Step 3: we found a bad match! Now retrieve a lock from the backward
+ 	 * list whose usage mask matches the exclusive usage mask from the
+ 	 * lock found on the forward list.
++	 *
++	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
++	 * the follow case:
++	 *
++	 * When trying to add A -> B to the graph, we find that there is a
++	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
++	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
++	 * invert bits of M's usage_mask, we will find another lock N that is
++	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
++	 * cause a inversion deadlock.
+ 	 */
+-	backward_mask = original_mask(target_entry1->class->usage_mask);
++	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
  
- 	mutex_lock(&isp->video_lock);
- 
--	if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
-+	is_singular_file = v4l2_fh_is_singular_file(file);
-+
-+	if (is_singular_file && ivc->streaming) {
- 		media_pipeline_stop(entity);
- 		ivc->streaming = 0;
- 	}
- 
- 	_vb2_fop_release(file, NULL);
- 
--	if (v4l2_fh_is_singular_file(file)) {
-+	if (is_singular_file) {
- 		fimc_pipeline_call(&ivc->ve, close);
- 
- 		mutex_lock(&mdev->graph_mutex);
+ 	ret = find_usage_backwards(&this, backward_mask, &target_entry);
+ 	if (bfs_error(ret)) {
 -- 
 2.30.2
 
