@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA24A3C58A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0391F3C4CF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379789AbhGLIu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
+        id S244665AbhGLHLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:11:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348094AbhGLHzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:55:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CB7A611F2;
-        Mon, 12 Jul 2021 07:51:42 +0000 (UTC)
+        id S238924AbhGLGtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D0026121E;
+        Mon, 12 Jul 2021 06:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076302;
-        bh=mUdufkRP5E+hO8OzuCj/d6SoF7ztqQYiiolxwrrMVhw=;
+        s=korg; t=1626072323;
+        bh=bGvSRzuuP7sYaANfuvBJajzDaCwYoyxCmgraZru8dyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vYkveREMaAUO941HfX16MVQqk+EytlgzmfXHEi6UcAdS03RPdCtkqqa8x7ezB3pKJ
-         6r+oYpfgl2U0/wtH6+ll3wM9b7n5ZKg4WtOZBtzT89jo4YOXyvxJhXKp4WRlA8j4lD
-         AAyTU/9ATC8CmS+zmuFV/48o1lz8zU+kOsW6Ir9k=
+        b=wd04eDgJgUqqz9cC8tyd42v5VEFLZS5IruTNUPM+yV+l2oIHQ8saOyVftpSuUvAxK
+         cL46A1vW9UImcPWJeAN4IH+vGnkTeEZ5nXyfqTB1355iBStPza/TUsbRnqSI78z+7y
+         KgpmTNreY8ADJreSfhl19AfV4jzyLCmJ8188iKg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 585/800] clk: actions: Fix UART clock dividers on Owl S500 SoC
-Date:   Mon, 12 Jul 2021 08:10:08 +0200
-Message-Id: <20210712061029.524646249@linuxfoundation.org>
+Subject: [PATCH 5.10 449/593] iio: accel: mxc4005: Fix overread of data and alignment issue.
+Date:   Mon, 12 Jul 2021 08:10:09 +0200
+Message-Id: <20210712060938.594284901@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,73 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 2dca2a619a907579e3e65e7c1789230c2b912e88 ]
+[ Upstream commit f65802284a3a337510d7f8f916c97d66c74f2e71 ]
 
-Use correct divider registers for the Actions Semi Owl S500 SoC's UART
-clocks.
+The bulk read size is based on the size of an array that also has
+space for the timestamp alongside the channels.
+Fix that and also fix alignment of the buffer passed
+to iio_push_to_buffers_with_timestamp.
 
-Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/4714d05982b19ac5fec2ed74f54be42d8238e392.1623354574.git.cristian.ciocaltea@gmail.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Found during an audit of all calls to this function.
+
+Fixes: 1ce0eda0f757 ("iio: mxc4005: add triggered buffer mode for mxc4005")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-6-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/actions/owl-s500.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/iio/accel/mxc4005.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-index 61bb224f6330..75b7186185b0 100644
---- a/drivers/clk/actions/owl-s500.c
-+++ b/drivers/clk/actions/owl-s500.c
-@@ -305,7 +305,7 @@ static OWL_COMP_FIXED_FACTOR(i2c3_clk, "i2c3_clk", "ethernet_pll_clk",
- static OWL_COMP_DIV(uart0_clk, "uart0_clk", uart_clk_mux_p,
- 			OWL_MUX_HW(CMU_UART0CLK, 16, 1),
- 			OWL_GATE_HW(CMU_DEVCLKEN1, 6, 0),
--			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
-+			OWL_DIVIDER_HW(CMU_UART0CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
- 			CLK_IGNORE_UNUSED);
+diff --git a/drivers/iio/accel/mxc4005.c b/drivers/iio/accel/mxc4005.c
+index f877263dc6ef..5a2b0ffbb145 100644
+--- a/drivers/iio/accel/mxc4005.c
++++ b/drivers/iio/accel/mxc4005.c
+@@ -56,7 +56,11 @@ struct mxc4005_data {
+ 	struct mutex mutex;
+ 	struct regmap *regmap;
+ 	struct iio_trigger *dready_trig;
+-	__be16 buffer[8];
++	/* Ensure timestamp is naturally aligned */
++	struct {
++		__be16 chans[3];
++		s64 timestamp __aligned(8);
++	} scan;
+ 	bool trigger_enabled;
+ };
  
- static OWL_COMP_DIV(uart1_clk, "uart1_clk", uart_clk_mux_p,
-@@ -317,31 +317,31 @@ static OWL_COMP_DIV(uart1_clk, "uart1_clk", uart_clk_mux_p,
- static OWL_COMP_DIV(uart2_clk, "uart2_clk", uart_clk_mux_p,
- 			OWL_MUX_HW(CMU_UART2CLK, 16, 1),
- 			OWL_GATE_HW(CMU_DEVCLKEN1, 8, 0),
--			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
-+			OWL_DIVIDER_HW(CMU_UART2CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
- 			CLK_IGNORE_UNUSED);
+@@ -135,7 +139,7 @@ static int mxc4005_read_xyz(struct mxc4005_data *data)
+ 	int ret;
  
- static OWL_COMP_DIV(uart3_clk, "uart3_clk", uart_clk_mux_p,
- 			OWL_MUX_HW(CMU_UART3CLK, 16, 1),
- 			OWL_GATE_HW(CMU_DEVCLKEN1, 19, 0),
--			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
-+			OWL_DIVIDER_HW(CMU_UART3CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
- 			CLK_IGNORE_UNUSED);
+ 	ret = regmap_bulk_read(data->regmap, MXC4005_REG_XOUT_UPPER,
+-			       data->buffer, sizeof(data->buffer));
++			       data->scan.chans, sizeof(data->scan.chans));
+ 	if (ret < 0) {
+ 		dev_err(data->dev, "failed to read axes\n");
+ 		return ret;
+@@ -301,7 +305,7 @@ static irqreturn_t mxc4005_trigger_handler(int irq, void *private)
+ 	if (ret < 0)
+ 		goto err;
  
- static OWL_COMP_DIV(uart4_clk, "uart4_clk", uart_clk_mux_p,
- 			OWL_MUX_HW(CMU_UART4CLK, 16, 1),
- 			OWL_GATE_HW(CMU_DEVCLKEN1, 20, 0),
--			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
-+			OWL_DIVIDER_HW(CMU_UART4CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
- 			CLK_IGNORE_UNUSED);
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   pf->timestamp);
  
- static OWL_COMP_DIV(uart5_clk, "uart5_clk", uart_clk_mux_p,
- 			OWL_MUX_HW(CMU_UART5CLK, 16, 1),
- 			OWL_GATE_HW(CMU_DEVCLKEN1, 21, 0),
--			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
-+			OWL_DIVIDER_HW(CMU_UART5CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
- 			CLK_IGNORE_UNUSED);
- 
- static OWL_COMP_DIV(uart6_clk, "uart6_clk", uart_clk_mux_p,
- 			OWL_MUX_HW(CMU_UART6CLK, 16, 1),
- 			OWL_GATE_HW(CMU_DEVCLKEN1, 18, 0),
--			OWL_DIVIDER_HW(CMU_UART1CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
-+			OWL_DIVIDER_HW(CMU_UART6CLK, 0, 8, CLK_DIVIDER_ROUND_CLOSEST, NULL),
- 			CLK_IGNORE_UNUSED);
- 
- static OWL_COMP_DIV(i2srx_clk, "i2srx_clk", i2s_clk_mux_p,
+ err:
 -- 
 2.30.2
 
