@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1AA3C6081
+	by mail.lfdr.de (Postfix) with ESMTP id 94E263C6082
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhGLQ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:29:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:58014 "EHLO foss.arm.com"
+        id S234211AbhGLQ37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:29:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:58028 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234028AbhGLQ3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:29:47 -0400
+        id S234062AbhGLQ3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:29:49 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5566FD6E;
-        Mon, 12 Jul 2021 09:26:58 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FABB1FB;
+        Mon, 12 Jul 2021 09:27:00 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CC6A3F774;
-        Mon, 12 Jul 2021 09:26:56 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C3613F774;
+        Mon, 12 Jul 2021 09:26:58 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
         etienne.carriere@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v3 6/8] clk: scmi: Support atomic enable/disable API
-Date:   Mon, 12 Jul 2021 17:26:23 +0100
-Message-Id: <20210712162626.34705-7-cristian.marussi@arm.com>
+Subject: [PATCH v3 7/8] [RFC] firmware: arm_scmi: Make smc transport use common completions
+Date:   Mon, 12 Jul 2021 17:26:24 +0100
+Message-Id: <20210712162626.34705-8-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210712162626.34705-1-cristian.marussi@arm.com>
 References: <20210712162626.34705-1-cristian.marussi@arm.com>
@@ -33,106 +33,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support enable/disable clk_ops instead of prepare/unprepare when the
-underlying SCMI transport is configured to support atomic transactions for
-synchronous commands.
+When a completion irq is available use it and delegate command completion
+handling to the core SCMI completion mechanism.
+
+If no completion irq is available revert to polling, using the core common
+polling machinery.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/clk/clk-scmi.c | 44 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 35 insertions(+), 9 deletions(-)
+ drivers/firmware/arm_scmi/smc.c | 41 +++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index 1e357d364ca2..a07117d5e5bd 100644
---- a/drivers/clk/clk-scmi.c
-+++ b/drivers/clk/clk-scmi.c
-@@ -88,21 +88,42 @@ static void scmi_clk_disable(struct clk_hw *hw)
- 	scmi_proto_clk_ops->disable(clk->ph, clk->id);
- }
+diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+index 4effecc3bb46..ec895a82a9ad 100644
+--- a/drivers/firmware/arm_scmi/smc.c
++++ b/drivers/firmware/arm_scmi/smc.c
+@@ -25,8 +25,6 @@
+  * @shmem: Transmit/Receive shared memory area
+  * @shmem_lock: Lock to protect access to Tx/Rx shared memory area
+  * @func_id: smc/hvc call function id
+- * @irq: Optional; employed when platforms indicates msg completion by intr.
+- * @tx_complete: Optional, employed only when irq is valid.
+  */
  
-+/*
-+ * We can provide enable/disable atomic callbacks only if the underlying SCMI
-+ * transport for this SCMI instance is configured to handle synchronous commands
-+ * in an atomic manner.
-+ *
-+ * When no SCMI atomic transport support is available we instead provide the
-+ * prepare/unprepare API, as allowed by the clock framework where atomic calls
-+ * are not available.
-+ *
-+ * Note that the provided clk_ops implementations are the same in both cases,
-+ * using indeed the same underlying SCMI clock_protocol operations, it's just
-+ * that they are assured to act in an atomic manner or not depending on the
-+ * actual underlying SCMI transport configuration.
-+ *
-+ * Two distinct sets of clk_ops are provided since we could have multiple SCMI
-+ * instances with different underlying transport quality, so they cannot be
-+ * shared.
-+ */
- static const struct clk_ops scmi_clk_ops = {
- 	.recalc_rate = scmi_clk_recalc_rate,
- 	.round_rate = scmi_clk_round_rate,
- 	.set_rate = scmi_clk_set_rate,
--	/*
--	 * We can't provide enable/disable callback as we can't perform the same
--	 * in atomic context. Since the clock framework provides standard API
--	 * clk_prepare_enable that helps cases using clk_enable in non-atomic
--	 * context, it should be fine providing prepare/unprepare.
--	 */
- 	.prepare = scmi_clk_enable,
- 	.unprepare = scmi_clk_disable,
+ struct scmi_smc {
+@@ -34,15 +32,14 @@ struct scmi_smc {
+ 	struct scmi_shared_mem __iomem *shmem;
+ 	struct mutex shmem_lock;
+ 	u32 func_id;
+-	int irq;
+-	struct completion tx_complete;
  };
  
--static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk)
-+static const struct clk_ops scmi_atomic_clk_ops = {
-+	.recalc_rate = scmi_clk_recalc_rate,
-+	.round_rate = scmi_clk_round_rate,
-+	.set_rate = scmi_clk_set_rate,
-+	.enable = scmi_clk_enable,
-+	.disable = scmi_clk_disable,
-+};
-+
-+static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
-+			     const struct clk_ops *scmi_ops)
+ static irqreturn_t smc_msg_done_isr(int irq, void *data)
  {
- 	int ret;
- 	unsigned long min_rate, max_rate;
-@@ -110,7 +131,7 @@ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk)
- 	struct clk_init_data init = {
- 		.flags = CLK_GET_RATE_NOCACHE,
- 		.num_parents = 0,
--		.ops = &scmi_clk_ops,
-+		.ops = scmi_ops,
- 		.name = sclk->info->name,
- 	};
+ 	struct scmi_smc *scmi_info = data;
  
-@@ -145,6 +166,7 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
- 	struct device_node *np = dev->of_node;
- 	const struct scmi_handle *handle = sdev->handle;
- 	struct scmi_protocol_handle *ph;
-+	bool is_atomic;
+-	complete(&scmi_info->tx_complete);
++	scmi_rx_callback(scmi_info->cinfo,
++			 shmem_read_header(scmi_info->shmem), NULL);
  
- 	if (!handle)
- 		return -ENODEV;
-@@ -168,6 +190,8 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
- 	clk_data->num = count;
- 	hws = clk_data->hws;
+ 	return IRQ_HANDLED;
+ }
+@@ -111,8 +108,9 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+ 			dev_err(dev, "failed to setup SCMI smc irq\n");
+ 			return ret;
+ 		}
+-		init_completion(&scmi_info->tx_complete);
+-		scmi_info->irq = irq;
++	} else {
++		/* No completion interrupt available */
++		cinfo->needs_polling = true;
+ 	}
  
-+	is_atomic = handle->is_transport_atomic(handle);
+ 	scmi_info->func_id = func_id;
+@@ -142,26 +140,21 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
+ 	struct scmi_smc *scmi_info = cinfo->transport_info;
+ 	struct arm_smccc_res res;
+ 
++	/*
++	 * Channel lock will be released only once response has been
++	 * surely fully retrieved, so after .mark_txdone()
++	 */
+ 	mutex_lock(&scmi_info->shmem_lock);
+-
+ 	shmem_tx_prepare(scmi_info->shmem, xfer);
+ 
+-	if (scmi_info->irq)
+-		reinit_completion(&scmi_info->tx_complete);
+-
+ 	arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0, &res);
+ 
+-	if (scmi_info->irq)
+-		wait_for_completion(&scmi_info->tx_complete);
+-
+-	scmi_rx_callback(scmi_info->cinfo,
+-			 shmem_read_header(scmi_info->shmem), NULL);
+-
+-	mutex_unlock(&scmi_info->shmem_lock);
+-
+ 	/* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
+-	if (res.a0)
++	if (res.a0) {
++		mutex_unlock(&scmi_info->shmem_lock);
+ 		return -EOPNOTSUPP;
++	}
 +
- 	for (idx = 0; idx < count; idx++) {
- 		struct scmi_clk *sclk;
+ 	return 0;
+ }
  
-@@ -184,7 +208,9 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
- 		sclk->id = idx;
- 		sclk->ph = ph;
+@@ -173,6 +166,13 @@ static void smc_fetch_response(struct scmi_chan_info *cinfo,
+ 	shmem_fetch_response(scmi_info->shmem, xfer);
+ }
  
--		err = scmi_clk_ops_init(dev, sclk);
-+		err = scmi_clk_ops_init(dev, sclk,
-+					is_atomic ? &scmi_atomic_clk_ops :
-+					&scmi_clk_ops);
- 		if (err) {
- 			dev_err(dev, "failed to register clock %d\n", idx);
- 			devm_kfree(dev, sclk);
++static void smc_mark_txdone(struct scmi_chan_info *cinfo, int ret)
++{
++	struct scmi_smc *scmi_info = cinfo->transport_info;
++
++	mutex_unlock(&scmi_info->shmem_lock);
++}
++
+ static bool
+ smc_poll_done(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
+ {
+@@ -186,6 +186,7 @@ static const struct scmi_transport_ops scmi_smc_ops = {
+ 	.chan_setup = smc_chan_setup,
+ 	.chan_free = smc_chan_free,
+ 	.send_message = smc_send_message,
++	.mark_txdone = smc_mark_txdone,
+ 	.fetch_response = smc_fetch_response,
+ 	.poll_done = smc_poll_done,
+ };
 -- 
 2.17.1
 
