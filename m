@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608AD3C48F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589453C56B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237206AbhGLGl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
+        id S1350672AbhGLIWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:22:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236598AbhGLGcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:32:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E203610D1;
-        Mon, 12 Jul 2021 06:29:35 +0000 (UTC)
+        id S1347671AbhGLHkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC736141C;
+        Mon, 12 Jul 2021 07:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071375;
-        bh=s0hSDXPGZNPiMQhMeECJGareszJcyKYanf7R9VEQUoI=;
+        s=korg; t=1626075320;
+        bh=svsv6M47GusGxdoHHlZTnG/iyReb7Lr39eIxDeEHyp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P4uBCulZhcBdSeBHPNIB9P89tV00ipAcPnYvPq59Daju59cVKn3zFnGE0Glb6Atn+
-         wECpUJoTifjkPGQBYnjLVzam0HBFeq8rCndlmvPbi/G+7NVC1Qty6ksKIrGNsvALur
-         SVkb1hNmhe3vL7XR8GsM4Gz355kp5h2Wk8ltrkBQ=
+        b=oM/QiFFliKaWTO7X9oMNq+pUkPEa75xM8RiJ++4Tpf4FhmDeuRtkDZIqyIAte/F7X
+         wk8YNzQeOMlVNdnLW/3Bh53fvVoIMBPqfmtxhFE4LZpE8EYH2gjiI8A78bdP4RmkAT
+         cRW7UnClRgf4u/XHwsKpGOX6vS7SQOJd8hgi1mms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 043/593] ext4: fix kernel infoleak via ext4_extent_header
+        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 180/800] spi: meson-spicc: fix a wrong goto jump for avoiding memory leak.
 Date:   Mon, 12 Jul 2021 08:03:23 +0200
-Message-Id: <20210712060847.901755689@linuxfoundation.org>
+Message-Id: <20210712060938.342636891@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: zpershuai <zpershuai@gmail.com>
 
-commit ce3aba43599f0b50adbebff133df8d08a3d5fffe upstream.
+[ Upstream commit 95730d5eb73170a6d225a9998c478be273598634 ]
 
-Initialize eh_generation of struct ext4_extent_header to prevent leaking
-info to userspace. Fixes KMSAN kernel-infoleak bug reported by syzbot at:
-http://syzkaller.appspot.com/bug?id=78e9ad0e6952a3ca16e8234724b2fa92d041b9b8
+In meson_spifc_probe function, when enable the device pclk clock is
+error, it should use clk_disable_unprepare to release the core clock.
 
-Cc: stable@kernel.org
-Reported-by: syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com
-Fixes: a86c61812637 ("[PATCH] ext3: add extent map support")
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210506185655.7118-1-mail@anirudhrb.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: zpershuai <zpershuai@gmail.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/1623562172-22056-1-git-send-email-zpershuai@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/extents.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/spi/spi-meson-spicc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -825,6 +825,7 @@ void ext4_ext_tree_init(handle_t *handle
- 	eh->eh_entries = 0;
- 	eh->eh_magic = EXT4_EXT_MAGIC;
- 	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
-+	eh->eh_generation = 0;
- 	ext4_mark_inode_dirty(handle, inode);
- }
+diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
+index ecba6b4a5d85..51aef2c6e966 100644
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -725,7 +725,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
+ 	ret = clk_prepare_enable(spicc->pclk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "pclk clock enable failed\n");
+-		goto out_master;
++		goto out_core_clk;
+ 	}
  
-@@ -1090,6 +1091,7 @@ static int ext4_ext_split(handle_t *hand
- 	neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
- 	neh->eh_magic = EXT4_EXT_MAGIC;
- 	neh->eh_depth = 0;
-+	neh->eh_generation = 0;
+ 	device_reset_optional(&pdev->dev);
+@@ -764,9 +764,11 @@ static int meson_spicc_probe(struct platform_device *pdev)
+ 	return 0;
  
- 	/* move remainder of path[depth] to the new leaf */
- 	if (unlikely(path[depth].p_hdr->eh_entries !=
-@@ -1167,6 +1169,7 @@ static int ext4_ext_split(handle_t *hand
- 		neh->eh_magic = EXT4_EXT_MAGIC;
- 		neh->eh_max = cpu_to_le16(ext4_ext_space_block_idx(inode, 0));
- 		neh->eh_depth = cpu_to_le16(depth - i);
-+		neh->eh_generation = 0;
- 		fidx = EXT_FIRST_INDEX(neh);
- 		fidx->ei_block = border;
- 		ext4_idx_store_pblock(fidx, oldblock);
+ out_clk:
+-	clk_disable_unprepare(spicc->core);
+ 	clk_disable_unprepare(spicc->pclk);
+ 
++out_core_clk:
++	clk_disable_unprepare(spicc->core);
++
+ out_master:
+ 	spi_master_put(master);
+ 
+-- 
+2.30.2
+
 
 
