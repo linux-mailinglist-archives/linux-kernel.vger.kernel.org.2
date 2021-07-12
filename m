@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8313C54F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEE53C4E51
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349961AbhGLIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:08:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
+        id S243949AbhGLHRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:17:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344428AbhGLH3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002EA6144C;
-        Mon, 12 Jul 2021 07:25:15 +0000 (UTC)
+        id S239603AbhGLGw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:52:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EFC3610A6;
+        Mon, 12 Jul 2021 06:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074716;
-        bh=GwE8RPq5pMt2EPWshQUKIzJE5UeMVqs9MYiF1KNprCw=;
+        s=korg; t=1626072608;
+        bh=1hBnDIF+sduapjhfuvMGL5/eDR7r5UOLZyaaGtPZrs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DUJn+qLq/tHTKd7c+f4F9GZwcREm2qlt7Myo2tNl26kwNrXblh9KJ6GnngjdmwdR6
-         51r8/DynW6ZWHvHuBS+LYJZq16bN9gVJiFCbHMJAFYVivfKVJem+aGrV7f7HKv1X+d
-         NipngDg6S5bxqPdvd6C3vM3epwnrAjxfzusdGt3U=
+        b=H2PvCYC3bgX+ZMbC0mDKmYuymKd6RW2BGL+YtKX77E41LQTZ2wy5wyrylYF7p7DiP
+         60DxQsAYbL3PZ6HVDEhPSzJXK+FR8m4j2A/d3N5StOdqG2zmUMY0NjWgRq7lASYw46
+         2pNIm4qEza5sOHKr5Mf3xrb4NyiFwys7BLXBpQRA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mathieu Othacehe <m.othacehe@gmail.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 630/700] iio: prox: isl29501: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Subject: [PATCH 5.10 553/593] powerpc: Offline CPU in stop_this_cpu()
 Date:   Mon, 12 Jul 2021 08:11:53 +0200
-Message-Id: <20210712061042.879276504@linuxfoundation.org>
+Message-Id: <20210712060955.248665070@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 92babc9938ebbf4050f2fba774836f7edc16a570 ]
+[ Upstream commit bab26238bbd44d5a4687c0a64fd2c7f2755ea937 ]
 
-Add __aligned(8) to ensure the buffer passed to
-iio_push_to_buffers_with_timestamp() is suitable for the naturally
-aligned timestamp that will be inserted.
+printk_safe_flush_on_panic() has special lock breaking code for the case
+where we panic()ed with the console lock held. It relies on panic IPI
+causing other CPUs to mark themselves offline.
 
-Here an explicit structure is not used, because the holes would
-necessitate the addition of an explict memset(), to avoid a kernel
-data leak, making for a less minimal fix.
+Do as most other architectures do.
 
-Fixes: 1c28799257bc ("iio: light: isl29501: Add support for the ISL29501 ToF sensor.")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Mathieu Othacehe <m.othacehe@gmail.com>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210613152301.571002-9-jic23@kernel.org
+This effectively reverts commit de6e5d38417e ("powerpc: smp_send_stop do
+not offline stopped CPUs"), unfortunately it may result in some false
+positive warnings, but the alternative is more situations where we can
+crash without getting messages out.
+
+Fixes: de6e5d38417e ("powerpc: smp_send_stop do not offline stopped CPUs")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210623041245.865134-1-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/proximity/isl29501.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/smp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/iio/proximity/isl29501.c b/drivers/iio/proximity/isl29501.c
-index 90e76451c972..5b6ea783795d 100644
---- a/drivers/iio/proximity/isl29501.c
-+++ b/drivers/iio/proximity/isl29501.c
-@@ -938,7 +938,7 @@ static irqreturn_t isl29501_trigger_handler(int irq, void *p)
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct isl29501_private *isl29501 = iio_priv(indio_dev);
- 	const unsigned long *active_mask = indio_dev->active_scan_mask;
--	u32 buffer[4] = {}; /* 1x16-bit + ts */
-+	u32 buffer[4] __aligned(8) = {}; /* 1x16-bit + naturally aligned ts */
- 
- 	if (test_bit(ISL29501_DISTANCE_SCAN_INDEX, active_mask))
- 		isl29501_register_read(isl29501, REG_DISTANCE, buffer);
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 0760230be56f..26a028a9233a 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -600,6 +600,8 @@ static void nmi_stop_this_cpu(struct pt_regs *regs)
+ 	/*
+ 	 * IRQs are already hard disabled by the smp_handle_nmi_ipi.
+ 	 */
++	set_cpu_online(smp_processor_id(), false);
++
+ 	spin_begin();
+ 	while (1)
+ 		spin_cpu_relax();
+@@ -615,6 +617,15 @@ void smp_send_stop(void)
+ static void stop_this_cpu(void *dummy)
+ {
+ 	hard_irq_disable();
++
++	/*
++	 * Offlining CPUs in stop_this_cpu can result in scheduler warnings,
++	 * (see commit de6e5d38417e), but printk_safe_flush_on_panic() wants
++	 * to know other CPUs are offline before it breaks locks to flush
++	 * printk buffers, in case we panic()ed while holding the lock.
++	 */
++	set_cpu_online(smp_processor_id(), false);
++
+ 	spin_begin();
+ 	while (1)
+ 		spin_cpu_relax();
 -- 
 2.30.2
 
