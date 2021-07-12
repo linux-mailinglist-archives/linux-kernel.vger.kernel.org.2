@@ -2,180 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9E63C40EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296FA3C40F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 03:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhGLBhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 21:37:20 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:41052 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229660AbhGLBhS (ORCPT
+        id S232547AbhGLBlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 21:41:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:10466 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhGLBlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 21:37:18 -0400
-X-UUID: d70b41b6d49540c482e15653ff09a960-20210712
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=WbudQEvPpcxQZODZf8OScCdCXRP8v+l01ckWJMMbx5U=;
-        b=WWIq3XQt7owh4ztk8wCMP28S/KklSk1dW0uy2G63LiZLS3a0UMJyTEaiYGDJ5/ATWwpWfSVOfvFjHj42lcIIsncMMRTcCmwWr+IEfisRBNthD4XGMn7p9lrZq8FwpxHhYyK9gynOl54bXOoJ0JHae5hBatDW7cWOe62ZOag7csQ=;
-X-UUID: d70b41b6d49540c482e15653ff09a960-20210712
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1909448754; Mon, 12 Jul 2021 09:34:29 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 12 Jul 2021 09:34:27 +0800
-Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 12 Jul 2021 09:34:22 +0800
-Message-ID: <c92a5f98560393617b2cfffabecac953ef7f7828.camel@mediatek.com>
-Subject: Re: [PATCH 14/22] clk: mediatek: Add MT8195 vdecsys clock support
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Mon, 12 Jul 2021 09:34:21 +0800
-In-Reply-To: <CAGXv+5GbyKpT9mTseCc2t94UWBCoPWtrXUfd_ZqXOewhP3QEZw@mail.gmail.com>
-References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
-         <20210616224743.5109-15-chun-jie.chen@mediatek.com>
-         <CAGXv+5GbyKpT9mTseCc2t94UWBCoPWtrXUfd_ZqXOewhP3QEZw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sun, 11 Jul 2021 21:41:13 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GNRCc6qLXzccLb;
+        Mon, 12 Jul 2021 09:35:08 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 09:38:24 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 09:38:24 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <jiri@nvidia.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <chenhao288@hisilicon.com>,
+        <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 0/9] net: hns3: add support devlink
+Date:   Mon, 12 Jul 2021 09:34:49 +0800
+Message-ID: <1626053698-46849-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA3LTA5IGF0IDE2OjQwICswODAwLCBDaGVuLVl1IFRzYWkgd3JvdGU6DQo+
-IE9uIFRodSwgSnVuIDE3LCAyMDIxIGF0IDc6MDIgQU0gQ2h1bi1KaWUgQ2hlbg0KPiA8Y2h1bi1q
-aWUuY2hlbkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+IA0KPiA+IEFkZCBNVDgxOTUgdmRlY3N5
-cyBjbG9jayBwcm92aWRlcnMNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuLUppZSBDaGVu
-IDxjaHVuLWppZS5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9jbGsv
-bWVkaWF0ZWsvS2NvbmZpZyAgICAgICAgICAgfCAgIDYgKysNCj4gPiAgZHJpdmVycy9jbGsvbWVk
-aWF0ZWsvTWFrZWZpbGUgICAgICAgICAgfCAgIDEgKw0KPiA+ICBkcml2ZXJzL2Nsay9tZWRpYXRl
-ay9jbGstbXQ4MTk1LXZkZWMuYyB8IDEwNg0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysN
-Cj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAxMTMgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9k
-ZSAxMDA2NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5NS12ZGVjLmMNCj4gPiANCj4g
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+IGIvZHJpdmVy
-cy9jbGsvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+IGluZGV4IGQzNDUxNzcyOGY0YS4uYjc4ODFiOGVi
-YjIzIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL0tjb25maWcNCj4gPiAr
-KysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9LY29uZmlnDQo+ID4gQEAgLTY0Miw2ICs2NDIsMTIg
-QEAgY29uZmlnIENPTU1PTl9DTEtfTVQ4MTk1X05OQVNZUw0KPiA+ICAgICAgICAgaGVscA0KPiA+
-ICAgICAgICAgICBUaGlzIGRyaXZlciBzdXBwb3J0cyBNZWRpYVRlayBNVDgxOTUgbm5hc3lzIGNs
-b2Nrcy4NCj4gPiANCj4gPiArY29uZmlnIENPTU1PTl9DTEtfTVQ4MTk1X1ZERUNTWVMNCj4gPiAr
-ICAgICAgIGJvb2wgIkNsb2NrIGRyaXZlciBmb3IgTWVkaWFUZWsgTVQ4MTk1IHZkZWNzeXMiDQo+
-ID4gKyAgICAgICBkZXBlbmRzIG9uIENPTU1PTl9DTEtfTVQ4MTk1DQo+ID4gKyAgICAgICBoZWxw
-DQo+ID4gKyAgICAgICAgIFRoaXMgZHJpdmVyIHN1cHBvcnRzIE1lZGlhVGVrIE1UODE5NSB2ZGVj
-c3lzIGNsb2Nrcy4NCj4gPiArDQo+IA0KPiBTYW1lIGNvbW1lbnRzIGFib3V0IHRoZSBjb21taXQg
-bG9nIGFuZCBLY29uZmlnIG9wdGlvbi4NCj4gDQo+ID4gIGNvbmZpZyBDT01NT05fQ0xLX01UODUx
-Ng0KPiA+ICAgICAgICAgYm9vbCAiQ2xvY2sgZHJpdmVyIGZvciBNZWRpYVRlayBNVDg1MTYiDQo+
-ID4gICAgICAgICBkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwgQ09NUElMRV9URVNUDQo+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL01ha2VmaWxlDQo+ID4gYi9kcml2ZXJz
-L2Nsay9tZWRpYXRlay9NYWtlZmlsZQ0KPiA+IGluZGV4IDQ5ZTU4NWE3YWM4ZS4uOWFjZmE3MDVm
-MWRlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL01ha2VmaWxlDQo+ID4g
-KysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvTWFrZWZpbGUNCj4gPiBAQCAtOTAsNSArOTAsNiBA
-QCBvYmotJChDT05GSUdfQ09NTU9OX0NMS19NVDgxOTVfSVBFU1lTKSArPSBjbGstDQo+ID4gbXQ4
-MTk1LWlwZS5vDQo+ID4gIG9iai0kKENPTkZJR19DT01NT05fQ0xLX01UODE5NV9NRkdDRkcpICs9
-IGNsay1tdDgxOTUtbWZnLm8NCj4gPiAgb2JqLSQoQ09ORklHX0NPTU1PTl9DTEtfTVQ4MTk1X1ND
-UF9BRFNQKSArPSBjbGstbXQ4MTk1LXNjcF9hZHNwLm8NCj4gPiAgb2JqLSQoQ09ORklHX0NPTU1P
-Tl9DTEtfTVQ4MTk1X05OQVNZUykgKz0gY2xrLW10ODE5NS1ubmEubw0KPiA+ICtvYmotJChDT05G
-SUdfQ09NTU9OX0NMS19NVDgxOTVfVkRFQ1NZUykgKz0gY2xrLW10ODE5NS12ZGVjLm8NCj4gPiAg
-b2JqLSQoQ09ORklHX0NPTU1PTl9DTEtfTVQ4NTE2KSArPSBjbGstbXQ4NTE2Lm8NCj4gPiAgb2Jq
-LSQoQ09ORklHX0NPTU1PTl9DTEtfTVQ4NTE2X0FVRFNZUykgKz0gY2xrLW10ODUxNi1hdWQubw0K
-PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTk1LXZkZWMuYw0K
-PiA+IGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5NS12ZGVjLmMNCj4gPiBuZXcgZmls
-ZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uOWFiODRlNzVlMWEwDQo+ID4g
-LS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTUt
-dmRlYy5jDQo+ID4gQEAgLTAsMCArMSwxMDYgQEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50
-aWZpZXI6IEdQTC0yLjAtb25seQ0KPiA+ICsvLw0KPiA+ICsvLyBDb3B5cmlnaHQgKGMpIDIwMjEg
-TWVkaWFUZWsgSW5jLg0KPiA+ICsvLyBBdXRob3I6IENodW4tSmllIENoZW4gPGNodW4tamllLmNo
-ZW5AbWVkaWF0ZWsuY29tPg0KPiA+ICsNCj4gPiArI2luY2x1ZGUgPGxpbnV4L2Nsay1wcm92aWRl
-ci5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4gKw0KPiA+
-ICsjaW5jbHVkZSAiY2xrLW10ay5oIg0KPiA+ICsjaW5jbHVkZSAiY2xrLWdhdGUuaCINCj4gDQo+
-IFBsZWFzZSBvcmRlciBhbHBoYWJldGljYWxseS4gSSB0aGluayB0aGlzIGFwcGxpZXMgdG8gYWxs
-IHRoZSBvdGhlcg0KPiBwYXRjaGVzLg0KPiBJIG1pc3NlZCB0aGlzIGluIHRoZSBlYXJsaWVyIG9u
-ZXMsIGJ1dCBwbGVhc2UgZml4IHRoZW0gbm9uZXRoZWxlc3MuDQo+IA0KDQpJIHdpbGwgY2hlY2sg
-aXQgaW4gYWxsIHBhdGNoZXMgb2YgdGhpcyBzZXJpZXMsIHRoYW5rcyBmb3IgeW91IGNvbW1lbnQu
-DQoNCkJlc3QgUmVnYXJkcywNCkNodW4tSmllDQoNCj4gPiArDQo+ID4gKyNpbmNsdWRlIDxkdC1i
-aW5kaW5ncy9jbG9jay9tdDgxOTUtY2xrLmg+DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3Ry
-dWN0IG10a19nYXRlX3JlZ3MgdmRlYzBfY2dfcmVncyA9IHsNCj4gPiArICAgICAgIC5zZXRfb2Zz
-ID0gMHgwLA0KPiA+ICsgICAgICAgLmNscl9vZnMgPSAweDQsDQo+ID4gKyAgICAgICAuc3RhX29m
-cyA9IDB4MCwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2dh
-dGVfcmVncyB2ZGVjMV9jZ19yZWdzID0gew0KPiA+ICsgICAgICAgLnNldF9vZnMgPSAweDIwMCwN
-Cj4gPiArICAgICAgIC5jbHJfb2ZzID0gMHgyMDQsDQo+ID4gKyAgICAgICAuc3RhX29mcyA9IDB4
-MjAwLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZ2F0ZV9y
-ZWdzIHZkZWMyX2NnX3JlZ3MgPSB7DQo+ID4gKyAgICAgICAuc2V0X29mcyA9IDB4OCwNCj4gPiAr
-ICAgICAgIC5jbHJfb2ZzID0gMHhjLA0KPiA+ICsgICAgICAgLnN0YV9vZnMgPSAweDgsDQo+ID4g
-K307DQo+ID4gKw0KPiA+ICsjZGVmaW5lIEdBVEVfVkRFQzAoX2lkLCBfbmFtZSwgX3BhcmVudCwN
-Cj4gPiBfc2hpZnQpICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiA+ICsgICAgICAgR0FURV9N
-VEsoX2lkLCBfbmFtZSwgX3BhcmVudCwgJnZkZWMwX2NnX3JlZ3MsIF9zaGlmdCwNCj4gPiAmbXRr
-X2Nsa19nYXRlX29wc19zZXRjbHJfaW52KQ0KPiA+ICsNCj4gPiArI2RlZmluZSBHQVRFX1ZERUMx
-KF9pZCwgX25hbWUsIF9wYXJlbnQsDQo+ID4gX3NoaWZ0KSAgICAgICAgICAgICAgICAgICAgICAg
-IFwNCj4gPiArICAgICAgIEdBVEVfTVRLKF9pZCwgX25hbWUsIF9wYXJlbnQsICZ2ZGVjMV9jZ19y
-ZWdzLCBfc2hpZnQsDQo+ID4gJm10a19jbGtfZ2F0ZV9vcHNfc2V0Y2xyX2ludikNCj4gPiArDQo+
-ID4gKyNkZWZpbmUgR0FURV9WREVDMihfaWQsIF9uYW1lLCBfcGFyZW50LA0KPiA+IF9zaGlmdCkg
-ICAgICAgICAgICAgICAgICAgICAgICBcDQo+ID4gKyAgICAgICBHQVRFX01USyhfaWQsIF9uYW1l
-LCBfcGFyZW50LCAmdmRlYzJfY2dfcmVncywgX3NoaWZ0LA0KPiA+ICZtdGtfY2xrX2dhdGVfb3Bz
-X3NldGNscl9pbnYpDQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19nYXRlIHZk
-ZWNfY2xrc1tdID0gew0KPiA+ICsgICAgICAgLyogVkRFQzAgKi8NCj4gPiArICAgICAgIEdBVEVf
-VkRFQzAoQ0xLX1ZERUNfVkRFQywgInZkZWNfdmRlYyIsICJ2ZGVjX3NlbCIsIDApLA0KPiA+ICsg
-ICAgICAgLyogVkRFQzEgKi8NCj4gPiArICAgICAgIEdBVEVfVkRFQzEoQ0xLX1ZERUNfTEFULCAi
-dmRlY19sYXQiLCAidmRlY19zZWwiLCAwKSwNCj4gPiArICAgICAgIC8qIFZERUMyICovDQo+ID4g
-KyAgICAgICBHQVRFX1ZERUMyKENMS19WREVDX0xBUkIxLCAidmRlY19sYXJiMSIsICJ2ZGVjX3Nl
-bCIsIDApLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZ2F0
-ZSB2ZGVjX2NvcmUxX2Nsa3NbXSA9IHsNCj4gPiArICAgICAgIC8qIFZERUMwICovDQo+ID4gKyAg
-ICAgICBHQVRFX1ZERUMwKENMS19WREVDX0NPUkUxX1ZERUMsICJ2ZGVjX2NvcmUxX3ZkZWMiLA0K
-PiA+ICJ2ZGVjX3NlbCIsIDApLA0KPiA+ICsgICAgICAgLyogVkRFQzEgKi8NCj4gPiArICAgICAg
-IEdBVEVfVkRFQzEoQ0xLX1ZERUNfQ09SRTFfTEFULCAidmRlY19jb3JlMV9sYXQiLA0KPiA+ICJ2
-ZGVjX3NlbCIsIDApLA0KPiA+ICsgICAgICAgLyogVkRFQzIgKi8NCj4gPiArICAgICAgIEdBVEVf
-VkRFQzIoQ0xLX1ZERUNfQ09SRTFfTEFSQjEsICJ2ZGVjX2NvcmUxX2xhcmIxIiwNCj4gPiAidmRl
-Y19zZWwiLCAwKSwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRr
-X2dhdGUgdmRlY19zb2NfY2xrc1tdID0gew0KPiA+ICsgICAgICAgLyogVkRFQzAgKi8NCj4gPiAr
-ICAgICAgIEdBVEVfVkRFQzAoQ0xLX1ZERUNfU09DX1ZERUMsICJ2ZGVjX3NvY192ZGVjIiwgInZk
-ZWNfc2VsIiwNCj4gPiAwKSwNCj4gPiArICAgICAgIC8qIFZERUMxICovDQo+ID4gKyAgICAgICBH
-QVRFX1ZERUMxKENMS19WREVDX1NPQ19MQVQsICJ2ZGVjX3NvY19sYXQiLCAidmRlY19zZWwiLA0K
-PiA+IDApLA0KPiA+ICsgICAgICAgLyogVkRFQzIgKi8NCj4gPiArICAgICAgIEdBVEVfVkRFQzIo
-Q0xLX1ZERUNfU09DX0xBUkIxLCAidmRlY19zb2NfbGFyYjEiLA0KPiA+ICJ2ZGVjX3NlbCIsIDAp
-LA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfY2xrX2Rlc2Mg
-dmRlY19kZXNjID0gew0KPiA+ICsgICAgICAgLmNsa3MgPSB2ZGVjX2Nsa3MsDQo+ID4gKyAgICAg
-ICAubnVtX2Nsa3MgPSBBUlJBWV9TSVpFKHZkZWNfY2xrcyksDQo+ID4gK307DQo+ID4gKw0KPiA+
-ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19jbGtfZGVzYyB2ZGVjX2NvcmUxX2Rlc2MgPSB7DQo+
-ID4gKyAgICAgICAuY2xrcyA9IHZkZWNfY29yZTFfY2xrcywNCj4gPiArICAgICAgIC5udW1fY2xr
-cyA9IEFSUkFZX1NJWkUodmRlY19jb3JlMV9jbGtzKSwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0
-YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2Nsa19kZXNjIHZkZWNfc29jX2Rlc2MgPSB7DQo+ID4gKyAg
-ICAgICAuY2xrcyA9IHZkZWNfc29jX2Nsa3MsDQo+ID4gKyAgICAgICAubnVtX2Nsa3MgPSBBUlJB
-WV9TSVpFKHZkZWNfc29jX2Nsa3MpLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0
-IHN0cnVjdCBvZl9kZXZpY2VfaWQgb2ZfbWF0Y2hfY2xrX210ODE5NV92ZGVjW10gPSB7DQo+ID4g
-KyAgICAgICB7DQo+ID4gKyAgICAgICAgICAgICAgIC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
-ODE5NS12ZGVjc3lzIiwNCj4gPiArICAgICAgICAgICAgICAgLmRhdGEgPSAmdmRlY19kZXNjLA0K
-PiA+ICsgICAgICAgfSwgew0KPiA+ICsgICAgICAgICAgICAgICAuY29tcGF0aWJsZSA9ICJtZWRp
-YXRlayxtdDgxOTUtdmRlY3N5c19jb3JlMSIsDQo+ID4gKyAgICAgICAgICAgICAgIC5kYXRhID0g
-JnZkZWNfY29yZTFfZGVzYywNCj4gPiArICAgICAgIH0sIHsNCj4gPiArICAgICAgICAgICAgICAg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTk1LXZkZWNzeXNfc29jIiwNCj4gPiArICAgICAg
-ICAgICAgICAgLmRhdGEgPSAmdmRlY19zb2NfZGVzYywNCj4gPiArICAgICAgIH0sIHsNCj4gPiAr
-ICAgICAgICAgICAgICAgLyogc2VudGluZWwgKi8NCj4gPiArICAgICAgIH0NCj4gPiArfTsNCj4g
-PiArDQo+ID4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGNsa19tdDgxOTVfdmRlY19k
-cnYgPSB7DQo+ID4gKyAgICAgICAucHJvYmUgPSBtdGtfY2xrX3NpbXBsZV9wcm9iZSwNCj4gPiAr
-ICAgICAgIC5kcml2ZXIgPSB7DQo+ID4gKyAgICAgICAgICAgICAgIC5uYW1lID0gImNsay1tdDgx
-OTUtdmRlYyIsDQo+ID4gKyAgICAgICAgICAgICAgIC5vZl9tYXRjaF90YWJsZSA9IG9mX21hdGNo
-X2Nsa19tdDgxOTVfdmRlYywNCj4gPiArICAgICAgIH0sDQo+ID4gK307DQo+ID4gKw0KPiANCj4g
-Tml0OiB5b3UgY291bGQgZHJvcCB0aGUgZW1wdHkgbGluZSBoZXJlLiBTYW1lIGluIHRoZSBvdGhl
-ciBwYXRjaGVzLg0KPiANCj4gQ2hlbll1DQo+IA0KDQpJIHdpbGwgY2hlY2sgaXQgaW4gYWxsIHBh
-dGNoZXMgb2YgdGhpcyBzZXJpZXMsIHRoYW5rcyBmb3IgeW91IGNvbW1lbnQuDQoNCkJlc3QgUmVn
-YXJkcywNCkNodW4tSmllDQoNCj4gDQo+ID4gK2J1aWx0aW5fcGxhdGZvcm1fZHJpdmVyKGNsa19t
-dDgxOTVfdmRlY19kcnYpOw0KPiA+IC0tDQo+ID4gMi4xOC4wDQo+ID4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiBMaW51eC1tZWRpYXRlayBtYWls
-aW5nIGxpc3QNCj4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+ID4gDQpo
-dHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tZWRpYXRla19fOyEhQ1RSTktBOXdNZzBBUmJ3ITI5R0xCcGpB
-Q1JDcGM1RnhhSGRyR2dhZlpUYUVBTGg4SWpIaU9yUTlUX0d1Skp6ZE9sd2hMUmVoUFM4djVjaUhV
-bzlXJA0KPiA+ICANCg==
+This series adds devlink support for the HNS3 ethernet driver.
+
+change log:
+RFC -> V1:
+1. use DEVLINK_INFO_VERSION_GENERIC_FW instead of "fw-version".
+2. add devlink documentation for hns3 driver.
+
+Hao Chen (5):
+  devlink: add documentation for hns3 driver
+  net: hns3: add devlink reload support for PF
+  net: hns3: add devlink reload support for VF
+  net: hns3: add support for PF setting rx/tx buffer size by devlink
+    param
+  net: hns3: add support for VF setting rx/tx buffer size by devlink
+    param
+
+Yufeng Mo (4):
+  net: hns3: add support for registering devlink for PF
+  net: hns3: add support for registering devlink for VF
+  net: hns3: add support for devlink get info for PF
+  net: hns3: add support for devlink get info for VF
+
+ Documentation/networking/devlink/hns3.rst          |  51 +++++
+ Documentation/networking/devlink/index.rst         |   1 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   1 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |   8 +-
+ .../net/ethernet/hisilicon/hns3/hns3pf/Makefile    |   2 +-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c | 241 ++++++++++++++++++++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_devlink.h |  22 ++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |  13 +-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |   2 +
+ .../net/ethernet/hisilicon/hns3/hns3vf/Makefile    |   2 +-
+ .../hisilicon/hns3/hns3vf/hclgevf_devlink.c        | 242 +++++++++++++++++++++
+ .../hisilicon/hns3/hns3vf/hclgevf_devlink.h        |  22 ++
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  |  11 +
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |   3 +
+ 14 files changed, 616 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/networking/devlink/hns3.rst
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.h
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
+ create mode 100644 drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.h
+
+-- 
+2.8.1
 
