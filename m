@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3876E3C591B
+	by mail.lfdr.de (Postfix) with ESMTP id 80CCE3C591C
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356906AbhGLI5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:57:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S1356950AbhGLI5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:57:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353758AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353761AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FDE761883;
-        Mon, 12 Jul 2021 07:57:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A93AD61930;
+        Mon, 12 Jul 2021 07:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076642;
-        bh=YmNe52kqRSRJID77Jo1kprfAwJgwat4kLMXBtr9KtYY=;
+        s=korg; t=1626076645;
+        bh=hqfDGKAdTtoWtw7NqFsuUYlVAcVneAVmKwumWSlcGzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U2Tw+TnBGan9QMmiMUd8AMyS9YXZXB+EOsYKiU8kj+HZBaw6u6su4OnAec6FaJ+BE
-         KKMvbPyShoy9IzE7P2ZS/q8FgFXUU+qjuT2n0z2kT8E6EfkeGUr9oW1+xPjvknaIMq
-         8XzwjOJ9lB2LXfnEgb+Io1F2oUYwzyVb0vDDFaA8=
+        b=sdl2ElwtfjL5nP6c86R8cm20ByUgYu9BTBA34f2CKW7HCJBgmzSGS6mV9XfRurS3t
+         0Yp9K5dpnZJlPzoTmpapTx/3xYjjKoS4nb0KGX6oFti0nisAIRBx/6V1S4MC/N/FTy
+         UtU4W4QwsrsEJOiAal+42SgEM1k45GJW63zzVJTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 730/800] habanalabs: Fix an error handling path in hl_pci_probe()
-Date:   Mon, 12 Jul 2021 08:12:33 +0200
-Message-Id: <20210712061044.450566126@linuxfoundation.org>
+Subject: [PATCH 5.13 731/800] scsi: mpt3sas: Fix error return value in _scsih_expander_add()
+Date:   Mon, 12 Jul 2021 08:12:34 +0200
+Message-Id: <20210712061044.551240391@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,35 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 3002f467a0b0a70aec01d9f446da4ac8c6fda10b ]
+[ Upstream commit d6c2ce435ffe23ef7f395ae76ec747414589db46 ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+When an expander does not contain any 'phys', an appropriate error code -1
+should be returned, as done elsewhere in this function. However, we
+currently do not explicitly assign this error code to 'rc'. As a result, 0
+was incorrectly returned.
 
-Fixes: 2e5eda4681f9 ("habanalabs: PCIe Advanced Error Reporting support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Link: https://lore.kernel.org/r/20210514081300.6650-1-thunder.leizhen@huawei.com
+Fixes: f92363d12359 ("[SCSI] mpt3sas: add new driver supporting 12GB SAS")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/habanalabs_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 64d1530db985..d15b912a347b 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -464,6 +464,7 @@ static int hl_pci_probe(struct pci_dev *pdev,
- 	return 0;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+index d00aca3c77ce..a5f70f0e0287 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+@@ -6884,8 +6884,10 @@ _scsih_expander_add(struct MPT3SAS_ADAPTER *ioc, u16 handle)
+ 		 handle, parent_handle,
+ 		 (u64)sas_expander->sas_address, sas_expander->num_phys);
  
- disable_device:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_set_drvdata(pdev, NULL);
- 	destroy_hdev(hdev);
- 
+-	if (!sas_expander->num_phys)
++	if (!sas_expander->num_phys) {
++		rc = -1;
+ 		goto out_fail;
++	}
+ 	sas_expander->phy = kcalloc(sas_expander->num_phys,
+ 	    sizeof(struct _sas_phy), GFP_KERNEL);
+ 	if (!sas_expander->phy) {
 -- 
 2.30.2
 
