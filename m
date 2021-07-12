@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161FC3C4DDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC7D3C54C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243159AbhGLHPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51274 "EHLO mail.kernel.org"
+        id S1354391AbhGLIEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:04:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240641AbhGLGv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:51:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D34F60FE3;
-        Mon, 12 Jul 2021 06:49:11 +0000 (UTC)
+        id S1345320AbhGLHZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:25:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A60EA613C7;
+        Mon, 12 Jul 2021 07:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072551;
-        bh=Ad2ectahd90H5iqxjE8PMFaHNMTUCCZS86ts+IwNhHk=;
+        s=korg; t=1626074541;
+        bh=p8MZCwApEeJkSMpx58w+IZ/YfyUklulrNMrzGhhLz0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5bzymh0S6O5Qs+jWhorSqWK0T9euRoJK2kM1/9ibduJAePA8bnHOzgC8mJd6KtCa
-         XQQFlVNAjDtceQKVmn9Wzk6iz1kHa9oyBre2BxwwvEoZr6QuhCruCVLEmlAifFONuX
-         N6WVpRr3hjhdNoomqQf8zShULyOcnZXcN9MT1LA0=
+        b=MNvHs52GXSvTjUQ2Ows2F9mBcGclvE7AuR1yEySq944+drikRGI36bz8qZF1GfRZs
+         nNdSDGG8VOffI/bLNidw61MfR52HjocCNlRU1MD9YyvCvOdZXKStUhwRGXCv/gsm3y
+         SdBpNL3DV6KtTRJ4JdtqNxl2R8FSgIOZelT3YDXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 536/593] soundwire: stream: Fix test for DP prepare complete
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 613/700] iio: adc: at91-sama5d2: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:11:36 +0200
-Message-Id: <20210712060952.679702086@linuxfoundation.org>
+Message-Id: <20210712061041.131606093@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 3d3e88e336338834086278236d42039f3cde50e1 ]
+[ Upstream commit 8f884758966259fa8c50c137ac6d4ce9bb7859db ]
 
-In sdw_prep_deprep_slave_ports(), after the wait_for_completion()
-the DP prepare status register is read. If this indicates that the
-port is now prepared, the code should continue with the port setup.
-It is irrelevant whether the wait_for_completion() timed out if the
-port is now ready.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-The previous implementation would always fail if the
-wait_for_completion() timed out, even if the port was reporting
-successful prepare.
+Found during an audit of all calls of this function.
 
-This patch also fixes a minor bug where the return from sdw_read()
-was not checked for error - any error code with LSBits clear could
-be misinterpreted as a successful port prepare.
-
-Fixes: 79df15b7d37c ("soundwire: Add helpers for ports operations")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210618144745.30629-1-rf@opensource.cirrus.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 5e1a1da0f8c9 ("iio: adc: at91-sama5d2_adc: add hw trigger and buffer support")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Eugen Hristev <eugen.hristev@microchip.com>
+Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210613152301.571002-2-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/stream.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/iio/adc/at91-sama5d2_adc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index a418c3c7001c..304ff2ee7d75 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -422,7 +422,6 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	struct completion *port_ready;
- 	struct sdw_dpn_prop *dpn_prop;
- 	struct sdw_prepare_ch prep_ch;
--	unsigned int time_left;
- 	bool intr = false;
- 	int ret = 0, val;
- 	u32 addr;
-@@ -479,15 +478,15 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 
- 		/* Wait for completion on port ready */
- 		port_ready = &s_rt->slave->port_ready[prep_ch.num];
--		time_left = wait_for_completion_timeout(port_ready,
--				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
-+		wait_for_completion_timeout(port_ready,
-+			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
- 
- 		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
--		val &= p_rt->ch_mask;
--		if (!time_left || val) {
-+		if ((val < 0) || (val & p_rt->ch_mask)) {
-+			ret = (val < 0) ? val : -ETIMEDOUT;
- 			dev_err(&s_rt->slave->dev,
--				"Chn prep failed for port:%d\n", prep_ch.num);
--			return -ETIMEDOUT;
-+				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
-+			return ret;
- 		}
- 	}
- 
+diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+index a7826f097b95..d356b515df09 100644
+--- a/drivers/iio/adc/at91-sama5d2_adc.c
++++ b/drivers/iio/adc/at91-sama5d2_adc.c
+@@ -403,7 +403,8 @@ struct at91_adc_state {
+ 	struct at91_adc_dma		dma_st;
+ 	struct at91_adc_touch		touch_st;
+ 	struct iio_dev			*indio_dev;
+-	u16				buffer[AT91_BUFFER_MAX_HWORDS];
++	/* Ensure naturally aligned timestamp */
++	u16				buffer[AT91_BUFFER_MAX_HWORDS] __aligned(8);
+ 	/*
+ 	 * lock to prevent concurrent 'single conversion' requests through
+ 	 * sysfs.
 -- 
 2.30.2
 
