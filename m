@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5683C59C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282F83C59CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350723AbhGLJIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:08:11 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:40922
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350572AbhGLIht (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:37:49 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D9AEB40325;
-        Mon, 12 Jul 2021 08:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626078888;
-        bh=Pzh4dpmLwQ8NXTWOU/AqP/Io9WI9Fmjor6J5jI85EO0=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=SE/XbkgzHSQIP+rm00RAY7rkDNB4P1AZ0BxglE+wU9yj8Bo1qx+U8WoxuE9loYbW2
-         din6bNOnctHusKV5Ts344LcS4cNGjez01//8ZHCU1f9hvo/XNLmUgKiKMpxJjcBJZ3
-         JLzrLV7Bd+R+Oka5aKhnIo/WOeMeGRUgc6V+ZlL5K2hL2pZZqjGLx94AYOjZeoT/qn
-         5xVGvupiXxZ/QKO4I4Tz85TTgiwHY2FK5qjeIIj6czpTYuhFm/901KHU6dp1m/c7vX
-         Om13gXg4ianchA/iOqBhXrWSaiFSN/Sm+7IFnKgx2rKB+dGZ1S+hts0XzrA3kmAVxI
-         vU3nS2OEQ5eiA==
-From:   Colin King <colin.king@canonical.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] perf tools: Fix spelling mistake "falied" -> "failed"
-Date:   Mon, 12 Jul 2021 09:34:48 +0100
-Message-Id: <20210712083448.26317-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S1354440AbhGLJIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:08:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:50646 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1378130AbhGLIkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:40:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B82071FB;
+        Mon, 12 Jul 2021 01:37:28 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.2.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D21A03F694;
+        Mon, 12 Jul 2021 01:37:25 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 09:37:17 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Sam Tebbs <sam.tebbs@arm.com>, Robin Murphy <robin.murphy@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Will Deacon <will@kernel.org>, Marco Elver <elver@google.com>
+Subject: Re: [PATCH] kasan: fix build for CONFIG_KASAN_HW_TAGS
+Message-ID: <20210712083455.GA85732@C02TD0UTHF1T.local>
+References: <20210708144411.25467-1-mark.rutland@arm.com>
+ <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Jul 10, 2021 at 09:16:14PM +0200, Andrey Konovalov wrote:
+> On Thu, Jul 8, 2021 at 4:44 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > When CONFIG_KASAN_HW_TAGS is selected, <linux/kasan.h> uses _RET_IP_,
+> > but doesn't explicitly include <linux/kernel.h> where this is defined.
+> >
+> > We used to get this via a transitive include, but since commit:
+> >
+> >   f39650de687e3576 ("kernel.h: split out panic and oops helpers")
+> >
+> > ... this is no longer the case, and so we get a build failure:
+> >
+> > |   CC      arch/arm64/mm/kasan_init.o
+> > | In file included from arch/arm64/mm/kasan_init.c:10:
+> > | ./include/linux/kasan.h: In function 'kasan_slab_free':
+> > | ./include/linux/kasan.h:211:39: error: '_RET_IP_' undeclared (first use in this function)
+> > |   211 |   return __kasan_slab_free(s, object, _RET_IP_, init);
+> > |       |                                       ^~~~~~~~
+> > | ./include/linux/kasan.h:211:39: note: each undeclared identifier is reported only once for each function it appears in
+> > | ./include/linux/kasan.h: In function 'kasan_kfree_large':
+> > | ./include/linux/kasan.h:219:28: error: '_RET_IP_' undeclared (first use in this function)
+> > |   219 |   __kasan_kfree_large(ptr, _RET_IP_);
+> > |       |                            ^~~~~~~~
+> > | ./include/linux/kasan.h: In function 'kasan_slab_free_mempool':
+> > | ./include/linux/kasan.h:226:34: error: '_RET_IP_' undeclared (first use in this function)
+> > |   226 |   __kasan_slab_free_mempool(ptr, _RET_IP_);
+> > |       |                                  ^~~~~~~~
+> > | ./include/linux/kasan.h: In function 'kasan_check_byte':
+> > | ./include/linux/kasan.h:277:35: error: '_RET_IP_' undeclared (first use in this function)
+> > |   277 |   return __kasan_check_byte(addr, _RET_IP_);
+> > |       |                                   ^~~~~~~~
+> >
+> > Fix this by including <linux/kernel.h> explicitly.
+> 
+> Hi Mark,
+> 
+> Marco already sent a fix for this. It should be in the mm tree.
+> (Although the link to it in the Andrew's notification email doesn't
+> work. But they rarely do :)
+> 
+> > As a heads-up, there are some unrelated runtime issues with
+> > CONFIG_KASAN_HW_TAGS and the recent arm64 string routines rework, which
+> > I'm looking into now. If you boot-test with this applied, you should
+> > expect to see those.
+> 
+> +Sam, +Robin
+> 
+> Looks like the new strlen routine is making accesses past the allocated buffer.
+> 
+> The guilty commit is 325a1de81287 ("arm64: Import updated version of
+> Cortex Strings' strlen").
 
-There is a spelling mistake in a pr_err error message. Fix it.
+FWIW, I already have a fix for this, I'm just cleaning it up and will
+post shortly.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- tools/perf/util/bpf_counter_cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The issue is that the new strlen() will make unaligned 16-byte accesses
+within a naturally-aligned 4096-byte window and over-read by up to 15
+bytes; we can fiddle with its alignment fixup to always align to 16
+bytes when MTE is in use so any over-read is within the same MTE granule
+as the final byte of the string.
 
-diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
-index 89aa5e71db1a..4139b4deee77 100644
---- a/tools/perf/util/bpf_counter_cgroup.c
-+++ b/tools/perf/util/bpf_counter_cgroup.c
-@@ -266,7 +266,7 @@ static int bperf_cgrp__read(struct evsel *evsel)
- 		idx = evsel->core.idx;
- 		err = bpf_map_lookup_elem(reading_map_fd, &idx, values);
- 		if (err) {
--			pr_err("bpf map lookup falied: idx=%u, event=%s, cgrp=%s\n",
-+			pr_err("bpf map lookup failed: idx=%u, event=%s, cgrp=%s\n",
- 			       idx, evsel__name(evsel), evsel->cgrp->name);
- 			goto out;
- 		}
--- 
-2.31.1
+I've checked the other routines, and AFAICT they never make accesses
+which staddle a 16-byte boundary.
 
+Thanks,
+Mark.
