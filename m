@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344C93C4CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC483C5384
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244212AbhGLHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:10:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
+        id S1344859AbhGLHzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235650AbhGLGsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:48:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 011166100B;
-        Mon, 12 Jul 2021 06:44:02 +0000 (UTC)
+        id S239124AbhGLHVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:21:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD52961153;
+        Mon, 12 Jul 2021 07:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072243;
-        bh=c5j3EHFQ1Uz2hO9RdP9Fr7Er0U4ZMMPMDvUCIvdSMgE=;
+        s=korg; t=1626074302;
+        bh=6lGjeoekTz6ys6sJqsXFEGnZmJ/mgkagM0GBlo5Gag4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GOzrsBGcZ3bFdOVYESboEjagv8E8pYcR1jjobeF6Bxhw3gG6ceLM5W4r28s0ReExw
-         AjcO1KIKDP0U9ZjSizH+/XCVmDd19vw6Rm1fq0ZAXZa8WtxwjxyOK3o2N6x7F0GWAi
-         2wfdWU2LYRIf8Lp8VHfiy/L+RCm5F/DoV9WG5LWk=
+        b=2Mlu+E9mnyZMYlvYOAD/+D1xmuXAKc5SWTxO7ys/xztt2Cfjxhh3JXcXMjrCU0eLE
+         BbD6MAkWZLEvx9s5Oc575vtSz38/UkpSy1lqy8wPT6+8KZQhiS7FvNKMUVsOQk353H
+         3ucYjcgED86ckxN+kYrQWzyFO4wGnfhtd8WfKt0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@intel.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Tom Herbert <tom@herbertland.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 414/593] Bluetooth: Fix not sending Set Extended Scan Response
+Subject: [PATCH 5.12 491/700] ipv6: fix out-of-bound access in ip6_parse_tlv()
 Date:   Mon, 12 Jul 2021 08:09:34 +0200
-Message-Id: <20210712060933.575604580@linuxfoundation.org>
+Message-Id: <20210712061028.777846500@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +42,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit a76a0d365077711594ce200a9553ed6d1ff40276 ]
+[ Upstream commit 624085a31c1ad6a80b1e53f686bf6ee92abbf6e8 ]
 
-Current code is actually failing on the following tests of mgmt-tester
-because get_adv_instance_scan_rsp_len did not account for flags that
-cause scan response data to be included resulting in non-scannable
-instance when in fact it should be scannable.
+First problem is that optlen is fetched without checking
+there is more than one byte to parse.
 
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+Fix this by taking care of IPV6_TLV_PAD1 before
+fetching optlen (under appropriate sanity checks against len)
+
+Second problem is that IPV6_TLV_PADN checks of zero
+padding are performed before the check of remaining length.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: c1412fce7ecc ("net/ipv6/exthdrs.c: Strict PadN option checking")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Tom Herbert <tom@herbertland.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_request.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ net/ipv6/exthdrs.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 161ea93a5382..33dc78c24b73 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1060,9 +1060,10 @@ static u8 get_adv_instance_scan_rsp_len(struct hci_dev *hdev, u8 instance)
- 	if (!adv_instance)
- 		return 0;
+diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
+index a9e1d7918d14..6ffa05298cc0 100644
+--- a/net/ipv6/exthdrs.c
++++ b/net/ipv6/exthdrs.c
+@@ -135,18 +135,23 @@ static bool ip6_parse_tlv(const struct tlvtype_proc *procs,
+ 	len -= 2;
  
--	/* TODO: Take into account the "appearance" and "local-name" flags here.
--	 * These are currently being ignored as they are not supported.
--	 */
-+	if (adv_instance->flags & MGMT_ADV_FLAG_APPEARANCE ||
-+	    adv_instance->flags & MGMT_ADV_FLAG_LOCAL_NAME)
-+		return 1;
-+
- 	return adv_instance->scan_rsp_len;
- }
+ 	while (len > 0) {
+-		int optlen = nh[off + 1] + 2;
+-		int i;
++		int optlen, i;
  
-@@ -1599,14 +1600,11 @@ void __hci_req_update_scan_rsp_data(struct hci_request *req, u8 instance)
+-		switch (nh[off]) {
+-		case IPV6_TLV_PAD1:
+-			optlen = 1;
++		if (nh[off] == IPV6_TLV_PAD1) {
+ 			padlen++;
+ 			if (padlen > 7)
+ 				goto bad;
+-			break;
++			off++;
++			len--;
++			continue;
++		}
++		if (len < 2)
++			goto bad;
++		optlen = nh[off + 1] + 2;
++		if (optlen > len)
++			goto bad;
  
- 		memset(&cp, 0, sizeof(cp));
+-		case IPV6_TLV_PADN:
++		if (nh[off] == IPV6_TLV_PADN) {
+ 			/* RFC 2460 states that the purpose of PadN is
+ 			 * to align the containing header to multiples
+ 			 * of 8. 7 is therefore the highest valid value.
+@@ -163,12 +168,7 @@ static bool ip6_parse_tlv(const struct tlvtype_proc *procs,
+ 				if (nh[off + i] != 0)
+ 					goto bad;
+ 			}
+-			break;
+-
+-		default: /* Other TLV code so scan list */
+-			if (optlen > len)
+-				goto bad;
+-
++		} else {
+ 			tlv_count++;
+ 			if (tlv_count > max_count)
+ 				goto bad;
+@@ -188,7 +188,6 @@ static bool ip6_parse_tlv(const struct tlvtype_proc *procs,
+ 				return false;
  
--		/* Extended scan response data doesn't allow a response to be
--		 * set if the instance isn't scannable.
--		 */
--		if (get_adv_instance_scan_rsp_len(hdev, instance))
-+		if (instance)
- 			len = create_instance_scan_rsp_data(hdev, instance,
- 							    cp.data);
- 		else
--			len = 0;
-+			len = create_default_scan_rsp_data(hdev, cp.data);
- 
- 		if (hdev->scan_rsp_data_len == len &&
- 		    !memcmp(cp.data, hdev->scan_rsp_data, len))
+ 			padlen = 0;
+-			break;
+ 		}
+ 		off += optlen;
+ 		len -= optlen;
 -- 
 2.30.2
 
