@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B39F3C52C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C6C3C4B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347343AbhGLHte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
+        id S241598AbhGLG6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243012AbhGLHPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:15:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6064C613F5;
-        Mon, 12 Jul 2021 07:11:43 +0000 (UTC)
+        id S238669AbhGLGlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:41:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D63661166;
+        Mon, 12 Jul 2021 06:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073903;
-        bh=pMyYFDtfX5GiJ4MJlfvITZ+k3OY0N/qMEdULP036w3M=;
+        s=korg; t=1626071927;
+        bh=3MAqpF/9SWuEGiSjf2Mm6Jmve9x6pUdqIRnr5vEv3Ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o70JatFRmULYjD4zhCRDD3PGTw7RdzxCI4hReIb2qs7EEKD5IqSTv4IuiftJCv0Vk
-         hQfxEd6lXMBsTFs5WllfCNGJsjEBb8QSKWA7GHYSqaxjSpDsAm/0zCd8lXuF5fiObD
-         uMzysSxmSKmRRoglCArOFXvhCii5EjkfW1OKfPww=
+        b=RTPnhxcv5LAk5ZiIA28nVoMCsPFWEVpVzZLWkQJbpQ9iWgLumYPDPYHvmjVoTrGgX
+         5OGctOeyGIRYrNwl1YjUtFojPeRA4/raHt/n/jwQ0A9O24MT1RfFIeU70YpyGFVTMy
+         bE8rBEzSI7z+AuZeai4aEg6824LDF6D0y2OPAC2I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 355/700] drm/ast: Fix missing conversions to managed API
-Date:   Mon, 12 Jul 2021 08:07:18 +0200
-Message-Id: <20210712061014.125858181@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 279/593] mark pstore-blk as broken
+Date:   Mon, 12 Jul 2021 08:07:19 +0200
+Message-Id: <20210712060914.729174211@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 9ea172a9a3f4a7c5e876469509fc18ddefc7d49d ]
+[ Upstream commit d07f3b081ee632268786601f55e1334d1f68b997 ]
 
-The commit 7cbb93d89838 ("drm/ast: Use managed pci functions")
-converted a few PCI accessors to the managed API and dropped the
-manual pci_iounmap() calls, but it seems to have forgotten converting
-pci_iomap() to the managed one.  It resulted in the leftover resources
-after the driver unbind.  Let's fix them.
+pstore-blk just pokes directly into the pagecache for the block
+device without going through the file operations for that by faking
+up it's own file operations that do not match the block device ones.
 
-Fixes: 7cbb93d89838 ("drm/ast: Use managed pci functions")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210421170458.21178-1-tiwai@suse.de
+As this breaks the control of the block layer of it's page cache,
+and even now just works by accident only the best thing is to just
+disable this driver.
+
+Fixes: 17639f67c1d6 ("pstore/blk: Introduce backend for block devices")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210608161327.1537919-1-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ast/ast_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/pstore/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index 0ac3c2039c4b..c29cc7f19863 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -413,7 +413,7 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
- 
- 	pci_set_drvdata(pdev, dev);
- 
--	ast->regs = pci_iomap(pdev, 1, 0);
-+	ast->regs = pcim_iomap(pdev, 1, 0);
- 	if (!ast->regs)
- 		return ERR_PTR(-EIO);
- 
-@@ -429,7 +429,7 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
- 
- 	/* "map" IO regs if the above hasn't done so already */
- 	if (!ast->ioregs) {
--		ast->ioregs = pci_iomap(pdev, 2, 0);
-+		ast->ioregs = pcim_iomap(pdev, 2, 0);
- 		if (!ast->ioregs)
- 			return ERR_PTR(-EIO);
- 	}
+diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+index e16a49ebfe54..8efe60487b48 100644
+--- a/fs/pstore/Kconfig
++++ b/fs/pstore/Kconfig
+@@ -165,6 +165,7 @@ config PSTORE_BLK
+ 	tristate "Log panic/oops to a block device"
+ 	depends on PSTORE
+ 	depends on BLOCK
++	depends on BROKEN
+ 	select PSTORE_ZONE
+ 	default n
+ 	help
 -- 
 2.30.2
 
