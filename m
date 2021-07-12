@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412AC3C4A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF35A3C5791
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239705AbhGLGt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
+        id S1377207AbhGLIfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238236AbhGLGkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A60DB6113C;
-        Mon, 12 Jul 2021 06:36:37 +0000 (UTC)
+        id S1346591AbhGLHsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A685F61432;
+        Mon, 12 Jul 2021 07:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071798;
-        bh=guxg2+eufG9UDUPphOeUcEP+twLiF/YRaELhSaqYqzw=;
+        s=korg; t=1626075780;
+        bh=+iO7CxnzvqzVAeUkTGfv6Xxx3DoJ7K22SSdc+7/GvIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5qdKua/CEF0X0KEuXKAHVacE/3ZWeFy5dElTNQ6jDTvUnsPahn6/f8/iO6L+XYmQ
-         1FN20s8LX2zVVZW+vw8lvZOdvL9KJwhRKcoxP8DWbm5IkNT2SqM1S2m5FFlhgKKmrJ
-         86w71/C622gszWOQxYSSxSr3rRJEoBwnM/gqoEVA=
+        b=Fyq7cWiSd++38u0S2G+pdXG9ovea+X4qutwLNHZP+xODX1an5xCSwSqCgHIO87oyT
+         ZG+Ty4t2eI5JW+U3AaDxtdMiGvhLfDOyYyzNV4i30S22bUfS448IXQP05ElzmfbwwG
+         4HEqZF5OoYj2wKeeK1cz76jAx/pTeVen433evX3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 224/593] evm: fix writing <securityfs>/evm overflow
+Subject: [PATCH 5.13 361/800] ACPI: tables: FPDT: Add missing acpi_put_table() in acpi_init_fpdt()
 Date:   Mon, 12 Jul 2021 08:06:24 +0200
-Message-Id: <20210712060907.586591539@linuxfoundation.org>
+Message-Id: <20210712061005.496720204@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mimi Zohar <zohar@linux.ibm.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 49219d9b8785ba712575c40e48ce0f7461254626 ]
+[ Upstream commit dd9eaa23e72572d4f1c03f2e5d2e14a5b5793e79 ]
 
-EVM_SETUP_COMPLETE is defined as 0x80000000, which is larger than INT_MAX.
-The "-fno-strict-overflow" compiler option properly prevents signaling
-EVM that the EVM policy setup is complete.  Define and read an unsigned
-int.
+acpi_init_fpdt() forgets to call acpi_put_table() in an error path.
 
-Fixes: f00d79750712 ("EVM: Allow userspace to signal an RSA key has been loaded")
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Add the missing function call to fix it.
+
+Fixes: d1eb86e59be0 ("ACPI: tables: introduce support for FPDT table")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Acked-by: Zhang Rui <rui.zhang@intel.com>
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/evm/evm_secfs.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/acpi/acpi_fpdt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/security/integrity/evm/evm_secfs.c b/security/integrity/evm/evm_secfs.c
-index a7042ae90b9e..bc10c945f3ed 100644
---- a/security/integrity/evm/evm_secfs.c
-+++ b/security/integrity/evm/evm_secfs.c
-@@ -66,12 +66,13 @@ static ssize_t evm_read_key(struct file *filp, char __user *buf,
- static ssize_t evm_write_key(struct file *file, const char __user *buf,
- 			     size_t count, loff_t *ppos)
- {
--	int i, ret;
-+	unsigned int i;
-+	int ret;
+diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
+index a89a806a7a2a..4ee2ad234e3d 100644
+--- a/drivers/acpi/acpi_fpdt.c
++++ b/drivers/acpi/acpi_fpdt.c
+@@ -240,8 +240,10 @@ static int __init acpi_init_fpdt(void)
+ 		return 0;
  
- 	if (!capable(CAP_SYS_ADMIN) || (evm_initialized & EVM_SETUP_COMPLETE))
- 		return -EPERM;
+ 	fpdt_kobj = kobject_create_and_add("fpdt", acpi_kobj);
+-	if (!fpdt_kobj)
++	if (!fpdt_kobj) {
++		acpi_put_table(header);
+ 		return -ENOMEM;
++	}
  
--	ret = kstrtoint_from_user(buf, count, 0, &i);
-+	ret = kstrtouint_from_user(buf, count, 0, &i);
- 
- 	if (ret)
- 		return ret;
+ 	while (offset < header->length) {
+ 		subtable = (void *)header + offset;
 -- 
 2.30.2
 
