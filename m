@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6554D3C49A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206D13C56CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhGLGp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
+        id S1356556AbhGLIYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:24:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236658AbhGLGfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F408611C0;
-        Mon, 12 Jul 2021 06:32:20 +0000 (UTC)
+        id S1347860AbhGLHkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E20161920;
+        Mon, 12 Jul 2021 07:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071541;
-        bh=NUozkwmHPh6gfRjEmtU3I+0oeJFHpmWF6sODACJ4GiQ=;
+        s=korg; t=1626075391;
+        bh=mwyT0CnTFy0k8PpQGR1TNJY0zisSRYQ8wl4PXiE2MaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XNfpECHvLoTHXWzTdaq3sg1gtllAxRir/I5B29BiN3roajs4PigRqOTn+ej6lCDI0
-         GvSjRIR5Ak9ZfEBc7U6JP//CNiLVfvPqNFWZepFMMn5qUcwj4GekRmXdwCZou80kgQ
-         CrF/I0PXJ0FQpEqNknwNV6GjqCAQFe9NNW67KDug=
+        b=Ih/hw4CRrgg8Vqv8LSSw1I3zHM4SStSs82rFNXGtx8lUEZe5GUpK1TyWCY3LP8dQz
+         sx++5Tvl79A4jW0g3l9AIdDcSRJLU46jKE7tndYkt/sDyYpoiJ+Ab8zax364vzQZgg
+         PDxtFIWmzPeumcpHEP6MGSbniIaP33QkQ0mfWfcc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 061/593] KVM: nVMX: Handle split-lock #AC exceptions that happen in L2
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 198/800] btrfs: sysfs: fix format string for some discard stats
 Date:   Mon, 12 Jul 2021 08:03:41 +0200
-Message-Id: <20210712060849.878415750@linuxfoundation.org>
+Message-Id: <20210712060941.066380457@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: David Sterba <dsterba@suse.com>
 
-commit b33bb78a1fada6445c265c585ee0dd0fc6279102 upstream.
+[ Upstream commit 8c5ec995616f1202ab92e195fd75d6f60d86f85c ]
 
-Mark #ACs that won't be reinjected to the guest as wanted by L0 so that
-KVM handles split-lock #AC from L2 instead of forwarding the exception to
-L1.  Split-lock #AC isn't yet virtualized, i.e. L1 will treat it like a
-regular #AC and do the wrong thing, e.g. reinject it into L2.
+The type of discard_bitmap_bytes and discard_extent_bytes is u64 so the
+format should be %llu, though the actual values would hardly ever
+overflow to negative values.
 
-Fixes: e6f8b6c12f03 ("KVM: VMX: Extend VMXs #AC interceptor to handle split lock #AC in guest")
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210622172244.3561540-1-seanjc@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/vmx/nested.c |    3 +++
- arch/x86/kvm/vmx/vmcs.h   |    5 +++++
- arch/x86/kvm/vmx/vmx.c    |    4 ++--
- arch/x86/kvm/vmx/vmx.h    |    1 +
- 4 files changed, 11 insertions(+), 2 deletions(-)
+ fs/btrfs/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5787,6 +5787,9 @@ static bool nested_vmx_l0_wants_exit(str
- 		else if (is_breakpoint(intr_info) &&
- 			 vcpu->guest_debug & KVM_GUESTDBG_USE_SW_BP)
- 			return true;
-+		else if (is_alignment_check(intr_info) &&
-+			 !vmx_guest_inject_ac(vcpu))
-+			return true;
- 		return false;
- 	case EXIT_REASON_EXTERNAL_INTERRUPT:
- 		return true;
---- a/arch/x86/kvm/vmx/vmcs.h
-+++ b/arch/x86/kvm/vmx/vmcs.h
-@@ -117,6 +117,11 @@ static inline bool is_gp_fault(u32 intr_
- 	return is_exception_n(intr_info, GP_VECTOR);
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 436ac7b4b334..4f5b14cd3a19 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -429,7 +429,7 @@ static ssize_t btrfs_discard_bitmap_bytes_show(struct kobject *kobj,
+ {
+ 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%lld\n",
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
+ 			fs_info->discard_ctl.discard_bitmap_bytes);
  }
- 
-+static inline bool is_alignment_check(u32 intr_info)
-+{
-+	return is_exception_n(intr_info, AC_VECTOR);
-+}
-+
- static inline bool is_machine_check(u32 intr_info)
+ BTRFS_ATTR(discard, discard_bitmap_bytes, btrfs_discard_bitmap_bytes_show);
+@@ -451,7 +451,7 @@ static ssize_t btrfs_discard_extent_bytes_show(struct kobject *kobj,
  {
- 	return is_exception_n(intr_info, MC_VECTOR);
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4755,7 +4755,7 @@ static int handle_machine_check(struct k
-  *  - Guest has #AC detection enabled in CR0
-  *  - Guest EFLAGS has AC bit set
-  */
--static inline bool guest_inject_ac(struct kvm_vcpu *vcpu)
-+bool vmx_guest_inject_ac(struct kvm_vcpu *vcpu)
- {
- 	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
- 		return true;
-@@ -4864,7 +4864,7 @@ static int handle_exception_nmi(struct k
- 		kvm_run->debug.arch.exception = ex_no;
- 		break;
- 	case AC_VECTOR:
--		if (guest_inject_ac(vcpu)) {
-+		if (vmx_guest_inject_ac(vcpu)) {
- 			kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
- 			return 1;
- 		}
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -352,6 +352,7 @@ void vmx_set_segment(struct kvm_vcpu *vc
- u64 construct_eptp(struct kvm_vcpu *vcpu, unsigned long root_hpa,
- 		   int root_level);
+ 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
  
-+bool vmx_guest_inject_ac(struct kvm_vcpu *vcpu);
- void update_exception_bitmap(struct kvm_vcpu *vcpu);
- void vmx_update_msr_bitmap(struct kvm_vcpu *vcpu);
- bool vmx_nmi_blocked(struct kvm_vcpu *vcpu);
+-	return scnprintf(buf, PAGE_SIZE, "%lld\n",
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
+ 			fs_info->discard_ctl.discard_extent_bytes);
+ }
+ BTRFS_ATTR(discard, discard_extent_bytes, btrfs_discard_extent_bytes_show);
+-- 
+2.30.2
+
 
 
