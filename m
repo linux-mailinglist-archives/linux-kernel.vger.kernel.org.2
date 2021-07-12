@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7473C4C70
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CAE3C52FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242957AbhGLHES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41504 "EHLO mail.kernel.org"
+        id S1351389AbhGLHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238040AbhGLGqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:46:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E4FA6121E;
-        Mon, 12 Jul 2021 06:42:26 +0000 (UTC)
+        id S243745AbhGLHRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:17:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E951D6144A;
+        Mon, 12 Jul 2021 07:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072147;
-        bh=ofC5oRRWzFCiyWfMVsYGmrP6k09mpDAOH7LMQNqNYVI=;
+        s=korg; t=1626074054;
+        bh=kaSrO8KpwTQKzLA0ep5KvQOP/dnweXGHzYOP5oDS/Z8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hv3K5qiq0pyGFOKbI+2ae26NkD6YTdCJRbJoYxI+WrIfCLXrXDQKcVImYqPjGkjJA
-         eRPbg+Gpnv+3Ah3WV+jiVeMSG0RqIklz/9d6O78NAK/yuhHvZtqF8NGpMVvjgO5c9Q
-         rgXPW3oQRjeX3JPZfehWVOAPm2aeghf6ZkB0coYg=
+        b=m0OUAGS9V9lSaZRDZumrqej3KY4Mwcr5yMditOgAZM/d2MYYBusymc/JF6KGcIxJD
+         h9M/QZ8LUZUTomYw8TfgPoCFp1oMY3qaad3mvEb+g8zeZWlt5B7i8/DsQJOuBcWMAo
+         589+KMGFz6DXXxj8Zb3W3AvRkdvCcj09LMYOKrKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Suryaputra <ssuryaextr@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
+        stable@vger.kernel.org, Eldar Gasanov <eldargasanov2@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 373/593] vrf: do not push non-ND strict packets with a source LLA through packet taps again
+Subject: [PATCH 5.12 450/700] net: dsa: mv88e6xxx: Fix adding vlan 0
 Date:   Mon, 12 Jul 2021 08:08:53 +0200
-Message-Id: <20210712060927.799307114@linuxfoundation.org>
+Message-Id: <20210712061024.427118567@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Eldar Gasanov <eldargasanov2@gmail.com>
 
-[ Upstream commit 603113c514e95c3350598bc3cccbd03af7ea4ab2 ]
+[ Upstream commit b8b79c414eca4e9bcab645e02cb92c48db974ce9 ]
 
-Non-ND strict packets with a source LLA go through the packet taps
-again, while non-ND strict packets with other source addresses do not,
-and we can see a clone of those packets on the vrf interface (we should
-not). This is due to a series of changes:
+8021q module adds vlan 0 to all interfaces when it starts.
+When 8021q module is loaded it isn't possible to create bond
+with mv88e6xxx interfaces, bonding module dipslay error
+"Couldn't add bond vlan ids", because it tries to add vlan 0
+to slave interfaces.
 
-Commit 6f12fa775530[1] made non-ND strict packets not being pushed again
-in the packet taps. This changed with commit 205704c618af[2] for those
-packets having a source LLA, as they need a lookup with the orig_iif.
+There is unexpected behavior in the switch. When a PVID
+is assigned to a port the switch changes VID to PVID
+in ingress frames with VID 0 on the port. Expected
+that the switch doesn't assign PVID to tagged frames
+with VID 0. But there isn't a way to change this behavior
+in the switch.
 
-The issue now is those packets do not skip the 'vrf_ip6_rcv' function to
-the end (as the ones without a source LLA) and go through the check to
-call packet taps again. This check was changed by commit 6f12fa775530[1]
-and do not exclude non-strict packets anymore. Packets matching
-'need_strict && !is_ndisc && is_ll_src' are now being sent through the
-packet taps again. This can be seen by dumping packets on the vrf
-interface.
-
-Fix this by having the same code path for all non-ND strict packets and
-selectively lookup with the orig_iif for those with a source LLA. This
-has the effect to revert to the pre-205704c618af[2] condition, which
-should also be easier to maintain.
-
-[1] 6f12fa775530 ("vrf: mark skb for multicast or link-local as enslaved to VRF")
-[2] 205704c618af ("vrf: packets with lladdr src needs dst at input with orig_iif when needs strict")
-
-Fixes: 205704c618af ("vrf: packets with lladdr src needs dst at input with orig_iif when needs strict")
-Cc: Stephen Suryaputra <ssuryaextr@gmail.com>
-Reported-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Fixes: 57e661aae6a8 ("net: dsa: mv88e6xxx: Link aggregation support")
+Signed-off-by: Eldar Gasanov <eldargasanov2@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vrf.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/dsa/mv88e6xxx/chip.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
-index bc96ac0c5769..2746f77745e4 100644
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -1312,22 +1312,22 @@ static struct sk_buff *vrf_ip6_rcv(struct net_device *vrf_dev,
- 	int orig_iif = skb->skb_iif;
- 	bool need_strict = rt6_need_strict(&ipv6_hdr(skb)->daddr);
- 	bool is_ndisc = ipv6_ndisc_frame(skb);
--	bool is_ll_src;
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index e08bf9377140..25363fceb45e 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -1552,9 +1552,6 @@ static int mv88e6xxx_port_check_hw_vlan(struct dsa_switch *ds, int port,
+ 	struct mv88e6xxx_vtu_entry vlan;
+ 	int i, err;
  
- 	/* loopback, multicast & non-ND link-local traffic; do not push through
- 	 * packet taps again. Reset pkt_type for upper layers to process skb.
--	 * for packets with lladdr src, however, skip so that the dst can be
--	 * determine at input using original ifindex in the case that daddr
--	 * needs strict
-+	 * For strict packets with a source LLA, determine the dst using the
-+	 * original ifindex.
- 	 */
--	is_ll_src = ipv6_addr_type(&ipv6_hdr(skb)->saddr) & IPV6_ADDR_LINKLOCAL;
--	if (skb->pkt_type == PACKET_LOOPBACK ||
--	    (need_strict && !is_ndisc && !is_ll_src)) {
-+	if (skb->pkt_type == PACKET_LOOPBACK || (need_strict && !is_ndisc)) {
- 		skb->dev = vrf_dev;
- 		skb->skb_iif = vrf_dev->ifindex;
- 		IP6CB(skb)->flags |= IP6SKB_L3SLAVE;
-+
- 		if (skb->pkt_type == PACKET_LOOPBACK)
- 			skb->pkt_type = PACKET_HOST;
-+		else if (ipv6_addr_type(&ipv6_hdr(skb)->saddr) & IPV6_ADDR_LINKLOCAL)
-+			vrf_ip6_input_dst(skb, vrf_dev, orig_iif);
-+
- 		goto out;
- 	}
+-	if (!vid)
+-		return -EOPNOTSUPP;
+-
+ 	/* DSA and CPU ports have to be members of multiple vlans */
+ 	if (dsa_is_dsa_port(ds, port) || dsa_is_cpu_port(ds, port))
+ 		return 0;
+@@ -1993,6 +1990,9 @@ static int mv88e6xxx_port_vlan_add(struct dsa_switch *ds, int port,
+ 	u8 member;
+ 	int err;
  
++	if (!vlan->vid)
++		return 0;
++
+ 	err = mv88e6xxx_port_vlan_prepare(ds, port, vlan);
+ 	if (err)
+ 		return err;
 -- 
 2.30.2
 
