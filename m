@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615873C4F6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558DD3C4F0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239720AbhGLHZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:25:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33600 "EHLO mail.kernel.org"
+        id S242380AbhGLHW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240507AbhGLG6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:58:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56BFF613E8;
-        Mon, 12 Jul 2021 06:56:02 +0000 (UTC)
+        id S238138AbhGLG4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:56:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C6F9613D8;
+        Mon, 12 Jul 2021 06:53:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072962;
-        bh=mN06SF4VSjSXGXyu6dP0YwqQ3pJaEq3g/1y+qp+mK4E=;
+        s=korg; t=1626072835;
+        bh=T514FKVQHpdtGynVP9Rb6yceVV44jJ/7xXUG8NIatSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KEs3X2oiJ5YdnP+J+21A+N7QmxJ3XScbzCwPjVTzlU/y/tC/kY0JfBObsqoVshga9
-         WHh9GOActKILvCVZXA9g1opAJdH4l/qBMjQseqmtLZGcdL2WiF1TxoRs0RvP8jLMaG
-         lBrONd2o2WNA5hs/EFUxrOGmkA+CjuD2pAuMIsj4=
+        b=Jww5lTLunfCRJZ+7zSa3du19gtgwUpcAY/+TuGpN2pVUZUwNL6iGlZQBw9KLB2oXB
+         uf8V/Q+AsvTmfsIeDfOGjEaVExT51AFK/qdWdvPNLIcSS0Wzjo8dz2HifdzJxIp6X4
+         eeyqOdOZOEcB2BSrdUtihguygjKxAAE3d6oHTh7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Murray McAllister <murray.mcallister@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Larkin <avlarkin82@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.12 037/700] Input: joydev - prevent use of not validated data in JSIOCSBTNMAP ioctl
-Date:   Mon, 12 Jul 2021 08:02:00 +0200
-Message-Id: <20210712060929.863410542@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.12 038/700] crypto: nx - Fix memcpy() over-reading in nonce
+Date:   Mon, 12 Jul 2021 08:02:01 +0200
+Message-Id: <20210712060930.019694796@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -42,54 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Larkin <avlarkin82@gmail.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit f8f84af5da9ee04ef1d271528656dac42a090d00 upstream.
+commit 74c66120fda6596ad57f41e1607b3a5d51ca143d upstream.
 
-Even though we validate user-provided inputs we then traverse past
-validated data when applying the new map. The issue was originally
-discovered by Murray McAllister with this simple POC (if the following
-is executed by an unprivileged user it will instantly panic the system):
+Fix typo in memcpy() where size should be CTR_RFC3686_NONCE_SIZE.
 
-int main(void) {
-	int fd, ret;
-	unsigned int buffer[10000];
-
-	fd = open("/dev/input/js0", O_RDONLY);
-	if (fd == -1)
-		printf("Error opening file\n");
-
-	ret = ioctl(fd, JSIOCSBTNMAP & ~IOCSIZE_MASK, &buffer);
-	printf("%d\n", ret);
-}
-
-The solution is to traverse internal buffer which is guaranteed to only
-contain valid date when constructing the map.
-
-Fixes: 182d679b2298 ("Input: joydev - prevent potential read overflow in ioctl")
-Fixes: 999b874f4aa3 ("Input: joydev - validate axis/button maps before clobbering current ones")
-Reported-by: Murray McAllister <murray.mcallister@gmail.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Alexander Larkin <avlarkin82@gmail.com>
-Link: https://lore.kernel.org/r/20210620120030.1513655-1-avlarkin82@gmail.com
+Fixes: 030f4e968741 ("crypto: nx - Fix reentrancy bugs")
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/joydev.c |    2 +-
+ drivers/crypto/nx/nx-aes-ctr.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/input/joydev.c
-+++ b/drivers/input/joydev.c
-@@ -499,7 +499,7 @@ static int joydev_handle_JSIOCSBTNMAP(st
- 	memcpy(joydev->keypam, keypam, len);
+--- a/drivers/crypto/nx/nx-aes-ctr.c
++++ b/drivers/crypto/nx/nx-aes-ctr.c
+@@ -118,7 +118,7 @@ static int ctr3686_aes_nx_crypt(struct s
+ 	struct nx_crypto_ctx *nx_ctx = crypto_skcipher_ctx(tfm);
+ 	u8 iv[16];
  
- 	for (i = 0; i < joydev->nkey; i++)
--		joydev->keymap[keypam[i] - BTN_MISC] = i;
-+		joydev->keymap[joydev->keypam[i] - BTN_MISC] = i;
- 
-  out:
- 	kfree(keypam);
+-	memcpy(iv, nx_ctx->priv.ctr.nonce, CTR_RFC3686_IV_SIZE);
++	memcpy(iv, nx_ctx->priv.ctr.nonce, CTR_RFC3686_NONCE_SIZE);
+ 	memcpy(iv + CTR_RFC3686_NONCE_SIZE, req->iv, CTR_RFC3686_IV_SIZE);
+ 	iv[12] = iv[13] = iv[14] = 0;
+ 	iv[15] = 1;
 
 
