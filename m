@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029EC3C64F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7BC3C6517
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbhGLUaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:30:01 -0400
-Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:50073 "EHLO
-        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234982AbhGLUaA (ORCPT
+        id S233414AbhGLUsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230058AbhGLUsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:30:00 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id 87ea98c9-e34f-11eb-ba24-005056bd6ce9;
-        Mon, 12 Jul 2021 23:27:10 +0300 (EEST)
-Date:   Mon, 12 Jul 2021 23:27:08 +0300
-From:   andy@surfacebook.localdomain
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Mon, 12 Jul 2021 16:48:40 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E30DC0613DD;
+        Mon, 12 Jul 2021 13:45:51 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id s15so29915945edt.13;
+        Mon, 12 Jul 2021 13:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=dDg6dKdVLJtJjWTE5YR4R8BahCCcS2EwH/pICn0zM0g=;
+        b=VvA9gF1cQzfsFJJuZw2k6deH0TrKgAqzG7Lh3UsbcHfVdGVULX6QCCBcDJkyEzUz6S
+         4M0lhD/f0O3zOV/qW/FH+AdiIPmjmsUduCXl6hYUHdp0jGxO78/bsxoJe7yL4u47uXAT
+         tIbgGLcdyJo2USYyUEiAAC42fyPLUXRMCVa3JkgqjQ4V0cgkjc3wrkDUPdEYzp64M1/4
+         kW+QcOi3Npa4jrni6tUvOEtIWOGIx/uQf0sSsamDOx8HwRbNEELxMo2PCR1eJWjfQjNo
+         XuctAP+IH3aZE96KMW8ZiFzNDr+Jwl7oANfweKQq9/jpchIKc9rys4gkFmtEyMKvWiCa
+         /JgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=dDg6dKdVLJtJjWTE5YR4R8BahCCcS2EwH/pICn0zM0g=;
+        b=uFRD2yGrsEjFTeQcKxAHvGrQId5fahUUNMCTUEIS54Y9YO9NtJ17PuLB7GqSxBOYhl
+         S9eSbrf16awof7Vq3R75Bx3OYEF1YF3rL/4KMHa9BqlYbRalgtHajgEikwLTnyUvV7qc
+         grLoB27GuPQVSXCmupMypWXEh3gxzNuJjJsJs9sPxjkTM0qDmpVAw35NDbj7QMxptw0l
+         53g5z6DOf1/OSeMB2W6lx2F8OvuDVY+q7dQHVGgmAN+IRj0p0PYL9HsA9pnVNeXaJtYa
+         yfoG0Yd7Ml1FkThjGvYFq0WVkh9bN3F76DAmADrJtdjrwSoEMyvkaPgihx43SUTjepd3
+         8TpA==
+X-Gm-Message-State: AOAM531aXxX44/AaSt1SXpNE/RzAbLYsTacBv1aeNiD7/7Fo+LtCnWxE
+        XvKxD6bqtu0eJ/3Ba7PDdZ8=
+X-Google-Smtp-Source: ABdhPJxTE8FRlr/SGGLVlQazu5h0rWf2qLy5L/iBr8vz6rqGAo+osxrbvsDwkpP/yPqJf49D1JCo5Q==
+X-Received: by 2002:aa7:d5c8:: with SMTP id d8mr882407eds.165.1626122750086;
+        Mon, 12 Jul 2021 13:45:50 -0700 (PDT)
+Received: from pc ([196.235.212.194])
+        by smtp.gmail.com with ESMTPSA id p26sm6814303ejd.80.2021.07.12.13.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 13:45:49 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 21:45:46 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     haren@us.ibm.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
-Message-ID: <YOylnHudkwcHHEeZ@surfacebook.localdomain>
-References: <20210511151955.28071-1-vigneshr@ti.com>
- <YJ008MjjewRUTn9Z@kroah.com>
- <YLCCJzkkB4N7LTQS@atomide.com>
- <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
- <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
- <56c5d73f-741c-2643-1c79-6dc13ebb05c7@ti.com>
+Subject: [PATCH] replace if with min
+Message-ID: <20210712204546.GA1492390@pc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56c5d73f-741c-2643-1c79-6dc13ebb05c7@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Jun 22, 2021 at 11:53:38AM +0530, Vignesh Raghavendra kirjoitti:
-> On 6/22/21 11:45 AM, Jan Kiszka wrote:
-> >>> Vignesh, it seems this quirk needs some soc specific flag added to
-> >>> it maybe? Or maybe UART_OMAP_RX_LVL register is not available for
-> >>> all the SoCs?
-> >>>
-> >> Yes indeed :(
-> >>
-> >>> I think it's best to drop this patch until the issues are resolved,
-> >>> also there are some open comments above that might be answered by
-> >>> limiting this quirk to a specific range of SoCs :)
-> >>>
-> >> Oops, I did test patch AM33xx assuming its equivalent to OMAP3, but UART
-> >> IP is quite different. I will respin the patch making sure, workaround
-> >> applies only to AM65x and K3 SoCs.
-> >>
-> >> Regards
-> >> Vignesh
-> >>
-> > What's the status here for AM65x? The issue remains present on that
-> > platform, and I was hoping to see a quick follow up that limit the fix
-> > to that target.
-> 
-> Sorry for the delay, I am trying to find which other TI SoCs are
-> affected by this issue. But that exercise will need a bit more time.
-> Will send a fix to address K3 SoCs like AM65x today/tomo.
+Replace if with min in order to make code more clean.
 
-This all reminds me the very similar issue one found on Intel integrated
-(Synopsys DesignWare based) UARTs:
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/crypto/nx/nx-842.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-https://lore.kernel.org/linux-serial/20170206233000.3021-1-dianders@chromium.org/
-https://lore.kernel.org/linux-serial/1440015124-28393-1-git-send-email-california.l.sullivan@intel.com/
-
+diff --git a/drivers/crypto/nx/nx-842.c b/drivers/crypto/nx/nx-842.c
+index 2ab90ec10e61..0d1d5a463899 100644
+--- a/drivers/crypto/nx/nx-842.c
++++ b/drivers/crypto/nx/nx-842.c
+@@ -134,8 +134,7 @@ EXPORT_SYMBOL_GPL(nx842_crypto_exit);
+ static void check_constraints(struct nx842_constraints *c)
+ {
+ 	/* limit maximum, to always have enough bounce buffer to decompress */
+-	if (c->maximum > BOUNCE_BUFFER_SIZE)
+-		c->maximum = BOUNCE_BUFFER_SIZE;
++	c->maximum = min(c->maximum, BOUNCE_BUFFER_SIZE);
+ }
+ 
+ static int nx842_crypto_add_header(struct nx842_crypto_header *hdr, u8 *buf)
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
