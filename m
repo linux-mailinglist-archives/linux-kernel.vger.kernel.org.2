@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAF93C5179
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AD13C5825
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348830AbhGLHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
+        id S1379149AbhGLIl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244345AbhGLHKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89C7F6052B;
-        Mon, 12 Jul 2021 07:07:50 +0000 (UTC)
+        id S1350316AbhGLHuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22E7561156;
+        Mon, 12 Jul 2021 07:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073670;
-        bh=ONwR6GIp6AWuHc/W2qm3Dsm3wMyhQ7b21oIuAaqXs3U=;
+        s=korg; t=1626075866;
+        bh=J8Lax/qMhCGjjnv9auOhYqqKP3CYUBLakkVskLSN72w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o84rBMCA/uwOlKI6YThWJ0/xbta2mfCnlUDCvnFOad0Og1+Ylwg0CGIsy5alhhIMf
-         m41qsb+DrnkgP4FEUy/3lEovWHnIn6g/Mv3hzNKNSHvcH4NzEPl5Wxn8Y9/qzwJr5F
-         mw+QKUudwM/ecMpHmv39oJcIFNGqJ3XXR7EeG7QQ=
+        b=X3g8EN8hvHTcxMEUXoO+nOaZnyEMjOmB0Tkwyz4zcqsXFKSGXlSbvX1RNAe1NBXJW
+         Ql+WkuvrqRqQoMTvbLvmZ36gUg6otKxfRQpcfo8lqecTrJzAqWOHQF/1RpKWcKavwN
+         1ruxrdheTQBGJNFPD5wmzpmU5YZTwEDnrYz1Izjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 321/700] media: mtk-vpu: on suspend, read/write regs only if vpu is running
+Subject: [PATCH 5.13 381/800] dax: fix ENOMEM handling in grab_mapping_entry()
 Date:   Mon, 12 Jul 2021 08:06:44 +0200
-Message-Id: <20210712061010.533722194@linuxfoundation.org>
+Message-Id: <20210712061007.685137743@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 11420749c6b4b237361750de3d5b5579175f8622 ]
+[ Upstream commit 1a14e3779dd58c16b30e56558146e5cc850ba8b0 ]
 
-If the vpu is not running, we should not rely on VPU_IDLE_REG
-value. In this case, the suspend cb should only unprepare the
-clock. This fixes a system-wide suspend to ram failure:
+grab_mapping_entry() has a bug in handling of ENOMEM condition.  Suppose
+we have a PMD entry at index i which we are downgrading to a PTE entry.
+grab_mapping_entry() will set pmd_downgrade to true, lock the entry, clear
+the entry in xarray, and decrement mapping->nrpages.  The it will call:
 
-[  273.073363] PM: suspend entry (deep)
-[  273.410502] mtk-msdc 11230000.mmc: phase: [map:ffffffff] [maxlen:32] [final:10]
-[  273.455926] Filesystems sync: 0.378 seconds
-[  273.589707] Freezing user space processes ... (elapsed 0.003 seconds) done.
-[  273.600104] OOM killer disabled.
-[  273.603409] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-[  273.613361] mwifiex_sdio mmc2:0001:1: None of the WOWLAN triggers enabled
-[  274.784952] mtk_vpu 10020000.vpu: vpu idle timeout
-[  274.789764] PM: dpm_run_callback(): platform_pm_suspend+0x0/0x70 returns -5
-[  274.796740] mtk_vpu 10020000.vpu: PM: failed to suspend: error -5
-[  274.802842] PM: Some devices failed to suspend, or early wake event detected
-[  275.426489] OOM killer enabled.
-[  275.429718] Restarting tasks ...
-[  275.435765] done.
-[  275.447510] PM: suspend exit
+	entry = dax_make_entry(pfn_to_pfn_t(0), flags);
+	dax_lock_entry(xas, entry);
 
-Fixes: 1f565e263c3e ("media: mtk-vpu: VPU should be in idle state before system is suspended")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+which inserts new PTE entry into xarray.  However this may fail allocating
+the new node.  We handle this by:
+
+	if (xas_nomem(xas, mapping_gfp_mask(mapping) & ~__GFP_HIGHMEM))
+		goto retry;
+
+however pmd_downgrade stays set to true even though 'entry' returned from
+get_unlocked_entry() will be NULL now.  And we will go again through the
+downgrade branch.  This is mostly harmless except that mapping->nrpages is
+decremented again and we temporarily have an invalid entry stored in
+xarray.  Fix the problem by setting pmd_downgrade to false each time we
+lookup the entry we work with so that it matches the entry we found.
+
+Link: https://lkml.kernel.org/r/20210622160015.18004-1-jack@suse.cz
+Fixes: b15cd800682f ("dax: Convert page fault handlers to XArray")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/dax.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index 043894f7188c..f49f6d53a941 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -987,6 +987,12 @@ static int mtk_vpu_suspend(struct device *dev)
- 		return ret;
- 	}
+diff --git a/fs/dax.c b/fs/dax.c
+index 62352cbcf0f4..da41f9363568 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -488,10 +488,11 @@ static void *grab_mapping_entry(struct xa_state *xas,
+ 		struct address_space *mapping, unsigned int order)
+ {
+ 	unsigned long index = xas->xa_index;
+-	bool pmd_downgrade = false; /* splitting PMD entry into PTE entries? */
++	bool pmd_downgrade;	/* splitting PMD entry into PTE entries? */
+ 	void *entry;
  
-+	if (!vpu_running(vpu)) {
-+		vpu_clock_disable(vpu);
-+		clk_unprepare(vpu->clk);
-+		return 0;
-+	}
-+
- 	mutex_lock(&vpu->vpu_mutex);
- 	/* disable vpu timer interrupt */
- 	vpu_cfg_writel(vpu, vpu_cfg_readl(vpu, VPU_INT_STATUS) | VPU_IDLE_STATE,
+ retry:
++	pmd_downgrade = false;
+ 	xas_lock_irq(xas);
+ 	entry = get_unlocked_entry(xas, order);
+ 
 -- 
 2.30.2
 
