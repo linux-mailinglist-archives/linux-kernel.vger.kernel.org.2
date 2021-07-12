@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5443C66DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5883C66DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 01:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbhGLXUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 19:20:09 -0400
-Received: from mail-pg1-f175.google.com ([209.85.215.175]:33490 "EHLO
-        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhGLXUI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 19:20:08 -0400
-Received: by mail-pg1-f175.google.com with SMTP id 37so19919832pgq.0;
-        Mon, 12 Jul 2021 16:17:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XJYXu78Otmo9gjq965zqEhcSFFXNrjOldt93lGmVRWY=;
-        b=M8SLFTK1HYQrMiaAozXZDNMl/0kNdu9FNFVptwqgAuqTSwDhayYFyHiHecfbylDVF5
-         Pgd391cMU46wexHtf999zc5V54AtzP073jfdvhMajq/ouk/avdsuhDeyjACTkPgs484q
-         jAubDF/bgS/r6D6mXhFzxejqgAt9v62dI4aSqhXHdtXnxOVfnyz2uH6am43CB4/n4Sgw
-         i03HOjaWTfW1P6a7OFjCsZhxbLM/Hjk1RUDQsh30WxGt3uSxld6CvWAj/vY1l0F+D8lM
-         jdbfzasj/mn4xnrAHw4jzJi7pQMl+QYFhYwrd54asKYqwopVqEmfpghRnwtZZNKAsn96
-         caXg==
-X-Gm-Message-State: AOAM530y3DPviJSAdin99OH0WSFYnh2/TMyi7hhuE+52BRE54I3JZJd2
-        64xEREt78YTHQ+NI0lWY1XM=
-X-Google-Smtp-Source: ABdhPJyvhvuyptKDvvybAUfQSniprveC0Rop1ecCKORddZFqU4wZnKSX02PIPxefhnvmESqN2uB7Wg==
-X-Received: by 2002:a65:50ca:: with SMTP id s10mr1503440pgp.68.1626131839259;
-        Mon, 12 Jul 2021 16:17:19 -0700 (PDT)
-Received: from garbanzo ([191.96.120.37])
-        by smtp.gmail.com with ESMTPSA id b18sm482706pji.39.2021.07.12.16.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 16:17:17 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 16:17:15 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     minchan@kernel.org, gregkh@linuxfoundation.org, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        rafael@kernel.org, axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] zram: fix deadlock with sysfs attribute usage and
- module removal
-Message-ID: <20210712231644.eeaql22odowieomb@garbanzo>
-References: <20210703001958.620899-1-mcgrof@kernel.org>
- <20210703001958.620899-3-mcgrof@kernel.org>
- <20210710122851.aae9783ae9b1a703d565cbec@linux-foundation.org>
+        id S231998AbhGLXVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 19:21:32 -0400
+Received: from ozlabs.org ([203.11.71.1]:57819 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230458AbhGLXVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 19:21:31 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GP07Q11LBz9sWd;
+        Tue, 13 Jul 2021 09:18:26 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626131906;
+        bh=r1OHkWV4zheiEUGH6zfhSkdiBAPokmU2n6vmXLRpy7I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Z2jTWAHnugmJwnK/XQ+fxeb4vL52TXnsC36T8wClBcWLP708yUBWbs/u32ziYWk7E
+         8zxy4DOx7biFxQ6rZSh2VcQnBixH1BXpoS63/wZfl+aRRvtMGae62HCvKLyI0fWO6E
+         UxMdvfgVbtlWGnggPnydItpaZ+IjEYKQ+geUNXRwol8Q6wGgTb05Z1i7dos5t+9/rN
+         CMVtnwobTO9Yv2T9gH2gH7YDEm8K3Gzi+NFGYcI7VkKAkqi9+TCiDvPOZ5EK/N8y1P
+         dbZE3PVtJs/iF5Z02d5llFxa6nSw8ad6cfKlJFjRcw3lf1zn63cO1wbBA5PvpIChid
+         SfQ+faFOC7R3A==
+Date:   Tue, 13 Jul 2021 09:18:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the workqueues tree
+Message-ID: <20210713091825.7cfaf3fb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710122851.aae9783ae9b1a703d565cbec@linux-foundation.org>
+Content-Type: multipart/signed; boundary="Sig_/oXn_iJ.xCgNXgASxB7sqQgl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 12:28:51PM -0700, Andrew Morton wrote:
-> On Fri,  2 Jul 2021 17:19:57 -0700 Luis Chamberlain <mcgrof@kernel.org> wrote:
-> 
-> > +#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
-> > +static ssize_t module_ ## _name ## _store(struct device *dev, \
-> > +				   struct device_attribute *attr, \
-> > +				   const char *buf, size_t len) \
-> > +{ \
-> > +	ssize_t __ret; \
-> > +	if (!try_module_get(THIS_MODULE)) \
-> > +		return -ENODEV; \
-> > +	__ret = _name ## _store(dev, attr, buf, len); \
-> > +	module_put(THIS_MODULE); \
-> > +	return __ret; \
-> > +}
-> 
-> I assume that Greg's comments on try_module_get() are applicable here
-> also.
+--Sig_/oXn_iJ.xCgNXgASxB7sqQgl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-While we wait for Greg for an alternative, patch #1 is still fine.
+Hi all,
 
-  Luis
+Commit
+
+  65160ab66cb6 ("cgroup1: fix leaked context root causing sporadic NULL der=
+ef in LTP")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/oXn_iJ.xCgNXgASxB7sqQgl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDszcEACgkQAVBC80lX
+0Gz9rggAllIceh8eEhxtQdK3t+9TNHz92snWMEfzouZIS7aoAgHv9kWmRLmzTDtW
+BZ/uAeGuyKuYbZVg1nt00BO5UBsxrXzlDQQAt0CyvV1ANE2DoQUqqgSNai59Sxzh
+YYAeyRPU9zm5COt7J4mOZCwGJFno13xh5JOPQ1vZZ16LAUu9RMxgCsxwxnz/Vdov
++j3xDt1B3ylHbhQhAZrHOIlYyRuuNiDbMzn4loL//SaX1mkzgjkixIYRPTV+3KwM
+71APDCu/29HArO1sAP6we6cm+T3w9nVOifp1hgOSIK4njnwE+ogDsILr9leVeBQ7
+FAfR2ihVCbVYBTbQhV7JSC3a9JNWBQ==
+=dHpz
+-----END PGP SIGNATURE-----
+
+--Sig_/oXn_iJ.xCgNXgASxB7sqQgl--
