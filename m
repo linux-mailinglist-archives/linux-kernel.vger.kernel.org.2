@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7703C587B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8E23C4CB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356914AbhGLIsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41326 "EHLO mail.kernel.org"
+        id S242823AbhGLHG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243451AbhGLHwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D7086112D;
-        Mon, 12 Jul 2021 07:50:02 +0000 (UTC)
+        id S236744AbhGLGrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB4361183;
+        Mon, 12 Jul 2021 06:43:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076202;
-        bh=bRID1WUDRBSGxPTH2JaoPg+8jnffbPLQFx/rjbCmz2c=;
+        s=korg; t=1626072220;
+        bh=jLLKyQbGcR94mhr7nkAhK74b0FMOP2YMi8Q6DFDCnio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l25kAKjNaPn2IaumB4Jt1dIqDUHqRjtAl7ypoabBdqzA0HKbzVkxKDw/zdST7uKp9
-         y/zJ/dARVA1Sl5f0OKW+WPQW8g8ka8jWs3J77kxgCt/WHh4grjLb1KU/zY3+xOu1Tm
-         DyMwa9KlDfmMhaeJScimV1C9fRMOx60JUdm/DTso=
+        b=G6okVZPiy3E5B/RCEXdcrETg9g9zwbHjPGDyT+AP0coqp2gxQjOJCsePV2zzUCDOG
+         rDydo+I/y6NKxI2dYfC2zVPvtTVkM5q+Q1SRrGU6iOr1m8mhaOXTCe2dpouao56Mlb
+         UoGqJrpQCW9gNXbwSPGmyhy8+YMf4VkL2aBybujg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        stable@vger.kernel.org, Lior Nahmanson <liorna@nvidia.com>,
+        Antoine Tenart <atenart@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 542/800] tc-testing: fix list handling
+Subject: [PATCH 5.10 405/593] net: atlantic: fix the macsec key length
 Date:   Mon, 12 Jul 2021 08:09:25 +0200
-Message-Id: <20210712061025.025802800@linuxfoundation.org>
+Message-Id: <20210712060932.292775778@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit b4fd096cbb871340be837491fa1795864a48b2d9 ]
+[ Upstream commit d67fb4772d9a6cfd10f1109f0e7b1e6eb58c8e16 ]
 
-python lists don't have an 'add' method, but 'append'.
+The key length used to store the macsec key was set to MACSEC_KEYID_LEN
+(16), which is an issue as:
+- This was never meant to be the key length.
+- The key length can be > 16.
 
-Fixes: 14e5175e9e04 ("tc-testing: introduce scapyPlugin for basic traffic")
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Fix this by using MACSEC_MAX_KEY_LEN instead (the max length accepted in
+uAPI).
+
+Fixes: 27736563ce32 ("net: atlantic: MACSec egress offload implementation")
+Fixes: 9ff40a751a6f ("net: atlantic: MACSec ingress offload implementation")
+Reported-by: Lior Nahmanson <liorna@nvidia.com>
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/aquantia/atlantic/aq_macsec.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py b/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py
-index 229ee185b27e..a7b21658af9b 100644
---- a/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py
-+++ b/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py
-@@ -36,7 +36,7 @@ class SubPlugin(TdcPlugin):
-         for k in scapy_keys:
-             if k not in scapyinfo:
-                 keyfail = True
--                missing_keys.add(k)
-+                missing_keys.append(k)
-         if keyfail:
-             print('{}: Scapy block present in the test, but is missing info:'
-                 .format(self.sub_class))
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_macsec.h b/drivers/net/ethernet/aquantia/atlantic/aq_macsec.h
+index f5fba8b8cdea..a47e2710487e 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_macsec.h
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_macsec.h
+@@ -91,7 +91,7 @@ struct aq_macsec_txsc {
+ 	u32 hw_sc_idx;
+ 	unsigned long tx_sa_idx_busy;
+ 	const struct macsec_secy *sw_secy;
+-	u8 tx_sa_key[MACSEC_NUM_AN][MACSEC_KEYID_LEN];
++	u8 tx_sa_key[MACSEC_NUM_AN][MACSEC_MAX_KEY_LEN];
+ 	struct aq_macsec_tx_sc_stats stats;
+ 	struct aq_macsec_tx_sa_stats tx_sa_stats[MACSEC_NUM_AN];
+ };
+@@ -101,7 +101,7 @@ struct aq_macsec_rxsc {
+ 	unsigned long rx_sa_idx_busy;
+ 	const struct macsec_secy *sw_secy;
+ 	const struct macsec_rx_sc *sw_rxsc;
+-	u8 rx_sa_key[MACSEC_NUM_AN][MACSEC_KEYID_LEN];
++	u8 rx_sa_key[MACSEC_NUM_AN][MACSEC_MAX_KEY_LEN];
+ 	struct aq_macsec_rx_sa_stats rx_sa_stats[MACSEC_NUM_AN];
+ };
+ 
 -- 
 2.30.2
 
