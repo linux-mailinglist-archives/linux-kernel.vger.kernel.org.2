@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319D93C52C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3697C3C52F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347184AbhGLHtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:49:24 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:10355 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241589AbhGLHOs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:14:48 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GNZb64GP0z78WH;
-        Mon, 12 Jul 2021 15:07:30 +0800 (CST)
-Received: from [10.174.178.125] (10.174.178.125) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 12 Jul 2021 15:11:56 +0800
-Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
- anonymous LRU list
-To:     Yu Zhao <yuzhao@google.com>
-CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <vbabka@suse.cz>, <mhocko@suse.com>, <axboe@kernel.dk>,
-        <iamjoonsoo.kim@lge.com>, <alexs@kernel.org>, <apopple@nvidia.com>,
-        <willy@infradead.org>, <minchan@kernel.org>, <david@redhat.com>,
-        <shli@fb.com>, <hillf.zj@alibaba-inc.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210710100329.49174-1-linmiaohe@huawei.com>
- <20210710100329.49174-2-linmiaohe@huawei.com>
- <CAOUHufZpU4uQOBb4p10uCXs-40MeETRUmGiqy96Eim1w3o_dgQ@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <022f2f7c-fc03-182a-1f8f-4b77c0731d4f@huawei.com>
-Date:   Mon, 12 Jul 2021 15:11:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAOUHufZpU4uQOBb4p10uCXs-40MeETRUmGiqy96Eim1w3o_dgQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.125]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+        id S1350886AbhGLHvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:22 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47480 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243592AbhGLHQs (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:16:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="209751801"
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="209751801"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 00:13:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="464160909"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga008.fm.intel.com with ESMTP; 12 Jul 2021 00:13:56 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v3 0/3] perf tool: Enable cpu list for hybrid
+Date:   Mon, 12 Jul 2021 15:12:32 +0800
+Message-Id: <20210712071235.28533-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/11 7:22, Yu Zhao wrote:
-> On Sat, Jul 10, 2021 at 4:03 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>
->> If the MADV_FREE pages are redirtied before they could be reclaimed, put
->> the pages back to anonymous LRU list by setting SwapBacked flag and the
->> pages will be reclaimed in normal swapout way. Otherwise MADV_FREE pages
->> won't be reclaimed as expected.
->>
->> Fixes: 802a3a92ad7a ("mm: reclaim MADV_FREE pages")
-> 
-> This is not a bug -- the dirty check isn't needed but it was copied
-> from __remove_mapping().
+The perf-record and perf-stat have supported the option '-C/--cpus'
+to count or collect only on the list of CPUs provided. This option
+needs to be supported for hybrid as well.
 
-Yes, this is not a bug and harmless. When we reach here, page should not be
-dirtied because PageDirty is handled above and there is no way to redirty it
-again as pagetable references are all gone and it's not in the swap cache.
+v3:
+---
+Rebase to latest perf/core branch.
 
-> 
-> The page has only one reference left, which is from the isolation.
-> After the caller puts the page back on lru and drops the reference,
-> the page will be freed anyway. It doesn't matter which lru it goes.
+v2:
+---
+Automatically map to hybrid pmu.
 
-But it looks buggy as it didn't perform the expected ops from code view.
-Should I drop the Fixes tag and send a v2 version?
+For example,
 
-Many thanks for reply!
+If cpu0-7 are 'cpu_core' and cpu9-11 are 'cpu_atom',
 
-> 
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  mm/vmscan.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index a7602f71ec04..6483fe0e2065 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -1628,6 +1628,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->>                         if (!page_ref_freeze(page, 1))
->>                                 goto keep_locked;
->>                         if (PageDirty(page)) {
->> +                               SetPageSwapBacked(page);
->>                                 page_ref_unfreeze(page, 1);
->>                                 goto keep_locked;
->>                         }
->> --
->> 2.23.0
->>
->>
-> .
-> 
+  # perf stat -e cycles -C0,11 -- sleep 1
+  WARNING: use 0 in 'cpu_core' for 'cycles', skip other cpus in list.
+  WARNING: use 11 in 'cpu_atom' for 'cycles', skip other cpus in list.
+
+   Performance counter stats for 'CPU(s) 0,11':
+
+           1,914,704      cpu_core/cycles/
+           2,036,983      cpu_atom/cycles/
+
+         1.005815641 seconds time elapsed
+
+It automatically selects cpu0 for cpu_core/cycles/, selects cpu11 for
+cpu_atom/cycles/, also with some warnings output.
+
+Jin Yao (3):
+  libperf: Add perf_cpu_map__default_new()
+  perf tools: Create hybrid flag in target
+  perf tools: Enable on a list of CPUs for hybrid
+
+ tools/lib/perf/cpumap.c              |  5 +++
+ tools/lib/perf/include/perf/cpumap.h |  1 +
+ tools/perf/builtin-record.c          |  7 +++
+ tools/perf/builtin-stat.c            |  6 +++
+ tools/perf/util/evlist-hybrid.c      | 65 ++++++++++++++++++++++++++++
+ tools/perf/util/evlist-hybrid.h      |  1 +
+ tools/perf/util/evlist.c             |  3 +-
+ tools/perf/util/pmu.c                | 35 +++++++++++++++
+ tools/perf/util/pmu.h                |  4 ++
+ tools/perf/util/target.h             |  1 +
+ 10 files changed, 127 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
 
