@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1490C3C4A3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4349A3C5786
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239479AbhGLGtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
+        id S1376986AbhGLIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238018AbhGLGju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A03C361206;
-        Mon, 12 Jul 2021 06:36:07 +0000 (UTC)
+        id S242613AbhGLHrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:47:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AED96140C;
+        Mon, 12 Jul 2021 07:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071768;
-        bh=U0O14NrXACBSK7rFxbwEOy4mIvgVCNB8sB5mzb6xcBg=;
+        s=korg; t=1626075750;
+        bh=9ihMQHP7o6q1GMgwWuLyMCJZgOUuh4C+mvgR1YUPZ44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iH4s6nH2wZqp8E652EDNX3IbskIxxZmeSvvD/IrbeezTnrdwfZsBUpDYRMr0M1WyP
-         JPFZMWQwZwxLF0HcS6Tolfvb+GKEDBYUybwIWYzUrN79PZFWse+UzRUCUSjpx+/gS4
-         LP2KMd2B9a6nKo/Q+uZPKLXCkeoPJ8fDLK7TSs98=
+        b=1Rv8OaDX33d00WNfEbRSfVOi1XpSUM3dbTFOPrnmKjMyMMJbgsds6nljdS/GtojPt
+         1VYlEQCeTCnlNawzzTIR6WKrEQqr3n0KaRksRrZZINNhjEyuhFdvS72e+tBNRULnBL
+         l6P6v3vsXZnJXYH4CmNcGPGeO/t4I5pQLZ/7HG54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, "ziwei.dai" <ziwei.dai@unisoc.com>,
+        "ke.wang" <ke.wang@unisoc.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 212/593] media: s5p_cec: decrement usage count if disabled
+Subject: [PATCH 5.13 349/800] psi: Fix race between psi_trigger_create/destroy
 Date:   Mon, 12 Jul 2021 08:06:12 +0200
-Message-Id: <20210712060906.242341141@linuxfoundation.org>
+Message-Id: <20210712061004.167008322@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +44,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-[ Upstream commit 747bad54a677d8633ec14b39dfbeb859c821d7f2 ]
+[ Upstream commit 8f91efd870ea5d8bc10b0fcc9740db51cd4c0c83 ]
 
-There's a bug at s5p_cec_adap_enable(): if called to
-disable the device, it should call pm_runtime_put()
-instead of pm_runtime_disable(), as the goal here is to
-decrement the usage_count and not to disable PM runtime.
+Race detected between psi_trigger_destroy/create as shown below, which
+cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+and psi_system->poll_timer->entry->next. Under this modification, the
+race window is removed by initialising poll_wait and poll_timer in
+group_init which are executed only once at beginning.
 
-Reported-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Fixes: 1bcbf6f4b6b0 ("[media] cec: s5p-cec: Add s5p-cec driver")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+  psi_trigger_destroy()                   psi_trigger_create()
+
+  mutex_lock(trigger_lock);
+  rcu_assign_pointer(poll_task, NULL);
+  mutex_unlock(trigger_lock);
+					  mutex_lock(trigger_lock);
+					  if (!rcu_access_pointer(group->poll_task)) {
+					    timer_setup(poll_timer, poll_timer_fn, 0);
+					    rcu_assign_pointer(poll_task, task);
+					  }
+					  mutex_unlock(trigger_lock);
+
+  synchronize_rcu();
+  del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
+                                  psi_trigger_create()
+
+So, trigger_lock/RCU correctly protects destruction of
+group->poll_task but misses this race affecting poll_timer and
+poll_wait.
+
+Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling mechanism")
+Co-developed-by: ziwei.dai <ziwei.dai@unisoc.com>
+Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+Co-developed-by: ke.wang <ke.wang@unisoc.com>
+Signed-off-by: ke.wang <ke.wang@unisoc.com>
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Link: https://lkml.kernel.org/r/1623371374-15664-1-git-send-email-huangzhaoyang@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/platform/s5p/s5p_cec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/psi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
-index 2250c1cbc64e..028a09a7531e 100644
---- a/drivers/media/cec/platform/s5p/s5p_cec.c
-+++ b/drivers/media/cec/platform/s5p/s5p_cec.c
-@@ -54,7 +54,7 @@ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
- 	} else {
- 		s5p_cec_mask_tx_interrupts(cec);
- 		s5p_cec_mask_rx_interrupts(cec);
--		pm_runtime_disable(cec->dev);
-+		pm_runtime_put(cec->dev);
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3cff41f..58b36d17a09a 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+ 
+ static void psi_avgs_work(struct work_struct *work);
+ 
++static void poll_timer_fn(struct timer_list *t);
++
+ static void group_init(struct psi_group *group)
+ {
+ 	int cpu;
+@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+ 	memset(group->polling_total, 0, sizeof(group->polling_total));
+ 	group->polling_next_update = ULLONG_MAX;
+ 	group->polling_until = 0;
++	init_waitqueue_head(&group->poll_wait);
++	timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 	rcu_assign_pointer(group->poll_task, NULL);
+ }
+ 
+@@ -1157,9 +1161,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 			return ERR_CAST(task);
+ 		}
+ 		atomic_set(&group->poll_wakeup, 0);
+-		init_waitqueue_head(&group->poll_wait);
+ 		wake_up_process(task);
+-		timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 		rcu_assign_pointer(group->poll_task, task);
  	}
  
- 	return 0;
+@@ -1211,6 +1213,7 @@ static void psi_trigger_destroy(struct kref *ref)
+ 					group->poll_task,
+ 					lockdep_is_held(&group->trigger_lock));
+ 			rcu_assign_pointer(group->poll_task, NULL);
++			del_timer(&group->poll_timer);
+ 		}
+ 	}
+ 
+@@ -1223,17 +1226,14 @@ static void psi_trigger_destroy(struct kref *ref)
+ 	 */
+ 	synchronize_rcu();
+ 	/*
+-	 * Destroy the kworker after releasing trigger_lock to prevent a
++	 * Stop kthread 'psimon' after releasing trigger_lock to prevent a
+ 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
+ 	 */
+ 	if (task_to_destroy) {
+ 		/*
+ 		 * After the RCU grace period has expired, the worker
+ 		 * can no longer be found through group->poll_task.
+-		 * But it might have been already scheduled before
+-		 * that - deschedule it cleanly before destroying it.
+ 		 */
+-		del_timer_sync(&group->poll_timer);
+ 		kthread_stop(task_to_destroy);
+ 	}
+ 	kfree(t);
 -- 
 2.30.2
 
