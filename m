@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD633C550A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE923C58F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhGLIJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:09:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43902 "EHLO mail.kernel.org"
+        id S1352869AbhGLIxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:53:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344476AbhGLH3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3752761463;
-        Mon, 12 Jul 2021 07:25:22 +0000 (UTC)
+        id S1353577AbhGLICg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3514461CC1;
+        Mon, 12 Jul 2021 07:55:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074722;
-        bh=kybzrNSYF+idEMHoERr7rzSo4OflBjxjU3TOYCtIBQY=;
+        s=korg; t=1626076554;
+        bh=esk09oZcbN0idloauH1h0UliJR4S1QsTKJ7Deu4x8D8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSr8UPnUgtDlLM4MwEWpR0UuwBxdxIzsUi7ODG95zScuhF6WzmP9SouwNREGvW/gA
-         0STDxi0TZ7zlELWXVOceocKodnfDN4N04KU7g6sbWCFQJ/9ULUEPyM1SRE40xrRS9s
-         ADlzt/o/ePQaOxXqLeDjO4yZC2zsfIgDF9t4XSZ8=
+        b=JxApPjuaZ+2mNQwvkJLZEE9TVgKtp3LpsBtA9F/Jn2YWvffdq7WF21mueNRlKP1m/
+         hwtOfdSuaLPrDaTSyjNcrRIi/BvmoBhE9g7mQNi5y4KVvZoL2bAhiNsZJeJRRthBn9
+         qFw4GUSPlMNfRmNzzy2jhoWSXIW7CFdx+9v5IgVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 632/700] of: Fix truncation of memory sizes on 32-bit platforms
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 692/800] ASoC: rt715-sdw: use first_hw_init flag on resume
 Date:   Mon, 12 Jul 2021 08:11:55 +0200
-Message-Id: <20210712061043.089866840@linuxfoundation.org>
+Message-Id: <20210712061040.455349421@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 2892d8a00d23d511a0591ac4b2ff3f050ae1f004 ]
+[ Upstream commit dbc07517ab173688ef11234d1099bc1e24e4f14b ]
 
-Variable "size" has type "phys_addr_t", which can be either 32-bit or
-64-bit on 32-bit systems, while "unsigned long" is always 32-bit on
-32-bit systems.  Hence the cast in
+The intent of the status check on resume was to verify if a SoundWire
+peripheral reported ATTACHED before waiting for the initialization to
+complete. This is required to avoid timeouts that will happen with
+'ghost' devices that are exposed in the platform firmware but are not
+populated in hardware.
 
-    (unsigned long)size / SZ_1M
+Unfortunately we used 'hw_init' instead of 'first_hw_init'. Due to
+another error, the resume operation never timed out, but the volume
+settings were not properly restored.
 
-may truncate a 64-bit size to 32-bit, as casts have a higher operator
-precedence than divisions.
-
-Fix this by inverting the order of the cast and division, which should
-be safe for memory blocks smaller than 4 PiB.  Note that the division is
-actually a shift, as SZ_1M is a power-of-two constant, hence there is no
-need to use div_u64().
-
-While at it, use "%lu" to format "unsigned long".
-
-Fixes: e8d9d1f5485b52ec ("drivers: of: add initialization code for static reserved memory")
-Fixes: 3f0c8206644836e4 ("drivers: of: add initialization code for dynamic reserved memory")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/4a1117e72d13d26126f57be034c20dac02f1e915.1623835273.git.geert+renesas@glider.be
-Signed-off-by: Rob Herring <robh@kernel.org>
+BugLink: https://github.com/thesofproject/linux/issues/2908
+BugLink: https://github.com/thesofproject/linux/issues/2637
+Fixes: d1ede0641b05e ('ASoC: rt715: add RT715 codec driver')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Link: https://lore.kernel.org/r/20210607222239.582139-11-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/fdt.c             | 8 ++++----
- drivers/of/of_reserved_mem.c | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt715-sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index adb26aff481d..c485b2c7720d 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -511,11 +511,11 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 81a1dd77b6f6..a7b21b03c08b 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -541,7 +541,7 @@ static int __maybe_unused rt715_dev_resume(struct device *dev)
+ 	struct rt715_priv *rt715 = dev_get_drvdata(dev);
+ 	unsigned long time;
  
- 		if (size &&
- 		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
--			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %ld MiB\n",
--				uname, &base, (unsigned long)size / SZ_1M);
-+			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
-+				uname, &base, (unsigned long)(size / SZ_1M));
- 		else
--			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %ld MiB\n",
--				uname, &base, (unsigned long)size / SZ_1M);
-+			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
-+				uname, &base, (unsigned long)(size / SZ_1M));
+-	if (!rt715->hw_init)
++	if (!rt715->first_hw_init)
+ 		return 0;
  
- 		len -= t_len;
- 		if (first) {
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index a7fbc5e37e19..6c95bbdf9265 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -134,9 +134,9 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
- 			ret = early_init_dt_alloc_reserved_memory_arch(size,
- 					align, start, end, nomap, &base);
- 			if (ret == 0) {
--				pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
-+				pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
- 					uname, &base,
--					(unsigned long)size / SZ_1M);
-+					(unsigned long)(size / SZ_1M));
- 				break;
- 			}
- 			len -= t_len;
-@@ -146,8 +146,8 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
- 		ret = early_init_dt_alloc_reserved_memory_arch(size, align,
- 							0, 0, nomap, &base);
- 		if (ret == 0)
--			pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
--				uname, &base, (unsigned long)size / SZ_1M);
-+			pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
-+				uname, &base, (unsigned long)(size / SZ_1M));
- 	}
- 
- 	if (base == 0) {
+ 	if (!slave->unattach_request)
 -- 
 2.30.2
 
