@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F021A3C4877
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A3D3C4792
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235820AbhGLGjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:39:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235302AbhGLGa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:30:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0650461006;
-        Mon, 12 Jul 2021 06:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071289;
-        bh=perK1Rv+zcYzDbyBXsYGxkG7BhjZJdCvaulLMazwFmI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lWtx6u4m6rASfKFMVYW6ProaDy9jxPNJuHBzcwtzBQIKBF5eyYXRvghqeUg0pMSoj
-         bRzVvtc0eZIDqMoLTYKuvNcF5dB7Lu21OyTXlQmoeoL60NLsno9IeFUtZsaEFboxxZ
-         MX2fkVp/HvY1hXCi/GtIMrjtZPnCuhmCbMkdXqxk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Quat Le <quat.le@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 348/348] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
-Date:   Mon, 12 Jul 2021 08:12:12 +0200
-Message-Id: <20210712060750.363169241@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
-References: <20210712060659.886176320@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236767AbhGLGd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235756AbhGLG3b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:29:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0897C08EC89;
+        Sun, 11 Jul 2021 23:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=tB53rqP9UurlO9Ubjzx5fIdyCBO9p4biSEwOPXSsFqo=; b=dzMdOtVbZVRxxudw8++DeGPLtl
+        rWxB7mGdvYuZ4AETWUbLfJHkL5g99xedhkEC8KrVXGsmNoSlWEJYkmw27IQ2HCHwgxqPeyGuF6n4z
+        QV9wDQYnD8Xvq+2OvZbS9BxxcfMtaMQm31nocFhIQsHL5sNTFpkFdq0RGPmo9w8EKt5Sgyqz2YJDp
+        Jmzgs5iBpf32uKiThPw9SABqwTDqjLZ3uoaQgfcF9XbmQu1cTVLTe2CGbZLHz2/AmYKVGEylaRWKo
+        T3qxVMUSY97ijE+OPbZ1AVZZwp8QbsOyfdmqGMkxYq8pjsTM7FWsjS9/wwxeczXm49LAbQbsFgFOu
+        2WwsE6Uw==;
+Received: from [2001:4bb8:184:8b7c:bd9:61b8:39ba:d78a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2pFZ-00Gws5-69; Mon, 12 Jul 2021 06:17:22 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     iommu@lists.linux-foundation.org,
+        Russell King <linux@armlinux.org.uk>,
+        Brian Cain <bcain@codeaurora.org>
+Cc:     Dillon Min <dillon.minfei@gmail.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: add support for the global coherent pool to the dma core
+Date:   Mon, 12 Jul 2021 08:16:57 +0200
+Message-Id: <20210712061704.4162464-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quat Le <quat.le@oracle.com>
+Hi all,
 
-commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
+this series adds support for using the global coherent (aka uncached)
+pool to the generic dma-direct code and then switches arm-nommu and
+hexagon over to it, together with a bunch of cleanups.
 
-If the device is power-cycled, it takes time for the initiator to transmit
-the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
-respond to the primitive to become ACTIVE. Retry the I/O request to allow
-the device time to become ACTIVE.
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Quat Le <quat.le@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/scsi/scsi_lib.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -762,6 +762,7 @@ static void scsi_io_completion_action(st
- 				case 0x07: /* operation in progress */
- 				case 0x08: /* Long write in progress */
- 				case 0x09: /* self test in progress */
-+				case 0x11: /* notify (enable spinup) required */
- 				case 0x14: /* space allocation in progress */
- 				case 0x1a: /* start stop unit in progress */
- 				case 0x1b: /* sanitize in progress */
-
-
+Diffstat:
+ arch/arm/Kconfig                |    5 -
+ arch/arm/mm/dma-mapping-nommu.c |  173 +---------------------------------------
+ arch/hexagon/Kconfig            |    1 
+ arch/hexagon/kernel/dma.c       |   57 ++-----------
+ include/linux/dma-map-ops.h     |   18 ++--
+ kernel/dma/Kconfig              |    4 
+ kernel/dma/coherent.c           |  159 +++++++++++++++++-------------------
+ kernel/dma/direct.c             |   15 +++
+ 8 files changed, 124 insertions(+), 308 deletions(-)
