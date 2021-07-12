@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3EE3C4F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5870F3C5661
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345405AbhGLHZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:25:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33514 "EHLO mail.kernel.org"
+        id S1357607AbhGLIR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:17:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239690AbhGLG6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A9C0613E6;
-        Mon, 12 Jul 2021 06:55:59 +0000 (UTC)
+        id S1346762AbhGLHeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:34:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 777906141E;
+        Mon, 12 Jul 2021 07:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072959;
-        bh=3Ias84A1L0Hif1Cme659SldcyuX/j2nCQoKvazpJGcU=;
+        s=korg; t=1626075075;
+        bh=bPapsC3ZIxS0AF4EYQz7RRzD8iWHeA91Ise1jgqYUKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WA35ZXKhmhE5uXqb/T2epy7QZ72XqUjprUi79mxha7M2jvgsMt9feQcZf+Azwa9EM
-         4epHtCbzdKxfnUL2Kwg/QMD+dhgl/synFNOGgCTATmmSw5fdsEYVw4ZmyNN9dC1Jis
-         mweVJV0UdBC/Ng99GbyjjDYpw6upifLtaKbTZp/I=
+        b=D8AcBMgTRy6i7Et1srprnvesSE7vhPQbGiZUwQRqvl/iXIYRPbQm8dDbdYasn781b
+         TnQEhOPbUye9ysNbWE2ol2b4nJm514IsKFwXwmrxKPsAn5LFKhMNpDf7jyxU5750xR
+         zwS6TIJVLEs0nmmRU5So8U4L9aIPtzU1wpu5TfJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.12 036/700] Input: elants_i2c - fix NULL dereference at probing
-Date:   Mon, 12 Jul 2021 08:01:59 +0200
-Message-Id: <20210712060929.717179516@linuxfoundation.org>
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.13 097/800] iio: accel: bmc150: Fix bma222 scale unit
+Date:   Mon, 12 Jul 2021 08:02:00 +0200
+Message-Id: <20210712060926.704352504@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-commit b9c0ebb867d67cc4e9e1a7a2abf0ac9a2cc02051 upstream.
+commit 6e2a90af0b8d757e850cc023d761ee9a9492e2fe upstream.
 
-The recent change in elants_i2c driver to support more chips
-introduced a regression leading to Oops at probing.  The driver reads
-id->driver_data, but the id may be NULL depending on the device type
-the driver gets bound.
+According to sysfs-bus-iio documentation the unit for accelerometer
+values after applying scale/offset should be m/s^2, not g, which explains
+why the scale values for the other variants in bmc150-accel do not match
+exactly the values given in the datasheet.
 
-Replace the driver data extraction with the device_get_match_data()
-helper, and define the driver data in OF table, too.
+To get the correct values, we need to multiply the BMA222 scale values
+by g = 9.80665 m/s^2.
 
-Fixes: 9517b95bdc46 ("Input: elants_i2c - add support for eKTF3624")
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1186454
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210528071024.26450-1-tiwai@suse.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: a1a210bf29a1 ("iio: accel: bmc150-accel: Add support for BMA222")
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20210611080903.14384-2-stephan@gerhold.net
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/touchscreen/elants_i2c.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/accel/bmc150-accel-core.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -1396,7 +1396,7 @@ static int elants_i2c_probe(struct i2c_c
- 	init_completion(&ts->cmd_done);
- 
- 	ts->client = client;
--	ts->chip_id = (enum elants_chip_id)id->driver_data;
-+	ts->chip_id = (enum elants_chip_id)(uintptr_t)device_get_match_data(&client->dev);
- 	i2c_set_clientdata(client, ts);
- 
- 	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
-@@ -1636,8 +1636,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id
- 
- #ifdef CONFIG_OF
- static const struct of_device_id elants_of_match[] = {
--	{ .compatible = "elan,ekth3500" },
--	{ .compatible = "elan,ektf3624" },
-+	{ .compatible = "elan,ekth3500", .data = (void *)EKTH3500 },
-+	{ .compatible = "elan,ektf3624", .data = (void *)EKTF3624 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, elants_of_match);
+--- a/drivers/iio/accel/bmc150-accel-core.c
++++ b/drivers/iio/accel/bmc150-accel-core.c
+@@ -1177,11 +1177,12 @@ static const struct bmc150_accel_chip_in
+ 		/*
+ 		 * The datasheet page 17 says:
+ 		 * 15.6, 31.3, 62.5 and 125 mg per LSB.
++		 * IIO unit is m/s^2 so multiply by g = 9.80665 m/s^2.
+ 		 */
+-		.scale_table = { {156000, BMC150_ACCEL_DEF_RANGE_2G},
+-				 {313000, BMC150_ACCEL_DEF_RANGE_4G},
+-				 {625000, BMC150_ACCEL_DEF_RANGE_8G},
+-				 {1250000, BMC150_ACCEL_DEF_RANGE_16G} },
++		.scale_table = { {152984, BMC150_ACCEL_DEF_RANGE_2G},
++				 {306948, BMC150_ACCEL_DEF_RANGE_4G},
++				 {612916, BMC150_ACCEL_DEF_RANGE_8G},
++				 {1225831, BMC150_ACCEL_DEF_RANGE_16G} },
+ 	},
+ 	[bma222e] = {
+ 		.name = "BMA222E",
 
 
