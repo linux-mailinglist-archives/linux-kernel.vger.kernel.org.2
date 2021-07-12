@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7F33C5ABA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3153C5ABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238535AbhGLKQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:16:17 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51788 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhGLKQA (ORCPT
+        id S232710AbhGLKSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:18:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3378 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234050AbhGLKS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:16:00 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 704B51F4210C
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH v5 8/8] dts: mtk-mdp: remove mediatek,vpu property from
- primary MDP device
-To:     Eizan Miyamoto <eizan@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     wenst@chromium.org, chunkuang.hu@kernel.org, yong.wu@mediatek.com,
-        houlong.wei@mediatek.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20210709022324.1607884-1-eizan@chromium.org>
- <20210709122040.v5.8.Ib681f06d5189351b7fda0e3dcd6b15f3863a0071@changeid>
-Message-ID: <a7d0bb06-345f-8e74-e272-cf241b2a122f@collabora.com>
-Date:   Mon, 12 Jul 2021 12:13:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 06:18:28 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GNfZV4d0Vz6K5sn;
+        Mon, 12 Jul 2021 18:07:14 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 12:15:37 +0200
+Received: from localhost (10.47.25.8) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 12 Jul
+ 2021 11:15:37 +0100
+Date:   Mon, 12 Jul 2021 11:15:19 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+CC:     Jonathan Cameron <jic23@kernel.org>, <lars@metafoo.de>,
+        <sre@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <letux-kernel@openphoenux.org>
+Subject: Re: [PATCH v2 2/2] power: supply: rn5t618: Add voltage_now property
+Message-ID: <20210712111519.00000ef7@Huawei.com>
+In-Reply-To: <20210712091130.2096cf23@aktux>
+References: <20210705113637.28908-1-andreas@kemnade.info>
+        <20210705113637.28908-3-andreas@kemnade.info>
+        <20210711112039.43c4af7b@jic23-huawei>
+        <20210712091130.2096cf23@aktux>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210709122040.v5.8.Ib681f06d5189351b7fda0e3dcd6b15f3863a0071@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.25.8]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eizan,
+On Mon, 12 Jul 2021 09:11:30 +0200
+Andreas Kemnade <andreas@kemnade.info> wrote:
 
-Thank you for your patch.
+> On Sun, 11 Jul 2021 11:20:39 +0100
+> Jonathan Cameron <jic23@kernel.org> wrote:
+> 
+> > On Mon,  5 Jul 2021 13:36:37 +0200
+> > Andreas Kemnade <andreas@kemnade.info> wrote:
+> >   
+> > > Read voltage_now via IIO and provide the property.
+> > > 
+> > > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> > > Reported-by: kernel test robot <lkp@intel.com>    
+> > Huh?  Seems unlikely it pointed out that this patch was necessary in general.
+> > If highlighting a particular fix in an earlier version, then state what it was
+> > in the commit message. Note for fixes that get rolled into patches, it's
+> > often just mentioned in the change log and we skip the tag because it can
+> > cause confusion.
+> >   
+> The robot found a problem in v1 (missing depends on IIO). It is fixed
+> now. The message from the bot tells to add a tag. It seems not to make
+> sense. But probably the bot is also running on public branches (which
+> will not be rebase) and uses the same message where it actually makes
+> sense.
 
-On 9/7/21 4:23, Eizan Miyamoto wrote:
-> It is no longer used by the mediatek MDP driver.
-> 
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> index d502073b551f..872427748110 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> @@ -1010,7 +1010,6 @@ mdp_rdma0: rdma@14001000 {
->  			power-domains = <&spm MT8173_POWER_DOMAIN_MM>;
->  			iommus = <&iommu M4U_PORT_MDP_RDMA0>;
->  			mediatek,larb = <&larb0>;
-> -			mediatek,vpu = <&vpu>;
+Yup. It might be helpful if they modified that message to suggest
+commented format if the fix is rolled into an existing patch.  I've seen
+things like.
 
+Reported-by: kernel test robot <lkp@intel.com> # Fix something interesting.
 
-Should be also removed from the documentation binding?
+Which makes it clear what is going on.
 
->  		};
->  
->  		mdp_rdma1: rdma@14002000 {
+Jonathan
 > 
+> I will send a v3 with that tag removed and the other comment addressed.
+> 
+> Regards,
+> Andreas
+
