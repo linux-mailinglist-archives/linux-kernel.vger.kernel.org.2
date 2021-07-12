@@ -2,36 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB6E3C54E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22803C4E8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345205AbhGLIGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43548 "EHLO mail.kernel.org"
+        id S245661AbhGLHTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343611AbhGLH2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:28:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E930961930;
-        Mon, 12 Jul 2021 07:24:10 +0000 (UTC)
+        id S238221AbhGLGzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34C5A6100B;
+        Mon, 12 Jul 2021 06:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074651;
-        bh=3VXaGHAyaewTOYvIuxByWSQBhJuMqKKqUenoZ6rXq30=;
+        s=korg; t=1626072743;
+        bh=BKSmCAPJJnJ6CPF5gE5xkJss2QAFBPNPP4U/ycNb9sI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=swKXngbFrysMLU+Mwrfjq3tl/EI4h9rMjgws6Ro8esMY3rg9qQQfsvCWe1XFcq8go
-         cn4Zb+kpIx87yCz9gCammFcgl03d83JvIbFm7jDYD8uGgL4y3MjxQyYrh2BjNKX8Cu
-         YfvN+kjXZqE/wxaBFuKAQ8xWlnRnVuk6TgM+W5Mw=
+        b=GQe6PVSwL4zXBOqz97sGLP8XYXueQtCqUbyuIfs9Lqmi1gChITgzGrcpRaEfERiIw
+         O2W+sWdimxLocw4CSwFXMPM+maaQDQ0m2auhYttUEGYdyWa3ZX5Y2wIFTmZSAKd+th
+         jvXHj0xMen1siqEfy716ddFv05pX8DdjQfv0JFMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 651/700] leds: ktd2692: Fix an error handling path
+        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 574/593] selftests/vm/pkeys: fix alloc_random_pkey() to make it really, really random
 Date:   Mon, 12 Jul 2021 08:12:14 +0200
-Message-Id: <20210712061045.107740421@linuxfoundation.org>
+Message-Id: <20210712060958.184692348@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +53,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-[ Upstream commit ee78b9360e14c276f5ceaa4a0d06f790f04ccdad ]
+[ Upstream commit f36ef407628835a7d7fb3d235b1f1aac7022d9a3 ]
 
-In 'ktd2692_parse_dt()', if an error occurs after a successful
-'regulator_enable()' call, we should call 'regulator_enable()'.
+Patch series "selftests/vm/pkeys: Bug fixes and a new test".
 
-This is the same in 'ktd2692_probe()', if an error occurs after a
-successful 'ktd2692_parse_dt()' call.
+There has been a lot of activity on the x86 front around the XSAVE
+architecture which is used to context-switch processor state (among other
+things).  In addition, AMD has recently joined the protection keys club by
+adding processor support for PKU.
 
-Instead of adding 'regulator_enable()' in several places, implement a
-resource managed solution and simplify the remove function accordingly.
+The AMD implementation helped uncover a kernel bug around the PKRU "init
+state", which actually applied to Intel's implementation but was just
+harder to hit.  This series adds a test which is expected to help find
+this class of bug both on AMD and Intel.  All the work around pkeys on x86
+also uncovered a few bugs in the selftest.
 
-Fixes: b7da8c5c725c ("leds: Add ktd2692 flash LED driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+This patch (of 4):
+
+The "random" pkey allocation code currently does the good old:
+
+	srand((unsigned int)time(NULL));
+
+*But*, it unfortunately does this on every random pkey allocation.
+
+There may be thousands of these a second.  time() has a one second
+resolution.  So, each time alloc_random_pkey() is called, the PRNG is
+*RESET* to time().  This is nasty.  Normally, if you do:
+
+	srand(<ANYTHING>);
+	foo = rand();
+	bar = rand();
+
+You'll be quite guaranteed that 'foo' and 'bar' are different.  But, if
+you do:
+
+	srand(1);
+	foo = rand();
+	srand(1);
+	bar = rand();
+
+You are quite guaranteed that 'foo' and 'bar' are the *SAME*.  The recent
+"fix" effectively forced the test case to use the same "random" pkey for
+the whole test, unless the test run crossed a second boundary.
+
+Only run srand() once at program startup.
+
+This explains some very odd and persistent test failures I've been seeing.
+
+Link: https://lkml.kernel.org/r/20210611164153.91B76FB8@viggo.jf.intel.com
+Link: https://lkml.kernel.org/r/20210611164155.192D00FF@viggo.jf.intel.com
+Fixes: 6e373263ce07 ("selftests/vm/pkeys: fix alloc_random_pkey() to make it really random")
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Ram Pai <linuxram@us.ibm.com>
+Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Michal Suchanek <msuchanek@suse.de>
+Cc: Shuah Khan <shuah@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-ktd2692.c | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ tools/testing/selftests/vm/protection_keys.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/leds/leds-ktd2692.c b/drivers/leds/leds-ktd2692.c
-index 632f10db4b3f..f341da1503a4 100644
---- a/drivers/leds/leds-ktd2692.c
-+++ b/drivers/leds/leds-ktd2692.c
-@@ -256,6 +256,17 @@ static void ktd2692_setup(struct ktd2692_context *led)
- 				 | KTD2692_REG_FLASH_CURRENT_BASE);
- }
+diff --git a/tools/testing/selftests/vm/protection_keys.c b/tools/testing/selftests/vm/protection_keys.c
+index fdbb602ecf32..9ee0ae5d3e06 100644
+--- a/tools/testing/selftests/vm/protection_keys.c
++++ b/tools/testing/selftests/vm/protection_keys.c
+@@ -561,7 +561,6 @@ int alloc_random_pkey(void)
+ 	int nr_alloced = 0;
+ 	int random_index;
+ 	memset(alloced_pkeys, 0, sizeof(alloced_pkeys));
+-	srand((unsigned int)time(NULL));
  
-+static void regulator_disable_action(void *_data)
-+{
-+	struct device *dev = _data;
-+	struct ktd2692_context *led = dev_get_drvdata(dev);
-+	int ret;
+ 	/* allocate every possible key and make a note of which ones we got */
+ 	max_nr_pkey_allocs = NR_PKEYS;
+@@ -1552,6 +1551,8 @@ int main(void)
+ 	int nr_iterations = 22;
+ 	int pkeys_supported = is_pkeys_supported();
+ 
++	srand((unsigned int)time(NULL));
 +
-+	ret = regulator_disable(led->regulator);
-+	if (ret)
-+		dev_err(dev, "Failed to disable supply: %d\n", ret);
-+}
-+
- static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
- 			    struct ktd2692_led_config_data *cfg)
- {
-@@ -286,8 +297,14 @@ static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
+ 	setup_handlers();
  
- 	if (led->regulator) {
- 		ret = regulator_enable(led->regulator);
--		if (ret)
-+		if (ret) {
- 			dev_err(dev, "Failed to enable supply: %d\n", ret);
-+		} else {
-+			ret = devm_add_action_or_reset(dev,
-+						regulator_disable_action, dev);
-+			if (ret)
-+				return ret;
-+		}
- 	}
- 
- 	child_node = of_get_next_available_child(np, NULL);
-@@ -377,17 +394,9 @@ static int ktd2692_probe(struct platform_device *pdev)
- static int ktd2692_remove(struct platform_device *pdev)
- {
- 	struct ktd2692_context *led = platform_get_drvdata(pdev);
--	int ret;
- 
- 	led_classdev_flash_unregister(&led->fled_cdev);
- 
--	if (led->regulator) {
--		ret = regulator_disable(led->regulator);
--		if (ret)
--			dev_err(&pdev->dev,
--				"Failed to disable supply: %d\n", ret);
--	}
--
- 	mutex_destroy(&led->lock);
- 
- 	return 0;
+ 	printf("has pkeys: %d\n", pkeys_supported);
 -- 
 2.30.2
 
