@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC6C3C4BD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A473C5800
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242883AbhGLHAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38480 "EHLO mail.kernel.org"
+        id S1378482AbhGLIkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239096AbhGLGor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EEBB611C0;
-        Mon, 12 Jul 2021 06:40:38 +0000 (UTC)
+        id S1350619AbhGLHvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5569461C30;
+        Mon, 12 Jul 2021 07:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072039;
-        bh=Cp9r/6DiavQ39O4xHOQMq0GHMp6ECWukRjvPnGBvsg8=;
+        s=korg; t=1626076022;
+        bh=qC8BuRcM73CXyeA4KBinzP5v6wjTB3NpWGuOzKomHek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yl2NR6+OjzkWWm3yGhXGb9U5wk1v/PjC0+SMh0+swbt0hhQEbUWgVi6dpx1s7xG+P
-         awcBLKNpH9B419UYQAQgx8Og0wn+owO1guMi4HguelFrh7KasdUxo1ZeBS5jPYvOEd
-         DxZoJVPhf+cnvqTMolDpufi5kaoeLy0kmXXFRfHY=
+        b=o/N3Ppz4uprMzh8HUleGuiCtq3D4qqj34HWLAjeKiUnmuAJ7pbI42co1IUkRoZEGa
+         2p2Ducqb1GsOccXqsRWWKwO5NW98JAbAPhuTJiFCVsmvHjy3HxM76f4Gt459EZEbHJ
+         1DkL4SkI8F49za3f2dMKuullw1NCq0wPUQ77OOmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Tong Tiangen <tongtiangen@huawei.com>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 327/593] RDMA/rtrs-clt: Fix memory leak of not-freed sess->stats and stats->pcpu_stats
+Subject: [PATCH 5.13 464/800] brcmfmac: Fix a double-free in brcmf_sdio_bus_reset
 Date:   Mon, 12 Jul 2021 08:08:07 +0200
-Message-Id: <20210712060921.709320804@linuxfoundation.org>
+Message-Id: <20210712061016.491016964@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Tong Tiangen <tongtiangen@huawei.com>
 
-[ Upstream commit 7ecd7e290bee0ab9cf75b79a367a4cc113cf8292 ]
+[ Upstream commit 7ea7a1e05c7ff5ffc9f9ec1f0849f6ceb7fcd57c ]
 
-sess->stats and sess->stats->pcpu_stats objects are freed
-when sysfs entry is removed. If something wrong happens and
-session is closed before sysfs entry is created,
-sess->stats and sess->stats->pcpu_stats objects are not freed.
+brcmf_sdiod_remove has been called inside brcmf_sdiod_probe when fails,
+so there's no need to call another one. Otherwise, sdiodev->freezer
+would be double freed.
 
-This patch adds freeing of them at three places:
-1. When client uses wrong address and session creation fails.
-2. When client fails to create a sysfs entry.
-3. When client adds wrong address via sysfs add_path.
-
-Fixes: 215378b838df0 ("RDMA/rtrs: client: sysfs interface functions")
-Link: https://lore.kernel.org/r/20210528113018.52290-21-jinpu.wang@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 7836102a750a ("brcmfmac: reset SDIO bus on a firmware crash")
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210601100128.69561-1-tongtiangen@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index dc44a9bfcdaa..46fad202a380 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2706,6 +2706,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 		if (err) {
- 			list_del_rcu(&sess->s.entry);
- 			rtrs_clt_close_conns(sess, true);
-+			free_percpu(sess->stats->pcpu_stats);
-+			kfree(sess->stats);
- 			free_sess(sess);
- 			goto close_all_sess;
- 		}
-@@ -2714,6 +2716,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 		if (err) {
- 			list_del_rcu(&sess->s.entry);
- 			rtrs_clt_close_conns(sess, true);
-+			free_percpu(sess->stats->pcpu_stats);
-+			kfree(sess->stats);
- 			free_sess(sess);
- 			goto close_all_sess;
- 		}
-@@ -2973,6 +2977,8 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
- close_sess:
- 	rtrs_clt_remove_path_from_arr(sess);
- 	rtrs_clt_close_conns(sess, true);
-+	free_percpu(sess->stats->pcpu_stats);
-+	kfree(sess->stats);
- 	free_sess(sess);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 16ed325795a8..3a1c98a046f0 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4162,7 +4162,6 @@ static int brcmf_sdio_bus_reset(struct device *dev)
+ 	if (ret) {
+ 		brcmf_err("Failed to probe after sdio device reset: ret %d\n",
+ 			  ret);
+-		brcmf_sdiod_remove(sdiodev);
+ 	}
  
- 	return err;
+ 	return ret;
 -- 
 2.30.2
 
