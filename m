@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755B63C5951
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7CE3C5952
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382745AbhGLJCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        id S1382764AbhGLJCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352868AbhGLIAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:00:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AB2661A19;
-        Mon, 12 Jul 2021 07:53:40 +0000 (UTC)
+        id S1352875AbhGLIAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:00:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC22C6145F;
+        Mon, 12 Jul 2021 07:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076421;
-        bh=oWIVEfJisgjGA/Uk2e+BIdHRCJdQ8T7qzbJPpW+JC2E=;
+        s=korg; t=1626076426;
+        bh=17ndaT0awGPfG3rICprw+qKb6vXqEx7aDN+fYNLbgec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eKMoqk/Mqjmxsocg19gxsd5WkKy2k4VijTBN/6GktDgPd/o2U6qobhMyUUC4WmHNL
-         KF0RDbm5M0VSdCXmJzzUs3ZRAzH2tsHTKbONSlrIcz2BNgxsnRKysuan+Y0pPx+wpV
-         KKPcfYxyd6r6sQYsUmwtxHuQnv9LIEz9wmfjaibI=
+        b=z9eY/TSgUdG04e5tE+F8lUiQPL+PJJs2bYHYd0Vuqh6y2A8qNDGveBf1y7hj7Qd/1
+         xvW8szfeSeoE1WN/PbYjIv6EhndY4RmUk24pnYczulzcMw7ALDyj5Job1DYEg7d2uC
+         +Ttm1U//xcoLTddPK90ExhGD6BIHW31hkD2GK9qA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 636/800] iio: cros_ec_sensors: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:59 +0200
-Message-Id: <20210712061034.794414373@linuxfoundation.org>
+Subject: [PATCH 5.13 638/800] ASoC: rk3328: fix missing clk_disable_unprepare() on error in rk3328_platform_probe()
+Date:   Mon, 12 Jul 2021 08:11:01 +0200
+Message-Id: <20210712061034.980918331@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,43 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 8dea228b174ac9637b567e5ef54f4c40db4b3c41 ]
+[ Upstream commit d14eece945a8068a017995f7512ea2beac21e34b ]
 
-The samples buffer is passed to iio_push_to_buffers_with_timestamp()
-which requires a buffer aligned to 8 bytes as it is assumed that
-the timestamp will be naturally aligned if present.
+Fix the missing clk_disable_unprepare() before return
+from rk3328_platform_probe() in the error handling case.
 
-Fixes tag is inaccurate but prior to that likely manual backporting needed
-(for anything before 4.18) Earlier than that the include file to fix is
-drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.h:
-commit 974e6f02e27 ("iio: cros_ec_sensors_core: Add common functions
-for the ChromeOS EC Sensor Hub.") present since kernel stable 4.10.
-(Thanks to Gwendal for tracking this down)
-
-Fixes: 5a0b8cb46624c ("iio: cros_ec: Move cros_ec_sensors_core.h in /include")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Gwendal Grignou <gwendal@chromium.org
-Link: https://lore.kernel.org/r/20210501171352.512953-7-jic23@kernel.org
+Fixes: c32759035ad2 ("ASoC: rockchip: support ACODEC for rk3328")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210518075847.1116983-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/iio/common/cros_ec_sensors_core.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rk3328_codec.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-index 7ce8a8adad58..c582e1a14232 100644
---- a/include/linux/iio/common/cros_ec_sensors_core.h
-+++ b/include/linux/iio/common/cros_ec_sensors_core.h
-@@ -77,7 +77,7 @@ struct cros_ec_sensors_core_state {
- 		u16 scale;
- 	} calib[CROS_EC_SENSOR_MAX_AXIS];
- 	s8 sign[CROS_EC_SENSOR_MAX_AXIS];
--	u8 samples[CROS_EC_SAMPLE_SIZE];
-+	u8 samples[CROS_EC_SAMPLE_SIZE] __aligned(8);
+diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
+index bfefefcc76d8..758d439e8c7a 100644
+--- a/sound/soc/codecs/rk3328_codec.c
++++ b/sound/soc/codecs/rk3328_codec.c
+@@ -474,7 +474,8 @@ static int rk3328_platform_probe(struct platform_device *pdev)
+ 	rk3328->pclk = devm_clk_get(&pdev->dev, "pclk");
+ 	if (IS_ERR(rk3328->pclk)) {
+ 		dev_err(&pdev->dev, "can't get acodec pclk\n");
+-		return PTR_ERR(rk3328->pclk);
++		ret = PTR_ERR(rk3328->pclk);
++		goto err_unprepare_mclk;
+ 	}
  
- 	int (*read_ec_sensors_data)(struct iio_dev *indio_dev,
- 				    unsigned long scan_mask, s16 *data);
+ 	ret = clk_prepare_enable(rk3328->pclk);
+@@ -484,19 +485,34 @@ static int rk3328_platform_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(base))
+-		return PTR_ERR(base);
++	if (IS_ERR(base)) {
++		ret = PTR_ERR(base);
++		goto err_unprepare_pclk;
++	}
+ 
+ 	rk3328->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+ 					       &rk3328_codec_regmap_config);
+-	if (IS_ERR(rk3328->regmap))
+-		return PTR_ERR(rk3328->regmap);
++	if (IS_ERR(rk3328->regmap)) {
++		ret = PTR_ERR(rk3328->regmap);
++		goto err_unprepare_pclk;
++	}
+ 
+ 	platform_set_drvdata(pdev, rk3328);
+ 
+-	return devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
++	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
+ 					       rk3328_dai,
+ 					       ARRAY_SIZE(rk3328_dai));
++	if (ret)
++		goto err_unprepare_pclk;
++
++	return 0;
++
++err_unprepare_pclk:
++	clk_disable_unprepare(rk3328->pclk);
++
++err_unprepare_mclk:
++	clk_disable_unprepare(rk3328->mclk);
++	return ret;
+ }
+ 
+ static const struct of_device_id rk3328_codec_of_match[] __maybe_unused = {
 -- 
 2.30.2
 
