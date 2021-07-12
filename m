@@ -2,171 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8863C5A2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF923C5A2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhGLJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236162AbhGLJgS (ORCPT
+        id S236786AbhGLJhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:37:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236653AbhGLJhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:36:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C1BC0613F0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 02:33:29 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1m2sJS-0006eq-JK; Mon, 12 Jul 2021 11:33:18 +0200
-Message-ID: <1159a6b7f30402b07aaa5654bd98bfaa95457960.camel@pengutronix.de>
-Subject: Re: [PATCH v14 09/12] dmaengine: imx-sdma: remove ERR009165 on
- i.mx6ul
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Robin Gong <yibin.gong@nxp.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "martin.fuzzey@flowbird.group" <martin.fuzzey@flowbird.group>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "matthias.schiffer@ew.tq-group.com" 
-        <matthias.schiffer@ew.tq-group.com>,
-        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
-        "m.felsch@pengutronix.de" <m.felsch@pengutronix.de>,
-        Clark Wang <xiaoning.wang@nxp.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 12 Jul 2021 11:33:16 +0200
-In-Reply-To: <VE1PR04MB6688F74F67882E3DC26495E489159@VE1PR04MB6688.eurprd04.prod.outlook.com>
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
-         <1617809456-17693-10-git-send-email-yibin.gong@nxp.com>
-         <3ade0741d94e53eb2bca86743ad11e55899381d7.camel@pengutronix.de>
-         <VE1PR04MB6688F74F67882E3DC26495E489159@VE1PR04MB6688.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        Mon, 12 Jul 2021 05:37:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626082452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gdA+S+3YSWLYResZwMQhyDJvMFxlp9J0PZNAibvseEU=;
+        b=URWCQ9H/BAqBhxSJm8RriRADhUJFhMaa7Iza8QAd/L/giBSy3IhHv7VSD+tLuUuIv10Z1+
+        mwpL1yY82utTQmbdZ9S4Ypd5pKgYEvrGZZLDJXp3eNUYINhZTvxT4g8+q01PyiqmUh5wSP
+        sXq5J169l7n9VvqT+/mL7X24jOy2ta4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-DsTtSTTPN3Oc37bTxBzuIg-1; Mon, 12 Jul 2021 05:34:08 -0400
+X-MC-Unique: DsTtSTTPN3Oc37bTxBzuIg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7F0E800D62;
+        Mon, 12 Jul 2021 09:34:06 +0000 (UTC)
+Received: from localhost (ovpn-112-230.ams2.redhat.com [10.36.112.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 98C5B604CF;
+        Mon, 12 Jul 2021 09:34:02 +0000 (UTC)
+Date:   Mon, 12 Jul 2021 10:34:01 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Wenchao Hao <haowenchao@huawei.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-scsi@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Wu Bo <wubo40@huawei.com>, linfeilong@huawei.com,
+        yuzhanzhan@huawei.com
+Subject: Re: [bug report]scsi: drive letter drift problem
+Message-ID: <YOwMiYRmGYskOn7A@stefanha-x1.localdomain>
+References: <7ae2293e-71a9-f68e-0bfb-b4a70ecf493e@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fuPUrc/TQtUWERHW"
+Content-Disposition: inline
+In-Reply-To: <7ae2293e-71a9-f68e-0bfb-b4a70ecf493e@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 12.07.2021 um 04:03 +0000 schrieb Robin Gong:
-> On 09/07/21 17:45 Lucas Stach <l.stach@pengutronix.de> wrote:
-> > Am Mittwoch, dem 07.04.2021 um 23:30 +0800 schrieb Robin Gong:
-> > > ECSPI issue fixed from i.mx6ul at hardware level, no need
-> > > ERR009165 anymore on those chips such as i.mx8mq.
-> > > 
-> > > Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-> > > Acked-by: Vinod Koul <vkoul@kernel.org>
-> > > ---
-> > >  drivers/dma/imx-sdma.c | 26 +++++++++++++++++++++++++-
-> > >  1 file changed, 25 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c index
-> > > 86bd383..af85116 100644
-> > > --- a/drivers/dma/imx-sdma.c
-> > > +++ b/drivers/dma/imx-sdma.c
-> > > @@ -422,6 +422,13 @@ struct sdma_driver_data {
-> > >  	int num_events;
-> > >  	struct sdma_script_start_addrs	*script_addrs;
-> > >  	bool check_ratio;
-> > > +	/*
-> > > +	 * ecspi ERR009165 fixed should be done in sdma script
-> > > +	 * and it has been fixed in soc from i.mx6ul.
-> > > +	 * please get more information from the below link:
-> > > +	 *
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.n
-> > xp.com%2Fdocs%2Fen%2Ferrata%2FIMX6DQCE.pdf&amp;data=04%7C01%7C
-> > yibin.gong%40nxp.com%7Cc950b1bdb6544eda369408d942be35d9%7C686ea
-> > 1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C637614206980361737%7CU
-> > nknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6
-> > Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=6iT6%2FbzJHyWnkhkDynY
-> > wmK9nn2hgCDy1GyzELeEk9K8%3D&amp;reserved=0
-> > > +	 */
-> > > +	bool ecspi_fixed;
-> > >  };
-> > > 
-> > >  struct sdma_engine {
-> > > @@ -542,6 +549,13 @@ static struct sdma_driver_data sdma_imx6q = {
-> > >  	.script_addrs = &sdma_script_imx6q,
-> > >  };
-> > > 
-> > > +static struct sdma_driver_data sdma_imx6ul = {
-> > > +	.chnenbl0 = SDMA_CHNENBL0_IMX35,
-> > > +	.num_events = 48,
-> > > +	.script_addrs = &sdma_script_imx6q,
-> > > +	.ecspi_fixed = true,
-> > > +};
-> > > +
-> > >  static struct sdma_script_start_addrs sdma_script_imx7d = {
-> > >  	.ap_2_ap_addr = 644,
-> > >  	.uart_2_mcu_addr = 819,
-> > > @@ -575,6 +589,7 @@ static const struct of_device_id sdma_dt_ids[] = {
-> > >  	{ .compatible = "fsl,imx31-sdma", .data = &sdma_imx31, },
-> > >  	{ .compatible = "fsl,imx25-sdma", .data = &sdma_imx25, },
-> > >  	{ .compatible = "fsl,imx7d-sdma", .data = &sdma_imx7d, },
-> > > +	{ .compatible = "fsl,imx6ul-sdma", .data = &sdma_imx6ul, },
-> > >  	{ .compatible = "fsl,imx8mq-sdma", .data = &sdma_imx8mq, },
-> > >  	{ /* sentinel */ }
-> > >  };
-> > > @@ -1144,8 +1159,17 @@ static int sdma_config_channel(struct dma_chan
-> > *chan)
-> > >  			if (sdmac->peripheral_type == IMX_DMATYPE_ASRC_SP ||
-> > >  			    sdmac->peripheral_type == IMX_DMATYPE_ASRC)
-> > >  				sdma_set_watermarklevel_for_p2p(sdmac);
-> > > -		} else
-> > > +		} else {
-> > > +			/*
-> > > +			 * ERR009165 fixed from i.mx6ul, no errata need,
-> > > +			 * set bit31 to let sdma script skip the errata.
-> > > +			 */
-> > > +			if (sdmac->peripheral_type == IMX_DMATYPE_CSPI &&
-> > > +			    sdmac->direction == DMA_MEM_TO_DEV &&
-> > > +			    sdmac->sdma->drvdata->ecspi_fixed)
-> > > +				__set_bit(31, &sdmac->watermark_level);
-> > 
-> > Hm, I don't care much either way, but couldn't we just return the regular
-> > mcu_2_app script in sdma_get_pc when ecspi_fixed == true? Seems like this
-> > would be a simpler and more targeted code change.
-> Yes, return mcu_2_app if ecspi_fixed == true also works, but since sdma firmware
-> have already been here to fix ERR009165 on most of legacy i.mx6/7/8 chips, so choosing
-> firmware/ram script to do like ROM/mcu_2_app is okay too since both ram script and rom
-> script in case of ecspi_fixed are almost same.
-> 
-Actually, while thinking some more about this: it is preferable to
-return mcu_2_app in the ecspi_fixed case, as this allows proper DMA
-support on the fixed SoCs without loading the firmware. The way you do
-it here still requires the RAM firmware to be loaded in order to get
-DMA support at all.
 
-Regards,
-Lucas
+--fuPUrc/TQtUWERHW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > 
-> > >  			__set_bit(sdmac->event_id0, sdmac->event_mask);
-> > > +		}
-> > > 
-> > >  		/* Address */
-> > >  		sdmac->shp_addr = sdmac->per_address;
-> > 
-> 
+On Mon, Jul 12, 2021 at 12:47:05PM +0800, Wenchao Hao wrote:
+> We deploy two SCSI disk in one SCSI host(virtio-scsi bus) for one machine,
+> whose ids are [0:0:0:0] and [0:0:1:0].
+>=20
+> Mostly, the device letter are assigned as following after reboot:
+> [0:0:0:0] --> sda
+> [0:0:1:0] --> sdb
+>=20
+> While in rare cases, the device letter shown as following:
+> [0:0:0:0] --> sdb
+> [0:0:1:0] --> sda
+>=20
+> Could we guarantee "sda" is assigned to [0:0:0:0] and "sdb" is assigned to
+> [0:0:1:0] or not?
+> If we can, then how?
 
+Is there a stable ID that you can use in /dev/disk/by-*?
+
+Stefan
+
+--fuPUrc/TQtUWERHW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDsDIkACgkQnKSrs4Gr
+c8hdnQf/Rs2fRaJYaSbQa32JKf0l4C/g6F+qFtbfnjBx97dzW6wb0+PPyavNMGmp
+tWbISz6bIz3StkRv8oOstrJA1px9caorIZJTvXXBf036EJFtnOuZq9HF1enjybNw
+RLFknEaavVlj6ay2ZkdxkIwCjGJtUcU/U6lXFGrWkwqScP6TOmhnV+l7nkcH74Kq
+lffTF6TC6rqGMQNVpPzK4PueRMSuBzWL4TAol61w9o6pwGYnxCObOnQIF4QGj6cE
+LKY89s8dbJG8SEN1LkUrqsd9NkV9Kd4lT67QEJd/qoWCBXFmL4mbF+ceJ5B0kL13
+RM9O4ybPKVXqiWhprpNon4qvBfwo3w==
+=0+Ee
+-----END PGP SIGNATURE-----
+
+--fuPUrc/TQtUWERHW--
 
