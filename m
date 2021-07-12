@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1709E3C5184
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1863C4B50
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349210AbhGLHlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        id S240610AbhGLG4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:56:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245307AbhGLHLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:11:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C169760FF0;
-        Mon, 12 Jul 2021 07:08:46 +0000 (UTC)
+        id S236463AbhGLGkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAF8961179;
+        Mon, 12 Jul 2021 06:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073727;
-        bh=rNG5DcWA9KDHMgAglAzkWJWc5snz95lOb8j/k4helOw=;
+        s=korg; t=1626071881;
+        bh=T8fUfAkdFqSrkqYjPwrk9Jg41wYzmdXkxx8O38AWlcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fPDHvCAbzSd09Yu0qFZtFklqCIDgA9ngSBrOg0qsh+teG9PpN5ef4GhnJpn6k6rUE
-         bw0Bu/KyDrMYnFkP640vqClkXWN+/aRNRDqksZDTlf1+OwLb67lFTs2eUzQPorHDvs
-         kOIZcxAqJkDtMzmhlJHkgVvuzrBqLqKQLhURe7mw=
+        b=zst5fzDH1ZoRDDGpKEOf4NgijVUQEFbPvweG9sHmkirxDh/5zF3A7QBg00+Egmy2A
+         aYQzP34zR559UX23+2aKzBoSf1XBH4/7ErxNjPMXOA75EjX/8YChrn4Y/Vu2MwAloH
+         0iqQFuW5Nmf+BQCoTvR/gCKR+iGYqe7oJWxd1IhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 338/700] ACPI: bgrt: Fix CFI violation
+Subject: [PATCH 5.10 261/593] btrfs: clear log tree recovering status if starting transaction fails
 Date:   Mon, 12 Jul 2021 08:07:01 +0200
-Message-Id: <20210712061012.281177073@linuxfoundation.org>
+Message-Id: <20210712060911.986387356@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,123 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit f37ccf8fce155d08ae2a4fb3db677911ced0c21a ]
+[ Upstream commit 1aeb6b563aea18cd55c73cf666d1d3245a00f08c ]
 
-clang's Control Flow Integrity requires that every indirect call has a
-valid target, which is based on the type of the function pointer. The
-*_show() functions in this file are written as if they will be called
-from dev_attr_show(); however, they will be called from
-sysfs_kf_seq_show() because the files were created by
-sysfs_create_group() and the sysfs ops are based on kobj_sysfs_ops
-because of kobject_add_and_create(). Because the *_show() functions do
-not match the type of the show() member in struct kobj_attribute, there
-is a CFI violation.
+When a log recovery is in progress, lots of operations have to take that
+into account, so we keep this status per tree during the operation. Long
+time ago error handling revamp patch 79787eaab461 ("btrfs: replace many
+BUG_ONs with proper error handling") removed clearing of the status in
+an error branch. Add it back as was intended in e02119d5a7b4 ("Btrfs:
+Add a write ahead tree log to optimize synchronous operations").
 
-$ cat /sys/firmware/acpi/bgrt/{status,type,version,{x,y}offset}}
-1
-0
-1
-522
-307
+There are probably no visible effects, log replay is done only during
+mount and if it fails all structures are cleared so the stale status
+won't be kept.
 
-$ dmesg | grep "CFI failure"
-[  267.761825] CFI failure (target: type_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762246] CFI failure (target: xoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762584] CFI failure (target: status_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762973] CFI failure (target: yoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.763330] CFI failure (target: version_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-
-Convert these functions to the type of the show() member in struct
-kobj_attribute so that there is no more CFI violation. Because these
-functions are all so similar, combine them into a macro.
-
-Fixes: d1ff4b1cdbab ("ACPI: Add support for exposing BGRT data")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1406
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error handling")
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/bgrt.c | 57 ++++++++++++++-------------------------------
- 1 file changed, 18 insertions(+), 39 deletions(-)
+ fs/btrfs/tree-log.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
-index 19bb7f870204..e0d14017706e 100644
---- a/drivers/acpi/bgrt.c
-+++ b/drivers/acpi/bgrt.c
-@@ -15,40 +15,19 @@
- static void *bgrt_image;
- static struct kobject *bgrt_kobj;
- 
--static ssize_t version_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.version);
--}
--static DEVICE_ATTR_RO(version);
--
--static ssize_t status_show(struct device *dev,
--			   struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.status);
--}
--static DEVICE_ATTR_RO(status);
--
--static ssize_t type_show(struct device *dev,
--			 struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_type);
--}
--static DEVICE_ATTR_RO(type);
--
--static ssize_t xoffset_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_x);
--}
--static DEVICE_ATTR_RO(xoffset);
--
--static ssize_t yoffset_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_y);
--}
--static DEVICE_ATTR_RO(yoffset);
-+#define BGRT_SHOW(_name, _member) \
-+	static ssize_t _name##_show(struct kobject *kobj,			\
-+				    struct kobj_attribute *attr, char *buf)	\
-+	{									\
-+		return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab._member);	\
-+	}									\
-+	struct kobj_attribute bgrt_attr_##_name = __ATTR_RO(_name)
-+
-+BGRT_SHOW(version, version);
-+BGRT_SHOW(status, status);
-+BGRT_SHOW(type, image_type);
-+BGRT_SHOW(xoffset, image_offset_x);
-+BGRT_SHOW(yoffset, image_offset_y);
- 
- static ssize_t image_read(struct file *file, struct kobject *kobj,
- 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
-@@ -60,11 +39,11 @@ static ssize_t image_read(struct file *file, struct kobject *kobj,
- static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
- 
- static struct attribute *bgrt_attributes[] = {
--	&dev_attr_version.attr,
--	&dev_attr_status.attr,
--	&dev_attr_type.attr,
--	&dev_attr_xoffset.attr,
--	&dev_attr_yoffset.attr,
-+	&bgrt_attr_version.attr,
-+	&bgrt_attr_status.attr,
-+	&bgrt_attr_type.attr,
-+	&bgrt_attr_xoffset.attr,
-+	&bgrt_attr_yoffset.attr,
- 	NULL,
- };
- 
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 300951088a11..4b913de2f24f 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6348,6 +6348,7 @@ next:
+ error:
+ 	if (wc.trans)
+ 		btrfs_end_transaction(wc.trans);
++	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
 -- 
 2.30.2
 
