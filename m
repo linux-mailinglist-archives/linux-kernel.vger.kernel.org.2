@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9ED3C4DD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FDC3C4E0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243257AbhGLHPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50590 "EHLO mail.kernel.org"
+        id S238902AbhGLHQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:16:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240337AbhGLGvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240338AbhGLGvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 02:51:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C8AB60FE3;
-        Mon, 12 Jul 2021 06:48:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE5161006;
+        Mon, 12 Jul 2021 06:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072494;
-        bh=2RKsoqzOpkwGZoidnAJECty77Z17DJBi4cGvckbFOcM=;
+        s=korg; t=1626072497;
+        bh=viCXNFNvlPbEBj8AIc4AR4ukiy7D927Ga/Q+qK0TVEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5y5IGg5GoZcsPZ1uDjsRLMiOY75qXSBCvWVpix9CSwnWkyCeSUqH6gugntHwekL+
-         ESED+80+X8VI/M9sUxv928sZFxB/BHp2DSP8MXsehQSozqBT04AzDz1mbfiFCpZIA9
-         vq80UvAI6vIE1mS2w/lmUycYvXU9Vd3YOXd01Wx4=
+        b=o8agxLsHA6WJgb8lRkU8MMNPwNZvbQ8Z1ZD3lEW99MwbfPmFlJP49QLI17eKytSbt
+         qU6Cyc+yMyqfqFbBeDAqR+Rau+HUe21FfVPCOhx6hVZfQ/lw2reEvcw2Vfmvc+Cphb
+         I5DRIzhrmF9x+j5pxN8+4rpvXYkWKJdAy2cRsbMw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 514/593] thunderbolt: Bond lanes only when dual_link_port != NULL in alloc_dev_default()
-Date:   Mon, 12 Jul 2021 08:11:14 +0200
-Message-Id: <20210712060948.579824691@linuxfoundation.org>
+Subject: [PATCH 5.10 515/593] iio: adc: at91-sama5d2: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:11:15 +0200
+Message-Id: <20210712060948.756193907@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -42,50 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit a0d36fa1065901f939b04587a09c65303a64ac88 ]
+[ Upstream commit 8f884758966259fa8c50c137ac6d4ce9bb7859db ]
 
-We should not dereference ->dual_link_port if it is NULL and lane bonding
-is requested. For this reason move lane bonding configuration happen
-inside the block where ->dual_link_port != NULL.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-Fixes: 54509f5005ca ("thunderbolt: Add KUnit tests for path walking")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Yehezkel Bernat <YehezkelShB@gmail.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Found during an audit of all calls of this function.
+
+Fixes: 5e1a1da0f8c9 ("iio: adc: at91-sama5d2_adc: add hw trigger and buffer support")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Eugen Hristev <eugen.hristev@microchip.com>
+Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210613152301.571002-2-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thunderbolt/test.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/iio/adc/at91-sama5d2_adc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/thunderbolt/test.c b/drivers/thunderbolt/test.c
-index 464c2d37b992..e254f8c37cb7 100644
---- a/drivers/thunderbolt/test.c
-+++ b/drivers/thunderbolt/test.c
-@@ -259,14 +259,14 @@ static struct tb_switch *alloc_dev_default(struct kunit *test,
- 	if (port->dual_link_port && upstream_port->dual_link_port) {
- 		port->dual_link_port->remote = upstream_port->dual_link_port;
- 		upstream_port->dual_link_port->remote = port->dual_link_port;
--	}
- 
--	if (bonded) {
--		/* Bonding is used */
--		port->bonded = true;
--		port->dual_link_port->bonded = true;
--		upstream_port->bonded = true;
--		upstream_port->dual_link_port->bonded = true;
-+		if (bonded) {
-+			/* Bonding is used */
-+			port->bonded = true;
-+			port->dual_link_port->bonded = true;
-+			upstream_port->bonded = true;
-+			upstream_port->dual_link_port->bonded = true;
-+		}
- 	}
- 
- 	return sw;
+diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+index b917a4714a9c..b8139c435a4b 100644
+--- a/drivers/iio/adc/at91-sama5d2_adc.c
++++ b/drivers/iio/adc/at91-sama5d2_adc.c
+@@ -403,7 +403,8 @@ struct at91_adc_state {
+ 	struct at91_adc_dma		dma_st;
+ 	struct at91_adc_touch		touch_st;
+ 	struct iio_dev			*indio_dev;
+-	u16				buffer[AT91_BUFFER_MAX_HWORDS];
++	/* Ensure naturally aligned timestamp */
++	u16				buffer[AT91_BUFFER_MAX_HWORDS] __aligned(8);
+ 	/*
+ 	 * lock to prevent concurrent 'single conversion' requests through
+ 	 * sysfs.
 -- 
 2.30.2
 
