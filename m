@@ -2,131 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB933C787F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2563C7880
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236072AbhGMVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235139AbhGMVGw (ORCPT
+        id S235692AbhGMVIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:08:22 -0400
+Received: from smtprelay0217.hostedemail.com ([216.40.44.217]:50440 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231499AbhGMVIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:06:52 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CD9C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:04:01 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id a18so73926ljk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0/WzDWmZUq8jX07GulngkcAUpVh4+cRWNFXLGvNWEeI=;
-        b=EcEjIIgQMnPfw3kb3KLbeGApDG4e53k159at93bSWI/G3rcs8agKmkFnyWlj64JjSs
-         1V0oqyXuyLZqCVUwBRYlGq4mMsc0KeLco5nUrr8LWqo1p6SlsBut4z4ZATD6Gp+jGjMA
-         tmpcDv5Xm/v7mNQuRGh5BCs8ywWxgw4va4ciRZ5NTmWr+YncMNtETWMIT1+gZt/fXaA0
-         9/60S1/bCEZBTUdC8FyMSr04MaXWm7pFI215a7zwwIgS2wPCKlLvaLTWnuFSvlOZmK9c
-         CIkJpOPP66lsxPTCMs47Uv/5SVWPro87N7+MC4nJIi0x3KBNHl8XRj/n0VBcJM4JsbIn
-         fAvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0/WzDWmZUq8jX07GulngkcAUpVh4+cRWNFXLGvNWEeI=;
-        b=N76XJ/OlZQiHTf5OqgCdwhsj1TJBR4X0ZyeF0V8Tn20t1xf8a7DTc2YCMuAYLEFs/p
-         z7Ygv+o7hZ/ESdRmU88SaQvJaR9T4uKZ0QOdveF7/o61TE4joPnhuMDjobY7g1j4yHRE
-         NSiSU1Gph+SPwTTO8Lg/UO+tZiGGQ7mPiNOWrjHzAMIJFVVcVJfAA+8GTftD4k9Sxd0v
-         0WCaEQI36lZb+/Ljkw8Pzk4eX+lCuBIZrqEbyDXyGqRcEed4+50liJjgncl+GlmyV6KV
-         2gbryJXRsqkjQ3fmXiSaY5JSXgUX5WGgwnMVq+0oTm/FULkxmx/10yu0XrrssyH0z6yf
-         igTw==
-X-Gm-Message-State: AOAM533KSIH89JIwLTX+jSOPL2aQsKEo3anNDIfRixlQfnEimYDSw+pC
-        MB25/aDJI9QUNcmj9umYmucgsflx0Vs7cETkhsEgYA==
-X-Google-Smtp-Source: ABdhPJxejiVBTFHqJSReqWobCTdyXBoqP09rUgnZRGuUJ0BDPBL7l/yP5EGzb2L9O7fWjR1kVxCSdLoVbVmALPmrNdk=
-X-Received: by 2002:a2e:a22c:: with SMTP id i12mr5959649ljm.267.1626210239553;
- Tue, 13 Jul 2021 14:03:59 -0700 (PDT)
+        Tue, 13 Jul 2021 17:08:21 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 01CA418291090;
+        Tue, 13 Jul 2021 21:05:29 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 0F8BF2EBF91;
+        Tue, 13 Jul 2021 21:05:28 +0000 (UTC)
+Message-ID: <8c2868969894ae5710147d3660e8442017438932.camel@perches.com>
+Subject: Re: [PATCH v1 4/4] serial: 8250_pci: Replace dev_*() by pci_*()
+ macros
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Date:   Tue, 13 Jul 2021 14:05:27 -0700
+In-Reply-To: <20210713104026.58560-4-andriy.shevchenko@linux.intel.com>
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+         <20210713104026.58560-4-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <20210601183002.26176586@canb.auug.org.au> <CACK8Z6Fp-_oRkC-dQ4U5y6ZUrr7Q3U084PiP+Q9daYstpps+aA@mail.gmail.com>
- <YLosn8r6pg4AUC14@kroah.com>
-In-Reply-To: <YLosn8r6pg4AUC14@kroah.com>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Tue, 13 Jul 2021 14:03:23 -0700
-Message-ID: <CACK8Z6GGXXv3G6po5Adfsw7=vHMij7Cpxu2mwjRmCDT70mkGhw@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the usb tree
-To:     Greg KH <greg@kroah.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 0F8BF2EBF91
+X-Spam-Status: No, score=-1.25
+X-Stat-Signature: fmdbu5uiam1jn1ntpfbc1itwfmnuz83w
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19wslUDz56ixfJZwEwSdX46P7sgAziArf0=
+X-HE-Tag: 1626210328-779052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+linux-doc@vger.kernel.org
-+Jonathan Corbet
+On Tue, 2021-07-13 at 13:40 +0300, Andy Shevchenko wrote:
+> PCI subsystem provides convenient shortcut macros for message printing.
+> Use those macros instead of dev_*().
+[]
+> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+[]
+> @@ -4147,8 +4139,7 @@ pciserial_init_one(struct pci_dev *dev, const struct pci_device_id *ent)
+>  		       sizeof(struct pciserial_board));
+>  		rc = serial_pci_guess_board(dev, &tmp);
+>  		if (rc == 0 && serial_pci_matches(board, &tmp))
+> -			moan_device("Redundant entry in serial pci_table.",
+> -				    dev);
+> +			moan_device("Redundant entry in serial pci_table.", dev);
 
-Hi Jonathan / kernel-docs people,
+Unassociated change.
 
-On Fri, Jun 4, 2021 at 6:37 AM Greg KH <greg@kroah.com> wrote:
->
-> On Tue, Jun 01, 2021 at 10:39:42AM -0700, Rajat Jain wrote:
-> > Hello,
-> >
-> >
-> > On Tue, Jun 1, 2021 at 1:30 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > After merging the usb tree, today's linux-next build (htmldocs) produced
-> > > this warning:
-> > >
-> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected indentation.
-> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote ends without a blank line; unexpected unindent.
-> >
-> > I'd be happy to send a patch to fix this, but I didn't really
-> > understand what needs to be done.
-> >
-> > Here is the relevant documentation update in the patch:
-> >
-> > +What:          /sys/devices/.../removable
-> > +Date:          May 2021
-> > +Contact:       Rajat Jain <rajatxjain@gmail.com>
-> > +Description:
-> > +               Information about whether a given device can be removed from the
-> > +               platform by the user. This is determined by its subsystem in a
-> > +               bus / platform-specific way. This attribute is only present for
-> > +               devices that can support determining such information:
-> > +
-> > +               "removable": device can be removed from the platform by the user
-> > +               "fixed":     device is fixed to the platform / cannot be removed
-> > +                            by the user.
-> > +               "unknown":   The information is unavailable / cannot be deduced.
-> > +
-> > +               Currently this is only supported by USB (which infers the
-> > +               information from a combination of hub descriptor bits and
-> > +               platform-specific data such as ACPI).
-> >
-> > I'd be happy to send a patch if you can point me what needs to be done
-> > (or let Stephen / Greg / some one else do it if it is easier to just
-> > do it instead of guiding me).
->
-> I do not know what the "right" thing to do here is, sorry.  Maybe one of
-> the kerneldoc people know?
-
-Can someone familiar with the documentation and html docs let me know
-what is wrong with Documentation/ABI/testing/sysfs-devices-removable
-that is resulting in this warning when doing "make htmldocs":
-
-> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected indentation.
-> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote ends without a blank line; unexpected unindent.
-
-I looked at the file line number 2 and it just seems inline with other
-similar files in that documentation folder.
-
-Thanks,
-
-Rajat
-
-> >
->
-> greg k-h
