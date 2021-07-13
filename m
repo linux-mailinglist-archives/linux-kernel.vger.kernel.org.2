@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A123C7422
+	by mail.lfdr.de (Postfix) with ESMTP id 849703C7423
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234815AbhGMQRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:17:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54702 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbhGMQQu (ORCPT
+        id S234874AbhGMQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233875AbhGMQQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:16:50 -0400
-Message-Id: <20210713160750.053836299@linutronix.de>
+        Tue, 13 Jul 2021 12:16:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A99EC0613EE
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:14:02 -0700 (PDT)
+Message-Id: <20210713160750.164344616@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626192839;
+        s=2020; t=1626192841;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=1UsSumVcIpKPg7SHarB7OCju5ysCnPoD8s5+TZzWUsw=;
-        b=R2CncGzL/iPVPgVMnjPtjeiPifJfkqejJcsWC3s6ugX8o3vN2aLU9ptYpcyLuDmZXcQVR1
-        u8x4vWgGl5YPy83TnRRkmwgNYmhmSWIvlkjDH1NGfVU2+6Vw5wWp/ZYecQnFgnGG/7GTei
-        pw0yq/kQU6W2FfcGDgEI5NnRTLphYAWmem2GtrGqNNJ5dNN7KwrH5g8p0UCNS4p71npTlT
-        tVDoRYSPMHXuc582aZq5fmfloKjauM2nWWk7SXWepImkhzrGw2K7fcfBcbjLUKNQBhZa+r
-        u4+lOzClQtvrFvA3kU4tVZUjKCHzd8U1jjwnVNBZb27SvavLVP3Fyt6kqH5bKA==
+        bh=C2Vo4XXDlt6QXjXgpvqtBd+Wz/AeHGU1nda0oZEGxhw=;
+        b=Ko3h5c0cRGrDPtsA0XPoUdMK8Utr59uIAoh2AELWAvyt7uQqIRhxub2WRPN8jOrPopPkTh
+        WCPZBR+2CmiW5Ms+79RxXNy+ryEhGinfAadTUCsN2909l2eAmjEg0gTgtRg5WYl2vUq5Xk
+        6T2safp6g3jdwqfsqd43giyG6DrQuM5tTO3kkqQH3g24JjSXaknK8Amnfa6chl1ANhhYah
+        pI0hQanNI3qUOEMIY8o5/DkRJ9aOaKJXtiHoJhz7GWi2BrXaV0RLRDDVlCKzSDVegUh7lg
+        mFZYOZd7LT8znccHKCFEcCWJun8yzdySVySoCb+MB4mRskOfxcfOrwLSwRyRkA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626192839;
+        s=2020e; t=1626192841;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=1UsSumVcIpKPg7SHarB7OCju5ysCnPoD8s5+TZzWUsw=;
-        b=yQc9cZFNppPcJlVjLgPQFt4fRFYgyWPZVabIi6yFeO8ctgFEgB6MK133Zi8z3QSjjbQXOh
-        Kyrev7uxzbmoztDA==
-Date:   Tue, 13 Jul 2021 17:11:36 +0200
+        bh=C2Vo4XXDlt6QXjXgpvqtBd+Wz/AeHGU1nda0oZEGxhw=;
+        b=QiCQ8mZrT7rM5hRdGv+JILnCKtabgJ1SUHJ2vS+f3xu11JDEPsxzCGfhVyBR6tT5kCTi14
+        vXAYcQeTx5kQ4QCg==
+Date:   Tue, 13 Jul 2021 17:11:37 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,7 +48,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 42/50] futex: Cleanup stale comments
+Subject: [patch 43/50] futex: Correct the number of requeued waiters for PI
 References: <20210713151054.700719949@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,46 +59,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The futex key reference mechanism is long gone. Cleanup the stale comments
-which still mention it.
+The accounting is wrong when either the PI sanity check or the
+requeue PI operation fails. Adjust it in the failure path.
+
+Will be simplified in the next step.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/futex.c |  9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ kernel/futex.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 ---
-diff --git a/kernel/futex.c b/kernel/futex.c
-index b8eab7a2934b..e0f266fa7249 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -1354,7 +1354,7 @@ static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
-  *  -  1 - acquired the lock;
-  *  - <0 - error
-  *
-- * The hb->lock and futex_key refs shall be held by the caller.
-+ * The hb->lock must be held by the caller.
-  *
-  * @exiting is only set when the return value is -EBUSY. If so, this holds
-  * a refcount on the exiting task on return and the caller needs to drop it
-@@ -2621,8 +2621,7 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
-  *
-  * Setup the futex_q and locate the hash_bucket.  Get the futex value and
-  * compare it with the expected value.  Handle atomic faults internally.
-- * Return with the hb lock held and a q.key reference on success, and unlocked
-- * with no q.key reference on failure.
-+ * Return with the hb lock held on success, and unlocked on failure.
-  *
-  * Return:
-  *  -  0 - uaddr contains val and hb has been locked;
-@@ -3235,9 +3234,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
- 	 * In order for us to be here, we know our q.key == key2, and since
- 	 * we took the hb->lock above, we also know that futex_requeue() has
- 	 * completed and we no longer have to concern ourselves with a wakeup
--	 * race with the atomic proxy lock acquisition by the requeue code. The
--	 * futex_requeue dropped our key1 reference and incremented our key2
--	 * reference count.
-+	 * race with the atomic proxy lock acquisition by the requeue code.
- 	 */
+@@ -2128,6 +2128,8 @@ static int futex_requeue(u32 __user *uad
  
- 	/*
+ 		/* Ensure we requeue to the expected futex for requeue_pi. */
+ 		if (requeue_pi && !match_futex(this->requeue_pi_key, &key2)) {
++			/* Don't account for it */
++			task_count--;
+ 			ret = -EINVAL;
+ 			break;
+ 		}
+@@ -2169,6 +2171,8 @@ static int futex_requeue(u32 __user *uad
+ 				 */
+ 				this->pi_state = NULL;
+ 				put_pi_state(pi_state);
++				/* Don't account for it */
++				task_count--;
+ 				/*
+ 				 * We stop queueing more waiters and let user
+ 				 * space deal with the mess.
 
