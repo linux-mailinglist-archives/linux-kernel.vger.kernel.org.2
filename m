@@ -2,150 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F12D3C6E1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E093C6E50
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbhGMKAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:00:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46852 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235381AbhGMKAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:00:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="207117624"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="207117624"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 02:57:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="451715145"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 13 Jul 2021 02:57:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1F2C7FF; Tue, 13 Jul 2021 12:58:22 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v2 1/1] serial: 8250_exar: Add ->unregister_gpio() callback
-Date:   Tue, 13 Jul 2021 12:58:21 +0300
-Message-Id: <20210713095821.7834-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235437AbhGMKTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 06:19:50 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:48992 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235143AbhGMKTt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 06:19:49 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id E17C6C1E98;
+        Tue, 13 Jul 2021 18:16:56 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P5175T139828399277824S1626169498245605_;
+        Tue, 13 Jul 2021 17:45:20 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <69499edfecc93ac7f9769f50aaaf1c72>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v12 01/10] dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash controller
+Date:   Tue, 13 Jul 2021 17:44:47 +0800
+Message-Id: <20210713094456.23288-2-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210713094456.23288-1-jon.lin@rock-chips.com>
+References: <20210713094456.23288-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the sake of reducing layering violation add ->unregister_gpio()
-callback and use it in the ->exit() one.
+From: Chris Morgan <macromorgan@hotmail.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Add bindings for the Rockchip serial flash controller. New device
+specific parameter of rockchip,sfc-no-dma included in documentation.
+
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
-v2: rebased on top of latest tty-next (Greg)
- drivers/tty/serial/8250/8250_exar.c | 36 ++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-index 3ffeedc29c83..d502240bbcf2 100644
---- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -114,6 +114,7 @@ struct exar8250;
- struct exar8250_platform {
- 	int (*rs485_config)(struct uart_port *, struct serial_rs485 *);
- 	int (*register_gpio)(struct pci_dev *, struct uart_8250_port *);
-+	void (*unregister_gpio)(struct uart_8250_port *);
- };
- 
- /**
-@@ -352,9 +353,8 @@ static void setup_gpio(struct pci_dev *pcidev, u8 __iomem *p)
- 	writeb(0x00, p + UART_EXAR_MPIOOD_15_8);
- }
- 
--static void *
--__xr17v35x_register_gpio(struct pci_dev *pcidev,
--			 const struct software_node *node)
-+static struct platform_device *__xr17v35x_register_gpio(struct pci_dev *pcidev,
-+							const struct software_node *node)
- {
- 	struct platform_device *pdev;
- 
-@@ -374,6 +374,12 @@ __xr17v35x_register_gpio(struct pci_dev *pcidev,
- 	return pdev;
- }
- 
-+static void __xr17v35x_unregister_gpio(struct platform_device *pdev)
-+{
-+	device_remove_software_node(&pdev->dev);
-+	platform_device_unregister(pdev);
-+}
+Changes in v12:
+- Remove useless oneOf lable
+- Add sfc controller discription
+
+Changes in v11: None
+Changes in v10: None
+Changes in v9: None
+Changes in v8:
+- Fix indent 4 to 2 in yaml
+
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
+
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
+
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml | 91 +++++++++++++++++++
+ 1 file changed, 91 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+new file mode 100644
+index 000000000000..339fb39529f3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+@@ -0,0 +1,91 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/rockchip-sfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static const struct property_entry exar_gpio_properties[] = {
- 	PROPERTY_ENTRY_U32("exar,first-pin", 0),
- 	PROPERTY_ENTRY_U32("ngpios", 16),
-@@ -384,8 +390,7 @@ static const struct software_node exar_gpio_node = {
- 	.properties = exar_gpio_properties,
- };
- 
--static int xr17v35x_register_gpio(struct pci_dev *pcidev,
--				  struct uart_8250_port *port)
-+static int xr17v35x_register_gpio(struct pci_dev *pcidev, struct uart_8250_port *port)
- {
- 	if (pcidev->vendor == PCI_VENDOR_ID_EXAR)
- 		port->port.private_data =
-@@ -394,6 +399,15 @@ static int xr17v35x_register_gpio(struct pci_dev *pcidev,
- 	return 0;
- }
- 
-+static void xr17v35x_unregister_gpio(struct uart_8250_port *port)
-+{
-+	if (!port->port.private_data)
-+		return;
++title: Rockchip Serial Flash Controller (SFC)
 +
-+	__xr17v35x_unregister_gpio(port->port.private_data);
-+	port->port.private_data = NULL;
-+}
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++  - Chris Morgan <macromorgan@hotmail.com>
 +
- static int generic_rs485_config(struct uart_port *port,
- 				struct serial_rs485 *rs485)
- {
-@@ -419,6 +433,7 @@ static int generic_rs485_config(struct uart_port *port,
- 
- static const struct exar8250_platform exar8250_default_platform = {
- 	.register_gpio = xr17v35x_register_gpio,
-+	.unregister_gpio = xr17v35x_unregister_gpio,
- 	.rs485_config = generic_rs485_config,
- };
- 
-@@ -484,6 +499,7 @@ static int iot2040_register_gpio(struct pci_dev *pcidev,
- static const struct exar8250_platform iot2040_platform = {
- 	.rs485_config = iot2040_rs485_config,
- 	.register_gpio = iot2040_register_gpio,
-+	.unregister_gpio = xr17v35x_unregister_gpio,
- };
- 
- /*
-@@ -555,17 +571,11 @@ pci_xr17v35x_setup(struct exar8250 *priv, struct pci_dev *pcidev,
- 
- static void pci_xr17v35x_exit(struct pci_dev *pcidev)
- {
-+	const struct exar8250_platform *platform = exar_get_platform();
- 	struct exar8250 *priv = pci_get_drvdata(pcidev);
- 	struct uart_8250_port *port = serial8250_get_port(priv->line[0]);
--	struct platform_device *pdev;
- 
--	pdev = port->port.private_data;
--	if (!pdev)
--		return;
--
--	device_remove_software_node(&pdev->dev);
--	platform_device_unregister(pdev);
--	port->port.private_data = NULL;
-+	platform->unregister_gpio(port);
- }
- 
- static inline void exar_misc_clear(struct exar8250 *priv)
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    const: rockchip,sfc
++    description:
++      The rockchip sfc controller is a standalone IP with version register,
++      and the driver can handle all the feature difference inside the IP
++      depending on the version register.
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    items:
++      - const: clk_sfc
++      - const: hclk_sfc
++
++  power-domains:
++    maxItems: 1
++
++  rockchip,sfc-no-dma:
++    description: Disable DMA and utilize FIFO mode only
++    type: boolean
++
++patternProperties:
++  "^flash@[0-3]$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 3
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/px30-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/power/px30-power.h>
++
++    sfc: spi@ff3a0000 {
++        compatible = "rockchip,sfc";
++        reg = <0xff3a0000 0x4000>;
++        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
++        clock-names = "clk_sfc", "hclk_sfc";
++        pinctrl-0 = <&sfc_clk &sfc_cs &sfc_bus2>;
++        pinctrl-names = "default";
++        power-domains = <&power PX30_PD_MMC_NAND>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@0 {
++            compatible = "jedec,spi-nor";
++            reg = <0>;
++            spi-max-frequency = <108000000>;
++            spi-rx-bus-width = <2>;
++            spi-tx-bus-width = <2>;
++        };
++    };
++
++...
 -- 
-2.30.2
+2.17.1
+
+
 
