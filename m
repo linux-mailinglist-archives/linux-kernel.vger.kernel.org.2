@@ -2,106 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CBE3C700E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BA83C6FE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236042AbhGMMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:00:47 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38742 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235797AbhGMMAr (ORCPT
+        id S235933AbhGMLnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235797AbhGMLnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:00:47 -0400
-X-UUID: 902a55c266aa41bd95fdcbfd5356fe29-20210713
-X-UUID: 902a55c266aa41bd95fdcbfd5356fe29-20210713
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1492047116; Tue, 13 Jul 2021 19:57:54 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 13 Jul 2021 19:57:52 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 13 Jul 2021 19:57:52 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <leilk.liu@mediatek.com>,
-        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
-Subject: [PATCH 1/2] spi: mediatek: add tick_delay support
-Date:   Tue, 13 Jul 2021 19:40:49 +0800
-Message-ID: <20210713114048.29509-1-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 13 Jul 2021 07:43:46 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A58FC0613DD;
+        Tue, 13 Jul 2021 04:40:56 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id y21-20020a7bc1950000b02902161fccabf1so1401039wmi.2;
+        Tue, 13 Jul 2021 04:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y85wNOtup5hmkCmTfLo1pIpQShIZxRh6DcPrPzi4Ol4=;
+        b=YwuIbl+0FSKIRy3WwoIS7w4iUYVf3dnRDGgv33bj6Hij0BnxVWbphZn1bpgpcEgFfh
+         IDKr4p16DEwBdLfCIzhWXIyZdJd71+xfo6pKH4P6tgdCja8jIV9lBGct6C3L2xTBDrWL
+         3mdgEO83Mif3eTMJiG0RyXe/RRcjhncA9t+VDMgItfpu0/v0LobiH5JylvILh16cjgDc
+         t0WEKux/2SRyaWgixRe7gd+uPpNVg7veO9wl5CvJ98B2wnY0xU8HZBeM5iUqyri+2bsa
+         r6V+gkU+9oob4xkqgg2BvaFmtDOB6y5ZWJKh30mKvAiEmlmucsuH3hCxZ6XVvp97Fnj2
+         ejxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y85wNOtup5hmkCmTfLo1pIpQShIZxRh6DcPrPzi4Ol4=;
+        b=XmZCWvkG9JzG9uxstaQA41UXWMPsbIN2n/VCSdtB87jL/XmOfNBCkNEIpH66p3acAj
+         6yrLH42a7k/hZiYpKs42oLoXUntObrhE9e3zXB1cXAVTRJqLFWngT2k0IN//TyV45Pcx
+         KvnOus8Hi6MYdAdPDAqLfV0ZVYszeiaJx6nCAa6dppkkY223zDnweTKBxAYhvuIAWimH
+         rhLluV5S4yUSidCmqriU4Y764PrivSFLp1yHUEzMAoEYdYH5YCPVXjOartySG+l8mZJR
+         UajoS/X2UfoBkiwngnYu8HtdffVaTzD6fzhyAIsIgeYs/Ugrqnq2cooV3ug0do5x1Lqy
+         EF+w==
+X-Gm-Message-State: AOAM531KM8eMmOR5nifoWXqsxerm6z+nfZKpcN9Q/Rjh/vfbcjkGdRRt
+        Rz4kcCmUlZCJMlzM7/fm3w==
+X-Google-Smtp-Source: ABdhPJxZXyl/yIp04pwFo98is7aZrayOSjjNfIszAcOIsR5PYVsPF3guD0dMbpg0o0JYYkbyr0nuAQ==
+X-Received: by 2002:a1c:7411:: with SMTP id p17mr19925287wmc.116.1626176455013;
+        Tue, 13 Jul 2021 04:40:55 -0700 (PDT)
+Received: from [192.168.200.247] (ip5b429fd6.dynamic.kabel-deutschland.de. [91.66.159.214])
+        by smtp.gmail.com with ESMTPSA id t15sm17193008wrx.17.2021.07.13.04.40.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 04:40:54 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] drm/rockchip: dw_hdmi: add rk3568 support
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
+        daniel@ffwll.ch, robh+dt@kernel.org, algea.cao@rock-chips.com,
+        andy.yan@rock-chips.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210707120323.401785-1-benjamin.gaignard@collabora.com>
+ <20210707120323.401785-3-benjamin.gaignard@collabora.com>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <a8c5a263-26a6-d4bf-47e7-9266ca1ae5a8@gmail.com>
+Date:   Tue, 13 Jul 2021 13:40:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210707120323.401785-3-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mason Zhang <Mason.Zhang@mediatek.com>
+Hi Benjamin,
 
-This patch support tick_delay setting, some users need use
-high-speed spi speed, which can use tick_delay to tuning spi clk timing.
+Am 07.07.21 um 14:03 schrieb Benjamin Gaignard:
+> Add a new dw_hdmi_plat_data struct and new compatible for rk3568.
+> This version of the HDMI hardware block need two clocks to provide
+> phy reference clock: hclk_vio and hclk.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 2:
+> - Add the clocks needed for the phy.
 
-Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
----
- drivers/spi/spi-mt65xx.c                 | 11 ++++++++++-
- include/linux/platform_data/spi-mt65xx.h |  1 +
- 2 files changed, 11 insertions(+), 1 deletion(-)
+If got Alega's comment correct, it wasn't about the hclks.
+It looks like for this variant, there is another reference clock 
+required (for the phy) like vpll is already (looks like downstream uses 
+HPLL ( = "HDMI-PLL" ?) for that - which also has to switch the frequency 
+according the the drm mode rate - the two clocks you added here are get 
+just enabled (and disabled) here.
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 097625d7915e..b34fbc913fd6 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -42,8 +42,9 @@
- #define SPI_CFG1_CS_IDLE_OFFSET           0
- #define SPI_CFG1_PACKET_LOOP_OFFSET       8
- #define SPI_CFG1_PACKET_LENGTH_OFFSET     16
--#define SPI_CFG1_GET_TICK_DLY_OFFSET      30
-+#define SPI_CFG1_GET_TICK_DLY_OFFSET      29
- 
-+#define SPI_CFG1_GET_TICK_DLY_MASK        0xe0000000
- #define SPI_CFG1_CS_IDLE_MASK             0xff
- #define SPI_CFG1_PACKET_LOOP_MASK         0xff00
- #define SPI_CFG1_PACKET_LENGTH_MASK       0x3ff0000
-@@ -152,6 +153,7 @@ static const struct mtk_spi_compatible mt6893_compat = {
-  */
- static const struct mtk_chip_config mtk_default_chip_info = {
- 	.sample_sel = 0,
-+	.tick_delay = 0,
- };
- 
- static const struct of_device_id mtk_spi_of_match[] = {
-@@ -275,6 +277,13 @@ static int mtk_spi_prepare_message(struct spi_master *master,
- 		writel(mdata->pad_sel[spi->chip_select],
- 		       mdata->base + SPI_PAD_SEL_REG);
- 
-+	/* tick delay */
-+	reg_val = readl(mdata->base + SPI_CFG1_REG);
-+	reg_val &= ~SPI_CFG1_GET_TICK_DLY_MASK;
-+	reg_val |= ((chip_config->tick_delay & 0x7)
-+		<< SPI_CFG1_GET_TICK_DLY_OFFSET);
-+	writel(reg_val, mdata->base + SPI_CFG1_REG);
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/platform_data/spi-mt65xx.h b/include/linux/platform_data/spi-mt65xx.h
-index 65fd5ffd257c..f0db674f07b8 100644
---- a/include/linux/platform_data/spi-mt65xx.h
-+++ b/include/linux/platform_data/spi-mt65xx.h
-@@ -12,5 +12,6 @@
- /* Board specific platform_data */
- struct mtk_chip_config {
- 	u32 sample_sel;
-+	u32 tick_delay;
- };
- #endif
--- 
-2.18.0
+Alega, Andy: Is it really required to enable hclk_vio and hclk(_vop) in 
+the hdmi driver? Are they required to be enabled for the other output 
+variants (i.e. mipi, dsi, rgb ....) as well and shouldn't better be 
+enabled in the (not-yet existing) vop2 driver?
+
+Overall: I'm not sure of the benefit of adding this hdmi variant for a 
+SoC where the display driver isn't implemented upstream yet. The "VOP2" 
+IP seems widely new and should probably be ported first. (even if the 
+HDMI part seems a low hanging fruit according to the vendor sources)
+
+Best,
+Alex
+
+> 
+>   drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 68 +++++++++++++++++++++
+>   1 file changed, 68 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> index 830bdd5e9b7ce..dc0e255e45745 100644
+> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> @@ -50,6 +50,10 @@
+>   #define RK3399_GRF_SOC_CON20		0x6250
+>   #define RK3399_HDMI_LCDC_SEL		BIT(6)
+>   
+> +#define RK3568_GRF_VO_CON1		0x0364
+> +#define RK3568_HDMI_SDAIN_MSK		BIT(15)
+> +#define RK3568_HDMI_SCLIN_MSK		BIT(14)
+> +
+>   #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
+>   
+>   /**
+> @@ -71,6 +75,8 @@ struct rockchip_hdmi {
+>   	const struct rockchip_hdmi_chip_data *chip_data;
+>   	struct clk *vpll_clk;
+>   	struct clk *grf_clk;
+> +	struct clk *hclk_vio;
+> +	struct clk *hclk_vop;
+>   	struct dw_hdmi *hdmi;
+>   	struct phy *phy;
+>   };
+> @@ -216,6 +222,26 @@ static int rockchip_hdmi_parse_dt(struct rockchip_hdmi *hdmi)
+>   		return PTR_ERR(hdmi->grf_clk);
+>   	}
+>   
+> +	hdmi->hclk_vio = devm_clk_get(hdmi->dev, "hclk_vio");
+> +	if (PTR_ERR(hdmi->hclk_vio) == -ENOENT) {
+> +		hdmi->hclk_vio = NULL;
+> +	} else if (PTR_ERR(hdmi->hclk_vio) == -EPROBE_DEFER) {
+> +		return -EPROBE_DEFER;
+> +	} else if (IS_ERR(hdmi->hclk_vio)) {
+> +		dev_err(hdmi->dev, "failed to get hclk_vio clock\n");
+> +		return PTR_ERR(hdmi->hclk_vio);
+> +	}
+> +
+> +	hdmi->hclk_vop = devm_clk_get(hdmi->dev, "hclk");
+> +	if (PTR_ERR(hdmi->hclk_vop) == -ENOENT) {
+> +		hdmi->hclk_vop = NULL;
+> +	} else if (PTR_ERR(hdmi->hclk_vop) == -EPROBE_DEFER) {
+> +		return -EPROBE_DEFER;
+> +	} else if (IS_ERR(hdmi->hclk_vop)) {
+> +		dev_err(hdmi->dev, "failed to get hclk_vop clock\n");
+> +		return PTR_ERR(hdmi->hclk_vop);
+> +	}
+> +
+>   	return 0;
+>   }
+>   
+> @@ -467,6 +493,19 @@ static const struct dw_hdmi_plat_data rk3399_hdmi_drv_data = {
+>   	.use_drm_infoframe = true,
+>   };
+>   
+> +static struct rockchip_hdmi_chip_data rk3568_chip_data = {
+> +	.lcdsel_grf_reg = -1,
+> +};
+> +
+> +static const struct dw_hdmi_plat_data rk3568_hdmi_drv_data = {
+> +	.mode_valid = dw_hdmi_rockchip_mode_valid,
+> +	.mpll_cfg   = rockchip_mpll_cfg,
+> +	.cur_ctr    = rockchip_cur_ctr,
+> +	.phy_config = rockchip_phy_config,
+> +	.phy_data = &rk3568_chip_data,
+> +	.use_drm_infoframe = true,
+> +};
+> +
+>   static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
+>   	{ .compatible = "rockchip,rk3228-dw-hdmi",
+>   	  .data = &rk3228_hdmi_drv_data
+> @@ -480,6 +519,9 @@ static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
+>   	{ .compatible = "rockchip,rk3399-dw-hdmi",
+>   	  .data = &rk3399_hdmi_drv_data
+>   	},
+> +	{ .compatible = "rockchip,rk3568-dw-hdmi",
+> +	  .data = &rk3568_hdmi_drv_data
+> +	},
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, dw_hdmi_rockchip_dt_ids);
+> @@ -536,6 +578,28 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
+>   		return ret;
+>   	}
+>   
+> +	ret = clk_prepare_enable(hdmi->hclk_vio);
+> +	if (ret) {
+> +		dev_err(hdmi->dev, "Failed to enable HDMI hclk_vio: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(hdmi->hclk_vop);
+> +	if (ret) {
+> +		dev_err(hdmi->dev, "Failed to enable HDMI hclk_vop: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	if (hdmi->chip_data == &rk3568_chip_data) {
+> +		regmap_write(hdmi->regmap, RK3568_GRF_VO_CON1,
+> +			     HIWORD_UPDATE(RK3568_HDMI_SDAIN_MSK |
+> +					   RK3568_HDMI_SCLIN_MSK,
+> +					   RK3568_HDMI_SDAIN_MSK |
+> +					   RK3568_HDMI_SCLIN_MSK));
+> +	}
+> +
+>   	hdmi->phy = devm_phy_optional_get(dev, "hdmi");
+>   	if (IS_ERR(hdmi->phy)) {
+>   		ret = PTR_ERR(hdmi->phy);
+> @@ -559,6 +623,8 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
+>   		ret = PTR_ERR(hdmi->hdmi);
+>   		drm_encoder_cleanup(encoder);
+>   		clk_disable_unprepare(hdmi->vpll_clk);
+> +		clk_disable_unprepare(hdmi->hclk_vio);
+> +		clk_disable_unprepare(hdmi->hclk_vop);
+>   	}
+>   
+>   	return ret;
+> @@ -571,6 +637,8 @@ static void dw_hdmi_rockchip_unbind(struct device *dev, struct device *master,
+>   
+>   	dw_hdmi_unbind(hdmi->hdmi);
+>   	clk_disable_unprepare(hdmi->vpll_clk);
+> +	clk_disable_unprepare(hdmi->hclk_vio);
+> +	clk_disable_unprepare(hdmi->hclk_vop);
+>   }
+>   
+>   static const struct component_ops dw_hdmi_rockchip_ops = {
+> 
 
