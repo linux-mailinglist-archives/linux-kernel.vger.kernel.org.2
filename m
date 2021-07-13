@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A153C7846
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131493C784D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhGMU7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbhGMU7I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:59:08 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86607C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:56:17 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id u3so68416plf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LMLZw+7kP17xj8iob4CnXRS8mLPc06HVwcScbSpgmog=;
-        b=DbhUnemaxXAYoclSgYPqjmzCgDcfvbTt0Fp2D3iAma0zwBxS/PVN+wOVRPnC4yPEXP
-         56fAdE8DeC5XAmFGZI1M6jOscQOIWAOLas285nt9xvjZiSVQsc5VDJtd9ZQHTOk5EVvx
-         9Z6DqQtUPkBOCvJd+rRYaB0zDlhvhs8VX82lgwiPf6AYDwItMgV6UFfcd9tmSMQuI85f
-         92mxF8FyStxwL5H2rKfLi7cakA6gtrS9QZU11Ty6YAj4rXYy1YX0fzHhNSN8xukw81EC
-         sZ1dBuH25Jl8vnQek1/rexfaZYFIKrcC34oedX3HJOdABtebYdwYWXEIfeMuMY0SdkA8
-         v6ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LMLZw+7kP17xj8iob4CnXRS8mLPc06HVwcScbSpgmog=;
-        b=maCZTCtvjZuMRG/LtXd4rCNSUnGolevy0sprStSb1/0tGWhB+io6EudSwQAFpsQjD6
-         9gLmUYjcKePu5rsjrXhIVSaharGZqk/DptXppBlq5Za8w4aiw6cFukFX29MYsrPWrm7W
-         XmMxKhG+fKa4MfYSStzUS6Gin4Nd55/qh0/m0+W7h6R1I792JibA7kZ8ztSiNJNwDgIO
-         VbtavqLpxHZW+R352ezIKSfbGGbg7vF3cuJlc3CbD2iafOjSEOlVixeh6iXwD/vDLTla
-         0UpH6bpwrWny7D9+XXX93SOgR/2fjhmZQ9aI3xECFFn6pGpOY7GYcdsHQ2Ijx5oCk0Tt
-         56FA==
-X-Gm-Message-State: AOAM533MAqHWDmDpazI6ba3Z4SLDkGM8RqYMzORiliYzXrcs0mcSEoj/
-        dAu5XYo2BlV7+DUNu2ZdMDUGVw==
-X-Google-Smtp-Source: ABdhPJwppbUt2eHS1spdEOKVMbf1fSzhtbIwYnWe8xIFSfLd75nFK+mE2w4E+UrVxpXtbpNpKe9XHg==
-X-Received: by 2002:a17:90a:510b:: with SMTP id t11mr135413pjh.178.1626209776872;
-        Tue, 13 Jul 2021 13:56:16 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j21sm57759pjz.26.2021.07.13.13.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 13:56:16 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 20:56:12 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v2 60/69] KVM: VMX: Add macro framework to read/write
- VMCS for VMs and TDs
-Message-ID: <YO397L2OQXFBZN5q@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <5735bf9268130a70b49bc32ff4b68ffc53ee788c.1625186503.git.isaku.yamahata@intel.com>
- <71ee8575-bd72-f51e-38c5-4e8411b8aedd@redhat.com>
+        id S235623AbhGMVAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:00:44 -0400
+Received: from relay.sw.ru ([185.231.240.75]:56672 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235490AbhGMVAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 17:00:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=sNeWr16D67k9ERD9fz0l1ggJ+G2nxSzI7yaf7NQ9na0=; b=DJgFQOy4wSSnzCq9GhR
+        ZQgmbURved4np9B5ieb1Q5t48PpilGDirtKcDKFFBYWPi2Bk/XzK2iCe0AgJ/jiGiNZlv3f9oR25d
+        J60UwD3yOcGcQYZGDvyN3ENUPYXp+zx8yfiiNY0TWBBcS7ldB7PqCl2oM4XwJwYtetExwbLYWUg=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m3PTO-003sYX-HV; Tue, 13 Jul 2021 23:57:46 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH NET v2 0/7] skbuff: introduce skb_expand_head()
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     netdev@vger.kernel.org, Joerg Reuter <jreuter@yaina.de>,
+        Ralf Baechle <ralf@linux-mips.org>, linux-hams@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
+Message-ID: <15eba3b2-80e2-5547-8ad9-167d810ad7e3@virtuozzo.com>
+Date:   Tue, 13 Jul 2021 23:57:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <71ee8575-bd72-f51e-38c5-4e8411b8aedd@redhat.com>
+In-Reply-To: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021, Paolo Bonzini wrote:
-> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > Add a macro framework to hide VMX vs. TDX details of VMREAD and VMWRITE
-> > so the VMX and TDX can shared common flows, e.g. accessing DTs.
-> > 
-> > Note, the TDX paths are dead code at this time.  There is no great way
-> > to deal with the chicken-and-egg scenario of having things in place for
-> > TDX without first having TDX.
-> > 
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >   arch/x86/kvm/vmx/common.h | 41 +++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 41 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
-> > index 9e5865b05d47..aa6a569b87d1 100644
-> > --- a/arch/x86/kvm/vmx/common.h
-> > +++ b/arch/x86/kvm/vmx/common.h
-> > @@ -11,6 +11,47 @@
-> >   #include "vmcs.h"
-> >   #include "vmx.h"
-> >   #include "x86.h"
-> > +#include "tdx.h"
-> > +
-> > +#ifdef CONFIG_KVM_INTEL_TDX
-> 
-> Is this #ifdef needed at all if tdx.h properly stubs is_td_vcpu (to return
-> false) and possibly declares a dummy version of td_vmcs_read/td_vmcs_write?
+currently if skb does not have enough headroom skb_realloc_headrom is called.
+It is not optimal because it creates new skb.
 
-IIRC, it requires dummy versions of is_debug_td() and all the ##bits variants of
-td_vmcs_read/write().  I'm not sure if I ever actually tried that, e.g. to see
-if the compiler completely elided the TDX crud when CONFIG_KVM_INTEL_TDX=n.
+Unlike skb_realloc_headroom, new helper skb_учзфтв_head 
+does not allocate a new skb if possible; 
+copies skb->sk on new skb when as needed
+and frees original skb in case of failures.
+
+This helps to simplify ip[6]_finish_output2(), ip6_xmit() and a few other
+functions in vrf, ax25 and bpf.
+
+There are few other cases where this helper can be used but they require
+an additional investigations. 
+
+v2 changes:
+ - helper's name was changed to skb_expand_head
+ - fixed few mistakes inside skb_expand_head():
+    skb_set_owner_w should set sk on nskb
+    kfree was replaced by kfree_skb()
+    improved warning message
+ - added minor refactoring in changed functions in vrf and bpf patches
+ - removed kfree_skb() in ax25_rt_build_path caller ax25_ip_xmit
+
+NB: patch "ipv6: use skb_expand_head in ip6_finish_output2" depends on 
+patch "ipv6: allocate enough headroom in ip6_finish_output2()" submitted separately
+https://lkml.org/lkml/2021/7/12/732
+
+Vasily Averin (7):
+  skbuff: introduce skb_expand_head()
+  ipv6: use skb_expand_head in ip6_finish_output2
+  ipv6: use skb_expand_head in ip6_xmit refactoring
+  ipv4: use skb_expand_head in ip_finish_output2
+  vrf: use skb_expand_head in vrf_finish_output
+  ax25: use skb_expand_head
+  bpf: use skb_expand_head in bpf_out_neigh_v4/6
+
+ drivers/net/vrf.c      | 21 +++++---------
+ include/linux/skbuff.h |  1 +
+ net/ax25/ax25_out.c    | 12 ++------
+ net/ax25/ax25_route.c  | 13 ++-------
+ net/core/filter.c      | 27 ++++-------------
+ net/core/skbuff.c      | 42 +++++++++++++++++++++++++++
+ net/ipv4/ip_output.c   | 13 ++-------
+ net/ipv6/ip6_output.c  | 78 +++++++++++++++++---------------------------------
+ 8 files changed, 90 insertions(+), 117 deletions(-)
+
+-- 
+1.8.3.1
+
