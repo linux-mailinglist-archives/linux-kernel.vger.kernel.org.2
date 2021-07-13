@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734BC3C718D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F0B3C715A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236818AbhGMN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:57:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53228 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236754AbhGMN5Z (ORCPT
+        id S236484AbhGMNoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236222AbhGMNoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:57:25 -0400
-Message-Id: <20210713135158.887322464@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626184474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Al+tO89KZ0WnAXZVnnl4CFnWdviNIoH34huQsHYgfow=;
-        b=uQyVQ+im3lM/kdchGEO4MUB0ZhGpJqyXlBuCMMNFaZwkEnb/BO0wV4OAJLMp8KG7/tAgdY
-        Huu7Nj4wrLibJ5sERzUZ8n7phnl8EiunpeGv+xq+ez/yFWWC6Zp6o9lSYNLd8rIUYadlmS
-        sTcVPs4DqAYTDNVBjln1waBazXz7tODk4Npom0Yrxsyg3TyH63G/z3akqkgKLBlJK09RQn
-        Blg5RfZTP+5xIxc0LEaJEAWXo21Nfzk5RMLeq5eIYEC/2RzxR9k574LDTNNOAdbZJa/gX3
-        839rAzej40JiorTe1qOdwt+laFzBrlY8W8LAVrmPvkybJ1fkClIFk2eTG9hUtw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626184474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Al+tO89KZ0WnAXZVnnl4CFnWdviNIoH34huQsHYgfow=;
-        b=W5utYlBd6EQXn1VSu1Zvfgt3se7v6eHK0bpju/6l0otgPPc0ET+ORDGlkI/M9/d7+Q2Tx0
-        JXB9Sj8zdEpmZeDg==
-Date:   Tue, 13 Jul 2021 15:39:55 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [patch V2 10/10] hrtimer: Avoid more SMP function calls in clock_was_set()
-References: <20210713133945.063650594@linutronix.de>
+        Tue, 13 Jul 2021 09:44:06 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E54C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:41:16 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id ay16so1559021qvb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:41:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vLkS8he1bc7Cmh6yyqncyHjSKkBroAx2qiGQQkmeSgE=;
+        b=G6nXn9w5QrREJfLwC4YiSeL105e5K/Qj9voXl1D7Hn7yXZYmyV7BuUuk8b/RxMb8gZ
+         mN8sBsBj637g6rXMobZkIO3u87nyfOu1XImkt1jtpAPQL0DrxC3Bmim46FvTj1xaNVGf
+         ErbXnNU1epcRtd2zGSxW7gIY9nDszcpXAMk0I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vLkS8he1bc7Cmh6yyqncyHjSKkBroAx2qiGQQkmeSgE=;
+        b=llApDxMya3paLmxrptco7YaHH/fZnaprMFlIImXVaqdNZCZPa38J1VKOSsHMXWub/C
+         EjRQn9rd3yNWkSDmqkICSxlPXh+3ctwMw4PDNxv62hdxFn2zJQkxUaNlhUgdd3qeBjPD
+         MjlCs475u5QNxdXJm5IpewtjirsBVMs5drb7koZ+BOoh0cDrISaq9GVqHR7dQHKRJKzo
+         fedJHi3Oje+ALmkTum4G70oOBBwP4hv0447VfR/2Vx2YS59GFzdApVN9kxW6RbMgg8Fj
+         k7Ehycwn3IdUJOZ9ZqFtqMAuLdUzhxKM8PMWCowM1HVfflYPjJ73xuWFrgIxDf0ZinlC
+         c0SQ==
+X-Gm-Message-State: AOAM533+TYnzYFAYMQ1m3S+cBpXvCvhPvZR5k/1IPbcWfoNesOGXsjnS
+        xcsPIomU02/3mzJnNzG6y0fyeiaU3fArSw==
+X-Google-Smtp-Source: ABdhPJzGNP/uWCvVCf7rrSDaCzbnfo9jyOdi41yTkBmrZxf40DGZkTmVfEdIpVoesLUVuvCaoPMJhA==
+X-Received: by 2002:a05:6214:cac:: with SMTP id s12mr4865640qvs.29.1626183675254;
+        Tue, 13 Jul 2021 06:41:15 -0700 (PDT)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id f1sm7897559qkh.75.2021.07.13.06.41.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 06:41:14 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id r135so34896497ybc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:41:13 -0700 (PDT)
+X-Received: by 2002:a25:ae14:: with SMTP id a20mr5690442ybj.41.1626183673327;
+ Tue, 13 Jul 2021 06:41:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+References: <20210712075933.v2.1.I23eb4cc5a680341e7b3e791632a635566fa5806a@changeid>
+In-Reply-To: <20210712075933.v2.1.I23eb4cc5a680341e7b3e791632a635566fa5806a@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 13 Jul 2021 06:41:01 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wn1GU51vqBUZAt4b-_CE4qJpj+Himm8B9CBSn0L6P2XA@mail.gmail.com>
+Message-ID: <CAD=FV=Wn1GU51vqBUZAt4b-_CE4qJpj+Himm8B9CBSn0L6P2XA@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/dp: Move panel DP AUX backlight support to drm_dp_helper
+To:     Lyude Paul <lyude@redhat.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Robert Foss <robert.foss@linaro.org>
+Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Hi,
 
-By unconditionally updating the offsets there are more indicators
-whether the SMP function calls on clock_was_set() can be avoided:
+On Mon, Jul 12, 2021 at 8:02 AM Douglas Anderson <dianders@chromium.org> wr=
+ote:
+>
+> We were getting a depmod error:
+>   depmod: ERROR: Cycle detected: drm_kms_helper -> drm -> drm_kms_helper
+>
+> It looks like the rule is that drm_kms_helper can call into drm, but
+> drm can't call into drm_kms_helper. That means we've got to move the
+> DP AUX backlight support into drm_dp_helper.
+>
+> NOTE: as part of this, I didn't try to do any renames of the main
+> registration function. Even though it's in the drm_dp_helper, it still
+> feels very parallel to drm_panel_of_backlight().
+>
+> Fixes: 10f7b40e4f30 ("drm/panel: add basic DP AUX backlight support")
+> Reported-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
+> Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> Note that I've compile tested this, but I don't have a device setup
+> yet that uses this code. Since the code is basically the same as it
+> was this should be OK, but if Rajeev could confirm that nothing is
+> broken that'd be nice.
+>
+> Changes in v2:
+> - Guard new functions by the proper configs.
+>
+>  drivers/gpu/drm/drm_dp_helper.c | 113 ++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/drm_panel.c     | 108 ------------------------------
+>  include/drm/drm_dp_helper.h     |  16 +++++
+>  include/drm/drm_panel.h         |   8 ---
+>  4 files changed, 129 insertions(+), 116 deletions(-)
 
-  - When the offset update already happened on the remote CPU then the
-    remote update attempt will yield the same seqeuence number and no
-    IPI is required.
+Pushed to drm-misc-next with Rajeev's review:
 
-  - When the remote CPU is currently handling hrtimer_interrupt(). In
-    that case the remote CPU will reevaluate the timer bases before
-    reprogramming anyway, so nothing to do.
+072ed3431f5b drm/dp: Move panel DP AUX backlight support to drm_dp_helper
 
-  - After updating it can be checked whether the first expiring timer in
-    the affected clock bases moves before the first expiring (softirq)
-    timer of the CPU. If that's not the case then sending the IPI is not
-    required.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V2: Fix the in_hrtirq thinko (Marcelo)
-    Add the missing masking (reported by 0day)
-
-P.S.: The git branch is updated as well
----
- kernel/time/hrtimer.c |   74 +++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 65 insertions(+), 9 deletions(-)
-
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -866,6 +866,68 @@ static void hrtimer_reprogram(struct hrt
- 	__hrtimer_reprogram(cpu_base, true, timer, expires);
- }
- 
-+static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
-+			     unsigned int active)
-+{
-+	struct hrtimer_clock_base *base;
-+	unsigned int seq;
-+	ktime_t expires;
-+
-+	/*
-+	 * Update the base offsets unconditionally so the following
-+	 * checks whether the SMP function call is required works.
-+	 *
-+	 * The update is safe even when the remote CPU is in the hrtimer
-+	 * interrupt or the hrtimer soft interrupt and expiring affected
-+	 * bases. Either it will see the update before handling a base or
-+	 * it will see it when it finishes the processing and reevaluates
-+	 * the next expiring timer.
-+	 */
-+	seq = cpu_base->clock_was_set_seq;
-+	hrtimer_update_base(cpu_base);
-+
-+	/*
-+	 * If the sequence did not change over the update then the
-+	 * remote CPU already handled it.
-+	 */
-+	if (seq == cpu_base->clock_was_set_seq)
-+		return false;
-+
-+	/*
-+	 * If the remote CPU is currently handling an hrtimer interrupt, it
-+	 * will reevaluate the first expiring timer of all clock bases
-+	 * before reprogramming. Nothing to do here.
-+	 */
-+	if (cpu_base->in_hrtirq)
-+		return false;
-+
-+	/*
-+	 * Walk the affected clock bases and check whether the first expiring
-+	 * timer in a clock base is moving ahead of the first expiring timer of
-+	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
-+	 * event devices cannot be remotely reprogrammed.
-+	 */
-+	active &= cpu_base->active_bases;
-+
-+	for_each_active_base(base, cpu_base, active) {
-+		struct timerqueue_node *next;
-+
-+		next = timerqueue_getnext(&base->active);
-+		expires = ktime_sub(next->expires, base->offset);
-+		if (expires < cpu_base->expires_next)
-+			return true;
-+
-+		/* Extra check for softirq clock bases */
-+		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
-+			continue;
-+		if (cpu_base->softirq_activated)
-+			continue;
-+		if (expires < cpu_base->softirq_expires_next)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /*
-  * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
-  * CLOCK_BOOTTIME (for late sleep time injection).
-@@ -900,16 +962,10 @@ void clock_was_set(unsigned int bases)
- 		unsigned long flags;
- 
- 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
--		/*
--		 * Only send the IPI when there are timers queued in one of
--		 * the affected clock bases. Otherwise update the base
--		 * remote to ensure that the next enqueue of a timer on
--		 * such a clock base will see the correct offsets.
--		 */
--		if (cpu_base->active_bases & bases)
-+
-+		if (update_needs_ipi(cpu_base, bases))
- 			cpumask_set_cpu(cpu, mask);
--		else
--			hrtimer_update_base(cpu_base);
-+
- 		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
- 	}
- 
-
+-Doug
