@@ -2,166 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268153C6AF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7348B3C6B16
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbhGMHKR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 03:10:17 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3390 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhGMHKP (ORCPT
+        id S234131AbhGMHUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233762AbhGMHUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:10:15 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GPBCx5y37z6BBWR;
-        Tue, 13 Jul 2021 14:53:01 +0800 (CST)
-Received: from lhreml718-chm.china.huawei.com (10.201.108.69) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 09:07:24 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml718-chm.china.huawei.com (10.201.108.69) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 08:07:24 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Tue, 13 Jul 2021 08:07:23 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>
-CC:     "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>
-Subject: RE: [PATCH v2 0/3] kvm/arm: New VMID allocator based on asid
-Thread-Topic: [PATCH v2 0/3] kvm/arm: New VMID allocator based on asid
-Thread-Index: AQHXYshE9jEBx3DaO0yBdBUJuC9xNqtApHOQ
-Date:   Tue, 13 Jul 2021 07:07:23 +0000
-Message-ID: <de5eee0cd5814b779827b982f0b1f270@huawei.com>
-References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
-In-Reply-To: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.90.246]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 13 Jul 2021 03:20:51 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357BAC0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:18:02 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id r20so28446454ljd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v/rXhAg8/mS9EW+OBkg4YZ134yjPtz+YcrIsxDtxXHw=;
+        b=gdFmIqRJGerDFfRedrGfJCYZTiEOVZPen6UFik8USN7wSEnDhX8+z7XGhUv1Xe1UET
+         E60fQrM+rX8DuBoVnFZ+G3Kjv2Ny2c1X0zx9mmRF4HZnwKIPPcavSze3deQaq8cs/zzi
+         E1JxLrPpNqdXrdD9/4sn9ONH67XXUg9JnnlSU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v/rXhAg8/mS9EW+OBkg4YZ134yjPtz+YcrIsxDtxXHw=;
+        b=HElTZgmGL5w1jis5I2ZJrT0Yh2q0kebLNl78E2KzW/uOdsdf/qGD0Kv0jQntcH8ZZ9
+         94daxPQhCkoD65pCEb1NweoeslUwsIsmJ5tWkhPreC7iGGDp8fVYnVjJlBqRxoENVwja
+         pqRb3P3tBj9EfXi2wx4EQFnmGIilCmFCMssWWxDBjkNndR5k7fr+7SDkojBs1bu0PXL8
+         LojeZUA+XEZWQDuJ+VAZcW6M0+D+7dnNRjjaYXdvmanhsflDI5/5rPwCIG0cYYy6ZqLz
+         TJ7GT8unSODQulUPFrrTqgqnHcGrZFLiFxjadsy64Ppi+dEwEZhH/KNo3G/XM0KCue3e
+         ldGA==
+X-Gm-Message-State: AOAM532ef8IrFe+aAawt8z0rlpAOFrnobtnl0B+LFRkHgKaJzqfsNdhS
+        63HGYqcANdhQwN9BVB4Gq8oi9mjpoaoIHGVjME/0PQ==
+X-Google-Smtp-Source: ABdhPJwvNEV51r8aYwOBO8oRSgDCsy56hMQEygkoe/TYR9OaSobFtYzNx+irktn74bxJOc20Xg0McmWpytNswEZxIRA=
+X-Received: by 2002:a2e:5c42:: with SMTP id q63mr2849499ljb.23.1626160680315;
+ Tue, 13 Jul 2021 00:18:00 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210710081722.1828-1-zhiyong.tao@mediatek.com> <20210710081722.1828-2-zhiyong.tao@mediatek.com>
+In-Reply-To: <20210710081722.1828-2-zhiyong.tao@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 13 Jul 2021 15:17:49 +0800
+Message-ID: <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>, mark.rutland@arm.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        light.hsieh@mediatek.com, biao.huang@mediatek.com,
+        hongzhou.yang@mediatek.com, sean.wang@mediatek.com,
+        seiya.wang@mediatek.com, devicetree@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Hi,
 
-> -----Original Message-----
-> From: Shameerali Kolothum Thodi
-> Sent: 16 June 2021 16:56
-> To: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> linux-kernel@vger.kernel.org
-> Cc: maz@kernel.org; will@kernel.org; catalin.marinas@arm.com;
-> james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> suzuki.poulose@arm.com; jean-philippe@linaro.org;
-> Alexandru.Elisei@arm.com; Linuxarm <linuxarm@huawei.com>
-> Subject: [PATCH v2 0/3] kvm/arm: New VMID allocator based on asid
-> 
-> Hi,
-> 
-> RFCv1 --> v2
->    - Dropped "pinned VMID" support for now.
->    - Dropped RFC tag.
-> 
-> Sanity tested on HiSilicon D06 board.
+On Sat, Jul 10, 2021 at 4:17 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+>
+> This patch adds rsel define for mt8195.
+>
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> ---
+>  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/include/dt-bindings/pinctrl/mt65xx.h b/include/dt-bindings/pinctrl/mt65xx.h
+> index 7e16e58fe1f7..f5934abcd1bd 100644
+> --- a/include/dt-bindings/pinctrl/mt65xx.h
+> +++ b/include/dt-bindings/pinctrl/mt65xx.h
+> @@ -16,6 +16,15 @@
+>  #define MTK_PUPD_SET_R1R0_10 102
+>  #define MTK_PUPD_SET_R1R0_11 103
+>
+> +#define MTK_PULL_SET_RSEL_000  200
+> +#define MTK_PULL_SET_RSEL_001  201
+> +#define MTK_PULL_SET_RSEL_010  202
+> +#define MTK_PULL_SET_RSEL_011  203
+> +#define MTK_PULL_SET_RSEL_100  204
+> +#define MTK_PULL_SET_RSEL_101  205
+> +#define MTK_PULL_SET_RSEL_110  206
+> +#define MTK_PULL_SET_RSEL_111  207
+> +
 
-A gentle ping on this one. Please let me know if you had a chance to look
-at this and have any feedback. I could do a rebase to 5.14-rc1 if required.
+Instead of all the obscure macros and the new custom "rsel" property,
+which BTW is not in the bindings, can't we just list the actual bias
+resistance of each setting? We could also migrate away from R1R0.
 
-Thanks,
-Shameer
+Then we can specify the setting with the standard bias-pull-up/down
+properties [1].
 
-> 
-> Thanks,
-> Shameer
-> 
-> History:
-> -------
-> Please find the RFC series here,
-> https://lore.kernel.org/kvmarm/20210506165232.1969-1-shameerali.kolothu
-> m.thodi@huawei.com/
-> 
-> From RFCv1:
-> 
-> This is based on a suggestion from Will [0] to try out the asid
-> based kvm vmid solution as a separate VMID allocator instead of
-> the shared lib approach attempted in v4[1].
-> 
-> The idea is to compare both the approaches and see whether the
-> shared lib solution with callbacks make sense or not.
-> 
-> Though we are not using the pinned vmids yet, patch #2 has
-> code for pinned vmid support. This is just to help the comparison.
-> 
-> Test Setup/Results
-> ----------------
-> The measurement was made with maxcpus set to 8 and with the
-> number of VMID limited to 4-bit. The test involves running
-> concurrently 40 guests with 2 vCPUs. Each guest will then
-> execute hackbench 5 times before exiting.
-> 
-> The performance difference between the current algo and the
-> new one are(avg. of 10 runs):
->     - 1.9% less entry/exit from the guest
->     - 0.5% faster
-> 
-> This is more or less comparable to v4 numbers.
-> 
-> For the complete series, please see,
-> https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-vmid-2nd-rfc
-> 
-> and for the shared asid lib v4 solution,
-> https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-asid-v4
-> 
-> As you can see there are ofcourse code duplication with this
-> approach but may be it is more easy to maintain considering
-> the complexity involved.
-> 
-> [0] https://lore.kernel.org/lkml/20210422160846.GB2214@willie-the-truck/
-> [1]
-> https://lore.kernel.org/lkml/20210414112312.13704-1-shameerali.kolothum.t
-> hodi@huawei.com/
-> 
-> Julien Grall (2):
->   arch/arm64: Introduce a capability to tell whether 16-bit VMID is
->     available
->   kvm/arm: Align the VMID allocation with the arm64 ASID one
-> 
-> Shameer Kolothum (1):
->   kvm/arm: Introduce a new vmid allocator for KVM
-> 
->  arch/arm64/include/asm/kvm_asm.h      |   4 +-
->  arch/arm64/include/asm/kvm_host.h     |  10 +-
->  arch/arm64/include/asm/kvm_mmu.h      |   7 +-
->  arch/arm64/kernel/cpufeature.c        |   9 ++
->  arch/arm64/kvm/Makefile               |   2 +-
->  arch/arm64/kvm/arm.c                  | 115 ++++----------
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c    |   6 +-
->  arch/arm64/kvm/hyp/nvhe/mem_protect.c |   3 +-
->  arch/arm64/kvm/hyp/nvhe/tlb.c         |  10 +-
->  arch/arm64/kvm/hyp/vhe/tlb.c          |  10 +-
->  arch/arm64/kvm/mmu.c                  |   1 -
->  arch/arm64/kvm/vmid.c                 | 206
-> ++++++++++++++++++++++++++
->  arch/arm64/tools/cpucaps              |   1 +
->  13 files changed, 273 insertions(+), 111 deletions(-)
->  create mode 100644 arch/arm64/kvm/vmid.c
-> 
+Also, please ask internally if Mediatek could relicense all the header
+files that Mediatek has contributed under include/dt-bindings/pinctrl/ [2]
+to GPL-2.0 and BSD dual license. These files are part of the DT bindings
+and we really want them to be dual licensed as well, and not just the
+YAML files.
+
+
+Regards
+ChenYu
+
+
+[1] https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml#L37
+[2] Note that a few files were contributed by other people
+
+>  #define MTK_DRIVE_2mA  2
+>  #define MTK_DRIVE_4mA  4
+>  #define MTK_DRIVE_6mA  6
 > --
-> 2.17.1
-
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
