@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2623C7842
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A153C7846
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbhGMUzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
+        id S231499AbhGMU7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235484AbhGMUzO (ORCPT
+        with ESMTP id S234172AbhGMU7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:55:14 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6185C0613DD;
-        Tue, 13 Jul 2021 13:52:23 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id g19so37065192ybe.11;
-        Tue, 13 Jul 2021 13:52:23 -0700 (PDT)
+        Tue, 13 Jul 2021 16:59:08 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86607C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:56:17 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id u3so68416plf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HNa1uyGKthgEsfSPk6zTopnzfVQXtNCng1FQUxNRDSk=;
-        b=RmyMSiR+gZjiltux2RtDJC9wYxWRfpJpHq3AYSrrmnuCKICYtPApkh+owtwJP89vl1
-         z7oaBD9NMcPLBWMjqZQdX86qizAsAjP5p49Z3XOmZuCgBxa2z2TVQ0LAhtOXtxXtR3dU
-         rTXtc+Znv211XjFUfgebzEESkCBPRqv3vKAhQ0ZhN/TDaASqH7zmqDUxrPsuyOSkPm1C
-         L0iZqN7GHzkWush+LBkyIVVr/kt9fsiun19+2cvyy1hLZBsmbBguEHRcMF76U6Ux/7S7
-         F+RUe6An+owsQ+c7uD1ygdvd1+x/NfA0Lvc7BRV72vPzouwk6EZq5lY144c3PCGPvCam
-         /JSA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LMLZw+7kP17xj8iob4CnXRS8mLPc06HVwcScbSpgmog=;
+        b=DbhUnemaxXAYoclSgYPqjmzCgDcfvbTt0Fp2D3iAma0zwBxS/PVN+wOVRPnC4yPEXP
+         56fAdE8DeC5XAmFGZI1M6jOscQOIWAOLas285nt9xvjZiSVQsc5VDJtd9ZQHTOk5EVvx
+         9Z6DqQtUPkBOCvJd+rRYaB0zDlhvhs8VX82lgwiPf6AYDwItMgV6UFfcd9tmSMQuI85f
+         92mxF8FyStxwL5H2rKfLi7cakA6gtrS9QZU11Ty6YAj4rXYy1YX0fzHhNSN8xukw81EC
+         sZ1dBuH25Jl8vnQek1/rexfaZYFIKrcC34oedX3HJOdABtebYdwYWXEIfeMuMY0SdkA8
+         v6ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HNa1uyGKthgEsfSPk6zTopnzfVQXtNCng1FQUxNRDSk=;
-        b=jyL4Ijj0NqXov+VYu4X61aJ20kgP94N/OsdvU8Lso1mE4odl/U0xdyleLl7/5LUyVD
-         KnOdcd5VwC67hRRvPRQK+4n40dBOBYuJ1TWzduKmu69VQKBnwxh8Vj008tBTEBRZsL5K
-         0C/CNQ673Uwm+wpiiSD93ZhEonzxOK3DemX6OE3RYuOk3nInk2UcdIEWZSpigvRMCgOw
-         LRkWgMBTUkfZb9m735MNviCyBHaMxgRMtyyvu0URof38J5JhWKk2bf2Iu2abBGVP9CjI
-         H4QcydxTvEC1ibOr7vxeY0wzpy7gkpU/ORVWg1taydyLikEfcZjWJvMA1A5uFwR49Qsm
-         EvGA==
-X-Gm-Message-State: AOAM532OA7udkuG4E8EHcisYtAw/u8CKXlq4H7dfGvdQvITmGSrIIk7H
-        eRy4vKzQG38OZrfRu82ULOe9k6FPuPuzsZZPtlc=
-X-Google-Smtp-Source: ABdhPJwIMUd+WE4l6xMme3qrqlBQ8xVcjP6/S9s4k4GOUlHN5X8yyjoXQwZzIzbiW/j6/TRc953ym5Ix33p2UcBOaME=
-X-Received: by 2002:a25:ad62:: with SMTP id l34mr8482235ybe.457.1626209543069;
- Tue, 13 Jul 2021 13:52:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LMLZw+7kP17xj8iob4CnXRS8mLPc06HVwcScbSpgmog=;
+        b=maCZTCtvjZuMRG/LtXd4rCNSUnGolevy0sprStSb1/0tGWhB+io6EudSwQAFpsQjD6
+         9gLmUYjcKePu5rsjrXhIVSaharGZqk/DptXppBlq5Za8w4aiw6cFukFX29MYsrPWrm7W
+         XmMxKhG+fKa4MfYSStzUS6Gin4Nd55/qh0/m0+W7h6R1I792JibA7kZ8ztSiNJNwDgIO
+         VbtavqLpxHZW+R352ezIKSfbGGbg7vF3cuJlc3CbD2iafOjSEOlVixeh6iXwD/vDLTla
+         0UpH6bpwrWny7D9+XXX93SOgR/2fjhmZQ9aI3xECFFn6pGpOY7GYcdsHQ2Ijx5oCk0Tt
+         56FA==
+X-Gm-Message-State: AOAM533MAqHWDmDpazI6ba3Z4SLDkGM8RqYMzORiliYzXrcs0mcSEoj/
+        dAu5XYo2BlV7+DUNu2ZdMDUGVw==
+X-Google-Smtp-Source: ABdhPJwppbUt2eHS1spdEOKVMbf1fSzhtbIwYnWe8xIFSfLd75nFK+mE2w4E+UrVxpXtbpNpKe9XHg==
+X-Received: by 2002:a17:90a:510b:: with SMTP id t11mr135413pjh.178.1626209776872;
+        Tue, 13 Jul 2021 13:56:16 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j21sm57759pjz.26.2021.07.13.13.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 13:56:16 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 20:56:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v2 60/69] KVM: VMX: Add macro framework to read/write
+ VMCS for VMs and TDs
+Message-ID: <YO397L2OQXFBZN5q@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <5735bf9268130a70b49bc32ff4b68ffc53ee788c.1625186503.git.isaku.yamahata@intel.com>
+ <71ee8575-bd72-f51e-38c5-4e8411b8aedd@redhat.com>
 MIME-Version: 1.0
-References: <CAMdYzYqvT+X9C_YZ+DtspgHLSeb=RVHLeS2-0pEHeotyvb+iXQ@mail.gmail.com>
- <20210713154310.GE24271@quack2.suse.cz>
-In-Reply-To: <20210713154310.GE24271@quack2.suse.cz>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Tue, 13 Jul 2021 16:52:11 -0400
-Message-ID: <CAMdYzYroicgDkWuiQ7Xaw_5aYD9mLkrz8qvE9WwS6mPw9uWe8g@mail.gmail.com>
-Subject: Re: ext4_xattr_ibody_find:2180: inode #2669312: comm systemd-journal:
- corrupted in-inode xattr
-To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71ee8575-bd72-f51e-38c5-4e8411b8aedd@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 11:43 AM Jan Kara <jack@suse.cz> wrote:
->
-> Hello!
+On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> > 
+> > Add a macro framework to hide VMX vs. TDX details of VMREAD and VMWRITE
+> > so the VMX and TDX can shared common flows, e.g. accessing DTs.
+> > 
+> > Note, the TDX paths are dead code at this time.  There is no great way
+> > to deal with the chicken-and-egg scenario of having things in place for
+> > TDX without first having TDX.
+> > 
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >   arch/x86/kvm/vmx/common.h | 41 +++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 41 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
+> > index 9e5865b05d47..aa6a569b87d1 100644
+> > --- a/arch/x86/kvm/vmx/common.h
+> > +++ b/arch/x86/kvm/vmx/common.h
+> > @@ -11,6 +11,47 @@
+> >   #include "vmcs.h"
+> >   #include "vmx.h"
+> >   #include "x86.h"
+> > +#include "tdx.h"
+> > +
+> > +#ifdef CONFIG_KVM_INTEL_TDX
+> 
+> Is this #ifdef needed at all if tdx.h properly stubs is_td_vcpu (to return
+> false) and possibly declares a dummy version of td_vmcs_read/td_vmcs_write?
 
-Good Evening,
-
->
-> On Fri 28-05-21 08:36:17, Peter Geis wrote:
-> > I have run into a fun issue where I have the follow error on boot,
-> > which causes the device to drop to read only mode:
-> > ext4_xattr_ibody_find:2180: inode #2669312: comm systemd-journal:
-> > corrupted in-inode xattr
-> > It marks the file system as unclean, which forces a fsck, but it seems
-> > that even as of v1.46.2 e2fsprogs does not have the ability to resolve
-> > this issue.
-> > Any attempts to touch the corrupted files (I've found two so far)
-> > leads to the same error, and I cannot find a way to remove or repair
-> > the affected inodes without wiping the entire file system.
->
-> This seems to have fallen through the cracks. Have you managed to fix your
-> filesystem? If not, please obtain filesystem image using e2image (it will
-> contain only fs metadata, not any data), compress it and put it somewhere for
-> download so that we can better diagnose the issue. Thanks!
-
-Unfortunately no I don't have the file system anymore.
-I put about two weeks into trying to fix it, but in the end I had to
-nuke it from orbit.
-
-Thanks for reaching out,
-Peter
-
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+IIRC, it requires dummy versions of is_debug_td() and all the ##bits variants of
+td_vmcs_read/write().  I'm not sure if I ever actually tried that, e.g. to see
+if the compiler completely elided the TDX crud when CONFIG_KVM_INTEL_TDX=n.
