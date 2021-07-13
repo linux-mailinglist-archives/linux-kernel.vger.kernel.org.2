@@ -2,175 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BE53C75EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856243C75EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhGMRv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhGMRvz (ORCPT
+        id S233384AbhGMRwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:52:11 -0400
+Received: from smtprelay0219.hostedemail.com ([216.40.44.219]:55774 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230145AbhGMRwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:51:55 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DE7C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:49:04 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id oj10-20020a17090b4d8ab0290172f77377ebso2624788pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=mkfpRgpeLPxUYp+ddTZkPNka6bB8ZGq5QWO32nx4iz0=;
-        b=edC+uUrC1ibal60WPRY84ZBLQ48kYRawi7D+gIF4wCdJuwZP0m5q/uuWjmHOWtUpdE
-         06YSilXhpiGlcb6XyD2iMRYLL87z+wfOxHXMUHX08Py7mdZdj5dM8CxAF2Sj5HgqhWkD
-         itfGjjLC8XA3IDYkRuOAPUwYooUT3aXXSojtV6y7Vctx5w2b9kFUd5i7FaRg6j1HSwAQ
-         IkV5tUP3PDpNdB8NOcja6zELBwjYaq+ORUHqTtTvhGee+R1z1Ds9LpUSEAea8Gwh3fdM
-         SX/y/ShBo+ZdIxOYsOg7pIdz3XNP2rAahf1jtFmIMFgNm62pkvjN1+AQHucvUPlHZXAq
-         zwIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=mkfpRgpeLPxUYp+ddTZkPNka6bB8ZGq5QWO32nx4iz0=;
-        b=dkAWdaHWraL9s8XGeV1JANeUq4nMHzPZcCgUfbq6qIXqiQwhsVN8sjXex9tDs34DKZ
-         XzaIEOrz59+QVftUG00fj0thX59DIM4g4K+Ni8MASyVVjwqhDnrvhGq+PL0C6zFdb4rj
-         TlAv6cjc9Q9GSEG6/mSl0dmqCNYQVyiEv1FIJtWpuTdmeMj+pbDE3jGoqWX8XdYD+03c
-         qUQ/F8wILmxPjyH+spgTbv2t6GuRuXYEDX6FoGFFANKcebnPG9yAqAkjDLidu1/xEJ/a
-         4v1uKYg3Rl0X5Bxd3uF4XFAqiDSzZDkd4ofa6BsUp6UR8611cw7PTeF2FOj0oAdn8WES
-         GZcg==
-X-Gm-Message-State: AOAM532FwOw4zYIoLLrNtdgz7+stvfrH0ALDuFnIsGpJNCT2vPz1Axru
-        ULrdANXaFMzV3nrpSG5b3/xIeg==
-X-Google-Smtp-Source: ABdhPJz22XsuCy0FIbFP7wrjQC2jH1V7CQEz98z5mMv8mIvEOA+oZ9Pr8XzdgfkjtzlTELrxachHJA==
-X-Received: by 2002:a17:90a:420c:: with SMTP id o12mr5364656pjg.101.1626198544250;
-        Tue, 13 Jul 2021 10:49:04 -0700 (PDT)
-Received: from anisinha-lenovo ([115.96.158.88])
-        by smtp.googlemail.com with ESMTPSA id f3sm12953271pfk.206.2021.07.13.10.48.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 10:49:03 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-X-Google-Original-From: Ani Sinha <anisinha@anisinha.ca>
-Date:   Tue, 13 Jul 2021 23:18:46 +0530 (IST)
-X-X-Sender: anisinha@anisinha-lenovo
-To:     Michael Kelley <mikelley@microsoft.com>
-cc:     Ani Sinha <ani@anisinha.ca>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "anirban.sinha@nokia.com" <anirban.sinha@nokia.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [PATCH] Hyper-V: fix for unwanted manipulation of sched_clock
- when TSC marked unstable
-In-Reply-To: <CY4PR21MB15866351E83212975EA02C34D7149@CY4PR21MB1586.namprd21.prod.outlook.com>
-Message-ID: <alpine.DEB.2.22.394.2107132306310.2140183@anisinha-lenovo>
-References: <20210713030522.1714803-1-ani@anisinha.ca> <CY4PR21MB15866351E83212975EA02C34D7149@CY4PR21MB1586.namprd21.prod.outlook.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 13 Jul 2021 13:52:08 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id AA2D9182CED34;
+        Tue, 13 Jul 2021 17:49:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id C3A242448BC;
+        Tue, 13 Jul 2021 17:49:16 +0000 (UTC)
+Message-ID: <997c0cdbd57752252d87129185a973c7d42e491f.camel@perches.com>
+Subject: [PATCH] MIPS: octeon: Remove vestiges of CONFIG_CAVIUM_RESERVE32
+From:   Joe Perches <joe@perches.com>
+To:     David Daney <david.daney@cavium.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 13 Jul 2021 10:49:15 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: C3A242448BC
+X-Spam-Status: No, score=-1.09
+X-Stat-Signature: noibhr63sywfph683hp1cq8jj65dttn9
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+RP6DANkgnMILu8gdNJRmDm7aiQfOSFvY=
+X-HE-Tag: 1626198556-395381
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The config option CAVIUM_RESERVE32 is not used.
+Remove the dead code controlled by it.
 
+Signed-off-by: Joe Perches <joe@perches.com>
+---
 
-On Tue, 13 Jul 2021, Michael Kelley wrote:
+Uncompiled, untested.
 
-> From: Ani Sinha <ani@anisinha.ca> Sent: Monday, July 12, 2021 8:05 PM
-> >
-> > Marking TSC as unstable has a side effect of marking sched_clock as
-> > unstable when TSC is still being used as the sched_clock. This is not
-> > desirable. Hyper-V ultimately uses a paravirtualized clock source that
-> > provides a stable scheduler clock even on systems without TscInvariant
-> > CPU capability. Hence, mark_tsc_unstable() call should be called _after_
-> > scheduler clock has been changed to the paravirtualized clocksource. This
-> > will prevent any unwanted manipulation of the sched_clock. Only TSC will
-> > be correctly marked as unstable.
-> >
-> > Signed-off-by: Ani Sinha <ani@anisinha.ca>
-> > ---
-> >  arch/x86/kernel/cpu/mshyperv.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > index 22f13343b5da..715458b7729a 100644
-> > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > @@ -370,8 +370,6 @@ static void __init ms_hyperv_init_platform(void)
-> >  	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT) {
-> >  		wrmsrl(HV_X64_MSR_TSC_INVARIANT_CONTROL, 0x1);
-> >  		setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
-> > -	} else {
-> > -		mark_tsc_unstable("running on Hyper-V");
-> >  	}
-> >
-> >  	/*
-> > @@ -432,6 +430,12 @@ static void __init ms_hyperv_init_platform(void)
-> >  	/* Register Hyper-V specific clocksource */
-> >  	hv_init_clocksource();
-> >  #endif
-> > +	/* TSC should be marked as unstable only after Hyper-V
-> > +	 * clocksource has been initialized. This ensures that the
-> > +	 * stability of the sched_clock is not altered.
-> > +	 */
->
-> For multi-line comments like the above, the first comment line
-> should just be "/*".  So:
+Found using a grep for unused Kconfig entries:
 
-Hmm, checkpatch.pl in kernel tree did not complain :
+$ git grep -P '^\s*#\s*if(?:def\s+|\s*defined\s*\(?\s*)CONFIG_[A-Z0-9_]+' | \
+  grep -oh -P '\bCONFIG_[A-Z0-9_]+\b' | \
+  sort | sed -e 's/^CONFIG_//' -e 's/_MODULE$//' | uniq | \
+  while read config ; do \
+    echo CONFIG_$config; \
+    git grep -w $config -- '*/Kconfig*' | \
+    wc -l; \
+  done | \
+  grep -B1 '^0'
 
-total: 0 errors, 0 warnings, 20 lines checked
+with some additional inspection of the kernel source tree to verify.
 
-0001-Hyper-V-fix-for-unwanted-manipulation-of-sched_clock.patch has no
-obvious style problems and is ready for submission.
+ arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c | 21 +++---------
+ arch/mips/cavium-octeon/setup.c                    | 38 +---------------------
+ 2 files changed, 5 insertions(+), 54 deletions(-)
 
-However, I do know from my experience of submitting Qemu patches last
-year that this is a requirement imposed by the Qemu community as
-checkpatch.pl in qemu tree would complain otherwise. I also took a peek at
-the Qemu git history. It seems they imported this check from the kernel's
-checkpatch.pl with this commit in Qemu tree:
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c b/arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c
+index 3839feba68f20..fb42e8e21ea0d 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c
+@@ -57,27 +57,14 @@ EXPORT_SYMBOL_GPL(__cvmx_cmd_queue_state_ptr);
+ static cvmx_cmd_queue_result_t __cvmx_cmd_queue_init_state_ptr(void)
+ {
+ 	char *alloc_name = "cvmx_cmd_queues";
+-#if defined(CONFIG_CAVIUM_RESERVE32) && CONFIG_CAVIUM_RESERVE32
+-	extern uint64_t octeon_reserve32_memory;
+-#endif
+ 
+ 	if (likely(__cvmx_cmd_queue_state_ptr))
+ 		return CVMX_CMD_QUEUE_SUCCESS;
+ 
+-#if defined(CONFIG_CAVIUM_RESERVE32) && CONFIG_CAVIUM_RESERVE32
+-	if (octeon_reserve32_memory)
+-		__cvmx_cmd_queue_state_ptr =
+-		    cvmx_bootmem_alloc_named_range(sizeof(*__cvmx_cmd_queue_state_ptr),
+-						   octeon_reserve32_memory,
+-						   octeon_reserve32_memory +
+-						   (CONFIG_CAVIUM_RESERVE32 <<
+-						    20) - 1, 128, alloc_name);
+-	else
+-#endif
+-		__cvmx_cmd_queue_state_ptr =
+-		    cvmx_bootmem_alloc_named(sizeof(*__cvmx_cmd_queue_state_ptr),
+-					    128,
+-					    alloc_name);
++	__cvmx_cmd_queue_state_ptr =
++		cvmx_bootmem_alloc_named(sizeof(*__cvmx_cmd_queue_state_ptr),
++					 128,
++					 alloc_name);
+ 	if (__cvmx_cmd_queue_state_ptr)
+ 		memset(__cvmx_cmd_queue_state_ptr, 0,
+ 		       sizeof(*__cvmx_cmd_queue_state_ptr));
+diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+index ce4e2806159bb..0ddd3cc16ee47 100644
+--- a/arch/mips/cavium-octeon/setup.c
++++ b/arch/mips/cavium-octeon/setup.c
+@@ -284,11 +284,6 @@ void octeon_crash_smp_send_stop(void)
+ 
+ #endif /* CONFIG_KEXEC */
+ 
+-#ifdef CONFIG_CAVIUM_RESERVE32
+-uint64_t octeon_reserve32_memory;
+-EXPORT_SYMBOL(octeon_reserve32_memory);
+-#endif
+-
+ #ifdef CONFIG_KEXEC
+ /* crashkernel cmdline parameter is parsed _after_ memory setup
+  * we also parse it here (workaround for EHB5200) */
+@@ -665,9 +660,7 @@ void __init prom_init(void)
+ 	int i;
+ 	u64 t;
+ 	int argc;
+-#ifdef CONFIG_CAVIUM_RESERVE32
+-	int64_t addr = -1;
+-#endif
++
+ 	/*
+ 	 * The bootloader passes a pointer to the boot descriptor in
+ 	 * $a3, this is available as fw_arg3.
+@@ -782,25 +775,6 @@ void __init prom_init(void)
+ 		cvmx_write_csr(CVMX_LED_UDD_DATX(1), 0);
+ 		cvmx_write_csr(CVMX_LED_EN, 1);
+ 	}
+-#ifdef CONFIG_CAVIUM_RESERVE32
+-	/*
+-	 * We need to temporarily allocate all memory in the reserve32
+-	 * region. This makes sure the kernel doesn't allocate this
+-	 * memory when it is getting memory from the
+-	 * bootloader. Later, after the memory allocations are
+-	 * complete, the reserve32 will be freed.
+-	 *
+-	 * Allocate memory for RESERVED32 aligned on 2MB boundary. This
+-	 * is in case we later use hugetlb entries with it.
+-	 */
+-	addr = cvmx_bootmem_phy_named_block_alloc(CONFIG_CAVIUM_RESERVE32 << 20,
+-						0, 0, 2 << 20,
+-						"CAVIUM_RESERVE32", 0);
+-	if (addr < 0)
+-		pr_err("Failed to allocate CAVIUM_RESERVE32 memory area\n");
+-	else
+-		octeon_reserve32_memory = addr;
+-#endif
+ 
+ #ifdef CONFIG_CAVIUM_OCTEON_LOCK_L2
+ 	if (cvmx_read_csr(CVMX_L2D_FUS3) & (3ull << 34)) {
+@@ -1078,16 +1052,6 @@ void __init plat_mem_setup(void)
+ 	cvmx_bootmem_unlock();
+ #endif /* CONFIG_CRASH_DUMP */
+ 
+-#ifdef CONFIG_CAVIUM_RESERVE32
+-	/*
+-	 * Now that we've allocated the kernel memory it is safe to
+-	 * free the reserved region. We free it here so that builtin
+-	 * drivers can use the memory.
+-	 */
+-	if (octeon_reserve32_memory)
+-		cvmx_bootmem_free_named("CAVIUM_RESERVE32");
+-#endif /* CONFIG_CAVIUM_RESERVE32 */
+-
+ 	if (total == 0)
+ 		panic("Unable to allocate memory from "
+ 		      "cvmx_bootmem_phy_alloc");
 
-commit 8c06fbdf36bf4d4d486116200248730887a4d7d6
-Author: Peter Maydell <peter.maydell@linaro.org>
-Date:   Fri Dec 14 13:30:48 2018 +0000
-
-    scripts/checkpatch.pl: Enforce multiline comment syntax
-
-Which adds this rule:
-
-+               # Block comments use /* on a line of its own
-+               if ($rawline !~ m@^\+.*/\*.*\*/[ \t]*$@ &&      #inline /*...*/
-+                   $rawline =~ m@^\+.*/\*\*?[ \t]*.+[ \t]*$@) { # /* or /** non-blank
-+                       WARN("Block comments use a leading /* on a separate line\n" . $herecurr);
-+               }
-
-
-But in kernel there is no such rule. Hmm. strange!
-
-
->
-> 	/*
-> 	 * TSC should be marked as unstable only after Hyper-V
-> 	 * clocksource has been initialized. This ensures that the
-> 	 * stability of the sched_clock is not altered.
-> 	 */
->
->
-> > +	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
-> > +		mark_tsc_unstable("running on Hyper-V");
-> >  }
-> >
-> >  static bool __init ms_hyperv_x2apic_available(void)
-> > --
-> > 2.25.1
->
-> Modulo the comment format,
->
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Tested-by: Michael Kelley <mikelley@microsoft.com>
->
