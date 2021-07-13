@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522CC3C6E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314893C6E5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhGMKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
+        id S235448AbhGMK01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 06:26:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:40110 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235143AbhGMKZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:25:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A92FE611CB;
-        Tue, 13 Jul 2021 10:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626171733;
-        bh=S4DYoR9vB4H4k1IjW6dUgtFP/bjqo4vpc0Qfg9yYKco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cFZNjRNL1kq3sX7/5bp5TZPoTN+tD1OvV04aki0pPrHpKKlOIv+oAfGTOfqZ0Fppa
-         blAz6lnKF3FhfMbT+dSfeh9x0jCTkEvChlJfrvhNLa9oJQrGrFlfSnZ9NrHOIVYdRD
-         q1PfMdb01UIZ0ZncIBns8zkRluEKBiRQYALj/fIDddDdvXbd2XAKw6fJoUJucEIcxO
-         6xVMqsWHr643fRL8rXMVhbuYlF3LFoujvTp6ADa2LaY4s02C5jd+K06VeExaWv68RE
-         nJ7S8IhQuzmQ7K0nvAp94YZRbtmT7lPkd+ym1ui8tEDgRsHNhE4qjFgDT+Ser2n80L
-         KYfyyZVq1wdow==
-Date:   Tue, 13 Jul 2021 13:22:07 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] mm: remove pfn_valid_within() and
- CONFIG_HOLES_IN_ZONE
-Message-ID: <YO1pT1bjMfldbQKg@kernel.org>
-References: <20210713080035.7464-1-rppt@kernel.org>
- <20210713080035.7464-2-rppt@kernel.org>
- <7300dfe1-0c6a-ae2e-2c48-c885248ec263@redhat.com>
+        id S235143AbhGMK00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 06:26:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90C666D;
+        Tue, 13 Jul 2021 03:23:36 -0700 (PDT)
+Received: from [10.57.36.240] (unknown [10.57.36.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 898223F7D8;
+        Tue, 13 Jul 2021 03:23:34 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: rockchip: Add compatible for
+ rk3568 HDMI
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
+        daniel@ffwll.ch, robh+dt@kernel.org, algea.cao@rock-chips.com,
+        andy.yan@rock-chips.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210707120323.401785-1-benjamin.gaignard@collabora.com>
+ <20210707120323.401785-2-benjamin.gaignard@collabora.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <da42fa57-6763-b57d-fc5a-82f14ce7b8e3@arm.com>
+Date:   Tue, 13 Jul 2021 11:23:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7300dfe1-0c6a-ae2e-2c48-c885248ec263@redhat.com>
+In-Reply-To: <20210707120323.401785-2-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 11:51:46AM +0200, David Hildenbrand wrote:
-> On 13.07.21 10:00, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > After recent changes in freeing of the unused parts of the memory map and
-> > rework of pfn_valid() in arm and arm64 there are no architectures that can
-> > have holes in the memory map within a pageblock and so nothing can enable
-> > CONFIG_HOLES_IN_ZONE which guards non trivial implementation of
-> > pfn_valid_within().
-> > 
-> > With that, pfn_valid_within() is always hardwired to 1 and can be
-> > completely removed.
-> > 
-> > Remove calls to pfn_valid_within() and CONFIG_HOLES_IN_ZONE.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> There is currently the discussion to increase MAX_ORDER, for example, to
-> cover 1GiB instead of 4MiB on x86-64. This would mean that we could
-> suddenly, again, have holes insides MAX_ORDER - 1 pages.
-> 
-> So I assume if we ever go down that path, we'll need something like this
-> again.
+On 2021-07-07 13:03, Benjamin Gaignard wrote:
+> Define a new compatible for rk3568 HDMI.
+> This version of HDMI hardware block needs two new clocks hclk_vio and hclk
+> to provide phy reference clocks.
 
-It depends whether pageblock_order will be also increased. PFN walkers rely
-on continuity of pageblocks rather than MAX_ORDER chunks, so if
-pageblock_order won't change, there won't be need to check for pfn_valid()
-inside a pageblock.
- 
-> For now, this looks like the right thing to do
+Do you know what hclk_vio is and whether it's actually necessary? I 
+don't see any mention of it downstream, and based on previous experience 
+I'm suspicious that it might be just the parent of hclk, and thus should 
+not need to be explicitly claimed by the device or baked into it's binding.
+
+Robin.
+
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 2:
+> - Add the clocks needed for the phy.
 > 
-> Acked-by: David Hildenbrand <david@redhat.com>
-
-Thanks!
-
--- 
-Sincerely yours,
-Mike.
+>   .../bindings/display/rockchip/rockchip,dw-hdmi.yaml         | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+> index 75cd9c686e985..cb8643b3a8b84 100644
+> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+> @@ -23,6 +23,7 @@ properties:
+>         - rockchip,rk3288-dw-hdmi
+>         - rockchip,rk3328-dw-hdmi
+>         - rockchip,rk3399-dw-hdmi
+> +      - rockchip,rk3568-dw-hdmi
+>   
+>     reg-io-width:
+>       const: 4
+> @@ -51,8 +52,11 @@ properties:
+>             - vpll
+>         - enum:
+>             - grf
+> +          - hclk_vio
+> +          - vpll
+> +      - enum:
+> +          - hclk
+>             - vpll
+> -      - const: vpll
+>   
+>     ddc-i2c-bus:
+>       $ref: /schemas/types.yaml#/definitions/phandle
+> 
