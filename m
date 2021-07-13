@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90A43C79C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EBC3C79CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236769AbhGMWpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 18:45:42 -0400
-Received: from mail-il1-f174.google.com ([209.85.166.174]:45921 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbhGMWpk (ORCPT
+        id S236687AbhGMWrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 18:47:06 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:37821 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235536AbhGMWrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 18:45:40 -0400
-Received: by mail-il1-f174.google.com with SMTP id b6so15266187iln.12;
-        Tue, 13 Jul 2021 15:42:50 -0700 (PDT)
+        Tue, 13 Jul 2021 18:47:05 -0400
+Received: by mail-io1-f46.google.com with SMTP id l18so24280033iow.4;
+        Tue, 13 Jul 2021 15:44:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lsdCSpnf6ZiX83NlGYzoBdbib31n+VNXkgCApsj7nLM=;
-        b=Z1Q/A5TNbwI2IdwMaC0xCigJJejksDH4+iY3IaOFrFm0GzpYSRGuBMLudA75lfUIJg
-         Sl1HC/DHNwnnodlOsL/VqtrKq1Lzy1yPp0EBD3Zbq4Bo4FGP2sWTIvdmfNMleJqzJ7bY
-         Ytm6EVOUoSzlegTZ4Wf9zYLHv9Uc2C38q+M9hdxyahVXzKojhVp4SIG2H44cZLhGRJAW
-         O4CCe14x4WLjBc+jKn+l+58T65hA8TNfVxXw38oeQeJ1Epp20GT8/9mpNCWYomMSTz9g
-         WBy/I9TncXUNRrPdBVWT3UTdgsQDB+xDzrH6uWIU56ksktfUoShzntivu+m66hhQcKuo
-         AoqQ==
-X-Gm-Message-State: AOAM530W1vEvEezVioQhyXLbfpeN7VkPfaS9um4Fb4UUpBUprAF/9OfW
-        xh+Uzdh1OZFWLcdx9YY5hQ==
-X-Google-Smtp-Source: ABdhPJyBP0Vwy0xP55H7Iy5+swmvS2mXaRlbYo72hNyvVC3lYhapXdsdp3wMpbQQcMkPLHtj0RgrfA==
-X-Received: by 2002:a92:c883:: with SMTP id w3mr3687073ilo.76.1626216169897;
-        Tue, 13 Jul 2021 15:42:49 -0700 (PDT)
+        bh=/1Qu7cMHa9uzbYo7ijXv1POZZirJoa4gkML3s+GgcbM=;
+        b=YB+q+JcDes5UEmWpTam8FQyGmc1MqGYlOcfz1lgaSv+AcUn0mhKxR5bFYtyY8HbRKf
+         8TaLMs6hWiFtdWHP4smAWg+t2SGx4sh7hjNemtRuV6CUCh2tVKEl8080IpMKpdPZTVLy
+         PqxMwizF/g11kXy73vE4ecIaA8zs4sCpi2hf7jPXm3ciz0hncvNhBpPN4S0T9jo1U6Eg
+         HuYBBiN7kGVFFzNnK2555BrEMk6eSpqSBwLmlWGp+SNhfJPazOWoF4UHIMGJIRQrg6BA
+         bp6hqLCU0xkI/J/6mSsAN66fwyYmnbraqO9Hih04hZcwaUXSDn3JoXpt4OGqq30phMOp
+         2eyg==
+X-Gm-Message-State: AOAM531cf8Iy/bhWejrJ5ZBaOkP6TK/tga6ocbW9o0D2PZ1gWh0Dbplq
+        gZQP0hyTASihc0pB8vjlHg==
+X-Google-Smtp-Source: ABdhPJzvmAfJKZ7SSfXPpwfF6OxiNSXzxMH5ZbpeWkU8qDr2LMSI2feSX2xxnpi1I9TrTAAvde/cuQ==
+X-Received: by 2002:a05:6602:8c3:: with SMTP id h3mr4877942ioz.144.1626216254403;
+        Tue, 13 Jul 2021 15:44:14 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p10sm177941ilh.57.2021.07.13.15.42.47
+        by smtp.gmail.com with ESMTPSA id c19sm193611ili.62.2021.07.13.15.44.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 15:42:49 -0700 (PDT)
-Received: (nullmailer pid 985485 invoked by uid 1000);
-        Tue, 13 Jul 2021 22:42:45 -0000
-Date:   Tue, 13 Jul 2021 16:42:45 -0600
+        Tue, 13 Jul 2021 15:44:13 -0700 (PDT)
+Received: (nullmailer pid 987828 invoked by uid 1000);
+        Tue, 13 Jul 2021 22:44:10 -0000
+Date:   Tue, 13 Jul 2021 16:44:10 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     bjorn.andersson@linaro.org, viresh.kumar@linaro.org,
-        agross@kernel.org, rjw@rjwysocki.net, devicetree@vger.kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jami.kettunen@somainline.org,
-        paul.bouchara@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, jeffrey.l.hugo@gmail.com
-Subject: Re: [PATCH v6 9/9] dt-bindings: cpufreq: qcom-hw: Make reg-names a
- required property
-Message-ID: <20210713224245.GA981311@robh.at.kernel.org>
-References: <20210701105730.322718-1-angelogioacchino.delregno@somainline.org>
- <20210701105730.322718-10-angelogioacchino.delregno@somainline.org>
+To:     Steven Lee <steven_lee@aspeedtech.com>
+Cc:     "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>, Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ryan_chen@aspeedtech.com, Hongweiz@ami.com,
+        billy_tsai@aspeedtech.com, Andrew Jeffery <andrew@aj.id.au>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v6 2/9] dt-bindings: aspeed-sgpio: Add ast2600 sgpio
+Message-ID: <20210713224410.GA987786@robh.at.kernel.org>
+References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+ <20210712100317.23298-3-steven_lee@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210701105730.322718-10-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210712100317.23298-3-steven_lee@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 12:57:30PM +0200, AngeloGioacchino Del Regno wrote:
-> The property reg-names is required after the addition of the OSM
-> programming sequence, as that mandates specifying different register
-> domains; to avoid confusion and improve devicetree readability,
-> specifying the regions names was made mandatory.
-
-Can't take patches missing a S-o-b.
-
-Making existing properties required breaks compatibility. That's okay on 
-*all* the platforms using this? If so, that needs to be crystal clear in 
-the commit msg.
-
+On Mon, 12 Jul 2021 18:03:09 +0800, Steven Lee wrote:
+> AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> with 80 pins. Add ast2600-sgpiom compatibles and update descriptions to
+> introduce the max number of available gpio pins that AST2600 supported.
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
 > ---
->  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-> index 29b663321a0b..17fd6a6cefb0 100644
-> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-> @@ -98,6 +98,7 @@ else:
->  required:
->    - compatible
->    - reg
-> +  - reg-names
->    - clocks
->    - clock-names
->    - '#freq-domain-cells'
-> -- 
-> 2.32.0
-> 
-> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
