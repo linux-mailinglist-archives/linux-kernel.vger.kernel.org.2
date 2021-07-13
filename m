@@ -2,171 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404103C6FF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA743C6FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbhGMLzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        id S236047AbhGMLz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235891AbhGMLzA (ORCPT
+        with ESMTP id S235891AbhGMLz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:55:00 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E214C0613DD;
-        Tue, 13 Jul 2021 04:52:10 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id s15so32746786edt.13;
-        Tue, 13 Jul 2021 04:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OeqxKzwwhx4YHjM5KQJiNswe/2PWyz6Lv9R2luzCE0o=;
-        b=kdwgFvjffiTSAMCVLAlAXO/xfCCfsHdFcohe7BrIigsO2Gi/JaFMJgz0+YfOihMLt5
-         U5+xa1J4u0uxnCnwpepb7wpWtTJcnQChQf454jXMXqdVQPwE5zHGT44KjSfYXPfKAotw
-         wD92oGaNENSzsS96hPEqXNL2c7O7o/4xldnOoiVnrT/0V6yr4jEaRevMDFUd3kFhFjwB
-         c0wv1jEz/EWCTNysAYEhhrIh280yXNAFuuADatudSLol+YWeeMrrf4QetdeK5IRy0bs2
-         teWi1toJKpWWS46rze9zcODz1N91Vc4sWz7tchO41wfFj8Dokeh60zoW9v5/fxct5V8k
-         XQCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OeqxKzwwhx4YHjM5KQJiNswe/2PWyz6Lv9R2luzCE0o=;
-        b=M4/hcVmPXByhPrjeBSEnOxGzMH/VLNdiNTL63paMxY3g5cFd+Z2KKBr3qkL8NtDET2
-         bT2/9NIBkvWfkSgC+yRo9NdQ/k728LbtOq4JPfILQy3FnF+/Ag+9eXHRGvpuHzJsFMxd
-         6cigW+l3FCnmYsFk4wv1mtdnkZn+n0Esirf3HjAMHRu3tMGryQcsMd4WoVMxroSnUqUi
-         jV0gJOUHEySrYyFosZT1cxQ195wIrmPbVKPYHhK79rWb3iOovVNtya4PFSRlZkK0shDM
-         CIX3coYRex/sFZ9f9yWYU0bEy7tNSsnhZO5bSuhnq5ut0WUpKQY3TZi+XsVRB4UREc/Q
-         Ih3A==
-X-Gm-Message-State: AOAM531g0pG1GlRqDKyu7v9WjangIi+oKgwOcFoq7r67FuYZly4pH8VQ
-        /IMH9ZDMBKa5vGCSsoy4c4hmtWYKWu8bOCFfHmU=
-X-Google-Smtp-Source: ABdhPJzv1VXR1O+kok2yEmvazi+5hwbcyw1N8xI/oLAgFZKKOKokQ7ifIh7Z28Q8tF6LbMV9x9KTcORdxVsEtfixIJs=
-X-Received: by 2002:a05:6402:4c5:: with SMTP id n5mr5138855edw.322.1626177128540;
- Tue, 13 Jul 2021 04:52:08 -0700 (PDT)
+        Tue, 13 Jul 2021 07:55:27 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6039C0613DD;
+        Tue, 13 Jul 2021 04:52:37 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4GPJsZ2NP6zQkF0;
+        Tue, 13 Jul 2021 13:52:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:references:in-reply-to:message-id:from:from
+        :date:date:received; s=mail20150812; t=1626177150; bh=C70kHArExG
+        w4iVosCEPnnelCJbTQVnk3pggo7Ik3oxc=; b=Vy3n/kcPZEmDOit2C1qrkvxpaT
+        qAVu+2v/RagruTRiDeSz8DgBm9PCa2clmOpWYMIS+USeyyipz0iyn0JNvR4q/3x6
+        jXRQ/KYhwP5Sn1t8Ii60jA27Enk0jqeQsgX3X163xTJKl0jnEGlpURlLzZSaizBE
+        URgtJ09TwnPpYlBPOPFli3ciZf45c1UiQaNOqMJvLbDnfRr2cy2aZYyBVTkYxhKc
+        3OnAokNuXkcuKnm5KLsy5yHIo1EtJSRaQVBcQ8+t4vGmU/dIlrQoYXH+81ujNZOq
+        XlQk25dlpurk8wLStK4n3/DzhX71EdddV3BVcOAw4bY23SdhFJJwxAW688ng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1626177152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z9w+E1u391qZJye63/G0NxSG+CzU/S7Pa+YeTpB3RRs=;
+        b=aa1Ia+wW35HAkZORdZLv21eOQtO/wha8Pm6zkPzgAtu8C1JCrjSdDwyrj1JtHqCUN6rwyx
+        rE1IDpaydHq7l6MZumD9dQxQoIsdWNFTUJrIHFYxeGKeptXpQf4LwCApBRfJ8OtJebdz5+
+        2TXUEJzukz/M9jqRpPhFUJGPDQxlyfa4s/iS66AF/ccO8fOIG6y9wnwhO2axao73oHt7Mp
+        RS5snHP5VD0l7VJz942ZZTrGD7uYXf4nUL727/NYA3kQnHe7RplfCrf2UiG6/JH0X+0WYU
+        v0pdovuPCn2iDGnux7lHqltcmWF9pfW6VZDdEoK13l2lv0oCjdF//sGx9vPyqQ==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id KzELcVTqACe8; Tue, 13 Jul 2021 13:52:30 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 13:52:29 +0200 (CEST)
+From:   torvic9@mailbox.org
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        masahiroy@kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Message-ID: <1402692321.81994.1626177149669@office.mailbox.org>
+In-Reply-To: <202107121021.38F447EBE4@keescook>
+References: <b45b2430-3670-b310-b6ad-2d6db50c2d18@mailbox.org>
+ <202107121021.38F447EBE4@keescook>
+Subject: Re: [PATCH 1/1] Kbuild, clang: add option for choosing a ThinLTO
+ cache directory
 MIME-Version: 1.0
-References: <20210713094158.450434-1-mudongliangabcd@gmail.com> <CAKXUXMwMvWmS1jMfGe15tJKXpKdqGnhjsOhBKPkQ6_+twZpKxA@mail.gmail.com>
-In-Reply-To: <CAKXUXMwMvWmS1jMfGe15tJKXpKdqGnhjsOhBKPkQ6_+twZpKxA@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 13 Jul 2021 19:51:42 +0800
-Message-ID: <CAD-N9QUipQHb7WS1V=3MXmuO4uweYqX-=BMfmV_fUVhSxqXFHA@mail.gmail.com>
-Subject: Re: [PATCH] audit: fix memory leak in nf_tables_commit
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -1.01 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 0720F18B6
+X-Rspamd-UID: b7bb32
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 7:47 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Tue, Jul 13, 2021 at 11:42 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
-> > free the adp variable.
-> >
-> > Fix this by freeing the linked list with head adl.
-> >
-> > backtrace:
-> >   kmalloc include/linux/slab.h:591 [inline]
-> >   kzalloc include/linux/slab.h:721 [inline]
-> >   nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
-> >   nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
-> >   nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
-> >   nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
-> >   nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
-> >   netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-> >   netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
-> >   netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
-> >   sock_sendmsg_nosec net/socket.c:702 [inline]
-> >   sock_sendmsg+0x56/0x80 net/socket.c:722
-> >
-> > Reported-by: syzbot <syzkaller@googlegroups.com>
->
-> As far as I see, the more default way is to reference to syzbot by:
->
-> Reported-by: syzbot+[[20-letter hex reference]]@syzkaller.appspotmail.com
->
-
-Hi Lukas,
-
-this bug is not listed on the syzbot dashboard. I found this bug by
-setting up a local syzkaller instance, so I only list syzbot other
-than concrete syzbot id.
-
-best regards,
-Dongliang Mu
-
-> as in for example:
->
-> Reported-by: syzbot+fee64147a25aecd48055@syzkaller.appspotmail.com
->
-> A rough count says that format above is used 1300 times, whereas
->
-> Reported-by: syzbot <syzkaller@googlegroups.com>
->
-> is only used about 330 times.
->
->
-> Lukas
->
-> > Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> Kees Cook <keescook@chromium.org> hat am 12.07.2021 19:22 geschrieben:
+> 
+>  
+> On Mon, Jul 12, 2021 at 11:10:04AM +0000, Tor Vic wrote:
+> > On some distros and configurations, it might be useful to allow for
+> > specifying a directory where Clang stores its ThinLTO cache.
+> > 
+> > More specifically, when building the VirtualBox extramodules on Arch with
+> > its proper 'makepkg' build system and DKMS, against an already installed
+> > ThinLTO kernel, the build fails because it tries to create the ThinLTO
+> > cache in a directory that is not user-writable.
+> > 
+> > A similar problem has been reported with openSUSE's OBS build system.
+> > 
+> > Add a Kconfig option that allows users to choose a directory in which
+> > Clang's ThinLTO can store its cache.
+> 
+> Ah-ha, good idea. Thanks! Question below...
+> 
+> > 
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1104
+> > Signed-off-by: Tor Vic <torvic9@mailbox.org>
 > > ---
-> >  net/netfilter/nf_tables_api.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> > index 390d4466567f..7f45b291be13 100644
-> > --- a/net/netfilter/nf_tables_api.c
-> > +++ b/net/netfilter/nf_tables_api.c
-> > @@ -8444,6 +8444,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
-> >         return 0;
-> >  }
-> >
-> > +static void nf_tables_commit_free(struct list_head *adl)
-> > +{
-> > +       struct nft_audit_data *adp, *adn;
+> >  Makefile                  |  5 +++--
+> >  arch/Kconfig              | 10 ++++++++++
+> >  scripts/Makefile.lib      |  4 ++++
+> >  scripts/Makefile.modfinal |  4 ++++
+> >  4 files changed, 21 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Makefile b/Makefile
+> > index c3f9bd191b89..472bc8bfff03 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -932,7 +932,8 @@ endif
+> >  ifdef CONFIG_LTO_CLANG
+> >  ifdef CONFIG_LTO_CLANG_THIN
+> >  CC_FLAGS_LTO	:= -flto=thin -fsplit-lto-unit
+> > -KBUILD_LDFLAGS	+= --thinlto-cache-dir=$(extmod_prefix).thinlto-cache
+> > +export thinlto-dir = $(if
+> > $(CONFIG_LTO_CLANG_THIN_CACHEDIR),$(CONFIG_LTO_CLANG_THIN_CACHEDIR)/)
+> > +KBUILD_LDFLAGS	+=
+> > --thinlto-cache-dir=$(thinlto-dir)$(extmod_prefix).thinlto-cache
+> >  else
+> >  CC_FLAGS_LTO	:= -flto
+> >  endif
+> > @@ -1728,7 +1729,7 @@ PHONY += compile_commands.json
+> > 
+> >  clean-dirs := $(KBUILD_EXTMOD)
+> >  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers
+> > $(KBUILD_EXTMOD)/modules.nsdeps \
+> > -	$(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
+> > +	$(KBUILD_EXTMOD)/compile_commands.json
+> > $(thinlto-dir)$(KBUILD_EXTMOD)/.thinlto-cache
+> > 
+> >  PHONY += help
+> >  help:
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 129df498a8e1..19e4d140e12a 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -696,6 +696,16 @@ config LTO_CLANG_THIN
+> >  	    https://clang.llvm.org/docs/ThinLTO.html
+> > 
+> >  	  If unsure, say Y.
 > > +
-> > +       list_for_each_entry_safe(adp, adn, adl, list) {
-> > +               list_del(&adp->list);
-> > +               kfree(adp);
-> > +       }
-> > +}
+> > +config LTO_CLANG_THIN_CACHEDIR
+> > +	string "Clang ThinLTO cache directory"
+> > +	depends on LTO_CLANG_THIN
+> > +	default ""
+> > +	help
+> > +	  This option allows users to choose a directory that stores
+> > +	  Clang's ThinLTO cache.
+> > +	  Leave empty for default.
 > > +
-> >  static void nf_tables_commit_audit_collect(struct list_head *adl,
-> >                                            struct nft_table *table, u32 op)
-> >  {
-> > @@ -8508,6 +8518,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
-> >                 ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
-> >                 if (ret) {
-> >                         nf_tables_commit_chain_prepare_cancel(net);
-> > +                       nf_tables_commit_free(adl);
-> >                         return ret;
-> >                 }
-> >                 if (trans->msg_type == NFT_MSG_NEWRULE ||
-> > @@ -8517,6 +8528,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
-> >                         ret = nf_tables_commit_chain_prepare(net, chain);
-> >                         if (ret < 0) {
-> >                                 nf_tables_commit_chain_prepare_cancel(net);
-> > +                               nf_tables_commit_free(adl);
-> >                                 return ret;
-> >                         }
-> >                 }
-> > --
-> > 2.25.1
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "syzkaller" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller/20210713094158.450434-1-mudongliangabcd%40gmail.com.
+> >  endchoice
+> > 
+> >  config ARCH_SUPPORTS_CFI_CLANG
+> > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> > index 10950559b223..bca87a6aa35b 100644
+> > --- a/scripts/Makefile.lib
+> > +++ b/scripts/Makefile.lib
+> > @@ -197,6 +197,10 @@ endif
+> >  part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
+> >  quiet_modtag = $(if $(part-of-module),[M],   )
+> > 
+> > +ifdef CONFIG_LTO_CLANG_THIN
+> > +KBUILD_LDFLAGS	+=
+> > --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
+> > +endif
+> > +
+> >  modkern_cflags =                                          \
+> >  	$(if $(part-of-module),                           \
+> >  		$(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE), \
+> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > index 5e9b8057fb24..ab0d72e21318 100644
+> > --- a/scripts/Makefile.modfinal
+> > +++ b/scripts/Makefile.modfinal
+> > @@ -35,6 +35,10 @@ ifdef CONFIG_LTO_CLANG
+> >  # avoid a second slow LTO link
+> >  prelink-ext := .lto
+> > 
+> > +ifdef CONFIG_LTO_CLANG_THIN
+> > +KBUILD_LDFLAGS	+=
+> > --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
+> > +endif # CONFIG_LTO_CLANG_THIN
+> > +
+> >  # ELF processing was skipped earlier because we didn't have native code,
+> >  # so let's now process the prelinked binary before we link the module.
+> 
+> Why are these changes needed in Makefile.lib and Makefile.modfinal?
+> Isn't KBUILD_LDFLAGS already populated from the top-level Makefile?
+
+Hi Kees,
+I think you are right.
+It seems that the changes to scripts/Makefile.{lib,modfinal} are not needed.
+I'll do some more testing and report back/send a v2.
+
+> 
+> -- 
+> Kees Cook
