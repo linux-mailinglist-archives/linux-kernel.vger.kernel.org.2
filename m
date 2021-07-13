@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D937C3C781E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD43D3C7848
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhGMUmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:42:49 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:33282 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235300AbhGMUms (ORCPT
+        id S235310AbhGMVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:00:39 -0400
+Received: from flipiebwealthmgs.xyz ([62.173.140.225]:36390 "EHLO
+        host.flipiebwealthmgs.xyz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234172AbhGMVAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:42:48 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3OrF-000NQg-Hw; Tue, 13 Jul 2021 20:18:21 +0000
-Date:   Tue, 13 Jul 2021 20:18:21 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-Message-ID: <YO31DWtFMZuqF8tm@zeniv-ca.linux.org.uk>
-References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
- <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
- <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Tue, 13 Jul 2021 17:00:38 -0400
+X-Greylist: delayed 1188 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Jul 2021 17:00:38 EDT
+Received: from flipiebwealthmgs.xyz (ec2-100-25-23-12.compute-1.amazonaws.com [100.25.23.12])
+        by host.flipiebwealthmgs.xyz (Postfix) with ESMTPA id 56F4810AFF63
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:31:46 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flipiebwealthmgs.xyz 56F4810AFF63
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flipiebwealthmgs.xyz; s=default; t=1626208306;
+        bh=9G86e92kIq/Gm9ou9607oUaenJE7el5MfLTN8tJRQJU=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=gTn6ObsWBQ21TA9nv7cwjpNFPPILqjmF9+w1W8bRytDQ5wD2gZTDpmsrYp82g3P+2
+         fgLV7/qPG+PoA+PrmWUj3uaZ2vDh2sOEB3wQIRhVGPEzX1ID9UqDJsKXw0+ew6jS2q
+         rdecOBiCb8nywvEtgf/0eRH4y0Cgo5uDAP54DAKs=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flipiebwealthmgs.xyz 56F4810AFF63
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flipiebwealthmgs.xyz; s=default; t=1626208306;
+        bh=9G86e92kIq/Gm9ou9607oUaenJE7el5MfLTN8tJRQJU=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=gTn6ObsWBQ21TA9nv7cwjpNFPPILqjmF9+w1W8bRytDQ5wD2gZTDpmsrYp82g3P+2
+         fgLV7/qPG+PoA+PrmWUj3uaZ2vDh2sOEB3wQIRhVGPEzX1ID9UqDJsKXw0+ew6jS2q
+         rdecOBiCb8nywvEtgf/0eRH4y0Cgo5uDAP54DAKs=
+Reply-To: jothamasuku10@flippiebeckerwealthservice.com
+From:   Jotham Masuku <jothamasuku10@flipiebwealthmgs.xyz>
+To:     linux-kernel@vger.kernel.org
+Subject: Project
+Date:   13 Jul 2021 20:31:46 +0000
+Message-ID: <20210713203145.4CF2AEEE25EBA071@flipiebwealthmgs.xyz>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 08:14:04PM +0000, Al Viro wrote:
-> On Tue, Jul 13, 2021 at 12:15:13PM -0700, Linus Torvalds wrote:
-> > On Tue, Jul 13, 2021 at 3:45 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> > >
-> > > Linus, sorry for sending this directly through you, instead of going
-> > > through some other tree, but trying to get this upstream through the
-> > > linux-fsdevel list / patch-review simply is not working.
-> > 
-> > Well, the filesystem maintainer sending their patches to me as a pull
-> > request is actually the norm rather than the exception when it comes
-> > to filesystems.
-> > 
-> > It's a bit different for drivers, but that's because while we have
-> > multiple filesystems, we have multiple _thousand_ drivers, so on the
-> > driver side I really don't want individual driver maintainers to all
-> > send me their individual pull requests - that just wouldn't scale.
-> > 
-> > So for individual drivers, we have subsystem maintainers, but for
-> > individual filesystems we generally don't.
-> > 
-> > (When something then touches the *common* vfs code, that's a different
-> > thing - but something like this vboxsf thing this pull request looks
-> > normal to me).
-> 
-> To elaborate a bit - there's one case when I want it to go through
-> vfs.git, and that's when there's an interference between something
-> going on in vfs.git and the work done in filesystem.
+Hello there,
 
-Example: if there's a series changing calling conventions for some method
-brewing in vfs.git and changes to filesystem's instance of that method
-in the filesystem tree.  Then I'd rather it coordinated before either
-gets merged.  It might be an invariant branch in either tree pulled by
-both, it might be a straight pull into vfs.git and sorting the things out
-there - depends upon the situation.
+I hope this message finds you in good spirits especially during=20
+this challenging time of coronavirus pandemic. I hope you and=20
+your family are well and keeping safe. Anyway, I am Jotham=20
+Masuku, a wealth manager working with Flippiebecker Wealth in=20
+South Africa. I got your contact through a b2b online business=20
+directory when searching for business minded people in your=20
+country. I am contacting you because one of my high profile=20
+clients is interested in investing abroad and has asked me to=20
+look for individuals and companies in your country with=20
+productive business ideas and projects that he can invest in. He=20
+wants to invest a substantial amount of asset abroad. I thought I=20
+should contact you to see if you are interested in this=20
+opportunity.
+
+I have decided to keep this proposal very brief for now but I=20
+will be happy to share more information and details upon=20
+receiving a response from you to indicate your interest. I am=20
+looking forward to hearing back from you so that we can plan a=20
+strategy that will be beneficial to all parties. Please be kind=20
+to also provide your direct contact telephone number for a verbal=20
+discussion.
+
+Best regards
+
+J Masuku
+Flippiebecker Wealth
