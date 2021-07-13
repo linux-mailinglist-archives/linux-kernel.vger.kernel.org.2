@@ -2,239 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AD23C6AF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268153C6AF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhGMHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:09:47 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29445 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232908AbhGMHJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:09:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="295759013"
-X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
-   d="scan'208";a="295759013"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 00:06:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
-   d="scan'208";a="492642935"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Jul 2021 00:06:52 -0700
-Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-References: <20210711104105.505728-1-leo.yan@linaro.org>
- <20210711104105.505728-12-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <2e4cbd2f-19b6-6fca-a8e3-86ba14247cb8@intel.com>
-Date:   Tue, 13 Jul 2021 10:07:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210711104105.505728-12-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
+        id S234146AbhGMHKR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 03:10:17 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3390 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhGMHKP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:10:15 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GPBCx5y37z6BBWR;
+        Tue, 13 Jul 2021 14:53:01 +0800 (CST)
+Received: from lhreml718-chm.china.huawei.com (10.201.108.69) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 09:07:24 +0200
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ lhreml718-chm.china.huawei.com (10.201.108.69) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 08:07:24 +0100
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2176.012; Tue, 13 Jul 2021 08:07:23 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>
+CC:     "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>
+Subject: RE: [PATCH v2 0/3] kvm/arm: New VMID allocator based on asid
+Thread-Topic: [PATCH v2 0/3] kvm/arm: New VMID allocator based on asid
+Thread-Index: AQHXYshE9jEBx3DaO0yBdBUJuC9xNqtApHOQ
+Date:   Tue, 13 Jul 2021 07:07:23 +0000
+Message-ID: <de5eee0cd5814b779827b982f0b1f270@huawei.com>
+References: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
+In-Reply-To: <20210616155606.2806-1-shameerali.kolothum.thodi@huawei.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.90.246]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/07/21 1:41 pm, Leo Yan wrote:
-> When perf runs in compat mode (kernel in 64-bit mode and the perf is in
-> 32-bit mode), the 64-bit value atomicity in the user space cannot be
-> assured, E.g. on some architectures, the 64-bit value accessing is split
-> into two instructions, one is for the low 32-bit word accessing and
-> another is for the high 32-bit word.
-> 
-> This patch introduces two functions compat_auxtrace_mmap__read_head()
-> and compat_auxtrace_mmap__write_tail(), as their naming indicates, when
-> perf tool works in compat mode, it uses these two functions to access
-> the AUX head and tail.  These two functions can allow the perf tool to
-> work properly in certain conditions, e.g. when perf tool works in
-> snapshot mode with only using AUX head pointer, or perf tool uses the
-> AUX buffer and the incremented tail is not bigger than 4GB.
-> 
-> When perf tool cannot handle the case when the AUX tail is bigger than
-> 4GB, the function compat_auxtrace_mmap__write_tail() returns -1 and
-> tells the caller to bail out for the error.
-> 
-> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/auxtrace.c |  9 ++--
->  tools/perf/util/auxtrace.h | 94 +++++++++++++++++++++++++++++++++++++-
->  2 files changed, 98 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index 6a63be8b2430..d6fc250fbf97 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -1766,10 +1766,13 @@ static int __auxtrace_mmap__read(struct mmap *map,
->  	mm->prev = head;
->  
->  	if (!snapshot) {
-> -		auxtrace_mmap__write_tail(mm, head);
-> -		if (itr->read_finish) {
-> -			int err;
-> +		int err;
->  
-> +		err = auxtrace_mmap__write_tail(mm, head);
-> +		if (err < 0)
-> +			return err;
-> +
-> +		if (itr->read_finish) {
->  			err = itr->read_finish(itr, mm->idx);
->  			if (err < 0)
->  				return err;
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index d68a5e80b217..66de7b6e65ec 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -18,6 +18,8 @@
->  #include <asm/bitsperlong.h>
->  #include <asm/barrier.h>
->  
-> +#include "env.h"
-> +
->  union perf_event;
->  struct perf_session;
->  struct evlist;
-> @@ -440,23 +442,111 @@ struct auxtrace_cache;
->  
->  #ifdef HAVE_AUXTRACE_SUPPORT
->  
-> +/*
-> + * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
-> + * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
-> + * the issues caused by the below sequence on multiple CPUs: when perf tool
-> + * accesses either the load operation or the store operation for 64-bit value,
-> + * on some architectures the operation is divided into two instructions, one
-> + * is for accessing the low 32-bit value and another is for the high 32-bit;
-> + * thus these two user operations can give the kernel chances to access the
-> + * 64-bit value, and thus leads to the unexpected load values.
-> + *
-> + *   kernel (64-bit)                        user (32-bit)
-> + *
-> + *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
-> + *       STORE $aux_data      |       ,--->
-> + *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
-> + *       STORE ->aux_head   --|-------`     smp_rmb()
-> + *   }                        |             LOAD $data
-> + *                            |             smp_mb()
-> + *                            |             STORE ->aux_tail_lo
-> + *                            `----------->
-> + *                                          STORE ->aux_tail_hi
-> + *
-> + * For this reason, it's impossible for the perf tool to work correctly when
-> + * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
-> + * can not simply limit the AUX ring buffer to less than 4GB, the reason is
-> + * the pointers can be increased monotonically (e.g in snapshot mode), whatever
+Hi Marc,
 
-At least for Intel PT, in snapshot mode, the head is always an offset
-into the buffer, so never more than 4GB for a 32-bit perf tool. So maybe
-leave out "(e.g in snapshot mode)"
-
-> + * the buffer size it is, at the end the head and tail can be bigger than 4GB
-> + * and carry out to the high 32-bit.
-> + *
-> + * To mitigate the issues and improve the user experience, we can allow the
-> + * perf tool working in certain conditions and bail out with error if detect
-> + * any overflow cannot be handled.
-> + *
-> + * For reading the AUX head, it reads out the values for three times, and
-> + * compares the high 4 bytes of the values between the first time and the last
-> + * time, if there has no change for high 4 bytes injected by the kernel during
-> + * the user reading sequence, it's safe for use the second value.
-> + *
-> + * When update the AUX tail and detects any carrying in the high 32 bits, it
-> + * means there have two store operations in user space and it cannot promise
-> + * the atomicity for 64-bit write, so return '-1' in this case to tell the
-> + * caller an overflow error has happened.
-> + */
-> +static inline u64 compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
-> +{
-> +	struct perf_event_mmap_page *pc = mm->userpg;
-> +	u64 first, second, last;
-> +	u64 mask = (u64)(UINT32_MAX) << 32;
-> +
-> +	do {
-> +		first = READ_ONCE(pc->aux_head);
-> +		/* Ensure all reads are done after we read the head */
-> +		smp_rmb();
-> +		second = READ_ONCE(pc->aux_head);
-> +		/* Ensure all reads are done after we read the head */
-> +		smp_rmb();
-> +		last = READ_ONCE(pc->aux_head);
-> +	} while ((first & mask) != (last & mask));
-> +
-> +	return second;
-> +}
-> +
-> +static inline int compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm,
-> +						    u64 tail)
-> +{
-> +	struct perf_event_mmap_page *pc = mm->userpg;
-> +	u64 mask = (u64)(UINT32_MAX) << 32;
-> +
-> +	if (tail & mask)
-> +		return -1;
-> +
-> +	/* Ensure all reads are done before we write the tail out */
-> +	smp_mb();
-> +	WRITE_ONCE(pc->aux_tail, tail);
-> +	return 0;
-> +}
-> +
->  static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->  {
->  	struct perf_event_mmap_page *pc = mm->userpg;
-> -	u64 head = READ_ONCE(pc->aux_head);
-> +	u64 head;
-> +
-> +#if BITS_PER_LONG == 32
-> +	if (kernel_is_64_bit)
-> +		return compat_auxtrace_mmap__read_head(mm);
-> +#endif
-> +	head = READ_ONCE(pc->aux_head);
->  
->  	/* Ensure all reads are done after we read the head */
->  	smp_rmb();
->  	return head;
->  }
->  
-> -static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
-> +static inline int auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
->  {
->  	struct perf_event_mmap_page *pc = mm->userpg;
->  
-> +#if BITS_PER_LONG == 32
-> +	if (kernel_is_64_bit)
-> +		return compat_auxtrace_mmap__write_tail(mm, tail);
-> +#endif
->  	/* Ensure all reads are done before we write the tail out */
->  	smp_mb();
->  	WRITE_ONCE(pc->aux_tail, tail);
-> +	return 0;
->  }
->  
->  int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
+> -----Original Message-----
+> From: Shameerali Kolothum Thodi
+> Sent: 16 June 2021 16:56
+> To: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> linux-kernel@vger.kernel.org
+> Cc: maz@kernel.org; will@kernel.org; catalin.marinas@arm.com;
+> james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> suzuki.poulose@arm.com; jean-philippe@linaro.org;
+> Alexandru.Elisei@arm.com; Linuxarm <linuxarm@huawei.com>
+> Subject: [PATCH v2 0/3] kvm/arm: New VMID allocator based on asid
 > 
+> Hi,
+> 
+> RFCv1 --> v2
+>    - Dropped "pinned VMID" support for now.
+>    - Dropped RFC tag.
+> 
+> Sanity tested on HiSilicon D06 board.
+
+A gentle ping on this one. Please let me know if you had a chance to look
+at this and have any feedback. I could do a rebase to 5.14-rc1 if required.
+
+Thanks,
+Shameer
+
+> 
+> Thanks,
+> Shameer
+> 
+> History:
+> -------
+> Please find the RFC series here,
+> https://lore.kernel.org/kvmarm/20210506165232.1969-1-shameerali.kolothu
+> m.thodi@huawei.com/
+> 
+> From RFCv1:
+> 
+> This is based on a suggestion from Will [0] to try out the asid
+> based kvm vmid solution as a separate VMID allocator instead of
+> the shared lib approach attempted in v4[1].
+> 
+> The idea is to compare both the approaches and see whether the
+> shared lib solution with callbacks make sense or not.
+> 
+> Though we are not using the pinned vmids yet, patch #2 has
+> code for pinned vmid support. This is just to help the comparison.
+> 
+> Test Setup/Results
+> ----------------
+> The measurement was made with maxcpus set to 8 and with the
+> number of VMID limited to 4-bit. The test involves running
+> concurrently 40 guests with 2 vCPUs. Each guest will then
+> execute hackbench 5 times before exiting.
+> 
+> The performance difference between the current algo and the
+> new one are(avg. of 10 runs):
+>     - 1.9% less entry/exit from the guest
+>     - 0.5% faster
+> 
+> This is more or less comparable to v4 numbers.
+> 
+> For the complete series, please see,
+> https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-vmid-2nd-rfc
+> 
+> and for the shared asid lib v4 solution,
+> https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-asid-v4
+> 
+> As you can see there are ofcourse code duplication with this
+> approach but may be it is more easy to maintain considering
+> the complexity involved.
+> 
+> [0] https://lore.kernel.org/lkml/20210422160846.GB2214@willie-the-truck/
+> [1]
+> https://lore.kernel.org/lkml/20210414112312.13704-1-shameerali.kolothum.t
+> hodi@huawei.com/
+> 
+> Julien Grall (2):
+>   arch/arm64: Introduce a capability to tell whether 16-bit VMID is
+>     available
+>   kvm/arm: Align the VMID allocation with the arm64 ASID one
+> 
+> Shameer Kolothum (1):
+>   kvm/arm: Introduce a new vmid allocator for KVM
+> 
+>  arch/arm64/include/asm/kvm_asm.h      |   4 +-
+>  arch/arm64/include/asm/kvm_host.h     |  10 +-
+>  arch/arm64/include/asm/kvm_mmu.h      |   7 +-
+>  arch/arm64/kernel/cpufeature.c        |   9 ++
+>  arch/arm64/kvm/Makefile               |   2 +-
+>  arch/arm64/kvm/arm.c                  | 115 ++++----------
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c    |   6 +-
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c |   3 +-
+>  arch/arm64/kvm/hyp/nvhe/tlb.c         |  10 +-
+>  arch/arm64/kvm/hyp/vhe/tlb.c          |  10 +-
+>  arch/arm64/kvm/mmu.c                  |   1 -
+>  arch/arm64/kvm/vmid.c                 | 206
+> ++++++++++++++++++++++++++
+>  arch/arm64/tools/cpucaps              |   1 +
+>  13 files changed, 273 insertions(+), 111 deletions(-)
+>  create mode 100644 arch/arm64/kvm/vmid.c
+> 
+> --
+> 2.17.1
 
