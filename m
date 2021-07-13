@@ -2,240 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7E43C6DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4151A3C6DAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbhGMJor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
+        id S235304AbhGMJpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235045AbhGMJoq (ORCPT
+        with ESMTP id S235199AbhGMJpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:44:46 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF9AC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:41:56 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id gb6so40338880ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:41:56 -0700 (PDT)
+        Tue, 13 Jul 2021 05:45:04 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2D1C0613DD;
+        Tue, 13 Jul 2021 02:42:14 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id v7so21128928pgl.2;
+        Tue, 13 Jul 2021 02:42:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=V760S+BFCa7ilL2lIBS6aIO+txiTgFlFb8r9AlTPRQY=;
-        b=jhtusCWE2SEkNo1yRkYuumNI6O2Ed5mw+5jTcxQ8MAhUhbTwTGZvfeqdBsvrNDhSL0
-         OCmIVq0Ic5fxcDu8ezD+Eybc5nIZRunKNUC2qD3/WGHOOI7cEp35Aucb2hSOrk/4oNeO
-         q+JpQrN7eOliGy7aX9pLJl6//jN1CORFXXPBpziAX6LDXiduse0f82vLXU5Oug8nKf7O
-         qITuZ4xcZtqFR2FEaAEKASLG1cmddjZkD8rdrlbbxlpeTptLqTLINWnqJvdT0HFkABju
-         iUCPeT7ms9hZOdtveJElLqtKUSBPBqjeSFrxh1xWEfZ3pG5u442L+ZjNUGHCyBcgrOPf
-         GPGw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3fWMP9fQRTobWKqa9AEAof4IRXVKYtteX5duYf7hZbc=;
+        b=qXb2LQCtkyInsqxC5JJn1LnL4RjpgOltJlhN+455aYKGiBphUoR/xgs5IABM2A2tSB
+         hS+QLZB7fJYT72pUGaGqTyGHcXSun35PHsIrFf0pwS/8TvxXTMOH+aTg6TlRQFaCJzKq
+         oX+7/PfIYZBln0A03jbea6oNez3fEikd0UEsRREPcEujeTne2N+HnU4b2gEkWGktWBqL
+         LE/xywaqshZvL1zZ1SKOToInMLNN+Fbnz30gE7OHjptaW74H/muLCCWJHpliSYMuACOP
+         coVsldI2wnlPmqJOJI0+GhxhU51Nfya/BoaR7UzgR5W7TG65lQdgQXvyVnSBUruphR9d
+         0KvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=V760S+BFCa7ilL2lIBS6aIO+txiTgFlFb8r9AlTPRQY=;
-        b=hcL85L5fFyBT6wuTpYpvYfpOxGCYzkQDkcj25+itWDntkg4bxsHfRduUriGca9aGpu
-         Ld1Pes9mf0ST8NQwQE1xJMuJbHqeD5SlJfdPcEH+sF2jY8xDdCbOsJitMcUFVnHuADzM
-         CGwfQZIf9PjxFUj525VDctG4XXXpEbPMjyeebpVlVLRAGw301JlDsO9MbnzmouFIS8rC
-         xKJchJye9YtEbzuuOBns4qnudggAFMnlTmCJ6GtiUbXNdB8sl1YXdk1j7ekc88hoi6Iz
-         Yo+KScN+/mYGZcDfdXG+Bdglk8+e4Tqs+E/CgGTjfAf+2Y6nKNclL1xsa0BpyOwSO77w
-         8QPw==
-X-Gm-Message-State: AOAM532/o/VcqkTawpnNknYMXStHj4zDm2sJj+5/t+t46EHtUy54GUnq
-        IEFUm2VvqgPAI1JYTzDz8tmOFk0YWKBPIpCKjpaPQU18qKBIcR3D
-X-Google-Smtp-Source: ABdhPJx/oAfRbJdMWcFwpcFQb4Ae0Ghug5P3pAR+sFjawYKU5RXW7+BU9bELuL/kb0hWcwAB9ojlF+0RZoyTW+jeR1I=
-X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr4557214ejv.247.1626169314948;
- Tue, 13 Jul 2021 02:41:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3fWMP9fQRTobWKqa9AEAof4IRXVKYtteX5duYf7hZbc=;
+        b=PocTL4l+Yn4nTtzcwBITf1pZrc9CN+0cTv3PcF+cav8HUUM/KixgUAYuUBQN+B5JBd
+         kchA7sIjam0ArTLslLjiAfbTo4xC6Ii3FVwwButYH/XcDltORwzq71+Q+XybakhcCXbF
+         +m9OE3WNcNuTkvZnIe+nw7NcDQMpSgUI3T+Jv1qNleDk8Hk7ygCLjcB9qiBKMFfGQnXU
+         cfnvx3tSNVuTU4ecdF4XnlqLgShq7uCStvypyVx5PFku2O9RplX2fqklWCMg+SzHAtkm
+         Pwnqk8o4SoHUzPln2th1O4yWoTk03lE3vPYqi3YdwTa7RctDqtkR46jC4C5WACJn3xVW
+         61Lg==
+X-Gm-Message-State: AOAM533ahTkqsgqUnsHYOyw661OojsJjbJfyyBRrGeOnQpAlYBOqZOwb
+        K4fOOt3UJ1yOGTJFKXnUHC4=
+X-Google-Smtp-Source: ABdhPJyyDhrO5NGkQ2bzwhZfOXDZTJ8z3m998PSHfA79sGP2hZe7o45tHI6Iv6mumGQWyVv6oZ3lEg==
+X-Received: by 2002:a63:5351:: with SMTP id t17mr3378618pgl.315.1626169334332;
+        Tue, 13 Jul 2021 02:42:14 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.218])
+        by smtp.gmail.com with ESMTPSA id s2sm18558087pgr.12.2021.07.13.02.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 02:42:13 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] audit: fix memory leak in nf_tables_commit
+Date:   Tue, 13 Jul 2021 17:41:57 +0800
+Message-Id: <20210713094158.450434-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210712184735.997723427@linuxfoundation.org>
-In-Reply-To: <20210712184735.997723427@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Jul 2021 15:11:43 +0530
-Message-ID: <CA+G9fYuy38DVR0rCedjPh9gDkpEsz3g46qz+c+Z+uERyGCd90w@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/349] 5.4.132-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 at 00:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.132 release.
-> There are 349 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 14 Jul 2021 18:45:40 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.132-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
+free the adp variable.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Fix this by freeing the linked list with head adl.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+backtrace:
+  kmalloc include/linux/slab.h:591 [inline]
+  kzalloc include/linux/slab.h:721 [inline]
+  nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
+  nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
+  nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
+  nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+  nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
+  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+  netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
+  netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
+  sock_sendmsg_nosec net/socket.c:702 [inline]
+  sock_sendmsg+0x56/0x80 net/socket.c:722
 
-## Build
-* kernel: 5.4.132-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 22b22e7110f52e9b2458fcb1a31aafea2590025f
-* git describe: v5.4.131-350-g22b22e7110f5
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-31-350-g22b22e7110f5
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ net/netfilter/nf_tables_api.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-## No regressions (compared to v5.4.131-348-g9ff994b4b538)
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 390d4466567f..7f45b291be13 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8444,6 +8444,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
+ 	return 0;
+ }
+ 
++static void nf_tables_commit_free(struct list_head *adl)
++{
++	struct nft_audit_data *adp, *adn;
++
++	list_for_each_entry_safe(adp, adn, adl, list) {
++		list_del(&adp->list);
++		kfree(adp);
++	}
++}
++
+ static void nf_tables_commit_audit_collect(struct list_head *adl,
+ 					   struct nft_table *table, u32 op)
+ {
+@@ -8508,6 +8518,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 		ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
+ 		if (ret) {
+ 			nf_tables_commit_chain_prepare_cancel(net);
++			nf_tables_commit_free(adl);
+ 			return ret;
+ 		}
+ 		if (trans->msg_type == NFT_MSG_NEWRULE ||
+@@ -8517,6 +8528,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 			ret = nf_tables_commit_chain_prepare(net, chain);
+ 			if (ret < 0) {
+ 				nf_tables_commit_chain_prepare_cancel(net);
++				nf_tables_commit_free(adl);
+ 				return ret;
+ 			}
+ 		}
+-- 
+2.25.1
 
-
-## No fixes (compared to v5.4.131-348-g9ff994b4b538)
-
-
-## Test result summary
- total: 70182, pass: 56914, fail: 955, skip: 11205, xfail: 1108,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 191 passed, 1 failed
-* arm64: 26 total, 25 passed, 1 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 14 passed, 1 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 25 passed, 1 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* timesync-off
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
