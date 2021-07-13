@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073343C6A36
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48F13C6A60
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhGMGGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        id S234138AbhGMGTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhGMGGa (ORCPT
+        with ESMTP id S233527AbhGMGTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:06:30 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 319D9C0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:03:41 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id j199so18586326pfd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:03:41 -0700 (PDT)
+        Tue, 13 Jul 2021 02:19:18 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1591EC0613DD;
+        Mon, 12 Jul 2021 23:16:29 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id dj21so11738307edb.0;
+        Mon, 12 Jul 2021 23:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FB5vlvnYYvrU21B0CO4PGpbTyzy5lXFnKOJGx4/Q5XE=;
-        b=H4eCa4SvuHL/QWjRdLmS+gv2GALPuJmxIAHxiRqfZdnVu6of/q5Co0QFLNCiInuu1k
-         LUirhDbKxTne3QHePIiEfmQ77whgezOlJ8Nwelh11uNtXr2Pk2A3x0jt0Ven/CSYeQqM
-         Ds24EAskBKW8wcANZhwqsBkrWJIP9lcJiuGn/j6UdIDP7OottKITrU8q8dAiWSy74/+b
-         eyTi2D5XOH5KY5XmzsmFnftZixqqDxFQOIT3DBwkEIXh4YcurcRGQqUOW8UAYiQJiEkt
-         cPgfcyi/HFc+oVcbfXjAeOVL1z6mWhweZuNbrpiV2UizV88hZKSX+Xv4EWVho1gOBUj9
-         EcnA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N755/myeCrFum8G4UCZxfG01d/TQE+qL8ItRnH1D5gI=;
+        b=pXz+WHI4SxVPWbrRwY10B1qhwgIE/zrSu4mRkL0qK8d4r9paEjbkjQfkFpaZtqmVMK
+         F40mIful9n8Hvv3rIK9o1hkcQOCUVWD6H+SyCWGrAkbdmR4p93+TDVpE7KJFN92zkG/E
+         FyCnO2J7m+vTrYVfmo6m+ClTgGhQJm2Aatailw7a+mDrmUIFi58cjWNQQ1/pQCClfBeA
+         oTyeVEoMn29b7ft9tqSRx8MT005DtAWbzCRNcj0v8GvRJOTh5TAX4QafCZLNjmZzDOG6
+         OQZCr0gvK3XXzaXpVR43xFkRAZrpiCP1uaM7fposNnFK+CMVlpJQrX+LizSEqy3JqYVm
+         l8Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FB5vlvnYYvrU21B0CO4PGpbTyzy5lXFnKOJGx4/Q5XE=;
-        b=TW5jW1bX1eeddjPEOM68/ZHpWW6zaTUgShTUrL90Dq/hiCbgKoZxWD5LPyKeDQu1B+
-         UmezCfAn1fWL8K0whHFHpcWY3QojCRsV2aK/D8PlSDj10H1L6L9faMxU16PHCOrLGoX9
-         iZSrC+m7sOujNBQ3N2FhX1A+wPC9OEdlgNdS9h5oVsQAuCfUr1hFimOXPYMyLy/x/A/F
-         D69I/Lfnn5d3WXMgpwEnKZ2zbPfqwqbWj6VxVXE/hfN1kIPWQfez/mOEntkLpQA4IusK
-         t3dejHvcwVDn+KzANQv0m2SV3KIit427i77PTxkC8EONibrfwD/ZSeKu7vLaBMKee9u4
-         jB0w==
-X-Gm-Message-State: AOAM533kov/t6v92JFvorRUdkIqkIqNtUyPr1tWYC8XA3n+xdiUUuajX
-        hIqQfBNqxXmvM2/puqoKAAg86Q==
-X-Google-Smtp-Source: ABdhPJw2WQAbtFk5/oGiEfXgsdAIOhd7cw/6gmLcg2Wkdqol49gEbGfNEypCUC8rP0zYXi+GhAGHkQ==
-X-Received: by 2002:aa7:8218:0:b029:316:88e:2a3a with SMTP id k24-20020aa782180000b0290316088e2a3amr2814735pfi.16.1626156220600;
-        Mon, 12 Jul 2021 23:03:40 -0700 (PDT)
-Received: from x1 ([174.127.163.79])
-        by smtp.gmail.com with ESMTPSA id n6sm12039049pgb.60.2021.07.12.23.03.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 23:03:39 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 23:03:38 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Wei Fu <tekkamanninja@gmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] dt-bindings: riscv: add starfive jh7100 bindings
-Message-ID: <20210713060338.GA2992629@x1>
-References: <20210709201603.2625664-1-drew@beagleboard.org>
- <CAMuHMdVBVAzy3cZtR1pOTNq3wTgGx+0_dvUXU118XfT+rCOSrw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N755/myeCrFum8G4UCZxfG01d/TQE+qL8ItRnH1D5gI=;
+        b=oyw8BUMnHGMtL+DjEjiuwEWfNhj9bOGsBVivudn+I7sPactiUmbVuspKXEn/di4Hbs
+         a/KbBiL1G3HjNNvVr0+RjDFjIyeDU1FZuQVe0WTObPHTnMBxzPudPo9qnVD8eZUoDZft
+         Jf0m2scUjDh/td1mBHDlUgHCWvJ9epyUsNk1A+Bmfygb98BhvnXEHV2+4EoidJmQYs7f
+         0GzJigY7FQCp+ZaxuXlO/QaThlv51XO3aBnO2CQEzLP9Hr4jeerihWh74gcW+5rWgcV1
+         p4tBHcmNBSqau7jm6uyis48yaejh1sWLUibLUGG/1YXs5hw/3JhJWwLYl1GG5jweITIb
+         f7uQ==
+X-Gm-Message-State: AOAM533ofEHrhVhuFQe8ndcSwuSfN2dZS1g0rtiHu0jvv+Kv4Ls1dkVq
+        G8oWxspH98lg+NUrO4qyqn82Qq45S6rUspBwzCI=
+X-Google-Smtp-Source: ABdhPJxb0+N6WRj/GhOgT8oAWNKUlDO67rCxa3DafGwy9Sn1/gVH+bGkHx6Xzi1nAdNDJzbcMFXTnCOalpKU40BOBb4=
+X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr3538469edb.186.1626156987630;
+ Mon, 12 Jul 2021 23:16:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVBVAzy3cZtR1pOTNq3wTgGx+0_dvUXU118XfT+rCOSrw@mail.gmail.com>
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com> <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Tue, 13 Jul 2021 14:16:15 +0800
+Message-ID: <CAABZP2zzeVe07Ak0RpN6prwy2_PQoO55WG2XhVy7NG0SnasKAg@mail.gmail.com>
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+To:     paulmck@kernel.org
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 01:24:19PM +0200, Geert Uytterhoeven wrote:
-> Hi Drew,
-> 
-> On Fri, Jul 9, 2021 at 10:17 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > Add DT binding documentation for the StarFive JH7100 Soc [1] and the
-> > BeagleV Starlight JH7100 board [2].
+Thank you very much,
+I went through the wordsmithed version, it looks exquisite!
+
+Thank you for your encouragement.
+Cheers
+Zhouyi
+
+On Tue, Jul 13, 2021 at 12:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
+> > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 > >
-> > [1] https://github.com/starfive-tech/beaglev_doc
-> > [2] https://github.com/beagleboard/beaglev-starlight
+> > Hi Paul,
 > >
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> > ---
-> > v3 changes:
-> > - added revision number for the board and soc after question from Palmer
-> 
-> Thanks for the update!
-> 
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/riscv/starfive.yaml
-> > @@ -0,0 +1,27 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/riscv/starfive.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: StarFive SoC-based boards
-> > +
-> > +maintainers:
-> > +  - Michael Zhu <michael.zhu@starfivetech.com>
-> > +  - Drew Fustini <drew@beagleboard.org>
-> > +
-> > +description:
-> > +  StarFive SoC-based boards
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    const: '/'
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +          - const: beagle,beaglev-starlight-jh7100-r0
-> > +          - const: starfive,jh7100-r0
-> 
-> While I can be convinced about the board revision number (probably you
-> know better if there will be different board revisions that matter),
-> I'm wondering if the revision number makes sense for the SoC part.
-> Will there be a new revision of jh7100, or will the next revision
-> be jh7110, which will use a different compatible value anyway?
-> Is there an on-chip register that allows the kernel to find out the
-> revision info? Might be better to use that with soc_device_register()
-> and soc_device_match()
-
-We do anticipate making additional BeagleV Starlight boards with the
-JH7100 SoC and those new boards may need to have a different USB hub
-chip due to sourcing. Thus it is possible that there will be a r1 board
-in the future.
-
-However, I think you are correct about the SoC. There won't be any new
-revisions of the JH7100 SoC. All chips with that part number will have
-the same design. There will eventually be JH7110 which is a different
-design but I did not want to prematurely add a compatible for that.
-
-
-Thanks,
-Drew
+> > During my studying of RCU, I did a grep in the kernel source tree.
+> > I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
+> > should be CONFIG_TASKS_TRACE_RCU instead.
+> >
+> > Without memory fencing, the idle/userspace task inspection may not
+> > be so accurate.
+> >
+> > Thanks for your constant encouragement for my studying.
+> >
+> > Best Wishes
+> > Zhouyi
+> >
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>
+> Good eyes, and those could cause real bugs, so thank you!
+>
+> Could you please check the wordsmithed version below?
+>
+>                                                         Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> commit fdcf5524b64f2cc8e6201447644079d9f8d4c821
+> Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> Date:   Tue Jul 13 08:56:45 2021 +0800
+>
+>     RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+>
+>     This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
+>     instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
+>     could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
+>     memory-ordering bugs that could result in false-positive quiescent
+>     states and too-short grace periods.
+>
+>     Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index cfeb43bfc719..434d12fe2d4f 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
+>  # define synchronize_rcu_tasks synchronize_rcu
+>  # endif
+>
+> -# ifdef CONFIG_TASKS_RCU_TRACE
+> +# ifdef CONFIG_TASKS_TRACE_RCU
+>  # define rcu_tasks_trace_qs(t)                                         \
+>         do {                                                            \
+>                 if (!likely(READ_ONCE((t)->trc_reader_checked)) &&      \
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 27b74352cccf..a8e3acead6f6 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1498,17 +1498,17 @@ static void noinstr rcu_dynticks_task_exit(void)
+>  /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+>  static void rcu_dynticks_task_trace_enter(void)
+>  {
+> -#ifdef CONFIG_TASKS_RCU_TRACE
+> +#ifdef CONFIG_TASKS_TRACE_RCU
+>         if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+>                 current->trc_reader_special.b.need_mb = true;
+> -#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
+> +#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+>  }
+>
+>  /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+>  static void rcu_dynticks_task_trace_exit(void)
+>  {
+> -#ifdef CONFIG_TASKS_RCU_TRACE
+> +#ifdef CONFIG_TASKS_TRACE_RCU
+>         if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+>                 current->trc_reader_special.b.need_mb = false;
+> -#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
+> +#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+>  }
