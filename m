@@ -2,155 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2829A3C7118
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F2A3C711F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhGMNTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:19:45 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11271 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbhGMNTo (ORCPT
+        id S236563AbhGMNVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236283AbhGMNVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:19:44 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GPLcM2LLNz1CJQh;
-        Tue, 13 Jul 2021 21:11:15 +0800 (CST)
-Received: from [10.174.178.125] (10.174.178.125) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 13 Jul 2021 21:16:51 +0800
-Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
- anonymous LRU list
-To:     Yu Zhao <yuzhao@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Alex Shi <alexs@kernel.org>, <apopple@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        David Hildenbrand <david@redhat.com>, <shli@fb.com>,
-        <hillf.zj@alibaba-inc.com>, Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210710100329.49174-1-linmiaohe@huawei.com>
- <20210710100329.49174-2-linmiaohe@huawei.com>
- <CAOUHufZpU4uQOBb4p10uCXs-40MeETRUmGiqy96Eim1w3o_dgQ@mail.gmail.com>
- <022f2f7c-fc03-182a-1f8f-4b77c0731d4f@huawei.com>
- <CAOUHufaEPKj4VU1qbjuqsr53rjVwhEXdRCC_C=LBOF0KTveBfQ@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <ff349ed2-14b5-8583-0c0c-725990d965e0@huawei.com>
-Date:   Tue, 13 Jul 2021 21:16:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 13 Jul 2021 09:21:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC28C0613DD;
+        Tue, 13 Jul 2021 06:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Svx69QrxBVfy3cdWo9pWIoRZqKkz0hfQNhlcUpOd4L4=; b=TTQmdRCGH9xs+kQs22KwQNUAfP
+        3wvBDZWnBT8OXQrVLuMY/O9jF2/JnP06CsbNqAfXzGs8SWhng6/6gl8Ig2I2DU748X717U5bxZN7x
+        Jv4Gs089nGHjBvwNVC7x+3PFPJrlalWZ/SgQsjpNMbEr+wP0bjJQTbPum5iNU8uP1DKzzuhDTGOyf
+        JOdXtxiW/rRkNW8fFu7tZar5nPWUD/694Xha5JR4x0tWkslDsMt03rKch33gZ7mSsL+TEcCJSnTmm
+        a3//T5JYfCR8qwhGAtkWBJu0LwxY0X/kHjX4ch8tE6tet2kzN7UqnAdqpS5MzJckFgwLZVbLCd0PH
+        HGSxVa8Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3IIP-00181A-3C; Tue, 13 Jul 2021 13:18:03 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 62633987782; Tue, 13 Jul 2021 15:17:56 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 15:17:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org,
+        anirban.sinha@nokia.com, mikelley@microsoft.com,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH] Hyper-V: fix for unwanted manipulation of sched_clock
+ when TSC marked unstable
+Message-ID: <20210713131756.GD4170@worktop.programming.kicks-ass.net>
+References: <20210713030522.1714803-1-ani@anisinha.ca>
+ <20210713130446.gt7k3cwlmhsxtltw@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-In-Reply-To: <CAOUHufaEPKj4VU1qbjuqsr53rjVwhEXdRCC_C=LBOF0KTveBfQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.125]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713130446.gt7k3cwlmhsxtltw@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/13 15:25, Yu Zhao wrote:
-> On Mon, Jul 12, 2021 at 1:12 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>
->> On 2021/7/11 7:22, Yu Zhao wrote:
->>> On Sat, Jul 10, 2021 at 4:03 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>>>
->>>> If the MADV_FREE pages are redirtied before they could be reclaimed, put
->>>> the pages back to anonymous LRU list by setting SwapBacked flag and the
->>>> pages will be reclaimed in normal swapout way. Otherwise MADV_FREE pages
->>>> won't be reclaimed as expected.
->>>>
->>>> Fixes: 802a3a92ad7a ("mm: reclaim MADV_FREE pages")
->>>
->>> This is not a bug -- the dirty check isn't needed but it was copied
->>> from __remove_mapping().
->>
->> Yes, this is not a bug and harmless. When we reach here, page should not be
->> dirtied because PageDirty is handled above and there is no way to redirty it
->> again as pagetable references are all gone and it's not in the swap cache.
->>
->>>
->>> The page has only one reference left, which is from the isolation.
->>> After the caller puts the page back on lru and drops the reference,
->>> the page will be freed anyway. It doesn't matter which lru it goes.
->>
->> But it looks buggy as it didn't perform the expected ops from code view.
->> Should I drop the Fixes tag and send a v2 version?
+On Tue, Jul 13, 2021 at 01:04:46PM +0000, Wei Liu wrote:
+> On Tue, Jul 13, 2021 at 08:35:21AM +0530, Ani Sinha wrote:
+> > Marking TSC as unstable has a side effect of marking sched_clock as
+> > unstable when TSC is still being used as the sched_clock. This is not
+> > desirable. Hyper-V ultimately uses a paravirtualized clock source that
+> > provides a stable scheduler clock even on systems without TscInvariant
+> > CPU capability. Hence, mark_tsc_unstable() call should be called _after_
+> > scheduler clock has been changed to the paravirtualized clocksource. This
+> > will prevent any unwanted manipulation of the sched_clock. Only TSC will
+> > be correctly marked as unstable.
 > 
-> I don't understand the logic here -- it looks pretty obvious to me
-> that, if we want to change anything, we should delete the dirty check,
-> not add another line that would enforce the belief that the dirty
-> check is needed.
+> Correct me if I'm wrong, what you're trying to address is that
+> sched_clock remains marked as unstable even after Linux has switched to
+> a stable clock source.
 > 
+> I think a better approach will be to mark the sched_clock as stable when
+> we switch to the paravirtualized clock source.
 
-The dirty check could be removed even with the page_ref_freeze check because no one can grab
-the page refcnt after the page is successfully unmapped.
-
-Does the change below makes sense for you?
-
-Many Thanks.
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 6e26b3c93242..c31925320b33 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1624,15 +1624,11 @@ static unsigned int shrink_page_list(struct list_head *page_list,
-                }
-
-                if (PageAnon(page) && !PageSwapBacked(page)) {
--                       /* follow __remove_mapping for reference */
--                       if (!page_ref_freeze(page, 1))
--                               goto keep_locked;
--                       if (PageDirty(page)) {
--                               SetPageSwapBacked(page);
--                               page_ref_unfreeze(page, 1);
--                               goto keep_locked;
--                       }
--
-+                       /*
-+                        * No one can grab the page refcnt or redirty the page
-+                        * after the page is successfully unmapped.
-+                        */
-+                       WARN_ON_ONCE(!page_ref_freeze(page, 1));
-                        count_vm_event(PGLAZYFREED);
-                        count_memcg_page_event(page, PGLAZYFREED);
-                } else if (!mapping || !__remove_mapping(mapping, page, true,
-
->>
->> Many thanks for reply!
->>
->>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  mm/vmscan.c | 1 +
->>>>  1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>>> index a7602f71ec04..6483fe0e2065 100644
->>>> --- a/mm/vmscan.c
->>>> +++ b/mm/vmscan.c
->>>> @@ -1628,6 +1628,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->>>>                         if (!page_ref_freeze(page, 1))
->>>>                                 goto keep_locked;
->>>>                         if (PageDirty(page)) {
->>>> +                               SetPageSwapBacked(page);
->>>>                                 page_ref_unfreeze(page, 1);
->>>>                                 goto keep_locked;
->>>>                         }
->>>> --
->>>> 2.23.0
->>>>
->>>>
->>> .
->>>
->>
-> .
-> 
+No.. unstable->stable transitions are unsound. You get to switch to your
+paravirt clock earlier.
 
