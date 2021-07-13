@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE303C73F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBDD3C73F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhGMQQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbhGMQQJ (ORCPT
+        id S231931AbhGMQQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:16:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54140 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhGMQQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:16:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80708C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:13:19 -0700 (PDT)
-Message-Id: <20210713160746.708726136@linutronix.de>
+        Tue, 13 Jul 2021 12:16:10 -0400
+Message-Id: <20210713160746.803662949@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626192798;
+        s=2020; t=1626192799;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=nz6iNRswOxKTf/LxISV+nf59LcGBzNa2Ih1pkjs3ys4=;
-        b=gi/GbJesdM/9CR63O1k1ppIVixuPK6gJPVmZZiB5q75bILWbyhiEwUSOjNToVBTHN+izhY
-        FOCZmOZWn9j0jOA+JSvDbAfLQNw0T1UXOUAiVzPPoje6AL5G6bLBmgELgfSgVP/JFeAMkt
-        41eK1/Jwh2FwTl4iB7SKcVDxy/B7klsWiZCQbEpJhtL/s+sVONaRCReT1yx8NBhvlwrSJV
-        Zds3gm7vBqi9GbZVKfkWvvsdD/ZZBt9jJBrBWpxL7c3Ld5EO/vWCvlBZ83BzYPx3ecSNVp
-        13D3latVKMiJdyJrpNQoy+iN4zWzTwcqPKlaVjSCYzSXEt5qo8BJ8i+N5svLAQ==
+        bh=2pb1sj0KFldTF8dYpiWdgRvUP4o3dILK9kPm6bSIFZs=;
+        b=Hak7cqU7wl0zABOWwI7fple1i3rJgE/rcgnCK7fA9gvd8eZUAGqj+46uWK+zX3IPClCBfV
+        Et6xWfOlTMn4kPgtaWpK+AO6ICuKQtiPH6jSDyeo4RyLU4sJdl0CvzBoSCawj09kVUTVGm
+        OgFJj1PGIudsGFTlvdlS7iFyVVxU5fGVp31p9cygZ+8xhT5Hr2NJd1fUfvEURffHtMl+dA
+        gAUjOkh2Iri/vgi4uUqE3dNUETLhC3qlXlzTWXvm03JNbEzflevRsDgjdYtydosja2CdyJ
+        ShiL34L/TU8mL2QCdyHrG5gwZIDeUrC5EiMaq1ZBQQxHf+K3pK+5bY3Yp5IYmQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626192798;
+        s=2020e; t=1626192799;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=nz6iNRswOxKTf/LxISV+nf59LcGBzNa2Ih1pkjs3ys4=;
-        b=Dv0sqOHwfGfiy1oyNP9VeUcoe0n3xE1154Owj6oJTP8LDg/I49NrYDxo4/QJWVMdpI3VcM
-        wovNHYYmHDIGivCQ==
-Date:   Tue, 13 Jul 2021 17:11:02 +0200
+        bh=2pb1sj0KFldTF8dYpiWdgRvUP4o3dILK9kPm6bSIFZs=;
+        b=rwIEV29JGX857TxXoqpsT5EKvVGC/s/EEEj/IMfkmH/jNiMI/mcuGvWTQZpPzMqwwMuRMw
+        96IKbwI6DoG4kEAA==
+Date:   Tue, 13 Jul 2021 17:11:03 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 08/50] rtmutex: Switch to try_cmpxchg()
+Subject: [patch 09/50] rtmutex: Split API and implementation
 References: <20210713151054.700719949@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,31 +56,1124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Allows the compiler to generate better code depending on the architecture.
+Prepare for reusing the inner functions of rtmutex for RT lock
+substitutions.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
+ kernel/locking/Makefile         |    2 
+ kernel/locking/rtmutex.c        |  479 +---------------------------------------
+ kernel/locking/rtmutex_api.c    |  453 +++++++++++++++++++++++++++++++++++++
+ kernel/locking/rtmutex_common.h |   78 +++---
+ 4 files changed, 514 insertions(+), 498 deletions(-)
+ create mode 100644 kernel/locking/rtmutex_api.c
+---
+--- a/kernel/locking/Makefile
++++ b/kernel/locking/Makefile
+@@ -24,7 +24,7 @@ obj-$(CONFIG_SMP) += spinlock.o
+ obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_lock.o
+ obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+ obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
+-obj-$(CONFIG_RT_MUTEXES) += rtmutex.o
++obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
+ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock_debug.o
+ obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -145,14 +145,14 @@ static __always_inline bool rt_mutex_cmp
- 						     struct task_struct *old,
- 						     struct task_struct *new)
- {
--	return cmpxchg_acquire(&lock->owner, old, new) == old;
-+	return try_cmpxchg_acquire(&lock->owner, &old, new);
+@@ -11,14 +11,12 @@
+  *
+  *  See Documentation/locking/rt-mutex-design.rst for details.
+  */
+-#include <linux/spinlock.h>
+-#include <linux/export.h>
++#include <linux/sched.h>
++#include <linux/sched/debug.h>
++#include <linux/sched/deadline.h>
+ #include <linux/sched/signal.h>
+ #include <linux/sched/rt.h>
+-#include <linux/sched/deadline.h>
+ #include <linux/sched/wake_q.h>
+-#include <linux/sched/debug.h>
+-#include <linux/timer.h>
+ 
+ #include "rtmutex_common.h"
+ 
+@@ -371,11 +369,6 @@ rt_mutex_cond_detect_deadlock(struct rt_
+ 	return chwalk == RT_MUTEX_FULL_CHAINWALK;
  }
  
- static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex *lock,
- 						     struct task_struct *old,
- 						     struct task_struct *new)
+-/*
+- * Max number of times we'll walk the boosting chain:
+- */
+-int max_lock_depth = 1024;
+-
+ static __always_inline struct rt_mutex *task_blocked_on_lock(struct task_struct *p)
  {
--	return cmpxchg_release(&lock->owner, old, new) == old;
-+	return try_cmpxchg_release(&lock->owner, &old, new);
+ 	return p->pi_blocked_on ? p->pi_blocked_on->lock : NULL;
+@@ -1112,42 +1105,6 @@ static void __sched remove_waiter(struct
+ 	raw_spin_lock_irq(&lock->wait_lock);
+ }
+ 
+-/*
+- * Recheck the pi chain, in case we got a priority setting
+- *
+- * Called from sched_setscheduler
+- */
+-void __sched rt_mutex_adjust_pi(struct task_struct *task)
+-{
+-	struct rt_mutex_waiter *waiter;
+-	struct rt_mutex *next_lock;
+-	unsigned long flags;
+-
+-	raw_spin_lock_irqsave(&task->pi_lock, flags);
+-
+-	waiter = task->pi_blocked_on;
+-	if (!waiter || rt_mutex_waiter_equal(waiter, task_to_waiter(task))) {
+-		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
+-		return;
+-	}
+-	next_lock = waiter->lock;
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
+-
+-	/* gets dropped in rt_mutex_adjust_prio_chain()! */
+-	get_task_struct(task);
+-
+-	rt_mutex_adjust_prio_chain(task, RT_MUTEX_MIN_CHAINWALK, NULL,
+-				   next_lock, NULL, task);
+-}
+-
+-void __sched rt_mutex_init_waiter(struct rt_mutex_waiter *waiter)
+-{
+-	debug_rt_mutex_init_waiter(waiter);
+-	RB_CLEAR_NODE(&waiter->pi_tree_entry);
+-	RB_CLEAR_NODE(&waiter->tree_entry);
+-	waiter->task = NULL;
+-}
+-
+ /**
+  * __rt_mutex_slowlock() - Perform the wait-wake-try-to-take loop
+  * @lock:		 the rt_mutex to take
+@@ -1274,6 +1231,15 @@ static int __sched rt_mutex_slowlock(str
+ 	return ret;
+ }
+ 
++static __always_inline int __rt_mutex_lock(struct rt_mutex *lock,
++					   unsigned int state)
++{
++	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
++		return 0;
++
++	return rt_mutex_slowlock(lock, state, NULL, RT_MUTEX_MIN_CHAINWALK);
++}
++
+ static int __sched __rt_mutex_slowtrylock(struct rt_mutex *lock)
+ {
+ 	int ret = try_to_take_rt_mutex(lock, current, NULL);
+@@ -1316,21 +1282,16 @@ static int __sched rt_mutex_slowtrylock(
+ 	return ret;
+ }
+ 
+-/*
+- * Performs the wakeup of the top-waiter and re-enables preemption.
+- */
+-void __sched rt_mutex_postunlock(struct wake_q_head *wake_q)
++static __always_inline int __rt_mutex_trylock(struct rt_mutex *lock)
+ {
+-	wake_up_q(wake_q);
++	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
++		return 1;
+ 
+-	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
+-	preempt_enable();
++	return rt_mutex_slowtrylock(lock);
  }
  
  /*
+  * Slow path to release a rt-mutex.
+- *
+- * Return whether the current task needs to call rt_mutex_postunlock().
+  */
+ static void __sched rt_mutex_slowunlock(struct rt_mutex *lock)
+ {
+@@ -1393,416 +1354,10 @@ static void __sched rt_mutex_slowunlock(
+ 	rt_mutex_postunlock(&wake_q);
+ }
+ 
+-/*
+- * debug aware fast / slowpath lock,trylock,unlock
+- *
+- * The atomic acquire/release ops are compiled away, when either the
+- * architecture does not support cmpxchg or when debugging is enabled.
+- */
+-static __always_inline int __rt_mutex_lock(struct rt_mutex *lock, long state,
+-					   unsigned int subclass)
+-{
+-	int ret;
+-
+-	might_sleep();
+-	mutex_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
+-
+-	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+-		return 0;
+-
+-	ret = rt_mutex_slowlock(lock, state, NULL, RT_MUTEX_MIN_CHAINWALK);
+-	if (ret)
+-		mutex_release(&lock->dep_map, _RET_IP_);
+-	return ret;
+-}
+-
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-/**
+- * rt_mutex_lock_nested - lock a rt_mutex
+- *
+- * @lock: the rt_mutex to be locked
+- * @subclass: the lockdep subclass
+- */
+-void __sched rt_mutex_lock_nested(struct rt_mutex *lock, unsigned int subclass)
+-{
+-	__rt_mutex_lock(lock, TASK_UNINTERRUPTIBLE, subclass);
+-}
+-EXPORT_SYMBOL_GPL(rt_mutex_lock_nested);
+-
+-#else /* !CONFIG_DEBUG_LOCK_ALLOC */
+-
+-/**
+- * rt_mutex_lock - lock a rt_mutex
+- *
+- * @lock: the rt_mutex to be locked
+- */
+-void __sched rt_mutex_lock(struct rt_mutex *lock)
+-{
+-	__rt_mutex_lock(lock, TASK_UNINTERRUPTIBLE, 0);
+-}
+-EXPORT_SYMBOL_GPL(rt_mutex_lock);
+-#endif
+-
+-/**
+- * rt_mutex_lock_interruptible - lock a rt_mutex interruptible
+- *
+- * @lock:		the rt_mutex to be locked
+- *
+- * Returns:
+- *  0		on success
+- * -EINTR	when interrupted by a signal
+- */
+-int __sched rt_mutex_lock_interruptible(struct rt_mutex *lock)
+-{
+-	return __rt_mutex_lock(lock, TASK_INTERRUPTIBLE, 0);
+-}
+-EXPORT_SYMBOL_GPL(rt_mutex_lock_interruptible);
+-
+-/**
+- * rt_mutex_trylock - try to lock a rt_mutex
+- *
+- * @lock:	the rt_mutex to be locked
+- *
+- * This function can only be called in thread context. It's safe to call it
+- * from atomic regions, but not from hard or soft interrupt context.
+- *
+- * Returns:
+- *  1 on success
+- *  0 on contention
+- */
+-int __sched rt_mutex_trylock(struct rt_mutex *lock)
++static __always_inline void __rt_mutex_unlock(struct rt_mutex *lock)
+ {
+-	int ret;
+-
+-	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES) && WARN_ON_ONCE(!in_task()))
+-		return 0;
+-
+-	/*
+-	 * No lockdep annotation required because lockdep disables the fast
+-	 * path.
+-	 */
+-	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+-		return 1;
+-
+-	ret = rt_mutex_slowtrylock(lock);
+-	if (ret)
+-		mutex_acquire(&lock->dep_map, 0, 1, _RET_IP_);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(rt_mutex_trylock);
+-
+-/**
+- * rt_mutex_unlock - unlock a rt_mutex
+- *
+- * @lock: the rt_mutex to be unlocked
+- */
+-void __sched rt_mutex_unlock(struct rt_mutex *lock)
+-{
+-	mutex_release(&lock->dep_map, _RET_IP_);
+ 	if (likely(rt_mutex_cmpxchg_release(lock, current, NULL)))
+ 		return;
+ 
+ 	rt_mutex_slowunlock(lock);
+ }
+-EXPORT_SYMBOL_GPL(rt_mutex_unlock);
+-
+-/*
+- * Futex variants, must not use fastpath.
+- */
+-int __sched rt_mutex_futex_trylock(struct rt_mutex *lock)
+-{
+-	return rt_mutex_slowtrylock(lock);
+-}
+-
+-int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
+-{
+-	return __rt_mutex_slowtrylock(lock);
+-}
+-
+-/**
+- * __rt_mutex_futex_unlock - Futex variant, that since futex variants
+- * do not use the fast-path, can be simple and will not need to retry.
+- *
+- * @lock:	The rt_mutex to be unlocked
+- * @wake_q:	The wake queue head from which to get the next lock waiter
+- */
+-bool __sched __rt_mutex_futex_unlock(struct rt_mutex *lock,
+-				     struct wake_q_head *wake_q)
+-{
+-	lockdep_assert_held(&lock->wait_lock);
+-
+-	debug_rt_mutex_unlock(lock);
+-
+-	if (!rt_mutex_has_waiters(lock)) {
+-		lock->owner = NULL;
+-		return false; /* done */
+-	}
+-
+-	/*
+-	 * We've already deboosted, mark_wakeup_next_waiter() will
+-	 * retain preempt_disabled when we drop the wait_lock, to
+-	 * avoid inversion prior to the wakeup.  preempt_disable()
+-	 * therein pairs with rt_mutex_postunlock().
+-	 */
+-	mark_wakeup_next_waiter(wake_q, lock);
+-
+-	return true; /* call postunlock() */
+-}
+-
+-void __sched rt_mutex_futex_unlock(struct rt_mutex *lock)
+-{
+-	DEFINE_WAKE_Q(wake_q);
+-	unsigned long flags;
+-	bool postunlock;
+-
+-	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+-	postunlock = __rt_mutex_futex_unlock(lock, &wake_q);
+-	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+-
+-	if (postunlock)
+-		rt_mutex_postunlock(&wake_q);
+-}
+-
+-/**
+- * __rt_mutex_init - initialize the rt_mutex
+- *
+- * @lock:	The rt_mutex to be initialized
+- * @name:	The lock name used for debugging
+- * @key:	The lock class key used for debugging
+- *
+- * Initialize the rt_mutex to unlocked state.
+- *
+- * Initializing of a locked rt_mutex is not allowed
+- */
+-void __sched __rt_mutex_init(struct rt_mutex *lock, const char *name,
+-		     struct lock_class_key *key)
+-{
+-	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
+-	lockdep_init_map(&lock->dep_map, name, key, 0);
+-
+-	__rt_mutex_basic_init(lock);
+-}
+-EXPORT_SYMBOL_GPL(__rt_mutex_init);
+-
+-/**
+- * rt_mutex_init_proxy_locked - initialize and lock a rt_mutex on behalf of a
+- *				proxy owner
+- *
+- * @lock:	the rt_mutex to be locked
+- * @proxy_owner:the task to set as owner
+- *
+- * No locking. Caller has to do serializing itself
+- *
+- * Special API call for PI-futex support. This initializes the rtmutex and
+- * assigns it to @proxy_owner. Concurrent operations on the rtmutex are not
+- * possible at this point because the pi_state which contains the rtmutex
+- * is not yet visible to other tasks.
+- */
+-void __sched rt_mutex_init_proxy_locked(struct rt_mutex *lock,
+-					struct task_struct *proxy_owner)
+-{
+-	__rt_mutex_basic_init(lock);
+-	rt_mutex_set_owner(lock, proxy_owner);
+-}
+-
+-/**
+- * rt_mutex_proxy_unlock - release a lock on behalf of owner
+- *
+- * @lock:	the rt_mutex to be locked
+- *
+- * No locking. Caller has to do serializing itself
+- *
+- * Special API call for PI-futex support. This merrily cleans up the rtmutex
+- * (debugging) state. Concurrent operations on this rt_mutex are not
+- * possible because it belongs to the pi_state which is about to be freed
+- * and it is not longer visible to other tasks.
+- */
+-void __sched rt_mutex_proxy_unlock(struct rt_mutex *lock)
+-{
+-	debug_rt_mutex_proxy_unlock(lock);
+-	rt_mutex_set_owner(lock, NULL);
+-}
+-
+-/**
+- * __rt_mutex_start_proxy_lock() - Start lock acquisition for another task
+- * @lock:		the rt_mutex to take
+- * @waiter:		the pre-initialized rt_mutex_waiter
+- * @task:		the task to prepare
+- *
+- * Starts the rt_mutex acquire; it enqueues the @waiter and does deadlock
+- * detection. It does not wait, see rt_mutex_wait_proxy_lock() for that.
+- *
+- * NOTE: does _NOT_ remove the @waiter on failure; must either call
+- * rt_mutex_wait_proxy_lock() or rt_mutex_cleanup_proxy_lock() after this.
+- *
+- * Returns:
+- *  0 - task blocked on lock
+- *  1 - acquired the lock for task, caller should wake it up
+- * <0 - error
+- *
+- * Special API call for PI-futex support.
+- */
+-int __sched __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+-					struct rt_mutex_waiter *waiter,
+-					struct task_struct *task)
+-{
+-	int ret;
+-
+-	lockdep_assert_held(&lock->wait_lock);
+-
+-	if (try_to_take_rt_mutex(lock, task, NULL))
+-		return 1;
+-
+-	/* We enforce deadlock detection for futexes */
+-	ret = task_blocks_on_rt_mutex(lock, waiter, task,
+-				      RT_MUTEX_FULL_CHAINWALK);
+-
+-	if (ret && !rt_mutex_owner(lock)) {
+-		/*
+-		 * Reset the return value. We might have
+-		 * returned with -EDEADLK and the owner
+-		 * released the lock while we were walking the
+-		 * pi chain.  Let the waiter sort it out.
+-		 */
+-		ret = 0;
+-	}
+-
+-	return ret;
+-}
+-
+-/**
+- * rt_mutex_start_proxy_lock() - Start lock acquisition for another task
+- * @lock:		the rt_mutex to take
+- * @waiter:		the pre-initialized rt_mutex_waiter
+- * @task:		the task to prepare
+- *
+- * Starts the rt_mutex acquire; it enqueues the @waiter and does deadlock
+- * detection. It does not wait, see rt_mutex_wait_proxy_lock() for that.
+- *
+- * NOTE: unlike __rt_mutex_start_proxy_lock this _DOES_ remove the @waiter
+- * on failure.
+- *
+- * Returns:
+- *  0 - task blocked on lock
+- *  1 - acquired the lock for task, caller should wake it up
+- * <0 - error
+- *
+- * Special API call for PI-futex support.
+- */
+-int __sched rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+-				      struct rt_mutex_waiter *waiter,
+-				      struct task_struct *task)
+-{
+-	int ret;
+-
+-	raw_spin_lock_irq(&lock->wait_lock);
+-	ret = __rt_mutex_start_proxy_lock(lock, waiter, task);
+-	if (unlikely(ret))
+-		remove_waiter(lock, waiter);
+-	raw_spin_unlock_irq(&lock->wait_lock);
+-
+-	return ret;
+-}
+-
+-/**
+- * rt_mutex_wait_proxy_lock() - Wait for lock acquisition
+- * @lock:		the rt_mutex we were woken on
+- * @to:			the timeout, null if none. hrtimer should already have
+- *			been started.
+- * @waiter:		the pre-initialized rt_mutex_waiter
+- *
+- * Wait for the lock acquisition started on our behalf by
+- * rt_mutex_start_proxy_lock(). Upon failure, the caller must call
+- * rt_mutex_cleanup_proxy_lock().
+- *
+- * Returns:
+- *  0 - success
+- * <0 - error, one of -EINTR, -ETIMEDOUT
+- *
+- * Special API call for PI-futex support
+- */
+-int __sched rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
+-				     struct hrtimer_sleeper *to,
+-				     struct rt_mutex_waiter *waiter)
+-{
+-	int ret;
+-
+-	raw_spin_lock_irq(&lock->wait_lock);
+-	/* sleep on the mutex */
+-	set_current_state(TASK_INTERRUPTIBLE);
+-	ret = __rt_mutex_slowlock(lock, TASK_INTERRUPTIBLE, to, waiter);
+-	/*
+-	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
+-	 * have to fix that up.
+-	 */
+-	fixup_rt_mutex_waiters(lock);
+-	raw_spin_unlock_irq(&lock->wait_lock);
+-
+-	return ret;
+-}
+-
+-/**
+- * rt_mutex_cleanup_proxy_lock() - Cleanup failed lock acquisition
+- * @lock:		the rt_mutex we were woken on
+- * @waiter:		the pre-initialized rt_mutex_waiter
+- *
+- * Attempt to clean up after a failed __rt_mutex_start_proxy_lock() or
+- * rt_mutex_wait_proxy_lock().
+- *
+- * Unless we acquired the lock; we're still enqueued on the wait-list and can
+- * in fact still be granted ownership until we're removed. Therefore we can
+- * find we are in fact the owner and must disregard the
+- * rt_mutex_wait_proxy_lock() failure.
+- *
+- * Returns:
+- *  true  - did the cleanup, we done.
+- *  false - we acquired the lock after rt_mutex_wait_proxy_lock() returned,
+- *          caller should disregards its return value.
+- *
+- * Special API call for PI-futex support
+- */
+-bool __sched rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
+-					 struct rt_mutex_waiter *waiter)
+-{
+-	bool cleanup = false;
+-
+-	raw_spin_lock_irq(&lock->wait_lock);
+-	/*
+-	 * Do an unconditional try-lock, this deals with the lock stealing
+-	 * state where __rt_mutex_futex_unlock() -> mark_wakeup_next_waiter()
+-	 * sets a NULL owner.
+-	 *
+-	 * We're not interested in the return value, because the subsequent
+-	 * test on rt_mutex_owner() will infer that. If the trylock succeeded,
+-	 * we will own the lock and it will have removed the waiter. If we
+-	 * failed the trylock, we're still not owner and we need to remove
+-	 * ourselves.
+-	 */
+-	try_to_take_rt_mutex(lock, current, waiter);
+-	/*
+-	 * Unless we're the owner; we're still enqueued on the wait_list.
+-	 * So check if we became owner, if not, take us off the wait_list.
+-	 */
+-	if (rt_mutex_owner(lock) != current) {
+-		remove_waiter(lock, waiter);
+-		cleanup = true;
+-	}
+-	/*
+-	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
+-	 * have to fix that up.
+-	 */
+-	fixup_rt_mutex_waiters(lock);
+-
+-	raw_spin_unlock_irq(&lock->wait_lock);
+-
+-	return cleanup;
+-}
+-
+-#ifdef CONFIG_DEBUG_RT_MUTEXES
+-void rt_mutex_debug_task_free(struct task_struct *task)
+-{
+-	DEBUG_LOCKS_WARN_ON(!RB_EMPTY_ROOT(&task->pi_waiters.rb_root));
+-	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
+-}
+-#endif
+--- /dev/null
++++ b/kernel/locking/rtmutex_api.c
+@@ -0,0 +1,453 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * rtmutex API
++ */
++#include <linux/spinlock.h>
++#include <linux/export.h>
++
++#include "rtmutex.c"
++
++/*
++ * Max number of times we'll walk the boosting chain:
++ */
++int max_lock_depth = 1024;
++
++/*
++ * Debug aware fast / slowpath lock,trylock,unlock
++ *
++ * The atomic acquire/release ops are compiled away, when either the
++ * architecture does not support cmpxchg or when debugging is enabled.
++ */
++static __always_inline int __rt_mutex_lock_common(struct rt_mutex *lock,
++						  unsigned int state,
++						  unsigned int subclass)
++{
++	int ret;
++
++	might_sleep();
++	mutex_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
++	ret = __rt_mutex_lock(lock, state);
++	if (ret)
++		mutex_release(&lock->dep_map, _RET_IP_);
++	return ret;
++}
++
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++/**
++ * rt_mutex_lock_nested - lock a rt_mutex
++ *
++ * @lock: the rt_mutex to be locked
++ * @subclass: the lockdep subclass
++ */
++void __sched rt_mutex_lock_nested(struct rt_mutex *lock, unsigned int subclass)
++{
++	__rt_mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, subclass);
++}
++EXPORT_SYMBOL_GPL(rt_mutex_lock_nested);
++
++#else /* !CONFIG_DEBUG_LOCK_ALLOC */
++
++/**
++ * rt_mutex_lock - lock a rt_mutex
++ *
++ * @lock: the rt_mutex to be locked
++ */
++void __sched rt_mutex_lock(struct rt_mutex *lock)
++{
++	__rt_mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0);
++}
++EXPORT_SYMBOL_GPL(rt_mutex_lock);
++#endif
++
++/**
++ * rt_mutex_lock_interruptible - lock a rt_mutex interruptible
++ *
++ * @lock:		the rt_mutex to be locked
++ *
++ * Returns:
++ *  0		on success
++ * -EINTR	when interrupted by a signal
++ */
++int __sched rt_mutex_lock_interruptible(struct rt_mutex *lock)
++{
++	return __rt_mutex_lock_common(lock, TASK_INTERRUPTIBLE, 0);
++}
++EXPORT_SYMBOL_GPL(rt_mutex_lock_interruptible);
++
++/**
++ * rt_mutex_trylock - try to lock a rt_mutex
++ *
++ * @lock:	the rt_mutex to be locked
++ *
++ * This function can only be called in thread context. It's safe to call it
++ * from atomic regions, but not from hard or soft interrupt context.
++ *
++ * Returns:
++ *  1 on success
++ *  0 on contention
++ */
++int __sched rt_mutex_trylock(struct rt_mutex *lock)
++{
++	int ret;
++
++	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES) && WARN_ON_ONCE(!in_task()))
++		return 0;
++
++	ret = __rt_mutex_trylock(lock);
++	if (ret)
++		mutex_acquire(&lock->dep_map, 0, 1, _RET_IP_);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(rt_mutex_trylock);
++
++/**
++ * rt_mutex_unlock - unlock a rt_mutex
++ *
++ * @lock: the rt_mutex to be unlocked
++ */
++void __sched rt_mutex_unlock(struct rt_mutex *lock)
++{
++	mutex_release(&lock->dep_map, _RET_IP_);
++	__rt_mutex_unlock(lock);
++}
++EXPORT_SYMBOL_GPL(rt_mutex_unlock);
++
++/*
++ * Futex variants, must not use fastpath.
++ */
++int __sched rt_mutex_futex_trylock(struct rt_mutex *lock)
++{
++	return rt_mutex_slowtrylock(lock);
++}
++
++int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
++{
++	return __rt_mutex_slowtrylock(lock);
++}
++
++/**
++ * __rt_mutex_futex_unlock - Futex variant, that since futex variants
++ * do not use the fast-path, can be simple and will not need to retry.
++ *
++ * @lock:	The rt_mutex to be unlocked
++ * @wake_q:	The wake queue head from which to get the next lock waiter
++ */
++bool __sched __rt_mutex_futex_unlock(struct rt_mutex *lock,
++				     struct wake_q_head *wake_q)
++{
++	lockdep_assert_held(&lock->wait_lock);
++
++	debug_rt_mutex_unlock(lock);
++
++	if (!rt_mutex_has_waiters(lock)) {
++		lock->owner = NULL;
++		return false; /* done */
++	}
++
++	/*
++	 * We've already deboosted, mark_wakeup_next_waiter() will
++	 * retain preempt_disabled when we drop the wait_lock, to
++	 * avoid inversion prior to the wakeup.  preempt_disable()
++	 * therein pairs with rt_mutex_postunlock().
++	 */
++	mark_wakeup_next_waiter(wake_q, lock);
++
++	return true; /* call postunlock() */
++}
++
++void __sched rt_mutex_futex_unlock(struct rt_mutex *lock)
++{
++	DEFINE_WAKE_Q(wake_q);
++	unsigned long flags;
++	bool postunlock;
++
++	raw_spin_lock_irqsave(&lock->wait_lock, flags);
++	postunlock = __rt_mutex_futex_unlock(lock, &wake_q);
++	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
++
++	if (postunlock)
++		rt_mutex_postunlock(&wake_q);
++}
++
++/**
++ * __rt_mutex_init - initialize the rt_mutex
++ *
++ * @lock:	The rt_mutex to be initialized
++ * @name:	The lock name used for debugging
++ * @key:	The lock class key used for debugging
++ *
++ * Initialize the rt_mutex to unlocked state.
++ *
++ * Initializing of a locked rt_mutex is not allowed
++ */
++void __sched __rt_mutex_init(struct rt_mutex *lock, const char *name,
++		     struct lock_class_key *key)
++{
++	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
++	lockdep_init_map(&lock->dep_map, name, key, 0);
++
++	__rt_mutex_basic_init(lock);
++}
++EXPORT_SYMBOL_GPL(__rt_mutex_init);
++
++/**
++ * rt_mutex_init_proxy_locked - initialize and lock a rt_mutex on behalf of a
++ *				proxy owner
++ *
++ * @lock:	the rt_mutex to be locked
++ * @proxy_owner:the task to set as owner
++ *
++ * No locking. Caller has to do serializing itself
++ *
++ * Special API call for PI-futex support. This initializes the rtmutex and
++ * assigns it to @proxy_owner. Concurrent operations on the rtmutex are not
++ * possible at this point because the pi_state which contains the rtmutex
++ * is not yet visible to other tasks.
++ */
++void __sched rt_mutex_init_proxy_locked(struct rt_mutex *lock,
++					struct task_struct *proxy_owner)
++{
++	__rt_mutex_basic_init(lock);
++	rt_mutex_set_owner(lock, proxy_owner);
++}
++
++/**
++ * rt_mutex_proxy_unlock - release a lock on behalf of owner
++ *
++ * @lock:	the rt_mutex to be locked
++ *
++ * No locking. Caller has to do serializing itself
++ *
++ * Special API call for PI-futex support. This just cleans up the rtmutex
++ * (debugging) state. Concurrent operations on this rt_mutex are not
++ * possible because it belongs to the pi_state which is about to be freed
++ * and it is not longer visible to other tasks.
++ */
++void __sched rt_mutex_proxy_unlock(struct rt_mutex *lock)
++{
++	debug_rt_mutex_proxy_unlock(lock);
++	rt_mutex_set_owner(lock, NULL);
++}
++
++/**
++ * __rt_mutex_start_proxy_lock() - Start lock acquisition for another task
++ * @lock:		the rt_mutex to take
++ * @waiter:		the pre-initialized rt_mutex_waiter
++ * @task:		the task to prepare
++ *
++ * Starts the rt_mutex acquire; it enqueues the @waiter and does deadlock
++ * detection. It does not wait, see rt_mutex_wait_proxy_lock() for that.
++ *
++ * NOTE: does _NOT_ remove the @waiter on failure; must either call
++ * rt_mutex_wait_proxy_lock() or rt_mutex_cleanup_proxy_lock() after this.
++ *
++ * Returns:
++ *  0 - task blocked on lock
++ *  1 - acquired the lock for task, caller should wake it up
++ * <0 - error
++ *
++ * Special API call for PI-futex support.
++ */
++int __sched __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++					struct rt_mutex_waiter *waiter,
++					struct task_struct *task)
++{
++	int ret;
++
++	lockdep_assert_held(&lock->wait_lock);
++
++	if (try_to_take_rt_mutex(lock, task, NULL))
++		return 1;
++
++	/* We enforce deadlock detection for futexes */
++	ret = task_blocks_on_rt_mutex(lock, waiter, task,
++				      RT_MUTEX_FULL_CHAINWALK);
++
++	if (ret && !rt_mutex_owner(lock)) {
++		/*
++		 * Reset the return value. We might have
++		 * returned with -EDEADLK and the owner
++		 * released the lock while we were walking the
++		 * pi chain.  Let the waiter sort it out.
++		 */
++		ret = 0;
++	}
++
++	return ret;
++}
++
++/**
++ * rt_mutex_start_proxy_lock() - Start lock acquisition for another task
++ * @lock:		the rt_mutex to take
++ * @waiter:		the pre-initialized rt_mutex_waiter
++ * @task:		the task to prepare
++ *
++ * Starts the rt_mutex acquire; it enqueues the @waiter and does deadlock
++ * detection. It does not wait, see rt_mutex_wait_proxy_lock() for that.
++ *
++ * NOTE: unlike __rt_mutex_start_proxy_lock this _DOES_ remove the @waiter
++ * on failure.
++ *
++ * Returns:
++ *  0 - task blocked on lock
++ *  1 - acquired the lock for task, caller should wake it up
++ * <0 - error
++ *
++ * Special API call for PI-futex support.
++ */
++int __sched rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++				      struct rt_mutex_waiter *waiter,
++				      struct task_struct *task)
++{
++	int ret;
++
++	raw_spin_lock_irq(&lock->wait_lock);
++	ret = __rt_mutex_start_proxy_lock(lock, waiter, task);
++	if (unlikely(ret))
++		remove_waiter(lock, waiter);
++	raw_spin_unlock_irq(&lock->wait_lock);
++
++	return ret;
++}
++
++/**
++ * rt_mutex_wait_proxy_lock() - Wait for lock acquisition
++ * @lock:		the rt_mutex we were woken on
++ * @to:			the timeout, null if none. hrtimer should already have
++ *			been started.
++ * @waiter:		the pre-initialized rt_mutex_waiter
++ *
++ * Wait for the lock acquisition started on our behalf by
++ * rt_mutex_start_proxy_lock(). Upon failure, the caller must call
++ * rt_mutex_cleanup_proxy_lock().
++ *
++ * Returns:
++ *  0 - success
++ * <0 - error, one of -EINTR, -ETIMEDOUT
++ *
++ * Special API call for PI-futex support
++ */
++int __sched rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
++				     struct hrtimer_sleeper *to,
++				     struct rt_mutex_waiter *waiter)
++{
++	int ret;
++
++	raw_spin_lock_irq(&lock->wait_lock);
++	/* sleep on the mutex */
++	set_current_state(TASK_INTERRUPTIBLE);
++	ret = __rt_mutex_slowlock(lock, TASK_INTERRUPTIBLE, to, waiter);
++	/*
++	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
++	 * have to fix that up.
++	 */
++	fixup_rt_mutex_waiters(lock);
++	raw_spin_unlock_irq(&lock->wait_lock);
++
++	return ret;
++}
++
++/**
++ * rt_mutex_cleanup_proxy_lock() - Cleanup failed lock acquisition
++ * @lock:		the rt_mutex we were woken on
++ * @waiter:		the pre-initialized rt_mutex_waiter
++ *
++ * Attempt to clean up after a failed __rt_mutex_start_proxy_lock() or
++ * rt_mutex_wait_proxy_lock().
++ *
++ * Unless we acquired the lock; we're still enqueued on the wait-list and can
++ * in fact still be granted ownership until we're removed. Therefore we can
++ * find we are in fact the owner and must disregard the
++ * rt_mutex_wait_proxy_lock() failure.
++ *
++ * Returns:
++ *  true  - did the cleanup, we done.
++ *  false - we acquired the lock after rt_mutex_wait_proxy_lock() returned,
++ *          caller should disregards its return value.
++ *
++ * Special API call for PI-futex support
++ */
++bool __sched rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
++					 struct rt_mutex_waiter *waiter)
++{
++	bool cleanup = false;
++
++	raw_spin_lock_irq(&lock->wait_lock);
++	/*
++	 * Do an unconditional try-lock, this deals with the lock stealing
++	 * state where __rt_mutex_futex_unlock() -> mark_wakeup_next_waiter()
++	 * sets a NULL owner.
++	 *
++	 * We're not interested in the return value, because the subsequent
++	 * test on rt_mutex_owner() will infer that. If the trylock succeeded,
++	 * we will own the lock and it will have removed the waiter. If we
++	 * failed the trylock, we're still not owner and we need to remove
++	 * ourselves.
++	 */
++	try_to_take_rt_mutex(lock, current, waiter);
++	/*
++	 * Unless we're the owner; we're still enqueued on the wait_list.
++	 * So check if we became owner, if not, take us off the wait_list.
++	 */
++	if (rt_mutex_owner(lock) != current) {
++		remove_waiter(lock, waiter);
++		cleanup = true;
++	}
++	/*
++	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
++	 * have to fix that up.
++	 */
++	fixup_rt_mutex_waiters(lock);
++
++	raw_spin_unlock_irq(&lock->wait_lock);
++
++	return cleanup;
++}
++
++/*
++ * Recheck the pi chain, in case we got a priority setting
++ *
++ * Called from sched_setscheduler
++ */
++void __sched rt_mutex_adjust_pi(struct task_struct *task)
++{
++	struct rt_mutex_waiter *waiter;
++	struct rt_mutex *next_lock;
++	unsigned long flags;
++
++	raw_spin_lock_irqsave(&task->pi_lock, flags);
++
++	waiter = task->pi_blocked_on;
++	if (!waiter || rt_mutex_waiter_equal(waiter, task_to_waiter(task))) {
++		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++		return;
++	}
++	next_lock = waiter->lock;
++	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++
++	/* gets dropped in rt_mutex_adjust_prio_chain()! */
++	get_task_struct(task);
++
++	rt_mutex_adjust_prio_chain(task, RT_MUTEX_MIN_CHAINWALK, NULL,
++				   next_lock, NULL, task);
++}
++
++/*
++ * Performs the wakeup of the top-waiter and re-enables preemption.
++ */
++void __sched rt_mutex_postunlock(struct wake_q_head *wake_q)
++{
++	wake_up_q(wake_q);
++
++	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
++	preempt_enable();
++}
++
++#ifdef CONFIG_DEBUG_RT_MUTEXES
++void rt_mutex_debug_task_free(struct task_struct *task)
++{
++	DEBUG_LOCKS_WARN_ON(!RB_EMPTY_ROOT(&task->pi_waiters.rb_root));
++	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
++}
++#endif
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -38,6 +38,33 @@ struct rt_mutex_waiter {
+ };
+ 
+ /*
++ * PI-futex support (proxy locking functions, etc.):
++ */
++extern void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
++				       struct task_struct *proxy_owner);
++extern void rt_mutex_proxy_unlock(struct rt_mutex *lock);
++extern int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++				     struct rt_mutex_waiter *waiter,
++				     struct task_struct *task);
++extern int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++				     struct rt_mutex_waiter *waiter,
++				     struct task_struct *task);
++extern int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
++			       struct hrtimer_sleeper *to,
++			       struct rt_mutex_waiter *waiter);
++extern bool rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
++				 struct rt_mutex_waiter *waiter);
++
++extern int rt_mutex_futex_trylock(struct rt_mutex *l);
++extern int __rt_mutex_futex_trylock(struct rt_mutex *l);
++
++extern void rt_mutex_futex_unlock(struct rt_mutex *lock);
++extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
++				struct wake_q_head *wake_q);
++
++extern void rt_mutex_postunlock(struct wake_q_head *wake_q);
++
++/*
+  * Must be guarded because this header is included from rcu/tree_plugin.h
+  * unconditionally.
+  */
+@@ -78,13 +105,6 @@ static inline struct task_struct *rt_mut
+ 
+ 	return (struct task_struct *) (owner & ~RT_MUTEX_HAS_WAITERS);
+ }
+-#else /* CONFIG_RT_MUTEXES */
+-/* Used in rcu/tree_plugin.h */
+-static inline struct task_struct *rt_mutex_owner(struct rt_mutex *lock)
+-{
+-	return NULL;
+-}
+-#endif  /* !CONFIG_RT_MUTEXES */
+ 
+ /*
+  * Constants for rt mutex functions which have a selectable deadlock
+@@ -108,34 +128,6 @@ static inline void __rt_mutex_basic_init
+ 	lock->waiters = RB_ROOT_CACHED;
+ }
+ 
+-/*
+- * PI-futex support (proxy locking functions, etc.):
+- */
+-extern void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
+-				       struct task_struct *proxy_owner);
+-extern void rt_mutex_proxy_unlock(struct rt_mutex *lock);
+-extern void rt_mutex_init_waiter(struct rt_mutex_waiter *waiter);
+-extern int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+-				     struct rt_mutex_waiter *waiter,
+-				     struct task_struct *task);
+-extern int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+-				     struct rt_mutex_waiter *waiter,
+-				     struct task_struct *task);
+-extern int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
+-			       struct hrtimer_sleeper *to,
+-			       struct rt_mutex_waiter *waiter);
+-extern bool rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
+-				 struct rt_mutex_waiter *waiter);
+-
+-extern int rt_mutex_futex_trylock(struct rt_mutex *l);
+-extern int __rt_mutex_futex_trylock(struct rt_mutex *l);
+-
+-extern void rt_mutex_futex_unlock(struct rt_mutex *lock);
+-extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
+-				 struct wake_q_head *wqh);
+-
+-extern void rt_mutex_postunlock(struct wake_q_head *wake_q);
+-
+ /* Debug functions */
+ static inline void debug_rt_mutex_unlock(struct rt_mutex *lock)
+ {
+@@ -161,4 +153,20 @@ static inline void debug_rt_mutex_free_w
+ 		memset(waiter, 0x22, sizeof(*waiter));
+ }
+ 
++static inline void rt_mutex_init_waiter(struct rt_mutex_waiter *waiter)
++{
++	debug_rt_mutex_init_waiter(waiter);
++	RB_CLEAR_NODE(&waiter->pi_tree_entry);
++	RB_CLEAR_NODE(&waiter->tree_entry);
++	waiter->task = NULL;
++}
++
++#else /* CONFIG_RT_MUTEXES */
++/* Used in rcu/tree_plugin.h */
++static inline struct task_struct *rt_mutex_owner(struct rt_mutex *lock)
++{
++	return NULL;
++}
++#endif  /* !CONFIG_RT_MUTEXES */
++
+ #endif
 
