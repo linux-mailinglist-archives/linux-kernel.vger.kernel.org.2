@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189A83C7127
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAACE3C712A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236626AbhGMNYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S236533AbhGMN2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbhGMNYI (ORCPT
+        with ESMTP id S236222AbhGMN17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:24:08 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519ECC0613DD;
-        Tue, 13 Jul 2021 06:21:18 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1m3ILL-0000YP-FG; Tue, 13 Jul 2021 15:20:59 +0200
-Date:   Tue, 13 Jul 2021 15:20:59 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        kernel test robot <lkp@intel.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] audit: fix memory leak in nf_tables_commit
-Message-ID: <20210713132059.GB11179@breakpoint.cc>
-References: <20210713130344.473646-1-mudongliangabcd@gmail.com>
+        Tue, 13 Jul 2021 09:27:59 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C32C0613DD;
+        Tue, 13 Jul 2021 06:25:08 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id p9so12125074pjl.3;
+        Tue, 13 Jul 2021 06:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=jgImV5lDtzOU/4Ozn0Pepwsu6kVjkzMXFrQpmXM9B/Y=;
+        b=p1mvoMvp4mvqswdbZNS5xjzN1dpNtfUKbZQjX3d36BDJIX063CJDSWMGynLk32Dpcl
+         HzxaCudHVV6YCXcu7sOe4FwtSu/cGO2/z/W7OdON9BmfHuK498X1sUuKbw3Xu54zSLX7
+         1ISKiWufCV41WlFLzyJdcdybJqi+/oTO5UADMY3rkujHRDJmN5pOJL7ZkDJaFg4bd0GD
+         U6wuEEtlQwVf54TCTt5Z0/R8RN+G9Xq7626CFHsjoMWgTIWLZ7DjiI9JMMBYUpfkd9LY
+         xxKFEkqYVa3SxO/4hCt+BUtVCQYkDK3NXlLnXDGyhN0S2bS/fiQ0XJMe89nOxxoFF4/E
+         Q5XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=jgImV5lDtzOU/4Ozn0Pepwsu6kVjkzMXFrQpmXM9B/Y=;
+        b=NomjAphcQqFXoeEFW3jDNcUroGmhgS/Sq71RQX2qPhiZgSA9Byyy/vAxdMoN81z0Ad
+         WVSkPSIgwrsK4IPzyEburiq1Dw8DGCtDFC/dS/RWIh9QohX+/p/BY/twdrOr7PWGxqUJ
+         pu3JCKy5OVb2izr4rZjR8iCxO3ambtueapvl3NSTh4F+rqHcEHdrTlo70U+SlMb6xuZv
+         EQ//iSNQwzA8E8JZjvLp7RcPFMgch8v/S+55h+znHs+Uq0XahHpymGM9EGqlNgauph6C
+         ElPcxyV7S/gghk/Tsf/SNBB7D3J3O1evgaH0xeC7FaHxjZ4PbR2cSlv6pFCvgnspqpU3
+         UXzw==
+X-Gm-Message-State: AOAM531PFA7MnnltR7PEx8bwpwNSM8Vw7nPKHbcQxjZdy5acfSy3uj+4
+        bCzaCwAgeoDECIQFrH38qGDFZ0RSDg7Q
+X-Google-Smtp-Source: ABdhPJxYO9Wb5G4T+kKf2OoQ0BLxKzEmh9t+Ma12OzfNi+1rVxQ4yBBqBfcODWuPuJDc4unpXBpXMQ==
+X-Received: by 2002:a17:90a:5a4d:: with SMTP id m13mr4222530pji.7.1626182708070;
+        Tue, 13 Jul 2021 06:25:08 -0700 (PDT)
+Received: from [10.109.0.6] ([45.145.248.64])
+        by smtp.gmail.com with ESMTPSA id m19sm9631952pfa.135.2021.07.13.06.25.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 06:25:07 -0700 (PDT)
+Subject: Re: [PATCH] tools: PCI: Zero-initialize param
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
+        kw@linux.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210627003937.6249-1-yang.shunyong@gmail.com>
+ <d4c250af-aa50-0ec0-c66a-104092646e15@gmail.com> <YOrcUcx2PdaBxRQi@unreal>
+From:   Shunyong Yang <yang.shunyong@gmail.com>
+Message-ID: <26dbd10a-3d4e-032a-ec56-3eddac5eb4aa@gmail.com>
+Date:   Tue, 13 Jul 2021 21:24:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713130344.473646-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YOrcUcx2PdaBxRQi@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
-> free the adp variable.
-> 
-> Fix this by freeing the linked list with head adl.
-> 
-> backtrace:
->   kmalloc include/linux/slab.h:591 [inline]
->   kzalloc include/linux/slab.h:721 [inline]
->   nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
->   nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
->   nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
->   nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
->   nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
->   netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->   netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
->   netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
->   sock_sendmsg_nosec net/socket.c:702 [inline]
->   sock_sendmsg+0x56/0x80 net/socket.c:722
-> 
-> Reported-by: syzbot <syzkaller@googlegroups.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
-> v1->v2: fix the compile issue
->  net/netfilter/nf_tables_api.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> index 390d4466567f..7f45b291be13 100644
-> --- a/net/netfilter/nf_tables_api.c
-> +++ b/net/netfilter/nf_tables_api.c
-> @@ -8444,6 +8444,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
->  	return 0;
->  }
->  
-> +static void nf_tables_commit_free(struct list_head *adl)
+Hi,  Romanovsky,
 
-nf_tables_commit_audit_free?
+On 2021/7/11 19:56, Leon Romanovsky wrote:
+> On Sun, Jul 11, 2021 at 09:48:17AM +0800, Shunyong Yang wrote:
+>> Hi, Bjorn and Kishon,
+>>
+>>    Gentle ping. Would you please help to review and merge this tiny change?
+>>
+>> Thansk.
+>>
+>> Shunyong.
+>>
+>> On 2021/6/27 8:39, Shunyong Yang wrote:
+>>> The values in param may be random if they are not initialized, which
+>>> may cause use_dma flag set even when "-d" option is not provided
+>>> in command line. Initializing all members to 0 to solve this.
+>>>
+>>> Signed-off-by: Shunyong Yang <yang.shunyong@gmail.com>
+>>> ---
+>>>    tools/pci/pcitest.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/pci/pcitest.c b/tools/pci/pcitest.c
+>>> index 0a1344c45213..59bcd6220a58 100644
+>>> --- a/tools/pci/pcitest.c
+>>> +++ b/tools/pci/pcitest.c
+>>> @@ -40,7 +40,7 @@ struct pci_test {
+>>>    static int run_test(struct pci_test *test)
+>>>    {
+>>> -	struct pci_endpoint_test_xfer_param param;
+>>> +	struct pci_endpoint_test_xfer_param param = {0};
+> You can simply write {} instead of {0} - zero is not needed.
+>
+> Thanks
 
-Aside from that, there should be a followup patch (for nf-next),
-adding empty inline functions in case of CONFIG_AUDITSYSCALL=n.
+    Will change as you said.
 
-Right now it does pointless aggregation for the AUDIT=n case.
+Thanks.
+
+Shunyong.
+
+>>>    	int ret = -EINVAL;
+>>>    	int fd;
