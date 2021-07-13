@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7B13C6A2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAC33C6A3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhGMGFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:05:21 -0400
-Received: from birdy.pmhahn.de ([88.198.22.186]:56930 "EHLO birdy.pmhahn.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhGMGFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:05:19 -0400
-Received: from [IPv6:2003:e2:7738:c200:a5ae:ca72:d4d5:6724] (p200300E27738C200A5aEcA72d4D56724.dip0.t-ipconnect.de [IPv6:2003:e2:7738:c200:a5ae:ca72:d4d5:6724])
-        by birdy.pmhahn.de (Postfix) with ESMTPSA id 626F62208EDA;
-        Tue, 13 Jul 2021 08:02:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=pmhahn.de; s=202002;
-        t=1626156148; bh=HfuvmijpRKAZ3kq4/6lrXulnT7YaLAQipZHwr6kr8E4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LYIB3WsIHggROpun740ag9e7XbypxixZ7+A8tFMhcdDqX/BKG9jLUjKLpu4NFLMvq
-         0tXGrnAMg2+aZO+6LulZj++mey3V94gkXReys0qXDjGag3e6HWTeYeGsiiba7VdldA
-         g/jVYlxxKDB1N5mW512dO9HEe3FuPoERGdbfANO7vezjSLvBUWPnMD4LGDpPhOl/PW
-         f+glKg7wSMqU4oucsqYG4AX0UTn7h4OwQBsWXjbMRQ1cL4nnfd1N377WGdmz5MzMfl
-         ux5aZ71QWZJaLJbn6Zz7UMdsU8T1HXLDlkVmb30TTAwrjp54J2j65B5D5oHMGQRiPp
-         57OhLqZcJW56w==
-Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
-To:     Salah Triki <salah.triki@gmail.com>, fabrice.gasnier@foss.st.com,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        lee.jones@linaro.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com
-Cc:     linux-pwm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210712231910.GA1831270@pc>
-From:   Philipp Hahn <pmhahn@pmhahn.de>
-Message-ID: <e597d6b8-55d6-2fa6-5f79-86ff813d8bd2@pmhahn.de>
-Date:   Tue, 13 Jul 2021 08:02:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233738AbhGMGHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231922AbhGMGHF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 02:07:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631EAC0613DD;
+        Mon, 12 Jul 2021 23:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=bEplaoWVbdHvF1rUD/yRmVkDlj
+        3GGXzso5zutWbBYG0Urg+gJ4s0YIzF+AAtii/QRcmm0VGj7DCRX7UMm51I4IbIqyhOezcuLX8o6/j
+        IA2b+7YqY9YwO0WutkXUCv+4blG54/ADRmY23VbXNYl59iwAvV11KzQX6QXAiZ/D0BWoVMUAazHPV
+        b67twHmwd3Y4+yFQAvAlUawTwRlj3fyAjEmWBczXbC62/YHLFbViZSO3z0YBDGjqYVv9+3hPIqBMM
+        ntXfPioZVqU9QEo/wdHk3bGky37vWiyG8upw1MYK1MVOnCXITA2vi1Gl0V1aTbvlblL7dBJ3ht4NZ
+        korlizSA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3BVx-000nCy-MV; Tue, 13 Jul 2021 06:03:35 +0000
+Date:   Tue, 13 Jul 2021 07:03:29 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz??lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH v5 6/6] loop: raise media_change event
+Message-ID: <YO0ssUrDEzJbqY4t@infradead.org>
+References: <20210712230530.29323-1-mcroce@linux.microsoft.com>
+ <20210712230530.29323-7-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210712231910.GA1831270@pc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712230530.29323-7-mcroce@linux.microsoft.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Looks good,
 
-Disclaimer: I have no idea what 'pwm-stm32' is or does
-
-Am 13.07.21 um 01:19 schrieb Salah Triki:
-> Divide by 3*sizeof(u32) when computing array_size, since stm32_breakinput
-> has 3 fields of type u32.
-...
-> --- a/drivers/pwm/pwm-stm32.c
-> +++ b/drivers/pwm/pwm-stm32.c
-> @@ -544,7 +544,7 @@ static int stm32_pwm_probe_breakinputs(struct stm32_pwm *priv,
->   		return -EINVAL;
->   
->   	priv->num_breakinputs = nb;
-> -	array_size = nb * sizeof(struct stm32_breakinput) / sizeof(u32);
-> +	array_size = nb * sizeof(struct stm32_breakinput) / (3 * sizeof(u32));
-
-Maybe it's too early in the morning for me, but this does not look right:
-
-> struct stm32_breakinput {
-> 	u32 index;
-> 	u32 level;
-> 	u32 filter;
-> };
-
-then "sizeof(struct stm32_breakinput)" == "(3 * sizeof(u32))", which 
-would simply make "arrray_site := nb" ?
-
-Philipp
+Reviewed-by: Christoph Hellwig <hch@lst.de>
