@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019A83C7661
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0A03C7663
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhGMSWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhGMSWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:22:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 984E06136D;
-        Tue, 13 Jul 2021 18:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626200354;
-        bh=cMdO8+EgP81LfDfTGGuhCMJIV2cTg8n2Vt2uLKZKQvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AYagHoxmuuhdYYALTMy0Q2QzsYQKQo64SCjxbrQFNSmccdgFZZYj5FhbCWle8irZ4
-         ZX3aK0KibU+ac/zl9UoKgsz2NM5X1E3JxiO7AenjX7Jn94Zk2gV96yi8DLX0C8jpgE
-         wRtfjCW1lnWQrIvGmGqc31NrCAqW6SNAfcB77sqq0dV3d1J6QLwI/b1LAKmHzgMh9O
-         +sVCiQHKSKl2NgahMzCbjgoUv5Yql6QfkcUbbNDSqmLU0J0efFDeiltdUT3Nz8iUh8
-         pyKdo6GXMgPySplfafVMb7+DDVzrEuwRFI2kj0gTxoxpBsYJlgPqXQa9eYNbsf29W+
-         1CLKwFhM5PgZQ==
-Date:   Tue, 13 Jul 2021 19:18:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-Message-ID: <20210713181837.GE4098@sirena.org.uk>
-References: <20210709170426.GC4112@sirena.org.uk>
- <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
- <20210712124223.GB4435@sirena.org.uk>
- <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
- <20210712133428.GD4435@sirena.org.uk>
- <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
- <20210712170120.GG4435@sirena.org.uk>
- <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
- <20210713152454.GC4098@sirena.org.uk>
- <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
+        id S234233AbhGMSWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbhGMSWl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:22:41 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B283C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:19:51 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id v6so14755615lfp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:19:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aRaC7OVMrz5Ujr3/sIQbWqu+KvqFyZ7N29CishV8qI8=;
+        b=evshTzDppfeY9x3hYIsbNOMJ8CcauD5TsOYP9DkJvBeA9GufJE6DS7GF9hzIYdco2U
+         Ce24pDdOo6a5tEYP7o2VdLLkKU9jN9UvzKHmb1+3Oxta5JNmheikWDE+Xa5MVUzr1vtD
+         D3iaeVutWKvAF4A3+StWWM6f05LexN09eZlRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aRaC7OVMrz5Ujr3/sIQbWqu+KvqFyZ7N29CishV8qI8=;
+        b=uXkGsSYSdZS0X3rSFwlxzITnat8qlj+RnYtpTg+vpOo8Cust5EMYCzgL+fu2Kh0BsE
+         GAj2cGwjcZZmlB6MUMq09I+FPBE9glcNlaaSkPBGDc15CgbMCvWeF7d4cnGsKHZVQGxy
+         HyTaSF0ynkxfI/pe4EDFVKpBSKfRqEzReCIA0n9GS1CRGS9iXJQRWvC+LI7EGnEnOLT2
+         38/vExFNHNKLHC70axwfJGplKetDDJjbq6EyC3jgIuLVWsAbRoFZYmfhwFXMaRgatUDM
+         8wun+/HLLsAstH0s45gXWirOXKwDHQB5LYDFBOlPAGC+lbXmFyrwCCE7ZWnCmiXjAycZ
+         frQw==
+X-Gm-Message-State: AOAM531BsO4ZJjcEY83tv6Cu3IWMaHlrcFCRw+cuKT86ectUoNG1sXUD
+        TyqT8J5xBjVwlRMnjmFtZafNR0qHq/JenNTCGmE=
+X-Google-Smtp-Source: ABdhPJzJrSlExv1AnHn74s1lvlHA+6NxLaSffMcYc/rGj1EGx7ZP9e7oVoW/PRfKHZkZswnT3xy64w==
+X-Received: by 2002:ac2:4294:: with SMTP id m20mr4596666lfh.6.1626200389175;
+        Tue, 13 Jul 2021 11:19:49 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id c30sm198982lfv.19.2021.07.13.11.19.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 11:19:46 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id b40so31321343ljf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:19:46 -0700 (PDT)
+X-Received: by 2002:a2e:81c4:: with SMTP id s4mr5223246ljg.251.1626200385898;
+ Tue, 13 Jul 2021 11:19:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k3qmt+ucFURmlhDS"
-Content-Disposition: inline
-In-Reply-To: <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
-X-Cookie: Keep away from fire or flame.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210713142414.GA28943@xsang-OptiPlex-9020>
+In-Reply-To: <20210713142414.GA28943@xsang-OptiPlex-9020>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 13 Jul 2021 11:19:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiDif7SvA5DOWj9ssDuYHC4ujUFPd7ad-ydhY-WMLb-kQ@mail.gmail.com>
+Message-ID: <CAHk-=wiDif7SvA5DOWj9ssDuYHC4ujUFPd7ad-ydhY-WMLb-kQ@mail.gmail.com>
+Subject: Re: [mm/vmalloc] 5c1f4e690e: BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c
+To:     kernel test robot <oliver.sang@intel.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@suse.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 13, 2021 at 7:06 AM kernel test robot <oliver.sang@intel.com> wrote:
+>
+> [  131.014885] BUG: sleeping function called from invalid context at mm/page_alloc.c:4992
 
---k3qmt+ucFURmlhDS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Strange. The call chain doesn't actually seem to be anything off: it's
+writev -> sock_write_iter -> sock_sendmsg -> netlink_sendmsg ->
+vmalloc.
 
-On Tue, Jul 13, 2021 at 06:55:59PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 13, 2021 at 6:25 PM Mark Brown <broonie@kernel.org> wrote:
+All good to sleep as far as I can tell. The warning itself seems to be just
 
-> > The driver code is trivial boilerplate, assuming someone doesn't go and
-> > implement a helper to register stuff separately like I suggested.  The
-> > proposed swnode stuff would involve duplicating the DT parsing code.
-> > This seems like a whole lot of effort for something that provides a
-> > worse result than either of the existing things.
+        might_sleep_if(gfp_mask & __GFP_DIRECT_RECLAIM);
 
-> I'm not sure I follow. Where did you see the duplication when I saw
-> the other way around?
+in prepare_alloc_pages().
 
-The current patch consists entirely of additions, it does not remove any
-existing code at all, the diffstat is:
+I don't see what's wrong with that commit, but it does seem to be very
+consistent, in that the parent doesn't have it:
 
- 5 files changed, 174 insertions(+)
+ > +----------------------------------------------------------------------+------------+------------+
+> |                                                                      | a2afc59fb2 | 5c1f4e690e |
+> +----------------------------------------------------------------------+------------+------------+
+> | BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c | 0          | 54         |
+> +----------------------------------------------------------------------+------------+------------+
 
-> Converting code from OF to fwnode APIs in most cases is smooth and
-> doesn't add any overhead to the codebase,
+Does anybody see what the problem is there?
 
-We explicitly do not want to attempt to parse regulator properties out
-of ACPI platform descriptions because using the regulator binding on
-ACPI platforms conflicts with the ACPI model for power management and
-we really don't want to encourage platforms to attempt to mix and match
-here, it's not going to lead to anything robust.  System integrators
-that need this sort of OS visible low level power management really
-should be working with the UEFI forum to get an ACPI specification for
-it, or if they don't really need it fixing up their AML to DTRT.
+There's an odd report _after_ the warning:
 
-If you were to say that we could bodge around that by somehow forcing
-this binding to exist only for swnodes when running on ACPI systems then
-we'd still have the problems with creating something with worse tooling
-than what's there already.
+[  131.345319] raw_local_irq_restore() called with IRQs enabled
+[  131.366561] RIP: 0010:warn_bogus_irq_restore+0x1d/0x20
+[  131.433334]  __alloc_pages_bulk+0xbb8/0xf20
 
-Like I said in the other mail fwnode is a nice hack for systems that are
-using ACPI but have hardware that's doing something totally outside the
-ACPI model to allow them to reuse work that's been done for DT, it's not
-a universal solution to the lack of appropriate support for describing
-modern systems in ACPI.
+but I think that's might be a result of the BUG(). Maybe. But it might
+also be indicative of some context confusion - do we end up nesting?
+Because the BUG() has
 
---k3qmt+ucFURmlhDS
-Content-Type: application/pgp-signature; name="signature.asc"
+[  131.036625] hardirqs last disabled at (283042):
+[<ffffffff81656d71>] __alloc_pages_bulk+0xae1/0xf20
 
------BEGIN PGP SIGNATURE-----
+which means that the might_sleep_if() happens _after_
+__alloc_pages_bulk() has disabled interrupts. That would explain it,
+but the stack_depot_save() thing actually makes that call chain really
+hard to read because it duplicates the addresses on the stack.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDt2PwACgkQJNaLcl1U
-h9AIYggAhPNHiBwlKUk6c+lvxWX8ALjqQ6kBBP2KDmwrMIuFZsvdXTXhHUQ1vPkb
-w7PG6FcToLxXp/CBQlzstZ9A6UP992Bd750Amcwy/ewXy4iI0EDrxsfcVmFYIonv
-KPs1YEint4jWFqG2RshAqI47K1HFFlIMVMdg/ml/RS86ZKYbJ69IzJ0swPfD0yZo
-zQ5fmFAStFmy16NRb6TdzWgU3fhulaKZsNrNXAvc7yNK4kuoE5OPfxl+oth46L6k
-T3uE9qCP3uTF3IWQLTjdWIvRUpe1fKtkvhedS9BQvgluaECF+bilchTHDkl/oERO
-FAXsZvvu/qRAoXEzYBTezPTelH3/BA==
-=wdNf
------END PGP SIGNATURE-----
+I don't see the nesting there, but that's what it kind of smells like to me.
 
---k3qmt+ucFURmlhDS--
+Anybody?
+
+               Linus
