@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDDE3C7648
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823E23C764C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhGMSQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:16:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhGMSQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:16:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A2361374;
-        Tue, 13 Jul 2021 18:13:09 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 19:13:02 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-Message-ID: <20210713181301.GE13181@arm.com>
-References: <20210711104105.505728-1-leo.yan@linaro.org>
- <20210711104105.505728-12-leo.yan@linaro.org>
- <20210712144410.GE22278@shell.armlinux.org.uk>
- <20210713154602.GD748506@leoy-ThinkPad-X240s>
- <20210713161441.GK22278@shell.armlinux.org.uk>
+        id S233634AbhGMSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbhGMSRb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:17:31 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D628C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:14:41 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id h4so22306684pgp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:14:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qYLRuC1J401GJNPoirPCf0sUsfjE1s5mBPfucqVBo/o=;
+        b=TemUpZC6DppCYmoiy4LOJWEQeqEKh09xAT6P4VzLXIMbauvxoS4EP330OrBhT+KMD8
+         cR2UVyVjCHceV7KPG7a9NZZmYbyYSNNWo475SwL++N6I4zXO9yWb6VASQns9WnzfMOFh
+         bHOmRt1m1x3AWl7z7ZKkjnUYvtZBijxS76sM/rse9ZmiC4tDHj3JBMAKP7TwgtjAxjVn
+         Xf7JqdMkTGH04bfp2wk+pGQ3QGL2Tjh7KcfaEciMt87JIcLooAuNboN9SqoujtPQpTeI
+         OX+q/7+1EwbpEtAufvbfEpN5lwH2yQY3OLYOTHt6yHv4KeueUCfkzIhTGMNnAtOJtiw6
+         ZiUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qYLRuC1J401GJNPoirPCf0sUsfjE1s5mBPfucqVBo/o=;
+        b=S6YovX/ykLaRa+7hi7onHQ8TFUZwsfN0MSTTaCe1nMnlKgI1eVrFmwUwvVC9S4sXbt
+         d2zdfFEm2ZtQ42IeBJMSXihlqgFXhy8/SUxnXutCUO/NE+f2PwXqFJrTFgvqcKRQehW2
+         CufuPGuc95BUx1w7anv/EMVJ06ZkQjgANA7RaeA4EnrlCda8GRVphfBNNNqT+A4RubPU
+         nYEn9AicCAyOKyA011xdC7t9CVeNzdvPSH2XZ32g662YaIBJPgG5ObMPGNcgvpzIq/l9
+         BnoRoGOZPCltphSu8IwZewTxAbxDqNEv1PJLUf2MCOl55XJQsW8oR/PP4E+miJGSndSq
+         iw8g==
+X-Gm-Message-State: AOAM531GeZMnQUnKfp2QTYkMnRJRMAfJnII9rljbVK9k4gRRsw6sxTVD
+        cgdZ3K09izdhqbZa29NcTiofgg==
+X-Google-Smtp-Source: ABdhPJw025D+QHvSXH7m/XdthsugBc+I0Bqri4rgbbh9zByxwSwtsOJDy77eNp2z0ZK1gdsXdBMXIg==
+X-Received: by 2002:a63:5c1b:: with SMTP id q27mr5441771pgb.284.1626200081027;
+        Tue, 13 Jul 2021 11:14:41 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x9sm109548pfd.100.2021.07.13.11.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 11:14:40 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 18:14:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [RFC PATCH v2 65/69] KVM: X86: Introduce initial_tsc_khz in
+ struct kvm_arch
+Message-ID: <YO3YDXLV7RQzMmXX@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <5f87f0b888555b52041a0fe32280adee0d563e63.1625186503.git.isaku.yamahata@intel.com>
+ <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713161441.GK22278@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 05:14:41PM +0100, Russell King wrote:
-> On Tue, Jul 13, 2021 at 11:46:02PM +0800, Leo Yan wrote:
-> > On Mon, Jul 12, 2021 at 03:44:11PM +0100, Russell King (Oracle) wrote:
-> > > On Sun, Jul 11, 2021 at 06:41:05PM +0800, Leo Yan wrote:
-> > > > When perf runs in compat mode (kernel in 64-bit mode and the perf is in
-> > > > 32-bit mode), the 64-bit value atomicity in the user space cannot be
-> > > > assured, E.g. on some architectures, the 64-bit value accessing is split
-> > > > into two instructions, one is for the low 32-bit word accessing and
-> > > > another is for the high 32-bit word.
-> > > 
-> > > Does this apply to 32-bit ARM code on aarch64? I would not have thought
-> > > it would, as the structure member is a __u64 and
-> > > compat_auxtrace_mmap__read_head() doesn't seem to be marking anything
-> > > as packed, so the compiler _should_ be able to use a LDRD instruction
-> > > to load the value.
+On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
+> > From: Xiaoyao Li <xiaoyao.li@intel.com>
 > > 
-> > I think essentially your question is relevant to the memory model.
-> > For 32-bit Arm application on aarch64, in the Armv8 architecture
-> > reference manual ARM DDI 0487F.c, chapter "E2.2.1
-> > Requirements for single-copy atomicity" describes:
+> > Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
+> > for kvm_arch_vcpu_create().
 > > 
-> > "LDM, LDC, LDRD, STM, STC, STRD, PUSH, POP, RFE, SRS, VLDM, VLDR, VSTM,
-> > and VSTR instructions are executed as a sequence of word-aligned word
-> > accesses. Each 32-bit word access is guaranteed to be single-copy
-> > atomic. The architecture does not require subsequences of two or more
-> > word accesses from the sequence to be single-copy atomic."
+> > This field is going to be used by TDX since TSC frequency for TD guest
+> > is configured at TD VM initialization phase.
+> > 
+> > Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >   arch/x86/include/asm/kvm_host.h | 1 +
+> >   arch/x86/kvm/x86.c              | 3 ++-
+> >   2 files changed, 3 insertions(+), 1 deletion(-)
 > 
-> ... which is an interesting statement for ARMv7 code. DDI0406C says
-> similar but goes on to say:
-> 
->    In an implementation that includes the Large Physical Address
->    Extension, LDRD and STRD accesses to 64-bit aligned locations
->    are 64-bit single-copy atomic as seen by translation table
->    walks and accesses to translation tables.
-> 
-> then states that LPAE page tables must be stored in memory that such
-> page tables must be in memory that is capable of supporting 64-bit
-> single-copy atomic accesses.
+> So this means disabling TSC frequency scaling on TDX.  Would it make sense
+> to delay VM creation to a separate ioctl, similar to KVM_ARM_VCPU_FINALIZE
+> (KVM_VM_FINALIZE)?
 
-A similar statement is in the ARMv8 ARM (E2.2.1 in version G.a).
-
-> In Linux, we assume all RAM that the kernel has access to can contain
-> page tables. So by implication, all RAM that the kernel has access to
-> and exposes to userspace must be 64-bit single-copy atomic (if not,
-> we have a rather serious bug.)
-
-Indeed. We should assume that the SDRAM supports all the CPU features.
-
-> The remaining question is whether it would be sane for LDRD and STRD
-> to be single-copy atomic to translation table walkers but not to other
-> CPUs. Since Linux expects to be able to modify the page tables from
-> any CPU in the system, this requirement must hold, otherwise it's going
-> to be a really strangely designed system.
-
-The above statement does say "translation table walks and accesses to
-translation tables". The accesses can be LDRD/STRD instructions from
-other CPUs. Since the hardware can't tell whether the access is to a
-page table, the designers just made LDRD/STRD single-copy atomic.
-
-> I'd be interested to hear what Catalin and Will have to say on this,
-> but I suspect in practice, Arm systems that are running Linux with
-> LPAE (ARMv7+LPAE, ARMv8) will implement LDRD and STRD with 64-bit
-> single-copy atomic semantics.
-
-That's my understanding as well. In theory one could have a page table
-access from EL0, so it should be atomic.
-
-We could try to clarify E2.2.1 to simply state that naturally aligned
-LDRD/STRD are single-copy atomic without any subsequent statement on the
-translation table.
-
--- 
-Catalin
+There's an equivalent of that in the next mega-patch, the KVM_TDX_INIT_VM sub-ioctl
+of KVM_MEMORY_ENCRYPT_OP.  The TSC frequency for the guest gets provided at that
+time.
