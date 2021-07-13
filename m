@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DAD3C72F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CAB3C72F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237055AbhGMPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:17:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14721 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237035AbhGMPRD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:17:03 -0400
+        id S237035AbhGMPRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:17:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43659 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237058AbhGMPRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 11:17:24 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626189253; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=geWynaJJrC10VJR2i0AbaYFJW+GpDlbTGEZUL8tGP4U=; b=SqZkzIbQJ1iZB6wge1LB9e8DIvvUABRqNbUPEn8Hnt2gCmknEajwmLStVoKtYdmGfCNKbqlg
- jiqB5kfwk0wBq0KZw3InfhE9ZPp1VNsMzoQx9kw3hiyf5opjde0Rkr1IY5YKDJUtyEKED1TE
- 1l1dypLwiV/rayKYM7LMQdMn6VI=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ s=smtp; t=1626189274; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=Nb+xuni7E6LMFv722oAXNbGbFVRD9tApBAZTHk6wDzY=; b=SnLzgqwVaAeGKQspE8Pb+eEryHOJAm90X7lE6m2meov57NrLzapWpYsGvKX68V9oE0AbajZ3
+ jJ4zvUFCiiT/fCEuifZVTI7Pb5De/w/hnrt13djR73M0bbdcCLlZ0mELkwPL1SgIfUAR/F5C
+ xZrbFWfpxEjwDqPhrftTAVSHnT0=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60edad6706ea41c941b27b9a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 15:12:39
+ 60edad6e06ea41c941b29ca5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 15:12:46
  GMT
 Sender: tdas=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 319FCC43460; Tue, 13 Jul 2021 15:12:39 +0000 (UTC)
+        id 85A9BC43217; Tue, 13 Jul 2021 15:12:45 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95072C433F1;
-        Tue, 13 Jul 2021 15:12:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 95072C433F1
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34A39C433D3;
+        Tue, 13 Jul 2021 15:12:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34A39C433D3
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
 From:   Taniya Das <tdas@codeaurora.org>
@@ -50,62 +50,34 @@ Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
         Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v3 0/7] Add support for DISP/VIDEO/GPU CCs for SC7280
-Date:   Tue, 13 Jul 2021 20:42:16 +0530
-Message-Id: <1626189143-12957-1-git-send-email-tdas@codeaurora.org>
+Subject: [PATCH v3 1/7] dt-bindings: clock: qcom: Update license for GCC SC7280
+Date:   Tue, 13 Jul 2021 20:42:17 +0530
+Message-Id: <1626189143-12957-2-git-send-email-tdas@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1626189143-12957-1-git-send-email-tdas@codeaurora.org>
+References: <1626189143-12957-1-git-send-email-tdas@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for display, video & graphics clock controllers on SC7280
-along with the bindings for each of the clock controllers.
+Update BSD license for GCC clock ids.
 
-[v3]
- * Update BSD license for Device Tree documentation and bindings for display,
-   graphics, video and also global clock controller.
- * Update 'const' for all the VCO tables.
- * Remove critical video xo clock from video driver as the clock is enabled
-   from HW and no SW modelled clock required.
+Fixes: 87a3d523b38c ("dt-bindings: clock: Add SC7280 GCC clock binding")
+Signed-off-by: Taniya Das <tdas@codeaurora.org>
+---
+ include/dt-bindings/clock/qcom,gcc-sc7280.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[v2]
- * Use the .hws instead of clk_parent_data when the whole array is
-   clk_hw pointers for all the clock drivers.
-
-[v1]
- * Documentation binding for DISP, GPU, VIDEO clock controller for SC7280.
- * Add the DISP, GPU, VIDEO clock drivers for SC7280.
-
-Taniya Das (7):
-  dt-bindings: clock: qcom: Update license for GCC SC7280
-  dt-bindings: clock: Add SC7280 DISPCC clock binding
-  clk: qcom: Add display clock controller driver for SC7280
-  dt-bindings: clock: Add SC7280 GPUCC clock binding
-  clk: qcom: Add graphics clock controller driver for SC7280
-  dt-bindings: clock: Add SC7280 VideoCC clock binding
-  clk: qcom: Add video clock controller driver for SC7280
-
- .../devicetree/bindings/clock/qcom,gpucc.yaml      |   6 +-
- .../bindings/clock/qcom,sc7280-dispcc.yaml         |  94 +++
- .../devicetree/bindings/clock/qcom,videocc.yaml    |   6 +-
- drivers/clk/qcom/Kconfig                           |  25 +
- drivers/clk/qcom/Makefile                          |   3 +
- drivers/clk/qcom/dispcc-sc7280.c                   | 908 +++++++++++++++++++++
- drivers/clk/qcom/gpucc-sc7280.c                    | 491 +++++++++++
- drivers/clk/qcom/videocc-sc7280.c                  | 325 ++++++++
- include/dt-bindings/clock/qcom,dispcc-sc7280.h     |  55 ++
- include/dt-bindings/clock/qcom,gcc-sc7280.h        |   2 +-
- include/dt-bindings/clock/qcom,gpucc-sc7280.h      |  35 +
- include/dt-bindings/clock/qcom,videocc-sc7280.h    |  27 +
- 12 files changed, 1972 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
- create mode 100644 drivers/clk/qcom/dispcc-sc7280.c
- create mode 100644 drivers/clk/qcom/gpucc-sc7280.c
- create mode 100644 drivers/clk/qcom/videocc-sc7280.c
- create mode 100644 include/dt-bindings/clock/qcom,dispcc-sc7280.h
- create mode 100644 include/dt-bindings/clock/qcom,gpucc-sc7280.h
- create mode 100644 include/dt-bindings/clock/qcom,videocc-sc7280.h
-
+diff --git a/include/dt-bindings/clock/qcom,gcc-sc7280.h b/include/dt-bindings/clock/qcom,gcc-sc7280.h
+index 4394f15..3d5724b 100644
+--- a/include/dt-bindings/clock/qcom,gcc-sc7280.h
++++ b/include/dt-bindings/clock/qcom,gcc-sc7280.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+ /*
+  * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+  */
 --
 Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
 of the Code Aurora Forum, hosted by the  Linux Foundation.
