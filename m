@@ -2,56 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758AB3C69DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522A33C69E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhGMFrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 01:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhGMFra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 01:47:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EC7C0613DD;
-        Mon, 12 Jul 2021 22:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kSOLV2yWdnXkqdxSe2pQiY3HJLae2PQc3A8NcVMaXyY=; b=eZSL/FG0R/mDuFBcwkcuVTD9uS
-        KBFriZ9twqFxIks5L9Qwy6K9vJVLFsJTlxIZfVS8xQOcw0HgcjObmW6xwKV7NuzZ3OrOUWZMow+0o
-        +6dguhppZ2oRT6GsukPupoL4M1SUGKqNNAV/qIsvdcjsNDuOfmpylP/+dolSKaa+bsugWw78u6x2x
-        g9WClhQJE4wwbAsnYbvDuEcOjKLXvBmenvm2tDcJ2Oyz0jf5o4IKFMyds9hrXMPTscy+2NSMr58bA
-        xkNWT9+yu/dIZngZY0qmL/RjyuyrY38EHPOM1s+iUwGDQpS2iCaBD0IWOuwBbiQ2KXcCRQLyMCErf
-        nhpvvNuA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3BDC-000mGH-L7; Tue, 13 Jul 2021 05:44:09 +0000
-Date:   Tue, 13 Jul 2021 06:44:06 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     torvalds@linux-foundation.org, Jeff Layton <jlayton@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfs: Add MAINTAINERS record
-Message-ID: <YO0oJvuIXlcmSd7F@infradead.org>
-References: <162609279295.3129635.5721010331369998019.stgit@warthog.procyon.org.uk>
+        id S232344AbhGMFtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 01:49:01 -0400
+Received: from verein.lst.de ([213.95.11.211]:57348 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229581AbhGMFtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 01:49:00 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6DA2F67373; Tue, 13 Jul 2021 07:46:06 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 07:46:06 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Shi <alexs@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: flush_kernel_dcache_page fixes and removal
+Message-ID: <20210713054606.GA6036@lst.de>
+References: <20210712060928.4161649-1-hch@lst.de> <CAHk-=whd0GaAH7gHuEiuKjOeD6JGKY1q5ydG1TCKjVBFNBUEJA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <162609279295.3129635.5721010331369998019.stgit@warthog.procyon.org.uk>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAHk-=whd0GaAH7gHuEiuKjOeD6JGKY1q5ydG1TCKjVBFNBUEJA@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 01:26:32PM +0100, David Howells wrote:
-> Add a MAINTAINERS record for the new netfs helper library.
+On Mon, Jul 12, 2021 at 12:24:11PM -0700, Linus Torvalds wrote:
+> I think architectures that have virtual caches might want to think
+> about this patch a bit more, but on the whole I can't argue against
+> the "it's badly documented and misused".
+> 
+> No sane architecture will care, since dcache will be coherent (there
+> are more issues on the I$ side, but that's a different issue)
 
-Btw, any reason why this code is called netfs?  It is a library
-that seems to mostly be glue code for fscache as far as I can tell and
-has nothing to do with networking at all.
+Yeah.  Once the arch maintainers look it it it might be worth to check
+if there is optimization potential for pages that are not in highmem
+and not in the page cache, as most architectures should be able to
+just do nothing in that case.
+
+Either way, I think getting patches 1-4 into 5.14 as bug fixes would
+be useful, 6 is a trivial cleanup and 5 is something we can chew on
+for a bit.
