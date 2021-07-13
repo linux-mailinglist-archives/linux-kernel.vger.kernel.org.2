@@ -2,109 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621443C77AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894243C77B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhGMUOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S234997AbhGMUQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhGMUOl (ORCPT
+        with ESMTP id S234394AbhGMUQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:14:41 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF71CC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:11:47 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id m2so277328wrq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:11:47 -0700 (PDT)
+        Tue, 13 Jul 2021 16:16:03 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C956C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:13:12 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id r16so31851048ljk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KdpYSs0f+vMAEUJqNmRmwCkH0V9W8+HtZzvw6bbCa+I=;
-        b=k5WkYTvCj0FQMv9jZauqIc46KrlQQNrl3wpe6Whc63rWv8AJ3V4SxO3ehkOu6wch3B
-         09g/wnjlvPbTV68x2HDyQWCCgNfuGMLwqcFpiDzW9v+ILMThW+ec1kO8jgNe27U+VTdv
-         jqnIiBywJcL66DWC2/DYbmjMikOYqt2gZ8bBB2jsBtlK/jKjzueALQpfQoVDbVuffu1c
-         B6glRW7b5R/nAh39MLb2KdRZ+NCc/v7Znq4eP1tP9dlNZ9trhOJGaWVR5LNutWbKWQnX
-         VWQj30rbsdwTOAu3e2ZIHc3SEbuGdS2UZVXuK1Sy9QV2XPN/9kcNUp+v4FV2SNt2frAW
-         ioWg==
+         :cc;
+        bh=euiefEzk8mTeEXe4b+xrYgYoRjWy4AZgIK0NfHWQQzY=;
+        b=f3/XcZVE2NMeiY6ih5O52kTDCfLHjzpuTfJBCpCgGZamAJrHdECI2vw1aPCvj85xPW
+         GPLJD9mFbQyPfKWlUL3z1d2IiBEfeuvFNrPcl5wfRwg6EWlrdaLa4v9wZ9GOmJ4VxWVI
+         n68Gqak1aavAXeg2LaGOp4LZjxSUCNY2rIBUO+1hhyq9jP/kYmzSj76eTWuh+2j1jFSz
+         /fmZWjXUzVH6tZdgLyA0XG78IhPkV2PefuU0PmnFa3Uk5Q0e6Qaeo5XusHH+xealSh8a
+         /DTI3MYAzeKRMimRNk+JNxEcRKDgSqrFqSINEGR3Jq1Vn7W+mAcudwgOEW3mbrmhc5R8
+         RblQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KdpYSs0f+vMAEUJqNmRmwCkH0V9W8+HtZzvw6bbCa+I=;
-        b=MI4rd6z6sXuuQWHmfuNb7RAeTu4whAxPbZ2Jf+qTJbFyrES+t48RLF1hwYLi/xxrg3
-         6cdjyLgf9zv04PRSQ4FKg8XMhZtvpidtR0LHuRjqiE5B2kqqwQavYS8AuxdtkrYDdCBB
-         efpJ8gTMbipNCLI0uIQn4ypUra3v/OCau7pZFywX0sb3Mls3O5Gr9wUJIhv7T/w0WpYa
-         iF3D/7C/+Q9+8i8ZTc35aqgFwDxNQwOUvAXov1KsUhV98bELYy/oXm33etx/Tl1TZS4p
-         iC5MvNzdvLbl+RAJ/4s+y0GL4cOJuo0kEuHeNZ0xQF52Zfyxme/0V3DxfM3y2NkQ/IOK
-         5bcw==
-X-Gm-Message-State: AOAM533H+EnfP2v1R2SH8r+RNlRbW2uZgfMeB2CBW4G4DQb/nZXg8KDQ
-        vdcoiWh+TEoS0Y3LHkpyl4c20NPYMjQAv2tySWDGTQ==
-X-Google-Smtp-Source: ABdhPJzaGaZJmOs0rALsIWpGR4NsOw9Wf+57y5TLStQtjMKUZYnpUkqZ93Asq5o5h68To4EdRn18s2UKaUM4H+m1t38=
-X-Received: by 2002:a05:6000:10c3:: with SMTP id b3mr7983318wrx.271.1626207106444;
- Tue, 13 Jul 2021 13:11:46 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=euiefEzk8mTeEXe4b+xrYgYoRjWy4AZgIK0NfHWQQzY=;
+        b=fLrjwcsUv7ab16UKxX7hOGXiEDIVgwuOBzf2QAa+YLG6MSHNN9xKl16uMCmj53OIua
+         wJqr4Z+GzKng3kBYUFRaL+5PfUrJE+dEITU/YvekhqrDhMkLrQdMsvd3nv6pVtD5CjA0
+         XWU/oUMcPxerKs1kmMfWcDpKJlHv0T0Wo/b5FHpJW5TPU6MnNUnldK0BNh3kXqSacOBQ
+         SNQlrP4uoRY9Mja2MWcDN47VMIiHQmcFCd8yb4oRK4yud12jKPLYToTYHgCufJNLWgLj
+         5sufVHKByRwxljw2omdU4OE/ReYPYVpWNR/YqfwIA5iyJBoyVOJ7g7LAKgVqM7qRczGq
+         979A==
+X-Gm-Message-State: AOAM531LqbjuJXQSklCpFDEnF9s8wvycUs19h0FQEB52+4HG0aU87Ikz
+        2c52CsAlJicvUwDB3GO49NoS9GLmg3Pzm+5oN0H+mg==
+X-Google-Smtp-Source: ABdhPJyNecPrGapneKA1aOeM7OZOTvb3YKLrvCDt7UITwo7dlhUBX/NySFVBTXbe1XxtZKoE87yfxNJFq+FbvmNiPjE=
+X-Received: by 2002:a2e:8110:: with SMTP id d16mr5731777ljg.42.1626207190335;
+ Tue, 13 Jul 2021 13:13:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210712234949.917788-1-namhyung@kernel.org>
-In-Reply-To: <20210712234949.917788-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 13 Jul 2021 13:11:34 -0700
-Message-ID: <CAP-5=fWG35oH+LdpkwoNrWaTDg9bZKxZoyH_vLbhYQnK8gd0RQ@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Fix build with libpfm
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>
+References: <20210621163118.1040170-1-pgonda@google.com> <20210621163118.1040170-3-pgonda@google.com>
+ <3f4a1b67-f426-5101-1e07-9f948e529d34@amd.com>
+In-Reply-To: <3f4a1b67-f426-5101-1e07-9f948e529d34@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 13 Jul 2021 14:12:58 -0600
+Message-ID: <CAMkAt6oaxyEMSLkqPRHpL7uwj2ph9=wW8aeH4PP0FrbdGzx9+A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] KVM, SEV: Add support for SEV local migration
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Lars Bull <larsbull@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 4:49 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> It missed to update the parse_libpfm_events_option() to use a new
-> helper function to set the event group leader.
->
->   $ make LIBPFM4=3D1
->   ...
->     CC      util/pfm.o
->   util/pfm.c: In function =E2=80=98parse_libpfm_events_option=E2=80=99:
->   util/pfm.c:103:9: error: =E2=80=98struct evsel=E2=80=99 has no member n=
-amed =E2=80=98leader=E2=80=99
->     103 |    evsel->leader =3D grp_leader;
->         |         ^~
->   make[4]: *** [tools/build/Makefile.build:96: util/pfm.o] Error 1
->
-> Fixes: fba7c86601e2 ("libperf: Move 'leader' from tools/perf to perf_evse=
-l::leader")
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Thanks for reviewing Brijesh! Seanjc@ said he would comment so I'll
+lump your suggestions and his into the V2.
 
-Acked-by: Ian Rogers <irogers@google.com>
+On Mon, Jul 12, 2021 at 3:09 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+>
+>
+> On 6/21/21 11:31 AM, Peter Gonda wrote:
+>
+> > +     if (!sev_guest(kvm))
+> > +             return -ENOTTY;
+> > +
+> > +     if (sev->es_active)
+> > +             return -EPERM;
+> > +
+> > +     if (sev->info_token != 0)
+> > +             return -EEXIST;
+> > +
+> > +     if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
+> > +                        sizeof(params)))
+> > +             return -EFAULT;
+> > +
+> > +     entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+> > +     if (!entry)
+> > +             return -ENOMEM;
+> > +
+> > +     entry->asid = sev->asid;
+> > +     entry->handle = sev->handle;
+> > +     entry->pages_locked = sev->pages_locked;
+> > +     entry->misc_cg = sev->misc_cg;
+> > +
+> > +     INIT_LIST_HEAD(&entry->regions_list);
+> > +     list_replace_init(&sev->regions_list, &entry->regions_list);
+>
+> I believe the entry->regions_list will be NULL if the command is called
+> before the memory regions are registered. The quesiton is, do you need
+> to check whether for a valid sev->handle (i.e, LAUNCH_START is done)?
 
-Thanks,
-Ian
+Makes sense to add a check for LAUNCH_START by checking sev->handle,
+I'll add that in V2.
 
-> ---
->  tools/perf/util/pfm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Would it also make sense to add similar checks to ioctls like launch
+update, measure, and finish? If so I can send a separate patch to add
+those checks.
+
 >
-> diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
-> index dd9ed56e0504..756295dedccc 100644
-> --- a/tools/perf/util/pfm.c
-> +++ b/tools/perf/util/pfm.c
-> @@ -99,7 +99,7 @@ int parse_libpfm_events_option(const struct option *opt=
-, const char *str,
->                         grp_leader =3D evsel;
 >
->                 if (grp_evt > -1) {
-> -                       evsel->leader =3D grp_leader;
-> +                       evsel__set_leader(evsel, grp_leader);
->                         grp_leader->core.nr_members++;
->                         grp_evt++;
->                 }
-> --
-> 2.32.0.93.g670b81a890-goog
+> > +
+> >   /* Userspace wants to query session length. */
+> >   static int
+> >   __sev_send_start_query_session_length(struct kvm *kvm, struct kvm_sev_cmd *argp,
+> > @@ -1513,6 +1711,18 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+> >               goto out;
+> >       }
+> >
+> > +     /*
+> > +      * If this VM has started exporting its SEV contents to another VM,
+> > +      * it's not allowed to do any more SEV operations that may modify the
+> > +      * SEV state.
+> > +      */
+> > +     if (to_kvm_svm(kvm)->sev_info.info_token &&
+> > +         sev_cmd.id != KVM_SEV_DBG_ENCRYPT &&
+> > +         sev_cmd.id != KVM_SEV_DBG_DECRYPT) {
+> > +             r = -EPERM;
+> > +             goto out;
+> > +     }
 >
+> Maybe move this check in a function so that it can later extended for
+> SEV-SNP (cmd ids for the debug is different).
+>
+> Something like:
+>
+> static bool is_local_mig_active(struct kvm *)
+> {
+>         ....
+> }
+
+Will do!
+
+>
+> Once the migration range hypercall is merged, we also need to preserve
+> any metadata memory maintained by KVM for the unencrypted ranges.
+
+OK. Any suggestions on how to manage these impending conflicts. Are
+those almost ready and I should build these patches on top of those or
+what would you suggest?
+
+>
+> -Brijesh
