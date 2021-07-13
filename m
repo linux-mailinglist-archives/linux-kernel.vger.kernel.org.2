@@ -2,515 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AF73C7974
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD55D3C7979
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236359AbhGMWPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 18:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235973AbhGMWPs (ORCPT
+        id S236545AbhGMWR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 18:17:27 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:40868 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235973AbhGMWR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 18:15:48 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABA1C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 15:12:57 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id y4so20280106pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 15:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j68Vg8JAk/DXfpZmo3qhmVL+R64WqjblQlTWOBouqH8=;
-        b=Zq9rf7UE1v3HVgiI5AwVMY+vEWQd1f73YRsIZENDV1gx525H7BqmqTc5lB4s4U9UFM
-         zMB0H/nFgNI0h1gayu3s0mgM63FBr+1PEKCdOda5WoAC3dZ+xoc0u1xM1WRWwOFYdSah
-         X2wDVVoYvtrCVSC8xBvbUG9Ri9n5T5YtuRvBwrwxqfxwS0RSuJcy0hAjW7ojXobc9YlU
-         XAEgY7jCe8qPrlsJzTM9fBBiOMNpZ/WhiSS87movxaE6D2I86es8EPibRSRHosHOGCdv
-         PsABqxnJdcVH08qewgtjA7E1VcfCoKp5Enoe5PKpdH6700zpdzJh4hOl9BbLghliOgzl
-         8rxg==
+        Tue, 13 Jul 2021 18:17:26 -0400
+Received: by mail-io1-f47.google.com with SMTP id l5so29153647iok.7;
+        Tue, 13 Jul 2021 15:14:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=j68Vg8JAk/DXfpZmo3qhmVL+R64WqjblQlTWOBouqH8=;
-        b=My3bEyE2+c5unIn3K2roJdy46dIY6myb3jJCc/fgJS4uR//wRFMlhOJSAPv+Pjx6/5
-         wwScpWsAY7UaIA+u0Qc6BCwdc0pbWbBGybuH18VQWfqfKZBNv9lyUmlrcJwM4mek5t2Q
-         R9JAJXbShu3L44ovbHUzTi2Gu9Zo3q5wRsQlRKooWUUsYCsEuT+sdQXVfzviok9xaOAS
-         +DlBiXqPBAyJxS5bpO0QV01w3RGzKrtP1ajnRpNpC/U+V15vLjEqkwq8SLusnyT85Rc/
-         KRB8gmXy3f22moaY53oKRIYLv5Qj4tyyib5pDY1SczodpB+ZfBA3GvB2l9rFFos5aPNd
-         AcWQ==
-X-Gm-Message-State: AOAM530GMkR73IIiAXOKJ2J36aw3/qLzyT/4ypaKb3Wiq1MSxtENTdw7
-        QriwPplJKt7NqTJcszGCU/Mx5g==
-X-Google-Smtp-Source: ABdhPJw9MMXw+96emsvst3hTape+HpKWcIpBioqhQgzjyI/y325QXFOJqjKI91PZ6xw1yfyYwEUZNg==
-X-Received: by 2002:a65:6412:: with SMTP id a18mr6086932pgv.445.1626214376546;
-        Tue, 13 Jul 2021 15:12:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c136sm150428pfc.201.2021.07.13.15.12.55
+        bh=RpU6tfEd13P9yTBdvZdhGhlLt5ObHps/ZkeBp0WE0QA=;
+        b=WzXeyk5idb10YtXdVHcIc1VFDKztbKiJGOynvqU1W1eoZTo/butXACmF284sv4DI48
+         eEwfKgpEfBS6I0v3cqn1jJLULunHHjce+a7Ofk3hT/K0zjAi0xmvT051NFq0KchJ4CIA
+         lM3Zf2pKPLalVxwFxVTXBL5LiYTzdJI5+PbbGOa7xhqYUWlmfFLojkG+pSYnYEoTMx/g
+         pWYcyKbDmYhJ6Lum09iTLX3Kv0rsxUvy29HZNqcuBXGU58HLPBk2M5e9JA16dgdVEXA+
+         AF4lfz91XM/IVhV8piqR0CLG6k689wHgW/rVDED5q7FKbfV7CtgdIDdhZSiN5LxBhhpb
+         hRNw==
+X-Gm-Message-State: AOAM532LCx6VxbzZ9giri8b1OwtLA2zZvoB+2eP5feqOdlpXVd4H6DXN
+        Lac1A+UficgaxJp6HZ8vYw==
+X-Google-Smtp-Source: ABdhPJzuVTo5lRZxqxJXVtSulqUkfqAXPBFkEEpwR+JcZEG4LgbqZ7v6QYhqAItUH3hRjVsS4lroTA==
+X-Received: by 2002:a05:6638:3882:: with SMTP id b2mr6002780jav.15.1626214475237;
+        Tue, 13 Jul 2021 15:14:35 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id z22sm73610iog.13.2021.07.13.15.14.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 15:12:55 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 22:12:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Lars Bull <larsbull@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] KVM, SEV: Add support for SEV local migration
-Message-ID: <YO4P5Ao3FiL+rllg@google.com>
-References: <20210621163118.1040170-1-pgonda@google.com>
- <20210621163118.1040170-3-pgonda@google.com>
+        Tue, 13 Jul 2021 15:14:34 -0700 (PDT)
+Received: (nullmailer pid 941748 invoked by uid 1000);
+        Tue, 13 Jul 2021 22:14:31 -0000
+Date:   Tue, 13 Jul 2021 16:14:31 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     lee.jones@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        p.zabel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [v9 1/2] dt-bindings: Add bindings for aspeed pwm-tach.
+Message-ID: <20210713221431.GA936073@robh.at.kernel.org>
+References: <20210709065217.6153-1-billy_tsai@aspeedtech.com>
+ <20210709065217.6153-2-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621163118.1040170-3-pgonda@google.com>
+In-Reply-To: <20210709065217.6153-2-billy_tsai@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021, Peter Gonda wrote:
-> Local migration provides a low-cost mechanism for userspace VMM upgrades.
-> It is an alternative to traditional (i.e., remote) live migration. Whereas
-> remote migration handles move a guest to a new host, local migration only
-> handles moving a guest to a new userspace VMM within a host.
+On Fri, Jul 09, 2021 at 02:52:16PM +0800, Billy Tsai wrote:
+> This patch adds device binding for aspeed pwm-tach device which is a
+> multi-function device include pwm and tach function and pwm/tach device
+> bindings which should be the child-node of pwm-tach device.
 
-Maybe use intra-host vs. inter-host instead of local vs. remote?  That'll save
-having to define local and remote.  KVM_SEV_INTRA_HOST_{SEND,RECEIVE} is a bit
-wordy, but also very specific.
+I'll say it again, the fan control h/w needs some common bindings for 
+describing fans and fan connections to pwm and tach. I'm not going to 
+sign off on more fan bindings just doing their own thing.
 
-> For SEV to work with local migration, contents of the SEV info struct
-> such as the ASID (used to index the encryption key in the AMD SP) and
-> the list
-> of memory regions need to be transferred to the target VM. Adds
-> commands for sending and receiving the sev info.
 > 
-> To avoid exposing this internal state to userspace and prevent other
-> processes from importing state they shouldn't have access to, the send
-> returns a token to userspace that is handed off to the target VM. The
-> target passes in this token to receive the sent state. The token is only
-> valid for one-time use. Functionality on the source becomes limited
-> after
-> send has been performed. If the source is destroyed before the target
-> has
-> received, the token becomes invalid.
-
-Something appears to be mangling the changelogs, or maybe you have a cat that
-likes stepping on the Enter key? :-D
-
-> The target is expected to be initialized (sev_guest_init), but not
-> launched
-> state (sev_launch_start) when performing receive. Once the target has
-> received, it will be in a launched state and will not need to perform
-> the
-> typical SEV launch commands.
-
-...
-
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 5af46ff6ec48..7c33ad2b910d 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -14,6 +14,7 @@
->  #include <linux/psp-sev.h>
->  #include <linux/pagemap.h>
->  #include <linux/swap.h>
-> +#include <linux/random.h>
->  #include <linux/misc_cgroup.h>
->  #include <linux/processor.h>
->  #include <linux/trace_events.h>
-> @@ -57,6 +58,8 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
->  #define sev_es_enabled false
->  #endif /* CONFIG_KVM_AMD_SEV */
->  
-> +#define MAX_RAND_RETRY    3
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../bindings/hwmon/aspeed,ast2600-tach.yaml   | 69 +++++++++++++++
+>  .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml | 87 +++++++++++++++++++
+>  .../bindings/pwm/aspeed,ast2600-pwm.yaml      | 64 ++++++++++++++
+>  3 files changed, 220 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml b/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+> new file mode 100644
+> index 000000000000..a08471f96a61
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Aspeed, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/aspeed,ast2600-tach.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  static u8 sev_enc_bit;
->  static DECLARE_RWSEM(sev_deactivate_lock);
->  static DEFINE_MUTEX(sev_bitmap_lock);
-> @@ -74,6 +77,22 @@ struct enc_region {
->  	unsigned long size;
->  };
->  
-> +struct sev_info_migration_node {
-> +	struct hlist_node hnode;
-> +	u64 token;
-> +	bool valid;
+> +title: Aspeed Ast2600 Tach controller
 > +
-> +	unsigned int asid;
-> +	unsigned int handle;
-> +	unsigned long pages_locked;
-> +	struct list_head regions_list;
-> +	struct misc_cg *misc_cg;
-> +};
+> +maintainers:
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
 > +
-> +#define SEV_INFO_MIGRATION_HASH_BITS    7
-> +static DEFINE_HASHTABLE(sev_info_migration_hash, SEV_INFO_MIGRATION_HASH_BITS);
-> +static DEFINE_SPINLOCK(sev_info_migration_hash_lock);
+> +description: |
+> +  The Aspeed Tach controller can support upto 16 fan input.
+> +  This module is part of the ast2600-pwm-tach multi-function device. For more
+> +  details see ../mfd/aspeed,ast2600-pwm-tach.yaml.
 > +
->  /* Called with the sev_bitmap_lock held, or on shutdown  */
->  static int sev_flush_asids(int min_asid, int max_asid)
->  {
-> @@ -1094,6 +1113,185 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	return ret;
->  }
->  
-> +static struct sev_info_migration_node *find_migration_info(unsigned long token)
-> +{
-> +	struct sev_info_migration_node *entry;
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2600-tach
 > +
-> +	hash_for_each_possible(sev_info_migration_hash, entry, hnode, token) {
-> +		if (entry->token == token)
-> +			return entry;
-> +	}
+> +  "#address-cells":
+> +    const: 1
 > +
-> +	return NULL;
-> +}
+> +  "#size-cells":
+> +    const: 0
 > +
-> +/*
-> + * Places @entry into the |sev_info_migration_hash|. Returns 0 if successful
-> + * and ownership of @entry is transferred to the hashmap.
-> + */
-> +static int place_migration_node(struct sev_info_migration_node *entry)
-> +{
-> +	u64 token = 0;
-> +	unsigned int retries;
-> +	int ret = -EFAULT;
+> +  pinctrl-0: true
 > +
-> +	/*
-> +	 * Generate a token associated with this VM's SEV info that userspace
-> +	 * can use to import on the other side. We use 0 to indicate a not-
-> +	 * present token. The token cannot collide with other existing ones, so
-> +	 * reroll a few times until we get a valid token. In the unlikely event
-> +	 * we're having trouble generating a unique token, give up and let
-> +	 * userspace retry if it needs to.
-> +	 */
-> +	spin_lock(&sev_info_migration_hash_lock);
-> +	for (retries = 0; retries < MAX_RAND_RETRY; retries++)  {
-> +		get_random_bytes((void *)&token, sizeof(token));
-
-Why is the kernel responsible for generating the token?  IIUC, the purpose of
-the random generation is to make the token difficult to guess by a process other
-than the intended recipient, e.g. by a malicious process.  But that's a userspace
-problem that can be better solved by the sender.
-
+> +  pinctrl-names:
+> +    const: default
 > +
-> +		if (find_migration_info(token))
-> +			continue;
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
 > +
-> +		entry->token = token;
-> +		entry->valid = true;
+> +additionalProperties:
+> +  type: object
+> +  properties:
+> +    reg:
+> +      description:
+> +        The tach channel used for this fan.
+> +      maxItems: 1
 > +
-> +		hash_add(sev_info_migration_hash, &entry->hnode, token);
-> +		ret = 0;
-> +		goto out;
-> +	}
+> +    aspeed,min-rpm:
+> +      description:
+> +        define the minimal revolutions per minute of the measure fan
+> +        used to calculate the sample period of tach
+> +      default: 1000
 > +
-> +out:
-> +	spin_unlock(&sev_info_migration_hash_lock);
-> +	return ret;
-> +}
+> +    aspeed,pulse-pr:
+> +      description:
+> +        Value specifying the number of pulses per revolution of the
+> +        monitored FAN.
+> +      default: 2
 > +
-> +static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_info_migration_node *entry;
-> +	struct kvm_sev_local_send params;
-> +	u64 token;
-> +	int ret = -EFAULT;
+> +    aspeed,tach-div:
+> +      description:
+> +        define the tachometer clock divider as an integer. Formula of
+> +        tach clock = clock source / (2^tach-div)^2
+> +      minimum: 0
+> +      maximum: 15
+> +      # The value that should be used if the property is not present
+> +      default: 5
 > +
-> +	if (!sev_guest(kvm))
-> +		return -ENOTTY;
+> +  required:
+> +    - reg
+> diff --git a/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml b/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+> new file mode 100644
+> index 000000000000..ab49aff1928a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Aspeed, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/aspeed,ast2600-pwm-tach.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	if (sev->es_active)
-> +		return -EPERM;
+> +title: PWM Tach controller Device Tree Bindings
 > +
-> +	if (sev->info_token != 0)
-> +		return -EEXIST;
+> +description: |
+> +  The PWM Tach controller is represented as a multi-function device which
+> +  includes:
+> +    PWM
+> +    Tach
 > +
-> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
-> +			   sizeof(params)))
-> +		return -EFAULT;
+> +maintainers:
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
 > +
-> +	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
-> +	if (!entry)
-> +		return -ENOMEM;
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - aspeed,ast2600-pwm-tach
+> +      - const: syscon
+> +      - const: simple-mfd
 > +
-> +	entry->asid = sev->asid;
-> +	entry->handle = sev->handle;
-> +	entry->pages_locked = sev->pages_locked;
-> +	entry->misc_cg = sev->misc_cg;
+> +  reg:
+> +    maxItems: 1
 > +
-> +	INIT_LIST_HEAD(&entry->regions_list);
-> +	list_replace_init(&sev->regions_list, &entry->regions_list);
+> +  clocks:
+> +    maxItems: 1
 > +
-> +	if (place_migration_node(entry))
-> +		goto e_listdel;
+> +  resets:
+> +    maxItems: 1
 > +
-> +	token = entry->token;
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - resets
 > +
-> +	params.info_token = token;
-> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params,
-> +			 sizeof(params)))
-> +		goto e_hashdel;
+> +patternProperties:
+> +  "^pwm(@[0-9a-f]+)?$":
+> +    $ref: ../pwm/aspeed,ast2600-pwm.yaml
 > +
-> +	sev->info_token = token;
+> +  "^tach(@[0-9a-f]+)?$":
+> +    $ref: ../hwmon/aspeed,ast2600-tach.yaml
 > +
-> +	return 0;
+> +additionalProperties: false
 > +
-> +e_hashdel:
-
-err_<name> is the more standard label for this sort of thing.
-
-> +	spin_lock(&sev_info_migration_hash_lock);
-> +	hash_del(&entry->hnode);
-> +	spin_unlock(&sev_info_migration_hash_lock);
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ast2600-clock.h>
+> +    pwm_tach: pwm_tach@1e610000 {
+> +      compatible = "aspeed,ast2600-pwm-tach", "syscon", "simple-mfd";
+> +      reg = <0x1e610000 0x100>;
+> +      clocks = <&syscon ASPEED_CLK_AHB>;
+> +      resets = <&syscon ASPEED_RESET_PWM>;
 > +
-> +e_listdel:
-
-listdel is a bit of an odd name, though I can't think of a better one.
-
-> +	list_replace_init(&entry->regions_list, &sev->regions_list);
+> +      pwm: pwm {
+> +        compatible = "aspeed,ast2600-pwm";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        #pwm-cells = <3>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pinctrl_pwm0_default>;
+> +        pwm-ch@0 {
+> +          reg = <0>;
+> +          aspeed,wdt-reload-enable;
+> +          aspeed,wdt-reload-duty-point = <32>;
+> +        };
+> +      };
 > +
-> +	kfree(entry);
+> +      tach: tach {
+> +        compatible = "aspeed,ast2600-tach";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pinctrl_tach0_default>;
+> +        tach-ch@0 {
+> +          reg = <0>;
+> +          aspeed,min-rpm = <1000>;
+> +          aspeed,pulse-pr = <2>;
+> +          aspeed,tach-div = <5>;
+> +        };
+> +      };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml b/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+> new file mode 100644
+> index 000000000000..f501f8a769df
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Aspeed, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/aspeed,ast2600-pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	return ret;
-> +}
+> +title: Aspeed Ast2600 PWM controller
 > +
-> +static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_info_migration_node *entry;
-> +	struct kvm_sev_local_receive params;
-> +	struct kvm_sev_info old_info;
+> +maintainers:
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
 > +
-> +	if (!sev_guest(kvm))
-> +		return -ENOTTY;
+> +description: |
+> +  The Aspeed PWM controller can support upto 16 PWM outputs.
+> +  This module is part of the ast2600-pwm-tach multi-function device. For more
+> +  details see ../mfd/aspeed,ast2600-pwm-tach.yaml.
 > +
-> +	if (sev->es_active)
-> +		return -EPERM;
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2600-pwm
 > +
-> +	if (sev->handle != 0)
-> +		return -EPERM;
+> +  "#pwm-cells":
+> +    const: 3
 > +
-> +	if (!list_empty(&sev->regions_list))
-> +		return -EPERM;
+> +  "#address-cells":
+> +    const: 1
 > +
-> +	if (copy_from_user(&params,
-> +			   (void __user *)(uintptr_t)argp->data,
-
-If you capture argp in a local var, this ugly cast can be done once and you'll
-save lines overall, e.g.
-
-	void __user *udata = (void __user *)(uintptr_t)argp->data;
-
-	if (copy_from_user(&params, udata, sizeof(params))
-		return -EFAULT;
-
-	...
-
-	if (copy_to_user(udata, &params, sizeof(params)))
-		return -EFAULT;
-
-
-> +			   sizeof(params)))
-> +		return -EFAULT;
+> +  "#size-cells":
+> +    const: 0
 > +
-> +	spin_lock(&sev_info_migration_hash_lock);
-> +	entry = find_migration_info(params.info_token);
-> +	if (!entry || !entry->valid)
-> +		goto err_unlock;
+> +  pinctrl-0: true
 > +
-> +	memcpy(&old_info, sev, sizeof(old_info));
+> +  pinctrl-names:
+> +    const: default
 > +
-> +	/*
-> +	 * The source VM always frees @entry On the target we simply
-> +	 * mark the token as invalid to notify the source the sev info
-> +	 * has been moved successfully.
-> +	 */
-> +	entry->valid = false;
-> +	sev->active = true;
-> +	sev->asid = entry->asid;
-> +	sev->handle = entry->handle;
-> +	sev->pages_locked = entry->pages_locked;
-> +	sev->misc_cg = entry->misc_cg;
+> +required:
+> +  - compatible
+> +  - "#pwm-cells"
+> +  - "#address-cells"
+> +  - "#size-cells"
 > +
-> +	INIT_LIST_HEAD(&sev->regions_list);
-> +	list_replace_init(&entry->regions_list, &sev->regions_list);
+> +additionalProperties:
+> +  description: Set extend properties for each pwm channel.
+> +  type: object
+> +  properties:
+> +    reg:
+> +      description:
+> +        The pwm channel index.
+> +      maxItems: 1
 > +
-> +	spin_unlock(&sev_info_migration_hash_lock);
+> +    aspeed,wdt-reload-enable:
+> +      type: boolean
+> +      description:
+> +        Enable the function of wdt reset reload duty point.
 > +
-> +	params.handle = sev->handle;
+> +    aspeed,wdt-reload-duty-point:
+> +      description:
+> +        Define the duty point after wdt reset, 0 = 100%
+> +      minimum: 0
+> +      maximum: 255
 > +
-> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params,
-> +			 sizeof(params)))
-> +		goto err_unwind;
-> +
-> +	sev_asid_free(&old_info);
-> +	return 0;
-> +
-> +err_unwind:
-> +	spin_lock(&sev_info_migration_hash_lock);
-
-Why does the lock need to be reacquired, and can anything go sideways if something
-else grabbed the lock while it was dropped?
-
-> +	list_replace_init(&sev->regions_list, &entry->regions_list);
-> +	entry->valid = true;
-> +	memcpy(sev, &old_info, sizeof(*sev));
-> +
-> +err_unlock:
-> +	spin_unlock(&sev_info_migration_hash_lock);
-> +
-> +	return -EFAULT;
-> +}
-> +
-
-...
-
-> @@ -1553,6 +1763,12 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->  	case KVM_SEV_GET_ATTESTATION_REPORT:
->  		r = sev_get_attestation_report(kvm, &sev_cmd);
->  		break;
-> +	case KVM_SEV_LOCAL_SEND:
-
-
-
-> +		r = sev_local_send(kvm, &sev_cmd);
-> +		break;
-> +	case KVM_SEV_LOCAL_RECEIVE:
-> +		r = sev_local_receive(kvm, &sev_cmd);
-> +		break;
->  	case KVM_SEV_SEND_START:
->  		r = sev_send_start(kvm, &sev_cmd);
->  		break;
-> @@ -1786,6 +2002,8 @@ static void __unregister_region_list_locked(struct kvm *kvm,
->  void sev_vm_destroy(struct kvm *kvm)
->  {
->  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_info_migration_node *entry = NULL;
-> +	bool info_migrated = false;
->  
->  	if (!sev_guest(kvm))
->  		return;
-> @@ -1796,25 +2014,59 @@ void sev_vm_destroy(struct kvm *kvm)
->  		return;
->  	}
->  
-> +	/*
-> +	 * If userspace has requested that we migrate the SEV info to a new VM,
-> +	 * then we own and must remove an entry node in the tracking data
-> +	 * structure. Whether we clean up the data in our SEV info struct and
-> +	 * entry node depends on whether userspace has done the migration,
-> +	 * which transfers ownership to a new VM. We can identify that
-> +	 * migration has occurred by checking if the node is marked invalid.
-> +	 */
-> +	if (sev->info_token != 0) {
-> +		spin_lock(&sev_info_migration_hash_lock);
-> +		entry = find_migration_info(sev->info_token);
-> +		if (entry) {
-> +			info_migrated = !entry->valid;
-> +			hash_del(&entry->hnode);
-
-Isn't info_migrated unnecessary?  Grabbing ->valid under the lock is a bit
-misleading because it's unnecessary, e.g. once the entry is deleted from the
-list then this flow owns it.
-
-If you do s/entry/migration_entry (or mig_entry), then I think the code will be
-sufficiently self-documenting.
-
-> +		} else
-
-Needs curly braces.
-
-> +			WARN(1,
-> +			     "SEV VM was marked for export, but does not have associated export node.\n");
-
-But an even better way to write this (IMO the msg isn't necessary, the issue is
-quite obvious at a quick glance):
-
-		if (!WARN_ON(!entry))
-			hash_del(&entry->node);
-
-> +		spin_unlock(&sev_info_migration_hash_lock);
-> +	}
-> +
->  	mutex_lock(&kvm->lock);
->  
->  	/*
-> -	 * Ensure that all guest tagged cache entries are flushed before
-> -	 * releasing the pages back to the system for use. CLFLUSH will
-> -	 * not do this, so issue a WBINVD.
-> +	 * Adding memory regions after a local send has started
-> +	 * is dangerous.
->  	 */
-> -	wbinvd_on_all_cpus();
-> +	if (sev->info_token != 0 && !list_empty(&sev->regions_list)) {
-
-Kernel style usually omits the "!= 0".
-
-> +		WARN(1,
-
-Similarly, WARN(1, ...) in an if statement is usually a sign that you're doing
-things backwards:
-
-	if (WARN_ON(sev->info_token && !list_empty(&sev->regions_list)))
-		unregister_enc_regions(kvm, &sev->regions_list);
-
-In addition to saving code, the WARN will display the failing condition, which
-obviates the need for a free form message in most cases (including this one).
-
-Oh, and I think you've got a bug here.  If info_token is '0', won't regions_list
-be leaked?  I.e. shouldn't this be (the helper gracefully handles the empty case):
-
-	WARN_ON(sev->info_token && !list_empty(&sev->regions_list));
-	unregister_enc_regions(kvm, &sev->regions_list);
-
-That will generate a smaller diff, since the exiting call for regions_list will
-be unchanged.
-
-> +		     "Source SEV regions list non-empty after export request. List is not expected to be modified after export request.\n");
-> +		__unregister_region_list_locked(kvm, &sev->regions_list);
-> +	}
->  
->  	/*
-> -	 * if userspace was terminated before unregistering the memory regions
-> -	 * then lets unpin all the registered memory.
-> +	 * If userspace was terminated before unregistering the memory
-
-Unnecessary new newline.  That said, this comment also appears to be stale?
-
-> +	 * regions then lets unpin all the registered memory.
->  	 */
-> -	__unregister_region_list_locked(kvm, &sev->regions_list);
-> +	if (entry)
-> +		__unregister_region_list_locked(kvm, &entry->regions_list);
->  
->  	mutex_unlock(&kvm->lock);
->  
-> -	sev_unbind_asid(kvm, sev->handle);
-> -	sev_asid_free(sev);
-> +	/*
-> +	 * Ensure that all guest tagged cache entries are flushed before
-> +	 * releasing the pages back to the system for use. CLFLUSH will
-> +	 * not do this, so issue a WBINVD.
-> +	 */
-> +	wbinvd_on_all_cpus();
-> +	if (!info_migrated) {
-
-As above, this can be:
-
-	if (!migration_entry || !migration_entry->valid) {
-
-> +		sev_unbind_asid(kvm, sev->handle);
-> +		sev_asid_free(sev);
-> +	}
-> +
-> +	kfree(entry);
->  }
+> +  required:
+> +    - reg
+> -- 
+> 2.25.1
+> 
+> 
