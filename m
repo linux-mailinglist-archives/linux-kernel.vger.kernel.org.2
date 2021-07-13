@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E852C3C74EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6D03C74F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhGMQin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
+        id S234677AbhGMQix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbhGMQie (ORCPT
+        with ESMTP id S235572AbhGMQig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:38:34 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A667C0613AD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:54 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id k63-20020a37a1420000b02903b4fb67f606so17336965qke.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:54 -0700 (PDT)
+        Tue, 13 Jul 2021 12:38:36 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CF1C05BD2E
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:56 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id w13-20020ac843cd0000b0290251f0b91196so8010205qtn.14
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=+rqcgnm7H23kDtzI+NHHhjYq+hDDRi5POz7LV9x1q80=;
-        b=EUJbXsjQJoA5ET64LXIKu5IwjyTv2OWjBqPQfKNl2ofUWNM0hNyDZH5Ne3c9P89XsG
-         6oSPkScJ1YGYbjScYTuHIfTGFWtPqSyAADXT662JDTvVUnz6RyTkTDWuYvgE/G4sZ7t2
-         FWXnX0XyxBe4Qfb+XxY0AfGU8pOpLbIZho0UE48yoGm4MNJijRm3yuEudWA5VGc4HFZh
-         OxElfscJXYpk7c+b5m044mL6z041YBXvHwhE4hGHHEM+uwaX5geQF5G1QhTXn3QPQCKt
-         mZllRrXhxZZ0qCds7XN9/LtRHF4xjMRfFzH5Wzdwdb/h5KmM03LV+VUADPwvuSM+5b2b
-         j1xg==
+        bh=ruF9NeysJG8YlLwDSa8NGDxOHgaZRuCfs6bt3ZWAhqU=;
+        b=q/QtnyQ9oosp7aP3q8zCPx1rbONx4piEuNDTe5YQXzXRg7B3QsfVOcDOUrjXpAfZ80
+         rUMkNbVNonq5w6AWR16/QUr487h5VRHwruFBiRrptKAaDx/pT3JeWaWN4clj6AKxK7xC
+         r022arb8lhLRWVLSlgIt/w7FQmIElKHrLHkQratxTBJTdeCvMEmwt6ZV+m/3BikSZ5wf
+         lxWIf/tGWw2e8h/bCuvjojg6z0dfF9T7gqY0C2T7Ub5Ayp0nNsseS5hyH7MzbMDDrh4S
+         1gB7by08qF06UvRUJgS6IXMbGLQbKO4qZCtrmWWFO8R4th4LMvFeOSVW1O6cAGvE8VlR
+         nOjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=+rqcgnm7H23kDtzI+NHHhjYq+hDDRi5POz7LV9x1q80=;
-        b=gTPBufkh1hQM46L5C/Yw2ISwORHbRIx+4BEoljRFTWKyJKM3NjD+w+AAZkypyNEAXd
-         Hatt6MrUvYfFl5el+PA/8GbnYmvtKbbpy3jGJRcPJVT93gm1TjQyxSYGSH6NaTU7gsXi
-         On6bLD0KWIF3M4FlYXT8aFxm/pUs4yu4hNWIU9NYAYrtarIzjJr3LTfdMGzm89PyH9je
-         s3P+XNoQa1zHT7/CGauf9WYJnsHoWRnKv4uS7nT9Lb+WJRFZpLFLx7jCRxOEq33ECbyB
-         OBp9Ba8RHX6LJgQ6tVK5Y3Yh2ieUpOdNdGvo5d78W9Jp5jP3gjqMu3e0DL4x3oJGkyHh
-         EWIw==
-X-Gm-Message-State: AOAM5312LesIgBpt9C9p46u9k8pPpXqGdT8NoCno1WMHMrDXIB5suTFz
-        rsso3/HYwqKRGJF+DHvzAc0aCorNgCs=
-X-Google-Smtp-Source: ABdhPJyX1XTDODijjpMeMU63KSmlqP/qOCjPFipPO8vYTD0ueg0PSQRQ+Wdp0FIJdWendLKxStrwihyhN/o=
+        bh=ruF9NeysJG8YlLwDSa8NGDxOHgaZRuCfs6bt3ZWAhqU=;
+        b=RLjiR0wz4wWUX+ZEKLAdLvqGFgqdldOTqK5SduO5lKslr9Bts+AY98TLcJ4vzS5Y1N
+         B262DMeA5nAlDTR3SeKzmH0iQKipvgkR96ED3+VELbL7R1Is8KUYeOkXMCjysyJ5P/3m
+         w/kyLr/zW5AyTsjUwUNwwyrYttkdelrd6Q7XIbxXaWAdo/d8LcSRno1iLYn+lNz/cVa3
+         Ztkcm5ii6BxsMzvmXWEXx1e3MdDDXXwLCAXzBt27JBVuD2SYtldRFGpy2eZDoMDHwKLu
+         vXvGzjANwbBw7N1SAIydoMUJfoDyGMqfaYYUYlquJ3ZS0YQVdw8PjJFqr79D0825nxB0
+         TF8Q==
+X-Gm-Message-State: AOAM532Gz70mqvTJ7ROkdYG9FX1ePOIp/ESepu6fUGJm6erCjVFJY2ca
+        RTPKXul1+uxylwgNqsDoyJKgY6t0ZvI=
+X-Google-Smtp-Source: ABdhPJzVU9yW2GAGD/nTjgmJlL07BIkZt8qPLIe2eCv6L8Db/53PtthwwLzzlQYczyhtkjPQksbVWmB+MNI=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:825e:11a1:364b:8109])
- (user=seanjc job=sendgmr) by 2002:a05:6214:1021:: with SMTP id
- k1mr5843936qvr.4.1626194093657; Tue, 13 Jul 2021 09:34:53 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:4b2:: with SMTP id
+ w18mr5659848qvz.5.1626194095368; Tue, 13 Jul 2021 09:34:55 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 13 Jul 2021 09:33:19 -0700
+Date:   Tue, 13 Jul 2021 09:33:20 -0700
 In-Reply-To: <20210713163324.627647-1-seanjc@google.com>
-Message-Id: <20210713163324.627647-42-seanjc@google.com>
+Message-Id: <20210713163324.627647-43-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210713163324.627647-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2 41/46] KVM: VMX: Smush x2APIC MSR bitmap adjustments into
- single function
+Subject: [PATCH v2 42/46] KVM: VMX: Remove redundant write to set vCPU as
+ active at RESET/INIT
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,132 +67,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consolidate all of the dynamic MSR bitmap adjustments into
-vmx_update_msr_bitmap_x2apic(), and rename the mode tracker to reflect
-that it is x2APIC specific.  If KVM gains more cases of dynamic MSR
-pass-through, odds are very good that those new cases will be better off
-with their own logic, e.g. see Intel PT MSRs and MSR_IA32_SPEC_CTRL.
+Drop a call to vmx_clear_hlt() during vCPU INIT, the guest's activity
+state is unconditionally set to "active" a few lines earlier in
+vmx_vcpu_reset().
 
-Attempting to handle all updates in a common helper did more harm than
-good, as KVM ended up collecting a large number of useless "updates".
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 55 ++++++++++++++++--------------------------
- arch/x86/kvm/vmx/vmx.h |  2 +-
- 2 files changed, 22 insertions(+), 35 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index bc09a2f7cb5f..cdde1dfaa574 100644
+index cdde1dfaa574..4acfb2f450e6 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3812,21 +3812,6 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
- 		vmx_set_msr_bitmap_write(msr_bitmap, msr);
+@@ -4465,8 +4465,6 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	kvm_make_request(KVM_REQ_APIC_PAGE_RELOAD, vcpu);
+ 
+ 	vpid_sync_context(vmx->vpid);
+-	if (init_event)
+-		vmx_clear_hlt(vcpu);
  }
  
--static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
--{
--	u8 mode = 0;
--
--	if (cpu_has_secondary_exec_ctrls() &&
--	    (secondary_exec_controls_get(to_vmx(vcpu)) &
--	     SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE)) {
--		mode |= MSR_BITMAP_MODE_X2APIC;
--		if (enable_apicv && kvm_vcpu_apicv_active(vcpu))
--			mode |= MSR_BITMAP_MODE_X2APIC_APICV;
--	}
--
--	return mode;
--}
--
- static void vmx_reset_x2apic_msrs(struct kvm_vcpu *vcpu, u8 mode)
- {
- 	unsigned long *msr_bitmap = to_vmx(vcpu)->vmcs01.msr_bitmap;
-@@ -3844,11 +3829,29 @@ static void vmx_reset_x2apic_msrs(struct kvm_vcpu *vcpu, u8 mode)
- 	}
- }
- 
--static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
-+static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu)
- {
-+	struct vcpu_vmx *vmx = to_vmx(vcpu);
-+	u8 mode;
-+
- 	if (!cpu_has_vmx_msr_bitmap())
- 		return;
- 
-+	if (cpu_has_secondary_exec_ctrls() &&
-+	    (secondary_exec_controls_get(vmx) &
-+	     SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE)) {
-+		mode = MSR_BITMAP_MODE_X2APIC;
-+		if (enable_apicv && kvm_vcpu_apicv_active(vcpu))
-+			mode |= MSR_BITMAP_MODE_X2APIC_APICV;
-+	} else {
-+		mode = 0;
-+	}
-+
-+	if (!(mode ^ vmx->x2apic_msr_bitmap_mode))
-+		return;
-+
-+	vmx->x2apic_msr_bitmap_mode = mode;
-+
- 	vmx_reset_x2apic_msrs(vcpu, mode);
- 
- 	/*
-@@ -3865,21 +3868,6 @@ static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
- 	}
- }
- 
--static void vmx_update_msr_bitmap(struct kvm_vcpu *vcpu)
--{
--	struct vcpu_vmx *vmx = to_vmx(vcpu);
--	u8 mode = vmx_msr_bitmap_mode(vcpu);
--	u8 changed = mode ^ vmx->msr_bitmap_mode;
--
--	if (!changed)
--		return;
--
--	if (changed & (MSR_BITMAP_MODE_X2APIC | MSR_BITMAP_MODE_X2APIC_APICV))
--		vmx_update_msr_bitmap_x2apic(vcpu, mode);
--
--	vmx->msr_bitmap_mode = mode;
--}
--
- void pt_update_intercept_for_msr(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
-@@ -4139,8 +4127,7 @@ static void vmx_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
- 					SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY);
- 	}
- 
--	if (cpu_has_vmx_msr_bitmap())
--		vmx_update_msr_bitmap(vcpu);
-+	vmx_update_msr_bitmap_x2apic(vcpu);
- }
- 
- u32 vmx_exec_control(struct vcpu_vmx *vmx)
-@@ -6186,7 +6173,7 @@ void vmx_set_virtual_apic_mode(struct kvm_vcpu *vcpu)
- 	}
- 	secondary_exec_controls_set(vmx, sec_exec_control);
- 
--	vmx_update_msr_bitmap(vcpu);
-+	vmx_update_msr_bitmap_x2apic(vcpu);
- }
- 
- static void vmx_set_apic_access_page_addr(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 1b3dd5ddf235..e370091d57c6 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -229,7 +229,7 @@ struct nested_vmx {
- struct vcpu_vmx {
- 	struct kvm_vcpu       vcpu;
- 	u8                    fail;
--	u8		      msr_bitmap_mode;
-+	u8		      x2apic_msr_bitmap_mode;
- 
- 	/*
- 	 * If true, host state has been stored in vmx->loaded_vmcs for
+ static void vmx_enable_irq_window(struct kvm_vcpu *vcpu)
 -- 
 2.32.0.93.g670b81a890-goog
 
