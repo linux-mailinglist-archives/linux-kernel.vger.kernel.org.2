@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C303C7860
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC783C7870
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236135AbhGMVBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:01:36 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56872 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235060AbhGMVBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:01:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=Zrmp38HLQSSBOIHCzrhOGN2I10/GGB7t9iYmdElr2i4=; b=oMb4Zx3XkPrKaEbUyM5
-        Wje5X6G4fTPCuW8lq2suLGXW4TgOCp3OBmHH00y2+c8S2v3SusR25Qn+9XuCa5+lRKj94uTuhRNP/
-        iXlyHbEjI3G1wn0S0pYAjM0i8kU7eYZurzXkFfp9sddH2FQI/V2+x06yB+T2hZ8RISMH1qTvwjw=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m3PUJ-003san-IH; Tue, 13 Jul 2021 23:58:43 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET v2 7/7] bpf: use skb_expand_head in bpf_out_neigh_v4/6
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
- <cover.1626206993.git.vvs@virtuozzo.com>
-Message-ID: <47012e92-9978-cab1-68e4-9565ebe96994@virtuozzo.com>
-Date:   Tue, 13 Jul 2021 23:58:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235922AbhGMVFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:05:41 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:24255 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234172AbhGMVFf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 17:05:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1626210165; x=1657746165;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=umlABZkJHw7V4iWPgz6fu0Xhlp40mzDNKgz22ICVX5s=;
+  b=P1QCtU+wUSYvdklh9tiBYsmenEvN1fqDR1JBwMemn/Yiz7/D9CKnu4TE
+   Xk1jlbGmfcT/ipI6HMJeIkrXMV3zen+MTXleajvCKPtdBVXoiDk9XxCV8
+   /rqivqziG9Q1RoxG+jDHVqBLrYcnutCWwdWDFmrTPyltfaoMZQEVBRV68
+   6hd/a2sDOAWj17s9eTFfkifi2+e/Kjp1Zmqyt9wUQKvZo1MU4KwxxSvtf
+   NDRaz36bOJP6BgcwAlN2YWWgXhbeqKT7+vBDMY6dVPEReEokogLp7oIC5
+   XXP8ozkHyJaaKAfFWB9YRxKnmKqA/XUgHii338249Kk+qd8EbA7RwPkrI
+   g==;
+IronPort-SDR: 0Kk7kLlKdu0GP4wHWN8T6uCrlaX+9yShksQXlYqKjw5FHfj98zsF5nOftCvtddPaSrcWXihXzC
+ 6tKFKRN3d1hQfCumUsWaCiKTOPVCnWcDBkIFQCxFis3kC9MVAeZAiNor8tlrq2DCyHQejWJzcn
+ aO5fx/3Pa9u9A63ONWPM3BB+OB7+NG5SBYkXRCptLmXJQ4W6NgQ5jgKjFfBIKk9/jZZXKd181c
+ NZuzinVplXg43FAIpq3cmOUDP76A2hl5oIoGC02v3lrRIvg8ULY41FdiTiFK0NzBtlAIk+LUEu
+ 9xc=
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
+   d="scan'208";a="124447483"
+Received: from f5out.microchip.com (HELO smtp.microsemi.com) ([198.175.253.81])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2021 14:02:44 -0700
+Received: from AVMBX2.microsemi.net (10.10.46.68) by AVMBX1.microsemi.net
+ (10.10.46.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 13 Jul
+ 2021 14:02:43 -0700
+Received: from brunhilda.pdev.net (10.238.32.34) by avmbx2.microsemi.net
+ (10.10.46.68) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 13 Jul 2021 14:02:43 -0700
+Received: by brunhilda.pdev.net (Postfix, from userid 1467)
+        id 620E6703479; Tue, 13 Jul 2021 16:02:43 -0500 (CDT)
+From:   Don Brace <don.brace@microchip.com>
+To:     <hch@infradead.org>, <martin.peterson@oracle.com>,
+        <jejb@linux.vnet.ibm.com>, <linux-scsi@vger.kernel.org>
+CC:     <Kevin.Barnett@microchip.com>, <scott.teel@microchip.com>,
+        <Justin.Lindley@microchip.com>, <scott.benesh@microchip.com>,
+        <gerry.morong@microchip.com>, <mahesh.rajashekhara@microchip.com>,
+        <mike.mcgowen@microchip.com>, <murthy.bhat@microchip.com>,
+        <balsundar.p@microchip.com>, <joseph.szczypek@hpe.com>,
+        <jeff@canonical.com>, <POSWALD@suse.com>,
+        <john.p.donnelly@oracle.com>, <mwilck@suse.com>,
+        <pmenzel@molgen.mpg.de>, <linux-kernel@vger.kernel.org>
+Subject: [smartpqi updates V2 PATCH 0/9] smartpqi updates
+Date:   Tue, 13 Jul 2021 16:02:34 -0500
+Message-ID: <20210713210243.40594-1-don.brace@microchip.com>
+X-Mailer: git-send-email 2.28.0.rc1.9.ge7ae437ac1
 MIME-Version: 1.0
-In-Reply-To: <cover.1626206993.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike skb_realloc_headroom, new helper skb_expand_head
-does not allocate a new skb if possible.
+These patches are based on Martin Peterson's 5.14/scsi-queue tree
+https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git 
+      5.14/scsi-queue
 
-Additionally this patch replaces commonly used dereferencing with variables.
+Most of these patches consist of adding new PCI devices. The remainder
+are simple updates to correct some rare issues and clean up some
+driver messages.
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- net/core/filter.c | 27 +++++----------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
+This set of changes consist of:
+  * Add in new PCI-IDs.
+    5 of these patches are adding in new PCI-IDs.
+  * Update copyright information.
+  * Enhance reset messages.
+    - Add SCSI command CDB[0] value to message.
+    - Also check for a 0 length SCSI command that can occur if
+      sg_reset is issued without any outstanding SCSI commands.
+  * Clean up a rare initialization issue where interrupts are
+    enabled before the supporting controller context has been
+    fully initialized. Found by internal testing only.
+  * Update the driver version to 2.1.10-020
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 65ab4e2..25a6950 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2179,17 +2179,9 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
- 	skb->tstamp = 0;
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
--		struct sk_buff *skb2;
--
--		skb2 = skb_realloc_headroom(skb, hh_len);
--		if (unlikely(!skb2)) {
--			kfree_skb(skb);
-+		skb = skb_expand_head(skb, hh_len);
-+		if (!skb)
- 			return -ENOMEM;
--		}
--		if (skb->sk)
--			skb_set_owner_w(skb2, skb->sk);
--		consume_skb(skb);
--		skb = skb2;
- 	}
- 
- 	rcu_read_lock_bh();
-@@ -2213,8 +2205,7 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
- 	}
- 	rcu_read_unlock_bh();
- 	if (dst)
--		IP6_INC_STATS(dev_net(dst->dev),
--			      ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
-+		IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
- out_drop:
- 	kfree_skb(skb);
- 	return -ENETDOWN;
-@@ -2286,17 +2277,9 @@ static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb,
- 	skb->tstamp = 0;
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
--		struct sk_buff *skb2;
--
--		skb2 = skb_realloc_headroom(skb, hh_len);
--		if (unlikely(!skb2)) {
--			kfree_skb(skb);
-+		skb = skb_expand_head(skb, hh_len);
-+		if (!skb)
- 			return -ENOMEM;
--		}
--		if (skb->sk)
--			skb_set_owner_w(skb2, skb->sk);
--		consume_skb(skb);
--		skb = skb2;
- 	}
- 
- 	rcu_read_lock_bh();
+Change since V1:
+Changes resulting from Paul Menzel <pmenzel@molgen.mpg.de>
+review:
+  * Renamed some PCI-ID patches to reflect controller name
+  * Renamed patch smartpqi: fix isr accessing null structure member
+    to smartpqi: fix isr accessing uninitialized data
+  * Split copyright patch. Removed driver name updates and placed
+    them in a separate patch.
+  * Removed patch ("smartpqi: rm unsupported controller features msgs")
+    May remove them in a future patch.
+
+
+Balsundar P (1):
+  smartpqi: add PCI IDs for new ZTE controllers
+
+Don Brace (3):
+  smartpqi: change driver module MACROS to microchip
+  smartpqi: change Kconfig menu entry to microchip
+  smartpqi: update version to 2.1.10-020
+
+Kevin Barnett (1):
+  smartpqi: update copyright notices
+
+Mahesh Rajashekhara (1):
+  smartpqi: add pci ids for H3C P4408 controllers
+
+Mike McGowen (2):
+  smartpqi: add PCI-ID for new ntcom controller
+  smartpqi: fix isr accessing uninitialized data
+
+Murthy Bhat (1):
+  smartpqi: add SCSI cmd info for resets
+
+ drivers/scsi/smartpqi/Kconfig                 |  8 +--
+ drivers/scsi/smartpqi/smartpqi.h              |  6 +-
+ drivers/scsi/smartpqi/smartpqi_init.c         | 64 +++++++++++++++----
+ .../scsi/smartpqi/smartpqi_sas_transport.c    |  4 +-
+ drivers/scsi/smartpqi/smartpqi_sis.c          |  4 +-
+ drivers/scsi/smartpqi/smartpqi_sis.h          |  4 +-
+ 6 files changed, 64 insertions(+), 26 deletions(-)
+
 -- 
-1.8.3.1
+2.28.0.rc1.9.ge7ae437ac1
 
