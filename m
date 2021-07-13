@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49FD3C688A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632773C6898
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhGMChs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 22:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S233658AbhGMCl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbhGMChr (ORCPT
+        with ESMTP id S230022AbhGMClY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 22:37:47 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94F8C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:34:57 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id nd37so38585250ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:34:57 -0700 (PDT)
+        Mon, 12 Jul 2021 22:41:24 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A4CC0613DD;
+        Mon, 12 Jul 2021 19:38:34 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id h2so31003771edt.3;
+        Mon, 12 Jul 2021 19:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RBPu6xYIBS0viB5UZS492p6zHqYEhcALtpbidr1sCrU=;
-        b=hAqQVpiv52aQMiILfGaILA7UZ3Vb7hpAEZl5MSyT4Y9giLdF8ZWBqgareVlSQUHWpR
-         ZUrim0on5dre3bqN5EGAiRzVWG6nVeaiF+s6JaGu2Q+54HjtAgU1AvqcqlU5GALyqPc8
-         J59ZdfyvvWc0CNOaKSGrAuHZon7DtT9jG9x1ueo2PbGCXBvXV9LCEYmPz0NJvuwLKCb4
-         e5swfb54jlYSJ49YcMdOKdIhN3CYIP2f7H6ObIehgsT00rpoEugEWTcwjWsk6Ijx/OB+
-         sziXashjbhIgbQwAsqKXq8JHPkE9kbOMVO58+jj4MNa7U/Fp8vQxUrXCiR8DuABY3fmZ
-         DToA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
+        b=oR2mglMxlqz8UVA4bDS/Vy20tMYeUdc0P45H4Di/KhCpwZEd0TIR4lhe1TtNTEnHYr
+         Tm0C56cv0awj95FPRIVu7se2mMU/rSAEHmqocxvlyh5syHrXTEfLeWjeZgkb81XTlM85
+         f9rK5ozXdDb/YJ6gh6HfN7xzzeAA+YYi6unlpvTknjVk034tFMpmtX4ZWbpLf8QcoJw3
+         pt8YKgfC9IKMqQ3P545piuKy4BMbP3JrBaUmx1Ux4xkhqoDm9A6LnhKRNXyAMhfti6Wd
+         2krhkIlXRR7oF9S6NvNlWrnxLRDJ/ncZLkLv+te0RSFmKSjEa4iwTLGdi/FAIKaayeRb
+         9HHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RBPu6xYIBS0viB5UZS492p6zHqYEhcALtpbidr1sCrU=;
-        b=euRtXqF5WwqRLcJAxMW8xGf89pnCaysOb5JuJS4Jb/fQanlNn/N4CrWkvZIlFmZPaU
-         8uwjkaBIHPoX5yGeDLJmBI29D67WPAnS8FUUINbb6OYTOWOgKABVgGlfUaF3//QiYfEY
-         E+GnOVsF+ajjiPtkVDJVK9vMgRp0/rcPG4UZoMem4fOHiuVEwV+cl0b3NlY6j0yEy8+y
-         nGIg4bqnkmCBfcVPsIQcLWcq3EXukT8C/VTgJSjRV3x/x1sYFEW2n1HRHQKCJogQ+aZB
-         DaOK3JyON8OS6cNyRoN6vxQgTaWipng75i00AUeRN5gvl0UsKYyBcHuPnG5HWDbHFjiM
-         AqWg==
-X-Gm-Message-State: AOAM532ftYghA/LNSUWrVYnBGbnFjtJkvqR6irLPmW6tZs+xuS4J1srY
-        UK/FKJ0RVnrtwpbtcb7nxp2/qQJKA1gBzVHLpUQ+
-X-Google-Smtp-Source: ABdhPJyytdq/CE/wkitIkFTYSvvbb5T4D4KC4bniBQLIKEAC15BXF2YMkUTZuWQQktrfljWaz21U9sH3mGdCEuV7T/M=
-X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr2673354ejb.542.1626143695922;
- Mon, 12 Jul 2021 19:34:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=BM24k6H9LcY/dUUeA4LE+RhfS6GQmXK+4XERxfAvlv0=;
+        b=cTnTmGy1oneZSLTbTcNjYhmf0O09By//+jwkdRZcIBSHdYAY49gSg9uB8XfxiCeGwf
+         u8hDWFDtKKLk7BjuZGHXTImwF302F1LIEahRtIClY8CzWU5pAlrz1x4YJBiBzLDSb5Ra
+         YjuNm0UOyb5fjPy2+19gRJsRrsW8VxgbB7YcbOwu6S2RPt0Z9+/tmW8PAaYZrqAVlq5O
+         npqq4NucDsC8af5qZRNABWVWVDvagkcMsclkpjgYNPgPW6/uiL1fjbzzlZ1S/Txnj12S
+         EBtmeJmd2wc7fc52nD0znpO420Zi06XsXmk/tP+n+9K7aGH29oM46clRq2EP7DoHW7Ws
+         qPAA==
+X-Gm-Message-State: AOAM533r4XzuxqahcDtja7myXGwTZJJSLnqkrFlUSNWjCCQ3X+JDBxmJ
+        hFv4FRl8xL8GljAh82oym7U=
+X-Google-Smtp-Source: ABdhPJyCdykS1tWU3nj+DHJ5VwHSHwsHr4XmdUj4TDsu6OHxOsPDqU8UBeD7gj48Jq6TkH36zDLUzw==
+X-Received: by 2002:a05:6402:90a:: with SMTP id g10mr2427996edz.365.1626143913168;
+        Mon, 12 Jul 2021 19:38:33 -0700 (PDT)
+Received: from pc ([196.235.212.194])
+        by smtp.gmail.com with ESMTPSA id n13sm7300744ejk.97.2021.07.12.19.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 19:38:32 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 03:38:28 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] use swap()
+Message-ID: <20210713023828.GA1841817@pc>
 MIME-Version: 1.0
-References: <20210616085118.1141101-1-omosnace@redhat.com> <8735tdiyc1.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <8735tdiyc1.ffs@nanos.tec.linutronix.de>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 12 Jul 2021 22:34:45 -0400
-Message-ID: <CAHC9VhRAN4RS2c3cwpr=DQ_45MDqn2QV7nL4J3ZWXKfUNLcjdQ@mail.gmail.com>
-Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 1:00 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Wed, Jun 16 2021 at 10:51, Ondrej Mosnacek wrote:
-> > diff --git a/arch/x86/mm/testmmiotrace.c b/arch/x86/mm/testmmiotrace.c
-> > index bda73cb7a044..c43a13241ae8 100644
-> > --- a/arch/x86/mm/testmmiotrace.c
-> > +++ b/arch/x86/mm/testmmiotrace.c
-> > @@ -116,7 +116,7 @@ static void do_test_bulk_ioremapping(void)
-> >  static int __init init(void)
-> >  {
-> >       unsigned long size = (read_far) ? (8 << 20) : (16 << 10);
-> > -     int ret = security_locked_down(LOCKDOWN_MMIOTRACE);
-> > +     int ret = security_locked_down(current_cred(), LOCKDOWN_MMIOTRACE);
->
-> I have no real objection to those patches, but it strikes me odd that
-> out of the 62 changed places 58 have 'current_cred()' and 4 have NULL as
-> argument.
->
-> I can't see why this would ever end up with anything else than
-> current_cred() or NULL and NULL being the 'special' case. So why not
-> having security_locked_down_no_cred() and make current_cred() implicit
-> for security_locked_down() which avoids most of the churn and just makes
-> the special cases special. I might be missing something though.
+Use swap() instead of implementing it in order to make code more clean.
 
-Unfortunately it is not uncommon for kernel subsystems to add, move,
-or otherwise play around with LSM hooks without checking with the LSM
-folks; generally this is okay, but there have been a few problems in
-the past and I try to keep that in mind when we are introducing new
-hooks or modifying existing ones.  If we have two LSM hooks for
-roughly the same control point it has the potential to cause
-confusion, e.g. do I use the "normal" or the "no_cred" version?  What
-if I don't want to pass a credential, can I just use "no_cred"?  My
-thinking with the single, always-pass-a-cred function is that callers
-don't have to worry about choosing from multiple, similar hooks and
-they know they need to pass a cred which hopefully gets them thinking
-about what cred is appropriate.  It's not foolproof, but I believe the
-single hook approach will be less prone to accidents ... or so I hope
-:)
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/crypto/atmel-aes.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index b1d286004295..60041022c4f5 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -1819,12 +1819,8 @@ static int atmel_aes_xts_process_data(struct atmel_aes_dev *dd)
+ 	 * the order of the ciphered tweak bytes need to be reversed before
+ 	 * writing them into the ODATARx registers.
+ 	 */
+-	for (i = 0; i < AES_BLOCK_SIZE/2; ++i) {
+-		u8 tmp = tweak_bytes[AES_BLOCK_SIZE - 1 - i];
+-
+-		tweak_bytes[AES_BLOCK_SIZE - 1 - i] = tweak_bytes[i];
+-		tweak_bytes[i] = tmp;
+-	}
++	for (i = 0; i < AES_BLOCK_SIZE/2; ++i)
++		swap(tweak_bytes[i], tweak_bytes[AES_BLOCK_SIZE - 1 - i]);
+ 
+ 	/* Process the data. */
+ 	atmel_aes_write_ctrl(dd, use_dma, NULL);
 -- 
-paul moore
-www.paul-moore.com
+2.25.1
+
