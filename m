@@ -2,117 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A423C7115
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2829A3C7118
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbhGMNRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbhGMNRn (ORCPT
+        id S236450AbhGMNTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:19:45 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:11271 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236283AbhGMNTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:17:43 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA1EC0613DD;
-        Tue, 13 Jul 2021 06:14:53 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w14so21429062edc.8;
-        Tue, 13 Jul 2021 06:14:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K84vgru1YIqVtNmeFuEhqRqnsJNSVO73ZMY5BYsBJ8U=;
-        b=kaflIbri9YV77jJ7dkdgxVFy+Uu7erp9W0KkRnMQBqPkk58voh2fi+dHwrZWhU3xvj
-         bfNGXuMhhKg4xLXqEtmNnplXarLUnWHw5wwUno5CUu7uNIZXT+FNddnHK2dggRqx6YP0
-         WqnB49FyWc6d+f4zi183s/mEvLuo/2wWcZAern7LUuiwkGdCYtVEtH99IqR8WwKN6GKE
-         nAGfeFBvElklRsi1YlrexRKMszgLYanvtezoinlH/LkJLR8FxDhweBFpNMFnGgbLa4hU
-         bY2WZetmWlPLbQJp3UnYVP/DNf2vG9xMUQEhXHMM9b4dMJzDxEJBx3pJmznNTWvZWUf0
-         9mug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K84vgru1YIqVtNmeFuEhqRqnsJNSVO73ZMY5BYsBJ8U=;
-        b=kgQqcLpxALBgtpeeTALSegXU2bwEOx36RNoWbIr68go0EpCurTMZkXvVBQJJ5R1PBX
-         bQPuYKUaj6GgL5nfsziG456ULwwXlCVpufBvNWrLEMd+8miwvUBZSIA4rvZq7IW8pA8/
-         zW8nkfFD3FPwTwuPtA9ZTbt213teY1NaP0vQDaVnMSz651ZkT/hOrlrJRaYDrllqaN98
-         tIKk8yz2H3CmqD7HllqPMMWTqug0/FH0yb8BUYOiQlaXqWsXwj+F848JrrIA2WKR9SZ6
-         I+F4/Gm02bAOzWjf1klFRC4Msy3AX2WxJOg7S/GeUYZCJEsc4HSfeJY/GW2sFf5YPjKW
-         odaQ==
-X-Gm-Message-State: AOAM530JW8fb6Pk4iseg0hJUA4WnnAwLPtsbnVwXI4BaUr8GQrupLa/p
-        CUEL9hrs95wlJzJuikgPHcSgsP17WoyhX7F7nss=
-X-Google-Smtp-Source: ABdhPJw1v6V6QaHDDXSsAhYUkms0Aifs9/xHMK8EzitM8X8EbF5RT8NSiPvjmOlt1tnR2GBNvJjmHlyQgpoMtWRs+io=
-X-Received: by 2002:a05:6402:180e:: with SMTP id g14mr5710331edy.241.1626182091917;
- Tue, 13 Jul 2021 06:14:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210621113959.53320-1-mudongliangabcd@gmail.com> <20210713085259.GB6572@gofer.mess.org>
-In-Reply-To: <20210713085259.GB6572@gofer.mess.org>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 13 Jul 2021 21:14:25 +0800
-Message-ID: <CAD-N9QWdpXicp4S8-JLWv60PW0FaFGXDEAFSLhhP2sOzgiCFmA@mail.gmail.com>
-Subject: Re: [PATCH 1/3 v2] media: dvb-usb: break long strings in dvb_usb_device_init
-To:     Sean Young <sean@mess.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
+        Tue, 13 Jul 2021 09:19:44 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GPLcM2LLNz1CJQh;
+        Tue, 13 Jul 2021 21:11:15 +0800 (CST)
+Received: from [10.174.178.125] (10.174.178.125) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 21:16:51 +0800
+Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
+ anonymous LRU list
+To:     Yu Zhao <yuzhao@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Alex Shi <alexs@kernel.org>, <apopple@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        David Hildenbrand <david@redhat.com>, <shli@fb.com>,
+        <hillf.zj@alibaba-inc.com>, Linux-MM <linux-mm@kvack.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210710100329.49174-1-linmiaohe@huawei.com>
+ <20210710100329.49174-2-linmiaohe@huawei.com>
+ <CAOUHufZpU4uQOBb4p10uCXs-40MeETRUmGiqy96Eim1w3o_dgQ@mail.gmail.com>
+ <022f2f7c-fc03-182a-1f8f-4b77c0731d4f@huawei.com>
+ <CAOUHufaEPKj4VU1qbjuqsr53rjVwhEXdRCC_C=LBOF0KTveBfQ@mail.gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <ff349ed2-14b5-8583-0c0c-725990d965e0@huawei.com>
+Date:   Tue, 13 Jul 2021 21:16:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAOUHufaEPKj4VU1qbjuqsr53rjVwhEXdRCC_C=LBOF0KTveBfQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.125]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 4:53 PM Sean Young <sean@mess.org> wrote:
->
-> On Mon, Jun 21, 2021 at 07:39:59PM +0800, Dongliang Mu wrote:
-> > Break long strings into multiple lines.
-> >
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  drivers/media/usb/dvb-usb/dvb-usb-init.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-> > index 28e1fd64dd3c..edc477cedaa9 100644
-> > --- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-> > +++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-> > @@ -286,13 +286,15 @@ int dvb_usb_device_init(struct usb_interface *intf,
-> >
-> >       desc = dvb_usb_find_device(udev, &d->props, &cold);
-> >       if (!desc) {
-> > -             deb_err("something went very wrong, device was not found in current device list - let's see what comes next.\n");
-> > +             deb_err("something went very wrong, "
-> > +                     "device was not found in current device list.\n");
->
-> Long lines are acceptable unto 100 columns or more if they are string
-> constants.  Breaking them up does not increase readability.
+On 2021/7/13 15:25, Yu Zhao wrote:
+> On Mon, Jul 12, 2021 at 1:12 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>
+>> On 2021/7/11 7:22, Yu Zhao wrote:
+>>> On Sat, Jul 10, 2021 at 4:03 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>>>
+>>>> If the MADV_FREE pages are redirtied before they could be reclaimed, put
+>>>> the pages back to anonymous LRU list by setting SwapBacked flag and the
+>>>> pages will be reclaimed in normal swapout way. Otherwise MADV_FREE pages
+>>>> won't be reclaimed as expected.
+>>>>
+>>>> Fixes: 802a3a92ad7a ("mm: reclaim MADV_FREE pages")
+>>>
+>>> This is not a bug -- the dirty check isn't needed but it was copied
+>>> from __remove_mapping().
+>>
+>> Yes, this is not a bug and harmless. When we reach here, page should not be
+>> dirtied because PageDirty is handled above and there is no way to redirty it
+>> again as pagetable references are all gone and it's not in the swap cache.
+>>
+>>>
+>>> The page has only one reference left, which is from the isolation.
+>>> After the caller puts the page back on lru and drops the reference,
+>>> the page will be freed anyway. It doesn't matter which lru it goes.
+>>
+>> But it looks buggy as it didn't perform the expected ops from code view.
+>> Should I drop the Fixes tag and send a v2 version?
+> 
+> I don't understand the logic here -- it looks pretty obvious to me
+> that, if we want to change anything, we should delete the dirty check,
+> not add another line that would enforce the belief that the dirty
+> check is needed.
+> 
 
-I see. Thanks for your comments. They are valuable to me.
+The dirty check could be removed even with the page_ref_freeze check because no one can grab
+the page refcnt after the page is successfully unmapped.
 
->
-> >               ret = -ENODEV;
-> >               goto error;
-> >       }
-> >
-> >       if (cold) {
-> > -             info("found a '%s' in cold state, will try to load a firmware", desc->name);
-> > +             info("found a %s in cold state, will try to load a firmware",
-> > +                  desc->name);
->
-> No reason for removing the quotes, I think.
->
-> >               ret = dvb_usb_download_firmware(udev, props);
-> >               if (!props->no_reconnect || ret != 0)
-> >                       goto error;
-> > @@ -314,7 +316,7 @@ int dvb_usb_device_init(struct usb_interface *intf,
-> >       if (du)
-> >               *du = d;
-> >
-> > -     info("%s successfully initialized and connected.", desc->name);
-> > +     info("%s is successfully initialized and connected.", desc->name);
->
-> "is" doesn't really add anything here, and the message is fine without it.
->
-> >       return 0;
-> >
-> >   error:
-> > --
-> > 2.25.1
+Does the change below makes sense for you?
+
+Many Thanks.
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6e26b3c93242..c31925320b33 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1624,15 +1624,11 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+                }
+
+                if (PageAnon(page) && !PageSwapBacked(page)) {
+-                       /* follow __remove_mapping for reference */
+-                       if (!page_ref_freeze(page, 1))
+-                               goto keep_locked;
+-                       if (PageDirty(page)) {
+-                               SetPageSwapBacked(page);
+-                               page_ref_unfreeze(page, 1);
+-                               goto keep_locked;
+-                       }
+-
++                       /*
++                        * No one can grab the page refcnt or redirty the page
++                        * after the page is successfully unmapped.
++                        */
++                       WARN_ON_ONCE(!page_ref_freeze(page, 1));
+                        count_vm_event(PGLAZYFREED);
+                        count_memcg_page_event(page, PGLAZYFREED);
+                } else if (!mapping || !__remove_mapping(mapping, page, true,
+
+>>
+>> Many thanks for reply!
+>>
+>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  mm/vmscan.c | 1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>>>> index a7602f71ec04..6483fe0e2065 100644
+>>>> --- a/mm/vmscan.c
+>>>> +++ b/mm/vmscan.c
+>>>> @@ -1628,6 +1628,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>>>>                         if (!page_ref_freeze(page, 1))
+>>>>                                 goto keep_locked;
+>>>>                         if (PageDirty(page)) {
+>>>> +                               SetPageSwapBacked(page);
+>>>>                                 page_ref_unfreeze(page, 1);
+>>>>                                 goto keep_locked;
+>>>>                         }
+>>>> --
+>>>> 2.23.0
+>>>>
+>>>>
+>>> .
+>>>
+>>
+> .
+> 
+
