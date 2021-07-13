@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCF93C740A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FDC3C740B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhGMQQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbhGMQQW (ORCPT
+        id S229500AbhGMQQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:16:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54372 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232432AbhGMQQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Jul 2021 12:16:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C873BC0613EE
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:13:31 -0700 (PDT)
-Message-Id: <20210713160747.710766613@linutronix.de>
+Message-Id: <20210713160747.809752662@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626192810;
+        s=2020; t=1626192811;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FF6MvAvtRttkwQnBpmp7rVGNOncLIBtp2kxN9m9Ox+A=;
-        b=IeS2cUe3wCcsuHfwExno/zVq5zYEvUlaWmBEwcmEKIT0jc/hW0p7+qru6C0mWYIdntEXNk
-        FqcisTEOl4PIy7xYIHiq88dsQLAUbG4olcnSSP3WwHQM4xyjVGSJHhk8fuIPhMimRUWbiW
-        YyJJMxYUKbV7m0GIMu724f3ceDDNUlGCil67drUKN2NM75Xjkfd/uvDTg6k4BbCp345z2i
-        8fq8EOTuLI/i9R4kWnDW8GDsa3rFI+Gl/SH7GIkJjMV5J36NHCQ77u53q3YgGjwOHGzNxv
-        D4zo2ftTOzo4zuECwoVw3XVUwsvmGT0uQjuVfigHvLC2D6+lhTPy8k2Qozv8Xw==
+        bh=hMSFNx5ea+xhPh9GeDC2KixS3GC8A4R7NFMfDf4P38Q=;
+        b=YpXCiOb1C/AccCyqXMTeHn38iWywfOKmvdUsouhMl/3392PituhYUO8JioD7mC1nbmI+S7
+        kJukx0zwhAKKemE9Ndfw6cf4CYqMreppRbtVWyh0tRFmMV/KU+y7c0xeHFcMFhnuwxxgg9
+        kbzACr5sJMJKWcNTE9Gw4RCBRkHyztYZfdQk4l6/LbrJ62jQnpOZDEwxoBpx+A28Z8mnQV
+        se4r4OBDTaApXV47k6l3OBUOu49Uh9z8yXSKXx3TtFMVETC0sTHLNO5vIIGAfrDKcztwTP
+        ENrH2aKFrM3DOQFm/UWGGeeIMLXQNWgnIP2w3zgAVlLX9NRXjccECm3PU0dT9A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626192810;
+        s=2020e; t=1626192811;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FF6MvAvtRttkwQnBpmp7rVGNOncLIBtp2kxN9m9Ox+A=;
-        b=Z1yJM6iKs2wu+69v3AcgBcaNTKA3xiKOyBnqur0HNnSw2iYgUW2K5EfuIksoUVWDSLarfU
-        oGohy2Ea68Ctf4Bg==
-Date:   Tue, 13 Jul 2021 17:11:12 +0200
+        bh=hMSFNx5ea+xhPh9GeDC2KixS3GC8A4R7NFMfDf4P38Q=;
+        b=97NZ2hOMDfiPMJK3vb7WiQu2ESwKlmNte9osdOTuQRPwBHX9K5+jrYocrIQzbxjWCLv5B2
+        QMG0RHzQBQKaQCCA==
+Date:   Tue, 13 Jul 2021 17:11:13 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,8 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 18/50] locking/rtmutex: Guard regular sleeping locks specific
- functions
+Subject: [patch 19/50] locking/spinlock: Split the lock types header
 References: <20210713151054.700719949@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,297 +56,157 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Guard the regular sleeping lock specific functionality which is used for
-rtmutex on non-RT enabled kernels and for mutex, rtmutex and semaphores on
-RT enabled kernels so the code can be reused for the RT specific
-implementation of spinlocks and rwlocks in a different compilation unit.
+Move raw_spinlock into its own file. Prepare for RT 'sleeping spinlocks' to
+avoid header recursion as RT locks require rtmutex.h which in turn requires
+the raw spinlock types.
 
 No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex.c     |  254 ++++++++++++++++++++++---------------------
- kernel/locking/rtmutex_api.c |    1 
- 2 files changed, 132 insertions(+), 123 deletions(-)
+ include/linux/rwlock_types.h       |  4 ++-
+ include/linux/spinlock.h           |  4 ++-
+ include/linux/spinlock_types.h     | 19 +-----------
+ include/linux/spinlock_types_raw.h | 65 +++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 74 insertions(+), 18 deletions(-)
+ create mode 100644 include/linux/spinlock_types_raw.h
 ---
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1073,10 +1073,139 @@ static void __sched mark_wakeup_next_wai
- 	raw_spin_unlock(&current->pi_lock);
- }
+diff --git a/include/linux/rwlock_types.h b/include/linux/rwlock_types.h
+index 3bd03e18061c..0ad226b5d8fd 100644
+--- a/include/linux/rwlock_types.h
++++ b/include/linux/rwlock_types.h
+@@ -1,6 +1,10 @@
+ #ifndef __LINUX_RWLOCK_TYPES_H
+ #define __LINUX_RWLOCK_TYPES_H
  
-+static int __sched __rt_mutex_slowtrylock(struct rt_mutex *lock)
-+{
-+	int ret = try_to_take_rt_mutex(lock, current, NULL);
-+
-+	/*
-+	 * try_to_take_rt_mutex() sets the lock waiters bit
-+	 * unconditionally. Clean this up.
-+	 */
-+	fixup_rt_mutex_waiters(lock);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Slow path try-lock function:
-+ */
-+static int __sched rt_mutex_slowtrylock(struct rt_mutex *lock)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	/*
-+	 * If the lock already has an owner we fail to get the lock.
-+	 * This can be done without taking the @lock->wait_lock as
-+	 * it is only being read, and this is a trylock anyway.
-+	 */
-+	if (rt_mutex_owner(lock))
-+		return 0;
-+
-+	/*
-+	 * The mutex has currently no owner. Lock the wait lock and try to
-+	 * acquire the lock. We use irqsave here to support early boot calls.
-+	 */
-+	raw_spin_lock_irqsave(&lock->wait_lock, flags);
-+
-+	ret = __rt_mutex_slowtrylock(lock);
-+
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-+
-+	return ret;
-+}
-+
-+static __always_inline int __rt_mutex_trylock(struct rt_mutex *lock)
-+{
-+	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
-+		return 1;
-+
-+	return rt_mutex_slowtrylock(lock);
-+}
-+
-+/*
-+ * Slow path to release a rt-mutex.
-+ */
-+static void __sched rt_mutex_slowunlock(struct rt_mutex *lock)
-+{
-+	DEFINE_RT_MUTEX_WAKE_Q_HEAD(wqh);
-+	unsigned long flags;
-+
-+	/* irqsave required to support early boot calls */
-+	raw_spin_lock_irqsave(&lock->wait_lock, flags);
-+
-+	debug_rt_mutex_unlock(lock);
-+
-+	/*
-+	 * We must be careful here if the fast path is enabled. If we
-+	 * have no waiters queued we cannot set owner to NULL here
-+	 * because of:
-+	 *
-+	 * foo->lock->owner = NULL;
-+	 *			rtmutex_lock(foo->lock);   <- fast path
-+	 *			free = atomic_dec_and_test(foo->refcnt);
-+	 *			rtmutex_unlock(foo->lock); <- fast path
-+	 *			if (free)
-+	 *				kfree(foo);
-+	 * raw_spin_unlock(foo->lock->wait_lock);
-+	 *
-+	 * So for the fastpath enabled kernel:
-+	 *
-+	 * Nothing can set the waiters bit as long as we hold
-+	 * lock->wait_lock. So we do the following sequence:
-+	 *
-+	 *	owner = rt_mutex_owner(lock);
-+	 *	clear_rt_mutex_waiters(lock);
-+	 *	raw_spin_unlock(&lock->wait_lock);
-+	 *	if (cmpxchg(&lock->owner, owner, 0) == owner)
-+	 *		return;
-+	 *	goto retry;
-+	 *
-+	 * The fastpath disabled variant is simple as all access to
-+	 * lock->owner is serialized by lock->wait_lock:
-+	 *
-+	 *	lock->owner = NULL;
-+	 *	raw_spin_unlock(&lock->wait_lock);
-+	 */
-+	while (!rt_mutex_has_waiters(lock)) {
-+		/* Drops lock->wait_lock ! */
-+		if (unlock_rt_mutex_safe(lock, flags) == true)
-+			return;
-+		/* Relock the rtmutex and try again */
-+		raw_spin_lock_irqsave(&lock->wait_lock, flags);
-+	}
-+
-+	/*
-+	 * The wakeup next waiter path does not suffer from the above
-+	 * race. See the comments there.
-+	 *
-+	 * Queue the next waiter for wakeup once we release the wait_lock.
-+	 */
-+	mark_wakeup_next_waiter(&wqh, lock);
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-+
-+	rt_mutex_wake_up_q(&wqh);
-+}
-+
-+static __always_inline void __rt_mutex_unlock(struct rt_mutex *lock)
-+{
-+	if (likely(rt_mutex_cmpxchg_release(lock, current, NULL)))
-+		return;
-+
-+	rt_mutex_slowunlock(lock);
-+}
-+
-+#ifdef RT_MUTEX_BUILD_MUTEX
-+/*
-+ * Functions required for:
-+ *	- rtmutex, futex on all kernels
-+ *	- mutex and rwsem substitutions on RT kernels
-+ */
++#if !defined(__LINUX_SPINLOCK_TYPES_H)
++# error "Do not include directly, include spinlock_types.h"
++#endif
 +
  /*
-  * Remove a waiter from a lock and give up
+  * include/linux/rwlock_types.h - generic rwlock type definitions
+  *				  and initializers
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index 79897841a2cc..5803b56622a8 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -12,6 +12,8 @@
+  *  asm/spinlock_types.h: contains the arch_spinlock_t/arch_rwlock_t and the
+  *                        initializers
   *
-- * Must be called with lock->wait_lock held and interrupts disabled. I must
-+ * Must be called with lock->wait_lock held and interrupts disabled. It must
-  * have just failed to try_to_take_rt_mutex().
++ *  linux/spinlock_types_raw:
++ *			  The raw types and initializers
+  *  linux/spinlock_types.h:
+  *                        defines the generic type and initializers
+  *
+@@ -31,6 +33,8 @@
+  *                        contains the generic, simplified UP spinlock type.
+  *                        (which is an empty structure on non-debug builds)
+  *
++ *  linux/spinlock_types_raw:
++ *			  The raw RT types and initializers
+  *  linux/spinlock_types.h:
+  *                        defines the generic type and initializers
+  *
+diff --git a/include/linux/spinlock_types.h b/include/linux/spinlock_types.h
+index b981caafe8bf..7c8107c280c0 100644
+--- a/include/linux/spinlock_types.h
++++ b/include/linux/spinlock_types.h
+@@ -9,24 +9,7 @@
+  * Released under the General Public License (GPL).
   */
- static void __sched remove_waiter(struct rt_mutex *lock,
-@@ -1279,125 +1408,4 @@ static __always_inline int __rt_mutex_lo
  
- 	return rt_mutex_slowlock(lock, state);
- }
+-#if defined(CONFIG_SMP)
+-# include <asm/spinlock_types.h>
+-#else
+-# include <linux/spinlock_types_up.h>
+-#endif
 -
--static int __sched __rt_mutex_slowtrylock(struct rt_mutex *lock)
--{
--	int ret = try_to_take_rt_mutex(lock, current, NULL);
+-#include <linux/lockdep_types.h>
 -
--	/*
--	 * try_to_take_rt_mutex() sets the lock waiters bit
--	 * unconditionally. Clean this up.
--	 */
--	fixup_rt_mutex_waiters(lock);
--
--	return ret;
--}
--
--/*
-- * Slow path try-lock function:
-- */
--static int __sched rt_mutex_slowtrylock(struct rt_mutex *lock)
--{
--	unsigned long flags;
--	int ret;
--
--	/*
--	 * If the lock already has an owner we fail to get the lock.
--	 * This can be done without taking the @lock->wait_lock as
--	 * it is only being read, and this is a trylock anyway.
--	 */
--	if (rt_mutex_owner(lock))
--		return 0;
--
--	/*
--	 * The mutex has currently no owner. Lock the wait lock and try to
--	 * acquire the lock. We use irqsave here to support early boot calls.
--	 */
--	raw_spin_lock_irqsave(&lock->wait_lock, flags);
--
--	ret = __rt_mutex_slowtrylock(lock);
--
--	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
--
--	return ret;
--}
--
--static __always_inline int __rt_mutex_trylock(struct rt_mutex *lock)
--{
--	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
--		return 1;
--
--	return rt_mutex_slowtrylock(lock);
--}
--
--/*
-- * Slow path to release a rt-mutex.
-- */
--static void __sched rt_mutex_slowunlock(struct rt_mutex *lock)
--{
--	DEFINE_RT_MUTEX_WAKE_Q_HEAD(wqh);
--	unsigned long flags;
--
--	/* irqsave required to support early boot calls */
--	raw_spin_lock_irqsave(&lock->wait_lock, flags);
--
--	debug_rt_mutex_unlock(lock);
--
--	/*
--	 * We must be careful here if the fast path is enabled. If we
--	 * have no waiters queued we cannot set owner to NULL here
--	 * because of:
--	 *
--	 * foo->lock->owner = NULL;
--	 *			rtmutex_lock(foo->lock);   <- fast path
--	 *			free = atomic_dec_and_test(foo->refcnt);
--	 *			rtmutex_unlock(foo->lock); <- fast path
--	 *			if (free)
--	 *				kfree(foo);
--	 * raw_spin_unlock(foo->lock->wait_lock);
--	 *
--	 * So for the fastpath enabled kernel:
--	 *
--	 * Nothing can set the waiters bit as long as we hold
--	 * lock->wait_lock. So we do the following sequence:
--	 *
--	 *	owner = rt_mutex_owner(lock);
--	 *	clear_rt_mutex_waiters(lock);
--	 *	raw_spin_unlock(&lock->wait_lock);
--	 *	if (cmpxchg(&lock->owner, owner, 0) == owner)
--	 *		return;
--	 *	goto retry;
--	 *
--	 * The fastpath disabled variant is simple as all access to
--	 * lock->owner is serialized by lock->wait_lock:
--	 *
--	 *	lock->owner = NULL;
--	 *	raw_spin_unlock(&lock->wait_lock);
--	 */
--	while (!rt_mutex_has_waiters(lock)) {
--		/* Drops lock->wait_lock ! */
--		if (unlock_rt_mutex_safe(lock, flags) == true)
--			return;
--		/* Relock the rtmutex and try again */
--		raw_spin_lock_irqsave(&lock->wait_lock, flags);
--	}
--
--	/*
--	 * The wakeup next waiter path does not suffer from the above
--	 * race. See the comments there.
--	 *
--	 * Queue the next waiter for wakeup once we release the wait_lock.
--	 */
--	mark_wakeup_next_waiter(&wqh, lock);
--	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
--
--	rt_mutex_wake_up_q(&wqh);
--}
--
--static __always_inline void __rt_mutex_unlock(struct rt_mutex *lock)
--{
--	if (likely(rt_mutex_cmpxchg_release(lock, current, NULL)))
--		return;
--
--	rt_mutex_slowunlock(lock);
--}
-+#endif /* RT_MUTEX_BUILD_MUTEX */
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -5,6 +5,7 @@
- #include <linux/spinlock.h>
- #include <linux/export.h>
+-typedef struct raw_spinlock {
+-	arch_spinlock_t raw_lock;
+-#ifdef CONFIG_DEBUG_SPINLOCK
+-	unsigned int magic, owner_cpu;
+-	void *owner;
+-#endif
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-	struct lockdep_map dep_map;
+-#endif
+-} raw_spinlock_t;
++#include <linux/spinlock_types_raw.h>
  
-+#define RT_MUTEX_BUILD_MUTEX
- #include "rtmutex.c"
+ #define SPINLOCK_MAGIC		0xdead4ead
  
- /*
+diff --git a/include/linux/spinlock_types_raw.h b/include/linux/spinlock_types_raw.h
+new file mode 100644
+index 000000000000..1d4a180e983d
+--- /dev/null
++++ b/include/linux/spinlock_types_raw.h
+@@ -0,0 +1,65 @@
++#ifndef __LINUX_SPINLOCK_TYPES_RAW_H
++#define __LINUX_SPINLOCK_TYPES_RAW_H
++
++#include <linux/types.h>
++
++#if defined(CONFIG_SMP)
++# include <asm/spinlock_types.h>
++#else
++# include <linux/spinlock_types_up.h>
++#endif
++
++#include <linux/lockdep_types.h>
++
++typedef struct raw_spinlock {
++	arch_spinlock_t raw_lock;
++#ifdef CONFIG_DEBUG_SPINLOCK
++	unsigned int magic, owner_cpu;
++	void *owner;
++#endif
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	struct lockdep_map dep_map;
++#endif
++} raw_spinlock_t;
++
++#define SPINLOCK_MAGIC		0xdead4ead
++
++#define SPINLOCK_OWNER_INIT	((void *)-1L)
++
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++# define RAW_SPIN_DEP_MAP_INIT(lockname)		\
++	.dep_map = {					\
++		.name = #lockname,			\
++		.wait_type_inner = LD_WAIT_SPIN,	\
++	}
++# define SPIN_DEP_MAP_INIT(lockname)			\
++	.dep_map = {					\
++		.name = #lockname,			\
++		.wait_type_inner = LD_WAIT_CONFIG,	\
++	}
++#else
++# define RAW_SPIN_DEP_MAP_INIT(lockname)
++# define SPIN_DEP_MAP_INIT(lockname)
++#endif
++
++#ifdef CONFIG_DEBUG_SPINLOCK
++# define SPIN_DEBUG_INIT(lockname)		\
++	.magic = SPINLOCK_MAGIC,		\
++	.owner_cpu = -1,			\
++	.owner = SPINLOCK_OWNER_INIT,
++#else
++# define SPIN_DEBUG_INIT(lockname)
++#endif
++
++#define __RAW_SPIN_LOCK_INITIALIZER(lockname)	\
++{						\
++	.raw_lock = __ARCH_SPIN_LOCK_UNLOCKED,	\
++	SPIN_DEBUG_INIT(lockname)		\
++	RAW_SPIN_DEP_MAP_INIT(lockname) }
++
++#define __RAW_SPIN_LOCK_UNLOCKED(lockname)	\
++	(raw_spinlock_t) __RAW_SPIN_LOCK_INITIALIZER(lockname)
++
++#define DEFINE_RAW_SPINLOCK(x)  raw_spinlock_t x = __RAW_SPIN_LOCK_UNLOCKED(x)
++
++#endif
 
