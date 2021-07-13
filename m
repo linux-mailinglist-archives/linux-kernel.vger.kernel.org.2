@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204263C6E52
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522CC3C6E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbhGMKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:20:12 -0400
-Received: from mga09.intel.com ([134.134.136.24]:62825 "EHLO mga09.intel.com"
+        id S235353AbhGMKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 06:25:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235143AbhGMKUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:20:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="210112538"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="210112538"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 03:17:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="570327144"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Jul 2021 03:17:14 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EC93EFF; Tue, 13 Jul 2021 13:17:41 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] serial: 8250_pci: Enumerate Elkhart Lake UARTs via dedicated driver
-Date:   Tue, 13 Jul 2021 13:17:39 +0300
-Message-Id: <20210713101739.36962-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S235143AbhGMKZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 06:25:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A92FE611CB;
+        Tue, 13 Jul 2021 10:22:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626171733;
+        bh=S4DYoR9vB4H4k1IjW6dUgtFP/bjqo4vpc0Qfg9yYKco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cFZNjRNL1kq3sX7/5bp5TZPoTN+tD1OvV04aki0pPrHpKKlOIv+oAfGTOfqZ0Fppa
+         blAz6lnKF3FhfMbT+dSfeh9x0jCTkEvChlJfrvhNLa9oJQrGrFlfSnZ9NrHOIVYdRD
+         q1PfMdb01UIZ0ZncIBns8zkRluEKBiRQYALj/fIDddDdvXbd2XAKw6fJoUJucEIcxO
+         6xVMqsWHr643fRL8rXMVhbuYlF3LFoujvTp6ADa2LaY4s02C5jd+K06VeExaWv68RE
+         nJ7S8IhQuzmQ7K0nvAp94YZRbtmT7lPkd+ym1ui8tEDgRsHNhE4qjFgDT+Ser2n80L
+         KYfyyZVq1wdow==
+Date:   Tue, 13 Jul 2021 13:22:07 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] mm: remove pfn_valid_within() and
+ CONFIG_HOLES_IN_ZONE
+Message-ID: <YO1pT1bjMfldbQKg@kernel.org>
+References: <20210713080035.7464-1-rppt@kernel.org>
+ <20210713080035.7464-2-rppt@kernel.org>
+ <7300dfe1-0c6a-ae2e-2c48-c885248ec263@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7300dfe1-0c6a-ae2e-2c48-c885248ec263@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Elkhart Lake UARTs are PCI enumerated Synopsys DesignWare v4.0+ UART
-integrated with Intel iDMA 32-bit DMA controller. There is a specific
-driver to handle them, i.e. 8250_lpss. Hence, disable 8250_pci
-enumeration for these UARTs.
+On Tue, Jul 13, 2021 at 11:51:46AM +0200, David Hildenbrand wrote:
+> On 13.07.21 10:00, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > After recent changes in freeing of the unused parts of the memory map and
+> > rework of pfn_valid() in arm and arm64 there are no architectures that can
+> > have holes in the memory map within a pageblock and so nothing can enable
+> > CONFIG_HOLES_IN_ZONE which guards non trivial implementation of
+> > pfn_valid_within().
+> > 
+> > With that, pfn_valid_within() is always hardwired to 1 and can be
+> > completely removed.
+> > 
+> > Remove calls to pfn_valid_within() and CONFIG_HOLES_IN_ZONE.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There is currently the discussion to increase MAX_ORDER, for example, to
+> cover 1GiB instead of 4MiB on x86-64. This would mean that we could
+> suddenly, again, have holes insides MAX_ORDER - 1 pages.
+> 
+> So I assume if we ever go down that path, we'll need something like this
+> again.
 
-Fixes: 1b91d97c66ef ("serial: 8250_lpss: Add ->setup() for Elkhart Lake ports")
-Fixes: 4f912b898dc2 ("serial: 8250_lpss: Enable HS UART on Elkhart Lake")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_pci.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 75827b608fdb..02985cf90ef2 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -3836,6 +3836,12 @@ static const struct pci_device_id blacklist[] = {
- 	{ PCI_VDEVICE(INTEL, 0x0f0c), },
- 	{ PCI_VDEVICE(INTEL, 0x228a), },
- 	{ PCI_VDEVICE(INTEL, 0x228c), },
-+	{ PCI_VDEVICE(INTEL, 0x4b96), },
-+	{ PCI_VDEVICE(INTEL, 0x4b97), },
-+	{ PCI_VDEVICE(INTEL, 0x4b98), },
-+	{ PCI_VDEVICE(INTEL, 0x4b99), },
-+	{ PCI_VDEVICE(INTEL, 0x4b9a), },
-+	{ PCI_VDEVICE(INTEL, 0x4b9b), },
- 	{ PCI_VDEVICE(INTEL, 0x9ce3), },
- 	{ PCI_VDEVICE(INTEL, 0x9ce4), },
+It depends whether pageblock_order will be also increased. PFN walkers rely
+on continuity of pageblocks rather than MAX_ORDER chunks, so if
+pageblock_order won't change, there won't be need to check for pfn_valid()
+inside a pageblock.
  
--- 
-2.30.2
+> For now, this looks like the right thing to do
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
 
+Thanks!
+
+-- 
+Sincerely yours,
+Mike.
