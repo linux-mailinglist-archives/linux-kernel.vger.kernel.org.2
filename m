@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB553C68C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1183C689C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhGMDBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 23:01:07 -0400
-Received: from gateway31.websitewelcome.com ([192.185.143.31]:14660 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229604AbhGMDBG (ORCPT
+        id S233917AbhGMCnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233756AbhGMCnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 23:01:06 -0400
-X-Greylist: delayed 1234 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Jul 2021 23:01:06 EDT
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 4ABD1ED7F7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:37:41 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 38Inm6OBtpGxH38InmPlVG; Mon, 12 Jul 2021 21:37:41 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=wpv8psm02uZEIzGe4pfHvQI+mzbvtCWaDHm6UbEsKjo=; b=Xy0fNMGCoGgpSiPCxIEYNcFbUF
-        8OblOSuek7fviIUlxqlv/XmRV6oUcmBAgWXJGPhLSn9zE2wG/xcJPuVH9xUkUWYf9m+sPv9m/b4HK
-        BO+UXIqgHswD+SBV1v5m/L6n332Y85uiGjll4w93JOED1tOAyK+74AKqElfXrJcTqwlotBo6RSepu
-        gI5bYF2Z2IWSpIuSAbjFToQBMWreO93Ysma6gtKZJLiRmbHXgg6tyALvZi72g2TDhnfQgI+Ai14zr
-        UYnUymVjAqN/guLbI62QUh1nJtuXPL/UVsXdVG2UCPz0eMSEfeyGY2w9MZUN/VbDcL7FU6GzmUy+M
-        ksm2zJfw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:36036 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1m38Ik-000fX5-Th; Mon, 12 Jul 2021 21:37:38 -0500
-Subject: Re: linux-next: build warning after merge of the kspp-gustavo tree
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210713102230.728b4899@canb.auug.org.au>
- <26f2ec3c-35ae-4361-62a4-ad0a84fc2399@embeddedor.com>
-Message-ID: <8242dd71-57ad-1c69-900e-db1773be643e@embeddedor.com>
-Date:   Mon, 12 Jul 2021 21:39:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 22:43:01 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB77C0613EF
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:40:12 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id l1so9192687edr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6SKPfn6xRnP6RvM1343nJURmtoEoYmDq0f1l/33/h84=;
+        b=x7RRPQyv9jG3OzPccMOSnW3VrdK3C+C7wh57/h4YZqZTFnUPLVZIkbejJqFM1bGJXD
+         hevjB4DEy9ElJW2GegUT1Xz2iGCm80zDMxIHFu6XRcIUtWY+iXCOVvT0Riyb19LtNK/X
+         RALuOfemsmqkkECHX8UFntgZwQiBNizAreHhCk+nxQ9KufS/UsFKP4VvmFp4KT9issBw
+         d3HYbjdCRd67BmavBuE9GJTUdo8fV2oYiXZC7dHoKcGKuGW1xjO37V29xWHAPtcL2ejB
+         2C2bzm6u2g5vlaz5YJv05KqWddMghzzTRd6D0hlHY3+5n9BgfSBLXDolpjLtUY0GcJNu
+         torw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6SKPfn6xRnP6RvM1343nJURmtoEoYmDq0f1l/33/h84=;
+        b=YybfufnNnuIXekMWibhmk3W0EalurZ0Iv/d7DMgKFOIwy/9OXu6NOGXn/Gl2kAOpRO
+         aAdEK0Fz2NFab7hTAJ9TdEcljWRF/RaocCzpBn4zmO2irRaG+mvR6rBPPHBc/8H7yt24
+         lnZ2JOTj6jmH0A58ItBVZ4knw3PO+LN8rY+zFuCbFnzPGRIj3HB/g/uzHyQJbf2l/O03
+         ClH1YhHezmIYoW1P8zORSl+sn2M0IxySYxfq9Pe7ubQWyzvQHuEOwoUhFroqcewIRrkl
+         18ROI9H7FCFUjscQKh217NfiKjPgWLwn9bGz7f9gFZXjG9QpsLCFUALfbDKyFKoYYlUE
+         HFjQ==
+X-Gm-Message-State: AOAM5318u+U5n6iFN56KBswceqWpZsof/4kcQwIgUrivtf8L9Eyn7j0t
+        g90OMjvzE13CiH81g2g8TgauQ+lkGXKWyCu1+njz
+X-Google-Smtp-Source: ABdhPJyZ/TPOOkCsJy185npELs8RkJjMh8prX3d/UtGFgQ0YS2+kXH0n7ovix3Q1wjS+ou3pLjc8wCtqxZLZR+mgDZA=
+X-Received: by 2002:aa7:dd88:: with SMTP id g8mr2479547edv.196.1626144010862;
+ Mon, 12 Jul 2021 19:40:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <26f2ec3c-35ae-4361-62a4-ad0a84fc2399@embeddedor.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1m38Ik-000fX5-Th
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:36036
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20210705090922.3321178-1-roberto.sassu@huawei.com> <20210705090922.3321178-4-roberto.sassu@huawei.com>
+In-Reply-To: <20210705090922.3321178-4-roberto.sassu@huawei.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 12 Jul 2021 22:40:00 -0400
+Message-ID: <CAHC9VhQAM+-TXOHLkcY2VGyJ3PNES0EaNr3PccHT=j3nGAvfPQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] ima: Add digest and digest_len params to the
+ functions to measure a buffer
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        prsriva02@gmail.com, tusharsu@linux.microsoft.com,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen
+On Mon, Jul 5, 2021 at 5:09 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
+>
+> This patch adds the 'digest' and 'digest_len' parameters to
+> ima_measure_critical_data() and process_buffer_measurement(), so that
+> callers can get the digest of the passed buffer.
+>
+> These functions calculate the digest even if there is no suitable rule in
+> the IMA policy and, in this case, they simply return 1 before generating a
+> new measurement entry.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  include/linux/ima.h                          |  5 +--
+>  security/integrity/ima/ima.h                 |  2 +-
+>  security/integrity/ima/ima_appraise.c        |  2 +-
+>  security/integrity/ima/ima_asymmetric_keys.c |  2 +-
+>  security/integrity/ima/ima_init.c            |  3 +-
+>  security/integrity/ima/ima_main.c            | 36 ++++++++++++++------
+>  security/integrity/ima/ima_queue_keys.c      |  2 +-
+>  security/selinux/ima.c                       |  6 ++--
+>  8 files changed, 39 insertions(+), 19 deletions(-)
 
-On 7/12/21 20:10, Gustavo A. R. Silva wrote:
-> Hi Stephen,
-> 
-> On 7/12/21 19:22, Stephen Rothwell wrote:
->> Hi all,
->>
->> After merging the kspp-gustavo tree, today's linux-next build (arm
->> multi_v7_defconfig) produced this warning:
->>
->> /home/sfr/next/next/drivers/gpu/drm/msm/msm_gem.c: In function 'msm_gem_new_impl':
->> /home/sfr/next/next/drivers/gpu/drm/msm/msm_gem.c:1170:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
->>  1170 |   if (priv->has_cached_coherent)
->>       |      ^
->> /home/sfr/next/next/drivers/gpu/drm/msm/msm_gem.c:1173:2: note: here
->>  1173 |  default:
->>       |  ^~~~~~~
->>
->> Introduced by commit
->>
->>   d12e339044a0 ("drm/msm: add MSM_BO_CACHED_COHERENT")
->>
->> Presumably exposed by commit
->>
->>   73ffc61f4a8b ("Makefile: Enable -Wimplicit-fallthrough for Clang")
->>
->> though I am not sure why since I am building with gcc.  The first
->> commit above introduces a new use of /* fallthrough */
-> 
-> We have previously adopted the new pseudo-keyword macro fallthrough; So,
-> we want to avoid having more /* fallthrough */ comments being introduced.
-> This is also being enforced by commit
-> 
-> 	73ffc61f4a8b ("Makefile: Enable -Wimplicit-fallthrough for Clang")
-> 
-> for both GCC and Clang.
-> 
-> So, the fix for this issue is merely to replace the /* fallthrough */ comment
-> with fallthrough;
+The SELinux changes are trivial and fall into that
+cross-subsystem-ACK-not-really-necessary category, but why not :)
 
-I've already added a fix for this to my -next branch:
+For the SELinux bits:
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=for-next/kspp&id=e181ad43887c6b6b5995e9b191666f04242d77eb
-
-Thanks for the report!
---
-Gustavo
+-- 
+paul moore
+www.paul-moore.com
