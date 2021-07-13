@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BDA3C68F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 05:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56B03C68F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 05:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhGMECJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 00:02:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14073 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhGMECH (ORCPT
+        id S229545AbhGMEA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 00:00:57 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15916 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhGMEAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 00:02:07 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GP6Hh0BsyzbbqG;
-        Tue, 13 Jul 2021 11:56:00 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 11:59:09 +0800
-Received: from linux-ibm.site (10.175.102.37) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 11:59:08 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <sudeep.holla@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <james.morse@arm.com>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] cacheinfo: clear cache_leaves(cpu) in free_cache_attributes()
-Date:   Tue, 13 Jul 2021 11:47:38 +0800
-Message-ID: <1626148058-55230-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        Tue, 13 Jul 2021 00:00:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626148680; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=w42WAE4DU8ptf8ebzyNY4PLTveQspPorDiUyQcBnboo=;
+ b=oYgMQZanp1u8lbYD7YtVCRfaEYE+pNWcta6ZBNwqZBmy647gZeQt4b0QGd+1TYIO4Y9d1I07
+ D0v6n3lDbCYyYmju3hoOapKTQnkmJoeYqxKjKPwaWQ8yAS6emHX8oM4Vy22BsuaDJj5GEszu
+ 8odFq19/HyWuxmkZrtKaOK6IFJA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60ed0f457b2963a282f2e13a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 03:57:57
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 60FF4C4338A; Tue, 13 Jul 2021 03:57:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CF787C433D3;
+        Tue, 13 Jul 2021 03:57:55 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 13 Jul 2021 09:27:55 +0530
+From:   skakit@codeaurora.org
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH V4 0/5] Add support for PMK8350 PON_HLOS PMIC peripheral
+In-Reply-To: <1620800053-26405-1-git-send-email-skakit@codeaurora.org>
+References: <1620800053-26405-1-git-send-email-skakit@codeaurora.org>
+Message-ID: <676720d932927fa0850924500da565df@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On ARM64, when PPTT(Processor Properties Topology Table) is not
-implemented in ACPI boot, we will goto 'free_ci' with the following
-print:
-  Unable to detect cache hierarchy for CPU 0
+Hi Dmitry,
 
-But some other codes may still use 'num_leaves' to iterate through the
-'info_list', such as get_cpu_cacheinfo_id(). If 'info_list' is NULL , it
-would crash. So clear 'num_leaves' in free_cache_attributes().
+On 2021-05-12 11:44, satya priya wrote:
+> David Collins (2):
+>   input: pm8941-pwrkey: add support for PMK8350 PON_HLOS PMIC 
+> peripheral
+>   dt-bindings: input: pm8941-pwrkey: add pmk8350 compatible strings
+> 
 
-Fixes: 246246cbde5e ("drivers: base: support cpu cache information
-interface to userspace via sysfs")
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/base/cacheinfo.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-index bfc0959..dad2962 100644
---- a/drivers/base/cacheinfo.c
-+++ b/drivers/base/cacheinfo.c
-@@ -297,6 +297,7 @@ static void free_cache_attributes(unsigned int cpu)
- 
- 	kfree(per_cpu_cacheinfo(cpu));
- 	per_cpu_cacheinfo(cpu) = NULL;
-+	cache_leaves(cpu) = 0;
- }
- 
- int __weak init_cache_level(unsigned int cpu)
--- 
-1.7.12.4
+> satya priya (3):
+>   dt-bindings: power: reset: Change 'additionalProperties' to true
+>   dt-bindings: input: pm8941-pwrkey: Convert pm8941 power key binding 
+> to
+>     yaml
+>   dt-bindings: power: reset: qcom-pon: Convert qcom PON binding to yaml
+> 
+Could you please pick these 3 patches.
 
+Thanks,
+Satya Priya
+>  .../bindings/input/qcom,pm8941-pwrkey.txt          |  53 -----------
+>  .../bindings/input/qcom,pm8941-pwrkey.yaml         |  51 ++++++++++
+>  .../devicetree/bindings/power/reset/qcom,pon.txt   |  49 ----------
+>  .../devicetree/bindings/power/reset/qcom,pon.yaml  |  80 
+> ++++++++++++++++
+>  .../bindings/power/reset/reboot-mode.yaml          |   2 +-
+>  drivers/input/misc/pm8941-pwrkey.c                 | 103 
+> ++++++++++++++-------
+>  6 files changed, 204 insertions(+), 134 deletions(-)
+>  delete mode 100644
+> Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
+>  create mode 100644
+> Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
+>  delete mode 100644 
+> Documentation/devicetree/bindings/power/reset/qcom,pon.txt
+>  create mode 100644 
+> Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
