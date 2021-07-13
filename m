@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E23D3C75CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BBE3C75D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhGMRhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        id S233427AbhGMRjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhGMRhV (ORCPT
+        with ESMTP id S229500AbhGMRjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:37:21 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211C4C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:34:31 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so2574545pjo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:34:31 -0700 (PDT)
+        Tue, 13 Jul 2021 13:39:17 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14B8C0613DD;
+        Tue, 13 Jul 2021 10:36:27 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id z1so24045283ils.0;
+        Tue, 13 Jul 2021 10:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hd1cC6I5OHV5VCDUp3dibhj6CjJ47a+lGBgbKjVqLDo=;
-        b=LleuEq/lqSw5USk8nmG+gJYpplLw6vMTPgb+W/T4AXU4Ii5D0O3PT1eyhcbudFfmff
-         TKg6AnZdz6bJALmhn65rU5RkWnoDqnoxVw0tw8dP9uThmiDxvTDb89l7t+E8XcaKZyD3
-         VcOAWoPj56sQ81fDzRL4slLRfpTI5d+DCPpaCGajnzJWpL+UVB1tXow2JH4sjLGsWGKh
-         LFpEUBG8fDERCteyN3HQDkQ0nMLRGlIWJRzZm3aWLva1nl0dDcMQY97LskY5nyJrW3V8
-         6B2A8ZHsQTDo04vqlaTG1NhmnmVcBq7wsxrm1vt8vsldGDPr0ksDNg/jt2ixU2lWccI5
-         3Mag==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3g3Cijcla/89iW/EaZQ3ICotAAUfLUSO4IjB0gva++I=;
+        b=TLYTOtHW+I/97sh6kVagbdreOYfI9M9MYYXUCCXpCj6pp3RAp5fg+pgCzCHNpnTRDA
+         qiE02gVe1eszsEHXhwrCqS132BTv4Tfu5zf4aRZL53pmUpqvohz0clyltG6EJiHLzqFW
+         d7NM4VorrQZVetfIUh/2Z6bLE82VnMZXtxNb0B4MQTMIz8OIz6lyqJMsZLVP2sR85APH
+         PRlvj8fQaDbvH9YdJpNCyXsSnoOKHLjcBxO0ojnoIIqKBRKufBN69IY+28lE9gKPvLCt
+         D0jt2LAbkB/Vcgl6+FiQPDIwvYrx/4iAAgrS1M1s47RXjoHDwKUwhh6ArpWDo1LtDt1t
+         FfHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hd1cC6I5OHV5VCDUp3dibhj6CjJ47a+lGBgbKjVqLDo=;
-        b=KWpAN+TVWkGCNYo7YxaFULLIPxvgYeiXxWV0sjDqAVuz2XsOgvle2j2y+dp1J7Sgjk
-         wnKeilzbcagBSLOouaFMIiSaqjTLYv41q16FITYOwJbn8dXXlfZeKynOv4iqsCjdrwSz
-         DRGAjI3XOlpN3keTjVuc+HubGzi8TET/DpC2Z5oRtTcM8jdj1NHainiMMGTQToT0KkJv
-         DpoejSRK7p99j6ObQEWqupVB4H/KZNHYh4HwrqrnOlcGg1DSqysE9d2pLludE7NdDhJS
-         I8xMMNPEVhQ3iyE4AhX1Eh3IsYYVDuAeJzOr0HM4q+whvBtewRiW+UqDJNaARnt37X+4
-         u2ag==
-X-Gm-Message-State: AOAM533NJ/GOWxCoBAOrGSOsaI5ZfROlAgne1T6LC9yZyCFO150FRmBr
-        4KulNBM0NM88nx255ildGOv+vqpPcx8R0w==
-X-Google-Smtp-Source: ABdhPJzoax2/gc1CHqtAG4G+Lr32vWff3NrNBVMUJoPXvCNFGjysNQxujHpb68AeTfZJajIcgLsexQ==
-X-Received: by 2002:a17:90a:3807:: with SMTP id w7mr5207288pjb.115.1626197670459;
-        Tue, 13 Jul 2021 10:34:30 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id pj3sm7604658pjb.35.2021.07.13.10.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 10:34:29 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 17:34:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        bgardon@google.com
-Subject: Re: [PATCH 1/2] KVM: Block memslot updates across range_start() and
- range_end()
-Message-ID: <YO3OomTEhGFo2yee@google.com>
-References: <20210610120615.172224-1-pbonzini@redhat.com>
- <20210610120615.172224-2-pbonzini@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3g3Cijcla/89iW/EaZQ3ICotAAUfLUSO4IjB0gva++I=;
+        b=EpL85oBxPUhbywwHRQHDK2Wga/Y3PNzt9eU/xbk6NbkzIT/dZRPDg1A4B+ZdIf0eBw
+         LibvcUq+VtkeBaN6d5g+022QOWY103Olp5JjOHlSC6g6KXZPZRAxeiOlRDDa15P4vVPg
+         lPiS2GyMwUG4bbvdKURXJteHOmI0vrDaXx10wZtOhBYBDXiYqC6YhLmatMKlRPYhAMyr
+         0/dpol2cS7PqQ4HxV44vRbjoUYLg6QqH1LNZTgma9lAhRrwXP11Ypd6KWpGrdtAmS0pV
+         SrAI9iUxfuRhWMaVnEwX3qw6fXXy1wnTILD9GP+dBXUQUUNrV1v0wTwxkYPpK5kOLa37
+         PjAQ==
+X-Gm-Message-State: AOAM532xcB45SmtbZQ6P8C7TPNeh6szxMdeCBJfW2/sOUum30V/3frBd
+        u+wfkrcRYx1E4O+d5SXPEV5GjbV/AwFgTwGgzSghA/H7
+X-Google-Smtp-Source: ABdhPJxVun6yT94sLQ/aoNlj+GeZwl2RReWNavCS2anXbOYD3Nn5r8IBT0p98c6YPrRXmrIDg0ytN3udg87qbu2IoUU=
+X-Received: by 2002:a92:b74d:: with SMTP id c13mr3699097ilm.176.1626197787248;
+ Tue, 13 Jul 2021 10:36:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610120615.172224-2-pbonzini@redhat.com>
+References: <20210712120828.5c480cdc@canb.auug.org.au> <c47a7f0b-4b5a-30c3-ee1e-2973793a9534@infradead.org>
+ <20210713111029.77bfb9bb@elm.ozlabs.ibm.com> <56341950-abd6-8a9c-42ca-7eb91c55cc90@infradead.org>
+ <8ed74a96-7309-3370-4b8b-376bface7cc6@infradead.org> <47f394e5-c319-3b79-92ad-d33b0d96993e@infradead.org>
+In-Reply-To: <47f394e5-c319-3b79-92ad-d33b0d96993e@infradead.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 13 Jul 2021 19:36:16 +0200
+Message-ID: <CANiq72mDL+CA9CnhDG5Sij4ufVzGHrWvZ9eaWSSXQMDYbpL-6w@mail.gmail.com>
+Subject: Re: linux-next: Tree for Jul 12 (no Rust)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021, Paolo Bonzini wrote:
->  static inline struct kvm_memslots *kvm_memslots(struct kvm *kvm)
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index fa7e7ebefc79..0dc0726c8d18 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -605,10 +605,13 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
->  
->  	/*
->  	 * .change_pte() must be surrounded by .invalidate_range_{start,end}(),
-> -	 * and so always runs with an elevated notifier count.  This obviates
-> -	 * the need to bump the sequence count.
-> +	 * If mmu_notifier_count is zero, then start() didn't find a relevant
-> +	 * memslot and wasn't forced down the slow path; rechecking here is
-> +	 * unnecessary.
->  	 */
-> -	WARN_ON_ONCE(!kvm->mmu_notifier_count);
-> +	WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
+Hi Randy,
 
-The sanity check on mn_active_invalidate_count can be added in this patch, but
-the optimization to return on !mmu_notifier_count should go in the next patch,
-i.e. mmu_notifier_count must be non-zero since __kvm_handle_hva_range() always
-takes mmu_lock at the time of this patch.
+On Tue, Jul 13, 2021 at 5:31 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> OK, I found some 'patch' failures in my download logs, so something
+> in my scripts didn't do its job.
+>
+> Thanks for bringing it up!
 
-> +	if (!kvm->mmu_notifier_count)
-> +		return;
->  
->  	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
->  }
+Thanks for looking -- if I can help with something on my side on the
+Rust tree, please let me know.
 
-...
+Also, if you found what went wrong (e.g. the end result after `patch`
+failed applying something), it would be nice to know, in case this
+comes up again.
 
-> @@ -1281,7 +1322,21 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
->  	WARN_ON(gen & KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS);
->  	slots->generation = gen | KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS;
->  
-> +	/*
-> +	 * Do not store the new memslots while there are invalidations in
-> +	 * progress (preparatory change for the next commit).
-> +	 */
-> +	spin_lock(&kvm->mn_invalidate_lock);
-> +	prepare_to_rcuwait(&kvm->mn_memslots_update_rcuwait);
-> +	while (kvm->mn_active_invalidate_count) {
-
-Does this need a READ_ONCE()?  Or are the spin locks guaranteed to prevent the
-compiler from caching mn_active_invalidate_count?
-
-> +		set_current_state(TASK_UNINTERRUPTIBLE);
-> +		spin_unlock(&kvm->mn_invalidate_lock);
-> +		schedule();
-> +		spin_lock(&kvm->mn_invalidate_lock);
-> +	}
-> +	finish_rcuwait(&kvm->mn_memslots_update_rcuwait);
->  	rcu_assign_pointer(kvm->memslots[as_id], slots);
-> +	spin_unlock(&kvm->mn_invalidate_lock);
->  
->  	/*
->  	 * Acquired in kvm_set_memslot. Must be released before synchronize
-> -- 
-> 2.27.0
-> 
-> 
+Cheers,
+Miguel
