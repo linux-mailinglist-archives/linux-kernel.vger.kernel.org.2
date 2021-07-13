@@ -2,185 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23233C7490
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F63E3C749B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhGMQfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:35:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:46852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230434AbhGMQfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:35:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 410806D;
-        Tue, 13 Jul 2021 09:32:27 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A4543F7D8;
-        Tue, 13 Jul 2021 09:32:25 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for non-online nodes
-In-Reply-To: <20210712124856.GA3836887@linux.vnet.ibm.com>
-References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com> <20210701041552.112072-2-srikar@linux.vnet.ibm.com> <875yxu85wi.mognet@arm.com> <20210712124856.GA3836887@linux.vnet.ibm.com>
-Date:   Tue, 13 Jul 2021 17:32:14 +0100
-Message-ID: <87zguqmay9.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S231890AbhGMQg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229454AbhGMQg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 12:36:26 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726DAC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:33:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so27726851ybp.17
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=eCce4R3xq3isKOouF5FTNEunRJdZmdeo4W5/csS7Oys=;
+        b=WW7f7RhIOPkS4TYxNubIzf63Dv/yms2kaYN5+Rxv5Q9YroM0R2ch1JNCqJSPPwyUlo
+         KAF82pu3Bp4g/Pn+xuTKeUAwB/TO69M6o1eZRkVdgC1tee/P/80S/uaAp7ti/HK3esQk
+         Q0ute6Gan86natVKaRfSeabXGhIzjPsBIB/HhoYgyxThITgbW2GiDLBWHLW8iIwxtJNt
+         vochZXnSRORkeDzrndGVSRqhSDgvh8hxbxWMzFFi/rSojFqOf7TCcj+bXcv3KCd5+lEm
+         8V/XzYdyWhy/C8ZT/zuzaVoIWT8zpBN0LW61lb5Tz/vRzpRc6UN871GxHFqxOTrEkUZC
+         5izQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=eCce4R3xq3isKOouF5FTNEunRJdZmdeo4W5/csS7Oys=;
+        b=fhaggF+eCg5dRXq3Md1TmGICUtXoEG7lvmBaR6puPlviFH/wy7bVXUkaq5NKCJUfhu
+         c6N6tHaMRooWcJYShkeriSaCoHTA7IlJxFG+jKlvIGphGxOeiNNUkzzjyvrj494JqIor
+         0BFKNPRhj0GyfnOSx5sqZYt3+pFZgTOa5Vs9HayO2BCbUlyiZ9OHg76kzcXjI8V+x6PV
+         CdeaFKjaCxGTMSJzxVY/yoXaZInjDod+WRVgC9jy6QqwMQlhfJ2b/5ixxi7pg5eUutYm
+         cZzIhL9+MTHimQ1+tD+DRgCdKBA/kKbDJ6gxB3mCIY+foomg+yOz6zDaAlrxmFC/DgW0
+         5apw==
+X-Gm-Message-State: AOAM533GgBKPRqgy/XUMoF7qI2LGcudddUV51I2Z+4NqGLGCai0/J2lm
+        0K0+tihbfE7Q2dSRGDes+Z+NqZ2aSg8=
+X-Google-Smtp-Source: ABdhPJx9JGW3qNNkd9oyzMw9G4hOv/gl13Yd2iL9EaRCo7CMB+rG3efy24zY7EhlUxx50+F6I7t4jPBb7to=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:825e:11a1:364b:8109])
+ (user=seanjc job=sendgmr) by 2002:a25:8743:: with SMTP id e3mr6953766ybn.125.1626194014534;
+ Tue, 13 Jul 2021 09:33:34 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 13 Jul 2021 09:32:38 -0700
+Message-Id: <20210713163324.627647-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2 00/46] KVM: x86: vCPU RESET/INIT fixes and consolidation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/07/21 18:18, Srikar Dronamraju wrote:
-> Hi Valentin,
->
->> On 01/07/21 09:45, Srikar Dronamraju wrote:
->> > @@ -1891,12 +1894,30 @@ void sched_init_numa(void)
->> >  void sched_domains_numa_masks_set(unsigned int cpu)
->> >  {
->>
->> Hmph, so we're playing games with masks of offline nodes - is that really
->> necessary? Your modification of sched_init_numa() still scans all of the
->> nodes (regardless of their online status) to build the distance map, and
->> that is never updated (sched_init_numa() is pretty much an __init
->> function).
->>
->> So AFAICT this is all to cope with topology_span_sane() not applying
->> 'cpu_map' to its masks. That seemed fine to me back when I wrote it, but in
->> light of having bogus distance values for offline nodes, not so much...
->>
->> What about the below instead?
->>
->> ---
->> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->> index b77ad49dc14f..c2d9caad4aa6 100644
->> --- a/kernel/sched/topology.c
->> +++ b/kernel/sched/topology.c
->> @@ -2075,6 +2075,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
->>  static bool topology_span_sane(struct sched_domain_topology_level *tl,
->>                            const struct cpumask *cpu_map, int cpu)
->>  {
->> +	struct cpumask *intersect = sched_domains_tmpmask;
->>      int i;
->>
->>      /* NUMA levels are allowed to overlap */
->> @@ -2090,14 +2091,17 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
->>      for_each_cpu(i, cpu_map) {
->>              if (i == cpu)
->>                      continue;
->> +
->>              /*
->> -		 * We should 'and' all those masks with 'cpu_map' to exactly
->> -		 * match the topology we're about to build, but that can only
->> -		 * remove CPUs, which only lessens our ability to detect
->> -		 * overlaps
->> +		 * We shouldn't have to bother with cpu_map here, unfortunately
->> +		 * some architectures (powerpc says hello) have to deal with
->> +		 * offline NUMA nodes reporting bogus distance values. This can
->> +		 * lead to funky NODE domain spans, but since those are offline
->> +		 * we can mask them out.
->>               */
->> +		cpumask_and(intersect, tl->mask(cpu), tl->mask(i));
->>              if (!cpumask_equal(tl->mask(cpu), tl->mask(i)) &&
->> -		    cpumask_intersects(tl->mask(cpu), tl->mask(i)))
->> +		    cpumask_intersects(intersect, cpu_map))
->>                      return false;
->>      }
->>
->
-> Unfortunately this is not helping.
-> I tried this patch alone and also with 2/2 patch of this series where
-> we update/fill fake topology numbers. However both cases are still failing.
->
+The end goal of this series is to consolidate the RESET/INIT code, both to
+deduplicate code and to try to avoid divergent behavior/bugs, e.g. SVM only
+recently started updating vcpu->arch.cr4 on INIT.
 
-Thanks for testing it.
+The TL;DR of why it takes 40+ patches to get there is that the RESET/INIT
+flows have multiple latent bugs and hidden dependencies, but "work"
+because they're rarely touched, are mostly fixed flows in both KVM and the
+guest, and because guests don't sanity check state after INIT.
 
+While several of the patches have Fixes tags, I am absolutely terrified of
+backporting most of them due to the likelihood of breaking a different
+version of KVM.  And, for the most part the bugs are benign in the sense
+no guest has actually encountered any of these bugs.  For that reason, I
+intentionally omitted stable@ entirely.  The only patches I would consider
+even remotely safe for backporting are the first four patches in the series.
 
-Now, let's take examples from your cover letter:
+v2:
+  - Collect Reviews. [Reiji]
+  - Fix an apic->base_address initialization goof. [Reiji]
+  - Add patch to flush TLB on INIT. [Reiji]
+  - Add patch to preserved CR0.CD/NW on INIT. [Reiji]
+  - Add patch to emulate #INIT after shutdown on SVM. [Reiji]
+  - Add patch to consolidate arch.hflags code. [Reiji]
+  - Drop patch to omit VMWRITE zeroing. [Paolo, Jim]
+  - Drop several MMU patches (moved to other series).
 
-  node distances:
-  node   0   1   2   3   4   5   6   7
-    0:  10  20  40  40  40  40  40  40
-    1:  20  10  40  40  40  40  40  40
-    2:  40  40  10  20  40  40  40  40
-    3:  40  40  20  10  40  40  40  40
-    4:  40  40  40  40  10  20  40  40
-    5:  40  40  40  40  20  10  40  40
-    6:  40  40  40  40  40  40  10  20
-    7:  40  40  40  40  40  40  20  10
+v1: https://lkml.kernel.org/r/20210424004645.3950558-1-seanjc@google.com
 
-But the system boots with just nodes 0 and 1, thus only this distance
-matrix is valid:
+Sean Christopherson (46):
+  KVM: x86: Flush the guest's TLB on INIT
+  KVM: nVMX: Set LDTR to its architecturally defined value on nested
+    VM-Exit
+  KVM: SVM: Zero out GDTR.base and IDTR.base on INIT
+  KVM: VMX: Set EDX at INIT with CPUID.0x1, Family-Model-Stepping
+  KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
+  KVM: SVM: Fall back to KVM's hardcoded value for EDX at RESET/INIT
+  KVM: VMX: Remove explicit MMU reset in enter_rmode()
+  KVM: SVM: Drop explicit MMU reset at RESET/INIT
+  KVM: SVM: Drop a redundant init_vmcb() from svm_create_vcpu()
+  KVM: VMX: Move init_vmcs() invocation to vmx_vcpu_reset()
+  KVM: x86: WARN if the APIC map is dirty without an in-kernel local
+    APIC
+  KVM: x86: Remove defunct BSP "update" in local APIC reset
+  KVM: x86: Migrate the PIT only if vcpu0 is migrated, not any BSP
+  KVM: x86: Don't force set BSP bit when local APIC is managed by
+    userspace
+  KVM: x86: Set BSP bit in reset BSP vCPU's APIC base by default
+  KVM: VMX: Stuff vcpu->arch.apic_base directly at vCPU RESET
+  KVM: x86: Open code necessary bits of kvm_lapic_set_base() at vCPU
+    RESET
+  KVM: x86: Consolidate APIC base RESET initialization code
+  KVM: x86: Move EDX initialization at vCPU RESET to common code
+  KVM: SVM: Don't bother writing vmcb->save.rip at vCPU RESET/INIT
+  KVM: VMX: Invert handling of CR0.WP for EPT without unrestricted guest
+  KVM: VMX: Remove direct write to vcpu->arch.cr0 during vCPU RESET/INIT
+  KVM: VMX: Fold ept_update_paging_mode_cr0() back into vmx_set_cr0()
+  KVM: nVMX: Do not clear CR3 load/store exiting bits if L1 wants 'em
+  KVM: VMX: Pull GUEST_CR3 from the VMCS iff CR3 load exiting is
+    disabled
+  KVM: x86/mmu: Skip the permission_fault() check on MMIO if CR0.PG=0
+  KVM: VMX: Process CR0.PG side effects after setting CR0 assets
+  KVM: VMX: Skip emulation required checks during pmode/rmode
+    transitions
+  KVM: nVMX: Don't evaluate "emulation required" on nested VM-Exit
+  KVM: SVM: Tweak order of cr0/cr4/efer writes at RESET/INIT
+  KVM: SVM: Drop redundant writes to vmcb->save.cr4 at RESET/INIT
+  KVM: SVM: Stuff save->dr6 at during VMSA sync, not at RESET/INIT
+  KVM: VMX: Skip pointless MSR bitmap update when setting EFER
+  KVM: VMX: Refresh list of user return MSRs after setting guest CPUID
+  KVM: VMX: Don't _explicitly_ reconfigure user return MSRs on vCPU INIT
+  KVM: x86: Move setting of sregs during vCPU RESET/INIT to common x86
+  KVM: VMX: Remove obsolete MSR bitmap refresh at vCPU RESET/INIT
+  KVM: nVMX: Remove obsolete MSR bitmap refresh at nested transitions
+  KVM: VMX: Don't redo x2APIC MSR bitmaps when userspace filter is
+    changed
+  KVM: VMX: Remove unnecessary initialization of msr_bitmap_mode
+  KVM: VMX: Smush x2APIC MSR bitmap adjustments into single function
+  KVM: VMX: Remove redundant write to set vCPU as active at RESET/INIT
+  KVM: VMX: Move RESET-only VMWRITE sequences to init_vmcs()
+  KVM: SVM: Emulate #INIT in response to triple fault shutdown
+  KVM: SVM: Drop redundant clearing of vcpu->arch.hflags at INIT/RESET
+  KVM: x86: Preserve guest's CR0.CD/NW on INIT
 
-  node   0   1
-    0:  10  20
-    1:  20  10
+ arch/x86/include/asm/kvm_host.h |   5 -
+ arch/x86/kvm/i8254.c            |   3 +-
+ arch/x86/kvm/lapic.c            |  26 +--
+ arch/x86/kvm/svm/sev.c          |   1 +
+ arch/x86/kvm/svm/svm.c          |  48 ++----
+ arch/x86/kvm/vmx/nested.c       |  24 ++-
+ arch/x86/kvm/vmx/vmx.c          | 270 +++++++++++++++-----------------
+ arch/x86/kvm/vmx/vmx.h          |   5 +-
+ arch/x86/kvm/x86.c              |  52 +++++-
+ 9 files changed, 211 insertions(+), 223 deletions(-)
 
-topology_span_sane() is going to use tl->mask(cpu), and as you reported the
-NODE topology level should cause issues. Let's assume all offline nodes say
-they're 10 distance away from everyone else, and that we have one CPU per
-node. This would give us:
-
-  NODE->mask(0) == 0,2-7
-  NODE->mask(1) == 1-7
-
-The intersection is 2-7, we'll trigger the WARN_ON().
-Now, with the above snippet, we'll check if that intersection covers any
-online CPU. For sched_init_domains(), cpu_map is cpu_active_mask, so we'd
-end up with an empty intersection and we shouldn't warn - that's the theory
-at least.
-
-Looking at sd_numa_mask(), I think there's a bug with topology_span_sane():
-it doesn't run in the right place wrt where sched_domains_curr_level is
-updated. Could you try the below on top of the previous snippet?
-
-If that doesn't help, could you share the node distances / topology masks
-that lead to the WARN_ON()? Thanks.
-
----
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index b77ad49dc14f..cda69dfa4065 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1516,13 +1516,6 @@ sd_init(struct sched_domain_topology_level *tl,
- 	int sd_id, sd_weight, sd_flags = 0;
- 	struct cpumask *sd_span;
- 
--#ifdef CONFIG_NUMA
--	/*
--	 * Ugly hack to pass state to sd_numa_mask()...
--	 */
--	sched_domains_curr_level = tl->numa_level;
--#endif
--
- 	sd_weight = cpumask_weight(tl->mask(cpu));
- 
- 	if (tl->sd_flags)
-@@ -2131,7 +2124,12 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
- 
- 		sd = NULL;
- 		for_each_sd_topology(tl) {
--
-+#ifdef CONFIG_NUMA
-+			/*
-+			 * Ugly hack to pass state to sd_numa_mask()...
-+			 */
-+			sched_domains_curr_level = tl->numa_level;
-+#endif
- 			if (WARN_ON(!topology_span_sane(tl, cpu_map, i)))
- 				goto error;
- 
+-- 
+2.32.0.93.g670b81a890-goog
 
