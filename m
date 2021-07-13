@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E513C6FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5183C6FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhGMLtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:49:43 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11456 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235797AbhGMLtn (ORCPT
+        id S235993AbhGMLuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235797AbhGMLuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:49:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626176813; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=zqFL0K40ucNLaW/YDFV3wxDvNTBjPj344YdNZFt7kLw=; b=XBtpvndljT/Qu18UkelZFYTRDZdFEHPNpm2GXaMR3NutzHp+A2SuOjneYvFjajkR0H2pPCFX
- wB4IoyeuBv2kgxx5rbffgFu5PCWUysCiEgTBXy4HAAYFKnv+uGfL9ub/Np6AnI2nAicu94L6
- IW2O8MoegZ9oxVmCIuvO/VOoYDI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60ed7cff5e3e57240b4ccc83 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 11:46:07
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9458EC4360C; Tue, 13 Jul 2021 11:46:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from vjitta-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6932CC433F1;
-        Tue, 13 Jul 2021 11:46:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6932CC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-From:   vjitta@codeaurora.org
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org, vjitta@codeaurora.org
-Subject: [PATCH] mm: slub: Fix slub_debug disablement for list of slabs
-Date:   Tue, 13 Jul 2021 17:15:50 +0530
-Message-Id: <1626176750-13099-1-git-send-email-vjitta@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 13 Jul 2021 07:50:15 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F32DC0613DD;
+        Tue, 13 Jul 2021 04:47:26 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id r135so34363511ybc.0;
+        Tue, 13 Jul 2021 04:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cuhTsqiAR1PuP9DOnQbs4r/pWF1mt0x6HYCYKTd+DvY=;
+        b=hQqtp6MpfUSjY4P7bpv2UJxjB1KB8zT2wVbTNEBHsGKfF1W6Fz7wMlsEYx7VhkbNff
+         XmYKNbvwMruvcJZbogUXAgq9WoxEbc5L8ok2rf3lXelPD+q5KvC0+7CwckYkB7gxzTA/
+         4dZPnpnJ7uTodaXlWYEm/8gH7N4Q6gpCbgkdiW1BN8DWbshRClA9p0RL+NI4jXTXdoWA
+         OzhgGUmBGwN9EGu5Lb4uQCDMPtoV/LZF2YeDuGL8Fv+RVWu/27t5ulfxAr+G3o6eqzW4
+         6HE7pwuof638hYVqcszEYyb4PkzfILP8mm0HUTodfW6ohuKnenWHt5kgCn6JvXdsnI7x
+         scZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cuhTsqiAR1PuP9DOnQbs4r/pWF1mt0x6HYCYKTd+DvY=;
+        b=sQBfFOuub0mwoge7hQv13wEu8xnOo+1rukpSlYu2ojTMhtCWrhzZCQL4IyIhw/IF71
+         x3wjrL7u8ZgGYJzTkfjF9s4V7E0vLFLUs6THzFBJm2AMhXgrlwjEV84J3/l9HJsR3DVv
+         D+cSHKpsoPDmGcI/uj1LYxwxAjoAlwLeD6uuWCWlzjayjNA3QjNZlbJDIwcbUnl8eg8s
+         jiKL8uF3LhalovbKWTHckI+jJCAYiQekppEy7zVLDqGWlCaTwgAY5w9ZiaVqqjU0q63+
+         ua2UK8b9TuK74hGJztUOkt0zH0LzPvAnQVBE2XqLRZsfyXPkh0hLPFOpa+TQNn6Lk6nG
+         IrvQ==
+X-Gm-Message-State: AOAM530ZJ9gRP/bMdBo7ek5GuFZlGp5VTdfYYtiDtMJV0WlvjfwtGo8n
+        5cqTBRV32dlSqaPE+EM1TeM/pf/qy9ALyMOR168=
+X-Google-Smtp-Source: ABdhPJxok7m5N2LiU5BHTGtcI74np0U4SiGSxVlGhK+jMHAn/uuqpJm2KI5NiUAR4Gfmr3WV77oxRjlKvhgO4IM3whA=
+X-Received: by 2002:a25:ab26:: with SMTP id u35mr5657712ybi.151.1626176845295;
+ Tue, 13 Jul 2021 04:47:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210713094158.450434-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210713094158.450434-1-mudongliangabcd@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 13 Jul 2021 13:47:14 +0200
+Message-ID: <CAKXUXMwMvWmS1jMfGe15tJKXpKdqGnhjsOhBKPkQ6_+twZpKxA@mail.gmail.com>
+Subject: Re: [PATCH] audit: fix memory leak in nf_tables_commit
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijayanand Jitta <vjitta@codeaurora.org>
+On Tue, Jul 13, 2021 at 11:42 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
+> free the adp variable.
+>
+> Fix this by freeing the linked list with head adl.
+>
+> backtrace:
+>   kmalloc include/linux/slab.h:591 [inline]
+>   kzalloc include/linux/slab.h:721 [inline]
+>   nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
+>   nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
+>   nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
+>   nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+>   nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+>   netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
+>   netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
+>   sock_sendmsg_nosec net/socket.c:702 [inline]
+>   sock_sendmsg+0x56/0x80 net/socket.c:722
+>
+> Reported-by: syzbot <syzkaller@googlegroups.com>
 
-Consider the scenario where CONFIG_SLUB_DEBUG_ON is set
-and we would want to disable slub_debug for few slabs.
-Using boot parameter with slub_debug=-,slab_name syntax
-doesn't work as expected i.e; only disabling debugging for
-the specified list of slabs, instead it disables debugging
-for all slabs. Fix this.
+As far as I see, the more default way is to reference to syzbot by:
 
-Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
----
- mm/slub.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Reported-by: syzbot+[[20-letter hex reference]]@syzkaller.appspotmail.com
 
-diff --git a/mm/slub.c b/mm/slub.c
-index dc863c1..5a88418 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1429,6 +1429,7 @@ static int __init setup_slub_debug(char *str)
- 	char *slab_list;
- 	bool global_slub_debug_changed = false;
- 	bool slab_list_specified = false;
-+	bool slab_list_debug_disable = true;
- 
- 	slub_debug = DEBUG_DEFAULT_FLAGS;
- 	if (*str++ != '=' || !*str)
-@@ -1436,7 +1437,6 @@ static int __init setup_slub_debug(char *str)
- 		 * No options specified. Switch on full debugging.
- 		 */
- 		goto out;
--
- 	saved_str = str;
- 	while (str) {
- 		str = parse_slub_debug_flags(str, &flags, &slab_list, true);
-@@ -1445,6 +1445,8 @@ static int __init setup_slub_debug(char *str)
- 			slub_debug = flags;
- 			global_slub_debug_changed = true;
- 		} else {
-+			if (flags || !IS_ENABLED(CONFIG_SLUB_DEBUG_ON))
-+				slab_list_debug_disable = false;
- 			slab_list_specified = true;
- 		}
- 	}
-@@ -1456,7 +1458,7 @@ static int __init setup_slub_debug(char *str)
- 	 * long as there is no option specifying flags without a slab list.
- 	 */
- 	if (slab_list_specified) {
--		if (!global_slub_debug_changed)
-+		if (!global_slub_debug_changed && !slab_list_debug_disable)
- 			slub_debug = 0;
- 		slub_debug_string = saved_str;
- 	}
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-2.7.4
+as in for example:
 
+Reported-by: syzbot+fee64147a25aecd48055@syzkaller.appspotmail.com
+
+A rough count says that format above is used 1300 times, whereas
+
+Reported-by: syzbot <syzkaller@googlegroups.com>
+
+is only used about 330 times.
+
+
+Lukas
+
+> Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  net/netfilter/nf_tables_api.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index 390d4466567f..7f45b291be13 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -8444,6 +8444,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
+>         return 0;
+>  }
+>
+> +static void nf_tables_commit_free(struct list_head *adl)
+> +{
+> +       struct nft_audit_data *adp, *adn;
+> +
+> +       list_for_each_entry_safe(adp, adn, adl, list) {
+> +               list_del(&adp->list);
+> +               kfree(adp);
+> +       }
+> +}
+> +
+>  static void nf_tables_commit_audit_collect(struct list_head *adl,
+>                                            struct nft_table *table, u32 op)
+>  {
+> @@ -8508,6 +8518,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+>                 ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
+>                 if (ret) {
+>                         nf_tables_commit_chain_prepare_cancel(net);
+> +                       nf_tables_commit_free(adl);
+>                         return ret;
+>                 }
+>                 if (trans->msg_type == NFT_MSG_NEWRULE ||
+> @@ -8517,6 +8528,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+>                         ret = nf_tables_commit_chain_prepare(net, chain);
+>                         if (ret < 0) {
+>                                 nf_tables_commit_chain_prepare_cancel(net);
+> +                               nf_tables_commit_free(adl);
+>                                 return ret;
+>                         }
+>                 }
+> --
+> 2.25.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller/20210713094158.450434-1-mudongliangabcd%40gmail.com.
