@@ -2,156 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CFA3C7A36
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 01:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77D73C7A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 01:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236977AbhGMXhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 19:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235437AbhGMXhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 19:37:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9232A60C3E;
-        Tue, 13 Jul 2021 23:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626219291;
-        bh=4w1kuGWwhwXRhAqnLB0ZB2jbtq1me0ixd/nQeLrNROQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GxWu/6tOH5S0lza9HJ+Z9hG72wDmFOVL/vSl6VT0J3LEtcQpodeXlmSCz3g3+uCUM
-         8WjdPfbWlFD5rVPyqNaDq1v+KF8UxDlA04XLsa5mCCy4eD4N4nVFTUPSzn7E3/Sjan
-         HQQiOUsJgSfbYbms0+gIKdRaPEQ31kO0+Mdi5Sug9nErExC4kVhIhTP8YmVbC2hX/s
-         5ZBk53ijV7sOmrLcC+yHpuB7F3A2g1kCL1XasmBUFnqt1ODxrEylrK3xn29ZFWeOMc
-         XoXGAX/uieGPpt9h+xlkrp2FFX/85diaQByR7VCre8HJJ/puB6wlfg0fz+yK592NZW
-         caKLva2RRHw1A==
-Date:   Tue, 13 Jul 2021 16:34:50 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-Message-ID: <YO4jGkKLQWZKrgny@google.com>
-References: <20210601101024.119356-1-yuchao0@huawei.com>
- <YN32/NsjqJONbvz7@google.com>
- <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
- <YN5srPRZaPN9gpZ0@google.com>
- <b828fc22-f15a-8be4-631a-ed4ecb631386@kernel.org>
- <YOXo3CT5sBvj6p0J@google.com>
- <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
+        id S237055AbhGMXhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 19:37:51 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:39931 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236982AbhGMXht (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 19:37:49 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210713233457epoutp02b9bbf3e6731ae3be002ee500601b5894~RfdWle_bP0274002740epoutp02O
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:34:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210713233457epoutp02b9bbf3e6731ae3be002ee500601b5894~RfdWle_bP0274002740epoutp02O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1626219297;
+        bh=a0bMVwQo+h2GMVyOxRasJNUFbZhTpUogH6uSC1zuPy0=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=UDLVUZe0aPtY+/HuSk+cSntjY3DKqmKy1rhW+s7XhBzxwMcKjgbnWQCQrJKlFRKG0
+         INbdqbCQXRYKLSGbwiI/1qWmxeB0vOcvZqfxq1HBsAelw5tBCfmbZsekfyFHo7TDoz
+         kvEGMkJMPup06mbeQke7OPI8IdWhaRyJCD1D55E4=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210713233456epcas2p4f9774ff83ee061ab65f32679cbddb17b~RfdV01keh0977709777epcas2p4R;
+        Tue, 13 Jul 2021 23:34:56 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4GPcRy56Qdz4x9QL; Tue, 13 Jul
+        2021 23:34:54 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        69.17.09921.E132EE06; Wed, 14 Jul 2021 08:34:54 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210713233453epcas2p1b29bd795101cea9059e574471095aa5d~RfdTQlmRg1321913219epcas2p1e;
+        Tue, 13 Jul 2021 23:34:53 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210713233453epsmtrp14fb5c3b3438918d4d0537ee532ac1b74~RfdTPhAv72398023980epsmtrp1C;
+        Tue, 13 Jul 2021 23:34:53 +0000 (GMT)
+X-AuditID: b6c32a45-fb3ff700000026c1-96-60ee231e01a9
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4E.8E.08394.D132EE06; Wed, 14 Jul 2021 08:34:53 +0900 (KST)
+Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210713233453epsmtip2916be6fc7ac6154b8daae6ffd9be993e~RfdTBesT-2760227602epsmtip2d;
+        Tue, 13 Jul 2021 23:34:53 +0000 (GMT)
+From:   "Chanho Park" <chanho61.park@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Alim Akhtar'" <alim.akhtar@gmail.com>
+Cc:     "'Alim Akhtar'" <alim.akhtar@samsung.com>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <avri.altman@wdc.com>, <martin.petersen@oracle.com>,
+        <kwmad.kim@samsung.com>, <cang@codeaurora.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kishon@ti.com>
+In-Reply-To: <CAJKOXPd6VMBaW7zBDXb7tXDHr3xwV2yZXxZtLJqNe3T69oUqsw@mail.gmail.com>
+Subject: RE: [RESEND PATCH v10 08/10] dt-bindings: ufs: Add bindings for
+ Samsung ufs host
+Date:   Wed, 14 Jul 2021 08:34:53 +0900
+Message-ID: <000001d7783f$ae446670$0acd3350$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQLSJHm6eNEbPiUjxcYKuzqoT35S6wG4t7PjAWYpiDECouhoZQFFh/mAqRP7SIA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmha6c8rsEg29buS2W3qq2eDBvG5vF
+        y59X2Sw+rV/GajH/yDlWiwtPe9gszp/fwG5xc8tRFotNj6+xWlzeNYfNYsb5fUwW3dd3sFks
+        P/6PyeL/nh3sDnwel/t6mTx2zrrL7rFpVSebx+Yl9R4fn95i8ejbsorR4/iN7UwenzfJebQf
+        6GYK4IzKsclITUxJLVJIzUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLxCdB1y8wB
+        ul1JoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquUWpCSU2BoWKBXnJhbXJqXrpecn2tlaGBg
+        ZApUmZCTcfzjWqaCyawVOz/4NTB+Y+5i5OSQEDCReHjtF1MXIxeHkMAORondz44wQjifGCWm
+        nP8E5XxjlDjTtwuuZW3zdjaIxF5GiQN37rNDOC8YJY68OghWxSagL/GyYxtrFyMHh4hAhMSb
+        s/kgNcwCL5kkDq5/wg5SwykQKPHo2msWEFtYIFpi1fu3TCA2i4CqxOtpV8Hm8ApYShx+9pYR
+        whaUODnzCVg9s4C8xPa3c6AuUpD4+XQZK4gtIuAn0TltGlSNiMTszjZmkMUSAnc4JD6fbGGB
+        aHCRaF5wjA3CFpZ4dXwLO4QtJfGyv40doqGbUaL10X+oxGpGic5GHwjbXuLX9C1gnzELaEqs
+        36UPYkoIKEscuQW1l0+i4/Bfdogwr0RHmxBEo7rEge3ToS6Qleie85l1AqPSLCSfzULy2Swk
+        H8xC2LWAkWUVo1hqQXFuemqxUYEhcmRvYgSnay3XHYyT337QO8TIxMF4iFGCg1lJhHep0dsE
+        Id6UxMqq1KL8+KLSnNTiQ4ymwLCeyCwlmpwPzBh5JfGGpkZmZgaWphamZkYWSuK8HOyHEoQE
+        0hNLUrNTUwtSi2D6mDg4pRqYwp4JXuuJXZO+0tO3KG5C4o0UNpaTc6QWx3tfkl+U8YLn76q5
+        KY5blWaZPp7GyXa+aepxkWf5kxQShVxWXzhkKfs3oK9/4793z20nT9Suulhp6zBhvrcL026F
+        FsfrlZufaJ2JOH5ClbWQo0FPYhHD5quFteoT9qzdrGjyyq3xr+6SvKNxd473RshbSiabxIR+
+        D5viJGG6967p4vVPZ2TPu3c1Kv/I6WNix71lt4sWHtStOVV73TfhWLDYx1R11XfZrSybRJ8w
+        /OJcxjfHYhvzTxvf/JDu/zEGDA6ns3Z9dV1ZnbtZmP+MG9e1T61HfewqtZ1FFl3UydqgMCdQ
+        //E23ZMzI7xnNbs52F8JtCxXYinOSDTUYi4qTgQAq3+T4WAEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRmVeSWpSXmKPExsWy7bCSvK6s8rsEg74HIhZLb1VbPJi3jc3i
+        5c+rbBaf1i9jtZh/5ByrxYWnPWwW589vYLe4ueUoi8Wmx9dYLS7vmsNmMeP8PiaL7us72CyW
+        H//HZPF/zw52Bz6Py329TB47Z91l99i0qpPNY/OSeo+PT2+xePRtWcXocfzGdiaPz5vkPNoP
+        dDMFcEZx2aSk5mSWpRbp2yVwZRz/uJapYDJrxc4Pfg2M35i7GDk5JARMJNY2b2cDsYUEdjNK
+        /GllgYjLSjx7t4MdwhaWuN9yhLWLkQuo5hmjxKwHq8ASbAL6Ei87trGC2CICERInb6xnByli
+        FvjKJLH04QUWiI6TTBJHH8wFq+IUCJR4dO012AphgUiJb592g61mEVCVeD3tKthJvAKWEoef
+        vWWEsAUlTs58AlbPLKAt8fTmUyhbXmL72zlQLyhI/Hy6DOoKP4nOadOgakQkZne2MU9gFJ6F
+        ZNQsJKNmIRk1C0nLAkaWVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwZGrpbmDcfuq
+        D3qHGJk4GA8xSnAwK4nwLjV6myDEm5JYWZValB9fVJqTWnyIUZqDRUmc90LXyXghgfTEktTs
+        1NSC1CKYLBMHp1QD09SVWy8uy7na84jhhqy11abjU/RYNGYxz0rv9Nm+pe3exnP3itQveYks
+        YL+R9GrfYdnjqxTv52dJnjJ/nchl0eE4/a4Gx4ea6evs1if92mQ6ofUhc7BE2f9HRYIe88OF
+        pKbY2dQWrancblQW7HvU0WjjGzuj39caTtbbJVxZ+eKJ2IkTejYJ3Xnas10//TcoLbVVn7Nv
+        TyCD9YaWj/uPM+U9cM7qKCpuVDk56Z2EvKiq5Vp1tvPLeLOr9x9/dt7LqCbyNuNbNWvzmS1H
+        xSdfnC5/cr37dpd50tMKfEI+uq17btXq8fS2g7y2ndfxiZe2zhL/mqV891ZoovqGhNfNtpe3
+        aZj2lYvFnuX1XCg7W4mlOCPRUIu5qDgRAP3kuk1LAwAA
+X-CMS-MailID: 20210713233453epcas2p1b29bd795101cea9059e574471095aa5d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200613030454epcas5p400f76485ddb34ce6293f0c8fa94332b8
+References: <CGME20200613030454epcas5p400f76485ddb34ce6293f0c8fa94332b8@epcas5p4.samsung.com>
+        <20200613024706.27975-1-alim.akhtar@samsung.com>
+        <20200613024706.27975-9-alim.akhtar@samsung.com>
+        <CAGOxZ500JD5xNWb0xFyEgaUH0qwQKm+kn1Ng71_1SM1wmJFxKg@mail.gmail.com>
+        <CAJKOXPd6VMBaW7zBDXb7tXDHr3xwV2yZXxZtLJqNe3T69oUqsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/13, Chao Yu wrote:
-> On 2021/7/8 1:48, Jaegeuk Kim wrote:
-> > On 07/02, Chao Yu wrote:
-> > > On 2021/7/2 9:32, Jaegeuk Kim wrote:
-> > > > On 07/02, Chao Yu wrote:
-> > > > > On 2021/7/2 1:10, Jaegeuk Kim wrote:
-> > > > > > On 06/01, Chao Yu wrote:
-> > > > > > > [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
-> > > > > > > 
-> > > > > > > As [1] reported, if lower device doesn't support write barrier, in below
-> > > > > > > case:
-> > > > > > > 
-> > > > > > > - write page #0; persist
-> > > > > > > - overwrite page #0
-> > > > > > > - fsync
-> > > > > > >     - write data page #0 OPU into device's cache
-> > > > > > >     - write inode page into device's cache
-> > > > > > >     - issue flush
-> > > > > > 
-> > > > > > Well, we have preflush for node writes, so I don't think this is the case.
-> > > > > > 
-> > > > > >     fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
-> > > > > 
-> > > > > This is only used for atomic write case, right?
-> > > > > 
-> > > > > I mean the common case which is called from f2fs_issue_flush() in
-> > > > > f2fs_do_sync_file().
-> > > > 
-> > > > How about adding PREFLUSH when writing node blocks aligned to the above set?
-> > > 
-> > > You mean implementation like v1 as below?
-> > > 
-> > > https://lore.kernel.org/linux-f2fs-devel/20200120100045.70210-1-yuchao0@huawei.com/
-> > 
-> > Yea, I think so. :P
+> > Hi Rob
+> > Anything else needs to be done for this patch?
+> >
+> > On Sat, Jun 13, 2020 at 8:36 AM Alim Akhtar <alim.akhtar@samsung.com>
+> wrote:
+> > >
+> > > This patch adds DT bindings for Samsung ufs hci
+> > >
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
 > 
-> I prefer v2, we may have several schemes to improve performance with v2, e.g.
-> - use inplace IO to avoid newly added preflush
-> - use flush_merge option to avoid redundant preflush
-> - if lower device supports barrier IO, we can avoid newly added preflush
+> It has Rob's ack, so it can be taken directly via SCSI tree.
+> 
+> Chanho,
+> I guess here is the answer why exynos7-ufs compatible was not documented,
+> so you can build on top of it.
+> 
 
-Doesn't v2 give one more flush than v1? Why do you want to take worse one and
-try to improve back? Not clear the benefit on v2.
+Great. I'll update my compatibles on top of this patch.
 
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > > 
-> > > > > 
-> > > > > And please see do_checkpoint(), we call f2fs_flush_device_cache() and
-> > > > > commit_checkpoint() separately to keep persistence order of CP datas.
-> > > > > 
-> > > > > See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
-> > > > > for details.
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > > 
-> > > > > > > 
-> > > > > > > If SPO is triggered during flush command, inode page can be persisted
-> > > > > > > before data page #0, so that after recovery, inode page can be recovered
-> > > > > > > with new physical block address of data page #0, however there may
-> > > > > > > contains dummy data in new physical block address.
-> > > > > > > 
-> > > > > > > Then what user will see is: after overwrite & fsync + SPO, old data in
-> > > > > > > file was corrupted, if any user do care about such case, we can suggest
-> > > > > > > user to use STRICT fsync mode, in this mode, we will force to trigger
-> > > > > > > preflush command to persist data in device cache in prior to node
-> > > > > > > writeback, it avoids potential data corruption during fsync().
-> > > > > > > 
-> > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > > > > ---
-> > > > > > > v2:
-> > > > > > > - fix this by adding additional preflush command rather than using
-> > > > > > > atomic write flow.
-> > > > > > >     fs/f2fs/file.c | 14 ++++++++++++++
-> > > > > > >     1 file changed, 14 insertions(+)
-> > > > > > > 
-> > > > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > > > > index 7d5311d54f63..238ca2a733ac 100644
-> > > > > > > --- a/fs/f2fs/file.c
-> > > > > > > +++ b/fs/f2fs/file.c
-> > > > > > > @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
-> > > > > > >     				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
-> > > > > > >     			goto flush_out;
-> > > > > > >     		goto out;
-> > > > > > > +	} else {
-> > > > > > > +		/*
-> > > > > > > +		 * for OPU case, during fsync(), node can be persisted before
-> > > > > > > +		 * data when lower device doesn't support write barrier, result
-> > > > > > > +		 * in data corruption after SPO.
-> > > > > > > +		 * So for strict fsync mode, force to trigger preflush to keep
-> > > > > > > +		 * data/node write order to avoid potential data corruption.
-> > > > > > > +		 */
-> > > > > > > +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
-> > > > > > > +								!atomic) {
-> > > > > > > +			ret = f2fs_issue_flush(sbi, inode->i_ino);
-> > > > > > > +			if (ret)
-> > > > > > > +				goto out;
-> > > > > > > +		}
-> > > > > > >     	}
-> > > > > > >     go_write:
-> > > > > > >     	/*
-> > > > > > > -- 
-> > > > > > > 2.29.2
+Anyway, who will take this patch?
+
+Best Regards,
+Chanho Park
+
