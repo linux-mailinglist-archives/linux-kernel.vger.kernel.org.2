@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BAF3C67F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3BC3C67F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbhGMBRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 21:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S233932AbhGMBSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 21:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbhGMBRi (ORCPT
+        with ESMTP id S233331AbhGMBSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 21:17:38 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F691C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:14:49 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so20843963oti.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:14:49 -0700 (PDT)
+        Mon, 12 Jul 2021 21:18:04 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1E6C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:15:15 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id l4-20020a05600c4f04b0290220f8455631so1175727wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:15:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w5fuKXjD5exY2sQw3ry9Eee8PiX/OiSILoIjdd1zuUo=;
-        b=f8z+Q4mvrnq2FTejbPWeeya3k+OIhbkCSvEJOLZLYeRPOj8h7VLXkU1KdgEnxcMVeA
-         eWVy90QH582D9VcBFYR91whYBS9Y9mcUgA5ZZEVyrQiZ84ltSoBq0gSgpBQIA1/Gy7s7
-         /ha+gobZJ1P+YU7tMtub/MHcfSwg+ojvVQXMw=
+        d=arista.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=11uDCiH91eJk41TnunaKFp7rxMRxo3/pVX2V/JGNeP4=;
+        b=gRQgOjU1FOiOXpXU5qflF4ODXVn6gwBKV8aTkBuH30aji3u6dhCXSisKDNsxHA2GIv
+         NOBXB5gNtYWleSNk5nhwV0pVrsDxROzOPN9L70btXOZ+5qUfObjUhpgSB8/hYc9Xm2uR
+         V5WKYTb4uEOpp8T6Q2Ks7Q1Lo/ZJwH2h2EfcIR14kb+NNGKxC3DN6HbtWzQ4tGATi3bB
+         WNuSm6bBQzTj9MijMyAH2D07Gat5o5Wwbes7kIKKdrLWOv/CdlJqAVRtB5UWdC5WSdTF
+         Cko8NnOhwIg9Sc28/L95pmJ5m+qILZgFu5vBYvqjSIS2iaruELBAyMpRRMEtzk/GMEyK
+         I0Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=w5fuKXjD5exY2sQw3ry9Eee8PiX/OiSILoIjdd1zuUo=;
-        b=ktBQa4TCJKnI0J/dfIqYOgThOIo8kpREx6awWKeIIt7t2LqEJNRKbvSKyK4W4OOOyP
-         +q/n71h1We+o4buOZL7m/qc2aUIE0wUcgTc+CbeKfAcM4EfuPgjOpi/HOPPmcw4kUNQb
-         fVrBq2mZrAV+JXdArSwboeH8nedO0E7gg4tOf1YqeTwISgseqkT8xtEvgJZ+CHODcn10
-         4a0klE/oNfh+7nhM1OLVHQsnZXllahpX65XjjU0IhJEJxbSTGYL5c0guxAgMeCQsdVgo
-         YbtiG4ehp19TxdTP+OslCmOyF3n7HHgYH795hlYi6hOKtZbrlhQjNAtduCU/s7Jx7b8p
-         tiTw==
-X-Gm-Message-State: AOAM5323Dj5bhcW6BoYgwm9LCOryqWhKsX1IgaaT/ZuuS/g+W5Qpu4rm
-        TPKvqzYvqdfBY3IPJVUq2O17PQ==
-X-Google-Smtp-Source: ABdhPJzJ7GYHKJVRuj+Lhcr0wl9g6Glzy9aRm8z8dm0Oe0Bs3J3KZHZGDVj35PaNAJf4ibJLlmyAZw==
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr1460109oti.251.1626138888711;
-        Mon, 12 Jul 2021 18:14:48 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y18sm3429515oiv.46.2021.07.12.18.14.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 18:14:48 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/349] 5.4.132-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210712184735.997723427@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <893782aa-e7a6-6c29-03b9-0d53ea63d60b@linuxfoundation.org>
-Date:   Mon, 12 Jul 2021 19:14:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=11uDCiH91eJk41TnunaKFp7rxMRxo3/pVX2V/JGNeP4=;
+        b=JZNyyfTJZuPtzMZzJyyHi7pHDJTM1XAao1+EkXd6wOeDw0Bfa7fSWkxe+cLFFKkmuf
+         nmjLObxfeh0OfXS0CZo5BNXq4OoSCSr8jcQtWvnzNjMtPqgPRYB6t5RW+1Lm8RpM/eal
+         YtY6uP8UnDietilQGDGfDhotEX6UmyOVD8tG6slCq/m93Rrn6I7jKtIYtBHhCUYL5mJY
+         OolWfxxpavXjsr8BVATdsO4tYQNi1tlGTv0M3MqnSmaTMTcZcAexenMsrwuBbvvMs7FW
+         8c+A9fuCOFDki3RMmF0fZ/Lb2ZbfJQLa1LqgfZWVqTNSkM1lF4NxnJZa+CGSkgK4hSVk
+         nRlQ==
+X-Gm-Message-State: AOAM532RA6o2KmfM6NlfUs1+FOBdk6Z8YKBpoFNkpc9MO2kEG7/pRVAJ
+        q2wQj2aJrJboGlX3nGALhyOxb6Ex0oghtQ==
+X-Google-Smtp-Source: ABdhPJxnl8bcCN8H8kwGeGkKYI2R1W6yHfvlNcIDT/Le0IdjT8xv9pbphA5qCzJX65EdLrYSoCXWlw==
+X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr1952880wmq.177.1626138913434;
+        Mon, 12 Jul 2021 18:15:13 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id x8sm8479566wrt.93.2021.07.12.18.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 18:15:12 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v2 0/2] printk: Add printk.console_verbose boot param
+Date:   Tue, 13 Jul 2021 02:15:09 +0100
+Message-Id: <20210713011511.215808-1-dima@arista.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210712184735.997723427@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 12:49 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.132 release.
-> There are 349 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 18:45:40 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.132-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+v1 to v2 Changes:
+- Add printk.console_verbose boot parameter instead of compile-time
+  CONFIG_CONSOLE_LOGLEVEL_PANIC (see v1 discussion with Petr)
+- I didn't rename console_verbose() to console_verbose_panic() as
+  I need it to be always disabled regardless oops/panic/lockdep.
+- I noticed console_silent() which is unused for long time, remove it.
 
-Compiled and booted on my test system. No dmesg regressions.
+v1: https://lore.kernel.org/lkml/20210622143350.1105701-1-dima@arista.com/
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: John Ogness <john.ogness@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
 
-thanks,
--- Shuah
+Dmitry Safonov (2):
+  printk: Remove console_silent()
+  printk: Add printk.console_verbose boot parameter
+
+ Documentation/admin-guide/kernel-parameters.txt | 9 +++++++++
+ include/linux/printk.h                          | 7 ++-----
+ kernel/printk/printk.c                          | 6 ++++++
+ 3 files changed, 17 insertions(+), 5 deletions(-)
+
+
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
+-- 
+2.32.0
 
