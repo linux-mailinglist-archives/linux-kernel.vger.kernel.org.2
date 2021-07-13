@@ -2,152 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083673C68EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 05:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A303C68EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 05:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhGMDnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 23:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhGMDnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 23:43:17 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C276AC0613DD;
-        Mon, 12 Jul 2021 20:40:27 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id b12so18296361pfv.6;
-        Mon, 12 Jul 2021 20:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MDHUlVkLSTR1eihtdaIEviPaD2WU9UjDNKrmcbar99Y=;
-        b=pyFz3IC6432wOadBp7mjKJpkIjZYaXvGBnwP64SBKU3BSb+nxbh+FoDd9gIulQ86lr
-         Zd55gDWWJB1lxXrp0mce0s7Kbmfdbb4Y8tZGtVpLD+hIL8AdbjwQAZOmEOB7NspatkD9
-         GQbaJM08sxX7vgEEEQ1DaexEMTW8QzPAcyAOdErM9FuBNBhEs3POevc314usF8bjoFPB
-         QeDShhlFlt/KTuP4vP/1qcwOyRe+IGzmOxITGkxeyZYnW6Ge9lPlOF0TqbtGW1+4q3/8
-         ZtdsgBpCH4jov1tqnoBephUPjrCv0n00pYUlF+2usb2PgcWRi2dCU+vS6VYxyAvpElEq
-         fvBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MDHUlVkLSTR1eihtdaIEviPaD2WU9UjDNKrmcbar99Y=;
-        b=HLW9HlKonaRguJVlyWsACcZN2Ayg13JOtnZX3jneCpYIdK9k+IZaXBjE8EKAhvadvv
-         gHYunTJFeL9rEQbYhr/ZwDGjaupbI/2oY3DO2JaadfLNAgpG27uqCe/SsTN9SLWchk/t
-         29WGUKsyL4spfqZPimSfXeMIN4uLohjKcf7LusI1by+viQC01fAHA6ORVdFat4T5r/2N
-         Sgn/XYOEWTQwaVn7Hjv2EhhS88zCvOsqTa3R17wwQZ2oPcjkzdp4q3x5LhJ8/xYrAkLo
-         TS+S4kmerJ8PYEutSjHVN2Dn2Hj4LE5wnjB49rTVndKrgwzxE8aJaUH2n3cecKaouW76
-         8h3Q==
-X-Gm-Message-State: AOAM532CBRJSNii32utNEVA8zhqM7Iw/xTekJzB6kdEELa2VSa66vWmv
-        QXgH7FpPW3U+l46cz+t22RlX2tT5zyySTr/Zu9k=
-X-Google-Smtp-Source: ABdhPJyUa65a80O+n1mXBoo4j0MBIZz6zopfw+uBkk88UIjosvEwrx5ZdCUJP/viVHuArxZmLNll5lAk7sm/Vz2oVFM=
-X-Received: by 2002:a63:a18:: with SMTP id 24mr2269233pgk.309.1626147627241;
- Mon, 12 Jul 2021 20:40:27 -0700 (PDT)
+        id S230477AbhGMDoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 23:44:22 -0400
+Received: from mout.gmx.net ([212.227.17.22]:33177 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229571AbhGMDoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 23:44:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626147680;
+        bh=cNViJekC3rjNU+L5V5+BCWxbatHT/ikYeX1hZnBrHOE=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=M1ZOoWPK4+SSML7l44gk4frAaGC/yQR1vXyaFWbajMjQEvtcR8l8tYVN8nUOZ0Wsm
+         TL9s35PGzDeStFxMQb7T/1IqCH/jR2gvlv242wJU7GzWexwM3K/YyN6xw9HahMfs4U
+         17gODNLD3OfTFx2wErkRLcaXs4jIMrT2BawDa1OI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from mir ([94.31.86.21]) by mail.gmx.net (mrgmx105 [212.227.17.168])
+ with ESMTPSA (Nemesis) id 1Mdvqg-1lTXd81DYU-00b0JV; Tue, 13 Jul 2021 05:41:20
+ +0200
+Date:   Tue, 13 Jul 2021 05:41:18 +0200
+From:   Stefan Lippers-Hollmann <s.l-h@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>, Bard Liao <bard.liao@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support
+ for Brya and BT-offload
+Message-ID: <20210713054118.4e5abba3@mir>
+In-Reply-To: <20210712061045.833441566@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
+        <20210712061045.833441566@linuxfoundation.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210712234801.GA29226@raspberrypi> <CAHC9VhTO=EubNyYJ5eOfpWPW2HGuVP-WFTm42mfiwtfWapt3tQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhTO=EubNyYJ5eOfpWPW2HGuVP-WFTm42mfiwtfWapt3tQ@mail.gmail.com>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Tue, 13 Jul 2021 12:40:16 +0900
-Message-ID: <CADLLry7oDgOfEg9ZbfGcEH6J1xj8i0MqdD1Kyje4zqxoJCfdmQ@mail.gmail.com>
-Subject: Re: [PATCH] lsm_audit,selinux: add exception handling for possible
- NULL audit buffers
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>,
-        kernel-team@lge.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pUDhmas1vn9MPMciTXYFOLPNxp+5IlGTZuIAVYZpj1FVya2RAvK
+ xdniPCilA0QYNHxTnecVwZ+ZO1z3BAm91lFGQrOiqhf/5hE2LCgAithchFUXRdsLMtdA9um
+ +Ry6Qjbb69r57T5lpLM5kvOd7MZkgkXvOk2EmQSVwL8FvTpb/1BXoLw7gI9418lKcI+rijj
+ PGxYILi6osNa2e55jJDOQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MQWwatOiT5o=:qBCtOH7p26VF5Husf5fpTo
+ Z902ld5V8LxkKzwOw0yCLGoJkqfnrhoYMIzwX/QEkPOaY2ZEuMfYquLnthZcpKzAIIcV/VNC3
+ 3zPimUOPGeBYslXIcRBlJN6IPnYCVhthseyOlEIsheOI5oQwbQROgJl36n3DXwBUauDEcz8xF
+ s1hVqh+QOQ0Y1FFEk5dyJYz3Xxbb5eyl08F0Qa5/f/VGn6l0dTYmofH+qDmT8djBSeU1TGZOg
+ L7gYKT27eD3L5QbwK0XVezoSISWZojIXqQg5PNOL+Uox1BwXJd3Le9+NkGnUky/7PFhMK324Z
+ M/H13t+dxco3Q6yRS8S+U9yokvqEZG+9Ho9NBo4+6bpOdUUZ0f/awOA6rUS2yUQ1dRHS4fx1f
+ D+SCcI6Q/cXSu320v1jnvjHOuCJbV4ptN0R15wVVKQPjCCW1DXWnJ0QW0QWt+mXD8tHHFtJBm
+ P0bBno5EsYj0zBqJ1HnyGjQ5ITu2s0Vdd8RXmf+5Rgw5q+Rabm5CiORqcmY6tBrG1LDmiq2Ai
+ i+xNZJX9e2w045ajbd8yOcrPYhbYuxZbHcydekbjjJuK2J210McmqzMSG7+SH9OO3xSLXv2RV
+ dSqoQy8RT7pCHYDkyjQDN27+Sb9kzBM5c/RyDQVrZSO6tXYEr6PCWfvLqeiGXbYOBXIJhgGGp
+ HVYJR9yQAbWRYlConWuDwvLeCoP9syrKo+DKzmJ4XO67Ll6wIqogXKJ6RSlTir3LDoiYCg6e/
+ u4V0+Dzcu4PtALhQXszpR+GHCVBKVQgihwPGXupPpfT1/Qw1LlLHNO/MeWs59ZAgxE78SFuic
+ bGTmNRwFygfjTHPIRYbpUAWtVObfYtxWx+iN4RRPiCf7Y4TOcmKO/tTcclj7GkJAmLoR6W2qJ
+ QUQt5Ahh0xicUHBABI1by0st73CMLVKdfUwhmEF9dh/dAvMN3IhXwbhJ10zr9hG24b7oxFfWR
+ DKl4ZBBBQEcz7RM/wy7LyC6o0eu/9Oul6C8445YzNVJwQy8hilnAavdiOl/8OB9xYKTrVvtFb
+ Q7oR6DQdLObOC9wwEGI7YrNR1AlhMAcxPU6xLLNwemqgn8r9HHmpCxKS5Z8l1s0/pfvy4QVQk
+ saNvRB1FPyM0J8WesFyC+eiun6dt/8y4mF7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 7=EC=9B=94 13=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 11:49, =
-Paul Moore <paul@paul-moore.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Mon, Jul 12, 2021 at 7:48 PM Austin Kim <austindh.kim@gmail.com> wrote=
-:
-> > From: Austin Kim <austin.kim@lge.com>
-> >
-> > It is possible for audit_log_start() to return NULL on error.
-> > So add exception handling for possible NULL audit buffers where
-> > return value can be handled from callers.
->
-> Hi.
->
-> The patch looks fine to me, but I think the description doesn't tell
-> the full story and I'm worried that people might misunderstand why
-> this patch is worthwhile.  I would suggest you revise the commit
-> description to explain that in these cases it is safe to return early
-> when audit_log_start() returns NULL because the only non-cleanup
-> processing left in these functions is to generate an audit record.
+Hi
 
-Thanks for valuable feedback.
-Let me resend the patch with revised 'commit description',
-as you recommended.
+On 2021-07-12, Greg Kroah-Hartman wrote:
+> From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+>
+> [ Upstream commit 03effde3a2ea1d82c4dd6b634fc6174545d2c34f ]
+>
+> Brya is another ADL-P product.
+>
+> AlderLake has support for Bluetooth audio offload capability.
+> Enable the BT-offload quirk for ADL-P Brya and the Intel RVP.
+[...]
 
-> Returning early in these cases is a performance optimization and not a
-> correctness issue; the audit_log_*() functions can support being
-> passed a NULL audit_buffer argument.
->
-> > Signed-off-by: Austin Kim <austin.kim@lge.com>
-> > ---
-> >  security/selinux/hooks.c       | 4 ++++
-> >  security/selinux/ss/services.c | 2 ++
-> >  2 files changed, 6 insertions(+)
-> >
-> > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > index b0032c42333e..9e84e6635f2f 100644
-> > --- a/security/selinux/hooks.c
-> > +++ b/security/selinux/hooks.c
-> > @@ -3325,6 +3325,8 @@ static int selinux_inode_setxattr(struct user_nam=
-espace *mnt_userns,
-> >                         }
-> >                         ab =3D audit_log_start(audit_context(),
-> >                                              GFP_ATOMIC, AUDIT_SELINUX_=
-ERR);
-> > +                       if (!ab)
-> > +                               return rc;
-> >                         audit_log_format(ab, "op=3Dsetxattr invalid_con=
-text=3D");
-> >                         audit_log_n_untrustedstring(ab, value, audit_si=
-ze);
-> >                         audit_log_end(ab);
-> > @@ -6552,6 +6554,8 @@ static int selinux_setprocattr(const char *name, =
-void *value, size_t size)
-> >                                 ab =3D audit_log_start(audit_context(),
-> >                                                      GFP_ATOMIC,
-> >                                                      AUDIT_SELINUX_ERR)=
-;
-> > +                               if (!ab)
-> > +                                       return error;
-> >                                 audit_log_format(ab, "op=3Dfscreate inv=
-alid_context=3D");
-> >                                 audit_log_n_untrustedstring(ab, value, =
-audit_size);
-> >                                 audit_log_end(ab);
-> > diff --git a/security/selinux/ss/services.c b/security/selinux/ss/servi=
-ces.c
-> > index d84c77f370dc..e5f1b2757a83 100644
-> > --- a/security/selinux/ss/services.c
-> > +++ b/security/selinux/ss/services.c
-> > @@ -1673,6 +1673,8 @@ static int compute_sid_handle_invalid_context(
-> >         if (context_struct_to_string(policydb, newcontext, &n, &nlen))
-> >                 goto out;
-> >         ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_SELIN=
-UX_ERR);
-> > +       if (!ab)
-> > +               goto out;
-> >         audit_log_format(ab,
-> >                          "op=3Dsecurity_compute_sid invalid_context=3D"=
-);
-> >         /* no need to record the NUL with untrusted strings */
-> > --
-> > 2.20.1
->
-> --
-> paul moore
-> www.paul-moore.com
+This patch seems to introduce a build failure into v5.13.2-rc1 on x86_64:
+
+  CC [M]  sound/soc/intel/boards/sof_sdw.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_rt5682.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_rt700.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_rt711.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_rt711_sdca.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_rt715.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_rt715_sdca.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_dmic.o
+  CC [M]  sound/soc/intel/boards/sof_sdw_hdmi.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sof_rt5682.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-haswell.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-bxt-da7219_max98357a.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-bxt-rt298.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-sof-pcm512x.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-sof-wm8804.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-glk-rt5682_max98357a.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-broadwell.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-bdw-rt5650-mach.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-bytcr-rt5640.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-bytcr-rt5651.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-rt5672.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-rt5645.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-max98090_ti.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-nau8824.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-cx2072x.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-da7213.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-es8316.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-nocodec.o
+  LD [M]  sound/soc/intel/boards/snd-soc-cml_rt1011_rt5682.o
+  LD [M]  sound/soc/intel/boards/snd-soc-kbl_da7219_max98357a.o
+  LD [M]  sound/soc/intel/boards/snd-soc-kbl_da7219_max98927.o
+  CHK     kernel/kheaders_data.tar.xz
+  LD [M]  sound/soc/intel/boards/snd-soc-kbl_rt5663_max98927.o
+  LD [M]  sound/soc/intel/boards/snd-soc-kbl_rt5660.o
+  LD [M]  sound/soc/intel/boards/snd-soc-skl_rt286.o
+  LD [M]  sound/soc/intel/boards/snd-skl_nau88l25_max98357a.o
+  LD [M]  sound/soc/intel/boards/snd-soc-skl_nau88l25_ssm4567.o
+  LD [M]  sound/soc/intel/boards/snd-soc-skl_hda_dsp.o
+  LD [M]  sound/soc/intel/boards/snd-soc-sof_da7219_max98373.o
+  LD [M]  sound/soc/intel/boards/snd-soc-ehl-rt5660.o
+  LD [M]  sound/soc/snd-soc-acpi.o
+/build/linux-aptosid-5.13/sound/soc/intel/boards/sof_sdw.c:200:6: error: i=
+mplicit declaration of function 'SOF_BT_OFFLOAD_SSP' [-Werror=3Dimplicit-f=
+unction-declaration]
+  200 |      SOF_BT_OFFLOAD_SSP(2) |
+      |      ^~~~~~~~~~~~~~~~~~
+  LD [M]  sound/soundcore.o
+  LD [M]  sound/soc/sof/xtensa/snd-sof-xtensa-dsp.o
+/build/linux-aptosid-5.13/sound/soc/intel/boards/sof_sdw.c:201:6: error: '=
+SOF_SSP_BT_OFFLOAD_PRESENT' undeclared here (not in a function)
+  201 |      SOF_SSP_BT_OFFLOAD_PRESENT),
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  LD [M]  sound/soc/sof/intel/snd-sof-acpi-intel-bdw.o
+  LD [M]  sound/soc/sof/intel/snd-sof-intel-hda.o
+  LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-tng.o
+  LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-apl.o
+  LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-cnl.o
+  LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-icl.o
+  LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-tgl.o
+cc1: some warnings being treated as errors
+make[5]: *** [/build/linux-aptosid-5.13/scripts/Makefile.build:273: sound/=
+soc/intel/boards/sof_sdw.o] Error 1
+
+> diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/s=
+of_sdw.c
+> index dfad2ad129ab..35ad448902c7 100644
+> --- a/sound/soc/intel/boards/sof_sdw.c
+> +++ b/sound/soc/intel/boards/sof_sdw.c
+> @@ -197,7 +197,21 @@ static const struct dmi_system_id sof_sdw_quirk_tab=
+le[] =3D {
+>  		.driver_data =3D (void *)(SOF_RT711_JD_SRC_JD1 |
+>  					SOF_SDW_TGL_HDMI |
+>  					SOF_RT715_DAI_ID_FIX |
+> -					SOF_SDW_PCH_DMIC),
+> +					SOF_SDW_PCH_DMIC |
+> +					SOF_BT_OFFLOAD_SSP(2) |
+> +					SOF_SSP_BT_OFFLOAD_PRESENT),
+> +	},
+> +	{
+> +		.callback =3D sof_sdw_quirk_cb,
+> +		.matches =3D {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "Brya"),
+> +		},
+> +		.driver_data =3D (void *)(SOF_SDW_TGL_HDMI |
+> +					SOF_SDW_PCH_DMIC |
+> +					SOF_SDW_FOUR_SPK |
+> +					SOF_BT_OFFLOAD_SSP(2) |
+> +					SOF_SSP_BT_OFFLOAD_PRESENT),
+>  	},
+>  	{}
+>  };
+
+Regards
+	Stefan Lippers-Hollmann
