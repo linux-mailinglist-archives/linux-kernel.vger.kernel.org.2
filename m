@@ -2,121 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5425C3C748F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23233C7490
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhGMQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:35:16 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:40865 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhGMQfP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:35:15 -0400
-Received: by mail-vs1-f53.google.com with SMTP id z7so927062vsn.7;
-        Tue, 13 Jul 2021 09:32:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wEFTIvfldYQdWbU0+dVTlFsldmIwtOaNGFmep4ASxsw=;
-        b=WKCBz66ADoc5oeZPvxZrFzzIPkQaPxaFCNknC9Jy4WXvZlv82z43xH7koz1PXZ3F/F
-         NdWp0sek2lTm/hIlvcQkp4FWirGqMe0yJY/Pvwu6z9Kgglga8dkTpIQNr5c7xGLAMqvf
-         Cw98khs7l41aYbiAk6dtdX17j9kX+qOY5arLnmn/dAc1yau7EiDh5x0Qj+w9iglcFd2x
-         9K73LPMDk64QnrrG/QMG/Ifc/z2hFhvd4pssgZFRkDPKV2nAd+J8tGvPMPqs8+PNamee
-         xIIvrc3vvXrZqu10m9sJUTrDDC3RxlUjtcCQOVUHXykrOVzwN9fKd8pl3S0vTKWE0x55
-         e7XA==
-X-Gm-Message-State: AOAM531G26l2grUrL6Aq4c17u7IwOQNWcIc2QaC/L2W6hYKRgALr72ei
-        3VOItlVDCqXMcJgRoVy6WkYKn8wYS8mPXkOfqAg=
-X-Google-Smtp-Source: ABdhPJxgGxKbu2+X0LPxRNPOhDg6pRFwCAZKuV6SHtapVvue/ES1G10rouYV5IkbldkxmkDs9aYQXDupBEil3x963kk=
-X-Received: by 2002:a67:8702:: with SMTP id j2mr7454255vsd.3.1626193944361;
- Tue, 13 Jul 2021 09:32:24 -0700 (PDT)
+        id S231153AbhGMQfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:35:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:46852 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230434AbhGMQfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 12:35:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 410806D;
+        Tue, 13 Jul 2021 09:32:27 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A4543F7D8;
+        Tue, 13 Jul 2021 09:32:25 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for non-online nodes
+In-Reply-To: <20210712124856.GA3836887@linux.vnet.ibm.com>
+References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com> <20210701041552.112072-2-srikar@linux.vnet.ibm.com> <875yxu85wi.mognet@arm.com> <20210712124856.GA3836887@linux.vnet.ibm.com>
+Date:   Tue, 13 Jul 2021 17:32:14 +0100
+Message-ID: <87zguqmay9.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210701202141.GA2859816@robh.at.kernel.org> <CA+V-a8sAvEQesjdKX8WzPZvPtt70pfm7qk-AGdy5QFrwXSKZrw@mail.gmail.com>
-In-Reply-To: <CA+V-a8sAvEQesjdKX8WzPZvPtt70pfm7qk-AGdy5QFrwXSKZrw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Jul 2021 18:32:13 +0200
-Message-ID: <CAMuHMdUoX5NyM7bN4c+JtO=n2v6HsxTaCqkeRrKBz8wmRu-ruw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation for
- Renesas RZ/G2L A/D converter
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-iio@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On 12/07/21 18:18, Srikar Dronamraju wrote:
+> Hi Valentin,
+>
+>> On 01/07/21 09:45, Srikar Dronamraju wrote:
+>> > @@ -1891,12 +1894,30 @@ void sched_init_numa(void)
+>> >  void sched_domains_numa_masks_set(unsigned int cpu)
+>> >  {
+>>
+>> Hmph, so we're playing games with masks of offline nodes - is that really
+>> necessary? Your modification of sched_init_numa() still scans all of the
+>> nodes (regardless of their online status) to build the distance map, and
+>> that is never updated (sched_init_numa() is pretty much an __init
+>> function).
+>>
+>> So AFAICT this is all to cope with topology_span_sane() not applying
+>> 'cpu_map' to its masks. That seemed fine to me back when I wrote it, but in
+>> light of having bogus distance values for offline nodes, not so much...
+>>
+>> What about the below instead?
+>>
+>> ---
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index b77ad49dc14f..c2d9caad4aa6 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -2075,6 +2075,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
+>>  static bool topology_span_sane(struct sched_domain_topology_level *tl,
+>>                            const struct cpumask *cpu_map, int cpu)
+>>  {
+>> +	struct cpumask *intersect = sched_domains_tmpmask;
+>>      int i;
+>>
+>>      /* NUMA levels are allowed to overlap */
+>> @@ -2090,14 +2091,17 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
+>>      for_each_cpu(i, cpu_map) {
+>>              if (i == cpu)
+>>                      continue;
+>> +
+>>              /*
+>> -		 * We should 'and' all those masks with 'cpu_map' to exactly
+>> -		 * match the topology we're about to build, but that can only
+>> -		 * remove CPUs, which only lessens our ability to detect
+>> -		 * overlaps
+>> +		 * We shouldn't have to bother with cpu_map here, unfortunately
+>> +		 * some architectures (powerpc says hello) have to deal with
+>> +		 * offline NUMA nodes reporting bogus distance values. This can
+>> +		 * lead to funky NODE domain spans, but since those are offline
+>> +		 * we can mask them out.
+>>               */
+>> +		cpumask_and(intersect, tl->mask(cpu), tl->mask(i));
+>>              if (!cpumask_equal(tl->mask(cpu), tl->mask(i)) &&
+>> -		    cpumask_intersects(tl->mask(cpu), tl->mask(i)))
+>> +		    cpumask_intersects(intersect, cpu_map))
+>>                      return false;
+>>      }
+>>
+>
+> Unfortunately this is not helping.
+> I tried this patch alone and also with 2/2 patch of this series where
+> we update/fill fake topology numbers. However both cases are still failing.
+>
 
-On Tue, Jul 13, 2021 at 6:01 PM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Thu, Jul 1, 2021 at 9:21 PM Rob Herring <robh@kernel.org> wrote:
-> > On Tue, Jun 29, 2021 at 11:03:27PM +0100, Lad Prabhakar wrote:
-> > > Add binding documentation for Renesas RZ/G2L A/D converter block.
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > ---
-> > >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
-> > >  1 file changed, 121 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > new file mode 100644
-> > > index 000000000000..db935d6d59eb
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > @@ -0,0 +1,121 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iio/adc/renesas,rzg2l-adc.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Renesas RZ/G2L ADC
-> > > +
-> > > +maintainers:
-> > > +  - Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > +
-> > > +description: |
-> > > +  A/D Converter block is a successive approximation analog-to-digital converter
-> > > +  with a 12-bit accuracy. Up to eight analog input channels can be selected.
-> > > +  Conversions can be performed in single or repeat mode. Result of the ADC is
-> > > +  stored in a 32-bit data register corresponding to each channel.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> >
-> > You can drop oneOf here.
-> >
-> Dropping oneOf from here dt_binding_check complains with below report,
-> Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml:
-> properties:compatible: [{'items': [{'enum':
-> ['renesas,r9a07g044-adc']}, {'const': 'renesas,rzg2l-adc'}]}] is not
-> of type 'object', 'boolean'
-> from schema $id: http://json-schema.org/draft-07/schema#
+Thanks for testing it.
 
-You forgot to drop the dash in front of the items, right?
 
-Gr{oetje,eeting}s,
+Now, let's take examples from your cover letter:
 
-                        Geert
+  node distances:
+  node   0   1   2   3   4   5   6   7
+    0:  10  20  40  40  40  40  40  40
+    1:  20  10  40  40  40  40  40  40
+    2:  40  40  10  20  40  40  40  40
+    3:  40  40  20  10  40  40  40  40
+    4:  40  40  40  40  10  20  40  40
+    5:  40  40  40  40  20  10  40  40
+    6:  40  40  40  40  40  40  10  20
+    7:  40  40  40  40  40  40  20  10
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+But the system boots with just nodes 0 and 1, thus only this distance
+matrix is valid:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  node   0   1
+    0:  10  20
+    1:  20  10
+
+topology_span_sane() is going to use tl->mask(cpu), and as you reported the
+NODE topology level should cause issues. Let's assume all offline nodes say
+they're 10 distance away from everyone else, and that we have one CPU per
+node. This would give us:
+
+  NODE->mask(0) == 0,2-7
+  NODE->mask(1) == 1-7
+
+The intersection is 2-7, we'll trigger the WARN_ON().
+Now, with the above snippet, we'll check if that intersection covers any
+online CPU. For sched_init_domains(), cpu_map is cpu_active_mask, so we'd
+end up with an empty intersection and we shouldn't warn - that's the theory
+at least.
+
+Looking at sd_numa_mask(), I think there's a bug with topology_span_sane():
+it doesn't run in the right place wrt where sched_domains_curr_level is
+updated. Could you try the below on top of the previous snippet?
+
+If that doesn't help, could you share the node distances / topology masks
+that lead to the WARN_ON()? Thanks.
+
+---
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index b77ad49dc14f..cda69dfa4065 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1516,13 +1516,6 @@ sd_init(struct sched_domain_topology_level *tl,
+ 	int sd_id, sd_weight, sd_flags = 0;
+ 	struct cpumask *sd_span;
+ 
+-#ifdef CONFIG_NUMA
+-	/*
+-	 * Ugly hack to pass state to sd_numa_mask()...
+-	 */
+-	sched_domains_curr_level = tl->numa_level;
+-#endif
+-
+ 	sd_weight = cpumask_weight(tl->mask(cpu));
+ 
+ 	if (tl->sd_flags)
+@@ -2131,7 +2124,12 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+ 
+ 		sd = NULL;
+ 		for_each_sd_topology(tl) {
+-
++#ifdef CONFIG_NUMA
++			/*
++			 * Ugly hack to pass state to sd_numa_mask()...
++			 */
++			sched_domains_curr_level = tl->numa_level;
++#endif
+ 			if (WARN_ON(!topology_span_sane(tl, cpu_map, i)))
+ 				goto error;
+ 
+
