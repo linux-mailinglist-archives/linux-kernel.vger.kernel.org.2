@@ -2,122 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21F13C68A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8EA3C68A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhGMCpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 22:45:04 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56374 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233444AbhGMCpD (ORCPT
+        id S234014AbhGMCvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233444AbhGMCvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 22:45:03 -0400
-X-UUID: d346211ecf4a4bbdb4686e1c9680087b-20210713
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=q802Vv2CMSQW17WNtOwOhY0YLtlaJIPW7BobIkTXRD8=;
-        b=hx90P2w5iFarKf38iFgJqSy0FW8RKT3/GWSsc6BIiS0gIrdB98DfcfZD5LiK2h+3xv++0BsBZ4JumK0I1l4NLrdeLyZqMKMvmPVHDxINR0cpZ8F7l/DLfP2lfeYr6Rdgs6zkXkbbLl/FvsxZxMl34rc2FvfUCYlrcQsk6S95cFI=;
-X-UUID: d346211ecf4a4bbdb4686e1c9680087b-20210713
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <ed.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1800056760; Tue, 13 Jul 2021 10:42:10 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 13 Jul 2021 10:42:08 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 13 Jul 2021 10:42:09 +0800
-Message-ID: <1fabb91167a86990f4723e9036a0e006293518f4.camel@mediatek.com>
-Subject: Re: [PATCH] [fuse] alloc_page nofs avoid deadlock
-From:   Ed Tsai <ed.tsai@mediatek.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        chenguanyou <chenguanyou@xiaomi.com>,
-        chenguanyou <chenguanyou9338@gmail.com>,
-        <stanley.chu@mediatek.com>
-Date:   Tue, 13 Jul 2021 10:42:09 +0800
-In-Reply-To: <CAJfpegsEkRnU26Vvo4BTQUmx89Hahp6=RTuyEcPm=rqz8icwUQ@mail.gmail.com>
-References: <20210603125242.31699-1-chenguanyou@xiaomi.com>
-         <CAJfpegsEkRnU26Vvo4BTQUmx89Hahp6=RTuyEcPm=rqz8icwUQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Mon, 12 Jul 2021 22:51:41 -0400
+X-Greylist: delayed 50121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 12 Jul 2021 19:48:52 PDT
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A27C0613DD;
+        Mon, 12 Jul 2021 19:48:52 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626144530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lStPFj8qvcgCwMoBQwKRWxIuDXA8OI5V+DDbWuXsQ9U=;
+        b=XzYsqY3+/nv4P9vUmEQymCL4lGnzA57LHW8zpl3Y/doBSkAOzY76fsHZI/0sWM0RM1R3vT
+        UdN99HvXA36JVXmUCg+Y1B2VrO25234DF61j2zoglEoKOff1WtkkXb2y7hxp9WbQJnzauq
+        OHM95gDhuL1iftdz9mXvLYFoGRoECnA=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, mathew.j.martineau@linux.intel.com,
+        matthieu.baerts@tessares.net, pablo@netfilter.org,
+        kadlec@netfilter.org, fw@strlen.de, vyasevich@gmail.com,
+        nhorman@tuxdriver.com, marcelo.leitner@gmail.com,
+        johannes.berg@intel.com, ast@kernel.org, yhs@fb.com,
+        0x7f454c46@gmail.com, yajun.deng@linux.dev, aahringo@redhat.com,
+        rdunlap@infradead.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mptcp@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-sctp@vger.kernel.org
+Subject: [PATCH v2] net: Use nlmsg_unicast() instead of netlink_unicast()
+Date:   Tue, 13 Jul 2021 10:48:24 +0800
+Message-Id: <20210713024824.14359-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA2LTA4IGF0IDE3OjMwICswMjAwLCBNaWtsb3MgU3plcmVkaSB3cm90ZToN
-Cj4gT24gVGh1LCAzIEp1biAyMDIxIGF0IDE0OjUyLCBjaGVuZ3VhbnlvdSA8Y2hlbmd1YW55b3U5
-MzM4QGdtYWlsLmNvbT4NCj4gd3JvdGU6DQo+ID4gDQo+ID4gQUJBIGRlYWRsb2NrDQo+ID4gDQo+
-ID4gUElEOiAxNzE3MiBUQVNLOiBmZmZmZmZjMGMxNjJjMDAwIENQVTogNiBDT01NQU5EOiAiVGhy
-ZWFkLTIxIg0KPiA+IDAgW2ZmZmZmZjgwMmQxNmI0MDBdIF9fc3dpdGNoX3RvIGF0IGZmZmZmZjgw
-MDgwODZhNGMNCj4gPiAxIFtmZmZmZmY4MDJkMTZiNDcwXSBfX3NjaGVkdWxlIGF0IGZmZmZmZjgw
-MDkxZmZlNTgNCj4gPiAyIFtmZmZmZmY4MDJkMTZiNGQwXSBzY2hlZHVsZSBhdCBmZmZmZmY4MDA5
-MjAwMzQ4DQo+ID4gMyBbZmZmZmZmODAyZDE2YjRmMF0gYml0X3dhaXQgYXQgZmZmZmZmODAwOTIw
-MTA5OA0KPiA+IDQgW2ZmZmZmZjgwMmQxNmI1MTBdIF9fd2FpdF9vbl9iaXQgYXQgZmZmZmZmODAw
-OTIwMGEzNA0KPiA+IDUgW2ZmZmZmZjgwMmQxNmI1YjBdIGlub2RlX3dhaXRfZm9yX3dyaXRlYmFj
-ayBhdCBmZmZmZmY4MDA4MzBlMWU4DQo+ID4gNiBbZmZmZmZmODAyZDE2YjVlMF0gZXZpY3QgYXQg
-ZmZmZmZmODAwODJmYjE1Yw0KPiA+IDcgW2ZmZmZmZjgwMmQxNmI2MjBdIGlwdXQgYXQgZmZmZmZm
-ODAwODJmOTI3MA0KPiA+IDggW2ZmZmZmZjgwMmQxNmI2ODBdIGRlbnRyeV91bmxpbmtfaW5vZGUg
-YXQgZmZmZmZmODAwODJmNGM5MA0KPiA+IDkgW2ZmZmZmZjgwMmQxNmI2YTBdIF9fZGVudHJ5X2tp
-bGwgYXQgZmZmZmZmODAwODJmMTcxMA0KPiA+IDEwIFtmZmZmZmY4MDJkMTZiNmQwXSBzaHJpbmtf
-ZGVudHJ5X2xpc3QgYXQgZmZmZmZmODAwODJmMWMzNA0KPiA+IDExIFtmZmZmZmY4MDJkMTZiNzUw
-XSBwcnVuZV9kY2FjaGVfc2IgYXQgZmZmZmZmODAwODJmMThhOA0KPiA+IDEyIFtmZmZmZmY4MDJk
-MTZiNzcwXSBzdXBlcl9jYWNoZV9zY2FuIGF0IGZmZmZmZjgwMDgyZDU1YWMNCj4gPiAxMyBbZmZm
-ZmZmODAyZDE2Yjg2MF0gc2hyaW5rX3NsYWIgYXQgZmZmZmZmODAwODI2NjE3MA0KPiA+IDE0IFtm
-ZmZmZmY4MDJkMTZiOTAwXSBzaHJpbmtfbm9kZSBhdCBmZmZmZmY4MDA4MjZiNDIwDQo+ID4gMTUg
-W2ZmZmZmZjgwMmQxNmI5ODBdIGRvX3RyeV90b19mcmVlX3BhZ2VzIGF0IGZmZmZmZjgwMDgyNjg0
-NjANCj4gPiAxNiBbZmZmZmZmODAyZDE2YmE2MF0gdHJ5X3RvX2ZyZWVfcGFnZXMgYXQgZmZmZmZm
-ODAwODI2ODBkMA0KPiA+IDE3IFtmZmZmZmY4MDJkMTZiYmUwXSBfX2FsbG9jX3BhZ2VzX25vZGVt
-YXNrIGF0IGZmZmZmZjgwMDgyNTY1MTQNCj4gPiAxOCBbZmZmZmZmODAyZDE2YmM2MF0gZnVzZV9j
-b3B5X2ZpbGwgYXQgZmZmZmZmODAwODQzODI2OA0KPiA+IDE5IFtmZmZmZmY4MDJkMTZiZDAwXSBm
-dXNlX2Rldl9kb19yZWFkIGF0IGZmZmZmZjgwMDg0Mzc2NTQNCj4gPiAyMCBbZmZmZmZmODAyZDE2
-YmRjMF0gZnVzZV9kZXZfc3BsaWNlX3JlYWQgYXQgZmZmZmZmODAwODQzNmY0MA0KPiA+IDIxIFtm
-ZmZmZmY4MDJkMTZiZTYwXSBzeXNfc3BsaWNlIGF0IGZmZmZmZjgwMDgzMTVkMTgNCj4gPiAyMiBb
-ZmZmZmZmODAyZDE2YmZmMF0gX19zeXNfdHJhY2UgYXQgZmZmZmZmODAwODA4NDAxNA0KPiA+IA0K
-PiA+IFBJRDogOTY1MiBUQVNLOiBmZmZmZmZjMGM5Y2UwMDAwIENQVTogNCBDT01NQU5EOiAia3dv
-cmtlci91MTY6OCINCj4gPiAwIFtmZmZmZmY4MDJlNzkzNjUwXSBfX3N3aXRjaF90byBhdCBmZmZm
-ZmY4MDA4MDg2YTRjDQo+ID4gMSBbZmZmZmZmODAyZTc5MzZjMF0gX19zY2hlZHVsZSBhdCBmZmZm
-ZmY4MDA5MWZmZTU4DQo+ID4gMiBbZmZmZmZmODAyZTc5MzcyMF0gc2NoZWR1bGUgYXQgZmZmZmZm
-ODAwOTIwMDM0OA0KPiA+IDMgW2ZmZmZmZjgwMmU3OTM3NzBdIF9fZnVzZV9yZXF1ZXN0X3NlbmQg
-YXQgZmZmZmZmODAwODQzNTc2MA0KPiA+IDQgW2ZmZmZmZjgwMmU3OTM3YjBdIGZ1c2Vfc2ltcGxl
-X3JlcXVlc3QgYXQgZmZmZmZmODAwODQzNWIxNA0KPiA+IDUgW2ZmZmZmZjgwMmU3OTM5MzBdIGZ1
-c2VfZmx1c2hfdGltZXMgYXQgZmZmZmZmODAwODQzYTdhMA0KPiA+IDYgW2ZmZmZmZjgwMmU3OTM5
-NTBdIGZ1c2Vfd3JpdGVfaW5vZGUgYXQgZmZmZmZmODAwODQzZTRkYw0KPiA+IDcgW2ZmZmZmZjgw
-MmU3OTM5ODBdIF9fd3JpdGViYWNrX3NpbmdsZV9pbm9kZSBhdCBmZmZmZmY4MDA4MzEyNzQwDQo+
-ID4gOCBbZmZmZmZmODAyZTc5M2FhMF0gd3JpdGViYWNrX3NiX2lub2RlcyBhdCBmZmZmZmY4MDA4
-MzExN2U0DQo+ID4gOSBbZmZmZmZmODAyZTc5M2IwMF0gX193cml0ZWJhY2tfaW5vZGVzX3diIGF0
-IGZmZmZmZjgwMDgzMTFkOTgNCj4gPiAxMCBbZmZmZmZmODAyZTc5M2MwMF0gd2Jfd3JpdGViYWNr
-IGF0IGZmZmZmZjgwMDgzMTBjZmMNCj4gPiAxMSBbZmZmZmZmODAyZTc5M2QwMF0gd2Jfd29ya2Zu
-IGF0IGZmZmZmZjgwMDgzMGU0YTgNCj4gPiAxMiBbZmZmZmZmODAyZTc5M2Q5MF0gcHJvY2Vzc19v
-bmVfd29yayBhdCBmZmZmZmY4MDA4MGU0ZmFjDQo+ID4gMTMgW2ZmZmZmZjgwMmU3OTNlMDBdIHdv
-cmtlcl90aHJlYWQgYXQgZmZmZmZmODAwODBlNTY3MA0KPiA+IDE0IFtmZmZmZmY4MDJlNzkzZTYw
-XSBrdGhyZWFkIGF0IGZmZmZmZjgwMDgwZWI2NTANCj4gDQo+IFRoZSBpc3N1ZSBpcyByZWFsLg0K
-PiANCj4gVGhlIGZpeCwgaG93ZXZlciwgaXMgbm90IHRoZSByaWdodCBvbmUuICBUaGUgZnVuZGFt
-ZW50YWwgcHJvYmxlbSBpcw0KPiB0aGF0IGZ1c2Vfd3JpdGVfaW5vZGUoKSBibG9ja3Mgb24gYSBy
-ZXF1ZXN0IHRvIHVzZXJzcGFjZS4NCj4gDQo+IFRoaXMgaXMgdGhlIHNhbWUgaXNzdWUgdGhhdCBm
-dXNlX3dyaXRlcGFnZS9mdXNlX3dyaXRlcGFnZXMgZmFjZS4gIEluDQo+IHRoYXQgY2FzZSB0aGUg
-c29sdXRpb24gd2FzIHRvIGNvcHkgdGhlIHBhZ2UgY29udGVudHMgdG8gYSB0ZW1wb3JhcnkNCj4g
-YnVmZmVyIGFuZCByZXR1cm4gaW1tZWRpYXRlbHkgYXMgaWYgdGhlIHdyaXRlYmFjayBhbHJlYWR5
-IGNvbXBsZXRlZC4NCj4gDQo+IFNvbWV0aGluZyBzaW1pbGFyIG5lZWRzIHRvIGJlIGRvbmUgaGVy
-ZTogc2VuZCB0aGUgRlVTRV9TRVRBVFRSDQo+IHJlcXVlc3QNCj4gYXN5bmNocm9ub3VzbHkgYW5k
-IHJldHVybiBpbW1lZGlhdGVseSBmcm9tIGZ1c2Vfd3JpdGVfaW5vZGUoKS4gIFRoZQ0KPiB0cmlj
-a3kgcGFydCBpcyB0byBtYWtlIHN1cmUgdGhhdCBtdWx0aXBsZSB0aW1lIHVwZGF0ZXMgZm9yIHRo
-ZSBzYW1lDQo+IGlub2RlIGFyZW4ndCBtaXhlZCB1cC4uLg0KPiANCj4gVGhhbmtzLA0KPiBNaWts
-b3MNCg0KRGVhciBTemVyZWRpLA0KDQpXcml0ZWJhY2sgdGhyZWFkIGNhbGxzIGZ1c2Vfd3JpdGVf
-aW5vZGUoKSBhbmQgd2FpdCBmb3IgdXNlciBEYWVtb24gdG8NCmNvbXBsZXRlIHRoaXMgd3JpdGUg
-aW5vZGUgcmVxdWVzdC4gVGhlIHVzZXIgZGFlbW9uIHdpbGwgYWxsb2NfcGFnZSgpDQphZnRlciB0
-YWtpbmcgdGhpcyByZXF1ZXN0LCBhbmQgYSBkZWFkbG9jayBjb3VsZCBoYXBwZW4gd2hlbiB3ZSB0
-cnkgdG8NCnNocmluayBkZW50cnkgbGlzdCB1bmRlciBtZW1vcnkgcHJlc3N1cmUuDQoNCldlIChN
-ZWRpYXRlaykgZ2xhZCB0byB3b3JrIG9uIHRoaXMgaXNzdWUgZm9yIG1haW5saW5lIGFuZCBhbHNv
-IExUUy4gU28NCmFub3RoZXIgcHJvYmxlbSBpcyB0aGF0IHdlIHNob3VsZCBub3QgY2hhbmdlIHRo
-ZSBwcm90b2NvbCBvciBmZWF0dXJlDQpmb3Igc3RhYmxlIGtlcm5lbC4NCg0KVXNlIEdGUF9OT0ZT
-IHwgX19HRlBfSElHSE1FTSBjYW4gcmVhbGx5IGF2b2lkIHRoaXMgYnkgc2tpcCB0aGUgZGVudHJ5
-DQpzaGlybmtlci4gSXQgd29ya3MgYnV0IGRlZ3JhZGUgdGhlIGFsbG9jX3BhZ2Ugc3VjY2VzcyBy
-YXRlLiBJbiBhIG1vcmUNCmZ1bmRhbWVudGFsIHdheSwgd2UgY291bGQgY2FjaGUgdGhlIGNvbnRl
-bnRzIGFuZCByZXR1cm4gaW1tZWRpYXRlbHkuDQpCdXQgaG93IHRvIGVuc3VyZSB0aGUgcmVxdWVz
-dCB3aWxsIGJlIGRvbmUgc3VjY2Vzc2Z1bGx5LCBlLmcuLCBhbHdheXMNCnJldHJ5IGlmIGl0IGZh
-aWxzIGZyb20gZGFlbW9uLg0KDQoNCg==
+It has 'if (err >0 )' statement in nlmsg_unicast(), so use nlmsg_unicast()
+instead of netlink_unicast(), this looks more concise.
+
+v2: remove the change in netfilter.
+
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ net/ipv4/fib_frontend.c  | 2 +-
+ net/ipv4/inet_diag.c     | 5 +----
+ net/ipv4/raw_diag.c      | 7 ++-----
+ net/ipv4/udp_diag.c      | 6 ++----
+ net/mptcp/mptcp_diag.c   | 6 ++----
+ net/netlink/af_netlink.c | 2 +-
+ net/sctp/diag.c          | 6 ++----
+ net/unix/diag.c          | 6 ++----
+ 8 files changed, 13 insertions(+), 27 deletions(-)
+
+diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
+index a933bd6345b1..9fe13e4f5d08 100644
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -1376,7 +1376,7 @@ static void nl_fib_input(struct sk_buff *skb)
+ 	portid = NETLINK_CB(skb).portid;      /* netlink portid */
+ 	NETLINK_CB(skb).portid = 0;        /* from kernel */
+ 	NETLINK_CB(skb).dst_group = 0;  /* unicast */
+-	netlink_unicast(net->ipv4.fibnl, skb, portid, MSG_DONTWAIT);
++	nlmsg_unicast(net->ipv4.fibnl, skb, portid);
+ }
+ 
+ static int __net_init nl_fib_lookup_init(struct net *net)
+diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
+index e65f4ef024a4..ef7897226f08 100644
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -580,10 +580,7 @@ int inet_diag_dump_one_icsk(struct inet_hashinfo *hashinfo,
+ 		nlmsg_free(rep);
+ 		goto out;
+ 	}
+-	err = netlink_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid,
+-			      MSG_DONTWAIT);
+-	if (err > 0)
+-		err = 0;
++	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
+ 
+ out:
+ 	if (sk)
+diff --git a/net/ipv4/raw_diag.c b/net/ipv4/raw_diag.c
+index 1b5b8af27aaf..ccacbde30a2c 100644
+--- a/net/ipv4/raw_diag.c
++++ b/net/ipv4/raw_diag.c
+@@ -119,11 +119,8 @@ static int raw_diag_dump_one(struct netlink_callback *cb,
+ 		return err;
+ 	}
+ 
+-	err = netlink_unicast(net->diag_nlsk, rep,
+-			      NETLINK_CB(in_skb).portid,
+-			      MSG_DONTWAIT);
+-	if (err > 0)
+-		err = 0;
++	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
++
+ 	return err;
+ }
+ 
+diff --git a/net/ipv4/udp_diag.c b/net/ipv4/udp_diag.c
+index b2cee9a307d4..1ed8c4d78e5c 100644
+--- a/net/ipv4/udp_diag.c
++++ b/net/ipv4/udp_diag.c
+@@ -77,10 +77,8 @@ static int udp_dump_one(struct udp_table *tbl,
+ 		kfree_skb(rep);
+ 		goto out;
+ 	}
+-	err = netlink_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid,
+-			      MSG_DONTWAIT);
+-	if (err > 0)
+-		err = 0;
++	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
++
+ out:
+ 	if (sk)
+ 		sock_put(sk);
+diff --git a/net/mptcp/mptcp_diag.c b/net/mptcp/mptcp_diag.c
+index 8f88ddeab6a2..f48eb6315bbb 100644
+--- a/net/mptcp/mptcp_diag.c
++++ b/net/mptcp/mptcp_diag.c
+@@ -57,10 +57,8 @@ static int mptcp_diag_dump_one(struct netlink_callback *cb,
+ 		kfree_skb(rep);
+ 		goto out;
+ 	}
+-	err = netlink_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid,
+-			      MSG_DONTWAIT);
+-	if (err > 0)
+-		err = 0;
++	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
++
+ out:
+ 	sock_put(sk);
+ 
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index d233ac4a91b6..380f95aacdec 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2471,7 +2471,7 @@ void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err,
+ 
+ 	nlmsg_end(skb, rep);
+ 
+-	netlink_unicast(in_skb->sk, skb, NETLINK_CB(in_skb).portid, MSG_DONTWAIT);
++	nlmsg_unicast(in_skb->sk, skb, NETLINK_CB(in_skb).portid);
+ }
+ EXPORT_SYMBOL(netlink_ack);
+ 
+diff --git a/net/sctp/diag.c b/net/sctp/diag.c
+index 493fc01e5d2b..760b367644c1 100644
+--- a/net/sctp/diag.c
++++ b/net/sctp/diag.c
+@@ -284,10 +284,8 @@ static int sctp_tsp_dump_one(struct sctp_transport *tsp, void *p)
+ 		goto out;
+ 	}
+ 
+-	err = netlink_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid,
+-			      MSG_DONTWAIT);
+-	if (err > 0)
+-		err = 0;
++	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
++
+ out:
+ 	return err;
+ }
+diff --git a/net/unix/diag.c b/net/unix/diag.c
+index 9ff64f9df1f3..7e7d7f45685a 100644
+--- a/net/unix/diag.c
++++ b/net/unix/diag.c
+@@ -295,10 +295,8 @@ static int unix_diag_get_exact(struct sk_buff *in_skb,
+ 
+ 		goto again;
+ 	}
+-	err = netlink_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid,
+-			      MSG_DONTWAIT);
+-	if (err > 0)
+-		err = 0;
++	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
++
+ out:
+ 	if (sk)
+ 		sock_put(sk);
+-- 
+2.32.0
 
