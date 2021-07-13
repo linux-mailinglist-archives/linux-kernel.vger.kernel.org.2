@@ -2,112 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DE13C70BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C46E3C70BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhGMMyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
+        id S236308AbhGMM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbhGMMyP (ORCPT
+        with ESMTP id S236164AbhGMM4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:54:15 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC98C0613DD;
-        Tue, 13 Jul 2021 05:51:25 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id k20so14549192pgg.7;
-        Tue, 13 Jul 2021 05:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=L6Z19cM06hJr3254lNoc8rFS2DcnQVnOHZzVU5oJkdY=;
-        b=RycI6eIu6txifUyYNMh21Z91nG+cHEG9+nXcu0OFLcnfvuHYaTD4zWzprYyZhxfLIR
-         +pPn37tSl1Wh1qxt0RlAIJW8O3XbkUw6PvWe6s8yaClJ3wj3Ru+5cPiW/pB7oXDLkVe1
-         JKg+YvTq9xkOjA3p+6zeapn+LsiAvX3AvKrlTNUWE+xlKntq44HkLyoDkj8+o3RtIAzK
-         t0SKHaWLfohe1KlHJYlnVfolun8NDY2Ww5vLZdQHaesIiUUHRm0/6JWeklCnSoqXHyls
-         Y0DO52xuEFBmYZ8y7etd3TPL+yf/IcJN8YG690uzO7hO6clDVcNk1zROkgIuQ3/OR1VH
-         6lgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=L6Z19cM06hJr3254lNoc8rFS2DcnQVnOHZzVU5oJkdY=;
-        b=bSS4ew5Myx6R2Oh/oNxowMXxbtKclnMb1oIf4rSy8j78RNC9S2BFBKOl9CAEVFr1jK
-         kvD4IgL1pDyOKo7gbTEEoY+K3t0uZ8MZTKQZFIsNf37rLovk+vV9+4/aTuDS3Zamg/0v
-         KNwr5Xuisi1KBsLBQtINY/T3Vm3J+HVuF28FsvQieiLOpkoUJoajRUz90NVru7ztNuE7
-         OL2wZjciGanJ96rocxp+Whs5OivPlCB5eUnoC4pczZ/rmz//cdBsufWfMAcn4gU6pNMS
-         fiy9aMw0tlB6AYlRkfl60FlffJnQ7cjhAOmO3jdL/Idzkwr6uFbsiRax/azy9QaxtvVA
-         b9Bw==
-X-Gm-Message-State: AOAM532K8zIZsUpg9XUA+cDzyE2B+DRmTz0EMveoKmxI57sWmkPraMGn
-        lQDYL7+i3zbzRci0VmuVhg==
-X-Google-Smtp-Source: ABdhPJw0Xj+6mEG6jN2omlWduAbKJ0fPWcMbtZ3P8d9+01QQakRw+AxE4WM7ZSN6duYbgegeVJnT1Q==
-X-Received: by 2002:a05:6a00:2:b029:32e:3ef0:770a with SMTP id h2-20020a056a000002b029032e3ef0770amr1783208pfk.8.1626180684635;
-        Tue, 13 Jul 2021 05:51:24 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id q12sm19617515pfj.220.2021.07.13.05.51.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Jul 2021 05:51:24 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        security@kernel.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH] video: fbdev: kyrofb: fix a DoS bug by restricting user input
-Date:   Tue, 13 Jul 2021 12:51:14 +0000
-Message-Id: <1626180674-25195-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 13 Jul 2021 08:56:30 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D70AC0613DD;
+        Tue, 13 Jul 2021 05:53:40 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626180817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7LjZkWC74fDIMPYNeGmPc/K5Xi038BMB6L+xT27MYqE=;
+        b=w8iSkPr5eesyu4f5GGaFk/2JEkyviH25L+GHL43w+G3PjuvuMdfz3HKCe25FLfngxXJRSI
+        qWxM9BT/SKTFX4v4n+WhWqcY7g/CL1pwqOiWtJLxDRzcWzVykion7/nv/MxFWOuwrazxdy
+        6OUgw9PwkKcr6nuGaDTaf/WAMEvV80k=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, yajun.deng@linux.dev,
+        johannes.berg@intel.com, ryazanov.s.a@gmail.com, avagin@gmail.com,
+        vladimir.oltean@nxp.com, roopa@cumulusnetworks.com,
+        zhudi21@huawei.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 2/2] net/sched: Remove unnecessary judgment statements
+Date:   Tue, 13 Jul 2021 20:53:18 +0800
+Message-Id: <20210713125318.2682-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user can pass in any value to the driver through the 'ioctl'
-interface. The driver dost not check, which may cause DoS bugs.
+It has been deal with the 'if (err' statement in rtnl_{send, unicast},
+so use rtnl_{send, unicast} instead of netlink_{send, unicast}.
 
-Fix this by checking if the divisor is 0
-
-The following log reveals it:
-
-divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
-Call Trace:
- kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
- kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
- do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
- fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
- do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- drivers/video/fbdev/kyro/STG4000OverlayDevice.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/sched/act_api.c | 20 ++++++--------------
+ net/sched/cls_api.c | 28 +++++++++++-----------------
+ net/sched/sch_api.c | 18 ++++++------------
+ 3 files changed, 23 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/video/fbdev/kyro/STG4000OverlayDevice.c b/drivers/video/fbdev/kyro/STG4000OverlayDevice.c
-index 9fde0e3b69ec..29d692fe5e75 100644
---- a/drivers/video/fbdev/kyro/STG4000OverlayDevice.c
-+++ b/drivers/video/fbdev/kyro/STG4000OverlayDevice.c
-@@ -407,6 +407,9 @@ int SetOverlayViewPort(volatile STG4000REG __iomem *pSTGReg,
- 		ulVertDecFactor = 1;
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index d17a66aab8ee..96fc6f3d080a 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -1349,10 +1349,8 @@ static int tca_action_flush(struct net *net, struct nlattr *nla,
+ 	nlh->nlmsg_len = skb_tail_pointer(skb) - b;
+ 	nlh->nlmsg_flags |= NLM_F_ROOT;
+ 	module_put(ops->owner);
+-	err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-			     n->nlmsg_flags & NLM_F_ECHO);
+-	if (err > 0)
+-		return 0;
++	err = rtnl_send(skb, net, portid, RTNLGRP_TC,
++			n->nlmsg_flags & NLM_F_ECHO);
+ 	if (err < 0)
+ 		NL_SET_ERR_MSG(extack, "Failed to send TC action flush notification");
+ 
+@@ -1421,10 +1419,8 @@ tcf_del_notify(struct net *net, struct nlmsghdr *n, struct tc_action *actions[],
+ 		return ret;
  	}
  
-+	if ((ulDest + 1) == 0)
-+		return -EINVAL;
-+
- 	ulDacYScale = ((ulSrc - 1) * 2048) / (ulDest + 1);
+-	ret = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-			     n->nlmsg_flags & NLM_F_ECHO);
+-	if (ret > 0)
+-		return 0;
++	ret = rtnl_send(skb, net, portid, RTNLGRP_TC,
++			n->nlmsg_flags & NLM_F_ECHO);
+ 	return ret;
+ }
  
- 	tmp = STG_READ_REG(DACOverlayVtDec);	/* Decimation */
-@@ -471,6 +474,9 @@ int SetOverlayViewPort(volatile STG4000REG __iomem *pSTGReg,
- 		 */
- 		ulScaleLeft = ulSrcLeft;
+@@ -1481,7 +1477,6 @@ tcf_add_notify(struct net *net, struct nlmsghdr *n, struct tc_action *actions[],
+ 	       u32 portid, size_t attr_size, struct netlink_ext_ack *extack)
+ {
+ 	struct sk_buff *skb;
+-	int err = 0;
  
-+		if ((ulRight - ulLeft + 2) == 0)
-+			return -EINVAL;
-+
- 		/* shift fxscale until it is in the range of the scaler */
- 		ulhDecim = 0;
- 		ulScale = (((ulSrcRight - ulSrcLeft) - 1) << (11 - ulhDecim)) / (ulRight - ulLeft + 2);
+ 	skb = alloc_skb(attr_size <= NLMSG_GOODSIZE ? NLMSG_GOODSIZE : attr_size,
+ 			GFP_KERNEL);
+@@ -1495,11 +1490,8 @@ tcf_add_notify(struct net *net, struct nlmsghdr *n, struct tc_action *actions[],
+ 		return -EINVAL;
+ 	}
+ 
+-	err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-			     n->nlmsg_flags & NLM_F_ECHO);
+-	if (err > 0)
+-		err = 0;
+-	return err;
++	return rtnl_send(skb, net, portid, RTNLGRP_TC,
++			 n->nlmsg_flags & NLM_F_ECHO);
+ }
+ 
+ static int tcf_action_add(struct net *net, struct nlattr *nla,
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index d73b5c5514a9..bbf1bd028e7c 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -1870,13 +1870,11 @@ static int tfilter_notify(struct net *net, struct sk_buff *oskb,
+ 	}
+ 
+ 	if (unicast)
+-		err = netlink_unicast(net->rtnl, skb, portid, MSG_DONTWAIT);
++		err = rtnl_unicast(skb, net, portid);
+ 	else
+-		err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-				     n->nlmsg_flags & NLM_F_ECHO);
++		err = rtnl_send(skb, net, portid, RTNLGRP_TC,
++				n->nlmsg_flags & NLM_F_ECHO);
+ 
+-	if (err > 0)
+-		err = 0;
+ 	return err;
+ }
+ 
+@@ -1909,15 +1907,13 @@ static int tfilter_del_notify(struct net *net, struct sk_buff *oskb,
+ 	}
+ 
+ 	if (unicast)
+-		err = netlink_unicast(net->rtnl, skb, portid, MSG_DONTWAIT);
++		err = rtnl_unicast(skb, net, portid);
+ 	else
+-		err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-				     n->nlmsg_flags & NLM_F_ECHO);
++		err = rtnl_send(skb, net, portid, RTNLGRP_TC,
++				n->nlmsg_flags & NLM_F_ECHO);
+ 	if (err < 0)
+ 		NL_SET_ERR_MSG(extack, "Failed to send filter delete notification");
+ 
+-	if (err > 0)
+-		err = 0;
+ 	return err;
+ }
+ 
+@@ -2711,13 +2707,11 @@ static int tc_chain_notify(struct tcf_chain *chain, struct sk_buff *oskb,
+ 	}
+ 
+ 	if (unicast)
+-		err = netlink_unicast(net->rtnl, skb, portid, MSG_DONTWAIT);
++		err = rtnl_unicast(skb, net, portid);
+ 	else
+-		err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-				     flags & NLM_F_ECHO);
++		err = rtnl_send(skb, net, portid, RTNLGRP_TC,
++				flags & NLM_F_ECHO);
+ 
+-	if (err > 0)
+-		err = 0;
+ 	return err;
+ }
+ 
+@@ -2741,9 +2735,9 @@ static int tc_chain_notify_delete(const struct tcf_proto_ops *tmplt_ops,
+ 	}
+ 
+ 	if (unicast)
+-		return netlink_unicast(net->rtnl, skb, portid, MSG_DONTWAIT);
++		return rtnl_unicast(skb, net, portid);
+ 
+-	return rtnetlink_send(skb, net, portid, RTNLGRP_TC, flags & NLM_F_ECHO);
++	return rtnl_send(skb, net, portid, RTNLGRP_TC, flags & NLM_F_ECHO);
+ }
+ 
+ static int tc_chain_tmplt_add(struct tcf_chain *chain, struct net *net,
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index f87d07736a14..aaec80a047d6 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -987,8 +987,8 @@ static int qdisc_notify(struct net *net, struct sk_buff *oskb,
+ 	}
+ 
+ 	if (skb->len)
+-		return rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-				      n->nlmsg_flags & NLM_F_ECHO);
++		return rtnl_send(skb, net, portid, RTNLGRP_TC,
++				 n->nlmsg_flags & NLM_F_ECHO);
+ 
+ err_out:
+ 	kfree_skb(skb);
+@@ -1845,7 +1845,6 @@ static int tclass_notify(struct net *net, struct sk_buff *oskb,
+ {
+ 	struct sk_buff *skb;
+ 	u32 portid = oskb ? NETLINK_CB(oskb).portid : 0;
+-	int err = 0;
+ 
+ 	skb = alloc_skb(NLMSG_GOODSIZE, GFP_KERNEL);
+ 	if (!skb)
+@@ -1856,11 +1855,8 @@ static int tclass_notify(struct net *net, struct sk_buff *oskb,
+ 		return -EINVAL;
+ 	}
+ 
+-	err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-			     n->nlmsg_flags & NLM_F_ECHO);
+-	if (err > 0)
+-		err = 0;
+-	return err;
++	return rtnl_send(skb, net, portid, RTNLGRP_TC,
++			 n->nlmsg_flags & NLM_F_ECHO);
+ }
+ 
+ static int tclass_del_notify(struct net *net,
+@@ -1892,10 +1888,8 @@ static int tclass_del_notify(struct net *net,
+ 		return err;
+ 	}
+ 
+-	err = rtnetlink_send(skb, net, portid, RTNLGRP_TC,
+-			     n->nlmsg_flags & NLM_F_ECHO);
+-	if (err > 0)
+-		err = 0;
++	err = rtnl_send(skb, net, portid, RTNLGRP_TC,
++			n->nlmsg_flags & NLM_F_ECHO);
+ 	return err;
+ }
+ 
 -- 
-2.17.6
+2.32.0
 
