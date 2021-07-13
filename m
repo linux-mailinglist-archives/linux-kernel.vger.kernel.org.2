@@ -2,103 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD903C7078
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C583C7082
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236409AbhGMMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
+        id S236241AbhGMMkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236146AbhGMMi1 (ORCPT
+        with ESMTP id S236137AbhGMMkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:38:27 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAA6C0613DD;
-        Tue, 13 Jul 2021 05:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=febXSlnqHBcqwfMc/cqWyNSs3akzUbytq0SHLTlJG6U=; b=wPXgU39qlJPnevOo2ICp2PMxP
-        +YC8r/8c8Vj25gmY9Scs+ok/PGyXY1Bia34Bc8wTxnp82+y/f8nQMDcoPw1Z1r6PczS+26YDd8QR8
-        qGLzpDjsCWZ4HXc2AQ5svfmxovOezfPTcM/4nxZOmWmgVpoUqGIuXBOTyDLenwG14qv+VCWymsxzJ
-        RF0Tsv3LZrAELaIIXLeD3vIdPsX3SGShsenxBcvij5WyzODC0qPGVLjgUj2W/wKV/RzzXo3kc8OaU
-        RF4GpCCAtpncSxJ3+R7Jl+xNn2cCpVVaPUEFeq6i0Lt0x8frgxwYiKBMrHlkq3lxqZSS6WH8Q+p3x
-        c6IGcX1vg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46054)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m3HdM-00066q-G3; Tue, 13 Jul 2021 13:35:32 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m3HdK-0000Hf-Gf; Tue, 13 Jul 2021 13:35:30 +0100
-Date:   Tue, 13 Jul 2021 13:35:30 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Salah Triki <salah.triki@gmail.com>,
-        "fabrice.gasnier@foss.st.com" <fabrice.gasnier@foss.st.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
-Message-ID: <20210713123530.GI22278@shell.armlinux.org.uk>
-References: <20210712231910.GA1831270@pc>
- <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
- <20210713091954.GG22278@shell.armlinux.org.uk>
- <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
- <20210713112253.GH22278@shell.armlinux.org.uk>
- <2f725f0be09349308bf7d9a24399d516@AcuMS.aculab.com>
+        Tue, 13 Jul 2021 08:40:11 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC70C0613DD;
+        Tue, 13 Jul 2021 05:37:21 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626179839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=m8rIX22IAGVfsJ3iDpBk4wsSFJiQUHqAci2MV1lrwys=;
+        b=i/+tzeMzZdY4Ywz4r+O+7GR+rNL4PqoEkQl4XEDqxxeD1/ortCaI3dnPMn6rCzQh355hT8
+        m/jcbO8xaUkbSQpRlPcPrq+Xb6GCIMyebdI4zMRv0iBfpadceUpjHCcQPs683lwG/1sjEc
+        3JjcZQQdRhVL3D5Ebn7yXLt6FdobgCE=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, yajun.deng@linux.dev,
+        johannes.berg@intel.com, ryazanov.s.a@gmail.com, avagin@gmail.com,
+        vladimir.oltean@nxp.com, roopa@cumulusnetworks.com,
+        zhudi21@huawei.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/2] net: Use nlmsg_{multicast, unicast} that contain if statement
+Date:   Tue, 13 Jul 2021 20:36:52 +0800
+Message-Id: <20210713123654.31174-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f725f0be09349308bf7d9a24399d516@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 12:20:26PM +0000, David Laight wrote:
-> > > For big structures it is worth adding a compile-time check of
-> > > the structure size - but not really for three u32.
-> > 
-> > Sorry, structure size has absolutely nothing to do with whether it's
-> > a good idea to have a compile-time check. The deciding factor is
-> > whether the code relies on some property such as it being a certain
-> > size. Such as in this exact case. If you grep for "BUILD_BUG_ON.*sizeof"
-> > in fs/ for example, this illustrates the point rather well.
-> 
-> I'd not bother if the size is obviously going to be correct.
+Patch1: use nlmsg_{multicast, unicast} instead of netlink_
+{broadcast,unicast} in rtnetlink.
+Patch2: The caller no need deal with the if statements and use
+the rename function.
 
-That's fine if you assume that the structure isn't going to be changed.
-In this case, you can't do that - the structure looks to be a driver
-internal structure. It certainly doesn't look like an interface to
-anything that matters.
+Yajun Deng (2):
+  rtnetlink: use nlmsg_{multicast, unicast} instead of
+    netlink_{broadcast,unicast}
+  net/sched: Remove unnecessary judgment statements
 
-The code as written relies on the assumption that an array of
-struct stm32_breakinput can be directly mapped to an array of u32,
-where every third element of the u32 array falls on the first member
-of each stm32_breakinput member. That is a _significant_ assumption
-that the code _should_ be checking for.
-
-> I did get some odd bugs a few years ago from a compiler that aligned
-> all structures on 4-byte boundaries.
-> I had to change a structure of two u16 into an array :-)
-
-ARM OABI will do exactly that.
+ include/linux/rtnetlink.h |  2 +-
+ net/core/rtnetlink.c      | 13 +++++++------
+ net/sched/act_api.c       | 20 ++++++--------------
+ net/sched/cls_api.c       | 28 +++++++++++-----------------
+ net/sched/sch_api.c       | 18 ++++++------------
+ 5 files changed, 31 insertions(+), 50 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.32.0
+
