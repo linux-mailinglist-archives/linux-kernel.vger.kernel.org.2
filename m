@@ -2,102 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E563C6769
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723543C676B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhGMAZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 20:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        id S233768AbhGMA1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 20:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233672AbhGMAZc (ORCPT
+        with ESMTP id S233486AbhGMA1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 20:25:32 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5747BC0613E9;
-        Mon, 12 Jul 2021 17:22:43 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x25so34059549lfu.13;
-        Mon, 12 Jul 2021 17:22:43 -0700 (PDT)
+        Mon, 12 Jul 2021 20:27:01 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FAFC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:24:12 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id r125so12297119qkf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LHMjl6v+1/z8wJKRrF+q+23p2ixGAoh6EkLjt4MZTjE=;
-        b=jiW8y8g6pdyhRM4uMdpXkWIFO7Xb89L5NGKePWnVUe+yA7+VP5URwMjPobX5jfWulK
-         gSb17dKjQdHcOQmvCyTekQFiWtEBOJi/Dl44qAZ4bCgiFIRXdnlR4exZw6QFLV+NxYrI
-         hiRJVYtwS+pj5u1yVrWfiQQviYYnUKAKDl0YloHnh9u35bNL0Gni6EtmDDlAci4+Zgp/
-         MHK1XrLdc4l4WINofxSEN8wyj5yuUpQo2hzdhPelq2ybm5G8+ZE+00HJW8QeSep4ncVc
-         MKwumlXVVL79ZHBN++QiG29p1zlmKOuz+M0Iu3wH/CkTYZpXRxhfzsd7O3yNwIvQs7aE
-         mu3A==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yB5qAIs9Fc7CEvMMJ8HjSEc+CJeHsMb3Z3r28kd1YEE=;
+        b=01/+1PeyYqpCfkWSPiQzQ1/4ZzPCpTK75chfxFtWF7xgFFxO8o4Rb6MeI8H1ivl+R1
+         1ebZc2s7qCJgIHtRRFKwbcgLSUa4zIa4Kn6y6NMGTV1QlR87DV9iAeYNqMq5bDoBrrmC
+         XSi53W67knvsyOnZ1i+6YWyZWQNWcAk+m6zx/QRcYOJTWpZRpKDsnGM0zk4Tqb3GXrN3
+         beKx5CGDrwhitiApD8OyX43Jrc3VFvy31lLfrNz0N5XDSD7AxLj9gFkWp+qDmeu0p9Yb
+         o+evI0jqah2VbXE5Lt/o15HtAEE+yZjiMaIPwdVonhgkYelnStKJwaS/TWNSzoI3xkZq
+         sQ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LHMjl6v+1/z8wJKRrF+q+23p2ixGAoh6EkLjt4MZTjE=;
-        b=CZ+Nl/6ZiuYQPlTd9l/IIACU7TRSiUk8hdWxoE66wWKQ/SBT3ptm0N9PRT1cZWGJhn
-         5evh+nzNcUDUOwh+i84LWMzCPecX+x6dpPXkJzfajfyxqLvAqi9TmCsAIsD1GNdIRZhQ
-         TOo8eNVGsdt70hsz3gIC8oGqVfMuKMqaKNRfSaCXmbAcMMyS6eQ97TTVyePsNKifQHYT
-         tvNBqkJ3+GxCR4OR+Z5npq0ETsuXbp0G7el0RGCqlNxZHiptUWTbmL7HvUaBtNddNeRL
-         F6KMTjEpSyByKT+l4xY39uiluA/30/Ilv6eHNkO5eu1fvD1P2+0GuDZjzJXQwBGPlBMK
-         Y+KQ==
-X-Gm-Message-State: AOAM5300Dyb8C38u8RjWgbTnAzFapJ4PXuegeCfg771PacOwzua0gob/
-        b0ObVd57GP6mSwJSaODkDzYr6lQtByE=
-X-Google-Smtp-Source: ABdhPJyklp2niBlI5qcNHdbeTgIqoUU9MU2T6GictWwRo4KZQc1szt0TRJ+VAnZmAp8XOGBpm1z3eg==
-X-Received: by 2002:a05:6512:260a:: with SMTP id bt10mr1119212lfb.636.1626135761389;
-        Mon, 12 Jul 2021 17:22:41 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id r19sm1801133lji.108.2021.07.12.17.22.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 17:22:40 -0700 (PDT)
-Subject: Re: [PATCH v3 06/12] dt-bindings: power: supply: smb347-charger:
- Document USB VBUS regulator
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210704225433.32029-1-digetx@gmail.com>
- <20210704225433.32029-7-digetx@gmail.com>
- <20210712153905.GA1980362@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <9032e807-b4d3-bacf-6c39-d3a2c7c57f3e@gmail.com>
-Date:   Tue, 13 Jul 2021 03:22:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yB5qAIs9Fc7CEvMMJ8HjSEc+CJeHsMb3Z3r28kd1YEE=;
+        b=nn8I1p5RbL1Mz0HYAUrzM/KwEizSSgV+JPtV5Qk6Zz7pRejEXKZrGU4coojxOZrKxo
+         jeb7OEUiXHog38dPjSCdD3kuOssSll2Cq1X1YLdLuP8Re5Sh07vajKpnnOqmcAKAL+5b
+         tdiLuMgBO0VWp+0w22+Hl/R+TWQ0UiT2JtOWbxKzXgjQ9UEw7ZQVrTZ4D5cnXTGehECJ
+         afPeaDyMlLIR5oTy2NTR3aTaBQc7WYPV5QYx8xS0Fe/F323uwEGmecBCd0AmhEoHfrM2
+         m2rWImhBoq60HwwX8cCcaXlp1XP2EpMMHdSYwp50EsSHu+gHyl/2XYQjFW0M8WYS4yQl
+         dRsw==
+X-Gm-Message-State: AOAM532TwPTf8fJqkj7ErlxmnXC+XpjVFUAlXDdInv5E3LosfVlOkpBe
+        VIbNlFSFMfqnvTfRVyzp51GYtA44q5yAow==
+X-Google-Smtp-Source: ABdhPJyNS88bT9lchdE/k2l0s9hF0E9K9iY57Ozrhl0XABc1zYmIZo6n9Z6iN5rSiOntQZCXbF+IQw==
+X-Received: by 2002:ae9:dd06:: with SMTP id r6mr1467355qkf.74.1626135851341;
+        Mon, 12 Jul 2021 17:24:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:a40c])
+        by smtp.gmail.com with ESMTPSA id x20sm7394463qkp.15.2021.07.12.17.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 17:24:10 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 20:24:09 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
+Message-ID: <YOzdKYejOEUbjvMj@cmpxchg.org>
+References: <20210712030701.4000097-1-willy@infradead.org>
+ <20210712030701.4000097-11-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210712153905.GA1980362@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712030701.4000097-11-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.07.2021 18:39, Rob Herring пишет:
->> +  summit,inok-polarity:
->> +    description: |
->> +      Polarity of INOK signal indicating presence of external power supply.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    enum:
->> +      - 0 # SMB3XX_SYSOK_INOK_ACTIVE_LOW
->> +      - 1 # SMB3XX_SYSOK_INOK_ACTIVE_HIGH
->> +
->> +  usb-vbus:
->> +    $ref: "../../regulator/regulator.yaml#"
->> +    type: object
->        unevaluatedProperties: false
-> 
-> With that,
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
+On Mon, Jul 12, 2021 at 04:04:54AM +0100, Matthew Wilcox (Oracle) wrote:
+> +/* Whether there are one or multiple pages in a folio */
+> +static inline bool folio_single(struct folio *folio)
+> +{
+> +	return !folio_head(folio);
+> +}
 
-I tried to add the unevaluatedProperties + a random unrelated property
-to the example usb-vbus node and dt_binding_check is happy with that. So
-the unevaluatedProperties has no effect, is it supposed to be so?
+Reading more converted code in the series, I keep tripping over the
+new non-camelcased flag testers.
+
+It's not an issue when it's adjectives: folio_uptodate(),
+folio_referenced(), folio_locked() etc. - those are obvious. But nouns
+and words that overlap with struct member names can easily be confused
+with non-bool accessors and lookups. Pop quiz: flag test or accessor?
+
+folio_private()
+folio_lru()
+folio_nid()
+folio_head()
+folio_mapping()
+folio_slab()
+folio_waiters()
+
+This requires a lot of double-taking on what is actually being
+queried. Bool types, ! etc. don't help, since we test pointers for
+NULL/non-NULL all the time.
+
+I see in a later patch you changed the existing page_lru() (which
+returns an enum) to folio_lru_list() to avoid the obvious collision
+with the PG_lru flag test. page_private() has the same problem but it
+changed into folio_get_private() (no refcounting involved). There
+doesn't seem to be a consistent, future-proof scheme to avoid this new
+class of collisions between flag testing and member accessors.
+
+There is also an inconsistency between flag test and set that makes me
+pause to think if they're actually testing and setting the same thing:
+
+	if (folio_idle(folio))
+		folio_clear_idle_flag(folio);
+
+Compare this to check_move_unevictable_pages(), where we do
+
+	if (page_evictable(page))
+		ClearPageUnevictable(page);
+
+where one queries a more complex, contextual userpage state and the
+other updates the corresponding pageframe bit flag.
+
+The camelcase stuff we use for page flag testing is unusual for kernel
+code. But the page API is also unusually rich and sprawling. What
+would actually come close? task? inode? Having those multiple
+namespaces to structure and organize the API has been quite helpful.
+
+On top of losing the flagops namespacing, this series also disappears
+many <verb>_page() operations (which currently optically distinguish
+themselves from page_<noun>() accessors) into the shared folio_
+namespace. This further increases the opportunities for collisions,
+which force undesirable naming compromises and/or ambiguity.
+
+More double-taking when the verb can be read as a noun: lock_folio()
+vs folio_lock().
+
+Now, is anybody going to mistake folio_lock() for an accessor? Not
+once they think about it. Can you figure out and remember what
+folio_head() returns? Probably. What about all the examples above at
+the same time? Personally, I'm starting to struggle. It certainly
+eliminates syntactic help and pattern matching, and puts much more
+weight on semantic analysis and remembering API definitions.
+
+What about functions like shrink_page_list() which are long sequences
+of page queries and manipulations? Many lines would be folio_<foo>
+with no further cue whether you're looking at tests, accessors, or a
+high-level state change that is being tested for success. There are
+fewer visual anchors to orient yourself when you page up and down. It
+quite literally turns some code into blah_(), blah_(), blah_():
+
+       if (!folio_active(folio) && !folio_unevictable(folio)) {
+	       folio_del_from_lru_list(folio, lruvec);
+	       folio_set_active_flag(folio);
+	       folio_add_to_lru_list(folio, lruvec);
+	       trace_mm_lru_activate(&folio->page);
+	}
+
+Think about the mental strain of reading and writing complicated
+memory management code with such a degree of syntactic parsimony, let
+alone the repetetive monotony.
+
+In those few lines of example code alone, readers will pause on things
+that should be obvious, and miss grave errors that should stand out.
+
+Add compatible return types to similarly named functions and we'll
+provoke subtle bugs that the compiler won't catch either.
+
+There are warts and inconsistencies in our naming patterns that could
+use cleanups. But I think this compresses a vast API into one template
+that isn't nearly expressive enough to adequately communicate and
+manage the complexity of the underlying structure and its operations.
