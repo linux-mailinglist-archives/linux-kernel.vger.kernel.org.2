@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD4E3C6F27
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69B33C6F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235826AbhGMLLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbhGMLK7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:10:59 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3152C0613DD;
-        Tue, 13 Jul 2021 04:08:09 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso1465914wme.0;
-        Tue, 13 Jul 2021 04:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=drfQwV7z7AQjhXKnfErNYK6DBLE0YIGe+wmzQzWXqB0=;
-        b=bpfFt8gKZC2rBuQfnUWTQQ8r6nfRO3tnaBgTKh82NMVElFhA6Fk1/l+f1JJBeNSyWp
-         28LOJLAevMizVSzgRbIEQ9kwXRUNzrlLV7arq1mSIDUstypHaRCxlkkckZNGnr7CM+e4
-         kLVstkWxQIUsIb+e+vOxHM8yO1knkqUh+Qeh2BS0uLtLj4IALBwY07KrwMECYr9cQnt4
-         EFPfPiwO8IiMZDc/fpu0fRSqxu3wQsP85tO1JJQIKByg7HlIWHszz9iqOWQ+R/gDPtZa
-         Ys6LXwaMNoQa1YgImZxm4Mu5E1cnLGfTYppHLFt6Fhc8ZeGkieUbtxKIOTYZKI8J4qzf
-         btGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=drfQwV7z7AQjhXKnfErNYK6DBLE0YIGe+wmzQzWXqB0=;
-        b=GXRdqCZRGv41TncAxr9RFpbCSeqHq9jE/KIp4fFKEVXOYIvYtt+ERtkqy6yeI4tXMR
-         bj9ma/hm92bsHnQ/LHVLZj2Rp6hqMkaH0/KAwNxEPfP3IWaQD3hx01Abz1sRY2YJAY+3
-         8n4NCAs/+APvo8ve7S3BdqFjJbtBGSlQiy+ByDWpCmsbFcfGTkz3aQsFWBv3NA4Fy/hx
-         /JN8KkwexdNkK2c0furPHBzhnZVck8oVClZ5oaypnJ6OH9kN69KmdcWoqGpp2ONsb0bC
-         iBNhPaQg0B6GXHPcoK9wdFKqIDN0SZbzud9+AVbstgoGrKSSoznoC8ASmcZz2tfI4os+
-         ezgg==
-X-Gm-Message-State: AOAM532dON5XPz4d+OtVon/gzDShiA57PSdNYE30ibJVINFCDnmb6i8N
-        2zdRFuErsov+tcr3OosmVQM=
-X-Google-Smtp-Source: ABdhPJw3muOVR2FbiF/ZWG++qqbHv7mXFi7TXbaPNfcp6VL+3LePaRE7vBruqFLfq/iGYa/GVzTkrQ==
-X-Received: by 2002:a05:600c:6d8:: with SMTP id b24mr6132220wmn.111.1626174487512;
-        Tue, 13 Jul 2021 04:08:07 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id g3sm13988938wru.95.2021.07.13.04.08.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 04:08:07 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 12:08:05 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/349] 5.4.132-rc2 review
-Message-ID: <YO10FeaBoAqls7Wv@debian>
-References: <20210712184735.997723427@linuxfoundation.org>
+        id S235771AbhGMLPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:15:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:41188 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235390AbhGMLPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:15:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 461F61FB;
+        Tue, 13 Jul 2021 04:12:50 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C08BA3F7D8;
+        Tue, 13 Jul 2021 04:12:45 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 12:11:43 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Etienne CARRIERE <etienne.carriere@st.com>
+Cc:     Sumit Garg <sumit.garg@linaro.org>, Marc Zyngier <maz@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>
+Subject: Re: [PATCH v2 0/7] Asynchronous notifications from secure world
+Message-ID: <20210713111143.g6ztdakegs6ck25s@bogus>
+References: <PAXPR10MB4687E737261282B78600272DFD189@PAXPR10MB4687.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712184735.997723427@linuxfoundation.org>
+In-Reply-To: <PAXPR10MB4687E737261282B78600272DFD189@PAXPR10MB4687.EURPRD10.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, Jul 12, 2021 at 08:49:06PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.132 release.
-> There are 349 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jul 09, 2021 at 08:05:57AM +0000, Etienne CARRIERE wrote:
+> Hello Sudeep and all,
 > 
-> Responses should be made by Wed, 14 Jul 2021 18:45:40 +0000.
-> Anything received after that time might be too late.
+> On Wed, 7 Jul 2021 at 19:52, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > Hi Sumit,
+> >
+> > I was holding off you reply as I didn't have all the background on this.
+> > Achin did mention that this is preparatory work for FFA notifications.
+> > I did mention to him that this is more than that, it is custom extension
+> > to address what FF-A notification is trying to in standard way.
+> >
+> > I share same opinion as Marc Z.
+> >
+> > On Wed, Jul 07, 2021 at 11:22:23AM +0530, Sumit Garg wrote:
+> > > On Tue, 6 Jul 2021 at 18:16, Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > [...]
+> >
+> > > >
+> > > > I don't care about OP-TEE. If you are proposing a contract between S
+> > > > and NS, it has to be TEE and OS independent. That's how the
+> > > > architecture works.
+> > > >
+> > >
+> > > Agree, here we are not proposing a common contract among the S and NS
+> > > world that every TEE (based on Arm TrustZone) will use to communicate
+> > > with REE (Linux in our case) but rather an OP-TEE specific
+> > > notifications feature that is built on top of OP-TEE specific ABIs.
+> > >
+> > > And I can see your arguments coming from an FFA perspective but there
+> > > are platforms like the ones based on Armv7 which don't support FFA
+> > > ABI. Maybe Jens can elaborate how this feature will fit in when FFA
+> > > comes into picture?
+> > >
+> >
+> > I can understand that but won't those platforms add the support both in
+> > the kernel(current series) and secure world to address notifications.
+> > While you could argue that it is small extension to what is already present
+> > but I prefer they support FF-A is they need such a support instead of adding
+> > custom mechanisms. It is hard to maintain and each vendor will deviate
+> > from this custom mechanism and soon we will have bunch of them to handle.
+>
+> There exist armv7-a platforms that expect OP-TEE notification support and
+> will not move the FF-A, like the stm32mp15. This platform won't move to FF-A
+> mainly due to the memory cost of the added SPM layer and the device physical
+> constraints.
 
-Build test:
-mips (gcc version 11.1.1 20210702): 65 configs -> no failure
-arm (gcc version 11.1.1 20210702): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210702): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Fair enough on the use-case and the analysis for not being able to use FF-A.
+As you may already know it doesn't simply this problem. This has been
+discussed for years and FF-A was assumed to be the solution when FF-A
+spec work started.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+> We have a usecase for OP-TEE notification. We're working on the integration
+> of an SCMI server in OP-TEE. SCMI notification is a feature needed is this
+> scope and it requires OP-TEE async notification means as those proposed
+> here.
+>
 
+I am aware of this use-case, I understand. But I can only share rants
+which I know doesn't help much.
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+> This OP-TEE async notif also brings a lot of value in OP-TEE as it allows a
+> OP-TEE secure thread (i.e. executing a trusted application service) to
+> gently wait on a secure interrupt (as a slow bus transaction completion or
+> many other usecase) with the CPU relaxed. This support is provided by the
+> proposed series. I believe existing device should be able to leverage this
+> OP-TEE feature without needing their OP-TEE to move to the new FF-A
+> interface.
+>
+
+While I agree these are nice to have in OPTEE, the timing is just odd.
+
+We are trying hard to push FF-A as standard solution to address all such
+issues that couldn't be solved with OPTEE + DT, now we are back to address
+the same in parallel to FF-A.
 
 --
-Regards
-Sudip
+Regards,
+Sudeep
