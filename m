@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513D83C74C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DDB3C74CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbhGMQh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
+        id S235048AbhGMQhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbhGMQhK (ORCPT
+        with ESMTP id S233923AbhGMQhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:37:10 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51C9C0613A6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:12 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id u8-20020a0562141c08b02902e82df307f0so5101437qvc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:12 -0700 (PDT)
+        Tue, 13 Jul 2021 12:37:11 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD64C061787
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:14 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id 81-20020a370b540000b02903b854c43335so6619399qkl.21
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=VLNuKyQvTwa0Rm4aLkj5S4FZy5CA1rkSDtpmTBtHVoc=;
-        b=oyR1MaMm7QYmjSg9mz0Rnv0KDk7T4VF7Pt6iLuMNec+Tfcf0IzGyVlEyBqbSQEeMSG
-         2MGXJFQ8F2EUCdTEqyaLc+rw0gcDJLIOCwp7z9/ZrM/Gbg3V+GRrXOV76VpTnGOsgMJA
-         2JTX5Qnv/hDtrnydyoMMrjvdxDgJQjzV4pesC2rNnm7dXyVj6xId94m9ZTCHKUeF5Rp/
-         lhkxyPPRy3e4NhlSyG35GE5cR5oiT4gKg+E8pCxVUNWHR/9Ua4jjD4HRqRgnlY+wRxgU
-         2gsJb0pCB9IMDhynM+wJjeOdGklqzO69wysuwhhAB+g7BeyzLicvq54M3YR+fp+l/I9P
-         f/kw==
+        bh=vZPov19t8seutNZvZmmF4+o9jQkrFF2KtkeJS46Aq18=;
+        b=VopMNO7HNEXA8hUjPdJmij4fABMuFmfzYYgItGc0441FQi4C11HDt5fH9s88dy6jaK
+         lf2Ks3MiNV/S8wXOU85/kDoApjMfT9uLCwAvyGvMoFpAKZ6mk4iLcp4WYs8PK51S0hpE
+         VQhlrRGpvcXODsgUOONai0ZNyBlekD0bDh6ZjgGYjEVGHgNnDCA5oPvVjzX+E/HqooXx
+         sgiDsSkVVgMYkfs/z/CxT1tn3X+rKDFbL6RgOVkH97VE3WtZHis00v8RpEllvHe/LBg4
+         N5qJveL998nOtOCGNtZUuKUBlZqVHfkeXncK7+8PUih743LvR3eADLKkfLREijOz6ayR
+         P6kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=VLNuKyQvTwa0Rm4aLkj5S4FZy5CA1rkSDtpmTBtHVoc=;
-        b=jrkT3RLaZyKtFlVXYBQSvIxx+0r0x3skdzsRv2WX7OhUqL76toYZH96xNl6IVTZl17
-         kUK146i/CJr90HWeg8Ty+2ovvWXmryPwEIfD5zL4RaxV3Nn7j1JCUM9emA2ku6EjOmp8
-         ryrbceMoNiV4PVXaJzetR5BzEGk0/gmvnOFpATr7ysp98qofQzxfuVDVJhSWv+WPoFCb
-         V2CcUmv2fukXUUG145uha1x3jYcskpUfrrYWkgN0euCgccU5d176tSx5eSkbC8vfu912
-         +syJWdDZ6uFS8GtJqfPOmiD9GOLJICgYEQPQJwGb52CHC/lk2NwBhFfpYPh6Tj7JcOJA
-         09vQ==
-X-Gm-Message-State: AOAM530hTzicJN+kj9xzBmRr8CGuh+YY39Qo0AdJeFNuBRgtt2seEPLn
-        Tl1TIgPLHNc7jUkhPTSMVytThxiCekE=
-X-Google-Smtp-Source: ABdhPJw73ip1ApUCgVsMmAoAoiyMSd7pyjPaFYmLRPs47MCJPzGXMnA+hVNCaPFYY9W2qPMwzI2uzs3Z/9U=
+        bh=vZPov19t8seutNZvZmmF4+o9jQkrFF2KtkeJS46Aq18=;
+        b=s/5fowzfGd1JcOyQgNbe61TajjvyeegQ/MT8sEUJ7HwvuIW7uxUNq6cSlZCGyYTqcl
+         NE9ON2o74fBgQJIAYHzYbRcvaJ5SWqusTfsWrh5A9nadxgfCQVKCp9o6rD5npLPeT5sc
+         Eq8H8DOy1djcd21ld9hUnmfHcuyMNNplbt1ro4frX05w09/Kky5/z5hP+AhIfEuF7v98
+         Dp1xZv+L+DRioVAvVL4Fcyn0yZ5oYTLyDR9nU4qkYPVmXfMUqQqr2IKkNledKRag8Ner
+         HsFEKpCdzxQJEEJpavgf+X6mo3KYvg12sLtPiHZxPhCWPaeh8u70XzCoxfuekTHxfB0n
+         eiUQ==
+X-Gm-Message-State: AOAM530YgA0L8+L5zwMTVRITvEh/IVgyrhqITGXlhNc7ZhTvpwqH72vn
+        rj2jdECS4coPC43vVnK1uVv7gItc4rk=
+X-Google-Smtp-Source: ABdhPJxTBvC2/uhRrFcuw3Dvu3wtq6/KTPvhO8/hFY8KAScEIlI7/pKb9QNOKEf+W8kvdnqsw1bCV2USwJA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:825e:11a1:364b:8109])
- (user=seanjc job=sendgmr) by 2002:ad4:57ac:: with SMTP id g12mr5843456qvx.32.1626194051878;
- Tue, 13 Jul 2021 09:34:11 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a0c:ff48:: with SMTP id y8mr5643746qvt.29.1626194053767;
+ Tue, 13 Jul 2021 09:34:13 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 13 Jul 2021 09:32:58 -0700
+Date:   Tue, 13 Jul 2021 09:32:59 -0700
 In-Reply-To: <20210713163324.627647-1-seanjc@google.com>
-Message-Id: <20210713163324.627647-21-seanjc@google.com>
+Message-Id: <20210713163324.627647-22-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210713163324.627647-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2 20/46] KVM: SVM: Don't bother writing vmcb->save.rip at
- vCPU RESET/INIT
+Subject: [PATCH v2 21/46] KVM: VMX: Invert handling of CR0.WP for EPT without
+ unrestricted guest
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,31 +67,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop unnecessary initialization of vmcb->save.rip during vCPU RESET/INIT,
-as svm_vcpu_run() unconditionally propagates VCPU_REGS_RIP to save.rip.
+Opt-in to forcing CR0.WP=1 for shadow paging, and stop lying about WP
+being "always on" for unrestricted guest.  In addition to making KVM a
+wee bit more honest, this paves the way for additional cleanup.
 
-No true functional change intended.
+No functional change intended.
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 268580713938..0101646e42e0 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1266,8 +1266,7 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
- 	svm_set_efer(vcpu, 0);
- 	save->dr6 = 0xffff0ff0;
- 	kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
--	save->rip = 0x0000fff0;
--	vcpu->arch.regs[VCPU_REGS_RIP] = save->rip;
-+	vcpu->arch.regs[VCPU_REGS_RIP] = 0x0000fff0;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index f506b94539ab..02aec75ec6f6 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -136,8 +136,7 @@ module_param(allow_smaller_maxphyaddr, bool, S_IRUGO);
+ #define KVM_VM_CR0_ALWAYS_OFF (X86_CR0_NW | X86_CR0_CD)
+ #define KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST X86_CR0_NE
+ #define KVM_VM_CR0_ALWAYS_ON				\
+-	(KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST | 	\
+-	 X86_CR0_WP | X86_CR0_PG | X86_CR0_PE)
++	(KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST | X86_CR0_PG | X86_CR0_PE)
  
- 	/*
- 	 * svm_set_cr0() sets PG and WP and clears NW and CD on save->cr0.
+ #define KVM_VM_CR4_ALWAYS_ON_UNRESTRICTED_GUEST X86_CR4_VMXE
+ #define KVM_PMODE_VM_CR4_ALWAYS_ON (X86_CR4_PAE | X86_CR4_VMXE)
+@@ -2995,9 +2994,7 @@ void ept_save_pdptrs(struct kvm_vcpu *vcpu)
+ 	kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+ }
+ 
+-static void ept_update_paging_mode_cr0(unsigned long *hw_cr0,
+-					unsigned long cr0,
+-					struct kvm_vcpu *vcpu)
++static void ept_update_paging_mode_cr0(unsigned long cr0, struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 
+@@ -3016,9 +3013,6 @@ static void ept_update_paging_mode_cr0(unsigned long *hw_cr0,
+ 		vcpu->arch.cr0 = cr0;
+ 		vmx_set_cr4(vcpu, kvm_read_cr4(vcpu));
+ 	}
+-
+-	if (!(cr0 & X86_CR0_WP))
+-		*hw_cr0 &= ~X86_CR0_WP;
+ }
+ 
+ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+@@ -3031,6 +3025,8 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+ 		hw_cr0 |= KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST;
+ 	else {
+ 		hw_cr0 |= KVM_VM_CR0_ALWAYS_ON;
++		if (!enable_ept)
++			hw_cr0 |= X86_CR0_WP;
+ 
+ 		if (vmx->rmode.vm86_active && (cr0 & X86_CR0_PE))
+ 			enter_pmode(vcpu);
+@@ -3049,7 +3045,7 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+ #endif
+ 
+ 	if (enable_ept && !is_unrestricted_guest(vcpu))
+-		ept_update_paging_mode_cr0(&hw_cr0, cr0, vcpu);
++		ept_update_paging_mode_cr0(cr0, vcpu);
+ 
+ 	vmcs_writel(CR0_READ_SHADOW, cr0);
+ 	vmcs_writel(GUEST_CR0, hw_cr0);
 -- 
 2.32.0.93.g670b81a890-goog
 
