@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701203C7122
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B4A3C7124
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236498AbhGMNWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
+        id S236579AbhGMNYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbhGMNWs (ORCPT
+        with ESMTP id S236283AbhGMNYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:22:48 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB06DC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:19:57 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 37so21616471pgq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:19:57 -0700 (PDT)
+        Tue, 13 Jul 2021 09:24:00 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32FBC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:21:10 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso22402347otu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=sYaLI5hREs6S0GCn5kt31M6b+bWhHLGZQ73MTTA23MY=;
-        b=E60K6rOVubJWxCl5FlN6nDmOD5MG0l6g8MRW71VqK/ZgOuHK4IIFJUJs2rkCsCqq5X
-         JTXOWjW9k0MiBAVxgm3NhAXgVJGVqELXGp+RLSOkUORU3bwV7d3UV4YyvjLYYUTfQtKX
-         wR6a2Ksg+z+gj5loBep8jhT2BEjD7HR82E//8=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kdpFilVG5TXmh38Qx9BIPBfF1X+JzE5ROTCr6BlXwgA=;
+        b=Fwg2SHr2yp+pkT/nR3CsSwV0aVO1sH7RaLMxJ+2G0tYtseOkHQtTzkbotRYz/drs/D
+         5DiBLZ9LnMkNK3nOfKZUQmhxqw4BttJSf88b08Bi+bKSsYf8WHNgkkgf71hs5Ksqt3t3
+         HXQ15TMQgdauzfhnZbVo8rVgSwGTYxMpi5/D9jr7s6e5O2D3FMbPgaMoUu2E9xxnlkKu
+         F5U0P+bjz/mttGkYC5yEAByea626fA5W+07zeALUr0T630X6t1SzO4kLFv5DQsXqqF5u
+         OxZ/zw7rSJXcpUgrKHhyOTEvRmu2wkrK4wVZ147rjS0crHZQRYpix6aGTx9S7IzxUd2a
+         3jKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=sYaLI5hREs6S0GCn5kt31M6b+bWhHLGZQ73MTTA23MY=;
-        b=AcNaN2lu/1JZosdAF+au1i4R/DTKhzkCVDg+H4Nomn0+hm3y5o89VfJnU3mn4uEOSi
-         kELt4KEAgkY3YoRHvVp6U6MpbChYniimuLH5ZwD0/sThCIgP2Us5gx3SKdSGtAQehZJM
-         JEAi4mPQGUdDZeVNk0M+iWrLdsM92JZqK40jJ6KlevEWhyQVpw3jSY72eiUmd46Mo08G
-         7ffxcW83NWBbYIv0LOK1KW8iRq1PBINUgOYnQsBENksQCP0Zfz7h3DkhoDXZppw3tgnI
-         FMwKj5Tl10A/HZWahwhsi27Y50nvZ8SuqrLxmsebc6PkmANT50A/yiU6xfBmcNSaZubf
-         rv4w==
-X-Gm-Message-State: AOAM532r0tsJre5s3gvdSHn/WQA5MzJhX673VaSJNMEyrX4Kh2umrpJs
-        hWaxghDwVvH4ED/1rgumceORjQ==
-X-Google-Smtp-Source: ABdhPJz/Hrby3BnB86LdkmOz8m+7CJUogDKjNLjMHs2y7/3yHj8hq2Nfoie3OSv1kUQRR8RBUGrQ9Q==
-X-Received: by 2002:aa7:82cb:0:b029:2e6:f397:d248 with SMTP id f11-20020aa782cb0000b02902e6f397d248mr4759999pfn.52.1626182397180;
-        Tue, 13 Jul 2021 06:19:57 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:e304:7803:b108:f108])
-        by smtp.gmail.com with ESMTPSA id d129sm19492414pfd.218.2021.07.13.06.19.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 06:19:56 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 22:19:52 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        John Johansen <john.johansen@canonical.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: apparmor: global buffers spin lock may get contended
-Message-ID: <YO2S+C7Cw7AS7bsg@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kdpFilVG5TXmh38Qx9BIPBfF1X+JzE5ROTCr6BlXwgA=;
+        b=rgftc4ypi1JmRjz0m8jPWUUj0eEZydZ10vylJ9XvZljp3k7s6fsmdEAhWOViRRs71c
+         TktcMkFmffnwj8PZ87Ns7rH7wS31NgpuXmS7zBEGVeH9eY487aXZMQVLXxZfb3OLaMlt
+         4XpjWZ0aDcc/K9MdJyB+8HRXqLBFb1/4Mq8xzx6tfuotoh+oP2JkLY4aBSuNtsrkXp/j
+         hgolfNqKFU24Z6dtLavhCSWeSCpQdKtUcrbmQEW5XVdmt3C8Bv38klgVgrD1a0setsEo
+         nWNAmP5wp9f+9b+gN13+K+Vtgj8+ko2wBjiJteKqIs0MRc875B3TDBH6pKi0L8J2BasG
+         FpKA==
+X-Gm-Message-State: AOAM532cWPiStPcn02ZDDaQCVR8Fz41N7sUzo6dqc2o1gqR37eZQ5BDi
+        Uc2lOuf34uwhsaDz3a2FH6gRV56cFUEXvN041JY=
+X-Google-Smtp-Source: ABdhPJzdUywi6Zcn01BcK81PlNUigJdVIW+LyVOJf2f8AlJplFa9ZxozIuTRgXLkYNGYTM2g5mWhgplR5D7L7hyy8Pg=
+X-Received: by 2002:a05:6830:1f3b:: with SMTP id e27mr3555174oth.311.1626182470396;
+ Tue, 13 Jul 2021 06:21:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210712224440.GA1830070@pc>
+In-Reply-To: <20210712224440.GA1830070@pc>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 13 Jul 2021 09:20:59 -0400
+Message-ID: <CADnq5_PKSPAPXxBjAw39fMXsDsvyd4sHWByAzmA4mb71=rnPcw@mail.gmail.com>
+Subject: Re: [PATCH] use swap()
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jul 13, 2021 at 3:09 AM Salah Triki <salah.triki@gmail.com> wrote:
+>
+> Use swap() instead of implementing it since it makes code more clean.
+>
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
 
-We've notices that apparmor has switched from using per-CPU buffer pool
-and per-CPU spin_lock to a global spin_lock in df323337e507a0009d3db1ea.
+Patches for this driver generally have the following prefix in the subject:
+gpu: ipu-v3:
 
-This seems to be causing some contention on our build machines (with
-quite a bit of cores). Because that global spin lock is a part of the
-stat() sys call (and perhaps some other)
+Alex
 
-E.g.
-
--    9.29%     0.00%  clang++          [kernel.vmlinux]                        
-   - 9.28% entry_SYSCALL_64_after_hwframe                                      
-      - 8.98% do_syscall_64                                                    
-         - 7.43% __do_sys_newlstat                                            
-            - 7.43% vfs_statx                                                  
-               - 7.18% security_inode_getattr                                  
-                  - 7.15% apparmor_inode_getattr                              
-                     - aa_path_perm                                            
-                        - 3.53% aa_get_buffer                                  
-                           - 3.47% _raw_spin_lock                              
-                                3.44% native_queued_spin_lock_slowpath        
-                        - 3.49% aa_put_buffer.part.0                          
-                           - 3.45% _raw_spin_lock                              
-                                3.43% native_queued_spin_lock_slowpath   
-
-Can we fix this contention?
+> ---
+>  drivers/gpu/ipu-v3/ipu-image-convert.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
+> index aa1d4b6d278f..5f730cd6009d 100644
+> --- a/drivers/gpu/ipu-v3/ipu-image-convert.c
+> +++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
+> @@ -1021,11 +1021,8 @@ static int calc_tile_offsets_planar(struct ipu_image_convert_ctx *ctx,
+>
+>                         u_off = y_size - y_off + uv_off;
+>                         v_off = (fmt->uv_packed) ? 0 : u_off + uv_size;
+> -                       if (fmt->uv_swapped) {
+> -                               tmp = u_off;
+> -                               u_off = v_off;
+> -                               v_off = tmp;
+> -                       }
+> +                       if (fmt->uv_swapped)
+> +                               swap(u_off, v_off);
+>
+>                         image->tile[tile].offset = y_off;
+>                         image->tile[tile].u_off = u_off;
+> --
+> 2.25.1
+>
