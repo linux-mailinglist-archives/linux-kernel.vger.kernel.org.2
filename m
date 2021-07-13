@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069AB3C78FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB4F3C7901
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235623AbhGMVeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:34:20 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55140 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhGMVeU (ORCPT
+        id S235727AbhGMVgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:36:08 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:4727 "EHLO
+        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhGMVgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:34:20 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A1E821C0B7A; Tue, 13 Jul 2021 23:31:28 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 23:31:28 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        frank zago <frank@zago.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH 5.10 073/593] iio: light: tcs3472: do not free
- unallocated IRQ
-Message-ID: <20210713213128.GA23770@amd>
-References: <20210712060843.180606720@linuxfoundation.org>
- <20210712060851.173417192@linuxfoundation.org>
+        Tue, 13 Jul 2021 17:36:07 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AywMQU6h2J3nGR6e/vqyf7z2903BQXr8ji2hC?=
+ =?us-ascii?q?6mlwRA09TyX4rbHMoB1/73TJYVkqN03I9ervBEDiexPhHPxOgLX5VI3KNGPbUQ?=
+ =?us-ascii?q?CTQL2Kg7GO/wHd?=
+X-IronPort-AV: E=Sophos;i="5.84,237,1620684000"; 
+   d="scan'208";a="387979542"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 23:33:15 +0200
+Date:   Tue, 13 Jul 2021 23:33:15 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     cocci <cocci@systeme.lip6.fr>, LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: cocci script to convert linux-kernel allocs with BITS_TO_LONGS
+ to bitmap_alloc
+In-Reply-To: <afd3a282ca57a4a400c8bae9879a7c57bc507c59.camel@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2107132332030.3024@hadrien>
+References: <08b89608cfb1280624d1a89ead6547069f9a4c31.camel@perches.com>  <alpine.DEB.2.22.394.2107102149140.46528@hadrien> <afd3a282ca57a4a400c8bae9879a7c57bc507c59.camel@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
-Content-Disposition: inline
-In-Reply-To: <20210712060851.173417192@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On Sat, 10 Jul 2021, Joe Perches wrote:
 
-> commit 7cd04c863f9e1655d607705455e7714f24451984 upstream.
->=20
-> Allocating an IRQ is conditional to the IRQ existence, but freeing it
-> was not. If no IRQ was allocate, the driver would still try to free
-> IRQ 0. Add the missing checks.
->=20
-> This fixes the following trace when the driver is removed:
->=20
-> [  100.667788] Trying to free already-free IRQ 0
+> On Sat, 2021-07-10 at 21:50 +0200, Julia Lawall wrote:
+> > On Fri, 9 Jul 2021, Joe Perches wrote:
+> >
+> > > Here is a cocci script to convert various types of bitmap allocations
+> > > that use BITS_TO_LONGS to the more typical bitmap_alloc functions.
 
-AFAICT this will need more fixing, because IRQ =3D=3D 0 is a valid
-IRQ. NO_IRQ (aka -1) should be safe to use for "no irq assigned".
+I see that there is also a bitmap_free.  Maybe the rule should be
+introducing that as well?
 
-Best regards,
-								Pavel
+julia
 
-> +++ b/drivers/iio/light/tcs3472.c
-> @@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_clie
->  	return 0;
-> =20
->  free_irq:
-> -	free_irq(client->irq, indio_dev);
-> +	if (client->irq)
-> +		free_irq(client->irq, indio_dev);
->  buffer_cleanup:
->  	iio_triggered_buffer_cleanup(indio_dev);
->  	return ret;
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmDuBi8ACgkQMOfwapXb+vJSWQCgpLkJMsg1wPPNX2WYjSFsH/GB
-In0Anj0BCzoFsL0FsXrXnVzAh23MYWrQ
-=q8U2
------END PGP SIGNATURE-----
-
---opJtzjQTFsWo+cga--
+> > >
+> > > Perhaps something like it could be added to scripts/coccinelle.
+> > > The diff produced by the script is also below.
+> > >
+> > > $ cat bitmap_allocs.cocci
+> > > // typical uses of bitmap allocations
+> []
+> > > @@
+> > > expression val;
+> > > expression e1;
+> > > expression e2;
+> > > @@
+> > >
+> > > -	val = kcalloc(BITS_TO_LONGS(e1), sizeof(*val), e2)
+> > > +	val = bitmap_zalloc(e1, e2)
+> >
+> > Is there something that guarantees that val has a type that has a size that
+> > is the same as a long?
+>
+> no, but afaict, all do.
+>
+>
+>
