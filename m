@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB3A3C7874
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63B53C787B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbhGMVFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:05:46 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:5638 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234665AbhGMVFf (ORCPT
+        id S235981AbhGMVF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235536AbhGMVFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:05:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626210164; x=1657746164;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nUrPuatobHKMHbBSvnB/MtWNobqFZh/U9CeTgX581Hc=;
-  b=wpmMuCVm9hfBijUqFBSawTbg+Pm6sTwaZYRIwqsR5EYfDZu2meiBbNWq
-   kl1p3R/uWsMrtSwD0zRRBvCwHhZcVykbUss8ipIVx+ENidhoZ25XOCIqX
-   Di0GYYPMkwPh7H3Wp+rJMFhJ5dc0ctxwV7DQff8mpO2WvYSWeOFvdxhPA
-   hv0wtduyMh8WY8LGNqC3+znUFxHglxdSC9zT5GznU4wvV5v3ErLIQhZLM
-   8kGOfT0pWi8+L1wsEJtUgRMcaXrY1j/09h9j1pudz8PvYtUEwwP31j5zL
-   Y51TDvHlqxYG2mabTTf4xrjlvo4YycTqACweKYHs8PyDTPy+Wp2qffPZn
-   w==;
-IronPort-SDR: g6tbyTzKs1+3GBtk5hG4hicJsghGiQH/QBGg6IxkpPO4NLeeoLFgJDJKhkNtck6QAJOB6EllLD
- lZTac1rPpXRwjHYPfDYbNPPZluzIt11so+V3ZG4ZL9gwgM4orobhG/PtjfRwMMxMQ6osEUUBod
- syfYMnX3wOzVbZuZ6MVDaO744M+8soxCdw4/VeE7eAdZUxlglVx2lN/1cFeUDlfjmepnFbtIzj
- CCbx/ycyR3bVSsZAJs/j5qUZmxlB2XhMaIGVyB96cVuPurds3rmPE/luOn62VwtBXxLd/hTEZ7
- wog=
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="62103595"
-Received: from smtpout.microchip.com (HELO smtp.microsemi.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2021 14:02:44 -0700
-Received: from AVMBX2.microsemi.net (10.10.46.68) by AUSMBX2.microsemi.net
- (10.10.76.218) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 13 Jul
- 2021 14:02:43 -0700
-Received: from brunhilda.pdev.net (10.238.32.34) by avmbx2.microsemi.net
- (10.10.46.68) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 13 Jul 2021 14:02:43 -0700
-Received: by brunhilda.pdev.net (Postfix, from userid 1467)
-        id 97D6770352F; Tue, 13 Jul 2021 16:02:43 -0500 (CDT)
-From:   Don Brace <don.brace@microchip.com>
-To:     <hch@infradead.org>, <martin.peterson@oracle.com>,
-        <jejb@linux.vnet.ibm.com>, <linux-scsi@vger.kernel.org>
-CC:     <Kevin.Barnett@microchip.com>, <scott.teel@microchip.com>,
-        <Justin.Lindley@microchip.com>, <scott.benesh@microchip.com>,
-        <gerry.morong@microchip.com>, <mahesh.rajashekhara@microchip.com>,
-        <mike.mcgowen@microchip.com>, <murthy.bhat@microchip.com>,
-        <balsundar.p@microchip.com>, <joseph.szczypek@hpe.com>,
-        <jeff@canonical.com>, <POSWALD@suse.com>,
-        <john.p.donnelly@oracle.com>, <mwilck@suse.com>,
-        <pmenzel@molgen.mpg.de>, <linux-kernel@vger.kernel.org>
-Subject: [smartpqi updates V2 PATCH 9/9] smartpqi: update version to 2.1.10-020
-Date:   Tue, 13 Jul 2021 16:02:43 -0500
-Message-ID: <20210713210243.40594-10-don.brace@microchip.com>
-X-Mailer: git-send-email 2.28.0.rc1.9.ge7ae437ac1
-In-Reply-To: <20210713210243.40594-1-don.brace@microchip.com>
-References: <20210713210243.40594-1-don.brace@microchip.com>
+        Tue, 13 Jul 2021 17:05:54 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF946C0613EF
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:03:03 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id h4so22644295pgp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/+a0nOAUvmFDk9sQMqBodRLs3dk1rTDWSs7A8bhW4R4=;
+        b=iA0rtUSvo2J+Q0KFs9VeHEfWPCZ8DBG+LqtWDHZyagCTcEzWpYCjPE4wfvRNUVRF7u
+         9Ki2NkyU53QgVvw8hFtNPqw61MFpsNaDTlck0X1PjcjPQqbYGgFSqk+gC9543wfuqxqP
+         0Lq7YzT4LxZrqcAOKEMdShDcVjej34X2egWDr8PXR/EdiJ9jJLWjBGn2t8J4HWtp6HEX
+         4cX1hGyRCCgbQcYp+Iolkk0VjDull+k8vpcQ+zrZIUtDhLmDBnom3Y7BG3xV+NYW/tsD
+         7ty0z8TzhI2oSJgLoNEoCJYA76zZyptM0gzanVZu3sUAA94xvw653dRzaS/ggc6v9EAC
+         k9Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/+a0nOAUvmFDk9sQMqBodRLs3dk1rTDWSs7A8bhW4R4=;
+        b=JwTwbG2GSwoHcPd1PnJC+SxPsEm/AGbvbb3cBktjn6LtxkD9rgcTTnpLJjRJtamXsI
+         xO2Riab1LeCqaI+MOMYsnpOBEjMVwj+seN0RyyJJ7MTED2gYB8csXPzVBK2nLwOtmozG
+         AH8U+H0YIhMAoPQ/IxqyzNdkKZdfu5Bmai9eF6Rf5fHS8Nz5y5WEdqjIvDH8sm+PowZL
+         b7goREE9Zdi1v9zSi80YfdCxdZM+xaprpgQTCTxt0nf68lxSXSGshtuU3tHp92Q89laC
+         xr+QZiP8Ig1xig/RzM3kC4Cdjd0VUIfJW/mnESUUZTlWptGi4Xo0L/Xk27qCKXqp7rGK
+         U3lQ==
+X-Gm-Message-State: AOAM5334qo/T896PuOsWNn7tNHtkjvjtt+2lke4myMvSWyrPUNZMrqmV
+        RKjVFLr7TfnpXG2oUvopPkLtIg==
+X-Google-Smtp-Source: ABdhPJww8g05J8+aQcowzYH6Gd3XLQf/mwD1z0IQ5Ql/naKK2SPiOd1YyZMnANZGrw2dUw7d8cZfFA==
+X-Received: by 2002:a65:4109:: with SMTP id w9mr5888848pgp.24.1626210183074;
+        Tue, 13 Jul 2021 14:03:03 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id a20sm3604319pjh.46.2021.07.13.14.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 14:03:02 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 21:02:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v2 51/69] KVM: x86/mmu: Allow per-VM override of the
+ TDP max page level
+Message-ID: <YO3/gvK9A3tgYfT6@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <e2521b4c48c582260454764e84a057a2da99ac3c.1625186503.git.isaku.yamahata@intel.com>
+ <89d1ff17-dc48-0f39-257a-4cf11a98f435@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89d1ff17-dc48-0f39-257a-4cf11a98f435@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Kevin Barnett <kevin.barnett@microchip.com>
-Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
-Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
-Reviewed-by: Scott Teel <scott.teel@microchip.com>
-Reviewed-by: Gerry Morong <gerry.morong@microchip.com>
-Signed-off-by: Don Brace <don.brace@microchip.com>
----
- drivers/scsi/smartpqi/smartpqi_init.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> > 
+> > TODO: This is tentative patch.  Support large page and delete this patch.
+> > 
+> > Allow TDX to effectively disable large pages, as SEPT will initially
+> > support only 4k pages.
 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index ab1c9c483478..c1f0f8da9fe2 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -33,11 +33,11 @@
- #define BUILD_TIMESTAMP
- #endif
- 
--#define DRIVER_VERSION		"2.1.8-045"
-+#define DRIVER_VERSION		"2.1.10-020"
- #define DRIVER_MAJOR		2
- #define DRIVER_MINOR		1
--#define DRIVER_RELEASE		8
--#define DRIVER_REVISION		45
-+#define DRIVER_RELEASE		10
-+#define DRIVER_REVISION		20
- 
- #define DRIVER_NAME		"Microchip SmartPQI Driver (v" \
- 				DRIVER_VERSION BUILD_TIMESTAMP ")"
--- 
-2.28.0.rc1.9.ge7ae437ac1
+...
 
+> Seems good enough for now.
+
+Looks like SNP needs a dynamic check, i.e. a kvm_x86_ops hook, to handle an edge
+case in the RMP.  That's probably the better route given that this is a short-term
+hack (hopefully :-D).
