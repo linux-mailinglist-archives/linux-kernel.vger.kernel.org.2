@@ -2,162 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01683C6FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F89B3C6FAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235835AbhGMLZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:25:48 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6809 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235413AbhGMLZr (ORCPT
+        id S235879AbhGML1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235572AbhGML1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:25:47 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPJ4n2Z0czXs9R;
-        Tue, 13 Jul 2021 19:17:13 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 19:22:50 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 19:22:49 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <laoar.shao@gmail.com>,
-        <rostedt@goodmis.org>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH] perf sched: Fix record failed when CONFIG_SCHEDSTATS is not set
-Date:   Tue, 13 Jul 2021 19:23:58 +0800
-Message-ID: <20210713112358.194693-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+        Tue, 13 Jul 2021 07:27:06 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A02DC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:24:16 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id n14so49633826lfu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NHt/FAPTgdkn/SCe9iIi6CS+dHhhoK3TCnPN2KGs+7Q=;
+        b=lmDlWFric5SOGHr8CKmkpMY3KyZMfDnA9ZalS30heq3oOLSas+s5EtHgQez5BBCC9F
+         DzFzGOv6MeewWI83AWbc3YktnJCFJ/Row9Z7OZMSVUK8FwO0iQi79MrTXQO1DsXOp3ST
+         VYkF1RfC3AbsHrC5WAipTewBjrLT8sXS3lkMEvYDyojecG+3Kn5SirWRgEnV4ZU0OS9U
+         GPghg3Ofx04dFWveWSqu1VAhFsjXzQBthuZH6dXPKo+QvX2P1FKpwaTqV5yChDS9nDNB
+         jCZddxIdhhKZ7P5AuGwXbdGJoilOCj6byThBU81tPabnsc19ijMjYrqnFKl+9sfHyapn
+         czLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NHt/FAPTgdkn/SCe9iIi6CS+dHhhoK3TCnPN2KGs+7Q=;
+        b=DRaFas87SveECJKpCXpWkiqdnDQbzGtQmrKp5fyrBcAIrdIXXIsvHtsLMB5FYPULou
+         Dl5nsvhL2vgD4K8lTO5rPHq8eOyV9UiEAHgvpO7BQYjPBh7MrrQSdJqvSsiXcEai8xt2
+         Tj39lfUHgrQ/6d5RbA8P2Cq9S6bF4ERehaLbZVgGjmQmS74/TSNyjToWzz8gGofijSg2
+         j+bMTM85XYHub4m0NQu14bFT2ZMcyqp9biWgZ5vsJjUTmqmfn3KO/hRBrSH1PCT6xcu4
+         uOy5+mizQLrBX8rpyqBYaKL8pnD8vfpD4VdJAzc+XUD+VRL1HIcDSjWaXimeUzH8d4P4
+         PAnQ==
+X-Gm-Message-State: AOAM531s1cQ8rqNo0vaIXGU0jwYWID0/jzWBhT3XdJOYjqlB7FM83yB3
+        1MgT4eIpvbDIHNH4kOJ0GKoKm3qwbTR92e9PfgUF1Q==
+X-Google-Smtp-Source: ABdhPJz6PSHuCCjPY2PtMT1jbw39ipBG5mD8rGosrIASuHXyjj6I47h50G3MX5yNF0RJcO/qWIa+sjdRXRUwHZWa+2M=
+X-Received: by 2002:a19:e002:: with SMTP id x2mr3175379lfg.84.1626175454465;
+ Tue, 13 Jul 2021 04:24:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+References: <20210708122447.3880803-1-sumit.garg@linaro.org> <CAD=FV=UhL32e7spQjr38Lwng0D7mUK+R7iGnmBah=tXzzXsO5g@mail.gmail.com>
+In-Reply-To: <CAD=FV=UhL32e7spQjr38Lwng0D7mUK+R7iGnmBah=tXzzXsO5g@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 13 Jul 2021 16:54:03 +0530
+Message-ID: <CAFA6WYN4gMv9Hkuq=3v_UKg+Y1OvFfbOqgZxt7yGSd2RnVBdJw@mail.gmail.com>
+Subject: Re: [PATCH v3] kdb: Get rid of custom debug heap allocator
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tracepoints trace_sched_stat_{wait, sleep, iowait} are not exposed to user
-if CONFIG_SCHEDSTATS is not set, "perf sched record" records the three events.
-As a result, the command fails to be executed.
+Hi Doug,
 
-Before:
+Thanks for your review.
 
-  #perf sched record sleep 1
-  event syntax error: 'sched:sched_stat_wait'
-                       \___ unknown tracepoint
+On Tue, 13 Jul 2021 at 04:20, Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Thu, Jul 8, 2021 at 5:25 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > @@ -233,10 +232,6 @@ extern struct task_struct *kdb_curr_task(int);
+> >
+> > @@ -52,48 +52,48 @@ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
+> >  }
+> >  EXPORT_SYMBOL(kdbgetsymval);
+> >
+> > -static char *kdb_name_table[100];      /* arbitrary size */
+> > -
+> >  /*
+> > - * kdbnearsym -        Return the name of the symbol with the nearest address
+>
+> nit: This is now kernel-doc, right? So start with "/**" ?
+>
 
-  Error:  File /sys/kernel/tracing/events/sched/sched_stat_wait not found.
-  Hint:   Perhaps this kernel misses some CONFIG_ setting to enable this feature?.
+Ack.
 
-  Run 'perf list' for a list of valid events
+> > - *     less than 'addr'.
+> > + * kdbnearsym() - Return the name of the symbol with the nearest address
+> > + *                less than @addr.
+> > + * @addr: Address to check for near symbol
+> > + * @symtab: Structure to receive results
+> >   *
+> > - * Parameters:
+> > - *     addr    Address to check for symbol near
+> > - *     symtab  Structure to receive results
+> > - * Returns:
+> > - *     0       No sections contain this address, symtab zero filled
+> > - *     1       Address mapped to module/symbol/section, data in symtab
+> > - * Remarks:
+> > - *     2.6 kallsyms has a "feature" where it unpacks the name into a
+> > - *     string.  If that string is reused before the caller expects it
+> > - *     then the caller sees its string change without warning.  To
+> > - *     avoid cluttering up the main kdb code with lots of kdb_strdup,
+> > - *     tests and kfree calls, kdbnearsym maintains an LRU list of the
+> > - *     last few unique strings.  The list is sized large enough to
+> > - *     hold active strings, no kdb caller of kdbnearsym makes more
+> > - *     than ~20 later calls before using a saved value.
+> > + * WARNING: This function may return a pointer to a single statically
+> > + * allocated buffer (namebuf). kdb's unusual calling context (single
+> > + * threaded, all other CPUs halted) provides us sufficient locking for
+> > + * this to be safe. The only constraint imposed by the static buffer is
+> > + * that the caller must consume any previous reply prior to another call
+> > + * to lookup a new symbol.
+> > + *
+> > + * Note that, strictly speaking, some architectures may re-enter the kdb
+> > + * trap if the system turns out to be very badly damaged and this breaks
+> > + * the single-threaded assumption above. In these circumstances successful
+> > + * continuation and exit from the inner trap is unlikely to work and any
+> > + * user attempting this receives a prominent warning before being allowed
+> > + * to progress. In these circumstances we remain memory safe because
+> > + * namebuf[KSYM_NAME_LEN-1] will never change from '\0' although we do
+> > + * tolerate the possibility of garbled symbol display from the outer kdb
+> > + * trap.
+> > + *
+> > + * Return:
+> > + * * 0 - No sections contain this address, symtab zero filled
+> > + * * 1 - Address mapped to module/symbol/section, data in symtab
+> >   */
+> >  int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+> >  {
+> >         int ret = 0;
+> >         unsigned long symbolsize = 0;
+> >         unsigned long offset = 0;
+> > -#define knt1_size 128          /* must be >= kallsyms table size */
+> > -       char *knt1 = NULL;
+> > +       static char namebuf[KSYM_NAME_LEN];
+>
+> I guess this also ends up fixing a bug too, right? My greps show that
+> "KSYM_NAME_LEN" is 512
 
-   Usage: perf record [<options>] [<command>]
-      or: perf record [<options>] -- <command> [<options>]
+I can see "KSYM_NAME_LEN" defined as 128 here [1]. Are you looking at
+any other header file?
 
-      -e, --event <event>   event selector. use 'perf list' to list available events
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kallsyms.h#n18
 
-Solution:
-  Check whether schedstat tracepoints are exposed. If no, these events are not recorded.
+> and the first thing kallsyms_lookup() does it
+> zero out byte 511. Previously we were only allocating 128 bytes so I
+> guess we were writing past the end.
+>
+> Assuming I understood correctly, maybe mention the bugfix in the commit text?
+>
+>
+> > @@ -102,63 +102,14 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+> >         symtab->sym_end = symtab->sym_start + symbolsize;
+> >         ret = symtab->sym_name != NULL && *(symtab->sym_name) != '\0';
+> >
+> > -       if (ret) {
+> > -               int i;
+> > -               /* Another 2.6 kallsyms "feature".  Sometimes the sym_name is
+> > -                * set but the buffer passed into kallsyms_lookup is not used,
+> > -                * so it contains garbage.  The caller has to work out which
+> > -                * buffer needs to be saved.
+> > -                *
+> > -                * What was Rusty smoking when he wrote that code?
+> > -                */
+> > -               if (symtab->sym_name != knt1) {
+> > -                       strncpy(knt1, symtab->sym_name, knt1_size);
+> > -                       knt1[knt1_size-1] = '\0';
+> > -               }
+> > -               for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
+> > -                       if (kdb_name_table[i] &&
+> > -                           strcmp(kdb_name_table[i], knt1) == 0)
+> > -                               break;
+> > -               }
+> > -               if (i >= ARRAY_SIZE(kdb_name_table)) {
+> > -                       debug_kfree(kdb_name_table[0]);
+> > -                       memmove(kdb_name_table, kdb_name_table+1,
+> > -                              sizeof(kdb_name_table[0]) *
+> > -                              (ARRAY_SIZE(kdb_name_table)-1));
+> > -               } else {
+> > -                       debug_kfree(knt1);
+> > -                       knt1 = kdb_name_table[i];
+> > -                       memmove(kdb_name_table+i, kdb_name_table+i+1,
+> > -                              sizeof(kdb_name_table[0]) *
+> > -                              (ARRAY_SIZE(kdb_name_table)-i-1));
+> > -               }
+> > -               i = ARRAY_SIZE(kdb_name_table) - 1;
+> > -               kdb_name_table[i] = knt1;
+> > -               symtab->sym_name = kdb_name_table[i];
+> > -               knt1 = NULL;
+>
+> I definitely had a hard time following exactly what all the cases were
+> handling and if they were all right, but I agree that we can kill the
+> old code (yay!)
+>
+>
+> > @@ -249,6 +200,7 @@ void kdb_symbol_print(unsigned long addr, const kdb_symtab_t *symtab_p,
+> >                       unsigned int punc)
+> >  {
+> >         kdb_symtab_t symtab, *symtab_p2;
+> > +
+> >         if (symtab_p) {
+> >                 symtab_p2 = (kdb_symtab_t *)symtab_p;
+> >         } else {
+>
+> nit: unrelated whitespace change?
+>
 
-After:
-  # perf sched record sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.163 MB perf.data (1091 samples) ]
-  # perf sched report
-  run measurement overhead: 4736 nsecs
-  sleep measurement overhead: 9059979 nsecs
-  the run test took 999854 nsecs
-  the sleep test took 8945271 nsecs
-  nr_run_events:        716
-  nr_sleep_events:      785
-  nr_wakeup_events:     0
-  ...
-  ------------------------------------------------------------
+Will revert.
 
-Fixes: 2a09b5de235a6 ("sched/fair: do not expose some tracepoints to user if CONFIG_SCHEDSTATS is not set")
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
- tools/perf/builtin-sched.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+>
+> All comments above are nits and not terribly important, so:
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 954ce2f594e9..3e5b7faf0c16 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -3335,6 +3335,16 @@ static void setup_sorting(struct perf_sched *sched, const struct option *options
- 	sort_dimension__add("pid", &sched->cmp_pid);
- }
- 
-+static bool schedstat_events_exposed(void)
-+{
-+	/*
-+	 * Select "sched:sched_stat_wait" event to check
-+	 * whether schedstat tracepoints are exposed.
-+	 */
-+	return IS_ERR(trace_event__tp_format("sched", "sched_stat_wait")) ?
-+		false : true;
-+}
-+
- static int __cmd_record(int argc, const char **argv)
- {
- 	unsigned int rec_argc, i, j;
-@@ -3346,21 +3356,33 @@ static int __cmd_record(int argc, const char **argv)
- 		"-m", "1024",
- 		"-c", "1",
- 		"-e", "sched:sched_switch",
--		"-e", "sched:sched_stat_wait",
--		"-e", "sched:sched_stat_sleep",
--		"-e", "sched:sched_stat_iowait",
- 		"-e", "sched:sched_stat_runtime",
- 		"-e", "sched:sched_process_fork",
- 		"-e", "sched:sched_wakeup_new",
- 		"-e", "sched:sched_migrate_task",
- 	};
-+
-+	/*
-+	 * The tracepoints trace_sched_stat_{wait, sleep, iowait}
-+	 * are not exposed to user if CONFIG_SCHEDSTATS is not set,
-+	 * to prevent "perf sched record" execution failure, determine
-+	 * whether to record schedstat events according to actual situation.
-+	 */
-+	const char * const schedstat_args[] = {
-+		"-e", "sched:sched_stat_wait",
-+		"-e", "sched:sched_stat_sleep",
-+		"-e", "sched:sched_stat_iowait",
-+	};
-+	unsigned int schedstat_argc = schedstat_events_exposed() ?
-+		ARRAY_SIZE(schedstat_args) : 0;
-+
- 	struct tep_event *waking_event;
- 
- 	/*
- 	 * +2 for either "-e", "sched:sched_wakeup" or
- 	 * "-e", "sched:sched_waking"
- 	 */
--	rec_argc = ARRAY_SIZE(record_args) + 2 + argc - 1;
-+	rec_argc = ARRAY_SIZE(record_args) + 2 + schedstat_argc + argc - 1;
- 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
- 
- 	if (rec_argv == NULL)
-@@ -3376,6 +3398,9 @@ static int __cmd_record(int argc, const char **argv)
- 	else
- 		rec_argv[i++] = strdup("sched:sched_wakeup");
- 
-+	for (j = 0; j < schedstat_argc; j++)
-+		rec_argv[i++] = strdup(schedstat_args[j]);
-+
- 	for (j = 1; j < (unsigned int)argc; j++, i++)
- 		rec_argv[i] = argv[j];
- 
--- 
-2.30.GIT
-
+Thanks,
+-Sumit
