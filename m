@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B243C78E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDCF3C78EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236935AbhGMVUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:20:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53999 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235863AbhGMVUG (ORCPT
+        id S235572AbhGMVYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:24:22 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:38413 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhGMVYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:20:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626211036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Th3vaV2j817/WDzJbZssbF/Balmf7wt+58Irkccy28s=;
-        b=AJNBWtTfanTSe+IqLEbu4oNARGR3zk8Rs3W9CWuX/ccFXLc/Zs59BdjjfNKHJMuXZ+iQY+
-        3KoenGaZGVJoHPJBxGnDVQvllyGLqnWOPVbusdfkU1Dg0+rnMWAv11/+hrywEGz+Lyy3SB
-        ZlTmkk0QM6S4+8IV5eZpPfCPNsezwPM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-bMDFSjwRPoeKj1w7CGj0dg-1; Tue, 13 Jul 2021 17:17:14 -0400
-X-MC-Unique: bMDFSjwRPoeKj1w7CGj0dg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4739118414A0;
-        Tue, 13 Jul 2021 21:17:09 +0000 (UTC)
-Received: from virtlab719.virt.lab.eng.bos.redhat.com (virtlab719.virt.lab.eng.bos.redhat.com [10.19.153.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 970FF5D9DD;
-        Tue, 13 Jul 2021 21:17:05 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
-        tglx@linutronix.de, jesse.brandeburg@intel.com,
-        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
-        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
-        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
-        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
-        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
-        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        somnath.kotur@broadcom.com, nilal@redhat.com,
-        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
-        ahs3@redhat.com, leonro@nvidia.com, chandrakanth.patil@broadcom.com
-Subject: [PATCH v3 14/14] net/mlx4: Use irq_update_affinity_hint
-Date:   Tue, 13 Jul 2021 17:15:02 -0400
-Message-Id: <20210713211502.464259-15-nitesh@redhat.com>
-In-Reply-To: <20210713211502.464259-1-nitesh@redhat.com>
-References: <20210713211502.464259-1-nitesh@redhat.com>
+        Tue, 13 Jul 2021 17:24:21 -0400
+Received: by mail-il1-f198.google.com with SMTP id s7-20020a92cb070000b02902021736bb95so14957972ilo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:21:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ctUZDxscRnndzpGH2QsdyHbqI2iOuV+I7hKSyzYBZzg=;
+        b=YTJN+k+wAJ79XSBdqFwtUGXbbGYnJR7Z8YP0LYcHkVDvSxUuio1hJrRYExaDl+IeGW
+         gOsHtqH55eU532G04ziY7JgS2ppvh/3CNqEiS9fubgo5ICS86NPxEq3314Mhko+eJa1B
+         J9vNQM1jC7CyuRBsgJyFgF+Uacd479TMcerPrDSmXhRoEA+Kh227HCmTSD5m1k3NaEaf
+         b80QmtbS84EfOWNIOJ67Zp2p2gQBSRji5YwNheWoa5MyLvcHvcYg0Q4LpyjLTI96FDdi
+         q+8U4qZZhsQiNTS57T+fZj7gHHbr6Tpv5IOS9PpkvqagN1p2Ij3AZLfGwR1SYI/xaw8/
+         BEpA==
+X-Gm-Message-State: AOAM530gNFjw6lsYSxgamw9cxzhpdTa5ah5X1BZkc9NhZQE2rrMIm7Y7
+        BNDvNinMsMred/KeNQv85zz7172Wf2Pc+lgIjY1WatFB1uGT
+X-Google-Smtp-Source: ABdhPJwRzw/yhTammAmdVfQ9FxPSsREVIOOfv//GCnLfmbDTQdD3pdztoLMz1wtBoBseoa35r0nINGd3PXgjDLRX1nGR5VawSOk+
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Received: by 2002:a92:cf03:: with SMTP id c3mr4387883ilo.195.1626211289982;
+ Tue, 13 Jul 2021 14:21:29 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 14:21:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000044ed0305c707d219@google.com>
+Subject: [syzbot] WARNING in iomap_page_release
+From:   syzbot <syzbot+5ea720fb6b767fbcab6d@syzkaller.appspotmail.com>
+To:     djwong@kernel.org, hch@infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver uses irq_set_affinity_hint() to update the affinity_hint mask
-that is consumed by the userspace to distribute the interrupts. However,
-under the hood irq_set_affinity_hint() also applies the provided cpumask
-(if not NULL) as the affinity for the given interrupt which is an
-undocumented side effect.
+Hello,
 
-To remove this side effect irq_set_affinity_hint() has been marked
-as deprecated and new interfaces have been introduced. Hence, replace the
-irq_set_affinity_hint() with the new interface irq_update_affinity_hint()
-that only updates the affinity_hint pointer.
+syzbot found the following issue on:
 
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+HEAD commit:    92510a7f Add linux-next specific files for 20210709
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14fa5bc4300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=505de2716f052686
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ea720fb6b767fbcab6d
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5ea720fb6b767fbcab6d@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8462 at fs/iomap/buffered-io.c:77 iomap_page_release+0x687/0x790 fs/iomap/buffered-io.c:77
+Modules linked in:
+CPU: 1 PID: 8462 Comm: syz-executor.1 Tainted: G        W         5.13.0-next-20210709-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:iomap_page_release+0x687/0x790 fs/iomap/buffered-io.c:77
+Code: 4f 8d 8a ff 49 8d 6d ff e9 1b fe ff ff e8 41 8d 8a ff 0f 0b e9 71 fe ff ff e8 35 8d 8a ff 0f 0b e9 97 fd ff ff e8 29 8d 8a ff <0f> 0b e9 32 fd ff ff 4c 89 ef e8 3a 9a d0 ff e9 96 f9 ff ff 48 89
+RSP: 0018:ffffc9000169f830 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000001000 RCX: 0000000000000000
+RDX: ffff8880265f8000 RSI: ffffffff81eb0f77 RDI: 0000000000000003
+RBP: ffffea0001380bc0 R08: 0000000000000000 R09: ffff88808995165b
+R10: ffffffff81eb0ca7 R11: 000000000000003f R12: ffff888089951658
+R13: ffffea0001380bc8 R14: 000000000000000c R15: 0000000000000031
+FS:  00000000027d1400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000544038 CR3: 00000000702a5000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ iomap_invalidatepage fs/iomap/buffered-io.c:489 [inline]
+ iomap_invalidatepage+0x46d/0x670 fs/iomap/buffered-io.c:478
+ do_invalidatepage mm/truncate.c:167 [inline]
+ truncate_cleanup_page+0x393/0x560 mm/truncate.c:186
+ truncate_inode_pages_range+0x26c/0x1030 mm/truncate.c:335
+ gfs2_evict_inode+0x1e1/0x1ff0 fs/gfs2/super.c:1467
+ evict+0x2ed/0x6b0 fs/inode.c:590
+ iput_final fs/inode.c:1670 [inline]
+ iput.part.0+0x539/0x850 fs/inode.c:1696
+ iput+0x58/0x70 fs/inode.c:1686
+ gfs2_put_super+0x29a/0x650 fs/gfs2/super.c:668
+ generic_shutdown_super+0x14c/0x370 fs/super.c:465
+ kill_block_super+0x97/0xf0 fs/super.c:1395
+ gfs2_kill_sb+0x104/0x160 fs/gfs2/ops_fstype.c:1682
+ deactivate_locked_super+0x94/0x160 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3a2/0x540 fs/namespace.c:1136
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x467a37
+Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffeb202ad98 EFLAGS: 00000246
+ ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000467a37
+RDX: 00007ffeb202ae6b RSI: 0000000000000002 RDI: 00007ffeb202ae60
+RBP: 00007ffeb202ae60 R08: 00000000ffffffff R09: 00007ffeb202ac30
+R10: 00000000027d28e3 R11: 0000000000000246 R12: 00000000004bee70
+R13: 00007ffeb202bf30 R14: 00000000027d2810 R15: 00007ffeb202bf70
+
+
 ---
- drivers/net/ethernet/mellanox/mlx4/eq.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/eq.c b/drivers/net/ethernet/mellanox/mlx4/eq.c
-index 9e48509ed3b2..414e390e6b48 100644
---- a/drivers/net/ethernet/mellanox/mlx4/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/eq.c
-@@ -244,9 +244,9 @@ static void mlx4_set_eq_affinity_hint(struct mlx4_priv *priv, int vec)
- 	    cpumask_empty(eq->affinity_mask))
- 		return;
- 
--	hint_err = irq_set_affinity_hint(eq->irq, eq->affinity_mask);
-+	hint_err = irq_update_affinity_hint(eq->irq, eq->affinity_mask);
- 	if (hint_err)
--		mlx4_warn(dev, "irq_set_affinity_hint failed, err %d\n", hint_err);
-+		mlx4_warn(dev, "irq_update_affinity_hint failed, err %d\n", hint_err);
- }
- #endif
- 
-@@ -1123,9 +1123,7 @@ static void mlx4_free_irqs(struct mlx4_dev *dev)
- 	for (i = 0; i < dev->caps.num_comp_vectors + 1; ++i)
- 		if (eq_table->eq[i].have_irq) {
- 			free_cpumask_var(eq_table->eq[i].affinity_mask);
--#if defined(CONFIG_SMP)
--			irq_set_affinity_hint(eq_table->eq[i].irq, NULL);
--#endif
-+			irq_update_affinity_hint(eq_table->eq[i].irq, NULL);
- 			free_irq(eq_table->eq[i].irq, eq_table->eq + i);
- 			eq_table->eq[i].have_irq = 0;
- 		}
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
