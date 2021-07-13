@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADA33C77C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F753C77CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhGMUVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:21:46 -0400
-Received: from dliviu.plus.com ([80.229.23.120]:40032 "EHLO smtp.dudau.co.uk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229944AbhGMUVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:21:45 -0400
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-        by smtp.dudau.co.uk (Postfix) with SMTP id 919384119B03;
-        Tue, 13 Jul 2021 21:18:53 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Tue, 13 Jul 2021 21:18:53 +0100
-From:   Liviu Dudau <liviu@dudau.co.uk>
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Mario Kleiner <mario.kleiner.de@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>
-Subject: [PATCH] drm/amd/display: Fix 10bit 4K display on CIK GPUs
-Date:   Tue, 13 Jul 2021 21:18:51 +0100
-Message-Id: <20210713201851.60359-1-liviu@dudau.co.uk>
-X-Mailer: git-send-email 2.32.0
+        id S231499AbhGMUXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhGMUXg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 16:23:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE671C0613DD;
+        Tue, 13 Jul 2021 13:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=dhbQxyrFl3CfKp7xzNNUas2IGsDrcFUOGAeAIrSwHtI=; b=rbJ6V1nOj2nMu6v64xZVW9Z2qu
+        VnxdjwdiLFEzHpM6p97e6HQWi6xv2ztm1oIhQXTmtDLHXil9F6VHS/9fmHjvJ8ysiwumNnG0loP1a
+        zP0QoxVhb8EV2qcMXkG3ajuNF7MpNQrgLu1YUPi5zLmb9hFb4zru36fJ+1FOjFGBrQNYWVaEMrbdZ
+        1ZtTFePSNwM9u5tQ95H02r13Z0hMs1ttZ+yj5mH7cKj9OC4rXi5F74wu6K4jQao38gYCRalJF4nQ3
+        FEAG+HX+0Sjjsx+di5eg7k4a+UCmrhJOXiWzC/M5EkrVMlzP5YjmYJsrxtsoRqD7kuKb2+fzhlUh2
+        Zl7Uu4KA==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3OtY-00BIag-Eh; Tue, 13 Jul 2021 20:20:44 +0000
+Subject: Re: linux-next: Tree for Jul 12 (no Rust)
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+References: <20210712120828.5c480cdc@canb.auug.org.au>
+ <c47a7f0b-4b5a-30c3-ee1e-2973793a9534@infradead.org>
+ <20210713111029.77bfb9bb@elm.ozlabs.ibm.com>
+ <56341950-abd6-8a9c-42ca-7eb91c55cc90@infradead.org>
+ <8ed74a96-7309-3370-4b8b-376bface7cc6@infradead.org>
+ <47f394e5-c319-3b79-92ad-d33b0d96993e@infradead.org>
+ <CANiq72mDL+CA9CnhDG5Sij4ufVzGHrWvZ9eaWSSXQMDYbpL-6w@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c8349e27-4941-e639-9a26-b665b2fa6a68@infradead.org>
+Date:   Tue, 13 Jul 2021 13:20:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72mDL+CA9CnhDG5Sij4ufVzGHrWvZ9eaWSSXQMDYbpL-6w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at
-30bpp for DCE-11.0.") doesn't seems to have fixed 10bit 4K rendering over
-DisplayPort for CIK GPUs. On my machine with a HAWAII GPU I get a broken
-image that looks like it has an effective resolution of 1920x1080 but
-scaled up in an irregular way. Reverting the commit or applying this
-patch fixes the problem on v5.14-rc1.
+On 7/13/21 10:36 AM, Miguel Ojeda wrote:
+> Hi Randy,
+> 
+> On Tue, Jul 13, 2021 at 5:31 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> OK, I found some 'patch' failures in my download logs, so something
+>> in my scripts didn't do its job.
+>>
+>> Thanks for bringing it up!
+> 
+> Thanks for looking -- if I can help with something on my side on the
+> Rust tree, please let me know.
+> 
+> Also, if you found what went wrong (e.g. the end result after `patch`
+> failed applying something), it would be nice to know, in case this
+> comes up again.
 
-Fixes: 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at 30bpp for DCE-11.0.")
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
----
- drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Miguel,
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-index a6a67244a322e..1596f6b7fed7c 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-@@ -1062,7 +1062,7 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
- 	 * so use only 30 bpp on DCE_VERSION_11_0. Testing with DCE 11.2 and 8.3
- 	 * did not show such problems, so this seems to be the exception.
- 	 */
--	if (plane_state->ctx->dce_version != DCE_VERSION_11_0)
-+	if (plane_state->ctx->dce_version > DCE_VERSION_11_0)
- 		pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_36BPP;
- 	else
- 		pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_30BPP;
--- 
-2.32.0
+It was either a script bug (but I haven't seen this one before)
+or a user error (more likely).
+My daily linux-next builds are started by a cron job but the don't
+always start when they should (IMO), so I may have started it
+manually... but then the error that I saw would have only happened
+if 2 linux-next builds were started at almost the same time (one
+by cron, one manually by me) - I don't know if that happened or not.
+
+Today's linux-next builds didn't have any similar problem and I doubt
+that I can reconstruct what happened exactly.
+
+Thanks.
 
