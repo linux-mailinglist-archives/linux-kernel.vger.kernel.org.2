@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F113C74D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EC83C74CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235027AbhGMQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
+        id S234934AbhGMQhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234909AbhGMQhY (ORCPT
+        with ESMTP id S235282AbhGMQh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:37:24 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C29C0613EE
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:20 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 132-20020a25158a0000b029055791ebe1e6so27980642ybv.20
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:20 -0700 (PDT)
+        Tue, 13 Jul 2021 12:37:28 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17844C0613EF
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x15-20020a25ce0f0000b029055bb0981111so27836585ybe.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=xdAkcygaPEcpp4CNM8O/R9k6BDNdm0ATuqQsXeEt38E=;
-        b=BxOhaKklb4xqr+QX8WDrqI3aFBnGaDnXY21Deh5ubB3ZAKGYD37cbdfvfm36hH93kR
-         lQDSbXnaqpxUuUwXhZXMbzXgDOEOhHdcAAFtwn8I3qw9bNAYyvbz69+Ba7NW+v2ja7tl
-         7EHvZBIwvviPZWxRdpdUwWh6VjSlBL0yudtDitGZJOkVNBOzwzMNThiydO54XUsAV88I
-         jTqwamhMr90yjJkWgYh9q8RuUGrONnxkLjB1Mw6wYc6WjRrDx2IwWAcWwOgkdCKk42Yd
-         OVLrzGRm3pp7LPzExfemC9WHeslyX9ujzoKgNdAWJogTE2juRQ+Zb1sjhFkdh+vfvB2E
-         YUjA==
+        bh=CgrSZBstNZwFy9Uo6jdcpFw84xBpoqNrT77cRxMhd+E=;
+        b=dIYjzPGsJ6TLn2wVcO+Ux1e9QGqStPI+HZp8nyXUUAtU47hnu0NRDZeyBPGX0xFdOO
+         CXTsHUJY33F6lOorYUZ0Llq6fkPEaeM4tReHGBoya2vw8YVLMng/27ngwKQy82UJdyvq
+         41l7qU7Vk53muwMcq7TtV5Zh1c4lwHBklW7C9ce/5AfBsbN+9oAHO5/C60HoBLd8np7H
+         K/rngvmcWlQFtWxii1lpF4dxVsiOTrn6nxvHagBhdOuPiTMMRZs7CM3/jFZazKs2aWkV
+         G0kawCHRm+J0IE3KlcNr1SEAFRDRvWLkCRIksCBe0P6T4ZNiuZ0wsS2VYZwSWvUzLt0z
+         qa6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=xdAkcygaPEcpp4CNM8O/R9k6BDNdm0ATuqQsXeEt38E=;
-        b=s3fQnqckHodrIVgi6RHQ2EENR8Aa0B4lhAFhHi2z2GfR+5ZEjuTYvmrvAOTKToDlAL
-         uvWgoH89+iKenUwtc/rz/ldvA9hz6Oh1ZZwdxMudps8+J45P3OkjX+MW2XJIdM34h6LA
-         QJU0LMdsEX/cq2HWE9wJ0Y3tW0PfQVC3HjkG6Tg5CeizjT3/oZvX0LwrpjDrjiYvYFDW
-         pv6wUG9K9EWm1sFVjJ5z/kgfX3jmDwhgsmVaxkCPAZ1kjzVF/KLgATBFG5MOCtEwQyLL
-         RdHtim/RhjcxfDS7Ux8nCOCbRdmAi0JFqjtQjl8w33oG5UGZBYNumPD8yxKqywD4WQV1
-         vgSA==
-X-Gm-Message-State: AOAM531QAVB8/3fHpz78DcRegdCw7+OEdh2FjOiioj2UD0mMXyJNy2Y2
-        FaaJq9jTBwnooDytZxustM4BtjIMjM8=
-X-Google-Smtp-Source: ABdhPJyWC6nAKsLCUaj4djllb/OFERwatUMnjg5LpWOKBrpAkn05V353L2nG5W05C3HlAoSn9h9MIXjbBEU=
+        bh=CgrSZBstNZwFy9Uo6jdcpFw84xBpoqNrT77cRxMhd+E=;
+        b=j8nuahKTaGk++JNzAuRY7n5+tuF9UqxvnNHAGbXKMFZM/DinaIhBNQ6Y6KF+d5Hv8c
+         idUz8Rx0OObADqkrQYD9wjUv3dyzQ+Mo4tlLEwUbSmkKMvD67h4RFfazWF/PeQ6cGmvr
+         Dqh1IvrfRrZBseQnPwTjIsbYbI4b2RTlGUC4HaFSHCPObgw+7SaOJmLcR1VJ9tVOQHW7
+         NKafuBJ71keFn8ObqO3B0RhwZfGsJ1QRiAJ5h2/EcUNv8yFP1lyohwZN1ouW2YjhVpv7
+         /nTF895h5tzrfL4xkhHeK5wIENeJYwHdZX8li4R9EuHmVCWeOa30dL7njJ8RXqbMofPt
+         dn4w==
+X-Gm-Message-State: AOAM532gFkpqBWR63rUjapEAX+Z/XN1kvnrQkOWO1c3fqVKfkFkFcycr
+        6bsRh+vj3XtGjpzy1ugXnmMaild7280=
+X-Google-Smtp-Source: ABdhPJyAx6+D/2SdrYQx5dm7fHrEFUIbnOPmhfqtgcFzKyqmQ1LUZK792ZNmUj9molVy3SElH+EwUtvhOuY=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:825e:11a1:364b:8109])
- (user=seanjc job=sendgmr) by 2002:a25:d310:: with SMTP id e16mr7596128ybf.63.1626194059316;
- Tue, 13 Jul 2021 09:34:19 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:258:: with SMTP id 85mr7222066ybc.109.1626194061338;
+ Tue, 13 Jul 2021 09:34:21 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 13 Jul 2021 09:33:02 -0700
+Date:   Tue, 13 Jul 2021 09:33:03 -0700
 In-Reply-To: <20210713163324.627647-1-seanjc@google.com>
-Message-Id: <20210713163324.627647-25-seanjc@google.com>
+Message-Id: <20210713163324.627647-26-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210713163324.627647-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2 24/46] KVM: nVMX: Do not clear CR3 load/store exiting bits
- if L1 wants 'em
+Subject: [PATCH v2 25/46] KVM: VMX: Pull GUEST_CR3 from the VMCS iff CR3 load
+ exiting is disabled
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,106 +67,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keep CR3 load/store exiting enable as needed when running L2 in order to
-honor L1's desires.  This fixes a largely theoretical bug where L1 could
-intercept CR3 but not CR0.PG and end up not getting the desired CR3 exits
-when L2 enables paging.  In other words, the existing !is_paging() check
-inadvertantly handles the normal case for L2 where vmx_set_cr0() is
-called during VM-Enter, which is guaranteed to run with paging enabled,
-and thus will never clear the bits.
+Tweak the logic for grabbing vmcs.GUEST_CR3 in vmx_cache_reg() to look
+directly at the execution controls, as opposed to effectively inferring
+the controls based on vCPUs.  Inferring the controls isn't wrong, but it
+creates a very subtle dependency between the caching logic, the state of
+vcpu->arch.cr0 (via is_paging()), and the behavior of vmx_set_cr0().
 
-Removing the !is_paging() check will also allow future consolidation and
-cleanup of the related code.  From a performance perspective, this is
-all a nop, as the VMCS controls shadow will optimize away the VMWRITE
-when the controls are in the desired state.
+Using the execution controls doesn't completely eliminate the dependency
+in vmx_set_cr0(), e.g. neglecting to cache CR3 before enabling
+interception would still break the guest, but it does reduce the
+code dependency and mostly eliminate the logical dependency (that CR3
+loads are intercepted in certain scenarios).  Eliminating the subtle
+read of vcpu->arch.cr0 will also allow for additional cleanup in
+vmx_set_cr0().
 
-Add a comment explaining why CR3 is intercepted, with a big disclaimer
-about not querying the old CR3.  Because vmx_set_cr0() is used for flows
-that are not directly tied to MOV CR3, e.g. vCPU RESET/INIT and nested
-VM-Enter, it's possible that is_paging() is not synchronized with CR3
-load/store exiting.  This is actually guaranteed in the current code, as
-KVM starts with CR3 interception disabled.  Obviously that can be fixed,
-but there's no good reason to play whack-a-mole, and it tends to end
-poorly, e.g. descriptor table exiting for UMIP emulation attempted to be
-precise in the past and ended up botching the interception toggling.
-
-Fixes: fe3ef05c7572 ("KVM: nVMX: Prepare vmcs02 from vmcs01 and vmcs12")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 46 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 37 insertions(+), 9 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index db70fe463aa1..58c6d7b98624 100644
+index 58c6d7b98624..d632c0a16f12 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2994,10 +2994,14 @@ void ept_save_pdptrs(struct kvm_vcpu *vcpu)
- 	kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
- }
- 
-+#define CR3_EXITING_BITS (CPU_BASED_CR3_LOAD_EXITING | \
-+			  CPU_BASED_CR3_STORE_EXITING)
-+
- void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long hw_cr0;
-+	u32 tmp;
- 
- 	hw_cr0 = (cr0 & ~KVM_VM_CR0_ALWAYS_OFF);
- 	if (is_unrestricted_guest(vcpu))
-@@ -3024,18 +3028,42 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- #endif
- 
- 	if (enable_ept && !is_unrestricted_guest(vcpu)) {
+@@ -2262,8 +2262,11 @@ static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+ 		vcpu->arch.cr0 |= vmcs_readl(GUEST_CR0) & guest_owned_bits;
+ 		break;
+ 	case VCPU_EXREG_CR3:
+-		if (is_unrestricted_guest(vcpu) ||
+-		    (enable_ept && is_paging(vcpu)))
 +		/*
-+		 * Ensure KVM has an up-to-date snapshot of the guest's CR3.  If
-+		 * the below code _enables_ CR3 exiting, vmx_cache_reg() will
-+		 * (correctly) stop reading vmcs.GUEST_CR3 because it thinks
-+		 * KVM's CR3 is installed.
++		 * When intercepting CR3 loads, e.g. for shadowing paging, KVM's
++		 * CR3 is loaded into hardware, not the guest's CR3.
 +		 */
- 		if (!kvm_register_is_available(vcpu, VCPU_EXREG_CR3))
- 			vmx_cache_reg(vcpu, VCPU_EXREG_CR3);
-+
-+		/*
-+		 * When running with EPT but not unrestricted guest, KVM must
-+		 * intercept CR3 accesses when paging is _disabled_.  This is
-+		 * necessary because restricted guests can't actually run with
-+		 * paging disabled, and so KVM stuffs its own CR3 in order to
-+		 * run the guest when identity mapped page tables.
-+		 *
-+		 * Do _NOT_ check the old CR0.PG, e.g. to optimize away the
-+		 * update, it may be stale with respect to CR3 interception,
-+		 * e.g. after nested VM-Enter.
-+		 *
-+		 * Lastly, honor L1's desires, i.e. intercept CR3 loads and/or
-+		 * stores to forward them to L1, even if KVM does not need to
-+		 * intercept them to preserve its identity mapped page tables.
-+		 */
- 		if (!(cr0 & X86_CR0_PG)) {
--			/* From paging/starting to nonpaging */
--			exec_controls_setbit(vmx, CPU_BASED_CR3_LOAD_EXITING |
--						  CPU_BASED_CR3_STORE_EXITING);
--			vcpu->arch.cr0 = cr0;
--			vmx_set_cr4(vcpu, kvm_read_cr4(vcpu));
--		} else if (!is_paging(vcpu)) {
--			/* From nonpaging to paging */
--			exec_controls_clearbit(vmx, CPU_BASED_CR3_LOAD_EXITING |
--						    CPU_BASED_CR3_STORE_EXITING);
-+			exec_controls_setbit(vmx, CR3_EXITING_BITS);
-+		} else if (!is_guest_mode(vcpu)) {
-+			exec_controls_clearbit(vmx, CR3_EXITING_BITS);
-+		} else {
-+			tmp = exec_controls_get(vmx);
-+			tmp &= ~CR3_EXITING_BITS;
-+			tmp |= get_vmcs12(vcpu)->cpu_based_vm_exec_control & CR3_EXITING_BITS;
-+			exec_controls_set(vmx, tmp);
-+		}
-+
-+		if (!is_paging(vcpu) != !(cr0 & X86_CR0_PG)) {
- 			vcpu->arch.cr0 = cr0;
- 			vmx_set_cr4(vcpu, kvm_read_cr4(vcpu));
- 		}
++		if (!(exec_controls_get(to_vmx(vcpu)) & CPU_BASED_CR3_LOAD_EXITING))
+ 			vcpu->arch.cr3 = vmcs_readl(GUEST_CR3);
+ 		break;
+ 	case VCPU_EXREG_CR4:
 -- 
 2.32.0.93.g670b81a890-goog
 
