@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C203C73E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7717B3C73E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhGMQNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:13:18 -0400
-Received: from mail-bn1nam07on2062.outbound.protection.outlook.com ([40.107.212.62]:16512
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229913AbhGMQNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:13:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HR8ZMRFQkt6qgv40t3iR/GEI299mFeby82KYjwcHSqCzPLWxqZXtmxrH9Ibq9gq8Xwc8n0zt9+EYYjYi5xUNNvyrNeqExChmgqowaY9T/r8IKo4fhomkTPj9Zuu/m+Fya55nDVSwfwVjy/YXqXuptDgFzlODAhpGGa3Jp3r7mzE4ulivGAlH70dqk0ByeMscyxRWgXjzX2TRvWJX1brf3bkMll3YMycKd6siBIEHZKi1p69IPYfe+6QyCHtzfEqy4NoNI7wwhlDOVd5Ulzg8Ts8GfBXWFXDMeyFrPdeOb+Dimr2PWG0kAOX6m0bbPME86BxxkFVF20V3ZtlKcBJqEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p0Zcirlhn5cOs5xaqXXsW0IWcH6v1GlP8ug1xzbs5q0=;
- b=W169mQsmRDyjt/5jJ74xxieWmSl6rdcGVJyd24d85avRAttbaxi5gjOgym/Lq35sfH1SdjeHbspLYWGwQjWcYFjji5EY/v51OgJb4JS7Ydq9DcyMYo1H/UOdW8yrZZDeh/yqGGX8lgd3E9Gt/FYVqRPKGLBvNa2VsF9Agmbz9oOm/M5CeI3J2YTNlA8LsV+zH038L8qeYKVgaAUwGLdDWmT4doc9TiIvjGAnEKls5t31LUt9Fqp7acANJowG7RN0saL0srQSpfhjkpsjkwjVN/BoaX+XwMvgEu+ImsnppLpdq7KQkQE/dVGKOKAPb9BLfYD40KMVHnFBMuZyUYMQ/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p0Zcirlhn5cOs5xaqXXsW0IWcH6v1GlP8ug1xzbs5q0=;
- b=n7KEUbEsh2uNH6dfbmSz0SHBLZxoXhNAzNgRgqEP5Um+E6aHIlrz0AVOKYR5z3wq6uBO9XJN7uTq0/956TrNnBbEFW7t5hjkZYZuNmPaUBRojbjI/363UtryQQkh10uEU76alAQRCKwveV5JCliAK7VIY7Sj1niR9yOaWGyt3U8=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1809.namprd12.prod.outlook.com (2603:10b6:404:106::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Tue, 13 Jul
- 2021 16:10:25 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::c099:e7a1:249a:a8a2]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::c099:e7a1:249a:a8a2%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
- 16:10:25 +0000
-Date:   Tue, 13 Jul 2021 12:10:17 -0400
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Muralidhara M K <muralimk@amd.com>,
-        Akshay Gupta <Akshay.Gupta@amd.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 1/2] x86/mce: Define function to extract ErrorAddr from
- MCA_ADDR
-Message-ID: <20210713161017.GA16744@aus-x-yghannam.amd.com>
-References: <20210625013341.231442-1-Smita.KoralahalliChannabasappa@amd.com>
+        id S230391AbhGMQNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhGMQNb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 12:13:31 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADE3C0613DD;
+        Tue, 13 Jul 2021 09:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zWIeSAOesk6PTxxPT2bnKuhH4ukKa6k6TAxEmP4Dn4E=; b=D+wBEy4C9FSPgE2ZMTD1JxSWN2
+        wya20X3j40bsHZbPMX7I2YFWSNuLmMIdsAdHMtJ9rIQGo3xFfeu1mcAW/scNAfHTQrglmpkP0y9n5
+        p8iLFw5qQs8B6EhIuaM8X3vfCx6lOXvJeINmnzvJiNBt7Mpf7aZaIoWUdpFogkSLMtFUeQBpF9HRK
+        3bVdN0coqru0NTk52TGZnOwOfuSTR2jhcasXlNliDvBhJ+T/2bQwdaqTKacBY3bNUC/v+g+6L9PoE
+        BbGKIYxcxsTGvZH0xrNXRTAu/DqoJWo36o0i0k6QNxQYzNjGd2K8AbHE3fbraFAiGb6xqVx5oZXjJ
+        1s47ydow==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3KzQ-00HBqf-Ee; Tue, 13 Jul 2021 16:10:32 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0C0CF986904; Tue, 13 Jul 2021 18:10:31 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 18:10:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrei Vagin <avagin@google.com>,
+        Jim Newsome <jnewsome@torproject.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [RFC PATCH 2/3 v0.2] sched/umcg: RFC: add userspace atomic
+ helpers
+Message-ID: <20210713161030.GA2591@worktop.programming.kicks-ass.net>
+References: <20210708194638.128950-1-posk@google.com>
+ <20210708194638.128950-3-posk@google.com>
+ <YOgCdMWE9OXvqczk@hirez.programming.kicks-ass.net>
+ <CAPNVh5fbDTNPCnSoQFia_VSuDcLsReGey+7iouK6V=p1S7v=sg@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625013341.231442-1-Smita.KoralahalliChannabasappa@amd.com>
-X-ClientProxiedBy: BN0PR02CA0055.namprd02.prod.outlook.com
- (2603:10b6:408:e5::30) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN0PR02CA0055.namprd02.prod.outlook.com (2603:10b6:408:e5::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 16:10:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6907a68f-f6a3-490d-ad64-08d94618b9a8
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1809:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR12MB1809A5263F3C7D8E43A2405EF8149@BN6PR12MB1809.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hpxXckb6lXxAbySJu2cvqZT3fxn7JlkUdHSwNdAhP1BZWvq7LUK9V+vGATdNsrs85a3jUIFemjsyamPT9c7FuOkKyTggW15xijGp1a3xmxQWPX8RGrAj3Hkzk79EVIpXBqpbpyUmhn8gc7s+rM/8Y+wF7LS3UgeQev/HWv9F2Gjeqrm/buJTpb3UamxXl5ABmywVWdTxo0bUVtcDKO5kSK1sEMYRIu3IuWOfCvcNJZs3vaEhC0VRmAgOjl0TLf43C+3tcw5MvdYIL/m4yLLJmIQTqN7lfWlsDtZq6KUeGhxK8C0KZtPCfbSmqZzcIMzzUI5ML71owvShEL/Dt+WmfKraYvQqORNKnDz1zL3o1TG/MOopq1FacwFCKeOkACCk+faGRaKX92mBlCrLI1Sw3YNU+OQsFqP6Yt8awTC3SQu8IYiZtdnYjefMPw4h9WEWot6TXCLhdsmmH1UAURM0+B6RpGKl6U/Y8W/26uc59z/NYMdh+Sv78GT5389XuuGq/FgBkrzZSVkF6uy4VtZI2GQj9Y2ftpujG4q2YS+JWmFEtGIENCqfW8+pRr8zNYOH0sm+EIlRQ/tjq/cTjujVif4xNYOPeZ4Y8yW7puLv3PT4YudzfPF1qt955PIgJmlBl/hAB2lg9t4XbLCuTCIOjYx/ce25MyWihX41b420OjJDzKm2/iXhx9qKNUTs6eVZpTpuAcuj5bFWCYmXI31GKA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(136003)(346002)(38350700002)(66476007)(66946007)(2906002)(33656002)(7696005)(26005)(66556008)(55016002)(186003)(4744005)(54906003)(86362001)(38100700002)(1076003)(8676002)(5660300002)(316002)(52116002)(4326008)(6636002)(956004)(8936002)(6862004)(44832011)(6666004)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fk9EAhNWWKqdLGY5+pzAg2e+1EFd3IdYI+ekNoSYKgEtfrnFD2bXDKUrEcv3?=
- =?us-ascii?Q?ut8eHhx0lLBC2aoizUomcWPeD28/yQYszTVVui7Fe/+EJE7IKj+/U6zX4EaL?=
- =?us-ascii?Q?UV2l42q3EuDhhVoV+xfWPkm1WlUE8fMHvAZgvTiSnp+sYexI6BAvFHokMpU5?=
- =?us-ascii?Q?Zq+9zEuHHyhzVIhrI+NnBmNEP/1zsCYrO7tNB3pSBzXJ29DP2it+lxv41ZmR?=
- =?us-ascii?Q?oPoc6dGLnAsUafzRcYM4KQGflVc8JeTHAd4aSkZkt+FjhzhQUIL+FWtbywxC?=
- =?us-ascii?Q?0Mload9Yh+lmGfVUISRKz81s/yUOuLeDRngu+QigNca5838MhpSxgiEyg1/b?=
- =?us-ascii?Q?42+ADsC4upZfwUvxH7tKjDGkGyFel3HVR11bcNxyaepXEy5ONUU5WkdFUHX+?=
- =?us-ascii?Q?LZXrtNc2+PeqybNMAg5HzvhkA40MpC9PUVYprwJqjsKC/LS31JdbZQtF8W+M?=
- =?us-ascii?Q?0/j6q3gcNZ9ECkYrk4c37HkHfNyjLEY9RJMobf4IowsjW5gtFSzfH3k1oJwj?=
- =?us-ascii?Q?f6B4vYNM2ujt4yqqFCfnKd7TbEROs63KL9bAo66Tpf3cEv+LV8+LJqb7269R?=
- =?us-ascii?Q?rdWmUxPWT/oG9+CE2vsfel9+zeqI35tJxBuxSU1jx1cXiDXuzqGFvuSlAXZ6?=
- =?us-ascii?Q?Zi2SvgD02Y/+qIG4ZjMMBb7h6UHYq8SRaSa2kLOXHEtiPdb0iWvRKIFjGz+v?=
- =?us-ascii?Q?LNng3B/P40S9/6Yms4rI64G93lyNqk4JO5zcDxawXsMTixfW0Vi2G++SRBHI?=
- =?us-ascii?Q?WzCB6tOmq+D0vriiLRJOPdHOfSOYVYDePwdapl4OG8Jbv0RgDJfBRPFl0aYL?=
- =?us-ascii?Q?XLwcZdYpdFZV2/S/Zntgl2ECYlzhoXIAyNbqMeFE8j8KAg449T0vrqL/u33E?=
- =?us-ascii?Q?kZOFZHBRDhF0+Spxh0ZBDUaSRpGX8HOQlvwT8aTfTuYuGHR3mxCVOecPIqOe?=
- =?us-ascii?Q?ir6i11UDIorjMwNnieNfxRNMGSgKUonVyZt5Ud3fJ1CRXBTvCwEIkArJ7e+2?=
- =?us-ascii?Q?x8rE/ePLHz+HFUu9vSv27lQw0H4X9PY/pb0XcwqhNjrybe7b5jz1/hdlUNd7?=
- =?us-ascii?Q?4S+T2LtQBg6o84i1UP5B/WrHxNWK8vtxB1f8l3qmhFuSl2S2G1lVJJ6GWLbJ?=
- =?us-ascii?Q?SgbwhW/p4QG2TJiSA94MehoOhblqrmxDYXbWZ2PFMwgbLOuaAhonAy8pmyTm?=
- =?us-ascii?Q?60PenooVHHZSnl2QmS3LOasOUGp8L03sUpj7ns4EfafDfSNh/W7cDVwY5RVJ?=
- =?us-ascii?Q?q16RShIxPCshzDw2OzBviVjJjguQxBglp2iCg+ctIp9f4cYnA4y+aknEFr32?=
- =?us-ascii?Q?jwzB/pvDugIvHVLjAXev9vuG?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6907a68f-f6a3-490d-ad64-08d94618b9a8
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 16:10:25.8903
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SAPoBLk7ukHeOQD+iAvc/sxG7NK3yWAqbgdUC+kB0VTbfG9eKVkLnJSH8qBN1JQ4sy3I08z8EF42cWEfGTyFBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1809
+In-Reply-To: <CAPNVh5fbDTNPCnSoQFia_VSuDcLsReGey+7iouK6V=p1S7v=sg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:33:40PM -0500, Smita Koralahalli wrote:
-> Move MCA_ADDR[ErrorAddr] extraction into a separate helper function. This
-> will be further refactored in the next patch.
+On Fri, Jul 09, 2021 at 09:57:32AM -0700, Peter Oskolkov wrote:
+> On Fri, Jul 9, 2021 at 1:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
+
+> > This is horrible... Jann is absolutely right, you do not, *ever* do
+> > userspace spinlocks. What's wrong with the trivial lockless single
+> > linked list approach?.
 > 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
+> I'm not sure how to get around the ABA problem with a lockless single
+> linked list: https://en.wikipedia.org/wiki/ABA_problem
 
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+I'm familiar with the problem. I'm just not sure how we got there.
 
-Thanks,
-Yazen
+Last time we had umcg_blocked_ptr / umcg_runnable_ptr which were kernel
+append, user clear single linked lists used for RUNNING->BLOCKED and
+BLOCKED->RUNNABLE notifications.
+
+But those seem gone, instead we now have idle_servers_ptr /
+idle_workers_ptr. I've not yet fully digested things, but they seem to
+implement some 'SMP' policy. Can we please forget about the whole SMP
+thing for now and focus on getting the basics sorted?
+
+So if we implement the bits outlined here:
+
+  https://lore.kernel.org/linux-api/20210609125435.GA68187@worktop.programming.kicks-ass.net/
+  https://lore.kernel.org/linux-api/YMJTyVVdylyHtkeW@hirez.programming.kicks-ass.net/
+
+Then what is mising for full N:1 (aka UP) ?
+
+One thing I've considered is that we might want to add u64 timestamps
+for the various state transitions, such that userspace can compute
+elapsed time which is useful for more dynamic scheduling policies.
+
+Another is preemption; I'm thinking we can drive that with signals, but
+that does give complications -- signals are super gross API wise.
+Another method would be much preferred I think. We could add another
+syscall which allows userspace (from eg. SIGALRM/SIGPROF/SIGVTALRM) to
+force a worker to do a RUNNING->RUNNABLE transition and schedule back to
+the server.
+
+
+Then lets consider N:M (aka SMP). The basics of SMP is sharing work
+between servers. For a large part userspace can already do that by
+keeping a shared ready queue. Servers that go idle pick up a work,
+re-assign it to themselves and go.
+
+The pain-point seems to be *efficient* BLOCKED->RUNNABLE notifications
+across servers. Inefficient options include the userspace servers
+iterating all known other servers and trying to steal their
+umcg_runnable_ptr and processing it. This is 'difficult' in that there
+is no natural wakeup and hence letting a server do IDLE will increase
+latency and destroy work concervance.
+
+The alternative seems to be to let the kernel do the server iteration,
+looking for a RUNNING one and using that umcg_runnable_ptr field and
+kicking it. For that we can set up an immutable linked list between
+struct umcg_task's, a circular single linked list that the kernel
+iterates until it's back where it started. Then there is no dymaic
+state.
+
+Hmm?
