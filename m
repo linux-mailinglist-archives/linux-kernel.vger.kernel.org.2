@@ -2,114 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8AF3C6CA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106D53C6CA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234950AbhGMIwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:52:17 -0400
-Received: from gofer.mess.org ([88.97.38.141]:52143 "EHLO gofer.mess.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235419AbhGMIvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:51:45 -0400
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id F1864C6373; Tue, 13 Jul 2021 09:48:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1626166134; bh=Kb1db9y9hfywyFC1BjnKSGTEXSZ7oVli5/OFy6vdR0A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V5Y200UZfNleJAybYnHQE40TBpvBCYyFQbgm1M4rgQY4n05DhNSr3c7YP9f9QrLUt
-         pPg+KwskE2Mwcr7hUa1YvV1hLsUcofPd4D8PVR7qsubx4L+YWQwMYwRZ1QTxEbVfl2
-         sOymUlEqkgVRgKzS4JqJ4ti587agcJgp5tbXL584qZBgquEHTA8P3/5Z9XrXWpX++E
-         c0/fpyzMZjsQk+VCHGY3E4U1Qaiar8wYpksTP8c5oPV7Dys8jkzpSwKmd83bNRM2ad
-         GpL0CMmJ+fzSVh7e00EgxCFlWlj/+KpxKRcEoM0uONMyaxu/7pUgQmG9tyL9IY7I3P
-         2ZTeolazLzoZA==
-Date:   Tue, 13 Jul 2021 09:48:53 +0100
-From:   Sean Young <sean@mess.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] [media] em28xx-input: fix refcount bug in
- em28xx_usb_disconnect
-Message-ID: <20210713084853.GA6572@gofer.mess.org>
-References: <20210707093409.1445747-1-mudongliangabcd@gmail.com>
+        id S235172AbhGMIwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234968AbhGMIwb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:52:31 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AA7C0612E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:49:19 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id go30so13039391ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g/yfFiQI6SsyaCP65eQfttE8/fWlGgjgVAsURdjrUTo=;
+        b=M0tN6iSrKci7SAcdy2LJyu/cey0629XNJ5wup6yzbDBMtbeTHivUKEQvIPlR0Kq9Va
+         8BsQxoVWI6GTDTVtZbCxMcns5tsuvt6lJtWPmOgGi8ISWlM/CyTceSIKNKyxeqBMW0qp
+         ntpTbQEhx31kKGleojPSgXdLL/M4p9E81DrKaSCq69BQ2bbZkRIBu7FYhsAX/UX7Fr71
+         7NcHdGSm6yqPeHaeI0GLqdRazfEWx5dIuFKXAvrMbCXta4pDC6pjtiqu3/vDg94BgLZ7
+         f7v//j2vA/iOJkFHB8mUjawOdF1+b+hG6tCvVZiLdoTz+VnIh7an9gI4TpFJq+uAvEA4
+         Qy8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g/yfFiQI6SsyaCP65eQfttE8/fWlGgjgVAsURdjrUTo=;
+        b=Vd/R9Sm6yeYZ0zRZvSj+2MdqKkiuyZmyGjOdqXT5FE+CUbAh3RxW91yQLahN3nZ3B1
+         xKBe8XQU5ff6Mzq1wvwnejcV4SIKVzND21Db+sJaekwyF8vOPILcJxOV1fLgA5BdZjku
+         aeYGek8KR0nMg53vCDKRnjr9AyakaQaC+UPzYw/2GrmLVTWOPhP/Efb9CQ6FNtgy2CDT
+         lRtgG+jEpIY4CpiI8P71cjrSBX6LtP4lsoEfhalUjrUZG49rNCOxYt2dkXRYjDqaMcqo
+         ycwpDsJRglMzozzYiziN6OYDvkbAhk3yAKM4u65WrDdCqFzqGkaKZ8LA1k3VeR1vQ0Gg
+         AZlg==
+X-Gm-Message-State: AOAM533Jwyajw05gx+uv+ARmPOtU9OJQJRzvL/piLwdzye04ct0zI9kx
+        rzvO06wPL0QI8ILlDTOBDWojQ8W3P985G59mKc0EJg==
+X-Google-Smtp-Source: ABdhPJyNZ1rmspgxu8nBplT/BItEcTgguLuCVgVnd23jxn5m/g9jxi5vorqZjV+v0J9rs1bSenOJEohaBBelMHokgw8=
+X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr4347138ejv.247.1626166158159;
+ Tue, 13 Jul 2021 01:49:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707093409.1445747-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210712184832.376480168@linuxfoundation.org>
+In-Reply-To: <20210712184832.376480168@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 13 Jul 2021 14:19:05 +0530
+Message-ID: <CA+G9fYtKs9fGCSPNwKtmgFKd_2auqKVCbOnV-mGqvv+mpxc03g@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/598] 5.10.50-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 05:34:09PM +0800, Dongliang Mu wrote:
-> If em28xx_ir_init fails, it would decrease the refcount of dev. However,
-> in the em28xx_ir_fini, when ir is NULL, it goes to ref_put and decrease
-> the refcount of dev. This will lead to a refcount bug.
-> 
-> Fix this bug by removing the kref_put in the error handling code
-> of em28xx_ir_init.
-> 
-> refcount_t: underflow; use-after-free.
-> WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
-> Modules linked in:
-> CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0 #3
-> Workqueue: usb_hub_wq hub_event
-> RIP: 0010:refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
-> Call Trace:
->   kref_put.constprop.0+0x60/0x85 include/linux/kref.h:69
->   em28xx_usb_disconnect.cold+0xd7/0xdc drivers/media/usb/em28xx/em28xx-cards.c:4150
->   usb_unbind_interface+0xbf/0x3a0 drivers/usb/core/driver.c:458
->   __device_release_driver drivers/base/dd.c:1201 [inline]
->   device_release_driver_internal+0x22a/0x230 drivers/base/dd.c:1232
->   bus_remove_device+0x108/0x160 drivers/base/bus.c:529
->   device_del+0x1fe/0x510 drivers/base/core.c:3540
->   usb_disable_device+0xd1/0x1d0 drivers/usb/core/message.c:1419
->   usb_disconnect+0x109/0x330 drivers/usb/core/hub.c:2221
->   hub_port_connect drivers/usb/core/hub.c:5151 [inline]
->   hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
->   port_event drivers/usb/core/hub.c:5586 [inline]
->   hub_event+0xf81/0x1d40 drivers/usb/core/hub.c:5668
->   process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
->   process_scheduled_works kernel/workqueue.c:2338 [inline]
->   worker_thread+0x333/0x5b0 kernel/workqueue.c:2424
->   kthread+0x188/0x1d0 kernel/kthread.c:319
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> 
-> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> Fixes: ac5688637144 ("media: em28xx: Fix possible memory leak of em28xx struct")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
-> v1->v2: move kref_get to the original position
->  drivers/media/usb/em28xx/em28xx-input.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
-> index 59529cbf9cd0..0b6d77c3bec8 100644
-> --- a/drivers/media/usb/em28xx/em28xx-input.c
-> +++ b/drivers/media/usb/em28xx/em28xx-input.c
-> @@ -842,7 +842,6 @@ static int em28xx_ir_init(struct em28xx *dev)
->  	kfree(ir);
->  ref_put:
->  	em28xx_shutdown_buttons(dev);
-> -	kref_put(&dev->ref, em28xx_free_device);
->  	return err;
->  }
+On Tue, 13 Jul 2021 at 00:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.50 release.
+> There are 598 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 14 Jul 2021 18:45:43 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.50-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Ideally we want an init function to not have any side effects if it returns
-an error (or to do undo those side effects). With this change, the as long
-as is_audio_only is not set, we always do a kref_get(), even in the error
-case. As long as is_audio_only is not set, fini always does a kref_put().
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Now this works but it's not really very readable code, and it requires that
-the fini is called even if init returns an error.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-If an init function returns an error, it should undo any side effects like
-allocations or reference counts. So the best way to handle this to only
-do a kref_get() in the happy path of em28xx_ir_init().
+## Build
+* kernel: 5.10.50-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: f820b41f4b3e043e9c7a8543e703f2749fc4f931
+* git describe: v5.10.49-597-gf820b41f4b3e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.49-597-gf820b41f4b3e
+
+## No regressions (compared to v5.10.49-593-g5be87d816c6b)
 
 
-Thanks
+## No fixes (compared to v5.10.49-593-g5be87d816c6b)
 
-Sean
+
+## Test result summary
+ total: 76306, pass: 62225, fail: 1938, skip: 10988, xfail: 1155,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
