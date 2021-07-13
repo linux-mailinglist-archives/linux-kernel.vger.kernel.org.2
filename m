@@ -2,325 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9983C73AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D07B3C73B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhGMP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
+        id S237256AbhGMP73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237124AbhGMP55 (ORCPT
+        with ESMTP id S237091AbhGMP72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:57:57 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B7C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:55:07 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id e14so22051826qkl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:55:07 -0700 (PDT)
+        Tue, 13 Jul 2021 11:59:28 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90CAC0613DD;
+        Tue, 13 Jul 2021 08:56:38 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id w15so21980272pgk.13;
+        Tue, 13 Jul 2021 08:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KBFRLopOdezb0UodrUpCebJmhvmovia/B4lLwnoHdLs=;
-        b=XfUWsOz2BlkOg4tqZ8lqZuw2GWoctad4pFmKtYmW6w9ehY4KId6tuv/fzvnWG3zadx
-         EJ9W/ux7JMpySOCL4YrYTwtNiBj4N2dXZCHw90P4AlCB0IkfliWPEYz3IPjqV2mwu13U
-         bZ6h/3Cpt/yEQzmLR8gqsAwxzN3tU+Iqnq4Yd00LvDUfGXIKuHVQPzrq21mVy/HJLI6x
-         To1M2Bek3aHsIGSBR4uPfLQmkUpJRdDEV8L5v/5sJDadtiDEVI29Ql0cYZWBPgmpglOd
-         JUws1x8z4tEsBFuIIFoP0jHl+8DuZyn/AU3oafVmztY/lJ47pK5nNWjOzqg7TbLWwgYI
-         GlBw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FkUgRBuDDTuqSHeo8ZDHf6GNDnL7WlSVrrAS8awCmls=;
+        b=gf0iGBX6WEkKHEx5ckstlflxSmHtZ5pqmRY2XWAPU0zIsNdXL3qkkkomZqAb8Txu5G
+         MR5MfE1LLk0UAPdLcRvhcmco4g3ZyHdjWgqS3aVG/dAA2bgKvzMnNzcUtmgNkE3q/qDQ
+         1HyDEtxtPN7gPn8ri156mEAh49yZS4WVs0Ojbd77+fMU/r9NXqcNcaJET5WmKMatqEBk
+         A9wqKP5P2Z0EULu71ssrDsMf41XDTSBpL5lRtA1GuAuAX5OoOUbGdJh+eSwRIEyCikZV
+         G0/12w8OUyKayhpFW7cU/nu8LBdZQA3H6hy3LcSV6z6ubYQ4GcS3dJbjKCiKqMxq9YSA
+         h+fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KBFRLopOdezb0UodrUpCebJmhvmovia/B4lLwnoHdLs=;
-        b=Q5woDPaoKVwOgnJS14G+J0JbVRNRxZPU3Uu1eaAOf+V8ZR81O2OLAC8NX8tNqKClHk
-         jXAagZ4OkYDbbUv+14SdVEU/TJTGBe9oAuVkAbz1/7pnuY93ExbxG9Nyg0LIupThV/hj
-         PKRwdb7jLI3GSspGMl1SQ2LsUljgCTDjQLgkVXNW9wlGBDEtG3KVxYE2e3vSwNqQ9/jY
-         6aQ+uCLQiyScNQteF72dRtw+y05BUAeRYR1+uSaobzm1IZzNZG8RKo1GNCfv5eLxRYEr
-         TCFwhfOYyjfEN/sN+eX/OJFeDbI/mw5hqG9reU7Sk4Clb0ZmEzwRQfLVCk4vsJ3fwLKX
-         c+Rg==
-X-Gm-Message-State: AOAM5332p/8Qkakl2Mb4iufu6MjZVyZS4bJ5jiGQ4Tm6PIw/K6GcdcDK
-        JkCqWEzq3dfe2cvjLrYbrexOIQ==
-X-Google-Smtp-Source: ABdhPJz4LFRXvnxpqoLZjllpt8vO0c01aPHVzWSD7Ce1uuRsz3kfMNluQNuHRmIkteK1dervFMGYeQ==
-X-Received: by 2002:a05:620a:1235:: with SMTP id v21mr4805593qkj.360.1626191706116;
-        Tue, 13 Jul 2021 08:55:06 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id m6sm6950347qtx.9.2021.07.13.08.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 08:55:05 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 11:55:04 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
-Message-ID: <YO23WOUhhZtL6Gtn@cmpxchg.org>
-References: <20210712030701.4000097-1-willy@infradead.org>
- <20210712030701.4000097-11-willy@infradead.org>
- <YOzdKYejOEUbjvMj@cmpxchg.org>
- <YOz3Lms9pcsHPKLt@casper.infradead.org>
- <20210713091533.GB4132@worktop.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkUgRBuDDTuqSHeo8ZDHf6GNDnL7WlSVrrAS8awCmls=;
+        b=rtPH4ilMXpiebx7D/lzvPYoFlNzelOMzy+g/IltssfRxtfV9/G8/N7ZnjcwYZyfTKy
+         v4AEn86gzLmOW/cCAMzIq2IVHrspVTyDqDaZRHtlqZBm1QrX4RBpXqAEVmKrLYA3DmTb
+         TJS8KrhAHroHk1YrdjORuXMr47LMsBCG44ppT7Rl1SZ4jkwPqxxls5SUsuxzK+Fcz2q2
+         BjAWVmQnLVkjCIleIYGAKpbJYphrMP1yfzf8emXPhbIrjhW9RWclMBOpOB0KRAHE42Vz
+         sxmXur0LOKJ12mK1bHnbSykKhP8WGG/rCxr+JZ5BYlwt7FUlu4ulSCHT0qsJmY3CtHM4
+         mxoA==
+X-Gm-Message-State: AOAM532rCpB9LG78jkkZmYZ7agP9PBxLS3SAGCD+KollE9i13hEEy/6P
+        rR5WLfsSo5bgLacPnGrPaZXoLGpgxw7AvDXZQkw=
+X-Google-Smtp-Source: ABdhPJxan9EflnhwmIouyYlhigesmxK4vLk5tZ2D7f8d76++4SNktmkv0Rk1kAGD/vXHsqATGr0E+TfD6rTthFEEtjU=
+X-Received: by 2002:a63:d014:: with SMTP id z20mr4898653pgf.203.1626191798398;
+ Tue, 13 Jul 2021 08:56:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713091533.GB4132@worktop.programming.kicks-ass.net>
+References: <20210708224226.457224-1-djrscally@gmail.com> <20210709170426.GC4112@sirena.org.uk>
+ <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
+ <20210712124223.GB4435@sirena.org.uk> <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
+ <20210712133428.GD4435@sirena.org.uk> <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
+ <20210712170120.GG4435@sirena.org.uk> <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
+ <20210713152454.GC4098@sirena.org.uk>
+In-Reply-To: <20210713152454.GC4098@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 13 Jul 2021 18:55:59 +0300
+Message-ID: <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        kieran.bingham@ideasonboard.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 11:15:33AM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 13, 2021 at 03:15:10AM +0100, Matthew Wilcox wrote:
-> > On Mon, Jul 12, 2021 at 08:24:09PM -0400, Johannes Weiner wrote:
-> > > On Mon, Jul 12, 2021 at 04:04:54AM +0100, Matthew Wilcox (Oracle) wrote:
-> > > > +/* Whether there are one or multiple pages in a folio */
-> > > > +static inline bool folio_single(struct folio *folio)
-> > > > +{
-> > > > +	return !folio_head(folio);
-> > > > +}
-> > > 
-> > > Reading more converted code in the series, I keep tripping over the
-> > > new non-camelcased flag testers.
-> > 
-> > Added PeterZ as he asked for it.
-> > 
-> > https://lore.kernel.org/linux-mm/20210419135528.GC2531743@casper.infradead.org/
-> 
-> Aye; I hate me some Camels with a passion. And Linux Coding style
-> explicitly not having Camels these things were always a sore spot. I'm
-> very glad to see them go.
-> 
-> > > It's not an issue when it's adjectives: folio_uptodate(),
-> > > folio_referenced(), folio_locked() etc. - those are obvious. But nouns
-> > > and words that overlap with struct member names can easily be confused
-> > > with non-bool accessors and lookups. Pop quiz: flag test or accessor?
-> > > 
-> > > folio_private()
-> > > folio_lru()
-> > > folio_nid()
-> > > folio_head()
-> > > folio_mapping()
-> > > folio_slab()
-> > > folio_waiters()
-> > 
-> > I know the answers to each of those, but your point is valid.  So what's
-> > your preferred alternative?  folio_is_lru(), folio_is_uptodate(),
-> > folio_is_slab(), etc?  I've seen suggestions for folio_test_lru(),
-> > folio_test_uptodate(), and I don't much care for that alternative.
-> 
-> Either _is_ or _test_ works for me, with a slight preference to _is_ on
-> account it of being shorter.
+On Tue, Jul 13, 2021 at 6:25 PM Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jul 13, 2021 at 12:32:26AM +0100, Daniel Scally wrote:
 
-I agree that _is_ reads nicer by itself, but paired with other ops
-such as testset, _test_ might be better.
+> > I do think it can simplify driver code too; a lot of them aren't written
+> > to parse platform data to get the init data, as they're just relying on
+> > reading it from devicetree so in the event that we get more cases like
+> > this, we need to modify those drivers to look for platform data too. On
+> > the other hand, even the drivers that don't directly call
+> > of_get_regulator_init_data() still do that lookup during the
+> > regulator_of_get_init_data() call in regulator_register(), so the ones
+> > that do parse platform data for init_data structs will check DT as part
+> > of regulator_register() anyway. Imitating that seems simpler to me.
+>
+> The driver code is trivial boilerplate, assuming someone doesn't go and
+> implement a helper to register stuff separately like I suggested.  The
+> proposed swnode stuff would involve duplicating the DT parsing code.
+> This seems like a whole lot of effort for something that provides a
+> worse result than either of the existing things.
 
-For example, in __set_page_dirty_no_writeback()
+I'm not sure I follow. Where did you see the duplication when I saw
+the other way around?
+Converting code from OF to fwnode APIs in most cases is smooth and
+doesn't add any overhead to the codebase,
 
-	if (folio_is_dirty())
-		return !folio_testset_dirty()
-
-is less clear about what's going on than would be:
-
-	if (folio_test_dirty())
-		return !folio_testset_dirty()
-
-My other example wasn't quoted, but IMO set and clear naming should
-also match testing to not cause confusion. I.e. the current:
-
-	if (folio_idle())
-		folio_clear_idle_flag()
-
-can make you think two different things are being tested and modified
-(as in if (page_evictable()) ClearPageUnevictable()). IMO easier:
-
-	if (folio_test_idle())
-		folio_clear_idle()
-
-Non-atomics would have the __ modifier in front of folio rather than
-read __clear or __set, which works I suppose?
-
-	__folio_clear_dirty()
-
-With all that, we'd have something like:
-
-	folio_test_foo()
-	folio_set_foo()
-	folio_clear_foo()
-	folio_testset_foo()
-	folio_testclear_foo()
-
-	__folio_test_foo()
-	__folio_set_foo()
-	__folio_clear_foo()
-
-Would that be a workable compromise for everybody?
-
-> > > Now, is anybody going to mistake folio_lock() for an accessor? Not
-> > > once they think about it. Can you figure out and remember what
-> > > folio_head() returns? Probably. What about all the examples above at
-> > > the same time? Personally, I'm starting to struggle. It certainly
-> > > eliminates syntactic help and pattern matching, and puts much more
-> > > weight on semantic analysis and remembering API definitions.
-> > 
-> > Other people have given the opposite advice.  For example,
-> > https://lore.kernel.org/linux-mm/YMmfQNjExNs3cuyq@kroah.com/
-> 
-> Yes, we -tip folk tend to also prefer consistent prefix_ naming, and
-> every time something big gets refactorered we make sure to make it so.
-> 
-> Look at it like a namespace; you can read it like
-> folio::del_from_lru_list() if you want. Obviously there's nothing like
-> 'using folio' for this being C and not C++.
-
-Yeah the lack of `using` is my concern.
-
-Namespacing is nice for more contained APIs. Classic class + method
-type deals, with non-namespaced private helpers implementing public
-methods, and public methods not layered past trivial stuff like
-foo_insert() calling __foo_insert() with a lock held.
-
-memcg, vmalloc, kobject, you name it.
-
-But the page api is pretty sprawling with sizable overlaps between
-interface and implementation, and heavy layering in both. `using`
-would be great to avoid excessive repetition where file or function
-context already does plenty of namespacing. Alas, it's not an option.
-
-So IMO we're taking a concept of more stringent object-oriented
-encapsulation to a large, heavily layered public API without having
-the tools e.g. C++ provides to manage exactly such situations.
-
-If everybody agrees we'll be fine, I won't stand in the way. But I do
-think the page API is a bit unusual in that regard. And while it is
-nice for the outward-facing filesystem interface - and I can see why
-fs people love it - the cost of it seems to be carried by the MM
-implementation code.
-
-> > > What about functions like shrink_page_list() which are long sequences
-> > > of page queries and manipulations? Many lines would be folio_<foo>
-> > > with no further cue whether you're looking at tests, accessors, or a
-> > > high-level state change that is being tested for success. There are
-> > > fewer visual anchors to orient yourself when you page up and down. It
-> > > quite literally turns some code into blah_(), blah_(), blah_():
-> > > 
-> > >        if (!folio_active(folio) && !folio_unevictable(folio)) {
-> > > 	       folio_del_from_lru_list(folio, lruvec);
-> > > 	       folio_set_active_flag(folio);
-> > > 	       folio_add_to_lru_list(folio, lruvec);
-> > > 	       trace_mm_lru_activate(&folio->page);
-> > > 	}
-> > 
-> > I actually like the way that looks (other than the trace_mm_lru_activate()
-> > which is pending a conversion from page to folio).  But I have my head
-> > completely down in it, and I can't tell what works for someone who's
-> > fresh to it.  I do know that it's hard to change from an API you're
-> > used to (and that's part of the cost of changing an API), and I don't
-> > know how to balance that against making a more discoverable API.
-> 
-> Yeah, I don't particularly have a problem with the repeated folio_ thing
-> either, it's something you'll get used to.
-
-Yeah I won't stand in the way if everybody agrees this is fine.
-
-Although I will say, folio_del_from_lru_list() reads a bit like
-'a'.append_to(string) to me. lruvec_add_folio() would match more
-conventional object hierarchy for container/collection/list/array
-interactions, like with list_add, xa_store, rb_insert, etc.
-
-Taking all of the above, we'd have:
-
-	if (!folio_test_active(folio) && !folio_test_unevictable(folio)) {
-		lruvec_del_folio(folio, lruvec);
-		folio_set_active(folio);
-		lruvec_add_folio(folio, lruvec);
-		trace_mm_lru_activate(&folio->page);
-	}
-
-which reads a little better overall, IMO.
-
-Is that a direction we could agree on?
-
-
-It still loses the visual anchoring of page state changes. These are
-often the "commit" part of multi-step transactions, and having those
-cut through the procedural grind a bit is nice - to see more easily
-what the code is fundamentally about, what is prerequisite for the
-transaction, and what is post-transactional housekeeping noise:
-
-	if (!PageActive(page) && !PageUnevictable(page)) {
-		del_page_from_lru_list(page, lruvec);
-		SetPageActive(page);
-		add_page_to_lru_list(page, lruvec);
-		trace_mm_lru_activate(page);
-	}
-
-Similar for isolation clearing PG_lru (empties, comments, locals
-removed):
-
-		if (page_zonenum(page) > sc->reclaim_idx) {
-			list_move(&page->lru, &pages_skipped);
-			nr_skipped[page_zonenum(page)] += nr_pages;
-			continue;
-		}
-		scan += nr_pages;
-		if (!__isolate_lru_page_prepare(page, mode)) {
-			list_move(&page->lru, src);
-			continue;
-		}
-		if (unlikely(!get_page_unless_zero(page))) {
-			list_move(&page->lru, src);
-			continue;
-		}
-		if (!TestClearPageLRU(page)) {
-			put_page(page);
-			list_move(&page->lru, src);
-			continue;
-		}
-		nr_taken += nr_pages;
-		nr_zone_taken[page_zonenum(page)] += nr_pages;
-		list_move(&page->lru, dst);
-
-Or writeback clearing PG_writeback:
-
-	lock_page_memcg(page);
-	if (mapping && mapping_use_writeback_tags(mapping)) {
-		xa_lock_irqsave(&mapping->i_pages, flags);
-		ret = TestClearPageWriteback(page);
-		if (ret) {
-			__xa_clear_mark(&mapping->i_pages, page_index(page),
-						PAGECACHE_TAG_WRITEBACK);
-			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
-				dec_wb_stat(wb, WB_WRITEBACK);
-				__wb_writeout_inc(wb);
-			}
-		}
-		if (mapping->host && !mapping_tagged(mapping,
-						     PAGECACHE_TAG_WRITEBACK))
-			sb_clear_inode_writeback(mapping->host);
-		xa_unlock_irqrestore(&mapping->i_pages, flags);
-	} else {
-		ret = TestClearPageWriteback(page);
-	}
-	if (ret) {
-		dec_lruvec_page_state(page, NR_WRITEBACK);
-		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
-		inc_node_page_state(page, NR_WRITTEN);
-	}
-	unlock_page_memcg(page);
-
-It's somewhat unfortunate to lose that bit of extra help when
-navigating the code, but I suppose we can live without it.
-
-> I agree that significantly changing the naming of things is a majoy
-> PITA, but given the level of refactoring at that, I think folio_ beats
-> pageymcpageface_. Give it some time to get used to it...
-
-I'll try ;-)
+-- 
+With Best Regards,
+Andy Shevchenko
