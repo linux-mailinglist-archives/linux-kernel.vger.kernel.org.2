@@ -2,176 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E5D3C686C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8583A3C6873
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbhGMCSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 22:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
+        id S230497AbhGMCVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhGMCS3 (ORCPT
+        with ESMTP id S229521AbhGMCVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 22:18:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D285AC0613DD;
-        Mon, 12 Jul 2021 19:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xJavVTfNWhtpN9cK3gRrytjNmd7xz7skpAOWkhfRqSk=; b=BWJ5IeYDzBpfCxr6ONu4e9+vr0
-        WDw6K+XJXd3pWafSZzG9GLPx1+YCV1GSQsOaGRWoOGYqTboibclpE+PeWiSx67JixZrTlAYy+YP4T
-        /xO+cURfcqiKEYY9Fy/dosw/mXDt5Cq5pKeJe/W+WEYJi5+pqT4vPK8GnzksEvdxODZJDev+Bcc0O
-        34J1BQvt3XMsGb2qC9t0SBuNeg3OfOEFK1jKwuRS9O+cqtJSCITFAdFGFUrKdkZNUu15eZsI9KN7k
-        ZTGM0VLaX/OJCTzl0sF1SFwVl8hvkdYcqcqnYO6e6NA2ENH6IlgY/m83rJXaZ09IBXcyz3vuNqY5D
-        djP2UfCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m37x0-000eHy-EK; Tue, 13 Jul 2021 02:15:16 +0000
-Date:   Tue, 13 Jul 2021 03:15:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
-Message-ID: <YOz3Lms9pcsHPKLt@casper.infradead.org>
-References: <20210712030701.4000097-1-willy@infradead.org>
- <20210712030701.4000097-11-willy@infradead.org>
- <YOzdKYejOEUbjvMj@cmpxchg.org>
+        Mon, 12 Jul 2021 22:21:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE4DC0613DD;
+        Mon, 12 Jul 2021 19:18:29 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id m83so10495614pfd.0;
+        Mon, 12 Jul 2021 19:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Axli3ymKTNSpOavgT//HKAT44cBIJTQgeyjPiS39+Ds=;
+        b=I1iKybbQIMq/kzbMPRb93Bh/+YJ3lkcEsS0FWVAQFNCJYUg3w4vtyBmyKqSuiAqZyS
+         PYiRYGO91eJvF0fsjg4un++IteZgCtzNVRXsKdp0YC6EPy2Fw41+fC6hf8nd1bLVaMmr
+         DcMUYilmrbXVA4OVDbDTO3LyAQPemI+rLC5a1vMkCwEb3YKCywEz+jVwaaMOQccbOKSm
+         T61VFtbsUWbGq24qtvOZBZ49+nJEbXUIsk3XQYwHYC+Ht/3nqdSj3g/K5pUa3KbMT2cr
+         gfh/69tYQFVz67sAroqsf12RAcPwhp3odCZqf8vWufhugImqXOeddmjdCYL96nYn3FND
+         MVHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Axli3ymKTNSpOavgT//HKAT44cBIJTQgeyjPiS39+Ds=;
+        b=MiyM1nc9fQTi2WVcGg/K9fRl8zdTntgutV2vBkXHwU63KOQFPUkDIFoGU6xZA89EA2
+         lqXQDVN/5LQjdVhrpOp+e9TqSRuoLMeXB+Q0+g7KB4w26y6WM6LPFK/vp6ciP6upjWIM
+         WkTPR/hzElUNxEEaxoFr4r9RqTZozybRVokAYYaO26TqSgFN7evt1uqNlsQIqzG3gjZm
+         oDbWH2ewNdJSTCDbmwn/f7cPF/Jw2ZrUbLmOwifADs4TWP4825Wm3KumrIXj8DBhEglN
+         b7j+auPt/2y3aEM5o0pk6lxJG7W8VYHm2yjVT8mQsLrb9QnKILVRQq1avAgIre48OxOj
+         Ghjg==
+X-Gm-Message-State: AOAM533teaXO8r4wNZSneMhzJUlFT9S/30pEkMJGZnfDcRXXOH/hLwX9
+        HBr6EpW9R7J/xjLl3UnyV/TypXhJcQZTAA==
+X-Google-Smtp-Source: ABdhPJzn3ngpfVap59T9AArxBafIfo4ZH5cXhuRAecQYxz8+FY6GML3cJsBDq7mM9ow4OJ/QTi7PGQ==
+X-Received: by 2002:a65:60c3:: with SMTP id r3mr2043198pgv.116.1626142707343;
+        Mon, 12 Jul 2021 19:18:27 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id m1sm727554pjk.35.2021.07.12.19.18.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 19:18:26 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/349] 5.4.132-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210712184735.997723427@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7cca05f4-0aff-0104-70d5-e1e694a8ed78@gmail.com>
+Date:   Mon, 12 Jul 2021 19:18:18 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOzdKYejOEUbjvMj@cmpxchg.org>
+In-Reply-To: <20210712184735.997723427@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 08:24:09PM -0400, Johannes Weiner wrote:
-> On Mon, Jul 12, 2021 at 04:04:54AM +0100, Matthew Wilcox (Oracle) wrote:
-> > +/* Whether there are one or multiple pages in a folio */
-> > +static inline bool folio_single(struct folio *folio)
-> > +{
-> > +	return !folio_head(folio);
-> > +}
-> 
-> Reading more converted code in the series, I keep tripping over the
-> new non-camelcased flag testers.
 
-Added PeterZ as he asked for it.
 
-https://lore.kernel.org/linux-mm/20210419135528.GC2531743@casper.infradead.org/
+On 7/12/2021 11:49 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.132 release.
+> There are 349 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 18:45:40 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.132-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> It's not an issue when it's adjectives: folio_uptodate(),
-> folio_referenced(), folio_locked() etc. - those are obvious. But nouns
-> and words that overlap with struct member names can easily be confused
-> with non-bool accessors and lookups. Pop quiz: flag test or accessor?
-> 
-> folio_private()
-> folio_lru()
-> folio_nid()
-> folio_head()
-> folio_mapping()
-> folio_slab()
-> folio_waiters()
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-I know the answers to each of those, but your point is valid.  So what's
-your preferred alternative?  folio_is_lru(), folio_is_uptodate(),
-folio_is_slab(), etc?  I've seen suggestions for folio_test_lru(),
-folio_test_uptodate(), and I don't much care for that alternative.
-
-> This requires a lot of double-taking on what is actually being
-> queried. Bool types, ! etc. don't help, since we test pointers for
-> NULL/non-NULL all the time.
-> 
-> I see in a later patch you changed the existing page_lru() (which
-> returns an enum) to folio_lru_list() to avoid the obvious collision
-> with the PG_lru flag test. page_private() has the same problem but it
-> changed into folio_get_private() (no refcounting involved). There
-> doesn't seem to be a consistent, future-proof scheme to avoid this new
-> class of collisions between flag testing and member accessors.
-> 
-> There is also an inconsistency between flag test and set that makes me
-> pause to think if they're actually testing and setting the same thing:
-> 
-> 	if (folio_idle(folio))
-> 		folio_clear_idle_flag(folio);
-> 
-> Compare this to check_move_unevictable_pages(), where we do
-> 
-> 	if (page_evictable(page))
-> 		ClearPageUnevictable(page);
-> 
-> where one queries a more complex, contextual userpage state and the
-> other updates the corresponding pageframe bit flag.
-> 
-> The camelcase stuff we use for page flag testing is unusual for kernel
-> code. But the page API is also unusually rich and sprawling. What
-> would actually come close? task? inode? Having those multiple
-> namespaces to structure and organize the API has been quite helpful.
-> 
-> On top of losing the flagops namespacing, this series also disappears
-> many <verb>_page() operations (which currently optically distinguish
-> themselves from page_<noun>() accessors) into the shared folio_
-> namespace. This further increases the opportunities for collisions,
-> which force undesirable naming compromises and/or ambiguity.
-> 
-> More double-taking when the verb can be read as a noun: lock_folio()
-> vs folio_lock().
-> 
-> Now, is anybody going to mistake folio_lock() for an accessor? Not
-> once they think about it. Can you figure out and remember what
-> folio_head() returns? Probably. What about all the examples above at
-> the same time? Personally, I'm starting to struggle. It certainly
-> eliminates syntactic help and pattern matching, and puts much more
-> weight on semantic analysis and remembering API definitions.
-
-Other people have given the opposite advice.  For example,
-https://lore.kernel.org/linux-mm/YMmfQNjExNs3cuyq@kroah.com/
-
-> What about functions like shrink_page_list() which are long sequences
-> of page queries and manipulations? Many lines would be folio_<foo>
-> with no further cue whether you're looking at tests, accessors, or a
-> high-level state change that is being tested for success. There are
-> fewer visual anchors to orient yourself when you page up and down. It
-> quite literally turns some code into blah_(), blah_(), blah_():
-> 
->        if (!folio_active(folio) && !folio_unevictable(folio)) {
-> 	       folio_del_from_lru_list(folio, lruvec);
-> 	       folio_set_active_flag(folio);
-> 	       folio_add_to_lru_list(folio, lruvec);
-> 	       trace_mm_lru_activate(&folio->page);
-> 	}
-
-I actually like the way that looks (other than the trace_mm_lru_activate()
-which is pending a conversion from page to folio).  But I have my head
-completely down in it, and I can't tell what works for someone who's
-fresh to it.  I do know that it's hard to change from an API you're
-used to (and that's part of the cost of changing an API), and I don't
-know how to balance that against making a more discoverable API.
-
-> Think about the mental strain of reading and writing complicated
-> memory management code with such a degree of syntactic parsimony, let
-> alone the repetetive monotony.
-> 
-> In those few lines of example code alone, readers will pause on things
-> that should be obvious, and miss grave errors that should stand out.
-> 
-> Add compatible return types to similarly named functions and we'll
-> provoke subtle bugs that the compiler won't catch either.
-> 
-> There are warts and inconsistencies in our naming patterns that could
-> use cleanups. But I think this compresses a vast API into one template
-> that isn't nearly expressive enough to adequately communicate and
-> manage the complexity of the underlying structure and its operations.
-
-I don't want to dismiss your concerns.  I just don't agree with them.
-If there's a consensus on folio_verb() vs verb_folio(), I'm happy to
-go back through all these patches and do the rename.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
