@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC723C7172
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32AA3C7175
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236727AbhGMNuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236222AbhGMNuN (ORCPT
+        id S236681AbhGMNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:50:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3468 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236222AbhGMNu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:50:13 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3972FC0613DD;
-        Tue, 13 Jul 2021 06:47:23 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id p8so30550186wrr.1;
-        Tue, 13 Jul 2021 06:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X/AEnKgR35dch3/Dd4uftg3ppYbt85cCwHqG8mB8H40=;
-        b=hHPV0jO0A53LsFdk1uIC2UDPRjwsgp6Khb9VjaAoaF31e/tfTM/VZeelFGvz4A1LhQ
-         VqIsT7exIXTKWb635pIeS2si1JfsMbllUg1pTpFXsgyiobOVnFTfPr6Zdqub1qB0GL2p
-         Z4K9vbagjhnMaI+y9VE2nbP/7Na7sf/NnDzveuSHKPfogbo11SPevbH3ZJauTo7nso/H
-         9gq4gSxmaXQ6I83ipChNMc3ow8UhHjeN1dtMvapBqI6quoHXubYjckkF0g8vlcQAa6OM
-         zLrInzQEl/8ObWfTF2c4kPlyViBRTBLGzryI2xPP371Yz51cRxZIaVGkgTKH1JLbyv/w
-         huFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X/AEnKgR35dch3/Dd4uftg3ppYbt85cCwHqG8mB8H40=;
-        b=mEi5TdzyNO4XNJ44hfSfEnDO+B+32UYSmZ3lJkt9tJZ+yeFwevSRz4AIZ3NhbXg/8T
-         FdjxHIn3Pnw1xpgVvKiWLBq2nulB7XnJHlvo9KBhxUg46UOOxCB8sgX9N2KB3jxf5lxw
-         Oc75nj1SKDgzKvpvV0aXAVtZEsCcL9LhCpcqqOGWHKW2DDolIJxxA6f3+Jf+ClEt2jGr
-         wkM0OvRUIUUBKKLSANv8Nh6/FXF7v8sE1G9Jj/YB6++7czQjLdb9rqfpdfa7YWjpIXyd
-         mVg5BFDc7fUXdi6N7Ym7e5QXgUQoPoei/45AVh3+QVAAmdcnvIYARBam8/qGyZ6keFES
-         daqA==
-X-Gm-Message-State: AOAM531kOCCaa0aE61+Wt1bE8wCJ7Z14y9p82EPceqMPVTF8gE2ooz6l
-        zsZEsbo5HcanCgMEgLXOW5us3LMAceheG+EUfLg=
-X-Google-Smtp-Source: ABdhPJxz/AMLqAjw+OLCeNgQzB+GRtUscV/kpXH6OPXF7N3eeXF6ZvPSvKnOblE9jj+X0nhUUX+w/Dq7KnNhXY8VWHQ=
-X-Received: by 2002:a5d:530b:: with SMTP id e11mr2420650wrv.65.1626184041894;
- Tue, 13 Jul 2021 06:47:21 -0700 (PDT)
+        Tue, 13 Jul 2021 09:50:58 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DDY0A2160520;
+        Tue, 13 Jul 2021 09:48:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=EsizOuUYqgDJqD1SA7Gt1GBWWhLQK+pZApIq/X2FPt0=;
+ b=f4DhsNap2KIW0/CBTL9Jx4qpOdO0cDRJE+pjdIYRAuI72RLDUtHl8iTm5+C+pCIzZr6N
+ xn2afLQdDPfHz5mM2U68aHFQNr9CKBERPMKbtA3wgyYnQVgjWq2amzPKA0sXFZQ5PpZx
+ sHvbU+WW9iGF/4JrlWDR3GT2FsdC9XDPe91j7V8YfxQRFcQCTRPAamKnwME3Cp1+qITL
+ d1z0exy1/uzqJArltaLXB1QIwsdDOFCasux6Gv0Xdaj9sxqIa0Woh6L2tXy+GVcs9gYn
+ 6xYWkgiS1VFSNZUcObY5Wq3J9BI1+cD61fSwq+G0+Vr37F6uv0cgDLDf0GQz/l/xUzgH uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrkwtjg4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 09:48:06 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16DDYVZZ162068;
+        Tue, 13 Jul 2021 09:48:06 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrkwtjfg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 09:48:06 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16DDcRLt000967;
+        Tue, 13 Jul 2021 13:48:05 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04dal.us.ibm.com with ESMTP id 39q36bqwj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 13:48:05 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16DDm3wU25035152
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 13:48:03 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D239E136051;
+        Tue, 13 Jul 2021 13:48:03 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83AE613605E;
+        Tue, 13 Jul 2021 13:48:02 +0000 (GMT)
+Received: from [9.85.184.30] (unknown [9.85.184.30])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Jul 2021 13:48:02 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+Date:   Tue, 13 Jul 2021 09:48:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210713054019.409273-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210713054019.409273-1-mudongliangabcd@gmail.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Tue, 13 Jul 2021 09:47:10 -0400
-Message-ID: <CAB_54W6DkBkASH5ojbChSoPB6ogQNy+7rq2kr=m9PNLmzATHtQ@mail.gmail.com>
-Subject: Re: [PATCH] ieee802154: hwsim: fix memory leak in __pskb_copy_fclone
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Aring <aring@mojatatu.com>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sixkAA8Q_4Pda_6ejzfhPfwcZw7HzmuJ
+X-Proofpoint-ORIG-GUID: mY_nBjNP8K7kfBpFx9cMs83BXdFgKZHd
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-13_05:2021-07-13,2021-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 suspectscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107130086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, 13 Jul 2021 at 01:40, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+
+On 7/12/21 7:38 PM, Halil Pasic wrote:
+> On Wed,  7 Jul 2021 11:41:56 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 >
-> hwsim_hw_xmit fails to deallocate the newskb copied by pskb_copy. Fix
-> this by adding kfree_skb after ieee802154_rx_irqsafe.
+>> It was pointed out during an unrelated patch review that locks should not
+>> be open coded - i.e., writing the algorithm of a standard lock in a
+>> function instead of using a lock from the standard library. The setting and
+>> testing of the kvm_busy flag and sleeping on a wait_event is the same thing
+>> a lock does. Whatever potential deadlock was found and reported via the
+>> lockdep splat was not magically removed by going to a wait_queue; it just
+>> removed the lockdep annotations that would identify the issue early
+> Did you change your opinion since we last talked about it? This reads to
+> me like we are deadlocky without this patch, because of the last
+> sentence.
+
+The words are a direct paraphrase of Jason G's responses to my
+query regarding what he meant by open coding locks. I
+am choosing to take his word on the subject and remove the
+open coded locks.
+
+Having said that, we do not have a deadlock problem without
+this patch. If you recall, the lockdep splat occurred ONLY when
+running a Secure Execution guest in a CI environment. Since
+AP is not yet supported for SE guests, there is no danger of
+a lockdep splat occurring in a customer environment. Given
+Jason's objections to the original solution (i.e., kvm_busy flag
+and wait queue), I decided to replace the so-called open
+coded locks.
+
 >
->   [<ffffffff836433fb>] __alloc_skb+0x22b/0x250 net/core/skbuff.c:414
->   [<ffffffff8364ad95>] __pskb_copy_fclone+0x75/0x360 net/core/skbuff.c:1609
->   [<ffffffff82ae65e3>] __pskb_copy include/linux/skbuff.h:1176 [inline]
->   [<ffffffff82ae65e3>] pskb_copy include/linux/skbuff.h:3207 [inline]
->   [<ffffffff82ae65e3>] hwsim_hw_xmit+0xd3/0x140 drivers/net/ieee802154/mac802154_hwsim.c:132
->   [<ffffffff83ff8f47>] drv_xmit_async net/mac802154/driver-ops.h:16 [inline]
->   [<ffffffff83ff8f47>] ieee802154_tx+0xc7/0x190 net/mac802154/tx.c:83
->   [<ffffffff83ff9138>] ieee802154_subif_start_xmit+0x58/0x70 net/mac802154/tx.c:132
->   [<ffffffff83670b82>] __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
->   [<ffffffff83670b82>] netdev_start_xmit include/linux/netdevice.h:4958 [inline]
->   [<ffffffff83670b82>] xmit_one net/core/dev.c:3658 [inline]
->   [<ffffffff83670b82>] dev_hard_start_xmit+0xe2/0x330 net/core/dev.c:3674
->   [<ffffffff83718028>] sch_direct_xmit+0xf8/0x520 net/sched/sch_generic.c:342
->   [<ffffffff8367193b>] __dev_xmit_skb net/core/dev.c:3874 [inline]
->   [<ffffffff8367193b>] __dev_queue_xmit+0xa3b/0x1360 net/core/dev.c:4241
->   [<ffffffff83ff5437>] dgram_sendmsg+0x437/0x570 net/ieee802154/socket.c:682
->   [<ffffffff836345b6>] sock_sendmsg_nosec net/socket.c:702 [inline]
->   [<ffffffff836345b6>] sock_sendmsg+0x56/0x80 net/socket.c:722
->
-> Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> Regards,
+> Halil
 
-sorry, I don't get the fix. Is this a memory leak? I remember there
-was something reported by syzkaller [0] but I wasn't able yet to get
-into it. Is it what you referring to?
-__pskb_copy_fclone() shows "The returned buffer has a reference count
-of 1" and ieee802154_rx_irqsafe() will queue the skb for a tasklet.
-With your patch it will be immediately freed and a use after free will
-occur. I believe there is something wrong in the error path of
-802.15.4 frame parsing and that's why we sometimes have a leaks there.
-
-I need to test this patch, but I don't get how this patch is supposed
-to fix the issue.
-
-- Alex
-
-[0] https://groups.google.com/g/syzkaller-bugs/c/EoIvZbk3Zfo/m/AlKUiErlAwAJ
