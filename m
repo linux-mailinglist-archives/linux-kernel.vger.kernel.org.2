@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9750C3C67C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43E33C67C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhGMA75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 20:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhGMA74 (ORCPT
+        id S230486AbhGMBA6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Jul 2021 21:00:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6806 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229604AbhGMBA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 20:59:56 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91589C0613DD;
-        Mon, 12 Jul 2021 17:57:06 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id p17so9666024plf.12;
-        Mon, 12 Jul 2021 17:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7772Xan/ik/wF4AknIJNRSnTyGg4NRQcBL8wB3gfbmE=;
-        b=Lsss++Zjtoro8sf32sfTiocEl3TjC8HaOXbx5wNuGl5I4kQ6561HG5W/593+2FYRIm
-         jIhmREqydFzpn+igwM/vL+7C/cc5LoRBRP4xyk0AoS/ZHEOOmuQol/YCkv52eKJQrgJL
-         PtcTpQ2j+pKjSkw8TNWnhRuadnQ/fcwcenrHSCBw5oqeKS9Sk1JcV4BI2baEA9G8RAHE
-         7X76A2ypUC0ujuOmtO0pL0Wlb2i5ZKZWbe9Vq4DXLO/eFf0w+11k7ozHAsQzDWAhXJr7
-         i8+IKgNZBIFjxuGHGh3brtXtHR+UuaO+l2UiRHxD4EnKB0PXhdiX/pYVa3BNFQ2qkkRb
-         NklQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7772Xan/ik/wF4AknIJNRSnTyGg4NRQcBL8wB3gfbmE=;
-        b=rUT2dpH9y1n9jAd/WTa3GYYIQ/SZu6YBaWC1+0ZGsx7rgegFnOBNFJhIktnJ3phmpN
-         9RyqrwvoIlPH77+1yCX1M9I1znNHtHSGjHwmiLZLTQZF/gFED2D5ExJ3AH+OF/SrLMXr
-         WQRePAR+yj3A8I+BtNFe1QJwI1EUcbeiRlNAetr3LjxhQAHx0vBZc3MH9cA6fyS9HEXH
-         b0ZgCBycKY/Sy9Edb8BnWvvfOouAsHItpPRgBqFnpK1Ycgs9dAVdzBWcb06r8lvHXyoT
-         TAvaHPkAPoZ/y3zltSBi9FX3uiCfUNPZt4TS3gHZl69qDsJViG/bPDMJDyViVizLe858
-         1MXQ==
-X-Gm-Message-State: AOAM531t12fxNGEDp45xaU1n2nOVTZmQZjncmz/uIF0Cmzpc3I+eHyDp
-        gZRm0kaGVlhq1z97F+/cCqw=
-X-Google-Smtp-Source: ABdhPJyMq0NSx0CT82c2/4C4xib7ishMjAm6WA93r1AVUKmTZoQXzT5yZ7mN5krpLyGgg04nqnfSLg==
-X-Received: by 2002:a17:902:9f93:b029:104:9bae:f56a with SMTP id g19-20020a1709029f93b02901049baef56amr1284851plq.75.1626137826100;
-        Mon, 12 Jul 2021 17:57:06 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.174])
-        by smtp.gmail.com with ESMTPSA id u16sm20124122pgh.53.2021.07.12.17.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 17:57:05 -0700 (PDT)
-From:   zhouzhouyi@gmail.com
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-Date:   Tue, 13 Jul 2021 08:56:45 +0800
-Message-Id: <20210713005645.8565-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 12 Jul 2021 21:00:57 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GP2Ct5sKzzXsS1;
+        Tue, 13 Jul 2021 08:52:26 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 08:57:59 +0800
+Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
+ dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 08:57:59 +0800
+Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
+ dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2176.012;
+ Tue, 13 Jul 2021 08:57:59 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Steven Sistare <steven.sistare@oracle.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Subject: RE: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Thread-Topic: [RFC PATCH 0/5] madvise MADV_DOEXEC
+Thread-Index: AQHXc97/nCzRwgdWL0SQOyOsHiWdfas4gR6AgAWFHYCAAAbcAIACA3Tw
+Date:   Tue, 13 Jul 2021 00:57:59 +0000
+Message-ID: <a94973ab83ce48bd85c91397f82d7915@huawei.com>
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+ <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
+ <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
+ <a1dbf12e-9949-109e-122c-ba7ba609801b@huawei.com>
+ <YOubKmDwxMIvdAed@casper.infradead.org>
+In-Reply-To: <YOubKmDwxMIvdAed@casper.infradead.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.148.223]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Hi Matthew,
 
-Hi Paul,
+> -----Original Message-----
+> From: Matthew Wilcox [mailto:willy@infradead.org]
+> Sent: Monday, July 12, 2021 9:30 AM
+> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+> <longpeng2@huawei.com>
+> Cc: Steven Sistare <steven.sistare@oracle.com>; Anthony Yznaga
+> <anthony.yznaga@oracle.com>; linux-kernel@vger.kernel.org;
+> linux-mm@kvack.org; Gonglei (Arei) <arei.gonglei@huawei.com>
+> Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+> 
+> On Mon, Jul 12, 2021 at 09:05:45AM +0800, Longpeng (Mike, Cloud
+> Infrastructure Service Product Dept.) wrote:
+> > Let me describe my use case more clearly (just ignore if you're not
+> > interested in it):
+> >
+> > 1. Prog A mmap() 4GB memory (anon or file-mapping), suppose the
+> > allocated VA range is [0x40000000,0x140000000)
+> >
+> > 2. Prog A specifies [0x48000000,0x50000000) and
+> > [0x80000000,0x100000000) will be shared by its child.
+> >
+> > 3. Prog A fork() Prog B and then Prog B exec() a new ELF binary.
+> >
+> > 4. Prog B notice the shared ranges (e.g. by input parameters or ...)
+> > and remap them to a continuous VA range.
+> 
+> This is dangerous.  There must be an active step for Prog B to accept Prog A's
+> ranges into its address space.  Otherwise Prog A could almost completely fill
+> Prog B's address space and so control where Prog B places its mappings.  It
+> could also provoke a latent bug in Prog B if it doesn't handle address space
+> exhaustion gracefully.
+> 
+> I had a proposal to handle this.  Would it meet your requirements?
+> https://lore.kernel.org/lkml/20200730152250.GG23808@casper.infradead.org/
 
-During my studying of RCU, I did a grep in the kernel source tree.
-I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-should be CONFIG_TASKS_TRACE_RCU instead.
+I noticed your proposal of project Sileby and I think it can meet Steven's requirement, but I not sure whether it's suitable for mine because there's no sample code yet, is it in progress ?
 
-Without memory fencing, the idle/userspace task inspection may not
-be so accurate.
-
-Thanks for your constant encouragement for my studying.
-
-Best Wishes
-Zhouyi
-
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
- include/linux/rcupdate.h | 2 +-
- kernel/rcu/tree_plugin.h | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d9680b798b21..955c82b4737c 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
- # define synchronize_rcu_tasks synchronize_rcu
- # endif
- 
--# ifdef CONFIG_TASKS_RCU_TRACE
-+# ifdef CONFIG_TASKS_TRACE_RCU
- # define rcu_tasks_trace_qs(t)						\
- 	do {								\
- 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index de1dc3bb7f70..6ce104242b23 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
- /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
- static void rcu_dynticks_task_trace_enter(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
- 
- /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
- static void rcu_dynticks_task_trace_exit(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
--- 
-2.25.1
+According to the abstract of Sileby, I have two questions:
+1. Would you plan to support the file-mapping memory sharing ? e.g. Prog A's 4G memory is backend with 2M hugetlb.
+2. Does each mshare fd only containe one sharing VMA ? For large memory process (1T~4T in our env), maybe there is hundreds of memory ranges need to be shared, this will take too much fd space if so ?
 
