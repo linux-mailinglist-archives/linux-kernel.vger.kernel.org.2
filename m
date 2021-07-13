@@ -2,168 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281803C6A92
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B670E3C6A9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhGMGbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233438AbhGMGbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:31:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2333361279;
-        Tue, 13 Jul 2021 06:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626157725;
-        bh=3ShMha9fcOy4Zy5RJ0NyvdKbD2EB5A+y8lByu+ZSUPU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAVbNwei55370FJHfiG1B4KJHf4o/5pI4jfjFImefVa+UZt1dOZPRI/hPBBUCu2e8
-         hUWfhuTHCWIQ6RHxp8MW8jygKKGGrQtOFzLRwswCTAD7bXEFEJaamMNnafsZ1OBs5W
-         dOfMT6srghE1Q/la/ESrA1AftGpY3qkQwkA+rKWAeuN2gZdvOQG63gWW6E3lV+Mjqh
-         SU19E3yBZp8c7TIo0qI0UtPOZdVlIWg7rwtRonf010E7ojY6d24uNGgERNOH6Dky+h
-         WoHBJfvohXzCiCt6qclVpbS7zEizZ7DEeOdFZViHgKhejbWcjmQWi7zfrUE1drNbk/
-         FhxbRt9RholhA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m3BuN-005yQ0-5h; Tue, 13 Jul 2021 08:28:43 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        "Manivannan Sadhasivam" <mani@kernel.org>,
-        "Rob Herring" <robh@kernel.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH v5 8/8] PCI: kirin: Use regmap for APB registers
-Date:   Tue, 13 Jul 2021 08:28:41 +0200
-Message-Id: <a7d6682ee8ccb9913fc8447e1dc99701e23decc2.1626157454.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626157454.git.mchehab+huawei@kernel.org>
-References: <cover.1626157454.git.mchehab+huawei@kernel.org>
+        id S233793AbhGMGdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233310AbhGMGdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 02:33:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24723C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:31:05 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m3BwY-0005bt-Jb; Tue, 13 Jul 2021 08:30:58 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m3BwW-0006OT-Hw; Tue, 13 Jul 2021 08:30:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m3BwW-0000mq-Gu; Tue, 13 Jul 2021 08:30:56 +0200
+Date:   Tue, 13 Jul 2021 08:30:53 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     fabrice.gasnier@foss.st.com, thierry.reding@gmail.com,
+        lee.jones@linaro.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-pwm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
+Message-ID: <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
+References: <20210712231910.GA1831270@pc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ez7arkdudmeg6ooh"
+Content-Disposition: inline
+In-Reply-To: <20210712231910.GA1831270@pc>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PHY layer need to access APB registers too, for Kirin 970.
-So, place them into a named regmap.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/pci/controller/dwc/pcie-kirin.c | 49 +++++++++++++------------
- 1 file changed, 26 insertions(+), 23 deletions(-)
+--ez7arkdudmeg6ooh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index 66662f7b0fc9..c51745f9b56b 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -54,28 +54,30 @@
- struct kirin_pcie {
- 	struct dw_pcie	*pci;
- 	struct phy	*phy;
--	void __iomem	*apb_base;
-+	struct regmap	*apb;
- };
- 
--/* Registers in PCIeCTRL */
--static inline void kirin_apb_ctrl_writel(struct kirin_pcie *kirin_pcie,
--					 u32 val, u32 reg)
--{
--	writel(val, kirin_pcie->apb_base + reg);
--}
--
--static inline u32 kirin_apb_ctrl_readl(struct kirin_pcie *kirin_pcie, u32 reg)
--{
--	return readl(kirin_pcie->apb_base + reg);
--}
-+static const struct regmap_config pcie_kirin_regmap_conf = {
-+	.name = "kirin_pcie_apb",
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = 4,
-+};
- 
- static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
- 				    struct platform_device *pdev)
- {
--	kirin_pcie->apb_base =
--		devm_platform_ioremap_resource_byname(pdev, "apb");
--	if (IS_ERR(kirin_pcie->apb_base))
--		return PTR_ERR(kirin_pcie->apb_base);
-+	struct device *dev = &pdev->dev;
-+	void __iomem *apb_base;
-+
-+	apb_base = devm_platform_ioremap_resource_byname(pdev, "apb");
-+	if (IS_ERR(apb_base))
-+		return PTR_ERR(apb_base);
-+
-+	kirin_pcie->apb = devm_regmap_init_mmio(dev, apb_base,
-+						&pcie_kirin_regmap_conf);
-+	if (IS_ERR(kirin_pcie->apb))
-+		return PTR_ERR(kirin_pcie->apb);
- 
- 	return 0;
- }
-@@ -96,13 +98,13 @@ static void kirin_pcie_sideband_dbi_w_mode(struct kirin_pcie *kirin_pcie,
- {
- 	u32 val;
- 
--	val = kirin_apb_ctrl_readl(kirin_pcie, SOC_PCIECTRL_CTRL0_ADDR);
-+	regmap_read(kirin_pcie->apb, SOC_PCIECTRL_CTRL0_ADDR, &val);
- 	if (on)
- 		val = val | PCIE_ELBI_SLV_DBI_ENABLE;
- 	else
- 		val = val & ~PCIE_ELBI_SLV_DBI_ENABLE;
- 
--	kirin_apb_ctrl_writel(kirin_pcie, val, SOC_PCIECTRL_CTRL0_ADDR);
-+	regmap_write(kirin_pcie->apb, SOC_PCIECTRL_CTRL0_ADDR, val);
- }
- 
- static void kirin_pcie_sideband_dbi_r_mode(struct kirin_pcie *kirin_pcie,
-@@ -110,13 +112,13 @@ static void kirin_pcie_sideband_dbi_r_mode(struct kirin_pcie *kirin_pcie,
- {
- 	u32 val;
- 
--	val = kirin_apb_ctrl_readl(kirin_pcie, SOC_PCIECTRL_CTRL1_ADDR);
-+	regmap_read(kirin_pcie->apb, SOC_PCIECTRL_CTRL1_ADDR, &val);
- 	if (on)
- 		val = val | PCIE_ELBI_SLV_DBI_ENABLE;
- 	else
- 		val = val & ~PCIE_ELBI_SLV_DBI_ENABLE;
- 
--	kirin_apb_ctrl_writel(kirin_pcie, val, SOC_PCIECTRL_CTRL1_ADDR);
-+	regmap_write(kirin_pcie->apb, SOC_PCIECTRL_CTRL1_ADDR, val);
- }
- 
- static int kirin_pcie_rd_own_conf(struct pci_bus *bus, unsigned int devfn,
-@@ -176,8 +178,9 @@ static void kirin_pcie_write_dbi(struct dw_pcie *pci, void __iomem *base,
- static int kirin_pcie_link_up(struct dw_pcie *pci)
- {
- 	struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
--	u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
-+	u32 val;
- 
-+	regmap_read(kirin_pcie->apb, PCIE_APB_PHY_STATUS0, &val);
- 	if ((val & PCIE_LINKUP_ENABLE) == PCIE_LINKUP_ENABLE)
- 		return 1;
- 
-@@ -189,8 +192,8 @@ static int kirin_pcie_start_link(struct dw_pcie *pci)
- 	struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
- 
- 	/* assert LTSSM enable */
--	kirin_apb_ctrl_writel(kirin_pcie, PCIE_LTSSM_ENABLE_BIT,
--			      PCIE_APP_LTSSM_ENABLE);
-+	regmap_write(kirin_pcie->apb, PCIE_APP_LTSSM_ENABLE,
-+		     PCIE_LTSSM_ENABLE_BIT);
- 
- 	return 0;
- }
--- 
-2.31.1
+Hello Salah,
 
+On Tue, Jul 13, 2021 at 12:19:10AM +0100, Salah Triki wrote:
+> Divide by 3*sizeof(u32) when computing array_size, since stm32_breakinput
+> has 3 fields of type u32.
+>=20
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+>  drivers/pwm/pwm-stm32.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+> index 794ca5b02968..fb21bc2b2dd6 100644
+> --- a/drivers/pwm/pwm-stm32.c
+> +++ b/drivers/pwm/pwm-stm32.c
+> @@ -544,7 +544,7 @@ static int stm32_pwm_probe_breakinputs(struct stm32_p=
+wm *priv,
+>  		return -EINVAL;
+> =20
+>  	priv->num_breakinputs =3D nb;
+> -	array_size =3D nb * sizeof(struct stm32_breakinput) / sizeof(u32);
+> +	array_size =3D nb * sizeof(struct stm32_breakinput) / (3 * sizeof(u32));
+>  	ret =3D of_property_read_u32_array(np, "st,breakinput",
+>  					 (u32 *)priv->breakinputs, array_size);
+>  	if (ret)
+
+I agree with Philipp here; this looks strange and needs a better
+description.
+
+Looking a bit more in details:
+
+ - priv->breakinputs has type struct stm32_breakinput[MAX_BREAKINPUT]
+ - nb is in [0 .. MAX_BREAKINPUT]
+ - sizeof(struct stm32_breakinput) =3D=3D 3 * sizeof(u32)
+ - of_property_read_u32_array reads $array_size u32 quantities
+
+so to read $nb members of type stm32_breakinput array_size must be a
+multiple of 3 which isn't given any more after your patch. This makes me
+believe your suggested change to be wrong.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ez7arkdudmeg6ooh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDtMxoACgkQwfwUeK3K
+7AmuxAf/TJUx15z8hdmnrrErJ3Hlc4gXAA+lr7K0fa/zANbA22QYZ4mhmLiNcsca
+8XRosInmiaz3M7bEBslrYIMl+vbuLclNt+lTPMeL9V0OcdWtnvZoDnDPpHdE77v1
+K10wsl5Uj6HJR27TnXm8VTolsTA5a4VEu4ocU3Ytnx6897ySGKG6wGxpQltn8ulN
+NtLZ0lIEmB93kF3UpGv2OHqElh1K8FQ6v4a9eREqlXytznMVdiqxQdfygPWZcYvY
+sY5V3UXdaKuP05bJK6qsmt3hZKT9tZ+4/z7UurgD2FwFe271rGk3+sJ38pyV6vPB
+AP9WncikXpljRtU/mIEpp/Fu2O4uwA==
+=OfoS
+-----END PGP SIGNATURE-----
+
+--ez7arkdudmeg6ooh--
