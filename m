@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D60F3C780A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2A63C780F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbhGMUhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234290AbhGMUhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:37:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F1FA6136D;
-        Tue, 13 Jul 2021 20:34:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626208460;
-        bh=h8IGvseWxDwyqhyASV2KmAN0tjeKNYXjo0V5hoRiSmA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ulkLc/aqfJxtKES83Jd+S+DB7dcMssjHru0dD22VVtJzQspeTg/p3x/SXXLKDXOZc
-         ItG5adFJfxgBvMZ07ywtQunjnztbv+E8OaYzZ9JsdV+SRThjbSGWJ5q9k6odiBngA7
-         YxESEn8cRlkdg+//FdzHNsyfVvPU49G0Jz/S10Gp6lOA6iqGwus94HXgpo8rkvuAL/
-         P7wDBuH/BEdlrgmgZQnsGUte6XAk1NmohVPdD9dEHzlD7hGLwto6rKDlc0PKlbLX0x
-         GvuEkUJa5+7N0WEHS8MkIj95I9lLBRSpI8am3X+aEiEqmBB2JvsPj11Vl6iiNKPSZH
-         /V0ihCcZ8XM7Q==
-Received: by mail-wm1-f53.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so2499787wms.1;
-        Tue, 13 Jul 2021 13:34:20 -0700 (PDT)
-X-Gm-Message-State: AOAM5307Nb48h5B4odSPy/wYcdavkQNunx13jh66D+0YOmT6GBjsuTMr
-        kPOK3bqYt1qZm2XNZYvYA5IF6GtXkVRfjqq5C8g=
-X-Google-Smtp-Source: ABdhPJxkIW99deI0NasROFnBp7AD31ptK2sBvd2H+WY7pKl4UILJAKncesIUcFCbu8CkHkdPWfi8U2dZlPljJ2OiSvo=
-X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr70558wmk.84.1626208459052;
- Tue, 13 Jul 2021 13:34:19 -0700 (PDT)
+        id S235135AbhGMUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234290AbhGMUiK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 16:38:10 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B78CC0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:35:16 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id a2so22599828pgi.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4AmDsVu8C7+Vh6wJ1AauG4/nfKkfZ5m7flJ2GCQMZco=;
+        b=m4SkF/hHghflqZHT/pRmE7NtDOkCNpy81YEGC+IhdJ9Rx/cT5SfAMC+awFq8gOpt+G
+         He2FY2JqztL6dPS/SSKMRSG6Pkoq+FdWwHxeu4MxlWtQIhL1cJBJKizSHtoUD4vDVc1Q
+         fOuewObDck+6tEHIlLdSY26T5LsaKnOyKWsXmcGvCvPqyNutDZ1e9o/HPyXyk/fhl0sv
+         NF/8vSbdZ8dQfE2sLZ3/+h81AAURRf8XVw9jUmvJcWgbGvg7m6+i3eeZhu7uV4teXL3Q
+         McOh6gH9ZbnYIEYukWKXo/ZqAS5I/mxxmV1+h7l2Jug4EfE/9GuyiJWJFJpDXe7VyXDs
+         NArA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4AmDsVu8C7+Vh6wJ1AauG4/nfKkfZ5m7flJ2GCQMZco=;
+        b=CZ84qIQaAjwUWg2WeOXpabSPG5LSngvpdKGVHXcq89Yiw4D8fqLK+OyWeJBdWmarJY
+         Xelc+G+6KkK/X8Wosd9gsOic/bHE1RT7bxmxaJtCs4oe3O/0o69drly5vj7MTWWU91JH
+         y10Auqf4E6mkb4C2a2ljZP/2n3SIfXXg9FilFGShBdqZF22j0ks9+B6LZVS8dqK/qd97
+         XQPzKfNfRfIoqOT68OpEzju/qRUVESWa4FdpglFn+Pju5nPP7SyPFGsB/GOIHiQW9qSu
+         psxGjdn3kHg0QVwPGWoM4iQEf5P3K38Q4Tg8bhRWDTC058PeQVKJWoApCznhR3p/hMK+
+         ydIg==
+X-Gm-Message-State: AOAM533C/Z03EovZuq+Wh9C5KRuznphAHtBsUgEEFC7qof0O9197ivJS
+        0yN+DI2ZNf2tVSyE2S+GP3RMPg==
+X-Google-Smtp-Source: ABdhPJw36stDiatSrqUOjKH3K6JCfVV0uAc6YTTPBKatF5UY65R9llh4XPwfgwF0WIVEsNp7ktdhlg==
+X-Received: by 2002:a63:4242:: with SMTP id p63mr5881087pga.185.1626208515649;
+        Tue, 13 Jul 2021 13:35:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 11sm49387pfl.41.2021.07.13.13.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 13:35:15 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 20:35:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v2 21/69] KVM: Add max_vcpus field in common 'struct
+ kvm'
+Message-ID: <YO34/91O242b8YS7@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <bf7685a4665a4f70259b0cd5f7d11a162753278c.1625186503.git.isaku.yamahata@intel.com>
+ <b6323953-1766-ff6a-2b3c-428606144e5f@redhat.com>
 MIME-Version: 1.0
-References: <cover.1626173013.git.viresh.kumar@linaro.org> <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
- <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
- <20210713151917.zouwfckidnjxvohn@vireshk-i7> <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
-In-Reply-To: <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 13 Jul 2021 22:34:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
-Message-ID: <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device subnode
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6323953-1766-ff6a-2b3c-428606144e5f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 9:35 PM Rob Herring <robh+dt@kernel.org> wrote:
-> On Tue, Jul 13, 2021 at 9:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 13-07-21, 08:43, Rob Herring wrote:
-> > > On Tue, Jul 13, 2021 at 4:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > >
-> > > > Allow virtio,mmio nodes to contain device specific subnodes. Since each
-> > > > virtio,mmio node can represent a single virtio device, each virtio node
-> > > > is allowed to contain a maximum of one device specific subnode.
-> > >
-> > > Doesn't sound like we need 2 nodes here. Just add I2C devices as child
-> > > nodes. You could add a more specific compatible string, but the
-> > > protocol is discoverable, so that shouldn't be necessary.
-> >
-> > I am not sure if it will be a problem, but you can clarify it better.
->
-> > The parent node (virtio,mmio) is used to create a platform device,
-> > virtio-mmio, (and so assigned as its of_node) and we create the
-> > virtio-device from probe() of this virtio-mmio device.
-> >
-> > Is it going to be a problem if two devices in kernel use the same
-> > of_node ?
->
-> There shouldn't be. We have nodes be multiple providers (e.g clocks
-> and resets) already.
+On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+> Please replace "Add" with "Move" and add a couple lines to the commit
+> message.
 
-I think this would be a little different, but it can still work. There is in
-fact already some precedent of doing this, with Jean-Philippe's virtio-iommu
-binding, which is documented in both
-
-Documentation/devicetree/bindings/virtio/iommu.txt
-Documentation/devicetree/bindings/virtio/mmio.txt
-
-Unfortunately, those are still slightly different from where I think we should
-be going here, but it's probably close enough to fit into the general
-system.
-
-What we have with virtio-iommu is two special hacks:
- - on virtio-mmio, a node with 'compatible="virtio,mmio"' may optionally
-   have an '#iommu-cells=<1>', in which case we assume it's an iommu.
- - for virtio-pci, the node has the standard PCI 'reg' property but a special
-   'compatible="virtio,pci-iommu"' property that I think is different from any
-   other PCI node.
-
-I think for other virtio devices, we should come up with a way to define a
-binding per device (i2c, gpio, ...) without needing to cram this into the
-"virtio,mmio" binding or coming up with special compatible strings for
-PCI devices.
-
-Having a child device for the virtio device type gives a better separation
-here, since it lets you have two nodes with 'compatible' strings that each
-make sense for their respective parent buses: The parent is either a PCI
-device or a plain mmio based device, and the child is a virtio device with
-its own namespace for compatible values. As you say, the downside is
-that this requires an extra node that is redundant because there is always
-a 1:1 relation with its parent.
-
-Having a combined node gets rid of the redundancy but if we want to
-identify the device for the purpose of defining a custom binding, it would have
-to have two compatible strings, something like
-
-compatible="virtio,mmio", "virtio,device34";
-
-for a virtio-mmio device of device-id 34 (i2c), or a PCI device with
-
-compatible="pci1af4,1041", "virtio,device34";
-
-which also does not quite feel right.
-
->> On Tue, Jul 13, 2021 at 9:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 13-07-21, 08:43, Rob Herring wrote:
-> > > On Tue, Jul 13, 2021 at 4:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > > BTW, what's the usecase for these protocols? A standard interface to
-> > > firmware controlled I2C, GPIO, etc.?
-> >
-> > Right now we are looking to control devices in the host machine from
-> > guests. That's what Linaro's project stratos is doing. There are other
-> > people who want to use this for other kind of remote control stuff,
-> > maybe from firmware.
->
-> Project stratos means nothing to me.
->
-> Direct userspace access to I2C, GPIO, etc. has its issues, we're going
-> to repeat that with guests?
-
-Passing through the i2c or gpio access from a Linux host is just one
-way to use it, you could do the same with an emulated i2c device
-from qemu, and you could have a fake i2c device behind a virtio-i2c
-controller.
-
-         Arnd
+  Move arm's per-VM max_vcpus field into the generic "struct kvm", and use
+  it to check vcpus_created in the generic code instead of checking only
+  the hardcoded absolute KVM-wide max.  x86 TDX guests will reuse the
+  generic check verbatim, as the max number of vCPUs for a TDX guest is
+  user defined at VM creation and immutable thereafter.
