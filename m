@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB093C6848
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA293C685B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233948AbhGMB51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 21:57:27 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:26438 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230000AbhGMB50 (ORCPT
+        id S231179AbhGMCHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:07:55 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60346 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229581AbhGMCHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 21:57:26 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16D1l8c1025999;
-        Tue, 13 Jul 2021 01:54:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=0a0LMdkmed9xJMwqoEpm3+8LdGZX73CbCCOWE49uNfk=;
- b=uyl6yGclAADhh11SrSLD70iw3ny3EXjol1I2zt+JaQuUmqrmmD7C1Z01GPboSKVcpoM9
- wKUkSIiwVdzjkeMTZrDQsds9JQqkcpWM/gzs9SpUoM0q3/Brkjj3NL3xG9SmJA2IyEHb
- +G4oPKg9z6rsTm/KU/DpXAC/TXNQ3+SqCdq6nDJaqFiMZ+XaLZuLPxtEKSF0boU0H/A1
- 4PeZV5gwjPLI4ibysT07PNniap8/RkrMBRWonNHzp/mmjuq6fUUFR2Qu0k+ypVCYO1WC
- 5TAOSAsCAtJYDHbG47CQhDesVr5T1Rn4nJP1O2t7dARd5hTpA2QufAnSJ88kPZFMEeln 5g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39rqkb17p2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Jul 2021 01:54:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16D1kniE091902;
-        Tue, 13 Jul 2021 01:54:27 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
-        by aserp3030.oracle.com with ESMTP id 39qyctrmv7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Jul 2021 01:54:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WkPNe+hOO+kud0k3CFgZDK0oM9/hvz9IdDeasHALzXC4AtjfZ+YefCuo56NIijG+EXPUSAgVz+aoqZvEQ/LtbEAJYIv7YhVlgYfmJJcHFP+kS7cWjoMPzs3tabkeEf6FYQZeNM9BnyvI/HPfQIRW02+blgCYOv8CHhsI4F3GFtUna8he4JBBrAQRRXHwiGI2vbnEiTpl7Qs2Y8nKCWGhHCMNPpNc1PPYMjUgon7lZTuiVeAkY2c/zRBvTPADXzpxbpJUMFDXSTm1GvhxDwoUPZ/Ga0/29lb0WtjkYSWlCjl4jDpznkrqp3ZcxKKDa9pcG95i+9qV4PMe9+KbIo7AZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0a0LMdkmed9xJMwqoEpm3+8LdGZX73CbCCOWE49uNfk=;
- b=D78XxgWF3oR6FQBk5FL56I55yG8VRyod7AvOPeBxMhEn6zUEetatfyS30xBUrsse6Je4pnNx3+msvxze7Z2zegpL97JW6gq+K9M3SqaWkg4K835xYsVRqfUwkCQ4SjDz8kwmi3OrBErjIZG+K4kOa0MViZDcrzLyWL2Yr4ldlOtaqz8PngebwHUgEfnQUuwU1ApBomm/+7eWJpMQyVo03Rf4cmmX2ioEJpo99He0OoJmTLZo6V5lmSVXE92QqpK8ZYFpgGNHEG4I4FXGHFbmNFGFq2MP9IgZFOnfQXntBUy/ow0pZVE4mpP8Ij8Zirx3DSl0AaWnJ6Y+skjRvrcofg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0a0LMdkmed9xJMwqoEpm3+8LdGZX73CbCCOWE49uNfk=;
- b=Sg+3UX7jTbQCFtYf5Y0MlgqKg/8ceKC54pnMf5UoFnMIuXbWLwmv4FtInA/iV+KaUlidUaih7A+jcvjhlefJEw+JEw0r5eCtLS71jmcERN6cQ+ceEhan/WppNBD1u5ik+x3CyIcp/0JFhmKkK9fpOs5zPxa5U56cxzDvwWOnZww=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5467.namprd10.prod.outlook.com (2603:10b6:510:d4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Tue, 13 Jul
- 2021 01:54:26 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
- 01:54:25 +0000
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH] scsi: pm8001: clean up kernel-doc and comments
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1h7gz567v.fsf@ca-mkp.ca.oracle.com>
-References: <20210708165723.8594-1-rdunlap@infradead.org>
-Date:   Mon, 12 Jul 2021 21:54:20 -0400
-In-Reply-To: <20210708165723.8594-1-rdunlap@infradead.org> (Randy Dunlap's
-        message of "Thu, 8 Jul 2021 09:57:23 -0700")
-Content-Type: text/plain
-X-ClientProxiedBy: SA0PR11CA0080.namprd11.prod.outlook.com
- (2603:10b6:806:d2::25) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Mon, 12 Jul 2021 22:07:54 -0400
+X-UUID: 69e3afa93de54c77b21be6682f21871a-20210713
+X-UUID: 69e3afa93de54c77b21be6682f21871a-20210713
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1515791918; Tue, 13 Jul 2021 10:05:00 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 13 Jul 2021 10:04:58 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 13 Jul 2021 10:04:57 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>, <maze@google.com>,
+        <lorenzo@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        <rocco.yue@gmail.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
+        Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any addr_gen_mode
+Date:   Tue, 13 Jul 2021 09:49:24 +0800
+Message-ID: <20210713014924.1831-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <40951584-8f53-4e95-4a6b-14ae1cf7f011@gmail.com>
+References: <40951584-8f53-4e95-4a6b-14ae1cf7f011@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA0PR11CA0080.namprd11.prod.outlook.com (2603:10b6:806:d2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21 via Frontend Transport; Tue, 13 Jul 2021 01:54:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 321d0705-8b44-44de-8a34-08d945a12443
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5467:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB5467AF5CB3F19DAD450D30028E149@PH0PR10MB5467.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IRsH8Xfb3Y6DYdzYRWY1LsXlBYyWDRaBWugQ+FpVmJHukp3tpX2T5QjcdKacTuECkh9wtPPfhnA3nmfEGYrWw1a51x6s4JmAT24fXSaYKXi5xWj7c6/ij8n2++uJpwkH021r+6TR1KVHPwzOmC9EUx5JcgsGAJkWvSRekA1LfGWjqaRTv0mHylut5hkWoOrdG8E/UzdmqO+gNCvianJOrBVRWfIQjzgv0ZwYlA6kk3MPFYKVvTPx8Ed156POwXDU5e17GYDzmH3dQDOis4Ghzri09BDGDMBXPwMCrM70kXxAuSwkchJpSqCJlVQ4xL5Y/DYSM8Zu99GUuIMHRsWghKu1bPGjyQBuwWO5545uHgfMJKiekzp9iHuFG2fasC+KknUfweGd2ouTsX6wlPmYA6ub65ONXYrRCMcg284Nk/8F6u58qNWBQdksfTXwF5KMQvN+2rm2qkd4GpGI3BMlE+U0uuqGEXR3eysO5cWC9sjK/p0F8eSbu1KHeYKMH6yp98WE5Vs5luurDfNuEXdzjsoWMKe/qn6b9OD7aKTpFFpcG4z4Q+/W5y3ObGcTbXl9hYgDyAv8Gt9FIsBacngBeLi8MmwB77niJ4tfqznrmaqM3V9FpyvY/UbXGprx6TBQJ0EORwCxKjhLnFgMzh07Ac6nEiMs7T97HmF0TlcNqa2e/ih22fSAJzsaZ1zEp+ULYR3dykKjJ0ia2/M3hsTPnw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(346002)(396003)(39860400002)(83380400001)(2906002)(86362001)(6666004)(66946007)(38350700002)(66556008)(186003)(26005)(66476007)(8936002)(478600001)(316002)(55016002)(54906003)(36916002)(4326008)(8676002)(7696005)(52116002)(5660300002)(107886003)(6916009)(558084003)(956004)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?41fcBYY/NKpqi6+R7zRQ61Qd2512EXKsY+4lfXijD40eDm3upnpcTC1Cc54n?=
- =?us-ascii?Q?A16oNp10+2hgxq9SZwoAYkaqJ5+8RlgOFXTGRIEUclJ8xcEqfqfNC7Y9ltAd?=
- =?us-ascii?Q?7Q6CDKTDSpx/SBTj/L+ipvUVTvCQ1VXQSFbCC8F1qgepbYDbz5J117C+jTQt?=
- =?us-ascii?Q?OF9Ytm5ghVTWjSLxGYNlR9b6DQwFABc1aNR0HINhwDtonDBpGNpswbS3DSIZ?=
- =?us-ascii?Q?Q1P+A2PNMb5IDc25I+EH6ps843Mj/oH3L3W0tWBMeESCbVpmoxEPxRXd4OuL?=
- =?us-ascii?Q?EqajU0zGAHJI+gyNUF86Xh7f5Kh6SqGZbABLGS96Cl24L7VD8RlS12f7Sh3U?=
- =?us-ascii?Q?FhLzaxBIeTbqUXzAQLpWN9picbLNnyjn+yu+MtTxnh8uyKLxldE7n1vBncfg?=
- =?us-ascii?Q?fExNU/t+3A5PzitXRxySyRFXh8yMw6Lechszt1Ydyk/GyZtGpXzFyZPvQEXf?=
- =?us-ascii?Q?HDPc2roKa+n5Bac/jzrd7NPtqoXa7X6N5Y7ZukgD6m/GN5doOMAo1yBYX5wr?=
- =?us-ascii?Q?17cKn/6n4TsEaqkbcpVLN2RD1NQaT1zC8mU5xwQiPR88JSd6zVxo5PztF0by?=
- =?us-ascii?Q?2PzZc8AhkF8m56GTRxnOadwW3rRHFw2tEozbtIqll7BIY9p6Os6y7OT01K3M?=
- =?us-ascii?Q?uZtDbdpLI6Pm4W5dTWx4AsXSe5oObr1mP2k/XBIP1HlTkU8L9d1fboalfTZ2?=
- =?us-ascii?Q?ArPvfcNfGeInLSHBidmkWSF1Wefjy8G/IfL1fR/FHyrc7gQMkhSkemqVnxAX?=
- =?us-ascii?Q?lJYoEoCcNcIljoBRT+aaYYptMs17Vy8H3b/sXPUKnGrw1O9MQwOMpo0iYZax?=
- =?us-ascii?Q?G5gTuB7QN48ow1TT/1JlVrI/73LWMrStX1MDfl+gVzM44GBjSdV7dXe+Ef53?=
- =?us-ascii?Q?dIHtX8J1huy1tBUDJ5CUEBTgt3NP0phctZxgZME9yt8FXffTW3jI1ay2JRx4?=
- =?us-ascii?Q?x9SNrjFqQg3RehwkPH5NlKroP0IOz0Mfeqgjkop9opWLgEMTD7lu3Q2mjquS?=
- =?us-ascii?Q?Y7DaZG0KrJ21uHrCqmDNHNWvxIGBLviDN1aZuh1bEGjt1YhD1z4+YW24Ru2o?=
- =?us-ascii?Q?pYCs1CfEfYuzJ12WGBPhxSqMY3QEDqOer9L6fSiScSzIAqD2X5La+aPG+YEj?=
- =?us-ascii?Q?XR1dSKbw5xQb88TVZhQSbAynVgVzXfrVbbE4szE2+/t/qm4noyZM67fSOCyf?=
- =?us-ascii?Q?j1liwFLp9YPV1gCcde3kv67+9CmEF2yBy9lf1Sowqxm89LcmXKJt5jXzocfD?=
- =?us-ascii?Q?pDQ4FN/Rt6mVnkuZs3xM61JJG5IzvLDlvH8SyJ60SwUfgtSI62VOapBM/nC/?=
- =?us-ascii?Q?EnvPO5GtqVr7JFxNHaxTkvdl?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 321d0705-8b44-44de-8a34-08d945a12443
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 01:54:25.6962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FA5uuxGJxOuPxkFbt8qhwXvhPqr48/SX3vQoDjrNIRwUuCxjU+eeotqqDySeAsd8wqpeGS3WIl4M2yBKjVJQNcs6bN8dLugo4dVRzxZDcck=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5467
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10043 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107130009
-X-Proofpoint-ORIG-GUID: nUBcaVYC3mmRGbpS6tRngwvdVrg6gtYL
-X-Proofpoint-GUID: nUBcaVYC3mmRGbpS6tRngwvdVrg6gtYL
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>> According to your suggestion, I checked the ipv6 code again. In my
+>> opinion, adding another addr_gen_mode may not be suitable.
+>> 
+>> (1)
+>> In the user space, the process enable the ipv6 stable privacy mode by
+>> setting the "/proc/sys/net/ipv6/conf/<iface>/stable_secret".
+>> 
+>> In the kernel, the addr_gen_mode of a networking device is switched to
+>> IN6_ADDR_GEN_MODE_STABLE_PRIVACY by judging the bool value of
+>> "cnf.stable_secret.initialized".
+> 
+> and that can be updated. If the default (inherited) setting is
+> IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA, then do not change to
+> IN6_ADDR_GEN_MODE_STABLE_PRIVACY.
+> 
+>> 
+>> So, although adding an additional IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
+>> user space process has some trouble to let kernel switch the iface's
+>> addr_gen_mode to the IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA.
+>> 
+>> This is not as flexible as adding a separate sysctl.
+>> 
+>> (2)
+>> After adding "proc/sys/net/ipv6/<iface>/disable_gen_linklocal_addr",
+>> so that kernel can keep the original code logic of the stable_secret
+>> proc file, and expand when the subsequent kernel adds a new add_gen_mode
+>> more flexibility and applicability.
+>> 
+>> And we only need to care about the networking device that do not
+>> generate an ipv6 link-local address, and not the addr_gen_mode that
+>> this device is using.
+>> 
+>> Maybe adding a separate sysctl is a better choice.
+>> Looking forward to your professional reply again.
+> 
+> per device sysctl's are not free. I do not see a valid reason for a
+> separate disable knob.
 
-Randy,
+Hi David,
 
-> Fix kernel-doc warnings then test again, wash, rinse, find more, then
-> repeat more/again.  Also fix spellos, some grammar, and some
-> punctuation.
+Thanks for your reply,
 
-Applied to 5.14/scsi-fixes, thanks!
+honstly, this separate sysctl is really useful and convenient.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+It allows users to simply configure the disable_gen_linklocal_addr
+proc file to achieve customized configuration of ipv6 link-local
+address without worrying about when the kernel will automatically
+generate a link-local address.
+
+At the same time, maybe a new addr_gen_mode will be added in the
+future. If the method of adding a sysctl is adopted, we don't need
+to consider the existing addr_gen_mode and the impact of adding
+another new addr_gen_mode in the future.
+
+Just simply echoing different values to the disable_gen_linklocal_addr
+proc file can achieve this needs.
+
+Thanks,
+Rocco
