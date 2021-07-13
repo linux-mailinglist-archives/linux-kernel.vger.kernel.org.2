@@ -2,266 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97063C6C78
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F103C6C44
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhGMIuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
+        id S234780AbhGMIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235105AbhGMIum (ORCPT
+        with ESMTP id S234690AbhGMIuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:50:42 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A8FC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:53 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id s18so5707912pgq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2fP/MAmI7gUka5e/DKUQ2mjQlxJxe0/QRKPw5yBwyTk=;
-        b=rpVEQUV1X70OmbrrQTJJKvk5vCPqC4uyyQYqM8mgOg9WDN/eKRObLhREIgC9AhlQtG
-         eUZsoe1ZtDcx9fRxn5K5cTmakEDk81uPA+xScHZGg3Tqu81c80BChtmTqJDJYMUUT2FX
-         I8vD0sFKqshhBkFve+LFV2d7iGakKJ6UO++oA6/QFcNuQGOsSjYmiPWVYrZl3U10Hqmm
-         N6egKhnknsyBTg02r1Hz+54X/yG9BUJz2HuqTsK2D2UErp3uOrJUQlLV7QFYJqAnHhic
-         z3Jy2j8PSswSLNBDJg5a+jUolEiDfEm0gqiykb9N4UFR//SYSeYkWWUQ83/UgrjRRwug
-         POjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2fP/MAmI7gUka5e/DKUQ2mjQlxJxe0/QRKPw5yBwyTk=;
-        b=aQV8PUk1LQ5p+DwZOxYPj5lCFuzpnfCmUr7sL/Ko8iuwStMcFd3GPJ0U3NF9EuNh/M
-         tipLcvmwzND1jNXufQPvErRnoEeTTlKGd+FnscFaYsS8wZIyxciMzmgqm2oAjIK0/ikP
-         MI+pwk5Et6kuYCtrJms0V5kKkFoT1a6AbB0Nhnra6fK+JwDPZVKSK5cneov2hgnDYiTV
-         eEFeCnC0O5F0yGv+mmUKpMpqa6b2Vg2n4Jt22CBLJhT9Gc2AJMM4Vb2eV3qYy0Odlqsj
-         sBc6hRcyuFIGF+fRrnmaORAvu4W4e+DRaiBx99mkQZ378R5mY6ryC+ksgHGk1CiqPdos
-         tMKQ==
-X-Gm-Message-State: AOAM531WSN+tlOm1RYgQq4c5Qg5YCVntZ4V3BGn+5KfOr2hCxSjlmDJ0
-        iGafu2FYdVfIj78pIN5GCHPT
-X-Google-Smtp-Source: ABdhPJyBkUB9QNAx3I8j5SvXv3BBPI0eQfjjVmRO0YZO2mJNlMqzj7TJp+Nb22Xnek5hLerTt0F38A==
-X-Received: by 2002:a65:5c89:: with SMTP id a9mr3285855pgt.207.1626166072648;
-        Tue, 13 Jul 2021 01:47:52 -0700 (PDT)
-Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id e2sm21544494pgh.5.2021.07.13.01.47.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 01:47:52 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 08/17] virtio_config: Add a return value to reset function
-Date:   Tue, 13 Jul 2021 16:46:47 +0800
-Message-Id: <20210713084656.232-9-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210713084656.232-1-xieyongji@bytedance.com>
-References: <20210713084656.232-1-xieyongji@bytedance.com>
+        Tue, 13 Jul 2021 04:50:06 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66807C0613DD;
+        Tue, 13 Jul 2021 01:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2Orx11XPMT4bJdCyRnGQJ/wU1Uuya12976tsLpHhTtE=; b=0sEdtMf40T872e6AkSLPFIQ7V
+        mlqyhFpqZRjNPWfcIooDXwck+InEsOvuFjhO1kaLor6KgqZhown+Om1MwulMziAEt/16nGntwf+H0
+        4CuMKXlAq8vlCASD+swbxFvg1Zq4dYFoWKPu4fe7jzvJ3ViT00Q5+9X32Cy1osPMEvOpT8XxdjxOz
+        yNzeWdKD8muvGBucOq0dDZ96Qx/nTUCzYDEvBVB7lk5+SneFbYK9gVjH0gKIqdydwdgMyajIbUXFQ
+        NVrwCfiaJ5XZ2L/uR2ucVQRp8mVnY68zo529L1wSCA+18x22l4L31ILc1FaCdyUQHFeVM59UrsLTz
+        Wr4N3URbw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46042)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m3E46-0005lO-4A; Tue, 13 Jul 2021 09:46:54 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m3E40-00008w-Tx; Tue, 13 Jul 2021 09:46:48 +0100
+Date:   Tue, 13 Jul 2021 09:46:48 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Shi <alexs@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org
+Subject: Re: flush_kernel_dcache_page fixes and removal
+Message-ID: <20210713084648.GF22278@shell.armlinux.org.uk>
+References: <20210712060928.4161649-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712060928.4161649-1-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a return value to reset function so that we can
-handle the reset failure later. No functional changes.
+On Mon, Jul 12, 2021 at 08:09:22AM +0200, Christoph Hellwig wrote:
+> while looking to convert the block layer away from kmap_atomic towards
+> kmap_local_page and prefeably the helpers that abstract it away I noticed
+> that a few block drivers directly or implicitly call
+> flush_kernel_dcache_page before kunmapping a page that has been written
+> to.  flush_kernel_dcache_page is documented to to be used in such cases,
+> but flush_dcache_page is actually required when the page could be in
+> the page cache and mapped to userspace, which is pretty much always the
+> case when kmapping an arbitrary page.  Unfortunately the documentation
+> doesn't exactly make that clear, which lead to this misused.  And it turns
+> out that only the copy_strings / copy_string_kernel in the exec code
+> were actually correct users of flush_kernel_dcache_page, which is why
+> I think we should just remove it and eat the very minor overhead in
+> exec rather than confusing poor driver writers.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
----
- arch/um/drivers/virtio_uml.c             | 4 +++-
- drivers/platform/mellanox/mlxbf-tmfifo.c | 4 +++-
- drivers/remoteproc/remoteproc_virtio.c   | 4 +++-
- drivers/s390/virtio/virtio_ccw.c         | 6 ++++--
- drivers/virtio/virtio_pci_legacy.c       | 4 +++-
- drivers/virtio/virtio_pci_modern.c       | 4 +++-
- drivers/virtio/virtio_vdpa.c             | 4 +++-
- include/linux/virtio_config.h            | 3 ++-
- 8 files changed, 24 insertions(+), 9 deletions(-)
+I think you need to be careful - I seem to have a recollection that the
+reason we ended up with flush_kernel_dcache_page() was the need to avoid
+the taking of the mmap lock for 32-bit ARM VIVT based CPUs in
+flush_dcache_page(). 32-bit ARM flush_dcache_page() can block.
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 4412d6febade..ca02deaf9b32 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -828,11 +828,13 @@ static void vu_set_status(struct virtio_device *vdev, u8 status)
- 	vu_dev->status = status;
- }
- 
--static void vu_reset(struct virtio_device *vdev)
-+static int vu_reset(struct virtio_device *vdev)
- {
- 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
- 
- 	vu_dev->status = 0;
-+
-+	return 0;
- }
- 
- static void vu_del_vq(struct virtqueue *vq)
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 38800e86ed8a..e3c513c2d4fa 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -989,11 +989,13 @@ static void mlxbf_tmfifo_virtio_set_status(struct virtio_device *vdev,
- }
- 
- /* Reset the device. Not much here for now. */
--static void mlxbf_tmfifo_virtio_reset(struct virtio_device *vdev)
-+static int mlxbf_tmfifo_virtio_reset(struct virtio_device *vdev)
- {
- 	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
- 
- 	tm_vdev->status = 0;
-+
-+	return 0;
- }
- 
- /* Read the value of a configuration field. */
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index cf4d54e98e6a..975c845b3187 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -191,7 +191,7 @@ static void rproc_virtio_set_status(struct virtio_device *vdev, u8 status)
- 	dev_dbg(&vdev->dev, "status: %d\n", status);
- }
- 
--static void rproc_virtio_reset(struct virtio_device *vdev)
-+static int rproc_virtio_reset(struct virtio_device *vdev)
- {
- 	struct rproc_vdev *rvdev = vdev_to_rvdev(vdev);
- 	struct fw_rsc_vdev *rsc;
-@@ -200,6 +200,8 @@ static void rproc_virtio_reset(struct virtio_device *vdev)
- 
- 	rsc->status = 0;
- 	dev_dbg(&vdev->dev, "reset !\n");
-+
-+	return 0;
- }
- 
- /* provide the vdev features as retrieved from the firmware */
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index d35e7a3f7067..5221cdad531d 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -710,14 +710,14 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 	return ret;
- }
- 
--static void virtio_ccw_reset(struct virtio_device *vdev)
-+static int virtio_ccw_reset(struct virtio_device *vdev)
- {
- 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
- 	struct ccw1 *ccw;
- 
- 	ccw = ccw_device_dma_zalloc(vcdev->cdev, sizeof(*ccw));
- 	if (!ccw)
--		return;
-+		return -ENOMEM;
- 
- 	/* Zero status bits. */
- 	vcdev->dma_area->status = 0;
-@@ -729,6 +729,8 @@ static void virtio_ccw_reset(struct virtio_device *vdev)
- 	ccw->cda = 0;
- 	ccw_io_helper(vcdev, ccw, VIRTIO_CCW_DOING_RESET);
- 	ccw_device_dma_free(vcdev->cdev, ccw, sizeof(*ccw));
-+
-+	return 0;
- }
- 
- static u64 virtio_ccw_get_features(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index d62e9835aeec..0b5d95e3efa1 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -89,7 +89,7 @@ static void vp_set_status(struct virtio_device *vdev, u8 status)
- 	iowrite8(status, vp_dev->ioaddr + VIRTIO_PCI_STATUS);
- }
- 
--static void vp_reset(struct virtio_device *vdev)
-+static int vp_reset(struct virtio_device *vdev)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	/* 0 status means a reset. */
-@@ -99,6 +99,8 @@ static void vp_reset(struct virtio_device *vdev)
- 	ioread8(vp_dev->ioaddr + VIRTIO_PCI_STATUS);
- 	/* Flush pending VQ/configuration callbacks. */
- 	vp_synchronize_vectors(vdev);
-+
-+	return 0;
- }
- 
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 30654d3a0b41..b0cde3b2f0ff 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -158,7 +158,7 @@ static void vp_set_status(struct virtio_device *vdev, u8 status)
- 	vp_modern_set_status(&vp_dev->mdev, status);
- }
- 
--static void vp_reset(struct virtio_device *vdev)
-+static int vp_reset(struct virtio_device *vdev)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-@@ -174,6 +174,8 @@ static void vp_reset(struct virtio_device *vdev)
- 		msleep(1);
- 	/* Flush pending VQ/configuration callbacks. */
- 	vp_synchronize_vectors(vdev);
-+
-+	return 0;
- }
- 
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index ff43f9b62b2f..3e666f70e829 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -97,11 +97,13 @@ static void virtio_vdpa_set_status(struct virtio_device *vdev, u8 status)
- 	return ops->set_status(vdpa, status);
- }
- 
--static void virtio_vdpa_reset(struct virtio_device *vdev)
-+static int virtio_vdpa_reset(struct virtio_device *vdev)
- {
- 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
- 
- 	vdpa_reset(vdpa);
-+
-+	return 0;
- }
- 
- static bool virtio_vdpa_notify(struct virtqueue *vq)
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 8519b3ae5d52..203407992c30 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -47,6 +47,7 @@ struct virtio_shm_region {
-  *	After this, status and feature negotiation must be done again
-  *	Device must not be reset from its vq/config callbacks, or in
-  *	parallel with being added/removed.
-+ *	Returns 0 on success or error status
-  * @find_vqs: find virtqueues and instantiate them.
-  *	vdev: the virtio_device
-  *	nvqs: the number of virtqueues to find
-@@ -82,7 +83,7 @@ struct virtio_config_ops {
- 	u32 (*generation)(struct virtio_device *vdev);
- 	u8 (*get_status)(struct virtio_device *vdev);
- 	void (*set_status)(struct virtio_device *vdev, u8 status);
--	void (*reset)(struct virtio_device *vdev);
-+	int (*reset)(struct virtio_device *vdev);
- 	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
- 			struct virtqueue *vqs[], vq_callback_t *callbacks[],
- 			const char * const names[], const bool *ctx,
+If you're sure that all these changes you're making do not end up
+calling flush_dcache_page() from a path where we are atomic, then fine.
+
+The second issue I have is that, when we are reading a page into a page
+cache page, how can that page be mapped to userspace? Isn't that a
+violation of semantics? If the page is mapped to userspace but does not
+contain data from the underlying storage device, then the page contains
+stale data (if it's a new page, lets hope that's zeroed and not some
+previous contents - which would be a massive security hole.) As I
+understand it, the flush_kernel_dcache_page() calls in the block layer
+are primarily there to cope with drivers that do PIO read to write to a
+page cache page to ensure that later userspace mappings can see the data
+in the page cache page - by ensuring that the page cache pages are in
+the same state as far as caches go as if they had been DMA'd to.
+
+We know that the current implementation works fine - you're now
+proposing to radically change it, asserting that it's buggy. I'm
+nervous about this change.
+
 -- 
-2.11.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
