@@ -2,184 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C643C6974
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D5E3C6976
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhGMEhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 00:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhGMEh3 (ORCPT
+        id S230237AbhGMEi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 00:38:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50420 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhGMEiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 00:37:29 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EEDC0613E9;
-        Mon, 12 Jul 2021 21:34:39 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id 201so6267340qkj.13;
-        Mon, 12 Jul 2021 21:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tTZUe6lePqaiw1G9wbgvwq76zWCGlANz5kNfBk1PKF0=;
-        b=Gk7Qg/56zPhOJqukqbmHlbVy1wDYjhJ0V3GXqS5Rb9RHRLzjccSJcXN+IodpmHi9JJ
-         mYWzFpFLxpKzAVbEBjuRZQ7ubtRInDIy1sdnZS+5oIQN4Y03MGezTauNJXlivMM8hVqN
-         Dou2+TjChLTehIhCAJdcWBRa/h6Kpu8TGDn6YkqY943AtJLSpYw32c4325lDa/x5digB
-         x+NBIQ2XfQlkuJihehOmeqhuPFqTC1zsn4jLhqfL85DcVWJy1WuQAtf/g4n8zwLYGOrR
-         YqO6lH5hTLde0g0dtdBTOL68f5knSVQGdPaRUVTwf0G5rnFtLlyrdA9J8WaHRrBa6YFX
-         fzAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tTZUe6lePqaiw1G9wbgvwq76zWCGlANz5kNfBk1PKF0=;
-        b=kfo520vrH18y68oVr4XhvaQJerT2pLUcY0B5op4J4R4A5nHCbWmPmwyr4BQw+tJfLp
-         qaBQh+/+Wpim9lhEs8a1RQ3ROxSJOI5mYNAYIxUYcY38yojIAsphv0TPfBjxTVwLURwF
-         f4aHgQoT5wvlfzGvx/1QOX2a0NHLOT2KnCIW/WTxIKbJxFBOqunlRgbrS31LjM4z7Teu
-         RKfFxTmVKEi3/I2oZIxDCFcoo3NXLunHZQ0uVt0vL1AEeBO+HS4LfMvT5+fwSqZoQN1L
-         STep1J4u+OTRkDPI5SJFiPd9csn+IL6Z4ilHcx6i9jCDaIFs4nWW54Y5CJl+pGQY/AU+
-         qIvg==
-X-Gm-Message-State: AOAM530sDNzFDFpbl362aDbdWfx2FoU4e+MWxoZWY1prRsrqyI9FtIGF
-        0PgL7cCczjGBIopj0gK5GXU=
-X-Google-Smtp-Source: ABdhPJyndypbts2s9Fsz4072+2DMx01IxlztrEy3T3IB1xS+NrGxRiHPhddvSI060Ux7gr4mjf6bpQ==
-X-Received: by 2002:a05:620a:685:: with SMTP id f5mr426477qkh.148.1626150878899;
-        Mon, 12 Jul 2021 21:34:38 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id x16sm7311455qkn.130.2021.07.12.21.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 21:34:38 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, lars@metafoo.de,
-        Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v3 4/4] dt-bindings: iio: adc: ad7949: add per channel reference
-Date:   Tue, 13 Jul 2021 00:34:25 -0400
-Message-Id: <20210713043425.3321230-5-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210713043425.3321230-1-liambeguin@gmail.com>
-References: <20210713043425.3321230-1-liambeguin@gmail.com>
+        Tue, 13 Jul 2021 00:38:55 -0400
+Date:   Tue, 13 Jul 2021 04:36:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1626150963;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=jj6UyBOyXEzLFWsMg+oxI+l23bxA8dSQx3WFTtDkRN8=;
+        b=X2LLF0sHciBknYHGuLByDH9sM5khpkVqiHnMg9B2l2Qnw0BAV4eMMqOsgtIr6LohnlKC+9
+        9ksSq13lz96Z9290FttSJXclTtVZAr2z/aFqIG1EXt+/RknoJdwHKkQ6NgdocuiO3jn1rk
+        i6hEzTOsYgrgF0bNYp4RXXFeN2v/lPlNw6mJgDnc5epqLU9d/a2Pih1nQaCVeutdA57f65
+        M4bj3Y0E+bwr7YnwNk9j7n7dIawc3teoXrXHIf4n1SasR8rVNXXnOBS0Ntcfuj6BmOaWwz
+        0sPTttc4A5+QKrvkoIenXocPlg2hCSJM2BCwgWByOr7ORH1prsQK5/sp1bA+sA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1626150963;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=jj6UyBOyXEzLFWsMg+oxI+l23bxA8dSQx3WFTtDkRN8=;
+        b=2CFfZDq3CEjJvoKyw92cqd4H+9W5ZSuzBY7s8OEaKfA2kDlmh+ClSrL1nrNx+yCAM2gDFS
+        tGQ79q4OxkPfoyCQ==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/urgent] smpboot: Mark idle_init() as __always_inlined to
+ work around aggressive compiler un-inlining
+Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162615096187.395.16156439314770075462.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+The following commit has been merged into the core/urgent branch of tip:
 
-Add bindings documentation describing per channel reference voltage
-selection.
-This adds the adi,internal-ref-mv property, and child nodes for each
-channel. This is required to properly configure the ADC sample request
-based on which reference source should be used for the calculation.
+Commit-ID:     e9ba16e68cce2f85e9f5d2eba5c0453f1a741fd2
+Gitweb:        https://git.kernel.org/tip/e9ba16e68cce2f85e9f5d2eba5c0453f1a741fd2
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Sun, 11 Jul 2021 08:26:45 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 13 Jul 2021 06:32:59 +02:00
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
+smpboot: Mark idle_init() as __always_inlined to work around aggressive compiler un-inlining
+
+While this function is a static inline, and is only used once in
+local scope, certain Kconfig variations may cause it to be compiled
+as a standalone function:
+
+  89231bf0 <idle_init>:
+  89231bf0:       83 05 60 d9 45 89 01    addl   $0x1,0x8945d960
+  89231bf7:       55                      push   %ebp
+
+Resulting in this build failure:
+
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x7fd5): Section mismatch in reference from the function idle_init() to the function .init.text:fork_idle()
+  The function idle_init() references
+  the function __init fork_idle().
+  This is often because idle_init lacks a __init
+  annotation or the annotation of fork_idle is wrong.
+  ERROR: modpost: Section mismatches detected.
+
+Certain USBSAN options x86-32 builds with CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+seem to be causing this.
+
+So mark idle_init() as __always_inline to work around this compiler
+bug/feature.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- .../bindings/iio/adc/adi,ad7949.yaml          | 71 +++++++++++++++++--
- 1 file changed, 67 insertions(+), 4 deletions(-)
+ kernel/smpboot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-index 9b56bd4d5510..18abba3b0b4d 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-@@ -26,19 +26,65 @@ properties:
-   reg:
-     maxItems: 1
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index e416304..21b7953 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -47,7 +47,7 @@ void __init idle_thread_set_boot_cpu(void)
+  *
+  * Creates the thread if it does not exist.
+  */
+-static inline void idle_init(unsigned int cpu)
++static inline void __always_inline idle_init(unsigned int cpu)
+ {
+ 	struct task_struct *tsk = per_cpu(idle_threads, cpu);
  
-+  vrefin-supply:
-+    description:
-+      Buffered ADC reference voltage supply.
-+
-   vref-supply:
-     description:
--      ADC reference voltage supply
-+      Unbuffered ADC reference voltage supply.
- 
-   spi-max-frequency: true
- 
--  "#io-channel-cells":
-+  '#io-channel-cells':
-     const: 1
- 
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+
- required:
-   - compatible
-   - reg
--  - vref-supply
-+
-+patternProperties:
-+  '^channel@([0-7])$':
-+    type: object
-+    description: |
-+      Represents the external channels which are connected to the ADC.
-+
-+    properties:
-+      reg:
-+        description: |
-+          The channel number.
-+          Up to 4 channels, numbered from 0 to 3 for adi,ad7682.
-+          Up to 8 channels, numbered from 0 to 7 for adi,ad7689 and adi,ad7949.
-+        items:
-+          minimum: 0
-+          maximum: 7
-+
-+      adi,internal-ref-mv:
-+        description: |
-+          Internal reference voltage selection in millivolts.
-+
-+          If no internal reference is specified, the channel will default to the
-+          external reference defined by vrefin-supply (or vref-supply).
-+          vrefin-supply will take precedence over vref-supply if both are defined.
-+
-+          If no supplies are defined, the reference selection will default to
-+          4096mV internal reference.
-+
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [2500, 4096]
-+        default: 4096
-+
-+    required:
-+      - reg
-+
-+    additionalProperties: false
- 
- additionalProperties: false
- 
-@@ -49,9 +95,26 @@ examples:
-         #size-cells = <0>;
- 
-         adc@0 {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-             compatible = "adi,ad7949";
-             reg = <0>;
--            vref-supply = <&vdd_supply>;
-+            vrefin-supply = <&vdd_supply>;
-+
-+            channel@0 {
-+                adi,internal-ref-mv = <4096>;
-+                reg = <0>;
-+            };
-+
-+            channel@1 {
-+                adi,internal-ref-mv = <2500>;
-+                reg = <1>;
-+            };
-+
-+            channel@2 {
-+                reg = <2>;
-+            };
-         };
-     };
- ...
--- 
-2.30.1.489.g328c10930387
-
