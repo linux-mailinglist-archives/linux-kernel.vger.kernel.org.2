@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2644A3C76D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBE53C76DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhGMTSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbhGMTSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:18:23 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCF2C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:15:31 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y42so52264387lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M18otY56PpJwNrQJZprVka1qTQakvoKBClejDnSkTrE=;
-        b=Rw5P0JTho1kjLZqea6CQ8gUagVJNs4k3emejx1WscQgRmsreZEOQiJc8y++sSNzf0m
-         yUK2cGVT6b3RBD//TAYSElF0ZPAUW145ztuAEdq517sQsSfp0z+NSo1QNXrpyx8J+aXd
-         SWZpFinMKDaD5pO2gHyIUWmKwlMrim3t2qYNM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M18otY56PpJwNrQJZprVka1qTQakvoKBClejDnSkTrE=;
-        b=HREEsVJetJiUCbQk2U+VuPJ4yaKmPtP0OQp/cAYBVxaoZrjdPMMBAqBY0UeLAekCMm
-         K3n4fsx/eDhs7hycsXe7YEmrQt3svzofK3KsTmH0GPDK9Q7Hp9/8iv/+/ed+hPuIDv7Q
-         RJD+oB6CPZL1ZbUht4nD/AHjcPL5hgeFeaEBpjCOE7qPRv1F7Mc5l3+svxdp3wEuIQT6
-         KowU2EtKRnOXE5RGleKRJ92p7QAbTG1SRIFGlkVYClsgqe78NDAajtpX1M5Kw5GrUb4R
-         hIaJryYkKKBR9esHHKA7nrIlO7kWp2EzlNPHi1h4dVta8ONnPC5xzcBuodeA55wjdK51
-         H/LQ==
-X-Gm-Message-State: AOAM531/sfE+zpywo16hZ1x4YRGlboajJZtoFqvv3+It3TYNV2mMai0l
-        EfBRD+1qAtUzzbQM1rF8TBLKKXB6xWaj0IA9EoU=
-X-Google-Smtp-Source: ABdhPJwLratuqwwlxGS6YHSNzwAxpbgry2rN7PIs8wb7gsBo2+v8Mwi/jfosNOFHiEQE96hsDzBr4Q==
-X-Received: by 2002:a19:8509:: with SMTP id h9mr4599695lfd.582.1626203729872;
-        Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id w19sm2032220ljw.138.2021.07.13.12.15.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id b26so19864812lfo.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
-X-Received: by 2002:a19:7d04:: with SMTP id y4mr4501282lfc.201.1626203729021;
- Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
-In-Reply-To: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 13 Jul 2021 12:15:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
-Message-ID: <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234648AbhGMTUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:20:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230145AbhGMTUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 15:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 45FAB60698;
+        Tue, 13 Jul 2021 19:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626203838;
+        bh=7vddfjlGonuPFMn0IkFfj8i0W+b3DAFYixis0GMBeYs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Avvuz8jpRx8vdEalxVFYJ+8s+KOHNIJdScTcn4Bw22NvloVNEvrai9iR6Q8jeRLY7
+         VTXvxnAOF5IGcjhL9p7JD+0QIDEI16qjukjhPmwfny1ypkkW/cXgpxeaP+69OCcvct
+         l/A2Jc+cGuIhDKbxLpKmNxhcCEnhm5Eszr1LoCfuVIgsbPkM8NgE4Xr8S8mLVwlRPE
+         TyRTjOLGtyTCzzsYPGEheY1WHqr+MccBQJj//DARFE8QoPkM6fGYK/flxk781xQdaP
+         xsepR0yLpd0YuoMJHFjpDjjInbb3pkADlgXFgLbC6mume/zNnBsZzVUyWFwZmMczhM
+         zO7lxBdI8GyGg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 32E5B609CD;
+        Tue, 13 Jul 2021 19:17:18 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.14-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1626115408.git.dsterba@suse.com>
+References: <cover.1626115408.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1626115408.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc1-tag
+X-PR-Tracked-Commit-Id: ea32af47f00a046a1f953370514d6d946efe0152
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f02bf8578bd8dd400903291ccebc69665adc911c
+Message-Id: <162620383814.18788.2485017643354037727.pr-tracker-bot@kernel.org>
+Date:   Tue, 13 Jul 2021 19:17:18 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 3:45 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Linus, sorry for sending this directly through you, instead of going
-> through some other tree, but trying to get this upstream through the
-> linux-fsdevel list / patch-review simply is not working.
+The pull request you sent on Mon, 12 Jul 2021 21:28:00 +0200:
 
-Well, the filesystem maintainer sending their patches to me as a pull
-request is actually the norm rather than the exception when it comes
-to filesystems.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc1-tag
 
-It's a bit different for drivers, but that's because while we have
-multiple filesystems, we have multiple _thousand_ drivers, so on the
-driver side I really don't want individual driver maintainers to all
-send me their individual pull requests - that just wouldn't scale.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f02bf8578bd8dd400903291ccebc69665adc911c
 
-So for individual drivers, we have subsystem maintainers, but for
-individual filesystems we generally don't.
+Thank you!
 
-(When something then touches the *common* vfs code, that's a different
-thing - but something like this vboxsf thing this pull request looks
-normal to me).
-
-Even with a maintainer sending me pull requests I do obviously prefer
-to see indications that other people have acked/tested/reviewed the
-patches, but this is fairly small, simple and straightforward, and
-absolutely nothing in this pull request makes me go "oh, that's
-sketchy".
-
-So no need to apologize at all, this all looks very regular.
-
-               Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
