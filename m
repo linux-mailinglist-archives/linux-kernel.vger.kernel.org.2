@@ -2,217 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFA53C76F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA643C76FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhGMTeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
+        id S234729AbhGMTgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhGMTeD (ORCPT
+        with ESMTP id S234411AbhGMTgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:34:03 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDE9C0613DD;
-        Tue, 13 Jul 2021 12:31:13 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id b12so20513775pfv.6;
-        Tue, 13 Jul 2021 12:31:13 -0700 (PDT)
+        Tue, 13 Jul 2021 15:36:12 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8019C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:33:21 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id s18so22475558pgg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:33:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8S0JSRUnQxgp/widcUStdZ06A70Ry0fn6tF6qKTL8sQ=;
-        b=XBQC4nn4Ju2cayLDVzYRc2KTECptBWNVFUp7dq5KiANVq0zEVFEvG07cFC352ZR/Ow
-         qC0cawY8B127gdbpsCmKuP+h1swZ23LUM/rYHmxe6UeLZvttgPZF6Gl6HH1EkvKFkdZx
-         sUG+Rx5YowW2lC1Mri4TIqJ9vvW2dFoCWeLaFLf5X5te/mc/Wm3dNDtqF3nS2/7S+MmB
-         KSEGsrRQ/So50sSWNHg1l+UMBdnpRinOruDfZUkdU+D1ucXU+cPjilDN1CpdgjWkzGnR
-         SMhAx167T+XVlkil0iIbEHBLA047XnBGk8ijhV0wUTQI6Lr2Fhjodc2RDzYA9cwmoTvY
-         P1Yg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N0sTfKKyE0+JAut7zXsvgnlkS/bdeOAiaAnE0HjBo3Q=;
+        b=ZrqS9e5z8WA9MdXrss28wbIf+rlilE8R81QX10ZcTKLpeNys78DSMzebQTZX/DM7Xh
+         lfiSWubTeELe9rZW8xKA2MrjfQ0x0wu7FfSgJ4BRj1Die1VytFGSJom20Za/69qEU0Fv
+         EVWyK56AgIja8WE0ruQLKGjKZRgMAfNv1UOer6xr6lpqN6cpZ1qCZt//+EinVl0HHcUW
+         dS7PiZOMZZa09FjJHbtss3N8QV09hDgMAoaOJotOax+wK4Fzu4muecJFhisRmfTLnbQN
+         /+FiYlIbYf5Ev1TrLau5/uwy9UvDAP3PRSzOzj3prZSFenvGLZr61lylf1p0wcyLEY13
+         Cr2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8S0JSRUnQxgp/widcUStdZ06A70Ry0fn6tF6qKTL8sQ=;
-        b=ttfPD47a3hevOECpe0iRRANIsdNPUh0qzWqmwsZTJIWH71u88nN7mSof6fXPLMVb2N
-         /QnG5o2s7DcZ7g83Rb+a/QIda4GmQ8lkcHharht7WO7HRep/nY2WecwpJ0vrESbRWlQj
-         dmttjjPM7Td6xbjkPbYYKrBbpZLYRDgcOFPD2IT/VWkQSJxnUb28Werk3B7CmLSGrqhT
-         6Al6I1w6gpmB5CThPd25lkLbiE80c3kk8C7nU16OzGaBnNLVHkw001w1pk7Hyvua//Id
-         7tvaGc3rvtvv08nlmfrMym9dCToOuTC20fzJL0yZ7Z1rRHR4P5xyWPNdhtm/yAyq5+mX
-         5skQ==
-X-Gm-Message-State: AOAM531BfC+F89W+pcpu3SAzXwEeh9Q9wk08yfKnbYgU9WaH4QWcAFTJ
-        d4owVQOm09D+K0Hv9mZPOvFF6HO+pbOwDg==
-X-Google-Smtp-Source: ABdhPJwOaqRJewNcfFrs7Mf2YVnL0Kb+iOqhJI6Pvqll8XIVxUaRWR5QkClCmP9lqeM2syWTiPNLMw==
-X-Received: by 2002:a63:7d15:: with SMTP id y21mr5710913pgc.352.1626204671826;
-        Tue, 13 Jul 2021 12:31:11 -0700 (PDT)
-Received: from [172.30.1.52] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id n33sm21904753pgm.55.2021.07.13.12.31.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 12:31:11 -0700 (PDT)
-Subject: Re: [PATCH 4/4] PM / devfreq: passive: Reduce duplicate code when
- passive_devfreq case
-To:     Matthias Kaehlcke <mka@chromium.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     andrew-sh.cheng@mediatek.com, hsinyi@chromium.org,
-        sibis@codeaurora.org, saravanak@google.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        chanwoo@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210617060546.26933-1-cw00.choi@samsung.com>
- <CGME20210617054647epcas1p41cd87f03bc6f5b44b6f2d7a3e5924860@epcas1p4.samsung.com>
- <20210617060546.26933-5-cw00.choi@samsung.com> <YNIthEVkS8OK19pm@google.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <30340383-c136-6a21-3e88-18cd6ed9cba1@gmail.com>
-Date:   Wed, 14 Jul 2021 04:31:06 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N0sTfKKyE0+JAut7zXsvgnlkS/bdeOAiaAnE0HjBo3Q=;
+        b=iljnSZyJhUGK/UHtBUb7Y43qwu8qQxQC8dOLAkMMkFIM9yu/aZp8Q8+wNL2bL7SylR
+         aFffe/9hr5QSXp69dlBI8mT+1BVF+GyA5MSQ+GlsavB2O+59VpZVPofdAMS2yW/xku5L
+         JN0mDg9h4C5jdHcfZeDD5SGjPreydIAeSQn8m9kt/FYDbMfp9u3eSN59pkj2hmCruTgv
+         AVz9iWEkgeayGnLePiX9Em91/SiusfiKhCKbRP+beOupUx05f32E70Of6g+vblgAOlPE
+         I5h20Kc3jSB0t0VvhggQ9RdaR5ZFWpPmDtjOUpqhhW/Zsr7iy04P2NAQe84xQngH5WyF
+         ywBA==
+X-Gm-Message-State: AOAM531R0DwbwlLrGizhsJdVvY6KQyswzoIJWTL6vWO5YUTQcXYj9us9
+        BofHlJYnCT1wwmK7zRwoY604OA==
+X-Google-Smtp-Source: ABdhPJxkR7/Z8wic9CB4fffLr4H+t5wMq+9SEeVm7uxYMaFaa6yDEqefL2/S8c56ikKQRnpi6H6kVg==
+X-Received: by 2002:a63:5f11:: with SMTP id t17mr5807364pgb.37.1626204801148;
+        Tue, 13 Jul 2021 12:33:21 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id r10sm20278553pff.7.2021.07.13.12.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 12:33:20 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 19:33:16 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com
+Subject: Re: [RFC PATCH v2 08/69] KVM: TDX: add trace point before/after TDX
+ SEAMCALLs
+Message-ID: <YO3qfA6AjrDP33x+@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <28a0ae6b767260fcb410c6ddff7de84f4e13062c.1625186503.git.isaku.yamahata@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YNIthEVkS8OK19pm@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28a0ae6b767260fcb410c6ddff7de84f4e13062c.1625186503.git.isaku.yamahata@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
-
-On 21. 6. 23. 오전 3:35, Matthias Kaehlcke wrote:
-> On Thu, Jun 17, 2021 at 03:05:46PM +0900, Chanwoo Choi wrote:
->> In order to keep the consistent coding style between passive_devfreq
->> and passive_cpufreq, use common code for handling required opp property.
->> Also remove the unneed conditional statement and unify the comment
->> of both passive_devfreq and passive_cpufreq when getting the target frequency.
->>
->> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
->> ---
->>   drivers/devfreq/governor_passive.c | 80 ++++++------------------------
->>   1 file changed, 15 insertions(+), 65 deletions(-)
->>
->> diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
->> index 07e864509b7e..7102cb7eb30d 100644
->> --- a/drivers/devfreq/governor_passive.c
->> +++ b/drivers/devfreq/governor_passive.c
->> @@ -91,66 +91,17 @@ static int get_target_freq_with_devfreq(struct devfreq *devfreq,
->>   	struct devfreq_passive_data *p_data
->>   			= (struct devfreq_passive_data *)devfreq->data;
->>   	struct devfreq *parent_devfreq = (struct devfreq *)p_data->parent;
->> -	unsigned long child_freq = ULONG_MAX;
->> -	struct dev_pm_opp *opp, *p_opp;
->> -	int i, count;
->> -
->> -	/*
->> -	 * If the devfreq device with passive governor has the specific method
->> -	 * to determine the next frequency, should use the get_target_freq()
->> -	 * of struct devfreq_passive_data.
->> -	 */
->> -	if (p_data->get_target_freq)
->> -		return p_data->get_target_freq(devfreq, freq);
->> -
->> -	/*
->> -	 * If the parent and passive devfreq device uses the OPP table,
->> -	 * get the next frequency by using the OPP table.
->> -	 */
->> -
->> -	/*
->> -	 * - parent devfreq device uses the governors except for passive.
->> -	 * - passive devfreq device uses the passive governor.
->> -	 *
->> -	 * Each devfreq has the OPP table. After deciding the new frequency
->> -	 * from the governor of parent devfreq device, the passive governor
->> -	 * need to get the index of new frequency on OPP table of parent
->> -	 * device. And then the index is used for getting the suitable
->> -	 * new frequency for passive devfreq device.
->> -	 */
->> -	if (!devfreq->profile || !devfreq->profile->freq_table
->> -		|| devfreq->profile->max_state <= 0)
->> -		return -EINVAL;
->> -
->> -	/*
->> -	 * The passive governor have to get the correct frequency from OPP
->> -	 * list of parent device. Because in this case, *freq is temporary
->> -	 * value which is decided by ondemand governor.
->> -	 */
->> -	if (devfreq->opp_table && parent_devfreq->opp_table) {
->> -		p_opp = devfreq_recommended_opp(parent_devfreq->dev.parent,
->> -						freq, 0);
->> -		if (IS_ERR(p_opp))
->> -			return PTR_ERR(p_opp);
->> -
->> -		opp = dev_pm_opp_xlate_required_opp(parent_devfreq->opp_table,
->> -						    devfreq->opp_table, p_opp);
->> -		dev_pm_opp_put(p_opp);
->> -
->> -		if (IS_ERR(opp))
->> -			goto no_required_opp;
->> -
->> -		*freq = dev_pm_opp_get_freq(opp);
->> -		dev_pm_opp_put(opp);
->> -
->> -		return 0;
->> -	}
->> +	unsigned long target_freq;
->> +	int i;
->> +
->> +	/* Get target freq via required opps */
->> +	target_freq = get_taget_freq_by_required_opp(parent_devfreq->dev.parent,
->> +						parent_devfreq->opp_table,
->> +						devfreq->opp_table, *freq);
+On Fri, Jul 02, 2021, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> s/get_taget_freq_by_required_opp/get_target_freq_by_required_opp/
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>  arch/x86/kvm/trace.h         | 80 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/vmx/seamcall.h  | 22 ++++++++-
+>  arch/x86/kvm/vmx/tdx_arch.h  | 47 ++++++++++++++++++
+>  arch/x86/kvm/vmx/tdx_errno.h | 96 ++++++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/x86.c           |  2 +
+>  5 files changed, 246 insertions(+), 1 deletion(-)
 > 
-> Also need to be fixed in "[3/4] PM / devfreq: Add cpu based scaling
-> support to passive governor".
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index 4f839148948b..c3398d0de9a7 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -8,6 +8,9 @@
+>  #include <asm/clocksource.h>
+>  #include <asm/pvclock-abi.h>
+>  
+> +#include "vmx/tdx_arch.h"
+> +#include "vmx/tdx_errno.h"
+> +
+>  #undef TRACE_SYSTEM
+>  #define TRACE_SYSTEM kvm
+>  
+> @@ -659,6 +662,83 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
+>  		  __entry->exit_int_info, __entry->exit_int_info_err)
+>  );
+>  
+> +/*
+> + * Tracepoint for the start of TDX SEAMCALLs.
+> + */
+> +TRACE_EVENT(kvm_tdx_seamcall_enter,
 
-Thanks for catch. I'll fix it.
+To avoid confusion, I think it makes sense to avoid "enter" and "exit".  E.g.
+my first reaction was that the tracepoint was specific to TDENTER.  And under
+the hood, SEAMCALL is technically an exit :-)
 
-> 
->> +	if (target_freq)
->> +		goto out;
->>   
->> -no_required_opp:
->> -	/*
->> -	 * Get the OPP table's index of decided frequency by governor
->> -	 * of parent device.
->> -	 */
->> +	/* Use Interpolation if required opps is not available */
-> 
-> s/Interpolation/interpolation/
+What about kvm_tdx_seamcall and kvm_tdx_seamret?  If the seamret usage is too
+much of a stretch, kvm_tdx_seamcall_begin/end?
 
-I'll fix it.
+> +	TP_PROTO(int cpuid, __u64 op, __u64 rcx, __u64 rdx, __u64 r8,
+> +		 __u64 r9, __u64 r10),
+> +	TP_ARGS(cpuid, op, rcx, rdx, r8, r9, r10),
 
-> 
->>   	for (i = 0; i < parent_devfreq->profile->max_state; i++)
->>   		if (parent_devfreq->profile->freq_table[i] == *freq)
->>   			break;
->> @@ -158,16 +109,15 @@ static int get_target_freq_with_devfreq(struct devfreq *devfreq,
->>   	if (i == parent_devfreq->profile->max_state)
->>   		return -EINVAL;
->>   
->> -	/* Get the suitable frequency by using index of parent device. */
->>   	if (i < devfreq->profile->max_state) {
->> -		child_freq = devfreq->profile->freq_table[i];
->> +		target_freq = devfreq->profile->freq_table[i];
->>   	} else {
->> -		count = devfreq->profile->max_state;
->> -		child_freq = devfreq->profile->freq_table[count - 1];
->> +		i = devfreq->profile->max_state;
->> +		target_freq = devfreq->profile->freq_table[i - 1];
->>   	}
->>   
->> -	/* Return the suitable frequency for passive device. */
->> -	*freq = child_freq;
->> +out:
->> +	*freq = target_freq;
-> 
-> You might want to split the child_freq => target_freq and commentary change into
-> a separate patch, since it is not directly related with the switch to
-> get_target_freq_by_required_opp().
+"cpuid" is potentially confusing without looking at the caller.  pcpu or pcpu_id
+would be preferable.
 
-OK. I will not change about child_freq -> target_freq.
+> diff --git a/arch/x86/kvm/vmx/seamcall.h b/arch/x86/kvm/vmx/seamcall.h
+> index a318940f62ed..2c83ab46eeac 100644
+> --- a/arch/x86/kvm/vmx/seamcall.h
+> +++ b/arch/x86/kvm/vmx/seamcall.h
+> @@ -9,12 +9,32 @@
+>  #else
+>  
+>  #ifndef seamcall
+> +#include "trace.h"
+> +
+>  struct tdx_ex_ret;
+>  asmlinkage u64 __seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9, u64 r10,
+>  			  struct tdx_ex_ret *ex);
+>  
+> +static inline u64 _seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9, u64 r10,
+> +			    struct tdx_ex_ret *ex)
+> +{
+> +	u64 err;
+> +
+> +	trace_kvm_tdx_seamcall_enter(smp_processor_id(), op,
+> +				     rcx, rdx, r8, r9, r10);
+> +	err = __seamcall(op, rcx, rdx, r8, r9, r10, ex);
+
+What was the motivation behind switching from the macro magic[*] to a dedicated
+asm subroutine?  The macros are gross, but IMO they yielded much more readable
+code for the upper level helpers, which is what people will look at the vast
+majority of time.  E.g.
+
+  static inline u64 tdh_sys_lp_shutdown(void)
+  {
+  	return seamcall(TDH_SYS_LP_SHUTDOWN, 0, 0, 0, 0, 0, NULL);
+  }
+
+  static inline u64 tdh_mem_track(hpa_t tdr)
+  {
+  	return seamcall(TDH_MEM_TRACK, tdr, 0, 0, 0, 0, NULL);
+  }
+
+versus
+
+  static inline u64 tdsysshutdownlp(void)
+  {
+  	seamcall_0(TDSYSSHUTDOWNLP);
+  }
+
+  static inline u64 tdtrack(hpa_t tdr)
+  {
+  	seamcall_1(TDTRACK, tdr);
+  }
 
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+The new approach also generates very suboptimal code due to the need to shuffle
+registers everywhere, e.g. gcc doesn't inline _seamcall because it's a whopping
+200+ bytes.
+
+[*] https://patchwork.kernel.org/project/kvm/patch/25f0d2c2f73c20309a1b578cc5fc15f4fd6b9a13.1605232743.git.isaku.yamahata@intel.com/
+
+> +	if (ex)
+> +		trace_kvm_tdx_seamcall_exit(smp_processor_id(), op, err, ex->rcx,
+
+smp_processor_id() is not stable since this code runs with IRQs and preemption
+enabled, e.g. if the task is preempted between the tracepoint and the actual
+SEAMCALL then the tracepoint may be wrong.  There could also be weirdly "nested"
+tracepoints since migrating the task will generate TDH_VP_FLUSH.
+
+> +					    ex->rdx, ex->r8, ex->r9, ex->r10,
+> +					    ex->r11);
+> +	else
+> +		trace_kvm_tdx_seamcall_exit(smp_processor_id(), op, err,
+> +					    0, 0, 0, 0, 0, 0);
+> +	return err;
+> +}
+> +
+>  #define seamcall(op, rcx, rdx, r8, r9, r10, ex)				\
+> -	__seamcall(SEAMCALL_##op, (rcx), (rdx), (r8), (r9), (r10), (ex))
+> +	_seamcall(SEAMCALL_##op, (rcx), (rdx), (r8), (r9), (r10), (ex))
+>  #endif
