@@ -2,171 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723543C676B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8FC3C676E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbhGMA1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 20:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbhGMA1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 20:27:01 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FAFC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:24:12 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id r125so12297119qkf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yB5qAIs9Fc7CEvMMJ8HjSEc+CJeHsMb3Z3r28kd1YEE=;
-        b=01/+1PeyYqpCfkWSPiQzQ1/4ZzPCpTK75chfxFtWF7xgFFxO8o4Rb6MeI8H1ivl+R1
-         1ebZc2s7qCJgIHtRRFKwbcgLSUa4zIa4Kn6y6NMGTV1QlR87DV9iAeYNqMq5bDoBrrmC
-         XSi53W67knvsyOnZ1i+6YWyZWQNWcAk+m6zx/QRcYOJTWpZRpKDsnGM0zk4Tqb3GXrN3
-         beKx5CGDrwhitiApD8OyX43Jrc3VFvy31lLfrNz0N5XDSD7AxLj9gFkWp+qDmeu0p9Yb
-         o+evI0jqah2VbXE5Lt/o15HtAEE+yZjiMaIPwdVonhgkYelnStKJwaS/TWNSzoI3xkZq
-         sQ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yB5qAIs9Fc7CEvMMJ8HjSEc+CJeHsMb3Z3r28kd1YEE=;
-        b=nn8I1p5RbL1Mz0HYAUrzM/KwEizSSgV+JPtV5Qk6Zz7pRejEXKZrGU4coojxOZrKxo
-         jeb7OEUiXHog38dPjSCdD3kuOssSll2Cq1X1YLdLuP8Re5Sh07vajKpnnOqmcAKAL+5b
-         tdiLuMgBO0VWp+0w22+Hl/R+TWQ0UiT2JtOWbxKzXgjQ9UEw7ZQVrTZ4D5cnXTGehECJ
-         afPeaDyMlLIR5oTy2NTR3aTaBQc7WYPV5QYx8xS0Fe/F323uwEGmecBCd0AmhEoHfrM2
-         m2rWImhBoq60HwwX8cCcaXlp1XP2EpMMHdSYwp50EsSHu+gHyl/2XYQjFW0M8WYS4yQl
-         dRsw==
-X-Gm-Message-State: AOAM532TwPTf8fJqkj7ErlxmnXC+XpjVFUAlXDdInv5E3LosfVlOkpBe
-        VIbNlFSFMfqnvTfRVyzp51GYtA44q5yAow==
-X-Google-Smtp-Source: ABdhPJyNS88bT9lchdE/k2l0s9hF0E9K9iY57Ozrhl0XABc1zYmIZo6n9Z6iN5rSiOntQZCXbF+IQw==
-X-Received: by 2002:ae9:dd06:: with SMTP id r6mr1467355qkf.74.1626135851341;
-        Mon, 12 Jul 2021 17:24:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:a40c])
-        by smtp.gmail.com with ESMTPSA id x20sm7394463qkp.15.2021.07.12.17.24.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 17:24:10 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 20:24:09 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
-Message-ID: <YOzdKYejOEUbjvMj@cmpxchg.org>
-References: <20210712030701.4000097-1-willy@infradead.org>
- <20210712030701.4000097-11-willy@infradead.org>
+        id S233782AbhGMA1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 20:27:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233491AbhGMA1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 20:27:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 577C461249;
+        Tue, 13 Jul 2021 00:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626135888;
+        bh=KexV+4F3TgN4PPH4fBSUjkTODP7+uxdjEVPvdNWA3ek=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=efNv2ZKOQmeZOzjaWJvY+GGdSdjEMfy1vzaR/X6ySrmMtOdN/rb6XSpLr2EssXBsa
+         c0ht1ljsmxEqenKRNycCRiooGY2sogJkyPHIJ2T9LWcK2C+n7B3/kWWUcbtUMQh8YQ
+         Ipc/JneCNEEMgTb1Z7tXZOopQwElPl3roo5YgVGHNj+uugtCGu0+tMCBUa71MaQeiv
+         AFIU3EnPzs3XJzlTxRxVpsmGZIocKROZc39+qoOS7xG/BCQT6OOZluMXud37p0yjN9
+         d2WwQmrW/ULkhSZ18v4noIr5MP7g//aZ5rs2q7EagHbYPzXCTM4r+y61PcaTJ09a4I
+         HtFMH2QFFBrIA==
+Received: by mail-ej1-f54.google.com with SMTP id i20so38086112ejw.4;
+        Mon, 12 Jul 2021 17:24:48 -0700 (PDT)
+X-Gm-Message-State: AOAM530G4j+LFRagV5g/qlQeU7GrPGmxZI2xTQelUjmyfa1gTA1zcuZ9
+        ue6e8uzO9rxBRaAwInusTqbm6Yjac+V8lL+5NQ==
+X-Google-Smtp-Source: ABdhPJzbNtMkeM1yr6+TVDvgJG2LQ1xNzk1FIO6ziqPDzewhB10dddOwyHMlOtOpBIsKU25K3xu2hWGbrYxzWaqPvF0=
+X-Received: by 2002:a17:907:62a1:: with SMTP id nd33mr2043181ejc.303.1626135886765;
+ Mon, 12 Jul 2021 17:24:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712030701.4000097-11-willy@infradead.org>
+References: <1626072109-2657-1-git-send-email-yongqiang.niu@mediatek.com> <1626072109-2657-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1626072109-2657-2-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 13 Jul 2021 08:24:35 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8=fdhVosGKj0uAqYemka3=PX+LOvnDPpTWfqBHaJgJ_Q@mail.gmail.com>
+Message-ID: <CAAOTY_8=fdhVosGKj0uAqYemka3=PX+LOvnDPpTWfqBHaJgJ_Q@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/mediatek: clear pending flag when cmdq packet is done.
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 04:04:54AM +0100, Matthew Wilcox (Oracle) wrote:
-> +/* Whether there are one or multiple pages in a folio */
-> +static inline bool folio_single(struct folio *folio)
-> +{
-> +	return !folio_head(folio);
-> +}
+Hi, Yongqiang:
 
-Reading more converted code in the series, I keep tripping over the
-new non-camelcased flag testers.
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=
+=8812=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=882:42=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> In cmdq mode, packet may be flushed before it is executed, so
+> the pending flag should be cleared after cmdq packet is done.
 
-It's not an issue when it's adjectives: folio_uptodate(),
-folio_referenced(), folio_locked() etc. - those are obvious. But nouns
-and words that overlap with struct member names can easily be confused
-with non-bool accessors and lookups. Pop quiz: flag test or accessor?
+I would like this patch to base on the series [1] because that series
+use the standard mailbox callback interface.
 
-folio_private()
-folio_lru()
-folio_nid()
-folio_head()
-folio_mapping()
-folio_slab()
-folio_waiters()
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D5143=
+69
 
-This requires a lot of double-taking on what is actually being
-queried. Bool types, ! etc. don't help, since we test pointers for
-NULL/non-NULL all the time.
+Regards,
+Chun-Kuang.
 
-I see in a later patch you changed the existing page_lru() (which
-returns an enum) to folio_lru_list() to avoid the obvious collision
-with the PG_lru flag test. page_private() has the same problem but it
-changed into folio_get_private() (no refcounting involved). There
-doesn't seem to be a consistent, future-proof scheme to avoid this new
-class of collisions between flag testing and member accessors.
-
-There is also an inconsistency between flag test and set that makes me
-pause to think if they're actually testing and setting the same thing:
-
-	if (folio_idle(folio))
-		folio_clear_idle_flag(folio);
-
-Compare this to check_move_unevictable_pages(), where we do
-
-	if (page_evictable(page))
-		ClearPageUnevictable(page);
-
-where one queries a more complex, contextual userpage state and the
-other updates the corresponding pageframe bit flag.
-
-The camelcase stuff we use for page flag testing is unusual for kernel
-code. But the page API is also unusually rich and sprawling. What
-would actually come close? task? inode? Having those multiple
-namespaces to structure and organize the API has been quite helpful.
-
-On top of losing the flagops namespacing, this series also disappears
-many <verb>_page() operations (which currently optically distinguish
-themselves from page_<noun>() accessors) into the shared folio_
-namespace. This further increases the opportunities for collisions,
-which force undesirable naming compromises and/or ambiguity.
-
-More double-taking when the verb can be read as a noun: lock_folio()
-vs folio_lock().
-
-Now, is anybody going to mistake folio_lock() for an accessor? Not
-once they think about it. Can you figure out and remember what
-folio_head() returns? Probably. What about all the examples above at
-the same time? Personally, I'm starting to struggle. It certainly
-eliminates syntactic help and pattern matching, and puts much more
-weight on semantic analysis and remembering API definitions.
-
-What about functions like shrink_page_list() which are long sequences
-of page queries and manipulations? Many lines would be folio_<foo>
-with no further cue whether you're looking at tests, accessors, or a
-high-level state change that is being tested for success. There are
-fewer visual anchors to orient yourself when you page up and down. It
-quite literally turns some code into blah_(), blah_(), blah_():
-
-       if (!folio_active(folio) && !folio_unevictable(folio)) {
-	       folio_del_from_lru_list(folio, lruvec);
-	       folio_set_active_flag(folio);
-	       folio_add_to_lru_list(folio, lruvec);
-	       trace_mm_lru_activate(&folio->page);
-	}
-
-Think about the mental strain of reading and writing complicated
-memory management code with such a degree of syntactic parsimony, let
-alone the repetetive monotony.
-
-In those few lines of example code alone, readers will pause on things
-that should be obvious, and miss grave errors that should stand out.
-
-Add compatible return types to similarly named functions and we'll
-provoke subtle bugs that the compiler won't catch either.
-
-There are warts and inconsistencies in our naming patterns that could
-use cleanups. But I think this compresses a vast API into one template
-that isn't nearly expressive enough to adequately communicate and
-manage the complexity of the underlying structure and its operations.
+>
+> Signed-off-by: CK Hu <ck.hu@mediatek.com>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 92 +++++++++++++++++++++++++++=
++++---
+>  1 file changed, 85 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index 40df2c8..8cd107b 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -73,6 +73,13 @@ struct mtk_crtc_state {
+>         unsigned int                    pending_vrefresh;
+>  };
+>
+> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> +struct mtk_cmdq_cb_data {
+> +       struct cmdq_pkt                 *cmdq_handle;
+> +       struct mtk_drm_crtc             *mtk_crtc;
+> +};
+> +#endif
+> +
+>  static inline struct mtk_drm_crtc *to_mtk_crtc(struct drm_crtc *c)
+>  {
+>         return container_of(c, struct mtk_drm_crtc, base);
+> @@ -224,7 +231,64 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(stru=
+ct drm_crtc *crtc,
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>  static void ddp_cmdq_cb(struct cmdq_cb_data data)
+>  {
+> -       cmdq_pkt_destroy(data.data);
+> +       struct mtk_cmdq_cb_data *cb_data =3D data.data;
+> +       struct mtk_drm_crtc *mtk_crtc;
+> +       struct mtk_crtc_state *state;
+> +       unsigned int i;
+> +
+> +       if (!cb_data) {
+> +               DRM_ERROR("cmdq callback data is null pointer!\n");
+> +               return;
+> +       }
+> +
+> +       if (data.sta !=3D 0) {
+> +               DRM_WARN("cmdq callback error %d!!\n", data.sta);
+> +               goto destroy_pkt;
+> +       }
+> +
+> +       mtk_crtc =3D cb_data->mtk_crtc;
+> +       if (!mtk_crtc) {
+> +               DRM_ERROR("cmdq callback mtk_crtc is null pointer!\n");
+> +               goto destroy_pkt;
+> +       }
+> +
+> +       state =3D to_mtk_crtc_state(mtk_crtc->base.state);
+> +
+> +       if (state->pending_config) {
+> +               state->pending_config =3D false;
+> +       }
+> +
+> +       if (mtk_crtc->pending_planes) {
+> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
+> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
+> +                       struct mtk_plane_state *plane_state;
+> +
+> +                       plane_state =3D to_mtk_plane_state(plane->state);
+> +
+> +                       if (plane_state->pending.config)
+> +                               plane_state->pending.config =3D false;
+> +               }
+> +               mtk_crtc->pending_planes =3D false;
+> +       }
+> +
+> +       if (mtk_crtc->pending_async_planes) {
+> +               for (i =3D 0; i < mtk_crtc->layer_nr; i++) {
+> +                       struct drm_plane *plane =3D &mtk_crtc->planes[i];
+> +                       struct mtk_plane_state *plane_state;
+> +
+> +                       plane_state =3D to_mtk_plane_state(plane->state);
+> +
+> +                       if (plane_state->pending.async_config)
+> +                               plane_state->pending.async_config =3D fal=
+se;
+> +               }
+> +               mtk_crtc->pending_async_planes =3D false;
+> +       }
+> +
+> +destroy_pkt:
+> +       if (cb_data->cmdq_handle)
+> +               cmdq_pkt_destroy(cb_data->cmdq_handle);
+> +
+> +       kfree(cb_data);
+>  }
+>  #endif
+>
+> @@ -378,7 +442,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc=
+,
+>                                     state->pending_vrefresh, 0,
+>                                     cmdq_handle);
+>
+> -               state->pending_config =3D false;
+> +               if (!cmdq_handle)
+> +                       state->pending_config =3D false;
+>         }
+>
+>         if (mtk_crtc->pending_planes) {
+> @@ -398,9 +463,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
+c,
+>                                 mtk_ddp_comp_layer_config(comp, local_lay=
+er,
+>                                                           plane_state,
+>                                                           cmdq_handle);
+> -                       plane_state->pending.config =3D false;
+> +                       if (!cmdq_handle)
+> +                               plane_state->pending.config =3D false;
+>                 }
+> -               mtk_crtc->pending_planes =3D false;
+> +
+> +               if (!cmdq_handle)
+> +                       mtk_crtc->pending_planes =3D false;
+>         }
+>
+>         if (mtk_crtc->pending_async_planes) {
+> @@ -420,9 +488,13 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crt=
+c,
+>                                 mtk_ddp_comp_layer_config(comp, local_lay=
+er,
+>                                                           plane_state,
+>                                                           cmdq_handle);
+> -                       plane_state->pending.async_config =3D false;
+> +
+> +                       if (!cmdq_handle)
+> +                               plane_state->pending.async_config =3D fal=
+se;
+>                 }
+> -               mtk_crtc->pending_async_planes =3D false;
+> +
+> +               if (!cmdq_handle)
+> +                       mtk_crtc->pending_async_planes =3D false;
+>         }
+>  }
+>
+> @@ -469,13 +541,19 @@ static void mtk_drm_crtc_update_config(struct mtk_d=
+rm_crtc *mtk_crtc,
+>         }
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>         if (mtk_crtc->cmdq_client) {
+> +               struct mtk_cmdq_cb_data *cb_data;
+> +
+>                 mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
+>                 cmdq_handle =3D cmdq_pkt_create(mtk_crtc->cmdq_client, PA=
+GE_SIZE);
+>                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
+>                 cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
+>                 mtk_crtc_ddp_config(crtc, cmdq_handle);
+>                 cmdq_pkt_finalize(cmdq_handle);
+> -               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handl=
+e);
+> +
+> +               cb_data =3D kmalloc(sizeof(*cb_data), GFP_KERNEL);
+> +               cb_data->cmdq_handle =3D cmdq_handle;
+> +               cb_data->mtk_crtc =3D mtk_crtc;
+> +               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cb_data);
+>         }
+>  #endif
+>         mtk_crtc->config_updating =3D false;
+> --
+> 1.8.1.1.dirty
+>
