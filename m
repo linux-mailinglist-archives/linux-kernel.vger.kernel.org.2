@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5CE3C7030
+	by mail.lfdr.de (Postfix) with ESMTP id 5719C3C7031
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236230AbhGMMOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        id S236265AbhGMMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236151AbhGMMOb (ORCPT
+        with ESMTP id S236172AbhGMMOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:14:31 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E75C0613EE;
-        Tue, 13 Jul 2021 05:11:41 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso2176205wmj.4;
-        Tue, 13 Jul 2021 05:11:41 -0700 (PDT)
+        Tue, 13 Jul 2021 08:14:33 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EC8C0613EF;
+        Tue, 13 Jul 2021 05:11:42 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id l7so29263017wrv.7;
+        Tue, 13 Jul 2021 05:11:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wrfAS+mMRUT8LDRtdpJEqZr/ZEkXHQf7XdSey0KQIRo=;
-        b=F7imLOfGlCdtb+j2z+c+J1wsEKV7Ru8sdxwG9HsbE0j2riS1z/tn7KsqwvpZD+vObH
-         tpY5yHqiV0eNybuZ+hASu8y4LB/vB1qyDsOupmx9qaPaZvNl2nCNRnRlst3SzR87dnFA
-         pyETt7jD8C6o55qvM/GE67hV4rsLrwOgzFq0rEBZJskWtknWR4PoS7bP53WDnUhISe5k
-         uB9n+4cSuhbZIBAYfZIAg3TQhnevCO3mbmC93OlVmajj6VUw8eUbwnIM8n+2qjxB3Q2y
-         awksjjLDVsdvJ+rT5UhMb5NBNsDEyCyqpPiHkSpfSoeDHigkV6ZV5emMwLbpSBGseXb6
-         OkEw==
+        bh=6WNHzJ7TZJXM3U37FlFXdskl78ntwTEiBDlOoJjZQ24=;
+        b=LTSRY90x7Y7DimNCF6RUhDJbyVReFviK/HDP4qepG7UHo0saNt3Neo6gmWuoflS8gW
+         clL15AvJb36PQxkydvOBbthju+yLjTqzZbzWIJ4WZUs2rBVcRY3XjX7IFM9oOXqVqbOz
+         GP9SRyrLRf9u8TSTmWWCmn3iQatZPID/1ayg+8uUn9Pi6yI+p6MmZ4F/NB9r31QCAsGi
+         iGC2FRV6RXNPJZfviYnrevdLRkYKXYmUQix/wD8ESgVyJl4ZghEDUQhFoKVdXdcKwaIq
+         bcrdzpv7iBn7/j1yelMqIlbgchwiNPytfBE1cykcdPOc/EuE4mK20oiZbY6QZdy2zEve
+         eugg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wrfAS+mMRUT8LDRtdpJEqZr/ZEkXHQf7XdSey0KQIRo=;
-        b=lAkO9yG7rJKnoJ67waakm3jC5f1s49E6KMTByrCN+6MTuHUZFnn7Rgz2XQWisL9Fkn
-         /WG0M6msLBaSXXlHhxR3epxCKfBpdMx5TrjZCXpjM/XAz6uKc+JHPxo0KhtG9s2r4QP6
-         tbdzEab+UFOJLcnPqwQMFumBQN5OCxVjGFIdFdxOtn93eJW1jZS6lxbU5emXj5Ngt1zF
-         OYVnQquqaz9Pzx7em1XwCeXXVXDKCzIROjjL2J1G3BWw0KsOduUU4qsUtE8AEqz8un2k
-         m6rd80yAJwTxben5uXclAUJ7Bw1ZxgT3Bu21m2Mbr5OsSpfLDYbZWRW6S6PbrxkpCb99
-         dhJA==
-X-Gm-Message-State: AOAM531DALqNhqrOO4yQMLJcTGbGvjFIcD4t0DyLRNP/0w2LsaHQm+N6
-        tIOpiby+/3EuMZ84oRATGBg=
-X-Google-Smtp-Source: ABdhPJy047TsRJBGd/1GkKHej2jtsTHzHQg5LPraCNUi8uN4tPNTjgjDX1HibgK7/fkX9i2UDQDqUQ==
-X-Received: by 2002:a1c:a58b:: with SMTP id o133mr4740824wme.160.1626178299975;
-        Tue, 13 Jul 2021 05:11:39 -0700 (PDT)
+        bh=6WNHzJ7TZJXM3U37FlFXdskl78ntwTEiBDlOoJjZQ24=;
+        b=pO6MBV/e0uQNNIL/Jw7Hf1I0c8Yb1lBGJeLsXSdPIqiSYGaiPp4mXQBI32LFgyF6qx
+         ebF8pSEQaYYkt6TJuDakmTzyR5C8J8Ebn7mNWOJ9RlkuEeSJHPZR0j9SE4Rtsty2Fax5
+         5eB5oIEY/5gr4dS4Uitsc3BtGgHk1cLruEX1R2+rm3yWmws+Vye1ElniT4ab1BCc/+6X
+         uD0Cs3sxXQzRbMJgYhVlVLQ/bE7ZbLOoq1BEJPJt+QVr43yUsBjrPe7pmt0rDotYs5sY
+         NsNab/05S6q22JgBHs/xRRkPvX92qrBOmlCzPDplurbJ8e7m/pnvrd32kmWXm21tikba
+         9kGQ==
+X-Gm-Message-State: AOAM531KV9xRjQ2MmIKVGbTSHh7csqPqLlh3NjaHvIqvIxRCpuFOdFbe
+        1I78MAlUBhV/ZoNpIwAP2ak=
+X-Google-Smtp-Source: ABdhPJzKUtfswrK+N087tU7Je+1UDSJUnz0e0h7Vb88mX6gkah3HK5+zOnKgr1iYjUGOzRnGSNIoeA==
+X-Received: by 2002:adf:a350:: with SMTP id d16mr5348380wrb.207.1626178301238;
+        Tue, 13 Jul 2021 05:11:41 -0700 (PDT)
 Received: from localhost.localdomain ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.googlemail.com with ESMTPSA id o3sm17551425wrw.56.2021.07.13.05.11.39
+        by smtp.googlemail.com with ESMTPSA id o3sm17551425wrw.56.2021.07.13.05.11.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 05:11:39 -0700 (PDT)
+        Tue, 13 Jul 2021 05:11:40 -0700 (PDT)
 From:   Riccardo Mancini <rickyman7@gmail.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Ian Rogers <irogers@google.com>,
@@ -58,9 +58,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [RFC PATCH 09/10] perf workqueue: add utility to execute a for loop in parallel
-Date:   Tue, 13 Jul 2021 14:11:20 +0200
-Message-Id: <68bbee1a8235ce83e85605138b7dffebe6554331.1626177381.git.rickyman7@gmail.com>
+Subject: [RFC PATCH 10/10] perf synthetic-events: use workqueue parallel_for
+Date:   Tue, 13 Jul 2021 14:11:21 +0200
+Message-Id: <b430c981f027cb03c1c20f6f7ee4800aded7a810.1626177381.git.rickyman7@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626177381.git.rickyman7@gmail.com>
 References: <cover.1626177381.git.rickyman7@gmail.com>
@@ -70,281 +70,250 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the parallel_for which executes a given function inside
-the workqueue, taking care of managing the work items.
+To generate synthetic events, perf has the option to use multiple
+threads. These threads are created manually using pthread_created.
+
+This patch replaces the manual pthread_create with a workqueue,
+using the parallel_for utility.
+
+Experimental results show that workqueue has a higher overhead, but
+this is repayed by the improved work balancing among threads.
+
+Results of perf bench before and after are reported below:
+Command: sudo ./perf bench internals synthesize -t
+Average synthesis time in usec is reported.
+
+Laptop (dual core i7 w/ hyperthreading), avg num events ~14200:
+ N    pthread (before)        workqueue (after)
+ 1  70714.400 +-  908.789   73306.000 +- 1597.868
+ 2  77426.700 +- 2986.579   46782.300 +-  326.221
+ 3  53176.300 +- 3405.635   41614.100 +-  239.827
+ 4  50760.900 +-  702.623   41071.300 +-  230.200
+
+VM (16 vCPUs over 16 core Intel Xeon E5-2630L v3), avg num events ~2760:
+ N    pthread (before)        workqueue (after)
+ 1  30309.500 +-  578.283   34252.000 +-  839.474
+ 2  23815.200 +- 1339.102   28487.200 +- 1423.481
+ 3  20644.300 +-  311.573   19220.200 +- 1436.024
+ 4  19091.500 +-  446.109   15048.600 +-  319.138
+ 5  17574.000 +-  988.612   14938.500 +-  411.078
+ 6  18908.900 +-  520.676   13997.600 +-  358.668
+ 7  19275.700 +-  631.989   11371.400 +-  365.038
+ 8  15671.200 +-  306.727   11964.800 +-  338.021
+ 9  14660.900 +-  333.218   11762.800 +-  652.763
+10  12490.200 +-  579.211   11832.300 +-  200.601
+11  18052.900 +-  941.578   13166.900 +-  704.318
+12  14253.600 +-  354.332   12012.000 +-  309.724
+13  12219.000 +-  516.438   12023.800 +-  273.626
+14  15896.600 +-  442.419   11764.600 +-  353.961
+15  15087.200 +-  337.612   11942.600 +-  304.102
+16  15368.700 +-  336.785   13625.200 +-  715.125
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 ---
- tools/perf/tests/workqueue.c          |  84 +++++++++++++++++
- tools/perf/util/workqueue/workqueue.c | 125 ++++++++++++++++++++++++++
- tools/perf/util/workqueue/workqueue.h |   7 ++
- 3 files changed, 216 insertions(+)
+ tools/perf/util/synthetic-events.c | 131 ++++++++++++-----------------
+ 1 file changed, 56 insertions(+), 75 deletions(-)
 
-diff --git a/tools/perf/tests/workqueue.c b/tools/perf/tests/workqueue.c
-index f71a839d5752d224..462a17904f2858db 100644
---- a/tools/perf/tests/workqueue.c
-+++ b/tools/perf/tests/workqueue.c
-@@ -19,6 +19,12 @@ struct workqueue_test_args_t {
- 	int n_work_items;
+diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+index 35aa0c0f7cd955b2..a55c7fa41b4f86d3 100644
+--- a/tools/perf/util/synthetic-events.c
++++ b/tools/perf/util/synthetic-events.c
+@@ -41,6 +41,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <unistd.h>
++#include "util/workqueue/workqueue.h"
+ 
+ #define DEFAULT_PROC_MAP_PARSE_TIMEOUT 500
+ 
+@@ -882,16 +883,13 @@ static int __perf_event__synthesize_threads(struct perf_tool *tool,
+ 					    perf_event__handler_t process,
+ 					    struct machine *machine,
+ 					    bool mmap_data,
+-					    struct dirent **dirent,
+-					    int start,
+-					    int num)
++					    char *d_name)
+ {
+ 	union perf_event *comm_event, *mmap_event, *fork_event;
+ 	union perf_event *namespaces_event;
+ 	int err = -1;
+ 	char *end;
+ 	pid_t pid;
+-	int i;
+ 
+ 	comm_event = malloc(sizeof(comm_event->comm) + machine->id_hdr_size);
+ 	if (comm_event == NULL)
+@@ -911,24 +909,22 @@ static int __perf_event__synthesize_threads(struct perf_tool *tool,
+ 	if (namespaces_event == NULL)
+ 		goto out_free_fork;
+ 
+-	for (i = start; i < start + num; i++) {
+-		if (!isdigit(dirent[i]->d_name[0]))
+-			continue;
++	if (!isdigit(d_name[0]))
++		goto out_free_namespaces;
+ 
+-		pid = (pid_t)strtol(dirent[i]->d_name, &end, 10);
+-		/* only interested in proper numerical dirents */
+-		if (*end)
+-			continue;
+-		/*
+-		 * We may race with exiting thread, so don't stop just because
+-		 * one thread couldn't be synthesized.
+-		 */
+-		__event__synthesize_thread(comm_event, mmap_event, fork_event,
+-					   namespaces_event, pid, 1, process,
+-					   tool, machine, mmap_data);
+-	}
++	pid = (pid_t)strtol(d_name, &end, 10);
++	/* only interested in proper numerical dirents */
++	if (*end)
++		goto out_free_namespaces;
++	/*
++	 * We may race with exiting thread, so don't stop just because
++	 * one thread couldn't be synthesized.
++	 */
++	__event__synthesize_thread(comm_event, mmap_event, fork_event,
++					namespaces_event, pid, 1, process,
++					tool, machine, mmap_data);
+ 	err = 0;
+-
++out_free_namespaces:
+ 	free(namespaces_event);
+ out_free_fork:
+ 	free(fork_event);
+@@ -946,19 +942,15 @@ struct synthesize_threads_arg {
+ 	struct machine *machine;
+ 	bool mmap_data;
+ 	struct dirent **dirent;
+-	int num;
+-	int start;
  };
  
-+struct parallel_for_test_args_t {
-+	int pool_size;
-+	int n_work_items;
-+	int work_size;
-+};
-+
- struct test_task {
- 	struct task_struct task;
- 	int n_threads;
-@@ -265,6 +271,44 @@ static int __test__workqueue(void *_args)
- 	return 0;
+-static void *synthesize_threads_worker(void *arg)
++static void synthesize_threads_worker(int i, void *arg)
+ {
+ 	struct synthesize_threads_arg *args = arg;
+ 
+ 	__perf_event__synthesize_threads(args->tool, args->process,
+ 					 args->machine, args->mmap_data,
+-					 args->dirent,
+-					 args->start, args->num);
+-	return NULL;
++					 args->dirent[i]->d_name);
  }
  
-+static void test_pfw_fn(int i, void *args)
-+{
-+	int *array = args;
-+
-+	dummy_work(i);
-+	array[i] = i+1;
-+}
-+
-+static int __test__parallel_for(void *_args)
-+{
-+	struct parallel_for_test_args_t *args = _args;
+ int perf_event__synthesize_threads(struct perf_tool *tool,
+@@ -967,15 +959,14 @@ int perf_event__synthesize_threads(struct perf_tool *tool,
+ 				   bool mmap_data,
+ 				   unsigned int nr_threads_synthesize)
+ {
+-	struct synthesize_threads_arg *args = NULL;
+-	pthread_t *synthesize_threads = NULL;
++	struct synthesize_threads_arg args;
+ 	char proc_path[PATH_MAX];
+ 	struct dirent **dirent;
+-	int num_per_thread;
+-	int m, n, i, j;
++	int n, i;
+ 	int thread_nr;
+-	int base = 0;
+-	int err = -1;
++	int err = -1, ret;
 +	struct threadpool_struct *pool;
 +	struct workqueue_struct *wq;
-+	int ret, i;
-+	int *array;
-+
-+	array = calloc(args->n_work_items, sizeof(*array));
-+
-+	ret = __workqueue__prepare(&pool, &wq, args->pool_size);
-+	if (ret)
-+		return ret;
-+
-+	ret = parallel_for(wq, 0, args->n_work_items, args->work_size,
-+				test_pfw_fn, array);
-+	TEST_ASSERT_VAL("parallel_for failure", ret == 0);
-+
-+	for (i = 0; i < args->n_work_items; i++)
-+		TEST_ASSERT_VAL("failed array check", array[i] == i+1);
-+
-+	ret = __workqueue__teardown(pool, wq);
-+	if (ret)
-+		return ret;
-+
-+	free(array);
-+
-+	return 0;
-+}
-+
- static const struct threadpool_test_args_t threadpool_test_args[] = {
- 	{
- 		.pool_size = 1
-@@ -310,6 +354,39 @@ static const struct workqueue_test_args_t workqueue_test_args[] = {
+ 
+ 
+ 	if (machine__is_default_guest(machine))
+@@ -992,54 +983,44 @@ int perf_event__synthesize_threads(struct perf_tool *tool,
+ 		thread_nr = nr_threads_synthesize;
+ 
+ 	if (thread_nr <= 1) {
+-		err = __perf_event__synthesize_threads(tool, process,
+-						       machine, mmap_data,
+-						       dirent, base, n);
++		for (i = 0; i < n; i++)
++			err = __perf_event__synthesize_threads(tool, process,
++								machine, mmap_data,
++								dirent[i]->d_name);
+ 		goto free_dirent;
  	}
- };
+-	if (thread_nr > n)
+-		thread_nr = n;
  
-+static const struct parallel_for_test_args_t parallel_for_test_args[] = {
-+	{
-+		.pool_size = 1,
-+		.n_work_items = 1,
-+		.work_size = 1
-+	},
-+	{
-+		.pool_size = 1,
-+		.n_work_items = 10,
-+		.work_size = 3
-+	},
-+	{
-+		.pool_size = 2,
-+		.n_work_items = 1,
-+		.work_size = 1
-+	},
-+	{
-+		.pool_size = 2,
-+		.n_work_items = 100,
-+		.work_size = 10
-+	},
-+	{
-+		.pool_size = 16,
-+		.n_work_items = 7,
-+		.work_size = 2
-+	},
-+	{
-+		.pool_size = 16,
-+		.n_work_items = 2789,
-+		.work_size = 16
-+	}
-+};
-+
- struct test_case {
- 	const char *desc;
- 	int (*func)(void *args);
-@@ -332,6 +409,13 @@ static struct test_case workqueue_testcase_table[] = {
- 		.args = (void *) workqueue_test_args,
- 		.n_args = (int)ARRAY_SIZE(workqueue_test_args),
- 		.arg_size = sizeof(struct workqueue_test_args_t)
-+	},
-+	{
-+		.desc = "Workqueue parallel-for",
-+		.func = __test__parallel_for,
-+		.args = (void *) parallel_for_test_args,
-+		.n_args = (int)ARRAY_SIZE(parallel_for_test_args),
-+		.arg_size = sizeof(struct parallel_for_test_args_t)
- 	}
- };
+-	synthesize_threads = calloc(sizeof(pthread_t), thread_nr);
+-	if (synthesize_threads == NULL)
++	pool = create_threadpool(thread_nr);
++	if (!pool)
+ 		goto free_dirent;
  
-diff --git a/tools/perf/util/workqueue/workqueue.c b/tools/perf/util/workqueue/workqueue.c
-index 20d196de9500d369..e69ed1568228a261 100644
---- a/tools/perf/util/workqueue/workqueue.c
-+++ b/tools/perf/util/workqueue/workqueue.c
-@@ -515,3 +515,128 @@ void init_work(struct work_struct *work)
- {
- 	INIT_LIST_HEAD(&work->entry);
- }
+-	args = calloc(sizeof(*args), thread_nr);
+-	if (args == NULL)
+-		goto free_threads;
+-
+-	num_per_thread = n / thread_nr;
+-	m = n % thread_nr;
+-	for (i = 0; i < thread_nr; i++) {
+-		args[i].tool = tool;
+-		args[i].process = process;
+-		args[i].machine = machine;
+-		args[i].mmap_data = mmap_data;
+-		args[i].dirent = dirent;
+-	}
+-	for (i = 0; i < m; i++) {
+-		args[i].num = num_per_thread + 1;
+-		args[i].start = i * args[i].num;
+-	}
+-	if (i != 0)
+-		base = args[i-1].start + args[i-1].num;
+-	for (j = i; j < thread_nr; j++) {
+-		args[j].num = num_per_thread;
+-		args[j].start = base + (j - i) * args[i].num;
+-	}
+-
+-	for (i = 0; i < thread_nr; i++) {
+-		if (pthread_create(&synthesize_threads[i], NULL,
+-				   synthesize_threads_worker, &args[i]))
+-			goto out_join;
+-	}
+-	err = 0;
+-out_join:
+-	for (i = 0; i < thread_nr; i++)
+-		pthread_join(synthesize_threads[i], NULL);
+-	free(args);
+-free_threads:
+-	free(synthesize_threads);
++	err = start_threadpool(pool);
++	if (err)
++		goto free_pool;
 +
-+/* Parallel-for utility */
++	wq = create_workqueue(pool);
++	if (!wq)
++		goto stop_pool;
 +
-+#define ceil_div(a, b) (((a)+(b)-1)/(b))
++	args.tool = tool;
++	args.process = process;
++	args.machine = machine;
++	args.mmap_data = mmap_data;
++	args.dirent = dirent;
 +
-+struct parallel_for_work {
-+	struct work_struct work;	/* work item that is queued */
-+	parallel_for_func_t func;	/* function to execute for each item */
-+	void *args;			/* additional args to pass to func */
-+	int start;			/* first item to execute */
-+	int num;			/* number of items to execute */
-+};
++	ret = parallel_for(wq, 0, n, 1, synthesize_threads_worker, &args);
++	if (ret)
++		err = ret;
 +
-+/**
-+ * parallel_for_work_fn - execute parallel_for_work.func in parallel
-+ *
-+ * This function will be executed by workqueue's workers.
-+ */
-+static void parallel_for_work_fn(struct work_struct *work)
-+{
-+	struct parallel_for_work *pfw = container_of(work, struct parallel_for_work, work);
-+	int i;
-+
-+	for (i = 0; i < pfw->num; i++)
-+		pfw->func(pfw->start+i, pfw->args);
-+}
-+
-+static inline void init_parallel_for_work(struct parallel_for_work *pfw,
-+					parallel_for_func_t func, void *args,
-+					int start, int num)
-+{
-+	init_work(&pfw->work);
-+	pfw->work.func = parallel_for_work_fn;
-+	pfw->func = func;
-+	pfw->args = args;
-+	pfw->start = start;
-+	pfw->num = num;
-+
-+	pr_debug2("pfw: start=%d, num=%d\n", start, num);
-+}
-+
-+/**
-+ * parallel_for - execute @func in parallel over indexes between @from and @to
-+ * @wq: workqueue that will run @func in parallel
-+ * @from: first index
-+ * @to: last index (excluded)
-+ * @work_size: number of indexes to handle on the same work item.
-+ *             ceil((to-from)/work_size) work items will be added to @wq
-+ *             NB: this is only a hint. The function will reduce the size of
-+ *                 the work items to fill all workers.
-+ * @func: function to execute in parallel
-+ * @args: additional arguments to @func
-+ *
-+ * This function is equivalent to:
-+ * for (i = from; i < to; i++) {
-+ *     // parallel
-+ *     func(i, args);
-+ * }
-+ * // sync
-+ *
-+ * This function takes care of:
-+ *  - creating balanced work items to submit to workqueue
-+ *  - submitting the work items to the workqueue
-+ *  - waiting for completion of the work items
-+ *  - cleanup of the work items
-+ */
-+int parallel_for(struct workqueue_struct *wq, int from, int to, int work_size,
-+		parallel_for_func_t func, void *args)
-+{
-+	int n = to-from;
-+	int n_work_items;
-+	int nr_threads = workqueue_nr_threads(wq);
-+	int i, j, start, num, m, base, num_per_item;
-+	struct parallel_for_work *pfw_array;
-+	int err = 0;
-+
-+	if (work_size <= 0) {
-+		pr_err("workqueue parallel-for: work_size must be >0\n");
-+		return -EINVAL;
-+	}
-+
-+	if (to < from) {
-+		pr_err("workqueue parallel-for: to must be >= from\n");
-+		return -EINVAL;
-+	} else if (to == from) {
-+		pr_info("workqueue parallel-for: skip since from == to\n");
-+		return 0;
-+	}
-+
-+	n_work_items = ceil_div(n, work_size);
-+	if (n_work_items < nr_threads)
-+		n_work_items = min(n, nr_threads);
-+
-+	pfw_array = calloc(n_work_items, sizeof(*pfw_array));
-+
-+	num_per_item = n / n_work_items;
-+	m = n % n_work_items;
-+
-+	for (i = 0; i < m; i++) {
-+		num = num_per_item + 1;
-+		start = i * num;
-+		init_parallel_for_work(&pfw_array[i], func, args, start, num);
-+		err = queue_work(wq, &pfw_array[i].work);
-+		if (err)
-+			goto out;
-+	}
-+	if (i != 0)
-+		base = pfw_array[i-1].start + pfw_array[i-1].num;
-+	else
-+		base = 0;
-+	for (j = i; j < n_work_items; j++) {
-+		num = num_per_item;
-+		start = base + (j - i) * num;
-+		init_parallel_for_work(&pfw_array[j], func, args, start, num);
-+		err = queue_work(wq, &pfw_array[j].work);
-+		if (err)
-+			goto out;
-+	}
-+
-+out:
-+	err = flush_workqueue(wq);
-+
-+	free(pfw_array);
-+	return err;
-+}
-diff --git a/tools/perf/util/workqueue/workqueue.h b/tools/perf/util/workqueue/workqueue.h
-index 719bd0e5fb0ce7b7..409acacbdba9e60d 100644
---- a/tools/perf/util/workqueue/workqueue.h
-+++ b/tools/perf/util/workqueue/workqueue.h
-@@ -28,4 +28,11 @@ extern int flush_workqueue(struct workqueue_struct *wq);
- 
- extern void init_work(struct work_struct *work);
- 
-+/* parallel_for utility */
-+
-+typedef void (*parallel_for_func_t)(int i, void *args);
-+
-+extern int parallel_for(struct workqueue_struct *wq, int from, int to, int work_size,
-+			parallel_for_func_t func, void *args);
-+
- #endif /* __WORKQUEUE_WORKQUEUE_H */
++	ret = destroy_workqueue(wq);
++	if (ret)
++		err = ret;
++stop_pool:
++	ret = stop_threadpool(pool);
++	if (ret)
++		err = ret;
++free_pool:
++	destroy_threadpool(pool);
+ free_dirent:
+ 	for (i = 0; i < n; i++)
+ 		zfree(&dirent[i]);
 -- 
 2.31.1
 
