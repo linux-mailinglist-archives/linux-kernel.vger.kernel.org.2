@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131493C784D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F933C7853
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235623AbhGMVAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:00:44 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56672 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235490AbhGMVAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:00:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=sNeWr16D67k9ERD9fz0l1ggJ+G2nxSzI7yaf7NQ9na0=; b=DJgFQOy4wSSnzCq9GhR
-        ZQgmbURved4np9B5ieb1Q5t48PpilGDirtKcDKFFBYWPi2Bk/XzK2iCe0AgJ/jiGiNZlv3f9oR25d
-        J60UwD3yOcGcQYZGDvyN3ENUPYXp+zx8yfiiNY0TWBBcS7ldB7PqCl2oM4XwJwYtetExwbLYWUg=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m3PTO-003sYX-HV; Tue, 13 Jul 2021 23:57:46 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET v2 0/7] skbuff: introduce skb_expand_head()
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, Joerg Reuter <jreuter@yaina.de>,
-        Ralf Baechle <ralf@linux-mips.org>, linux-hams@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
-Message-ID: <15eba3b2-80e2-5547-8ad9-167d810ad7e3@virtuozzo.com>
-Date:   Tue, 13 Jul 2021 23:57:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235771AbhGMVAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235716AbhGMVAs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 17:00:48 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44418C0613EE
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:57:58 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id g4-20020a17090ace84b029017554809f35so2056615pju.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1DqW0KvhYSIK42zC7O5KI/TTNeM/zzYloShAYV2CzpE=;
+        b=eWyy0jddXtN29MpB2D2HVwuG3z4IKomgwIsIgLyaih5fTxUChd13N0JRqGOH80TUV+
+         WtqjwGggJAMvnUEwcpeOUkWoICip1CFGD6LSbIFPQ+wQDcOTBSZGeJgdu0so8TLAuQCw
+         oHmKKJAgNUnMBXm4STr7NZLHun8HTh6onEXkPPMIj1AZVA3wPrmK32lV7O5UckRUb1XD
+         AtVCkzcbSJxZBStCGdGEtsIi7kZkgRq/EyKjVjlA+ASpzY3kMPEyHObTlEUF1UhOXWC1
+         Dpc6t6V9iaEwfyb6IENuWGS/42LpLBpiqEfkPie3xpwF0fn/zPrKcoUu3w/T0kVE/AmE
+         NouQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1DqW0KvhYSIK42zC7O5KI/TTNeM/zzYloShAYV2CzpE=;
+        b=h6/GJXdLxa7ppgub9mRLiQNAnL02rvQuALIiC+M7ZSwjwHLAafRLeqMv1OQScLAUo1
+         A47Fs8H8NzMe/EjRRz+IWgbxo18lSqT+Mx26GcCZplDt8w5PTB+Vgl7dk5VHjh8kplxR
+         ubBeLXz8bSrLsGBLOUl0EpCVfh/njep7eISd8O/fLpP9BTh00Cv/z6f8taELXO+u6MAI
+         Pt1xcx8mBVqXfXxmrO37aOyutW7HpvK5+WLTRg5ya0uET5VKr+QiNZtELHhRN2vEVbWE
+         qZ1JAO+1Ya4JU9iOOOo/XKwMr2ZlL26NAsp36HDeLTe4Brln3RxyF5pKOjziVaAzF/0A
+         Ed5Q==
+X-Gm-Message-State: AOAM532flJIq5fRCicyQqPc4WYCnCgGsYJkY7iUu8VWFweCS2+O/FbC/
+        MTlBg41cPyf2Y7eDwPsb7zBREg==
+X-Google-Smtp-Source: ABdhPJwSZs/McCYhg/hhS8WKfqryjNr8b0GDcFuBCWzj9pFrQyNjwnmRhy2UDrMeRnVoncYXBv7KMg==
+X-Received: by 2002:a17:902:8ec4:b029:129:7649:87b7 with SMTP id x4-20020a1709028ec4b0290129764987b7mr4881431plo.23.1626209877658;
+        Tue, 13 Jul 2021 13:57:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m24sm6619pgv.24.2021.07.13.13.57.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 13:57:57 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 20:57:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v2 52/69] KVM: VMX: Split out guts of EPT violation
+ to common/exposed function
+Message-ID: <YO3+UTNfbxdKNCJt@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <8e246d479e8986172d19704ef4ef4d2b666d5ac1.1625186503.git.isaku.yamahata@intel.com>
+ <6e129879-bb76-622e-19a9-afb62fcf864b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e129879-bb76-622e-19a9-afb62fcf864b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently if skb does not have enough headroom skb_realloc_headrom is called.
-It is not optimal because it creates new skb.
+On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> > +static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
+> > +					     unsigned long exit_qualification)
+> > +{
 
-Unlike skb_realloc_headroom, new helper skb_учзфтв_head 
-does not allocate a new skb if possible; 
-copies skb->sk on new skb when as needed
-and frees original skb in case of failures.
+...
 
-This helps to simplify ip[6]_finish_output2(), ip6_xmit() and a few other
-functions in vrf, ax25 and bpf.
+> > +}
+> > +
 
-There are few other cases where this helper can be used but they require
-an additional investigations. 
+...
 
-v2 changes:
- - helper's name was changed to skb_expand_head
- - fixed few mistakes inside skb_expand_head():
-    skb_set_owner_w should set sk on nskb
-    kfree was replaced by kfree_skb()
-    improved warning message
- - added minor refactoring in changed functions in vrf and bpf patches
- - removed kfree_skb() in ax25_rt_build_path caller ax25_ip_xmit
+> > @@ -5379,7 +5356,7 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
+> >   	if (unlikely(allow_smaller_maxphyaddr && kvm_vcpu_is_illegal_gpa(vcpu, gpa)))
+> >   		return kvm_emulate_instruction(vcpu, 0);
+> > -	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
+> > +	return __vmx_handle_ept_violation(vcpu, gpa, exit_qualification);
+> >   }
+> >   static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+> > 
+> 
+> This should be in main.c, not in a header (and named
+> __vt_handle_ept_qualification).
 
-NB: patch "ipv6: use skb_expand_head in ip6_finish_output2" depends on 
-patch "ipv6: allocate enough headroom in ip6_finish_output2()" submitted separately
-https://lkml.org/lkml/2021/7/12/732
-
-Vasily Averin (7):
-  skbuff: introduce skb_expand_head()
-  ipv6: use skb_expand_head in ip6_finish_output2
-  ipv6: use skb_expand_head in ip6_xmit refactoring
-  ipv4: use skb_expand_head in ip_finish_output2
-  vrf: use skb_expand_head in vrf_finish_output
-  ax25: use skb_expand_head
-  bpf: use skb_expand_head in bpf_out_neigh_v4/6
-
- drivers/net/vrf.c      | 21 +++++---------
- include/linux/skbuff.h |  1 +
- net/ax25/ax25_out.c    | 12 ++------
- net/ax25/ax25_route.c  | 13 ++-------
- net/core/filter.c      | 27 ++++-------------
- net/core/skbuff.c      | 42 +++++++++++++++++++++++++++
- net/ipv4/ip_output.c   | 13 ++-------
- net/ipv6/ip6_output.c  | 78 +++++++++++++++++---------------------------------
- 8 files changed, 90 insertions(+), 117 deletions(-)
-
--- 
-1.8.3.1
-
+Yar, though I'm guessing you meant __vt_handle_ept_violation?
