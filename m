@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2253C6AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123863C6AA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbhGMGeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233374AbhGMGet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:34:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA33E60724;
-        Tue, 13 Jul 2021 06:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626157920;
-        bh=iMuvmIE0kAoqY9keTpiEumLIadU2ExRBtXI7HPoxV+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QZyZLJFWMbKUpdZR2ktXGQyRrkH8KUoIj3itFZpEhEsIoQEceXSfEF7LuzuEVjNA4
-         UNtjwYiRjeTRWt1sERJVbSEXF2GMLgojKgW9oISVpZ5YFLKhEhD8wn+1M9lOJBv6Z8
-         CjAWInjMXqODzs9pwemPaALNT/7qMibmMSDDLouE=
-Date:   Tue, 13 Jul 2021 08:31:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO0zXVX9Bx9QZCTs@kroah.com>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+        id S233793AbhGMGgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233338AbhGMGga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 02:36:30 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF213C0613DD;
+        Mon, 12 Jul 2021 23:33:29 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id b26so15963250lfo.4;
+        Mon, 12 Jul 2021 23:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eMJaT/nZ6S3bRnzrlMyan4xNGvrrXcYoCyU3SginI2A=;
+        b=vUux1m6X3zVaN75YGOyNj4/StrdScUMFS6amXR0rSqVZKGq7PRlRo0rMYsPqhHrxq/
+         ujYO4PBrWIbVvABxQhDXSHsUiKX67UbLVFRU9fXX5Mg247KADBx7Fpg8CO6Cv/aMofrK
+         m/6DerrjN6eVVaeU+Tz1W5Sk9dabAN8EM+CU4oAvxNOjB8dljQkDBh31uIgcUneT8US7
+         OYNlDRzeHWNhIPxD5pvh2E9ihIAdTpKcLRFnMGpkd57Qv+NE/dM3Gqt0f40Nis5utYw7
+         Gm3OVgRY4dmirShEvkq73liqjr/+HeOYD2oNPjzUNW67GtjO/N/KADtDGzdL0up/rwBR
+         Hm5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eMJaT/nZ6S3bRnzrlMyan4xNGvrrXcYoCyU3SginI2A=;
+        b=Xwh5l+R4nrO9R8PiOagoaodW3bim8lj77ZZM4IPQiNboQbJa7Eay5CTqOvdB2Bh/+H
+         kwzc610wSs8AppsGAEa5XK7c0wKFRRjng70IrjbKW7gPCkMLNDt+xjCNHkzFyzrH5GZw
+         7hnQy8cXEEYcIwE5qe3fJEuwatZ4C6Nf8CmrX+lC1hdax9opvAi2FLvllwMbEtIAjM+I
+         iwszMNECedUPxSMu40kHRXoFLr8cxy+uYos2BWNTuz5PdciQQn9mzXQrAeV72RTji2ez
+         4bzcJ6VYYF83LgPpLxnues5hA3vzOiqJ7f2ZtozE3sjuOIjqSNIRRSjIqL//SGcbyz5/
+         466g==
+X-Gm-Message-State: AOAM531cdLq90oixakUY+cDTnC3r+q3gq/M+ls/KQYN5W72+cEL7PCtx
+        cvkSXRH0Tm2Ob5myWZzMk0kFFtx4XEjS4IblcNA=
+X-Google-Smtp-Source: ABdhPJyNTI/m2EI6US1z4Qhq+ZpzG82hXaT5ovcFwoPSSlrcEZhk8S5Q8+IsGbxPNQH2dx01/VQdaqHNCtCaiOKcPrg=
+X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr2194335lfr.576.1626158008035;
+ Mon, 12 Jul 2021 23:33:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+References: <20210711141002.103445-1-dwaipayanray1@gmail.com> <20210712194433.GA1002@aus-x-yghannam.amd.com>
+In-Reply-To: <20210712194433.GA1002@aus-x-yghannam.amd.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Tue, 13 Jul 2021 12:03:17 +0530
+Message-ID: <CABJPP5AHCidvreH0segwYmHL8k1+1uxSjRRtOeexR1vYPhh9Vg@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers:edac: Use DEVICE_ATTR helper macros
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     bp@alien8.de, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        tony.luck@intel.com, james.morse@arm.com, rric@kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        kbuild-all@lists.01.org, linux-edac@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>, lkp@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:55:01PM -0700, Hugh Dickins wrote:
-> On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
-> 
-> > This is the start of the stable review cycle for the 5.13.2 release.
-> > There are 800 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.2-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > -------------
-> > Pseudo-Shortlog of commits:
-> > 
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >     Linux 5.13.2-rc1
-> 
-> Hi Greg,
-> 
-> Sorry to be making waves, but please, what's up with the 5.13.2-rc,
-> 5.12.17-rc, 5.10.50-rc, 5.4.132-rc stable release candidates?
+On Tue, Jul 13, 2021 at 1:14 AM Yazen Ghannam <yazen.ghannam@amd.com> wrote:
+>
+> On Sun, Jul 11, 2021 at 07:40:02PM +0530, Dwaipayan Ray wrote:
+> > Instead of "open coding" DEVICE_ATTR, use the corresponding
+> > helper macros DEVICE_ATTR_{RW,RO_WO} in amd64_edac.c
+> >
+>
+> I think you meant to write "RO,WO" rather than "RO_WO", correct?
+>
 
-They show the problem that we currently have where maintainers wait at
-the end of the -rc cycle and keep valid fixes from being sent to Linus.
-They "bunch up" and come out only in -rc1 and so the first few stable
-releases after -rc1 comes out is huge.  It's been happening for the past
-few years and only getting worse.  These stable releases are proof of
-that, the 5.13.2-rc release was the largest we have ever done and it
-broke one of my scripts because of it :(
+Yes that's correct. It's a typo. I will fix it.
 
-I know personally I do this for my subsystems, having fixes that are
-trivial things batch up for -rc1 just because they are generally not
-worth getting into -final.  But that is not the case with many other
-subsystems as you can see by these huge patch sequences.
+> Was this change inspired by a code-checking tool or script?
+>
 
-> Amongst the 2000+ patches posted today, there are a significant number
-> of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
-> yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
-> 
-> Am I out of date?  I thought that had been agreed not to happen:
-> https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
-> is the thread I found when I looked for confirmation, but I believe the
-> same has been agreed before and since too.
-> 
-> Andrew goes to a lot of trouble to establish which Fixes from his tree
-> ought to go to stable.  Of course there will be exceptions which we
-> later decide should go in after all; but it's worrying when there's a
-> wholesale breach like this, and I think most of them should be dropped.
-> 
-> To pick on just one of many examples (sorry Miaohe!), a patch that
-> surprises me, but I've not had time to look into so far, and would
-> not want accelerated into X stable releases, 385/800
-> 
-> > Miaohe Lin <linmiaohe@huawei.com>
-> >     mm/shmem: fix shmem_swapin() race with swapoff
+Yes, the particular warnings were detected via a checkpatch run on
+the whole kernel and screening for really unwanted violations.
+However, the changes were made manually.
 
-Sasha, and I, take patches from Linus's tree like the above one that
-have "Fixes:" tags in them as many many maintainers do not remember to
-put "cc: stable" on their patches.
 
-The above patch says it fixes a problem in the 5.1 kernel release, so
-Sasha queued it up for 5.10, 5.12, and 5.13.  Odds are he should have
-also sent a "FAILED" notice for 5.4, but we don't always do that for
-patches only with a Fixes tag all the time as we only have so much we
-can do...
+> > Some function names needed to be changed to match the device
+> > conventions <foo>_show and <foo>_store, but the functionality
+> > itself is unchanged.
+> >
+> > The devices using EDAC_DCT_ATTR_SHOW() are left unchanged.
+> >
+> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> > ---
+> >
+> > Changes in v2:
+> > - Revert back the device name changes which broke
+> >   the kernel. These were using the macro EDAC_DCT_ATTR_SHOW()
+> >   to construct the show methods based on device name.
+> >   Reported by Kernel test bot.
+> >
+> >  drivers/edac/amd64_edac.c | 21 ++++++++-------------
+> >  1 file changed, 8 insertions(+), 13 deletions(-)
+> >
+>
+> The $SUBJECT should say something like "EDAC/amd64" since the change is
+> wholly within amd64_edac.c. Using "driver:edac" makes it seem like this
+> patch affects multiple EDAC modules.
+>
 
-So is that tag incorrect?  If not, why was it not cc: stable?  Why is it
-not valid for a stable release?  So far, all automated testing seems to
-show that there are no regressions in these releases with these commits
-in them.  If there was a problem, how would it show up?
+That makes sense. I will send in a new patch with these updates.
 
-And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
-bot, but that is not what caused this commit to be added to a stable
-release.
+> But otherwise it looks good to me.
+>
+> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+>
+> Thanks,
+> Yazen
 
-Trying to keep a "do not apply" list for Fixes: tags only is much harder
-for both of us as we do these semi-manually and review them
-individually.  Trying to remember what subsystem only does Fixes tags
-yet really doesn't mean it is an impossible task.
-
-We are glad to drop any patch added to a -rc release, just let us know.
-We are also glad to revert them later on if a developer/maintainer does
-not catch them in time before a release happens.
-
-thanks,
-
-greg k-h
+Thanks for the review,
+Dwaipayan.
