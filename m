@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823E23C764C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEA33C7659
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbhGMSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        id S233456AbhGMSUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhGMSRb (ORCPT
+        with ESMTP id S229500AbhGMSUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:17:31 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D628C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:14:41 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id h4so22306684pgp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:14:41 -0700 (PDT)
+        Tue, 13 Jul 2021 14:20:17 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9BEC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:17:27 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id t143so10399849oie.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:17:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qYLRuC1J401GJNPoirPCf0sUsfjE1s5mBPfucqVBo/o=;
-        b=TemUpZC6DppCYmoiy4LOJWEQeqEKh09xAT6P4VzLXIMbauvxoS4EP330OrBhT+KMD8
-         cR2UVyVjCHceV7KPG7a9NZZmYbyYSNNWo475SwL++N6I4zXO9yWb6VASQns9WnzfMOFh
-         bHOmRt1m1x3AWl7z7ZKkjnUYvtZBijxS76sM/rse9ZmiC4tDHj3JBMAKP7TwgtjAxjVn
-         Xf7JqdMkTGH04bfp2wk+pGQ3QGL2Tjh7KcfaEciMt87JIcLooAuNboN9SqoujtPQpTeI
-         OX+q/7+1EwbpEtAufvbfEpN5lwH2yQY3OLYOTHt6yHv4KeueUCfkzIhTGMNnAtOJtiw6
-         ZiUA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vFrqYhL05Vy05BtALwYpKWHwESItGNqrbz0D2wIZh/8=;
+        b=XKet3qSvQzAW0CYQ3Mv8rPqZlV08oQkiC38RlWJHjAry3NDC8WoR8OMxyNlLndBKPU
+         xEjG+MGOcde5tFKKGogCbkauPLTs6mnu5TbBwREyudcUzQIPotLM/s4yXFA8zm12b925
+         0Q1WZYEgez1rxHz/7dcdE+zcnI5+JeUIYW4KN+d+1eBm9O/IrxeywcZBpCh5VQqmu4XV
+         ub3oPEnNTFh/9GeKUkZr/c0i2L0X91uyimpnC/eFyYarU/x81XtWFXyxQGIxZtUVFmy3
+         Mjkky6SkypdJbOusvor35ECe2A8k8N9OnN77L6AvHKew0jXKyHPylSeF4WYOkLpGGbxc
+         BRVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qYLRuC1J401GJNPoirPCf0sUsfjE1s5mBPfucqVBo/o=;
-        b=S6YovX/ykLaRa+7hi7onHQ8TFUZwsfN0MSTTaCe1nMnlKgI1eVrFmwUwvVC9S4sXbt
-         d2zdfFEm2ZtQ42IeBJMSXihlqgFXhy8/SUxnXutCUO/NE+f2PwXqFJrTFgvqcKRQehW2
-         CufuPGuc95BUx1w7anv/EMVJ06ZkQjgANA7RaeA4EnrlCda8GRVphfBNNNqT+A4RubPU
-         nYEn9AicCAyOKyA011xdC7t9CVeNzdvPSH2XZ32g662YaIBJPgG5ObMPGNcgvpzIq/l9
-         BnoRoGOZPCltphSu8IwZewTxAbxDqNEv1PJLUf2MCOl55XJQsW8oR/PP4E+miJGSndSq
-         iw8g==
-X-Gm-Message-State: AOAM531GeZMnQUnKfp2QTYkMnRJRMAfJnII9rljbVK9k4gRRsw6sxTVD
-        cgdZ3K09izdhqbZa29NcTiofgg==
-X-Google-Smtp-Source: ABdhPJw025D+QHvSXH7m/XdthsugBc+I0Bqri4rgbbh9zByxwSwtsOJDy77eNp2z0ZK1gdsXdBMXIg==
-X-Received: by 2002:a63:5c1b:: with SMTP id q27mr5441771pgb.284.1626200081027;
-        Tue, 13 Jul 2021 11:14:41 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x9sm109548pfd.100.2021.07.13.11.14.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 11:14:40 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 18:14:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: Re: [RFC PATCH v2 65/69] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
-Message-ID: <YO3YDXLV7RQzMmXX@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <5f87f0b888555b52041a0fe32280adee0d563e63.1625186503.git.isaku.yamahata@intel.com>
- <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vFrqYhL05Vy05BtALwYpKWHwESItGNqrbz0D2wIZh/8=;
+        b=Gc7uLkwT1ferFW7cUfZzBDlen2E6MISn2eNC+d1IFX8p2JwBbvH2DP54S/z254ITko
+         X4XYmjprV55MUjkyN568G3/5ie3JlqOv1fUSYMahXNUqiXqh5QGpw0PDKhrDORcf9awi
+         BObpF8Z4l+KDJ6q2uZ71GyGWw5VQr17Jzw4u15F+sqKKKzUT/2Gh/ODPRNiWkjhkmrfP
+         CE2zEFTjP52MYKewxtEYowUByqtYuywYz2U12VJ/+MR7BCcQm314rvkx9ayRC9Nx3JUo
+         ugEbFDaKX5dDn4Vn32UXNfmQ00n2bF178qAf3hgg8Q2EOG9X2Yku0bk5u16VskGlTYZJ
+         z0aA==
+X-Gm-Message-State: AOAM532au/gZL2l04EUMMbNB9lULuyBrHCk/EX7aQAf16c9vdx7EAD4z
+        Mf8t6l5fwmGTPQ+rseXeqqKc/SolWRBSpBhScQ05Dw==
+X-Google-Smtp-Source: ABdhPJw/miWyaTCWv3dN7r5q8Ey8ctzHNqRBDij00bssaHzcW39TXaUcVynU8RTvsMsQNppRYTOJcl9FNFhtX5yRSR8=
+X-Received: by 2002:aca:4dc6:: with SMTP id a189mr4077592oib.166.1626200245878;
+ Tue, 13 Jul 2021 11:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
+References: <20210713093438.3173-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20210713093438.3173-1-peter.ujfalusi@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 13 Jul 2021 11:17:15 -0700
+Message-ID: <CAPcyv4ipa7LBA6ewTqot4nxdKdFNTswQT9pkNKydv9ChQ2Hcpw@mail.gmail.com>
+Subject: Re: [PATCH] driver core: auxiliary bus: Fix memory leak when
+ driver_register() fail
+To:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        David M Ertman <david.m.ertman@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021, Paolo Bonzini wrote:
-> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
-> > From: Xiaoyao Li <xiaoyao.li@intel.com>
-> > 
-> > Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
-> > for kvm_arch_vcpu_create().
-> > 
-> > This field is going to be used by TDX since TSC frequency for TD guest
-> > is configured at TD VM initialization phase.
-> > 
-> > Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >   arch/x86/include/asm/kvm_host.h | 1 +
-> >   arch/x86/kvm/x86.c              | 3 ++-
-> >   2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> So this means disabling TSC frequency scaling on TDX.  Would it make sense
-> to delay VM creation to a separate ioctl, similar to KVM_ARM_VCPU_FINALIZE
-> (KVM_VM_FINALIZE)?
+On Tue, Jul 13, 2021 at 2:34 AM Peter Ujfalusi
+<peter.ujfalusi@linux.intel.com> wrote:
+>
+> If driver_register() returns with error we need to free the memory
+> allocated for auxdrv->driver.name before returning from
+> __auxiliary_driver_register()
+>
+> Fixes: 7de3697e9cbd4 ("Add auxiliary bus support")
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-There's an equivalent of that in the next mega-patch, the KVM_TDX_INIT_VM sub-ioctl
-of KVM_MEMORY_ENCRYPT_OP.  The TSC frequency for the guest gets provided at that
-time.
+Good catch,
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
