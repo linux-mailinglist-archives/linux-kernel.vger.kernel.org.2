@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D985A3C6D87
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746653C6D90
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235071AbhGMJfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:35:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45396 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbhGMJfU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:35:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EA65722119;
-        Tue, 13 Jul 2021 09:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626168749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w3Sj149XMB0QShxaoOCWjevBXrahbi07+L3gB+CfwcY=;
-        b=ot/bciPDVvOfiixjXDQj8Exwa60bHVBMfYFRPkmjCAiEVydB3+a/oY7lMDr50NPShpqoaD
-        5AjG672jzBPfbZWlzKmIsN35BbuWbMUZ9OCy7IcmuYM49Hb9/ejf+jjq7HYlc1WIdgoWzs
-        9lHYaH0S1NVQF0ZFYxbk6AsTLMXUDsY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BB9CAA3B9A;
-        Tue, 13 Jul 2021 09:32:29 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 11:32:29 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, vbabka@suse.cz,
-        axboe@kernel.dk, iamjoonsoo.kim@lge.com, alexs@kernel.org,
-        apopple@nvidia.com, willy@infradead.org, minchan@kernel.org,
-        david@redhat.com, shli@fb.com, hillf.zj@alibaba-inc.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] mm/vmscan: fix misleading comment in
- isolate_lru_pages()
-Message-ID: <YO1drWweAjSz8Oa+@dhcp22.suse.cz>
-References: <20210710100329.49174-1-linmiaohe@huawei.com>
- <20210710100329.49174-6-linmiaohe@huawei.com>
- <YOvvFaYMBhISeGEI@dhcp22.suse.cz>
- <ed30bbc5-8438-d399-a9ef-462eda1b6d4e@huawei.com>
+        id S235079AbhGMJhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:37:41 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52088 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234819AbhGMJhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 05:37:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="273964736"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="273964736"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 02:34:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="492686722"
+Received: from pujfalus-mobl.ger.corp.intel.com (HELO peter-virtualbox.ger.corp.intel.com) ([10.252.60.138])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 02:34:45 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        david.m.ertman@intel.com
+Cc:     dan.j.williams@intel.com, ranjani.sridharan@linux.intel.com,
+        linux-kernel@vger.kernel.org, peter.ujfalusi@linux.intel.com
+Subject: [PATCH] driver core: auxiliary bus: Fix memory leak when driver_register() fail
+Date:   Tue, 13 Jul 2021 12:34:38 +0300
+Message-Id: <20210713093438.3173-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed30bbc5-8438-d399-a9ef-462eda1b6d4e@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-07-21 19:16:47, Miaohe Lin wrote:
-> On 2021/7/12 15:28, Michal Hocko wrote:
-> > On Sat 10-07-21 18:03:29, Miaohe Lin wrote:
-> >> We couldn't know whether the page is being freed elsewhere until we failed
-> >> to increase the page count.
-> > 
-> > This is moving a hard to understand comment from one place to another.
-> 
-> If get_page_unless_zero failed, the page could have been freed elsewhere. I think
-> this looks straightforward but doesn't help a lot. Are you preferring to just
-> remove this comment ?
+If driver_register() returns with error we need to free the memory
+allocated for auxdrv->driver.name before returning from
+__auxiliary_driver_register()
 
-Yes the comment in its current form is not really helpful much. Does it
-deserve a single liner to drop it? Likely not on its own without more
-changes in that area.
+Fixes: 7de3697e9cbd4 ("Add auxiliary bus support")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ drivers/base/auxiliary.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index adc199dfba3c..6a30264ab2ba 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -231,6 +231,8 @@ EXPORT_SYMBOL_GPL(auxiliary_find_device);
+ int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
+ 				struct module *owner, const char *modname)
+ {
++	int ret;
++
+ 	if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
+ 		return -EINVAL;
+ 
+@@ -246,7 +248,11 @@ int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
+ 	auxdrv->driver.bus = &auxiliary_bus_type;
+ 	auxdrv->driver.mod_name = modname;
+ 
+-	return driver_register(&auxdrv->driver);
++	ret = driver_register(&auxdrv->driver);
++	if (ret)
++		kfree(auxdrv->driver.name);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(__auxiliary_driver_register);
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.32.0
+
