@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC593C7645
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDDE3C7648
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhGMSNg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 14:13:36 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:33571 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGMSNg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:13:36 -0400
-Received: by mail-vs1-f53.google.com with SMTP id j8so12855414vsd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:10:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qlhl2E4nqEvej10lWriIdCXDfOfI/z5zwQZ0hljp3Qc=;
-        b=baWQAcbEN26/xaDaeP8sVQl7wX7hBxHEFYH9DcN+pge2ORvARzAVQadZbp+c4WHk9E
-         sCzrcKjr59TZtHKyhIRhuoJMYViZgfsRBsSLd5obMCz6O0mixeqv1oeibwOwXDKTkqo8
-         1pb9nc/Fv//J4W0bSIFZKBqBiOOSUsuKiVrWdzQKQnp4zoNNzxO6aKrXKTrIdnzog4HR
-         31E/At3TfC7TNwvG19rrOloNC0ZeTtjSGcp3iGyY7FyDz3FIEKhm3dapl89QuGJ5JaRC
-         17syXduwVR3DxrxwnAghZYJ008eEwPTizOtYEtPsuIEex8Isc8VFK6Nfzd7czqXhXo3X
-         H8/Q==
-X-Gm-Message-State: AOAM532kLldWTVQ3CkzPo1xO18Dx3wZuWf4KCAV7+DCyZghYN9bu1937
-        SmeHXX19fFKW1eNKcozeVHDNoFO+iq9xm0mL2cY=
-X-Google-Smtp-Source: ABdhPJzePsGsxOA9mqBP7SE9ett5dB4ezFPwOrW7KOdf7lH79pezfcjEWLC1BHM6GAPhc1Dl5k1pOmVQ5W5h+wTAFeY=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr7981244vsd.42.1626199844405;
- Tue, 13 Jul 2021 11:10:44 -0700 (PDT)
+        id S231499AbhGMSQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:16:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhGMSQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:16:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A2361374;
+        Tue, 13 Jul 2021 18:13:09 +0000 (UTC)
+Date:   Tue, 13 Jul 2021 19:13:02 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
+ compat_auxtrace_mmap__{read_head|write_tail}
+Message-ID: <20210713181301.GE13181@arm.com>
+References: <20210711104105.505728-1-leo.yan@linaro.org>
+ <20210711104105.505728-12-leo.yan@linaro.org>
+ <20210712144410.GE22278@shell.armlinux.org.uk>
+ <20210713154602.GD748506@leoy-ThinkPad-X240s>
+ <20210713161441.GK22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <3e1dbea4-3b0f-de32-5447-2e23c6d4652a@gmail.com>
- <60c1f087-1e8b-8f22-7d25-86f5f3dcee3f@gmail.com> <20210710014915.GA149706@roeck-us.net>
-In-Reply-To: <20210710014915.GA149706@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Jul 2021 20:10:33 +0200
-Message-ID: <CAMuHMdWrrP37Kfp4yC8G5f6SvMtD6u_=JkqX-Nd97FS_mayYWQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] riscv: __asm_copy_to-from_user: Optimize unaligned
- memory access and pipeline stall
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713161441.GK22278@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Günter, Tsukamoto-san,
+On Tue, Jul 13, 2021 at 05:14:41PM +0100, Russell King wrote:
+> On Tue, Jul 13, 2021 at 11:46:02PM +0800, Leo Yan wrote:
+> > On Mon, Jul 12, 2021 at 03:44:11PM +0100, Russell King (Oracle) wrote:
+> > > On Sun, Jul 11, 2021 at 06:41:05PM +0800, Leo Yan wrote:
+> > > > When perf runs in compat mode (kernel in 64-bit mode and the perf is in
+> > > > 32-bit mode), the 64-bit value atomicity in the user space cannot be
+> > > > assured, E.g. on some architectures, the 64-bit value accessing is split
+> > > > into two instructions, one is for the low 32-bit word accessing and
+> > > > another is for the high 32-bit word.
+> > > 
+> > > Does this apply to 32-bit ARM code on aarch64? I would not have thought
+> > > it would, as the structure member is a __u64 and
+> > > compat_auxtrace_mmap__read_head() doesn't seem to be marking anything
+> > > as packed, so the compiler _should_ be able to use a LDRD instruction
+> > > to load the value.
+> > 
+> > I think essentially your question is relevant to the memory model.
+> > For 32-bit Arm application on aarch64, in the Armv8 architecture
+> > reference manual ARM DDI 0487F.c, chapter "E2.2.1
+> > Requirements for single-copy atomicity" describes:
+> > 
+> > "LDM, LDC, LDRD, STM, STC, STRD, PUSH, POP, RFE, SRS, VLDM, VLDR, VSTM,
+> > and VSTR instructions are executed as a sequence of word-aligned word
+> > accesses. Each 32-bit word access is guaranteed to be single-copy
+> > atomic. The architecture does not require subsequences of two or more
+> > word accesses from the sequence to be single-copy atomic."
+> 
+> ... which is an interesting statement for ARMv7 code. DDI0406C says
+> similar but goes on to say:
+> 
+>    In an implementation that includes the Large Physical Address
+>    Extension, LDRD and STRD accesses to 64-bit aligned locations
+>    are 64-bit single-copy atomic as seen by translation table
+>    walks and accesses to translation tables.
+> 
+> then states that LPAE page tables must be stored in memory that such
+> page tables must be in memory that is capable of supporting 64-bit
+> single-copy atomic accesses.
 
-On Sat, Jul 10, 2021 at 3:50 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> On Wed, Jun 23, 2021 at 09:40:39PM +0900, Akira Tsukamoto wrote:
-> > This patch will reduce cpu usage dramatically in kernel space especially
-> > for application which use sys-call with large buffer size, such as network
-> > applications. The main reason behind this is that every unaligned memory
-> > access will raise exceptions and switch between s-mode and m-mode causing
-> > large overhead.
-> >
-> > First copy in bytes until reaches the first word aligned boundary in
-> > destination memory address. This is the preparation before the bulk
-> > aligned word copy.
-> >
-> > The destination address is aligned now, but oftentimes the source address
-> > is not in an aligned boundary. To reduce the unaligned memory access, it
-> > reads the data from source in aligned boundaries, which will cause the
-> > data to have an offset, and then combines the data in the next iteration
-> > by fixing offset with shifting before writing to destination. The majority
-> > of the improving copy speed comes from this shift copy.
-> >
-> > In the lucky situation that the both source and destination address are on
-> > the aligned boundary, perform load and store with register size to copy the
-> > data. Without the unrolling, it will reduce the speed since the next store
-> > instruction for the same register using from the load will stall the
-> > pipeline.
-> >
-> > At last, copying the remainder in one byte at a time.
-> >
-> > Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
->
-> This patch causes all riscv32 qemu emulations to stall during boot.
-> The log suggests that something in kernel/user communication may be wrong.
->
-> Bad case:
->
-> Starting syslogd: OK
-> Starting klogd: OK
-> /etc/init.d/S02sysctl: line 68: syntax error: EOF in backquote substitution
-> /etc/init.d/S20urandom: line 1: syntax error: unterminated quoted string
-> Starting network: /bin/sh: syntax error: unterminated quoted string
+A similar statement is in the ARMv8 ARM (E2.2.1 in version G.a).
 
-> # first bad commit: [ca6eaaa210deec0e41cbfc380bf89cf079203569] riscv: __asm_copy_to-from_user: Optimize unaligned memory access and pipeline stall
+> In Linux, we assume all RAM that the kernel has access to can contain
+> page tables. So by implication, all RAM that the kernel has access to
+> and exposes to userspace must be 64-bit single-copy atomic (if not,
+> we have a rather serious bug.)
 
-Same here on vexriscv. Bisected to the same commit.
+Indeed. We should assume that the SDRAM supports all the CPU features.
 
-The actual scripts look fine when using "cat", but contain some garbage
-when executing them using "sh -v".
+> The remaining question is whether it would be sane for LDRD and STRD
+> to be single-copy atomic to translation table walkers but not to other
+> CPUs. Since Linux expects to be able to modify the page tables from
+> any CPU in the system, this requirement must hold, otherwise it's going
+> to be a really strangely designed system.
 
-Tsukamoto-san: glancing at the patch:
+The above statement does say "translation table walks and accesses to
+translation tables". The accesses can be LDRD/STRD instructions from
+other CPUs. Since the hardware can't tell whether the access is to a
+page table, the designers just made LDRD/STRD single-copy atomic.
 
-+       addi    a0, a0, 8*SZREG
-+       addi    a1, a1, 8*SZREG
+> I'd be interested to hear what Catalin and Will have to say on this,
+> but I suspect in practice, Arm systems that are running Linux with
+> LPAE (ARMv7+LPAE, ARMv8) will implement LDRD and STRD with 64-bit
+> single-copy atomic semantics.
 
-I think you forgot about rv32, where registers cover only 4
-bytes each?
+That's my understanding as well. In theory one could have a page table
+access from EL0, so it should be atomic.
 
-Gr{oetje,eeting}s,
-
-                        Geert
+We could try to clarify E2.2.1 to simply state that naturally aligned
+LDRD/STRD are single-copy atomic without any subsequent statement on the
+translation table.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Catalin
