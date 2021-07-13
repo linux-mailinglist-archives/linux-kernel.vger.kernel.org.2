@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719FC3C6F1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF1D3C6F20
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhGMLIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:08:30 -0400
-Received: from mail-bn8nam11on2074.outbound.protection.outlook.com ([40.107.236.74]:38977
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231838AbhGMLI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:08:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ESuLIDOE12V6tQiuk8XvhqPkQHzcnrt6lCrMmz/wXWgvpRvQt8tvlGLOxfVHKToY3R5azuONXH1StVXOhrYKiuCSVyBJSHPYl8zs86XwB6pVy49wTJyDCKXXYFpRZ3xdSW8CXTODvH66g71OcQFx9A4ONoAT85ugP5j6AXo8bgTaOzVuRj1aT/9CXDnCdMzk4wqF302RumJvC1sauIMQAOfuPepR0XvuNQyZK8LpWb7TmDmshYCDddBKSHppWwdlZny8riG9IMMo0UqbGX3IO7AVM4HN4Ka0UbZ0kd+smdodhst8lbxpH0MUmdU5pGslc15rheMBT1tAszpyWEvE3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iDWblUW8p3Epy6k7TpleMS+0XEm3sH932aDgM8KGsOc=;
- b=lFr5l2ie4moMLJygLACBFymZ1UfuoBMPJYlOf3Hg5LTWqnNiSMEsAl6fGFKs+Lecy92vn7B2Q1wUePJlvwukwLcX4uIiBsdbKZ6f+jOgSvanq269tM33qZEFTOWQB4U1SzXtBj/xC8NbPx2UcpXWfN4Uc71vK4T6mTPqsGDP8ReokP8EAjRUpTNs5ijrf7AOoSm/49+b4kUATURNkKHmO9rkwDfVPtNns8nUxqKC92KShFLtypZmlD2HhOZO+8SYYb3cw6VSKUwo8Fcd/adwwdwlR7IBoegubanzH0FwcMTOMU524uHdjBUusSmEcjfAtU5e4XypSqN/VA28EoJ4Xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iDWblUW8p3Epy6k7TpleMS+0XEm3sH932aDgM8KGsOc=;
- b=ij5iXxi7hE5YIiYxj6IgUgQX1bVuJn2JLDPYu8wQ4wDAx4xYXdrXUj+Rnhjm0ozB0ayyoL59CVsu4Vz7rC/4URVpxhypPFCBQ0i5zzymxbKEdTNWbrcF/9MuZvHFQu9Q7lAQ15erIUtcDQCHGs9BN0FIMiNNG898V9pBu19/4ww=
-Received: from DM5PR10CA0024.namprd10.prod.outlook.com (2603:10b6:4:2::34) by
- CH2PR12MB4859.namprd12.prod.outlook.com (2603:10b6:610:62::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4308.22; Tue, 13 Jul 2021 11:05:37 +0000
-Received: from DM6NAM11FT008.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:2:cafe::2f) by DM5PR10CA0024.outlook.office365.com
- (2603:10b6:4:2::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Tue, 13 Jul 2021 11:05:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT008.mail.protection.outlook.com (10.13.172.85) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 11:05:37 +0000
-Received: from amd-WhiteHaven.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 13 Jul
- 2021 06:05:33 -0500
-From:   Shirish S <shirish.s@amd.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        "Mel Gorman" <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, Shirish S <shirish.s@amd.com>
-Subject: [PATCH] sched/debug: print column titles of show_state_filter()
-Date:   Tue, 13 Jul 2021 16:35:18 +0530
-Message-ID: <20210713110518.52243-1-shirish.s@amd.com>
-X-Mailer: git-send-email 2.17.1
+        id S235797AbhGMLJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231838AbhGMLJZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:09:25 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59792C0613DD;
+        Tue, 13 Jul 2021 04:06:35 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id p8so29925132wrr.1;
+        Tue, 13 Jul 2021 04:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dw6lkmr1adgEO4fWE9M60Uv0CtnlK8zie8DhmKgSQJc=;
+        b=eS5w/M7OXRH/7Fs5b98t1/MMZJGxSrFU2Sg4ft5X8fluP/kWCGHwq1AAGk5DJh2qqT
+         TDTgi59pPFBjCfLwr54RAz24lJfKu4R34mKLiFRVJKZh/DbJdEcJJEhBwHmOmoViqdnU
+         vff2exXO6WUkyRHePB7IwYd4/Rno/eGenyhaHNhU5p00aUi2jk/ERdexVXDhHA8avU3u
+         Rq5NIpT/7HgPhTLMx8h9hgUYC0GX1H0f4hvSE6ml8mctySY/OfXeWq03ivrsSxXNksfl
+         Vu98Okw8u/70WTXCkZOdzgpsH0b3LBtkRZL2mzbWJV6ixtrsF5ZzrlljTOSiElOKDOfG
+         7Nyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dw6lkmr1adgEO4fWE9M60Uv0CtnlK8zie8DhmKgSQJc=;
+        b=c6RyyfZYNjuOYL7zFyUKfIFi4HNTlRySDrmMfYHZVVo4F0smJCZrI7auyUxJNM/RsK
+         4JJLM3QAk7aUIEIboqzi6KR6WWOAuMFYvZ721kB8+8jU1GXoyB90U4uFuUIxHcSRWwon
+         HEgjIpYjq26ptiNKunRfSwXgCYeODleM/Q6kQBh+mzC1+2na0hnkxhuI+3/YVFlKBH/y
+         8Zpm3wqq8VUHbDB73ZGDv+sTBu5jELM402W2LQ5CAZf44ugktGDEWT4eW629wsAtXqbD
+         rzl9wm9AUuNdmj8KbAo3jPvTO5V3DeRtLju/OIqn0fke7tttJcjEoLlP5yg8CbmQ7CN4
+         Ufiw==
+X-Gm-Message-State: AOAM532RAwY5jnKPxhnCWB0A9E8Q85GCur++0oa4ng14C+CwDAnfEAXj
+        AWZmkVAl37cEVIUXcnD5qBw=
+X-Google-Smtp-Source: ABdhPJzbTN73Ez/+vNM5fN4OAKfb8Lsh89OilGH8UG5oRkFycM5EOFPV/2Hh6EPM4Qvs7Lf/tWktvA==
+X-Received: by 2002:adf:a1c2:: with SMTP id v2mr4890635wrv.155.1626174393945;
+        Tue, 13 Jul 2021 04:06:33 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id o11sm14660881wmq.1.2021.07.13.04.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 04:06:33 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 12:06:31 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/598] 5.10.50-rc2 review
+Message-ID: <YO1zt7SY+rzDFMDs@debian>
+References: <20210712184832.376480168@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 57a0db6f-c845-4d45-1e4c-08d945ee2511
-X-MS-TrafficTypeDiagnostic: CH2PR12MB4859:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB4859CDD0E49F8F8500A3D067F2149@CH2PR12MB4859.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DyuuJvOpjKZJb3/woUm3rNvwnGpIn2VzDO0EqXC/PpVj12Seo7VUXH3KlJgBzNKCJnS5FzDNg8Sq28+Odm+4+JsLyVUrRd5Bs4Lc4OmGbgJ0qJKBFfN1dvkqXZ38DjM0DSjXhRRTUg9uB2+JbaCXvPhfBPLtvBgXSBrS4w37VFZHulrz7l7gDPyWnCUPqRufQHXQJ0MP6NKUtuLtGRVB5xoyJqbhIB/40dxg833CSEJeXmD+ybCiF+9rHAUmW2u4QXPLbOgJT73GMrdEASBTRR5XBJstT/NcSiZLNmb3CIpjgg0efl9J7jhoZEki1DzCzxD/OJ50AQEj8pN5QXacXhK2ZAtHeh8cNtOx4iCmHO+B2KSfJzSIhLl3VMGOewLc27L6bEs/h1+i1/MlmrCBki54HxOWh3K9sW9JVahNSF087H46/vqmegoxmH8OUlHKz/XsYrRQ+XyTP/CVH9iI8GKvaxKT0kfMr2IenOHja0jZp3FfdHpJ3OvmMF+zZvYRjGTBeEgYZy6UxxG7AOIDMmYJmqwf1bazPMjYmtaVmtoekSAV72NBhmkmvlFJMZbL6YRn4SdMIvxaFd6crFkwzI1hrURm6m2r+Wsj/i1SqQsnD+3elPLqR40XnmhSFYTrxEHOauO5TyS0CsnBZP6edUM4+sHvysr5fUT6ZHIvW16GyMBMOHLlQ16qRXRKPnjahnYKfKKfG5fKETD5srge+QdKDHAmLjRefaCanuftfjk=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(36840700001)(5660300002)(47076005)(8676002)(70586007)(4326008)(4744005)(36756003)(336012)(81166007)(8936002)(70206006)(186003)(356005)(83380400001)(54906003)(110136005)(6666004)(478600001)(426003)(7416002)(16526019)(82310400003)(316002)(26005)(7696005)(36860700001)(1076003)(86362001)(2906002)(2616005)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 11:05:37.5068
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57a0db6f-c845-4d45-1e4c-08d945ee2511
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT008.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4859
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712184832.376480168@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This addition in the debug output shall improve readablitly..
-Its not intuitive for users that the pid printed in last column
-is of parent process.
+Hi Greg,
 
-Signed-off-by: Shirish S <shirish.s@amd.com>
----
- kernel/sched/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On Mon, Jul 12, 2021 at 08:49:35PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.50 release.
+> There are 598 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 18:45:43 +0000.
+> Anything received after that time might be too late.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2d9ff40f4661..d95d46a89e7e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8194,6 +8194,11 @@ void show_state_filter(unsigned int state_filter)
- {
- 	struct task_struct *g, *p;
- 
-+#if BITS_PER_LONG == 32
-+	pr_info("  task                PC stack   pid father\n");
-+#else
-+	pr_info("  task                        PC stack   pid father\n");
-+#endif
- 	rcu_read_lock();
- 	for_each_process_thread(g, p) {
- 		/*
--- 
-2.17.1
+Build test:
+mips (gcc version 11.1.1 20210702): 63 configs -> no failure
+arm (gcc version 11.1.1 20210702): 105 configs -> no new failure
+arm64 (gcc version 11.1.1 20210702): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+arm64: Booted on rpi4b (4GB model). No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
