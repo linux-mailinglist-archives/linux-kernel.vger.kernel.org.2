@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D740A3C6F9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FFF3C6FA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbhGMLYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S235891AbhGMLZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235413AbhGMLYd (ORCPT
+        with ESMTP id S235709AbhGMLZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:24:33 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA12DC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:21:42 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id f17so29995089wrt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=X8xv8rGJpjxSJR0ZZ1INoCyEgsaBC8NAw+scozjjM+4=;
-        b=AQj5e6C5XEeEXRIG8v5iLTKUk/Gr+MfghzTZo8yRS78ajPrpvbWofiwJitoaFyhLuo
-         xZWD8vvLdBGMNZAa/xRnm/OaZYHeROA5x4cEQ6GcnizCn8Kb+S3E1DNP2ohD/1LkjUsV
-         JXo0E3pqVk4zR+ynXd1mEszsKw1zzrHlsJLiZ4bJY6qtv9ZHQEzZOxU8a1YuiTDgVgiJ
-         gvQ4NIuP7HNAi64RHyV1zMbaITNeGvd8yVlenMZXHOOhT7YGuYC0/GBueVZgVHQdIC3A
-         J3Z/XGcyd8IyiOz1eYq6AxZ/K4Q1tlKR+/f0b0yv+W1XblF7p76jJdC7oinLOqXsBFcb
-         kHJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=X8xv8rGJpjxSJR0ZZ1INoCyEgsaBC8NAw+scozjjM+4=;
-        b=RU1yewdRGlDrNhsYFhHOWCz7gQ9xXSP3Utr8e7SxtIP8gnUnSPApoRZVhaYwJl1VEj
-         fHp18UgG13P9SewVqE7MXxJ/i/r1Pdwp5rDkq9vmNbGPZmJ5s5Nx+icWX5/uONuXmUIt
-         408Zvd0HDdodwyty2ktJGTq6hhGPOl79WZGPtkgNTkAjRf5AjBevDDbyIGg6skPjIAL0
-         iZ14+oLnlOP78UFZhuzFma+EMSlfXeB8oVugBmOruI7g1Bs7le3S0j0Lsj11Yo2/r7Pe
-         4nh6BkMtrxB09gI9BX2gv8A+z5S8Ci0Y7D1D+pOSScHhgNUICAMz3qfz2sfr37A1YSyG
-         8BLQ==
-X-Gm-Message-State: AOAM533tAUymMYaLDuuyg99H9YktchM6IvOrinUK/W9hvWis/5BiVnBh
-        fjMzmYD7GC0tnFtwTavAp6FRJA==
-X-Google-Smtp-Source: ABdhPJzvwdJ9sSppz5IFDqWf15tQKfpvXfce8bcoiU79NtRboFEl4fye5d5p3ODywxEdlU27mR6fwg==
-X-Received: by 2002:adf:ef11:: with SMTP id e17mr5064905wro.71.1626175301338;
-        Tue, 13 Jul 2021 04:21:41 -0700 (PDT)
-Received: from google.com ([109.180.115.218])
-        by smtp.gmail.com with ESMTPSA id g7sm1948824wmq.22.2021.07.13.04.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 04:21:40 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 12:21:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     min.li.xe@renesas.com
-Cc:     sameo@linux.intel.com, grant.likely@linaro.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH mfd v3] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Message-ID: <YO13QgPCcsFg+Yta@google.com>
-References: <1624034232-7952-1-git-send-email-min.li.xe@renesas.com>
+        Tue, 13 Jul 2021 07:25:53 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E493C0613DD;
+        Tue, 13 Jul 2021 04:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=yGhDFnZM0A65W5PQXub87bUt7hi0BbiF5BkXDcA/Zr4=; b=ffLTrSEP1oIazt9MQBn1/8er4
+        3sgMpXXzNFjn9Tdwdueb36QlruzqqCcSURPnHeqedRvfFPWhkTHYdYjjG4fvWr24TDV3ZFZnD7Vqb
+        6zUhqHqoYcrwDJGYnSZGJEfEIPtXjGRiYqf6qn+ULprCyZCttHZ0+87T4GbudVKnv/URIkSiVuXsP
+        qCm2q6xIAIof9Wc45z860/XHYcV2wK1xBl3lBTz8N6rV2i90D+fjEcaAOJkmffMvNQ2AZIyLtgsfp
+        EvE/2PWJx5eau5kMIjcVs9L5SlE0lWfY4I6n9gTkwU5GVX+8uXaNBX3kL3L5xuitIuy8Q5zXnHOYz
+        fWMql0T3Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46046)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m3GV5-00060D-8l; Tue, 13 Jul 2021 12:22:55 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m3GV3-0000Ew-8A; Tue, 13 Jul 2021 12:22:53 +0100
+Date:   Tue, 13 Jul 2021 12:22:53 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Salah Triki <salah.triki@gmail.com>,
+        "fabrice.gasnier@foss.st.com" <fabrice.gasnier@foss.st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
+Message-ID: <20210713112253.GH22278@shell.armlinux.org.uk>
+References: <20210712231910.GA1831270@pc>
+ <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
+ <20210713091954.GG22278@shell.armlinux.org.uk>
+ <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1624034232-7952-1-git-send-email-min.li.xe@renesas.com>
+In-Reply-To: <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021, min.li.xe@renesas.com wrote:
-
-> From: Min Li <min.li.xe@renesas.com>
+On Tue, Jul 13, 2021 at 11:07:00AM +0000, David Laight wrote:
+> From: Russell King
+> > Sent: 13 July 2021 10:20
+> ....
+> > I would also note that the code relies on there being no padding in
+> > struct stm32_breakinput - it should be noted that a strict
+> > interpretation of the C standard allows padding to be added anywhere
+> > to a structure - at the start, end or between members.
 > 
-> Add support for ClockMatrix(TM) and 82P33xxx families of timing
-> and synchronization devices. The access interface can be either
-> SPI or I2C. Currently, it will create 2 types of MFD devices,
-> which are to be used by the corresponding rsmu character device
-> driver and the PTP hardware clock driver, respectively.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
-> Change log
-> -create the core driver suggested by Lee Jones
-> -export rsmu_ddata instead of platform_data suggested by Lee Jones
-> -add support for 8v19n85x chips
-> 
->  drivers/mfd/Kconfig              |  28 ++
->  drivers/mfd/Makefile             |   5 +
->  drivers/mfd/rsmu.h               |  16 +
->  drivers/mfd/rsmu_core.c          |  88 +++++
->  drivers/mfd/rsmu_i2c.c           | 203 +++++++++++
->  drivers/mfd/rsmu_spi.c           | 273 +++++++++++++++
->  include/linux/mfd/idt82p33_reg.h | 112 ++++++
->  include/linux/mfd/idt8a340_reg.h | 729 +++++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/rsmu.h         |  36 ++
->  9 files changed, 1490 insertions(+)
->  create mode 100644 drivers/mfd/rsmu.h
->  create mode 100644 drivers/mfd/rsmu_core.c
->  create mode 100644 drivers/mfd/rsmu_i2c.c
->  create mode 100644 drivers/mfd/rsmu_spi.c
->  create mode 100644 include/linux/mfd/idt82p33_reg.h
->  create mode 100644 include/linux/mfd/idt8a340_reg.h
->  create mode 100644 include/linux/mfd/rsmu.h
+> I'm pretty certain I remember that padding before the first member
+> isn't allowed.
 
-Thanks for sticking with this.  I still have a couple of minor
-niggles, but they'll be fixed over time.
+You may be right there.
 
-Applied, thanks.
+> In any case the kernel generally assumes there is no extra padding.
+> (eg for structures that map hardware registers.)
+
+That's incorrect. Places where we care either generally end up with
+__packed or are carefully layed out to ensure members are naturally
+aligned to reduce the likelyhood of it. 32-bit OABI ARM has been
+particularly "fun" in this respect.
+
+> For big structures it is worth adding a compile-time check of
+> the structure size - but not really for three u32.
+
+Sorry, structure size has absolutely nothing to do with whether it's
+a good idea to have a compile-time check. The deciding factor is
+whether the code relies on some property such as it being a certain
+size. Such as in this exact case. If you grep for "BUILD_BUG_ON.*sizeof"
+in fs/ for example, this illustrates the point rather well.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
