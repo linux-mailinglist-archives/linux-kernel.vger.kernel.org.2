@@ -2,2027 +2,824 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35A63C6B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C91C3C6B9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbhGMHoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234488AbhGMHoZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:44:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DB6C0613EE
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:41:35 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3D1n-0003zr-Vz; Tue, 13 Jul 2021 09:40:28 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3D1j-0006QX-Ox; Tue, 13 Jul 2021 09:40:23 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3D1i-0000vy-Hv; Tue, 13 Jul 2021 09:40:22 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel@pengutronix.de,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>, Alex Elder <elder@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Frank Li <lznuaa@gmail.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ira Weiny <ira.weiny@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Wang <jasowang@redhat.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joey Pabalan <jpabalanb@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Johannes Thumshirn <morbidrsa@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>, Juergen Gross <jgross@suse.com>,
-        Julien Grall <jgrall@amazon.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Lee Jones <lee.jones@linaro.org>, Len Brown <lenb@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Martyn Welch <martyn@welchs.me.uk>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Michael Buesch <m@bues.ch>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Jamet <michael.jamet@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Samuel Holland <samuel@sholland.org>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thorsten Scherer <t.scherer@eckelmann.de>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Tom Rix <trix@redhat.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org,
-        dmaengine@vger.kernel.org, greybus-dev@lists.linaro.org,
-        industrypack-devel@lists.sourceforge.net, kvm@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-fpga@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-ntb@googlegroups.com,
-        linux-parisc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-sunxi@lists.linux.dev,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, nvdimm@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org, target-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org,
-        Johannes Thumshirn <jth@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: [PATCH v3 5/5] bus: Make remove callback return void
-Date:   Tue, 13 Jul 2021 09:40:14 +0200
-Message-Id: <20210713074014.684791-6-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210713074014.684791-1-u.kleine-koenig@pengutronix.de>
-References: <20210713074014.684791-1-u.kleine-koenig@pengutronix.de>
+        id S234444AbhGMHpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:45:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:36862 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234366AbhGMHpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:45:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="207100066"
+X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
+   d="gz'50?scan'50,208,50";a="207100066"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 00:42:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
+   d="gz'50?scan'50,208,50";a="629957546"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 13 Jul 2021 00:42:26 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m3D3h-000HbL-Rz; Tue, 13 Jul 2021 07:42:25 +0000
+Date:   Tue, 13 Jul 2021 15:41:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [gfs2:for-next.mmap-fault 1/5] ld.lld: error: undefined symbol:
+ fault_in_user_pages
+Message-ID: <202107131545.0ubIED75-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=nwraWdwDJwSCf/PVA+pCJjcxHppjqX/HTinL8xamX9o=; m=ziH5qs3H2jnGskCKzejNXaENxMH8EgSJcO+tV5Q1Ac8=; p=p1mrMFFy3Pdj4j7dHjX2dcRs9JNeC9yQebRu27ayjG0=; g=e9831fd69c58c32f30ab91ddbbdea0c2e82dec4a
-X-Patch-Sig: m=pgp; i=uwe@kleine-koenig.org; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDtQ0IACgkQwfwUeK3K7AnkawgAlRz dCqtSOP9ih1i4W5wwF/bZeXj4tznZGIH2+sYq5x2oA3dI4XG2dSDnYZQbB46jUkU05A1jWJf5G+VB hsA+rguikQ8PP3sFmUWKeblEoPrsYTOvISytC1ya7RKqeAwah0ZUsQkI6MEF3om+EpdOfPnDxA7eu YbIUBqsKD4OfahXRYWxY/ZfFwSzgIH/TIrFfZLDieHjDwP1exZhl/I0daGuK7EsE4gS6si+Zqk0wt lFUvmwBtgrM7Ocfy+LgSlv/Upgm8XLqNRldlCr+/NrBKIieAgKTyMfgdz4ogrf3hglogP3aTJwi5v pwYjP8gv6ConYtl+DRxGpkG9lYKyo5g==
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of this callback because there
-is only little it can do when a device disappears.
 
-This is the final bit of a long lasting cleanup quest where several
-buses were converted to also return void from their remove callback.
-Additionally some resource leaks were fixed that were caused by drivers
-returning an error code in the expectation that the driver won't go
-away.
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-With struct bus_type::remove returning void it's prevented that newly
-implemented buses return an ignored error code and so don't anticipate
-wrong expectations for driver authors.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git for-next.mmap-fault
+head:   caf380f33115de28cbd1d497390d346bedac8238
+commit: 4423c35bf0a030f43fb8623a55418b727606c842 [1/5] iov_iter: Introduce fault_in_iov_iter helper
+config: riscv-randconfig-r011-20210712 (attached as .config)
+compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 8d69635ed9ecf36fd0ca85906bfde17949671cbe)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install riscv cross compiling tool for clang build
+        # apt-get install binutils-riscv64-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git/commit/?id=4423c35bf0a030f43fb8623a55418b727606c842
+        git remote add gfs2 https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git
+        git fetch --no-tags gfs2 for-next.mmap-fault
+        git checkout 4423c35bf0a030f43fb8623a55418b727606c842
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=riscv SHELL=/bin/bash
 
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk> (For ARM, Amba and related parts)
-Acked-by: Mark Brown <broonie@kernel.org>
-Acked-by: Chen-Yu Tsai <wens@csie.org> (for sunxi-rsb)
-Acked-by: Pali Rohár <pali@kernel.org>
-Acked-by: Mauro Carvalho Chehab <mchehab@kernel.org> (for media)
-Acked-by: Hans de Goede <hdegoede@redhat.com> (For drivers/platform)
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-By: Vinod Koul <vkoul@kernel.org>
-Acked-by: Juergen Gross <jgross@suse.com> (For xen)
-Acked-by: Lee Jones <lee.jones@linaro.org> (For mfd)
-Acked-by: Johannes Thumshirn <jth@kernel.org> (For mcb)
-Acked-by: Johan Hovold <johan@kernel.org>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org> (For slimbus)
-Acked-by: Kirti Wankhede <kwankhede@nvidia.com> (For vfio)
-Acked-by: Maximilian Luz <luzmaximilian@gmail.com>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com> (For ulpi and typec)
-Acked-by: Samuel Iglesias Gonsálvez <siglesias@igalia.com> (For ipack)
-Reviewed-by: Tom Rix <trix@redhat.com> (For fpga)
-Acked-by: Geoff Levand <geoff@infradead.org> (For ps3)
-Acked-by: Yehezkel Bernat <YehezkelShB@gmail.com> (For thunderbolt)
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Acked-by: Alexander Shishkin <alexander.shishkin@linux.intel.com> (For intel_th)
-Acked-by: Dominik Brodowski <linux@dominikbrodowski.net> (For pcmcia)
-Reviewed-by: Cornelia Huck <cohuck@redhat.com> (For drivers/s390 and drivers/vfio)
-Acked-by: Rafael J. Wysocki <rafael@kernel.org> (For ACPI)
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org> (rpmsg and apr)
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> (For intel-ish-hid)
-Acked-by: Dan Williams <dan.j.williams@intel.com> (For CXL, DAX, and NVDIMM)
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com> (For isa)
-Acked-by: Stefan Richter <stefanr@s5r6.in-berlin.de> (For firewire)
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com> (For hid)
-Acked-by: Thorsten Scherer <t.scherer@eckelmann.de> (For siox)
-Acked-by: Sven Van Asbroeck <TheSven73@gmail.com> (For anybuss)
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org> (For MMC)
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: fault_in_user_pages
+   >>> referenced by iov_iter.c
+   >>>               iov_iter.o:(fault_in_iov_iter) in archive lib/built-in.a
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for LOCKDEP
+   Depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT && (FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
+   Selected by
+   - DEBUG_LOCK_ALLOC && DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+
 ---
- arch/arm/common/locomo.c                  | 3 +--
- arch/arm/common/sa1111.c                  | 4 +---
- arch/arm/mach-rpc/ecard.c                 | 4 +---
- arch/mips/sgi-ip22/ip22-gio.c             | 3 +--
- arch/parisc/kernel/drivers.c              | 5 ++---
- arch/powerpc/platforms/ps3/system-bus.c   | 3 +--
- arch/powerpc/platforms/pseries/ibmebus.c  | 3 +--
- arch/powerpc/platforms/pseries/vio.c      | 3 +--
- drivers/acpi/bus.c                        | 3 +--
- drivers/amba/bus.c                        | 4 +---
- drivers/base/auxiliary.c                  | 4 +---
- drivers/base/isa.c                        | 4 +---
- drivers/base/platform.c                   | 4 +---
- drivers/bcma/main.c                       | 6 ++----
- drivers/bus/sunxi-rsb.c                   | 4 +---
- drivers/cxl/core.c                        | 3 +--
- drivers/dax/bus.c                         | 4 +---
- drivers/dma/idxd/sysfs.c                  | 4 +---
- drivers/firewire/core-device.c            | 4 +---
- drivers/firmware/arm_scmi/bus.c           | 4 +---
- drivers/firmware/google/coreboot_table.c  | 4 +---
- drivers/fpga/dfl.c                        | 4 +---
- drivers/hid/hid-core.c                    | 4 +---
- drivers/hid/intel-ish-hid/ishtp/bus.c     | 4 +---
- drivers/hv/vmbus_drv.c                    | 5 +----
- drivers/hwtracing/intel_th/core.c         | 4 +---
- drivers/i2c/i2c-core-base.c               | 5 +----
- drivers/i3c/master.c                      | 4 +---
- drivers/input/gameport/gameport.c         | 3 +--
- drivers/input/serio/serio.c               | 3 +--
- drivers/ipack/ipack.c                     | 4 +---
- drivers/macintosh/macio_asic.c            | 4 +---
- drivers/mcb/mcb-core.c                    | 4 +---
- drivers/media/pci/bt8xx/bttv-gpio.c       | 3 +--
- drivers/memstick/core/memstick.c          | 3 +--
- drivers/mfd/mcp-core.c                    | 3 +--
- drivers/misc/mei/bus.c                    | 4 +---
- drivers/misc/tifm_core.c                  | 3 +--
- drivers/mmc/core/bus.c                    | 4 +---
- drivers/mmc/core/sdio_bus.c               | 4 +---
- drivers/net/netdevsim/bus.c               | 3 +--
- drivers/ntb/core.c                        | 4 +---
- drivers/ntb/ntb_transport.c               | 4 +---
- drivers/nvdimm/bus.c                      | 3 +--
- drivers/pci/endpoint/pci-epf-core.c       | 4 +---
- drivers/pci/pci-driver.c                  | 3 +--
- drivers/pcmcia/ds.c                       | 4 +---
- drivers/platform/surface/aggregator/bus.c | 4 +---
- drivers/platform/x86/wmi.c                | 4 +---
- drivers/pnp/driver.c                      | 3 +--
- drivers/rapidio/rio-driver.c              | 4 +---
- drivers/rpmsg/rpmsg_core.c                | 7 ++-----
- drivers/s390/cio/ccwgroup.c               | 4 +---
- drivers/s390/cio/css.c                    | 4 +---
- drivers/s390/cio/device.c                 | 4 +---
- drivers/s390/cio/scm.c                    | 4 +---
- drivers/s390/crypto/ap_bus.c              | 4 +---
- drivers/scsi/scsi_debug.c                 | 3 +--
- drivers/siox/siox-core.c                  | 4 +---
- drivers/slimbus/core.c                    | 4 +---
- drivers/soc/qcom/apr.c                    | 4 +---
- drivers/spi/spi.c                         | 4 +---
- drivers/spmi/spmi.c                       | 3 +--
- drivers/ssb/main.c                        | 4 +---
- drivers/staging/fieldbus/anybuss/host.c   | 4 +---
- drivers/staging/greybus/gbphy.c           | 4 +---
- drivers/target/loopback/tcm_loop.c        | 5 ++---
- drivers/thunderbolt/domain.c              | 4 +---
- drivers/tty/serdev/core.c                 | 4 +---
- drivers/usb/common/ulpi.c                 | 4 +---
- drivers/usb/serial/bus.c                  | 4 +---
- drivers/usb/typec/bus.c                   | 4 +---
- drivers/vdpa/vdpa.c                       | 4 +---
- drivers/vfio/mdev/mdev_driver.c           | 4 +---
- drivers/virtio/virtio.c                   | 3 +--
- drivers/vme/vme.c                         | 4 +---
- drivers/xen/xenbus/xenbus.h               | 2 +-
- drivers/xen/xenbus/xenbus_probe.c         | 4 +---
- include/linux/device/bus.h                | 2 +-
- sound/aoa/soundbus/core.c                 | 4 +---
- 80 files changed, 84 insertions(+), 221 deletions(-)
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/arch/arm/common/locomo.c b/arch/arm/common/locomo.c
-index e45f4e4e06b6..24d21ba63030 100644
---- a/arch/arm/common/locomo.c
-+++ b/arch/arm/common/locomo.c
-@@ -834,14 +834,13 @@ static int locomo_bus_probe(struct device *dev)
- 	return ret;
- }
- 
--static int locomo_bus_remove(struct device *dev)
-+static void locomo_bus_remove(struct device *dev)
- {
- 	struct locomo_dev *ldev = LOCOMO_DEV(dev);
- 	struct locomo_driver *drv = LOCOMO_DRV(dev->driver);
- 
- 	if (drv->remove)
- 		drv->remove(ldev);
--	return 0;
- }
- 
- struct bus_type locomo_bus_type = {
-diff --git a/arch/arm/common/sa1111.c b/arch/arm/common/sa1111.c
-index ff5e0d04cb89..092a2ebc0c28 100644
---- a/arch/arm/common/sa1111.c
-+++ b/arch/arm/common/sa1111.c
-@@ -1364,15 +1364,13 @@ static int sa1111_bus_probe(struct device *dev)
- 	return ret;
- }
- 
--static int sa1111_bus_remove(struct device *dev)
-+static void sa1111_bus_remove(struct device *dev)
- {
- 	struct sa1111_dev *sadev = to_sa1111_device(dev);
- 	struct sa1111_driver *drv = SA1111_DRV(dev->driver);
- 
- 	if (drv->remove)
- 		drv->remove(sadev);
--
--	return 0;
- }
- 
- struct bus_type sa1111_bus_type = {
-diff --git a/arch/arm/mach-rpc/ecard.c b/arch/arm/mach-rpc/ecard.c
-index 827b50f1c73e..53813f9464a2 100644
---- a/arch/arm/mach-rpc/ecard.c
-+++ b/arch/arm/mach-rpc/ecard.c
-@@ -1052,7 +1052,7 @@ static int ecard_drv_probe(struct device *dev)
- 	return ret;
- }
- 
--static int ecard_drv_remove(struct device *dev)
-+static void ecard_drv_remove(struct device *dev)
- {
- 	struct expansion_card *ec = ECARD_DEV(dev);
- 	struct ecard_driver *drv = ECARD_DRV(dev->driver);
-@@ -1067,8 +1067,6 @@ static int ecard_drv_remove(struct device *dev)
- 	ec->ops = &ecard_default_ops;
- 	barrier();
- 	ec->irq_data = NULL;
--
--	return 0;
- }
- 
- /*
-diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
-index de0768a49ee8..dfc52f661ad0 100644
---- a/arch/mips/sgi-ip22/ip22-gio.c
-+++ b/arch/mips/sgi-ip22/ip22-gio.c
-@@ -143,14 +143,13 @@ static int gio_device_probe(struct device *dev)
- 	return error;
- }
- 
--static int gio_device_remove(struct device *dev)
-+static void gio_device_remove(struct device *dev)
- {
- 	struct gio_device *gio_dev = to_gio_device(dev);
- 	struct gio_driver *drv = to_gio_driver(dev->driver);
- 
- 	if (dev->driver && drv->remove)
- 		drv->remove(gio_dev);
--	return 0;
- }
- 
- static void gio_device_shutdown(struct device *dev)
-diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index 80fa0650736b..776d624a7207 100644
---- a/arch/parisc/kernel/drivers.c
-+++ b/arch/parisc/kernel/drivers.c
-@@ -133,14 +133,13 @@ static int parisc_driver_probe(struct device *dev)
- 	return rc;
- }
- 
--static int __exit parisc_driver_remove(struct device *dev)
-+static void __exit parisc_driver_remove(struct device *dev)
- {
- 	struct parisc_device *pa_dev = to_parisc_device(dev);
- 	struct parisc_driver *pa_drv = to_parisc_driver(dev->driver);
-+
- 	if (pa_drv->remove)
- 		pa_drv->remove(pa_dev);
--
--	return 0;
- }
- 	
- 
-diff --git a/arch/powerpc/platforms/ps3/system-bus.c b/arch/powerpc/platforms/ps3/system-bus.c
-index 1a5665875165..cc5774c64fae 100644
---- a/arch/powerpc/platforms/ps3/system-bus.c
-+++ b/arch/powerpc/platforms/ps3/system-bus.c
-@@ -381,7 +381,7 @@ static int ps3_system_bus_probe(struct device *_dev)
- 	return result;
- }
- 
--static int ps3_system_bus_remove(struct device *_dev)
-+static void ps3_system_bus_remove(struct device *_dev)
- {
- 	struct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);
- 	struct ps3_system_bus_driver *drv;
-@@ -399,7 +399,6 @@ static int ps3_system_bus_remove(struct device *_dev)
- 			__func__, __LINE__, drv->core.name);
- 
- 	pr_debug(" <- %s:%d: %s\n", __func__, __LINE__, dev_name(&dev->core));
--	return 0;
- }
- 
- static void ps3_system_bus_shutdown(struct device *_dev)
-diff --git a/arch/powerpc/platforms/pseries/ibmebus.c b/arch/powerpc/platforms/pseries/ibmebus.c
-index c6c79ef55e13..7ee3ed7d6cc2 100644
---- a/arch/powerpc/platforms/pseries/ibmebus.c
-+++ b/arch/powerpc/platforms/pseries/ibmebus.c
-@@ -366,14 +366,13 @@ static int ibmebus_bus_device_probe(struct device *dev)
- 	return error;
- }
- 
--static int ibmebus_bus_device_remove(struct device *dev)
-+static void ibmebus_bus_device_remove(struct device *dev)
- {
- 	struct platform_device *of_dev = to_platform_device(dev);
- 	struct platform_driver *drv = to_platform_driver(dev->driver);
- 
- 	if (dev->driver && drv->remove)
- 		drv->remove(of_dev);
--	return 0;
- }
- 
- static void ibmebus_bus_device_shutdown(struct device *dev)
-diff --git a/arch/powerpc/platforms/pseries/vio.c b/arch/powerpc/platforms/pseries/vio.c
-index e00f3725ec96..58283cecbd52 100644
---- a/arch/powerpc/platforms/pseries/vio.c
-+++ b/arch/powerpc/platforms/pseries/vio.c
-@@ -1257,7 +1257,7 @@ static int vio_bus_probe(struct device *dev)
- }
- 
- /* convert from struct device to struct vio_dev and pass to driver. */
--static int vio_bus_remove(struct device *dev)
-+static void vio_bus_remove(struct device *dev)
- {
- 	struct vio_dev *viodev = to_vio_dev(dev);
- 	struct vio_driver *viodrv = to_vio_driver(dev->driver);
-@@ -1276,7 +1276,6 @@ static int vio_bus_remove(struct device *dev)
- 		vio_cmo_bus_remove(viodev);
- 
- 	put_device(devptr);
--	return 0;
- }
- 
- static void vio_bus_shutdown(struct device *dev)
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index f854bcb8d010..b941555cb5e4 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1019,7 +1019,7 @@ static int acpi_device_probe(struct device *dev)
- 	return 0;
- }
- 
--static int acpi_device_remove(struct device *dev)
-+static void acpi_device_remove(struct device *dev)
- {
- 	struct acpi_device *acpi_dev = to_acpi_device(dev);
- 	struct acpi_driver *acpi_drv = acpi_dev->driver;
-@@ -1034,7 +1034,6 @@ static int acpi_device_remove(struct device *dev)
- 	acpi_dev->driver_data = NULL;
- 
- 	put_device(dev);
--	return 0;
- }
- 
- struct bus_type acpi_bus_type = {
-diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index 939ca220bf78..962041148482 100644
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -219,7 +219,7 @@ static int amba_probe(struct device *dev)
- 	return ret;
- }
- 
--static int amba_remove(struct device *dev)
-+static void amba_remove(struct device *dev)
- {
- 	struct amba_device *pcdev = to_amba_device(dev);
- 	struct amba_driver *drv = to_amba_driver(dev->driver);
-@@ -236,8 +236,6 @@ static int amba_remove(struct device *dev)
- 
- 	amba_put_disable_pclk(pcdev);
- 	dev_pm_domain_detach(dev, true);
--
--	return 0;
- }
- 
- static void amba_shutdown(struct device *dev)
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index adc199dfba3c..0c86f5bed9f4 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -79,7 +79,7 @@ static int auxiliary_bus_probe(struct device *dev)
- 	return ret;
- }
- 
--static int auxiliary_bus_remove(struct device *dev)
-+static void auxiliary_bus_remove(struct device *dev)
- {
- 	struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
- 	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
-@@ -87,8 +87,6 @@ static int auxiliary_bus_remove(struct device *dev)
- 	if (auxdrv->remove)
- 		auxdrv->remove(auxdev);
- 	dev_pm_domain_detach(dev, true);
--
--	return 0;
- }
- 
- static void auxiliary_bus_shutdown(struct device *dev)
-diff --git a/drivers/base/isa.c b/drivers/base/isa.c
-index aa4737667026..55e3ee2da98f 100644
---- a/drivers/base/isa.c
-+++ b/drivers/base/isa.c
-@@ -46,14 +46,12 @@ static int isa_bus_probe(struct device *dev)
- 	return 0;
- }
- 
--static int isa_bus_remove(struct device *dev)
-+static void isa_bus_remove(struct device *dev)
- {
- 	struct isa_driver *isa_driver = dev->platform_data;
- 
- 	if (isa_driver && isa_driver->remove)
- 		isa_driver->remove(dev, to_isa_dev(dev)->id);
--
--	return 0;
- }
- 
- static void isa_bus_shutdown(struct device *dev)
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 8640578f45e9..a94b7f454881 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -1438,7 +1438,7 @@ static int platform_probe(struct device *_dev)
- 	return ret;
- }
- 
--static int platform_remove(struct device *_dev)
-+static void platform_remove(struct device *_dev)
- {
- 	struct platform_driver *drv = to_platform_driver(_dev->driver);
- 	struct platform_device *dev = to_platform_device(_dev);
-@@ -1450,8 +1450,6 @@ static int platform_remove(struct device *_dev)
- 			dev_warn(_dev, "remove callback returned a non-zero value. This will be ignored.\n");
- 	}
- 	dev_pm_domain_detach(_dev, true);
--
--	return 0;
- }
- 
- static void platform_shutdown(struct device *_dev)
-diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
-index 6535614a7dc1..e076630d17bd 100644
---- a/drivers/bcma/main.c
-+++ b/drivers/bcma/main.c
-@@ -27,7 +27,7 @@ static DEFINE_MUTEX(bcma_buses_mutex);
- 
- static int bcma_bus_match(struct device *dev, struct device_driver *drv);
- static int bcma_device_probe(struct device *dev);
--static int bcma_device_remove(struct device *dev);
-+static void bcma_device_remove(struct device *dev);
- static int bcma_device_uevent(struct device *dev, struct kobj_uevent_env *env);
- 
- static ssize_t manuf_show(struct device *dev, struct device_attribute *attr, char *buf)
-@@ -614,7 +614,7 @@ static int bcma_device_probe(struct device *dev)
- 	return err;
- }
- 
--static int bcma_device_remove(struct device *dev)
-+static void bcma_device_remove(struct device *dev)
- {
- 	struct bcma_device *core = container_of(dev, struct bcma_device, dev);
- 	struct bcma_driver *adrv = container_of(dev->driver, struct bcma_driver,
-@@ -623,8 +623,6 @@ static int bcma_device_remove(struct device *dev)
- 	if (adrv->remove)
- 		adrv->remove(core);
- 	put_device(dev);
--
--	return 0;
- }
- 
- static int bcma_device_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/drivers/bus/sunxi-rsb.c b/drivers/bus/sunxi-rsb.c
-index d46db132d085..6f225dddc74f 100644
---- a/drivers/bus/sunxi-rsb.c
-+++ b/drivers/bus/sunxi-rsb.c
-@@ -169,13 +169,11 @@ static int sunxi_rsb_device_probe(struct device *dev)
- 	return drv->probe(rdev);
- }
- 
--static int sunxi_rsb_device_remove(struct device *dev)
-+static void sunxi_rsb_device_remove(struct device *dev)
- {
- 	const struct sunxi_rsb_driver *drv = to_sunxi_rsb_driver(dev->driver);
- 
- 	drv->remove(to_sunxi_rsb_device(dev));
--
--	return 0;
- }
- 
- static struct bus_type sunxi_rsb_bus = {
-diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-index a2e4d54fc7bc..2b90b7c3b9d7 100644
---- a/drivers/cxl/core.c
-+++ b/drivers/cxl/core.c
-@@ -1034,13 +1034,12 @@ static int cxl_bus_probe(struct device *dev)
- 	return to_cxl_drv(dev->driver)->probe(dev);
- }
- 
--static int cxl_bus_remove(struct device *dev)
-+static void cxl_bus_remove(struct device *dev)
- {
- 	struct cxl_driver *cxl_drv = to_cxl_drv(dev->driver);
- 
- 	if (cxl_drv->remove)
- 		cxl_drv->remove(dev);
--	return 0;
- }
- 
- struct bus_type cxl_bus_type = {
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 5aee26e1bbd6..6cc4da4c713d 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -172,15 +172,13 @@ static int dax_bus_probe(struct device *dev)
- 	return 0;
- }
- 
--static int dax_bus_remove(struct device *dev)
-+static void dax_bus_remove(struct device *dev)
- {
- 	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
- 	struct dev_dax *dev_dax = to_dev_dax(dev);
- 
- 	if (dax_drv->remove)
- 		dax_drv->remove(dev_dax);
--
--	return 0;
- }
- 
- static struct bus_type dax_bus_type = {
-diff --git a/drivers/dma/idxd/sysfs.c b/drivers/dma/idxd/sysfs.c
-index 0460d58e3941..5a017c62c752 100644
---- a/drivers/dma/idxd/sysfs.c
-+++ b/drivers/dma/idxd/sysfs.c
-@@ -260,7 +260,7 @@ static void disable_wq(struct idxd_wq *wq)
- 	dev_info(dev, "wq %s disabled\n", dev_name(&wq->conf_dev));
- }
- 
--static int idxd_config_bus_remove(struct device *dev)
-+static void idxd_config_bus_remove(struct device *dev)
- {
- 	int rc;
- 
-@@ -305,8 +305,6 @@ static int idxd_config_bus_remove(struct device *dev)
- 			dev_info(dev, "Device %s disabled\n", dev_name(dev));
- 
- 	}
--
--	return 0;
- }
- 
- static void idxd_config_bus_shutdown(struct device *dev)
-diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
-index 68216988391f..90ed8fdaba75 100644
---- a/drivers/firewire/core-device.c
-+++ b/drivers/firewire/core-device.c
-@@ -187,14 +187,12 @@ static int fw_unit_probe(struct device *dev)
- 	return driver->probe(fw_unit(dev), unit_match(dev, dev->driver));
- }
- 
--static int fw_unit_remove(struct device *dev)
-+static void fw_unit_remove(struct device *dev)
- {
- 	struct fw_driver *driver =
- 			container_of(dev->driver, struct fw_driver, driver);
- 
- 	driver->remove(fw_unit(dev));
--
--	return 0;
- }
- 
- static int get_modalias(struct fw_unit *unit, char *buffer, size_t buffer_size)
-diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
-index 784cf0027da3..2682c3df651c 100644
---- a/drivers/firmware/arm_scmi/bus.c
-+++ b/drivers/firmware/arm_scmi/bus.c
-@@ -116,15 +116,13 @@ static int scmi_dev_probe(struct device *dev)
- 	return scmi_drv->probe(scmi_dev);
- }
- 
--static int scmi_dev_remove(struct device *dev)
-+static void scmi_dev_remove(struct device *dev)
- {
- 	struct scmi_driver *scmi_drv = to_scmi_driver(dev->driver);
- 	struct scmi_device *scmi_dev = to_scmi_dev(dev);
- 
- 	if (scmi_drv->remove)
- 		scmi_drv->remove(scmi_dev);
--
--	return 0;
- }
- 
- static struct bus_type scmi_bus_type = {
-diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
-index dc83ea118c67..c52bcaa9def6 100644
---- a/drivers/firmware/google/coreboot_table.c
-+++ b/drivers/firmware/google/coreboot_table.c
-@@ -44,15 +44,13 @@ static int coreboot_bus_probe(struct device *dev)
- 	return ret;
- }
- 
--static int coreboot_bus_remove(struct device *dev)
-+static void coreboot_bus_remove(struct device *dev)
- {
- 	struct coreboot_device *device = CB_DEV(dev);
- 	struct coreboot_driver *driver = CB_DRV(dev->driver);
- 
- 	if (driver->remove)
- 		driver->remove(device);
--
--	return 0;
- }
- 
- static struct bus_type coreboot_bus_type = {
-diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-index 511b20ff35a3..1ae6779a0dd6 100644
---- a/drivers/fpga/dfl.c
-+++ b/drivers/fpga/dfl.c
-@@ -284,15 +284,13 @@ static int dfl_bus_probe(struct device *dev)
- 	return ddrv->probe(ddev);
- }
- 
--static int dfl_bus_remove(struct device *dev)
-+static void dfl_bus_remove(struct device *dev)
- {
- 	struct dfl_driver *ddrv = to_dfl_drv(dev->driver);
- 	struct dfl_device *ddev = to_dfl_dev(dev);
- 
- 	if (ddrv->remove)
- 		ddrv->remove(ddev);
--
--	return 0;
- }
- 
- static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 7db332139f7d..dbed2524fd47 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2302,7 +2302,7 @@ static int hid_device_probe(struct device *dev)
- 	return ret;
- }
- 
--static int hid_device_remove(struct device *dev)
-+static void hid_device_remove(struct device *dev)
- {
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct hid_driver *hdrv;
-@@ -2322,8 +2322,6 @@ static int hid_device_remove(struct device *dev)
- 
- 	if (!hdev->io_started)
- 		up(&hdev->driver_input_lock);
--
--	return 0;
- }
- 
- static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
-diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
-index f0802b047ed8..8a51bd9cd093 100644
---- a/drivers/hid/intel-ish-hid/ishtp/bus.c
-+++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
-@@ -255,7 +255,7 @@ static int ishtp_cl_bus_match(struct device *dev, struct device_driver *drv)
-  *
-  * Return: Return value from driver remove() call.
-  */
--static int ishtp_cl_device_remove(struct device *dev)
-+static void ishtp_cl_device_remove(struct device *dev)
- {
- 	struct ishtp_cl_device *device = to_ishtp_cl_device(dev);
- 	struct ishtp_cl_driver *driver = to_ishtp_cl_driver(dev->driver);
-@@ -267,8 +267,6 @@ static int ishtp_cl_device_remove(struct device *dev)
- 
- 	if (driver->remove)
- 		driver->remove(device);
--
--	return 0;
- }
- 
- /**
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 57bbbaa4e8f7..392c1ac4f819 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -922,7 +922,7 @@ static int vmbus_probe(struct device *child_device)
- /*
-  * vmbus_remove - Remove a vmbus device
-  */
--static int vmbus_remove(struct device *child_device)
-+static void vmbus_remove(struct device *child_device)
- {
- 	struct hv_driver *drv;
- 	struct hv_device *dev = device_to_hv_device(child_device);
-@@ -932,11 +932,8 @@ static int vmbus_remove(struct device *child_device)
- 		if (drv->remove)
- 			drv->remove(dev);
- 	}
--
--	return 0;
- }
- 
--
- /*
-  * vmbus_shutdown - Shutdown a vmbus device
-  */
-diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
-index 66eed2dff818..7e753a75d23b 100644
---- a/drivers/hwtracing/intel_th/core.c
-+++ b/drivers/hwtracing/intel_th/core.c
-@@ -95,7 +95,7 @@ static int intel_th_probe(struct device *dev)
- 
- static void intel_th_device_remove(struct intel_th_device *thdev);
- 
--static int intel_th_remove(struct device *dev)
-+static void intel_th_remove(struct device *dev)
- {
- 	struct intel_th_driver *thdrv = to_intel_th_driver(dev->driver);
- 	struct intel_th_device *thdev = to_intel_th_device(dev);
-@@ -164,8 +164,6 @@ static int intel_th_remove(struct device *dev)
- 	pm_runtime_disable(dev);
- 	pm_runtime_set_active(dev);
- 	pm_runtime_enable(dev);
--
--	return 0;
- }
- 
- static struct bus_type intel_th_bus = {
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index 84f12bf90644..54964fbe3f03 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -601,7 +601,7 @@ static int i2c_device_probe(struct device *dev)
- 	return status;
- }
- 
--static int i2c_device_remove(struct device *dev)
-+static void i2c_device_remove(struct device *dev)
- {
- 	struct i2c_client	*client = to_i2c_client(dev);
- 	struct i2c_adapter      *adap;
-@@ -631,9 +631,6 @@ static int i2c_device_remove(struct device *dev)
- 	client->irq = 0;
- 	if (client->flags & I2C_CLIENT_HOST_NOTIFY)
- 		pm_runtime_put(&client->adapter->dev);
--
--	/* return always 0 because there is WIP to make remove-functions void */
--	return 0;
- }
- 
- #ifdef CONFIG_PM_SLEEP
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index e2e12a5585e5..c3b4c677b442 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -322,7 +322,7 @@ static int i3c_device_probe(struct device *dev)
- 	return driver->probe(i3cdev);
- }
- 
--static int i3c_device_remove(struct device *dev)
-+static void i3c_device_remove(struct device *dev)
- {
- 	struct i3c_device *i3cdev = dev_to_i3cdev(dev);
- 	struct i3c_driver *driver = drv_to_i3cdrv(dev->driver);
-@@ -331,8 +331,6 @@ static int i3c_device_remove(struct device *dev)
- 		driver->remove(i3cdev);
- 
- 	i3c_device_free_ibi(i3cdev);
--
--	return 0;
- }
- 
- struct bus_type i3c_bus_type = {
-diff --git a/drivers/input/gameport/gameport.c b/drivers/input/gameport/gameport.c
-index 61fa7e724172..db58a01b23d3 100644
---- a/drivers/input/gameport/gameport.c
-+++ b/drivers/input/gameport/gameport.c
-@@ -697,13 +697,12 @@ static int gameport_driver_probe(struct device *dev)
- 	return gameport->drv ? 0 : -ENODEV;
- }
- 
--static int gameport_driver_remove(struct device *dev)
-+static void gameport_driver_remove(struct device *dev)
- {
- 	struct gameport *gameport = to_gameport_port(dev);
- 	struct gameport_driver *drv = to_gameport_driver(dev->driver);
- 
- 	drv->disconnect(gameport);
--	return 0;
- }
- 
- static void gameport_attach_driver(struct gameport_driver *drv)
-diff --git a/drivers/input/serio/serio.c b/drivers/input/serio/serio.c
-index 29f491082926..ec117be3d8d8 100644
---- a/drivers/input/serio/serio.c
-+++ b/drivers/input/serio/serio.c
-@@ -778,12 +778,11 @@ static int serio_driver_probe(struct device *dev)
- 	return serio_connect_driver(serio, drv);
- }
- 
--static int serio_driver_remove(struct device *dev)
-+static void serio_driver_remove(struct device *dev)
- {
- 	struct serio *serio = to_serio_port(dev);
- 
- 	serio_disconnect_driver(serio);
--	return 0;
- }
- 
- static void serio_cleanup(struct serio *serio)
-diff --git a/drivers/ipack/ipack.c b/drivers/ipack/ipack.c
-index 7de9605cac4f..b1c3198355e7 100644
---- a/drivers/ipack/ipack.c
-+++ b/drivers/ipack/ipack.c
-@@ -67,15 +67,13 @@ static int ipack_bus_probe(struct device *device)
- 	return drv->ops->probe(dev);
- }
- 
--static int ipack_bus_remove(struct device *device)
-+static void ipack_bus_remove(struct device *device)
- {
- 	struct ipack_device *dev = to_ipack_dev(device);
- 	struct ipack_driver *drv = to_ipack_driver(device->driver);
- 
- 	if (drv->ops->remove)
- 		drv->ops->remove(dev);
--
--	return 0;
- }
- 
- static int ipack_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/drivers/macintosh/macio_asic.c b/drivers/macintosh/macio_asic.c
-index 49af60bdac92..c1fdf2896021 100644
---- a/drivers/macintosh/macio_asic.c
-+++ b/drivers/macintosh/macio_asic.c
-@@ -88,7 +88,7 @@ static int macio_device_probe(struct device *dev)
- 	return error;
- }
- 
--static int macio_device_remove(struct device *dev)
-+static void macio_device_remove(struct device *dev)
- {
- 	struct macio_dev * macio_dev = to_macio_device(dev);
- 	struct macio_driver * drv = to_macio_driver(dev->driver);
-@@ -96,8 +96,6 @@ static int macio_device_remove(struct device *dev)
- 	if (dev->driver && drv->remove)
- 		drv->remove(macio_dev);
- 	macio_dev_put(macio_dev);
--
--	return 0;
- }
- 
- static void macio_device_shutdown(struct device *dev)
-diff --git a/drivers/mcb/mcb-core.c b/drivers/mcb/mcb-core.c
-index 38fbb3b59873..edf4ee6eff25 100644
---- a/drivers/mcb/mcb-core.c
-+++ b/drivers/mcb/mcb-core.c
-@@ -77,7 +77,7 @@ static int mcb_probe(struct device *dev)
- 	return ret;
- }
- 
--static int mcb_remove(struct device *dev)
-+static void mcb_remove(struct device *dev)
- {
- 	struct mcb_driver *mdrv = to_mcb_driver(dev->driver);
- 	struct mcb_device *mdev = to_mcb_device(dev);
-@@ -89,8 +89,6 @@ static int mcb_remove(struct device *dev)
- 	module_put(carrier_mod);
- 
- 	put_device(&mdev->dev);
--
--	return 0;
- }
- 
- static void mcb_shutdown(struct device *dev)
-diff --git a/drivers/media/pci/bt8xx/bttv-gpio.c b/drivers/media/pci/bt8xx/bttv-gpio.c
-index b730225ca887..a2b18e2bed1b 100644
---- a/drivers/media/pci/bt8xx/bttv-gpio.c
-+++ b/drivers/media/pci/bt8xx/bttv-gpio.c
-@@ -46,14 +46,13 @@ static int bttv_sub_probe(struct device *dev)
- 	return sub->probe ? sub->probe(sdev) : -ENODEV;
- }
- 
--static int bttv_sub_remove(struct device *dev)
-+static void bttv_sub_remove(struct device *dev)
- {
- 	struct bttv_sub_device *sdev = to_bttv_sub_dev(dev);
- 	struct bttv_sub_driver *sub = to_bttv_sub_drv(dev->driver);
- 
- 	if (sub->remove)
- 		sub->remove(sdev);
--	return 0;
- }
- 
- struct bus_type bttv_sub_bus_type = {
-diff --git a/drivers/memstick/core/memstick.c b/drivers/memstick/core/memstick.c
-index bb1065990aeb..660df7d269fa 100644
---- a/drivers/memstick/core/memstick.c
-+++ b/drivers/memstick/core/memstick.c
-@@ -91,7 +91,7 @@ static int memstick_device_probe(struct device *dev)
- 	return rc;
- }
- 
--static int memstick_device_remove(struct device *dev)
-+static void memstick_device_remove(struct device *dev)
- {
- 	struct memstick_dev *card = container_of(dev, struct memstick_dev,
- 						  dev);
-@@ -105,7 +105,6 @@ static int memstick_device_remove(struct device *dev)
- 	}
- 
- 	put_device(dev);
--	return 0;
- }
- 
- #ifdef CONFIG_PM
-diff --git a/drivers/mfd/mcp-core.c b/drivers/mfd/mcp-core.c
-index eff9423e90f5..2fa592c37c6f 100644
---- a/drivers/mfd/mcp-core.c
-+++ b/drivers/mfd/mcp-core.c
-@@ -33,13 +33,12 @@ static int mcp_bus_probe(struct device *dev)
- 	return drv->probe(mcp);
- }
- 
--static int mcp_bus_remove(struct device *dev)
-+static void mcp_bus_remove(struct device *dev)
- {
- 	struct mcp *mcp = to_mcp(dev);
- 	struct mcp_driver *drv = to_mcp_driver(dev->driver);
- 
- 	drv->remove(mcp);
--	return 0;
- }
- 
- static struct bus_type mcp_bus_type = {
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index 935acc6bbf3c..3bf2bb4fd152 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -884,7 +884,7 @@ static int mei_cl_device_probe(struct device *dev)
-  *
-  * Return:  0 on success; < 0 otherwise
-  */
--static int mei_cl_device_remove(struct device *dev)
-+static void mei_cl_device_remove(struct device *dev)
- {
- 	struct mei_cl_device *cldev = to_mei_cl_device(dev);
- 	struct mei_cl_driver *cldrv = to_mei_cl_driver(dev->driver);
-@@ -896,8 +896,6 @@ static int mei_cl_device_remove(struct device *dev)
- 
- 	mei_cl_bus_module_put(cldev);
- 	module_put(THIS_MODULE);
--
--	return 0;
- }
- 
- static ssize_t name_show(struct device *dev, struct device_attribute *a,
-diff --git a/drivers/misc/tifm_core.c b/drivers/misc/tifm_core.c
-index 667e574a7df2..52656fc87e99 100644
---- a/drivers/misc/tifm_core.c
-+++ b/drivers/misc/tifm_core.c
-@@ -87,7 +87,7 @@ static void tifm_dummy_event(struct tifm_dev *sock)
- 	return;
- }
- 
--static int tifm_device_remove(struct device *dev)
-+static void tifm_device_remove(struct device *dev)
- {
- 	struct tifm_dev *sock = container_of(dev, struct tifm_dev, dev);
- 	struct tifm_driver *drv = container_of(dev->driver, struct tifm_driver,
-@@ -101,7 +101,6 @@ static int tifm_device_remove(struct device *dev)
- 	}
- 
- 	put_device(dev);
--	return 0;
- }
- 
- #ifdef CONFIG_PM
-diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-index 4383c262b3f5..f6b7a9c5bbff 100644
---- a/drivers/mmc/core/bus.c
-+++ b/drivers/mmc/core/bus.c
-@@ -140,14 +140,12 @@ static int mmc_bus_probe(struct device *dev)
- 	return drv->probe(card);
- }
- 
--static int mmc_bus_remove(struct device *dev)
-+static void mmc_bus_remove(struct device *dev)
- {
- 	struct mmc_driver *drv = to_mmc_driver(dev->driver);
- 	struct mmc_card *card = mmc_dev_to_card(dev);
- 
- 	drv->remove(card);
--
--	return 0;
- }
- 
- static void mmc_bus_shutdown(struct device *dev)
-diff --git a/drivers/mmc/core/sdio_bus.c b/drivers/mmc/core/sdio_bus.c
-index 3d709029e07c..fda03b35c14a 100644
---- a/drivers/mmc/core/sdio_bus.c
-+++ b/drivers/mmc/core/sdio_bus.c
-@@ -203,7 +203,7 @@ static int sdio_bus_probe(struct device *dev)
- 	return ret;
- }
- 
--static int sdio_bus_remove(struct device *dev)
-+static void sdio_bus_remove(struct device *dev)
- {
- 	struct sdio_driver *drv = to_sdio_driver(dev->driver);
- 	struct sdio_func *func = dev_to_sdio_func(dev);
-@@ -232,8 +232,6 @@ static int sdio_bus_remove(struct device *dev)
- 		pm_runtime_put_sync(dev);
- 
- 	dev_pm_domain_detach(dev, false);
--
--	return 0;
- }
- 
- static const struct dev_pm_ops sdio_bus_pm_ops = {
-diff --git a/drivers/net/netdevsim/bus.c b/drivers/net/netdevsim/bus.c
-index ccec29970d5b..14b154929533 100644
---- a/drivers/net/netdevsim/bus.c
-+++ b/drivers/net/netdevsim/bus.c
-@@ -370,12 +370,11 @@ static int nsim_bus_probe(struct device *dev)
- 	return nsim_dev_probe(nsim_bus_dev);
- }
- 
--static int nsim_bus_remove(struct device *dev)
-+static void nsim_bus_remove(struct device *dev)
- {
- 	struct nsim_bus_dev *nsim_bus_dev = to_nsim_bus_dev(dev);
- 
- 	nsim_dev_remove(nsim_bus_dev);
--	return 0;
- }
- 
- static int nsim_num_vf(struct device *dev)
-diff --git a/drivers/ntb/core.c b/drivers/ntb/core.c
-index f8f75a504a58..27dd93deff6e 100644
---- a/drivers/ntb/core.c
-+++ b/drivers/ntb/core.c
-@@ -271,7 +271,7 @@ static int ntb_probe(struct device *dev)
- 	return rc;
- }
- 
--static int ntb_remove(struct device *dev)
-+static void ntb_remove(struct device *dev)
- {
- 	struct ntb_dev *ntb;
- 	struct ntb_client *client;
-@@ -283,8 +283,6 @@ static int ntb_remove(struct device *dev)
- 		client->ops.remove(client, ntb);
- 		put_device(dev);
- 	}
--
--	return 0;
- }
- 
- static void ntb_dev_release(struct device *dev)
-diff --git a/drivers/ntb/ntb_transport.c b/drivers/ntb/ntb_transport.c
-index 4a02561cfb96..a9b97ebc71ac 100644
---- a/drivers/ntb/ntb_transport.c
-+++ b/drivers/ntb/ntb_transport.c
-@@ -304,7 +304,7 @@ static int ntb_transport_bus_probe(struct device *dev)
- 	return rc;
- }
- 
--static int ntb_transport_bus_remove(struct device *dev)
-+static void ntb_transport_bus_remove(struct device *dev)
- {
- 	const struct ntb_transport_client *client;
- 
-@@ -312,8 +312,6 @@ static int ntb_transport_bus_remove(struct device *dev)
- 	client->remove(dev);
- 
- 	put_device(dev);
--
--	return 0;
- }
- 
- static struct bus_type ntb_transport_bus = {
-diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
-index e6aa87043a95..9dc7f3edd42b 100644
---- a/drivers/nvdimm/bus.c
-+++ b/drivers/nvdimm/bus.c
-@@ -108,7 +108,7 @@ static int nvdimm_bus_probe(struct device *dev)
- 	return rc;
- }
- 
--static int nvdimm_bus_remove(struct device *dev)
-+static void nvdimm_bus_remove(struct device *dev)
- {
- 	struct nd_device_driver *nd_drv = to_nd_device_driver(dev->driver);
- 	struct module *provider = to_bus_provider(dev);
-@@ -123,7 +123,6 @@ static int nvdimm_bus_remove(struct device *dev)
- 	dev_dbg(&nvdimm_bus->dev, "%s.remove(%s)\n", dev->driver->name,
- 			dev_name(dev));
- 	module_put(provider);
--	return 0;
- }
- 
- static void nvdimm_bus_shutdown(struct device *dev)
-diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
-index 4b9ad96bf1b2..502eb79cd551 100644
---- a/drivers/pci/endpoint/pci-epf-core.c
-+++ b/drivers/pci/endpoint/pci-epf-core.c
-@@ -387,7 +387,7 @@ static int pci_epf_device_probe(struct device *dev)
- 	return driver->probe(epf);
- }
- 
--static int pci_epf_device_remove(struct device *dev)
-+static void pci_epf_device_remove(struct device *dev)
- {
- 	struct pci_epf *epf = to_pci_epf(dev);
- 	struct pci_epf_driver *driver = to_pci_epf_driver(dev->driver);
-@@ -395,8 +395,6 @@ static int pci_epf_device_remove(struct device *dev)
- 	if (driver->remove)
- 		driver->remove(epf);
- 	epf->driver = NULL;
--
--	return 0;
- }
- 
- static struct bus_type pci_epf_bus_type = {
-diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-index 3a72352aa5cf..a0615395500a 100644
---- a/drivers/pci/pci-driver.c
-+++ b/drivers/pci/pci-driver.c
-@@ -440,7 +440,7 @@ static int pci_device_probe(struct device *dev)
- 	return error;
- }
- 
--static int pci_device_remove(struct device *dev)
-+static void pci_device_remove(struct device *dev)
- {
- 	struct pci_dev *pci_dev = to_pci_dev(dev);
- 	struct pci_driver *drv = pci_dev->driver;
-@@ -476,7 +476,6 @@ static int pci_device_remove(struct device *dev)
- 	 */
- 
- 	pci_dev_put(pci_dev);
--	return 0;
- }
- 
- static void pci_device_shutdown(struct device *dev)
-diff --git a/drivers/pcmcia/ds.c b/drivers/pcmcia/ds.c
-index bd81aa64d011..5bd1b80424e7 100644
---- a/drivers/pcmcia/ds.c
-+++ b/drivers/pcmcia/ds.c
-@@ -350,7 +350,7 @@ static void pcmcia_card_remove(struct pcmcia_socket *s, struct pcmcia_device *le
- 	return;
- }
- 
--static int pcmcia_device_remove(struct device *dev)
-+static void pcmcia_device_remove(struct device *dev)
- {
- 	struct pcmcia_device *p_dev;
- 	struct pcmcia_driver *p_drv;
-@@ -389,8 +389,6 @@ static int pcmcia_device_remove(struct device *dev)
- 	/* references from pcmcia_device_probe */
- 	pcmcia_put_dev(p_dev);
- 	module_put(p_drv->owner);
--
--	return 0;
- }
- 
- 
-diff --git a/drivers/platform/surface/aggregator/bus.c b/drivers/platform/surface/aggregator/bus.c
-index 0169677c243e..0a40dd9c94ed 100644
---- a/drivers/platform/surface/aggregator/bus.c
-+++ b/drivers/platform/surface/aggregator/bus.c
-@@ -316,14 +316,12 @@ static int ssam_bus_probe(struct device *dev)
- 		->probe(to_ssam_device(dev));
- }
- 
--static int ssam_bus_remove(struct device *dev)
-+static void ssam_bus_remove(struct device *dev)
- {
- 	struct ssam_device_driver *sdrv = to_ssam_device_driver(dev->driver);
- 
- 	if (sdrv->remove)
- 		sdrv->remove(to_ssam_device(dev));
--
--	return 0;
- }
- 
- struct bus_type ssam_bus_type = {
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 62e0d56a3332..a76313006bdc 100644
---- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -980,7 +980,7 @@ static int wmi_dev_probe(struct device *dev)
- 	return ret;
- }
- 
--static int wmi_dev_remove(struct device *dev)
-+static void wmi_dev_remove(struct device *dev)
- {
- 	struct wmi_block *wblock = dev_to_wblock(dev);
- 	struct wmi_driver *wdriver =
-@@ -997,8 +997,6 @@ static int wmi_dev_remove(struct device *dev)
- 
- 	if (ACPI_FAILURE(wmi_method_enable(wblock, 0)))
- 		dev_warn(dev, "failed to disable device\n");
--
--	return 0;
- }
- 
- static struct class wmi_bus_class = {
-diff --git a/drivers/pnp/driver.c b/drivers/pnp/driver.c
-index c29d590c5e4f..cc6757dfa3f1 100644
---- a/drivers/pnp/driver.c
-+++ b/drivers/pnp/driver.c
-@@ -123,7 +123,7 @@ static int pnp_device_probe(struct device *dev)
- 	return error;
- }
- 
--static int pnp_device_remove(struct device *dev)
-+static void pnp_device_remove(struct device *dev)
- {
- 	struct pnp_dev *pnp_dev = to_pnp_dev(dev);
- 	struct pnp_driver *drv = pnp_dev->driver;
-@@ -139,7 +139,6 @@ static int pnp_device_remove(struct device *dev)
- 		pnp_disable_dev(pnp_dev);
- 
- 	pnp_device_detach(pnp_dev);
--	return 0;
- }
- 
- static void pnp_device_shutdown(struct device *dev)
-diff --git a/drivers/rapidio/rio-driver.c b/drivers/rapidio/rio-driver.c
-index 72874153972e..a72bb0a40fcf 100644
---- a/drivers/rapidio/rio-driver.c
-+++ b/drivers/rapidio/rio-driver.c
-@@ -112,7 +112,7 @@ static int rio_device_probe(struct device *dev)
-  * driver, then run the driver remove() method.  Then update
-  * the reference count.
-  */
--static int rio_device_remove(struct device *dev)
-+static void rio_device_remove(struct device *dev)
- {
- 	struct rio_dev *rdev = to_rio_dev(dev);
- 	struct rio_driver *rdrv = rdev->driver;
-@@ -124,8 +124,6 @@ static int rio_device_remove(struct device *dev)
- 	}
- 
- 	rio_dev_put(rdev);
--
--	return 0;
- }
- 
- static void rio_device_shutdown(struct device *dev)
-diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-index c1404d3dae2c..9151836190ce 100644
---- a/drivers/rpmsg/rpmsg_core.c
-+++ b/drivers/rpmsg/rpmsg_core.c
-@@ -530,14 +530,13 @@ static int rpmsg_dev_probe(struct device *dev)
- 	return err;
- }
- 
--static int rpmsg_dev_remove(struct device *dev)
-+static void rpmsg_dev_remove(struct device *dev)
- {
- 	struct rpmsg_device *rpdev = to_rpmsg_device(dev);
- 	struct rpmsg_driver *rpdrv = to_rpmsg_driver(rpdev->dev.driver);
--	int err = 0;
- 
- 	if (rpdev->ops->announce_destroy)
--		err = rpdev->ops->announce_destroy(rpdev);
-+		rpdev->ops->announce_destroy(rpdev);
- 
- 	if (rpdrv->remove)
- 		rpdrv->remove(rpdev);
-@@ -546,8 +545,6 @@ static int rpmsg_dev_remove(struct device *dev)
- 
- 	if (rpdev->ept)
- 		rpmsg_destroy_ept(rpdev->ept);
--
--	return err;
- }
- 
- static struct bus_type rpmsg_bus = {
-diff --git a/drivers/s390/cio/ccwgroup.c b/drivers/s390/cio/ccwgroup.c
-index a6aeab1ea0ae..382c5b5f8cd3 100644
---- a/drivers/s390/cio/ccwgroup.c
-+++ b/drivers/s390/cio/ccwgroup.c
-@@ -439,15 +439,13 @@ module_exit(cleanup_ccwgroup);
- 
- /************************** driver stuff ******************************/
- 
--static int ccwgroup_remove(struct device *dev)
-+static void ccwgroup_remove(struct device *dev)
- {
- 	struct ccwgroup_device *gdev = to_ccwgroupdev(dev);
- 	struct ccwgroup_driver *gdrv = to_ccwgroupdrv(dev->driver);
- 
- 	if (gdrv->remove)
- 		gdrv->remove(gdev);
--
--	return 0;
- }
- 
- static void ccwgroup_shutdown(struct device *dev)
-diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
-index 092fd1ea5799..ebc321edba51 100644
---- a/drivers/s390/cio/css.c
-+++ b/drivers/s390/cio/css.c
-@@ -1371,7 +1371,7 @@ static int css_probe(struct device *dev)
- 	return ret;
- }
- 
--static int css_remove(struct device *dev)
-+static void css_remove(struct device *dev)
- {
- 	struct subchannel *sch;
- 
-@@ -1379,8 +1379,6 @@ static int css_remove(struct device *dev)
- 	if (sch->driver->remove)
- 		sch->driver->remove(sch);
- 	sch->driver = NULL;
--
--	return 0;
- }
- 
- static void css_shutdown(struct device *dev)
-diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
-index cd5d2d4d8e46..adf33b653d87 100644
---- a/drivers/s390/cio/device.c
-+++ b/drivers/s390/cio/device.c
-@@ -1741,7 +1741,7 @@ ccw_device_probe (struct device *dev)
- 	return 0;
- }
- 
--static int ccw_device_remove(struct device *dev)
-+static void ccw_device_remove(struct device *dev)
- {
- 	struct ccw_device *cdev = to_ccwdev(dev);
- 	struct ccw_driver *cdrv = cdev->drv;
-@@ -1775,8 +1775,6 @@ static int ccw_device_remove(struct device *dev)
- 	spin_unlock_irq(cdev->ccwlock);
- 	io_subchannel_quiesce(sch);
- 	__disable_cmf(cdev);
--
--	return 0;
- }
- 
- static void ccw_device_shutdown(struct device *dev)
-diff --git a/drivers/s390/cio/scm.c b/drivers/s390/cio/scm.c
-index b31711307e5a..b6b4589c70bd 100644
---- a/drivers/s390/cio/scm.c
-+++ b/drivers/s390/cio/scm.c
-@@ -28,15 +28,13 @@ static int scmdev_probe(struct device *dev)
- 	return scmdrv->probe ? scmdrv->probe(scmdev) : -ENODEV;
- }
- 
--static int scmdev_remove(struct device *dev)
-+static void scmdev_remove(struct device *dev)
- {
- 	struct scm_device *scmdev = to_scm_dev(dev);
- 	struct scm_driver *scmdrv = to_scm_drv(dev->driver);
- 
- 	if (scmdrv->remove)
- 		scmdrv->remove(scmdev);
--
--	return 0;
- }
- 
- static int scmdev_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
-index 8d3a1d84a757..0992edcaf1af 100644
---- a/drivers/s390/crypto/ap_bus.c
-+++ b/drivers/s390/crypto/ap_bus.c
-@@ -901,7 +901,7 @@ static int ap_device_probe(struct device *dev)
- 	return rc;
- }
- 
--static int ap_device_remove(struct device *dev)
-+static void ap_device_remove(struct device *dev)
- {
- 	struct ap_device *ap_dev = to_ap_dev(dev);
- 	struct ap_driver *ap_drv = ap_dev->drv;
-@@ -926,8 +926,6 @@ static int ap_device_remove(struct device *dev)
- 	ap_dev->drv = NULL;
- 
- 	put_device(dev);
--
--	return 0;
- }
- 
- struct ap_queue *ap_get_qdev(ap_qid_t qid)
-diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-index 5b3a20a140f9..58f69366bdcc 100644
---- a/drivers/scsi/scsi_debug.c
-+++ b/drivers/scsi/scsi_debug.c
-@@ -7674,7 +7674,7 @@ static int sdebug_driver_probe(struct device *dev)
- 	return error;
- }
- 
--static int sdebug_driver_remove(struct device *dev)
-+static void sdebug_driver_remove(struct device *dev)
- {
- 	struct sdebug_host_info *sdbg_host;
- 	struct sdebug_dev_info *sdbg_devinfo, *tmp;
-@@ -7691,7 +7691,6 @@ static int sdebug_driver_remove(struct device *dev)
- 	}
- 
- 	scsi_host_put(sdbg_host->shost);
--	return 0;
- }
- 
- static int pseudo_lld_bus_match(struct device *dev,
-diff --git a/drivers/siox/siox-core.c b/drivers/siox/siox-core.c
-index 1794ff0106bc..7c4f32d76966 100644
---- a/drivers/siox/siox-core.c
-+++ b/drivers/siox/siox-core.c
-@@ -520,7 +520,7 @@ static int siox_probe(struct device *dev)
- 	return sdriver->probe(sdevice);
- }
- 
--static int siox_remove(struct device *dev)
-+static void siox_remove(struct device *dev)
- {
- 	struct siox_driver *sdriver =
- 		container_of(dev->driver, struct siox_driver, driver);
-@@ -528,8 +528,6 @@ static int siox_remove(struct device *dev)
- 
- 	if (sdriver->remove)
- 		sdriver->remove(sdevice);
--
--	return 0;
- }
- 
- static void siox_shutdown(struct device *dev)
-diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index 1d2bc181da05..78480e332ab8 100644
---- a/drivers/slimbus/core.c
-+++ b/drivers/slimbus/core.c
-@@ -81,7 +81,7 @@ static int slim_device_probe(struct device *dev)
- 	return ret;
- }
- 
--static int slim_device_remove(struct device *dev)
-+static void slim_device_remove(struct device *dev)
- {
- 	struct slim_device *sbdev = to_slim_device(dev);
- 	struct slim_driver *sbdrv;
-@@ -91,8 +91,6 @@ static int slim_device_remove(struct device *dev)
- 		if (sbdrv->remove)
- 			sbdrv->remove(sbdev);
- 	}
--
--	return 0;
- }
- 
- static int slim_device_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-index 7abfc8c4fdc7..475a57b435b2 100644
---- a/drivers/soc/qcom/apr.c
-+++ b/drivers/soc/qcom/apr.c
-@@ -217,7 +217,7 @@ static int apr_device_probe(struct device *dev)
- 	return adrv->probe(adev);
- }
- 
--static int apr_device_remove(struct device *dev)
-+static void apr_device_remove(struct device *dev)
- {
- 	struct apr_device *adev = to_apr_device(dev);
- 	struct apr_driver *adrv;
-@@ -231,8 +231,6 @@ static int apr_device_remove(struct device *dev)
- 		idr_remove(&apr->svcs_idr, adev->svc_id);
- 		spin_unlock(&apr->svcs_lock);
- 	}
--
--	return 0;
- }
- 
- static int apr_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index c99181165321..ad2b558dc9cb 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -405,7 +405,7 @@ static int spi_probe(struct device *dev)
- 	return ret;
- }
- 
--static int spi_remove(struct device *dev)
-+static void spi_remove(struct device *dev)
- {
- 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
- 
-@@ -420,8 +420,6 @@ static int spi_remove(struct device *dev)
- 	}
- 
- 	dev_pm_domain_detach(dev, true);
--
--	return 0;
- }
- 
- static void spi_shutdown(struct device *dev)
-diff --git a/drivers/spmi/spmi.c b/drivers/spmi/spmi.c
-index 51f5aeb65b3b..b37ead9e2fad 100644
---- a/drivers/spmi/spmi.c
-+++ b/drivers/spmi/spmi.c
-@@ -345,7 +345,7 @@ static int spmi_drv_probe(struct device *dev)
- 	return err;
- }
- 
--static int spmi_drv_remove(struct device *dev)
-+static void spmi_drv_remove(struct device *dev)
- {
- 	const struct spmi_driver *sdrv = to_spmi_driver(dev->driver);
- 
-@@ -356,7 +356,6 @@ static int spmi_drv_remove(struct device *dev)
- 	pm_runtime_disable(dev);
- 	pm_runtime_set_suspended(dev);
- 	pm_runtime_put_noidle(dev);
--	return 0;
- }
- 
- static void spmi_drv_shutdown(struct device *dev)
-diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
-index 3a29b5570f9f..8a93c83cb6f8 100644
---- a/drivers/ssb/main.c
-+++ b/drivers/ssb/main.c
-@@ -283,7 +283,7 @@ static void ssb_device_shutdown(struct device *dev)
- 		ssb_drv->shutdown(ssb_dev);
- }
- 
--static int ssb_device_remove(struct device *dev)
-+static void ssb_device_remove(struct device *dev)
- {
- 	struct ssb_device *ssb_dev = dev_to_ssb_dev(dev);
- 	struct ssb_driver *ssb_drv = drv_to_ssb_drv(dev->driver);
-@@ -291,8 +291,6 @@ static int ssb_device_remove(struct device *dev)
- 	if (ssb_drv && ssb_drv->remove)
- 		ssb_drv->remove(ssb_dev);
- 	ssb_device_put(ssb_dev);
--
--	return 0;
- }
- 
- static int ssb_device_probe(struct device *dev)
-diff --git a/drivers/staging/fieldbus/anybuss/host.c b/drivers/staging/fieldbus/anybuss/host.c
-index 0f730efe9a6d..8a75f6642c78 100644
---- a/drivers/staging/fieldbus/anybuss/host.c
-+++ b/drivers/staging/fieldbus/anybuss/host.c
-@@ -1186,15 +1186,13 @@ static int anybus_bus_probe(struct device *dev)
- 	return adrv->probe(adev);
- }
- 
--static int anybus_bus_remove(struct device *dev)
-+static void anybus_bus_remove(struct device *dev)
- {
- 	struct anybuss_client_driver *adrv =
- 		to_anybuss_client_driver(dev->driver);
- 
- 	if (adrv->remove)
- 		adrv->remove(to_anybuss_client(dev));
--
--	return 0;
- }
- 
- static struct bus_type anybus_bus = {
-diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
-index 13d319860da5..5a5c17a4519b 100644
---- a/drivers/staging/greybus/gbphy.c
-+++ b/drivers/staging/greybus/gbphy.c
-@@ -169,7 +169,7 @@ static int gbphy_dev_probe(struct device *dev)
- 	return ret;
- }
- 
--static int gbphy_dev_remove(struct device *dev)
-+static void gbphy_dev_remove(struct device *dev)
- {
- 	struct gbphy_driver *gbphy_drv = to_gbphy_driver(dev->driver);
- 	struct gbphy_device *gbphy_dev = to_gbphy_dev(dev);
-@@ -180,8 +180,6 @@ static int gbphy_dev_remove(struct device *dev)
- 	pm_runtime_set_suspended(dev);
- 	pm_runtime_put_noidle(dev);
- 	pm_runtime_dont_use_autosuspend(dev);
--
--	return 0;
- }
- 
- static struct bus_type gbphy_bus_type = {
-diff --git a/drivers/target/loopback/tcm_loop.c b/drivers/target/loopback/tcm_loop.c
-index 6d0b0e67e79e..cbb2118fb35e 100644
---- a/drivers/target/loopback/tcm_loop.c
-+++ b/drivers/target/loopback/tcm_loop.c
-@@ -81,7 +81,7 @@ static int tcm_loop_show_info(struct seq_file *m, struct Scsi_Host *host)
- }
- 
- static int tcm_loop_driver_probe(struct device *);
--static int tcm_loop_driver_remove(struct device *);
-+static void tcm_loop_driver_remove(struct device *);
- 
- static int pseudo_lld_bus_match(struct device *dev,
- 				struct device_driver *dev_driver)
-@@ -363,7 +363,7 @@ static int tcm_loop_driver_probe(struct device *dev)
- 	return 0;
- }
- 
--static int tcm_loop_driver_remove(struct device *dev)
-+static void tcm_loop_driver_remove(struct device *dev)
- {
- 	struct tcm_loop_hba *tl_hba;
- 	struct Scsi_Host *sh;
-@@ -373,7 +373,6 @@ static int tcm_loop_driver_remove(struct device *dev)
- 
- 	scsi_remove_host(sh);
- 	scsi_host_put(sh);
--	return 0;
- }
- 
- static void tcm_loop_release_adapter(struct device *dev)
-diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
-index a062befcb3b2..7018d959f775 100644
---- a/drivers/thunderbolt/domain.c
-+++ b/drivers/thunderbolt/domain.c
-@@ -86,7 +86,7 @@ static int tb_service_probe(struct device *dev)
- 	return driver->probe(svc, id);
- }
- 
--static int tb_service_remove(struct device *dev)
-+static void tb_service_remove(struct device *dev)
- {
- 	struct tb_service *svc = tb_to_service(dev);
- 	struct tb_service_driver *driver;
-@@ -94,8 +94,6 @@ static int tb_service_remove(struct device *dev)
- 	driver = container_of(dev->driver, struct tb_service_driver, driver);
- 	if (driver->remove)
- 		driver->remove(svc);
--
--	return 0;
- }
- 
- static void tb_service_shutdown(struct device *dev)
-diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
-index 9cdfcfe07e87..92498961fd92 100644
---- a/drivers/tty/serdev/core.c
-+++ b/drivers/tty/serdev/core.c
-@@ -421,15 +421,13 @@ static int serdev_drv_probe(struct device *dev)
- 	return ret;
- }
- 
--static int serdev_drv_remove(struct device *dev)
-+static void serdev_drv_remove(struct device *dev)
- {
- 	const struct serdev_device_driver *sdrv = to_serdev_device_driver(dev->driver);
- 	if (sdrv->remove)
- 		sdrv->remove(to_serdev_device(dev));
- 
- 	dev_pm_domain_detach(dev, true);
--
--	return 0;
- }
- 
- static struct bus_type serdev_bus_type = {
-diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
-index 7e13b74e60e5..4169cf40a03b 100644
---- a/drivers/usb/common/ulpi.c
-+++ b/drivers/usb/common/ulpi.c
-@@ -78,14 +78,12 @@ static int ulpi_probe(struct device *dev)
- 	return drv->probe(to_ulpi_dev(dev));
- }
- 
--static int ulpi_remove(struct device *dev)
-+static void ulpi_remove(struct device *dev)
- {
- 	struct ulpi_driver *drv = to_ulpi_driver(dev->driver);
- 
- 	if (drv->remove)
- 		drv->remove(to_ulpi_dev(dev));
--
--	return 0;
- }
- 
- static struct bus_type ulpi_bus = {
-diff --git a/drivers/usb/serial/bus.c b/drivers/usb/serial/bus.c
-index 7133818a58b9..9e38142acd38 100644
---- a/drivers/usb/serial/bus.c
-+++ b/drivers/usb/serial/bus.c
-@@ -74,7 +74,7 @@ static int usb_serial_device_probe(struct device *dev)
- 	return retval;
- }
- 
--static int usb_serial_device_remove(struct device *dev)
-+static void usb_serial_device_remove(struct device *dev)
- {
- 	struct usb_serial_port *port = to_usb_serial_port(dev);
- 	struct usb_serial_driver *driver;
-@@ -101,8 +101,6 @@ static int usb_serial_device_remove(struct device *dev)
- 
- 	if (!autopm_err)
- 		usb_autopm_put_interface(port->serial->interface);
--
--	return 0;
- }
- 
- static ssize_t new_id_store(struct device_driver *driver,
-diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
-index 7f3c9a8e2bf0..78e0e78954f2 100644
---- a/drivers/usb/typec/bus.c
-+++ b/drivers/usb/typec/bus.c
-@@ -382,7 +382,7 @@ static int typec_probe(struct device *dev)
- 	return ret;
- }
- 
--static int typec_remove(struct device *dev)
-+static void typec_remove(struct device *dev)
- {
- 	struct typec_altmode_driver *drv = to_altmode_driver(dev->driver);
- 	struct typec_altmode *adev = to_typec_altmode(dev);
-@@ -400,8 +400,6 @@ static int typec_remove(struct device *dev)
- 
- 	adev->desc = NULL;
- 	adev->ops = NULL;
--
--	return 0;
- }
- 
- struct bus_type typec_bus = {
-diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-index bb3f1d1f0422..3fc4525fc05c 100644
---- a/drivers/vdpa/vdpa.c
-+++ b/drivers/vdpa/vdpa.c
-@@ -34,15 +34,13 @@ static int vdpa_dev_probe(struct device *d)
- 	return ret;
- }
- 
--static int vdpa_dev_remove(struct device *d)
-+static void vdpa_dev_remove(struct device *d)
- {
- 	struct vdpa_device *vdev = dev_to_vdpa(d);
- 	struct vdpa_driver *drv = drv_to_vdpa(vdev->dev.driver);
- 
- 	if (drv && drv->remove)
- 		drv->remove(vdev);
--
--	return 0;
- }
- 
- static struct bus_type vdpa_bus = {
-diff --git a/drivers/vfio/mdev/mdev_driver.c b/drivers/vfio/mdev/mdev_driver.c
-index c368ec824e2b..e2cb1ff56f6c 100644
---- a/drivers/vfio/mdev/mdev_driver.c
-+++ b/drivers/vfio/mdev/mdev_driver.c
-@@ -57,7 +57,7 @@ static int mdev_probe(struct device *dev)
- 	return ret;
- }
- 
--static int mdev_remove(struct device *dev)
-+static void mdev_remove(struct device *dev)
- {
- 	struct mdev_driver *drv =
- 		container_of(dev->driver, struct mdev_driver, driver);
-@@ -67,8 +67,6 @@ static int mdev_remove(struct device *dev)
- 		drv->remove(mdev);
- 
- 	mdev_detach_iommu(mdev);
--
--	return 0;
- }
- 
- static int mdev_match(struct device *dev, struct device_driver *drv)
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 4b15c00c0a0a..2a6055c0d4d3 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -278,7 +278,7 @@ static int virtio_dev_probe(struct device *_d)
- 
- }
- 
--static int virtio_dev_remove(struct device *_d)
-+static void virtio_dev_remove(struct device *_d)
- {
- 	struct virtio_device *dev = dev_to_virtio(_d);
- 	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
-@@ -292,7 +292,6 @@ static int virtio_dev_remove(struct device *_d)
- 
- 	/* Acknowledge the device's existence again. */
- 	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
--	return 0;
- }
- 
- static struct bus_type virtio_bus = {
-diff --git a/drivers/vme/vme.c b/drivers/vme/vme.c
-index 1b15afea28ee..8dba20186be3 100644
---- a/drivers/vme/vme.c
-+++ b/drivers/vme/vme.c
-@@ -1990,7 +1990,7 @@ static int vme_bus_probe(struct device *dev)
- 	return -ENODEV;
- }
- 
--static int vme_bus_remove(struct device *dev)
-+static void vme_bus_remove(struct device *dev)
- {
- 	struct vme_driver *driver;
- 	struct vme_dev *vdev = dev_to_vme_dev(dev);
-@@ -1998,8 +1998,6 @@ static int vme_bus_remove(struct device *dev)
- 	driver = dev->platform_data;
- 	if (driver->remove)
- 		driver->remove(vdev);
--
--	return 0;
- }
- 
- struct bus_type vme_bus_type = {
-diff --git a/drivers/xen/xenbus/xenbus.h b/drivers/xen/xenbus/xenbus.h
-index 2a93b7c9c159..2754bdfadcb8 100644
---- a/drivers/xen/xenbus/xenbus.h
-+++ b/drivers/xen/xenbus/xenbus.h
-@@ -106,7 +106,7 @@ void xs_request_exit(struct xb_req_data *req);
- 
- int xenbus_match(struct device *_dev, struct device_driver *_drv);
- int xenbus_dev_probe(struct device *_dev);
--int xenbus_dev_remove(struct device *_dev);
-+void xenbus_dev_remove(struct device *_dev);
- int xenbus_register_driver_common(struct xenbus_driver *drv,
- 				  struct xen_bus_type *bus,
- 				  struct module *owner,
-diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
-index 33d09b3f6211..bd003ca8acbe 100644
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -325,7 +325,7 @@ int xenbus_dev_probe(struct device *_dev)
- }
- EXPORT_SYMBOL_GPL(xenbus_dev_probe);
- 
--int xenbus_dev_remove(struct device *_dev)
-+void xenbus_dev_remove(struct device *_dev)
- {
- 	struct xenbus_device *dev = to_xenbus_device(_dev);
- 	struct xenbus_driver *drv = to_xenbus_driver(_dev->driver);
-@@ -355,8 +355,6 @@ int xenbus_dev_remove(struct device *_dev)
- 	if (!drv->allow_rebind ||
- 	    xenbus_read_driver_state(dev->nodename) == XenbusStateClosing)
- 		xenbus_switch_state(dev, XenbusStateClosed);
--
--	return 0;
- }
- EXPORT_SYMBOL_GPL(xenbus_dev_remove);
- 
-diff --git a/include/linux/device/bus.h b/include/linux/device/bus.h
-index 1ea5e1d1545b..062777a45a74 100644
---- a/include/linux/device/bus.h
-+++ b/include/linux/device/bus.h
-@@ -91,7 +91,7 @@ struct bus_type {
- 	int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
- 	int (*probe)(struct device *dev);
- 	void (*sync_state)(struct device *dev);
--	int (*remove)(struct device *dev);
-+	void (*remove)(struct device *dev);
- 	void (*shutdown)(struct device *dev);
- 
- 	int (*online)(struct device *dev);
-diff --git a/sound/aoa/soundbus/core.c b/sound/aoa/soundbus/core.c
-index 002fb5bf220b..c9579d97fbab 100644
---- a/sound/aoa/soundbus/core.c
-+++ b/sound/aoa/soundbus/core.c
-@@ -104,7 +104,7 @@ static int soundbus_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	return retval;
- }
- 
--static int soundbus_device_remove(struct device *dev)
-+static void soundbus_device_remove(struct device *dev)
- {
- 	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
- 	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
-@@ -112,8 +112,6 @@ static int soundbus_device_remove(struct device *dev)
- 	if (dev->driver && drv->remove)
- 		drv->remove(soundbus_dev);
- 	soundbus_dev_put(soundbus_dev);
--
--	return 0;
- }
- 
- static void soundbus_device_shutdown(struct device *dev)
--- 
-2.30.2
+--XsQoSWH+UP9D9v3l
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+cnoCAA==
+
+--XsQoSWH+UP9D9v3l--
