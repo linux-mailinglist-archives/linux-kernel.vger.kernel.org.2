@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71FD3C703A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A403C703E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236178AbhGMMXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:23:05 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51340 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235968AbhGMMXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:23:03 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1m3HOM-00054s-Lp; Tue, 13 Jul 2021 20:20:02 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1m3HO5-0006IH-0H; Tue, 13 Jul 2021 20:19:45 +0800
-Date:   Tue, 13 Jul 2021 20:19:45 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, jic23@kernel.org,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
- typeof_memeber() macros
-Message-ID: <20210713121944.GA24157@gondor.apana.org.au>
-References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
- <20210713084541.7958-3-andriy.shevchenko@linux.intel.com>
- <YO1s+rHEqC9RjMva@kroah.com>
- <YO12ARa3i1TprGnJ@smile.fi.intel.com>
- <YO13lSUdPfNGOnC3@kroah.com>
+        id S236191AbhGMMXX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 08:23:23 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49588 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236085AbhGMMXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 08:23:21 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-231-Dk-aoIJGObaCzW5wvCtF0g-1; Tue, 13 Jul 2021 13:20:28 +0100
+X-MC-Unique: Dk-aoIJGObaCzW5wvCtF0g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Tue, 13 Jul 2021 13:20:26 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Tue, 13 Jul 2021 13:20:26 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Russell King' <linux@armlinux.org.uk>
+CC:     =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Salah Triki <salah.triki@gmail.com>,
+        "fabrice.gasnier@foss.st.com" <fabrice.gasnier@foss.st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] divide by 3*sizeof(u32) when computing array_size
+Thread-Topic: [PATCH] divide by 3*sizeof(u32) when computing array_size
+Thread-Index: AQHXd8hGdzQpdmgYHUiEx+VC3p1WwKtAvfwg///0h4CAAB31IA==
+Date:   Tue, 13 Jul 2021 12:20:26 +0000
+Message-ID: <2f725f0be09349308bf7d9a24399d516@AcuMS.aculab.com>
+References: <20210712231910.GA1831270@pc>
+ <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
+ <20210713091954.GG22278@shell.armlinux.org.uk>
+ <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
+ <20210713112253.GH22278@shell.armlinux.org.uk>
+In-Reply-To: <20210713112253.GH22278@shell.armlinux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO13lSUdPfNGOnC3@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 01:23:01PM +0200, Greg Kroah-Hartman wrote:
->
-> Life is messy and can not easily be partitioned into tiny pieces.  That
-> way usually ends up being even messier in the end...
+From: Russell King
+> Sent: 13 July 2021 12:23
+> 
+> On Tue, Jul 13, 2021 at 11:07:00AM +0000, David Laight wrote:
+> > From: Russell King
+> > > Sent: 13 July 2021 10:20
+> > ....
+> > > I would also note that the code relies on there being no padding in
+> > > struct stm32_breakinput - it should be noted that a strict
+> > > interpretation of the C standard allows padding to be added anywhere
+> > > to a structure - at the start, end or between members.
+> >
+> > I'm pretty certain I remember that padding before the first member
+> > isn't allowed.
+> 
+> You may be right there.
+> 
+> > In any case the kernel generally assumes there is no extra padding.
+> > (eg for structures that map hardware registers.)
+> 
+> That's incorrect. Places where we care either generally end up with
+> __packed or are carefully layed out to ensure members are naturally
+> aligned to reduce the likelyhood of it. 32-bit OABI ARM has been
+> particularly "fun" in this respect.
 
-One advantage is less chance of header loops which very often
-involve kernel.h and one of the most common reasons for other
-header files to include kernel.h is to access container_of.
+I did say 'extra padding'.
+Ensuring everything is naturally aligned is best - shame the standards
+bodies don't do that - just look at the SCTP socket options.
 
-However, I don't see much point in touching *.c files that include
-kernel.h.
+Adding __packed is right sometimes, but it isn't without cost
+and is probably wrong for anything hardware related.
+Definitely useful on structure members to remove the padding
+before that specific member (eg for 64bit in x86 compat code).
+But marking a structure __packed is usually wrong (or bad).
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> > For big structures it is worth adding a compile-time check of
+> > the structure size - but not really for three u32.
+> 
+> Sorry, structure size has absolutely nothing to do with whether it's
+> a good idea to have a compile-time check. The deciding factor is
+> whether the code relies on some property such as it being a certain
+> size. Such as in this exact case. If you grep for "BUILD_BUG_ON.*sizeof"
+> in fs/ for example, this illustrates the point rather well.
+
+I'd not bother if the size is obviously going to be correct.
+
+I did get some odd bugs a few years ago from a compiler that aligned
+all structures on 4-byte boundaries.
+I had to change a structure of two u16 into an array :-)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
