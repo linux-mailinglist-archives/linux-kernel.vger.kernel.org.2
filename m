@@ -2,134 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBAA3C7775
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D57D3C7779
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbhGMTuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S235127AbhGMTuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhGMTt7 (ORCPT
+        with ESMTP id S235119AbhGMTuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:49:59 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851BDC0613DD;
-        Tue, 13 Jul 2021 12:47:09 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id cu14so7420856pjb.0;
-        Tue, 13 Jul 2021 12:47:09 -0700 (PDT)
+        Tue, 13 Jul 2021 15:50:14 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD596C06178A;
+        Tue, 13 Jul 2021 12:47:22 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id hd33so14928792ejc.9;
+        Tue, 13 Jul 2021 12:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hUO4z88FjFShb0tr7ebTCI1mlDYypbUNdBXF8PiD+/Q=;
-        b=S2gpv6iuoIz8KMmME9waddrFut/+xO1c/4fJ0KphbAOcyf7xLe4QKpsyQelvdnLhcD
-         hxCt7L77sSih+iTVfj+VAcaCzDp2/GbnGrVFT119jUVnEDPZr0AVJJBQ/eaKK06E0Q/H
-         9LPxKtXJyl+5rlCReHeEoEnvWiHdlffy9tiWNmyzsaTSFuD1TzIcMYN3DhKGYsP5qYZZ
-         nRALrm9DVfdD5tqNfx8iile/54ugLaVcLzDZIrcbjyMJjGR0vMAvWyb+7lO0ve0mAiaf
-         h8hpteyD0NzKDZw5lEuJovSDjBEx8d4GLticXBfNjCV2mplHAFtHPab5uXvpdM1MjmTe
-         TN1Q==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=DTzlHpqU1xWPgcCMr1ESW3zCE8WiwwCSMY6IY5+7EKk=;
+        b=qyrvvIt8yq5OmMoKnzW1brn8GLZClHONEZn4/BoFRs7+kD9dUVskXHSi1KK9kqJRD8
+         DmZFjcYmSaL4Dn+ysObXfMy3fADiql4GIVUbU1hEolaaK0jGJLbdqejI3COLNI78bfz/
+         aOF3D1WCCyAIHZNfCEGMcBaXpDSiUxlZlGjIAT3+0Iv3WFFLXM1NcL7lksj1kQ4SyVWj
+         vt8xUThuSrU8wfCVZvHEGBXyWGKgSyIh3RyIaDi8tntiXy5v3LXYRKz15CciS/980PaZ
+         CqvOBb15QgEOv5U2qmkFqPJjLwYVlUiy0wR5HbZI4imAW7paumy7cmLMeZ3fZpnQCPmf
+         6yaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hUO4z88FjFShb0tr7ebTCI1mlDYypbUNdBXF8PiD+/Q=;
-        b=VJWJZ43y97rrSu9AMJjQHgdZDfE56Chea/Abad1DsWQSG9Bhky4w/K6LRjpaOkIZZI
-         u9Xy/iBXvKb1dcw7jeVItpQhhjwb2sOU2ci3zdQ94vUdLuYuoVZItdLfYAvoi0pfSJeD
-         XK8X1GroiaHll35CcYtPv5B+9ipEt+BHkT+jLfYeLCFpVTCwU8N3MeXs22fJrZzmb6sn
-         wR90wKXEd4XlQ4eem2t3l3KUpaxsV/EkZZeIeiCrKokFFvIniyOXnhxAR6oEpgjfoHWR
-         djOlG+Nsc2Vv6VIgSkJowObxZ4OkCkwc8E7rpnzkBXrOQ3ZTWOaYvL/LMcjAmdb+WfbD
-         Lv+A==
-X-Gm-Message-State: AOAM530hW+eZZKs9GdA9d2g6Cx/HtryCpSfRTVYEgrgH0R7hF9weo2Hb
-        hoKjEKic2ffjz7bpYiaNFZAR6tw2BvY6h2paoxk=
-X-Google-Smtp-Source: ABdhPJw/cLrySdmiuHtHgNMWFAAQecmL2CP6a9Y251qzuozfAeeYM95TWi09nfpSbz0tdoHKY8xH+caVRBWV2Avivmc=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr900534pja.181.1626205629007;
- Tue, 13 Jul 2021 12:47:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=DTzlHpqU1xWPgcCMr1ESW3zCE8WiwwCSMY6IY5+7EKk=;
+        b=bOhndb/748rhLgD7nuc765C14fZo7BcDC2vYxHj1rQ2dmD1QZmhQ+UoTgav97ve8YX
+         g8iEzYzgjjwV0sc4lhFz+GYWJE1RGHXQMXAuaZrLkDnQvHh5v8RsSPNTIMsjq4c8EVaJ
+         Sabg9imIdJ8cNoY3C9jjZy+8n9YA9bNvuLtD0YHbWmpquu/cuzW8punv0kMV2gzk83WU
+         08P5Sgy6R4itepT+quYw/sPibyRNA9R3krwNI/B1lja7dhVm9RpNG2syiThFZQOBH8JX
+         ntM3vXw53lqPLJaSw13oqyA8qsRetOOdedy7bK2UguzxNWBcjfwnIta2dMo/GMFY9sw/
+         KtPA==
+X-Gm-Message-State: AOAM532Uc6zEG4VS286ggq8/soJbyuHeflluqqO9KJy0fO0ZB2+8LgRl
+        6Cx1W4AFgM1QqiloMA0nZ+vSQh0twg==
+X-Google-Smtp-Source: ABdhPJwqmFURteOsUkKq9Kq02nY9tJa97rjAS6oUskn73cnlUEp8s9ENvSmYqpkfJ4qmilY9C4pwfw==
+X-Received: by 2002:a17:907:97c5:: with SMTP id js5mr7640957ejc.321.1626205640798;
+        Tue, 13 Jul 2021 12:47:20 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.248.110])
+        by smtp.gmail.com with ESMTPSA id q11sm8390992eds.60.2021.07.13.12.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 12:47:20 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 22:47:18 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, arnd@arndb.de
+Subject: [PATCH] Decouple build from userspace headers
+Message-ID: <YO3txvw87MjKfdpq@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210709170426.GC4112@sirena.org.uk> <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
- <20210712124223.GB4435@sirena.org.uk> <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
- <20210712133428.GD4435@sirena.org.uk> <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
- <20210712170120.GG4435@sirena.org.uk> <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
- <20210713152454.GC4098@sirena.org.uk> <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
- <20210713181837.GE4098@sirena.org.uk>
-In-Reply-To: <20210713181837.GE4098@sirena.org.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 13 Jul 2021 22:46:29 +0300
-Message-ID: <CAHp75Vfwz-cDrAhOnXaeUSDN-K+YJv8ahmvZ3aJwm2sKqc8HeQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        kieran.bingham@ideasonboard.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 9:19 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Jul 13, 2021 at 06:55:59PM +0300, Andy Shevchenko wrote:
-> > On Tue, Jul 13, 2021 at 6:25 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > The driver code is trivial boilerplate, assuming someone doesn't go and
-> > > implement a helper to register stuff separately like I suggested.  The
-> > > proposed swnode stuff would involve duplicating the DT parsing code.
-> > > This seems like a whole lot of effort for something that provides a
-> > > worse result than either of the existing things.
->
-> > I'm not sure I follow. Where did you see the duplication when I saw
-> > the other way around?
->
-> The current patch consists entirely of additions, it does not remove any
-> existing code at all, the diffstat is:
->
->  5 files changed, 174 insertions(+)
+In theory, userspace headers can be under incompatible license.
 
-Ah, okay, you are talking with regard to the current patch. I talked
-in generic terms.
+Linux by virtue of being OS kernel is fully independent piece of code
+and should not require anything from userspace.
 
-> > Converting code from OF to fwnode APIs in most cases is smooth and
-> > doesn't add any overhead to the codebase,
->
-> We explicitly do not want to attempt to parse regulator properties out
-> of ACPI platform descriptions because using the regulator binding on
-> ACPI platforms conflicts with the ACPI model for power management and
-> we really don't want to encourage platforms to attempt to mix and match
-> here, it's not going to lead to anything robust.  System integrators
-> that need this sort of OS visible low level power management really
-> should be working with the UEFI forum to get an ACPI specification for
-> it, or if they don't really need it fixing up their AML to DTRT.
+For this:
 
-No-one is objecting to this. I agree that integration of regulators
-and ACPI should be done in a specific way if needed at all.
+* ship minimal <stdarg.h>
+	2 types, 4 macros
 
-> If you were to say that we could bodge around that by somehow forcing
-> this binding to exist only for swnodes when running on ACPI systems then
-> we'd still have the problems with creating something with worse tooling
-> than what's there already.
+* delete "-isystem"
+	This is what enables leakage.
 
-Of course, no objections to this.
+* fixup compilation where necessary.
 
-> Like I said in the other mail fwnode is a nice hack for systems that are
-> using ACPI but have hardware that's doing something totally outside the
-> ACPI model to allow them to reuse work that's been done for DT, it's not
-> a universal solution to the lack of appropriate support for describing
-> modern systems in ACPI.
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-In some (I suppose rear) cases it may be used by DT-enabled platforms as well.
-I can imagine the case when you have a system in ROM and only what you
-can do to change DTB there is either use DT overlays (which seems to
-be not working, plenty of gaps there according to a Wiki I saw once)
-or do something in the board files.
+ Makefile                                                               |    2 +-
+ arch/um/include/shared/irq_user.h                                      |    1 -
+ arch/um/os-Linux/signal.c                                              |    2 +-
+ crypto/aegis128-neon-inner.c                                           |    2 --
+ drivers/net/wwan/iosm/iosm_ipc_imem.h                                  |    1 -
+ drivers/pinctrl/aspeed/pinmux-aspeed.h                                 |    1 -
+ drivers/staging/media/atomisp/pci/hive_isp_css_common/host/isp_local.h |    2 --
+ include/stdarg.h                                                       |    9 +++++++++
+ sound/aoa/codecs/onyx.h                                                |    1 -
+ sound/aoa/codecs/tas.c                                                 |    1 -
+ 10 files changed, 11 insertions(+), 11 deletions(-)
 
-So, if you replace "ACPI" with the "firmware resource provider" in the
-above paragraph, I will agree 100% with you.
-
--- 
-With Best Regards,
-Andy Shevchenko
+--- a/Makefile
++++ b/Makefile
+@@ -978,7 +978,7 @@ KBUILD_CFLAGS += -falign-functions=64
+ endif
+ 
+ # arch Makefile may override CC so keep this after arch Makefile is included
+-NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
++NOSTDINC_FLAGS += -nostdinc
+ 
+ # warn about C99 declaration after statement
+ KBUILD_CFLAGS += -Wdeclaration-after-statement
+--- a/arch/um/include/shared/irq_user.h
++++ b/arch/um/include/shared/irq_user.h
+@@ -7,7 +7,6 @@
+ #define __IRQ_USER_H__
+ 
+ #include <sysdep/ptrace.h>
+-#include <stdbool.h>
+ 
+ enum um_irq_type {
+ 	IRQ_READ,
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -67,7 +67,7 @@ int signals_enabled;
+ #ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
+ static int signals_blocked;
+ #else
+-#define signals_blocked false
++#define signals_blocked 0
+ #endif
+ static unsigned int signals_pending;
+ static unsigned int signals_active = 0;
+--- a/crypto/aegis128-neon-inner.c
++++ b/crypto/aegis128-neon-inner.c
+@@ -15,8 +15,6 @@
+ 
+ #define AEGIS_BLOCK_SIZE	16
+ 
+-#include <stddef.h>
+-
+ extern int aegis128_have_aes_insn;
+ 
+ void *memcpy(void *dest, const void *src, size_t n);
+--- a/drivers/net/wwan/iosm/iosm_ipc_imem.h
++++ b/drivers/net/wwan/iosm/iosm_ipc_imem.h
+@@ -7,7 +7,6 @@
+ #define IOSM_IPC_IMEM_H
+ 
+ #include <linux/skbuff.h>
+-#include <stdbool.h>
+ 
+ #include "iosm_ipc_mmio.h"
+ #include "iosm_ipc_pcie.h"
+--- a/drivers/pinctrl/aspeed/pinmux-aspeed.h
++++ b/drivers/pinctrl/aspeed/pinmux-aspeed.h
+@@ -5,7 +5,6 @@
+ #define ASPEED_PINMUX_H
+ 
+ #include <linux/regmap.h>
+-#include <stdbool.h>
+ 
+ /*
+  * The ASPEED SoCs provide typically more than 200 pins for GPIO and other
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/isp_local.h
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/isp_local.h
+@@ -16,8 +16,6 @@
+ #ifndef __ISP_LOCAL_H_INCLUDED__
+ #define __ISP_LOCAL_H_INCLUDED__
+ 
+-#include <stdbool.h>
+-
+ #include "isp_global.h"
+ 
+ #include <isp2400_support.h>
+new file mode 100644
+--- /dev/null
++++ b/include/stdarg.h
+@@ -0,0 +1,9 @@
++#ifndef _LINUX_STDARG_H
++#define _LINUX_STDARG_H
++typedef __builtin_va_list __gnuc_va_list;
++typedef __builtin_va_list va_list;
++#define va_start(v, l)	__builtin_va_start(v, l)
++#define va_end(v)	__builtin_va_end(v)
++#define va_arg(v, T)	__builtin_va_arg(v, T)
++#define va_copy(d, s)	__builtin_va_copy(d, s)
++#endif
+--- a/sound/aoa/codecs/onyx.h
++++ b/sound/aoa/codecs/onyx.h
+@@ -6,7 +6,6 @@
+  */
+ #ifndef __SND_AOA_CODEC_ONYX_H
+ #define __SND_AOA_CODEC_ONYX_H
+-#include <stddef.h>
+ #include <linux/i2c.h>
+ #include <asm/pmac_low_i2c.h>
+ #include <asm/prom.h>
+--- a/sound/aoa/codecs/tas.c
++++ b/sound/aoa/codecs/tas.c
+@@ -58,7 +58,6 @@
+  *    and up to the hardware designer to not wire
+  *    them up in some weird unusable way.
+  */
+-#include <stddef.h>
+ #include <linux/i2c.h>
+ #include <asm/pmac_low_i2c.h>
+ #include <asm/prom.h>
