@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA2F3C718C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62473C718B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhGMN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236741AbhGMN5V (ORCPT
+        id S236789AbhGMN5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:57:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53228 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236742AbhGMN5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Jul 2021 09:57:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A73FC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:54:31 -0700 (PDT)
-Message-Id: <20210713135158.488853478@linutronix.de>
+Message-Id: <20210713135158.580966888@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626184469;
+        s=2020; t=1626184471;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7w/WjmY4L1WiRcb0h50YeGNn764ly9SO0FIXZqbq/0o=;
-        b=JKZJ5CpgtLipWXMrXni4KP6hA6jYA+iOFak49JelSN1ovRLNSdPxrCMhAuGAS0FscG+kIX
-        0S2dNdu4MdaXV1fs65v5IyxoIgSNkkdZ2MwZk+xTdeVpfJgcM1UMm6dJ1MK7YD2nQyMMX4
-        MIxUqhCUcUX9FaJEoEXrMIwdGvtGttgvsnn9/Odpfc6j4dInaIWbzl0hWmIM5sTnOR5P7q
-        wwXm6Kn82LxK7Oye6MRBk9vE+qU38XqV0JIJ7XhjYS/Y2d4lOa/y0Ok018RW0pt9cJxRV4
-        L107tGkJLL090ISXCEuopfH30Sf5sT6fxe75SbD9wsSRG6MhtpV2cxv53HlFnw==
+        bh=dnvLU+uTr7vwEogkNs6hQ2PurAqpWtxHRlHkc0vgym8=;
+        b=l8xBs3UZX9oCUOdGSt+X5E4ZJb03XML9rCS1A1yB55zYqT/iGzDYqY+iLXWe0iKaiuo/mx
+        JDvRSAcQyO2oiCIwGUpsNu69PvzVC9EIIgbKHF4kV/G81QJJfzpyLAyR/qBOVxTBdAwooX
+        kPLHzz5qdWxEUJmPhsoeIRjeI+OutzDk0FoUF4K4qK3O0rB/3dWVy0Wf0xrqdZkA3EHaX4
+        OFZ2GEER91DNvUFcMN5l6Yyhnud2YzVlKbZLHh5HB+IIyrFhD1McbRZMGQGDMbFfIWGqFD
+        5DiumyoZewv+iiq+2qFjMJImEYZqh7EXelp3MwrKMOnoVeSrdQMkka7rV6+nig==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626184469;
+        s=2020e; t=1626184471;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7w/WjmY4L1WiRcb0h50YeGNn764ly9SO0FIXZqbq/0o=;
-        b=/LoNft1dinzXOXxXjMrIgV9KSTOGvyPFKQr0Vrmog65oY7rt0JqocgnHjHzzYBWXfi9Hrp
-        H9+i/zd+P9zjVlDg==
-Date:   Tue, 13 Jul 2021 15:39:51 +0200
+        bh=dnvLU+uTr7vwEogkNs6hQ2PurAqpWtxHRlHkc0vgym8=;
+        b=xXbFEQYKAUJ+KVX2ObjHt3Fy4HBwGjL5q31PQcjM0PdJZjrTDT/FFDkEzHeBHIAIOL0OyZ
+        BRXD8a5/qJzA+VDg==
+Date:   Tue, 13 Jul 2021 15:39:52 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [patch V2 06/10] timekeeping: Distangle resume and clock-was-set events
+Subject: [patch V2 07/10] time/timekeeping: Avoid invoking clock_was_set() twice
 References: <20210713133945.063650594@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,111 +50,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Resuming timekeeping is a clock-was-set event and uses the clock-was-set
-notification mechanism. This is in the way of making the clock-was-set
-update for hrtimers selective so unnecessary IPIs are avoided when a CPU
-base does not have timers queued which are affected by the clock setting.
+do_adjtimex() might end up scheduling a delayed clock_was_set() via
+timekeeping_advance() and then invoke clock_was_set() directly which is
+pointless.
 
-Distangle it by invoking hrtimer_resume() on each unfreezing CPU and invoke
-the new timerfd_resume() function from timekeeping_resume() which is the
-only place where this is needed.
-
-Rename hrtimer_resume() to hrtimer_resume_local() to reflect the change.
-
-With this the clock_was_set*() functions are not longer required to IPI all
-CPUs unconditionally and can get some smarts to avoid them.
+Make timekeeping_advance() return whether an invocation of clock_was_set()
+is required and handle it at the call sites which allows do_adjtimex() to
+issue a single direct call if required.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/hrtimer.h     |    1 -
- kernel/time/hrtimer.c       |   15 ++++++---------
- kernel/time/tick-common.c   |    7 +++++++
- kernel/time/tick-internal.h |    2 ++
- kernel/time/timekeeping.c   |    4 +++-
- 5 files changed, 18 insertions(+), 11 deletions(-)
+ kernel/time/timekeeping.c |   18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -354,7 +354,6 @@ extern void timerfd_resume(void);
- static inline void timerfd_clock_was_set(void) { }
- static inline void timerfd_resume(void) { }
- #endif
--extern void hrtimers_resume(void);
- 
- DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
- 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -900,8 +900,8 @@ static void clock_was_set_work(struct wo
- static DECLARE_WORK(hrtimer_work, clock_was_set_work);
- 
- /*
-- * Called from timekeeping and resume code to reprogram the hrtimer
-- * interrupt device on all cpus and to notify timerfd.
-+ * Called from timekeeping code to reprogram the hrtimer interrupt device
-+ * on all cpus and to notify timerfd.
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -2127,7 +2127,7 @@ static u64 logarithmic_accumulation(stru
+  * timekeeping_advance - Updates the timekeeper to the current time and
+  * current NTP tick length
   */
- void clock_was_set_delayed(void)
+-static void timekeeping_advance(enum timekeeping_adv_mode mode)
++static bool timekeeping_advance(enum timekeeping_adv_mode mode)
  {
-@@ -909,18 +909,15 @@ void clock_was_set_delayed(void)
- }
- 
- /*
-- * During resume we might have to reprogram the high resolution timer
-- * interrupt on all online CPUs.  However, all other CPUs will be
-- * stopped with IRQs interrupts disabled so the clock_was_set() call
-- * must be deferred.
-+ * Called during resume either directly from via timekeeping_resume()
-+ * or in the case of s2idle from tick_unfreeze() to ensure that the
-+ * hrtimers are up to date.
-  */
--void hrtimers_resume(void)
-+void hrtimers_resume_local(void)
- {
- 	lockdep_assert_irqs_disabled();
- 	/* Retrigger on the local CPU */
- 	retrigger_next_event(NULL);
--	/* And schedule a retrigger for all others */
--	clock_was_set_delayed();
- }
- 
- /*
---- a/kernel/time/tick-common.c
-+++ b/kernel/time/tick-common.c
-@@ -470,6 +470,13 @@ void tick_resume_local(void)
- 		else
- 			tick_resume_oneshot();
- 	}
+ 	struct timekeeper *real_tk = &tk_core.timekeeper;
+ 	struct timekeeper *tk = &shadow_timekeeper;
+@@ -2198,9 +2198,8 @@ static void timekeeping_advance(enum tim
+ 	write_seqcount_end(&tk_core.seq);
+ out:
+ 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
+-	if (clock_set)
+-		/* Have to call _delayed version, since in irq context*/
+-		clock_was_set_delayed();
 +
-+	/*
-+	 * Ensure that hrtimers are up to date and the clockevents device
-+	 * is reprogrammed correctly when high resolution timers are
-+	 * enabled.
-+	 */
-+	hrtimers_resume_local();
++	return !!clock_set;
  }
  
  /**
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -168,3 +168,5 @@ void timer_clear_idle(void);
- 
- void clock_was_set(void);
- void clock_was_set_delayed(void);
-+
-+void hrtimers_resume_local(void);
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -1810,8 +1810,10 @@ void timekeeping_resume(void)
- 
- 	touch_softlockup_watchdog();
- 
-+	/* Resume the clockevent device(s) and hrtimers */
- 	tick_resume();
--	hrtimers_resume();
-+	/* Notify timerfd as resume is equivalent to clock_was_set() */
-+	timerfd_resume();
+@@ -2209,7 +2208,8 @@ static void timekeeping_advance(enum tim
+  */
+ void update_wall_time(void)
+ {
+-	timekeeping_advance(TK_ADV_TICK);
++	if (timekeeping_advance(TK_ADV_TICK))
++		clock_was_set_delayed();
  }
  
- int timekeeping_suspend(void)
+ /**
+@@ -2389,8 +2389,9 @@ int do_adjtimex(struct __kernel_timex *t
+ {
+ 	struct timekeeper *tk = &tk_core.timekeeper;
+ 	struct audit_ntp_data ad;
+-	unsigned long flags;
++	bool clock_set = false;
+ 	struct timespec64 ts;
++	unsigned long flags;
+ 	s32 orig_tai, tai;
+ 	int ret;
+ 
+@@ -2425,6 +2426,7 @@ int do_adjtimex(struct __kernel_timex *t
+ 	if (tai != orig_tai) {
+ 		__timekeeping_set_tai_offset(tk, tai);
+ 		timekeeping_update(tk, TK_MIRROR | TK_CLOCK_WAS_SET);
++		clock_set = true;
+ 	}
+ 	tk_update_leap_state(tk);
+ 
+@@ -2435,9 +2437,9 @@ int do_adjtimex(struct __kernel_timex *t
+ 
+ 	/* Update the multiplier immediately if frequency was set directly */
+ 	if (txc->modes & (ADJ_FREQUENCY | ADJ_TICK))
+-		timekeeping_advance(TK_ADV_FREQ);
++		clock_set |= timekeeping_advance(TK_ADV_FREQ);
+ 
+-	if (tai != orig_tai)
++	if (clock_set)
+ 		clock_was_set();
+ 
+ 	ntp_notify_cmos_timer();
 
