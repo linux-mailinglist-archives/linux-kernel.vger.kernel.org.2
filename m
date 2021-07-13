@@ -2,86 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4DA3C6B36
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77BC3C6B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhGMH3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:29:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14075 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbhGMH3w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:29:52 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPBvN1SPwzbc2D;
-        Tue, 13 Jul 2021 15:23:44 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 15:27:00 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 15:27:00 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] PCI: Optimize pci_resource_len() to reduce the binary size of kernel
-Date:   Tue, 13 Jul 2021 15:22:36 +0800
-Message-ID: <20210713072236.3043-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S234199AbhGMHZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:25:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:37610 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234153AbhGMHZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:25:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43F7231B;
+        Tue, 13 Jul 2021 00:22:38 -0700 (PDT)
+Received: from [10.163.65.186] (unknown [10.163.65.186])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51AA23F694;
+        Tue, 13 Jul 2021 00:22:35 -0700 (PDT)
+Subject: Re: [PATCH 0/5] coresight: TRBE and Self-Hosted trace fixes
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, peterz@infradead.org, Tamas.Zsoldos@arm.com,
+        will@kernel.org
+References: <20210712113830.2803257-1-suzuki.poulose@arm.com>
+ <20210712170246.GB1777012@p14s>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <0c9ef7f3-a62f-cdae-68f2-dd6e443422c3@arm.com>
+Date:   Tue, 13 Jul 2021 12:53:23 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210712170246.GB1777012@p14s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pci_resource_end() can be 0 only when pci_resource_start() is 0.
-Otherwise, it is definitely an error. In this case, pci_resource_len()
-should be regarded as 0. Therefore, determining whether
-pci_resource_start() and pci_resource_end() are both 0 can be reduced to
-determining only whether pci_resource_end() is 0.
 
-Although only one condition judgment is reduced, the macro function
-pci_resource_len() is widely referenced in the kernel. I used defconfig to
-compile the latest kernel on X86, and its binary code size was reduced by
-about 3KB.
 
-Before:
- [ 2] .rela.text        RELA             0000000000000000  093bfcb0
-      0000000001a67168  0000000000000018   I      68     1     8
+On 7/12/21 10:32 PM, Mathieu Poirier wrote:
+> On Mon, Jul 12, 2021 at 12:38:25PM +0100, Suzuki K Poulose wrote:
+>> This is a series of fixes addressing the issues in the way we handle
+>>   - Self-Hosted trace filter control register for ETM/ETE
+>>   - AUX buffer and event handling of TRBE at overflow.
+>>
+>> The use of TRUNCATED flag on an IRQ for the TRBE driver is
+>> something that needs to be rexamined. Please see Patch 3 for
+>> more details.
+>>
+>> Suzuki K Poulose (5):
+>>   coresight: etm4x: Save restore TRFCR_EL1
+>>   coresight: etm4x: Use Trace Filtering controls dynamically
+>>   coresight: trbe: Keep TRBE disabled on overflow irq
+>>   coresight: trbe: Move irq_work queue processing
+>>   coresight: trbe: Prohibit tracing while handling an IRQ
+>>
+>>  .../coresight/coresight-etm4x-core.c          | 109 ++++++++++++++----
+>>  drivers/hwtracing/coresight/coresight-etm4x.h |   7 +-
+>>  drivers/hwtracing/coresight/coresight-trbe.c  |  91 ++++++++++-----
+>>  3 files changed, 149 insertions(+), 58 deletions(-)
+> 
+> Anshuman - please have a look when you have a minutes.
 
-After:
- [ 2] .rela.text        RELA             0000000000000000  093bfcb0
-      0000000001a66598  0000000000000018   I      68     1     8
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/pci.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 540b377ca8f6..23ef1a15eb5d 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1881,9 +1881,7 @@ int pci_iobar_pfn(struct pci_dev *pdev, int bar, struct vm_area_struct *vma);
- #define pci_resource_end(dev, bar)	((dev)->resource[(bar)].end)
- #define pci_resource_flags(dev, bar)	((dev)->resource[(bar)].flags)
- #define pci_resource_len(dev,bar) \
--	((pci_resource_start((dev), (bar)) == 0 &&	\
--	  pci_resource_end((dev), (bar)) ==		\
--	  pci_resource_start((dev), (bar))) ? 0 :	\
-+	((pci_resource_end((dev), (bar)) == 0) ? 0 :	\
- 							\
- 	 (pci_resource_end((dev), (bar)) -		\
- 	  pci_resource_start((dev), (bar)) + 1))
--- 
-2.25.1
-
+Sure, will do.
