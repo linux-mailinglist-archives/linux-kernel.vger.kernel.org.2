@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1A53C6A67
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39453C6A6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhGMGXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:23:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35265 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231261AbhGMGXR (ORCPT
+        id S233522AbhGMG2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhGMG2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:23:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626157227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E4nsKDY6NNQsjKT8elVvpHdt/irXtZ9RqD2SnFvWtPo=;
-        b=K2XIb4hwrQxyITQMNdnEhhhVO48OnGWG/+7aACwB+55Do9r0uCrnnpBsN5t1kiuzUhw3T2
-        A/5a6xXvDQK7wxfYLAt9sKCBAVtazGstbAezQCJHpNFSDULtVngXDQ5UbOMWNavSSPhKPj
-        y+nGouwCjYrhKGyHlS1y/bTPkrLdL6A=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-427-3ncjnNO4M2GuOiDk7oPz_g-1; Tue, 13 Jul 2021 02:20:26 -0400
-X-MC-Unique: 3ncjnNO4M2GuOiDk7oPz_g-1
-Received: by mail-il1-f200.google.com with SMTP id h11-20020a056e021b8bb029020d99b97ad3so2633163ili.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:20:26 -0700 (PDT)
+        Tue, 13 Jul 2021 02:28:09 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A808BC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:25:19 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ec55so6755603edb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=GvSEm2IhMBJ052xe9DI9VvCgaL6z88P134FZp7B8Jpk=;
+        b=UYsTsd7u7Y8aygHcgDvmgkOvRe+XTIhj9kMxJJwO+HKRSbu58NR3wyvkVh7JmUCfIH
+         9lWY8LAtaqzLRmpZfkO7Ie15/5ZBOcJwHqLcGVKvkDAzdMvsh34McWxP96ttFtdykGIZ
+         Sq1Qe6d0BhXLr5/paYwAksIE8NERk5UjHDJqASO3IBreFHk8vaAzLYtezvxet6eJuaPR
+         dtGUDIuStjNIueWObIoM4sacVVZy8G1Xu2r1f40obLHJUy1mHo6xehpYbLf5z+xgcyaq
+         AQxH95VCa+4y98wMO2ZuwQXj2Fmde8/lEGpTezNwsAB19syFB4Z54/AieNg/tq0ZAC8V
+         Gb5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E4nsKDY6NNQsjKT8elVvpHdt/irXtZ9RqD2SnFvWtPo=;
-        b=sdxKkvsvKt5gxxJ8HXBsdORbnkfBpRtNKFfFahKW4nPaxBacXhwRaPfWkN5HO6ni1K
-         vQmFbsHqk4OCF4cARWIemwcrlXSLaKi+wd1aLT6hcjlC+t0iwoDaY8OIiWLYeazr/s+P
-         tmbEQM4BlohUREKZRnpSuNvOjI1XMLmYuh0kPi7rhHlS7j7r523UM0uzfnsOUOFBO4xs
-         9KBveMOyZ5p+Qou54tmJTa5gRH6x2fqdQVMvD2E4TBCc8QFgUYK/qdTlWFkWdB9FT3yB
-         QrYBe3jqXMRwSxh9ydId8lEpEqdm+RRHrhURYSHyYX7emG0NQ8TTW8QmxucUSHI5M5mU
-         ZvWg==
-X-Gm-Message-State: AOAM531YWncK/i8O0T2qLBiguLEaizWUrWCTGo021b4xwd7T5IOC+SbR
-        TYzqBdBOMHjUvklB64oxPV66BmWajszIZMWMz57Za3o4WQkBb+g2kVoalZPZBiGBsRolWjk1V2+
-        NE+HkzH8cPd+Ksx75hAKphBvMPMiLJ7HjTjh8o8M/
-X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr1914747ilt.57.1626157225655;
-        Mon, 12 Jul 2021 23:20:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3kiD/a8JM5nHkDEQo+XiTaFj9b0wO1WbJI0xT5YFJRKB3iin18hAgPlrOEwutplukAALDfhQsu6lIqe4FFAw=
-X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr1914729ilt.57.1626157225469;
- Mon, 12 Jul 2021 23:20:25 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=GvSEm2IhMBJ052xe9DI9VvCgaL6z88P134FZp7B8Jpk=;
+        b=QaVEjCtPOR/KTymWZJ/OhxDITLKGb+3NQzoDjxy42jY6A5En2WBAnVNN2AiD2Pfl0F
+         m9O4k6NliRTdScg05r23X3h8oERAVOBb+AEEeKuIT4DBIwCqV7H/nKygf3CO+6Y6qEOm
+         N9oJ7+LxxEK02WM6nqwWDy/rxX3p0vP63tfGYv6UxfQNOVwtNu4vmCV8N7w5v4KkT94g
+         qHUvpaVNgNYd7Z9dfrsQo5YdOXKJDs8kyGBrCSbTeeO3t1WP/rdM5Sd8t2HrGWhUs/VE
+         fKI8x39TF4j6BhPDwOMhXKxXHkHWrxX6RNe2Srzg6apTFBlkDARL2VTzPzb2aKUqiWSu
+         m/CA==
+X-Gm-Message-State: AOAM531xYb+OuMn9cSDNgzX151JiVRva29IygJKm7uyXb/c2vrKEWzex
+        11DUgZbbej/azyZqoYQrqlVWPaCbmdAg+s4f+xo=
+X-Google-Smtp-Source: ABdhPJwkUzH8AlY7LZqiV2w40f7p1MB/5GD79PumhDudKeDjNczbivSurUA8aU8FFurpqGuAj00gND9ImbETUUO8TGI=
+X-Received: by 2002:a05:6402:10cc:: with SMTP id p12mr3552013edu.328.1626157518154;
+ Mon, 12 Jul 2021 23:25:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707081642.95365-1-ihuguet@redhat.com> <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
- <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com>
- <20210707130140.rgbbhvboozzvfoe3@gmail.com> <CACT4oud6R3tPFpGuiyNM9kjV5kXqzRcg8J_exv-2MaHWLPm-sA@mail.gmail.com>
- <b11886d2-d2de-35be-fab3-d1c65252a9a8@gmail.com> <4189ac6d-94c9-5818-ae9b-ef22dfbdeb27@redhat.com>
- <CACT4ouf-0AVHvwyPMGN9q-C70Sjm-PFqBnAz7L4rJGKcsVeYXA@mail.gmail.com> <681117f7-113b-512d-08c4-0ca7f25a687e@gmail.com>
-In-Reply-To: <681117f7-113b-512d-08c4-0ca7f25a687e@gmail.com>
-From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
-Date:   Tue, 13 Jul 2021 08:20:14 +0200
-Message-ID: <CACT4oufpg0RkY3yk1Cs4z=OmK8JjSevAF6=YD02RTyFS+qLcZA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev queues"
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jesper Brouer <brouer@redhat.com>
+Received: by 2002:a17:906:d152:0:0:0:0 with HTTP; Mon, 12 Jul 2021 23:25:17
+ -0700 (PDT)
+Reply-To: ablahikazabl67@gmail.com
+From:   Abdoulahi Kazim <aigaddafi11@gmail.com>
+Date:   Tue, 13 Jul 2021 07:25:17 +0100
+Message-ID: <CANMgZffM9xqduOWRP9vEPpve4dtECHysa=qces9fROoVL4yxdg@mail.gmail.com>
+Subject: More Authentic Information
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 4:53 PM Edward Cree <ecree.xilinx@gmail.com> wrote:
-> I think the proper solution to this is to get this policy decision out
->  of the kernel, and make the allocation of queues be under the control
->  of userspace.  I recall some discussion a couple of years ago about
->  "making queues a first-class citizen" for the sake of AF_XDP; this
->  seems to be part and parcel of that.
-> But I don't know what such an interface would/should look like.
+-- 
+Dear Partner,
 
-I absolutely agree, or at least standardize it for all drivers via XDP
-APIs. Let's see if any good ideas arise in netdevconf.
+I am soliciting your partnership to relocate $12.5 Million to your
+country for investment on my behalf and you will be entitled to 30% of
+the sum once the transaction is successful made.
 
-Anyway, meanwhile we should do something to have it working.
---=20
-=C3=8D=C3=B1igo Huguet
+ Please indicate your genuine interest if you are capable so that i
+will send you the authentic details and documents of the transaction
+in awareness with some of my fellow Directors in the bank.
+If you are interested, here is my private Email address: (
+ablahikazabl67@gmail.com )
+For more authentic and legit information.
 
+
+Regards : Abdoulahi Kazim
