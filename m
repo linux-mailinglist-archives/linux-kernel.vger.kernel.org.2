@@ -2,119 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC723C6BAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42A73C6BBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234357AbhGMHtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:49:31 -0400
-Received: from mga18.intel.com ([134.134.136.126]:61484 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234342AbhGMHta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:49:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="197391554"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="197391554"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 00:46:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="570205582"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 13 Jul 2021 00:46:37 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 13 Jul 2021 10:46:36 +0300
-Date:   Tue, 13 Jul 2021 10:46:36 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 5/6] software nodes: Split software_node_notify()
-Message-ID: <YO1E3PjX/uqZEgCF@kuha.fi.intel.com>
-References: <2780027.e9J7NaK4W3@kreacher>
- <5627033.MhkbZ0Pkbq@kreacher>
- <YOyD/4kdvd77PzLy@kroah.com>
- <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
+        id S234365AbhGMHzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234233AbhGMHzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:55:20 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BA7C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:52:29 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u14so17837510ljh.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=umfPdu1lrU6B3okQ5unfcwiBa6kdfuAx9EF1yLDSE/k=;
+        b=kqN1K0NCZuOLIo66DGBW7GvDESI7wJ3Vo7DAytXYWMbEkDjw4qFRe5kbnbKUBChtzz
+         a3moe+7hMFmfPN4Y8dACZeQdQkDsP32F8RXcdtiH6B7CEVFdezNPNfMoqCu6czfxuv8s
+         4M0pf60qTKDi5iMmkrE3UgfY/1vL1HnXZXxi+x7RqXHtSQy2bSUGWrT5keFpGdiySVue
+         hnhLj8C5cE2rHYoTbg36cB76Ekks9U9VlvpCvPiem5nHl0eD3rAINObvWWp9gruP/RU9
+         DrwVk8ko6BgWxBUCLyNZy91RhNKW6E73kqtnv60k3D+GbdpsYQOvI9c2C70QYcdZdh4u
+         pSKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=umfPdu1lrU6B3okQ5unfcwiBa6kdfuAx9EF1yLDSE/k=;
+        b=rWrWsZ+NgScxjEkpstC7VAXQCbjwwrxY/S1UP4gb2a766mSsvYwCp7OBVeo0ReL7We
+         eweRLTbHPymnUZo4+1kSyHF12E0U2wSIDI54q/VzXh/o+ZeAWpONcMLJavVFV2KNpzth
+         jmS1ZtGqPYeTGWg3r9hO3SUGi0scVOT1L8H5xxSxQ9xevpOAYzANUPHEjmxB5aLhC78c
+         KPnqn19txvnCER5BMq+53EJWPMJVDCrbbfIS57a69htxg4uQa6w6WmWZ1tAGYkYqixMX
+         qbg+L4lTsH9AyTauvNAHVum+jIrcbDHRCyNT9yGNNE2+wE8wqxC+aMitFBLMduhG9NKK
+         SaYw==
+X-Gm-Message-State: AOAM531my3llg+4NxfHE38Df6B88v1PHZvzktd2TEWZiiU4UA6ktljHt
+        yx12tsMufJ+AKZWn5xtWFds=
+X-Google-Smtp-Source: ABdhPJymvkBefEBGF3M0rdNw7gmRquJu+GkPGC0OJkiXTav8YVwN0NE1AqUrDfq1zhWggpGqPVhLHw==
+X-Received: by 2002:a2e:99cc:: with SMTP id l12mr3082563ljj.358.1626162747533;
+        Tue, 13 Jul 2021 00:52:27 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id r5sm662018ljn.28.2021.07.13.00.52.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 00:52:27 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 10:52:14 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        David Airlie <airlied@linux.ie>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/2] drm: add crtc background color property
+Message-ID: <20210713105214.5730c959@eldfell>
+In-Reply-To: <f8e7db99-a4e4-c4d7-5d6a-67950184701c@amd.com>
+References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+        <20210707084557.22443-2-raphael.gallais-pou@foss.st.com>
+        <20210709110459.79ca406a@eldfell>
+        <3c8331cf-fded-b6e6-3e25-666634f4b87a@foss.st.com>
+        <20210712110310.540df27d@eldfell>
+        <f8e7db99-a4e4-c4d7-5d6a-67950184701c@amd.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/7sIoOLLn+H1OrBMUDsRwLWM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 08:30:06PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Jul 12, 2021 at 8:03 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Jul 12, 2021 at 07:27:12PM +0200, Rafael J. Wysocki wrote:
-> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > Split software_node_notify_remove) out of software_node_notify()
-> > > and make device_platform_notify() call the latter on device addition
-> > > and the former on device removal.
-> > >
-> > > While at it, put the headers of the above functions into base.h,
-> > > because they don't need to be present in a global header file.
-> > >
-> > > No intentional functional impact.
-> > >
-> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > ---
-> > >  drivers/base/base.h      |    3 ++
-> > >  drivers/base/core.c      |    9 +++---
-> > >  drivers/base/swnode.c    |   61 ++++++++++++++++++++++++-----------------------
-> > >  include/linux/property.h |    2 -
-> > >  4 files changed, 39 insertions(+), 36 deletions(-)
-> > >
-> > > Index: linux-pm/drivers/base/swnode.c
-> > > ===================================================================
-> > > --- linux-pm.orig/drivers/base/swnode.c
-> > > +++ linux-pm/drivers/base/swnode.c
-> > > @@ -11,6 +11,8 @@
-> > >  #include <linux/property.h>
-> > >  #include <linux/slab.h>
-> > >
-> > > +#include "base.h"
-> > > +
-> > >  struct swnode {
-> > >       struct kobject kobj;
-> > >       struct fwnode_handle fwnode;
-> > > @@ -1053,7 +1055,7 @@ int device_add_software_node(struct devi
-> > >        * balance.
-> > >        */
-> > >       if (device_is_registered(dev))
-> > > -             software_node_notify(dev, KOBJ_ADD);
-> > > +             software_node_notify(dev);
-> >
-> > Should this now be called "software_node_notify_add()" to match up with:
-> >
-> > >       if (device_is_registered(dev))
-> > > -             software_node_notify(dev, KOBJ_REMOVE);
-> > > +             software_node_notify_remove(dev);
-> >
-> > The other being called "_remove"?
-> >
-> > Makes it more obvious to me :)
-> 
-> The naming convention used here follows platform_notify() and
-> platform_notify_remove(), and the analogous function names in ACPI for
-> that matter.
+--Sig_/7sIoOLLn+H1OrBMUDsRwLWM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So why not rename those instead: platform_notify() to
-platform_notify_add() and so on? You are in any case modifying
-acpi_device_notify() in this series, and I think there is only one
-place left where .platform_notify is assigned. I believe you also
-wouldn't then need to worry about the function name collision (3/6).
+On Mon, 12 Jul 2021 12:15:59 -0400
+Harry Wentland <harry.wentland@amd.com> wrote:
 
-> I thought that adding _add in just one case would be sort of odd, but
-> of course I can do that, so please let me know what you want me to do.
+> On 2021-07-12 4:03 a.m., Pekka Paalanen wrote:
+> > On Fri, 9 Jul 2021 18:23:26 +0200
+> > Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com> wrote:
+> >  =20
+> >> On 7/9/21 10:04 AM, Pekka Paalanen wrote: =20
+> >>> On Wed, 7 Jul 2021 08:48:47 +0000
+> >>> Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com> wrote:
+> >>>   =20
+> >>>> Some display controllers can be programmed to present non-black colo=
+rs
+> >>>> for pixels not covered by any plane (or pixels covered by the
+> >>>> transparent regions of higher planes).  Compositors that want a UI w=
+ith
+> >>>> a solid color background can potentially save memory bandwidth by
+> >>>> setting the CRTC background property and using smaller planes to dis=
+play
+> >>>> the rest of the content.
+> >>>>
+> >>>> To avoid confusion between different ways of encoding RGB data, we
+> >>>> define a standard 64-bit format that should be used for this propert=
+y's
+> >>>> value.  Helper functions and macros are provided to generate and dis=
+sect
+> >>>> values in this standard format with varying component precision valu=
+es.
+> >>>>
+> >>>> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> >>>> Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+> >>>> ---
+> >>>>   drivers/gpu/drm/drm_atomic_state_helper.c |  1 +
+> >>>>   drivers/gpu/drm/drm_atomic_uapi.c         |  4 +++
+> >>>>   drivers/gpu/drm/drm_blend.c               | 34 +++++++++++++++++++=
+++--
+> >>>>   drivers/gpu/drm/drm_mode_config.c         |  6 ++++
+> >>>>   include/drm/drm_blend.h                   |  1 +
+> >>>>   include/drm/drm_crtc.h                    | 12 ++++++++
+> >>>>   include/drm/drm_mode_config.h             |  5 ++++
+> >>>>   include/uapi/drm/drm_mode.h               | 28 +++++++++++++++++++
+> >>>>   8 files changed, 89 insertions(+), 2 deletions(-)
 
-I would prefer the "_add" ending, but in any case, FWIW:
+...
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >>> The question about full vs. limited range seems unnecessary to me, as
+> >>> the background color will be used as-is in the blending stage, so
+> >>> userspace can just program the correct value that fits the pipeline it
+> >>> is setting up.
+> >>>
+> >>> One more question is, as HDR exists, could we need background colors
+> >>> with component values greater than 1.0?   =20
+> >>
+> >> AR4H color format should cover that case, isn't it ? =20
+> >=20
+> > Yes, but with the inconvenience I mentioned.
+> >=20
+> > This is a genuine question though, would anyone actually need
+> > background color values > 1.0. I don't know of any case yet where it
+> > would be required. It would imply that plane blending happens in a
+> > color space where >1.0 values are meaningful. I'm not even sure if any
+> > hardware supporting that exists.
+> >=20
+> > Maybe it would be best to assume that only [0.0, 1.0] pixel value range
+> > is useful, and mention in the commit message that if someone really
+> > needs values outside of that, they should create another background
+> > color property. Then, you can pick a simple unsigned integer pixel
+> > format, too. (I didn't see any 16 bit-per-channel formats like that in
+> > drm_fourcc.h though.)
+> >  =20
+>=20
+> I don't think we should artificially limit this to [0.0, 1.0]. As you
+> mentioned above when talking about full vs limited, the userspace
+> understands what's the correct value that fits the pipeline. If that
+> pipeline is FP16 with > 1.0 values then it would make sense that the
+> background color can be > 1.0.
+
+Ok. The standard FP32 format then for ease of use and guaranteed enough
+range and precision for far into the future?
+
+Or do you want to keep it in 64 bits total, so the UABI can pack
+everything into a u64 instead of needing to create a blob?
+
+I don't mind as long as it's clearly documented what it is and how it
+works, and it carries enough precision.
+
+But FP16 with its 10 bits of precision might be too little for integer
+12-16 bpc pipelines and sinks?
+
+If the values can go beyond [0.0, 1.0] range, then does the blending
+hardware and the degamma/ctm/gamma coming afterwards cope with them, or
+do they get clamped anyway?
 
 
--- 
-heikki
+Thanks,
+pq
+
+--Sig_/7sIoOLLn+H1OrBMUDsRwLWM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDtRi4ACgkQI1/ltBGq
+qqeaYxAAlKsXIdhtMGdhLiHKsFuM2ocvI/5alaiQD0SWSgB2OJuz7wltI5aV53Am
+LhPDY1h0zPnpT5v3WvvJZSSCHSSwlm5TkJX24DOuqwFJWINcmBYWQsMb0/ab7f76
+fZERpWuaiB2rpOMOzAzgKMXI8Ss1gVVdztQmKZj3WrTwnu+6p2LAQn8NwYgH7Fi9
+ZL8+acw2A3xPuT5gkgk8IosBVt5WGeeBY0R92uLRU47V7nzbtJADziLlkv+pM8dL
+3o+Tdglgxnlb4SsEYwv/saJmAAe5Uyzst4vOBfI6BqbxegNeU+gsJUVqpTv5z+tj
+NoMVzxXIzZPY6vD0fgCvZWiEECR+kmc/CVY/kmwKjoZhaWRuCPEzNz2QjH3ETM9f
+AMl+V5/uLpvgpTlvi/HLrcapU89/7tw5drqjcmacygejDWz2BH+KWwB5uXYNRFkQ
+QzUhY0pV+fY4O+hMtNVWEfHjZr9qCzD9dyfDz5EUI5I1LJyAZLUnSmzWsXaNh+yA
+LmbJuLu3XtKECtGsTnSYWO52g8f/ihqE+vBgEzm+t05r3MSV/WXAaLrtWmWh4cUc
+wrQFi4EmblkUrd3gi2okv9AWZ3Gqzo25qYIMHswndLVdMc1QborQO1bTSctH9xFv
+aw8ajlVrK9YiZ6723kVTsYaWAGq4aalnOQw7mW2xdGxlWFvXI/I=
+=O57I
+-----END PGP SIGNATURE-----
+
+--Sig_/7sIoOLLn+H1OrBMUDsRwLWM--
