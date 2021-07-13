@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581AD3C7166
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C539B3C7168
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236636AbhGMNrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236222AbhGMNrp (ORCPT
+        id S236693AbhGMNsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:48:14 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48448
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236222AbhGMNsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:47:45 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB718C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:44:54 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id y42so50394519lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A9GCE1XyokBjHqSgBA/iJEz3drr7IdUuNv0RdsnzLeE=;
-        b=EqpBeNlnm4ViPyJwMUgvpLbBGimxy8xUkaxEZarGaWkEXICuUxFFVTvA+wNN/nvEn6
-         pgVxHY/63YMpCOFYGKlNZGhhOhRcTKpfiPpmLretPtpO6zu2QV1/4l2yP4QL0ruMFIDX
-         6sFSCpc9GeIPsOLFoAb8fuv15fponjyWlCeKQQAsvZ9bJXtvqhhlls4bT3KoRUV4OJX0
-         L9CujbEumsmiCetHoMatkDpyaxIt5iOPMCSsJ4LMdsaztrwyJAvPL3AC6oMMA+3ktx9I
-         LnugzSh7/SCUe49vfiS+QYKv1GB7FZBy3flf7gn4TtC3NQ271reHq5tX+VBZpE5pUW7r
-         uOzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A9GCE1XyokBjHqSgBA/iJEz3drr7IdUuNv0RdsnzLeE=;
-        b=oN7z7v/W1Us+DZW/GbykNDkFIUSj4ArnlhPZMzs2kzkoKWqj6Mi/wyaD9R4PYWz6QQ
-         RkNZsuIEPI9xtxVjdmmNNcwMAFSKKhWNd9COcg2kqEFzO43K8C2CWp3hiDMon892DLYh
-         EbE4dyzJsPSIasDcApCpToXg6umqBqlD9jwHlwbfmqM1jyABwMEDCX6YYda5ZbtO/ikY
-         Dw00frDS+bI5bIFiDSube+i5EFTpdUksBGSkdSvOYP69H9Nf2x19LiMe8LTz3GtYqluc
-         SochU7m5NxCWq6PAEZJm9wiSIyxI44/Y3MEcG2HbVdYNrZDHXUIfTvR7fwZfaoect+DQ
-         B1gw==
-X-Gm-Message-State: AOAM531MUQSbY/BqHrlA5nlOM2qBttzxjfHYv9C2d2AeHkt5fM6HZI8M
-        tYGceFzOUax2gnBfkJ/Nrg2N8BdSKzOSHosmRFM=
-X-Google-Smtp-Source: ABdhPJwWbAqgQWlLJw0BY2EdKR+e7hDanpON3XRb3mTM4I19Xn3x28jmKb62g0+4v6fwWkjtyCsW11A4OB50rjdY6Is=
-X-Received: by 2002:ac2:5297:: with SMTP id q23mr3528281lfm.223.1626183893269;
- Tue, 13 Jul 2021 06:44:53 -0700 (PDT)
+        Tue, 13 Jul 2021 09:48:13 -0400
+Received: from [192.168.1.18] (unknown [222.129.38.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 08DE1405E6;
+        Tue, 13 Jul 2021 13:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626183922;
+        bh=XFchaAmc9L6ZJAbgvoritLLDGb3RUOvHfIzleghA+mI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=habbnrJBNcH29BI7CQh8bNqPF/4LUngU9TvbzFiOCYIGJuBzIWvsI16wSn29vO9/o
+         2PMGpzdlTGZLSp8joo0aiJkCC4tHsoe4gzSPN8fxq39b0ap1od9qrZUUTBeO+NlhvB
+         bAFsl6roxPoTV18hoIdUyjCeu9n7bTq3mNve10yqVUfIps5vjT7XNrjLDxShl20w2r
+         Qg6V+AN9o438AqKbrJldHbtRBTlvXWimys19reH0SEsxDpG2MsYbJ8EEKOHs9Y63OU
+         htdhkg538ytmoern4qT72H8mtHrTgvN7g5CUFUnHIheh9w4FsihIEdt1lEk1EDrMh4
+         IOJdkDFyleHTw==
+Subject: Re: [Intel-wired-lan] [PATCH 2/2] igc: wait for the MAC copy when
+ enabled MAC passthrough
+To:     "Neftin, Sasha" <sasha.neftin@intel.com>,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Edri, Michael" <michael.edri@intel.com>,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        "Shalev, Avi" <avi.shalev@intel.com>
+References: <20210702045120.22855-1-aaron.ma@canonical.com>
+ <20210702045120.22855-2-aaron.ma@canonical.com>
+ <613e2106-940a-49ed-6621-0bb00bc7dca5@intel.com>
+ <ad3d2d01-1d0a-8887-b057-e6a9531a05f4@canonical.com>
+ <f9f9408e-9ba3-7ed9-acc2-1c71913b04f0@intel.com>
+ <96106dfe-9844-1d9d-d865-619d78a0d150@canonical.com>
+ <47117935-10d6-98e0-5894-ba104912ce25@intel.com>
+From:   Aaron Ma <aaron.ma@canonical.com>
+Message-ID: <1a539d4d-10b4-5b9b-31e7-6aec57120356@canonical.com>
+Date:   Tue, 13 Jul 2021 21:45:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210713133230.GA1872993@pc>
-In-Reply-To: <20210713133230.GA1872993@pc>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 13 Jul 2021 10:44:41 -0300
-Message-ID: <CAOMZO5C05uBJXxg+Vmy1EAxx5rh7UsF-KQFi2w3cBQ-b=tTDOA@mail.gmail.com>
-Subject: Re: [PATCH] gpu: ipu-v3: use swap()
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>, alexdeucher@gmail.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <47117935-10d6-98e0-5894-ba104912ce25@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Salah,
 
-On Tue, Jul 13, 2021 at 10:33 AM Salah Triki <salah.triki@gmail.com> wrote:
->
-> Use swap() instead of implementing it since it makes code more clean.
+On 7/8/21 12:24 PM, Neftin, Sasha wrote:
+> I would to like suggest checking the following direction:
+> 1. principal question: can we update the netdev device address after it is already set during probe? I meant perform another:
+> memcpy(netdev->dev_addr, hw->mac.addr, netdev->addr_len) up to demand
 
-s/more clean/cleaner
+Updating MAC addr may work.
+Even at the end of probe, it still got the wrong MAC address, delay is still needed.
 
-> Signed-off-by: Salah Triki <salah.triki@gmail.com>
-> ---
->  drivers/gpu/ipu-v3/ipu-image-convert.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
-> index aa1d4b6d278f..5f730cd6009d 100644
-> --- a/drivers/gpu/ipu-v3/ipu-image-convert.c
-> +++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
-> @@ -1021,11 +1021,8 @@ static int calc_tile_offsets_planar(struct ipu_image_convert_ctx *ctx,
->
->                         u_off = y_size - y_off + uv_off;
->                         v_off = (fmt->uv_packed) ? 0 : u_off + uv_size;
-> -                       if (fmt->uv_swapped) {
-> -                               tmp = u_off;
-> -                               u_off = v_off;
-> -                               v_off = tmp;
+Aaron
 
-The 'tmp' variable seems to be unused now, so its declaration should be removed.
-
-Thanks
+> 2. We need to work with Intel's firmware engineer/group and define the message/event: MAC addressis changed and should be updated.
+> As I know MNG FW updates shadow registers. Since shadow registers are different from RAL/RAH registers - it could be a notification that the MAC address changed. Let's check it.
