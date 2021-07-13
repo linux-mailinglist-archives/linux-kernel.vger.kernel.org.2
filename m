@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F3F3C6F23
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0FA3C6F24
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbhGMLJ4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 07:09:56 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:47737 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231838AbhGMLJz (ORCPT
+        id S235870AbhGMLJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:09:57 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44766 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235826AbhGMLJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Jul 2021 07:09:55 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-149-IVa75z0JOaOBrGaXpniqdQ-1; Tue, 13 Jul 2021 12:07:03 +0100
-X-MC-Unique: IVa75z0JOaOBrGaXpniqdQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.18; Tue, 13 Jul 2021 12:07:01 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 13 Jul 2021 12:07:01 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Russell King' <linux@armlinux.org.uk>,
-        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Salah Triki <salah.triki@gmail.com>,
-        "fabrice.gasnier@foss.st.com" <fabrice.gasnier@foss.st.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] divide by 3*sizeof(u32) when computing array_size
-Thread-Topic: [PATCH] divide by 3*sizeof(u32) when computing array_size
-Thread-Index: AQHXd8hGdzQpdmgYHUiEx+VC3p1WwKtAvfwg
-Date:   Tue, 13 Jul 2021 11:07:00 +0000
-Message-ID: <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
-References: <20210712231910.GA1831270@pc>
- <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
- <20210713091954.GG22278@shell.armlinux.org.uk>
-In-Reply-To: <20210713091954.GG22278@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+Received: by mail-il1-f197.google.com with SMTP id s12-20020a056e02216cb02901f9cee02769so7574325ilv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:07:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=AvMyKnTkwsxUrtP3XQjHPh5T2O88RDnNqnIxyYnIxDM=;
+        b=m/zILuj5YVByDNV7n/yqOgzKFVTVKsxVkAA348OcOjSrkUDmr0nUsY+2GlpEVMgbgH
+         FC1AS7CuNC9CFgkLV9DhJRA6NWI+D6V1S+0L+ddAxmSuo15Io/86+65IcX9U3LrR+/Z7
+         lLzskLpgud+n/TFfvq1uQ0iDKtdLcC+Fw/f9tJV2BX5RKtuI2a0wL09SZYToqGBDg13I
+         Wc7gE5LsTH1wQQ/aw4R+KifiCWR/jZfQojfw6odMqOp4l/vE5QbyoVBVtCWaVYEv8O+6
+         d+wWosoMoXBlGL0w/VfKja8/VLNKrA2Dt9ZqY9exDnlZedHcFBgbyKYKhSM5vcdPMY/Q
+         W6PA==
+X-Gm-Message-State: AOAM532BZhoPxteDZqijfttydUHvFDVY72FJ8ClI5NyATE3X6946XLz4
+        4V+FlYDUnupjkauWZeY4yLmozwR8oMMmDybxSDsQM4BwmnAa
+X-Google-Smtp-Source: ABdhPJx/vetpoAeNKu+h2uUTRnfq90XIA1URsPj0f0m4j4mGg0p/BueIwuoYv8LVvOh5gGrqGwU9K0+iMrMbIOe/OTEglU2TUt1K
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-Received: by 2002:a92:c0c3:: with SMTP id t3mr2483044ilf.80.1626174425449;
+ Tue, 13 Jul 2021 04:07:05 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 04:07:05 -0700
+In-Reply-To: <20210713115546.34c99ea8@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f8c8e605c6ff3cff@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in r871xu_dev_remove
+From:   syzbot <syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King
-> Sent: 13 July 2021 10:20
-....
-> I would also note that the code relies on there being no padding in
-> struct stm32_breakinput - it should be noted that a strict
-> interpretation of the C standard allows padding to be added anywhere
-> to a structure - at the start, end or between members.
+Hello,
 
-I'm pretty certain I remember that padding before the first member
-isn't allowed.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-In any case the kernel generally assumes there is no extra padding.
-(eg for structures that map hardware registers.)
+drivers/staging/rtl8712/hal_init.c:46:3: error: implicit declaration of function 'shedule'; did you mean 'schedule'? [-Werror=implicit-function-declaration]
 
-For big structures it is worth adding a compile-time check of
-the structure size - but not really for three u32.
 
-	David
+Tested on:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+commit:         8f0df15b Add linux-next specific files for 20210713
+git tree:       linux-next
+dashboard link: https://syzkaller.appspot.com/bug?extid=5872a520e0ce0a7c7230
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13a2c06c300000
 
