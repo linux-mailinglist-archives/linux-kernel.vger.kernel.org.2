@@ -2,290 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB563C7480
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928F03C7487
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhGMQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhGMQcE (ORCPT
+        id S229726AbhGMQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:33:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59242 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229437AbhGMQdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:32:04 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1375C0613DD;
-        Tue, 13 Jul 2021 09:29:13 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso2464423pjp.5;
-        Tue, 13 Jul 2021 09:29:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0if1JKGz6Y+FvBAbIJIXUcoRPTBbCA20QOj+Wr5C6ZA=;
-        b=oDvHV80APNi2CCXFUVu82VLZOUFwYr5tsWH4aMZJ46xkF2BXqKfPcpLgYo10OiQ1KN
-         MdFS/GxucV+VTgbkIwW03WFOAxWHIB1ABVwtpgXZ+qKgBV6J/Y7LhKIwe1aK2J6mpDaB
-         iKHkRHZUzdXV9k3dfs/WitHRz0MRncWxfNT765ztasMS8E+uVjLtjd3QehJNy+tioGsS
-         b/pA3rDNy9O7WNTTab5OwJWRvKGUqjbsb9YG7NcxvxLbgathM2Mr7dLuw3ooD6c7GV5o
-         2rz8HJ8b/00YeYIx/gHH6npnpGk/N7fuqaOaIKi5pyf6qvpyG5QJzbG25nMtWmwkX///
-         NQzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0if1JKGz6Y+FvBAbIJIXUcoRPTBbCA20QOj+Wr5C6ZA=;
-        b=DsFLWScx+PmMKRA2YKchsQ6/hV60daObDjWIGg17xM/AI5/tJ+i/O6Q9DBX232wxzY
-         0rHMCJ4jjwQiZypi4Z/Ov+ihWN1UE3S9nuRSLFA3BYfdNqnI8oS0F1JpiFeoWQxqQ13f
-         bWvDhjCskLT8yI1+UfwUIjYWXfI/holbaK+8rzE5YDuXviz2z+BXtvIgUIYOIVGp522O
-         k5E3Jh8m6cP5yM5z9gL5LeEETuFNCbIOpO1pazrSxYGGg3X3gp6l6xbtgN/kAIWiliGL
-         ekqMMMU5ZTFeUu+rxeggEd9OWWyhcFpF1qMzie5ZiFceH5oT5EU1EIcAVY4BOjQKMAnA
-         gpfg==
-X-Gm-Message-State: AOAM531Y/1XLpnPqasGj7cxeN57gA282gpFXFT1AJr+7eGWozbkcFpUX
-        73sQHyZbUhjpYuRpqRv3kic=
-X-Google-Smtp-Source: ABdhPJz6v3FuQLY/R/FqBGyR1r2uQhUl0i7qarzPr6/Ir5EdlkqZ2FxD8rc/YLfFPehCSv3r3TvJnw==
-X-Received: by 2002:a17:902:aa86:b029:116:3e3a:2051 with SMTP id d6-20020a170902aa86b02901163e3a2051mr4076009plr.38.1626193753280;
-        Tue, 13 Jul 2021 09:29:13 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id oj4sm2979413pjb.56.2021.07.13.09.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 09:29:12 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, stefan@datenfreihafen.org
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-Subject: [PATCH v2] Bluetooth: fix inconsistent lock state in sco
-Date:   Wed, 14 Jul 2021 00:28:38 +0800
-Message-Id: <20210713162838.693266-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 13 Jul 2021 12:33:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 39D9D201FF;
+        Tue, 13 Jul 2021 16:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626193819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p6CpxQyjv18y0aMeeHfjIcHfYe2zm0CP5+MKiPGR1ng=;
+        b=wX1VV577ZLYQD2efMQXEmbJ/BNa2ozrjiGJ4pPtsK04CaGkxS6Z9XVP9rgDvIGelw52h7n
+        foPSlrJunDg5ZlLu53DdDLMI0XYpWY4e/ZBQ/6VSIDRvL5jAsGrHW4JsQPtR0crrgC+8jk
+        md/uD4kjkB/RYnM7rkoKjeicL2T7AtI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626193819;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p6CpxQyjv18y0aMeeHfjIcHfYe2zm0CP5+MKiPGR1ng=;
+        b=vAEM9QWqJb882v9E2c4B5/l68KPApW+7biFz+T7ZHIQvEcLPConPabgR1CHu4/NXfv91y+
+        BA9AXJVaE6SHdcBA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 209D2A3B84;
+        Tue, 13 Jul 2021 16:30:19 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id F02E71E0BBE; Tue, 13 Jul 2021 18:30:18 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 18:30:18 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Javier Pello <javier.pello@urjc.es>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 1/1] fs/ext2: Avoid page_address on pages returned by
+ ext2_get_page
+Message-ID: <20210713163018.GF24271@quack2.suse.cz>
+References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
+ <20210713165918.10da0318af5b9b73e599a517@urjc.es>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713165918.10da0318af5b9b73e599a517@urjc.es>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported an inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock
-usage in sco_conn_del and sco_sock_timeout that could lead to
-deadlocks.
+On Tue 13-07-21 16:59:18, Javier Pello wrote:
+> From: Javier Pello <javier.pello@urjc.es>
+> 
+> Commit 782b76d7abdf02b12c46ed6f1e9bf715569027f7 ("fs/ext2: Replace
+> kmap() with kmap_local_page()") replaced the kmap/kunmap calls in
+> ext2_get_page/ext2_put_page with kmap_local_page/kunmap_local for
+> efficiency reasons. As a necessary side change, the commit also
+> made ext2_get_page (and ext2_find_entry and ext2_dotdot) return
+> the mapping address along with the page itself, as it is required
+> for kunmap_local, and converted uses of page_address on such pages
+> to use the newly returned address instead. However, uses of
+> page_address on such pages were missed in ext2_check_page and
+> ext2_delete_entry, which triggers oopses if kmap_local_page happens
+> to return an address from high memory. Fix this now by converting
+> the remaining uses of page_address to use the right address, as
+> returned by kmap_local_page.
 
-This inconsistent lock state can also happen in sco_conn_ready,
-rfcomm_connect_ind, and bt_accept_enqueue.
+Good catch. Thanks for the patch. Ira, can you please check the patch as
+well?
 
-The issue is that these functions take a spin lock on the socket with
-interrupts enabled, but sco_sock_timeout takes the lock in an IRQ
-context. This could lead to deadlocks:
+I have just a few nits below:
 
-       CPU0
-       ----
-  lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
-  <Interrupt>
-    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+> Signed-off-by: Javier Pello <javier.pello@urjc.es>
+> Fixes: 782b76d7abdf fs/ext2: Replace kmap() with kmap_local_page()
 
- *** DEADLOCK ***
+Please wrap subject in Fixes tag into ("...").
 
-We fix this by ensuring that local bh is disabled before calling
-bh_lock_sock.
+> @@ -584,16 +584,16 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
+>   * ext2_delete_entry deletes a directory entry by merging it with the
+>   * previous entry. Page is up-to-date.
+>   */
+> -int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+> +int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
+> +			void *kaddr)
 
-After doing this, we additionally need to protect sco_conn_lock by
-disabling local bh.
+Why not have 'kaddr' as char *. We type it to char * basically everywhere
+anyway.
 
-This is necessary because sco_conn_del makes a call to sco_chan_del
-while holding on to the sock lock, and sco_chan_del itself makes a
-call to sco_conn_lock. If sco_conn_lock is held elsewhere with
-interrupts enabled, there could still be a
-slock-AF_BLUETOOTH-BTPROTO_SCO --> &conn->lock#2 lock inversion as
-follows:
+>  {
+>  	struct inode *inode = page->mapping->host;
+> -	char *kaddr = page_address(page);
+> -	unsigned from = ((char*)dir - kaddr) & ~(ext2_chunk_size(inode)-1);
+> -	unsigned to = ((char *)dir - kaddr) +
+> -				ext2_rec_len_from_disk(dir->rec_len);
+> +	unsigned int delta = (char *)dir - (char *)kaddr;
 
-        CPU0                    CPU1
-        ----                    ----
-   lock(&conn->lock#2);
-                                local_irq_disable();
-                                lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
-                                lock(&conn->lock#2);
-   <Interrupt>
-     lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+Maybe I'd call this 'offset' rather than 'delta'. Also if kaddr will stay
+char *, you maybe just don't need to touch this...
 
-  *** DEADLOCK ***
+> +	unsigned int from = delta & ~(ext2_chunk_size(inode)-1);
+> +	unsigned int to = delta + ext2_rec_len_from_disk(dir->rec_len);
+>  	loff_t pos;
+>  	ext2_dirent * pde = NULL;
+> -	ext2_dirent * de = (ext2_dirent *) (kaddr + from);
+> +	ext2_dirent *de = (ext2_dirent *) ((char *)kaddr + from);
+>  	int err;
+>  
+>  	while ((char*)de < (char*)dir) {
+> @@ -607,7 +607,7 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+>  		de = ext2_next_entry(de);
+>  	}
+>  	if (pde)
+> -		from = (char*)pde - (char*)page_address(page);
+> +		from = (char *)pde - (char *)kaddr;
+>  	pos = page_offset(page) + from;
+>  	lock_page(page);
+>  	err = ext2_prepare_chunk(page, pos, to - from);
 
-As sco_conn_del now disables local bh before calling sco_chan_del,
-instead of disabling local bh for the calls to sco_conn_lock in
-sco_chan_del, we instead wrap other calls to sco_chan_del with
-local_bh_disable/enable.
-
-Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
----
-
-Hi,
-
-The previous version of this patch was a bit of a mess, so I made the
-following changes.
-
-v1 -> v2:
-- Instead of pulling out the clean-up code out from sco_chan_del and
-using it directly in sco_conn_del, disable local irqs for relevant
-sections.
-- Disable local irqs more thoroughly for instances of
-bh_lock_sock/bh_lock_sock_nested in the bluetooth subsystem.
-Specifically, the calls in af_bluetooth.c and rfcomm/sock.c are now made
-with local irqs disabled as well.
-
-Best wishes,
-Desmond
-
- net/bluetooth/rfcomm/sock.c |  2 ++
- net/bluetooth/sco.c         | 26 +++++++++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
-index ae6f80730561..d8734abb2df4 100644
---- a/net/bluetooth/rfcomm/sock.c
-+++ b/net/bluetooth/rfcomm/sock.c
-@@ -974,6 +974,7 @@ int rfcomm_connect_ind(struct rfcomm_session *s, u8 channel, struct rfcomm_dlc *
- 	if (!parent)
- 		return 0;
- 
-+	local_bh_disable();
- 	bh_lock_sock(parent);
- 
- 	/* Check for backlog size */
-@@ -1002,6 +1003,7 @@ int rfcomm_connect_ind(struct rfcomm_session *s, u8 channel, struct rfcomm_dlc *
- 
- done:
- 	bh_unlock_sock(parent);
-+	local_bh_enable();
- 
- 	if (test_bit(BT_SK_DEFER_SETUP, &bt_sk(parent)->flags))
- 		parent->sk_state_change(parent);
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 3bd41563f118..2548b8f81473 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -167,16 +167,22 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
- 	BT_DBG("hcon %p conn %p, err %d", hcon, conn, err);
- 
- 	/* Kill socket */
-+	local_bh_disable();
- 	sco_conn_lock(conn);
- 	sk = conn->sk;
- 	sco_conn_unlock(conn);
-+	local_bh_enable();
- 
- 	if (sk) {
- 		sock_hold(sk);
-+
-+		local_bh_disable();
- 		bh_lock_sock(sk);
- 		sco_sock_clear_timer(sk);
- 		sco_chan_del(sk, err);
- 		bh_unlock_sock(sk);
-+		local_bh_enable();
-+
- 		sco_sock_kill(sk);
- 		sock_put(sk);
- 	}
-@@ -202,6 +208,7 @@ static int sco_chan_add(struct sco_conn *conn, struct sock *sk,
- {
- 	int err = 0;
- 
-+	local_bh_disable();
- 	sco_conn_lock(conn);
- 	if (conn->sk)
- 		err = -EBUSY;
-@@ -209,6 +216,7 @@ static int sco_chan_add(struct sco_conn *conn, struct sock *sk,
- 		__sco_chan_add(conn, sk, parent);
- 
- 	sco_conn_unlock(conn);
-+	local_bh_enable();
- 	return err;
- }
- 
-@@ -303,9 +311,11 @@ static void sco_recv_frame(struct sco_conn *conn, struct sk_buff *skb)
- {
- 	struct sock *sk;
- 
-+	local_bh_disable();
- 	sco_conn_lock(conn);
- 	sk = conn->sk;
- 	sco_conn_unlock(conn);
-+	local_bh_enable();
- 
- 	if (!sk)
- 		goto drop;
-@@ -420,18 +430,25 @@ static void __sco_sock_close(struct sock *sk)
- 		if (sco_pi(sk)->conn->hcon) {
- 			sk->sk_state = BT_DISCONN;
- 			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
-+			local_bh_disable();
- 			sco_conn_lock(sco_pi(sk)->conn);
- 			hci_conn_drop(sco_pi(sk)->conn->hcon);
- 			sco_pi(sk)->conn->hcon = NULL;
- 			sco_conn_unlock(sco_pi(sk)->conn);
--		} else
-+			local_bh_enable();
-+		} else {
-+			local_bh_disable();
- 			sco_chan_del(sk, ECONNRESET);
-+			local_bh_enable();
-+		}
- 		break;
- 
- 	case BT_CONNECT2:
- 	case BT_CONNECT:
- 	case BT_DISCONN:
-+		local_bh_disable();
- 		sco_chan_del(sk, ECONNRESET);
-+		local_bh_enable();
- 		break;
- 
- 	default:
-@@ -1084,21 +1101,26 @@ static void sco_conn_ready(struct sco_conn *conn)
- 
- 	if (sk) {
- 		sco_sock_clear_timer(sk);
-+		local_bh_disable();
- 		bh_lock_sock(sk);
- 		sk->sk_state = BT_CONNECTED;
- 		sk->sk_state_change(sk);
- 		bh_unlock_sock(sk);
-+		local_bh_enable();
- 	} else {
-+		local_bh_disable();
- 		sco_conn_lock(conn);
- 
- 		if (!conn->hcon) {
- 			sco_conn_unlock(conn);
-+			local_bh_enable();
- 			return;
- 		}
- 
- 		parent = sco_get_sock_listen(&conn->hcon->src);
- 		if (!parent) {
- 			sco_conn_unlock(conn);
-+			local_bh_enable();
- 			return;
- 		}
- 
-@@ -1109,6 +1131,7 @@ static void sco_conn_ready(struct sco_conn *conn)
- 		if (!sk) {
- 			bh_unlock_sock(parent);
- 			sco_conn_unlock(conn);
-+			local_bh_enable();
- 			return;
- 		}
- 
-@@ -1131,6 +1154,7 @@ static void sco_conn_ready(struct sco_conn *conn)
- 		bh_unlock_sock(parent);
- 
- 		sco_conn_unlock(conn);
-+		local_bh_enable();
- 	}
- }
- 
+									Honza
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
