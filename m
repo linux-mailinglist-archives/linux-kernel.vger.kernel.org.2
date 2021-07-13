@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F103C6C44
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9723C6C7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234780AbhGMIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
+        id S235249AbhGMIvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbhGMIuG (ORCPT
+        with ESMTP id S235160AbhGMIut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:50:06 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66807C0613DD;
-        Tue, 13 Jul 2021 01:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2Orx11XPMT4bJdCyRnGQJ/wU1Uuya12976tsLpHhTtE=; b=0sEdtMf40T872e6AkSLPFIQ7V
-        mlqyhFpqZRjNPWfcIooDXwck+InEsOvuFjhO1kaLor6KgqZhown+Om1MwulMziAEt/16nGntwf+H0
-        4CuMKXlAq8vlCASD+swbxFvg1Zq4dYFoWKPu4fe7jzvJ3ViT00Q5+9X32Cy1osPMEvOpT8XxdjxOz
-        yNzeWdKD8muvGBucOq0dDZ96Qx/nTUCzYDEvBVB7lk5+SneFbYK9gVjH0gKIqdydwdgMyajIbUXFQ
-        NVrwCfiaJ5XZ2L/uR2ucVQRp8mVnY68zo529L1wSCA+18x22l4L31ILc1FaCdyUQHFeVM59UrsLTz
-        Wr4N3URbw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46042)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m3E46-0005lO-4A; Tue, 13 Jul 2021 09:46:54 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m3E40-00008w-Tx; Tue, 13 Jul 2021 09:46:48 +0100
-Date:   Tue, 13 Jul 2021 09:46:48 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alex Shi <alexs@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org
-Subject: Re: flush_kernel_dcache_page fixes and removal
-Message-ID: <20210713084648.GF22278@shell.armlinux.org.uk>
-References: <20210712060928.4161649-1-hch@lst.de>
+        Tue, 13 Jul 2021 04:50:49 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90197C0613AD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:56 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id p22so5974793pfh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=79+lwfgqPqTMCDJYOtelsxZhwWsCxwv7dGGvPGe+0Sw=;
+        b=XPYV6AqgUbZp6+vdppARBpAYCPqTsziLqNwvNsrjLuNKQsh6GS3q19GuTFueLqfI3W
+         2mpioxtWWYo5lHGzcp+Jutobs4GmHGUTQiIvyRJOrhRaSYEd2g13fYjJdx8IqQbpVtg+
+         U5M3F2NmfDR26UxFi92Yzg5HX/fYV6AYnZdE6d7ugOH+Y9vAV4e5UbOMWrmsG3AqiEzX
+         NUPQt8B7lzQDca2Wt8iUkhnTLPaw8kJJmv71Rv4l+iNrRzjIvV51afp0ikEMovNJIa3w
+         l3GoRQ485RyPX6RthpBauL0J2/vlNzokMcWZNI71JmewCwtjndkIJDGd4VS80mquizHp
+         zreQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=79+lwfgqPqTMCDJYOtelsxZhwWsCxwv7dGGvPGe+0Sw=;
+        b=gEJaHYM4QxkAP03llYwWamnpF43SpmDhzunwG5fP8QZmvs3BMFsFTnMPKEAUNbtw7P
+         6KM9vQbd0G2BYGGbHk4anakY2WAvr2FK6smHNg8c6FFltl83IxkujYzCG4Tcb7zD4151
+         AWMeh5rNkXtiJt3rQAf4c5fFL6+5bzgWPB3Wm+4yJforluNd7/1xr4zrcVni1a2RBWAW
+         3AEMuZpm8ECfS8CpHzeI39yeI/SSbM1kyhAVBlPvY3beDCOx2Yew3R8MH+ybfLOmn1+9
+         i6zh+z35R3Z6L7ez4abCOPLHZhi2Qx9CEGgOQmYUYNBSNruM+UEAg3VcIIxg5OYtcvrP
+         7CbQ==
+X-Gm-Message-State: AOAM533Ud/0IParwh3TUlzMJGKkocXFQ3ThNZYpqi4fvBCoKrI6hzXJh
+        RgI89z5c8pfD0AxfpzyHn1GN
+X-Google-Smtp-Source: ABdhPJya/3d83k8xmEEz7mxN/KfDFTYEWfRDpJqmURKX4t0jIlbAdO7JalzXWyaKhiHPR7hvAQh/zQ==
+X-Received: by 2002:aa7:808b:0:b029:2ef:cdd4:8297 with SMTP id v11-20020aa7808b0000b02902efcdd48297mr3574498pff.27.1626166076154;
+        Tue, 13 Jul 2021 01:47:56 -0700 (PDT)
+Received: from localhost ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id q21sm11607775pff.55.2021.07.13.01.47.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 01:47:55 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com
+Cc:     songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 09/17] virtio-vdpa: Handle the failure of vdpa_reset()
+Date:   Tue, 13 Jul 2021 16:46:48 +0800
+Message-Id: <20210713084656.232-10-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210713084656.232-1-xieyongji@bytedance.com>
+References: <20210713084656.232-1-xieyongji@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712060928.4161649-1-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 08:09:22AM +0200, Christoph Hellwig wrote:
-> while looking to convert the block layer away from kmap_atomic towards
-> kmap_local_page and prefeably the helpers that abstract it away I noticed
-> that a few block drivers directly or implicitly call
-> flush_kernel_dcache_page before kunmapping a page that has been written
-> to.  flush_kernel_dcache_page is documented to to be used in such cases,
-> but flush_dcache_page is actually required when the page could be in
-> the page cache and mapped to userspace, which is pretty much always the
-> case when kmapping an arbitrary page.  Unfortunately the documentation
-> doesn't exactly make that clear, which lead to this misused.  And it turns
-> out that only the copy_strings / copy_string_kernel in the exec code
-> were actually correct users of flush_kernel_dcache_page, which is why
-> I think we should just remove it and eat the very minor overhead in
-> exec rather than confusing poor driver writers.
+The vpda_reset() may fail now. This adds check to its return
+value and fail the virtio_vdpa_reset().
 
-I think you need to be careful - I seem to have a recollection that the
-reason we ended up with flush_kernel_dcache_page() was the need to avoid
-the taking of the mmap lock for 32-bit ARM VIVT based CPUs in
-flush_dcache_page(). 32-bit ARM flush_dcache_page() can block.
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+---
+ drivers/virtio/virtio_vdpa.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-If you're sure that all these changes you're making do not end up
-calling flush_dcache_page() from a path where we are atomic, then fine.
-
-The second issue I have is that, when we are reading a page into a page
-cache page, how can that page be mapped to userspace? Isn't that a
-violation of semantics? If the page is mapped to userspace but does not
-contain data from the underlying storage device, then the page contains
-stale data (if it's a new page, lets hope that's zeroed and not some
-previous contents - which would be a massive security hole.) As I
-understand it, the flush_kernel_dcache_page() calls in the block layer
-are primarily there to cope with drivers that do PIO read to write to a
-page cache page to ensure that later userspace mappings can see the data
-in the page cache page - by ensuring that the page cache pages are in
-the same state as far as caches go as if they had been DMA'd to.
-
-We know that the current implementation works fine - you're now
-proposing to radically change it, asserting that it's buggy. I'm
-nervous about this change.
-
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index 3e666f70e829..ebbd8471bbee 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -101,9 +101,7 @@ static int virtio_vdpa_reset(struct virtio_device *vdev)
+ {
+ 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+ 
+-	vdpa_reset(vdpa);
+-
+-	return 0;
++	return vdpa_reset(vdpa);
+ }
+ 
+ static bool virtio_vdpa_notify(struct virtqueue *vq)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.11.0
+
