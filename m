@@ -2,227 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F83D3C75D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4854F3C75D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhGMRj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54168 "EHLO mail.kernel.org"
+        id S232455AbhGMRlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:41:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:48104 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230207AbhGMRj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:39:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 526A961284;
-        Tue, 13 Jul 2021 17:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626197796;
-        bh=cHKUmCfv/Vp8nKb1GBgpUQRSdt6VitMVZ+mx3xLi7RM=;
-        h=Date:From:To:cc:Subject:From;
-        b=h3LhRvtsUghgyRFPbzjAd+bYFIKNiZIFyp10e3zgQAjEIP8zv0WvctzWwLeeRFw7l
-         jqvoSJebyjANvnVh8WB94YPKKzaOHIHyZFbvk+st+SNjgeOUCU41t9JhwwuDAPUb8I
-         ssj1yZQRGBzuQbP46MXw/3N9iJRo/YkV/AQexXoXFcsNI0xIeazvJpyFNmxoh+sAlW
-         SaK6Awc3O+7W4hNMHLOD5Zx6U5+DnPQ23jNzfDRwo9l/KLKpmBoqxYBKcmDpkypabu
-         nswtz2TovHEC759+Fyl4iE0PJhDdah2wyJa/wglk2JJyaE8tmxsMQCXzaaycyCqOsB
-         Y5EiifRWr7IQg==
-Date:   Tue, 13 Jul 2021 19:36:33 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Lin Ma <linma@zju.edu.cn>, Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Two issues caused by commit e305509e678b3 ("Bluetooth: use correct
- lock to prevent UAF of hdev object")
-Message-ID: <nycvar.YFH.7.76.2107131924280.8253@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S229500AbhGMRlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:41:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CB781FB;
+        Tue, 13 Jul 2021 10:38:17 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8D9D3F7D8;
+        Tue, 13 Jul 2021 10:38:16 -0700 (PDT)
+Subject: Re: [PATCH] cacheinfo: clear cache_leaves(cpu) in
+ free_cache_attributes()
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1626148058-55230-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20210713113315.thsvrvqvqptc7hje@bogus>
+ <303cd2bf-7142-6ec9-548a-afe7f6e5ca8f@huawei.com>
+ <20210713132612.gvx7xpdp3tjcmxxu@bogus>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <ee4db21a-e1cc-5847-d1fb-1d7735cf2164@arm.com>
+Date:   Tue, 13 Jul 2021 18:38:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210713132612.gvx7xpdp3tjcmxxu@bogus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-commit e305509e678b3 ("Bluetooth: use correct lock to prevent UAF of hdev 
-object") has two issues, and I believe it should be reverted for 5.14 
-final. Could you please elaborate what is the exact UAF scenario the patch 
-is fixing? It's rather hard to deduce from the very short changelog, but 
-it's pretty obvious that it creates at least two issues.
+On 13/07/2021 14:26, Sudeep Holla wrote:
+> On Tue, Jul 13, 2021 at 08:46:19PM +0800, Xiongfeng Wang wrote:
+>> On 2021/7/13 19:33, Sudeep Holla wrote:
+>>> On Tue, Jul 13, 2021 at 11:47:38AM +0800, Xiongfeng Wang wrote:
+>>>> On ARM64, when PPTT(Processor Properties Topology Table) is not
+>>>> implemented in ACPI boot, we will goto 'free_ci' with the following
+>>>> print:
+>>>>   Unable to detect cache hierarchy for CPU 0
+>>>>
+>>>
+>>> The change itself looks good and I am fine with that. However,...
+>>>
+>>>> But some other codes may still use 'num_leaves' to iterate through the
+>>>
+>>> Can you point me exactly where it is used to make sure there are no
+>>> other issues associated with that.
+>>>
+>>>> 'info_list', such as get_cpu_cacheinfo_id(). If 'info_list' is NULL , it
+>>>> would crash. So clear 'num_leaves' in free_cache_attributes().
+>>>>
+>>>
+>>> And can you provide the crash dump please ? If we are not hitting any
+>>> issue and you just figured this with code inspection, that is fine. It
+>>> helps to determine if this needs to be backport or just good to have
+>>> clean up.
+
+>> There is no issue in the mainline kernel. get_cpu_cacheinfo_id() is only called
+>> on x86. I didn't hit any issue using the mainline kernel.
+
+>> Actually, it's our own code that crashed. My colleague Shaobo(CCed) tried to add
+
+Seems to have dropped off the CC list.
+
+>> MPAM support on ARM64.
+
+Do you want me to CC either of you on the series that refactor the resctrl code? This is
+the bit that needs doing to get MPAM working upstream
+
+(I copy Shameerali, but I've not heard from him in a while.)
 
 
+>> His code called get_cpu_cacheinfo_id() and crashed when
+>> PPTT is not implemented. Maybe he should check whether PPTT is implemented
+>> before calling get_cpu_cacheinfo_id(), but we think it is also better to clear
+>> cache_leaves(cpu) in free_cache_attributes().
+>> Sorry for not clearly expressed.
 
-(1) it introduces a possibility of deadlock between hci_sock_dev_event() 
-   and hci_sock_sendmsg().
-
-Namely:
-
-- hci_sock_sendmsg(HCI_CHANNEL_LOGGING) acquires lock_sock(sk) and then 
-  calls into hci_logging_frame() -> hci_send_to_channel() which in turn 
-  acquires hci_sk_list.lock
-
-- after the mentioned commit, hci_sock_dev_event() first acquires 
-  hci_sk_list.lock before doing lock_sock(sk) on each of the sockets it
-  iterates through, creating the reverse dependency
+The ACPI tables for MPAM reference the PPTT, so you're going to need one.
 
 
-Please find the full lockdep report below for reference.
+> Thanks for detailed explanation. In this case I would drop the Fixes: tag
+> as it is not fixing anything in the commit mentioned in the tag.
+> 
+> Also not sure if we can tag this as fixes
+> 709c4362725a ("cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file")
+> as that is introducing the possible access that could crash. @James ?
 
-(2) it causes sleeping function to be called from atomic context, because 
-   it's not allowed to sleep after acquiring read_lock(), which is exactly 
-   what this patch does (lock_sock() is sleepable). Report below as well.
-
-
-
-
-
-
- BUG: sleeping function called from invalid context at net/core/sock.c:3100
- in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 448, name: kworker/0:5
- 6 locks held by kworker/0:5/448:
-  #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
-  #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
-  #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0xd50 [usbcore]
-  #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x54/0x270 [usbcore]
-  #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0x1a/0x1d0
-  #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x12b/0x1e0 [bluetooth]
- CPU: 0 PID: 448 Comm: kworker/0:5 Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7 #15
- Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
- Workqueue: usb_hub_wq hub_event [usbcore]
- Call Trace:
-  dump_stack_lvl+0x56/0x6c
-  ___might_sleep+0x1b6/0x210
-  lock_sock_nested+0x29/0xa0
-  hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-  hci_unregister_dev+0xd2/0x350 [bluetooth]
-  btusb_disconnect+0x63/0x150 [btusb]
-  usb_unbind_interface+0x79/0x260 [usbcore]
-  device_release_driver_internal+0xf7/0x1d0
-  bus_remove_device+0xef/0x160
-  device_del+0x1ac/0x430
-  ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
-  usb_disable_device+0x8d/0x1a0 [usbcore]
-  usb_disconnect+0xc1/0x270 [usbcore]
-  ? hub_event+0x4b0/0xd50 [usbcore]
-  hub_port_connect+0x82/0xa20 [usbcore]
-  ? __mutex_unlock_slowpath+0x43/0x2b0
-  hub_event+0x4c4/0xd50 [usbcore]
-  ? lock_is_held_type+0xb4/0x120
-  process_one_work+0x244/0x5e0
-  worker_thread+0x3c/0x390
-  ? process_one_work+0x5e0/0x5e0
-  kthread+0x133/0x160
-  ? set_kthread_struct+0x40/0x40
-  ret_from_fork+0x22/0x30
-
- ======================================================
- WARNING: possible circular locking dependency detected
- 5.14.0-rc1-00003-g7fef2edf7cc7 #15 Tainted: G        W        
- ------------------------------------------------------
- kworker/0:5/448 is trying to acquire lock:
- ffff89e950647920 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}, at: hci_sock_dev_event+0x156/0x1e0 [bluetooth]
- 
- but task is already holding lock:
- ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x12b/0x1e0 [bluetooth]
- 
- which lock already depends on the new lock.
-
- 
- the existing dependency chain (in reverse order) is:
- 
- -> #1 (hci_sk_list.lock){++++}-{2:2}:
-        _raw_read_lock+0x38/0x70
- systemd-sysv-generator[1254]: stat() failed on /etc/init.d/jexec, ignoring: No such file or directory
-        hci_send_to_channel+0x22/0x50 [bluetooth]
-        hci_sock_sendmsg+0xa2b/0xa40 [bluetooth]
-        sock_sendmsg+0x5b/0x60
-        ____sys_sendmsg+0x1ed/0x250
- systemd-sysv-generator[1254]: SysV service '/etc/init.d/tpfand' lacks a native systemd unit file. Automatically generating a unit file for compatibility. Please update package to include a native systemd unit file, in order to make it more safe and robust.
-        ___sys_sendmsg+0x88/0xd0
-        __sys_sendmsg+0x5e/0xa0
-        do_syscall_64+0x3a/0xb0
- systemd-sysv-generator[1254]: SysV service '/etc/init.d/boot.local' lacks a native systemd unit file. Automatically generating a unit file for compatibility. Please update package to include a native systemd unit file, in order to make it more safe and robust.
-        entry_SYSCALL_64_after_hwframe+0x44/0xae
- 
- -> #0 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}:
-        __lock_acquire+0x124a/0x1680
-        lock_acquire+0x278/0x300
-        lock_sock_nested+0x72/0xa0
-        hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-        hci_unregister_dev+0xd2/0x350 [bluetooth]
-        btusb_disconnect+0x63/0x150 [btusb]
-        usb_unbind_interface+0x79/0x260 [usbcore]
-        device_release_driver_internal+0xf7/0x1d0
-        bus_remove_device+0xef/0x160
-        device_del+0x1ac/0x430
-        usb_disable_device+0x8d/0x1a0 [usbcore]
-        usb_disconnect+0xc1/0x270 [usbcore]
-        hub_port_connect+0x82/0xa20 [usbcore]
-        hub_event+0x4c4/0xd50 [usbcore]
-        process_one_work+0x244/0x5e0
-        worker_thread+0x3c/0x390
-        kthread+0x133/0x160
-        ret_from_fork+0x22/0x30
- 
- other info that might help us debug this:
-
-  Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(hci_sk_list.lock);
-                                lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
-                                lock(hci_sk_list.lock);
-   lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
- 
-  *** DEADLOCK ***
-
- 6 locks held by kworker/0:5/448:
-  #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
-  #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
-  #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0xd50 [usbcore]
-  #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x54/0x270 [usbcore]
-  #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0x1a/0x1d0
-  #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x12b/0x1e0 [bluetooth]
- 
- stack backtrace:
- CPU: 0 PID: 448 Comm: kworker/0:5 Tainted: G        W         5.14.0-rc1-00003-g7fef2edf7cc7 #15
- Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
- Workqueue: usb_hub_wq hub_event [usbcore]
- Call Trace:
-  dump_stack_lvl+0x56/0x6c
-  check_noncircular+0x105/0x120
-  ? stack_trace_save+0x4b/0x70
-  ? save_trace+0x3d/0x340
-  ? __lock_acquire+0x124a/0x1680
-  __lock_acquire+0x124a/0x1680
-  lock_acquire+0x278/0x300
-  ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-  ? lock_release+0x15a/0x2a0
-  lock_sock_nested+0x72/0xa0
-  ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-  hci_sock_dev_event+0x156/0x1e0 [bluetooth]
-  hci_unregister_dev+0xd2/0x350 [bluetooth]
-  btusb_disconnect+0x63/0x150 [btusb]
-  usb_unbind_interface+0x79/0x260 [usbcore]
-  device_release_driver_internal+0xf7/0x1d0
-  bus_remove_device+0xef/0x160
-  device_del+0x1ac/0x430
-  ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
-  usb_disable_device+0x8d/0x1a0 [usbcore]
-  usb_disconnect+0xc1/0x270 [usbcore]
-  ? hub_event+0x4b0/0xd50 [usbcore]
-  hub_port_connect+0x82/0xa20 [usbcore]
-  ? __mutex_unlock_slowpath+0x43/0x2b0
-  hub_event+0x4c4/0xd50 [usbcore]
-  ? lock_is_held_type+0xb4/0x120
-  process_one_work+0x244/0x5e0
-  worker_thread+0x3c/0x390
-  ? process_one_work+0x5e0/0x5e0
-  kthread+0x133/0x160
-  ? set_kthread_struct+0x40/0x40
-  ret_from_fork+0x22/0x30
+If you like. If there is nothing broken its hard to care.
+I guess this helps people doing backports.
 
 
 
--- 
-Jiri Kosina
-SUSE Labs
+Thanks,
 
+James
