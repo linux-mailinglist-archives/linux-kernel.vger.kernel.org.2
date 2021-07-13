@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285383C6FEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E513C6FED
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhGMLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:46:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235803AbhGMLqh (ORCPT
+        id S235919AbhGMLtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:49:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11456 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235797AbhGMLtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:46:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626176627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/PhPn0HsWdt3/if9m4dksmO9/1fk5RdagIKiaocN3ws=;
-        b=Nhr9Cs67GFe18Y+yL+q/lGw9wRks4FPO7fZxVKA8C3YIU6YTxqqDhQlmlprEViFttsp3ly
-        /LQ/tVtlEfs+aEZYGI6rjJE3RDnvlfwcYV42b2AI6A4BkRO26hnoVGJDMgAVceaE0QE1Fp
-        KviosKhyD6Myzngi4vMjmjDPGLED9wQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-mXR0SX6AOxmjgQ5j1nOkJw-1; Tue, 13 Jul 2021 07:43:45 -0400
-X-MC-Unique: mXR0SX6AOxmjgQ5j1nOkJw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 13 Jul 2021 07:49:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626176813; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=zqFL0K40ucNLaW/YDFV3wxDvNTBjPj344YdNZFt7kLw=; b=XBtpvndljT/Qu18UkelZFYTRDZdFEHPNpm2GXaMR3NutzHp+A2SuOjneYvFjajkR0H2pPCFX
+ wB4IoyeuBv2kgxx5rbffgFu5PCWUysCiEgTBXy4HAAYFKnv+uGfL9ub/Np6AnI2nAicu94L6
+ IW2O8MoegZ9oxVmCIuvO/VOoYDI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60ed7cff5e3e57240b4ccc83 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 11:46:07
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9458EC4360C; Tue, 13 Jul 2021 11:46:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from vjitta-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D40B91082261;
-        Tue, 13 Jul 2021 11:43:43 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AD08760583;
-        Tue, 13 Jul 2021 11:43:43 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 16DBhgbj018767;
-        Tue, 13 Jul 2021 07:43:42 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 16DBhgRV018764;
-        Tue, 13 Jul 2021 07:43:42 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Tue, 13 Jul 2021 07:43:42 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Nico Schottelius <nico.schottelius@ungleich.ch>
-cc:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] scripts/setlocalversion: fix a bug when LOCALVERSION
- is empty
-In-Reply-To: <87r1g2h92y.fsf@ungleich.ch>
-Message-ID: <alpine.LRH.2.02.2107130738340.18452@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com> <YOyGrUvA4LjydcP3@kroah.com> <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com> <YOyVH3qD9O3qsNUL@kroah.com>
- <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com> <87tukzgrkg.fsf@ungleich.ch> <alpine.LRH.2.02.2107130454430.3795@file01.intranet.prod.int.rdu2.redhat.com> <87r1g2h92y.fsf@ungleich.ch>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6932CC433F1;
+        Tue, 13 Jul 2021 11:46:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6932CC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+From:   vjitta@codeaurora.org
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        vinmenon@codeaurora.org, vjitta@codeaurora.org
+Subject: [PATCH] mm: slub: Fix slub_debug disablement for list of slabs
+Date:   Tue, 13 Jul 2021 17:15:50 +0530
+Message-Id: <1626176750-13099-1-git-send-email-vjitta@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Vijayanand Jitta <vjitta@codeaurora.org>
 
+Consider the scenario where CONFIG_SLUB_DEBUG_ON is set
+and we would want to disable slub_debug for few slabs.
+Using boot parameter with slub_debug=-,slab_name syntax
+doesn't work as expected i.e; only disabling debugging for
+the specified list of slabs, instead it disables debugging
+for all slabs. Fix this.
 
-On Tue, 13 Jul 2021, Nico Schottelius wrote:
+Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+---
+ mm/slub.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> 
-> 
-> Mikulas Patocka <mpatocka@redhat.com> writes:
-> > I set LOCALVERSION to an empty string (with "export LOCALVERSION="). This
-> > prevented the kernel from adding a "+" sign to the kernel version. Since
-> > the commit 042da426f8eb, it no longer works and the kernel adds a "+" sign
-> > if LOCALVERSION is set and empty.
-> >
-> > If you don't like "if [ "${LOCALVERSION+set}" != "set" ]", then please
-> > provide some other way how to test if the variable is set.
-> 
-> I fail to see the problem you are solving, as that case works exactly
-> like I wrote in my last mail:
-
-The problem is this - I have a few patches applied to the kernel and I 
-don't want the plus sign in the kernel version. So, I set
-"export LOCALVERSION=". In the kernel 5.13 and previous versions, there is 
-no plus sign at the end of version string. With the version 5.14-rc1, 
-there is a plus sign.because of the patch 042da426f8eb.
-
-> [11:09:03] nb3:~$ export LOCALVERSION=; [ -z "${LOCALVERSION}" ] && echo unset
-> unset
-> [11:09:27] nb3:~$ echo $BASH_VERSION
-> 5.1.8(1)-release
-> 
-> Did you try that in your environment?
-
-I tried and it and it doesn't work - the plus sign is present in the 
-kernel version because [ -z "${LOCALVERSION}" ] return true.
-
-Mikulas
+diff --git a/mm/slub.c b/mm/slub.c
+index dc863c1..5a88418 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1429,6 +1429,7 @@ static int __init setup_slub_debug(char *str)
+ 	char *slab_list;
+ 	bool global_slub_debug_changed = false;
+ 	bool slab_list_specified = false;
++	bool slab_list_debug_disable = true;
+ 
+ 	slub_debug = DEBUG_DEFAULT_FLAGS;
+ 	if (*str++ != '=' || !*str)
+@@ -1436,7 +1437,6 @@ static int __init setup_slub_debug(char *str)
+ 		 * No options specified. Switch on full debugging.
+ 		 */
+ 		goto out;
+-
+ 	saved_str = str;
+ 	while (str) {
+ 		str = parse_slub_debug_flags(str, &flags, &slab_list, true);
+@@ -1445,6 +1445,8 @@ static int __init setup_slub_debug(char *str)
+ 			slub_debug = flags;
+ 			global_slub_debug_changed = true;
+ 		} else {
++			if (flags || !IS_ENABLED(CONFIG_SLUB_DEBUG_ON))
++				slab_list_debug_disable = false;
+ 			slab_list_specified = true;
+ 		}
+ 	}
+@@ -1456,7 +1458,7 @@ static int __init setup_slub_debug(char *str)
+ 	 * long as there is no option specifying flags without a slab list.
+ 	 */
+ 	if (slab_list_specified) {
+-		if (!global_slub_debug_changed)
++		if (!global_slub_debug_changed && !slab_list_debug_disable)
+ 			slub_debug = 0;
+ 		slub_debug_string = saved_str;
+ 	}
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.7.4
 
