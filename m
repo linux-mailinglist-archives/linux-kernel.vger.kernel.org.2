@@ -2,202 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635783C7A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 01:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243B53C7A05
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 01:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236824AbhGMXUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 19:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        id S236873AbhGMXVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 19:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGMXUY (ORCPT
+        with ESMTP id S236794AbhGMXVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 19:20:24 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BA9C0613DD;
-        Tue, 13 Jul 2021 16:17:33 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id h9so530892ljm.5;
-        Tue, 13 Jul 2021 16:17:33 -0700 (PDT)
+        Tue, 13 Jul 2021 19:21:06 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5187C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 16:18:14 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id r125so15871777qkf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 16:18:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+L+XSIts3sWSH9rPyJ8d19pb+TeTwIO8ubgRgT2nCB8=;
-        b=gE2m7yi4rjuyo6pQCeTQaZDq10FPCiBd+mDVvaE63noY7iJN3j52jfLt6NWEaeGB3C
-         NBvrvl/V8cV82vgnh3keaG3KRJ93QuF9TgP8v52f2DXrU77rpfj5lBdzFHXP0zWuTM45
-         qVltDwy0+2mHwZRjPLXLr88kfqTag1VhVoI1yPchhfej7pyDLw2qIIGTIX6SUJ8xUrZK
-         8O+VbwxeevkuEviuvvsfqjxWrsYOlf1OU9epg2agBzkbqDCwxC0RJOXoPour03eEBP67
-         ENxTTebbtRvjNdlaTgL/y7oooSpsIn/+LV9KAzwJ+VlIIXk+kc3BvUHYevE/fHdiJQpx
-         U0tg==
+         :cc;
+        bh=X7EKvFIO/8O+BrCmufnPNCIDCKJof7TC2G+GPb281Kk=;
+        b=vstfIIXpC66V8Fdf4gXiMzbgUIxqHrQh2s9iRgiZ9eMvf3unWbjSWZwMPPrPq3PUoc
+         +U3DefG4sYEYRyWdjXmqNPwezvTbwnB8pLyu447a9Ev+FEvtCUVXWrIWsgCEHH5o0bOR
+         lRjJUuw7qCUDMXLloWLJjk73ntKVVo+MmURiCiLFzzJujrNkdW1kJTE8IrWukSnbeyca
+         KDn0PEMzOHJ7v3a2eY8SRkY+vzOyweW1FmwPay6axcOT2ZaSgvpve+uMQF1ME/sxoSwW
+         /1jknaGnzrB4/Q+doN97u6uMvaP2DG46u+zSYP3ydM0he47WVyiTEHYCgQSJxL9N7KB3
+         +1EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+L+XSIts3sWSH9rPyJ8d19pb+TeTwIO8ubgRgT2nCB8=;
-        b=EHSjqNf7Vp2iYGmOb6B7t9a9UKus1QmaH9Hq/QprebatHuDixDW5PZgpxvGmSwfmGx
-         35W4K3UA3XZODydHkIiGuC5jMOMc4Do5d24Pqk0qVTAXFGd2ZWAg+rg4peO+Xl5Xdq7b
-         /yFkLJIDLqsYKrFXdmkfPNVkMeqQaxLICJ+/xuf/Qetmio4/nJX8cTzOdOGHH0yjfdmv
-         1Kjo8APaFdAFW1t2xRfvrjRSjsFeCivvi361HvmfaCUhufzhPPidAKN2DVcZA41PZEDq
-         kHubkJLpKaXzwQ7dPMEIZah3zkfOUIomKsklvRNPP/0mRdKnHcR/GEZQvRDdd7SpoEeX
-         7znA==
-X-Gm-Message-State: AOAM530CSp7qCR4+6/yiIatR8wEyABcuu9dMbZ7rZzxvRQ1jsdiyJIqC
-        Q9JqgFCW2x2776vuDKi+uH5RwyKqXNWaO1i1bmg=
-X-Google-Smtp-Source: ABdhPJzpajTynGgHQnsdxC4op3aEsBjv23iB9LydkL+oUyBZSLQ1EernGefxkAPqy7Yh+/kcdEMoDkGDC/jq1Enz9mo=
-X-Received: by 2002:a2e:b80e:: with SMTP id u14mr6330406ljo.204.1626218252221;
- Tue, 13 Jul 2021 16:17:32 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=X7EKvFIO/8O+BrCmufnPNCIDCKJof7TC2G+GPb281Kk=;
+        b=hAHIAs6+2gq6UI839/rhAbp/fXBcz8KMZJp8vpc/5KTL2WMTeupvMZPjOHuxWpK+sW
+         s444ZT05ewDlr3Tp4WxQA8aXFExiA+TzseDoUrirgMKTXgexp6MhTLmZUIBusf6TgogR
+         7MzyfqPXzdh8bbnwIZLVtq8hVHOJRDPAe1X0dFbvYPGB6RPK1whVkfs5OND+JCQNyBQ5
+         nDLyGOMYbpyLPibeIaOER3inVdMnOjC+AC2UaEAHjOy46A9mK1k6pymfbN0hOidt7OZu
+         yyMxvemv222Az/OpSWJ15dUzNSa0GzYgVy8YRxOrjlenCamSLPGERrtK3SZyu1rdBb0f
+         xG2w==
+X-Gm-Message-State: AOAM532KaQerVGIiK/olgQHy3C4lyCvtCKDl/BTBeINxPxiGYPhliDt5
+        Eii/6ar/JILW7K4GIwx66HBjpz0wPAdOvkK2V4/FCA==
+X-Google-Smtp-Source: ABdhPJw71oxMLOthCOty8sCCNUamAqIXG1dQrWSKcfyxw3TB3eUuJW33VfEC6A0+HHgXbhhD2CzYo5hYvYhgObPdFnw=
+X-Received: by 2002:a05:620a:a90:: with SMTP id v16mr6752709qkg.150.1626218293567;
+ Tue, 13 Jul 2021 16:18:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707043811.5349-1-hefengqing@huawei.com> <20210707043811.5349-4-hefengqing@huawei.com>
- <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com>
- <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com> <CAADnVQJ0Q0dLVs5UM-CyJe90N+KHomccAy-S_LOOARa9nXkXsA@mail.gmail.com>
- <bc75c9c5-7479-5021-58ea-ed8cf53fb331@huawei.com> <CAADnVQJ2DnoC07XLki_=xPti7V=wH153tQb1bowP+xdLwn580w@mail.gmail.com>
- <21d8cd9e-487e-411f-1cfd-67cebc86b221@huawei.com>
-In-Reply-To: <21d8cd9e-487e-411f-1cfd-67cebc86b221@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 13 Jul 2021 16:17:20 -0700
-Message-ID: <CAADnVQ+XGGaXfte6aDdEp6euYckGtyP6S+VDUe4JusUz7xDLLg@mail.gmail.com>
-Subject: Re: [bpf-next 3/3] bpf: Fix a use after free in bpf_check()
-To:     He Fengqing <hefengqing@huawei.com>
-Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210621163118.1040170-1-pgonda@google.com> <20210621163118.1040170-2-pgonda@google.com>
+In-Reply-To: <20210621163118.1040170-2-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Tue, 13 Jul 2021 16:18:02 -0700
+Message-ID: <CAA03e5EusWamD=awDq2N8zO7R22Ce-7b2nZaaJiE92R7oxHpXQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] KVM, SEV: Refactor out function for unregistering
+ encrypted regions
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 7:17 PM He Fengqing <hefengqing@huawei.com> wrote:
+On Mon, Jun 21, 2021 at 9:59 AM Peter Gonda <pgonda@google.com> wrote:
 >
+> Factor out helper function for freeing the encrypted region list.
 >
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
 >
-> =E5=9C=A8 2021/7/9 23:12, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > On Fri, Jul 9, 2021 at 4:11 AM He Fengqing <hefengqing@huawei.com> wrot=
-e:
-> >>
-> >>
-> >>
-> >> =E5=9C=A8 2021/7/8 11:09, Alexei Starovoitov =E5=86=99=E9=81=93:
-> >>> On Wed, Jul 7, 2021 at 8:00 PM He Fengqing <hefengqing@huawei.com> wr=
-ote:
-> >>>>
-> >>>> Ok, I will change this in next version.
-> >>>
-> >>> before you spam the list with the next version
-> >>> please explain why any of these changes are needed?
-> >>> I don't see an explanation in the patches and I don't see a bug in th=
-e code.
-> >>> Did you check what is the prog clone ?
-> >>> When is it constructed? Why verifier has anything to do with it?
-> >>> .
-> >>>
-> >>
-> >>
-> >> I'm sorry, I didn't describe these errors clearly.
-> >>
-> >> bpf_check(bpf_verifier_env)
-> >>       |
-> >>       |->do_misc_fixups(env)
-> >>       |    |
-> >>       |    |->bpf_patch_insn_data(env)
-> >>       |    |    |
-> >>       |    |    |->bpf_patch_insn_single(env->prog)
-> >>       |    |    |    |
-> >>       |    |    |    |->bpf_prog_realloc(env->prog)
-> >>       |    |    |    |    |
-> >>       |    |    |    |    |->construct new_prog
-> >>       |    |    |    |    |    free old_prog(env->prog)
-> >>       |    |    |    |    |
-> >>       |    |    |    |    |->return new_prog;
-> >>       |    |    |    |
-> >>       |    |    |    |->return new_prog;
-> >>       |    |    |
-> >>       |    |    |->adjust_insn_aux_data
-> >>       |    |    |    |
-> >>       |    |    |    |->return ENOMEM;
-> >>       |    |    |
-> >>       |    |    |->return NULL;
-> >>       |    |
-> >>       |    |->return ENOMEM;
-> >>
-> >> bpf_verifier_env->prog had been freed in bpf_prog_realloc function.
-> >>
-> >>
-> >> There are two errors here, the first is memleak in the
-> >> bpf_patch_insn_data function, and the second is use after free in the
-> >> bpf_check function.
-> >>
-> >> memleak in bpf_patch_insn_data:
-> >>
-> >> Look at the call chain above, if adjust_insn_aux_data function return
-> >> ENOMEM, bpf_patch_insn_data will return NULL, but we do not free the
-> >> new_prog.
-> >>
-> >> So in the patch 2, before bpf_patch_insn_data return NULL, we free the
-> >> new_prog.
-> >>
-> >> use after free in bpf_check:
-> >>
-> >> If bpf_patch_insn_data function return NULL, we will not assign new_pr=
-og
-> >> to the bpf_verifier_env->prog, but bpf_verifier_env->prog has been fre=
-ed
-> >> in the bpf_prog_realloc function. Then in bpf_check function, we will
-> >> use bpf_verifier_env->prog after do_misc_fixups function.
-> >>
-> >> In the patch 3, I added a free_old parameter to bpf_prog_realloc, in
-> >> this scenario we don't free old_prog. Instead, we free it in the
-> >> do_misc_fixups function when bpf_patch_insn_data return a valid new_pr=
-og.
-> >
-> > Thanks for explaining.
-> > Why not to make adjust_insn_aux_data() in bpf_patch_insn_data() first t=
-hen?
-> > Just changing the order will resolve both issues, no?
-> > .
-> >
-> adjust_insn_aux_data() need the new constructed new_prog as an input
-> parameter, so we must call bpf_patch_insn_single() before
-> adjust_insn_aux_data().
+> ---
+>  arch/x86/kvm/svm/sev.c | 26 +++++++++++++++++---------
+>  1 file changed, 17 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 46e339c84998..5af46ff6ec48 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1767,11 +1767,25 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>         return ret;
+>  }
+>
+> +static void __unregister_region_list_locked(struct kvm *kvm,
+> +                                           struct list_head *mem_regions)
+> +{
+> +       struct enc_region *pos, *q;
+> +
+> +       lockdep_assert_held(&kvm->lock);
+> +
+> +       if (list_empty(mem_regions))
+> +               return;
+> +
+> +       list_for_each_entry_safe(pos, q, mem_regions, list) {
+> +               __unregister_enc_region_locked(kvm, pos);
+> +               cond_resched();
+> +       }
+> +}
+> +
+>  void sev_vm_destroy(struct kvm *kvm)
+>  {
+>         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -       struct list_head *head = &sev->regions_list;
+> -       struct list_head *pos, *q;
+>
+>         if (!sev_guest(kvm))
+>                 return;
+> @@ -1795,13 +1809,7 @@ void sev_vm_destroy(struct kvm *kvm)
+>          * if userspace was terminated before unregistering the memory regions
+>          * then lets unpin all the registered memory.
+>          */
+> -       if (!list_empty(head)) {
+> -               list_for_each_safe(pos, q, head) {
+> -                       __unregister_enc_region_locked(kvm,
+> -                               list_entry(pos, struct enc_region, list));
+> -                       cond_resched();
+> -               }
+> -       }
+> +       __unregister_region_list_locked(kvm, &sev->regions_list);
+>
+>         mutex_unlock(&kvm->lock);
+>
+> --
+> 2.32.0.288.g62a8d224e6-goog
 
-Right. I forgot about insn_has_def32() logic and
-commit b325fbca4b13 ("bpf: verifier: mark patched-insn with
-sub-register zext flag")
-that added that extra parameter.
-
-> But we can make adjust_insn_aux_data() never return ENOMEM. In
-> bpf_patch_insn_data(), first we pre-malloc memory for new aux_data, then
-> call bpf_patch_insn_single() to constructed the new_prog, at last call
-> adjust_insn_aux_data() functin. In this way, adjust_insn_aux_data()
-> never fails.
->
-> bpf_patch_insn_data(env) {
->         struct bpf_insn_aux_data *new_data =3D vzalloc();
->         struct bpf_prog *new_prog;
->         if (new_data =3D=3D NULL)
->                 return NULL;
->
->         new_prog =3D bpf_patch_insn_single(env->prog);
->         if (new_prog =3D=3D NULL) {
->                 vfree(new_data);
->                 return NULL;
->         }
->
->         adjust_insn_aux_data(new_prog, new_data);
->         return new_prog;
-> }
-> What do you think about it?
-
-That's a good idea. Let's do that. The new size for vzalloc is easy to comp=
-ute.
-What should be the commit in the Fixes tag?
-commit 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
-right?
-4 year old bug then.
-I wonder why syzbot with malloc error injection didn't catch it sooner.
+Reviewed-by: Marc Orr <marcorr@google.com>
