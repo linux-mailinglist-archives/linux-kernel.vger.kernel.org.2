@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637AB3C6FE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CBE3C700E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236094AbhGMLmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:42:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:42284 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236072AbhGMLmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:42:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5ED84D6E;
-        Tue, 13 Jul 2021 04:39:48 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 476213F7D8;
-        Tue, 13 Jul 2021 04:39:45 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
-        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
-        ink@jurassic.park.msu.ru, jonas@southpole.se,
-        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
-        mark.rutland@arm.com, mattst88@gmail.com, mingo@redhat.com,
-        monstr@monstr.eu, mpe@ellerman.id.au, paulmck@kernel.org,
-        paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCH v3 10/10] x86: snapshot thread flags
-Date:   Tue, 13 Jul 2021 12:38:42 +0100
-Message-Id: <20210713113842.2106-11-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210713113842.2106-1-mark.rutland@arm.com>
-References: <20210713113842.2106-1-mark.rutland@arm.com>
+        id S236042AbhGMMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:00:47 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38742 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235797AbhGMMAr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 08:00:47 -0400
+X-UUID: 902a55c266aa41bd95fdcbfd5356fe29-20210713
+X-UUID: 902a55c266aa41bd95fdcbfd5356fe29-20210713
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1492047116; Tue, 13 Jul 2021 19:57:54 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 13 Jul 2021 19:57:52 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 13 Jul 2021 19:57:52 +0800
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <leilk.liu@mediatek.com>,
+        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
+Subject: [PATCH 1/2] spi: mediatek: add tick_delay support
+Date:   Tue, 13 Jul 2021 19:40:49 +0800
+Message-ID: <20210713114048.29509-1-mason.zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some thread flags can be set remotely, and so even when IRQs are
-disabled, the flags can change under our feet. Generally this is
-unlikely to cause a problem in practice, but it is somewhat unsound, and
-KCSAN will legitimately warn that there is a data race.
+From: Mason Zhang <Mason.Zhang@mediatek.com>
 
-To avoid such issues, a snapshot of the flags has to be taken prior to
-using them. Some places already use READ_ONCE() for that, others do not.
+This patch support tick_delay setting, some users need use
+high-speed spi speed, which can use tick_delay to tuning spi clk timing.
 
-Convert them all to the new flag accessor helpers.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Ingo Molnar <mingo@redhat.com>
+Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
 ---
- arch/x86/kernel/process.c | 8 ++++----
- arch/x86/kernel/process.h | 6 +++---
- arch/x86/mm/tlb.c         | 2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/spi/spi-mt65xx.c                 | 11 ++++++++++-
+ include/linux/platform_data/spi-mt65xx.h |  1 +
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 1d9463e3096b..0b9a1f2ccfb3 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -348,7 +348,7 @@ void arch_setup_new_exec(void)
- 		clear_thread_flag(TIF_SSBD);
- 		task_clear_spec_ssb_disable(current);
- 		task_clear_spec_ssb_noexec(current);
--		speculation_ctrl_update(task_thread_info(current)->flags);
-+		speculation_ctrl_update(read_thread_flags());
- 	}
+diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
+index 097625d7915e..b34fbc913fd6 100644
+--- a/drivers/spi/spi-mt65xx.c
++++ b/drivers/spi/spi-mt65xx.c
+@@ -42,8 +42,9 @@
+ #define SPI_CFG1_CS_IDLE_OFFSET           0
+ #define SPI_CFG1_PACKET_LOOP_OFFSET       8
+ #define SPI_CFG1_PACKET_LENGTH_OFFSET     16
+-#define SPI_CFG1_GET_TICK_DLY_OFFSET      30
++#define SPI_CFG1_GET_TICK_DLY_OFFSET      29
+ 
++#define SPI_CFG1_GET_TICK_DLY_MASK        0xe0000000
+ #define SPI_CFG1_CS_IDLE_MASK             0xff
+ #define SPI_CFG1_PACKET_LOOP_MASK         0xff00
+ #define SPI_CFG1_PACKET_LENGTH_MASK       0x3ff0000
+@@ -152,6 +153,7 @@ static const struct mtk_spi_compatible mt6893_compat = {
+  */
+ static const struct mtk_chip_config mtk_default_chip_info = {
+ 	.sample_sel = 0,
++	.tick_delay = 0,
+ };
+ 
+ static const struct of_device_id mtk_spi_of_match[] = {
+@@ -275,6 +277,13 @@ static int mtk_spi_prepare_message(struct spi_master *master,
+ 		writel(mdata->pad_sel[spi->chip_select],
+ 		       mdata->base + SPI_PAD_SEL_REG);
+ 
++	/* tick delay */
++	reg_val = readl(mdata->base + SPI_CFG1_REG);
++	reg_val &= ~SPI_CFG1_GET_TICK_DLY_MASK;
++	reg_val |= ((chip_config->tick_delay & 0x7)
++		<< SPI_CFG1_GET_TICK_DLY_OFFSET);
++	writel(reg_val, mdata->base + SPI_CFG1_REG);
++
+ 	return 0;
  }
  
-@@ -600,7 +600,7 @@ static unsigned long speculation_ctrl_update_tif(struct task_struct *tsk)
- 			clear_tsk_thread_flag(tsk, TIF_SPEC_IB);
- 	}
- 	/* Return the updated threadinfo flags*/
--	return task_thread_info(tsk)->flags;
-+	return read_task_thread_flags(tsk);
- }
- 
- void speculation_ctrl_update(unsigned long tif)
-@@ -636,8 +636,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	unsigned long tifp, tifn;
- 
--	tifn = READ_ONCE(task_thread_info(next_p)->flags);
--	tifp = READ_ONCE(task_thread_info(prev_p)->flags);
-+	tifn = read_task_thread_flags(next_p);
-+	tifp = read_task_thread_flags(prev_p);
- 
- 	switch_to_bitmap(tifp);
- 
-diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
-index 1d0797b2338a..0b1be8685b49 100644
---- a/arch/x86/kernel/process.h
-+++ b/arch/x86/kernel/process.h
-@@ -13,9 +13,9 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p);
- static inline void switch_to_extra(struct task_struct *prev,
- 				   struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
--	unsigned long prev_tif = task_thread_info(prev)->flags;
--
-+	unsigned long next_tif = read_task_thread_flags(next);
-+	unsigned long prev_tif = read_task_thread_flags(prev);
-+	
- 	if (IS_ENABLED(CONFIG_SMP)) {
- 		/*
- 		 * Avoid __switch_to_xtra() invocation when conditional
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index cfe6b1e85fa6..56917e92991d 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -319,7 +319,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 
- static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
-+	unsigned long next_tif = read_task_thread_flags(next);
- 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
- 
- 	return (unsigned long)next->mm | ibpb;
+diff --git a/include/linux/platform_data/spi-mt65xx.h b/include/linux/platform_data/spi-mt65xx.h
+index 65fd5ffd257c..f0db674f07b8 100644
+--- a/include/linux/platform_data/spi-mt65xx.h
++++ b/include/linux/platform_data/spi-mt65xx.h
+@@ -12,5 +12,6 @@
+ /* Board specific platform_data */
+ struct mtk_chip_config {
+ 	u32 sample_sel;
++	u32 tick_delay;
+ };
+ #endif
 -- 
-2.11.0
+2.18.0
 
