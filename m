@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1A93C7010
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285383C6FEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbhGMMC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:02:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41054 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235797AbhGMMC2 (ORCPT
+        id S235936AbhGMLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:46:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235803AbhGMLqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:02:28 -0400
-X-UUID: bc9aa24003bc4abbbcb5e7b476c21f65-20210713
-X-UUID: bc9aa24003bc4abbbcb5e7b476c21f65-20210713
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 748022706; Tue, 13 Jul 2021 19:59:34 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 13 Jul 2021 19:59:22 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 13 Jul 2021 19:59:21 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <leilk.liu@mediatek.com>,
-        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
-Subject: [PATCH 2/2] spi: mediatek: move devm_spi_register_master position
-Date:   Tue, 13 Jul 2021 19:42:48 +0800
-Message-ID: <20210713114247.1536-1-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 13 Jul 2021 07:46:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626176627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/PhPn0HsWdt3/if9m4dksmO9/1fk5RdagIKiaocN3ws=;
+        b=Nhr9Cs67GFe18Y+yL+q/lGw9wRks4FPO7fZxVKA8C3YIU6YTxqqDhQlmlprEViFttsp3ly
+        /LQ/tVtlEfs+aEZYGI6rjJE3RDnvlfwcYV42b2AI6A4BkRO26hnoVGJDMgAVceaE0QE1Fp
+        KviosKhyD6Myzngi4vMjmjDPGLED9wQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-mXR0SX6AOxmjgQ5j1nOkJw-1; Tue, 13 Jul 2021 07:43:45 -0400
+X-MC-Unique: mXR0SX6AOxmjgQ5j1nOkJw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D40B91082261;
+        Tue, 13 Jul 2021 11:43:43 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AD08760583;
+        Tue, 13 Jul 2021 11:43:43 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 16DBhgbj018767;
+        Tue, 13 Jul 2021 07:43:42 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 16DBhgRV018764;
+        Tue, 13 Jul 2021 07:43:42 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 13 Jul 2021 07:43:42 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Nico Schottelius <nico.schottelius@ungleich.ch>
+cc:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] scripts/setlocalversion: fix a bug when LOCALVERSION
+ is empty
+In-Reply-To: <87r1g2h92y.fsf@ungleich.ch>
+Message-ID: <alpine.LRH.2.02.2107130738340.18452@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com> <YOyGrUvA4LjydcP3@kroah.com> <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com> <YOyVH3qD9O3qsNUL@kroah.com>
+ <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com> <87tukzgrkg.fsf@ungleich.ch> <alpine.LRH.2.02.2107130454430.3795@file01.intranet.prod.int.rdu2.redhat.com> <87r1g2h92y.fsf@ungleich.ch>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mason Zhang <Mason.Zhang@mediatek.com>
 
-This patch move devm_spi_register_master to the end of mtk_spi_probe.
-If slaves call spi_sync in there probe function, master should have probe done.
 
-Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
----
- drivers/spi/spi-mt65xx.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On Tue, 13 Jul 2021, Nico Schottelius wrote:
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index b34fbc913fd6..6f2925118b98 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -820,12 +820,6 @@ static int mtk_spi_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = devm_spi_register_master(&pdev->dev, master);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to register master (%d)\n", ret);
--		goto err_disable_runtime_pm;
--	}
--
- 	if (mdata->dev_comp->need_pad_sel) {
- 		if (mdata->pad_num != master->num_chipselect) {
- 			dev_err(&pdev->dev,
-@@ -865,6 +859,12 @@ static int mtk_spi_probe(struct platform_device *pdev)
- 		dev_notice(&pdev->dev, "SPI dma_set_mask(%d) failed, ret:%d\n",
- 			   addr_bits, ret);
- 
-+	ret = devm_spi_register_master(&pdev->dev, master);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register master (%d)\n", ret);
-+		goto err_disable_runtime_pm;
-+	}
-+
- 	return 0;
- 
- err_disable_runtime_pm:
--- 
-2.18.0
+> 
+> 
+> Mikulas Patocka <mpatocka@redhat.com> writes:
+> > I set LOCALVERSION to an empty string (with "export LOCALVERSION="). This
+> > prevented the kernel from adding a "+" sign to the kernel version. Since
+> > the commit 042da426f8eb, it no longer works and the kernel adds a "+" sign
+> > if LOCALVERSION is set and empty.
+> >
+> > If you don't like "if [ "${LOCALVERSION+set}" != "set" ]", then please
+> > provide some other way how to test if the variable is set.
+> 
+> I fail to see the problem you are solving, as that case works exactly
+> like I wrote in my last mail:
+
+The problem is this - I have a few patches applied to the kernel and I 
+don't want the plus sign in the kernel version. So, I set
+"export LOCALVERSION=". In the kernel 5.13 and previous versions, there is 
+no plus sign at the end of version string. With the version 5.14-rc1, 
+there is a plus sign.because of the patch 042da426f8eb.
+
+> [11:09:03] nb3:~$ export LOCALVERSION=; [ -z "${LOCALVERSION}" ] && echo unset
+> unset
+> [11:09:27] nb3:~$ echo $BASH_VERSION
+> 5.1.8(1)-release
+> 
+> Did you try that in your environment?
+
+I tried and it and it doesn't work - the plus sign is present in the 
+kernel version because [ -z "${LOCALVERSION}" ] return true.
+
+Mikulas
 
