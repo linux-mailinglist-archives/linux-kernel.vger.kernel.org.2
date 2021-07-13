@@ -2,147 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4023C7A26
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 01:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD96E3C7A29
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 01:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237127AbhGMX2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 19:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        id S237153AbhGMX3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 19:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237061AbhGMX2P (ORCPT
+        with ESMTP id S236769AbhGMX3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 19:28:15 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC79CC0613EE;
-        Tue, 13 Jul 2021 16:25:22 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id m11-20020a05600c3b0bb0290228f19cb433so2726661wms.0;
-        Tue, 13 Jul 2021 16:25:22 -0700 (PDT)
+        Tue, 13 Jul 2021 19:29:01 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A092C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 16:26:11 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id j184so23487025qkd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 16:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FH75JwQEVliZTaWQznunNwTYXm+Fo6iQYmM7PbpCqSg=;
-        b=fX5FxxXqlzoY7IxLhQNQg1smTSkSn1eHqVimKllvBWfJTwrNPzR1Vrmp8VR/Lq1jIo
-         a0SbXWKhZenNgh0uKQDmLwDf6R3mFKNIuOupKkUclmsRjj8EKFOWCVZug+H0eE15Japw
-         /hxLUZTqVdzeTa7nhhGLSSRlbSsUxM4JRlmxKHE9khgg2nsjtk+euga2pgJTtQuFcIpb
-         1apBe7gFE6sDYtHpr0+XzvUcS216jM1IejOTdxW1WfkoHmCzZVDAMD8zDrzKAqvb19Dd
-         VaxEtLmqr3NId1hApJ1XxE1uvcQpuyM7pZrIs9WKSmG19HsMwOLMhYz0PxMjl3W+HJiE
-         247g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ee/o65exFIzIhsxcS7E9njpZeaIcqPJlsjtSMIS/Xmk=;
+        b=ld2WluOzZ3vcWQh+pP5ehks61yNJxkt5zFFIsmejPkfjk2F5r6//qaTETyIu/NEdp1
+         lo/njfGH8sitMpnXrklCs0Ln3MpHXkTu6NwBWHWhSYjzN33HH+87VuydBSpendj6Yy0x
+         skQGkCA9gx/JX79yKklvKmpYogkQ5Xd79TyJyUT+AJTV71Fp+pjDoe/Fe5c6KYIuHXJQ
+         F82m35jvRTkv8Gezpa+yrzPz3w9AXrTJYCGbl1PeSPzHYYp9eIcbibBCLtUFKsN4LdMh
+         2JWosCvK22k3s/LoEbyvIJ6VDMxiveq9RjLBeoSN71VNqEZZPaZt765q4Tc6nSNUN6BD
+         7iKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FH75JwQEVliZTaWQznunNwTYXm+Fo6iQYmM7PbpCqSg=;
-        b=aOtIdfqbSC3dpZXXNVZ5LkWo3Hq2csqHtA4lNdwV/5uMEAi709S5sFdZSF8gM95FUi
-         9UA8SRSr2dVlMiey9WXYuk9+qoAcWvnDmQ4+9D8eDQDDYrNsYZKmrGZm1f/CWHyXPZ3I
-         6hCTTkuOpdNE/hYpgqg8bUf6f12kVX76FTpJFUc5w/xQmRjXrd6O/WdwGPgbI9+h1Aws
-         V52CY7XNjWXwfBitF1Xo8+gDVQp7tF45XgWLuBJUDwkpIr3uWXjcV+TlM/q7xY7OFMk9
-         IMnjJrIV3e/tiT4SWajPWlpR9o2mauxFzOf7LSbtCqeYRgezuC5q6KKJ6nwHdzfhSKwH
-         f+aw==
-X-Gm-Message-State: AOAM532g/O4QuLYtNy5J+q8xF/exKKb4e8q17j3XpSTOYFJPmJV2WSoX
-        toGAPoXLKVCiV1VXyzKDZE8=
-X-Google-Smtp-Source: ABdhPJxnNKco3a/kivcsIRnmdxRAj+ZXML03zzTKPNo++xrIsOEnuoPpZAmSAlxRz8mspb013enWwg==
-X-Received: by 2002:a05:600c:4841:: with SMTP id j1mr7773098wmo.88.1626218721546;
-        Tue, 13 Jul 2021 16:25:21 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a01-0c23-c041-6f00-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:c041:6f00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id o11sm3857390wmc.2.2021.07.13.16.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 16:25:21 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, jbrunet@baylibre.com,
-        narmstrong@baylibre.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 6/6] clk: meson: meson8b: Export the video clocks
-Date:   Wed, 14 Jul 2021 01:25:10 +0200
-Message-Id: <20210713232510.3057750-7-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210713232510.3057750-1-martin.blumenstingl@googlemail.com>
-References: <20210713232510.3057750-1-martin.blumenstingl@googlemail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ee/o65exFIzIhsxcS7E9njpZeaIcqPJlsjtSMIS/Xmk=;
+        b=KRfYIXTH1OWFGk7yNkezDqpmgvpt7+YeHkRYCDt/wlms9Wpe4SJ1T9I14KW7Rlj3ec
+         h11yElo/4b9jdjHllJOvx4un3Z7MusQi11CWnlv2r0/QKHkSMp8xSfxuQjP/hEg3uI3o
+         NElcAY2s+mAreI8J4S2HH+UEvy6VBXw83qQ5RD6SoohfL0Xafjyue8zzHKgvEyvS/xzc
+         NH7mERDeu3qm9fuWHoLr7cV8aBBC94xm44nP8tEzJexRNd2mfhmUZEknN41Wmuxl5SCU
+         AXuWGzWaE7aQe4T+16nx9npA6qkPZTV5q92lsIC/WEh7bRf/9T2M0GehYXG0bPHBUbbZ
+         DRZQ==
+X-Gm-Message-State: AOAM531w9RTXHE/jlc6FPS4c0txLMHkRM9MXCURl92n6KYa3Xo45YT79
+        qAx23XONKZuXSWhhCNPqbPIYJH20Tzyp9BhFRu8kxQ==
+X-Google-Smtp-Source: ABdhPJwnPd0n5kMOUoBcuVwycNcXbzgcRQKeNmVCbbgeKN1tUtc9QZ0DWnEOnGfCQ1+6Eu0INYEaQ4h+QJjUaawsNxM=
+X-Received: by 2002:a05:620a:a90:: with SMTP id v16mr6785145qkg.150.1626218769988;
+ Tue, 13 Jul 2021 16:26:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210621163118.1040170-1-pgonda@google.com> <20210621163118.1040170-4-pgonda@google.com>
+In-Reply-To: <20210621163118.1040170-4-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Tue, 13 Jul 2021 16:25:57 -0700
+Message-ID: <CAA03e5F_TLCfKusJb4ekSuXYt7EiG-MiGxN2wLovFDc4s4j==w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] KVM, SEV: Add support for SEV-ES local migration
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting the video clocks requires fine-tuned adjustments of various
-video clocks. Export the required ones to allow changing the video clock
-for the CVBS and HDMI outputs at runtime.
+On Mon, Jun 21, 2021 at 9:59 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> Local migration provides a low-cost mechanism for userspace VMM upgrades.
+> It is an alternative to traditional (i.e., remote) live migration. Whereas
+> remote migration handles move a guest to a new host, local migration only
+> handles moving a guest to a new userspace VMM within a host.
+>
+> For SEV-ES to work with local migration the VMSAs, GHCB metadata,
+> and other SEV-ES info needs to be preserved along with the guest's
+> memory. KVM maintains a pointer to each vCPUs GHCB and may additionally
+> contain an copy of the GHCB's save area if the guest has been using it
+> for NAE handling. The local send and receive ioctls have been updated to
+> move this additional metadata required for each vCPU in SEV-ES into
+> hashmap for SEV local migration data.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+>
+> ---
+>  arch/x86/kvm/svm/sev.c | 164 +++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 150 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 7c33ad2b910d..33df7ed08d21 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -77,6 +77,19 @@ struct enc_region {
+>         unsigned long size;
+>  };
+>
+> +struct vmsa_node {
+> +       struct list_head list;
+> +       int vcpu_id;
+> +       struct vmcb_save_area *vmsa;
+> +       struct ghcb *ghcb;
+> +       u64 ghcb_gpa;
+> +
+> +       void *ghcb_sa;
+> +       u64 ghcb_sa_len;
+> +       bool ghcb_sa_sync;
+> +       bool ghcb_sa_free;
+> +};
+> +
+>  struct sev_info_migration_node {
+>         struct hlist_node hnode;
+>         u64 token;
+> @@ -87,6 +100,11 @@ struct sev_info_migration_node {
+>         unsigned long pages_locked;
+>         struct list_head regions_list;
+>         struct misc_cg *misc_cg;
+> +
+> +       /* The following fields are for SEV-ES guests */
+> +       bool es_enabled;
+> +       struct list_head vmsa_list;
+> +       u64 ap_jump_table;
+>  };
+>
+>  #define SEV_INFO_MIGRATION_HASH_BITS    7
+> @@ -1163,6 +1181,94 @@ static int place_migration_node(struct sev_info_migration_node *entry)
+>         return ret;
+>  }
+>
+> +static int process_vmsa_list(struct kvm *kvm, struct list_head *vmsa_list)
+> +{
+> +       struct vmsa_node *vmsa_node, *q;
+> +       struct kvm_vcpu *vcpu;
+> +       struct vcpu_svm *svm;
+> +
+> +       lockdep_assert_held(&kvm->lock);
+> +
+> +       if (!vmsa_list)
+> +               return 0;
+> +
+> +       list_for_each_entry(vmsa_node, vmsa_list, list) {
+> +               if (!kvm_get_vcpu_by_id(kvm, vmsa_node->vcpu_id)) {
+> +                       WARN(1,
+> +                            "Failed to find VCPU with ID %d despite presence in VMSA list.\n",
+> +                            vmsa_node->vcpu_id);
+> +                       return -1;
+> +               }
+> +       }
+> +
+> +       /*
+> +        * Move any stashed VMSAs back to their respective VMCBs and delete
+> +        * those nodes.
+> +        */
+> +       list_for_each_entry_safe(vmsa_node, q, vmsa_list, list) {
+> +               vcpu = kvm_get_vcpu_by_id(kvm, vmsa_node->vcpu_id);
+> +               svm = to_svm(vcpu);
+> +               svm->vmsa = vmsa_node->vmsa;
+> +               svm->ghcb = vmsa_node->ghcb;
+> +               svm->vmcb->control.ghcb_gpa = vmsa_node->ghcb_gpa;
+> +               svm->vcpu.arch.guest_state_protected = true;
+> +               svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
+> +               svm->ghcb_sa = vmsa_node->ghcb_sa;
+> +               svm->ghcb_sa_len = vmsa_node->ghcb_sa_len;
+> +               svm->ghcb_sa_sync = vmsa_node->ghcb_sa_sync;
+> +               svm->ghcb_sa_free = vmsa_node->ghcb_sa_free;
+> +
+> +               list_del(&vmsa_node->list);
+> +               kfree(vmsa_node);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int create_vmsa_list(struct kvm *kvm,
+> +                           struct sev_info_migration_node *entry)
+> +{
+> +       int i;
+> +       const int num_vcpus = atomic_read(&kvm->online_vcpus);
+> +       struct vmsa_node *node;
+> +       struct kvm_vcpu *vcpu;
+> +       struct vcpu_svm *svm;
+> +
+> +       INIT_LIST_HEAD(&entry->vmsa_list);
+> +       for (i = 0; i < num_vcpus; ++i) {
+> +               node = kzalloc(sizeof(*node), GFP_KERNEL);
+> +               if (!node)
+> +                       goto e_freelist;
+> +
+> +               vcpu = kvm->vcpus[i];
+> +               node->vcpu_id = vcpu->vcpu_id;
+> +
+> +               svm = to_svm(vcpu);
+> +               node->vmsa = svm->vmsa;
+> +               svm->vmsa = NULL;
+> +               node->ghcb = svm->ghcb;
+> +               svm->ghcb = NULL;
+> +               node->ghcb_gpa = svm->vmcb->control.ghcb_gpa;
+> +               node->ghcb_sa = svm->ghcb_sa;
+> +               svm->ghcb_sa = NULL;
+> +               node->ghcb_sa_len = svm->ghcb_sa_len;
+> +               svm->ghcb_sa_len = 0;
+> +               node->ghcb_sa_sync = svm->ghcb_sa_sync;
+> +               svm->ghcb_sa_sync = false;
+> +               node->ghcb_sa_free = svm->ghcb_sa_free;
+> +               svm->ghcb_sa_free = false;
+> +
+> +               list_add_tail(&node->list, &entry->vmsa_list);
+> +       }
+> +
+> +       return 0;
+> +
+> +e_freelist:
+> +       if (process_vmsa_list(kvm, &entry->vmsa_list))
+> +               WARN(1, "Unable to move VMSA list back to source VM. Guest is in a broken state now.");
+> +       return -1;
+> +}
+> +
+>  static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  {
+>         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> @@ -1174,9 +1280,6 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         if (!sev_guest(kvm))
+>                 return -ENOTTY;
+>
+> -       if (sev->es_active)
+> -               return -EPERM;
+> -
+>         if (sev->info_token != 0)
+>                 return -EEXIST;
+>
+> @@ -1196,8 +1299,19 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         INIT_LIST_HEAD(&entry->regions_list);
+>         list_replace_init(&sev->regions_list, &entry->regions_list);
+>
+> +       if (sev_es_guest(kvm)) {
+> +               /*
+> +                * If this is an ES guest, we need to move each VMCB's VMSA into a
+> +                * list for migration.
+> +                */
+> +               entry->es_enabled = true;
+> +               entry->ap_jump_table = sev->ap_jump_table;
+> +               if (create_vmsa_list(kvm, entry))
+> +                       goto e_listdel;
+> +       }
+> +
+>         if (place_migration_node(entry))
+> -               goto e_listdel;
+> +               goto e_vmsadel;
+>
+>         token = entry->token;
+>
+> @@ -1215,6 +1329,11 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         hash_del(&entry->hnode);
+>         spin_unlock(&sev_info_migration_hash_lock);
+>
+> +e_vmsadel:
+> +       if (sev_es_guest(kvm) && process_vmsa_list(kvm, &entry->vmsa_list))
+> +               WARN(1,
+> +                    "Unable to move VMSA list back to source VM. Guest is in a broken state now.");
+> +
+>  e_listdel:
+>         list_replace_init(&entry->regions_list, &sev->regions_list);
+>
+> @@ -1233,9 +1352,6 @@ static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         if (!sev_guest(kvm))
+>                 return -ENOTTY;
+>
+> -       if (sev->es_active)
+> -               return -EPERM;
+> -
+>         if (sev->handle != 0)
+>                 return -EPERM;
+>
+> @@ -1254,6 +1370,14 @@ static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>
+>         memcpy(&old_info, sev, sizeof(old_info));
+>
+> +       if (entry->es_enabled) {
+> +               if (process_vmsa_list(kvm, &entry->vmsa_list))
+> +                       goto err_unlock;
+> +
+> +               sev->es_active = true;
+> +               sev->ap_jump_table = entry->ap_jump_table;
+> +       }
+> +
+>         /*
+>          * The source VM always frees @entry On the target we simply
+>          * mark the token as invalid to notify the source the sev info
+> @@ -2046,12 +2170,22 @@ void sev_vm_destroy(struct kvm *kvm)
+>                 __unregister_region_list_locked(kvm, &sev->regions_list);
+>         }
+>
+> -       /*
+> -        * If userspace was terminated before unregistering the memory
+> -        * regions then lets unpin all the registered memory.
+> -        */
+> -       if (entry)
+> +       if (entry) {
+> +               /*
+> +                * If there are any saved VMSAs, restore them so they can be
+> +                * destructed through the normal path.
+> +                */
+> +               if (entry->es_enabled)
+> +                       if (process_vmsa_list(kvm, &entry->vmsa_list))
+> +                               WARN(1,
+> +                                    "Unable to clean up vmsa_list");
+> +
+> +               /*
+> +                * If userspace was terminated before unregistering the memory
+> +                * regions then lets unpin all the registered memory.
+> +                */
+>                 __unregister_region_list_locked(kvm, &entry->regions_list);
+> +       }
+>
+>         mutex_unlock(&kvm->lock);
+>
+> @@ -2243,9 +2377,11 @@ void sev_free_vcpu(struct kvm_vcpu *vcpu)
+>
+>         svm = to_svm(vcpu);
+>
+> -       if (vcpu->arch.guest_state_protected)
+> +       if (svm->ghcb && vcpu->arch.guest_state_protected)
+>                 sev_flush_guest_memory(svm, svm->vmsa, PAGE_SIZE);
+> -       __free_page(virt_to_page(svm->vmsa));
+> +
+> +       if (svm->vmsa)
+> +               __free_page(virt_to_page(svm->vmsa));
+>
+>         if (svm->ghcb_sa_free)
+>                 kfree(svm->ghcb_sa);
+> --
+> 2.32.0.288.g62a8d224e6-goog
+>
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/meson/meson8b.h              | 12 +-----------
- include/dt-bindings/clock/meson8b-clkc.h | 10 ++++++++++
- 2 files changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/clk/meson/meson8b.h b/drivers/clk/meson/meson8b.h
-index b5b591943e80..ce62ed47cbfc 100644
---- a/drivers/clk/meson/meson8b.h
-+++ b/drivers/clk/meson/meson8b.h
-@@ -117,14 +117,11 @@
- #define CLKID_PERIPH_SEL	125
- #define CLKID_AXI_SEL		127
- #define CLKID_L2_DRAM_SEL	129
--#define CLKID_HDMI_PLL_LVDS_OUT	131
--#define CLKID_HDMI_PLL_HDMI_OUT	132
-+#define CLKID_HDMI_PLL_LVDS_OUT 131
- #define CLKID_VID_PLL_IN_SEL	133
- #define CLKID_VID_PLL_IN_EN	134
- #define CLKID_VID_PLL_PRE_DIV	135
- #define CLKID_VID_PLL_POST_DIV	136
--#define CLKID_VID_PLL_FINAL_DIV	137
--#define CLKID_VCLK_IN_SEL	138
- #define CLKID_VCLK_IN_EN	139
- #define CLKID_VCLK_DIV1		140
- #define CLKID_VCLK_DIV2_DIV	141
-@@ -135,7 +132,6 @@
- #define CLKID_VCLK_DIV6		146
- #define CLKID_VCLK_DIV12_DIV	147
- #define CLKID_VCLK_DIV12	148
--#define CLKID_VCLK2_IN_SEL	149
- #define CLKID_VCLK2_IN_EN	150
- #define CLKID_VCLK2_DIV1	151
- #define CLKID_VCLK2_DIV2_DIV	152
-@@ -147,17 +143,11 @@
- #define CLKID_VCLK2_DIV12_DIV	158
- #define CLKID_VCLK2_DIV12	159
- #define CLKID_CTS_ENCT_SEL	160
--#define CLKID_CTS_ENCT		161
- #define CLKID_CTS_ENCP_SEL	162
--#define CLKID_CTS_ENCP		163
- #define CLKID_CTS_ENCI_SEL	164
--#define CLKID_CTS_ENCI		165
- #define CLKID_HDMI_TX_PIXEL_SEL	166
--#define CLKID_HDMI_TX_PIXEL	167
- #define CLKID_CTS_ENCL_SEL	168
--#define CLKID_CTS_ENCL		169
- #define CLKID_CTS_VDAC0_SEL	170
--#define CLKID_CTS_VDAC0		171
- #define CLKID_HDMI_SYS_SEL	172
- #define CLKID_HDMI_SYS_DIV	173
- #define CLKID_MALI_0_SEL	175
-diff --git a/include/dt-bindings/clock/meson8b-clkc.h b/include/dt-bindings/clock/meson8b-clkc.h
-index f33781338eda..78aa07fd7cc0 100644
---- a/include/dt-bindings/clock/meson8b-clkc.h
-+++ b/include/dt-bindings/clock/meson8b-clkc.h
-@@ -105,6 +105,16 @@
- #define CLKID_PERIPH		126
- #define CLKID_AXI		128
- #define CLKID_L2_DRAM		130
-+#define CLKID_HDMI_PLL_HDMI_OUT	132
-+#define CLKID_VID_PLL_FINAL_DIV	137
-+#define CLKID_VCLK_IN_SEL	138
-+#define CLKID_VCLK2_IN_SEL	149
-+#define CLKID_CTS_ENCT		161
-+#define CLKID_CTS_ENCP		163
-+#define CLKID_CTS_ENCI		165
-+#define CLKID_HDMI_TX_PIXEL	167
-+#define CLKID_CTS_ENCL		169
-+#define CLKID_CTS_VDAC0		171
- #define CLKID_HDMI_SYS		174
- #define CLKID_VPU		190
- #define CLKID_VDEC_1		196
--- 
-2.32.0
-
+Reviewed-by: Marc Orr <marcorr@google.com>
