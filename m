@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E533C6F01
+	by mail.lfdr.de (Postfix) with ESMTP id 815903C6F02
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235671AbhGMKz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:55:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:40748 "EHLO foss.arm.com"
+        id S235864AbhGMK4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 06:56:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:40762 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235772AbhGMKzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:55:52 -0400
+        id S235814AbhGMKzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 06:55:54 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E28CCD6E;
-        Tue, 13 Jul 2021 03:53:02 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDEC31FB;
+        Tue, 13 Jul 2021 03:53:04 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AC9F63F7D8;
-        Tue, 13 Jul 2021 03:53:01 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A1BB23F7D8;
+        Tue, 13 Jul 2021 03:53:03 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Mark Rutland <mark.rutland@arm.com>,
@@ -25,9 +25,9 @@ Cc:     Mark Rutland <mark.rutland@arm.com>,
         Marco Elver <elver@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will@kernel.org>
-Subject: [PATCH 2/5] locking/atomic: remove ARCH_ATOMIC remanants
-Date:   Tue, 13 Jul 2021 11:52:50 +0100
-Message-Id: <20210713105253.7615-3-mark.rutland@arm.com>
+Subject: [PATCH 3/5] locking/atomic: centralize generated headers
+Date:   Tue, 13 Jul 2021 11:52:51 +0100
+Message-Id: <20210713105253.7615-4-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210713105253.7615-1-mark.rutland@arm.com>
 References: <20210713105253.7615-1-mark.rutland@arm.com>
@@ -35,12 +35,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that gen-atomic-fallback.sh is only used to generate the arch_*
-fallbacks, we don't need to also generate the non-arch_* forms, and can
-removethe infrastructure this needed.
+The generated atomic headers are only intended to be included directly
+by <linux/atomic.h>, but are spread across include/linux/ and
+include/asm-generic/, where people mnay be encouraged to include them.
 
-There is no change to any of the generated headers as a result of this
-patch.
+This patch centralizes them under include/linux/atomic/.
+
+Other than the header guards and hashes, there is no change to any of
+the generated headers as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Boqun Feng <boqun.feng@gmail.com>
@@ -50,565 +52,167 @@ Cc: Marco Elver <elver@google.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Will Deacon <will@kernel.org>
 ---
- scripts/atomic/fallbacks/acquire             |  4 +-
- scripts/atomic/fallbacks/add_negative        |  6 +--
- scripts/atomic/fallbacks/add_unless          |  6 +--
- scripts/atomic/fallbacks/andnot              |  4 +-
- scripts/atomic/fallbacks/dec                 |  4 +-
- scripts/atomic/fallbacks/dec_and_test        |  6 +--
- scripts/atomic/fallbacks/dec_if_positive     |  6 +--
- scripts/atomic/fallbacks/dec_unless_positive |  6 +--
- scripts/atomic/fallbacks/fence               |  4 +-
- scripts/atomic/fallbacks/fetch_add_unless    |  8 ++--
- scripts/atomic/fallbacks/inc                 |  4 +-
- scripts/atomic/fallbacks/inc_and_test        |  6 +--
- scripts/atomic/fallbacks/inc_not_zero        |  6 +--
- scripts/atomic/fallbacks/inc_unless_negative |  6 +--
- scripts/atomic/fallbacks/read_acquire        |  2 +-
- scripts/atomic/fallbacks/release             |  4 +-
- scripts/atomic/fallbacks/set_release         |  2 +-
- scripts/atomic/fallbacks/sub_and_test        |  6 +--
- scripts/atomic/fallbacks/try_cmpxchg         |  4 +-
- scripts/atomic/gen-atomic-fallback.sh        | 66 ++++++++++------------------
- scripts/atomic/gen-atomics.sh                |  2 +-
- 21 files changed, 71 insertions(+), 91 deletions(-)
+ include/linux/atomic.h                                      | 7 +++----
+ include/linux/{ => atomic}/atomic-arch-fallback.h           | 0
+ include/{asm-generic => linux/atomic}/atomic-instrumented.h | 8 ++++----
+ include/{asm-generic => linux/atomic}/atomic-long.h         | 8 ++++----
+ scripts/atomic/check-atomics.sh                             | 6 +++---
+ scripts/atomic/gen-atomic-instrumented.sh                   | 6 +++---
+ scripts/atomic/gen-atomic-long.sh                           | 6 +++---
+ scripts/atomic/gen-atomics.sh                               | 6 +++---
+ 8 files changed, 23 insertions(+), 24 deletions(-)
+ rename include/linux/{ => atomic}/atomic-arch-fallback.h (100%)
+ rename include/{asm-generic => linux/atomic}/atomic-instrumented.h (99%)
+ rename include/{asm-generic => linux/atomic}/atomic-long.h (99%)
 
-diff --git a/scripts/atomic/fallbacks/acquire b/scripts/atomic/fallbacks/acquire
-index 59c00529dc7c..ef764085c79a 100755
---- a/scripts/atomic/fallbacks/acquire
-+++ b/scripts/atomic/fallbacks/acquire
-@@ -1,8 +1,8 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_${pfx}${name}${sfx}_acquire(${params})
-+arch_${atomic}_${pfx}${name}${sfx}_acquire(${params})
- {
--	${ret} ret = ${arch}${atomic}_${pfx}${name}${sfx}_relaxed(${args});
-+	${ret} ret = arch_${atomic}_${pfx}${name}${sfx}_relaxed(${args});
- 	__atomic_acquire_fence();
- 	return ret;
- }
-diff --git a/scripts/atomic/fallbacks/add_negative b/scripts/atomic/fallbacks/add_negative
-index a66635bceefb..15caa2eb2371 100755
---- a/scripts/atomic/fallbacks/add_negative
-+++ b/scripts/atomic/fallbacks/add_negative
-@@ -1,6 +1,6 @@
- cat <<EOF
- /**
-- * ${arch}${atomic}_add_negative - add and test if negative
-+ * arch_${atomic}_add_negative - add and test if negative
-  * @i: integer value to add
-  * @v: pointer of type ${atomic}_t
-  *
-@@ -9,8 +9,8 @@ cat <<EOF
-  * result is greater than or equal to zero.
-  */
- static __always_inline bool
--${arch}${atomic}_add_negative(${int} i, ${atomic}_t *v)
-+arch_${atomic}_add_negative(${int} i, ${atomic}_t *v)
- {
--	return ${arch}${atomic}_add_return(i, v) < 0;
-+	return arch_${atomic}_add_return(i, v) < 0;
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/add_unless b/scripts/atomic/fallbacks/add_unless
-index 2ff598a3f9ec..9e5159c2ccfc 100755
---- a/scripts/atomic/fallbacks/add_unless
-+++ b/scripts/atomic/fallbacks/add_unless
-@@ -1,6 +1,6 @@
- cat << EOF
- /**
-- * ${arch}${atomic}_add_unless - add unless the number is already a given value
-+ * arch_${atomic}_add_unless - add unless the number is already a given value
-  * @v: pointer of type ${atomic}_t
-  * @a: the amount to add to v...
-  * @u: ...unless v is equal to u.
-@@ -9,8 +9,8 @@ cat << EOF
-  * Returns true if the addition was done.
-  */
- static __always_inline bool
--${arch}${atomic}_add_unless(${atomic}_t *v, ${int} a, ${int} u)
-+arch_${atomic}_add_unless(${atomic}_t *v, ${int} a, ${int} u)
- {
--	return ${arch}${atomic}_fetch_add_unless(v, a, u) != u;
-+	return arch_${atomic}_fetch_add_unless(v, a, u) != u;
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/andnot b/scripts/atomic/fallbacks/andnot
-index 3f18663dcefb..5a42f54a3595 100755
---- a/scripts/atomic/fallbacks/andnot
-+++ b/scripts/atomic/fallbacks/andnot
-@@ -1,7 +1,7 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_${pfx}andnot${sfx}${order}(${int} i, ${atomic}_t *v)
-+arch_${atomic}_${pfx}andnot${sfx}${order}(${int} i, ${atomic}_t *v)
- {
--	${retstmt}${arch}${atomic}_${pfx}and${sfx}${order}(~i, v);
-+	${retstmt}arch_${atomic}_${pfx}and${sfx}${order}(~i, v);
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/dec b/scripts/atomic/fallbacks/dec
-index e2e01f0574bb..8c144c818e9e 100755
---- a/scripts/atomic/fallbacks/dec
-+++ b/scripts/atomic/fallbacks/dec
-@@ -1,7 +1,7 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_${pfx}dec${sfx}${order}(${atomic}_t *v)
-+arch_${atomic}_${pfx}dec${sfx}${order}(${atomic}_t *v)
- {
--	${retstmt}${arch}${atomic}_${pfx}sub${sfx}${order}(1, v);
-+	${retstmt}arch_${atomic}_${pfx}sub${sfx}${order}(1, v);
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/dec_and_test b/scripts/atomic/fallbacks/dec_and_test
-index e8a5e492eb5f..8549f359bd0e 100755
---- a/scripts/atomic/fallbacks/dec_and_test
-+++ b/scripts/atomic/fallbacks/dec_and_test
-@@ -1,6 +1,6 @@
- cat <<EOF
- /**
-- * ${arch}${atomic}_dec_and_test - decrement and test
-+ * arch_${atomic}_dec_and_test - decrement and test
-  * @v: pointer of type ${atomic}_t
-  *
-  * Atomically decrements @v by 1 and
-@@ -8,8 +8,8 @@ cat <<EOF
-  * cases.
-  */
- static __always_inline bool
--${arch}${atomic}_dec_and_test(${atomic}_t *v)
-+arch_${atomic}_dec_and_test(${atomic}_t *v)
- {
--	return ${arch}${atomic}_dec_return(v) == 0;
-+	return arch_${atomic}_dec_return(v) == 0;
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/dec_if_positive b/scripts/atomic/fallbacks/dec_if_positive
-index 527adec89c37..86bdced3428d 100755
---- a/scripts/atomic/fallbacks/dec_if_positive
-+++ b/scripts/atomic/fallbacks/dec_if_positive
-@@ -1,14 +1,14 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_dec_if_positive(${atomic}_t *v)
-+arch_${atomic}_dec_if_positive(${atomic}_t *v)
- {
--	${int} dec, c = ${arch}${atomic}_read(v);
-+	${int} dec, c = arch_${atomic}_read(v);
- 
- 	do {
- 		dec = c - 1;
- 		if (unlikely(dec < 0))
- 			break;
--	} while (!${arch}${atomic}_try_cmpxchg(v, &c, dec));
-+	} while (!arch_${atomic}_try_cmpxchg(v, &c, dec));
- 
- 	return dec;
- }
-diff --git a/scripts/atomic/fallbacks/dec_unless_positive b/scripts/atomic/fallbacks/dec_unless_positive
-index dcab6848ca1e..c531d5afecc4 100755
---- a/scripts/atomic/fallbacks/dec_unless_positive
-+++ b/scripts/atomic/fallbacks/dec_unless_positive
-@@ -1,13 +1,13 @@
- cat <<EOF
- static __always_inline bool
--${arch}${atomic}_dec_unless_positive(${atomic}_t *v)
-+arch_${atomic}_dec_unless_positive(${atomic}_t *v)
- {
--	${int} c = ${arch}${atomic}_read(v);
-+	${int} c = arch_${atomic}_read(v);
- 
- 	do {
- 		if (unlikely(c > 0))
- 			return false;
--	} while (!${arch}${atomic}_try_cmpxchg(v, &c, c - 1));
-+	} while (!arch_${atomic}_try_cmpxchg(v, &c, c - 1));
- 
- 	return true;
- }
-diff --git a/scripts/atomic/fallbacks/fence b/scripts/atomic/fallbacks/fence
-index 3764fc8ce945..07757d8e338e 100755
---- a/scripts/atomic/fallbacks/fence
-+++ b/scripts/atomic/fallbacks/fence
-@@ -1,10 +1,10 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_${pfx}${name}${sfx}(${params})
-+arch_${atomic}_${pfx}${name}${sfx}(${params})
- {
- 	${ret} ret;
- 	__atomic_pre_full_fence();
--	ret = ${arch}${atomic}_${pfx}${name}${sfx}_relaxed(${args});
-+	ret = arch_${atomic}_${pfx}${name}${sfx}_relaxed(${args});
- 	__atomic_post_full_fence();
- 	return ret;
- }
-diff --git a/scripts/atomic/fallbacks/fetch_add_unless b/scripts/atomic/fallbacks/fetch_add_unless
-index 0e0b9aef1515..68ce13c8b9da 100755
---- a/scripts/atomic/fallbacks/fetch_add_unless
-+++ b/scripts/atomic/fallbacks/fetch_add_unless
-@@ -1,6 +1,6 @@
- cat << EOF
- /**
-- * ${arch}${atomic}_fetch_add_unless - add unless the number is already a given value
-+ * arch_${atomic}_fetch_add_unless - add unless the number is already a given value
-  * @v: pointer of type ${atomic}_t
-  * @a: the amount to add to v...
-  * @u: ...unless v is equal to u.
-@@ -9,14 +9,14 @@ cat << EOF
-  * Returns original value of @v
-  */
- static __always_inline ${int}
--${arch}${atomic}_fetch_add_unless(${atomic}_t *v, ${int} a, ${int} u)
-+arch_${atomic}_fetch_add_unless(${atomic}_t *v, ${int} a, ${int} u)
- {
--	${int} c = ${arch}${atomic}_read(v);
-+	${int} c = arch_${atomic}_read(v);
- 
- 	do {
- 		if (unlikely(c == u))
- 			break;
--	} while (!${arch}${atomic}_try_cmpxchg(v, &c, c + a));
-+	} while (!arch_${atomic}_try_cmpxchg(v, &c, c + a));
- 
- 	return c;
- }
-diff --git a/scripts/atomic/fallbacks/inc b/scripts/atomic/fallbacks/inc
-index 15ec62946e8c..3c2c3739169e 100755
---- a/scripts/atomic/fallbacks/inc
-+++ b/scripts/atomic/fallbacks/inc
-@@ -1,7 +1,7 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_${pfx}inc${sfx}${order}(${atomic}_t *v)
-+arch_${atomic}_${pfx}inc${sfx}${order}(${atomic}_t *v)
- {
--	${retstmt}${arch}${atomic}_${pfx}add${sfx}${order}(1, v);
-+	${retstmt}arch_${atomic}_${pfx}add${sfx}${order}(1, v);
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/inc_and_test b/scripts/atomic/fallbacks/inc_and_test
-index cecc8322a21f..0cf23fe1efb8 100755
---- a/scripts/atomic/fallbacks/inc_and_test
-+++ b/scripts/atomic/fallbacks/inc_and_test
-@@ -1,6 +1,6 @@
- cat <<EOF
- /**
-- * ${arch}${atomic}_inc_and_test - increment and test
-+ * arch_${atomic}_inc_and_test - increment and test
-  * @v: pointer of type ${atomic}_t
-  *
-  * Atomically increments @v by 1
-@@ -8,8 +8,8 @@ cat <<EOF
-  * other cases.
-  */
- static __always_inline bool
--${arch}${atomic}_inc_and_test(${atomic}_t *v)
-+arch_${atomic}_inc_and_test(${atomic}_t *v)
- {
--	return ${arch}${atomic}_inc_return(v) == 0;
-+	return arch_${atomic}_inc_return(v) == 0;
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/inc_not_zero b/scripts/atomic/fallbacks/inc_not_zero
-index 50f2d4d48279..ed8a1f562667 100755
---- a/scripts/atomic/fallbacks/inc_not_zero
-+++ b/scripts/atomic/fallbacks/inc_not_zero
-@@ -1,14 +1,14 @@
- cat <<EOF
- /**
-- * ${arch}${atomic}_inc_not_zero - increment unless the number is zero
-+ * arch_${atomic}_inc_not_zero - increment unless the number is zero
-  * @v: pointer of type ${atomic}_t
-  *
-  * Atomically increments @v by 1, if @v is non-zero.
-  * Returns true if the increment was done.
-  */
- static __always_inline bool
--${arch}${atomic}_inc_not_zero(${atomic}_t *v)
-+arch_${atomic}_inc_not_zero(${atomic}_t *v)
- {
--	return ${arch}${atomic}_add_unless(v, 1, 0);
-+	return arch_${atomic}_add_unless(v, 1, 0);
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/inc_unless_negative b/scripts/atomic/fallbacks/inc_unless_negative
-index 87629e0d4a80..95d8ce48233f 100755
---- a/scripts/atomic/fallbacks/inc_unless_negative
-+++ b/scripts/atomic/fallbacks/inc_unless_negative
-@@ -1,13 +1,13 @@
- cat <<EOF
- static __always_inline bool
--${arch}${atomic}_inc_unless_negative(${atomic}_t *v)
-+arch_${atomic}_inc_unless_negative(${atomic}_t *v)
- {
--	${int} c = ${arch}${atomic}_read(v);
-+	${int} c = arch_${atomic}_read(v);
- 
- 	do {
- 		if (unlikely(c < 0))
- 			return false;
--	} while (!${arch}${atomic}_try_cmpxchg(v, &c, c + 1));
-+	} while (!arch_${atomic}_try_cmpxchg(v, &c, c + 1));
- 
- 	return true;
- }
-diff --git a/scripts/atomic/fallbacks/read_acquire b/scripts/atomic/fallbacks/read_acquire
-index 341a88dccaa7..803ba7561076 100755
---- a/scripts/atomic/fallbacks/read_acquire
-+++ b/scripts/atomic/fallbacks/read_acquire
-@@ -1,6 +1,6 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_read_acquire(const ${atomic}_t *v)
-+arch_${atomic}_read_acquire(const ${atomic}_t *v)
- {
- 	return smp_load_acquire(&(v)->counter);
- }
-diff --git a/scripts/atomic/fallbacks/release b/scripts/atomic/fallbacks/release
-index f8906d537c0f..b46feb56d69c 100755
---- a/scripts/atomic/fallbacks/release
-+++ b/scripts/atomic/fallbacks/release
-@@ -1,8 +1,8 @@
- cat <<EOF
- static __always_inline ${ret}
--${arch}${atomic}_${pfx}${name}${sfx}_release(${params})
-+arch_${atomic}_${pfx}${name}${sfx}_release(${params})
- {
- 	__atomic_release_fence();
--	${retstmt}${arch}${atomic}_${pfx}${name}${sfx}_relaxed(${args});
-+	${retstmt}arch_${atomic}_${pfx}${name}${sfx}_relaxed(${args});
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/set_release b/scripts/atomic/fallbacks/set_release
-index 76068272d5f5..86ede759f24e 100755
---- a/scripts/atomic/fallbacks/set_release
-+++ b/scripts/atomic/fallbacks/set_release
-@@ -1,6 +1,6 @@
- cat <<EOF
- static __always_inline void
--${arch}${atomic}_set_release(${atomic}_t *v, ${int} i)
-+arch_${atomic}_set_release(${atomic}_t *v, ${int} i)
- {
- 	smp_store_release(&(v)->counter, i);
- }
-diff --git a/scripts/atomic/fallbacks/sub_and_test b/scripts/atomic/fallbacks/sub_and_test
-index c580f4c2136e..260f37341c88 100755
---- a/scripts/atomic/fallbacks/sub_and_test
-+++ b/scripts/atomic/fallbacks/sub_and_test
-@@ -1,6 +1,6 @@
- cat <<EOF
- /**
-- * ${arch}${atomic}_sub_and_test - subtract value from variable and test result
-+ * arch_${atomic}_sub_and_test - subtract value from variable and test result
-  * @i: integer value to subtract
-  * @v: pointer of type ${atomic}_t
-  *
-@@ -9,8 +9,8 @@ cat <<EOF
-  * other cases.
-  */
- static __always_inline bool
--${arch}${atomic}_sub_and_test(${int} i, ${atomic}_t *v)
-+arch_${atomic}_sub_and_test(${int} i, ${atomic}_t *v)
- {
--	return ${arch}${atomic}_sub_return(i, v) == 0;
-+	return arch_${atomic}_sub_return(i, v) == 0;
- }
- EOF
-diff --git a/scripts/atomic/fallbacks/try_cmpxchg b/scripts/atomic/fallbacks/try_cmpxchg
-index 06db0f738e45..890f850ede37 100755
---- a/scripts/atomic/fallbacks/try_cmpxchg
-+++ b/scripts/atomic/fallbacks/try_cmpxchg
-@@ -1,9 +1,9 @@
- cat <<EOF
- static __always_inline bool
--${arch}${atomic}_try_cmpxchg${order}(${atomic}_t *v, ${int} *old, ${int} new)
-+arch_${atomic}_try_cmpxchg${order}(${atomic}_t *v, ${int} *old, ${int} new)
- {
- 	${int} r, o = *old;
--	r = ${arch}${atomic}_cmpxchg${order}(v, o, new);
-+	r = arch_${atomic}_cmpxchg${order}(v, o, new);
- 	if (unlikely(r != o))
- 		*old = r;
- 	return likely(r == o);
-diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
-index 2601ff4f9468..8e2da71f1d5f 100755
---- a/scripts/atomic/gen-atomic-fallback.sh
-+++ b/scripts/atomic/gen-atomic-fallback.sh
-@@ -2,11 +2,10 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- ATOMICDIR=$(dirname $0)
--ARCH=$2
- 
- . ${ATOMICDIR}/atomic-tbl.sh
- 
--#gen_template_fallback(template, meta, pfx, name, sfx, order, arch, atomic, int, args...)
-+#gen_template_fallback(template, meta, pfx, name, sfx, order, atomic, int, args...)
- gen_template_fallback()
- {
- 	local template="$1"; shift
-@@ -15,11 +14,10 @@ gen_template_fallback()
- 	local name="$1"; shift
- 	local sfx="$1"; shift
- 	local order="$1"; shift
--	local arch="$1"; shift
- 	local atomic="$1"; shift
- 	local int="$1"; shift
- 
--	local atomicname="${arch}${atomic}_${pfx}${name}${sfx}${order}"
-+	local atomicname="arch_${atomic}_${pfx}${name}${sfx}${order}"
- 
- 	local ret="$(gen_ret_type "${meta}" "${int}")"
- 	local retstmt="$(gen_ret_stmt "${meta}")"
-@@ -34,7 +32,7 @@ gen_template_fallback()
- 	fi
- }
- 
--#gen_proto_fallback(meta, pfx, name, sfx, order, arch, atomic, int, args...)
-+#gen_proto_fallback(meta, pfx, name, sfx, order, atomic, int, args...)
- gen_proto_fallback()
- {
- 	local meta="$1"; shift
-@@ -65,44 +63,26 @@ gen_proto_order_variant()
- 	local name="$1"; shift
- 	local sfx="$1"; shift
- 	local order="$1"; shift
--	local arch="$1"
--	local atomic="$2"
-+	local atomic="$1"
- 
--	local basename="${arch}${atomic}_${pfx}${name}${sfx}"
-+	local basename="arch_${atomic}_${pfx}${name}${sfx}"
- 
--	printf "#define arch_${basename}${order} ${basename}${order}\n"
-+	printf "#define ${basename}${order} ${basename}${order}\n"
- }
- 
--#gen_proto_order_variants(meta, pfx, name, sfx, arch, atomic, int, args...)
-+#gen_proto_order_variants(meta, pfx, name, sfx, atomic, int, args...)
- gen_proto_order_variants()
- {
- 	local meta="$1"; shift
- 	local pfx="$1"; shift
- 	local name="$1"; shift
- 	local sfx="$1"; shift
--	local arch="$1"
--	local atomic="$2"
-+	local atomic="$1"
- 
--	local basename="${arch}${atomic}_${pfx}${name}${sfx}"
-+	local basename="arch_${atomic}_${pfx}${name}${sfx}"
- 
- 	local template="$(find_fallback_template "${pfx}" "${name}" "${sfx}" "${order}")"
- 
--	if [ -z "$arch" ]; then
--		gen_proto_order_variant "${meta}" "${pfx}" "${name}" "${sfx}" "" "$@"
--
--		if meta_has_acquire "${meta}"; then
--			gen_proto_order_variant "${meta}" "${pfx}" "${name}" "${sfx}" "_acquire" "$@"
--		fi
--		if meta_has_release "${meta}"; then
--			gen_proto_order_variant "${meta}" "${pfx}" "${name}" "${sfx}" "_release" "$@"
--		fi
--		if meta_has_relaxed "${meta}"; then
--			gen_proto_order_variant "${meta}" "${pfx}" "${name}" "${sfx}" "_relaxed" "$@"
--		fi
--
--		echo ""
--	fi
--
- 	# If we don't have relaxed atomics, then we don't bother with ordering fallbacks
- 	# read_acquire and set_release need to be templated, though
- 	if ! meta_has_relaxed "${meta}"; then
-@@ -187,38 +167,38 @@ gen_try_cmpxchg_fallback()
- 	local order="$1"; shift;
- 
- cat <<EOF
--#ifndef ${ARCH}try_cmpxchg${order}
--#define ${ARCH}try_cmpxchg${order}(_ptr, _oldp, _new) \\
-+#ifndef arch_try_cmpxchg${order}
-+#define arch_try_cmpxchg${order}(_ptr, _oldp, _new) \\
- ({ \\
- 	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \\
--	___r = ${ARCH}cmpxchg${order}((_ptr), ___o, (_new)); \\
-+	___r = arch_cmpxchg${order}((_ptr), ___o, (_new)); \\
- 	if (unlikely(___r != ___o)) \\
- 		*___op = ___r; \\
- 	likely(___r == ___o); \\
+diff --git a/include/linux/atomic.h b/include/linux/atomic.h
+index ed1d3ffd5b9d..1896a58b5aba 100644
+--- a/include/linux/atomic.h
++++ b/include/linux/atomic.h
+@@ -77,9 +77,8 @@
+ 	__ret;								\
  })
--#endif /* ${ARCH}try_cmpxchg${order} */
-+#endif /* arch_try_cmpxchg${order} */
  
- EOF
+-#include <linux/atomic-arch-fallback.h>
+-#include <asm-generic/atomic-instrumented.h>
+-
+-#include <asm-generic/atomic-long.h>
++#include <linux/atomic/atomic-arch-fallback.h>
++#include <linux/atomic/atomic-instrumented.h>
++#include <linux/atomic/atomic-long.h>
+ 
+ #endif /* _LINUX_ATOMIC_H */
+diff --git a/include/linux/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
+similarity index 100%
+rename from include/linux/atomic-arch-fallback.h
+rename to include/linux/atomic/atomic-arch-fallback.h
+diff --git a/include/asm-generic/atomic-instrumented.h b/include/linux/atomic/atomic-instrumented.h
+similarity index 99%
+rename from include/asm-generic/atomic-instrumented.h
+rename to include/linux/atomic/atomic-instrumented.h
+index bc45af52c93b..f6fe36c428df 100644
+--- a/include/asm-generic/atomic-instrumented.h
++++ b/include/linux/atomic/atomic-instrumented.h
+@@ -14,8 +14,8 @@
+  * arch_ variants (i.e. arch_atomic_read()/arch_atomic_cmpxchg()) to avoid
+  * double instrumentation.
+  */
+-#ifndef _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
+-#define _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
++#ifndef _LINUX_ATOMIC_INSTRUMENTED_H
++#define _LINUX_ATOMIC_INSTRUMENTED_H
+ 
+ #include <linux/build_bug.h>
+ #include <linux/compiler.h>
+@@ -1333,5 +1333,5 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	arch_cmpxchg_double_local(__ai_ptr, __VA_ARGS__); \
+ })
+ 
+-#endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
+-// 1d7c3a25aca5c7fb031c307be4c3d24c7b48fcd5
++#endif /* _LINUX_ATOMIC_INSTRUMENTED_H */
++// 5edd72f105b6f54b7e9492d794abee88e6912d29
+diff --git a/include/asm-generic/atomic-long.h b/include/linux/atomic/atomic-long.h
+similarity index 99%
+rename from include/asm-generic/atomic-long.h
+rename to include/linux/atomic/atomic-long.h
+index 073cf40f431b..e40e480e175f 100644
+--- a/include/asm-generic/atomic-long.h
++++ b/include/linux/atomic/atomic-long.h
+@@ -3,8 +3,8 @@
+ // Generated by scripts/atomic/gen-atomic-long.sh
+ // DO NOT MODIFY THIS FILE DIRECTLY
+ 
+-#ifndef _ASM_GENERIC_ATOMIC_LONG_H
+-#define _ASM_GENERIC_ATOMIC_LONG_H
++#ifndef _LINUX_ATOMIC_LONG_H
++#define _LINUX_ATOMIC_LONG_H
+ 
+ #include <linux/compiler.h>
+ #include <asm/types.h>
+@@ -1010,5 +1010,5 @@ atomic_long_dec_if_positive(atomic_long_t *v)
  }
  
- gen_try_cmpxchg_fallbacks()
- {
--	printf "#ifndef ${ARCH}try_cmpxchg_relaxed\n"
--	printf "#ifdef ${ARCH}try_cmpxchg\n"
-+	printf "#ifndef arch_try_cmpxchg_relaxed\n"
-+	printf "#ifdef arch_try_cmpxchg\n"
+ #endif /* CONFIG_64BIT */
+-#endif /* _ASM_GENERIC_ATOMIC_LONG_H */
+-// a624200981f552b2c6be4f32fe44da8289f30d87
++#endif /* _LINUX_ATOMIC_LONG_H */
++// c5552b5d78a0c7584dfd03cba985e78a1a86bbed
+diff --git a/scripts/atomic/check-atomics.sh b/scripts/atomic/check-atomics.sh
+index 9c7fbd4bcbce..0e7bab3eb0d1 100755
+--- a/scripts/atomic/check-atomics.sh
++++ b/scripts/atomic/check-atomics.sh
+@@ -14,9 +14,9 @@ if [ $? -ne 0 ]; then
+ fi
  
--	gen_basic_fallbacks "${ARCH}try_cmpxchg"
-+	gen_basic_fallbacks "arch_try_cmpxchg"
- 
--	printf "#endif /* ${ARCH}try_cmpxchg */\n\n"
-+	printf "#endif /* arch_try_cmpxchg */\n\n"
- 
- 	for order in "" "_acquire" "_release" "_relaxed"; do
- 		gen_try_cmpxchg_fallback "${order}"
- 	done
- 
--	printf "#else /* ${ARCH}try_cmpxchg_relaxed */\n"
-+	printf "#else /* arch_try_cmpxchg_relaxed */\n"
- 
--	gen_order_fallbacks "${ARCH}try_cmpxchg"
-+	gen_order_fallbacks "arch_try_cmpxchg"
- 
--	printf "#endif /* ${ARCH}try_cmpxchg_relaxed */\n\n"
-+	printf "#endif /* arch_try_cmpxchg_relaxed */\n\n"
- }
- 
- cat << EOF
-@@ -234,14 +214,14 @@ cat << EOF
- 
+ cat <<EOF |
+-asm-generic/atomic-instrumented.h
+-asm-generic/atomic-long.h
+-linux/atomic-arch-fallback.h
++linux/atomic/atomic-instrumented.h
++linux/atomic/atomic-long.h
++linux/atomic/atomic-arch-fallback.h
  EOF
+ while read header; do
+ 	OLDSUM="$(tail -n 1 ${LINUXDIR}/include/${header})"
+diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+index b0c45aee19d7..6fc1ab772e40 100755
+--- a/scripts/atomic/gen-atomic-instrumented.sh
++++ b/scripts/atomic/gen-atomic-instrumented.sh
+@@ -121,8 +121,8 @@ cat << EOF
+  * arch_ variants (i.e. arch_atomic_read()/arch_atomic_cmpxchg()) to avoid
+  * double instrumentation.
+  */
+-#ifndef _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
+-#define _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
++#ifndef _LINUX_ATOMIC_INSTRUMENTED_H
++#define _LINUX_ATOMIC_INSTRUMENTED_H
  
--for xchg in "${ARCH}xchg" "${ARCH}cmpxchg" "${ARCH}cmpxchg64"; do
-+for xchg in "arch_xchg" "arch_cmpxchg" "arch_cmpxchg64"; do
- 	gen_xchg_fallbacks "${xchg}"
- done
- 
- gen_try_cmpxchg_fallbacks
- 
- grep '^[a-z]' "$1" | while read name meta args; do
--	gen_proto "${meta}" "${name}" "${ARCH}" "atomic" "int" ${args}
-+	gen_proto "${meta}" "${name}" "atomic" "int" ${args}
- done
+ #include <linux/build_bug.h>
+ #include <linux/compiler.h>
+@@ -158,5 +158,5 @@ gen_xchg "cmpxchg_double_local" "2 * "
  
  cat <<EOF
-@@ -252,7 +232,7 @@ cat <<EOF
- EOF
  
- grep '^[a-z]' "$1" | while read name meta args; do
--	gen_proto "${meta}" "${name}" "${ARCH}" "atomic64" "s64" ${args}
-+	gen_proto "${meta}" "${name}" "atomic64" "s64" ${args}
- done
+-#endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
++#endif /* _LINUX_ATOMIC_INSTRUMENTED_H */
+ EOF
+diff --git a/scripts/atomic/gen-atomic-long.sh b/scripts/atomic/gen-atomic-long.sh
+index e318d3f92e53..db69572609df 100755
+--- a/scripts/atomic/gen-atomic-long.sh
++++ b/scripts/atomic/gen-atomic-long.sh
+@@ -61,8 +61,8 @@ cat << EOF
+ // Generated by $0
+ // DO NOT MODIFY THIS FILE DIRECTLY
+ 
+-#ifndef _ASM_GENERIC_ATOMIC_LONG_H
+-#define _ASM_GENERIC_ATOMIC_LONG_H
++#ifndef _LINUX_ATOMIC_LONG_H
++#define _LINUX_ATOMIC_LONG_H
+ 
+ #include <linux/compiler.h>
+ #include <asm/types.h>
+@@ -98,5 +98,5 @@ done
  
  cat <<EOF
+ #endif /* CONFIG_64BIT */
+-#endif /* _ASM_GENERIC_ATOMIC_LONG_H */
++#endif /* _LINUX_ATOMIC_LONG_H */
+ EOF
 diff --git a/scripts/atomic/gen-atomics.sh b/scripts/atomic/gen-atomics.sh
-index f776a574224d..56b119f7d1c2 100755
+index 56b119f7d1c2..5b98a8307693 100755
 --- a/scripts/atomic/gen-atomics.sh
 +++ b/scripts/atomic/gen-atomics.sh
-@@ -10,7 +10,7 @@ LINUXDIR=${ATOMICDIR}/../..
+@@ -8,9 +8,9 @@ ATOMICTBL=${ATOMICDIR}/atomics.tbl
+ LINUXDIR=${ATOMICDIR}/../..
+ 
  cat <<EOF |
- gen-atomic-instrumented.sh      asm-generic/atomic-instrumented.h
- gen-atomic-long.sh              asm-generic/atomic-long.h
--gen-atomic-fallback.sh          linux/atomic-arch-fallback.h		arch_
-+gen-atomic-fallback.sh          linux/atomic-arch-fallback.h
+-gen-atomic-instrumented.sh      asm-generic/atomic-instrumented.h
+-gen-atomic-long.sh              asm-generic/atomic-long.h
+-gen-atomic-fallback.sh          linux/atomic-arch-fallback.h
++gen-atomic-instrumented.sh      linux/atomic/atomic-instrumented.h
++gen-atomic-long.sh              linux/atomic/atomic-long.h
++gen-atomic-fallback.sh          linux/atomic/atomic-arch-fallback.h
  EOF
  while read script header args; do
  	/bin/sh ${ATOMICDIR}/${script} ${ATOMICTBL} ${args} > ${LINUXDIR}/include/${header}
