@@ -2,159 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D483C7637
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955663C7616
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbhGMSKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:10:16 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:35704 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbhGMSKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:10:15 -0400
-Received: by mail-il1-f198.google.com with SMTP id f5-20020a92b5050000b02901ff388acf98so15327975ile.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:07:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hx45N4k+4Z2tVC49Axkuc3Q0IugSpxdue/FcmmF4DmI=;
-        b=gIzlGbUyCZBEGv75z+yRSRXnCAxi+Pfht8K57EGwwUlVVPUvT/uMzt10U4OmwAxWK7
-         kJRAC47qOJfJih+R/8erIYg+Tc07ZOO/EsaWyqTmRYExTgK7TaMmahR8ltgJM3a8Nitd
-         xddPdM6Ho4dvyouY92+klJL5LP1NmD2RkJPSKZWuPAw1AZ8Vm1fZGpHyDBeZ4Zy/Snbl
-         s2bGNF7HslIuzirgli1RCySv0npaY3sKiS5xE23QhT2D1NUvvR5VpHi63iL6sMbszslE
-         y1EprrymvFQldTp6/fSQqyfyrTr51a/Fc3TixGdATChbSrwyrlE95GQGl2W275SII7Yq
-         EzFg==
-X-Gm-Message-State: AOAM531l3BqgtSE1SBAU2jgYud7Gozqt/vnDsB2PMvGXsoivr3GUD41N
-        0fTc6iZMuvnCHDLF96xyc3665k9+t9eYCGjGjI3P4SodDP83
-X-Google-Smtp-Source: ABdhPJwakdCmZ54yFmPNoCDulm1hLgI0er72w8b8WJITPiulr6TdM7TldoP9jp+MAsHlQZyYmybsawg2/18l4SJ52vzbL2iQ16di
+        id S233038AbhGMSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:08:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhGMSIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:08:00 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F021C61369;
+        Tue, 13 Jul 2021 18:05:08 +0000 (UTC)
+Date:   Tue, 13 Jul 2021 19:07:27 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        linux-iio@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter: intel-qep: Remove linux/bitops.h include
+Message-ID: <20210713190727.6a6c049c@jic23-huawei>
+In-Reply-To: <YNsMk4qyfyZ43MfX@shinobu>
+References: <20210629111657.2655688-1-jarkko.nikula@linux.intel.com>
+        <YNsMk4qyfyZ43MfX@shinobu>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:618:: with SMTP id g24mr5239391jar.16.1626199644520;
- Tue, 13 Jul 2021 11:07:24 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 11:07:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002545e805c7051ce0@google.com>
-Subject: [syzbot] memory leak in dev_exception_add
-From:   syzbot <syzbot+988c8a25ad1677559236@syzkaller.appspotmail.com>
-To:     jmorris@namei.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 29 Jun 2021 21:05:39 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-syzbot found the following issue on:
+> On Tue, Jun 29, 2021 at 02:16:57PM +0300, Jarkko Nikula wrote:
+> > 0-DAY CI Kernel Test Service reported following iwyu warning:
+> > 
+> > drivers/counter/intel-qep.c:11:1: iwyu: warning: superfluous #include <linux/bitops.h>
+> > 
+> > Remove that include since we don't seem to use anything from it.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>  
+> 
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Applied,
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1518cffc300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=55ac6a927d7e3fe9
-dashboard link: https://syzkaller.appspot.com/bug?extid=988c8a25ad1677559236
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1500e772300000
+Thanks,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+988c8a25ad1677559236@syzkaller.appspotmail.com
+Jonathan
 
-BUG: memory leak
-unreferenced object 0xffff88810d3a4300 (size 64):
-  comm "systemd", pid 1, jiffies 4294938536 (age 1351.150s)
-  hex dump (first 32 bytes):
-    01 00 00 00 03 00 00 00 02 00 07 00 00 00 00 00  ................
-    10 04 2b 0d 81 88 ff ff 22 01 00 00 00 00 ad de  ..+.....".......
-  backtrace:
-    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
-    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
-    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
-    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
-    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
-    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
-    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
-    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
-    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
-    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
-    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
-    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> > ---
+> >  drivers/counter/intel-qep.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/counter/intel-qep.c b/drivers/counter/intel-qep.c
+> > index 8d7ae28fbd67..1a9512e28519 100644
+> > --- a/drivers/counter/intel-qep.c
+> > +++ b/drivers/counter/intel-qep.c
+> > @@ -8,7 +8,6 @@
+> >   * Author: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> >   * Author: Raymond Tan <raymond.tan@intel.com>
+> >   */
+> > -#include <linux/bitops.h>
+> >  #include <linux/counter.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> > -- 
+> > 2.30.2
+> >   
 
-BUG: memory leak
-unreferenced object 0xffff88810d2b0400 (size 64):
-  comm "systemd", pid 1, jiffies 4294938537 (age 1351.140s)
-  hex dump (first 32 bytes):
-    01 00 00 00 05 00 00 00 02 00 07 00 00 00 00 00  ................
-    90 ac 3b 0d 81 88 ff ff 22 01 00 00 00 00 ad de  ..;.....".......
-  backtrace:
-    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
-    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
-    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
-    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
-    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
-    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
-    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
-    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
-    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
-    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
-    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
-    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810d3bac80 (size 64):
-  comm "systemd", pid 1, jiffies 4294938537 (age 1351.140s)
-  hex dump (first 32 bytes):
-    01 00 00 00 07 00 00 00 02 00 07 00 00 00 00 00  ................
-    50 84 31 0d 81 88 ff ff 22 01 00 00 00 00 ad de  P.1.....".......
-  backtrace:
-    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
-    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
-    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
-    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
-    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
-    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
-    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
-    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
-    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
-    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
-    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
-    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810d318440 (size 64):
-  comm "systemd", pid 1, jiffies 4294938537 (age 1351.140s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 02 00 07 00 00 00 00 00  ................
-    d0 aa 3b 0d 81 88 ff ff 22 01 00 00 00 00 ad de  ..;.....".......
-  backtrace:
-    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
-    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
-    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
-    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
-    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
-    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
-    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
-    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
-    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
-    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
-    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
-    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-[ 1363.912106][    C1]
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
