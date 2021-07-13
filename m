@@ -2,141 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A832F3C7272
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856CC3C7280
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbhGMOnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:43:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41734 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236904AbhGMOnd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:43:33 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CDBAB22984;
-        Tue, 13 Jul 2021 14:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626187241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BwNe64VMZn2yiDWOKM8XaMldMBilnvc5QIq1eVu9sq8=;
-        b=c2DBsYMtGFFfL1b7RKoFsDBngAZKGF9G0rW+XHgxSURqeG4qqg3Dh0ZDkYw9Zxnqq93ukB
-        /3zX2EQyPkQzATKGgwO4nx34QY79hk4ho6WHeWL2D5TF7ziABW8qVbaruWO20JTPpj1bq5
-        DtvgODlLJOiPWvjq/PZH9JQGcHQwTno=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626187241;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BwNe64VMZn2yiDWOKM8XaMldMBilnvc5QIq1eVu9sq8=;
-        b=CZ+QKOL2vecPomdJtQee7s6HqiNVFeUFxkbMsaUlr+Qo1RE7r7dSM9IcLpqACunydKPRvc
-        uquv7pTWVm5VZeAg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id C0233A3B83;
-        Tue, 13 Jul 2021 14:40:41 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ABF141E0BBE; Tue, 13 Jul 2021 16:40:41 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 16:40:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v13 065/137] mm/writeback: Change __wb_writeout_inc() to
- __wb_writeout_add()
-Message-ID: <20210713144041.GC24271@quack2.suse.cz>
-References: <20210712030701.4000097-1-willy@infradead.org>
- <20210712030701.4000097-66-willy@infradead.org>
+        id S236837AbhGMOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236721AbhGMOqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 10:46:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD0DA61288;
+        Tue, 13 Jul 2021 14:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626187403;
+        bh=hNJ0K9HFDPahs5ikGtSTAtYOsLP5Ts1mMnq8Pa1WmIo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YmMW05JJ2p+flTzE4h6asnE4AD++Px9zIojyYVAJa/K3Rmh8in58S8PWxSTnVsvnW
+         IQuo4p+ouMwoE4aW4+vCvc7v17opnMkW+SNDX9kD8XfJ58S08oSQBHa7OVhHiGuS8P
+         y6gvdrj79IGKT3dODIa3TQqUc6CMJXeGkc+pYytoAogD2kgS6038X/Whd6okws7J02
+         ol40/280xIDL3u/KmjdHWddpQzj5FKkItMCXZvbZWDSAzZyL77lPNW7JsB3faUMduP
+         AKgf/NIzgAsxamyaDvoYF6Izk1VnEaMZhdKIwbiA+9liK9mRCrYtYSz0J8hK0EI3rS
+         PzolSBkLKtMkg==
+Received: by mail-ej1-f44.google.com with SMTP id nd37so41943222ejc.3;
+        Tue, 13 Jul 2021 07:43:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530j9oxwslh3A435xgwvsZ/zHr2DI4G5zp9ltohQkk7sLX06K24X
+        F4IN2tWHCHbYWHndsJ4JVM7t7uhN/zVDCL9WVQ==
+X-Google-Smtp-Source: ABdhPJx8KJ89U2wFb6/w4b8mDik94hL/0OpgIBrKt+puc53ZwqPRiRVGHPqg6EkQ0zFCw2FsgUdbVEEOb7mGJCY/4Cw=
+X-Received: by 2002:a17:906:8158:: with SMTP id z24mr6166850ejw.359.1626187402270;
+ Tue, 13 Jul 2021 07:43:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712030701.4000097-66-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1626173013.git.viresh.kumar@linaro.org> <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+In-Reply-To: <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 13 Jul 2021 08:43:10 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
+Message-ID: <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device subnode
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-07-21 04:05:49, Matthew Wilcox (Oracle) wrote:
-> Allow for accounting N pages at once instead of one page at a time.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Tue, Jul 13, 2021 at 4:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Allow virtio,mmio nodes to contain device specific subnodes. Since each
+> virtio,mmio node can represent a single virtio device, each virtio node
+> is allowed to contain a maximum of one device specific subnode.
 
-Looks good. Feel free to add:
+Doesn't sound like we need 2 nodes here. Just add I2C devices as child
+nodes. You could add a more specific compatible string, but the
+protocol is discoverable, so that shouldn't be necessary.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+BTW, what's the usecase for these protocols? A standard interface to
+firmware controlled I2C, GPIO, etc.?
 
-								Honza
-
+> The device subnode must have the "reg" property, and its value must
+> match the virtio device ID used by the virtio mmio node.
+>
+> A phandle to this device subnode can then be used by the users of the
+> virtio device.
+>
+> Also add a symbolic link to uapi/linux/virtio_ids.h in order to use the
+> definitions here.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  mm/page-writeback.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 63c0dd9f8bf7..1056ff779bfe 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -562,12 +562,12 @@ static unsigned long wp_next_time(unsigned long cur_time)
->  	return cur_time;
->  }
->  
-> -static void wb_domain_writeout_inc(struct wb_domain *dom,
-> +static void wb_domain_writeout_add(struct wb_domain *dom,
->  				   struct fprop_local_percpu *completions,
-> -				   unsigned int max_prop_frac)
-> +				   unsigned int max_prop_frac, long nr)
->  {
->  	__fprop_add_percpu_max(&dom->completions, completions,
-> -			       max_prop_frac, 1);
-> +			       max_prop_frac, nr);
->  	/* First event after period switching was turned off? */
->  	if (unlikely(!dom->period_time)) {
->  		/*
-> @@ -585,18 +585,18 @@ static void wb_domain_writeout_inc(struct wb_domain *dom,
->   * Increment @wb's writeout completion count and the global writeout
->   * completion count. Called from test_clear_page_writeback().
->   */
-> -static inline void __wb_writeout_inc(struct bdi_writeback *wb)
-> +static inline void __wb_writeout_add(struct bdi_writeback *wb, long nr)
->  {
->  	struct wb_domain *cgdom;
->  
-> -	inc_wb_stat(wb, WB_WRITTEN);
-> -	wb_domain_writeout_inc(&global_wb_domain, &wb->completions,
-> -			       wb->bdi->max_prop_frac);
-> +	wb_stat_mod(wb, WB_WRITTEN, nr);
-> +	wb_domain_writeout_add(&global_wb_domain, &wb->completions,
-> +			       wb->bdi->max_prop_frac, nr);
->  
->  	cgdom = mem_cgroup_wb_domain(wb);
->  	if (cgdom)
-> -		wb_domain_writeout_inc(cgdom, wb_memcg_completions(wb),
-> -				       wb->bdi->max_prop_frac);
-> +		wb_domain_writeout_add(cgdom, wb_memcg_completions(wb),
-> +				       wb->bdi->max_prop_frac, nr);
->  }
->  
->  void wb_writeout_inc(struct bdi_writeback *wb)
-> @@ -604,7 +604,7 @@ void wb_writeout_inc(struct bdi_writeback *wb)
->  	unsigned long flags;
->  
->  	local_irq_save(flags);
-> -	__wb_writeout_inc(wb);
-> +	__wb_writeout_add(wb, 1);
->  	local_irq_restore(flags);
->  }
->  EXPORT_SYMBOL_GPL(wb_writeout_inc);
-> @@ -2751,7 +2751,7 @@ int test_clear_page_writeback(struct page *page)
->  				struct bdi_writeback *wb = inode_to_wb(inode);
->  
->  				dec_wb_stat(wb, WB_WRITEBACK);
-> -				__wb_writeout_inc(wb);
-> +				__wb_writeout_add(wb, 1);
->  			}
->  		}
->  
-> -- 
-> 2.30.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  .../devicetree/bindings/virtio/mmio.yaml      | 41 +++++++++++++++++++
+>  include/dt-bindings/virtio/virtio_ids.h       |  1 +
+>  2 files changed, 42 insertions(+)
+>  create mode 120000 include/dt-bindings/virtio/virtio_ids.h
+>
+> diff --git a/Documentation/devicetree/bindings/virtio/mmio.yaml b/Documentation/devicetree/bindings/virtio/mmio.yaml
+> index d46597028cf1..e5f9fe6ecb5e 100644
+> --- a/Documentation/devicetree/bindings/virtio/mmio.yaml
+> +++ b/Documentation/devicetree/bindings/virtio/mmio.yaml
+> @@ -31,6 +31,31 @@ title: virtio memory mapped devices
+>      description: Required for devices making accesses thru an IOMMU.
+>      maxItems: 1
+>
+> +  "#address-cells":
+> +    const: 1
+> +    description:
+> +      The cell is the device ID if a device subnode is used.
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  '^[a-z0-9]+-virtio@[0-9]+$':
+> +    type: object
+> +    description: |
+> +      Exactly one node describing the virtio device. The name of the node isn't
+> +      significant but its phandle can be used to by an user of the virtio
+> +      device.
+> +
+> +    properties:
+> +      reg:
+> +        description:
+> +          Must contain the Virtio ID of the device.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +    required:
+> +      - reg
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -57,4 +82,20 @@ additionalProperties: false
+>          #iommu-cells = <1>;
+>      };
+>
+> +  - |
+> +    #include <dt-bindings/virtio/virtio_ids.h>
+> +
+> +    virtio@3200 {
+> +        compatible = "virtio,mmio";
+> +        reg = <0x3200 0x100>;
+> +        interrupts = <43>;
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        i2c-virtio@0 {
+> +            reg = <VIRTIO_ID_I2C_ADAPTER>;
+> +        };
+> +    };
+> +
+>  ...
+> diff --git a/include/dt-bindings/virtio/virtio_ids.h b/include/dt-bindings/virtio/virtio_ids.h
+> new file mode 120000
+> index 000000000000..6e59ba332216
+> --- /dev/null
+> +++ b/include/dt-bindings/virtio/virtio_ids.h
+> @@ -0,0 +1 @@
+> +../../uapi/linux/virtio_ids.h
+
+This will break the devicetree-rebasing tree I think. DT files
+shouldn't reference kernel files.
+
+Rob
