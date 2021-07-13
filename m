@@ -2,168 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF5F3C7884
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565503C7890
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbhGMVOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhGMVOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:14:40 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235727AbhGMVS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:18:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49577 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhGMVS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 17:18:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626210936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VMJGkrX22NsvQPy5d9/dm13+Xn72U9Eqcs783OTJsIw=;
+        b=CQiUj50UBIAvT4YGO6zW7L/ieNBN1HN5OAISTAAfzkSaLXIOhqnGfMNsZiD0W9jqUayS4i
+        dwHmCfFgpREjnNbdeAA0eBPhGAbBiTRow+YLfOLDuTogImSKv3I2Xh5p8YANZM1DVeAGyT
+        ezbHM6rrI6m/5y+euOefRLXhhWQIxL4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-t7gVGBMqPpiCrJUFuxX7Fg-1; Tue, 13 Jul 2021 17:15:34 -0400
+X-MC-Unique: t7gVGBMqPpiCrJUFuxX7Fg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD73460FE9;
-        Tue, 13 Jul 2021 21:11:49 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 17:11:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [GIT PULL] tracing: Add __string_len() and __assign_str_len()
- helpers
-Message-ID: <20210713171143.7784697e@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E57FA804145;
+        Tue, 13 Jul 2021 21:15:28 +0000 (UTC)
+Received: from virtlab719.virt.lab.eng.bos.redhat.com (virtlab719.virt.lab.eng.bos.redhat.com [10.19.153.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A9A9A5D9DD;
+        Tue, 13 Jul 2021 21:15:12 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        tglx@linutronix.de, jesse.brandeburg@intel.com,
+        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
+        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
+        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
+        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
+        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, nilal@redhat.com,
+        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
+        ahs3@redhat.com, leonro@nvidia.com, chandrakanth.patil@broadcom.com
+Subject: [PATCH v3 00/14] genirq: Cleanup the usage of irq_set_affinity_hint
+Date:   Tue, 13 Jul 2021 17:14:48 -0400
+Message-Id: <20210713211502.464259-1-nitesh@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The drivers currently rely on irq_set_affinity_hint() to either set the
+affinity_hint that is consumed by the userspace and/or to enforce a custom
+affinity.
 
-Linus,
+irq_set_affinity_hint() as the name suggests is originally introduced to
+only set the affinity_hint to help the userspace in guiding the interrupts
+and not the affinity itself. However, since the commit
 
-Add macros for the TRACE_EVENT() macro that can be used to assign strings
-that either need to be truncated, or have no nul terminator, and depends
-on a length attribute to assign.
+        e2e64a932556 "genirq: Set initial affinity in irq_set_affinity_hint()"
 
-Note: A while ago Chuck Lever asked for these changes, and I sent him this
-patch to see if it would work for him, and he said it would. But because
-I never made a commit for it, I forgot about it. Although this is not
-an actual fix, it also has no functional changes. It introduces two
-macro helpers to the TRACE_EVENT() macros, and that is all it does.
-These can then be used by Chuck for work that will go into the next
-merge window.
+irq_set_affinity_hint() also started applying the provided cpumask (if not
+NULL) as the affinity for the interrupts. The issue that this commit was
+trying to solve is to allow the drivers to enforce their affinity mask to
+distribute the interrupts across the CPUs such that they don't always end
+up on CPU0. This issue has been resolved within the irq subsystem since the
+commit
 
-It would be easier if it were upstream instead of him carrying the change,
-and likely conflict with work I am working on as this touches the core
-file that creates the TRACE_EVENT macro. The other approach is that I make
-a specific branch that he can then base off of in his tree, and we both have
-that as our base branch. But still, that complicates things. Third approach is
-that he takes this patch into his tree, and I take the same patch into mine
-and just work on top of it even though they have separate sha1s.
+        a0c9259dc4e1 "irq/matrix: Spread interrupts on allocation"
 
-If you do not want to pull this because this is not technically a fix, we
-will then just go with one of the above approaches. I'll let it be your call.
+Hence, there is no need for the drivers to overwrite the affinity to spread
+as it is dynamically performed at the time of allocation.
 
-Please pull the latest trace-v5.14-3 tree, which can be found at:
+Also, irq_set_affinity_hint() setting affinity unconditionally introduces
+issues for the drivers that only want to set their affinity_hint and not the
+affinity itself as for these driver interrupts the default_smp_affinity_mask
+is completely ignored (for detailed investigation please refer to [1]).
+
+Unfortunately reverting the commit e2e64a932556 is not an option at this
+point for two reasons [2]:
+
+- Several drivers for a valid reason (performance) rely on this API to
+  enforce their affinity mask
+
+- Until very recently this was the only exported interface that was
+  available
+
+To clear this out Thomas has come up with the following interfaces:
+
+- irq_set_affinity(): only sets affinity of an IRQ [3]
+- irq_update_affinity_hint(): Only sets the hint [4]
+- irq_set_affinity_and_hint(): Sets both affinity and the hint mask [4]
+
+The first API is already merged in the linus's tree and the patch
+that introduces the other two interfaces is included with this patch-set.
+
+To move to the stage where we can safely get rid of the
+irq_set_affinity_hint(), which has been marked deprecated, we have to
+move all its consumers to these new interfaces. In this patch-set, I have
+done that for a few drivers and will hopefully try to move the remaining of
+them in the coming days.
+
+Testing
+-------
+In terms of testing, I have performed some basic testing on x86 to verify
+things such as the interrupts are evenly spread on all CPUs, hint mask is
+correctly set etc. for the drivers - i40e, iavf, mlx5, mlx4, ixgbe, and
+enic on top of:
+
+        git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+
+So more testing is probably required for these and the drivers that I didn't
+test and any help will be much appreciated.
 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.14-3
+Notes
+-----
+- For the mpt3sas driver I decided to go with the usage of
+  irq_set_affinity_and_hint over irq_set_affinity based on my analysis of
+  it and the megaraid driver. However, if we are sure that it is not
+  required then I can replace it with just irq_set_affinity as one of its
+  comment suggests.
 
-Tag SHA1: 7217c1cf4cd4c5f22e7b3bd641a594bbe7b7c8e1
-Head SHA1: ac58f4f28369ce3287982da131ad3c6fb283d4e6
+Change from v2 [5]
+------------------
 
+- Rebased on top of 5.14-rc1 (Leon Romanovsky)
+  + After discussion with Leon [6], made changes in the mlx5 patch to use
+    irq_set_affinity_and_hint over irq_update_affinity_hint
+  + i40iw is replaced with irdma driver, hence made the respective changes
+    in irdma (also replcaed irq_update_affinity_hint with
+    irq_set_affinity_and_hint).
 
-Steven Rostedt (VMware) (1):
-      tracing: Add trace_event helper macros __string_len() and __assign_str_len()
+Change from v1 [7]
+------------------
+- Fixed compilation error by adding the new interface definitions for cases
+  where CONFIG_SMP is not defined
 
-----
- include/trace/trace_events.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
----------------------------
-commit ac58f4f28369ce3287982da131ad3c6fb283d4e6
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Thu May 13 10:50:18 2021 -0400
+- Fixed function usage in megaraid_sas and removed unnecessary variable
+  (Robin Murphy)
 
-    tracing: Add trace_event helper macros __string_len() and __assign_str_len()
-    
-    There's a few cases that a string that is to be recorded in a trace event,
-    does not have a terminating 'nul' character, and instead, the tracepoint
-    passes in the length of the string to record.
-    
-    Add two helper macros to the trace event code that lets this work easier,
-    than tricks with "%.*s" logic.
-    
-      __string_len() which is similar to __string() for declaration, but takes a
-                     length argument.
-    
-      __assign_str_len() which is similar to __assign_str() for assiging the
-                     string, but it too takes a length argument.
-    
-    This string can still use __get_str() just like strings created with
-    __string() can use to retrieve the string.
-    
-    Link: https://lore.kernel.org/linux-nfs/20210513105018.7539996a@gandalf.local.home/
-    
-    Tested-by: Chuck Lever <chuck.lever@oracle.com>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+- Removed unwanted #if/endif from mlx4 (Leon Romanovsky)
 
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index acc17194c160..a0fa8a3a691c 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -102,6 +102,9 @@ TRACE_MAKE_SYSTEM_STR();
- #undef __string
- #define __string(item, src) __dynamic_array(char, item, -1)
+- Other indentation related fixes
+
  
-+#undef __string_len
-+#define __string_len(item, src, len) __dynamic_array(char, item, -1)
-+
- #undef __bitmask
- #define __bitmask(item, nr_bits) __dynamic_array(char, item, -1)
- 
-@@ -197,6 +200,9 @@ TRACE_MAKE_SYSTEM_STR();
- #undef __string
- #define __string(item, src) __dynamic_array(char, item, -1)
- 
-+#undef __string_len
-+#define __string_len(item, src, len) __dynamic_array(char, item, -1)
-+
- #undef __bitmask
- #define __bitmask(item, nr_bits) __dynamic_array(unsigned long, item, -1)
- 
-@@ -459,6 +465,9 @@ static struct trace_event_functions trace_event_type_funcs_##call = {	\
- #undef __string
- #define __string(item, src) __dynamic_array(char, item, -1)
- 
-+#undef __string_len
-+#define __string_len(item, src, len) __dynamic_array(char, item, -1)
-+
- #undef __bitmask
- #define __bitmask(item, nr_bits) __dynamic_array(unsigned long, item, -1)
- 
-@@ -507,6 +516,9 @@ static struct trace_event_fields trace_event_fields_##call[] = {	\
- #define __string(item, src) __dynamic_array(char, item,			\
- 		    strlen((src) ? (const char *)(src) : "(null)") + 1)
- 
-+#undef __string_len
-+#define __string_len(item, src, len) __dynamic_array(char, item, (len) + 1)
-+
- /*
-  * __bitmask_size_in_bytes_raw is the number of bytes needed to hold
-  * num_possible_cpus().
-@@ -670,10 +682,18 @@ static inline notrace int trace_event_get_offsets_##call(		\
- #undef __string
- #define __string(item, src) __dynamic_array(char, item, -1)
- 
-+#undef __string_len
-+#define __string_len(item, src, len) __dynamic_array(char, item, -1)
-+
- #undef __assign_str
- #define __assign_str(dst, src)						\
- 	strcpy(__get_str(dst), (src) ? (const char *)(src) : "(null)");
- 
-+#undef __assign_str_len
-+#define __assign_str_len(dst, src, len)						\
-+	strncpy(__get_str(dst), (src) ? (const char *)(src) : "(null)", len);	\
-+	__get_str(dst)[len] = '\0';
-+
- #undef __bitmask
- #define __bitmask(item, nr_bits) __dynamic_array(unsigned long, item, -1)
- 
+[1] https://lore.kernel.org/lkml/1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com/
+[2] https://lore.kernel.org/linux-pci/d1d5e797-49ee-4968-88c6-c07119343492@arm.com/
+[3] https://lore.kernel.org/linux-arm-kernel/20210518091725.046774792@linutronix.de/
+[4] https://lore.kernel.org/patchwork/patch/1434326/
+[5] https://lore.kernel.org/lkml/20210629152746.2953364-1-nitesh@redhat.com/
+[6] https://lore.kernel.org/lkml/YO0eKv2GJcADQTHH@unreal/
+[7] https://lore.kernel.org/linux-scsi/20210617182242.8637-1-nitesh@redhat.com/
+
+
+Nitesh Narayan Lal (13):
+  iavf: Use irq_update_affinity_hint
+  i40e: Use irq_update_affinity_hint
+  scsi: megaraid_sas: Use irq_set_affinity_and_hint
+  scsi: mpt3sas: Use irq_set_affinity_and_hint
+  RDMA/irdma: Use irq_set_affinity_and_hint
+  enic: Use irq_update_affinity_hint
+  be2net: Use irq_update_affinity_hint
+  ixgbe: Use irq_update_affinity_hint
+  mailbox: Use irq_update_affinity_hint
+  scsi: lpfc: Use irq_set_affinity
+  hinic: Use irq_set_affinity_and_hint
+  net/mlx5: Use irq_set_affinity_and_hint
+  net/mlx4: Use irq_update_affinity_hint
+
+Thomas Gleixner (1):
+  genirq: Provide new interfaces for affinity hints
+
+ drivers/infiniband/hw/irdma/hw.c              |  4 +-
+ drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
+ drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
+ drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
+ drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
+ drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  8 +--
+ drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
+ drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
+ drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
+ include/linux/interrupt.h                     | 53 ++++++++++++++++++-
+ kernel/irq/manage.c                           |  8 +--
+ 15 files changed, 114 insertions(+), 65 deletions(-)
+
+-- 
+
+
