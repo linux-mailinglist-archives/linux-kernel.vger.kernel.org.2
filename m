@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF70A3C743A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA33C7441
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhGMQVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        id S229445AbhGMQWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhGMQVG (ORCPT
+        with ESMTP id S229771AbhGMQWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:21:06 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8E0C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:18:15 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id bt15so7364200pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:18:15 -0700 (PDT)
+        Tue, 13 Jul 2021 12:22:03 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F079C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:19:13 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id m18so1848906oie.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:19:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A5YhPK+U85k0SKsYlDjEBbw9AMYz32iyaMx2KI0XJrU=;
-        b=Qfwg9sDKAm5t+RWonrl91t9f06nWp0+7onIoZC3nBS9NUBXEur05hfosoHDL9VU2p+
-         2Kf/R5KU+lhnSUhdi9MkfDM09b2TmogQwIijHnuiDDIIp4WVA6hJ+hDIid928ms23HgM
-         slmX0nlW6DwQ4CAkltMqxGOvpkemWqcPgiHOX9aiP6mYrgKrf9JAX3DCRmh7ZGhJnOTI
-         6n3GmonwtA2d3ngFbsWSdNEc5NwYClUrDvQuiT/QEpkhNqiSzzQYRoS9fL3YuPj38013
-         GZpacX8lefNmjSpZPHpI0XzbxTdyuxMgKp6wVqMy9nZVfdu1sqq0jZZqqdo8DPqu9/8C
-         5L7Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=huy3A4ZQsPTRZT7tGhT5kIwuh7my/p/nRbdB9PmgvzM=;
+        b=W1uGwlOEfvG+vtbgUVE8EKwQtXKNJzS98MbwXZbFrPG/G2iZ0gFWmM0UOk7T3Jb8ZN
+         DZ4QMNoTmsOtt/lSKdJCwG2SF10O1R/jw4fLknzhlJVMUj+Y0qOeiwmGv+3yBIE2Rf+d
+         hHzVt4oDElWdFCf+WMiAXyCat6mDvZle/4q0QUKElOt3C+fJ85vEwbqQdCBEQPjoe+eF
+         9kIcbTW6ww33ZLYHKwNF5EcevIK68CVW6AC1IoiJE7Qls0LBNV6TRPGbXEGCkbD6VKZo
+         /9bChu8a56PgQ1TH/U+9nCbVtF0Ww3drfo+aQ/Wvux+y2WG8NrMj9a69kinEEX5JOm9n
+         QuFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=A5YhPK+U85k0SKsYlDjEBbw9AMYz32iyaMx2KI0XJrU=;
-        b=sHR6mMpIKA+LGjkE+gXoyA9/CjPvuNw2rdadaVyLYalDdoTM5h8GPCVH45thmgLt65
-         yyr4HBpErD/C1U5fvfDMHDJASokcId6CZFNDberG7D5tZ30pfhex5kx1tSppa+QBOPxg
-         bMjICoiAJezB9efzZ1clupskVF9SmPmXro0N76jaxjxDVMBo9FCpfaELajVaBwha//ks
-         WYMuP+IiJ57NP+nxTpSJ/qrtdladU0yhBVI9TPkqC42h75Dcj5otfHjeYEqn0L0/onRK
-         wUSdlUZvMEHoXCnOPQhD4ICK22aiiZ53dJmP/Y17g+hUSkwjQSCdtJ4dq6XlEcV4JT3A
-         fGWg==
-X-Gm-Message-State: AOAM533V/Sr+9I0dWwWgqBTB92gu0csgXtIKxGdRDYpyvEr2OENf+kT/
-        bK99ApspOlw0sYjaYK1EsrU=
-X-Google-Smtp-Source: ABdhPJwVhN6L+kJszXRvnMuSIYrAht9+csgEepd9qKOYZZBY55Rj/lptLWbzmby7tlaBDRljmcRWow==
-X-Received: by 2002:a17:902:ead2:b029:12a:ec28:7bc9 with SMTP id p18-20020a170902ead2b029012aec287bc9mr4034711pld.79.1626193095174;
-        Tue, 13 Jul 2021 09:18:15 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id j20sm17014874pfc.203.2021.07.13.09.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 09:18:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 13 Jul 2021 06:18:13 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xu Qiang <xuqiang36@huawei.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH v2] workqueue: fix UAF in pwq_unbound_release_workfn()
-Message-ID: <YO28xd4mlxgN6xY8@slm.duckdns.org>
-References: <20210709071100.4057639-1-yangyingliang@huawei.com>
- <YOx392cwdEHMMnD0@slm.duckdns.org>
- <CAJhGHyC+oyX6fqnR1-JPnNgPuDpikU6KYr1iXrj7BDZHnjPGTA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=huy3A4ZQsPTRZT7tGhT5kIwuh7my/p/nRbdB9PmgvzM=;
+        b=uO3R5fJlwJz6QrUhRvlJJVuZ+o1WknLFFFPY0jAnTutQOt1ETdxjtGbKrBG16+bA/m
+         TYlMQVafvQyEpaLQK5nc0hs03AqHmysTGcPXXSxisNnuXCIL9R1/6Anxg5DLRvCy9J4G
+         DPF2YIEyGuwXifhVzpH6stzyCHvvzv+syYwxoLKfRuvNJfmm6AeNI+jdAHvKp3FWNuoO
+         zyBl0Y8fyvC+8Tdd71II3WBWr+v7bqnDODk3KgH63Y0qfRMfAckRbNIOGGD5P6Pw1dcL
+         wht6oIxQxWsAEtieJJWT32O1yzVJtbLyYf/ahwb5aYaMa3c+0QeZTydPfEyvZj1BkHKM
+         OkTw==
+X-Gm-Message-State: AOAM531nx3iJr+37+Ifwkfh+fhq3v2TthdO6Zwb2R0DbemHBBPMCwK79
+        ZfUxSxKCTe6OmwOe1XzfBMxsK3rmi3DUvAOFTCy1GQ==
+X-Google-Smtp-Source: ABdhPJytAg3oPcgS+rfsoNfJ9pnVekMsJ3OtPlYEx+2kTpu5b2aTtBF4uluKr0tmXbqltD7U54Jjj8lVJu7wecnRsLs=
+X-Received: by 2002:a05:6808:284:: with SMTP id z4mr3800835oic.70.1626193152621;
+ Tue, 13 Jul 2021 09:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyC+oyX6fqnR1-JPnNgPuDpikU6KYr1iXrj7BDZHnjPGTA@mail.gmail.com>
+References: <20210630150234.1109496-1-glider@google.com> <20210630150234.1109496-2-glider@google.com>
+ <CANpmjNNvBWER=zjie544Eq6o_ZSMD6rDYb7mqDcUFtYutDSpWw@mail.gmail.com>
+In-Reply-To: <CANpmjNNvBWER=zjie544Eq6o_ZSMD6rDYb7mqDcUFtYutDSpWw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 13 Jul 2021 18:19:01 +0200
+Message-ID: <CANpmjNNu8xRwG6nCOgiuidWKenQ2X+BTBTuTjhZCaGptyN8nhw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] kfence: skip all GFP_ZONEMASK allocations
+To:     akpm@linux-foundation.org
+Cc:     dvyukov@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        gregkh@linuxfoundation.org, jrdr.linux@gmail.com,
+        Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Lai.
+On Mon, 5 Jul 2021 at 16:05, Marco Elver <elver@google.com> wrote:
+> Andrew,
+>
+> This series is ready to be picked up.
+>
+> If possible, kindly consider including it in an upcoming batch of
+> mainline fixes.
+>
+> Thank you!
 
-On Tue, Jul 13, 2021 at 01:56:12PM +0800, Lai Jiangshan wrote:
-> > Does something like the following work?
-> 
-> It works since it has a flush_scheduled_work() in
-> alloc_and_link_pwqs(). But I don't think it works for
-> workqueue_apply_unbound_cpumask() when apply_wqattrs_commit()
-> is not called.
+It'd be good to get this sorted -- please take another look.
 
-Yeah, but in that path, wq is fully initialized and will always have
-existing pwqs, so the wq free path shouldn't get activated. During wq
-allocation, the problem is that we're installing the first set of pwqs, so
-if they fail, the workqueue doesn't have any pwqs and thus triggers
-self-destruction.
+Many thanks,
+-- Marco
 
-> If we want to reuse the current apply_wqattrs_cleanup(), I would prefer
-> something like this: (untested)
-> 
-> @@ -3680,15 +3676,21 @@ static void pwq_unbound_release_workfn(struct
-> work_struct *work)
->                                                   unbound_release_work);
->         struct workqueue_struct *wq = pwq->wq;
->         struct worker_pool *pool = pwq->pool;
-> -       bool is_last;
-> +       bool is_last = false;
-> 
-> -       if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-> -               return;
-> +       /*
-> +        * when @pwq is not linked, it doesn't hold any reference to the
-> +        * @wq, and @wq is invalid to access.
-> +        */
-> +       if (!list_empty(&pwq->pwqs_node)) {
-> +               if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-> +                       return;
-> 
-> -       mutex_lock(&wq->mutex);
-> -       list_del_rcu(&pwq->pwqs_node);
-> -       is_last = list_empty(&wq->pwqs);
-> -       mutex_unlock(&wq->mutex);
-> +               mutex_lock(&wq->mutex);
-> +               list_del_rcu(&pwq->pwqs_node);
-> +               is_last = list_empty(&wq->pwqs);
-> +               mutex_unlock(&wq->mutex);
-> +       }
-> 
->         mutex_lock(&wq_pool_mutex);
->         put_unbound_pool(pool);
-
-But, oh yeah, this is way better.
-
-Thanks.
-
--- 
-tejun
+> On Wed, 30 Jun 2021 at 17:02, Alexander Potapenko <glider@google.com> wrote:
+> > Allocation requests outside ZONE_NORMAL (MOVABLE, HIGHMEM or DMA) cannot
+> > be fulfilled by KFENCE, because KFENCE memory pool is located in a
+> > zone different from the requested one.
+> >
+> > Because callers of kmem_cache_alloc() may actually rely on the
+> > allocation to reside in the requested zone (e.g. memory allocations done
+> > with __GFP_DMA must be DMAable), skip all allocations done with
+> > GFP_ZONEMASK and/or respective SLAB flags (SLAB_CACHE_DMA and
+> > SLAB_CACHE_DMA32).
+> >
+> > Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Souptick Joarder <jrdr.linux@gmail.com>
+> > Cc: stable@vger.kernel.org # 5.12+
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> >
+> > ---
+> >
+> > v2:
+> >  - added parentheses around the GFP clause, as requested by Marco
+> > v3:
+> >  - ignore GFP_ZONEMASK, which also covers __GFP_HIGHMEM and __GFP_MOVABLE
+> >  - move the flag check at the beginning of the function, as requested by
+> >    Souptick Joarder
+> > v4:
+> >  - minor fixes to description and comment formatting
+> > ---
+> >  mm/kfence/core.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> > index 33bb20d91bf6a..1cbdb62e6d0fb 100644
+> > --- a/mm/kfence/core.c
+> > +++ b/mm/kfence/core.c
+> > @@ -740,6 +740,15 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+> >         if (size > PAGE_SIZE)
+> >                 return NULL;
+> >
+> > +       /*
+> > +        * Skip allocations from non-default zones, including DMA. We cannot
+> > +        * guarantee that pages in the KFENCE pool will have the requested
+> > +        * properties (e.g. reside in DMAable memory).
+> > +        */
+> > +       if ((flags & GFP_ZONEMASK) ||
+> > +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> > +               return NULL;
+> > +
+> >         /*
+> >          * allocation_gate only needs to become non-zero, so it doesn't make
+> >          * sense to continue writing to it and pay the associated contention
+> > --
+> > 2.32.0.93.g670b81a890-goog
+> >
