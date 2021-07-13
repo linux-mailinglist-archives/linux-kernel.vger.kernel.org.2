@@ -2,260 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC143C67EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B853C67ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbhGMBPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 21:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
+        id S233870AbhGMBQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 21:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhGMBPX (ORCPT
+        with ESMTP id S233527AbhGMBQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 21:15:23 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E15EC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:12:34 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id b13so32070219ybk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:12:34 -0700 (PDT)
+        Mon, 12 Jul 2021 21:16:05 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D2C0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:13:15 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 75-20020a9d08510000b02904acfe6bcccaso20813204oty.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:13:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3oAlTpbgK6u4tipighDXmanWuC5k+j2pz7LHeW3niE=;
-        b=seQEp+0/ZpN/RK+fvG8klQBC3j7eW84QimkF86nmGyY8xuENBGhMw/dtqU1HqofJx+
-         qSF0iqRZHKLoVWniM5fTCcOUAjyzBzRrYYe+wnEeP0L4Q3nCGdKo26wTAWGF2mauRJ13
-         tOjhFdoOphrNcXGK5aZ3VIEoNG5cpH3qtf44HaWa3kVoS3HyVvFPk1wzWkFt7rYB+wDj
-         BMjF8FxNIvqAFCI1dYFSD4ul3G7utINcF0CRxMJaegbwDLfC9FzeE84nmEd3ruMsE9uO
-         E7YXB/C92IzbWGPUaQZv0Ad5pbbwzMDyFghYA563uleRAgkGiwnjUnZaOijuQI4p0IFN
-         MPGQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PGfvyw9ns++LEn4wxvGIcDCtX4HWl+qHFVB4LAvbNrM=;
+        b=Fvyn++v0dJvozOdfIaKfxT+eBx7sZFzQ9+DbmGbnpa+hhWb0K8GR5eERRqgkR9FkTO
+         ia7YDYYLDtnq0XezYtbfhMAMfvZnmw2184bEFLAU5lCiHhxOPNLPtQlg93YZMZ76gw42
+         lOJKoC1SI9fzf43JsmzCzOaooBDDBc9/oKWSE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3oAlTpbgK6u4tipighDXmanWuC5k+j2pz7LHeW3niE=;
-        b=RGzxfTUStq8jq/ht9CQ/cfXvOf0R9FZ3FPB38YpqaZiBp4BVrZAljhQZvSBhvXeHdK
-         9H96H8LfOw8dcg5hIW4I5Ik/y0eliT3liTKUnRUpOdjNt4mreZHd6ETRwkTUKynRg24q
-         34SpelP7NONsA2OX4t4YXK/Y1euyNnjmUHqRlNM7GWemP8tupD9gTlknBKCIjnSFwmlM
-         UpL4Y5P2LpkkKHjczMjlAmZwrq34pS/Na2ViNY19FygkteQRqlaUEIRHwtAWoQF230az
-         CoaZfMyH9e9jaPO7q96YRGum2XzIbdQLDjbCTIMITWwStQtFAtKCgD42/cGAQdJg1kr1
-         r5ow==
-X-Gm-Message-State: AOAM533V6x2nBDDg6E7C8QGZIyaaK/5y6G5UvhIIW3AstEQjGMwTyNqK
-        /uAy0ynUBVfQzVktUy9UWisfC23xHYZGCZ5kyFHzFw==
-X-Google-Smtp-Source: ABdhPJxoAygQp3R5au+npJIEr+9s6ZSsT7fy1m9V4+Af9mxLInsnUJJW5H0O1wZ3wJgC8UPwCnT32W71U/fnUkV4MPI=
-X-Received: by 2002:a25:71c4:: with SMTP id m187mr2357132ybc.397.1626138753430;
- Mon, 12 Jul 2021 18:12:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PGfvyw9ns++LEn4wxvGIcDCtX4HWl+qHFVB4LAvbNrM=;
+        b=auxAMmIFk4bqAExpW5ksd/TutvlwkpejRtPg0Vzf5s6mza1BR1mVl2lO0Yv9WvLrHD
+         lnQ1fLFOqWQa3th5t4FNDY8EFsLbNq1Lhw5WCtIN4pnoDf53GVur2oRG17VsujVVnxXH
+         KEpO4OzhU8Li11qiJ8NjBkMm0dcOFpSHIr55mo5Op5g2ai7R6D+3isjRcP0NSqotLmrl
+         hpFk178EZCh5EKRaTJ/27WZ0hSUUjZUxoSLSWtpNBR71IWmRq6GqwNl2kKoIJNvkXMJh
+         MYLYKVacpAFLolSDDY90zv1mvDrhgHaqnjNgN/2jSsgy3zJTkeIldEUBhad66o7ORdGs
+         vPsg==
+X-Gm-Message-State: AOAM530IHBtwJY08p06ACOB7Hmokv4yzgEeslKT2Bx8b+ViBwvgbPdEF
+        p9HaO9dMvQHd3JBeaiWZjgj70g==
+X-Google-Smtp-Source: ABdhPJyaybOH3bVje/QV+ZvtQGY/k5Kvs2G+RlaPU0QmTMPvRv+2rWxaNeKg4t4CJVQKPAfj3LPEWQ==
+X-Received: by 2002:a9d:1464:: with SMTP id h91mr1377515oth.237.1626138794800;
+        Mon, 12 Jul 2021 18:13:14 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l17sm106736ota.20.2021.07.12.18.13.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 18:13:14 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/598] 5.10.50-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210712184832.376480168@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <1443cc44-34c6-48e0-2053-9b4ab09a2c6c@linuxfoundation.org>
+Date:   Mon, 12 Jul 2021 19:13:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210710003626.3549282-1-surenb@google.com> <20210710003626.3549282-2-surenb@google.com>
- <CAMZfGtUqMKnMKDqY7wP+29U-fSxqsOv9OHnaZxQSsOtKrBQYfQ@mail.gmail.com>
-In-Reply-To: <CAMZfGtUqMKnMKDqY7wP+29U-fSxqsOv9OHnaZxQSsOtKrBQYfQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 12 Jul 2021 18:12:22 -0700
-Message-ID: <CAJuCfpGB96oDToQewi6x2AAc03S1v0A97Z4OyiyZG9hCJ6nSOA@mail.gmail.com>
-Subject: Re: [External] [PATCH v3 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge}
- to improve disabled memcg config
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, apopple@nvidia.com,
-        Minchan Kim <minchan@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210712184832.376480168@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 4:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Sat, Jul 10, 2021 at 8:36 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> >
-> > Inline mem_cgroup_{charge/uncharge} and mem_cgroup_uncharge_list functions
-> > functions to perform mem_cgroup_disabled static key check inline before
-> > calling the main body of the function. This minimizes the memcg overhead
-> > in the pagefault and exit_mmap paths when memcgs are disabled using
-> > cgroup_disable=memory command-line option.
-> > This change results in ~0.4% overhead reduction when running PFT test
-> > comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
-> > configurationon on an 8-core ARM64 Android device.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
->
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
->
-> But some nits below.
->
-> > ---
-> >  include/linux/memcontrol.h | 28 +++++++++++++++++++++++++---
-> >  mm/memcontrol.c            | 29 ++++++++++-------------------
-> >  2 files changed, 35 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index bfe5c486f4ad..39fa88051a42 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -693,13 +693,35 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
-> >                 page_counter_read(&memcg->memory);
-> >  }
-> >
-> > -int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
-> > +int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> > +                       gfp_t gfp_mask);
-> > +static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> > +                                   gfp_t gfp_mask)
-> > +{
-> > +       if (mem_cgroup_disabled())
-> > +               return 0;
-> > +       return __mem_cgroup_charge(page, mm, gfp_mask);
-> > +}
-> > +
-> >  int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
-> >                                   gfp_t gfp, swp_entry_t entry);
-> >  void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
-> >
-> > -void mem_cgroup_uncharge(struct page *page);
-> > -void mem_cgroup_uncharge_list(struct list_head *page_list);
-> > +void __mem_cgroup_uncharge(struct page *page);
-> > +static inline void mem_cgroup_uncharge(struct page *page)
-> > +{
-> > +       if (mem_cgroup_disabled())
-> > +               return;
-> > +       __mem_cgroup_uncharge(page);
-> > +}
-> > +
-> > +void __mem_cgroup_uncharge_list(struct list_head *page_list);
-> > +static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
-> > +{
-> > +       if (mem_cgroup_disabled())
-> > +               return;
-> > +       __mem_cgroup_uncharge_list(page_list);
-> > +}
-> >
-> >  void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index a228cd51c4bd..cdaf7003b43d 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6701,8 +6701,7 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-> >                         atomic_long_read(&parent->memory.children_low_usage)));
-> >  }
-> >
-> > -static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-> > -                              gfp_t gfp)
-> > +static int charge_memcg(struct page *page, struct mem_cgroup *memcg, gfp_t gfp)
-> >  {
-> >         unsigned int nr_pages = thp_nr_pages(page);
-> >         int ret;
-> > @@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-> >  }
-> >
-> >  /**
-> > - * mem_cgroup_charge - charge a newly allocated page to a cgroup
-> > + * __mem_cgroup_charge - charge a newly allocated page to a cgroup
-> >   * @page: page to charge
-> >   * @mm: mm context of the victim
-> >   * @gfp_mask: reclaim mode
-> > @@ -6736,16 +6735,14 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-> >   *
-> >   * Returns 0 on success. Otherwise, an error code is returned.
-> >   */
-> > -int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
-> > +int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> > +                       gfp_t gfp_mask)
-> >  {
-> >         struct mem_cgroup *memcg;
-> >         int ret;
-> >
-> > -       if (mem_cgroup_disabled())
-> > -               return 0;
-> > -
-> >         memcg = get_mem_cgroup_from_mm(mm);
-> > -       ret = __mem_cgroup_charge(page, memcg, gfp_mask);
-> > +       ret = charge_memcg(page, memcg, gfp_mask);
-> >         css_put(&memcg->css);
-> >
-> >         return ret;
-> > @@ -6780,7 +6777,7 @@ int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
-> >                 memcg = get_mem_cgroup_from_mm(mm);
-> >         rcu_read_unlock();
-> >
-> > -       ret = __mem_cgroup_charge(page, memcg, gfp);
-> > +       ret = charge_memcg(page, memcg, gfp);
-> >
-> >         css_put(&memcg->css);
-> >         return ret;
-> > @@ -6916,18 +6913,15 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
-> >  }
-> >
-> >  /**
-> > - * mem_cgroup_uncharge - uncharge a page
-> > + * __mem_cgroup_uncharge - uncharge a page
-> >   * @page: page to uncharge
-> >   *
-> >   * Uncharge a page previously charged with mem_cgroup_charge().
->
-> The comment here also needs to be updated.
->
-> mem_cgroup_uncharge() -> __mem_cgroup_uncharge()
->
-> >   */
-> > -void mem_cgroup_uncharge(struct page *page)
-> > +void __mem_cgroup_uncharge(struct page *page)
-> >  {
-> >         struct uncharge_gather ug;
-> >
-> > -       if (mem_cgroup_disabled())
-> > -               return;
-> > -
-> >         /* Don't touch page->lru of any random page, pre-check: */
-> >         if (!page_memcg(page))
-> >                 return;
-> > @@ -6938,20 +6932,17 @@ void mem_cgroup_uncharge(struct page *page)
-> >  }
-> >
-> >  /**
-> > - * mem_cgroup_uncharge_list - uncharge a list of page
-> > + * __mem_cgroup_uncharge_list - uncharge a list of page
-> >   * @page_list: list of pages to uncharge
-> >   *
-> >   * Uncharge a list of pages previously charged with
-> >   * mem_cgroup_charge().
->
-> Should be __mem_cgroup_charge().
+On 7/12/21 12:49 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.50 release.
+> There are 598 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 18:45:43 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.50-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Fixed and posted in v4 at:
-https://lore.kernel.org/patchwork/project/lkml/list/?series=507943
-Thanks!
+Compiled and booted on my test system. No dmesg regressions.
 
->
-> Thanks.
->
-> >   */
-> > -void mem_cgroup_uncharge_list(struct list_head *page_list)
-> > +void __mem_cgroup_uncharge_list(struct list_head *page_list)
-> >  {
-> >         struct uncharge_gather ug;
-> >         struct page *page;
-> >
-> > -       if (mem_cgroup_disabled())
-> > -               return;
-> > -
-> >         uncharge_gather_clear(&ug);
-> >         list_for_each_entry(page, page_list, lru)
-> >                 uncharge_page(page, &ug);
-> > --
-> > 2.32.0.93.g670b81a890-goog
-> >
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
