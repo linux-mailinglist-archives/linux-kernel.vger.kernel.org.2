@@ -2,167 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC2E3C737D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830D13C7380
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237174AbhGMPrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
+        id S237154AbhGMPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236932AbhGMPrB (ORCPT
+        with ESMTP id S236932AbhGMPtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:47:01 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F54DC0613DD;
-        Tue, 13 Jul 2021 08:44:11 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id e1-20020a9d63c10000b02904b8b87ecc43so8991307otl.4;
-        Tue, 13 Jul 2021 08:44:11 -0700 (PDT)
+        Tue, 13 Jul 2021 11:49:00 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2C2C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:46:10 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id me13-20020a17090b17cdb0290173bac8b9c9so1687229pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=retq6liOP8LyC4cjQJYBW1Hq0tEy4WkIXq1yMZpGIss=;
-        b=l5diPwu63ZdwRDfFsRfLQy6ioKCxMcgkhHwIYlXxCmK8cfEIsueg3SB3anKBpHRUFL
-         /ygVShxWcr+HN/+V5ri/oymhukuLDAjGZ7wzhGv9J3LNpQZRxmJ4uVnL8MX8CaGKXiem
-         6863xjwYlv9r55SU7cPAxwSnubqtyzFaIL7/WWAWmncdYPMNYhLBxdOOPsLH5ogoja8I
-         4MB/Ghh455+ouxNT3gtRiQFhNsx7hN+MGYLiMkhrFWeN+levLLFjQOL8rEXE6EecfxQt
-         DptmuInoEjccYpab6fsGBKqa3jVdcmuD1AfGNLxNIa7ixzEEcMcRjx4mnTi0yXi6aeBz
-         nXbg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=88HXaPtHKzXvJfwVkmoFRhzh8ULUchVJgvCgSXMZAEA=;
+        b=IMSe346IusRmrX3pn5fJMJ9Kjb0J8qJPIB5Fw4mHBShvol+ZM0iW6AswXxYKFgThp2
+         NiUrVqwOW22Ibl7Uo8Irfjyetq41nt5wNmRgY6CbxpMB3wzP3d57Y8uJaIAHG9Mc05Sq
+         8YDwgsFnmHQjD4rkzAXRsHb132CuLelWS3qujGuiYxCoW+O4A4bKq8VA85gemw0mEy0r
+         +RODPf++g0m9822Bw3VJ/64YIRmde2Bsm0zZ5ECgd1b+z05p2Ky/cL+vMPd30KuLxxcg
+         gGlHCVWO8yyLSnXlVB98vCQej203Ql1lhPhZNS+6Mq0cgS10cfsf/lcJJqfvsfEoOzIc
+         KNtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=retq6liOP8LyC4cjQJYBW1Hq0tEy4WkIXq1yMZpGIss=;
-        b=EXkrF/I3qDFEL1C2XM+ORqoPl+NAqYLpMNrQu+mJ0sW3faaWzVCnkn1/9oc7YIbu+F
-         pA0f13hPwVfVdZ4+mTPkIHSq88DYBHEWicMWWwbFiOLIQGRPeDIMIC2b09wK1dvPzKZG
-         H9w6Bh3L6YXokJpF3O+o4z/a2sIYZIzPJ8WyOtyXSKqLziQUT0fgQ9b6EakcdugliwoF
-         /JvV4daHp65WRa1R77rI3TvdAhVf82VCNotQKDFsES+f5ktuF3YxkKVOX36AVGuDx2pk
-         mYK/Pkqm51ID/nRlYt++ZDwdzzKWxpawfs7BY2N/Qs8QpRE4BllKmFi1mkUbDhcC4wVH
-         1B5g==
-X-Gm-Message-State: AOAM5305NXibudOGp2J8lYlOWvPDKr5gSzViJmflQvAzTP7V9L8yA46G
-        gNdplv7dvl+lW6DGks3xRg==
-X-Google-Smtp-Source: ABdhPJyx0htP9DIoOaWYr204hm25coZiD0nA2Sxr0KKjHdzpEOchF2qpDQHfdQWgEM0KXzdIvynVzw==
-X-Received: by 2002:a05:6830:3108:: with SMTP id b8mr4034650ots.182.1626191050482;
-        Tue, 13 Jul 2021 08:44:10 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id v26sm336142oof.30.2021.07.13.08.44.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=88HXaPtHKzXvJfwVkmoFRhzh8ULUchVJgvCgSXMZAEA=;
+        b=DIlZ5oRyHF88AlhI6xQA8w3orPzuhY4btCSK41WQu945CEFBR9EfVHk74SeIDlWxvw
+         VoXVrpGHYNWg90V2nlPWPdbYCYbKeOVr++0X8w6Cfwbrn/dQsUgDhs1isynXptnlpBQT
+         br0zrTvEeCfewocPZd6CUD+k6r/oFsqrkx20WjiaRsfm0Sk5hW5Yhw4ddYVKYhnQDA4v
+         ieOFe+ddw6O5TyRjeQIFP8f17vlzHM+mdrMFINHigP+VSdeaQuAkYGr/tI7OQScfGjir
+         8lKsuj0dXNhYsJpMDwd6TOYc75iN27KMLqIHcLfN0F+6AgKWuKEYn/rgneDIhW8BsunO
+         COLA==
+X-Gm-Message-State: AOAM532sob8lTi5x0xoDUz/R6nmWzBvRKcczDQ8cYwI8UC81/rDVow4M
+        O+sgjt8ZjXi9X/tPahNXoaqFDw==
+X-Google-Smtp-Source: ABdhPJza4OuJ5oLLl2sYrZSHnrhml4tdTkspyGV08RSdzPXDKi8rSdcWd4cuhMJeAVtMgMXK28WI4g==
+X-Received: by 2002:a17:902:ed95:b029:ee:aa46:547a with SMTP id e21-20020a170902ed95b02900eeaa46547amr4011323plj.27.1626191169630;
+        Tue, 13 Jul 2021 08:46:09 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id i1sm3257836pjs.31.2021.07.13.08.46.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 08:44:08 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:2514:a9eb:8442:8902])
-        by serve.minyard.net (Postfix) with ESMTPSA id 08A4D1800E8;
-        Tue, 13 Jul 2021 15:44:07 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 10:44:05 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v4 0/3] Add SSIF BMC driver
-Message-ID: <20210713154405.GB3406@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210713055425.30636-1-quan@os.amperecomputing.com>
+        Tue, 13 Jul 2021 08:46:08 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 23:46:02 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
+ compat_auxtrace_mmap__{read_head|write_tail}
+Message-ID: <20210713154602.GD748506@leoy-ThinkPad-X240s>
+References: <20210711104105.505728-1-leo.yan@linaro.org>
+ <20210711104105.505728-12-leo.yan@linaro.org>
+ <20210712144410.GE22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713055425.30636-1-quan@os.amperecomputing.com>
+In-Reply-To: <20210712144410.GE22278@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 12:54:22PM +0700, Quan Nguyen wrote:
-> This series add support the SSIF BMC driver which is to perform in-band
-> IPMI communication with their host in management (BMC) side.
+Hi Russell,
 
-Per the kernel build robot, looks like patch 3 introduces slave_enable()
-but patch 1 uses it.
+On Mon, Jul 12, 2021 at 03:44:11PM +0100, Russell King (Oracle) wrote:
+> On Sun, Jul 11, 2021 at 06:41:05PM +0800, Leo Yan wrote:
+> > When perf runs in compat mode (kernel in 64-bit mode and the perf is in
+> > 32-bit mode), the 64-bit value atomicity in the user space cannot be
+> > assured, E.g. on some architectures, the 64-bit value accessing is split
+> > into two instructions, one is for the low 32-bit word accessing and
+> > another is for the high 32-bit word.
+> 
+> Does this apply to 32-bit ARM code on aarch64? I would not have thought
+> it would, as the structure member is a __u64 and
+> compat_auxtrace_mmap__read_head() doesn't seem to be marking anything
+> as packed, so the compiler _should_ be able to use a LDRD instruction
+> to load the value.
 
--corey
+I think essentially your question is relevant to the memory model.
+For 32-bit Arm application on aarch64, in the Armv8 architecture
+reference manual ARM DDI 0487F.c, chapter "E2.2.1
+Requirements for single-copy atomicity" describes:
 
-> 
-> SSIF BMC driver in this series is tested with Aspeed AST2500.
-> 
-> v4:
->   + Fix recursive spinlock                                      [Graeme]
->   + Send response with Completion code 0xFF when aborting         [Quan]
->   + Fix warning with dt_binding_check                              [Rob]
->   + Change aspeed-ssif-bmc.yaml to ssif-bmc.yaml                  [Quan]
->   + Added bounding check on SMBus writes and the whole request     [Dan]
->   + Moved buffer to end of struct ssif_bmc_ctx to avoid context
->     corruption if somehow buffer is written past the end           [Dan]
->   + Return -EINVAL if userspace buffer too small, dont
->     silence truncate                                       [Corey, Joel]
->   + Not necessary to check NONBLOCK in lock                      [Corey]
->   + Enforce one user at a time                                    [Joel]
->   + Reject write with invalid response length from userspace     [Corey]
->   + Add state machines for better ssif bmc state handling         [Quan]
->   + Drop ssif_bmc_aspeed.c and make ssif_bmc.c is generic
->     SSIF BMC driver                                               [Quan]
->   + Change compatible string "aspeed,ast2500-ssif-bmc" to
->     "ampere,ssif-bmc"                                             [Quan]
->   + Toggle Slave enable in i2c-aspeed to turn on/off slave mode   [Ryan]
->   + Added slave_enable() to struct i2c_algorithm to control
->     slave mode and to address the recursive spinlock      [Graeme, Ryan]
->   + Abort current request with invalid SMBus write or
->     invalid command                                               [Quan]
->   + Abort all request if there is pending response                [Quan]
->   + Changed validate_pec() to validate_request()                  [Quan]
->   + Add unsupported_smbus_cmd() to handle unknown SMBus command   [Quan]
->   + Print internal state string for ease investigating issue      [Quan]
->   + Move to READY state on SLAVE_STOP event                       [Quan]
->   + Change initilize_transfer() to process_smbus_cmd()            [Quan]
->   + Introduce functions for each slave event                      [Quan]
-> 
-> v3:
->   + Switched binding doc to use DT schema format [Rob]
->   + Splited into generic ssif_bmc and aspeed-specific [Corey, Joel]
->   + Removed redundant license info [Joel]
->   + Switched to use traditional if-else [Joel]
->   + Removed unused ssif_bmc_ioctl() [Joel]
->   + Made handle_request()/complete_response() to return void [Joel]
->   + Refactored send_ssif_bmc_response()/receive_ssif_bmc_request()
->   [Corey]
->   + Remove mutex [Corey]
->   + Use spin_lock/unlock_irqsave/restore in callback [Corey]
->   + Removed the unnecessary memset [Corey]
->   + Switch to use dev_err() [Corey]
->   + Combine mask/unmask two interrupts together [Corey]
->   + Fixed unhandled Tx done with NAK [Quan]
->   + Late ack'ed Tx done w/wo Ack irq [Quan]
->   + Use aspeed-specific exported aspeed_set_slave_busy() when slave busy
->   to fix the deadlock [Graeme, Philipp, Quan]
->   + Clean buffer for last multipart read [Quan]
->   + Handle unknown incoming command [Quan]
-> 
-> v2:
->   + Fixed compiling error with COMPILE_TEST for arc
-> 
-> Quan Nguyen (3):
->   ipmi: ssif_bmc: Add SSIF BMC driver
->   bindings: ipmi: Add binding for SSIF BMC driver
->   i2c: aspeed: Add slave_enable() to toggle slave mode
-> 
->  .../devicetree/bindings/ipmi/ssif-bmc.yaml    |  38 +
->  drivers/char/ipmi/Kconfig                     |  11 +
->  drivers/char/ipmi/Makefile                    |   1 +
->  drivers/char/ipmi/ssif_bmc.c                  | 781 ++++++++++++++++++
->  drivers/char/ipmi/ssif_bmc.h                  | 106 +++
->  drivers/i2c/busses/i2c-aspeed.c               |  20 +
->  include/linux/i2c.h                           |   2 +
->  7 files changed, 959 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml
->  create mode 100644 drivers/char/ipmi/ssif_bmc.c
->  create mode 100644 drivers/char/ipmi/ssif_bmc.h
-> 
-> -- 
-> 2.28.0
-> 
+"LDM, LDC, LDRD, STM, STC, STRD, PUSH, POP, RFE, SRS, VLDM, VLDR, VSTM,
+and VSTR instructions are executed as a sequence of word-aligned word
+accesses. Each 32-bit word access is guaranteed to be single-copy
+atomic. The architecture does not require subsequences of two or more
+word accesses from the sequence to be single-copy atomic."
+
+So I think LDRD/STRD instruction cannot promise the atomicity for
+loading or storing two words in 32-bit Arm.
+
+And another thought is the functions compat_auxtrace_mmap__read_head()
+is a general function, I avoid to write it with any architecture
+specific instructions.
+
+> Is this a problem noticed on non-ARM architectures?
+
+No, actually we just concluded the potential issue based on the analysis
+for the weak memory model.
+
+Thanks,
+Leo
