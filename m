@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9A53C6A95
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBC03C6A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhGMGbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:31:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51122 "EHLO mail.kernel.org"
+        id S234130AbhGMGbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:31:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233934AbhGMGbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:31:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33E7F61284;
+        id S231261AbhGMGbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 02:31:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E2B5611AB;
         Tue, 13 Jul 2021 06:28:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626157725;
-        bh=beQ/nlrqcVJKSEttIL89uLGSbQ5pFqjunHiG0KZXdfc=;
+        bh=se9640ubWAMBXq29BIJQe5nQYy9uHVZjbLlOIKUMhLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mtUJl1n8wkfbz1Lr0Fb1MinklwzlNDMTbayd5c5bx/82H5Ipo9p0xAjOtUvKorane
-         gR3+5eOLCmkB2XMcUVUgVwswWPIOK/UgRx8PUzvdHZY4SWEnlZIOxgv0qC1Vzb3keW
-         TCQItGa20dTj50WM64jJNtPDksLNLJURYW7ZItZke04YDwKlpinc15/1hV+SDuk/I8
-         KF/ZuGGgzVV/9waOpbIYNgKxp6mOJmnFH6e4rA0ssNNY8dYkDQzCLRShtIvd70Uvip
-         cb1dwjWuzw76LgOcj8zl9cMdrkKTUzjFrkvIdSbUvwISiCvR41CS0zFAdoqKeAL3hZ
-         FAeLJv49hbnlg==
+        b=uStJlKToM2PjoN3BxTnmKgBTyyKyT36OYj7HUwAqTBXD2yupJfQ2NHHScIAyukCHr
+         g3GMxasYYy8CCLaaBFBXY1GfDEDXnCDiZ3xzqe58dAWmyXqQUI0Bk4Fo8g+PPjFD3b
+         qEr/Pse6bnWIWsULrsHx8oWtcmTXY33W+XjY3kXeEaieM8Op94xwSmbASTxbDZu1em
+         3ZOhsaCGz84cY8YUowhOpJx9XhfizZGlWQe8T2X0AV+8m1aFb2SijApMsXqiKpGIEm
+         3ORvckVxMzGm41ZCBd3pkTpOPmZd9gVg6S5PdOkO+suBz/F2AzPk5hdG5K9COrrjSF
+         vHR6qnSa9T2+Q==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1m3BuM-005yPX-QG; Tue, 13 Jul 2021 08:28:42 +0200
+        id 1m3BuM-005yPb-RS; Tue, 13 Jul 2021 08:28:42 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Bjorn Helgaas <helgaas@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
@@ -36,9 +36,9 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Rob Herring <robh+dt@kernel.org>,
         Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: [PATCH v5 1/8] dt-bindings: phy: Add bindings for HiKey 960 PCIe PHY
-Date:   Tue, 13 Jul 2021 08:28:34 +0200
-Message-Id: <390e7fc0cd6fa4217f5d67c74f12ea101fab3f6d.1626157454.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v5 2/8] dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+Date:   Tue, 13 Jul 2021 08:28:35 +0200
+Message-Id: <baa7e71e13953b28a11fffdcef35195099feb7fd.1626157454.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626157454.git.mchehab+huawei@kernel.org>
 References: <cover.1626157454.git.mchehab+huawei@kernel.org>
@@ -49,38 +49,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bindings for HiKey 960 (hi3660) PCIe PHY
+Document the bindings for HiKey 970 (hi3670) PCIe PHY
 interface, supported via the pcie-kirin driver.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../phy/hisilicon,phy-hi3660-pcie.yaml        | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        | 101 ++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
 
-diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml
+diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
 new file mode 100644
-index 000000000000..81c93e76cef4
+index 000000000000..976ab6fe7b0a
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml
-@@ -0,0 +1,82 @@
++++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+@@ -0,0 +1,101 @@
 +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3660-pcie.yaml#
++$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3670-pcie.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: HiSilicon Kirin960 PCIe PHY
++title: HiSilicon Kirin970 PCIe PHY
 +
 +maintainers:
 +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 +
 +description: |+
-+  Bindings for PCIe PHY on HiSilicon Kirin 960.
++  Bindings for PCIe PHY on HiSilicon Kirin 970.
 +
 +properties:
 +  compatible:
-+    const: hisilicon,hi960-pcie-phy
++    const: hisilicon,hi970-pcie-phy
 +
 +  "#phy-cells":
 +    const: 0
@@ -91,6 +91,9 @@ index 000000000000..81c93e76cef4
 +
 +  reg-names:
 +    const: phy
++
++  phy-supply:
++    description: The PCIe PHY power supply
 +
 +  clocks:
 +    items:
@@ -109,7 +112,16 @@ index 000000000000..81c93e76cef4
 +      - const: pcie_aclk
 +
 +  reset-gpios:
-+    description: PCI PERST reset GPIO
++    description: PCI PERST reset GPIOs
++    maxItems: 4
++
++  clkreq-gpios:
++    description: Clock request GPIOs
++    maxItems: 3
++
++  hisilicon,eye-diagram-param:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: Eye diagram for phy.
 +
 +required:
 +  - "#phy-cells"
@@ -119,30 +131,37 @@ index 000000000000..81c93e76cef4
 +  - clocks
 +  - clock-names
 +  - reset-gpios
++  - clkreq-gpios
++  - hisilicon,eye-diagram-param
++  - phy-supply
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/clock/hi3660-clock.h>
++    #include <dt-bindings/clock/hi3670-clock.h>
 +
 +    bus {
 +      #address-cells = <2>;
 +      #size-cells = <2>;
-+      pcie_phy: pcie-phy@f3f2000 {
-+        compatible = "hisilicon,hi960-pcie-phy";
-+        reg = <0x0 0xf3f20000 0x0 0x40000>;
++      pcie_phy: pcie-phy@fc000000 {
++        compatible = "hisilicon,hi970-pcie-phy";
++        reg = <0x0 0xfc000000 0x0 0x80000>;
 +        reg-names = "phy";
-+        clocks = <&crg_ctrl HI3660_PCIEPHY_REF>,
-+                 <&crg_ctrl HI3660_CLK_GATE_PCIEAUX>,
-+                 <&crg_ctrl HI3660_PCLK_GATE_PCIE_PHY>,
-+                 <&crg_ctrl HI3660_PCLK_GATE_PCIE_SYS>,
-+                 <&crg_ctrl HI3660_ACLK_GATE_PCIE>;
-+        clock-names = "pcie_phy_ref", "pcie_aux",
-+                 "pcie_apb_phy", "pcie_apb_sys",
-+                 "pcie_aclk";
-+        reset-gpios = <&gpio11 1 0 >;
 +        #phy-cells = <0>;
++        phy-supply = <&ldo33>;
++        clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
++                 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
++                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
++                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
++                 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
++        clock-names = "pcie_phy_ref", "pcie_aux",
++                      "pcie_apb_phy", "pcie_apb_sys", "pcie_aclk";
++        reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
++                      <&gpio3 1 0 >, <&gpio27 4 0 >;
++        clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >, <&gpio17 0 0 >;
++        hisilicon,eye-diagram-param = <0xFFFFFFFF 0xFFFFFFFF
++                                       0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF>;
 +      };
 +    };
 +...
