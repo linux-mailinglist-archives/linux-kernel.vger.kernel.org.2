@@ -2,529 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E7E3C690A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6663C6917
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhGMEKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 00:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhGMEKk (ORCPT
+        id S229782AbhGMEPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 00:15:10 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54834 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhGMEPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 00:10:40 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D56C0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:07:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id w5-20020a0569021005b029055b51419c7dso25244966ybt.23
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=lsRQcYOnLNGeZNFv9ZqabeUiQqK2KSkzul/BCImYOGQ=;
-        b=gPSXuiokMiiFcRSzhrt4fHhIbGRoeQi7Eq4XA3gKVm2B6yAWrkdk1rCOxk5ky642fW
-         8EHwZOyTerEb18XV86OudV9UyVF5PNC3+cN/Owf5gp3iAAtyiQpPC5juqs2nfmbNcZNp
-         G9iSIfJn0IcLbJvo+qX+4b97x+ytRKUmB707yHZX0a4Ugkbu3BPyzJYBscBtOIlr+9PZ
-         4s9qPHYX8K2TTwoSRiEs7/l7fbu7mjOlJKvImJQMMIhMInUcVqAKkbHhqySlvBw1V/Aw
-         MnhDQH+dkssXHH6sEZFKpPcBmVs1Td2epMkxH7yfPTDg8blpTOoYfNx8z26aFc+hNMe5
-         iBHg==
+        Tue, 13 Jul 2021 00:15:09 -0400
+Received: by mail-io1-f72.google.com with SMTP id m14-20020a5d898e0000b02904f7957d92b5so13395504iol.21
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:12:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=lsRQcYOnLNGeZNFv9ZqabeUiQqK2KSkzul/BCImYOGQ=;
-        b=VR63+CNeFPXwMl0E8uGryD17Q48ED8F/QPO9LbtuKbalIyaW5jhXllcoMLEABnZkun
-         0hSXnShRG3Tqybvqgzjv23TrItsC5VepkE8krh5lKdCIK+BYt/WXSF2OytL/zuYrzw/h
-         QTbh9kFxvcIVj3u7tSJ4VtPTVX9VXBEJ7FEYabTJJyXdWEp7t3KrA/0/yj7VF6L3AeX4
-         w4KG0IO+PFf663lZdGs/RVB844Zr0dmGg7FOOKyiPSN8v1OccbYTVSjfTkn0A5ObHIc5
-         OOxfFFknZw7Dg9yxprWhcFYuvkBUiz+sDvi7Pt/V7wgdhigBKNkcpiqWbv2MOTBoMeWV
-         MNAw==
-X-Gm-Message-State: AOAM532/3T9POiyaQIQVon4Fq6jB0Nkmj9Nzh5YuWCbCQR1ecYuuRDvk
-        dovcul/eETAvZgBj+FxwvjPhzypurtg=
-X-Google-Smtp-Source: ABdhPJxZMjSGTD6Q9sj/OJwUJwZToli5AFricGI0zhixsoa2+/EbM8Q8aIAn6TH/hNqolerSh4FEQ1DfqVs=
-X-Received: from hridya.mtv.corp.google.com ([2620:15c:211:200:2156:3303:4d7a:cc35])
- (user=hridya job=sendgmr) by 2002:a5b:c0a:: with SMTP id f10mr3006444ybq.9.1626149269053;
- Mon, 12 Jul 2021 21:07:49 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 21:07:38 -0700
-Message-Id: <20210713040742.2680135-1-hridya@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2] dma-buf: Delete the DMA-BUF attachment sysfs statistics
-From:   Hridya Valsaraju <hridya@google.com>
-To:     christian.koenig@amd.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Cc:     kernel-team@android.com, john.stultz@linaro.org, surenb@google.com,
-        daniel@ffwll.ch
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ccpUymmYMJnlE4BtUzanLseXkHW29GGGmHbpFP8ZztM=;
+        b=OIMknEC5nxDdwYaqObo7/KuMbgfzjk9f/6lNxGkncXmi12GEZ5BILVEPzdxXw+PGzm
+         8qaKGrNJjblUJVwaKAZ674uq8IhLw8vBCR5cgR1k5YNUX1SFWTHT0gB6JtdAT/M6vgII
+         88u9MxDpRV8bLAVUw6sVw3dso0G1YGPbCzSw4IbxSXTAioGVp2oEBBlaJH57M5d+SIn5
+         z8L7CXWO1Jvms14Je8iMwyBojqnNVRq/u9BdVlAJR5CQt7olB0X1jPmEmYJuYWgaRlxU
+         vjPnJkc5Y6jU05pVXeAOyCcCTWYvqg2HlY700IPysxnmD9eamVn0PyJajou1KpIFOQyZ
+         grvQ==
+X-Gm-Message-State: AOAM531aPyahcJFrvPJzZWsLIEo4nWg/2F+BOxfYvTh99Z1Nk6U15nAK
+        2jjRbHqMS21tB0AuV2QEBTV/1Ii8MCdl8IvVRLzrw45Nea2R
+X-Google-Smtp-Source: ABdhPJyqv6fEm3KCkuMLgXE0cTLtuqsqJcimr+C6aG/c2PHeFwoVQdUBgejJq1zdGv8qJY6Jfm6iI23TaweAYv4EhkWCev7oZfDE
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:3155:: with SMTP id m21mr1705310ioy.145.1626149540071;
+ Mon, 12 Jul 2021 21:12:20 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 21:12:20 -0700
+In-Reply-To: <00000000000069c40405be6bdad4@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b00c1105c6f971b2@google.com>
+Subject: Re: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
+From:   syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>
+To:     brauner@kernel.org, christian.brauner@ubuntu.com,
+        dvyukov@google.com, gregkh@linuxfoundation.org,
+        gscrivan@redhat.com, hch@lst.de, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org,
+        stable@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMA-BUF attachment statistics form a subset of the DMA-BUF
-sysfs statistics that recently merged to the drm-misc tree. They are not
-UABI yet since they have not merged to the upstream Linux kernel.
+syzbot has found a reproducer for the following issue on:
 
-Since there has been a reported a performance regression due to the
-overhead of sysfs directory creation/teardown during
-dma_buf_attach()/dma_buf_detach(), this patch deletes the DMA-BUF
-attachment statistics from sysfs.
+HEAD commit:    7fef2edf sd: don't mess with SD_MINORS for CONFIG_DEBUG_BL..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=178919b0300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20276914ec6ad813
+dashboard link: https://syzkaller.appspot.com/bug?extid=283ce5a46486d6acdbaf
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120220f2300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115f37b4300000
 
-Fixes: bdb8d06dfefd (dmabuf: Add the capability to expose DMA-BUF stats
-in sysfs)
-Signed-off-by: Hridya Valsaraju <hridya@google.com>
-Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com
 
-Changes in v2:
-Updated commit message to clarify that the sysfs files being removed
-have not yet merged to upstream Linux and are hence not ABI.
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in atomic64_read include/asm-generic/atomic-instrumented.h:605 [inline]
+BUG: KASAN: use-after-free in atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+BUG: KASAN: use-after-free in filp_close+0x22/0x170 fs/open.c:1306
+Read of size 8 at addr ffff888025a40a78 by task syz-executor493/8445
 
-Hi Christian,
+CPU: 1 PID: 8445 Comm: syz-executor493 Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic64_read include/asm-generic/atomic-instrumented.h:605 [inline]
+ atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+ filp_close+0x22/0x170 fs/open.c:1306
+ close_fd+0x5c/0x80 fs/file.c:628
+ __do_sys_close fs/open.c:1331 [inline]
+ __se_sys_close fs/open.c:1329 [inline]
+ __x64_sys_close+0x2f/0xa0 fs/open.c:1329
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4021b3
+Code: c7 c2 c0 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8
+RSP: 002b:00007ffe62cc73e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00000000004021b3
+RDX: 0000000020000000 RSI: 0000000000000005 RDI: 0000000000000004
+RBP: 00007ffe62cc73f8 R08: 0000000000000004 R09: 00000000004aa000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe62cc7400
+R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
 
-I have updated the commit message as per your suggestion. Please do take
-another look when you get a chance.
+Allocated by task 8445:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:467
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slab.h:512 [inline]
+ slab_alloc_node mm/slub.c:2981 [inline]
+ slab_alloc mm/slub.c:2989 [inline]
+ kmem_cache_alloc+0x216/0x3a0 mm/slub.c:2994
+ kmem_cache_zalloc include/linux/slab.h:711 [inline]
+ __alloc_file+0x21/0x280 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:150
+ path_openat+0xde/0x27f0 fs/namei.c:3493
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_creat fs/open.c:1294 [inline]
+ __se_sys_creat fs/open.c:1288 [inline]
+ __x64_sys_creat+0xc9/0x120 fs/open.c:1288
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Thanks,
-Hridya
+Freed by task 8445:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:229 [inline]
+ slab_free_hook mm/slub.c:1650 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1675
+ slab_free mm/slub.c:3235 [inline]
+ kfree+0xeb/0x650 mm/slub.c:4295
+ put_fs_context+0x3fb/0x650 fs/fs_context.c:454
+ fscontext_release+0x4c/0x60 fs/fsopen.c:73
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
- .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  28 ----
- drivers/dma-buf/dma-buf-sysfs-stats.c         | 140 +-----------------
- drivers/dma-buf/dma-buf-sysfs-stats.h         |  27 ----
- drivers/dma-buf/dma-buf.c                     |  16 --
- include/linux/dma-buf.h                       |  17 ---
- 5 files changed, 4 insertions(+), 224 deletions(-)
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:3029 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3109
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers b/Docume=
-ntation/ABI/testing/sysfs-kernel-dmabuf-buffers
-index a243984ed420..5d3bc997dc64 100644
---- a/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
-+++ b/Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
-@@ -22,31 +22,3 @@ KernelVersion:	v5.13
- Contact:	Hridya Valsaraju <hridya@google.com>
- Description:	This file is read-only and specifies the size of the DMA-BUF =
-in
- 		bytes.
--
--What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments
--Date:		May 2021
--KernelVersion:	v5.13
--Contact:	Hridya Valsaraju <hridya@google.com>
--Description:	This directory will contain subdirectories representing every
--		attachment of the DMA-BUF.
--
--What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_u=
-id>
--Date:		May 2021
--KernelVersion:	v5.13
--Contact:	Hridya Valsaraju <hridya@google.com>
--Description:	This directory will contain information on the attached devic=
-e
--		and the number of current distinct device mappings.
--
--What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_u=
-id>/device
--Date:		May 2021
--KernelVersion:	v5.13
--Contact:	Hridya Valsaraju <hridya@google.com>
--Description:	This file is read-only and is a symlink to the attached devic=
-e's
--		sysfs entry.
--
--What:		/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attachment_u=
-id>/map_counter
--Date:		May 2021
--KernelVersion:	v5.13
--Contact:	Hridya Valsaraju <hridya@google.com>
--Description:	This file is read-only and contains a map_counter indicating =
-the
--		number of distinct device mappings of the attachment.
-diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.c b/drivers/dma-buf/dma-bu=
-f-sysfs-stats.c
-index a2638e84199c..053baadcada9 100644
---- a/drivers/dma-buf/dma-buf-sysfs-stats.c
-+++ b/drivers/dma-buf/dma-buf-sysfs-stats.c
-@@ -40,14 +40,11 @@
-  *
-  * * ``/sys/kernel/dmabuf/buffers/<inode_number>/exporter_name``
-  * * ``/sys/kernel/dmabuf/buffers/<inode_number>/size``
-- * * ``/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/=
-device``
-- * * ``/sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/=
-map_counter``
-  *
-- * The information in the interface can also be used to derive per-exporte=
-r and
-- * per-device usage statistics. The data from the interface can be gathere=
-d
-- * on error conditions or other important events to provide a snapshot of
-- * DMA-BUF usage. It can also be collected periodically by telemetry to mo=
-nitor
-- * various metrics.
-+ * The information in the interface can also be used to derive per-exporte=
-r
-+ * statistics. The data from the interface can be gathered on error condit=
-ions
-+ * or other important events to provide a snapshot of DMA-BUF usage.
-+ * It can also be collected periodically by telemetry to monitor various m=
-etrics.
-  *
-  * Detailed documentation about the interface is present in
-  * Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers.
-@@ -121,120 +118,6 @@ static struct kobj_type dma_buf_ktype =3D {
- 	.default_groups =3D dma_buf_stats_default_groups,
- };
-=20
--#define to_dma_buf_attach_entry_from_kobj(x) container_of(x, struct dma_bu=
-f_attach_sysfs_entry, kobj)
--
--struct dma_buf_attach_stats_attribute {
--	struct attribute attr;
--	ssize_t (*show)(struct dma_buf_attach_sysfs_entry *sysfs_entry,
--			struct dma_buf_attach_stats_attribute *attr, char *buf);
--};
--#define to_dma_buf_attach_stats_attr(x) container_of(x, struct dma_buf_att=
-ach_stats_attribute, attr)
--
--static ssize_t dma_buf_attach_stats_attribute_show(struct kobject *kobj,
--						   struct attribute *attr,
--						   char *buf)
--{
--	struct dma_buf_attach_stats_attribute *attribute;
--	struct dma_buf_attach_sysfs_entry *sysfs_entry;
--
--	attribute =3D to_dma_buf_attach_stats_attr(attr);
--	sysfs_entry =3D to_dma_buf_attach_entry_from_kobj(kobj);
--
--	if (!attribute->show)
--		return -EIO;
--
--	return attribute->show(sysfs_entry, attribute, buf);
--}
--
--static const struct sysfs_ops dma_buf_attach_stats_sysfs_ops =3D {
--	.show =3D dma_buf_attach_stats_attribute_show,
--};
--
--static ssize_t map_counter_show(struct dma_buf_attach_sysfs_entry *sysfs_e=
-ntry,
--				struct dma_buf_attach_stats_attribute *attr,
--				char *buf)
--{
--	return sysfs_emit(buf, "%u\n", sysfs_entry->map_counter);
--}
--
--static struct dma_buf_attach_stats_attribute map_counter_attribute =3D
--	__ATTR_RO(map_counter);
--
--static struct attribute *dma_buf_attach_stats_default_attrs[] =3D {
--	&map_counter_attribute.attr,
--	NULL,
--};
--ATTRIBUTE_GROUPS(dma_buf_attach_stats_default);
--
--static void dma_buf_attach_sysfs_release(struct kobject *kobj)
--{
--	struct dma_buf_attach_sysfs_entry *sysfs_entry;
--
--	sysfs_entry =3D to_dma_buf_attach_entry_from_kobj(kobj);
--	kfree(sysfs_entry);
--}
--
--static struct kobj_type dma_buf_attach_ktype =3D {
--	.sysfs_ops =3D &dma_buf_attach_stats_sysfs_ops,
--	.release =3D dma_buf_attach_sysfs_release,
--	.default_groups =3D dma_buf_attach_stats_default_groups,
--};
--
--void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach)
--{
--	struct dma_buf_attach_sysfs_entry *sysfs_entry;
--
--	sysfs_entry =3D attach->sysfs_entry;
--	if (!sysfs_entry)
--		return;
--
--	sysfs_delete_link(&sysfs_entry->kobj, &attach->dev->kobj, "device");
--
--	kobject_del(&sysfs_entry->kobj);
--	kobject_put(&sysfs_entry->kobj);
--}
--
--int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
--			       unsigned int uid)
--{
--	struct dma_buf_attach_sysfs_entry *sysfs_entry;
--	int ret;
--	struct dma_buf *dmabuf;
--
--	if (!attach)
--		return -EINVAL;
--
--	dmabuf =3D attach->dmabuf;
--
--	sysfs_entry =3D kzalloc(sizeof(struct dma_buf_attach_sysfs_entry),
--			      GFP_KERNEL);
--	if (!sysfs_entry)
--		return -ENOMEM;
--
--	sysfs_entry->kobj.kset =3D dmabuf->sysfs_entry->attach_stats_kset;
--
--	attach->sysfs_entry =3D sysfs_entry;
--
--	ret =3D kobject_init_and_add(&sysfs_entry->kobj, &dma_buf_attach_ktype,
--				   NULL, "%u", uid);
--	if (ret)
--		goto kobj_err;
--
--	ret =3D sysfs_create_link(&sysfs_entry->kobj, &attach->dev->kobj,
--				"device");
--	if (ret)
--		goto link_err;
--
--	return 0;
--
--link_err:
--	kobject_del(&sysfs_entry->kobj);
--kobj_err:
--	kobject_put(&sysfs_entry->kobj);
--	attach->sysfs_entry =3D NULL;
--
--	return ret;
--}
- void dma_buf_stats_teardown(struct dma_buf *dmabuf)
- {
- 	struct dma_buf_sysfs_entry *sysfs_entry;
-@@ -243,7 +126,6 @@ void dma_buf_stats_teardown(struct dma_buf *dmabuf)
- 	if (!sysfs_entry)
- 		return;
-=20
--	kset_unregister(sysfs_entry->attach_stats_kset);
- 	kobject_del(&sysfs_entry->kobj);
- 	kobject_put(&sysfs_entry->kobj);
- }
-@@ -290,7 +172,6 @@ int dma_buf_stats_setup(struct dma_buf *dmabuf)
- {
- 	struct dma_buf_sysfs_entry *sysfs_entry;
- 	int ret;
--	struct kset *attach_stats_kset;
-=20
- 	if (!dmabuf || !dmabuf->file)
- 		return -EINVAL;
-@@ -315,21 +196,8 @@ int dma_buf_stats_setup(struct dma_buf *dmabuf)
- 	if (ret)
- 		goto err_sysfs_dmabuf;
-=20
--	/* create the directory for attachment stats */
--	attach_stats_kset =3D kset_create_and_add("attachments",
--						&dmabuf_sysfs_no_uevent_ops,
--						&sysfs_entry->kobj);
--	if (!attach_stats_kset) {
--		ret =3D -ENOMEM;
--		goto err_sysfs_attach;
--	}
--
--	sysfs_entry->attach_stats_kset =3D attach_stats_kset;
--
- 	return 0;
-=20
--err_sysfs_attach:
--	kobject_del(&sysfs_entry->kobj);
- err_sysfs_dmabuf:
- 	kobject_put(&sysfs_entry->kobj);
- 	dmabuf->sysfs_entry =3D NULL;
-diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.h b/drivers/dma-buf/dma-bu=
-f-sysfs-stats.h
-index 5f4703249117..a49c6e2650cc 100644
---- a/drivers/dma-buf/dma-buf-sysfs-stats.h
-+++ b/drivers/dma-buf/dma-buf-sysfs-stats.h
-@@ -14,23 +14,8 @@ int dma_buf_init_sysfs_statistics(void);
- void dma_buf_uninit_sysfs_statistics(void);
-=20
- int dma_buf_stats_setup(struct dma_buf *dmabuf);
--int dma_buf_attach_stats_setup(struct dma_buf_attachment *attach,
--			       unsigned int uid);
--static inline void dma_buf_update_attachment_map_count(struct dma_buf_atta=
-chment *attach,
--						       int delta)
--{
--	struct dma_buf_attach_sysfs_entry *entry =3D attach->sysfs_entry;
-=20
--	entry->map_counter +=3D delta;
--}
- void dma_buf_stats_teardown(struct dma_buf *dmabuf);
--void dma_buf_attach_stats_teardown(struct dma_buf_attachment *attach);
--static inline unsigned int dma_buf_update_attach_uid(struct dma_buf *dmabu=
-f)
--{
--	struct dma_buf_sysfs_entry *entry =3D dmabuf->sysfs_entry;
--
--	return entry->attachment_uid++;
--}
- #else
-=20
- static inline int dma_buf_init_sysfs_statistics(void)
-@@ -44,19 +29,7 @@ static inline int dma_buf_stats_setup(struct dma_buf *dm=
-abuf)
- {
- 	return 0;
- }
--static inline int dma_buf_attach_stats_setup(struct dma_buf_attachment *at=
-tach,
--					     unsigned int uid)
--{
--	return 0;
--}
-=20
- static inline void dma_buf_stats_teardown(struct dma_buf *dmabuf) {}
--static inline void dma_buf_attach_stats_teardown(struct dma_buf_attachment=
- *attach) {}
--static inline void dma_buf_update_attachment_map_count(struct dma_buf_atta=
-chment *attach,
--						       int delta) {}
--static inline unsigned int dma_buf_update_attach_uid(struct dma_buf *dmabu=
-f)
--{
--	return 0;
--}
- #endif
- #endif // _DMA_BUF_SYSFS_STATS_H
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 510b42771974..b1a6db71c656 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -738,7 +738,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct d=
-evice *dev,
- {
- 	struct dma_buf_attachment *attach;
- 	int ret;
--	unsigned int attach_uid;
-=20
- 	if (WARN_ON(!dmabuf || !dev))
- 		return ERR_PTR(-EINVAL);
-@@ -764,13 +763,8 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct =
-device *dev,
- 	}
- 	dma_resv_lock(dmabuf->resv, NULL);
- 	list_add(&attach->node, &dmabuf->attachments);
--	attach_uid =3D dma_buf_update_attach_uid(dmabuf);
- 	dma_resv_unlock(dmabuf->resv);
-=20
--	ret =3D dma_buf_attach_stats_setup(attach, attach_uid);
--	if (ret)
--		goto err_sysfs;
--
- 	/* When either the importer or the exporter can't handle dynamic
- 	 * mappings we cache the mapping here to avoid issues with the
- 	 * reservation object lock.
-@@ -797,7 +791,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct d=
-evice *dev,
- 			dma_resv_unlock(attach->dmabuf->resv);
- 		attach->sgt =3D sgt;
- 		attach->dir =3D DMA_BIDIRECTIONAL;
--		dma_buf_update_attachment_map_count(attach, 1 /* delta */);
- 	}
-=20
- 	return attach;
-@@ -814,7 +807,6 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct d=
-evice *dev,
- 	if (dma_buf_is_dynamic(attach->dmabuf))
- 		dma_resv_unlock(attach->dmabuf->resv);
-=20
--err_sysfs:
- 	dma_buf_detach(dmabuf, attach);
- 	return ERR_PTR(ret);
- }
-@@ -864,7 +856,6 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_=
-buf_attachment *attach)
- 			dma_resv_lock(attach->dmabuf->resv, NULL);
-=20
- 		__unmap_dma_buf(attach, attach->sgt, attach->dir);
--		dma_buf_update_attachment_map_count(attach, -1 /* delta */);
-=20
- 		if (dma_buf_is_dynamic(attach->dmabuf)) {
- 			dmabuf->ops->unpin(attach);
-@@ -878,7 +869,6 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_=
-buf_attachment *attach)
- 	if (dmabuf->ops->detach)
- 		dmabuf->ops->detach(dmabuf, attach);
-=20
--	dma_buf_attach_stats_teardown(attach);
- 	kfree(attach);
- }
- EXPORT_SYMBOL_GPL(dma_buf_detach);
-@@ -1020,10 +1010,6 @@ struct sg_table *dma_buf_map_attachment(struct dma_b=
-uf_attachment *attach,
- 		}
- 	}
- #endif /* CONFIG_DMA_API_DEBUG */
--
--	if (!IS_ERR(sg_table))
--		dma_buf_update_attachment_map_count(attach, 1 /* delta */);
--
- 	return sg_table;
- }
- EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
-@@ -1061,8 +1047,6 @@ void dma_buf_unmap_attachment(struct dma_buf_attachme=
-nt *attach,
- 	if (dma_buf_is_dynamic(attach->dmabuf) &&
- 	    !IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY))
- 		dma_buf_unpin(attach);
--
--	dma_buf_update_attachment_map_count(attach, -1 /* delta */);
- }
- EXPORT_SYMBOL_GPL(dma_buf_unmap_attachment);
-=20
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 2b814fde0d11..678b2006be78 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -444,15 +444,6 @@ struct dma_buf {
- 	struct dma_buf_sysfs_entry {
- 		struct kobject kobj;
- 		struct dma_buf *dmabuf;
--
--		/**
--		 * @sysfs_entry.attachment_uid:
--		 *
--		 * This is protected by the dma_resv_lock() on @resv and is
--		 * incremented on each attach.
--		 */
--		unsigned int attachment_uid;
--		struct kset *attach_stats_kset;
- 	} *sysfs_entry;
- #endif
- };
-@@ -504,7 +495,6 @@ struct dma_buf_attach_ops {
-  * @importer_ops: importer operations for this attachment, if provided
-  * dma_buf_map/unmap_attachment() must be called with the dma_resv lock he=
-ld.
-  * @importer_priv: importer specific attachment data.
-- * @sysfs_entry: For exposing information about this attachment in sysfs.
-  *
-  * This structure holds the attachment information between the dma_buf buf=
-fer
-  * and its user device(s). The list contains one attachment struct per dev=
-ice
-@@ -525,13 +515,6 @@ struct dma_buf_attachment {
- 	const struct dma_buf_attach_ops *importer_ops;
- 	void *importer_priv;
- 	void *priv;
--#ifdef CONFIG_DMABUF_SYSFS_STATS
--	/* for sysfs stats */
--	struct dma_buf_attach_sysfs_entry {
--		struct kobject kobj;
--		unsigned int map_counter;
--	} *sysfs_entry;
--#endif
- };
-=20
- /**
---=20
-2.32.0.93.g670b81a890-goog
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+ task_work_add+0x3a/0x190 kernel/task_work.c:38
+ fput_many.part.0+0xbb/0x170 fs/file_table.c:341
+ fput_many fs/file_table.c:336 [inline]
+ fput+0x3b/0x50 fs/file_table.c:357
+ path_openat+0x19bd/0x27f0 fs/namei.c:3516
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_open fs/open.c:1228 [inline]
+ __se_sys_open fs/open.c:1224 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1224
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888025a40a00
+ which belongs to the cache filp of size 464
+The buggy address is located 120 bytes inside of
+ 464-byte region [ffff888025a40a00, ffff888025a40bd0)
+The buggy address belongs to the page:
+page:ffffea0000969000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25a40
+head:ffffea0000969000 order:1 compound_mapcount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 0000000000000000 0000000b00000001 ffff8880109c4780
+raw: 0000000000000000 00000000800c000c 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4875, ts 15466439710, free_ts 15379402342
+ prep_new_page mm/page_alloc.c:2433 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4166
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5374
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
+ alloc_slab_page mm/slub.c:1713 [inline]
+ allocate_slab+0x32b/0x4c0 mm/slub.c:1853
+ new_slab mm/slub.c:1916 [inline]
+ new_slab_objects mm/slub.c:2662 [inline]
+ ___slab_alloc+0x4ba/0x820 mm/slub.c:2825
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2865
+ slab_alloc_node mm/slub.c:2947 [inline]
+ slab_alloc mm/slub.c:2989 [inline]
+ kmem_cache_alloc+0x372/0x3a0 mm/slub.c:2994
+ kmem_cache_zalloc include/linux/slab.h:711 [inline]
+ __alloc_file+0x21/0x280 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:150
+ path_openat+0xde/0x27f0 fs/namei.c:3493
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_open fs/open.c:1228 [inline]
+ __se_sys_open fs/open.c:1224 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1224
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1343 [inline]
+ free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1394
+ free_unref_page_prepare mm/page_alloc.c:3329 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3408
+ qlink_free mm/kasan/quarantine.c:146 [inline]
+ qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
+ __kasan_slab_alloc+0x8e/0xa0 mm/kasan/common.c:444
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slab.h:512 [inline]
+ slab_alloc_node mm/slub.c:2981 [inline]
+ slab_alloc mm/slub.c:2989 [inline]
+ __kmalloc+0x1f4/0x330 mm/slub.c:4133
+ kmalloc include/linux/slab.h:596 [inline]
+ tomoyo_add_entry security/tomoyo/common.c:2031 [inline]
+ tomoyo_supervisor+0xce8/0xf00 security/tomoyo/common.c:2103
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
+ tomoyo_path_perm+0x2f0/0x400 security/tomoyo/file.c:838
+ security_inode_getattr+0xcf/0x140 security/security.c:1332
+ vfs_getattr fs/stat.c:139 [inline]
+ vfs_statx+0x164/0x390 fs/stat.c:207
+ vfs_fstatat fs/stat.c:225 [inline]
+ vfs_lstat include/linux/fs.h:3386 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:380
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff888025a40900: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+ ffff888025a40980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888025a40a00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                                ^
+ ffff888025a40a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888025a40b00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
