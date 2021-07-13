@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3777F3C71BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7896F3C71C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbhGMOFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236720AbhGMOFm (ORCPT
+        id S236815AbhGMOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:06:08 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:34471 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236765AbhGMOGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:05:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF025C0613DD;
-        Tue, 13 Jul 2021 07:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qSFD2FiYbEqxI6h5fJ2mcIpTOMalsYT7JNKaXpDY58E=; b=CDYriJnhZwpQn6mou8CszAUrn0
-        OjUPAxBcuDlSKNNvz5PSIx8wbOhUFZqI9b6D4FX+opmEoN3+qiG4ojWMmu7RVIrx8sRLWbv6peSzi
-        G37dUTQTfE7Xg3nvLliIdh+9XzZwraMv1vzrQoXSn7xiw5mOBmLgpTqp4CiF5Jjj8rxGwQV9J4Id7
-        3elRe4nzVVhlTGgmV7y6jE7V45HTrxWiSTvt9GfhF6tWYNHn+CFH5WGEaLcwIcaLJ85TY7TA07EMy
-        H49Kv7nuH+m7pxQeTzz7uQiFwTCKZl7m5brZMjB+MoG3YcQQVDijaezFRtV8XQvBRmPJ5ZcLYA8up
-        16Qf0ePw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3Izc-00HAhl-GN; Tue, 13 Jul 2021 14:02:36 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 52A8D987782; Tue, 13 Jul 2021 16:02:35 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 16:02:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Thierry Delisle <tdelisle@uwaterloo.ca>, avagin@google.com,
-        bsegall@google.com, jannh@google.com, jnewsome@torproject.org,
-        joel@joelfernandes.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        mkarsten@uwaterloo.ca, pabuhr@uwaterloo.ca, pjt@google.com,
-        posk@posk.io, tglx@linutronix.de
-Subject: Re: [RFC PATCH 3/3 v0.2] sched/umcg: RFC: implement UMCG syscalls
-Message-ID: <20210713140235.GE4170@worktop.programming.kicks-ass.net>
-References: <CAPNVh5f3H7Gor-Dph7=2jAdme-4mRfCCb0gv=wjgHQtd7Cad=Q@mail.gmail.com>
- <acad5960-30b2-3693-9117-e0b054ee97a7@uwaterloo.ca>
- <CAPNVh5cm9LhLEi1Td3rbOWtWH5oCvZTTMRd+p5bu75Epr3mqwA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPNVh5cm9LhLEi1Td3rbOWtWH5oCvZTTMRd+p5bu75Epr3mqwA@mail.gmail.com>
+        Tue, 13 Jul 2021 10:06:07 -0400
+Received: by mail-il1-f171.google.com with SMTP id e13so23300087ilc.1;
+        Tue, 13 Jul 2021 07:03:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=sTck8MT1tcfpVCvL1kgsklddyUpTEtuVs7S3TVtOJY0=;
+        b=SrDZNtvdgMPFw4Jye5GTBSnSBJawROP0DtP0nBwdtUEi0EglYqRLwyOU2EMVHQPmgG
+         Tyl66RQAC6p7RubgAAvf5X4opK6ajIGRoeI1RaJ59nMSPjmgcoxMdVkeEAnPIubqfGSj
+         fgEhck5wDsUoB9M+m9A9uCqb5QC8eTnIDvzD6tuAQqkRJpGMf2MJ7gEO/m5XdfK28q1V
+         axRpdgtfC44xu0VrOpYLuQh05P2QMPlgshZ6dklY1DaUicZNbX/A0UxLTkTXbwBjwQMn
+         G1pbVvAYRclKOUh6qV/27Qy5JoFo9Zbh7JJWGtHoIilIueAhWNqqwxpWoMkYgi5TuWuh
+         HCLQ==
+X-Gm-Message-State: AOAM532ZQJgNMniMtvKOuXRFNlJv4vsWUHgpXrLaKOMQvLjlJFzGeDAU
+        6PtTnfYQrxG8ZkbAdDNZvA==
+X-Google-Smtp-Source: ABdhPJzrE0TMePTKV6hzrsV09nnwJnBTynrp9bH4nZNdyfgGXyIW71KBdOIQERmDZOb82by5hSyJTA==
+X-Received: by 2002:a92:d10:: with SMTP id 16mr3000342iln.189.1626184997191;
+        Tue, 13 Jul 2021 07:03:17 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id f3sm719146iob.30.2021.07.13.07.03.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 07:03:16 -0700 (PDT)
+Received: (nullmailer pid 129710 invoked by uid 1000);
+        Tue, 13 Jul 2021 14:03:13 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sascha Hauer <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        kernel@collabora.com, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ian Ray <ian.ray@ge.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-spi@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+In-Reply-To: <20210712150242.146545-2-sebastian.reichel@collabora.com>
+References: <20210712150242.146545-1-sebastian.reichel@collabora.com> <20210712150242.146545-2-sebastian.reichel@collabora.com>
+Subject: Re: [PATCHv6 1/3] dt-bindings: misc: ge-achc: Convert to DT schema format
+Date:   Tue, 13 Jul 2021 08:03:13 -0600
+Message-Id: <1626184993.653258.129709.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 04:31:01PM -0700, Peter Oskolkov wrote:
-> On Mon, Jul 12, 2021 at 2:44 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
-
-> > So what I am asking is: is UMCG_WAIT_WAKE_ONLY needed?
+On Mon, 12 Jul 2021 17:02:40 +0200, Sebastian Reichel wrote:
+> Convert the binding to DT schema format. Also update the binding
+> to fix shortcomings
 > 
-> Because the approach you described has been tried last year and was NACKed:
-> https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
+>  * Add "nxp,kinetis-k20" fallback compatible
+>  * add programming SPI interface and reset GPIO
+>  * add main clock
+>  * add voltage supplies
+>  * drop spi-max-frequency from required properties,
+>    driver will setup max. frequency
 > 
-> In short, futex maintainers do not want to touch the existing futex
-> code at all other than for bugfixes. No new futex functionality,
-> period. See e.g. futex2 efforts:
-> https://lore.kernel.org/lkml/20210603195924.361327-1-andrealmeid@collabora.com/
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../devicetree/bindings/misc/ge-achc.txt      | 26 --------
+>  .../devicetree/bindings/misc/ge-achc.yaml     | 65 +++++++++++++++++++
+>  2 files changed, 65 insertions(+), 26 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/misc/ge-achc.txt
+>  create mode 100644 Documentation/devicetree/bindings/misc/ge-achc.yaml
+> 
 
-These are two orthogonal issues. We do not want to make the futex
-multiplex monster worse, but that's not the reason for rejecting
-FUTEX_SWAP.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-The problem with FUTEX_SWAP is that it doesn't even begin to solve the
-posed problem, namely N:M threading that natively allows blocking
-syscalls (IOW without wrapping all syscalls).
+yamllint warnings/errors:
 
-This means we need kernel->user notification of tasks that block and
-wakeup, such that the userspace scheduler can adequately react. This is
-not something that sanely fits in futex.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.example.dt.yaml: spi: spi@1:reg: [[1], [0]] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/spi-controller.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.example.dt.yaml: spi: spi@1:reg: Additional items are not allowed ([0] was unexpected)
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/spi-controller.yaml
+\ndoc reference errors (make refcheckdocs):
 
-It also requires an additional kernel side block point such that tasks
-that blocked in-kernel, will not resume userspace when the userspace
-scheduler decided to run another task in its stead.
+See https://patchwork.ozlabs.org/patch/1504037
 
-These things are what resulted in UMCG.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
