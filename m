@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446F33C6F09
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12073C6F10
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbhGMK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:59:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235508AbhGMK7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 864666127C;
-        Tue, 13 Jul 2021 10:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626173805;
-        bh=CUz5DNHYp7J2Qi4kShmm8q0o4eae/stvnRk/KeoGgd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X2g8iUO2SdpRvF+7XcoZeodN1uD/DGbSvIZCBZ3/PIeX7UEFhAXoM75bDR2IFYbGV
-         gkfE37qOel6g+2CxBLKDLqHGu6gcGWEHq8dLpo7fgRPShZfFUiI1pvwPMy22N1LVLa
-         bVWRlGdFxmR7Qy4j08trX7JsaoJbMg7RWM66gEL0=
-Date:   Tue, 13 Jul 2021 12:56:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCHv6 3/3] misc: gehc-achc: new driver
-Message-ID: <YO1xaUAgO2LnXLva@kroah.com>
-References: <20210712150242.146545-1-sebastian.reichel@collabora.com>
- <20210712150242.146545-4-sebastian.reichel@collabora.com>
- <YOx/3YaIg24Tx+OQ@kroah.com>
- <20210712232016.feixz7mqingdc7ck@earth.universe>
- <YO0nn5iX2835Zta9@kroah.com>
- <20210713104600.gbhixaf7r4cukg6i@earth.universe>
+        id S235809AbhGMLBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235390AbhGMLBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:01:49 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BA9C0613DD;
+        Tue, 13 Jul 2021 03:58:59 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id v6so12342362lfp.6;
+        Tue, 13 Jul 2021 03:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D9zpTdN6p7SwNXQB1vuqj99Xdu6Hr8oPzuitgbMbnZk=;
+        b=ZTn/WbFDqY9SPvf3lVVTkPfOrI5ttwO9SW0TSXDm2iFHdX8XB5zQ2x6G4XYT1UgUpg
+         a3H+KqkJfkuVMp7uYIX22W7rEp/V06WBquLqI0hgEqBEbIfkkzz4XDNfv34OPNRNZEGn
+         ZOK7klAN++kcFMvp2Kj52zf7rO57FcF6co/QtpeZYUdTF9l0WnjqXndAb/ORhNfoQKLH
+         COAB5jL6JuLSEki7Un8IrS3SBUNqtPykbLHhfDM0g36cGC/X+DB75JdNtMgLjiEQ0ALX
+         OmDvh/92srotT25b0RFy3APdl/KRPDP2sUPtLJMuVX6asw8DfDikuXAv8dFPLqAie7NS
+         9lIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D9zpTdN6p7SwNXQB1vuqj99Xdu6Hr8oPzuitgbMbnZk=;
+        b=iYJ+fjK7a+p/t6dLo1d/jLQLAVfmUvLEu7EU8Mj3/a7A00BZ23mqcUh9SUTvJVe/kV
+         nWwMUL6NNwYYqinx2NlSlHotpXVp2QV7Gj9qaTO5EsbUy6xEImVxmvUi5XmbtG2GdCzo
+         cVN3eUJnBxDw5dxVNr/ZdwrxIKZ6565ea6Ea3YPAyrQzsDBGqIzuXWmrcbA5huMKXWeU
+         KNUesNu6rIlh75hDLZFRGzBdPUKp4E6ESnipfFjlnJpRlf7ySpY1FyfhpnTIFjnpuIDu
+         uHmJeRhXpdIZHFz80LwWSCP8KGUiv+zVwhf6Zj9oIPA+K40SkP4KUFh+wwp7zAdzXxOj
+         wN4Q==
+X-Gm-Message-State: AOAM530Nt++gAQ1Uzji/ThU9GxOovvLT+oqFcwuTulxtPMUnNUEct9ub
+        0Jrg06ihRARSqQ3vQiBbhLtrV6VGubcnlw==
+X-Google-Smtp-Source: ABdhPJzfXrm6xvAzy0gVpRtApq3vqO52EaQJHWWR3f0EimmrNTPumFpYfZ2b3NJLxHtx0ULx1SP+vw==
+X-Received: by 2002:a05:6512:230d:: with SMTP id o13mr2900964lfu.557.1626173937603;
+        Tue, 13 Jul 2021 03:58:57 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.115])
+        by smtp.gmail.com with ESMTPSA id i67sm208006lji.60.2021.07.13.03.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 03:58:57 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     macro@orcam.me.uk, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] net: fddi: fix UAF in fza_probe
+Date:   Tue, 13 Jul 2021 13:58:53 +0300
+Message-Id: <20210713105853.8979-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713104600.gbhixaf7r4cukg6i@earth.universe>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 12:46:00PM +0200, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Tue, Jul 13, 2021 at 07:41:51AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Jul 13, 2021 at 01:20:16AM +0200, Sebastian Reichel wrote:
-> > > On Mon, Jul 12, 2021 at 07:46:05PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Mon, Jul 12, 2021 at 05:02:42PM +0200, Sebastian Reichel wrote:
-> > > > > General Electric Healthcare's PPD has a secondary processor from
-> > > > > NXP's Kinetis K20 series. That device has two SPI chip selects:
-> > > > > 
-> > > > > The main interface's behaviour depends on the loaded firmware
-> > > > > and is currently unused.
-> > > > > 
-> > > > > The secondary interface can be used to update the firmware using
-> > > > > EzPort protocol. This is implemented by this driver using the
-> > > > > kernel's firmware API. It's not done during probe time, since
-> > > > > the device has non-volatile memory and flashing lasts almost 3
-> > > > > minutes.
-> > > > 
-> > > > In thinking about this some more, why does it matter?  Spin up a
-> > > > workqueue when probing and do the firmware loading then. That way you
-> > > > do not end up creating yet another custom user/kernel api just to do
-> > > > something as trivial as loading the firmware for a device.
-> > > > 
-> > > > And I think the firmware loader even handles async loading, or at least
-> > > > it used to, maybe not anymore, it's a complex api, I recommend reading
-> > > > the docs...
-> > > 
-> > > Flashing the firmware during boot instead of on-demand is not
-> > > a good idea for two reasons:
-> > > 
-> > > 1. This will wear the flash memory of the microcontroller for no
-> > >    good reason.
-> > 
-> > Why would you boot with this hardware and not want the firmware
-> > loaded?
-> 
-> As written in the commit message this code is updateing the firmware
-> in non-volatile memory, so the previously flashed FW will be used
-> until a new one is flashed.
-> 
-> The datasheet for the memory being programmed states, that it has a
-> guaranteed programming endurance of 10.000 times. So programming it
-> at every boot instead of manually when a new FW should be flashed
-> (i.e. once every few years) shortens the device life time considerably.
+fp is netdev private data and it cannot be
+used after free_netdev() call. Using fp after free_netdev()
+can cause UAF bug. Fix it by moving free_netdev() after error message.
 
-Ah, ok, that was not obvious at all.  This is much more like a "BIOS
-update" in that it is infrequent.  You might want to document the heck
-out of this so others are not confused like me.
+Fixes: 61414f5ec983 ("FDDI: defza: Add support for DEC FDDIcontroller 700
+TURBOchannel adapter")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/fddi/defza.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-thanks,
+diff --git a/drivers/net/fddi/defza.c b/drivers/net/fddi/defza.c
+index 14f07050b6b1..0de2c4552f5e 100644
+--- a/drivers/net/fddi/defza.c
++++ b/drivers/net/fddi/defza.c
+@@ -1504,9 +1504,8 @@ static int fza_probe(struct device *bdev)
+ 	release_mem_region(start, len);
+ 
+ err_out_kfree:
+-	free_netdev(dev);
+-
+ 	pr_err("%s: initialization failure, aborting!\n", fp->name);
++	free_netdev(dev);
+ 	return ret;
+ }
+ 
+-- 
+2.32.0
 
-greg k-h
