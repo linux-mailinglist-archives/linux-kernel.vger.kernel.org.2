@@ -2,130 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EA13C72A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916633C72AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236882AbhGMOxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:53:01 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10204 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236763AbhGMOxA (ORCPT
+        id S236912AbhGMO4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236763AbhGMO4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:53:00 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DEhi08026083;
-        Tue, 13 Jul 2021 16:49:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=7iogho2MPvmeERAslTdZvt0AwKrPJiklnLgTcqL++t4=;
- b=CdFhfAHZ96LBfujeF5x+52cXoKRn8LNQVASe402H+6akQ391PamDYFxr1fyS58guiHLt
- 20JYVMn3K4GpeXeug/gMV+RCith/1zNKczjiZHbp9DH3kPY3WigZWWHWjEWS2mefiBYI
- FnSk9ctjVqNQjKpHyZkr24phFQpGfK4Fk2XGpziBcr7k3j60hs6O8UT9+oocAQzmJ2iK
- dXO75e2gxh8WH2MwwlsJD9sjyQICBwhV7eoCJYxGDrrI6hWlpc4fhdAQ/sBXpnbs1e5i
- gGW6Eet83LZbpbd5CPkAecJYgaSaae4cLQHIEVnVnMBnMW8ZfdRjn3lmYy+on/kP1eAP UQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39s6csth38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jul 2021 16:49:49 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A00C610002A;
-        Tue, 13 Jul 2021 16:49:47 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 78C7A22AD4A;
-        Tue, 13 Jul 2021 16:49:47 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Jul 2021 16:49:47
- +0200
-From:   Antonio Borneo <antonio.borneo@foss.st.com>
-To:     Yannick Fertre <yannick.fertre@foss.st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Antonio Borneo <antonio.borneo@foss.st.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/stm: dsi: compute the transition time from LP to HS and back
-Date:   Tue, 13 Jul 2021 16:49:41 +0200
-Message-ID: <20210713144941.3599-1-antonio.borneo@foss.st.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 13 Jul 2021 10:56:52 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4162C0613DD;
+        Tue, 13 Jul 2021 07:54:01 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id s15so33498422edt.13;
+        Tue, 13 Jul 2021 07:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k4EB4Sx0jgByYWBwXJvCykjKMntXAwLAnZkvJwOEWdQ=;
+        b=PbpZ3Zv91l1nzaxTFRSV5RCJ0UZMnXDJxa7hn7u6BRCxqTWqxI1G5Wbm4zKEbjuE7z
+         iawq7JjeMNb1OFc6OruibX/GHRxgi/g2AYwfm4zJOHYzqwu2eSJueMn8m5Uzm93nnU17
+         zbZDQPLsczXsJgDb5p2GMM+nUH2P2Yevrj3e+VpaJFuv3Z3kmqACJWiwpO82DrBzOpCV
+         TVqGNW7vrvNHkVFzz3CE+NnjRIEpAsM0tFH6+8SKTDQYIDbwADWNUxopOvA9bF0QDCsQ
+         9rAz4uecRNQhkp4obuczNolb95cQ2dDsXpkohzV8YlJ6J5MDeIlTNzvAJsmkMk+djIUx
+         Z8+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k4EB4Sx0jgByYWBwXJvCykjKMntXAwLAnZkvJwOEWdQ=;
+        b=V9p3SYX6QKefIDY/LGFLChHj0xZWDTiEJULMrYSgNHabj1n2U/PrGQyMCjjZZoR0jz
+         r88HjHfnqLLdk0AOUjOrYNoZ+WP2UpL2QKrSJCGZrIxOjl34d4MjV6D0AcEQfZ/p0aEn
+         t8cpA7FZXO3ONPvrFvfd/XhYjc05rPxRHHzgC4qMe6JuWBULg/YB9lcEzQ8fImGBUD5t
+         ucQOwKS/bRYSggy4ZKxF4I5OkqIGre81JLpgOEvseF2MsNkUMfzX6uZz0WaL8qKE+nG+
+         FlxtTEmbIsmTMYPLUBiV51VboOcQBUEah1j2OM8KMXu59N+3uFMVEmfSd4LKui5yNn7a
+         YPRw==
+X-Gm-Message-State: AOAM53386OuKH4SpPAMiYAOk/KxErZaiNgSWWGLewFFt9DU/hq6sgSqr
+        rlQqMaVFgKi2pJiOPPXMiny+DDTrOLIoTaedMhw=
+X-Google-Smtp-Source: ABdhPJzUeWoIkovQmYJqOXz7yl/cm5RYe1xqlUrLVUZ7bM0bvpjRJVHK5xYFlMvPgUzLU8YuBHGHvNsLzh3G+R69Sgk=
+X-Received: by 2002:aa7:c74e:: with SMTP id c14mr6327253eds.40.1626188040412;
+ Tue, 13 Jul 2021 07:54:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-13_07:2021-07-13,2021-07-13 signatures=0
+References: <20210712201732.31808-1-viktor.prutyanov@phystech.edu> <20210712201732.31808-2-viktor.prutyanov@phystech.edu>
+In-Reply-To: <20210712201732.31808-2-viktor.prutyanov@phystech.edu>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 13 Jul 2021 16:53:49 +0200
+Message-ID: <CAFBinCBF6BH4LCJB0EQXdwMsmFOryH+1Y+JpcRY6BzG6hX0VWw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] media: rc: meson-ir-tx: document device tree bindings
+To:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+Cc:     sean@mess.org, mchehab@kernel.org, robh+dt@kernel.org,
+        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
+        jbrunet@baylibre.com, linux-media <linux-media@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver uses a conservative set of hardcoded values for the
-maximum time delay of the transitions between LP and HS, either
-for data and clock lanes.
+Hi Viktor,
 
-By using the info in STM32MP157 datasheet, valid also for other ST
-devices, compute the actual delay from the lane's bps.
+On Mon, Jul 12, 2021 at 10:17 PM Viktor Prutyanov
+<viktor.prutyanov@phystech.edu> wrote:
+[...]
+> +  max-fifo-level:
+> +    maxItems: 1
+> +    description:
+> +      Maximum IR TX FIFO fill level
+From Documentation/devicetree/bindings/writing-bindings.rst:
+"DO use a vendor prefix on device specific property names. Consider if
+properties could be common among devices of the same class. Check
+other existing bindings for similar devices."
+I am not sure if there's a "common" fifo size property for IR
+transmitters though.
 
-Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
----
-To: Yannick Fertre <yannick.fertre@foss.st.com>
-To: Philippe Cornu <philippe.cornu@foss.st.com>
-To: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-To: David Airlie <airlied@linux.ie>
-To: Daniel Vetter <daniel@ffwll.ch>
-To: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>
-To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-To: dri-devel@lists.freedesktop.org
-To: linux-stm32@st-md-mailman.stormreply.com
-To: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
+Also in general I think it's good to write the schema for properties
+in a way so the binding validation can detect issues.
+For "common" properties (like clocks, interrupts, etc.) this is
+inherited by default
+However, for custom properties this needs to be defined manually.
+For this property I would add:
+  $ref: /schemas/types.yaml#/definitions/uint32
+(I think this can replace maxItems)
+And I would define the allowed value, from what I have seen in the
+vendor driver (which I am not sure about though!) that would be:
+  const: 1024
 
- drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 8399d337589d..32cb41b2202f 100644
---- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-+++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -309,14 +309,23 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
- 	return 0;
- }
- 
-+#define DSI_PHY_DELAY(fp, vp, mbps) DIV_ROUND_UP((fp) * (mbps) + 1000 * (vp), 8000)
-+
- static int
- dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned int lane_mbps,
- 			   struct dw_mipi_dsi_dphy_timing *timing)
- {
--	timing->clk_hs2lp = 0x40;
--	timing->clk_lp2hs = 0x40;
--	timing->data_hs2lp = 0x40;
--	timing->data_lp2hs = 0x40;
-+	/*
-+	 * From STM32MP157 datasheet, valid for STM32F469, STM32F7x9, STM32H747
-+	 * phy_clkhs2lp_time = (272+136*UI)/(8*UI)
-+	 * phy_clklp2hs_time = (512+40*UI)/(8*UI)
-+	 * phy_hs2lp_time = (192+64*UI)/(8*UI)
-+	 * phy_lp2hs_time = (256+32*UI)/(8*UI)
-+	 */
-+	timing->clk_hs2lp = DSI_PHY_DELAY(272, 136, lane_mbps);
-+	timing->clk_lp2hs = DSI_PHY_DELAY(512, 40, lane_mbps);
-+	timing->data_hs2lp = DSI_PHY_DELAY(192, 64, lane_mbps);
-+	timing->data_lp2hs = DSI_PHY_DELAY(256, 32, lane_mbps);
- 
- 	return 0;
- }
-
-base-commit: 35d283658a6196b2057be562096610c6793e1219
--- 
-2.32.0
-
+Best regards,
+Martin
