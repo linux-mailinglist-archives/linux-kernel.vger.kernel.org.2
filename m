@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077793C6CC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321D03C6CC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhGMJBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:01:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:52516 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234121AbhGMJBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:01:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="209942193"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="209942193"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 01:58:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="570222387"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 13 Jul 2021 01:58:12 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 13 Jul 2021 11:58:11 +0300
-Date:   Tue, 13 Jul 2021 11:58:11 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        kernel@puri.sm, linux-usb@vger.kernel.org,
+        id S234775AbhGMJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:02:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234121AbhGMJCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 05:02:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626166775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1jbljAuxlCrSmymVFLKpgjR864vr/cvdzhGXW1LdC7k=;
+        b=iaDttx2WOxGUDGaYvacj4Cf3BRIqSv0wA474PUjlJLI46GrP94giU2HYveIdCyD3taUQgp
+        UH7N2VACr53F1y9VIJcAp999VGAaIcA49kBbJKZKQJq6spveVBVXgll5QEZYiyDnEJn3wS
+        gymOqMWRFXQB/o3MACDtyH/1Yk9PtxI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-Yq_e_LiaP8SoSh_JJgsn8g-1; Tue, 13 Jul 2021 04:59:32 -0400
+X-MC-Unique: Yq_e_LiaP8SoSh_JJgsn8g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 123378189D5;
+        Tue, 13 Jul 2021 08:59:31 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D66EF5DA60;
+        Tue, 13 Jul 2021 08:59:30 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 16D8xU3q004057;
+        Tue, 13 Jul 2021 04:59:30 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 16D8xUNi004054;
+        Tue, 13 Jul 2021 04:59:30 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 13 Jul 2021 04:59:30 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tipd: Don't block probing of consumer of
- "connector" nodes
-Message-ID: <YO1VowaJ1Impm1U7@kuha.fi.intel.com>
-References: <20210713073946.102501-1-martin.kepplinger@puri.sm>
+Subject: Re: [PATCH v3] scripts/setlocalversion: fix a bug when LOCALVERSION
+ is empty
+In-Reply-To: <87tukzgrkg.fsf@ungleich.ch>
+Message-ID: <alpine.LRH.2.02.2107130454430.3795@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com> <YOyGrUvA4LjydcP3@kroah.com> <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com> <YOyVH3qD9O3qsNUL@kroah.com>
+ <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com> <87tukzgrkg.fsf@ungleich.ch>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713073946.102501-1-martin.kepplinger@puri.sm>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Rafael, Saravana
 
-On Tue, Jul 13, 2021 at 09:39:46AM +0200, Martin Kepplinger wrote:
-> Similar as with tcpm this patch lets fw_devlink know not to wait on the
-> fwnode to be populated as a struct device.
+
+On Mon, 12 Jul 2021, Nico Schottelius wrote:
+
 > 
-> Without this patch, USB functionality can be broken on some previously
-> supported boards.
+> Sorry to say, but I am not convinced by the patch.
 > 
-> Fixes: 28ec344bb891 ("usb: typec: tcpm: Don't block probing of consumers of "connector" nodes")
-
-That patch has gone under my radar.
-
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
-> hi,
+> While yes, we might have changed the behaviour slightly, reading
+> something on the line of
 > 
-> at least the boards based on imx8mq-librem5.dtsi suffer from this, possibly
-> more.
+> if [ -z ... ]
 > 
-> thanks,
->                            martin
+> is significantly more simple, elegant and easier to maintain, than
+> a rather atypical special case for setting a variable to empty,
+> using
 > 
+> if [ "${LOCALVERSION+set}" != "set" ] ..
 > 
->  drivers/usb/typec/tipd/core.c | 2 ++
->  1 file changed, 2 insertions(+)
+> *and* because it is so atypical, adding a long comment for it, too.
 > 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 938219bc1b4b..b31aaf57eb3b 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -629,6 +629,8 @@ static int tps6598x_probe(struct i2c_client *client)
->  	if (!fwnode)
->  		return -ENODEV;
->  
-> +	fw_devlink_purge_absent_suppliers(fwnode);
+> Additonally, -z should be correct if the variable *is* truly empty. I
+> assume it actually isn't and contains whitespace, which is not the same
+> as being set and empty.
+> 
+> Instead of re-adding complexity, could you consider changing the build
+> flow so that LOCALVERSION is either unset or empty?
+> 
+> Nico
 
-Why do we have to care about this kind of stuff in the drivers? It
-sounds like something that only affects DT platforms, so why isn't
-this being fixed in the DT core code?
+I set LOCALVERSION to an empty string (with "export LOCALVERSION="). This 
+prevented the kernel from adding a "+" sign to the kernel version. Since 
+the commit 042da426f8eb, it no longer works and the kernel adds a "+" sign 
+if LOCALVERSION is set and empty.
 
-I didn't have time to study this fw_deflink thing yet, it is
-completely new to me and unfortunately I'm going on vacation now, but
-it looks like something that has been added to the driver core in a
-haste without enough thinking, and which is now causing problems. Not
-cool.
+If you don't like "if [ "${LOCALVERSION+set}" != "set" ]", then please 
+provide some other way how to test if the variable is set.
 
+Mikulas
 
-thanks,
-
--- 
-heikki
