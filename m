@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32C83C6D77
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10C23C6D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235254AbhGMJcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:32:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:10476 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235252AbhGMJcv (ORCPT
+        id S235072AbhGMJWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:22:33 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:55525 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234959AbhGMJWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:32:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPFdH1w88zccym;
-        Tue, 13 Jul 2021 17:26:43 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Tue, 13 Jul 2021 05:22:31 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16D9JWKd8010080, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16D9JWKd8010080
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 13 Jul 2021 17:19:32 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 17:29:51 +0800
-Received: from linux-ibm.site (10.175.102.37) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 17:29:50 +0800
-From:   Hanjun Guo <guohanjun@huawei.com>
-To:     <stable@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Hanjun Guo <guohanjun@huawei.com>
-Subject: [Backport for 5.10.y PATCH 3/7] io_uring: simplify io_remove_personalities()
-Date:   Tue, 13 Jul 2021 17:18:33 +0800
-Message-ID: <1626167917-11972-4-git-send-email-guohanjun@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1626167917-11972-1-git-send-email-guohanjun@huawei.com>
-References: <1626167917-11972-1-git-send-email-guohanjun@huawei.com>
+ 15.1.2106.2; Tue, 13 Jul 2021 17:19:32 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 13 Jul
+ 2021 17:19:31 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <kuba@kernel.org>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net-next 0/2] r8152: split the source code
+Date:   Tue, 13 Jul 2021 17:18:34 +0800
+Message-ID: <1394712342-15778-368-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/13/2021 03:03:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzcvMTMgpFekyCAwMTowNjowMA==?=
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzcvMTMgpFekyCAwNzo0OTowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/13/2021 08:57:21
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165001 [Jul 13 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_exist}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/13/2021 09:01:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yejune Deng <yejune.deng@gmail.com>
+The r8152.c is too large to find out the desired part, so I speparate it
+into r8152_main.c and r8152_fw.c.
 
-commit 0bead8cd39b9c9c7c4e902018ccf129107ac50ef upstream.
+Hayes Wang (2):
+  r8152: group the usb ethernet of realtek
+  r8152: separate the r8152.c into r8152_main.c and r8152_fw.c
 
-The function io_remove_personalities() is very similar to
-io_unregister_personality(),so implement io_remove_personalities()
-calling io_unregister_personality().
+ MAINTAINERS                                   |   10 +-
+ drivers/net/usb/Kconfig                       |   30 +-
+ drivers/net/usb/Makefile                      |    4 +-
+ drivers/net/usb/realtek/Kconfig               |   33 +
+ drivers/net/usb/realtek/Makefile              |    9 +
+ drivers/net/usb/realtek/r8152_basic.h         |  860 ++++++
+ drivers/net/usb/realtek/r8152_fw.c            | 1557 ++++++++++
+ .../net/usb/{r8152.c => realtek/r8152_main.c} | 2585 +----------------
+ drivers/net/usb/{ => realtek}/r8153_ecm.c     |    0
+ drivers/net/usb/{ => realtek}/rtl8150.c       |    0
+ 10 files changed, 2576 insertions(+), 2512 deletions(-)
+ create mode 100644 drivers/net/usb/realtek/Kconfig
+ create mode 100644 drivers/net/usb/realtek/Makefile
+ create mode 100644 drivers/net/usb/realtek/r8152_basic.h
+ create mode 100644 drivers/net/usb/realtek/r8152_fw.c
+ rename drivers/net/usb/{r8152.c => realtek/r8152_main.c} (75%)
+ rename drivers/net/usb/{ => realtek}/r8153_ecm.c (100%)
+ rename drivers/net/usb/{ => realtek}/rtl8150.c (100%)
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
----
- fs/io_uring.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0138aa7..0cbf2a0 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8505,9 +8505,8 @@ static int io_uring_fasync(int fd, struct file *file, int on)
- 	return fasync_helper(fd, file, on, &ctx->cq_fasync);
- }
- 
--static int io_remove_personalities(int id, void *p, void *data)
-+static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
- {
--	struct io_ring_ctx *ctx = data;
- 	struct io_identity *iod;
- 
- 	iod = idr_remove(&ctx->personality_idr, id);
-@@ -8515,7 +8514,17 @@ static int io_remove_personalities(int id, void *p, void *data)
- 		put_cred(iod->creds);
- 		if (refcount_dec_and_test(&iod->count))
- 			kfree(iod);
-+		return 0;
- 	}
-+
-+	return -EINVAL;
-+}
-+
-+static int io_remove_personalities(int id, void *p, void *data)
-+{
-+	struct io_ring_ctx *ctx = data;
-+
-+	io_unregister_personality(ctx, id);
- 	return 0;
- }
- 
-@@ -9606,21 +9615,6 @@ static int io_register_personality(struct io_ring_ctx *ctx)
- 	return ret;
- }
- 
--static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
--{
--	struct io_identity *iod;
--
--	iod = idr_remove(&ctx->personality_idr, id);
--	if (iod) {
--		put_cred(iod->creds);
--		if (refcount_dec_and_test(&iod->count))
--			kfree(iod);
--		return 0;
--	}
--
--	return -EINVAL;
--}
--
- static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 				    unsigned int nr_args)
- {
 -- 
-1.7.12.4
+2.26.3
 
