@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB8D3C74FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FDA3C74F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhGMQi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
+        id S235756AbhGMQiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235677AbhGMQih (ORCPT
+        with ESMTP id S235293AbhGMQij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:38:37 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C69C05BD31
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:58 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so27735164ybp.17
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:34:58 -0700 (PDT)
+        Tue, 13 Jul 2021 12:38:39 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3758FC05BD34
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:35:00 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so27735310ybp.17
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=kkwdoJIGvsW7E6rhoByJg5nAs3eFczhVd+MvdJJpI18=;
-        b=qGHaSx/UlBq3fT7bOWw8v4WtpLzwISDRglaEYJFcQBgOupLdDvDCtvgvBQ5s3lmxSg
-         Qnk6Tu/bMf2Ll24BFQNUi1QyXQyXTWeu/+GXQAOsUuZZt33XkS054wtvx/Nogp8zmLdH
-         ZGFzFG0XyDq4qWw0pIZB9JcQwqO1FcbyVMdd7dv3M6rnorldK9rsMLTSW2F+yJ6YZ8h5
-         km13PAJmaDBqmQn44DUtXDth1qM69k2l+o8Roz5hG4FDeBYbpGYxX61LZ18985TeeYMn
-         2PczuNTLwAuC1inZ0rmuHUezMYE+P3Kuk30agrd5tyTGS+LDCXR4/JW7N35JG/izUPJq
-         iM2Q==
+        bh=wiSZeaOJz6E5eaSw6IcwZw34ds4nUby2LO6OctxjAfc=;
+        b=JlLgNaatfTImrlLKDteCXIQCOvCb7D/zd/Eu4BP8cEmHg7r7VjKchWZkJwwyg08wAe
+         aCHxM1JMig6P15Ukgg4qRI7XmC0/FhSLV8og8HvomKXEpPzVYK7x7byEbdHBk0cjwrMy
+         BhSwQF2jP7TF/4PczCGUhGmF+ICPxtxma149TzwxP8LwjQ/5/UpPeSZIYCBExWDGAKxH
+         gg7yF4UJOwYieLGaWNNPWQzqOqraVbPqBexeoeQlBg3WqgQ/pMjMIxmc3veB8GR7Twx/
+         +SOXWsMXyaRaLIQRiEZWiF+lTDWhzNx4F0M9LHtA8itikEIR1y1klXAV8e4S2pYVZ9cQ
+         Uc+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=kkwdoJIGvsW7E6rhoByJg5nAs3eFczhVd+MvdJJpI18=;
-        b=mkHIJOFRxyzxSlUroAdichBCxv8rHqCFDXqsIY14N+n8M0l9rqRYaZSSIC9r/KqfxD
-         FUrJM+tak4N1TAj4NIdt+F7EJmwgD79F3dBzlPp3t0VoljSttlFhMVYQ1LFk6L+dM3Ju
-         9qJTMEycwWsGMH+iNWYhXaPWAbtwaufVNJQtDW+AtOXq/gA2YQ8/JrjUy+dvaMSIjekq
-         7x019X2F2gr9/leAYJ0quQZjkfIEqk9TD77LRzzNZBeOYZ3KMzfDAl3hxwxYo6CIzk05
-         PX6XMxN5sxK4CAGf3wVhxl5FBYXqyZ/6Ihtyid2fWa4fdHvxRzrDzO4flEP6c1n4X1mc
-         Fq8Q==
-X-Gm-Message-State: AOAM530eUxsMmU0pAaSqMvoIIBNNiimAdxMJwPd4vyhk6VCY+hQTBVsb
-        wBKJLdbM9/AtEhnZx7U+EGPqVXuVjfE=
-X-Google-Smtp-Source: ABdhPJxrYd/echyvro/44ZRTVuasMTDq61J+3yCP8qTNghRGTn2OkROQt5Le6/N6bkpMboEQMwfaEed2LNU=
+        bh=wiSZeaOJz6E5eaSw6IcwZw34ds4nUby2LO6OctxjAfc=;
+        b=fvIHHdkB7klHQhDQh2hY3upiONu9Us/J/b2ThcOIft+YEOrRWcT7QtgJOseFwJHnpG
+         jy75vmzc8ilzxKjz1ozZnw9MjVAVraJsM0htgWqXuj9SaS3hPOEaPGqKHNL/msMH1Xom
+         G6lhiSrC6eTYetpjVV4HePLipg5UqCYLSkrgo1+7fwaczHHqNORHcBMrWfSXu1MXE6RP
+         N3dImAz9jmRKl1hvEGtiZZCDvf4D4l0smL4sBRx3T2HOOW+6ZaodguW7vJmu1wiFfvuE
+         QSexkNz4Vu76GKzZWzK5gXCgd0YG3PFHvIc68K1JCj7+zvKdw89yFzNALWkH4Y7Iw+ay
+         9LpA==
+X-Gm-Message-State: AOAM530fgSAuovp/Xs82kKC53sgKEpKCtyQZa20AM2XuDNf/TcJuIm6A
+        psaqIBXs5/nc/hpVOf2/aOG5CSuktYU=
+X-Google-Smtp-Source: ABdhPJyBvicK0PC23syQ0zjJevsQ+gDXEZvCcjh5Ouah2do0HAGsJSUY+5MMhTO6SaMMg+0yinBYAWXikpA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:825e:11a1:364b:8109])
- (user=seanjc job=sendgmr) by 2002:a25:9bc4:: with SMTP id w4mr6530083ybo.168.1626194097439;
- Tue, 13 Jul 2021 09:34:57 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:afcd:: with SMTP id d13mr6691400ybj.504.1626194099437;
+ Tue, 13 Jul 2021 09:34:59 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 13 Jul 2021 09:33:21 -0700
+Date:   Tue, 13 Jul 2021 09:33:22 -0700
 In-Reply-To: <20210713163324.627647-1-seanjc@google.com>
-Message-Id: <20210713163324.627647-44-seanjc@google.com>
+Message-Id: <20210713163324.627647-45-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210713163324.627647-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2 43/46] KVM: VMX: Move RESET-only VMWRITE sequences to init_vmcs()
+Subject: [PATCH v2 44/46] KVM: SVM: Emulate #INIT in response to triple fault shutdown
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -66,71 +66,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move VMWRITE sequences in vmx_vcpu_reset() guarded by !init_event into
-init_vmcs() to make it more obvious that they're, uh, initializing the
-VMCS.
+Emulate a full #INIT instead of simply initializing the VMCB if the
+guest hits a shutdown.  Initializing the VMCB but not other vCPU state,
+much of which is mirrored by the VMCB, results in incoherent and broken
+vCPU state.
 
-No meaningful functional change intended (though the order of VMWRITEs
-and whatnot is different).
+Ideally, KVM would not automatically init anything on shutdown, and
+instead put the vCPU into e.g. KVM_MP_STATE_UNINITIALIZED and force
+userspace to explicitly INIT or RESET the vCPU.  Even better would be to
+add KVM_MP_STATE_SHUTDOWN, since technically NMI can break shutdown
+(and SMI on Intel CPUs).
 
+But, that ship has sailed, and emulating #INIT is the next best thing as
+that has at least some connection with reality since there exist bare
+metal platforms that automatically INIT the CPU if it hits shutdown.
+
+Fixes: 46fe4ddd9dbb ("[PATCH] KVM: SVM: Propagate cpu shutdown events to userspace")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ arch/x86/kvm/svm/svm.c | 10 +++++++---
+ arch/x86/kvm/x86.c     |  1 +
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4acfb2f450e6..97fa2aa676bd 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4393,6 +4393,19 @@ static void init_vmcs(struct vcpu_vmx *vmx)
- 		vmcs_write64(GUEST_IA32_RTIT_CTL, 0);
- 	}
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index ea4bea428078..285587a7fe80 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2058,11 +2058,15 @@ static int shutdown_interception(struct kvm_vcpu *vcpu)
+ 		return -EINVAL;
  
-+	vmcs_write32(GUEST_SYSENTER_CS, 0);
-+	vmcs_writel(GUEST_SYSENTER_ESP, 0);
-+	vmcs_writel(GUEST_SYSENTER_EIP, 0);
-+	vmcs_write64(GUEST_IA32_DEBUGCTL, 0);
-+
-+	if (cpu_has_vmx_tpr_shadow()) {
-+		vmcs_write64(VIRTUAL_APIC_PAGE_ADDR, 0);
-+		if (cpu_need_tpr_shadow(&vmx->vcpu))
-+			vmcs_write64(VIRTUAL_APIC_PAGE_ADDR,
-+				     __pa(vmx->vcpu.arch.apic->regs));
-+		vmcs_write32(TPR_THRESHOLD, 0);
-+	}
-+
- 	vmx_setup_uret_msrs(vmx);
+ 	/*
+-	 * VMCB is undefined after a SHUTDOWN intercept
+-	 * so reinitialize it.
++	 * VMCB is undefined after a SHUTDOWN intercept.  INIT the vCPU to put
++	 * the VMCB in a known good state.  Unfortuately, KVM doesn't have
++	 * KVM_MP_STATE_SHUTDOWN and can't add it without potentially breaking
++	 * userspace.  At a platform view, INIT is acceptable behavior as
++	 * there exist bare metal platforms that automatically INIT the CPU
++	 * in response to shutdown.
+ 	 */
+ 	clear_page(svm->vmcb);
+-	init_vmcb(vcpu);
++	kvm_vcpu_reset(vcpu, true);
+ 
+ 	kvm_run->exit_reason = KVM_EXIT_SHUTDOWN;
+ 	return 0;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3aa952edd5f4..f35dd8192c32 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10901,6 +10901,7 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	if (init_event)
+ 		kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
  }
++EXPORT_SYMBOL_GPL(kvm_vcpu_reset);
  
-@@ -4433,13 +4446,6 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	vmcs_write32(GUEST_LDTR_LIMIT, 0xffff);
- 	vmcs_write32(GUEST_LDTR_AR_BYTES, 0x00082);
- 
--	if (!init_event) {
--		vmcs_write32(GUEST_SYSENTER_CS, 0);
--		vmcs_writel(GUEST_SYSENTER_ESP, 0);
--		vmcs_writel(GUEST_SYSENTER_EIP, 0);
--		vmcs_write64(GUEST_IA32_DEBUGCTL, 0);
--	}
--
- 	vmcs_writel(GUEST_GDTR_BASE, 0);
- 	vmcs_write32(GUEST_GDTR_LIMIT, 0xffff);
- 
-@@ -4454,14 +4460,6 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 
- 	vmcs_write32(VM_ENTRY_INTR_INFO_FIELD, 0);  /* 22.2.1 */
- 
--	if (cpu_has_vmx_tpr_shadow() && !init_event) {
--		vmcs_write64(VIRTUAL_APIC_PAGE_ADDR, 0);
--		if (cpu_need_tpr_shadow(vcpu))
--			vmcs_write64(VIRTUAL_APIC_PAGE_ADDR,
--				     __pa(vcpu->arch.apic->regs));
--		vmcs_write32(TPR_THRESHOLD, 0);
--	}
--
- 	kvm_make_request(KVM_REQ_APIC_PAGE_RELOAD, vcpu);
- 
- 	vpid_sync_context(vmx->vpid);
+ void kvm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+ {
 -- 
 2.32.0.93.g670b81a890-goog
 
