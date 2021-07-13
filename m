@@ -2,183 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF5C3C795C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544F33C7960
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236394AbhGMWFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 18:05:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:18912 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234947AbhGMWFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 18:05:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="274079443"
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="274079443"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 15:02:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="412595706"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga006.jf.intel.com with ESMTP; 13 Jul 2021 15:02:09 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 13 Jul 2021 15:02:08 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Tue, 13 Jul 2021 15:02:08 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Tue, 13 Jul 2021 15:02:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CM4vU8dJpica1ZLAq0dH/HeVbacDW7K/BO8Bw53S7INQdfnmIsJw/85ic0bbb56UdAw/WeHfstQ3+sVx7CRo/IZHfphfVD05RFH5MYsTSXtHKgPZTxLgkC7CE5olX8vMIwnwCfjEqHVw7e7qZO1Z7Zz/lj3v2tkRsEoJxyp6HNjPH6xqfYjNyVB0xcHgsjoWPO8ee5QI21CzDcmq00i9wbTuMyYFDjavimGJ+iO3mDIwiaIppxo/9SrJfWOXDQ99AIF3RAMTBK8GwykjKVRoePQZdbthtziS5A6wLF/xekdepdSOyhcjcRcKjHICU9KZR/rFhvQzL1TUAd9WeGUorA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1PjNPwK95MTLTm0xFMblbMGH1EHzBgz6QjCV7erSFfo=;
- b=X/vLEEOVpTNLZBm/X/yEXmo3s7TDS2bRbbwSUGPy9E+NSqsUp5KDARPEDw9UsqJWZ8caIH8rRtqPzmQ7UolQDvrRAGJtElomuGTjPPvr/rPTsrfOjF/XZlX2bc1Jqdg9ozZDaQvOhlc7ggkrMOjKh69WagE2qOfp0Ax7QigXpKWajKc3x9xfsZrgFi4dO52Lj3fjp0CtKIDzAKgM1QHYxnRCxMMwPfr6rivlZpdzplJolrtaf5Q3jaSnkTSR1sb9b4at8CJ2+bCkgSd4ZEfYsK9qOScKGKK+RGKbCZuVtHarbBAjYvlYOg9gkb6dDKcqsWPl/mOMCU1EUqWZmp2kug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1PjNPwK95MTLTm0xFMblbMGH1EHzBgz6QjCV7erSFfo=;
- b=Nl0zEBuT+I05DzYfQwCfopPOtC8neBFHJ9++SM4+D8AEzPL6DohEIE1qkfiC4KdU3BvrmMd/688PrmWackTlWU4VsRSGN0Y1JnF67zQtNzWT5RXw8TCCYv9jfhH8ioO65EH/BSfdA5emk4TILKUSx6sUVWIR71iBqob6mGFKxik=
-Authentication-Results: broadcom.com; dkim=none (message not signed)
- header.d=none;broadcom.com; dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
- by MWHPR11MB1440.namprd11.prod.outlook.com (2603:10b6:301:7::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Tue, 13 Jul
- 2021 22:01:56 +0000
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::7405:432c:f34a:b909]) by CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::7405:432c:f34a:b909%6]) with mapi id 15.20.4331.021; Tue, 13 Jul 2021
- 22:01:56 +0000
-Subject: Re: [PATCH v3 09/14] ixgbe: Use irq_update_affinity_hint
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <tglx@linutronix.de>, <robin.murphy@arm.com>,
-        <mtosatti@redhat.com>, <mingo@kernel.org>, <jbrandeb@kernel.org>,
-        <frederic@kernel.org>, <juri.lelli@redhat.com>,
-        <abelits@marvell.com>, <bhelgaas@google.com>,
-        <rostedt@goodmis.org>, <peterz@infradead.org>,
-        <davem@davemloft.net>, <akpm@linux-foundation.org>,
-        <sfr@canb.auug.org.au>, <stephen@networkplumber.org>,
-        <rppt@linux.vnet.ibm.com>, <chris.friesen@windriver.com>,
-        <maz@kernel.org>, <nhorman@tuxdriver.com>,
-        <pjwaskiewicz@gmail.com>, <sassmann@redhat.com>,
-        <thenzl@redhat.com>, <kashyap.desai@broadcom.com>,
-        <sumit.saxena@broadcom.com>,
-        <shivasharan.srikanteshwara@broadcom.com>,
-        <sathya.prakash@broadcom.com>, <sreekanth.reddy@broadcom.com>,
-        <suganath-prabu.subramani@broadcom.com>,
-        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
-        <jkc@redhat.com>, <faisal.latif@intel.com>,
-        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
-        <ahleihel@redhat.com>, <kheib@redhat.com>, <borisp@nvidia.com>,
-        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
-        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
-        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
-        <nilal@redhat.com>, <tatyana.e.nikolova@intel.com>,
-        <mustafa.ismail@intel.com>, <ahs3@redhat.com>, <leonro@nvidia.com>,
-        <chandrakanth.patil@broadcom.com>
-References: <20210713211502.464259-1-nitesh@redhat.com>
- <20210713211502.464259-10-nitesh@redhat.com>
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-Message-ID: <1f083139-4faf-126d-b14c-29d228474d6b@intel.com>
-Date:   Tue, 13 Jul 2021 15:01:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S236158AbhGMWJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 18:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234947AbhGMWJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 18:09:35 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD56C0613DD;
+        Tue, 13 Jul 2021 15:06:44 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r11so575006wro.9;
+        Tue, 13 Jul 2021 15:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=/3zV46goqXUufTjHSFOtqe+Hqag8yZnkCH1OaEMysKQ=;
+        b=n0QPSF25EsEC1AeBM4B9dxXPcvnK+2gVjFLBEDJdhtKh3H0hxOQDU932QyNeo/XCS1
+         YgRVvfNZcsJ2kQWIlj8/qj7DCRYvjmIGurOR5ZoxRQwXNpbSA3bfeCf86C9lfoEefQRz
+         CgWULPNnt47FPuNc7X2BOTR75gJeZCp2j7Vhb1IyLbNYI3q9SjEzPy7zvzo7ToKaVGUi
+         XuU2XkBi2kdSbR3qWIdHmEd1yWiHTZGRGsf4nq8vAKDvSgQy9/Qe9Xrs8qKuVHaNYq19
+         l6+aH9wiN51yayOMJiT7p4keA/7z6IYW9hwenUvtFZcIgJsCr0Wei+Xe25XOlIbVeCZx
+         BcbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/3zV46goqXUufTjHSFOtqe+Hqag8yZnkCH1OaEMysKQ=;
+        b=dxGaAqY1LMSAfeqI4pCj1JAdp27QrBP+PmvB1uHga00Dzk/8aj709Z4kINUwLBe5p0
+         axRfmUPgdk8YskdFJZ0hoYEwV8vjgOm1gfJ6Vj/Hr4amADo30QsYTr31zmpO0xkhVsdK
+         PvdWjcXkS6wK/RkWtoULMv2J72srd3tlyHRuN+tpFhmm4epRMqmUOvAT1v1zeIqB4uDl
+         q2+kDIhbb6bTReAXPWa7GKxaDGtQ2cmBe3Toub/7Wi7T6LgHylr0dyHGw+V3eSQF8EgZ
+         BDWcbU1JGKEvJPFCbH106tMIV29p39KZSzLaeo1ZrDRl+/XT69n7IeMBfEBc6/lSkiH6
+         1sXQ==
+X-Gm-Message-State: AOAM532BpkyiLACyPiHfJC/72wsZIzzBTG2SeSPqSh81igFVZjSyZ4zQ
+        MIPiV1gJBq3koBjgOy6D6xM=
+X-Google-Smtp-Source: ABdhPJw/JkqZaExSL3QACAADMzVi5VIANMS8RRK6A99eHr3IY7iRN17vaZD8XqKWQnhydt9RvyUi5Q==
+X-Received: by 2002:a5d:6506:: with SMTP id x6mr8326125wru.86.1626214003069;
+        Tue, 13 Jul 2021 15:06:43 -0700 (PDT)
+Received: from [192.168.1.211] ([2.29.20.111])
+        by smtp.gmail.com with ESMTPSA id s1sm3517330wmj.8.2021.07.13.15.06.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 15:06:42 -0700 (PDT)
+From:   Daniel Scally <djrscally@gmail.com>
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        kieran.bingham@ideasonboard.com
+References: <20210708224226.457224-1-djrscally@gmail.com>
+ <20210709170426.GC4112@sirena.org.uk>
+ <CAHp75VeugcuwWAq5p_rx+8J2FsX7igV+UJ3QKw3XG6BiDqTtNQ@mail.gmail.com>
+ <20210712124223.GB4435@sirena.org.uk>
+ <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
+ <20210712133428.GD4435@sirena.org.uk>
+ <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
+ <20210712170120.GG4435@sirena.org.uk>
+ <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
+ <20210713152454.GC4098@sirena.org.uk>
+Message-ID: <94cbb11d-c697-44cf-75e3-6c7c4789cc94@gmail.com>
+Date:   Tue, 13 Jul 2021 23:06:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <20210713211502.464259-10-nitesh@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+MIME-Version: 1.0
+In-Reply-To: <20210713152454.GC4098@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-ClientProxiedBy: MW4PR04CA0252.namprd04.prod.outlook.com
- (2603:10b6:303:88::17) To CO1PR11MB4914.namprd11.prod.outlook.com
- (2603:10b6:303:90::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.214] (50.39.107.76) by MW4PR04CA0252.namprd04.prod.outlook.com (2603:10b6:303:88::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 22:01:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b5b59858-1b7f-4052-55a0-08d94649d43d
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1440:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR11MB1440497EE6398B17F15DDE5197149@MWHPR11MB1440.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S4svR+oPCZ8P3L13e0Y79hj5o/J/DUBNolFJoF3ltbSjuJYlJdaso5h1C5FCljXYtZRHUbe9IyciIP5el7YauNagoFUTaC5lmVW2bRm9vBej/df9RpoekYYC7pRECfDcxRpn8p5bQ1otoKhcdx5VN54LqwIW/Ysxl9mqtmQSAG+g7OEkruewNJDvEQv4mBYVnIyJHkb392F7t86L81oWtsD92XBDIxWDLgslhqN3hkWXKekHyF+Hg5IcWkwBXzsdFFGF8TGS5VzhI+dDJcsll8nQbxeYFw5a22HCQ14slxWL4k6klBlFn/ppxW5PfJEq0K11Msx5vUYYrfNoE2F0BiOFXSfTEHoPo1jSc0d66BL8YA9ddxrx35ygz0lJSqMxdBG3Hi2jSJdx7Av5p8B4ZS65ts4e3DN1Zo9KXpz6s1ADE/+ZJjRMewp/dTPjRovRHVRM8J3rdJhKuyFrT9IIgezYyAXi0Q9X5zP9yRjGqopdcW3y8ykOeRf1pSSxFitxMN5sAEeSfeHgHN1QzMTl897JBcoBm6atKOHAYBWoQqZa8LqGWNEzpPNyivGGzm42ehfQxXIezF8CqKDmRO0m1aYVaI0Ldig3dgEjHIu1ydg6MmesmkwUnIjGxVF4rQjXQNNd78O7uwDFl+V1qKKAg36M6WE4Fi9NWpk1E51r2yRP7QY/59rYIO3QO+ZPhwRrwb5KcB4QfGC5nIJVcgXmxQwv9MZQHejjqAqGHZlaeXkeJfOVDEMarkO2G/hZsrr/fJB4E9o6zyrp6vFiY+9RmQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(39860400002)(346002)(396003)(4744005)(31696002)(1191002)(86362001)(2906002)(8676002)(53546011)(2616005)(478600001)(316002)(44832011)(8936002)(26005)(16576012)(956004)(6486002)(7416002)(186003)(66946007)(7406005)(66556008)(7366002)(66476007)(38100700002)(921005)(5660300002)(36756003)(31686004)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NDZ4VkFsc0dIemxkdEphWjJVdGZYRnA5blVKQlB0TWR5K3BEUjZMVDBPdmoy?=
- =?utf-8?B?Q1R1ZGlxZG1lVUdJRTEzQTBxZ0dqZXFDSlpXRTljbkE2ZytnWEFoT0t0MHpG?=
- =?utf-8?B?WWhPRy9CaURzL0pSUGZHU2pmdU1mMWpsUW9uRnluZ1liaTE5OTVsK2N2aHdo?=
- =?utf-8?B?UlFkNnc0R3NFbmNlVjZSWnFGUEV6dXVZblpncDVmdnlXOEhWN2Z0T0tNMGxt?=
- =?utf-8?B?aE1XOGhReGVoSzcwYmRPc3Q4QmJMOStGK2l2YUw1ZTcyQTZaZUQ0bllCWXNq?=
- =?utf-8?B?K3ByRUd1c2NDSkMxWVY1SlJlY0hlVXlMK0tZS2NUOXRSSWxTUEFuamVxMHVZ?=
- =?utf-8?B?VkhZNXpobkx2d256NVBpM212czhsdHpZTXpWbEs1OGx1R2xDc1U2RFFLZTAw?=
- =?utf-8?B?dFM2Sk1meWJ4dE1TclNuMGowbzRqd0FqbE1zZElGM0JuS25SWDRwRnI5Nnhl?=
- =?utf-8?B?RUtxUk5CVmxxdk4xZDdObmZIbDgrT0lJcXVsUk9CUG1XWGVFR1hBcXNkaG1q?=
- =?utf-8?B?dCtaSVdObGFTZDcrVk5UclBLS0QycGRpUDBmSVZ3eFdYbXQwU2pHQ28zOFJs?=
- =?utf-8?B?VC9WVXZVM1hjeUdMVmdpa2lSblZqbXpXMEc2YmxNS0FWSTdzK0F2SzhpTDVK?=
- =?utf-8?B?WGo4cEZiY0RXMmRWdW9RQU5tQnRPanQ1U2hidkFsbU56a3F0QnFCV0tVN09u?=
- =?utf-8?B?V2l6SnV6NWtIeFNuZThmSGtCVzB2cTNudVVYc2JFTTBTQ3NXamRoYjZ3UnQv?=
- =?utf-8?B?RjRWUncrTGt0aWFzV0gzTUdKTldUTDIxM09IQ0ZkazIrNktCN0tFbXVOWWU3?=
- =?utf-8?B?Z01vdFpJWTBodklETll2WHVaMXZRNXhobTNveTkvRjh2N3doNkpqRHovMkJh?=
- =?utf-8?B?VEw4dmVsK2E3bzUramtmQUQ3c3hwOHZxaGRxc0N4d0dCNEdPOEltNmgzMXpz?=
- =?utf-8?B?Nlp2NE1tSnBVR0o5SDVUd0tDemxTcUU2RG02YmNVRHQvWjdRV0Y3akFkVUhZ?=
- =?utf-8?B?SnRRQ3hmanNTT3NjUWx2U2ZoMVU4TGNIaEdPT0JZVHZCQ1dzMnA3V1lmdXZN?=
- =?utf-8?B?UmpwRFJsTG5lUFVGaFZvVlBnN3kwcWFHWnhaNkZaRXFycE1XRnN2Qy8yamlZ?=
- =?utf-8?B?MjdmUzY5dGYyS1NGT1ZPRExWVktobWxjc1lwdjRuYlNJS1V3MHprNHY5R3NK?=
- =?utf-8?B?T3lPOTNNU1VaQjJ6cHdkd0szUjVlaUpuVUNaMHNmVlBKbXZEUDd6N2syc3or?=
- =?utf-8?B?b2hFd3hWQnhZMW9xelAvcEcvRU96dTM1NjdiZWJubG95aHNsb3hKVzZYUXFx?=
- =?utf-8?B?SUkwUnNRZlNMYUE4TkFHQlB2UmZ1YkN4ZHkyUCtDaHIzYTVyUk1selNvOWJC?=
- =?utf-8?B?aXZTMjgwV2RCWFlrbGYwdlVFbFNRVDVPYXNZYWRiekdiNUVtTWxuaDhQbzVH?=
- =?utf-8?B?MDJDK3BwUmt6cWdkcG9iaS9pdnlObFdIUUJBZ21OS0U0Rm5helpXdlFYN1hx?=
- =?utf-8?B?V2V1MVhjVVVEdjJmNFQ2eThnVytMdmg4U3Nmc09MNGRmT2V6M1BEOVJpaVB3?=
- =?utf-8?B?dWthVERXSkhMT2FQZEU3N3YzV0lXeERFeEtLUmx1Q00zV3c3ZXpDS2J6R1c0?=
- =?utf-8?B?dWY4OXJvUHhzNExMd0p1NThWbFNuS0lLZEhFODRFcWt3eUVXb3BmUTdwa2Vh?=
- =?utf-8?B?UmZOTHkyRmpHdVVuSmYvNUVDa1Z3SUVYYnlSRjBRRVFmNDNvYm5Bd2ovMHJI?=
- =?utf-8?Q?16UFDxbE1JJbYIiPM7drc2GoHRwJIjna0wAUyvJ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5b59858-1b7f-4052-55a0-08d94649d43d
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 22:01:55.9013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PTUx1Za1q6kwYKjmCUBrjrhdTiDKcDwKZtAhJWkXEBVlsUyL0xRkyK4t8J9I+zYo395GUTqqRE2wpq1r+iiql45FdGEUCh3KZqljdCDpMfI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1440
-X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/2021 2:14 PM, Nitesh Narayan Lal wrote:
-> The driver uses irq_set_affinity_hint() to update the affinity_hint mask
-> that is consumed by the userspace to distribute the interrupts. However,
-> under the hood irq_set_affinity_hint() also applies the provided cpumask
-> (if not NULL) as the affinity for the given interrupt which is an
-> undocumented side effect.
+Hi Mark
+
+On 13/07/2021 16:24, Mark Brown wrote:
+> On Tue, Jul 13, 2021 at 12:32:26AM +0100, Daniel Scally wrote:
 >
-> To remove this side effect irq_set_affinity_hint() has been marked
-> as deprecated and new interfaces have been introduced. Hence, replace the
-> irq_set_affinity_hint() with the new interface irq_update_affinity_hint()
-> that only updates the affinity_hint pointer.
->
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+>> I do think it can simplify driver code too; a lot of them aren't written
+>> to parse platform data to get the init data, as they're just relying on
+>> reading it from devicetree so in the event that we get more cases like
+>> this, we need to modify those drivers to look for platform data too. On
+>> the other hand, even the drivers that don't directly call
+>> of_get_regulator_init_data() still do that lookup during the
+>> regulator_of_get_init_data() call in regulator_register(), so the ones
+>> that do parse platform data for init_data structs will check DT as part
+>> of regulator_register() anyway. Imitating that seems simpler to me.
+> The driver code is trivial boilerplate, assuming someone doesn't go and
+> implement a helper to register stuff separately like I suggested.  The
+> proposed swnode stuff would involve duplicating the DT parsing code.
+> This seems like a whole lot of effort for something that provides a
+> worse result than either of the existing things.
 
-Thanks!
 
-Acked-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Alright - let me look at adding a helper to register them instead then.
 
+>> It also creates some problems to suppress the enumeration of the i2c
+>> device via ACPI (which we'll have to do in a machine specific fashion,
+>> because some laptops have this chip with properly configured ACPI and
+> To be clear I think that's a terrible idea.
+
+
+Me too. I thought you were suggesting that I do that - sorry to have
+misunderstood there. The problem we're trying to resolve here is kinda
+exacerbated by a lot non-standard stuff within the ACPI for these
+devices, so for example, on top of not having any power management AML
+(which is what I'm trying to fix up here), the ACPI device can actually
+represent a bunch of different things that might be a TPS68470 PMIC, a
+different PMIC entirely or even not a physical PMIC at all, but rather
+just a convenient dummy device to collect a bunch of GPIOs under. Which
+one it is is revealed by parsing a buffer out of the device's ACPI, so
+we need the ACPI enumeration to be able to use that properly.
+
+
+Part of the reasons I went with addressing this with software nodes is
+that we've used them to correct other deficiencies in the ACPI on the
+same devices, like the references between the cameras and the image
+signal processor ought to be described in _DSD packages [1], but are
+again just hidden inside a buffer that we need to parse to figure out
+the right way to make the connection, and then we used software nodes to
+represent that. The difference there is that that's implementing
+something that should have been there in the first place, whereas the
+regulators wouldn't ordinarily be described in this way.
+
+>>> down to being another data table, I imagine you could write a helper for
+>>> it, or probably even come up with some generic thing that let you
+>>> register a platform data/DMI combo independently of the driver to get it
+>>> out of the driver code (looking more like the existing GPIO code which
+>>> is already being used in another bit of this quirking).
+>> The advantage of the GPIO lookups is there's no need to have the pointer
+>> to the registered devices to register the lookup table; we could imitate
+>> that, by adding entries to a list with the lookup values being device
+>> and regulator name (with the init data as the thing that's "looked up")
+>> and check for those during regulator_register() maybe?
+> Like I keep saying I think that's a much better approach than trying to
+> use swnodes, they just seem like a terrible fit for the problem.
+
+
+Okedokey; I'm happy to take another look at it from this angle then -
+thanks for the feedback.
+
+
+[1]
+https://www.kernel.org/doc/html/latest/firmware-guide/acpi/dsd/graph.html
 
