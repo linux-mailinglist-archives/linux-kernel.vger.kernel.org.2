@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686033C6BC8
+	by mail.lfdr.de (Postfix) with ESMTP id B16AE3C6BC9
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbhGMHzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:55:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40874 "EHLO mail.kernel.org"
+        id S234699AbhGMHzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:55:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234393AbhGMHzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:55:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9C1261283;
-        Tue, 13 Jul 2021 07:52:41 +0000 (UTC)
+        id S234569AbhGMHzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:55:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57E6261284;
+        Tue, 13 Jul 2021 07:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626162762;
-        bh=F38xb+ea50o5DQwe1jjicpxTzqUUMQy/cHK1qDBfRG8=;
+        s=k20201202; t=1626162764;
+        bh=4LtAZZO7EgUELA/458Z+YEg7jTxQU+YeZm4ZYwvW5Yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Py6EGV07UT7X0DlNGSMCsDTdMNHyHMuDI3YmtWclc+Oo4G+wAnQqIEUqBtB9eWA8d
-         CLTo3xZo6LupvGSitZnWva3z3ojmwCIB1zhgYgoP8mH/ffAhqSyCNcRY6yPR/lpedL
-         He6aUpXidfbG+fKERD+FYZ+czYJ6cPUYB7IJ8IeBFZigmide2LnqHhf1CIDb/A0eCk
-         jB29LudaWgdSy0lJyUTJTlpc3gUoRx+sWxScCUktSVEhyp2f41+6Tiieo0UahFh/E/
-         lh5hlwI6mhOyHWiXhygzdckad2ZwVUDuy52DLCB3Ps2kXysQwwD7fATJh7zzdS2E3I
-         BF8S2q9S1VrpA==
+        b=W5u8umqcHatW6ECmRkY3V2m4fyVQ5VC+cGu6RLFv1Axii/dj8twMVo0lJImZj1HD8
+         t7bWZQ5T25XN3s+sdh6fWQkzhpebNafR4qu5XCabQHIkcsgZk6gi+lJhH9wfi+nW+f
+         XutT4DhXTuN8usVli3O/gR0c3CuvBsjl647hM+9tD2chPQUpTQLRXGVrsL1BKa7t+1
+         pFgXm/9iy6nmysb0KOFGEb8vZiMUuP0gyEQm8DKBglOoIHz19cUOzrVlAXECs08KWC
+         ro+xfcuZMTSHy8TngErNZwlLzzXfzGfM7D4kXcOqZclzr4dgS4gunrrjJrfViuFuwi
+         vKaRsfOj2VeSw==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     farah kassabri <fkassabri@habana.ai>
-Subject: [PATCH 10/11] habanalabs: add support for encapsulated signals reservation
-Date:   Tue, 13 Jul 2021 10:52:25 +0300
-Message-Id: <20210713075226.11094-10-ogabbay@kernel.org>
+Subject: [PATCH 11/11] habanalabs: add support for encapsulated signals submission
+Date:   Tue, 13 Jul 2021 10:52:26 +0300
+Message-Id: <20210713075226.11094-11-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210713075226.11094-1-ogabbay@kernel.org>
 References: <20210713075226.11094-1-ogabbay@kernel.org>
@@ -40,234 +40,237 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: farah kassabri <fkassabri@habana.ai>
 
-The signaling from within encapsulated OP capability is merged into the
-existing stream architecture, such that one can trigger multiple
-signaling from an encapsulated op, according to the time the event
-was done in the graph execution and avoid the need to wait for the
-whole encapsulated OP execution to be complete before the stream can
-signal.
-
-This commit implements only the reserve/unreserve part.
+This commit is the second part of the encapsulated signals feature.
+It contains the driver support for submission of cs with encapsulated
+signals and the wait for them.
 
 Signed-off-by: farah kassabri <fkassabri@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- .../habanalabs/common/command_submission.c    | 255 +++++++++++++++++-
- drivers/misc/habanalabs/common/context.c      |  56 ++++
- drivers/misc/habanalabs/common/habanalabs.h   |  55 +++-
- .../misc/habanalabs/common/habanalabs_drv.c   |   1 -
- drivers/misc/habanalabs/common/hw_queue.c     |   5 +-
- drivers/misc/habanalabs/gaudi/gaudi.c         |   8 +-
- drivers/misc/habanalabs/goya/goya.c           |   6 +
- include/uapi/misc/habanalabs.h                | 110 +++++++-
- 8 files changed, 468 insertions(+), 28 deletions(-)
+ .../habanalabs/common/command_submission.c    | 187 ++++++++++++------
+ drivers/misc/habanalabs/common/habanalabs.h   |  23 ++-
+ drivers/misc/habanalabs/common/hw_queue.c     |  96 ++++++++-
+ drivers/misc/habanalabs/gaudi/gaudi.c         |  45 ++++-
+ drivers/misc/habanalabs/goya/goya.c           |   2 +-
+ 5 files changed, 279 insertions(+), 74 deletions(-)
 
 diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 458cdf2ddab5..84032b1bae5c 100644
+index 84032b1bae5c..94b37ab08f90 100644
 --- a/drivers/misc/habanalabs/common/command_submission.c
 +++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -38,7 +38,11 @@ static void hl_sob_reset(struct kref *ref)
- 							kref);
- 	struct hl_device *hdev = hw_sob->hdev;
- 
-+	dev_dbg(hdev->dev, "reset sob id %u\n", hw_sob->sob_id);
-+
- 	hdev->asic_funcs->reset_sob(hdev, hw_sob);
-+
-+	hw_sob->need_reset = false;
- }
- 
- void hl_sob_reset_error(struct kref *ref)
-@@ -52,7 +56,7 @@ void hl_sob_reset_error(struct kref *ref)
- 		hw_sob->q_idx, hw_sob->sob_id);
- }
- 
--static void hw_sob_put(struct hl_hw_sob *hw_sob)
-+void hw_sob_put(struct hl_hw_sob *hw_sob)
- {
- 	if (hw_sob)
- 		kref_put(&hw_sob->kref, hl_sob_reset);
-@@ -64,7 +68,7 @@ static void hw_sob_put_err(struct hl_hw_sob *hw_sob)
- 		kref_put(&hw_sob->kref, hl_sob_reset_error);
- }
- 
--static void hw_sob_get(struct hl_hw_sob *hw_sob)
-+void hw_sob_get(struct hl_hw_sob *hw_sob)
- {
- 	if (hw_sob)
- 		kref_get(&hw_sob->kref);
-@@ -576,7 +580,8 @@ static inline void cs_release_sob_reset_handler(struct hl_device *hdev,
- 
- 	if ((hl_cs_cmpl->type == CS_TYPE_SIGNAL) ||
- 			(hl_cs_cmpl->type == CS_TYPE_WAIT) ||
--			(hl_cs_cmpl->type == CS_TYPE_COLLECTIVE_WAIT)) {
-+			(hl_cs_cmpl->type == CS_TYPE_COLLECTIVE_WAIT) ||
-+			(!!hl_cs_cmpl->encaps_signals)) {
- 		dev_dbg(hdev->dev,
- 				"CS 0x%llx type %d finished, sob_id: %d, sob_val: 0x%x\n",
- 				hl_cs_cmpl->cs_seq,
-@@ -829,6 +834,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
- 
- 	cs_cmpl->hdev = hdev;
- 	cs_cmpl->type = cs->type;
-+	cs_cmpl->encaps_signals = false;
- 	spin_lock_init(&cs_cmpl->lock);
- 	INIT_WORK(&cs_cmpl->sob_reset_work, sob_reset_work);
- 	cs->fence = &cs_cmpl->base_fence;
-@@ -1115,6 +1121,10 @@ static enum hl_cs_type hl_cs_get_cs_type(u32 cs_type_flags)
- 		return CS_TYPE_WAIT;
- 	else if (cs_type_flags & HL_CS_FLAGS_COLLECTIVE_WAIT)
- 		return CS_TYPE_COLLECTIVE_WAIT;
-+	else if (cs_type_flags & HL_CS_FLAGS_RESERVE_SIGNALS_ONLY)
-+		return CS_RESERVE_SIGNALS;
-+	else if (cs_type_flags & HL_CS_FLAGS_UNRESERVE_SIGNALS_ONLY)
-+		return CS_UNRESERVE_SIGNALS;
- 	else
- 		return CS_TYPE_DEFAULT;
- }
-@@ -1652,10 +1662,17 @@ static int hl_cs_ctx_switch(struct hl_fpriv *hpriv, union hl_cs_args *args,
-  * hl_cs_signal_sob_wraparound_handler: handle SOB value wrapaound case.
-  * if the SOB value reaches the max value move to the other SOB reserved
-  * to the queue.
-+ * @hdev: pointer to device structure
-+ * @q_idx: stream queue index
-+ * @hw_sob: the H/W SOB used in this signal CS.
-+ * @count: signals count
-+ * @encaps_sig: tells whether it's reservation for encaps signals or not.
-+ *
-  * Note that this function must be called while hw_queues_lock is taken.
-  */
- int hl_cs_signal_sob_wraparound_handler(struct hl_device *hdev, u32 q_idx,
--			struct hl_hw_sob **hw_sob, u32 count)
-+			struct hl_hw_sob **hw_sob, u32 count, bool encaps_sig)
-+
- {
- 	struct hl_sync_stream_properties *prop;
- 	struct hl_hw_sob *sob = *hw_sob, *other_sob;
-@@ -1688,12 +1705,34 @@ int hl_cs_signal_sob_wraparound_handler(struct hl_device *hdev, u32 q_idx,
- 			return -EINVAL;
- 		}
- 
--		prop->next_sob_val = 1;
-+		prop->next_sob_val = count;
- 
- 		/* only two SOBs are currently in use */
- 		prop->curr_sob_offset = other_sob_offset;
- 		*hw_sob = other_sob;
- 
-+		/*
-+		 * check if other_sob needs reset, then do it before using it
-+		 * for the reservation or the next signal cs.
-+		 * we do it here, and for both encaps and regular signal cs
-+		 * cases in order to avoid possible races of two kref_put
-+		 * of the sob which can occur at the same time if we move the
-+		 * sob reset(kref_put) to cs_do_release function.
-+		 * in addition, if we have combination of cs signal and
-+		 * encaps, and at the point we need to reset the sob there was
-+		 * no more reservations and only signal cs keep coming,
-+		 * in such case we need to signal_cs to put the refcount and
-+		 * reset the sob.
-+		 */
-+		if (other_sob->need_reset)
-+			kref_put(&other_sob->kref, hl_sob_reset);
-+
-+		if (encaps_sig) {
-+			/* set reset indication for the sob */
-+			sob->need_reset = true;
-+			hw_sob_get(other_sob);
-+		}
-+
- 		dev_dbg(hdev->dev, "switched to SOB %d, q_idx: %d\n",
- 				prop->curr_sob_offset, q_idx);
- 	} else {
-@@ -1817,6 +1856,187 @@ static int cs_ioctl_signal_wait_create_jobs(struct hl_device *hdev,
+@@ -106,38 +106,6 @@ int hl_gen_sob_mask(u16 sob_base, u8 sob_mask, u8 *mask)
  	return 0;
  }
  
-+static int cs_ioctl_reserve_signals(struct hl_fpriv *hpriv,
-+				u32 q_idx, u32 count,
-+				u32 *handle_id, u32 *sob_addr,
-+				u32 *signals_count)
-+{
-+	struct hw_queue_properties *hw_queue_prop;
-+	struct hl_sync_stream_properties *prop;
-+	struct hl_device *hdev = hpriv->hdev;
-+	struct hl_cs_encaps_sig_handle *handle;
-+	struct hl_encaps_signals_mgr *mgr;
-+	struct hl_hw_sob *hw_sob;
-+	int hdl_id;
-+	int rc = 0;
-+
-+	if (count >= HL_MAX_SOB_VAL) {
-+		dev_err(hdev->dev, "signals count(%u) exceeds the max SOB value\n",
-+						count);
-+		rc = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (q_idx >= hdev->asic_prop.max_queues) {
-+		dev_err(hdev->dev, "Queue index %d is invalid\n",
-+			q_idx);
-+		rc = -EINVAL;
-+		goto out;
-+	}
-+
-+	hw_queue_prop = &hdev->asic_prop.hw_queues_props[q_idx];
-+
-+	if (!hw_queue_prop->supports_sync_stream) {
-+		dev_err(hdev->dev,
-+			"Queue index %d does not support sync stream operations\n",
-+									q_idx);
-+		rc = -EINVAL;
-+		goto out;
-+	}
-+
-+	prop = &hdev->kernel_queues[q_idx].sync_stream_prop;
-+
-+	handle = kzalloc(sizeof(*handle), GFP_KERNEL);
-+	if (!handle) {
-+		rc = -ENOMEM;
-+		goto out;
-+	}
-+
-+	handle->count = count;
-+	mgr = &hpriv->ctx->sig_mgr;
-+
-+	spin_lock(&mgr->lock);
-+	hdl_id = idr_alloc(&mgr->handles, handle, 1, 0, GFP_KERNEL);
-+	spin_unlock(&mgr->lock);
-+
-+	if (hdl_id < 0) {
-+		dev_err(hdev->dev, "Failed to allocate IDR for a new signal reservation\n");
-+		rc = -EINVAL;
-+		goto out;
-+	}
-+
-+	handle->id = hdl_id;
-+	handle->q_idx = q_idx;
-+	handle->hdev = hdev;
-+	kref_init(&handle->refcount);
-+
-+	hdev->asic_funcs->hw_queues_lock(hdev);
-+
-+	hw_sob = &prop->hw_sob[prop->curr_sob_offset];
-+
+-static void sob_reset_work(struct work_struct *work)
+-{
+-	struct hl_cs_compl *hl_cs_cmpl =
+-		container_of(work, struct hl_cs_compl, sob_reset_work);
+-	struct hl_device *hdev = hl_cs_cmpl->hdev;
+-
+-	/*
+-	 * A signal CS can get completion while the corresponding wait
+-	 * for signal CS is on its way to the PQ. The wait for signal CS
+-	 * will get stuck if the signal CS incremented the SOB to its
+-	 * max value and there are no pending (submitted) waits on this
+-	 * SOB.
+-	 * We do the following to void this situation:
+-	 * 1. The wait for signal CS must get a ref for the signal CS as
+-	 *    soon as possible in cs_ioctl_signal_wait() and put it
+-	 *    before being submitted to the PQ but after it incremented
+-	 *    the SOB refcnt in init_signal_wait_cs().
+-	 * 2. Signal/Wait for signal CS will decrement the SOB refcnt
+-	 *    here.
+-	 * These two measures guarantee that the wait for signal CS will
+-	 * reset the SOB upon completion rather than the signal CS and
+-	 * hence the above scenario is avoided.
+-	 */
+-	kref_put(&hl_cs_cmpl->hw_sob->kref, hl_sob_reset);
+-
+-	if (hl_cs_cmpl->type == CS_TYPE_COLLECTIVE_WAIT)
+-		hdev->asic_funcs->reset_sob_group(hdev,
+-				hl_cs_cmpl->sob_group);
+-
+-	kfree(hl_cs_cmpl);
+-}
+-
+ static void hl_fence_release(struct kref *kref)
+ {
+ 	struct hl_fence *fence =
+@@ -578,6 +546,11 @@ static inline void cs_release_sob_reset_handler(struct hl_device *hdev,
+ 
+ 	spin_lock(&hl_cs_cmpl->lock);
+ 
 +	/*
-+	 * Increment the SOB value by count by user request
-+	 * to reserve those signals
-+	 * check if the signals amount to reserve is not exceeding the max sob
-+	 * value, if yes then switch sob.
++	 * we get refcount upon reservation of signals or signal/wait cs for the
++	 * hw_sob object, and need to put it when the first staged cs
++	 * (which cotains the encaps signals) or cs signal/wait is completed.
 +	 */
-+	rc = hl_cs_signal_sob_wraparound_handler(hdev, q_idx, &hw_sob, count,
-+						true);
-+	if (rc) {
-+		dev_err(hdev->dev, "Failed to switch SOB\n");
-+		hdev->asic_funcs->hw_queues_unlock(hdev);
-+		rc = -EINVAL;
-+		goto remove_idr;
+ 	if ((hl_cs_cmpl->type == CS_TYPE_SIGNAL) ||
+ 			(hl_cs_cmpl->type == CS_TYPE_WAIT) ||
+ 			(hl_cs_cmpl->type == CS_TYPE_COLLECTIVE_WAIT) ||
+@@ -664,8 +637,20 @@ static void cs_do_release(struct kref *ref)
+ 			list_del(&cs->staged_cs_node);
+ 			spin_unlock(&hdev->cs_mirror_lock);
+ 		}
++
++		/* decrement refcount to handle when first staged cs
++		 * with encaps signals is completed.
++		 */
++		if (hl_cs_cmpl->encaps_signals)
++			kref_put(&hl_cs_cmpl->encaps_sig_hdl->refcount,
++						hl_encaps_handle_do_release);
+ 	}
+ 
++	if ((cs->type == CS_TYPE_WAIT || cs->type == CS_TYPE_COLLECTIVE_WAIT)
++			&& cs->encaps_signals)
++		kref_put(&cs->encaps_sig_hdl->refcount,
++					hl_encaps_handle_do_release);
++
+ out:
+ 	/* Must be called before hl_ctx_put because inside we use ctx to get
+ 	 * the device
+@@ -798,6 +783,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	cs->completed = false;
+ 	cs->type = cs_type;
+ 	cs->timestamp = !!(flags & HL_CS_FLAGS_TIMESTAMP);
++	cs->encaps_signals = !!(flags & HL_CS_FLAGS_ENCAP_SIGNALS);
+ 	cs->timeout_jiffies = timeout;
+ 	cs->skip_reset_on_timeout =
+ 		hdev->skip_reset_on_timeout ||
+@@ -808,9 +794,9 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	kref_init(&cs->refcount);
+ 	spin_lock_init(&cs->job_lock);
+ 
+-	cs_cmpl = kmalloc(sizeof(*cs_cmpl), GFP_ATOMIC);
++	cs_cmpl = kzalloc(sizeof(*cs_cmpl), GFP_ATOMIC);
+ 	if (!cs_cmpl)
+-		cs_cmpl = kmalloc(sizeof(*cs_cmpl), GFP_KERNEL);
++		cs_cmpl = kzalloc(sizeof(*cs_cmpl), GFP_KERNEL);
+ 
+ 	if (!cs_cmpl) {
+ 		atomic64_inc(&ctx->cs_counters.out_of_mem_drop_cnt);
+@@ -834,9 +820,7 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 
+ 	cs_cmpl->hdev = hdev;
+ 	cs_cmpl->type = cs->type;
+-	cs_cmpl->encaps_signals = false;
+ 	spin_lock_init(&cs_cmpl->lock);
+-	INIT_WORK(&cs_cmpl->sob_reset_work, sob_reset_work);
+ 	cs->fence = &cs_cmpl->base_fence;
+ 
+ 	spin_lock(&ctx->cs_lock);
+@@ -1225,7 +1209,8 @@ static int hl_cs_copy_chunk_array(struct hl_device *hdev,
+ }
+ 
+ static int cs_staged_submission(struct hl_device *hdev, struct hl_cs *cs,
+-				u64 sequence, u32 flags)
++				u64 sequence, u32 flags,
++				u32 encaps_signal_handle)
+ {
+ 	if (!(flags & HL_CS_FLAGS_STAGED_SUBMISSION))
+ 		return 0;
+@@ -1237,6 +1222,9 @@ static int cs_staged_submission(struct hl_device *hdev, struct hl_cs *cs,
+ 		/* Staged CS sequence is the first CS sequence */
+ 		INIT_LIST_HEAD(&cs->staged_cs_node);
+ 		cs->staged_sequence = cs->sequence;
++
++		if (cs->encaps_signals)
++			cs->encaps_sig_hdl_id = encaps_signal_handle;
+ 	} else {
+ 		/* User sequence will be validated in 'hl_hw_queue_schedule_cs'
+ 		 * under the cs_mirror_lock
+@@ -1254,7 +1242,7 @@ static int cs_staged_submission(struct hl_device *hdev, struct hl_cs *cs,
+ 
+ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 				u32 num_chunks, u64 *cs_seq, u32 flags,
+-				u32 timeout)
++				u32 encaps_signals_handle, u32 timeout)
+ {
+ 	bool staged_mid, int_queues_only = true;
+ 	struct hl_device *hdev = hpriv->hdev;
+@@ -1293,7 +1281,8 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 
+ 	hl_debugfs_add_cs(cs);
+ 
+-	rc = cs_staged_submission(hdev, cs, user_sequence, flags);
++	rc = cs_staged_submission(hdev, cs, user_sequence, flags,
++						encaps_signals_handle);
+ 	if (rc)
+ 		goto free_cs_object;
+ 
+@@ -1604,7 +1593,7 @@ static int hl_cs_ctx_switch(struct hl_fpriv *hpriv, union hl_cs_args *args,
+ 			rc = 0;
+ 		} else {
+ 			rc = cs_ioctl_default(hpriv, chunks, num_chunks,
+-					cs_seq, 0, hdev->timeout_jiffies);
++					cs_seq, 0, 0, hdev->timeout_jiffies);
+ 		}
+ 
+ 		mutex_unlock(&hpriv->restore_phase_mutex);
+@@ -1743,12 +1732,18 @@ int hl_cs_signal_sob_wraparound_handler(struct hl_device *hdev, u32 q_idx,
+ }
+ 
+ static int cs_ioctl_extract_signal_seq(struct hl_device *hdev,
+-		struct hl_cs_chunk *chunk, u64 *signal_seq, struct hl_ctx *ctx)
++		struct hl_cs_chunk *chunk, u64 *signal_seq, struct hl_ctx *ctx,
++		bool encaps_signals)
+ {
+ 	u64 *signal_seq_arr = NULL;
+ 	u32 size_to_copy, signal_seq_arr_len;
+ 	int rc = 0;
+ 
++	if (encaps_signals) {
++		*signal_seq = chunk->encaps_signal_seq;
++		return 0;
 +	}
 +
+ 	signal_seq_arr_len = chunk->num_signal_seq_arr;
+ 
+ 	/* currently only one signal seq is supported */
+@@ -1773,7 +1768,7 @@ static int cs_ioctl_extract_signal_seq(struct hl_device *hdev,
+ 		return -ENOMEM;
+ 	}
+ 
+-	size_to_copy = chunk->num_signal_seq_arr * sizeof(*signal_seq_arr);
++	size_to_copy = signal_seq_arr_len * sizeof(*signal_seq_arr);
+ 	if (copy_from_user(signal_seq_arr,
+ 				u64_to_user_ptr(chunk->signal_seq_arr),
+ 				size_to_copy)) {
+@@ -1795,8 +1790,8 @@ static int cs_ioctl_extract_signal_seq(struct hl_device *hdev,
+ }
+ 
+ static int cs_ioctl_signal_wait_create_jobs(struct hl_device *hdev,
+-		struct hl_ctx *ctx, struct hl_cs *cs, enum hl_queue_type q_type,
+-		u32 q_idx)
++		struct hl_ctx *ctx, struct hl_cs *cs,
++		enum hl_queue_type q_type, u32 q_idx, u32 encaps_signal_offset)
+ {
+ 	struct hl_cs_counters_atomic *cntr;
+ 	struct hl_cs_job *job;
+@@ -1834,6 +1829,9 @@ static int cs_ioctl_signal_wait_create_jobs(struct hl_device *hdev,
+ 	job->user_cb_size = cb_size;
+ 	job->hw_queue_id = q_idx;
+ 
++	if ((cs->type == CS_TYPE_WAIT || cs->type == CS_TYPE_COLLECTIVE_WAIT)
++			&& cs->encaps_signals)
++		job->encaps_sig_wait_offset = encaps_signal_offset;
+ 	/*
+ 	 * No need in parsing, user CB is the patched CB.
+ 	 * We call hl_cb_destroy() out of two reasons - we don't need the CB in
+@@ -1931,13 +1929,22 @@ static int cs_ioctl_reserve_signals(struct hl_fpriv *hpriv,
+ 	 * value, if yes then switch sob.
+ 	 */
+ 	rc = hl_cs_signal_sob_wraparound_handler(hdev, q_idx, &hw_sob, count,
+-						true);
++								true);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "Failed to switch SOB\n");
+ 		hdev->asic_funcs->hw_queues_unlock(hdev);
+ 		rc = -EINVAL;
+ 		goto remove_idr;
+ 	}
 +	/* set the hw_sob to the handle after calling the sob wraparound handler
 +	 * since sob could have changed.
 +	 */
@@ -277,620 +280,535 @@ index 458cdf2ddab5..84032b1bae5c 100644
 +	 * signal offset support
 +	 */
 +	handle->pre_sob_val = prop->next_sob_val - handle->count;
-+
-+	*signals_count = prop->next_sob_val;
-+	hdev->asic_funcs->hw_queues_unlock(hdev);
-+
-+	*sob_addr = handle->hw_sob->sob_addr;
-+	*handle_id = hdl_id;
-+
-+	dev_dbg(hdev->dev,
-+		"Signals reserved, sob_id: %d, sob addr: 0x%x, sob val: 0x%x, q_idx: %d, hdl_id: %d\n",
-+			hw_sob->sob_id, handle->hw_sob->sob_addr,
-+			prop->next_sob_val, q_idx, hdl_id);
-+	goto out;
-+
-+remove_idr:
-+	spin_lock(&mgr->lock);
-+	idr_remove(&mgr->handles, hdl_id);
-+	spin_unlock(&mgr->lock);
-+
-+	kfree(handle);
-+out:
-+	return rc;
-+}
-+
-+static int cs_ioctl_unreserve_signals(struct hl_fpriv *hpriv, u32 handle_id)
-+{
-+	struct hl_cs_encaps_sig_handle *encaps_sig_hdl;
-+	struct hl_sync_stream_properties *prop;
-+	struct hl_device *hdev = hpriv->hdev;
-+	struct hl_encaps_signals_mgr *mgr;
-+	struct hl_hw_sob *hw_sob;
-+	u32 q_idx, sob_addr;
-+	int rc = 0;
-+
-+	mgr = &hpriv->ctx->sig_mgr;
-+
-+	spin_lock(&mgr->lock);
-+	encaps_sig_hdl = idr_find(&mgr->handles, handle_id);
-+	if (encaps_sig_hdl) {
-+		dev_dbg(hdev->dev, "unreserve signals, handle: %u, SOB:0x%x, count: %u\n",
-+				handle_id, encaps_sig_hdl->hw_sob->sob_addr,
-+					encaps_sig_hdl->count);
-+
-+		hdev->asic_funcs->hw_queues_lock(hdev);
-+
-+		q_idx = encaps_sig_hdl->q_idx;
-+		prop = &hdev->kernel_queues[q_idx].sync_stream_prop;
-+		hw_sob = &prop->hw_sob[prop->curr_sob_offset];
-+		sob_addr = hdev->asic_funcs->get_sob_addr(hdev, hw_sob->sob_id);
-+
-+		/* Check if sob_val got out of sync due to other
-+		 * signal submission requests which were handled
-+		 * between the reserve-unreserve calls or SOB switch
-+		 * upon reaching SOB max value.
-+		 */
-+		if (encaps_sig_hdl->pre_sob_val + encaps_sig_hdl->count
-+				!= prop->next_sob_val ||
-+				sob_addr != encaps_sig_hdl->hw_sob->sob_addr) {
-+			dev_err(hdev->dev, "Cannot unreserve signals, SOB val ran out of sync, expected: %u, actual val: %u\n",
-+				encaps_sig_hdl->pre_sob_val,
-+				(prop->next_sob_val - encaps_sig_hdl->count));
-+
-+			hdev->asic_funcs->hw_queues_unlock(hdev);
-+			rc = -EINVAL;
-+			goto out;
-+		}
-+
-+		/*
-+		 * Decrement the SOB value by count by user request
-+		 * to unreserve those signals
-+		 */
-+		prop->next_sob_val -= encaps_sig_hdl->count;
-+
-+		hdev->asic_funcs->hw_queues_unlock(hdev);
-+
-+		hw_sob_put(hw_sob);
-+
-+		/* Release the id and free allocated memory of the handle */
-+		idr_remove(&mgr->handles, handle_id);
-+		kfree(encaps_sig_hdl);
-+	} else {
-+		rc = -EINVAL;
-+		dev_err(hdev->dev, "failed to unreserve signals, cannot find handler\n");
-+	}
-+out:
-+	spin_unlock(&mgr->lock);
-+
-+	return rc;
-+}
-+
- static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 
+ 	/* set the hw_sob to the handle after calling the sob wraparound handler
+ 	 * since sob could have changed.
+@@ -2041,7 +2048,12 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
  				void __user *chunks, u32 num_chunks,
  				u64 *cs_seq, u32 flags, u32 timeout)
-@@ -1996,10 +2216,11 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
- int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
  {
- 	union hl_cs_args *args = data;
--	enum hl_cs_type cs_type;
-+	enum hl_cs_type cs_type = 0;
- 	u64 cs_seq = ULONG_MAX;
- 	void __user *chunks;
--	u32 num_chunks, flags, timeout;
-+	u32 num_chunks, flags, timeout,
-+		signals_count = 0, sob_addr = 0, handle_id = 0;
++	struct hl_cs_encaps_sig_handle *encaps_sig_hdl = NULL;
++	bool handle_found = false, is_wait_cs = false,
++			wait_cs_submitted = false,
++			cs_encaps_signals = false;
+ 	struct hl_cs_chunk *cs_chunk_array, *chunk;
++	bool staged_cs_with_encaps_signals = false;
+ 	struct hw_queue_properties *hw_queue_prop;
+ 	struct hl_device *hdev = hpriv->hdev;
+ 	struct hl_cs_compl *sig_waitcs_cmpl;
+@@ -2050,7 +2062,6 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	struct hl_fence *sig_fence = NULL;
+ 	struct hl_ctx *ctx = hpriv->ctx;
+ 	enum hl_queue_type q_type;
+-	bool is_wait_cs = false;
+ 	struct hl_cs *cs;
+ 	u64 signal_seq;
  	int rc;
+@@ -2102,13 +2113,56 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 		collective_engine_id = chunk->collective_engine_id;
+ 	}
  
- 	rc = hl_cs_sanity_checks(hpriv, args);
-@@ -2036,17 +2257,33 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
- 		rc = cs_ioctl_signal_wait(hpriv, cs_type, chunks, num_chunks,
- 					&cs_seq, args->in.cs_flags, timeout);
+-	if (cs_type == CS_TYPE_WAIT || cs_type == CS_TYPE_COLLECTIVE_WAIT) {
+-		is_wait_cs = true;
++	is_wait_cs = !!(cs_type == CS_TYPE_WAIT ||
++			cs_type == CS_TYPE_COLLECTIVE_WAIT);
++
++	cs_encaps_signals = !!(flags & HL_CS_FLAGS_ENCAP_SIGNALS);
+ 
+-		rc = cs_ioctl_extract_signal_seq(hdev, chunk, &signal_seq, ctx);
++	if (is_wait_cs) {
++		rc = cs_ioctl_extract_signal_seq(hdev, chunk, &signal_seq,
++				ctx, cs_encaps_signals);
+ 		if (rc)
+ 			goto free_cs_chunk_array;
+ 
++		if (cs_encaps_signals) {
++			/* check if cs sequence has encapsulated
++			 * signals handle
++			 */
++			struct idr *idp;
++			u32 id;
++
++			spin_lock(&ctx->sig_mgr.lock);
++			idp = &ctx->sig_mgr.handles;
++			idr_for_each_entry(idp, encaps_sig_hdl, id) {
++				if (encaps_sig_hdl->cs_seq == signal_seq) {
++					handle_found = true;
++					/* get refcount to protect removing
++					 * this handle from idr, needed when
++					 * multiple wait cs are used with offset
++					 * to wait on reserved encaps signals.
++					 */
++					kref_get(&encaps_sig_hdl->refcount);
++					break;
++				}
++			}
++			spin_unlock(&ctx->sig_mgr.lock);
++
++			if (!handle_found) {
++				dev_err(hdev->dev, "Cannot find encapsulated signals handle for seq 0x%llx\n",
++						signal_seq);
++				goto free_cs_chunk_array;
++			}
++
++			/* validate also the signal offset value */
++			if (chunk->encaps_signal_offset >
++					encaps_sig_hdl->count) {
++				dev_err(hdev->dev, "offset(%u) value exceed max reserved signals count(%u)!\n",
++						chunk->encaps_signal_offset,
++						encaps_sig_hdl->count);
++				goto free_cs_chunk_array;
++			}
++		}
++
+ 		sig_fence = hl_ctx_get_fence(ctx, signal_seq);
+ 		if (IS_ERR(sig_fence)) {
+ 			atomic64_inc(&ctx->cs_counters.validation_drop_cnt);
+@@ -2129,11 +2183,16 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 		sig_waitcs_cmpl =
+ 			container_of(sig_fence, struct hl_cs_compl, base_fence);
+ 
+-		if (sig_waitcs_cmpl->type != CS_TYPE_SIGNAL) {
++		staged_cs_with_encaps_signals = !!
++				(sig_waitcs_cmpl->type == CS_TYPE_DEFAULT &&
++				(flags & HL_CS_FLAGS_ENCAP_SIGNALS));
++
++		if (sig_waitcs_cmpl->type != CS_TYPE_SIGNAL &&
++				!staged_cs_with_encaps_signals) {
+ 			atomic64_inc(&ctx->cs_counters.validation_drop_cnt);
+ 			atomic64_inc(&cntr->validation_drop_cnt);
+ 			dev_err(hdev->dev,
+-				"CS seq 0x%llx is not of a signal CS\n",
++				"CS seq 0x%llx is not of a signal/encaps-signal CS\n",
+ 				signal_seq);
+ 			hl_fence_put(sig_fence);
+ 			rc = -EINVAL;
+@@ -2159,9 +2218,18 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	/*
+ 	 * Save the signal CS fence for later initialization right before
+ 	 * hanging the wait CS on the queue.
++	 * for encaps signals case, we save the cs sequence and handle pointer
++	 * for later initialization.
+ 	 */
+-	if (cs_type == CS_TYPE_WAIT || cs_type == CS_TYPE_COLLECTIVE_WAIT)
++	if (is_wait_cs) {
+ 		cs->signal_fence = sig_fence;
++		/* store the handle pointer, so we don't have to
++		 * look for it again, later on the flow
++		 * when we need to set SOB info in hw_queue.
++		 */
++		if (cs->encaps_signals)
++			cs->encaps_sig_hdl = encaps_sig_hdl;
++	}
+ 
+ 	hl_debugfs_add_cs(cs);
+ 
+@@ -2169,10 +2237,11 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 
+ 	if (cs_type == CS_TYPE_WAIT || cs_type == CS_TYPE_SIGNAL)
+ 		rc = cs_ioctl_signal_wait_create_jobs(hdev, ctx, cs, q_type,
+-				q_idx);
++				q_idx, chunk->encaps_signal_offset);
+ 	else if (cs_type == CS_TYPE_COLLECTIVE_WAIT)
+ 		rc = hdev->asic_funcs->collective_wait_create_jobs(hdev, ctx,
+-				cs, q_idx, collective_engine_id);
++				cs, q_idx, collective_engine_id,
++				chunk->encaps_signal_offset);
+ 	else {
+ 		atomic64_inc(&ctx->cs_counters.validation_drop_cnt);
+ 		atomic64_inc(&cntr->validation_drop_cnt);
+@@ -2198,6 +2267,8 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	}
+ 
+ 	rc = HL_CS_STATUS_SUCCESS;
++	if (is_wait_cs)
++		wait_cs_submitted = true;
+ 	goto put_cs;
+ 
+ free_cs_object:
+@@ -2208,6 +2279,10 @@ static int cs_ioctl_signal_wait(struct hl_fpriv *hpriv, enum hl_cs_type cs_type,
+ 	/* We finished with the CS in this function, so put the ref */
+ 	cs_put(cs);
+ free_cs_chunk_array:
++	if (!wait_cs_submitted && cs_encaps_signals && handle_found &&
++							is_wait_cs)
++		kref_put(&encaps_sig_hdl->refcount,
++				hl_encaps_handle_do_release);
+ 	kfree(cs_chunk_array);
+ out:
+ 	return rc;
+@@ -2269,7 +2344,9 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
  		break;
-+	case CS_RESERVE_SIGNALS:
-+		rc = cs_ioctl_reserve_signals(hpriv,
-+					args->in.encaps_signals_q_idx,
-+					args->in.encaps_signals_count,
-+					&handle_id, &sob_addr, &signals_count);
-+		break;
-+	case CS_UNRESERVE_SIGNALS:
-+		rc = cs_ioctl_unreserve_signals(hpriv,
-+					args->in.encaps_sig_handle_id);
-+		break;
  	default:
  		rc = cs_ioctl_default(hpriv, chunks, num_chunks, &cs_seq,
- 						args->in.cs_flags, timeout);
+-						args->in.cs_flags, timeout);
++						args->in.cs_flags,
++						args->in.encaps_sig_handle_id,
++						timeout);
  		break;
  	}
--
  out:
- 	if (rc != -EAGAIN) {
- 		memset(args, 0, sizeof(*args));
-+
-+		if (cs_type == CS_RESERVE_SIGNALS) {
-+			args->out.handle_id = handle_id;
-+			args->out.sob_base_addr_offset = sob_addr;
-+			args->out.count = signals_count;
-+		} else {
-+			args->out.seq = cs_seq;
-+		}
- 		args->out.status = rc;
--		args->out.seq = cs_seq;
- 	}
- 
- 	return rc;
-diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
-index 4d922e4d0393..abbba4194d3b 100644
---- a/drivers/misc/habanalabs/common/context.c
-+++ b/drivers/misc/habanalabs/common/context.c
-@@ -9,6 +9,59 @@
- 
- #include <linux/slab.h>
- 
-+void hl_encaps_handle_do_release(struct kref *ref)
-+{
-+	struct hl_cs_encaps_sig_handle *handle =
-+		container_of(ref, struct hl_cs_encaps_sig_handle, refcount);
-+	struct hl_ctx *ctx = handle->hdev->compute_ctx;
-+	struct hl_encaps_signals_mgr *mgr = &ctx->sig_mgr;
-+
-+	idr_remove(&mgr->handles, handle->id);
-+	kfree(handle);
-+}
-+
-+static void hl_encaps_handle_do_release_sob(struct kref *ref)
-+{
-+	struct hl_cs_encaps_sig_handle *handle =
-+		container_of(ref, struct hl_cs_encaps_sig_handle, refcount);
-+	struct hl_ctx *ctx = handle->hdev->compute_ctx;
-+	struct hl_encaps_signals_mgr *mgr = &ctx->sig_mgr;
-+
-+	/* if we're here, then there was a signals reservation but cs with
-+	 * encaps signals wasn't submitted, so need to put refcount
-+	 * to hw_sob taken at the reservation.
-+	 */
-+	hw_sob_put(handle->hw_sob);
-+
-+	idr_remove(&mgr->handles, handle->id);
-+	kfree(handle);
-+}
-+
-+static void hl_encaps_sig_mgr_init(struct hl_encaps_signals_mgr *mgr)
-+{
-+	spin_lock_init(&mgr->lock);
-+	idr_init(&mgr->handles);
-+}
-+
-+static void hl_encaps_sig_mgr_fini(struct hl_device *hdev,
-+			struct hl_encaps_signals_mgr *mgr)
-+{
-+	struct hl_cs_encaps_sig_handle *handle;
-+	struct idr *idp;
-+	u32 id;
-+
-+	idp = &mgr->handles;
-+
-+	if (!idr_is_empty(idp)) {
-+		dev_warn(hdev->dev, "device released while some encaps signals handles are still allocated\n");
-+		idr_for_each_entry(idp, handle, id)
-+			kref_put(&handle->refcount,
-+					hl_encaps_handle_do_release_sob);
-+	}
-+
-+	idr_destroy(&mgr->handles);
-+}
-+
- static void hl_ctx_fini(struct hl_ctx *ctx)
- {
- 	struct hl_device *hdev = ctx->hdev;
-@@ -53,6 +106,7 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
- 		hl_cb_va_pool_fini(ctx);
- 		hl_vm_ctx_fini(ctx);
- 		hl_asid_free(hdev, ctx->asid);
-+		hl_encaps_sig_mgr_fini(hdev, &ctx->sig_mgr);
- 
- 		/* Scrub both SRAM and DRAM */
- 		hdev->asic_funcs->scrub_device_mem(hdev, 0, 0);
-@@ -200,6 +254,8 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
- 			goto err_cb_va_pool_fini;
- 		}
- 
-+		hl_encaps_sig_mgr_init(&ctx->sig_mgr);
-+
- 		dev_dbg(hdev->dev, "create user context %d\n", ctx->asid);
- 	}
- 
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index bf327cb7ddd6..81b6825e0c1c 100644
+index 81b6825e0c1c..1ea8e70a5a34 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -242,7 +242,9 @@ enum hl_cs_type {
- 	CS_TYPE_DEFAULT,
- 	CS_TYPE_SIGNAL,
- 	CS_TYPE_WAIT,
--	CS_TYPE_COLLECTIVE_WAIT
-+	CS_TYPE_COLLECTIVE_WAIT,
-+	CS_RESERVE_SIGNALS,
-+	CS_UNRESERVE_SIGNALS
- };
+@@ -605,11 +605,11 @@ struct hl_fence {
  
- /*
-@@ -287,13 +289,17 @@ enum queue_cb_alloc_flags {
+ /**
+  * struct hl_cs_compl - command submission completion object.
+- * @sob_reset_work: workqueue object to run SOB reset flow.
+  * @base_fence: hl fence object.
+  * @lock: spinlock to protect fence.
   * @hdev: habanalabs device structure.
-  * @kref: refcount of this SOB. The SOB will reset once the refcount is zero.
-  * @sob_id: id of this SOB.
-+ * @sob_addr: the sob offset from the base address.
-  * @q_idx: the H/W queue that uses this SOB.
-+ * @need_reset: reset indication set when switching to the other sob.
-  */
- struct hl_hw_sob {
- 	struct hl_device	*hdev;
- 	struct kref		kref;
- 	u32			sob_id;
-+	u32			sob_addr;
- 	u32			q_idx;
-+	bool			need_reset;
- };
- 
- enum hl_collective_mode {
-@@ -608,6 +614,8 @@ struct hl_fence {
+  * @hw_sob: the H/W SOB used in this signal/wait CS.
++ * @encaps_sig_hdl: encaps signals hanlder.
+  * @cs_seq: command submission sequence number.
   * @type: type of the CS - signal/wait.
   * @sob_val: the SOB value that is used in this signal/wait CS.
-  * @sob_group: the SOB group that is used in this collective wait CS.
-+ * @encaps_signals: indication whether it's a completion object of cs with
-+ * encaps signals or not.
+@@ -618,11 +618,11 @@ struct hl_fence {
+  * encaps signals or not.
   */
  struct hl_cs_compl {
- 	struct work_struct	sob_reset_work;
-@@ -619,6 +627,7 @@ struct hl_cs_compl {
+-	struct work_struct	sob_reset_work;
+ 	struct hl_fence		base_fence;
+ 	spinlock_t		lock;
+ 	struct hl_device	*hdev;
+ 	struct hl_hw_sob	*hw_sob;
++	struct hl_cs_encaps_sig_handle *encaps_sig_hdl;
+ 	u64			cs_seq;
  	enum hl_cs_type		type;
  	u16			sob_val;
- 	u16			sob_group;
-+	bool			encaps_signals;
+@@ -1267,8 +1267,9 @@ struct hl_asic_funcs {
+ 	u64 (*get_device_time)(struct hl_device *hdev);
+ 	int (*collective_wait_init_cs)(struct hl_cs *cs);
+ 	int (*collective_wait_create_jobs)(struct hl_device *hdev,
+-			struct hl_ctx *ctx, struct hl_cs *cs, u32 wait_queue_id,
+-			u32 collective_engine_id);
++			struct hl_ctx *ctx, struct hl_cs *cs,
++			u32 wait_queue_id, u32 collective_engine_id,
++			u32 encaps_signal_offset);
+ 	u64 (*scramble_addr)(struct hl_device *hdev, u64 addr);
+ 	u64 (*descramble_addr)(struct hl_device *hdev, u64 addr);
+ 	void (*ack_protection_bits_errors)(struct hl_device *hdev);
+@@ -1485,12 +1486,14 @@ struct hl_userptr {
+  * @mirror_node : node in device mirror list of command submissions.
+  * @staged_cs_node: node in the staged cs list.
+  * @debugfs_list: node in debugfs list of command submissions.
++ * @encaps_sig_hdl: holds the encaps signals handle.
+  * @sequence: the sequence number of this CS.
+  * @staged_sequence: the sequence of the staged submission this CS is part of,
+  *                   relevant only if staged_cs is set.
+  * @timeout_jiffies: cs timeout in jiffies.
+  * @submission_time_jiffies: submission time of the cs
+  * @type: CS_TYPE_*.
++ * @encaps_sig_hdl_id: encaps signals handle id, set for the first staged cs.
+  * @submitted: true if CS was submitted to H/W.
+  * @completed: true if CS was completed by device.
+  * @timedout : true if CS was timedout.
+@@ -1504,6 +1507,7 @@ struct hl_userptr {
+  * @staged_cs: true if this CS is part of a staged submission.
+  * @skip_reset_on_timeout: true if we shall not reset the device in case
+  *                         timeout occurs (debug scenario).
++ * @encaps_signals: true if this CS has encaps reserved signals.
+  */
+ struct hl_cs {
+ 	u16			*jobs_in_queue_cnt;
+@@ -1518,11 +1522,13 @@ struct hl_cs {
+ 	struct list_head	mirror_node;
+ 	struct list_head	staged_cs_node;
+ 	struct list_head	debugfs_list;
++	struct hl_cs_encaps_sig_handle *encaps_sig_hdl;
+ 	u64			sequence;
+ 	u64			staged_sequence;
+ 	u64			timeout_jiffies;
+ 	u64			submission_time_jiffies;
+ 	enum hl_cs_type		type;
++	u32			encaps_sig_hdl_id;
+ 	u8			submitted;
+ 	u8			completed;
+ 	u8			timedout;
+@@ -1533,6 +1539,7 @@ struct hl_cs {
+ 	u8			staged_first;
+ 	u8			staged_cs;
+ 	u8			skip_reset_on_timeout;
++	u8			encaps_signals;
  };
  
- /*
-@@ -730,6 +739,17 @@ struct hl_sync_stream_properties {
- 	u8		curr_sob_offset;
- };
- 
-+/**
-+ * struct hl_encaps_signals_mgr - describes sync stream encapsulated signals
-+ * handlers manager
-+ * @lock: protects handles.
-+ * @handles: an idr to hold all encapsulated signals handles.
-+ */
-+struct hl_encaps_signals_mgr {
-+	spinlock_t		lock;
-+	struct idr		handles;
-+};
-+
  /**
-  * struct hl_hw_queue - describes a H/W transport queue.
-  * @shadow_queue: pointer to a shadow queue that holds pointers to jobs.
-@@ -1135,6 +1155,7 @@ struct fw_load_mgr {
-  * @init_firmware_loader: initialize data for FW loader.
-  * @init_cpu_scrambler_dram: Enable CPU specific DRAM scrambling
-  * @state_dump_init: initialize constants required for state dump
-+ * @get_sob_addr: get SOB base address offset.
-  */
- struct hl_asic_funcs {
- 	int (*early_init)(struct hl_device *hdev);
-@@ -1261,6 +1282,7 @@ struct hl_asic_funcs {
- 	void (*init_firmware_loader)(struct hl_device *hdev);
- 	void (*init_cpu_scrambler_dram)(struct hl_device *hdev);
- 	void (*state_dump_init)(struct hl_device *hdev);
-+	u32 (*get_sob_addr)(struct hl_device *hdev, u32 sob_id);
+@@ -1552,6 +1559,8 @@ struct hl_cs {
+  * @hw_queue_id: the id of the H/W queue this job is submitted to.
+  * @user_cb_size: the actual size of the CB we got from the user.
+  * @job_cb_size: the actual size of the CB that we put on the queue.
++ * @encaps_sig_wait_offset: encapsulated signals offset, which allow user
++ *                          to wait on part of the reserved signals.
+  * @is_kernel_allocated_cb: true if the CB handle we got from the user holds a
+  *                          handle to a kernel-allocated CB object, false
+  *                          otherwise (SRAM/DRAM/host address).
+@@ -1576,6 +1585,7 @@ struct hl_cs_job {
+ 	u32			hw_queue_id;
+ 	u32			user_cb_size;
+ 	u32			job_cb_size;
++	u32			encaps_sig_wait_offset;
+ 	u8			is_kernel_allocated_cb;
+ 	u8			contains_dma_pkt;
  };
- 
- 
-@@ -1353,6 +1375,7 @@ struct hl_pending_cb {
-  * @cs_counters: context command submission counters.
-  * @cb_va_pool: device VA pool for command buffers which are mapped to the
-  *              device's MMU.
-+ * @sig_mgr: encaps signals handle manager.
-  * @cs_sequence: sequence number for CS. Value is assigned to a CS and passed
-  *			to user so user could inquire about CS. It is used as
-  *			index to cs_pending array.
-@@ -1392,6 +1415,7 @@ struct hl_ctx {
- 	struct list_head		hw_block_mem_list;
- 	struct hl_cs_counters_atomic	cs_counters;
- 	struct gen_pool			*cb_va_pool;
-+	struct hl_encaps_signals_mgr	sig_mgr;
- 	u64				cs_sequence;
- 	u64				*dram_default_hops;
- 	spinlock_t			pending_cb_lock;
-@@ -2504,7 +2528,6 @@ struct hl_device {
- 
- 	struct multi_cs_completion	multi_cs_completion[
- 							MULTI_CS_MAX_USER_CTX];
--
- 	atomic64_t			dram_used_mem;
- 	u64				timeout_jiffies;
- 	u64				max_power;
-@@ -2576,6 +2599,29 @@ struct hl_device {
- };
- 
- 
-+/**
-+ * struct hl_cs_encaps_sig_handle - encapsulated signals handle structure
-+ * @refcount: refcount used to protect removing this id when several
-+ *            wait cs are used to wait of the reserved encaps signals.
-+ * @hdev: pointer to habanalabs device structure.
-+ * @hw_sob: pointer to  H/W SOB used in the reservation.
-+ * @cs_seq: staged cs sequence which contains encapsulated signals
-+ * @id: idr handler id to be used to fetch the handler info
-+ * @q_idx: stream queue index
-+ * @pre_sob_val: current SOB value before reservation
-+ * @count: signals number
-+ */
-+struct hl_cs_encaps_sig_handle {
-+	struct kref refcount;
-+	struct hl_device *hdev;
-+	struct hl_hw_sob *hw_sob;
-+	u64  cs_seq;
-+	u32  id;
-+	u32  q_idx;
-+	u32  pre_sob_val;
-+	u32  count;
-+};
-+
- /*
-  * IOCTLs
-  */
-@@ -2889,9 +2935,12 @@ int hl_set_voltage(struct hl_device *hdev,
+@@ -2935,9 +2945,12 @@ int hl_set_voltage(struct hl_device *hdev,
  			int sensor_index, u32 attr, long value);
  int hl_set_current(struct hl_device *hdev,
  			int sensor_index, u32 attr, long value);
+-void hl_encaps_handle_do_release(struct kref *ref);
+ void hw_sob_get(struct hl_hw_sob *hw_sob);
+ void hw_sob_put(struct hl_hw_sob *hw_sob);
 +void hl_encaps_handle_do_release(struct kref *ref);
-+void hw_sob_get(struct hl_hw_sob *hw_sob);
-+void hw_sob_put(struct hl_hw_sob *hw_sob);
++void hl_hw_queue_encaps_sig_set_sob_info(struct hl_device *hdev,
++			struct hl_cs *cs, struct hl_cs_job *job,
++			struct hl_cs_compl *cs_cmpl);
  void hl_release_pending_user_interrupts(struct hl_device *hdev);
  int hl_cs_signal_sob_wraparound_handler(struct hl_device *hdev, u32 q_idx,
--			struct hl_hw_sob **hw_sob, u32 count);
-+			struct hl_hw_sob **hw_sob, u32 count, bool encaps_sig);
- 
- int hl_state_dump(struct hl_device *hdev);
- const char *hl_state_dump_get_sync_name(struct hl_device *hdev, u32 sync_id);
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index bffca119946b..3df4313d72cd 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -194,7 +194,6 @@ int hl_device_open(struct inode *inode, struct file *filp)
- 
- out_err:
- 	mutex_unlock(&hdev->fpriv_list_lock);
--
- 	hl_cb_mgr_fini(hpriv->hdev, &hpriv->cb_mgr);
- 	hl_ctx_mgr_fini(hpriv->hdev, &hpriv->ctx_mgr);
- 	filp->private_data = NULL;
+ 			struct hl_hw_sob **hw_sob, u32 count, bool encaps_sig);
 diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
-index 2494bd6e9358..9a59b8e9bf53 100644
+index 9a59b8e9bf53..3d9b24ce2020 100644
 --- a/drivers/misc/habanalabs/common/hw_queue.c
 +++ b/drivers/misc/habanalabs/common/hw_queue.c
-@@ -426,7 +426,8 @@ static int init_signal_cs(struct hl_device *hdev,
- 	hdev->asic_funcs->gen_signal_cb(hdev, job->patched_cb,
- 				cs_cmpl->hw_sob->sob_id, 0, true);
- 
--	rc = hl_cs_signal_sob_wraparound_handler(hdev, q_idx, &hw_sob, 1);
-+	rc = hl_cs_signal_sob_wraparound_handler(hdev, q_idx, &hw_sob, 1,
-+								false);
- 
+@@ -432,12 +432,27 @@ static int init_signal_cs(struct hl_device *hdev,
  	return rc;
  }
-@@ -850,6 +851,8 @@ static void sync_stream_queue_init(struct hl_device *hdev, u32 q_idx)
- 		hw_sob = &sync_stream_prop->hw_sob[sob];
- 		hw_sob->hdev = hdev;
- 		hw_sob->sob_id = sync_stream_prop->base_sob_id + sob;
-+		hw_sob->sob_addr =
-+			hdev->asic_funcs->get_sob_addr(hdev, hw_sob->sob_id);
- 		hw_sob->q_idx = q_idx;
- 		kref_init(&hw_sob->kref);
+ 
++void hl_hw_queue_encaps_sig_set_sob_info(struct hl_device *hdev,
++			struct hl_cs *cs, struct hl_cs_job *job,
++			struct hl_cs_compl *cs_cmpl)
++{
++	struct hl_cs_encaps_sig_handle *handle = cs->encaps_sig_hdl;
++
++	cs_cmpl->hw_sob = handle->hw_sob;
++
++	/* Note that encaps_sig_wait_offset was validated earlier in the flow
++	 * for offset value which exceeds the max reserved signal count.
++	 */
++	cs_cmpl->sob_val = handle->pre_sob_val +
++			(job->encaps_sig_wait_offset);
++}
++
+ static int init_wait_cs(struct hl_device *hdev, struct hl_cs *cs,
+ 		struct hl_cs_job *job, struct hl_cs_compl *cs_cmpl)
+ {
+-	struct hl_cs_compl *signal_cs_cmpl;
+-	struct hl_sync_stream_properties *prop;
+ 	struct hl_gen_wait_properties wait_prop;
++	struct hl_sync_stream_properties *prop;
++	struct hl_cs_compl *signal_cs_cmpl;
+ 	u32 q_idx;
+ 
+ 	q_idx = job->hw_queue_id;
+@@ -447,9 +462,23 @@ static int init_wait_cs(struct hl_device *hdev, struct hl_cs *cs,
+ 					struct hl_cs_compl,
+ 					base_fence);
+ 
+-	/* copy the SOB id and value of the signal CS */
+-	cs_cmpl->hw_sob = signal_cs_cmpl->hw_sob;
+-	cs_cmpl->sob_val = signal_cs_cmpl->sob_val;
++	if (cs->encaps_signals) {
++		/* use the encaps signal handle stored earlier in the flow
++		 * and set the SOB information from the encaps
++		 * signals handle
++		 */
++		hl_hw_queue_encaps_sig_set_sob_info(hdev, cs, job, cs_cmpl);
++
++		dev_dbg(hdev->dev, "Wait for encaps signals handle, qidx(%u), CS sequence(%llu), sob val: %u, offset: %u\n",
++				cs->encaps_sig_hdl->q_idx,
++				cs->encaps_sig_hdl->cs_seq,
++				cs_cmpl->sob_val,
++				job->encaps_sig_wait_offset);
++	} else {
++		/* Copy the SOB id and value of the signal CS */
++		cs_cmpl->hw_sob = signal_cs_cmpl->hw_sob;
++		cs_cmpl->sob_val = signal_cs_cmpl->sob_val;
++	}
+ 
+ 	/* check again if the signal cs already completed.
+ 	 * if yes then don't send any wait cs since the hw_sob
+@@ -523,6 +552,57 @@ static int init_signal_wait_cs(struct hl_cs *cs)
+ 	return rc;
+ }
+ 
++static int encaps_sig_first_staged_cs_handler
++			(struct hl_device *hdev, struct hl_cs *cs)
++{
++	struct hl_cs_compl *cs_cmpl =
++			container_of(cs->fence,
++					struct hl_cs_compl, base_fence);
++	struct hl_cs_encaps_sig_handle *encaps_sig_hdl;
++	struct hl_encaps_signals_mgr *mgr;
++	int rc = 0;
++
++	mgr = &hdev->compute_ctx->sig_mgr;
++
++	spin_lock(&mgr->lock);
++	encaps_sig_hdl = idr_find(&mgr->handles, cs->encaps_sig_hdl_id);
++	if (encaps_sig_hdl) {
++		/*
++		 * Set handler CS sequence,
++		 * the CS which contains the encapsulated signals.
++		 */
++		encaps_sig_hdl->cs_seq = cs->sequence;
++		/* store the handle and set encaps signal indication,
++		 * to be used later in cs_do_release to put the last
++		 * reference to encaps signals handlers.
++		 */
++		cs_cmpl->encaps_signals = true;
++		cs_cmpl->encaps_sig_hdl = encaps_sig_hdl;
++
++		/* set hw_sob pointer in completion object
++		 * since it's used in cs_do_release flow to put
++		 * refcount to sob
++		 */
++		cs_cmpl->hw_sob = encaps_sig_hdl->hw_sob;
++		cs_cmpl->sob_val = encaps_sig_hdl->pre_sob_val +
++						encaps_sig_hdl->count;
++
++		dev_dbg(hdev->dev, "CS seq (%llu) added to encaps signal handler id (%u), count(%u), qidx(%u)\n",
++				cs->sequence, encaps_sig_hdl->id,
++				encaps_sig_hdl->count,
++				encaps_sig_hdl->q_idx);
++
++	} else {
++		dev_err(hdev->dev, "encaps handle id(%u) wasn't found!\n",
++				cs->encaps_sig_hdl_id);
++		rc = -EINVAL;
++	}
++
++	spin_unlock(&mgr->lock);
++
++	return rc;
++}
++
+ /*
+  * hl_hw_queue_schedule_cs - schedule a command submission
+  * @cs: pointer to the CS
+@@ -602,6 +682,12 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
  	}
+ 
+ 
++	if (cs->encaps_signals && cs->staged_first) {
++		rc = encaps_sig_first_staged_cs_handler(hdev, cs);
++		if (rc)
++			goto unroll_cq_resv;
++	}
++
+ 	spin_lock(&hdev->cs_mirror_lock);
+ 
+ 	/* Verify staged CS exists and add to the staged list */
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 5b7a5692cd21..ae1a8b4e694c 100644
+index ae1a8b4e694c..529ccd8b8911 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -8720,6 +8720,11 @@ static u32 gaudi_get_wait_cb_size(struct hl_device *hdev)
- 			sizeof(struct packet_msg_prot) * 2;
- }
+@@ -1215,6 +1215,19 @@ static void gaudi_collective_slave_init_job(struct hl_device *hdev,
+ 	queue_id = job->hw_queue_id;
+ 	prop = &hdev->kernel_queues[queue_id].sync_stream_prop;
  
-+static u32 gaudi_get_sob_addr(struct hl_device *hdev, u32 sob_id)
-+{
-+	return mmSYNC_MNGR_W_S_SYNC_MNGR_OBJS_SOB_OBJ_0 + (sob_id * 4);
-+}
++	if (job->cs->encaps_signals) {
++		/* use the encaps signal handle store earlier in the flow
++		 * and set the SOB information from the encaps
++		 * signals handle
++		 */
++		hl_hw_queue_encaps_sig_set_sob_info(hdev, job->cs, job,
++						cs_cmpl);
 +
- static u32 gaudi_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id,
- 				u32 size, bool eb)
++		dev_dbg(hdev->dev, "collective wait: Sequence %llu found, sob val incremented to: %u\n",
++				job->cs->sequence,
++				job->cs->encaps_sig_hdl->pre_sob_val);
++	}
++
+ 	/* Add to wait CBs using slave monitor */
+ 	wait_prop.data = (void *) job->user_cb;
+ 	wait_prop.sob_base = cs_cmpl->hw_sob->sob_id;
+@@ -1257,9 +1270,14 @@ static int gaudi_collective_wait_init_cs(struct hl_cs *cs)
+ 	gaudi = hdev->asic_specific;
+ 	cprop = &gaudi->collective_props;
+ 
+-	/* copy the SOB id and value of the signal CS */
+-	cs_cmpl->hw_sob = signal_cs_cmpl->hw_sob;
+-	cs_cmpl->sob_val = signal_cs_cmpl->sob_val;
++	/* In encaps signals case the SOB info will be retrieved from
++	 * the handle in gaudi_collective_slave_init_job.
++	 */
++	if (!cs->encaps_signals) {
++		/* copy the SOB id and value of the signal CS */
++		cs_cmpl->hw_sob = signal_cs_cmpl->hw_sob;
++		cs_cmpl->sob_val = signal_cs_cmpl->sob_val;
++	}
+ 
+ 	/* check again if the signal cs already completed.
+ 	 * if yes then don't send any wait cs since the hw_sob
+@@ -1336,7 +1354,8 @@ static int gaudi_collective_wait_init_cs(struct hl_cs *cs)
+ 
+ static int gaudi_collective_wait_create_job(struct hl_device *hdev,
+ 		struct hl_ctx *ctx, struct hl_cs *cs,
+-		enum hl_collective_mode mode, u32 queue_id, u32 wait_queue_id)
++		enum hl_collective_mode mode, u32 queue_id, u32 wait_queue_id,
++		u32 encaps_signal_offset)
  {
-@@ -9424,7 +9429,8 @@ static const struct hl_asic_funcs gaudi_funcs = {
- 	.map_pll_idx_to_fw_idx = gaudi_map_pll_idx_to_fw_idx,
- 	.init_firmware_loader = gaudi_init_firmware_loader,
- 	.init_cpu_scrambler_dram = gaudi_init_scrambler_hbm,
--	.state_dump_init = gaudi_state_dump_init
-+	.state_dump_init = gaudi_state_dump_init,
-+	.get_sob_addr = gaudi_get_sob_addr
- };
+ 	struct hw_queue_properties *hw_queue_prop;
+ 	struct hl_cs_counters_atomic *cntr;
+@@ -1396,6 +1415,13 @@ static int gaudi_collective_wait_create_job(struct hl_device *hdev,
+ 	job->user_cb_size = cb_size;
+ 	job->hw_queue_id = queue_id;
  
- /**
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index dd218a4bb62e..8a689bf42397 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -5575,6 +5575,11 @@ static void goya_state_dump_init(struct hl_device *hdev)
- 	hdev->state_dump_specs.funcs = goya_state_dump_funcs;
- }
- 
-+static u32 goya_get_sob_addr(struct hl_device *hdev, u32 sob_id)
-+{
-+	return 0;
-+}
-+
- static const struct hl_asic_funcs goya_funcs = {
- 	.early_init = goya_early_init,
- 	.early_fini = goya_early_fini,
-@@ -5662,6 +5667,7 @@ static const struct hl_asic_funcs goya_funcs = {
- 	.init_firmware_loader = goya_init_firmware_loader,
- 	.init_cpu_scrambler_dram = goya_cpu_init_scrambler_dram,
- 	.state_dump_init = goya_state_dump_init,
-+	.get_sob_addr = &goya_get_sob_addr
- };
- 
- /*
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index 49c737c4a2f6..eca86c545916 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -628,12 +628,21 @@ struct hl_cs_chunk {
- 		__u64 cb_handle;
- 
- 		/* Relevant only when HL_CS_FLAGS_WAIT or
--		 * HL_CS_FLAGS_COLLECTIVE_WAIT is set.
-+		 * HL_CS_FLAGS_COLLECTIVE_WAIT is set
- 		 * This holds address of array of u64 values that contain
--		 * signal CS sequence numbers. The wait described by this job
--		 * will listen on all those signals (wait event per signal)
-+		 * signal CS sequence numbers. The wait described by
-+		 * this job will listen on all those signals
-+		 * (wait event per signal)
- 		 */
- 		__u64 signal_seq_arr;
-+
-+		/*
-+		 * Relevant only when HL_CS_FLAGS_WAIT or
-+		 * HL_CS_FLAGS_COLLECTIVE_WAIT is set
-+		 * along with HL_CS_FLAGS_ENCAP_SIGNALS.
-+		 * This is the CS sequence which has the encapsulated signals.
-+		 */
-+		__u64 encaps_signal_seq;
- 	};
- 
- 	/* Index of queue to put the CB on */
-@@ -651,6 +660,17 @@ struct hl_cs_chunk {
- 		 * Number of entries in signal_seq_arr
- 		 */
- 		__u32 num_signal_seq_arr;
-+
-+		/* Relevant only when HL_CS_FLAGS_WAIT or
-+		 * HL_CS_FLAGS_COLLECTIVE_WAIT is set along
-+		 * with HL_CS_FLAGS_ENCAP_SIGNALS
-+		 * This set the signals range that the user want to wait for
-+		 * out of the whole reserved signals range.
-+		 * e.g if the signals range is 20, and user don't want
-+		 * to wait for signal 8, so he set this offset to 7, then
-+		 * he call the API again with 9 and so on till 20.
-+		 */
-+		__u32 encaps_signal_offset;
- 	};
- 
- 	/* HL_CS_CHUNK_FLAGS_* */
-@@ -678,6 +698,28 @@ struct hl_cs_chunk {
- #define HL_CS_FLAGS_CUSTOM_TIMEOUT		0x200
- #define HL_CS_FLAGS_SKIP_RESET_ON_TIMEOUT	0x400
- 
-+/*
-+ * The encapsulated signals CS is merged into the existing CS ioctls.
-+ * In order to use this feature need to follow the below procedure:
-+ * 1. Reserve signals, set the CS type to HL_CS_FLAGS_RESERVE_SIGNALS_ONLY
-+ *    the output of this API will be the SOB offset from CFG_BASE.
-+ *    this address will be used to patch CB cmds to do the signaling for this
-+ *    SOB by incrementing it's value.
-+ *    for reverting the reservation use HL_CS_FLAGS_UNRESERVE_SIGNALS_ONLY
-+ *    CS type, note that this might fail if out-of-sync happened to the SOB
-+ *    value, in case other signaling request to the same SOB occurred between
-+ *    reserve-unreserve calls.
-+ * 2. Use the staged CS to do the encapsulated signaling jobs.
-+ *    use HL_CS_FLAGS_STAGED_SUBMISSION and HL_CS_FLAGS_STAGED_SUBMISSION_FIRST
-+ *    along with HL_CS_FLAGS_ENCAP_SIGNALS flag, and set encaps_signal_offset
-+ *    field. This offset allows app to wait on part of the reserved signals.
-+ * 3. Use WAIT/COLLECTIVE WAIT CS along with HL_CS_FLAGS_ENCAP_SIGNALS flag
-+ *    to wait for the encapsulated signals.
-+ */
-+#define HL_CS_FLAGS_ENCAP_SIGNALS		0x800
-+#define HL_CS_FLAGS_RESERVE_SIGNALS_ONLY	0x1000
-+#define HL_CS_FLAGS_UNRESERVE_SIGNALS_ONLY	0x2000
-+
- #define HL_CS_STATUS_SUCCESS		0
- 
- #define HL_MAX_JOBS_PER_CS		512
-@@ -690,10 +732,35 @@ struct hl_cs_in {
- 	/* holds address of array of hl_cs_chunk for execution phase */
- 	__u64 chunks_execute;
- 
--	/* Sequence number of a staged submission CS
--	 * valid only if HL_CS_FLAGS_STAGED_SUBMISSION is set
--	 */
--	__u64 seq;
-+	union {
-+		/*
-+		 * Sequence number of a staged submission CS
-+		 * valid only if HL_CS_FLAGS_STAGED_SUBMISSION is set and
-+		 * HL_CS_FLAGS_STAGED_SUBMISSION_FIRST is unset.
-+		 */
-+		__u64 seq;
-+
-+		/*
-+		 * Encapsulated signals handle id
-+		 * Valid for two flows:
-+		 * 1. CS with encapsulated signals:
-+		 *    when HL_CS_FLAGS_STAGED_SUBMISSION and
-+		 *    HL_CS_FLAGS_STAGED_SUBMISSION_FIRST
-+		 *    and HL_CS_FLAGS_ENCAP_SIGNALS are set.
-+		 * 2. unreserve signals:
-+		 *    valid when HL_CS_FLAGS_UNRESERVE_SIGNALS_ONLY is set.
-+		 */
-+		__u32 encaps_sig_handle_id;
-+
-+		/* Valid only when HL_CS_FLAGS_RESERVE_SIGNALS_ONLY is set */
-+		struct {
-+			/* Encapsulated signals number */
-+			__u32 encaps_signals_count;
-+
-+			/* Encapsulated signals queue index (stream) */
-+			__u32 encaps_signals_q_idx;
-+		};
-+	};
- 
- 	/* Number of chunks in restore phase array. Maximum number is
- 	 * HL_MAX_JOBS_PER_CS
-@@ -718,14 +785,31 @@ struct hl_cs_in {
- };
- 
- struct hl_cs_out {
-+	union {
-+		/*
-+		 * seq holds the sequence number of the CS to pass to wait
-+		 * ioctl. All values are valid except for 0 and ULLONG_MAX
-+		 */
-+		__u64 seq;
-+
-+		/* Valid only when HL_CS_FLAGS_RESERVE_SIGNALS_ONLY is set */
-+		struct {
-+			/* This is the resereved signal handle id */
-+			__u32 handle_id;
-+
-+			/* This is the signals count */
-+			__u32 count;
-+		};
-+	};
-+
-+	/* HL_CS_STATUS */
-+	__u32 status;
++	/* since its guaranteed to have only one chunk in the collective wait
++	 * cs, we can use this chunk to set the encapsulated signal offset
++	 * in the jobs.
++	 */
++	if (cs->encaps_signals)
++		job->encaps_sig_wait_offset = encaps_signal_offset;
 +
  	/*
--	 * seq holds the sequence number of the CS to pass to wait ioctl. All
--	 * values are valid except for 0 and ULLONG_MAX
-+	 * SOB base address offset
-+	 * Valid only when HL_CS_FLAGS_RESERVE_SIGNALS_ONLY is set
- 	 */
--	__u64 seq;
--	/* HL_CS_STATUS_* */
--	__u32 status;
--	__u32 pad;
-+	__u32 sob_base_addr_offset;
- };
+ 	 * No need in parsing, user CB is the patched CB.
+ 	 * We call hl_cb_destroy() out of two reasons - we don't need
+@@ -1424,8 +1450,9 @@ static int gaudi_collective_wait_create_job(struct hl_device *hdev,
+ }
  
- union hl_cs_args {
+ static int gaudi_collective_wait_create_jobs(struct hl_device *hdev,
+-		struct hl_ctx *ctx, struct hl_cs *cs, u32 wait_queue_id,
+-		u32 collective_engine_id)
++		struct hl_ctx *ctx, struct hl_cs *cs,
++		u32 wait_queue_id, u32 collective_engine_id,
++		u32 encaps_signal_offset)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+ 	struct hw_queue_properties *hw_queue_prop;
+@@ -1475,7 +1502,8 @@ static int gaudi_collective_wait_create_jobs(struct hl_device *hdev,
+ 		if (i == 0) {
+ 			queue_id = wait_queue_id;
+ 			rc = gaudi_collective_wait_create_job(hdev, ctx, cs,
+-				HL_COLLECTIVE_MASTER, queue_id, wait_queue_id);
++				HL_COLLECTIVE_MASTER, queue_id,
++				wait_queue_id, encaps_signal_offset);
+ 		} else {
+ 			if (nic_idx < NIC_NUMBER_OF_ENGINES) {
+ 				if (gaudi->hw_cap_initialized &
+@@ -1495,7 +1523,8 @@ static int gaudi_collective_wait_create_jobs(struct hl_device *hdev,
+ 			}
+ 
+ 			rc = gaudi_collective_wait_create_job(hdev, ctx, cs,
+-				HL_COLLECTIVE_SLAVE, queue_id, wait_queue_id);
++				HL_COLLECTIVE_SLAVE, queue_id,
++				wait_queue_id, encaps_signal_offset);
+ 		}
+ 
+ 		if (rc)
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 8a689bf42397..c070cd14753e 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -5487,7 +5487,7 @@ static int goya_collective_wait_init_cs(struct hl_cs *cs)
+ 
+ static int goya_collective_wait_create_jobs(struct hl_device *hdev,
+ 		struct hl_ctx *ctx, struct hl_cs *cs, u32 wait_queue_id,
+-		u32 collective_engine_id)
++		u32 collective_engine_id, u32 encaps_signal_offset)
+ {
+ 	return -EINVAL;
+ }
 -- 
 2.25.1
 
