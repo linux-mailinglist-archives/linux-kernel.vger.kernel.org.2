@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EB13C768D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4E33C7688
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhGMSmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:42:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234179AbhGMSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:42:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DF4D61175;
-        Tue, 13 Jul 2021 18:39:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626201579;
-        bh=ubA7uHxdE1SyiCkT+7s0waoDpBAfPaD5yVbqUZVcML8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lOlnTcMr74IExyFpOoT519KFz61keGVAqq48xsqYnFWDqRdrO2APsJDG9uT7FQOWt
-         eMzuLtIdPGWWhZ35nv/8h68CQQ3/63Lkw6Ay+tw9XczoLYaT4AWoakYHN5gAKibzQ5
-         DB3kqQJIJx41PYmLFnTg8wE5jQF0x5B4pB8c8WH53qzeHo6YT3FjnEDSx1AZIZArqx
-         rCAREy8B/rAyhKIZGavKwCWTbyzBLFGLruJVJguRn04fZyJWhb9TqWYijMxbuMGw9Q
-         hSQCCELJVo7R43F+SdAnnozFtkdHhIBTcWCsK5xcnCUcDBD8nEEmz2NKl2NM0ivQa0
-         1/oWveJlz22qg==
-Date:   Tue, 13 Jul 2021 19:39:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 2/2] spi: cadence-quadspi: Fix check condition for DTR ops
-Message-ID: <20210713183903.GH4098@sirena.org.uk>
-References: <20210713125743.1540-1-a-nandan@ti.com>
- <20210713125743.1540-3-a-nandan@ti.com>
+        id S234254AbhGMSm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhGMSmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:42:24 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D84C0613DD;
+        Tue, 13 Jul 2021 11:39:33 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id z11so6723450iow.0;
+        Tue, 13 Jul 2021 11:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dvhTzTGuwGaxvYP49OCa62HCoxmtDuXHty07kjzc4tQ=;
+        b=p6lH0Pf9OmSWBFQl92qBpyl7xdKbccrbq7NjhAgHC62ORJ3ULLCws7qTa69osGy8iu
+         s/K9I8Olglp/uwNswevPsbwUoNKYGTVFwQ+BbwK5YiQLlybmy/HbOb+XM63SYyINJfoh
+         vXPWhKbLoGArVyOXDMl+JEjtzN2zz32Tb6pEdD/Tz6JhE1kbmLFysAK346kieRxVHq7D
+         9gksqPeVhIfxmvr22kO529va1RrB8yYhQU1ia2PpHj+q5kEmdAiBWCmLNU7hzm7QJZBZ
+         645Oyk+6vnYwhZfydXCzUMjRrM1DbqfO1IakvrKXyR76lPNF5ttk2Rz7bLRJyLZh5ICI
+         Elfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dvhTzTGuwGaxvYP49OCa62HCoxmtDuXHty07kjzc4tQ=;
+        b=psIPaC5HMH+bO4rfXClXinEbSVeeRPhtNblbG0+AUzsHmITwOk5a3pJwl+YrPJXwmE
+         qn7FKoocU6VnFkbqoX1TGSkvzO0OB5PiHGFcjLcEVCSnAUWPGxXeG+GVVGUhK3FDk6ep
+         Wj280F1v/HWm5L89ZPVjNoe1+SmkOiYMQ9iRSHL3/x1JCIS3+txHRDAh8ebecDlSNVDA
+         pUne4TE9kGk1tVws9hzn+Zrc0W9lAMJyuEZjljrrUDAvVuKv1vgqDsZtsnTtcuzQtnAA
+         /JEemOVjxc2+MJL0mT9H2auzNLHB7NrxCfX4RWoBmRgA7ACdOlpPQPG5bivoZ4UbxX7B
+         YRbw==
+X-Gm-Message-State: AOAM530AWa6hI+73szbKsC1MfqVKGhqKKdchlLoWEJBqdX4SJ29Lc3tG
+        jBQC35IyxIBgwE0zYIRTm9Z5q0D2x7LG6lE0UuU=
+X-Google-Smtp-Source: ABdhPJwpTjUp3UniqBaKrgdpc+yOJB6FaS6hkA5OBwgCiueGrCrCf7PVlzeQETyowNt2XoKgBr9TdfK/YQqEyQIzWmA=
+X-Received: by 2002:a02:2b21:: with SMTP id h33mr5075656jaa.31.1626201573037;
+ Tue, 13 Jul 2021 11:39:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K1n7F7fSdjvFAEnM"
-Content-Disposition: inline
-In-Reply-To: <20210713125743.1540-3-a-nandan@ti.com>
-X-Cookie: Keep away from fire or flame.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
+ <20210713084541.7958-3-andriy.shevchenko@linux.intel.com> <YO1s+rHEqC9RjMva@kroah.com>
+ <YO12ARa3i1TprGnJ@smile.fi.intel.com> <YO13lSUdPfNGOnC3@kroah.com>
+In-Reply-To: <YO13lSUdPfNGOnC3@kroah.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 13 Jul 2021 20:39:22 +0200
+Message-ID: <CANiq72=vs8-88h3Z+BON=qA4CZQ1pS1nggnCFHDEHYyG+Y+3JQ@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
+ typeof_memeber() macros
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 13, 2021 at 1:23 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Life is messy and can not easily be partitioned into tiny pieces.  That
+> way usually ends up being even messier in the end...
 
---K1n7F7fSdjvFAEnM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I agree measurements would be ideal.
 
-On Tue, Jul 13, 2021 at 12:57:42PM +0000, Apurva Nandan wrote:
+Having said that, even if it makes no performance difference, I think
+it is reasonable to split things (within reason) and makes a bunch of
+other things easier, plus sometimes one can enforce particular
+conventions in the separate header (like I did when introducing
+`compiler_attributes.h`).
 
-> +	f_pdata->dtr = op->cmd.dtr &&
-> +		       (op->addr.dtr || !op->addr.nbytes) &&
-> +		       (op->data.dtr || !op->data.nbytes);
-
-I'm not sure anyone reading this code is going to figure out what it's
-doing without thinking about it, the combination of writing the bytes
-check with a !, putting it after the check for .dtr and not having any
-comments is a bit obscure.  Something like
-
-	(op->addr.nbytes && op.addr.dtr)
-
-might be a bit clearer, or a comment explicitly spelling it out.
-
---K1n7F7fSdjvFAEnM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDt3cYACgkQJNaLcl1U
-h9AkBAf9HBtavcaFb5fGRZa9jwV4sz1G1ZGGhYDjn+JTd/S/oMPd/BMpXsO4y1M+
-5PBqgnG0bvl1hq/FQjupbs7BaiTTLWWAQjPYHIZaXoHIEiuSq7JI+Ryki0N+LFta
-0YzL5ammBlGcvF2ZPfAm95dMaV83sBqkXJmdqzy8mVABe2Rw1iw9kx6kinLzk9X4
-tBZnXOej3AhXr3FHjInBmZeWun/6TZ3dHQ4fKLvAWcnCeC8E5Z3lMG9VEYWDEbpd
-SiT6VtjFsGDLzzV2+3eCVtnxU9Kzr5CmDhLsl2zBQ4nkq0s+8xIdUG9Op11V6yA6
-BpdtzeCL+W0U7+YfEiSNFnvO/vHmEw==
-=YkZ7
------END PGP SIGNATURE-----
-
---K1n7F7fSdjvFAEnM--
+Cheers,
+Miguel
