@@ -2,237 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDC33C67B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9750C3C67C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhGMA50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 20:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        id S232582AbhGMA75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 20:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbhGMA5Z (ORCPT
+        with ESMTP id S229993AbhGMA74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 20:57:25 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56732C0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:54:36 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id h18so9551120qve.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:54:36 -0700 (PDT)
+        Mon, 12 Jul 2021 20:59:56 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91589C0613DD;
+        Mon, 12 Jul 2021 17:57:06 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id p17so9666024plf.12;
+        Mon, 12 Jul 2021 17:57:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LpiLPRJIBi6SrxM3Fqi2A10JFLoRo5PavGwbx3+mEss=;
-        b=vkVFketWLLa3g3vbW0VKxxdpO1VgzH/shdIKlbrtcym5F/0egwiJ/KScrVUz6zavRU
-         PyjeGkQD6UuUB+smKODLYpFIa3JrnHSg7m1XBH/tkP+xTWGGa+HiUXFuRN1Vt/euRQGQ
-         i0I/OKqxssPRjPzI2+SINFVwwvWlGAbSIvstxGTgkfcAxuuPver5dUevSCOWSe6g7dQZ
-         ZboqVaRliHLVYR/pH2gN5fl7zEObD/Gxl8vpvtvuC8C+OyJMgfQPFnNIJmG2l6hqWcRy
-         3H5eWHcnQWYSGAJ5tp6eGBLmF5NuI8KEXSRet02TihLEbPtNbxoxTS6JeRqBVHI7dumT
-         Tskw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7772Xan/ik/wF4AknIJNRSnTyGg4NRQcBL8wB3gfbmE=;
+        b=Lsss++Zjtoro8sf32sfTiocEl3TjC8HaOXbx5wNuGl5I4kQ6561HG5W/593+2FYRIm
+         jIhmREqydFzpn+igwM/vL+7C/cc5LoRBRP4xyk0AoS/ZHEOOmuQol/YCkv52eKJQrgJL
+         PtcTpQ2j+pKjSkw8TNWnhRuadnQ/fcwcenrHSCBw5oqeKS9Sk1JcV4BI2baEA9G8RAHE
+         7X76A2ypUC0ujuOmtO0pL0Wlb2i5ZKZWbe9Vq4DXLO/eFf0w+11k7ozHAsQzDWAhXJr7
+         i8+IKgNZBIFjxuGHGh3brtXtHR+UuaO+l2UiRHxD4EnKB0PXhdiX/pYVa3BNFQ2qkkRb
+         NklQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=LpiLPRJIBi6SrxM3Fqi2A10JFLoRo5PavGwbx3+mEss=;
-        b=qxPCQwkqXRrMObReZUd65SoDqLPk1PFHRHiNR0lgk4NOwAGUYEeoLhLBfMI/ZnDCjY
-         33jKveQ2b6ACKH+aWdida7ZzM9ZFyQWvtf7tSoBb4XWZ4J06dPIgcWYlAIAtZn003QDE
-         Koq10/z/UtTFov09FDPxtTf/YWI5CjjiHIulzPS5Beln74vebmv7jg1KvcdMlVr8v61D
-         wMNhD8i3LUccdnLzWOVsB8huPRFeyQq6kcg25zgHTh0m9pHk/fUkPZGHSwrMU7SHEvzC
-         gd+gtyNh1T3OnagjbgrUaZZyig4uKW8pDvFwuPYz2HPdHxUt8Qw2honxd7it2QgByo98
-         gZCQ==
-X-Gm-Message-State: AOAM531iDlaJvAS8xX43IVCiOtv9pt0ZnHc7bFzU67sJH7lpko6VLZFv
-        iAFANHL1ngfTHhOiQy2C6TQSag==
-X-Google-Smtp-Source: ABdhPJz2gNuczFb8JQuqxQmKUDUJ0En8OUGHx6qsEkm8g13tkukdUApRMxbJNC6xcU8U5NIHl8v0mQ==
-X-Received: by 2002:a0c:c350:: with SMTP id j16mr2185643qvi.51.1626137675267;
-        Mon, 12 Jul 2021 17:54:35 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id k66sm7586042qke.84.2021.07.12.17.54.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 17:54:34 -0700 (PDT)
-Subject: Re: [Patch v3 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210708120656.663851-1-thara.gopinath@linaro.org>
- <20210708120656.663851-7-thara.gopinath@linaro.org> <YOkgSP5e3JaGY19V@yoga>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <2d11017d-8722-30d1-6b91-214c341e8ab4@linaro.org>
-Date:   Mon, 12 Jul 2021 20:54:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=7772Xan/ik/wF4AknIJNRSnTyGg4NRQcBL8wB3gfbmE=;
+        b=rUT2dpH9y1n9jAd/WTa3GYYIQ/SZu6YBaWC1+0ZGsx7rgegFnOBNFJhIktnJ3phmpN
+         9RyqrwvoIlPH77+1yCX1M9I1znNHtHSGjHwmiLZLTQZF/gFED2D5ExJ3AH+OF/SrLMXr
+         WQRePAR+yj3A8I+BtNFe1QJwI1EUcbeiRlNAetr3LjxhQAHx0vBZc3MH9cA6fyS9HEXH
+         b0ZgCBycKY/Sy9Edb8BnWvvfOouAsHItpPRgBqFnpK1Ycgs9dAVdzBWcb06r8lvHXyoT
+         TAvaHPkAPoZ/y3zltSBi9FX3uiCfUNPZt4TS3gHZl69qDsJViG/bPDMJDyViVizLe858
+         1MXQ==
+X-Gm-Message-State: AOAM531t12fxNGEDp45xaU1n2nOVTZmQZjncmz/uIF0Cmzpc3I+eHyDp
+        gZRm0kaGVlhq1z97F+/cCqw=
+X-Google-Smtp-Source: ABdhPJyMq0NSx0CT82c2/4C4xib7ishMjAm6WA93r1AVUKmTZoQXzT5yZ7mN5krpLyGgg04nqnfSLg==
+X-Received: by 2002:a17:902:9f93:b029:104:9bae:f56a with SMTP id g19-20020a1709029f93b02901049baef56amr1284851plq.75.1626137826100;
+        Mon, 12 Jul 2021 17:57:06 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.174])
+        by smtp.gmail.com with ESMTPSA id u16sm20124122pgh.53.2021.07.12.17.57.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 17:57:05 -0700 (PDT)
+From:   zhouzhouyi@gmail.com
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+Date:   Tue, 13 Jul 2021 08:56:45 +0800
+Message-Id: <20210713005645.8565-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YOkgSP5e3JaGY19V@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
+Hi Paul,
 
-On 7/10/21 12:21 AM, Bjorn Andersson wrote:
-> On Thu 08 Jul 07:06 CDT 2021, Thara Gopinath wrote:
-> 
->> Add dt binding documentation to describe Qualcomm
->> Limits Management Hardware node.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>   .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++++++++++++
->>   1 file changed, 100 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
->> new file mode 100644
->> index 000000000000..7f62bd3d543d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
->> @@ -0,0 +1,100 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +# Copyright 2021 Linaro Ltd.
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/thermal/qcom-lmh.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Limits Management Hardware(LMh)
->> +
->> +maintainers:
->> +  - Thara Gopinath <thara.gopinath@linaro.org>
->> +
->> +description:
->> +  Limits Management Hardware(LMh) is a hardware infrastructure on some
->> +  Qualcomm SoCs that can enforce temperature and current limits as
->> +  programmed by software for certain IPs like CPU.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,sdm845-lmh
->> +
->> +  reg:
->> +    items:
->> +      - description: core registers
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  '#interrupt-cells':
->> +    const: 1
->> +
->> +  interrupt-controller: true
->> +
->> +  qcom,lmh-cpu-id:
->> +    description:
->> +      CPU id of the first cpu in the LMh cluster
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  qcom,lmh-temperature-arm:
->> +    description:
->> +      An integer expressing temperature threshold in millicelsius at which
->> +      the LMh thermal FSM is engaged.
-> 
-> Do we know (by any public source) what "arm", "low" and "high" means
-> beyond that they somehow pokes the state machine?
+During my studying of RCU, I did a grep in the kernel source tree.
+I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
+should be CONFIG_TASKS_TRACE_RCU instead.
 
-Not from public documentation. I know what these thresholds means, 
-atleast to some extent. Though I will never claim to be an expert in 
-this! There is an error in description of qcom,lmh-temperature-low and 
-qcom,lmh-temperature-high below. I copied
-and forgot to change the description. I will fix it.
+Without memory fencing, the idle/userspace task inspection may not
+be so accurate.
 
-> 
->> +    $ref: /schemas/types.yaml#/definitions/int32
->> +
->> +  qcom,lmh-temperature-low:
->> +    description:
->> +      An integer expressing temperature threshold in millicelsius at which
->> +      the LMh thermal FSM is engaged.
->> +    $ref: /schemas/types.yaml#/definitions/int32
->> +
->> +  qcom,lmh-temperature-high:
->> +    description:
->> +      An integer expressing temperature threshold in millicelsius at which
->> +      the LMh thermal FSM is engaged.
->> +    $ref: /schemas/types.yaml#/definitions/int32
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - #interrupt-cells
->> +  - interrupt-controller
->> +  - qcom,lmh-cpu-id
->> +  - qcom,lmh-temperature-arm
->> +  - qcom,lmh-temperature-low
->> +  - qcom,lmh-temperature-high
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    #include <dt-bindings/clock/qcom,rpmh.h>
->> +    #include <dt-bindings/interconnect/qcom,sdm845.h>
-> 
-> I don't see why you need qcom,rpmh.h or the interconnect include in this
-> example.
+Thanks for your constant encouragement for my studying.
 
-I could have sworn make dt-bindings check failed. But maybe only The 
-first include is needed. I will remove the other two.
+Best Wishes
+Zhouyi
 
-> 
->> +
->> +    lmh_cluster1: lmh@17d70800 {
->> +      compatible = "qcom,sdm845-lmh";
->> +      reg = <0 0x17d70800 0 0x401>;
-> 
-> #address- and #size-cells are 1 in the wrapper that validates the
-> examples, so drop the two zeros.
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ include/linux/rcupdate.h | 2 +-
+ kernel/rcu/tree_plugin.h | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-Ok.
-
-> 
->> +      interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
->> +      qcom,lmh-cpu-id = <0x4>;
->> +      qcom,lmh-temperature-arm = <65000>;
->> +      qcom,lmh-temperature-low = <94500>;
->> +      qcom,lmh-temperature-high = <95000>;
->> +      interrupt-controller;
->> +      #interrupt-cells = <1>;
->> +    };
->> +  - |
-> 
-> This is a different example from the one above, if you intended that,
-> don't you need the #include of arm-gic.h here as well?
-
-Again make dt-bindings check did not fail. It is a different example.
-So I am not sure of the norm here. Is one example good enough ?
-
-> 
-> Regards,
-> Bjorn
-> 
->> +    lmh_cluster0: lmh@17d78800 {
->> +      compatible = "qcom,sdm845-lmh";
->> +      reg = <0 0x17d78800 0 0x401>;
->> +      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
->> +      qcom,lmh-cpu-id = <0x0>;
->> +      qcom,lmh-temperature-arm = <65000>;
->> +      qcom,lmh-temperature-low = <94500>;
->> +      qcom,lmh-temperature-high = <95000>;
->> +      interrupt-controller;
->> +      #interrupt-cells = <1>;
->> +    };
->> +  - |
->> -- 
->> 2.25.1
->>
-
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index d9680b798b21..955c82b4737c 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
+ # define synchronize_rcu_tasks synchronize_rcu
+ # endif
+ 
+-# ifdef CONFIG_TASKS_RCU_TRACE
++# ifdef CONFIG_TASKS_TRACE_RCU
+ # define rcu_tasks_trace_qs(t)						\
+ 	do {								\
+ 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index de1dc3bb7f70..6ce104242b23 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
+ /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+ static void rcu_dynticks_task_trace_enter(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = true;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
+ 
+ /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+ static void rcu_dynticks_task_trace_exit(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = false;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
 -- 
-Warm Regards
-Thara (She/Her/Hers)
+2.25.1
+
