@@ -2,344 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35DC3C6B21
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B253C6B24
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhGMHWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbhGMHWu (ORCPT
+        id S234208AbhGMHXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:23:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6918 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234163AbhGMHXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:22:50 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49062C0613DD;
-        Tue, 13 Jul 2021 00:20:01 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id b12so18705628pfv.6;
-        Tue, 13 Jul 2021 00:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k87ShhA7JYr3dDTpNdrndNWm72BoFK448tq+9qFOE+Q=;
-        b=TvzSYuC2It9dB+C7aPwqlN5GqQ0x5DopQ8nVpXXSS48A6OZP1alOMA+zyG5IueQu6D
-         0QcbsvwyG2LO5zReSQVHpHTqWcVYapchgm0ftbL2YleFSXZHwg3ucCzqD3U8l6YaQUZE
-         58luLKi4ChFj/t4PJ/rxIFDTAfzf1uFXtNdiRgIpMyq7ZJ4+ZoPaq6GWMsBC7sKc7Z3W
-         vYQNss9dacQ0puoQs0xSn8CKyKO47w9vmqOOG119LK2PVc/4pEMKBPuQDUyYffupG3PE
-         xYeHAFsVZH4KJUu516JTiYjPzfCpYYq4u9gSfgjsNp5SPijEC+azrnrDC1Dg9yX7KdIU
-         bZbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k87ShhA7JYr3dDTpNdrndNWm72BoFK448tq+9qFOE+Q=;
-        b=b2TIEm2UWSH94sD7vZmcsBFnlyTeedKMFrfFEVKXFsrJ+l/RtEii6F5mf92AGm6Qja
-         yK0STpbKK69FY9uSbgb0qCMaAG0NViW5lsYRGd/QmYEfbDXkjjqEAQOQOmvYbugfa/os
-         qrM8+RUDhRCbLHQK3Sl3To9vRa1s7fld45XvefngLTDO0YCRf+brmjgbeipudZ2IgzzN
-         N4hVtkbhy8tl+ThibV+hGshYmegjJ8ManhXuHWt8qmaNMDABIl6NMC2id1XhXnFIL1xd
-         WJ5IlaTmf0Vfu8TA/xDU/If9v9sQCUd1jfmQmi7+ZDmcBdcVOdWGTM4uOZGCXEylu+Nf
-         njGQ==
-X-Gm-Message-State: AOAM5331/RmLa65kWfu3J6UjYqza+SSRjFx92+0XMgHOgXyCWGaYhGDQ
-        O+f6+UOibGOhCIKsvSiIv+SuNxbaxYcoCdSzdERAJQ0ON1yu8D/fXVE=
-X-Google-Smtp-Source: ABdhPJwATcOwyw4C63A7maDbOoHQTY3NYjqzLaZ+EEUA3+JAKClQMLHxQuPsxsiNOWQ0+Tl1Gflpv4NsDetOwJHt/qY=
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
- p30-20020a056a000a1eb02902e289d85c87mr3285711pfh.73.1626160800594; Tue, 13
- Jul 2021 00:20:00 -0700 (PDT)
+        Tue, 13 Jul 2021 03:23:13 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPBlM40brz7Bc5;
+        Tue, 13 Jul 2021 15:16:47 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 15:20:19 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 13 Jul
+ 2021 15:20:19 +0800
+Subject: Re: [PATCH rfc v3 3/4] page_pool: add frag page recycling support in
+ page pool
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Will Deacon" <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
+        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Alexander Lobakin" <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        <kpsingh@kernel.org>, <andrii@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
+ <1626092196-44697-4-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0UdQS585DyUELZoVpVg-MSLDw=EYrkywgWS_zU1Gqt6Xqw@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <6e5b27bc-14ea-6ca4-d51c-50a45e7e2cea@huawei.com>
+Date:   Tue, 13 Jul 2021 15:20:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <alpine.DEB.2.21.2106260539240.37803@angie.orcam.me.uk>
- <alpine.DEB.2.21.2106260604540.37803@angie.orcam.me.uk> <YOyi0cPdIVSCcpmw@surfacebook.localdomain>
- <alpine.DEB.2.21.2107130150420.9461@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2107130150420.9461@angie.orcam.me.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 13 Jul 2021 10:19:24 +0300
-Message-ID: <CAHp75VfnCG-C6bUzhhC9jQGOSgMXVLZ=QtH0mdhAD85yeqBC7A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] serial: 8250: Add proper clock handling for OxSemi
- PCIe devices
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAKgT0UdQS585DyUELZoVpVg-MSLDw=EYrkywgWS_zU1Gqt6Xqw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 4:52 AM Maciej W. Rozycki <macro@orcam.me.uk> wrote=
-:
->  Something wrong with your "From:" header; I've fixed it up based on a
-> best guess basis.
+On 2021/7/13 3:46, Alexander Duyck wrote:
+> On Mon, Jul 12, 2021 at 5:17 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> Currently page pool only support page recycling only when
+>> there is only one user of the page, and the split page
+>> reusing implemented in the most driver can not use the
+>> page pool as bing-pong way of reusing requires the multi
+>> user support in page pool.
+>>
+>> Those reusing or recycling has below limitations:
+>> 1. page from page pool can only be used be one user in order
+>>    for the page recycling to happen.
+>> 2. Bing-pong way of reusing in most driver does not support
+>>    multi desc using different part of the same page in order
+>>    to save memory.
+>>
+>> So add multi-users support and frag page recycling in page pool
+>> to overcome the above limitation.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>>  include/net/page_pool.h |  22 ++++++++-
+>>  net/core/page_pool.c    | 126 +++++++++++++++++++++++++++++++++++++++++++-----
+>>  2 files changed, 134 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>> index 84cd972..d9a736f 100644
+>> --- a/include/net/page_pool.h
+>> +++ b/include/net/page_pool.h
+>> @@ -45,7 +45,10 @@
+>>                                         * Please note DMA-sync-for-CPU is still
+>>                                         * device driver responsibility
+>>                                         */
+>> -#define PP_FLAG_ALL            (PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV)
+>> +#define PP_FLAG_PAGE_FRAG      BIT(2)  /* for page frag feature */
+>> +#define PP_FLAG_ALL            (PP_FLAG_DMA_MAP |\
+>> +                                PP_FLAG_DMA_SYNC_DEV |\
+>> +                                PP_FLAG_PAGE_FRAG)
+>>
+>>  /*
+>>   * Fast allocation side cache array/stack
+>> @@ -88,6 +91,9 @@ struct page_pool {
+>>         unsigned long defer_warn;
+>>
+>>         u32 pages_state_hold_cnt;
+>> +       unsigned int frag_offset;
+>> +       int frag_bias;
+>> +       struct page *frag_page;
+>>
+>>         /*
+>>          * Data structure for allocation side
+>> @@ -137,6 +143,20 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+>>         return page_pool_alloc_pages(pool, gfp);
+>>  }
+>>
+>> +struct page *page_pool_alloc_frag(struct page_pool *pool,
+>> +                                 unsigned int *offset,
+>> +                                 unsigned int size,
+>> +                                 gfp_t gfp);
+>> +
+>> +static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+>> +                                                   unsigned int *offset,
+>> +                                                   unsigned int size)
+>> +{
+>> +       gfp_t gfp = (GFP_ATOMIC | __GFP_NOWARN);
+>> +
+>> +       return page_pool_alloc_frag(pool, offset, size, gfp);
+>> +}
+>> +
+>>  /* get the stored dma direction. A driver might decide to treat this locally and
+>>   * avoid the extra cache line from page_pool to determine the direction
+>>   */
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index 1abefc6..39d5156 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -24,6 +24,8 @@
+>>  #define DEFER_TIME (msecs_to_jiffies(1000))
+>>  #define DEFER_WARN_INTERVAL (60 * HZ)
+>>
+>> +#define BIAS_MAX       (PAGE_SIZE - 1)
+>> +
+>>  static int page_pool_init(struct page_pool *pool,
+>>                           const struct page_pool_params *params)
+>>  {
+>> @@ -304,6 +306,33 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+>>         return page;
+>>  }
+>>
+>> +/* nr could be negative */
+>> +static int page_pool_atomic_add_bias(struct page *page, int nr)
+>> +{
+>> +       unsigned long *bias_ptr = page_pool_pagecnt_bias_ptr(page);
+>> +       unsigned long old_bias = READ_ONCE(*bias_ptr);
+>> +       unsigned long new_bias;
+>> +
+>> +       do {
+>> +               int bias = (int)(old_bias & ~PAGE_MASK);
+>> +
+>> +               /* Warn when page_pool_dev_alloc_pages() is called
+>> +                * with PP_FLAG_PAGE_FRAG flag in driver.
+>> +                */
+>> +               WARN_ON(!bias);
+>> +
+>> +               /* already the last user */
+>> +               if (!(bias + nr))
+>> +                       return 0;
+>> +
+>> +               new_bias = old_bias + nr;
+>> +       } while (!try_cmpxchg(bias_ptr, &old_bias, new_bias));
+>> +
+>> +       WARN_ON((new_bias & PAGE_MASK) != (old_bias & PAGE_MASK));
+>> +
+>> +       return new_bias & ~PAGE_MASK;
+>> +}
+>> +
+> 
+> So instead of having a function to add bias it might make more sense
+> to have a function that does a subtract and test since that is what we
+> are really doing. So in a way you could think of it as a countdown
+> until unmap or recycle.
 
-Ah, yes, I have to fix it locally. Thanks!
+ok
 
-> On Mon, 12 Jul 2021, andy@surfacebook.localdomain wrote:
->
-> > >   Also handle the historic spd_cust feature so as to allow one to set
-> > >   all the three parameters manually to arbitrary values, by keeping t=
-he
-> > >   low 16 bits for the divisor and then putting TCR in bits 19:16 and
-> > >   CPR/CPR2 in bits 28:20, sanitising the bit pattern supplied such as
-> > >   to clamp CPR/CPR2 values between 0.000 and 0.875 inclusive to 1.000=
-.
-> > >   This preserves compatibility with any existing setups, that is wher=
-e
-> > >   requesting a custom divisor that only has any bits set among the lo=
-w
-> > >   16 the oversampling rate of 16 and the clock prescaler of 1 will be
-> > >   used.
-> >
-> > Please no. We really would like to get rid of that ugly hack. The BOTHE=
-R exists
-> > for ages.
->
->  I have actually carefully considered it before submission and:
->
-> 1. it remains a supported user API with a tool included with contemporary
->    distributions, and
+> 
+> For the frags case we could probably default to one of two values. For
+> the variable sized frags we default to a pagecnt_bias of PAGE_SIZE - 1
+> and then eventually do the subtraction at the end to free up unused
+> count when the page has been fully used. For fixed sized frags you
+> could theoretically just store off the PAGE_SIZE / frag_size - 1 and
+> use that to initialize the pagecnt_bias of the pages as you use them.
 
-What supported API?
+Will default to a pagecnt_bias of PAGE_SIZE - 1.
 
-> 2. with this device you can't set all the possible whole-number baud
->    rates let alone UART clock frequencies with the BOTHER API, and
+> 
+> Also one thing we may want to do is look at renaming this since we
+> aren't messing with the page_ref_count anymore. It might make more
+> sense to refer to this as something such as pp_frag_refcount. Also as
+> per the other patch if we can get away from having to share the same
+> space as DMA that would be even better.
 
-How does SPD_CUST make it different?
+page_pool_pagecnt_bias_ptr() is gone in the new version when we get away
+from having to share the same space as DMA.
 
-> 3. it doesn't hurt.
+> 
+>>  /* For using page_pool replace: alloc_pages() API calls, but provide
+>>   * synchronization guarantee for allocation side.
+>>   */
+>> @@ -425,6 +454,11 @@ static __always_inline struct page *
+>>  __page_pool_put_page(struct page_pool *pool, struct page *page,
+>>                      unsigned int dma_sync_size, bool allow_direct)
+>>  {
+>> +       /* It is not the last user for the page frag case */
+>> +       if (pool->p.flags & PP_FLAG_PAGE_FRAG &&
+>> +           page_pool_atomic_add_bias(page, -1))
+>> +               return NULL;
+>> +
+>>         /* This allocator is optimized for the XDP mode that uses
+>>          * one-frame-per-page, but have fallbacks that act like the
+>>          * regular page allocator APIs.
+>> @@ -448,19 +482,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>>                 /* Page found as candidate for recycling */
+>>                 return page;
+>>         }
+>> -       /* Fallback/non-XDP mode: API user have elevated refcnt.
+>> -        *
+>> -        * Many drivers split up the page into fragments, and some
+>> -        * want to keep doing this to save memory and do refcnt based
+>> -        * recycling. Support this use case too, to ease drivers
+>> -        * switching between XDP/non-XDP.
+>> -        *
+>> -        * In-case page_pool maintains the DMA mapping, API user must
+>> -        * call page_pool_put_page once.  In this elevated refcnt
+>> -        * case, the DMA is unmapped/released, as driver is likely
+>> -        * doing refcnt based recycle tricks, meaning another process
+>> -        * will be invoking put_page.
+>> -        */
+>> +
+>>         /* Do not replace this with page_pool_return_page() */
+>>         page_pool_release_page(pool, page);
+>>         put_page(page);
+>> @@ -517,6 +539,82 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+>>  }
+>>  EXPORT_SYMBOL(page_pool_put_page_bulk);
+>>
+>> +/* When BIAS_RESERVE to avoid frag page being recycled back to
+>> + * page pool while the frag page is still in pool->frag_page
+>> + * waiting for more user. As minimum align size for DMA seems to
+>> + * be 32, so we support max size of 2047 * 32 for 4K page size.
+>> + */
+>> +#define BIAS_RESERVE           ((int)(BIAS_MAX / 2 + 1))
+>> +#define BIAS_NEGATIVE_RESERVE  (0 - BIAS_RESERVE)
+> 
+> The explanation and these values don't make sense to me. BIAS_RESERVE
+> would be 4095 / 2 + 1 which should come out to 2048, and
+> BIAS_NEGATIVE_REVERSE is -2048. Should these values have been 127/-127
+> which would have been 4096 / 32 - 1?
 
-It hurts development a lot.
+The idea is to prevent the bias from being subtracted to zeor while
+the frag page is sitting in the page pool waiting for more users.
 
-> If you'd like to get rid of SPD_CUST, then just do so, but until then I
-> fail to see a point to have it supported with some devices but not other
-> ones.
+Anyway, the above comment is not needed if I take the "default to a
+pagecnt_bias of PAGE_SIZE - 1" suggestion.
 
-It _is_ the current state of affairs. Most of the contemporary drivers
-do not support this "feature" at all.
+> 
+>> +static struct page *page_pool_drain_frag(struct page_pool *pool,
+>> +                                        struct page *page)
+>> +{
+>> +       /* page pool is not the last user */
+>> +       if (page_pool_atomic_add_bias(page, pool->frag_bias +
+>> +                                     BIAS_NEGATIVE_RESERVE))
+>> +               return NULL;
+>> +       else
+>> +               return page;
+>> +}
+>> +
+> 
+> So this check isn't quite complete, and I probably wouldn't use it
+> this way. To be complete you would need to check the page_ref_count
+> and pfmemalloc flags. Also, we already have recycling into the page
+> pool so we might as well just use that rather than trying to introduce
+> yet another layer of recycling.
 
->  NB if you do get to it, then please consider adding an equally flexible
-> API too, e.g. for fractional baud rates (134.5bps haha); I won't mind if
-> it's less hackish though.
+Yes, will add the the pfmemalloc and page_ref_count checking.
 
-Why do you need fractional baud rates for the small speeds? I do not
-believe we have any good use case for that. And 1/2 from 134 is less
-than 0.5% which is tolerable by UART by definition.
+As introducing another layer of recycling, it seems we can not call
+page_pool_put_page() directly, and if the page is reusable, adding
+back to the pool and taking one from the pool seems unnecessary.
 
-So, please no, drop it.
+> 
+>> +static void page_pool_free_frag(struct page_pool *pool)
+>> +{
+>> +       struct page *page = pool->frag_page;
+>> +
+>> +       if (!page ||
+>> +           page_pool_atomic_add_bias(page, pool->frag_bias +
+>> +                                     BIAS_NEGATIVE_RESERVE))
+>> +               return;
+>> +
+>> +       page_pool_return_page(pool, page);
+>> +       pool->frag_page = NULL;
+>> +}
+>> +
+> 
+> If we make the add_bias into a sub_bias then we are just needing to
+> flip the values so that you are subtracting BIAS_RESERVE -
+> pool->frag_bias which is much more readable in my opinion.
 
-> > > References:
-> > >
-> > > [1] "OXPCIe200 PCI Express Multi-Port Bridge", Oxford Semiconductor,
-> > >     Inc., DS-0045, 10 Nov 2008, Section "950 Mode", pp. 64-65
-> > >
-> > > [2] "OXPCIe952 PCI Express Bridge to Dual Serial & Parallel Port",
-> > >     Oxford Semiconductor, Inc., DS-0046, Mar 06 08, Section "950 Mode=
-",
-> > >     p. 20
-> > >
-> > > [3] "OXPCIe954 PCI Express Bridge to Quad Serial Port", Oxford
-> > >     Semiconductor, Inc., DS-0047, Feb 08, Section "950 Mode", p. 20
-> > >
-> > > [4] "OXPCIe958 PCI Express Bridge to Octal Serial Port", Oxford
-> > >     Semiconductor, Inc., DS-0048, Feb 08, Section "950 Mode", p. 20
-> >
-> > Is it possible to reduce a commit message by shifting some stuff to the
-> > dedicated documentation?
->
->  The relevant stuff has been included as comments along with actual code
-> already, and the rest is the usual submission-time rationale.  This will
-> be the initial source of information when someone studies the history of
-> this code (`git log').
+ok.
 
-I do not object to this, but perhaps in the form of documentation it
-would serve a better job (no-one will need to go deep into the Git
-history for this, especially non-developer people who just got a
-tarball, for example).
-
->  I don't consider it cast in stone however, so if there's any particular
-> piece you'd like to see elsewhere, then please point out to me what to
-> move and where.  Or give any guidance other than just: "Rewrite it!"
-
-At least that table with divisors and deviation with accompanying
-text. But I dare to say 90-95% of the commit message and leave
-something like "Here is a new driver. documentation is there." To
-where? Documentation/admin-guide seems most suitable right now
-(looking at the presence of auxdisplay folder), however I think that
-maybe dedicated folder like Documentation/hardware-notes maybe better.
-
-+Cc: Mauro. What do you think about this? We need a folder where we
-rather describe hardware features and maybe some driver implementation
-details.
-
->  (Yes I often have troubles figuring out the real intent of some changes
-> made say 15 years ago that have turned out broken after all those years
-> and whose change description is simply too terse now that the lore has
-> been lost.)
->
-> > >  drivers/tty/serial/8250/8250_pci.c  |  331 +++++++++++++++++++++++++=
-+++--------
-> >
-> > Can we, please, split the quirk driver first as it's done in a lot of e=
-xamples
-> > (_exar, _mid, _lpss, _...) and then modify it?
->
->  I have found it unclear where the line is drawn between having support
-> code included with 8250_pci.c proper and having it split off to a separat=
-e
-> file.  All the device-specific files seem to provide complex handling,
-> well beyond just calculating the clock.
-
-Lines of code in the current 8250_pci in conjunction with expansion.
-To me 331 (okay, it's something like 280?) LOC + sounds like a very
-good justification to split.
-
->  I'll be happy to split it off however (with a suitable preparatory
-> change) if there is a consensus in favour to doing so.
-
-If you have a consensus with yourself :-) Maintaining 8250_pci is a burden.
-You may look into the history of 8250_pci (and you will often see my
-name there) how it was shrinking in time.
-
-> > > +/*
-> > > + * Determine the oversampling rate, the clock prescaler, and the clo=
-ck
-> > > + * divisor for the requested baud rate.  The clock rate is 62.5 MHz,
-> > > + * which is four times the baud base, and the prescaler increments i=
-n
-> > > + * steps of 1/8.  Therefore to make calculations on integers we need
-> > > + * to use a scaled clock rate, which is the baud base multiplied by =
-32
-> > > + * (or our assumed UART clock rate multiplied by 2).
-> > > + *
-> > > + * The allowed oversampling rates are from 4 up to 16 inclusive (val=
-ues
-> > > + * from 0 to 3 inclusive map to 16).  Likewise the clock prescaler a=
-llows
-> > > + * values between 1.000 and 63.875 inclusive (operation for values f=
-rom
-> > > + * 0.000 to 0.875 has not been specified).  The clock divisor is the=
- usual
-> > > + * unsigned 16-bit integer.
-> > > + *
-> > > + * For the most accurate baud rate we use a table of predetermined
-> > > + * oversampling rates and clock prescalers that records all possible
-> > > + * products of the two parameters in the range from 4 up to 255 incl=
-usive,
-> > > + * and additionally 335 for the 1500000bps rate, with the prescaler =
-scaled
-> > > + * by 8.  The table is sorted by the decreasing value of the oversam=
-pling
-> > > + * rate and ties are resolved by sorting by the decreasing value of =
-the
-> > > + * product.  This way preference is given to higher oversampling rat=
-es.
-> > > + *
-> > > + * We iterate over the table and choose the product of an oversampli=
-ng
-> > > + * rate and a clock prescaler that gives the lowest integer division
-> > > + * result deviation, or if an exact integer divider is found we stop
-> > > + * looking for right away.  We do some fixup if the resulting clock
-
-for it right
-
-> > > + * divisor required would be out of its unsigned 16-bit integer rang=
-e.
-> > > + *
-> > > + * Finally we abuse the supposed fractional part returned to encode =
-the
-> > > + * 4-bit value of the oversampling rate and the 9-bit value of the c=
-lock
-> > > + * prescaler which will end up in the TCR and CPR/CPR2 registers.
-> > > + */
-> > > +static unsigned int pci_oxsemi_tornado_get_divisor(struct uart_port =
-*port,
-> > > +                                              unsigned int baud,
-> > > +                                              unsigned int *frac)
-> > > +{
-> > > +   static u8 p[][2] =3D {
-> > > +           { 16, 14, }, { 16, 13, }, { 16, 12, }, { 16, 11, },
-> > > +           { 16, 10, }, { 16,  9, }, { 16,  8, }, { 15, 17, },
-> > > +           { 15, 16, }, { 15, 15, }, { 15, 14, }, { 15, 13, },
-> > > +           { 15, 12, }, { 15, 11, }, { 15, 10, }, { 15,  9, },
-> > > +           { 15,  8, }, { 14, 18, }, { 14, 17, }, { 14, 14, },
-> > > +           { 14, 13, }, { 14, 12, }, { 14, 11, }, { 14, 10, },
-> > > +           { 14,  9, }, { 14,  8, }, { 13, 19, }, { 13, 18, },
-> > > +           { 13, 17, }, { 13, 13, }, { 13, 12, }, { 13, 11, },
-> > > +           { 13, 10, }, { 13,  9, }, { 13,  8, }, { 12, 19, },
-> > > +           { 12, 18, }, { 12, 17, }, { 12, 11, }, { 12,  9, },
-> > > +           { 12,  8, }, { 11, 23, }, { 11, 22, }, { 11, 21, },
-> > > +           { 11, 20, }, { 11, 19, }, { 11, 18, }, { 11, 17, },
-> > > +           { 11, 11, }, { 11, 10, }, { 11,  9, }, { 11,  8, },
-> > > +           { 10, 25, }, { 10, 23, }, { 10, 20, }, { 10, 19, },
-> > > +           { 10, 17, }, { 10, 10, }, { 10,  9, }, { 10,  8, },
-> > > +           {  9, 27, }, {  9, 23, }, {  9, 21, }, {  9, 19, },
-> > > +           {  9, 18, }, {  9, 17, }, {  9,  9, }, {  9,  8, },
-> > > +           {  8, 31, }, {  8, 29, }, {  8, 23, }, {  8, 19, },
-> > > +           {  8, 17, }, {  8,  8, }, {  7, 35, }, {  7, 31, },
-> > > +           {  7, 29, }, {  7, 25, }, {  7, 23, }, {  7, 21, },
-> > > +           {  7, 19, }, {  7, 17, }, {  7, 15, }, {  7, 14, },
-> > > +           {  7, 13, }, {  7, 12, }, {  7, 11, }, {  7, 10, },
-> > > +           {  7,  9, }, {  7,  8, }, {  6, 41, }, {  6, 37, },
-> > > +           {  6, 31, }, {  6, 29, }, {  6, 23, }, {  6, 19, },
-> > > +           {  6, 17, }, {  6, 13, }, {  6, 11, }, {  6, 10, },
-> > > +           {  6,  9, }, {  6,  8, }, {  5, 67, }, {  5, 47, },
-> > > +           {  5, 43, }, {  5, 41, }, {  5, 37, }, {  5, 31, },
-> > > +           {  5, 29, }, {  5, 25, }, {  5, 23, }, {  5, 19, },
-> > > +           {  5, 17, }, {  5, 15, }, {  5, 13, }, {  5, 11, },
-> > > +           {  5, 10, }, {  5,  9, }, {  5,  8, }, {  4, 61, },
-> > > +           {  4, 59, }, {  4, 53, }, {  4, 47, }, {  4, 43, },
-> > > +           {  4, 41, }, {  4, 37, }, {  4, 31, }, {  4, 29, },
-> > > +           {  4, 23, }, {  4, 19, }, {  4, 17, }, {  4, 13, },
-> > > +           {  4,  9, }, {  4,  8, },
-> > > +   };
-> >
-> > Oh l=C3=A0 l=C3=A0! Please, use rational best approximation algorithm i=
-nstead
-> > (check CONFIG_RATIONAL).
->
->  Thanks for the pointer, I didn't know we had this piece.
->
->  However how is it supposed to apply here?  The denominator is always 8,
-> so we can rule it out (by multiplying the dividend by 8, which this piece
-> does, so that the divisor is a whole number), but the numerator has to be
-> a product of three integers, from a different range each ([4,16], [8,511]=
-,
-> [1, 65535]) as noted above.
->
->  Essentially we need to find such three integers (with extra constraints)
-> the product of which is closest to (500000000 / baud_rate) -- which IMHO
-> amounts to factorisation, an NP-complete problem as you have been surely
-> aware (and the whole world relies on), and I have decided that this simpl=
-e
-> table-driven approximation is good enough to handle the usual baud rates,
-> especially the higher ones.  For several baud rates it gives more accurat=
-e
-> results (lower deviation) than the factors proposed in the manufacturer's
-> datasheets.
-
-And my point is to calculate is always based on the asked baud rate.
-Yes. I understand what you wrote above and sometimes only brute force
-can be used, but in the kernel we have integer arithmetics which helps
-a lot besides the fact of bits twiddlings.
-
->  I just fail to see how your proposed algorithm could be factored in here=
-,
-> but I'll be happy to be proved wrong, so I'll appreciate guidance.
-
-It's possible that it doesn't fit in the current form or for all three
-integers. Just give some time and think about it. Maybe you can come
-up with a better idea. I usually point to one case I have solved [1]
-to show that ugly tables can be dropped (in some cases it makes sense
-to leave them, though).
-
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
-mit/drivers/spi/spi-pxa2xx.c?id=3D9df461eca18f5395ee84670cdba6755dddec1898
-
->  In any case thank you for your review, always appreciated!
-
-You/re welcome!
-
---=20
-With Best Regards,
-Andy Shevchenko
+> 
+>> +struct page *page_pool_alloc_frag(struct page_pool *pool,
+>> +                                 unsigned int *offset,
+>> +                                 unsigned int size,
+>> +                                 gfp_t gfp)
+>> +{
+>> +       unsigned int max_size = PAGE_SIZE << pool->p.order;
+>> +       unsigned int frag_offset = pool->frag_offset;
+>> +       struct page *frag_page = pool->frag_page;
+>> +
+>> +       if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
+>> +                   size > max_size))
+>> +               return NULL;
+>> +
+>> +       size = ALIGN(size, dma_get_cache_alignment());
+>> +
+>> +       if (frag_page && frag_offset + size > max_size) {
+>> +               frag_page = page_pool_drain_frag(pool, frag_page);
+>> +               if (frag_page)
+>> +                       goto frag_reset;
+>> +       }
+>> +
+>> +       if (!frag_page) {
+>> +               frag_page = page_pool_alloc_pages(pool, gfp);
+>> +               if (unlikely(!frag_page)) {
+>> +                       pool->frag_page = NULL;
+>> +                       return NULL;
+>> +               }
+>> +
+>> +               pool->frag_page = frag_page;
+>> +
+>> +frag_reset:
+>> +               pool->frag_bias = 0;
+>> +               frag_offset = 0;
+>> +               page_pool_set_pagecnt_bias(frag_page, BIAS_RESERVE);
+>> +       }
+>> +
+>> +       pool->frag_bias++;
+>> +       *offset = frag_offset;
+>> +       pool->frag_offset = frag_offset + size;
+>> +
+>> +       return frag_page;
+>> +}
+>> +EXPORT_SYMBOL(page_pool_alloc_frag);
+>> +
+>>  static void page_pool_empty_ring(struct page_pool *pool)
+>>  {
+>>         struct page *page;
+>> @@ -622,6 +720,8 @@ void page_pool_destroy(struct page_pool *pool)
+>>         if (!page_pool_put(pool))
+>>                 return;
+>>
+>> +       page_pool_free_frag(pool);
+>> +
+>>         if (!page_pool_release(pool))
+>>                 return;
+>>
+>> --
+>> 2.7.4
+>>
+> .
+> 
