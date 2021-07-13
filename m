@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894243C7822
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C963C7826
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235060AbhGMUsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhGMUsn (ORCPT
+        id S235328AbhGMUth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:49:37 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49256 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234394AbhGMUtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:48:43 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8383C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:45:52 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id h4so22612229pgp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eQX4kZnsLTyg7teV0XbJWRhjVPkHV+0yk2IpmzFd8ms=;
-        b=RGhls4yq6tFoTm/Xjmjres/ZZ6a9ARR4qMBHONUr6+qg7imnynLE2R9mR+cwfIoXm9
-         gtwqRV9hcDquUdbhIJzZgj3+N1gJKnZqsDYU5umnmNcqe5k/+ZCkFc7OSaDsJdADcU19
-         AorUUQK2Dqrsy4vEeE5YUHYsaGbnSqL3zMLATx2AWjxUHyTbMCuGlf1BdvYGQfVB/MNC
-         PKRXJ9bi8ljuXXxRFBHsOZDjsUUJhEPx73P/kabj00kWC/LC71vB1yaL6P9Yb5o7o6ao
-         qoyHj0GcNM54fRr3d7rWi+7RGLKwEZX1Dl045nGqBuLiDm3G2irY3RSGDa52B/rryWa7
-         UkbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eQX4kZnsLTyg7teV0XbJWRhjVPkHV+0yk2IpmzFd8ms=;
-        b=KtrRMHuERhz6sFtcVpFM8VToewy4L4fc8vvfPGItPzguNojFChwEBNDmZDjOYP9tHM
-         MubbP/8z8PRLTEcC9OB0om92rofnmAsaDT47CuMhpdf+mwhyAOfDUDun7Szyj8v868vh
-         KPPa+iV7M6suBX1QveevVFYwIthocMNbufyQp8DmN9/VfHwew/1FVpOgStXvwGpAGGWM
-         lXyCp7XVbJ+fr1Fq8aJ0Um9mM7Og7v7MWhGvPBZEnVDb4sAf2HaBxYJNzGAvB0IrWqdE
-         oUYD/qeu8EJ5y6+Wh0BgLw+rxtAUn0rEZLY9+JW4sr5OmAsHm0WoVtOzesY/kd8+PQqh
-         NDJA==
-X-Gm-Message-State: AOAM532QpZCoYYvUMJKyFz5cQvjBnXjnGvQ4bHmd3ZBP0cHSmkAz3Q1d
-        6Mcfqu2dncV1L9SZmWELZSJtbg==
-X-Google-Smtp-Source: ABdhPJxflGK9WxEcu/h2vs+/KkCJ0jsMv1UYctADE9K1Hof7R+4DlRUb7WeQaiAYK/v6e3ZJRaVDfA==
-X-Received: by 2002:a63:5a5b:: with SMTP id k27mr6009568pgm.74.1626209152218;
-        Tue, 13 Jul 2021 13:45:52 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w10sm7006820pgl.46.2021.07.13.13.45.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 13:45:51 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 20:45:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v2 63/69] KVM: VMX: Move .get_interrupt_shadow()
- implementation to common VMX code
-Message-ID: <YO37fMf/verI0QYR@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <11a3389da6184785b238b0d5a7f60279aa0a93b1.1625186503.git.isaku.yamahata@intel.com>
- <3343767a-f7b3-715b-8d99-9821a458a708@redhat.com>
+        Tue, 13 Jul 2021 16:49:36 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2D9CF1C0B7A; Tue, 13 Jul 2021 22:46:44 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 22:46:43 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Geoffrey D. Bennett" <g@b4.vu>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 5.10 007/593] ALSA: usb-audio: scarlett2: Fix wrong
+ resume call
+Message-ID: <20210713204643.GA21897@amd>
+References: <20210712060843.180606720@linuxfoundation.org>
+ <20210712060843.978749134@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
 Content-Disposition: inline
-In-Reply-To: <3343767a-f7b3-715b-8d99-9821a458a708@redhat.com>
+In-Reply-To: <20210712060843.978749134@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021, Paolo Bonzini wrote:
-> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index d69d4dc7c071..d31cace67907 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -1467,15 +1467,7 @@ void vmx_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags)
-> >   u32 vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu)
-> >   {
-> > -	u32 interruptibility = vmcs_read32(GUEST_INTERRUPTIBILITY_INFO);
-> > -	int ret = 0;
-> > -
-> > -	if (interruptibility & GUEST_INTR_STATE_STI)
-> > -		ret |= KVM_X86_SHADOW_INT_STI;
-> > -	if (interruptibility & GUEST_INTR_STATE_MOV_SS)
-> > -		ret |= KVM_X86_SHADOW_INT_MOV_SS;
-> > -
-> > -	return ret;
-> > +	return __vmx_get_interrupt_shadow(vcpu);
-> >   }
-> >   void vmx_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
-> > 
-> 
-> Is there any reason to add the __ version, since at this point kvm_x86_ops
-> is already pointing to vt_get_interrupt_shadow?
 
-Yeah, no idea what I was thinking, the whole thing can be moved as is, just need
-to delete the prototype in vmx.h.
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This patch corrects those issues.  It introduces a new value type,
+> USB_MIXER_BESPOKEN, which indicates a non-standard mixer element, and
+> use this type for all scarlett2 mixer elements, as well as
+> initializing the fixed unit id 0 for avoiding the overflow.
+
+New mixer value is introduced, but printing code in mixer.c is not
+updated.
+
+Is something like this needed?
+
+
+> +++ b/sound/usb/mixer.h
+> @@ -55,6 +55,7 @@ enum {
+>  	USB_MIXER_U16,
+>  	USB_MIXER_S32,
+>  	USB_MIXER_U32,
+> +	USB_MIXER_BESPOKEN,	/* non-standard type */
+>  };
+>
+
+Best regards,
+							Pavel
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 2b5281ef8fca..83d5e4d19128 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3294,7 +3294,7 @@ static void snd_usb_mixer_dump_cval(struct snd_info_b=
+uffer *buffer,
+ {
+ 	struct usb_mixer_elem_info *cval =3D mixer_elem_list_to_info(list);
+ 	static const char * const val_types[] =3D {
+-		"BOOLEAN", "INV_BOOLEAN", "S8", "U8", "S16", "U16", "S32", "U32",
++		"BOOLEAN", "INV_BOOLEAN", "S8", "U8", "S16", "U16", "S32", "U32", "BESPO=
+KEN",=20
+ 	};
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDt+7MACgkQMOfwapXb+vKiegCeLQBSOze1TjPqUt9nn9/tvpv+
+iuwAoKteVnR/byH8Ie4pCWcnQDEwO6VA
+=ZLiS
+-----END PGP SIGNATURE-----
+
+--ZGiS0Q5IWpPtfppv--
