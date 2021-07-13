@@ -2,126 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1843C691C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83493C6925
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhGMES5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 00:18:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229470AbhGMES5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 00:18:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDF1A611C1;
-        Tue, 13 Jul 2021 04:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626149768;
-        bh=gQSEfxPEb8SfRt8lkUNQ707+GbkhAy0StWkQEhuA4wQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jyXBMGpF3LmSgHWegVFYPXLaxpBWbEO1N3u/55sLlEsN+4M+WMCc7gQeD+Yihp73s
-         NjnHXwjGPk7F710ROt3Q3dxIaQXHo5DzntP0H64MYh4cG9FhnAQ1fvH89yrJdJ4YkT
-         CB2a/ID7XcNxw5KeAB9N+48+9PJh2/BBclvlktTJbK43sYkPikEZPCxquqyNs4gjv9
-         FL4egaiOoGXQkDOlnQz8bCBu5ETkEy1TEmRRh+EtOs5lodI2lgMZRj8ob4Q/Kt7c03
-         zMr77recEb+xlY0imnRckrng0n/ugNZTRd482LgOBpUigqQGTQB/+vLfKbDjrYVnHt
-         1kg+j/zphndNg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BE0015C027D; Mon, 12 Jul 2021 21:16:07 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 21:16:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     zhouzhouyi@gmail.com
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-Message-ID: <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713005645.8565-1-zhouzhouyi@gmail.com>
+        id S229886AbhGMEXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 00:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhGMEXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 00:23:49 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11C8C0613DD;
+        Mon, 12 Jul 2021 21:21:00 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id q190so20353004qkd.2;
+        Mon, 12 Jul 2021 21:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:from:to:cc
+         :subject:references:in-reply-to;
+        bh=8NA/aiB+EPeP5agFXPDEWwbuZmONbn8hs65mOdjo90E=;
+        b=u2ZZ/wddx4jiSxD+EsMWy/YdYWsP5gJA2u8vA7b4HUutkMaY4jEuRuuIsVNLH37RKs
+         wsEsPU6a8kAH0ZHXClKZFb+ihojE3s54kH1H61RrhQTagTbsgLusrGgPI9CMb6r3Vlm1
+         mpuPggKGhymrEP8CHsfy1dE9h48i3SMFxfu8RIbnINz9R8gdqe8NzX2o97bAaq17jIlm
+         EOC0ewFhHbX2vf2QC1Or60awM+sKG9u9yL0wSQZI1A0Ztr96fKsQwpM5bv7f4ee59B3B
+         dVhVQTkWk9CJG7yz94tXByZKWE12rgazwjuOg68/T1VolPiNDEVZ65ofmP6c0uZs24Rf
+         +MNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:from:to:cc:subject:references:in-reply-to;
+        bh=8NA/aiB+EPeP5agFXPDEWwbuZmONbn8hs65mOdjo90E=;
+        b=r+BNFQnrAmku+ftDKHer0blm4IX71pkwvKl9sXDB0eBqzG0TrcV38o+9XtzoKKE/PH
+         4+q8ZKn/h8/IW+52fJ6cKzGcCIjv2WM9GS6ObKwE1LWrhs16oaM8awwChLXQJh985M8/
+         enFxc96WQUE/ShZTQmXwO5Jgi8jzePK44sO7X9WIFUMyrNUGMBtaUX2H5ChfPgKeE/zF
+         wPpmtEb7EAjTAUOu6VRPNV/Vc65yWjA2w/f4+6VZP8E2tyMhwB5VbHPoeWWmv+P2zcJn
+         P3HyYwB2kLNGNQe3NrGBVR8+0JWoyXqPZbj9lKqx3fysVpjqQEDhJAQIJGloTrHs9rkb
+         udYw==
+X-Gm-Message-State: AOAM532cJP4yz0UHI+EzB234HN2I8DuTWAsNSyDo+meSwacWgbQBcnZG
+        /VSXspnvcfuIb+Tcw0hrLUA=
+X-Google-Smtp-Source: ABdhPJzGNriWBi2sW60H9zEhh/xjic7z/9LY0JmnqxQ5ohSy4+gi4yc7IWaSYzqt8ivS+6MnGhy0gQ==
+X-Received: by 2002:ae9:ed03:: with SMTP id c3mr2156146qkg.418.1626150059668;
+        Mon, 12 Jul 2021 21:20:59 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id x15sm7379996qkm.66.2021.07.12.21.20.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 21:20:59 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 13 Jul 2021 00:20:57 -0400
+Message-Id: <CCRQ33B4B96F.3IX5IUAK24F49@shaak>
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Rob Herring" <robh@kernel.org>
+Cc:     <peda@axentia.se>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 10/10] dt-bindings: iio: afe: add bindings for
+ temperature transducers
+References: <20210706160942.3181474-1-liambeguin@gmail.com>
+ <20210706160942.3181474-11-liambeguin@gmail.com>
+ <20210712161156.GA2029104@robh.at.kernel.org>
+In-Reply-To: <20210712161156.GA2029104@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
-> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> 
-> Hi Paul,
-> 
-> During my studying of RCU, I did a grep in the kernel source tree.
-> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-> should be CONFIG_TASKS_TRACE_RCU instead.
-> 
-> Without memory fencing, the idle/userspace task inspection may not
-> be so accurate.
-> 
-> Thanks for your constant encouragement for my studying.
-> 
-> Best Wishes
-> Zhouyi
-> 
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+On Mon Jul 12, 2021 at 12:11 PM EDT, Rob Herring wrote:
+> On Tue, Jul 06, 2021 at 12:09:42PM -0400, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > An ADC is often used to measure other quantities indirectly.
+> > This binding describe one case, the measurement of a temperature
+> > through a temperature transducer (either voltage or current).
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  .../iio/afe/temperature-transducer.yaml       | 111 ++++++++++++++++++
+> >  1 file changed, 111 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperatu=
+re-transducer.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-tran=
+sducer.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-transdu=
+cer.yaml
+> > new file mode 100644
+> > index 000000000000..b5a4fbfe75e4
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.=
+yaml
+> > @@ -0,0 +1,111 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/afe/temperature-transducer.yaml=
+#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Temperature Transducer
+> > +
+> > +maintainers:
+> > +  - Liam Beguin <lvb@xiphos.com>
+> > +
+> > +description: |
+> > +  A temperature transducer is a device that converts a thermal quantit=
+y
+> > +  into any other physical quantity. This binding applies to temperatur=
+e to
+> > +  voltage (like the LTC2997), and temperature to current (like the AD5=
+90)
+> > +  linear transducers.
+> > +  In both cases these are assumed to be connected to a voltage ADC.
+> > +
+> > +  When an io-channel measures the output voltage of a temperature anal=
+og front
+> > +  end such as a temperature transducer, the interesting measurement is=
+ almost
+> > +  always the corresponding temperature, not the voltage output. This b=
+inding
+> > +  describes such a circuit.
+> > +
+> > +  The general transfer function here is (using SI units)
+> > +    V(T) =3D Rsense * Isense(T)
+> > +    T =3D (Isense(T) / alpha) + offset
+> > +    T =3D 1 / (Rsense * alpha) * (V + offset * Rsense * alpha)
+> > +
+> > +  When using a temperature to voltage transducer, Rsense is set to 1.
+> > +
+> > +  The following circuits show a temperature to current and a temperatu=
+re to
+> > +  voltage transducer that can be used with this binding.
+> > +
+> > +           VCC
+> > +          -----
+> > +            |
+> > +        +---+---+
+> > +        | AD590 |                               VCC
+> > +        +---+---+                              -----
+> > +            |                                    |
+> > +            V proportional to T             +----+----+
+> > +            |                          D+ --+         |
+> > +            +---- Vout                      | LTC2997 +--- Vout
+> > +            |                          D- --+         |
+> > +        +---+----+                          +---------+
+> > +        | Rsense |                               |
+> > +        +---+----+                             -----
+> > +            |                                   GND
+> > +          -----
+> > +           GND
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: temperature-transducer
+> > +
+> > +  io-channels:
+> > +    maxItems: 1
+> > +    description: |
+> > +      Channel node of a voltage io-channel.
+> > +
+> > +  '#io-channel-cells':
+> > +    const: 0
 
-Good eyes, and those could cause real bugs, so thank you!
+Hi Rob,
 
-Could you please check the wordsmithed version below?
+>
+> This is a io-channel consumer and producer?
+>
 
-							Thanx, Paul
+Yes, this is a consumer and a producer.
+It consumes a single ADC channel and can be fed to something like hwmon.
 
-------------------------------------------------------------------------
+> > +
+> > +  sense-offset-millicelsius:
+> > +    description: |
+> > +      Temperature offset. The default is <0>.
+> > +      This offset is commonly used to convert from Kelvins to degrees =
+Celsius.
+> > +      In that case, sense-offset-millicelsius would be set to <(-27315=
+0)>.
+>
+> default: 0
+>
+> > +
+> > +  sense-resistor-ohms:
+> > +    description: |
+> > +      The sense resistor. Defaults to <1>.
+> > +      Set sense-resistor-ohms to <1> when using a temperature to volta=
+ge
+> > +      transducer.
+>
+> default: 1
+>
+> Though why would we set the value to 1 if the default is 1?
+>
 
-commit fdcf5524b64f2cc8e6201447644079d9f8d4c821
-Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue Jul 13 08:56:45 2021 +0800
+I can rephrase this. I meant to say that the default will make this
+behave like a temperature to voltage transducer.
 
-    RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-    
-    This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
-    instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
-    could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
-    memory-ordering bugs that could result in false-positive quiescent
-    states and too-short grace periods.
-    
-    Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Liam
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index cfeb43bfc719..434d12fe2d4f 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
- # define synchronize_rcu_tasks synchronize_rcu
- # endif
- 
--# ifdef CONFIG_TASKS_RCU_TRACE
-+# ifdef CONFIG_TASKS_TRACE_RCU
- # define rcu_tasks_trace_qs(t)						\
- 	do {								\
- 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 27b74352cccf..a8e3acead6f6 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1498,17 +1498,17 @@ static void noinstr rcu_dynticks_task_exit(void)
- /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
- static void rcu_dynticks_task_trace_enter(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
- 
- /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
- static void rcu_dynticks_task_trace_exit(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
+> > +
+> > +  alpha-ppm-per-celsius:
+> > +    description: |
+> > +      Sometimes referred to as output gain, slope, or temperature coef=
+ficient.
+> > +
+> > +      alpha is expressed in parts per million which can be micro-amps =
+per
+> > +      degrees Celsius or micro-volts per degrees Celsius. The is the m=
+ain
+> > +      characteristic of a temperature transducer and should be stated =
+in the
+> > +      datasheet.
+> > +
+> > +additionalProperties: false
+>
+> Blank line here.
+>
+> > +required:
+> > +  - compatible
+> > +  - io-channels
+> > +  - alpha-ppm-per-celsius
+> > +
+> > +examples:
+> > +  - |
+> > +    ad950: temperature-sensor-0 {
+> > +        compatible =3D "temperature-transducer";
+> > +        #io-channel-cells =3D <0>;
+> > +        io-channels =3D <&temp_adc 3>;
+> > +
+> > +        sense-offset-millicelsius =3D <(-273150)>; /* Kelvin to degree=
+s Celsius */
+> > +        sense-resistor-ohms =3D <8060>;
+> > +        alpha-ppm-per-celsius =3D <1>; /* 1 uA/K */
+> > +    };
+> > +  - |
+> > +    znq_tmp: temperature-sensor-1 {
+> > +        compatible =3D "temperature-transducer";
+> > +        #io-channel-cells =3D <0>;
+> > +        io-channels =3D <&temp_adc 2>;
+> > +
+> > +        sense-offset-millicelsius =3D <(-273150)>; /* Kelvin to degree=
+s Celsius */
+> > +        alpha-ppm-per-celsius =3D <4000>; /* 4 mV/K */
+> > +    };
+> > +...
+> > --=20
+> > 2.30.1.489.g328c10930387
+> >=20
+> >=20
+
