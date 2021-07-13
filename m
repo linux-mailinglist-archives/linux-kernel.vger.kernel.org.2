@@ -2,241 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BA83C6FE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314EB3C6FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235933AbhGMLnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        id S235968AbhGMLpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235797AbhGMLnq (ORCPT
+        with ESMTP id S235923AbhGMLpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:43:46 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A58FC0613DD;
-        Tue, 13 Jul 2021 04:40:56 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id y21-20020a7bc1950000b02902161fccabf1so1401039wmi.2;
-        Tue, 13 Jul 2021 04:40:56 -0700 (PDT)
+        Tue, 13 Jul 2021 07:45:11 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9530C0613EE
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:42:20 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id k27so9128841edk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:42:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y85wNOtup5hmkCmTfLo1pIpQShIZxRh6DcPrPzi4Ol4=;
-        b=YwuIbl+0FSKIRy3WwoIS7w4iUYVf3dnRDGgv33bj6Hij0BnxVWbphZn1bpgpcEgFfh
-         IDKr4p16DEwBdLfCIzhWXIyZdJd71+xfo6pKH4P6tgdCja8jIV9lBGct6C3L2xTBDrWL
-         3mdgEO83Mif3eTMJiG0RyXe/RRcjhncA9t+VDMgItfpu0/v0LobiH5JylvILh16cjgDc
-         t0WEKux/2SRyaWgixRe7gd+uPpNVg7veO9wl5CvJ98B2wnY0xU8HZBeM5iUqyri+2bsa
-         r6V+gkU+9oob4xkqgg2BvaFmtDOB6y5ZWJKh30mKvAiEmlmucsuH3hCxZ6XVvp97Fnj2
-         ejxg==
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=2wPp/1soT9726IbCKk+567N+cbV3rHR5v7IOzW1ypiI=;
+        b=fIQgx0hxRAC50u/HUbxsBEtfdCMx+1ued3aXxXSsD0rEoGUsvQzTwXmzqpY7sK3yg7
+         xMNODBMH5YZDG4YwYBzlbQwvE8k07dM62W+/bHALO7vVPshNsd4A23SUKuyzzpeSmT87
+         QipmGK+1BO8jMEY+PPyebD+A0nAglhuKigQmNwya+fb569RZaN20GMRBmc4xT1W4XYv/
+         WnuAZMoRGrPojTjOdQC1TJZrvOonNiCtmqhzp03IVV3aBM6SCJGutg+PKpn+UfND6hfB
+         6K/gzSm+iyvKriulkZL7ztKScO/tNcsqRQiEHbOshe00WZ8W3bZAOTYZEeTtO4aqK2u0
+         tfzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y85wNOtup5hmkCmTfLo1pIpQShIZxRh6DcPrPzi4Ol4=;
-        b=XmZCWvkG9JzG9uxstaQA41UXWMPsbIN2n/VCSdtB87jL/XmOfNBCkNEIpH66p3acAj
-         6yrLH42a7k/hZiYpKs42oLoXUntObrhE9e3zXB1cXAVTRJqLFWngT2k0IN//TyV45Pcx
-         KvnOus8Hi6MYdAdPDAqLfV0ZVYszeiaJx6nCAa6dppkkY223zDnweTKBxAYhvuIAWimH
-         rhLluV5S4yUSidCmqriU4Y764PrivSFLp1yHUEzMAoEYdYH5YCPVXjOartySG+l8mZJR
-         UajoS/X2UfoBkiwngnYu8HtdffVaTzD6fzhyAIsIgeYs/Ugrqnq2cooV3ug0do5x1Lqy
-         EF+w==
-X-Gm-Message-State: AOAM531KM8eMmOR5nifoWXqsxerm6z+nfZKpcN9Q/Rjh/vfbcjkGdRRt
-        Rz4kcCmUlZCJMlzM7/fm3w==
-X-Google-Smtp-Source: ABdhPJxZXyl/yIp04pwFo98is7aZrayOSjjNfIszAcOIsR5PYVsPF3guD0dMbpg0o0JYYkbyr0nuAQ==
-X-Received: by 2002:a1c:7411:: with SMTP id p17mr19925287wmc.116.1626176455013;
-        Tue, 13 Jul 2021 04:40:55 -0700 (PDT)
-Received: from [192.168.200.247] (ip5b429fd6.dynamic.kabel-deutschland.de. [91.66.159.214])
-        by smtp.gmail.com with ESMTPSA id t15sm17193008wrx.17.2021.07.13.04.40.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 04:40:54 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] drm/rockchip: dw_hdmi: add rk3568 support
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
-        daniel@ffwll.ch, robh+dt@kernel.org, algea.cao@rock-chips.com,
-        andy.yan@rock-chips.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20210707120323.401785-1-benjamin.gaignard@collabora.com>
- <20210707120323.401785-3-benjamin.gaignard@collabora.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <a8c5a263-26a6-d4bf-47e7-9266ca1ae5a8@gmail.com>
-Date:   Tue, 13 Jul 2021 13:40:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=2wPp/1soT9726IbCKk+567N+cbV3rHR5v7IOzW1ypiI=;
+        b=YLmKsPwAeAxB5bUS+4opd0KpNTYeSbiX3g/6CrhhWUDSK4pwuGlJSZPvVx6a5AR2RE
+         3uYd24m8066NUxUHcsY77b9NxcWAYLHC7EPvFLJwrmfcsukZUL42X5DAR427jSaOonTL
+         dt7Bbbgsshp58eh+KwIY2QkbCmeZu1Uf5+vojAmsAi2FMiKo9EGvkHn9N7nJGX037W2v
+         ILm9UCgZ2HqXHeBq1Z8tEccb6oOzmVZ906z4/V8LhMeG0XbmAm2aJnFZydWOKApssfxf
+         e8mxKcXJFEFDG1SkNQNyAk1/6aZ/dD/JnJsqj1MqiBKRZm7LEXWQGM+73EO7BTYnG4Iz
+         PcmQ==
+X-Gm-Message-State: AOAM5300xDMqv+hqapFbqIkB2rZZV5XWSH/Qcw3QlFRhLg7iEjsv5m2R
+        35d1seTdJPODOV1877qCUXHUaF4/zeBvflQXDyEZWg==
+X-Google-Smtp-Source: ABdhPJyrsO+9BrKJPpzba2LtuODxZBtarbd4Xr+LHn6dldRpsS4jst0GpxdXuXZaZOIYrxzkFKFndKS2uf2rhzadgHI=
+X-Received: by 2002:aa7:cacd:: with SMTP id l13mr5227672edt.218.1626176539269;
+ Tue, 13 Jul 2021 04:42:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210707120323.401785-3-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a50:2486:0:0:0:0:0 with HTTP; Tue, 13 Jul 2021 04:42:18
+ -0700 (PDT)
+X-Originating-IP: [5.35.23.161]
+In-Reply-To: <1626168272-25622-5-git-send-email-linyunsheng@huawei.com>
+References: <1626168272-25622-1-git-send-email-linyunsheng@huawei.com> <1626168272-25622-5-git-send-email-linyunsheng@huawei.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Tue, 13 Jul 2021 14:42:18 +0300
+Message-ID: <CAOJe8K33OM0_FpMtE_iDqRHYNGoKrZyBaoe6TiSHumcAoMsFnQ@mail.gmail.com>
+Subject: Re: [PATCH rfc v4 4/4] net: hns3: support skb's frag page recycling
+ based on page pool
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, alexander.duyck@gmail.com,
+        linux@armlinux.org.uk, mw@semihalf.com, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, akpm@linux-foundation.org,
+        peterz@infradead.org, will@kernel.org, willy@infradead.org,
+        vbabka@suse.cz, fenghua.yu@intel.com, guro@fb.com,
+        peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, yhs@fb.com, kpsingh@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On 7/13/21, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> This patch adds skb's frag page recycling support based on
+> the elevated refcnt support in page pool.
+>
+> The performance improves above 10~20% with IOMMU disabled.
+> The performance improves about 200% when IOMMU is enabled
+> and iperf server shares the same cpu with irq/NAPI.
 
-Am 07.07.21 um 14:03 schrieb Benjamin Gaignard:
-> Add a new dw_hdmi_plat_data struct and new compatible for rk3568.
-> This version of the HDMI hardware block need two clocks to provide
-> phy reference clock: hclk_vio and hclk.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Could you share workload details?
+
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 > ---
-> version 2:
-> - Add the clocks needed for the phy.
-
-If got Alega's comment correct, it wasn't about the hclks.
-It looks like for this variant, there is another reference clock 
-required (for the phy) like vpll is already (looks like downstream uses 
-HPLL ( = "HDMI-PLL" ?) for that - which also has to switch the frequency 
-according the the drm mode rate - the two clocks you added here are get 
-just enabled (and disabled) here.
-
-Alega, Andy: Is it really required to enable hclk_vio and hclk(_vop) in 
-the hdmi driver? Are they required to be enabled for the other output 
-variants (i.e. mipi, dsi, rgb ....) as well and shouldn't better be 
-enabled in the (not-yet existing) vop2 driver?
-
-Overall: I'm not sure of the benefit of adding this hdmi variant for a 
-SoC where the display driver isn't implemented upstream yet. The "VOP2" 
-IP seems widely new and should probably be ported first. (even if the 
-HDMI part seems a low hanging fruit according to the vendor sources)
-
-Best,
-Alex
-
-> 
->   drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 68 +++++++++++++++++++++
->   1 file changed, 68 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> index 830bdd5e9b7ce..dc0e255e45745 100644
-> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> @@ -50,6 +50,10 @@
->   #define RK3399_GRF_SOC_CON20		0x6250
->   #define RK3399_HDMI_LCDC_SEL		BIT(6)
->   
-> +#define RK3568_GRF_VO_CON1		0x0364
-> +#define RK3568_HDMI_SDAIN_MSK		BIT(15)
-> +#define RK3568_HDMI_SCLIN_MSK		BIT(14)
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 79
+> +++++++++++++++++++++++--
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |  3 +
+>  2 files changed, 77 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> index cdb5f14..c799129 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> @@ -3205,6 +3205,21 @@ static int hns3_alloc_buffer(struct hns3_enet_ring
+> *ring,
+>  	unsigned int order = hns3_page_order(ring);
+>  	struct page *p;
+>
+> +	if (ring->page_pool) {
+> +		p = page_pool_dev_alloc_frag(ring->page_pool,
+> +					     &cb->page_offset,
+> +					     hns3_buf_size(ring));
+> +		if (unlikely(!p))
+> +			return -ENOMEM;
 > +
->   #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
->   
->   /**
-> @@ -71,6 +75,8 @@ struct rockchip_hdmi {
->   	const struct rockchip_hdmi_chip_data *chip_data;
->   	struct clk *vpll_clk;
->   	struct clk *grf_clk;
-> +	struct clk *hclk_vio;
-> +	struct clk *hclk_vop;
->   	struct dw_hdmi *hdmi;
->   	struct phy *phy;
->   };
-> @@ -216,6 +222,26 @@ static int rockchip_hdmi_parse_dt(struct rockchip_hdmi *hdmi)
->   		return PTR_ERR(hdmi->grf_clk);
->   	}
->   
-> +	hdmi->hclk_vio = devm_clk_get(hdmi->dev, "hclk_vio");
-> +	if (PTR_ERR(hdmi->hclk_vio) == -ENOENT) {
-> +		hdmi->hclk_vio = NULL;
-> +	} else if (PTR_ERR(hdmi->hclk_vio) == -EPROBE_DEFER) {
-> +		return -EPROBE_DEFER;
-> +	} else if (IS_ERR(hdmi->hclk_vio)) {
-> +		dev_err(hdmi->dev, "failed to get hclk_vio clock\n");
-> +		return PTR_ERR(hdmi->hclk_vio);
+> +		cb->priv = p;
+> +		cb->buf = page_address(p);
+> +		cb->dma = page_pool_get_dma_addr(p);
+> +		cb->type = DESC_TYPE_FRAG;
+> +		cb->reuse_flag = 0;
+> +		return 0;
 > +	}
 > +
-> +	hdmi->hclk_vop = devm_clk_get(hdmi->dev, "hclk");
-> +	if (PTR_ERR(hdmi->hclk_vop) == -ENOENT) {
-> +		hdmi->hclk_vop = NULL;
-> +	} else if (PTR_ERR(hdmi->hclk_vop) == -EPROBE_DEFER) {
-> +		return -EPROBE_DEFER;
-> +	} else if (IS_ERR(hdmi->hclk_vop)) {
-> +		dev_err(hdmi->dev, "failed to get hclk_vop clock\n");
-> +		return PTR_ERR(hdmi->hclk_vop);
+>  	p = dev_alloc_pages(order);
+>  	if (!p)
+>  		return -ENOMEM;
+> @@ -3227,8 +3242,12 @@ static void hns3_free_buffer(struct hns3_enet_ring
+> *ring,
+>  	if (cb->type & (DESC_TYPE_SKB | DESC_TYPE_BOUNCE_HEAD |
+>  			DESC_TYPE_BOUNCE_ALL | DESC_TYPE_SGL_SKB))
+>  		napi_consume_skb(cb->priv, budget);
+> -	else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
+> -		__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
+> +	else if (!HNAE3_IS_TX_RING(ring)) {
+> +		if (cb->type & DESC_TYPE_PAGE && cb->pagecnt_bias)
+> +			__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
+> +		else if (cb->type & DESC_TYPE_FRAG)
+> +			page_pool_put_full_page(ring->page_pool, cb->priv, false);
+> +	}
+>  	memset(cb, 0, sizeof(*cb));
+>  }
+>
+> @@ -3315,7 +3334,7 @@ static int hns3_alloc_and_map_buffer(struct
+> hns3_enet_ring *ring,
+>  	int ret;
+>
+>  	ret = hns3_alloc_buffer(ring, cb);
+> -	if (ret)
+> +	if (ret || ring->page_pool)
+>  		goto out;
+>
+>  	ret = hns3_map_buffer(ring, cb);
+> @@ -3337,7 +3356,8 @@ static int hns3_alloc_and_attach_buffer(struct
+> hns3_enet_ring *ring, int i)
+>  	if (ret)
+>  		return ret;
+>
+> -	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
+> +	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
+> +					 ring->desc_cb[i].page_offset);
+>
+>  	return 0;
+>  }
+> @@ -3367,7 +3387,8 @@ static void hns3_replace_buffer(struct hns3_enet_ring
+> *ring, int i,
+>  {
+>  	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
+>  	ring->desc_cb[i] = *res_cb;
+> -	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
+> +	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
+> +					 ring->desc_cb[i].page_offset);
+>  	ring->desc[i].rx.bd_base_info = 0;
+>  }
+>
+> @@ -3539,6 +3560,12 @@ static void hns3_nic_reuse_page(struct sk_buff *skb,
+> int i,
+>  	u32 frag_size = size - pull_len;
+>  	bool reused;
+>
+> +	if (ring->page_pool) {
+> +		skb_add_rx_frag(skb, i, desc_cb->priv, frag_offset,
+> +				frag_size, truesize);
+> +		return;
 > +	}
 > +
->   	return 0;
->   }
->   
-> @@ -467,6 +493,19 @@ static const struct dw_hdmi_plat_data rk3399_hdmi_drv_data = {
->   	.use_drm_infoframe = true,
->   };
->   
-> +static struct rockchip_hdmi_chip_data rk3568_chip_data = {
-> +	.lcdsel_grf_reg = -1,
-> +};
+>  	/* Avoid re-using remote or pfmem page */
+>  	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
+>  		goto out;
+> @@ -3856,6 +3883,9 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring,
+> unsigned int length,
+>  		/* We can reuse buffer as-is, just make sure it is reusable */
+>  		if (dev_page_is_reusable(desc_cb->priv))
+>  			desc_cb->reuse_flag = 1;
+> +		else if (desc_cb->type & DESC_TYPE_FRAG)
+> +			page_pool_put_full_page(ring->page_pool, desc_cb->priv,
+> +						false);
+>  		else /* This page cannot be reused so discard it */
+>  			__page_frag_cache_drain(desc_cb->priv,
+>  						desc_cb->pagecnt_bias);
+> @@ -3863,6 +3893,10 @@ static int hns3_alloc_skb(struct hns3_enet_ring
+> *ring, unsigned int length,
+>  		hns3_rx_ring_move_fw(ring);
+>  		return 0;
+>  	}
 > +
-> +static const struct dw_hdmi_plat_data rk3568_hdmi_drv_data = {
-> +	.mode_valid = dw_hdmi_rockchip_mode_valid,
-> +	.mpll_cfg   = rockchip_mpll_cfg,
-> +	.cur_ctr    = rockchip_cur_ctr,
-> +	.phy_config = rockchip_phy_config,
-> +	.phy_data = &rk3568_chip_data,
-> +	.use_drm_infoframe = true,
-> +};
+> +	if (ring->page_pool)
+> +		skb_mark_for_recycle(skb);
 > +
->   static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
->   	{ .compatible = "rockchip,rk3228-dw-hdmi",
->   	  .data = &rk3228_hdmi_drv_data
-> @@ -480,6 +519,9 @@ static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
->   	{ .compatible = "rockchip,rk3399-dw-hdmi",
->   	  .data = &rk3399_hdmi_drv_data
->   	},
-> +	{ .compatible = "rockchip,rk3568-dw-hdmi",
-> +	  .data = &rk3568_hdmi_drv_data
-> +	},
->   	{},
->   };
->   MODULE_DEVICE_TABLE(of, dw_hdmi_rockchip_dt_ids);
-> @@ -536,6 +578,28 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
->   		return ret;
->   	}
->   
-> +	ret = clk_prepare_enable(hdmi->hclk_vio);
-> +	if (ret) {
-> +		dev_err(hdmi->dev, "Failed to enable HDMI hclk_vio: %d\n",
-> +			ret);
-> +		return ret;
+>  	u64_stats_update_begin(&ring->syncp);
+>  	ring->stats.seg_pkt_cnt++;
+>  	u64_stats_update_end(&ring->syncp);
+> @@ -3901,6 +3935,10 @@ static int hns3_add_frag(struct hns3_enet_ring
+> *ring)
+>  					    "alloc rx fraglist skb fail\n");
+>  				return -ENXIO;
+>  			}
+> +
+> +			if (ring->page_pool)
+> +				skb_mark_for_recycle(new_skb);
+> +
+>  			ring->frag_num = 0;
+>
+>  			if (ring->tail_skb) {
+> @@ -4705,6 +4743,29 @@ static void hns3_put_ring_config(struct hns3_nic_priv
+> *priv)
+>  	priv->ring = NULL;
+>  }
+>
+> +static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
+> +{
+> +	struct page_pool_params pp_params = {
+> +		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG,
+> +		.order = hns3_page_order(ring),
+> +		.pool_size = ring->desc_num * hns3_buf_size(ring) / PAGE_SIZE,
+> +		.nid = dev_to_node(ring_to_dev(ring)),
+> +		.dev = ring_to_dev(ring),
+> +		.dma_dir = DMA_FROM_DEVICE,
+> +		.offset = 0,
+> +		.max_len = 0,
+> +	};
+> +
+> +	ring->page_pool = page_pool_create(&pp_params);
+> +	if (IS_ERR(ring->page_pool)) {
+> +		dev_warn(ring_to_dev(ring), "page pool creation failed: %ld\n",
+> +			 PTR_ERR(ring->page_pool));
+> +		ring->page_pool = NULL;
+> +	} else {
+> +		dev_info(ring_to_dev(ring), "page pool creation succeeded\n");
 > +	}
+> +}
 > +
-> +	ret = clk_prepare_enable(hdmi->hclk_vop);
-> +	if (ret) {
-> +		dev_err(hdmi->dev, "Failed to enable HDMI hclk_vop: %d\n",
-> +			ret);
-> +		return ret;
+>  static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
+>  {
+>  	int ret;
+> @@ -4724,6 +4785,8 @@ static int hns3_alloc_ring_memory(struct
+> hns3_enet_ring *ring)
+>  		goto out_with_desc_cb;
+>
+>  	if (!HNAE3_IS_TX_RING(ring)) {
+> +		hns3_alloc_page_pool(ring);
+> +
+>  		ret = hns3_alloc_ring_buffers(ring);
+>  		if (ret)
+>  			goto out_with_desc;
+> @@ -4764,6 +4827,12 @@ void hns3_fini_ring(struct hns3_enet_ring *ring)
+>  		devm_kfree(ring_to_dev(ring), tx_spare);
+>  		ring->tx_spare = NULL;
+>  	}
+> +
+> +	if (!HNAE3_IS_TX_RING(ring) && ring->page_pool) {
+> +		page_pool_destroy(ring->page_pool);
+> +		ring->page_pool = NULL;
+> +		dev_info(ring_to_dev(ring), "page pool destroyed\n");
 > +	}
-> +
-> +	if (hdmi->chip_data == &rk3568_chip_data) {
-> +		regmap_write(hdmi->regmap, RK3568_GRF_VO_CON1,
-> +			     HIWORD_UPDATE(RK3568_HDMI_SDAIN_MSK |
-> +					   RK3568_HDMI_SCLIN_MSK,
-> +					   RK3568_HDMI_SDAIN_MSK |
-> +					   RK3568_HDMI_SCLIN_MSK));
-> +	}
-> +
->   	hdmi->phy = devm_phy_optional_get(dev, "hdmi");
->   	if (IS_ERR(hdmi->phy)) {
->   		ret = PTR_ERR(hdmi->phy);
-> @@ -559,6 +623,8 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
->   		ret = PTR_ERR(hdmi->hdmi);
->   		drm_encoder_cleanup(encoder);
->   		clk_disable_unprepare(hdmi->vpll_clk);
-> +		clk_disable_unprepare(hdmi->hclk_vio);
-> +		clk_disable_unprepare(hdmi->hclk_vop);
->   	}
->   
->   	return ret;
-> @@ -571,6 +637,8 @@ static void dw_hdmi_rockchip_unbind(struct device *dev, struct device *master,
->   
->   	dw_hdmi_unbind(hdmi->hdmi);
->   	clk_disable_unprepare(hdmi->vpll_clk);
-> +	clk_disable_unprepare(hdmi->hclk_vio);
-> +	clk_disable_unprepare(hdmi->hclk_vop);
->   }
->   
->   static const struct component_ops dw_hdmi_rockchip_ops = {
-> 
-
+>  }
+>
+>  static int hns3_buf_size2type(u32 buf_size)
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+> b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+> index 15af3d9..115c0ce 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+> @@ -6,6 +6,7 @@
+>
+>  #include <linux/dim.h>
+>  #include <linux/if_vlan.h>
+> +#include <net/page_pool.h>
+>
+>  #include "hnae3.h"
+>
+> @@ -307,6 +308,7 @@ enum hns3_desc_type {
+>  	DESC_TYPE_BOUNCE_ALL		= 1 << 3,
+>  	DESC_TYPE_BOUNCE_HEAD		= 1 << 4,
+>  	DESC_TYPE_SGL_SKB		= 1 << 5,
+> +	DESC_TYPE_FRAG			= 1 << 6,
+>  };
+>
+>  struct hns3_desc_cb {
+> @@ -451,6 +453,7 @@ struct hns3_enet_ring {
+>  	struct hnae3_queue *tqp;
+>  	int queue_index;
+>  	struct device *dev; /* will be used for DMA mapping of descriptors */
+> +	struct page_pool *page_pool;
+>
+>  	/* statistic */
+>  	struct ring_stats stats;
+> --
+> 2.7.4
+>
+>
