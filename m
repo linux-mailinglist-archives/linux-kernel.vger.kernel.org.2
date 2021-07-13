@@ -2,137 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102853C6B9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF8A3C6BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbhGMHpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:45:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6454 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234548AbhGMHpa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:45:30 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16D7XuPn061320;
-        Tue, 13 Jul 2021 03:42:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=kPEoSNC3+9NeuP52sd4WrijMgjy3yioYcn0or+J92CA=;
- b=VmNCuNdw/Qwwf3GBSibnG5O+kI+j1dfM6eNH9eNwaqZ0LhjDZv+xv1gtqaIFmNoXYSOn
- FXNwKEbMzf3dK8gW7WnChi6adgl/QUsgvel/4kVfG7kikRgcSmRZAqm33qDICU/tHALO
- 7P/wfN+CXrqRUlFEOHnLaQRMhwRd31BtR2LA+YshHtLxTRIDh0ee9A4f+E0t3lQn8BDs
- SHx0IZ9nGGBXYcY6kMZfwqk1TGNFhJ+cD1xGnldL0Q4SMR6lbaLh8pznPgYx+W+PEuVH
- bgWIYJp3MwWpVmYyix+/jsfsxNbAproiqeXR/xHKmbv4qJRhmLNog2aOH84swPqsgMrD wQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrf7v8fn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jul 2021 03:42:34 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16D7XwsO061483;
-        Tue, 13 Jul 2021 03:42:33 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrf7v8dc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jul 2021 03:42:33 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16D7XIHa022584;
-        Tue, 13 Jul 2021 07:42:31 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 39q36894sd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jul 2021 07:42:30 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16D7gRdx22872370
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Jul 2021 07:42:28 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C26E55204E;
-        Tue, 13 Jul 2021 07:42:27 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.32.99])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3F6EB52054;
-        Tue, 13 Jul 2021 07:42:22 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     will@kernel.org, hao.wu@intel.com, mark.rutland@arm.com
-Cc:     trix@redhat.com, yilun.xu@intel.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        rnsastry@linux.ibm.com, linux-perf-users@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH v3] fpga: dfl: fme: Fix cpu hotplug issue in performance reporting
-Date:   Tue, 13 Jul 2021 13:12:16 +0530
-Message-Id: <20210713074216.208391-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FVqvcLVKiLkkyKw4ZEKdT5VwXxDvg-YH
-X-Proofpoint-GUID: FLEPZacoJTH9gAwYfc9AKxx11NF3afn9
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S234365AbhGMHtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:49:12 -0400
+Received: from relay.sw.ru ([185.231.240.75]:54260 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234342AbhGMHtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:49:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=S2QgaeifWpJsHlA3PUAtp1Lof9N7j00FCY/hbO/PGaI=; b=EgJEJb+r09iWh1OBB
+        feiEeV/D+REGUFN0DOztEvNG72wKfV0UpVf3bKT8pco0QH6ZlX+r9XVL1QDfPZHpW+aNZ9EaGNpXT
+        lwN8egs0Y/8kuj6rm53di01iBhF8KuJYTcecatIxD6XNzsFAdpok2p+qqREnEGH7qnmb0fH235aQE
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m3D7Q-003my6-2D; Tue, 13 Jul 2021 10:46:16 +0300
+Subject: Re: [PATCH IPV6 v3 1/1] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <74e90fba-df9f-5078-13de-41df54d2b257@virtuozzo.com>
+ <cover.1626069562.git.vvs@virtuozzo.com>
+ <1b1efd52-dd34-2023-021c-c6c6df6fec5f@virtuozzo.com>
+Message-ID: <e44bfeb9-5a5a-9f44-12bd-ec3d61eb3a14@virtuozzo.com>
+Date:   Tue, 13 Jul 2021 10:46:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-13_03:2021-07-13,2021-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107130047
+In-Reply-To: <1b1efd52-dd34-2023-021c-c6c6df6fec5f@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The performance reporting driver added cpu hotplug
-feature but it didn't add pmu migration call in cpu
-offline function.
-This can create an issue incase the current designated
-cpu being used to collect fme pmu data got offline,
-as based on current code we are not migrating fme pmu to
-new target cpu. Because of that perf will still try to
-fetch data from that offline cpu and hence we will not
-get counter data.
+I've found 2 problems in this patch,
+and I'm going to resend new patch version soon.
 
-Patch fixed this issue by adding pmu_migrate_context call
-in fme_perf_offline_cpu function.
+On 7/12/21 9:45 AM, Vasily Averin wrote:
+> index ff4f9eb..0efcb9b 100644
+> --- a/net/ipv6/ip6_output.c
+> +++ b/net/ipv6/ip6_output.c
+> @@ -60,10 +60,38 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+>  {
+>  	struct dst_entry *dst = skb_dst(skb);
+>  	struct net_device *dev = dst->dev;
+> +	unsigned int hh_len = LL_RESERVED_SPACE(dev);
+> +	int delta = hh_len - skb_headroom(skb);
+>  	const struct in6_addr *nexthop;
+>  	struct neighbour *neigh;
+>  	int ret;
+>  
+> +	/* Be paranoid, rather than too clever. */
+> +	if (unlikely(delta > 0) && dev->header_ops) {
+> +		/* pskb_expand_head() might crash, if skb is shared */
+> +		if (skb_shared(skb)) {
+> +			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+> +
+> +			if (likely(nskb)) {
+> +				if (skb->sk)
+> +					skb_set_owner_w(skb, skb->sk);
 
-Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
-Tested-by: Xu Yilun <yilun.xu@intel.com>
-Acked-by: Wu Hao <hao.wu@intel.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Cc: stable@vger.kernel.org
----
- drivers/fpga/dfl-fme-perf.c | 2 ++
- 1 file changed, 2 insertions(+)
+need to assign sk not to skb but to nskb 
 
----
-Changelog:
-v2 -> v3:
-- Added Acked-by tag
-- Removed comment as suggested by Wu Hao
-- Link to patch v2: https://lkml.org/lkml/2021/7/9/143
+> +				consume_skb(skb);
+> +			} else {
+> +				kfree_skb(skb);
 
-v1 -> v2:
-- Add stable@vger.kernel.org in cc list
-- Link to patch v1: https://lkml.org/lkml/2021/6/28/275
+It is quite strange to call consume_skb() on one case and kfree_skb() in another one.
+We know that original skb was shared so we should not call kfree_skb here.
 
-RFC -> PATCH v1
-- Remove RFC tag
-- Did nits changes on subject and commit message as suggested by Xu Yilun
-- Added Tested-by tag
-- Link to rfc patch: https://lkml.org/lkml/2021/6/28/112
----
+Btw I've noticed similar problem in few other cases:
+in pptp_xmit, pvc_xmit, ip_vs_prepare_tunneled_skb
+they call consume_skb() in case of success and kfree_skb on error path.
+It looks like potential bug for me.
 
-diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-index 4299145ef347..587c82be12f7 100644
---- a/drivers/fpga/dfl-fme-perf.c
-+++ b/drivers/fpga/dfl-fme-perf.c
-@@ -953,6 +953,8 @@ static int fme_perf_offline_cpu(unsigned int cpu, struct hlist_node *node)
- 		return 0;
- 
- 	priv->cpu = target;
-+	perf_pmu_migrate_context(&priv->pmu, cpu, target);
-+
- 	return 0;
- }
- 
--- 
-2.31.1
+> +			}
+> +			skb = nskb;
+> +		}
+> +		if (skb &&
+> +		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+> +			kfree_skb(skb);
+> +			skb = NULL;
+> +		}
+> +		if (!skb) {
+> +			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
+>  		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
+>  
+> 
 
