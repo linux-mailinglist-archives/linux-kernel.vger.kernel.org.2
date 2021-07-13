@@ -2,139 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ABE3C6E3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5513C6E4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235427AbhGMKMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:12:55 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:46288 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235266AbhGMKMw (ORCPT
+        id S235367AbhGMKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 06:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235143AbhGMKTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:12:52 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 36EFDD5EB2;
-        Tue, 13 Jul 2021 18:00:27 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P5175T139827068524288S1626169639517537_;
-        Tue, 13 Jul 2021 17:51:44 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <2befb8db51a31463ef8707a8cf9a8f6a>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v12 09/10] arm64: dts: rockchip: Add SFC to RK3308
-Date:   Tue, 13 Jul 2021 17:47:17 +0800
-Message-Id: <20210713094718.1709-5-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210713094718.1709-1-jon.lin@rock-chips.com>
-References: <20210713094456.23288-1-jon.lin@rock-chips.com>
- <20210713094718.1709-1-jon.lin@rock-chips.com>
+        Tue, 13 Jul 2021 06:19:07 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9864EC0613DD;
+        Tue, 13 Jul 2021 03:16:16 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id a127so19108828pfa.10;
+        Tue, 13 Jul 2021 03:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pZ+kJIZpqwPna83byG9/WJMMnZqY/UkbffT9YAmCx5Y=;
+        b=FggyFQ1hdkSBHPNsyxE7wgkRDUf+2lrqhQYPR+9om9qKy71AO7QUa2bAULnsN7CFD2
+         hjV4k+E1rbfgUMW/6LiVe1tFlOpp5sbigFNT9rb8Zg1ImEugjwMLr7AhEWfm4+3xGr7C
+         U5eyOLNgIOWiRTKXZQT5c1pN1uMKTLnZhd7hnYFof7o5MQw2eDVVbshIw9kkLiqmbtnQ
+         3AAJ71AYWh/oYG8spKS435N19+ChT3/QAK7C9GBSaJPwGT8YXSWifElDljPREMv+Yhca
+         tVBwwS131a4tZ7KfuaNEB1TXq8HKKL2pdRMMT3TMQzoJ9cQ6Mc4ehR39xL6Jc1FkdJpO
+         ekBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pZ+kJIZpqwPna83byG9/WJMMnZqY/UkbffT9YAmCx5Y=;
+        b=DybDQU0hB4R8zZDC6CtpR2Imtcsid6FgWJRn4qfQdfF8BNHVC1ZPzQ98mzF99SvFdg
+         QpbzWux5uP4LPGJg0Yz1PUSNrFo9gDLFqLK0OaCEeQ1+n2IjcuS96BAC2Z6hK3f1y2CX
+         rW+RgXlJ0K/dHtKq11Crc6PXhnvThHxidAt4AGztHOF1weUwxokL1RJgIp/NGRgxKWmu
+         Uf6XAoLk4TwYCnWqsfrNdLUmCo7HkjCGmn8YyOdUiMpVTgeQEiQ1+gbR+fTcjvjDRpCY
+         t0Ods9fmruyC69owB0hbQh/80cgFGzVYwEBIgCOurxSEiZm69EB41hVQnk2QeEBgc9Qt
+         I/ag==
+X-Gm-Message-State: AOAM531Cc0g7Lpd8vl++hZu8llGM3sVFwZJrYAWicmoy34n7Uy+IDusI
+        y8jzrxjHkdnD0UaQ2u4Lcpc2SnWw1dtQOowJ
+X-Google-Smtp-Source: ABdhPJzzwC6RpHs3l+fl6fcP04Rduib3eXMpIf9Z3Z5X9sYmQ+cWiYU4vvptjSzzgwNWOeBlPoiI5g==
+X-Received: by 2002:a65:5086:: with SMTP id r6mr3566071pgp.237.1626171375987;
+        Tue, 13 Jul 2021 03:16:15 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id x10sm14944114pfr.150.2021.07.13.03.16.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 03:16:15 -0700 (PDT)
+To:     Yang Weijiang <weijiang.yang@intel.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
+ <20210712095034.GD12162@intel.com>
+ <CALMp9eQLHfXQwPCfqtc_y34sKGkZsCxEFL+BGx8wHgz7A8cOPA@mail.gmail.com>
+ <20210713094713.GB13824@intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host MSR_ARCH_LBR_CTL
+ state
+Message-ID: <1be1fde6-37c5-4697-cff0-b15af419975e@gmail.com>
+Date:   Tue, 13 Jul 2021 18:16:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210713094713.GB13824@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+On 13/7/2021 5:47 pm, Yang Weijiang wrote:
+> On Mon, Jul 12, 2021 at 10:23:02AM -0700, Jim Mattson wrote:
+>> On Mon, Jul 12, 2021 at 2:36 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>>>
+>>> On Fri, Jul 09, 2021 at 03:54:53PM -0700, Jim Mattson wrote:
+>>>> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>>>>>
+>>>>> If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
+>>>>> and reload it after vm-exit.
+>>>>
+>>>> I don't see anything being done here "before VM-entry" or "after
+>>>> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
+>>>>
+>>>> In any case, I don't see why this one MSR is special. It seems that if
+>>>> the host is using the architectural LBR MSRs, then *all* of the host
+>>>> architectural LBR MSRs have to be saved on vcpu_load and restored on
+>>>> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
+>>>> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
+>>>> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
+>>> I looked back on the discussion thread:
+>>> https://patchwork.kernel.org/project/kvm/patch/20210303135756.1546253-8-like.xu@linux.intel.com/
+>>> not sure why this code is added, but IMO, although fpu save/restore in outer loop
+>>> covers this LBR MSR, but the operation points are far away from vm-entry/exit
+>>> point, i.e., the guest MSR setting could leak to host side for a signicant
+>>> long of time, it may cause host side profiling accuracy. if we save/restore it
+>>> manually, it'll mitigate the issue signifcantly.
+>>
+>> I'll be interested to see how you distinguish the intermingled branch
+>> streams, if you allow the host to record LBRs while the LBR MSRs
+>> contain guest values!
 
-Add a devicetree entry for the Rockchip SFC for the RK3308 SOC.
+The guest is pretty fine that the real LBR MSRs contain the guest values
+even after vm-exit if there is no other LBR user in the current thread.
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+(The perf subsystem makes this data visible only to the current thread)
 
-Changes in v12: None
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
+Except for MSR_ARCH_LBR_CTL, we don't want to add msr switch overhead to
+the vmx transaction (just think about {from, to, info} * 32 entries).
 
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 37 ++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+If we have other LBR user (such as a "perf kvm") in the current thread,
+the host/guest LBR user will create separate LBR events to compete for
+who can use the LBR in the the current thread.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index 0c5fa9801e6f..cb8d96235986 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -637,6 +637,17 @@
- 		status = "disabled";
- 	};
- 
-+	sfc: spi@ff4c0000 {
-+		compatible = "rockchip,sfc";
-+		reg = <0x0 0xff4c0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-+		clock-names = "clk_sfc", "hclk_sfc";
-+		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
-+
- 	cru: clock-controller@ff500000 {
- 		compatible = "rockchip,rk3308-cru";
- 		reg = <0x0 0xff500000 0x0 0x1000>;
-@@ -910,6 +921,32 @@
- 			};
- 		};
- 
-+		sfc {
-+			sfc_bus4: sfc-bus4 {
-+				rockchip,pins =
-+					<3 RK_PA0 3 &pcfg_pull_none>,
-+					<3 RK_PA1 3 &pcfg_pull_none>,
-+					<3 RK_PA2 3 &pcfg_pull_none>,
-+					<3 RK_PA3 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_bus2: sfc-bus2 {
-+				rockchip,pins =
-+					<3 RK_PA0 3 &pcfg_pull_none>,
-+					<3 RK_PA1 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_cs0: sfc-cs0 {
-+				rockchip,pins =
-+					<3 RK_PA4 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_clk: sfc-clk {
-+				rockchip,pins =
-+					<3 RK_PA5 3 &pcfg_pull_none>;
-+			};
-+		};
-+
- 		gmac {
- 			rmii_pins: rmii-pins {
- 				rockchip,pins =
--- 
-2.17.1
+The final arbiter is the host perf scheduler. The host perf will
+save/restore the contents of the LBR when switching between two
+LBR events.
 
+Indeed, if the LBR hardware is assigned to the host LBR event before
+vm-entry, then the guest LBR feature will be broken and a warning
+will be triggered on the host.
 
+LBR is the kind of exclusive hardware resource and cannot be shared
+by different host/guest lbr_select configurations.
 
+> I'll check if an inner simplified xsave/restore to guest/host LBR MSRs is meaningful,
+> the worst case is to drop this patch since it's not correct to only enable host lbr ctl
+> while still leaves guest LBR data in the MSRs. Thanks for the reminder!
+> 
