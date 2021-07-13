@@ -2,304 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64693C7993
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864733C7998
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236613AbhGMWYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 18:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235973AbhGMWYu (ORCPT
+        id S236466AbhGMW1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 18:27:54 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:30069 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234665AbhGMW1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 18:24:50 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916B6C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 15:21:58 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c15so141921pls.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 15:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NRZUGlSQxELBktwEt/k7qMLhHgHPpSVIp1xfpZkDFtI=;
-        b=c/KMCALyx3thmuzG/vP7s34yWbO2c+usFQ1Uid80TZgPjn0hY/bhzDGnD0nFKFLWEH
-         IMnzMSCdf1QjRSy0VRmDeZ924Y5UnIidPDWLXgU9fyqT6p9s65PIgjCgfwSsiTncSdb7
-         jInT7ol/ohUAR1YMIqlWboqFtRFCCYjZeYmLRUrKRhGnxg3VaU177ACb9dsC0UNl45+e
-         lPlYqR17/9PZhd+dTW5+q1nNTn0P0gDDHGiz5sZmpy4s/wDAbpROygUyTrvueYf+RdmT
-         +dXpUzOq921wIWIPNAlTxEa+6yz5JVitm7n/aTyfaB5ryqjuNWJXN1bq6H6dVzFyRxQ1
-         JEXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NRZUGlSQxELBktwEt/k7qMLhHgHPpSVIp1xfpZkDFtI=;
-        b=fZIxlNWzU8YNCHORZKyKtSzzDy0E2P/qyIpcGstriM7igczz3NwVBZpA0yQkPEqA+b
-         GXdl9XtXeesvn85bFH1b588YzI3mwIc9qOVgnYlfH26gpuFK3ATSpnANoo2DPBDXB9bX
-         R9ZrknPb2NrAYRQdG06kWGKZGBnwnFGRchOS3BvlK2W/iQ0GprvT5wXS/I4Vh0DdONDV
-         7nsnIXVSYXgp40OsCLKBiUy9xycoaa4x7VYIajzNw6Te5vkYxTCMlxlhyuHO6nUlWasS
-         PzJdXx2i1/56twk5swbtKGSWyisdKn5zWsVi0PKZczkQiN1pwQsEat3FlLiBgJ4FC+d/
-         FkFA==
-X-Gm-Message-State: AOAM532195qasr/QQkGWUanHCOHk3HrJeA6Zq+ZOsnJfhO+hsB2l9JAr
-        NyxE9w2XHgPeKnKuWBExIK5VGQ==
-X-Google-Smtp-Source: ABdhPJyL6ACnKBcWKU0Ek7jnIjThnmCrAvHpT+7xZ5GQoLYfDmG/qBO9Df1Aaq9oJCxFq9La2KRgEA==
-X-Received: by 2002:a17:903:89:b029:12a:ee95:42df with SMTP id o9-20020a1709030089b029012aee9542dfmr5128828pld.77.1626214917950;
-        Tue, 13 Jul 2021 15:21:57 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d3sm150696pjo.31.2021.07.13.15.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 15:21:57 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 22:21:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] KVM, SEV: Add support for SEV-ES local migration
-Message-ID: <YO4SAZiEIgzjQ5b3@google.com>
-References: <20210621163118.1040170-1-pgonda@google.com>
- <20210621163118.1040170-4-pgonda@google.com>
+        Tue, 13 Jul 2021 18:27:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626215102; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NrfFoaUg+uge8R5c62DK9xqyU2a37Zv+qz0iccvChbU=;
+ b=jWiDnzpJS4NklBGzmeLN2n9RRkm26vIyWRyxxzlRwjQFogM4iJnmHTd/Pb7yrnSY55bScCJI
+ lN4TipKVxGKdsFOGSCe/NqlpBz9cpAMNcVFr2xHb01kKCogRjGjSrWNEgAzeBlcMbaLIVPLd
+ d2RUFK+9xXuSQWOeoBdVMAhGiFY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60ee12bddc4628fe7e4a26e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 22:25:01
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EA62C433F1; Tue, 13 Jul 2021 22:25:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 18AD7C433D3;
+        Tue, 13 Jul 2021 22:24:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621163118.1040170-4-pgonda@google.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 13 Jul 2021 15:24:58 -0700
+From:   khsieh@codeaurora.org
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        lyude@redhat.com, abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        rsubbia@codeaurora.org, rnayak@codeaurora.org,
+        freedreno@lists.freedesktop.org, airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
+ failure
+In-Reply-To: <87zguy7c5a.fsf@intel.com>
+References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+ <87zguy7c5a.fsf@intel.com>
+Message-ID: <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021, Peter Gonda wrote:
-> +static int process_vmsa_list(struct kvm *kvm, struct list_head *vmsa_list)
-> +{
-> +	struct vmsa_node *vmsa_node, *q;
-> +	struct kvm_vcpu *vcpu;
-> +	struct vcpu_svm *svm;
-> +
-> +	lockdep_assert_held(&kvm->lock);
-> +
-> +	if (!vmsa_list)
-
-This is pointless, all callers pass in a list, i.e. it's mandatory.
-
-> +		return 0;
-> +
-> +	list_for_each_entry(vmsa_node, vmsa_list, list) {
-> +		if (!kvm_get_vcpu_by_id(kvm, vmsa_node->vcpu_id)) {
-> +			WARN(1,
-> +			     "Failed to find VCPU with ID %d despite presence in VMSA list.\n",
-> +			     vmsa_node->vcpu_id);
-> +			return -1;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Move any stashed VMSAs back to their respective VMCBs and delete
-> +	 * those nodes.
-> +	 */
-> +	list_for_each_entry_safe(vmsa_node, q, vmsa_list, list) {
-> +		vcpu = kvm_get_vcpu_by_id(kvm, vmsa_node->vcpu_id);
-
-Barring a KVM bug, is it even theoretically possible for vcpu to be NULL?  If not,
-I'd simply drop the above sanity check.  If this can only be true if there's a
-KVM bug and you really want to keep it the WARN, just do:
-
-		if (WARN_ON(!vcpu))
-			continue;
-
-since a KVM bug this egregious means all bets are off anyways.  That should also
-allow you to make this a void returning helper and avoid pointless checking.
-
-> +		svm = to_svm(vcpu);
-> +		svm->vmsa = vmsa_node->vmsa;
-> +		svm->ghcb = vmsa_node->ghcb;
-> +		svm->vmcb->control.ghcb_gpa = vmsa_node->ghcb_gpa;
-> +		svm->vcpu.arch.guest_state_protected = true;
-> +		svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
-> +		svm->ghcb_sa = vmsa_node->ghcb_sa;
-> +		svm->ghcb_sa_len = vmsa_node->ghcb_sa_len;
-> +		svm->ghcb_sa_sync = vmsa_node->ghcb_sa_sync;
-> +		svm->ghcb_sa_free = vmsa_node->ghcb_sa_free;
-> +
-> +		list_del(&vmsa_node->list);
-> +		kfree(vmsa_node);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int create_vmsa_list(struct kvm *kvm,
-> +			    struct sev_info_migration_node *entry)
-> +{
-> +	int i;
-> +	const int num_vcpus = atomic_read(&kvm->online_vcpus);
-> +	struct vmsa_node *node;
-> +	struct kvm_vcpu *vcpu;
-> +	struct vcpu_svm *svm;
-> +
-> +	INIT_LIST_HEAD(&entry->vmsa_list);
-> +	for (i = 0; i < num_vcpus; ++i) {
-> +		node = kzalloc(sizeof(*node), GFP_KERNEL);
-> +		if (!node)
-> +			goto e_freelist;
-> +
-> +		vcpu = kvm->vcpus[i];
-> +		node->vcpu_id = vcpu->vcpu_id;
-> +
-> +		svm = to_svm(vcpu);
-> +		node->vmsa = svm->vmsa;
-> +		svm->vmsa = NULL;
-> +		node->ghcb = svm->ghcb;
-> +		svm->ghcb = NULL;
-> +		node->ghcb_gpa = svm->vmcb->control.ghcb_gpa;
-> +		node->ghcb_sa = svm->ghcb_sa;
-> +		svm->ghcb_sa = NULL;
-> +		node->ghcb_sa_len = svm->ghcb_sa_len;
-> +		svm->ghcb_sa_len = 0;
-> +		node->ghcb_sa_sync = svm->ghcb_sa_sync;
-> +		svm->ghcb_sa_sync = false;
-> +		node->ghcb_sa_free = svm->ghcb_sa_free;
-> +		svm->ghcb_sa_free = false;
-> +
-> +		list_add_tail(&node->list, &entry->vmsa_list);
-> +	}
-> +
-> +	return 0;
-> +
-> +e_freelist:
-> +	if (process_vmsa_list(kvm, &entry->vmsa_list))
-> +		WARN(1, "Unable to move VMSA list back to source VM. Guest is in a broken state now.");
-
-Same comments about err_freelist and using WARN_ON().  Though if process_vmsa_list()
-can't return an error, this goes away entirely.
-
-> +	return -1;
-> +}
-> +
->  static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  {
->  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> @@ -1174,9 +1280,6 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	if (!sev_guest(kvm))
->  		return -ENOTTY;
->  
-> -	if (sev->es_active)
-> -		return -EPERM;
-> -
->  	if (sev->info_token != 0)
->  		return -EEXIST;
->  
-> @@ -1196,8 +1299,19 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	INIT_LIST_HEAD(&entry->regions_list);
->  	list_replace_init(&sev->regions_list, &entry->regions_list);
->  
-> +	if (sev_es_guest(kvm)) {
-> +		/*
-> +		 * If this is an ES guest, we need to move each VMCB's VMSA into a
-> +		 * list for migration.
-> +		 */
-> +		entry->es_enabled = true;
-> +		entry->ap_jump_table = sev->ap_jump_table;
-> +		if (create_vmsa_list(kvm, entry))
-> +			goto e_listdel;
-> +	}
-> +
->  	if (place_migration_node(entry))
-> -		goto e_listdel;
-> +		goto e_vmsadel;
->  
->  	token = entry->token;
->  
-> @@ -1215,6 +1329,11 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	hash_del(&entry->hnode);
->  	spin_unlock(&sev_info_migration_hash_lock);
->  
-> +e_vmsadel:
-> +	if (sev_es_guest(kvm) && process_vmsa_list(kvm, &entry->vmsa_list))
-> +		WARN(1,
-> +		     "Unable to move VMSA list back to source VM. Guest is in a broken state now.");
-
-Guess what today's Final Jeopardy answer is? :-D
-
-> +
->  e_listdel:
->  	list_replace_init(&entry->regions_list, &sev->regions_list);
->  
-> @@ -1233,9 +1352,6 @@ static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	if (!sev_guest(kvm))
->  		return -ENOTTY;
->  
-> -	if (sev->es_active)
-> -		return -EPERM;
-> -
->  	if (sev->handle != 0)
->  		return -EPERM;
->  
-> @@ -1254,6 +1370,14 @@ static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  
->  	memcpy(&old_info, sev, sizeof(old_info));
->  
-> +	if (entry->es_enabled) {
-> +		if (process_vmsa_list(kvm, &entry->vmsa_list))
-> +			goto err_unlock;
-> +
-> +		sev->es_active = true;
-> +		sev->ap_jump_table = entry->ap_jump_table;
-> +	}
-> +
->  	/*
->  	 * The source VM always frees @entry On the target we simply
->  	 * mark the token as invalid to notify the source the sev info
-> @@ -2046,12 +2170,22 @@ void sev_vm_destroy(struct kvm *kvm)
->  		__unregister_region_list_locked(kvm, &sev->regions_list);
->  	}
->  
-> -	/*
-> -	 * If userspace was terminated before unregistering the memory
-> -	 * regions then lets unpin all the registered memory.
-> -	 */
-> -	if (entry)
-> +	if (entry) {
-> +		/*
-> +		 * If there are any saved VMSAs, restore them so they can be
-> +		 * destructed through the normal path.
-> +		 */
-> +		if (entry->es_enabled)
-> +			if (process_vmsa_list(kvm, &entry->vmsa_list))
-> +				WARN(1,
-> +				     "Unable to clean up vmsa_list");
-
-More code that can be zapped if process_vmsa_list() is less of a zealot.
-
-> +
-> +		/*
-> +		 * If userspace was terminated before unregistering the memory
-> +		 * regions then lets unpin all the registered memory.
-> +		 */
->  		__unregister_region_list_locked(kvm, &entry->regions_list);
-> +	}
->  
->  	mutex_unlock(&kvm->lock);
->  
-> @@ -2243,9 +2377,11 @@ void sev_free_vcpu(struct kvm_vcpu *vcpu)
->  
->  	svm = to_svm(vcpu);
->  
-> -	if (vcpu->arch.guest_state_protected)
-> +	if (svm->ghcb && vcpu->arch.guest_state_protected)
->  		sev_flush_guest_memory(svm, svm->vmsa, PAGE_SIZE);
-> -	__free_page(virt_to_page(svm->vmsa));
-> +
-> +	if (svm->vmsa)
-> +		__free_page(virt_to_page(svm->vmsa));
->  
->  	if (svm->ghcb_sa_free)
->  		kfree(svm->ghcb_sa);
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
+On 2021-07-07 01:37, Jani Nikula wrote:
+> On Tue, 06 Jul 2021, Kuogee Hsieh <khsieh@codeaurora.org> wrote:
+>> From: Rajkumar Subbiah <rsubbia@codeaurora.org>
+>> 
+>> Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+>> selftests") added some debug code for sideband message tracing. But
+>> it seems to have unintentionally changed the behavior on sideband 
+>> message
+>> failure. It catches and returns failure only if DRM_UT_DP is enabled.
+>> Otherwise it ignores the error code and returns success. So on an MST
+>> unplug, the caller is unaware that the clear payload message failed 
+>> and
+>> ends up waiting for 4 seconds for the response. Fixes the issue by
+>> returning the proper error code.
+>> 
+>> Changes in V2:
+>> -- Revise commit text as review comment
+>> -- add Fixes text
+>> 
+>> Changes in V3:
+>> -- remove "unlikely" optimization
+>> 
+>> Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing + 
+>> selftests")
+>> 
+>> Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> 
+>> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > 
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+> 
+> 
+>> ---
+Lyude,
+Any comments from you?
+Thanks,
+
+>>  drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
+>>  1 file changed, 6 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c 
+>> b/drivers/gpu/drm/drm_dp_mst_topology.c
+>> index 1590144..df91110 100644
+>> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+>> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+>> @@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct 
+>> drm_dp_mst_topology_mgr *mgr,
+>>  	idx += tosend + 1;
+>> 
+>>  	ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
+>> -	if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+>> -		struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+>> +	if (ret) {
+>> +		if (drm_debug_enabled(DRM_UT_DP)) {
+>> +			struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+>> 
+>> -		drm_printf(&p, "sideband msg failed to send\n");
+>> -		drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+>> +			drm_printf(&p, "sideband msg failed to send\n");
+>> +			drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+>> +		}
+>>  		return ret;
+>>  	}
