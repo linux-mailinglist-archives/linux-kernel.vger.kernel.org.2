@@ -2,105 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40BD3C75C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57FF3C75CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhGMRft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:35:49 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:41786 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhGMRft (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:35:49 -0400
-Received: by mail-wr1-f49.google.com with SMTP id k4so25207537wrc.8;
-        Tue, 13 Jul 2021 10:32:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wzNkp23Updmo+9Qa3OwjPC2MPeOgka9V1Y3hAYMOtks=;
-        b=X6KycBiI1QodUgRNw4GFhLSCziydmR29sQKIoW+A9SRtgmNVeIpyzZvwD9PbuI08Ly
-         RXC47R3I8WPCePS+vqyDCiMLICyPoAej+u1F+MxqdBNdR9cVaRMt80adm0cHBrWgszJg
-         ObIAlYPaqfbxmqA+6Mxr8MG2kRu6YHEwfy5VySX1y/7HeixauS/Q1Y4+PbjHxvPJPCRj
-         SFpf+x/x3YyM8RsbxPS2Pn3AtrwkH/zDlMutN3u1Oh9oDSMZawvq9PL5X6csDJ3ZHgIc
-         f8EJKz11oS8NVF34+IljKphhU2iBl8zLWCBkMR1XK5HTkO3VLVwg6N3kpd8dLe/7UUGa
-         7kMA==
-X-Gm-Message-State: AOAM530i/ytZl5xfkoW0NCNdoKZp8AJP7E+L/ZQThoj7EEovI88KPjlV
-        WhAjv3YRB6YrsBPJnvimBcE=
-X-Google-Smtp-Source: ABdhPJxYRgWtgBkIQoz393H7CDpbw9RR0mcltSYfiVXitpEWDSTu9ODbPaobVfTgXZFYC8nNKKYEZA==
-X-Received: by 2002:adf:c5d2:: with SMTP id v18mr7200261wrg.386.1626197577942;
-        Tue, 13 Jul 2021 10:32:57 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id c15sm2287056wmr.28.2021.07.13.10.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 10:32:57 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 17:32:56 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Ani Sinha <ani@anisinha.ca>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "anirban.sinha@nokia.com" <anirban.sinha@nokia.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH] Hyper-V: fix for unwanted manipulation of sched_clock
- when TSC marked unstable
-Message-ID: <20210713173256.f4guohutujyvfste@liuwe-devbox-debian-v2>
-References: <20210713030522.1714803-1-ani@anisinha.ca>
- <CY4PR21MB15866351E83212975EA02C34D7149@CY4PR21MB1586.namprd21.prod.outlook.com>
+        id S233282AbhGMRgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:36:16 -0400
+Received: from mail-eopbgr60077.outbound.protection.outlook.com ([40.107.6.77]:46721
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229454AbhGMRgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:36:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j0MrP2CYoLbno14YP5pZJYCG9CYsPgCCAxYidzfx/S7i5P21mDOsQrTK7GOcGJOjy6vs7iEm35bmKVY4O5phgsRxvfVKRvYFOIo/2iQJRMtt9gaiK7QYLovRyFVEC9oGuoo/8CWHwVDNI0kwMUFOHcLOiMCOqMNb9azgzj7oeRRxg6ILDiBFWjDfoer6MDAa+cF/mn9EVW7Hsk5v/9n2Xyee3NcQfVhEbuNQqOkjJ/Gh1wTgeNnv75vkmiQm5VuhergK4OvFOEBFixwxejyQUGwCkfjl6w2y0y14ymulx/LMkwNGfD9aZqENfllmxg+OMMCOlXp/1NyCAIve3kbxTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YkjNym2bdTo2xhECHOpWuCOASFUQgHeriMDEFSLJ7NY=;
+ b=dupGeOGw1i/JC+IG7IdsdDI1cTjHZlK4w4XEP2z4CMbDXKZp4u3D3haHsotR14XStno9E6xR1c/VAxQWWaFlRY2WMmEnEU/twUm++SXMXi7sVk0UJBhiFl8dT72OY5zGt0qJG1VuhDso98sghWDL6nBbZJSKuHp03GqTbSBFrt0c4OuGatXNqVz0uI31uvNalcXmuaQIvNxp6rHQk5ezcIfDb0gtGeBkr+cCq6oDNTaaREMf7uKk7Hqr4hB0vYqbzJCs4Ua2X2PqqEooPIyheFQ83tQ+lcgagN1VkZOyhBmYt7sHdlg6r+CQ0NRt06Z3Xmk1kSDP7lbd1m6H0hVtXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=urjc.es; dmarc=pass action=none header.from=urjc.es; dkim=pass
+ header.d=urjc.es; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=urjc.onmicrosoft.com;
+ s=selector2-urjc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YkjNym2bdTo2xhECHOpWuCOASFUQgHeriMDEFSLJ7NY=;
+ b=Ft6dnM6gjka/7lQc+XicO6T2HhC9TIMSKlzMFqMGvzMdZxK0/v0kaCVJP6S3hRyh/VIYncS50bFYbSeZNZphFyJ7v5ckrGzmjcCki4Iqi2G7XOenMffK0PxypJUF9Ym0zXEs7MyX+n8iZAVVVdPj+AvePFMqxHASHRkDmN3F3X4=
+Authentication-Results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=urjc.es;
+Received: from DB7PR02MB4663.eurprd02.prod.outlook.com (2603:10a6:10:5c::15)
+ by DB9PR02MB6570.eurprd02.prod.outlook.com (2603:10a6:10:1f8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 13 Jul
+ 2021 17:33:21 +0000
+Received: from DB7PR02MB4663.eurprd02.prod.outlook.com
+ ([fe80::1048:a385:a5d8:1f0e]) by DB7PR02MB4663.eurprd02.prod.outlook.com
+ ([fe80::1048:a385:a5d8:1f0e%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
+ 17:33:21 +0000
+Date:   Tue, 13 Jul 2021 19:33:19 +0200
+From:   Javier Pello <javier.pello@urjc.es>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 1/1] fs/ext2: Avoid page_address on pages returned by
+ ext2_get_page
+Message-Id: <20210713193319.a223cd12e3fb8687f0cae0e8@urjc.es>
+In-Reply-To: <20210713163018.GF24271@quack2.suse.cz>
+References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
+        <20210713165918.10da0318af5b9b73e599a517@urjc.es>
+        <20210713163018.GF24271@quack2.suse.cz>
+Organization: Universidad Rey Juan Carlos
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-unknown-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MR2P264CA0156.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:1::19) To DB7PR02MB4663.eurprd02.prod.outlook.com
+ (2603:10a6:10:5c::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR21MB15866351E83212975EA02C34D7149@CY4PR21MB1586.namprd21.prod.outlook.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mo-dep2-d036-01.escet.urjc.es (212.128.1.36) by MR2P264CA0156.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 17:33:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c34ea41b-4c10-46ee-e3f8-08d946244efb
+X-MS-TrafficTypeDiagnostic: DB9PR02MB6570:
+X-Microsoft-Antispam-PRVS: <DB9PR02MB657083F9A710330D2A90E4E79B149@DB9PR02MB6570.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1Ius88t0144PpV5DUOaRrYS/LL6tXDvsu38BZLGSwYQGu3Q7NfS0gK/DT7ub614fkTMH6L2n+7alGUsiL3o/w9JIxDpF0ZTCdVDRhE8vKU0GZN/rxgiEI/yxJJlMNjY+tEFiRpQA4XZQFHt+62Op0MoeLvh/rqkvFJovUF4ffY7Y4Os/pXT/kKOGySyf7OXHB5Gy3NO+AVNhChEXg1r1zUb6W3jpkrJKWiW2PsCa4ztafOKYqmOa7FKcny15XDtUVcbHQ8L6r1SziVxt9j7c/XK3wd73kGtgiTFLcOblOW3jxAIikCFRXaa6hlZjoPE2MaZnoqzBTX4aEHltTjU6iFUztdMV/USXJnxx0CeS00MqLS9OKkWWUzRSiRFRTomRYLQ0rdjYquo8p0Npmg738WKN1P1IgpLEy2xi1+A0G1HfnSg0dQDZ2fT8wxwICgLdeB19kAEtWDSTYFdg9TUgQDep8lRs/DZ1wNkVz2Yiyhfno+21ldMc4p1eKKlFlgl1eNe+ZEt2BFCGOaoFKomLwnm/gIhFuz0bNutVzvnhPki7xG/kYWiRr/PBm2vyVn6QlHY7msqZWA9XRq6aPQf9IzXHzlitCrjvbCd62asp1LwWm6G3oxkX1X2QHu0saRrM8lbznQkNE853PzmHlqJrH+UIFZiEGy4E5zpUt9q5k0osufF4iBNH6/JCrsqU2BdfI5Mk2Q6fSV+6+ZuuQImYHw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR02MB4663.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(396003)(376002)(346002)(136003)(366004)(2906002)(86362001)(8676002)(52116002)(66946007)(44832011)(36916002)(6486002)(7696005)(478600001)(36756003)(66556008)(316002)(26005)(5660300002)(8936002)(66476007)(83380400001)(956004)(786003)(54906003)(4326008)(2616005)(38350700002)(38100700002)(1076003)(186003)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jYZ+PmKGSomqponsU03nW1Jp+OJS5waA6fKBEiQizRxQM5elGi+3LqbG7Ncw?=
+ =?us-ascii?Q?wX0wd8+GOcs4mMq9qB4CQeRABD9GewK4gPk1sfDK7yJIUDOzcJtIOUaK6lgX?=
+ =?us-ascii?Q?I1lLFZBUl9gwbs6ovJ9lhQgKphaX5E9e0TFhUvoBrC5C8RIao9G1hIb0UozH?=
+ =?us-ascii?Q?x6y5zh04RS0uKIJ3DqS+XD4BmL1AquhhtDchjCw5WMmU8c2QWSdcDlJXZHyj?=
+ =?us-ascii?Q?TIo2/3eiHC1nZSE3Qjr7aLEnvHkK1ic9I4vuBYbb/NCc5VPBNtskEHtDe6+M?=
+ =?us-ascii?Q?4Qdfck6O6WJo5Y1hOjDFIji1xec96/qXQuc3X51aIlYTRV2GrKlLbWzFt8Bq?=
+ =?us-ascii?Q?FUk4GvYRN87BziM2uFnyAK0KOg4OFPrYbfgH8TtrsfGjMtfiWsKNAsgumgmt?=
+ =?us-ascii?Q?V7oIreDbaSkMKmuCd841i6/6CjYEUvphcKkmqvgE/P1CVH5xcFOHolLtQN/o?=
+ =?us-ascii?Q?D4zJUoaXCi6RudbDf6VpczlhVJ8jNewuhaMAYH6IKAGJQn6QW8lc3/zZ+JK4?=
+ =?us-ascii?Q?cKbzJwz7mCHI7yQslrhguMAHc0FFQFaauddvkshF7gM3JE6cRLAwgBZylkaE?=
+ =?us-ascii?Q?uFfINxd5XW0CSRzhrPcwc7QTPOKNYPBcpRoZf5LHkR9GbvZUMpJ/RMwB/AUO?=
+ =?us-ascii?Q?EImhvocGMcVjsOu1XmjDKa8+fFdSz9DITbHNU1LBPQtlZRz46nE818dfUo0Q?=
+ =?us-ascii?Q?jyPHyu8Zt9/MBnLmeg0SQE7dy3+0xc3O2WPWxA5vDHmS0WLVzn8nsaLsOovj?=
+ =?us-ascii?Q?z0rdaRa7kTCXi+VV0xwKdIaK67WHuLDn256ShElLLcl4Z0XquXUI03AKkk+I?=
+ =?us-ascii?Q?QQxuhaKXsvGGfAjpgWMc3Zs50ClD22YzYhL9v+z5MM+T30BgbzfVWR5Tpl8X?=
+ =?us-ascii?Q?CXCawDzXn0wfKoL60L7C7sxoVkYKV5UQFV9K8tm2+uO4TOVMDx1kmLIeflQZ?=
+ =?us-ascii?Q?ACr852N7uUeF1ZYeLholwmnBM0JZYgLTMeWMJXkrB36t5vM9L7b01NAtFyt+?=
+ =?us-ascii?Q?q7uxekW5nQoQ1XK+1gZlopMGlfQJk38E9RXovYlOGSqVaBrKcgsc5r0dkSYM?=
+ =?us-ascii?Q?wTU6OMGrnas+xQ/4UrzI21lG6CShokLAlotZvk+l/hLjg4rb0sY7HP32og62?=
+ =?us-ascii?Q?zovxojADD0vgWO140HqGFBwySks/AMfiJdf+Ys/cYQhDIEeEocYtlX/PzUcx?=
+ =?us-ascii?Q?hE5PDWRnzKscwo/Sdv0m3p/B94q1YysiCzXC4FRTtPLqJxg7zD1C9CYzAQD0?=
+ =?us-ascii?Q?6o6RGYhUtr6dbZohmibWPyrhYNQsixeRgNZ1VBrLO7IyPNM2z0m8Yu3Hoqe7?=
+ =?us-ascii?Q?9t9EBH4hK8RcMXYb/Ia4xCS3?=
+X-OriginatorOrg: urjc.es
+X-MS-Exchange-CrossTenant-Network-Message-Id: c34ea41b-4c10-46ee-e3f8-08d946244efb
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR02MB4663.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 17:33:21.2500
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5f84c4ea-370d-4b9e-830c-756f8bf1b51f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Oz823U/TgMcrVXqsmBxvvvF0w9CCH8EIRfYL6/G/nRjstQUh7hUvE+54DajrP+Xy9n9eZDjFFPS344ivODL0MQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB6570
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 05:25:59PM +0000, Michael Kelley wrote:
-> From: Ani Sinha <ani@anisinha.ca> Sent: Monday, July 12, 2021 8:05 PM
-[...]
-> >  	/*
-> > @@ -432,6 +430,12 @@ static void __init ms_hyperv_init_platform(void)
-> >  	/* Register Hyper-V specific clocksource */
-> >  	hv_init_clocksource();
-> >  #endif
-> > +	/* TSC should be marked as unstable only after Hyper-V
-> > +	 * clocksource has been initialized. This ensures that the
-> > +	 * stability of the sched_clock is not altered.
-> > +	 */
+On Tue, 13 Jul 2021 18:30:18, Jan Kara wrote:
+> On Tue 13-07-21 16:59:18, Javier Pello wrote:
+> > Commit 782b76d7abdf02b12c46ed6f1e9bf715569027f7 ("fs/ext2: Replace
+> > kmap() with kmap_local_page()") replaced the kmap/kunmap calls in
+> > ext2_get_page/ext2_put_page with kmap_local_page/kunmap_local for
+> > efficiency reasons. As a necessary side change, the commit also
+> > made ext2_get_page (and ext2_find_entry and ext2_dotdot) return
+> > the mapping address along with the page itself, as it is required
+> > for kunmap_local, and converted uses of page_address on such pages
+> > to use the newly returned address instead. However, uses of
+> > page_address on such pages were missed in ext2_check_page and
+> > ext2_delete_entry, which triggers oopses if kmap_local_page happens
+> > to return an address from high memory. Fix this now by converting
+> > the remaining uses of page_address to use the right address, as
+> > returned by kmap_local_page.
 > 
-> For multi-line comments like the above, the first comment line
-> should just be "/*".  So:
+> Good catch. Thanks for the patch. Ira, can you please check the patch as
+> well?
 > 
-> 	/* 
-> 	 * TSC should be marked as unstable only after Hyper-V
-> 	 * clocksource has been initialized. This ensures that the
-> 	 * stability of the sched_clock is not altered.
-> 	 */
+> I have just a few nits below:
 > 
+> > Signed-off-by: Javier Pello <javier.pello@urjc.es>
+> > Fixes: 782b76d7abdf fs/ext2: Replace kmap() with kmap_local_page()
 > 
-> > +	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
-> > +		mark_tsc_unstable("running on Hyper-V");
-> >  }
-> > 
-> >  static bool __init ms_hyperv_x2apic_available(void)
-> > --
-> > 2.25.1
-> 
-> Modulo the comment format,
-> 
+> Please wrap subject in Fixes tag into ("...").
 
-I can fix this while committing. No need to resend.
+Will do.
 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Tested-by: Michael Kelley <mikelley@microsoft.com> 
+> > @@ -584,16 +584,16 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
+> >   * ext2_delete_entry deletes a directory entry by merging it with the
+> >   * previous entry. Page is up-to-date.
+> >   */
+> > -int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+> > +int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
+> > +                     void *kaddr)
+> 
+> Why not have 'kaddr' as char *. We type it to char * basically everywhere
+> anyway.
 
-Thanks Michael.
+I thought about that, as well, but in the end I leaned towards void *
+because it is a generic pointer, conceptually. Would you rather have it
+be char *?
 
-Wei.
+> >  {
+> >       struct inode *inode = page->mapping->host;
+> > -     char *kaddr = page_address(page);
+> > -     unsigned from = ((char*)dir - kaddr) & ~(ext2_chunk_size(inode)-1);
+> > -     unsigned to = ((char *)dir - kaddr) +
+> > -                             ext2_rec_len_from_disk(dir->rec_len);
+> > +     unsigned int delta = (char *)dir - (char *)kaddr;
+> 
+> Maybe I'd call this 'offset' rather than 'delta'.
+
+Fair enough.
+
+> Also if kaddr will stay
+> char *, you maybe just don't need to touch this...
+
+Yes, if kaddr becomes char * then there is no need to touch these lines.
+
+Javier
