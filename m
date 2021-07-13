@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AB73C7632
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D483C7637
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbhGMSKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:10:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:48602 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhGMSKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:10:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 243A61FB;
-        Tue, 13 Jul 2021 11:07:11 -0700 (PDT)
-Received: from [10.57.36.240] (unknown [10.57.36.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0FC43F7D8;
-        Tue, 13 Jul 2021 11:07:05 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-To:     Doug Anderson <dianders@chromium.org>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
-        Saravana Kannan <saravanak@google.com>,
-        Rajat Jain <rajatja@google.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org>
- <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
- <YOaymBHc4g2cIfRn@8bytes.org>
- <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com>
-Date:   Tue, 13 Jul 2021 19:07:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234028AbhGMSKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:10:16 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:35704 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233876AbhGMSKP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:10:15 -0400
+Received: by mail-il1-f198.google.com with SMTP id f5-20020a92b5050000b02901ff388acf98so15327975ile.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:07:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=hx45N4k+4Z2tVC49Axkuc3Q0IugSpxdue/FcmmF4DmI=;
+        b=gIzlGbUyCZBEGv75z+yRSRXnCAxi+Pfht8K57EGwwUlVVPUvT/uMzt10U4OmwAxWK7
+         kJRAC47qOJfJih+R/8erIYg+Tc07ZOO/EsaWyqTmRYExTgK7TaMmahR8ltgJM3a8Nitd
+         xddPdM6Ho4dvyouY92+klJL5LP1NmD2RkJPSKZWuPAw1AZ8Vm1fZGpHyDBeZ4Zy/Snbl
+         s2bGNF7HslIuzirgli1RCySv0npaY3sKiS5xE23QhT2D1NUvvR5VpHi63iL6sMbszslE
+         y1EprrymvFQldTp6/fSQqyfyrTr51a/Fc3TixGdATChbSrwyrlE95GQGl2W275SII7Yq
+         EzFg==
+X-Gm-Message-State: AOAM531l3BqgtSE1SBAU2jgYud7Gozqt/vnDsB2PMvGXsoivr3GUD41N
+        0fTc6iZMuvnCHDLF96xyc3665k9+t9eYCGjGjI3P4SodDP83
+X-Google-Smtp-Source: ABdhPJwakdCmZ54yFmPNoCDulm1hLgI0er72w8b8WJITPiulr6TdM7TldoP9jp+MAsHlQZyYmybsawg2/18l4SJ52vzbL2iQ16di
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:618:: with SMTP id g24mr5239391jar.16.1626199644520;
+ Tue, 13 Jul 2021 11:07:24 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 11:07:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002545e805c7051ce0@google.com>
+Subject: [syzbot] memory leak in dev_exception_add
+From:   syzbot <syzbot+988c8a25ad1677559236@syzkaller.appspotmail.com>
+To:     jmorris@namei.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-08 15:36, Doug Anderson wrote:
-[...]
->> Or document for the users that want performance how to
->> change the setting, so that they can decide.
-> 
-> Pushing this to the users can make sense for a Linux distribution but
-> probably less sense for an embedded platform. So I'm happy to make
-> some way for a user to override this (like via kernel command line),
-> but I also strongly believe there should be a default that users don't
-> have to futz with that we think is correct.
+Hello,
 
-FYI I did make progress on the "punt it to userspace" approach. I'm not 
-posting it even as an RFC yet because I still need to set up a machine 
-to try actually testing any of it (it's almost certainly broken 
-somewhere), but in the end it comes out looking surprisingly not too bad 
-overall. If you're curious to take a look in the meantime I put it here:
+syzbot found the following issue on:
 
-https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1518cffc300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=55ac6a927d7e3fe9
+dashboard link: https://syzkaller.appspot.com/bug?extid=988c8a25ad1677559236
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1500e772300000
 
-Cheers,
-Robin.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+988c8a25ad1677559236@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88810d3a4300 (size 64):
+  comm "systemd", pid 1, jiffies 4294938536 (age 1351.150s)
+  hex dump (first 32 bytes):
+    01 00 00 00 03 00 00 00 02 00 07 00 00 00 00 00  ................
+    10 04 2b 0d 81 88 ff ff 22 01 00 00 00 00 ad de  ..+.....".......
+  backtrace:
+    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
+    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
+    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
+    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
+    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
+    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
+    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
+    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
+    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
+    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
+    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
+    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88810d2b0400 (size 64):
+  comm "systemd", pid 1, jiffies 4294938537 (age 1351.140s)
+  hex dump (first 32 bytes):
+    01 00 00 00 05 00 00 00 02 00 07 00 00 00 00 00  ................
+    90 ac 3b 0d 81 88 ff ff 22 01 00 00 00 00 ad de  ..;.....".......
+  backtrace:
+    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
+    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
+    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
+    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
+    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
+    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
+    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
+    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
+    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
+    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
+    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
+    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88810d3bac80 (size 64):
+  comm "systemd", pid 1, jiffies 4294938537 (age 1351.140s)
+  hex dump (first 32 bytes):
+    01 00 00 00 07 00 00 00 02 00 07 00 00 00 00 00  ................
+    50 84 31 0d 81 88 ff ff 22 01 00 00 00 00 ad de  P.1.....".......
+  backtrace:
+    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
+    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
+    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
+    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
+    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
+    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
+    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
+    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
+    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
+    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
+    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
+    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88810d318440 (size 64):
+  comm "systemd", pid 1, jiffies 4294938537 (age 1351.140s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 02 00 07 00 00 00 00 00  ................
+    d0 aa 3b 0d 81 88 ff ff 22 01 00 00 00 00 ad de  ..;.....".......
+  backtrace:
+    [<ffffffff81479633>] kmemdup+0x23/0x50 mm/util.c:128
+    [<ffffffff8217485f>] kmemdup include/linux/fortify-string.h:270 [inline]
+    [<ffffffff8217485f>] dev_exception_add+0x2f/0x160 security/device_cgroup.c:94
+    [<ffffffff82175812>] devcgroup_update_access security/device_cgroup.c:734 [inline]
+    [<ffffffff82175812>] devcgroup_access_write+0x8c2/0x9e0 security/device_cgroup.c:764
+    [<ffffffff813198bd>] cgroup_file_write+0x10d/0x260 kernel/cgroup/cgroup.c:3814
+    [<ffffffff81690535>] kernfs_fop_write_iter+0x1b5/0x270 fs/kernfs/file.c:296
+    [<ffffffff81560eb7>] call_write_iter include/linux/fs.h:2114 [inline]
+    [<ffffffff81560eb7>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
+    [<ffffffff81564531>] vfs_write+0x351/0x400 fs/read_write.c:605
+    [<ffffffff8156481d>] ksys_write+0x9d/0x160 fs/read_write.c:658
+    [<ffffffff8439b235>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff8439b235>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+[ 1363.912106][    C1]
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
