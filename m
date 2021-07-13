@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D152B3C6CA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1BF3C6CB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhGMIws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:52:48 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:34076 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234982AbhGMIwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:52:38 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m3E6k-00086V-2I; Tue, 13 Jul 2021 10:49:38 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hjc@rock-chips.com, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, algea.cao@rock-chips.com,
-        andy.yan@rock-chips.com,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: display: rockchip: Add compatible for rk3568 HDMI
-Date:   Tue, 13 Jul 2021 10:49:37 +0200
-Message-ID: <3865833.Ac65pObt5d@diego>
-In-Reply-To: <1bd64284-0a20-12e3-e2e7-19cdfdbf1a25@wolfvision.net>
-References: <20210707120323.401785-1-benjamin.gaignard@collabora.com> <20210707120323.401785-2-benjamin.gaignard@collabora.com> <1bd64284-0a20-12e3-e2e7-19cdfdbf1a25@wolfvision.net>
+        id S234795AbhGMIzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234599AbhGMIzv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:55:51 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31249C0613DD;
+        Tue, 13 Jul 2021 01:53:02 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id E2EC7C64D7; Tue, 13 Jul 2021 09:52:59 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1626166379; bh=G/2d8fKlYxrIrlXIyG7DS5u7VSl3e6PA0spKSFRiuCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lrgc7lYLc4gcn41dqJI+og4bYsq+wTJ6k2As1pzNKfvFlPi6zw+ZFw48JX18+FsEl
+         9hrUU6t0A8+Ym80jV1+ZAKdSvDOgLcE03tuSrXst1eqOd8jn/m0yxCqwVn4kHH/YW+
+         gdpX296eA6h0vP6O0DQnWBMZt2J7o61d+MjnfXHuxcGwEUNFDtzOp3NH8HDVV4zPsQ
+         imZJAg8qdz0GT8atWov7KV3fwpG5eAcBwFvTn/2fBIOYC1uBFoK+vunqDQP2owGmIl
+         x/Jra06jmSh8Kf+JvZnI0pMDLNMelo1TWfNZ43DioxhdMMyOWte8P0wFTUBSIamA5K
+         OUVRJ8Uj0Oyhg==
+Date:   Tue, 13 Jul 2021 09:52:59 +0100
+From:   Sean Young <sean@mess.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3 v2] media: dvb-usb: break long strings in
+ dvb_usb_device_init
+Message-ID: <20210713085259.GB6572@gofer.mess.org>
+References: <20210621113959.53320-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621113959.53320-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-Am Dienstag, 13. Juli 2021, 10:44:00 CEST schrieb Michael Riesch:
-> The HDMI TX block in the RK3568 requires two power supplies, which have
-> to be enabled in some cases (at least on the RK3568 EVB1 the voltages
-> VDDA0V9_IMAGE and VCCA1V8_IMAGE are disabled by default). It would be
-> great if this was considered by the driver and the device tree binding.
-> I am not sure, though, whether this is a RK3568 specific or
-> rockchip_dw_hdmi specific thing. Maybe it can even enter the Synopsis DW
-> HDMI driver.
-
-I do remember that this discussion happened many years back already.
-And yes the supplies are needed for all but back then there was opposition
-as these are supposedly phy-related supplies, not for the dw-hdmi itself.
-[There are variants with an external phy, like on the rk3328]
-
-See discussion on [0]
-
-[0] https://dri-devel.freedesktop.narkive.com/pen2zWo1/patch-v3-1-2-drm-bridge-dw-hdmi-support-optional-supply-regulators
-
-
-
-> On 7/7/21 2:03 PM, Benjamin Gaignard wrote:
-> > Define a new compatible for rk3568 HDMI.
-> > This version of HDMI hardware block needs two new clocks hclk_vio and hclk
-> > to provide phy reference clocks.
-> > 
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > ---
-> > version 2:
-> > - Add the clocks needed for the phy.
-> > 
-> >  .../bindings/display/rockchip/rockchip,dw-hdmi.yaml         | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-> > index 75cd9c686e985..cb8643b3a8b84 100644
-> > --- a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-> > +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-> > @@ -23,6 +23,7 @@ properties:
-> >        - rockchip,rk3288-dw-hdmi
-> >        - rockchip,rk3328-dw-hdmi
-> >        - rockchip,rk3399-dw-hdmi
-> > +      - rockchip,rk3568-dw-hdmi
-> >  
-> >    reg-io-width:
-> >      const: 4
-> > @@ -51,8 +52,11 @@ properties:
-> >            - vpll
-> >        - enum:
-> >            - grf
-> > +          - hclk_vio
-> > +          - vpll
-> > +      - enum:
-> > +          - hclk
-> >            - vpll
-> > -      - const: vpll
+On Mon, Jun 21, 2021 at 07:39:59PM +0800, Dongliang Mu wrote:
+> Break long strings into multiple lines.
 > 
-> The description and documentation of the clocks are somewhat misleading
-> IMHO. This is not caused by your patches, of course. But maybe this is a
-> chance to clean them up a bit.
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  drivers/media/usb/dvb-usb/dvb-usb-init.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> It seems that the CEC clock is an optional clock of the dw-hdmi driver.
-> Shouldn't it be documented in the synopsys,dw-hdmi.yaml?
-> 
-> Also, it would be nice if the clocks hclk_vio and hclk featured a
-> description in the binding.
-> 
-> BTW, I am not too familiar with the syntax here, but shouldn't items in
-> clocks and items in clock-names be aligned (currently, there is a plain
-> list vs. an enum structure)?
-> 
-> Best regards,
-> Michael
-> 
-> >  
-> >    ddc-i2c-bus:
-> >      $ref: /schemas/types.yaml#/definitions/phandle
-> > 
-> 
+> diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> index 28e1fd64dd3c..edc477cedaa9 100644
+> --- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> +++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> @@ -286,13 +286,15 @@ int dvb_usb_device_init(struct usb_interface *intf,
+>  
+>  	desc = dvb_usb_find_device(udev, &d->props, &cold);
+>  	if (!desc) {
+> -		deb_err("something went very wrong, device was not found in current device list - let's see what comes next.\n");
+> +		deb_err("something went very wrong, "
+> +			"device was not found in current device list.\n");
 
+Long lines are acceptable unto 100 columns or more if they are string
+constants.  Breaking them up does not increase readability.
 
+>  		ret = -ENODEV;
+>  		goto error;
+>  	}
+>  
+>  	if (cold) {
+> -		info("found a '%s' in cold state, will try to load a firmware", desc->name);
+> +		info("found a %s in cold state, will try to load a firmware",
+> +		     desc->name);
 
+No reason for removing the quotes, I think.
 
+>  		ret = dvb_usb_download_firmware(udev, props);
+>  		if (!props->no_reconnect || ret != 0)
+>  			goto error;
+> @@ -314,7 +316,7 @@ int dvb_usb_device_init(struct usb_interface *intf,
+>  	if (du)
+>  		*du = d;
+>  
+> -	info("%s successfully initialized and connected.", desc->name);
+> +	info("%s is successfully initialized and connected.", desc->name);
+
+"is" doesn't really add anything here, and the message is fine without it.
+
+>  	return 0;
+>  
+>   error:
+> -- 
+> 2.25.1
