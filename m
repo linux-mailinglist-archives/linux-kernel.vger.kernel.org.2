@@ -2,128 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928F03C7487
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7422E3C748A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhGMQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:33:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59242 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhGMQdK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:33:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 39D9D201FF;
-        Tue, 13 Jul 2021 16:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626193819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p6CpxQyjv18y0aMeeHfjIcHfYe2zm0CP5+MKiPGR1ng=;
-        b=wX1VV577ZLYQD2efMQXEmbJ/BNa2ozrjiGJ4pPtsK04CaGkxS6Z9XVP9rgDvIGelw52h7n
-        foPSlrJunDg5ZlLu53DdDLMI0XYpWY4e/ZBQ/6VSIDRvL5jAsGrHW4JsQPtR0crrgC+8jk
-        md/uD4kjkB/RYnM7rkoKjeicL2T7AtI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626193819;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p6CpxQyjv18y0aMeeHfjIcHfYe2zm0CP5+MKiPGR1ng=;
-        b=vAEM9QWqJb882v9E2c4B5/l68KPApW+7biFz+T7ZHIQvEcLPConPabgR1CHu4/NXfv91y+
-        BA9AXJVaE6SHdcBA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 209D2A3B84;
-        Tue, 13 Jul 2021 16:30:19 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F02E71E0BBE; Tue, 13 Jul 2021 18:30:18 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 18:30:18 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Javier Pello <javier.pello@urjc.es>
-Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 1/1] fs/ext2: Avoid page_address on pages returned by
- ext2_get_page
-Message-ID: <20210713163018.GF24271@quack2.suse.cz>
-References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
- <20210713165918.10da0318af5b9b73e599a517@urjc.es>
+        id S230191AbhGMQen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:34:43 -0400
+Received: from mga18.intel.com ([134.134.136.126]:40293 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhGMQem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 12:34:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="197473794"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="197473794"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 09:30:01 -0700
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="493102007"
+Received: from bartel-mobl1.amr.corp.intel.com ([10.254.200.47])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 09:29:58 -0700
+Message-ID: <34d1bedc0a1bc8d1116e2bab4482133e6dfd67ba.camel@linux.intel.com>
+Subject: Re: [PATCH] iio: hid-sensors: bind IIO channels alloc to device
+ object
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, jikos@kernel.org
+Date:   Tue, 13 Jul 2021 09:29:55 -0700
+In-Reply-To: <20210630123029.759609-1-aardelean@deviqon.com>
+References: <20210630123029.759609-1-aardelean@deviqon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713165918.10da0318af5b9b73e599a517@urjc.es>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13-07-21 16:59:18, Javier Pello wrote:
-> From: Javier Pello <javier.pello@urjc.es>
+On Wed, 2021-06-30 at 15:30 +0300, Alexandru Ardelean wrote:
+> Some HID drivers use devm_kmemdup() already to clone the template IIO
+> channels information and update it.
+> However, there are still some drivers that kmemdup() and kfree() the
+> channels.
 > 
-> Commit 782b76d7abdf02b12c46ed6f1e9bf715569027f7 ("fs/ext2: Replace
-> kmap() with kmap_local_page()") replaced the kmap/kunmap calls in
-> ext2_get_page/ext2_put_page with kmap_local_page/kunmap_local for
-> efficiency reasons. As a necessary side change, the commit also
-> made ext2_get_page (and ext2_find_entry and ext2_dotdot) return
-> the mapping address along with the page itself, as it is required
-> for kunmap_local, and converted uses of page_address on such pages
-> to use the newly returned address instead. However, uses of
-> page_address on such pages were missed in ext2_check_page and
-> ext2_delete_entry, which triggers oopses if kmap_local_page happens
-> to return an address from high memory. Fix this now by converting
-> the remaining uses of page_address to use the right address, as
-> returned by kmap_local_page.
+> This change converts them to use devm_kmemdup() and bind the life-
+> time of
+> this allocated object to the parent device object (in these drivers).
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-Good catch. Thanks for the patch. Ira, can you please check the patch as
-well?
+> ---
+>  drivers/iio/accel/hid-sensor-accel-3d.c      | 10 ++++------
+>  drivers/iio/gyro/hid-sensor-gyro-3d.c        | 11 ++++-------
+>  drivers/iio/light/hid-sensor-als.c           | 11 ++++-------
+>  drivers/iio/light/hid-sensor-prox.c          | 11 ++++-------
+>  drivers/iio/orientation/hid-sensor-incl-3d.c | 11 ++++-------
+>  drivers/iio/pressure/hid-sensor-press.c      | 11 ++++-------
+>  6 files changed, 24 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c
+> b/drivers/iio/accel/hid-sensor-accel-3d.c
+> index 55cdca818b3b..a2def6f9380a 100644
+> --- a/drivers/iio/accel/hid-sensor-accel-3d.c
+> +++ b/drivers/iio/accel/hid-sensor-accel-3d.c
+> @@ -367,7 +367,8 @@ static int hid_accel_3d_probe(struct
+> platform_device *pdev)
+>                 dev_err(&pdev->dev, "failed to setup common
+> attributes\n");
+>                 return ret;
+>         }
+> -       indio_dev->channels = kmemdup(channel_spec, channel_size,
+> GFP_KERNEL);
+> +       indio_dev->channels = devm_kmemdup(&pdev->dev, channel_spec,
+> +                                          channel_size, GFP_KERNEL);
+>  
+>         if (!indio_dev->channels) {
+>                 dev_err(&pdev->dev, "failed to duplicate
+> channels\n");
+> @@ -378,7 +379,7 @@ static int hid_accel_3d_probe(struct
+> platform_device *pdev)
+>                                 hsdev->usage, accel_state);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to setup attributes\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         indio_dev->info = &accel_3d_info;
+> @@ -391,7 +392,7 @@ static int hid_accel_3d_probe(struct
+> platform_device *pdev)
+>                                         &accel_state-
+> >common_attributes);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "trigger setup failed\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         ret = iio_device_register(indio_dev);
+> @@ -416,8 +417,6 @@ static int hid_accel_3d_probe(struct
+> platform_device *pdev)
+>         iio_device_unregister(indio_dev);
+>  error_remove_trigger:
+>         hid_sensor_remove_trigger(indio_dev, &accel_state-
+> >common_attributes);
+> -error_free_dev_mem:
+> -       kfree(indio_dev->channels);
+>         return ret;
+>  }
+>  
+> @@ -431,7 +430,6 @@ static int hid_accel_3d_remove(struct
+> platform_device *pdev)
+>         sensor_hub_remove_callback(hsdev, hsdev->usage);
+>         iio_device_unregister(indio_dev);
+>         hid_sensor_remove_trigger(indio_dev, &accel_state-
+> >common_attributes);
+> -       kfree(indio_dev->channels);
+>  
+>         return 0;
+>  }
+> diff --git a/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> b/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> index bc63c2a34c5e..8f0ad022c7f1 100644
+> --- a/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> +++ b/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> @@ -303,8 +303,8 @@ static int hid_gyro_3d_probe(struct
+> platform_device *pdev)
+>                 return ret;
+>         }
+>  
+> -       indio_dev->channels = kmemdup(gyro_3d_channels,
+> -                                     sizeof(gyro_3d_channels),
+> GFP_KERNEL);
+> +       indio_dev->channels = devm_kmemdup(&pdev->dev,
+> gyro_3d_channels,
+> +                                          sizeof(gyro_3d_channels),
+> GFP_KERNEL);
+>         if (!indio_dev->channels) {
+>                 dev_err(&pdev->dev, "failed to duplicate
+> channels\n");
+>                 return -ENOMEM;
+> @@ -315,7 +315,7 @@ static int hid_gyro_3d_probe(struct
+> platform_device *pdev)
+>                                    HID_USAGE_SENSOR_GYRO_3D,
+> gyro_state);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to setup attributes\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         indio_dev->num_channels = ARRAY_SIZE(gyro_3d_channels);
+> @@ -329,7 +329,7 @@ static int hid_gyro_3d_probe(struct
+> platform_device *pdev)
+>                                         &gyro_state-
+> >common_attributes);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "trigger setup failed\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         ret = iio_device_register(indio_dev);
+> @@ -354,8 +354,6 @@ static int hid_gyro_3d_probe(struct
+> platform_device *pdev)
+>         iio_device_unregister(indio_dev);
+>  error_remove_trigger:
+>         hid_sensor_remove_trigger(indio_dev, &gyro_state-
+> >common_attributes);
+> -error_free_dev_mem:
+> -       kfree(indio_dev->channels);
+>         return ret;
+>  }
+>  
+> @@ -369,7 +367,6 @@ static int hid_gyro_3d_remove(struct
+> platform_device *pdev)
+>         sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_GYRO_3D);
+>         iio_device_unregister(indio_dev);
+>         hid_sensor_remove_trigger(indio_dev, &gyro_state-
+> >common_attributes);
+> -       kfree(indio_dev->channels);
+>  
+>         return 0;
+>  }
+> diff --git a/drivers/iio/light/hid-sensor-als.c
+> b/drivers/iio/light/hid-sensor-als.c
+> index 2ff252c75c03..5a1a625d8d16 100644
+> --- a/drivers/iio/light/hid-sensor-als.c
+> +++ b/drivers/iio/light/hid-sensor-als.c
+> @@ -294,8 +294,8 @@ static int hid_als_probe(struct platform_device
+> *pdev)
+>                 return ret;
+>         }
+>  
+> -       indio_dev->channels = kmemdup(als_channels,
+> -                                     sizeof(als_channels),
+> GFP_KERNEL);
+> +       indio_dev->channels = devm_kmemdup(&pdev->dev, als_channels,
+> +                                          sizeof(als_channels),
+> GFP_KERNEL);
+>         if (!indio_dev->channels) {
+>                 dev_err(&pdev->dev, "failed to duplicate
+> channels\n");
+>                 return -ENOMEM;
+> @@ -306,7 +306,7 @@ static int hid_als_probe(struct platform_device
+> *pdev)
+>                                HID_USAGE_SENSOR_ALS, als_state);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to setup attributes\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         indio_dev->num_channels =
+> @@ -321,7 +321,7 @@ static int hid_als_probe(struct platform_device
+> *pdev)
+>                                 &als_state->common_attributes);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "trigger setup failed\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         ret = iio_device_register(indio_dev);
+> @@ -346,8 +346,6 @@ static int hid_als_probe(struct platform_device
+> *pdev)
+>         iio_device_unregister(indio_dev);
+>  error_remove_trigger:
+>         hid_sensor_remove_trigger(indio_dev, &als_state-
+> >common_attributes);
+> -error_free_dev_mem:
+> -       kfree(indio_dev->channels);
+>         return ret;
+>  }
+>  
+> @@ -361,7 +359,6 @@ static int hid_als_remove(struct platform_device
+> *pdev)
+>         sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_ALS);
+>         iio_device_unregister(indio_dev);
+>         hid_sensor_remove_trigger(indio_dev, &als_state-
+> >common_attributes);
+> -       kfree(indio_dev->channels);
+>  
+>         return 0;
+>  }
+> diff --git a/drivers/iio/light/hid-sensor-prox.c
+> b/drivers/iio/light/hid-sensor-prox.c
+> index 1621530f5f61..f10fa2abfe72 100644
+> --- a/drivers/iio/light/hid-sensor-prox.c
+> +++ b/drivers/iio/light/hid-sensor-prox.c
+> @@ -253,8 +253,8 @@ static int hid_prox_probe(struct platform_device
+> *pdev)
+>                 return ret;
+>         }
+>  
+> -       indio_dev->channels = kmemdup(prox_channels,
+> sizeof(prox_channels),
+> -                                     GFP_KERNEL);
+> +       indio_dev->channels = devm_kmemdup(&pdev->dev, prox_channels,
+> +                                          sizeof(prox_channels),
+> GFP_KERNEL);
+>         if (!indio_dev->channels) {
+>                 dev_err(&pdev->dev, "failed to duplicate
+> channels\n");
+>                 return -ENOMEM;
+> @@ -265,7 +265,7 @@ static int hid_prox_probe(struct platform_device
+> *pdev)
+>                                 HID_USAGE_SENSOR_PROX, prox_state);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to setup attributes\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         indio_dev->num_channels = ARRAY_SIZE(prox_channels);
+> @@ -279,7 +279,7 @@ static int hid_prox_probe(struct platform_device
+> *pdev)
+>                                 &prox_state->common_attributes);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "trigger setup failed\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         ret = iio_device_register(indio_dev);
+> @@ -304,8 +304,6 @@ static int hid_prox_probe(struct platform_device
+> *pdev)
+>         iio_device_unregister(indio_dev);
+>  error_remove_trigger:
+>         hid_sensor_remove_trigger(indio_dev, &prox_state-
+> >common_attributes);
+> -error_free_dev_mem:
+> -       kfree(indio_dev->channels);
+>         return ret;
+>  }
+>  
+> @@ -319,7 +317,6 @@ static int hid_prox_remove(struct platform_device
+> *pdev)
+>         sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_PROX);
+>         iio_device_unregister(indio_dev);
+>         hid_sensor_remove_trigger(indio_dev, &prox_state-
+> >common_attributes);
+> -       kfree(indio_dev->channels);
+>  
+>         return 0;
+>  }
+> diff --git a/drivers/iio/orientation/hid-sensor-incl-3d.c
+> b/drivers/iio/orientation/hid-sensor-incl-3d.c
+> index c0079e2c8807..ba5b581d5b25 100644
+> --- a/drivers/iio/orientation/hid-sensor-incl-3d.c
+> +++ b/drivers/iio/orientation/hid-sensor-incl-3d.c
+> @@ -326,8 +326,8 @@ static int hid_incl_3d_probe(struct
+> platform_device *pdev)
+>                 return ret;
+>         }
+>  
+> -       indio_dev->channels = kmemdup(incl_3d_channels,
+> -                                     sizeof(incl_3d_channels),
+> GFP_KERNEL);
+> +       indio_dev->channels = devm_kmemdup(&pdev->dev,
+> incl_3d_channels,
+> +                                          sizeof(incl_3d_channels),
+> GFP_KERNEL);
+>         if (!indio_dev->channels) {
+>                 dev_err(&pdev->dev, "failed to duplicate
+> channels\n");
+>                 return -ENOMEM;
+> @@ -339,7 +339,7 @@ static int hid_incl_3d_probe(struct
+> platform_device *pdev)
+>                                    incl_state);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to setup attributes\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         indio_dev->num_channels = ARRAY_SIZE(incl_3d_channels);
+> @@ -353,7 +353,7 @@ static int hid_incl_3d_probe(struct
+> platform_device *pdev)
+>                                         &incl_state-
+> >common_attributes);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "trigger setup failed\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         ret = iio_device_register(indio_dev);
+> @@ -379,8 +379,6 @@ static int hid_incl_3d_probe(struct
+> platform_device *pdev)
+>         iio_device_unregister(indio_dev);
+>  error_remove_trigger:
+>         hid_sensor_remove_trigger(indio_dev, &incl_state-
+> >common_attributes);
+> -error_free_dev_mem:
+> -       kfree(indio_dev->channels);
+>         return ret;
+>  }
+>  
+> @@ -394,7 +392,6 @@ static int hid_incl_3d_remove(struct
+> platform_device *pdev)
+>         sensor_hub_remove_callback(hsdev,
+> HID_USAGE_SENSOR_INCLINOMETER_3D);
+>         iio_device_unregister(indio_dev);
+>         hid_sensor_remove_trigger(indio_dev, &incl_state-
+> >common_attributes);
+> -       kfree(indio_dev->channels);
+>  
+>         return 0;
+>  }
+> diff --git a/drivers/iio/pressure/hid-sensor-press.c
+> b/drivers/iio/pressure/hid-sensor-press.c
+> index 10c52b8df2ba..dcd593c426b4 100644
+> --- a/drivers/iio/pressure/hid-sensor-press.c
+> +++ b/drivers/iio/pressure/hid-sensor-press.c
+> @@ -259,8 +259,8 @@ static int hid_press_probe(struct platform_device
+> *pdev)
+>                 return ret;
+>         }
+>  
+> -       indio_dev->channels = kmemdup(press_channels,
+> sizeof(press_channels),
+> -                                     GFP_KERNEL);
+> +       indio_dev->channels = devm_kmemdup(&pdev->dev,
+> press_channels,
+> +                                          sizeof(press_channels),
+> GFP_KERNEL);
+>         if (!indio_dev->channels) {
+>                 dev_err(&pdev->dev, "failed to duplicate
+> channels\n");
+>                 return -ENOMEM;
+> @@ -271,7 +271,7 @@ static int hid_press_probe(struct platform_device
+> *pdev)
+>                                  HID_USAGE_SENSOR_PRESSURE,
+> press_state);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to setup attributes\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         indio_dev->num_channels =
+> @@ -286,7 +286,7 @@ static int hid_press_probe(struct platform_device
+> *pdev)
+>                                 &press_state->common_attributes);
+>         if (ret) {
+>                 dev_err(&pdev->dev, "trigger setup failed\n");
+> -               goto error_free_dev_mem;
+> +               return ret;
+>         }
+>  
+>         ret = iio_device_register(indio_dev);
+> @@ -311,8 +311,6 @@ static int hid_press_probe(struct platform_device
+> *pdev)
+>         iio_device_unregister(indio_dev);
+>  error_remove_trigger:
+>         hid_sensor_remove_trigger(indio_dev, &press_state-
+> >common_attributes);
+> -error_free_dev_mem:
+> -       kfree(indio_dev->channels);
+>         return ret;
+>  }
+>  
+> @@ -326,7 +324,6 @@ static int hid_press_remove(struct
+> platform_device *pdev)
+>         sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_PRESSURE);
+>         iio_device_unregister(indio_dev);
+>         hid_sensor_remove_trigger(indio_dev, &press_state-
+> >common_attributes);
+> -       kfree(indio_dev->channels);
+>  
+>         return 0;
+>  }
 
-I have just a few nits below:
 
-> Signed-off-by: Javier Pello <javier.pello@urjc.es>
-> Fixes: 782b76d7abdf fs/ext2: Replace kmap() with kmap_local_page()
-
-Please wrap subject in Fixes tag into ("...").
-
-> @@ -584,16 +584,16 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
->   * ext2_delete_entry deletes a directory entry by merging it with the
->   * previous entry. Page is up-to-date.
->   */
-> -int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
-> +int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
-> +			void *kaddr)
-
-Why not have 'kaddr' as char *. We type it to char * basically everywhere
-anyway.
-
->  {
->  	struct inode *inode = page->mapping->host;
-> -	char *kaddr = page_address(page);
-> -	unsigned from = ((char*)dir - kaddr) & ~(ext2_chunk_size(inode)-1);
-> -	unsigned to = ((char *)dir - kaddr) +
-> -				ext2_rec_len_from_disk(dir->rec_len);
-> +	unsigned int delta = (char *)dir - (char *)kaddr;
-
-Maybe I'd call this 'offset' rather than 'delta'. Also if kaddr will stay
-char *, you maybe just don't need to touch this...
-
-> +	unsigned int from = delta & ~(ext2_chunk_size(inode)-1);
-> +	unsigned int to = delta + ext2_rec_len_from_disk(dir->rec_len);
->  	loff_t pos;
->  	ext2_dirent * pde = NULL;
-> -	ext2_dirent * de = (ext2_dirent *) (kaddr + from);
-> +	ext2_dirent *de = (ext2_dirent *) ((char *)kaddr + from);
->  	int err;
->  
->  	while ((char*)de < (char*)dir) {
-> @@ -607,7 +607,7 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
->  		de = ext2_next_entry(de);
->  	}
->  	if (pde)
-> -		from = (char*)pde - (char*)page_address(page);
-> +		from = (char *)pde - (char *)kaddr;
->  	pos = page_offset(page) + from;
->  	lock_page(page);
->  	err = ext2_prepare_chunk(page, pos, to - from);
-
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
