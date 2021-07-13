@@ -2,65 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFB33C710A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404F73C710F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhGMNKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:10:12 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52670 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236677AbhGMNKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:10:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=U96NI2AGJuhqP5+/xjUH0gQkh60Cu2uwD9mCLAs6TFA=; b=bpHciKamB0LY4LVzoJGeG2kXPh
-        vluHAzAiNVOkFARFf+mHlBBta/BiEIBRVex9/iNaEW01yMUzEbvBLBsYnYLp7mDo+wBqK4+DfP5cj
-        gUerjKmV0wDDsMJx73LhdLx5pLIj3GCSLu2lgZwBzSKvLm1YXyoFp1We0wzCy7e+3wQU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m3I7k-00DDBM-DO; Tue, 13 Jul 2021 15:06:56 +0200
-Date:   Tue, 13 Jul 2021 15:06:56 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] net: phy: intel-xway: Add RGMII internal
- delay configuration
-Message-ID: <YO2P8J4Ln+RwxkfO@lunn.ch>
-References: <20210709164216.18561-1-ms@dev.tdt.de>
- <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
- <fcb3203ea82d1180a6e471f22e39e817@dev.tdt.de>
+        id S236520AbhGMNL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:11:59 -0400
+Received: from mail.efficios.com ([167.114.26.124]:47762 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236364AbhGMNL4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 09:11:56 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 0E51A9B0B6;
+        Tue, 13 Jul 2021 09:09:05 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id AX09Z6F5_rWq; Tue, 13 Jul 2021 09:09:04 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8B2409AEEA;
+        Tue, 13 Jul 2021 09:09:04 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8B2409AEEA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1626181744;
+        bh=rwUgiTkIr4C//Zi3ZCbCC+KkCr16aUd//0fkaJH5ftg=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=RtZFuG59a4D0MN2//vkD6iQI9MR/JYZvUIn0bu0oe39KC5pSMMHpXjC+xiX2bF4mF
+         56uEKzOgUZVDnb0kyGi1cYcjqfhTmFcDphQzcaYV7XyNHLkb7Xq4cOCoHCx/vBf8N3
+         rMxAE5G8a5g9nX0Q0bCbC2yginEZIr6CRMuOY4/a/btIWU5kds3YhYWCfG3OETbsuv
+         KJSCb7o3uF+uJ8fGBNWRBB77EtDkmhqKbXyNGxgzTKa6rEmXFbbJqBUScPUMX9ltOL
+         hNXaVBx2JeuDV2wocsIB3miOytoeDFcl7o9os8T82RUb2dA63jslwCR90TH4UxbI0s
+         gu+0gOPtUjpWg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 5xVyNO2WsDun; Tue, 13 Jul 2021 09:09:04 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 7B60D9B237;
+        Tue, 13 Jul 2021 09:09:04 -0400 (EDT)
+Date:   Tue, 13 Jul 2021 09:09:04 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     paulmck <paulmck@kernel.org>
+Cc:     zhouzhouyi@gmail.com, Josh Triplett <josh@joshtriplett.org>,
+        rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com> <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fcb3203ea82d1180a6e471f22e39e817@dev.tdt.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4059)
+Thread-Topic: Fix macro name CONFIG_TASKS_RCU_TRACE
+Thread-Index: ROUS2UuRwOuQB1BTugtLk1BJzQIfiw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > [...]
-> > > +#if IS_ENABLED(CONFIG_OF_MDIO)
-> > is there any particular reason why we need to guard this with
-> > CONFIG_OF_MDIO?
-> > The dp83822 driver does not use this #if either (as far as I
-> > understand at least)
-> > 
+----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
+
+> On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
+>> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>> 
+>> Hi Paul,
+>> 
+>> During my studying of RCU, I did a grep in the kernel source tree.
+>> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
+>> should be CONFIG_TASKS_TRACE_RCU instead.
+>> 
+>> Without memory fencing, the idle/userspace task inspection may not
+>> be so accurate.
+>> 
+>> Thanks for your constant encouragement for my studying.
+>> 
+>> Best Wishes
+>> Zhouyi
+>> 
+>> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 > 
-> It makes no sense to retrieve properties from the device tree if we are
-> compiling for a target that does not support a device tree.
-> At least that is my understanding of this condition.
+> Good eyes, and those could cause real bugs, so thank you!
 
-There should be stubs for all these functions, so if OF is not part of
-the configured kernel, stub functions take their place. That has the
-advantage of at least compiling the code, so checking parameter types
-etc. We try to avoid #ifdef where possible, so we get better compiler
-build test coverage. The more #ifef there are, the more different
-configurations that need compiling in order to get build coverage.
+Hi Paul,
 
-	       Andrew
+This makes me wonder: what is missing testing-wise in rcutorture to
+catch those issues with testing before they reach mainline ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
