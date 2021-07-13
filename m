@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1C53C716B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC723C7172
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhGMNtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
+        id S236727AbhGMNuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236222AbhGMNtA (ORCPT
+        with ESMTP id S236222AbhGMNuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:49:00 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BF4C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:46:09 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id k3so7534229qtq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:46:09 -0700 (PDT)
+        Tue, 13 Jul 2021 09:50:13 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3972FC0613DD;
+        Tue, 13 Jul 2021 06:47:23 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id p8so30550186wrr.1;
+        Tue, 13 Jul 2021 06:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KS+iF4Pc2VBgRkck8w5172ucQsF7IAiFUaz7SAcYMXk=;
-        b=h/E21b2bz9c5PjZDILRVd6rY5jYdenj0x1RbXdub99cORNrUc9F+LLuuxzKTDnknmj
-         ZpN6lWiw1ahrFN9CFG81RfLKbUx7ipS+4StmjzCZQSyDoXGJ+HeiyZy5tZbi0bQ7BOp7
-         tgPTsHnaXa1BLZIpr+537gJD5BWGKfj0wLI28=
+        bh=X/AEnKgR35dch3/Dd4uftg3ppYbt85cCwHqG8mB8H40=;
+        b=hHPV0jO0A53LsFdk1uIC2UDPRjwsgp6Khb9VjaAoaF31e/tfTM/VZeelFGvz4A1LhQ
+         VqIsT7exIXTKWb635pIeS2si1JfsMbllUg1pTpFXsgyiobOVnFTfPr6Zdqub1qB0GL2p
+         Z4K9vbagjhnMaI+y9VE2nbP/7Na7sf/NnDzveuSHKPfogbo11SPevbH3ZJauTo7nso/H
+         9gq4gSxmaXQ6I83ipChNMc3ow8UhHjeN1dtMvapBqI6quoHXubYjckkF0g8vlcQAa6OM
+         zLrInzQEl/8ObWfTF2c4kPlyViBRTBLGzryI2xPP371Yz51cRxZIaVGkgTKH1JLbyv/w
+         huFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KS+iF4Pc2VBgRkck8w5172ucQsF7IAiFUaz7SAcYMXk=;
-        b=XSXspKUUOR1/wtC/jD6SpQ5HAhHY8EAqsipMkmF8/MoYtYfqwIzz9FAEp8fizUhKxl
-         OAsmhlP6v+hupfqUViaIu9EdT9U1ennoA+EZM8jhiyHY4V9JUp7pPWBAJ7PT6vJ6Z4VV
-         Qt6NqhreubWIHtPBXAKX/jx6eiOHvqhMjy+JAdcY2KfYUbB6qt3rCVxkKz0KAjbZ/OTq
-         IItA4mDB7+770CIkfC64RU/j41LIOwf7vw3GwyMO6Nn6LE5/q8gX98RRhMysL62BaKkZ
-         YFovgArExzljW9Ophep/kWWkieBPTip7UXMeFnjAK7dLAWMylOMVciKsXVWqtLYxHtWh
-         Ac3g==
-X-Gm-Message-State: AOAM531iA55yMn/38oPABESMCrKm137u8B+0RnbTRHUnZMPakTZ6GPrb
-        RBQm8dqge8x2W6iLsS2N8bsAfCtFA2LHaw==
-X-Google-Smtp-Source: ABdhPJwY+qi4IP98yFsScP9xSqhJEDiBVZ1aVdylF1Nu2a1mN3EJEV5Q6Jf+WJMDN8Z7MnxvE2yBTw==
-X-Received: by 2002:ac8:776f:: with SMTP id h15mr4116354qtu.26.1626183966976;
-        Tue, 13 Jul 2021 06:46:06 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id u4sm8365270qkb.99.2021.07.13.06.46.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 06:46:05 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id r132so34861383yba.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:46:05 -0700 (PDT)
-X-Received: by 2002:a25:cc52:: with SMTP id l79mr5818725ybf.476.1626183965121;
- Tue, 13 Jul 2021 06:46:05 -0700 (PDT)
+        bh=X/AEnKgR35dch3/Dd4uftg3ppYbt85cCwHqG8mB8H40=;
+        b=mEi5TdzyNO4XNJ44hfSfEnDO+B+32UYSmZ3lJkt9tJZ+yeFwevSRz4AIZ3NhbXg/8T
+         FdjxHIn3Pnw1xpgVvKiWLBq2nulB7XnJHlvo9KBhxUg46UOOxCB8sgX9N2KB3jxf5lxw
+         Oc75nj1SKDgzKvpvV0aXAVtZEsCcL9LhCpcqqOGWHKW2DDolIJxxA6f3+Jf+ClEt2jGr
+         wkM0OvRUIUUBKKLSANv8Nh6/FXF7v8sE1G9Jj/YB6++7czQjLdb9rqfpdfa7YWjpIXyd
+         mVg5BFDc7fUXdi6N7Ym7e5QXgUQoPoei/45AVh3+QVAAmdcnvIYARBam8/qGyZ6keFES
+         daqA==
+X-Gm-Message-State: AOAM531kOCCaa0aE61+Wt1bE8wCJ7Z14y9p82EPceqMPVTF8gE2ooz6l
+        zsZEsbo5HcanCgMEgLXOW5us3LMAceheG+EUfLg=
+X-Google-Smtp-Source: ABdhPJxz/AMLqAjw+OLCeNgQzB+GRtUscV/kpXH6OPXF7N3eeXF6ZvPSvKnOblE9jj+X0nhUUX+w/Dq7KnNhXY8VWHQ=
+X-Received: by 2002:a5d:530b:: with SMTP id e11mr2420650wrv.65.1626184041894;
+ Tue, 13 Jul 2021 06:47:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210708122447.3880803-1-sumit.garg@linaro.org>
- <CAD=FV=UhL32e7spQjr38Lwng0D7mUK+R7iGnmBah=tXzzXsO5g@mail.gmail.com> <CAFA6WYN4gMv9Hkuq=3v_UKg+Y1OvFfbOqgZxt7yGSd2RnVBdJw@mail.gmail.com>
-In-Reply-To: <CAFA6WYN4gMv9Hkuq=3v_UKg+Y1OvFfbOqgZxt7yGSd2RnVBdJw@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 13 Jul 2021 06:45:52 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
-Message-ID: <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
-Subject: Re: [PATCH v3] kdb: Get rid of custom debug heap allocator
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210713054019.409273-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210713054019.409273-1-mudongliangabcd@gmail.com>
+From:   Alexander Aring <alex.aring@gmail.com>
+Date:   Tue, 13 Jul 2021 09:47:10 -0400
+Message-ID: <CAB_54W6DkBkASH5ojbChSoPB6ogQNy+7rq2kr=m9PNLmzATHtQ@mail.gmail.com>
+Subject: Re: [PATCH] ieee802154: hwsim: fix memory leak in __pskb_copy_fclone
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Aring <aring@mojatatu.com>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,28 +66,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Tue, Jul 13, 2021 at 4:24 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+On Tue, 13 Jul 2021 at 01:40, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 >
-> > >  int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
-> > >  {
-> > >         int ret = 0;
-> > >         unsigned long symbolsize = 0;
-> > >         unsigned long offset = 0;
-> > > -#define knt1_size 128          /* must be >= kallsyms table size */
-> > > -       char *knt1 = NULL;
-> > > +       static char namebuf[KSYM_NAME_LEN];
-> >
-> > I guess this also ends up fixing a bug too, right? My greps show that
-> > "KSYM_NAME_LEN" is 512
+> hwsim_hw_xmit fails to deallocate the newskb copied by pskb_copy. Fix
+> this by adding kfree_skb after ieee802154_rx_irqsafe.
 >
-> I can see "KSYM_NAME_LEN" defined as 128 here [1]. Are you looking at
-> any other header file?
+>   [<ffffffff836433fb>] __alloc_skb+0x22b/0x250 net/core/skbuff.c:414
+>   [<ffffffff8364ad95>] __pskb_copy_fclone+0x75/0x360 net/core/skbuff.c:1609
+>   [<ffffffff82ae65e3>] __pskb_copy include/linux/skbuff.h:1176 [inline]
+>   [<ffffffff82ae65e3>] pskb_copy include/linux/skbuff.h:3207 [inline]
+>   [<ffffffff82ae65e3>] hwsim_hw_xmit+0xd3/0x140 drivers/net/ieee802154/mac802154_hwsim.c:132
+>   [<ffffffff83ff8f47>] drv_xmit_async net/mac802154/driver-ops.h:16 [inline]
+>   [<ffffffff83ff8f47>] ieee802154_tx+0xc7/0x190 net/mac802154/tx.c:83
+>   [<ffffffff83ff9138>] ieee802154_subif_start_xmit+0x58/0x70 net/mac802154/tx.c:132
+>   [<ffffffff83670b82>] __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
+>   [<ffffffff83670b82>] netdev_start_xmit include/linux/netdevice.h:4958 [inline]
+>   [<ffffffff83670b82>] xmit_one net/core/dev.c:3658 [inline]
+>   [<ffffffff83670b82>] dev_hard_start_xmit+0xe2/0x330 net/core/dev.c:3674
+>   [<ffffffff83718028>] sch_direct_xmit+0xf8/0x520 net/sched/sch_generic.c:342
+>   [<ffffffff8367193b>] __dev_xmit_skb net/core/dev.c:3874 [inline]
+>   [<ffffffff8367193b>] __dev_queue_xmit+0xa3b/0x1360 net/core/dev.c:4241
+>   [<ffffffff83ff5437>] dgram_sendmsg+0x437/0x570 net/ieee802154/socket.c:682
+>   [<ffffffff836345b6>] sock_sendmsg_nosec net/socket.c:702 [inline]
+>   [<ffffffff836345b6>] sock_sendmsg+0x56/0x80 net/socket.c:722
 >
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kallsyms.h#n18
+> Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 
-Ah ha, it's recent! See commit f2f6175186f4 ("kallsyms: increase
-maximum kernel symbol length to 512")
+sorry, I don't get the fix. Is this a memory leak? I remember there
+was something reported by syzkaller [0] but I wasn't able yet to get
+into it. Is it what you referring to?
+__pskb_copy_fclone() shows "The returned buffer has a reference count
+of 1" and ieee802154_rx_irqsafe() will queue the skb for a tasklet.
+With your patch it will be immediately freed and a use after free will
+occur. I believe there is something wrong in the error path of
+802.15.4 frame parsing and that's why we sometimes have a leaks there.
 
-...I guess this officially "Fixes" that commit then?
+I need to test this patch, but I don't get how this patch is supposed
+to fix the issue.
 
--Doug
+- Alex
+
+[0] https://groups.google.com/g/syzkaller-bugs/c/EoIvZbk3Zfo/m/AlKUiErlAwAJ
