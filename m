@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23113C7433
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF70A3C743A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhGMQTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:19:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:46492 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229604AbhGMQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:19:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E1DE6D;
-        Tue, 13 Jul 2021 09:16:29 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 228D33F7D8;
-        Tue, 13 Jul 2021 09:16:28 -0700 (PDT)
-Subject: Re: [PATCH] drm/of: free the iterator object on failure
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210712155758.48286-1-steven.price@arm.com>
- <YOxyvIoJcZFAgUz5@pendragon.ideasonboard.com>
- <b420a4e6-8038-6c1e-7c97-75ef3bea3c21@arm.com>
- <YOy6VQNz8Htg6Usb@pendragon.ideasonboard.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <5c3db755-c3fb-dfe7-3d23-bbbcc81af3d8@arm.com>
-Date:   Tue, 13 Jul 2021 17:16:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229867AbhGMQVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229454AbhGMQVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 12:21:06 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8E0C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:18:15 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id bt15so7364200pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A5YhPK+U85k0SKsYlDjEBbw9AMYz32iyaMx2KI0XJrU=;
+        b=Qfwg9sDKAm5t+RWonrl91t9f06nWp0+7onIoZC3nBS9NUBXEur05hfosoHDL9VU2p+
+         2Kf/R5KU+lhnSUhdi9MkfDM09b2TmogQwIijHnuiDDIIp4WVA6hJ+hDIid928ms23HgM
+         slmX0nlW6DwQ4CAkltMqxGOvpkemWqcPgiHOX9aiP6mYrgKrf9JAX3DCRmh7ZGhJnOTI
+         6n3GmonwtA2d3ngFbsWSdNEc5NwYClUrDvQuiT/QEpkhNqiSzzQYRoS9fL3YuPj38013
+         GZpacX8lefNmjSpZPHpI0XzbxTdyuxMgKp6wVqMy9nZVfdu1sqq0jZZqqdo8DPqu9/8C
+         5L7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=A5YhPK+U85k0SKsYlDjEBbw9AMYz32iyaMx2KI0XJrU=;
+        b=sHR6mMpIKA+LGjkE+gXoyA9/CjPvuNw2rdadaVyLYalDdoTM5h8GPCVH45thmgLt65
+         yyr4HBpErD/C1U5fvfDMHDJASokcId6CZFNDberG7D5tZ30pfhex5kx1tSppa+QBOPxg
+         bMjICoiAJezB9efzZ1clupskVF9SmPmXro0N76jaxjxDVMBo9FCpfaELajVaBwha//ks
+         WYMuP+IiJ57NP+nxTpSJ/qrtdladU0yhBVI9TPkqC42h75Dcj5otfHjeYEqn0L0/onRK
+         wUSdlUZvMEHoXCnOPQhD4ICK22aiiZ53dJmP/Y17g+hUSkwjQSCdtJ4dq6XlEcV4JT3A
+         fGWg==
+X-Gm-Message-State: AOAM533V/Sr+9I0dWwWgqBTB92gu0csgXtIKxGdRDYpyvEr2OENf+kT/
+        bK99ApspOlw0sYjaYK1EsrU=
+X-Google-Smtp-Source: ABdhPJwVhN6L+kJszXRvnMuSIYrAht9+csgEepd9qKOYZZBY55Rj/lptLWbzmby7tlaBDRljmcRWow==
+X-Received: by 2002:a17:902:ead2:b029:12a:ec28:7bc9 with SMTP id p18-20020a170902ead2b029012aec287bc9mr4034711pld.79.1626193095174;
+        Tue, 13 Jul 2021 09:18:15 -0700 (PDT)
+Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
+        by smtp.gmail.com with ESMTPSA id j20sm17014874pfc.203.2021.07.13.09.18.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 09:18:14 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 13 Jul 2021 06:18:13 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xu Qiang <xuqiang36@huawei.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v2] workqueue: fix UAF in pwq_unbound_release_workfn()
+Message-ID: <YO28xd4mlxgN6xY8@slm.duckdns.org>
+References: <20210709071100.4057639-1-yangyingliang@huawei.com>
+ <YOx392cwdEHMMnD0@slm.duckdns.org>
+ <CAJhGHyC+oyX6fqnR1-JPnNgPuDpikU6KYr1iXrj7BDZHnjPGTA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YOy6VQNz8Htg6Usb@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyC+oyX6fqnR1-JPnNgPuDpikU6KYr1iXrj7BDZHnjPGTA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/07/2021 22:55, Laurent Pinchart wrote:
-> Hi Steven,
+Hello, Lai.
 
-Hi Laurent,
-
-> On Mon, Jul 12, 2021 at 10:31:52PM +0100, Steven Price wrote:
->> On 12/07/2021 17:50, Laurent Pinchart wrote:
->>> On Mon, Jul 12, 2021 at 04:57:58PM +0100, Steven Price wrote:
->>>> When bailing out due to the sanity check the iterator value needs to be
->>>> freed because the early return prevents for_each_child_of_node() from
->>>> doing the dereference itself.
->>>>
->>>> Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
->>>
->>> I don't think the Fixes tag is correct, the issue was already present
->>> before 4ee48cc5586b. The fix looks right though.
->>
->> I'm not sure quite what you mean by "already present". As I understand
->> it the timeline was:
->>
->> 1. 6529007522de drm: of: Add drm_of_lvds_get_dual_link_pixel_order
->>    The function was originally added. This made the mistake twice of
->>    calling of_node_put() on the wrong variable (remote_port rather than
->>    endpoint).
+On Tue, Jul 13, 2021 at 01:56:12PM +0800, Lai Jiangshan wrote:
+> > Does something like the following work?
 > 
-> Correct.
+> It works since it has a flush_scheduled_work() in
+> alloc_and_link_pwqs(). But I don't think it works for
+> workqueue_apply_unbound_cpumask() when apply_wqattrs_commit()
+> is not called.
+
+Yeah, but in that path, wq is fully initialized and will always have
+existing pwqs, so the wq free path shouldn't get activated. During wq
+allocation, the problem is that we're installing the first set of pwqs, so
+if they fail, the workqueue doesn't have any pwqs and thus triggers
+self-destruction.
+
+> If we want to reuse the current apply_wqattrs_cleanup(), I would prefer
+> something like this: (untested)
 > 
->> 2. 4ee48cc5586b drm: of: Fix double-free bug
->>    One of the of_node_put() calls was removed as it was a double-free.
->>    This left the first incorrect of_node_put() in place, and the second
->>    is now a straight leak.
+> @@ -3680,15 +3676,21 @@ static void pwq_unbound_release_workfn(struct
+> work_struct *work)
+>                                                   unbound_release_work);
+>         struct workqueue_struct *wq = pwq->wq;
+>         struct worker_pool *pool = pwq->pool;
+> -       bool is_last;
+> +       bool is_last = false;
 > 
-> That's right, but this commit didn't introduce the leak, it was already
-> there in 6529007522de (in addition to the double-free).
-
-Ah, I see what you mean. My thought process was that the original
-comment had the bug "using the wrong variable", and (2) (partially)
-fixed that but in the process introduced a new bug (a memory leak). But
-I guess technically the memory leak was there from the beginning.
-
-The other reason I referenced (2) in the Fixes line is because this
-patch depends on patch (2), whereas it won't apply cleanly without.
-
-However I don't think it really matters either way: (2) has already been
-backported, and either way this needs fixing if either (1) or (2) are
-present.
-
-Would you like me to resend with a "Fixes: 6529007522de drm: of: Add
-drm_of_lvds_get_dual_link_pixel_order", or are you happy to just fix
-this up when merging?
-
-Thanks,
-
-Steve
-
->> 3. b557a5f8da57 drm/of: free the right object
->>    This (correctly) fixes the first of_node_put() to free endpoint. And
->>    the post from Daniel was what caused me to look.
->>
->> 4. This patch
->>    Reintroduces the of_node_put() removed in (2) but putting endpoint
->>    rather than remote_port.
->>
->> I've put (2) in the Fixes line as this patch is fixing the leak
->> introduced by that patch, but that in itself was of course 'fixing' the
->> double free of the original patch.
->>
->>>> Signed-off-by: Steven Price <steven.price@arm.com>
->>>> ---
->>>>  drivers/gpu/drm/drm_of.c | 4 +++-
->>>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>>
->>>> Daniel's email[1] made me take a look at this function and it appears
->>>> that for_each_child_of_node()'s interface had caused a bad bug fix due
->>>> to the hidden reference counting in the iterator.
->>>>
->>>> [1] https://lore.kernel.org/r/YOxQ5TbkNrqCGBDJ%40phenom.ffwll.local
->>>>
->>>> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
->>>> index 197c57477344..997b8827fed2 100644
->>>> --- a/drivers/gpu/drm/drm_of.c
->>>> +++ b/drivers/gpu/drm/drm_of.c
->>>> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
->>>>  		 * configurations by passing the endpoints explicitly to
->>>>  		 * drm_of_lvds_get_dual_link_pixel_order().
->>>>  		 */
->>>> -		if (!current_pt || pixels_type != current_pt)
->>>> +		if (!current_pt || pixels_type != current_pt) {
->>>> +			of_node_put(endpoint);
->>>>  			return -EINVAL;
->>>> +		}
->>>>  	}
->>>>  
->>>>  	return pixels_type;
+> -       if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
+> -               return;
+> +       /*
+> +        * when @pwq is not linked, it doesn't hold any reference to the
+> +        * @wq, and @wq is invalid to access.
+> +        */
+> +       if (!list_empty(&pwq->pwqs_node)) {
+> +               if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
+> +                       return;
 > 
+> -       mutex_lock(&wq->mutex);
+> -       list_del_rcu(&pwq->pwqs_node);
+> -       is_last = list_empty(&wq->pwqs);
+> -       mutex_unlock(&wq->mutex);
+> +               mutex_lock(&wq->mutex);
+> +               list_del_rcu(&pwq->pwqs_node);
+> +               is_last = list_empty(&wq->pwqs);
+> +               mutex_unlock(&wq->mutex);
+> +       }
+> 
+>         mutex_lock(&wq_pool_mutex);
+>         put_unbound_pool(pool);
 
+But, oh yeah, this is way better.
+
+Thanks.
+
+-- 
+tejun
