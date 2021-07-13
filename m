@@ -2,110 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE2C3C70A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C943C7098
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236364AbhGMMqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
+        id S236265AbhGMMqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236268AbhGMMq3 (ORCPT
+        with ESMTP id S236098AbhGMMqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:46:29 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A63AC0613E9;
-        Tue, 13 Jul 2021 05:43:39 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id w15so21489615pgk.13;
-        Tue, 13 Jul 2021 05:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wy49cRVsEmxIbrbaWFjn3024Zxh1lL5f/THThTGEals=;
-        b=hJQMbfKzpLX0uAtSBYI7zS+nKbXgpu39J+Vj7FRwiCYhAeSQ/Jh9U9lOOlUEzjHr0L
-         +LVZKNDryppVhvCpSumUiMl8lWKXqxi+i/njw97NHYmqpkWonpDpBjq3HUDnF8wGFr7g
-         1ME6Tez5SUQPZ9iSLDutir1oYLX/CQD5p2qFOvrW+O39ZiWcPsDAdM5In6jCbtfiVybK
-         bNJtKh4YyS6cmXOwEaHpJB3tTRLf6aixN/W3i/4A1/eJhCY7tNw0e5XI+jWTrJftejdx
-         4ZZ3xRUOHqrNFDvperVCTvO1+yuTWecywdJmkU76o5acPDcDrsPKxGwxCYo6Bpo7qykW
-         G0Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wy49cRVsEmxIbrbaWFjn3024Zxh1lL5f/THThTGEals=;
-        b=Lip//JNBO93vDUFdN43j/MOgNOHzgqxeVzv//4Yl6zXq3OlaWr5XTrcYxLdMbZgItZ
-         EnpktZABd31Mu8ev33nxZ86i190OuzEfbIu1DEc0+NtB81Pv1P7hfX0I6PkhqU2yPto/
-         JNnMsX6dWX3+ON3cEQ0jdgh9tkvWyammFOKsoZGJm/35+VAE0V59t/2jw0sNSnCAvSOT
-         ZSf5M4TwIQcKeNrKdYwrHQ2G5Z0cngNfbPidRMohsTYO0c+WkZiXCf5XuaJF4ZSAdKX7
-         UZ0gOnT43VvmNAcKs71DfktP8RyieejAN6GOUdfAJz+C0IwjGOm/NIgZj2Rcd1kz18i6
-         g7IQ==
-X-Gm-Message-State: AOAM5335YIJlIHH2rlJW2OHj1UXrIX18AfeJEhGPH5fx63+pOalRu8PC
-        A7k+xF5kkiI1VVNHb6nq56tkD9kMR5F9qEgZ12Q=
-X-Google-Smtp-Source: ABdhPJxXN/EJDXq3VVNsWx8320lVNSE+g21jGRGaBQABdOGA5tTDqb4mnL8tnVlXEE1Z/joNb9dYtYx/3LlC3HE9Xg0=
-X-Received: by 2002:a65:434a:: with SMTP id k10mr4172714pgq.4.1626180218824;
- Tue, 13 Jul 2021 05:43:38 -0700 (PDT)
+        Tue, 13 Jul 2021 08:46:24 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AB3C0613DD;
+        Tue, 13 Jul 2021 05:43:34 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4GPL0P1WJVzQk9t;
+        Tue, 13 Jul 2021 14:43:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:references:in-reply-to:message-id:from:from
+        :date:date:received; s=mail20150812; t=1626180209; bh=XdCFFgBWRD
+        UCGB4TseCEQHZoH2XbPOIN5YL4HrfJklI=; b=Tc/6jsNd8cOZBF5pDBoQabWjY2
+        a22peb4Dxiwv2famydz8cK+9x4rWWutHtqxZXQFscTd2H27fw37t+VZPEp8w3R6n
+        bTS65xPjVxPgoa5mYot7kKV6Q/NjMM4YlahtxP0o7J3KIl+w8qpd+yVvOeXDiYmH
+        pUWIKcFacRkz0+wOLHL7mKZftExrnIww9wouj3a3Lc2RYsbm2DwCrNzc/kHG3sUI
+        wNDXBJTzRi+GZGyLU1J87IDmEae6iux6yD2z4NaSIhT76DPal9KGKMoqKslYNtiU
+        Q95qqaP8dTZaaI2uuVZmI+7R9vkCJK1eC60aZJRV6BZlToTJqNYebveDZdTw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1626180211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uXS7RkS7M9LEfQKQ0Js/p3lAa+kHFpTYNkuyQeip5MY=;
+        b=paaC/r3JB9kA4YNagUxMhK/Rms+LTHhZpWnfDUMmU8An2Gd5Q0qVmKMnq7XvbdCPSHK2l+
+        Qe6DbBO+wYV68nlJsdeNvnzLcIXTXQv5sgs0l6UzXEnqbx8LB2MkWG0h/9F92FrYO6y8gl
+        Q98z9y0N+rgvTNONY17KsHqOlu09fb1etwDiUxlGAZBCgEzKPY7H9U0nLSBFYaj6xK+AFD
+        36pvGKLf8HdctuLp4HjzZGkSKskJ0jjCnEHToBQHo7XL9AydJhpbtkCWD6RaNsHJqHpXiU
+        ax8wFndxSY3V2eQSvLzwZpofXIMa1A+yTeQgnjLeHLtShuUuzkyb2oiqfi0WAA==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id BLBFdGFgjsUH; Tue, 13 Jul 2021 14:43:29 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 14:43:29 +0200 (CEST)
+From:   torvic9@mailbox.org
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Message-ID: <868773411.91110.1626180209155@office.mailbox.org>
+In-Reply-To: <CAK7LNAT3bAg164L7mWDk0sfsvxZvMukezSSu1BYu3M425SWeaQ@mail.gmail.com>
+References: <b45b2430-3670-b310-b6ad-2d6db50c2d18@mailbox.org>
+ <CAK7LNAT3bAg164L7mWDk0sfsvxZvMukezSSu1BYu3M425SWeaQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Kbuild, clang: add option for choosing a ThinLTO
+ cache directory
 MIME-Version: 1.0
-References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com> <20210713123845.GA4170@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210713123845.GA4170@worktop.programming.kicks-ass.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 13 Jul 2021 15:42:59 +0300
-Message-ID: <CAHp75VdtyeTakC4UgScCD2=yksF6RhwrNVfmuzGUcyaZ6UKtFQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] kernel.h: Don't pollute header with single user macros
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -6.44 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 160421825
+X-Rspamd-UID: 9d2495
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 3:41 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Jul 13, 2021 at 11:45:39AM +0300, Andy Shevchenko wrote:
-> > The COUNT_ARGS() and CONCATENATE() macros are used by a single user.
-> > Let move them to it.
->
-> That seems to be because people like re-implementing it instead of
-> reusing existing ones:
->
-> arch/x86/include/asm/efi.h:#define __efi_nargs__(_0, _1, _2, _3, _4, _5, _6, _7, n, ...)        \
-> arch/x86/include/asm/rmwcc.h:#define __RMWcc_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
-> include/linux/arm-smccc.h:#define ___count_args(_0, _1, _2, _3, _4, _5, _6, _7, _8, x, ...) x
-> include/linux/kernel.h:#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
 
-Good catch!
+> Masahiro Yamada <masahiroy@kernel.org> hat am 13.07.2021 12:45 geschrieben:
+> 
+>  
+> On Mon, Jul 12, 2021 at 8:10 PM Tor Vic <torvic9@mailbox.org> wrote:
+> >
+> > On some distros and configurations, it might be useful to allow for
+> > specifying a directory where Clang stores its ThinLTO cache.
+> >
+> > More specifically, when building the VirtualBox extramodules on Arch with
+> > its proper 'makepkg' build system and DKMS, against an already installed
+> > ThinLTO kernel, the build fails because it tries to create the ThinLTO
+> > cache in a directory that is not user-writable.
+> >
+> > A similar problem has been reported with openSUSE's OBS build system.
+> >
+> > Add a Kconfig option that allows users to choose a directory in which
+> > Clang's ThinLTO can store its cache.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1104
+> > Signed-off-by: Tor Vic <torvic9@mailbox.org>
+> 
+> 
+> I do not understand.
+> 
+> Currently, .thinlto-cache is created in the same directory
+> as the other objects.  (right under $(KBUILD_EXTMOD))
+> 
+> If you build in a read-only directory, you cannot put
+> any build artifact (not limited to the thinlto cache) there.
+> 
+> Why did changing the location of .thinlto-cache
+> solve your problem?
+> 
 
-I will redo this, thanks!
+Sorry, I accidentally sent the message before completing it...
 
--- 
-With Best Regards,
-Andy Shevchenko
+So, when building an out-of-tree module on Arch using DKMS,
+I get the following error message:
+
+    Error: Permission denied
+    LLVM ERROR: ThinLTO: Can't get a temporary file
+
+The reason for this seems to be that DKMS looks for the cache inside
+the installed kernel's modules/headers folder, which on Arch is in
+/usr/lib/modules/$kernelversion/build, and this folder is of course not
+writeable by the user.
+With the patch, a user-writable directory can be selected and DKMS seems
+to pick it up.
+But yes, I also have more questions than answers unfortunately...
+
+Maybe it is more of an issue with DKMS itself than with the kernel, in
+any way, DKMS needs a few fixes for Clang-built kernels, see [1].
+
+[1] https://github.com/dell/dkms/issues/124
+
+> 
+> 
+> > ---
+> >  Makefile                  |  5 +++--
+> >  arch/Kconfig              | 10 ++++++++++
+> >  scripts/Makefile.lib      |  4 ++++
+> >  scripts/Makefile.modfinal |  4 ++++
+> >  4 files changed, 21 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index c3f9bd191b89..472bc8bfff03 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -932,7 +932,8 @@ endif
+> >  ifdef CONFIG_LTO_CLANG
+> >  ifdef CONFIG_LTO_CLANG_THIN
+> >  CC_FLAGS_LTO   := -flto=thin -fsplit-lto-unit
+> > -KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod_prefix).thinlto-cache
+> > +export thinlto-dir = $(if
+> > $(CONFIG_LTO_CLANG_THIN_CACHEDIR),$(CONFIG_LTO_CLANG_THIN_CACHEDIR)/)
+> > +KBUILD_LDFLAGS +=
+> > --thinlto-cache-dir=$(thinlto-dir)$(extmod_prefix).thinlto-cache
+> >  else
+> >  CC_FLAGS_LTO   := -flto
+> >  endif
+> > @@ -1728,7 +1729,7 @@ PHONY += compile_commands.json
+> >
+> >  clean-dirs := $(KBUILD_EXTMOD)
+> >  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers
+> > $(KBUILD_EXTMOD)/modules.nsdeps \
+> > -       $(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
+> > +       $(KBUILD_EXTMOD)/compile_commands.json
+> > $(thinlto-dir)$(KBUILD_EXTMOD)/.thinlto-cache
+> >
+> >  PHONY += help
+> >  help:
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 129df498a8e1..19e4d140e12a 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -696,6 +696,16 @@ config LTO_CLANG_THIN
+> >             https://clang.llvm.org/docs/ThinLTO.html
+> >
+> >           If unsure, say Y.
+> > +
+> > +config LTO_CLANG_THIN_CACHEDIR
+> > +       string "Clang ThinLTO cache directory"
+> > +       depends on LTO_CLANG_THIN
+> > +       default ""
+> > +       help
+> > +         This option allows users to choose a directory that stores
+> > +         Clang's ThinLTO cache.
+> > +         Leave empty for default.
+> > +
+> >  endchoice
+> >
+> >  config ARCH_SUPPORTS_CFI_CLANG
+> > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> > index 10950559b223..bca87a6aa35b 100644
+> > --- a/scripts/Makefile.lib
+> > +++ b/scripts/Makefile.lib
+> > @@ -197,6 +197,10 @@ endif
+> >  part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
+> >  quiet_modtag = $(if $(part-of-module),[M],   )
+> >
+> > +ifdef CONFIG_LTO_CLANG_THIN
+> > +KBUILD_LDFLAGS +=
+> > --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
+> > +endif
+> > +
+> >  modkern_cflags =                                          \
+> >         $(if $(part-of-module),                           \
+> >                 $(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE), \
+> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> > index 5e9b8057fb24..ab0d72e21318 100644
+> > --- a/scripts/Makefile.modfinal
+> > +++ b/scripts/Makefile.modfinal
+> > @@ -35,6 +35,10 @@ ifdef CONFIG_LTO_CLANG
+> >  # avoid a second slow LTO link
+> >  prelink-ext := .lto
+> >
+> > +ifdef CONFIG_LTO_CLANG_THIN
+> > +KBUILD_LDFLAGS +=
+> > --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
+> > +endif # CONFIG_LTO_CLANG_THIN
+> > +
+> >  # ELF processing was skipped earlier because we didn't have native code,
+> >  # so let's now process the prelinked binary before we link the module.
+> >
+> > --
+> > 2.32.0
+> 
+> 
+> 
+> -- 
+> Best Regards
+> Masahiro Yamada
