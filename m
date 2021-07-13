@@ -2,202 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46DB3C7024
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECC83C7028
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbhGMMKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S236121AbhGMMO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235936AbhGMMKh (ORCPT
+        with ESMTP id S235936AbhGMMOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:10:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379ECC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 05:07:47 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id y42so49895417lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 05:07:47 -0700 (PDT)
+        Tue, 13 Jul 2021 08:14:24 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6C4C0613DD;
+        Tue, 13 Jul 2021 05:11:33 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so1462528wmb.3;
+        Tue, 13 Jul 2021 05:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wirenboard-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8352iHkl0Yrxdg9vY81krfsoSyfvHtWK/xGBQ/Fg6Q8=;
-        b=qh0h/pJdYWlhAY3uOh/VUFIMKN4Ha2pek58KztkxO45Ikn7ld2dkrCLhWH64E0qm7q
-         BAvnhEpEEzX1CGNn62TbA0x2AoUDTGuvmftjkMdZbkzehAaL1HbbD7SUoi2Qf6mMQRvV
-         Iww1W4Qwju/RsGLSnNQ67uHjloS/BpsONl/LZiERK6tcSQBZzWmwfbalQIPltZ6XseP0
-         HnLal+nX8GzIeBCOH8T6Znz5w5AxcyJnkxjaq018WgVZHgz1Tdqax238StCnY5ux70Bl
-         DM0SopDHBnEqBkwfOEOBk3y41P7Ipipb7NmjFJP158hngNdnAk5JOo0ivVhKgehyTfLZ
-         ATxg==
+        bh=0k9i4ryQ9bJFDsrRO38Wd8DYLKsoLjmKBJR+v0YQjxs=;
+        b=nqnYzTcu4Et3R8OrU+dlYoeVA3GpRaLFiomzAkbfuc3beAXI2HptS+mLpO17WTkbCu
+         DrnktVrVaNiftWwLNMLBDLJhGa3CW6Zsa+B53G5Jvm6AxsMvuKtwKvZ+/aRso6+JXUy6
+         7TVkn7/7DMqI+fbUlMAfF4L7sqG9kgM/9EGnQyxI72C0Vl3j5UlxDxPnwiAoPo20nnXd
+         HFg6DtAQjzpWVG8BF3tI2ugq9esCS1Ze3+mBggZv26BO3mW9DDcNMCbw+al+EDPyDHnM
+         6sDI3j6GTUWZjejh2RhzHR0GNaDYksenuBUsp1wtNh/gxWTxCfKbZACmzkNbGiS1YjrK
+         tWfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8352iHkl0Yrxdg9vY81krfsoSyfvHtWK/xGBQ/Fg6Q8=;
-        b=IoLGKnsKyS0oude3qWdYjwrvF00fvCoq+U18CF1wWr+OhqQiFPpF0kHLW0gFnkObyL
-         +6tOBfQ0rTQK+mwHD4gS+LEd2ULOVtPdukQLibmwVSKOOGIL3a71BPmtJXiOr/JvgeHx
-         Nb6EDaPbywTY9VzYjvodQ9K+1I2UkzVHPVFGddRMS9oNlOGw/GpcYwGX86sjq4uH7dBi
-         SsMaqxl7VBeqaeKSuPAS6Xyi7/NEisCsFJMHcILJ17a3iEnoOjNOMrWdXmw9UI3zbIde
-         UmNn0u4OmvHGyNgkP3lhzEXfde8xTbzuakMFlmwBW7f7MhU6aIJxoQ4CuZNefVFiFlkh
-         gibw==
-X-Gm-Message-State: AOAM532a96PbMT4ZsiaMC0JtZmq76mrWxfKcJ+/Cm3OAh3V1z6nWInYQ
-        h324/5mASQAnbwwPmL234/KqUw==
-X-Google-Smtp-Source: ABdhPJxwtocUq7RGDqGJzaJJ9eTsy9xroN8Ns70O4LslsogHjoA6GJKZ9+33hadJaKwMiORcg8izOA==
-X-Received: by 2002:a05:6512:23a6:: with SMTP id c38mr3288367lfv.78.1626178065537;
-        Tue, 13 Jul 2021 05:07:45 -0700 (PDT)
-Received: from boger-laptop.lan (81.5.110.226.dhcp.mipt-telecom.ru. [81.5.110.226])
-        by smtp.gmail.com with ESMTPSA id v13sm1902355lji.30.2021.07.13.05.07.44
+        bh=0k9i4ryQ9bJFDsrRO38Wd8DYLKsoLjmKBJR+v0YQjxs=;
+        b=E+m5alwu80QDkU7t4bF5+8Q55quU37DVEBctVed/anwM+s5R0OukSXKVZhQ8RA6PRA
+         XxxIEaMzSYvcbrZ6VBfZlymXJHuWb4BhaazF9nZ/XKL7jqbFvs3qO7/TDacgMh+nwOcH
+         TgJwfMCtHsNYseDQiFbUWxN0GjPg6F7gpAPBYR+oad/yCfPVetOiFwLLtJ4gn7N1NjEI
+         ZEwn3dHl/h7fsuEx69PlEPTbESyt02jS5DfMEhNkl9fKGGbWoQviQhqISeq7yR6IbamQ
+         luUUuHImvpLj+Wxn9CHB66cD+HwxpKTJZWD4UpsGcokAOaq647XaMQdAH1ssM0MhjOZB
+         g6Hg==
+X-Gm-Message-State: AOAM5333uhU1WjZv+kBMurilJU0w/tJA047oUdxfOGdg8Q1dWcnZ8BMk
+        9/fgYJZOqtAVOLQubJ61gdg=
+X-Google-Smtp-Source: ABdhPJxB611LBG3S9GKodAtf+TuKLj9cr4bT5ebwWlleKL8jl1cOUH4mIdaml73zsi2Q+KlS7+UJEw==
+X-Received: by 2002:a7b:c1c2:: with SMTP id a2mr4573948wmj.15.1626178291200;
+        Tue, 13 Jul 2021 05:11:31 -0700 (PDT)
+Received: from localhost.localdomain ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.googlemail.com with ESMTPSA id o3sm17551425wrw.56.2021.07.13.05.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 05:07:45 -0700 (PDT)
-From:   Evgeny Boger <boger@wirenboard.com>
-To:     linux-sunxi@lists.linux.dev
-Cc:     Evgeny Boger <boger@wirenboard.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        qianfan Zhao <qianfanguijin@163.com>, andre.przywara@arm.com
-Subject: [PATCH] phy: sun4i-usb: fix phy write on H3 and newer
-Date:   Tue, 13 Jul 2021 15:07:11 +0300
-Message-Id: <20210713120711.995629-1-boger@wirenboard.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 13 Jul 2021 05:11:30 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [RFC PATCH 00/10] perf: add workqueue library and use it in synthetic-events
+Date:   Tue, 13 Jul 2021 14:11:11 +0200
+Message-Id: <cover.1626177381.git.rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On older SoCs (prior to H3) PHY register are accessed by manipulating
-the common register for all PHYs. PHY index is specified by pulsing
-usbc bit.
+This patchset introduces a new utility library inside perf/util, which
+provides a work queue abstraction, which loosely follows the Kernel
+workqueue API.
 
-Newer SoCs leave the access procedure mostly unchanged, the
-difference being that the latch registers are separate for each PHY.
+The workqueue abstraction is made up by two components:
+ - threadpool: which takes care of managing a pool of threads. It is
+   inspired by the prototype for threaded trace in perf-record from Alexey:
+   https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+ - workqueue: manages a shared queue and provides the workers implementation.
 
-Additionally, accessing USB PHY registers is only possible if phy0 is
-routed to musb IP instead of HCI.
+On top of the workqueue, a simple parallel-for utility is implemented
+which is then showcased in synthetic-events.c, replacing the previous
+manual pthread-created threads.
 
-Introduce phy_reg_access_v2 cfg flag for H3 (H2+, H5),
-R40 (V40, A40i, T3), V3s (V3, S3) and A64 SoCs.
+Through some experiments with perf bench, I can see how the new 
+workqueue has a higher overhead compared to manual creation of threads, 
+but is able to more effectively partition work among threads, yielding 
+a better result with more threads.
+Furthermore, the overhead could be configured by changing the
+`work_size` (currently 1), aka the number of dirents that are 
+processed by a thread before grabbing a lock to get the new work item.
+I experimented with different sizes but, while bigger sizes reduce overhead
+as expected, they do not scale as well to more threads.
 
-On A83t, H6, H616, T507 and probably on more recent hardware,
-these PHY registers are not used in vendor BSP.
-So don't set v2 flag for these even newer SoCs as a precaution.
+I tried to keep the patchset as simple as possible, deferring possible
+improvements and features to future work.
+Naming a few:
+ - in order to achieve a better performance, we could consider using 
+   work-stealing instead of a common queue.
+ - affinities in the thread pool, as in Alexey prototype for
+   perf-record. Doing so would enable reusing the same threadpool for
+   different purposes (evlist open, threaded trace, synthetic threads),
+   avoiding having to spin up threads multiple times.
+ - resizable threadpool, e.g. for lazy spawining of threads.
 
-Signed-off-by: Evgeny Boger <boger@wirenboard.com>
----
- drivers/phy/allwinner/phy-sun4i-usb.c | 44 ++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 5 deletions(-)
+@Arnaldo
+Since I wanted the workqueue to provide a similar API to the Kernel's
+workqueue, I followed the naming style I found there, instead of the
+usual object__method style that is typically found in perf. 
+Let me know if you'd like me to follow perf style instead.
 
-diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-index 651d5e2a25ce..f7c974914619 100644
---- a/drivers/phy/allwinner/phy-sun4i-usb.c
-+++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-@@ -119,6 +119,7 @@ struct sun4i_usb_phy_cfg {
- 	bool dedicated_clocks;
- 	bool enable_pmu_unk1;
- 	bool phy0_dual_route;
-+	bool phy_reg_access_v2;
- 	int missing_phys;
- };
- 
-@@ -192,13 +193,38 @@ static void sun4i_usb_phy_write(struct sun4i_usb_phy *phy, u32 addr, u32 data,
- 				int len)
- {
- 	struct sun4i_usb_phy_data *phy_data = to_sun4i_usb_phy_data(phy);
--	u32 temp, usbc_bit = BIT(phy->index * 2);
-+	u32 otgctl_val, temp, usbc_bit;
- 	void __iomem *phyctl = phy_data->base + phy_data->cfg->phyctl_offset;
-+	void __iomem *phyctl_latch;
- 	unsigned long flags;
- 	int i;
- 
- 	spin_lock_irqsave(&phy_data->reg_lock, flags);
- 
-+	/* On older SoCs (prior to H3) PHY register are accessed by manipulating the
-+	 * common register for all PHYs. PHY index is specified by pulsing usbc bit.
-+	 * Newer SoCs leave the access procedure mostly unchanged, the difference
-+	 * being that the latch registers are separate for each PHY.
-+	 */
-+	if (phy_data->cfg->phy_reg_access_v2) {
-+		if (phy->index == 0)
-+			phyctl_latch = phy_data->base + phy_data->cfg->phyctl_offset;
-+		else
-+			phyctl_latch = phy->pmu + phy_data->cfg->phyctl_offset;
-+		usbc_bit = 1;
-+
-+		/* Accessing USB PHY registers is only possible if phy0 is routed to musb.
-+		 * As it's not clear whether is this related to actual PHY
-+		 * routing or rather the hardware is just reusing the same bit,
-+		 * don't check phy0_dual_route here.
-+		 */
-+		otgctl_val = readl(phy_data->base + REG_PHY_OTGCTL);
-+		writel(otgctl_val | OTGCTL_ROUTE_MUSB, phy_data->base + REG_PHY_OTGCTL);
-+	} else {
-+		phyctl_latch = phyctl;
-+		usbc_bit = BIT(phy->index * 2);
-+	}
-+
- 	if (phy_data->cfg->phyctl_offset == REG_PHYCTL_A33) {
- 		/* SoCs newer than A33 need us to set phyctl to 0 explicitly */
- 		writel(0, phyctl);
-@@ -224,17 +250,21 @@ static void sun4i_usb_phy_write(struct sun4i_usb_phy *phy, u32 addr, u32 data,
- 		writeb(temp, phyctl);
- 
- 		/* pulse usbc_bit */
--		temp = readb(phyctl);
-+		temp = readb(phyctl_latch);
- 		temp |= usbc_bit;
--		writeb(temp, phyctl);
-+		writeb(temp, phyctl_latch);
- 
--		temp = readb(phyctl);
-+		temp = readb(phyctl_latch);
- 		temp &= ~usbc_bit;
--		writeb(temp, phyctl);
-+		writeb(temp, phyctl_latch);
- 
- 		data >>= 1;
- 	}
- 
-+	/* Restore PHY routing and the rest of OTGCTL */
-+	if (phy_data->cfg->phy_reg_access_v2)
-+		writel(otgctl_val, phy_data->base + REG_PHY_OTGCTL);
-+
- 	spin_unlock_irqrestore(&phy_data->reg_lock, flags);
- }
- 
-@@ -931,6 +961,7 @@ static const struct sun4i_usb_phy_cfg sun8i_h3_cfg = {
- 	.dedicated_clocks = true,
- 	.enable_pmu_unk1 = true,
- 	.phy0_dual_route = true,
-+	.phy_reg_access_v2 = true,
- };
- 
- static const struct sun4i_usb_phy_cfg sun8i_r40_cfg = {
-@@ -941,6 +972,7 @@ static const struct sun4i_usb_phy_cfg sun8i_r40_cfg = {
- 	.dedicated_clocks = true,
- 	.enable_pmu_unk1 = true,
- 	.phy0_dual_route = true,
-+	.phy_reg_access_v2 = true,
- };
- 
- static const struct sun4i_usb_phy_cfg sun8i_v3s_cfg = {
-@@ -951,6 +983,7 @@ static const struct sun4i_usb_phy_cfg sun8i_v3s_cfg = {
- 	.dedicated_clocks = true,
- 	.enable_pmu_unk1 = true,
- 	.phy0_dual_route = true,
-+	.phy_reg_access_v2 = true,
- };
- 
- static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
-@@ -961,6 +994,7 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
- 	.dedicated_clocks = true,
- 	.enable_pmu_unk1 = true,
- 	.phy0_dual_route = true,
-+	.phy_reg_access_v2 = true,
- };
- 
- static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
+Thanks,
+Riccardo
+
+Riccardo Mancini (10):
+  perf workqueue: threadpool creation and destruction
+  perf tests: add test for workqueue
+  perf workqueue: add threadpool start and stop functions
+  perf workqueue: add threadpool execute and wait functions
+  perf workqueue: add sparse annotation header
+  perf workqueue: introduce workqueue struct
+  perf workqueue: implement worker thread and management
+  perf workqueue: add queue_work and flush_workqueue functions
+  perf workqueue: add utility to execute a for loop in parallel
+  perf synthetic-events: use workqueue parallel_for
+
+ tools/perf/tests/Build                 |   1 +
+ tools/perf/tests/builtin-test.c        |   9 +
+ tools/perf/tests/tests.h               |   3 +
+ tools/perf/tests/workqueue.c           | 453 +++++++++++++++++
+ tools/perf/util/Build                  |   1 +
+ tools/perf/util/synthetic-events.c     | 131 +++--
+ tools/perf/util/workqueue/Build        |   2 +
+ tools/perf/util/workqueue/sparse.h     |  21 +
+ tools/perf/util/workqueue/threadpool.c | 516 ++++++++++++++++++++
+ tools/perf/util/workqueue/threadpool.h |  29 ++
+ tools/perf/util/workqueue/workqueue.c  | 642 +++++++++++++++++++++++++
+ tools/perf/util/workqueue/workqueue.h  |  38 ++
+ 12 files changed, 1771 insertions(+), 75 deletions(-)
+ create mode 100644 tools/perf/tests/workqueue.c
+ create mode 100644 tools/perf/util/workqueue/Build
+ create mode 100644 tools/perf/util/workqueue/sparse.h
+ create mode 100644 tools/perf/util/workqueue/threadpool.c
+ create mode 100644 tools/perf/util/workqueue/threadpool.h
+ create mode 100644 tools/perf/util/workqueue/workqueue.c
+ create mode 100644 tools/perf/util/workqueue/workqueue.h
+
 -- 
-2.25.1
+2.31.1
 
