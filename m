@@ -2,133 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC513C76C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24243C76C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhGMTG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGMTGz (ORCPT
+        id S234394AbhGMTH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:07:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51944 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229500AbhGMTHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:06:55 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BBAC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:04:03 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id gb6so43388190ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RRHnqgTDleVFG5NcQlSkXobdxLX8J2tzmW5qrxaqAB8=;
-        b=Xdi05Fm4oIRff4UVzx1er5Cq+7tg+KuRGe6A7JK2alkLfWTlO/oy/ByAsCNBU+3wMu
-         IHVsR3ZlA/UP2c0f1MWe/J/x3kmL8OyoACCTsQNwoYWGlMyLOjUDc3w/VO+iYgA25XKJ
-         kmWLAn1zl6jkHg6PuKrp1PG9hfOzs5xh9YLlpp8F79e/xBvatxEVIyi1F0dOE7+lvk+V
-         T1FeLUYm/P9j/M0rxzhhk1LpOvbkjcc7coFKWqKXJeiNYnFdgZAK4pM/PSbBqk2+btmo
-         ZyJx5VK6ZDjXpONyvMSYst9IwugA0vIjdiHx3mq/bsuVlvjS6xw7Fa2uOICDO1jtVesn
-         BKVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RRHnqgTDleVFG5NcQlSkXobdxLX8J2tzmW5qrxaqAB8=;
-        b=aLRs8E4qU0gmzgBhWBpchbzbo76jCIYwBxvHvkP4tE3yS1s5BieV/w8Vbmqtx4IQIe
-         vOjGYLKqVIppd/YaT0c90c2GFj+0v0FE5DYol0RL9OO2iZqFQiTk6r8yeT7624rBXqxr
-         he9qv7JDrvhmjRug5Na4EHaUCue6BByVa15GIcZjJJJwk8R+JRUHQPbMuGMu300+bYtL
-         Igm+edgjbyos81844m0Dq+w2qSapodoGWrLJyED+r97E6T/DLcc5OOh4O73mM9sJDzw0
-         IkkeXImmpPn7dLkj2O1AKVA977qdQRhP4fAhLXz3gmyNmzKFM0wyIZ0m+jfLjZ+nR9UO
-         9I9Q==
-X-Gm-Message-State: AOAM531en5F5HSE3fkdJ4p+9a7/2soXJwb+xcmQI6Pb4H879H/isxjzU
-        53+rxh7hvvpvGKipRL8C51U=
-X-Google-Smtp-Source: ABdhPJz7otacVuB2JTm1gosl7q2fM5LVZfUIJ+w17cg59HUTB6KjvdvIWAV8N63GbhIXpstezhiY3A==
-X-Received: by 2002:a17:907:988e:: with SMTP id ja14mr7444582ejc.173.1626203042308;
-        Tue, 13 Jul 2021 12:04:02 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id g23sm10045807edp.90.2021.07.13.12.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 12:04:01 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        fabioaiuto83@gmail.com
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2] staging: rtl8188eu: Remove no more used functions and variables
-Date:   Tue, 13 Jul 2021 21:03:58 +0200
-Message-Id: <20210713190358.11864-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 13 Jul 2021 15:07:25 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DJ47hX167016;
+        Tue, 13 Jul 2021 15:04:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uaihiB6uGspX9Rt/mXJ3V4yuM7c61F+rcXJUUgxiIlE=;
+ b=Jia9a5YxXm2e8nX2YB1hydkxRbDWzIJgpPh3FgEcA+S2WY0uiS852zQD5clTp1OIddL6
+ M6Pv+gjx2wuLVAtMUPVl2ecxnazz1T406DIk2Yzms6nByjE+hs0G8GeVsIKmBmx3DImT
+ 8W2e4789O5OO45QnSZDyBuMq/qWhRpB/vRcTqyvDgCr8bG/PWSb007JZC1QMfqMa6jEv
+ QQSEVR9+qpl4ngO1+rdcPlWTgRmZ9d2fghJYYOLcTfgAlK1S/4Zkg4voJR9q1i+J74Fg
+ na4OiMDBbrYAUtu3pTycpzuWbouj6V6PXMwjvtBuzGYpsjIBmdhXKj1Is+HRSPsE9wOq 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39qs3cg346-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 15:04:34 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16DJ4XB0170049;
+        Tue, 13 Jul 2021 15:04:33 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39qs3cg33s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 15:04:33 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16DJ0Mkk032061;
+        Tue, 13 Jul 2021 19:04:33 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02dal.us.ibm.com with ESMTP id 39qt3beg4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 19:04:32 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16DJ4VA423986594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 19:04:31 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42F03136068;
+        Tue, 13 Jul 2021 19:04:31 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A281113605D;
+        Tue, 13 Jul 2021 19:04:28 +0000 (GMT)
+Received: from [9.85.184.30] (unknown [9.85.184.30])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Jul 2021 19:04:28 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Jason Gunthorpe <jgg@nvidia.com>, Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+ <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+ <20210713184517.48eacee6.pasic@linux.ibm.com>
+ <20210713170533.GF136586@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <9512a7fb-cc55-cd9b-cdf9-7c19d0567311@linux.ibm.com>
+Date:   Tue, 13 Jul 2021 15:04:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210713170533.GF136586@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: NRFBfKKzn4jvnDSsBmc2q_2plxQK1wCP
+X-Proofpoint-ORIG-GUID: 0KLL-IszE5tVscu23fYsoVqA-QbvDQMI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-13_10:2021-07-13,2021-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 impostorscore=0 suspectscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 clxscore=1015 bulkscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107130121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the functions and variables from rtw_security.c that are no more
-necessary since the patch that replaces getcrc32() with crc32_le():
-https://lore.kernel.org/lkml/20210713184629.7358-1-fmdefrancesco@gmail.com/
-
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
-
-v1 -> v2:
-Update the commit message with the URL of v2 of the above-mentioned
-patch.
-
-Please, apply this patch after the above-mentioned one to make the 
-code build with no errors.
 
 
- drivers/staging/rtl8188eu/core/rtw_security.c | 36 -------------------
- 1 file changed, 36 deletions(-)
+On 7/13/21 1:05 PM, Jason Gunthorpe wrote:
+> On Tue, Jul 13, 2021 at 06:45:17PM +0200, Halil Pasic wrote:
+>
+>> Jason may give it another try to convince us that 0cc00c8d4050 only
+>> silenced lockdep, but vfio_ap remained prone to deadlocks. To my best
+>> knowledge using condition variable and a mutex is one of the well known
+>> ways to implement an rwlock.
+> The well known pattern is to use a rwsem.
+>
+> This:
+>          wait_event_cmd(matrix_mdev->wait_for_kvm,
+>                         !matrix_mdev->kvm_busy,
+>                         mutex_unlock(&matrix_dev->lock),
+>                         mutex_lock(&matrix_dev->lock));
+>
+>
+> Is not really a rwsem, and is invsible to lockdep.
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-index e9de61afe881..8ec0b897ba3b 100644
---- a/drivers/staging/rtl8188eu/core/rtw_security.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_security.c
-@@ -76,42 +76,6 @@ static void arcfour_encrypt(struct arc4context *parc4ctx, u8 *dest, u8 *src, u32
- 		dest[i] = src[i] ^ (unsigned char)arcfour_byte(parc4ctx);
- }
- 
--static int bcrc32initialized;
--static u32 crc32_table[256];
--
--static u8 crc32_reverseBit(u8 data)
--{
--	return (u8)((data << 7) & 0x80) | ((data << 5) & 0x40) | ((data << 3) & 0x20) |
--		   ((data << 1) & 0x10) | ((data >> 1) & 0x08) | ((data >> 3) & 0x04) |
--		   ((data >> 5) & 0x02) | ((data >> 7) & 0x01);
--}
--
--static void crc32_init(void)
--{
--	int i, j;
--	u32 c;
--	u8 *p = (u8 *)&c, *p1;
--	u8 k;
--
--	if (bcrc32initialized == 1)
--		return;
--
--	c = 0x12340000;
--
--	for (i = 0; i < 256; ++i) {
--		k = crc32_reverseBit((u8)i);
--		for (c = ((u32)k) << 24, j = 8; j > 0; --j)
--			c = c & 0x80000000 ? (c << 1) ^ CRC32_POLY : (c << 1);
--		p1 = (u8 *)&crc32_table[i];
--
--		p1[0] = crc32_reverseBit(p[3]);
--		p1[1] = crc32_reverseBit(p[2]);
--		p1[2] = crc32_reverseBit(p[1]);
--		p1[3] = crc32_reverseBit(p[0]);
--	}
--	bcrc32initialized = 1;
--}
--
- /* Need to consider the fragment  situation */
- void rtw_wep_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- {
--- 
-2.32.0
+The lockdep splat was due to holding the matrix_dev->lock
+mutex while the kvm->lock was taken to plug the AP devices
+into the guest. The same problem would occur whether an
+rwsem or the mutex was used.
+
+The lockdep splat was resolved by setting the
+matrix_mdev->kvm_busy flag and unlocking the matrix_dev->lock
+mutex while the AP devices were being plugged into the guest.
+All other functions needing the matrix_dev->lock mutex would wait
+on a queue until the matrix_mdev->kvm_busy flag is cleared before
+locking the matrix_dev->lock mutex.
+
+Now, I understand that this technique is invisible to lockdep,
+but I don't see how we can ever end up in a deadlock with
+this design since the matrix_dev->lock mutex will never get
+locked as long as the matrix_mdev->kvm_busy flag is set.
+
+>
+> Jason
 
