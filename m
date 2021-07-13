@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BCE3C77F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D922C3C77F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhGMUaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        id S235060AbhGMUbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhGMUaG (ORCPT
+        with ESMTP id S229944AbhGMUbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:30:06 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3417FC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:27:15 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 8so40883976lfp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:27:15 -0700 (PDT)
+        Tue, 13 Jul 2021 16:31:24 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42E9C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:28:34 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id c15so23343pls.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vDVcnWUCmKFgFt42Z0BstCmPPXwwhSiEhiVvSxMjimA=;
-        b=gGWUKJ1/QgenvRKNsFA/kuTLwkZmnjUbKvkHw6Hb9aeF/y3rC4CapuK/JdpFMuw1Sf
-         XwIJHgrRUcz4hL+muJYuC3WCP0VSU+GXiTlRPCy5233n4lTzBS3lJlade5HnVy8531og
-         6Xi/Rol5DVgx2NaHFulwZjPFeEg0g3fYptl7fVMy3GOodBuVsSiHGD/dkf8T4whLLNYp
-         D36hGi7QmxKTb2QbtBHjvrSKG80CZ5YDP0gEMBEpfHn0DoSxKXmOrVtm9RlojlL13t+v
-         16SMl0zfZLA5lkfGEOFqPlgfe6R1pe5k2jYAqVXM0YwJiEIDPfNuLt3mLwmIIMxRQ8IE
-         QB4Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LxJNrLcxo+1XG3xReG2GznPJ80Kx/41M8LyFkMVe9nw=;
+        b=LVyHap2ItF10BDhXeoGpLsMsy+Kpnq9zg/VQMqQpe+4mMVxsfeZi19ErCqjwPe5z8q
+         HQKrMF+TJEetLHunq9crVxN3cFqO1Vh3hVt9uMxSyRt1oCmdGtQmEYiaPNtMFG1dOLhS
+         0PKdV6y+2xXlS371/sZsYdffhk5gU3LcuI8g1Ew7QtwKPbNT0t6ERuHwMATY7aMc44Ah
+         +qPzcshSyQD404qt0kkXjBvA+3TvfjlwyceRHG+x/Ys3h6E1VlDvQry4y3lJPZGMrQ2n
+         Ura6G70OULrhe4kwCL1L2LDG8QToCyDlW791EVIza0Ew0evTCVTlTbdJYlnyCCpXw2bs
+         RTDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vDVcnWUCmKFgFt42Z0BstCmPPXwwhSiEhiVvSxMjimA=;
-        b=PnGqsU8+lknJMPViWAt9Y8rGtlDpIMgYy5+pUAEsJOTxU92XdttjrMKM39j4FzXM1e
-         laa7jQz5hLu1ZFCliK0418EVx2Qnv5fEJwM/n9Q87Ogy6CmtWRac/y0u2GPgi2UC+zZE
-         a1pFmGJdbkFLpDrnZDwpjTiEy7DBbvEFjQ5PHgI5nKcEPWEgAR0L60/5sUp0UiH+Kazt
-         8ydruLSgjSISGADDRw8dkMovqmOJEvsiBvwYEvr4Fx2MaNQW6JQdUR9kr6PrEa+LCKtj
-         KCEKmUETNMDhek7MoJRWNhqC6225KuMYorvatwW4SeSnOZGj8Qf5fyaI7B9zKT6qsua+
-         Xsxw==
-X-Gm-Message-State: AOAM531SGsbmyJ48I0Qg7MkZPrJj6v5U+a89EXkSm2msLXMZJsUKZPs1
-        azSY2kcTL/AlCJnkHPp7TycufJPdYDi/oeZ5pQfSzA==
-X-Google-Smtp-Source: ABdhPJypAoGStqdoyPRQutNsnNe7ghH2ya92MNaOYt9mzbNtnwlCrOwGl9PbRkXmq4Ck30R0BdGl4VZ0c/9O4luKWmE=
-X-Received: by 2002:a05:6512:687:: with SMTP id t7mr4852056lfe.347.1626208033194;
- Tue, 13 Jul 2021 13:27:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LxJNrLcxo+1XG3xReG2GznPJ80Kx/41M8LyFkMVe9nw=;
+        b=bkK74wQhw1lENQFaCfyj1ixVLMxUAhPUy9KjW1vAhTKgOHD+WLfU3lmjNE5Ro0vFQ5
+         eLftImthejoLXeE/t9j9eV3i6hc2wEnE+2fGcxNtaG36SDe+m2lNEpiqwMfYmAQXYshS
+         vxE9V3SFjrsrK3t3WJqux4I6TN7Xfa34VhJW/ZZlRyaLHl2C0342q9dMAv+ewpUALgFv
+         m3cgckf8IK6RbIpbBxlC0cKeVwZrvxJTuZ0DUN1tLQOMb0vwzOIM5/8MUexRYymZmrZA
+         YqdtMz6P0cJm7zs0H7hu9rfQ/VRdva+QBNxkZht+aEn5q94rnVM4M+VH552zBIrjljF5
+         vO6A==
+X-Gm-Message-State: AOAM5332FqqOE8f5faCRo652BR1ix0MCRGXOKZ5nBDdKeaEtJpizVT2M
+        9lGoSdhHzUSgU/w+JzQttB9yGA==
+X-Google-Smtp-Source: ABdhPJyX+I+K9qk9PMf8bCXNz0VTk1pIktY4RsEHVeMVTqDe/l6s4cyo0FaDlkFoCm8rvOHptNsbJQ==
+X-Received: by 2002:a17:902:bcc7:b029:12b:32c5:3d31 with SMTP id o7-20020a170902bcc7b029012b32c53d31mr3245556pls.55.1626208113905;
+        Tue, 13 Jul 2021 13:28:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u24sm32501pfm.141.2021.07.13.13.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 13:28:33 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 20:28:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v2 20/69] KVM: x86/mmu: Mark VM as bugged if page
+ fault returns RET_PF_INVALID
+Message-ID: <YO33bT2q3AfTspcO@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <298980aa5fc5707184ac082287d13a800cd9c25f.1625186503.git.isaku.yamahata@intel.com>
 MIME-Version: 1.0
-References: <20210713202412.248252-1-shakeelb@google.com> <20210713202412.248252-2-shakeelb@google.com>
-In-Reply-To: <20210713202412.248252-2-shakeelb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 13 Jul 2021 13:27:02 -0700
-Message-ID: <CALvZod74cj6TOm3sXsnSOXnQeCfKonf=+DQFj92QhKq49ppr8w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] memcg: infrastructure to flush memcg stats
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <298980aa5fc5707184ac082287d13a800cd9c25f.1625186503.git.isaku.yamahata@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 1:24 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> At the moment memcg stats are read in four contexts:
->
-> 1. memcg stat user interfaces
-> 2. dirty throttling
-> 3. page fault
-> 4. memory reclaim
->
-> Currently the kernel flushes the stats for first two cases. Flushing the
-> stats for remaining two casese may have performance impact. Always
-> flushing the memcg stats on the page fault code path may negatively
-> impacts the performance of the applications. In addition flushing in the
-> memory reclaim code path, though treated as slowpath, can become the
-> source of contention for the global lock taken for stat flushing because
-> when system or memcg is under memory pressure, many tasks may enter the
-> reclaim path.
->
-> This patch uses following mechanisms to solve these challenges:
->
-> 1. Periodically flush the stats from root memcg every 2 seconds. This
-> will time limit the out of sync stats.
->
-> 2. Asynchronously flush the stats after fixed number of stat updates.
-> In the worst case the stat can be out of sync by O(nr_cpus * BATCH) for
-> 2 seconds.
->
-> 3. For avoiding thundering herd to flush the stats particularly from the
-> memory reclaim context, introduce memcg local spinlock and let only one
-> flusher active at a time. This could have been done through
-> cgroup_rstat_lock lock but that lock is used by other subsystem and for
-> userspace reading memcg stats. So, it is better to keep flushers
-> introduced by this patch decoupled from cgroup_rstat_lock.
-> ---
-> Changes since v2:
-> - Changed the subject of the patch
-> - Added mechanism to bound errors to nr_cpus instead of nr_cgroups
-> - memcg local lock to let one active flusher
->
-> Changes since v1:
-> - use system_unbound_wq for flushing the memcg stats
->
+On Fri, Jul 02, 2021, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Forgot to add v3 in the subject for this patch.
+For a changelog:
+
+  Mark a VM as bugged instead of simply warning if the core page fault
+  handler unexpectedly returns RET_PF_INVALID.  KVM's (undocumented) API
+  for the page fault path does not allow returning RET_PF_INVALID, e.g. a
+  fatal condition should be morphed to -errno.
+
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
