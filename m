@@ -2,104 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C722E3C70CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE59D3C70CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236459AbhGMNAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:00:46 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49672 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236420AbhGMNAp (ORCPT
+        id S236446AbhGMNB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:01:58 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:54710 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236205AbhGMNB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:00:45 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16DCvsmG069678;
-        Tue, 13 Jul 2021 07:57:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626181074;
-        bh=Ui/KPZbAU38b0wA6rcSDGQuKj8dI11hQRsYTACt6x30=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=DJtEsKQdwsMI4Ws50N2qSqcZ1WqNQTh4N4A/W7Sekse5w40EyeRRH1zE5ALSfkstc
-         l/gOKpIzWnLdNxdeWgSxRLT2wy5TIWqw9zCqhp65cwVpmvyDQ5y+ixrqvU6UTkGWoP
-         4GvLvljWW3T0ACNpChA6iYgQSGnjZdo7411Yn0xY=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16DCvse1074049
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 13 Jul 2021 07:57:54 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Jul 2021 07:57:54 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 13 Jul 2021 07:57:54 -0500
-Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16DCvh0X067892;
-        Tue, 13 Jul 2021 07:57:51 -0500
-From:   Apurva Nandan <a-nandan@ti.com>
-To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Apurva Nandan <a-nandan@ti.com>, Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH 2/2] spi: cadence-quadspi: Fix check condition for DTR ops
-Date:   Tue, 13 Jul 2021 12:57:42 +0000
-Message-ID: <20210713125743.1540-3-a-nandan@ti.com>
-X-Mailer: git-send-email 2.31.1.windows.1
-In-Reply-To: <20210713125743.1540-1-a-nandan@ti.com>
-References: <20210713125743.1540-1-a-nandan@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 13 Jul 2021 09:01:57 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 13 Jul 2021 05:59:07 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 13 Jul 2021 05:59:05 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 13 Jul 2021 18:28:43 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 47A4222735; Tue, 13 Jul 2021 18:28:42 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [PATCH] venus: vdec: decoded picture buffer handling during reconfig sequence
+Date:   Tue, 13 Jul 2021 18:28:36 +0530
+Message-Id: <1626181116-2650-1-git-send-email-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-buswidth and dtr fields in spi_mem_op are only valid when the
-corresponding spi_mem_op phase has a non-zero length. For example,
-SPI NAND core doesn't set buswidth when using SPI_MEM_OP_NO_ADDR
-phase.
+In existing implementation, driver is freeing and un-mapping all the
+decoded picture buffers(DPB) as part of dynamic resolution change(DRC)
+handling. As a result, when firmware try to access the DPB buffer, from
+previous sequence, SMMU context fault is seen due to the buffer being
+already unmapped.
 
-Fix the dtr checks in set_protocol() and suppports_mem_op() to
-ignore empty spi_mem_op phases, as checking for dtr field in
-empty phase will result in false negatives.
+With this change, driver defines ownership of each DPB buffer. If a buffer
+is owned by firmware, driver would skip from un-mapping the same.
 
-Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
 ---
- drivers/spi/spi-cadence-quadspi.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/media/platform/qcom/venus/core.h    |  3 +++
+ drivers/media/platform/qcom/venus/helpers.c | 37 ++++++++++++++++++++++-------
+ drivers/media/platform/qcom/venus/helpers.h | 17 +++++++++++++
+ drivers/media/platform/qcom/venus/vdec.c    | 25 ++++++++++++++++++-
+ 4 files changed, 72 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index a2e1f4ce8b3e..a884678e8dff 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -322,7 +322,9 @@ static int cqspi_set_protocol(struct cqspi_flash_pdata *f_pdata,
- 	f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
- 	f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
- 	f_pdata->data_width = CQSPI_INST_TYPE_SINGLE;
--	f_pdata->dtr = op->data.dtr && op->cmd.dtr && op->addr.dtr;
-+	f_pdata->dtr = op->cmd.dtr &&
-+		       (op->addr.dtr || !op->addr.nbytes) &&
-+		       (op->data.dtr || !op->data.nbytes);
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 8df2d49..7ecbf9e 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -450,6 +450,7 @@ struct venus_inst {
+ 	bool next_buf_last;
+ 	bool drain_active;
+ 	enum venus_inst_modes flags;
++	u32 dpb_out_tag[VB2_MAX_FRAME];
+ };
  
- 	switch (op->data.buswidth) {
- 	case 0:
-@@ -1225,8 +1227,12 @@ static bool cqspi_supports_mem_op(struct spi_mem *mem,
- {
- 	bool all_true, all_false;
+ #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
+@@ -484,4 +485,6 @@ venus_caps_by_codec(struct venus_core *core, u32 codec, u32 domain)
+ 	return NULL;
+ }
  
--	all_true = op->cmd.dtr && op->addr.dtr && op->dummy.dtr &&
--		   op->data.dtr;
-+	/* op->dummy.dtr is checked when converting nbytes into ncycles.*/
-+	all_true = op->cmd.dtr &&
-+		   (op->addr.dtr || !op->addr.nbytes) &&
-+		   (op->dummy.dtr || !op->dummy.nbytes) &&
-+		   (op->data.dtr || !op->data.nbytes);
++void dpb_out_tag_init(struct venus_inst *inst);
 +
- 	all_false = !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
- 		    !op->data.dtr;
+ #endif
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 1fe6d46..ee2e26a 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -21,14 +21,6 @@
+ #define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
+ #define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
  
+-struct intbuf {
+-	struct list_head list;
+-	u32 type;
+-	size_t size;
+-	void *va;
+-	dma_addr_t da;
+-	unsigned long attrs;
+-};
+ 
+ bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt)
+ {
+@@ -95,9 +87,16 @@ int venus_helper_queue_dpb_bufs(struct venus_inst *inst)
+ 		fdata.device_addr = buf->da;
+ 		fdata.buffer_type = buf->type;
+ 
++		if (buf->owned_by == FIRMWARE)
++			continue;
++
++		fdata.clnt_data = buf->dpb_out_tag;
++
+ 		ret = hfi_session_process_buf(inst, &fdata);
+ 		if (ret)
+ 			goto fail;
++
++		buf->owned_by = FIRMWARE;
+ 	}
+ 
+ fail:
+@@ -110,18 +109,36 @@ int venus_helper_free_dpb_bufs(struct venus_inst *inst)
+ 	struct intbuf *buf, *n;
+ 
+ 	list_for_each_entry_safe(buf, n, &inst->dpbbufs, list) {
++		if (buf->owned_by == FIRMWARE)
++			continue;
++
++		inst->dpb_out_tag[buf->dpb_out_tag - VB2_MAX_FRAME] = 0;
++
+ 		list_del_init(&buf->list);
+ 		dma_free_attrs(inst->core->dev, buf->size, buf->va, buf->da,
+ 			       buf->attrs);
+ 		kfree(buf);
+ 	}
+ 
+-	INIT_LIST_HEAD(&inst->dpbbufs);
+ 
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(venus_helper_free_dpb_bufs);
+ 
++int venus_helper_get_free_dpb_tag(struct venus_inst *inst)
++{
++	u32 i;
++
++	for (i = 0; i < VB2_MAX_FRAME; i++) {
++		if (inst->dpb_out_tag[i] == 0) {
++			inst->dpb_out_tag[i] = i + VB2_MAX_FRAME;
++			return inst->dpb_out_tag[i];
++		}
++	}
++
++	return 0;
++}
++
+ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+ {
+ 	struct venus_core *core = inst->core;
+@@ -171,6 +188,8 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+ 			ret = -ENOMEM;
+ 			goto fail;
+ 		}
++		buf->owned_by = DRIVER;
++		buf->dpb_out_tag = venus_helper_get_free_dpb_tag(inst);
+ 
+ 		list_add_tail(&buf->list, &inst->dpbbufs);
+ 	}
+diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
+index e6269b4..e6ff556 100644
+--- a/drivers/media/platform/qcom/venus/helpers.h
++++ b/drivers/media/platform/qcom/venus/helpers.h
+@@ -8,6 +8,22 @@
+ 
+ #include <media/videobuf2-v4l2.h>
+ 
++enum dpb_buf_owner {
++	DRIVER,
++	FIRMWARE,
++};
++
++struct intbuf {
++	struct list_head list;
++	u32 type;
++	size_t size;
++	void *va;
++	dma_addr_t da;
++	unsigned long attrs;
++	enum dpb_buf_owner owned_by;
++	u32 dpb_out_tag;
++};
++
+ struct venus_inst;
+ struct venus_core;
+ 
+@@ -66,4 +82,5 @@ int venus_helper_get_profile_level(struct venus_inst *inst, u32 *profile, u32 *l
+ int venus_helper_set_profile_level(struct venus_inst *inst, u32 profile, u32 level);
+ int venus_helper_set_stride(struct venus_inst *inst, unsigned int aligned_width,
+ 			    unsigned int aligned_height);
++
+ #endif
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 198e47e..ba46085 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1297,6 +1297,7 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+ 	struct vb2_v4l2_buffer *vbuf;
+ 	struct vb2_buffer *vb;
+ 	unsigned int type;
++	struct intbuf *dpb_buf;
+ 
+ 	vdec_pm_touch(inst);
+ 
+@@ -1306,8 +1307,18 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+ 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+ 
+ 	vbuf = venus_helper_find_buf(inst, type, tag);
+-	if (!vbuf)
++	if (!vbuf) {
++		if (type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
++		    buf_type == HFI_BUFFER_OUTPUT) {
++			list_for_each_entry(dpb_buf, &inst->dpbbufs, list) {
++				if (dpb_buf->dpb_out_tag == tag) {
++					dpb_buf->owned_by = DRIVER;
++					break;
++				}
++			}
++		}
+ 		return;
++	}
+ 
+ 	vbuf->flags = flags;
+ 	vbuf->field = V4L2_FIELD_NONE;
+@@ -1542,6 +1553,14 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+ 	return vb2_queue_init(dst_vq);
+ }
+ 
++void dpb_out_tag_init(struct venus_inst *inst)
++{
++	u32 i;
++
++	for (i = 0; i < VB2_MAX_FRAME; i++)
++		inst->dpb_out_tag[i] = 0;
++}
++
+ static int vdec_open(struct file *file)
+ {
+ 	struct venus_core *core = video_drvdata(file);
+@@ -1580,6 +1599,8 @@ static int vdec_open(struct file *file)
+ 
+ 	vdec_inst_init(inst);
+ 
++	dpb_out_tag_init(inst);
++
+ 	/*
+ 	 * create m2m device for every instance, the m2m context scheduling
+ 	 * is made by firmware side so we do not need to care about.
+@@ -1622,6 +1643,8 @@ static int vdec_close(struct file *file)
+ 
+ 	vdec_pm_get(inst);
+ 
++	venus_helper_free_dpb_bufs(inst);
++	INIT_LIST_HEAD(&inst->dpbbufs);
+ 	v4l2_m2m_ctx_release(inst->m2m_ctx);
+ 	v4l2_m2m_release(inst->m2m_dev);
+ 	vdec_ctrl_deinit(inst);
 -- 
-2.17.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
