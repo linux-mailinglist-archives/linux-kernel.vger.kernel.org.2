@@ -2,124 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BCC3C6978
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF74D3C6979
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhGMEjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 00:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S231759AbhGMEjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 00:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhGMEjK (ORCPT
+        with ESMTP id S229470AbhGMEjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 00:39:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036A4C0613DD;
-        Mon, 12 Jul 2021 21:36:20 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 04:36:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626150977;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=OLxfYBTXkYYVSMMoc07cFS3jYh3pW4pxki3au8TXW9s=;
-        b=IL59anytZ6Ji8mFDCiA5rAohHQtisVQCaZVJ2TLyidy7Ody4GiZzwkgRn/rDXuIiflJa4G
-        jeFTGCvNGU9qXLzS7dzzt0xUlFkPKu9plg5l00tbjOOKCx0U95CDDoRO0gd5q2pWspzo9I
-        Eld0bIFL2aJOLQ1Bbjx88cnyNbZgvn/q2pOCRN+qqPNomh+iNW1HldEphD8aboL4dw4z/F
-        rVNqLihOjAgdr1v5p2x55QeN55wMKcfqYu8h+8XmN+vzZeD8sMN1q90UNZ+5J7NVRaAzWr
-        NmSXNy8EnGGCTzdqeGclwiWMckzPJjfCJ5lvken5+6iqDSx8rzBBfoh4q+Q7MA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626150977;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=OLxfYBTXkYYVSMMoc07cFS3jYh3pW4pxki3au8TXW9s=;
-        b=pFZW7wGNvV06mPqXSqb6ywHIMNK8vF6OM0aS+GByJqdHW8yFPYNXUUFp7fmqh87bQODiER
-        Fa1L5hm/12j6FnBg==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] jump_labels: Mark __jump_label_transform() as
- __always_inlined to work around aggressive compiler un-inlining
-Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Tue, 13 Jul 2021 00:39:32 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0240C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:36:42 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id w15so20496800pgk.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=82m03D0s+VMudJouCH7xODKkU6rRtZkgh42oOQDO16A=;
+        b=VW6TGlpY06/w5pkT7TxeM2WTODkXJh5X54KrtuYOFbiQ4cJR4UOEQq/3J77uAa4K9o
+         r7IWudEirM1J2yeVWKv5dGC6hCQpQONyWEQBnJNvrkXGi53dpr7IHhRLRmSdafqUMba6
+         yC2qrM3ZoaoZoH9Rx+nXf+ueLuGsDYIDwjAkytOPK0D+BZw5TO8iYERyHKWmQc7/321i
+         JmaeSiWUV2v539BKivflxc6bU2UusUPT2BFzdljqE6VnSxisQBgud1zv14n/onez2fBj
+         5HX7OF42GOsvE0s8drqycKBE56kjgIG3eqW//7OXR80RoM+Rh/5W/BDvoPV9ErJKMlf0
+         CYuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=82m03D0s+VMudJouCH7xODKkU6rRtZkgh42oOQDO16A=;
+        b=SJwHoTC7BvTQO5yLXYvqCZfWJSwoi+dcEkPvbsKWB68RNngJAqMzH8CG2hikifVLHF
+         rAsSkLH2Cke7fRDVuJ5A6j9AK2TkyNTqp/BGGVfJ730BiBcmyOfKrFNogaLzfORxN9Dv
+         2RH8mDyOSXoe0cDfZAGmywvkR+HScBTHkaUBWoSeyQnTB87DAIT26+Fmq0Vyj+dFxNw/
+         DCQbPB9IzNDGjUJFVk2ZPf00S0dmolesR1ylRgJI/3quWgkV3IhQBatcHkAWxeyAQkky
+         lxMThU2Eix3h9u1mtgkbfJYxZVRr/Rqcf0AIm1OLA8idOkXt0Br0Co7yRji0onEuGKol
+         n4bA==
+X-Gm-Message-State: AOAM531ENoYFCmQAiLTJxRerOr0+y99CQYKX1DLPYXGvRMCGga4+XGup
+        YFX2ztgcNOX0jAmqFXVC8rk=
+X-Google-Smtp-Source: ABdhPJwSS4qHGmIytrzwPKmqhB2ndXwHOn3ihpE6aC1jNtjFxE+StfykewwJZNQ72Oncr1gendG2DA==
+X-Received: by 2002:a05:6a00:21c6:b029:2ff:e9:94f0 with SMTP id t6-20020a056a0021c6b02902ff00e994f0mr2536260pfj.73.1626151002354;
+        Mon, 12 Jul 2021 21:36:42 -0700 (PDT)
+Received: from ?IPv6:2804:14c:482:92eb:ffdf:6b35:b94d:258? ([2804:14c:482:92eb:ffdf:6b35:b94d:258])
+        by smtp.gmail.com with ESMTPSA id j20sm14700424pfc.203.2021.07.12.21.36.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 21:36:41 -0700 (PDT)
+Message-ID: <5b8676140f495dbbe3e28ce261e449b885dbae66.camel@gmail.com>
+Subject: Re: [PATCH v4 10/11] powerpc/pseries/iommu: Make use of DDW for
+ indirect mapping
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Tue, 13 Jul 2021 01:36:52 -0300
+In-Reply-To: <95ac11e9-a709-e0a2-9690-ef13c4a2cd43@ozlabs.ru>
+References: <20210430163145.146984-1-leobras.c@gmail.com>
+         <20210430163145.146984-11-leobras.c@gmail.com>
+         <95ac11e9-a709-e0a2-9690-ef13c4a2cd43@ozlabs.ru>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Message-ID: <162615097706.395.9514541982225963135.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Tue, 2021-05-11 at 17:57 +1000, Alexey Kardashevskiy wrote:
+> 
+> 
+> On 01/05/2021 02:31, Leonardo Bras wrote:
+> > [...]
+> >       pmem_present = dn != NULL;
+> > @@ -1218,8 +1224,12 @@ static bool enable_ddw(struct pci_dev *dev,
+> > struct device_node *pdn)
+> >   
+> >         mutex_lock(&direct_window_init_mutex);
+> >   
+> > -       if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset,
+> > &len))
+> > -               goto out_unlock;
+> > +       if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset,
+> > &len)) {
+> > +               direct_mapping = (len >= max_ram_len);
+> > +
+> > +               mutex_unlock(&direct_window_init_mutex);
+> > +               return direct_mapping;
+> 
+> Does not this break the existing case when direct_mapping==true by 
+> skipping setting dev->dev.bus_dma_limit before returning?
+> 
 
-Commit-ID:     e48a12e546ecbfb0718176037eae0ad60598a29a
-Gitweb:        https://git.kernel.org/tip/e48a12e546ecbfb0718176037eae0ad60598a29a
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Tue, 13 Jul 2021 06:16:05 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 13 Jul 2021 06:32:05 +02:00
+Yes, it does. Good catch!
+I changed it to use a flag instead of win64 for return, and now I can
+use the same success exit path for both the new config and the config
+found in list. (out_unlock)
 
-jump_labels: Mark __jump_label_transform() as __always_inlined to work around aggressive compiler un-inlining
+> 
+> 
+> > +       }
+> >   
+> >         /*
+> >          * If we already went through this for a previous function of
+> > @@ -1298,7 +1308,6 @@ static bool enable_ddw(struct pci_dev *dev,
+> > struct device_node *pdn)
+> >                 goto out_failed;
+> >         }
+> >         /* verify the window * number of ptes will map the partition
+> > */
+> > -       /* check largest block * page size > max memory hotplug addr
+> > */
+> >         /*
+> >          * The "ibm,pmemory" can appear anywhere in the address
+> > space.
+> >          * Assuming it is still backed by page structs, try
+> > MAX_PHYSMEM_BITS
+> > @@ -1320,6 +1329,17 @@ static bool enable_ddw(struct pci_dev *dev,
+> > struct device_node *pdn)
+> >                         1ULL << len,
+> >                         query.largest_available_block,
+> >                         1ULL << page_shift);
+> > +
+> > +               len = order_base_2(query.largest_available_block <<
+> > page_shift);
+> > +               win_name = DMA64_PROPNAME;
+> 
+> [1] ....
+> 
+> 
+> > +       } else {
+> > +               direct_mapping = true;
+> > +               win_name = DIRECT64_PROPNAME;
+> > +       }
+> > +
+> > +       /* DDW + IOMMU on single window may fail if there is any
+> > allocation */
+> > +       if (default_win_removed && !direct_mapping &&
+> > iommu_table_in_use(tbl)) {
+> > +               dev_dbg(&dev->dev, "current IOMMU table in use, can't
+> > be replaced.\n");
+> 
+> 
+> ... remove !direct_mapping and move to [1]?
 
-In randconfig testing, certain UBSAN and CC Kconfig combinations
-with GCC 10.3.0:
 
-  CONFIG_X86_32=y
+sure, done!
 
-  CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+> 
+> 
+> >                 goto out_failed;
+> >         }
+> >   
+> > @@ -1331,8 +1351,7 @@ static bool enable_ddw(struct pci_dev *dev,
+> > struct device_node *pdn)
+> >                   create.liobn, dn);
+> >   
+> >         win_addr = ((u64)create.addr_hi << 32) | create.addr_lo;
+> > -       win64 = ddw_property_create(DIRECT64_PROPNAME, create.liobn,
+> > win_addr,
+> > -                                   page_shift, len);
+> > +       win64 = ddw_property_create(win_name, create.liobn, win_addr,
+> > page_shift, len);
+> >         if (!win64) {
+> >                 dev_info(&dev->dev,
+> >                          "couldn't allocate property, property name,
+> > or value\n");
+> > @@ -1350,12 +1369,47 @@ static bool enable_ddw(struct pci_dev *dev,
+> > struct device_node *pdn)
+> >         if (!window)
+> >                 goto out_del_prop;
+> >   
+> > -       ret = walk_system_ram_range(0, memblock_end_of_DRAM() >>
+> > PAGE_SHIFT,
+> > -                       win64->value,
+> > tce_setrange_multi_pSeriesLP_walk);
+> > -       if (ret) {
+> > -               dev_info(&dev->dev, "failed to map direct window for
+> > %pOF: %d\n",
+> > -                        dn, ret);
+> > -               goto out_del_list;
+> > +       if (direct_mapping) {
+> > +               /* DDW maps the whole partition, so enable direct DMA
+> > mapping */
+> > +               ret = walk_system_ram_range(0, memblock_end_of_DRAM()
+> > >> PAGE_SHIFT,
+> > +                                           win64->value,
+> > tce_setrange_multi_pSeriesLP_walk);
+> > +               if (ret) {
+> > +                       dev_info(&dev->dev, "failed to map direct
+> > window for %pOF: %d\n",
+> > +                                dn, ret);
+> > +                       goto out_del_list;
+> > +               }
+> > +       } else {
+> > +               struct iommu_table *newtbl;
+> > +               int i;
+> > +
+> > +               /* New table for using DDW instead of the default DMA
+> > window */
+> > +               newtbl = iommu_pseries_alloc_table(pci->phb->node);
+> > +               if (!newtbl) {
+> > +                       dev_dbg(&dev->dev, "couldn't create new IOMMU
+> > table\n");
+> > +                       goto out_del_list;
+> > +               }
+> > +
+> > +               for (i = 0; i < ARRAY_SIZE(pci->phb->mem_resources);
+> > i++) {
+> > +                       const unsigned long mask = IORESOURCE_MEM_64
+> > | IORESOURCE_MEM;
+> > +
+> > +                       /* Look for MMIO32 */
+> > +                       if ((pci->phb->mem_resources[i].flags & mask)
+> > == IORESOURCE_MEM)
+> > +                               break;
+> 
+> What if there is no IORESOURCE_MEM? pci->phb->mem_resources[i].start 
+> below will have garbage.
 
-  CONFIG_UBSAN=y
-  # CONFIG_UBSAN_TRAP is not set
-  # CONFIG_UBSAN_BOUNDS is not set
-  CONFIG_UBSAN_SHIFT=y
-  # CONFIG_UBSAN_DIV_ZERO is not set
-  CONFIG_UBSAN_UNREACHABLE=y
-  CONFIG_UBSAN_BOOL=y
-  # CONFIG_UBSAN_ENUM is not set
-  # CONFIG_UBSAN_ALIGNMENT is not set
-  # CONFIG_UBSAN_SANITIZE_ALL is not set
 
-... produce this build warning (and build error if
-CONFIG_SECTION_MISMATCH_WARN_ONLY=y is set):
 
-  WARNING: modpost: vmlinux.o(.text+0x4c1cc): Section mismatch in reference from the function __jump_label_transform() to the function .init.text:text_poke_early()
-  The function __jump_label_transform() references
-  the function __init text_poke_early().
-  This is often because __jump_label_transform lacks a __init
-  annotation or the annotation of text_poke_early is wrong.
+Yeah, that makes sense. I will add this lines after 'for':
 
-  ERROR: modpost: Section mismatches detected.
+if (i == ARRAY_SIZE(pci->phb->mem_resources)) {
+ iommu_tce_table_put(newtbl);
+ goto out_del_list;
+}
 
-The problem is that __jump_label_transform() gets uninlined by GCC,
-despite there being only a single local scope user of the 'static inline'
-function.
+What do you think?
 
-Mark the function __always_inline instead, to work around this compiler
-bug/artifact.
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- arch/x86/kernel/jump_label.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> 
+> > +               }
+> > +
+> > +               _iommu_table_setparms(newtbl, pci->phb->bus->number,
+> > create.liobn, win_addr,
+> > +                                     1UL << len, page_shift, 0,
+> > &iommu_table_lpar_multi_ops);
+> > +               iommu_init_table(newtbl, pci->phb->node, pci->phb-
+> > >mem_resources[i].start,
+> > +                                pci->phb->mem_resources[i].end);
+> > +
+> > +               if (default_win_removed)
+> > +                       iommu_tce_table_put(tbl);
+> 
+> 
+> iommu_tce_table_put() should have been called when the window was
+> removed.
+> 
+> Also after some thinking - what happens if there were 2 devices in the 
+> PE and one requested 64bit DMA? This will only update 
+> set_iommu_table_base() for the 64bit one but not for the other.
+>
+> I think the right thing to do is:
+> 
+> 1. check if table[0] is in use, if yes => fail (which this does
+> already)
+> 
+> 2. remove default dma window but keep the iommu_table struct with one
+> change - set it_size to 0 (and free it_map) so the 32bit device won't
+> look at a stale structure and think there is some window (imaginery 
+> situation for phyp but easy to recreate in qemu).
+> 
+> 3. use table[1] for newly created indirect DDW window.
+> 
+> 4. change get_iommu_table_base() to return a usable table (or may be
+> not 
+> needed?).
+> 
+> If this sounds reasonable (does it?),
 
-diff --git a/arch/x86/kernel/jump_label.c b/arch/x86/kernel/jump_label.c
-index 674906f..68f091b 100644
---- a/arch/x86/kernel/jump_label.c
-+++ b/arch/x86/kernel/jump_label.c
-@@ -79,9 +79,10 @@ __jump_label_patch(struct jump_entry *entry, enum jump_label_type type)
- 	return (struct jump_label_patch){.code = code, .size = size};
- }
- 
--static inline void __jump_label_transform(struct jump_entry *entry,
--					  enum jump_label_type type,
--					  int init)
-+static __always_inline void
-+__jump_label_transform(struct jump_entry *entry,
-+		       enum jump_label_type type,
-+		       int init)
- {
- 	const struct jump_label_patch jlp = __jump_label_patch(entry, type);
- 
+Looks ok, I will try your suggestion. 
+I was not aware of how pci->table_group->tables[] worked, so I replaced
+pci->table_group->tables[0] with the new tbl, while moving the older in
+pci->table_group->tables[1].
+(4) get_iommu_table_base() does not seem to need update, as it returns
+the tlb set by set_iommu_table_base() which is already called in the
+!direct_mapping path in current patch.
+
+>  the question is now if you have
+> time to do that and the hardware to test that, or I'll have to finish
+> the work :)
+
+Sorry, for some reason part of this got lost in Evolution mail client.
+
+If possible, I do want to finish this work, and I am talking to IBM
+Virt people in order to get testing HW.
+
+> 
+> 
+> > +               else
+> > +                       pci->table_group->tables[1] = tbl;
+> 
+> 
+> What is this for?
+
+I was thinking of adding the older table to pci->table_group->tables[1]
+while keeping the newer table on pci->table_group->tables[0].
+This did work, but I think your suggestion may work better.
+
+Best regards,
+Leonardo Bras
+
+
