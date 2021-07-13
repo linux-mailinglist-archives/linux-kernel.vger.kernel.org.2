@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89243C79C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90A43C79C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 00:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236666AbhGMWoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 18:44:00 -0400
-Received: from ozlabs.org ([203.11.71.1]:37449 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhGMWn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 18:43:59 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GPbFv20vGz9sW8;
-        Wed, 14 Jul 2021 08:41:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626216067;
-        bh=J/itNARh4aENrF5yMCdjo3tfisLF0MSFuwr2HJFVY60=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VyJM1Vq0nphVz/rNerR+0L7Nyo9FliPj3JVNE28IaPIS8/0DvmVwBszS4Qju6q4O7
-         977+q1ADtctMKvZqF/ftx1u6CZzZKP6ThaD7JxqDcXHhN/FM60aESKzmq4QFN3o1h2
-         RNZ/+8axINtkVnID5kBFvn7gi+igODlAif/iVVFGgWHJsPoQwFucPDprPFRI5oGYDi
-         Xqbj3eCY4+XjMYplzCN7ufhyPy0f+FtEbWOSAAghAydTSlTU7ULjhqkUCmlCa5hvLB
-         Z3ljzwPqtT3zeDxV9a0HjKENdc+81VhF4ixqInP2JK+6+lQnkiKMpeNG7XJvSsras+
-         pCGknj4+4y8hA==
-Date:   Wed, 14 Jul 2021 08:41:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Jul 13
-Message-ID: <20210714084106.0525b879@canb.auug.org.au>
-In-Reply-To: <CAMuHMdUb_VvjGZUsnKuGpSwQfJMa0pqQ-tN5HCwi_-Am7angJw@mail.gmail.com>
-References: <20210713180305.5ba41f10@canb.auug.org.au>
-        <CAMuHMdUb_VvjGZUsnKuGpSwQfJMa0pqQ-tN5HCwi_-Am7angJw@mail.gmail.com>
+        id S236769AbhGMWpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 18:45:42 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:45921 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236696AbhGMWpk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 18:45:40 -0400
+Received: by mail-il1-f174.google.com with SMTP id b6so15266187iln.12;
+        Tue, 13 Jul 2021 15:42:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lsdCSpnf6ZiX83NlGYzoBdbib31n+VNXkgCApsj7nLM=;
+        b=Z1Q/A5TNbwI2IdwMaC0xCigJJejksDH4+iY3IaOFrFm0GzpYSRGuBMLudA75lfUIJg
+         Sl1HC/DHNwnnodlOsL/VqtrKq1Lzy1yPp0EBD3Zbq4Bo4FGP2sWTIvdmfNMleJqzJ7bY
+         Ytm6EVOUoSzlegTZ4Wf9zYLHv9Uc2C38q+M9hdxyahVXzKojhVp4SIG2H44cZLhGRJAW
+         O4CCe14x4WLjBc+jKn+l+58T65hA8TNfVxXw38oeQeJ1Epp20GT8/9mpNCWYomMSTz9g
+         WBy/I9TncXUNRrPdBVWT3UTdgsQDB+xDzrH6uWIU56ksktfUoShzntivu+m66hhQcKuo
+         AoqQ==
+X-Gm-Message-State: AOAM530W1vEvEezVioQhyXLbfpeN7VkPfaS9um4Fb4UUpBUprAF/9OfW
+        xh+Uzdh1OZFWLcdx9YY5hQ==
+X-Google-Smtp-Source: ABdhPJyBP0Vwy0xP55H7Iy5+swmvS2mXaRlbYo72hNyvVC3lYhapXdsdp3wMpbQQcMkPLHtj0RgrfA==
+X-Received: by 2002:a92:c883:: with SMTP id w3mr3687073ilo.76.1626216169897;
+        Tue, 13 Jul 2021 15:42:49 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p10sm177941ilh.57.2021.07.13.15.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 15:42:49 -0700 (PDT)
+Received: (nullmailer pid 985485 invoked by uid 1000);
+        Tue, 13 Jul 2021 22:42:45 -0000
+Date:   Tue, 13 Jul 2021 16:42:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     bjorn.andersson@linaro.org, viresh.kumar@linaro.org,
+        agross@kernel.org, rjw@rjwysocki.net, devicetree@vger.kernel.org,
+        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jami.kettunen@somainline.org,
+        paul.bouchara@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, jeffrey.l.hugo@gmail.com
+Subject: Re: [PATCH v6 9/9] dt-bindings: cpufreq: qcom-hw: Make reg-names a
+ required property
+Message-ID: <20210713224245.GA981311@robh.at.kernel.org>
+References: <20210701105730.322718-1-angelogioacchino.delregno@somainline.org>
+ <20210701105730.322718-10-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RgVhqow=b/sVknUkVFgF8WF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210701105730.322718-10-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RgVhqow=b/sVknUkVFgF8WF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jul 01, 2021 at 12:57:30PM +0200, AngeloGioacchino Del Regno wrote:
+> The property reg-names is required after the addition of the OSM
+> programming sequence, as that mandates specifying different register
+> domains; to avoid confusion and improve devicetree readability,
+> specifying the regions names was made mandatory.
 
-Hi Geert,
+Can't take patches missing a S-o-b.
 
-On Tue, 13 Jul 2021 10:44:40 +0200 Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
->
-> I've just noticed you don't have
->=20
->     renesas-fixes git
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git#fix=
-es
->=20
-> included yet. Can you please add it?
-> This branch contains fixes intended for the current release.
+Making existing properties required breaks compatibility. That's okay on 
+*all* the platforms using this? If so, that needs to be crystal clear in 
+the commit msg.
 
-Added from today.
-
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
---Sig_/RgVhqow=b/sVknUkVFgF8WF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDuFoIACgkQAVBC80lX
-0Gw4zwf/ZQ2XLyGQeYBDRCtdYsVjEgbyAFLaWzWCTSxgPcXq4X4bNtNuSY2Ixtig
-4cBWT0s2kvQuGaaZFyvqsOtd3NBWMkkB915tyi8TRIk6yydBGBAfDvClVlyFFqrN
-fqEbu4zAalMe7CtHrSYLguD/JjGwfHcJM19AoJujYqo6VyWFFL/A/IFnceB5qZ01
-wk530dv9RwnwmgtScAhsQFMvGyCRWUCE/53pjbDJHR9EYRU0C17z84x7ZfLt8THi
-63yv4MwuvDBi/E6G5MN8rZAtt3Z6hhDd1XuKn+5xshISCOEI5FdKy0kWybvbTUpm
-0GfN+Sij/Uh9cjVmJSZrXgn0JZTiJA==
-=gKZN
------END PGP SIGNATURE-----
-
---Sig_/RgVhqow=b/sVknUkVFgF8WF--
+> ---
+>  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> index 29b663321a0b..17fd6a6cefb0 100644
+> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> @@ -98,6 +98,7 @@ else:
+>  required:
+>    - compatible
+>    - reg
+> +  - reg-names
+>    - clocks
+>    - clock-names
+>    - '#freq-domain-cells'
+> -- 
+> 2.32.0
+> 
+> 
