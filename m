@@ -2,202 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA643C76FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B292D3C76FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhGMTgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234411AbhGMTgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:36:12 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8019C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:33:21 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id s18so22475558pgg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N0sTfKKyE0+JAut7zXsvgnlkS/bdeOAiaAnE0HjBo3Q=;
-        b=ZrqS9e5z8WA9MdXrss28wbIf+rlilE8R81QX10ZcTKLpeNys78DSMzebQTZX/DM7Xh
-         lfiSWubTeELe9rZW8xKA2MrjfQ0x0wu7FfSgJ4BRj1Die1VytFGSJom20Za/69qEU0Fv
-         EVWyK56AgIja8WE0ruQLKGjKZRgMAfNv1UOer6xr6lpqN6cpZ1qCZt//+EinVl0HHcUW
-         dS7PiZOMZZa09FjJHbtss3N8QV09hDgMAoaOJotOax+wK4Fzu4muecJFhisRmfTLnbQN
-         /+FiYlIbYf5Ev1TrLau5/uwy9UvDAP3PRSzOzj3prZSFenvGLZr61lylf1p0wcyLEY13
-         Cr2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N0sTfKKyE0+JAut7zXsvgnlkS/bdeOAiaAnE0HjBo3Q=;
-        b=iljnSZyJhUGK/UHtBUb7Y43qwu8qQxQC8dOLAkMMkFIM9yu/aZp8Q8+wNL2bL7SylR
-         aFffe/9hr5QSXp69dlBI8mT+1BVF+GyA5MSQ+GlsavB2O+59VpZVPofdAMS2yW/xku5L
-         JN0mDg9h4C5jdHcfZeDD5SGjPreydIAeSQn8m9kt/FYDbMfp9u3eSN59pkj2hmCruTgv
-         AVz9iWEkgeayGnLePiX9Em91/SiusfiKhCKbRP+beOupUx05f32E70Of6g+vblgAOlPE
-         I5h20Kc3jSB0t0VvhggQ9RdaR5ZFWpPmDtjOUpqhhW/Zsr7iy04P2NAQe84xQngH5WyF
-         ywBA==
-X-Gm-Message-State: AOAM531R0DwbwlLrGizhsJdVvY6KQyswzoIJWTL6vWO5YUTQcXYj9us9
-        BofHlJYnCT1wwmK7zRwoY604OA==
-X-Google-Smtp-Source: ABdhPJxkR7/Z8wic9CB4fffLr4H+t5wMq+9SEeVm7uxYMaFaa6yDEqefL2/S8c56ikKQRnpi6H6kVg==
-X-Received: by 2002:a63:5f11:: with SMTP id t17mr5807364pgb.37.1626204801148;
-        Tue, 13 Jul 2021 12:33:21 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id r10sm20278553pff.7.2021.07.13.12.33.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 12:33:20 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 19:33:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com
-Subject: Re: [RFC PATCH v2 08/69] KVM: TDX: add trace point before/after TDX
- SEAMCALLs
-Message-ID: <YO3qfA6AjrDP33x+@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <28a0ae6b767260fcb410c6ddff7de84f4e13062c.1625186503.git.isaku.yamahata@intel.com>
+        id S234856AbhGMThK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:37:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234411AbhGMThK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 15:37:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A2D61362;
+        Tue, 13 Jul 2021 19:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626204859;
+        bh=q6UBDjtaa8NUUdqWJxCHFB88WzEYVPE9y9bs3xKd6rM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ix5wiJ0HBk1YpblazcZQ+oZzQ5JDBdl1e/ybkWlgcFqiq1b2ltmPmycs8KeLf3mgz
+         ufdIv0JRv2ydfYiJVA5eqos0X88dphEFoZnIW/JUiRgjM7b2FhF2LDjrzxz06gslA8
+         B8pF7NznuJCpLbwPEpulEQp1OpBCmpLBw+29OmU7ADW0xDBId+X+t2SnXijk8KUWqI
+         3tqElFfqZ5huNr9tI6e3Kx9HIHDoDhOnQYZo0zEGrp6BBTK47ARG/7CuaO8pPsRX82
+         u3/xU8wqO+l8m2eShd26LbI2PAnArSiMZWzqxrghZK7e7YT8DBgFZIY0tHYtdEk5z2
+         vFTo27NYlmv5g==
+Received: by mail-ej1-f48.google.com with SMTP id hc15so5019873ejc.4;
+        Tue, 13 Jul 2021 12:34:19 -0700 (PDT)
+X-Gm-Message-State: AOAM532seLs9amzSIPddZavb03KUCInoBqaRyuCu9yCi8Kam1tjTDQfp
+        4mYuVKCvEyYqderLAgPFr6CPoC++iuiApdn0Bg==
+X-Google-Smtp-Source: ABdhPJxebfXWfjPtG3UgTLJ2gamvHrDzok7Vep7WR5t4cjwuIyGWTbLDQS1ro3UlQYyKlYUIVu1iH/LjVjSActCgrf8=
+X-Received: by 2002:a17:906:57d0:: with SMTP id u16mr7823954ejr.468.1626204858178;
+ Tue, 13 Jul 2021 12:34:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28a0ae6b767260fcb410c6ddff7de84f4e13062c.1625186503.git.isaku.yamahata@intel.com>
+References: <cover.1626173013.git.viresh.kumar@linaro.org> <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+ <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com> <20210713151917.zouwfckidnjxvohn@vireshk-i7>
+In-Reply-To: <20210713151917.zouwfckidnjxvohn@vireshk-i7>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 13 Jul 2021 13:34:05 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
+Message-ID: <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device subnode
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  arch/x86/kvm/trace.h         | 80 ++++++++++++++++++++++++++++++
->  arch/x86/kvm/vmx/seamcall.h  | 22 ++++++++-
->  arch/x86/kvm/vmx/tdx_arch.h  | 47 ++++++++++++++++++
->  arch/x86/kvm/vmx/tdx_errno.h | 96 ++++++++++++++++++++++++++++++++++++
->  arch/x86/kvm/x86.c           |  2 +
->  5 files changed, 246 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index 4f839148948b..c3398d0de9a7 100644
-> --- a/arch/x86/kvm/trace.h
-> +++ b/arch/x86/kvm/trace.h
-> @@ -8,6 +8,9 @@
->  #include <asm/clocksource.h>
->  #include <asm/pvclock-abi.h>
->  
-> +#include "vmx/tdx_arch.h"
-> +#include "vmx/tdx_errno.h"
-> +
->  #undef TRACE_SYSTEM
->  #define TRACE_SYSTEM kvm
->  
-> @@ -659,6 +662,83 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
->  		  __entry->exit_int_info, __entry->exit_int_info_err)
->  );
->  
-> +/*
-> + * Tracepoint for the start of TDX SEAMCALLs.
-> + */
-> +TRACE_EVENT(kvm_tdx_seamcall_enter,
+On Tue, Jul 13, 2021 at 9:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 13-07-21, 08:43, Rob Herring wrote:
+> > On Tue, Jul 13, 2021 at 4:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > Allow virtio,mmio nodes to contain device specific subnodes. Since each
+> > > virtio,mmio node can represent a single virtio device, each virtio node
+> > > is allowed to contain a maximum of one device specific subnode.
+> >
+> > Doesn't sound like we need 2 nodes here. Just add I2C devices as child
+> > nodes. You could add a more specific compatible string, but the
+> > protocol is discoverable, so that shouldn't be necessary.
+>
+> I am not sure if it will be a problem, but you can clarify it better.
+>
+> The parent node (virtio,mmio) is used to create a platform device,
+> virtio-mmio, (and so assigned as its of_node) and we create the
+> virtio-device from probe() of this virtio-mmio device.
+>
+> Is it going to be a problem if two devices in kernel use the same
+> of_node ?
 
-To avoid confusion, I think it makes sense to avoid "enter" and "exit".  E.g.
-my first reaction was that the tracepoint was specific to TDENTER.  And under
-the hood, SEAMCALL is technically an exit :-)
+There shouldn't be. We have nodes be multiple providers (e.g clocks
+and resets) already.
 
-What about kvm_tdx_seamcall and kvm_tdx_seamret?  If the seamret usage is too
-much of a stretch, kvm_tdx_seamcall_begin/end?
+> Are there cases where we would need to get the device
+> pointer from the of_node ? Then we will have two here.
 
-> +	TP_PROTO(int cpuid, __u64 op, __u64 rcx, __u64 rdx, __u64 r8,
-> +		 __u64 r9, __u64 r10),
-> +	TP_ARGS(cpuid, op, rcx, rdx, r8, r9, r10),
+Rarely...
 
-"cpuid" is potentially confusing without looking at the caller.  pcpu or pcpu_id
-would be preferable.
+In any case, should these potential kernel issues be dictating the DT
+binding design? No!
 
-> diff --git a/arch/x86/kvm/vmx/seamcall.h b/arch/x86/kvm/vmx/seamcall.h
-> index a318940f62ed..2c83ab46eeac 100644
-> --- a/arch/x86/kvm/vmx/seamcall.h
-> +++ b/arch/x86/kvm/vmx/seamcall.h
-> @@ -9,12 +9,32 @@
->  #else
->  
->  #ifndef seamcall
-> +#include "trace.h"
-> +
->  struct tdx_ex_ret;
->  asmlinkage u64 __seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9, u64 r10,
->  			  struct tdx_ex_ret *ex);
->  
-> +static inline u64 _seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9, u64 r10,
-> +			    struct tdx_ex_ret *ex)
-> +{
-> +	u64 err;
-> +
-> +	trace_kvm_tdx_seamcall_enter(smp_processor_id(), op,
-> +				     rcx, rdx, r8, r9, r10);
-> +	err = __seamcall(op, rcx, rdx, r8, r9, r10, ex);
+>
+> > BTW, what's the usecase for these protocols? A standard interface to
+> > firmware controlled I2C, GPIO, etc.?
+>
+> Right now we are looking to control devices in the host machine from
+> guests. That's what Linaro's project stratos is doing. There are other
+> people who want to use this for other kind of remote control stuff,
+> maybe from firmware.
 
-What was the motivation behind switching from the macro magic[*] to a dedicated
-asm subroutine?  The macros are gross, but IMO they yielded much more readable
-code for the upper level helpers, which is what people will look at the vast
-majority of time.  E.g.
+Project stratos means nothing to me.
 
-  static inline u64 tdh_sys_lp_shutdown(void)
-  {
-  	return seamcall(TDH_SYS_LP_SHUTDOWN, 0, 0, 0, 0, 0, NULL);
-  }
+Direct userspace access to I2C, GPIO, etc. has its issues, we're going
+to repeat that with guests?
 
-  static inline u64 tdh_mem_track(hpa_t tdr)
-  {
-  	return seamcall(TDH_MEM_TRACK, tdr, 0, 0, 0, 0, NULL);
-  }
+> > > diff --git a/include/dt-bindings/virtio/virtio_ids.h b/include/dt-bindings/virtio/virtio_ids.h
+> > > new file mode 120000
+> > > index 000000000000..6e59ba332216
+> > > --- /dev/null
+> > > +++ b/include/dt-bindings/virtio/virtio_ids.h
+> > > @@ -0,0 +1 @@
+> > > +../../uapi/linux/virtio_ids.h
+> >
+> > This will break the devicetree-rebasing tree I think. DT files
+> > shouldn't reference kernel files.
+>
+> We already do this for linux-event-codes.h and so I thought it is the
+> right way of doing it :)
 
-versus
+Humm, maybe it's okay. Please double check then...
 
-  static inline u64 tdsysshutdownlp(void)
-  {
-  	seamcall_0(TDSYSSHUTDOWNLP);
-  }
+> Else we can create a new copy, which will be a mess, or use hardcoded
+> values.
 
-  static inline u64 tdtrack(hpa_t tdr)
-  {
-  	seamcall_1(TDTRACK, tdr);
-  }
+Though you may not need the header based on what Arnd and I have suggested.
 
-
-The new approach also generates very suboptimal code due to the need to shuffle
-registers everywhere, e.g. gcc doesn't inline _seamcall because it's a whopping
-200+ bytes.
-
-[*] https://patchwork.kernel.org/project/kvm/patch/25f0d2c2f73c20309a1b578cc5fc15f4fd6b9a13.1605232743.git.isaku.yamahata@intel.com/
-
-> +	if (ex)
-> +		trace_kvm_tdx_seamcall_exit(smp_processor_id(), op, err, ex->rcx,
-
-smp_processor_id() is not stable since this code runs with IRQs and preemption
-enabled, e.g. if the task is preempted between the tracepoint and the actual
-SEAMCALL then the tracepoint may be wrong.  There could also be weirdly "nested"
-tracepoints since migrating the task will generate TDH_VP_FLUSH.
-
-> +					    ex->rdx, ex->r8, ex->r9, ex->r10,
-> +					    ex->r11);
-> +	else
-> +		trace_kvm_tdx_seamcall_exit(smp_processor_id(), op, err,
-> +					    0, 0, 0, 0, 0, 0);
-> +	return err;
-> +}
-> +
->  #define seamcall(op, rcx, rdx, r8, r9, r10, ex)				\
-> -	__seamcall(SEAMCALL_##op, (rcx), (rdx), (r8), (r9), (r10), (ex))
-> +	_seamcall(SEAMCALL_##op, (rcx), (rdx), (r8), (r9), (r10), (ex))
->  #endif
+Rob
