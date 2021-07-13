@@ -2,149 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913EA3C7290
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EA13C72A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236873AbhGMOtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:49:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236636AbhGMOtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:49:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17A1C60E0B;
-        Tue, 13 Jul 2021 14:46:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626187589;
-        bh=8OfT0pQARDOsKTvRaO4tWkRS4CwArG5IMRk8JhdFeGw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eDx98K8UcwT5s+ILi3q9xSEhE89E71SJQCdRNBXkfnG8CjAiWOG5zZGkz4+1AfG86
-         c4l1McC1/A++77qKRxjuT8JC52h0TVFfbHYoBwtfDGn8c+R1AfblXL9S6VaQHZMqmu
-         sT2w+p3ZlCAHX2lG7MMcBGE5a9hQeV9lLJCc4dW0CuY9NZahWMliZFb3U2q7VNpY0M
-         r6Xsv1F1PhDnIBuwFXvtUYDDDGVp/ZndGkSir4mr9gED4rqy6fIjdR8sq9FPnwAtYn
-         5JFoJhTxoCqPW5pSs292U/QK+pAVOpxSOjsjrAbqDetboZ2cK1qwJR54N5QUUlJihh
-         BAqxGKSyqCw4Q==
-Received: by mail-ej1-f41.google.com with SMTP id ga14so26958813ejc.6;
-        Tue, 13 Jul 2021 07:46:29 -0700 (PDT)
-X-Gm-Message-State: AOAM53128dFITcGko1teOuzqCWtigpiTgUUExSfHLWYmphMOny4UmKyD
-        wpJv1jMs2AVmYSRLTygTzYYx8MH4C7Srg4/ilA==
-X-Google-Smtp-Source: ABdhPJxfbGVd0KOttGqI611VjMxKM2Ddx6d8nMVbxOKG2ZlXCPTSszTMxQPSdlENqS/7uh/2WhwWwGKmW32aZVK8CiA=
-X-Received: by 2002:a17:906:28d1:: with SMTP id p17mr5730032ejd.130.1626187587660;
- Tue, 13 Jul 2021 07:46:27 -0700 (PDT)
+        id S236882AbhGMOxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:53:01 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10204 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236763AbhGMOxA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 10:53:00 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DEhi08026083;
+        Tue, 13 Jul 2021 16:49:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=7iogho2MPvmeERAslTdZvt0AwKrPJiklnLgTcqL++t4=;
+ b=CdFhfAHZ96LBfujeF5x+52cXoKRn8LNQVASe402H+6akQ391PamDYFxr1fyS58guiHLt
+ 20JYVMn3K4GpeXeug/gMV+RCith/1zNKczjiZHbp9DH3kPY3WigZWWHWjEWS2mefiBYI
+ FnSk9ctjVqNQjKpHyZkr24phFQpGfK4Fk2XGpziBcr7k3j60hs6O8UT9+oocAQzmJ2iK
+ dXO75e2gxh8WH2MwwlsJD9sjyQICBwhV7eoCJYxGDrrI6hWlpc4fhdAQ/sBXpnbs1e5i
+ gGW6Eet83LZbpbd5CPkAecJYgaSaae4cLQHIEVnVnMBnMW8ZfdRjn3lmYy+on/kP1eAP UQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39s6csth38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 16:49:49 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A00C610002A;
+        Tue, 13 Jul 2021 16:49:47 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 78C7A22AD4A;
+        Tue, 13 Jul 2021 16:49:47 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Jul 2021 16:49:47
+ +0200
+From:   Antonio Borneo <antonio.borneo@foss.st.com>
+To:     Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Antonio Borneo <antonio.borneo@foss.st.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/stm: dsi: compute the transition time from LP to HS and back
+Date:   Tue, 13 Jul 2021 16:49:41 +0200
+Message-ID: <20210713144941.3599-1-antonio.borneo@foss.st.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <cover.1626173013.git.viresh.kumar@linaro.org> <268086e273df0c53e3a9a1e751304c63e50ebe12.1626173013.git.viresh.kumar@linaro.org>
-In-Reply-To: <268086e273df0c53e3a9a1e751304c63e50ebe12.1626173013.git.viresh.kumar@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 13 Jul 2021 08:46:15 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLuyhSCR=LuFRsAUwL7OUvOahhH3iU+mkQbL8GJoC-cng@mail.gmail.com>
-Message-ID: <CAL_JsqLuyhSCR=LuFRsAUwL7OUvOahhH3iU+mkQbL8GJoC-cng@mail.gmail.com>
-Subject: Re: [PATCH 5/5] dt-bindings: gpio: Add bindings for gpio-virtio
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-13_07:2021-07-13,2021-07-13 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 4:51 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> gpio-virtio represents a virtio GPIO controller and this patch adds
-> binding for the same. The gpio-virtio subnode can be part of a
-> virtio,mmio node and is based on its binding.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> Depends on:
->
-> https://lore.kernel.org/lkml/7c716c2eb7ace5b5a560d8502af93101dbb53d24.1626170146.git.viresh.kumar@linaro.org/
-> ---
->  .../devicetree/bindings/gpio/gpio-virtio.yaml | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
->
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml b/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
-> new file mode 100644
-> index 000000000000..c813cdfd60fd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/gpio-virtio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Virtio memory mapped GPIO controller
-> +
-> +maintainers:
-> +  - Viresh Kumar <viresh.kumar@linaro.org>
-> +
-> +description:
-> +  Virtio GPIO controller, see /schemas/virtio/mmio.yaml for more details.
-> +
-> +allOf:
-> +  - $ref: /schemas/gpio/gpio.yaml#
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: '^gpio-virtio@[0-9]+$'
-> +
-> +  reg:
-> +    description:
-> +      The cell is the device ID of the GPIO device (VIRTIO_ID_GPIO) as per
-> +      dt-bindings/virtio/virtio_ids.h.
-> +    const: 41
-> +    $ref: /schemas/virtio/mmio.yaml#/properties/reg
-> +
-> +  gpio-controller: true
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +required:
-> +  - reg
-> +  - gpio-controller
-> +  - "#gpio-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/virtio/virtio_ids.h>
-> +
-> +    virtio@3000 {
-> +        compatible = "virtio,mmio";
-> +        reg = <0x3000 0x100>;
-> +        interrupts = <41>;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        gpio-virtio@0 {
-> +            reg = <VIRTIO_ID_GPIO>;
-> +            gpio-controller;
-> +            #gpio-cells = <2>;
-> +            interrupt-controller;
-> +            #interrupt-cells = <2>;
+The driver uses a conservative set of hardcoded values for the
+maximum time delay of the transitions between LP and HS, either
+for data and clock lanes.
 
-Similar to I2C, all this can just be added to the parent node.
+By using the info in STM32MP157 datasheet, valid also for other ST
+devices, compute the actual delay from the lane's bps.
 
-Rob
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+---
+To: Yannick Fertre <yannick.fertre@foss.st.com>
+To: Philippe Cornu <philippe.cornu@foss.st.com>
+To: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+To: David Airlie <airlied@linux.ie>
+To: Daniel Vetter <daniel@ffwll.ch>
+To: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>
+To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+To: dri-devel@lists.freedesktop.org
+To: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+index 8399d337589d..32cb41b2202f 100644
+--- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
++++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+@@ -309,14 +309,23 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+ 	return 0;
+ }
+ 
++#define DSI_PHY_DELAY(fp, vp, mbps) DIV_ROUND_UP((fp) * (mbps) + 1000 * (vp), 8000)
++
+ static int
+ dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned int lane_mbps,
+ 			   struct dw_mipi_dsi_dphy_timing *timing)
+ {
+-	timing->clk_hs2lp = 0x40;
+-	timing->clk_lp2hs = 0x40;
+-	timing->data_hs2lp = 0x40;
+-	timing->data_lp2hs = 0x40;
++	/*
++	 * From STM32MP157 datasheet, valid for STM32F469, STM32F7x9, STM32H747
++	 * phy_clkhs2lp_time = (272+136*UI)/(8*UI)
++	 * phy_clklp2hs_time = (512+40*UI)/(8*UI)
++	 * phy_hs2lp_time = (192+64*UI)/(8*UI)
++	 * phy_lp2hs_time = (256+32*UI)/(8*UI)
++	 */
++	timing->clk_hs2lp = DSI_PHY_DELAY(272, 136, lane_mbps);
++	timing->clk_lp2hs = DSI_PHY_DELAY(512, 40, lane_mbps);
++	timing->data_hs2lp = DSI_PHY_DELAY(192, 64, lane_mbps);
++	timing->data_lp2hs = DSI_PHY_DELAY(256, 32, lane_mbps);
+ 
+ 	return 0;
+ }
+
+base-commit: 35d283658a6196b2057be562096610c6793e1219
+-- 
+2.32.0
+
