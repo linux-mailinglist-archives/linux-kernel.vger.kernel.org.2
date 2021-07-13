@@ -2,216 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928A73C6CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F346B3C6CDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhGMJIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
+        id S234898AbhGMJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234845AbhGMJIS (ORCPT
+        with ESMTP id S234121AbhGMJJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:08:18 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011D5C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:05:28 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id l4-20020a05600c4f04b0290220f8455631so1803009wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:05:27 -0700 (PDT)
+        Tue, 13 Jul 2021 05:09:12 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D8EC0613DD;
+        Tue, 13 Jul 2021 02:06:21 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so21797862oti.2;
+        Tue, 13 Jul 2021 02:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0WOJOt7FoNNdbU6eZCXmOzp8mABgTTjOaj0L45g8wKs=;
-        b=TNf+xPCLerhLd+lHMLt14shq/V3BBfLbOjPiLDmplEfX1pe3QZEIsAD+ICoBCAkjA9
-         7dO75sEE1PaiefPkfmdAIIMnQo4m3LvMBcZvVH45caWT5vrl7d87183oDxOvgXmvgCS6
-         VbuF2vTH6Zgu5UGaRGj1vr9umdPhozjOvUFxscWX8Zb7roJ4Laj/czHZmfU4TDgQxbRk
-         Cq90HSXs5zma5fO6NyCaMfYwiwrevZlblE5lpFF4OJY8PgomO4dINejCXIhLvQMMZxGt
-         JZxhtWNjrV6G5zHQoj0+UBwmTVvFd+iaoYTmvshc96LmTH1HIuPQ6DdCcxc+uGN/GcDG
-         Up6Q==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9Au+qoSVHB4VwxC9iKkQR94HxlbBA0K+/1PBJPfppOc=;
+        b=sRYMdsr/MH/y7malyvLoVgJEWfqHdp6Vrj/XQeg2SbBGiWG8qXZ7/aHTDbXBzCS7n4
+         sv+elgQ/zCdr/MpVmtarAZT1UOwVihpuZ08f30ygdhm0DqshFFO3htSpvtPSt+5PX5Up
+         fH0MBOXHKozqDZQlEXNqYmhkOhyK40NX5EndXwR0cIJZx1T4NIwTEpPKzY+EzCLdsCDe
+         iAztvUSOQiWWnfwrPIW5gcgYRte7G+oIJuOfunmyLiLUaxPtnFR9tXVSECjDQzUYrPJU
+         jnZhBNuIfORTaHmHTuqHNE5ayOt5U9qDAQrFuia3fLSFbWpVtIMvk/igf0IPoBHURvFI
+         zo5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0WOJOt7FoNNdbU6eZCXmOzp8mABgTTjOaj0L45g8wKs=;
-        b=MC1Eq4UJXSaCTEBdQWeUswecrvIJvkYeyde0ZoDjPIvBd6lJ/2LxKn6dPtxfJ7DrNk
-         y93TLAHjhhdvFuy65bOnC98+nSk2M0agYa5I9O6k3FUPbTx1smzKhZmoHesCjvN7kmt0
-         vqPRJF/O8d1y8fpAudO6Lvju1Gt+oDQnkVXcCXXt85jl57+e4Aku2LFxxPxp32sktXg/
-         DtbIySURNOoItEdiNHuqC9r4n/0JaTTbwQovPVNwHRpP7SQBfhEO4PxEbyylnLapYAj5
-         qlRqmYAozyJ5FlcFg9JlB8mQZQ93ql3b0dH4zETSGVGU5PwUViShV6iN7+d8DH/oFTIs
-         x+kA==
-X-Gm-Message-State: AOAM531QFCOxIG/Rqv2THydm9Djwu7WRKX5FYe+w7rw54nP5B9Him+l6
-        cush0y0XwzZAlUKnvoXZTasYPw==
-X-Google-Smtp-Source: ABdhPJz+AZFpWZZPDhbkwEpDoRjHtToftwvHQZ/OC8l4qi53pyIr7gkebcqoEL4sjcc7L0AEHbg13Q==
-X-Received: by 2002:a1c:2182:: with SMTP id h124mr3852357wmh.44.1626167126538;
-        Tue, 13 Jul 2021 02:05:26 -0700 (PDT)
-Received: from google.com ([109.180.115.218])
-        by smtp.gmail.com with ESMTPSA id v9sm4774176wml.36.2021.07.13.02.05.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 02:05:25 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 10:05:23 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9Au+qoSVHB4VwxC9iKkQR94HxlbBA0K+/1PBJPfppOc=;
+        b=QOsg7kS/5gkIKaBLftb3uIS9v5VyoJTp3BD6D2C0i3+Yx5yhyjHTzn80LXP4hPQeAm
+         8m7muyIAKUCTm1SY5uJzsdapLjaoHEmpVn5wQ/liN1s7cFMys2a7KxFy+OLUnB5CYdON
+         TOX1rcrg31THqSzLdgsy1MeZcdhZDFPVa6F4Q7E5cNSzU5FM9NOQl8MQvI/2djOht4ds
+         9FCq3r95jZluOqaMZ/wHd/MFI0/pmQQmfmlIJZzw1D4Zta53r4kSGLXNDyfsetyamPOu
+         LGVcckx15d0vIBLDX0mCcWqULIVt9wSxpruwx4Ht+PamHiyA3FTnMRMnN2TdIhdQBEmw
+         ww9Q==
+X-Gm-Message-State: AOAM531hz/bb7KSURgtBhSzJ3X0zNn0EGLq+RV4FKAV8DA5LwVIznnYq
+        ke+LDKF9gKJRiuSxI3/WDYFFlnK8osU=
+X-Google-Smtp-Source: ABdhPJz1t4eOhXNJJ4vGWL3ObMrQD7iWG8+jMxQzCTu4k0COQhMyuFHS8d2cHpreBEldaM1wgou/QA==
+X-Received: by 2002:a9d:1d7:: with SMTP id e81mr2707555ote.171.1626167180499;
+        Tue, 13 Jul 2021 02:06:20 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x30sm3762921ote.44.2021.07.13.02.06.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 02:06:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/1] PCI: Coalesce host bridge contiguous apertures
+ without sorting
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
- as a module
-Message-ID: <YO1XU2ySZL3d03RH@google.com>
-References: <20201020072532.949137-1-narmstrong@baylibre.com>
- <20201020072532.949137-2-narmstrong@baylibre.com>
- <7hsga8kb8z.fsf@baylibre.com>
- <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
- <87r1hwwier.wl-maz@kernel.org>
- <7h7diwgjup.fsf@baylibre.com>
+References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
+ <f18e36f7-cb18-1a4a-e7e8-4fbb253581ae@roeck-us.net>
+ <CAAd53p50502g1_7Db4xzUXrzcofmtBDO=+-HLqfs+J7NvVhB+A@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <346ae622-de15-b81d-c129-24c9e77b59d4@roeck-us.net>
+Date:   Tue, 13 Jul 2021 02:06:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7h7diwgjup.fsf@baylibre.com>
+In-Reply-To: <CAAd53p50502g1_7Db4xzUXrzcofmtBDO=+-HLqfs+J7NvVhB+A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021, Kevin Hilman wrote:
+On 7/13/21 1:49 AM, Kai-Heng Feng wrote:
+> On Tue, Jul 13, 2021 at 4:45 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On 7/13/21 12:57 AM, Kai-Heng Feng wrote:
+>>> Commit 65db04053efe ("PCI: Coalesce host bridge contiguous apertures")
+>>> sorts the resources by address so the resources can be swapped.
+>>>
+>>> Before:
+>>> PCI host bridge to bus 0002:00
+>>> pci_bus 0002:00: root bus resource [io  0x0000-0xffff]
+>>> pci_bus 0002:00: root bus resource [mem 0xd80000000-0xdffffffff] (bus address [0x80000000-0xffffffff])
+>>> pci_bus 0002:00: root bus resource [mem 0xc0ee00000-0xc0eefffff] (bus address [0x00000000-0x000fffff])
+>>>
+>>> And after:
+>>> PCI host bridge to bus 0002:00
+>>> pci_bus 0002:00: root bus resource [io  0x0000-0xffff]
+>>> pci_bus 0002:00: root bus resource [mem 0xc0ee00000-0xc0eefffff] (bus address [0x00000000-0x000fffff])
+>>> pci_bus 0002:00: root bus resource [mem 0xd80000000-0xdffffffff] (bus address [0x80000000-0xffffffff])
+>>>
+>>> However, the sorted resources make NVMe stops working on QEMU ppc:sam460ex.
+>>>
+>>> Resources in the original issue are already in ascending order:
+>>> pci_bus 0000:00: root bus resource [mem 0x10020200000-0x100303fffff window]
+>>> pci_bus 0000:00: root bus resource [mem 0x10030400000-0x100401fffff window]
+>>>
+>>> So remove the sorting part to resolve the issue.
+>>>
+>>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>>> Fixes: 65db04053efe ("PCI: Coalesce host bridge contiguous apertures")
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>
+>> I think the original commit message would make more sense here. This patch
+>> doesn't fix 65db04053efe, it replaces it. The commit message now misses
+>> the point, and the patch coalesces continuous apertures without explaining
+>> the reason.
+> 
+> Because the message is already in the git log so I didn't think that's
+> necessary.
 
-> Marc Zyngier <maz@kernel.org> writes:
-> 
-> > On Fri, 21 May 2021 10:47:48 +0100,
-> > Lee Jones <lee.jones@linaro.org> wrote:
-> >> 
-> >> [1  <text/plain; UTF-8 (quoted-printable)>]
-> >> On Tue, 20 Oct 2020 at 19:23, Kevin Hilman <khilman@baylibre.com> wrote:
-> >> 
-> >> > Neil Armstrong <narmstrong@baylibre.com> writes:
-> >> >
-> >> > > In order to reduce the kernel Image size on multi-platform distributions,
-> >> > > make it possible to build the Amlogic GPIO IRQ controller as a module
-> >> > > by switching it to a platform driver.
-> >> > >
-> >> > > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> >> >
-> >> > Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-> >> > Tested-by: Kevin Hilman <khilman@baylibre.com>
-> >> >
-> >> > Tested as a module on meson-sm1-khadas-vim3l where the wired networking
-> >> > uses GPIO IRQs.
-> >> >
-> >> 
-> >> Good morning Neil, Kevin,
-> >> 
-> >> What happened to this set in the end?  I still don't see it in Mainline.
-> >
-> > Last time I tried this patch, it broke my test setup in non-obvious
-> > ways. Has someone checked that the issue I reported back then has been
-> > resolved now that fw_devlink is more usable?
-> 
-> OK, after much anticipation (and much delay due to me forgetting about
-> this), I just gave this series a spin again on top of v5.13-rc6, and it
-> seems to work fine with `fw_devlink=on`
-> 
-> I started with your config[1] and accepting all the defaults of any new
-> configs.  IOW, I ran: yes '' | make oldconfig after copying your config
-> to .config.
-> 
-> With that it seems to be working fine for me.
-> 
-> Right after boot (and before network probes) I see module loaded, but no
-> users yet in /proc/interrupts:
-> 
-> / # uname -a
-> Linux buildroot 5.13.0-rc6-00002-g679c8e852942 #5 SMP PREEMPT Mon Jun 14 15:08:40 PDT 2021 aarch64 GNU/Linux
-> / # lsmod |grep gpio
-> irq_meson_gpio         20480  0
-> leds_gpio              16384  0
-> / # cat /proc/interrupts
->            CPU0       CPU1       CPU2       CPU3
->   9:          0          0          0          0     GICv2  25 Level     vgic
->  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
->  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
->  13:       1416        916        534       1421     GICv2  26 Level     arch_timer
->  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
->  22:         38          0          0          0     GICv2 225 Edge      ttyAML0
->  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
->  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
->  28:        322          0          0          0     GICv2  35 Edge      meson
->  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
->  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
->  34:          0          0          0          0     GICv2 194 Level     panfrost-job
->  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
->  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
->  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
->  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
-> IPI0:       425        544        664        925       Rescheduling interrupts
-> IPI1:        86        166        269        136       Function call interrupts
-> IPI2:         0          0          0          0       CPU stop interrupts
-> IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-> IPI4:         0          0          0          0       Timer broadcast interrupts
-> IPI5:         0          0          0          0       IRQ work interrupts
-> IPI6:         0          0          0          0       CPU wake-up interrupts
-> Err:          0
-> 
-> So then I init the network interface and PHY works, DHCP works etc.
-> 
-> / # udhcpc
-> udhcpc: started, v1.31.1
-> [  102.250449] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=37)
-> [  102.256413] meson8b-dwmac ff3f0000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> [  102.269433] meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
-> [  102.271357] meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
-> [  102.278493] meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
-> udhcpc: sending discover
-> [  104.743301] meson8b-dwmac ff3f0000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
-> [  104.746470] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-> udhcpc: sending discover
-> udhcpc: sending select for 192.168.0.122
-> udhcpc: lease of 192.168.0.122 obtained, lease time 600
-> deleting routers
-> adding dns 192.168.0.254
-> adding dns 192.168.0.254
-> / # cat /proc/interrupts
->            CPU0       CPU1       CPU2       CPU3
->   9:          0          0          0          0     GICv2  25 Level     vgic
->  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
->  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
->  13:       1575       1018        604       1588     GICv2  26 Level     arch_timer
->  14:          8          0          0          0     GICv2  40 Level     eth0
->  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
->  22:        132          0          0          0     GICv2 225 Edge      ttyAML0
->  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
->  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
->  28:        322          0          0          0     GICv2  35 Edge      meson
->  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
->  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
->  34:          0          0          0          0     GICv2 194 Level     panfrost-job
->  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
->  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
->  37:          2          0          0          0  meson-gpio-irqchip  26 Level     0.0:00
->  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
->  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
-> IPI0:       476        567        720        956       Rescheduling interrupts
-> IPI1:        93        166        270        137       Function call interrupts
-> IPI2:         0          0          0          0       CPU stop interrupts
-> IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-> IPI4:         0          0          0          0       Timer broadcast interrupts
-> IPI5:         0          0          0          0       IRQ work interrupts
-> IPI6:         0          0          0          0       CPU wake-up interrupts
-> Err:          0
-> / #
-> 
-> Kevin
-> 
-> [1] http://www.loen.fr/tmp/Config.full-arm64
+Hmm, not my decision to make, but the original commit got reverted.
+The commit log associated with this patch should still reflect what
+the patch does.
 
-Thanks Kevin.
+Guenter
 
-Now that -rc1 is out, hopefully Marc can assign some time to this.
+> Will send another one with the original message along with this one.
+> 
+> Kai-Heng
+> 
+>>
+>> Guenter
+>>
+>>> ---
+>>>    drivers/pci/probe.c | 31 +++++++++++++++++++++++++++----
+>>>    1 file changed, 27 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+>>> index 79177ac37880..5de157600466 100644
+>>> --- a/drivers/pci/probe.c
+>>> +++ b/drivers/pci/probe.c
+>>> @@ -877,11 +877,11 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
+>>>    static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>>>    {
+>>>        struct device *parent = bridge->dev.parent;
+>>> -     struct resource_entry *window, *n;
+>>> +     struct resource_entry *window, *next, *n;
+>>>        struct pci_bus *bus, *b;
+>>> -     resource_size_t offset;
+>>> +     resource_size_t offset, next_offset;
+>>>        LIST_HEAD(resources);
+>>> -     struct resource *res;
+>>> +     struct resource *res, *next_res;
+>>>        char addr[64], *fmt;
+>>>        const char *name;
+>>>        int err;
+>>> @@ -961,11 +961,34 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>>>        if (nr_node_ids > 1 && pcibus_to_node(bus) == NUMA_NO_NODE)
+>>>                dev_warn(&bus->dev, "Unknown NUMA node; performance will be reduced\n");
+>>>
+>>> +     /* Coalesce contiguous windows */
+>>> +     resource_list_for_each_entry_safe(window, n, &resources) {
+>>> +             if (list_is_last(&window->node, &resources))
+>>> +                     break;
+>>> +
+>>> +             next = list_next_entry(window, node);
+>>> +             offset = window->offset;
+>>> +             res = window->res;
+>>> +             next_offset = next->offset;
+>>> +             next_res = next->res;
+>>> +
+>>> +             if (res->flags != next_res->flags || offset != next_offset)
+>>> +                     continue;
+>>> +
+>>> +             if (res->end + 1 == next_res->start) {
+>>> +                     next_res->start = res->start;
+>>> +                     res->flags = res->start = res->end = 0;
+>>> +             }
+>>> +     }
+>>> +
+>>>        /* Add initial resources to the bus */
+>>>        resource_list_for_each_entry_safe(window, n, &resources) {
+>>> -             list_move_tail(&window->node, &bridge->windows);
+>>>                offset = window->offset;
+>>>                res = window->res;
+>>> +             if (!res->end)
+>>> +                     continue;
+>>> +
+>>> +             list_move_tail(&window->node, &bridge->windows);
+>>>
+>>>                if (res->flags & IORESOURCE_BUS)
+>>>                        pci_bus_insert_busn_res(bus, bus->number, res->end);
+>>>
+>>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
