@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63B53C787B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB933C787F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235981AbhGMVF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
+        id S236072AbhGMVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbhGMVFy (ORCPT
+        with ESMTP id S235139AbhGMVGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:05:54 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF946C0613EF
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:03:03 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id h4so22644295pgp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:03:03 -0700 (PDT)
+        Tue, 13 Jul 2021 17:06:52 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CD9C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:04:01 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id a18so73926ljk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 14:04:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/+a0nOAUvmFDk9sQMqBodRLs3dk1rTDWSs7A8bhW4R4=;
-        b=iA0rtUSvo2J+Q0KFs9VeHEfWPCZ8DBG+LqtWDHZyagCTcEzWpYCjPE4wfvRNUVRF7u
-         9Ki2NkyU53QgVvw8hFtNPqw61MFpsNaDTlck0X1PjcjPQqbYGgFSqk+gC9543wfuqxqP
-         0Lq7YzT4LxZrqcAOKEMdShDcVjej34X2egWDr8PXR/EdiJ9jJLWjBGn2t8J4HWtp6HEX
-         4cX1hGyRCCgbQcYp+Iolkk0VjDull+k8vpcQ+zrZIUtDhLmDBnom3Y7BG3xV+NYW/tsD
-         7ty0z8TzhI2oSJgLoNEoCJYA76zZyptM0gzanVZu3sUAA94xvw653dRzaS/ggc6v9EAC
-         k9Rw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0/WzDWmZUq8jX07GulngkcAUpVh4+cRWNFXLGvNWEeI=;
+        b=EcEjIIgQMnPfw3kb3KLbeGApDG4e53k159at93bSWI/G3rcs8agKmkFnyWlj64JjSs
+         1V0oqyXuyLZqCVUwBRYlGq4mMsc0KeLco5nUrr8LWqo1p6SlsBut4z4ZATD6Gp+jGjMA
+         tmpcDv5Xm/v7mNQuRGh5BCs8ywWxgw4va4ciRZ5NTmWr+YncMNtETWMIT1+gZt/fXaA0
+         9/60S1/bCEZBTUdC8FyMSr04MaXWm7pFI215a7zwwIgS2wPCKlLvaLTWnuFSvlOZmK9c
+         CIkJpOPP66lsxPTCMs47Uv/5SVWPro87N7+MC4nJIi0x3KBNHl8XRj/n0VBcJM4JsbIn
+         fAvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/+a0nOAUvmFDk9sQMqBodRLs3dk1rTDWSs7A8bhW4R4=;
-        b=JwTwbG2GSwoHcPd1PnJC+SxPsEm/AGbvbb3cBktjn6LtxkD9rgcTTnpLJjRJtamXsI
-         xO2Riab1LeCqaI+MOMYsnpOBEjMVwj+seN0RyyJJ7MTED2gYB8csXPzVBK2nLwOtmozG
-         AH8U+H0YIhMAoPQ/IxqyzNdkKZdfu5Bmai9eF6Rf5fHS8Nz5y5WEdqjIvDH8sm+PowZL
-         b7goREE9Zdi1v9zSi80YfdCxdZM+xaprpgQTCTxt0nf68lxSXSGshtuU3tHp92Q89laC
-         xr+QZiP8Ig1xig/RzM3kC4Cdjd0VUIfJW/mnESUUZTlWptGi4Xo0L/Xk27qCKXqp7rGK
-         U3lQ==
-X-Gm-Message-State: AOAM5334qo/T896PuOsWNn7tNHtkjvjtt+2lke4myMvSWyrPUNZMrqmV
-        RKjVFLr7TfnpXG2oUvopPkLtIg==
-X-Google-Smtp-Source: ABdhPJww8g05J8+aQcowzYH6Gd3XLQf/mwD1z0IQ5Ql/naKK2SPiOd1YyZMnANZGrw2dUw7d8cZfFA==
-X-Received: by 2002:a65:4109:: with SMTP id w9mr5888848pgp.24.1626210183074;
-        Tue, 13 Jul 2021 14:03:03 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a20sm3604319pjh.46.2021.07.13.14.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 14:03:02 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 21:02:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v2 51/69] KVM: x86/mmu: Allow per-VM override of the
- TDP max page level
-Message-ID: <YO3/gvK9A3tgYfT6@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <e2521b4c48c582260454764e84a057a2da99ac3c.1625186503.git.isaku.yamahata@intel.com>
- <89d1ff17-dc48-0f39-257a-4cf11a98f435@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0/WzDWmZUq8jX07GulngkcAUpVh4+cRWNFXLGvNWEeI=;
+        b=N76XJ/OlZQiHTf5OqgCdwhsj1TJBR4X0ZyeF0V8Tn20t1xf8a7DTc2YCMuAYLEFs/p
+         z7Ygv+o7hZ/ESdRmU88SaQvJaR9T4uKZ0QOdveF7/o61TE4joPnhuMDjobY7g1j4yHRE
+         NSiSU1Gph+SPwTTO8Lg/UO+tZiGGQ7mPiNOWrjHzAMIJFVVcVJfAA+8GTftD4k9Sxd0v
+         0WCaEQI36lZb+/Ljkw8Pzk4eX+lCuBIZrqEbyDXyGqRcEed4+50liJjgncl+GlmyV6KV
+         2gbryJXRsqkjQ3fmXiSaY5JSXgUX5WGgwnMVq+0oTm/FULkxmx/10yu0XrrssyH0z6yf
+         igTw==
+X-Gm-Message-State: AOAM533KSIH89JIwLTX+jSOPL2aQsKEo3anNDIfRixlQfnEimYDSw+pC
+        MB25/aDJI9QUNcmj9umYmucgsflx0Vs7cETkhsEgYA==
+X-Google-Smtp-Source: ABdhPJxejiVBTFHqJSReqWobCTdyXBoqP09rUgnZRGuUJ0BDPBL7l/yP5EGzb2L9O7fWjR1kVxCSdLoVbVmALPmrNdk=
+X-Received: by 2002:a2e:a22c:: with SMTP id i12mr5959649ljm.267.1626210239553;
+ Tue, 13 Jul 2021 14:03:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89d1ff17-dc48-0f39-257a-4cf11a98f435@redhat.com>
+References: <20210601183002.26176586@canb.auug.org.au> <CACK8Z6Fp-_oRkC-dQ4U5y6ZUrr7Q3U084PiP+Q9daYstpps+aA@mail.gmail.com>
+ <YLosn8r6pg4AUC14@kroah.com>
+In-Reply-To: <YLosn8r6pg4AUC14@kroah.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Tue, 13 Jul 2021 14:03:23 -0700
+Message-ID: <CACK8Z6GGXXv3G6po5Adfsw7=vHMij7Cpxu2mwjRmCDT70mkGhw@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the usb tree
+To:     Greg KH <greg@kroah.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021, Paolo Bonzini wrote:
-> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > TODO: This is tentative patch.  Support large page and delete this patch.
-> > 
-> > Allow TDX to effectively disable large pages, as SEPT will initially
-> > support only 4k pages.
++linux-doc@vger.kernel.org
++Jonathan Corbet
 
-...
+Hi Jonathan / kernel-docs people,
 
-> Seems good enough for now.
+On Fri, Jun 4, 2021 at 6:37 AM Greg KH <greg@kroah.com> wrote:
+>
+> On Tue, Jun 01, 2021 at 10:39:42AM -0700, Rajat Jain wrote:
+> > Hello,
+> >
+> >
+> > On Tue, Jun 1, 2021 at 1:30 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > After merging the usb tree, today's linux-next build (htmldocs) produced
+> > > this warning:
+> > >
+> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected indentation.
+> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote ends without a blank line; unexpected unindent.
+> >
+> > I'd be happy to send a patch to fix this, but I didn't really
+> > understand what needs to be done.
+> >
+> > Here is the relevant documentation update in the patch:
+> >
+> > +What:          /sys/devices/.../removable
+> > +Date:          May 2021
+> > +Contact:       Rajat Jain <rajatxjain@gmail.com>
+> > +Description:
+> > +               Information about whether a given device can be removed from the
+> > +               platform by the user. This is determined by its subsystem in a
+> > +               bus / platform-specific way. This attribute is only present for
+> > +               devices that can support determining such information:
+> > +
+> > +               "removable": device can be removed from the platform by the user
+> > +               "fixed":     device is fixed to the platform / cannot be removed
+> > +                            by the user.
+> > +               "unknown":   The information is unavailable / cannot be deduced.
+> > +
+> > +               Currently this is only supported by USB (which infers the
+> > +               information from a combination of hub descriptor bits and
+> > +               platform-specific data such as ACPI).
+> >
+> > I'd be happy to send a patch if you can point me what needs to be done
+> > (or let Stephen / Greg / some one else do it if it is easier to just
+> > do it instead of guiding me).
+>
+> I do not know what the "right" thing to do here is, sorry.  Maybe one of
+> the kerneldoc people know?
 
-Looks like SNP needs a dynamic check, i.e. a kvm_x86_ops hook, to handle an edge
-case in the RMP.  That's probably the better route given that this is a short-term
-hack (hopefully :-D).
+Can someone familiar with the documentation and html docs let me know
+what is wrong with Documentation/ABI/testing/sysfs-devices-removable
+that is resulting in this warning when doing "make htmldocs":
+
+> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected indentation.
+> > > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote ends without a blank line; unexpected unindent.
+
+I looked at the file line number 2 and it just seems inline with other
+similar files in that documentation folder.
+
+Thanks,
+
+Rajat
+
+> >
+>
+> greg k-h
