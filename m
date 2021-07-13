@@ -2,257 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868AB3C7695
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6A73C769D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234205AbhGMSnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S234586AbhGMSoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhGMSnt (ORCPT
+        with ESMTP id S234548AbhGMSoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:43:49 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D833BC0613DD;
-        Tue, 13 Jul 2021 11:40:58 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id dt7so13481282ejc.12;
-        Tue, 13 Jul 2021 11:40:58 -0700 (PDT)
+        Tue, 13 Jul 2021 14:44:05 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A33C0613EE;
+        Tue, 13 Jul 2021 11:41:14 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id c17so43203536ejk.13;
+        Tue, 13 Jul 2021 11:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QQpf5xOaOqo0s/plb1U3NgMNZX1Ph8Dt44evAisR+l0=;
-        b=gI7n/qI/DkL7SIT4shqKYtKHWdM176gJQ3/2RrZOVcCXPfG3EbUy0bDedEoBuILbpr
-         CORECQF9iy1EkOD3hP9IHmXZ44XRBdjIs8sBXI2ozzNvMcmlMTmrdANT4RNAU+w8xj8G
-         J7eUfJnhuD343zLi1dXayV9MAKCc3KSG1f9wePXJfVqfeVIb7OUS4KYYUZMd8EQxsX/H
-         wWUc0Qhpve1BBC1OconHChBafgEAEQ27DJIul2rLsMOyDgWl4upMFHXuURFasV4lT56Y
-         Z5LoII4Nkvv594aDEvDTbKWa51/5nk67U4dBgAYdty4lCqqvATA4epnFmJoN3qk7B6CQ
-         S5fg==
+        bh=FnotVOBY4MJ516v1c1mv4RJWivhMUK0+SH3ZuHVwU20=;
+        b=ocH/cyHkQ2xDE+OiGRIQa0nRf0KV/hVRl4c0T/OyflQIoFehVp0nhgd+IN3Ov7uE4m
+         fqtDMQtuOgqtjdie2j9qlHulMyKHKrgo1dg1gtsbXr927nK14Nt0F7/k/2KtFRl41ZcC
+         IRJTldIaWXNLmTzf798r+N9WDISyZ5kGDaP7mOgPBIwg16Co3XSO2MHVDg/DCIkAIBTg
+         TNvVJJOYgGUhoxjdvbKyf+SDn35L7IF9JboMY1GE9HE4O2Gw9NapQt0a6tj9Wu08dA+A
+         k54f6HrjM6m7mpXmpfQkVQiR7gswYRrkYOFCTXaGa+jIJaUSuDhV4rcURhdKtBztxLbb
+         hK+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QQpf5xOaOqo0s/plb1U3NgMNZX1Ph8Dt44evAisR+l0=;
-        b=kITSwvR4n3NXAQQUzLXJeHXhGauWAvZy8CPcLzAIQ8g7eLdcNUO/HC0prtT1H+Zprp
-         4IdZ67oXcUWwQs3NKWw1E9DvzjLVOgI5IEA5gRNFcd4KL6JkFUrwmHRlAodV0LT9/aus
-         J+s5I6obDTzmtCjDqtrRu9XeiYG4fuBGEL3SrgQN+HreYv/5piK+7KibVXekJeseC3Ix
-         eVcDhQZnpXiGC0BuksI8NM9fgftH5LsTQgdRg3pihLGlvdkp0kTPnfiEIrYWcaV/quVY
-         vhdA6qxOXFr62/hpgDt26hm8g3rrxEkDENICZJ3RPYmd9SBELlMZBqjoc8D1dK8wEXs2
-         rnug==
-X-Gm-Message-State: AOAM5310ntfcFpaXhJXh7ACK+A7lMM75u3XfUsODs7K5UJnRv+7yL6gr
-        5Q3mCiRzQ1NnZFcKPdIvlJGd8Dy5xBWZGt14pWw=
-X-Google-Smtp-Source: ABdhPJxK71IKMduWW2mt+NCXshKS0E6oF7WxzwUQNmcLDT/A9YHEAOZfzeyoku38PmMUvK3HNH6Eh6lXLoPNYPUF9BA=
-X-Received: by 2002:a17:907:7d94:: with SMTP id oz20mr7376635ejc.333.1626201657390;
- Tue, 13 Jul 2021 11:40:57 -0700 (PDT)
+        bh=FnotVOBY4MJ516v1c1mv4RJWivhMUK0+SH3ZuHVwU20=;
+        b=kFhejzADZCdRa3O1vaVc4Qtc3jqjA6mhBXXLIDZ6iKR7N/6qln6jV09w8Ow7kyxcvR
+         5CrhiTIOsno2aEnRdTlt/Q//4Yow0F5a7RTIg7yQDnZg437GwzaFDQEUbTf7StWIczR3
+         vRQJ3F33ZrZvioLodzu1i33BFshyhFm6b/PHTSPipkKrQRRlD0lhJYIyHyjMlvl/kxmr
+         msU1O7mLpjGttcN2g2da9sCzUjrVUkG8cAJ+14OnqXaIH5SaPoTXtVJRJn5rAEKilgWM
+         BQ3sWRZq/H499Gnp8msOuMEfCbBhDeM+NnEBx13JauEAeYIW6w53n1V2scv598GEa0kL
+         kl8A==
+X-Gm-Message-State: AOAM533T6wZTIwEu9ujLC+3OBrb3yKxa7LB17L3+BqoD31yI200HziYp
+        nVrzXjIbZE7a8N7MKBdU2UN2CKUhJxv1CJaAXRk=
+X-Google-Smtp-Source: ABdhPJx+RwAA0sfkwjHGLIOh81NJNto2mj6271Pb2cD5eDmUd5wrTqTSZarZhopKei55G0/dNnMpdSbuKJ/HMLHWQO8=
+X-Received: by 2002:a17:907:e9e:: with SMTP id ho30mr7609884ejc.114.1626201672721;
+ Tue, 13 Jul 2021 11:41:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210713010536.3161822-1-woodylin@google.com>
-In-Reply-To: <20210713010536.3161822-1-woodylin@google.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Tue, 13 Jul 2021 20:40:46 +0200
-Message-ID: <CA+fCnZdycHhs1fQyn1uZKhPv8T3EhE_ckQ7tVbELyMSEJGJE7Q@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/kasan: move kasan.fault to mm/kasan/report.c
-To:     Woody Lin <woodylin@google.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+References: <1626168272-25622-1-git-send-email-linyunsheng@huawei.com> <1626168272-25622-3-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1626168272-25622-3-git-send-email-linyunsheng@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 13 Jul 2021 11:41:01 -0700
+Message-ID: <CAKgT0UevHk7n=Lnfkvw1t04HvRCX9vtyc0a6_2cda3c6hgDdJg@mail.gmail.com>
+Subject: Re: [PATCH rfc v4 2/4] page_pool: add interface to manipulate bias in
+ page pool
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 3:07 AM Woody Lin <woodylin@google.com> wrote:
+On Tue, Jul 13, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >
-> Move the boot parameter 'kasan.fault' from hw_tags.c to report.c, so it
-> can support all KASAN modes - generic, and both tag-based.
+> As suggested by Alexander, "A DMA mapping should be page
+> aligned anyway so the lower 12 bits would be reserved 0",
+> so it might make more sense to repurpose the lower 12 bits
+> of the dma address to store the bias for frag page support
+> in page pool for 32 bit systems with 64 bit dma, which
+> should be rare those days.
 >
-> Signed-off-by: Woody Lin <woodylin@google.com>
-> ---
->  Documentation/dev-tools/kasan.rst | 13 ++++++----
->  mm/kasan/hw_tags.c                | 43 -------------------------------
->  mm/kasan/kasan.h                  |  1 -
->  mm/kasan/report.c                 | 29 ++++++++++++++++++---
->  4 files changed, 34 insertions(+), 52 deletions(-)
+> For normal system, the dma_addr[1] in 'struct page' is not
+> used, so we can reuse the dma_addr[1] for storing bias.
 >
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index 83ec4a556c19..21dc03bc10a4 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -181,9 +181,16 @@ By default, KASAN prints a bug report only for the first invalid memory access.
->  With ``kasan_multi_shot``, KASAN prints a report on every invalid access. This
->  effectively disables ``panic_on_warn`` for KASAN reports.
->
-> +Alternatively, independent of ``panic_on_warn`` the ``kasan.fault=`` boot
-> +parameter can be used to control panic and reporting behaviour:
-> +
-> +- ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
-> +  report or also panic the kernel (default: ``report``). The panic happens even
-> +  if ``kasan_multi_shot`` is enabled.
-> +
->  Hardware tag-based KASAN mode (see the section about various modes below) is
->  intended for use in production as a security mitigation. Therefore, it supports
-> -boot parameters that allow disabling KASAN or controlling its features.
-> +additional boot parameters that allow disabling KASAN or controlling features:
->
->  - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
->
-> @@ -199,10 +206,6 @@ boot parameters that allow disabling KASAN or controlling its features.
->  - ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
->    traces collection (default: ``on``).
->
-> -- ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
-> -  report or also panic the kernel (default: ``report``). The panic happens even
-> -  if ``kasan_multi_shot`` is enabled.
-> -
->  Implementation details
->  ----------------------
->
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 4ea8c368b5b8..51903639e55f 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -37,16 +37,9 @@ enum kasan_arg_stacktrace {
->         KASAN_ARG_STACKTRACE_ON,
->  };
->
-> -enum kasan_arg_fault {
-> -       KASAN_ARG_FAULT_DEFAULT,
-> -       KASAN_ARG_FAULT_REPORT,
-> -       KASAN_ARG_FAULT_PANIC,
-> -};
-> -
->  static enum kasan_arg kasan_arg __ro_after_init;
->  static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
->  static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
-> -static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
->
->  /* Whether KASAN is enabled at all. */
->  DEFINE_STATIC_KEY_FALSE(kasan_flag_enabled);
-> @@ -59,9 +52,6 @@ EXPORT_SYMBOL_GPL(kasan_flag_async);
->  /* Whether to collect alloc/free stack traces. */
->  DEFINE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
->
-> -/* Whether to panic or print a report and disable tag checking on fault. */
-> -bool kasan_flag_panic __ro_after_init;
-> -
->  /* kasan=off/on */
->  static int __init early_kasan_flag(char *arg)
->  {
-> @@ -113,23 +103,6 @@ static int __init early_kasan_flag_stacktrace(char *arg)
->  }
->  early_param("kasan.stacktrace", early_kasan_flag_stacktrace);
->
-> -/* kasan.fault=report/panic */
-> -static int __init early_kasan_fault(char *arg)
-> -{
-> -       if (!arg)
-> -               return -EINVAL;
-> -
-> -       if (!strcmp(arg, "report"))
-> -               kasan_arg_fault = KASAN_ARG_FAULT_REPORT;
-> -       else if (!strcmp(arg, "panic"))
-> -               kasan_arg_fault = KASAN_ARG_FAULT_PANIC;
-> -       else
-> -               return -EINVAL;
-> -
-> -       return 0;
-> -}
-> -early_param("kasan.fault", early_kasan_fault);
-> -
->  /* kasan_init_hw_tags_cpu() is called for each CPU. */
->  void kasan_init_hw_tags_cpu(void)
->  {
-> @@ -197,22 +170,6 @@ void __init kasan_init_hw_tags(void)
->                 break;
->         }
->
-> -       switch (kasan_arg_fault) {
-> -       case KASAN_ARG_FAULT_DEFAULT:
-> -               /*
-> -                * Default to no panic on report.
-> -                * Do nothing, kasan_flag_panic keeps its default value.
-> -                */
-> -               break;
-> -       case KASAN_ARG_FAULT_REPORT:
-> -               /* Do nothing, kasan_flag_panic keeps its default value. */
-> -               break;
-> -       case KASAN_ARG_FAULT_PANIC:
-> -               /* Enable panic on report. */
-> -               kasan_flag_panic = true;
-> -               break;
-> -       }
-> -
->         pr_info("KernelAddressSanitizer initialized\n");
->  }
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 98e3059bfea4..9d57383ce1fa 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -36,7 +36,6 @@ static inline bool kasan_async_mode_enabled(void)
->
->  #endif
->
-> -extern bool kasan_flag_panic __ro_after_init;
->  extern bool kasan_flag_async __ro_after_init;
->
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 8fff1825b22c..884a950c7026 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -39,6 +39,31 @@ static unsigned long kasan_flags;
->  #define KASAN_BIT_REPORTED     0
->  #define KASAN_BIT_MULTI_SHOT   1
->
-> +enum kasan_arg_fault {
-> +       KASAN_ARG_FAULT_DEFAULT,
-> +       KASAN_ARG_FAULT_REPORT,
-> +       KASAN_ARG_FAULT_PANIC,
-> +};
-> +
-> +static enum kasan_arg_fault kasan_arg_fault __ro_after_init = KASAN_ARG_FAULT_DEFAULT;
-> +
-> +/* kasan.fault=report/panic */
-> +static int __init early_kasan_fault(char *arg)
-> +{
-> +       if (!arg)
-> +               return -EINVAL;
-> +
-> +       if (!strcmp(arg, "report"))
-> +               kasan_arg_fault = KASAN_ARG_FAULT_REPORT;
-> +       else if (!strcmp(arg, "panic"))
-> +               kasan_arg_fault = KASAN_ARG_FAULT_PANIC;
-> +       else
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +early_param("kasan.fault", early_kasan_fault);
-> +
->  bool kasan_save_enable_multi_shot(void)
->  {
->         return test_and_set_bit(KASAN_BIT_MULTI_SHOT, &kasan_flags);
-> @@ -102,10 +127,8 @@ static void end_report(unsigned long *flags, unsigned long addr)
->                 panic_on_warn = 0;
->                 panic("panic_on_warn set ...\n");
->         }
-> -#ifdef CONFIG_KASAN_HW_TAGS
-> -       if (kasan_flag_panic)
-> +       if (kasan_arg_fault == KASAN_ARG_FAULT_PANIC)
->                 panic("kasan.fault=panic set ...\n");
-> -#endif
->         kasan_enable_current();
->  }
->
-> --
-> 2.32.0.93.g670b81a890-goog
->
+> The PAGE_POOP_USE_DMA_ADDR_1 macro is used to decide where
+> to store the bias, as the "sizeof(dma_addr_t) > sizeof(
+> unsigned long)" is false for normal system, so hopefully the
+> compiler will optimize out the unused code for those system.
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+I assume the name is a typo and you meant PAGE_POOL_USE_DMA_ADDR_1?
+
+> The newly added page_pool_set_bias() should be called before
+> the page is passed to any user. Otherwise, call the newly
+> added page_pool_atomic_sub_bias_return().
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+>  include/net/page_pool.h | 70 ++++++++++++++++++++++++++++++++++++++++++++++---
+>  net/core/page_pool.c    | 10 +++++++
+>  2 files changed, 77 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index 8d7744d..315b9f2 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -198,21 +198,85 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>         page_pool_put_full_page(pool, page, true);
+>  }
+>
+> +#define PAGE_POOP_USE_DMA_ADDR_1       (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +
+>  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>  {
+> -       dma_addr_t ret = page->dma_addr[0];
+> -       if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +       dma_addr_t ret;
+> +
+> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
+> +               ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
+>                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+
+Alternatively we could change things a bit and rename things so we
+have the MSB of dma_addr where dma_addr[1] is and we rename
+dma_addr[0] to pp_frag_count we could have it also contain the lower
+bits and handle it like so:
+    ret = page->dma_addr;
+    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+        ret <<= 32;
+        ret |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
+    }
+
+> +       } else {
+> +               ret = page->dma_addr[0];
+> +       }
+> +
+>         return ret;
+>  }
+>
+>  static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>  {
+>         page->dma_addr[0] = addr;
+> -       if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +       if (PAGE_POOP_USE_DMA_ADDR_1)
+>                 page->dma_addr[1] = upper_32_bits(addr);
+
+So assuming similar logic to above we could do something like:
+    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+        atomic_long_set(&page->pp_frag_count, addr & PAGE_MASK);
+        addr >>= 32;
+    }
+    pp->dma_addr = addr;
+
+>  }
+>
+> +static inline int page_pool_atomic_sub_bias_return(struct page *page, int nr)
+> +{
+> +       int bias;
+> +
+> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
+> +               unsigned long *bias_ptr = &page->dma_addr[0];
+> +               unsigned long old_bias = READ_ONCE(*bias_ptr);
+> +               unsigned long new_bias;
+> +
+> +               do {
+> +                       bias = (int)(old_bias & ~PAGE_MASK);
+> +
+> +                       /* Warn when page_pool_dev_alloc_pages() is called
+> +                        * with PP_FLAG_PAGE_FRAG flag in driver.
+> +                        */
+> +                       WARN_ON(!bias);
+> +
+> +                       /* already the last user */
+> +                       if (!(bias - nr))
+> +                               return 0;
+> +
+> +                       new_bias = old_bias - nr;
+> +               } while (!try_cmpxchg(bias_ptr, &old_bias, new_bias));
+> +
+> +               WARN_ON((new_bias & PAGE_MASK) != (old_bias & PAGE_MASK));
+> +
+> +               bias = new_bias & ~PAGE_MASK;
+> +       } else {
+> +               atomic_t *v = (atomic_t *)&page->dma_addr[1];
+
+The problem with casting like this is that it makes assumptions about
+byte ordering in the case that atomic_t is a 32b value and dma_addr is
+a long value.
+
+> +
+> +               if (atomic_read(v) == nr)
+> +                       return 0;
+> +
+> +               bias = atomic_sub_return(nr, v);
+> +               WARN_ON(bias < 0);
+> +       }
+
+Rather than have 2 versions of this function it might work better to
+just use the atomic_long version of these functions instead. Then you
+shouldn't need to have two versions of the code.
+
+You could just modify the block on the end to check for new_frag_count
+vs old_frag_count if PAGE_POOL_USE_PP_FRAG_COUNT is true, or
+new_frag_count < 0 if false.
+
+> +
+> +       return bias;
+> +}
+> +
+> +static inline void page_pool_set_bias(struct page *page, int bias)
+> +{
+> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
+> +               unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
+> +
+> +               dma_addr_0 &= PAGE_MASK;
+> +               dma_addr_0 |= bias;
+> +
+> +               WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+> +       } else {
+> +               atomic_t *v = (atomic_t *)&page->dma_addr[1];
+> +
+> +               atomic_set(v, bias);
+> +       }
+
+Similarly here you could just update bias to include the dma_addr in
+the if case, and then use atomic_long_set for both cases.
+
+> +}
+> +
+>  static inline bool is_page_pool_compiled_in(void)
+>  {
+>  #ifdef CONFIG_PAGE_POOL
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 78838c6..6ac5b00 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -198,6 +198,16 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+>         if (dma_mapping_error(pool->p.dev, dma))
+>                 return false;
+>
+> +       if (PAGE_POOP_USE_DMA_ADDR_1 &&
+> +           WARN_ON(pool->p.flags & PP_FLAG_PAGE_FRAG &&
+> +                   dma & ~PAGE_MASK)) {
+> +               dma_unmap_page_attrs(pool->p.dev, dma,
+> +                                    PAGE_SIZE << pool->p.order,
+> +                                    pool->p.dma_dir,
+> +                                    DMA_ATTR_SKIP_CPU_SYNC);
+> +               return false;
+> +       }
+> +
+>         page_pool_set_dma_addr(page, dma);
+>
+>         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> --
+> 2.7.4
+>
