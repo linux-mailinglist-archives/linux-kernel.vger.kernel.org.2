@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC643C7186
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C054C3C7184
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236755AbhGMN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
+        id S236710AbhGMN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236675AbhGMN5S (ORCPT
+        with ESMTP id S234047AbhGMN5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Jul 2021 09:57:18 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32833C0613E9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33323C0613EE
         for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:54:28 -0700 (PDT)
-Message-Id: <20210713135157.873137732@linutronix.de>
+Message-Id: <20210713135158.054424875@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626184463;
+        s=2020; t=1626184465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=x1uTpTpMB0uJ96GBHD+WIpG/ubMIBaVSx1DvZbQ0boo=;
-        b=dyrjp+DHP/sX/DRBBQVVoC4tGkTRB9uQb5vVEX3TI0BYXZrHqmCdM8bxKcMVOkJ8oKIBO2
-        v7wRi/P0oO2ObqjstB6IzjAtc5XO9s4Dq8AU5pTWicKRVcvogGEKT41MRZlntN0IwFkxLb
-        HjQrQHgSMNAytbVpX7hQNS6NSLCKHdUS9K0A5pwLovIHYnMbKlmnx4gNI6R9irl8cY2eIV
-        1RFQCRncVdKLLdxeEhF4TWoKH4VV0gMqRyBSPibzZ21JOwsvJKU2EkbVcG6yOsn8bMUgdO
-        nZQoPNlhswvVeK4G13Icr4hO5I5p6jrybTr7TEhpbPQwtLAyy9xlKjMpHTf6gg==
+        bh=BT7n9FP62MQsymf3YSaIkQc0vDdp+TMODSJke4k2jl4=;
+        b=pP0nCUa4gjOcHVFzXLCgSqziS1JMn6Eu2ySyWeKi048tUS4Wv7fAqxBhep7Z9Cir/nuwzx
+        OHo9DwXkR9zTg9vHmzGUfAgma5nmOPaenY5GZGQqg+39qdoSKAGzl5i61AR68Iu4XQuV00
+        nPw52WLE3YSwDSJbCDUZkAhnwbaaF7yzHFwwKRDo4ej3SaL/L7erObNF5FgomkRVXrHXts
+        nMhlJpCl2R2IXcJshYdjqTmcZ6Okv3AlPCOWI+WRPfc1yoSvf5ICVbbmIrsDsyv2DE6gay
+        ubrZvWXyTYEFb8RNFft7PbT91d6EXvMXrSjUKr1uaZqZYxhYmWmKPcm1QLZNdw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626184463;
+        s=2020e; t=1626184465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=x1uTpTpMB0uJ96GBHD+WIpG/ubMIBaVSx1DvZbQ0boo=;
-        b=anICf/TE+JZX7cJYoFNvz2tJigZFyefGjF3/HliwAcOVSX67ho6eOB3m5906PUWQnQ7oOm
-        jcDQSxKgxl0mn5BQ==
-Date:   Tue, 13 Jul 2021 15:39:46 +0200
+        bh=BT7n9FP62MQsymf3YSaIkQc0vDdp+TMODSJke4k2jl4=;
+        b=4vZYdiIjdMRzUx+axVYfCHYKMk1O0Ztj7kv2lRhN1sH4upHl0ZyjQIpA1MkDPXEKaaLDX6
+        TZWutiPYgVKZxAAA==
+Date:   Tue, 13 Jul 2021 15:39:47 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>,
         Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>
-Subject: [patch V2 01/10] hrtimer: Avoid double reprogramming in
- __hrtimer_start_range_ns()
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [patch V2 02/10] hrtimer: Consolidate reprogramming code
 References: <20210713133945.063650594@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,130 +51,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Peter Zijlstra <peterz@infradead.org>
 
-If __hrtimer_start_range_ns() is invoked with an already armed hrtimer then
-the timer has to be canceled first and then added back. If the timer is the
-first expiring timer then on removal the clockevent device is reprogrammed
-to the next expiring timer to avoid that the pending expiry fires needlessly.
+This code is mostly duplicated. The redudant store in the force reprogram
+case does no harm and the in hrtimer interrupt condition cannot be true for
+the force reprogram invocations.
 
-If the new expiry time ends up to be the first expiry again then the clock
-event device has to reprogrammed again.
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/time/hrtimer.c |   72 ++++++++++++++++++++------------------------------
+ 1 file changed, 29 insertions(+), 43 deletions(-)
 
-Avoid this by checking whether the timer is the first to expire and in that
-case, keep the timer on the current CPU and delay the reprogramming up to
-the point where the timer has been enqueued again.
-
-Reported-by: Lorenzo Colitti <lorenzo@google.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
----
- kernel/time/hrtimer.c |   60 ++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 53 insertions(+), 7 deletions(-)
 
 --- a/kernel/time/hrtimer.c
 +++ b/kernel/time/hrtimer.c
-@@ -1030,12 +1030,13 @@ static void __remove_hrtimer(struct hrti
-  * remove hrtimer, called with base lock held
-  */
- static inline int
--remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
-+remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base,
-+	       bool restart, bool keep_local)
- {
- 	u8 state = timer->state;
- 
- 	if (state & HRTIMER_STATE_ENQUEUED) {
--		int reprogram;
-+		bool reprogram;
- 
- 		/*
- 		 * Remove the timer and force reprogramming when high
-@@ -1048,8 +1049,16 @@ remove_hrtimer(struct hrtimer *timer, st
- 		debug_deactivate(timer);
- 		reprogram = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
- 
-+		/*
-+		 * If the timer is not restarted then reprogramming is
-+		 * required if the timer is local. If it is local and about
-+		 * to be restarted, avoid programming it twice (on removal
-+		 * and a moment later when it's requeued).
-+		 */
- 		if (!restart)
- 			state = HRTIMER_STATE_INACTIVE;
-+		else
-+			reprogram &= !keep_local;
- 
- 		__remove_hrtimer(timer, base, state, reprogram);
- 		return 1;
-@@ -1103,9 +1112,31 @@ static int __hrtimer_start_range_ns(stru
- 				    struct hrtimer_clock_base *base)
- {
- 	struct hrtimer_clock_base *new_base;
-+	bool force_local, first;
- 
--	/* Remove an active timer from the queue: */
--	remove_hrtimer(timer, base, true);
-+	/*
-+	 * If the timer is on the local cpu base and is the first expiring
-+	 * timer then this might end up reprogramming the hardware twice
-+	 * (on removal and on enqueue). To avoid that by prevent the
-+	 * reprogram on removal, keep the timer local to the current CPU
-+	 * and enforce reprogramming after it is queued no matter whether
-+	 * it is the new first expiring timer again or not.
-+	 */
-+	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
-+	force_local &= base->cpu_base->next_timer == timer;
-+
-+	/*
-+	 * Remove an active timer from the queue. In case it is not queued
-+	 * on the current CPU, make sure that remove_hrtimer() updates the
-+	 * remote data correctly.
-+	 *
-+	 * If it's on the current CPU and the first expiring timer, then
-+	 * skip reprogramming, keep the timer local and enforce
-+	 * reprogramming later if it was the first expiring timer.  This
-+	 * avoids programming the underlying clock event twice (once at
-+	 * removal and once after enqueue).
-+	 */
-+	remove_hrtimer(timer, base, true, force_local);
- 
- 	if (mode & HRTIMER_MODE_REL)
- 		tim = ktime_add_safe(tim, base->get_time());
-@@ -1115,9 +1146,24 @@ static int __hrtimer_start_range_ns(stru
- 	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
- 
- 	/* Switch the timer base, if necessary: */
--	new_base = switch_hrtimer_base(timer, base, mode & HRTIMER_MODE_PINNED);
-+	if (!force_local) {
-+		new_base = switch_hrtimer_base(timer, base,
-+					       mode & HRTIMER_MODE_PINNED);
-+	} else {
-+		new_base = base;
-+	}
- 
--	return enqueue_hrtimer(timer, new_base, mode);
-+	first = enqueue_hrtimer(timer, new_base, mode);
-+	if (!force_local)
-+		return first;
-+
-+	/*
-+	 * Timer was forced to stay on the current CPU to avoid
-+	 * reprogramming on removal and enqueue. Force reprogram the
-+	 * hardware by evaluating the new first expiring timer.
-+	 */
-+	hrtimer_force_reprogram(new_base->cpu_base, 1);
-+	return 0;
+@@ -652,21 +652,24 @@ static inline int hrtimer_hres_active(vo
+ 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
  }
  
- /**
-@@ -1183,7 +1229,7 @@ int hrtimer_try_to_cancel(struct hrtimer
- 	base = lock_hrtimer_base(timer, &flags);
+-/*
+- * Reprogram the event source with checking both queues for the
+- * next event
+- * Called with interrupts disabled and base->lock held
+- */
+ static void
+-hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
++__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
++		    struct hrtimer *next_timer, ktime_t expires_next)
+ {
+-	ktime_t expires_next;
++	/*
++	 * If the hrtimer interrupt is running, then it will reevaluate the
++	 * clock bases and reprogram the clock event device.
++	 */
++	if (cpu_base->in_hrtirq)
++		return;
  
- 	if (!hrtimer_callback_running(timer))
--		ret = remove_hrtimer(timer, base, false);
-+		ret = remove_hrtimer(timer, base, false, false);
+-	expires_next = hrtimer_update_next_event(cpu_base);
++	if (expires_next > cpu_base->expires_next)
++		return;
  
- 	unlock_hrtimer_base(timer, &flags);
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
  
++	cpu_base->next_timer = next_timer;
+ 	cpu_base->expires_next = expires_next;
+ 
+ 	/*
+@@ -689,7 +692,23 @@ hrtimer_force_reprogram(struct hrtimer_c
+ 	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+ 		return;
+ 
+-	tick_program_event(cpu_base->expires_next, 1);
++	tick_program_event(expires_next, 1);
++}
++
++/*
++ * Reprogram the event source with checking both queues for the
++ * next event
++ * Called with interrupts disabled and base->lock held
++ */
++static void
++hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
++{
++	ktime_t expires_next;
++
++	expires_next = hrtimer_update_next_event(cpu_base);
++
++	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
++			    expires_next);
+ }
+ 
+ /* High resolution timer related functions */
+@@ -835,40 +854,7 @@ static void hrtimer_reprogram(struct hrt
+ 	if (base->cpu_base != cpu_base)
+ 		return;
+ 
+-	/*
+-	 * If the hrtimer interrupt is running, then it will
+-	 * reevaluate the clock bases and reprogram the clock event
+-	 * device. The callbacks are always executed in hard interrupt
+-	 * context so we don't need an extra check for a running
+-	 * callback.
+-	 */
+-	if (cpu_base->in_hrtirq)
+-		return;
+-
+-	if (expires >= cpu_base->expires_next)
+-		return;
+-
+-	/* Update the pointer to the next expiring timer */
+-	cpu_base->next_timer = timer;
+-	cpu_base->expires_next = expires;
+-
+-	/*
+-	 * If hres is not active, hardware does not have to be
+-	 * programmed yet.
+-	 *
+-	 * If a hang was detected in the last timer interrupt then we
+-	 * do not schedule a timer which is earlier than the expiry
+-	 * which we enforced in the hang detection. We want the system
+-	 * to make progress.
+-	 */
+-	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+-		return;
+-
+-	/*
+-	 * Program the timer hardware. We enforce the expiry for
+-	 * events which are already in the past.
+-	 */
+-	tick_program_event(expires, 1);
++	__hrtimer_reprogram(cpu_base, true, timer, expires);
+ }
+ 
+ /*
 
