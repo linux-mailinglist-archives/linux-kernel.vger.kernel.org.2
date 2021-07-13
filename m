@@ -2,81 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E223C7046
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F05A3C7081
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhGMM3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236042AbhGMM3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:29:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F95961288;
-        Tue, 13 Jul 2021 12:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626179215;
-        bh=3a5/3YrF7WmM3W+mRfP+oYr4maXcyyH49woP0O8Bt7g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pn2YhGERo5SB2Jvr64haBX4pNjs4Bh6XB5WgW+INarvCMZTT32150XYsKUL6REiBy
-         4Jixff7ij6cG691CggEy2uVXBHOHAjlbVZUBQ4F0k1fAS/9bDEzTg5KvLNdY9iNlCm
-         rmHutJs82IUtA7ccuz6tI44WKaEQ4PFV7yaULdEAN6jhv7+xCJh0QB4HANmuzcnX9i
-         CTR75Gz82Vwmm/7PVMS3888neO6pxd9eDHgcS3zi3xi/9c2bZCOCZ6jO+5MJu4hLeh
-         jKdAzBe7TY6QcLnXPy3zzcXmsujYmTbMayae6lDHxXEtHPf4q5lPEGqgN9RaCbHQLS
-         63B3odrEDLyUQ==
-Received: by mail-wr1-f53.google.com with SMTP id d12so29601075wre.13;
-        Tue, 13 Jul 2021 05:26:55 -0700 (PDT)
-X-Gm-Message-State: AOAM5328YzKVghIzVNRbvoBmvUqqkusYd6/Zp5GCFfAX61EFtzaGoPWs
-        4r+vpifOmVi9z1ialXUq16K+qmvFlqVu1beexPs=
-X-Google-Smtp-Source: ABdhPJz7kK/kD0vgyFgbrO5TSzjfWnvwi+u0l2I8FZ7PSiNOm21ufzVRUNh/39YJuaAoZ+KSylOfNeAh7twnj63QK7Y=
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr5395595wrq.99.1626179214184;
- Tue, 13 Jul 2021 05:26:54 -0700 (PDT)
+        id S236438AbhGMMjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236203AbhGMMjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 08:39:10 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70CBC0613E9;
+        Tue, 13 Jul 2021 05:36:19 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id g22so26986475iom.1;
+        Tue, 13 Jul 2021 05:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CYnGjrlZ5z/fC91mEpEO1zoqRsMy8U9xbP5qH086+PE=;
+        b=dgn2pqjreoanGsyrB/5b5aW4oR/3rEwqjyxxVdIGbG8Rr6V3zCkjRy3u/wIWk6V5Mp
+         ud+RUEJX+DJ+H+RPVPf2uaEae/WqnHpy3KhCJlmKZ3pSGtkukJp3nG2lu9VqnlK5Ex8q
+         SzXL18Mhk2HgCGf6DD0yMvC0onR1BhnxtmLjyBDkxyo4yDZQ5Rdrj0c5MktU7rfUGHH4
+         WwZPZBZxC4FxIT5MEYCU+7U2lOVQTQ6LUhcDQ5AIKuar63k5aORKsXtoPpCECDGgCTge
+         cHfRXkX7O7ItFfoM6o57O4ohE8zEyd3S310F7pbfvaIpLLmzh2RG2bInEO2rP6hLTMQ4
+         kdog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CYnGjrlZ5z/fC91mEpEO1zoqRsMy8U9xbP5qH086+PE=;
+        b=MHYiQPoyw364W+/o63XexiLZ+MH0x3rjbaTsHTlYGVTOimVh5g35MgQp89Sk2I13LW
+         yYDPgeWq773FGDXPLVovt3KXUlcA3HotqLVFBEYbiTEZvMxb8jV7UfxnZs9dB4MHl4i5
+         U+qujPfVBn8rgXPGZptpXROxxA6u7xX9vcI+c4jguM1Wv+SoC3Kxr5bJMRGLyw/PJIGA
+         CrS/tobt93Z/n31oH1w+rCt7/GgnqSQ5+WZcaRY03FCTdge4Ybs8zI37iqj+NHhwDU46
+         tVJAUh2llwS71sgFVpdHSmMpy5DXCGEtnd41AWwUlld2KtNuIvIHeAlZ+GkPrtN3A8Th
+         UUZQ==
+X-Gm-Message-State: AOAM533RR4BxfwnPQOFD76//EjUa44lFh3eLc8yNiMVHiP7um/Mw0Cn9
+        /EzCo+3i72JdxZPUZ+mBuwsw8Oe0NX7pdsKHWHA=
+X-Google-Smtp-Source: ABdhPJyCH72MaLOUyK+oviLVcOUdG02yNIXFra02A0athWVli80Y0AfHt0J4YT0PBTp2pvX1uVqwErfDvtEApyglFDM=
+X-Received: by 2002:a6b:ef01:: with SMTP id k1mr2979640ioh.102.1626179779105;
+ Tue, 13 Jul 2021 05:36:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1626173013.git.viresh.kumar@linaro.org> <26ba6941fa01eee88c99ecdd611d235c22bd6e3c.1626173013.git.viresh.kumar@linaro.org>
-In-Reply-To: <26ba6941fa01eee88c99ecdd611d235c22bd6e3c.1626173013.git.viresh.kumar@linaro.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 13 Jul 2021 14:26:38 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Sf6CaPKTKEodX_=hGxwoEXiD=UoNOtX6kPOeA9GrjTw@mail.gmail.com>
-Message-ID: <CAK8P3a3Sf6CaPKTKEodX_=hGxwoEXiD=UoNOtX6kPOeA9GrjTw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] virtio_mmio: Bind virtio device to device-tree node
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
+References: <CGME20200613030454epcas5p400f76485ddb34ce6293f0c8fa94332b8@epcas5p4.samsung.com>
+ <20200613024706.27975-1-alim.akhtar@samsung.com> <20200613024706.27975-9-alim.akhtar@samsung.com>
+In-Reply-To: <20200613024706.27975-9-alim.akhtar@samsung.com>
+From:   Alim Akhtar <alim.akhtar@gmail.com>
+Date:   Tue, 13 Jul 2021 12:35:41 +0530
+Message-ID: <CAGOxZ500JD5xNWb0xFyEgaUH0qwQKm+kn1Ng71_1SM1wmJFxKg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v10 08/10] dt-bindings: ufs: Add bindings for
+ Samsung ufs host
+To:     Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     robh@kernel.org, devicetree@vger.kernel.org,
+        linux-scsi@vger.kernel.org, krzk@kernel.org, avri.altman@wdc.com,
+        martin.petersen@oracle.com, kwmad.kim@samsung.com,
+        stanley.chu@mediatek.com, cang@codeaurora.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kishon@ti.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 12:51 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+Hi Rob
+Anything else needs to be done for this patch?
+
+On Sat, Jun 13, 2020 at 8:36 AM Alim Akhtar <alim.akhtar@samsung.com> wrote:
 >
-> Bind the virtio device with its device protocol's sub-node. This will
-> help users of the virtio device to mention their dependencies on the
-> device in the DT file itself. Like GPIO pin users can use the phandle of
-> the device node, or the node may contain more subnodes to add i2c or spi
-> eeproms and other users.
+> This patch adds DT bindings for Samsung ufs hci
 >
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
 > ---
->  drivers/virtio/virtio_mmio.c | 44 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
+>  .../bindings/ufs/samsung,exynos-ufs.yaml      | 89 +++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+> new file mode 100644
+> index 000000000000..38193975c9f1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
+> @@ -0,0 +1,89 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ufs/samsung,exynos-ufs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Samsung SoC series UFS host controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Alim Akhtar <alim.akhtar@samsung.com>
+> +
+> +description: |
+> +  Each Samsung UFS host controller instance should have its own node.
+> +  This binding define Samsung specific binding other then what is used
+> +  in the common ufshcd bindings
+> +  [1] Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> +
+> +properties:
+> +
+> +  compatible:
+> +    enum:
+> +      - samsung,exynos7-ufs
+> +
+> +  reg:
+> +    items:
+> +     - description: HCI register
+> +     - description: vendor specific register
+> +     - description: unipro register
+> +     - description: UFS protector register
+> +
+> +  reg-names:
+> +    items:
+> +      - const: hci
+> +      - const: vs_hci
+> +      - const: unipro
+> +      - const: ufsp
+> +
+> +  clocks:
+> +    items:
+> +      - description: ufs link core clock
+> +      - description: unipro main clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core_clk
+> +      - const: sclk_unipro_main
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  phy-names:
+> +    const: ufs-phy
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - phys
+> +  - phy-names
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/exynos7-clk.h>
+> +
+> +    ufs: ufs@15570000 {
+> +       compatible = "samsung,exynos7-ufs";
+> +       reg = <0x15570000 0x100>,
+> +             <0x15570100 0x100>,
+> +             <0x15571000 0x200>,
+> +             <0x15572000 0x300>;
+> +       reg-names = "hci", "vs_hci", "unipro", "ufsp";
+> +       interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
+> +       clocks = <&clock_fsys1 ACLK_UFS20_LINK>,
+> +                <&clock_fsys1 SCLK_UFSUNIPRO20_USER>;
+> +       clock-names = "core_clk", "sclk_unipro_main";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
+> +       phys = <&ufs_phy>;
+> +       phy-names = "ufs-phy";
+> +    };
+> +...
+> --
+> 2.17.1
+>
 
-Hi Viresh,
 
-I don't see anything in this patch that is specific to virtio-mmio, as
-opposed to
-virtio-pci. It would be better to move this into the virtio core code so it can
-be called independently of the transport that is used for virtio.
-
-The PCI code has similar code that will set vdev->dev.parent->of_node
-for a virtio-pci device, as long as that node is present.
-
-        Arnd
+-- 
+Regards,
+Alim
