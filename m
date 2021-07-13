@@ -2,96 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F583C6883
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70D33C687D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhGMCaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 22:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhGMCaD (ORCPT
+        id S231759AbhGMC2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:28:49 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:10473 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhGMC2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 22:30:03 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773E1C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:27:14 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id z11so3482653iow.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:27:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AW/0GNITZsaRFqj2/Dl194ei172M0FvRnwMWPjsrgZc=;
-        b=PMrcJLB2oFTLbiloA/YPSDBsldKIUwfc2RJvH30zucUYvInRgrcX94x7wNG5UbHqjc
-         FIFhIQ8PVRyuYLZoz+5N1NUcsXcHg0BNWDs0rDUkVQHQv+IX+bYuZ0KmHvb7oHr6AXtx
-         HC2Y7cDt8+VYYoFiUyLxecXIYVOqMcyPzoJUE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AW/0GNITZsaRFqj2/Dl194ei172M0FvRnwMWPjsrgZc=;
-        b=MOb6VROYLdidmPJZbOK6otYHrho0MR+wgSrsFQ3mY/AniRsuimuRRRILeoo2zXmi5G
-         CbAo+8fGOC2gFsxcZXjyFns+c4lZzx52mpikCwhx/eDMilZXirvyCWPUWK49S9suNI+C
-         LlKMDNQE+RbdUUwijnm5weGxesY3Uh9mbneg3cmUhiuVlaSGWSeAm3WhvHvwtS/eVBIb
-         8rJzSRBYxptpTaPB6Zeg2bB7waZEzRaqtK0Yo61nbGWpjTlGw85E1RvhJDtTeXuVV/GJ
-         2G2ShLjc7GJ5bgak+lP2evcw2LzvxCSSGBOGWDgN32mJTBoyNzEDaCoLD6bWZaNLtiMP
-         i85g==
-X-Gm-Message-State: AOAM532HwQP/VjM087LVzIvkqNnxZRCzQmpKJqrbKpxPFyVruWB/yWPx
-        krb93bvQGMYMxNTLJb0LLJkAkQ==
-X-Google-Smtp-Source: ABdhPJwi7YYCJBjyfLgctuijjIpfAngXLPcF3PWzZUysXqiCHMbxRyxCh+ItcQ7Tia4TCzVEHUheqg==
-X-Received: by 2002:a6b:f81a:: with SMTP id o26mr1497012ioh.68.1626143233900;
-        Mon, 12 Jul 2021 19:27:13 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h12sm9289894ilj.6.2021.07.12.19.27.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 19:27:13 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e854a220-a348-14b1-1b5d-3a69e7d84af2@linuxfoundation.org>
-Date:   Mon, 12 Jul 2021 20:27:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 12 Jul 2021 22:28:47 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GP4D02cX0zccnW;
+        Tue, 13 Jul 2021 10:22:40 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
+ Jul 2021 10:25:56 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <yukuai3@huawei.com>, Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] ext4: Fix access uninitialized 'retval' in kmmpd
+Date:   Tue, 13 Jul 2021 10:27:28 +0800
+Message-ID: <20210713022728.2533770-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 12:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.2 release.
-> There are 800 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+If (!ext4_has_feature_mmp(sb)) then goto 'wait_to_exit' label, but
+retval not be uninitialized.
 
-Compiled and booted on my test system. No dmesg regressions.
+Fixes: 61bb4a1c417e ("ext4: fix possible UAF when remounting r/o a mmp-protected file system")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/mmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index bc364c119af6..cebea4270817 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -138,7 +138,7 @@ static int kmmpd(void *data)
+ 	unsigned mmp_check_interval;
+ 	unsigned long last_update_time;
+ 	unsigned long diff;
+-	int retval;
++	int retval = 0;
+ 
+ 	mmp_block = le64_to_cpu(es->s_mmp_block);
+ 	mmp = (struct mmp_struct *)(bh->b_data);
+-- 
+2.31.1
 
-thanks,
--- Shuah
