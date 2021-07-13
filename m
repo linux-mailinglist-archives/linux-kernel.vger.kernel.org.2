@@ -2,101 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D773C69A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CC53C6998
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhGMFHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 01:07:02 -0400
-Received: from enterprise02.smtp.diehl.com ([193.201.238.220]:15533 "EHLO
-        enterprise02.smtp.diehl.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230477AbhGMFG5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 01:06:57 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Jul 2021 01:06:57 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=diehl.com; i=@diehl.com; q=dns/txt; s=default;
-  t=1626152648; x=1657688648;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=bLlo+CFvO3SZcAxUg22LZW83GVKOvd67T5GdflhPz/8=;
-  b=mpi27ZxED1aCGIiA1cVDEXD1fun4EQroBIm6fEZ6X08T1ayTGJ7dgw8o
-   edekV2hmcuyNxbtXyUSJCp/AdDlyP2CmKsYaMuyNKHQ+abJ38IbXm/iAJ
-   IcxdVCodjcIf8l/2rqX+6TCq2Saj2xscIug+vB4FlsZzYiC/gWNCOS1Ot
-   sfd0Bm5gtqvEqc2nna/wUYa/eyRF7JJgn+bT075qsuiHAk+xEtoBvCbmB
-   Ds6oVcEJxIcoJgSQtt0f7FWNUxTxh3rYVbeY0GLnaYi6r6x6Sr2MqKdLK
-   TGYsbw1wOeOCJkbkMagqcw6YhyYa1qf9iDwUkh+Q98ctD3Ngq1Rv3H6Sg
-   w==;
-IronPort-HdrOrdr: A9a23:fbad56/6mz5ju5yJ3m1uk+Gwdb1zdoMgy1knxilNoENuH/Bwxv
- rFoB1E73TJYVcqKQ4dcL+7Sc29qB/nhPlICKgqTM2ftWrdyRCVxeNZnPPfKlTbckWTmY4ttt
- YDAs1D5cXLbGSS5fyKnjVQeOxQpuVvnprY/Ns2+00dPD2CJpsQpzuQXmygfHFedU1jP94UBZ
- Cc7s1Iq36LYnIMdPm2AXEDQqzqu8DLvIiOW29GOzcXrC21yR+44r/zFBaVmj0EVSlU/Lsk+W
- /Z1yTk+6SYte2hwBO07R6c031voqqg9jJ/Pr3BtiFVEESgtu+QXvUqZ1RWhkF7nAmtgGxa5+
- Uk7S1QfPib0EmhDV1dlyGdrzUI4Axem0MK9mXo80cL2faJOA7SK/Ax876xISGponbJgrlHod
- d2NiSixtFq5Gj77VnA2+Q=
-X-IronPort-AV: E=Sophos;i="5.84,235,1620684000"; 
-   d="scan'208";a="12283072"
-From:   Denis Osterland-Heim <denis.osterland@diehl.com>
-To:     "pavel@ucw.cz" <pavel@ucw.cz>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "denis.osterland.heim@gmail.com" <denis.osterland.heim@gmail.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
-Subject: Re: [PATCH v8 0/2] leds: pwm: add support for default-state device
-Thread-Topic: [PATCH v8 0/2] leds: pwm: add support for default-state device
-Thread-Index: AQHXXDCSqhNnKvwrZkaRj2EjMB6ajqtAbRkA
-Date:   Tue, 13 Jul 2021 04:56:56 +0000
-Message-ID: <41d9a940334d3682d5a90796ea6a5af7d4732d92.camel@diehl.com>
-References: <20210608063554.6590-1-denis.osterland.heim@gmail.com>
-In-Reply-To: <20210608063554.6590-1-denis.osterland.heim@gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-disclaimerprocessed: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3DC2A90528E4C2479D3944059A71AA2B@diehl.internal>
-Content-Transfer-Encoding: base64
+        id S232186AbhGMFEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 01:04:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhGMFEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 01:04:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BE7260725;
+        Tue, 13 Jul 2021 05:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626152494;
+        bh=pi3/8CoqzjVtefalb1lWMBNyAW91jVNorghWkKWho4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EqaYF2N5sMlq0M0fk5mUicFGrE6aNAmXHAc2fMoL2DSv0gKGJ2/60bUYhr+1OQX8J
+         8jsjHtpmgjqkCNQ0K59/TPvzZI+TjecAjGMpek0JQPn35c5Lo6z9N9CFzWxdasDR8U
+         207WXhjs27NbxS7Z8XNNQUjJZuoto1O3YZNMDo+/lObOZ1LccEt/vmK4N+Ng7xMawH
+         vf+Vz+Ybr8U211B6xEfeH71tSFQi5x0T+olygk3gNRRf/2HESt2q/mX/8yEfL8XSpT
+         q2tvic72ShedZz/IOiSP/DHwFN/Z4ieixhGNdCJNbsTQJMo2KgeOZrS4U4OICgLquT
+         2fbdSdrAsDzKw==
+Date:   Tue, 13 Jul 2021 08:01:30 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Nitesh Lal <nilal@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-pci@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        frederic@kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, Ken Cox <jkc@redhat.com>,
+        faisal.latif@intel.com, shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, benve@cisco.com, govind@gmx.com,
+        jassisinghbrar@gmail.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>
+Subject: Re: [PATCH v2 00/14] genirq: Cleanup the usage of
+ irq_set_affinity_hint
+Message-ID: <YO0eKv2GJcADQTHH@unreal>
+References: <20210629152746.2953364-1-nitesh@redhat.com>
+ <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
+ <YOrWqPYPkZp6nRLS@unreal>
+ <CAFki+L=FYOTQ1+-MHWmTuA6ZxTUcZA9t41HRL2URYgv03oFbDg@mail.gmail.com>
 MIME-Version: 1.0
-X-GBS-PROC: 5x5xXKsZ7k4sJw6jWwvS4hszs22Nz32/i3QUigkTVV6eKK0tnzEyXJ1e2qupTxgK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFki+L=FYOTQ1+-MHWmTuA6ZxTUcZA9t41HRL2URYgv03oFbDg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cGluZw0KDQpBbSBEaWVuc3RhZywgZGVuIDA4LjA2LjIwMjEsIDA4OjM1ICswMjAwIHNjaHJpZWIg
-RGVuaXMgT3N0ZXJsYW5kLUhlaW06DQo+IHY3IC0+IHY4Og0KPiAgLSBhcHBseSBhbmQgdGVzdCBv
-biBuZXdlc3Qga2VybmVsDQo+ICAtIGRyb3AgZG9jdSBwYXRjaCwgYmVjYXVzZSBpdCBpcyBhbHJl
-YWR5IGRvY3VtZW50ZWQNCj4NCj4gRGVuaXMgT3N0ZXJsYW5kLUhlaW0gKDIpOg0KPiAgICAgICBs
-ZWRzOiBtb3ZlIGRlZmF1bHRfc3RhdGUgcmVhZCBmcm9tIGZ3bm9kZSB0byBjb3JlDQo+ICAgICAg
-IGxlZHM6IHB3bTogYWRkIHN1cHBvcnQgZm9yIGRlZmF1bHQtc3RhdGUgZGV2aWNlIHByb3BlcnR5
-DQo+DQo+ICBkcml2ZXJzL2xlZHMvbGVkLWNvcmUuYyAgfCAxNSArKysrKysrKysrKysrKysNCj4g
-IGRyaXZlcnMvbGVkcy9sZWRzLWdwaW8uYyB8IDEyICsrLS0tLS0tLS0tLQ0KPiAgZHJpdmVycy9s
-ZWRzL2xlZHMuaCAgICAgIHwgIDEgKw0KPiAgaW5jbHVkZS9saW51eC9sZWRzLmggICAgIHwgMTIg
-KysrKysrKysrLS0tDQo+ICA0IGZpbGVzIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKyksIDEzIGRl
-bGV0aW9ucygtKQ0KPg0KPiBNZXNzYWdlLUlkOiA8MjAyMDA3MzExNjQ5NDUuMTk1MTUtMS1EZW5p
-cy5Pc3RlcmxhbmRAZGllaGwuY29tPg0KPiBiYXNlLWNvbW1pdDogZTkwYWJiOTViYzcxNTY2ZTIw
-MTY5NjRlOTgxODE1NTc5MjlmNTVmNQ0KPg0KRGllaGwgQ29ubmVjdGl2aXR5IFNvbHV0aW9ucyBH
-bWJIDQpHZXNjaMOkZnRzZsO8aHJ1bmc6IEhvcnN0IExlb25iZXJnZXINClNpdHogZGVyIEdlc2Vs
-bHNjaGFmdDogTsO8cm5iZXJnIC0gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodA0KTsO8cm5i
-ZXJnOiBIUkIgMzIzMTUNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCg0KRGVy
-IEluaGFsdCBkZXIgdm9yc3RlaGVuZGVuIEUtTWFpbCBpc3QgbmljaHQgcmVjaHRsaWNoIGJpbmRl
-bmQuIERpZXNlIEUtTWFpbCBlbnRoYWVsdCB2ZXJ0cmF1bGljaGUgdW5kL29kZXIgcmVjaHRsaWNo
-IGdlc2NodWV0enRlIEluZm9ybWF0aW9uZW4uDQpJbmZvcm1pZXJlbiBTaWUgdW5zIGJpdHRlLCB3
-ZW5uIFNpZSBkaWVzZSBFLU1haWwgZmFlbHNjaGxpY2hlcndlaXNlIGVyaGFsdGVuIGhhYmVuLiBC
-aXR0ZSBsb2VzY2hlbiBTaWUgaW4gZGllc2VtIEZhbGwgZGllIE5hY2hyaWNodC4NCkplZGUgdW5l
-cmxhdWJ0ZSBGb3JtIGRlciBSZXByb2R1a3Rpb24sIEJla2FubnRnYWJlLCBBZW5kZXJ1bmcsIFZl
-cnRlaWx1bmcgdW5kL29kZXIgUHVibGlrYXRpb24gZGllc2VyIEUtTWFpbCBpc3Qgc3RyZW5nc3Rl
-bnMgdW50ZXJzYWd0Lg0KDQotIEluZm9ybWF0aW9uZW4genVtIERhdGVuc2NodXR6LCBpbnNiZXNv
-bmRlcmUgenUgSWhyZW4gUmVjaHRlbiwgZXJoYWx0ZW4gU2llIHVudGVyOg0KDQpodHRwczovL3d3
-dy5kaWVobC5jb20vZ3JvdXAvZGUvdHJhbnNwYXJlbnotdW5kLWluZm9ybWF0aW9uc3BmbGljaHRl
-bi8NCg0KVGhlIGNvbnRlbnRzIG9mIHRoZSBhYm92ZSBtZW50aW9uZWQgZS1tYWlsIGlzIG5vdCBs
-ZWdhbGx5IGJpbmRpbmcuIFRoaXMgZS1tYWlsIGNvbnRhaW5zIGNvbmZpZGVudGlhbCBhbmQvb3Ig
-bGVnYWxseSBwcm90ZWN0ZWQgaW5mb3JtYXRpb24uIFBsZWFzZSBpbmZvcm0gdXMgaWYgeW91IGhh
-dmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgYnkNCm1pc3Rha2UgYW5kIGRlbGV0ZSBpdCBpbiBzdWNo
-IGEgY2FzZS4gRWFjaCB1bmF1dGhvcml6ZWQgcmVwcm9kdWN0aW9uLCBkaXNjbG9zdXJlLCBhbHRl
-cmF0aW9uLCBkaXN0cmlidXRpb24gYW5kL29yIHB1YmxpY2F0aW9uIG9mIHRoaXMgZS1tYWlsIGlz
-IHN0cmljdGx5IHByb2hpYml0ZWQuDQoNCi0gRm9yIGdlbmVyYWwgaW5mb3JtYXRpb24gb24gZGF0
-YSBwcm90ZWN0aW9uIGFuZCB5b3VyIHJlc3BlY3RpdmUgcmlnaHRzIHBsZWFzZSB2aXNpdDoNCg0K
-aHR0cHM6Ly93d3cuZGllaGwuY29tL2dyb3VwL2VuL3RyYW5zcGFyZW5jeS1hbmQtaW5mb3JtYXRp
-b24tb2JsaWdhdGlvbnMvDQoNCg0K
+On Mon, Jul 12, 2021 at 05:27:05PM -0400, Nitesh Lal wrote:
+> Hi Leon,
+> 
+> On Sun, Jul 11, 2021 at 7:32 AM Leon Romanovsky <leonro@nvidia.com> wrote:
+> >
+> > On Thu, Jul 08, 2021 at 03:24:20PM -0400, Nitesh Lal wrote:
+> > > On Tue, Jun 29, 2021 at 11:28 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+> >
+> > <...>
+> >
+> > > >
+> > > >  drivers/infiniband/hw/i40iw/i40iw_main.c      |  4 +-
+> > > >  drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
+> > > >  drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
+> > > >  drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
+> > > >  drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
+> > > >  drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
+> > > >  drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
+> > > >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
+> > > >  drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
+> > > >  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  6 +--
+> > > >  drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
+> > > >  drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
+> > > >  drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
+> > > >  include/linux/interrupt.h                     | 53 ++++++++++++++++++-
+> > > >  kernel/irq/manage.c                           |  8 +--
+> > > >  15 files changed, 113 insertions(+), 64 deletions(-)
+> > > >
+> > > > --
+> > > >
+> > > >
+> > >
+> > > Gentle ping.
+> > > Any comments or suggestions on any of the patches included in this series?
+> >
+> > Please wait for -rc1, rebase and resend.
+> > At least i40iw was deleted during merge window.
+> >
+> 
+> In -rc1 some non-trivial mlx5 changes also went in.  I was going through
+> these changes and it seems after your patch
+> 
+> e4e3f24b822f: ("net/mlx5: Provide cpumask at EQ creation phase")
+> 
+> we do want to control the affinity for the mlx5 interrupts from the driver.
+> Is that correct? 
+
+We would like to create devices with correct affinity from the
+beginning. For this, we will introduce extension to devlink to control
+affinity that will be used prior initialization sequence.
+
+Currently, netdev users who don't want irqbalance are digging into
+their procfs, reconfigure affinity on already existing devices and
+hope for the best. 
+
+This is even more cumbersome for the SIOV use case, where every physical
+NIC PCI device will/can create thousands of lightweights netdevs that will
+be forwarded to the containers later. These containers are limited to known
+CPU cores, so no reason do not limit netdev device too.
+
+The same goes for other sub-functions of that PCI device, like RDMA,
+vdpa e.t.c.
+
+> This would mean that we should use irq_set_affinity_and_hint() instead
+> of irq_update_affinity_hint().
+
+I think so.
+
+Thanks
+
+> 
+> -- 
+> Thanks
+> Nitesh
+> 
