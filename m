@@ -2,108 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4E33C7688
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5348A3C7690
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234254AbhGMSm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGMSmY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:42:24 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D84C0613DD;
-        Tue, 13 Jul 2021 11:39:33 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z11so6723450iow.0;
-        Tue, 13 Jul 2021 11:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dvhTzTGuwGaxvYP49OCa62HCoxmtDuXHty07kjzc4tQ=;
-        b=p6lH0Pf9OmSWBFQl92qBpyl7xdKbccrbq7NjhAgHC62ORJ3ULLCws7qTa69osGy8iu
-         s/K9I8Olglp/uwNswevPsbwUoNKYGTVFwQ+BbwK5YiQLlybmy/HbOb+XM63SYyINJfoh
-         vXPWhKbLoGArVyOXDMl+JEjtzN2zz32Tb6pEdD/Tz6JhE1kbmLFysAK346kieRxVHq7D
-         9gksqPeVhIfxmvr22kO529va1RrB8yYhQU1ia2PpHj+q5kEmdAiBWCmLNU7hzm7QJZBZ
-         645Oyk+6vnYwhZfydXCzUMjRrM1DbqfO1IakvrKXyR76lPNF5ttk2Rz7bLRJyLZh5ICI
-         Elfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dvhTzTGuwGaxvYP49OCa62HCoxmtDuXHty07kjzc4tQ=;
-        b=psIPaC5HMH+bO4rfXClXinEbSVeeRPhtNblbG0+AUzsHmITwOk5a3pJwl+YrPJXwmE
-         qn7FKoocU6VnFkbqoX1TGSkvzO0OB5PiHGFcjLcEVCSnAUWPGxXeG+GVVGUhK3FDk6ep
-         Wj280F1v/HWm5L89ZPVjNoe1+SmkOiYMQ9iRSHL3/x1JCIS3+txHRDAh8ebecDlSNVDA
-         pUne4TE9kGk1tVws9hzn+Zrc0W9lAMJyuEZjljrrUDAvVuKv1vgqDsZtsnTtcuzQtnAA
-         /JEemOVjxc2+MJL0mT9H2auzNLHB7NrxCfX4RWoBmRgA7ACdOlpPQPG5bivoZ4UbxX7B
-         YRbw==
-X-Gm-Message-State: AOAM530AWa6hI+73szbKsC1MfqVKGhqKKdchlLoWEJBqdX4SJ29Lc3tG
-        jBQC35IyxIBgwE0zYIRTm9Z5q0D2x7LG6lE0UuU=
-X-Google-Smtp-Source: ABdhPJwpTjUp3UniqBaKrgdpc+yOJB6FaS6hkA5OBwgCiueGrCrCf7PVlzeQETyowNt2XoKgBr9TdfK/YQqEyQIzWmA=
-X-Received: by 2002:a02:2b21:: with SMTP id h33mr5075656jaa.31.1626201573037;
- Tue, 13 Jul 2021 11:39:33 -0700 (PDT)
+        id S234457AbhGMSm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:42:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:49166 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229944AbhGMSm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:42:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 167E11FB;
+        Tue, 13 Jul 2021 11:40:06 -0700 (PDT)
+Received: from [10.57.36.240] (unknown [10.57.36.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED2963F7D8;
+        Tue, 13 Jul 2021 11:40:04 -0700 (PDT)
+Subject: Re: [PATCH v5 5/7] iommu/amd: Tailored gather logic for AMD
+To:     Nadav Amit <nadav.amit@gmail.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Nadav Amit <namit@vmware.com>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        Will Deacon <will@kernel.org>
+References: <20210713094151.652597-1-namit@vmware.com>
+ <20210713094151.652597-6-namit@vmware.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d9818e0b-681c-29a0-d9cd-e2f4dc963eb4@arm.com>
+Date:   Tue, 13 Jul 2021 19:40:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
- <20210713084541.7958-3-andriy.shevchenko@linux.intel.com> <YO1s+rHEqC9RjMva@kroah.com>
- <YO12ARa3i1TprGnJ@smile.fi.intel.com> <YO13lSUdPfNGOnC3@kroah.com>
-In-Reply-To: <YO13lSUdPfNGOnC3@kroah.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 13 Jul 2021 20:39:22 +0200
-Message-ID: <CANiq72=vs8-88h3Z+BON=qA4CZQ1pS1nggnCFHDEHYyG+Y+3JQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
- typeof_memeber() macros
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210713094151.652597-6-namit@vmware.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 1:23 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> Life is messy and can not easily be partitioned into tiny pieces.  That
-> way usually ends up being even messier in the end...
+On 2021-07-13 10:41, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> AMD's IOMMU can flush efficiently (i.e., in a single flush) any range.
+> This is in contrast, for instnace, to Intel IOMMUs that have a limit on
+> the number of pages that can be flushed in a single flush.  In addition,
+> AMD's IOMMU do not care about the page-size, so changes of the page size
+> do not need to trigger a TLB flush.
+> 
+> So in most cases, a TLB flush due to disjoint range is not needed for
+> AMD. Yet, vIOMMUs require the hypervisor to synchronize the virtualized
+> IOMMU's PTEs with the physical ones. This process induce overheads, so
+> it is better not to cause unnecessary flushes, i.e., flushes of PTEs
+> that were not modified.
+> 
+> Implement and use amd_iommu_iotlb_gather_add_page() and use it instead
+> of the generic iommu_iotlb_gather_add_page(). Ignore disjoint regions
+> unless "non-present cache" feature is reported by the IOMMU
+> capabilities, as this is an indication we are running on a physical
+> IOMMU. A similar indication is used by VT-d (see "caching mode"). The
+> new logic retains the same flushing behavior that we had before the
+> introduction of page-selective IOTLB flushes for AMD.
+> 
+> On virtualized environments, check if the newly flushed region and the
+> gathered one are disjoint and flush if it is.
+> 
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Jiajun Cao <caojiajun@vmware.com>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-kernel@vger.kernel.org>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> ---
+>   drivers/iommu/amd/iommu.c | 23 ++++++++++++++++++++++-
+>   1 file changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index bfae3928b98f..cc55c4c6a355 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -2048,6 +2048,27 @@ static int amd_iommu_map(struct iommu_domain *dom, unsigned long iova,
+>   	return ret;
+>   }
+>   
+> +static void amd_iommu_iotlb_gather_add_page(struct iommu_domain *domain,
+> +					    struct iommu_iotlb_gather *gather,
+> +					    unsigned long iova, size_t size)
+> +{
+> +	/*
+> +	 * AMD's IOMMU can flush as many pages as necessary in a single flush.
+> +	 * Unless we run in a virtual machine, which can be inferred according
+> +	 * to whether "non-present cache" is on, it is probably best to prefer
+> +	 * (potentially) too extensive TLB flushing (i.e., more misses) over
+> +	 * mutliple TLB flushes (i.e., more flushes). For virtual machines the
+> +	 * hypervisor needs to synchronize the host IOMMU PTEs with those of
+> +	 * the guest, and the trade-off is different: unnecessary TLB flushes
+> +	 * should be avoided.
+> +	 */
+> +	if (amd_iommu_np_cache && gather->end != 0 &&
 
-I agree measurements would be ideal.
+iommu_iotlb_gather_is_disjoint() is also checking "gather->end != 0", so 
+I don't think we need both. Strictly it's only necessary here since the 
+other call from iommu_iotlb_gather_add_page() equivalently asserts that 
+the gather is already non-empty via its gather->pgsize check, but one 
+could argue it either way and I don't have a hugely strong preference.
 
-Having said that, even if it makes no performance difference, I think
-it is reasonable to split things (within reason) and makes a bunch of
-other things easier, plus sometimes one can enforce particular
-conventions in the separate header (like I did when introducing
-`compiler_attributes.h`).
+Otherwise, I love how neat this has all ended up, thanks for persevering!
 
-Cheers,
-Miguel
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+> +	    iommu_iotlb_gather_is_disjoint(gather, iova, size))
+> +		iommu_iotlb_sync(domain, gather);
+> +
+> +	iommu_iotlb_gather_add_range(gather, iova, size);
+> +}
+> +
+>   static size_t amd_iommu_unmap(struct iommu_domain *dom, unsigned long iova,
+>   			      size_t page_size,
+>   			      struct iommu_iotlb_gather *gather)
+> @@ -2062,7 +2083,7 @@ static size_t amd_iommu_unmap(struct iommu_domain *dom, unsigned long iova,
+>   
+>   	r = (ops->unmap) ? ops->unmap(ops, iova, page_size, gather) : 0;
+>   
+> -	iommu_iotlb_gather_add_page(dom, gather, iova, page_size);
+> +	amd_iommu_iotlb_gather_add_page(dom, gather, iova, page_size);
+>   
+>   	return r;
+>   }
+> 
