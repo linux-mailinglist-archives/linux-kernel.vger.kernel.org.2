@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158613C76CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FE53C76D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234564AbhGMTIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:08:55 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:45918 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhGMTIy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:08:54 -0400
-Received: by mail-pf1-f175.google.com with SMTP id q10so20462917pfj.12;
-        Tue, 13 Jul 2021 12:06:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kgHbFRM6VxIszRNHG24rOOolVqPqE99AJsomwCHAvw4=;
-        b=olYePmT+CQzsBl7v7ne5RP75vBVs9TmjcbdUN0D2XGZpK3Biodn7IELR48vz8zcXF/
-         2GhqRIfha44u69cftVy1Xp3lG/G/DcKmOYk0VzdqlqDhIOwoS23AvrISwFGXnPLVhG/B
-         iOn0w/nqcMRPAWv1XWeVMhx9MJU73AoBQQQZZwyNVCgKVuWnULHUV+fZWhaK9oScBhev
-         uO8NIvOTqtQ1Cq+02Qo6RniP3Y5VEm1zy01PabWevdZyFoC1E6zXU7beBcAn9oZHGLbC
-         Hf8aNL56SYV/M0i6dB6Xeu3xhJruy0mHScl9uldfdZxXSFckt7A2/I3HJZvs8gmmS6Y/
-         cLDg==
-X-Gm-Message-State: AOAM533K69TLICB6Xl6Fser60iugABv9YW/4f3uiw8MOoD3ZfuXutFEG
-        Ae/N0sUOOrmqiM4Oz1jiWq0=
-X-Google-Smtp-Source: ABdhPJwvZzMg4JmP6ENsw3Ml8oqQbHHZvM0sTVIBvj95aMws5HsAiZK9SNelACo8vuwhKIRPKw3uvQ==
-X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id w125-20020a62dd830000b02902e8e511c32fmr6100366pff.49.1626203163497;
-        Tue, 13 Jul 2021 12:06:03 -0700 (PDT)
-Received: from ?IPv6:2620:0:1000:2004:d6d0:1357:913a:795c? ([2620:0:1000:2004:d6d0:1357:913a:795c])
-        by smtp.gmail.com with ESMTPSA id l8sm3092432pjc.17.2021.07.13.12.06.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 12:06:02 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: add missing host_lock in setup_xfer_req
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
-        Asutosh Das <asutoshd@codeaurora.org>
-References: <20210701005117.3846179-1-jaegeuk@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <38432018-e8bf-f9f3-00bf-cd4b81c95c88@acm.org>
-Date:   Tue, 13 Jul 2021 12:06:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234275AbhGMTNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:13:11 -0400
+Received: from mga09.intel.com ([134.134.136.24]:42639 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhGMTNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 15:13:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210204577"
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
+   d="scan'208";a="210204577"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 12:10:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
+   d="scan'208";a="465192167"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Jul 2021 12:10:15 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m3NnK-000I5x-Qv; Tue, 13 Jul 2021 19:10:14 +0000
+Date:   Wed, 14 Jul 2021 03:10:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: stm32: fix excluded_middle.cocci warnings
+Message-ID: <20210713191004.GA14729@5eb5c2cbef84>
+References: <202107140345.xyOobAtH-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210701005117.3846179-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202107140345.xyOobAtH-lkp@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/21 5:51 PM, Jaegeuk Kim wrote:
-> This patch adds a host_lock which existed before on ufshcd_vops_setup_xfer_req.
-> 
-> Cc: Stanley Chu <stanley.chu@mediatek.com>
-> Cc: Can Guo <cang@codeaurora.org>
-> Cc: Bean Huo <beanhuo@micron.com>
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Asutosh Das <asutoshd@codeaurora.org>
-> Fixes: a45f937110fa ("scsi: ufs: Optimize host lock on transfer requests send/compl paths")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->   drivers/scsi/ufs/ufshcd.h | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index c98d540ac044..194755c9ddfe 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -1229,8 +1229,13 @@ static inline int ufshcd_vops_pwr_change_notify(struct ufs_hba *hba,
->   static inline void ufshcd_vops_setup_xfer_req(struct ufs_hba *hba, int tag,
->   					bool is_scsi_cmd)
->   {
-> -	if (hba->vops && hba->vops->setup_xfer_req)
-> -		return hba->vops->setup_xfer_req(hba, tag, is_scsi_cmd);
-> +	if (hba->vops && hba->vops->setup_xfer_req) {
-> +		unsigned long flags;
-> +
-> +		spin_lock_irqsave(hba->host->host_lock, flags);
-> +		hba->vops->setup_xfer_req(hba, tag, is_scsi_cmd);
-> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> +	}
->   }
->   
->   static inline void ufshcd_vops_setup_task_mgmt(struct ufs_hba *hba,
+From: kernel test robot <lkp@intel.com>
 
-Can anyone help with reviewing this patch?
-
-Thanks,
-
-Bart.
+drivers/spi/spi-stm32.c:915:23-25: WARNING !A || A && B is equivalent to !A || B
 
 
+ Condition !A || A && B is equivalent to !A || B.
+
+Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+
+Fixes: 7ceb0b8a3ced ("spi: stm32: finalize message either on dma callback or EOT")
+CC: Alain Volmat <alain.volmat@foss.st.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   8f0df15bafc1e1c92b6d96bf8ef24dd8be3aec7b
+commit: 7ceb0b8a3ceddc36ae4ef1cba6c25a0e28ed65fc [1012/1340] spi: stm32: finalize message either on dma callback or EOT
+:::::: branch date: 11 hours ago
+:::::: commit date: 2 days ago
+
+ spi-stm32.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -912,8 +912,7 @@ static irqreturn_t stm32h7_spi_irq_threa
+ 		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
+ 			stm32h7_spi_read_rxfifo(spi);
+ 		if (!spi->cur_usedma ||
+-		    (spi->cur_usedma && (spi->cur_comm == SPI_SIMPLEX_TX ||
+-		     spi->cur_comm == SPI_3WIRE_TX)))
++		    (spi->cur_comm == SPI_SIMPLEX_TX || spi->cur_comm == SPI_3WIRE_TX))
+ 			end = true;
+ 	}
+ 
