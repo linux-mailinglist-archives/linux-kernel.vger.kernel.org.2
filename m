@@ -2,145 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C391D3C753C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E33B3C7544
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhGMQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:50:54 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51546 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229604AbhGMQux (ORCPT
+        id S231837AbhGMQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:53:00 -0400
+Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:54084 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231651AbhGMQw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:50:53 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DGlmtL019530;
-        Tue, 13 Jul 2021 18:47:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=gg2gTv2lq4OleHCgViRouDUkyxkUyd4z5kbx03z9dNk=;
- b=cLpUYW2YltxWRKbbdofSonWO7t33yV0AXq1/u+uO8nO1z7wp2dKWo98zA8WCggSF4/hl
- MS+8izDBmDKu5YYEmo/6YX033Ca1MzAonFEsvTymVjN9n9sJ4vgM06cvd/QIUhAbO5Pa
- pYkx/I7K3aeW5FYrQDzw8hRznHCiUGQpS+i/q1WywQWg+xjQMP2ht/QD5B9DOS3twdVe
- MQPpgqLAkJbcZ8X1ZRzvJ8NvizEOm1NARCfqCCgbautiNVldcnTPAQMBVYsz2Vh3xwGY
- nLKHKGc2ofdSrIDlUe7AiSWORWwhSjNF8xh+a99vnnH/1lBJLpoInhKCt6rrKwe4ugaF Mg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39s8vd22ah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Jul 2021 18:47:48 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 56DD610002A;
-        Tue, 13 Jul 2021 18:47:45 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3E89F248ED3;
-        Tue, 13 Jul 2021 18:47:45 +0200 (CEST)
-Received: from lmecxl0993.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Jul
- 2021 18:47:44 +0200
-Subject: Re: [PATCH] drm/stm: dsi: compute the transition time from LP to HS
- and back
-To:     Antonio Borneo <antonio.borneo@foss.st.com>,
-        Yannick Fertre <yannick.fertre@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20210713144941.3599-1-antonio.borneo@foss.st.com>
-From:   Philippe CORNU <philippe.cornu@foss.st.com>
-Message-ID: <fab62613-59a4-5d0b-4ff8-3900ef70a49d@foss.st.com>
-Date:   Tue, 13 Jul 2021 18:47:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 13 Jul 2021 12:52:59 -0400
+Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 7E5C018283013;
+        Tue, 13 Jul 2021 16:50:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 3E288C4198;
+        Tue, 13 Jul 2021 16:49:55 +0000 (UTC)
+Message-ID: <bf25e7b270fb247475254254fece22cf6abbd0ef.camel@perches.com>
+Subject: Re: [PATCH v33 13/13] MAINTAINERS: Update for DAMON
+From:   Joe Perches <joe@perches.com>
+To:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
+        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
+        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
+        guoju.fgj@alibaba-inc.com, jgowans@amazon.com, mgorman@suse.de,
+        mheyne@amazon.de, minchan@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
+        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
+        shakeelb@google.com, shuah@kernel.org, sieberf@amazon.com,
+        snu@zelle79.org, vbabka@suse.cz, vdavydov.dev@gmail.com,
+        zgf574564920@gmail.com, linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 13 Jul 2021 09:49:53 -0700
+In-Reply-To: <20210713123356.6924-14-sj38.park@gmail.com>
+References: <20210713123356.6924-1-sj38.park@gmail.com>
+         <20210713123356.6924-14-sj38.park@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <20210713144941.3599-1-antonio.borneo@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-13_10:2021-07-13,2021-07-13 signatures=0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 3E288C4198
+X-Spam-Status: No, score=-1.21
+X-Stat-Signature: m1hg9osk3yog6buqp66cwwxmd5bntbpx
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19uh9H0cVpDv7YV+HEpen90R6heGT0nwvg=
+X-HE-Tag: 1626194995-818137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Antonio,
-
-On 7/13/21 4:49 PM, Antonio Borneo wrote:
-> The driver uses a conservative set of hardcoded values for the
-> maximum time delay of the transitions between LP and HS, either
-> for data and clock lanes.
+On Tue, 2021-07-13 at 12:33 +0000, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
 > 
-> By using the info in STM32MP157 datasheet, valid also for other ST
-> devices, compute the actual delay from the lane's bps.
+> This commit updates MAINTAINERS file for DAMON related files.
 > 
-> Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Reviewed-by: Markus Boehme <markubo@amazon.de>
 > ---
-> To: Yannick Fertre <yannick.fertre@foss.st.com>
-> To: Philippe Cornu <philippe.cornu@foss.st.com>
-> To: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-> To: David Airlie <airlied@linux.ie>
-> To: Daniel Vetter <daniel@ffwll.ch>
-> To: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> To: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-> To: dri-devel@lists.freedesktop.org
-> To: linux-stm32@st-md-mailman.stormreply.com
-> To: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+>  MAINTAINERS | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
->   drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 17 +++++++++++++----
->   1 file changed, 13 insertions(+), 4 deletions(-)
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a61f4f3b78a9..d492ae8b77de 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5114,6 +5114,18 @@ F:	net/ax25/ax25_out.c
+>  F:	net/ax25/ax25_timer.c
+>  F:	net/ax25/sysctl_net_ax25.c
+>  
 > 
-> diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-> index 8399d337589d..32cb41b2202f 100644
-> --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-> +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-> @@ -309,14 +309,23 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
->   	return 0;
->   }
->   
-> +#define DSI_PHY_DELAY(fp, vp, mbps) DIV_ROUND_UP((fp) * (mbps) + 1000 * (vp), 8000)
-> +
->   static int
->   dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned int lane_mbps,
->   			   struct dw_mipi_dsi_dphy_timing *timing)
->   {
-> -	timing->clk_hs2lp = 0x40;
-> -	timing->clk_lp2hs = 0x40;
-> -	timing->data_hs2lp = 0x40;
-> -	timing->data_lp2hs = 0x40;
-> +	/*
-> +	 * From STM32MP157 datasheet, valid for STM32F469, STM32F7x9, STM32H747
-> +	 * phy_clkhs2lp_time = (272+136*UI)/(8*UI)
-> +	 * phy_clklp2hs_time = (512+40*UI)/(8*UI)
-> +	 * phy_hs2lp_time = (192+64*UI)/(8*UI)
-> +	 * phy_lp2hs_time = (256+32*UI)/(8*UI)
-> +	 */
-> +	timing->clk_hs2lp = DSI_PHY_DELAY(272, 136, lane_mbps);
-> +	timing->clk_lp2hs = DSI_PHY_DELAY(512, 40, lane_mbps);
-> +	timing->data_hs2lp = DSI_PHY_DELAY(192, 64, lane_mbps);
-> +	timing->data_lp2hs = DSI_PHY_DELAY(256, 32, lane_mbps);
+> +DATA ACCESS MONITOR
+> +M:	SeongJae Park <sjpark@amazon.de>
+> +L:	linux-mm@kvack.org
+> +S:	Maintained
+> +F:	Documentation/admin-guide/mm/damon/*
+> +F:	Documentation/vm/damon/*
+> +F:	include/linux/damon.h
+> +F:	include/trace/events/damon.h
+> +F:	mm/damon/*
+> +F:	tools/damon/*
+> +F:	tools/testing/selftests/damon/*
 
-Many thanks for your patch.
+Using "F:	<path>/*" means that you are maintaining only
+files in that specific path and not any subdirectory of that path.
 
-Reviewed-by: Philippe Cornu <philippe.cornu@foss.st.com>
-Acked-by: Philippe Cornu <philippe.cornu@foss.st.com>
+Are there subdirectories in these uses of <path>/*
+that you are avoiding?
 
-I will apply it on drm-misc-next early next week,
+If not, the proper use is just a trailing forward slash like
 
-Philippe :-)
+F:	<path>/
 
->   
->   	return 0;
->   }
-> 
-> base-commit: 35d283658a6196b2057be562096610c6793e1219
-> 
+I believe this should be:
+
+DATA ACCESS MONITOR
+M:	SeongJae Park <sjpark@amazon.de>
+L:	linux-mm@kvack.org
+S:	Maintained
+F:	Documentation/admin-guide/mm/damon/
+F:	Documentation/vm/damon/
+F:	include/linux/damon.h
+F:	include/trace/events/damon.h
+F:	mm/damon/
+F:	tools/damon/
+F:	tools/testing/selftests/damon/
+
+
