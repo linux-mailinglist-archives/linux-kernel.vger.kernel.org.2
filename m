@@ -2,79 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0F43C70AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0658E3C70B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236249AbhGMMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236146AbhGMMsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:48:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9243611AB;
-        Tue, 13 Jul 2021 12:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626180351;
-        bh=FVR1cfoVz4ZTVgihL/TBDgLD2SOeoQiWYsaGuF2lpT0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LsIUGIruXxEHgiRGWHytHSewI2yd9si9rgfkqm6BILyZFnLo8d6vvodgXPsRtCXn7
-         0k1F76FYwIwZXW7TlXrWdnMBybD1QVAK1cvNmshShm0nW/dy7hEtqp9TdcZkIX33E6
-         RwjtWTUlmYX6BEPbwOZQPCA+Tjm86Dio7n7Bma2aAqGQab+jhcetoUqqV49A0xmxZ6
-         Kl86WkRKa3yzHdaccayiSn86286hGk9Ar3PI8oRovWLshKc2s8pbyYmceXhkd591gy
-         8I2Q8hFxndb8O5/H5RVO7HHsMbITmAnColQfSsSp2rKBfYkKe0Rh82wne+pFmGuakz
-         2BArl+3fWla0w==
-Received: by mail-pg1-f171.google.com with SMTP id s18so21510938pgg.8;
-        Tue, 13 Jul 2021 05:45:51 -0700 (PDT)
-X-Gm-Message-State: AOAM53057GtauII7l74fnq23vMnBr7Pfp8OqfZsJoKo8sotTJekQP/BF
-        czFq3DbatTXOS1LkKuJ1ZuMNSwteCvu5dsJL+Xo=
-X-Google-Smtp-Source: ABdhPJwGEYoM2NLAxWeYb+0E+kIrwhFFrXS50V3nh4QAre2PJh2JC6W1CxIABdvxwyy5oHbGbu8XZYDmAVOxT6QtBq4=
-X-Received: by 2002:a65:4103:: with SMTP id w3mr4187454pgp.308.1626180351585;
- Tue, 13 Jul 2021 05:45:51 -0700 (PDT)
+        id S236368AbhGMMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236276AbhGMMtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 08:49:20 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67F3C0613DD;
+        Tue, 13 Jul 2021 05:46:30 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 62so21550604pgf.1;
+        Tue, 13 Jul 2021 05:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OSSm6vgQ/hSSbGft4asv3z9r3hlk04ITp8gGHFuDvJw=;
+        b=O39QOghdBj2CErHDzCypebVvNfoixfpYts0+Kds4Ts4zA0Yh+shjkOTnx0g2yp7mIN
+         gAW8vorFQtxLHvSPiqQVLIkfYfS3J32Rm/7zqaNd3W8YexLbuAKA0/1QuRfWMKFYyekv
+         VPxl06BGV7KvPuaeq5qqPAKPFkE1xCRYPzl/Fi0z3kYLdS3aY41tN6AeaytCgX8CLlHc
+         +VxTbEErb/axjLe8hMOsnQmzkYTCj3RFBaT7XVFqGs2WMXbcpFQYY/ts89D2GtvhMK7w
+         E7311D/UuhrIXxgOoWXK4ytFyOoT0GBJVzpa1dUZXtw+emVEKXFBz1+3XdwOASmtsso5
+         5r8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OSSm6vgQ/hSSbGft4asv3z9r3hlk04ITp8gGHFuDvJw=;
+        b=ZhI/4/Lbd15yIdE6ntWlGwqDdlJ7tT5hWDPYS3VgB/pFtGviZxjmiaYwdDqFFdVnMl
+         K2WiqXEfkQA7j8/wYa7+1AuDjj1CmoE268n+DWG7d5gISnS8D+jP0RjIgEuHpwRZvrEP
+         tD9k1g3p9VnTsSuNNrzVTyq4SSc8etptjx8mLuKP1zQXdhBPucASkPbeooTxXY6rcaZ9
+         Lp/Pc3E8LXWtca+5XpVsv1BR+vbODY2FwLLd46Kd8PbEv29hm5LsLuS+GbuEfkwTTbpY
+         1u9bQKWjUsy6jZXZMSTdabBrpDWIpqPQc+XJdc4XNigSpDKHtce316uUKU+W+ua118zJ
+         K7Tw==
+X-Gm-Message-State: AOAM532fWKQ4hd71NKc+IbBglCxgHb41LHH/t4+LJP5R/QF6FAYdIVhV
+        OxEQjAPTHNhQqj5t4Sf+c80mnsog1krinu0ZxiU=
+X-Google-Smtp-Source: ABdhPJx/eA7qttUtbxpBlfH2rmDd3YHt9oPD7s1U8eIfqlDXzmWYLqbH+5Zu/3++zSAoGtFtVxI3MqkvwM4efGpLntE=
+X-Received: by 2002:aa7:8055:0:b029:303:36a6:fec7 with SMTP id
+ y21-20020aa780550000b029030336a6fec7mr4670949pfm.40.1626180390255; Tue, 13
+ Jul 2021 05:46:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20200613030454epcas5p400f76485ddb34ce6293f0c8fa94332b8@epcas5p4.samsung.com>
- <20200613024706.27975-1-alim.akhtar@samsung.com> <20200613024706.27975-9-alim.akhtar@samsung.com>
- <CAGOxZ500JD5xNWb0xFyEgaUH0qwQKm+kn1Ng71_1SM1wmJFxKg@mail.gmail.com>
-In-Reply-To: <CAGOxZ500JD5xNWb0xFyEgaUH0qwQKm+kn1Ng71_1SM1wmJFxKg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 13 Jul 2021 14:45:39 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPd6VMBaW7zBDXb7tXDHr3xwV2yZXxZtLJqNe3T69oUqsw@mail.gmail.com>
-Message-ID: <CAJKOXPd6VMBaW7zBDXb7tXDHr3xwV2yZXxZtLJqNe3T69oUqsw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v10 08/10] dt-bindings: ufs: Add bindings for
- Samsung ufs host
-To:     Alim Akhtar <alim.akhtar@gmail.com>,
-        Chanho Park <chanho61.park@samsung.com>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>, robh@kernel.org,
-        devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
-        avri.altman@wdc.com, martin.petersen@oracle.com,
-        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kishon@ti.com
+References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
+ <20210713084541.7958-3-andriy.shevchenko@linux.intel.com> <YO1s+rHEqC9RjMva@kroah.com>
+ <YO12ARa3i1TprGnJ@smile.fi.intel.com> <YO13lSUdPfNGOnC3@kroah.com> <20210713121944.GA24157@gondor.apana.org.au>
+In-Reply-To: <20210713121944.GA24157@gondor.apana.org.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 13 Jul 2021 15:45:51 +0300
+Message-ID: <CAHp75VfGd6VYyCjbqxO91B4RyyYuNQd_XKJA=yLMWJpa7-Yi9Q@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
+ typeof_memeber() macros
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 at 14:36, Alim Akhtar <alim.akhtar@gmail.com> wrote:
->
-> Hi Rob
-> Anything else needs to be done for this patch?
->
-> On Sat, Jun 13, 2020 at 8:36 AM Alim Akhtar <alim.akhtar@samsung.com> wrote:
+On Tue, Jul 13, 2021 at 3:21 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> On Tue, Jul 13, 2021 at 01:23:01PM +0200, Greg Kroah-Hartman wrote:
 > >
-> > This patch adds DT bindings for Samsung ufs hci
-> >
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+> > Life is messy and can not easily be partitioned into tiny pieces.  That
+> > way usually ends up being even messier in the end...
+>
+> One advantage is less chance of header loops which very often
+> involve kernel.h and one of the most common reasons for other
+> header files to include kernel.h is to access container_of.
 
-It has Rob's ack, so it can be taken directly via SCSI tree.
+Thanks, yes, that's also one important point.
 
-Chanho,
-I guess here is the answer why exynos7-ufs compatible was not
-documented, so you can build on top of it.
+> However, I don't see much point in touching *.c files that include
+> kernel.h.
 
-Best regards,
-Krzysztof
+The whole idea came when discussing drivers, esp. IIO ones. They often
+are using ARRAY_SIZE() + container_of(). kernel.h is a big overkill
+there.
+
+-- 
+With Best Regards,
+Andy Shevchenko
