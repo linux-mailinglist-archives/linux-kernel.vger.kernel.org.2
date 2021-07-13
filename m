@@ -2,139 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681963C6E2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43B63C6DBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235623AbhGMKCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:02:32 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:44656 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235149AbhGMKC3 (ORCPT
+        id S235199AbhGMJwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234857AbhGMJwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:02:29 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 2EF70B1CF5;
-        Tue, 13 Jul 2021 17:59:34 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P5175T139827068524288S1626169639517537_;
-        Tue, 13 Jul 2021 17:49:16 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d0f03a370503f5ae407c95967c4b1094>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v12 08/10] arm: dts: rockchip: Add SFC to RV1108
-Date:   Tue, 13 Jul 2021 17:47:16 +0800
-Message-Id: <20210713094718.1709-4-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210713094718.1709-1-jon.lin@rock-chips.com>
-References: <20210713094456.23288-1-jon.lin@rock-chips.com>
- <20210713094718.1709-1-jon.lin@rock-chips.com>
+        Tue, 13 Jul 2021 05:52:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A43C0613DD;
+        Tue, 13 Jul 2021 02:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DsRs0GWZtjxgV/G+0LfR+smdacS384gtQB/dib23CM0=; b=B7IJS4LyOfpUzyzT/QH90vbIW9
+        0n+XQba6i3wYq4xVYxKcBVocZtWn4HIYzAL6myclgAvoQ0dbAM7PlZf07GesiXZA3j2MR5HB/fDuO
+        Zk0g2R50qMc1DEfyvBVJd9s+qZ6uoFSqlPSR04HGH0m/FLggHRAQq/csieQCoV32++JtGmpEPxJbW
+        x6FsOhBU6WI53Yivyk35MzvyxrqOL+h+7kqOYfz1w0U4LfS58UZ/lYSi8A5ezkDIw3q4uVbuWgptg
+        IsS4U7d2YzM8WsLb82REEr/qhO5SOJOJNaoGKe0oZBqkv9Xg184H9Mvj7TwM1TAKrpdQVEzYslsXv
+        95dgMwbA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3F1e-000xYr-VD; Tue, 13 Jul 2021 09:48:32 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8B9839866F6; Tue, 13 Jul 2021 11:48:25 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 11:48:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, dvyukov@google.com,
+        glider@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, ebiederm@xmission.com,
+        omosnace@redhat.com, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] perf: Fix required permissions if sigtrap is
+ requested
+Message-ID: <20210713094825.GC4132@worktop.programming.kicks-ass.net>
+References: <20210705084453.2151729-1-elver@google.com>
+ <CANpmjNP7Z0mxaF+eYCtP1aabPcoh-0aDSOiW6FQsPkR8SbVwnA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNP7Z0mxaF+eYCtP1aabPcoh-0aDSOiW6FQsPkR8SbVwnA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+On Mon, Jul 12, 2021 at 12:32:33PM +0200, Marco Elver wrote:
+> It'd be good to get this sorted -- please take another look.
 
-Add a devicetree entry for the Rockchip SFC for the RV1108 SOC.
+Thanks!
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
-
-Changes in v12: None
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
-
- arch/arm/boot/dts/rv1108.dtsi | 37 +++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
-index 884872ca5207..6d4f289aff53 100644
---- a/arch/arm/boot/dts/rv1108.dtsi
-+++ b/arch/arm/boot/dts/rv1108.dtsi
-@@ -536,6 +536,17 @@
- 		status = "disabled";
- 	};
- 
-+	sfc: spi@301c0000 {
-+		compatible = "rockchip,sfc";
-+		reg = <0x301c0000 0x4000>;
-+		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-+		clock-names = "clk_sfc", "hclk_sfc";
-+		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
-+
- 	gmac: eth@30200000 {
- 		compatible = "rockchip,rv1108-gmac";
- 		reg = <0x30200000 0x10000>;
-@@ -704,6 +715,32 @@
- 			};
- 		};
- 
-+		sfc {
-+			sfc_bus4: sfc-bus4 {
-+				rockchip,pins =
-+					<2 RK_PA0 3 &pcfg_pull_none>,
-+					<2 RK_PA1 3 &pcfg_pull_none>,
-+					<2 RK_PA2 3 &pcfg_pull_none>,
-+					<2 RK_PA3 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_bus2: sfc-bus2 {
-+				rockchip,pins =
-+					<2 RK_PA0 3 &pcfg_pull_none>,
-+					<2 RK_PA1 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_cs0: sfc-cs0 {
-+				rockchip,pins =
-+					<2 RK_PB4 3 &pcfg_pull_none>;
-+			};
-+
-+			sfc_clk: sfc-clk {
-+				rockchip,pins =
-+					<2 RK_PB7 2 &pcfg_pull_none>;
-+			};
-+		};
-+
- 		gmac {
- 			rmii_pins: rmii-pins {
- 				rockchip,pins =	<1 RK_PC5 2 &pcfg_pull_none>,
--- 
-2.17.1
-
-
-
+I'll queue them into perf/urgent.
