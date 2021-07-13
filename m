@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E263C7017
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871B43C7019
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbhGMMGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:06:43 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:47088 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235919AbhGMMGm (ORCPT
+        id S236098AbhGMMIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235797AbhGMMIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:06:42 -0400
-Received: by mail-vs1-f48.google.com with SMTP id e9so10608942vsk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 05:03:51 -0700 (PDT)
+        Tue, 13 Jul 2021 08:08:01 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EECCC0613DD;
+        Tue, 13 Jul 2021 05:05:10 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id k184so34335242ybf.12;
+        Tue, 13 Jul 2021 05:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G4qUuiRcnCqECtHAPnwTFpmFpYXByDpjZoDpTuZyyA0=;
+        b=m/+o0ouN8yGbzHGH+fsTvse9H7ZEqDZwjDRjh9TWqyhEcJI28Ywq2C6WgRHl7VUVqk
+         dRux8kDtNTCWmv1K14fGv+U8qb6I/3tE/AMhMs5Hd+BjxxiD1QeTyrd6iYc4PmM9wCwm
+         Tgn3BPqYifaSbHpAGcnYiJHQWC9CYGZkKPirQPjak+iwqvkZYd9XHe/ZFiARBO7BMNzh
+         JJSsGRMrKjC92G+tVcD4R6yRHNkjms3DvKxHQzdqdIRrs/5yHW4HwHrYXEF0DYLlnVXz
+         3RUVzivnJznL2Hrr8HIkO84Hg8nAzvyOD1L8AxysH2Gt3HmL14yX8HoeFfRotr17hOYw
+         DD0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uJ/XATmEw2FOvWYcKuc48jTHeHh5xPl/7xffQRs+CgY=;
-        b=HFp3djgKOtqg6+QwjeSqXSUzCWX3ljs+otnqiIIVb1SskOhVUBFdD0opGC+Q7ECT51
-         svIvT7fSQdeoFjy+Bk5xOtWAxVeEoScSknwLH//TAM314BO++1iKHy5n2NbzgDINidXf
-         QpOfVFoIkngvmbyWi2I4XgHZPcOw4BCzWzH1aKzmDBvjk8OJF1blV7NzJP32ppWXlJkQ
-         7MxDp5sOStIaFrWv4wgrbL2K1mcaFahSpSExgOlji7Or1veBcSSBu6oCsD+e1zqg1SrW
-         p3XvX1dU9fpkIR3l/t9n48mqIXo20Bqt0hfvjkUZF73Qc4l6eki2lb/zxxuSSa+OADaF
-         J9iw==
-X-Gm-Message-State: AOAM531qcJ+Vf3zSKm1p5hcLO1/C/dYQMTdJv4He4awA3va1fFbdk5Cj
-        g1E6ET1Itum3E+aM2rugIqva1Tpyv8YB8W+MdNE=
-X-Google-Smtp-Source: ABdhPJz/wYxiMEghMEpeCH26yZOIcHTipXqFk2MKx3dtSnvRcQq5ZNTfblEiJ56qKYYPOx6Lu73/EnheHrxuPN8B8CY=
-X-Received: by 2002:a67:8702:: with SMTP id j2mr5598475vsd.3.1626177831098;
- Tue, 13 Jul 2021 05:03:51 -0700 (PDT)
+        bh=G4qUuiRcnCqECtHAPnwTFpmFpYXByDpjZoDpTuZyyA0=;
+        b=W//3IAOBx3y1+A7UG28Lj6wIPjAOlunT4PotCvYU0AdNuSwuFkFpCnW2Oit8U9QV1t
+         ry1K7ez7Smg/bOBbfbRBRMH2nU3N8pq9aSZrRqxogqVwMVorItLCqedMB3BMOL593rHR
+         eK4HENqYGma7S7svuVtNSNJ3COjdeEXYdDbH6dRSs+YrJkvisT5JLH5ij0Ni0+494+Vc
+         PqZFsw3d33I+OHOVd+c8bfwooMwrUYwGxc/6UtBOmcVx5QHOvIYqj4bfpabfo5422Prb
+         GMW0+ngf2sl8UB01gggCXini7+rIM/uCkYdRCa0NCDw7bYwencs4DEdMxoacgv6MCFjY
+         UpcA==
+X-Gm-Message-State: AOAM532C/QlE/JCD4wD53fBOtpqNSe07bd/fKc6HTuFLWYs9Vw+QiQmx
+        UDuWUlHmyqnwjNB6fE6kxlmWNLftSQ/OxIRnSAE=
+X-Google-Smtp-Source: ABdhPJxzbiMIFK6e9wYRrK4smZN209wow+vMaQRxI8Sn+Una/ZyJF+g1mVl1oHxCN5MYCBuxySSi/En7yAzSI+7pyXI=
+X-Received: by 2002:a25:7415:: with SMTP id p21mr5056281ybc.464.1626177909786;
+ Tue, 13 Jul 2021 05:05:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414163434.4376-1-glittao@gmail.com>
-In-Reply-To: <20210414163434.4376-1-glittao@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Jul 2021 14:03:39 +0200
-Message-ID: <CAMuHMdW=eoVzM1Re5FVoEN87nKfiLmM2+Ah7eNu2KXEhCvbZyA@mail.gmail.com>
-Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
-To:     glittao@gmail.com, Yogesh Lal <ylal@codeaurora.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+References: <20210713094158.450434-1-mudongliangabcd@gmail.com>
+ <CAKXUXMwMvWmS1jMfGe15tJKXpKdqGnhjsOhBKPkQ6_+twZpKxA@mail.gmail.com> <CAD-N9QUipQHb7WS1V=3MXmuO4uweYqX-=BMfmV_fUVhSxqXFHA@mail.gmail.com>
+In-Reply-To: <CAD-N9QUipQHb7WS1V=3MXmuO4uweYqX-=BMfmV_fUVhSxqXFHA@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 13 Jul 2021 14:04:58 +0200
+Message-ID: <CAKXUXMyFRN=p-JtgFHXneTx8rF+tWLb4sBgjLRWdzZ_wz=pZiw@mail.gmail.com>
+Subject: Re: [PATCH] audit: fix memory leak in nf_tables_commit
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver, Yogesh,
-
-On Wed, Apr 14, 2021 at 8:08 PM <glittao@gmail.com> wrote:
-> From: Oliver Glitta <glittao@gmail.com>
+On Tue, Jul 13, 2021 at 1:52 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 >
-> Many stack traces are similar so there are many similar arrays.
-> Stackdepot saves each unique stack only once.
+> On Tue, Jul 13, 2021 at 7:47 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> >
+> > On Tue, Jul 13, 2021 at 11:42 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > >
+
+> > >
+> > > Reported-by: syzbot <syzkaller@googlegroups.com>
+> >
+> > As far as I see, the more default way is to reference to syzbot by:
+> >
+> > Reported-by: syzbot+[[20-letter hex reference]]@syzkaller.appspotmail.com
+> >
 >
-> Replace field addrs in struct track with depot_stack_handle_t handle.
-> Use stackdepot to save stack trace.
+> Hi Lukas,
 >
-> The benefits are smaller memory overhead and possibility to aggregate
-> per-cache statistics in the future using the stackdepot handle
-> instead of matching stacks manually.
+> this bug is not listed on the syzbot dashboard. I found this bug by
+> setting up a local syzkaller instance, so I only list syzbot other
+> than concrete syzbot id.
 >
-> Signed-off-by: Oliver Glitta <glittao@gmail.com>
 
-Thanks for your patch, which is now commit 788691464c294553 ("mm/slub:
-use stackdepot to save stack trace in objects") in v5.14-rc1.
+I see. Thanks for your explanation.
 
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1891,6 +1891,7 @@ config SLUB_DEBUG
->         default y
->         bool "Enable SLUB debugging support" if EXPERT
->         depends on SLUB && SYSFS
-> +       select STACKDEPOT if STACKTRACE_SUPPORT
->         help
->           SLUB has extensive debug support features. Disabling these can
->           result in significant savings in code size. This also disables
-
-This change increases memory consumption by 4 MiB (or more, see below).
-
-Looking at lib/Kconfig:
-
-|   config STACK_HASH_ORDER
-|           int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
-
-The sizes reported here are not correct, as the actual memory consumption
-is not STACK_HAS_ORDER bytes, but STACK_HAS_ORDER pointers.
-Hence they're off by a factor of 4 or 8.
-
-|           range 12 20
-|           default 20
-
-Does this really have to default to the maximum value?
-
-|           depends on STACKDEPOT
-|           help
-|            Select the hash size as a power of 2 for the stackdepot hash table.
-|            Choose a lower value to reduce the memory impact.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Lukas
