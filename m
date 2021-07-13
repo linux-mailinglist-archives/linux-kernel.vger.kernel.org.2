@@ -2,155 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43DD3C76B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EC63C76B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhGMSwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhGMSwY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:52:24 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AC3C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:49:33 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y42so52136426lfa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:49:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wRjP314M1GpUJgRSbgMGoaSYR4Jg4jHqUSa68YgJXO4=;
-        b=e4sNa/Sg9kxdAqw8spcbO5TswTuu+YuZY4qDNyyT4dhSXDPimR6bb2lWnbbuTInGqB
-         vYUg38sUbSqtZrcvWZKELF4PIlu5pb7g5GNPYB2a3PjVTtamIQpdhfHkcPbrrm/2URQS
-         WJcBQQ/7EzRD+zl/dWIaXSSXiQFQ87HU4XNVI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wRjP314M1GpUJgRSbgMGoaSYR4Jg4jHqUSa68YgJXO4=;
-        b=A7ca+OMpiBhpwCZBH9PfzY7xjjKAzaRrCtzahR4ACCP4qxX8ga901/fFR0ttqpG/gR
-         bLVyAcLK2BfTHk17CaRYYWJWd0XbWEZBZp4aXTuh+xD6BOou8LaX/r4LFq9hbb4798YL
-         JwIOkkHvcr4K5OpKIJkIHvUqCRh9MZZ5bz9XNZVfgx9qA7nrDqJ7x24by7B7v++biqMm
-         kqQzqnbYkFjU0boLAVz39AP7dUCgoGqizJ8w7n5GfXjnJTtXjWxvdjUR/EWzfdvaa3tT
-         e6YibTt4lSCd10ZFCIGa6lANMyK279/WTNu0EYCFsEPd4NWAmrSl3dhC3coqpn5s5U64
-         FhhA==
-X-Gm-Message-State: AOAM531x52d1hUiigiKILn0OejLaVocUwMX+Q/8Ba2zSWwmXrHGiDpmh
-        IBiSEcs3P9rhwZiXeYJgYm6OKRUF8zRFAhe8iNw=
-X-Google-Smtp-Source: ABdhPJxEwZ2sq90j+mO+l6+7Df04a9DQiywfqCekg1ovrsVqJCXMeD5AUnQB2/R6omDYSArshNC26g==
-X-Received: by 2002:ac2:4f82:: with SMTP id z2mr4423748lfs.39.1626202171851;
-        Tue, 13 Jul 2021 11:49:31 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id i15sm2122956lja.135.2021.07.13.11.49.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 11:49:31 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id e20so31459348ljn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:49:30 -0700 (PDT)
-X-Received: by 2002:a2e:a276:: with SMTP id k22mr5215151ljm.465.1626202170413;
- Tue, 13 Jul 2021 11:49:30 -0700 (PDT)
+        id S234061AbhGMS5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhGMS5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:57:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 666D460FEB;
+        Tue, 13 Jul 2021 18:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626202452;
+        bh=svx4BysCDN++nwq/Uq7Id8auGbV4pq5BbTPAk7gpD6c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EA3gkdtjXdaxENdJpfXVN63km87jTp3narHN04n2MUypo8tVbHvLhQW1jIvb4VgHA
+         MkvbqJsHfiraaaouaS4qJ6YB1B/O3Z0Daq9d/7MH4AYCg54rhL+8rxqECra5f1cS9T
+         IKNVKAR91WpKuapaJQsyvc0Vee+JDN/iApGyen4h9lc4f3ECC7VK0U29nlQQkK4lxo
+         Sj5erUOL45lD78pQDqBEk/v8a6oInE7pOokjcqujsX28TmZUMcJJkk+/2UVEve5S+9
+         8n3iogtQrkh2dsAywLI6KcNjVuc+iLJczKYqyl7xFSUVg75cEqBjnXrIP65LUeBSOt
+         tvwTrOIve4QPw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A5343403F2; Tue, 13 Jul 2021 15:54:09 -0300 (-03)
+Date:   Tue, 13 Jul 2021 15:54:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libperf: fix build error with LIBPFM4=1
+Message-ID: <YO3hUUqRv5R/AxI5@kernel.org>
+References: <20210713091907.1555560-1-hca@linux.ibm.com>
+ <YO1dngCS/v0j3cAE@krava>
 MIME-Version: 1.0
-References: <00000000000069c40405be6bdad4@google.com> <000000000000b00c1105c6f971b2@google.com>
-In-Reply-To: <000000000000b00c1105c6f971b2@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 13 Jul 2021 11:49:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgWv1s1FbTxS+T7kbF-7LLm9Nz1eC+WBn+kr1WdYGtisA@mail.gmail.com>
-Message-ID: <CAHk-=wgWv1s1FbTxS+T7kbF-7LLm9Nz1eC+WBn+kr1WdYGtisA@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
-To:     syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>
-Cc:     brauner@kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        gscrivan@redhat.com, Christoph Hellwig <hch@lst.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable-commits@vger.kernel.org, stable <stable@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YO1dngCS/v0j3cAE@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 9:12 PM syzbot
-<syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com> wrote:
->
-> syzbot has found a reproducer for the following issue on:
+Em Tue, Jul 13, 2021 at 11:32:14AM +0200, Jiri Olsa escreveu:
+> On Tue, Jul 13, 2021 at 11:19:07AM +0200, Heiko Carstens wrote:
+> > Fix build error with LIBPFM4=1:
+> >   CC      util/pfm.o
+> > util/pfm.c: In function ‘parse_libpfm_events_option’:
+> > util/pfm.c:102:30: error: ‘struct evsel’ has no member named ‘leader’
+> >   102 |                         evsel->leader = grp_leader;
+> >       |                              ^~
+> > 
+> > Fixes: fba7c86601e2 ("libperf: Move 'leader' from tools/perf to perf_evsel::leader")
+> > Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Hmm.
+Argh, we have this in 'make -C tools/perf build-test'
 
-This issue is reported to have been already fixed:
+⬢[acme@toolbox perf]$ grep libpfm tools/perf/tests/make
+make_with_libpfm4   := LIBPFM4=1
+run += make_with_libpfm4
+⬢[acme@toolbox perf]$
 
-    Fix commit: 9b5b8722 file: fix close_range() for unshare+cloexec
+But I forgot to install libpfm-devel :-\
 
-and that fix is already in the reported HEAD commit:
+Thanks, applied.
 
-> HEAD commit:    7fef2edf sd: don't mess with SD_MINORS for CONFIG_DEBUG_BL..
-
-and the oops report clearly is from that:
-
-> CPU: 1 PID: 8445 Comm: syz-executor493 Not tainted 5.14.0-rc1-syzkaller #0
-
-so the alleged fix is already there.
-
-So clearly commit 9b5b872215fe ("file: fix close_range() for
-unshare+cloexec") does *NOT* fix the issue.
-
-This was originally bisected to that 582f1fb6b721 ("fs, close_range:
-add flag CLOSE_RANGE_CLOEXEC") in
-
-     https://syzkaller.appspot.com/bug?id=1bef50bdd9622a1969608d1090b2b4a588d0c6ac
-
-which is where the "fix" is from.
-
-It would probably be good if sysbot made this kind of "hey, it was
-reported fixed, but it's not" very clear.
-
-The KASAN report looks like a use-after-free, and that "use" is
-actually the sanity check that the file count is non-zero, so it's
-really a "struct file *" that has already been free'd.
-
-That bogus free is a regular close() system call
-
->  filp_close+0x22/0x170 fs/open.c:1306
->  close_fd+0x5c/0x80 fs/file.c:628
->  __do_sys_close fs/open.c:1331 [inline]
->  __se_sys_close fs/open.c:1329 [inline]
-
-And it was opened by a "creat()" system call:
-
-> Allocated by task 8445:
->  __alloc_file+0x21/0x280 fs/file_table.c:101
->  alloc_empty_file+0x6d/0x170 fs/file_table.c:150
->  path_openat+0xde/0x27f0 fs/namei.c:3493
->  do_filp_open+0x1aa/0x400 fs/namei.c:3534
->  do_sys_openat2+0x16d/0x420 fs/open.c:1204
->  do_sys_open fs/open.c:1220 [inline]
->  __do_sys_creat fs/open.c:1294 [inline]
->  __se_sys_creat fs/open.c:1288 [inline]
->  __x64_sys_creat+0xc9/0x120 fs/open.c:1288
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-But it has apparently already been closed from a workqueue:
-
-> Freed by task 8445:
->  __fput+0x288/0x920 fs/file_table.c:280
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
-
-So it's some kind of confusion and re-use of a struct file pointer.
-
-Which is certainly consistent with the "fix" in 9b5b872215fe ("file:
-fix close_range() for unshare+cloexec"), but it very much looks like
-that fix was incomplete and not the full story.
-
-Some fdtable got re-allocated? The fix that wasn't a fix ends up
-re-checking the maximum file number under the file_lock, but there's
-clearly something else going on too.
-
-Christian?
-
-                Linus
+- Arnaldo
