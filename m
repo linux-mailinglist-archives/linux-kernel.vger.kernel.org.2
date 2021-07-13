@@ -2,118 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F8D3C738D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C863C739C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237148AbhGMP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237005AbhGMPz7 (ORCPT
+        id S237212AbhGMP5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:57:47 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15228 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237206AbhGMP5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:55:59 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB23C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:53:09 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id p8so31113108wrr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9VK3zYj7KAcX3VkDmk3HajnLmQ/7F6UzbJJALrCeO9s=;
-        b=jVy56SpSpjEEFw/F6TCv07V2BDQiA7Gs3E1NN79skntxIokby+W/y0Oq6qsraXVOKG
-         qqu6SPTIg7vGH7pna9L8xfB/2d8pmZuVxd4SjoQub5fyV3egUekPgnHR4YQcqqS/bsNx
-         0ca4R0DmcScWassVUo/4Sp265V8rj8e+UXn8PiSormXTKVMVLpFDLph7bG/OJsHoiCK8
-         xOd9GgZsq18KgIymiTB/ZeMz3O1MyuaavNOTPap7GDy15wezvRlYw60BshdBvHC2hoBU
-         JTuzk7VBYgIn5E2KFhB4W636pr4HBNBC5Mjg+pgR0ywKKmKNaWf5jmjgoMiobEOtcBEo
-         p9fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9VK3zYj7KAcX3VkDmk3HajnLmQ/7F6UzbJJALrCeO9s=;
-        b=GBuHqCI4VpYVLJ2jTO3UeN1paGLmeVoidKr9ORcnTrS1h23xLVFNfggHiGx3nOyybQ
-         jDgEIwvSS1y8lYcM1jC12wh+G6elVJh2oGGcY4PndDrn/GEhvh2J2Hxe5Z1FHViPq7g5
-         RjsW3qoE6SDEmoa4h51hFKUPhp3DBRhNRTXVM96tY1uWCd9+PrctpyIRaz+3QmCqPC3g
-         WMqGy2dh6WXtPsiEB1umWQvmP/n05O53eQUiOxR3BebkYTLopuPTs8iQe3YGSgPw+Q1n
-         igpfGeNW815WaS8CFGBaBAYCMVPtpRXulLFwkrsp0wUvw4M/hsG3IGZGnbus03KDEoB+
-         sbXw==
-X-Gm-Message-State: AOAM533oVsp7ngDMEfehgw8QJZqLWOkTIatTWN6aSkkEa1ozO5SRORCA
-        MFZLOjGXmA9KrKVB018RtwJUsQ==
-X-Google-Smtp-Source: ABdhPJyNhaqWJuUzhjdyh6zAxmiGvUgGFjvx0P9iHM4p3kS9jyIHt0wReUeQ2r3Lr23AV4tICt0RTg==
-X-Received: by 2002:adf:9bd7:: with SMTP id e23mr6694018wrc.349.1626191588021;
-        Tue, 13 Jul 2021 08:53:08 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id r9sm15907812wmq.25.2021.07.13.08.53.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 08:53:07 -0700 (PDT)
-Subject: Re: ia64-linux-ld: wcd938x.c:undefined reference to
- `__devm_regmap_init_sdw'
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-References: <202107132322.nTixp2uM-lkp@intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c327f238-55ae-831b-5092-6a3f577135ed@linaro.org>
-Date:   Tue, 13 Jul 2021 16:53:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <202107132322.nTixp2uM-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 13 Jul 2021 11:57:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626191697; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ISnkaTcNJcI8305yLt52TZLR5pfbH41+7hRWFRezhug=; b=wXBVWX/tidvuxnN/EW8CEMoETDcaUNkvaUYGq0Uid0e9bnkA+T6vaxzgaTaMpytrNhaHywVU
+ rUFCMcW3AJyDxjd+ySS5Z27M4Kbs1iuGs5VDu831qekrSaahWww5QWQwvIqd+sptnrmHEF7O
+ zrtiQzcNvkb5krfr/9hy5x31tWk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60edb73adc4628fe7e72ea48 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 15:54:34
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9ACB5C4323A; Tue, 13 Jul 2021 15:54:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17300C433D3;
+        Tue, 13 Jul 2021 15:54:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 17300C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/7] add fixes to pass DP Link Layer compliance test cases
+Date:   Tue, 13 Jul 2021 08:54:00 -0700
+Message-Id: <1626191647-13901-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+add fixes to pass DP Link Layer compliance test cases
 
+Kuogee Hsieh (7):
+  drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
+  drm/msm/dp: reduce link rate if failed at link training 1
+  drm/msm/dp: reset aux controller after dp_aux_cmd_fifo_tx() failed.
+  drm/msm/dp: replug event is converted into an unplug followed by an
+    plug events
+  drm/msm/dp: return correct edid checksum after corrupted edid checksum
+    read
+  drm/msm/dp: do not end dp link training until video is ready
+  drm/msm/dp: retrain link when loss of symbol lock detected
 
-On 13/07/2021 16:32, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   7fef2edf7cc753b51f7ccc74993971b0a9c81eca
-> commit: b90d9398d6ff6f518f352c39176450dbaf99e276 ASoC: codecs: wcd938x: remove incorrect module interdependency
-> date:   4 weeks ago
-> config: ia64-randconfig-c004-20210713 (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b90d9398d6ff6f518f352c39176450dbaf99e276
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout b90d9398d6ff6f518f352c39176450dbaf99e276
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=ia64 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
+ drivers/gpu/drm/msm/dp/dp_aux.c     |   3 +
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 145 +++++++++++++++++++++++-------------
+ drivers/gpu/drm/msm/dp/dp_display.c |  13 ++--
+ drivers/gpu/drm/msm/dp/dp_panel.c   |   9 ++-
+ 4 files changed, 110 insertions(+), 60 deletions(-)
 
-Thanks for reporting this,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-I already send out a fix for this issue.
-
---srini
-> All errors (new ones prefixed by >>):
-> 
->     ia64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_free':
->     wcd938x.c:(.text+0x762): undefined reference to `wcd938x_sdw_free'
->     ia64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_hw_params':
->     wcd938x.c:(.text+0x7f2): undefined reference to `wcd938x_sdw_hw_params'
->     ia64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_set_sdw_stream':
->     wcd938x.c:(.text+0x882): undefined reference to `wcd938x_sdw_set_sdw_stream'
->     ia64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_tx_swr_ctrl':
->     wcd938x.c:(.text+0x2a32): undefined reference to `wcd938x_swr_get_current_bank'
->     ia64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_bind':
->     wcd938x.c:(.text+0x4ff2): undefined reference to `wcd938x_sdw_device_get'
->     ia64-linux-ld: wcd938x.c:(.text+0x50b2): undefined reference to `wcd938x_sdw_device_get'
->>> ia64-linux-ld: wcd938x.c:(.text+0x5292): undefined reference to `__devm_regmap_init_sdw'
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
