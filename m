@@ -2,86 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2A63C780F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC93A3C7811
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbhGMUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
+        id S235459AbhGMUiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbhGMUiK (ORCPT
+        with ESMTP id S235322AbhGMUiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:38:10 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B78CC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:35:16 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id a2so22599828pgi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:35:16 -0700 (PDT)
+        Tue, 13 Jul 2021 16:38:20 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD41C0613DD;
+        Tue, 13 Jul 2021 13:35:29 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id ec55so10087165edb.1;
+        Tue, 13 Jul 2021 13:35:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4AmDsVu8C7+Vh6wJ1AauG4/nfKkfZ5m7flJ2GCQMZco=;
-        b=m4SkF/hHghflqZHT/pRmE7NtDOkCNpy81YEGC+IhdJ9Rx/cT5SfAMC+awFq8gOpt+G
-         He2FY2JqztL6dPS/SSKMRSG6Pkoq+FdWwHxeu4MxlWtQIhL1cJBJKizSHtoUD4vDVc1Q
-         fOuewObDck+6tEHIlLdSY26T5LsaKnOyKWsXmcGvCvPqyNutDZ1e9o/HPyXyk/fhl0sv
-         NF/8vSbdZ8dQfE2sLZ3/+h81AAURRf8XVw9jUmvJcWgbGvg7m6+i3eeZhu7uV4teXL3Q
-         McOh6gH9ZbnYIEYukWKXo/ZqAS5I/mxxmV1+h7l2Jug4EfE/9GuyiJWJFJpDXe7VyXDs
-         NArA==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lz1iNRVmJl/8c02nO6mcAo+x0LUik5FJFjS42Nicby8=;
+        b=I93Jw38f4suLZLxrcS11ROvBezOGU4JjFfcwHEGortMfxkTfN8UAqSPN2szzMQAE1d
+         er50D8stbzEiVr8XMg/kJF9abJbF/jEILEq+03llk6uLCKV4l6mvLKVURuLRWX5jDO1N
+         6lZUTJqBPyMJnqbGgBCap5EmeHutNScznEb6M3SAf+4+1tCA2UZ+C1I0JvqBECH2O2uo
+         Habw2ErqzBpxlKBIy5n7bDd40kv1SiqUqkdD5kFy2Ri+Ds5oprwISZsx66w577mnLpwx
+         f7wx0iZY+ozU/lpPvIjZdZkdG8/gJ2Z613VMV3zROZv0ZkbAXj2hjH/7wovNCCu/34CS
+         zeFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4AmDsVu8C7+Vh6wJ1AauG4/nfKkfZ5m7flJ2GCQMZco=;
-        b=CZ84qIQaAjwUWg2WeOXpabSPG5LSngvpdKGVHXcq89Yiw4D8fqLK+OyWeJBdWmarJY
-         Xelc+G+6KkK/X8Wosd9gsOic/bHE1RT7bxmxaJtCs4oe3O/0o69drly5vj7MTWWU91JH
-         y10Auqf4E6mkb4C2a2ljZP/2n3SIfXXg9FilFGShBdqZF22j0ks9+B6LZVS8dqK/qd97
-         XQPzKfNfRfIoqOT68OpEzju/qRUVESWa4FdpglFn+Pju5nPP7SyPFGsB/GOIHiQW9qSu
-         psxGjdn3kHg0QVwPGWoM4iQEf5P3K38Q4Tg8bhRWDTC058PeQVKJWoApCznhR3p/hMK+
-         ydIg==
-X-Gm-Message-State: AOAM533C/Z03EovZuq+Wh9C5KRuznphAHtBsUgEEFC7qof0O9197ivJS
-        0yN+DI2ZNf2tVSyE2S+GP3RMPg==
-X-Google-Smtp-Source: ABdhPJw36stDiatSrqUOjKH3K6JCfVV0uAc6YTTPBKatF5UY65R9llh4XPwfgwF0WIVEsNp7ktdhlg==
-X-Received: by 2002:a63:4242:: with SMTP id p63mr5881087pga.185.1626208515649;
-        Tue, 13 Jul 2021 13:35:15 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 11sm49387pfl.41.2021.07.13.13.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 13:35:15 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 20:35:11 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v2 21/69] KVM: Add max_vcpus field in common 'struct
- kvm'
-Message-ID: <YO34/91O242b8YS7@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <bf7685a4665a4f70259b0cd5f7d11a162753278c.1625186503.git.isaku.yamahata@intel.com>
- <b6323953-1766-ff6a-2b3c-428606144e5f@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lz1iNRVmJl/8c02nO6mcAo+x0LUik5FJFjS42Nicby8=;
+        b=UJQ9KD9DmIZUtSURh1qVG+qIwgBGHvQKhfhyej2E4Gy78gKc6wdPAc/XcginK+zOl1
+         bIZgzMT3KB1R0oNQN73dER/obU7FwLog3z19PhSYfBiPNf0QAXnkB4ypE0cx+3JjUSF4
+         z2PoeCJZyQOdeKQqg38XxsiqDHPy4FplnBrkC+gLJsKHs6ygmV6AhqM0izx/Cazq6reh
+         6hEOZkaw8F7HLNV3EpIGfBjuT5zXg7gVHuRvxKd759aKlbCCctsuh3mBF37xqWbp0ZWX
+         FEOjHZJCIXRI6H1D7F4U1TqQaC5dYz9u6jXfM9bHVILfid+jr5vJNf+Dpe/4es/pi4yV
+         /IWg==
+X-Gm-Message-State: AOAM5305IB9FPIO3KbbP16SWYs8bDCHqkkGO/NVHgAqrtjT1vdt7K0Yi
+        tAiXaJ5g5a+cAOHqnCVcdeRHsY+3pKYVadsfpSo=
+X-Google-Smtp-Source: ABdhPJxtOwqdJeTKPSUanACIrHdPw1eVvCe+a/6kJEv5H4LVBcI1ek6HLhA0gFT9a/FkLDXR9ho5PMGWfIoQ2V5HXnU=
+X-Received: by 2002:a05:6402:190c:: with SMTP id e12mr8137065edz.176.1626208528146;
+ Tue, 13 Jul 2021 13:35:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6323953-1766-ff6a-2b3c-428606144e5f@redhat.com>
+References: <20210713055227.1142-1-linux.amoon@gmail.com> <20210713055227.1142-2-linux.amoon@gmail.com>
+ <CAFBinCD3ahpNQhP_jWZ3-4nXx8OqZOAANCpTN3BrsULRbYZHVw@mail.gmail.com> <CANAwSgTh02qg=cMT8tpHcEfAs5yW2vHQ7tPOkvuKXos_fOmh8A@mail.gmail.com>
+In-Reply-To: <CANAwSgTh02qg=cMT8tpHcEfAs5yW2vHQ7tPOkvuKXos_fOmh8A@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 13 Jul 2021 22:35:17 +0200
+Message-ID: <CAFBinCC-kD-MW+bwqCZH5AjYDhxWa_pN2WEnHuiZpx=RhUdROQ@mail.gmail.com>
+Subject: Re: [PATCHv1 1/3] ARM: dts: meson8b: odroidc1: Add usb phy power node
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021, Paolo Bonzini wrote:
-> Please replace "Add" with "Move" and add a couple lines to the commit
-> message.
+Hi Anand,
 
-  Move arm's per-VM max_vcpus field into the generic "struct kvm", and use
-  it to check vcpus_created in the generic code instead of checking only
-  the hardcoded absolute KVM-wide max.  x86 TDX guests will reuse the
-  generic check verbatim, as the max number of vCPUs for a TDX guest is
-  user defined at VM creation and immutable thereafter.
+On Tue, Jul 13, 2021 at 8:45 PM Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> Hi Martin,
+>
+> Thanks for reviewing the changes,
+>
+> On Tue, 13 Jul 2021 at 20:35, Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+> >
+> > Hi Anand,
+> >
+> > On Tue, Jul 13, 2021 at 7:53 AM Anand Moon <linux.amoon@gmail.com> wrote:
+> > >
+> > > Add missing usb phy power node for phy mode fix below warning.
+> > >
+> > > [    1.253149] phy phy-c1108820.phy.0: Looking up phy-supply from device tree
+> > > [    1.253166] phy phy-c1108820.phy.0: Looking up phy-supply property
+> > >                 in node /soc/cbus@c1100000/phy@8820 failed
+> > I did some testing on my own Odroid-C1+ and this patch is not doing
+> > anything for me.
+> > more information below.
+> Some device node for USB will have
+The mistake I made before is considering USB VBUS as PHY power supply.
+I believe the USB PHY is actually powered by the AVDD18_USB_ADC and
+USB33_VDDIOH signals. See the S905 datasheet [0], page 25
+These are 1.8V and 3.3V signals while you are adding a 5V regulator.
+
+[...]
+> > > +               /*
+> > > +                * signal name from schematics: USB_POWER
+> > > +                */
+> > Just a few lines below you're saying that the name from the schematics is PWREN
+> > If this patch is getting another round then please clarify the actual
+> > signal name, or name both signals if the schematics is actually using
+> > both names.
+> >
+> As per the schematics.
+> PWREN ---> GPIOAO.BIT5      gpio pin control
+> USB_POWER ---> P5V0          power source regulator.
+ah, thanks for clarifying this
+my suggestion is to put that exact paragraph into the comment to avoid confusion
+
+[...]
+> > Can you please give this a try on your Odroid-C1 as well?
+> > The conclusion from my own testing is that GPIOAO_5 doesn't seem to be
+> > related to USB1 (host-only) because if it was then inverting the
+> > polarity (from active high to active low) should result in a change.
+> >
+>
+> Ok I have modified as per above but not changes in gpio polarity
+> from active high to active low. see below.
+>
+> # Odroid C1
+> [alarm@archl-c1e ~]$ sudo cat /sys/kernel/debug/gpio | grep USB
+>  gpio-1953 (USB_HUB_RST_N       |usb-hub-reset       ) out hi
+>  gpio-1954 (USB_OTG_PWREN       |regulator-usbp_pwr_e) out hi
+>
+> # Odroid C2
+> [alarm@archl-c2lm ~]$  sudo cat /sys/kernel/debug/gpio | grep usb
+>  gpio-501 (USB HUB nRESET      |usb-hub-reset       ) out hi
+>  gpio-502 (USB OTG Power En    |regulator-usb-pwrs  ) out hi
+that's strange, my result is different
+
+  gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
+  enable-active-high;
+gives me:
+  # grep USB_OTG_PWREN /sys/kernel/debug/gpio
+  gpio-418 (USB_OTG_PWREN       |regulator-usb-pwr-en) out hi
+
+  gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_LOW>;
+gives me:
+  # grep USB_OTG_PWREN /sys/kernel/debug/gpio
+  gpio-418 (USB_OTG_PWREN       |regulator-usb-pwr-en) out lo ACTIVE LOW
+
+Did you remove the "enable-active-high;" in your "active low" test?
+GPIO polarity for regulators is managed with that flag, not just with
+GPIO_ACTIVE_{HIGH,LOW}
+
+[...]
+> > >  &usb1_phy {
+> > >         status = "okay";
+> > > +       phy-supply = <&usb_pwr_en>;
+> > From the schematics it seems that this is not the PHY supply (which I
+> > admittedly have used incorrectly for VBUS before).
+> > In the schematics that I have (odroid-c1+_rev0.4_20150615.pdf) it
+> > seems to be enabling VBUS.
+> > So in that case a vbus-supply property should be used inside &usb1 instead.
+> >
+> As per the debug log I have added this since core phy looking for this property
+Let's discuss the results with different polarities first, then we can
+also discuss the rest.
+
+
+Best regards,
+Martin
