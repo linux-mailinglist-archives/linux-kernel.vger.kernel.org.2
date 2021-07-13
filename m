@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A32C3C778C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438213C7792
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhGMT5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:57:40 -0400
-Received: from mail-eopbgr70113.outbound.protection.outlook.com ([40.107.7.113]:14227
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234411AbhGMT5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:57:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJHy1rZMucR8uBPZxuMDU8/RHrkYFBYkZ1tArxeUN5EZIj0bONrokhOSpC0GWZLqYYZ71yMUvHQywq20EoTcosfEX8xFysqoGt5NtXzUFms8OBhgl03cdefUO90eVMcXMqeJUivnK5LI1N6K/vg/Zuzr3vvWFTDPqCBotiLe9y7785UjemrDoQkHIA43rJoVYCOnzQb82nTvonj6taknKw4N7J0nyk+qTYTPnUalAYqa7mstCpe8JOSZ1Qw8CIdWibfGjCkO6I9zUVwKoM+GP/NVVuBbbjt4TgxLBOYIupf7DPArTISBdzLMrkQp4OrFkxXFUqFTvb9RHFCZXYSLQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=darPVLEsHD3398SrFEIX6NcY9ZvtI4RtvIYMUGUn0pA=;
- b=TQLkrdzKAvWspT2Ik3Ht8quCjXKbRxV8j+XDZSImXENla6pRb/Mo4vJ2xPU5AcOQIdvCslIhif+hqsfcc9jWtHFICu4tfuNQPeECSee4n76Nb3CCWubtqU5jWuZ62otOaVNrjmZh8833q2GUKSOw2Mh8OJK39MIR/D7QxYM9U7su8GicsUPBN2MuYnC09V8lYHKEG9PDyjQfqEaPF+EX4Z4yL5mX/k12MY8oNl6xwYqHVHJMDnz+9rjeJNKr+KSdWpxb/F8OO+0ajTBk8EYaHGoLI9H43AUG0nl9cdQd9V1mHPTpq7Tp7vJN6JHZN7N+Xr5xRY/tLIJBbk971J5J2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=darPVLEsHD3398SrFEIX6NcY9ZvtI4RtvIYMUGUn0pA=;
- b=POgjxvBEFrNuu3jmhphVWi1uBAlaY1VxOHyglIpgik946n6PieFQC2bcKigpcwsZyz7hK0IwBC+3t4FXMyqKJqutl20ng3e56FRWdLi8vRu25pHhnZLyHuKvdykfQCw5E300ogMGxequN2N0oVFwMiqL/1eZpi3M1Wn0DPAlV1Y=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=toradex.com;
-Received: from PAXPR05MB8285.eurprd05.prod.outlook.com (2603:10a6:102:dd::24)
- by PA4PR05MB7584.eurprd05.prod.outlook.com (2603:10a6:102:ff::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.26; Tue, 13 Jul
- 2021 19:54:45 +0000
-Received: from PAXPR05MB8285.eurprd05.prod.outlook.com
- ([fe80::68c9:eb5c:2e08:f814]) by PAXPR05MB8285.eurprd05.prod.outlook.com
- ([fe80::68c9:eb5c:2e08:f814%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
- 19:54:45 +0000
-From:   Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-To:     linux-next@vger.kernel.org
-Cc:     Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: colibri-imx6ull: limit SDIO clock to 25MHz
-Date:   Tue, 13 Jul 2021 22:54:16 +0300
-Message-Id: <20210713195416.277153-1-oleksandr.suvorov@toradex.com>
-X-Mailer: git-send-email 2.31.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: FR3P281CA0044.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4a::7) To PAXPR05MB8285.eurprd05.prod.outlook.com
- (2603:10a6:102:dd::24)
+        id S234615AbhGMUBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231499AbhGMUBb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 16:01:31 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F6DC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:58:40 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i5so22617656lfe.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:58:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TWXBE2VTCTk8wXZw3+DTQo1Bqc43JUhOeaoaUlFV+Nc=;
+        b=CFLfq9mQRVkeFIKtgFF6xB2WiQ9NQrHUnQOWV71uF7wmQW5l56yFzqBI/QKSEB0fAO
+         IBnW3YCqIH/MbEqpR808nvZ5Qt43jaa4L4ufGnklJMzM1B4hTIBoOSazC2IUH5uxrFRX
+         aFaWThc9dEEHS0FmSKHSRoB2b/sZ966XYzfPNdLohMF+868XBsPix02KoYd6mpe5nA0k
+         qn+3E3o4E3f0i/wu+A/0WsQgXVf/L59GLDtHzwXkBuEUh3JI1Befsy3YnMoSTRPWwkdf
+         iITminZwtodHn6oAyMhg2KH6iB3WGsO0Vs3mbjrGq4k+RI+zKHcdXrCpbP7zPhZ7SvcW
+         +Qjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TWXBE2VTCTk8wXZw3+DTQo1Bqc43JUhOeaoaUlFV+Nc=;
+        b=d9X3OBu9fMQA0zo6yC9xRQjcyf8xHgjWDrLJBy29mcisLkfMfv3gP7lWu9mILUBgLQ
+         +Lvf+3BtZ4t0TD71I7BtRTBJxtKX2GXAESKkuP4bc8o2XkgkBa+IPjzehwRnCyxzBTQD
+         urRGBdd3DvUpctVWe6zTIgEjTOOjAS2afUlXDlC6LM9hJtWhReNshuE9EncvG1iSWgcG
+         aMewNI9q4Rki5LToQ/cxK1Um2fSNRCi5XwtGUZGEJ78DKU6aLSJASFkhxOZZwrQvj9Bz
+         pl34ZOtQ5WTqxZWdrzW/8yuRDrjccSzHcOsYVJutADj8Jbhlf4lTdIBB/BcYQhJQfsaz
+         3H6w==
+X-Gm-Message-State: AOAM5302m/MFuvMxLmp8ifowbUSEUZsIYZYXYeHgqxRNzFUP/AucYL0v
+        kDM+qTTQef1D8yy/RXuFizg=
+X-Google-Smtp-Source: ABdhPJzPocR6Xm91gfYTrEpIRN0lYXtOUuDZvjfrxLf4SQHcUiHLSdvjpOwZUNMAojsUbs7g2CMAHA==
+X-Received: by 2002:ac2:4e69:: with SMTP id y9mr4783834lfs.593.1626206318841;
+        Tue, 13 Jul 2021 12:58:38 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id o18sm28073ljc.25.2021.07.13.12.58.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 12:58:38 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 13 Jul 2021 21:58:35 +0200
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@suse.de>, Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [mm/vmalloc] 5c1f4e690e:
+ BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c
+Message-ID: <20210713195835.GA21685@pc638.lan>
+References: <20210713142414.GA28943@xsang-OptiPlex-9020>
+ <CAHk-=wiDif7SvA5DOWj9ssDuYHC4ujUFPd7ad-ydhY-WMLb-kQ@mail.gmail.com>
+ <YO3a7erVd2yXdaAK@casper.infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from cryobook.toradex.int (82.193.109.226) by FR3P281CA0044.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4a::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.12 via Frontend Transport; Tue, 13 Jul 2021 19:54:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 37239451-f89f-42cd-c3e1-08d94638100a
-X-MS-TrafficTypeDiagnostic: PA4PR05MB7584:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PA4PR05MB7584BBFD1698A5CD52FABE4DF9149@PA4PR05MB7584.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hLlfCBNtrHHhWh8xn+RW9v5wkkzCXB7OyN+51erhIXccUmwZtJ2nUhlAv3mDkpfmyhreekJ38q4b8azra2p3Y39aTmj/aX9jkJ9YW9F0o0RTshi9Bh2OALwl3//fb+Qy+m7BEVgn+jZHr8aAxdLge03mRsnI6N1PG89k3foppSm3xcOlCbdKx7E5lrfF/D9gxBsbiLBEZEX1uifwBXPnOCbPrbBmYQGPdxTcYrPu+GujIor4anUZAvzWu5ifyHJxv3HvCzN0uMGeZVW5OfBCe3zlnE7vcUbnGmR6I69xhJEbf/vlxkHFf8kDrjksb2QzrX0P2s/4WcXRqec+gTN9ezedUIoGKnqWoONtJSmR8AB/rdG83McmpC/h3nKj7q1oJyHe53U10je3vptxBGY7eAV5PnB/ZrCJ+9YcScz6tlqTUZ1BbcozoqjFdyYIaf88KRavtmJFcbpgvNflG19T8ZFin9s8pOtmEy/jI5emdLUraZoJZxh+bfDNvVMJruPQPJxRcsWlSmWC5diK3MX3427YI3NdZMjy/WBw0J1liudbLTy5o+2vq8WMkKZaqeycCUI+HvoGS2CCFN+9QmJ646Ziu2TgSbTp+p5TzMaqfQ/hwHnqyVykNnFbCrQxa8R9pzDML/k6UC3hr7QJ62MZa3yuX1iPviqMg+LUOMefuOAlRUUnZOFsqHL89z2WycHUzbU12d6qEpjzLhKkhZeL1Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR05MB8285.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(136003)(346002)(39830400003)(8676002)(6512007)(52116002)(7416002)(1076003)(478600001)(186003)(2906002)(38100700002)(6486002)(83380400001)(4744005)(38350700002)(54906003)(44832011)(86362001)(66476007)(6666004)(2616005)(8936002)(5660300002)(26005)(4326008)(956004)(316002)(66946007)(55236004)(6916009)(6506007)(36756003)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WwXHjVPyp7tPgEWk3xOR3S0Lk11qVAmKkiPUh01EBKM7rYLH/IjeRiOf0a5C?=
- =?us-ascii?Q?yEAxORNAvjt+pQwPHDUjnf8x5JpWrStOCTHqhE8S0kdzWv0tzkwGNdU2bMqy?=
- =?us-ascii?Q?XM4Yvag0TEeSO9IXsctkEwueZnEZARrn8wSZn21MXQ/vMruoMRPO3Sj9HdF4?=
- =?us-ascii?Q?o3RyJFOEAwMELt9L27GpPzz2Ax8qNU+ZjSUmxn4hj/OHm2f/lRBUrxzd/xc/?=
- =?us-ascii?Q?ZyAeAe43MZzJVq9F9Y3LBZsqxD7WlCoj00BaSb/ymXwqOW9LgoJrBfTzwk7f?=
- =?us-ascii?Q?zOw8F+tU8+BoNNZzuyFA+8RMW+DrMamdefsKyysmVnUPlXMbAdKXjmKH5oTE?=
- =?us-ascii?Q?YbxHAQSTuY2J9izOdtWU7G6Jzlq/VKzutklpWOMkueg6gK2BAU/+T0D9bMeW?=
- =?us-ascii?Q?wjtxwOCGwkYGLuynlkezpbunQlvwx4ww4A9GK+SRbw8OMUrK65242wlmKrho?=
- =?us-ascii?Q?DWDo4sjqyY+QaQwGsmuBswIqJa/rST77XG+kv8VwPgL/4dTJ8z0/4FLwyRSO?=
- =?us-ascii?Q?RJ1gdl3OrmdIB+jZdBRsUNhHdODot+ANRaR4/pKnRTAFsIbEDNky49pCsX0u?=
- =?us-ascii?Q?D6fOJjYErIB2tUXAkepWa1WelyYtNDedFnRpgv7NsyziaNX925Krm6b4QM50?=
- =?us-ascii?Q?Hy6svrDHp3aovoXdoGZaP3XIeI4a50oCh9Kvn0Z7d1T5U8ctpIk6l8d0WkG9?=
- =?us-ascii?Q?ZB5hbwclx9UrDfOXI023tpifNlvivToUcZA9Ko/6ahf6bKEv4knwvd8w/RfL?=
- =?us-ascii?Q?1ZAjeOh5NrG5FdkXcG/fiHlHReI1qnqSftAesS1pmU8XOkhXv7mCegwU1W9Z?=
- =?us-ascii?Q?Mmh/DZyJvgijethOdD6chykf2MC2+jklIsFPrcBlbJb1BGxvMkO4bzANKvqd?=
- =?us-ascii?Q?tIOrEuJqhmNX8n+Mq7iHEJIuaG4RCVxch1YSXMubNTveJJEWo4Ibe63UBL4t?=
- =?us-ascii?Q?6I87a7y2IvX9Xp4yjk+tRaLchEud5bGDYieS/3yUxWxo0GPC7DjSxViA79QN?=
- =?us-ascii?Q?CHAJdfInGnaHMqLbT7iMlnb+fkoLx80rlUyqMUn/LldczQo+C7xtpPFMBGej?=
- =?us-ascii?Q?TstvKKpn7+7U0obxZvSIRDdZiRrxdmcHMZnx+AahBwksY8Pv5qcQztshGVJi?=
- =?us-ascii?Q?qRQi+t9UBWQM5P+LsMCcBvp27Va18rjnzu45aPiqKLmbKmrI3t2mjqA2FwuK?=
- =?us-ascii?Q?6XKoX7NL2M0s721esfIkKvGLEarLGELgl/RXf38JVNiGI1acyz6JxLpqcb4P?=
- =?us-ascii?Q?qP4UfVd2MGG7vEss1QRHZ++gFh2S+TcG362GkOBDERmZ/nwW01++mIPu7NOs?=
- =?us-ascii?Q?ujy1mmMUujABRdMabb8KUsY0?=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37239451-f89f-42cd-c3e1-08d94638100a
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR05MB8285.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 19:54:45.2213
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H+TkZ6P7KIeIvQhLOQ+k9C7rwf1+D3ZazUv+sXU9xKUgLi+RojFVNa/C2VNUy42q1KZPyEUG6X/33soBbJHLomG8Fu44pALfLgujdLmbmic=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR05MB7584
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YO3a7erVd2yXdaAK@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NXP and AzureWave don't recommend using SDIO bus mode 3.3V@50MHz due
-to noise affecting the wireless throughput. Colibri iMX6ULL uses only
-3.3V signaling for Wi-Fi module AW-CM276NF.
+On Tue, Jul 13, 2021 at 07:26:53PM +0100, Matthew Wilcox wrote:
+> On Tue, Jul 13, 2021 at 11:19:29AM -0700, Linus Torvalds wrote:
+> > Does anybody see what the problem is there?
+> > 
+> > There's an odd report _after_ the warning:
+> > 
+> > [  131.345319] raw_local_irq_restore() called with IRQs enabled
+> > [  131.366561] RIP: 0010:warn_bogus_irq_restore+0x1d/0x20
+> > [  131.433334]  __alloc_pages_bulk+0xbb8/0xf20
+> 
+> That's the key -- __alloc_pages_bulk has interrupts disabled and then
+> page_owner allocates memory for the stack dump.  Mel has a fix; I think
+> we're just waiting for it to hit your tree.
+> 
+I was thinking about how we came to the step when a sleeping check is fired
+somewhere deep in the "page-bulk" allocator. If vmalloc was invoked from
+non-sleepin context we would see it earlier, at least in alloc_vmap_area().
 
-Limit the SDIO Clock on Colibri iMX6ULL to 25MHz.
+I think, the bulk allocator disables interrupts and does some sleeping
+things.
 
-Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
----
+Matthew, Could you please point to the fix?
 
- arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi b/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi
-index a0545431b3dc..9f1e38282bee 100644
---- a/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi
-+++ b/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi
-@@ -43,6 +43,7 @@ &usdhc2 {
- 	assigned-clock-rates = <0>, <198000000>;
- 	cap-power-off-card;
- 	keep-power-in-suspend;
-+	max-frequency = <25000000>;
- 	mmc-pwrseq = <&wifi_pwrseq>;
- 	no-1-8-v;
- 	non-removable;
--- 
-2.31.1
-
+--
+Vlad Rezki
