@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5893C746F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FA33C7471
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhGMQ1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
+        id S229953AbhGMQ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhGMQ1N (ORCPT
+        with ESMTP id S229437AbhGMQ2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:27:13 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA6BC0613E9;
-        Tue, 13 Jul 2021 09:24:23 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so23070278oti.2;
-        Tue, 13 Jul 2021 09:24:23 -0700 (PDT)
+        Tue, 13 Jul 2021 12:28:24 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F21C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:25:34 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id h2so33984874edt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:25:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xczKCTyuhtwoZjASSpqKqupD2qvCeMqp8pYEr+GbpNU=;
-        b=D7+eSBGkcYe9VJAe//BclzJZaP77VVPBtIXqCryLaHfmOTlOsOUQUhhy1RAeTS7B6P
-         6PY910s0Hd46vFDMGWRM4H1rA2MhXvxZp0z65kWIrMFOI9q+JjjLI/qw61Ut3z0MyGem
-         WqKFkLr21TK4zvyAM2R6vVJAMHjW7lfsnu5ZoPQRmWjSrM/x4UETCbnx3QMRjBAKoQcH
-         du7XKpCvrDdxTEdtCe9Dp/rxjkkNPqYSDUxkHm5EolWpg5WiQ73SrvF/Y4YprLHOo8t3
-         wEuBRy21csCxfkTnXbpETZv3bC6a7h4RNa2XgdQoGFoKTocewl87AQOo1e0lJe0Zoeco
-         589A==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=iPXO2WxOI4kfZyDAE7w7JXdDG7n4qC4bl0bnuoZa+ws=;
+        b=OcuVQpyiJ2pwXKATDs7UHXL+5Deihbrd4vkX/p25dhUyULJs6miRnAXJbshJYLpp6/
+         QaMVDTdyIVqTUDiPRjMWUVmXso+4o9167T6agnoHoZOA2YqG2PGWMulPpBhI6l/qjE3u
+         WdoZ0vOy614l1SBPB7TcOXd9Tv+xop9Eb/aCB19CQIYaaOMmJmUfuih/OchBZSiUUhO/
+         hQKhpCbExCnQJxbpRM95R5Axngoz49czb9friY1q0tNkWN26Z9ZxQPuHcHbPYxDzf2eS
+         FRncRFPtNSleGYgexFz6W0TVHRD7rrQGE30b0xl9UK7zMiGLJfc0ESJWtWFSmAy1MoIo
+         0IPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xczKCTyuhtwoZjASSpqKqupD2qvCeMqp8pYEr+GbpNU=;
-        b=MZ4kh5L2vj+05xgAyTNFjNTJ33e+IqSxOK/Mzg0wHuRaAexozsQIFU5zeOpay6+GOr
-         NGCsjm7sl2VAb1lBZKfoA0Jsxqr6FLacUKhLvIiG6EjiJ0NeIEMDETZS7yJW6QzR+3kG
-         yLoX3XTidK+9DJFU0U7bZK1c8FrMN4rjNC9xexC8bLaFLLgKEI96Lje6asXPrzrrsorh
-         HFSkuL5cju8YGqN0MLAgOibi8rS5aaypDSLo8tuR60MoMFq0L0F4tWFq8Y42E+b8/9wi
-         X+pbcQSAGYyc1s0IdWGeJdFdw0/BsT8JLdQXqpEb8tWv8BH933sD/NcuZsyPjVMV5YRE
-         GcpQ==
-X-Gm-Message-State: AOAM532XCYU17YapFjXPEbDiC8VEoLof+xCXYSXbAkjDlf46NnoZCC4b
-        Hja0w6lm5eNOczkjdboB66kmJVu3Ia9fdg==
-X-Google-Smtp-Source: ABdhPJzTppdsBnWIA1Bvcrk2KcTfjzyz0Kad81Vma9wuL00XsCV/K3wYWyRovp//eCvs/0AUhpprGA==
-X-Received: by 2002:a9d:1b41:: with SMTP id l59mr4431102otl.8.1626193462339;
-        Tue, 13 Jul 2021 09:24:22 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.38])
-        by smtp.googlemail.com with ESMTPSA id v11sm946831ook.7.2021.07.13.09.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 09:24:21 -0700 (PDT)
-Subject: Re: [PATCH v2] net: Use nlmsg_unicast() instead of netlink_unicast()
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        vyasevich@gmail.com, nhorman@tuxdriver.com,
-        marcelo.leitner@gmail.com, johannes.berg@intel.com, ast@kernel.org,
-        yhs@fb.com, 0x7f454c46@gmail.com, aahringo@redhat.com,
-        rdunlap@infradead.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mptcp@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org
-References: <20210713024824.14359-1-yajun.deng@linux.dev>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <55d96ad0-f9e3-ce17-0f7d-5e4c57faeac3@gmail.com>
-Date:   Tue, 13 Jul 2021 10:24:19 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=iPXO2WxOI4kfZyDAE7w7JXdDG7n4qC4bl0bnuoZa+ws=;
+        b=cYJqL8QpAG6wMw9Ptl+6BcS6+CrHi84sQwzs3sSbf1yu0SGKU515QiaRCrLOgThIlp
+         JPxFQByUpPJbcJW3WJbEVAUqsNtm/hemtGQbsfMwz0lmkmfPpf9AzxL8a2urjxOcBPOT
+         uSon7R6+Fsm7tRN5CujYZCxxHg3IkELqOM8kE8gl2gsz0YfTVEsSo2ERHmYUOSrCEeBs
+         Nv+MsvCHoZNedpQoHq1NjNKmY8/Dl8dkNQat6ZaZ+rrUTXDIcw70cU/v6X3aMVtua4T+
+         nr9uw1B4izvIuK5JEZvSl1ATbzpg6pNUeVf+I0KaplSHh2z/+1EuWxfCwpVDlw3GkMJZ
+         tTQg==
+X-Gm-Message-State: AOAM531djkNeZXbEybVOfjWgsjSN3hF7z8dRzc/Sc6PIZ2HiZ78CaJOu
+        CMLcDzpG9alGx/JR74/J8op6UfKV4sQu8XBtpxQ=
+X-Google-Smtp-Source: ABdhPJzFYUXMmVmpKxTMebPDpMKbNtGU9wZ2yLGlJx+aYuzC8mOQqhq6C2MlMSpEZLbtlR7QSDmxrv6MMgHL95OejCY=
+X-Received: by 2002:a05:6402:501:: with SMTP id m1mr6843973edv.163.1626193532781;
+ Tue, 13 Jul 2021 09:25:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210713024824.14359-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:906:380c:0:0:0:0 with HTTP; Tue, 13 Jul 2021 09:25:32
+ -0700 (PDT)
+Reply-To: chevronoilcorporation@engineer.com
+From:   Chevronoil Corporation <chrisdickson151515@gmail.com>
+Date:   Tue, 13 Jul 2021 17:25:32 +0100
+Message-ID: <CAPWAWuwC4q66LmNan4PMNZySmmTopyc0wTJsctot-f14xchFMA@mail.gmail.com>
+Subject: INTERESTED REPLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 8:48 PM, Yajun Deng wrote:
-> diff --git a/net/ipv4/raw_diag.c b/net/ipv4/raw_diag.c
-> index 1b5b8af27aaf..ccacbde30a2c 100644
-> --- a/net/ipv4/raw_diag.c
-> +++ b/net/ipv4/raw_diag.c
-> @@ -119,11 +119,8 @@ static int raw_diag_dump_one(struct netlink_callback *cb,
->  		return err;
->  	}
->  
-> -	err = netlink_unicast(net->diag_nlsk, rep,
-> -			      NETLINK_CB(in_skb).portid,
-> -			      MSG_DONTWAIT);
-> -	if (err > 0)
-> -		err = 0;
-> +	err = nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
-> +
->  	return err;
+BEWARE, Real company doesn't ask for money, Chevron Oil and Gas United
+States is employing now free flight ticket, if you are interested
+reply with your Resume/CV.
 
-can be shortened to:
-
-	return nlmsg_unicast(net->diag_nlsk, rep, NETLINK_CB(in_skb).portid);
-
-
-
-other than that it's a good cleanup:
-
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Regards,
+H.R.M. Chevron.
