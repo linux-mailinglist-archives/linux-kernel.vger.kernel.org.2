@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF8A3C6BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC723C6BAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhGMHtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:49:12 -0400
-Received: from relay.sw.ru ([185.231.240.75]:54260 "EHLO relay.sw.ru"
+        id S234357AbhGMHtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:49:31 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61484 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234342AbhGMHtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:49:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=S2QgaeifWpJsHlA3PUAtp1Lof9N7j00FCY/hbO/PGaI=; b=EgJEJb+r09iWh1OBB
-        feiEeV/D+REGUFN0DOztEvNG72wKfV0UpVf3bKT8pco0QH6ZlX+r9XVL1QDfPZHpW+aNZ9EaGNpXT
-        lwN8egs0Y/8kuj6rm53di01iBhF8KuJYTcecatIxD6XNzsFAdpok2p+qqREnEGH7qnmb0fH235aQE
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m3D7Q-003my6-2D; Tue, 13 Jul 2021 10:46:16 +0300
-Subject: Re: [PATCH IPV6 v3 1/1] ipv6: allocate enough headroom in
- ip6_finish_output2()
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <74e90fba-df9f-5078-13de-41df54d2b257@virtuozzo.com>
- <cover.1626069562.git.vvs@virtuozzo.com>
- <1b1efd52-dd34-2023-021c-c6c6df6fec5f@virtuozzo.com>
-Message-ID: <e44bfeb9-5a5a-9f44-12bd-ec3d61eb3a14@virtuozzo.com>
-Date:   Tue, 13 Jul 2021 10:46:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234342AbhGMHta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:49:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="197391554"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="197391554"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 00:46:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="570205582"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 13 Jul 2021 00:46:37 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 13 Jul 2021 10:46:36 +0300
+Date:   Tue, 13 Jul 2021 10:46:36 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 5/6] software nodes: Split software_node_notify()
+Message-ID: <YO1E3PjX/uqZEgCF@kuha.fi.intel.com>
+References: <2780027.e9J7NaK4W3@kreacher>
+ <5627033.MhkbZ0Pkbq@kreacher>
+ <YOyD/4kdvd77PzLy@kroah.com>
+ <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1b1efd52-dd34-2023-021c-c6c6df6fec5f@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've found 2 problems in this patch,
-and I'm going to resend new patch version soon.
-
-On 7/12/21 9:45 AM, Vasily Averin wrote:
-> index ff4f9eb..0efcb9b 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -60,10 +60,38 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
->  {
->  	struct dst_entry *dst = skb_dst(skb);
->  	struct net_device *dev = dst->dev;
-> +	unsigned int hh_len = LL_RESERVED_SPACE(dev);
-> +	int delta = hh_len - skb_headroom(skb);
->  	const struct in6_addr *nexthop;
->  	struct neighbour *neigh;
->  	int ret;
->  
-> +	/* Be paranoid, rather than too clever. */
-> +	if (unlikely(delta > 0) && dev->header_ops) {
-> +		/* pskb_expand_head() might crash, if skb is shared */
-> +		if (skb_shared(skb)) {
-> +			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-> +
-> +			if (likely(nskb)) {
-> +				if (skb->sk)
-> +					skb_set_owner_w(skb, skb->sk);
-
-need to assign sk not to skb but to nskb 
-
-> +				consume_skb(skb);
-> +			} else {
-> +				kfree_skb(skb);
-
-It is quite strange to call consume_skb() on one case and kfree_skb() in another one.
-We know that original skb was shared so we should not call kfree_skb here.
-
-Btw I've noticed similar problem in few other cases:
-in pptp_xmit, pvc_xmit, ip_vs_prepare_tunneled_skb
-they call consume_skb() in case of success and kfree_skb on error path.
-It looks like potential bug for me.
-
-> +			}
-> +			skb = nskb;
-> +		}
-> +		if (skb &&
-> +		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> +			kfree_skb(skb);
-> +			skb = NULL;
-> +		}
-> +		if (!skb) {
-> +			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +
->  	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
->  		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
->  
+On Mon, Jul 12, 2021 at 08:30:06PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Jul 12, 2021 at 8:03 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Jul 12, 2021 at 07:27:12PM +0200, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Split software_node_notify_remove) out of software_node_notify()
+> > > and make device_platform_notify() call the latter on device addition
+> > > and the former on device removal.
+> > >
+> > > While at it, put the headers of the above functions into base.h,
+> > > because they don't need to be present in a global header file.
+> > >
+> > > No intentional functional impact.
+> > >
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >  drivers/base/base.h      |    3 ++
+> > >  drivers/base/core.c      |    9 +++---
+> > >  drivers/base/swnode.c    |   61 ++++++++++++++++++++++++-----------------------
+> > >  include/linux/property.h |    2 -
+> > >  4 files changed, 39 insertions(+), 36 deletions(-)
+> > >
+> > > Index: linux-pm/drivers/base/swnode.c
+> > > ===================================================================
+> > > --- linux-pm.orig/drivers/base/swnode.c
+> > > +++ linux-pm/drivers/base/swnode.c
+> > > @@ -11,6 +11,8 @@
+> > >  #include <linux/property.h>
+> > >  #include <linux/slab.h>
+> > >
+> > > +#include "base.h"
+> > > +
+> > >  struct swnode {
+> > >       struct kobject kobj;
+> > >       struct fwnode_handle fwnode;
+> > > @@ -1053,7 +1055,7 @@ int device_add_software_node(struct devi
+> > >        * balance.
+> > >        */
+> > >       if (device_is_registered(dev))
+> > > -             software_node_notify(dev, KOBJ_ADD);
+> > > +             software_node_notify(dev);
+> >
+> > Should this now be called "software_node_notify_add()" to match up with:
+> >
+> > >       if (device_is_registered(dev))
+> > > -             software_node_notify(dev, KOBJ_REMOVE);
+> > > +             software_node_notify_remove(dev);
+> >
+> > The other being called "_remove"?
+> >
+> > Makes it more obvious to me :)
 > 
+> The naming convention used here follows platform_notify() and
+> platform_notify_remove(), and the analogous function names in ACPI for
+> that matter.
 
+So why not rename those instead: platform_notify() to
+platform_notify_add() and so on? You are in any case modifying
+acpi_device_notify() in this series, and I think there is only one
+place left where .platform_notify is assigned. I believe you also
+wouldn't then need to worry about the function name collision (3/6).
+
+> I thought that adding _add in just one case would be sort of odd, but
+> of course I can do that, so please let me know what you want me to do.
+
+I would prefer the "_add" ending, but in any case, FWIW:
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+
+-- 
+heikki
