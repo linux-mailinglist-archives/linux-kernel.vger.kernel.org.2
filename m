@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6EF3C718A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734BC3C718D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhGMN53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:57:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53240 "EHLO
+        id S236818AbhGMN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:57:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53228 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236762AbhGMN5Y (ORCPT
+        with ESMTP id S236754AbhGMN5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:57:24 -0400
-Message-Id: <20210713135158.787536542@linutronix.de>
+        Tue, 13 Jul 2021 09:57:25 -0400
+Message-Id: <20210713135158.887322464@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626184473;
+        s=2020; t=1626184474;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=tjoOaRJ0VG1BA/IRv30bb4o48CCGuIbta8lNlR7BPbo=;
-        b=IrXU8lvoudPHCxjw/7oJcpdzIDvXPPwlLjt38glmidk15PGtMZMF2DGc3SOow6AwxiiMkM
-        uOvWdylgWtpEbHeKnilE7mUvNgs1WOEMFxnHsN/dWwc8YGxOBA961N8mrt87pv0plYThLd
-        qeT12UqzPvQNFGy49K/urq31TKN3M//z0E0REePVyAekT2DjwMEsl0pV/753mEGqB2gvlC
-        AoOXZOMrAtkPDFOutZmZ3JaG8ZfAhsV3zUp1F7PoctFrW/CIBr9ZeLSisr9pz2sZSqpGUh
-        lS87gwYfG3Pj4MZyPYlepPNmIK+npFvPv2koJ3gkliaMg/uSAmZDI+BheMgGRA==
+        bh=Al+tO89KZ0WnAXZVnnl4CFnWdviNIoH34huQsHYgfow=;
+        b=uQyVQ+im3lM/kdchGEO4MUB0ZhGpJqyXlBuCMMNFaZwkEnb/BO0wV4OAJLMp8KG7/tAgdY
+        Huu7Nj4wrLibJ5sERzUZ8n7phnl8EiunpeGv+xq+ez/yFWWC6Zp6o9lSYNLd8rIUYadlmS
+        sTcVPs4DqAYTDNVBjln1waBazXz7tODk4Npom0Yrxsyg3TyH63G/z3akqkgKLBlJK09RQn
+        Blg5RfZTP+5xIxc0LEaJEAWXo21Nfzk5RMLeq5eIYEC/2RzxR9k574LDTNNOAdbZJa/gX3
+        839rAzej40JiorTe1qOdwt+laFzBrlY8W8LAVrmPvkybJ1fkClIFk2eTG9hUtw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626184473;
+        s=2020e; t=1626184474;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=tjoOaRJ0VG1BA/IRv30bb4o48CCGuIbta8lNlR7BPbo=;
-        b=ekuEbTniunfYYKZ9bWahhALw12WHiCY/pZt6I2CATqBK2Bmnsh+7YgcES4lo//umN1TV1m
-        c7DHa5NXfsk19WDw==
-Date:   Tue, 13 Jul 2021 15:39:54 +0200
+        bh=Al+tO89KZ0WnAXZVnnl4CFnWdviNIoH34huQsHYgfow=;
+        b=W5utYlBd6EQXn1VSu1Zvfgt3se7v6eHK0bpju/6l0otgPPc0ET+ORDGlkI/M9/d7+Q2Tx0
+        JXB9Sj8zdEpmZeDg==
+Date:   Tue, 13 Jul 2021 15:39:55 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [patch V2 09/10] hrtimer: Avoid unnecessary SMP function calls in
- clock_was_set()
+Subject: [patch V2 10/10] hrtimer: Avoid more SMP function calls in clock_was_set()
 References: <20210713133945.063650594@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,103 +48,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Tosatti <mtosatti@redhat.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Setting of clocks triggers an unconditional SMP function call on all online
-CPUs to reprogram the clock event device.
+By unconditionally updating the offsets there are more indicators
+whether the SMP function calls on clock_was_set() can be avoided:
 
-However, only some clocks have their offsets updated and therefore
-potentially require a reprogram. That's CLOCK_REALTIME and CLOCK_TAI and in
-the case of resume (delayed sleep time injection) also CLOCK_BOOTTIME.
+  - When the offset update already happened on the remote CPU then the
+    remote update attempt will yield the same seqeuence number and no
+    IPI is required.
 
-Instead of sending an IPI unconditionally, check each per CPU hrtimer base
-whether it has active timers in the affected clock bases which are
-indicated by the caller in the @bases argument of clock_was_set().
+  - When the remote CPU is currently handling hrtimer_interrupt(). In
+    that case the remote CPU will reevaluate the timer bases before
+    reprogramming anyway, so nothing to do.
 
-If that's not the case, skip the IPI and update the offsets remotely which
-ensures that any subsequently armed timers on the affected clocks are
-evaluated with the correct offsets.
+  - After updating it can be checked whether the first expiring timer in
+    the affected clock bases moves before the first expiring (softirq)
+    timer of the CPU. If that's not the case then sending the IPI is not
+    required.
 
-[ tglx: Adopted to the new bases argument, removed the softirq_active
-  	check, added comment, fixed up stale comment ]
-
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-v6:
-  - Remove the softirq_active check (Peter Xu)
-  - Adopt to the new base argument
-  - Add comment and fixup the stale one
-  - Bring back CLOCK_BOOTTIME conditionally for late sleeptime
-    injection on resume (missed that in the review of V1)
+V2: Fix the in_hrtirq thinko (Marcelo)
+    Add the missing masking (reported by 0day)
 
-v5:
-  - Add missing hrtimer_update_base (Peter Xu).
-
-v4:
-   - Drop unused code (Thomas).
-
-v3:
-   - Nicer changelog  (Thomas).
-   - Code style fixes (Thomas).
-   - Compilation warning with CONFIG_HIGH_RES_TIMERS=n (Thomas).
-   - Shrink preemption disabled section (Thomas).
-
-v2:
-   - Only REALTIME and TAI bases are affected by offset-to-monotonic changes (Thomas).
-   - Don't special case nohz_full CPUs (Thomas).
-
-
+P.S.: The git branch is updated as well
 ---
- kernel/time/hrtimer.c |   35 +++++++++++++++++++++++++++++++++--
- 1 file changed, 33 insertions(+), 2 deletions(-)
+ kernel/time/hrtimer.c |   74 +++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 65 insertions(+), 9 deletions(-)
 
 --- a/kernel/time/hrtimer.c
 +++ b/kernel/time/hrtimer.c
-@@ -896,11 +896,42 @@ static void hrtimer_reprogram(struct hrt
-  */
- void clock_was_set(unsigned int bases)
- {
-+	cpumask_var_t mask;
-+	int cpu;
-+
- 	if (!hrtimer_hres_active() && !tick_nohz_active)
- 		goto out_timerfd;
+@@ -866,6 +866,68 @@ static void hrtimer_reprogram(struct hrt
+ 	__hrtimer_reprogram(cpu_base, true, timer, expires);
+ }
  
--	/* Retrigger the CPU local events everywhere */
--	on_each_cpu(retrigger_next_event, NULL, 1);
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
-+		on_each_cpu(retrigger_next_event, NULL, 1);
-+		goto out_timerfd;
++static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
++			     unsigned int active)
++{
++	struct hrtimer_clock_base *base;
++	unsigned int seq;
++	ktime_t expires;
++
++	/*
++	 * Update the base offsets unconditionally so the following
++	 * checks whether the SMP function call is required works.
++	 *
++	 * The update is safe even when the remote CPU is in the hrtimer
++	 * interrupt or the hrtimer soft interrupt and expiring affected
++	 * bases. Either it will see the update before handling a base or
++	 * it will see it when it finishes the processing and reevaluates
++	 * the next expiring timer.
++	 */
++	seq = cpu_base->clock_was_set_seq;
++	hrtimer_update_base(cpu_base);
++
++	/*
++	 * If the sequence did not change over the update then the
++	 * remote CPU already handled it.
++	 */
++	if (seq == cpu_base->clock_was_set_seq)
++		return false;
++
++	/*
++	 * If the remote CPU is currently handling an hrtimer interrupt, it
++	 * will reevaluate the first expiring timer of all clock bases
++	 * before reprogramming. Nothing to do here.
++	 */
++	if (cpu_base->in_hrtirq)
++		return false;
++
++	/*
++	 * Walk the affected clock bases and check whether the first expiring
++	 * timer in a clock base is moving ahead of the first expiring timer of
++	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
++	 * event devices cannot be remotely reprogrammed.
++	 */
++	active &= cpu_base->active_bases;
++
++	for_each_active_base(base, cpu_base, active) {
++		struct timerqueue_node *next;
++
++		next = timerqueue_getnext(&base->active);
++		expires = ktime_sub(next->expires, base->offset);
++		if (expires < cpu_base->expires_next)
++			return true;
++
++		/* Extra check for softirq clock bases */
++		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
++			continue;
++		if (cpu_base->softirq_activated)
++			continue;
++		if (expires < cpu_base->softirq_expires_next)
++			return true;
 +	}
++	return false;
++}
 +
-+	/* Avoid interrupting CPUs if possible */
-+	cpus_read_lock();
-+	for_each_online_cpu(cpu) {
-+		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
-+		unsigned long flags;
-+
-+		raw_spin_lock_irqsave(&cpu_base->lock, flags);
-+		/*
-+		 * Only send the IPI when there are timers queued in one of
-+		 * the affected clock bases. Otherwise update the base
-+		 * remote to ensure that the next enqueue of a timer on
-+		 * such a clock base will see the correct offsets.
-+		 */
-+		if (cpu_base->active_bases & bases)
-+			cpumask_set_cpu(cpu, mask);
-+		else
-+			hrtimer_update_base(cpu_base);
-+		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
-+	}
-+
-+	preempt_disable();
-+	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
-+	preempt_enable();
-+	cpus_read_unlock();
-+	free_cpumask_var(mask);
+ /*
+  * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
+  * CLOCK_BOOTTIME (for late sleep time injection).
+@@ -900,16 +962,10 @@ void clock_was_set(unsigned int bases)
+ 		unsigned long flags;
  
- out_timerfd:
- 	timerfd_clock_was_set();
-
+ 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
+-		/*
+-		 * Only send the IPI when there are timers queued in one of
+-		 * the affected clock bases. Otherwise update the base
+-		 * remote to ensure that the next enqueue of a timer on
+-		 * such a clock base will see the correct offsets.
+-		 */
+-		if (cpu_base->active_bases & bases)
++
++		if (update_needs_ipi(cpu_base, bases))
+ 			cpumask_set_cpu(cpu, mask);
+-		else
+-			hrtimer_update_base(cpu_base);
++
+ 		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
+ 	}
+ 
 
