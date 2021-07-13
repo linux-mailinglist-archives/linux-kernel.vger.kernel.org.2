@@ -2,141 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193B03C6CD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAA53C6CD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhGMJHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:07:11 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:33471 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbhGMJHK (ORCPT
+        id S234828AbhGMJHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234121AbhGMJHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:07:10 -0400
-Received: by mail-ua1-f52.google.com with SMTP id d2so8372793uan.0;
-        Tue, 13 Jul 2021 02:04:20 -0700 (PDT)
+        Tue, 13 Jul 2021 05:07:46 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3DEC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:04:56 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id h8so18914548eds.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bUaDGJFiyNbYhtmiV63zVjpYrC0s92kN0RMEpGrY9Fg=;
+        b=dbDxvu7BGayQ0GtMJ7B1OgY1/zXQxntVEiBiGbutiCtzQTXArjgTS4akUN8BUcYlqh
+         ARr0Qx//jVQ/aOY/byUBnB5845FNcBDC8/kI36a8F72CQXMuJCFbkcdUR+YV6/mJS2/3
+         xZUhI4lOczf+tcyLqEqLbnEAr2VRvpeGigrYUbig2VuwvcmVRRY2jlF1PAJXqx64StNZ
+         mDCAcu6OFN+NOWOFvJJGpi3Lv5GEsdPt6hoR4HLfSbNU8v4j0Xk6w4sgZ4UIJDlL74pB
+         ALPNzuQ9eCNumraRoDTxbJmmlx76FaAZ51h86P02+HJe64voiD+uh4is8Yq5k8qRb3E8
+         WoMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WQWSg0jDhNONrBiZZkx/bcj5j+pFk4TYCqn0Z+sXNdk=;
-        b=e9PtSQHEDPAPJzEbQJup31n6O5Z0EKW89aoKf/K/xIpFaOP/MwNb8nAF1TsKu2qwLy
-         HHpuCxZA5oWSuCoEc1W6Svtmn8xHFO363TtX6hdFomTL4IfalCsjfyG9pCjdfeNtjjPc
-         O4FvO64giMxE0t55UM/Yh+5IqRf/jeC1/SR+azdVi1NCSv8aAp+EWiiEXNvCcE4WXN06
-         Lpdle7Z0mKDle0B8b9qYffXJhj8c5IfQdRfhzt19uApyQ6L5aUsYHLNP9bKtjSRuBtaR
-         c2hEtCqmiUd1lNmBxzyWSkwpY8l449sSoGqxU4UrzsEhh24aqt2RUmDC0WB+50Y2c6Dd
-         FvGg==
-X-Gm-Message-State: AOAM532f+ZKbfr4BK6M2V2RVDA03YToXEtRV2Rq0YizlgaLycA1Iutcx
-        T4+HNf3umk7E5gJLtWypsXu/TmCiZ/gVySmHibA=
-X-Google-Smtp-Source: ABdhPJxmIw0nXS2cU2uL1fDZHeZi7584axKXsQoQpys4cUbFsG87WiXR+tlSUdpuTvQK+kGDHhgf0FSjubiQ2jxtfIM=
-X-Received: by 2002:a9f:3f0d:: with SMTP id h13mr4554003uaj.100.1626167060423;
- Tue, 13 Jul 2021 02:04:20 -0700 (PDT)
+        bh=bUaDGJFiyNbYhtmiV63zVjpYrC0s92kN0RMEpGrY9Fg=;
+        b=F7LbfzMRgrt72Sbi0bf996SOXzVrs9QV/wbkXiTh3Gz1MfiRyCmjugwYHJNAB7g9n9
+         Buz35XN9j2dVrglfTiyvN1p0Z4NR/4dvx/tpGbI9KreOrk5M42xK6WiIGIXh2Besj4Ij
+         qiSvgJZYVb/Fjbbj3mDs69sG2Q6vCZjiAya7D9UY3Q+SFaXTWo8O3lpfaYhvaiyy62Ng
+         Nry+Ftnev3omA/inp8CByTmIhEsYkvpxWMhN8jl+8igFT3oSaEm7AN79HcdRwWbYVE42
+         e1vLSZjt8Vl84OMBDvkOOvqJvJOszfCF7KXz2dwVDcyqsZORX0wUO6g7g2633W8lROSY
+         8lpw==
+X-Gm-Message-State: AOAM531O1NdaxZ7gakESL3vw6L8nyVV9zZs6ArXM6Pp+gt4/cKCHscg7
+        ZLzBZ/56KvKHqVpRR+3wYvsJ9q8HYQvh6f57CMk=
+X-Google-Smtp-Source: ABdhPJz2HwKOgkx6OjxSuuiPVxgyqsmKe++OmxjcZrMFHInsQFK67OFqNjU1b6f0hMyd1OVg4fIMDn/ZvVXBMxICCfQ=
+X-Received: by 2002:a05:6402:270d:: with SMTP id y13mr4424427edd.66.1626167094585;
+ Tue, 13 Jul 2021 02:04:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210611152108.6785-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWJQESFmhV+c-QmivXCWPx21QcB-HSzjxf8KsXh_DAvfw@mail.gmail.com>
- <CAMuHMdXG9H_mOtA_a9t0K8BVaR4p0DcWgNeL0786YvybV2Hqgw@mail.gmail.com>
- <CA+V-a8tk6uCeRwmiTh=Ds+8DYVUqCYs64nX_9ksDXXdSd-rxNA@mail.gmail.com>
- <CAMuHMdUg5v3qsFQsg783nC=o_BL3pL6YqqQphGQHHOaCeakj5Q@mail.gmail.com> <20210713085508.nq6473icf5gt3nm5@bogus>
-In-Reply-To: <20210713085508.nq6473icf5gt3nm5@bogus>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Jul 2021 11:04:09 +0200
-Message-ID: <CAMuHMdVG6eji_uW+7egeQH=77fwQnN_qQ4hRHgQa4XQYQrbL9Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: renesas: r9a07g044: Add missing GICv3 node properties
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <00000000000087b4c305c6f8a243@google.com> <20210713115546.34c99ea8@gmail.com>
+In-Reply-To: <20210713115546.34c99ea8@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 13 Jul 2021 17:04:28 +0800
+Message-ID: <CAD-N9QU3jHw_gOiwduF+eATJ_sxcUcMiiBDESBYmZ8NdGH5RCQ@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in r871xu_dev_remove
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     syzbot <syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com>,
+        Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        hridayhegde1999@gmail.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, rkovhaev@gmail.com,
+        straube.linux@gmail.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
-
-On Tue, Jul 13, 2021 at 10:56 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> On Tue, Jul 13, 2021 at 10:30:36AM +0200, Geert Uytterhoeven wrote:
-> > On Tue, Jul 13, 2021 at 10:22 AM Lad, Prabhakar
-> > <prabhakar.csengg@gmail.com> wrote:
-> > > On Tue, Jul 13, 2021 at 9:08 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Mon, Jun 14, 2021 at 2:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Fri, Jun 11, 2021 at 5:21 PM Lad Prabhakar
-> > > > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > > > > Add the below missing properties into GIC node,
-> > > > > > - clocks
-> > > > > > - clock-names
-> > > > > > - power-domains
-> > > > > > - resets
-> > > > > >
-> > > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > > >
-> > > > > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > >
-> > > > > Queueing pending on[1].
-> > > > >
-> > > > > > [1] https://lore.kernel.org/linux-devicetree/
-> > > > > >     20210609155108.16590-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
-> > > >
-> > > > The dependency has been accepted, but this patch needs a respin
-> > > > for the changed clocks.
-> > > >
-> > > Thank you for pointing this out. wrt resets the GIC has two signals
-> > > (which I learnt lately when the dependency path was accepted). Earlier
-> > > discussion in irc with Sudeep pointed out that there wouldn't be any
-> > > use case of having GIC resets in DTSI, so either we drop the resets
-> > > property in DT binding doc or correct it.
-> > >
-> > > Let me know your thoughts on this and how we proceed further.
+On Tue, Jul 13, 2021 at 4:55 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On Mon, 12 Jul 2021 20:14:24 -0700
+> syzbot <syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com> wrote:
+>
+> > Hello,
 > >
-> > DT Rule #1: DT describes hardware not software policy.
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    92510a7f Add linux-next specific files for 20210709
+> > git tree:       linux-next
+> > console output:
+> > https://syzkaller.appspot.com/x/log.txt?x=16c50180300000 kernel
+> > config:  https://syzkaller.appspot.com/x/.config?x=505de2716f052686
+> > dashboard link:
+> > https://syzkaller.appspot.com/bug?extid=5872a520e0ce0a7c7230 syz
+> > repro:
+> > https://syzkaller.appspot.com/x/repro.syz?x=1639a73c300000 C
+> > reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fcd5e4300000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the
+> > commit: Reported-by:
+> > syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com
 > >
 >
-> Completely agreed, no disagreement .
+> Hmm, bisection is wrong this time. It should be
+> e02a3b945816 ("staging: rtl8712: fix memory leak in rtl871x_load_fw_cb")
 
-Good ;-)
+Hi Paval,
 
-> > And a possible use case: the RT CPU core may want to reset the AP GIC.
+can you share more details about why the patch e02a3b945816 causes
+this UAF problem?
+
 >
-> I didn't want to add new bindings without details on the implementation
-> to avoid possible issues with backward compatibility as this was not
-> thought through completely and correctly before it was added.
+> #syz test:
+> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
 >
-> OK, now let us discuss your use-case: *RT CPU wants to reset AP GIC*
 >
-> 1. Will it just reset AP GIC or will it request the AP reset as a whole ?
->    I am not sure if we can handle former, if you think otherwise what is
->    the reset notification mechanism ?
+> I guess, this should work
 >
-> 2. Will that bypass secure world/PSCI ? Again more details on this would
->    be helpful to visualise the entire use-case end-to-end better.
 >
-> By GIC reset, I am assuming it will be complete GIC reset including it's
-> CPU interface.
+> With regards,
+> Pavel Skripkin
 >
-> I don't think we can reset GIC without actual CPU reset. Even if we get
-> some notification magically to the CPU that its GIC alone needs to be
-> reset, it needs to safely higher exceptions to get its GIC CPU interface
-> reprogrammed to correct (saved) values before OS can reprogram the NS
-> world values. All these seems overall complicated and may be unnecessary.
-
-Probably both.  Might make sense to reset on wake-up, after having disabled
-clocks and powered down the AP CPU, AP GIC, ...
-
-If that bypasses PSCI: well, if the unsecure software can do it, it
-means the hardware is not secure. Or at least Linux has to be trusted.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210713115546.34c99ea8%40gmail.com.
