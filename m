@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FFF3C6FA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7BE3C6FAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235891AbhGMLZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S235947AbhGMLZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:25:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235881AbhGMLZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Jul 2021 07:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235709AbhGMLZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:25:53 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E493C0613DD;
-        Tue, 13 Jul 2021 04:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=yGhDFnZM0A65W5PQXub87bUt7hi0BbiF5BkXDcA/Zr4=; b=ffLTrSEP1oIazt9MQBn1/8er4
-        3sgMpXXzNFjn9Tdwdueb36QlruzqqCcSURPnHeqedRvfFPWhkTHYdYjjG4fvWr24TDV3ZFZnD7Vqb
-        6zUhqHqoYcrwDJGYnSZGJEfEIPtXjGRiYqf6qn+ULprCyZCttHZ0+87T4GbudVKnv/URIkSiVuXsP
-        qCm2q6xIAIof9Wc45z860/XHYcV2wK1xBl3lBTz8N6rV2i90D+fjEcaAOJkmffMvNQ2AZIyLtgsfp
-        EvE/2PWJx5eau5kMIjcVs9L5SlE0lWfY4I6n9gTkwU5GVX+8uXaNBX3kL3L5xuitIuy8Q5zXnHOYz
-        fWMql0T3Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46046)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m3GV5-00060D-8l; Tue, 13 Jul 2021 12:22:55 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m3GV3-0000Ew-8A; Tue, 13 Jul 2021 12:22:53 +0100
-Date:   Tue, 13 Jul 2021 12:22:53 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Salah Triki <salah.triki@gmail.com>,
-        "fabrice.gasnier@foss.st.com" <fabrice.gasnier@foss.st.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
-Message-ID: <20210713112253.GH22278@shell.armlinux.org.uk>
-References: <20210712231910.GA1831270@pc>
- <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
- <20210713091954.GG22278@shell.armlinux.org.uk>
- <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D966117A;
+        Tue, 13 Jul 2021 11:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626175384;
+        bh=Aae1Qk7FDHxDqCGXiyf7ZTDCvIv9/biiOfm0a9nKJLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qsivhSf/eXgBzA3V5pV8jl3cs0+TKjdEJl3F/882r9uc0MpHVbf4q2AhlBXYEqfJt
+         8Vwd/Mreg1/FRkqj4xTkRbQra3RJEjeVutP0dhSkgD4zANW5171+Xrq4iU+DoWQpnv
+         qg0YaE6hvhQuoCd5zoLqL+dLdFpwHFerqDn7he+I=
+Date:   Tue, 13 Jul 2021 13:23:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
+        Andrew Morton <akpm@linux-foundation.org>, jic23@kernel.org,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
+ typeof_memeber() macros
+Message-ID: <YO13lSUdPfNGOnC3@kroah.com>
+References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
+ <20210713084541.7958-3-andriy.shevchenko@linux.intel.com>
+ <YO1s+rHEqC9RjMva@kroah.com>
+ <YO12ARa3i1TprGnJ@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <YO12ARa3i1TprGnJ@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 11:07:00AM +0000, David Laight wrote:
-> From: Russell King
-> > Sent: 13 July 2021 10:20
-> ....
-> > I would also note that the code relies on there being no padding in
-> > struct stm32_breakinput - it should be noted that a strict
-> > interpretation of the C standard allows padding to be added anywhere
-> > to a structure - at the start, end or between members.
+On Tue, Jul 13, 2021 at 02:16:17PM +0300, Andy Shevchenko wrote:
+> On Tue, Jul 13, 2021 at 12:37:46PM +0200, Greg Kroah-Hartman wrote:
+> > On Tue, Jul 13, 2021 at 11:45:41AM +0300, Andy Shevchenko wrote:
+> > > kernel.h is being used as a dump for all kinds of stuff for a long time.
+> > > Here is the attempt cleaning it up by splitting out container_of() and
+> > > typeof_memeber() macros.
+> > 
+> > That feels messy, why?
 > 
-> I'm pretty certain I remember that padding before the first member
-> isn't allowed.
+> Because the headers in the kernel are messy.
 
-You may be right there.
+Life is messy and can not easily be partitioned into tiny pieces.  That
+way usually ends up being even messier in the end...
 
-> In any case the kernel generally assumes there is no extra padding.
-> (eg for structures that map hardware registers.)
+> > Reading one .h file for these common
+> > macros/defines is fine, why are container_of and typeof somehow
+> > deserving of their own .h files?
+> 
+> It's explained here. There are tons of drivers that includes kernel.h for only
+> a few or even solely for container_of() macro.
 
-That's incorrect. Places where we care either generally end up with
-__packed or are carefully layed out to ensure members are naturally
-aligned to reduce the likelyhood of it. 32-bit OABI ARM has been
-particularly "fun" in this respect.
+And why is that really a problem?  kernel.h is in the cache and I would
+be amazed if splitting this out actually made anything build faster.
 
-> For big structures it is worth adding a compile-time check of
-> the structure size - but not really for three u32.
+> > What speedups are you seeing by
+> > splitting this up?
+> 
+> C preprocessing.
 
-Sorry, structure size has absolutely nothing to do with whether it's
-a good idea to have a compile-time check. The deciding factor is
-whether the code relies on some property such as it being a certain
-size. Such as in this exact case. If you grep for "BUILD_BUG_ON.*sizeof"
-in fs/ for example, this illustrates the point rather well.
+Numbers please.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+greg k-h
