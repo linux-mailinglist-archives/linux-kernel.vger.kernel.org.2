@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7896F3C71C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB633C71CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236815AbhGMOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:06:08 -0400
-Received: from mail-il1-f171.google.com ([209.85.166.171]:34471 "EHLO
-        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236765AbhGMOGH (ORCPT
+        id S236763AbhGMOGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:06:21 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:34509 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236809AbhGMOGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:06:07 -0400
-Received: by mail-il1-f171.google.com with SMTP id e13so23300087ilc.1;
-        Tue, 13 Jul 2021 07:03:17 -0700 (PDT)
+        Tue, 13 Jul 2021 10:06:19 -0400
+Received: by mail-il1-f178.google.com with SMTP id e13so23300905ilc.1;
+        Tue, 13 Jul 2021 07:03:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=sTck8MT1tcfpVCvL1kgsklddyUpTEtuVs7S3TVtOJY0=;
-        b=SrDZNtvdgMPFw4Jye5GTBSnSBJawROP0DtP0nBwdtUEi0EglYqRLwyOU2EMVHQPmgG
-         Tyl66RQAC6p7RubgAAvf5X4opK6ajIGRoeI1RaJ59nMSPjmgcoxMdVkeEAnPIubqfGSj
-         fgEhck5wDsUoB9M+m9A9uCqb5QC8eTnIDvzD6tuAQqkRJpGMf2MJ7gEO/m5XdfK28q1V
-         axRpdgtfC44xu0VrOpYLuQh05P2QMPlgshZ6dklY1DaUicZNbX/A0UxLTkTXbwBjwQMn
-         G1pbVvAYRclKOUh6qV/27Qy5JoFo9Zbh7JJWGtHoIilIueAhWNqqwxpWoMkYgi5TuWuh
-         HCLQ==
-X-Gm-Message-State: AOAM532ZQJgNMniMtvKOuXRFNlJv4vsWUHgpXrLaKOMQvLjlJFzGeDAU
-        6PtTnfYQrxG8ZkbAdDNZvA==
-X-Google-Smtp-Source: ABdhPJzrE0TMePTKV6hzrsV09nnwJnBTynrp9bH4nZNdyfgGXyIW71KBdOIQERmDZOb82by5hSyJTA==
-X-Received: by 2002:a92:d10:: with SMTP id 16mr3000342iln.189.1626184997191;
-        Tue, 13 Jul 2021 07:03:17 -0700 (PDT)
+        bh=W0tPxTxBFqwVjrERv5yBUzJYH1KOoxA14jOPXeTsapQ=;
+        b=bR91lGqkMdz4olayLpBSeAENnbHKZ6120q7JP7xzGxTa+fbeX+ysTwi2uuYZwb5ub4
+         w8qfFJHfDM285H5cbhVxi03D58AIcuKHoI4HMv0JPDJnsFAj/X0o+AL17Pp25MFW/evf
+         LTk1Bz1W6TPNIrDz1U1e6GI8n5jdZHftTkMZSgUkmsCO7XS/ZKFKz8ba2Ce4XO82DbGs
+         hQNa3VPxXxe3vOr3SzVzKN/66N7bX9r8zEkhtrnT7SOlYn4efVcOGI96MbKj1YQcD+ow
+         VMSIHbqkuMCzesW1O8egEs4lT86+Gdih6WJnGIO2P5F0c7LCGc0sb0naOdsZksaH3eUv
+         Zd8g==
+X-Gm-Message-State: AOAM532gJSIaCnF2qUTj7o7n6zTTSELwcg4FXxUhEykqkR1pYbMilhvk
+        UoWbUOl3fF/0NXaumNDT3A==
+X-Google-Smtp-Source: ABdhPJwtHCLdHMImB7FGf/LTlwtrd/GDrGn+A00ynbPDFQORtkdIz28oeNvQHmIoGkb0xe9e6AIBjQ==
+X-Received: by 2002:a92:3f08:: with SMTP id m8mr2957950ila.104.1626185009476;
+        Tue, 13 Jul 2021 07:03:29 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id f3sm719146iob.30.2021.07.13.07.03.14
+        by smtp.gmail.com with ESMTPSA id e14sm9527471ilc.47.2021.07.13.07.03.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 07:03:16 -0700 (PDT)
-Received: (nullmailer pid 129710 invoked by uid 1000);
+        Tue, 13 Jul 2021 07:03:28 -0700 (PDT)
+Received: (nullmailer pid 129715 invoked by uid 1000);
         Tue, 13 Jul 2021 14:03:13 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        kernel@collabora.com, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ian Ray <ian.ray@ge.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-spi@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-In-Reply-To: <20210712150242.146545-2-sebastian.reichel@collabora.com>
-References: <20210712150242.146545-1-sebastian.reichel@collabora.com> <20210712150242.146545-2-sebastian.reichel@collabora.com>
-Subject: Re: [PATCHv6 1/3] dt-bindings: misc: ge-achc: Convert to DT schema format
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        devicetree@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Bill Mills <bill.mills@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        =?utf-8?q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        Jie Deng <jie.deng@intel.com>
+In-Reply-To: <268086e273df0c53e3a9a1e751304c63e50ebe12.1626173013.git.viresh.kumar@linaro.org>
+References: <cover.1626173013.git.viresh.kumar@linaro.org> <268086e273df0c53e3a9a1e751304c63e50ebe12.1626173013.git.viresh.kumar@linaro.org>
+Subject: Re: [PATCH 5/5] dt-bindings: gpio: Add bindings for gpio-virtio
 Date:   Tue, 13 Jul 2021 08:03:13 -0600
-Message-Id: <1626184993.653258.129709.nullmailer@robh.at.kernel.org>
+Message-Id: <1626184993.671493.129714.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 17:02:40 +0200, Sebastian Reichel wrote:
-> Convert the binding to DT schema format. Also update the binding
-> to fix shortcomings
+On Tue, 13 Jul 2021 16:20:34 +0530, Viresh Kumar wrote:
+> gpio-virtio represents a virtio GPIO controller and this patch adds
+> binding for the same. The gpio-virtio subnode can be part of a
+> virtio,mmio node and is based on its binding.
 > 
->  * Add "nxp,kinetis-k20" fallback compatible
->  * add programming SPI interface and reset GPIO
->  * add main clock
->  * add voltage supplies
->  * drop spi-max-frequency from required properties,
->    driver will setup max. frequency
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  .../devicetree/bindings/misc/ge-achc.txt      | 26 --------
->  .../devicetree/bindings/misc/ge-achc.yaml     | 65 +++++++++++++++++++
->  2 files changed, 65 insertions(+), 26 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/misc/ge-achc.txt
->  create mode 100644 Documentation/devicetree/bindings/misc/ge-achc.yaml
+> Depends on:
+> 
+> https://lore.kernel.org/lkml/7c716c2eb7ace5b5a560d8502af93101dbb53d24.1626170146.git.viresh.kumar@linaro.org/
+> ---
+>  .../devicetree/bindings/gpio/gpio-virtio.yaml | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -82,13 +84,18 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.example.dt.yaml: spi: spi@1:reg: [[1], [0]] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/spi-controller.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.example.dt.yaml: spi: spi@1:reg: Additional items are not allowed ([0] was unexpected)
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/spi-controller.yaml
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/virtio/mmio.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+Documentation/devicetree/bindings/gpio/gpio-virtio.example.dts:19:18: fatal error: dt-bindings/virtio/virtio_ids.h: No such file or directory
+   19 |         #include <dt-bindings/virtio/virtio_ids.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/gpio/gpio-virtio.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1504037
+See https://patchwork.ozlabs.org/patch/1504545
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
