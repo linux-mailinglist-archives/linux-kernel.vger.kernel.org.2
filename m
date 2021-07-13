@@ -2,181 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1A83C7265
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9E03C7277
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236861AbhGMOmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:42:42 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34544 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236636AbhGMOml (ORCPT
+        id S236944AbhGMOnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236904AbhGMOnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:42:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EE114201E5;
-        Tue, 13 Jul 2021 14:39:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626187189; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJgth62e6DRwxuE1p4QeibZRXKh6lnd/FGpb00zXtco=;
-        b=O68ObX8MG6BlpUhu/xBv9j7G1mYqUdqLnRyV03xbqEujXuAfy0gpOA9lJ/F4bdBCKke3Lk
-        a/MXrhFnAh+ZWYWAl3kgsN5DvQbJlWQV8LmNxkZMvNL2ViqzuUBDde0tvQuoR/1YT88dFm
-        1AYwhHBSkTc0TaS/25XfTyoazBgd9JM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626187189;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJgth62e6DRwxuE1p4QeibZRXKh6lnd/FGpb00zXtco=;
-        b=8I2ejwrN0kq14Tnws/o7U/fah1Jw9rBREUuBXF5M68+gOMotjQpjh0qFRfO0R5JN5U1NiW
-        veZxhd2s1RXuuSCQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id E1AB2A3B85;
-        Tue, 13 Jul 2021 14:39:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BE9F11E0BBE; Tue, 13 Jul 2021 16:39:49 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 16:39:49 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v13 064/137] flex_proportions: Allow N events instead of 1
-Message-ID: <20210713143949.GB24271@quack2.suse.cz>
-References: <20210712030701.4000097-1-willy@infradead.org>
- <20210712030701.4000097-65-willy@infradead.org>
+        Tue, 13 Jul 2021 10:43:41 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD076C0613DD;
+        Tue, 13 Jul 2021 07:40:51 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id hc15so3384931ejc.4;
+        Tue, 13 Jul 2021 07:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Go+slvtxWKdfE07JhWqm6afFVlakzlCghY+rCteiXNk=;
+        b=RLmbrCxqrYioWCRlKRjyX8rC/XXm/wSoiyzmlI3C5kp8hqumfpH0t7HU70vxm3MMbc
+         bYVIguzS7/JmF5KZJU49LL/wegnfQGjHp6zZjf7p5MjInF6f2WdBsIWESmZy9YwCf8g/
+         iLcYF9hOCfNMU79dKeThMMT33YsictvuDEFyMk/szyBn0hFRpcJ5GIKkDQck3XiNkPu2
+         GLfDYHJVFsm90lg+a4ihS5muzm+SueOb7NKmQqfjzsnWdbuDm3NTTrcKukQ2o9eDb8lq
+         4h/sadjHuPtSxWqo2pFXk7RaD+oWQZV4sdVUdfBLCPqnNUT19Lz4ZJdvCL2grZMnb29O
+         dIIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Go+slvtxWKdfE07JhWqm6afFVlakzlCghY+rCteiXNk=;
+        b=aVuPtbp6iK2dYYQ7vaEN/ygukWD8sIUBdz6P8HwoNzplxaCXCIhIGF5OkduwqnSdkN
+         MiFzbthq0LLsjhalLwU8yoSDo+LWqOIbHkq4emVrNvGvWdSxjZArFs1F28kx8mCzTl7N
+         om0JTIbKorw/g8wqx/0eCepIBcfiH8cVuBVpEvyW4pdnrPbJoolSzj5pdJO1HNpiw9IF
+         UbmcqFShKI3Y+N6ih9o3AcPG2tUnvRBWGMBP2CsbApfx4kCwgHFIFHGCD5xPTAM0BQ7D
+         Q3hvwzM556HOMDfuERWwQxknT6HL6/Fs81nrIvTMPNMCdWBxum9dcRQ8veAUQ52UX4oK
+         9g0Q==
+X-Gm-Message-State: AOAM5331/uUaGCpv1/QwN3t5VBqEVB2G29sKHJFxOES/sRjrNsOaPp39
+        Mn2NyrPz7ZenrKDRTPgrneJYKKwfQOdjFCinKQg=
+X-Google-Smtp-Source: ABdhPJwwCtmbCXpHbRujh0bTJ/EL89rPzsgTyP80upk+Ti2zLojUqE8up27+RnQ8TU/xPEuBCAg+wytSmsuPai3ObXY=
+X-Received: by 2002:a17:906:4784:: with SMTP id cw4mr6035482ejc.160.1626187250185;
+ Tue, 13 Jul 2021 07:40:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712030701.4000097-65-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210713130344.473646-1-mudongliangabcd@gmail.com> <20210713132059.GB11179@breakpoint.cc>
+In-Reply-To: <20210713132059.GB11179@breakpoint.cc>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 13 Jul 2021 22:40:23 +0800
+Message-ID: <CAD-N9QV7pt3PCzUK2r03aB_URU5Auu+quC+DJpc=46hjkceBNg@mail.gmail.com>
+Subject: Re: [PATCH v2] audit: fix memory leak in nf_tables_commit
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        kernel test robot <lkp@intel.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-07-21 04:05:48, Matthew Wilcox (Oracle) wrote:
-> When batching events (such as writing back N pages in a single I/O), it
-> is better to do one flex_proportion operation instead of N.  There is
-> only one caller of __fprop_inc_percpu_max(), and it's the one we're
-> going to change in the next patch, so rename it instead of adding a
-> compatibility wrapper.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Tue, Jul 13, 2021 at 9:21 PM Florian Westphal <fw@strlen.de> wrote:
+>
+> Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
+> > free the adp variable.
+> >
+> > Fix this by freeing the linked list with head adl.
+> >
+> > backtrace:
+> >   kmalloc include/linux/slab.h:591 [inline]
+> >   kzalloc include/linux/slab.h:721 [inline]
+> >   nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
+> >   nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
+> >   nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
+> >   nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+> >   nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
+> >   netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+> >   netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
+> >   netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
+> >   sock_sendmsg_nosec net/socket.c:702 [inline]
+> >   sock_sendmsg+0x56/0x80 net/socket.c:722
+> >
+> > Reported-by: syzbot <syzkaller@googlegroups.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+> > v1->v2: fix the compile issue
+> >  net/netfilter/nf_tables_api.c | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> >
+> > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> > index 390d4466567f..7f45b291be13 100644
+> > --- a/net/netfilter/nf_tables_api.c
+> > +++ b/net/netfilter/nf_tables_api.c
+> > @@ -8444,6 +8444,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
+> >       return 0;
+> >  }
+> >
+> > +static void nf_tables_commit_free(struct list_head *adl)
+>
+> nf_tables_commit_audit_free?
 
-Looks good. You can add:
+What do you mean? Modify the name of newly added function to
+nf_tables_commit_audit_free?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+>
+> Aside from that, there should be a followup patch (for nf-next),
+> adding empty inline functions in case of CONFIG_AUDITSYSCALL=n.
 
-								Honza
+I see. I prefer to send them (two implementations of the newly added
+function) in version v2.
 
-> ---
->  include/linux/flex_proportions.h |  9 +++++----
->  lib/flex_proportions.c           | 28 +++++++++++++++++++---------
->  mm/page-writeback.c              |  4 ++--
->  3 files changed, 26 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/flex_proportions.h b/include/linux/flex_proportions.h
-> index c12df59d3f5f..3e378b1fb0bc 100644
-> --- a/include/linux/flex_proportions.h
-> +++ b/include/linux/flex_proportions.h
-> @@ -83,9 +83,10 @@ struct fprop_local_percpu {
->  
->  int fprop_local_init_percpu(struct fprop_local_percpu *pl, gfp_t gfp);
->  void fprop_local_destroy_percpu(struct fprop_local_percpu *pl);
-> -void __fprop_inc_percpu(struct fprop_global *p, struct fprop_local_percpu *pl);
-> -void __fprop_inc_percpu_max(struct fprop_global *p, struct fprop_local_percpu *pl,
-> -			    int max_frac);
-> +void __fprop_add_percpu(struct fprop_global *p, struct fprop_local_percpu *pl,
-> +		long nr);
-> +void __fprop_add_percpu_max(struct fprop_global *p,
-> +		struct fprop_local_percpu *pl, int max_frac, long nr);
->  void fprop_fraction_percpu(struct fprop_global *p,
->  	struct fprop_local_percpu *pl, unsigned long *numerator,
->  	unsigned long *denominator);
-> @@ -96,7 +97,7 @@ void fprop_inc_percpu(struct fprop_global *p, struct fprop_local_percpu *pl)
->  	unsigned long flags;
->  
->  	local_irq_save(flags);
-> -	__fprop_inc_percpu(p, pl);
-> +	__fprop_add_percpu(p, pl, 1);
->  	local_irq_restore(flags);
->  }
->  
-> diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-> index 451543937524..53e7eb1dd76c 100644
-> --- a/lib/flex_proportions.c
-> +++ b/lib/flex_proportions.c
-> @@ -217,11 +217,12 @@ static void fprop_reflect_period_percpu(struct fprop_global *p,
->  }
->  
->  /* Event of type pl happened */
-> -void __fprop_inc_percpu(struct fprop_global *p, struct fprop_local_percpu *pl)
-> +void __fprop_add_percpu(struct fprop_global *p, struct fprop_local_percpu *pl,
-> +		long nr)
->  {
->  	fprop_reflect_period_percpu(p, pl);
-> -	percpu_counter_add_batch(&pl->events, 1, PROP_BATCH);
-> -	percpu_counter_add(&p->events, 1);
-> +	percpu_counter_add_batch(&pl->events, nr, PROP_BATCH);
-> +	percpu_counter_add(&p->events, nr);
->  }
->  
->  void fprop_fraction_percpu(struct fprop_global *p,
-> @@ -253,20 +254,29 @@ void fprop_fraction_percpu(struct fprop_global *p,
->  }
->  
->  /*
-> - * Like __fprop_inc_percpu() except that event is counted only if the given
-> + * Like __fprop_add_percpu() except that event is counted only if the given
->   * type has fraction smaller than @max_frac/FPROP_FRAC_BASE
->   */
-> -void __fprop_inc_percpu_max(struct fprop_global *p,
-> -			    struct fprop_local_percpu *pl, int max_frac)
-> +void __fprop_add_percpu_max(struct fprop_global *p,
-> +		struct fprop_local_percpu *pl, int max_frac, long nr)
->  {
->  	if (unlikely(max_frac < FPROP_FRAC_BASE)) {
->  		unsigned long numerator, denominator;
-> +		s64 tmp;
->  
->  		fprop_fraction_percpu(p, pl, &numerator, &denominator);
-> -		if (numerator >
-> -		    (((u64)denominator) * max_frac) >> FPROP_FRAC_SHIFT)
-> +		/* Adding 'nr' to fraction exceeds max_frac/FPROP_FRAC_BASE? */
-> +		tmp = (u64)denominator * max_frac -
-> +					((u64)numerator << FPROP_FRAC_SHIFT);
-> +		if (tmp < 0) {
-> +			/* Maximum fraction already exceeded? */
->  			return;
-> +		} else if (tmp < nr * (FPROP_FRAC_BASE - max_frac)) {
-> +			/* Add just enough for the fraction to saturate */
-> +			nr = div_u64(tmp + FPROP_FRAC_BASE - max_frac - 1,
-> +					FPROP_FRAC_BASE - max_frac);
-> +		}
->  	}
->  
-> -	__fprop_inc_percpu(p, pl);
-> +	__fprop_add_percpu(p, pl, nr);
->  }
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index e677e79c7b9b..63c0dd9f8bf7 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -566,8 +566,8 @@ static void wb_domain_writeout_inc(struct wb_domain *dom,
->  				   struct fprop_local_percpu *completions,
->  				   unsigned int max_prop_frac)
->  {
-> -	__fprop_inc_percpu_max(&dom->completions, completions,
-> -			       max_prop_frac);
-> +	__fprop_add_percpu_max(&dom->completions, completions,
-> +			       max_prop_frac, 1);
->  	/* First event after period switching was turned off? */
->  	if (unlikely(!dom->period_time)) {
->  		/*
-> -- 
-> 2.30.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> Right now it does pointless aggregation for the AUDIT=n case.
