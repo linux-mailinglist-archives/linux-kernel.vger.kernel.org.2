@@ -2,145 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F58F3C6FC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218143C6FC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhGMLfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235875AbhGMLfV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:35:21 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE252C0613EE;
-        Tue, 13 Jul 2021 04:32:31 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id w13so13399071wmc.3;
-        Tue, 13 Jul 2021 04:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VxdNMTgC7RTJI/82gSAHHxnwIsTXy+NvVdODaOq4tmU=;
-        b=jbrgQaNivHHWkIhys33LFvPyuiYLHxbq70sxVdJgim8ewGwhZtO9FUjdIMTe+omB3s
-         DAxzDDGIqKo0OQ4mC/0OzgOEqLh4pCc3mhTZQ70dyfup1z3oHLB+wvyqZZKTjynnOwUX
-         uNjy5YwuC3Qhe1z6V0DKxCgWr+pJv5vjLLaboqX9Fl1VGs2cX27ipJqIQ0UluoCiMNDm
-         h9sIW5o7je9YRHhbDIcAQoh+Jid5V0oKBpKlgTph0zoL6xzX/+RkXYwPO4s6+XbUXbck
-         alJLAHgki3I65JeyuI0yJ+rbagfm1mc6OZPVt5QCANqVd+IEQxTCzzsFjJdbUnbAjh+G
-         K90w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VxdNMTgC7RTJI/82gSAHHxnwIsTXy+NvVdODaOq4tmU=;
-        b=b/FW6vu3GX/ddrgwq+B5IH8QTfVkdbTBxTEWNuije76ukAMfckn4amDvviuR7OKiQ6
-         e9g5EavDsqeKB1vCuyryLJpjQG2MjTdWuALke3ENMRZ8Ev9Jw7H3uQ4k/vw5qWTK6AcX
-         R1ea90A7CxXFFjbA0QPQ0z4O/eaigAnobipDik3wHuu9LF4CdyI5szBC5A9lswHqSrOb
-         tO8+ZTnGORC3UIk8Tize525zWDSg/o9giZXjUkYQ5fRF68JF6Mj5/NMfxBkWaWDilMuk
-         Q9e4emvHN5R6P+fBsLUsW1Xnur8Va5fvxAmQAQHSQXLObeOD1knfzsRLylTAibUjbRB9
-         wt0w==
-X-Gm-Message-State: AOAM5321p1t1pTJLzI3hzuCbQ5vTl5wdg6pNJHI9sJ3mac11QJwo+srn
-        rWDpBuhGJC8o8n0p69zNVA87Fyt9DnWyUQ==
-X-Google-Smtp-Source: ABdhPJxiGPc++BzEpZlBMmV+XlyZZlbgyEGXgaNiGp0hI/Tv7hPRxDVW7mz937Gx9gR/Y6p1sdMtyg==
-X-Received: by 2002:a7b:c042:: with SMTP id u2mr4495286wmc.86.1626175950253;
-        Tue, 13 Jul 2021 04:32:30 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.127.100])
-        by smtp.gmail.com with ESMTPSA id r16sm2056532wmg.11.2021.07.13.04.32.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 04:32:29 -0700 (PDT)
-To:     Chuanjia Liu <chuanjia.liu@mediatek.com>,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, bhelgaas@google.com
-Cc:     ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
-        yong.wu@mediatek.com, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210611060902.12418-1-chuanjia.liu@mediatek.com>
- <20210611060902.12418-3-chuanjia.liu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v10 2/4] PCI: mediatek: Add new method to get shared
- pcie-cfg base address and parse node
-Message-ID: <e462d9f0-2fa3-6106-f060-9753dc604b9f@gmail.com>
-Date:   Tue, 13 Jul 2021 13:32:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235838AbhGMLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:37:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:41712 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235623AbhGMLhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:37:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1EF21FB;
+        Tue, 13 Jul 2021 04:34:32 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3221B3F7D8;
+        Tue, 13 Jul 2021 04:34:31 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 12:33:24 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-kernel@vger.kernel.org, james.morse@arm.com
+Subject: Re: [PATCH] cacheinfo: clear cache_leaves(cpu) in
+ free_cache_attributes()
+Message-ID: <20210713113315.thsvrvqvqptc7hje@bogus>
+References: <1626148058-55230-1-git-send-email-wangxiongfeng2@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210611060902.12418-3-chuanjia.liu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626148058-55230-1-git-send-email-wangxiongfeng2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 13, 2021 at 11:47:38AM +0800, Xiongfeng Wang wrote:
+> On ARM64, when PPTT(Processor Properties Topology Table) is not
+> implemented in ACPI boot, we will goto 'free_ci' with the following
+> print:
+>   Unable to detect cache hierarchy for CPU 0
+>
 
+The change itself looks good and I am fine with that. However,...
 
-On 11/06/2021 08:09, Chuanjia Liu wrote:
-> For the new dts format, add a new method to get
-> shared pcie-cfg base address and parse node.
-> 
-> Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> But some other codes may still use 'num_leaves' to iterate through the
 
-You missed the
-Reviewed-by: Rob Herring <robh@kernel.org>
-given in v8. Or were there any substantial changes in this patch?
+Can you point me exactly where it is used to make sure there are no
+other issues associated with that.
 
+> 'info_list', such as get_cpu_cacheinfo_id(). If 'info_list' is NULL , it
+> would crash. So clear 'num_leaves' in free_cache_attributes().
+>
+
+And can you provide the crash dump please ? If we are not hitting any
+issue and you just figured this with code inspection, that is fine. It
+helps to determine if this needs to be backport or just good to have
+clean up.
+
+> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 > ---
->  drivers/pci/controller/pcie-mediatek.c | 52 +++++++++++++++++++-------
->  1 file changed, 39 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> index 62a042e75d9a..950f577a2f44 100644
-> --- a/drivers/pci/controller/pcie-mediatek.c
-> +++ b/drivers/pci/controller/pcie-mediatek.c
-> @@ -14,6 +14,7 @@
->  #include <linux/irqchip/chained_irq.h>
->  #include <linux/irqdomain.h>
->  #include <linux/kernel.h>
-> +#include <linux/mfd/syscon.h>
->  #include <linux/msi.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> @@ -23,6 +24,7 @@
->  #include <linux/phy/phy.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/regmap.h>
->  #include <linux/reset.h>
->  
->  #include "../pci.h"
-> @@ -207,6 +209,7 @@ struct mtk_pcie_port {
->   * struct mtk_pcie - PCIe host information
->   * @dev: pointer to PCIe device
->   * @base: IO mapped register base
-> + * @cfg: IO mapped register map for PCIe config
->   * @free_ck: free-run reference clock
->   * @mem: non-prefetchable memory resource
->   * @ports: pointer to PCIe port information
-> @@ -215,6 +218,7 @@ struct mtk_pcie_port {
->  struct mtk_pcie {
->  	struct device *dev;
->  	void __iomem *base;
-> +	struct regmap *cfg;
->  	struct clk *free_ck;
->  
->  	struct list_head ports;
-> @@ -650,7 +654,11 @@ static int mtk_pcie_setup_irq(struct mtk_pcie_port *port,
->  		return err;
->  	}
->  
-> -	port->irq = platform_get_irq(pdev, port->slot);
-> +	if (of_find_property(dev->of_node, "interrupt-names", NULL))
-> +		port->irq = platform_get_irq_byname(pdev, "pcie_irq");
-> +	else
-> +		port->irq = platform_get_irq(pdev, port->slot);
-> +
+>  drivers/base/cacheinfo.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
+> index bfc0959..dad2962 100644
+> --- a/drivers/base/cacheinfo.c
+> +++ b/drivers/base/cacheinfo.c
+> @@ -297,6 +297,7 @@ static void free_cache_attributes(unsigned int cpu)
+>
+>  	kfree(per_cpu_cacheinfo(cpu));
+>  	per_cpu_cacheinfo(cpu) = NULL;
+> +	cache_leaves(cpu) = 0;
 
-Do I understand that this is used for backwards compatibility with older DTS? I
-just wonder why we don't need to mandate
-interrupt-names = "pcie_irq"
-in the binding description.
+I initially thought it might get used and crash in cache_shared_cpu_map_remove
+but you are setting it later. So where do you suspect it to be used ? Sorry
+if I am missing something obvious, looking at this code after long time.
 
+-- 
 Regards,
-Matthias
+Sudeep
