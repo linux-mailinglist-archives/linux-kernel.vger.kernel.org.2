@@ -2,167 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCA13C6C3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F823C6C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbhGMIsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        id S234781AbhGMIuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234758AbhGMIss (ORCPT
+        with ESMTP id S234770AbhGMIuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:48:48 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAE1C0613DD;
-        Tue, 13 Jul 2021 01:45:57 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 75-20020a9d08510000b02904acfe6bcccaso21720834oty.12;
-        Tue, 13 Jul 2021 01:45:57 -0700 (PDT)
+        Tue, 13 Jul 2021 04:50:13 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69590C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:23 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s18so5706799pgq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T+2TDXF9EDKSZL5Kzj9TJlxPiJ+RmKYPj3eyPe8VGrQ=;
-        b=I65UGfx1S64EbyEek5XbLG7ivJH0gzrauClda8uSGEI2CYDLve1rrfbR5bIMZGjT4z
-         l8Nlu5DgZkOG0eJTmeMVSdRcn3+i4tFo8ibzmhQTmZO9Sqb4vXD2XJBnxLLeQRLon8vu
-         8nZP/tf2MW4ggSiITz9Sc43vjiPv0FhGzw6IHGsnm62oKi8lbtDz1fLi4SxcW/pdvgWN
-         bdfH74QqeGcsZp+ta5I0jxL/csIHWj7BxSb0jaWpzH0tCTotr/be2Y5bS2jcbQn8xsEe
-         ejVRIy8NZzWi1aXGL/V4zRBpHEGgx8cJm/XeXpvYQglZwpybLxKDFfqO8oLdSP37Btl2
-         NNJA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rv8gj4jA0FtBvDj5QpcpkmbVeDKmo9ccDDVHnkHtgCU=;
+        b=A63bmGGBwau1O/rJ5EaGwoi11K18AQBZ6fD+MFwM6tHXeZjN+FZ2OloX2zjeF+Yur2
+         YlL7cD1GiyAsrwaaLCRBQGkVmTtI1sJ8Bwz6kP2U5a5uJS/qtD9buN8U7JZiQN1tj1Ov
+         kDXOVOHJAnkqoVvgwnaKCF/mhH3XS0FixLRUnnJ4Q1CuTDfvB/1b3ZmRdxvlNu41wD6O
+         zJ+q4uZJY3zRzjzD9JxM4R/yCAk0js/y2qbMFBqaIjnLupR5k68SfAf7DqX4njeJFrPy
+         JRxWFbyH6ZTbTcALO9/1s4wk6TtDnWs3QoMMj3ag/UxotJ+tA0gCvPnFzLQD3F8IKbQX
+         w+rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T+2TDXF9EDKSZL5Kzj9TJlxPiJ+RmKYPj3eyPe8VGrQ=;
-        b=i/lPlZFZcOZkuUoMzNTfpwvH+TJl66WfKbQ9K0ZRkdgsg/k469UxaVL1HPC9xPoGgw
-         qckAx26yDYzQCbWFfU707+PsZDF6s3DcWc84n/oi12UjELIJqTBTy9AMbhzQQVtAlgVp
-         MGyva730X79+XYCQ5cfcwKtJLHXO1HNWQyh5oZS4TkSVChA3TGTMCUlYVAgx7xVVJQjv
-         aSPLiC13YW35hjn+eMUqBSfWdRlW9LDMYme+aof79aH4DGXD7iNhG39kgFcKdhP2uRMk
-         hJaOZfazNeH+Ku2eOTAyzSs7CAmXAqVEffGundyhZng1g3tbrPndhEepIyL7HZUOrKVP
-         iocg==
-X-Gm-Message-State: AOAM530BCtxhCZX0LPK1b7LR1kyVeeVJEGeUGuN4vvrGL7PTAt5W7My5
-        EnrixE3wAD3MhmvTHwXqfLeAB2q1+W0=
-X-Google-Smtp-Source: ABdhPJwL383jZ46QRqsnv972rfzscEbGIbCKaRsojwy9XVvnLFiG6AHJ86qgMxfHcYeyTvBHePMdHg==
-X-Received: by 2002:a9d:64cd:: with SMTP id n13mr2730807otl.349.1626165956933;
-        Tue, 13 Jul 2021 01:45:56 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t5sm3661034otk.39.2021.07.13.01.45.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 01:45:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/1] PCI: Coalesce host bridge contiguous apertures
- without sorting
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com
-Cc:     "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <f18e36f7-cb18-1a4a-e7e8-4fbb253581ae@roeck-us.net>
-Date:   Tue, 13 Jul 2021 01:45:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=rv8gj4jA0FtBvDj5QpcpkmbVeDKmo9ccDDVHnkHtgCU=;
+        b=PnrqPJlFvITURWW04XE9oEOMkJAHnFENBx+Vm4evPEGwbajc0o1rCDeXJsyDwidN0P
+         IAfe4nsWX1sfNJMqqz6NyPwlczi3X+WI2lEHPNyW2kczYe9jcvUNMKOzCtBikM1wYwLc
+         8S7llY4g00bXQbxZnagQWuUPO8w3rH1BfQsqYBynp+YuYVwIbLOrz/DFH/vvtyRSQPly
+         fl8N4Va99sOWSbapgm0d9wqvDd2zxZYPf2E6I9zpq4a87bns5WCR05Uh9lVxSs9ZSz9e
+         OMpJnNVJMSKAjNrnQ9VPrCPGhTjYiNp2fuEiVersjNDJWoZUQmFg/HXB8NaH/bb/b8wr
+         Jryg==
+X-Gm-Message-State: AOAM530qapbUIZL/rECt3oyElD0qZuvuYo41CrrVtno/ytlr9WHTkga1
+        x4mZaGt7m/c8QrcbKfbcbZ0X
+X-Google-Smtp-Source: ABdhPJwipbRjQjDJxXSpT9538xRpYXTXyx/lH7SJR6xJlqh0VT8xfyfUqL+l+USs2N1YZyaloRL3Fg==
+X-Received: by 2002:a62:8f4a:0:b029:327:6616:410f with SMTP id n71-20020a628f4a0000b02903276616410fmr3412310pfd.68.1626166042922;
+        Tue, 13 Jul 2021 01:47:22 -0700 (PDT)
+Received: from localhost ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id t17sm20462768pgl.93.2021.07.13.01.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 01:47:22 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com
+Cc:     songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 00/17] Introduce VDUSE - vDPA Device in Userspace
+Date:   Tue, 13 Jul 2021 16:46:39 +0800
+Message-Id: <20210713084656.232-1-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/21 12:57 AM, Kai-Heng Feng wrote:
-> Commit 65db04053efe ("PCI: Coalesce host bridge contiguous apertures")
-> sorts the resources by address so the resources can be swapped.
-> 
-> Before:
-> PCI host bridge to bus 0002:00
-> pci_bus 0002:00: root bus resource [io  0x0000-0xffff]
-> pci_bus 0002:00: root bus resource [mem 0xd80000000-0xdffffffff] (bus address [0x80000000-0xffffffff])
-> pci_bus 0002:00: root bus resource [mem 0xc0ee00000-0xc0eefffff] (bus address [0x00000000-0x000fffff])
-> 
-> And after:
-> PCI host bridge to bus 0002:00
-> pci_bus 0002:00: root bus resource [io  0x0000-0xffff]
-> pci_bus 0002:00: root bus resource [mem 0xc0ee00000-0xc0eefffff] (bus address [0x00000000-0x000fffff])
-> pci_bus 0002:00: root bus resource [mem 0xd80000000-0xdffffffff] (bus address [0x80000000-0xffffffff])
-> 
-> However, the sorted resources make NVMe stops working on QEMU ppc:sam460ex.
-> 
-> Resources in the original issue are already in ascending order:
-> pci_bus 0000:00: root bus resource [mem 0x10020200000-0x100303fffff window]
-> pci_bus 0000:00: root bus resource [mem 0x10030400000-0x100401fffff window]
-> 
-> So remove the sorting part to resolve the issue.
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Fixes: 65db04053efe ("PCI: Coalesce host bridge contiguous apertures")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+This series introduces a framework that makes it possible to implement
+software-emulated vDPA devices in userspace. And to make the device
+emulation more secure, the emulated vDPA device's control path is handled
+in the kernel and only the data path is implemented in the userspace.
 
-I think the original commit message would make more sense here. This patch
-doesn't fix 65db04053efe, it replaces it. The commit message now misses
-the point, and the patch coalesces continuous apertures without explaining
-the reason.
+Since the emuldated vDPA device's control path is handled in the kernel,
+a message mechnism is introduced to make userspace be aware of the data
+path related changes. Userspace can use read()/write() to receive/reply
+the control messages.
 
-Guenter
+In the data path, the core is mapping dma buffer into VDUSE daemon's
+address space, which can be implemented in different ways depending on
+the vdpa bus to which the vDPA device is attached.
 
-> ---
->   drivers/pci/probe.c | 31 +++++++++++++++++++++++++++----
->   1 file changed, 27 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 79177ac37880..5de157600466 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -877,11 +877,11 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
->   static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->   {
->   	struct device *parent = bridge->dev.parent;
-> -	struct resource_entry *window, *n;
-> +	struct resource_entry *window, *next, *n;
->   	struct pci_bus *bus, *b;
-> -	resource_size_t offset;
-> +	resource_size_t offset, next_offset;
->   	LIST_HEAD(resources);
-> -	struct resource *res;
-> +	struct resource *res, *next_res;
->   	char addr[64], *fmt;
->   	const char *name;
->   	int err;
-> @@ -961,11 +961,34 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->   	if (nr_node_ids > 1 && pcibus_to_node(bus) == NUMA_NO_NODE)
->   		dev_warn(&bus->dev, "Unknown NUMA node; performance will be reduced\n");
->   
-> +	/* Coalesce contiguous windows */
-> +	resource_list_for_each_entry_safe(window, n, &resources) {
-> +		if (list_is_last(&window->node, &resources))
-> +			break;
-> +
-> +		next = list_next_entry(window, node);
-> +		offset = window->offset;
-> +		res = window->res;
-> +		next_offset = next->offset;
-> +		next_res = next->res;
-> +
-> +		if (res->flags != next_res->flags || offset != next_offset)
-> +			continue;
-> +
-> +		if (res->end + 1 == next_res->start) {
-> +			next_res->start = res->start;
-> +			res->flags = res->start = res->end = 0;
-> +		}
-> +	}
-> +
->   	/* Add initial resources to the bus */
->   	resource_list_for_each_entry_safe(window, n, &resources) {
-> -		list_move_tail(&window->node, &bridge->windows);
->   		offset = window->offset;
->   		res = window->res;
-> +		if (!res->end)
-> +			continue;
-> +
-> +		list_move_tail(&window->node, &bridge->windows);
->   
->   		if (res->flags & IORESOURCE_BUS)
->   			pci_bus_insert_busn_res(bus, bus->number, res->end);
-> 
+In virtio-vdpa case, we implements a MMU-based on-chip IOMMU driver with
+bounce-buffering mechanism to achieve that. And in vhost-vdpa case, the dma
+buffer is reside in a userspace memory region which can be shared to the
+VDUSE userspace processs via transferring the shmfd.
+
+The details and our user case is shown below:
+
+------------------------    -------------------------   ----------------------------------------------
+|            Container |    |              QEMU(VM) |   |                               VDUSE daemon |
+|       ---------      |    |  -------------------  |   | ------------------------- ---------------- |
+|       |dev/vdx|      |    |  |/dev/vhost-vdpa-x|  |   | | vDPA device emulation | | block driver | |
+------------+-----------     -----------+------------   -------------+----------------------+---------
+            |                           |                            |                      |
+            |                           |                            |                      |
+------------+---------------------------+----------------------------+----------------------+---------
+|    | block device |           |  vhost device |            | vduse driver |          | TCP/IP |    |
+|    -------+--------           --------+--------            -------+--------          -----+----    |
+|           |                           |                           |                       |        |
+| ----------+----------       ----------+-----------         -------+-------                |        |
+| | virtio-blk driver |       |  vhost-vdpa driver |         | vdpa device |                |        |
+| ----------+----------       ----------+-----------         -------+-------                |        |
+|           |      virtio bus           |                           |                       |        |
+|   --------+----+-----------           |                           |                       |        |
+|                |                      |                           |                       |        |
+|      ----------+----------            |                           |                       |        |
+|      | virtio-blk device |            |                           |                       |        |
+|      ----------+----------            |                           |                       |        |
+|                |                      |                           |                       |        |
+|     -----------+-----------           |                           |                       |        |
+|     |  virtio-vdpa driver |           |                           |                       |        |
+|     -----------+-----------           |                           |                       |        |
+|                |                      |                           |    vdpa bus           |        |
+|     -----------+----------------------+---------------------------+------------           |        |
+|                                                                                        ---+---     |
+-----------------------------------------------------------------------------------------| NIC |------
+                                                                                         ---+---
+                                                                                            |
+                                                                                   ---------+---------
+                                                                                   | Remote Storages |
+                                                                                   -------------------
+
+We make use of it to implement a block device connecting to
+our distributed storage, which can be used both in containers and
+VMs. Thus, we can have an unified technology stack in this two cases.
+
+To test it with null-blk:
+
+  $ qemu-storage-daemon \
+      --chardev socket,id=charmonitor,path=/tmp/qmp.sock,server,nowait \
+      --monitor chardev=charmonitor \
+      --blockdev driver=host_device,cache.direct=on,aio=native,filename=/dev/nullb0,node-name=disk0 \
+      --export type=vduse-blk,id=test,node-name=disk0,writable=on,name=vduse-null,num-queues=16,queue-size=128
+
+The qemu-storage-daemon can be found at https://github.com/bytedance/qemu/tree/vduse
+
+To make the userspace VDUSE processes such as qemu-storage-daemon able
+to be run by an unprivileged user. We limit the supported device type
+to virtio block device currently. The support for other device types
+can be added after the security issue of corresponding device driver
+is clarified or fixed in the future.
+
+This series is now based on:
+
+https://lore.kernel.org/lkml/20210618084412.18257-1-zhe.he@windriver.com/
+https://lore.kernel.org/lkml/20210705071910.31965-1-jasowang@redhat.com/
+https://lore.kernel.org/lkml/20210602021536.39525-1-jasowang@redhat.com/
+
+Future work:
+  - Improve performance
+  - Userspace library (find a way to reuse device emulation code in qemu/rust-vmm)
+  - Support more device types
+
+V8 to V9:
+- Add VDUSE_SET_STATUS message to replace VDUSE_START/STOP_DATAPLANE messages
+- Support packed virtqueue state
+- Handle the reset failure in both virtio-vdpa and vhost-vdpa cases
+- Add more details in documentation
+- Remove VDUSE_REQ_FLAGS_NO_REPLY flag
+- Add VDUSE_VQ_SETUP ioctl to support per-vq configuration
+- Separate config interrupt injecting out of config update
+- Flush kworker for interrupt inject during resetting
+- Validate the config_size in .get_config()
+
+V7 to V8:
+- Rebased to newest kernel tree
+- Rework VDUSE driver to handle the device's control path in kernel
+- Limit the supported device type to virtio block device
+- Export free_iova_fast()
+- Remove the virtio-blk and virtio-scsi patches (will send them alone)
+- Remove all module parameters
+- Use the same MAJOR for both control device and VDUSE devices
+- Avoid eventfd cleanup in vduse_dev_release()
+
+V6 to V7:
+- Export alloc_iova_fast()
+- Add get_config_size() callback
+- Add some patches to avoid trusting virtio devices
+- Add limited device emulation
+- Add some documents
+- Use workqueue to inject config irq
+- Add parameter on vq irq injecting
+- Rename vduse_domain_get_mapping_page() to vduse_domain_get_coherent_page()
+- Add WARN_ON() to catch message failure
+- Add some padding/reserved fields to uAPI structure
+- Fix some bugs
+- Rebase to vhost.git
+
+V5 to V6:
+- Export receive_fd() instead of __receive_fd()
+- Factor out the unmapping logic of pa and va separatedly
+- Remove the logic of bounce page allocation in page fault handler
+- Use PAGE_SIZE as IOVA allocation granule
+- Add EPOLLOUT support
+- Enable setting API version in userspace
+- Fix some bugs
+
+V4 to V5:
+- Remove the patch for irq binding
+- Use a single IOTLB for all types of mapping
+- Factor out vhost_vdpa_pa_map()
+- Add some sample codes in document
+- Use receice_fd_user() to pass file descriptor
+- Fix some bugs
+
+V3 to V4:
+- Rebase to vhost.git
+- Split some patches
+- Add some documents
+- Use ioctl to inject interrupt rather than eventfd
+- Enable config interrupt support
+- Support binding irq to the specified cpu
+- Add two module parameter to limit bounce/iova size
+- Create char device rather than anon inode per vduse
+- Reuse vhost IOTLB for iova domain
+- Rework the message mechnism in control path
+
+V2 to V3:
+- Rework the MMU-based IOMMU driver
+- Use the iova domain as iova allocator instead of genpool
+- Support transferring vma->vm_file in vhost-vdpa
+- Add SVA support in vhost-vdpa
+- Remove the patches on bounce pages reclaim
+
+V1 to V2:
+- Add vhost-vdpa support
+- Add some documents
+- Based on the vdpa management tool
+- Introduce a workqueue for irq injection
+- Replace interval tree with array map to store the iova_mapu
+
+Xie Yongji (17):
+  iova: Export alloc_iova_fast() and free_iova_fast()
+  file: Export receive_fd() to modules
+  vdpa: Fix code indentation
+  vdpa: Fail the vdpa_reset() if fail to set device status to zero
+  vhost-vdpa: Fail the vhost_vdpa_set_status() on reset failure
+  vhost-vdpa: Handle the failure of vdpa_reset()
+  virtio: Don't set FAILED status bit on device index allocation failure
+  virtio_config: Add a return value to reset function
+  virtio-vdpa: Handle the failure of vdpa_reset()
+  virtio: Handle device reset failure in register_virtio_device()
+  vhost-iotlb: Add an opaque pointer for vhost IOTLB
+  vdpa: Add an opaque pointer for vdpa_config_ops.dma_map()
+  vdpa: factor out vhost_vdpa_pa_map() and vhost_vdpa_pa_unmap()
+  vdpa: Support transferring virtual addressing during DMA mapping
+  vduse: Implement an MMU-based IOMMU driver
+  vduse: Introduce VDUSE - vDPA Device in Userspace
+  Documentation: Add documentation for VDUSE
+
+ Documentation/userspace-api/index.rst              |    1 +
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
+ Documentation/userspace-api/vduse.rst              |  248 ++++
+ arch/um/drivers/virtio_uml.c                       |    4 +-
+ drivers/iommu/iova.c                               |    2 +
+ drivers/platform/mellanox/mlxbf-tmfifo.c           |    4 +-
+ drivers/remoteproc/remoteproc_virtio.c             |    4 +-
+ drivers/s390/virtio/virtio_ccw.c                   |    6 +-
+ drivers/vdpa/Kconfig                               |   10 +
+ drivers/vdpa/Makefile                              |    1 +
+ drivers/vdpa/ifcvf/ifcvf_main.c                    |    2 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c                  |    2 +-
+ drivers/vdpa/vdpa.c                                |    9 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim.c                   |    8 +-
+ drivers/vdpa/vdpa_user/Makefile                    |    5 +
+ drivers/vdpa/vdpa_user/iova_domain.c               |  545 +++++++
+ drivers/vdpa/vdpa_user/iova_domain.h               |   73 +
+ drivers/vdpa/vdpa_user/vduse_dev.c                 | 1502 ++++++++++++++++++++
+ drivers/vdpa/virtio_pci/vp_vdpa.c                  |    2 +-
+ drivers/vhost/iotlb.c                              |   20 +-
+ drivers/vhost/vdpa.c                               |  168 ++-
+ drivers/virtio/virtio.c                            |   17 +-
+ drivers/virtio/virtio_pci_legacy.c                 |    4 +-
+ drivers/virtio/virtio_pci_modern.c                 |    4 +-
+ drivers/virtio/virtio_vdpa.c                       |    4 +-
+ fs/file.c                                          |    6 +
+ include/linux/file.h                               |    7 +-
+ include/linux/vdpa.h                               |   46 +-
+ include/linux/vhost_iotlb.h                        |    3 +
+ include/linux/virtio_config.h                      |    3 +-
+ include/uapi/linux/vduse.h                         |  221 +++
+ 31 files changed, 2858 insertions(+), 74 deletions(-)
+ create mode 100644 Documentation/userspace-api/vduse.rst
+ create mode 100644 drivers/vdpa/vdpa_user/Makefile
+ create mode 100644 drivers/vdpa/vdpa_user/iova_domain.c
+ create mode 100644 drivers/vdpa/vdpa_user/iova_domain.h
+ create mode 100644 drivers/vdpa/vdpa_user/vduse_dev.c
+ create mode 100644 include/uapi/linux/vduse.h
+
+-- 
+2.11.0
 
