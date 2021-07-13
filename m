@@ -2,219 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FDD3C6844
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB093C6848
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbhGMBzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 21:55:19 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:60594 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhGMBzS (ORCPT
+        id S233948AbhGMB51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 21:57:27 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:26438 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230000AbhGMB50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 21:55:18 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 10A0992009C; Tue, 13 Jul 2021 03:52:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 0A8EF92009B;
-        Tue, 13 Jul 2021 03:52:28 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 03:52:27 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Andy Shevchenko <andy@kernel.org>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] serial: 8250: Add proper clock handling for OxSemi
- PCIe devices
-In-Reply-To: <YOyi0cPdIVSCcpmw@surfacebook.localdomain>
-Message-ID: <alpine.DEB.2.21.2107130150420.9461@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106260539240.37803@angie.orcam.me.uk> <alpine.DEB.2.21.2106260604540.37803@angie.orcam.me.uk> <YOyi0cPdIVSCcpmw@surfacebook.localdomain>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 12 Jul 2021 21:57:26 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16D1l8c1025999;
+        Tue, 13 Jul 2021 01:54:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=0a0LMdkmed9xJMwqoEpm3+8LdGZX73CbCCOWE49uNfk=;
+ b=uyl6yGclAADhh11SrSLD70iw3ny3EXjol1I2zt+JaQuUmqrmmD7C1Z01GPboSKVcpoM9
+ wKUkSIiwVdzjkeMTZrDQsds9JQqkcpWM/gzs9SpUoM0q3/Brkjj3NL3xG9SmJA2IyEHb
+ +G4oPKg9z6rsTm/KU/DpXAC/TXNQ3+SqCdq6nDJaqFiMZ+XaLZuLPxtEKSF0boU0H/A1
+ 4PeZV5gwjPLI4ibysT07PNniap8/RkrMBRWonNHzp/mmjuq6fUUFR2Qu0k+ypVCYO1WC
+ 5TAOSAsCAtJYDHbG47CQhDesVr5T1Rn4nJP1O2t7dARd5hTpA2QufAnSJ88kPZFMEeln 5g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39rqkb17p2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 01:54:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16D1kniE091902;
+        Tue, 13 Jul 2021 01:54:27 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by aserp3030.oracle.com with ESMTP id 39qyctrmv7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 01:54:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WkPNe+hOO+kud0k3CFgZDK0oM9/hvz9IdDeasHALzXC4AtjfZ+YefCuo56NIijG+EXPUSAgVz+aoqZvEQ/LtbEAJYIv7YhVlgYfmJJcHFP+kS7cWjoMPzs3tabkeEf6FYQZeNM9BnyvI/HPfQIRW02+blgCYOv8CHhsI4F3GFtUna8he4JBBrAQRRXHwiGI2vbnEiTpl7Qs2Y8nKCWGhHCMNPpNc1PPYMjUgon7lZTuiVeAkY2c/zRBvTPADXzpxbpJUMFDXSTm1GvhxDwoUPZ/Ga0/29lb0WtjkYSWlCjl4jDpznkrqp3ZcxKKDa9pcG95i+9qV4PMe9+KbIo7AZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0a0LMdkmed9xJMwqoEpm3+8LdGZX73CbCCOWE49uNfk=;
+ b=D78XxgWF3oR6FQBk5FL56I55yG8VRyod7AvOPeBxMhEn6zUEetatfyS30xBUrsse6Je4pnNx3+msvxze7Z2zegpL97JW6gq+K9M3SqaWkg4K835xYsVRqfUwkCQ4SjDz8kwmi3OrBErjIZG+K4kOa0MViZDcrzLyWL2Yr4ldlOtaqz8PngebwHUgEfnQUuwU1ApBomm/+7eWJpMQyVo03Rf4cmmX2ioEJpo99He0OoJmTLZo6V5lmSVXE92QqpK8ZYFpgGNHEG4I4FXGHFbmNFGFq2MP9IgZFOnfQXntBUy/ow0pZVE4mpP8Ij8Zirx3DSl0AaWnJ6Y+skjRvrcofg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0a0LMdkmed9xJMwqoEpm3+8LdGZX73CbCCOWE49uNfk=;
+ b=Sg+3UX7jTbQCFtYf5Y0MlgqKg/8ceKC54pnMf5UoFnMIuXbWLwmv4FtInA/iV+KaUlidUaih7A+jcvjhlefJEw+JEw0r5eCtLS71jmcERN6cQ+ceEhan/WppNBD1u5ik+x3CyIcp/0JFhmKkK9fpOs5zPxa5U56cxzDvwWOnZww=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5467.namprd10.prod.outlook.com (2603:10b6:510:d4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Tue, 13 Jul
+ 2021 01:54:26 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
+ 01:54:25 +0000
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        linux-scsi@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH] scsi: pm8001: clean up kernel-doc and comments
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1h7gz567v.fsf@ca-mkp.ca.oracle.com>
+References: <20210708165723.8594-1-rdunlap@infradead.org>
+Date:   Mon, 12 Jul 2021 21:54:20 -0400
+In-Reply-To: <20210708165723.8594-1-rdunlap@infradead.org> (Randy Dunlap's
+        message of "Thu, 8 Jul 2021 09:57:23 -0700")
+Content-Type: text/plain
+X-ClientProxiedBy: SA0PR11CA0080.namprd11.prod.outlook.com
+ (2603:10b6:806:d2::25) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA0PR11CA0080.namprd11.prod.outlook.com (2603:10b6:806:d2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21 via Frontend Transport; Tue, 13 Jul 2021 01:54:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 321d0705-8b44-44de-8a34-08d945a12443
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5467:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB5467AF5CB3F19DAD450D30028E149@PH0PR10MB5467.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IRsH8Xfb3Y6DYdzYRWY1LsXlBYyWDRaBWugQ+FpVmJHukp3tpX2T5QjcdKacTuECkh9wtPPfhnA3nmfEGYrWw1a51x6s4JmAT24fXSaYKXi5xWj7c6/ij8n2++uJpwkH021r+6TR1KVHPwzOmC9EUx5JcgsGAJkWvSRekA1LfGWjqaRTv0mHylut5hkWoOrdG8E/UzdmqO+gNCvianJOrBVRWfIQjzgv0ZwYlA6kk3MPFYKVvTPx8Ed156POwXDU5e17GYDzmH3dQDOis4Ghzri09BDGDMBXPwMCrM70kXxAuSwkchJpSqCJlVQ4xL5Y/DYSM8Zu99GUuIMHRsWghKu1bPGjyQBuwWO5545uHgfMJKiekzp9iHuFG2fasC+KknUfweGd2ouTsX6wlPmYA6ub65ONXYrRCMcg284Nk/8F6u58qNWBQdksfTXwF5KMQvN+2rm2qkd4GpGI3BMlE+U0uuqGEXR3eysO5cWC9sjK/p0F8eSbu1KHeYKMH6yp98WE5Vs5luurDfNuEXdzjsoWMKe/qn6b9OD7aKTpFFpcG4z4Q+/W5y3ObGcTbXl9hYgDyAv8Gt9FIsBacngBeLi8MmwB77niJ4tfqznrmaqM3V9FpyvY/UbXGprx6TBQJ0EORwCxKjhLnFgMzh07Ac6nEiMs7T97HmF0TlcNqa2e/ih22fSAJzsaZ1zEp+ULYR3dykKjJ0ia2/M3hsTPnw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(346002)(396003)(39860400002)(83380400001)(2906002)(86362001)(6666004)(66946007)(38350700002)(66556008)(186003)(26005)(66476007)(8936002)(478600001)(316002)(55016002)(54906003)(36916002)(4326008)(8676002)(7696005)(52116002)(5660300002)(107886003)(6916009)(558084003)(956004)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?41fcBYY/NKpqi6+R7zRQ61Qd2512EXKsY+4lfXijD40eDm3upnpcTC1Cc54n?=
+ =?us-ascii?Q?A16oNp10+2hgxq9SZwoAYkaqJ5+8RlgOFXTGRIEUclJ8xcEqfqfNC7Y9ltAd?=
+ =?us-ascii?Q?7Q6CDKTDSpx/SBTj/L+ipvUVTvCQ1VXQSFbCC8F1qgepbYDbz5J117C+jTQt?=
+ =?us-ascii?Q?OF9Ytm5ghVTWjSLxGYNlR9b6DQwFABc1aNR0HINhwDtonDBpGNpswbS3DSIZ?=
+ =?us-ascii?Q?Q1P+A2PNMb5IDc25I+EH6ps843Mj/oH3L3W0tWBMeESCbVpmoxEPxRXd4OuL?=
+ =?us-ascii?Q?EqajU0zGAHJI+gyNUF86Xh7f5Kh6SqGZbABLGS96Cl24L7VD8RlS12f7Sh3U?=
+ =?us-ascii?Q?FhLzaxBIeTbqUXzAQLpWN9picbLNnyjn+yu+MtTxnh8uyKLxldE7n1vBncfg?=
+ =?us-ascii?Q?fExNU/t+3A5PzitXRxySyRFXh8yMw6Lechszt1Ydyk/GyZtGpXzFyZPvQEXf?=
+ =?us-ascii?Q?HDPc2roKa+n5Bac/jzrd7NPtqoXa7X6N5Y7ZukgD6m/GN5doOMAo1yBYX5wr?=
+ =?us-ascii?Q?17cKn/6n4TsEaqkbcpVLN2RD1NQaT1zC8mU5xwQiPR88JSd6zVxo5PztF0by?=
+ =?us-ascii?Q?2PzZc8AhkF8m56GTRxnOadwW3rRHFw2tEozbtIqll7BIY9p6Os6y7OT01K3M?=
+ =?us-ascii?Q?uZtDbdpLI6Pm4W5dTWx4AsXSe5oObr1mP2k/XBIP1HlTkU8L9d1fboalfTZ2?=
+ =?us-ascii?Q?ArPvfcNfGeInLSHBidmkWSF1Wefjy8G/IfL1fR/FHyrc7gQMkhSkemqVnxAX?=
+ =?us-ascii?Q?lJYoEoCcNcIljoBRT+aaYYptMs17Vy8H3b/sXPUKnGrw1O9MQwOMpo0iYZax?=
+ =?us-ascii?Q?G5gTuB7QN48ow1TT/1JlVrI/73LWMrStX1MDfl+gVzM44GBjSdV7dXe+Ef53?=
+ =?us-ascii?Q?dIHtX8J1huy1tBUDJ5CUEBTgt3NP0phctZxgZME9yt8FXffTW3jI1ay2JRx4?=
+ =?us-ascii?Q?x9SNrjFqQg3RehwkPH5NlKroP0IOz0Mfeqgjkop9opWLgEMTD7lu3Q2mjquS?=
+ =?us-ascii?Q?Y7DaZG0KrJ21uHrCqmDNHNWvxIGBLviDN1aZuh1bEGjt1YhD1z4+YW24Ru2o?=
+ =?us-ascii?Q?pYCs1CfEfYuzJ12WGBPhxSqMY3QEDqOer9L6fSiScSzIAqD2X5La+aPG+YEj?=
+ =?us-ascii?Q?XR1dSKbw5xQb88TVZhQSbAynVgVzXfrVbbE4szE2+/t/qm4noyZM67fSOCyf?=
+ =?us-ascii?Q?j1liwFLp9YPV1gCcde3kv67+9CmEF2yBy9lf1Sowqxm89LcmXKJt5jXzocfD?=
+ =?us-ascii?Q?pDQ4FN/Rt6mVnkuZs3xM61JJG5IzvLDlvH8SyJ60SwUfgtSI62VOapBM/nC/?=
+ =?us-ascii?Q?EnvPO5GtqVr7JFxNHaxTkvdl?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 321d0705-8b44-44de-8a34-08d945a12443
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 01:54:25.6962
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FA5uuxGJxOuPxkFbt8qhwXvhPqr48/SX3vQoDjrNIRwUuCxjU+eeotqqDySeAsd8wqpeGS3WIl4M2yBKjVJQNcs6bN8dLugo4dVRzxZDcck=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5467
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10043 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107130009
+X-Proofpoint-ORIG-GUID: nUBcaVYC3mmRGbpS6tRngwvdVrg6gtYL
+X-Proofpoint-GUID: nUBcaVYC3mmRGbpS6tRngwvdVrg6gtYL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
 
- Something wrong with your "From:" header; I've fixed it up based on a 
-best guess basis.
+Randy,
 
-On Mon, 12 Jul 2021, andy@surfacebook.localdomain wrote:
+> Fix kernel-doc warnings then test again, wash, rinse, find more, then
+> repeat more/again.  Also fix spellos, some grammar, and some
+> punctuation.
 
-> >   Also handle the historic spd_cust feature so as to allow one to set 
-> >   all the three parameters manually to arbitrary values, by keeping the 
-> >   low 16 bits for the divisor and then putting TCR in bits 19:16 and 
-> >   CPR/CPR2 in bits 28:20, sanitising the bit pattern supplied such as
-> >   to clamp CPR/CPR2 values between 0.000 and 0.875 inclusive to 1.000.
-> >   This preserves compatibility with any existing setups, that is where 
-> >   requesting a custom divisor that only has any bits set among the low 
-> >   16 the oversampling rate of 16 and the clock prescaler of 1 will be 
-> >   used.
-> 
-> Please no. We really would like to get rid of that ugly hack. The BOTHER exists
-> for ages.
+Applied to 5.14/scsi-fixes, thanks!
 
- I have actually carefully considered it before submission and:
-
-1. it remains a supported user API with a tool included with contemporary 
-   distributions, and
-
-2. with this device you can't set all the possible whole-number baud 
-   rates let alone UART clock frequencies with the BOTHER API, and
-
-3. it doesn't hurt.
-
-If you'd like to get rid of SPD_CUST, then just do so, but until then I 
-fail to see a point to have it supported with some devices but not other 
-ones.
-
- NB if you do get to it, then please consider adding an equally flexible 
-API too, e.g. for fractional baud rates (134.5bps haha); I won't mind if 
-it's less hackish though.
-
-> > References:
-> > 
-> > [1] "OXPCIe200 PCI Express Multi-Port Bridge", Oxford Semiconductor,
-> >     Inc., DS-0045, 10 Nov 2008, Section "950 Mode", pp. 64-65
-> > 
-> > [2] "OXPCIe952 PCI Express Bridge to Dual Serial & Parallel Port",
-> >     Oxford Semiconductor, Inc., DS-0046, Mar 06 08, Section "950 Mode", 
-> >     p. 20
-> > 
-> > [3] "OXPCIe954 PCI Express Bridge to Quad Serial Port", Oxford
-> >     Semiconductor, Inc., DS-0047, Feb 08, Section "950 Mode", p. 20
-> > 
-> > [4] "OXPCIe958 PCI Express Bridge to Octal Serial Port", Oxford
-> >     Semiconductor, Inc., DS-0048, Feb 08, Section "950 Mode", p. 20
-> 
-> Is it possible to reduce a commit message by shifting some stuff to the
-> dedicated documentation?
-
- The relevant stuff has been included as comments along with actual code 
-already, and the rest is the usual submission-time rationale.  This will 
-be the initial source of information when someone studies the history of 
-this code (`git log').
-
- I don't consider it cast in stone however, so if there's any particular 
-piece you'd like to see elsewhere, then please point out to me what to 
-move and where.  Or give any guidance other than just: "Rewrite it!"  
-
- (Yes I often have troubles figuring out the real intent of some changes 
-made say 15 years ago that have turned out broken after all those years 
-and whose change description is simply too terse now that the lore has 
-been lost.)
-
-> >  drivers/tty/serial/8250/8250_pci.c  |  331 ++++++++++++++++++++++++++++--------
-> 
-> Can we, please, split the quirk driver first as it's done in a lot of examples
-> (_exar, _mid, _lpss, _...) and then modify it?
-
- I have found it unclear where the line is drawn between having support 
-code included with 8250_pci.c proper and having it split off to a separate 
-file.  All the device-specific files seem to provide complex handling, 
-well beyond just calculating the clock.
-
- I'll be happy to split it off however (with a suitable preparatory 
-change) if there is a consensus in favour to doing so.
-
-> > +/*
-> > + * Determine the oversampling rate, the clock prescaler, and the clock
-> > + * divisor for the requested baud rate.  The clock rate is 62.5 MHz,
-> > + * which is four times the baud base, and the prescaler increments in
-> > + * steps of 1/8.  Therefore to make calculations on integers we need
-> > + * to use a scaled clock rate, which is the baud base multiplied by 32
-> > + * (or our assumed UART clock rate multiplied by 2).
-> > + *
-> > + * The allowed oversampling rates are from 4 up to 16 inclusive (values
-> > + * from 0 to 3 inclusive map to 16).  Likewise the clock prescaler allows
-> > + * values between 1.000 and 63.875 inclusive (operation for values from
-> > + * 0.000 to 0.875 has not been specified).  The clock divisor is the usual
-> > + * unsigned 16-bit integer.
-> > + *
-> > + * For the most accurate baud rate we use a table of predetermined
-> > + * oversampling rates and clock prescalers that records all possible
-> > + * products of the two parameters in the range from 4 up to 255 inclusive,
-> > + * and additionally 335 for the 1500000bps rate, with the prescaler scaled
-> > + * by 8.  The table is sorted by the decreasing value of the oversampling
-> > + * rate and ties are resolved by sorting by the decreasing value of the
-> > + * product.  This way preference is given to higher oversampling rates.
-> > + *
-> > + * We iterate over the table and choose the product of an oversampling
-> > + * rate and a clock prescaler that gives the lowest integer division
-> > + * result deviation, or if an exact integer divider is found we stop
-> > + * looking for right away.  We do some fixup if the resulting clock
-> > + * divisor required would be out of its unsigned 16-bit integer range.
-> > + *
-> > + * Finally we abuse the supposed fractional part returned to encode the
-> > + * 4-bit value of the oversampling rate and the 9-bit value of the clock
-> > + * prescaler which will end up in the TCR and CPR/CPR2 registers.
-> > + */
-> > +static unsigned int pci_oxsemi_tornado_get_divisor(struct uart_port *port,
-> > +						   unsigned int baud,
-> > +						   unsigned int *frac)
-> > +{
-> > +	static u8 p[][2] = {
-> > +		{ 16, 14, }, { 16, 13, }, { 16, 12, }, { 16, 11, },
-> > +		{ 16, 10, }, { 16,  9, }, { 16,  8, }, { 15, 17, },
-> > +		{ 15, 16, }, { 15, 15, }, { 15, 14, }, { 15, 13, },
-> > +		{ 15, 12, }, { 15, 11, }, { 15, 10, }, { 15,  9, },
-> > +		{ 15,  8, }, { 14, 18, }, { 14, 17, }, { 14, 14, },
-> > +		{ 14, 13, }, { 14, 12, }, { 14, 11, }, { 14, 10, },
-> > +		{ 14,  9, }, { 14,  8, }, { 13, 19, }, { 13, 18, },
-> > +		{ 13, 17, }, { 13, 13, }, { 13, 12, }, { 13, 11, },
-> > +		{ 13, 10, }, { 13,  9, }, { 13,  8, }, { 12, 19, },
-> > +		{ 12, 18, }, { 12, 17, }, { 12, 11, }, { 12,  9, },
-> > +		{ 12,  8, }, { 11, 23, }, { 11, 22, }, { 11, 21, },
-> > +		{ 11, 20, }, { 11, 19, }, { 11, 18, }, { 11, 17, },
-> > +		{ 11, 11, }, { 11, 10, }, { 11,  9, }, { 11,  8, },
-> > +		{ 10, 25, }, { 10, 23, }, { 10, 20, }, { 10, 19, },
-> > +		{ 10, 17, }, { 10, 10, }, { 10,  9, }, { 10,  8, },
-> > +		{  9, 27, }, {  9, 23, }, {  9, 21, }, {  9, 19, },
-> > +		{  9, 18, }, {  9, 17, }, {  9,  9, }, {  9,  8, },
-> > +		{  8, 31, }, {  8, 29, }, {  8, 23, }, {  8, 19, },
-> > +		{  8, 17, }, {  8,  8, }, {  7, 35, }, {  7, 31, },
-> > +		{  7, 29, }, {  7, 25, }, {  7, 23, }, {  7, 21, },
-> > +		{  7, 19, }, {  7, 17, }, {  7, 15, }, {  7, 14, },
-> > +		{  7, 13, }, {  7, 12, }, {  7, 11, }, {  7, 10, },
-> > +		{  7,  9, }, {  7,  8, }, {  6, 41, }, {  6, 37, },
-> > +		{  6, 31, }, {  6, 29, }, {  6, 23, }, {  6, 19, },
-> > +		{  6, 17, }, {  6, 13, }, {  6, 11, }, {  6, 10, },
-> > +		{  6,  9, }, {  6,  8, }, {  5, 67, }, {  5, 47, },
-> > +		{  5, 43, }, {  5, 41, }, {  5, 37, }, {  5, 31, },
-> > +		{  5, 29, }, {  5, 25, }, {  5, 23, }, {  5, 19, },
-> > +		{  5, 17, }, {  5, 15, }, {  5, 13, }, {  5, 11, },
-> > +		{  5, 10, }, {  5,  9, }, {  5,  8, }, {  4, 61, },
-> > +		{  4, 59, }, {  4, 53, }, {  4, 47, }, {  4, 43, },
-> > +		{  4, 41, }, {  4, 37, }, {  4, 31, }, {  4, 29, },
-> > +		{  4, 23, }, {  4, 19, }, {  4, 17, }, {  4, 13, },
-> > +		{  4,  9, }, {  4,  8, },
-> > +	};
-> 
-> Oh là là! Please, use rational best approximation algorithm instead 
-> (check CONFIG_RATIONAL).
-
- Thanks for the pointer, I didn't know we had this piece.
-
- However how is it supposed to apply here?  The denominator is always 8,
-so we can rule it out (by multiplying the dividend by 8, which this piece 
-does, so that the divisor is a whole number), but the numerator has to be 
-a product of three integers, from a different range each ([4,16], [8,511], 
-[1, 65535]) as noted above.
-
- Essentially we need to find such three integers (with extra constraints) 
-the product of which is closest to (500000000 / baud_rate) -- which IMHO 
-amounts to factorisation, an NP-complete problem as you have been surely 
-aware (and the whole world relies on), and I have decided that this simple 
-table-driven approximation is good enough to handle the usual baud rates, 
-especially the higher ones.  For several baud rates it gives more accurate 
-results (lower deviation) than the factors proposed in the manufacturer's 
-datasheets.
-
- I just fail to see how your proposed algorithm could be factored in here, 
-but I'll be happy to be proved wrong, so I'll appreciate guidance.
-
- In any case thank you for your review, always appreciated!
-
-  Maciej
+-- 
+Martin K. Petersen	Oracle Linux Engineering
