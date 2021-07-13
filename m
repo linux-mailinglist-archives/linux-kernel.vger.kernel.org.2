@@ -2,125 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69B33C6F33
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E023C6F47
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbhGMLPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:15:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:41188 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235390AbhGMLPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:15:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 461F61FB;
-        Tue, 13 Jul 2021 04:12:50 -0700 (PDT)
-Received: from bogus (unknown [10.57.79.213])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C08BA3F7D8;
-        Tue, 13 Jul 2021 04:12:45 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 12:11:43 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Etienne CARRIERE <etienne.carriere@st.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Subject: Re: [PATCH v2 0/7] Asynchronous notifications from secure world
-Message-ID: <20210713111143.g6ztdakegs6ck25s@bogus>
-References: <PAXPR10MB4687E737261282B78600272DFD189@PAXPR10MB4687.EURPRD10.PROD.OUTLOOK.COM>
+        id S235911AbhGMLSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235709AbhGMLSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:18:39 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099C3C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:15:50 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id u11so28236845oiv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 04:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4U+dpFlbVDJAptoBsJwRV5rg5yTKxT0i49dSys/T/o0=;
+        b=k/Gw6fsU1KJkPIdtK8Mwlin1Tkyia5Myc0J/qodmmo3Xk8iYWjTAM9FBHc3fp9T5/C
+         RQJmlYoUEZgc3xBtswsx7GdGZHU8VP4WEhqj0WA8vXO/QRq4gqo9hJjNSfgonASSu7ZG
+         NZhvqsLbi9mfJ2Ornopc+/Ex1qXfult9t93Yo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4U+dpFlbVDJAptoBsJwRV5rg5yTKxT0i49dSys/T/o0=;
+        b=RmXGVgl+Qja7VmB7m7nC1vEEjbh5MSkQthlAgZYDHkzftD+T923MfA7DYjuPoznYnc
+         or/0n79s2RdfZlusXu4UAsUQJIcVSpFdiDTt7dnb81Tb0JtIIflkpJQ0lCVQHGBgcMo2
+         HdkXgpJKuyrk+e7QPODf68rkCxRgFA8eBv4kk/SXptID+ET26mKTDF1WNIMDbqscgCNj
+         fHiyqIi386Yf5gOT9aes+EO+7zxX42P67x4/UDvnS8wjG19/oIBhRYjY5NVRDmGuE/kG
+         SCCNSlESO2eV19OGE+LmZJwYIxBUQ/JMDOl9d0ebYwyt76h9zjGv5Z37p2e1HBb1sUKT
+         cN/Q==
+X-Gm-Message-State: AOAM533X/W4QytpAWV5SzHN7ZKmGgO+RzDL2yEXt8sRkwkMWpS2VzKif
+        diiqh62JfHaX3lwyyKbyHyaeKE1T/AAXFnewID2X2Q==
+X-Google-Smtp-Source: ABdhPJwl9FIe/eZAGKxCpTTSp0CfSAouaVvuXROTRb5aItJZQfuCfTjzvJHjagD3TETh0ln0G3xy3Ap7JzPHqLyb2vM=
+X-Received: by 2002:aca:d4cf:: with SMTP id l198mr608583oig.14.1626174949394;
+ Tue, 13 Jul 2021 04:15:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR10MB4687E737261282B78600272DFD189@PAXPR10MB4687.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210712085544.2828-1-thunder.leizhen@huawei.com> <YOxTvOayYYCro+qh@phenom.ffwll.local>
+In-Reply-To: <YOxTvOayYYCro+qh@phenom.ffwll.local>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 13 Jul 2021 13:15:38 +0200
+Message-ID: <CAKMK7uEpUQ-t3iWLaJ=mL=r1xOF7fS9+fh3VDmvaHM8bnO1XZg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] fbmem: Do not delete the mode that is still in use
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 08:05:57AM +0000, Etienne CARRIERE wrote:
-> Hello Sudeep and all,
-> 
-> On Wed, 7 Jul 2021 at 19:52, Sudeep Holla <sudeep.holla@arm.com> wrote:
+On Mon, Jul 12, 2021 at 4:37 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Mon, Jul 12, 2021 at 04:55:44PM +0800, Zhen Lei wrote:
+> > The execution of fb_delete_videomode() is not based on the result of the
+> > previous fbcon_mode_deleted(). As a result, the mode is directly deleted,
+> > regardless of whether it is still in use, which may cause UAF.
 > >
-> > Hi Sumit,
+> > ==================================================================
+> > BUG: KASAN: use-after-free in fb_mode_is_equal+0x36e/0x5e0 \
+> > drivers/video/fbdev/core/modedb.c:924
+> > Read of size 4 at addr ffff88807e0ddb1c by task syz-executor.0/18962
 > >
-> > I was holding off you reply as I didn't have all the background on this.
-> > Achin did mention that this is preparatory work for FFA notifications.
-> > I did mention to him that this is more than that, it is custom extension
-> > to address what FF-A notification is trying to in standard way.
+> > CPU: 2 PID: 18962 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ...
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x137/0x1be lib/dump_stack.c:118
+> >  print_address_description+0x6c/0x640 mm/kasan/report.c:385
+> >  __kasan_report mm/kasan/report.c:545 [inline]
+> >  kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
+> >  fb_mode_is_equal+0x36e/0x5e0 drivers/video/fbdev/core/modedb.c:924
+> >  fbcon_mode_deleted+0x16a/0x220 drivers/video/fbdev/core/fbcon.c:2746
+> >  fb_set_var+0x1e1/0xdb0 drivers/video/fbdev/core/fbmem.c:975
+> >  do_fb_ioctl+0x4d9/0x6e0 drivers/video/fbdev/core/fbmem.c:1108
+> >  vfs_ioctl fs/ioctl.c:48 [inline]
+> >  __do_sys_ioctl fs/ioctl.c:753 [inline]
+> >  __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > >
-> > I share same opinion as Marc Z.
+> > Freed by task 18960:
+> >  kasan_save_stack mm/kasan/common.c:48 [inline]
+> >  kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+> >  kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+> >  __kasan_slab_free+0x108/0x140 mm/kasan/common.c:422
+> >  slab_free_hook mm/slub.c:1541 [inline]
+> >  slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1574
+> >  slab_free mm/slub.c:3139 [inline]
+> >  kfree+0xca/0x3d0 mm/slub.c:4121
+> >  fb_delete_videomode+0x56a/0x820 drivers/video/fbdev/core/modedb.c:1104
+> >  fb_set_var+0x1f3/0xdb0 drivers/video/fbdev/core/fbmem.c:978
+> >  do_fb_ioctl+0x4d9/0x6e0 drivers/video/fbdev/core/fbmem.c:1108
+> >  vfs_ioctl fs/ioctl.c:48 [inline]
+> >  __do_sys_ioctl fs/ioctl.c:753 [inline]
+> >  __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > >
-> > On Wed, Jul 07, 2021 at 11:22:23AM +0530, Sumit Garg wrote:
-> > > On Tue, 6 Jul 2021 at 18:16, Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > [...]
-> >
-> > > >
-> > > > I don't care about OP-TEE. If you are proposing a contract between S
-> > > > and NS, it has to be TEE and OS independent. That's how the
-> > > > architecture works.
-> > > >
-> > >
-> > > Agree, here we are not proposing a common contract among the S and NS
-> > > world that every TEE (based on Arm TrustZone) will use to communicate
-> > > with REE (Linux in our case) but rather an OP-TEE specific
-> > > notifications feature that is built on top of OP-TEE specific ABIs.
-> > >
-> > > And I can see your arguments coming from an FFA perspective but there
-> > > are platforms like the ones based on Armv7 which don't support FFA
-> > > ABI. Maybe Jens can elaborate how this feature will fit in when FFA
-> > > comes into picture?
-> > >
-> >
-> > I can understand that but won't those platforms add the support both in
-> > the kernel(current series) and secure world to address notifications.
-> > While you could argue that it is small extension to what is already present
-> > but I prefer they support FF-A is they need such a support instead of adding
-> > custom mechanisms. It is hard to maintain and each vendor will deviate
-> > from this custom mechanism and soon we will have bunch of them to handle.
+> > Fixes: 13ff178ccd6d ("fbcon: Call fbcon_mode_deleted/new_modelist directly")
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 >
-> There exist armv7-a platforms that expect OP-TEE notification support and
-> will not move the FF-A, like the stm32mp15. This platform won't move to FF-A
-> mainly due to the memory cost of the added SPM layer and the device physical
-> constraints.
-
-Fair enough on the use-case and the analysis for not being able to use FF-A.
-As you may already know it doesn't simply this problem. This has been
-discussed for years and FF-A was assumed to be the solution when FF-A
-spec work started.
-
-> We have a usecase for OP-TEE notification. We're working on the integration
-> of an SCMI server in OP-TEE. SCMI notification is a feature needed is this
-> scope and it requires OP-TEE async notification means as those proposed
-> here.
+> Nice catch, that indeed got lost.
 >
-
-I am aware of this use-case, I understand. But I can only share rants
-which I know doesn't help much.
-
-> This OP-TEE async notif also brings a lot of value in OP-TEE as it allows a
-> OP-TEE secure thread (i.e. executing a trusted application service) to
-> gently wait on a secure interrupt (as a slow bus transaction completion or
-> many other usecase) with the CPU relaxed. This support is provided by the
-> proposed series. I believe existing device should be able to leverage this
-> OP-TEE feature without needing their OP-TEE to move to the new FF-A
-> interface.
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: <stable@vger.kernel.org> # v5.3+
 >
+> Needs to be applied to drm-misc-fixes, but the tree isn't ready yet.
 
-While I agree these are nice to have in OPTEE, the timing is just odd.
+Tree still isn't ready, adding Thomas.
 
-We are trying hard to push FF-A as standard solution to address all such
-issues that couldn't be solved with OPTEE + DT, now we are back to address
-the same in parallel to FF-A.
+Thomas, can you pls apply this when drm-misc-fixes is forwarded?
 
---
-Regards,
-Sudeep
+Thanks, Daniel
+
+> -Daniel
+>
+> > ---
+> >  drivers/video/fbdev/core/fbmem.c | 12 +++++-------
+> >  1 file changed, 5 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+> > index 98f193078c05..1c855145711b 100644
+> > --- a/drivers/video/fbdev/core/fbmem.c
+> > +++ b/drivers/video/fbdev/core/fbmem.c
+> > @@ -970,13 +970,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+> >               fb_var_to_videomode(&mode2, &info->var);
+> >               /* make sure we don't delete the videomode of current var */
+> >               ret = fb_mode_is_equal(&mode1, &mode2);
+> > -
+> > -             if (!ret)
+> > -                     fbcon_mode_deleted(info, &mode1);
+> > -
+> > -             if (!ret)
+> > -                     fb_delete_videomode(&mode1, &info->modelist);
+> > -
+> > +             if (!ret) {
+> > +                     ret = fbcon_mode_deleted(info, &mode1);
+> > +                     if (!ret)
+> > +                             fb_delete_videomode(&mode1, &info->modelist);
+> > +             }
+> >
+> >               return ret ? -EINVAL : 0;
+> >       }
+> > --
+> > 2.25.1
+> >
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
