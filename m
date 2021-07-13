@@ -2,84 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BBE3C75D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F83D3C75D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbhGMRjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:39:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGMRjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:39:17 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14B8C0613DD;
-        Tue, 13 Jul 2021 10:36:27 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id z1so24045283ils.0;
-        Tue, 13 Jul 2021 10:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3g3Cijcla/89iW/EaZQ3ICotAAUfLUSO4IjB0gva++I=;
-        b=TLYTOtHW+I/97sh6kVagbdreOYfI9M9MYYXUCCXpCj6pp3RAp5fg+pgCzCHNpnTRDA
-         qiE02gVe1eszsEHXhwrCqS132BTv4Tfu5zf4aRZL53pmUpqvohz0clyltG6EJiHLzqFW
-         d7NM4VorrQZVetfIUh/2Z6bLE82VnMZXtxNb0B4MQTMIz8OIz6lyqJMsZLVP2sR85APH
-         PRlvj8fQaDbvH9YdJpNCyXsSnoOKHLjcBxO0ojnoIIqKBRKufBN69IY+28lE9gKPvLCt
-         D0jt2LAbkB/Vcgl6+FiQPDIwvYrx/4iAAgrS1M1s47RXjoHDwKUwhh6ArpWDo1LtDt1t
-         FfHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3g3Cijcla/89iW/EaZQ3ICotAAUfLUSO4IjB0gva++I=;
-        b=EpL85oBxPUhbywwHRQHDK2Wga/Y3PNzt9eU/xbk6NbkzIT/dZRPDg1A4B+ZdIf0eBw
-         LibvcUq+VtkeBaN6d5g+022QOWY103Olp5JjOHlSC6g6KXZPZRAxeiOlRDDa15P4vVPg
-         lPiS2GyMwUG4bbvdKURXJteHOmI0vrDaXx10wZtOhBYBDXiYqC6YhLmatMKlRPYhAMyr
-         0/dpol2cS7PqQ4HxV44vRbjoUYLg6QqH1LNZTgma9lAhRrwXP11Ypd6KWpGrdtAmS0pV
-         SrAI9iUxfuRhWMaVnEwX3qw6fXXy1wnTILD9GP+dBXUQUUNrV1v0wTwxkYPpK5kOLa37
-         PjAQ==
-X-Gm-Message-State: AOAM532xcB45SmtbZQ6P8C7TPNeh6szxMdeCBJfW2/sOUum30V/3frBd
-        u+wfkrcRYx1E4O+d5SXPEV5GjbV/AwFgTwGgzSghA/H7
-X-Google-Smtp-Source: ABdhPJxVun6yT94sLQ/aoNlj+GeZwl2RReWNavCS2anXbOYD3Nn5r8IBT0p98c6YPrRXmrIDg0ytN3udg87qbu2IoUU=
-X-Received: by 2002:a92:b74d:: with SMTP id c13mr3699097ilm.176.1626197787248;
- Tue, 13 Jul 2021 10:36:27 -0700 (PDT)
+        id S230376AbhGMRj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:39:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230207AbhGMRj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:39:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 526A961284;
+        Tue, 13 Jul 2021 17:36:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626197796;
+        bh=cHKUmCfv/Vp8nKb1GBgpUQRSdt6VitMVZ+mx3xLi7RM=;
+        h=Date:From:To:cc:Subject:From;
+        b=h3LhRvtsUghgyRFPbzjAd+bYFIKNiZIFyp10e3zgQAjEIP8zv0WvctzWwLeeRFw7l
+         jqvoSJebyjANvnVh8WB94YPKKzaOHIHyZFbvk+st+SNjgeOUCU41t9JhwwuDAPUb8I
+         ssj1yZQRGBzuQbP46MXw/3N9iJRo/YkV/AQexXoXFcsNI0xIeazvJpyFNmxoh+sAlW
+         SaK6Awc3O+7W4hNMHLOD5Zx6U5+DnPQ23jNzfDRwo9l/KLKpmBoqxYBKcmDpkypabu
+         nswtz2TovHEC759+Fyl4iE0PJhDdah2wyJa/wglk2JJyaE8tmxsMQCXzaaycyCqOsB
+         Y5EiifRWr7IQg==
+Date:   Tue, 13 Jul 2021 19:36:33 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Lin Ma <linma@zju.edu.cn>, Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Two issues caused by commit e305509e678b3 ("Bluetooth: use correct
+ lock to prevent UAF of hdev object")
+Message-ID: <nycvar.YFH.7.76.2107131924280.8253@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210712120828.5c480cdc@canb.auug.org.au> <c47a7f0b-4b5a-30c3-ee1e-2973793a9534@infradead.org>
- <20210713111029.77bfb9bb@elm.ozlabs.ibm.com> <56341950-abd6-8a9c-42ca-7eb91c55cc90@infradead.org>
- <8ed74a96-7309-3370-4b8b-376bface7cc6@infradead.org> <47f394e5-c319-3b79-92ad-d33b0d96993e@infradead.org>
-In-Reply-To: <47f394e5-c319-3b79-92ad-d33b0d96993e@infradead.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 13 Jul 2021 19:36:16 +0200
-Message-ID: <CANiq72mDL+CA9CnhDG5Sij4ufVzGHrWvZ9eaWSSXQMDYbpL-6w@mail.gmail.com>
-Subject: Re: linux-next: Tree for Jul 12 (no Rust)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Hi,
 
-On Tue, Jul 13, 2021 at 5:31 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> OK, I found some 'patch' failures in my download logs, so something
-> in my scripts didn't do its job.
->
-> Thanks for bringing it up!
+commit e305509e678b3 ("Bluetooth: use correct lock to prevent UAF of hdev 
+object") has two issues, and I believe it should be reverted for 5.14 
+final. Could you please elaborate what is the exact UAF scenario the patch 
+is fixing? It's rather hard to deduce from the very short changelog, but 
+it's pretty obvious that it creates at least two issues.
 
-Thanks for looking -- if I can help with something on my side on the
-Rust tree, please let me know.
 
-Also, if you found what went wrong (e.g. the end result after `patch`
-failed applying something), it would be nice to know, in case this
-comes up again.
 
-Cheers,
-Miguel
+(1) it introduces a possibility of deadlock between hci_sock_dev_event() 
+   and hci_sock_sendmsg().
+
+Namely:
+
+- hci_sock_sendmsg(HCI_CHANNEL_LOGGING) acquires lock_sock(sk) and then 
+  calls into hci_logging_frame() -> hci_send_to_channel() which in turn 
+  acquires hci_sk_list.lock
+
+- after the mentioned commit, hci_sock_dev_event() first acquires 
+  hci_sk_list.lock before doing lock_sock(sk) on each of the sockets it
+  iterates through, creating the reverse dependency
+
+
+Please find the full lockdep report below for reference.
+
+(2) it causes sleeping function to be called from atomic context, because 
+   it's not allowed to sleep after acquiring read_lock(), which is exactly 
+   what this patch does (lock_sock() is sleepable). Report below as well.
+
+
+
+
+
+
+ BUG: sleeping function called from invalid context at net/core/sock.c:3100
+ in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 448, name: kworker/0:5
+ 6 locks held by kworker/0:5/448:
+  #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
+  #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
+  #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0xd50 [usbcore]
+  #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x54/0x270 [usbcore]
+  #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0x1a/0x1d0
+  #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x12b/0x1e0 [bluetooth]
+ CPU: 0 PID: 448 Comm: kworker/0:5 Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7 #15
+ Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+ Workqueue: usb_hub_wq hub_event [usbcore]
+ Call Trace:
+  dump_stack_lvl+0x56/0x6c
+  ___might_sleep+0x1b6/0x210
+  lock_sock_nested+0x29/0xa0
+  hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+  hci_unregister_dev+0xd2/0x350 [bluetooth]
+  btusb_disconnect+0x63/0x150 [btusb]
+  usb_unbind_interface+0x79/0x260 [usbcore]
+  device_release_driver_internal+0xf7/0x1d0
+  bus_remove_device+0xef/0x160
+  device_del+0x1ac/0x430
+  ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
+  usb_disable_device+0x8d/0x1a0 [usbcore]
+  usb_disconnect+0xc1/0x270 [usbcore]
+  ? hub_event+0x4b0/0xd50 [usbcore]
+  hub_port_connect+0x82/0xa20 [usbcore]
+  ? __mutex_unlock_slowpath+0x43/0x2b0
+  hub_event+0x4c4/0xd50 [usbcore]
+  ? lock_is_held_type+0xb4/0x120
+  process_one_work+0x244/0x5e0
+  worker_thread+0x3c/0x390
+  ? process_one_work+0x5e0/0x5e0
+  kthread+0x133/0x160
+  ? set_kthread_struct+0x40/0x40
+  ret_from_fork+0x22/0x30
+
+ ======================================================
+ WARNING: possible circular locking dependency detected
+ 5.14.0-rc1-00003-g7fef2edf7cc7 #15 Tainted: G        W        
+ ------------------------------------------------------
+ kworker/0:5/448 is trying to acquire lock:
+ ffff89e950647920 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}, at: hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+ 
+ but task is already holding lock:
+ ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x12b/0x1e0 [bluetooth]
+ 
+ which lock already depends on the new lock.
+
+ 
+ the existing dependency chain (in reverse order) is:
+ 
+ -> #1 (hci_sk_list.lock){++++}-{2:2}:
+        _raw_read_lock+0x38/0x70
+ systemd-sysv-generator[1254]: stat() failed on /etc/init.d/jexec, ignoring: No such file or directory
+        hci_send_to_channel+0x22/0x50 [bluetooth]
+        hci_sock_sendmsg+0xa2b/0xa40 [bluetooth]
+        sock_sendmsg+0x5b/0x60
+        ____sys_sendmsg+0x1ed/0x250
+ systemd-sysv-generator[1254]: SysV service '/etc/init.d/tpfand' lacks a native systemd unit file. Automatically generating a unit file for compatibility. Please update package to include a native systemd unit file, in order to make it more safe and robust.
+        ___sys_sendmsg+0x88/0xd0
+        __sys_sendmsg+0x5e/0xa0
+        do_syscall_64+0x3a/0xb0
+ systemd-sysv-generator[1254]: SysV service '/etc/init.d/boot.local' lacks a native systemd unit file. Automatically generating a unit file for compatibility. Please update package to include a native systemd unit file, in order to make it more safe and robust.
+        entry_SYSCALL_64_after_hwframe+0x44/0xae
+ 
+ -> #0 (sk_lock-AF_BLUETOOTH-BTPROTO_HCI){+.+.}-{0:0}:
+        __lock_acquire+0x124a/0x1680
+        lock_acquire+0x278/0x300
+        lock_sock_nested+0x72/0xa0
+        hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+        hci_unregister_dev+0xd2/0x350 [bluetooth]
+        btusb_disconnect+0x63/0x150 [btusb]
+        usb_unbind_interface+0x79/0x260 [usbcore]
+        device_release_driver_internal+0xf7/0x1d0
+        bus_remove_device+0xef/0x160
+        device_del+0x1ac/0x430
+        usb_disable_device+0x8d/0x1a0 [usbcore]
+        usb_disconnect+0xc1/0x270 [usbcore]
+        hub_port_connect+0x82/0xa20 [usbcore]
+        hub_event+0x4c4/0xd50 [usbcore]
+        process_one_work+0x244/0x5e0
+        worker_thread+0x3c/0x390
+        kthread+0x133/0x160
+        ret_from_fork+0x22/0x30
+ 
+ other info that might help us debug this:
+
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(hci_sk_list.lock);
+                                lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
+                                lock(hci_sk_list.lock);
+   lock(sk_lock-AF_BLUETOOTH-BTPROTO_HCI);
+ 
+  *** DEADLOCK ***
+
+ 6 locks held by kworker/0:5/448:
+  #0: ffff89e947fb4338 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
+  #1: ffffadef40973e78 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x1c2/0x5e0
+  #2: ffff89e946998a20 (&dev->mutex){....}-{3:3}, at: hub_event+0x6a/0xd50 [usbcore]
+  #3: ffff89e950828a20 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x54/0x270 [usbcore]
+  #4: ffff89e9504e71a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0x1a/0x1d0
+  #5: ffffffffc117a3c0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x12b/0x1e0 [bluetooth]
+ 
+ stack backtrace:
+ CPU: 0 PID: 448 Comm: kworker/0:5 Tainted: G        W         5.14.0-rc1-00003-g7fef2edf7cc7 #15
+ Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+ Workqueue: usb_hub_wq hub_event [usbcore]
+ Call Trace:
+  dump_stack_lvl+0x56/0x6c
+  check_noncircular+0x105/0x120
+  ? stack_trace_save+0x4b/0x70
+  ? save_trace+0x3d/0x340
+  ? __lock_acquire+0x124a/0x1680
+  __lock_acquire+0x124a/0x1680
+  lock_acquire+0x278/0x300
+  ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+  ? lock_release+0x15a/0x2a0
+  lock_sock_nested+0x72/0xa0
+  ? hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+  hci_sock_dev_event+0x156/0x1e0 [bluetooth]
+  hci_unregister_dev+0xd2/0x350 [bluetooth]
+  btusb_disconnect+0x63/0x150 [btusb]
+  usb_unbind_interface+0x79/0x260 [usbcore]
+  device_release_driver_internal+0xf7/0x1d0
+  bus_remove_device+0xef/0x160
+  device_del+0x1ac/0x430
+  ? usb_remove_ep_devs+0x1b/0x30 [usbcore]
+  usb_disable_device+0x8d/0x1a0 [usbcore]
+  usb_disconnect+0xc1/0x270 [usbcore]
+  ? hub_event+0x4b0/0xd50 [usbcore]
+  hub_port_connect+0x82/0xa20 [usbcore]
+  ? __mutex_unlock_slowpath+0x43/0x2b0
+  hub_event+0x4c4/0xd50 [usbcore]
+  ? lock_is_held_type+0xb4/0x120
+  process_one_work+0x244/0x5e0
+  worker_thread+0x3c/0x390
+  ? process_one_work+0x5e0/0x5e0
+  kthread+0x133/0x160
+  ? set_kthread_struct+0x40/0x40
+  ret_from_fork+0x22/0x30
+
+
+
+-- 
+Jiri Kosina
+SUSE Labs
+
