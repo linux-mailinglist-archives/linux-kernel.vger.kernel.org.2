@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB633C71CB
+	by mail.lfdr.de (Postfix) with ESMTP id 05BE03C71C8
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236763AbhGMOGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:06:21 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:34509 "EHLO
+        id S236781AbhGMOGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:06:15 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:37420 "EHLO
         mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236809AbhGMOGT (ORCPT
+        with ESMTP id S236755AbhGMOGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:06:19 -0400
-Received: by mail-il1-f178.google.com with SMTP id e13so23300905ilc.1;
-        Tue, 13 Jul 2021 07:03:29 -0700 (PDT)
+        Tue, 13 Jul 2021 10:06:14 -0400
+Received: by mail-il1-f178.google.com with SMTP id o8so12465073ilf.4;
+        Tue, 13 Jul 2021 07:03:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=W0tPxTxBFqwVjrERv5yBUzJYH1KOoxA14jOPXeTsapQ=;
-        b=bR91lGqkMdz4olayLpBSeAENnbHKZ6120q7JP7xzGxTa+fbeX+ysTwi2uuYZwb5ub4
-         w8qfFJHfDM285H5cbhVxi03D58AIcuKHoI4HMv0JPDJnsFAj/X0o+AL17Pp25MFW/evf
-         LTk1Bz1W6TPNIrDz1U1e6GI8n5jdZHftTkMZSgUkmsCO7XS/ZKFKz8ba2Ce4XO82DbGs
-         hQNa3VPxXxe3vOr3SzVzKN/66N7bX9r8zEkhtrnT7SOlYn4efVcOGI96MbKj1YQcD+ow
-         VMSIHbqkuMCzesW1O8egEs4lT86+Gdih6WJnGIO2P5F0c7LCGc0sb0naOdsZksaH3eUv
-         Zd8g==
-X-Gm-Message-State: AOAM532gJSIaCnF2qUTj7o7n6zTTSELwcg4FXxUhEykqkR1pYbMilhvk
-        UoWbUOl3fF/0NXaumNDT3A==
-X-Google-Smtp-Source: ABdhPJwtHCLdHMImB7FGf/LTlwtrd/GDrGn+A00ynbPDFQORtkdIz28oeNvQHmIoGkb0xe9e6AIBjQ==
-X-Received: by 2002:a92:3f08:: with SMTP id m8mr2957950ila.104.1626185009476;
-        Tue, 13 Jul 2021 07:03:29 -0700 (PDT)
+        bh=rrdiKpMGTcNX/oecvUxIZ+HcSY5J/MLTnT7FsikOG0g=;
+        b=Vqzk6pEkNrOEkU2H23Dv6pc9gNWqZNjXAporyytCOv5MABIYkqP7gKCl/h6Reehvdn
+         ir5JjbOKgeNLg6V2fKwCB1W1hg4hxsksWD1vmnfyvBWNQPVzr8VQNSlMb7v46NRN/n10
+         wbagJJHPjiijkjjeLMwSIGG+Fe7f7cVfrXml2pjJOnGkg+BTxSf2Y4zcMWJfqgo89XQ8
+         /7r0PCeSiKsBwYm0HxxplbOSpyyDUHWGyP2qYPYttUtt1xCOGLww2KrcUI9Tzcij3VOF
+         ROOp/3Mv5MM3RxRw3yjSvOIkUVGqnmRPx2JodmdFNc4ixOeU+aUSjKJqoFxSwtenRvN5
+         5Nbw==
+X-Gm-Message-State: AOAM533gBhEVoo7kYUdAkNYQtnBDah97GqDzQniKcdyQ5aDcy7sVM103
+        uI1pmdypDmARxQLBDWg6PA==
+X-Google-Smtp-Source: ABdhPJzonXO+4ZfWz8P78P+ikyRaaY9YHUrrlWmavAu+ibX9HKMQRFdOhnXkLxc2XaT8jK4JxU+Blw==
+X-Received: by 2002:a92:a30d:: with SMTP id a13mr3116852ili.236.1626185003183;
+        Tue, 13 Jul 2021 07:03:23 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id e14sm9527471ilc.47.2021.07.13.07.03.25
+        by smtp.gmail.com with ESMTPSA id r16sm4229865iln.30.2021.07.13.07.03.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 07:03:28 -0700 (PDT)
-Received: (nullmailer pid 129715 invoked by uid 1000);
+        Tue, 13 Jul 2021 07:03:22 -0700 (PDT)
+Received: (nullmailer pid 129713 invoked by uid 1000);
         Tue, 13 Jul 2021 14:03:13 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        devicetree@vger.kernel.org,
+Cc:     Arnd Bergmann <arnd@kernel.org>, Wolfram Sang <wsa@kernel.org>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        Bill Mills <bill.mills@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        virtualization@lists.linux-foundation.org,
+        devicetree@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bill Mills <bill.mills@linaro.org>,
         =?utf-8?q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        Jie Deng <jie.deng@intel.com>
-In-Reply-To: <268086e273df0c53e3a9a1e751304c63e50ebe12.1626173013.git.viresh.kumar@linaro.org>
-References: <cover.1626173013.git.viresh.kumar@linaro.org> <268086e273df0c53e3a9a1e751304c63e50ebe12.1626173013.git.viresh.kumar@linaro.org>
-Subject: Re: [PATCH 5/5] dt-bindings: gpio: Add bindings for gpio-virtio
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <e650cecb3bc6a0ed16eb37460ac57cb191ba92e4.1626173013.git.viresh.kumar@linaro.org>
+References: <cover.1626173013.git.viresh.kumar@linaro.org> <e650cecb3bc6a0ed16eb37460ac57cb191ba92e4.1626173013.git.viresh.kumar@linaro.org>
+Subject: Re: [PATCH 3/5] dt-bindings: i2c: Add bindings for i2c-virtio
 Date:   Tue, 13 Jul 2021 08:03:13 -0600
-Message-Id: <1626184993.671493.129714.nullmailer@robh.at.kernel.org>
+Message-Id: <1626184993.664261.129712.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 16:20:34 +0530, Viresh Kumar wrote:
-> gpio-virtio represents a virtio GPIO controller and this patch adds
-> binding for the same. The gpio-virtio subnode can be part of a
-> virtio,mmio node and is based on its binding.
+On Tue, 13 Jul 2021 16:20:32 +0530, Viresh Kumar wrote:
+> i2c-virtio represents a virtio I2C device and this patch adds binding
+> for the same. The i2c-virtio subnode can be part of a virtio,mmio node
+> and is based on its binding.
 > 
+> Cc: Wolfram Sang <wsa@kernel.org>
 > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
-> Depends on:
-> 
-> https://lore.kernel.org/lkml/7c716c2eb7ace5b5a560d8502af93101dbb53d24.1626170146.git.viresh.kumar@linaro.org/
-> ---
->  .../devicetree/bindings/gpio/gpio-virtio.yaml | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
+>  .../devicetree/bindings/i2c/i2c-virtio.yaml   | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -86,16 +81,16 @@ yamllint warnings/errors:
 dtschema/dtc warnings/errors:
 Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/virtio/mmio.yaml'
 xargs: dt-doc-validate: exited with status 255; aborting
-Documentation/devicetree/bindings/gpio/gpio-virtio.example.dts:19:18: fatal error: dt-bindings/virtio/virtio_ids.h: No such file or directory
+Documentation/devicetree/bindings/i2c/i2c-virtio.example.dts:19:18: fatal error: dt-bindings/virtio/virtio_ids.h: No such file or directory
    19 |         #include <dt-bindings/virtio/virtio_ids.h>
       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 compilation terminated.
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/gpio/gpio-virtio.example.dt.yaml] Error 1
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/i2c/i2c-virtio.example.dt.yaml] Error 1
 make[1]: *** Waiting for unfinished jobs....
 make: *** [Makefile:1416: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1504545
+See https://patchwork.ozlabs.org/patch/1504542
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
