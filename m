@@ -2,152 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48F13C6A60
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1A53C6A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbhGMGTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233527AbhGMGTS (ORCPT
+        id S233438AbhGMGXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:23:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35265 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231261AbhGMGXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:19:18 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1591EC0613DD;
-        Mon, 12 Jul 2021 23:16:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id dj21so11738307edb.0;
-        Mon, 12 Jul 2021 23:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N755/myeCrFum8G4UCZxfG01d/TQE+qL8ItRnH1D5gI=;
-        b=pXz+WHI4SxVPWbrRwY10B1qhwgIE/zrSu4mRkL0qK8d4r9paEjbkjQfkFpaZtqmVMK
-         F40mIful9n8Hvv3rIK9o1hkcQOCUVWD6H+SyCWGrAkbdmR4p93+TDVpE7KJFN92zkG/E
-         FyCnO2J7m+vTrYVfmo6m+ClTgGhQJm2Aatailw7a+mDrmUIFi58cjWNQQ1/pQCClfBeA
-         oTyeVEoMn29b7ft9tqSRx8MT005DtAWbzCRNcj0v8GvRJOTh5TAX4QafCZLNjmZzDOG6
-         OQZCr0gvK3XXzaXpVR43xFkRAZrpiCP1uaM7fposNnFK+CMVlpJQrX+LizSEqy3JqYVm
-         l8Xw==
+        Tue, 13 Jul 2021 02:23:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626157227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E4nsKDY6NNQsjKT8elVvpHdt/irXtZ9RqD2SnFvWtPo=;
+        b=K2XIb4hwrQxyITQMNdnEhhhVO48OnGWG/+7aACwB+55Do9r0uCrnnpBsN5t1kiuzUhw3T2
+        A/5a6xXvDQK7wxfYLAt9sKCBAVtazGstbAezQCJHpNFSDULtVngXDQ5UbOMWNavSSPhKPj
+        y+nGouwCjYrhKGyHlS1y/bTPkrLdL6A=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-3ncjnNO4M2GuOiDk7oPz_g-1; Tue, 13 Jul 2021 02:20:26 -0400
+X-MC-Unique: 3ncjnNO4M2GuOiDk7oPz_g-1
+Received: by mail-il1-f200.google.com with SMTP id h11-20020a056e021b8bb029020d99b97ad3so2633163ili.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:20:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N755/myeCrFum8G4UCZxfG01d/TQE+qL8ItRnH1D5gI=;
-        b=oyw8BUMnHGMtL+DjEjiuwEWfNhj9bOGsBVivudn+I7sPactiUmbVuspKXEn/di4Hbs
-         a/KbBiL1G3HjNNvVr0+RjDFjIyeDU1FZuQVe0WTObPHTnMBxzPudPo9qnVD8eZUoDZft
-         Jf0m2scUjDh/td1mBHDlUgHCWvJ9epyUsNk1A+Bmfygb98BhvnXEHV2+4EoidJmQYs7f
-         0GzJigY7FQCp+ZaxuXlO/QaThlv51XO3aBnO2CQEzLP9Hr4jeerihWh74gcW+5rWgcV1
-         p4tBHcmNBSqau7jm6uyis48yaejh1sWLUibLUGG/1YXs5hw/3JhJWwLYl1GG5jweITIb
-         f7uQ==
-X-Gm-Message-State: AOAM533ofEHrhVhuFQe8ndcSwuSfN2dZS1g0rtiHu0jvv+Kv4Ls1dkVq
-        G8oWxspH98lg+NUrO4qyqn82Qq45S6rUspBwzCI=
-X-Google-Smtp-Source: ABdhPJxb0+N6WRj/GhOgT8oAWNKUlDO67rCxa3DafGwy9Sn1/gVH+bGkHx6Xzi1nAdNDJzbcMFXTnCOalpKU40BOBb4=
-X-Received: by 2002:a05:6402:3192:: with SMTP id di18mr3538469edb.186.1626156987630;
- Mon, 12 Jul 2021 23:16:27 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E4nsKDY6NNQsjKT8elVvpHdt/irXtZ9RqD2SnFvWtPo=;
+        b=sdxKkvsvKt5gxxJ8HXBsdORbnkfBpRtNKFfFahKW4nPaxBacXhwRaPfWkN5HO6ni1K
+         vQmFbsHqk4OCF4cARWIemwcrlXSLaKi+wd1aLT6hcjlC+t0iwoDaY8OIiWLYeazr/s+P
+         tmbEQM4BlohUREKZRnpSuNvOjI1XMLmYuh0kPi7rhHlS7j7r523UM0uzfnsOUOFBO4xs
+         9KBveMOyZ5p+Qou54tmJTa5gRH6x2fqdQVMvD2E4TBCc8QFgUYK/qdTlWFkWdB9FT3yB
+         QrYBe3jqXMRwSxh9ydId8lEpEqdm+RRHrhURYSHyYX7emG0NQ8TTW8QmxucUSHI5M5mU
+         ZvWg==
+X-Gm-Message-State: AOAM531YWncK/i8O0T2qLBiguLEaizWUrWCTGo021b4xwd7T5IOC+SbR
+        TYzqBdBOMHjUvklB64oxPV66BmWajszIZMWMz57Za3o4WQkBb+g2kVoalZPZBiGBsRolWjk1V2+
+        NE+HkzH8cPd+Ksx75hAKphBvMPMiLJ7HjTjh8o8M/
+X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr1914747ilt.57.1626157225655;
+        Mon, 12 Jul 2021 23:20:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3kiD/a8JM5nHkDEQo+XiTaFj9b0wO1WbJI0xT5YFJRKB3iin18hAgPlrOEwutplukAALDfhQsu6lIqe4FFAw=
+X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr1914729ilt.57.1626157225469;
+ Mon, 12 Jul 2021 23:20:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com> <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 13 Jul 2021 14:16:15 +0800
-Message-ID: <CAABZP2zzeVe07Ak0RpN6prwy2_PQoO55WG2XhVy7NG0SnasKAg@mail.gmail.com>
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210707081642.95365-1-ihuguet@redhat.com> <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
+ <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com>
+ <20210707130140.rgbbhvboozzvfoe3@gmail.com> <CACT4oud6R3tPFpGuiyNM9kjV5kXqzRcg8J_exv-2MaHWLPm-sA@mail.gmail.com>
+ <b11886d2-d2de-35be-fab3-d1c65252a9a8@gmail.com> <4189ac6d-94c9-5818-ae9b-ef22dfbdeb27@redhat.com>
+ <CACT4ouf-0AVHvwyPMGN9q-C70Sjm-PFqBnAz7L4rJGKcsVeYXA@mail.gmail.com> <681117f7-113b-512d-08c4-0ca7f25a687e@gmail.com>
+In-Reply-To: <681117f7-113b-512d-08c4-0ca7f25a687e@gmail.com>
+From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+Date:   Tue, 13 Jul 2021 08:20:14 +0200
+Message-ID: <CACT4oufpg0RkY3yk1Cs4z=OmK8JjSevAF6=YD02RTyFS+qLcZA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev queues"
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jesper Brouer <brouer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you very much,
-I went through the wordsmithed version, it looks exquisite!
+On Mon, Jul 12, 2021 at 4:53 PM Edward Cree <ecree.xilinx@gmail.com> wrote:
+> I think the proper solution to this is to get this policy decision out
+>  of the kernel, and make the allocation of queues be under the control
+>  of userspace.  I recall some discussion a couple of years ago about
+>  "making queues a first-class citizen" for the sake of AF_XDP; this
+>  seems to be part and parcel of that.
+> But I don't know what such an interface would/should look like.
 
-Thank you for your encouragement.
-Cheers
-Zhouyi
+I absolutely agree, or at least standardize it for all drivers via XDP
+APIs. Let's see if any good ideas arise in netdevconf.
 
-On Tue, Jul 13, 2021 at 12:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
-> > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> >
-> > Hi Paul,
-> >
-> > During my studying of RCU, I did a grep in the kernel source tree.
-> > I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-> > should be CONFIG_TASKS_TRACE_RCU instead.
-> >
-> > Without memory fencing, the idle/userspace task inspection may not
-> > be so accurate.
-> >
-> > Thanks for your constant encouragement for my studying.
-> >
-> > Best Wishes
-> > Zhouyi
-> >
-> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->
-> Good eyes, and those could cause real bugs, so thank you!
->
-> Could you please check the wordsmithed version below?
->
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit fdcf5524b64f2cc8e6201447644079d9f8d4c821
-> Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> Date:   Tue Jul 13 08:56:45 2021 +0800
->
->     RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
->
->     This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
->     instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
->     could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
->     memory-ordering bugs that could result in false-positive quiescent
->     states and too-short grace periods.
->
->     Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index cfeb43bfc719..434d12fe2d4f 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
->  # define synchronize_rcu_tasks synchronize_rcu
->  # endif
->
-> -# ifdef CONFIG_TASKS_RCU_TRACE
-> +# ifdef CONFIG_TASKS_TRACE_RCU
->  # define rcu_tasks_trace_qs(t)                                         \
->         do {                                                            \
->                 if (!likely(READ_ONCE((t)->trc_reader_checked)) &&      \
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 27b74352cccf..a8e3acead6f6 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1498,17 +1498,17 @@ static void noinstr rcu_dynticks_task_exit(void)
->  /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
->  static void rcu_dynticks_task_trace_enter(void)
->  {
-> -#ifdef CONFIG_TASKS_RCU_TRACE
-> +#ifdef CONFIG_TASKS_TRACE_RCU
->         if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
->                 current->trc_reader_special.b.need_mb = true;
-> -#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-> +#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
->  }
->
->  /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
->  static void rcu_dynticks_task_trace_exit(void)
->  {
-> -#ifdef CONFIG_TASKS_RCU_TRACE
-> +#ifdef CONFIG_TASKS_TRACE_RCU
->         if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
->                 current->trc_reader_special.b.need_mb = false;
-> -#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-> +#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
->  }
+Anyway, meanwhile we should do something to have it working.
+--=20
+=C3=8D=C3=B1igo Huguet
+
