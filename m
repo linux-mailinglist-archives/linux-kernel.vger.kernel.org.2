@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955663C7616
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD803C763A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhGMSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
+        id S233634AbhGMSLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhGMSIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:08:00 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F021C61369;
-        Tue, 13 Jul 2021 18:05:08 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 19:07:27 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        linux-iio@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: intel-qep: Remove linux/bitops.h include
-Message-ID: <20210713190727.6a6c049c@jic23-huawei>
-In-Reply-To: <YNsMk4qyfyZ43MfX@shinobu>
-References: <20210629111657.2655688-1-jarkko.nikula@linux.intel.com>
-        <YNsMk4qyfyZ43MfX@shinobu>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230145AbhGMSLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:11:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26DB361370;
+        Tue, 13 Jul 2021 18:09:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626199743;
+        bh=46YcJlTPBE+sL8Lgj1YV5aLfzsrVPPnMADD+cqOOecw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WFCii6I1OZidIYlYzJdhPSeCEeQ9BzEd6fzP0a+dNoAR64RxxUE0DmzPENw2ApSXf
+         A7klDLWqb7EcKkLBQyk1xMkdUlceugxc313NDjhjJVGzVaVl+XsFVwDyR2reF9cpnr
+         yIIjWm8Q4O/24MX7U3CCnfD6dmoCnejETM0jUxfrOTp4isEi/HDfC0SWffFe/FlXvQ
+         dMxfz8NlBvU1+WW4Lht4HxkbZKzm01M6LGbfSxpDObLvtL9btPrPGnnNJwHlJcqLXS
+         DEr7lB/CIs500mACx+mY0hw9k4ORTBtqEhJDqXaR15PN0uohR1NlQBj9666qABV/Wk
+         aBj11/A/djSSA==
+From:   Will Deacon <will@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] arm64: Restrict ARM64_BTI_KERNEL to clang 12.0.0 and newer
+Date:   Tue, 13 Jul 2021 19:08:56 +0100
+Message-Id: <162619029187.3095121.267075671742631551.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210712214636.3134425-1-nathan@kernel.org>
+References: <20210709000627.3183718-1-nathan@kernel.org> <20210712214636.3134425-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 21:05:39 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> On Tue, Jun 29, 2021 at 02:16:57PM +0300, Jarkko Nikula wrote:
-> > 0-DAY CI Kernel Test Service reported following iwyu warning:
-> > 
-> > drivers/counter/intel-qep.c:11:1: iwyu: warning: superfluous #include <linux/bitops.h>
-> > 
-> > Remove that include since we don't seem to use anything from it.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>  
+On Mon, 12 Jul 2021 14:46:37 -0700, Nathan Chancellor wrote:
+> Commit 97fed779f2a6 ("arm64: bti: Provide Kconfig for kernel mode BTI")
+> disabled CONFIG_ARM64_BTI_KERNEL when CONFIG_GCOV_KERNEL was enabled and
+> compiling with clang because of warnings that were seen with
+> allmodconfig because LLVM was not emitting PAC/BTI instructions for
+> compiler generated functions:
 > 
-> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Applied,
-
-Thanks,
-
-Jonathan
-
+> warning: some functions compiled with BTI and some compiled without BTI
+> warning: not setting BTI in feature flags
 > 
-> > ---
-> >  drivers/counter/intel-qep.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/counter/intel-qep.c b/drivers/counter/intel-qep.c
-> > index 8d7ae28fbd67..1a9512e28519 100644
-> > --- a/drivers/counter/intel-qep.c
-> > +++ b/drivers/counter/intel-qep.c
-> > @@ -8,7 +8,6 @@
-> >   * Author: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> >   * Author: Raymond Tan <raymond.tan@intel.com>
-> >   */
-> > -#include <linux/bitops.h>
-> >  #include <linux/counter.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> > -- 
-> > 2.30.2
-> >   
+> [...]
 
+Thanks Nathan for turning this around so quickly. The new commit message
+is much better.
+
+Applied to arm64 (for-next/fixes), thanks!
+
+[1/1] arm64: Restrict ARM64_BTI_KERNEL to clang 12.0.0 and newer
+      https://git.kernel.org/arm64/c/8cdd23c23c3d
+
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
