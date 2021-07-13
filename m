@@ -2,272 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6A73C769D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA28B3C7697
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234586AbhGMSoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234548AbhGMSoF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:44:05 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A33C0613EE;
-        Tue, 13 Jul 2021 11:41:14 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id c17so43203536ejk.13;
-        Tue, 13 Jul 2021 11:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FnotVOBY4MJ516v1c1mv4RJWivhMUK0+SH3ZuHVwU20=;
-        b=ocH/cyHkQ2xDE+OiGRIQa0nRf0KV/hVRl4c0T/OyflQIoFehVp0nhgd+IN3Ov7uE4m
-         fqtDMQtuOgqtjdie2j9qlHulMyKHKrgo1dg1gtsbXr927nK14Nt0F7/k/2KtFRl41ZcC
-         IRJTldIaWXNLmTzf798r+N9WDISyZ5kGDaP7mOgPBIwg16Co3XSO2MHVDg/DCIkAIBTg
-         TNvVJJOYgGUhoxjdvbKyf+SDn35L7IF9JboMY1GE9HE4O2Gw9NapQt0a6tj9Wu08dA+A
-         k54f6HrjM6m7mpXmpfQkVQiR7gswYRrkYOFCTXaGa+jIJaUSuDhV4rcURhdKtBztxLbb
-         hK+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FnotVOBY4MJ516v1c1mv4RJWivhMUK0+SH3ZuHVwU20=;
-        b=kFhejzADZCdRa3O1vaVc4Qtc3jqjA6mhBXXLIDZ6iKR7N/6qln6jV09w8Ow7kyxcvR
-         5CrhiTIOsno2aEnRdTlt/Q//4Yow0F5a7RTIg7yQDnZg437GwzaFDQEUbTf7StWIczR3
-         vRQJ3F33ZrZvioLodzu1i33BFshyhFm6b/PHTSPipkKrQRRlD0lhJYIyHyjMlvl/kxmr
-         msU1O7mLpjGttcN2g2da9sCzUjrVUkG8cAJ+14OnqXaIH5SaPoTXtVJRJn5rAEKilgWM
-         BQ3sWRZq/H499Gnp8msOuMEfCbBhDeM+NnEBx13JauEAeYIW6w53n1V2scv598GEa0kL
-         kl8A==
-X-Gm-Message-State: AOAM533T6wZTIwEu9ujLC+3OBrb3yKxa7LB17L3+BqoD31yI200HziYp
-        nVrzXjIbZE7a8N7MKBdU2UN2CKUhJxv1CJaAXRk=
-X-Google-Smtp-Source: ABdhPJx+RwAA0sfkwjHGLIOh81NJNto2mj6271Pb2cD5eDmUd5wrTqTSZarZhopKei55G0/dNnMpdSbuKJ/HMLHWQO8=
-X-Received: by 2002:a17:907:e9e:: with SMTP id ho30mr7609884ejc.114.1626201672721;
- Tue, 13 Jul 2021 11:41:12 -0700 (PDT)
+        id S234490AbhGMSoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:44:02 -0400
+Received: from mail-mw2nam12on2087.outbound.protection.outlook.com ([40.107.244.87]:57409
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229478AbhGMSoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:44:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C2IzN/tDM37GG+xuSnYd8BubdXGjTzqOamBafqV90GZhRwnDgxSPbhfjWagkE7MYpu1iFMKoF1vf8QGBSTaj/duyqDK2WhwWwCnRfahquTVT641PtrxM+WU34KUSdK6efbBpFKKeh+9dQHkcSGMDwdf14nLsmPSxNBV3FKyAddX3Bw59nGdXXylagu0b08Z+5nSPGkhemhrGxLsvc9F2kq0ETmYsLqv/lpbGzx0bA7qYLhwHptUmy/X5HXnCLtchXgceYZPrvfS62P+uQzmST7uFD8cVUpAezAKRK1xesoPh3gC88NE8Jpw+RCHWXpdPSEU4pXd5ttzx+2UAeZ3zBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TSOiIt2a4xt59UGP5tVRqwkjcQMwailiy/c970hnt8o=;
+ b=EqLTrzQw2/Zlg/vSTWxkVxTcLlKvMQRBjNrI36OgXKpO4B/soqkPFV6Md4sHN0I8uzL8BfsXV2gCUJrz+rvsXrMO2JHR9rznqRT+ZHPz0qT7ioUSqoAIAFh/f8GjKEp5C07XGbLVzHHLFYfLsHOyvnxQJLu9cSIOW3Oj9Om3gIxHN85ZkmH1HzCfWfHsYopoabLDsrIoFbYgOinW6pBgnrz+ImdAR+6TPVvghDOH3L3wWkLinNsjsB5rdY2Qpq8FHk7H5KIwZidvDZb6BEAMpeZTQep6FLr0CO0E/DKFnHCTt0rhjKMrvzZjNBZX/ElOdAtPVBUeVX11r/O/yt8Gvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TSOiIt2a4xt59UGP5tVRqwkjcQMwailiy/c970hnt8o=;
+ b=2FEJY+T+9eECj4e7bgFzyF0lklYgU/Kzr/OpuASjr8Tn62bHO+z9YJOl+7JGwK68dqD4rR9S5otK6ejmySYZQ5bv3NlObOB2w5uLE01O62e7K38vmvsMSR+BW2lv0LQtpYjD6weCFrzo/k0Ro6V0TwQIzHS3Y5CrVC6+TZXyrgw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 13 Jul
+ 2021 18:41:08 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
+ 18:41:08 +0000
+Cc:     brijesh.singh@amd.com, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] KVM, SEV: Add support for SEV-ES local migration
+To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
+References: <20210621163118.1040170-1-pgonda@google.com>
+ <20210621163118.1040170-4-pgonda@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <71d3fdc2-7866-1486-d8e4-5a6469982cd7@amd.com>
+Date:   Tue, 13 Jul 2021 13:41:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210621163118.1040170-4-pgonda@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0601CA0022.namprd06.prod.outlook.com
+ (2603:10b6:803:2f::32) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-References: <1626168272-25622-1-git-send-email-linyunsheng@huawei.com> <1626168272-25622-3-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1626168272-25622-3-git-send-email-linyunsheng@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 13 Jul 2021 11:41:01 -0700
-Message-ID: <CAKgT0UevHk7n=Lnfkvw1t04HvRCX9vtyc0a6_2cda3c6hgDdJg@mail.gmail.com>
-Subject: Re: [PATCH rfc v4 2/4] page_pool: add interface to manipulate bias in
- page pool
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SN4PR0601CA0022.namprd06.prod.outlook.com (2603:10b6:803:2f::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 18:41:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e8e191c5-70af-4453-dd0d-08d9462dc790
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB45570B144C72A71BDC4C4DF4E5149@SA0PR12MB4557.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JAHmt67HAOmJF/jLnqWJ67dbWIUzJjnglntkqG/aMy41bRLZnnlLOf+fWXkIEFkTYHSAe/jDlXPt+e4ii87sej1Iip22SPLDNtAaeHm/mw7W/HvsQOz6iJo18/eF7nSOJQHPwQhfIY5kZCZoMzfrNNY5v7nPlGmZmRmr5wzee9dktX+NaXjzEiMUTAi2oZIxo++3GgX3r7LHviBs1gOtiaXDDaubLX+y1A1Vc8HXzBAPcu7b7IFsGw06rqqK5Oje/GfM7sZP76sU88R3FWQbyirTgazm9dQycZX1kYBUj1CxkARozcNi28GpeRcMNCPL498D7OBHSgvkg2t+nDPp62gsCqarr3HbeVZ2913NsHoMNpWgzJXSnxo/cZQU/ezWiSpu7Pvc8sikYyOw6HYvV5qAdk4yeZnkArCifHQB0zNd9Zu4yRokeVNv+dsCnKCAPJFjCD8RXxtOI6ipAyiNa1/NmACfx3zJoiD+pZGhGb933UyjDJwL/1/af0bVaVBobAPXvpZu6GX/1UTpdJ8w7DRwPtKrhAIN6W/ljTwZr/Dp1GUVaq5LHoa8QtQJ/y3EuoF2vtIItCLAzLVDo8GPW2Vj9iF5EY7rC8zPkrf3vsx4tmEfauiqMeNpVMxnPCHYaTr5sQSyZm1jTPNBjmn0gNCUhPkS/vYtkw/8JrqPPaYo5Z77Y2nFkTY/G2UITZVbH48Tu6I6lnaHYxyIKOLlcVhNDQeRdNAWtv/U8sxMktDLyyUa2vE7Ve7AuE2jH3e/lBbOpWOoD48kDUTsrpQXWQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(376002)(366004)(8936002)(66476007)(6486002)(38350700002)(83380400001)(66556008)(5660300002)(4744005)(2906002)(44832011)(26005)(31686004)(36756003)(38100700002)(53546011)(478600001)(86362001)(2616005)(316002)(7416002)(956004)(186003)(4326008)(8676002)(54906003)(52116002)(66946007)(16576012)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXNTSGR2cTJLa013eFlKZGxVY3ZOQ0xHMDJ5ejJxY2tUamhTa0xXcHVSWGJX?=
+ =?utf-8?B?REFLa3FOMlN0L3BCQWFoeVpqc0xwdWx5RURrRWpXMytPeUlaemU0SDgwbVBT?=
+ =?utf-8?B?b2M1a2RYZWg3cnRsSnNhZXNIWjg2cWZxY0VsMDRIOHprZG1FRlFFMytsOFBX?=
+ =?utf-8?B?WkYrL1dYeDh5alJ3RkV3RE9ZNnFrRXBHaGdySUtLMExkeExOL250N2F6QTFs?=
+ =?utf-8?B?aEZZVVhueUYwc0hsT01XNWlnVXErQWhSZExaM0J1eVFTWVJWeWlXQldHb01Z?=
+ =?utf-8?B?R054d0pJeC9tZVZsd3loMERzeTdzei8xK2VFV040V3lKcFNmMGlaejlJSTB1?=
+ =?utf-8?B?YmlQL0NwMEwyT2hMam1aQldYdFBMY29NWTRJR3dVVERDaG4vZjBFVHpDUDZ1?=
+ =?utf-8?B?c3ErUTlRdktKYXJRVnFoenNMVXcweGE1Q0pGQ1FXUEVvZjFPRlNYN1FUUy8w?=
+ =?utf-8?B?V1laeVJjNVNiZ2JzNnhPZVFDWXpNZmhZcXZTd0N3RUVkVUZGVzZFUFltbUgv?=
+ =?utf-8?B?bkNsN3F6OUZrUUJpalh3aFd3VEJGeTdPSFgvVVUyK004cGFLTURDMklGSzJL?=
+ =?utf-8?B?TTBBVHl2aFBiVHRUaSswejEvMGJ0RUd2OFJ6Z0M0SlBDUUFINWhqdDVNZkRG?=
+ =?utf-8?B?SVNpaXlNdStyVGliYmxxblo2d3k0ZCtUS2YvTkpEV0ptc0V0MERQWnJ0WnZQ?=
+ =?utf-8?B?QWViejBnWmNHenVZQTVkMHlHVWh1UTVKYzJ0Zzk2cStXWm94aGtUV0RIUSt3?=
+ =?utf-8?B?Z0ZjRXpBLzZRUFYzM3pORDkza3hLT09kSlJ5OWppUU1HaDVGcVN1d0Fia2sr?=
+ =?utf-8?B?NTN0NGh6RDZwTEVyVThScks0L3krNWt1UFVqdmJOWUYwZFprbVFnNzF1UlBm?=
+ =?utf-8?B?UWI5VnFZRUYrcnUvcGNtd2p6MGRMM0pmZ0xqUmk3NjRaL20yUDZZamNkeHlM?=
+ =?utf-8?B?cUpaL1Q0c0ZvWmp6S241ejZieFoyOFBGSDhhS3ZnRnhWdW1lQlFoWHVlaEtS?=
+ =?utf-8?B?RE1IaEpvbmtIczljUXdScWd3OXRzZ1lmTC9VNlpSZ3ErN3lVSFQ0a09nRUNw?=
+ =?utf-8?B?dHdnaytJMzBMS2tKVGpuZ2M3R29VTjRnNUhMb1dxcFZTS1ArcWZ3eDNpbnFw?=
+ =?utf-8?B?NEJwSU0vcEJmcG85MTJ4b3RaZnc3eGRSR09JSE1OQmFiWG1GWU93S3pjVndL?=
+ =?utf-8?B?K3RVZDlJeTUyQTJwdnFhZkF5YXl2bGVUdDNtSElicjFETnJ0bllaUUdSeW1Y?=
+ =?utf-8?B?WlVQVzV1TDBrMmJuWEJSVWp5NTRZa2hLUW1qRHpxcDQ3WmJZNE9JYnB0eTRv?=
+ =?utf-8?B?UXMxTkVKY0pvK014RWhxTVcxRjZIcVo5elVyMFJMVVBNUG5kcURiWGpZSzhr?=
+ =?utf-8?B?Vi9mY0ZlZjEzTDNyNk01aThEc1BaMFkvMTc0OVRCallBVEtMMXhyWFVTbEpE?=
+ =?utf-8?B?MnZDZG5aeWN2NngrK0hYTDE0LzlSRVpjd0VzSmRIWHFYNTVrNnB5Z0c3WlBY?=
+ =?utf-8?B?Wko0OUJOVExTUmI1cW5nOWhodTFNbFN4OWE0dFRXbG1VT0VyVjlTRUIxV0k0?=
+ =?utf-8?B?Y0hFdEI3cUQ4Z24vWGUwRjhlVVorZzB1YXJtci9kMDhaSHl0ZzNZOTY4M0pY?=
+ =?utf-8?B?UlB6UFlDTlFqeGNPczQxV3hhSnI4L1BwUWpNZDZmeWZzTjBqNUo3NlpXN0Jv?=
+ =?utf-8?B?YXJra1gzaE85Uy9pbXFkTm83dFZqY2FrYVhYazFoV0xSZ3N4WUczUHVHcUFm?=
+ =?utf-8?Q?URtYEzX0lJDqj1w/D1kMX4YkDF4v46ytpVbW8VN?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8e191c5-70af-4453-dd0d-08d9462dc790
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 18:41:08.7137
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i8LMVI/kGF/8iOhqMA9kJYqDgBJQQYwhKEXccXCRPh5225m+yzQww96IDhIqrB1r+SS+/ClVtf9etV0UTXRW5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> As suggested by Alexander, "A DMA mapping should be page
-> aligned anyway so the lower 12 bits would be reserved 0",
-> so it might make more sense to repurpose the lower 12 bits
-> of the dma address to store the bias for frag page support
-> in page pool for 32 bit systems with 64 bit dma, which
-> should be rare those days.
->
-> For normal system, the dma_addr[1] in 'struct page' is not
-> used, so we can reuse the dma_addr[1] for storing bias.
->
-> The PAGE_POOP_USE_DMA_ADDR_1 macro is used to decide where
-> to store the bias, as the "sizeof(dma_addr_t) > sizeof(
-> unsigned long)" is false for normal system, so hopefully the
-> compiler will optimize out the unused code for those system.
 
-I assume the name is a typo and you meant PAGE_POOL_USE_DMA_ADDR_1?
 
-> The newly added page_pool_set_bias() should be called before
-> the page is passed to any user. Otherwise, call the newly
-> added page_pool_atomic_sub_bias_return().
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  include/net/page_pool.h | 70 ++++++++++++++++++++++++++++++++++++++++++++++---
->  net/core/page_pool.c    | 10 +++++++
->  2 files changed, 77 insertions(+), 3 deletions(-)
->
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index 8d7744d..315b9f2 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -198,21 +198,85 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->         page_pool_put_full_page(pool, page, true);
->  }
->
-> +#define PAGE_POOP_USE_DMA_ADDR_1       (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->  {
-> -       dma_addr_t ret = page->dma_addr[0];
-> -       if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +       dma_addr_t ret;
-> +
-> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
-> +               ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
->                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+On 6/21/21 11:31 AM, Peter Gonda wrote:
 
-Alternatively we could change things a bit and rename things so we
-have the MSB of dma_addr where dma_addr[1] is and we rename
-dma_addr[0] to pp_frag_count we could have it also contain the lower
-bits and handle it like so:
-    ret = page->dma_addr;
-    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-        ret <<= 32;
-        ret |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
-    }
+> @@ -1196,8 +1299,19 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	INIT_LIST_HEAD(&entry->regions_list);
+>   	list_replace_init(&sev->regions_list, &entry->regions_list);
+>   
+> +	if (sev_es_guest(kvm)) {
+> +		/*
+> +		 * If this is an ES guest, we need to move each VMCB's VMSA into a
+> +		 * list for migration.
+> +		 */
+> +		entry->es_enabled = true;
+> +		entry->ap_jump_table = sev->ap_jump_table;
+> +		if (create_vmsa_list(kvm, entry))
+> +			goto e_listdel;
+> +	}
+> +
 
-> +       } else {
-> +               ret = page->dma_addr[0];
-> +       }
-> +
->         return ret;
->  }
->
->  static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->  {
->         page->dma_addr[0] = addr;
-> -       if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +       if (PAGE_POOP_USE_DMA_ADDR_1)
->                 page->dma_addr[1] = upper_32_bits(addr);
+the patch looks good. Similar to the previous patch, do we need to check 
+for the SEV guest state >= LAUNCH_UPDATE to be sure that VMSA's are 
+encrypted before we go about sharing it with the new VMM ?
 
-So assuming similar logic to above we could do something like:
-    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-        atomic_long_set(&page->pp_frag_count, addr & PAGE_MASK);
-        addr >>= 32;
-    }
-    pp->dma_addr = addr;
-
->  }
->
-> +static inline int page_pool_atomic_sub_bias_return(struct page *page, int nr)
-> +{
-> +       int bias;
-> +
-> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
-> +               unsigned long *bias_ptr = &page->dma_addr[0];
-> +               unsigned long old_bias = READ_ONCE(*bias_ptr);
-> +               unsigned long new_bias;
-> +
-> +               do {
-> +                       bias = (int)(old_bias & ~PAGE_MASK);
-> +
-> +                       /* Warn when page_pool_dev_alloc_pages() is called
-> +                        * with PP_FLAG_PAGE_FRAG flag in driver.
-> +                        */
-> +                       WARN_ON(!bias);
-> +
-> +                       /* already the last user */
-> +                       if (!(bias - nr))
-> +                               return 0;
-> +
-> +                       new_bias = old_bias - nr;
-> +               } while (!try_cmpxchg(bias_ptr, &old_bias, new_bias));
-> +
-> +               WARN_ON((new_bias & PAGE_MASK) != (old_bias & PAGE_MASK));
-> +
-> +               bias = new_bias & ~PAGE_MASK;
-> +       } else {
-> +               atomic_t *v = (atomic_t *)&page->dma_addr[1];
-
-The problem with casting like this is that it makes assumptions about
-byte ordering in the case that atomic_t is a 32b value and dma_addr is
-a long value.
-
-> +
-> +               if (atomic_read(v) == nr)
-> +                       return 0;
-> +
-> +               bias = atomic_sub_return(nr, v);
-> +               WARN_ON(bias < 0);
-> +       }
-
-Rather than have 2 versions of this function it might work better to
-just use the atomic_long version of these functions instead. Then you
-shouldn't need to have two versions of the code.
-
-You could just modify the block on the end to check for new_frag_count
-vs old_frag_count if PAGE_POOL_USE_PP_FRAG_COUNT is true, or
-new_frag_count < 0 if false.
-
-> +
-> +       return bias;
-> +}
-> +
-> +static inline void page_pool_set_bias(struct page *page, int bias)
-> +{
-> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
-> +               unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
-> +
-> +               dma_addr_0 &= PAGE_MASK;
-> +               dma_addr_0 |= bias;
-> +
-> +               WRITE_ONCE(page->dma_addr[0], dma_addr_0);
-> +       } else {
-> +               atomic_t *v = (atomic_t *)&page->dma_addr[1];
-> +
-> +               atomic_set(v, bias);
-> +       }
-
-Similarly here you could just update bias to include the dma_addr in
-the if case, and then use atomic_long_set for both cases.
-
-> +}
-> +
->  static inline bool is_page_pool_compiled_in(void)
->  {
->  #ifdef CONFIG_PAGE_POOL
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 78838c6..6ac5b00 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -198,6 +198,16 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->         if (dma_mapping_error(pool->p.dev, dma))
->                 return false;
->
-> +       if (PAGE_POOP_USE_DMA_ADDR_1 &&
-> +           WARN_ON(pool->p.flags & PP_FLAG_PAGE_FRAG &&
-> +                   dma & ~PAGE_MASK)) {
-> +               dma_unmap_page_attrs(pool->p.dev, dma,
-> +                                    PAGE_SIZE << pool->p.order,
-> +                                    pool->p.dma_dir,
-> +                                    DMA_ATTR_SKIP_CPU_SYNC);
-> +               return false;
-> +       }
-> +
->         page_pool_set_dma_addr(page, dma);
->
->         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> --
-> 2.7.4
->
+-Brijesh
