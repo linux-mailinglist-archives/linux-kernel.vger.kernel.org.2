@@ -2,239 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988953C6B42
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD49C3C6B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhGMHd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbhGMHd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:33:56 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B86C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:31:05 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id bu12so39835953ejb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=loyzxLfCnzl/ksLrRc8pjpRGLW5+1mWDiDb2yYTqTXU=;
-        b=L7gk63dKJFwvM24S/o75hPqOYi2qPripwdQa9Q9v6l3yrX9oJPlMdJDGvazZdTM69p
-         k49U+BPDzzDu7/yEdfS80F1PNRTcpOjGRHrT1B/PEZvMTnVmcx/1r931wOX81mtK0gcn
-         rZ0MDzWu1+AaB3p0d8ppj1ga3dkSA3JGFg4Dk1bjpKYo4uT3E/bMQZF7DV4CQ8nQTwyR
-         BHUtnvBXjOpp9NaE6gp+lAQtSk5zFIO8SHU7XD4foqDtrDfjH/rQVTaoktGj/11kciRO
-         xrY6wVIAHRgeFNjEvbJCm0osRHAZuyH5IxuBN1WG2BFGf8E0Do6rKd1mHJMytmLXqp8d
-         WGBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=loyzxLfCnzl/ksLrRc8pjpRGLW5+1mWDiDb2yYTqTXU=;
-        b=ir/hzhKwVCxaN3D2nttf6EugAy9BgvjgOX0A3a2z/egqcNOZs6/oLt0FP+zMvH3LSa
-         HHLL4Gmgj9BkAPhdcONqrLVU0UVTYwc/LeafhmbXEsJejZN2RHgMb66ArRD/cvE0hnkB
-         xqX64jdr0HkWVLpvdaCVfkzaJdfuPcIan/3MPk2fpvh0mfBl8ZEIJjAO7R4B1rMRHzk6
-         ji0NS6ByQmc45SOoyMFG93ZDcVuKo1CvnmqOj4c+Eq/Zgb3y8XNcQktBurp94OQ1UAFZ
-         PEhY6gB/0lLDEldk6ChogMBGwsf2KvEwzDFsIFSH40vuWubioBEwl98T/CWPf1Y4dZH3
-         PjsQ==
-X-Gm-Message-State: AOAM532UUGe5dmKT0nSKeVaHzENhZzsRA2wpRYoRoMfMZkIdRBd9de/o
-        Vb0shXxFE4+RZn7TQAlwO6gWoD9ds3xbX+ONlWCArg==
-X-Google-Smtp-Source: ABdhPJxzpxq6YqcySERPId+6YvGbQO3SCZBhQ+Oh6ZYgLAV21CaKEN+EpPcZ02+nxnWqTQfI0O90fsugAcglry6Pyfg=
-X-Received: by 2002:a17:906:e97:: with SMTP id p23mr4028453ejf.287.1626161464240;
- Tue, 13 Jul 2021 00:31:04 -0700 (PDT)
+        id S234248AbhGMHek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:34:40 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:41159 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233762AbhGMHej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:34:39 -0400
+Received: from localhost.localdomain (ip5f5aeb78.dynamic.kabel-deutschland.de [95.90.235.120])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D066F61E30BCC;
+        Tue, 13 Jul 2021 09:31:47 +0200 (CEST)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Guohan Lu <lguohan@gmail.com>, balsup <balsup@contoso.com>,
+        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: Reserve address space for powered-off devices behind PCIe bridges
+Date:   Tue, 13 Jul 2021 09:31:24 +0200
+Message-Id: <20210713073124.177027-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210712060912.995381202@linuxfoundation.org>
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Jul 2021 13:00:52 +0530
-Message-ID: <CA+G9fYtxwUrQGvv=uMwadPBWRN_MNhv+tEENJdVhq0H3w6CrQA@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 at 13:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.13.2 release.
-> There are 800 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.13.2-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.13.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+From: balsup <balsup@contoso.com>
 
+Data path devices are powered off by default, they will not be visible at
+BIOS stage and memory for these devices is not reserved.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+By default, no address space would be reserved on the bridges for these
+unpowered devices. When they were powered up, they could fail to initialize
+because there was no appropriately aligned window available for a given
+BAR.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This patch will reserve address space for data path devices that are behind
+PCIe bridge, so that when devices are available PCIe subsystem will be
+assign the address within the specified range.
 
-## Build
-* kernel: 5.13.2-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.13.y
-* git commit: 949241ad55a91465aea61c7afa51c1ec7540d5d7
-* git describe: v5.13.1-805-g949241ad55a9
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
-.1-805-g949241ad55a9
+Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+---
+This patch was submitted to the SONiC project for a Cisco device [1].
+It’s better to have it reviewed and committed upstream though.
 
-## No regressions (compared to v5.13.1-800-g0e69649203d5)
+ drivers/pci/setup-bus.c | 159 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 159 insertions(+)
 
-## No fixes (compared to v5.13.1-800-g0e69649203d5)
+diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+index 2ce636937c6e..266097984e19 100644
+--- a/drivers/pci/setup-bus.c
++++ b/drivers/pci/setup-bus.c
+@@ -967,6 +967,148 @@ static inline resource_size_t calculate_mem_align(resource_size_t *aligns,
+ 	return min_align;
+ }
+ 
++#define PLX_RES_MAGIC_VALUE            0xABBA
++#define PLX_RES_DS_PORT_REG0           0xC6C
++#define PLX_RES_DS_PORT_REG1           0xC70
++#define PLX_RES_MAGIC_OFFSET           0xC76
++#define PLX_RES_NP_MASK                0x1
++#define PLX_RES_P_MASK                 0x1F
++
++static struct pci_dev *
++plx_find_nt_device(struct pci_bus *bus, unsigned short brg_dev_id)
++{
++	struct pci_dev *dev, *nt_virt_dev = NULL;
++	struct pci_bus *child_bus;
++	unsigned short vendor, devid, class;
++
++	if (!bus)
++		return NULL;
++
++	list_for_each_entry(child_bus, &bus->children, node) {
++		list_for_each_entry(dev, &child_bus->devices, bus_list) {
++			vendor = dev->vendor;
++			devid = dev->device;
++			class = dev->class >> 8;
++
++			if ((vendor == PCI_VENDOR_ID_PLX) &&
++					(brg_dev_id == devid) &&
++					(class == PCI_CLASS_BRIDGE_OTHER)) {
++				dev_dbg(&dev->dev, "Found NT device 0x%x\n",
++						devid);
++				nt_virt_dev = dev;
++				break;
++			}
++		}
++
++		if (nt_virt_dev)
++			break;
++	}
++	return nt_virt_dev;
++}
++
++static resource_size_t
++pci_get_plx_downstream_res_size(struct pci_bus *bus, unsigned long res_type)
++{
++	int depth = 0;
++	resource_size_t size = 0;
++	struct pci_dev *dev = bus->self;
++	struct pci_bus *tmp_bus;
++	struct pci_dev *nt_virt_dev;
++	u16 res_magic = 0;
++
++	/*
++	 * 32 bits to store the memory requirement for PLX ports.
++	 * Following is the layout:
++	 * np32_0:1;  --> non-prefetchable port 0
++	 * p64_0:5;   --> prefetchable port 0
++	 * np32_1:1;  --> non-prefetchable port 1
++	 * p64_1:5;   --> prefetchable port 1
++	 * np32_2:1;  --> non-prefetchable port 2
++	 * p64_2:5;   --> prefetchable port 2
++	 * np32_3:1;  --> non-prefetchable port 3
++	 * p64_3:5;   --> prefetchable port 3
++	 * np32_4:1;  --> non-prefetchable port 4
++	 * p64_4:5;   --> prefetchable port 4
++	 * reserved:2;
++	 */
++	unsigned int port_bitmap;
++
++	u32 mem_res_bitmap = 0;
++	unsigned int ds_port_offset = 0;
++	unsigned short multiplier = 0;
++	unsigned short np_size = 0;
++
++	/*
++	 * PLX8713 used on FC4 and FC8
++	 * PLX8725 used on FC12 and FC18
++	 */
++	if (!dev || dev->vendor != PCI_VENDOR_ID_PLX ||
++			((dev->device & 0xFF00) != 0x8700))
++		return size;
++
++	tmp_bus = bus;
++	while (tmp_bus->parent) {
++		tmp_bus = tmp_bus->parent;
++		depth++;
++	}
++
++	/* Only for Second level bridges */
++	if (depth != 5)
++		return size;
++
++	nt_virt_dev = plx_find_nt_device(bus->parent, 0x87b0);
++	if (nt_virt_dev) {
++		pci_read_config_word(nt_virt_dev, PLX_RES_MAGIC_OFFSET,
++				&res_magic);
++		dev_dbg(&nt_virt_dev->dev,
++				"Magic offset of 0x%x found in NT device\n", res_magic);
++	}
++
++	if (res_magic == PLX_RES_MAGIC_VALUE) {
++		/*
++		 * The pacifics are connected on PLX ports:
++		 *  FC4 and FC8: #3, #4
++		 *  FC12       : #3, #4, #5
++		 *  FC18       : #3, #4, #5, #11
++		 */
++
++		/* Calculate resource based on EEPROM values */
++		ds_port_offset = (bus->number - bus->parent->number) - 1;
++		if (ds_port_offset < 5) {
++			pci_read_config_dword(nt_virt_dev, PLX_RES_DS_PORT_REG0,
++					&mem_res_bitmap);
++		} else {
++			ds_port_offset -= 5;
++			pci_read_config_dword(nt_virt_dev, PLX_RES_DS_PORT_REG1,
++					&mem_res_bitmap);
++		}
++		port_bitmap = mem_res_bitmap;
++		dev_dbg(&bus->dev, "Port offset: 0x%x, res bitmap 0x%x\n",
++				ds_port_offset, mem_res_bitmap);
++
++		if (ds_port_offset < 5) {
++			u8 m[] = { 26, 20, 14, 8, 2 };
++			u8 s[] = { 31, 25, 19, 13, 7 };
++
++			multiplier = (port_bitmap >> m[ds_port_offset]) & PLX_RES_P_MASK;
++			np_size = (port_bitmap >> s[ds_port_offset]) & PLX_RES_NP_MASK;
++
++			dev_dbg(&bus->dev, "Multiplier: %d, np_size: %d\n",
++					multiplier, np_size);
++
++			if (res_type & IORESOURCE_PREFETCH) {
++				size = 0x100000 << (multiplier - 1);
++				dev_dbg(&bus->dev, "Pref Multiplier %d, Size 0x%llx\n",
++						multiplier, (long long) size);
++			} else if (np_size) {
++				size = 0x100000;
++				dev_dbg(&bus->dev, "NP Size 0x%llx\n", (long long) size);
++			}
++		}
++	}
++	return size;
++}
++
+ /**
+  * pbus_size_mem() - Size the memory window of a given bus
+  *
+@@ -1001,6 +1143,7 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+ 	resource_size_t children_add_size = 0;
+ 	resource_size_t children_add_align = 0;
+ 	resource_size_t add_align = 0;
++	unsigned int dev_count = 0;
+ 
+ 	if (!b_res)
+ 		return -ENOSPC;
+@@ -1016,6 +1159,7 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+ 	list_for_each_entry(dev, &bus->devices, bus_list) {
+ 		int i;
+ 
++		dev_count++;
+ 		for (i = 0; i < PCI_NUM_RESOURCES; i++) {
+ 			struct resource *r = &dev->resource[i];
+ 			resource_size_t r_size;
+@@ -1071,6 +1215,21 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+ 		}
+ 	}
+ 
++	/* Static allocation for FC pacific */
++	if (!size && !dev_count) {
++		size = pci_get_plx_downstream_res_size(bus, type);
++		if (size) {
++			order = __ffs(size);
++			dev_dbg(&bus->self->dev, "order for %llx is %u\n", (long long) size, order);
++			if ((order >= 20) &&
++					((order -= 20) < ARRAY_SIZE(aligns)) &&
++					(order > max_order)) {
++				max_order = order;
++				dev_dbg(&bus->self->dev, "max_order reset to %d; size %zx\n", max_order, (size_t)size);
++			}
++		}
++	}
++
+ 	min_align = calculate_mem_align(aligns, max_order);
+ 	min_align = max(min_align, window_alignment(bus, b_res->flags));
+ 	size0 = calculate_memsize(size, min_size, 0, 0, resource_size(b_res), min_align);
+-- 
+2.32.0
 
-## Test result summary
- total: 84521, pass: 69640, fail: 1673, skip: 12072, xfail: 1136,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
