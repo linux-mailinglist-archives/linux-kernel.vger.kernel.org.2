@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC893C6FDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228D33C6FDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhGMLmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:42:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:41926 "EHLO foss.arm.com"
+        id S235987AbhGMLmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:42:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:41968 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235967AbhGMLmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:42:02 -0400
+        id S235967AbhGMLmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:42:07 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFE7F1FB;
-        Tue, 13 Jul 2021 04:39:12 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 751A01042;
+        Tue, 13 Jul 2021 04:39:17 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C49083F7D8;
-        Tue, 13 Jul 2021 04:39:09 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 628B53F7D8;
+        Tue, 13 Jul 2021 04:39:14 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
@@ -28,9 +28,9 @@ Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
         paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
         shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
         tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCH v3 02/10] entry: snapshot thread flags
-Date:   Tue, 13 Jul 2021 12:38:34 +0100
-Message-Id: <20210713113842.2106-3-mark.rutland@arm.com>
+Subject: [PATCH v3 03/10] sched: snapshot thread flags
+Date:   Tue, 13 Jul 2021 12:38:35 +0100
+Message-Id: <20210713113842.2106-4-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210713113842.2106-1-mark.rutland@arm.com>
 References: <20210713113842.2106-1-mark.rutland@arm.com>
@@ -48,73 +48,31 @@ using them. Some places already use READ_ONCE() for that, others do not.
 
 Convert them all to the new flag accessor helpers.
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/entry-kvm.h | 2 +-
- kernel/entry/common.c     | 4 ++--
- kernel/entry/kvm.c        | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+The READ_ONCE(ti->flags) .. cmpxchg(ti->flags) loop in
+set_nr_if_polling() is left as-is for clarity.
 
-diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
-index 136b8d97d8c0..2bd3b1f10fd1 100644
---- a/include/linux/entry-kvm.h
-+++ b/include/linux/entry-kvm.h
-@@ -71,7 +71,7 @@ static inline void xfer_to_guest_mode_prepare(void)
-  */
- static inline bool __xfer_to_guest_mode_work_pending(void)
- {
--	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
-+	unsigned long ti_work = read_thread_flags();
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2d9ff40f4661..bbce979c513d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8157,7 +8157,7 @@ void sched_show_task(struct task_struct *p)
+ 	rcu_read_unlock();
+ 	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
+ 		free, task_pid_nr(p), ppid,
+-		(unsigned long)task_thread_info(p)->flags);
++		read_task_thread_flags(p));
  
- 	return !!(ti_work & XFER_TO_GUEST_MODE_WORK);
- }
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index bf16395b9e13..49bd64c43fe9 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -189,7 +189,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 		/* Check if any of the above work has queued a deferred wakeup */
- 		tick_nohz_user_enter_prepare();
- 
--		ti_work = READ_ONCE(current_thread_info()->flags);
-+		ti_work = read_thread_flags();
- 	}
- 
- 	/* Return the latest work state for arch_exit_to_user_mode() */
-@@ -198,7 +198,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 
- static void exit_to_user_mode_prepare(struct pt_regs *regs)
- {
--	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
-+	unsigned long ti_work = read_thread_flags();
- 
- 	lockdep_assert_irqs_disabled();
- 
-diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
-index 49972ee99aff..96d476e06c77 100644
---- a/kernel/entry/kvm.c
-+++ b/kernel/entry/kvm.c
-@@ -26,7 +26,7 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu, unsigned long ti_work)
- 		if (ret)
- 			return ret;
- 
--		ti_work = READ_ONCE(current_thread_info()->flags);
-+		ti_work = read_thread_flags();
- 	} while (ti_work & XFER_TO_GUEST_MODE_WORK || need_resched());
- 	return 0;
- }
-@@ -43,7 +43,7 @@ int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu)
- 	 * disabled in the inner loop before going into guest mode. No need
- 	 * to disable interrupts here.
- 	 */
--	ti_work = READ_ONCE(current_thread_info()->flags);
-+	ti_work = read_thread_flags();
- 	if (!(ti_work & XFER_TO_GUEST_MODE_WORK))
- 		return 0;
- 
+ 	print_worker_info(KERN_INFO, p);
+ 	print_stop_info(KERN_INFO, p);
 -- 
 2.11.0
 
