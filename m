@@ -2,86 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE713C6CCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0D53C6CAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhGMJDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:03:37 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:59226 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234121AbhGMJDg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:03:36 -0400
-X-UUID: f648231f35e343cd92fe1bac49f99370-20210713
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/SkvQQ3+rtq2S0/tdyj0Z0yx4+LQp8I/gV8vayHB1eA=;
-        b=eJeCnaVA92IGHPSnF4fRU+uuPIXGaxtF5vFMGURAcc/jXq0+2SDrAZP4SGsRcPmL8NZBqrS/GDtLMoFSFLv7q/NXzkM/mqHx4nvYKq94h1faSNM3SIOQkzjjk2tji5eH4S1LVq3RGdRgvk/Af0xx7D2zVDCI89YxU4uzn3J+GVc=;
-X-UUID: f648231f35e343cd92fe1bac49f99370-20210713
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 777364225; Tue, 13 Jul 2021 17:00:41 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Jul
- 2021 17:00:39 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 13 Jul 2021 17:00:38 +0800
-Message-ID: <1626166838.29490.4.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 02/13] dt-bindings: usb: mtu3: add optional property
- to disable usb2 ports
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Tue, 13 Jul 2021 17:00:38 +0800
-In-Reply-To: <20210712190809.GA2310371@robh.at.kernel.org>
-References: <1624008558-16949-1-git-send-email-chunfeng.yun@mediatek.com>
-         <1624008558-16949-3-git-send-email-chunfeng.yun@mediatek.com>
-         <20210712190809.GA2310371@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S234735AbhGMIy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:54:26 -0400
+Received: from mga09.intel.com ([134.134.136.24]:58584 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234599AbhGMIyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:54:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="210101442"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="210101442"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 01:51:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="459506072"
+Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
+  by orsmga008.jf.intel.com with ESMTP; 13 Jul 2021 01:51:29 -0700
+Date:   Tue, 13 Jul 2021 17:05:31 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>,
+        Jim Mattson <jmattson@google.com>, pbonzini@redhat.com,
+        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH v5 05/13] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_CTL for
+ guest Arch LBR
+Message-ID: <20210713090531.GA13824@intel.com>
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-6-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eR8mbVXS5E6sB7TwEocytpWcG_6w-ijmfxAd4ciHPtfmw@mail.gmail.com>
+ <20210712093626.GC12162@intel.com>
+ <bd386ed1-69d8-39ab-8bee-6e3aed8d2ee2@gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 1F30D6F3E0CBFBFE6BBF7E6E74BA7C17CB540E6A07D0FFC39EB0D4C6EC885D8A2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bd386ed1-69d8-39ab-8bee-6e3aed8d2ee2@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA3LTEyIGF0IDEzOjA4IC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gRnJpLCBKdW4gMTgsIDIwMjEgYXQgMDU6Mjk6MDdQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
-b3RlOg0KPiA+IEFkZCBzdXBwb3J0IHRvIGRpc2FibGUgc3BlY2lmaWMgdXNiMiBob3N0IHBvcnRz
-LCBpdCdzIHVzZWZ1bCB3aGVuDQo+ID4gYSB1c2IyIHBvcnQgaXMgZGlzYWJsZWQgb24gc29tZSBw
-bGF0Zm9ybXMsIGJ1dCBlbmFibGVkIG9uIG90aGVycyBmb3INCj4gPiB0aGUgc2FtZSBTb0MsIGFu
-b3RoZXIgY2FzZSBpcyB0aGF0IHRoZSBkaWZmZXJlbnQgcGFja2FnZSBtYXkgc3VwcG9ydA0KPiA+
-IGRpZmZlcmVudCBudW1iZXIgb2YgcG9ydHMuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1
-bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IHYyOiBu
-byBjaGFuZ2VzDQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy91c2IvbWVkaWF0ZWssbXR1My55YW1sIHwgNiArKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQs
-IDYgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvdXNiL21lZGlhdGVrLG10dTMueWFtbCBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXR1My55YW1sDQo+ID4gaW5kZXggMmNh
-YzdhODdjZTM2Li4zZTZmMjc1MGY0OGQgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9tZWRpYXRlayxtdHUzLnlhbWwNCj4gPiArKysgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL21lZGlhdGVrLG10dTMueWFtbA0KPiA+
-IEBAIC0xNjYsNiArMTY2LDEyIEBAIHByb3BlcnRpZXM6DQo+ID4gICAgICBkZXNjcmlwdGlvbjog
-VGhlIG1hc2sgdG8gZGlzYWJsZSB1M3BvcnRzLCBiaXQwIGZvciB1M3BvcnQwLA0KPiA+ICAgICAg
-ICBiaXQxIGZvciB1M3BvcnQxLCAuLi4gZXRjDQo+ID4gIA0KPiA+ICsgIG1lZGlhdGVrLHUycC1k
-aXMtbXNrOg0KPiANCj4gSnVzdCBzcGVsbCBvdXQgJ21hc2snLg0KVGhlcmUgaXMgYWxyZWFkeSBh
-IHByb3BlcnR5ICJtZWRpYXRlayx1M3AtZGlzLW1zayIsIHByZWZlciB0byB1c2UgdGhlDQpzYW1l
-IGZvcm1hdCwgdGhhbmtzDQoNCj4gDQo+ID4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1s
-Iy9kZWZpbml0aW9ucy91aW50MzINCj4gPiArICAgIGRlc2NyaXB0aW9uOiBUaGUgbWFzayB0byBk
-aXNhYmxlIHUycG9ydHMsIGJpdDAgZm9yIHUycG9ydDAsDQo+ID4gKyAgICAgIGJpdDEgZm9yIHUy
-cG9ydDEsIC4uLiBldGM7IGJ1dCBjYW4ndCBkaXNhYmxlIHUycG9ydDAgaWYgZHVhbCByb2xlIG1v
-ZGUNCj4gPiArICAgICAgaXMgZW5hYmxlZCwgc28gd2lsbCBiZSBza2lwcGVkIGluIHRoaXMgY2Fz
-ZS4NCj4gPiArDQo+ID4gICMgUmVxdWlyZWQgY2hpbGQgbm9kZSB3aGVuIHN1cHBvcnQgZHVhbC1y
-b2xlDQo+ID4gIHBhdHRlcm5Qcm9wZXJ0aWVzOg0KPiA+ICAgICJedXNiQFswLTlhLWZdKyQiOg0K
-PiA+IC0tIA0KPiA+IDIuMTguMA0KPiA+IA0KPiA+IA0KDQo=
+On Mon, Jul 12, 2021 at 06:10:30PM +0800, Like Xu wrote:
+> On 12/7/2021 5:36 pm, Yang Weijiang wrote:
+> >On Fri, Jul 09, 2021 at 02:55:35PM -0700, Jim Mattson wrote:
+> >>On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+> >>>
+> >>>From: Like Xu <like.xu@linux.intel.com>
+> >>>
+> >>>Arch LBRs are enabled by setting MSR_ARCH_LBR_CTL.LBREn to 1. A new guest
+> >>>state field named "Guest IA32_LBR_CTL" is added to enhance guest LBR usage.
+> >>>When guest Arch LBR is enabled, a guest LBR event will be created like the
+> >>>model-specific LBR does. Clear guest LBR enable bit on host PMI handling so
+> >>>guest can see expected config.
+> >>>
+> >>>On processors that support Arch LBR, MSR_IA32_DEBUGCTLMSR[bit 0] has no
+> >>>meaning. It can be written to 0 or 1, but reads will always return 0.
+> >>>Like IA32_DEBUGCTL, IA32_ARCH_LBR_CTL msr is also reserved on INIT.
+> >>
+> >>I suspect you mean "preserved" rather than "reserved."
+> >Yes, should be preserved.
+> >
+> >>
+> >>>Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> >>>Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> >>>---
+> >>>  arch/x86/events/intel/lbr.c      |  2 --
+> >>>  arch/x86/include/asm/msr-index.h |  1 +
+> >>>  arch/x86/include/asm/vmx.h       |  2 ++
+> >>>  arch/x86/kvm/vmx/pmu_intel.c     | 31 ++++++++++++++++++++++++++-----
+> >>>  arch/x86/kvm/vmx/vmx.c           |  9 +++++++++
+> >>>  5 files changed, 38 insertions(+), 7 deletions(-)
+> >>>
+> >>
+> >>>diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> >>>index da68f0e74702..4500c564c63a 100644
+> >>>--- a/arch/x86/kvm/vmx/pmu_intel.c
+> >>>+++ b/arch/x86/kvm/vmx/pmu_intel.c
+> >>>@@ -19,6 +19,11 @@
+> >>>  #include "pmu.h"
+> >>>
+> >>>  #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
+> >>>+/*
+> >>>+ * Regardless of the Arch LBR or legacy LBR, when the LBR_EN bit 0 of the
+> >>>+ * corresponding control MSR is set to 1, LBR recording will be enabled.
+> >>>+ */
+> >>
+> >>Is this comment misplaced? It doesn't seem to have anything to do with
+> >>the macro being defined below.
+> >Agree, will put this in commit message.
+> >>
+> >>>@@ -458,6 +467,14 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >>>                 lbr_desc->records.nr = data;
+> >>>                 lbr_desc->arch_lbr_reset = true;
+> >>>                 return 0;
+> >>>+       case MSR_ARCH_LBR_CTL:
+> >>>+               if (data & ~KVM_ARCH_LBR_CTL_MASK)
+> >>
+> >>Is a static mask sufficient? Per the Intel® Architecture Instruction
+> >>Set Extensions and Future Features Programming Reference, some of
+> >>these bits may not be supported on all microarchitectures. See Table
+> >>7-8. CPUID Leaf 01CH Enumeration of Architectural LBR Capabilities.
+> >Yes, more sanity checks are required, thanks!
+> >
+> >>
+> >>>+                       break;
+> >>>+               vmcs_write64(GUEST_IA32_LBR_CTL, data);
+> >>>+               if (intel_pmu_lbr_is_enabled(vcpu) && !lbr_desc->event &&
+> >>>+                   (data & ARCH_LBR_CTL_LBREN))
+> >>>+                       intel_pmu_create_guest_lbr_event(vcpu);
+> >>
+> >>Nothing has to be done when the LBREN bit goes from 1 to 0?
+> >Need to release the event and reset related flag when the bit goes from
+> >1 to 0. Thanks!
+> 
+> No need to release the LBR event and it will be lazily released.
+>
+I forgot the lazy cleanup :-), thanks!
+ 
+> >>
+> >>>+               return 0;
+> >>>         default:
+> >>>                 if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+> >>>                     (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> >>
+> >>Per the Intel® Architecture Instruction Set Extensions and Future
+> >>Features Programming Reference, "IA32_LBR_CTL.LBREn is saved and
+> >>cleared on #SMI, and restored on RSM." I don't see that happening
+> >>anywhere. That manual also says, "On a warm reset...IA32_LBR_CTL.LBREn
+> >>is cleared to 0, disabling LBRs." I don't see that happening either.
+> >
+> >Yes, I'll add related code to make it consistent with spec, thanks!
+> >>
+> >>I have a question about section 7.1.4.4 in that manual. It says, "On a
+> >>debug breakpoint event (#DB), IA32_LBR_CTL.LBREn is cleared." When,
+> >>exactly, does that happen? In particular, if kvm synthesizes such an
+> >>event (for example, in kvm_vcpu_do_singlestep), does
+> >>IA32_LBR_CTL.LBREn automatically get cleared (after loading the guest
+> >>IA32_LBR_CTL value from the VMCS)? Or does kvm need to explicitly
+> >>clear that bit in the VMCS before injecting the #DB?
+> >OK, I don't have answer now, will ask the Arch to get clear answer on this,
+> >thanks for raising the question!
+> 
+> I think we also need a kvm-unit-tests to cover it (as well as the legacy
+> LBR).
+> 
+Yes, I'll add one later.
 
+> >
