@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A074B3C745A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFBE3C745D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhGMQWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:22:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23961 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231418AbhGMQWN (ORCPT
+        id S231499AbhGMQWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230361AbhGMQWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:22:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626193162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LkVbvILKBq40WaEmHLBRSgoHvH/vzwrA0dUxLC2cHSE=;
-        b=h4NVAU573xF6cAzB8SuI9BaVEwASb+RKGKVCOETmsdML3QHe8s8FsGt4NzHrPAskGWAbK7
-        p8fBOY2ENmIXGh5LXEcHR3/Q2pQMNUxblg7UTRMj7xtCFTVlBsLWoZisZtYS98kQVPOoDu
-        vG0qD+imlrDNaM7bcGWu3/VDOcl8h7E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-kWE6OaooNECjV1bN-9szzQ-1; Tue, 13 Jul 2021 12:19:21 -0400
-X-MC-Unique: kWE6OaooNECjV1bN-9szzQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF48C1009444;
-        Tue, 13 Jul 2021 16:19:19 +0000 (UTC)
-Received: from localhost (ovpn-112-172.ams2.redhat.com [10.36.112.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 713906091B;
-        Tue, 13 Jul 2021 16:19:19 +0000 (UTC)
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Jason Wang <jasowang@redhat.com>,
-        linux-block@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-pm@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: [RFC 3/3] softirq: participate in cpuidle polling
-Date:   Tue, 13 Jul 2021 17:19:06 +0100
-Message-Id: <20210713161906.457857-4-stefanha@redhat.com>
-In-Reply-To: <20210713161906.457857-1-stefanha@redhat.com>
-References: <20210713161906.457857-1-stefanha@redhat.com>
+        Tue, 13 Jul 2021 12:22:35 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B418C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:19:44 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id c197so1483402oib.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:19:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dp68kZ8Q63rdtMpfnAuQFhGyVZFwXtaAN9MVU2dhJVw=;
+        b=s2qdVmQAPUyIBQcU3gCySim/cqyPncxJAVDUWDUvCgsIEL+CQ1ZkQehIXEZJxuY0F+
+         X4qgCZkoVkznKYHOxjxy9r284xl3LpkqXYyw4hJs1eHnvd2s36b3AFZWLddq/BY+orVp
+         gjAUDeJVmGjC+iw2uEPJFhfPbm1IU1jdO2BZOdiCwMNfSaJgUHh7gLc0/ID/r2qK3qPB
+         4xLUlZU66ARXHNShMS3KvakwXv23Wl+UgjNefUR1JT6MzYfAX3oIwZhihmBq7i+c/g0s
+         keZc2VhfQVdvQTNMpOVtDvmYA/J+h5xV5pHr94Dq5zp+OERqVerbwiIfmaCCQKp/3WsM
+         Un/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dp68kZ8Q63rdtMpfnAuQFhGyVZFwXtaAN9MVU2dhJVw=;
+        b=M5y3fuE8DfObiIDkD0zNuq6jmaB69DFYgyU4PogUWthSft2brcDNm0aW6Aw6c2LRul
+         xc9Bm/emeA48s5fINUvwFigUazXonB1/CH/fS86W/hbAnmnEJPcAL6eBeQRzy/n2li4n
+         6XwMIWDi0GFkxW6iEMgj2H2F9nMHQ4sSlq0jnmSZ1m3dEUKGe9/Idu1rZqKjqSc4vq8o
+         O03mnaQ4Vc/9EthCNTPD3ujikkwTrBCFUKlzJ7miTpxvxwSVPWSeWeXao0pot8halpSR
+         BzRJPpC5Y8Y7MdxsCe8FGm+4CKFkd0LmPwUQyM9BiJc0iVZ2OE6wIcNV1vwZJJbYFf1O
+         f4vg==
+X-Gm-Message-State: AOAM533gHe/mjDszVIMg2W30Nz654rjgN5GxyE90JhY8gagDChigKomG
+        8Vo2OclnxF/OI2dG3e0B3Vo7ng3uAHoKpwooReiC3g==
+X-Google-Smtp-Source: ABdhPJw/q3Dy4tg96XptFz5EoeVdiGFEQ3Tnai+h5w17+Fq3JI7KCm873IrohB6qpItS4PKvWiUqNWIzaJAelsRIhj4=
+X-Received: by 2002:a05:6808:1286:: with SMTP id a6mr3772723oiw.121.1626193183652;
+ Tue, 13 Jul 2021 09:19:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210629113323.2354571-1-elver@google.com> <CAG_fn=V2H7UX8YQYqsQ08D_xF3VKUMCUkafTMVr-ywtki6S0wA@mail.gmail.com>
+ <YNsGnyHJL6i1OZFl@cork>
+In-Reply-To: <YNsGnyHJL6i1OZFl@cork>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 13 Jul 2021 18:19:32 +0200
+Message-ID: <CANpmjNOif53i2zx5hZCN97U9Hb_BPv15dchSTfg9qpJa8iZ3rA@mail.gmail.com>
+Subject: Re: [PATCH] kfence: show cpu and timestamp in alloc/free info
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@purestorage.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tm9ybWFsbHkgc29mdGlycXMgYXJlIGludm9rZWQgd2hlbiBleGl0aW5nIGlycXMuIFdoZW4gcG9s
-bGluZyBpbiB0aGUKY3B1aWRsZSBkcml2ZXIgdGhlcmUgbWF5IGJlIG5vIGlycS4gVGhlcmVmb3Jl
-IHBlbmRpbmcgc29mdGlycXMgZ28KdW5ub3RpY2VkIGFuZCBwb2xsaW5nIGNvbnRpbnVlcyB3aXRo
-b3V0IGludm9raW5nIHRoZW0uCgpBZGQgYSBzb2Z0aXJxX3BvbGwoKSBmdW5jdGlvbiB0byBleHBs
-aWNpdGx5IGNoZWNrIGZvciBhbmQgaW52b2tlCnNvZnRpcnFzLgoKU2lnbmVkLW9mZi1ieTogU3Rl
-ZmFuIEhham5vY3ppIDxzdGVmYW5oYUByZWRoYXQuY29tPgotLS0KVGhpcyBjb21taXQgaXMgbm90
-IG5lZWRlZCBmb3IgdmlydGlvLWJsay4gSSBhZGRlZCBpdCB3aGVuIEkgcmVhbGl6ZWQKdmlydGlv
-LW5ldCdzIE5BUEkgc2NoZWR1bGluZyBtaWdodCBub3QgYmUgZGV0ZWN0ZWQgYnkgdGhlIGNwdWlk
-bGUgYnVzeQp3YWl0IGxvb3AgYmVjYXVzZSBpdCBpcyB1bmF3YXJlIG9mIHNvZnRpcnFzLiBIb3dl
-dmVyLCBldmVuIGFmdGVyIGRvaW5nCnRoaXMgdmlydGlvLW5ldCdzIE5BUEkgcG9sbGluZyBkb2Vz
-bid0IGNvbWJpbmUgd2l0aCBjcHVpZGxlIGhhbHRwb2xsLgoKUGVyaGFwcyB0aGlzIHBhdGNoIGlz
-IHN0aWxsIGRlc2lyYWJsZSBmb3IgY3B1aWRsZSBwb2xsX3N0YXRlIGluIGNhc2UgYQpzb2Z0aXJx
-IGlzIHJhaXNlZD8KLS0tCiBpbmNsdWRlL2xpbnV4L2ludGVycnVwdC5oICAgICB8ICAyICsrCiBk
-cml2ZXJzL2NwdWlkbGUvcG9sbF9zb3VyY2UuYyB8ICAzICsrKwoga2VybmVsL3NvZnRpcnEuYyAg
-ICAgICAgICAgICAgfCAxNCArKysrKysrKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCAxOSBpbnNl
-cnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9pbnRlcnJ1cHQuaCBiL2luY2x1
-ZGUvbGludXgvaW50ZXJydXB0LmgKaW5kZXggNDc3Nzg1MGE2ZGM3Li45YmZkY2M0NjZiYTggMTAw
-NjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvaW50ZXJydXB0LmgKKysrIGIvaW5jbHVkZS9saW51eC9p
-bnRlcnJ1cHQuaApAQCAtNTczLDYgKzU3Myw4IEBAIHN0cnVjdCBzb2Z0aXJxX2FjdGlvbgogYXNt
-bGlua2FnZSB2b2lkIGRvX3NvZnRpcnEodm9pZCk7CiBhc21saW5rYWdlIHZvaWQgX19kb19zb2Z0
-aXJxKHZvaWQpOwogCitleHRlcm4gdm9pZCBzb2Z0aXJxX3BvbGwodm9pZCk7CisKIGV4dGVybiB2
-b2lkIG9wZW5fc29mdGlycShpbnQgbnIsIHZvaWQgKCphY3Rpb24pKHN0cnVjdCBzb2Z0aXJxX2Fj
-dGlvbiAqKSk7CiBleHRlcm4gdm9pZCBzb2Z0aXJxX2luaXQodm9pZCk7CiBleHRlcm4gdm9pZCBf
-X3JhaXNlX3NvZnRpcnFfaXJxb2ZmKHVuc2lnbmVkIGludCBucik7CmRpZmYgLS1naXQgYS9kcml2
-ZXJzL2NwdWlkbGUvcG9sbF9zb3VyY2UuYyBiL2RyaXZlcnMvY3B1aWRsZS9wb2xsX3NvdXJjZS5j
-CmluZGV4IDQ2MTAwZTVhNzFlNC4uZWQyMDBmZWIwZGFhIDEwMDY0NAotLS0gYS9kcml2ZXJzL2Nw
-dWlkbGUvcG9sbF9zb3VyY2UuYworKysgYi9kcml2ZXJzL2NwdWlkbGUvcG9sbF9zb3VyY2UuYwpA
-QCAtNiw2ICs2LDcgQEAKICNpbmNsdWRlIDxsaW51eC9sb2NrZGVwLmg+CiAjaW5jbHVkZSA8bGlu
-dXgvcGVyY3B1Lmg+CiAjaW5jbHVkZSA8bGludXgvcG9sbF9zb3VyY2UuaD4KKyNpbmNsdWRlIDxs
-aW51eC9pbnRlcnJ1cHQuaD4KIAogLyogVGhlIHBlci1jcHUgbGlzdCBvZiByZWdpc3RlcmVkIHBv
-bGwgc291cmNlcyAqLwogREVGSU5FX1BFUl9DUFUoc3RydWN0IGxpc3RfaGVhZCwgcG9sbF9zb3Vy
-Y2VfbGlzdCk7CkBAIC0yNiw2ICsyNyw4IEBAIHZvaWQgcG9sbF9zb3VyY2VfcnVuX29uY2Uodm9p
-ZCkKIAogCWxpc3RfZm9yX2VhY2hfZW50cnkoc3JjLCB0aGlzX2NwdV9wdHIoJnBvbGxfc291cmNl
-X2xpc3QpLCBub2RlKQogCQlzcmMtPm9wcy0+cG9sbChzcmMpOworCisJc29mdGlycV9wb2xsKCk7
-CiB9CiAKIC8qIENhbGxlZCBmcm9tIGlkbGUgdGFzayB3aXRoIFRJRl9QT0xMSU5HX05SRkxBRyBz
-ZXQgYW5kIGlycXMgZW5hYmxlZCAqLwpkaWZmIC0tZ2l0IGEva2VybmVsL3NvZnRpcnEuYyBiL2tl
-cm5lbC9zb2Z0aXJxLmMKaW5kZXggNDk5Mjg1M2VmNTNkLi5mNDViZjAyMDQyMTggMTAwNjQ0Ci0t
-LSBhL2tlcm5lbC9zb2Z0aXJxLmMKKysrIGIva2VybmVsL3NvZnRpcnEuYwpAQCAtNjExLDYgKzYx
-MSwyMCBAQCB2b2lkIGlycV9lbnRlcih2b2lkKQogCWlycV9lbnRlcl9yY3UoKTsKIH0KIAorLyoq
-CisgKiBzb2Z0aXJxX3BvbGwoKSAtIGludm9rZSBwZW5kaW5nIHNvZnRpcnFzCisgKgorICogTm9y
-bWFsbHkgaXQgaXMgbm90IG5lY2Vzc2FyeSB0byBleHBsaWNpdGx5IHBvbGwgZm9yIHNvZnRpcnFz
-LCBidXQgaW4gdGhlCisgKiBjcHVpZGxlIGRyaXZlciBhIHBvbGxpbmcgZnVuY3Rpb24gbWF5IGhh
-dmUgcmFpc2VkIGEgc29mdGlycSB3aXRoIG5vIGlycSBleGl0CisgKiB0byBpbnZva2UgaXQuIFRo
-ZXJlZm9yZSBpdCBpcyBuZWNlc3NhcnkgdG8gcG9sbCBmb3IgcGVuZGluZyBzb2Z0aXJxcyBhbmQK
-KyAqIGludm9rZSB0aGVtIGV4cGxpY2l0bHkuCisgKi8KK3ZvaWQgc29mdGlycV9wb2xsKHZvaWQp
-Cit7CisJaWYgKCFpbl9pbnRlcnJ1cHQoKSAmJiBsb2NhbF9zb2Z0aXJxX3BlbmRpbmcoKSkKKwkJ
-aW52b2tlX3NvZnRpcnEoKTsKK30KKwogc3RhdGljIGlubGluZSB2b2lkIHRpY2tfaXJxX2V4aXQo
-dm9pZCkKIHsKICNpZmRlZiBDT05GSUdfTk9fSFpfQ09NTU9OCi0tIAoyLjMxLjEKCg==
+Hello, Andrew,
 
+This patch is ready to be picked up.
+
+Many thanks,
+-- Marco
+
+On Tue, 29 Jun 2021 at 13:40, 'J=C3=B6rn Engel' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+> On Tue, Jun 29, 2021 at 01:34:27PM +0200, Alexander Potapenko wrote:
+> > On Tue, Jun 29, 2021 at 1:33 PM Marco Elver <elver@google.com> wrote:
+> > >
+> > > Record cpu and timestamp on allocations and frees, and show them in
+> > > reports. Upon an error, this can help correlate earlier messages in t=
+he
+> > > kernel log via allocation and free timestamps.
+> > >
+> > > Suggested-by: Joern Engel <joern@purestorage.com>
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> >
+> > Acked-by: Alexander Potapenko <glider@google.com>
+> Acked-by: Joern Engel <joern@purestorage.com>
