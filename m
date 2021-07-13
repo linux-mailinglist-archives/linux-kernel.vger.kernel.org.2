@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7473C72D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DAD3C72F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhGMPN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236873AbhGMPN2 (ORCPT
+        id S237055AbhGMPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:17:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:14721 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237035AbhGMPRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:13:28 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF04CC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:10:37 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r11so25672075wro.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ccVY0wCgTs5TXR//31Go1dN/0eihaDgl7hSzcu1KrSo=;
-        b=UkdSHwacQ3plM3u3pH8mvBtHXjUG6BjKxsW9wykYRUo8TMgOcACEM4ZNrwYRh1grhL
-         LH5NrJb4WpZK6FbVUpMb9kd4eyDdexx0S3bkho9dxBKA3qvnxwlrWAp7DafMqCWnStMJ
-         6dEOgko/45tAofxskHm37lTPwdhXGyIvvPNGyGeb+17cyLkZJ43wYSx76Jq9BVY0YWz4
-         6KQ3nvMPMAFFD+Kdl7IMk8G87asdaYDPHNm5B5B3D5KiOKbwUOgH/boEQWs59nfQH7fU
-         PumH+jFL9BOoyfNfLDcFnEtjFQnc1jZbBZP+VgaUydk6YC7Zhh61ju0xI8h4QQ6QP2HE
-         qdcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ccVY0wCgTs5TXR//31Go1dN/0eihaDgl7hSzcu1KrSo=;
-        b=FolBHvQwjt5ur9zMeytS+rP9Om15GtzMJ7rpQBy1CUXQbkwpUHq8Zn/71nuk45Vvvr
-         NnIcTF9+PhM04/uYcNvbQQaoj5ba+bpAjEY3ZTTvFFKjlIeaXLc6GVD1e6ETCeldSzz7
-         SaaHFkITc/qOnLPFrYimc93cazsIaOL1f3oTXLPZ35sxr6+GhfMh50A+z4a9C2P/f87B
-         uWPLEOmxnTdXMU4utk7AW8QSEjIXrbuEdw0iJrp1O5cZzx1C6YsjXouMXYn48cCxOfz7
-         MF57NxWopqA/YqbeWXFbMwu2+rsokWR4TpeyIYyxb/LvtQtP82SOIT1wlyK0QHs69vdB
-         BG9w==
-X-Gm-Message-State: AOAM531sRHzuHCFD1aaPNIM/niCYlKqpNz70QRtnsTTkqmzkKiPSZKnZ
-        chDci08XyHJeEEth4EKSChVjWA==
-X-Google-Smtp-Source: ABdhPJzb/XWyYmuq03TFlvNVBnQieIXH3H7Kne0EI7KaadBgGq/cwOHSL4U4N5RweLFDSZ5/H1rGyw==
-X-Received: by 2002:adf:e488:: with SMTP id i8mr6411373wrm.285.1626189036529;
-        Tue, 13 Jul 2021 08:10:36 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id t9sm17689573wrq.92.2021.07.13.08.10.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 08:10:34 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 16:10:32 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] kdb: Get rid of custom debug heap allocator
-Message-ID: <20210713151032.hvsbufswijxt6uxk@maple.lan>
-References: <20210708122447.3880803-1-sumit.garg@linaro.org>
- <CAD=FV=UhL32e7spQjr38Lwng0D7mUK+R7iGnmBah=tXzzXsO5g@mail.gmail.com>
- <CAFA6WYN4gMv9Hkuq=3v_UKg+Y1OvFfbOqgZxt7yGSd2RnVBdJw@mail.gmail.com>
- <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
+        Tue, 13 Jul 2021 11:17:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626189253; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=geWynaJJrC10VJR2i0AbaYFJW+GpDlbTGEZUL8tGP4U=; b=SqZkzIbQJ1iZB6wge1LB9e8DIvvUABRqNbUPEn8Hnt2gCmknEajwmLStVoKtYdmGfCNKbqlg
+ jiqB5kfwk0wBq0KZw3InfhE9ZPp1VNsMzoQx9kw3hiyf5opjde0Rkr1IY5YKDJUtyEKED1TE
+ 1l1dypLwiV/rayKYM7LMQdMn6VI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60edad6706ea41c941b27b9a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 15:12:39
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 319FCC43460; Tue, 13 Jul 2021 15:12:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95072C433F1;
+        Tue, 13 Jul 2021 15:12:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 95072C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v3 0/7] Add support for DISP/VIDEO/GPU CCs for SC7280
+Date:   Tue, 13 Jul 2021 20:42:16 +0530
+Message-Id: <1626189143-12957-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 06:45:52AM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Jul 13, 2021 at 4:24 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > > >  int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
-> > > >  {
-> > > >         int ret = 0;
-> > > >         unsigned long symbolsize = 0;
-> > > >         unsigned long offset = 0;
-> > > > -#define knt1_size 128          /* must be >= kallsyms table size */
-> > > > -       char *knt1 = NULL;
-> > > > +       static char namebuf[KSYM_NAME_LEN];
-> > >
-> > > I guess this also ends up fixing a bug too, right? My greps show that
-> > > "KSYM_NAME_LEN" is 512
-> >
-> > I can see "KSYM_NAME_LEN" defined as 128 here [1]. Are you looking at
-> > any other header file?
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kallsyms.h#n18
-> 
-> Ah ha, it's recent! See commit f2f6175186f4 ("kallsyms: increase
-> maximum kernel symbol length to 512")
+Add support for display, video & graphics clock controllers on SC7280
+along with the bindings for each of the clock controllers.
 
-Ineed. So recent that I think it hasn't been merged to mainline yet!
+[v3]
+ * Update BSD license for Device Tree documentation and bindings for display,
+   graphics, video and also global clock controller.
+ * Update 'const' for all the VCO tables.
+ * Remove critical video xo clock from video driver as the clock is enabled
+   from HW and no SW modelled clock required.
 
-This patch is part of the rust patch set. IIUC it is in linux-next for
-wider testing but I'd be surprised if it gets merged to mainline anytime
-soon (and even more amazed if it is merged without being rebased and
-given a new hash value ;-) ).
+[v2]
+ * Use the .hws instead of clk_parent_data when the whole array is
+   clk_hw pointers for all the clock drivers.
 
+[v1]
+ * Documentation binding for DISP, GPU, VIDEO clock controller for SC7280.
+ * Add the DISP, GPU, VIDEO clock drivers for SC7280.
 
-Daniel.
+Taniya Das (7):
+  dt-bindings: clock: qcom: Update license for GCC SC7280
+  dt-bindings: clock: Add SC7280 DISPCC clock binding
+  clk: qcom: Add display clock controller driver for SC7280
+  dt-bindings: clock: Add SC7280 GPUCC clock binding
+  clk: qcom: Add graphics clock controller driver for SC7280
+  dt-bindings: clock: Add SC7280 VideoCC clock binding
+  clk: qcom: Add video clock controller driver for SC7280
+
+ .../devicetree/bindings/clock/qcom,gpucc.yaml      |   6 +-
+ .../bindings/clock/qcom,sc7280-dispcc.yaml         |  94 +++
+ .../devicetree/bindings/clock/qcom,videocc.yaml    |   6 +-
+ drivers/clk/qcom/Kconfig                           |  25 +
+ drivers/clk/qcom/Makefile                          |   3 +
+ drivers/clk/qcom/dispcc-sc7280.c                   | 908 +++++++++++++++++++++
+ drivers/clk/qcom/gpucc-sc7280.c                    | 491 +++++++++++
+ drivers/clk/qcom/videocc-sc7280.c                  | 325 ++++++++
+ include/dt-bindings/clock/qcom,dispcc-sc7280.h     |  55 ++
+ include/dt-bindings/clock/qcom,gcc-sc7280.h        |   2 +-
+ include/dt-bindings/clock/qcom,gpucc-sc7280.h      |  35 +
+ include/dt-bindings/clock/qcom,videocc-sc7280.h    |  27 +
+ 12 files changed, 1972 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
+ create mode 100644 drivers/clk/qcom/dispcc-sc7280.c
+ create mode 100644 drivers/clk/qcom/gpucc-sc7280.c
+ create mode 100644 drivers/clk/qcom/videocc-sc7280.c
+ create mode 100644 include/dt-bindings/clock/qcom,dispcc-sc7280.h
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sc7280.h
+ create mode 100644 include/dt-bindings/clock/qcom,videocc-sc7280.h
+
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
+
