@@ -2,97 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7BE3C6FAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01683C6FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 13:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235947AbhGMLZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 07:25:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235881AbhGMLZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 07:25:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D966117A;
-        Tue, 13 Jul 2021 11:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626175384;
-        bh=Aae1Qk7FDHxDqCGXiyf7ZTDCvIv9/biiOfm0a9nKJLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qsivhSf/eXgBzA3V5pV8jl3cs0+TKjdEJl3F/882r9uc0MpHVbf4q2AhlBXYEqfJt
-         8Vwd/Mreg1/FRkqj4xTkRbQra3RJEjeVutP0dhSkgD4zANW5171+Xrq4iU+DoWQpnv
-         qg0YaE6hvhQuoCd5zoLqL+dLdFpwHFerqDn7he+I=
-Date:   Tue, 13 Jul 2021 13:23:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, jic23@kernel.org,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
- typeof_memeber() macros
-Message-ID: <YO13lSUdPfNGOnC3@kroah.com>
-References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
- <20210713084541.7958-3-andriy.shevchenko@linux.intel.com>
- <YO1s+rHEqC9RjMva@kroah.com>
- <YO12ARa3i1TprGnJ@smile.fi.intel.com>
+        id S235835AbhGMLZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 07:25:48 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6809 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235413AbhGMLZr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:25:47 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPJ4n2Z0czXs9R;
+        Tue, 13 Jul 2021 19:17:13 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 19:22:50 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 19:22:49 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <laoar.shao@gmail.com>,
+        <rostedt@goodmis.org>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH] perf sched: Fix record failed when CONFIG_SCHEDSTATS is not set
+Date:   Tue, 13 Jul 2021 19:23:58 +0800
+Message-ID: <20210713112358.194693-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO12ARa3i1TprGnJ@smile.fi.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 02:16:17PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 13, 2021 at 12:37:46PM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Jul 13, 2021 at 11:45:41AM +0300, Andy Shevchenko wrote:
-> > > kernel.h is being used as a dump for all kinds of stuff for a long time.
-> > > Here is the attempt cleaning it up by splitting out container_of() and
-> > > typeof_memeber() macros.
-> > 
-> > That feels messy, why?
-> 
-> Because the headers in the kernel are messy.
+The tracepoints trace_sched_stat_{wait, sleep, iowait} are not exposed to user
+if CONFIG_SCHEDSTATS is not set, "perf sched record" records the three events.
+As a result, the command fails to be executed.
 
-Life is messy and can not easily be partitioned into tiny pieces.  That
-way usually ends up being even messier in the end...
+Before:
 
-> > Reading one .h file for these common
-> > macros/defines is fine, why are container_of and typeof somehow
-> > deserving of their own .h files?
-> 
-> It's explained here. There are tons of drivers that includes kernel.h for only
-> a few or even solely for container_of() macro.
+  #perf sched record sleep 1
+  event syntax error: 'sched:sched_stat_wait'
+                       \___ unknown tracepoint
 
-And why is that really a problem?  kernel.h is in the cache and I would
-be amazed if splitting this out actually made anything build faster.
+  Error:  File /sys/kernel/tracing/events/sched/sched_stat_wait not found.
+  Hint:   Perhaps this kernel misses some CONFIG_ setting to enable this feature?.
 
-> > What speedups are you seeing by
-> > splitting this up?
-> 
-> C preprocessing.
+  Run 'perf list' for a list of valid events
 
-Numbers please.
+   Usage: perf record [<options>] [<command>]
+      or: perf record [<options>] -- <command> [<options>]
 
-greg k-h
+      -e, --event <event>   event selector. use 'perf list' to list available events
+
+Solution:
+  Check whether schedstat tracepoints are exposed. If no, these events are not recorded.
+
+After:
+  # perf sched record sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.163 MB perf.data (1091 samples) ]
+  # perf sched report
+  run measurement overhead: 4736 nsecs
+  sleep measurement overhead: 9059979 nsecs
+  the run test took 999854 nsecs
+  the sleep test took 8945271 nsecs
+  nr_run_events:        716
+  nr_sleep_events:      785
+  nr_wakeup_events:     0
+  ...
+  ------------------------------------------------------------
+
+Fixes: 2a09b5de235a6 ("sched/fair: do not expose some tracepoints to user if CONFIG_SCHEDSTATS is not set")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+---
+ tools/perf/builtin-sched.c | 33 +++++++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 954ce2f594e9..3e5b7faf0c16 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -3335,6 +3335,16 @@ static void setup_sorting(struct perf_sched *sched, const struct option *options
+ 	sort_dimension__add("pid", &sched->cmp_pid);
+ }
+ 
++static bool schedstat_events_exposed(void)
++{
++	/*
++	 * Select "sched:sched_stat_wait" event to check
++	 * whether schedstat tracepoints are exposed.
++	 */
++	return IS_ERR(trace_event__tp_format("sched", "sched_stat_wait")) ?
++		false : true;
++}
++
+ static int __cmd_record(int argc, const char **argv)
+ {
+ 	unsigned int rec_argc, i, j;
+@@ -3346,21 +3356,33 @@ static int __cmd_record(int argc, const char **argv)
+ 		"-m", "1024",
+ 		"-c", "1",
+ 		"-e", "sched:sched_switch",
+-		"-e", "sched:sched_stat_wait",
+-		"-e", "sched:sched_stat_sleep",
+-		"-e", "sched:sched_stat_iowait",
+ 		"-e", "sched:sched_stat_runtime",
+ 		"-e", "sched:sched_process_fork",
+ 		"-e", "sched:sched_wakeup_new",
+ 		"-e", "sched:sched_migrate_task",
+ 	};
++
++	/*
++	 * The tracepoints trace_sched_stat_{wait, sleep, iowait}
++	 * are not exposed to user if CONFIG_SCHEDSTATS is not set,
++	 * to prevent "perf sched record" execution failure, determine
++	 * whether to record schedstat events according to actual situation.
++	 */
++	const char * const schedstat_args[] = {
++		"-e", "sched:sched_stat_wait",
++		"-e", "sched:sched_stat_sleep",
++		"-e", "sched:sched_stat_iowait",
++	};
++	unsigned int schedstat_argc = schedstat_events_exposed() ?
++		ARRAY_SIZE(schedstat_args) : 0;
++
+ 	struct tep_event *waking_event;
+ 
+ 	/*
+ 	 * +2 for either "-e", "sched:sched_wakeup" or
+ 	 * "-e", "sched:sched_waking"
+ 	 */
+-	rec_argc = ARRAY_SIZE(record_args) + 2 + argc - 1;
++	rec_argc = ARRAY_SIZE(record_args) + 2 + schedstat_argc + argc - 1;
+ 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
+ 
+ 	if (rec_argv == NULL)
+@@ -3376,6 +3398,9 @@ static int __cmd_record(int argc, const char **argv)
+ 	else
+ 		rec_argv[i++] = strdup("sched:sched_wakeup");
+ 
++	for (j = 0; j < schedstat_argc; j++)
++		rec_argv[i++] = strdup(schedstat_args[j]);
++
+ 	for (j = 1; j < (unsigned int)argc; j++, i++)
+ 		rec_argv[i] = argv[j];
+ 
+-- 
+2.30.GIT
+
