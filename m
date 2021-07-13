@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2113C70C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DD73C70C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236265AbhGMM7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236164AbhGMM7t (ORCPT
+        id S236390AbhGMNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:00:41 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41320 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236258AbhGMNAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:59:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C58C0613DD;
-        Tue, 13 Jul 2021 05:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HYg+Gfy1rzeXrpFBUcY0k1dwItUMLKZvkbcYt//5vGs=; b=Ub9SgGnQKmt3zkIyJReBe/qE5m
-        Yd92oP9f5SvHwpnoK2HskVaKdko2ZDkimitSCSIYLaHIHWEzAMZ+aeOEJlzF1QdA4VHXq0RGp0mHH
-        TIRTgUioV6gth7Ip8RTWYDudTwc/uRewtHzzhSD1Slw4WhFlrF/+DvBLxoseR+flZRovW/Vgqg252
-        a5ShtUV1r4Zf8PNy3rABuMRHORrS/JLILcSTgSTZaZ58TclGfyfPVRB30ck9F/Bcw6cz7v1V2c7iO
-        uceGGFmts7bMmDNuoJzbqYMsMZhjNFx0AjGzpezPP1oYxR2oWcSUFcoEyduUlQ28pBSnqVmqdqp4A
-        lCPgpYbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3HxG-00171O-Nc; Tue, 13 Jul 2021 12:56:08 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 566F7987782; Tue, 13 Jul 2021 14:56:06 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 14:56:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 03/11] coresight: tmc-etf: Add comment for store
- ordering
-Message-ID: <20210713125606.GB4170@worktop.programming.kicks-ass.net>
-References: <20210711104105.505728-1-leo.yan@linaro.org>
- <20210711104105.505728-4-leo.yan@linaro.org>
+        Tue, 13 Jul 2021 09:00:39 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16DCvmuZ006781;
+        Tue, 13 Jul 2021 07:57:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1626181068;
+        bh=1ZZ9zjal5f/2Vjv3oKPjd86SEpDc740fHxWVRQS+DvE=;
+        h=From:To:CC:Subject:Date;
+        b=KPi74tjEqNBFtdZfMaWl/q/rjzqW8bF1jl0Z63CD8SHQtYkMjdgLH3m3stQPBr9en
+         6A7rZikBpI6s40NDKfmRlNljgIlGnGSGsVEYx2YGiMFItyhIPiinHOyFkAEmHRBIrp
+         WZz68NngnQtMyG3vcWsr5x7M67fEk6wpZvWe6AQU=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16DCvmU3121170
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 13 Jul 2021 07:57:48 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
+ Jul 2021 07:57:47 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 13 Jul 2021 07:57:47 -0500
+Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16DCvh0V067892;
+        Tue, 13 Jul 2021 07:57:44 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Apurva Nandan <a-nandan@ti.com>, Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH 0/2] spi: cadence-quadspi: Fix DTR op checks and timeout in SPI NAND write operations
+Date:   Tue, 13 Jul 2021 12:57:40 +0000
+Message-ID: <20210713125743.1540-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210711104105.505728-4-leo.yan@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 06:40:57PM +0800, Leo Yan wrote:
-> AUX ring buffer is required to separate the data store and aux_head
-> store, since the function CS_LOCK() has contained memory barrier mb(),
-> mb() is a more conservative barrier than smp_wmb() on Arm32/Arm64, thus
-> it's needless to add any explicit barrier anymore.
-> 
-> Add comment to make clear for the barrier usage for ETF.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  drivers/hwtracing/coresight/coresight-tmc-etf.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> index 45b85edfc690..9a42ee689921 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> @@ -553,6 +553,12 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
->  	if (buf->snapshot)
->  		handle->head += to_read;
->  
-> +	/*
-> +	 * AUX ring buffer requires to use memory barrier to separate the trace
-> +	 * data store and aux_head store, because CS_LOCK() contains mb() which
-> +	 * gives more heavy barrier than smp_wmb(), it's not necessary to
-> +	 * explicitly invoke any barrier.
-> +	 */
->  	CS_LOCK(drvdata->base);
+Hi,
+This series proposes fixes for cadence-quadspi controller for the
+following issues with SPI NAND flashes:
 
-'more heavy' is not a correctness argument :-)
+- Due to auto-HW polling without address phase, the cadence-quadspi
+  controller timeouts when performing any write operation on SPI NAND
+  flash.
 
-The argument to make here is that CS_LOCK() ensures completion /
-visibility of the hardware buffer.
+- When checking for DTR spi_mem_op, cadence-quadspi doesn't ignore a
+  zero length phase in the SPI instruction, resulting in false negatives.
+
+This series has been tested on TI J721e EVM with the Winbond W35N01JW
+flash.
+
+Apurva Nandan (2):
+  spi: cadence-quadspi: Disable Auto-HW polling
+  spi: cadence-quadspi: Fix check condition for DTR ops
+
+ drivers/spi/spi-cadence-quadspi.c | 39 ++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
+
