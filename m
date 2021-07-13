@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8D13C702A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C857F3C7029
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhGMMOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S236146AbhGMMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236100AbhGMMO0 (ORCPT
+        with ESMTP id S235797AbhGMMOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:14:26 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C5CC0613EE;
-        Tue, 13 Jul 2021 05:11:34 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l6so5192718wmq.0;
-        Tue, 13 Jul 2021 05:11:34 -0700 (PDT)
+        Tue, 13 Jul 2021 08:14:25 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10C0C0613DD;
+        Tue, 13 Jul 2021 05:11:35 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so2180891wmc.2;
+        Tue, 13 Jul 2021 05:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B/r9xbvtzQfz8z7JIGAltsdXiwLlLwykHrOPTkNqXTo=;
-        b=RzWNG3VJoZi2fcRCUQlN4D5fFfp+42vxrRqIWKg/GNpVAifk+NOq0sfhSiia9iAM8+
-         nZjAw8hYiyXgQyOt+f4dyXnF0g3wVLz3wskPm2cwsjAjmsaSg4jiARLWQeA8P5ORY76h
-         ot6mjGMsia4qNmatR+XEbL8jverOcz6viELjqrJ44NS1fW6OqHVzarkvTZPkMOqIUjba
-         NuL4C0Q2kIsnZOb9NgSqKxMtJnqONeuM0RDDsNJdCcufm3RZJQOLn4wKgdUmFVIJWuaT
-         pZ/JZgZtBZHIXTBYucRulxShsWpLrFit9Hzu3Nt+pIvNEsxhKqHIU6acRXMmG/Lr0OwK
-         Ueig==
+        bh=MEb7AcK2dhSUeUYWAppL9LVnTDMDUT/LyxDTtDZFJYU=;
+        b=trhYvCu+ZR/3Pqq71sigenE9TJ1TyehIUHdXfkTSVwR5pic3q/g/dUUSg7NHiXdL/A
+         JdhyFbExzgkfipi7aB3yD++64FcJBcX4Lt/S3Jiwdln8BrodrjAHWrAKKz9SfnMj2ZWM
+         4JMlDKfYt/8pR/KJFUxA7lhbeHhyAOgLHCC5vWKChXUANnP/9Tcc60f6IPqQjZnbkfp1
+         DgxgnGNVWt/8yfxcuE7s85fZUhIg2PeX3O3qfNuSOE30wq3/U1h13TJ8uU98BZ4xP58X
+         WRDiHDJA3GKtYR/qVX5jUc5990lWvtT4JyDFLxavR6rnrh+tFpzjH6naY8QMrN7Pk8Rc
+         TDcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B/r9xbvtzQfz8z7JIGAltsdXiwLlLwykHrOPTkNqXTo=;
-        b=kdL0vsfyRkNoxqbeeDyZPmz/WfbGKLDFPzTbcuu5ykyNtxpe+J14JpBEF2wK93nToC
-         IFdryu7fSNKJacPOjcdw+crZYbVD1AFl6WU6oUKY3MPMXcZaBNJt41RDUzwGRwJPyt31
-         v2rjkdNarRibpKGDMf2brEjxWcDV7u2bL3gTvIevkA1W2ZOeIVm8SAHAKQKx/ve9PyNJ
-         8HqqC7kgpCmroV/sD/qR3QtnOgbM4+Dt1q0ngTchVsIq+CXcRZawTkv3ZDwoeaNT/M/E
-         iGXNZMDf3sKzyxNMOVFKhcVo194XxyptcNiNYqM9TFh7yfU1D42j4k+0tJQxrwN8wMr5
-         2+DA==
-X-Gm-Message-State: AOAM531VMpH/1PoPBqK+TulOY5pwuw2H3dKYMUfsWPMJ7mGT8wXfCpGV
-        jpSvYQsXOsrfgly0NLFNK84=
-X-Google-Smtp-Source: ABdhPJzLy58wlWB6R3xHHia8m27GHwWjYH+3zPDpxZlEXyCWOqa9JUkjbt+p3iizIAUInjuRkJ9NdA==
-X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr19692347wme.35.1626178293332;
-        Tue, 13 Jul 2021 05:11:33 -0700 (PDT)
+        bh=MEb7AcK2dhSUeUYWAppL9LVnTDMDUT/LyxDTtDZFJYU=;
+        b=PtiQq7u/fHPIDrQm6u9njxWvAwYdWMBV1YfO6igJ5wmCIVDgMnn9I0C0iArmEg50gs
+         Zw85DD28DAZ4UQY/MuUe2KqxHGzWW265w+BLxu1ulMg/+uMBkpk2g0ZKSBwZSB62K0Ir
+         5+KLbEeCOHMdCw6GpePPs2/Ni5BtwsR4GLc7tgrBL1uqIFM4U8BN8I9MuxgXJ6vCFDG6
+         S+iZxelImjHlF6aV+IaAIpPXO14WiW9Cb36tq83nCG28kY6ylvY+MMUSBWwK7AGylx+K
+         QQIJq4qVk/WlVSDI4+tDKoly3X8tjrSc4lzNms9iPspGThuCQ//jWjDBwOG690LbC4LB
+         61Rw==
+X-Gm-Message-State: AOAM53298AaXx2i8lMDG+N6dnlYxqwOrvakMeDvP418i7CvfYaN7sapM
+        KRBxn+J6qFx0kyeTgKudTgw=
+X-Google-Smtp-Source: ABdhPJyKbBkETe3BmF6G7UsnTvg0JCmM0HC640hEhz0jAPAzGhHvMbjMXX0wTUOWZ/h2AM+anAubgw==
+X-Received: by 2002:a05:600c:1992:: with SMTP id t18mr20461199wmq.165.1626178294287;
+        Tue, 13 Jul 2021 05:11:34 -0700 (PDT)
 Received: from localhost.localdomain ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.googlemail.com with ESMTPSA id o3sm17551425wrw.56.2021.07.13.05.11.32
+        by smtp.googlemail.com with ESMTPSA id o3sm17551425wrw.56.2021.07.13.05.11.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 05:11:32 -0700 (PDT)
+        Tue, 13 Jul 2021 05:11:33 -0700 (PDT)
 From:   Riccardo Mancini <rickyman7@gmail.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Ian Rogers <irogers@google.com>,
@@ -57,10 +57,11 @@ Cc:     Ian Rogers <irogers@google.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: [RFC PATCH 02/10] perf tests: add test for workqueue
-Date:   Tue, 13 Jul 2021 14:11:13 +0200
-Message-Id: <333e2e3986d32cf8894105f149abb543a84ec91c.1626177381.git.rickyman7@gmail.com>
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Subject: [RFC PATCH 03/10] perf workqueue: add threadpool start and stop functions
+Date:   Tue, 13 Jul 2021 14:11:14 +0200
+Message-Id: <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626177381.git.rickyman7@gmail.com>
 References: <cover.1626177381.git.rickyman7@gmail.com>
@@ -70,186 +71,345 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It will have subtests testing threadpool and workqueue separately.
-This patch only introduces the first subtest, checking that the
-threadpool is correctly created and destructed.
-This test will be expanded when new functions are added in next
-patches.
+This patch adds the start and stop functions, alongside the thread
+function.
+Each thread will run until a stop signal is received.
+Furthermore, start and stop are added to the test.
 
+Thread management is based on the prototype from Alexey:
+https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+
+Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 ---
- tools/perf/tests/Build          |   1 +
- tools/perf/tests/builtin-test.c |   9 +++
- tools/perf/tests/tests.h        |   3 +
- tools/perf/tests/workqueue.c    | 113 ++++++++++++++++++++++++++++++++
- 4 files changed, 126 insertions(+)
- create mode 100644 tools/perf/tests/workqueue.c
+ tools/perf/tests/workqueue.c           |  13 ++
+ tools/perf/util/workqueue/threadpool.c | 238 +++++++++++++++++++++++++
+ tools/perf/util/workqueue/threadpool.h |   5 +
+ 3 files changed, 256 insertions(+)
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 650aec19d49052ca..eda6c78a37cfbc13 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -64,6 +64,7 @@ perf-y += parse-metric.o
- perf-y += pe-file-parsing.o
- perf-y += expand-cgroup.o
- perf-y += perf-time-to-tsc.o
-+perf-y += workqueue.o
- 
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 5e6242576236325c..2ff5d38ed83a723d 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -360,6 +360,15 @@ static struct test generic_tests[] = {
- 		.func = test__perf_time_to_tsc,
- 		.is_supported = test__tsc_is_supported,
- 	},
-+	{
-+		.desc = "Test workqueue lib",
-+		.func = test__workqueue,
-+		.subtest = {
-+			.skip_if_fail	= false,
-+			.get_nr		= test__workqueue_subtest_get_nr,
-+			.get_desc	= test__workqueue_subtest_get_desc,
-+		}
-+	},
- 	{
- 		.func = NULL,
- 	},
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 1100dd55b657b779..9ca67113a7402463 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -127,6 +127,9 @@ int test__parse_metric(struct test *test, int subtest);
- int test__pe_file_parsing(struct test *test, int subtest);
- int test__expand_cgroup_events(struct test *test, int subtest);
- int test__perf_time_to_tsc(struct test *test, int subtest);
-+int test__workqueue(struct test *test, int subtest);
-+const char *test__workqueue_subtest_get_desc(int subtest);
-+int test__workqueue_subtest_get_nr(void);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
 diff --git a/tools/perf/tests/workqueue.c b/tools/perf/tests/workqueue.c
-new file mode 100644
-index 0000000000000000..1bd4d78c13eb3b14
---- /dev/null
+index 1bd4d78c13eb3b14..be377e9897bab4e9 100644
+--- a/tools/perf/tests/workqueue.c
 +++ b/tools/perf/tests/workqueue.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/kernel.h>
-+#include "tests.h"
-+#include "util/debug.h"
-+#include "util/workqueue/threadpool.h"
-+
-+struct threadpool_test_args_t {
-+	int pool_size;
-+};
-+
-+static int __threadpool__prepare(struct threadpool_struct **pool, int pool_size)
-+{
-+	*pool = create_threadpool(pool_size);
-+	TEST_ASSERT_VAL("threadpool creation failure", *pool != NULL);
-+	TEST_ASSERT_VAL("threadpool size is wrong",
-+			threadpool_size(*pool) == pool_size);
-+
-+	return 0;
-+}
-+
-+static int __threadpool__teardown(struct threadpool_struct *pool)
-+{
-+	destroy_threadpool(pool);
-+
-+	return 0;
-+}
-+
-+
-+static int __test__threadpool(void *_args)
-+{
-+	struct threadpool_test_args_t *args = _args;
-+	struct threadpool_struct *pool;
+@@ -10,16 +10,29 @@ struct threadpool_test_args_t {
+ 
+ static int __threadpool__prepare(struct threadpool_struct **pool, int pool_size)
+ {
 +	int ret;
 +
-+	ret = __threadpool__prepare(&pool, args->pool_size);
-+	if (ret)
-+		return ret;
+ 	*pool = create_threadpool(pool_size);
+ 	TEST_ASSERT_VAL("threadpool creation failure", *pool != NULL);
+ 	TEST_ASSERT_VAL("threadpool size is wrong",
+ 			threadpool_size(*pool) == pool_size);
+ 
++	ret = start_threadpool(*pool);
++	TEST_ASSERT_VAL("threadpool start failure", ret == 0);
++	TEST_ASSERT_VAL("threadpool is not ready", threadpool_is_ready(*pool));
 +
-+	ret = __threadpool__teardown(pool);
-+	if (ret)
-+		return ret;
+ 	return 0;
+ }
+ 
+ static int __threadpool__teardown(struct threadpool_struct *pool)
+ {
++	int ret;
 +
-+	return 0;
-+}
++	ret = stop_threadpool(pool);
++	TEST_ASSERT_VAL("threadpool start failure", ret == 0);
++	TEST_ASSERT_VAL("stopped threadpool is ready",
++			!threadpool_is_ready(pool));
 +
-+static const struct threadpool_test_args_t threadpool_test_args[] = {
-+	{
-+		.pool_size = 1
-+	},
-+	{
-+		.pool_size = 2
-+	},
-+	{
-+		.pool_size = 4
-+	},
-+	{
-+		.pool_size = 8
-+	},
-+	{
-+		.pool_size = 16
-+	}
-+};
-+
-+struct test_case {
-+	const char *desc;
-+	int (*func)(void *args);
-+	void *args;
-+	int n_args;
-+	int arg_size;
-+};
-+
-+static struct test_case workqueue_testcase_table[] = {
-+	{
-+		.desc = "Threadpool",
-+		.func = __test__threadpool,
-+		.args = (void *) threadpool_test_args,
-+		.n_args = (int)ARRAY_SIZE(threadpool_test_args),
-+		.arg_size = sizeof(struct threadpool_test_args_t)
-+	}
-+};
-+
-+
-+int test__workqueue(struct test *test __maybe_unused, int i)
+ 	destroy_threadpool(pool);
+ 
+ 	return 0;
+diff --git a/tools/perf/util/workqueue/threadpool.c b/tools/perf/util/workqueue/threadpool.c
+index 70c67569f956a3e2..f4635ff782b9388e 100644
+--- a/tools/perf/util/workqueue/threadpool.c
++++ b/tools/perf/util/workqueue/threadpool.c
+@@ -4,12 +4,23 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <string.h>
++#include <pthread.h>
++#include <signal.h>
++#include <syscall.h>
+ #include "debug.h"
+ #include "asm/bug.h"
+ #include "threadpool.h"
+ 
++#ifndef HAVE_GETTID
++static inline pid_t gettid(void)
 +{
-+	int j, ret = 0;
-+	struct test_case *tc;
++	return (pid_t)syscall(__NR_gettid);
++}
++#endif
 +
-+	if (i < 0 || i >= (int)ARRAY_SIZE(workqueue_testcase_table))
+ enum threadpool_status {
+ 	THREADPOOL_STATUS__STOPPED,		/* no threads */
++	THREADPOOL_STATUS__READY,		/* threads are ready but idle */
+ 	THREADPOOL_STATUS__ERROR,		/* errors */
+ 	THREADPOOL_STATUS__MAX
+ };
+@@ -31,6 +42,21 @@ struct thread_struct {
+ 	} pipes;
+ };
+ 
++enum thread_msg {
++	THREAD_MSG__UNDEFINED = 0,
++	THREAD_MSG__ACK,		/* from th: create and exit ack */
++	THREAD_MSG__WAKE,		/* to th: wake up */
++	THREAD_MSG__STOP,		/* to th: exit */
++	THREAD_MSG__MAX
++};
++
++static const char * const thread_msg_tags[] = {
++	"undefined",
++	"ack",
++	"wake",
++	"stop"
++};
++
+ /**
+  * init_pipes - initialize all pipes of @thread
+  */
+@@ -89,6 +115,113 @@ static void close_pipes(struct thread_struct *thread)
+ 	}
+ }
+ 
++/**
++ * wait_thread - receive ack from thread
++ *
++ * NB: call only from main thread!
++ */
++static int wait_thread(struct thread_struct *thread)
++{
++	int res;
++	enum thread_msg msg = THREAD_MSG__UNDEFINED;
++
++	res = read(thread->pipes.from[0], &msg, sizeof(msg));
++	if (res < 0) {
++		pr_err("threadpool: failed to recv msg from tid=%d: %s\n",
++		       thread->tid, strerror(errno));
 +		return -1;
-+
-+	tc = &workqueue_testcase_table[i];
-+
-+	for (j = 0; j < tc->n_args; j++) {
-+		ret = tc->func(tc->args + (j*tc->arg_size));
-+		if (ret)
-+			return ret;
 +	}
++	if (msg != THREAD_MSG__ACK) {
++		pr_err("threadpool: received unexpected msg from tid=%d: %s\n",
++		       thread->tid, thread_msg_tags[msg]);
++		return -1;
++	}
++
++	pr_debug2("threadpool: received ack from tid=%d\n", thread->tid);
 +
 +	return 0;
 +}
 +
-+
-+int test__workqueue_subtest_get_nr(void)
++/**
++ * terminate_thread - send stop signal to thread and wait for ack
++ *
++ * NB: call only from main thread!
++ */
++static int terminate_thread(struct thread_struct *thread)
 +{
-+	return (int)ARRAY_SIZE(workqueue_testcase_table);
++	int res;
++	enum thread_msg msg = THREAD_MSG__STOP;
++
++	res = write(thread->pipes.to[1], &msg, sizeof(msg));
++	if (res < 0) {
++		pr_err("threadpool: error sending stop msg to tid=%d: %s\n",
++			thread->tid, strerror(errno));
++		return res;
++	}
++
++	res = wait_thread(thread);
++
++	return res;
 +}
 +
-+const char *test__workqueue_subtest_get_desc(int i)
++/**
++ * threadpool_thread - function running on thread
++ *
++ * This function waits for a signal from main thread to start executing
++ * a task.
++ * On completion, it will go back to sleep, waiting for another signal.
++ * Signals are delivered through pipes.
++ */
++static void *threadpool_thread(void *args)
 +{
-+	if (i < 0 || i >= (int)ARRAY_SIZE(workqueue_testcase_table))
++	struct thread_struct *thread = (struct thread_struct *) args;
++	enum thread_msg msg;
++	int err;
++
++	thread->tid = gettid();
++
++	pr_debug2("threadpool[%d]: started\n", thread->tid);
++
++	for (;;) {
++		msg = THREAD_MSG__ACK;
++		err = write(thread->pipes.from[1], &msg, sizeof(msg));
++		if (err == -1) {
++			pr_err("threadpool[%d]: failed to send ack: %s\n",
++				thread->tid, strerror(errno));
++			break;
++		}
++
++		msg = THREAD_MSG__UNDEFINED;
++		err = read(thread->pipes.to[0], &msg, sizeof(msg));
++		if (err < 0) {
++			pr_err("threadpool[%d]: error receiving msg: %s\n",
++				thread->tid, strerror(errno));
++			break;
++		}
++
++		if (msg != THREAD_MSG__WAKE && msg != THREAD_MSG__STOP) {
++			pr_err("threadpool[%d]: received unexpected msg: %s\n",
++				thread->tid, thread_msg_tags[msg]);
++			break;
++		}
++
++		if (msg == THREAD_MSG__STOP)
++			break;
++	}
++
++	pr_debug2("threadpool[%d]: exit\n", thread->tid);
++
++	msg = THREAD_MSG__ACK;
++	err = write(thread->pipes.from[1], &msg, sizeof(msg));
++	if (err == -1) {
++		pr_err("threadpool[%d]: failed to send ack: %s\n",
++			thread->tid, strerror(errno));
 +		return NULL;
-+	return workqueue_testcase_table[i].desc;
++	}
++
++	return NULL;
 +}
++
+ /**
+  * create_threadpool - create a fixed threadpool with @n_threads threads
+  */
+@@ -173,3 +306,108 @@ int threadpool_size(struct threadpool_struct *pool)
+ {
+ 	return pool->nr_threads;
+ }
++
++/**
++ * __start_threadpool - start all threads in the pool.
++ *
++ * This function does not change @pool->status.
++ */
++static int __start_threadpool(struct threadpool_struct *pool)
++{
++	int t, tt, ret = 0, nr_threads = pool->nr_threads;
++	sigset_t full, mask;
++	pthread_t handle;
++	pthread_attr_t attrs;
++
++	sigfillset(&full);
++	if (sigprocmask(SIG_SETMASK, &full, &mask)) {
++		pr_err("Failed to block signals on threads start: %s\n",
++			strerror(errno));
++		return -1;
++	}
++
++	pthread_attr_init(&attrs);
++	pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
++
++	for (t = 0; t < nr_threads; t++) {
++		struct thread_struct *thread = &pool->threads[t];
++
++		if (pthread_create(&handle, &attrs, threadpool_thread, thread)) {
++			for (tt = 1; tt < t; tt++)
++				terminate_thread(thread);
++			pr_err("Failed to start threads: %s\n", strerror(errno));
++			ret = -1;
++			goto out_free_attr;
++		}
++
++		if (wait_thread(thread)) {
++			for (tt = 1; tt <= t; tt++)
++				terminate_thread(thread);
++			ret = -1;
++			goto out_free_attr;
++		}
++	}
++
++out_free_attr:
++	pthread_attr_destroy(&attrs);
++
++	if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
++		pr_err("Failed to unblock signals on threads start: %s\n",
++			strerror(errno));
++		ret = -1;
++	}
++
++	return ret;
++}
++
++/**
++ * start_threadpool - start all threads in the pool.
++ *
++ * The function blocks until all threads are up and running.
++ */
++int start_threadpool(struct threadpool_struct *pool)
++{
++	int err;
++
++	if (pool->status != THREADPOOL_STATUS__STOPPED) {
++		pr_err("threadpool: starting not stopped pool\n");
++		return -1;
++	}
++
++	err = __start_threadpool(pool);
++	pool->status = err ? THREADPOOL_STATUS__ERROR : THREADPOOL_STATUS__READY;
++	return err;
++}
++
++/**
++ * stop_threadpool - stop all threads in the pool.
++ *
++ * This function blocks waiting for ack from all threads.
++ */
++int stop_threadpool(struct threadpool_struct *pool)
++{
++	int t, ret, err = 0;
++
++	if (pool->status != THREADPOOL_STATUS__READY) {
++		pr_err("threadpool: stopping not ready pool\n");
++		return -1;
++	}
++
++	for (t = 0; t < pool->nr_threads; t++) {
++		ret = terminate_thread(&pool->threads[t]);
++		if (ret && !err)
++			err = -1;
++	}
++
++	pool->status = err ? THREADPOOL_STATUS__ERROR : THREADPOOL_STATUS__STOPPED;
++
++	return err;
++}
++
++/**
++ * threadpool_is_ready - check if the threads are running
++ */
++bool threadpool_is_ready(struct threadpool_struct *pool)
++{
++	return pool->status == THREADPOOL_STATUS__READY;
++}
+diff --git a/tools/perf/util/workqueue/threadpool.h b/tools/perf/util/workqueue/threadpool.h
+index 2b9388c768a0b588..b62cad2b2c5dd331 100644
+--- a/tools/perf/util/workqueue/threadpool.h
++++ b/tools/perf/util/workqueue/threadpool.h
+@@ -14,6 +14,11 @@ struct task_struct {
+ extern struct threadpool_struct *create_threadpool(int n_threads);
+ extern void destroy_threadpool(struct threadpool_struct *pool);
+ 
++extern int start_threadpool(struct threadpool_struct *pool);
++extern int stop_threadpool(struct threadpool_struct *pool);
++
+ extern int threadpool_size(struct threadpool_struct *pool);
+ 
++extern bool threadpool_is_ready(struct threadpool_struct *pool);
++
+ #endif /* __WORKQUEUE_THREADPOOL_H */
 -- 
 2.31.1
 
