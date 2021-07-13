@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F293C7343
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520663C734B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhGMPc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:32:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29791 "EHLO mga04.intel.com"
+        id S237127AbhGMPdb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 11:33:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:51843 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237033AbhGMPcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:32:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="208366730"
+        id S236992AbhGMPda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 11:33:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="274015979"
 X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="208366730"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 08:25:15 -0700
+   d="scan'208";a="274015979"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 08:27:03 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="412479666"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 13 Jul 2021 08:25:03 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 228725A1; Tue, 13 Jul 2021 18:25:28 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 5/5] media: staging: atomisp: Remove unused port_enabled variable
-Date:   Tue, 13 Jul 2021 18:25:23 +0300
-Message-Id: <20210713152523.19902-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210713152523.19902-1-andriy.shevchenko@linux.intel.com>
-References: <20210713152523.19902-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="503184746"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Jul 2021 08:27:02 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 13 Jul 2021 08:27:01 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 13 Jul 2021 08:27:01 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
+ Tue, 13 Jul 2021 08:27:01 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rric@kernel.org" <rric@kernel.org>
+CC:     "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] EDAC/amd64: Use DEVICE_ATTR helper macros
+Thread-Topic: [PATCH v3] EDAC/amd64: Use DEVICE_ATTR helper macros
+Thread-Index: AQHXd7OeuAHraXCsaUyi/VM2AGH0MqtBByhQ
+Date:   Tue, 13 Jul 2021 15:27:01 +0000
+Message-ID: <43f0eb92643a4613992714effefed757@intel.com>
+References: <20210713065130.2151-1-dwaipayanray1@gmail.com>
+In-Reply-To: <20210713065130.2151-1-dwaipayanray1@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused port_enabled variable in ia_css_isys_rx_configure().
+> Instead of "open coding" DEVICE_ATTR, use the corresponding
+> helper macros DEVICE_ATTR_{RW,RO,WO} in amd64_edac.c
+>
+> Some function names needed to be changed to match the device
+> conventions <foo>_show and <foo>_store, but the functionality
+> itself is unchanged.
+>
+> The devices using EDAC_DCT_ATTR_SHOW() are left unchanged.
+>
+> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: added "media:" prefix
- drivers/staging/media/atomisp/pci/runtime/isys/src/rx.c | 3 ---
- 1 file changed, 3 deletions(-)
+Yazen,
 
-diff --git a/drivers/staging/media/atomisp/pci/runtime/isys/src/rx.c b/drivers/staging/media/atomisp/pci/runtime/isys/src/rx.c
-index 79475dc19eb6..af153c3fb86d 100644
---- a/drivers/staging/media/atomisp/pci/runtime/isys/src/rx.c
-+++ b/drivers/staging/media/atomisp/pci/runtime/isys/src/rx.c
-@@ -490,7 +490,6 @@ static const mipi_lane_cfg_t MIPI_PORT_LANES[N_RX_MODE][N_MIPI_PORT_ID] = {
- void ia_css_isys_rx_configure(const rx_cfg_t *config,
- 			      const enum ia_css_input_mode input_mode)
- {
--	bool port_enabled[N_MIPI_PORT_ID];
- 	bool any_port_enabled = false;
- 	enum mipi_port_id port;
- 
-@@ -527,8 +526,6 @@ void ia_css_isys_rx_configure(const rx_cfg_t *config,
- 					_HRT_CSS_RECEIVER_2400_RX_COUNT_REG_IDX,
- 					config->rxcount);
- 
--		port_enabled[port] = true;
--
- 		if (input_mode != IA_CSS_INPUT_MODE_BUFFERED_SENSOR) {
- 			/* MW: A bit of a hack, straight wiring of the capture
- 			 * units,assuming they are linearly enumerated. */
--- 
-2.30.2
+Boris is on vacation. Should I queue this change?
 
+-Tony
