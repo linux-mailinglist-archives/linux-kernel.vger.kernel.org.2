@@ -2,131 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D443C6ECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144F13C6ED5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 12:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhGMKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 06:48:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58296 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235390AbhGMKsO (ORCPT
+        id S235800AbhGMKtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 06:49:09 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:45777 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235669AbhGMKtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 06:48:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626173123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tm3BAPBxcujCn83ZLlZEVc0uhwhMyYxPuk4009NBqU0=;
-        b=IVB4QhpAN4tOROFDQbEqSd1fIta+TXTX9BodhBkSC4nQMPB3yr6XrVf4KhNzibIVEdq8JU
-        C0u6CglO190bh7ldpXeU716aO7QBxtBjLGEN6n1lasvwXRa1SBewRGoyA0OkRnYsh0smo+
-        q3RNSTB/noaxUdqETMX9N10kY8xyloc=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231--dRpA-WSNUC3TM9EpU45Pw-1; Tue, 13 Jul 2021 06:45:22 -0400
-X-MC-Unique: -dRpA-WSNUC3TM9EpU45Pw-1
-Received: by mail-ej1-f71.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so6428320ejz.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 03:45:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=tm3BAPBxcujCn83ZLlZEVc0uhwhMyYxPuk4009NBqU0=;
-        b=Xw6LOGuHfcOVwwWzhV/Gfr01zX47jHV95uLzgrmugTVekWZAAPYJmf6u5uJoi9vRuf
-         OBnJkOEYTWEj1CVf5vh/eBXCyY64sjKN79I/jDdEFk8V1JMBB3Is8K6utdfbBNHyf4fJ
-         P9+9OOs/jwvAgYenFfEAq5zJwEvj9hNE+WX1L8x4w9dv6EueLz5XZ4PrySqQ2MWzWdxL
-         cNnsV4VDGmqZftkVo7gyXhjAeMrHFzH0KxA8rmtB98qas1ELwrCbDHUP4gQCksIcApg+
-         2qvO5VVmTWD+ZNBBydGixE19iCjZ7qENMkSCehWaKp1k7OHBUpQU8cuwu6GPYr5OqVbt
-         p1gw==
-X-Gm-Message-State: AOAM531178wvyJnk9pSJRdeTWOeP04NOtiTVP1e57/0ogzGsHHfNDlpx
-        dXn2TC1Xhr4JvUKsEXJWUhANTXCT0rbuNf81mvUXNPec8pEI8iEO19f8v+MlFnzzoPl0zl8f5OM
-        LQWFdJysblyQ+KHAUmQ2etf9YdgrviPsJNShCoVNXqi3Zfn6xSNA10FcfoTLLAeawxg3pjUXtzC
-        uJ
-X-Received: by 2002:a17:906:6d8e:: with SMTP id h14mr4924107ejt.128.1626173121044;
-        Tue, 13 Jul 2021 03:45:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzMemoqHtCQm8MvCsHTFd/7QO+vl5+8z/ZgEsYC6HbfgHNENkjma/gD7gKut3z1BjHjunkssw==
-X-Received: by 2002:a17:906:6d8e:: with SMTP id h14mr4924085ejt.128.1626173120840;
-        Tue, 13 Jul 2021 03:45:20 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id dj16sm5006073edb.0.2021.07.13.03.45.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 03:45:20 -0700 (PDT)
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] vboxsf fixes for 5.14-1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>
-Message-ID: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
-Date:   Tue, 13 Jul 2021 12:45:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 13 Jul 2021 06:49:05 -0400
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 16DAjwGT028532;
+        Tue, 13 Jul 2021 19:45:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 16DAjwGT028532
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626173159;
+        bh=+svtoajNYpBbeswP8VRHWjbPN7Mwn71IcUxSdOvYYRw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WIxeqi7ujMMMDlMLSvXa+6y4daMI4auS5+S99bpyyz72Uw++5f1rgsLgyLeP/074p
+         v2mgGrU8wCICRjVtmB/ZUW0WMzrKHXDTdIpRAS30MCIu/goV9PffhIXxUupgBHsZf8
+         c8q+qBmOEQOQZZcTfs9nNnZBlTRt2stqReHgFgwCoqXJQHrWLAKccA2ss2wZxq8VTS
+         AuVtfdMZ8ASQCK/Fu/vsCpRShboIzlOMGJB3KgPOqGzn3TYTQxTKIFtpLNYR1uxGWY
+         J5n8vRkk5lw2luZkjG1r1iEV/ulfwWrW5beBVvfXkYpI32/KMXnAISLt/a034Ktxmi
+         5K/zsBFPdI/5Q==
+X-Nifty-SrcIP: [209.85.215.176]
+Received: by mail-pg1-f176.google.com with SMTP id v7so21256369pgl.2;
+        Tue, 13 Jul 2021 03:45:58 -0700 (PDT)
+X-Gm-Message-State: AOAM533+NezI5HYEYRZayyxtQ6UIyYJfVcAKwcAWe05qOSaOzeaSTZoT
+        6vVv6cJ8iObJ7U/BokchfJw7cuHyfxo+DwSENKs=
+X-Google-Smtp-Source: ABdhPJzT8YYPsrA/tRV2GsNJszdAtIewLzHvqbB0CLRXbYuiXtV87DWVQ2kMZYdodA6VATLGTrN0/wmcLBbkMY9dqAc=
+X-Received: by 2002:a62:1d84:0:b029:304:5af1:65f6 with SMTP id
+ d126-20020a621d840000b02903045af165f6mr3832354pfd.80.1626173157865; Tue, 13
+ Jul 2021 03:45:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <b45b2430-3670-b310-b6ad-2d6db50c2d18@mailbox.org>
+In-Reply-To: <b45b2430-3670-b310-b6ad-2d6db50c2d18@mailbox.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 13 Jul 2021 19:45:21 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT3bAg164L7mWDk0sfsvxZvMukezSSu1BYu3M425SWeaQ@mail.gmail.com>
+Message-ID: <CAK7LNAT3bAg164L7mWDk0sfsvxZvMukezSSu1BYu3M425SWeaQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Kbuild, clang: add option for choosing a ThinLTO
+ cache directory
+To:     Tor Vic <torvic9@mailbox.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Here is a pull-req with a set of patches fixing a vboxsf bug for 5.14
-(I am the vboxsf maintainer).
-
-Linus, sorry for sending this directly through you, instead of going
-through some other tree, but trying to get this upstream through the
-linux-fsdevel list / patch-review simply is not working.
-
-This bugfix patch-set (3 preparation patches + 1 actual bugfix) fixes
-a bug which is actually being hit by users in the wild, e.g. doing
-a "git clone" on a vbox guest inside a shared-folder will fail
-without his fix. Since you merge pull-req-s for a bunch of other
-filesystems directly I'm hoping that you are willing to take this
-one too.
-
-This patch-set has been posted on the linux-fsdevel for the first
-time on January 21th 2021, so almost 6 months ago and I've send
-out several pings and a resend since then, but unfortunately
-no-one on the linux-fsdevel list seems to have interest in /
-time for reviewing vboxsf patches.
-
-Regards,
-
-Hans
+On Mon, Jul 12, 2021 at 8:10 PM Tor Vic <torvic9@mailbox.org> wrote:
+>
+> On some distros and configurations, it might be useful to allow for
+> specifying a directory where Clang stores its ThinLTO cache.
+>
+> More specifically, when building the VirtualBox extramodules on Arch with
+> its proper 'makepkg' build system and DKMS, against an already installed
+> ThinLTO kernel, the build fails because it tries to create the ThinLTO
+> cache in a directory that is not user-writable.
+>
+> A similar problem has been reported with openSUSE's OBS build system.
+>
+> Add a Kconfig option that allows users to choose a directory in which
+> Clang's ThinLTO can store its cache.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1104
+> Signed-off-by: Tor Vic <torvic9@mailbox.org>
 
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+I do not understand.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+Currently, .thinlto-cache is created in the same directory
+as the other objects.  (right under $(KBUILD_EXTMOD))
 
-are available in the Git repository at:
+If you build in a read-only directory, you cannot put
+any build artifact (not limited to the thinlto cache) there.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hansg/linux.git tags/vboxsf-v5.14-1
+Why did changing the location of .thinlto-cache
+solve your problem?
 
-for you to fetch changes up to 52dfd86aa568e433b24357bb5fc725560f1e22d8:
 
-  vboxsf: Add support for the atomic_open directory-inode op (2021-06-23 14:36:52 +0200)
 
-----------------------------------------------------------------
-Signed tag for a set of bugfixes for vboxsf for 5.14
+> ---
+>  Makefile                  |  5 +++--
+>  arch/Kconfig              | 10 ++++++++++
+>  scripts/Makefile.lib      |  4 ++++
+>  scripts/Makefile.modfinal |  4 ++++
+>  4 files changed, 21 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index c3f9bd191b89..472bc8bfff03 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -932,7 +932,8 @@ endif
+>  ifdef CONFIG_LTO_CLANG
+>  ifdef CONFIG_LTO_CLANG_THIN
+>  CC_FLAGS_LTO   := -flto=thin -fsplit-lto-unit
+> -KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod_prefix).thinlto-cache
+> +export thinlto-dir = $(if
+> $(CONFIG_LTO_CLANG_THIN_CACHEDIR),$(CONFIG_LTO_CLANG_THIN_CACHEDIR)/)
+> +KBUILD_LDFLAGS +=
+> --thinlto-cache-dir=$(thinlto-dir)$(extmod_prefix).thinlto-cache
+>  else
+>  CC_FLAGS_LTO   := -flto
+>  endif
+> @@ -1728,7 +1729,7 @@ PHONY += compile_commands.json
+>
+>  clean-dirs := $(KBUILD_EXTMOD)
+>  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers
+> $(KBUILD_EXTMOD)/modules.nsdeps \
+> -       $(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
+> +       $(KBUILD_EXTMOD)/compile_commands.json
+> $(thinlto-dir)$(KBUILD_EXTMOD)/.thinlto-cache
+>
+>  PHONY += help
+>  help:
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 129df498a8e1..19e4d140e12a 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -696,6 +696,16 @@ config LTO_CLANG_THIN
+>             https://clang.llvm.org/docs/ThinLTO.html
+>
+>           If unsure, say Y.
+> +
+> +config LTO_CLANG_THIN_CACHEDIR
+> +       string "Clang ThinLTO cache directory"
+> +       depends on LTO_CLANG_THIN
+> +       default ""
+> +       help
+> +         This option allows users to choose a directory that stores
+> +         Clang's ThinLTO cache.
+> +         Leave empty for default.
+> +
+>  endchoice
+>
+>  config ARCH_SUPPORTS_CFI_CLANG
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 10950559b223..bca87a6aa35b 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -197,6 +197,10 @@ endif
+>  part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
+>  quiet_modtag = $(if $(part-of-module),[M],   )
+>
+> +ifdef CONFIG_LTO_CLANG_THIN
+> +KBUILD_LDFLAGS +=
+> --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
+> +endif
+> +
+>  modkern_cflags =                                          \
+>         $(if $(part-of-module),                           \
+>                 $(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE), \
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 5e9b8057fb24..ab0d72e21318 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -35,6 +35,10 @@ ifdef CONFIG_LTO_CLANG
+>  # avoid a second slow LTO link
+>  prelink-ext := .lto
+>
+> +ifdef CONFIG_LTO_CLANG_THIN
+> +KBUILD_LDFLAGS +=
+> --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
+> +endif # CONFIG_LTO_CLANG_THIN
+> +
+>  # ELF processing was skipped earlier because we didn't have native code,
+>  # so let's now process the prelinked binary before we link the module.
+>
+> --
+> 2.32.0
 
-This patch series adds support for the atomic_open
-directory-inode op to vboxsf.
 
-Note this is not just an enhancement this also fixes an actual issue
-which users are hitting, see the commit message of the
-"boxsf: Add support for the atomic_open directory-inode" patch.
 
-----------------------------------------------------------------
-Hans de Goede (4):
-      vboxsf: Honor excl flag to the dir-inode create op
-      vboxsf: Make vboxsf_dir_create() return the handle for the created file
-      vboxsf: Add vboxsf_[create|release]_sf_handle() helpers
-      vboxsf: Add support for the atomic_open directory-inode op
-
- fs/vboxsf/dir.c    | 76 ++++++++++++++++++++++++++++++++++++++++++++++--------
- fs/vboxsf/file.c   | 71 +++++++++++++++++++++++++++++++-------------------
- fs/vboxsf/vfsmod.h |  7 +++++
- 3 files changed, 116 insertions(+), 38 deletions(-)
-
+-- 
+Best Regards
+Masahiro Yamada
