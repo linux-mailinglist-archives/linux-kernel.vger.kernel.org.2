@@ -2,354 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7693C6C9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8AF3C6CA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbhGMIwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235323AbhGMIvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:51:44 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7178DC06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:48:27 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso1013409pjc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uMm6a9p0EzX9DUYqGCBIk5+JBvK8mtKaW/5v/siepz8=;
-        b=FwrQiD+0uRPLUN+6Ju88xP5C02Bvk9OqVShw9WcsJdiLxu+YCLfDld1XCGfjLU1nSl
-         918yKE4A5ColszxQDG/4pM1sXcDtN4ghfirvX+RsqtkNJyYamqqNi2VjbvDtJuJMdMEH
-         DBnVAKFBCd1A3Mu8H5eyl/2LzIPpp/+RJW7nXs1sv+9wD9NX2G2ZW51nr6oAKS/uh/Re
-         no24BT5m/sJN3evL+WSKCld+Bzy52NIw84s+0QKBgTE+n5jtfL7elaULaVgn89viBuwz
-         oYoSGCLRyfky8JDQWJQ44g6XrECuYo7lecJLBNwO2UB7NYtQMZoIpWP32eSw3XP6Zz0y
-         tt/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uMm6a9p0EzX9DUYqGCBIk5+JBvK8mtKaW/5v/siepz8=;
-        b=mx6ffuPJWOPh3ZTcLRGnlWueITI7qLqJ+SxpJip2TDdYcwAzSkVVd5doSgifc0ZXfl
-         G2u5TUeUuKt23iyF45+RyCaQihk6b9nV3EYd33C7nsU7utH696BBcdWz32rcnc0G7I4j
-         IaCpbCFRECjzwWeRl5Dkz/PdW9Mc3NwlheNU3kI0pMzpi7pPwjh75k+KigVbsoXVmr+S
-         JXfwhv1vxEk7CYpiQKc0ds2T4axsj5seKl74y1fFUURSVz5T6sF36NBJLTTKcQdl4ple
-         +GPTqRq0dcGWuCKx6wnjEJRzzIWZd7O4fhi9pLCJkIZAp/AMJXIu2NqX9cDUH6L3zPPZ
-         6NdQ==
-X-Gm-Message-State: AOAM531LwwHr3K71Ev+yAlNkAnVr3ID1+d+OKFXmNMuVRMdH4zFDriHz
-        U1/L9SAdh3BW4vCBRhh9w5iD
-X-Google-Smtp-Source: ABdhPJy41kKAoDHW9SvVVXjbdWKoO4Hb5f5MeAoUzDaUJYwvEJY6gTCT1v+c76dyqcdtmYhkN5UdhA==
-X-Received: by 2002:a17:90a:8585:: with SMTP id m5mr3319949pjn.224.1626166106915;
-        Tue, 13 Jul 2021 01:48:26 -0700 (PDT)
-Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id a23sm17961927pff.43.2021.07.13.01.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 01:48:26 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 17/17] Documentation: Add documentation for VDUSE
-Date:   Tue, 13 Jul 2021 16:46:56 +0800
-Message-Id: <20210713084656.232-18-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210713084656.232-1-xieyongji@bytedance.com>
-References: <20210713084656.232-1-xieyongji@bytedance.com>
+        id S234950AbhGMIwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:52:17 -0400
+Received: from gofer.mess.org ([88.97.38.141]:52143 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235419AbhGMIvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:51:45 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id F1864C6373; Tue, 13 Jul 2021 09:48:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1626166134; bh=Kb1db9y9hfywyFC1BjnKSGTEXSZ7oVli5/OFy6vdR0A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V5Y200UZfNleJAybYnHQE40TBpvBCYyFQbgm1M4rgQY4n05DhNSr3c7YP9f9QrLUt
+         pPg+KwskE2Mwcr7hUa1YvV1hLsUcofPd4D8PVR7qsubx4L+YWQwMYwRZ1QTxEbVfl2
+         sOymUlEqkgVRgKzS4JqJ4ti587agcJgp5tbXL584qZBgquEHTA8P3/5Z9XrXWpX++E
+         c0/fpyzMZjsQk+VCHGY3E4U1Qaiar8wYpksTP8c5oPV7Dys8jkzpSwKmd83bNRM2ad
+         GpL0CMmJ+fzSVh7e00EgxCFlWlj/+KpxKRcEoM0uONMyaxu/7pUgQmG9tyL9IY7I3P
+         2ZTeolazLzoZA==
+Date:   Tue, 13 Jul 2021 09:48:53 +0100
+From:   Sean Young <sean@mess.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] [media] em28xx-input: fix refcount bug in
+ em28xx_usb_disconnect
+Message-ID: <20210713084853.GA6572@gofer.mess.org>
+References: <20210707093409.1445747-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707093409.1445747-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VDUSE (vDPA Device in Userspace) is a framework to support
-implementing software-emulated vDPA devices in userspace. This
-document is intended to clarify the VDUSE design and usage.
+On Wed, Jul 07, 2021 at 05:34:09PM +0800, Dongliang Mu wrote:
+> If em28xx_ir_init fails, it would decrease the refcount of dev. However,
+> in the em28xx_ir_fini, when ir is NULL, it goes to ref_put and decrease
+> the refcount of dev. This will lead to a refcount bug.
+> 
+> Fix this bug by removing the kref_put in the error handling code
+> of em28xx_ir_init.
+> 
+> refcount_t: underflow; use-after-free.
+> WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
+> Modules linked in:
+> CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0 #3
+> Workqueue: usb_hub_wq hub_event
+> RIP: 0010:refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
+> Call Trace:
+>   kref_put.constprop.0+0x60/0x85 include/linux/kref.h:69
+>   em28xx_usb_disconnect.cold+0xd7/0xdc drivers/media/usb/em28xx/em28xx-cards.c:4150
+>   usb_unbind_interface+0xbf/0x3a0 drivers/usb/core/driver.c:458
+>   __device_release_driver drivers/base/dd.c:1201 [inline]
+>   device_release_driver_internal+0x22a/0x230 drivers/base/dd.c:1232
+>   bus_remove_device+0x108/0x160 drivers/base/bus.c:529
+>   device_del+0x1fe/0x510 drivers/base/core.c:3540
+>   usb_disable_device+0xd1/0x1d0 drivers/usb/core/message.c:1419
+>   usb_disconnect+0x109/0x330 drivers/usb/core/hub.c:2221
+>   hub_port_connect drivers/usb/core/hub.c:5151 [inline]
+>   hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+>   port_event drivers/usb/core/hub.c:5586 [inline]
+>   hub_event+0xf81/0x1d40 drivers/usb/core/hub.c:5668
+>   process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
+>   process_scheduled_works kernel/workqueue.c:2338 [inline]
+>   worker_thread+0x333/0x5b0 kernel/workqueue.c:2424
+>   kthread+0x188/0x1d0 kernel/kthread.c:319
+>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> 
+> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> Fixes: ac5688637144 ("media: em28xx: Fix possible memory leak of em28xx struct")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+> v1->v2: move kref_get to the original position
+>  drivers/media/usb/em28xx/em28xx-input.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
+> index 59529cbf9cd0..0b6d77c3bec8 100644
+> --- a/drivers/media/usb/em28xx/em28xx-input.c
+> +++ b/drivers/media/usb/em28xx/em28xx-input.c
+> @@ -842,7 +842,6 @@ static int em28xx_ir_init(struct em28xx *dev)
+>  	kfree(ir);
+>  ref_put:
+>  	em28xx_shutdown_buttons(dev);
+> -	kref_put(&dev->ref, em28xx_free_device);
+>  	return err;
+>  }
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
----
- Documentation/userspace-api/index.rst |   1 +
- Documentation/userspace-api/vduse.rst | 248 ++++++++++++++++++++++++++++++++++
- 2 files changed, 249 insertions(+)
- create mode 100644 Documentation/userspace-api/vduse.rst
+Ideally we want an init function to not have any side effects if it returns
+an error (or to do undo those side effects). With this change, the as long
+as is_audio_only is not set, we always do a kref_get(), even in the error
+case. As long as is_audio_only is not set, fini always does a kref_put().
 
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index 0b5eefed027e..c432be070f67 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -27,6 +27,7 @@ place where this information is gathered.
-    iommu
-    media/index
-    sysfs-platform_profile
-+   vduse
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
-new file mode 100644
-index 000000000000..2c0d56d4b2da
---- /dev/null
-+++ b/Documentation/userspace-api/vduse.rst
-@@ -0,0 +1,248 @@
-+==================================
-+VDUSE - "vDPA Device in Userspace"
-+==================================
-+
-+vDPA (virtio data path acceleration) device is a device that uses a
-+datapath which complies with the virtio specifications with vendor
-+specific control path. vDPA devices can be both physically located on
-+the hardware or emulated by software. VDUSE is a framework that makes it
-+possible to implement software-emulated vDPA devices in userspace. And
-+to make the device emulation more secure, the emulated vDPA device's
-+control path is handled in the kernel and only the data path is
-+implemented in the userspace.
-+
-+Note that only virtio block device is supported by VDUSE framework now,
-+which can reduce security risks when the userspace process that implements
-+the data path is run by an unprivileged user. The support for other device
-+types can be added after the security issue of corresponding device driver
-+is clarified or fixed in the future.
-+
-+Start/Stop VDUSE devices
-+------------------------
-+
-+VDUSE devices are started as follows:
-+
-+1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-+   /dev/vduse/control.
-+
-+2. Setup each virtqueue with ioctl(VDUSE_VQ_SETUP) on /dev/vduse/$NAME.
-+
-+3. Begin processing VDUSE messages from /dev/vduse/$NAME. The first
-+   messages will arrive while attaching the VDUSE instance to vDPA bus.
-+
-+4. Send the VDPA_CMD_DEV_NEW netlink message to attach the VDUSE
-+   instance to vDPA bus.
-+
-+VDUSE devices are stopped as follows:
-+
-+1. Send the VDPA_CMD_DEV_DEL netlink message to detach the VDUSE
-+   instance from vDPA bus.
-+
-+2. Close the file descriptor referring to /dev/vduse/$NAME.
-+
-+3. Destroy the VDUSE instance with ioctl(VDUSE_DESTROY_DEV) on
-+   /dev/vduse/control.
-+
-+The netlink messages can be sent via vdpa tool in iproute2 or use the
-+below sample codes:
-+
-+.. code-block:: c
-+
-+	static int netlink_add_vduse(const char *name, enum vdpa_command cmd)
-+	{
-+		struct nl_sock *nlsock;
-+		struct nl_msg *msg;
-+		int famid;
-+
-+		nlsock = nl_socket_alloc();
-+		if (!nlsock)
-+			return -ENOMEM;
-+
-+		if (genl_connect(nlsock))
-+			goto free_sock;
-+
-+		famid = genl_ctrl_resolve(nlsock, VDPA_GENL_NAME);
-+		if (famid < 0)
-+			goto close_sock;
-+
-+		msg = nlmsg_alloc();
-+		if (!msg)
-+			goto close_sock;
-+
-+		if (!genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, famid, 0, 0, cmd, 0))
-+			goto nla_put_failure;
-+
-+		NLA_PUT_STRING(msg, VDPA_ATTR_DEV_NAME, name);
-+		if (cmd == VDPA_CMD_DEV_NEW)
-+			NLA_PUT_STRING(msg, VDPA_ATTR_MGMTDEV_DEV_NAME, "vduse");
-+
-+		if (nl_send_sync(nlsock, msg))
-+			goto close_sock;
-+
-+		nl_close(nlsock);
-+		nl_socket_free(nlsock);
-+
-+		return 0;
-+	nla_put_failure:
-+		nlmsg_free(msg);
-+	close_sock:
-+		nl_close(nlsock);
-+	free_sock:
-+		nl_socket_free(nlsock);
-+		return -1;
-+	}
-+
-+How VDUSE works
-+---------------
-+
-+As mentioned above, a VDUSE device is created by ioctl(VDUSE_CREATE_DEV) on
-+/dev/vduse/control. With this ioctl, userspace can specify some basic configuration
-+such as device name (uniquely identify a VDUSE device), virtio features, virtio
-+configuration space, bounce buffer size and so on for this emulated device. Then
-+a char device interface (/dev/vduse/$NAME) is exported to userspace for device
-+emulation. Userspace can use the VDUSE_VQ_SETUP ioctl on /dev/vduse/$NAME to
-+add per-virtqueue configuration such as the max size of virtqueue to the device.
-+
-+After the initialization, the VDUSE device can be attached to vDPA bus via
-+the VDPA_CMD_DEV_NEW netlink message. Userspace needs to read()/write() on
-+/dev/vduse/$NAME to receive/reply some control messages from/to VDUSE kernel
-+module as follows:
-+
-+.. code-block:: c
-+
-+	static int vduse_message_handler(int dev_fd)
-+	{
-+		int len;
-+		struct vduse_dev_request req;
-+		struct vduse_dev_response resp;
-+
-+		len = read(dev_fd, &req, sizeof(req));
-+		if (len != sizeof(req))
-+			return -1;
-+
-+		resp.request_id = req.request_id;
-+
-+		switch (req.type) {
-+
-+		/* handle different types of message */
-+
-+		}
-+
-+		len = write(dev_fd, &resp, sizeof(resp));
-+		if (len != sizeof(resp))
-+			return -1;
-+
-+		return 0;
-+	}
-+
-+There are now three types of messages introduced by VDUSE framework:
-+
-+- VDUSE_GET_VQ_STATE: Get the state for virtqueue, userspace should return
-+  avail index for split virtqueue or the device/driver ring wrap counters and
-+  the avail and used index for packed virtqueue.
-+
-+- VDUSE_SET_STATUS: Set the device status, userspace should follow
-+  the virtio spec: https://docs.oasis-open.org/virtio/virtio/v1.1/virtio-v1.1.html
-+  to process this message. For example, fail to set the FEATURES_OK device
-+  status bit if the device can not accept the negotiated virtio features
-+  get from the VDUSE_GET_FEATURES ioctl.
-+
-+- VDUSE_UPDATE_IOTLB: Notify userspace to update the memory mapping for specified
-+  IOVA range, userspace should firstly remove the old mapping, then setup the new
-+  mapping via the VDUSE_IOTLB_GET_FD ioctl.
-+
-+After DRIVER_OK status bit is set via the VDUSE_SET_STATUS message, userspace is
-+able to start the dataplane processing with the help of below ioctls:
-+
-+- VDUSE_IOTLB_GET_FD: Find the first IOVA region that overlaps with the specified
-+  range [start, last] and return the corresponding file descriptor. In vhost-vdpa
-+  cases, it might be a full chunk of guest RAM. And in virtio-vdpa cases, it should
-+  be the whole bounce buffer or the memory region that stores one virtqueue's
-+  metadata (descriptor table, available ring and used ring). Userspace can access
-+  this IOVA region by passing fd and corresponding size, offset, perm to mmap().
-+  For example:
-+
-+.. code-block:: c
-+
-+	static int perm_to_prot(uint8_t perm)
-+	{
-+		int prot = 0;
-+
-+		switch (perm) {
-+		case VDUSE_ACCESS_WO:
-+			prot |= PROT_WRITE;
-+			break;
-+		case VDUSE_ACCESS_RO:
-+			prot |= PROT_READ;
-+			break;
-+		case VDUSE_ACCESS_RW:
-+			prot |= PROT_READ | PROT_WRITE;
-+			break;
-+		}
-+
-+		return prot;
-+	}
-+
-+	static void *iova_to_va(int dev_fd, uint64_t iova, uint64_t *len)
-+	{
-+		int fd;
-+		void *addr;
-+		size_t size;
-+		struct vduse_iotlb_entry entry;
-+
-+		entry.start = iova;
-+		entry.last = iova;
-+		fd = ioctl(dev_fd, VDUSE_IOTLB_GET_FD, &entry);
-+		if (fd < 0)
-+			return NULL;
-+
-+		size = entry.last - entry.start + 1;
-+		*len = entry.last - iova + 1;
-+		addr = mmap(0, size, perm_to_prot(entry.perm), MAP_SHARED,
-+			    fd, entry.offset);
-+		close(fd);
-+		if (addr == MAP_FAILED)
-+			return NULL;
-+
-+		/*
-+		 * Using some data structures such as linked list to store
-+		 * the iotlb mapping. The munmap(2) should be called for the
-+		 * cached mapping when the corresponding VDUSE_UPDATE_IOTLB
-+		 * message is received or the device is reset.
-+		 */
-+
-+		return addr + iova - entry.start;
-+	}
-+
-+- VDUSE_VQ_GET_INFO: Get the specified virtqueue's information including the size,
-+  the IOVAs of descriptor table, available ring and used ring, the state
-+  and the ready status. The IOVAs should be passed to the VDUSE_IOTLB_GET_FD ioctl
-+  so that userspace can access the descriptor table, available ring and used ring.
-+
-+- VDUSE_VQ_SETUP_KICKFD: Setup the kick eventfd for the specified virtqueues.
-+  The kick eventfd is used by VDUSE kernel module to notify userspace to consume
-+  the available ring.
-+
-+- VDUSE_INJECT_VQ_IRQ: Inject an interrupt for specific virtqueue. It's used to
-+  notify virtio driver to consume the used ring.
-+
-+More details on the uAPI can be found in include/uapi/linux/vduse.h.
-+
-+MMU-based IOMMU Driver
-+----------------------
-+
-+VDUSE framework implements an MMU-based on-chip IOMMU driver to support
-+mapping the kernel DMA buffer into the userspace IOVA region dynamically.
-+This is mainly designed for virtio-vdpa case (kernel virtio drivers).
-+
-+The basic idea behind this driver is treating MMU (VA->PA) as IOMMU (IOVA->PA).
-+The driver will set up MMU mapping instead of IOMMU mapping for the DMA transfer
-+so that the userspace process is able to use its virtual address to access
-+the DMA buffer in kernel.
-+
-+And to avoid security issue, a bounce-buffering mechanism is introduced to
-+prevent userspace accessing the original buffer directly which may contain other
-+kernel data. During the mapping, unmapping, the driver will copy the data from
-+the original buffer to the bounce buffer and back, depending on the direction of
-+the transfer. And the bounce-buffer addresses will be mapped into the user address
-+space instead of the original one.
--- 
-2.11.0
+Now this works but it's not really very readable code, and it requires that
+the fini is called even if init returns an error.
 
+If an init function returns an error, it should undo any side effects like
+allocations or reference counts. So the best way to handle this to only
+do a kref_get() in the happy path of em28xx_ir_init().
+
+
+Thanks
+
+Sean
