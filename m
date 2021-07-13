@@ -2,83 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629BC3C75F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227973C75FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhGMRxr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Jul 2021 13:53:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56694 "EHLO mail.kernel.org"
+        id S233839AbhGMR4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:56:19 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53020 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233455AbhGMRxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:53:45 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 187CB611AB;
-        Tue, 13 Jul 2021 17:50:52 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 18:53:11 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antti =?UTF-8?B?S2Vyw6RuZW4=?= <detegr@rbx.email>
-Cc:     linux-iio@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno Sa <nuno.sa@analog.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH v2] iio: adis: set GPIO reset pin direction
-Message-ID: <20210713185311.200023ef@jic23-huawei>
-In-Reply-To: <20210708095425.13295-1-detegr@rbx.email>
-References: <60e5ac8c.1c69fb81.c69f0.abab@mx.google.com>
-        <20210708095425.13295-1-detegr@rbx.email>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229585AbhGMR4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:56:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=fwSEUPKLIXDYdatZtRYzvhcsqODqbAeg+WW5QkFpprg=; b=UbzJXkk4Ffkjzb9vhNhUMiuLGj
+        5g9Lm8acdQp/yKLwGg15cSthbLsu5mCiOJLpekx9WyR6Iz95xYaIN7YQk3JGGaREMKvxMsOuS4LZw
+        XJgPxMvEC/6qUeyDcZvUL3oTTExvipYlmfwmJJRyfTGeltPPGulzDcPexhtZPjd91R9s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m3May-00DEt7-BI; Tue, 13 Jul 2021 19:53:24 +0200
+Date:   Tue, 13 Jul 2021 19:53:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     alexandru.tachici@analog.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org
+Subject: Re: [PATCH v2 5/7] net: phy: adin1100: Add ethtool master-slave
+ support
+Message-ID: <YO3TFLTph38WYX0e@lunn.ch>
+References: <20210712130631.38153-1-alexandru.tachici@analog.com>
+ <20210712130631.38153-6-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712130631.38153-6-alexandru.tachici@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  8 Jul 2021 12:54:29 +0300
-Antti Keränen <detegr@rbx.email> wrote:
-
-> Set reset pin direction to output as the reset pin needs to be an active
-> low output pin.
+On Mon, Jul 12, 2021 at 04:06:29PM +0300, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
 > 
-> Co-developed-by: Hannu Hartikainen <hannu@hrtk.in>
-> Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
-> Signed-off-by: Antti Keränen <detegr@rbx.email>
-
-So this sits on the boundary of whether it is a fix or not.
-Do we want this to go into rc1 + stable?
-
-If so a fixes tag would be great.
-
-Thanks,
-
-Jonathan
-
-> ---
-> Removed unnecessary toggling of the pin as requested by Lars-Peter. I
-> missed out on the conversation, but I agree this is better.
+> Allow user to select the advertised master-slave
+> configuration through ethtool.
 > 
->  drivers/iio/imu/adis.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/imu/adis.c b/drivers/iio/imu/adis.c
-> index 319b64b2fd88..f8b7837d8b8f 100644
-> --- a/drivers/iio/imu/adis.c
-> +++ b/drivers/iio/imu/adis.c
-> @@ -415,12 +415,11 @@ int __adis_initial_startup(struct adis *adis)
->  	int ret;
->  
->  	/* check if the device has rst pin low */
-> -	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_ASIS);
-> +	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_OUT_HIGH);
->  	if (IS_ERR(gpio))
->  		return PTR_ERR(gpio);
->  
->  	if (gpio) {
-> -		gpiod_set_value_cansleep(gpio, 1);
->  		msleep(10);
->  		/* bring device out of reset */
->  		gpiod_set_value_cansleep(gpio, 0);
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
