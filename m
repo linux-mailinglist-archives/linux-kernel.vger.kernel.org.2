@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A673C7015
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E263C7017
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236098AbhGMMEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:04:07 -0400
-Received: from relay.sw.ru ([185.231.240.75]:54452 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235797AbhGMMEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:04:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=WqHA6WCcYZ0072a3tlO4GBh019ffg4nrngZQQG462K0=; b=TqBoTNbgYrfOncHqcYZ
-        7FD73wF5nnlV/p1FvuqAr0wyZcmX7Z0KD5QUtd6qHQM8kb/E+yJALdquWZX836T7PSFzmkWPRINib
-        ttHZwdfHLPwhrvg9g7k5HcmLod/XwS7ccrc8diri18hq6VARl6EwvXjPF/+44RgZedqOso6r4jQ=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m3H6B-003pDZ-C4; Tue, 13 Jul 2021 15:01:15 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET v4 1/1] ipv6: allocate enough headroom in
- ip6_finish_output2()
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <e44bfeb9-5a5a-9f44-12bd-ec3d61eb3a14@virtuozzo.com>
- <cover.1626177047.git.vvs@virtuozzo.com>
-Message-ID: <dc51dab2-8434-9f88-d6cd-4e6754383413@virtuozzo.com>
-Date:   Tue, 13 Jul 2021 15:01:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236004AbhGMMGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:06:43 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:47088 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235919AbhGMMGm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 08:06:42 -0400
+Received: by mail-vs1-f48.google.com with SMTP id e9so10608942vsk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 05:03:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uJ/XATmEw2FOvWYcKuc48jTHeHh5xPl/7xffQRs+CgY=;
+        b=HFp3djgKOtqg6+QwjeSqXSUzCWX3ljs+otnqiIIVb1SskOhVUBFdD0opGC+Q7ECT51
+         svIvT7fSQdeoFjy+Bk5xOtWAxVeEoScSknwLH//TAM314BO++1iKHy5n2NbzgDINidXf
+         QpOfVFoIkngvmbyWi2I4XgHZPcOw4BCzWzH1aKzmDBvjk8OJF1blV7NzJP32ppWXlJkQ
+         7MxDp5sOStIaFrWv4wgrbL2K1mcaFahSpSExgOlji7Or1veBcSSBu6oCsD+e1zqg1SrW
+         p3XvX1dU9fpkIR3l/t9n48mqIXo20Bqt0hfvjkUZF73Qc4l6eki2lb/zxxuSSa+OADaF
+         J9iw==
+X-Gm-Message-State: AOAM531qcJ+Vf3zSKm1p5hcLO1/C/dYQMTdJv4He4awA3va1fFbdk5Cj
+        g1E6ET1Itum3E+aM2rugIqva1Tpyv8YB8W+MdNE=
+X-Google-Smtp-Source: ABdhPJz/wYxiMEghMEpeCH26yZOIcHTipXqFk2MKx3dtSnvRcQq5ZNTfblEiJ56qKYYPOx6Lu73/EnheHrxuPN8B8CY=
+X-Received: by 2002:a67:8702:: with SMTP id j2mr5598475vsd.3.1626177831098;
+ Tue, 13 Jul 2021 05:03:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1626177047.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414163434.4376-1-glittao@gmail.com>
+In-Reply-To: <20210414163434.4376-1-glittao@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 13 Jul 2021 14:03:39 +0200
+Message-ID: <CAMuHMdW=eoVzM1Re5FVoEN87nKfiLmM2+Ah7eNu2KXEhCvbZyA@mail.gmail.com>
+Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
+To:     glittao@gmail.com, Yogesh Lal <ylal@codeaurora.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When TEE target mirrors traffic to another interface, sk_buff may
-not have enough headroom to be processed correctly.
-ip_finish_output2() detect this situation for ipv4 and allocates
-new skb with enogh headroom. However ipv6 lacks this logic in
-ip_finish_output2 and it leads to skb_under_panic:
+Hi Oliver, Yogesh,
 
- skbuff: skb_under_panic: text:ffffffffc0866ad4 len:96 put:24
- head:ffff97be85e31800 data:ffff97be85e317f8 tail:0x58 end:0xc0 dev:gre0
- ------------[ cut here ]------------
- kernel BUG at net/core/skbuff.c:110!
- invalid opcode: 0000 [#1] SMP PTI
- CPU: 2 PID: 393 Comm: kworker/2:2 Tainted: G           OE     5.13.0 #13
- Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.4 04/01/2014
- Workqueue: ipv6_addrconf addrconf_dad_work
- RIP: 0010:skb_panic+0x48/0x4a
- Call Trace:
-  skb_push.cold.111+0x10/0x10
-  ipgre_header+0x24/0xf0 [ip_gre]
-  neigh_connected_output+0xae/0xf0
-  ip6_finish_output2+0x1a8/0x5a0
-  ip6_output+0x5c/0x110
-  nf_dup_ipv6+0x158/0x1000 [nf_dup_ipv6]
-  tee_tg6+0x2e/0x40 [xt_TEE]
-  ip6t_do_table+0x294/0x470 [ip6_tables]
-  nf_hook_slow+0x44/0xc0
-  nf_hook.constprop.34+0x72/0xe0
-  ndisc_send_skb+0x20d/0x2e0
-  ndisc_send_ns+0xd1/0x210
-  addrconf_dad_work+0x3c8/0x540
-  process_one_work+0x1d1/0x370
-  worker_thread+0x30/0x390
-  kthread+0x116/0x130
-  ret_from_fork+0x22/0x30
+On Wed, Apr 14, 2021 at 8:08 PM <glittao@gmail.com> wrote:
+> From: Oliver Glitta <glittao@gmail.com>
+>
+> Many stack traces are similar so there are many similar arrays.
+> Stackdepot saves each unique stack only once.
+>
+> Replace field addrs in struct track with depot_stack_handle_t handle.
+> Use stackdepot to save stack trace.
+>
+> The benefits are smaller memory overhead and possibility to aggregate
+> per-cache statistics in the future using the stackdepot handle
+> instead of matching stacks manually.
+>
+> Signed-off-by: Oliver Glitta <glittao@gmail.com>
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- net/ipv6/ip6_output.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Thanks for your patch, which is now commit 788691464c294553 ("mm/slub:
+use stackdepot to save stack trace in objects") in v5.14-rc1.
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index ff4f9eb..25144c7 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -60,10 +60,38 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
- {
- 	struct dst_entry *dst = skb_dst(skb);
- 	struct net_device *dev = dst->dev;
-+	unsigned int hh_len = LL_RESERVED_SPACE(dev);
-+	int delta = hh_len - skb_headroom(skb);
- 	const struct in6_addr *nexthop;
- 	struct neighbour *neigh;
- 	int ret;
- 
-+	/* Be paranoid, rather than too clever. */
-+	if (unlikely(delta > 0) && dev->header_ops) {
-+		/* pskb_expand_head() might crash, if skb is shared */
-+		if (skb_shared(skb)) {
-+			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-+
-+			if (likely(nskb)) {
-+				if (skb->sk)
-+					skb_set_owner_w(nskb, skb->sk);
-+				consume_skb(skb);
-+			} else {
-+				kfree_skb(skb);
-+			}
-+			skb = nskb;
-+		}
-+		if (skb &&
-+		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-+			kfree_skb(skb);
-+			skb = NULL;
-+		}
-+		if (!skb) {
-+			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
-+			return -ENOMEM;
-+		}
-+	}
-+
- 	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
- 		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
- 
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1891,6 +1891,7 @@ config SLUB_DEBUG
+>         default y
+>         bool "Enable SLUB debugging support" if EXPERT
+>         depends on SLUB && SYSFS
+> +       select STACKDEPOT if STACKTRACE_SUPPORT
+>         help
+>           SLUB has extensive debug support features. Disabling these can
+>           result in significant savings in code size. This also disables
+
+This change increases memory consumption by 4 MiB (or more, see below).
+
+Looking at lib/Kconfig:
+
+|   config STACK_HASH_ORDER
+|           int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
+
+The sizes reported here are not correct, as the actual memory consumption
+is not STACK_HAS_ORDER bytes, but STACK_HAS_ORDER pointers.
+Hence they're off by a factor of 4 or 8.
+
+|           range 12 20
+|           default 20
+
+Does this really have to default to the maximum value?
+
+|           depends on STACKDEPOT
+|           help
+|            Select the hash size as a power of 2 for the stackdepot hash table.
+|            Choose a lower value to reduce the memory impact.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-1.8.3.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
