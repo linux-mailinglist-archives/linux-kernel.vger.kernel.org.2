@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B003C7141
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB693C7140
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236613AbhGMNfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S236622AbhGMNfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236222AbhGMNfm (ORCPT
+        with ESMTP id S236620AbhGMNfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:35:42 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465B0C0613DD;
-        Tue, 13 Jul 2021 06:32:51 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a13so30478805wrf.10;
-        Tue, 13 Jul 2021 06:32:51 -0700 (PDT)
+        Tue, 13 Jul 2021 09:35:47 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83DEC0613EF
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:32:56 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id o5so41527919ejy.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:32:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pI0cbCYu+L65LMy8pKJADG6rkLokSzcNjTpiGRxQp6k=;
-        b=tzviYNhsTAOgc2k4Tair+DBq/t1cmo1dLBHrPo0PW+saTfiEvydWb0j1O24Sndv9/R
-         leZ9yBtCnOJTAVSyzig0tskpCZKjiGg1v+q2Uwm7cylyrZ/4Sn6HD6yesz4C+koR4fMo
-         2LdU4YrhXqSsU9mOASz5Wg2wnQLYSJs0A2zRvkgWqIIeOwlzcJqzgyri5ZFcoThvE2vp
-         ECoIlOIbC1naxFkOkcF+Re80GLhKCkzEcNn32sgzCOcVUgyblMhNWvQBhF/zOkzEktCH
-         4w3iRzTq7qRr9EnGIQyK1i6BKUNp5msOX67JBzKTdEldDQjPN1z4xaXUoEa9LiHg1XLu
-         WpQA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=AtdBxpTbfHI9zbIVsZ9n9GdLQqULdtTSE9Dda28OKGs=;
+        b=arzhzSexletdezrIX00iuWr6PXJClFcKap26bWzVnlSQOe40YBLQ+Ssz06kLN81keY
+         SzBy6GrM9I484ZCUT/RaDs/JKgEjCjqVddj2WSlUR6bAgNPMQIxA/ijqm05+wAyCskr2
+         oDnNb2WqeTPBMEUJGHMkAukjp8LnJB2v+FK6FkLoVPY1NbvJ3UmNzJiW9w0Sn4DZ4BwW
+         s40mMKANdb1ifp+jqTKko1fHxb3/O84blBxJRC06alA7IBVyHr1NQ03PFUCtegIBpE7T
+         ntKeAxPAHTWiUOnm532AIFrbSQYkCla5mwQlLqAps0Cb13KmQ7LhibDVYMDkQvPDpFcD
+         K/mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pI0cbCYu+L65LMy8pKJADG6rkLokSzcNjTpiGRxQp6k=;
-        b=TgkY3bbZrzuhId5KgVPHJLDNG+FztrpSm38UiLh/pYZ+34BleCq1vpPpe68HVszSyc
-         RXl0g+Ekv5obHf23oxp08nfWk3+rbMh+ZjdC0EBo0rT4/tmZQWSwlRLkm4s6hrrzyB7t
-         HW7i0nUSR3eOW1AFDCR1B/o7Sc4HtNGQbFLl6mbsobhv/zUpp2Ohcyy6+Mb1oQ4warBv
-         i1D9AilT9PprVXWvvENq8KcJRo7GGDb2t9h4fSasIWOpSu1euCDAf23EIaDD7b2qPWsR
-         mHrmYoi/Pqt60dmuJ/w6aWInIs3pmUwrkHtC1xjI68IuIlotusUqxbYwdzT0gHwK+CZO
-         Af1w==
-X-Gm-Message-State: AOAM530QEx8OuQCjnddAE96QWhq6ZX6etxhiVHJv8TNHAzlk5N8OpXpL
-        5dF4HV4KS4LmZej6+NbleyLQbA+tZKvwnWCbi1w=
-X-Google-Smtp-Source: ABdhPJxhCWRtbJ84J+zskZZNBBOaoz+1AY5nwuladFjDzzth+/dJ0F1O+mOOZVMk765mKL+AoYCJ93FyUD9euxl6NCg=
-X-Received: by 2002:a5d:46c8:: with SMTP id g8mr5713496wrs.341.1626183169799;
- Tue, 13 Jul 2021 06:32:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=AtdBxpTbfHI9zbIVsZ9n9GdLQqULdtTSE9Dda28OKGs=;
+        b=r8lovhgtGOmq5cvF+qpcap86P9Dnz6OHZcd28rXP3Q0WJETf/bnqrVOU0d32hFOmoa
+         RIqwyPmYja324R4C3QDuB/6LHVgkd14e2dLy9qebzSSeUj/UJGjLI9Gh9N5mEv4T9LTX
+         8g9sZWkJd9/wKICpOfBOZfWXDd61CC8e/6w6PMzfHuR9en9T77XPZSlgmLg+Q+e0Nko1
+         BNPooL2pomiRufXkQTPJnc5rUdNYvkbc3QDplJpHbe94v3GYt6oyRXI456wdw9fPUMjB
+         RIplz0z3ecvW+G9IFNEsclgvu/5+zWW53aCsQTl2FmFPR1EFgeBhejIVjH7BdrQ3brrL
+         FueA==
+X-Gm-Message-State: AOAM532e7XQKdR86zSfD3ohsqbNmMdHBGiHerKzd2VKlYkReCFyif0K5
+        AiGHYsp5ZsznG4TuArmgwi8=
+X-Google-Smtp-Source: ABdhPJyQoK9u/72BsU0I0QMdIqlx68r8g6oAyZCK2X65NMlI3FjZ3gohRyrOA83oHhj6A11h+OJfuw==
+X-Received: by 2002:a17:907:7608:: with SMTP id jx8mr5613677ejc.233.1626183175273;
+        Tue, 13 Jul 2021 06:32:55 -0700 (PDT)
+Received: from pc ([196.235.212.194])
+        by smtp.gmail.com with ESMTPSA id gg26sm7500555ejb.103.2021.07.13.06.32.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 06:32:54 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 14:32:52 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     p.zabel@pengutronix.de, alexdeucher@gmail.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpu: ipu-v3: use swap()
+Message-ID: <20210713133230.GA1872993@pc>
 MIME-Version: 1.0
-References: <20210712134430.19372-1-yuehaibing@huawei.com>
-In-Reply-To: <20210712134430.19372-1-yuehaibing@huawei.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Tue, 13 Jul 2021 09:32:38 -0400
-Message-ID: <CAB_54W62WZCcPintGnu-kqzCmgAH7EsJxP9oaeD2NVZ03e_2Wg@mail.gmail.com>
-Subject: Re: [PATCH] nl802154: Fix type check in nl802154_new_interface()
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Use swap() instead of implementing it since it makes code more clean.
 
-On Mon, 12 Jul 2021 at 09:49, YueHaibing <yuehaibing@huawei.com> wrote:
->
-> We got this UBSAN warning:
->
-> UBSAN: shift-out-of-bounds in net/ieee802154/nl802154.c:920:44
-> shift exponent -1 is negative
-> CPU: 3 PID: 8258 Comm: repro Not tainted 5.13.0+ #222
-> Call Trace:
->  dump_stack_lvl+0x8d/0xcf
->  ubsan_epilogue+0xa/0x4e
->  __ubsan_handle_shift_out_of_bounds+0x161/0x182
->  nl802154_new_interface+0x3bf/0x3d0
->  genl_family_rcv_msg_doit.isra.15+0x12d/0x170
->  genl_rcv_msg+0x11a/0x240
->  netlink_rcv_skb+0x69/0x160
->  genl_rcv+0x24/0x40
->
-> NL802154_IFTYPE_UNSPEC is -1, so enum nl802154_iftype type now
-> is a signed integer, which is assigned by nla_get_u32 in
-> nl802154_new_interface(), this may cause type is negative and trigger
-> this warning.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/gpu/ipu-v3/ipu-image-convert.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-I think this is not the right fix, the fix is to change the UAPI that
-NL802154_IFTYPE_UNSPEC fits into the netlink range of U32. I will
-prepare a fix for that, it should still be backwards compatible.
+diff --git a/drivers/gpu/ipu-v3/ipu-image-convert.c b/drivers/gpu/ipu-v3/ipu-image-convert.c
+index aa1d4b6d278f..5f730cd6009d 100644
+--- a/drivers/gpu/ipu-v3/ipu-image-convert.c
++++ b/drivers/gpu/ipu-v3/ipu-image-convert.c
+@@ -1021,11 +1021,8 @@ static int calc_tile_offsets_planar(struct ipu_image_convert_ctx *ctx,
+ 
+ 			u_off = y_size - y_off + uv_off;
+ 			v_off = (fmt->uv_packed) ? 0 : u_off + uv_size;
+-			if (fmt->uv_swapped) {
+-				tmp = u_off;
+-				u_off = v_off;
+-				v_off = tmp;
+-			}
++			if (fmt->uv_swapped)
++				swap(u_off, v_off);
+ 
+ 			image->tile[tile].offset = y_off;
+ 			image->tile[tile].u_off = u_off;
+-- 
+2.25.1
 
-- Alex
