@@ -2,259 +2,523 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C06F3C735A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B553C735F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237097AbhGMPhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:37:41 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:50282 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237060AbhGMPhk (ORCPT
+        id S237065AbhGMPlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:41:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237003AbhGMPlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:37:40 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DFVcrm011930;
-        Tue, 13 Jul 2021 15:34:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=RAHduqLyzwqe+xyRdRp4dxW7LRacuFOUK2aaw4cnrUA=;
- b=yL08ZLUXKSYrlmDjqXaOgCWoVpL/sqsH9n2W2QCge5JDeCzfvi9UAgE7FEKZ7q4MiJui
- fx3kp+OYymwZZghvKbjwGr6CUl4XL7tB4+/D9MyyDjphQD9tbpPqKrKCRpsKvvtG4G0S
- 4H8zpjhea+46fVwswMGJlrT8hHdaoc00hEFZCYFbNionLavb9pDTB732pQwaIBK22iW/
- oXaPhw+iGvV9qsFlCUKCwzD6j5H9b+XhrIyiFAu9zlTgmiHBiqmWjlC+3dOBb7SrTX+d
- BdbTV0zJhAfL9+Pw1Kveck6xUaUtxxEZeMiDlDzhwGvhucAjdRtMd1B8SoVsNBy+FxVh bw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39rqm0tpc2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Jul 2021 15:34:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16DFUfZE157543;
-        Tue, 13 Jul 2021 15:34:43 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2040.outbound.protection.outlook.com [104.47.73.40])
-        by aserp3020.oracle.com with ESMTP id 39q3cbm2wb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Jul 2021 15:34:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FHo6Mj1S/5aG36w7hWdKzsi9/wbkvd15OQ022UPO6Uehu26zvXw0x7RzHdlBeQ95EZXgChZZ2n6iR4fPKC3JkUYhF1qQ95AbTZTyydIlrvg2ecaPU5E+E5R2wk0EZnnQ7LzGqZ8nilZ2sNNvcrxwmnF4/w6gTDK112ks8AiPwbaPgqumeK2281WZaMDUjxJ5o7Ve+ccdfSifUKnflf2NhxIi/G1okBpOIxWPa3TT1KdwQaMk0+iRJ/gdq0zTWqsgSh47RgQY+qbteClNc+hSXqEdrT0aO9+VPck1u1b6JoO74ieYHmTSvwq9pl+PouZi9IQzfTaMWq4EzIW40Nc2cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RAHduqLyzwqe+xyRdRp4dxW7LRacuFOUK2aaw4cnrUA=;
- b=cnFfWiAiH7yz1mVu3/o6F2fBelPRYe78fmLi+CF5m1IEuPR0I6KVlLSdBFS21yZDlT+YT2dYop0AXg/sgQltozxY9oM1THc6eBxLlSRr1CRGzLsHjrVfV3ODK5v4rk1UagZf8GRBA7NMGzLxUy1NfzQ0URmYS59eVOGqpJsQ/OWFJhxY6F7QUntzXMQibC0w9WTyP3ch5DMBJknUCj9BXEjRxK+t7eKhE3GwTFjy2bCVLQN9JEXzT5EEBWVLjp+6UESG5hOvJ6q5Yr0DqiaiDlu3on0r8vzSuE1RX2XqyrNj9j8mQtfVZmOJ6GAy+eiRMam7sSsBml7hAl2mx9RQKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RAHduqLyzwqe+xyRdRp4dxW7LRacuFOUK2aaw4cnrUA=;
- b=mvbiWzb2nGkaDwjIshG0uwXyCoSC2300WMHQgazQoaDUGUon6ms8Q6hrmWxSK96L3E7AC9BkL9DphS/Gn2+TNgZbSUC6xx6Y+18h4UcuhfcIWT9SQ5Z7/pSDs2AlDu3Y20QgpbiVheH1ks8xxHo18DJKpovX9Sucw1qmXTZvOWE=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BYAPR10MB3718.namprd10.prod.outlook.com (2603:10b6:a03:126::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Tue, 13 Jul
- 2021 15:34:40 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::9dee:998a:9134:5fcb]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::9dee:998a:9134:5fcb%3]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
- 15:34:38 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Zhang Qiang <Qiang.Zhang@windriver.com>,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] mm/page_alloc: Further fix __alloc_pages_bulk()
- return value
-Thread-Topic: [PATCH 3/4] mm/page_alloc: Further fix __alloc_pages_bulk()
- return value
-Thread-Index: AQHXd/q0wkVPyeiXDU6Ea6+AzorKHqtBCTeA
-Date:   Tue, 13 Jul 2021 15:34:38 +0000
-Message-ID: <CBDA966F-616F-4411-BCA3-F497ED79DE34@oracle.com>
-References: <20210713152100.10381-1-mgorman@techsingularity.net>
- <20210713152100.10381-4-mgorman@techsingularity.net>
-In-Reply-To: <20210713152100.10381-4-mgorman@techsingularity.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: techsingularity.net; dkim=none (message not signed)
- header.d=none;techsingularity.net; dmarc=none action=none
- header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 74cb9f88-0216-466e-d48c-08d94613b9db
-x-ms-traffictypediagnostic: BYAPR10MB3718:
-x-microsoft-antispam-prvs: <BYAPR10MB37185F834EC258099D7AFC6893149@BYAPR10MB3718.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1443;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UximIVGTr24C2bPAslTizw6kP9ScBJHsaU1AYlVLMsekxOJ/6ckEFhPqodo8gHZf9yMQdwTOh41LZSjZ1AadmE2Fz/+HrE5P6r1OIXX0J5cpOgzYqfbRLc4S7/NtJxtjhfh+JdvnWX+3YimKAQ+WDGRzQ+/wH/V1kkTgnhihjWeIBiPQ+d56/lR6lUtGsG1X0RIz828jJnn6LTVN+gUkTa4km75ecU7vvUJ2O0oek8SaRp1z/I6jWzij0PBfyC3jMO5qbodFLV4CYmpGdwpS7eDrcdnU1wuE/ParUCzGo0W9aMMv4JNdZ34i1WX+/RRYwxxzo+UkqjYFLH1kSgmRzm6/77/UHFzLCDnfEmi3Uwf3zQriZo21dOwTS7RrIqC+uzRp1SznYgx14UiwJLOKqvEJflTJFvgfCjZRsSb0bBbLRD3x0vHU2io/3IUhYn06RSt3LGtxu9F+mL+mmwP/JeWVvo0eWhnrOe6qY+4/AsdufwgtoLjK5p1E2ML9K+9zeYxgFk0x1AgX7s4vYFsocmAbAeF7zYwgJHJdX2RIJ2eCsmyXyCUVdn5UczBIBO06Z70E31A4ioWtFHdEVZITAoHshCpP1ooG2e4hZIKrw0cK3Uf1hhuiOVhWKabo1wCGrGx7+y0riRgSltWgV+A9CTD+7NSq9w1JOfKACume6SAceGLrV4Ylyccy7J7akdZhds6mAWGicJlbOI1+cnJfNA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(39860400002)(366004)(396003)(66556008)(122000001)(316002)(4326008)(66476007)(64756008)(66446008)(91956017)(36756003)(86362001)(186003)(66946007)(83380400001)(6486002)(71200400001)(76116006)(26005)(6512007)(53546011)(33656002)(2616005)(478600001)(6916009)(54906003)(5660300002)(6506007)(8676002)(38100700002)(2906002)(8936002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?N/CQl4jtbjCXe5MJj5QCjWuHFBXnyEOZOEU0wHNMgyf7p+49PXkcIYQWghv1?=
- =?us-ascii?Q?Kw7AASyEoQwIBoSD3gTLULNpax/Zarz2Y8AVbAzIax1EnlZjJPx4/AJtNvYN?=
- =?us-ascii?Q?rtPGVVwAmezbXWSjPfPncVf8ocGZUMVSXlAkuY1csHhLuKFC71ILdYHhNDCH?=
- =?us-ascii?Q?xHnD9WuUWWzNp2o2jYtIUP+LooNTms69EMAb6x+vVzNVdU0Q9C+/byGbiMrw?=
- =?us-ascii?Q?loekKt+YH8xbrDYqdewA97k238UA9IiEzR0wyNn0zJJRloNAU1roTqOZ7Fyg?=
- =?us-ascii?Q?JGxU2lXBWWgrhYba6IYItNsxVtIeEVVGZ7mpzMRkWBm1bfg784yOovLNylut?=
- =?us-ascii?Q?Xix1YzAOQbQEhC+oGsYvf0n8RXW2ppSuo0tsDuVo+kADZrufOg1c8QSPqwEf?=
- =?us-ascii?Q?cU/t7Q8MqFS623bSmEr/poxISzNHLc9hW+lqI/YAwFxRDOa9u/F6Sx6ONR0h?=
- =?us-ascii?Q?Qr5jpzFl7/4Cq2z+sUhZyPdcHc0kEij/k+xoFXLU8xIYNfp8XEXXCOhY5Rlu?=
- =?us-ascii?Q?e+hdoQzwMOPH9960HSFIyYX+xvbLnPp+c5pdK0awWfOi0CLVwIkilB4s+N7c?=
- =?us-ascii?Q?TFvkULxMkZDWdcXNBocFf8EbgDj12CaSHJY9GatYDjr+SXM2SDFvu2KI/ETx?=
- =?us-ascii?Q?mhyNX0UnF7HVDSl4SDNKtWZm/J4rE22H2A1Pocp33Rrv/5HvkVWe76ZT1gQS?=
- =?us-ascii?Q?ym7qFUAN8IhOtAeP47DgTTnwfn2EmWnYYqlftDBmHXsrVicY18sj2lBu4Ky8?=
- =?us-ascii?Q?BgU14ioD/MtOF6UTAJXmx+lOhUQvRMjePabjRJmkwBcOwSiqZcxrgRYUiDtu?=
- =?us-ascii?Q?E3mYAjloJdLghFzxLDoTdEQH8aOuGwlv17XFalk4362e/T+AyJXrMc9WPNbr?=
- =?us-ascii?Q?hzG/adDxSM6joqQUL/I3eKkgvfYes/sEBXpIvMJ76mV/JLvmOwuu3VVn3rQ/?=
- =?us-ascii?Q?HyqPZ6T8Go9KWyM/cU/XH8BjcoY10rJV7C8eVJoupFiuMdzlEiePVErrM6Br?=
- =?us-ascii?Q?DNIBAeVyXg1QwaTgzCfG+Zl6qp7nYAsMyqxQgJt7i2FOvCwJLhTVqhmKN+m7?=
- =?us-ascii?Q?cBt1ZnkQXLRG6sNDrC9Xspo8rHIbEt6xH7dKzZS+oUfwyexBQLeWYaXJQks3?=
- =?us-ascii?Q?HBi9h8EzMObJcQ5pZQFarL4UA+hrdufjzTox2Xt2UqDwtqmIoKmpfT3fW1ut?=
- =?us-ascii?Q?W8U78rsH/O9ib1xCohTV9PDD1Vnj6Eli5J8ulHX8VUMFe+aG4zrF+pt9q2WJ?=
- =?us-ascii?Q?GMxbDTKbyPEuI/frLUgXYmDd4dMoOuzIGjpSjTPAvHKfdSUbnfF9dD0q8pOU?=
- =?us-ascii?Q?HDhKs2TLaUawXUU+ka3wjWGC?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <23168954393DCD4C8DD900A4C9B0FF64@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 13 Jul 2021 11:41:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626190693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PkpGjk3IAqUo4g2B+8cvDFjwsKJtxW8AwUw5KJ9QtHg=;
+        b=eULWG48aeonhA9zmOaAyt1YaDOVA4c1Q5UTXRM/cdvrs+ip1aux5f442RgERISgF177kT8
+        aHi6psaSLSDSff7IIS/FJxIgvWzGficjXNrJvxGTs7VrJILbMZSB2xVmSTT7xODuSLjXGS
+        Kfxj64EST4KvYUFYq7TpKvx+lbFZ8+c=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-D7IEeVeeMou1fb_Tx3Z6ww-1; Tue, 13 Jul 2021 11:38:11 -0400
+X-MC-Unique: D7IEeVeeMou1fb_Tx3Z6ww-1
+Received: by mail-wr1-f69.google.com with SMTP id m4-20020adffa040000b02901404c442853so1174013wrr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:38:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PkpGjk3IAqUo4g2B+8cvDFjwsKJtxW8AwUw5KJ9QtHg=;
+        b=UCzeazPBj6T96CWlLrWdisJpkK0bM2eIUBNR5AYz9bHS6N6rEwTPjZeeWGkqlEQQmW
+         O1wcSd48LWHjg7wPBuK/MV9MvqGYeNhbUUJhnIyKFtVHMC3HIML2N/5kCkSgkgvf7ccz
+         K4DSVMTrnmooHMAp8HFVZhS0qO1XyBzLeiYa8ZP183iZEKMnmzKT+mtVqt+7tQmkJK+v
+         xIrB4m1wanV/We0vrBFVY59FxH1Z8oTFM/5oz886F53/X0ZIfDQ7sfyEHuC5/3R3ZBTZ
+         NmZXBkODHihkIq/AqnXBMR6a8+hEr9Y5cgfFbr+lkkuXavsDxLBEXoYcjR0gptqIFM2G
+         CFug==
+X-Gm-Message-State: AOAM533g/pr4bgsBTSJsrbWacU3/qhtrLwMzaYT66qR61zAhK6eWQzV/
+        4TSUmblbX7Ddshue1dqw04RlJToLyRianxAcxMcdz7ktywxemvQnT5fELL2RcGeVbctgWbXbH+Y
+        XR8tiGADRfVvN9Vh8kvsabLJI
+X-Received: by 2002:adf:e0c8:: with SMTP id m8mr6543704wri.261.1626190690788;
+        Tue, 13 Jul 2021 08:38:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5gRYN/5Fm8EE9B9Q//aKvJjbg4Hmw8ae63wQji1dUg1u2RqchL2CD/ZfgcYIuPvVrzJ4zXg==
+X-Received: by 2002:adf:e0c8:: with SMTP id m8mr6543680wri.261.1626190690558;
+        Tue, 13 Jul 2021 08:38:10 -0700 (PDT)
+Received: from redhat.com ([2.55.15.23])
+        by smtp.gmail.com with ESMTPSA id y197sm1893726wmc.7.2021.07.13.08.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 08:38:09 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 11:38:05 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        viresh.kumar@linaro.org, stefanha@redhat.com,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210713113607-mutt-send-email-mst@kernel.org>
+References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74cb9f88-0216-466e-d48c-08d94613b9db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2021 15:34:38.5144
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xvSOBzTBR5A0PHOhSO/isW7iFv3yfcVF74LtypVDus3ZWhyvsOnB2/FDwXIhksx4WtlyFJ0fNjcgjBs3SZaWqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3718
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10044 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107130099
-X-Proofpoint-GUID: fhZ9DqRFWW_MWXiQNAn3avpr0K83b0Z_
-X-Proofpoint-ORIG-GUID: fhZ9DqRFWW_MWXiQNAn3avpr0K83b0Z_
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Jul 13, 2021, at 11:20 AM, Mel Gorman <mgorman@techsingularity.net> wr=
-ote:
->=20
-> From: Chuck Lever <chuck.lever@oracle.com>
->=20
-> The author of commit b3b64ebd3822 ("mm/page_alloc: do bulk array
-> bounds check after checking populated elements") was possibly
-> confused by the mixture of return values throughout the function.
->=20
-> The API contract is clear that the function "Returns the number of
-> pages on the list or array." It does not list zero as a unique
-> return value with a special meaning. Therefore zero is a plausible
-> return value only if @nr_pages is zero or less.
->=20
-> Clean up the return logic to make it clear that the returned value
-> is always the total number of pages in the array/list, not the
-> number of pages that were allocated during this call.
->=20
-> The only change in behavior with this patch is the value returned
-> if prepare_alloc_pages() fails. To match the API contract, the
-> number of pages currently in the array/list is returned in this
-> case.
->=20
-> The call site in __page_pool_alloc_pages_slow() also seems to be
-> confused on this matter. It should be attended to by someone who
-> is familiar with that code.
->=20
-> [mel@techsingularity.net: Return nr_populated if 0 pages are requested]
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+On Fri, Jul 09, 2021 at 10:25:30AM +0800, Jie Deng wrote:
+> Add an I2C bus driver for virtio para-virtualization.
+> 
+> The controller can be emulated by the backend driver in
+> any device model software by following the virtio protocol.
+> 
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+> 
+> By following the specification, people may implement different
+> backend drivers to emulate different controllers according to
+> their needs.
+> 
+> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Jie Deng <jie.deng@intel.com>
 > ---
-> mm/page_alloc.c | 14 ++++++++------
-> 1 file changed, 8 insertions(+), 6 deletions(-)
->=20
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 803414ce9264..c66f1e6204c2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5221,9 +5221,6 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pre=
-ferred_nid,
-> 	unsigned int alloc_flags =3D ALLOC_WMARK_LOW;
-> 	int nr_populated =3D 0, nr_account =3D 0;
->=20
-> -	if (unlikely(nr_pages <=3D 0))
-> -		return 0;
-> -
-> 	/*
-> 	 * Skip populated array elements to determine if any pages need
-> 	 * to be allocated before disabling IRQs.
-> @@ -5231,9 +5228,13 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pr=
-eferred_nid,
-> 	while (page_array && nr_populated < nr_pages && page_array[nr_populated]=
-)
-> 		nr_populated++;
->=20
-> +	/* No pages requested? */
-> +	if (unlikely(nr_pages <=3D 0))
-> +		goto out;
+> Changes v13 -> v14
+> 	- Put the headers in virtio_i2c.h in alphabetical order.
+> 	- Dropped I2C_FUNC_SMBUS_QUICK support.
+> 	- Dropped few unnecessary variables and checks.
+> 	- Use "num" everywhere instead of num or nr, to be consistent.
+> 	- Added few comments which make the design more clear. 
+>  
+> Changes v12 -> v13
+> 	- Use _BITUL() instead of BIT().
+> 	- Rename "virtio_i2c_send_reqs" to "virtio_i2c_prepare_reqs".
+> 	- Optimize the return value of "virtio_i2c_complete_reqs".
+> 
+> Changes v11 -> v12
+> 	- Do not sent msg_buf for zero-length request.
+> 	- Send requests to host only if all the number of transfers requested prepared successfully.
+> 	- Remove the line #include <linux/bits.h> in virtio_i2c.h.
+> 
+> Changes v10 -> v11
+> 	- Remove vi->adap.class = I2C_CLASS_DEPRECATED.
+> 	- Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused".
+> 	- Remove "struct mutex lock" in "struct virtio_i2c".
+> 	- Support zero-length request.
+> 	- Remove unnecessary logs.
+> 	- Remove vi->adap.timeout = HZ / 10, just use the default value.
+> 	- Use BIT(0) to define VIRTIO_I2C_FLAGS_FAIL_NEXT.
+> 	- Add the virtio_device index to adapter's naming mechanism.
+> 
+>  drivers/i2c/busses/Kconfig      |  11 ++
+>  drivers/i2c/busses/Makefile     |   3 +
+>  drivers/i2c/busses/i2c-virtio.c | 285 ++++++++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/virtio_i2c.h |  41 ++++++
+>  include/uapi/linux/virtio_ids.h |   1 +
+>  5 files changed, 341 insertions(+)
+>  create mode 100644 drivers/i2c/busses/i2c-virtio.c
+>  create mode 100644 include/uapi/linux/virtio_i2c.h
+> 
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index 10acece..e47616a 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -21,6 +21,17 @@ config I2C_ALI1535
+>  	  This driver can also be built as a module.  If so, the module
+>  	  will be called i2c-ali1535.
+>  
+> +config I2C_VIRTIO
+> +	tristate "Virtio I2C Adapter"
+> +	select VIRTIO
+> +	help
+> +	  If you say yes to this option, support will be included for the virtio
+> +	  I2C adapter driver. The hardware can be emulated by any device model
+> +	  software according to the virtio protocol.
 > +
-> 	/* Already populated array? */
-> 	if (unlikely(page_array && nr_pages - nr_populated =3D=3D 0))
-> -		return nr_populated;
-> +		goto out;
->=20
-> 	/* Use the single page allocator for one page. */
-> 	if (nr_pages - nr_populated =3D=3D 1)
-> @@ -5255,7 +5256,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pre=
-ferred_nid,
-> 	gfp &=3D gfp_allowed_mask;
-> 	alloc_gfp =3D gfp;
-> 	if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask, &ac, &alloc_gf=
-p, &alloc_flags))
-> -		return nr_populated;
-> +		goto out;
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called i2c-virtio.
+> +
+>  config I2C_ALI1563
+>  	tristate "ALI 1563"
+>  	depends on PCI
+> diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
+> index 69e9963..9843756 100644
+> --- a/drivers/i2c/busses/Makefile
+> +++ b/drivers/i2c/busses/Makefile
+> @@ -147,4 +147,7 @@ obj-$(CONFIG_I2C_XGENE_SLIMPRO) += i2c-xgene-slimpro.o
+>  obj-$(CONFIG_SCx200_ACB)	+= scx200_acb.o
+>  obj-$(CONFIG_I2C_FSI)		+= i2c-fsi.o
+>  
+> +# VIRTIO I2C host controller driver
+> +obj-$(CONFIG_I2C_VIRTIO)	+= i2c-virtio.o
+> +
+>  ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
+> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+> new file mode 100644
+> index 0000000..0139cdc
+> --- /dev/null
+> +++ b/drivers/i2c/busses/i2c-virtio.c
+> @@ -0,0 +1,285 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Virtio I2C Bus Driver
+> + *
+> + * The Virtio I2C Specification:
+> + * https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex
+> + *
+> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/completion.h>
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/virtio.h>
+> +#include <linux/virtio_ids.h>
+> +#include <linux/virtio_config.h>
+> +#include <linux/virtio_i2c.h>
+> +
+> +/**
+> + * struct virtio_i2c - virtio I2C data
+> + * @vdev: virtio device for this controller
+> + * @completion: completion of virtio I2C message
+> + * @adap: I2C adapter for this controller
+> + * @vq: the virtio virtqueue for communication
+> + */
+> +struct virtio_i2c {
+> +	struct virtio_device *vdev;
+> +	struct completion completion;
+> +	struct i2c_adapter adap;
+> +	struct virtqueue *vq;
+> +};
+> +
+> +/**
+> + * struct virtio_i2c_req - the virtio I2C request structure
+> + * @out_hdr: the OUT header of the virtio I2C message
+> + * @buf: the buffer into which data is read, or from which it's written
+> + * @in_hdr: the IN header of the virtio I2C message
+> + */
+> +struct virtio_i2c_req {
+> +	struct virtio_i2c_out_hdr out_hdr	____cacheline_aligned;
+> +	uint8_t *buf				____cacheline_aligned;
+> +	struct virtio_i2c_in_hdr in_hdr		____cacheline_aligned;
+> +};
+> +
+> +static void virtio_i2c_msg_done(struct virtqueue *vq)
+> +{
+> +	struct virtio_i2c *vi = vq->vdev->priv;
+> +
+> +	complete(&vi->completion);
+> +}
+> +
+> +static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
+> +				   struct virtio_i2c_req *reqs,
+> +				   struct i2c_msg *msgs, int num)
+> +{
+> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+> +	int i;
+> +
+> +	for (i = 0; i < num; i++) {
+> +		int outcnt = 0, incnt = 0;
+> +
+> +		/*
+> +		 * We don't support 0 length messages and so masked out
+> +		 * I2C_FUNC_SMBUS_QUICK in virtio_i2c_func().
+> +		 */
+> +		if (!msgs[i].len)
+> +			break;
+> +
+> +		/*
+> +		 * Only 7-bit mode supported for this moment. For the address
+> +		 * format, Please check the Virtio I2C Specification.
+> +		 */
+> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+> +
+> +		if (i != num - 1)
+> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
+> +
+> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+> +		sgs[outcnt++] = &out_hdr;
+> +
+> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
+> +		if (!reqs[i].buf)
+> +			break;
+> +
+> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+> +
+> +		if (msgs[i].flags & I2C_M_RD)
+> +			sgs[outcnt + incnt++] = &msg_buf;
+> +		else
+> +			sgs[outcnt++] = &msg_buf;
+> +
+> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+> +		sgs[outcnt + incnt++] = &in_hdr;
+> +
+> +		if (virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL)) {
+> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
+> +			break;
+> +		}
 
-:thumbsup:  Thanks!
+
+I think we should tweak this such that we add multiple buffers but
+only make them visible to host after all add commands were successful.
+With split this is possible by deffering avail idx update,
+with packed by deferring update of the avail bit in the descriptor.
+I'll write a patch to add an API like that to virtio, then we
+can switch to that.
 
 
-> 	gfp =3D alloc_gfp;
->=20
-> 	/* Find an allowed local zone that meets the low watermark. */
-> @@ -5323,6 +5324,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pre=
-ferred_nid,
-> 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
-> 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
->=20
-> +out:
-> 	return nr_populated;
->=20
-> failed_irq:
-> @@ -5338,7 +5340,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pre=
-ferred_nid,
-> 		nr_populated++;
-> 	}
->=20
-> -	return nr_populated;
-> +	goto out;
-> }
-> EXPORT_SYMBOL_GPL(__alloc_pages_bulk);
->=20
-> --=20
-> 2.26.2
->=20
-
---
-Chuck Lever
-
-
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> +				    struct virtio_i2c_req *reqs,
+> +				    struct i2c_msg *msgs, int num,
+> +				    bool timedout)
+> +{
+> +	struct virtio_i2c_req *req;
+> +	bool failed = timedout;
+> +	unsigned int len;
+> +	int i, j = 0;
+> +
+> +	for (i = 0; i < num; i++) {
+> +		/* Detach the ith request from the vq */
+> +		req = virtqueue_get_buf(vq, &len);
+> +
+> +		/*
+> +		 * Condition req == &reqs[i] should always meet since we have
+> +		 * total num requests in the vq. reqs[i] can never be NULL here.
+> +		 */
+> +		if (!failed && (WARN_ON(req != &reqs[i]) ||
+> +				req->in_hdr.status != VIRTIO_I2C_MSG_OK))
+> +			failed = true;
+> +
+> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
+> +
+> +		if (!failed)
+> +			j++;
+> +	}
+> +
+> +	return timedout ? -ETIMEDOUT : j;
+> +}
+> +
+> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> +			   int num)
+> +{
+> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> +	struct virtqueue *vq = vi->vq;
+> +	struct virtio_i2c_req *reqs;
+> +	unsigned long time_left;
+> +	int count;
+> +
+> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> +	if (!reqs)
+> +		return -ENOMEM;
+> +
+> +	count = virtio_i2c_prepare_reqs(vq, reqs, msgs, num);
+> +	if (!count)
+> +		goto err_free;
+> +
+> +	/*
+> +	 * For the case where count < num, i.e. we weren't able to queue all the
+> +	 * msgs, ideally we should abort right away and return early, but some
+> +	 * of the messages are already sent to the remote I2C controller and the
+> +	 * virtqueue will be left in undefined state in that case. We kick the
+> +	 * remote here to clear the virtqueue, so we can try another set of
+> +	 * messages later on.
+> +	 */
+> +
+> +	reinit_completion(&vi->completion);
+> +	virtqueue_kick(vq);
+> +
+> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
+> +	if (!time_left)
+> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
+> +
+> +	count = virtio_i2c_complete_reqs(vq, reqs, msgs, count, !time_left);
+> +
+> +err_free:
+> +	kfree(reqs);
+> +	return count;
+> +}
+> +
+> +static void virtio_i2c_del_vqs(struct virtio_device *vdev)
+> +{
+> +	vdev->config->reset(vdev);
+> +	vdev->config->del_vqs(vdev);
+> +}
+> +
+> +static int virtio_i2c_setup_vqs(struct virtio_i2c *vi)
+> +{
+> +	struct virtio_device *vdev = vi->vdev;
+> +
+> +	vi->vq = virtio_find_single_vq(vdev, virtio_i2c_msg_done, "msg");
+> +	return PTR_ERR_OR_ZERO(vi->vq);
+> +}
+> +
+> +static u32 virtio_i2c_func(struct i2c_adapter *adap)
+> +{
+> +	return I2C_FUNC_I2C | (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
+> +}
+> +
+> +static struct i2c_algorithm virtio_algorithm = {
+> +	.master_xfer = virtio_i2c_xfer,
+> +	.functionality = virtio_i2c_func,
+> +};
+> +
+> +static int virtio_i2c_probe(struct virtio_device *vdev)
+> +{
+> +	struct device *pdev = vdev->dev.parent;
+> +	struct virtio_i2c *vi;
+> +	int ret;
+> +
+> +	vi = devm_kzalloc(&vdev->dev, sizeof(*vi), GFP_KERNEL);
+> +	if (!vi)
+> +		return -ENOMEM;
+> +
+> +	vdev->priv = vi;
+> +	vi->vdev = vdev;
+> +
+> +	init_completion(&vi->completion);
+> +
+> +	ret = virtio_i2c_setup_vqs(vi);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vi->adap.owner = THIS_MODULE;
+> +	snprintf(vi->adap.name, sizeof(vi->adap.name),
+> +		 "i2c_virtio at virtio bus %d", vdev->index);
+> +	vi->adap.algo = &virtio_algorithm;
+> +	vi->adap.dev.parent = &vdev->dev;
+> +	i2c_set_adapdata(&vi->adap, vi);
+> +
+> +	/*
+> +	 * Setup ACPI node for controlled devices which will be probed through
+> +	 * ACPI.
+> +	 */
+> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
+> +
+> +	ret = i2c_add_adapter(&vi->adap);
+> +	if (ret)
+> +		virtio_i2c_del_vqs(vdev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void virtio_i2c_remove(struct virtio_device *vdev)
+> +{
+> +	struct virtio_i2c *vi = vdev->priv;
+> +
+> +	i2c_del_adapter(&vi->adap);
+> +	virtio_i2c_del_vqs(vdev);
+> +}
+> +
+> +static struct virtio_device_id id_table[] = {
+> +	{ VIRTIO_ID_I2C_ADAPTER, VIRTIO_DEV_ANY_ID },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(virtio, id_table);
+> +
+> +#ifdef CONFIG_PM_SLEEP
+> +static int virtio_i2c_freeze(struct virtio_device *vdev)
+> +{
+> +	virtio_i2c_del_vqs(vdev);
+> +	return 0;
+> +}
+> +
+> +static int virtio_i2c_restore(struct virtio_device *vdev)
+> +{
+> +	return virtio_i2c_setup_vqs(vdev->priv);
+> +}
+> +#endif
+> +
+> +static struct virtio_driver virtio_i2c_driver = {
+> +	.id_table	= id_table,
+> +	.probe		= virtio_i2c_probe,
+> +	.remove		= virtio_i2c_remove,
+> +	.driver	= {
+> +		.name	= "i2c_virtio",
+> +	},
+> +#ifdef CONFIG_PM_SLEEP
+> +	.freeze = virtio_i2c_freeze,
+> +	.restore = virtio_i2c_restore,
+> +#endif
+> +};
+> +module_virtio_driver(virtio_i2c_driver);
+> +
+> +MODULE_AUTHOR("Jie Deng <jie.deng@intel.com>");
+> +MODULE_AUTHOR("Conghui Chen <conghui.chen@intel.com>");
+> +MODULE_DESCRIPTION("Virtio i2c bus driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
+> new file mode 100644
+> index 0000000..7c6a6fc
+> --- /dev/null
+> +++ b/include/uapi/linux/virtio_i2c.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+> +/*
+> + * Definitions for virtio I2C Adpter
+> + *
+> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+> +#define _UAPI_LINUX_VIRTIO_I2C_H
+> +
+> +#include <linux/const.h>
+> +#include <linux/types.h>
+> +
+> +/* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
+> +#define VIRTIO_I2C_FLAGS_FAIL_NEXT	_BITUL(0)
+> +
+> +/**
+> + * struct virtio_i2c_out_hdr - the virtio I2C message OUT header
+> + * @addr: the controlled device address
+> + * @padding: used to pad to full dword
+> + * @flags: used for feature extensibility
+> + */
+> +struct virtio_i2c_out_hdr {
+> +	__le16 addr;
+> +	__le16 padding;
+> +	__le32 flags;
+> +};
+> +
+> +/**
+> + * struct virtio_i2c_in_hdr - the virtio I2C message IN header
+> + * @status: the processing result from the backend
+> + */
+> +struct virtio_i2c_in_hdr {
+> +	__u8 status;
+> +};
+> +
+> +/* The final status written by the device */
+> +#define VIRTIO_I2C_MSG_OK	0
+> +#define VIRTIO_I2C_MSG_ERR	1
+> +
+> +#endif /* _UAPI_LINUX_VIRTIO_I2C_H */
+> diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
+> index 4fe842c..3b5f05a 100644
+> --- a/include/uapi/linux/virtio_ids.h
+> +++ b/include/uapi/linux/virtio_ids.h
+> @@ -55,6 +55,7 @@
+>  #define VIRTIO_ID_FS			26 /* virtio filesystem */
+>  #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+>  #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
+> +#define VIRTIO_ID_I2C_ADAPTER		34 /* virtio i2c adapter */
+>  #define VIRTIO_ID_BT			40 /* virtio bluetooth */
+>  
+>  #endif /* _LINUX_VIRTIO_IDS_H */
+> -- 
+> 2.7.4
 
