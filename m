@@ -2,250 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD49C3C6B44
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4343C6B48
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234248AbhGMHek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:34:40 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:41159 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233762AbhGMHej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:34:39 -0400
-Received: from localhost.localdomain (ip5f5aeb78.dynamic.kabel-deutschland.de [95.90.235.120])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D066F61E30BCC;
-        Tue, 13 Jul 2021 09:31:47 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Guohan Lu <lguohan@gmail.com>, balsup <balsup@contoso.com>,
-        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: Reserve address space for powered-off devices behind PCIe bridges
-Date:   Tue, 13 Jul 2021 09:31:24 +0200
-Message-Id: <20210713073124.177027-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.32.0
+        id S234233AbhGMHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233762AbhGMHiQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 03:38:16 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56110C0613DD;
+        Tue, 13 Jul 2021 00:35:27 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id v7so20873844pgl.2;
+        Tue, 13 Jul 2021 00:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lDXX6aLRLFwz2lfT6sXQWOct2gpF65UcPwyHGrne0Co=;
+        b=FuDtjjEEv8z4K71c2XZNdoUpw/GLqIkymVWoS0dExrqNTrNVncs9H7Nj3TxK17kJgP
+         AOmxt5MuCyqGpf+U5ZUOGw8z7K1gmB0gxSa4rroTIQe8V16Zdk0KEHNmSAwhn4YNaqLe
+         oi9wWsQi4aRjiyQAJABg56p3S/HsAluDXqZCXo6hryVHu9DffgYKvuqfe9HhKCTH+kVl
+         pMLO0vw+cfs65f2suu/5JDSBlSV2Py2JKvobQBCa6Nmvaduwz4tTw7ayrRu54OmJCSYU
+         u+yhdDbUnT/nMocKsL2ptMcTraQDO8GhVUVLzHFGObiPSeyglliCGdMqRGNFj74dggOL
+         J+BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lDXX6aLRLFwz2lfT6sXQWOct2gpF65UcPwyHGrne0Co=;
+        b=cSxcXvZRz3c5d0R3Gn2k2LLRvNekGjDpQZF6Bwrj++RtTzyBHUN7IBE8oDcYf3sMTc
+         iZ2PH1uD5ItMspuZAfds+XqxHPPnNyr/XzaJV83i7YyFaCVfTak8gx6jvZonZFirU18M
+         qRfW8zbcUj4KncPlKdMRP0aQl3Sx10Jmr6xj1SiAokjwRt27txlh67HzgONHJ5oPIb4l
+         +b3wuTfQrSvOaAbP8r68KugVfQte/lNt+Xt7kPQjVgHljgCu9O+1MrLt0NKgjzKPblvP
+         JiWKCjJ82CaIo7cwG3CLIOcmB07uGjbbQXpitcyzUuuPqX5w4Qeh4ZDwRfz1xmCC5E02
+         dGSw==
+X-Gm-Message-State: AOAM532xFScP+5XrTwTB+2IGlrxcqojgKJ4/9p/1b9mEaGYtHHWuCwSd
+        MTkebHsxKIp3MyoS57BbXNLTXHIyPOKJnG+/TlA=
+X-Google-Smtp-Source: ABdhPJzhTjL9ZI8zsvkBliQ7IYB+YYzPt6Bu37UPa4OIsdmd3BNZmELfrm3UQrUzTm/ZfEqad9mvifZvRXWvxyjxNJs=
+X-Received: by 2002:a05:6a00:2451:b029:329:df3d:62f2 with SMTP id
+ d17-20020a056a002451b0290329df3d62f2mr3293864pfj.7.1626161726846; Tue, 13 Jul
+ 2021 00:35:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210529111935.3849707-1-andy.shevchenko@gmail.com> <YNMz59WLCMwr0rVD@smile.fi.intel.com>
+In-Reply-To: <YNMz59WLCMwr0rVD@smile.fi.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 13 Jul 2021 10:34:50 +0300
+Message-ID: <CAHp75VcsaPs3GGEZDBxDj=0oEpTWPcqUP75kFOo8LG_JfQkhmA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/13] leds: core: The -ENOTSUPP should never be seen
+ by user space
+To:     Pavel Machek <pavel@ucw.cz>,
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Abanoub Sameh <abanoubsameh8@gmail.com>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Jacek Anaszewski <j.anaszewski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: balsup <balsup@contoso.com>
+On Wed, Jun 23, 2021 at 4:16 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sat, May 29, 2021 at 02:19:23PM +0300, Andy Shevchenko wrote:
+> > Luckily there is no user which checks for returned code and actually
+> > returns it, but since the function is exported any user may try to return
+> > an error code from it to user space, usually during probe phase,
+> >
+> > Replace -ENOTSUPP by -EOPNOTSUPP when returning from exported function.
+>
+> There were no issue reported by bots, no comments from people (except one tag),
+> can we do something about this series or should I amend it?
 
-Data path devices are powered off by default, they will not be visible at
-BIOS stage and memory for these devices is not reserved.
+Pavel, do I need to resend this series? It mostly should be the part
+of v5.14 cycle (half of it is the fixes).
 
-By default, no address space would be reserved on the bridges for these
-unpowered devices. When they were powered up, they could fail to initialize
-because there was no appropriately aligned window available for a given
-BAR.
-
-This patch will reserve address space for data path devices that are behind
-PCIe bridge, so that when devices are available PCIe subsystem will be
-assign the address within the specified range.
-
-Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
----
-This patch was submitted to the SONiC project for a Cisco device [1].
-It’s better to have it reviewed and committed upstream though.
-
- drivers/pci/setup-bus.c | 159 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 159 insertions(+)
-
-diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
-index 2ce636937c6e..266097984e19 100644
---- a/drivers/pci/setup-bus.c
-+++ b/drivers/pci/setup-bus.c
-@@ -967,6 +967,148 @@ static inline resource_size_t calculate_mem_align(resource_size_t *aligns,
- 	return min_align;
- }
- 
-+#define PLX_RES_MAGIC_VALUE            0xABBA
-+#define PLX_RES_DS_PORT_REG0           0xC6C
-+#define PLX_RES_DS_PORT_REG1           0xC70
-+#define PLX_RES_MAGIC_OFFSET           0xC76
-+#define PLX_RES_NP_MASK                0x1
-+#define PLX_RES_P_MASK                 0x1F
-+
-+static struct pci_dev *
-+plx_find_nt_device(struct pci_bus *bus, unsigned short brg_dev_id)
-+{
-+	struct pci_dev *dev, *nt_virt_dev = NULL;
-+	struct pci_bus *child_bus;
-+	unsigned short vendor, devid, class;
-+
-+	if (!bus)
-+		return NULL;
-+
-+	list_for_each_entry(child_bus, &bus->children, node) {
-+		list_for_each_entry(dev, &child_bus->devices, bus_list) {
-+			vendor = dev->vendor;
-+			devid = dev->device;
-+			class = dev->class >> 8;
-+
-+			if ((vendor == PCI_VENDOR_ID_PLX) &&
-+					(brg_dev_id == devid) &&
-+					(class == PCI_CLASS_BRIDGE_OTHER)) {
-+				dev_dbg(&dev->dev, "Found NT device 0x%x\n",
-+						devid);
-+				nt_virt_dev = dev;
-+				break;
-+			}
-+		}
-+
-+		if (nt_virt_dev)
-+			break;
-+	}
-+	return nt_virt_dev;
-+}
-+
-+static resource_size_t
-+pci_get_plx_downstream_res_size(struct pci_bus *bus, unsigned long res_type)
-+{
-+	int depth = 0;
-+	resource_size_t size = 0;
-+	struct pci_dev *dev = bus->self;
-+	struct pci_bus *tmp_bus;
-+	struct pci_dev *nt_virt_dev;
-+	u16 res_magic = 0;
-+
-+	/*
-+	 * 32 bits to store the memory requirement for PLX ports.
-+	 * Following is the layout:
-+	 * np32_0:1;  --> non-prefetchable port 0
-+	 * p64_0:5;   --> prefetchable port 0
-+	 * np32_1:1;  --> non-prefetchable port 1
-+	 * p64_1:5;   --> prefetchable port 1
-+	 * np32_2:1;  --> non-prefetchable port 2
-+	 * p64_2:5;   --> prefetchable port 2
-+	 * np32_3:1;  --> non-prefetchable port 3
-+	 * p64_3:5;   --> prefetchable port 3
-+	 * np32_4:1;  --> non-prefetchable port 4
-+	 * p64_4:5;   --> prefetchable port 4
-+	 * reserved:2;
-+	 */
-+	unsigned int port_bitmap;
-+
-+	u32 mem_res_bitmap = 0;
-+	unsigned int ds_port_offset = 0;
-+	unsigned short multiplier = 0;
-+	unsigned short np_size = 0;
-+
-+	/*
-+	 * PLX8713 used on FC4 and FC8
-+	 * PLX8725 used on FC12 and FC18
-+	 */
-+	if (!dev || dev->vendor != PCI_VENDOR_ID_PLX ||
-+			((dev->device & 0xFF00) != 0x8700))
-+		return size;
-+
-+	tmp_bus = bus;
-+	while (tmp_bus->parent) {
-+		tmp_bus = tmp_bus->parent;
-+		depth++;
-+	}
-+
-+	/* Only for Second level bridges */
-+	if (depth != 5)
-+		return size;
-+
-+	nt_virt_dev = plx_find_nt_device(bus->parent, 0x87b0);
-+	if (nt_virt_dev) {
-+		pci_read_config_word(nt_virt_dev, PLX_RES_MAGIC_OFFSET,
-+				&res_magic);
-+		dev_dbg(&nt_virt_dev->dev,
-+				"Magic offset of 0x%x found in NT device\n", res_magic);
-+	}
-+
-+	if (res_magic == PLX_RES_MAGIC_VALUE) {
-+		/*
-+		 * The pacifics are connected on PLX ports:
-+		 *  FC4 and FC8: #3, #4
-+		 *  FC12       : #3, #4, #5
-+		 *  FC18       : #3, #4, #5, #11
-+		 */
-+
-+		/* Calculate resource based on EEPROM values */
-+		ds_port_offset = (bus->number - bus->parent->number) - 1;
-+		if (ds_port_offset < 5) {
-+			pci_read_config_dword(nt_virt_dev, PLX_RES_DS_PORT_REG0,
-+					&mem_res_bitmap);
-+		} else {
-+			ds_port_offset -= 5;
-+			pci_read_config_dword(nt_virt_dev, PLX_RES_DS_PORT_REG1,
-+					&mem_res_bitmap);
-+		}
-+		port_bitmap = mem_res_bitmap;
-+		dev_dbg(&bus->dev, "Port offset: 0x%x, res bitmap 0x%x\n",
-+				ds_port_offset, mem_res_bitmap);
-+
-+		if (ds_port_offset < 5) {
-+			u8 m[] = { 26, 20, 14, 8, 2 };
-+			u8 s[] = { 31, 25, 19, 13, 7 };
-+
-+			multiplier = (port_bitmap >> m[ds_port_offset]) & PLX_RES_P_MASK;
-+			np_size = (port_bitmap >> s[ds_port_offset]) & PLX_RES_NP_MASK;
-+
-+			dev_dbg(&bus->dev, "Multiplier: %d, np_size: %d\n",
-+					multiplier, np_size);
-+
-+			if (res_type & IORESOURCE_PREFETCH) {
-+				size = 0x100000 << (multiplier - 1);
-+				dev_dbg(&bus->dev, "Pref Multiplier %d, Size 0x%llx\n",
-+						multiplier, (long long) size);
-+			} else if (np_size) {
-+				size = 0x100000;
-+				dev_dbg(&bus->dev, "NP Size 0x%llx\n", (long long) size);
-+			}
-+		}
-+	}
-+	return size;
-+}
-+
- /**
-  * pbus_size_mem() - Size the memory window of a given bus
-  *
-@@ -1001,6 +1143,7 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
- 	resource_size_t children_add_size = 0;
- 	resource_size_t children_add_align = 0;
- 	resource_size_t add_align = 0;
-+	unsigned int dev_count = 0;
- 
- 	if (!b_res)
- 		return -ENOSPC;
-@@ -1016,6 +1159,7 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
- 	list_for_each_entry(dev, &bus->devices, bus_list) {
- 		int i;
- 
-+		dev_count++;
- 		for (i = 0; i < PCI_NUM_RESOURCES; i++) {
- 			struct resource *r = &dev->resource[i];
- 			resource_size_t r_size;
-@@ -1071,6 +1215,21 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
- 		}
- 	}
- 
-+	/* Static allocation for FC pacific */
-+	if (!size && !dev_count) {
-+		size = pci_get_plx_downstream_res_size(bus, type);
-+		if (size) {
-+			order = __ffs(size);
-+			dev_dbg(&bus->self->dev, "order for %llx is %u\n", (long long) size, order);
-+			if ((order >= 20) &&
-+					((order -= 20) < ARRAY_SIZE(aligns)) &&
-+					(order > max_order)) {
-+				max_order = order;
-+				dev_dbg(&bus->self->dev, "max_order reset to %d; size %zx\n", max_order, (size_t)size);
-+			}
-+		}
-+	}
-+
- 	min_align = calculate_mem_align(aligns, max_order);
- 	min_align = max(min_align, window_alignment(bus, b_res->flags));
- 	size0 = calculate_memsize(size, min_size, 0, 0, resource_size(b_res), min_align);
 -- 
-2.32.0
-
+With Best Regards,
+Andy Shevchenko
