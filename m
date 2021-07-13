@@ -2,155 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB113C6C20
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3863C6C22
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhGMIqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:46:36 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:52731 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbhGMIqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:46:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626165826; x=1657701826;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Q1z6EyHUN8ZZogVPBL3trusKA4tjxUlKHy6RtO76L+o=;
-  b=FL5Vf/3G78Y7LSJJdSR2qL2S6n4nNGjATIj6lo0jrme3MNbFTrX9X+LV
-   rnHOh1LRymXMWAmQFP6WdNJSu9YEWt+lFVV+PWTxMXCiCFAzcU7fWivfr
-   FQRgiPNo7kVy/eFH3LKYPk1SDnRLKInOsurgg4H59iZVkuzwwHv74eZZk
-   pEny2fuOQnWap3yaQhswDCaEwP0IBRpSlBawP7Hn5d7ny9M1U9co8T2U+
-   KCUSRs4PkK4rwiRwzXXRbWkhrjtjouS1SlGgnH0vrDymqfqqZSZulDTA0
-   dj2hvNGni5A66bbNauxh+O23Sh3Rof0uj4J3nhmL0kR5ru2bd43FibIl8
-   w==;
-IronPort-SDR: NPFsvc/aGrQ5u5FV+syWhe0qDTWlnkvjRxLfSTAQMcKzm7Y0pVneiDoM3qxKByrqD0EbTEFih8
- OWHwqhMNSTy+N7pHZPQfl+nYwCfrek9CYXAgud3DI73FEl6N6f/6szJUUe/xoC5cVbv69Ur39m
- ZqStAU0SKdp77rZxP8XiaVmTv6XFqEKlPx1OytqX82/StkHVVvIGgeC0eagzkHr3Xvj/zQmWol
- 62qAPYdttnH6BJZz7bu5wapM65jurgiZ5aE2yw+L1dd/SsuZB9j8wsCoENFM08lAUZsmbMbDjY
- awI=
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="62025215"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2021 01:43:45 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 01:43:45 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Tue, 13 Jul 2021 01:43:44 -0700
+        id S234675AbhGMIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:46:56 -0400
+Received: from mail-vi1eur05on2077.outbound.protection.outlook.com ([40.107.21.77]:32992
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234121AbhGMIqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:46:54 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fnYRdA9Ld8wBkNJ/Mv8LlodVXhEQLd+PuIol0HqZmPHSMkr11jRZ749nSR/pkDviidVfB7QrTWqXdy1NgKsf9VoM4A7O7M+29fNLTOVirtHeCGwTEXys4FdFgy/i67pgkJk2BFXabHgx9O+CQKFi7EQ3oJftJXK+RC82VfxrzWFQ9SulVuRqroea65r3fllJFjtYPpcqO4qDBSLO0YjAKfW0oJw8joaYJLZGP47rAogeea6nwmRa7PIqBGtpj2Mel0bEIoAaJG7K+zwwLIOaeU3HeEiLmh+ivZIz93eao+laXIuzXYAWZOsMTfuGRKD6bX4llngFzOqgwA0mKefgCg==
+ b=BQlItuqBhSziqOnnnZHHfOSmVhADGOX3VWVU8qlZo847axwEOQu2XGUuNPHVpQL+I49BmUHfo7ypOX2U28AgZ5vpSZn2iX9OjhXZ7Bbk0r9QXJrHw0XBZKDtMtZap+GdLv50eEcnt5Ixtj9mqvNrkxW2Od3FfHreWnCRjAJSAAY+fg3Cbujr1zXiKTESTbNkYVGyo55bwusBjXze9bqa27+Km15yEk6oNOeV1I3j8364FyUMK7H+sde7oiwlZo9K/IsF1TQ8hGwFQ2H15856oFWIZLSuq/idKRulE1u1WU0XtZXgig6AJYoucgnZaJiZIVrfVDdJiEcByt5BGCoc8w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q1z6EyHUN8ZZogVPBL3trusKA4tjxUlKHy6RtO76L+o=;
- b=TNleo/dPD+0axGwFLEgb6ue+7wgtL7uoTh3BfwXs1Dp9QOWqskkN25I2rs3TUGqgoFVk+9ZFIA3Z1qaYYoXzscpP/z9r43dsLM85I0XaMmpdMF500lFeraYFYXe/+vao2g4x/iKnL9tExF24nNvP/tqpz0FxudujcPD6lc0Z81fCQndVP4IafQGbBe7D6+ibIq0/ckkFWDy277YfswHwqBxZgF+H4oJD+Ne3h4PRDJ+W2hnQ/bjYSqbxGe6/kT1EdA/bQS/l1+FoCn7YTIlXzuLcZ/Zwzofc3O7QqAeNDQU1u5RFpSTi93nkyfWw0XNwvubUKytdwudAxIrD1dWZ9w==
+ bh=o6z6cRcL5ZaJtkebEHEpfrL4LGa/7GHBeCEyg3dC55w=;
+ b=fp5pNxdWjLIbTx2D+ulumIz7qi7IrAQDazAurA5+CUytlKBs9ogRkZqfj0SS0z4UoZMpieQsWhB8zXA3KtX4LHo/I5TKUej+Macb2R2wb7LPHyvtuYvXyxT78F1ZKIAeuEqh0FOj5FxXLLq5j5IKXCKH3fO8FrJgXF4zvUhdSFmLW2yRYujYeOVEg5Bp6LDmfS8ohKGmiceXF7aDw/yuFAoZ4HRLgANpPap2HuUC+lWImKDSHiDUqquOSbP0aUoDT+E/THx3ACdqjBFLfY2MylkwDULfZ0CMl6wfVNNt+MvTidjiWwnnnNsJwVSkkTTjObhbmNng1OzWj8BMwWaSOg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q1z6EyHUN8ZZogVPBL3trusKA4tjxUlKHy6RtO76L+o=;
- b=MdmwJdStKWQuWrybIlMPjiX4sRhkwiMOemHNJfwd+eXPkVlj98jX268M3Dvm5fa0zLAzu8vHW0xDXC+ZmXaWMdcy8crPdijLPhN0g2BdyG0IY+dENEMXSxp3uA8ssXE5kbh49iWQ25zdfGW34LxGFMetWFKHyDZ3OliSCelqgtg=
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com (2603:10b6:8:22::7) by
- DM4PR11MB5341.namprd11.prod.outlook.com (2603:10b6:5:390::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4308.20; Tue, 13 Jul 2021 08:43:43 +0000
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::44ef:d8cf:6e86:2cd5]) by DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::44ef:d8cf:6e86:2cd5%5]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
- 08:43:43 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <Claudiu.Beznea@microchip.com>, <Nicolas.Ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>
-CC:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] i2c: at91: remove #define CONFIG_PM
-Thread-Topic: [PATCH] i2c: at91: remove #define CONFIG_PM
-Thread-Index: AQHXcZe9Daji3etcjEyeNNuBSNwosqtAoy4A
-Date:   Tue, 13 Jul 2021 08:43:43 +0000
-Message-ID: <aa7bccf4-c5bf-9358-65bf-fba63851460d@microchip.com>
-References: <20210705121516.622326-1-claudiu.beznea@microchip.com>
-In-Reply-To: <20210705121516.622326-1-claudiu.beznea@microchip.com>
-Accept-Language: en-US
+ bh=o6z6cRcL5ZaJtkebEHEpfrL4LGa/7GHBeCEyg3dC55w=;
+ b=unlIuiyMMZQRVJbpYWgNGdXbfL8cVOfemCakLxfdJ99I/KBaEoulK62hJlhOj1tK5rZYvkbZjuewkxP0R0PUpdM12rzqRBJaFdWMA5bgn2Kg+/nCRm3jnjK4YKs7lgdiMqYQnte+3t0ueRKMvuuunU5/U8rFcOMDHOR1l22M/b4=
+Authentication-Results: collabora.com; dkim=none (message not signed)
+ header.d=none;collabora.com; dmarc=none action=none
+ header.from=wolfvision.net;
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
+ by DBBPR08MB6298.eurprd08.prod.outlook.com (2603:10a6:10:1f7::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Tue, 13 Jul
+ 2021 08:44:02 +0000
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
+ 08:44:02 +0000
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: rockchip: Add compatible for
+ rk3568 HDMI
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
+        daniel@ffwll.ch, robh+dt@kernel.org, algea.cao@rock-chips.com,
+        andy.yan@rock-chips.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210707120323.401785-1-benjamin.gaignard@collabora.com>
+ <20210707120323.401785-2-benjamin.gaignard@collabora.com>
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+Organization: WolfVision GmbH
+Message-ID: <1bd64284-0a20-12e3-e2e7-19cdfdbf1a25@wolfvision.net>
+Date:   Tue, 13 Jul 2021 10:44:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <20210707120323.401785-2-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none
- header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7b47afc1-50a3-41f4-7366-08d945da5285
-x-ms-traffictypediagnostic: DM4PR11MB5341:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR11MB5341E4155F1DE3522C566CE9E7149@DM4PR11MB5341.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IugQs12lEwTySny9nnsgCnLNc+UjuWnULLRaiwe5HLIWJFTffQP54JXnjNDHp+TUjyVPcNVR9HiiLa6PMCduuESMktg6fFPUz/kB7vfoHZk2RztryIKy7KpLamMs0ud7fmg8cyDB7ivi2ehy9l+8+viDTsEK8qCJoSsXIw9iO2eqPivX6B9v9sjR3IAQquFgm0RnJOODCoyZrF9VXE8uF6t88nnd+kKXSIhKykCuKQGgSLormhAnz4OTK6s4SL3QU+MAABe63g2tcRV4rpMpW3jBFIb0oP+DTMIunI5knj7RITxuBBkn2GPdBhBkP6xX39rJcLjuN4XGyX+WVxGkoaN046S3kHQo1OXt6UGptzE9FbWC5myoHnqYKp/ZgNeY2LA1k9B1iebj5lRxJ5BJMxKf6X5Q1gwbDQiXWZZGfmMDcwK35Fea8Md1WJ3K1a0BUqAv4SbVFXib/x7gmFHMmqtUIbuWNI5IqUKzoXXW5GGSlHKU6rIQZv6QUvUT9urzCG05bsIvGU+ynVlwBBsJCqHXExzVbhYmKaWq8Ug4hqG13LEKYfkJLJPPEFqm1NrgAM8VNAUEwD8MI7rIbdTHzLR48+dWl6ozj7v4uZbVuoMcY39IC2ABrnNV+EBMul1lR+y8tCyVzO+m+5yaPLRC40f0EgoRMpAe/CVt8RusTJCLpuh8D5kHfLHjUBVVk7XTxaN3woVl4L5R84I+iLFGfIgWFaPMpWzDa1BV+i4XZLv6V+OryTgn+V+qGYiAeLCL
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5687.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(39860400002)(136003)(346002)(2906002)(4326008)(54906003)(8676002)(316002)(36756003)(6512007)(110136005)(558084003)(2616005)(71200400001)(8936002)(76116006)(122000001)(66556008)(186003)(64756008)(6636002)(86362001)(31696002)(31686004)(5660300002)(38100700002)(26005)(478600001)(6486002)(6506007)(66446008)(66476007)(53546011)(91956017)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YU5DZlVtbnBEODdaTDh3cW90MTFRM0dzR1IweEVSOEVmZjJpOTFuTWN1bFpj?=
- =?utf-8?B?Q2JJYkdyY1VyMGxZQjlKMEtUMzRTUWhiSUoyc0dHU1dXb1JYZzFmUUhZKzdm?=
- =?utf-8?B?cnR4S1p3S1VGVyttaWV3cVBlZzJ4dEQ0eFFGL2VHSU9XN3haNDA2b0I0dW9p?=
- =?utf-8?B?MG5JUlZOcitSSzNJdGU1aU1SUVZhSjg1OC9nVGtTV2pVODgrN2lsN1NLNEhM?=
- =?utf-8?B?Z3pGUnRVbEhoNG1nd1NiNmdiMlQ0UWg0dkY4bGpuOG5WejVKMTBGclpNYitH?=
- =?utf-8?B?ZndOUXJrZEtYeC9TalQ3M3ZPa0dJbzEybGZYNDNRUUhNbStMYnRoZGx0bXBk?=
- =?utf-8?B?TGpzZ3ZmOXl2MEdyZlpaZmhxZVRnZmluVHZFR3o4MXhoYUhENDlkOUdTaUx3?=
- =?utf-8?B?U2daYS9oOXgxMmU0RS9pUkdTYjF4KytCZFVvdTZOM1pPaFVuZGp1bE9yQUcr?=
- =?utf-8?B?elZ0VEQ5b0NISVlsNlNubmdWTytja3FqRDQ1VkM0aEg0NitUNVpSc2l0Njhl?=
- =?utf-8?B?enFTNE9oYnltQTI2ZzFlVmNpVWVkQmF3dU16Y0k5U3psSk52Zng2QzV2L3BZ?=
- =?utf-8?B?OVpwSTcxTnhOcXQzQ3BseUVPMWZUL3RxY1VFUzAvbmVsYmZRS28yOXNNZ1li?=
- =?utf-8?B?YzJGbEN5RzJvRktRbElmZFh4UnJtalp1MVFSUDRQTzk2RXpwTys3MmEva0xP?=
- =?utf-8?B?QzNkZnJ6VmQyUzR3S3Fhcm5RcTRJQ2JlczBxTUNkSE1uYURSOUtTWnZFNTRC?=
- =?utf-8?B?My9uUXBtdjJWSnBEZ2lLb0N4STJ3VzRWVHdDL1NiU05GUUFRa2c5cUcrU2Rt?=
- =?utf-8?B?SUJSdFFhaXFBclRwWXAyREpUQVNHa0VEdUNLL1ZkOFRqdWxMdnU2TVQxTnlm?=
- =?utf-8?B?VVkvL1p1ZmRMWlQvUUtZbHB5TEc4SktOQmpUZjVzWWhrblBHRVY3NkhyTkZ6?=
- =?utf-8?B?WEJNL3ROb21yQlZ6amRJa2ZTdlRKMmJETzN1SzZ5Qk9mL1hob21HRjBwRnh3?=
- =?utf-8?B?dXFsWng5WG9RYjdhZE9IcVdoQUtKdUwvMHlDblkzNTJwOWN0Q3dvNmlZamI0?=
- =?utf-8?B?VjFwMmU4MllsQm8vemgzMWgwdjRzVVJkSW0yV0EwbXRhZDFhU2ZMUThRbjJC?=
- =?utf-8?B?RjhPeVV6aU0wOEtCM1VoQklOaDdoMEVTcW8zOThNSzAyYzFUSDRha3p6Tmk3?=
- =?utf-8?B?Z2tURmtPbzlkQXYrRkJHYktYVW51N0RzaDlTRHl4K3dPTmV6dDZxeGZ6TXVw?=
- =?utf-8?B?Ty95aXA4RWU1YVBJTHR4SEdRdHVwKzBTQTBRMytQd1RlcUgzdzBHNGJoUXll?=
- =?utf-8?B?d0lIYzdBQmFlUm4vT2VKTkV1c3FPSTQxRmhZTjl2QzZSVFZDK1ZXSmowY2FU?=
- =?utf-8?B?L1NKRVJVMTkySEx5a1laVzkxZGxmeXp5cEV5TVdabkxPRUE2TVdzcSszVkl5?=
- =?utf-8?B?UnRRaG94S1FLWUV2TVdRNnJUUGEyZVo5T00wa0tpQ3o5UmpLUHhxVGk0V21l?=
- =?utf-8?B?ZGY5RzRGOWJ3QlJQUnNBRVFLS2ptSEtxKzBhN2xsT3Fla2FVazM4YWlVM3Vx?=
- =?utf-8?B?aHRNWmdBemF2cjk5RlJ5RHFCZnJzczg0UXJ0ZVE2K0FuUkJDMTIyUEcxL1lr?=
- =?utf-8?B?R1Q5dXpSSkVPZnRTVlRrU1p5c1JBVFJZRHhDQUxJak5iYWFBbjVWYkFkVWx4?=
- =?utf-8?B?N0l2U2NVdVFuWGZjaWZpa1kxcWM4S2x3RWZhZDkyVVJidTVBbWFVQ1dwSnlS?=
- =?utf-8?Q?heIGg5OoqNyb3/1eR8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6BE87A477FE3834AAE1CB10B3A35FAA2@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM5PR1001CA0012.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:206:2::25) To DBBPR08MB4523.eurprd08.prod.outlook.com
+ (2603:10a6:10:c8::19)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.100.125] (91.118.163.37) by AM5PR1001CA0012.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:206:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 08:44:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c04c85cd-549e-40c3-d79c-08d945da5d72
+X-MS-TrafficTypeDiagnostic: DBBPR08MB6298:
+X-Microsoft-Antispam-PRVS: <DBBPR08MB629869DDDE29F235C9D4FA38F2149@DBBPR08MB6298.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0oHd9oJZXWkSok+MhwYw9kdq00BvKD4ro7zXCNv7xRDZjHI9lf5Ee+xTvvDVJlhfInXMgLeEDgWLqb0wqgd/0c32C/2sMvxBbKfMHOFqyZpQBBJxNKXgu7ytooGmQrpkux/9tQy/bck8l88v5oAMja9uxTCWBHb2wdjiMzrGeeZES3eTL+lFnLYPvfuWNmES13yNIw9TFp7nvrw+4gfWgznFaJaquJutrs2iiUXtrTaAYzVi0ciKKuSbF5k5U3SbYSxcbX+yk526A0StJiCdhIvKDgcaOkcreNl8BTU7gkNM+A7aUbWyy5UTlNLCVc9rgB6ALes10HYDz9Ogp6Rk5bXocppMHDiMNyWjhCOvAnfq/AWx2zVHpvyLHNM91mKW3oit+3lOfGe26Ba2jyYMjKyeDighNz9sfN3GVU4PcRcjQqY7gRLBgOiizLczhpMnovEELwtFd5zBKj2v2Ap17qVU0e4IXVAQ1DP3QPX8TW8Cf1nGoBR55jXc8hAta3YrBE6UX2ZNKl7duQZjk6F1mD0lxWgZCvhsCiVabVTjqCDJfIaTUl9uY61UkPaJeHxq7ySE5pwxkGL0jX6wx++hE1sqnUY5ZjQvN8l3zneT+2YL3SO3IPD/vXta7aYK/oFMr+eIzGVRvnHVYmGBVJ5T7GlSMpXGqYjIXhmC7tan76jhRIiuC4LJYHWlrZsBCNKzzBABC8cqfEk9Mvyblci1QvU6Sr0pl7kaFAGth/VyM+Nw7tOJVBSrJLkaQC7NhWy7zA4MtoQqGljrmS/hZ8bUlw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(366004)(346002)(136003)(376002)(396003)(2616005)(38350700002)(956004)(4326008)(8936002)(53546011)(16576012)(316002)(31696002)(83380400001)(38100700002)(2906002)(86362001)(26005)(5660300002)(186003)(36756003)(44832011)(6486002)(66556008)(36916002)(66476007)(66946007)(8676002)(478600001)(52116002)(31686004)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0IwcDNxRXlJRGZsVE1ISGZoYmFSSWJMaEdTM3hFbmk3UEZSTVRRTmRoZzJ6?=
+ =?utf-8?B?VXhEMUh6QzNZSFc2NWR2SlZ4LzRSV1pYdnZxL08yOE9uWFZ2RmovWHoxVGln?=
+ =?utf-8?B?M3FZejBEYWRIUDhST0d3WVBHK0t1bk1rU0loR2xpS2NyaXJoWGhQVExsU1p4?=
+ =?utf-8?B?c1FDTDZYaHdMUVNsaERMdDU2b1g5TjlFYjFEYmtZcjhjQ3FPdnJaOThNUTNL?=
+ =?utf-8?B?dHM0VlFZTVlreHZCbWdGSi81K1JjTzQzOTNFRWdQV1d1cHhZbTQrVUkrSTJl?=
+ =?utf-8?B?K3g0YjM5ZFZCQzlaZWNpN2ZUYXRHcFovdHJJajU1dTdxWkUzRms5MzMvNmw5?=
+ =?utf-8?B?MXQ2UlF1MnZEZUdZTS9zOE9FakJxTVdUVmdFSzhBZGp3Uno0bVhNRUEzM2NW?=
+ =?utf-8?B?Znl2R1Vuc1Nmd0w2Y0tRY2VDTG9qM1psUnhtVWxuUUx2REtlS3lBRDB0ZXBP?=
+ =?utf-8?B?Y0FKM0c4MDBWNlMrN3RJS21icG5JcmRRbHVWUHB3cnAzbDRDSS94Zkh1STRT?=
+ =?utf-8?B?a0xUeFZ3cGFKbTFpTEhITWxpbUYxNE1RMndyTlNkQmo4ZnFQcUFJdEJoZDM1?=
+ =?utf-8?B?K0poTm53KzAzZWlrTkNjL21EUmdCVkRYSGdDMHNKNTkxZXV3VlpQK1hFQ1VS?=
+ =?utf-8?B?T3ZVbGd5UldOOHd3bjQxc0Rwbk5IOTlQdkJ4S1hMcVZYLytQZXpDWE1tTHdE?=
+ =?utf-8?B?dVhJTXRhU0ZLdHE4UU84REQvbXU0dkROZndRd3JwVURPeVlJWVlBU2V3eWhP?=
+ =?utf-8?B?K2xtVDBBU1JvZjlvMDcxL0RuOWFyemdSR2MyUjc4YzVSNVJFcXVDMEdhWFh4?=
+ =?utf-8?B?Ri9PNi9MMnpDblRGUVMrRUVPMjdsZTVzYmFQb3RwdlFSSlY1c0NYZEgvczNs?=
+ =?utf-8?B?QlBiVDFnRndtd3ltVHE1Q3VNaHlyUUJSdzFtRTVjaVJIVDQycHZQSHJYRFUz?=
+ =?utf-8?B?VnVLYWVxSy8xVlZzemlsYVZ1ak1zWDNjSC9LTFJ3NjJlTy9xTFRhbnBUbVRG?=
+ =?utf-8?B?QkNvN1l0aWdjMXhqbklZRktrTmRSOUxMN1NoK2tKZVhEMUV0WmYxTU5xcFAx?=
+ =?utf-8?B?cDQ4eXNuREZ1NFN5VXZzY1JqQkpkK3NSWFljVGIyWXJoNnEyc0loVXR5NXRn?=
+ =?utf-8?B?SGJPN3RSRWdacEszM01vR3IyUWw4Y2RXN1IyYThXNTZ0QnQ1dHlVWmltL1hj?=
+ =?utf-8?B?UzNidGc0OHdHVFlLMmVRc0tBNzNvRnpmb0MrM2pDSnlTenRaNXN2V0w2dEVu?=
+ =?utf-8?B?VkMzWmswSFpIbDdCSnIzaHRNVi9zb2d4VkFmYUVUS1pFSWFUT0FLclUvcVFB?=
+ =?utf-8?B?aSt5emtuMXltbmNWVk14T3hHaS9Oa3FPSkRCMWJiaDhvVDhDd2NuNTdDUkZm?=
+ =?utf-8?B?djRpRTUzQ1d6bzlCVDQ4RWN5d1VmT1RON2ZWQlZxK3JXckpIUUVpRXdjMlFF?=
+ =?utf-8?B?aTdNNHdYa0NxeXJGa2U3VW4ybGsvL29jQUgwSTZ6MElPU2M5UkxxazlpU3ZX?=
+ =?utf-8?B?R1Y0eHJCVjhTOE5veGNDSmRSSUFQMUdMTVI3RFJ0RElxK3JKTFl3Tk1KY0ty?=
+ =?utf-8?B?WlA5VjAyQWV4QjN2M3pIVEtZV1RjWUdhdzBDdFF2UGNJVlc0NlFNR05ucVcw?=
+ =?utf-8?B?MTIweU1YeHFZV2RTYmpFcmprNmt5ZWpUN3l2THpGT0Rpb1F2VitVZTVYeXEx?=
+ =?utf-8?B?TGkyaUp6c1FGWms2NVlmQzRHSUx2M1VmRWJsZ2IvczZqUzhYdHltMCsxOEta?=
+ =?utf-8?Q?dbssc9w2bvSlw5ooJcTBk5JgcCa+dhAX6loul8x?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: c04c85cd-549e-40c3-d79c-08d945da5d72
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5687.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b47afc1-50a3-41f4-7366-08d945da5285
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2021 08:43:43.7538
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 08:44:02.4489
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: F4ebxbEHxc8NLtV/Jjw74yRXiUOYMudehLLMWfyfAPuc7C2xTHmZYI9173ZqTXFMPgVU05MKdPUEmN/Zyv+Ozu8qZ/1n3f8pYGi3ivGIQdU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5341
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pcZ3NZL+X4aEdNEQyohG6hlknQtxgpD8/OopBKaxPISzSM2h/wwrczki++7zrccnozMzvYoae40LTHFz52p/EjKVlarhc4KOLSL6EtQ8F0w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR08MB6298
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMDUuMDcuMjAyMSAxNToxNSwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+IFJlbW92ZSAjZGVm
-aW5lIENPTkZJR19QTSBhbmQgdXNlIF9fbWF5YmVfdW51c2VkIGZvciBQTSBmdW5jdGlvbnMgYW5k
-DQo+IHBtX3B0cigpIGZvciBQTSBvcHMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDbGF1ZGl1IEJl
-em5lYSA8Y2xhdWRpdS5iZXpuZWFAbWljcm9jaGlwLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IENvZHJp
-biBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29tPg0KDQpUaGFua3Mh
-DQo=
+Hello Benjamin,
+
+The HDMI TX block in the RK3568 requires two power supplies, which have
+to be enabled in some cases (at least on the RK3568 EVB1 the voltages
+VDDA0V9_IMAGE and VCCA1V8_IMAGE are disabled by default). It would be
+great if this was considered by the driver and the device tree binding.
+I am not sure, though, whether this is a RK3568 specific or
+rockchip_dw_hdmi specific thing. Maybe it can even enter the Synopsis DW
+HDMI driver.
+
+On 7/7/21 2:03 PM, Benjamin Gaignard wrote:
+> Define a new compatible for rk3568 HDMI.
+> This version of HDMI hardware block needs two new clocks hclk_vio and hclk
+> to provide phy reference clocks.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 2:
+> - Add the clocks needed for the phy.
+> 
+>  .../bindings/display/rockchip/rockchip,dw-hdmi.yaml         | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+> index 75cd9c686e985..cb8643b3a8b84 100644
+> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+> @@ -23,6 +23,7 @@ properties:
+>        - rockchip,rk3288-dw-hdmi
+>        - rockchip,rk3328-dw-hdmi
+>        - rockchip,rk3399-dw-hdmi
+> +      - rockchip,rk3568-dw-hdmi
+>  
+>    reg-io-width:
+>      const: 4
+> @@ -51,8 +52,11 @@ properties:
+>            - vpll
+>        - enum:
+>            - grf
+> +          - hclk_vio
+> +          - vpll
+> +      - enum:
+> +          - hclk
+>            - vpll
+> -      - const: vpll
+
+The description and documentation of the clocks are somewhat misleading
+IMHO. This is not caused by your patches, of course. But maybe this is a
+chance to clean them up a bit.
+
+It seems that the CEC clock is an optional clock of the dw-hdmi driver.
+Shouldn't it be documented in the synopsys,dw-hdmi.yaml?
+
+Also, it would be nice if the clocks hclk_vio and hclk featured a
+description in the binding.
+
+BTW, I am not too familiar with the syntax here, but shouldn't items in
+clocks and items in clock-names be aligned (currently, there is a plain
+list vs. an enum structure)?
+
+Best regards,
+Michael
+
+>  
+>    ddc-i2c-bus:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+> 
