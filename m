@@ -2,156 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1D63C6D71
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEE93C6D1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235192AbhGMJcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:32:45 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11294 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235128AbhGMJco (ORCPT
+        id S235027AbhGMJWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:22:14 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39080 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234397AbhGMJWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:32:44 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GPFbn3pfbz78wB;
-        Tue, 13 Jul 2021 17:25:25 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 17:29:53 +0800
-Received: from linux-ibm.site (10.175.102.37) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 17:29:52 +0800
-From:   Hanjun Guo <guohanjun@huawei.com>
-To:     <stable@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mike Christie <michael.christie@oracle.com>,
-        Gulam Mohamed <gulam.mohamed@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-Subject: [Backport for 5.10.y PATCH 7/7] scsi: iscsi: Fix iSCSI cls conn state
-Date:   Tue, 13 Jul 2021 17:18:37 +0800
-Message-ID: <1626167917-11972-8-git-send-email-guohanjun@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1626167917-11972-1-git-send-email-guohanjun@huawei.com>
-References: <1626167917-11972-1-git-send-email-guohanjun@huawei.com>
+        Tue, 13 Jul 2021 05:22:13 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16D93ck5023805;
+        Tue, 13 Jul 2021 05:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=MatbeyZ0SxVOS2gBPMLnqMBOxl2inB3UbJ7bpIt2WBg=;
+ b=s0H2W4Iq7SrGBfDjvCrYRfyN8/pFVw5rFXYBIQ1qa0JelUak/ZhESXldyOFu97JRfWYJ
+ q1Q/Djn2qEnxvrzTyKOZhwca/YQOvAtDwcVDwL4jj33PF4/HoejWD6PgjA0AExxyAK9F
+ DoB0x7Lpl2q/qW6+M42SF7M5sjuAVONGV2kD5/sp/Vl+sPwpgXMqYt2MThyfg83f6OWs
+ /z8Bl+RkdcomSVOZuxFnaRTWsoKuEosfKtBZ3c4I2czyBTlIYI50Xkwi+i0wwIlHwgAQ
+ eeJyiejPGr88/1J2+6L+wpxhlPwx5QAMJFrJkn8S+XVw9j4YqOYkCdOu7j5aHXMUSBH0 eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrmtxayx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 05:19:13 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16D94pKD028052;
+        Tue, 13 Jul 2021 05:19:13 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrmtxayb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 05:19:12 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16D98GJp029490;
+        Tue, 13 Jul 2021 09:19:10 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 39q368gmnp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 09:19:10 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16D9J8wk35389940
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 09:19:08 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 225BB52052;
+        Tue, 13 Jul 2021 09:19:08 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C49AE5204F;
+        Tue, 13 Jul 2021 09:19:07 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] libperf: fix build error with LIBPFM4=1
+Date:   Tue, 13 Jul 2021 11:19:07 +0200
+Message-Id: <20210713091907.1555560-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: s9_lfE23xdlRphDFJqnFWtf5fw9JOYxE
+X-Proofpoint-ORIG-GUID: mHT3aL4ucBVdoYBSOXUjqMM4jL-ej9TA
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-13_03:2021-07-13,2021-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107130057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+Fix build error with LIBPFM4=1:
+  CC      util/pfm.o
+util/pfm.c: In function ‘parse_libpfm_events_option’:
+util/pfm.c:102:30: error: ‘struct evsel’ has no member named ‘leader’
+  102 |                         evsel->leader = grp_leader;
+      |                              ^~
 
-commit 0dcf8febcb7b9d42bec98bc068e01d1a6ea578b8 upstream.
-
-In commit 9e67600ed6b8 ("scsi: iscsi: Fix race condition between login and
-sync thread") I missed that libiscsi was now setting the iSCSI class state,
-and that patch ended up resetting the state during conn stoppage and using
-the wrong state value during ep_disconnect. This patch moves the setting of
-the class state to the class module and then fixes the two issues above.
-
-Link: https://lore.kernel.org/r/20210406171746.5016-1-michael.christie@oracle.com
-Fixes: 9e67600ed6b8 ("scsi: iscsi: Fix race condition between login and sync thread")
-Cc: Gulam Mohamed <gulam.mohamed@oracle.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+Fixes: fba7c86601e2 ("libperf: Move 'leader' from tools/perf to perf_evsel::leader")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 ---
- drivers/scsi/libiscsi.c             | 26 +++-----------------------
- drivers/scsi/scsi_transport_iscsi.c | 18 +++++++++++++++---
- 2 files changed, 18 insertions(+), 26 deletions(-)
+ tools/perf/util/pfm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 41b8192..41023fc 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -3089,9 +3089,10 @@ int iscsi_conn_start(struct iscsi_cls_conn *cls_conn)
- 	}
- }
+diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
+index dd9ed56e0504..756295dedccc 100644
+--- a/tools/perf/util/pfm.c
++++ b/tools/perf/util/pfm.c
+@@ -99,7 +99,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+ 			grp_leader = evsel;
  
--static void iscsi_start_session_recovery(struct iscsi_session *session,
--					 struct iscsi_conn *conn, int flag)
-+void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
- {
-+	struct iscsi_conn *conn = cls_conn->dd_data;
-+	struct iscsi_session *session = conn->session;
- 	int old_stop_stage;
- 
- 	mutex_lock(&session->eh_mutex);
-@@ -3149,27 +3150,6 @@ static void iscsi_start_session_recovery(struct iscsi_session *session,
- 	spin_unlock_bh(&session->frwd_lock);
- 	mutex_unlock(&session->eh_mutex);
- }
--
--void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
--{
--	struct iscsi_conn *conn = cls_conn->dd_data;
--	struct iscsi_session *session = conn->session;
--
--	switch (flag) {
--	case STOP_CONN_RECOVER:
--		cls_conn->state = ISCSI_CONN_FAILED;
--		break;
--	case STOP_CONN_TERM:
--		cls_conn->state = ISCSI_CONN_DOWN;
--		break;
--	default:
--		iscsi_conn_printk(KERN_ERR, conn,
--				  "invalid stop flag %d\n", flag);
--		return;
--	}
--
--	iscsi_start_session_recovery(session, conn, flag);
--}
- EXPORT_SYMBOL_GPL(iscsi_conn_stop);
- 
- int iscsi_conn_bind(struct iscsi_cls_session *cls_session,
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index cb7b74a0..2735178 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -2479,10 +2479,22 @@ static void iscsi_if_stop_conn(struct iscsi_cls_conn *conn, int flag)
- 	 * it works.
- 	 */
- 	mutex_lock(&conn_mutex);
-+	switch (flag) {
-+	case STOP_CONN_RECOVER:
-+		conn->state = ISCSI_CONN_FAILED;
-+		break;
-+	case STOP_CONN_TERM:
-+		conn->state = ISCSI_CONN_DOWN;
-+		break;
-+	default:
-+		iscsi_cls_conn_printk(KERN_ERR, conn,
-+				      "invalid stop flag %d\n", flag);
-+		goto unlock;
-+	}
-+
- 	conn->transport->stop_conn(conn, flag);
--	conn->state = ISCSI_CONN_DOWN;
-+unlock:
- 	mutex_unlock(&conn_mutex);
--
- }
- 
- static void stop_conn_work_fn(struct work_struct *work)
-@@ -2973,7 +2985,7 @@ static int iscsi_if_ep_disconnect(struct iscsi_transport *transport,
- 		mutex_lock(&conn->ep_mutex);
- 		conn->ep = NULL;
- 		mutex_unlock(&conn->ep_mutex);
--		conn->state = ISCSI_CONN_DOWN;
-+		conn->state = ISCSI_CONN_FAILED;
- 	}
- 
- 	transport->ep_disconnect(ep);
+ 		if (grp_evt > -1) {
+-			evsel->leader = grp_leader;
++			evsel__set_leader(evsel, grp_leader);
+ 			grp_leader->core.nr_members++;
+ 			grp_evt++;
+ 		}
 -- 
-1.7.12.4
+2.25.1
 
