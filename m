@@ -2,129 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59303C6792
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D8A3C6799
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhGMArX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 20:47:23 -0400
-Received: from mga03.intel.com ([134.134.136.65]:31965 "EHLO mga03.intel.com"
+        id S233732AbhGMAtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 20:49:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233517AbhGMArV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 20:47:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="210119400"
-X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
-   d="scan'208";a="210119400"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 17:44:26 -0700
-X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
-   d="scan'208";a="649090900"
-Received: from kpurma-mobl.amr.corp.intel.com (HELO [10.212.163.17]) ([10.212.163.17])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 17:44:23 -0700
-Subject: Re: [PATCH v2 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
- attestation interface driver
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <06c85c19-e16c-3121-ed47-075cfa779b67@kernel.org>
- <169451ef-e8f6-5a07-f47a-61eaa085b4ef@intel.com>
- <ce0feeec-a949-35f8-3010-b0d69acbbc2e@linux.intel.com>
- <afba42c2-e925-d937-8893-80f995a143b4@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f119b8b9-e3da-574b-9362-34cd0baf104e@intel.com>
-Date:   Mon, 12 Jul 2021 17:44:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233505AbhGMAta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 20:49:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A083C60FDB;
+        Tue, 13 Jul 2021 00:46:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626137201;
+        bh=6bUuDtl3T5ukpb4KgsVCNQhFQQRp/NYEnjIyp76CrDI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=RTrcqMpIAK3M4VifUJz1XrGglzqn+jXET/gtby1x5QC4eq63YXZ9TE0mp5tNWwarj
+         RyQ5mYymQ+98Fd2NTxd1eGDKSWqcMGr7UbnvMI69Oh53mQxqdX/cSFX8ppp2odDBTS
+         gNtM1rlndrkx2r81evSvCSIpKT+gvQFVQzkHzhoKEtMSxRo/ECtK28Q5YDW4WPNr3r
+         KpEiD3zNzb+8vWD8Soul+U7d7neyrGJtZo0yyX+hDryuYNIcHVnWuzpHe+1mPSGPfN
+         VTneLTyAmzJsB74eCwgB0jaeYisDuEK/W6VOmoJmZ5pD4x2xeR1vvq/V99nMQP3Ue9
+         LgtqrqDG7bH7Q==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org
+References: <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+ <YOLJW0IgCagMk2tF@google.com>
+ <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
+ <YOLxZAnaKSwBIlK9@casper.infradead.org> <YONJpQapR7BRnW/J@google.com>
+ <YONTRlrJugeVq6Fj@casper.infradead.org>
+ <20210706091211.GR3840@techsingularity.net>
+ <85bb893b-0dc4-5f57-23ec-3f84814b7072@kernel.org>
+ <20210707095706.GT3840@techsingularity.net>
+ <fc0de0c2-a3b6-df91-5b90-524768a85d82@kernel.org>
+ <YOvm2faBUjKmZI7Q@dhcp22.suse.cz>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <ce628979-6f1c-0070-9680-841c87745639@kernel.org>
+Date:   Tue, 13 Jul 2021 08:46:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <afba42c2-e925-d937-8893-80f995a143b4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YOvm2faBUjKmZI7Q@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 5:33 PM, Kuppuswamy, Sathyanarayanan wrote:
-
-> On 7/8/21 5:38 PM, Andi Kleen wrote:
->>> Expensive and permanently fractures the direct map.
->>> 
->>> I'm struggling to figure out why the direct map is even touched
->>> here.
->> I think Sathya did it this way because the TD interface requires a 
->> physical address.
->>> Why not just use a vmalloc area mapping?  You really just need
->>> *a* decrypted mapping to the page.  You don't need to make
->>> *every* mapping to the page decrypted.
->> 
->> Yes it would be possible to use vmap() on the page and only set
->> the vmap encrypted by passing the right flags directly.
+On 2021/7/12 14:53, Michal Hocko wrote:
+> On Sat 10-07-21 16:11:38, Chao Yu wrote:
+>> On 2021/7/7 17:57, Mel Gorman wrote:
+>>> I think it would work but it would be preferable to find out why the
+>>> tail page has an order set in the first place. I've looked over
+>>
+>> Agreed.
+>>
+>>> mm/page_alloc.c and mm/compaction.c a few times and did not spot where
+>>> set_private_page(page, 0) is missed when it should be covered by
+>>> clear_page_guard or del_page_from_free_list :(
+>>
+>> I didn't enable CONFIG_DEBUG_PAGEALLOC, so we will expect page private
+>> should be cleared by del_page_from_free_list(), but I guess it only clears
+>> the buddy's private field rather than original page's, so I added below
+>> diff and check the dmesg, it looks stall private value in original page
+>> will be left commonly... Let me know if I missed something?
 > 
-> Is it alright to have non coherent mappings? If yes, any
-> documentation reference for it?
+> Page private should be cleared when the page is freed to the allocator.
+> Have a look at PAGE_FLAGS_CHECK_AT_FREE.
 
-Do you mean non-cache-coherent mappings?  I'm not sure what that has to
-do with creating "unencrypted" (shared) mappings.
+Quoted from Jaegeuk's comments in [1]
 
-Are you asking exactly which arguments to pass to vmap() or to vmap_pfn()?
+"Hmm, I can see it in 4.14 and 5.10 kernel.
+
+The trace is on:
+
+  30875 [ 1065.118750] c3     87  f2fs_migrate_page+0x354/0x45c
+  30876 [ 1065.123872] c3     87  move_to_new_page+0x70/0x30c
+  30877 [ 1065.128813] c3     87  migrate_pages+0x3a0/0x964
+  30878 [ 1065.133583] c3     87  compact_zone+0x608/0xb04
+  30879 [ 1065.138257] c3     87  kcompactd+0x378/0x4ec
+  30880 [ 1065.142664] c3     87  kthread+0x11c/0x12c
+  30881 [ 1065.146897] c3     87  ret_from_fork+0x10/0x18
+
+  It seems compaction_alloc() gets a free page which doesn't reset the fields?"
+
+https://lore.kernel.org/linux-f2fs-devel/YOvm2faBUjKmZI7Q@dhcp22.suse.cz/T/#m98a4a5e777f5b0e7366b367463efafd2133dd681
+
+So problem here we met is: in f2fs_migrate_page(), newpage may has stall .private
+value rather than PG_private flag, which may cause f2fs will treat the page with
+wrong private status.
+
+> 
+>> ---
+>>   mm/page_alloc.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index a06bcfe6f786..1e7031ff548e 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -1029,6 +1029,7 @@ static inline void __free_one_page(struct page *page,
+>>   	unsigned long combined_pfn;
+>>   	unsigned int max_order;
+>>   	struct page *buddy;
+>> +	struct page *orig_page = page;
+>>   	bool to_tail;
+>>
+>>   	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
+>> @@ -1097,6 +1098,10 @@ static inline void __free_one_page(struct page *page,
+>>
+>>   done_merging:
+>>   	set_buddy_order(page, order);
+>> +	if (orig_page != page) {
+>> +		if (WARN_ON_ONCE(orig_page->private))
+>> +			pr_info("2order:%x, origpage.private:%x", order, orig_page->private);
+>> +	}
+> 
+> Why is this expected? Buddy allocator uses page private to store order.
+> Whether we are merging to the freed page or coalesce it to a different
+
+The order was only set in head page, right? Since it looks __free_one_page() tries
+to clear page.private for every buddy with del_page_from_free_list().
+
+If that is true, after done_merging label in __free_one_page, if original page is
+a tail page, we may missed to clear its page.private field?
+
+Thanks,
+
+> page is not all that important.
+> 
