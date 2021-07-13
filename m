@@ -2,313 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF74D3C6979
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6EE3C6983
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 06:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhGMEjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 00:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhGMEjc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 00:39:32 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0240C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:36:42 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w15so20496800pgk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 21:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=82m03D0s+VMudJouCH7xODKkU6rRtZkgh42oOQDO16A=;
-        b=VW6TGlpY06/w5pkT7TxeM2WTODkXJh5X54KrtuYOFbiQ4cJR4UOEQq/3J77uAa4K9o
-         r7IWudEirM1J2yeVWKv5dGC6hCQpQONyWEQBnJNvrkXGi53dpr7IHhRLRmSdafqUMba6
-         yC2qrM3ZoaoZoH9Rx+nXf+ueLuGsDYIDwjAkytOPK0D+BZw5TO8iYERyHKWmQc7/321i
-         JmaeSiWUV2v539BKivflxc6bU2UusUPT2BFzdljqE6VnSxisQBgud1zv14n/onez2fBj
-         5HX7OF42GOsvE0s8drqycKBE56kjgIG3eqW//7OXR80RoM+Rh/5W/BDvoPV9ErJKMlf0
-         CYuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=82m03D0s+VMudJouCH7xODKkU6rRtZkgh42oOQDO16A=;
-        b=SJwHoTC7BvTQO5yLXYvqCZfWJSwoi+dcEkPvbsKWB68RNngJAqMzH8CG2hikifVLHF
-         rAsSkLH2Cke7fRDVuJ5A6j9AK2TkyNTqp/BGGVfJ730BiBcmyOfKrFNogaLzfORxN9Dv
-         2RH8mDyOSXoe0cDfZAGmywvkR+HScBTHkaUBWoSeyQnTB87DAIT26+Fmq0Vyj+dFxNw/
-         DCQbPB9IzNDGjUJFVk2ZPf00S0dmolesR1ylRgJI/3quWgkV3IhQBatcHkAWxeyAQkky
-         lxMThU2Eix3h9u1mtgkbfJYxZVRr/Rqcf0AIm1OLA8idOkXt0Br0Co7yRji0onEuGKol
-         n4bA==
-X-Gm-Message-State: AOAM531ENoYFCmQAiLTJxRerOr0+y99CQYKX1DLPYXGvRMCGga4+XGup
-        YFX2ztgcNOX0jAmqFXVC8rk=
-X-Google-Smtp-Source: ABdhPJwSS4qHGmIytrzwPKmqhB2ndXwHOn3ihpE6aC1jNtjFxE+StfykewwJZNQ72Oncr1gendG2DA==
-X-Received: by 2002:a05:6a00:21c6:b029:2ff:e9:94f0 with SMTP id t6-20020a056a0021c6b02902ff00e994f0mr2536260pfj.73.1626151002354;
-        Mon, 12 Jul 2021 21:36:42 -0700 (PDT)
-Received: from ?IPv6:2804:14c:482:92eb:ffdf:6b35:b94d:258? ([2804:14c:482:92eb:ffdf:6b35:b94d:258])
-        by smtp.gmail.com with ESMTPSA id j20sm14700424pfc.203.2021.07.12.21.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 21:36:41 -0700 (PDT)
-Message-ID: <5b8676140f495dbbe3e28ce261e449b885dbae66.camel@gmail.com>
-Subject: Re: [PATCH v4 10/11] powerpc/pseries/iommu: Make use of DDW for
- indirect mapping
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 13 Jul 2021 01:36:52 -0300
-In-Reply-To: <95ac11e9-a709-e0a2-9690-ef13c4a2cd43@ozlabs.ru>
-References: <20210430163145.146984-1-leobras.c@gmail.com>
-         <20210430163145.146984-11-leobras.c@gmail.com>
-         <95ac11e9-a709-e0a2-9690-ef13c4a2cd43@ozlabs.ru>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 
+        id S230454AbhGMEq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 00:46:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhGMEq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 00:46:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E21161026;
+        Tue, 13 Jul 2021 04:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626151445;
+        bh=LhQ88MmfLPgOgVF9V7BGRh5TOT9dUVIs3HJWRwi/M/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BC3ljYCFeJX0g7nn9XG2d24A3mG2UG5gGN9eA6jn1Ejes2QpC/K/xiIwax5ccS1/p
+         pwXsa2WLUb4CPQtUrJpwp8GHxNddjlkse0poNTvo1+/FOkKHinyYSQHKcLUgXbtYs+
+         jMsDybxPtlivulap/rxVzSvjnu0sX2OwecK5nzoE=
+Date:   Tue, 13 Jul 2021 06:44:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>, Bard Liao <bard.liao@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for
+ Brya and BT-offload
+Message-ID: <YO0aEm/kWuu1UCow@kroah.com>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <20210712061045.833441566@linuxfoundation.org>
+ <20210713054118.4e5abba3@mir>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713054118.4e5abba3@mir>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-11 at 17:57 +1000, Alexey Kardashevskiy wrote:
+On Tue, Jul 13, 2021 at 05:41:18AM +0200, Stefan Lippers-Hollmann wrote:
+> Hi
 > 
+> On 2021-07-12, Greg Kroah-Hartman wrote:
+> > From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+> >
+> > [ Upstream commit 03effde3a2ea1d82c4dd6b634fc6174545d2c34f ]
+> >
+> > Brya is another ADL-P product.
+> >
+> > AlderLake has support for Bluetooth audio offload capability.
+> > Enable the BT-offload quirk for ADL-P Brya and the Intel RVP.
+> [...]
 > 
-> On 01/05/2021 02:31, Leonardo Bras wrote:
-> > [...]
-> >       pmem_present = dn != NULL;
-> > @@ -1218,8 +1224,12 @@ static bool enable_ddw(struct pci_dev *dev,
-> > struct device_node *pdn)
-> >   
-> >         mutex_lock(&direct_window_init_mutex);
-> >   
-> > -       if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset,
-> > &len))
-> > -               goto out_unlock;
-> > +       if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset,
-> > &len)) {
-> > +               direct_mapping = (len >= max_ram_len);
-> > +
-> > +               mutex_unlock(&direct_window_init_mutex);
-> > +               return direct_mapping;
+> This patch seems to introduce a build failure into v5.13.2-rc1 on x86_64:
 > 
-> Does not this break the existing case when direct_mapping==true by 
-> skipping setting dev->dev.bus_dma_limit before returning?
+>   CC [M]  sound/soc/intel/boards/sof_sdw.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_rt5682.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_rt700.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_rt711.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_rt711_sdca.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_rt715.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_rt715_sdca.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_dmic.o
+>   CC [M]  sound/soc/intel/boards/sof_sdw_hdmi.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sof_rt5682.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-haswell.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-bxt-da7219_max98357a.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-bxt-rt298.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-sof-pcm512x.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-sof-wm8804.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-glk-rt5682_max98357a.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-broadwell.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-bdw-rt5650-mach.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-bytcr-rt5640.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-bytcr-rt5651.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-rt5672.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-rt5645.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-max98090_ti.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-cht-bsw-nau8824.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-cx2072x.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-da7213.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-es8316.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sst-byt-cht-nocodec.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-cml_rt1011_rt5682.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-kbl_da7219_max98357a.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-kbl_da7219_max98927.o
+>   CHK     kernel/kheaders_data.tar.xz
+>   LD [M]  sound/soc/intel/boards/snd-soc-kbl_rt5663_max98927.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-kbl_rt5660.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-skl_rt286.o
+>   LD [M]  sound/soc/intel/boards/snd-skl_nau88l25_max98357a.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-skl_nau88l25_ssm4567.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-skl_hda_dsp.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-sof_da7219_max98373.o
+>   LD [M]  sound/soc/intel/boards/snd-soc-ehl-rt5660.o
+>   LD [M]  sound/soc/snd-soc-acpi.o
+> /build/linux-aptosid-5.13/sound/soc/intel/boards/sof_sdw.c:200:6: error: implicit declaration of function 'SOF_BT_OFFLOAD_SSP' [-Werror=implicit-function-declaration]
+>   200 |      SOF_BT_OFFLOAD_SSP(2) |
+>       |      ^~~~~~~~~~~~~~~~~~
+>   LD [M]  sound/soundcore.o
+>   LD [M]  sound/soc/sof/xtensa/snd-sof-xtensa-dsp.o
+> /build/linux-aptosid-5.13/sound/soc/intel/boards/sof_sdw.c:201:6: error: 'SOF_SSP_BT_OFFLOAD_PRESENT' undeclared here (not in a function)
+>   201 |      SOF_SSP_BT_OFFLOAD_PRESENT),
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>   LD [M]  sound/soc/sof/intel/snd-sof-acpi-intel-bdw.o
+>   LD [M]  sound/soc/sof/intel/snd-sof-intel-hda.o
+>   LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-tng.o
+>   LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-apl.o
+>   LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-cnl.o
+>   LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-icl.o
+>   LD [M]  sound/soc/sof/intel/snd-sof-pci-intel-tgl.o
+> cc1: some warnings being treated as errors
+> make[5]: *** [/build/linux-aptosid-5.13/scripts/Makefile.build:273: sound/soc/intel/boards/sof_sdw.o] Error 1
+> 
+> > diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+> > index dfad2ad129ab..35ad448902c7 100644
+> > --- a/sound/soc/intel/boards/sof_sdw.c
+> > +++ b/sound/soc/intel/boards/sof_sdw.c
+> > @@ -197,7 +197,21 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+> >  		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
+> >  					SOF_SDW_TGL_HDMI |
+> >  					SOF_RT715_DAI_ID_FIX |
+> > -					SOF_SDW_PCH_DMIC),
+> > +					SOF_SDW_PCH_DMIC |
+> > +					SOF_BT_OFFLOAD_SSP(2) |
+> > +					SOF_SSP_BT_OFFLOAD_PRESENT),
+> > +	},
+> > +	{
+> > +		.callback = sof_sdw_quirk_cb,
+> > +		.matches = {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+> > +			DMI_MATCH(DMI_PRODUCT_NAME, "Brya"),
+> > +		},
+> > +		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+> > +					SOF_SDW_PCH_DMIC |
+> > +					SOF_SDW_FOUR_SPK |
+> > +					SOF_BT_OFFLOAD_SSP(2) |
+> > +					SOF_SSP_BT_OFFLOAD_PRESENT),
+> >  	},
+> >  	{}
+> >  };
 > 
 
-Yes, it does. Good catch!
-I changed it to use a flag instead of win64 for return, and now I can
-use the same success exit path for both the new config and the config
-found in list. (out_unlock)
+Already dropped, thanks!
 
-> 
-> 
-> > +       }
-> >   
-> >         /*
-> >          * If we already went through this for a previous function of
-> > @@ -1298,7 +1308,6 @@ static bool enable_ddw(struct pci_dev *dev,
-> > struct device_node *pdn)
-> >                 goto out_failed;
-> >         }
-> >         /* verify the window * number of ptes will map the partition
-> > */
-> > -       /* check largest block * page size > max memory hotplug addr
-> > */
-> >         /*
-> >          * The "ibm,pmemory" can appear anywhere in the address
-> > space.
-> >          * Assuming it is still backed by page structs, try
-> > MAX_PHYSMEM_BITS
-> > @@ -1320,6 +1329,17 @@ static bool enable_ddw(struct pci_dev *dev,
-> > struct device_node *pdn)
-> >                         1ULL << len,
-> >                         query.largest_available_block,
-> >                         1ULL << page_shift);
-> > +
-> > +               len = order_base_2(query.largest_available_block <<
-> > page_shift);
-> > +               win_name = DMA64_PROPNAME;
-> 
-> [1] ....
-> 
-> 
-> > +       } else {
-> > +               direct_mapping = true;
-> > +               win_name = DIRECT64_PROPNAME;
-> > +       }
-> > +
-> > +       /* DDW + IOMMU on single window may fail if there is any
-> > allocation */
-> > +       if (default_win_removed && !direct_mapping &&
-> > iommu_table_in_use(tbl)) {
-> > +               dev_dbg(&dev->dev, "current IOMMU table in use, can't
-> > be replaced.\n");
-> 
-> 
-> ... remove !direct_mapping and move to [1]?
-
-
-sure, done!
-
-> 
-> 
-> >                 goto out_failed;
-> >         }
-> >   
-> > @@ -1331,8 +1351,7 @@ static bool enable_ddw(struct pci_dev *dev,
-> > struct device_node *pdn)
-> >                   create.liobn, dn);
-> >   
-> >         win_addr = ((u64)create.addr_hi << 32) | create.addr_lo;
-> > -       win64 = ddw_property_create(DIRECT64_PROPNAME, create.liobn,
-> > win_addr,
-> > -                                   page_shift, len);
-> > +       win64 = ddw_property_create(win_name, create.liobn, win_addr,
-> > page_shift, len);
-> >         if (!win64) {
-> >                 dev_info(&dev->dev,
-> >                          "couldn't allocate property, property name,
-> > or value\n");
-> > @@ -1350,12 +1369,47 @@ static bool enable_ddw(struct pci_dev *dev,
-> > struct device_node *pdn)
-> >         if (!window)
-> >                 goto out_del_prop;
-> >   
-> > -       ret = walk_system_ram_range(0, memblock_end_of_DRAM() >>
-> > PAGE_SHIFT,
-> > -                       win64->value,
-> > tce_setrange_multi_pSeriesLP_walk);
-> > -       if (ret) {
-> > -               dev_info(&dev->dev, "failed to map direct window for
-> > %pOF: %d\n",
-> > -                        dn, ret);
-> > -               goto out_del_list;
-> > +       if (direct_mapping) {
-> > +               /* DDW maps the whole partition, so enable direct DMA
-> > mapping */
-> > +               ret = walk_system_ram_range(0, memblock_end_of_DRAM()
-> > >> PAGE_SHIFT,
-> > +                                           win64->value,
-> > tce_setrange_multi_pSeriesLP_walk);
-> > +               if (ret) {
-> > +                       dev_info(&dev->dev, "failed to map direct
-> > window for %pOF: %d\n",
-> > +                                dn, ret);
-> > +                       goto out_del_list;
-> > +               }
-> > +       } else {
-> > +               struct iommu_table *newtbl;
-> > +               int i;
-> > +
-> > +               /* New table for using DDW instead of the default DMA
-> > window */
-> > +               newtbl = iommu_pseries_alloc_table(pci->phb->node);
-> > +               if (!newtbl) {
-> > +                       dev_dbg(&dev->dev, "couldn't create new IOMMU
-> > table\n");
-> > +                       goto out_del_list;
-> > +               }
-> > +
-> > +               for (i = 0; i < ARRAY_SIZE(pci->phb->mem_resources);
-> > i++) {
-> > +                       const unsigned long mask = IORESOURCE_MEM_64
-> > | IORESOURCE_MEM;
-> > +
-> > +                       /* Look for MMIO32 */
-> > +                       if ((pci->phb->mem_resources[i].flags & mask)
-> > == IORESOURCE_MEM)
-> > +                               break;
-> 
-> What if there is no IORESOURCE_MEM? pci->phb->mem_resources[i].start 
-> below will have garbage.
-
-
-
-Yeah, that makes sense. I will add this lines after 'for':
-
-if (i == ARRAY_SIZE(pci->phb->mem_resources)) {
- iommu_tce_table_put(newtbl);
- goto out_del_list;
-}
-
-What do you think?
-
-
-> 
-> 
-> > +               }
-> > +
-> > +               _iommu_table_setparms(newtbl, pci->phb->bus->number,
-> > create.liobn, win_addr,
-> > +                                     1UL << len, page_shift, 0,
-> > &iommu_table_lpar_multi_ops);
-> > +               iommu_init_table(newtbl, pci->phb->node, pci->phb-
-> > >mem_resources[i].start,
-> > +                                pci->phb->mem_resources[i].end);
-> > +
-> > +               if (default_win_removed)
-> > +                       iommu_tce_table_put(tbl);
-> 
-> 
-> iommu_tce_table_put() should have been called when the window was
-> removed.
-> 
-> Also after some thinking - what happens if there were 2 devices in the 
-> PE and one requested 64bit DMA? This will only update 
-> set_iommu_table_base() for the 64bit one but not for the other.
->
-> I think the right thing to do is:
-> 
-> 1. check if table[0] is in use, if yes => fail (which this does
-> already)
-> 
-> 2. remove default dma window but keep the iommu_table struct with one
-> change - set it_size to 0 (and free it_map) so the 32bit device won't
-> look at a stale structure and think there is some window (imaginery 
-> situation for phyp but easy to recreate in qemu).
-> 
-> 3. use table[1] for newly created indirect DDW window.
-> 
-> 4. change get_iommu_table_base() to return a usable table (or may be
-> not 
-> needed?).
-> 
-> If this sounds reasonable (does it?),
-
-Looks ok, I will try your suggestion. 
-I was not aware of how pci->table_group->tables[] worked, so I replaced
-pci->table_group->tables[0] with the new tbl, while moving the older in
-pci->table_group->tables[1].
-(4) get_iommu_table_base() does not seem to need update, as it returns
-the tlb set by set_iommu_table_base() which is already called in the
-!direct_mapping path in current patch.
-
->  the question is now if you have
-> time to do that and the hardware to test that, or I'll have to finish
-> the work :)
-
-Sorry, for some reason part of this got lost in Evolution mail client.
-
-If possible, I do want to finish this work, and I am talking to IBM
-Virt people in order to get testing HW.
-
-> 
-> 
-> > +               else
-> > +                       pci->table_group->tables[1] = tbl;
-> 
-> 
-> What is this for?
-
-I was thinking of adding the older table to pci->table_group->tables[1]
-while keeping the newer table on pci->table_group->tables[0].
-This did work, but I think your suggestion may work better.
-
-Best regards,
-Leonardo Bras
-
-
+greg k-h
