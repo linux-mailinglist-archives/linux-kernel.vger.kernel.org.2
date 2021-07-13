@@ -2,175 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142653C71B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3777F3C71BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236801AbhGMODJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:03:09 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5016 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236681AbhGMODH (ORCPT
+        id S236778AbhGMOFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236720AbhGMOFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:03:07 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 13 Jul 2021 07:00:17 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 13 Jul 2021 07:00:15 -0700
-X-QCInternal: smtphost
-Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 13 Jul 2021 19:29:50 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id C475422735; Tue, 13 Jul 2021 19:29:48 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, dikshita@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [V2] venus: venc: add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control
-Date:   Tue, 13 Jul 2021 19:29:47 +0530
-Message-Id: <1626184787-25020-1-git-send-email-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 13 Jul 2021 10:05:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF025C0613DD;
+        Tue, 13 Jul 2021 07:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qSFD2FiYbEqxI6h5fJ2mcIpTOMalsYT7JNKaXpDY58E=; b=CDYriJnhZwpQn6mou8CszAUrn0
+        OjUPAxBcuDlSKNNvz5PSIx8wbOhUFZqI9b6D4FX+opmEoN3+qiG4ojWMmu7RVIrx8sRLWbv6peSzi
+        G37dUTQTfE7Xg3nvLliIdh+9XzZwraMv1vzrQoXSn7xiw5mOBmLgpTqp4CiF5Jjj8rxGwQV9J4Id7
+        3elRe4nzVVhlTGgmV7y6jE7V45HTrxWiSTvt9GfhF6tWYNHn+CFH5WGEaLcwIcaLJ85TY7TA07EMy
+        H49Kv7nuH+m7pxQeTzz7uQiFwTCKZl7m5brZMjB+MoG3YcQQVDijaezFRtV8XQvBRmPJ5ZcLYA8up
+        16Qf0ePw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3Izc-00HAhl-GN; Tue, 13 Jul 2021 14:02:36 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 52A8D987782; Tue, 13 Jul 2021 16:02:35 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 16:02:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Thierry Delisle <tdelisle@uwaterloo.ca>, avagin@google.com,
+        bsegall@google.com, jannh@google.com, jnewsome@torproject.org,
+        joel@joelfernandes.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        mkarsten@uwaterloo.ca, pabuhr@uwaterloo.ca, pjt@google.com,
+        posk@posk.io, tglx@linutronix.de
+Subject: Re: [RFC PATCH 3/3 v0.2] sched/umcg: RFC: implement UMCG syscalls
+Message-ID: <20210713140235.GE4170@worktop.programming.kicks-ass.net>
+References: <CAPNVh5f3H7Gor-Dph7=2jAdme-4mRfCCb0gv=wjgHQtd7Cad=Q@mail.gmail.com>
+ <acad5960-30b2-3693-9117-e0b054ee97a7@uwaterloo.ca>
+ <CAPNVh5cm9LhLEi1Td3rbOWtWH5oCvZTTMRd+p5bu75Epr3mqwA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPNVh5cm9LhLEi1Td3rbOWtWH5oCvZTTMRd+p5bu75Epr3mqwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control for
-H264 high profile and constrained high profile.
+On Mon, Jul 12, 2021 at 04:31:01PM -0700, Peter Oskolkov wrote:
+> On Mon, Jul 12, 2021 at 2:44 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
 
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h       |  1 +
- drivers/media/platform/qcom/venus/hfi_cmds.c   |  8 ++++++++
- drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
- drivers/media/platform/qcom/venus/venc.c       | 11 +++++++++++
- drivers/media/platform/qcom/venus/venc_ctrls.c | 15 ++++++++++++++-
- 5 files changed, 39 insertions(+), 1 deletion(-)
+> > So what I am asking is: is UMCG_WAIT_WAKE_ONLY needed?
+> 
+> Because the approach you described has been tried last year and was NACKed:
+> https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
+> 
+> In short, futex maintainers do not want to touch the existing futex
+> code at all other than for bugfixes. No new futex functionality,
+> period. See e.g. futex2 efforts:
+> https://lore.kernel.org/lkml/20210603195924.361327-1-andrealmeid@collabora.com/
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 8df2d49..39dfab4 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -234,6 +234,7 @@ struct venc_controls {
- 	u32 h264_loop_filter_mode;
- 	s32 h264_loop_filter_alpha;
- 	s32 h264_loop_filter_beta;
-+	u32 h264_8x8_transform;
- 
- 	u32 hevc_i_qp;
- 	u32 hevc_p_qp;
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index f510247..d121dcb 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1239,6 +1239,14 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		break;
- 	}
- 
-+	case HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8: {
-+		struct hfi_h264_8x8x_transform *in = pdata, *tm = prop_data;
-+
-+		tm->enable_type = in->enable_type;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*tm);
-+		break;
-+	}
-+
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
- 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index b0a9beb..fe3e523 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -507,6 +507,7 @@
- #define HFI_PROPERTY_PARAM_VENC_MAX_NUM_B_FRAMES		0x2005020
- #define HFI_PROPERTY_PARAM_VENC_H264_VUI_BITSTREAM_RESTRC	0x2005021
- #define HFI_PROPERTY_PARAM_VENC_PRESERVE_TEXT_QUALITY		0x2005023
-+#define HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8			0x2005025
- #define HFI_PROPERTY_PARAM_VENC_HIER_P_MAX_NUM_ENH_LAYER	0x2005026
- #define HFI_PROPERTY_PARAM_VENC_DISABLE_RC_TIMESTAMP		0x2005027
- #define HFI_PROPERTY_PARAM_VENC_INITIAL_QP			0x2005028
-@@ -562,6 +563,10 @@ struct hfi_bitrate {
- 	u32 layer_id;
- };
- 
-+struct hfi_h264_8x8x_transform {
-+	u32 enable_type;
-+};
-+
- #define HFI_CAPABILITY_FRAME_WIDTH			0x01
- #define HFI_CAPABILITY_FRAME_HEIGHT			0x02
- #define HFI_CAPABILITY_MBS_PER_FRAME			0x03
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 8dd49d4..948369c 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -567,6 +567,7 @@ static int venc_set_properties(struct venus_inst *inst)
- 		struct hfi_h264_vui_timing_info info;
- 		struct hfi_h264_entropy_control entropy;
- 		struct hfi_h264_db_control deblock;
-+		struct hfi_h264_8x8x_transform h264_transform;
- 
- 		ptype = HFI_PROPERTY_PARAM_VENC_H264_VUI_TIMING_INFO;
- 		info.enable = 1;
-@@ -597,6 +598,16 @@ static int venc_set_properties(struct venus_inst *inst)
- 		ret = hfi_session_set_property(inst, ptype, &deblock);
- 		if (ret)
- 			return ret;
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8;
-+		if (ctr->profile.h264 == HFI_H264_PROFILE_HIGH ||
-+		    ctr->profile.h264 == HFI_H264_PROFILE_CONSTRAINED_HIGH)
-+			h264_transform.enable_type = ctr->h264_8x8_transform;
-+
-+		ret = hfi_session_set_property(inst, ptype, &h264_transform);
-+		if (ret)
-+			return ret;
-+
- 	}
- 
- 	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 637c92f..62beba2 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -319,6 +319,16 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
- 		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
-+		if (ctr->profile.h264 != HFI_H264_PROFILE_HIGH &&
-+		    ctr->profile.h264 != HFI_H264_PROFILE_CONSTRAINED_HIGH)
-+			return -EINVAL;
-+
-+		if (ctrl->val == 0)
-+			return -EINVAL;
-+
-+		ctr->h264_8x8_transform = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -334,7 +344,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 57);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 58);
- 	if (ret)
- 		return ret;
- 
-@@ -438,6 +448,9 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP, 1, 51, 1, 1);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+		V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM, 0, 1, 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
- 			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP, 1, 51, 1, 1);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+These are two orthogonal issues. We do not want to make the futex
+multiplex monster worse, but that's not the reason for rejecting
+FUTEX_SWAP.
 
+The problem with FUTEX_SWAP is that it doesn't even begin to solve the
+posed problem, namely N:M threading that natively allows blocking
+syscalls (IOW without wrapping all syscalls).
+
+This means we need kernel->user notification of tasks that block and
+wakeup, such that the userspace scheduler can adequately react. This is
+not something that sanely fits in futex.
+
+It also requires an additional kernel side block point such that tasks
+that blocked in-kernel, will not resume userspace when the userspace
+scheduler decided to run another task in its stead.
+
+These things are what resulted in UMCG.
