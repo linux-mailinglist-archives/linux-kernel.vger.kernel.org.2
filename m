@@ -2,131 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741C43C6B33
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BB03C6B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 09:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhGMH2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 03:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbhGMH2l (ORCPT
+        id S234239AbhGMHaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 03:30:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15006 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234241AbhGMH37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:28:41 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3259EC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:25:52 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1110883wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 00:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kLualirFuyhQUpkaVrxmK4ztlGCjktHhBFIVEYAPxQA=;
-        b=B6JoVQ10aBH7JgQIPgclYZz/ClgL8rZS6NnNn0MJJx5542fP+YvEhJuBp8gX/OHzYU
-         tAHBSrs6ehVkF3aAzxUi6wpTooE7i8UFm+tQHDs1Zryv9LO03qAxRUmcw/PEYkwhhfdV
-         CPUC4th7fTEU0KrX1cHvPwSPA5HuBPyPTB/2J6P3RhK3Rtbypp1OsSnCYXFFkGZRcmWj
-         /5Ed+1GtccitTvrmqzkYKIkSNCElk90Vtsp/vMdMLAOrlgN9jcWyqixQrXGtK4JkPMuI
-         DfY9I0JvR5DF68cEGRNMakc3C63my1ooWqTEP04pLx52uZr6HRsxbM42Hr0KTmasB7+0
-         +jRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kLualirFuyhQUpkaVrxmK4ztlGCjktHhBFIVEYAPxQA=;
-        b=J9x008jtgaeuVItdnzwze5/DTblmA4qqVy/xjg0A83kKAo3t7o1lsA7DplLGJPNV2L
-         XqTQb83dA+p/ncV+/+TrqLnQl7CkilMt/03Ki8wWA5U6hH6q9B9z0004kVi5xXKHFJ3W
-         3aeH9o8/Q9j5jCCvV3RjoudMQ/spufUbbeka3TJRwRCMJ09BMqlrj9igNfeUNoHy9cl2
-         keN/6dn+r7j8wm9KkIyEE75cHFy217UsKL+3aX10YhWM91/CKBPe2hBJcdknDtueg6xK
-         +lBjjVIy2j4wxMWKz8ObJLB4biJ54FX2pWSt/RbQQyRLFvudwxV3bXxx0Gvu3mB0a4Fl
-         Ulbg==
-X-Gm-Message-State: AOAM532/HSTfTGplnTy3R/N3RaqgeMdNx2bt8m7qH4v9NrVaD6bLrBSE
-        VSWESg83c3Q551zGuvKaVadxXh53+mSF9ZHGCvBjTw==
-X-Google-Smtp-Source: ABdhPJy7wtIfW5cpn6NEXGfuHWRX0BJTvr5N+bXGIcHsnRGt8TIWuqQu2RmlLybXvnHW9/zzVKVV0WmKkaGbrEsQM+E=
-X-Received: by 2002:a05:600c:2197:: with SMTP id e23mr3397905wme.101.1626161150645;
- Tue, 13 Jul 2021 00:25:50 -0700 (PDT)
+        Tue, 13 Jul 2021 03:29:59 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPBvP6gWQzbbpG;
+        Tue, 13 Jul 2021 15:23:45 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 15:27:02 +0800
+Received: from [10.174.179.5] (10.174.179.5) by dggpemm500002.china.huawei.com
+ (7.185.36.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 13 Jul
+ 2021 15:27:01 +0800
+Subject: Re: [PATCH net-next 1/3] arm64: barrier: add DGH macros to control
+ memory accesses merging
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     Will Deacon <will@kernel.org>,
+        Guangbin Huang <huangguangbin2@huawei.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <catalin.marinas@arm.com>, <maz@kernel.org>,
+        <mark.rutland@arm.com>, <dbrazdil@google.com>,
+        <qperret@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <lipeng321@huawei.com>,
+        <peterz@infradead.org>
+References: <1624360271-17525-1-git-send-email-huangguangbin2@huawei.com>
+ <1624360271-17525-2-git-send-email-huangguangbin2@huawei.com>
+ <20210622121630.GC30757@willie-the-truck>
+ <0c8f931b-9da8-ffb0-4b7c-7d291e9af8aa@huawei.com>
+Message-ID: <3ef9ca7d-e203-2041-2b6a-ed73c5e8e7b6@huawei.com>
+Date:   Tue, 13 Jul 2021 15:27:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20210710100329.49174-1-linmiaohe@huawei.com> <20210710100329.49174-2-linmiaohe@huawei.com>
- <CAOUHufZpU4uQOBb4p10uCXs-40MeETRUmGiqy96Eim1w3o_dgQ@mail.gmail.com> <022f2f7c-fc03-182a-1f8f-4b77c0731d4f@huawei.com>
-In-Reply-To: <022f2f7c-fc03-182a-1f8f-4b77c0731d4f@huawei.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 13 Jul 2021 01:25:39 -0600
-Message-ID: <CAOUHufaEPKj4VU1qbjuqsr53rjVwhEXdRCC_C=LBOF0KTveBfQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
- anonymous LRU list
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Alex Shi <alexs@kernel.org>, apopple@nvidia.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        David Hildenbrand <david@redhat.com>, shli@fb.com,
-        hillf.zj@alibaba-inc.com, Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0c8f931b-9da8-ffb0-4b7c-7d291e9af8aa@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.5]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 1:12 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> On 2021/7/11 7:22, Yu Zhao wrote:
-> > On Sat, Jul 10, 2021 at 4:03 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
-> >>
-> >> If the MADV_FREE pages are redirtied before they could be reclaimed, put
-> >> the pages back to anonymous LRU list by setting SwapBacked flag and the
-> >> pages will be reclaimed in normal swapout way. Otherwise MADV_FREE pages
-> >> won't be reclaimed as expected.
-> >>
-> >> Fixes: 802a3a92ad7a ("mm: reclaim MADV_FREE pages")
-> >
-> > This is not a bug -- the dirty check isn't needed but it was copied
-> > from __remove_mapping().
->
-> Yes, this is not a bug and harmless. When we reach here, page should not be
-> dirtied because PageDirty is handled above and there is no way to redirty it
-> again as pagetable references are all gone and it's not in the swap cache.
->
-> >
-> > The page has only one reference left, which is from the isolation.
-> > After the caller puts the page back on lru and drops the reference,
-> > the page will be freed anyway. It doesn't matter which lru it goes.
->
-> But it looks buggy as it didn't perform the expected ops from code view.
-> Should I drop the Fixes tag and send a v2 version?
+Hi,
 
-I don't understand the logic here -- it looks pretty obvious to me
-that, if we want to change anything, we should delete the dirty check,
-not add another line that would enforce the belief that the dirty
-check is needed.
+On 2021/6/29 19:11, Xiongfeng Wang wrote:
+> Hi Will,
+> 
+> On 2021/6/22 20:16, Will Deacon wrote:
+>> On Tue, Jun 22, 2021 at 07:11:09PM +0800, Guangbin Huang wrote:
+>>> From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>>>
+>>> DGH prohibits merging memory accesses with Normal-NC or Device-GRE
+>>> attributes before the hint instruction with any memory accesses
+>>> appearing after the hint instruction. Provide macros to expose it to the
+>>> arch code.
+>>
+>> Hmm.
+>>
+>> The architecture states:
+>>
+>>   | DGH is a hint instruction. A DGH instruction is not expected to be
+>>   | performance optimal to merge memory accesses with Normal Non-cacheable
+>>   | or Device-GRE attributes appearing in program order before the hint
+>>   | instruction with any memory accesses appearing after the hint instruction
+>>   | into a single memory transaction on an interconnect.
+>>
+>> which doesn't make a whole lot of sense to me, in all honesty.
+>>
+>>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
+>>> Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+>>> ---
+>>>  arch/arm64/include/asm/assembler.h | 7 +++++++
+>>>  arch/arm64/include/asm/barrier.h   | 1 +
+>>>  2 files changed, 8 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+>>> index 8418c1bd8f04..d723899328bd 100644
+>>> --- a/arch/arm64/include/asm/assembler.h
+>>> +++ b/arch/arm64/include/asm/assembler.h
+>>> @@ -90,6 +90,13 @@
+>>>  	.endm
+>>>  
+>>>  /*
+>>> + * Data gathering hint
+>>> + */
+>>> +	.macro	dgh
+>>> +	hint	#6
+>>> +	.endm
+>>> +
+>>> +/*
+>>>   * RAS Error Synchronization barrier
+>>>   */
+>>>  	.macro  esb
+>>> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+>>> index 451e11e5fd23..02e1735706d2 100644
+>>> --- a/arch/arm64/include/asm/barrier.h
+>>> +++ b/arch/arm64/include/asm/barrier.h
+>>> @@ -22,6 +22,7 @@
+>>>  #define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
+>>>  #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
+>>>  
+>>> +#define dgh()		asm volatile("hint #6" : : : "memory")
+>>
+>> Although I'm fine with this in arm64, I don't think this is the interface
+>> which drivers should be using. Instead, once we know what this instruction
+>> is supposed to do, we should look at exposing it as part of the I/O barriers
+>> and providing a NOP implementation for other architectures. That way,
+>> drivers can use it without having to have the #ifdef CONFIG_ARM64 stuff that
+>> you have in the later patches here.
+> 
+> How about we adding a interface called flush_wc_writeX(), which can be used to
+> flush the write-combined buffers to the device immediately.
+> I found it has been disscussed in the below link, but it is unnessary in their
+> situation.
+> https://patchwork.ozlabs.org/project/netdev/patch/20200102180830.66676-3-liran.alon@oracle.com/
 
->
-> Many thanks for reply!
->
-> >
-> >> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> >> ---
-> >>  mm/vmscan.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >> index a7602f71ec04..6483fe0e2065 100644
-> >> --- a/mm/vmscan.c
-> >> +++ b/mm/vmscan.c
-> >> @@ -1628,6 +1628,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
-> >>                         if (!page_ref_freeze(page, 1))
-> >>                                 goto keep_locked;
-> >>                         if (PageDirty(page)) {
-> >> +                               SetPageSwapBacked(page);
-> >>                                 page_ref_unfreeze(page, 1);
-> >>                                 goto keep_locked;
-> >>                         }
-> >> --
-> >> 2.23.0
-> >>
-> >>
-> > .
-> >
->
+Do you have some suggestions on this problem ? How about we adding an interface
+called flush_wc_writeX() ?
+
+Thanks,
+Xiongfeng
+
+> 
+> Thanks,
+> Xiongfeng
+> 
+>>
+>> Will
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> .
+>>
