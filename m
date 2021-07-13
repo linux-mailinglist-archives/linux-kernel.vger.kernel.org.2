@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F8D3C68B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BD03C68B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 04:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhGMC6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 22:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhGMC6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 22:58:07 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14804C0613EE
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:55:17 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o3-20020a17090a6783b0290173ce472b8aso518773pjj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 19:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NV7/yF1O74iLBNvfkEg1IJxU/cGFxdoh71Qlx0oT7BE=;
-        b=X1tpyci5/JZOAmQTWbvBRYGBKEjFQa32Z1GqbGitkfjZeFm876Exs6I6EzAKr71u3w
-         7A9W7fEISdzeCnFUA7EXPX2f2ZINeOySZDLRvaKm+msueXuac1pcHE0yCEYkHdn/Q+u9
-         XPQOuuCK/mXYFAMLbRThjEglWjjjn/veXffM1hAeQ7Myg4JAp8DQ8yGuAFvUe/8zRnwC
-         cgWFn9DCscrhh6W9gvvTsOsqomEWb9cp5z2xGkleXXCdCcmjpGUJbr0x1Hcs2bLscaEu
-         rkfTxxtxIen4is6h0zUIsi07BI76kwtYf5+slg8lhXo3r8Ddal7PC18bVHKezcHFkf0G
-         HIwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=NV7/yF1O74iLBNvfkEg1IJxU/cGFxdoh71Qlx0oT7BE=;
-        b=r8JsLFh9NFDluC+l1c0dSEw28k+O/SeRMNsmcy6ivmU/YZKiKL9ddlpWd5Ps5getu2
-         ZoGCqrH3ppNkemADOE/7TWLTvt4GR3EO/vcEfgM6Nb53H6vrgndIuMpQ7WnCCv/Bg46I
-         LNzmLJ5FSRPqMYk7ME7FeO5aKTM1ZdMc6R3E+2Kcyh1sd7r6GhnR1+oNQ41LxAtgFygf
-         +eBK7vFr1K8Yqj6g0PqHD4An6MzKvUQ8J189skMtJaUkJ8fEs/iQmcL8w2iSuJaWHLL/
-         l/AvBAQf/6SCAz3PPdKlvjfU0qlSA8xLmYAIhO0klXjMcE49FMb1+2D6atNLKMK8qIZa
-         3pvw==
-X-Gm-Message-State: AOAM530u93PbQtdHhgojYlWUtHiwTZjcWYdONSu3oN5XGqaM/qlIDi/O
-        QUw8lu99UgC3uA2jvWTzhHSWJw==
-X-Google-Smtp-Source: ABdhPJzmqN/Pby+dpGrUe+mBl1BHg3jXyAwyBRe/KcDBUjVoqsrBBm1K9pblrBcWEzCwkNNuMcLFtQ==
-X-Received: by 2002:a17:902:d213:b029:127:9520:7649 with SMTP id t19-20020a170902d213b029012795207649mr1741094ply.10.1626144916660;
-        Mon, 12 Jul 2021 19:55:16 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.134])
-        by smtp.gmail.com with ESMTPSA id r14sm19303344pgm.28.2021.07.12.19.55.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Jul 2021 19:55:16 -0700 (PDT)
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhangfei Gao <zhangfei.gao@linaro.org>
-Subject: [PATCH v5 3/3] PCI: Set dma-can-stall for HiSilicon chips
-Date:   Tue, 13 Jul 2021 10:54:36 +0800
-Message-Id: <1626144876-11352-4-git-send-email-zhangfei.gao@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626144876-11352-1-git-send-email-zhangfei.gao@linaro.org>
-References: <1626144876-11352-1-git-send-email-zhangfei.gao@linaro.org>
+        id S234138AbhGMC6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 22:58:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31026 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234118AbhGMC6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 22:58:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626144922; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gZeXd18Y7hmR404HpwMl2cb8wh6vrKs8MoX1XzZwIus=; b=iqRI2FzeQFgjBjReI31H+QBjENlWDtYF81K9kZtZg2yPRmNT1gXLtGRFjuHoooWqUvGEBG8N
+ 7dfQfTQV3o3PHilidg8piOd9JDGO84wQS92Yy/Z1q3tGD+0LclAlUHncxbaf9k8bZdeY0aqT
+ 9YbA3zbUjBxJXbZRVtPwjYKJR4U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60ed0099c4cc543602cc33c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Jul 2021 02:55:21
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DECE9C4360C; Tue, 13 Jul 2021 02:55:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.100] (unknown [49.204.181.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D04EC43217;
+        Tue, 13 Jul 2021 02:55:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D04EC43217
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+Subject: Re: [PATCH v2 1/6] dt-bindings: clock: Add SC7280 DISPCC clock
+ binding
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <1619519590-3019-1-git-send-email-tdas@codeaurora.org>
+ <1619519590-3019-2-git-send-email-tdas@codeaurora.org>
+ <20210503191837.GA2220566@robh.at.kernel.org>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <8243809b-97ba-3c7e-3d20-bb0e5995242c@codeaurora.org>
+Date:   Tue, 13 Jul 2021 08:25:14 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210503191837.GA2220566@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-actually on the AMBA bus. These fake PCI devices can support SVA via
-SMMU stall feature, by setting dma-can-stall for ACPI platforms.
+Hello Rob,
 
-Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/pci/quirks.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Thanks for the review.
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 5d46ac6..03b0f98 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -1823,10 +1823,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
- 
- static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
- {
-+	struct property_entry properties[] = {
-+		PROPERTY_ENTRY_BOOL("dma-can-stall"),
-+		{},
-+	};
-+
- 	if (pdev->revision != 0x21 && pdev->revision != 0x30)
- 		return;
- 
- 	pdev->pasid_no_tlp = 1;
-+
-+	/*
-+	 * Set the dma-can-stall property on ACPI platforms. Device tree
-+	 * can set it directly.
-+	 */
-+	if (!pdev->dev.of_node &&
-+	    device_add_properties(&pdev->dev, properties))
-+		pci_warn(pdev, "could not add stall property");
- }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
+On 5/4/2021 12:48 AM, Rob Herring wrote:
+> On Tue, Apr 27, 2021 at 04:03:05PM +0530, Taniya Das wrote:
+>> Add device tree bindings for display clock controller subsystem for
+>> Qualcomm Technology Inc's SC7280 SoCs.
+>>
+>> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+>> ---
+>>   .../bindings/clock/qcom,sc7280-dispcc.yaml         | 94 ++++++++++++++++++++++
+>>   include/dt-bindings/clock/qcom,dispcc-sc7280.h     | 55 +++++++++++++
+>>   2 files changed, 149 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
+>>   create mode 100644 include/dt-bindings/clock/qcom,dispcc-sc7280.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
+>> new file mode 100644
+>> index 0000000..2178666
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
+>> @@ -0,0 +1,94 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+
+>> +...
+>> diff --git a/include/dt-bindings/clock/qcom,dispcc-sc7280.h b/include/dt-bindings/clock/qcom,dispcc-sc7280.h
+>> new file mode 100644
+>> index 0000000..2074b30
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/qcom,dispcc-sc7280.h
+>> @@ -0,0 +1,55 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+> 
+> Dual license please. I'm tired of telling the company that complained to
+> me about having dual licensing for DT stuff not dual license their
+> stuff. Please pass that on to your coworkers.
+> 
+> Rob
+> 
+Rob, I have taken a note on this and will be taken care from the next time.
+
 -- 
-2.7.4
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
+--
