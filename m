@@ -2,150 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8279E3C77C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADA33C77C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhGMUWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234615AbhGMUWe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:22:34 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58949C0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:19:44 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id j9so14966489pfc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 13:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ApntNZUKGH4ouQpQjiCPIANirQV7gTDdHNRaTDbpwkI=;
-        b=AtOjI9/bDSq3Rjimdi/lTu2X5RJ4USrs8ebWyNH6X63y3bZrp7837V6sQUvuLcTyv4
-         VtyVHTzRHTl86zcyXa04Ko/aPaXLX6RHfoKq2rUhU1nfHFkpeJ1f9s1Pm7dy4Kt+5eWC
-         d/o1ycJX6wU5/3PgMFHVozAtyBn/DqjG4CJQ1qYHhmDQwQkkLEh+O1DIW2xGP7GajfKz
-         VAbEY3TpcAlWdQUseO/sWsama1xVFLkxjWboWUPLQ7QhkpkcriDYWIocbkSwF8sED/y7
-         CVH15vKlve4Eg7/PKKCrWivT0rsM7+3fCWxadkYZwDxbO5UkZNrMXgV1/JYZdMTeRb2d
-         YT9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ApntNZUKGH4ouQpQjiCPIANirQV7gTDdHNRaTDbpwkI=;
-        b=Ej6I+Hru2ttTvQAer3/3wfDsRI39j2jO8t5QJkw3/haYvTLD6np+aGIBvHL2Zr7pgt
-         wTBV/PIBigCcrG15yQBc2aRsYxLLYLiMvnFSqzSkZ/l0vGfZu0zUEm/ds3/WxbjkB2HW
-         TLidyipC1hMi4Bfyif6IH4JMbcltAO/3A2zmMC40mZ78Aa5OKP/C6e/1SUD8txxAbFRH
-         WZcuEvmBQxIBNG/EDKvs1Wt//qRzOqgTWGuVYSNW6aReGhNylwsQZsrS7dQCcDqt1Rr4
-         h6Dku75hzGjs2daUCKw7me2Dc7pFleDMDFZGIzsuMwu163NDCwiB88+8lgUmX+lS+bAX
-         MzSg==
-X-Gm-Message-State: AOAM5336Fa+9BVZ9EYIXkdP2sLp8o4A9cdSf5KfYiYdOpWkCRa46YBSA
-        ufnbyzxndVl9259sEtLnphIbYw==
-X-Google-Smtp-Source: ABdhPJyPy5xSbrdNySHocck9/UIDyPfB6Nz/gRyKMhpC9oXDBRaudgO55tcL6k+8sEayiyWLkUR7KA==
-X-Received: by 2002:a65:56ca:: with SMTP id w10mr5732194pgs.107.1626207583582;
-        Tue, 13 Jul 2021 13:19:43 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id k189sm23339698pgk.14.2021.07.13.13.17.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 13:18:11 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 20:17:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v2 16/69] KVM: x86/mmu: Zap only leaf SPTEs for
- deleted/moved memslot by default
-Message-ID: <YO30xgEmqcOr0xlQ@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <78d02fee3a21741cc26f6b6b2fba258cd52f2c3c.1625186503.git.isaku.yamahata@intel.com>
- <3ef7f4e7-cfda-98fe-dd3e-1b084ef86bd4@redhat.com>
+        id S234776AbhGMUVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:21:46 -0400
+Received: from dliviu.plus.com ([80.229.23.120]:40032 "EHLO smtp.dudau.co.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229944AbhGMUVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 16:21:45 -0400
+Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
+        by smtp.dudau.co.uk (Postfix) with SMTP id 919384119B03;
+        Tue, 13 Jul 2021 21:18:53 +0100 (BST)
+Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Tue, 13 Jul 2021 21:18:53 +0100
+From:   Liviu Dudau <liviu@dudau.co.uk>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Mario Kleiner <mario.kleiner.de@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>
+Subject: [PATCH] drm/amd/display: Fix 10bit 4K display on CIK GPUs
+Date:   Tue, 13 Jul 2021 21:18:51 +0100
+Message-Id: <20210713201851.60359-1-liviu@dudau.co.uk>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ef7f4e7-cfda-98fe-dd3e-1b084ef86bd4@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021, Paolo Bonzini wrote:
-> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > Zap only leaf SPTEs when deleting/moving a memslot by default, and add a
-> > module param to allow reverting to the old behavior of zapping all SPTEs
-> > at all levels and memslots when any memslot is updated.
-> > 
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >   arch/x86/kvm/mmu/mmu.c | 21 ++++++++++++++++++++-
-> >   1 file changed, 20 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 8d5876dfc6b7..5b8a640f8042 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -85,6 +85,9 @@ __MODULE_PARM_TYPE(nx_huge_pages_recovery_ratio, "uint");
-> >   static bool __read_mostly force_flush_and_sync_on_reuse;
-> >   module_param_named(flush_on_reuse, force_flush_and_sync_on_reuse, bool, 0644);
-> > +static bool __read_mostly memslot_update_zap_all;
-> > +module_param(memslot_update_zap_all, bool, 0444);
-> > +
-> >   /*
-> >    * When setting this variable to true it enables Two-Dimensional-Paging
-> >    * where the hardware walks 2 page tables:
-> > @@ -5480,11 +5483,27 @@ static bool kvm_has_zapped_obsolete_pages(struct kvm *kvm)
-> >   	return unlikely(!list_empty_careful(&kvm->arch.zapped_obsolete_pages));
-> >   }
-> > +static void kvm_mmu_zap_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> > +{
-> > +	/*
-> > +	 * Zapping non-leaf SPTEs, a.k.a. not-last SPTEs, isn't required, worst
-> > +	 * case scenario we'll have unused shadow pages lying around until they
-> > +	 * are recycled due to age or when the VM is destroyed.
-> > +	 */
-> > +	write_lock(&kvm->mmu_lock);
-> > +	slot_handle_level(kvm, slot, kvm_zap_rmapp, PG_LEVEL_4K,
-> > +			  KVM_MAX_HUGEPAGE_LEVEL, true);
-> > +	write_unlock(&kvm->mmu_lock);
-> > +}
-> > +
-> >   static void kvm_mmu_invalidate_zap_pages_in_memslot(struct kvm *kvm,
-> >   			struct kvm_memory_slot *slot,
-> >   			struct kvm_page_track_notifier_node *node)
-> >   {
-> > -	kvm_mmu_zap_all_fast(kvm);
-> > +	if (memslot_update_zap_all)
-> > +		kvm_mmu_zap_all_fast(kvm);
-> > +	else
-> > +		kvm_mmu_zap_memslot(kvm, slot);
-> >   }
-> >   void kvm_mmu_init_vm(struct kvm *kvm)
-> > 
-> 
-> This is the old patch that broke VFIO for some unknown reason.
+Commit 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at
+30bpp for DCE-11.0.") doesn't seems to have fixed 10bit 4K rendering over
+DisplayPort for CIK GPUs. On my machine with a HAWAII GPU I get a broken
+image that looks like it has an effective resolution of 1920x1080 but
+scaled up in an irregular way. Reverting the commit or applying this
+patch fixes the problem on v5.14-rc1.
 
-Yes, my white whale :-/
+Fixes: 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at 30bpp for DCE-11.0.")
+Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+---
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The commit message should at least say why memslot_update_zap_all is not true
-> by default.  Also, IIUC the bug still there with NX hugepage splits disabled,
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index a6a67244a322e..1596f6b7fed7c 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -1062,7 +1062,7 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+ 	 * so use only 30 bpp on DCE_VERSION_11_0. Testing with DCE 11.2 and 8.3
+ 	 * did not show such problems, so this seems to be the exception.
+ 	 */
+-	if (plane_state->ctx->dce_version != DCE_VERSION_11_0)
++	if (plane_state->ctx->dce_version > DCE_VERSION_11_0)
+ 		pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_36BPP;
+ 	else
+ 		pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_30BPP;
+-- 
+2.32.0
 
-I strongly suspect the bug is also there with hugepage splits enabled, it's just
-masked and/or harder to hit.
-
-> but what if the TDP MMU is enabled?
-
-This should not be a module param.  IIRC, the original code I wrote had it as a
-per-VM flag that wasn't even exposed to the user, i.e. TDX guests always do the
-partial flush and non-TDX guests always do the full flush.  I think that's the
-least awful approach if we can't figure out the underlying bug before TDX is
-ready for inclusion.
