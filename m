@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746653C6D90
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4922D3C6D93
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhGMJhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:37:41 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52088 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234819AbhGMJhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:37:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="273964736"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="273964736"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 02:34:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="492686722"
-Received: from pujfalus-mobl.ger.corp.intel.com (HELO peter-virtualbox.ger.corp.intel.com) ([10.252.60.138])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 02:34:45 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        david.m.ertman@intel.com
-Cc:     dan.j.williams@intel.com, ranjani.sridharan@linux.intel.com,
-        linux-kernel@vger.kernel.org, peter.ujfalusi@linux.intel.com
-Subject: [PATCH] driver core: auxiliary bus: Fix memory leak when driver_register() fail
-Date:   Tue, 13 Jul 2021 12:34:38 +0300
-Message-Id: <20210713093438.3173-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.32.0
+        id S235188AbhGMJip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234819AbhGMJin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 05:38:43 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36CFC0613DD;
+        Tue, 13 Jul 2021 02:35:53 -0700 (PDT)
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id A07E73C2;
+        Tue, 13 Jul 2021 11:35:47 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 0/3] kvm: svm: Add initial GHCB protocol version 2 support
+Date:   Tue, 13 Jul 2021 11:35:43 +0200
+Message-Id: <20210713093546.7467-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If driver_register() returns with error we need to free the memory
-allocated for auxdrv->driver.name before returning from
-__auxiliary_driver_register()
+From: Joerg Roedel <jroedel@suse.de>
 
-Fixes: 7de3697e9cbd4 ("Add auxiliary bus support")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- drivers/base/auxiliary.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index adc199dfba3c..6a30264ab2ba 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -231,6 +231,8 @@ EXPORT_SYMBOL_GPL(auxiliary_find_device);
- int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
- 				struct module *owner, const char *modname)
- {
-+	int ret;
-+
- 	if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
- 		return -EINVAL;
- 
-@@ -246,7 +248,11 @@ int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
- 	auxdrv->driver.bus = &auxiliary_bus_type;
- 	auxdrv->driver.mod_name = modname;
- 
--	return driver_register(&auxdrv->driver);
-+	ret = driver_register(&auxdrv->driver);
-+	if (ret)
-+		kfree(auxdrv->driver.name);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(__auxiliary_driver_register);
- 
+here is a small set of patches which I took from the pending SEV-SNP
+patch-sets to enable basic support for GHCB protocol version 2.
+
+When SEV-SNP is not supported, only two new MSR protocol VMGEXIT calls
+need to be supported:
+
+	- MSR-based AP-reset-hold
+	- MSR-based HV-feature-request
+
+These calls are implemented by here and then the protocol is lifted to
+version 2.
+
+This is submitted separately because the MSR-based AP-reset-hold call
+is required to support kexec/kdump in SEV-ES guests.
+
+Regards,
+
+	Joerg
+
+Brijesh Singh (2):
+  KVM: SVM: Add support for Hypervisor Feature support MSR protocol
+  KVM: SVM: Increase supported GHCB protocol version
+
+Tom Lendacky (1):
+  KVM: SVM: Add support to handle AP reset MSR protocol
+
+ arch/x86/include/asm/sev-common.h |  5 +++
+ arch/x86/include/uapi/asm/svm.h   |  1 +
+ arch/x86/kvm/svm/sev.c            | 63 +++++++++++++++++++++++++++----
+ arch/x86/kvm/svm/svm.h            |  4 +-
+ 4 files changed, 64 insertions(+), 9 deletions(-)
+
+
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
 -- 
-2.32.0
+2.31.1
 
