@@ -2,153 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7882F3C6D3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C073C6D43
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234971AbhGMJ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234397AbhGMJ0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4142600D1;
-        Tue, 13 Jul 2021 09:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626168215;
-        bh=p6qo3HQ0SqxP6PWdKWsMC3NKbvO928431ScHS8VOYJ0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ddt3yDkYY3spoxhgXUQm3yswJpIu859ZBYzp1O6faxARk3Hs8PfywxiUebWwFD/3m
-         hWUqX2TqftP0BHhRH2ZkgnTDEdp+kykEgtsfsT0j6Lktskte303okQuja0Up6ddC4H
-         D2AgB1BSArWKNdf9QHDIs//ubf6pPIafpV9mWoT9fdbrL7U67Dsp9uLMlLBmHLgd0Q
-         STSMLinJ3IOoDvgDHMkUVvkRtUNNEl32jqMMR9EDSnXFdjIv82OHL16mOaR5w1E0h8
-         xVeAR14PHN2JVqlUTVR2kDlq+8Y/ML8q9wxbShyjQB+aQDek6bUPTOOuZlLj5/x3iP
-         drvm0ZE2ZmXNg==
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20210601101024.119356-1-yuchao0@huawei.com>
- <YN32/NsjqJONbvz7@google.com>
- <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
- <YN5srPRZaPN9gpZ0@google.com>
- <b828fc22-f15a-8be4-631a-ed4ecb631386@kernel.org>
- <YOXo3CT5sBvj6p0J@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
-Date:   Tue, 13 Jul 2021 17:23:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235060AbhGMJ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:27:31 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:14784 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234397AbhGMJ13 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 05:27:29 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16D97JLb013915;
+        Tue, 13 Jul 2021 09:24:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=L17bwVMs4gzgIH8mx+YPUPVmWaRdar8ujU1PA9RXgM8=;
+ b=wcDWCqYaspUCnfNoMaECLfaGhH69HkbvqDReBX30FiK+TB58uFLrbIeVflW08vvhJ9Rc
+ ukk/DUlDlaCtKQY/csCQg9Bgtt1pDlHc3+Gp8MT8P+Lgr+b8+OW2SOgp1jIOPzleT6bJ
+ pObxKStRd+At17KYx96b7RLxZA0xc69NCqRFkzsrvF/+GhtAk2P7bB+ONklulVoAOFDf
+ oEpcmGLNBNs64oVCuVaLPbajmUB+EKZHJR3Op2PUH/pJdguCLlRzqZNwiqLnMohFb6Pz
+ rELl2vLQpZ9obprMAK4rLlLR/LVuwivgvF8JFuPyWC4odw3vPBJnWoYLOWM0BZdmK6t1 vQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39rnxdj3ue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 09:24:25 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16D9AsFO151876;
+        Tue, 13 Jul 2021 09:24:24 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
+        by userp3020.oracle.com with ESMTP id 39qnaxafkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 09:24:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bm36Zg+0DbMHAwH7jrm0ggQegnOJCQbuSm5UhT88sOZV1/eb8oQbxADN4SF0KJvtpDrMYFUb6OCgR/gL+vcispSRI0rSnc2LrdJahWY6/8yQZO/Dl0J98rxKtNCTew4UG937uhmr2B+c9T7qdW9GDoFvfZnnky4/OSiZSeJfxxRwWN9cshcY3g0225TjrqfHzmEyNSuX6ng5hqdnw6d9LjWVNp3+EGlun7Tmv5WPiZlvA2Csb0IvCfGNQasideplFV+/8nZNPp53hUmDD8Vw4gJrsqM6oCNbpVZnBuGYcMhXf7YQdMstJGJMBX3kDTUnD50Zz9a6ZJsKMNN4EOpQDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L17bwVMs4gzgIH8mx+YPUPVmWaRdar8ujU1PA9RXgM8=;
+ b=W1dR2WT4ftNhbKTfWqXeFhvK+ZX+5wVZDdS/I3KNRJwjBwhH5aCmnnQswmz5U9Ot9GPVc8oq0HZQx+HpFrTDJmQayZQ03kD1bSXbpDi2tS4SIFVRgqd2O1gIcimGYUe7smSchLr8uXGvjbHtI3fEMaGR7DkwZSJdjh89vwHlorsJnvje59m8NKurVPyDwUGKsHjsqxhAOWlHHHD1ir+/qwqFc15rQSdzJi25IsQeoUV8xPDMuuo+ot+aRGIsxPKeHJ4Wpgp257ISSTeno9lNegMjqO2wbyOAZ4uKw/FM+3TCD4tS6iS4Hbl+V63h8uS8yvcsS08zlI3ct+mr5YEg9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L17bwVMs4gzgIH8mx+YPUPVmWaRdar8ujU1PA9RXgM8=;
+ b=rEsGgQkdufft0vq5KfGMwc1MIsQoyEOsmrBPrWGCrpxTaE+VMYMiLAy4NdNem3c7eNjk6c3tBuoMuBpkMYrO4zJ/z6DEIFaqLv9ifhHyGAYvCmKKNWmP/bqCH7xUHkm29eq5vQ0/U0U7xAK5/1099oWnfcsQw5YEVZp0X3gbbhg=
+Authentication-Results: iotwrt.com; dkim=none (message not signed)
+ header.d=none;iotwrt.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR1001MB2159.namprd10.prod.outlook.com
+ (2603:10b6:301:2c::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.27; Tue, 13 Jul
+ 2021 09:24:22 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
+ 09:24:22 +0000
+Date:   Tue, 13 Jul 2021 12:24:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jacob Chen <jacob-chen@iotwrt.com>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: [PATCH v2] media: rockchip/rga: fix error handling in probe
+Message-ID: <YO1burFzVK+l3JST@mwanda>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-ClientProxiedBy: LO2P265CA0050.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:60::14) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <YOXo3CT5sBvj6p0J@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mwanda (2a02:6900:8208:1848::16ae) by LO2P265CA0050.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:60::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21 via Frontend Transport; Tue, 13 Jul 2021 09:24:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 13570910-4a0a-4570-16ad-08d945dfff95
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2159:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB2159E45C429400F45068E34C8E149@MWHPR1001MB2159.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BpnS7Pn6XEBufSdYBF6vjWlBY4YT0yJ52ld4tIEkn/a+VfTZxZpvmMHGJxOU70PuOVReHKPLRxdMOykw8g6CdvzmC2wMppg1tB4/vtaSHOr25CelCEBPXe2x2Jil4nCeJw6/JKa7Z5kPH63jjrRlryH+ONJTFXg1VjHWNCtJfOS7rbGMkiwrFgfsl1WkjO1poiojmie1aRFdv4aw2GwyG6NE/SMN4g/9HhowROLIgwv0XJX12UQj+UysoOmMJ88gNyaM57iPaG8wBSiKJLh2P5+xOCAJG5x/D3G2jPgKFMieOUnx950AmJAhlP2xzXytu7T68R6Qz6ZWVJt3dcz8AWm2Q/NqnhOmYgy/gaiUrciqK7yfwdvV6YK0BmRO/JCHCZHar0+ZM181chfErbXMiM8uWBfNQ+FwqjS+oAeZW/sPqLZGvs9HhwH3eqmEtuKDD8jVw+zadotogDBvV7DRQul8M0TQcBxQTB3LC7JwrZKDVrlLj8KcTQceDGch8wsiG6lyNfUJ1tTOmOzOFDFk4BxH/PpqITX5Eh4KPjKYtmyuruq3takUAuQkO4LIaZrGeBi23al6ZK0okdAD+qWBcz1g55XPH9bCsfLUqtMCstvFPjwZA6wktrn06Rjet9Zm+PFwPnYFxwzmIdsLeKoXBBNMF5vH0Vu9A7VOzyMNOA70SVzgX0NvYDPafqHf737+GcU2LSzBlgBUHIC6NE/bhg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39860400002)(136003)(366004)(44832011)(38100700002)(83380400001)(9576002)(5660300002)(6666004)(33716001)(316002)(54906003)(86362001)(52116002)(6496006)(9686003)(2906002)(55016002)(6916009)(186003)(8676002)(66556008)(66476007)(66946007)(4326008)(478600001)(8936002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hRDovjINpn75+Ic5O3QmuQN9OMGSKgweBQnH+j6DG1grsMMbeJm6k/1TtFbX?=
+ =?us-ascii?Q?+rXjS0vFDE/thfg9klW+w72kpQ55Me940WirCa/TXKYu4HneeV7L0D40c0wG?=
+ =?us-ascii?Q?u7FrImz+1ja0ESIBrlm3ZEaoyoxp/pn3p393ldb6R8PcIXrysrp+9M6KVg1n?=
+ =?us-ascii?Q?fqqvROTZxicRaI07fie9X+C8W1EiPSvjBjFdWb4649aqOZ4BuQsvvU2VAf56?=
+ =?us-ascii?Q?6Kt01gOsfT86bymrAX7Y5Bs6UIjnikFQxx0qcpuafA/Sj+laR9NIsblLd0cb?=
+ =?us-ascii?Q?zaaIEOM1Knsea8P4WZA+HJM+6MFYPmqg3NOsMY0LI5wJIauVT41M2bq+Rx0F?=
+ =?us-ascii?Q?2KFMZchb+XusP3iQgUpLpHjwTvVTTzBraYrQ5SlS5bBdteM3rpZpb+C9ehiM?=
+ =?us-ascii?Q?gi02JJpr8kc/YP4Gv8JpE0Qvx9wJ43upCDKeJWmraIPZbpSPAqCadiW1Sveh?=
+ =?us-ascii?Q?5Cnaya3Wrd03fYMRTzt6q13TN97Xbgk4ll5ayuGpvdxeJcMlEmiT1hIBo2ak?=
+ =?us-ascii?Q?Yz0xLno87RozuaBIiMlqFJatOtiLaK9oy8ukTKdGRZPu0Ui4eVtXHzJHHV0i?=
+ =?us-ascii?Q?VFbjMM93tvIJg54sSFeLJ+7IkfTuR7KAnW3/M2+aq4CTqqpVw6rRojPjp0QE?=
+ =?us-ascii?Q?MC41McsTxT25FBypQARNqHOpj0EQrfbftMxmYYrNTj6kAESPdTjgMTrvoCrh?=
+ =?us-ascii?Q?gqmgXTIJYH9XKlULdehNy+IaNaIFxx5nVP4CmHqYkhyEGO91aPh3Fg7Yi3Cq?=
+ =?us-ascii?Q?Mp870SkXXAy5SVh6BJjBmH+oa13MWJJZRVKkhpDZudU5jNcuRMBKiteCEWNl?=
+ =?us-ascii?Q?7EvJN0EmwO7PuQVj8kETjuTqcJH1xM6wio2S6yhmB1pY81fu6CExE/hdbFqh?=
+ =?us-ascii?Q?xhMBkhvqfkdlyn2e6/DHbvq9vIGha3d5W6lFlQreiPLTHuEpFPA597aOXOqO?=
+ =?us-ascii?Q?yR9rq0KX9ArWKwC6amVp3DYDCG1utUSr8V9fxapCHARW70ibiYGFXrWfZ+gM?=
+ =?us-ascii?Q?qDWbPj3k+VfQeq+mRtVuA6hZbuI4Dja3EyTEKk5b1QVJepjnCcekXuCWawoY?=
+ =?us-ascii?Q?/oRHKyPlrKzDdVrz0EgpWYMvZyeyYjscAkRxjYaqK8j6qCo7IqXixIV38U7F?=
+ =?us-ascii?Q?zslV5pNedUrNYXPB6XvyXUYHXEJBKhpT15q28FL9GPA0Me4Ua13O3lLWFslW?=
+ =?us-ascii?Q?Jg3RqyxvQzGdMmAhjoH5bb96Rkr3RKNcp852yihmW6OWC4i783CMGU5HK0Px?=
+ =?us-ascii?Q?KZK+umdRsVJl9JF/KDRMwMDiq3HkKHyhiLU8CMMDb8UQ+pgYFMyHbQlgDpRZ?=
+ =?us-ascii?Q?udzj09BaruchtxVb6Hmo81eYXIF88neopm98oPqUlVh4xlbUIXM8nMP8iUGd?=
+ =?us-ascii?Q?TqHIQAU=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13570910-4a0a-4570-16ad-08d945dfff95
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 09:24:22.2587
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l/SM9UMdUPYK+ROBFthqZi5OZpyyP8yNFIrdjsNhFNpKB/cM3dfj+vfqzV0kuod+xUGwdy7KC5dKZLqj2Oy1tnfx4tqYdzc8XRCSccXazmc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2159
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10043 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107130058
+X-Proofpoint-GUID: 79YkD6Rc0_MYJBcWtfG0UeIBRmDHBRd5
+X-Proofpoint-ORIG-GUID: 79YkD6Rc0_MYJBcWtfG0UeIBRmDHBRd5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/8 1:48, Jaegeuk Kim wrote:
-> On 07/02, Chao Yu wrote:
->> On 2021/7/2 9:32, Jaegeuk Kim wrote:
->>> On 07/02, Chao Yu wrote:
->>>> On 2021/7/2 1:10, Jaegeuk Kim wrote:
->>>>> On 06/01, Chao Yu wrote:
->>>>>> [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
->>>>>>
->>>>>> As [1] reported, if lower device doesn't support write barrier, in below
->>>>>> case:
->>>>>>
->>>>>> - write page #0; persist
->>>>>> - overwrite page #0
->>>>>> - fsync
->>>>>>     - write data page #0 OPU into device's cache
->>>>>>     - write inode page into device's cache
->>>>>>     - issue flush
->>>>>
->>>>> Well, we have preflush for node writes, so I don't think this is the case.
->>>>>
->>>>>     fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
->>>>
->>>> This is only used for atomic write case, right?
->>>>
->>>> I mean the common case which is called from f2fs_issue_flush() in
->>>> f2fs_do_sync_file().
->>>
->>> How about adding PREFLUSH when writing node blocks aligned to the above set?
->>
->> You mean implementation like v1 as below?
->>
->> https://lore.kernel.org/linux-f2fs-devel/20200120100045.70210-1-yuchao0@huawei.com/
-> 
-> Yea, I think so. :P
+There are a few bugs in this code.  1)  No checks for whether
+dma_alloc_attrs() or __get_free_pages() failed.  2)  If
+video_register_device() fails it doesn't clean up the dma attrs or the
+free pages.  3)  The video_device_release() function frees "vfd" which
+leads to a use after free on the next line.  The call to
+video_unregister_device() is not required so I have just removed that.
 
-I prefer v2, we may have several schemes to improve performance with v2, e.g.
-- use inplace IO to avoid newly added preflush
-- use flush_merge option to avoid redundant preflush
-- if lower device supports barrier IO, we can avoid newly added preflush
+Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
+Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2:  The v1 patch only fixed the use after free and not the other bugs
 
-Thanks,
+ drivers/media/platform/rockchip/rga/rga.c | 27 ++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-> 
->>
->> Thanks,
->>
->>>
->>>>
->>>> And please see do_checkpoint(), we call f2fs_flush_device_cache() and
->>>> commit_checkpoint() separately to keep persistence order of CP datas.
->>>>
->>>> See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
->>>> for details.
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>>>
->>>>>> If SPO is triggered during flush command, inode page can be persisted
->>>>>> before data page #0, so that after recovery, inode page can be recovered
->>>>>> with new physical block address of data page #0, however there may
->>>>>> contains dummy data in new physical block address.
->>>>>>
->>>>>> Then what user will see is: after overwrite & fsync + SPO, old data in
->>>>>> file was corrupted, if any user do care about such case, we can suggest
->>>>>> user to use STRICT fsync mode, in this mode, we will force to trigger
->>>>>> preflush command to persist data in device cache in prior to node
->>>>>> writeback, it avoids potential data corruption during fsync().
->>>>>>
->>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>>> ---
->>>>>> v2:
->>>>>> - fix this by adding additional preflush command rather than using
->>>>>> atomic write flow.
->>>>>>     fs/f2fs/file.c | 14 ++++++++++++++
->>>>>>     1 file changed, 14 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>> index 7d5311d54f63..238ca2a733ac 100644
->>>>>> --- a/fs/f2fs/file.c
->>>>>> +++ b/fs/f2fs/file.c
->>>>>> @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->>>>>>     				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
->>>>>>     			goto flush_out;
->>>>>>     		goto out;
->>>>>> +	} else {
->>>>>> +		/*
->>>>>> +		 * for OPU case, during fsync(), node can be persisted before
->>>>>> +		 * data when lower device doesn't support write barrier, result
->>>>>> +		 * in data corruption after SPO.
->>>>>> +		 * So for strict fsync mode, force to trigger preflush to keep
->>>>>> +		 * data/node write order to avoid potential data corruption.
->>>>>> +		 */
->>>>>> +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
->>>>>> +								!atomic) {
->>>>>> +			ret = f2fs_issue_flush(sbi, inode->i_ino);
->>>>>> +			if (ret)
->>>>>> +				goto out;
->>>>>> +		}
->>>>>>     	}
->>>>>>     go_write:
->>>>>>     	/*
->>>>>> -- 
->>>>>> 2.29.2
+diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
+index bf3fd71ec3af..6759091b15e0 100644
+--- a/drivers/media/platform/rockchip/rga/rga.c
++++ b/drivers/media/platform/rockchip/rga/rga.c
+@@ -863,12 +863,12 @@ static int rga_probe(struct platform_device *pdev)
+ 	if (IS_ERR(rga->m2m_dev)) {
+ 		v4l2_err(&rga->v4l2_dev, "Failed to init mem2mem device\n");
+ 		ret = PTR_ERR(rga->m2m_dev);
+-		goto unreg_video_dev;
++		goto rel_vdev;
+ 	}
+ 
+ 	ret = pm_runtime_resume_and_get(rga->dev);
+ 	if (ret < 0)
+-		goto unreg_video_dev;
++		goto rel_vdev;
+ 
+ 	rga->version.major = (rga_read(rga, RGA_VERSION_INFO) >> 24) & 0xFF;
+ 	rga->version.minor = (rga_read(rga, RGA_VERSION_INFO) >> 20) & 0x0F;
+@@ -882,11 +882,23 @@ static int rga_probe(struct platform_device *pdev)
+ 	rga->cmdbuf_virt = dma_alloc_attrs(rga->dev, RGA_CMDBUF_SIZE,
+ 					   &rga->cmdbuf_phy, GFP_KERNEL,
+ 					   DMA_ATTR_WRITE_COMBINE);
++	if (!rga->cmdbuf_virt) {
++		ret = -ENOMEM;
++		goto rel_vdev;
++	}
+ 
+ 	rga->src_mmu_pages =
+ 		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
++	if (!rga->src_mmu_pages) {
++		ret = -ENOMEM;
++		goto free_dma;
++	}
+ 	rga->dst_mmu_pages =
+ 		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
++	if (rga->dst_mmu_pages) {
++		ret = -ENOMEM;
++		goto free_src_pages;
++	}
+ 
+ 	def_frame.stride = (def_frame.width * def_frame.fmt->depth) >> 3;
+ 	def_frame.size = def_frame.stride * def_frame.height;
+@@ -894,7 +906,7 @@ static int rga_probe(struct platform_device *pdev)
+ 	ret = video_register_device(vfd, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+ 		v4l2_err(&rga->v4l2_dev, "Failed to register video device\n");
+-		goto rel_vdev;
++		goto free_dst_pages;
+ 	}
+ 
+ 	v4l2_info(&rga->v4l2_dev, "Registered %s as /dev/%s\n",
+@@ -902,10 +914,15 @@ static int rga_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++free_dst_pages:
++	free_pages((unsigned long)rga->dst_mmu_pages, 3);
++free_src_pages:
++	free_pages((unsigned long)rga->src_mmu_pages, 3);
++free_dma:
++	dma_free_attrs(rga->dev, RGA_CMDBUF_SIZE, rga->cmdbuf_virt,
++		       rga->cmdbuf_phy, DMA_ATTR_WRITE_COMBINE);
+ rel_vdev:
+ 	video_device_release(vfd);
+-unreg_video_dev:
+-	video_unregister_device(rga->vfd);
+ unreg_v4l2_dev:
+ 	v4l2_device_unregister(&rga->v4l2_dev);
+ err_put_clk:
+-- 
+2.30.2
+
