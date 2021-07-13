@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924FD3C760E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D613B3C7613
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhGMSDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        id S233634AbhGMSFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhGMSDA (ORCPT
+        with ESMTP id S229478AbhGMSFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:03:00 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293A1C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:00:10 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id t9so22297846pgn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:00:10 -0700 (PDT)
+        Tue, 13 Jul 2021 14:05:06 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B365C0613DD;
+        Tue, 13 Jul 2021 11:02:15 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id r125so14939516qkf.1;
+        Tue, 13 Jul 2021 11:02:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=aUnwvzo3iJx64EYOs36puVhqp9GJq4422krM2Lg28ME=;
-        b=pjVheK0zx5si1i4Eb9s5pegJG0OMW2zAHJpyCgDLb3LtX1Y7fa51g9Hemt6Z6DEA5B
-         /v76+1atkf1zQ5aFPBUpsRPz4HjJE18d79Q9YlRKj+0UqcQZGM03XgHRrRVstC4n+XGK
-         peZGo/WocfT+2+8SfvpxTmo0BK7901uovyMvl6KIoctAtLEwmSpwggDxYZB/t5AVbTl+
-         E3DdQVUj6GjNNZv/AQv/mAKC9HxWGhq05FTWUtldVgs0FJcRm6GnPuC3x74hJINiQ1PY
-         3mKUU2TNNxzBC3hfT8L+AZiQNftgYjcHD2fpY/H9+04lDIbk7rS3HLa8DSoPWZFDOEjv
-         Nzaw==
+        bh=8TTYSZMJTfaJpr238K/4LxyKEosHZCJyy+F52YED+TY=;
+        b=o8JQakp2L+wWqKAhlxER0A1Sdy69isN9DelFCPMnxusbF07+0A6O0ooBS4zvVCXUMn
+         3o0xvXRgMhFtlgJFsdojsDOnjDGA23bQD6ypvXeS2KiJqYZAPqqiBgahCyiNvEQjYLCM
+         rZ1F54wWBYdlEHdsWnKL7p7FaPO0dtk5bx4FcHEkrcCyAkOo6s3YodIqZBQbOqsrLk2J
+         I9NIPje25WvpV+H5d1GQGP7SK5ihVH/E/vtXMI076zuG21/sdJWg9esi8iVTYF0fljTz
+         1AZmO7gh+Wt1U6ZouQMF2jvtAiyidjCX2ZlBaPUrLXZ1RkJ1erg2RXPub1hDyV3ey5kz
+         Y6dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aUnwvzo3iJx64EYOs36puVhqp9GJq4422krM2Lg28ME=;
-        b=oRlvCB5et1xm6cALZHyTfTcuKiG5w+aKodwyaTKY1ntIBgyMIEcTrCl/g7UEvpFFkB
-         IfXZ3sUQeki9LlSUFXEeq8ek346FxEmGPf/HtbJ5N5GqOWnfJyVsMvO18UyXe3UJZqVb
-         qf0+mFctJEUVpvePWnI8YEYiEDdOHcfuIiZ76t/ddSrS7hIB3t2qM3vGEkskzbCALo0S
-         KSBsjXfwXKvNhaGPgHSG46Flc/sI/UvAq9tRId1QSp2rxoWXzHt0GpEAUomv6KZ9e3j4
-         EEybrE92VLMoH9eHVP3FGZfQ7onF4U6zFqp1lX2NuF6FiOx0wuPU0Vf6LFyI7zGSmGoz
-         q1Eg==
-X-Gm-Message-State: AOAM531JnL1nm9CvZEKdzhld7ZKrHou9lF+YCnvgj9cb117rVT+/c2K0
-        8JBfl7lET8m9sxs0d9EGWe0WhA==
-X-Google-Smtp-Source: ABdhPJxaQxbHMgMZVyJ0E5PG31fBCaX18MkwNLy14FTMd4q9lNqBvbMwHOSOurSVNYYmXu/IIpynaA==
-X-Received: by 2002:a62:3045:0:b029:32b:880f:c03a with SMTP id w66-20020a6230450000b029032b880fc03amr5884323pfw.22.1626199209362;
-        Tue, 13 Jul 2021 11:00:09 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 133sm21494711pfx.39.2021.07.13.11.00.08
+        bh=8TTYSZMJTfaJpr238K/4LxyKEosHZCJyy+F52YED+TY=;
+        b=g/JYCogEo9h7I13VWk/kIZ6/OBsctTyqy39EP2Z+98Yl8RFzjFA7wvYJa5VSzzQsdd
+         SO+l3i1FDUbZquue0jqCk758Wd19v0qfgendA18R60sxph9n5DuD+duabRFmdlU+wIW2
+         wya5GTc7D+DzMhzHt4Kcm1D1yjowzmouvRaPbhIs4Qc92YG+rQoEvHkre/bvKgsXMLLx
+         Sb2oOBiwH4pn7sG2RIs4+L691whdSP6yPIBgxS+oyQs+pYFYZksbfp+hGReNKkb3MKNt
+         szXtVLJGtMefTESPpR48zv6pW76jxNUdoQeV84WedkLxo+tKswEIvcpKAvrWLml4sV/N
+         28JA==
+X-Gm-Message-State: AOAM533RS+WUtNa3Y/oDHKCsE//TN26k6fVYekV+98ypi1A8OzeIL6JZ
+        OcKuXsnYi0vvToI8enLRfQ==
+X-Google-Smtp-Source: ABdhPJz0HI60ldyJ5cJ+YVmgPU3mxyQfCUjFVA6TQwhU9M3cus7hi8hB1CHbClmj1siUP422pqYJbg==
+X-Received: by 2002:a05:620a:1526:: with SMTP id n6mr5405097qkk.401.1626199334533;
+        Tue, 13 Jul 2021 11:02:14 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id p22sm3001052qtq.64.2021.07.13.11.02.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 11:00:08 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 18:00:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com
-Subject: Re: [RFC PATCH v2 03/69] KVM: X86: move out the definition
- vmcs_hdr/vmcs from kvm to x86
-Message-ID: <YO3UpbYp1WRycupy@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <62b61eb968f867518aedd98a0753b7fd29958efb.1625186503.git.isaku.yamahata@intel.com>
+        Tue, 13 Jul 2021 11:02:14 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 14:02:10 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Gary Guo <gary@garyguo.net>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: Re: [PATCH 01/17] kallsyms: support big kernel symbols (2-byte
+ lengths)
+Message-ID: <YO3VIjpaCSZnNapB@moria.home.lan>
+References: <20210704202756.29107-1-ojeda@kernel.org>
+ <20210704202756.29107-2-ojeda@kernel.org>
+ <YOIicc94zvSjrKfe@casper.infradead.org>
+ <CANiq72=eHs870jbmZz8CUEUuN2NOCaKS9-F6-jAb0QXje2x1Eg@mail.gmail.com>
+ <YOIpM3iFT5roz69i@casper.infradead.org>
+ <20210704232007.0000357e@garyguo.net>
+ <YOI5O6/RpaN1P6mM@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62b61eb968f867518aedd98a0753b7fd29958efb.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <YOI5O6/RpaN1P6mM@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Sun, Jul 04, 2021 at 11:42:03PM +0100, Matthew Wilcox wrote:
+> On Sun, Jul 04, 2021 at 11:20:07PM +0100, Gary Guo wrote:
+> > This is big endian.
 > 
-> This is preparation for TDX support.
+> Fundamentally, it doesn't matter whether it's encoded as top-7 +
+> bottom-8 or bottom-7 + top-8.  It could just as well be:
 > 
-> Because SEAMCALL instruction requires VMX enabled, it needs to initialize
-> struct vmcs and load it before SEAMCALL instruction.[1] [2]  Move out the
-> definition of vmcs into a common x86 header, arch/x86/include/asm/vmx.h, so
-> that seamloader code can share the same definition.
-       ^^^^^^^^^^
-       SEAMLDR?
+>         if (len >= 128) {
+>                 len -= 128;
+>                 len += *data * 256;
+>                 data++;
+>         }
+> 
+> It doesn't matter whether it's compatible with some other encoding.
+> This encoding has one producer and one consumer.  As long as they agree,
+> it's fine.  If you want to make an argument about extensibiity, then
+> I'm going to suggest that wanting a symbol name more than 32kB in size
+> is a sign you've done something else very, very wrong.
+> 
+> At that point, you should probably switch to comparing hashes of the
+> symbol instead of the symbol.  Indeed, I think we're already there at
+> 300 byte symbols; we should probably SipHash the full, unmangled symbol
+> [1].  At 33k symbols in the current kernel, the risk of a collision of
+> a 64-bit value is negligible, and almost every kernel symbol is longer
+> than 7 bytes (thankfully).
 
-I don't have a strong preference on what we call it, but we should be consistent
-in our usage.
+We really should have a better standard varint encoding - open coding varint
+encodings in 2021 is offensive, and LEB128 is retarded due to using the high bit
+of _every_ byte. Here's the encoding I did for bcachefs, which I nominate for a
+standard varint encoding, unless someone knows of a way to do better:
 
-Same comments as the first two patches, without seeing the actual SEAMLDR code
-it's impossible review this patch.  I certainly have no objection to splitting
-up this behemoth, but the series should be self contained (within reason).
+https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/varint.c
