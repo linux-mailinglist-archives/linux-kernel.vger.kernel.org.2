@@ -2,140 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1AF3C6A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2253C6AA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 08:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbhGMGeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 02:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233374AbhGMGef (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:34:35 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8EDC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:31:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1454429pjp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 23:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Br8GUMFwUFegAxc9iJgZv/zXdT69t+A8Nufo1mD356g=;
-        b=wao4cd/9u7fGjc9e560agRWg1B6OIVuJAjPDiC+lxPCIpySqZTqxcr06BmkQybfSzq
-         /Ba9X9CZj6XIk/M0ss/En+B+/fdfvNHTkLLNnYgS3Qxs5NffHPD1zv0iznXcvws6QMwN
-         S+smVHifljhWEjCtAZaMFKoAX229UwDDuGY9oK1VG3L0/Gp3A5bZOYO6MV8anSC0OsoX
-         cCpz763mUTgY77HSUce4aHqMKac0ndLgrMI1BaGmHscBR4PSONgZQAphsPDRNzvl/+Lt
-         MWNgwZr61GMQQJoCOdqSppSfXhApCd3vMz5EpX+PjPpOIuW2UqGbAs4ochiAjJ5G1vZl
-         TIkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Br8GUMFwUFegAxc9iJgZv/zXdT69t+A8Nufo1mD356g=;
-        b=H7Y1+TEH9a45AVYQsU6Kn3xeHncALY/6Rpsx6w6f0ZaHX/5ZshuWwqBj2gw0Mtty+G
-         7Apr44UPhqB5xTIFue1xsuUFBaa3d/nt4L5pJVhtd1rJBi4VvbbnAEt8tBm2cheDp8G5
-         Igi/DZJSZP8bnSRrgT41XKRoxnrX/RUpQfbNG/g/HNExzLNHHj+r//k3xmuF92/ohMSU
-         n8iwld9CACDDGxSpEMWxvRYJIsBvwEOP7vdAHapD6z+gy/ne4jVeCEZhV1th1Jeh6RB6
-         qbVr2RFukjkEb23fCF3Qp9M7dlA6lrEjqjtCWUPEFLftixSkVvufR8QxPFjUX75YchJ+
-         jwWg==
-X-Gm-Message-State: AOAM531i1741ygMTsmx0VnF6049wxzcikz5qPWer7EjR9wAwYt6gQCq0
-        C9gR+bVD+DOsD22oBbzn5+A7RF4Faxb7Y1N9aBVz2w==
-X-Google-Smtp-Source: ABdhPJz32PTvCL1DociLEj1FUp3UFQ1G2/2HInEOm1k/PEel8a/8ZFZgPD7P75Xp2i9SCuakpZAIXjALI1b/rQEnYhc=
-X-Received: by 2002:a17:90a:5204:: with SMTP id v4mr17743612pjh.147.1626157904440;
- Mon, 12 Jul 2021 23:31:44 -0700 (PDT)
+        id S233926AbhGMGeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 02:34:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233374AbhGMGet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 02:34:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA33E60724;
+        Tue, 13 Jul 2021 06:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626157920;
+        bh=iMuvmIE0kAoqY9keTpiEumLIadU2ExRBtXI7HPoxV+A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZyZLJFWMbKUpdZR2ktXGQyRrkH8KUoIj3itFZpEhEsIoQEceXSfEF7LuzuEVjNA4
+         UNtjwYiRjeTRWt1sERJVbSEXF2GMLgojKgW9oISVpZ5YFLKhEhD8wn+1M9lOJBv6Z8
+         CjAWInjMXqODzs9pwemPaALNT/7qMibmMSDDLouE=
+Date:   Tue, 13 Jul 2021 08:31:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Subject: Re: 5.13.2-rc and others have many not for stable
+Message-ID: <YO0zXVX9Bx9QZCTs@kroah.com>
+References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
 MIME-Version: 1.0
-References: <20210710002441.167759-1-mike.kravetz@oracle.com> <20210710002441.167759-2-mike.kravetz@oracle.com>
-In-Reply-To: <20210710002441.167759-2-mike.kravetz@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 13 Jul 2021 14:31:08 +0800
-Message-ID: <CAMZfGtU0LzeVE-mXY7-mEAWZcu-q7K_Lp+HL4+VuDDOnxFkkNQ@mail.gmail.com>
-Subject: Re: [External] [PATCH 1/3] hugetlb: simplify prep_compound_gigantic_page
- ref count racing code
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 8:25 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> Code in prep_compound_gigantic_page waits for a rcu grace period if it
-> notices a temporarily inflated ref count on a tail page.  This was due
-> to the identified potential race with speculative page cache references
-> which could only last for a rcu grace period.  This is overly complicated
-> as this situation is VERY unlikely to ever happen.  Instead, just quickly
-> return an error.
+On Mon, Jul 12, 2021 at 10:55:01PM -0700, Hugh Dickins wrote:
+> On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+> 
+> > This is the start of the stable review cycle for the 5.13.2 release.
+> > There are 800 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.2-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> > -------------
+> > Pseudo-Shortlog of commits:
+> > 
+> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >     Linux 5.13.2-rc1
+> 
+> Hi Greg,
+> 
+> Sorry to be making waves, but please, what's up with the 5.13.2-rc,
+> 5.12.17-rc, 5.10.50-rc, 5.4.132-rc stable release candidates?
 
-Right. The race is very very small. IMHO, that does not complicate
-the code is the right thing to do.
+They show the problem that we currently have where maintainers wait at
+the end of the -rc cycle and keep valid fixes from being sent to Linus.
+They "bunch up" and come out only in -rc1 and so the first few stable
+releases after -rc1 comes out is huge.  It's been happening for the past
+few years and only getting worse.  These stable releases are proof of
+that, the 5.13.2-rc release was the largest we have ever done and it
+broke one of my scripts because of it :(
 
->
-> Also, only print a warning in prep_compound_gigantic_page instead of
-> multiple callers.
->
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  mm/hugetlb.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 924553aa8f78..e59ebba63da7 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1657,16 +1657,12 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
->                  * cache adding could take a ref on a 'to be' tail page.
->                  * We need to respect any increased ref count, and only set
->                  * the ref count to zero if count is currently 1.  If count
-> -                * is not 1, we call synchronize_rcu in the hope that a rcu
-> -                * grace period will cause ref count to drop and then retry.
-> -                * If count is still inflated on retry we return an error and
-> -                * must discard the pages.
-> +                * is not 1, we return an error and caller must discard the
-> +                * pages.
+I know personally I do this for my subsystems, having fixes that are
+trivial things batch up for -rc1 just because they are generally not
+worth getting into -final.  But that is not the case with many other
+subsystems as you can see by these huge patch sequences.
 
-Shall we add more details about why we discard the pages?
+> Amongst the 2000+ patches posted today, there are a significant number
+> of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
+> yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
+> 
+> Am I out of date?  I thought that had been agreed not to happen:
+> https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
+> is the thread I found when I looked for confirmation, but I believe the
+> same has been agreed before and since too.
+> 
+> Andrew goes to a lot of trouble to establish which Fixes from his tree
+> ought to go to stable.  Of course there will be exceptions which we
+> later decide should go in after all; but it's worrying when there's a
+> wholesale breach like this, and I think most of them should be dropped.
+> 
+> To pick on just one of many examples (sorry Miaohe!), a patch that
+> surprises me, but I've not had time to look into so far, and would
+> not want accelerated into X stable releases, 385/800
+> 
+> > Miaohe Lin <linmiaohe@huawei.com>
+> >     mm/shmem: fix shmem_swapin() race with swapoff
 
-Thanks.
+Sasha, and I, take patches from Linus's tree like the above one that
+have "Fixes:" tags in them as many many maintainers do not remember to
+put "cc: stable" on their patches.
 
->                  */
->                 if (!page_ref_freeze(p, 1)) {
-> -                       pr_info("HugeTLB unexpected inflated ref count on freshly allocated page\n");
-> -                       synchronize_rcu();
-> -                       if (!page_ref_freeze(p, 1))
-> -                               goto out_error;
-> +                       pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
-> +                       goto out_error;
->                 }
->                 set_page_count(p, 0);
->                 set_compound_head(p, page);
-> @@ -1830,7 +1826,6 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
->                                 retry = true;
->                                 goto retry;
->                         }
-> -                       pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
->                         return NULL;
->                 }
->         }
-> @@ -2828,8 +2823,8 @@ static void __init gather_bootmem_prealloc(void)
->                         prep_new_huge_page(h, page, page_to_nid(page));
->                         put_page(page); /* add to the hugepage allocator */
->                 } else {
-> +                       /* VERY unlikely inflated ref count on a tail page */
->                         free_gigantic_page(page, huge_page_order(h));
-> -                       pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
->                 }
->
->                 /*
-> --
-> 2.31.1
->
+The above patch says it fixes a problem in the 5.1 kernel release, so
+Sasha queued it up for 5.10, 5.12, and 5.13.  Odds are he should have
+also sent a "FAILED" notice for 5.4, but we don't always do that for
+patches only with a Fixes tag all the time as we only have so much we
+can do...
+
+So is that tag incorrect?  If not, why was it not cc: stable?  Why is it
+not valid for a stable release?  So far, all automated testing seems to
+show that there are no regressions in these releases with these commits
+in them.  If there was a problem, how would it show up?
+
+And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
+bot, but that is not what caused this commit to be added to a stable
+release.
+
+Trying to keep a "do not apply" list for Fixes: tags only is much harder
+for both of us as we do these semi-manually and review them
+individually.  Trying to remember what subsystem only does Fixes tags
+yet really doesn't mean it is an impossible task.
+
+We are glad to drop any patch added to a -rc release, just let us know.
+We are also glad to revert them later on if a developer/maintainer does
+not catch them in time before a release happens.
+
+thanks,
+
+greg k-h
