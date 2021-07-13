@@ -2,104 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AB43C69C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062A63C69CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhGMFhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 01:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhGMFhw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 01:37:52 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE9CC0613DD;
-        Mon, 12 Jul 2021 22:35:02 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso736583pjc.0;
-        Mon, 12 Jul 2021 22:35:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=656y0SKEsy91nowxlCSTTz6ISrr5oJXdnBWsOy7Nsr8=;
-        b=nlDvi2MGKgJeL5t0xES8danv7/BM6DypzHg0eCGgt5SllNYZRGNBj1nqE65IuPl4rz
-         bJG5UyTZB+xtQWoQsT5Ctge07azgaXGi7weWWAdb5hfnjh1c6B3Q53/dWYLh/VL63VZq
-         V7AOzZvu5sLLizTX8pkG8PR6ouXIOelIQFjc4tjljZP3Jaxbd9ZApVfPpg9dj1Bh3mqU
-         D7shlZix/loS84G/KP10dkyBebNpdug/ReDF0NJZqXTxI2fafBQuaOD0qsAl5Pybc8gR
-         2hcuDsxiEx/4D4zkWgnWJrlW7mVmiQNCDWcMQh4pysgLT2l8Id+CjcEDPVmRq7CmL7sk
-         8wJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=656y0SKEsy91nowxlCSTTz6ISrr5oJXdnBWsOy7Nsr8=;
-        b=ezodV9oTbY2FED72XJup6C9Os+8WgSrJ4qiBVaeUazu1nnShqqXjykpOnkFbjk4pvX
-         QySV3QefgNu7xSuXvH+sJdifY/ZFHi4ErjHx8e7NyW70GBK6Xq6P5Uaz/Iaqxo/B9YrK
-         Qrr7/smi4GTX6o3TmOgDOq8dqpprK1u1/wHmu55fNW6CEUcw4qku7T4AvpIB2GnlkIEJ
-         tp5wFi+moG9/n77QHXVg8Re+9gmYh2981pKCV3o7mVpDJuFcgwT14K4mCDE9yD92qqMZ
-         TMYOQWc/E8JOaE+uEho39TMGEubraQTeeCfzIC3XbWXJ8gtho31bhmeacVsk3MA6/vEG
-         vpBQ==
-X-Gm-Message-State: AOAM531R9DMBZXpeGeUxAC2Wwdy7r/FoF1mMLkUcrUGsyCPTeisFSm3h
-        rfYvokBVnocl3MVn5JuLm30=
-X-Google-Smtp-Source: ABdhPJzXwmnO5r9arR/SE1wfye8TnYN828QMIhq+WED3DbfkhIGM3nIlAbD6A+Ht3YUCcaVPwv44kA==
-X-Received: by 2002:a17:902:b210:b029:11a:bf7b:1a83 with SMTP id t16-20020a170902b210b029011abf7b1a83mr2183268plr.84.1626154500899;
-        Mon, 12 Jul 2021 22:35:00 -0700 (PDT)
-Received: from KSAKATA-T470.us.oracle.com ([161.97.199.233])
-        by smtp.gmail.com with ESMTPSA id q3sm17691295pfj.89.2021.07.12.22.35.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 22:35:00 -0700 (PDT)
-From:   oracleks043021@gmail.com
-To:     beanhuo@micron.com, kenny.gibbons@oracle.com,
-        kimito.sakata@oracle.com, rkamdar@micron.com, chris@printf.net,
-        ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mmc-utils: Fix for Firmware Version string printing
-Date:   Mon, 12 Jul 2021 23:34:58 -0600
-Message-Id: <20210713053458.1441-1-oracleks043021@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S230477AbhGMFnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 01:43:00 -0400
+Received: from verein.lst.de ([213.95.11.211]:57321 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229782AbhGMFnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 01:43:00 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 967F767373; Tue, 13 Jul 2021 07:40:08 +0200 (CEST)
+Date:   Tue, 13 Jul 2021 07:40:08 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stefan Hajnoczi <stefanha@redhat.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
+ get_all_fs_names
+Message-ID: <20210713054008.GA5825@lst.de>
+References: <20210621062657.3641879-1-hch@lst.de> <20210622081217.GA2975@lst.de> <YNGhERcnLuzjn8j9@stefanha-x1.localdomain> <20210629205048.GE5231@redhat.com> <20210630053601.GA29241@lst.de> <20210707210404.GB244500@redhat.com> <20210707210636.GC244500@redhat.com> <20210708125936.GA319010@redhat.com> <20210712182130.GC502004@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712182130.GC502004@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kimito Sakata <kimito.sakata@oracle.com>
+On Mon, Jul 12, 2021 at 02:21:30PM -0400, Vivek Goyal wrote:
+> In case you are finding it hard to spend some time on these patches, I 
+> can take those patches, merge my changes and repost them.
 
-Added a local buffer to create a NULL terminated string to print the
-Firmware Version instead of attempting to print directly from
-ext_csd buffer. The last byte of the Firmware Version field may not
-be NULL and the next field may also not be which may cause it to
-print garbage.
-
-Tested on x86 platform.
----
- mmc_cmds.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/mmc_cmds.c b/mmc_cmds.c
-index afa85b7..205e6e5 100644
---- a/mmc_cmds.c
-+++ b/mmc_cmds.c
-@@ -1392,6 +1392,7 @@ int do_read_extcsd(int nargs, char **argv)
- 	__u32 regl;
- 	int fd, ret;
- 	char *device;
-+	char lbuf[10];
- 	const char *str;
- 
- 	if (nargs != 2) {
-@@ -1833,8 +1834,9 @@ int do_read_extcsd(int nargs, char **argv)
- 	}
- 
- 	if (ext_csd_rev >= 7) {
--		printf("eMMC Firmware Version: %s\n",
--			(char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION]);
-+                memset(lbuf, 0, sizeof(lbuf));
-+		strncpy(lbuf, (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION], 8);
-+		printf("eMMC Firmware Version: %s\n", lbuf);
- 		printf("eMMC Life Time Estimation A [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x%02x\n",
- 			ext_csd[EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]);
- 		printf("eMMC Life Time Estimation B [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x%02x\n",
--- 
-2.31.1
-
+Yes, please do.  Thanks a lot!
