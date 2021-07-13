@@ -2,139 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7BE3C76D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2644A3C76D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhGMTRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:17:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhGMTRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:17:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 048AD61154;
-        Tue, 13 Jul 2021 19:14:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626203658;
-        bh=/A28ytl7Glg4j6xHPrW4hXaLaer9R4bAx56RHj0Avuc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TOBM+UvtFJgSCWP5XB85U8dG/gCQeOfKM3jUIk6eFGWrnL2TK/G8m7EB3dwBw2aXj
-         Cfbrm1Vgl/7xWaJSHtmjCB8gplQLXZWjoxsARyNrm6/ME5cLa/E+F6d7SvGMSDkrYk
-         Qa2uYNbvIRpUy4NlRopD5wSHn5nt8C643Ay5auemkq9xmDiUXaZ6vk9/3CBY/Ll1O9
-         EXT8drjJ/CdivvOo6i7Iv9OR7i3E45OvGVedcJ4vuvkHqvqQJxZc0p1O6WOAlhfG7g
-         o+olDlctw7SIE84KveZT4W7c5AsFWJhXN0QlOfln7BBnep8E9cN7SxwgSyeetsTEjG
-         fsCpvoNGGuuZw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4F38C403F2; Tue, 13 Jul 2021 16:14:15 -0300 (-03)
-Date:   Tue, 13 Jul 2021 16:14:15 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH 00/10] perf: add workqueue library and use it in
- synthetic-events
-Message-ID: <YO3mB0pzaxJ/4c58@kernel.org>
-References: <cover.1626177381.git.rickyman7@gmail.com>
+        id S234540AbhGMTSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234172AbhGMTSX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 15:18:23 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCF2C0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:15:31 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y42so52264387lfa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M18otY56PpJwNrQJZprVka1qTQakvoKBClejDnSkTrE=;
+        b=Rw5P0JTho1kjLZqea6CQ8gUagVJNs4k3emejx1WscQgRmsreZEOQiJc8y++sSNzf0m
+         yUK2cGVT6b3RBD//TAYSElF0ZPAUW145ztuAEdq517sQsSfp0z+NSo1QNXrpyx8J+aXd
+         SWZpFinMKDaD5pO2gHyIUWmKwlMrim3t2qYNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M18otY56PpJwNrQJZprVka1qTQakvoKBClejDnSkTrE=;
+        b=HREEsVJetJiUCbQk2U+VuPJ4yaKmPtP0OQp/cAYBVxaoZrjdPMMBAqBY0UeLAekCMm
+         K3n4fsx/eDhs7hycsXe7YEmrQt3svzofK3KsTmH0GPDK9Q7Hp9/8iv/+/ed+hPuIDv7Q
+         RJD+oB6CPZL1ZbUht4nD/AHjcPL5hgeFeaEBpjCOE7qPRv1F7Mc5l3+svxdp3wEuIQT6
+         KowU2EtKRnOXE5RGleKRJ92p7QAbTG1SRIFGlkVYClsgqe78NDAajtpX1M5Kw5GrUb4R
+         hIaJryYkKKBR9esHHKA7nrIlO7kWp2EzlNPHi1h4dVta8ONnPC5xzcBuodeA55wjdK51
+         H/LQ==
+X-Gm-Message-State: AOAM531/sfE+zpywo16hZ1x4YRGlboajJZtoFqvv3+It3TYNV2mMai0l
+        EfBRD+1qAtUzzbQM1rF8TBLKKXB6xWaj0IA9EoU=
+X-Google-Smtp-Source: ABdhPJwLratuqwwlxGS6YHSNzwAxpbgry2rN7PIs8wb7gsBo2+v8Mwi/jfosNOFHiEQE96hsDzBr4Q==
+X-Received: by 2002:a19:8509:: with SMTP id h9mr4599695lfd.582.1626203729872;
+        Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id w19sm2032220ljw.138.2021.07.13.12.15.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id b26so19864812lfo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr4501282lfc.201.1626203729021;
+ Tue, 13 Jul 2021 12:15:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1626177381.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
+In-Reply-To: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 13 Jul 2021 12:15:13 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
+Message-ID: <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 13, 2021 at 02:11:11PM +0200, Riccardo Mancini escreveu:
-> This patchset introduces a new utility library inside perf/util, which
-> provides a work queue abstraction, which loosely follows the Kernel
-> workqueue API.
-> 
-> The workqueue abstraction is made up by two components:
->  - threadpool: which takes care of managing a pool of threads. It is
->    inspired by the prototype for threaded trace in perf-record from Alexey:
->    https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
->  - workqueue: manages a shared queue and provides the workers implementation.
-> 
-> On top of the workqueue, a simple parallel-for utility is implemented
-> which is then showcased in synthetic-events.c, replacing the previous
-> manual pthread-created threads.
-> 
-> Through some experiments with perf bench, I can see how the new 
-> workqueue has a higher overhead compared to manual creation of threads, 
-> but is able to more effectively partition work among threads, yielding 
-> a better result with more threads.
-> Furthermore, the overhead could be configured by changing the
-> `work_size` (currently 1), aka the number of dirents that are 
-> processed by a thread before grabbing a lock to get the new work item.
-> I experimented with different sizes but, while bigger sizes reduce overhead
-> as expected, they do not scale as well to more threads.
-> 
-> I tried to keep the patchset as simple as possible, deferring possible
-> improvements and features to future work.
-> Naming a few:
->  - in order to achieve a better performance, we could consider using 
->    work-stealing instead of a common queue.
->  - affinities in the thread pool, as in Alexey prototype for
->    perf-record. Doing so would enable reusing the same threadpool for
->    different purposes (evlist open, threaded trace, synthetic threads),
->    avoiding having to spin up threads multiple times.
->  - resizable threadpool, e.g. for lazy spawining of threads.
-> 
-> @Arnaldo
-> Since I wanted the workqueue to provide a similar API to the Kernel's
-> workqueue, I followed the naming style I found there, instead of the
-> usual object__method style that is typically found in perf. 
-> Let me know if you'd like me to follow perf style instead.
+On Tue, Jul 13, 2021 at 3:45 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Linus, sorry for sending this directly through you, instead of going
+> through some other tree, but trying to get this upstream through the
+> linux-fsdevel list / patch-review simply is not working.
 
-You did the right thing, that is how we do with other kernel APIs, we
-use list_add(), rb_first(), bitmap_weight(), hash_del(),  etc.
+Well, the filesystem maintainer sending their patches to me as a pull
+request is actually the norm rather than the exception when it comes
+to filesystems.
 
-- Arnaldo
- 
-> Thanks,
-> Riccardo
-> 
-> Riccardo Mancini (10):
->   perf workqueue: threadpool creation and destruction
->   perf tests: add test for workqueue
->   perf workqueue: add threadpool start and stop functions
->   perf workqueue: add threadpool execute and wait functions
->   perf workqueue: add sparse annotation header
->   perf workqueue: introduce workqueue struct
->   perf workqueue: implement worker thread and management
->   perf workqueue: add queue_work and flush_workqueue functions
->   perf workqueue: add utility to execute a for loop in parallel
->   perf synthetic-events: use workqueue parallel_for
-> 
->  tools/perf/tests/Build                 |   1 +
->  tools/perf/tests/builtin-test.c        |   9 +
->  tools/perf/tests/tests.h               |   3 +
->  tools/perf/tests/workqueue.c           | 453 +++++++++++++++++
->  tools/perf/util/Build                  |   1 +
->  tools/perf/util/synthetic-events.c     | 131 +++--
->  tools/perf/util/workqueue/Build        |   2 +
->  tools/perf/util/workqueue/sparse.h     |  21 +
->  tools/perf/util/workqueue/threadpool.c | 516 ++++++++++++++++++++
->  tools/perf/util/workqueue/threadpool.h |  29 ++
->  tools/perf/util/workqueue/workqueue.c  | 642 +++++++++++++++++++++++++
->  tools/perf/util/workqueue/workqueue.h  |  38 ++
->  12 files changed, 1771 insertions(+), 75 deletions(-)
->  create mode 100644 tools/perf/tests/workqueue.c
->  create mode 100644 tools/perf/util/workqueue/Build
->  create mode 100644 tools/perf/util/workqueue/sparse.h
->  create mode 100644 tools/perf/util/workqueue/threadpool.c
->  create mode 100644 tools/perf/util/workqueue/threadpool.h
->  create mode 100644 tools/perf/util/workqueue/workqueue.c
->  create mode 100644 tools/perf/util/workqueue/workqueue.h
-> 
-> -- 
-> 2.31.1
-> 
+It's a bit different for drivers, but that's because while we have
+multiple filesystems, we have multiple _thousand_ drivers, so on the
+driver side I really don't want individual driver maintainers to all
+send me their individual pull requests - that just wouldn't scale.
 
--- 
+So for individual drivers, we have subsystem maintainers, but for
+individual filesystems we generally don't.
 
-- Arnaldo
+(When something then touches the *common* vfs code, that's a different
+thing - but something like this vboxsf thing this pull request looks
+normal to me).
+
+Even with a maintainer sending me pull requests I do obviously prefer
+to see indications that other people have acked/tested/reviewed the
+patches, but this is fairly small, simple and straightforward, and
+absolutely nothing in this pull request makes me go "oh, that's
+sketchy".
+
+So no need to apologize at all, this all looks very regular.
+
+               Linus
