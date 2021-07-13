@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A7C3C6C5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2778F3C6C6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhGMIub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
+        id S234931AbhGMIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234902AbhGMIu1 (ORCPT
+        with ESMTP id S234900AbhGMIud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:50:27 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F91C0613EE
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:38 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id p36so9200385pfw.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:38 -0700 (PDT)
+        Tue, 13 Jul 2021 04:50:33 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA9EC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:42 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso1478470pjx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 01:47:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tdSO+YXsywfBhdOnOREu62bNqEWlUHvrtNpQOS7MuZo=;
-        b=hiimUl4DgO1Of4XGPXpdICPYnPm7+QvGfh85ne+O9YqLV4HwNaz1/3GVCexKIIR9bK
-         79qC2iFIA2pLQ1nFnXPut8k1vrxiwBlzw8SE6x4BYAMbkEs5Gxh0ltQDnZC1DuhOWaXy
-         Y2aq3utptKdeOlIEcc73zmkwyC0gwKsapg8k19yhxOLFoyCxe7DHgO2gP5VdDTqtHx6A
-         mJhAVdE2NVFsWzib8FCLBIYmov6tjYXcaVAbydRQY1/65AASv7O0PG98TXYj+Gu12TPn
-         VjG1m9HmS0VsQdytCx6vQRcAJNoY4lM6llfjwo4MI5ukWs2uwYJovIc1U/KU7Zz4NCOC
-         WkTg==
+        bh=FdoZ+4EM7JCQgZ86bDT9RbGlh7q+AWgllGjoIYPWL9Q=;
+        b=gA1/QgaUqMMGrBGGpEVYK8fMzHiF70tOx013tB9CxkOMsIAz6K9CyWbLukiYsceeeK
+         WT3omC6T/UV02GbqJntqFcUEJy/CsH+2v38lltH8hTUVi5bDMirNFM2m8jsgCd53U/1v
+         Lc/Oygn7Gsw282JeKIqoiMuvIbDZt/am73WeLkzOY2/CkX4nQAuUu3ul4s5GPTxJkyx3
+         dWRyzileES+3pFwFh509M/IKBfUS06G83m9tPJd2yiq3RvUawNvAiQ6SGLm5AoV3JD3Q
+         Yf50mdZiBV6HqGDPHp59XIyHUg9RniZUw56YWfFOmyWOXjXu+QsXkJ6TpitVDuk7cFO9
+         CT5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tdSO+YXsywfBhdOnOREu62bNqEWlUHvrtNpQOS7MuZo=;
-        b=Bf5IHbbyOSFaFHIMYZbhez3LImwXs42Jc8oaZL6mC+F9rD/w/4+easqQgbzzJ0zDGX
-         0QO2vqEeMb/EkZVaJRbLddw4hd3wC40wGwPfPW2NOykqgCtqFFXMprvY1IZHBjvkUF5v
-         f30Vzz1slE2DRl47vpCNSL03LxaYS8qR0J0Ds7R47/RvwzxDEZIUfoBba/QmSHvmfsCQ
-         AKLPoSkAuQpq4d4m/qI2bywAgtLo6JMwrxDdpzrLqPuyQfAd7nL2RlQfVz7tSXMZa/YG
-         GcIpDPLH5uepJ1WrIIZ6L7kItWZxMmbeQZBSrubMxihV1CYBvp7ynE90mOBcOIqKtXs9
-         qYEA==
-X-Gm-Message-State: AOAM532csuxu1ooOTt8dV3YkqZC2B+tZN0VsPDF37DWlbOgze2sUAmPj
-        XuYMScHt46o3S64e+f1W+z+f
-X-Google-Smtp-Source: ABdhPJzmFohN6vUcKF8KLIan4JZVjJ6TYDpkl96NawoSdWhjfLM6wpCarQvAfJbCfQIvaaP5xnDdBw==
-X-Received: by 2002:a05:6a00:2:b029:32e:3ef0:770a with SMTP id h2-20020a056a000002b029032e3ef0770amr810552pfk.8.1626166057836;
-        Tue, 13 Jul 2021 01:47:37 -0700 (PDT)
+        bh=FdoZ+4EM7JCQgZ86bDT9RbGlh7q+AWgllGjoIYPWL9Q=;
+        b=O3uCWhBbl8qs17zbWCTYC9ZYWeKf8ruwBd3l3bnB1HZCCVbl/2jsrEFmTNoi7COE66
+         dcQuJjway5zMr4OHx1EB98nfAdR/CmxXCV8hgFRT50CzywBiik8ok4uDRrVWXwlHTJEV
+         y5VKunnh/kGMKUcqx6HKwPaMP/dRXa/YoI0B9Ell/9iMAyKHc2uh1Xo77mShf/BF6x9p
+         poI9uG9tQLhsFZJS0nBR5gZJM5bd3DcBFvlEayo1pWeH3YIniUXwja8JAPbsraGeC6iT
+         elZ6z3gCmNUwCs1objZ/prJ3iOwgC1jtKlJbIdw2gUmJ1rLxyjl7xgQjeXEH7zQPUXtr
+         I78g==
+X-Gm-Message-State: AOAM531wwycZM8mrpPwzsiZJJsPbUQXmI4772ko4LdAdnGKfUo7XY3H8
+        JJb/ZohlL7sqouZ20C72CqoM
+X-Google-Smtp-Source: ABdhPJy/YXaKCppxOExioeRxTLQv1sj8lcUHDptTXIY/sm3klehqPKR0QkOZNRfSckm4SM+jax8f+w==
+X-Received: by 2002:a17:90b:1b4d:: with SMTP id nv13mr1935868pjb.216.1626166061630;
+        Tue, 13 Jul 2021 01:47:41 -0700 (PDT)
 Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id u7sm21390626pgl.30.2021.07.13.01.47.36
+        by smtp.gmail.com with ESMTPSA id w2sm15858457pjq.5.2021.07.13.01.47.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 01:47:37 -0700 (PDT)
+        Tue, 13 Jul 2021 01:47:41 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
         sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
@@ -61,9 +61,9 @@ Cc:     songmuchun@bytedance.com,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 04/17] vdpa: Fail the vdpa_reset() if fail to set device status to zero
-Date:   Tue, 13 Jul 2021 16:46:43 +0800
-Message-Id: <20210713084656.232-5-xieyongji@bytedance.com>
+Subject: [PATCH v9 05/17] vhost-vdpa: Fail the vhost_vdpa_set_status() on reset failure
+Date:   Tue, 13 Jul 2021 16:46:44 +0800
+Message-Id: <20210713084656.232-6-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210713084656.232-1-xieyongji@bytedance.com>
 References: <20210713084656.232-1-xieyongji@bytedance.com>
@@ -74,51 +74,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Re-read the device status to ensure it's set to zero during
-resetting. Otherwise, fail the vdpa_reset() after timeout.
+resetting. Otherwise, fail the vhost_vdpa_set_status() after timeout.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 ---
- include/linux/vdpa.h | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/vhost/vdpa.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index f822490db584..198c30e84b5d 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -6,6 +6,7 @@
- #include <linux/device.h>
- #include <linux/interrupt.h>
- #include <linux/vhost_iotlb.h>
-+#include <linux/delay.h>
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index bb374a801bda..62b6d911c57d 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -157,7 +157,7 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+ 	struct vdpa_device *vdpa = v->vdpa;
+ 	const struct vdpa_config_ops *ops = vdpa->config;
+ 	u8 status, status_old;
+-	int nvqs = v->nvqs;
++	int timeout = 0, nvqs = v->nvqs;
+ 	u16 i;
  
- /**
-  * struct vdpa_calllback - vDPA callback definition.
-@@ -340,12 +341,24 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
- 	return vdev->dma_dev;
- }
+ 	if (copy_from_user(&status, statusp, sizeof(status)))
+@@ -173,6 +173,15 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+ 		return -EINVAL;
  
--static inline void vdpa_reset(struct vdpa_device *vdev)
-+#define VDPA_RESET_TIMEOUT_MS 1000
+ 	ops->set_status(vdpa, status);
++	if (status == 0) {
++		while (ops->get_status(vdpa)) {
++			timeout += 20;
++			if (timeout > VDPA_RESET_TIMEOUT_MS)
++				return -EIO;
 +
-+static inline int vdpa_reset(struct vdpa_device *vdev)
- {
- 	const struct vdpa_config_ops *ops = vdev->config;
-+	int timeout = 0;
- 
- 	vdev->features_valid = false;
- 	ops->set_status(vdev, 0);
-+	while (ops->get_status(vdev)) {
-+		timeout += 20;
-+		if (timeout > VDPA_RESET_TIMEOUT_MS)
-+			return -EIO;
-+
-+		msleep(20);
++			msleep(20);
++		}
 +	}
-+
-+	return 0;
- }
  
- static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+ 	if ((status & VIRTIO_CONFIG_S_DRIVER_OK) && !(status_old & VIRTIO_CONFIG_S_DRIVER_OK))
+ 		for (i = 0; i < nvqs; i++)
 -- 
 2.11.0
 
