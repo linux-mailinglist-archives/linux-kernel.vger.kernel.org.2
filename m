@@ -2,72 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC3E3C6C29
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374693C6C2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhGMIrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:47:42 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:34464 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbhGMIrl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:47:41 -0400
-Received: by mail-vs1-f48.google.com with SMTP id a22so5282930vso.1;
-        Tue, 13 Jul 2021 01:44:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GFKmfYD/nq2s2kUBoq5cQahfH3Ptn/14mS4Xud4XnlA=;
-        b=E2Z9cMkT0ZBcYEqZ1aqdgaDVn/N9xQM70AZSAwYHuMJrNOCAq4EWplLXBHClD3tWUi
-         MPWFFhdzh5/nbhKctYeKeMQ5KNnNiDzVKEFpSk0K3+tBYQHDpnMtyev2P6tzHsyic7Wz
-         mIHUBbiF+i0Zr8mSuzTgAexQTkEafOMCPK79WkgM6z5HKRn1MQkFE6JD0WenUROBNwtP
-         /dAEB2ky7MSogLg0pBopaZXfjoSUdtiNPhI1yNWtq5QKiZyVDz98CmfozfqAzbHHppzM
-         QwzqSMZgp5yCoLiP1757RGV4ej4TYdWxBmgq3hGmPcSp3gySK3F/cb5yn2o8AAh4XBie
-         AQUw==
-X-Gm-Message-State: AOAM53309x5R9h3ibYTA3vQdcXPMBbPUwMTo3FwdI17ONo6lCwEf+/l4
-        E84vJhenMf80uQK0vFS90ZEz5I1uGyeE9k9h7uD2xomuQlQ=
-X-Google-Smtp-Source: ABdhPJxuJlLmnUFrkqbkH9MmViiRSbNsyOwmQvUy5mJcA92QylebJ1xOiKwMyT1lHxWBlo8k/D+HtkGz09X12iyPlT8=
-X-Received: by 2002:a67:8702:: with SMTP id j2mr4853830vsd.3.1626165891880;
- Tue, 13 Jul 2021 01:44:51 -0700 (PDT)
+        id S234752AbhGMIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:48:27 -0400
+Received: from mga12.intel.com ([192.55.52.136]:4569 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234121AbhGMIsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:48:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="189809123"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="189809123"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 01:45:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="426893556"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 13 Jul 2021 01:45:23 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id E7695FF; Tue, 13 Jul 2021 11:45:50 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
+        Andrew Morton <akpm@linux-foundation.org>, jic23@kernel.org,
+        linux@rasmusvillemoes.dk
+Subject: [PATCH v1 1/3] kernel.h: Don't pollute header with single user macros
+Date:   Tue, 13 Jul 2021 11:45:39 +0300
+Message-Id: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210713180305.5ba41f10@canb.auug.org.au>
-In-Reply-To: <20210713180305.5ba41f10@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Jul 2021 10:44:40 +0200
-Message-ID: <CAMuHMdUb_VvjGZUsnKuGpSwQfJMa0pqQ-tN5HCwi_-Am7angJw@mail.gmail.com>
-Subject: Re: linux-next: Tree for Jul 13
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+The COUNT_ARGS() and CONCATENATE() macros are used by a single user.
+Let move them to it.
 
-On Tue, Jul 13, 2021 at 10:03 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> You can see which trees have been included by looking in the Next/Trees
-> file in the source.  There are also quilt-import.log and merge.log
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/kernel.h    | 7 -------
+ include/trace/bpf_probe.h | 7 +++++++
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-I've just noticed you don't have
-
-    renesas-fixes git
-git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git#fixes
-
-included yet. Can you please add it?
-This branch contains fixes intended for the current release.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 1b2f0a7e00d6..743d3c9a3227 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -476,13 +476,6 @@ ftrace_vprintk(const char *fmt, va_list ap)
+ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
+ #endif /* CONFIG_TRACING */
+ 
+-/* This counts to 12. Any more, it will return 13th argument. */
+-#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
+-#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+-
+-#define __CONCAT(a, b) a ## b
+-#define CONCATENATE(a, b) __CONCAT(a, b)
+-
+ /**
+  * container_of - cast a member of a structure out to the containing structure
+  * @ptr:	the pointer to the member.
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index a23be89119aa..6f57c96f7dc3 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -27,6 +27,13 @@
+ #undef __perf_task
+ #define __perf_task(t)	(t)
+ 
++/* This counts to 12. Any more, it will return 13th argument. */
++#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
++#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
++
++#define __CONCAT(a, b) a ## b
++#define CONCATENATE(a, b) __CONCAT(a, b)
++
+ /* cast any integer, pointer, or small struct to u64 */
+ #define UINTTYPE(size) \
+ 	__typeof__(__builtin_choose_expr(size == 1,  (u8)1, \
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
