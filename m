@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2E63C756E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A943C7572
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhGMRCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:02:47 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:60606 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhGMRCq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:02:46 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id C7CC792009C; Tue, 13 Jul 2021 18:59:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id BFC4D92009B;
-        Tue, 13 Jul 2021 18:59:54 +0200 (CEST)
-Date:   Tue, 13 Jul 2021 18:59:54 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: fddi: fix UAF in fza_probe
-In-Reply-To: <20210713105853.8979-1-paskripkin@gmail.com>
-Message-ID: <alpine.DEB.2.21.2107131853530.9461@angie.orcam.me.uk>
-References: <20210713105853.8979-1-paskripkin@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S232455AbhGMRCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:02:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229604AbhGMRCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:02:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C332161279;
+        Tue, 13 Jul 2021 17:00:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626195603;
+        bh=7qTlaialpc3o6/uKYhiOxUmmY9YiuNQpL0hx8sWkp4Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QHF91szFngKequpv/wK720OMgleZ7Q1M5Iqxd7NBNUZ2b+Pj4qg/XZ5e0c55jiNEq
+         2szr9NiXqUb4G6ff51z+5mJkiX/bix+6UiGMdYt1cOELmgYZCHqVNm2leayUh1sED6
+         WCjIoIG6KiwheZTaaB8d6HnTPLfBo8d9VrCsK6JOuWW7anYbDLJYKMkQs6uojJNYoF
+         LGFtU699Ol46wpP83X0ChZK70eswBThWmKK3Da+b9ObY/FToqsqa1VUC6545dQ/V5s
+         h0EyA3L6CLnjizDWqmWEn10tm6AAyGnygIgIYMzqGFTWQyH/KUPiRRYmYrK1wsOTCg
+         +JxoPt6N7tS4Q==
+Date:   Tue, 13 Jul 2021 17:59:58 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Chen Huang <chenhuang5@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] arm64: Avoid premature usercopy failure
+Message-ID: <20210713165957.GA30304@willie-the-truck>
+References: <dc03d5c675731a1f24a62417dba5429ad744234e.1626098433.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc03d5c675731a1f24a62417dba5429ad744234e.1626098433.git.robin.murphy@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021, Pavel Skripkin wrote:
+On Mon, Jul 12, 2021 at 03:27:46PM +0100, Robin Murphy wrote:
+> Al reminds us that the usercopy API must only return complete failure
+> if absolutely nothing could be copied. Currently, if userspace does
+> something silly like giving us an unaligned pointer to Device memory,
+> or a size which overruns MTE tag bounds, we may fail to honour that
+> requirement when faulting on a multi-byte access even though a smaller
+> access could have succeeded.
+> 
+> Add a mitigation to the fixup routines to fall back to a single-byte
+> copy if we faulted on a larger access before anything has been written
+> to the destination, to guarantee making *some* forward progress. We
+> needn't be too concerned about the overall performance since this should
+> only occur when callers are doing something a bit dodgy in the first
+> place. Particularly broken userspace might still be able to trick
+> generic_perform_write() into an infinite loop by targeting write() at
+> an mmap() of some read-only device register where the fault-in load
+> succeeds but any store synchronously aborts such that copy_to_user() is
+> genuinely unable to make progress, but, well, don't do that...
+> 
+> CC: stable@vger.kernel.org
+> Reported-by: Chen Huang <chenhuang5@huawei.com>
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+> 
+> I've started trying the "replay" approach for figuring out more precise
+> remainders in general, but that quickly got more complicated with
+> rebasing the fault address passing stuff, so I'm resending this now as
+> a point fix and will continue to explore that as an improvement on top.
 
-> fp is netdev private data and it cannot be
-> used after free_netdev() call. Using fp after free_netdev()
-> can cause UAF bug. Fix it by moving free_netdev() after error message.
+Is it possible to add/extend a selftest for this, please? I think Catalin
+mentioned that before, but not sure if he got anywhere with it.
 
- Can you justify the lines for a better layout?  The paragraph looks odd 
-to me in its current form.
-
-> Fixes: 61414f5ec983 ("FDDI: defza: Add support for DEC FDDIcontroller 700
-> TURBOchannel adapter")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-
- Otherwise LGTM.  And a good catch, thank you!
-
-Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
-
-  Maciej
+Will
