@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331AD3C711C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701203C7122
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 15:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236512AbhGMNVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 09:21:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236283AbhGMNVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 09:21:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7E55610CB;
-        Tue, 13 Jul 2021 13:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626182292;
-        bh=mFHtavYuxH/fzZeLZE9LpQ1vHGSC7cR2ChXAS4fuTdY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FGAUcSTsoovKJpqn+ri4tnppV6LUKAzI2SIBBAQxCPJZGWpCnr2c9lLcrr1WQSdeD
-         Vk+xRvf2oiQ2tEenuGCh72Kk49V/6SEbw1Fd5qC6OMHkURw9TVOhG4Phl2JmhhDVjE
-         JjJzR0o2E/hb3duKTEGTf7KohoofaYBWrN66Emi1Vx3ZQLb7p4Iy4ZBO6Ydv/a2zUS
-         8DkC5aBHa4LoyiNP3MdBCKkP9YxJTbhale7JPxNjilZkz1qmpkG8yo6ndKio7Gs9Th
-         zfCB/AYn962204rsgH6uxJMshfsqYz5hjPJyUS81a/hswneBolkLA2d6oJCvLablVq
-         ix60g8+kJ9RvQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B7C2D5C0367; Tue, 13 Jul 2021 06:18:12 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 06:18:12 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     zhouzhouyi@gmail.com, Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-Message-ID: <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
- <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
- <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+        id S236498AbhGMNWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 09:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236283AbhGMNWs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 09:22:48 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB06DC0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:19:57 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 37so21616471pgq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 06:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=sYaLI5hREs6S0GCn5kt31M6b+bWhHLGZQ73MTTA23MY=;
+        b=E60K6rOVubJWxCl5FlN6nDmOD5MG0l6g8MRW71VqK/ZgOuHK4IIFJUJs2rkCsCqq5X
+         JTXOWjW9k0MiBAVxgm3NhAXgVJGVqELXGp+RLSOkUORU3bwV7d3UV4YyvjLYYUTfQtKX
+         wR6a2Ksg+z+gj5loBep8jhT2BEjD7HR82E//8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=sYaLI5hREs6S0GCn5kt31M6b+bWhHLGZQ73MTTA23MY=;
+        b=AcNaN2lu/1JZosdAF+au1i4R/DTKhzkCVDg+H4Nomn0+hm3y5o89VfJnU3mn4uEOSi
+         kELt4KEAgkY3YoRHvVp6U6MpbChYniimuLH5ZwD0/sThCIgP2Us5gx3SKdSGtAQehZJM
+         JEAi4mPQGUdDZeVNk0M+iWrLdsM92JZqK40jJ6KlevEWhyQVpw3jSY72eiUmd46Mo08G
+         7ffxcW83NWBbYIv0LOK1KW8iRq1PBINUgOYnQsBENksQCP0Zfz7h3DkhoDXZppw3tgnI
+         FMwKj5Tl10A/HZWahwhsi27Y50nvZ8SuqrLxmsebc6PkmANT50A/yiU6xfBmcNSaZubf
+         rv4w==
+X-Gm-Message-State: AOAM532r0tsJre5s3gvdSHn/WQA5MzJhX673VaSJNMEyrX4Kh2umrpJs
+        hWaxghDwVvH4ED/1rgumceORjQ==
+X-Google-Smtp-Source: ABdhPJz/Hrby3BnB86LdkmOz8m+7CJUogDKjNLjMHs2y7/3yHj8hq2Nfoie3OSv1kUQRR8RBUGrQ9Q==
+X-Received: by 2002:aa7:82cb:0:b029:2e6:f397:d248 with SMTP id f11-20020aa782cb0000b02902e6f397d248mr4759999pfn.52.1626182397180;
+        Tue, 13 Jul 2021 06:19:57 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:e304:7803:b108:f108])
+        by smtp.gmail.com with ESMTPSA id d129sm19492414pfd.218.2021.07.13.06.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 06:19:56 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 22:19:52 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        John Johansen <john.johansen@canonical.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: apparmor: global buffers spin lock may get contended
+Message-ID: <YO2S+C7Cw7AS7bsg@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
-> ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
-> 
-> > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
-> >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> >> 
-> >> Hi Paul,
-> >> 
-> >> During my studying of RCU, I did a grep in the kernel source tree.
-> >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-> >> should be CONFIG_TASKS_TRACE_RCU instead.
-> >> 
-> >> Without memory fencing, the idle/userspace task inspection may not
-> >> be so accurate.
-> >> 
-> >> Thanks for your constant encouragement for my studying.
-> >> 
-> >> Best Wishes
-> >> Zhouyi
-> >> 
-> >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > 
-> > Good eyes, and those could cause real bugs, so thank you!
-> 
-> Hi Paul,
-> 
-> This makes me wonder: what is missing testing-wise in rcutorture to
-> catch those issues with testing before they reach mainline ?
+Hi,
 
-My guess:  Running on weakly ordered architectures.  ;-)
+We've notices that apparmor has switched from using per-CPU buffer pool
+and per-CPU spin_lock to a global spin_lock in df323337e507a0009d3db1ea.
 
-							Thanx, Paul
+This seems to be causing some contention on our build machines (with
+quite a bit of cores). Because that global spin lock is a part of the
+stat() sys call (and perhaps some other)
+
+E.g.
+
+-    9.29%     0.00%  clang++          [kernel.vmlinux]                        
+   - 9.28% entry_SYSCALL_64_after_hwframe                                      
+      - 8.98% do_syscall_64                                                    
+         - 7.43% __do_sys_newlstat                                            
+            - 7.43% vfs_statx                                                  
+               - 7.18% security_inode_getattr                                  
+                  - 7.15% apparmor_inode_getattr                              
+                     - aa_path_perm                                            
+                        - 3.53% aa_get_buffer                                  
+                           - 3.47% _raw_spin_lock                              
+                                3.44% native_queued_spin_lock_slowpath        
+                        - 3.49% aa_put_buffer.part.0                          
+                           - 3.45% _raw_spin_lock                              
+                                3.43% native_queued_spin_lock_slowpath   
+
+Can we fix this contention?
