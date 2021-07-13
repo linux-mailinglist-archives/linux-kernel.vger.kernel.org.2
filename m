@@ -2,213 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52483C71F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531B43C71FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 16:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbhGMOT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 10:19:56 -0400
-Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:33623
-        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236763AbhGMOTy (ORCPT
+        id S236771AbhGMOXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 10:23:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236721AbhGMOXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 10:19:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1626185824; bh=qSmib3x1dLQWlJoX90dq7cHQ8qcLZnxM2n0EuG5rzmQ=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=FFkKSsZe+cCb42thO5qAALp49q8v9dvIE2/84zyvZfFFJwACSvuAXaUPj9m04/zYOGIvAQw1XIwYBLfXWvFXy8az7vOcRZIRlBChNHNo3qXIC+aqiodRmnuVVFEBS7ovTHo5YjQ1HRbTnVBb6Ggt2M794VoVghWDY89yawjeVCsx6kdRYJyx5GSnBS7KMpRS3jjfty43ViA7ktcK6wEqoh3uzeT0rcvFa1S82HbGWRvsYRbTGrk3Oyz2YMKA0Ahu19Qf2CFSJck5jmQk7Pk8NxdhE7C1RHKBbG1SnonKj2L3e/zZQMgchDcJFSNj9t4pRAPrQUEhO/hR9w+ilJCiDw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1626185824; bh=njsM7fyZvHI/wufBwUx68ggkYEHtVKhjhgmk3RZq/6Z=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=GU5DRt0hsEC35OVpgiX4Whkuiv3ajd+goxAdRBP3QotsyjdJFREuDc88C6D9WhMRI+l1OCqWRkN8Vxa1Xdr26g2UK+Kl33is7G8XWN8mTHsAqII6ZxryeCn2j+KL7dePYDxFaPCGASYvMajv3/2blj8s9oLYqLlByduGTl8zhIX/14NdGXHRSZVBuoqHh1VmTzN7Vpm5gPjZWNcvWZlp3g0x7du8IeNLPiNQzUPms6Ul6wPc6fg7XE2yayABIrruHTV8ry9WHbB78dZtxXyDp/n/lYhzlTknQh5mXc0ASDz8sxvxHMEwjhfmgJzcle6KVbSDPsas1YUodLO0U7VWhQ==
-X-YMail-OSG: _n1TojEVM1kx7ATuYgAhAOg0abWpCSz3d642VeFtNqjCfxyMXmRdmHFKH3KWY1Z
- eqhiOi9NXj7KbQ5.gryekrO__6waX3o0Ft5CvPUkTUQhvGaPmJ3.dhMWimwguEsXKDUCoERmDr8q
- PaXnpaBNt0G1TmDQwzhDQ8mWi1fh.fTxr_I6OconM5t9_oFSJgKGFT65hYh6u7WpFFGd4ZSpUIo2
- uUIx86gGRJ4T2F4F3pYib2BbwEDez8cS1nGb9_OtWtihgwfk9Oa.psArJ8lJVo3lHmzwNGKWrsSx
- wESWARPcp0iKQc2f66jug.rlstLsIWS_t8jSpxCb.0gFfPYQotMgzD0YJzF3M7NzYbmsA.8.1Lbg
- naVKXunVEgOXSHZvdidLVonzyBtHaRQmrOcUr4sidYvieCiDYDBCip1llqALf2xaiHpEIrWumoDL
- 703Me1epcZ53TfuEc4lKEE8JEues9XKciCA681QrhMySaRPweXkefkf.DIdTrHL9_7jup06UGwFu
- 8o2B1o0JzoW0oJ60myYbj6Xh_Hy4hvh4Q8hPb9av41MRbR3s7T36RJeDmauh5OkQBb1c2L7SuuGI
- C8aRYFWDOOPmvOAxHIyS8z9DxaSu_gxqt6Vmk0pxhmi4FBp28sQ65LFcXK.J9Zl3r7s1DeReYwVF
- CgWQKDIvdu0kwQMinD0Mfn4t77onF9m3ztK7as_BaaSt9mJXUSYbvij0qGf8I.Do1m3rYUSySrf_
- sLJoiP0dX3x0rHlM5mIsvucMGDYyoPhy_N09aXUSS2walB1Jg5AKTS7zmC_yutWte5BQVrc_cbh5
- JN.RBPhT66PjtHEbGdfMplLlmupR.ZwYuUWx4A_8If3ppRkPw0XTDVau9lTKcaaHppLEUvWoZ49P
- pkXZVfLylYN0tJLJ.3_gYo15NyKfb.fugqrmqWo7aBkjIbC33HFJR7vRKHxqv3mOqKSKBWoxE3da
- BDt4RAomOy.bvzvBJRkDrUtor_Obya0jQ7rSDhGDSPnwOVid3YsI3aN5PThizpIu4o84RJZqwb5v
- yMEsnGaDcDp07Xqw7OM8Ou_3F8zXQXiV9rIABjooRgUqpGm0j.yWW31IqTHTOumzOI4DXtw00KBU
- EVY.vaIIuC44lqdUi.r2MuY1uoPggVu9kGhYLK68_1qxZtR334.lb4z9FG1ns6vezMMKseX_dkqv
- 83yKdIlins3CMaWQ.I1BhHcXf5cT19B3T.d9kk1t9j8eN0YgShZnbrjdF0KHWga2ijfG1TD3ni.7
- 5tEvRu_lnFqZYgpCQN7so9iwjmKXq6M3fWcAUFw0HfS3L.Qq0yK9aEr981itMAyJT1ZH9e4sVt22
- mP1vYVlOjNFHQO88g.9GEc4KNcqeCrvYnY9okjjalsG4c0jatCSKy2Dz7p9y96reKX5_BAsI6x9X
- lvsIKcd.IDVhWVLMXegneBpQ5Ms1oTQFtXTKbhO_yCbWQ0z2NTQLBB2fT9aqUHH1JUpX0Z_ppYNj
- zg4Qz3bOsKtYhabc_A6U2U71DnXwhPSccRIANq9QQjtOj2AencPwrG_8UiaI34pX6J2iznrQocQM
- tvKa4g8SEBxrZXxtj3HzZsdjVwQSli7W6mFWd3UzZ1TFcb8dhUJLpPy.DX2y_DP2OXNPmsAzkA7N
- pDDmk4N.9IjlY9ER6.tTs8PytvT9sbuL85TEtuLrd85iAWa6BrMYkYtbSdrZRlKN7dwhJ5JRvFLs
- w8ltbEq998DfW4skJrcrpSIHPk9wIB.goIh8W.bIhSmcLEHTFO17NmX_jFEiF3g8O.Tx3wEISwRg
- gdgV05Ua3ILDNod2XKQoCzFwcpyvsgvjpJBlDWqoEUjHxpti8O.QKPQ8bEmC_g2P1BA28Jdrbmkm
- Vp3cRPc1H8PBxyXtKx026ovFBAktICkpp.c8r9GKLfHlt6mFY5axN_jzegyXteS_Uy24_7pnM1uX
- tIc8vksbyHpl22z1pg0dpZ7i4z37jwYhCvXulwmqP1GCIJa1Hc3B1vdWSKZ_MjGuC2dmxOl4_K3u
- dy8mI3vwKt4bY7ElJOFrK_MXu2h0LBFfohv2.z6zlGwW9KVnXHcDy1WK5sdl9ChcNWSZ0A86CoRj
- iwQk0UH_ze.jxvt29FGdglhQkxRK9M2IV9.UUjx6MLyGrn4nAE1nwmtS5JPYXWpPEvfLY8w_covX
- eA8iGOtiR1VHQzAgmBYQWnDGQaTMMIBIwKc2ZKzmOXg2B2.62DYo7KUVwZGrKSvBW3SntU3moJuX
- 15nRkDERyYybhZpMGvKrosY4jtf0hMSl0xRW7ItjburpfUppQNvxO3icLYDYHB61od4bC5TqJCdq
- 5HEtyo0nxQR4RGCfnpeirTNLt.HTnPKjU9Etb1imDnEOY.bIfD6q9Z7hFxa3z5zR.nS6QUTHGaTt
- mEeQfwAmZhEefcBJFOh214UEfwllnyJ9PG3RPiMjEpxOOqy9Ex4BN7Tpj5OHyU3Nm5tYZiQ9l6Zf
- FzuYq8DGx1qv5cleudISWsV5PXeM0NjdcT7VdBkwcP4ReiYP2YFzVf0l5umUvtGP4ZB2mCRURguk
- bSCFsvon8yaKjOg4Da5aJGNq57gDHtNxcBWlCL1x9yW99mn7_838b8eoa3lYyq9Y89BB2n99ct_h
- guqEI8JGMg5O7ptwSiGlc4CWy.xHkcqh2J.hKBjXvay4H4drlb7.tssuZcu_jYglxkLjBUSHM4.H
- 6IL_jKSpgxivg7kkHh68yDFTQUt0Sd2yA.QnBjLWIgfMELx8LPbtEhsiALn7RY8SH50wfPrBeHdq
- E8VmDi0n5xWyStb1fohV3PF0R0WCxlVKpOn8EtGjRdix_PswCdWyRxfIWbiPbVAx2Mxbdt7Jr9bc
- 8G6.e30vMdhNKAgG1mnMjBGhBxBiLRdf5vBOmi6T08vf9JCCpP_Yp90yyTFEtVrmr4pfAapg74z8
- vTASiPepVAjkx_UTVmPvr0okfWVIIq9SuWLow2.yfasxSUAe6qzBRHo2LyCwNjSu7sdyBRF0RITd
- 0iuUFLG6CU3uS4VNhvHM52K_6FfImUeOL9wXnXlWOQ1LJkV0tdrpfLwUsr_qkVsYQYRUUtdy8tod
- GSRaYwnwhm6k3mMf4ErPuQbHIxs6qD39peutiWYneq.nW9N3l0bbOW7JgRMapXVGqxjptdKlCYzg
- A5Ry4aIZsBvoxm7B2gR8dTlbO4wJhIi7hcV1Txm2De12.xmS3cTfegWgfI1FPXLqKSz1lMWoIx7a
- _vJ1ZcvK.DmxfYOTy.tYyHFf7vss4ltjNEelMqjZxEpo4eOC48leuT8BYrHc731tsesb23TnXYXp
- GqLaBDXHFsEreiyCaSrOeO.MpNYZSYYDBatXhX8d4uw8CUepIg24Z4PeaL1zlxuIx7HwfXAUJzGF
- zBP8tw1sk0KBKaCCanycF.WMgnlhhrfGeWVdgTzBUJ6cainXFvlIZvPj70Tc5XtnKOEnnSomeEd2
- OQRAwMelaDItXGN0qms0gSiZ1G3ZmRo4M8VKQx3KJ4cir9dEtxinbO_jd3RBPNTY9O8MfbiNEdxe
- SlHbjoXIzHSWbBlgn3e72tzMcEuTvodLxJTSPZCBye2V5wrMq2bevYWfe3gH7_vZT8UaAr8l1BAb
- KqoQQoZN1Kv20jFdvjjHmwkeJaN3MNSPrIxV9OSq0XGxTPkuSdMRZ5URslhfwyVbew.yVDKcR8w-
- -
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 13 Jul 2021 14:17:04 +0000
-Received: by kubenode524.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 28950ba845a757077a448cf8bdb00262;
-          Tue, 13 Jul 2021 14:17:01 +0000 (UTC)
-Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
- files
-To:     Vivek Goyal <vgoyal@redhat.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Bruce Fields <bfields@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
-        dgilbert@redhat.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
-        jack@suse.cz, Christoph Hellwig <hch@infradead.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20210708175738.360757-1-vgoyal@redhat.com>
- <20210708175738.360757-2-vgoyal@redhat.com>
- <20210709091915.2bd4snyfjndexw2b@wittgenstein>
- <20210709152737.GA398382@redhat.com>
- <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
- <20210709175947.GB398382@redhat.com>
- <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
- <20210712140247.GA486376@redhat.com> <20210712154106.GB18679@fieldses.org>
- <20210712174759.GA502004@redhat.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <3d55ff30-c6cf-46c4-0e32-3b578099343d@schaufler-ca.com>
-Date:   Tue, 13 Jul 2021 07:17:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 13 Jul 2021 10:23:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626186033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pNQ2lCTRvbObMNcD7lph5qANAohw41EceuXt8GmciDk=;
+        b=aVHChIbbBBOTq8Tbyyln67CzUGaT+A47qIaFYrI9yz0MF76wj6KaFxdoJgSeJVimFB+15b
+        y5dzHrLyZeGpTB1Q2SK17/5JBTvc3eK2m6azFAyc93H1beW7ccIyAhg58VwW/l4cP1fxRA
+        9GCrHla6XfEs7h6bZGhTObriCCrXe8c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-89-hnGZOYq0Np-W6mlmQ95kRg-1; Tue, 13 Jul 2021 10:20:31 -0400
+X-MC-Unique: hnGZOYq0Np-W6mlmQ95kRg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88F69101F016;
+        Tue, 13 Jul 2021 14:20:29 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C98B25D6AB;
+        Tue, 13 Jul 2021 14:20:24 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/8] My AVIC patch queue
+Date:   Tue, 13 Jul 2021 17:20:15 +0300
+Message-Id: <20210713142023.106183-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210712174759.GA502004@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.18469 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/2021 10:47 AM, Vivek Goyal wrote:
-> On Mon, Jul 12, 2021 at 11:41:06AM -0400, J. Bruce Fields wrote:
->> On Mon, Jul 12, 2021 at 10:02:47AM -0400, Vivek Goyal wrote:
->>> On Fri, Jul 09, 2021 at 04:10:16PM -0400, Bruce Fields wrote:
->>>> On Fri, Jul 9, 2021 at 1:59 PM Vivek Goyal <vgoyal@redhat.com> wrote:
->>>>> nfs seems to have some issues.
->>>> I'm not sure what the expected behavior is for nfs.  All I have for
->>>> now is some generic troubleshooting ideas, sorry:
->>>>
->>>>> - I can set user.foo xattr on symlink and query it back using xattr name.
->>>>>
->>>>>   getfattr -h -n user.foo foo-link.txt
->>>>>
->>>>>   But when I try to dump all xattrs on this file, user.foo is being
->>>>>   filtered out it looks like. Not sure why.
->>>> Logging into the server and seeing what's set there could help confirm
->>>> whether it's the client or server that's at fault.  (Or watching the
->>>> traffic in wireshark; there are GET/SET/LISTXATTR ops that should be
->>>> easy to spot.)
->>>>
->>>>> - I can't set "user.foo" xattr on a device node on nfs and I get
->>>>>   "Permission denied". I am assuming nfs server is returning this.
->>>> Wireshark should tell you whether it's the server or client doing that.
->>>>
->>>> The RFC is https://datatracker.ietf.org/doc/html/rfc8276, and I don't
->>>> see any explicit statement about what the server should do in the case
->>>> of symlinks or device nodes, but I do see "Any regular file or
->>>> directory may have a set of extended attributes", so that was clearly
->>>> the assumption.  Also, NFS4ERR_WRONG_TYPE is listed as a possible
->>>> error return for the xattr ops.  But on a quick skim I don't see any
->>>> explicit checks in the nfsd code, so I *think* it's just relying on
->>>> the vfs for any file type checks.
->>> Hi Bruce,
->>>
->>> Thanks for the response. I am just trying to do set a user.foo xattr on
->>> a device node on nfs.
->>>
->>> setfattr -n "user.foo" -v "bar" /mnt/nfs/test-dev
->>>
->>> and I get -EACCESS.
->>>
->>> I put some printk() statements and EACCESS is being returned from here.
->>>
->>> nfs4_xattr_set_nfs4_user() {
->>>         if (!nfs_access_get_cached(inode, current_cred(), &cache, true)) {
->>>                 if (!(cache.mask & NFS_ACCESS_XAWRITE)) {
->>>                         return -EACCES;
->>>                 }
->>>         }
->>> }
->>>
->>> Value of cache.mask=0xd at the time of error.
->> Looks like 0xd is what the server returns to access on a device node
->> with mode bits rw- for the caller.
->>
->> Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
->> checks" added the ACCESS_X* bits for regular files and directories but
->> not others.
->>
->> But you don't want to determine permission from the mode bits anyway,
->> you want it to depend on the owner,
-> Thinking more about this part. Current implementation of my patch is
-> effectively doing both the checks. It checks that you are owner or
-> have CAP_FOWNER in xattr_permission() and then goes on to call
-> inode_permission(). And that means file mode bits will also play a
-> role. If caller does not have write permission on the file, it will
-> be denied setxattr().
->
-> If I don't call inode_permission(), and just return 0 right away for
-> file owner (for symlinks and special files), then just being owner
-> is enough to write user.* xattr. And then even security modules will
-> not get a chance to block that operation.
+Hi!=0D
+=0D
+This is a series of bugfixes to the AVIC dynamic inhibition, which was=0D
+made while trying to fix bugs as much as possible, in this area and trying=
+=0D
+to make the AVIC+SYNIC conditional enablement work.=0D
+=0D
+* Patches 1-4 address an issue of possible=0D
+  mismatch between the AVIC inhibit state and AVIC enable state on all vCPU=
+s.=0D
+=0D
+  Since AVICs state is changed via a request there is a window during which=
+=0D
+  the states differ which can lead to various warnings and errors.=0D
+=0D
+  There was an earlier attempt to fix this by changing the AVIC enable stat=
+e=0D
+  on the current vCPU immediately when the AVIC inhibit request is created,=
+=0D
+  however while this fixes the common case, it actually hides the issue dee=
+per,=0D
+  because on all other vCPUs but current one, the two states can still=0D
+  mismatch till the KVM_REQ_APICV_UPDATE is processed on each of them.=0D
+=0D
+  My take on this is to fix the places where the mismatch causes the=0D
+  issues instead and then drop the special case of toggling the AVIC right=
+=0D
+  away in kvm_request_apicv_update.=0D
+=0D
+  V2: I rewrote the commit description for the patch that touches=0D
+    avic inhibition in nested case.=0D
+=0D
+* Patches 5-6 in this series fix a race condition which can cause=0D
+  a lost write from a guest to APIC when the APIC write races=0D
+  the AVIC un-inhibition, and add a warning to catch this problem=0D
+  if it re-emerges again.=0D
+=0D
+  V2: I re-implemented this with a mutex in V2.=0D
+=0D
+* Patch 7 is an  fix yet another issue I found in AVIC inhibit code:=0D
+  Currently avic_vcpu_load/avic_vcpu_put are called on userspace entry/exit=
+=0D
+  from KVM (aka kvm_vcpu_get/kvm_vcpu_put), and these functions update the=
+=0D
+  "is running" bit in the AVIC physical ID remap table and update the=0D
+  target vCPU in iommu code.=0D
+=0D
+  However both of these functions don't do anything when AVIC is inhibited=
+=0D
+  thus the "is running" bit will be kept enabled during exit to userspace.=
+=0D
+  This shouldn't be a big issue as the caller=0D
+  doesn't use the AVIC when inhibited but still inconsistent and can trigge=
+r=0D
+  a warning about this in avic_vcpu_load.=0D
+=0D
+  To be on the safe side I think it makes sense to call=0D
+  avic_vcpu_put/avic_vcpu_load when inhibiting/uninhibiting the AVIC.=0D
+  This will ensure that the work these functions do is matched.=0D
+=0D
+* Patch 8 is the patch from Vitaly about allowing AVIC with SYNC=0D
+  as long as the guest doesn=E2=80=99t use the AutoEOI feature. I only slig=
+htly=0D
+  changed it to drop the SRCU lock around call to kvm_request_apicv_update=
+=0D
+  and also expose the AutoEOI cpuid bit regardless of AVIC enablement.=0D
+=0D
+  Despite the fact that this is the last patch in this series, this patch=0D
+  doesn't depend on the other fixes.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (7):=0D
+  KVM: SVM: svm_set_vintr don't warn if AVIC is active but is about to=0D
+    be deactivated=0D
+  KVM: SVM: tweak warning about enabled AVIC on nested entry=0D
+  KVM: SVM: use vmcb01 in svm_refresh_apicv_exec_ctrl=0D
+  KVM: x86: APICv: drop immediate APICv disablement on current vCPU=0D
+  KVM: x86: APICv: fix race in kvm_request_apicv_update on SVM=0D
+  KVM: SVM: add warning for mistmatch between AVIC state and AVIC access=0D
+    page state=0D
+  KVM: SVM: call avic_vcpu_load/avic_vcpu_put when enabling/disabling=0D
+    AVIC=0D
+=0D
+Vitaly Kuznetsov (1):=0D
+  KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in=0D
+    use=0D
+=0D
+ arch/x86/include/asm/kvm_host.h |  3 ++=0D
+ arch/x86/kvm/hyperv.c           | 34 ++++++++++++++++----=0D
+ arch/x86/kvm/svm/avic.c         | 45 ++++++++++++++------------=0D
+ arch/x86/kvm/svm/nested.c       |  2 +-=0D
+ arch/x86/kvm/svm/svm.c          | 18 ++++++++---=0D
+ arch/x86/kvm/x86.c              | 57 ++++++++++++++++++---------------=0D
+ include/linux/kvm_host.h        |  1 +=0D
+ virt/kvm/kvm_main.c             |  1 +=0D
+ 8 files changed, 103 insertions(+), 58 deletions(-)=0D
+=0D
+-- =0D
+2.26.3=0D
+=0D
 
-That isn't going to fly. SELinux and Smack don't rely on ownership
-as a criteria for access. Being the owner of a symlink conveys no
-special privilege. The LSM must be consulted to determine if the
-module's policy allows the access.
-
->  IOW, if you are owner of
-> a symlink or special file, you can write as many user.* xattr as you
-> like and except quota does not look like anything else can block
-> it. I am wondering if this approach is ok?
->
->
->
->> so I guess we should be calling
->> xattr_permission somewhere if we want that behavior.
->> The RFC assumes user xattrs are for regular files and directories,
->> without, as far as I can tell, actually explicitly forbidding them on
->> other objects.  We should also raise this with the working group if we
->> want to increase the chances that you'll get the behavior you want on
->> non-Linux servers.
-> Ok. I am hoping once this patch merges in some form, then I can
-> follow it up with relevant working group.
->
->> The "User extended attributes" section of the xattr(7) man page will
->> need updating.
-> Agreed. I will take care of that in a separate patch.
->
-> Right now, I am not too sure if being owner should be the only check
-> and I should skip calling inode_permission() entirely or not.
->
-> Thanks
-> Vivek
->
->> --b.
->>
