@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967303C76D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7BE3C76D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhGMTQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:16:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:30055 "EHLO mga11.intel.com"
+        id S234411AbhGMTRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhGMTQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:16:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207211591"
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="207211591"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 12:13:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="503348493"
-Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Jul 2021 12:13:23 -0700
-Received: from tjmaciei-mobl5.localnet (10.209.50.142) by
- IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Tue, 13 Jul 2021 20:13:20 +0100
-From:   Thiago Macieira <thiago.macieira@intel.com>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-CC:     <bp@suse.de>, <luto@kernel.org>, <tglx@linutronix.de>,
-        <mingo@kernel.org>, <x86@kernel.org>, <len.brown@intel.com>,
-        <dave.hansen@intel.com>, <jing2.liu@intel.com>,
-        <ravi.v.shankar@intel.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
-Date:   Tue, 13 Jul 2021 12:13:16 -0700
-Message-ID: <1817232.MPthNTNLIG@tjmaciei-mobl5>
-Organization: Intel Corporation
-In-Reply-To: <20210710130313.5072-13-chang.seok.bae@intel.com>
-References: <20210710130313.5072-1-chang.seok.bae@intel.com> <20210710130313.5072-13-chang.seok.bae@intel.com>
+        id S229500AbhGMTRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 15:17:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 048AD61154;
+        Tue, 13 Jul 2021 19:14:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626203658;
+        bh=/A28ytl7Glg4j6xHPrW4hXaLaer9R4bAx56RHj0Avuc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TOBM+UvtFJgSCWP5XB85U8dG/gCQeOfKM3jUIk6eFGWrnL2TK/G8m7EB3dwBw2aXj
+         Cfbrm1Vgl/7xWaJSHtmjCB8gplQLXZWjoxsARyNrm6/ME5cLa/E+F6d7SvGMSDkrYk
+         Qa2uYNbvIRpUy4NlRopD5wSHn5nt8C643Ay5auemkq9xmDiUXaZ6vk9/3CBY/Ll1O9
+         EXT8drjJ/CdivvOo6i7Iv9OR7i3E45OvGVedcJ4vuvkHqvqQJxZc0p1O6WOAlhfG7g
+         o+olDlctw7SIE84KveZT4W7c5AsFWJhXN0QlOfln7BBnep8E9cN7SxwgSyeetsTEjG
+         fsCpvoNGGuuZw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4F38C403F2; Tue, 13 Jul 2021 16:14:15 -0300 (-03)
+Date:   Tue, 13 Jul 2021 16:14:15 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH 00/10] perf: add workqueue library and use it in
+ synthetic-events
+Message-ID: <YO3mB0pzaxJ/4c58@kernel.org>
+References: <cover.1626177381.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.209.50.142]
-X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
- IRSMSX605.ger.corp.intel.com (163.33.146.138)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1626177381.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, 10 July 2021 06:02:59 PDT Chang S. Bae wrote:
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index a58800973aed..f45b2cefd6cf 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -1112,6 +1112,44 @@ DEFINE_IDTENTRY(exc_device_not_available)
-[cut]
-> +                               /* Raise a signal when it failed to handle.
-> */ +                               if (err)
-> +                                       force_sig(SIGSEGV);
-> +                       }
-> +                       return;
-
-Hello Chang
-
-Can I make a suggestion that you send a different signal than SIGSEGV for the 
-failure of unauthorised instructions? I would recommend SIGILL. Additionally, 
-please consider a new ILL_* constant for the si_code field.
-
-I have multiple reasons for that:
-1) the XFD failure is not a memory issue, so SIGSEGV is not really 
-appropriate, despite coming from an #NM interrupt
-
-2) SIGILL is sent for the AMX instructions in other circumstances, due to CPU 
-#UD, notably:
-- running on a CPU without AMX support
-- running under an OS that did not enable the AMX state in XCR0 (like Linux 
-  before this patch series)
-
-When a developer is debugging code and sees a SIGILL on a valid instruction 
-stream in disassembly, they know they've got to code they should never have 
-got to, bypassing CPU checks. Forgetting to ask for permission is now a 
-variant of  that case.
-
-3) the very first AMX instruction to cause the #NM is likely going to be an 
-LDTILECFG or TILELOADD, which are memory-related instructions, so may #GP for 
-using bad pointers (and LDTILECFG can #GP for bad tile configurations). 
-Knowing that the issue was the instruction itself instead of the pointer or 
-data being loaded is going to come in handy.
-
-4) SIGSEGV will also be sent for another reason by the kernel. Your cover 
-message had:
-
-> 4. Applications touching AMX without permission results in process exit.
+Em Tue, Jul 13, 2021 at 02:11:11PM +0200, Riccardo Mancini escreveu:
+> This patchset introduces a new utility library inside perf/util, which
+> provides a work queue abstraction, which loosely follows the Kernel
+> workqueue API.
 > 
->     Armed XFD results in #NM, results in SIGSEGV, typically resulting in
->     process exit.
-
-> 6. NM handler allocation failure results in process exit.
+> The workqueue abstraction is made up by two components:
+>  - threadpool: which takes care of managing a pool of threads. It is
+>    inspired by the prototype for threaded trace in perf-record from Alexey:
+>    https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+>  - workqueue: manages a shared queue and provides the workers implementation.
 > 
->     If the #NM handler can not allocate the 8KB buffer, the task will
->     receive a SIGSEGV at the instruction that took the #NM fault, typically
->     resulting in process exit.
+> On top of the workqueue, a simple parallel-for utility is implemented
+> which is then showcased in synthetic-events.c, replacing the previous
+> manual pthread-created threads.
+> 
+> Through some experiments with perf bench, I can see how the new 
+> workqueue has a higher overhead compared to manual creation of threads, 
+> but is able to more effectively partition work among threads, yielding 
+> a better result with more threads.
+> Furthermore, the overhead could be configured by changing the
+> `work_size` (currently 1), aka the number of dirents that are 
+> processed by a thread before grabbing a lock to get the new work item.
+> I experimented with different sizes but, while bigger sizes reduce overhead
+> as expected, they do not scale as well to more threads.
+> 
+> I tried to keep the patchset as simple as possible, deferring possible
+> improvements and features to future work.
+> Naming a few:
+>  - in order to achieve a better performance, we could consider using 
+>    work-stealing instead of a common queue.
+>  - affinities in the thread pool, as in Alexey prototype for
+>    perf-record. Doing so would enable reusing the same threadpool for
+>    different purposes (evlist open, threaded trace, synthetic threads),
+>    avoiding having to spin up threads multiple times.
+>  - resizable threadpool, e.g. for lazy spawining of threads.
+> 
+> @Arnaldo
+> Since I wanted the workqueue to provide a similar API to the Kernel's
+> workqueue, I followed the naming style I found there, instead of the
+> usual object__method style that is typically found in perf. 
+> Let me know if you'd like me to follow perf style instead.
 
-Knowing that it was caused by reaching code that shouldn't have been reached, 
-instead of an OOM issue, is handy.
+You did the right thing, that is how we do with other kernel APIs, we
+use list_add(), rb_first(), bitmap_weight(), hash_del(),  etc.
 
-Do note that this SIGSEGV for allocation is unlikely to happen. If the kernel 
-is under memory pressure, the OOM killer will probably kick in and may kill 
-(SIGKILL) this process instead. But at least #6 is a legitimate memory issue.
-
-
-On the same topic, is there a way to save this state in a core dump? The FS 
-and GS bases would also be very handy.
+- Arnaldo
+ 
+> Thanks,
+> Riccardo
+> 
+> Riccardo Mancini (10):
+>   perf workqueue: threadpool creation and destruction
+>   perf tests: add test for workqueue
+>   perf workqueue: add threadpool start and stop functions
+>   perf workqueue: add threadpool execute and wait functions
+>   perf workqueue: add sparse annotation header
+>   perf workqueue: introduce workqueue struct
+>   perf workqueue: implement worker thread and management
+>   perf workqueue: add queue_work and flush_workqueue functions
+>   perf workqueue: add utility to execute a for loop in parallel
+>   perf synthetic-events: use workqueue parallel_for
+> 
+>  tools/perf/tests/Build                 |   1 +
+>  tools/perf/tests/builtin-test.c        |   9 +
+>  tools/perf/tests/tests.h               |   3 +
+>  tools/perf/tests/workqueue.c           | 453 +++++++++++++++++
+>  tools/perf/util/Build                  |   1 +
+>  tools/perf/util/synthetic-events.c     | 131 +++--
+>  tools/perf/util/workqueue/Build        |   2 +
+>  tools/perf/util/workqueue/sparse.h     |  21 +
+>  tools/perf/util/workqueue/threadpool.c | 516 ++++++++++++++++++++
+>  tools/perf/util/workqueue/threadpool.h |  29 ++
+>  tools/perf/util/workqueue/workqueue.c  | 642 +++++++++++++++++++++++++
+>  tools/perf/util/workqueue/workqueue.h  |  38 ++
+>  12 files changed, 1771 insertions(+), 75 deletions(-)
+>  create mode 100644 tools/perf/tests/workqueue.c
+>  create mode 100644 tools/perf/util/workqueue/Build
+>  create mode 100644 tools/perf/util/workqueue/sparse.h
+>  create mode 100644 tools/perf/util/workqueue/threadpool.c
+>  create mode 100644 tools/perf/util/workqueue/threadpool.h
+>  create mode 100644 tools/perf/util/workqueue/workqueue.c
+>  create mode 100644 tools/perf/util/workqueue/workqueue.h
+> 
+> -- 
+> 2.31.1
+> 
 
 -- 
-Thiago Macieira - thiago.macieira (AT) intel.com
-  Software Architect - Intel DPG Cloud Engineering
 
-
-
+- Arnaldo
