@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7587E3C67DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242393C67E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 03:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhGMBMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 21:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
+        id S233843AbhGMBMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 21:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbhGMBMa (ORCPT
+        with ESMTP id S233802AbhGMBMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 21:12:30 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBDBC0613E9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:09:41 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id n77-20020a3740500000b02903b496f6f425so15620879qka.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:09:41 -0700 (PDT)
+        Mon, 12 Jul 2021 21:12:33 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28247C0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:09:44 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id j15-20020ac84c8f0000b0290257b7db4a28so1222543qtv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 18:09:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=VHC+YzAQlppaneCSXMJd1zGWtOqB6UoQTAIsnf0LqyQ=;
-        b=B96QMnD0FPaSmeEsppXsVd3HAhgPo4nyv4JECcEg7l+oShKYLwOpMGC/sUCjQbXWRl
-         oks73mO0TPAgR6iq9peBltmQkRiVWIWrTRmZYSzElLXllQyDKnqgOTbk6y67vuRC0rI8
-         c9UsXgvDYat3KZvFpDZWBv0Vasmht7AvEHzy93lcn3z+HRpPEzKHh2f4NlLZ3vUsa47O
-         lfqTyCrtAbui11u0enmycqLCQjhOmYFHe6rOdHA43YSu92ycgFJEpDOVtBNblhWvuugU
-         NjYhM61KfqFe0oBF1KW0OtoiQw3QlTw6VW9jGQmM8vuClVFM8B84JK+d3jsuhXIYmbrn
-         WLpQ==
+        bh=GVgy78Y4XH5cKdFUoC55+OC486NwPMBxiv8zZWv7bfY=;
+        b=rTbNMSzuL2c2s+SMmiQn/vo/SmZsGY+OXkBGAmvHywWnVW/URmqQ0RI383JRllnj0g
+         /Rgg9ahp4PmJVJfmhYHoDdwgpVoqHOW7CDS7rKPdn0+cGvbn/snoF9GCBhg1uiqWT9qe
+         43PBwfiIlYRPZEiXNO6L/bQhFZLTXhl3q1rBuTazBFbrIcS6ashHR8TI3ejZXN/+67qF
+         /+fnl5fqxgXZO19rd7/Iv4KOhZTISnV77Hla7Q49CH2r/Hracy8Sa9p7sUx7g69DDiLf
+         40gs9q2RTcEOIDoqcVOBMQoSikn/FykSFTUWz1XCCTFAn5AiVv+nfMNeup81sN3KERDA
+         fEFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=VHC+YzAQlppaneCSXMJd1zGWtOqB6UoQTAIsnf0LqyQ=;
-        b=qX51pdCH6X+aWPdH3tSH3KnE5CsmvS/PC9J5dRwJaa/Q/XtXzq66SxpRIyXXNEfPMm
-         Nsfuj7IXhXrtfk5A7Apcgenp32tv2xY42+X0c/UkZ+fWRHdtnbsgsMOfdyT2n7ldx8ty
-         oFe9GnvlyWB5YB95q5J6AVFhC3pyehLIB797p3lCtwKn4hCfjlWr0FNdUZzczouMyoV5
-         6SQRG+g5kwQiOHHgfJAPerQtFMTGVMR7nmUHRLrvcTbf9sbiGjkvLJD3TtFiVRCnYl5v
-         vXVswC/oc2w4iR0Paq5wPF8ZowxhrLDNi0WrJIbXsFcqFWl3pHKid2qnzaNrxE8VdwaZ
-         pY1g==
-X-Gm-Message-State: AOAM530WBLOOQnH9SlKGsD9GsP0Qjm2sLcBhybWRThqXxLxfwIBeb/g6
-        Cduat5SZaeChB0okMAGWB8Mxns411cY=
-X-Google-Smtp-Source: ABdhPJxRLJG0ufJocNQajQsmACrz3wFP0mbch21XtZNh4dx+ecRPXx5GPV1sA8xr9QgLbVfLtsUu4N4++NY=
+        bh=GVgy78Y4XH5cKdFUoC55+OC486NwPMBxiv8zZWv7bfY=;
+        b=Vb7HQhsKXrPDfY+XiAJmUx7TtR4DOvS20ixE6AG9q0XjDDGtNLJxcA4jE5gI9vrPgd
+         ZVT5rIbHDwy6PBYSRKIWwfe+Dhj/XfxHyXWSDC9rBFKK6AyKCuSJKnmk7kKKZyjlw00h
+         hdiYQ7O7DEhClRD3tlrvuMwImHH7QN3goZVW25z0kdNTIKRm8SBSgRa/2pdI4Pw7IyPX
+         u4hAiIqlfv4PUxnUqbKAUXCj3wzz+HlTMnOOjclw2FLLU72sGFA00w2tGxeloJn5n45x
+         pjgFM41Vyg5/kH3IA8T3h87VW+TssM38gfLthsacBwya7g5d/WXsm67jGr9HxJgjjSlq
+         C1ZA==
+X-Gm-Message-State: AOAM533lMZLPHCjwHLXLzoc8HBLxFTpmhmFSMrXdbLDptdJ/ekEnlOuN
+        4YSbIjs7V+PZShL1LiqFf9ewqwBJkjI=
+X-Google-Smtp-Source: ABdhPJyjUESs588030M5v+lLeh6WjvewH3DZcGV9RsmwjkEGb+fdJhU9dJwttvo6+TJFHFNMxA2VaZGZz94=
 X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:2a5a:e173:9576:794e])
- (user=surenb job=sendgmr) by 2002:a05:6214:27e7:: with SMTP id
- jt7mr2315244qvb.28.1626138580442; Mon, 12 Jul 2021 18:09:40 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 18:09:33 -0700
+ (user=surenb job=sendgmr) by 2002:ad4:5bec:: with SMTP id k12mr2263862qvc.5.1626138582967;
+ Mon, 12 Jul 2021 18:09:42 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 18:09:34 -0700
 In-Reply-To: <20210713010934.299876-1-surenb@google.com>
-Message-Id: <20210713010934.299876-2-surenb@google.com>
+Message-Id: <20210713010934.299876-3-surenb@google.com>
 Mime-Version: 1.0
 References: <20210713010934.299876-1-surenb@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v4 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
- improve disabled memcg config
+Subject: [PATCH v4 3/3] mm, memcg: inline swap-related functions to improve
+ disabled memcg config
 From:   Suren Baghdasaryan <surenb@google.com>
 To:     tj@kernel.org
 Cc:     hannes@cmpxchg.org, mhocko@kernel.org, mhocko@suse.com,
@@ -69,12 +69,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inline mem_cgroup_{charge/uncharge} and mem_cgroup_uncharge_list functions
-functions to perform mem_cgroup_disabled static key check inline before
-calling the main body of the function. This minimizes the memcg overhead
-in the pagefault and exit_mmap paths when memcgs are disabled using
-cgroup_disable=memory command-line option.
-This change results in ~0.4% overhead reduction when running PFT test [1]
+Inline mem_cgroup_try_charge_swap, mem_cgroup_uncharge_swap and
+cgroup_throttle_swaprate functions to perform mem_cgroup_disabled static
+key check inline before calling the main body of the function. This
+minimizes the memcg overhead in the pagefault and exit_mmap paths when
+memcgs are disabled using cgroup_disable=memory command-line option.
+This change results in ~1% overhead reduction when running PFT test [1]
 comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
 configuration on an 8-core ARM64 Android device.
 
@@ -83,154 +83,130 @@ configuration on an 8-core ARM64 Android device.
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- include/linux/memcontrol.h | 28 +++++++++++++++++++++++++---
- mm/memcontrol.c            | 33 ++++++++++++---------------------
- 2 files changed, 37 insertions(+), 24 deletions(-)
+ include/linux/swap.h | 26 +++++++++++++++++++++++---
+ mm/memcontrol.c      | 14 ++++----------
+ mm/swapfile.c        |  5 +----
+ 3 files changed, 28 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index bfe5c486f4ad..39fa88051a42 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -693,13 +693,35 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
- 		page_counter_read(&memcg->memory);
- }
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 6f5a43251593..f30d26b0f71d 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -721,7 +721,13 @@ static inline int mem_cgroup_swappiness(struct mem_cgroup *mem)
+ #endif
  
--int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
-+int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-+			gfp_t gfp_mask);
-+static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-+				    gfp_t gfp_mask)
+ #if defined(CONFIG_SWAP) && defined(CONFIG_MEMCG) && defined(CONFIG_BLK_CGROUP)
+-extern void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask);
++extern void __cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask);
++static inline  void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
++{
++	if (mem_cgroup_disabled())
++		return;
++	__cgroup_throttle_swaprate(page, gfp_mask);
++}
+ #else
+ static inline void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
+ {
+@@ -730,8 +736,22 @@ static inline void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
+ 
+ #ifdef CONFIG_MEMCG_SWAP
+ extern void mem_cgroup_swapout(struct page *page, swp_entry_t entry);
+-extern int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry);
+-extern void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
++extern int __mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry);
++static inline int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
 +{
 +	if (mem_cgroup_disabled())
 +		return 0;
-+	return __mem_cgroup_charge(page, mm, gfp_mask);
++	return __mem_cgroup_try_charge_swap(page, entry);
 +}
 +
- int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
- 				  gfp_t gfp, swp_entry_t entry);
- void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
- 
--void mem_cgroup_uncharge(struct page *page);
--void mem_cgroup_uncharge_list(struct list_head *page_list);
-+void __mem_cgroup_uncharge(struct page *page);
-+static inline void mem_cgroup_uncharge(struct page *page)
++extern void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
++static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
 +{
 +	if (mem_cgroup_disabled())
 +		return;
-+	__mem_cgroup_uncharge(page);
++	__mem_cgroup_uncharge_swap(entry, nr_pages);
 +}
 +
-+void __mem_cgroup_uncharge_list(struct list_head *page_list);
-+static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
-+{
-+	if (mem_cgroup_disabled())
-+		return;
-+	__mem_cgroup_uncharge_list(page_list);
-+}
- 
- void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
- 
+ extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+ extern bool mem_cgroup_swap_full(struct page *page);
+ #else
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a228cd51c4bd..6adf50acdbe2 100644
+index 6adf50acdbe2..b8aab1900995 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -6701,8 +6701,7 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- 			atomic_long_read(&parent->memory.children_low_usage)));
- }
- 
--static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
--			       gfp_t gfp)
-+static int charge_memcg(struct page *page, struct mem_cgroup *memcg, gfp_t gfp)
- {
- 	unsigned int nr_pages = thp_nr_pages(page);
- 	int ret;
-@@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+@@ -7234,7 +7234,7 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
  }
  
  /**
-- * mem_cgroup_charge - charge a newly allocated page to a cgroup
-+ * __mem_cgroup_charge - charge a newly allocated page to a cgroup
-  * @page: page to charge
-  * @mm: mm context of the victim
-  * @gfp_mask: reclaim mode
-@@ -6736,16 +6735,14 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+- * mem_cgroup_try_charge_swap - try charging swap space for a page
++ * __mem_cgroup_try_charge_swap - try charging swap space for a page
+  * @page: page being added to swap
+  * @entry: swap entry to charge
   *
-  * Returns 0 on success. Otherwise, an error code is returned.
+@@ -7242,16 +7242,13 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+  *
+  * Returns 0 on success, -ENOMEM on failure.
   */
--int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
-+int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-+			gfp_t gfp_mask)
+-int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
++int __mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
  {
+ 	unsigned int nr_pages = thp_nr_pages(page);
+ 	struct page_counter *counter;
  	struct mem_cgroup *memcg;
- 	int ret;
+ 	unsigned short oldid;
  
 -	if (mem_cgroup_disabled())
 -		return 0;
 -
- 	memcg = get_mem_cgroup_from_mm(mm);
--	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
-+	ret = charge_memcg(page, memcg, gfp_mask);
- 	css_put(&memcg->css);
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return 0;
  
- 	return ret;
-@@ -6780,7 +6777,7 @@ int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
- 		memcg = get_mem_cgroup_from_mm(mm);
- 	rcu_read_unlock();
- 
--	ret = __mem_cgroup_charge(page, memcg, gfp);
-+	ret = charge_memcg(page, memcg, gfp);
- 
- 	css_put(&memcg->css);
- 	return ret;
-@@ -6916,18 +6913,15 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+@@ -7287,18 +7284,15 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
  }
  
  /**
-- * mem_cgroup_uncharge - uncharge a page
-+ * __mem_cgroup_uncharge - uncharge a page
-  * @page: page to uncharge
-  *
-- * Uncharge a page previously charged with mem_cgroup_charge().
-+ * Uncharge a page previously charged with __mem_cgroup_charge().
+- * mem_cgroup_uncharge_swap - uncharge swap space
++ * __mem_cgroup_uncharge_swap - uncharge swap space
+  * @entry: swap entry to uncharge
+  * @nr_pages: the amount of swap space to uncharge
   */
--void mem_cgroup_uncharge(struct page *page)
-+void __mem_cgroup_uncharge(struct page *page)
+-void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
++void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
  {
- 	struct uncharge_gather ug;
+ 	struct mem_cgroup *memcg;
+ 	unsigned short id;
  
 -	if (mem_cgroup_disabled())
 -		return;
 -
- 	/* Don't touch page->lru of any random page, pre-check: */
- 	if (!page_memcg(page))
+ 	id = swap_cgroup_record(entry, 0, nr_pages);
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_id(id);
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 707fa0481bb4..04a0c83f1313 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3773,14 +3773,11 @@ static void free_swap_count_continuations(struct swap_info_struct *si)
+ }
+ 
+ #if defined(CONFIG_MEMCG) && defined(CONFIG_BLK_CGROUP)
+-void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
++void __cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
+ {
+ 	struct swap_info_struct *si, *next;
+ 	int nid = page_to_nid(page);
+ 
+-	if (mem_cgroup_disabled())
+-		return;
+-
+ 	if (!(gfp_mask & __GFP_IO))
  		return;
-@@ -6938,20 +6932,17 @@ void mem_cgroup_uncharge(struct page *page)
- }
  
- /**
-- * mem_cgroup_uncharge_list - uncharge a list of page
-+ * __mem_cgroup_uncharge_list - uncharge a list of page
-  * @page_list: list of pages to uncharge
-  *
-  * Uncharge a list of pages previously charged with
-- * mem_cgroup_charge().
-+ * __mem_cgroup_charge().
-  */
--void mem_cgroup_uncharge_list(struct list_head *page_list)
-+void __mem_cgroup_uncharge_list(struct list_head *page_list)
- {
- 	struct uncharge_gather ug;
- 	struct page *page;
- 
--	if (mem_cgroup_disabled())
--		return;
--
- 	uncharge_gather_clear(&ug);
- 	list_for_each_entry(page, page_list, lru)
- 		uncharge_page(page, &ug);
 -- 
 2.32.0.93.g670b81a890-goog
 
