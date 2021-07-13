@@ -2,141 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF503C76AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE0C3C76AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 20:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233980AbhGMSt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 14:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGMStZ (ORCPT
+        id S234320AbhGMSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 14:50:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38174 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229500AbhGMSt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 14:49:25 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF47CC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:46:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id c17so43230035ejk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 11:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZCD8zEFZfiBDd2pp94vqMa1qM/uM1MO0tR4Do8NO9I=;
-        b=QOm25nPiezRVaPDCN4I2K3StsoeQ23bPBgiWI6sVxjua0vNHSjaI09mJxA0bpLM857
-         4eNJ7StB9ZeM3mri41JlknuVuZTIa0m+2bg7GdXPalWBwRKHqRRuIhuyTXj6SX4dhDPs
-         I9RI1mOcnnDhenDyRZaJYuOOdFNAmaOE+WKwZot/MMo5EfEBMZKmFmy/0w3cHNBa9N89
-         dHFwF16BodoZm20xhSm5cg6wh8zKS1jdd4gCM8JSaWBQ+PpFL02mpjOjlnXzCi4hGGt/
-         /2ILlFWp3oQQRnySnWJRtQnxNTshIYe37ZG4vc+Wikrfd3XiOkcXgOk/2pcc0XUVuHgj
-         Jb+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZCD8zEFZfiBDd2pp94vqMa1qM/uM1MO0tR4Do8NO9I=;
-        b=ZKPKKdoq7azvsBWD1QBYUHem5FORA2i7BEsgsKn6OVPovI7clfNh/As9IH9VUft6oL
-         1tNdwuotbPGLk2t4VZaZvxBh3/iJa69YK4xhUI4Ks05dIUTWhhJyMOvjHZES22lI6lgD
-         K4IWy5Y1Wj/Iv6iOc6QLIjZOkFU4UZGNfO1ASCk5wCVogLrbRMqQ94jDWhrEv94HCcnc
-         lHHQsb6VNuLCWfWlajcHLoqHC1jJ2j6dvSDEgEkOw2vMYcjnCzHcE6v2DzfnRxKqBesL
-         OUtI/axwl2lFzQm9rBcvhVgTaRAMA/v9zySyaumip0+aPeD6PXxohkteavaifmYmoBZL
-         oCTQ==
-X-Gm-Message-State: AOAM530321A9aX7V9kxH44IkXvAufK2sAi1Bl+ODs1IWHJoFZ/HJSeFy
-        /DMnwlQDAeLvGxWIDsDyYfM=
-X-Google-Smtp-Source: ABdhPJwpFI+wg5vNsqtctNDH9anW4yZdnwDnJA1smF+y5f6Ubqk4ED4Nlzymj3oJu4a9g0wSvyly/A==
-X-Received: by 2002:a17:906:5957:: with SMTP id g23mr7361434ejr.484.1626201993247;
-        Tue, 13 Jul 2021 11:46:33 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id a16sm6419317edv.69.2021.07.13.11.46.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 11:46:32 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        fabioaiuto83@gmail.com
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2] staging: rtl8188eu: Replace a custom function with crc32_le()
-Date:   Tue, 13 Jul 2021 20:46:29 +0200
-Message-Id: <20210713184629.7358-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 13 Jul 2021 14:49:59 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DIYQOG191072;
+        Tue, 13 Jul 2021 14:47:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=rGyPh9dHcWjAxXdFjnsEc9dwbCIGHA68f2kvsmINWMA=;
+ b=EQw3O0m5DNhPLd2Hfbar9vgdjhMNik5GDpankPvLuqS2eVf/DKW/XCPYU/3/ARQixKng
+ iHCVxlIzwyA+m6+wHw68RXzRY7bmZpM8KoMGkOpKJIw79eJqqCR47/+FItTaUNVTX1/2
+ WPVejvFLKZXFnLSwrv4nRCBtTkJVpVmj1jP5AMADO0yfxrF/+bCNu6/aV6EpisH2L/6q
+ Ni+NkoOTF+mukdC9sAHvgYG+kDjEPmDEV++gCbRYzFnqKTHZHedmMoMmszlrshIcmdw9
+ XraBY2cgMGNknW+AbTgQLgO9kzEz/b9RB53j81Ac+XGO9OE7Um9wqOxphwYEwfMDF/Wa qA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39sdy5mx16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 14:47:06 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16DIZSNb196082;
+        Tue, 13 Jul 2021 14:47:05 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39sdy5mx0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 14:47:05 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16DIjhCe005498;
+        Tue, 13 Jul 2021 18:47:05 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma05wdc.us.ibm.com with ESMTP id 39q36ccyj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Jul 2021 18:47:05 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16DIl3cU34996500
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Jul 2021 18:47:03 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9659D13604F;
+        Tue, 13 Jul 2021 18:47:03 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 084B1136060;
+        Tue, 13 Jul 2021 18:47:00 +0000 (GMT)
+Received: from [9.85.184.30] (unknown [9.85.184.30])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Jul 2021 18:47:00 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+ <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+ <20210713184517.48eacee6.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <29f8c92c-2ad9-b407-4063-0e9a4580c971@linux.ibm.com>
+Date:   Tue, 13 Jul 2021 14:47:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210713184517.48eacee6.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WpgcrbO8Qxfzi0WiQrCVImz4Rnqqg8GS
+X-Proofpoint-GUID: uV7ZPBNZDfwNcd86FYI4Z9cN4aCiuyLi
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-13_10:2021-07-13,2021-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ impostorscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107130117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kernel API crc32_le() in place of the custom getcrc32().
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
 
-v1 --> v2:
-Use cpu_to_le32() to assign native endian return value of crc32_le to
-crc.
+On 7/13/21 12:45 PM, Halil Pasic wrote:
+> On Tue, 13 Jul 2021 09:48:01 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> On 7/12/21 7:38 PM, Halil Pasic wrote:
+>>> On Wed,  7 Jul 2021 11:41:56 -0400
+>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>   
+>>>> It was pointed out during an unrelated patch review that locks should not
+>>>> be open coded - i.e., writing the algorithm of a standard lock in a
+>>>> function instead of using a lock from the standard library. The setting and
+>>>> testing of the kvm_busy flag and sleeping on a wait_event is the same thing
+>>>> a lock does. Whatever potential deadlock was found and reported via the
+>>>> lockdep splat was not magically removed by going to a wait_queue; it just
+>>>> removed the lockdep annotations that would identify the issue early
+>>> Did you change your opinion since we last talked about it? This reads to
+>>> me like we are deadlocky without this patch, because of the last
+>>> sentence.
+>> The words are a direct paraphrase of Jason G's responses to my
+>> query regarding what he meant by open coding locks. I
+>> am choosing to take his word on the subject and remove the
+>> open coded locks.
+>>
+>> Having said that, we do not have a deadlock problem without
+>> this patch. If you recall, the lockdep splat occurred ONLY when
+>> running a Secure Execution guest in a CI environment. Since
+>> AP is not yet supported for SE guests, there is no danger of
+>> a lockdep splat occurring in a customer environment. Given
+>> Jason's objections to the original solution (i.e., kvm_busy flag
+>> and wait queue), I decided to replace the so-called open
+>> coded locks.
+> I'm in favor of doing that. But if   ("s390/vfio-ap: fix
+> circular lockdep when setting/clearing crypto masks") ain't buggy,
+> then this patch does not qualify for stable. For a complete set of
+> rules consult:
+> https://github.com/torvalds/linux/blob/master/Documentation/process/stable-kernel-rules.rst
+>
+> Here the most relevant points:
+> * It must fix a real bug that bothers people (not a, "This could be a
+> problem..." type thing).
+> * t must fix a problem that causes a build error (but not for things
+> marked CONFIG_BROKEN), an oops, a hang, data corruption, a real security
+> issue, or some "oh, that's not good" issue. In short, something critical.
+> * No "theoretical race condition" issues, unless an explanation of how
+> the race can be exploited is also provided.
+>
+> Jason may give it another try to convince us that 0cc00c8d4050 only
+> silenced lockdep, but vfio_ap remained prone to deadlocks. To my best
+> knowledge using condition variable and a mutex is one of the well known
+> ways to implement an rwlock.
+>
+> In my opinion, you should drop the fixes tag, drop the cc stable, and
+> provide a patch description that corresponds to *your* understanding
+> of the situation.
 
- drivers/staging/rtl8188eu/core/rtw_security.c | 23 ++++---------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
+I'll drop the fixes and cc stable. Given the patch was created in
+response to Jason G's comments - which are paraphrased in
+the patch description - the patch description corresponds
+directly to my understanding of the situation. It is precisely why
+I created the patch.
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-index 1b2cb6196463..e9de61afe881 100644
---- a/drivers/staging/rtl8188eu/core/rtw_security.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_security.c
-@@ -11,6 +11,7 @@
- #include <wifi.h>
- #include <osdep_intf.h>
- #include <net/lib80211.h>
-+#include <linux/types.h>
- 
- /* WEP related ===== */
- 
-@@ -111,21 +112,6 @@ static void crc32_init(void)
- 	bcrc32initialized = 1;
- }
- 
--static __le32 getcrc32(u8 *buf, int len)
--{
--	u8 *p;
--	u32  crc;
--
--	if (bcrc32initialized == 0)
--		crc32_init();
--
--	crc = 0xffffffff;       /* preload shift register, per CRC-32 spec */
--
--	for (p = buf; len > 0; ++p, --len)
--		crc = crc32_table[(crc ^ *p) & 0xff] ^ (crc >> 8);
--	return cpu_to_le32(~crc);    /* transmit complement, per CRC-32 spec */
--}
--
- /* Need to consider the fragment  situation */
- void rtw_wep_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- {
-@@ -609,14 +595,15 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 
- 				if ((curfragnum + 1) == pattrib->nr_frags) {	/* 4 the last fragment */
- 					length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
--					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
-+					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
- 
- 					arcfour_init(&mycontext, rc4key, 16);
- 					arcfour_encrypt(&mycontext, payload, payload, length);
- 					arcfour_encrypt(&mycontext, payload + length, crc, 4);
- 				} else {
- 					length = pxmitpriv->frag_len - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
--					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
-+					*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length));
-+
- 					arcfour_init(&mycontext, rc4key, 16);
- 					arcfour_encrypt(&mycontext, payload, payload, length);
- 					arcfour_encrypt(&mycontext, payload + length, crc, 4);
-@@ -682,7 +669,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, struct recv_frame *precvframe)
- 			arcfour_init(&mycontext, rc4key, 16);
- 			arcfour_encrypt(&mycontext, payload, payload, length);
- 
--			*((__le32 *)crc) = getcrc32(payload, length - 4);
-+			*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, payload, length - 4));
- 
- 			if (crc[3] != payload[length - 1] ||
- 			    crc[2] != payload[length - 2] ||
--- 
-2.32.0
+>
+> Neither the Fixes tag or the stable process is (IMHO) meant for these
+> types of (style) issues. And if you don't think the alleged problem is
+> real, don't make the description of your patch say it is real.
+> Regards,
+> Halil
+>
+>>> Regards,
+>>> Halil
 
