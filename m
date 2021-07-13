@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04363C6D79
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F833C6D81
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbhGMJdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:33:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43046 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235282AbhGMJc5 (ORCPT
+        id S235118AbhGMJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:35:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32982 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234986AbhGMJfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:32:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C7CCC2007E;
-        Tue, 13 Jul 2021 09:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626168606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 13 Jul 2021 05:35:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626168740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JcCPjDcrvfzpmzaVzS7nNSr2ItgjCbZj3DsU2BMBR/E=;
-        b=a3jdJE7sy8Ewp0X+SdC/k03tAwBJsCPyelubwU2+vA+YxTWuDWROkohFZ3JvBVivUgabr5
-        l+BPrZglKPsK3AH3rzuKqbjCE/oQz0vEjyQMKA1IGluU9QimBfpWCAB60WyT2zB7mJbZtB
-        MCAGswAVEraxGxhOcFa6mIHyBfmrP94=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 305EEA3B8C;
-        Tue, 13 Jul 2021 09:30:03 +0000 (UTC)
-Date:   Tue, 13 Jul 2021 11:30:02 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, vbabka@suse.cz,
-        axboe@kernel.dk, iamjoonsoo.kim@lge.com, alexs@kernel.org,
-        apopple@nvidia.com, willy@infradead.org, minchan@kernel.org,
-        david@redhat.com, shli@fb.com, hillf.zj@alibaba-inc.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
- anonymous LRU list
-Message-ID: <YO1dGvcTLaRJplRQ@dhcp22.suse.cz>
-References: <20210710100329.49174-1-linmiaohe@huawei.com>
- <20210710100329.49174-2-linmiaohe@huawei.com>
- <YOvtmy9ggJA4KUIQ@dhcp22.suse.cz>
- <9409189e-44f7-2608-68af-851629b6d453@huawei.com>
+        bh=PUfa8peh4EProvCzGePhsPSlqxOJ32hePZg6qQ0HeAY=;
+        b=B6AxOdHFw2bDxzbeXuAduEVJBgLwRbEiK61HZeijlH2Cd/7+E6FpSAXiWq0Up8mmShAAVr
+        lb6syGcIVPXSbMqprKadZKYS0AGYoJOC2O4ZoAoNuknFLlny2STYKFyDiC9o5KjhOzKDo4
+        N5Xr1Et/uZlPYzr0JasJLelGol0P+ZU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-NZXDBK0UMW2FVDjjvMp2qw-1; Tue, 13 Jul 2021 05:32:18 -0400
+X-MC-Unique: NZXDBK0UMW2FVDjjvMp2qw-1
+Received: by mail-wr1-f71.google.com with SMTP id k3-20020a5d52430000b0290138092aea94so8483822wrc.20
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:32:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PUfa8peh4EProvCzGePhsPSlqxOJ32hePZg6qQ0HeAY=;
+        b=i6/EFxCsS2n816XIz8mi3bWsP7NjCp54OjD0p1TUGQfa/oz/btCm1QbbJg/E7BLA6v
+         NGUqgrRToYZ2ZKOFKPLPJSJncCtwdwKnMnG5tltQvIMLPKyT77x48Ujcz4IbcnpazH/b
+         KT7Kl1ctTZmaLOIwzCytV23WGH+nSXP0ewF6syTrtzG9pCabVOsjXeogZUH/7M1HKuWo
+         /NNBfsxsej1fA8s3bOuVxL3QJsF4bI/1GgBoqUIioqmIyILOjm6UmWb3BtvbUGcjFUaf
+         4cVLRluQTPQoSM2kA5v3aYmfOX1kKdg7W5my3rqT7W4Q7l/Sc6AJpuwAsZ7pKrerkMw3
+         bD7Q==
+X-Gm-Message-State: AOAM531VOKSXuTCH5mu1FwzjhlrqVwjGtYYM0dnfXRqH4ahYM38iK0Y3
+        aDFkm1FKlniAS8DtpiH4o9PyuM8OBTzANU51gOu+ZGnRCKBcaY7UZ5A+pU9Cj45XSkhxgWrGjPb
+        YpoaYyrRXWkI/dvDDXw2+SZT+
+X-Received: by 2002:a1c:2c43:: with SMTP id s64mr17979774wms.9.1626168737801;
+        Tue, 13 Jul 2021 02:32:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyMJurEW/0Q64xKOCxt5ctYrt4Wb7q6JeVABU+bbnF1ypD2SxX3hsknLvihnmJBpFjXE6U5Bg==
+X-Received: by 2002:a1c:2c43:: with SMTP id s64mr17979756wms.9.1626168737628;
+        Tue, 13 Jul 2021 02:32:17 -0700 (PDT)
+Received: from krava ([5.171.209.239])
+        by smtp.gmail.com with ESMTPSA id f13sm17510226wrt.86.2021.07.13.02.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 02:32:17 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 11:32:14 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libperf: fix build error with LIBPFM4=1
+Message-ID: <YO1dngCS/v0j3cAE@krava>
+References: <20210713091907.1555560-1-hca@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9409189e-44f7-2608-68af-851629b6d453@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210713091907.1555560-1-hca@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-07-21 19:03:39, Miaohe Lin wrote:
-> On 2021/7/12 15:22, Michal Hocko wrote:
-> > On Sat 10-07-21 18:03:25, Miaohe Lin wrote:
-> >> If the MADV_FREE pages are redirtied before they could be reclaimed, put
-> >> the pages back to anonymous LRU list by setting SwapBacked flag and the
-> >> pages will be reclaimed in normal swapout way. Otherwise MADV_FREE pages
-> >> won't be reclaimed as expected.
-> > 
-> > Could you describe problem which you are trying to address? What does it
-> > mean that pages won't be reclaimed as expected?
-> > 
+On Tue, Jul 13, 2021 at 11:19:07AM +0200, Heiko Carstens wrote:
+> Fix build error with LIBPFM4=1:
+>   CC      util/pfm.o
+> util/pfm.c: In function ‘parse_libpfm_events_option’:
+> util/pfm.c:102:30: error: ‘struct evsel’ has no member named ‘leader’
+>   102 |                         evsel->leader = grp_leader;
+>       |                              ^~
 > 
-> In fact, this is not a bug and harmless.
+> Fixes: fba7c86601e2 ("libperf: Move 'leader' from tools/perf to perf_evsel::leader")
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 
-Fixes tag is then misleading and the changelog should be more clear
-about this as well.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> But it looks buggy as it didn't perform
-> the expected ops from code view. Lazyfree (MADV_FREE) pages are clean anonymous
-> pages. They have SwapBacked flag cleared to distinguish normal anonymous pages.
+thanks,
+jirka
 
-yes.
-
-> When the MADV_FREE pages are redirtied before they could be reclaimed, the pages
-> should be put back to anonymous LRU list by setting SwapBacked flag, thus the
-> pages will be reclaimed in normal swapout way.
-
-Agreed. But the question is why this needs an explicit handling here
-when we already do handle this case when trying to unmap the page.
-Please make sure to document the behavior you are observing, why it is
-not desirable.
-
-> Many thanks for review and reply.
+> ---
+>  tools/perf/util/pfm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > Also why is SetPageSwapBacked in shrink_page_list insufficient?
+> diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
+> index dd9ed56e0504..756295dedccc 100644
+> --- a/tools/perf/util/pfm.c
+> +++ b/tools/perf/util/pfm.c
+> @@ -99,7 +99,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+>  			grp_leader = evsel;
+>  
+>  		if (grp_evt > -1) {
+> -			evsel->leader = grp_leader;
+> +			evsel__set_leader(evsel, grp_leader);
+>  			grp_leader->core.nr_members++;
+>  			grp_evt++;
+>  		}
+> -- 
+> 2.25.1
+> 
 
-Sorry I meant to say try_to_unmap path here
-
-> >> Fixes: 802a3a92ad7a ("mm: reclaim MADV_FREE pages")
-> >> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> >> ---
-> >>  mm/vmscan.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >> index a7602f71ec04..6483fe0e2065 100644
-> >> --- a/mm/vmscan.c
-> >> +++ b/mm/vmscan.c
-> >> @@ -1628,6 +1628,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
-> >>  			if (!page_ref_freeze(page, 1))
-> >>  				goto keep_locked;
-> >>  			if (PageDirty(page)) {
-> >> +				SetPageSwapBacked(page);
-> >>  				page_ref_unfreeze(page, 1);
-> >>  				goto keep_locked;
-> >>  			}
-> >> -- 
-> >> 2.23.0
-> > 
-
--- 
-Michal Hocko
-SUSE Labs
