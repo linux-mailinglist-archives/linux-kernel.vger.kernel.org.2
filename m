@@ -2,164 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC02D3C758A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEB33C7590
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhGMRLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:11:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:19849 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230072AbhGMRLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:11:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207191831"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="207191831"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 10:07:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
-   d="scan'208";a="654468502"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 13 Jul 2021 10:07:11 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m3LsE-000I0s-Fm; Tue, 13 Jul 2021 17:07:10 +0000
-Date:   Wed, 14 Jul 2021 01:06:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 79e920060fa72d0e827a104d74578fa077c59b66
-Message-ID: <60edc800.8NfMkPDDOJIU+e2l%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230087AbhGMRPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhGMRPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:15:03 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5F4C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:12:13 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id u15so10750136oiw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n5veVY6Aaqiwela1VTgvyQeZvKjk2HOBHm+S80Fosp4=;
+        b=Nhq89+zvRlnrFJm1BqHy2q61n3E4rKBojKAwuo5+Qa8zsj2pSrQrpRfVTSJOXaoJl5
+         L8UGZWVhp5tD0AAm5sf+gUxy+xgGFJCAlM3KqG/iQcLKfELoepqYj00fak8AE7PdDNIJ
+         X1HwdiJXt4y0M/vxC/Ae1lUopA4jUnMDhSq7Kk2RjBm8cpSOLCtrz6AtrxxoSWV1lf/j
+         uY0TO2Y3xNUDKhKVxkLlfonquQGTYQPH58yli+dCaol0USNrGgPl1FfRywN+wXn71hFw
+         LgAeiSAQ0YaOinCG5pT9G1kEH1V5VJ8JHhFzMCuNI/UGj9SrQ2WHmS01984wlnqlbf9H
+         LBBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n5veVY6Aaqiwela1VTgvyQeZvKjk2HOBHm+S80Fosp4=;
+        b=RKdIM8lj1uy9yMROElJHlLBrOO1oL17BJp6ChoCzkvGHeNvZ69qyilpZX+GxWgZME7
+         N77h39x3FTxL+uNkJIZCy1oarR6823JgO6YJ1kXQ0fMWMTkZQ/nI4l4ES6W8W07Q+yUN
+         DYPjH8uMoWmz1hAnTSB9ncdPXglIA1/wiyHdZfBZPd8IfDfdy7rA4JUQj+IEMHRvHRoC
+         9sLjAy7NzHUV+Pgm7/i9zAEoFnF3WgiE+9pYYEK2uBM8FeAGxDPZv+9nYv+FGE+shtVU
+         pKYJ8/YRXmyp9msvwPEyfm1BOTM+yny0tPTMHMUNwCZVVzr7HRZNOa7j92u1dvcTwwm+
+         LMhQ==
+X-Gm-Message-State: AOAM530MXKqsvim0uiGq7DDdlcajanhimV4esh/NJgLMk6OXMWVODjfz
+        RDLUx7mbzxJLESEeA1ZMg3Iv8lXzixZ/iNjsGT1jUg==
+X-Google-Smtp-Source: ABdhPJxi1iNIG51zOSsQQLi9TRZ3R+CvAU+7ctLD3c3G0E9vI40AtM+Vi9LVN+oWPPejUf7jhqENJxCd6j1HI1/thtg=
+X-Received: by 2002:aca:1e07:: with SMTP id m7mr3825205oic.28.1626196332203;
+ Tue, 13 Jul 2021 10:12:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
+ <20210712095034.GD12162@intel.com> <CALMp9eQLHfXQwPCfqtc_y34sKGkZsCxEFL+BGx8wHgz7A8cOPA@mail.gmail.com>
+ <20210713094713.GB13824@intel.com> <1be1fde6-37c5-4697-cff0-b15af419975e@gmail.com>
+In-Reply-To: <1be1fde6-37c5-4697-cff0-b15af419975e@gmail.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 13 Jul 2021 10:12:00 -0700
+Message-ID: <CALMp9eSTVVH1fZ361o0Zpf8A3AG24efqGhM6tnYAbv0M5xyhZw@mail.gmail.com>
+Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host MSR_ARCH_LBR_CTL state
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 79e920060fa72d0e827a104d74578fa077c59b66  Merge branch 'WIP/fixes'
+On Tue, Jul 13, 2021 at 3:16 AM Like Xu <like.xu.linux@gmail.com> wrote:
+>
+> On 13/7/2021 5:47 pm, Yang Weijiang wrote:
+> > On Mon, Jul 12, 2021 at 10:23:02AM -0700, Jim Mattson wrote:
+> >> On Mon, Jul 12, 2021 at 2:36 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+> >>>
+> >>> On Fri, Jul 09, 2021 at 03:54:53PM -0700, Jim Mattson wrote:
+> >>>> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+> >>>>>
+> >>>>> If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
+> >>>>> and reload it after vm-exit.
+> >>>>
+> >>>> I don't see anything being done here "before VM-entry" or "after
+> >>>> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
+> >>>>
+> >>>> In any case, I don't see why this one MSR is special. It seems that if
+> >>>> the host is using the architectural LBR MSRs, then *all* of the host
+> >>>> architectural LBR MSRs have to be saved on vcpu_load and restored on
+> >>>> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
+> >>>> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
+> >>>> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
+> >>> I looked back on the discussion thread:
+> >>> https://patchwork.kernel.org/project/kvm/patch/20210303135756.1546253-8-like.xu@linux.intel.com/
+> >>> not sure why this code is added, but IMO, although fpu save/restore in outer loop
+> >>> covers this LBR MSR, but the operation points are far away from vm-entry/exit
+> >>> point, i.e., the guest MSR setting could leak to host side for a signicant
+> >>> long of time, it may cause host side profiling accuracy. if we save/restore it
+> >>> manually, it'll mitigate the issue signifcantly.
+> >>
+> >> I'll be interested to see how you distinguish the intermingled branch
+> >> streams, if you allow the host to record LBRs while the LBR MSRs
+> >> contain guest values!
+>
+> The guest is pretty fine that the real LBR MSRs contain the guest values
+> even after vm-exit if there is no other LBR user in the current thread.
+>
+> (The perf subsystem makes this data visible only to the current thread)
+>
+> Except for MSR_ARCH_LBR_CTL, we don't want to add msr switch overhead to
+> the vmx transaction (just think about {from, to, info} * 32 entries).
+>
+> If we have other LBR user (such as a "perf kvm") in the current thread,
+> the host/guest LBR user will create separate LBR events to compete for
+> who can use the LBR in the the current thread.
+>
+> The final arbiter is the host perf scheduler. The host perf will
+> save/restore the contents of the LBR when switching between two
+> LBR events.
+>
+> Indeed, if the LBR hardware is assigned to the host LBR event before
+> vm-entry, then the guest LBR feature will be broken and a warning
+> will be triggered on the host.
 
-i386-tinyconfig vmlinux size:
+Are you saying that the guest LBR feature only works some of the time?
+How are failures communicated to the guest? If this feature doesn't
+follow the architectural specification, perhaps you should consider
+offering a paravirtual feature instead.
 
-=================================================================================
- TOTAL  TEXT  __mutex_trylock_common()                                           
-=================================================================================
-     0     0                         0  79e920060fa7 Merge branch 'WIP/fixes'    
-   -64   -64                       +78  7fef2edf7cc7..79e920060fa7 (ALL COMMITS) 
-=================================================================================
+Warnings on the host, by the way, are almost completely useless. How
+do I surface such a warning to a customer who has a misbehaving VM? At
+the very least, user space should be notified of KVM emulation errors,
+so I can get an appropriate message to the customer.
 
-elapsed time: 726m
+> LBR is the kind of exclusive hardware resource and cannot be shared
+> by different host/guest lbr_select configurations.
 
-configs tested: 97
-configs skipped: 3
+In that case, it definitely sounds like guest architectural LBRs
+should be a paravirtual feature, since you can't actually virtualize
+the hardware.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-h8300                       h8s-sim_defconfig
-arm                         axm55xx_defconfig
-m68k                        m5407c3_defconfig
-mips                         db1xxx_defconfig
-arm                         assabet_defconfig
-arm                         orion5x_defconfig
-arm                    vt8500_v6_v7_defconfig
-nds32                               defconfig
-arm                       netwinder_defconfig
-xtensa                           alldefconfig
-sh                            migor_defconfig
-nios2                         3c120_defconfig
-powerpc                      mgcoge_defconfig
-arm                         mv78xx0_defconfig
-arm                            zeus_defconfig
-powerpc                     powernv_defconfig
-powerpc                  storcenter_defconfig
-sh                           se7343_defconfig
-arm                          badge4_defconfig
-arm                       multi_v4t_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210713
-i386                 randconfig-a004-20210713
-i386                 randconfig-a006-20210713
-i386                 randconfig-a001-20210713
-i386                 randconfig-a002-20210713
-i386                 randconfig-a003-20210713
-x86_64               randconfig-a013-20210713
-x86_64               randconfig-a014-20210713
-x86_64               randconfig-a012-20210713
-x86_64               randconfig-a015-20210713
-x86_64               randconfig-a016-20210713
-x86_64               randconfig-a011-20210713
-i386                 randconfig-a015-20210713
-i386                 randconfig-a014-20210713
-i386                 randconfig-a011-20210713
-i386                 randconfig-a013-20210713
-i386                 randconfig-a012-20210713
-i386                 randconfig-a016-20210713
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210713
-x86_64               randconfig-a005-20210713
-x86_64               randconfig-a004-20210713
-x86_64               randconfig-a003-20210713
-x86_64               randconfig-a002-20210713
-x86_64               randconfig-a006-20210713
-x86_64               randconfig-a001-20210713
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > I'll check if an inner simplified xsave/restore to guest/host LBR MSRs is meaningful,
+> > the worst case is to drop this patch since it's not correct to only enable host lbr ctl
+> > while still leaves guest LBR data in the MSRs. Thanks for the reminder!
+> >
