@@ -2,138 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121FC3C67AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDC33C67B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 02:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhGMAyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 20:54:36 -0400
-Received: from mail-dm6nam12on2070.outbound.protection.outlook.com ([40.107.243.70]:42368
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233545AbhGMAyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 20:54:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FcO6HJHW18tWUYKzH3ubqRP3ShM16l+ewKNI6iYECnOyRkt97zBTEWGIk6E1eeTvDiBVTL2MBmfForyggWzf7PFawULEqujdYGhGY0W4y8wbJ9rOcOoR1EQR9p8xhIEDXFiZxVB8RoclsBWfcgdGp4a3iKTxnj8aXnSovXQAw1M9AgBcYn8B034T1u+VfsdeeKwKY7N7FY0iwcx3cZMTvR3M3bSdX/VELrMv0L0KfYI5xJ/KC80XwmIj2lQ6YG6AnZUT6qbgE9Pcb48nfZo7lbTYwLAimjs3LxaPSCXX26psj5j8tQYM2/djwyfJTaK5uIFzTtF/ST2nyBG4vyT4qQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7ATnBftd5xJK6qDNpJi1tSPdBmaqt+BWYsW2ArY8F98=;
- b=WjXqy6xYXfb4bHX0G2e01JSafwFTB3BTiEQtWhiu+YlgypQVKkDQiF566LAK2LeSJ7shGjT0LaOVRWO1g+GLrTqlGwhdYAjg7+6bboTbEX5S92g4ShgpDLspTIb3ticuseMk701tDiqAYEP3YLiATcKvoUMlZ5pASEX0/efdwc+YYioLUpqiMl2kVjw+xr39Jku7g8nx8APzunJY2A5Md2d6qPKfKAUfkGGZzvfUb8WrnweJ2/iQKB8Ar19sLvvG2vhz44b/VOvltZrvUhe+dgzTKN7iDS0kXIDMwGI4uTastmDF9ySNM/ndo2EV6ylyo7gx6CWYvDAkn0Z2dTTNiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=nutanix.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7ATnBftd5xJK6qDNpJi1tSPdBmaqt+BWYsW2ArY8F98=;
- b=BBQzgqCQIJrpqDagyCSxdzsiZjx/7f3blcERRRd/KeUVZ392CGGnc+MnLANEE8OlTGf68yRayjcYQs/MVoZV0GT+MuppPA5UMissu4GUvMVefNNG3V7R9+WrUafvKWhBiWv6McV/5j0YiimcDfMKpHaLTpTuGH97BD7O5enwU1US2b9BBg2CH2RSzKaOUi48VzGmfx9Gbad9x0JsOJlYO0zW+N0heyOwg69Mqqu6ImwJlQXPyoaYkbSbmuesoUnzTK6fejeNoRYOl6SpwpbeRUxlJN8CI4XO6E8tXLEsVTCP7NBNApMJUeS9pqRaCQn3nA2mmwdHzAoHwit6bJxtwg==
-Received: from MWHPR19CA0013.namprd19.prod.outlook.com (2603:10b6:300:d4::23)
- by BYAPR12MB4742.namprd12.prod.outlook.com (2603:10b6:a03:9f::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Tue, 13 Jul
- 2021 00:51:45 +0000
-Received: from CO1NAM11FT065.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:d4:cafe::ce) by MWHPR19CA0013.outlook.office365.com
- (2603:10b6:300:d4::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend
- Transport; Tue, 13 Jul 2021 00:51:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; nutanix.com; dkim=none (message not signed)
- header.d=none;nutanix.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT065.mail.protection.outlook.com (10.13.174.62) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4308.20 via Frontend Transport; Tue, 13 Jul 2021 00:51:44 +0000
-Received: from [10.20.23.82] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Jul
- 2021 00:51:43 +0000
-Subject: Re: [PATCH v10 7/8] PCI: Add support for ACPI _RST reset method
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
- <20210709123813.8700-8-ameynarkhede03@gmail.com>
- <20210712170920.2a0868ac.alex.williamson@redhat.com>
-From:   Shanker R Donthineni <sdonthineni@nvidia.com>
-Message-ID: <e8f0b236-dfb3-c9cf-4683-c43e8bc0c0b4@nvidia.com>
-Date:   Mon, 12 Jul 2021 19:51:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233814AbhGMA50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 20:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233545AbhGMA5Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 20:57:25 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56732C0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:54:36 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id h18so9551120qve.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 17:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LpiLPRJIBi6SrxM3Fqi2A10JFLoRo5PavGwbx3+mEss=;
+        b=vkVFketWLLa3g3vbW0VKxxdpO1VgzH/shdIKlbrtcym5F/0egwiJ/KScrVUz6zavRU
+         PyjeGkQD6UuUB+smKODLYpFIa3JrnHSg7m1XBH/tkP+xTWGGa+HiUXFuRN1Vt/euRQGQ
+         i0I/OKqxssPRjPzI2+SINFVwwvWlGAbSIvstxGTgkfcAxuuPver5dUevSCOWSe6g7dQZ
+         ZboqVaRliHLVYR/pH2gN5fl7zEObD/Gxl8vpvtvuC8C+OyJMgfQPFnNIJmG2l6hqWcRy
+         3H5eWHcnQWYSGAJ5tp6eGBLmF5NuI8KEXSRet02TihLEbPtNbxoxTS6JeRqBVHI7dumT
+         Tskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LpiLPRJIBi6SrxM3Fqi2A10JFLoRo5PavGwbx3+mEss=;
+        b=qxPCQwkqXRrMObReZUd65SoDqLPk1PFHRHiNR0lgk4NOwAGUYEeoLhLBfMI/ZnDCjY
+         33jKveQ2b6ACKH+aWdida7ZzM9ZFyQWvtf7tSoBb4XWZ4J06dPIgcWYlAIAtZn003QDE
+         Koq10/z/UtTFov09FDPxtTf/YWI5CjjiHIulzPS5Beln74vebmv7jg1KvcdMlVr8v61D
+         wMNhD8i3LUccdnLzWOVsB8huPRFeyQq6kcg25zgHTh0m9pHk/fUkPZGHSwrMU7SHEvzC
+         gd+gtyNh1T3OnagjbgrUaZZyig4uKW8pDvFwuPYz2HPdHxUt8Qw2honxd7it2QgByo98
+         gZCQ==
+X-Gm-Message-State: AOAM531iDlaJvAS8xX43IVCiOtv9pt0ZnHc7bFzU67sJH7lpko6VLZFv
+        iAFANHL1ngfTHhOiQy2C6TQSag==
+X-Google-Smtp-Source: ABdhPJz2gNuczFb8JQuqxQmKUDUJ0En8OUGHx6qsEkm8g13tkukdUApRMxbJNC6xcU8U5NIHl8v0mQ==
+X-Received: by 2002:a0c:c350:: with SMTP id j16mr2185643qvi.51.1626137675267;
+        Mon, 12 Jul 2021 17:54:35 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id k66sm7586042qke.84.2021.07.12.17.54.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 17:54:34 -0700 (PDT)
+Subject: Re: [Patch v3 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        tdas@codeaurora.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210708120656.663851-1-thara.gopinath@linaro.org>
+ <20210708120656.663851-7-thara.gopinath@linaro.org> <YOkgSP5e3JaGY19V@yoga>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <2d11017d-8722-30d1-6b91-214c341e8ab4@linaro.org>
+Date:   Mon, 12 Jul 2021 20:54:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210712170920.2a0868ac.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YOkgSP5e3JaGY19V@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5c3f6b56-5883-42b0-0a0a-08d945986320
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4742:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB4742A3081B84A156E6B6D53EC7149@BYAPR12MB4742.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZRbEJaYpYjZg3Zcuh7F9ndAGz5JY5VVa6zCpt0YhO9IfkAApOjj3cb9eoT+mjpTSvKkJAFoCNx+7a7vGPF5D68SBYPfovuV8+suYym+QdrrHm9WHkL5nbZjHQt+fxD6gRpkuphGt0C7Ks0APL8GDvV6Qgc2kswYjafb8QY9K3XQBoJbPLk2wmhM3EB+gPttowo9ka24WuE6muolgq1PRiOX1/BjxEE1LCSJNZc7uAWPLhzbmBjLgUwUJLk/EOuLTLIZVB2v2OMDGIjrn81/gE/Rae1gkiNr11IzbIccOdyEoCvHbFcS+u5F4Yah8d2Rm+hSQwwx4cP/B+MUo5ByUPTbna27G7vjEDv4c7G+OSOqo4h0VO2FocpRsijZ9reEVC83ne/hq4PtWITMquhavyj7VuCEhRvDMWTYq0xbq68+9cRSrtrIMgnBYmXrS0Ao8chxbhhK95YK6Lm8Mi0RYePAuvkxsZV7XvObTBBSDRnbvtrb0YlgsB8+sZtgXpH7behAUSrJhgD1W5dwQ23mdgRK/CNB9hcwcmPTLdTLjNbqBBqBKeBCP7hsqp8yLZcx9YGR9dFnbFZBCCzYxt1EdACxGwYgCmcbAD9QocvgrtbOm4vkr8199TmgCAaZIiFJ0QfOpLI4LZHXem/0wD91nGGqNnBGGwWdm068qz96OJGNb4vKGyjDhpfMV+wwiK+CRYydYojCdK5AfEVy/xonMEvnnkiZIJCt2rGwAj0dnqTL67JwziY6f4579zZfWfHHZVII9XfJQP5/yLMtUTlYw7w==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39850400004)(346002)(396003)(136003)(46966006)(36840700001)(83380400001)(7636003)(53546011)(6916009)(16526019)(356005)(31686004)(36860700001)(2906002)(4326008)(2616005)(296002)(54906003)(426003)(70586007)(186003)(8936002)(316002)(478600001)(5660300002)(336012)(36756003)(36906005)(70206006)(26005)(7416002)(82310400003)(34020700004)(16576012)(31696002)(47076005)(86362001)(8676002)(82740400003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 00:51:44.8926
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c3f6b56-5883-42b0-0a0a-08d945986320
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT065.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4742
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-On 7/12/21 6:09 PM, Alex Williamson wrote:
->> +/**
->> + * pci_dev_acpi_reset - do a function level reset using _RST method
->> + * @dev: device to reset
->> + * @probe: check if _RST method is included in the acpi_device context.
->> + */
->> +int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
->> +{
->> +     acpi_handle handle = ACPI_HANDLE(&dev->dev);
+
+On 7/10/21 12:21 AM, Bjorn Andersson wrote:
+> On Thu 08 Jul 07:06 CDT 2021, Thara Gopinath wrote:
+> 
+>> Add dt binding documentation to describe Qualcomm
+>> Limits Management Hardware node.
+>>
+>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>> ---
+>>   .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++++++++++++
+>>   1 file changed, 100 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+>> new file mode 100644
+>> index 000000000000..7f62bd3d543d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+>> @@ -0,0 +1,100 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +# Copyright 2021 Linaro Ltd.
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/thermal/qcom-lmh.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 >> +
->> +     if (!handle || !acpi_has_method(handle, "_RST"))
->> +             return -ENOTTY;
+>> +title: Qualcomm Limits Management Hardware(LMh)
 >> +
->> +     if (probe)
->> +             return 0;
+>> +maintainers:
+>> +  - Thara Gopinath <thara.gopinath@linaro.org>
 >> +
->> +     if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
->> +             pci_warn(dev, "ACPI _RST failed\n");
->> +             return -EINVAL;
-> Should we return -ENOTTY here instead to give a possible secondary
-> reset method a chance?  Thanks,
-Thanks for reviewing patches.
+>> +description:
+>> +  Limits Management Hardware(LMh) is a hardware infrastructure on some
+>> +  Qualcomm SoCs that can enforce temperature and current limits as
+>> +  programmed by software for certain IPs like CPU.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - qcom,sdm845-lmh
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: core registers
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  '#interrupt-cells':
+>> +    const: 1
+>> +
+>> +  interrupt-controller: true
+>> +
+>> +  qcom,lmh-cpu-id:
+>> +    description:
+>> +      CPU id of the first cpu in the LMh cluster
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  qcom,lmh-temperature-arm:
+>> +    description:
+>> +      An integer expressing temperature threshold in millicelsius at which
+>> +      the LMh thermal FSM is engaged.
+> 
+> Do we know (by any public source) what "arm", "low" and "high" means
+> beyond that they somehow pokes the state machine?
 
-ACPI/AML _RST method type is VOID. The only possibility of failure would be
-either system is running out of memory or bugs in ACPICA. There is no strong
-reason not to return -NOTTY.
+Not from public documentation. I know what these thresholds means, 
+atleast to some extent. Though I will never claim to be an expert in 
+this! There is an error in description of qcom,lmh-temperature-low and 
+qcom,lmh-temperature-high below. I copied
+and forgot to change the description. I will fix it.
 
-I'll fix in the next version. Is there opportunity to include reset feature in v5.14-rc2?
+> 
+>> +    $ref: /schemas/types.yaml#/definitions/int32
+>> +
+>> +  qcom,lmh-temperature-low:
+>> +    description:
+>> +      An integer expressing temperature threshold in millicelsius at which
+>> +      the LMh thermal FSM is engaged.
+>> +    $ref: /schemas/types.yaml#/definitions/int32
+>> +
+>> +  qcom,lmh-temperature-high:
+>> +    description:
+>> +      An integer expressing temperature threshold in millicelsius at which
+>> +      the LMh thermal FSM is engaged.
+>> +    $ref: /schemas/types.yaml#/definitions/int32
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +  - #interrupt-cells
+>> +  - interrupt-controller
+>> +  - qcom,lmh-cpu-id
+>> +  - qcom,lmh-temperature-arm
+>> +  - qcom,lmh-temperature-low
+>> +  - qcom,lmh-temperature-high
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    #include <dt-bindings/clock/qcom,rpmh.h>
+>> +    #include <dt-bindings/interconnect/qcom,sdm845.h>
+> 
+> I don't see why you need qcom,rpmh.h or the interconnect include in this
+> example.
 
-Can I add your reviewed-by since no other comments to this patch?
+I could have sworn make dt-bindings check failed. But maybe only The 
+first include is needed. I will remove the other two.
 
--Shanker
+> 
+>> +
+>> +    lmh_cluster1: lmh@17d70800 {
+>> +      compatible = "qcom,sdm845-lmh";
+>> +      reg = <0 0x17d70800 0 0x401>;
+> 
+> #address- and #size-cells are 1 in the wrapper that validates the
+> examples, so drop the two zeros.
 
+Ok.
 
+> 
+>> +      interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+>> +      qcom,lmh-cpu-id = <0x4>;
+>> +      qcom,lmh-temperature-arm = <65000>;
+>> +      qcom,lmh-temperature-low = <94500>;
+>> +      qcom,lmh-temperature-high = <95000>;
+>> +      interrupt-controller;
+>> +      #interrupt-cells = <1>;
+>> +    };
+>> +  - |
+> 
+> This is a different example from the one above, if you intended that,
+> don't you need the #include of arm-gic.h here as well?
 
+Again make dt-bindings check did not fail. It is a different example.
+So I am not sure of the norm here. Is one example good enough ?
+
+> 
+> Regards,
+> Bjorn
+> 
+>> +    lmh_cluster0: lmh@17d78800 {
+>> +      compatible = "qcom,sdm845-lmh";
+>> +      reg = <0 0x17d78800 0 0x401>;
+>> +      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+>> +      qcom,lmh-cpu-id = <0x0>;
+>> +      qcom,lmh-temperature-arm = <65000>;
+>> +      qcom,lmh-temperature-low = <94500>;
+>> +      qcom,lmh-temperature-high = <95000>;
+>> +      interrupt-controller;
+>> +      #interrupt-cells = <1>;
+>> +    };
+>> +  - |
+>> -- 
+>> 2.25.1
+>>
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
