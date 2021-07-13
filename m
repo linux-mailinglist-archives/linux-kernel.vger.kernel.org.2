@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E8F3C705C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD903C7078
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 14:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhGMMhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 08:37:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:10478 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236230AbhGMMhD (ORCPT
+        id S236409AbhGMMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 08:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236146AbhGMMi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 08:37:03 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPKjn2RcBzcbkr;
-        Tue, 13 Jul 2021 20:30:53 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 13 Jul 2021 20:34:10 +0800
-Received: from [10.67.102.67] (10.67.102.67) by dggemi759-chm.china.huawei.com
- (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Jul 2021 20:34:09 +0800
-Subject: Re: [PATCH net-next 1/9] devlink: add documentation for hns3 driver
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <jiri@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lipeng321@huawei.com>,
-        <chenhao288@hisilicon.com>
-References: <1626053698-46849-1-git-send-email-huangguangbin2@huawei.com>
- <1626053698-46849-2-git-send-email-huangguangbin2@huawei.com>
- <20210712113243.2d786fe3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
-Message-ID: <09d3972e-20d9-095e-ead3-b3ed7fcf2767@huawei.com>
-Date:   Tue, 13 Jul 2021 20:34:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 13 Jul 2021 08:38:27 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAA6C0613DD;
+        Tue, 13 Jul 2021 05:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=febXSlnqHBcqwfMc/cqWyNSs3akzUbytq0SHLTlJG6U=; b=wPXgU39qlJPnevOo2ICp2PMxP
+        +YC8r/8c8Vj25gmY9Scs+ok/PGyXY1Bia34Bc8wTxnp82+y/f8nQMDcoPw1Z1r6PczS+26YDd8QR8
+        qGLzpDjsCWZ4HXc2AQ5svfmxovOezfPTcM/4nxZOmWmgVpoUqGIuXBOTyDLenwG14qv+VCWymsxzJ
+        RF0Tsv3LZrAELaIIXLeD3vIdPsX3SGShsenxBcvij5WyzODC0qPGVLjgUj2W/wKV/RzzXo3kc8OaU
+        RF4GpCCAtpncSxJ3+R7Jl+xNn2cCpVVaPUEFeq6i0Lt0x8frgxwYiKBMrHlkq3lxqZSS6WH8Q+p3x
+        c6IGcX1vg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46054)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m3HdM-00066q-G3; Tue, 13 Jul 2021 13:35:32 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m3HdK-0000Hf-Gf; Tue, 13 Jul 2021 13:35:30 +0100
+Date:   Tue, 13 Jul 2021 13:35:30 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Salah Triki <salah.triki@gmail.com>,
+        "fabrice.gasnier@foss.st.com" <fabrice.gasnier@foss.st.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
+Message-ID: <20210713123530.GI22278@shell.armlinux.org.uk>
+References: <20210712231910.GA1831270@pc>
+ <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
+ <20210713091954.GG22278@shell.armlinux.org.uk>
+ <012ccfea2a564274bd9d2e1cfc130873@AcuMS.aculab.com>
+ <20210713112253.GH22278@shell.armlinux.org.uk>
+ <2f725f0be09349308bf7d9a24399d516@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20210712113243.2d786fe3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.67]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f725f0be09349308bf7d9a24399d516@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/7/13 2:32, Jakub Kicinski wrote:
-> On Mon, 12 Jul 2021 09:34:50 +0800 Guangbin Huang wrote:
->> +Parameters
->> +==========
->> +
->> +The ``hns3`` driver implements the following driver-specific
->> +parameters.
->> +
->> +.. list-table:: Driver-specific parameters implemented
->> +   :widths: 10 10 10 70
->> +
->> +   * - Name
->> +     - Type
->> +     - Mode
->> +     - Description
->> +   * - ``rx_buf_len``
->> +     - U32
->> +     - driverinit
->> +     - Set rx BD buffer size.
->> +       * Now only support setting 2048 and 4096.
+On Tue, Jul 13, 2021 at 12:20:26PM +0000, David Laight wrote:
+> > > For big structures it is worth adding a compile-time check of
+> > > the structure size - but not really for three u32.
+> > 
+> > Sorry, structure size has absolutely nothing to do with whether it's
+> > a good idea to have a compile-time check. The deciding factor is
+> > whether the code relies on some property such as it being a certain
+> > size. Such as in this exact case. If you grep for "BUILD_BUG_ON.*sizeof"
+> > in fs/ for example, this illustrates the point rather well.
 > 
-> Can you elaborate further? If I was a user reading this I'd still have
-> little confidence what this does. Does it change the size of each
-> buffer put on the Rx ring between 2k and 4k? Why is that a devlink
-> feature, we configure rings via ethtool.
-> 
-Yes, we can add more detailed descriptions about this feature and tx_buf_size
-in V2. This devlink feature is to change the buffer size of each BD of Rx ring
-between 2KB and 4KB.
+> I'd not bother if the size is obviously going to be correct.
 
-Now ethtool -G paramter supports setting some ring configurations such as
-queue depth and so on，but not supports setting rx BD buffer size. And
-devlink can support this function.
+That's fine if you assume that the structure isn't going to be changed.
+In this case, you can't do that - the structure looks to be a driver
+internal structure. It certainly doesn't look like an interface to
+anything that matters.
 
-For another thing, setting rx BD buffer size needs to reload resource
-pool(for resource pool details, see the link: [1]) to take effect, so
-even if ethtool support this function, it still needs next reload to
-take effect. Now devlink supports reload operation(patch 6/9), so we can
-set rx BD buffer size via devlink, then do devlink reload operation to
-make it take effect.
+The code as written relies on the assumption that an array of
+struct stm32_breakinput can be directly mapped to an array of u32,
+where every third element of the u32 array falls on the first member
+of each stm32_breakinput member. That is a _significant_ assumption
+that the code _should_ be checking for.
 
-To sum up, we choose devlink to set rx BD buffer size.
+> I did get some odd bugs a few years ago from a compiler that aligned
+> all structures on 4-byte boundaries.
+> I had to change a structure of two u16 into an array :-)
 
->> +   * - ``tx_buf_size``
->> +     - U32
->> +     - driverinit
->> +     - Set tx spare buf size.
->> +
->> +       * The size is setted for tx bounce feature.
-> 
-> ... and what is the tx bounce feature?
-> .
-> 
-Tx bounce buffer feature is used for small size packet or frag. It adds a queue
-based tx shared bounce buffer to memcpy the small packet when the len of xmitted
-skb is below tx_copybreak(value to distinguish small size and normal size), and
-reduce the overhead of dma map and unmap when IOMMU is on. For more details, see
-link: [2], this devlink feature is setting tx bounce buffer size for it.
+ARM OABI will do exactly that.
 
-
-1.  https://lore.kernel.org/patchwork/cover/816549/
-2.  https://patchwork.kernel.org/project/netdevbpf/patch/1623825377-41948-4-git-send-email-huangguangbin2@huawei.com/
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
