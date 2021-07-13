@@ -2,163 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8AB3C7596
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFA23C7599
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 19:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhGMRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 13:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhGMRR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 13:17:58 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0646CC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:15:08 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id h19so20197548ljl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 10:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TRElncUApLCHRIerX6tD+RzBqbqdZ3F0Mpo2jg30Jx0=;
-        b=oZK6lBP0C1TUfupGEUR83jD4aWoePZG9wxjZmwMzyFtaQEpZOOvz7ySZ8R9dySXvkk
-         zHpz+xU57gCTGhOdBVveHZkysVyzqINe4ixIH1Wxbp5NbZMRX0eDwKhq4LGsQPsicyHI
-         LnigKyrRPuSahzjCxqdkMgcqD0ozs8NFN9L99XWNCSLvUeeHa3LdYxaLMGBlCLws9bN5
-         fUCTqz8Z6JQaRKXu20rHf0mJsoRNA204tPp+uaDtePXeYVJeKvpsu+R7r386iyCdusOM
-         kqF+7Kd0myposqkDIVI62kL71KQcpmJ948pqv32W+5jL7UNzYjhYgahmVIkRP2td5M6z
-         dL3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TRElncUApLCHRIerX6tD+RzBqbqdZ3F0Mpo2jg30Jx0=;
-        b=UTti2wZ7SGg3qaCk1a/VumqErdbnabPeHBbHC8qOq9+8FwUmmfiU5j3+4sQAigUA9v
-         q08z24uNbl1ykryqAIPf85RUtugjmrL4RdUFidz3Sku2C8d00TQDogwGQfx04IdUOHfs
-         SiJlPVbXiVz7Lnba/UY3e8v99eWLwUFjVA96xx8Ebg+JNDH9+7FVL88gQmOrDIkPIT3l
-         HjO6ObT+KrhBvO2S5omN0zoTsJyI2mplDl2G0LsrlteyDL0Gw7HhYbX/kB/Px1+pDOn8
-         YSiVqYZe7P5OAehMo718WykcrDK/NkP3HPPvNq5P8IGbs6AStRqsfkFKVmjOLn1Q2bsg
-         xPYA==
-X-Gm-Message-State: AOAM531P1J3pbN4v3nyHXltU43lDxMZLtzFqRCfEWYfvijkpVWVahdp5
-        HoR2mz2E16/5t6/JSc1NSO/PsHd6qMtT9H7EwWgr2g==
-X-Google-Smtp-Source: ABdhPJyf7GujIzwXailhgsxgfd/9Mlseri46FP9xEUeiTaKMYMd+4BMwlW0qPgiwEGfg+cn2OSBihchdCsONYcdOjWk=
-X-Received: by 2002:a05:651c:111b:: with SMTP id d27mr5027279ljo.387.1626196506026;
- Tue, 13 Jul 2021 10:15:06 -0700 (PDT)
+        id S232455AbhGMRTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 13:19:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:24282 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhGMRTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 13:19:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="271324176"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="271324176"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 10:16:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="654472036"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 13 Jul 2021 10:16:11 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m3M0w-000I1J-Ol; Tue, 13 Jul 2021 17:16:10 +0000
+Date:   Wed, 14 Jul 2021 01:15:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-next/clang-fallthrough] BUILD SUCCESS WITH
+ WARNING 570d444e9f773ab12a6a4281b357fc5b80e4dd7a
+Message-ID: <60edca25.k00ut905IFBjPyt5%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210708194638.128950-1-posk@google.com> <20210708194638.128950-3-posk@google.com>
- <YOgCdMWE9OXvqczk@hirez.programming.kicks-ass.net> <CAPNVh5fbDTNPCnSoQFia_VSuDcLsReGey+7iouK6V=p1S7v=sg@mail.gmail.com>
- <20210713161030.GA2591@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210713161030.GA2591@worktop.programming.kicks-ass.net>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Tue, 13 Jul 2021 10:14:54 -0700
-Message-ID: <CAPNVh5fpLDVTznS9m343LjhRn1uUQdWbPuo0C_+G5D6RsugL=w@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3 v0.2] sched/umcg: RFC: add userspace atomic helpers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 9:10 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Jul 09, 2021 at 09:57:32AM -0700, Peter Oskolkov wrote:
-> > On Fri, Jul 9, 2021 at 1:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > > This is horrible... Jann is absolutely right, you do not, *ever* do
-> > > userspace spinlocks. What's wrong with the trivial lockless single
-> > > linked list approach?.
-> >
-> > I'm not sure how to get around the ABA problem with a lockless single
-> > linked list: https://en.wikipedia.org/wiki/ABA_problem
->
-> I'm familiar with the problem. I'm just not sure how we got there.
->
-> Last time we had umcg_blocked_ptr / umcg_runnable_ptr which were kernel
-> append, user clear single linked lists used for RUNNING->BLOCKED and
-> BLOCKED->RUNNABLE notifications.
->
-> But those seem gone, instead we now have idle_servers_ptr /
-> idle_workers_ptr. I've not yet fully digested things, but they seem to
-> implement some 'SMP' policy. Can we please forget about the whole SMP
-> thing for now and focus on getting the basics sorted?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
+branch HEAD: 570d444e9f773ab12a6a4281b357fc5b80e4dd7a  Makefile: Enable -Wimplicit-fallthrough for Clang
 
-Hmm... yes, I was always working on the M:N model, i.e. multiple
-servers, i.e. SMP. Apologies if this was not clear.
+Warning in current branch:
 
-I think I'm close to having "SMP basics sorted" - I believe it will
-take me longer now to go back to "UP" and then extend this to SMP. And
-the result can probably be not as clean as having SMP there from the
-beginning. Just give me another couple of days, please!
+kernel/sched/core.c:3141:4: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+sound/core/pcm_native.c:3799:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
 
->
-> So if we implement the bits outlined here:
->
->   https://lore.kernel.org/linux-api/20210609125435.GA68187@worktop.programming.kicks-ass.net/
->   https://lore.kernel.org/linux-api/YMJTyVVdylyHtkeW@hirez.programming.kicks-ass.net/
->
-> Then what is mising for full N:1 (aka UP) ?
->
-> One thing I've considered is that we might want to add u64 timestamps
-> for the various state transitions, such that userspace can compute
-> elapsed time which is useful for more dynamic scheduling policies.
+possible Warning in current branch:
 
-Tagging state transitions with unique-per-task tags (counters) will
-simplify a lot of things in the userspace, as these can be used to
-sort out block/wakeup/swap races easily. If these tags have timestamp
-semantics (e.g. nanos), even better - as you suggest, scheduling can
-be tweaked, tracing/instrumentation will naturally use these, etc.
+arch/mips/include/asm/fpu.h:79:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+arch/mips/mm/tlbex.c:1386:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/char/lp.c:764:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+drivers/dma/ipu/ipu_idmac.c:621:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:382:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/mmc/host/jz4740_mmc.c:792:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/pci/proc.c:234:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+drivers/scsi/libsas/sas_discover.c:467:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+drivers/video/fbdev/xilinxfb.c:244:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+include/math-emu/op-common.h:332:8: warning: this statement may fall through [-Wimplicit-fallthrough=]
 
-Synchronizing state+timestamp updates will be a challenge, unless we
-share a 64-bit field for state + timestamp: 6 bytes for the timestamp
-and two bytes for the state (I think one byte for the state is too
-tight, although it will be enough initially). 6 bytes of nanos will
-cycle over in a couple of days (if my math is right), so should not be
-an issue for uniqueness; and I guess the userspace can always easily
-restore the higher two bytes of the timestamp if needed.
+Warning ids grouped by kconfigs:
 
-So... should I convert u32 state into u64 state+timestamp field?
+gcc_recent_errors
+`-- nds32-randconfig-r004-20210713
+    `-- include-math-emu-op-common.h:warning:this-statement-may-fall-through
 
->
-> Another is preemption; I'm thinking we can drive that with signals, but
-> that does give complications -- signals are super gross API wise.
-> Another method would be much preferred I think. We could add another
-> syscall which allows userspace (from eg. SIGALRM/SIGPROF/SIGVTALRM) to
-> force a worker to do a RUNNING->RUNNABLE transition and schedule back to
-> the server.
+clang_recent_errors
+|-- arm64-randconfig-r002-20210711
+|   |-- drivers-iommu-arm-arm-smmu-v3-arm-smmu-v3.c:warning:unannotated-fall-through-between-switch-labels
+|   |-- drivers-pci-proc.c:warning:fallthrough-annotation-in-unreachable-code
+|   |-- drivers-scsi-libsas-sas_discover.c:warning:unannotated-fall-through-between-switch-labels
+|   |-- drivers-video-fbdev-xilinxfb.c:warning:unannotated-fall-through-between-switch-labels
+|   `-- kernel-sched-core.c:warning:fallthrough-annotation-in-unreachable-code
+|-- arm64-randconfig-r036-20210713
+|   `-- drivers-dma-ipu-ipu_idmac.c:warning:unannotated-fall-through-between-switch-labels
+|-- mips-randconfig-r025-20210713
+|   |-- arch-mips-include-asm-fpu.h:warning:fallthrough-annotation-in-unreachable-code
+|   |-- arch-mips-mm-tlbex.c:warning:unannotated-fall-through-between-switch-labels
+|   `-- drivers-mmc-host-jz4740_mmc.c:warning:unannotated-fall-through-between-switch-labels
+|-- riscv-buildonly-randconfig-r003-20210712
+|   |-- kernel-sched-core.c:warning:fallthrough-annotation-in-unreachable-code
+|   `-- sound-core-pcm_native.c:warning:fallthrough-annotation-in-unreachable-code
+|-- x86_64-randconfig-a003-20210713
+|   |-- drivers-char-lp.c:warning:fallthrough-annotation-in-unreachable-code
+|   `-- drivers-scsi-libsas-sas_discover.c:warning:unannotated-fall-through-between-switch-labels
+|-- x86_64-randconfig-a004-20210713
+|   `-- drivers-scsi-libsas-sas_discover.c:warning:unannotated-fall-through-between-switch-labels
+`-- x86_64-randconfig-a006-20210713
+    `-- kernel-sched-core.c:warning:fallthrough-annotation-in-unreachable-code
 
-I haven't looked into preemption yet, so I'll try any approach you
-suggest (after the "basics" are sorted out).
+elapsed time: 864m
 
-> Then lets consider N:M (aka SMP). The basics of SMP is sharing work
-> between servers. For a large part userspace can already do that by
-> keeping a shared ready queue. Servers that go idle pick up a work,
-> re-assign it to themselves and go.
->
-> The pain-point seems to be *efficient* BLOCKED->RUNNABLE notifications
-> across servers. Inefficient options include the userspace servers
-> iterating all known other servers and trying to steal their
-> umcg_runnable_ptr and processing it. This is 'difficult' in that there
-> is no natural wakeup and hence letting a server do IDLE will increase
-> latency and destroy work concervance.
->
-> The alternative seems to be to let the kernel do the server iteration,
-> looking for a RUNNING one and using that umcg_runnable_ptr field and
-> kicking it. For that we can set up an immutable linked list between
-> struct umcg_task's, a circular single linked list that the kernel
-> iterates until it's back where it started. Then there is no dymaic
-> state.
+configs tested: 135
+configs skipped: 5
 
-In full utilization scenarios, which are typical in our use cases
-(custom scheduling is not that useful if there are idle CPUs/servers),
-the kernel will quite often find no idle servers, so having a dynamic
-list/stack of idle servers is more efficient. I'll post what I have in
-mind (the kernel marks servers as deleted, the userspace does
-cleanup/gc) soon.
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      ep88xc_defconfig
+arc                     haps_hs_smp_defconfig
+sh                             espt_defconfig
+arm                             ezx_defconfig
+riscv                          rv32_defconfig
+arm                  colibri_pxa300_defconfig
+h8300                       h8s-sim_defconfig
+arm                         axm55xx_defconfig
+m68k                        m5407c3_defconfig
+mips                         db1xxx_defconfig
+arm                         assabet_defconfig
+arm                         orion5x_defconfig
+sh                          urquell_defconfig
+powerpc                    gamecube_defconfig
+arm                    vt8500_v6_v7_defconfig
+nds32                               defconfig
+arm                       netwinder_defconfig
+xtensa                           alldefconfig
+sh                            migor_defconfig
+arm                     davinci_all_defconfig
+mips                         tb0219_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                     akebono_defconfig
+powerpc                    mvme5100_defconfig
+arm                            mps2_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc8313_rdb_defconfig
+riscv                            allyesconfig
+sh                          r7785rp_defconfig
+microblaze                          defconfig
+arm                         nhk8815_defconfig
+mips                         tb0287_defconfig
+powerpc                   motionpro_defconfig
+powerpc                  storcenter_defconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                     taishan_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                    klondike_defconfig
+powerpc                      ppc40x_defconfig
+arm                           viper_defconfig
+arm                          gemini_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                            mmp2_defconfig
+arm                        multi_v5_defconfig
+mips                            e55_defconfig
+arm                            zeus_defconfig
+powerpc                     powernv_defconfig
+sh                           se7343_defconfig
+arm                          badge4_defconfig
+arm                       multi_v4t_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+csky                                defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+s390                                defconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210712
+x86_64               randconfig-a003-20210712
+x86_64               randconfig-a005-20210712
+x86_64               randconfig-a006-20210712
+i386                 randconfig-a004-20210712
+i386                 randconfig-a006-20210712
+i386                 randconfig-a005-20210713
+i386                 randconfig-a004-20210713
+i386                 randconfig-a006-20210713
+i386                 randconfig-a001-20210713
+i386                 randconfig-a002-20210713
+i386                 randconfig-a003-20210713
+i386                 randconfig-a005-20210712
+i386                 randconfig-a001-20210712
+i386                 randconfig-a002-20210712
+x86_64               randconfig-a013-20210713
+x86_64               randconfig-a014-20210713
+x86_64               randconfig-a012-20210713
+x86_64               randconfig-a015-20210713
+x86_64               randconfig-a016-20210713
+x86_64               randconfig-a011-20210713
+i386                 randconfig-a014-20210712
+i386                 randconfig-a013-20210712
+i386                 randconfig-a016-20210712
+i386                 randconfig-a015-20210712
+i386                 randconfig-a011-20210712
+i386                 randconfig-a012-20210712
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210713
+x86_64               randconfig-a005-20210713
+x86_64               randconfig-a004-20210713
+x86_64               randconfig-a003-20210713
+x86_64               randconfig-a002-20210713
+x86_64               randconfig-a006-20210713
+x86_64               randconfig-a001-20210713
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
