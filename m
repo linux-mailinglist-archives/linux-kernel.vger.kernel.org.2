@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6F53C6DC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709233C6DA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235326AbhGMJyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:54:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234857AbhGMJyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:54:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626169909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tbVpCJ8GLa0hxilOdeafb29laMr4Nxg08S4wR66Adcc=;
-        b=c+eewRcHtVVKGKC5SwnXRKXGKSMZpYu2N7YYwpr+PCH/NRn2a78oZ6MIBgrTG0uJH0hI3P
-        dNYvPeUO7noB9qGPjYACqi3NdXdAMmV8QBfv/tvDm6uFlM5Ca3KScuHcWsC7jPCzrN4CK+
-        MzMcSfI/5uHu+wZNCNV+x7Mafh0i87A=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-7KXmF0CgMk2yxBCDO9j3iA-1; Tue, 13 Jul 2021 05:51:48 -0400
-X-MC-Unique: 7KXmF0CgMk2yxBCDO9j3iA-1
-Received: by mail-wm1-f71.google.com with SMTP id m31-20020a05600c3b1fb02902082e9b2132so288426wms.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:51:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tbVpCJ8GLa0hxilOdeafb29laMr4Nxg08S4wR66Adcc=;
-        b=k1A4eEkA4aHBhnGrcMpM907l2byyizM8V33um5bMPHeksZDaq6mHchryPnWgN6A/3M
-         OfubVHHyjYg1dwxlrceG71AL9Aej7CTt4R8T6h6D/nVhAVU9TTpa5PNuX+e+7p+cBfKK
-         KUOC7tukVFOl+GF9/LfKNrnf7pf7a1CagnfypVidNDmMvFV7uHI1mgg0Z/nB825aOgLJ
-         tnL10Kztj642RI455IDByjgHRvbbRdp4EXDQYd+Jd6TudbvB6MrnlHYTihoUki0kXYht
-         8izCMIazLLSchQGuX4x/LE7w+XGZ7ljkz3Uy7rZYgozjZIkE2oaTqXFyWHJ1glyCvSZG
-         zz0A==
-X-Gm-Message-State: AOAM531BXkV5saejQ6tsBYnuXivk4mgwY9BFyx8K9t+GGEFh92jHlTwp
-        tjwTQ3P33J3+s5iPW4BAmCKYMN2Mmb+sJb3AqLcf57KWVYo2omk9OUOTKUR1VCTOPykOz9HsLNw
-        nwVZ8++s4ixiD1PXqrnkDCyLG
-X-Received: by 2002:a5d:46cc:: with SMTP id g12mr4415718wrs.136.1626169907572;
-        Tue, 13 Jul 2021 02:51:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/GqNgtzZRWmYLDz80dEOp59PHsbGvCWr4Au8zvbhBgLzCZbb2+X12ymf+JjOj9uQxKghRiw==
-X-Received: by 2002:a5d:46cc:: with SMTP id g12mr4415706wrs.136.1626169907427;
-        Tue, 13 Jul 2021 02:51:47 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id n7sm1756180wmq.37.2021.07.13.02.51.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 02:51:47 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mm: remove pfn_valid_within() and
- CONFIG_HOLES_IN_ZONE
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210713080035.7464-1-rppt@kernel.org>
- <20210713080035.7464-2-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <7300dfe1-0c6a-ae2e-2c48-c885248ec263@redhat.com>
-Date:   Tue, 13 Jul 2021 11:51:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235223AbhGMJl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:41:57 -0400
+Received: from mga04.intel.com ([192.55.52.120]:2178 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234971AbhGMJl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 05:41:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="208315243"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="208315243"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 02:39:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; 
+   d="scan'208";a="570242805"
+Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Jul 2021 02:39:01 -0700
+Date:   Tue, 13 Jul 2021 17:53:03 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Like Xu <like.xu.linux@gmail.com>,
+        Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>
+Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host
+ MSR_ARCH_LBR_CTL state
+Message-ID: <20210713095303.GC13824@intel.com>
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
+ <CALMp9eQ+9czB0ayBFR3-nW-ynKuH0v9uHAGeV4wgkXYJMSs1=w@mail.gmail.com>
+ <20210712095305.GE12162@intel.com>
+ <d73eb316-4e09-a924-5f60-e3778db91df4@gmail.com>
+ <CALMp9eQmK+asv7fXeUpF2UiRKL7VmZx44HMGj67aSqm0k9nKVg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210713080035.7464-2-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALMp9eQmK+asv7fXeUpF2UiRKL7VmZx44HMGj67aSqm0k9nKVg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.21 10:00, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Jul 12, 2021 at 10:20:04AM -0700, Jim Mattson wrote:
+> On Mon, Jul 12, 2021 at 3:19 AM Like Xu <like.xu.linux@gmail.com> wrote:
+> >
+> > On 12/7/2021 5:53 pm, Yang Weijiang wrote:
+> > > On Fri, Jul 09, 2021 at 04:41:30PM -0700, Jim Mattson wrote:
+> > >> On Fri, Jul 9, 2021 at 3:54 PM Jim Mattson <jmattson@google.com> wrote:
+> > >>>
+> > >>> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+> > >>>>
+> > >>>> If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
+> > >>>> and reload it after vm-exit.
+> > >>>
+> > >>> I don't see anything being done here "before VM-entry" or "after
+> > >>> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
+> > >>>
+> > >>> In any case, I don't see why this one MSR is special. It seems that if
+> > >>> the host is using the architectural LBR MSRs, then *all* of the host
+> > >>> architectural LBR MSRs have to be saved on vcpu_load and restored on
+> > >>> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
+> > >>> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
+> > >>> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
+> > >>
+> > >> It does seem like there is something special about IA32_LBR_DEPTH, though...
+> > >>
+> > >> Section 7.3.1 of the Intel® Architecture Instruction Set Extensions
+> > >> and Future Features Programming Reference
+> > >> says, "IA32_LBR_DEPTH is saved by XSAVES, but it is not written by
+> > >> XRSTORS in any circumstance." It seems like that would require some
+> > >> special handling if the host depth and the guest depth do not match.
+> > > In our vPMU design, guest depth is alway kept the same as that of host,
+> > > so this won't be a problem. But I'll double check the code again, thanks!
+> >
+> > KVM only exposes the host's depth value to the user space
+> > so the guest can only use the same depth as the host.
 > 
-> After recent changes in freeing of the unused parts of the memory map and
-> rework of pfn_valid() in arm and arm64 there are no architectures that can
-> have holes in the memory map within a pageblock and so nothing can enable
-> CONFIG_HOLES_IN_ZONE which guards non trivial implementation of
-> pfn_valid_within().
-> 
-> With that, pfn_valid_within() is always hardwired to 1 and can be
-> completely removed.
-> 
-> Remove calls to pfn_valid_within() and CONFIG_HOLES_IN_ZONE.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-
-There is currently the discussion to increase MAX_ORDER, for example, to 
-cover 1GiB instead of 4MiB on x86-64. This would mean that we could 
-suddenly, again, have holes insides MAX_ORDER - 1 pages.
-
-So I assume if we ever go down that path, we'll need something like this 
-again.
-
-For now, this looks like the right thing to do
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+> The allowed depth supplied by KVM_GET_SUPPORTED_CPUID isn't enforced,
+> though, is it?
+Do you mean to enforce a check to depth written from user space via KVM_SET_CPUID2?
