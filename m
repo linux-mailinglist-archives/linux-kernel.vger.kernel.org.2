@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537703C6A09
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50343C6A0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 07:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhGMF6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 01:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
+        id S233095AbhGMF7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 01:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhGMF6J (ORCPT
+        with ESMTP id S229945AbhGMF7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 01:58:09 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85189C0613EF
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 22:55:19 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d15so4493094qte.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 22:55:19 -0700 (PDT)
+        Tue, 13 Jul 2021 01:59:14 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D8BC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 22:56:23 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id y8so25700581iop.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 22:56:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=3P0wrRnQGSlxiiwhQ+M6v1FWAVoaNfm4NLnA+4kdAwg=;
-        b=qWeVoIAnMzMwc6Lmk2qMTu9UTf4o1Xc4kIKj2aiG9X7BRL61TT1dhVderZykCZ7NWU
-         wctf3j4j83t5XRc5PXeQwV1yVWejdYlrmkUcsMIXwg1fV3vcAhf3sZUV6y1dT3fAZEQL
-         BB4iXkTv9Bdp661OuYFOXyP2gJJfmTKI1VtbeUWkujvpK3G8UDmEj+ayYKkFCGEZvyy+
-         qytgi3DRx+IMOnTwJsNnGzGaeZRQTHJZ03dhDrwWekCsN9V9nuuG+RrS+kr0bnijUtPI
-         SNM0aNMhpfnewYx2YiFWA1sHUt90nL9oBJi7iBVl2ONzJKtx0CubXy1ltsA+kt2KQ28V
-         +tsw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z7hjVuTD7ebpc67aOCyY+kA34+JT5DXa9Uos3O7Mgh8=;
+        b=ELM5yK5EFrfdNW5bvfms+b5g0QQirYe1yUvvYIbXWoXjNQbVUZ21jod5KrwbzZsxHb
+         6UY5EHCoza7kAvevxMzH7CXf6SveoQpJb/UjnYsDp67LsMab344x+fuusoP7Z2AEO+Up
+         p4IusX1J7rTckbCBecwUWtCLdb/WIjWmkXKHdaTIb+/YsZX9mwFMn8rA8LiXDUlEdv1r
+         ID9eB+RMnF7fmVHumLbgxfZQeR6VqkqSvkPRS5h/SlzfyAZEFZ+qKqMZh/0HUDjqJi8u
+         lBgIetnrk7OKardnPlBRR6YmpshJfqFQ8zXrUeb0i2O67zzvI9SI+Vnrc9ZYp87tcc/B
+         /O3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=3P0wrRnQGSlxiiwhQ+M6v1FWAVoaNfm4NLnA+4kdAwg=;
-        b=HnHOIgV6Fbrd0HQnlqgvPC4Q/plqB1TAKD7quBKasps0ascEXYGulDDxt+rwFPoZ2A
-         bVDpGyIb9JbVgDr/cpk205Fedk5dVqfunNGjMtRvkeaA5I04MMtZ/3lzT0zbfuvUcbIV
-         sSU9Rtk1nI1WtIY+qi9PcahijgZzNj/3hCZXMmARUO/kOYjLOKB2HLeESTeWjZtSzOxZ
-         QGb66EaKZTMBw+LiQLxm9V/Gqs3GCwBEsjBgkVNqfkdlus/9AeCdGL0goujo7qYFkfsc
-         YiPSq1TBTpm9euoksXIyJ0g8atJbKcXFM8f9c3r96qqzUF7ZaTVTW5vSGRaFYfpCqT+O
-         SajA==
-X-Gm-Message-State: AOAM5309hzZh1miWimiWcJvNsqzlcCjx/WLLfgf48yigRe7rMtGYgw15
-        awcnFkdipxTXMOJ0NZBoSEZ8Pw==
-X-Google-Smtp-Source: ABdhPJxe0y6jRbCV64kTd+SBqvUOXR1NUVZE3CgmwSkEjxbULGyu4cVsARZxNqvreArcM6jIzPWVHw==
-X-Received: by 2002:a05:622a:291:: with SMTP id z17mr2413206qtw.95.1626155718426;
-        Mon, 12 Jul 2021 22:55:18 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id m6sm6434419qtx.9.2021.07.12.22.55.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 22:55:18 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 22:55:01 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: 5.13.2-rc and others have many not for stable
-Message-ID: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z7hjVuTD7ebpc67aOCyY+kA34+JT5DXa9Uos3O7Mgh8=;
+        b=XyN5JZL5Pd52VOmKvd98oM0MzBBwU+6ZRbt2O586T6wwSnzrtN0+lBwR7RMmRprUgd
+         OUOsoIQQxV1s3uPkmfpNnwlGfN3UngzBEGGtOAbAtg2Zi3Ok/SXo4z6xfe44xW0RzeBH
+         HBAvevZ/FzAYHqaXIcCjnMnS/mzE27NtxlyeM7AODD/gpmHvhe6TbSa2nrbh7gxeNzpC
+         TNJ6hs6Tn4IZj38EI38iA1Ep4utCghf0nI6DaymyvRSbhPetuMdpTEuzsTpWck37h8Ir
+         NXmvqHT/FkoBgl/XcMG6RD2Ez5LXFOp4FcO+44Y/Ja788F+F+cOKaCCfq4X1f9745Vy4
+         tgYg==
+X-Gm-Message-State: AOAM533QSCv1R7ltP1VmLgwSW2ecYqDr8Y1gEh8SVd64NaIleBsdjhBr
+        3exJTtraf4deEIapBJ1lYe5dAUnM1mpYoatZDEU=
+X-Google-Smtp-Source: ABdhPJwMID8d0rgdBuuYtx5RGY+d7khg6d4NoN20ziURnsbUW1ORe01yCBLMqBf5DtFuhCRboQJa9ijjPqEepZ7GQ2Y=
+X-Received: by 2002:a5e:9309:: with SMTP id k9mr1903062iom.207.1626155783489;
+ Mon, 12 Jul 2021 22:56:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210709071100.4057639-1-yangyingliang@huawei.com> <YOx392cwdEHMMnD0@slm.duckdns.org>
+In-Reply-To: <YOx392cwdEHMMnD0@slm.duckdns.org>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 13 Jul 2021 13:56:12 +0800
+Message-ID: <CAJhGHyC+oyX6fqnR1-JPnNgPuDpikU6KYr1iXrj7BDZHnjPGTA@mail.gmail.com>
+Subject: Re: [PATCH v2] workqueue: fix UAF in pwq_unbound_release_workfn()
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xu Qiang <xuqiang36@huawei.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+On Tue, Jul 13, 2021 at 1:12 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello, Yang.
+>
+> > +static void free_pwq(struct pool_workqueue *pwq)
+> > +{
+> > +     if (!pwq || --pwq->refcnt)
+> > +             return;
+> > +
+> > +     put_unbound_pool(pwq->pool);
+> > +     kmem_cache_free(pwq_cache, pwq);
+> > +}
+> > +
+> > +static void free_wqattrs_ctx(struct apply_wqattrs_ctx *ctx)
+> > +{
+> > +     int node;
+> > +
+> > +     if (!ctx)
+> > +             return;
+> > +
+> > +     for_each_node(node)
+> > +             free_pwq(ctx->pwq_tbl[node]);
+> > +     free_pwq(ctx->dfl_pwq);
+> > +
+> > +     free_workqueue_attrs(ctx->attrs);
+> > +
+> > +     kfree(ctx);
+> > +}
+>
+> It bothers me that we're partially replicating the free path including pwq
+> refcnting.
 
-> This is the start of the stable review cycle for the 5.13.2 release.
-> There are 800 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.13.2-rc1
+The replicating code can be reduced by merging
+apply_wqattrs_cleanup() into apply_wqattrs_commit().
 
-Hi Greg,
+> Does something like the following work?
 
-Sorry to be making waves, but please, what's up with the 5.13.2-rc,
-5.12.17-rc, 5.10.50-rc, 5.4.132-rc stable release candidates?
+It works since it has a flush_scheduled_work() in
+alloc_and_link_pwqs(). But I don't think it works for
+workqueue_apply_unbound_cpumask() when apply_wqattrs_commit()
+is not called.
 
-Amongst the 2000+ patches posted today, there are a significant number
-of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
-yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
+If we want to reuse the current apply_wqattrs_cleanup(), I would prefer
+something like this: (untested)
 
-Am I out of date?  I thought that had been agreed not to happen:
-https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
-is the thread I found when I looked for confirmation, but I believe the
-same has been agreed before and since too.
+@@ -3680,15 +3676,21 @@ static void pwq_unbound_release_workfn(struct
+work_struct *work)
+                                                  unbound_release_work);
+        struct workqueue_struct *wq = pwq->wq;
+        struct worker_pool *pool = pwq->pool;
+-       bool is_last;
++       bool is_last = false;
 
-Andrew goes to a lot of trouble to establish which Fixes from his tree
-ought to go to stable.  Of course there will be exceptions which we
-later decide should go in after all; but it's worrying when there's a
-wholesale breach like this, and I think most of them should be dropped.
+-       if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
+-               return;
++       /*
++        * when @pwq is not linked, it doesn't hold any reference to the
++        * @wq, and @wq is invalid to access.
++        */
++       if (!list_empty(&pwq->pwqs_node)) {
++               if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
++                       return;
 
-To pick on just one of many examples (sorry Miaohe!), a patch that
-surprises me, but I've not had time to look into so far, and would
-not want accelerated into X stable releases, 385/800
+-       mutex_lock(&wq->mutex);
+-       list_del_rcu(&pwq->pwqs_node);
+-       is_last = list_empty(&wq->pwqs);
+-       mutex_unlock(&wq->mutex);
++               mutex_lock(&wq->mutex);
++               list_del_rcu(&pwq->pwqs_node);
++               is_last = list_empty(&wq->pwqs);
++               mutex_unlock(&wq->mutex);
++       }
 
-> Miaohe Lin <linmiaohe@huawei.com>
->     mm/shmem: fix shmem_swapin() race with swapoff
+        mutex_lock(&wq_pool_mutex);
+        put_unbound_pool(pool);
 
-Hugh
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 104e3ef04e33..0c0ab363edeb 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -3693,7 +3693,7 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
+>          * If we're the last pwq going away, @wq is already dead and no one
+>          * is gonna access it anymore.  Schedule RCU free.
+>          */
+> -       if (is_last) {
+> +       if (is_last && !list_empty(&wq->list)) {
+>                 wq_unregister_lockdep(wq);
+>                 call_rcu(&wq->rcu, rcu_free_wq);
+>         }
+> @@ -4199,6 +4199,10 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+>         }
+>         put_online_cpus();
+>
+> +       if (ret) {
+> +               flush_scheduled_work();
+> +       }
+> +
+>         return ret;
+>  }
+>
+> --
+> tejun
