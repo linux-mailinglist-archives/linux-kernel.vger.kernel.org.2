@@ -2,192 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533AC3C7947
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9423C7948
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 23:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbhGMVzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 17:55:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1947 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236198AbhGMVzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:55:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="197520230"
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="197520230"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 14:52:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
-   d="scan'208";a="503493681"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Jul 2021 14:52:25 -0700
-Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 13 Jul 2021 14:52:25 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Tue, 13 Jul 2021 14:52:25 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Tue, 13 Jul 2021 14:52:25 -0700
+        id S236463AbhGMVzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 17:55:39 -0400
+Received: from mail-bn8nam11on2063.outbound.protection.outlook.com ([40.107.236.63]:1633
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234947AbhGMVzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 17:55:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kW6WdoL6amr8KiHFAfpu//48EMJ5rYYgEDChj9aUb2Xy5LuPPNVgtHV745vI243wy/zQas0gugCD4eKzAAsjh8yo/VAY3xVi1wztPGVoUjyhzTlN2KSnNuTXYFM2G/XHFWw7nhdR7TFYs8rd1XoytO+lx6Xu74xCfqWrxWjgQPdSxiw4M3NVUjcJflEBbcn0ascLZidcQzEDTMjgsll4Z467COz2LMVNAZzTwk5cVGog1FcFt/MH+tkjErcWzDV+2dlFEk9UlBNpVup/C1rnNc1d+g7KKhxYUwNQLO5nDXy84WrqskgyQ/SM+QbLqGxzBAuJQJcnRbQl8i7Gwy210g==
+ b=FcLo5urE5nTcJXhLZq5AByAh4FpIse6kF307dY2vfU8XpXspUEmq7MQl+aE98X+2UHxgFuYUWDRsfgtBsZGMWBqRmn384G8OpqRO11vIl6dvrhsmsNTKMMkk8JLqhF2sh/i7LiPUR3WbbIwx6U7AGdSGo00p16UM5Zwz9VgE4dv0fe+ptnK/p3Sc9ThF5irR42NRrqxe8lbOShroM3IZ6WbCxM470N9CNIF8OFsa0Hti66tFgY5mYxDb9jAncBG5Nmdyrr94MP9XSHiJiqtqKmimAO+LQdQPkJVDn5OzI3Qmw1EU++KhzWULM6+S0jM/k4LjcKugN5WgPH9NmHxz9g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=khvmwoXl3kb8xRpLao0eDNvBcNiyqzyUIe1TVxCMzmU=;
- b=MPJzNZNV+gTkHeSegSRYiykGV/T8LR7WZ5fXwR0aWfiMCeX/yONzv3Fd/sBvGSryw9d5gNYM/kmiNGRzUFTN75zk1p+pjWE/lW4ATcT71yP02/2ZURCoh+XyXqANgWAB9jkHykcOqMozmlK8voHX+wLKwMWiOJojlSkxRIIB7ocesooIOxFNzLlyLXDU+Tbs6+c88f/htC6O/A2+79ChNfSomOAaBnHZSIlcAB0PWziNccIeAudG1hmylE8ORjc83qbmpsx4xUSdhzOsQgcpM5g9sY5/POK3uyQQc60F6x1dDT43U8EXv5p5P0iqhm0Ri5ByzqaVI+2istWyOINiMg==
+ bh=wQiX4z+9teJ3q7ryBZaQLLmuzytWuC1rypA0jziQefY=;
+ b=XBblid3G7ujPwgZqM6BA9ej1loDXez3FMODBHompX2I6odd2d1KlrKeDcgXD+0WjQ+J9PszLYUcpvXEZhIIMr6M0GSxfAiBnZkYWeiYgCGgCIp76FVLGc4I5+fa4Ji+wyPzyJjIdsh0LdLqQWy8s5qjPutSpiOlUcB6/VPu3OJkNZoXffRA5zZcuviFkyunNMe17Hg704qLzXP2uktMzYJ8Pu1GtDUP8I6DCSuEPDRIpuBQ9tdsz4F/koygZAXNuVvSETtF9ELRTYChgsn40etgZDfOlOgtoCgadQR4NZ27AHblvJAosQm4qMq9j3MqVnqfHcuRDuOtYDJc2eRnPTw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=khvmwoXl3kb8xRpLao0eDNvBcNiyqzyUIe1TVxCMzmU=;
- b=y513PrRMaB42BokVnMlDTmgjyO1tOnm3rww9KXyIvJjKM/94Dc7v5vGWLNKLx4jG0RJ+LGlSaEnCbVIwh+0CK2HQ/FvBmBNBdnEb0myHAlieA97LGHnD8zR8qaEg1l4nRw1dPRgj6udtEAaPgj8Bu9TUxBgGJHtQdi3EXgyQi74=
-Authentication-Results: broadcom.com; dkim=none (message not signed)
- header.d=none;broadcom.com; dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
- by MWHPR11MB1440.namprd11.prod.outlook.com (2603:10b6:301:7::23) with
+ bh=wQiX4z+9teJ3q7ryBZaQLLmuzytWuC1rypA0jziQefY=;
+ b=vaJmVLcmHs+CL+LGepeIiW6hrHgDzrzkwoQJWVUKXPR9reqT7u7kZlQDxyxQzAlAjSrv6nWIwk05vpALb8a7+YO5fNAOW4XzOu1fnd8lJ9V4GB2MYWVLdtdXrmnTuIFtWB90Xcu6usVDwEQCl0e/15HaD5FPAFygV0Yrpqjziv4=
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
+ by BYAPR05MB3975.namprd05.prod.outlook.com (2603:10b6:a02:8f::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Tue, 13 Jul
- 2021 21:52:13 +0000
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::7405:432c:f34a:b909]) by CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::7405:432c:f34a:b909%6]) with mapi id 15.20.4331.021; Tue, 13 Jul 2021
- 21:52:13 +0000
-Subject: Re: [PATCH v3 03/14] i40e: Use irq_update_affinity_hint
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <tglx@linutronix.de>, <robin.murphy@arm.com>,
-        <mtosatti@redhat.com>, <mingo@kernel.org>, <jbrandeb@kernel.org>,
-        <frederic@kernel.org>, <juri.lelli@redhat.com>,
-        <abelits@marvell.com>, <bhelgaas@google.com>,
-        <rostedt@goodmis.org>, <peterz@infradead.org>,
-        <davem@davemloft.net>, <akpm@linux-foundation.org>,
-        <sfr@canb.auug.org.au>, <stephen@networkplumber.org>,
-        <rppt@linux.vnet.ibm.com>, <chris.friesen@windriver.com>,
-        <maz@kernel.org>, <nhorman@tuxdriver.com>,
-        <pjwaskiewicz@gmail.com>, <sassmann@redhat.com>,
-        <thenzl@redhat.com>, <kashyap.desai@broadcom.com>,
-        <sumit.saxena@broadcom.com>,
-        <shivasharan.srikanteshwara@broadcom.com>,
-        <sathya.prakash@broadcom.com>, <sreekanth.reddy@broadcom.com>,
-        <suganath-prabu.subramani@broadcom.com>,
-        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
-        <jkc@redhat.com>, <faisal.latif@intel.com>,
-        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
-        <ahleihel@redhat.com>, <kheib@redhat.com>, <borisp@nvidia.com>,
-        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
-        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
-        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
-        <nilal@redhat.com>, <tatyana.e.nikolova@intel.com>,
-        <mustafa.ismail@intel.com>, <ahs3@redhat.com>, <leonro@nvidia.com>,
-        <chandrakanth.patil@broadcom.com>
-References: <20210713211502.464259-1-nitesh@redhat.com>
- <20210713211502.464259-4-nitesh@redhat.com>
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-Message-ID: <4eca6f2d-c5d2-1f1d-ffc4-4d8f7bbed68e@intel.com>
-Date:   Tue, 13 Jul 2021 14:52:10 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210713211502.464259-4-nitesh@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.14; Tue, 13 Jul
+ 2021 21:52:45 +0000
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::6850:f36b:29d2:2769]) by BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::6850:f36b:29d2:2769%5]) with mapi id 15.20.4331.021; Tue, 13 Jul 2021
+ 21:52:45 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v5 5/7] iommu/amd: Tailored gather logic for AMD
+Thread-Topic: [PATCH v5 5/7] iommu/amd: Tailored gather logic for AMD
+Thread-Index: AQHXeBaBI4ds/9zJPUSkM707TxU6GqtBcqQA
+Date:   Tue, 13 Jul 2021 21:52:45 +0000
+Message-ID: <80134D97-D8CD-40ED-88C3-4FAD620E4F12@vmware.com>
+References: <20210713094151.652597-1-namit@vmware.com>
+ <20210713094151.652597-6-namit@vmware.com>
+ <d9818e0b-681c-29a0-d9cd-e2f4dc963eb4@arm.com>
+In-Reply-To: <d9818e0b-681c-29a0-d9cd-e2f4dc963eb4@arm.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-ClientProxiedBy: MW4PR04CA0068.namprd04.prod.outlook.com
- (2603:10b6:303:6b::13) To CO1PR11MB4914.namprd11.prod.outlook.com
- (2603:10b6:303:90::24)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.100.0.2.22)
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d8da13ce-3bf2-4669-884f-08d946488c12
+x-ms-traffictypediagnostic: BYAPR05MB3975:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR05MB39758813E672BB3EA50F50E8D0149@BYAPR05MB3975.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WAf2IhcsHRb5Ye1N28ZfQrznVMo0kX2VO8Se3f5xYairjcFBXqSL7TJD5MnPrP1hhWwrCUBw0PWGfrZZvWh8mmArsAmHHSJ+c8lyt7XS2NVMe/RbruDY7X9PzZOrynZlTZh+RNC3mJaflPWjO09Ra9Lw+QB7alruWSCeA3f68hyHaGAlue8iTdv4U16OOkRxrAwkzRqvYSHkZmC9npX+aAk9O/+QyeYmqHmeXkN6+mp65iuraC+6DaWlp0m8y+kFeLZWAquer24gmDI1WZDHYYVyV4pkbWMufChhzP1tBbb8NDId69rcWmaHRqNINm1SIoO7zRa2tf4zatx66zh3wimwaRCDsX5ESP9d2f3gvO8xpl00oFfeyMejgVq1GA40HlcjL1zA05mJCgHGC/U4IsBM6NaQlO4tO5xoh80LVsc4y09rzbVs5LNvk7p9KmjaYqNfdNaZlngkBXd0v+ACHmjP0E24fk0o7TeKfqzMmTJW1NzF32LOOmnQIEf0f8Jw6E3oJanQKlKwti+KqZck8Gw5maak3EpGiUxrIYCcoZOL7g4vs9h4MKEsnB3vCB/y06BSurkXN1tlSny06qIXWGao7GM0//nJq0WR9k9KlCrqT2MghGykIy3NLmDQ9db0gb7tkLaizEp+E7BaeVKaaB7BWqv1Hc5nGpIQUA7H9OTfM7mxiv1jHIw2zNqrbC0yUC2EWV11F875cSPdwJag3j5dFvDmbh3PKk0y9UKFjjc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(136003)(346002)(39860400002)(122000001)(6916009)(6512007)(478600001)(66446008)(33656002)(186003)(64756008)(66946007)(71200400001)(66556008)(66476007)(38100700002)(54906003)(2906002)(76116006)(26005)(6506007)(53546011)(36756003)(8676002)(83380400001)(8936002)(86362001)(316002)(5660300002)(6486002)(2616005)(4326008)(38070700003)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?o0cfB5PaxC83DKna/rAmlTw5jzBSuSaHSfFO+sWCgH6Xgo1QvYVng4L2xpYm?=
+ =?us-ascii?Q?n3EBIsD4SeRtRCVQW9nnX3HSERsbrKA7lco+F/rBayOnO7xMhB+ODsSD2hsy?=
+ =?us-ascii?Q?khXlhYedJoE9+kWUbsi9CuA2/ZeN1P7gPX8LfTEkG6EWgHcvgmQx+UPFmU9o?=
+ =?us-ascii?Q?5TcijzWNNXz9YSE4YZ1qPZeJijtyYwqLF3srlxp/cAn8wOPqwSBSpiTI4N69?=
+ =?us-ascii?Q?7VvOt9E5ClmkCJkVVLxiSI9Cn5uSsDreaKNBuMom68G/dkt4zC/M0bwUjcwV?=
+ =?us-ascii?Q?7tXqsVZHWUYpBjvQnWUCfeqzry7jpg8UH7Kc9gCZHZ0M1LuxgIb1pnVU4bLT?=
+ =?us-ascii?Q?cesRk+cI+NgyRXG9STeE0OhLuqw/+hISHNEMR6VChMkpicznrBL5eA62ukSf?=
+ =?us-ascii?Q?HE2TYR1DmxG6ybWTYC5DDtx+zuUBy6a/GAy4SUOBLgIpu58yOOHu42ABARQB?=
+ =?us-ascii?Q?tzLK4ehOTGnGAH3MRxKvlXbXH2ufQunD83F33n+B4TwsU4JQ+isbVs/Yy0KN?=
+ =?us-ascii?Q?Ioqg/ZFY0JUxLTZYETbOTMhN50HWleyDzNtyMZDM2Nq6MQmAsekxh8yCGgJI?=
+ =?us-ascii?Q?w/SqxpheC0Ky1YWBroLk7RdDqJNpw+yn5VUeszOAH3GQZarPeaR92Hk1ph6u?=
+ =?us-ascii?Q?/4V9lXAqBp3i1CXtjgjgcbqrHu2KoZmJO1Mc7BNOivGy1cQS8J+3TrPwT6Kr?=
+ =?us-ascii?Q?jnFq3HU/UzMCBEhU0HhUU4icfxrzNh4NdSTcE6abCdBzSrlNjorpkwbGSB3q?=
+ =?us-ascii?Q?AYJDb7fsZD8cAWjqBwDA8uPjU3EbRYI2kpyZ1NAFvebC88K5MWa3Qjanakao?=
+ =?us-ascii?Q?tO00K1LobA6t5mO2/VYN5wGm39Z4143G7ezjeBb2Awn/6jdKyEsflMsNgE3D?=
+ =?us-ascii?Q?m7CrbgTVuMs2JdXRIV9gIOzACXFUJ0IxyL8w6YS/tDFhrClMYC6eyUlx7OjS?=
+ =?us-ascii?Q?OLmCdgPYXhdwHX7gcJcRFYyiZpIwYGgkrB6JMZ9mPlSm+yKtMKwM9F3a5o5q?=
+ =?us-ascii?Q?YGxBVUctXmiWzZ2r1ppXrtUyHRo63VcgV0IcXbEPaCiL4DtghpNJSCxDSjD0?=
+ =?us-ascii?Q?wzj+VdWV5G+hTiM0fV+dWomy1yseS7vB8/pHFK8gdtcafLKawaWN9nkJWs6O?=
+ =?us-ascii?Q?+WkOwvTabd51MRCKiUZOiZ8AaTLSTN/kBOCaPNdaPXu9ly3wgdU1MNLlR8uz?=
+ =?us-ascii?Q?jykkef17AyJQ5HBkgJuFyXBr/Clen17XkodvoApBLK50sfm+BFY4KnHm+GY8?=
+ =?us-ascii?Q?g2XIXAp/oi4OzM9GIaZ3eDRmYINzfhZGLpg5Vp40uQLTQNegFXOx982dZ+V7?=
+ =?us-ascii?Q?2S+6vD1ldFJQZNJ6aQFD7V4I?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <56D0AFF61FD76949AEC2C48C5A77A3AE@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.214] (50.39.107.76) by MW4PR04CA0068.namprd04.prod.outlook.com (2603:10b6:303:6b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Tue, 13 Jul 2021 21:52:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd2fe0ca-8d46-4f6a-2b96-08d9464878cb
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1440:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR11MB1440DE17CF70E8BC6A7AE82997149@MWHPR11MB1440.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sI4eFJWqapZIUXTZj94uebz5ESYqHU1vDFjTncbF0B4ub8Hu1LQG8b2gsqiPtuJGSUBgKG0Kr5PwiItKlnk4BMFkmkXL5JL0M31DCk7MEEeervVdUSIUrj8xp+RVUwrbyDR2I4OG4GLmZnb7mzDFTz7VmeY2wVGrZ0MlVHPrM3hyLaFju/EAGrGzpuMuUNXVKTlenznIKy/lxSjMqtzyH2BMsy0LW9oLp6ea3K+xHG/JIHet1X44/en2cAaM96v5ORl74FxfGjhZQIXQOn1Nr9ON3EItJL5tQQhxdfkbz19UtLoLFePqDrbuZ4KvvDsYBUqTl43mNxggV9/n7t2Oc3ikDzf8jkylO0KQGLP2qxVeMJIgxgyrtR7McMVZ4cQ4JPlLmFjqm8ZdVsZM+MHexcKXRKRXmgTPj9Vz5rFKwiSq7+vIq0AHuvDr/Jo6xUJ4l+vJjBK30bR73zcIxsekju7chLo8aj1LMChgFmUNT4e4NfBKsShWXnBhheuusHcLXv9dO0Co5JU4QOjFYtLUPQAAL7A8pfm5rEcCthkJY5duCGa2W9DHYnekXPse1aN+KIKSw8fZmRAtYNIekGkS13EZ80fWOVzxiTi3eGUw8OFMuQg6ztFYcTZRsC4LyB4e6MXMWOWdFZQ8prtsr7Vfti9FsOBJib4Jo9reoPjrdabDOk/draSvToPHrKFAHozDUllUpb3YxOH2LwH9wPErb5YRV3mxBz6Ru8bJvQ8rAGhLyhP+wM8eGDeJE8Qb+4AE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(366004)(376002)(136003)(66556008)(7366002)(38100700002)(66476007)(921005)(66946007)(6486002)(7416002)(186003)(7406005)(5660300002)(36756003)(31686004)(83380400001)(8676002)(53546011)(2906002)(2616005)(31696002)(1191002)(86362001)(956004)(478600001)(316002)(44832011)(8936002)(16576012)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnlXU3NCR0hCQnlDOTNBK3ltNG9yZ3hqa3J5bDU1VXpzQWcwdXpvRksza1Fm?=
- =?utf-8?B?Qm9mTDd5MU1MbU1qRWcva25JUjhGS2xSVjNyckNRWUFqU0swYkYxYXBYLzla?=
- =?utf-8?B?aDB6cFlraC9TQnFNZjdvWmJvbWZBK3h5T0Z6QkRSVlRvMHh1UVdSNWJWL2pm?=
- =?utf-8?B?Q1NiaGZiY0NObDlUTyswQzl2T3o5UmxETWxOODZHSDFOR3V1VGVWSDdkcjVL?=
- =?utf-8?B?Wm53cy9KY2szaEpRVnJvTXVoZkhWMXp6bTVERDIwelovTFZhTklHZXZqZytO?=
- =?utf-8?B?NklWbklYT3hXSWNlN1NiT09WT1E5dTBUOGxhUmFDbU9WVlhWUmpwaklSVkRv?=
- =?utf-8?B?dTM2OFlPQ05SVzBmMFlSZlU0Sk9DaEVlbVI5WGdvTCtoTXc0K0ZxblFxbmU5?=
- =?utf-8?B?eFFTdmFqbVVEblcrUUV1dU5VSnBXVlRuSjdTVTJjR29leHprOXgxVFNnaXVO?=
- =?utf-8?B?cjQ1RGp3N1hiUEdWbnlEdUJDVS9CblRmL2FxUWo4OFA2R0FTVllMdiswcm0y?=
- =?utf-8?B?YXpETlFNT0VHaGwyZ0IramZNUWdmbFNscUJtblZza0N2R1N1dElzZ0I4UHI4?=
- =?utf-8?B?TXNUZDRBenh5YmY4cmJsNFphVFJ0aVhlNjJPb0ZWZGhFeU4yeGJPL0hOci9L?=
- =?utf-8?B?RlhKRHhxZ3Z6VlJzMXVjT3M0OHBIUjlUcWp1R1hsNGl4Sk9iZmxXZUl3VUU0?=
- =?utf-8?B?T1BqeFRNbWhKYWN5UlFDaUI3NlRCYXFxc1NNbmtaUTIwTER4MXJSOTdOY2lD?=
- =?utf-8?B?YTBOdkFia2YxV0dReGNBYW9xRCs4Q09haFFtUFdDakpraFMxTlNYWHhOa1I2?=
- =?utf-8?B?N2tkTlBtU1NpUmhtenpKTzNUOXk0MTRrSVJ5R3VJUWQ0N0xDeUhTZ2NERzFE?=
- =?utf-8?B?ckFtTUs1Y1dkSFhReUV4WVNVdEdXT08rRkVJS2tKOFlESkhzTGJnWHNydTNo?=
- =?utf-8?B?MzJwMlJyZ3FUTUN4WUlSYXRsYWMyVWlYZUpCcXFvMzdoSForUlVkZTlyQVpY?=
- =?utf-8?B?ZEpmNlJLazF1RGxuOGlDK0IybXNIYVROS3loTWc5SXIwcUNTVmlSWFJQRVN1?=
- =?utf-8?B?a1hFazVIRUtkR3plTHpVSUs3QnkvcE8rbUcrRkNBR1UrMkphYWdjazJRWWpi?=
- =?utf-8?B?VXhwVlVNWlRWd3docmZrbkxIcTVGV2x4M2RoMEdjWk5XWWVreUFOczNjMEZV?=
- =?utf-8?B?QzEvOFZrREFpaHo2MDFlTGp0d0tNaTNxbGdLTE03dWtVTmVadWswd2FydzFJ?=
- =?utf-8?B?VzhIWUkxRC8zaitYSi82UGFHcUJ4OUwrVUtWQWxjMUk1VjhMdXFYeENnTDN4?=
- =?utf-8?B?Nmg3bWJ1aFdGTkg1UVpPWGlwWStCaG1tMXpKZE8xQ1Rmbk56TkdZU2w2cnBR?=
- =?utf-8?B?WEN3U1FKVGV5bVdha1ZkcTVuaHpPSEdxYlJhVFdieGlPK25mWDZmcTdNZFNp?=
- =?utf-8?B?c0dSdG1YV012d2lXdlVVZXFLNnFkbUxLQUVqOUMvY3grc3dHRCtKZXBLQmcx?=
- =?utf-8?B?OXU1WDh2VVBxK0w5UVRxR1N4V2dWUXhDbCtFd2JxUzhGWVBaYS9acG85cnF6?=
- =?utf-8?B?aUJVT3REbU9YcHU2YThqazY4Y2x0dk9PSDMxYkM2QlYzdlVsQkxPWkhaL0JQ?=
- =?utf-8?B?N1U3N1JtTGFWdmlzNGhISG9GYjRZM2hESndvc3hHcU5rTHVhYzJ5bWtKRHBX?=
- =?utf-8?B?VWpGb1pzaVBnb0Y3UlpOUWxOc09rUk9DamRoTlp4Sk4zNFREV3JvZzhhWEJz?=
- =?utf-8?Q?LpHeFLAlAFZwJPWVfXFLNGmpS+gYYhUtGSZwEHp?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd2fe0ca-8d46-4f6a-2b96-08d9464878cb
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
+X-OriginatorOrg: vmware.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 21:52:13.1639
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8da13ce-3bf2-4669-884f-08d946488c12
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2021 21:52:45.0752
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Lex77Xam8INV81m57U11jdPjPSafi7nI/GA7lC8pEUmVSephQeHTJWf0QUg82m3mTZcmU7lAxX3uzpCXvOIU+vxskr1/NHHcakOTrch5jgY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1440
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bUdzp8jbqm5pylivNtcubUI2SpGIpHjqjU8HnaG4dLOh2Ws0Y2aRNn61ZSSwwIKGBsIQAvfBnwQDtbbF2XjjnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB3975
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/2021 2:14 PM, Nitesh Narayan Lal wrote:
-> The driver uses irq_set_affinity_hint() for two purposes:
->
-> - To set the affinity_hint which is consumed by the userspace for
->    distributing the interrupts
->
-> - To apply an affinity that it provides for the i40e interrupts
->
-> The latter is done to ensure that all the interrupts are evenly spread
-> across all available CPUs. However, since commit a0c9259dc4e1 ("irq/matrix:
-> Spread interrupts on allocation") the spreading of interrupts is
-> dynamically performed at the time of allocation. Hence, there is no need
-> for the drivers to enforce their own affinity for the spreading of
-> interrupts.
->
-> Also, irq_set_affinity_hint() applying the provided cpumask as an affinity
-> for the interrupt is an undocumented side effect. To remove this side
-> effect irq_set_affinity_hint() has been marked as deprecated and new
-> interfaces have been introduced. Hence, replace the irq_set_affinity_hint()
-> with the new interface irq_update_affinity_hint() that only sets the
-> pointer for the affinity_hint.
->
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-Thanks!
-
-Acked-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
 
+> On Jul 13, 2021, at 11:40 AM, Robin Murphy <robin.murphy@arm.com> wrote:
+>=20
+> On 2021-07-13 10:41, Nadav Amit wrote:
+>> From: Nadav Amit <namit@vmware.com>
+>> AMD's IOMMU can flush efficiently (i.e., in a single flush) any range.
+>> This is in contrast, for instnace, to Intel IOMMUs that have a limit on
+>> the number of pages that can be flushed in a single flush.  In addition,
+>> AMD's IOMMU do not care about the page-size, so changes of the page size
+>> do not need to trigger a TLB flush.
+>> So in most cases, a TLB flush due to disjoint range is not needed for
+>> AMD. Yet, vIOMMUs require the hypervisor to synchronize the virtualized
+>> IOMMU's PTEs with the physical ones. This process induce overheads, so
+>> it is better not to cause unnecessary flushes, i.e., flushes of PTEs
+>> that were not modified.
+>> Implement and use amd_iommu_iotlb_gather_add_page() and use it instead
+>> of the generic iommu_iotlb_gather_add_page(). Ignore disjoint regions
+>> unless "non-present cache" feature is reported by the IOMMU
+>> capabilities, as this is an indication we are running on a physical
+>> IOMMU. A similar indication is used by VT-d (see "caching mode"). The
+>> new logic retains the same flushing behavior that we had before the
+>> introduction of page-selective IOTLB flushes for AMD.
+>> On virtualized environments, check if the newly flushed region and the
+>> gathered one are disjoint and flush if it is.
+>> Cc: Joerg Roedel <joro@8bytes.org>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Jiajun Cao <caojiajun@vmware.com>
+>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+>> Cc: iommu@lists.linux-foundation.org
+>> Cc: linux-kernel@vger.kernel.org>
+>> Cc: Robin Murphy <robin.murphy@arm.com>
+>> Signed-off-by: Nadav Amit <namit@vmware.com>
+>> ---
+>>  drivers/iommu/amd/iommu.c | 23 ++++++++++++++++++++++-
+>>  1 file changed, 22 insertions(+), 1 deletion(-)
+>> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+>> index bfae3928b98f..cc55c4c6a355 100644
+>> --- a/drivers/iommu/amd/iommu.c
+>> +++ b/drivers/iommu/amd/iommu.c
+>> @@ -2048,6 +2048,27 @@ static int amd_iommu_map(struct iommu_domain *dom=
+, unsigned long iova,
+>>  	return ret;
+>>  }
+>>  +static void amd_iommu_iotlb_gather_add_page(struct iommu_domain *domai=
+n,
+>> +					    struct iommu_iotlb_gather *gather,
+>> +					    unsigned long iova, size_t size)
+>> +{
+>> +	/*
+>> +	 * AMD's IOMMU can flush as many pages as necessary in a single flush.
+>> +	 * Unless we run in a virtual machine, which can be inferred according
+>> +	 * to whether "non-present cache" is on, it is probably best to prefer
+>> +	 * (potentially) too extensive TLB flushing (i.e., more misses) over
+>> +	 * mutliple TLB flushes (i.e., more flushes). For virtual machines the
+>> +	 * hypervisor needs to synchronize the host IOMMU PTEs with those of
+>> +	 * the guest, and the trade-off is different: unnecessary TLB flushes
+>> +	 * should be avoided.
+>> +	 */
+>> +	if (amd_iommu_np_cache && gather->end !=3D 0 &&
+>=20
+> iommu_iotlb_gather_is_disjoint() is also checking "gather->end !=3D 0", s=
+o I don't think we need both. Strictly it's only necessary here since the o=
+ther call from iommu_iotlb_gather_add_page() equivalently asserts that the =
+gather is already non-empty via its gather->pgsize check, but one could arg=
+ue it either way and I don't have a hugely strong preference.
+
+You are correct (even if the compiler would have eliminated the redundancy)=
+.
+
+I will remove the redundant check.
+
+>=20
+> Otherwise, I love how neat this has all ended up, thanks for persevering!
+
+Thank you for the thorough review!
+
+Regards,
+Nadav=
