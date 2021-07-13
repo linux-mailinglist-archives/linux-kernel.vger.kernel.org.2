@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158733C6CB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26A63C6CBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhGMI5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 04:57:25 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43876 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbhGMI5X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 04:57:23 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16D8sMRh020569;
-        Tue, 13 Jul 2021 03:54:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626166462;
-        bh=VdegMj0ebwhk+tdoHioq3OJiHwcoi55JYHegIa/B9Ao=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=BSzKhFmzc3zBjcRF5UvE/hgTvawI4K0ES2gKNcRkMPVTGZVjcv/jIAODFe3sC4HJZ
-         UBcDi2if8Bvu1GNPePFMwvUWR23pz++c9IZEQEaFJUU4VOKMI2+LN5BJ1YsEUiZTEa
-         Ernnn9JCaB7Cgs6ZyU0Hczwm6cACj94SoiPASV88=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16D8sMC9018419
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 13 Jul 2021 03:54:22 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Jul 2021 03:54:22 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 13 Jul 2021 03:54:22 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16D8sJWf050564;
-        Tue, 13 Jul 2021 03:54:19 -0500
-Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
-To:     <linux-serial@vger.kernel.org>
-CC:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210511151955.28071-1-vigneshr@ti.com>
- <YJ008MjjewRUTn9Z@kroah.com> <YLCCJzkkB4N7LTQS@atomide.com>
- <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
- <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
- <56c5d73f-741c-2643-1c79-6dc13ebb05c7@ti.com>
- <YOylnHudkwcHHEeZ@surfacebook.localdomain>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <0ae7e313-1ed7-f1be-e8a7-edd1286277a5@ti.com>
-Date:   Tue, 13 Jul 2021 14:24:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234875AbhGMI7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 04:59:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:38752 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234796AbhGMI7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 04:59:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 113F431B;
+        Tue, 13 Jul 2021 01:56:13 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF0CE3F7D8;
+        Tue, 13 Jul 2021 01:56:10 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 09:55:08 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH] arm64: dts: renesas: r9a07g044: Add missing GICv3 node
+ properties
+Message-ID: <20210713085508.nq6473icf5gt3nm5@bogus>
+References: <20210611152108.6785-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdWJQESFmhV+c-QmivXCWPx21QcB-HSzjxf8KsXh_DAvfw@mail.gmail.com>
+ <CAMuHMdXG9H_mOtA_a9t0K8BVaR4p0DcWgNeL0786YvybV2Hqgw@mail.gmail.com>
+ <CA+V-a8tk6uCeRwmiTh=Ds+8DYVUqCYs64nX_9ksDXXdSd-rxNA@mail.gmail.com>
+ <CAMuHMdUg5v3qsFQsg783nC=o_BL3pL6YqqQphGQHHOaCeakj5Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YOylnHudkwcHHEeZ@surfacebook.localdomain>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdUg5v3qsFQsg783nC=o_BL3pL6YqqQphGQHHOaCeakj5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/13/21 1:57 AM, andy@surfacebook.localdomain wrote:
-> Tue, Jun 22, 2021 at 11:53:38AM +0530, Vignesh Raghavendra kirjoitti:
->> On 6/22/21 11:45 AM, Jan Kiszka wrote:
->>>>> Vignesh, it seems this quirk needs some soc specific flag added to
->>>>> it maybe? Or maybe UART_OMAP_RX_LVL register is not available for
->>>>> all the SoCs?
->>>>>
->>>> Yes indeed :(
->>>>
->>>>> I think it's best to drop this patch until the issues are resolved,
->>>>> also there are some open comments above that might be answered by
->>>>> limiting this quirk to a specific range of SoCs :)
->>>>>
->>>> Oops, I did test patch AM33xx assuming its equivalent to OMAP3, but UART
->>>> IP is quite different. I will respin the patch making sure, workaround
->>>> applies only to AM65x and K3 SoCs.
->>>>
->>>> Regards
->>>> Vignesh
->>>>
->>> What's the status here for AM65x? The issue remains present on that
->>> platform, and I was hoping to see a quick follow up that limit the fix
->>> to that target.
->>
->> Sorry for the delay, I am trying to find which other TI SoCs are
->> affected by this issue. But that exercise will need a bit more time.
->> Will send a fix to address K3 SoCs like AM65x today/tomo.
+On Tue, Jul 13, 2021 at 10:30:36AM +0200, Geert Uytterhoeven wrote:
+> Hi Prabhakar,
 > 
-> This all reminds me the very similar issue one found on Intel integrated
-> (Synopsys DesignWare based) UARTs:
-> 
+> On Tue, Jul 13, 2021 at 10:22 AM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Tue, Jul 13, 2021 at 9:08 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Mon, Jun 14, 2021 at 2:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Fri, Jun 11, 2021 at 5:21 PM Lad Prabhakar
+> > > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > > > Add the below missing properties into GIC node,
+> > > > > - clocks
+> > > > > - clock-names
+> > > > > - power-domains
+> > > > > - resets
+> > > > >
+> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > >
+> > > > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > >
+> > > > Queueing pending on[1].
+> > > >
+> > > > > [1] https://lore.kernel.org/linux-devicetree/
+> > > > >     20210609155108.16590-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> > >
+> > > The dependency has been accepted, but this patch needs a respin
+> > > for the changed clocks.
+> > >
+> > Thank you for pointing this out. wrt resets the GIC has two signals
+> > (which I learnt lately when the dependency path was accepted). Earlier
+> > discussion in irc with Sudeep pointed out that there wouldn't be any
+> > use case of having GIC resets in DTSI, so either we drop the resets
+> > property in DT binding doc or correct it.
+> >
+> > Let me know your thoughts on this and how we proceed further.
+>
+> DT Rule #1: DT describes hardware not software policy.
+>
 
-Hmm, yes, seems like common problem with some 8250 UARTs although not
-all TI SoCs show this behavior even though they all claim 8250 compatible.
+Completely agreed, no disagreement 😄.
 
-> https://lore.kernel.org/linux-serial/20170206233000.3021-1-dianders@chromium.org/
+> And a possible use case: the RT CPU core may want to reset the AP GIC.
+>
 
-I am not sure if reading UART_LSR is a good idea in the above patch.
-Some flags in LSR register are cleared on read (at least that's the case
-for UARTs on TI SoCs) and thus can result in loss of error/FIFO status
-information.
+I didn't want to add new bindings without details on the implementation
+to avoid possible issues with backward compatibility as this was not
+thought through completely and correctly before it was added.
 
-> https://lore.kernel.org/linux-serial/1440015124-28393-1-git-send-email-california.l.sullivan@intel.com/
-> 
+OK, now let us discuss your use-case: *RT CPU wants to reset AP GIC*
 
-Looks like this never made it.
+1. Will it just reset AP GIC or will it request the AP reset as a whole ?
+   I am not sure if we can handle former, if you think otherwise what is
+   the reset notification mechanism ?
 
-Given the quirks associated with 8250 UARTs, workarounds would need to
-be tied to specific variants, so I don't know if its possible to
-implement the fix in 8250 core IRQ handler.
+2. Will that bypass secure world/PSCI ? Again more details on this would
+   be helpful to visualise the entire use-case end-to-end better.
 
-PS: v2 of $patch is already merged.
+By GIC reset, I am assuming it will be complete GIC reset including it's
+CPU interface.
 
-Regards
-Vignesh
+I don't think we can reset GIC without actual CPU reset. Even if we get
+some notification magically to the CPU that its GIC alone needs to be
+reset, it needs to safely higher exceptions to get its GIC CPU interface
+reprogrammed to correct (saved) values before OS can reprogram the NS
+world values. All these seems overall complicated and may be unnecessary.
+
+--
+Regards,
+Sudeep
