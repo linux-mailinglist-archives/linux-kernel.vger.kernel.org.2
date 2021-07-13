@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAA33C7417
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289483C741A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhGMQRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233326AbhGMQQh (ORCPT
+        id S229454AbhGMQRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:17:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54372 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhGMQQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:16:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9CDC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 09:13:47 -0700 (PDT)
-Message-Id: <20210713160748.976800694@linutronix.de>
+        Tue, 13 Jul 2021 12:16:38 -0400
+Message-Id: <20210713160749.071380596@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626192826;
+        s=2020; t=1626192827;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=tsBaskijRYNDUxX6NfDiuLjF2dz0Rv/0p2pUQ1IXE+g=;
-        b=JKHCOTngakUYODGTlYTKzOV/+VRZTu7JqAFgQ+2UFfF6d/VxORns57VEtT3BMZbw6Fy7Gf
-        yHoOV2Ze2EL6P7u1b9c4Amf66TY0gK76ZUl179J4xa281rCZtnsiWprlK/Fg+x+Z15mJEQ
-        19+cIBO4VfE7PHZ95E84U9Fx7KoRXQ7FmvMhurF0yZJXLQiIOlmY+9GJSin9SELFv88glL
-        uTYCVlxDBy6BAdgTZhyd1EP6Tc7DrSkUNN/bP/tTESTbt59Dht2lnxYRRWB1+PYjz9v8uT
-        xitHYE2q6908pB+yMeDWY+qxSOm1kRNbvP0gtIWFHHsGU0kwfsfMiItywJTtfQ==
+        bh=elwT5t+pzooM4E97Vb3k27mIhbT4w6Kj6oGs71SqCtg=;
+        b=M+d9bxnRambqcZjRty+Lbf1v3QbCm6gSPxC17sr4zB3PpKPSMUHE/RtHX6GAP65j1yEhn2
+        2rteeoMVEIToPbQfPRMou7+RWSNsXcQOiV1WWV/HT2a7ILK18fg0G2FizKLumGEpAH2Vbe
+        eiQzRko5k4tAF0OPq+wnBLV+DDtlA/jJCXnjqIIKz4utbbrMfUqVbziom06AA1AlWF90ws
+        jajrTtugpiUPJ9CcQ/Uzd6I7/OiYgXU/7MbxeNVYyBriv/tHMBXyCEdTjywN9srI6RQSyL
+        i5PsH4+FYZJrIC2UHHzQVhHa/kX2wll2egxbwy1q+H/gbKBYk4NRIUgwZOIfEg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626192826;
+        s=2020e; t=1626192827;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=tsBaskijRYNDUxX6NfDiuLjF2dz0Rv/0p2pUQ1IXE+g=;
-        b=G4Iw+YroC6q3vGzdidJfOiVSN8UyrYMaP5QfE1eIT6jJ2hz0PrFcqJ8f6p3xSxWk4h+FrJ
-        XSylkAiW60ob7hCg==
-Date:   Tue, 13 Jul 2021 17:11:25 +0200
+        bh=elwT5t+pzooM4E97Vb3k27mIhbT4w6Kj6oGs71SqCtg=;
+        b=+Y1qIXSXLY8vBUVbGow/N5yonVlcOfHtaZG7HqJ7c+3YjENDIPg9AFkYpGzQbAi3J1JHux
+        GfEnrl7P+kwEkbCQ==
+Date:   Tue, 13 Jul 2021 17:11:26 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 31/50] locking/ww_mutex: Move ww_mutex declarations into ww_mutex.h
+Subject: [patch 32/50] locking/mutex: Make mutex::wait_lock raw
 References: <20210713151054.700719949@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,63 +56,131 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Move the ww_mutex declarations into the ww_mutex specific header where they
-belong.
+PREEMPT_RT wants to utilize the existing ww_mutex implementation instead of
+trying to mangle ww_mutex functionality into the rtmutex based mutex
+implementation. The mutex internal wait_lock is a regular spinlock which
+would be converted to a sleeping spinlock on RT, but that's not really
+required because the wait_lock held times are short and limited.
 
-Preperatory change to allow compiling ww_mutex standalone.
+Convert it to a raw_spinlock like the wait_lock of rtmutex.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/mutex.h    | 11 -----------
- include/linux/ww_mutex.h |  8 ++++++++
- 2 files changed, 8 insertions(+), 11 deletions(-)
+ include/linux/mutex.h  |  4 ++--
+ kernel/locking/mutex.c | 22 +++++++++++-----------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 ---
 diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 62bafee747e9..db3367586a06 100644
+index db3367586a06..0bbc872ba72b 100644
 --- a/include/linux/mutex.h
 +++ b/include/linux/mutex.h
-@@ -20,9 +20,6 @@
- #include <linux/osq_lock.h>
- #include <linux/debug_locks.h>
- 
--struct ww_class;
--struct ww_acquire_ctx;
--
- /*
-  * Simple, straightforward mutexes with strict semantics:
-  *
-@@ -66,14 +63,6 @@ struct mutex {
+@@ -50,7 +50,7 @@
+  */
+ struct mutex {
+ 	atomic_long_t		owner;
+-	spinlock_t		wait_lock;
++	raw_spinlock_t		wait_lock;
+ #ifdef CONFIG_MUTEX_SPIN_ON_OWNER
+ 	struct optimistic_spin_queue osq; /* Spinner MCS lock */
  #endif
- };
+@@ -105,7 +105,7 @@ do {									\
  
--struct ww_mutex {
--	struct mutex base;
--	struct ww_acquire_ctx *ctx;
--#ifdef CONFIG_DEBUG_MUTEXES
--	struct ww_class *ww_class;
--#endif
--};
--
- #ifdef CONFIG_DEBUG_MUTEXES
+ #define __MUTEX_INITIALIZER(lockname) \
+ 		{ .owner = ATOMIC_LONG_INIT(0) \
+-		, .wait_lock = __SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
++		, .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
+ 		, .wait_list = LIST_HEAD_INIT(lockname.wait_list) \
+ 		__DEBUG_MUTEX_INITIALIZER(lockname) \
+ 		__DEP_MAP_MUTEX_INITIALIZER(lockname) }
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 68723b49c22e..16360787aa47 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -36,7 +36,7 @@ void
+ __mutex_init(struct mutex *lock, const char *name, struct lock_class_key *key)
+ {
+ 	atomic_long_set(&lock->owner, 0);
+-	spin_lock_init(&lock->wait_lock);
++	raw_spin_lock_init(&lock->wait_lock);
+ 	INIT_LIST_HEAD(&lock->wait_list);
+ #ifdef CONFIG_MUTEX_SPIN_ON_OWNER
+ 	osq_lock_init(&lock->osq);
+@@ -487,9 +487,9 @@ ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+ 	 * Uh oh, we raced in fastpath, check if any of the waiters need to
+ 	 * die or wound us.
+ 	 */
+-	spin_lock(&lock->base.wait_lock);
++	raw_spin_lock(&lock->base.wait_lock);
+ 	__ww_mutex_check_waiters(&lock->base, ctx);
+-	spin_unlock(&lock->base.wait_lock);
++	raw_spin_unlock(&lock->base.wait_lock);
+ }
  
- #define __DEBUG_MUTEX_INITIALIZER(lockname)				\
-diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
-index b77f39f319ad..590aaa207757 100644
---- a/include/linux/ww_mutex.h
-+++ b/include/linux/ww_mutex.h
-@@ -28,6 +28,14 @@ struct ww_class {
- 	unsigned int is_wait_die;
- };
+ #ifdef CONFIG_MUTEX_SPIN_ON_OWNER
+@@ -964,7 +964,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 		return 0;
+ 	}
  
-+struct ww_mutex {
-+	struct mutex base;
-+	struct ww_acquire_ctx *ctx;
-+#ifdef CONFIG_DEBUG_MUTEXES
-+	struct ww_class *ww_class;
-+#endif
-+};
-+
- struct ww_acquire_ctx {
- 	struct task_struct *task;
- 	unsigned long stamp;
+-	spin_lock(&lock->wait_lock);
++	raw_spin_lock(&lock->wait_lock);
+ 	/*
+ 	 * After waiting to acquire the wait_lock, try again.
+ 	 */
+@@ -1028,7 +1028,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 				goto err;
+ 		}
+ 
+-		spin_unlock(&lock->wait_lock);
++		raw_spin_unlock(&lock->wait_lock);
+ 		schedule_preempt_disabled();
+ 
+ 		/*
+@@ -1051,9 +1051,9 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
+ 			break;
+ 
+-		spin_lock(&lock->wait_lock);
++		raw_spin_lock(&lock->wait_lock);
+ 	}
+-	spin_lock(&lock->wait_lock);
++	raw_spin_lock(&lock->wait_lock);
+ acquired:
+ 	__set_current_state(TASK_RUNNING);
+ 
+@@ -1078,7 +1078,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 	if (ww_ctx)
+ 		ww_mutex_lock_acquired(ww, ww_ctx);
+ 
+-	spin_unlock(&lock->wait_lock);
++	raw_spin_unlock(&lock->wait_lock);
+ 	preempt_enable();
+ 	return 0;
+ 
+@@ -1086,7 +1086,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+ 	__set_current_state(TASK_RUNNING);
+ 	__mutex_remove_waiter(lock, &waiter);
+ err_early_kill:
+-	spin_unlock(&lock->wait_lock);
++	raw_spin_unlock(&lock->wait_lock);
+ 	debug_mutex_free_waiter(&waiter);
+ 	mutex_release(&lock->dep_map, ip);
+ 	preempt_enable();
+@@ -1255,7 +1255,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+ 		owner = old;
+ 	}
+ 
+-	spin_lock(&lock->wait_lock);
++	raw_spin_lock(&lock->wait_lock);
+ 	debug_mutex_unlock(lock);
+ 	if (!list_empty(&lock->wait_list)) {
+ 		/* get the first entry from the wait-list: */
+@@ -1272,7 +1272,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+ 	if (owner & MUTEX_FLAG_HANDOFF)
+ 		__mutex_handoff(lock, next);
+ 
+-	spin_unlock(&lock->wait_lock);
++	raw_spin_unlock(&lock->wait_lock);
+ 
+ 	wake_up_q(&wake_q);
+ }
 
