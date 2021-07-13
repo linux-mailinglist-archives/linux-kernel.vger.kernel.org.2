@@ -2,127 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B292D3C76FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FC03C7706
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 21:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbhGMThK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 15:37:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234411AbhGMThK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 15:37:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A2D61362;
-        Tue, 13 Jul 2021 19:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626204859;
-        bh=q6UBDjtaa8NUUdqWJxCHFB88WzEYVPE9y9bs3xKd6rM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ix5wiJ0HBk1YpblazcZQ+oZzQ5JDBdl1e/ybkWlgcFqiq1b2ltmPmycs8KeLf3mgz
-         ufdIv0JRv2ydfYiJVA5eqos0X88dphEFoZnIW/JUiRgjM7b2FhF2LDjrzxz06gslA8
-         B8pF7NznuJCpLbwPEpulEQp1OpBCmpLBw+29OmU7ADW0xDBId+X+t2SnXijk8KUWqI
-         3tqElFfqZ5huNr9tI6e3Kx9HIHDoDhOnQYZo0zEGrp6BBTK47ARG/7CuaO8pPsRX82
-         u3/xU8wqO+l8m2eShd26LbI2PAnArSiMZWzqxrghZK7e7YT8DBgFZIY0tHYtdEk5z2
-         vFTo27NYlmv5g==
-Received: by mail-ej1-f48.google.com with SMTP id hc15so5019873ejc.4;
-        Tue, 13 Jul 2021 12:34:19 -0700 (PDT)
-X-Gm-Message-State: AOAM532seLs9amzSIPddZavb03KUCInoBqaRyuCu9yCi8Kam1tjTDQfp
-        4mYuVKCvEyYqderLAgPFr6CPoC++iuiApdn0Bg==
-X-Google-Smtp-Source: ABdhPJxebfXWfjPtG3UgTLJ2gamvHrDzok7Vep7WR5t4cjwuIyGWTbLDQS1ro3UlQYyKlYUIVu1iH/LjVjSActCgrf8=
-X-Received: by 2002:a17:906:57d0:: with SMTP id u16mr7823954ejr.468.1626204858178;
- Tue, 13 Jul 2021 12:34:18 -0700 (PDT)
+        id S234909AbhGMThv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 15:37:51 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:41929 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhGMThu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 15:37:50 -0400
+Received: by mail-io1-f54.google.com with SMTP id b1so28702271ioz.8;
+        Tue, 13 Jul 2021 12:34:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eXNbiOfz2OADKu5/Fro0uEc8qfMv6oN+akM7nAMsoNs=;
+        b=R5rmT8ovYq4T9/0xGqehGSjL2Tkr709x7kPP68DY1EqMpoNcw7BgNbAxp3J5ngszVn
+         8W2efjOTgRrAoEobCI4hFcCFO1t6kHHLpLzIwK5Py/VyfSuOkW9EVZtUbAp8ugV2Vl+m
+         tWL5L08czLP5JTQJNz5EJOFJdUX1ILP9izXYPs1ITg+zCiX8ecKGJhuH+EfwBpIwv1sD
+         +dMWDupVjw367iIJPFtdi4dcygoHlxIUwqDQpes3LTzBXQL+tObiKdlMHhZ7N4xzi7b+
+         KvKV1o+lGhKQaIK0mCqdbdGpD9TOIT48Ao9yBowHgfn3kCKRDzmIovBHuH4CxeJ91Wvx
+         mZjQ==
+X-Gm-Message-State: AOAM530Hw1faVojnBObdZAsNQxX4C/QjEdeFFb6DAgf2KMfWFseJBrC1
+        klLKwSIRkKIE4fjYpyvEaHETiT9BRQ==
+X-Google-Smtp-Source: ABdhPJzw9lbjwb1pdT4tIxapva2T9ilTykdW85tANNfljZrD6J0J6zkjV6l4axi9xOmTnyTsjbnCSg==
+X-Received: by 2002:a5d:928f:: with SMTP id s15mr4391019iom.142.1626204898597;
+        Tue, 13 Jul 2021 12:34:58 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id k13sm4640772ilv.18.2021.07.13.12.34.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 12:34:57 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Brian Norris <computersforpeace@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-clk@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH] dt-bindings: More dropping redundant minItems/maxItems
+Date:   Tue, 13 Jul 2021 13:34:53 -0600
+Message-Id: <20210713193453.690290-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <cover.1626173013.git.viresh.kumar@linaro.org> <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
- <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com> <20210713151917.zouwfckidnjxvohn@vireshk-i7>
-In-Reply-To: <20210713151917.zouwfckidnjxvohn@vireshk-i7>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 13 Jul 2021 13:34:05 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
-Message-ID: <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device subnode
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 9:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 13-07-21, 08:43, Rob Herring wrote:
-> > On Tue, Jul 13, 2021 at 4:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > Allow virtio,mmio nodes to contain device specific subnodes. Since each
-> > > virtio,mmio node can represent a single virtio device, each virtio node
-> > > is allowed to contain a maximum of one device specific subnode.
-> >
-> > Doesn't sound like we need 2 nodes here. Just add I2C devices as child
-> > nodes. You could add a more specific compatible string, but the
-> > protocol is discoverable, so that shouldn't be necessary.
->
-> I am not sure if it will be a problem, but you can clarify it better.
->
-> The parent node (virtio,mmio) is used to create a platform device,
-> virtio-mmio, (and so assigned as its of_node) and we create the
-> virtio-device from probe() of this virtio-mmio device.
->
-> Is it going to be a problem if two devices in kernel use the same
-> of_node ?
+Another round of removing redundant minItems/maxItems from new schema in
+the recent merge window.
 
-There shouldn't be. We have nodes be multiple providers (e.g clocks
-and resets) already.
+If a property has an 'items' list, then a 'minItems' or 'maxItems' with the
+same size as the list is redundant and can be dropped. Note that is DT
+schema specific behavior and not standard json-schema behavior. The tooling
+will fixup the final schema adding any unspecified minItems/maxItems.
 
-> Are there cases where we would need to get the device
-> pointer from the of_node ? Then we will have two here.
+This condition is partially checked with the meta-schema already, but
+only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+An improved meta-schema is pending.
 
-Rarely...
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Sebastian Siewior <bigeasy@linutronix.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-clk@vger.kernel.org
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rtc@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/clock/brcm,iproc-clocks.yaml      | 1 -
+ .../devicetree/bindings/iommu/rockchip,iommu.yaml         | 2 --
+ .../bindings/memory-controllers/arm,pl353-smc.yaml        | 1 -
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml  | 8 --------
+ .../devicetree/bindings/rtc/faraday,ftrtc010.yaml         | 1 -
+ Documentation/devicetree/bindings/usb/nxp,isp1760.yaml    | 2 --
+ 6 files changed, 15 deletions(-)
 
-In any case, should these potential kernel issues be dictating the DT
-binding design? No!
+diff --git a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+index 8dc7b404ee12..1174c9aa9934 100644
+--- a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
++++ b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+@@ -50,7 +50,6 @@ properties:
+ 
+   reg:
+     minItems: 1
+-    maxItems: 3
+     items:
+       - description: base register
+       - description: power register
+diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+index d2e28a9e3545..ba9124f721f1 100644
+--- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
++++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+@@ -28,14 +28,12 @@ properties:
+       - description: configuration registers for MMU instance 0
+       - description: configuration registers for MMU instance 1
+     minItems: 1
+-    maxItems: 2
+ 
+   interrupts:
+     items:
+       - description: interruption for MMU instance 0
+       - description: interruption for MMU instance 1
+     minItems: 1
+-    maxItems: 2
+ 
+   clocks:
+     items:
+diff --git a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+index 7a63c85ef8c5..01c9acf9275d 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+@@ -57,7 +57,6 @@ properties:
+ 
+   ranges:
+     minItems: 1
+-    maxItems: 3
+     description: |
+       Memory bus areas for interacting with the devices. Reflects
+       the memory layout with four integer values following:
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+index e5f1a33332a5..dd5a64969e37 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+@@ -84,7 +84,6 @@ properties:
+ 
+   interrupts:
+     minItems: 1
+-    maxItems: 3
+     items:
+       - description: NAND CTLRDY interrupt
+       - description: FLASH_DMA_DONE if flash DMA is available
+@@ -92,7 +91,6 @@ properties:
+ 
+   interrupt-names:
+     minItems: 1
+-    maxItems: 3
+     items:
+       - const: nand_ctlrdy
+       - const: flash_dma_done
+@@ -148,8 +146,6 @@ allOf:
+     then:
+       properties:
+         reg-names:
+-          minItems: 2
+-          maxItems: 2
+           items:
+             - const: nand
+             - const: nand-int-base
+@@ -161,8 +157,6 @@ allOf:
+     then:
+       properties:
+         reg-names:
+-          minItems: 3
+-          maxItems: 3
+           items:
+             - const: nand
+             - const: nand-int-base
+@@ -175,8 +169,6 @@ allOf:
+     then:
+       properties:
+         reg-names:
+-          minItems: 3
+-          maxItems: 3
+           items:
+             - const: nand
+             - const: iproc-idm
+diff --git a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+index 657c13b62b67..056d42daae06 100644
+--- a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
++++ b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+@@ -30,7 +30,6 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    minItems: 2
+     items:
+       - description: PCLK clocks
+       - description: EXTCLK clocks. Faraday calls it CLK1HZ and says the clock
+diff --git a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+index a88f99adfe8e..f238848ad094 100644
+--- a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
++++ b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+@@ -25,14 +25,12 @@ properties:
+ 
+   interrupts:
+     minItems: 1
+-    maxItems: 2
+     items:
+       - description: Host controller interrupt
+       - description: Device controller interrupt in isp1761
+ 
+   interrupt-names:
+     minItems: 1
+-    maxItems: 2
+     items:
+       - const: host
+       - const: peripheral
+-- 
+2.27.0
 
->
-> > BTW, what's the usecase for these protocols? A standard interface to
-> > firmware controlled I2C, GPIO, etc.?
->
-> Right now we are looking to control devices in the host machine from
-> guests. That's what Linaro's project stratos is doing. There are other
-> people who want to use this for other kind of remote control stuff,
-> maybe from firmware.
-
-Project stratos means nothing to me.
-
-Direct userspace access to I2C, GPIO, etc. has its issues, we're going
-to repeat that with guests?
-
-> > > diff --git a/include/dt-bindings/virtio/virtio_ids.h b/include/dt-bindings/virtio/virtio_ids.h
-> > > new file mode 120000
-> > > index 000000000000..6e59ba332216
-> > > --- /dev/null
-> > > +++ b/include/dt-bindings/virtio/virtio_ids.h
-> > > @@ -0,0 +1 @@
-> > > +../../uapi/linux/virtio_ids.h
-> >
-> > This will break the devicetree-rebasing tree I think. DT files
-> > shouldn't reference kernel files.
->
-> We already do this for linux-event-codes.h and so I thought it is the
-> right way of doing it :)
-
-Humm, maybe it's okay. Please double check then...
-
-> Else we can create a new copy, which will be a mess, or use hardcoded
-> values.
-
-Though you may not need the header based on what Arnd and I have suggested.
-
-Rob
