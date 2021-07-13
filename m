@@ -2,118 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445A13C72D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7473C72D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236977AbhGMPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
+        id S236974AbhGMPN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236978AbhGMPNb (ORCPT
+        with ESMTP id S236873AbhGMPN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:13:31 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC9CC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:10:41 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id o5so42135893ejy.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:10:41 -0700 (PDT)
+        Tue, 13 Jul 2021 11:13:28 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF04CC0613E9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:10:37 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r11so25672075wro.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=abBnvCNHoiwPjk+pbO+twHux68rlYki9TXT2SBB9tcw=;
-        b=mMSm0wM3NOhKOxlm9bp2OYVdOl2GFv2ww21t4vL5hdSpHzKCDtOD5DtMMu4WhFyB/8
-         AA63GR7gN/lLDZ7K4Q469luHcVfOExwwI4EMPCDiGHCEb8RmyTxNoGV/iAB7Y83jJVMs
-         8s4Jwa6+oZTnQVFRQiw2wrCoJ6r4/wIMgg+IZnizdwTIikcjk6wuAtys2KkCBD9ypZ2K
-         Lk4Kb5FMxAN5iioqSvOExiVpweF1JJR6hnGhNlHZVe+jT+YReH+WsU/AVXqa2PlSZGP7
-         qTaCxSVq3fCDypRfz5j0Km4uBs0gmgsjUfFI/rta3CTklHA7NAlqEr73KD3iEdLS4/M9
-         jHag==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ccVY0wCgTs5TXR//31Go1dN/0eihaDgl7hSzcu1KrSo=;
+        b=UkdSHwacQ3plM3u3pH8mvBtHXjUG6BjKxsW9wykYRUo8TMgOcACEM4ZNrwYRh1grhL
+         LH5NrJb4WpZK6FbVUpMb9kd4eyDdexx0S3bkho9dxBKA3qvnxwlrWAp7DafMqCWnStMJ
+         6dEOgko/45tAofxskHm37lTPwdhXGyIvvPNGyGeb+17cyLkZJ43wYSx76Jq9BVY0YWz4
+         6KQ3nvMPMAFFD+Kdl7IMk8G87asdaYDPHNm5B5B3D5KiOKbwUOgH/boEQWs59nfQH7fU
+         PumH+jFL9BOoyfNfLDcFnEtjFQnc1jZbBZP+VgaUydk6YC7Zhh61ju0xI8h4QQ6QP2HE
+         qdcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=abBnvCNHoiwPjk+pbO+twHux68rlYki9TXT2SBB9tcw=;
-        b=AnCNATZ22IjmVws9yr876fTAtld3Hy9tvfP9cAE7eOjLayWePuqA/DGlF0HG93iCws
-         U0IzzxhXEPWk43cuoQF5sfxaAwRkOKE7iCXVH8bijOp/GqHWvecIjygUpYvFv4rXO2up
-         TkfRo2yFb00ie7C1ssAan9h+veZUeKA/haHsxSHFkxeTwFErbHIEO570/aLTguhJyN73
-         8HF1es/hFVPx4rfVuZfpa8pTD2qlcm3wBn1J2Jng4c9V2oqbUkhxAlJfAkxBD22mHb2V
-         xNJGjE05jXsXflqIF+pe+qPnQgk03hG6nvZF1RkwTDpaRpBRgE27Hz8f7U05hAFJNkh/
-         NjKQ==
-X-Gm-Message-State: AOAM532kO6cJWPvlfx+28QqMQ+IvCWBE+UqZbbXpfBzhME7pswmIGSMp
-        2T2SlYRr9/i7W7FBZel/Pvotzx6pxHJGTqeeI2pKAw==
-X-Google-Smtp-Source: ABdhPJyNpk+yq9jqqqPZ/24v2cTPBYfQ2AjOJJCtVBjGij/qpzOk/dCQ7ciO+D5h7rLmtYU0kt2COYcaM3lBc7W27w8=
-X-Received: by 2002:a17:907:76b8:: with SMTP id jw24mr6223309ejc.375.1626189039800;
- Tue, 13 Jul 2021 08:10:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ccVY0wCgTs5TXR//31Go1dN/0eihaDgl7hSzcu1KrSo=;
+        b=FolBHvQwjt5ur9zMeytS+rP9Om15GtzMJ7rpQBy1CUXQbkwpUHq8Zn/71nuk45Vvvr
+         NnIcTF9+PhM04/uYcNvbQQaoj5ba+bpAjEY3ZTTvFFKjlIeaXLc6GVD1e6ETCeldSzz7
+         SaaHFkITc/qOnLPFrYimc93cazsIaOL1f3oTXLPZ35sxr6+GhfMh50A+z4a9C2P/f87B
+         uWPLEOmxnTdXMU4utk7AW8QSEjIXrbuEdw0iJrp1O5cZzx1C6YsjXouMXYn48cCxOfz7
+         MF57NxWopqA/YqbeWXFbMwu2+rsokWR4TpeyIYyxb/LvtQtP82SOIT1wlyK0QHs69vdB
+         BG9w==
+X-Gm-Message-State: AOAM531sRHzuHCFD1aaPNIM/niCYlKqpNz70QRtnsTTkqmzkKiPSZKnZ
+        chDci08XyHJeEEth4EKSChVjWA==
+X-Google-Smtp-Source: ABdhPJzb/XWyYmuq03TFlvNVBnQieIXH3H7Kne0EI7KaadBgGq/cwOHSL4U4N5RweLFDSZ5/H1rGyw==
+X-Received: by 2002:adf:e488:: with SMTP id i8mr6411373wrm.285.1626189036529;
+        Tue, 13 Jul 2021 08:10:36 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id t9sm17689573wrq.92.2021.07.13.08.10.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 08:10:34 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 16:10:32 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] kdb: Get rid of custom debug heap allocator
+Message-ID: <20210713151032.hvsbufswijxt6uxk@maple.lan>
+References: <20210708122447.3880803-1-sumit.garg@linaro.org>
+ <CAD=FV=UhL32e7spQjr38Lwng0D7mUK+R7iGnmBah=tXzzXsO5g@mail.gmail.com>
+ <CAFA6WYN4gMv9Hkuq=3v_UKg+Y1OvFfbOqgZxt7yGSd2RnVBdJw@mail.gmail.com>
+ <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Jul 2021 20:40:28 +0530
-Message-ID: <CA+G9fYubOg+Pu8N3LYFKn-eL3f=gn4ceK9Asj1RdBDntU_A2ng@mail.gmail.com>
-Subject: perf: bench/sched-messaging.c:73:13: error: 'dummy' may be used uninitialized
-To:     perf-users <perf-users@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LKFT have noticed these warnings / errors when we have updated gcc version from
-gcc-9 to gcc-11 on stable-rc linux-5.4.y branch. I have provided the steps to
-reproduce in this email below.
+On Tue, Jul 13, 2021 at 06:45:52AM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Jul 13, 2021 at 4:24 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > > >  int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+> > > >  {
+> > > >         int ret = 0;
+> > > >         unsigned long symbolsize = 0;
+> > > >         unsigned long offset = 0;
+> > > > -#define knt1_size 128          /* must be >= kallsyms table size */
+> > > > -       char *knt1 = NULL;
+> > > > +       static char namebuf[KSYM_NAME_LEN];
+> > >
+> > > I guess this also ends up fixing a bug too, right? My greps show that
+> > > "KSYM_NAME_LEN" is 512
+> >
+> > I can see "KSYM_NAME_LEN" defined as 128 here [1]. Are you looking at
+> > any other header file?
+> >
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kallsyms.h#n18
+> 
+> Ah ha, it's recent! See commit f2f6175186f4 ("kallsyms: increase
+> maximum kernel symbol length to 512")
 
-Following perf builds failed with gcc-11 with linux-5.4.y branch.
-- build-arm-gcc-11-perf
-- build-arm64-gcc-11-perf
-- build-i386-gcc-11-perf
-- build-x86-gcc-11-perf
+Ineed. So recent that I think it hasn't been merged to mainline yet!
 
-Build error log:
---------------------
-find: 'x86_64-linux-gnu-gcc/arch': No such file or directory
-error: Found argument '-I' which wasn't expected, or isn't valid in this context
-USAGE:
-    sccache [FLAGS] [OPTIONS] [cmd]...
-For more information try --help
-error: Found argument '-I' which wasn't expected, or isn't valid in this context
-USAGE:
-    sccache [FLAGS] [OPTIONS] [cmd]...
-For more information try --help
+This patch is part of the rust patch set. IIUC it is in linux-next for
+wider testing but I'd be surprised if it gets merged to mainline anytime
+soon (and even more amazed if it is merged without being rebased and
+given a new hash value ;-) ).
 
-In function 'ready',
-    inlined from 'sender' at bench/sched-messaging.c:87:2:
-bench/sched-messaging.c:73:13: error: 'dummy' may be used
-uninitialized [-Werror=maybe-uninitialized]
-   73 |         if (write(ready_out, &dummy, 1) != 1)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from bench/sched-messaging.c:22:
-bench/sched-messaging.c: In function 'sender':
-/usr/x86_64-linux-gnu/include/unistd.h:366:16: note: by argument 2 of
-type 'const void *' to 'write' declared here
-  366 | extern ssize_t write (int __fd, const void *__buf, size_t __n) __wur;
-      |                ^~~~~
-bench/sched-messaging.c:69:14: note: 'dummy' declared here
-   69 |         char dummy;
-      |              ^~~~~
-cc1: all warnings being treated as errors
 
-ref:
-https://builds.tuxbuild.com/1vEIWryaujwVtL4wmodXkz1djUa/
-https://builds.tuxbuild.com/1vEIX7NTo5OpaN9nrs2UvO74oxB/
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Steps to reproduce:
----------------------------
-tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/1vEIWryaujwVtL4wmodXkz1djUa/config headers
-kernel modules perf
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Daniel.
