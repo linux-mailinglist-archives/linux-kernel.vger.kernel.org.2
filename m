@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61763C6CE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB2E3C6CCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 11:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbhGMJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 05:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbhGMJKq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 05:10:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82716C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 02:07:56 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3EOL-0005ka-Gm; Tue, 13 Jul 2021 11:07:49 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3EOJ-0006XN-9L; Tue, 13 Jul 2021 11:07:47 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3EOJ-0001PE-7i; Tue, 13 Jul 2021 11:07:47 +0200
-Date:   Tue, 13 Jul 2021 11:07:47 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     fabrice.gasnier@foss.st.com, thierry.reding@gmail.com,
-        lee.jones@linaro.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-pwm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] divide by 3*sizeof(u32) when computing array_size
-Message-ID: <20210713090747.ragr5vuwrezhjmgl@pengutronix.de>
-References: <20210712231910.GA1831270@pc>
- <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
+        id S234690AbhGMJEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 05:04:07 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:38608 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234121AbhGMJEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 05:04:06 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 0FA3749DFB;
+        Tue, 13 Jul 2021 09:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:user-agent:date:date:mime-version
+        :content-type:content-type:organization:references:in-reply-to
+        :from:from:subject:subject:message-id:received:received
+        :received; s=mta-01; t=1626166873; x=1627981274; bh=nTYVAlTPiYr7
+        lxItHGFf4MOyH4HtsZz+n7U+oa9+8Gc=; b=MhGH47pOFt6GEFHvIKcqK4LgZQvH
+        YHMsPQ4o8333zqf2Ez2AltKDUWATLTsy6hj8Qg+PTkhxxyq82PrA9H6BV6BfheuZ
+        aS0GKweV+jrwpSbyb9356THnIGIgCyODiMCjCa8e7wkhBbfMDGcy5O2Om2A0Mncf
+        1cgo6kt6Ks9OkVo=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2aIZhp-e2neT; Tue, 13 Jul 2021 12:01:13 +0300 (MSK)
+Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id EA8F749E12;
+        Tue, 13 Jul 2021 12:01:07 +0300 (MSK)
+Received: from [10.199.0.245] (10.199.0.245) by T-EXCH-03.corp.yadro.com
+ (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 13
+ Jul 2021 12:01:07 +0300
+Message-ID: <796d759a685428814cfd68ae2fd69fe9ab5298dd.camel@yadro.com>
+Subject: Re: [PATCH v2 1/3] net/ncsi: fix restricted cast warning of sparse
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Joel Stanley <joel@jms.id.au>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+In-Reply-To: <CACPK8Xe2W-qTPjyuAHkTGq6Kz0sWYRz23Cqqdxu0CL2XNc=T0w@mail.gmail.com>
+References: <20210708122754.555846-1-i.mikhaylov@yadro.com>
+         <20210708122754.555846-2-i.mikhaylov@yadro.com>
+         <CACPK8Xe2W-qTPjyuAHkTGq6Kz0sWYRz23Cqqdxu0CL2XNc=T0w@mail.gmail.com>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pyqa4oiecyo2qrwd"
-Content-Disposition: inline
-In-Reply-To: <20210713063053.qqttzxlopvpnadj3@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Date:   Tue, 13 Jul 2021 12:08:56 +0300
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.199.0.245]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-03.corp.yadro.com (172.17.100.103)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2021-07-12 at 09:09 +0000, Joel Stanley wrote:
+> On Thu, 8 Jul 2021 at 12:27, Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+> > 
+> > Sparse reports:
+> > net/ncsi/ncsi-rsp.c:406:24: warning: cast to restricted __be32
+> > net/ncsi/ncsi-manage.c:732:33: warning: cast to restricted __be32
+> > net/ncsi/ncsi-manage.c:756:25: warning: cast to restricted __be32
+> > net/ncsi/ncsi-manage.c:779:25: warning: cast to restricted __be32
+> 
+> Strange, I don't get these warnings from sparse on my system.
 
---pyqa4oiecyo2qrwd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+https://patchwork.hopto.org/static/nipa/510079/12355969/build_32bit/stderr
+All those errors from ntohl. David linked this one in first series of patches.
 
-Hello again,
+> 
+> $ sparse --version
+> 0.6.3 (Debian: 0.6.3-2)
+> 
+> > 
+> > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+> > ---
+> >  net/ncsi/ncsi-manage.c | 6 +++---
+> >  net/ncsi/ncsi-rsp.c    | 2 +-
+> >  2 files changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
+> > index ca04b6df1341..42b54a3da2e6 100644
+> > --- a/net/ncsi/ncsi-manage.c
+> > +++ b/net/ncsi/ncsi-manage.c
+> > @@ -700,7 +700,7 @@ static int ncsi_oem_gma_handler_bcm(struct ncsi_cmd_arg
+> > *nca)
+> >         nca->payload = NCSI_OEM_BCM_CMD_GMA_LEN;
+> > 
+> >         memset(data, 0, NCSI_OEM_BCM_CMD_GMA_LEN);
+> > -       *(unsigned int *)data = ntohl(NCSI_OEM_MFR_BCM_ID);
+> > +       *(unsigned int *)data = ntohl((__force __be32)NCSI_OEM_MFR_BCM_ID);
+> 
+> This looks wrong, the value you're passing isn't big endian. It would
+> make more sense if the byte swap was ntohl, as it's coming from the
+> cpu and going into the NCSI packet.
 
-one more thing: If and when you resend a reworked patch, please start
-the Subject with
+Is there any other ways to deal with those sparse errors?
 
-	pwm: stm32:
+Thanks.
 
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---pyqa4oiecyo2qrwd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDtV98ACgkQwfwUeK3K
-7AkRwwgAmJ/1yynASv2Azd29sjKfOKK+gUPbIJiekzqV/FHJjaLBoKs4u49xE7RB
-v8voj2ip4L34+1pzYW2p7JwLRPM7WZWwKmaRKJw4niU+ol8N4QMG3j6Uq9H3HixR
-QGM6ugV8pXEV3+bevyCUjUwTX1sRQkUwONTHzC9onJBT+Lj6HK/dQUt02m/Xv59A
-iy0yww3r9UxTV3Z6mVzKhT4WoiYOX9KbtM8RJNetFv4DqkF5OeSXxtxM3dykOoRf
-DqG2nlMSH7VYOsiAa9sSRPQvh+gxljhB4RDPyOvr96R4X1tZlI1ljWIrc5rXsRrg
-FMiejlQJYn9c/6EzSGs9hb1da6j1jQ==
-=Knxe
------END PGP SIGNATURE-----
-
---pyqa4oiecyo2qrwd--
