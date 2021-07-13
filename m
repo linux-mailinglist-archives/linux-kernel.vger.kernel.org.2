@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62463C77AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56B63C77B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 22:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbhGMUM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 16:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbhGMUMy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 16:12:54 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81389C0613DD;
-        Tue, 13 Jul 2021 13:10:01 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id u14so21063595ljh.0;
-        Tue, 13 Jul 2021 13:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bpDCW++1gO2M56q1+jpsZUKW3MSgWQPFJkKR8oSYa2g=;
-        b=YJrjG8o5uAvVp69w54NnRPzFP0r50GOMCSle0h7PMLFVqbxBClCYY7jBiltM6wPxfz
-         sQfzkPbvHWdois2LHiTv6My+myepePDdTYjxdvczsqH3LUDUHtL7KlEd5MY0r7Oty9uI
-         xfJef+b59vSH+FumO9fuEaXgF7i+1j0YocboHoGZIGrqLK79n8tndvQHzXjQ9gjW4DzO
-         HJjn8j21de9To+XtW5yARdLxJ/fyKsuRJ7NJFD/Wc/6D0Eg6IKF2hLyLQG1mBVRy2tTq
-         /32UgbI/cJ/OBha9I8p6VccokhgHnzo9dtwOzMUPsN4u8kofhh7kiG6ngAIYrbaxQ11S
-         Bx4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bpDCW++1gO2M56q1+jpsZUKW3MSgWQPFJkKR8oSYa2g=;
-        b=GcCwMcTYhflYNPJ/ag5CHwc3nj37NFEO1IYYACYlFEruitDwTV3w8LOYow2QDnonVO
-         GGRqt0Y3fBBAlAhtQJkfvTqu0nFQU2oOYOuhpJ5nXBo/SPa7bdR2UIpuThpqEj4k2uK4
-         lfZ5cdhcoh2AbgTrICl5jtPy4o1bLvCZW2xzxkmzYajPtuaETsFnCJE5+YhbCrCgqAlg
-         qm5srEkjtpeJz8cLy8b+n5iBNakFwSlPtAsLx+pZvE7N03A5o96KFhMWT/iBJE+xlVK7
-         N5Yp9EuIpioJOIFdXTdpxYytn+rbxdFDGDqT4RrNZFNdMs3kIFaqtDSTcKtTqRqEzvUO
-         b4Vg==
-X-Gm-Message-State: AOAM533Jde192mY9PI7hKyt38E/2KE7xnavVYxdbiAGhXkgf4Tt8PbXq
-        ebGAg1PhUWVA066NdRGFYvk3ZRg/gH9ZIJe932k=
-X-Google-Smtp-Source: ABdhPJxJAPwjwsmS879OcMkey5vVAbrr+cvhPfFvxUhRDYgRjyPL3CIm6UZURJJxV+lV1/ZxMBuVGN6M13Km5lBBAd0=
-X-Received: by 2002:a2e:a785:: with SMTP id c5mr5727249ljf.490.1626206999281;
- Tue, 13 Jul 2021 13:09:59 -0700 (PDT)
+        id S234729AbhGMUSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 16:18:37 -0400
+Received: from dliviu.plus.com ([80.229.23.120]:40030 "EHLO smtp.dudau.co.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230376AbhGMUSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 16:18:36 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Jul 2021 16:18:36 EDT
+Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
+        by smtp.dudau.co.uk (Postfix) with SMTP id 2673D4119B03;
+        Tue, 13 Jul 2021 21:10:35 +0100 (BST)
+Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Tue, 13 Jul 2021 21:10:35 +0100
+From:   Liviu Dudau <liviu@dudau.co.uk>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Mario Kleiner <mario.kleiner.de@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>
+Subject: [PATCH] drm/amd/display: Fix 10bit 4K display on CIK GPUs
+Date:   Tue, 13 Jul 2021 21:10:19 +0100
+Message-Id: <20210713201019.59107-1-liviu@dudau.co.uk>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210713195416.277153-1-oleksandr.suvorov@toradex.com>
-In-Reply-To: <20210713195416.277153-1-oleksandr.suvorov@toradex.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 13 Jul 2021 17:09:48 -0300
-Message-ID: <CAOMZO5D+4Dg1q+fxM7Dfz_y1f1wpE=kZx7ew+bdkBiQdWB7YCA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: colibri-imx6ull: limit SDIO clock to 25MHz
-To:     Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksandr,
+Commit 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at
+30bpp for DCE-11.0.") doesn't seems to have fixed 10bit 4K rendering over
+DisplayPort for CIK GPUs. On my machine with a HAWAII GPU I get a broken
+image that looks like it has an effective resolution of 1920x1080 but
+scaled up in an irregular way. Reverting the commit or applying this
+patch fixes the problem on v5.14-rc1.
 
-On Tue, Jul 13, 2021 at 4:54 PM Oleksandr Suvorov
-<oleksandr.suvorov@toradex.com> wrote:
->
-> NXP and AzureWave don't recommend using SDIO bus mode 3.3V@50MHz due
-> to noise affecting the wireless throughput. Colibri iMX6ULL uses only
-> 3.3V signaling for Wi-Fi module AW-CM276NF.
->
-> Limit the SDIO Clock on Colibri iMX6ULL to 25MHz.
+Fixes: 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at 30bpp for DCE-11.0.")
+Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+---
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-What about adding a Fixes tag so that it can go to the stable trees?
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index a6a67244a322e..1596f6b7fed7c 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -1062,7 +1062,7 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+ 	 * so use only 30 bpp on DCE_VERSION_11_0. Testing with DCE 11.2 and 8.3
+ 	 * did not show such problems, so this seems to be the exception.
+ 	 */
+-	if (plane_state->ctx->dce_version != DCE_VERSION_11_0)
++	if (plane_state->ctx->dce_version > DCE_VERSION_11_0)
+ 		pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_36BPP;
+ 	else
+ 		pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_30BPP;
+-- 
+2.32.0
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
