@@ -2,155 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3163C7428
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26713C73E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 18:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhGMQRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 12:17:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54816 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbhGMQRA (ORCPT
+        id S229867AbhGMQMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 12:12:46 -0400
+Received: from m15114.mail.126.com ([220.181.15.114]:39292 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhGMQMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:17:00 -0400
-Message-Id: <20210713160750.848393199@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626192849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=EHJeSjZK1+m3nQQLCNy8//V4qilvXkYZKrXA+/ZyTt4=;
-        b=jDbKiJTDKL9tsdscVD0AtcCbm6lq5pdotjW6BMFVlxdu+BZTha6lwBwr9HMGMtOkMvaRsT
-        X6R8NJjQifRdzF3W0mqB1xPhV1Qq7fTqtuBIoVo5EVStybVU7LpCpI1tV8ufBMFZ3sVATh
-        0PmGoF+4I0aDyb0pNIoMDg6ZuHuxAhbU2yIV+ymGTRVQh+2mvwXl28Mz+0wHG0LIbFUfqz
-        SoMNR1HEL9KeBbdURF3nVdDQqZ+DTLNGeYWifen5fE/HyC1xiuhX6ZGg+ZPQyI14FlQ+Lm
-        Z/0hIwkK5BrfcsR6llNmZM02oSwzdVE3kKSob5Vd/5WGR3ae0926nBvTE4EBmw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626192849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=EHJeSjZK1+m3nQQLCNy8//V4qilvXkYZKrXA+/ZyTt4=;
-        b=zb5nTYCZBqkY2cghf+JFaybP2l6yfQ0PQ5dxs015TkfD1jzP/X+v3OwgjzSO1nUho3dQ0y
-        XAU3k6sG59JZnMDA==
-Date:   Tue, 13 Jul 2021 17:11:44 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 50/50] locking/rtmutex: Add adaptive spinwait mechanism
-References: <20210713151054.700719949@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+        Tue, 13 Jul 2021 12:12:46 -0400
+X-Greylist: delayed 1814 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Jul 2021 12:12:36 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=hWrXsZqz2S9WPoBszQ
+        NOR1ZBbtfHZp1AgMaPc3k8gsI=; b=QcyF4cFMae2jfAxYumTa9v6LuCvK8ocG0z
+        osbelUvnbyVZKlxeX//Rb59rD9EGeMwKT3hGki3PbXHdvEgZ7P2s4gfkWgrbOCIX
+        YTQKy3RPQrdnPEEb+AUryHTs2kz+uhcMk+WmCDWAQr2vEXlcP0RT5A6CzqDk3Qzs
+        m9evvUTPg=
+Received: from 192.168.137.133 (unknown [112.10.74.16])
+        by smtp7 (Coremail) with SMTP id DsmowAA3sDuFs+1gDe1hSQ--.4116S3;
+        Tue, 13 Jul 2021 23:38:47 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     mst@redhat.com, jasowang@redhat.com, david@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: [PATCH] virtio-balloon: Use virtio_find_vqs() helper
+Date:   Tue, 13 Jul 2021 11:38:44 -0400
+Message-Id: <1626190724-7942-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DsmowAA3sDuFs+1gDe1hSQ--.4116S3
+X-Coremail-Antispam: 1Uf129KBjvdXoWruF18Xw4xWF1kuw4Uuw43trb_yoWfJFbEyr
+        4Ivryxtr98GF4jkrWDur4Fvryaka48uF9rZ39Yy3WfJFW7Z3WjvasFgr1UJ3W7WFWUAa9x
+        GF45urs7uw4IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8nSdDUUUUU==
+X-Originating-IP: [112.10.74.16]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbizgfOpF8RNJL9zQAAs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt <rostedt@goodmis.org>
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
 
-Going to sleep when a spinlock or rwlock is contended can be quite
-inefficient when the contention time is short and the lock owner is running
-on a different CPU. The MCS mechanism is not applicable to rtmutex based
-locks, so provide a simple adaptive spinwait mechanism for the RT specific
-spin/rwlock implementations.
+Use the helper virtio_find_vqs().
 
-[ tglx: Provide a contemporary changelog ]
-
-Originally-by: Gregory Haskins <ghaskins@novell.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
 ---
- kernel/locking/rtmutex.c |   50 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
----
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -8,6 +8,11 @@
-  *  Copyright (C) 2005-2006 Timesys Corp., Thomas Gleixner <tglx@timesys.com>
-  *  Copyright (C) 2005 Kihon Technologies Inc., Steven Rostedt
-  *  Copyright (C) 2006 Esben Nielsen
-+ * Adaptive Spinlocks:
-+ *  Copyright (C) 2008 Novell, Inc., Gregory Haskins, Sven Dietrich,
-+ *				     and Peter Morreale,
-+ * Adaptive Spinlocks simplification:
-+ *  Copyright (C) 2008 Red Hat, Inc., Steven Rostedt <srostedt@redhat.com>
-  *
-  *  See Documentation/locking/rt-mutex-design.rst for details.
-  */
-@@ -1433,6 +1438,43 @@ static __always_inline int __rt_mutex_lo
-  * Functions required for spin/rw_lock substitution on RT kernels
-  */
+ drivers/virtio/virtio_balloon.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 510e931..18e0bf3 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -531,8 +531,8 @@ static int init_vqs(struct virtio_balloon *vb)
+ 		callbacks[VIRTIO_BALLOON_VQ_REPORTING] = balloon_ack;
+ 	}
  
-+#ifdef CONFIG_SMP
-+/*
-+ * Note that owner is a speculative pointer and dereferencing relies
-+ * on rcu_read_lock() and the check against the lock owner.
-+ */
-+static bool rtlock_adaptive_spinwait(struct rt_mutex *lock,
-+				     struct task_struct *owner)
-+{
-+	bool res = true;
-+
-+	rcu_read_lock();
-+	for (;;) {
-+		/* Owner changed. Trylock again */
-+		if (owner != rt_mutex_owner(lock))
-+			break;
-+		/*
-+		 * Ensure that owner->on_cpu is dereferenced _after_
-+		 * checking the above to be valid.
-+		 */
-+		barrier();
-+		if (!owner->on_cpu) {
-+			res = false;
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+	rcu_read_unlock();
-+	return res;
-+}
-+#else
-+static bool rtlock_adaptive_spinwait(struct rt_mutex *lock,
-+				     struct task_struct *owner)
-+{
-+	return false;
-+}
-+#endif
-+
- /**
-  * rtlock_slowlock_locked - Slow path lock acquisition for RT locks
-  * @lock:	The underlying rt mutex
-@@ -1440,6 +1482,7 @@ static __always_inline int __rt_mutex_lo
- static void __sched rtlock_slowlock_locked(struct rt_mutex *lock)
- {
- 	struct rt_mutex_waiter waiter;
-+	struct task_struct *owner;
+-	err = vb->vdev->config->find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX,
+-					 vqs, callbacks, names, NULL, NULL);
++	err = virtio_find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX, vqs,
++				callbacks, names, NULL);
+ 	if (err)
+ 		return err;
  
- 	lockdep_assert_held(&lock->wait_lock);
- 
-@@ -1458,9 +1501,14 @@ static void __sched rtlock_slowlock_lock
- 		if (try_to_take_rt_mutex(lock, current, &waiter))
- 			break;
- 
-+		if (&waiter == rt_mutex_top_waiter(lock))
-+			owner = rt_mutex_owner(lock);
-+		else
-+			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		schedule_rtlock();
-+		if (!owner || !rtlock_adaptive_spinwait(lock, owner))
-+			schedule_rtlock();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(TASK_RTLOCK_WAIT);
+-- 
+1.8.3.1
 
