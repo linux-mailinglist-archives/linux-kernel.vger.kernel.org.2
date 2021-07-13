@@ -2,123 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830D13C7380
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562783C7383
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 17:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbhGMPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 11:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236932AbhGMPtA (ORCPT
+        id S237175AbhGMPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 11:50:18 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:35399 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237061AbhGMPuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 11:49:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2C2C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:46:10 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id me13-20020a17090b17cdb0290173bac8b9c9so1687229pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 08:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=88HXaPtHKzXvJfwVkmoFRhzh8ULUchVJgvCgSXMZAEA=;
-        b=IMSe346IusRmrX3pn5fJMJ9Kjb0J8qJPIB5Fw4mHBShvol+ZM0iW6AswXxYKFgThp2
-         NiUrVqwOW22Ibl7Uo8Irfjyetq41nt5wNmRgY6CbxpMB3wzP3d57Y8uJaIAHG9Mc05Sq
-         8YDwgsFnmHQjD4rkzAXRsHb132CuLelWS3qujGuiYxCoW+O4A4bKq8VA85gemw0mEy0r
-         +RODPf++g0m9822Bw3VJ/64YIRmde2Bsm0zZ5ECgd1b+z05p2Ky/cL+vMPd30KuLxxcg
-         gGlHCVWO8yyLSnXlVB98vCQej203Ql1lhPhZNS+6Mq0cgS10cfsf/lcJJqfvsfEoOzIc
-         KNtw==
+        Tue, 13 Jul 2021 11:50:16 -0400
+Received: by mail-wr1-f53.google.com with SMTP id m2so20060808wrq.2;
+        Tue, 13 Jul 2021 08:47:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=88HXaPtHKzXvJfwVkmoFRhzh8ULUchVJgvCgSXMZAEA=;
-        b=DIlZ5oRyHF88AlhI6xQA8w3orPzuhY4btCSK41WQu945CEFBR9EfVHk74SeIDlWxvw
-         VoXVrpGHYNWg90V2nlPWPdbYCYbKeOVr++0X8w6Cfwbrn/dQsUgDhs1isynXptnlpBQT
-         br0zrTvEeCfewocPZd6CUD+k6r/oFsqrkx20WjiaRsfm0Sk5hW5Yhw4ddYVKYhnQDA4v
-         ieOFe+ddw6O5TyRjeQIFP8f17vlzHM+mdrMFINHigP+VSdeaQuAkYGr/tI7OQScfGjir
-         8lKsuj0dXNhYsJpMDwd6TOYc75iN27KMLqIHcLfN0F+6AgKWuKEYn/rgneDIhW8BsunO
-         COLA==
-X-Gm-Message-State: AOAM532sob8lTi5x0xoDUz/R6nmWzBvRKcczDQ8cYwI8UC81/rDVow4M
-        O+sgjt8ZjXi9X/tPahNXoaqFDw==
-X-Google-Smtp-Source: ABdhPJza4OuJ5oLLl2sYrZSHnrhml4tdTkspyGV08RSdzPXDKi8rSdcWd4cuhMJeAVtMgMXK28WI4g==
-X-Received: by 2002:a17:902:ed95:b029:ee:aa46:547a with SMTP id e21-20020a170902ed95b02900eeaa46547amr4011323plj.27.1626191169630;
-        Tue, 13 Jul 2021 08:46:09 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id i1sm3257836pjs.31.2021.07.13.08.46.04
+        bh=jG0GlQf65FSs7wAywgVrWxVXba4Vuqs6QN9P6/U3ebY=;
+        b=TKpVO3WlHW+sBQ0RzmrgQXNHtpukbnSt8NLaeWtv1jBLp08jI4YxujYSPKqyc1iQBI
+         4g5/25Ptc8GLkVKpartSUdYPLop8mGpoX7te8Tnvw2jPPLrcsmlWbpXZ5cqTIzj0Prpe
+         t9c1aQP1AHJ+Y9Z2rQW0ovaQYrPD1s71SQSBhp5JQiAPRtaQAQeGxr0k6PZC8fMsU1b3
+         Pj1NgKLK5PbRGYODCoqpeXwlEb10RNxyLTAuGCpJv62vG1RpSrmkxT4JDjAw78oN475C
+         NN8b2DfCbxcTi7dBKf4sqdt1kqmHfn5xUtZyx+X++V+yKMgsxF+/gIsEOFEsaH3/ZkUn
+         a1RQ==
+X-Gm-Message-State: AOAM530xOmIKX2S33BX0EMJJ5LEAOwHGwNmSCfK9EqBkxJivEOS/GzeF
+        jgYJ3DYk5CbV1cgm70/PTvU=
+X-Google-Smtp-Source: ABdhPJwnXEwLHQqAh7h+z2eHbDH/aW2z/lyoAggOo061dYdClwuDp9v6dAUr+4x/fzhdO8By/lLM5A==
+X-Received: by 2002:adf:b318:: with SMTP id j24mr6755990wrd.361.1626191244601;
+        Tue, 13 Jul 2021 08:47:24 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id a9sm17581521wrv.37.2021.07.13.08.47.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 08:46:08 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 23:46:02 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Tue, 13 Jul 2021 08:47:24 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 15:47:22 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Ani Sinha <ani@anisinha.ca>,
+        Michael Kelley <mikelley@microsoft.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Wei Liu <wei.liu@kernel.org>, linux-kernel@vger.kernel.org,
+        anirban.sinha@nokia.com, mikelley@microsoft.com,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-Message-ID: <20210713154602.GD748506@leoy-ThinkPad-X240s>
-References: <20210711104105.505728-1-leo.yan@linaro.org>
- <20210711104105.505728-12-leo.yan@linaro.org>
- <20210712144410.GE22278@shell.armlinux.org.uk>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH] Hyper-V: fix for unwanted manipulation of sched_clock
+ when TSC marked unstable
+Message-ID: <20210713154722.pqsofao7xp4ihg44@liuwe-devbox-debian-v2>
+References: <20210713030522.1714803-1-ani@anisinha.ca>
+ <20210713130446.gt7k3cwlmhsxtltw@liuwe-devbox-debian-v2>
+ <20210713131756.GD4170@worktop.programming.kicks-ass.net>
+ <alpine.DEB.2.22.394.2107132051590.2135909@anisinha-lenovo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712144410.GE22278@shell.armlinux.org.uk>
+In-Reply-To: <alpine.DEB.2.22.394.2107132051590.2135909@anisinha-lenovo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
-
-On Mon, Jul 12, 2021 at 03:44:11PM +0100, Russell King (Oracle) wrote:
-> On Sun, Jul 11, 2021 at 06:41:05PM +0800, Leo Yan wrote:
-> > When perf runs in compat mode (kernel in 64-bit mode and the perf is in
-> > 32-bit mode), the 64-bit value atomicity in the user space cannot be
-> > assured, E.g. on some architectures, the 64-bit value accessing is split
-> > into two instructions, one is for the low 32-bit word accessing and
-> > another is for the high 32-bit word.
+On Tue, Jul 13, 2021 at 09:01:06PM +0530, Ani Sinha wrote:
 > 
-> Does this apply to 32-bit ARM code on aarch64? I would not have thought
-> it would, as the structure member is a __u64 and
-> compat_auxtrace_mmap__read_head() doesn't seem to be marking anything
-> as packed, so the compiler _should_ be able to use a LDRD instruction
-> to load the value.
+> 
+> On Tue, 13 Jul 2021, Peter Zijlstra wrote:
+> 
+> > On Tue, Jul 13, 2021 at 01:04:46PM +0000, Wei Liu wrote:
+> > > On Tue, Jul 13, 2021 at 08:35:21AM +0530, Ani Sinha wrote:
+> > > > Marking TSC as unstable has a side effect of marking sched_clock as
+> > > > unstable when TSC is still being used as the sched_clock. This is not
+> > > > desirable. Hyper-V ultimately uses a paravirtualized clock source that
+> > > > provides a stable scheduler clock even on systems without TscInvariant
+> > > > CPU capability. Hence, mark_tsc_unstable() call should be called _after_
+> > > > scheduler clock has been changed to the paravirtualized clocksource. This
+> > > > will prevent any unwanted manipulation of the sched_clock. Only TSC will
+> > > > be correctly marked as unstable.
+> > >
+> > > Correct me if I'm wrong, what you're trying to address is that
+> > > sched_clock remains marked as unstable even after Linux has switched to
+> > > a stable clock source.
+> > >
+> > > I think a better approach will be to mark the sched_clock as stable when
+> > > we switch to the paravirtualized clock source.
+> >
+> > No.. unstable->stable transitions are unsound. You get to switch to your
+> > paravirt clock earlier.
+> >
+> 
+> I believe manipulating sched_clock was never the intention of the original
+> author who added the code to mark tsc as unstable on hyper-V:
+> 
+> commit 88c9281a9fba67636ab26c1fd6afbc78a632374f
+> Author: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Date:   Wed Aug 19 09:54:24 2015 -0700
+> 
+>     x86/hyperv: Mark the Hyper-V TSC as unstable
+> 
+> 
+> The original author simply wanted to mark TSC as unstable on hyper-V
+> systems because of reasons the above commit log will describe. Sched clock
+> manipulation happened accidentally because from where the
+> mark_tsc_unstable() was being called. This patch simply fixes this.
+> 
+> Michael Kelly from Microsoft has tested this patch already.
 
-I think essentially your question is relevant to the memory model.
-For 32-bit Arm application on aarch64, in the Armv8 architecture
-reference manual ARM DDI 0487F.c, chapter "E2.2.1
-Requirements for single-copy atomicity" describes:
+OK. In light of Peter's comment and this one, I'm fine with this patch.
 
-"LDM, LDC, LDRD, STM, STC, STRD, PUSH, POP, RFE, SRS, VLDM, VLDR, VSTM,
-and VSTR instructions are executed as a sequence of word-aligned word
-accesses. Each 32-bit word access is guaranteed to be single-copy
-atomic. The architecture does not require subsequences of two or more
-word accesses from the sequence to be single-copy atomic."
-
-So I think LDRD/STRD instruction cannot promise the atomicity for
-loading or storing two words in 32-bit Arm.
-
-And another thought is the functions compat_auxtrace_mmap__read_head()
-is a general function, I avoid to write it with any architecture
-specific instructions.
-
-> Is this a problem noticed on non-ARM architectures?
-
-No, actually we just concluded the potential issue based on the analysis
-for the weak memory model.
+Michael, can you give an ack or review here?
 
 Thanks,
-Leo
+Wei.
+
+> 
+> --Ani
+> 
