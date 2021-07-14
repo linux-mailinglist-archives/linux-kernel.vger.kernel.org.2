@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D607D3C8D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAD73C8BF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbhGNToc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:44:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235441AbhGNTmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:42:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B4C9613D7;
-        Wed, 14 Jul 2021 19:39:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291600;
-        bh=9vX5Pw3btHf51G/PwJ69a7b1fuw17DF2HH/8DIhR/qo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ue6hNzyfw9GEdHM54ml6pcMr5YgfqwamvFHDjoY0G4x9Pys992WPLlyoeyrU1DF8e
-         ThUFhIhS9SAWg02BZTOfuw9fYs9tcFqGM1+SYlP19JpZH2NqAlN1QVWhr4BLpfOFpy
-         07QK63sKrv77vQdEmMi4vfugznPaVAEKLAULE314pD/s2keBmiXmVDYT2RCHf3Tv7K
-         pHVjBuRPYkgYTs1DSMtIlJyonITP7wjRkoyEj12NWyFXAlwZcBPlf063le2Dux8Fhs
-         SwuMowf1vWGHPojyAPihXJDfzUUd48IDAVOQdNGqJwWj1TejWg+RlTz3hYcHShUJXh
-         Caa4VBBucf/YA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 082/108] soc/tegra: fuse: Fix Tegra234-only builds
-Date:   Wed, 14 Jul 2021 15:37:34 -0400
-Message-Id: <20210714193800.52097-82-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714193800.52097-1-sashal@kernel.org>
-References: <20210714193800.52097-1-sashal@kernel.org>
+        id S230197AbhGNTkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:40:33 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:41600 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhGNTkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:40:32 -0400
+Received: by mail-io1-f50.google.com with SMTP id z9so3506892iob.8;
+        Wed, 14 Jul 2021 12:37:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yFXysK5QOV9gybtnN9RhupuFfhn+ypkE022RTON7Xkk=;
+        b=AcZ8sdh/89HX5AimgEGcvQmxF/vpbwnwjEfn3TOZj2lLoVjckGd59FdQnXbmqUpzSe
+         VL4palhUUOe5zVQ7jquna9RmAae+BG/98EXdG88R4LDsIwEBqzdhhIof1gscS5wjTkTJ
+         OmgwFlhGQu5Gt5y2RTiWBHrBdMhqOVSzkwd2dyeyHOaZ+BOh+Jy3Tdd6IBlik4aCPaNN
+         yyXLVYAo9gVoXXsslf3scUWr2+Tn1zEbmy0A68KYJB1hs3pnYag/D8ACtbME974ShHZH
+         YS1fUFoaouwhOFRDeLjQxmONxU8aJ5n0hcuMjGvm9+W4s3Fwz09M5RSfDj5lbdAC5O/c
+         pmkQ==
+X-Gm-Message-State: AOAM5305RaoTzO0MWTs5M8FgyZB4PR1MftNHTgo+Z73gtB2IM+3PK3Qn
+        4IoTCZDCKq5HSRQGAS/Qjg==
+X-Google-Smtp-Source: ABdhPJzTVnCksi6USt4jMQ9BBc0xI6zwCtruKYr1fN/ZmcDbgZJEaOWxQ8Hm+smUBRc21truH7dzyA==
+X-Received: by 2002:a5d:858b:: with SMTP id f11mr8297275ioj.156.1626291459021;
+        Wed, 14 Jul 2021 12:37:39 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t2sm1758841ilq.27.2021.07.14.12.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 12:37:38 -0700 (PDT)
+Received: (nullmailer pid 3160062 invoked by uid 1000);
+        Wed, 14 Jul 2021 19:37:34 -0000
+Date:   Wed, 14 Jul 2021 13:37:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     evgreen@chromium.org, ohad@wizery.com,
+        saiprakash.ranjan@codeaurora.org, devicetree@vger.kernel.org,
+        swboyd@chromium.org, joro@8bytes.org,
+        linux-remoteproc@vger.kernel.org, agross@kernel.org,
+        mathieu.poirier@linaro.org, bjorn.andersson@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        will@kernel.org, linux-arm-msm@vger.kernel.org, robh+dt@kernel.org,
+        robin.murphy@arm.com, dianders@chromium.org, p.zabel@pengutronix.de
+Subject: Re: [PATCH 3/9] dt-bindings: remoteproc: qcom: Add Q6V5 Modem PIL
+ binding
+Message-ID: <20210714193734.GA3159989@robh.at.kernel.org>
+References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
+ <1624564058-24095-4-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624564058-24095-4-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Fri, 25 Jun 2021 01:17:32 +0530, Sibi Sankar wrote:
+> Add a new modem compatible string for QTI SC7280 SoCs and introduce the
+> "qcom,ext-regs" and "qcom,qaccept-regs" bindings needed by the modem
+> sub-system running on SC7280 SoCs.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  .../devicetree/bindings/remoteproc/qcom,q6v5.txt   | 32 ++++++++++++++++++++--
+>  1 file changed, 30 insertions(+), 2 deletions(-)
+> 
 
-[ Upstream commit e2d0ee225e49a5553986f3138dd2803852a31fd5 ]
-
-The tegra30_fuse_read() symbol is used on Tegra234, so make sure it's
-available.
-
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/soc/tegra/fuse/fuse-tegra30.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/soc/tegra/fuse/fuse-tegra30.c b/drivers/soc/tegra/fuse/fuse-tegra30.c
-index 9ea7f0168457..c1aa7815bd6e 100644
---- a/drivers/soc/tegra/fuse/fuse-tegra30.c
-+++ b/drivers/soc/tegra/fuse/fuse-tegra30.c
-@@ -37,7 +37,8 @@
-     defined(CONFIG_ARCH_TEGRA_132_SOC) || \
-     defined(CONFIG_ARCH_TEGRA_210_SOC) || \
-     defined(CONFIG_ARCH_TEGRA_186_SOC) || \
--    defined(CONFIG_ARCH_TEGRA_194_SOC)
-+    defined(CONFIG_ARCH_TEGRA_194_SOC) || \
-+    defined(CONFIG_ARCH_TEGRA_234_SOC)
- static u32 tegra30_fuse_read_early(struct tegra_fuse *fuse, unsigned int offset)
- {
- 	if (WARN_ON(!fuse->base))
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
