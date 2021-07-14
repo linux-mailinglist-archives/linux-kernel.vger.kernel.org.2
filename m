@@ -2,91 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69383C805D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7EE3C8063
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238610AbhGNIjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:39:52 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:44564 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238482AbhGNIjw (ORCPT
+        id S238601AbhGNIl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238482AbhGNIl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:39:52 -0400
-Received: by mail-wr1-f54.google.com with SMTP id f9so2137878wrq.11;
-        Wed, 14 Jul 2021 01:37:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GROROvL9gTpopa9rK0I2AZCVqoD2tSZHDr2c/EQ9HJ8=;
-        b=gzDjMiKYxXU59AoYgtH+FT1zuWBVw2hFm1koddGjO5NqMDXUVqjm71iOERcROhXiqL
-         uPp1xJEJneNmYffZ3GBm/AGUB/NYD/Mq4JlQJnP6Dr39OASohrF5gy/YgzHFf3mu8J+o
-         DiLHOFIUA8P25OoksZnSme+MM1/YD/tHrFn5eTHML9737h7SUvU2x8mQKtb4JW5soby1
-         Um4C+AdVZf5EocPf+unwhXb/V7JIvhuMPwEVg4Q0JhSxX3KRc79ec/VXbWnAM10By1VF
-         Sdgevt0BDPuP/lNKm1CAjTHSQgClshQ5hta7pxoMjy4wQoTvlIOJ2mrmGW2tB4qAIR7I
-         O65A==
-X-Gm-Message-State: AOAM533YVKPo7Cwh64lnwFoHKl1+QD7M2HNWSFalBBYnjeUz/YaMoqGq
-        xZbLNfQv/9gyfi22CPlyuC4vLJ4S7tgxBw==
-X-Google-Smtp-Source: ABdhPJxdhFBUJyjXZm21HyX5xoIANyUHLknD4Qe3clWaZoDj9Q/QevlhCLs7FebqTqxJn0JwU1ZDEQ==
-X-Received: by 2002:adf:e586:: with SMTP id l6mr11680936wrm.26.1626251819556;
-        Wed, 14 Jul 2021 01:36:59 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id p4sm1758210wrt.23.2021.07.14.01.36.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 01:36:59 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     Holger Kiehl <Holger.Kiehl@dwd.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210712060912.995381202@linuxfoundation.org>
- <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
- <YO56HTE3k95JLeje@kroah.com>
- <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
- <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a59b73aa-24f6-7395-6b99-d6c62feb0fc4@kernel.org>
-Date:   Wed, 14 Jul 2021 10:36:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 14 Jul 2021 04:41:28 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B39EC06175F;
+        Wed, 14 Jul 2021 01:38:37 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9EA68CC;
+        Wed, 14 Jul 2021 10:38:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626251915;
+        bh=YbyFIqNHO3+cig/EdKRQenB4YdAV8pA1dPKaR9Ajrb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pZ0PKnDxKLI8zEjX4dbxQdGSqpGC0WsyAIK8YFApt9/5WfEUne+DwoFdwe719/AfP
+         q88kPyOc7s2GDRkoRX0SP6fZstxlduNZ7cq5hBJ6OQf97998wtga0XVb+HHu7oxcGp
+         +ri5+FqXm+R52UKo3X+sPsPQYvQ0Z+iF5BLNOVbc=
+Date:   Wed, 14 Jul 2021 11:38:34 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Brian Norris <computersforpeace@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        linux-clk@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: More dropping redundant minItems/maxItems
+Message-ID: <YO6iinTsYE6EC+mn@pendragon.ideasonboard.com>
+References: <20210713193453.690290-1-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210713193453.690290-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14. 07. 21, 10:15, Holger Kiehl wrote:
->> Yes, will try to do that. I think it will take some time ...
->>
-> Hmm, I am doing something wrong?
+Hi Rob,
 
-No, you are not: -rcs are not tagged.
+Thank you for the patch.
 
->     git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
->     cd linux-5.13.y/
->     git tag|grep v5.13
->     v5.13
->     v5.13-rc1
->     v5.13-rc2
->     v5.13-rc3
->     v5.13-rc4
->     v5.13-rc5
->     v5.13-rc6
->     v5.13-rc7
->     v5.13.1
+On Tue, Jul 13, 2021 at 01:34:53PM -0600, Rob Herring wrote:
+> Another round of removing redundant minItems/maxItems from new schema in
+> the recent merge window.
 > 
-> There is no v5.13.2-rc1. It is my first time with 'git bisect'. Must be
-> doing something wrong. How can I get the correct git kernel rc version?
+> If a property has an 'items' list, then a 'minItems' or 'maxItems' with the
+> same size as the list is redundant and can be dropped. Note that is DT
+> schema specific behavior and not standard json-schema behavior. The tooling
+> will fixup the final schema adding any unspecified minItems/maxItems.
+> 
+> This condition is partially checked with the meta-schema already, but
+> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+> An improved meta-schema is pending.
+> 
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Sebastian Siewior <bigeasy@linutronix.de>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: linux-clk@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-rtc@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-So just bisect v5.13.1..linux-5.13.y.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-regards,
+> ---
+>  .../devicetree/bindings/clock/brcm,iproc-clocks.yaml      | 1 -
+>  .../devicetree/bindings/iommu/rockchip,iommu.yaml         | 2 --
+>  .../bindings/memory-controllers/arm,pl353-smc.yaml        | 1 -
+>  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml  | 8 --------
+>  .../devicetree/bindings/rtc/faraday,ftrtc010.yaml         | 1 -
+>  Documentation/devicetree/bindings/usb/nxp,isp1760.yaml    | 2 --
+>  6 files changed, 15 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+> index 8dc7b404ee12..1174c9aa9934 100644
+> --- a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+> +++ b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
+> @@ -50,7 +50,6 @@ properties:
+>  
+>    reg:
+>      minItems: 1
+> -    maxItems: 3
+>      items:
+>        - description: base register
+>        - description: power register
+> diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> index d2e28a9e3545..ba9124f721f1 100644
+> --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> @@ -28,14 +28,12 @@ properties:
+>        - description: configuration registers for MMU instance 0
+>        - description: configuration registers for MMU instance 1
+>      minItems: 1
+> -    maxItems: 2
+>  
+>    interrupts:
+>      items:
+>        - description: interruption for MMU instance 0
+>        - description: interruption for MMU instance 1
+>      minItems: 1
+> -    maxItems: 2
+>  
+>    clocks:
+>      items:
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+> index 7a63c85ef8c5..01c9acf9275d 100644
+> --- a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+> +++ b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
+> @@ -57,7 +57,6 @@ properties:
+>  
+>    ranges:
+>      minItems: 1
+> -    maxItems: 3
+>      description: |
+>        Memory bus areas for interacting with the devices. Reflects
+>        the memory layout with four integer values following:
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> index e5f1a33332a5..dd5a64969e37 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> @@ -84,7 +84,6 @@ properties:
+>  
+>    interrupts:
+>      minItems: 1
+> -    maxItems: 3
+>      items:
+>        - description: NAND CTLRDY interrupt
+>        - description: FLASH_DMA_DONE if flash DMA is available
+> @@ -92,7 +91,6 @@ properties:
+>  
+>    interrupt-names:
+>      minItems: 1
+> -    maxItems: 3
+>      items:
+>        - const: nand_ctlrdy
+>        - const: flash_dma_done
+> @@ -148,8 +146,6 @@ allOf:
+>      then:
+>        properties:
+>          reg-names:
+> -          minItems: 2
+> -          maxItems: 2
+>            items:
+>              - const: nand
+>              - const: nand-int-base
+> @@ -161,8 +157,6 @@ allOf:
+>      then:
+>        properties:
+>          reg-names:
+> -          minItems: 3
+> -          maxItems: 3
+>            items:
+>              - const: nand
+>              - const: nand-int-base
+> @@ -175,8 +169,6 @@ allOf:
+>      then:
+>        properties:
+>          reg-names:
+> -          minItems: 3
+> -          maxItems: 3
+>            items:
+>              - const: nand
+>              - const: iproc-idm
+> diff --git a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+> index 657c13b62b67..056d42daae06 100644
+> --- a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
+> @@ -30,7 +30,6 @@ properties:
+>      maxItems: 1
+>  
+>    clocks:
+> -    minItems: 2
+>      items:
+>        - description: PCLK clocks
+>        - description: EXTCLK clocks. Faraday calls it CLK1HZ and says the clock
+> diff --git a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+> index a88f99adfe8e..f238848ad094 100644
+> --- a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+> +++ b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
+> @@ -25,14 +25,12 @@ properties:
+>  
+>    interrupts:
+>      minItems: 1
+> -    maxItems: 2
+>      items:
+>        - description: Host controller interrupt
+>        - description: Device controller interrupt in isp1761
+>  
+>    interrupt-names:
+>      minItems: 1
+> -    maxItems: 2
+>      items:
+>        - const: host
+>        - const: peripheral
+
 -- 
-js
-suse labs
+Regards,
+
+Laurent Pinchart
