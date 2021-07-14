@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A5C3C924D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11783C9228
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhGNUot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:44:49 -0400
-Received: from st43p00im-zteg10063401.me.com ([17.58.63.175]:53771 "EHLO
-        st43p00im-zteg10063401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230463AbhGNUos (ORCPT
+        id S232419AbhGNUg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhGNUg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:44:48 -0400
-X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 16:44:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1626294927;
-        bh=7DwUPoV9IztFfSwlvH+mW8SDazur3k/YH6VaR6m3ZKk=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=zOJ1t7Ok2BF0GgxbtBr9hUbdB8ijS9AdjtyTaeP8NP6/xBm2Q56USCMBL2rXWTWTv
-         Aq2h0iPfL4TyB3PKE4sGf55CC696mTXWhAZWNjxFrfCOqXNBtJ+TwYj1rn2ij0XrS5
-         ZklsGn7aIT6W+G+fXAYyYV4OatpJlh5B1DDu6OLTMIyOc8OTY0hOrWS68cLu8kWnbA
-         qpQPk+E8GCW3bcIyjRQ91dUINgzTbYioZkIJ/8loOC5f3a6P9OeC7SUemuHOfqyT6W
-         yyF3WFChg6T3iJz5umuPRRbOEdrh9ohJ9bsA3yaeIhAUP8BS9RfURaSCFA6L55lso6
-         O3O+tfh84MFrA==
-Received: from localhost.localdomain (dyn-72-33-2-114.uwnet.wisc.edu [72.33.2.114])
-        by st43p00im-zteg10063401.me.com (Postfix) with ESMTPSA id E8F874A047D;
-        Wed, 14 Jul 2021 20:35:25 +0000 (UTC)
-From:   Marco Kurzynski <marcokurzynski@icloud.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Marco Kurzynski <marcokurzynski@icloud.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/gpu/drm/i915/display: remove boilerplate code using LOCK_ALL macros
-Date:   Wed, 14 Jul 2021 15:33:25 -0500
-Message-Id: <20210714203324.146783-1-marcokurzynski@icloud.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Jul 2021 16:36:58 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BF3C06175F;
+        Wed, 14 Jul 2021 13:34:05 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id g4-20020a17090ace84b029017554809f35so4557854pju.5;
+        Wed, 14 Jul 2021 13:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:mime-version
+         :content-disposition;
+        bh=6u4Kc/MlFhTHYE4kKbxeOSm+0tW4tXnf9YsPfOpp7rA=;
+        b=JY39Xc8ma461Ms/wxEuC7yQisfQuS1mohIjI5VlQu84SiW3Y+JJjBhVa88yHuq7MFm
+         RIieJejVpKfs7cBGJRr8yKwLA+aEayvE2Mtr3E32t9N9XefKU7Eryz9MxNfOPd+USkga
+         Hwy5g38l32tygr7RtmTFxWDnbAuwMxnlkoJavWWBZAByFcwhhBesckhrgjIe9yPNmFpo
+         8VbtHjqvcGlA30aQeQMioCf7Wirq70n3SI6h0B+1O/73xIS24GTA6J7zXY0fjdt/szu4
+         Z2G4UopdcjVLdKyj5IcecBFksdlEPMwquL/HsRcLFeva1Vz6kzRTvJsatXnMjzRZ2Vpy
+         qm5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mime-version:content-disposition;
+        bh=6u4Kc/MlFhTHYE4kKbxeOSm+0tW4tXnf9YsPfOpp7rA=;
+        b=sfeTsRvPwWsvpPwet387u90Hxzlk/oX/uWhSF62JIXucMdYdcn6kMH9LAv/bCDChFQ
+         KP2fSmhnUR6zAj4pUTT4ef+K1Y/1aUqn/jzmqjtWxQiP2pU93dcI5rVo29iUdt7Ra5+v
+         Z2X8TDQr6CZyJB6m5Zubv/D+rF10cDtguknFATCfhVnvM8MTCcpxjdnocs86eHQmmFwY
+         3BemzfOIXr5Ag9rNBgiLgysKgHZ6YuY9iwv2/Ck6TwAAhBiQhomKXkpDBtNFRcBCPfTG
+         EEFSb4VIGmsTegM5zRxTjDRskkJLxLy68qQw99bHd8EtUhmBW3HjECADqqwXpWwmtUWk
+         98gA==
+X-Gm-Message-State: AOAM533Yx65fdH7RlCz2W+6+GL2g008hYDZy63swUORuvqP43ZPOBsvL
+        bd/5wh+UNb3rDS2CBY6vhcc69AfmylaPfA==
+X-Google-Smtp-Source: ABdhPJzZJ0STVr0DLDGtvm14e9Go01kafX9HrOGjaC6KZcpC10daa8hyCoSVnNyHNos5ofpX05tG4Q==
+X-Received: by 2002:a17:902:7144:b029:12b:24ce:a83c with SMTP id u4-20020a1709027144b029012b24cea83cmr8868904plm.54.1626294845162;
+        Wed, 14 Jul 2021 13:34:05 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id w22sm3677610pfu.50.2021.07.14.13.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 13:34:04 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 02:04:00 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     axboe@kernel.dk, hch@infradead.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] loop: fix setting arbitrarily large block size
+Message-ID: <YO9KONjiBOYhQ7mN@fedora>
+Reply-To: 20210626082406.348821-1-chouhan.shreyansh630@gmail.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-14_10:2021-07-14,2021-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2107140122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaced the boilerplate code for intel_display.c with
-DRM_MODESET_LOCK_ALL macros per the TODO in gpu
+Hi,
 
-(I apologize if I did something wrong, this is my first contribution of
-hopefully many, so excited!!!)
+Just a ping so that this patch doesn't get lost.
 
-Signed-off-by: Marco Kurzynski <marcokurzynski@icloud.com>
----
- drivers/gpu/drm/i915/display/intel_display.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-index 3bad4e00f7be..4a46d63b4d39 100644
---- a/drivers/gpu/drm/i915/display/intel_display.c
-+++ b/drivers/gpu/drm/i915/display/intel_display.c
-@@ -13307,22 +13307,12 @@ void intel_display_resume(struct drm_device *dev)
- 	if (state)
- 		state->acquire_ctx = &ctx;
- 
--	drm_modeset_acquire_init(&ctx, 0);
--
--	while (1) {
--		ret = drm_modeset_lock_all_ctx(dev, &ctx);
--		if (ret != -EDEADLK)
--			break;
--
--		drm_modeset_backoff(&ctx);
--	}
--
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 	if (!ret)
- 		ret = __intel_display_resume(dev, state, &ctx);
- 
- 	intel_enable_ipc(dev_priv);
--	drm_modeset_drop_locks(&ctx);
--	drm_modeset_acquire_fini(&ctx);
-+	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
- 
- 	if (ret)
- 		drm_err(&dev_priv->drm,
--- 
-2.25.1
-
+Regards,
+Shreyansh Chouhan.
