@@ -2,144 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86733C8A96
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2203C8A9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240010AbhGNSRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        id S240014AbhGNST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhGNSRq (ORCPT
+        with ESMTP id S229806AbhGNST0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:17:46 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F274C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:14:54 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id 23so2553918qke.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:14:54 -0700 (PDT)
+        Wed, 14 Jul 2021 14:19:26 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD66C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:16:33 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 8so5136115lfp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3WKLZGhjXG90Fatu5wm7XoigXrQeEPeI0ZySxgtrf1E=;
-        b=K34aiEbq6IThsKWJBJDDGsckcOYXonTslRsCf6xEi7ghhFV+UbwNIfzQP6Tq5ldAxz
-         x/gfvgeDt8i9UmUFByP8JylSs7uppp+LheXconENxXR/wPDkP+0iUfG5YhfwPEmQU1fy
-         4tTjvgWpmY3o7IvTFaQR7Z34VuSgQbU+YmK0iN4AE41bZtFsm7nGfsIz6oRpkXpW6axf
-         6b+9SsmHKDPDXxNXQY2L0ih10uAe1HpuGUVydXvTdbXoxG4rjZrIfD2Nskrohj6TdZDI
-         j2Q+YXsv7xUpGHDh1ZKrJ93dEG0SbTKyIkbyJdcn2EcTIo/QYOSql+60mVB0ixujp++K
-         tFqQ==
+        bh=gdYfStJb5mwOOj1KojUyVafFJ1o2WedkSsc19T3H7UY=;
+        b=NWbdnzBEli+FCtVqOVGaPss2MwLIRyY/wdM4+OblEBSOHLPtHRJx4v4lqeWS87OiJq
+         GrCDPu7eUBhilt/v8alOd8G8WOI58C8iirfAC7Bz5pOBy2GTDt8ZNdlBxGQUO3n4YrBX
+         0YKG1LOyZQ9udog24gV/2cMfql+Vkwc1NHmxZvx5GcfwE8hcU6pFqbjySrUJjrRw2Wp9
+         mApyz4NWpEbcuSm3WOHq4Qb6GYGwKDFVRWXkeey6gBTkA2EnAqy9IxDqE3imgbiOZ+V1
+         pU7DeFfq4lKx0B5Opnxs9bmnjeQZ7/8mdW9zD4wwqb+xlxZyqrUAVcx6lpH5Y8+P6nMC
+         F3WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3WKLZGhjXG90Fatu5wm7XoigXrQeEPeI0ZySxgtrf1E=;
-        b=N8f++mQ/gVPPphneGTwyappnT/SbgAyMIO7h9zb5ahNV3ZzSnWXqWA8838VZihHthq
-         MASKU0uyldbe9c9QVocczoMjlTRSmho8TVz2hjANwdWeLkg1j6c7WmlobsZZIYOQHqiL
-         NL/lxI93kWYeNYOEB3RYaMhq/z1T/vgqcX49XkyA+AULHphW2A/gDjiZgVQueoJ0TBsT
-         0IkLTGeGqV+2vh5sbe3I9p605LLjFtFI1yIQBHPyb82iyKmW4pTWRGFAPDmb3qYV7qqt
-         m43t4J4rZbgMY9Lb2U+wkXjUYYR6tEDQJrZdO417By/bWpMI+XgeRlB8IwIjiMq4YUoO
-         cbQg==
-X-Gm-Message-State: AOAM532VL97FkODF6bfB4GfcgAyAEsSfn8rJlW4/yD4QI/n2x8qG2AHR
-        JJZ2pjRRSPd81nEcsKJKsQdQmyUi7RTDgc91hvUMxw==
-X-Google-Smtp-Source: ABdhPJxM1wp8nSe3bkx8dg/pQpdxw78kl5esOD57NTfXsDoAxivKWcg01aZjKeev4L+fz4X+d7136TERrs+FRe6NY50=
-X-Received: by 2002:a05:620a:a90:: with SMTP id v16mr11085310qkg.150.1626286493309;
- Wed, 14 Jul 2021 11:14:53 -0700 (PDT)
+        bh=gdYfStJb5mwOOj1KojUyVafFJ1o2WedkSsc19T3H7UY=;
+        b=QrIYunNVZdyAy/bC/oTVhThDgAJlOtERK7+iiB3tPitF9jfkqWMSakU1ZqIFwY4zag
+         b2HF0d2RX+1DHYSz0lyKE9THS18dfLWHf7eT4FHExXr1/0gxzdR2qtPJDrkAvXtYmwfX
+         NZbGpLbFIgOn6FruM65rWWZ0E+qo2fWwKmlttpAkGKy8CverJDOTzcgU0GqrS1+U5E0e
+         Qsev1uWGvGmHZnW9vCo33g031sFcUgssc9sH9HWJLdRy2o7REA6uMcw5tcg2ZZLOUHk+
+         jqItDqT0oaQAYhRof7P/0eMBl3pWmN+nnmtIQXyBqI3a/lVo4tMnbg1ldoKWAxbs/69H
+         4Uow==
+X-Gm-Message-State: AOAM531DFCtn6+DlwuBNCxBByQlZu9BRvpcr2LAJ3sd3XQpl937c9sxC
+        27NzVMN5ft0NyRnarztQFNKDVoz1IbwjmAsusLrH4Q==
+X-Google-Smtp-Source: ABdhPJzEKs9SRTQ6+N8LhT06hWiRWkYkLtuXtaEpRgI5+ZlKGUTLSDyWY2UH/XyxBPnSN/RKA3eJ4h/aWPEjT0jZRRI=
+X-Received: by 2002:ac2:59db:: with SMTP id x27mr5574226lfn.547.1626286592091;
+ Wed, 14 Jul 2021 11:16:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707183616.5620-1-brijesh.singh@amd.com> <20210707183616.5620-16-brijesh.singh@amd.com>
- <CAA03e5HA_vjhOtTPL-vKFJvPxseLRMs5=s90ffUwDWQxtG7aCQ@mail.gmail.com> <98ac737d-83a8-6ee8-feac-554bab673191@amd.com>
-In-Reply-To: <98ac737d-83a8-6ee8-feac-554bab673191@amd.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Wed, 14 Jul 2021 11:14:41 -0700
-Message-ID: <CAA03e5EKn=X28jKwK10V2MxY9e5Kj0+8obG4vnU=X8oooNzRxQ@mail.gmail.com>
-Subject: Re: [PATCH Part2 RFC v4 15/40] crypto: ccp: Handle the legacy TMR
- allocation when SNP is enabled
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com,
-        Alper Gun <alpergun@google.com>
+References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-4-ojeda@kernel.org>
+ <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
+In-Reply-To: <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 14 Jul 2021 11:16:20 -0700
+Message-ID: <CAKwvOdm3_TbPPCZRvpdsfZW7szWEEnpb4NyqQ39P8a=7YGCb=g@mail.gmail.com>
+Subject: Re: [PATCH 03/17] Makefile: generate `CLANG_FLAGS` even in GCC builds
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Should this return a non-zero value -- maybe `-ENODEV`? Otherwise, the
-> > `snp_alloc_firmware_page()` API will return a page that the caller
-> > believes is suitable to use with FW. My concern is that someone
-> > decides to use this API to stash a page very early on during kernel
-> > boot and that page becomes a time bomb.
+On Wed, Jul 14, 2021 at 11:13 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> But that means the caller now need to know that SNP is enabled before
-> calling the APIs. The idea behind the API was that caller does not need
-> to know whether the firmware is in the INIT state. If the firmware has
-> initialized the SNP, then it will transparently set the immutable bit in
-> the RMP table.
-
-For SNP, isn't that already the case? There are three scenarios:
-
-#1: The PSP driver is loaded and `snp_inited` is `true`: These returns
-are never hit.
-
-#2: The PSP driver is not loaded. The first return, `!psp ||
-!psp->sev_data` fires. As written, it returns `0`, indicating success.
-However, we never called RMPUPDATE on the page. Thus, later, when the
-PSP driver is loaded, the page that was previously returned as usable
-with FW is in fact not usable with FW. Unless SNP is disabled (e.g.,
-SEV, SEV-ES only). In which case I guess the page is OK.
-
-#3 The PSP driver is loaded but the SNP_INIT command has not been
-issued. Looking at this again, I guess `return 0` is OK. Because if we
-got this far, then `sev_pci_init()` has been called, and the SNP_INIT
-command has been issued if we're supporting SNP VMs.
-
-So in summary, I think we should change the first return to return an
-error and leave the 2nd return as is.
-
-> > If we initialize `rc` to `-ENODEV` (or something similar), then every
-> > return in this function can be `return rc`.
+> On Sun, Jul 4, 2021 at 1:28 PM <ojeda@kernel.org> wrote:
 > >
-> >> +
-> >> +       /* If SEV-SNP is initialized then add the page in RMP table. */
-> >> +       sev = psp->sev_data;
-> >> +       if (!sev->snp_inited)
-> >> +               return 0;
+> > From: Miguel Ojeda <ojeda@kernel.org>
 > >
-> > Ditto. Should this turn a non-zero value?
+> > To support Rust under GCC-built kernels, we need to save the flags that
+> > would have been passed if the kernel was being compiled with Clang.
 > >
-> >> +
-> >> +       while (pfn < pfn_end) {
-> >> +               if (need_reclaim)
-> >> +                       if (snp_reclaim_page(pfn_to_page(pfn), locked))
-> >> +                               return -EFAULT;
-> >> +
-> >> +               rc = rmpupdate(pfn_to_page(pfn), val);
-> >> +               if (rc)
-> >> +                       return rc;
-> >> +
-> >> +               pfn++;
-> >> +       }
-> >> +
-> >> +       return 0;
-> >> +}
+> > The reason is that `bindgen` -- the tool we use to generate Rust
+> > bindings to the C side of the kernel -- relies on `libclang` to
+> > parse C. Ideally:
+> >
+> >   - `bindgen` would support a GCC backend (requested at [1]),
+> >
+> >   - or the Clang driver would be perfectly compatible with GCC,
+> >     including plugins. Unlikely, of course, but perhaps a big
+> >     subset of configs may be possible to guarantee to be kept
+> >     compatible nevertheless.
+> >
+> > This is also the reason why GCC builds are very experimental and some
+> > configurations may not work (e.g. `GCC_PLUGIN_RANDSTRUCT`). However,
+> > we keep GCC builds working (for some example configs) in the CI
+> > to avoid diverging/regressing further, so that we are better prepared
+> > for the future when a solution might become available.
+> >
+> > [1] https://github.com/rust-lang/rust-bindgen/issues/1949
+> >
+> > Link: https://github.com/Rust-for-Linux/linux/issues/167
+> > Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
+> > Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
+> > Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
+> > Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
+> > Co-developed-by: Finn Behrens <me@kloenk.de>
+> > Signed-off-by: Finn Behrens <me@kloenk.de>
+> > Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> > Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> > Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
+> > Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
+> > Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+>
+> Patch LGTM; please keep an eye on the series:
+> https://lore.kernel.org/lkml/20210707224310.1403944-2-ndesaulniers@google.com/
+>
+> If that lands in kbuild before this, this patch will need to be
+> rebased to avoid a conflict in linux-next.
+>
+> So (tentatively :-P):
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> If the patch needs to be rebased on the series linked above, please
+> drop my reviewed by tag and I will re-review. Perhaps putting me
+> explicitly on Cc: in the commit message will help notify me if there
+> are successive versions?
+>
+> > ---
+> >  Makefile | 17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 0565caea036..6e823d8bd64 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -573,18 +573,23 @@ endif
+> >  # and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> >  CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
+> >
+> > -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> > +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
+
+Also, consider whether `BINDGEN_FLAGS` would be more descriptive (and
+less verbose) than `TENTATIVE_CLANG_FLAGS`.
+
+> > +
+> >  ifneq ($(CROSS_COMPILE),)
+> > -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> > +TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> >  endif
+> >  ifeq ($(LLVM_IAS),1)
+> > -CLANG_FLAGS    += -integrated-as
+> > +TENTATIVE_CLANG_FLAGS  += -integrated-as
+> >  else
+> > -CLANG_FLAGS    += -no-integrated-as
+> > +TENTATIVE_CLANG_FLAGS  += -no-integrated-as
+> >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> > -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> > +TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> >  endif
+> > -CLANG_FLAGS    += -Werror=unknown-warning-option
+> > +
+> > +export TENTATIVE_CLANG_FLAGS
+> > +
+> > +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> > +CLANG_FLAGS    += $(TENTATIVE_CLANG_FLAGS)
+> >  KBUILD_CFLAGS  += $(CLANG_FLAGS)
+> >  KBUILD_AFLAGS  += $(CLANG_FLAGS)
+> >  export CLANG_FLAGS
+> > --
+> > 2.32.0
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
