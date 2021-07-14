@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3BB3C907E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588FB3C907D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242477AbhGNTz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45690 "EHLO mail.kernel.org"
+        id S242413AbhGNTzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:55:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240657AbhGNTt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACE19613D1;
-        Wed, 14 Jul 2021 19:45:48 +0000 (UTC)
+        id S240695AbhGNTuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:50:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB90C613F6;
+        Wed, 14 Jul 2021 19:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291949;
-        bh=tkbnrYTRku90PmRyB2CpW7EvmcO8ivAcS/EzWo9+h1Q=;
+        s=k20201202; t=1626291953;
+        bh=Fmcf9oDWCQiqMKX6qvtKMXajpy/iVIYKEDt+BFHyfcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nIEb8VWsKoPRUiYaB8SwW6PokKHnmHXBf/NJB0YSdNFQ+36SEgzjpgheYfsBk/1Xh
-         7SEBgO0P9+fERApzLg0e6RnnNSHSuqUllZgElKHnlDTNSRe8ScBEHmIS4wl7rca/vk
-         BTdGkplv4UGNsjjjJGYzxeHVWkjx8HiEW6UkiDW63PLCUgd/b3ApFgvhkxYMIxSso6
-         WNVYgztrw/seD5bbmO2XZbFZgUsBAaleAua+XpnLRyvJz24kV7UqddS1VQiZ1ejofo
-         d7ueKhWxXRwdt7nyba1fcsmFf3aBGHE2/yGFZmFxfZLoMCjxEx/POZW/qljd21lisz
-         c7ivSXvXnvNaQ==
+        b=PxWFG/U3INEzp6lupCPgbpcFyPyQJpcA9x/ferQqC4/lqCW8YO9/xLPrPlemxWg7I
+         UjxR1B6OwmrJtZJ9I4Xr/9v3Df+nuPh9/DFmOuxDO7RsX+GL/Wqk5JH1S0B7PElBdx
+         w+ybsP4NRHgFOSGNPuF+Dq8dLfG3EbJ52HqTqOVFjMwvI8Nc4e7u4PGUZhetVe0F/x
+         CKW6YqqqKzzEdnyvVP6SwXPYewIvYQNB9OFJnPh/xCx/SmVg28zxSztkFlfRup+sEZ
+         RIzc2oVgjJ4PrVqv5ZE3ITdFFGxbS8zfxJQUNXGXlBbkHaFyvZmWhn3ArSahSX6dyP
+         K6wtEwRwrtc+A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
         Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 25/51] ARM: dts: omap3: align gpio hog names with dt-schema
-Date:   Wed, 14 Jul 2021 15:44:47 -0400
-Message-Id: <20210714194513.54827-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 28/51] ARM: dts: am57xx-cl-som-am57x: fix ti,no-reset-on-init flag for gpios
+Date:   Wed, 14 Jul 2021 15:44:50 -0400
+Message-Id: <20210714194513.54827-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194513.54827-1-sashal@kernel.org>
 References: <20210714194513.54827-1-sashal@kernel.org>
@@ -45,45 +45,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit cfb4ab3b5df86c6001127346d8331f5e87012f91 ]
+[ Upstream commit b644c5e01c870056e13a096e14b9a92075c8f682 ]
 
-The GPIO Hog dt-schema node naming convention expect GPIO hogs node names
-to end with a 'hog' suffix.
+The ti,no-reset-on-init flag need to be at the interconnect target module
+level for the modules that have it defined.
+The ti-sysc driver handles this case, but produces warning, not a critical
+issue.
 
 Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap3-evm-processor-common.dtsi | 2 +-
- arch/arm/boot/dts/omap3-gta04a5.dts               | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/am57xx-cl-som-am57x.dts | 5 ++---
+ arch/arm/boot/dts/dra7-l4.dtsi            | 4 ++--
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap3-evm-processor-common.dtsi b/arch/arm/boot/dts/omap3-evm-processor-common.dtsi
-index b4109f48ec18..e6ba30a21166 100644
---- a/arch/arm/boot/dts/omap3-evm-processor-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-evm-processor-common.dtsi
-@@ -195,7 +195,7 @@ &uart3 {
-  * for bus switch SN74CB3Q3384A, level-shifter SN74AVC16T245DGGR, and 1.8V.
-  */
- &gpio2 {
--	en_usb2_port {
-+	en-usb2-port-hog {
- 		gpio-hog;
- 		gpios = <29 GPIO_ACTIVE_HIGH>;	/* gpio_61 */
- 		output-low;
-diff --git a/arch/arm/boot/dts/omap3-gta04a5.dts b/arch/arm/boot/dts/omap3-gta04a5.dts
-index fd84bbf3b9cc..9ce8d81250aa 100644
---- a/arch/arm/boot/dts/omap3-gta04a5.dts
-+++ b/arch/arm/boot/dts/omap3-gta04a5.dts
-@@ -37,7 +37,7 @@ pps {
+diff --git a/arch/arm/boot/dts/am57xx-cl-som-am57x.dts b/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
+index 34ca761aeded..e86d4795e024 100644
+--- a/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
++++ b/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
+@@ -611,12 +611,11 @@ &mcasp3 {
+ 	>;
  };
  
- &gpio5 {
--	irda_en {
-+	irda-en-hog {
- 		gpio-hog;
- 		gpios = <(175-160) GPIO_ACTIVE_HIGH>;
- 		output-high;	/* activate gpio_175 to disable IrDA receiver */
+-&gpio3 {
+-	status = "okay";
++&gpio3_target {
+ 	ti,no-reset-on-init;
+ };
+ 
+-&gpio2 {
++&gpio2_target {
+ 	status = "okay";
+ 	ti,no-reset-on-init;
+ };
+diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+index bc702579488b..3f845a8531f4 100644
+--- a/arch/arm/boot/dts/dra7-l4.dtsi
++++ b/arch/arm/boot/dts/dra7-l4.dtsi
+@@ -1326,7 +1326,7 @@ gpio8: gpio@0 {
+ 			};
+ 		};
+ 
+-		target-module@55000 {			/* 0x48055000, ap 13 0e.0 */
++		gpio2_target: target-module@55000 {		/* 0x48055000, ap 13 0e.0 */
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+ 			reg = <0x55000 0x4>,
+ 			      <0x55010 0x4>,
+@@ -1359,7 +1359,7 @@ gpio2: gpio@0 {
+ 			};
+ 		};
+ 
+-		target-module@57000 {			/* 0x48057000, ap 15 06.0 */
++		gpio3_target: target-module@57000 {		/* 0x48057000, ap 15 06.0 */
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+ 			reg = <0x57000 0x4>,
+ 			      <0x57010 0x4>,
 -- 
 2.30.2
 
