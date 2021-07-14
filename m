@@ -2,203 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBE93C896E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB593C8985
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236088AbhGNRO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:14:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32587 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229684AbhGNRO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:14:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626282725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+u7BWcRWLoQNWyKJOQaPMWksN5UwirJlXh6tTZi510=;
-        b=AWnO2nu9gdisLnZ0R6GogXB6oSPgJS5I5/qSEUauh+VrD5j4FMDNDgtmBn7TR5B8NA00Ly
-        qjubtLtPJL7F5s9xiKCtJHMjtmPWc43V/o5BOQi3/H/oa1im86bdZDxoa8YNrRRG8PnTwb
-        XM5rx8bZIXA980nV9/Ay0iNquX7z2D0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-HZaT3c9ZOwyHgp0TUTM5RQ-1; Wed, 14 Jul 2021 13:12:03 -0400
-X-MC-Unique: HZaT3c9ZOwyHgp0TUTM5RQ-1
-Received: by mail-qv1-f69.google.com with SMTP id l4-20020a0ce8440000b02902d89f797d08so2104779qvo.17
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:12:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/+u7BWcRWLoQNWyKJOQaPMWksN5UwirJlXh6tTZi510=;
-        b=XaZ3am7tzOshwl1KDK6MrOV8a+4waPJEXN8UENvXJ8/GCKWfmLEbt2nZDEOruOag5j
-         DcJ3CGO/9tK/bHzUiph1LXr/P/+rDSwdakvhoHUL93yy557ogrU1SyV9IE/gfJRQjMxN
-         idcaYO3Mq/2vEi80i/EfiSLwAJVYxyAoeQSFTCzIbaKC/X7OnIDc+TWsHi8PKhxFd7Q+
-         ZP6YJ10ptThweSbcAkXKE5jJDfOfA7Ro7WAeD9FlR90yS+4dsEDbi2oXp0KIEKB7bR8K
-         nxyVnRrBUUZ97TL6OrvFxXzqVE3urPeAncNbVaHRz8Gb25PT8iSXJx15VFPuz92t0s/+
-         UmNw==
-X-Gm-Message-State: AOAM53236MFuzsqiDFOSX3hoYTFlm0ynOrVomwUVbLiRMHTXU6kKDQuZ
-        PF9fGi/5XuopZ86Sn4WDPp872kCRpZg/ByX4gvycMP5TF6G1zenRnL8l2v8u9j1Cc4EgY6wzVYR
-        XG2av/DHfrnEyVEKi3z6/mpo5
-X-Received: by 2002:ac8:5853:: with SMTP id h19mr10295755qth.66.1626282723387;
-        Wed, 14 Jul 2021 10:12:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyndPdH5BTegzcOmOxSmhX4dkEPZGrFPJ8X9gKoVpK4Gm+R6Uw+5+pGKoSBxNBkGXhdPso+QQ==
-X-Received: by 2002:ac8:5853:: with SMTP id h19mr10295722qth.66.1626282723147;
-        Wed, 14 Jul 2021 10:12:03 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id t62sm1274934qkc.26.2021.07.14.10.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 10:12:02 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 13:12:00 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>,
-        akpm@linux-foundation.org, catalin.marinas@arm.com,
-        peterz@infradead.org, chinwen.chang@mediatek.com,
-        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
-        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [RFC PATCH 1/1] pagemap: report swap location for shared pages
-Message-ID: <YO8a4FpvBVEIBgjK@t490s>
-References: <20210714152426.216217-1-tiberiu.georgescu@nutanix.com>
- <20210714152426.216217-2-tiberiu.georgescu@nutanix.com>
- <YO8L5PTdAs+vPeIx@t490s>
- <0e38ef52-0ac7-c15b-114b-3316973fc7dc@redhat.com>
- <f39be587-31f4-72c0-7d39-dad02a0f5777@redhat.com>
+        id S239711AbhGNRRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:17:32 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35631 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239635AbhGNRRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:17:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="232208078"
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="232208078"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 10:14:39 -0700
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="413353810"
+Received: from alpinagh-mobl1.amr.corp.intel.com (HELO [10.212.71.223]) ([10.212.71.223])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 10:14:37 -0700
+Subject: Re: [PATCH v2 16/16] ASoC: qcom: sm8250: Add audioreach support
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.de,
+        plai@codeaurora.org, linux-kernel@vger.kernel.org
+References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
+ <20210714153039.28373-17-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <67e19b85-7f97-c965-04ea-6a46eaf19f3f@linux.intel.com>
+Date:   Wed, 14 Jul 2021 12:12:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210714153039.28373-17-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f39be587-31f4-72c0-7d39-dad02a0f5777@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 06:30:05PM +0200, David Hildenbrand wrote:
-> On 14.07.21 18:24, David Hildenbrand wrote:
-> > On 14.07.21 18:08, Peter Xu wrote:
-> > > On Wed, Jul 14, 2021 at 03:24:26PM +0000, Tiberiu Georgescu wrote:
-> > > > When a page allocated using the MAP_SHARED flag is swapped out, its pagemap
-> > > > entry is cleared. In many cases, there is no difference between swapped-out
-> > > > shared pages and newly allocated, non-dirty pages in the pagemap interface.
-> > > > 
-> > > > This patch addresses the behaviour and modifies pte_to_pagemap_entry() to
-> > > > make use of the XArray associated with the virtual memory area struct
-> > > > passed as an argument. The XArray contains the location of virtual pages
-> > > > in the page cache, swap cache or on disk. If they are on either of the
-> > > > caches, then the original implementation still works. If not, then the
-> > > > missing information will be retrieved from the XArray.
-> > > > 
-> > > > Co-developed-by: Florian Schmidt <florian.schmidt@nutanix.com>
-> > > > Signed-off-by: Florian Schmidt <florian.schmidt@nutanix.com>
-> > > > Co-developed-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
-> > > > Signed-off-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
-> > > > Co-developed-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
-> > > > Signed-off-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
-> > > > Signed-off-by: Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-> > > > ---
-> > > >    fs/proc/task_mmu.c | 37 +++++++++++++++++++++++++++++--------
-> > > >    1 file changed, 29 insertions(+), 8 deletions(-)
-> > > > 
-> > > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> > > > index eb97468dfe4c..b17c8aedd32e 100644
-> > > > --- a/fs/proc/task_mmu.c
-> > > > +++ b/fs/proc/task_mmu.c
-> > > > @@ -1359,12 +1359,25 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
-> > > >    	return err;
-> > > >    }
-> > > > +static void *get_xa_entry_at_vma_addr(struct vm_area_struct *vma,
-> > > > +		unsigned long addr)
-> > > > +{
-> > > > +	struct inode *inode = file_inode(vma->vm_file);
-> > > > +	struct address_space *mapping = inode->i_mapping;
-> > > > +	pgoff_t offset = linear_page_index(vma, addr);
-> > > > +
-> > > > +	return xa_load(&mapping->i_pages, offset);
-> > > > +}
-> > > > +
-> > > >    static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
-> > > >    		struct vm_area_struct *vma, unsigned long addr, pte_t pte)
-> > > >    {
-> > > >    	u64 frame = 0, flags = 0;
-> > > >    	struct page *page = NULL;
-> > > > +	if (vma->vm_flags & VM_SOFTDIRTY)
-> > > > +		flags |= PM_SOFT_DIRTY;
-> > > > +
-> > > >    	if (pte_present(pte)) {
-> > > >    		if (pm->show_pfn)
-> > > >    			frame = pte_pfn(pte);
-> > > > @@ -1374,13 +1387,22 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
-> > > >    			flags |= PM_SOFT_DIRTY;
-> > > >    		if (pte_uffd_wp(pte))
-> > > >    			flags |= PM_UFFD_WP;
-> > > > -	} else if (is_swap_pte(pte)) {
-> > > > +	} else if (is_swap_pte(pte) || shmem_file(vma->vm_file)) {
-> > > >    		swp_entry_t entry;
-> > > > -		if (pte_swp_soft_dirty(pte))
-> > > > -			flags |= PM_SOFT_DIRTY;
-> > > > -		if (pte_swp_uffd_wp(pte))
-> > > > -			flags |= PM_UFFD_WP;
-> > > > -		entry = pte_to_swp_entry(pte);
-> > > > +		if (is_swap_pte(pte)) {
-> > > > +			entry = pte_to_swp_entry(pte);
-> > > > +			if (pte_swp_soft_dirty(pte))
-> > > > +				flags |= PM_SOFT_DIRTY;
-> > > > +			if (pte_swp_uffd_wp(pte))
-> > > > +				flags |= PM_UFFD_WP;
-> > > > +		} else {
-> > > > +			void *xa_entry = get_xa_entry_at_vma_addr(vma, addr);
-> > > > +
-> > > > +			if (xa_is_value(xa_entry))
-> > > > +				entry = radix_to_swp_entry(xa_entry);
-> > > > +			else
-> > > > +				goto out;
-> > > > +		}
-> > > >    		if (pm->show_pfn)
-> > > >    			frame = swp_type(entry) |
-> > > >    				(swp_offset(entry) << MAX_SWAPFILES_SHIFT);
-> > > > @@ -1393,9 +1415,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
-> > > >    		flags |= PM_FILE;
-> > > >    	if (page && page_mapcount(page) == 1)
-> > > >    		flags |= PM_MMAP_EXCLUSIVE;
-> > > > -	if (vma->vm_flags & VM_SOFTDIRTY)
-> > > > -		flags |= PM_SOFT_DIRTY;
-> > > 
-> > > IMHO moving this to the entry will only work for the initial iteration, however
-> > > it won't really help anything, as soft-dirty should always be used in pair with
-> > > clear_refs written with value "4" first otherwise all pages will be marked
-> > > soft-dirty then the pagemap data is meaningless.
-> > > 
-> > > After the "write 4" op VM_SOFTDIRTY will be cleared and I expect the test case
-> > > to see all zeros again even with the patch.
-> > > 
-> > > I think one way to fix this is to do something similar to uffd-wp: we leave a
-> > > marker in pte showing that this is soft-dirtied pte even if swapped out.
-> > 
-> > How exactly does such a pte look like? Simply pte_none() with another
-> > bit set?
 
-Yes something like that.  The pte can be defined at will, as long as never used
-elsewhere.
 
-> > 
-> > > However we don't have a mechanism for that yet in current linux, and the
-> > > uffd-wp series is the first one trying to introduce something like that.
-> > 
-> > Can you give me a pointer? I'm very interested in learning how to
-> > identify this case.
-> > 
+On 7/14/21 10:30 AM, Srinivas Kandagatla wrote:
+> This patch adds support for parsing dt for AudioReach based soundcards
+> which only have backend DAI links in DT.
 > 
-> I assume it's
-> https://lore.kernel.org/lkml/20210527202117.30689-1-peterx@redhat.com/
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  sound/soc/qcom/sm8250.c | 144 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 143 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
+> index fe8fd7367e21..421f9d1d2bed 100644
+> --- a/sound/soc/qcom/sm8250.c
+> +++ b/sound/soc/qcom/sm8250.c
+> @@ -20,6 +20,141 @@ struct sm8250_snd_data {
+>  	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
+>  };
+>  
+> +static int qcom_audioreach_snd_parse_of(struct snd_soc_card *card)
+> +{
+> +	struct device_node *np;
+> +	struct device_node *codec = NULL;
+> +	struct device_node *platform = NULL;
+> +	struct device_node *cpu = NULL;
+> +	struct device *dev = card->dev;
+> +	struct snd_soc_dai_link *link;
+> +	struct of_phandle_args args;
+> +	struct snd_soc_dai_link_component *dlc;
+> +	int ret, num_links;
+> +
+> +	ret = snd_soc_of_parse_card_name(card, "model");
+> +	if (ret) {
+> +		dev_err(dev, "Error parsing card name: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* DAPM routes */
+> +	if (of_property_read_bool(dev->of_node, "audio-routing")) {
+> +		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* Populate links */
+> +	num_links = of_get_child_count(dev->of_node);
+> +
+> +	/* Allocate the DAI link array */
+> +	card->dai_link = devm_kcalloc(dev, num_links, sizeof(*link), GFP_KERNEL);
+> +	if (!card->dai_link)
+> +		return -ENOMEM;
+> +
+> +	card->num_links = num_links;
+> +	link = card->dai_link;
+> +
+> +	for_each_child_of_node(dev->of_node, np) {
+> +
+> +		dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
+> +		if (!dlc) {
+> +			ret = -ENOMEM;
+> +			goto err_put_np;
+> +		}
+> +
+> +		link->cpus	= &dlc[0];
+> +		link->platforms	= &dlc[1];
+> +
+> +		link->num_cpus		= 1;
+> +		link->num_platforms	= 1;
+> +
+> +
+> +		ret = of_property_read_string(np, "link-name", &link->name);
+> +		if (ret) {
+> +			dev_err(card->dev, "error getting codec dai_link name\n");
+> +			goto err_put_np;
+> +		}
+> +
+> +		cpu = of_get_child_by_name(np, "cpu");
+> +		platform = of_get_child_by_name(np, "platform");
+> +		codec = of_get_child_by_name(np, "codec");
+> +		if (!cpu) {
+> +			dev_err(dev, "%s: Can't find cpu DT node\n", link->name);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		if (!platform) {
+> +			dev_err(dev, "%s: Can't find platform DT node\n", link->name);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		if (!codec) {
+> +			dev_err(dev, "%s: Can't find codec DT node\n", link->name);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		ret = of_parse_phandle_with_args(cpu, "sound-dai", "#sound-dai-cells", 0, &args);
+> +		if (ret) {
+> +			dev_err(card->dev, "%s: error getting cpu phandle\n", link->name);
+> +			goto err;
+> +		}
+> +
+> +		link->cpus->of_node = args.np;
+> +		link->id = args.args[0];
+> +
+> +		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
+> +		if (ret) {
+> +			if (ret != -EPROBE_DEFER)
+> +				dev_err(card->dev, "%s: error getting cpu dai name: %d\n",
+> +					link->name, ret);
+> +			goto err;
+> +		}
+> +
+> +		link->platforms->of_node = of_parse_phandle(platform, "sound-dai", 0);
+> +		if (!link->platforms->of_node) {
+> +			dev_err(card->dev, "%s: platform dai not found\n", link->name);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+> +		if (ret < 0) {
+> +			if (ret != -EPROBE_DEFER)
+> +				dev_err(card->dev, "%s: codec dai not found: %d\n",
+> +					link->name, ret);
+> +			goto err;
+> +		}
+> +
+> +		/* DPCM backend */
+> +		link->no_pcm = 1;
+> +		link->ignore_pmdown_time = 1;
+> +		link->ignore_suspend = 1;
 
-Yes.
+why are those two fields set unconditionally?
 
--- 
-Peter Xu
+If you parse information from DT shouldn't those links be explicitly tagged as requiring those fields to be set?
+
+It's a recurring battle for me to ask why people set them in Intel machine drivers, I find it really odd that you would set them since they aren't without side effect on clocks and suspend.
+
+> +
+> +		link->stream_name = link->name;
+> +		snd_soc_dai_link_set_capabilities(link);
+> +		link++;
+> +
+> +		of_node_put(cpu);
+> +		of_node_put(codec);
+> +		of_node_put(platform);
+> +
+> +	}
+> +
+> +	return 0;
+> +err:
+> +	of_node_put(cpu);
+> +	of_node_put(codec);
+> +	of_node_put(platform);
+> +err_put_np:
+> +	of_node_put(np);
+> +	return ret;
+> +}
+> +
 
