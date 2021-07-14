@@ -2,91 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199A03C83C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9DD3C83CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238871AbhGNLZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhGNLZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:25:29 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EACC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:22:37 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
-        by laurent.telenet-ops.be with bizsmtp
-        id UzNa2500A1ccfby01zNa2P; Wed, 14 Jul 2021 13:22:35 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3cyH-0017Wr-VG; Wed, 14 Jul 2021 13:22:33 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3cyH-00A7kH-Gk; Wed, 14 Jul 2021 13:22:33 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v3] x86: ce4100: Replace "ti,pcf8575" by "nxp,pcf8575"
-Date:   Wed, 14 Jul 2021 13:22:32 +0200
-Message-Id: <24300cf6ef1d7c5243f379d5a5965c5ece40ad32.1626261651.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S239115AbhGNLZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:25:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238984AbhGNLZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 07:25:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A35E613B2;
+        Wed, 14 Jul 2021 11:22:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626261773;
+        bh=FC/9D6uaBW1b3824J5hBP6nN+CqfeDP2fvPFq9DaeZc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UQGnjDpCTB7wsjfVmd8BzXw8199D9LfSiVbEVCMbb9ZLYBxbOzux0NDHfabpvA9og
+         21Y6dwPEkTjZMsDYjP/c0JgujoPTXpMekB/mYUJAALEETwiyTijQLZ6Ve7UNxxfLSU
+         6YV2Km6kQfSmI69+mF2UluychIw7OhEWT2EaerG6rtv4PPehLyn58ETJ/egoHmzDxF
+         /j+yicTAqvNFrKKVIutKeTBOx4aPhzrqWPDTEpZo5msAeikA0ybfQOKUG5tkwEkH5+
+         TujfaEM4PQQ0moXqsPYlI1EGCSTXVHIVhyKyULs0sKm+DnRTex100WYbHl+RSB1J26
+         j87ZzVkWKStJw==
+Date:   Wed, 14 Jul 2021 13:22:46 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Manivannan Sadhasivam <mani@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 4/8] dt-bindings: PCI: kirin: Drop PHY properties
+Message-ID: <20210714132246.0bb44667@coco.lan>
+In-Reply-To: <20210714022849.GA1330659@robh.at.kernel.org>
+References: <cover.1626157454.git.mchehab+huawei@kernel.org>
+        <a04c9c92187ceaee0fd4b8d4721e2a3275d97518.1626157454.git.mchehab+huawei@kernel.org>
+        <20210714022849.GA1330659@robh.at.kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TI part is equivalent to the NXP part, and its compatible value is
-not documented in the DT bindings.
+Em Tue, 13 Jul 2021 20:28:49 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-Note that while the Linux driver DT match table does not contain the
-compatible value of the TI part, it could still match to this part, as
-i2c_device_id-based matching ignores the vendor part of the compatible
-value.
+> On Tue, Jul 13, 2021 at 08:28:37AM +0200, Mauro Carvalho Chehab wrote:
+> > There are several properties there that belong to the PHY
+> > interface. Drop them, as a new binding file will describe
+> > the PHY properties for Kirin 960.  
+> 
+> Folks are okay with an incompatible change on hikey960?
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
-v3:
-  - Add Reviewed-by,
+I hope so ;-)
 
-v2:
-  - New.
----
- arch/x86/platform/ce4100/falconfalls.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I mean, it should be easy to add a backward-compatible code that
+would make the PHY driver to use the pci-bus old schema if there's
+no PHY entry at DT.
 
-diff --git a/arch/x86/platform/ce4100/falconfalls.dts b/arch/x86/platform/ce4100/falconfalls.dts
-index 0ac3d43571361112..65fa3d866226ce97 100644
---- a/arch/x86/platform/ce4100/falconfalls.dts
-+++ b/arch/x86/platform/ce4100/falconfalls.dts
-@@ -249,7 +249,7 @@ i2c@1 {
- 
- 						gpio@26 {
- 							#gpio-cells = <2>;
--							compatible = "ti,pcf8575";
-+							compatible = "nxp,pcf8575";
- 							reg = <0x26>;
- 							gpio-controller;
- 						};
-@@ -263,7 +263,7 @@ i2c@2 {
- 
- 						gpio@26 {
- 							#gpio-cells = <2>;
--							compatible = "ti,pcf8575";
-+							compatible = "nxp,pcf8575";
- 							reg = <0x26>;
- 							gpio-controller;
- 						};
--- 
-2.25.1
+However, this is not enough, as the PHY driver won't be loaded/probed
+without at least this at hi3660.dtsi:
 
+	pcie_phy: pcie-phy@f3f2000 {
+		compatible = "hisilicon,hi960-pcie-phy";
+	};
+
+
+So, some (probably ugly) hack would be needed at pcie-kirin, in order
+to make it to manually load and probe the PHY driver, if it
+founds (for instance) "phy" reg-name as a pcie-kirin property.
+
+Thanks,
+Mauro
