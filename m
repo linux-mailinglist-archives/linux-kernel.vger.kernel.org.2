@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC193C7F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192C13C7F9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238362AbhGNHzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:55:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41000 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238139AbhGNHzv (ORCPT
+        id S238371AbhGNH4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:56:08 -0400
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:42649 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238139AbhGNH4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:55:51 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 23B392058A;
-        Wed, 14 Jul 2021 07:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626249179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ujqb/zEY2k9KvhKQHF6Csk8Ctg8A3CK/RhiEIwOGvQA=;
-        b=mflHGjHAofHGhgtGzeEs8vUR+3U3yHRYl6hwwZpM5P9l9DMXZpV2dPZGYR2MCBojyn/4Gi
-        iCX3TqfqM4EYUA15Vt/MUeHNN8f1GkQ1W4J14zMjbj9dE4JcqsLVR4n5T9T4xc7I+DPOXU
-        UA2rvnU5k18eBPSdS5sWMjgpof5fDkI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 93688A3B85;
-        Wed, 14 Jul 2021 07:52:58 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 09:52:58 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO6X2og4mzqAEwJn@dhcp22.suse.cz>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com>
- <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+        Wed, 14 Jul 2021 03:56:07 -0400
+Received: by mail-vs1-f54.google.com with SMTP id u7so448701vst.9;
+        Wed, 14 Jul 2021 00:53:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x3/MK3eQJImLkG7ZMsR8ZMRn/ZP4avUxVKH3TZwMMJ0=;
+        b=nteAxe+APdWd+KRqFPtA/6z+slFq0w4HwF4/bX7LD0C2LQXnU+/p4lWG8grns3wquS
+         MZ0YFGR0B6XB/ap713IJZaZJY0sDYap5+/y840QEbNtjdMb683bCUgauukiXotJm4yBp
+         rghJgBKL7AaurllGHjz6MmnwXAePFN6fOIKHGHIEjvFaoVI3sMfPauZSdmeuLJCfKqp9
+         BWFzPFYvzW/TwJm718WYD8rSjD/+xUoZCTySIeABRCmxgAjOdS5EG+Rh0oE26HO6xuPI
+         MEBSiBFHalXWXZXsBNkqEfsOicPmzc3J2M5Y7Xtm/CZ6iqLsyOH7zirnu5vxXaka/Th3
+         OcuA==
+X-Gm-Message-State: AOAM530glC0n5ph14Z7jqYV3VF/H8WckwrIfDFyBfw7Ha7OcNj05EP1X
+        BG6qEb12pZRvfzxnSKL4Cla5eRXaMCB8sMeUuQoLC/jH
+X-Google-Smtp-Source: ABdhPJwyunVPh778G/aGGTSvtP0xUCWrSmkfw/KX9ceUj/nZomBFVLw9Uwq5tWsTu2Ills2W36zrTneFYhlPtnCGe54=
+X-Received: by 2002:a67:1542:: with SMTP id 63mr10305350vsv.40.1626249195799;
+ Wed, 14 Jul 2021 00:53:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+References: <20210714083156.29032075@canb.auug.org.au>
+In-Reply-To: <20210714083156.29032075@canb.auug.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Jul 2021 09:53:04 +0200
+Message-ID: <CAMuHMdVLbfb8N_qhUfbw2aq23c-a1LA9bu7EAJQYb+4iT3pzZQ@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the clk-renesas tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13-07-21 18:28:13, Andrew Morton wrote:
-[...]
-> > Trying to keep a "do not apply" list for Fixes: tags only is much harder
-> > for both of us as we do these semi-manually and review them
-> > individually.  Trying to remember what subsystem only does Fixes tags
-> > yet really doesn't mean it is an impossible task.
-> 
-> Well, it shouldn't be super hard to skip all patches which have Fixes:,
-> Signed-off-by:akpm and no cc:stable?
-> 
-> I'd really really prefer this, please.
+Hi Stephen,
 
-Yes please!
+On Wed, Jul 14, 2021 at 12:32 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> Commits
+>
+>   1a95840b0d0d ("clk: renesas: r9a07g044: Add DMAC clocks/resets")
+>   1f5cda1cc885 ("clk: renesas: r9a07g044: Add I2C clocks/resets")
+>
+> are missing a Signed-off-by from their committer.
 
-> At present this -stable
-> promiscuity is overriding the (sometime carefully) considered decisions
-> of the MM developers, and that's a bit scary.
+Thanks for the report, fixed.
 
-Not only scary, it is also a waste of precious time of those who
-carefuly evaluate stable tree backports.
+Gr{oetje,eeting}s,
 
-> I've actually been
-> spending the past couple of years believing that if I left off
-> cc:stable, the fix wasn't going to go into -stable!
-> 
-> Alternatively I could just invent a new tag to replace the "Fixes:"
-> ("Fixes-no-backport?") to be used on patches which fix a known previous
-> commit but which we don't want backported.
- 
-Please no. We already do have a way to mark for stable trees. The fact
-that stable kernel maintainers tend oto ignore that shouldn't put the
-burden to developers/maintainers. But hey, if stable maintainers really
-want to push to quantity over quality then be it....
+                        Geert
 
 -- 
-Michal Hocko
-SUSE Labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
