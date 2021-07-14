@@ -2,244 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439863C87D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75A93C87E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhGNPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:41:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:36280 "EHLO foss.arm.com"
+        id S239554AbhGNPq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:46:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232354AbhGNPlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:41:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D11C631B;
-        Wed, 14 Jul 2021 08:38:17 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49CB13F7D8;
-        Wed, 14 Jul 2021 08:38:16 -0700 (PDT)
-Subject: Re: [RFC 06/10] arm64/mm: Add FEAT_LPA2 specific encoding
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
-        mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
-        maz@kernel.org, james.morse@arm.com
-References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
- <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <9f0d9925-3694-3fae-0d09-00adbecd1878@arm.com>
-Date:   Wed, 14 Jul 2021 16:38:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232318AbhGNPqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 11:46:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6831613C8;
+        Wed, 14 Jul 2021 15:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626277413;
+        bh=/Hc6tz85MTUadhdIRSG2oaN3rM7XRWUzy2dI1TVpQNU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ckDkrimm+MK/okCfOz5+C1/IGeSHPSaA4wAdG/WJ6m9CM7AJEABcRoubzKwcWY8lm
+         5OA6EG3Bwvw3tTkmY4v9yS+LFU+1nQPq4V3RDu5L04CWVJBfGf1MqZM65YVk+VLkTp
+         pomV+O2fmWbejjx5bAVzu7ACeO34xtpEwMW8/bGbZy/+fg4t6UHcKpVKBzSETidfng
+         4kBQ+frsxb7+h2LMLQAsPIWHR/nbvDcoDIWWi+fwFcNDoD95QUx+UJfD4j626w4Dp+
+         mVx3D19y8hyJS4dBVavrXcRLvwSF+isb4i+IV/U1sKyWkGaBtvbUyJG9Di0tD/FPd3
+         5ZTX60eJ8+tGw==
+Received: by mail-ej1-f41.google.com with SMTP id hc15so4071020ejc.4;
+        Wed, 14 Jul 2021 08:43:33 -0700 (PDT)
+X-Gm-Message-State: AOAM533t/RxdGyrgmwyMJIm4JDAhGxhUmWG/QMoLrOWmPPs0ofEYdym9
+        AOU8T69+MVt3Td97zOtIDI4ylUZ9Y5tK5FqdoQ==
+X-Google-Smtp-Source: ABdhPJzMA2/c1kwXXfJV0KwSIgHuC8FkqivEpe59TEvEKJgJDyWLdmKNNJ3+1Mw5Fuv3WHmBfdjEupGaJ+DBVGPgWVQ=
+X-Received: by 2002:a17:907:5096:: with SMTP id fv22mr12588246ejc.525.1626277412327;
+ Wed, 14 Jul 2021 08:43:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <cover.1626173013.git.viresh.kumar@linaro.org> <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+ <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
+ <20210713151917.zouwfckidnjxvohn@vireshk-i7> <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
+ <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 14 Jul 2021 09:43:20 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKLjFx9AOcMiyxdQvDU7V8Sak8YPyrJm2TuSE-TTqvREw@mail.gmail.com>
+Message-ID: <CAL_JsqKLjFx9AOcMiyxdQvDU7V8Sak8YPyrJm2TuSE-TTqvREw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device subnode
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2021 03:21, Anshuman Khandual wrote:
-> FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
-> page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
-> ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
-> would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
-> and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
-> the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
-> to accept a temporary variable and changes impacted call sites.
-> 
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/include/asm/assembler.h     | 23 +++++++++++++++++++----
->  arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
->  arch/arm64/include/asm/pgtable.h       |  4 ++++
->  arch/arm64/kernel/head.S               | 25 +++++++++++++------------
->  4 files changed, 40 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-> index fedc202..0492543 100644
-> --- a/arch/arm64/include/asm/assembler.h
-> +++ b/arch/arm64/include/asm/assembler.h
-> @@ -606,7 +606,7 @@ alternative_endif
->  #endif
->  	.endm
->  
-> -	.macro	phys_to_pte, pte, phys
-> +	.macro	phys_to_pte, pte, phys, tmp
->  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
->  	/*
->  	 * We assume \phys is 64K aligned and this is guaranteed by only
-> @@ -614,6 +614,17 @@ alternative_endif
->  	 */
->  	orr	\pte, \phys, \phys, lsr #36
->  	and	\pte, \pte, #PTE_ADDR_MASK
-> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-> +	orr	\pte, \phys, \phys, lsr #42
-> +
-> +	/*
-> +	 * The 'tmp' is being used here to just prepare
-> +	 * and hold PTE_ADDR_MASK which cannot be passed
-> +	 * to the subsequent 'and' instruction.
-> +	 */
-> +	mov	\tmp, #PTE_ADDR_LOW
-> +	orr	\tmp, \tmp, #PTE_ADDR_HIGH
-> +	and	\pte, \pte, \tmp
+On Tue, Jul 13, 2021 at 2:34 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Jul 13, 2021 at 9:35 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > On Tue, Jul 13, 2021 at 9:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > On 13-07-21, 08:43, Rob Herring wrote:
+> > > > On Tue, Jul 13, 2021 at 4:50 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > > >
+> > > > > Allow virtio,mmio nodes to contain device specific subnodes. Since each
+> > > > > virtio,mmio node can represent a single virtio device, each virtio node
+> > > > > is allowed to contain a maximum of one device specific subnode.
+> > > >
+> > > > Doesn't sound like we need 2 nodes here. Just add I2C devices as child
+> > > > nodes. You could add a more specific compatible string, but the
+> > > > protocol is discoverable, so that shouldn't be necessary.
+> > >
+> > > I am not sure if it will be a problem, but you can clarify it better.
+> >
+> > > The parent node (virtio,mmio) is used to create a platform device,
+> > > virtio-mmio, (and so assigned as its of_node) and we create the
+> > > virtio-device from probe() of this virtio-mmio device.
+> > >
+> > > Is it going to be a problem if two devices in kernel use the same
+> > > of_node ?
+> >
+> > There shouldn't be. We have nodes be multiple providers (e.g clocks
+> > and resets) already.
+>
+> I think this would be a little different, but it can still work. There is in
+> fact already some precedent of doing this, with Jean-Philippe's virtio-iommu
+> binding, which is documented in both
+>
+> Documentation/devicetree/bindings/virtio/iommu.txt
+> Documentation/devicetree/bindings/virtio/mmio.txt
+>
+> Unfortunately, those are still slightly different from where I think we should
+> be going here, but it's probably close enough to fit into the general
+> system.
+>
+> What we have with virtio-iommu is two special hacks:
+>  - on virtio-mmio, a node with 'compatible="virtio,mmio"' may optionally
+>    have an '#iommu-cells=<1>', in which case we assume it's an iommu.
+>  - for virtio-pci, the node has the standard PCI 'reg' property but a special
+>    'compatible="virtio,pci-iommu"' property that I think is different from any
+>    other PCI node.
 
-Rather than adding an extra temporary register (and the fallout of
-various other macros needing an extra register), this can be done with
-two AND instructions:
+How is that different? PCI device can be a VID/PID compatible or
+omitted, but can also be a "typical" compatible string.
 
-	/* PTE_ADDR_MASK cannot be encoded as an immediate, so
-         * mask off all but two bits, followed by masking the
-         * extra two bits
-         */
-	and	\pte, \pte, #PTE_ADDR_MASK | (3 << 10)
-	and	\pte, \pte, #~(3 << 10)
+> I think for other virtio devices, we should come up with a way to define a
+> binding per device (i2c, gpio, ...) without needing to cram this into the
+> "virtio,mmio" binding or coming up with special compatible strings for
+> PCI devices.
+>
+> Having a child device for the virtio device type gives a better separation
+> here, since it lets you have two nodes with 'compatible' strings that each
+> make sense for their respective parent buses: The parent is either a PCI
+> device or a plain mmio based device, and the child is a virtio device with
+> its own namespace for compatible values. As you say, the downside is
+> that this requires an extra node that is redundant because there is always
+> a 1:1 relation with its parent.
+>
+> Having a combined node gets rid of the redundancy but if we want to
+> identify the device for the purpose of defining a custom binding, it would have
+> to have two compatible strings, something like
+>
+> compatible="virtio,mmio", "virtio,device34";
 
-Steve
+The order seems backwards here. 'virtio,device34' is more specific.
+Though I guess the meanings are orthogonal.
 
->  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
->  	mov	\pte, \phys
->  #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
-> @@ -621,9 +632,13 @@ alternative_endif
->  
->  	.macro	pte_to_phys, phys, pte
->  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
-> -	ubfiz	\phys, \pte, #(48 - 16 - 12), #16
-> -	bfxil	\phys, \pte, #16, #32
-> -	lsl	\phys, \phys, #16
-> +	ubfiz	\phys, \pte, #(48 - PAGE_SHIFT - 12), #16
-> +	bfxil	\phys, \pte, #PAGE_SHIFT, #(48 - PAGE_SHIFT)
-> +	lsl	\phys, \phys, #PAGE_SHIFT
-> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-> +	ubfiz	\phys, \pte, #(52 - PAGE_SHIFT - 10), #10
-> +	bfxil	\phys, \pte, #PAGE_SHIFT, #(50 - PAGE_SHIFT)
-> +	lsl	\phys, \phys, #PAGE_SHIFT
->  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
->  	and	\phys, \pte, #PTE_ADDR_MASK
->  #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
-> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
-> index f375bcf..c815a85 100644
-> --- a/arch/arm64/include/asm/pgtable-hwdef.h
-> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
-> @@ -159,6 +159,10 @@
->  #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
->  #define PTE_ADDR_HIGH		(_AT(pteval_t, 0xf) << 12)
->  #define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
-> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-> +#define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (50 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
-> +#define PTE_ADDR_HIGH		(_AT(pteval_t, 0x3) << 8)
-> +#define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
->  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
->  #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
->  #define PTE_ADDR_MASK		PTE_ADDR_LOW
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 3c57fb2..5e7e402 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -70,6 +70,10 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
->  #define __pte_to_phys(pte)	\
->  	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
->  #define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
-> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-> +#define __pte_to_phys(pte)	\
-> +	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 42))
-> +#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 42)) & PTE_ADDR_MASK)
->  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
->  #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
->  #define __phys_to_pte_val(phys)	(phys)
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index c5c994a..6444147 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -134,9 +134,9 @@ SYM_CODE_END(preserve_boot_args)
->   * Corrupts:	ptrs, tmp1, tmp2
->   * Returns:	tbl -> next level table page address
->   */
-> -	.macro	create_table_entry, tbl, virt, shift, ptrs, tmp1, tmp2
-> +	.macro	create_table_entry, tbl, virt, shift, ptrs, tmp1, tmp2, tmp3
->  	add	\tmp1, \tbl, #PAGE_SIZE
-> -	phys_to_pte \tmp2, \tmp1
-> +	phys_to_pte \tmp2, \tmp1, \tmp3
->  	orr	\tmp2, \tmp2, #PMD_TYPE_TABLE	// address of next table and entry type
->  	lsr	\tmp1, \virt, #\shift
->  	sub	\ptrs, \ptrs, #1
-> @@ -161,8 +161,8 @@ SYM_CODE_END(preserve_boot_args)
->   * Corrupts:	index, tmp1
->   * Returns:	rtbl
->   */
-> -	.macro populate_entries, tbl, rtbl, index, eindex, flags, inc, tmp1
-> -.Lpe\@:	phys_to_pte \tmp1, \rtbl
-> +	.macro populate_entries, tbl, rtbl, index, eindex, flags, inc, tmp1, tmp2
-> +.Lpe\@:	phys_to_pte \tmp1, \rtbl, \tmp2
->  	orr	\tmp1, \tmp1, \flags	// tmp1 = table entry
->  	str	\tmp1, [\tbl, \index, lsl #3]
->  	add	\rtbl, \rtbl, \inc	// rtbl = pa next level
-> @@ -224,31 +224,32 @@ SYM_CODE_END(preserve_boot_args)
->   * Preserves:	vstart, vend, flags
->   * Corrupts:	tbl, rtbl, istart, iend, tmp, count, sv
->   */
-> -	.macro map_memory, tbl, rtbl, vstart, vend, flags, phys, pgds, istart, iend, tmp, count, sv
-> +	.macro map_memory, tbl, rtbl, vstart, vend, flags, phys, pgds, istart, iend, \
-> +								tmp, tmp1, count, sv
->  	add \rtbl, \tbl, #PAGE_SIZE
->  	mov \sv, \rtbl
->  	mov \count, #0
->  	compute_indices \vstart, \vend, #PGDIR_SHIFT, \pgds, \istart, \iend, \count
-> -	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
-> +	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp, \tmp1
->  	mov \tbl, \sv
->  	mov \sv, \rtbl
->  
->  #if SWAPPER_PGTABLE_LEVELS > 3
->  	compute_indices \vstart, \vend, #PUD_SHIFT, #PTRS_PER_PUD, \istart, \iend, \count
-> -	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
-> +	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp, \tmp1
->  	mov \tbl, \sv
->  	mov \sv, \rtbl
->  #endif
->  
->  #if SWAPPER_PGTABLE_LEVELS > 2
->  	compute_indices \vstart, \vend, #SWAPPER_TABLE_SHIFT, #PTRS_PER_PMD, \istart, \iend, \count
-> -	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
-> +	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp, \tmp1
->  	mov \tbl, \sv
->  #endif
->  
->  	compute_indices \vstart, \vend, #SWAPPER_BLOCK_SHIFT, #PTRS_PER_PTE, \istart, \iend, \count
->  	bic \count, \phys, #SWAPPER_BLOCK_SIZE - 1
-> -	populate_entries \tbl, \count, \istart, \iend, \flags, #SWAPPER_BLOCK_SIZE, \tmp
-> +	populate_entries \tbl, \count, \istart, \iend, \flags, #SWAPPER_BLOCK_SIZE, \tmp, \tmp1
->  	.endm
->  
->  /*
-> @@ -343,7 +344,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  #endif
->  
->  	mov	x4, EXTRA_PTRS
-> -	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
-> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6, x20
->  #else
->  	/*
->  	 * If VA_BITS == 48, we don't have to configure an additional
-> @@ -356,7 +357,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	ldr_l	x4, idmap_ptrs_per_pgd
->  	adr_l	x6, __idmap_text_end		// __pa(__idmap_text_end)
->  
-> -	map_memory x0, x1, x3, x6, x7, x3, x4, x10, x11, x12, x13, x14
-> +	map_memory x0, x1, x3, x6, x7, x3, x4, x10, x11, x12, x20, x13, x14
->  
->  	/*
->  	 * Map the kernel image (starting with PHYS_OFFSET).
-> @@ -370,7 +371,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	sub	x6, x6, x3			// _end - _text
->  	add	x6, x6, x5			// runtime __va(_end)
->  
-> -	map_memory x0, x1, x5, x6, x7, x3, x4, x10, x11, x12, x13, x14
-> +	map_memory x0, x1, x5, x6, x7, x3, x4, x10, x11, x12, x20, x13, x14
->  
->  	/*
->  	 * Since the page tables have been populated with non-cacheable
-> 
+> for a virtio-mmio device of device-id 34 (i2c), or a PCI device with
+>
+> compatible="pci1af4,1041", "virtio,device34";
 
+But this seems the right order. Though does '1041' have any specific
+meaning or device IDs are just dynamically assigned? It seems to be
+the latter from my brief scan of the code.
+
+> which also does not quite feel right.
+
+I guess it comes down to is 'virtio,mmio' providing a bus or is it
+just a device? I guess a bus (so 2 nodes) does make sense here.
+'virtio,mmio' defines how you access/discover the virtio queues (the
+bus) and the functional device (i2c, gpio, iommu, etc.) is accessed
+via the virtio queues.
+
+Rob
