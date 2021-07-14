@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B145D3C883D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FAE3C8845
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239852AbhGNQCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
+        id S239760AbhGNQEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232409AbhGNQCS (ORCPT
+        with ESMTP id S232392AbhGNQEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:02:18 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6633FC06175F;
-        Wed, 14 Jul 2021 08:59:25 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u25so4110447ljj.11;
-        Wed, 14 Jul 2021 08:59:25 -0700 (PDT)
+        Wed, 14 Jul 2021 12:04:50 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B64C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 09:01:58 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id x9-20020a6541490000b0290222fe6234d6so1960702pgp.14
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 09:01:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UJ4E/XVzZM3ylSuwrw9dCIunWH7KAQHUmW4q5N94kcc=;
-        b=tw9V/5BAB7DcppZw4qv7SJrckZJdY/MRbWk4EJ65eGrxhUQgv29cr/OImjqQrhMX0g
-         GTpk1yQSeS/WD0jvHsGIR+t2Ncx4K4T+dFtVH5bwqk8tIcWPpoUarVg1EBMUADPFRXxs
-         e5QgjxRv7hCUJfGEcdyy0P7/Ka0K5BXS6PqG6xkpAYh8sBbsWmMeK8bRdo3enoR9mzsc
-         vspisdxBfGGf26jikFgq9iGRBsrpNsqrA84VTiyFHLfb92e9U3Nt59d0BdjQasojeWyg
-         IuUsCyZu6E9ktmHftUnVdtOPjVOy/VdUAKCoLidFFve9Q3A2NfKlUZQ45Mx3iUIP5YE0
-         qDVg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=36Omnbyd7/DKRdeKJAY3Yo0H0DXYFeJOYXFkJ9nO0PY=;
+        b=bNaY5m0BNjTkrIa24jfGv5ZBzhSpdWHZnjwdQTOmK870VyWvISk6WpG8iprS31EDue
+         upk28mQj2kaUubx9qY1I99MzOu3WaOt/gI/R5H7hZLdi2US8QxWdZ8TUTpwhbfjBveUf
+         UVIK4lQnLDwNr/nIomjIsz1rHpiaOJO/mzmaRj6UOiQ2mUp2+2JhBiBLg/8S0BalAwHA
+         X8/fMziV6hVBXzPZAGfgTVVFURjfbkvCq1TAw/zbS1v5avNdG5K5Fuw21JTbElKa7k8P
+         md2dEuWugUvnK0i8I4S4UnG8VsUyVqOQxrAYFW2CuBaJWxjOJ6IYcYMh6gj9eWvtYw9I
+         iBiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UJ4E/XVzZM3ylSuwrw9dCIunWH7KAQHUmW4q5N94kcc=;
-        b=U5OI3uRZmv+JmK8cIVwNbhhyq8BhOEgxnKA4LCRrkl7MjKcuA16EThkh4vdC+Chmy+
-         iENO1FttPaiKKE82RPV6OcfzdQ3bevw6GNjBb4a40J+iVWNP4IeA0TvoM5Bqi2rElDBl
-         OvDuPAA7z6Utf4uZdrMy+gMNLtAWhDY7Ppc6mz5lAiWSO+k06L2pfL6hLG1VN6Ch5jMb
-         LHCgcptyaehy2jW7TfXSPRZoUaajlRg3Tmwf/0G2g0FIf+znaOnNmVZn4PVF+SZOIPjr
-         tWYV5mwVF78CNasd+p8onZ/RynHfLDxSCka5t5pcUeaFLkqK012v15CSRhI/RQPs4peO
-         sXMQ==
-X-Gm-Message-State: AOAM530MO77KkprYId1316sfZwcSfksqJv4fcCVhGUOl6e8qGefjpLll
-        eqPXwZIZA6loLMLrDBaNDJk=
-X-Google-Smtp-Source: ABdhPJy920bWU5iblLN0ldCTe7g8Jo0x8c7L5tLIQEpGZwMN2OvWDNQwqxsgSO8HBr0mJxb9PzmTQA==
-X-Received: by 2002:a2e:8e26:: with SMTP id r6mr9935055ljk.159.1626278363778;
-        Wed, 14 Jul 2021 08:59:23 -0700 (PDT)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id p16sm191967lfs.83.2021.07.14.08.59.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 08:59:23 -0700 (PDT)
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
- <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
- <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
- <bea2bcf2-02f6-f247-9e06-7b9ec154377a@gmail.com> <YO755O8JnxG44YaT@kroah.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <7f4a96bc-3912-dfb6-4a32-f0c6487d977b@gmail.com>
-Date:   Wed, 14 Jul 2021 17:59:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <YO755O8JnxG44YaT@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=36Omnbyd7/DKRdeKJAY3Yo0H0DXYFeJOYXFkJ9nO0PY=;
+        b=QGRwb48HnEgUM0wEY6GDsRwdoYc1BFNvHTWAoCMW+oxUix4Btgcftjzj0+WoFO/FxA
+         UJvwKWF9AG0MCjIs4wTBG1HaDV8LAUF8jHu+IoCISx1IR1VLFssDl5y5csOoiOQvIedH
+         204ABegWAOwUVRkhOmDb4vPD4EaYMbmg1sxQ/ZKuvnabK0qcNJB2wxWw9rgDeQF3umjP
+         6pnQfA5IGk0VvLlKAM7NU91FPGI178IVX3A3wfr8bUNYpn03CC1fMb8531mOfmdWs59t
+         +6Gb6dfvH9q/iofYfqEVSjgpypFk1He7Lnd3yvJIXVYaFC09MMY+k7mJivcWz89wPNqn
+         9LbQ==
+X-Gm-Message-State: AOAM5335Ld70Y0ffD+cp/xdtz01OGxoE7kiVREovWHiOOGLw322kCcFe
+        3TuGd4PuN6jADHgxbFAHmMjrGwxdW2E=
+X-Google-Smtp-Source: ABdhPJzYnFQVarUz/3jyy/DooiZ6xEAeyOR7C/uDYGDXITH8IplGRb69qQwH/GJRN4uO8N2lU9jDLSFB4oI=
+X-Received: from pgonda1.kir.corp.google.com ([2620:0:1008:11:32d8:66d1:672:9aeb])
+ (user=pgonda job=sendgmr) by 2002:a17:902:d4c9:b029:12b:46f3:2db2 with SMTP
+ id o9-20020a170902d4c9b029012b46f32db2mr2240730plg.5.1626278517567; Wed, 14
+ Jul 2021 09:01:57 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 09:01:40 -0700
+Message-Id: <20210714160143.2116583-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH 0/3 V2] Add AMD SEV and SEV-ES intra host migration support
+From:   Peter Gonda <pgonda@google.com>
+To:     pgonda@google.com
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.2021 16:51, Greg KH wrote:
-> On Wed, Jul 14, 2021 at 12:50:08PM +0200, Rafał Miłecki wrote:
->> Hi Alexander,
->>
->> On 13.07.2021 22:14, Al Viro wrote:
->>> To elaborate a bit - there's one case when I want it to go through
->>> vfs.git, and that's when there's an interference between something
->>> going on in vfs.git and the work done in filesystem.  Other than
->>> that, I'm perfectly fine with maintainer sending pull request directly
->>> to Linus (provided that I hadn't spotted something obviously wrong
->>> in the series, of course, but that's not "I want it to go through
->>> vfs.git" - that's "I don't want it in mainline until such and such
->>> bug is resolved").
->>
->> let me take this opportunity to ask about another filesystem.
->>
->> Would you advise to send pull req for the fs/ntfs3 directly to Linus?
->>
->> That is a pending filesystem that happens to be highly expected by many
->> Linux focused communities.
->>
->>
->> Paragon Software GmbH proved it's commitment by sending as many as 26
->> versions on it's patchset. The last set was send early April:
->>
->> [PATCH v26 00/10] NTFS read-write driver GPL implementation by Paragon Software
->> https://marc.info/?l=linux-fsdevel&m=161738417018673&q=mbox
->> https://patchwork.kernel.org/project/linux-fsdevel/list/?series=460291
->>
->>
->> I'd say there weren't any serious issues raised since then.
->>
->> One Tested-by, one maintenance question, one remainder, one clang-12
->> issue [0] [1].
->>
->> It seems this filesystem only needs:
->> 1. [Requirement] Adjusting to the meanwhile changed iov API [2]
->> 2. [Clean up] Using fs/iomap/ helpers [3]
-> 
-> Why haven't those things been done and the patches resubmitted for
-> review?  Nothing we can do from our side when the developers don't want
-> to submit a new series, right?
+Intra host migration provides a low-cost mechanism for userspace VMM upgrades.
+It is an alternative to traditional (i.e., remote) live migration. Whereas
+remote migration handles move a guest to a new host, intra host migration only
+handles moving a guest to a new userspace VMM within a host.  This can be
+used to update, rollback, change flags of the VMM, etc. The lower cost
+compared to live migration comes from the fact that the guest's memory does
+not need to be copied between processes. A handle to the guest memory
+simply gets passed to the new VMM, this could be done via using /dev/shm
+with share=on or similar feature.
 
-The real issue (broken compilation) has been pointed out 2 days ago and
-is a result of a more recent commit. For months filesystem could be
-pushed but it wasn't for unknown reason.
+The guest state can be transferred from an old VMM to a new VMM as follows:
+1. Export guest state from KVM to the old user-space VMM via a getter
+user-space/kernel API 2. Transfer guest state from old VMM to new VMM via
+IPC communication 3. Import guest state into KVM from the new user-space
+VMM via a setter user-space/kernel API VMMs by exporting from KVM using
+getters, sending that data to the new VMM, then setting it again in KVM.
 
-As for fs/iomap/ helpers it's unclear to me if that is really required
-or could be worked on later as a clean up. Darrick joked his opinion on
-using those helper is biased.
+In the common case for intra host migration, we can rely on the normal ioctls
+for passing data from one VMM to the next. SEV, SEV-ES, and other
+confidential compute environments make most of this information opaque, and
+render KVM ioctls such as "KVM_GET_REGS" irrelevant.  As a result, we need
+the ability to pass this opaque metadata from one VMM to the next. The
+easiest way to do this is to leave this data in the kernel, and transfer
+ownership of the metadata from one KVM VM (or vCPU) to the next. For
+example, we need to move the SEV enabled ASID, VMSAs, and GHCB metadata
+from one VMM to the next.  In general, we need to be able to hand off any
+data that would be unsafe/impossible for the kernel to hand directly to
+userspace (and cannot be reproduced using data that can be handed safely to
+userspace).
 
-In short I'd say: missing feedback.
+During the intra host send operation the SEV required metadata, the guest's
+ASID is loaded into a kvm wide hashmap keyed by a value given by
+userspace. This allows the userspace VMM to pass the key to the target
+VMM. Then on intra host receive the target VMM can be loaded with the
+metadata from the hashmap.
+
+v2:
+ * Added marcorr@ reviewed by tag
+ * Renamed function introduced in 1/3
+ * Edited with seanjc@'s review comments
+ ** Cleaned up WARN usage
+ ** Userspace makes random token now
+ * Edited with brijesh.singh@'s review comments
+ ** Checks for different LAUNCH_* states in send function
+
+v1: https://lore.kernel.org/kvm/20210621163118.1040170-1-pgonda@google.com/
+
+Peter Gonda (3):
+  KVM, SEV: Refactor out function for unregistering encrypted regions
+  KVM, SEV: Add support for SEV intra host migration
+  KVM, SEV: Add support for SEV-ES intra host migration
+
+ .../virt/kvm/amd-memory-encryption.rst        |  43 ++
+ arch/x86/kvm/svm/sev.c                        | 396 +++++++++++++++++-
+ arch/x86/kvm/svm/svm.h                        |   1 +
+ include/uapi/linux/kvm.h                      |  12 +
+ 4 files changed, 433 insertions(+), 19 deletions(-)
+
+base-commit: 7caa04b36f20
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+-- 
+2.32.0.93.g670b81a890-goog
+
