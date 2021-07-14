@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E601E3C9068
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F7C3C9069
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241697AbhGNTye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45690 "EHLO mail.kernel.org"
+        id S241722AbhGNTyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:54:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240228AbhGNTtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6C64613D4;
-        Wed, 14 Jul 2021 19:44:51 +0000 (UTC)
+        id S240248AbhGNTth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA587613F2;
+        Wed, 14 Jul 2021 19:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291892;
-        bh=Ba38WJGVqGtC8P5d4zPWnHTztyf1aMSimuHwSDGgzEg=;
+        s=k20201202; t=1626291896;
+        bh=Xe1YxtBwK5MDibkRq5gzYlM4QXbTY8HByV5XQO5CWhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aajzwjdYVX4j9sXbQq9I5wHWknFYHLk2s6eWK1WedlSsYeQnj8SsLMnxEQ/T6hhv/
-         QnbUT4cLOhfyCUgA8Y/Fc1IyKpKnY2xNMrqaL/yEXWZjAKKB4lfBq3Tm+pwAZazZZN
-         skJG85btRiaVlOw/9JeXi6qeyDPb2YNcVii5uSgLsamVBNWF92p+ogwG8U6nqAoQU5
-         gvyYCxNWh4xzsQrekzmuGTCplxnSD1hyt1+ag27KhjBfWLGZnZmU6H/eU8AqWulk8g
-         PRKp5UCTPyYx8e0YJ96hbTsq9c0Y3ZSGzBSKU0cl3KgnpL9ME9DlxK5vkZi0XKJoAo
-         DXkjC6pLfJpDQ==
+        b=gSjibXeQL1AAuTY6AhdtggvNtxoWW0fdJi/7GKbxN8qIL/TgqcUMk8rHvHDE02FJe
+         Dk/AvXVlnUA3Mm1q3jityxnD8HD7l37dNkxBDat02VDkSEmnn2emJEoq9JbwhzBPhG
+         UKoZOvnJ2SDor9LFhQhl5PguNQr+ffU+6TtYTGynDB8EVEjPFJdiicLTwqNAz6DyiK
+         8fMv9vudmKuppkMfGNgZCqOVPoqCaH/PDaquyjwbdw3YBdLU9HluWcxQzCjwPVf2vx
+         Ll7PAdunf3BrCbALSLkPtyMp1lQHG/HBVj5lRH9WNizoIdOOOGfSao37BzCwgqwT1s
+         +unWct8GFdkRQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 73/88] thermal/drivers/imx_sc: Add missing of_node_put for loop iteration
-Date:   Wed, 14 Jul 2021 15:42:48 -0400
-Message-Id: <20210714194303.54028-73-sashal@kernel.org>
+Cc:     Konstantin Porotchkin <kostap@marvell.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 76/88] arch/arm64/boot/dts/marvell: fix NAND partitioning scheme
+Date:   Wed, 14 Jul 2021 15:42:51 -0400
+Message-Id: <20210714194303.54028-76-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -44,53 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Konstantin Porotchkin <kostap@marvell.com>
 
-[ Upstream commit 3da97620e8d60da4a7eaae46e03e0a494780642d ]
+[ Upstream commit e3850467bf8c82de4a052619136839fe8054b774 ]
 
-Early exits from for_each_available_child_of_node() should decrement the
-node reference counter.  Reported by Coccinelle:
+Eliminate 1MB gap between Linux and filesystem partitions.
 
-  drivers/thermal/imx_sc_thermal.c:93:1-33: WARNING:
-    Function "for_each_available_child_of_node" should have of_node_put() before return around line 97.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Jacky Bai <ping.bai@nxp.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210614192230.19248-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/imx_sc_thermal.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/marvell/cn9130-db.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/thermal/imx_sc_thermal.c b/drivers/thermal/imx_sc_thermal.c
-index b01d28eca7ee..8d76dbfde6a9 100644
---- a/drivers/thermal/imx_sc_thermal.c
-+++ b/drivers/thermal/imx_sc_thermal.c
-@@ -93,6 +93,7 @@ static int imx_sc_thermal_probe(struct platform_device *pdev)
- 	for_each_available_child_of_node(np, child) {
- 		sensor = devm_kzalloc(&pdev->dev, sizeof(*sensor), GFP_KERNEL);
- 		if (!sensor) {
-+			of_node_put(child);
- 			of_node_put(sensor_np);
- 			return -ENOMEM;
- 		}
-@@ -104,6 +105,7 @@ static int imx_sc_thermal_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev,
- 				"failed to get valid sensor resource id: %d\n",
- 				ret);
-+			of_node_put(child);
- 			break;
- 		}
- 
-@@ -114,6 +116,7 @@ static int imx_sc_thermal_probe(struct platform_device *pdev)
- 		if (IS_ERR(sensor->tzd)) {
- 			dev_err(&pdev->dev, "failed to register thermal zone\n");
- 			ret = PTR_ERR(sensor->tzd);
-+			of_node_put(child);
- 			break;
- 		}
- 
+diff --git a/arch/arm64/boot/dts/marvell/cn9130-db.dts b/arch/arm64/boot/dts/marvell/cn9130-db.dts
+index ce49a70d88a0..d24294888400 100644
+--- a/arch/arm64/boot/dts/marvell/cn9130-db.dts
++++ b/arch/arm64/boot/dts/marvell/cn9130-db.dts
+@@ -258,7 +258,7 @@ partition@0 {
+ 			};
+ 			partition@200000 {
+ 				label = "Linux";
+-				reg = <0x200000 0xd00000>;
++				reg = <0x200000 0xe00000>;
+ 			};
+ 			partition@1000000 {
+ 				label = "Filesystem";
 -- 
 2.30.2
 
