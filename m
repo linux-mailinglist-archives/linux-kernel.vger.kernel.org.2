@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9063C3C7BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465493C7BAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237478AbhGNCZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237375AbhGNCZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:25:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A99FC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B3fKLu6x90gYniUL5gogEh9zBG7fF7DVZEYNuV5m4q0=; b=NtmylrsCgZ2SnKyzsjA02m/cpv
-        Lojz2OtZCoq0uRMf8PJ1ERJm7b4U6OFL3HBn4sYNo0F8qsLxnkDI1Xu9uJde8fY7DlXIGEZHqERMM
-        LQEeUpvKEDDAq9sqPEZp+TaLJPVza+4VOfoF5nBJ4JYSb2FiDCiZkYfCWBhwxTlKEKsX0URFO5RZn
-        cUWANCeH+X8PJT6JLwEddaQSaw/cFaU55CRCo2PvgfaEqEsNyvsOs+gukMhIDmETdWzjM0ttjqt4W
-        JdNk2UNAnqVFCL8qzUMuZLFhv/OrWv8r5gTOvCKrDoXT90VBbahCDaMGw7m4vQbaUKA877XeYFGDF
-        1377F20w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3UVw-001kkZ-4U; Wed, 14 Jul 2021 02:20:51 +0000
-Date:   Wed, 14 Jul 2021 03:20:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Make copy_huge_page() always available
-Message-ID: <YO5J/OSGQvHp1npk@casper.infradead.org>
-References: <20210712153207.39302-1-willy@infradead.org>
- <20210713191244.553680171f9fab3bf6e0889b@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713191244.553680171f9fab3bf6e0889b@linux-foundation.org>
+        id S237470AbhGNCX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:23:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:55708 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237397AbhGNCXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:23:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5BD61FB;
+        Tue, 13 Jul 2021 19:21:04 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.65.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 51EE53F7D8;
+        Tue, 13 Jul 2021 19:21:01 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
+        mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        maz@kernel.org, james.morse@arm.com, steven.price@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [RFC 00/10] arm64/mm: Enable FEAT_LPA2 (52 bits PA support on 4K|16K pages)
+Date:   Wed, 14 Jul 2021 07:51:21 +0530
+Message-Id: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 07:12:44PM -0700, Andrew Morton wrote:
-> On Mon, 12 Jul 2021 16:32:07 +0100 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
-> 
-> > Rewrite copy_huge_page() and move it into mm/util.c so it's always
-> > available.  Fixes an exposure of uninitialised memory on configurations
-> > with HUGETLB and UFFD enabled and MIGRATION disabled.
-> 
-> Wait.  Exposing uninitialized memory is serious.  Can we please include
-> full info on this flaw and decide whether a -stable backport is justified? 
-> If not, why not, etc?
+This series enables 52 bits PA support for 4K and 16K page configs via
+existing CONFIG_ARM64_PA_BITS_52, utilizing a new arch feature FEAT_LPA2
+which is available from ARM v8.7. IDMAP needs changes to accommodate two
+new level of page tables in certain scenarios like (4K|39VA|52PA) but the
+same problem also exists for (16K|36VA|48PA) which needs fixing. I am
+currently working on the IDMAP fix for 16K and later will enable it for
+FEAT_LPA2 as well.
 
-Well, the code was only merged this merge window, so as long as it goes
-in in the next few weeks, there's no need to trouble -stable with it.
+This series applies on v5.14-rc1.
+
+Testing:
+
+Build and boot tested (individual patches) on all existing and new
+FEAT_LPA2 enabled config combinations.
+
+Pending:
+
+- Enable IDMAP for FEAT_LPA2
+- Enable 52 bit VA range on 4K/16K page sizes
+- Evaluate KVM and SMMU impacts from FEAT_LPA2
+
+Anshuman Khandual (10):
+  mm/mmap: Dynamically initialize protection_map[]
+  arm64/mm: Consolidate TCR_EL1 fields
+  arm64/mm: Add FEAT_LPA2 specific TCR_EL1.DS field
+  arm64/mm: Add FEAT_LPA2 specific ID_AA64MMFR0.TGRAN[2]
+  arm64/mm: Add CONFIG_ARM64_PA_BITS_52_[LPA|LPA2]
+  arm64/mm: Add FEAT_LPA2 specific encoding
+  arm64/mm: Detect and enable FEAT_LPA2
+  arm64/mm: Add FEAT_LPA2 specific PTE_SHARED and PMD_SECT_S
+  arm64/mm: Add FEAT_LPA2 specific fallback (48 bits PA) when not implemented
+  arm64/mm: Enable CONFIG_ARM64_PA_BITS_52 on CONFIG_ARM64_[4K|16K]_PAGES
+
+ arch/arm64/Kconfig                      |  9 +++++-
+ arch/arm64/include/asm/assembler.h      | 48 ++++++++++++++++++++++------
+ arch/arm64/include/asm/kernel-pgtable.h |  4 +--
+ arch/arm64/include/asm/memory.h         |  1 +
+ arch/arm64/include/asm/pgtable-hwdef.h  | 28 ++++++++++++++---
+ arch/arm64/include/asm/pgtable.h        | 18 +++++++++--
+ arch/arm64/include/asm/sysreg.h         |  9 +++---
+ arch/arm64/kernel/head.S                | 55 ++++++++++++++++++++++++++-------
+ arch/arm64/mm/mmu.c                     |  3 ++
+ arch/arm64/mm/pgd.c                     |  2 +-
+ arch/arm64/mm/proc.S                    | 11 ++++++-
+ arch/arm64/mm/ptdump.c                  | 26 ++++++++++++++--
+ mm/mmap.c                               | 26 +++++++++++++---
+ 13 files changed, 195 insertions(+), 45 deletions(-)
+
+-- 
+2.7.4
+
