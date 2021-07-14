@@ -2,103 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC2A3C8857
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510B33C8859
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhGNQIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:08:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhGNQIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:08:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFB560FF2;
-        Wed, 14 Jul 2021 16:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626278738;
-        bh=72/oQiQdsT/Cwo5iJX87YvVtTW9vsj6VkU2MnEgEThU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPDfDuzJbULpPqRzSkd30cv8qpee9WwAZEfW55Qh3TcbHN9xNXxRF+hMZipYm6XsK
-         fO9pQz7amDQSmYPFLoxGqBqStfk9jLjg0ZV2CVS6CYrKaG/S8NZhZ4v32VtpKPd4Cz
-         lIfTRcRG/EpqSC6ovT0GdSjhJw77bbp2u+cBky1IJJJTZ8c2T72+VHdY0heiLZat6z
-         T/D7OHEXThINNQyxrxOXKPu7098NXvQZ5dFB+MSdrNQ6LQ03Sa1EiIB0UX1xy+idoF
-         MRRt7kvneZC+5uvKl+cbgpoNAfh60P29wRQp6WgcRo9hMQO0woGHoy4PjNPigitgCR
-         8ZmcxuCL4OG2g==
-Date:   Wed, 14 Jul 2021 17:05:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        id S232499AbhGNQIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhGNQIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 12:08:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2A0C06175F;
+        Wed, 14 Jul 2021 09:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=BiCvi+xpFl7gJwbD11pdFh8bwy+RGhUE6mwJAV6RuBs=; b=MKcP9PsKXStlDCEAvJPRgO9MQ8
+        HHiw5y/9ONALDl4oitZS30Ao2KS4tq0lR9CMcOigv3X4aNUru20oAFZhsC8Ra4KbODj4TCojRx/sN
+        IM3wAL+c/rbC/zHgNzw85sHSfiYDaCCB3FB9jqkzrBpJVomc46MB/SV+rUhpoukwiqYWk7TihdNaX
+        KbJDluP9xzECqjUUZ2Hb/hwyxYhzt+fSe7uGMB4OQuIvVcHkaqzwUQnM3NZ0Ge2vQARKmlG8K3zCV
+        JCWP9loK19HCfIzoEz2yPhtNU08zBlxqvNXz1fBvIzKV5/lOHAgxzjCkzv/sPjlMraDVpR8LT9hjl
+        j9PfzGeA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3hNo-002M1J-Ql; Wed, 14 Jul 2021 16:05:19 +0000
+Date:   Wed, 14 Jul 2021 17:05:12 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-Message-ID: <20210714160501.GC4719@sirena.org.uk>
-References: <20210712124223.GB4435@sirena.org.uk>
- <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
- <20210712133428.GD4435@sirena.org.uk>
- <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
- <20210712170120.GG4435@sirena.org.uk>
- <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
- <20210713152454.GC4098@sirena.org.uk>
- <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
- <20210713181837.GE4098@sirena.org.uk>
- <CAHp75Vfwz-cDrAhOnXaeUSDN-K+YJv8ahmvZ3aJwm2sKqc8HeQ@mail.gmail.com>
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+Message-ID: <YO8LOKR/vRUgggTx@casper.infradead.org>
+References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
+ <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
+ <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
+ <bea2bcf2-02f6-f247-9e06-7b9ec154377a@gmail.com>
+ <YO755O8JnxG44YaT@kroah.com>
+ <7f4a96bc-3912-dfb6-4a32-f0c6487d977b@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YD3LsXFS42OYHhNZ"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vfwz-cDrAhOnXaeUSDN-K+YJv8ahmvZ3aJwm2sKqc8HeQ@mail.gmail.com>
-X-Cookie: C for yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7f4a96bc-3912-dfb6-4a32-f0c6487d977b@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 14, 2021 at 05:59:19PM +0200, Rafał Miłecki wrote:
+> In short I'd say: missing feedback.
 
---YD3LsXFS42OYHhNZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Uh, with all due respect: Fuck you.
 
-On Tue, Jul 13, 2021 at 10:46:29PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 13, 2021 at 9:19 PM Mark Brown <broonie@kernel.org> wrote:
+I've provided feedback, and Paragon have done a fantastic job of
+responding to it.  Pretending that the filesystem has simply been
+ignored is hugely disrespectful of my time and those at Paragon.
 
-> > Like I said in the other mail fwnode is a nice hack for systems that are
-> > using ACPI but have hardware that's doing something totally outside the
-> > ACPI model to allow them to reuse work that's been done for DT, it's not
-> > a universal solution to the lack of appropriate support for describing
-> > modern systems in ACPI.
-
-> In some (I suppose rear) cases it may be used by DT-enabled platforms as well.
-> I can imagine the case when you have a system in ROM and only what you
-> can do to change DTB there is either use DT overlays (which seems to
-> be not working, plenty of gaps there according to a Wiki I saw once)
-> or do something in the board files.
-
-DT overlays are pretty extensively deployed, it's just that there's very
-few use cases where it's done in the kernel - it tends to be better to
-do them in either the firmware or a thin wrapper around the kernel so
-that the kernel never has to see an unfixed DT, and we don't have to
-try to do fixups super early in the boot on a supposedly generic kernel.
-The main kernel use cases are things like FPGAs loading a dynamic image
-and matching DT at runtime which is a whole additional ball of fun.
-
---YD3LsXFS42OYHhNZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvCy0ACgkQJNaLcl1U
-h9DWJQf+ITAL3NEkBDUGUKxXlzZU7IrAMJVdxNeE4V8QLBXZy5os6tWB+dCeQ+cz
-g03rkbrcMXIjBGbWtyxb+ydDqpn4DUI7+sm0L6vZTQHIgpFZCrTBZj2kKbpbq0La
-9Q6cy5pMzf5bCtd93nUj0O7jF6GriGyFq7x78aWS4SWPcQApOIPAmRtELPpaBy2b
-3vQIhaBYHQqSYaqPCYw8xTXT/k2GpUEiETBXv4gPO0eL7uKsZN7cmO07f6nWHsm0
-k9OPwoLp3CqQ4ZaHQ5foR62G3LlGHa1zELv+KeXzqyJmA5BKvpoTrUQS//riWQ94
-bHo5P4GTsQSXbIl5juoJBRHpNkA/OQ==
-=Z0yY
------END PGP SIGNATURE-----
-
---YD3LsXFS42OYHhNZ--
+I'm supportive of ntfs3 being included, FWIW.  It looks to be
+in much better shape than the existing fs/ntfs.
