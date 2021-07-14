@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CE63C8382
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F1D3C838B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239023AbhGNLRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:17:47 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:40193 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhGNLRq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:17:46 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d27 with ME
-        id UzEt2500721Fzsu03zEu7G; Wed, 14 Jul 2021 13:14:54 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 14 Jul 2021 13:14:54 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jic23@kernel.org, lars@metafoo.de
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] iio: buffer: Move a sanity check at the beginning of 'iio_scan_mask_set()'
-Date:   Wed, 14 Jul 2021 13:14:51 +0200
-Message-Id: <98a351adda1908c306e981b9cc86d3dbc79eb5ec.1626261211.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <89d8a766eb971eda1ee362444a8711037bdb208c.1626261211.git.christophe.jaillet@wanadoo.fr>
-References: <89d8a766eb971eda1ee362444a8711037bdb208c.1626261211.git.christophe.jaillet@wanadoo.fr>
+        id S239088AbhGNLSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:18:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239078AbhGNLSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 07:18:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A72A8613B2;
+        Wed, 14 Jul 2021 11:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626261330;
+        bh=gln4o9RYzRUbHOmzZqjlvV9yan+8+ZdEpUYMAg5gL/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oKMWmnZStjX2CGk2zjgDWd8X8ttujb7VrM/P4zovZfZH35IfrCIvb91yoG84Wx2aW
+         MgKYD8aBlwy0J/5fxgNEQqLUSC/McZ265/AOgb64FzufAe1o6PeeawnZFcI+cIVzyY
+         saubQqi4nY2uFzaCX3mrKcbrFYYMOKIkYFkORC+hvXhmHhf/FvpqAHNlB60tBsjat5
+         8KpvKz8V/B0TAUPxFDcg667k9h5U5EZO6OOtOUxiqSr4iCjJO6SkKO1EWfVu7EO9Q0
+         hRj2eie/pM4Zc28xgIlhj6Fda21Dep2ZcCfRv4xCjdPsL/cojUselnyrXbXK7eC5UT
+         KDG1DMBkciKOQ==
+Date:   Wed, 14 Jul 2021 12:14:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Troy Kisky <troy.kisky@boundarydevices.com>,
+        linux-hwmon@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Move fixed string 'patternProperties' to
+ 'properties'
+Message-ID: <20210714111453.GA4719@sirena.org.uk>
+References: <20210713193514.690894-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+In-Reply-To: <20210713193514.690894-1-robh@kernel.org>
+X-Cookie: C for yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is more standard to have sanity checks at the entry of a function,
-instead of allocating some memory first and having to free it if a
-condition is not met.
 
-Shuffle code a bit to check 'masklength' before calling 'bitmap_alloc()'
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/iio/industrialio-buffer.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+On Tue, Jul 13, 2021 at 01:35:14PM -0600, Rob Herring wrote:
+> There's no need for fixed strings to be under 'patternProperties', so move
+> them under 'properties' instead.
 
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index 6d4776a7f002..a95cc2da56be 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -354,13 +354,14 @@ static int iio_scan_mask_set(struct iio_dev *indio_dev,
- 	const unsigned long *mask;
- 	unsigned long *trialmask;
- 
--	trialmask = bitmap_alloc(indio_dev->masklength, GFP_KERNEL);
--	if (!trialmask)
--		return -ENOMEM;
- 	if (!indio_dev->masklength) {
- 		WARN(1, "Trying to set scanmask prior to registering buffer\n");
--		goto err_invalid_mask;
-+		return -EINVAL;
- 	}
-+
-+	trialmask = bitmap_alloc(indio_dev->masklength, GFP_KERNEL);
-+	if (!trialmask)
-+		return -ENOMEM;
- 	bitmap_copy(trialmask, buffer->scan_mask, indio_dev->masklength);
- 	set_bit(bit, trialmask);
- 
--- 
-2.30.2
+Acked-by: Mark Brown <broonie@kernel.org>
 
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDuxywACgkQJNaLcl1U
+h9Bc7wf/VFIPyyWWMsNINwBGSVPcM1hXRLA6fZcXy+7sLbycWy8SufjBoG59RLn/
+C4HNt7T8YDEdRgHUu7T0wfXxdfObm8W2RleX8FPEZ7IjD1e7/tY1+cNBBOQNdTdT
+T4s9TLh4c0aVjTXwB6TGAANL9kk7kS/bNwpxtnpb1P1rHAvcGyk/vkYNPs9m97MO
+KKkpVAzJoJpX9nQxUq+u/xdXkLawzGwA4lv+2Y2XPC0DwWLVGNB6al6tiU/sPlry
+pJ+ndFbDfT0lFWG8ZQbnpNW7aDy+ez12Lz6Fksi6s1eEKTCkmNd8FElGbJyAwiIR
+m6LUlCuJM3gflOnm28ExPSQjRXv9Qg==
+=583K
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
