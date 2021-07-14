@@ -2,89 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44923C85C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13473C85CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhGNOKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhGNOKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:10:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7544A613C8;
-        Wed, 14 Jul 2021 14:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626271678;
-        bh=BkxQBD9MLVqjxyyjXklU15HeBi9VJ9pSdrBB/p1hUfw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=phGWzMwPnlvCLqW4G83acYyfdHdUSI2lGLPycQhHMfVsVl3oyFoDMpd4zMX1SoXGh
-         p7+IDYWumT4BpmE7IQPA0yh+sezbUilDcrXuR1EXhs9pghnNRxP4/pRQZWwnEyzBx2
-         IwJGoemLA2XxBxGlyrtSGNdv9PIOWXlxluElKxZqAGt/nfUtrZPLXTPQvfM3eS5Abj
-         kXdYPbd70FCcQZJ9hQALscgDdFDiubH24FOkDQNeZBI5SLfRhsKU5gVUzOsVXhmv0v
-         3Go7W3nUda4wl6XHdGxZGzwGjuKm8tglJGT8R8YvXftiEInXDUMuwLk2nUQjXI4BKj
-         JUDLkRxUFleeQ==
-Received: by mail-ej1-f49.google.com with SMTP id dt7so3496822ejc.12;
-        Wed, 14 Jul 2021 07:07:58 -0700 (PDT)
-X-Gm-Message-State: AOAM532XYISf+vGK2sOAlfPii69+hEGd/QTo2vIlyYhDixSdxLlHMBiv
-        nM/8qviTEVeu0UiHkCVQCEVNXW87li15jsZ6QQ==
-X-Google-Smtp-Source: ABdhPJw50v3ovvDxjytHudq3XB7Q56opajiEV0Dz+ePy4AYPVhuqgelzFt9cFkSZWuNRe62kCNZY6QlUzRjJlMN+928=
-X-Received: by 2002:a17:906:57d0:: with SMTP id u16mr12930014ejr.468.1626271677006;
- Wed, 14 Jul 2021 07:07:57 -0700 (PDT)
+        id S232129AbhGNORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231543AbhGNORn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:17:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67869C06175F;
+        Wed, 14 Jul 2021 07:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vP330DcWRoBPONMHv7xhBbT8B1efYkRrKax3eUHZM4A=; b=rsNZezzekFswEgJ5dQBrdI3TLU
+        0vrpaL3VlVXSxVgF7qdmL6YsoINs6QfNMtUIDc6HuyuHlou+L0GxA9SPyFpEcjZ3o5hbELF7tktrv
+        wkj50LbEVz7Z4Rr1QbktYkyOAKXtQTboDzRl3ETu2ORUA+8+5hRORjYKBUOQ6/+ix5KP//NeqOM/1
+        4vSQnNweMh/R41XaYj2lPy1a8ejSRJDh7XWMfjIaraFloG/bKqjco4VRoWvIqiJNtv+r6Wv15QONT
+        vAiGmNEfqkFKURrkn7FjkE7qW+KUhRTZbrFTQ6KcLLR/V2pGggyChB+aavknG6J1nvomvTXny1eqv
+        7edhXz7g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3fe7-002Gz7-Ok; Wed, 14 Jul 2021 14:13:58 +0000
+Date:   Wed, 14 Jul 2021 15:13:55 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Rafa?? Mi??ecki <zajec5@gmail.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+Message-ID: <YO7xIzYvEKalFhfm@infradead.org>
+References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
+ <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
+ <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
+ <bea2bcf2-02f6-f247-9e06-7b9ec154377a@gmail.com>
 MIME-Version: 1.0
-References: <20210628061410.8009-1-shruthi.sanil@intel.com>
- <20210628061410.8009-2-shruthi.sanil@intel.com> <20210714024756.GA1355219@robh.at.kernel.org>
- <YO6ome7Opd6kjqua@smile.fi.intel.com>
-In-Reply-To: <YO6ome7Opd6kjqua@smile.fi.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 14 Jul 2021 08:07:44 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+4vEfL5ZQzREXU7Mo1AUx1ZbdHTmJDwauEL890O7S7qg@mail.gmail.com>
-Message-ID: <CAL_Jsq+4vEfL5ZQzREXU7Mo1AUx1ZbdHTmJDwauEL890O7S7qg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: timer: Add bindings for Intel Keem
- Bay SoC Timer
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     shruthi.sanil@intel.com,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, kris.pan@linux.intel.com,
-        Mark Gross <mgross@linux.intel.com>,
-        srikanth.thokala@intel.com,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        mallikarjunappa.sangannavar@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bea2bcf2-02f6-f247-9e06-7b9ec154377a@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 3:04 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Jul 13, 2021 at 08:47:56PM -0600, Rob Herring wrote:
-> > On Mon, Jun 28, 2021 at 11:44:09AM +0530, shruthi.sanil@intel.com wrote:
->
-> > > +  The parent node represents the common general configuration details and
-> > > +  the child nodes represents the counter and timers.
-> >
-> > I don't think all the child nodes are necessary. Are the counters and
-> > timers configurable (say on another SoC)? If not, then a single node
-> > here would suffice.
->
-> If you may notice the children may have different properties that can't be
-> known ahead, such as IRQ line. On some platforms it may be this mapping, on
-> another it maybe different.
+> That is a pending filesystem that happens to be highly expected by many
+> Linux focused communities.
 
-What I noticed is it's all the same clock and 1 interrupt for each
-timer can be just a single 'interrupts' property with 8 entries.
+This sounds like generated by a markov chain fed all kinds of marketeer
+BS..
 
-Is there a platform that's different or that's a hypothetical? Because
-hypothetically, every aspect of every IP could change. But we don't
-try to parameterize everything in DT. It's a judgement call between
-implying things from compatible and explicit DT properties.
+Independent of that resending a more than 3 month old page set usually
+really helps to get some reviewer attention.
 
-> With all respect for the simplification I think we can't do it here.
-
-You can. Any data in DT could be in the kernel. It's a question of
-balance, not can or can't.
-
-Rob
