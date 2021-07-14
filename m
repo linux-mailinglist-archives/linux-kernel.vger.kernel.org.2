@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E5A3C90ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387463C914F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239889AbhGNT5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241421AbhGNTug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:50:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEBC161370;
-        Wed, 14 Jul 2021 19:47:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626292064;
-        bh=xBHqgHRC6aAnsrOMZY2FhhRH8sz63DOxznvRISNXJmY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oOYIJA4RKdc2jSXovbH37ztkpfpCEpuGybl2MOUNJ0VZzgSW6HPqTekDrtIA4uojX
-         2LPuA1EG3ydWUvFOUf57CHP0ZW7AfKxGrfsPQPZIhI7eXS/T3I5eVdGF63Y9fu/OWJ
-         yHMglBgbl+Z1Lzh6awmnW/jpx9p4CZdFsYmWcgHU4vRh5mExr+usweQDEmEc4Mh+Zh
-         CPOs9zdELf++DC+QVG8PPyV0o9omb2E4ySM8ulUjtPAOCrgxyrczsNVe8nrjmB2D4t
-         +LSLaXzpV+3RduVx84jV21jLwIwE5Df9bfVFokRKZMX2cIDeBPLE2cHDj2fcEzK5x3
-         fV5vAhbjEE9rA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Primoz Fiser <primoz.fiser@norik.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.14 13/28] ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
-Date:   Wed, 14 Jul 2021 15:47:08 -0400
-Message-Id: <20210714194723.55677-13-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714194723.55677-1-sashal@kernel.org>
-References: <20210714194723.55677-1-sashal@kernel.org>
+        id S242789AbhGNUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:00:42 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:41934 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240778AbhGNTuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:50:04 -0400
+Received: by mail-io1-f42.google.com with SMTP id z9so3538219iob.8;
+        Wed, 14 Jul 2021 12:47:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3V8nZmi/KX6WV/3eY0dps9KX5cZgW01GINnuyCZFNQ8=;
+        b=lkca+N7KzKC7iSwakJfi+XnZk2e2bROh/CchHE7/ukwkxM88OtsdEqbhShQem/EfeR
+         KKtfAKxFVOJ6pKbKoW6GLStUmV10E0dhbaekDGFsZDSDl97vRIRu04elCsLShwVW7U2P
+         NGBAs0GOTs85tggaob750INCz+MDFluvL6MO3QSzliA1DrxFI4YR11VYgkDOeoH8C32F
+         PAgj/9LXS1hLW2v487PDwvKUy2Z0KbvNozidaLtvDmVhhLCJsZVUw/kpVak/dIzSxX2t
+         KhEouHZNfKAD2WrXn1x2KyrQDiacvp/8coukg0xp02QmD64rGTRlSLfPLXfghOE0yimJ
+         /bfQ==
+X-Gm-Message-State: AOAM533FYnBx8qjpwINoqs4WYQlOaviEBf+PZ5Kt6pNilf5CgBOeXzNP
+        x6Y5EgK/rmWEAsdBVB3Gtg==
+X-Google-Smtp-Source: ABdhPJwpbtBXJYHQG5252lxL69KkSHkS5KRtgQnqEhEK/RRyDCmq/ly16p21u7NdLsnKBh1SpzA4dA==
+X-Received: by 2002:a5d:87cc:: with SMTP id q12mr8285823ios.131.1626292031269;
+        Wed, 14 Jul 2021 12:47:11 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id b3sm1594371ilm.73.2021.07.14.12.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 12:47:10 -0700 (PDT)
+Received: (nullmailer pid 3236404 invoked by uid 1000);
+        Wed, 14 Jul 2021 19:47:08 -0000
+Date:   Wed, 14 Jul 2021 13:47:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     git@xilinx.com, monstr@monstr.eu, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        kw@linux.com, bharat.kumar.gogada@xilinx.com,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pci: xilinx-nwl: Document optional
+ clock property
+Message-ID: <20210714194708.GA3236304@robh.at.kernel.org>
+References: <cover.1624618100.git.michal.simek@xilinx.com>
+ <67aa2c189337181bb2d7721fb616db5640587d2a.1624618100.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67aa2c189337181bb2d7721fb616db5640587d2a.1624618100.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Primoz Fiser <primoz.fiser@norik.com>
+On Fri, 25 Jun 2021 12:48:22 +0200, Michal Simek wrote:
+> Clock property hasn't been documented in binding document but it is used
+> for quite a long time where clock was specified by commit 9c8a47b484ed
+> ("arm64: dts: xilinx: Add the clock nodes for zynqmp").
+> 
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+> 
+> (no changes since v2)
+> 
+> Changes in v2:
+> - new patch in this series because I found that it has never been sent
+> 
+> Bharat: Can you please start to work on converting it to yaml?
+> 
+> ---
+>  Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-[ Upstream commit 14cdc1f243d79e0b46be150502b7dba9c5a6bdfd ]
-
-Serial interface uart3 on phyFLEX board is capable of 5-wire connection
-including signals RTS and CTS for hardware flow control.
-
-Fix signals UART3_CTS_B and UART3_RTS_B padmux assignments and add
-missing property "uart-has-rtscts" to allow serial interface to be
-configured and used with the hardware flow control.
-
-Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-index d2c31eae9fef..cce680a563f7 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -306,8 +306,8 @@ pinctrl_uart3: uart3grp {
- 			fsl,pins = <
- 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
- 				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1
--				MX6QDL_PAD_EIM_D30__UART3_RTS_B		0x1b0b1
--				MX6QDL_PAD_EIM_D31__UART3_CTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D31__UART3_RTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D30__UART3_CTS_B		0x1b0b1
- 			>;
- 		};
- 
-@@ -394,6 +394,7 @@ &reg_soc {
- &uart3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart3>;
-+	uart-has-rtscts;
- 	status = "disabled";
- };
- 
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
