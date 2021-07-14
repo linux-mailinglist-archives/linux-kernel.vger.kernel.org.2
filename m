@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9543C9081
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8387A3C919A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242620AbhGNTzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
+        id S242254AbhGNUEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240749AbhGNTuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2E7C61448;
-        Wed, 14 Jul 2021 19:45:58 +0000 (UTC)
+        id S238651AbhGNTsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:48:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAEDC613DD;
+        Wed, 14 Jul 2021 19:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291959;
-        bh=nh8pStBS+5ArRqilrog2rXovZEMgyN0rWNwz1/DvgGU=;
+        s=k20201202; t=1626291814;
+        bh=x+qdZzgSdk3d/ojZFp62G+S3M5I1KK3oAlR4rrJvUFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ENDK2hxerN/uzzNEQnLDSDI6cQ2NMCn8N/+hLXjrtWT/9oH4wjKYQ10IOknt9Y+gT
-         RChrMQ7wGwD/58aykv63Gnhq+4CfVl1X+M5dhHp1J/quE1INh7eAZT8P95F5oWsVTp
-         G3Mwc493JWD5AGOYLSqlGX7FF4XmWnEJWZZTkFB3paMYmpZ0pHcCyaRocHsr9o4fS2
-         PYz+ZIG79is1nis0eqM4jJSDUJHrF9ePmWPwH7efyIEfE/i0eDleZxkqBXzxzq21fk
-         DhR5xmJrZTC/itN0GKcK7rL6OL4q+dyOPlB1xvzp1qB3psU0drfwbwkkfR4EC+Yky+
-         tfhpICUhnOVMw==
+        b=WL+AfbzGAbPpMGFVWMo/tTZhqELoSzrbbI+7I0+w/gfm/+nnVOkAm2mfK/g1NpJFw
+         yIyapYGJToYiAKzahnbKb3j9CecfQzQV4ZltR98dU7A91qByC1rNNh6avlij3lOenp
+         rqWRYNEqDeca3CANCvPFj1W9cfy7klNme13w0hMjn2qpyJrdjIeqPPiuB9aWG3srNl
+         i4V2kI8Vm4X5M9h6mNRaUAorWVhVhj1N+Hi3lg0WiJ64FZP+bYBKcxUBTjNhaX5Yjc
+         FUY6bCtmWeH7Iheio4rkdPUr/GQF+PxTY3AkBy57uGZZ2BZiFuSz4eGWYES9vDCbr9
+         I1l5hYkV198/g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 32/51] ARM: dts: stm32: fix timer nodes on STM32 MCU to prevent warnings
-Date:   Wed, 14 Jul 2021 15:44:54 -0400
-Message-Id: <20210714194513.54827-32-sashal@kernel.org>
+Cc:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 18/88] ARM: dts: BCM63xx: Fix NAND nodes names
+Date:   Wed, 14 Jul 2021 15:41:53 -0400
+Message-Id: <20210714194303.54028-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714194513.54827-1-sashal@kernel.org>
-References: <20210714194513.54827-1-sashal@kernel.org>
+In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
+References: <20210714194303.54028-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,126 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 2388f14d8747f8304e26ee870790e188c9431efd ]
+[ Upstream commit 75e2f012f6e34b93124d1d86eaa8f27df48e9ea0 ]
 
-Prevent warning seen with "make dtbs_check W=1" command:
+This matches nand-controller.yaml requirements.
 
-Warning (avoid_unnecessary_addr_size): /soc/timers@40001c00: unnecessary
-address-cells/size-cells without "ranges" or child "reg" property
-
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32f429.dtsi | 8 --------
- arch/arm/boot/dts/stm32f746.dtsi | 8 --------
- arch/arm/boot/dts/stm32h743.dtsi | 4 ----
- 3 files changed, 20 deletions(-)
+ arch/arm/boot/dts/bcm63138.dtsi    | 2 +-
+ arch/arm/boot/dts/bcm963138dvt.dts | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
-index 1476d3eaf6fa..dd41342ef017 100644
---- a/arch/arm/boot/dts/stm32f429.dtsi
-+++ b/arch/arm/boot/dts/stm32f429.dtsi
-@@ -283,8 +283,6 @@ timer@11 {
+diff --git a/arch/arm/boot/dts/bcm63138.dtsi b/arch/arm/boot/dts/bcm63138.dtsi
+index 9c0325cf9e22..cca49a2e2d62 100644
+--- a/arch/arm/boot/dts/bcm63138.dtsi
++++ b/arch/arm/boot/dts/bcm63138.dtsi
+@@ -203,7 +203,7 @@ serial1: serial@620 {
+ 			status = "disabled";
  		};
  
- 		timers13: timers@40001c00 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40001C00 0x400>;
- 			clocks = <&rcc 0 STM32F4_APB1_CLOCK(TIM13)>;
-@@ -299,8 +297,6 @@ pwm {
- 		};
+-		nand: nand@2000 {
++		nand_controller: nand-controller@2000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.0", "brcm,brcmnand";
+diff --git a/arch/arm/boot/dts/bcm963138dvt.dts b/arch/arm/boot/dts/bcm963138dvt.dts
+index 5b177274f182..df5c8ab90627 100644
+--- a/arch/arm/boot/dts/bcm963138dvt.dts
++++ b/arch/arm/boot/dts/bcm963138dvt.dts
+@@ -31,10 +31,10 @@ &serial1 {
+ 	status = "okay";
+ };
  
- 		timers14: timers@40002000 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40002000 0x400>;
- 			clocks = <&rcc 0 STM32F4_APB1_CLOCK(TIM14)>;
-@@ -623,8 +619,6 @@ timer@8 {
- 		};
+-&nand {
++&nand_controller {
+ 	status = "okay";
  
- 		timers10: timers@40014400 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40014400 0x400>;
- 			clocks = <&rcc 0 STM32F4_APB2_CLOCK(TIM10)>;
-@@ -639,8 +633,6 @@ pwm {
- 		};
- 
- 		timers11: timers@40014800 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40014800 0x400>;
- 			clocks = <&rcc 0 STM32F4_APB2_CLOCK(TIM11)>;
-diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f746.dtsi
-index d26f93f8b9c2..974dc71b2fe3 100644
---- a/arch/arm/boot/dts/stm32f746.dtsi
-+++ b/arch/arm/boot/dts/stm32f746.dtsi
-@@ -265,8 +265,6 @@ timer@11 {
- 		};
- 
- 		timers13: timers@40001c00 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40001C00 0x400>;
- 			clocks = <&rcc 0 STM32F7_APB1_CLOCK(TIM13)>;
-@@ -281,8 +279,6 @@ pwm {
- 		};
- 
- 		timers14: timers@40002000 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40002000 0x400>;
- 			clocks = <&rcc 0 STM32F7_APB1_CLOCK(TIM14)>;
-@@ -533,8 +529,6 @@ timer@8 {
- 		};
- 
- 		timers10: timers@40014400 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40014400 0x400>;
- 			clocks = <&rcc 0 STM32F7_APB2_CLOCK(TIM10)>;
-@@ -549,8 +543,6 @@ pwm {
- 		};
- 
- 		timers11: timers@40014800 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-timers";
- 			reg = <0x40014800 0x400>;
- 			clocks = <&rcc 0 STM32F7_APB2_CLOCK(TIM11)>;
-diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
-index c065266ee377..82a234c64b8b 100644
---- a/arch/arm/boot/dts/stm32h743.dtsi
-+++ b/arch/arm/boot/dts/stm32h743.dtsi
-@@ -438,8 +438,6 @@ trigger@2 {
- 		};
- 
- 		lptimer4: timer@58002c00 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-lptimer";
- 			reg = <0x58002c00 0x400>;
- 			clocks = <&rcc LPTIM4_CK>;
-@@ -454,8 +452,6 @@ pwm {
- 		};
- 
- 		lptimer5: timer@58003000 {
--			#address-cells = <1>;
--			#size-cells = <0>;
- 			compatible = "st,stm32-lptimer";
- 			reg = <0x58003000 0x400>;
- 			clocks = <&rcc LPTIM5_CK>;
+-	nandcs@0 {
++	nand@0 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <0>;
+ 		nand-ecc-strength = <4>;
 -- 
 2.30.2
 
