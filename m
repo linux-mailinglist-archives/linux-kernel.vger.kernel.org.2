@@ -2,207 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0909B3C840B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA383C8408
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239269AbhGNLsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239279AbhGNLsH (ORCPT
+        id S239263AbhGNLr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:47:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37544 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231162AbhGNLr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:48:07 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A39C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:45:13 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 77so1200771qkk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zxPicnNj0mGB/tmcGMwmXnv6kKv9n+OZmDAsE0BpNOI=;
-        b=of51A5jV+4EsLMz/6UFrjhy6Fwu4/1Y9uszSSFtCb/0Qf58qKPNHTrHLxzR3i9kl5H
-         4I3px+9vaeR0DpcF+Rcaa67LSUOsU0K7T/QnSGObafY4CCAkzABBHffef050xhPDGRKx
-         nCJDI7Qbg4uz8zgkEugfNkFTLdDxsgEwItPs0NXLRLZFfnHIPTTQe+eBnc68wmHgFgIS
-         wMi5zaOO+Bp6SD/m8tSFmnr0jmBPm8suupTM9sIdOee2oI4YCcFQgvJOUdi6+omxx7Ag
-         m/oLtkyE5+30VLvSlYLKT3kGbUhm1R5pQ44wQF7tn0XU7tKsW9fm7jN+kdH8WV4BgkUg
-         c5fA==
+        Wed, 14 Jul 2021 07:47:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626263106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sUkXi73maUwIwZJT/dIBNQGb2h9o1ydx3iAklNKDix0=;
+        b=MJT4EHxC0DkBUlYL49oYgoLX18qWUYrQyDiUNPoWPycSZLFmkscAweci7EdlfFSuSvWjj6
+        8zREeOR/4Ul/dSZDPOk5qNXCSGlya3dMnQ0SfeQJtG5Ohl8HhKihDJ7orxjmFmz1P1CB8O
+        8mZ4QAqA2DCakBtIRCjPLgNpPoGnJCM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-eKihICBaPjCJ428R26AfOw-1; Wed, 14 Jul 2021 07:45:05 -0400
+X-MC-Unique: eKihICBaPjCJ428R26AfOw-1
+Received: by mail-ed1-f69.google.com with SMTP id v14-20020a056402184eb029039994f9cab9so375970edy.22
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:45:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zxPicnNj0mGB/tmcGMwmXnv6kKv9n+OZmDAsE0BpNOI=;
-        b=mxh4xSlEUjbwTIYqsA4FspzLZ1np5wnv+Zp8nmNthJBg3HFw/g6cK+aZDJn3K9MUWn
-         ojoBW5Y2XTpL6ag4CXWFASbMwtLPWytoUDOEsQemPwI+Uf5IT8lvG/+n7B/nya4LXkhh
-         sL4gwW/TAmaDCcrp9KmnvMaC96Q9ji/kb/uBJZdwUgzrIVljS7Rf+d3vZ3ackEmuD1LK
-         Aq1IXurvf+NECcyE4hgRcA4ZmSaTmaeS5M27OyvvqMKqN4rZNXLX7Qft7bJjUQ5ccobt
-         UYrgSVlN3I7S5QM/BDpe2STMEVUS/SzbTriHIwCxCFkwM23RnrFgvs2fBf2URa6s9NB1
-         lBvQ==
-X-Gm-Message-State: AOAM533jCqaCPPh6XetlaMOo6htfbOHd04oBYx3x1jb8t7tf2nNAGW16
-        /IK3BHDV+kkzGLDZK0mFzd8gYaXU9v6SVb8U0gRaFg==
-X-Google-Smtp-Source: ABdhPJyx4laym9+h+45Vgrl9Y94NJBp3NLiQdaymRY5O2zbiPKn0HRhbZyM0RydO2WGGv8kkyoHL4Glcouyagw3soG4=
-X-Received: by 2002:a05:620a:2091:: with SMTP id e17mr844903qka.265.1626263112836;
- Wed, 14 Jul 2021 04:45:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=sUkXi73maUwIwZJT/dIBNQGb2h9o1ydx3iAklNKDix0=;
+        b=Wm5ThKvUFC3YK24RkK64HmsjUiaIrh4PRbwGnPf+6IScZWg5qHNVg2nGgzJ77cq+iv
+         DNPJq9Jq/a08eU2Mq+xU2iVNy29f+PaE2sB/4DzRQ9L3rpogBqjjaW1SLE+smc4H4F++
+         qO9os0nZefZDvrfzV/sJ10z+NR0KUekc7uFXTn0Y2Wea30dKKlIr9xjtC8zZp66MGBgB
+         QXafHDs2UL429Y2PD6WzUTEjArz782iUW8RJpOEJS9oePXEd10mVByvRZkqxyxej/Mo2
+         Q5hy4j/ZzuXu7j6n5J+kMvhcm3fWp+PKVenx4W/rFkBy9iI3isl3YnuVfUkh8oxXWXk0
+         GBIw==
+X-Gm-Message-State: AOAM530SUyDG57oxspz7apbPVfgOTs0KcLO8UYmpwUGelyqSChrjVKSc
+        cpH+bVAw/nSqBntrt+F2GAU6M2fmH9qNoXlOJnHk4ZxdvUSgrJpZ0u1CWmA/pGYiuum2zwlvg+Y
+        BveA+g3bMdNRuj/iZbetmi+/r
+X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr12078839ejb.461.1626263104260;
+        Wed, 14 Jul 2021 04:45:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGJgPhEtAhl/WQs5vXFywLTNZpwoCVFAsTepi7vc5r54pDtGS85pTYIcpYMisa+e9E66WyhQ==
+X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr12078805ejb.461.1626263103969;
+        Wed, 14 Jul 2021 04:45:03 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id n14sm862810edo.23.2021.07.14.04.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 04:45:03 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-doc@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number
+ of vcpus per guest
+In-Reply-To: <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-7-jgross@suse.com>
+ <87h7gx2lkt.fsf@vitty.brq.redhat.com>
+ <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
+Date:   Wed, 14 Jul 2021 13:45:02 +0200
+Message-ID: <878s292k75.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <00000000000069c40405be6bdad4@google.com> <000000000000b00c1105c6f971b2@google.com>
- <CAHk-=wgWv1s1FbTxS+T7kbF-7LLm9Nz1eC+WBn+kr1WdYGtisA@mail.gmail.com> <20210714075925.jtlfrhhuj4bzff3m@wittgenstein>
-In-Reply-To: <20210714075925.jtlfrhhuj4bzff3m@wittgenstein>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 14 Jul 2021 13:45:01 +0200
-Message-ID: <CACT4Y+bMWpKPjwaRg0L1x=db20qZc1F-F0DkmDw=-EHVKU8UuA@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>,
-        brauner@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        gscrivan@redhat.com, Christoph Hellwig <hch@lst.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable-commits@vger.kernel.org, stable <stable@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 at 09:59, Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Tue, Jul 13, 2021 at 11:49:14AM -0700, Linus Torvalds wrote:
-> > On Mon, Jul 12, 2021 at 9:12 PM syzbot
-> > <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com> wrote:
-> > >
-> > > syzbot has found a reproducer for the following issue on:
-> >
-> > Hmm.
-> >
-> > This issue is reported to have been already fixed:
-> >
-> >     Fix commit: 9b5b8722 file: fix close_range() for unshare+cloexec
-> >
-> > and that fix is already in the reported HEAD commit:
-> >
-> > > HEAD commit:    7fef2edf sd: don't mess with SD_MINORS for CONFIG_DEBUG_BL..
-> >
-> > and the oops report clearly is from that:
-> >
-> > > CPU: 1 PID: 8445 Comm: syz-executor493 Not tainted 5.14.0-rc1-syzkaller #0
-> >
-> > so the alleged fix is already there.
-> >
-> > So clearly commit 9b5b872215fe ("file: fix close_range() for
-> > unshare+cloexec") does *NOT* fix the issue.
-> >
-> > This was originally bisected to that 582f1fb6b721 ("fs, close_range:
-> > add flag CLOSE_RANGE_CLOEXEC") in
-> >
-> >      https://syzkaller.appspot.com/bug?id=1bef50bdd9622a1969608d1090b2b4a588d0c6ac
-> >
-> > which is where the "fix" is from.
-> >
-> > It would probably be good if sysbot made this kind of "hey, it was
-> > reported fixed, but it's not" very clear.
-> >
-> > The KASAN report looks like a use-after-free, and that "use" is
-> > actually the sanity check that the file count is non-zero, so it's
-> > really a "struct file *" that has already been free'd.
-> >
-> > That bogus free is a regular close() system call
-> >
-> > >  filp_close+0x22/0x170 fs/open.c:1306
-> > >  close_fd+0x5c/0x80 fs/file.c:628
-> > >  __do_sys_close fs/open.c:1331 [inline]
-> > >  __se_sys_close fs/open.c:1329 [inline]
-> >
-> > And it was opened by a "creat()" system call:
-> >
-> > > Allocated by task 8445:
-> > >  __alloc_file+0x21/0x280 fs/file_table.c:101
-> > >  alloc_empty_file+0x6d/0x170 fs/file_table.c:150
-> > >  path_openat+0xde/0x27f0 fs/namei.c:3493
-> > >  do_filp_open+0x1aa/0x400 fs/namei.c:3534
-> > >  do_sys_openat2+0x16d/0x420 fs/open.c:1204
-> > >  do_sys_open fs/open.c:1220 [inline]
-> > >  __do_sys_creat fs/open.c:1294 [inline]
-> > >  __se_sys_creat fs/open.c:1288 [inline]
-> > >  __x64_sys_creat+0xc9/0x120 fs/open.c:1288
-> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > But it has apparently already been closed from a workqueue:
-> >
-> > > Freed by task 8445:
-> > >  __fput+0x288/0x920 fs/file_table.c:280
-> > >  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
-> >
-> > So it's some kind of confusion and re-use of a struct file pointer.
-> >
-> > Which is certainly consistent with the "fix" in 9b5b872215fe ("file:
-> > fix close_range() for unshare+cloexec"), but it very much looks like
-> > that fix was incomplete and not the full story.
-> >
-> > Some fdtable got re-allocated? The fix that wasn't a fix ends up
-> > re-checking the maximum file number under the file_lock, but there's
-> > clearly something else going on too.
-> >
-> > Christian?
->
-> Looking into this now.
->
-> I have to say I'm very confused by the syzkaller report here.
->
-> If I go to
->
-> https://syzkaller.appspot.com/bug?extid=283ce5a46486d6acdbaf
->
-> which is the original link in the report it shows me
->
-> android-54      KASAN: use-after-free Read in filp_close        C                       2       183d    183d    0/1     upstream: reported C repro on 2021/01/11 12:38
->
-> which seems to indicate that this happened on an Android specific 5.4
-> kernel?
+Juergen Gross <jgross@suse.com> writes:
 
-Hi Christian,
+> On 14.07.21 13:15, Vitaly Kuznetsov wrote:
+>> Juergen Gross <jgross@suse.com> writes:
+>> 
+>>> Today the maximum number of vcpus of a kvm guest is set via a #define
+>>> in a header file.
+>>>
+>>> In order to support higher vcpu numbers for guests without generally
+>>> increasing the memory consumption of guests on the host especially on
+>>> very large systems add a boot parameter for specifying the number of
+>>> allowed vcpus for guests.
+>>>
+>>> The default will still be the current setting of 288. The value 0 has
+>>> the special meaning to limit the number of possible vcpus to the
+>>> number of possible cpus of the host.
+>>>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>> ---
+>>>   Documentation/admin-guide/kernel-parameters.txt | 10 ++++++++++
+>>>   arch/x86/include/asm/kvm_host.h                 |  5 ++++-
+>>>   arch/x86/kvm/x86.c                              |  7 +++++++
+>>>   3 files changed, 21 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>>> index 99bfa53a2bbd..8eb856396ffa 100644
+>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>> @@ -2373,6 +2373,16 @@
+>>>   			guest can't have more vcpus than the set value + 1.
+>>>   			Default: 1023
+>>>   
+>>> +	kvm.max_vcpus=	[KVM,X86] Set the maximum allowed numbers of vcpus per
+>>> +			guest. The special value 0 sets the limit to the number
+>>> +			of physical cpus possible on the host (including not
+>>> +			yet hotplugged cpus). Higher values will result in
+>>> +			slightly higher memory consumption per guest. Depending
+>>> +			on the value and the virtual topology the maximum
+>>> +			allowed vcpu-id might need to be raised, too (see
+>>> +			kvm.max_vcpu_id parameter).
+>> 
+>> I'd suggest to at least add a sanity check: 'max_vcpu_id' should always
+>> be >= 'max_vcpus'. Alternatively, we can replace 'max_vcpu_id' with say
+>> 'vcpu_id_to_vcpus_ratio' and set it to e.g. '4' by default.
+>
+> Either would be fine with me.
+>
+> A default of '2' for the ratio would seem more appropriate for me,
+> however. A thread count per core not being a power of 2 is quite
+> unlikely, and the worst case scenario for cores per socket would be
+> 2^n + 1.
+>
 
-That's "similar bugs" section. In this section syzbot shows previous
-similar bugs and similar bugs on other kernels (lts, android).
+(I vaguely recall AMD EPYC had more than thread id (package id?)
+encapsulated into APIC id).
 
-"KASAN: use-after-free Read in filp_close" also happened on Android
-tree, if you click on the link, you can see crashes and reproducers on
-the android tree:
-https://syzkaller.appspot.com/bug?id=255edc9d4f00a881d3bf68b87d09a8b7843409e7
+Personally, I'd vote for introducing a 'ratio' parameter then so
+generally users will only have to set 'kvm.max_vcpus'.
 
-If you are interested only in upstream crashes/reproducers, then
-ignore the "similar bugs" section.
+>> 
+>>> +			Default: 288
+>>> +
+>>>   	l1tf=           [X86] Control mitigation of the L1TF vulnerability on
+>>>   			      affected CPUs
+>>>   
+>>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>>> index 39cbc4b6bffb..65ae82a5d444 100644
+>>> --- a/arch/x86/include/asm/kvm_host.h
+>>> +++ b/arch/x86/include/asm/kvm_host.h
+>>> @@ -37,7 +37,8 @@
+>>>   
+>>>   #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>>>   
+>>> -#define KVM_MAX_VCPUS 288
+>>> +#define KVM_DEFAULT_MAX_VCPUS 288
+>>> +#define KVM_MAX_VCPUS max_vcpus
+>>>   #define KVM_SOFT_MAX_VCPUS 240
+>>>   #define KVM_DEFAULT_MAX_VCPU_ID 1023
+>>>   #define KVM_MAX_VCPU_ID max_vcpu_id
+>>> @@ -1509,6 +1510,8 @@ extern u64  kvm_max_tsc_scaling_ratio;
+>>>   extern u64  kvm_default_tsc_scaling_ratio;
+>>>   /* bus lock detection supported? */
+>>>   extern bool kvm_has_bus_lock_exit;
+>>> +/* maximum number of vcpus per guest */
+>>> +extern unsigned int max_vcpus;
+>>>   /* maximum vcpu-id */
+>>>   extern unsigned int max_vcpu_id;
+>>>   /* per cpu vcpu bitmasks (disable preemption during usage) */
+>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>> index a9b0bb2221ea..888c4507504d 100644
+>>> --- a/arch/x86/kvm/x86.c
+>>> +++ b/arch/x86/kvm/x86.c
+>>> @@ -177,6 +177,10 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
+>>>   int __read_mostly pi_inject_timer = -1;
+>>>   module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+>>>   
+>>> +unsigned int __read_mostly max_vcpus = KVM_DEFAULT_MAX_VCPUS;
+>>> +module_param(max_vcpus, uint, S_IRUGO);
+>>> +EXPORT_SYMBOL_GPL(max_vcpus);
+>>> +
+>>>   unsigned int __read_mostly max_vcpu_id = KVM_DEFAULT_MAX_VCPU_ID;
+>>>   module_param(max_vcpu_id, uint, S_IRUGO);
+>>>   
+>>> @@ -10648,6 +10652,9 @@ int kvm_arch_hardware_setup(void *opaque)
+>>>   	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>>>   		rdmsrl(MSR_IA32_XSS, host_xss);
+>>>   
+>>> +	if (max_vcpus == 0)
+>>> +		max_vcpus = num_possible_cpus();
+>> 
+>> Is this special case really needed? I mean 'max_vcpus' is not '0' by
+>> default so whoever sets it manually probably knows how big his guests
+>> are going to be anyway and it is not always obvious how many CPUs are
+>> reported by 'num_possible_cpus()' (ACPI tables can be weird for example).
+>
+> The idea was to make it easy for anyone managing a large fleet of hosts
+> and wanting to have a common setting for all of them.
+>
 
+I see. It seems to be uncommon indeed to run guests with more vCPUs than
+host pCPUs so everything >= num_online_cpus() should be OK. My only
+concern about num_possible_cpus() is that it is going to be hard to
+explain what 'possible CPUs' mean (but whoever cares that much about
+wasting memory can always set the required value manually).
 
-> But ok, so I click on the link "upstream: reported C repro on 2021/01/11 12:38"
-> which takes me to a google group
+> It would even be possible to use '0' as the default (probably via config
+> option only).
 >
-> https://groups.google.com/g/syzkaller-android-bugs/c/FQj0qcRSy_M/m/wrY70QFzBAAJ
->
-> which again strongly indicates that this is an Android specific kernel?
->
-> HEAD commit: c9951e5d Merge 5.4.88 into android12-5.4
-> git tree: android12-5.4
->
-> but then I can click on the dashboard link for that crash report and it
-> takes me to:
->
-> https://syzkaller.appspot.com/bug?extid=53897bcb31b82c7a08fe
->
-> which seems to be the upstream report?
->
-> So I'm a bit confused whether I'm even looking at the correct bug report
-> but I'll just give the repro a try and see what's going on.
->
-> Christian
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210714075925.jtlfrhhuj4bzff3m%40wittgenstein.
+>> 
+>>> +
+>>>   	kvm_pcpu_vcpu_mask = __alloc_percpu(KVM_VCPU_MASK_SZ,
+>>>   					    sizeof(unsigned long));
+>>>   	kvm_hv_vp_bitmap = __alloc_percpu(KVM_HV_VPMAP_SZ, sizeof(u64));
+>> 
+
+-- 
+Vitaly
+
