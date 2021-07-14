@@ -2,169 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57033C93CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4B83C93CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236971AbhGNW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 18:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235858AbhGNW2B (ORCPT
+        id S237031AbhGNW2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 18:28:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60314 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236974AbhGNW2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 18:28:01 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFC2C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:25:08 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id a14so2176099pls.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d0LEZQXZXBUYt56KXRh0C3kDKHdIojtN6Lf/OzbsuzM=;
-        b=FfQxK3SV/ESQiEb5v3FHVKWIjqOGMi4YhXCbDa/51EtfbkQHxT2bFZuQBtvVg++Xeg
-         6tt92/t1RsBiKAXrzBF+W13Xl100z7HkSSk7BE9ticaVj6iq5TZK7Yg/85MWig+KqUDw
-         cyh4r8o4dCYrVzEuhIF9iT9raSFKiQqQNcDLT7akQKaZ/An2B98mJOTtp0QI2qrbIFM4
-         WR9L7DaXT0Vv1KusvFEYql1V5zbws+hFtvF3t8YfggWxOEhoGuBz+C+2lUnc/kEi5Ad0
-         eL5L3DWqhdHe5U357bksn3v1Xz/7tZ2TBx48v3xH753GiAUfNYU73mbLS26JarnruUEu
-         /B+g==
+        Wed, 14 Jul 2021 18:28:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626301512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6xF0M7X1DsWIfOb+PL4bMVWgDi6eXN7r5W8R38MPpTs=;
+        b=Mv9Zh5myQ0ENcL2TCOcgUFWoa7cfWzxgS0rpGfSUFsexBpsO8ASyMQpBQoQ8yPoA/BI/78
+        UdeJfRDW19XIKHzXIUrAnKQjFzaigQLVlmTrcf5WmJjzHhOu9hWCncEm7JdXhMWfbRoMJq
+        ld1LeAWzaUH9wRrzTjfCgJetFFqTdLg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-7vllgGpDNpGHRMcmmS0c2Q-1; Wed, 14 Jul 2021 18:25:11 -0400
+X-MC-Unique: 7vllgGpDNpGHRMcmmS0c2Q-1
+Received: by mail-qv1-f69.google.com with SMTP id y12-20020a0ceacc0000b02902eaed054a57so2684091qvp.15
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:25:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d0LEZQXZXBUYt56KXRh0C3kDKHdIojtN6Lf/OzbsuzM=;
-        b=i/JLUjjSDd3xBxwF9I+aYmlqy90OgJEmcvIPX0r0CzxygoAliuomdPobrSyt8GkVZp
-         m94WF76DU2KCmX+2AQfmUJGQBjlqg946fB+Vh7UFyT9N+Jm46eN0/uZDl2A19Qk948FL
-         7/HUZu9HvzOikcKDo0x4eTmxmU9eGO/p3ynrp9p/2o1QCrO4K7tX65PF79IpggxpPMff
-         GgneugzMDVjF/Pf5iVqb+rgCZHjPrvqmrRS+sWAH3T6SU6jhTl1Xq4Y9/3luQ3GgXVuV
-         CrmHJ/4iLmRMx/7atGyXvT1cJPLrhjF642DAiXCmFlSCIFhyc1XgiB1keq3Po00+USD4
-         4aOw==
-X-Gm-Message-State: AOAM533bhzkUxm+GYci18s3Tv+R97mJc6JVwxIdwQ58RezmvU5Yb8klI
-        NiHCpszoGf49slZOkmxPcSFMPg==
-X-Google-Smtp-Source: ABdhPJyj12ndfez3CtyE1b5kgpw1CSsww4ClT6FKSpDwrLOL4aVpAEAP3FkBpK5S7C9HrKMRFrU05w==
-X-Received: by 2002:a17:90b:1d84:: with SMTP id pf4mr140522pjb.166.1626301507743;
-        Wed, 14 Jul 2021 15:25:07 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 3sm3889790pfm.25.2021.07.14.15.25.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6xF0M7X1DsWIfOb+PL4bMVWgDi6eXN7r5W8R38MPpTs=;
+        b=XrzxEJBfQlQfCVbu8M4RV8vsTYZr+e4d2VEzp4rZHfgUdSZxdWCN9FTA97YMtx0pua
+         610WoKu5EHuFT51jwpn7XgDlj3PdkWIB3whXZDSXTnF+D9pWaJfkwK/2qsxhlU32OeHQ
+         MeocGFTncHHqSKdxl6dBQ+tx9JRQeikpiUnsWGCZG3yJGKQXLErBLJN+e8/O+9DtTIKs
+         NKhGykWM3X6hy6v8fHPnvcgz8f8E79ik1xO2EjQSkADtMLFZGRM4uVhqsyPvcwdxZ3Wf
+         7Gj+ylrF7islB9v0VZrDVC2hDU5BzcdyRCcnaAqRM3ef5xaifUenbmaifIGVmlfwGt1M
+         wHCg==
+X-Gm-Message-State: AOAM532dIG0llE/bwpcYLUzEDhgz4EqUYtXzBG2xd/TuGtlsCuO1O3ZC
+        3jg5YzDKlCDuWYzlW4rUs7ounikuV2Hsc2i608h4nTEy2JuV1Pzba8FbFyH0wS/gLsWv0HgW/FY
+        WeoK+Jq68G8H4XFFipG/mCLPZ
+X-Received: by 2002:a05:620a:21da:: with SMTP id h26mr234707qka.364.1626301511102;
+        Wed, 14 Jul 2021 15:25:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAzfpIJGP3b/Bp6JWursq5waaz3pJsfn/nHxprQEqq4SvYcLJVducew1EhJJTmsYUN8IEusQ==
+X-Received: by 2002:a05:620a:21da:: with SMTP id h26mr234684qka.364.1626301510880;
+        Wed, 14 Jul 2021 15:25:10 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id i123sm16830qkf.60.2021.07.14.15.25.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 15:25:07 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 22:25:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 07/40] x86/sev: Split the physmap when
- adding the page in RMP table
-Message-ID: <YO9kP1v0TAFXISHD@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-8-brijesh.singh@amd.com>
+        Wed, 14 Jul 2021 15:25:10 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Alistair Popple <apopple@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>, peterx@redhat.com,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH v4 19/26] hugetlb/userfaultfd: Handle UFFDIO_WRITEPROTECT
+Date:   Wed, 14 Jul 2021 18:25:07 -0400
+Message-Id: <20210714222507.49042-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210714222117.47648-1-peterx@redhat.com>
+References: <20210714222117.47648-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-8-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> The integrity guarantee of SEV-SNP is enforced through the RMP table.
-> The RMP is used in conjuntion with standard x86 and IOMMU page
-> tables to enforce memory restrictions and page access rights. The
-> RMP is indexed by system physical address, and is checked at the end
-> of CPU and IOMMU table walks. The RMP check is enforced as soon as
-> SEV-SNP is enabled globally in the system. Not every memory access
-> requires an RMP check. In particular, the read accesses from the
-> hypervisor do not require RMP checks because the data confidentiality
-> is already protected via memory encryption. When hardware encounters
-> an RMP checks failure, it raise a page-fault exception. The RMP bit in
-> fault error code can be used to determine if the fault was due to an
-> RMP checks failure.
-> 
-> A write from the hypervisor goes through the RMP checks. When the
-> hypervisor writes to pages, hardware checks to ensures that the assigned
-> bit in the RMP is zero (i.e page is shared). If the page table entry that
-> gives the sPA indicates that the target page size is a large page, then
-> all RMP entries for the 4KB constituting pages of the target must have the
-> assigned bit 0. If one of entry does not have assigned bit 0 then hardware
-> will raise an RMP violation. To resolve it, split the page table entry
-> leading to target page into 4K.
+This starts from passing cp_flags into hugetlb_change_protection() so hugetlb
+will be able to handle MM_CP_UFFD_WP[_RESOLVE] requests.
 
-Isn't the above just saying:
+huge_pte_clear_uffd_wp() is introduced to handle the case where the
+UFFDIO_WRITEPROTECT is requested upon migrating huge page entries.
 
-  All RMP entries covered by a large page must match the shared vs. encrypted
-  state of the page, e.g. host large pages must have assigned=0 for all relevant
-  RMP entries.
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/hugetlb.h |  6 ++++--
+ mm/hugetlb.c            | 13 ++++++++++++-
+ mm/mprotect.c           |  3 ++-
+ mm/userfaultfd.c        |  8 ++++++++
+ 4 files changed, 26 insertions(+), 4 deletions(-)
 
-> This poses a challenge in the Linux memory model. The Linux kernel
-> creates a direct mapping of all the physical memory -- referred to as
-> the physmap. The physmap may contain a valid mapping of guest owned pages.
-> During the page table walk, the host access may get into the situation
-> where one of the pages within the large page is owned by the guest (i.e
-> assigned bit is set in RMP). A write to a non-guest within the large page
-> will raise an RMP violation. Call set_memory_4k() to split the physmap
-> before adding the page in the RMP table. This ensures that the pages
-> added in the RMP table are used as 4K in the physmap.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kernel/sev.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 949efe530319..a482e01f880a 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2375,6 +2375,12 @@ int rmpupdate(struct page *page, struct rmpupdate *val)
->  	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
->  		return -ENXIO;
->  
-> +	ret = set_memory_4k((unsigned long)page_to_virt(page), 1);
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index fcdbf9f46d85..e19ca363803d 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -205,7 +205,8 @@ struct page *follow_huge_pgd(struct mm_struct *mm, unsigned long address,
+ int pmd_huge(pmd_t pmd);
+ int pud_huge(pud_t pud);
+ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+-		unsigned long address, unsigned long end, pgprot_t newprot);
++		unsigned long address, unsigned long end, pgprot_t newprot,
++		unsigned long cp_flags);
+ 
+ bool is_hugetlb_entry_migration(pte_t pte);
+ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
+@@ -372,7 +373,8 @@ static inline void move_hugetlb_state(struct page *oldpage,
+ 
+ static inline unsigned long hugetlb_change_protection(
+ 			struct vm_area_struct *vma, unsigned long address,
+-			unsigned long end, pgprot_t newprot)
++			unsigned long end, pgprot_t newprot,
++			unsigned long cp_flags)
+ {
+ 	return 0;
+ }
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index f4efcb8c6214..7d3558265b6f 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5519,7 +5519,8 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ }
+ 
+ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+-		unsigned long address, unsigned long end, pgprot_t newprot)
++		unsigned long address, unsigned long end,
++		pgprot_t newprot, unsigned long cp_flags)
+ {
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long start = address;
+@@ -5529,6 +5530,8 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 	unsigned long pages = 0;
+ 	bool shared_pmd = false;
+ 	struct mmu_notifier_range range;
++	bool uffd_wp = cp_flags & MM_CP_UFFD_WP;
++	bool uffd_wp_resolve = cp_flags & MM_CP_UFFD_WP_RESOLVE;
+ 
+ 	/*
+ 	 * In the case of shared PMDs, the area to flush could be beyond
+@@ -5570,6 +5573,10 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 				entry = make_readable_migration_entry(
+ 							swp_offset(entry));
+ 				newpte = swp_entry_to_pte(entry);
++				if (uffd_wp)
++					newpte = pte_swp_mkuffd_wp(newpte);
++				else if (uffd_wp_resolve)
++					newpte = pte_swp_clear_uffd_wp(newpte);
+ 				set_huge_swap_pte_at(mm, address, ptep,
+ 						     newpte, huge_page_size(h));
+ 				pages++;
+@@ -5584,6 +5591,10 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 			old_pte = huge_ptep_modify_prot_start(vma, address, ptep);
+ 			pte = pte_mkhuge(huge_pte_modify(old_pte, newprot));
+ 			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
++			if (uffd_wp)
++				pte = huge_pte_mkuffd_wp(huge_pte_wrprotect(pte));
++			else if (uffd_wp_resolve)
++				pte = huge_pte_clear_uffd_wp(pte);
+ 			huge_ptep_modify_prot_commit(vma, address, ptep, old_pte, pte);
+ 			pages++;
+ 		}
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 3fcb87b59696..96f4df023439 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -426,7 +426,8 @@ unsigned long change_protection(struct vm_area_struct *vma, unsigned long start,
+ 	BUG_ON((cp_flags & MM_CP_UFFD_WP_ALL) == MM_CP_UFFD_WP_ALL);
+ 
+ 	if (is_vm_hugetlb_page(vma))
+-		pages = hugetlb_change_protection(vma, start, end, newprot);
++		pages = hugetlb_change_protection(vma, start, end, newprot,
++						  cp_flags);
+ 	else
+ 		pages = change_protection_range(vma, start, end, newprot,
+ 						cp_flags);
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 501d6b9f7a5a..7ba721aca1c5 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -695,6 +695,7 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 			unsigned long len, bool enable_wp, bool *mmap_changing)
+ {
+ 	struct vm_area_struct *dst_vma;
++	unsigned long page_mask;
+ 	pgprot_t newprot;
+ 	int err;
+ 
+@@ -731,6 +732,13 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 	if (!vma_is_anonymous(dst_vma))
+ 		goto out_unlock;
+ 
++	if (is_vm_hugetlb_page(dst_vma)) {
++		err = -EINVAL;
++		page_mask = vma_kernel_pagesize(dst_vma) - 1;
++		if ((start & page_mask) || (len & page_mask))
++			goto out_unlock;
++	}
++
+ 	if (enable_wp)
+ 		newprot = vm_get_page_prot(dst_vma->vm_flags & ~(VM_WRITE));
+ 	else
+-- 
+2.31.1
 
-IIUC, this shatters the direct map for page that's assigned to an SNP guest, and
-the large pages are never recovered?
-
-I believe a better approach would be to do something similar to memfd_secret[*],
-which encountered a similar problem with the direct map.  Instead of forcing the
-direct map to be forever 4k, unmap the direct map when making a page guest private,
-and restore the direct map when it's made shared (or freed).
-
-I thought memfd_secret had also solved the problem of restoring large pages in
-the direct map, but at a glance I can't tell if that's actually implemented
-anywhere.  But, even if it's not currently implemented, I think it makes sense
-to mimic the memfd_secret approach so that both features can benefit if large
-page preservation/restoration is ever added.
-
-[*] https://lkml.kernel.org/r/20210518072034.31572-5-rppt@kernel.org
-
-> +	if (ret) {
-> +		pr_err("Failed to split physical address 0x%lx (%d)\n", spa, ret);
-> +		return ret;
-> +	}
-> +
->  	/* Retry if another processor is modifying the RMP entry. */
->  	do {
->  		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
-> -- 
-> 2.17.1
-> 
