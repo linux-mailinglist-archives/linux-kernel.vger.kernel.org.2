@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E953C88C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ECB3C88C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhGNQkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:40:08 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:33754 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhGNQkH (ORCPT
+        id S235756AbhGNQk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:40:29 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:46064 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232434AbhGNQk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:40:07 -0400
-Received: by mail-io1-f53.google.com with SMTP id z11so2949777iow.0;
-        Wed, 14 Jul 2021 09:37:14 -0700 (PDT)
+        Wed, 14 Jul 2021 12:40:28 -0400
+Received: by mail-io1-f49.google.com with SMTP id y16so2866584iol.12;
+        Wed, 14 Jul 2021 09:37:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=E4AvJhetNwASZem5dl8Fp/vANmJkc1r/xjwo+QbtJNI=;
-        b=SmxSX7dN7b+AMmVcxi63JWOF+vk+g6OW4+pZzEnkpfvVC67rxMcoPH+H47JVL6TpaL
-         eiFMG0K4LRp26bIofw67PIuY7bpTVbvn8AE0z3ImZjYTHrmVr7aUun0GW8tCZR65JDR4
-         gGPf4rcSUiagovs1RHrf1rWqOi6LP9ot8iTWy+pf1Go3BGqoxHOgwLIQg3vMP+2T1+la
-         eG5/HNcL1Afzbx9fVnAuFXdjIfgeRh7eXK5/mjT3YkPYgxN86aABirfjm7yhl/ICt0iL
-         f2jvZnMlZZ4bGOsl5V/SUd/HGVmigzO28rVR028ekKHwVN1+cN/Kj/o2BaO5jvbNL0FU
-         ZcAA==
-X-Gm-Message-State: AOAM532l7INibQWErnJNbwtgMUrqoem3OXhYT3p+Q6VVW5rSIFV7TGqW
-        QmIocaKj2kH3v3ixDla94w==
-X-Google-Smtp-Source: ABdhPJyyqzjI4orQEKBGudclxA6i5CqYo1oBoYaIfnzXMXkj0ILABCTs+SeLuzpf8Is17w4C3VeFtg==
-X-Received: by 2002:a02:ad08:: with SMTP id s8mr9861761jan.40.1626280634475;
-        Wed, 14 Jul 2021 09:37:14 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=4tJeunAnZHlhQuigtds/Y0c5fgwGRcJ1HpFKTFeZvbU=;
+        b=gpTqHTfrN8ddNqSbMjZ4paKCkbcDPeLcyHWL0mkoA1cMfbVW8qwp7bOqxSGCSCgnBi
+         JAJLs9PFXNrsWB8rXdjxVJRTZEf/1ULq/YVTIRtK0iobrZhHcS57qDBoThYZK3me5TkK
+         ktDpmvvS1i8sx/I3GJJCNqMsw3aD/f4np5JtDL5Y5wFZF/F5OQy7YzPTrBJ5NQdGsuLm
+         ZEu+I/aKL7WzL2r18sQKCwpCn1IGWPpAAFyz2RkiWXfv552E9oTycWKSNZxP4R2g56AD
+         qeEYnltWBxuk+0QQh3fq+um9/jCcM9oU7k31RK+sX/7Zo58BJ4bcky695EDy3fRoaUCo
+         x8yQ==
+X-Gm-Message-State: AOAM531z3PePSZCqlOtZu47fbsYVmfdas42yJfoO88fYXttyGqBJ8Pbr
+        tDTLwSgsm4kw/QllNUuV3g==
+X-Google-Smtp-Source: ABdhPJzVkkc1P8a634IL2iHsgXQyZ4AE005dkCM4T2KN3A+q4PdX0vgxBSC65J1kRJPnYNA0vZBkvg==
+X-Received: by 2002:a02:a595:: with SMTP id b21mr9600496jam.122.1626280656051;
+        Wed, 14 Jul 2021 09:37:36 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r1sm1078472ilt.37.2021.07.14.09.37.11
+        by smtp.gmail.com with ESMTPSA id c26sm1446889ioa.32.2021.07.14.09.37.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 09:37:13 -0700 (PDT)
-Received: (nullmailer pid 2719225 invoked by uid 1000);
-        Wed, 14 Jul 2021 16:37:10 -0000
-Date:   Wed, 14 Jul 2021 10:37:10 -0600
+        Wed, 14 Jul 2021 09:37:35 -0700 (PDT)
+Received: (nullmailer pid 2719952 invoked by uid 1000);
+        Wed, 14 Jul 2021 16:37:31 -0000
+Date:   Wed, 14 Jul 2021 10:37:31 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     David Airlie <airlied@linux.ie>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        dri-devel@lists.freedesktop.org,
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, soc@kernel.org,
+        linux-kernel@vger.kernel.org,
         Thierry Reding <thierry.reding@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: display: simple: add some Logic
- Technologies and Multi-Inno panels
-Message-ID: <20210714163710.GA2718995@robh.at.kernel.org>
+        Olof Johansson <olof@lixom.net>,
+        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
+        David Airlie <airlied@linux.ie>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 2/4] dt-bindings: vendor-prefixes: Add an entry for
+ SKOV A/S
+Message-ID: <20210714163731.GA2719790@robh.at.kernel.org>
 References: <20210714045349.10963-1-o.rempel@pengutronix.de>
- <20210714045349.10963-2-o.rempel@pengutronix.de>
+ <20210714045349.10963-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210714045349.10963-2-o.rempel@pengutronix.de>
+In-Reply-To: <20210714045349.10963-3-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 06:53:46 +0200, Oleksij Rempel wrote:
-> Add Logictechno and Multi-Inno panels:
-> - Logic Technologies LTTD800x480 L2RT 7" 800x480 TFT Resistive Touch Module
-> - Logic Technologies LTTD800480070-L6WH-RT 7” 800x480 TFT Resistive Touch Module
-> - Multi-Inno Technology Co.,Ltd MI1010AIT-1CP 10.1" 1280x800 LVDS IPS Cap Touch Mod.
+On Wed, 14 Jul 2021 06:53:47 +0200, Oleksij Rempel wrote:
+> Add "skov" entry for the SKOV A/S: https://www.skov.com/en/
 > 
 > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml     | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 
