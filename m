@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1623C89E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307C03C89E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhGNRk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhGNRk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:40:57 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F33CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:38:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso4355688pjc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AkN/g8848yQUrVMq0VBpWbOyu8YJObYWSKkoyUzYfiU=;
-        b=eMg6FmyNsO6+/sMtxzHj9WXua3i1vPIdUzNZ4lZdQJyej/FRHSIF1ML3Mc0G5cDLWx
-         tGwv3//qdXYSpJRjVqTg7jtj4aiFsmzWU90DtlM9Y5q+P+1yJ2rBkswf7mJD6Xo76FEk
-         rKQ27JxibdftdRE8B5pWmFRcMUOs3YMz2Cegk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AkN/g8848yQUrVMq0VBpWbOyu8YJObYWSKkoyUzYfiU=;
-        b=tvkZHIUu8d50fBp99xuB8+uC3yj39nTOGX+YPII5AvX9vz2cB5nLplNfTquVkWey9F
-         HhPrcR2fRxxDJKZRGkJBOIXWGPe6q1ABeyqu6mb7RzjV3N4ST4e8aeDBZz53qayJ4Jia
-         /Vqyt6Sxg6jddGZGWn1TaRykvFxKzekPkODgBI/y8ss+AFpll+wymircDPsSGtvG/WN0
-         uZT8GhKejI/Gk4SPJNFbEyRBcHlcWUHh8H8q46tHtnLkbx3Y4MQoN4BJK7nUZMypCLs1
-         C0bQ+vxv4qz4pX5Is6CRG6ty5iXPbCJEULLVAlsFEpVqLuwpbkl2fnmgh0zM+EXye3/Z
-         j7ZA==
-X-Gm-Message-State: AOAM532PndMNawpBGe1dxMxoIGWefDup4fPwcjytnl/aZSojMYmop47M
-        Is5uHqiDa5EhcMIE4zNNHqbhgg==
-X-Google-Smtp-Source: ABdhPJwEcCE08Sj3IeUY5ZlR8wzGioKVy8YsVZg+ovQUa2cTdgQKHOv/52is24ZM2pDu/8rkeVCVdQ==
-X-Received: by 2002:a17:90a:6a43:: with SMTP id d3mr4872708pjm.15.1626284283944;
-        Wed, 14 Jul 2021 10:38:03 -0700 (PDT)
-Received: from dev-yzhong.dev.purestorage.com ([192.30.188.252])
-        by smtp.googlemail.com with ESMTPSA id d8sm3855074pgu.49.2021.07.14.10.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 10:38:03 -0700 (PDT)
-From:   Yuanyuan Zhong <yzhong@purestorage.com>
-To:     elver@google.com
-Cc:     akpm@linux-foundation.org, corbet@lwn.net, dvyukov@google.com,
-        glider@google.com, joern@purestorage.com,
-        kasan-dev@googlegroups.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH mm v2] kfence: show cpu and timestamp in alloc/free info
-Date:   Wed, 14 Jul 2021 11:37:55 -0600
-Message-Id: <20210714173755.1083-1-yzhong@purestorage.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210714082145.2709233-1-elver@google.com>
-References: <20210714082145.2709233-1-elver@google.com>
+        id S229937AbhGNRlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhGNRlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:41:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E725613BE;
+        Wed, 14 Jul 2021 17:38:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626284334;
+        bh=lu4E99+VlD+VteTU0c7rsugJIogDlCtx+P3Ik3XMfmk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MgCEFF93YlBo+KW7/779T2U1km9osAwJn9tR+fdqek0uZrhKAGWAHvTFpv+WDWzra
+         A0LjdKYZKbT0QjyGX4H41ZBnNfaUmqzaIxUWf0bDHM5o0RIRLbl0Cku7D5B1OdoAIu
+         /qmBqc5yvhc0rwyYZEYwZpC5r0w/f/KP92OiYHNenxmgYWaU1CFHpr8hbhOqDQ+hZu
+         RtvxJ/mLyRcyW+CwBWYXktov3uCkIyzlu/FL5PfzpcTqNrx1vDyVOJ8Ta5Rjaz8ash
+         luc6Vukj0T8iPC6jYJMN/wSf/OflPYPN4mf9ey6Dx1MHbW/+PHgeFbHeopSPvWGPMn
+         OK0NjBjOGkZcA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B297C403F2; Wed, 14 Jul 2021 14:38:51 -0300 (-03)
+Date:   Wed, 14 Jul 2021 14:38:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tools headers: Remove broken definition of __LITTLE_ENDIAN
+Message-ID: <YO8hK7lqJcIWuBzx@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	/* Timestamp matches printk timestamp format. */
-> +	seq_con_printf(seq, "%s by task %d on cpu %d at %lu.%06lus:\n",
-> +		       show_alloc ? "allocated" : "freed", meta->alloc_track.pid,
-> +		       meta->alloc_track.cpu, (unsigned long)ts_sec, rem_nsec / 1000);
+FYI, added this to my local tree.
 
-s/meta->alloc_track\./track->/
+commit adfb906cb3ee7b941a5de71dbb72b6de1ee258db
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Wed Jul 14 14:28:02 2021 -0300
+
+    tools headers: Remove broken definition of __LITTLE_ENDIAN
+    
+    The linux/kconfig.h file was copied from the kernel but the line where
+    with the generated/autoconf.h include from where the CONFIG_ entries
+    would come from was deleted, as tools/ build system don't create that
+    file, so we ended up always defining just __LITTLE_ENDIAN as
+    CONFIG_CPU_BIG_ENDIAN was nowhere to be found.
+    
+    This in turn ended up breaking the build in some systems where
+    __LITTLE_ENDIAN was already defined, such as the androind NDK.
+    
+    So just ditch that block that depends on the CONFIG_CPU_BIG_ENDIAN
+    define.
+    
+    The kconfig.h file was copied just to get IS_ENABLED() and a
+    'make -C tools/all' doesn't breaks with this removal.
+    
+    Fixes: 93281c4a96572a34 ("x86/insn: Add an insn_decode() API")
+    Cc: Borislav Petkov <bp@suse.de>
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/include/linux/kconfig.h b/tools/include/linux/kconfig.h
+index 1555a0c4f34514bf..13b86bd3b7461d27 100644
+--- a/tools/include/linux/kconfig.h
++++ b/tools/include/linux/kconfig.h
+@@ -4,12 +4,6 @@
+ 
+ /* CONFIG_CC_VERSION_TEXT (Do not delete this comment. See help in Kconfig) */
+ 
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-#define __BIG_ENDIAN 4321
+-#else
+-#define __LITTLE_ENDIAN 1234
+-#endif
+-
+ #define __ARG_PLACEHOLDER_1 0,
+ #define __take_second_arg(__ignored, val, ...) val
+ 
