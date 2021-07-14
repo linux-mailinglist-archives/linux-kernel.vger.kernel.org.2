@@ -2,208 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C109B3C7E1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EFF3C7E38
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237948AbhGNFvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237899AbhGNFvP (ORCPT
+        id S238117AbhGNFz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:55:29 -0400
+Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.174]:11883 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237959AbhGNFzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:51:15 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C47C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:48:24 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id l26so1455653eda.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ISPhdRd7kgRF131of+I49P7OQzeT4zgllEAZ6yc66Cw=;
-        b=CRCCf/8GTFicMvq9b/39MqKOLA4VR5W/ygtwaJLI0t2FCj5mbGw+0F5fvOpYhQBlrp
-         mnWkMFmm1NRwvDJrruNdW/yFacogODt3bCpAldP7YRcTEBrB9r1iBC2NjEl0kUTRdDqQ
-         1LDJkNtefZh3Inp027Damv068boUObxXQE1Pm1ikQNRrKOn0QiMcT+UqofXREN+wn0AY
-         Qwlp4lF5HnpBmLE3ay7KGuePAPoflcJyMWHPJ6Bnc8lPzXEAzgnhzHTc+Z5cugll/6CO
-         prP+98aaVF7nhR72k5BdnaouBNhEtSUaq/qfnkjt1V52oVKY2JDemFXyTzCt7m8WNALL
-         Fl/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ISPhdRd7kgRF131of+I49P7OQzeT4zgllEAZ6yc66Cw=;
-        b=j7yVNmXUvWZBibHusHb/ysOgCD/haCH76F2Ugl+cJF0eOpDaqvD1eRmg9Fw4IMcwzE
-         ZEzdIJi1FSmG1g58bNy1PYFZmtMYbA21RoueOjqtxQ5W0Cj2vWWe/3PN5NoK662iCIEg
-         qvjo5Uh6b1i/LVCvyw9xPqh6JUfw0ex6XgxY/dZSmJ3KlEKJzsWRgZe84omQiE9+4wth
-         AsGPYV+Hiidfq7rfPblH0BPpLn7L7oLlWLKy5ExJWuqXm0Pd/D2ELmt2FiJFuk5CAJpQ
-         1r6gI08ovw5bbzN8eqt8cqTq9DG8v+yGWazzThGAFjx/CXGoQoFakMldKlWPlngFbwQH
-         mznA==
-X-Gm-Message-State: AOAM533K5Guf1VGq/z5QjSVBYfx6aNox0YDYheA/kSpsCbTu6GGIAAIx
-        UrtFeIXB9tA4rQ84ejITpwrGqvM+5auWY8Nv4x8w
-X-Google-Smtp-Source: ABdhPJxXeEP7t8zpZ7c72shHdFobOH14/MjRGIjC6cNWOwN1I+LFplaCEgLfUWMkJbOdheWG/GEx1jYGgqe4NN7VDzo=
-X-Received: by 2002:a50:ff01:: with SMTP id a1mr10892387edu.253.1626241703073;
- Tue, 13 Jul 2021 22:48:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210713084656.232-1-xieyongji@bytedance.com> <20210713084656.232-4-xieyongji@bytedance.com>
- <8aa028a0117ecb51d209861f926a84ce74fe0c46.camel@perches.com>
-In-Reply-To: <8aa028a0117ecb51d209861f926a84ce74fe0c46.camel@perches.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Wed, 14 Jul 2021 13:48:12 +0800
-Message-ID: <CACycT3t99LoN86KH2Hz38ZnqdgsV4tt4UGNB4QqOvX40Xji5vA@mail.gmail.com>
-Subject: Re: [PATCH v9 03/17] vdpa: Fix code indentation
-To:     Joe Perches <joe@perches.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
+        Wed, 14 Jul 2021 01:55:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626241849;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=QPS7OuH3DnMGYhAOAdZFeI9eRAvYhooyGueRH9+3eaQ=;
+    b=tEngVz1KJa+q1P8czzuUJP5st33/XIHV0R43TV83p/+U5xLNfbnJ0Z1kW0OWrk2Cr4
+    ObyT/BT+bA5PtqQQhMOTpHb15R6jMihZZin24es9DR+ApwJASzHPYPwAV8JsZOPV/Hj4
+    VqUy8R2f2q/Pz5YzEwN7BT6ac9J1CzMqlKyRfyT4a8GQFsXbqv0vy8IMtKgY8VVYWrpv
+    St/IwWl4l+Rc9I5RPT0PovE/L+rNuuemnk0fO058BDuvtgXB4bnDL6lJQScS4wp7yYMq
+    sdScOGit/Ffvvo/aA5GfGwMRMQA1/x0ZDb+PCuDykPZe6aKSMUbXNa3Pe0VfOvZMttnx
+    h1yg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXPSI/SaRQ=="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
+    with ESMTPSA id N0753fx6E5omwyS
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 14 Jul 2021 07:50:48 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
+Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
         Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        John Haxby <john.haxby@oracle.com>,
+        Alexander Lobakin <alobakin@mailbox.org>
+Subject: [PATCH v41 10/13] LRNG - add Jitter RNG fast noise source
+Date:   Wed, 14 Jul 2021 07:48:40 +0200
+Message-ID: <8015368.FPDjnrgga5@positron.chronox.de>
+In-Reply-To: <7822794.ITf6fX9eNu@positron.chronox.de>
+References: <7822794.ITf6fX9eNu@positron.chronox.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 12:20 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2021-07-13 at 16:46 +0800, Xie Yongji wrote:
-> > Use tabs to indent the code instead of spaces.
->
-> There are a lot more of these in this file.
->
-> $ ./scripts/checkpatch.pl --fix-inplace --strict include/linux/vdpa.h
->
-> and a little typing gives:
-> ---
->  include/linux/vdpa.h | 50 +++++++++++++++++++++++++-------------------------
->  1 file changed, 25 insertions(+), 25 deletions(-)
->
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 3357ac98878d4..14cd4248e59fd 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -43,17 +43,17 @@ struct vdpa_vq_state_split {
->   * @last_used_idx: used index
->   */
->  struct vdpa_vq_state_packed {
-> -        u16    last_avail_counter:1;
-> -        u16    last_avail_idx:15;
-> -        u16    last_used_counter:1;
-> -        u16    last_used_idx:15;
-> +       u16     last_avail_counter:1;
-> +       u16     last_avail_idx:15;
-> +       u16     last_used_counter:1;
-> +       u16     last_used_idx:15;
->  };
->
->  struct vdpa_vq_state {
-> -     union {
-> -          struct vdpa_vq_state_split split;
-> -          struct vdpa_vq_state_packed packed;
-> -     };
-> +       union {
-> +               struct vdpa_vq_state_split split;
-> +               struct vdpa_vq_state_packed packed;
-> +       };
->  };
->
->  struct vdpa_mgmt_dev;
-> @@ -131,7 +131,7 @@ struct vdpa_iova_range {
->   *                             @vdev: vdpa device
->   *                             @idx: virtqueue index
->   *                             @state: pointer to returned state (last_avail_idx)
-> - * @get_vq_notification:       Get the notification area for a virtqueue
-> + * @get_vq_notification:       Get the notification area for a virtqueue
->   *                             @vdev: vdpa device
->   *                             @idx: virtqueue index
->   *                             Returns the notifcation area
-> @@ -277,13 +277,13 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->                                         const struct vdpa_config_ops *config,
->                                         size_t size, const char *name);
->
-> -#define vdpa_alloc_device(dev_struct, member, parent, config, name)   \
-> -                         container_of(__vdpa_alloc_device( \
-> -                                      parent, config, \
-> -                                      sizeof(dev_struct) + \
-> -                                      BUILD_BUG_ON_ZERO(offsetof( \
-> -                                      dev_struct, member)), name), \
-> -                                      dev_struct, member)
-> +#define vdpa_alloc_device(dev_struct, member, parent, config, name)    \
-> +       container_of(__vdpa_alloc_device(parent, config,                \
-> +                                        sizeof(dev_struct) +           \
-> +                                        BUILD_BUG_ON_ZERO(offsetof(dev_struct, \
-> +                                                                   member)), \
-> +                                        name),                         \
-> +                    dev_struct, member)
->
->  int vdpa_register_device(struct vdpa_device *vdev, int nvqs);
->  void vdpa_unregister_device(struct vdpa_device *vdev);
-> @@ -308,8 +308,8 @@ struct vdpa_driver {
->  int __vdpa_register_driver(struct vdpa_driver *drv, struct module *owner);
->  void vdpa_unregister_driver(struct vdpa_driver *drv);
->
-> -#define module_vdpa_driver(__vdpa_driver) \
-> -       module_driver(__vdpa_driver, vdpa_register_driver,      \
-> +#define module_vdpa_driver(__vdpa_driver)                              \
-> +       module_driver(__vdpa_driver, vdpa_register_driver,              \
->                       vdpa_unregister_driver)
->
->  static inline struct vdpa_driver *drv_to_vdpa(struct device_driver *driver)
-> @@ -339,25 +339,25 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
->
->  static inline void vdpa_reset(struct vdpa_device *vdev)
->  {
-> -        const struct vdpa_config_ops *ops = vdev->config;
-> +       const struct vdpa_config_ops *ops = vdev->config;
->
->         vdev->features_valid = false;
-> -        ops->set_status(vdev, 0);
-> +       ops->set_status(vdev, 0);
->  }
->
->  static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
->  {
-> -        const struct vdpa_config_ops *ops = vdev->config;
-> +       const struct vdpa_config_ops *ops = vdev->config;
->
->         vdev->features_valid = true;
-> -        return ops->set_features(vdev, features);
-> +       return ops->set_features(vdev, features);
->  }
->
-> -
-> -static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
-> +static inline void vdpa_get_config(struct vdpa_device *vdev,
-> +                                  unsigned int offset,
->                                    void *buf, unsigned int len)
->  {
-> -        const struct vdpa_config_ops *ops = vdev->config;
-> +       const struct vdpa_config_ops *ops = vdev->config;
->
->         /*
->          * Config accesses aren't supposed to trigger before features are set.
->
->
+The Jitter RNG fast noise source implemented as part of the kernel
+crypto API is queried for 256 bits of entropy at the time the seed
+buffer managed by the LRNG is about to be filled.
 
-Oh, yes. I miss that. Thanks for the reminder!
+CC: Torsten Duwe <duwe@lst.de>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>
+CC: "Alexander E. Patrakov" <patrakov@gmail.com>
+CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
+CC: "Theodore Y. Ts'o" <tytso@mit.edu>
+CC: Willy Tarreau <w@1wt.eu>
+CC: Matthew Garrett <mjg59@srcf.ucam.org>
+CC: Vito Caputo <vcaputo@pengaru.com>
+CC: Andreas Dilger <adilger.kernel@dilger.ca>
+CC: Jan Kara <jack@suse.cz>
+CC: Ray Strode <rstrode@redhat.com>
+CC: William Jon McCann <mccann@jhu.edu>
+CC: zhangjs <zachary@baishancloud.com>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Florian Weimer <fweimer@redhat.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>
+CC: Nicolai Stange <nstange@suse.de>
+CC: Alexander Lobakin <alobakin@mailbox.org>
+Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Neil Horman <nhorman@redhat.com>
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ drivers/char/lrng/Kconfig     | 27 +++++++++++
+ drivers/char/lrng/Makefile    |  1 +
+ drivers/char/lrng/lrng_jent.c | 90 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 118 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_jent.c
 
-Will fix it in the next version.
+diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
+index ffd2df43f2d4..e622b8532e2b 100644
+--- a/drivers/char/lrng/Kconfig
++++ b/drivers/char/lrng/Kconfig
+@@ -182,6 +182,33 @@ config LRNG_IRQ_ENTROPY_RATE
+ 	  interrupt entropy source will still deliver data but without
+ 	  being credited with entropy.
+ 
++comment "Jitter RNG Entropy Source"
++
++config LRNG_JENT
++	bool "Enable Jitter RNG as LRNG Seed Source"
++	depends on CRYPTO
++	select CRYPTO_JITTERENTROPY
++	help
++	  The Linux RNG may use the Jitter RNG as noise source. Enabling
++	  this option enables the use of the Jitter RNG. Its default
++	  entropy level is 16 bits of entropy per 256 data bits delivered
++	  by the Jitter RNG. This entropy level can be changed at boot
++	  time or at runtime with the lrng_base.jitterrng configuration
++	  variable.
++
++config LRNG_JENT_ENTROPY_RATE
++	int "Jitter RNG Entropy Source Entropy Rate"
++	range 0 256
++	default 16
++	help
++	  The option defines the amount of entropy the LRNG applies to 256
++	  bits of data obtained from the Jitter RNG entropy source. The
++	  LRNG enforces the limit that this value must be in the range
++	  between 0 and 256.
++
++	  In order to disable the Jitter RNG entropy source, the option
++	  has to be set to 0.
++
+ comment "CPU Entropy Source"
+ 
+ config LRNG_CPU_ENTROPY_RATE
+diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
+index 97d2b13d3227..6be88156010a 100644
+--- a/drivers/char/lrng/Makefile
++++ b/drivers/char/lrng/Makefile
+@@ -14,3 +14,4 @@ obj-$(CONFIG_LRNG_DRNG_SWITCH)	+= lrng_switch.o
+ obj-$(CONFIG_LRNG_KCAPI_HASH)	+= lrng_kcapi_hash.o
+ obj-$(CONFIG_LRNG_DRBG)		+= lrng_drbg.o
+ obj-$(CONFIG_LRNG_KCAPI)	+= lrng_kcapi.o
++obj-$(CONFIG_LRNG_JENT)		+= lrng_jent.o
+diff --git a/drivers/char/lrng/lrng_jent.c b/drivers/char/lrng/lrng_jent.c
+new file mode 100644
+index 000000000000..2599ab9352b6
+--- /dev/null
++++ b/drivers/char/lrng/lrng_jent.c
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++/*
++ * LRNG Fast Entropy Source: Jitter RNG
++ *
++ * Copyright (C) 2016 - 2021, Stephan Mueller <smueller@chronox.de>
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/types.h>
++#include <crypto/internal/jitterentropy.h>
++
++#include "lrng_internal.h"
++
++/*
++ * Estimated entropy of data is a 16th of LRNG_DRNG_SECURITY_STRENGTH_BITS.
++ * Albeit a full entropy assessment is provided for the noise source indicating
++ * that it provides high entropy rates and considering that it deactivates
++ * when it detects insufficient hardware, the chosen under estimation of
++ * entropy is considered to be acceptable to all reviewers.
++ */
++static u32 jitterrng = CONFIG_LRNG_JENT_ENTROPY_RATE;
++#ifdef CONFIG_LRNG_RUNTIME_ES_CONFIG
++module_param(jitterrng, uint, 0644);
++MODULE_PARM_DESC(jitterrng, "Entropy in bits of 256 data bits from Jitter RNG noise source");
++#endif
++
++static bool lrng_jent_initialized = false;
++static struct rand_data *lrng_jent_state;
++
++static int __init lrng_jent_initialize(void)
++{
++	/* Initialize the Jitter RNG after the clocksources are initialized. */
++	lrng_jent_state = jent_lrng_entropy_collector();
++	if (!lrng_jent_state) {
++		jitterrng = 0;
++		pr_info("Jitter RNG unusable on current system\n");
++		return 0;
++	}
++	lrng_jent_initialized = true;
++	lrng_pool_add_entropy();
++	pr_debug("Jitter RNG working on current system\n");
++
++	return 0;
++}
++device_initcall(lrng_jent_initialize);
++
++/**
++ * lrng_get_jent() - Get Jitter RNG entropy
++ *
++ * @outbuf: buffer to store entropy
++ * @outbuflen: length of buffer
++ *
++ * Return:
++ * * > 0 on success where value provides the added entropy in bits
++ * * 0 if no fast source was available
++ */
++u32 lrng_get_jent(u8 *outbuf, u32 requested_bits)
++{
++	int ret;
++	u32 ent_bits = lrng_jent_entropylevel(requested_bits);
++	unsigned long flags;
++	static DEFINE_SPINLOCK(lrng_jent_lock);
++
++	spin_lock_irqsave(&lrng_jent_lock, flags);
++
++	if (!ent_bits || !lrng_jent_initialized) {
++		spin_unlock_irqrestore(&lrng_jent_lock, flags);
++		return 0;
++	}
++
++	ret = jent_read_entropy(lrng_jent_state, outbuf, requested_bits >> 3);
++	spin_unlock_irqrestore(&lrng_jent_lock, flags);
++
++	if (ret) {
++		pr_debug("Jitter RNG failed with %d\n", ret);
++		return 0;
++	}
++
++	pr_debug("obtained %u bits of entropy from Jitter RNG noise source\n",
++		 ent_bits);
++
++	return ent_bits;
++}
++
++u32 lrng_jent_entropylevel(u32 requested_bits)
++{
++	return lrng_fast_noise_entropylevel((lrng_jent_initialized) ?
++					    jitterrng : 0, requested_bits);
++}
+-- 
+2.31.1
 
-Thanks,
-Yongji
+
+
+
