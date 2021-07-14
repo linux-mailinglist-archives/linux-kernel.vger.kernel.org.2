@@ -2,127 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22953C7C27
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F353C7C2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237662AbhGNC5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:57:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20562 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237503AbhGNC5P (ORCPT
+        id S237676AbhGNC7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:59:40 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:39106 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237436AbhGNC7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:57:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626231263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L8YuQd5Ts4JNGV6wtOAvCK5EPGDYCcnR+6g/ZGfnDJI=;
-        b=BAyyWUmPNx1uQ/8+GV32/pc5x7Rumus9OvFX2Q7B90oCLYtPc44dll/3Z8x+mKKhLLZR50
-        hR5Wi8i4IUDn4vg2V6DQfFOMeXfphdBlbGLSyU4mGiRjcs9gA7jgeikELD0nEgfHgRpOOP
-        x+hR3SO36L31sP8e+CjakIO3APs1AuQ=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-ZU6yGX0dP9qR0RQvaN-m3Q-1; Tue, 13 Jul 2021 22:54:22 -0400
-X-MC-Unique: ZU6yGX0dP9qR0RQvaN-m3Q-1
-Received: by mail-pl1-f198.google.com with SMTP id h9-20020a170902ac89b029012aec287bd5so596902plr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:54:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=L8YuQd5Ts4JNGV6wtOAvCK5EPGDYCcnR+6g/ZGfnDJI=;
-        b=jgx6W2u94v5V+I6KVjTP4rCm6yQQDpgs+MIAgwZsXCAagfTy6kbptFRhWzZUpwdozk
-         A8vJhR9hs2Mk7tVQ2lD3GZTIg4luFrQebKTJEwTgaXmD59H8GLDxbo048O7j38bCUzxY
-         X4tWbddptCEBFiTxZIGu4U+sgjZ7rJhdR9urgUgkVjTqwZBPJOAsUYX5tQaNvqoLiTr4
-         BvtGlNKDnGyUOnG8AinUk7EGV8stdkp07sIquesxZ4Dicf2DOKHpgwEy0QfhQEzFdYO0
-         PPit3d/d5AFk1XUqw2y+oMxpIMFZHx9hHP5q7Qww5+If5TWohRMMCWjEUZn3RAPf4n6p
-         2iLw==
-X-Gm-Message-State: AOAM531MNewWAOlvjR6i7s0dbMmZk3nXNiWUQpgueSvE86/HkTXSyd5R
-        3bivsuv8j/zrz9HB+Y/y9RTvzY/fzR2eRG+g03Q9LXa0kHoNipWHh/gtqpt3YMHkTJ1F+stDbj7
-        2V0KnqKyBqD/dqxd8kEF5BLMqu2pYsg864Zr2gPmI7RDJPGL5MH1/uF51Am7R8+NkIDYoDqkIjw
-        dr
-X-Received: by 2002:aa7:93cd:0:b029:328:9d89:a790 with SMTP id y13-20020aa793cd0000b02903289d89a790mr7769437pff.71.1626231261477;
-        Tue, 13 Jul 2021 19:54:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVcvRFQIHUh/wToTzbSqcRq399rxXFtmmAr5rDXhIuYW/QN+SkST9rmMlarwJcwx/uWSDVUw==
-X-Received: by 2002:aa7:93cd:0:b029:328:9d89:a790 with SMTP id y13-20020aa793cd0000b02903289d89a790mr7769384pff.71.1626231260928;
-        Tue, 13 Jul 2021 19:54:20 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id v11sm494452pjs.13.2021.07.13.19.54.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 19:54:20 -0700 (PDT)
-Subject: Re: [PATCH v9 16/17] vduse: Introduce VDUSE - vDPA Device in
- Userspace
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
-        parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        joro@8bytes.org, gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210713084656.232-1-xieyongji@bytedance.com>
- <20210713084656.232-17-xieyongji@bytedance.com> <20210713132741.GM1954@kadam>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c42979dd-331f-4af5-fda6-18d80f22be2d@redhat.com>
-Date:   Wed, 14 Jul 2021 10:54:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Tue, 13 Jul 2021 22:59:38 -0400
+X-UUID: 783cf94eb78640b59ae3b1daf7180ef1-20210714
+X-UUID: 783cf94eb78640b59ae3b1daf7180ef1-20210714
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 991614617; Wed, 14 Jul 2021 10:56:42 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 14 Jul 2021 10:56:40 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Jul 2021 10:56:38 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+CC:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
+        <ming-fan.chen@mediatek.com>, <yi.kuo@mediatek.com>,
+        <acourbot@chromium.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Xia Jiang <xia.jiang@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        <anthony.huang@mediatek.com>
+Subject: [PATCH v6 00/11] Clean up "mediatek,larb"
+Date:   Wed, 14 Jul 2021 10:56:15 +0800
+Message-ID: <20210714025626.5528-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210713132741.GM1954@kadam>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+MediaTek IOMMU block diagram always like below:
 
-ÔÚ 2021/7/13 ÏÂÎç9:27, Dan Carpenter Ð´µÀ:
-> On Tue, Jul 13, 2021 at 04:46:55PM +0800, Xie Yongji wrote:
->> +static int vduse_dev_init_vdpa(struct vduse_dev *dev, const char *name)
->> +{
->> +	struct vduse_vdpa *vdev;
->> +	int ret;
->> +
->> +	if (dev->vdev)
->> +		return -EEXIST;
->> +
->> +	vdev = vdpa_alloc_device(struct vduse_vdpa, vdpa, dev->dev,
->> +				 &vduse_vdpa_config_ops, name, true);
->> +	if (!vdev)
->> +		return -ENOMEM;
-> This should be an IS_ERR() check instead of a NULL check.
+        M4U
+         |
+    smi-common
+         |
+  -------------
+  |         |  ...
+  |         |
+larb1     larb2
+  |         |
+vdec       venc
 
+All the consumer connect with smi-larb, then connect with smi-common.
 
-Yes.
+When the consumer works, it should enable the smi-larb's power which also
+need enable the smi-common's power firstly.
 
+Thus, Firstly, use the device link connect the consumer and the
+smi-larbs. then add device link between the smi-larb and smi-common.
 
->
-> The vdpa_alloc_device() macro is doing something very complicated but
-> I'm not sure what.  It calls container_of() and that looks buggy until
-> you spot the BUILD_BUG_ON_ZERO() compile time assert which ensures that
-> the container_of() is a no-op.
->
-> Only one of the callers checks for error pointers correctly so maybe
-> it's too complicated or maybe there should be better documentation.
+After adding the device_link, then "mediatek,larb" property can be removed.
+the iommu consumer don't need call the mtk_smi_larb_get/put to enable
+the power and clock of smi-larb and smi-common.
 
+About the MM dt-binding/dtsi patches, I guess they should go together, thus
+I don't split them for each a MM module and each a SoC.
 
-We need better documentation for this macro and fix all the buggy callers.
+Base on v5.14-rc1, and a jpeg[1] and mdp[2] patchset.
 
-Yong Ji, want to do that?
+[1] https://lore.kernel.org/linux-mediatek/20210702102304.3346429-1-hsinyi@chromium.org/
+[2] https://lore.kernel.org/linux-mediatek/20210709022324.1607884-1-eizan@chromium.org/
 
-Thanks
+Change notes:
+v6: 1) rebase on v5.14-rc1.
+    2) Fix the issue commented in v5 from Dafna and Hsin-Yi.
+    3) Remove the patches about using pm_runtime_resume_and_get since they have
+       already been merged by other patches.
 
+v5: https://lore.kernel.org/linux-mediatek/20210410091128.31823-1-yong.wu@mediatek.com/
+    1) Base v5.12-rc2.
+    2) Remove changing the mtk-iommu to module_platform_driver patch, It have already been a
+    independent patch.
 
->
-> regards,
-> dan carpenter
->
+v4: https://lore.kernel.org/linux-mediatek/1590826218-23653-1-git-send-email-yong.wu@mediatek.com/ 
+    base on v5.7-rc1.
+  1) Move drm PM patch before smi patchs.
+  2) Change builtin_platform_driver to module_platform_driver since we may need
+     build as module.
+  3) Rebase many patchset as above.
+
+v3: https://lore.kernel.org/linux-iommu/1567503456-24725-1-git-send-email-yong.wu@mediatek.com/
+    1) rebase on v5.3-rc1 and the latest mt8183 patchset.
+    2) Use device_is_bound to check whether the driver is ready from Matthias.    
+    3) Add DL_FLAG_STATELESS flag when calling device_link_add and explain the
+   reason in the commit message[3/14].
+    4) Add a display patch[12/14] into this series. otherwise it may affect
+   display HW fastlogo even though it don't happen in mt8183.
+   
+v2: https://lore.kernel.org/linux-iommu/1560171313-28299-1-git-send-email-yong.wu@mediatek.com/
+   1) rebase on v5.2-rc1.
+   2) Move adding device_link between the consumer and smi-larb into
+iommu_add_device from Robin.
+   3) add DL_FLAG_AUTOREMOVE_CONSUMER even though the smi is built-in from Evan.
+   4) Remove the shutdown callback in iommu.   
+
+v1: https://lore.kernel.org/linux-iommu/1546318276-18993-1-git-send-email-yong.wu@mediatek.com/
+
+Yong Wu (10):
+  dt-binding: mediatek: Get rid of mediatek,larb for multimedia HW
+  iommu/mediatek: Add probe_defer for smi-larb
+  iommu/mediatek: Add device_link between the consumer and the larb
+    devices
+  media: mtk-jpeg: Get rid of mtk_smi_larb_get/put
+  media: mtk-mdp: Get rid of mtk_smi_larb_get/put
+  drm/mediatek: Get rid of mtk_smi_larb_get/put
+  media: mtk-vcodec: Get rid of mtk_smi_larb_get/put
+  memory: mtk-smi: Get rid of mtk_smi_larb_get/put
+  arm: dts: mediatek: Get rid of mediatek,larb for MM nodes
+  arm64: dts: mediatek: Get rid of mediatek,larb for MM nodes
+
+Yongqiang Niu (1):
+  drm/mediatek: Add pm runtime support for ovl and rdma
+
+ .../display/mediatek/mediatek,disp.txt        |  9 ----
+ .../bindings/media/mediatek-jpeg-decoder.yaml |  9 ----
+ .../bindings/media/mediatek-jpeg-encoder.yaml |  9 ----
+ .../bindings/media/mediatek-mdp.txt           |  8 ----
+ .../bindings/media/mediatek-vcodec.txt        |  4 --
+ arch/arm/boot/dts/mt2701.dtsi                 |  2 -
+ arch/arm/boot/dts/mt7623n.dtsi                |  5 --
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 16 -------
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  6 ---
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  9 +++-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  9 +++-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 19 ++++----
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   | 36 +--------------
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |  1 -
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  5 +-
+ drivers/iommu/mtk_iommu.c                     | 24 +++++++++-
+ drivers/iommu/mtk_iommu_v1.c                  | 22 ++++++++-
+ .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 45 +-----------------
+ .../media/platform/mtk-jpeg/mtk_jpeg_core.h   |  2 -
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 46 +------------------
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  2 -
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  1 -
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 37 ++-------------
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  3 --
+ .../platform/mtk-vcodec/mtk_vcodec_enc.c      |  1 -
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   | 44 ++----------------
+ drivers/memory/mtk-smi.c                      | 14 ------
+ include/soc/mediatek/smi.h                    | 20 --------
+ 28 files changed, 85 insertions(+), 323 deletions(-)
+
+-- 
+2.18.0
+
 
