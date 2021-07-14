@@ -2,142 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D7E3C7CF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660183C7CEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237815AbhGNDaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 23:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237718AbhGNDaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 23:30:20 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BACFC0613DD;
-        Tue, 13 Jul 2021 20:27:29 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id h4so951420pgp.5;
-        Tue, 13 Jul 2021 20:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fs0dJT+CYtli8VWxcsALtkdK7y7s0huk1WucGWBqsvg=;
-        b=YSVZAGnid/hf0YZB3FKd81E5KtbuHdAr1ntK7uDTCuLdrCiu17CzsABDEyrexyZBB0
-         NSCmaRJLH0A4eEqMeFnes4OPXneQnKo67Tz6HrvZiwSG8QTd/NExNwBps5ob788rhEes
-         4osgtYqhCUHqxBwRy544Q8zvlTTH8eWC4HcH5oF3M10dx1jgmkBSNAgpGBH9uqfeb0ko
-         vgXn5en82qCD5ltJf8Rd5aTdg7Vy/jBBbN/lMV50qn9FY9Y3Dai/WGQ82zC/+mdBlFzY
-         Fm4yuuss0StGwxvC7+TdhisOx3XRxPC3uM1QjYVZCLyvoEdhYa3UPSYS5HEUiplt9BFP
-         RM7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fs0dJT+CYtli8VWxcsALtkdK7y7s0huk1WucGWBqsvg=;
-        b=g2KzBKO4T755A1DDgGsd5pdwN0+l5EpM4Sfg45gob9/XC+UMn3mtya5U86WdZW/N9L
-         KLqH+G/NqoR1ZqPgGqYkfUav3dMRdXvwdalCb0KMnz70SHN93Y0hPOC6+3eclPZ/MeFE
-         1E3w4C6PqzcR5JgL3c3igPtelHQjpmCtAF/qUPuiWe4qiiGiRrFmHo4uW7Hqp16GbPZp
-         zTQn2qaXN/sHvNttm65ooHCpCs+QHtiF/1z0stTI37tLd/uzJ5dwA54FmI/0PGCnNx71
-         HUN2ejdLjAITUmyNEqgWh8KfSVrDu8dWUL3/0iCErX3/KWl22GPRAQiZ16QNNQ/qw7ir
-         O5fA==
-X-Gm-Message-State: AOAM530y4g4+AdGJSp5qLgdpLyNPpLZNLwgLhxDP79+BR5PA4TFFzqoD
-        VnTlst1Te6s0Et7rgltzBvc=
-X-Google-Smtp-Source: ABdhPJyYf0JB4m1nI00mva8ZpxAX1QnLnXslGkHvDbaqxDffMUnUHADBFActTNwYhoi4pl5IQtC+IA==
-X-Received: by 2002:a65:6a42:: with SMTP id o2mr7141072pgu.316.1626233248729;
-        Tue, 13 Jul 2021 20:27:28 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.218])
-        by smtp.gmail.com with ESMTPSA id y5sm596970pfn.87.2021.07.13.20.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 20:27:28 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        kernel test robot <lkp@intel.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] audit: fix memory leak in nf_tables_commit
-Date:   Wed, 14 Jul 2021 11:27:03 +0800
-Message-Id: <20210714032703.505023-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S237774AbhGNDaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 23:30:15 -0400
+Received: from mail-mw2nam10on2075.outbound.protection.outlook.com ([40.107.94.75]:12577
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237486AbhGNDaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 23:30:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FWHwNgxxuFylmCFGFAEtSuUp4myLziNbXYYN0B77R03KGwlDtsSOMQEYLV7tNtC8aw9+1Zip81QLbNCpem4VoCfZfu9GqNHGetN1A6519aPwAwqkVAngIsLn5y+A/a4S81b7CE21m3FpOD3wa5ynNNeftRgwNxdAwgBG+z1PWbO9E8pfNObOHPWfDO8usMhmC9DcxEA3KCG3borqyKPcfizejl8hISmHETlxt7XmvpCK8u8byujbkd2aSXKBwnp8MOYpLXlwJuL9O+/dMfv3fyKx7FOj/dGopZUMNlv2oqP8sd//7hyJ/UgMDgruUhq8jT4soqEmJ5+OyNU706C5og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ovs3+ufsST1Jcf/WTbj+oKuZ43UGzlNlBGZuPKLZ5B8=;
+ b=W/8w7+wORp5uDZJUdRNHYjcfZru7332RGw3Ac+Nz7nTKpb5tbUYwWMXpmRvg4jsCCY70j+ah3H3AkCiFxG3Uq4ZldyqDmOyc0+7iVR/2W57n2HRL954s8dIrysBo+0lH2YVc6x+0qCHAy9qjukmKnS/nbkCaZIKTvWVlon1mS7LhruroDFjjD44DXN8VNlIFGSITJZYR/TaMEwsPW4xDBWNfYSx704b/ApPClX6yr/+8n6CBtQmLlXpvLhrLcih9rAdsSW6u8TgBjM5eH3rMLp9Kyxk5H/7PQSHhdlSPNdII4DPRxRZAR44OLjj+iP8wVajKm2ajqyW5dd+PyrAJ5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ovs3+ufsST1Jcf/WTbj+oKuZ43UGzlNlBGZuPKLZ5B8=;
+ b=msi+SImoZdbmRuYwk7INwUly7DNgxVTHFkzXtgg0PtYQMhoD/gnBzuOEDZn5ZmINijD0p3GijolsBfng0s4RcWQr0dNI0ufplZQagsll6eiq/S75pBho9jHnmMiMAQVRiAsfHPB6nBco5OfVql7cHZgPEGxnT0kirWG3s44K2jw=
+Received: from BN0PR02CA0008.namprd02.prod.outlook.com (2603:10b6:408:e4::13)
+ by MN2PR12MB2941.namprd12.prod.outlook.com (2603:10b6:208:a9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Wed, 14 Jul
+ 2021 03:27:21 +0000
+Received: from BN8NAM11FT044.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e4:cafe::47) by BN0PR02CA0008.outlook.office365.com
+ (2603:10b6:408:e4::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend
+ Transport; Wed, 14 Jul 2021 03:27:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT044.mail.protection.outlook.com (10.13.177.219) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 03:27:21 +0000
+Received: from amd-WhiteHaven.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 13 Jul
+ 2021 22:27:18 -0500
+From:   Shirish S <shirish.s@amd.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        "Mel Gorman" <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, Shirish S <shirish.s@amd.com>
+Subject: [PATCH] sched/debug: print column titles of show_state_filter()[V2]
+Date:   Wed, 14 Jul 2021 08:57:05 +0530
+Message-ID: <20210714032705.79726-1-shirish.s@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 83acc3e5-b933-4cf6-8439-08d946774a8e
+X-MS-TrafficTypeDiagnostic: MN2PR12MB2941:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB29410D5213991C216029B8A4F2139@MN2PR12MB2941.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:494;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RGnW/yvJnRke4kVDvNUsf4vjWQWjT2oB3jFacypm3wP31bG98qsMMV0peZKAv0EGYBoDJGVy7FdVnGoXzrhnZT1mNT4+LmclfbdExhiw4Ot8y08ZrM8qhGVHi+kIhaNSHH1qHVaOZ0UItRnbGTVdhjZlLZuVO0qpFV4iyAkTdq9Tw7DeYUa7bDeXUvchoH9uq36m9hQ5+4p8W3aisdDvJpybvBC552ugU4YwN5XQbyTRYAYWV5kmrXtC0XtsFbboNY81ArZHL2QCLUS1Fvb3M0OtdHHAOk1KVSuyz+Yo+AacQiRUl7Jqy77/onenzeHInz1752o03cdhJPYUBUWJ9MGWxfjheJ5DiYS8EgV7qDwDEUJ4aWTr/J0KesmDWKXcuMxaCCugvMjQHeT9vbt0Cey35rh7YMSnLBAWSkkRzK4eAsXpnuyF3ctZLyWobH+Y+fTcJxu2KvKDidy/aIH0Fs4EWKTCJjs8GXCwYUE2iIReOkVkB4rA114Fc/10zJkALAKqjHJ2fIkPT9FqlTiBXw9bzcEhf7xyK9zL7SesHM20QkNF+OWrQbG8FMCjzHKY9iC2JK8Qm/8rpDwyqM6JENlEh4Mr2bV3DoTwshdid54Ms2NAvhN75vr+gbnccbR7sw0MYjLPrSmBp60QuNaSW71QTm6pIeOcd4gnJiOMSF9oT0ikU2LL0kZm3yyBjdGVEulsm6COGdG0773hXLK/nal1qGsJqIVyoH/1cU8Ro84=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(36840700001)(46966006)(6666004)(5660300002)(356005)(1076003)(54906003)(110136005)(426003)(82310400003)(4744005)(186003)(36860700001)(4326008)(83380400001)(16526019)(7696005)(26005)(316002)(8676002)(86362001)(36756003)(70206006)(8936002)(81166007)(82740400003)(70586007)(7416002)(2906002)(2616005)(336012)(47076005)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 03:27:21.5022
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83acc3e5-b933-4cf6-8439-08d946774a8e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT044.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2941
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
-free the adp variable.
+This addition in the debug output shall improve readablitly..
+Its not intuitive for users that the pid printed in last column
+is of parent process.
 
-Fix this by adding nf_tables_commit_audit_free which frees 
-the linked list with the head node adl.
+v2: Dropped #ifdef logic
 
-backtrace:
-  kmalloc include/linux/slab.h:591 [inline]
-  kzalloc include/linux/slab.h:721 [inline]
-  nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
-  nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
-  nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
-  nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
-  nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
-  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-  netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
-  netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
-  sock_sendmsg_nosec net/socket.c:702 [inline]
-  sock_sendmsg+0x56/0x80 net/socket.c:722
-
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: c520292f29b8 ("audit: log nftables configuration change events once per table")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Shirish S <shirish.s@amd.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 ---
-v1->v2: fix the compile issue
-v2->v3: modify the added function to a new name
- net/netfilter/nf_tables_api.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 390d4466567f..7f45b291be13 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8444,6 +8444,16 @@ static int nf_tables_commit_audit_alloc(struct list_head *adl,
- 	return 0;
- }
- 
-+static void nf_tables_commit_audit_free(struct list_head *adl)
-+{
-+	struct nft_audit_data *adp, *adn;
-+
-+	list_for_each_entry_safe(adp, adn, adl, list) {
-+		list_del(&adp->list);
-+		kfree(adp);
-+	}
-+}
-+
- static void nf_tables_commit_audit_collect(struct list_head *adl,
- 					   struct nft_table *table, u32 op)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2d9ff40f4661..22cee4c0f4b1 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8194,6 +8194,9 @@ void show_state_filter(unsigned int state_filter)
  {
-@@ -8508,6 +8518,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 		ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
- 		if (ret) {
- 			nf_tables_commit_chain_prepare_cancel(net);
-+			nf_tables_commit_audit_free(&adl);
- 			return ret;
- 		}
- 		if (trans->msg_type == NFT_MSG_NEWRULE ||
-@@ -8517,6 +8528,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 			ret = nf_tables_commit_chain_prepare(net, chain);
- 			if (ret < 0) {
- 				nf_tables_commit_chain_prepare_cancel(net);
-+				nf_tables_commit_audit_free(&adl);
- 				return ret;
- 			}
- 		}
+ 	struct task_struct *g, *p;
+ 
++	pr_info("  task%*s", BITS_PER_LONG == 32 ? 38 : 46,
++		"PC stack   pid father\n");
++
+ 	rcu_read_lock();
+ 	for_each_process_thread(g, p) {
+ 		/*
 -- 
-2.25.1
+2.17.1
 
