@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965503C8889
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5BD3C8892
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhGNQVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhGNQVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:21:22 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B688C06175F;
-        Wed, 14 Jul 2021 09:18:29 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id b40so4203319ljf.12;
-        Wed, 14 Jul 2021 09:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4dmyFudmqM35M4fxUjbwxzi8D3gpd+2jW5SdToDO008=;
-        b=Lrp3yue8taTSFoHaZno0VXwcfHyJVAa9j97nmENM2H20rzINkjXZxclFrL2JfHCRdN
-         3l2Jn1WjcsaUWSLmScjkV69B3MAXiZ2lCFngdPOTvOm6XZvLEJqJ6MckCLQNY9Klp/gJ
-         +yxJGgjc+AJPEaGmCqNYNPB1QDdr/Hlb03bYrScjY7mDh0S5QBU7QgcMlYNwCdroGCqE
-         faB/8E32xq/BHxd4aCRAevDovZw8t8Qs4f3WMIhdNQr84l8MK+0HkUra066lpTp9Izk/
-         0dD1PGoAtxxCpw5jWOxPrWJDsfw9AskcmpxTB2FxRDhJhp3YPStHj8eJhWzd/kLbUz6B
-         hhHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4dmyFudmqM35M4fxUjbwxzi8D3gpd+2jW5SdToDO008=;
-        b=Zh+KdWAmWFS6jG2IarrubBcoZ8+q0i/ra9ZAFQFElQH+vrVkdJjjHYDdybohoTJbRA
-         bug1Etm00Ji8poguLOpGqg1rFcQfiDpns3uwaZm54WNjRWhimqmGFBiCemIgXBeOHapb
-         fVAAcFIQLKBytMJbuDD8wlWiCTbqBSzY7uc1iZxgD+5c38lpgQdqwnq2T5HGRroyQiGK
-         YhuB6Ipn1c9qtCaJyzZpjG7iC6FC3kwudpVGRLds5+lXdG225+NNpKQDtgeE0sLeB2Wj
-         ovdFYiwa16LvN48IXZIFSp3Dlxwwvf4LOP+uAYMp270gncKxgp38bXewFPmTNXSpn4gL
-         Wu+g==
-X-Gm-Message-State: AOAM531fi94IodW8wWIKPkRm8tI8bF8Ezof72wzl9WAzrnEXOchivTW9
-        Ge5le6e7ZvUyldKcYhyVHRA=
-X-Google-Smtp-Source: ABdhPJye5vz+hvuPkKfHD19KQ6U212f6Tl2NLMdLr8lUm1SAJc+P8hb6ID6nHkMKz57A6kN2vEukaA==
-X-Received: by 2002:a2e:b548:: with SMTP id a8mr10206515ljn.346.1626279507951;
-        Wed, 14 Jul 2021 09:18:27 -0700 (PDT)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id v16sm285386ljn.93.2021.07.14.09.18.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 09:18:27 -0700 (PDT)
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
- <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
- <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
- <bea2bcf2-02f6-f247-9e06-7b9ec154377a@gmail.com> <YO755O8JnxG44YaT@kroah.com>
- <7f4a96bc-3912-dfb6-4a32-f0c6487d977b@gmail.com>
- <YO8LOKR/vRUgggTx@casper.infradead.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
-Date:   Wed, 14 Jul 2021 18:18:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S235417AbhGNQ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:27:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhGNQ1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 12:27:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A573461106;
+        Wed, 14 Jul 2021 16:24:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626279856;
+        bh=ydb3bROEvCOilFapPnKxoGtuhQaXeTXNdteDjVKfyIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UKnUVgN5Vuj1Xmz2RRwq631aSQ4uiLZdgsPhSjSkXWpj/uHQ8Jmy3IvnQmSUEfPwT
+         11m8uzFLs7Cw/BEjuHqNR8m9LlynlV32YhjUp1eGR+h5c18cIOlv0U3x+7Fe/uv/gb
+         9SaMsAzCIQboNDfl6sQS4RTAtZsTggaa+wDI7z7JvPQv7SF6iJRpYtigVKmvr9yuYB
+         N5lhzQileVGiG/ISOyLZm1k9ievTEcE3X2AQH4UcBq4OYvuSPX/thWnXcpmtd5XGUy
+         3W3L+/PeJT2OwQpRBl/G5Nakb/ggDmUSs7gDiSR74LO9mHPrHogj9H5JtZPm1ULIT1
+         w0KlfpiSsmGQQ==
+Date:   Wed, 14 Jul 2021 17:23:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com
+Subject: Re: [PATCH 10/12] ASoC: amd: add vangogh pci driver pm ops
+Message-ID: <20210714162339.GD4719@sirena.org.uk>
+References: <20210707055623.27371-1-vijendar.mukunda@amd.com>
+ <20210707055623.27371-11-vijendar.mukunda@amd.com>
+ <ce03f4b3-874f-a286-5523-7793722a6ee7@linux.intel.com>
+ <b754ef05-065d-ee7b-754f-1498f7c6cff6@amd.com>
+ <38def9e9-5161-9441-c88a-43b21edfec43@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YO8LOKR/vRUgggTx@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Xm/fll+QQv+hsKip"
+Content-Disposition: inline
+In-Reply-To: <38def9e9-5161-9441-c88a-43b21edfec43@amd.com>
+X-Cookie: C for yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.2021 18:05, Matthew Wilcox wrote:
-> On Wed, Jul 14, 2021 at 05:59:19PM +0200, Rafał Miłecki wrote:
->> In short I'd say: missing feedback.
-> 
-> Uh, with all due respect: Fuck you.
-> 
-> I've provided feedback, and Paragon have done a fantastic job of
-> responding to it.  Pretending that the filesystem has simply been
-> ignored is hugely disrespectful of my time and those at Paragon.
-> 
-> I'm supportive of ntfs3 being included, FWIW.  It looks to be
-> in much better shape than the existing fs/ntfs.
 
-Thanks you for kind words before even trying to clarify the situation.
+--Xm/fll+QQv+hsKip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-What I meant (but failed to write clearly) is missing feedback on *the
-latest* patchset.
+On Tue, Jul 13, 2021 at 12:06:38PM +0530, Mukunda,Vijendar wrote:
+> On 7/8/21 5:11 PM, Mukunda,Vijendar wrote:
+> > On 7/7/21 10:04 PM, Pierre-Louis Bossart wrote:
 
-I highly appreciate everyone who took time and helped polishing that
-filesystem to its latest form.
+> >>> +static const struct dev_pm_ops acp5x_pm =3D {
+> >>> +	.runtime_suspend =3D snd_acp5x_suspend,
+> >>> +	.runtime_resume =3D  snd_acp5x_resume,
+> >>> +	.resume =3D	snd_acp5x_resume,
+
+> >> use SET_SYSTEM_SLEEP_PM_OPS and SET_RUNTIME_PM_OPS?
+
+> suspend and resume callbacks implementation is same for runtime pm ops
+> and system level pm ops in ACP PCI driver i.e in suspend callback acp
+> de-init sequence will be invoked and in resume callback acp init
+> sequence will be invoked.
+
+> As per our understanding if we safeguard code with CONFIG_PM_SLEEP
+> macro, then runtime pm ops won't work.
+
+That's not what Pierre is suggesting though?
+
+> Do we need to duplicate the same code as mentioned below?
+
+> static const struct dev_pm_ops acp5x_pm =3D {
+>         SET_RUNTIME_PM_OPS(snd_acp5x_runtime_suspend,
+>                            snd_acp5x_runtime_resume, NULL)
+>         SET_SYSTEM_SLEEP_PM_OPS(snd_acp5x_suspend, snd_acp5x_resume)
+> };
+
+Using the SET_ macros doesn't require that you duplicate the functions,
+it literally just means changing the way the ops are assigned. =20
+
+--Xm/fll+QQv+hsKip
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvD4oACgkQJNaLcl1U
+h9CFSAf9GXJDYHFf1ZYbjnC5Y/psNti5ZQIkL894y7bQ1oR/KwYUHFEUKag4zOJa
+UxaEGAEFQe2pcFefvMz8jo6MtARR3jgsoetUVHCQTLdoaEcdsP98XxCQX+cr3yXq
+41LkTiKUl1EEiThrDUkDxPlVxzn46R17ilHVQquyAcUgdnZqNb2Ggk2I/HWySA/x
+ZkSjs8O7cIi0Z90c9qLVoFJRMY4SPvZ9hcf6aEbu/0eo24kWnt21bxD0V03y9u9D
+fN6UlPF3anejGy3w+B78Ih651m4khWzqqEGYTtXcF6yAll7CYGOSHdMIQVKCd3AI
+VI5Maa4nX676OciEdgu0YfOmZx3VUw==
+=9L9r
+-----END PGP SIGNATURE-----
+
+--Xm/fll+QQv+hsKip--
