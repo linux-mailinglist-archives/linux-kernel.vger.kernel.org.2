@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E4A3C8125
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CEF3C8124
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238791AbhGNJQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:16:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57880 "EHLO
+        id S238837AbhGNJQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:16:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57888 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238223AbhGNJQI (ORCPT
+        with ESMTP id S238587AbhGNJQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Jul 2021 05:16:08 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DAFC72027D;
-        Wed, 14 Jul 2021 09:13:15 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 12DC22059A;
+        Wed, 14 Jul 2021 09:13:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626253995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1626253996; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UupelVpR/QHiLH+r7Ic+eZ6bFluEGEEJzyV0/5Od9sM=;
-        b=nF6GC+5ybqNxXGrXehcsP0yNXPQY/8BYShusmENlNPYsR7xvjYEizFFYosGufnsgNyFB3L
-        FgIT/ELCR7YrpM0pncONY6jWjqp6Fon3uUy5htet1SsWn7jUvwSr03i548FltNnX1Rppzb
-        UI+7uShuvxkzvVsLL6cENX8beor7dH4=
+        bh=P6vuQhixxlic1wj1A+Zwc8AxkLogGfuVvfR6Con3evs=;
+        b=x5yAxngWsxIToN56K/iQp8C64PbrvtArHCgKbYrZQ/dyh2xX8/8KjLhXVboOBtd+EhpdXo
+        1AaSKgAq+GLOBUPUOqB8yUY0qMP5hMwdiAoxiWh4rOvoN1Yo7HljIaZssisMiZvkHcjWn1
+        3gKdwJZ3Bj2oaQA+tTpIVeB85h2dVq8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626253995;
+        s=susede2_ed25519; t=1626253996;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UupelVpR/QHiLH+r7Ic+eZ6bFluEGEEJzyV0/5Od9sM=;
-        b=cp5nzF62PC1knLuAdJZQ+DWIHLe9vqdKliTKAsNV4LkMG1ZDmoYdPxYuPaZxuyOGmmTTXY
-        GzJFjxuykv31QdAw==
+        bh=P6vuQhixxlic1wj1A+Zwc8AxkLogGfuVvfR6Con3evs=;
+        b=UC5UNWdlcaXRRDJwwahOIwyRpP5qIkYYMxu9wMHOa9RmDrM/o9rCmvYQQ8ZAsIFEHdeSj2
+        tcyCcYlg/03aiBBQ==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B0419A3B81;
+        by relay2.suse.de (Postfix) with ESMTPS id DED4BA3B8B;
         Wed, 14 Jul 2021 09:13:15 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 02/11] amiserial: remove serial_* strings
-Date:   Wed, 14 Jul 2021 11:13:05 +0200
-Message-Id: <20210714091314.8292-2-jslaby@suse.cz>
+Subject: [PATCH 03/11] amiserial: remove stale comment
+Date:   Wed, 14 Jul 2021 11:13:06 +0200
+Message-Id: <20210714091314.8292-3-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210714091314.8292-1-jslaby@suse.cz>
 References: <20210714091314.8292-1-jslaby@suse.cz>
@@ -54,85 +54,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove a print of serial_name and serial_version from the probe
-function, i.e. show_serial_version() from amiga_serial_probe(). The
-value of such a print is minimal.
-
-Aside from that, the version is artificial (copied from the serial core
-in 2.3.45pre2 and never increased). So inline the version into
-seq_printf's format string in rs_proc_show() and remove both strings
-completely.
+The comment about interrupt routines is stale at least since commit
+41c28ff1635e (kill _INLINE_) from 2006. So remove the obsolete parts and
+leave only "here they start...".
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/amiserial.c | 19 +------------------
- 1 file changed, 1 insertion(+), 18 deletions(-)
+ drivers/tty/amiserial.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
 diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
-index 08987c438408..b2ff5861ca78 100644
+index b2ff5861ca78..6edd2de01f39 100644
 --- a/drivers/tty/amiserial.c
 +++ b/drivers/tty/amiserial.c
-@@ -40,8 +40,6 @@
- #include <linux/types.h>
- #include <linux/serial.h>
- #include <linux/serial_reg.h>
--static char *serial_version = "4.30";
--
- #include <linux/errno.h>
- #include <linux/signal.h>
- #include <linux/sched.h>
-@@ -91,7 +89,6 @@ struct serial_state {
- };
- 
- #define custom amiga_custom
--static char *serial_name = "Amiga-builtin serial driver";
- 
- static struct tty_driver *serial_driver;
- 
-@@ -1452,7 +1449,7 @@ static inline void line_info(struct seq_file *m, int line,
- 
- static int rs_proc_show(struct seq_file *m, void *v)
- {
--	seq_printf(m, "serinfo:1.0 driver:%s\n", serial_version);
-+	seq_printf(m, "serinfo:1.0 driver:4.30\n");
- 	line_info(m, 0, &rs_table[0]);
- 	return 0;
- }
-@@ -1465,17 +1462,6 @@ static int rs_proc_show(struct seq_file *m, void *v)
-  * ---------------------------------------------------------------------
+@@ -179,21 +179,8 @@ static void rs_start(struct tty_struct *tty)
+ /*
+  * ----------------------------------------------------------------------
+  *
+- * Here starts the interrupt handling routines.  All of the following
+- * subroutines are declared as inline and are folded into
+- * rs_interrupt().  They were separated out for readability's sake.
++ * Here start the interrupt handling routines.
+  *
+- * Note: rs_interrupt() is a "fast" interrupt, which means that it
+- * runs with interrupts turned off.  People who may want to modify
+- * rs_interrupt() should try to keep the interrupt handler as fast as
+- * possible.  After you are done making modifications, it is not a bad
+- * idea to do:
+- * 
+- * gcc -S -DKERNEL -Wall -Wstrict-prototypes -O6 -fomit-frame-pointer serial.c
+- *
+- * and look at the resulting assemble code in serial.s.
+- *
+- * 				- Ted Ts'o (tytso@mit.edu), 7-Mar-93
+  * -----------------------------------------------------------------------
   */
  
--/*
-- * This routine prints out the appropriate serial driver version
-- * number, and identifies which options were configured into this
-- * driver.
-- */
--static void show_serial_version(void)
--{
-- 	printk(KERN_INFO "%s version %s\n", serial_name, serial_version);
--}
--
--
- static const struct tty_operations serial_ops = {
- 	.open = rs_open,
- 	.close = rs_close,
-@@ -1542,8 +1528,6 @@ static int __init amiga_serial_probe(struct platform_device *pdev)
- 	if (!serial_driver)
- 		return -ENOMEM;
- 
--	show_serial_version();
--
- 	/* Initialize the tty_driver structure */
- 
- 	serial_driver->driver_name = "amiserial";
-@@ -1628,7 +1612,6 @@ static int __exit amiga_serial_remove(struct platform_device *pdev)
- {
- 	struct serial_state *state = platform_get_drvdata(pdev);
- 
--	/* printk("Unloading %s: version %s\n", serial_name, serial_version); */
- 	tty_unregister_driver(serial_driver);
- 	put_tty_driver(serial_driver);
- 	tty_port_destroy(&state->tport);
 -- 
 2.32.0
 
