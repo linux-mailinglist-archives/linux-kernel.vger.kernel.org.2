@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789543C7E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143173C7E47
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238035AbhGNF41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237971AbhGNF40 (ORCPT
+        id S238017AbhGNF6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:58:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28109 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237954AbhGNF55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:56:26 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DF2C0613DD;
-        Tue, 13 Jul 2021 22:53:35 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso3014081pjx.1;
-        Tue, 13 Jul 2021 22:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=FcWz93B3TY2NaEB6A00DYMs3rnSUlD4JI48Qjj+1dto=;
-        b=I6dUFLht6XEJWdXKzQSNpt8coqO8492xaA25/5tMPw5iCpQnwB4fWPN5qNIi6+TsWC
-         4Yx/Nx4YAvxsa6jEcXtzipX1qDevkNk56obKp/XH2BiIgp9achR1cuKPZSgXbo0cRs+M
-         P6R35psBXBseb34/aTufJH1uUccG9KLwuCvwPV6OdB/psTLtJBbLSS9+u9eR4K7TZ6K1
-         ze76dsl/bjZXoD2t4oGNx99sp9GzELsovZeB+CSelTPOeJ2ZcW2s6LVvHVbJm02adi/r
-         USf13g11MyOKMdHUB/cAT9Z2g+2KwbXqd+UTP2Fvlblh0kmnrpJcAlpPzYfjLcJE0b7q
-         56sw==
+        Wed, 14 Jul 2021 01:57:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626242106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vuixl4fC2c2rDMK0JnG+CP570kUeJWSiqn18LVKWU/A=;
+        b=ZHrCj9J5MiywYvEk8JK/z4/yFpt1l+XKqoY6dGbaLpa+fSnC7apgZseNeUrYmm2i05eAWD
+        7tOWoNXlPf+2tsY42Rl2sdt6vtj6SSVl6Gslc7363MqC3JxJHTDcYYUJAnG6twGCcdKfHZ
+        a3AeLSCnXI4XsIYY2BrHTHE2XKeXIjQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-TU6LSpWVPi2uy-rn2HJ7fQ-1; Wed, 14 Jul 2021 01:55:05 -0400
+X-MC-Unique: TU6LSpWVPi2uy-rn2HJ7fQ-1
+Received: by mail-wr1-f72.google.com with SMTP id r11-20020a5d52cb0000b02901309f5e7298so935091wrv.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:55:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FcWz93B3TY2NaEB6A00DYMs3rnSUlD4JI48Qjj+1dto=;
-        b=jaLivzZ1yli5t9BcJxY8cONcm+gxDT9HSOgQCOT7mEVWPjhvTMgP8kYehK7169IA6r
-         VlFWJpul9+LyvEhtxdcXp07qcW64HlCpVWTLHAjekEhBYyu3oDA5+KWB27Q+I3eSgyxW
-         rcubYK9mJKCI4HrG18KE165TU9t23ObLqK0icezI0z/1AOPydUEJKI0F0tNF80wgP9mf
-         tuRCPMKuDq6BjPwamSifKOiZVCmQuph2lH4USBWLoflQeqZx+DJj1keqT0H15gU2TLXR
-         oPFB81CuyaRYeQk+LaGXKD+aD7tLyIopwHW8n3FkHWSVBsrpdcTDucgC/03BTa676oPa
-         k45g==
-X-Gm-Message-State: AOAM531mKOfCyOoXtT6/ZXhALgpNV6CqCaVp4PSML2kw2pJyUIOuVP2M
-        5F5KIc5Pjh5SZtu9fq70sQ==
-X-Google-Smtp-Source: ABdhPJxpcAXRl+b1TV9SBrV8jdbj55m3TVAZEPwCuDwd44O866ldbFvfB5dIc51IGFv1oqgWqD817Q==
-X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr8180136pjr.213.1626242014991;
-        Tue, 13 Jul 2021 22:53:34 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id c11sm1143812pfp.0.2021.07.13.22.53.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Jul 2021 22:53:34 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        rclemsmith@gmail.com
-Cc:     zheyuma97@gmail.com, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tty: serial: jsm: hold port lock when reporting modem line changes
-Date:   Wed, 14 Jul 2021 05:53:23 +0000
-Message-Id: <1626242003-3809-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vuixl4fC2c2rDMK0JnG+CP570kUeJWSiqn18LVKWU/A=;
+        b=UkH0IHwqtd6X3cjtyS/YMdDrvQTY3SCsIR515bGReHxND4iDzWU0BIJXjR08FkSEOc
+         itYHxwiUhKMRDf1YdXUDadcQK9FUyL0jTG7ExoyTSITfLwT68S8GsDoPQpztu7zJVarI
+         XWRVqPhf3FGDiPn0zb1WvIQrL+vbFlxAaU7EqpiX9tVFGhRDXjPORREwxof41H1073mh
+         T4g4SZmB2oAVgeo02GrzZN6ushnZt7IWNmkHkckenbY8K53L2C2MJM2Rkd3yswy5qy3Z
+         XXY1hKx98yu1FuG2POG9VPGlddaia4rvn0Hs+eZ1Q8FiCcQJB3jVf5UJTs7Sllketc+I
+         aOSg==
+X-Gm-Message-State: AOAM531VW2zhCWKNRkBaUJtubHPdtLFsyg3+22gYyJvzChdxmizkrMZ3
+        UT8iMZU6P8U27HEeNU8mzk29vT2Z0pIAjpK8nDDa4s1EhZv4D+W1T/nIAL0GxaiGil4b8sL1UBx
+        ZvyOmEwxDvSqHRoUqyqsycgSC
+X-Received: by 2002:a7b:c3c1:: with SMTP id t1mr8958241wmj.25.1626242103972;
+        Tue, 13 Jul 2021 22:55:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/S4q9eTkg2SYhF6yFeKAyfrn1SBCErVUzbnkOz4rD7u4lWIEWYF5U7IkZ57PnxEN5PdQimQ==
+X-Received: by 2002:a7b:c3c1:: with SMTP id t1mr8958222wmj.25.1626242103823;
+        Tue, 13 Jul 2021 22:55:03 -0700 (PDT)
+Received: from redhat.com ([2.55.15.23])
+        by smtp.gmail.com with ESMTPSA id i15sm1182300wro.3.2021.07.13.22.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 22:55:03 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 01:54:58 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Xie Yongji <xieyongji@bytedance.com>, stefanha@redhat.com,
+        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 16/17] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+Message-ID: <20210714014817-mutt-send-email-mst@kernel.org>
+References: <20210713084656.232-1-xieyongji@bytedance.com>
+ <20210713084656.232-17-xieyongji@bytedance.com>
+ <26116714-f485-eeab-4939-71c4c10c30de@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26116714-f485-eeab-4939-71c4c10c30de@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uart_handle_dcd_change() requires a port lock to be held and will emit a
-warning when lockdep is enabled.
+On Wed, Jul 14, 2021 at 01:45:39PM +0800, Jason Wang wrote:
+> > +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+> > +			      struct vduse_dev_msg *msg)
+> > +{
+> > +	int ret;
+> > +
+> > +	init_waitqueue_head(&msg->waitq);
+> > +	spin_lock(&dev->msg_lock);
+> > +	msg->req.request_id = dev->msg_unique++;
+> > +	vduse_enqueue_msg(&dev->send_list, msg);
+> > +	wake_up(&dev->waitq);
+> > +	spin_unlock(&dev->msg_lock);
+> > +
+> > +	wait_event_killable_timeout(msg->waitq, msg->completed,
+> > +				    VDUSE_REQUEST_TIMEOUT * HZ);
+> > +	spin_lock(&dev->msg_lock);
+> > +	if (!msg->completed) {
+> > +		list_del(&msg->list);
+> > +		msg->resp.result = VDUSE_REQ_RESULT_FAILED;
+> > +	}
+> > +	ret = (msg->resp.result == VDUSE_REQ_RESULT_OK) ? 0 : -EIO;
+> 
+> 
+> I think we should mark the device as malfunction when there is a timeout and
+> forbid any userspace operations except for the destroy aftwards for safety.
 
-Held corresponding lock to fix the following warnings.
+This looks like if one tried to run gdb on the program the behaviour
+will change completely because kernel wants it to respond within
+specific time. Looks like a receipe for heisenbugs.
 
-[  132.528648] WARNING: CPU: 5 PID: 11600 at drivers/tty/serial/serial_core.c:3046 uart_handle_dcd_change+0xf4/0x120
-[  132.530482] Modules linked in:
-[  132.531050] CPU: 5 PID: 11600 Comm: jsm Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7-dirty #31
-[  132.535268] RIP: 0010:uart_handle_dcd_change+0xf4/0x120
-[  132.557100] Call Trace:
-[  132.557562]  ? __free_pages+0x83/0xb0
-[  132.558213]  neo_parse_modem+0x156/0x220
-[  132.558897]  neo_param+0x399/0x840
-[  132.559495]  jsm_tty_open+0x12f/0x2d0
-[  132.560131]  uart_startup.part.18+0x153/0x340
-[  132.560888]  ? lock_is_held_type+0xe9/0x140
-[  132.561660]  uart_port_activate+0x7f/0xe0
-[  132.562351]  ? uart_startup.part.18+0x340/0x340
-[  132.563003]  tty_port_open+0x8d/0xf0
-[  132.563523]  ? uart_set_options+0x1e0/0x1e0
-[  132.564125]  uart_open+0x24/0x40
-[  132.564604]  tty_open+0x15c/0x630
+Let's not build interfaces with arbitrary timeouts like that.
+Interruptible wait exists for this very reason. Let userspace have its
+own code to set and use timers. This does mean that userspace will
+likely have to change a bit to support this driver, such is life.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
-Changes in v2:
-    - Attach an excerpt from the warning
----
- drivers/tty/serial/jsm/jsm_neo.c | 2 ++
- drivers/tty/serial/jsm/jsm_tty.c | 3 +++
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
-index bf0e2a4cb0ce..c6f927a76c3b 100644
---- a/drivers/tty/serial/jsm/jsm_neo.c
-+++ b/drivers/tty/serial/jsm/jsm_neo.c
-@@ -815,7 +815,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
- 		/* Parse any modem signal changes */
- 		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
- 			"MOD_STAT: sending to parse_modem_sigs\n");
-+		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
- 		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
-+		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
- 	}
- }
- 
-diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
-index 8e42a7682c63..d74cbbbf33c6 100644
---- a/drivers/tty/serial/jsm/jsm_tty.c
-+++ b/drivers/tty/serial/jsm/jsm_tty.c
-@@ -187,6 +187,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
- 
- static int jsm_tty_open(struct uart_port *port)
- {
-+	unsigned long lock_flags;
- 	struct jsm_board *brd;
- 	struct jsm_channel *channel =
- 		container_of(port, struct jsm_channel, uart_port);
-@@ -240,6 +241,7 @@ static int jsm_tty_open(struct uart_port *port)
- 	channel->ch_cached_lsr = 0;
- 	channel->ch_stops_sent = 0;
- 
-+	spin_lock_irqsave(&port->lock, lock_flags);
- 	termios = &port->state->port.tty->termios;
- 	channel->ch_c_cflag	= termios->c_cflag;
- 	channel->ch_c_iflag	= termios->c_iflag;
-@@ -259,6 +261,7 @@ static int jsm_tty_open(struct uart_port *port)
- 	jsm_carrier(channel);
- 
- 	channel->ch_open_count++;
-+	spin_unlock_irqrestore(&port->lock, lock_flags);
- 
- 	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
- 	return 0;
 -- 
-2.17.6
+MST
 
