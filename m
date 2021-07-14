@@ -2,117 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828D73C8B53
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5F63C8B56
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhGNTAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:00:18 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33311 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhGNTAQ (ORCPT
+        id S240045AbhGNTCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:02:19 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:33398 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhGNTCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:00:16 -0400
-Received: by mail-io1-f70.google.com with SMTP id i9-20020a0566021349b02904df6556dad4so1891508iov.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:57:23 -0700 (PDT)
+        Wed, 14 Jul 2021 15:02:17 -0400
+Received: by mail-io1-f50.google.com with SMTP id z11so3486493iow.0;
+        Wed, 14 Jul 2021 11:59:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FXh2bXqx9XOXDqPo/4Em2QPdfuhaE8nPMfQxb+O+VqE=;
-        b=kqeFoGxavbnzcz1dQuwrefZM0BtFzox2dX1q20wo2UUTy0hzZgCYn5ok+tFhpBaqiZ
-         WKGCF7mLqfcULHvN9kLWp9YnEAEaZCRNp5TEKdXWQYdvBBlA+X6o/i5MBsk4Ga8yNKVf
-         lCpiBiafSie4HeCA9lGGWF7Amo4N0W0YwTgIukWMvE/x5HZj6kYSVaErwqDdyMBi53mE
-         KkyJMlQ9yx8GxiFLxCZQPofUumsshk0mXNDrzJs1Y1T4s7tUqyNxRHl5yBb4qftd5Y1r
-         3jDZ7N/g26AmmUCwP4TpZHWhc+HHt/tafLW3ApAh+0NZOmEHhI9nfARozgYXOQnAUnBW
-         hmgg==
-X-Gm-Message-State: AOAM531+TXSiiUid4iRJUnPh/9hoXPlhYRRfaCCNjSx3SXBKvdiprZJW
-        8S6zGCh8h0wFL1gNL8zsFTFixtVnPcmgS22Uoq+K8GJ78AgP
-X-Google-Smtp-Source: ABdhPJxXBwnFfSM1fvlJm/v8iT+oOe2IOUF0qHWKcZN8vlxN2QTV9dSCMR6JOHBVSozuJwcJ1huXu8BttxRsaHarL1Mw8iRbS5yF
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zqn/UuKDKBVB65aNlLqXAidjfeKUMUwTatpSpLAxY4U=;
+        b=Tg0iPwpS5QNTRtOlO9GO+X+CmTx09K7dyV73lGBbCsGpzmvYkjX7kRDCGAANr1Wbbh
+         +Y3A4sxeFnp9kC8AbzYn2ZvX23YqilRInTk+PhUJlMMa1xlUwkWOWF313t2QSYrflQd+
+         szpjYMPHOCuKOvB4V0QB0XxGz/i7pvsy6vTu4yg6L0lxrz9M8IqTIMnpiUASCd1VAgFg
+         A/MdvbuS55EBSuEX3nY/LtlpgzFG9PXGo0og54Y2aDvTleoGFOxTenCPEjpfs8FALGNd
+         +Oiwk6EnqjFaue0oWsAvYFJ2DCidxbvKQb7FeEUoEn6/DBxTVa+k5QyjxgcoxlxhNdLf
+         upRw==
+X-Gm-Message-State: AOAM531aVisfg16DCK8gSVj090iYIQHEBgSbDWmjmz4cGlOFuHfgYVMe
+        zwic8xPtE6//2aQVJBcZ6Q==
+X-Google-Smtp-Source: ABdhPJxYKPIleDLKeTmh50SEBn76TTQwAq6xmaa4599i+vpnmfWqT0gXTEERcjvubH19PDmCTkbwVg==
+X-Received: by 2002:a02:9109:: with SMTP id a9mr10232121jag.93.1626289165340;
+        Wed, 14 Jul 2021 11:59:25 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id r16sm1696281iln.30.2021.07.14.11.59.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 11:59:24 -0700 (PDT)
+Received: (nullmailer pid 2937232 invoked by uid 1000);
+        Wed, 14 Jul 2021 18:59:22 -0000
+Date:   Wed, 14 Jul 2021 12:59:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Keiji Hayashibara <hayashibara.keiji@socionext.com>
+Subject: Re: [PATCH] dt-bindings: nvmem: Convert UniPhier eFuse bindings to
+ json-schema
+Message-ID: <20210714185922.GA2857803@robh.at.kernel.org>
+References: <1624413058-17338-1-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9f11:: with SMTP id q17mr7746713iot.62.1626289043502;
- Wed, 14 Jul 2021 11:57:23 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 11:57:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bd7c8a05c719ecf2@google.com>
-Subject: [syzbot] WARNING in internal_create_group
-From:   syzbot <syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624413058-17338-1-git-send-email-hayashi.kunihiko@socionext.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jun 23, 2021 at 10:50:58AM +0900, Kunihiko Hayashi wrote:
+> Convert the UniPhier eFuse binding to DT schema format.
+> 
+> Cc: Keiji Hayashibara <hayashibara.keiji@socionext.com>
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  .../bindings/nvmem/socionext,uniphier-efuse.yaml   | 109 +++++++++++++++++++++
+>  .../devicetree/bindings/nvmem/uniphier-efuse.txt   |  49 ---------
+>  2 files changed, 109 insertions(+), 49 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml b/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
+> new file mode 100644
+> index 0000000..e03c1ed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
+> @@ -0,0 +1,109 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/socionext,uniphier-efuse.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Socionext UniPhier eFuse bindings
+> +
+> +maintainers:
+> +  - Keiji Hayashibara <hayashibara.keiji@socionext.com>
+> +  - Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> +
+> +allOf:
+> +  - $ref: "nvmem.yaml#"
+> +
+> +properties:
+> +  "#address-cells": true
+> +  "#size-cells": true
+> +
+> +  compatible:
+> +    const: socionext,uniphier-efuse
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +patternProperties:
+> +  "^.*@[0-9a-f]+,[0-9]+$":
 
-syzbot found the following issue on:
+nvmem.yaml has a different definition. Though it doesn't handle 
+overlapping addresses. You should extend nvmem.yaml like you have here. 
+The last part should be optional though.
 
-HEAD commit:    5d52c906f059 Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=16acf1e2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=51ea6c9df4ed04c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=9937dc42271cd87d4b98
+> +    type: object
+> +
+> +    properties:
+> +      reg:
+> +        maxItems: 1
+> +
+> +      bits:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - reg
 
-Unfortunately, I don't have any reproducer for this issue yet.
+All this is already defined in nvmem.yaml.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 9350 at fs/sysfs/group.c:116 internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
-Modules linked in:
-CPU: 1 PID: 9350 Comm: syz-executor.4 Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
-Code: 0f 85 e8 f7 ff ff 41 bd ea ff ff ff e9 34 fd ff ff e8 33 bc 82 ff 48 8b 7c 24 08 e8 89 11 ff ff e9 20 fd ff ff e8 1f bc 82 ff <0f> 0b 41 bd ea ff ff ff e9 0e fd ff ff e8 0d bc 82 ff 48 8b 14 24
-RSP: 0018:ffffc9000181f2b0 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: 0000000000000000 RCX: ffffc90012931000
-RDX: 0000000000040000 RSI: ffffffff81f2c5f1 RDI: 0000000000000003
-RBP: ffff8880706b9d08 R08: 0000000000000000 R09: ffff8880706b9d0f
-R10: ffffffff81f2bd9e R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88809a948070 R14: 0000000000000000 R15: ffff88809a94807c
-FS:  00007feaac597700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000006f6c CR3: 000000009d5fa000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- blk_register_queue+0xda/0x570 block/blk-sysfs.c:871
- __device_add_disk+0x7b5/0xd10 block/genhd.c:529
- add_disk include/linux/genhd.h:217 [inline]
- nbd_dev_add+0x712/0x900 drivers/block/nbd.c:1709
- nbd_genl_connect+0x551/0x1660 drivers/block/nbd.c:1817
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x85b/0xda0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007feaac597188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000008
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffe11ff566f R14: 00007feaac597300 R15: 0000000000022000
+Use 'unevaluatedProperties: false' and then you don't need to redefine 
+anything common here.
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +
+> +examples:
+> +  - |
+> +    // The UniPhier eFuse should be a subnode of a "soc-glue" node.
+> +
+> +    soc-glue@5f900000 {
+> +        compatible = "simple-mfd";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        ranges = <0x0 0x5f900000 0x2000>;
+> +
+> +        efuse@100 {
+> +            compatible = "socionext,uniphier-efuse";
+> +            reg = <0x100 0x28>;
+> +        };
+> +
+> +        efuse@200 {
+> +            compatible = "socionext,uniphier-efuse";
+> +            reg = <0x200 0x68>;
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +
+> +            /* Data cells */
+> +            usb_rterm0: trim@54,4 {
+> +                reg = <0x54 1>;
+> +                bits = <4 2>;
+> +            };
+> +            usb_rterm1: trim@55,4 {
+> +                reg = <0x55 1>;
+> +                bits = <4 2>;
+> +            };
+> +            usb_rterm2: trim@58,4 {
+> +                reg = <0x58 1>;
+> +                bits = <4 2>;
+> +            };
+> +            usb_rterm3: trim@59,4 {
+> +                reg = <0x59 1>;
+> +                bits = <4 2>;
+> +            };
+> +            usb_sel_t0: trim@54,0 {
+> +                reg = <0x54 1>;
+> +                bits = <0 4>;
+> +            };
+> +            usb_sel_t1: trim@55,0 {
+> +                reg = <0x55 1>;
+> +                bits = <0 4>;
+> +            };
+> +            usb_sel_t2: trim@58,0 {
+> +                reg = <0x58 1>;
+> +                bits = <0 4>;
+> +            };
+> +            usb_sel_t3: trim@59,0 {
+> +                reg = <0x59 1>;
+> +                bits = <0 4>;
+> +            };
+> +            usb_hs_i0: trim@56,0 {
+> +                reg = <0x56 1>;
+> +                bits = <0 4>;
+> +            };
+> +            usb_hs_i2: trim@5a,0 {
+> +                reg = <0x5a 1>;
+> +                bits = <0 4>;
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt b/Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt
+> deleted file mode 100644
+> index eccf490..0000000
+> --- a/Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt
+> +++ /dev/null
+> @@ -1,49 +0,0 @@
+> -= UniPhier eFuse device tree bindings =
+> -
+> -This UniPhier eFuse must be under soc-glue.
+> -
+> -Required properties:
+> -- compatible: should be "socionext,uniphier-efuse"
+> -- reg: should contain the register location and length
+> -
+> -= Data cells =
+> -Are child nodes of efuse, bindings of which as described in
+> -bindings/nvmem/nvmem.txt
+> -
+> -Example:
+> -
+> -	soc-glue@5f900000 {
+> -		compatible = "socionext,uniphier-ld20-soc-glue-debug",
+> -			     "simple-mfd";
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		ranges = <0x0 0x5f900000 0x2000>;
+> -
+> -		efuse@100 {
+> -			compatible = "socionext,uniphier-efuse";
+> -			reg = <0x100 0x28>;
+> -		};
+> -
+> -		efuse@200 {
+> -			compatible = "socionext,uniphier-efuse";
+> -			reg = <0x200 0x68>;
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -
+> -			/* Data cells */
+> -			usb_mon: usb-mon@54 {
+> -				reg = <0x54 0xc>;
+> -			};
+> -		};
+> -	};
+> -
+> -= Data consumers =
+> -Are device nodes which consume nvmem data cells.
+> -
+> -Example:
+> -
+> -	usb {
+> -		...
+> -		nvmem-cells = <&usb_mon>;
+> -		nvmem-cell-names = "usb_mon";
+> -	}
+> -- 
+> 2.7.4
+> 
+> 
