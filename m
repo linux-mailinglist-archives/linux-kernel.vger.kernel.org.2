@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F4A3C83F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7148C3C83F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhGNLjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:39:52 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11276 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhGNLjw (ORCPT
+        id S239133AbhGNLj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238969AbhGNLjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:39:52 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GPwLd0rQxz1CJld;
-        Wed, 14 Jul 2021 19:31:21 +0800 (CST)
-Received: from [10.174.178.125] (10.174.178.125) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 14 Jul 2021 19:36:58 +0800
-Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
- anonymous LRU list
-To:     Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, Yu Zhao <yuzhao@google.com>
-CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <vbabka@suse.cz>, <axboe@kernel.dk>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <apopple@nvidia.com>, <minchan@kernel.org>,
-        <david@redhat.com>, <shli@fb.com>, <hillf.zj@alibaba-inc.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210710100329.49174-1-linmiaohe@huawei.com>
- <20210710100329.49174-2-linmiaohe@huawei.com>
- <YOvtmy9ggJA4KUIQ@dhcp22.suse.cz>
- <9409189e-44f7-2608-68af-851629b6d453@huawei.com>
- <YO1dGvcTLaRJplRQ@dhcp22.suse.cz>
- <ec86d902-1da5-2f49-7324-a796d32ac979@huawei.com>
- <YO2WUx0a5go71Vhm@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <b17caa5f-f3db-9fb0-fe1f-45510ff902c8@huawei.com>
-Date:   Wed, 14 Jul 2021 19:36:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 14 Jul 2021 07:39:55 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F07C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:37:04 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id u25so2852937ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WjldPce2yJdyEw8QkPgsa1Sc+VM1DW1QEwVUXhzbOZE=;
+        b=Wpsk3CKnBrWEgBwrYX1DD+I5VROoYr7vUmlGxjfRNsqj5IY6ipJi6oETSMNiukrDm3
+         RQhWY+UaQZmLhfKssgvqz52CCeobtRYA99VxH+RGbSoZ91ZO0iW3bezF1jGczu1/UDZy
+         okCfVnB76edi3X2aQecuyUWyk4fFblXUPxYK77HKqBxR6JEoJV494ScX2PfG3EWmB2vV
+         9eBRTkUBBGiSFznWxsSRU8DEir/grBm2e2lfvlMktMugZ/Ji9IzqGkpsf/QwSFgOIt6X
+         9mZWH0/9qfI/tAWxBLj1TlXIpBTn8QyPZMflJpNsAbGYtjaoFtT6GQqZ4Lyl+VqNmImt
+         iPsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WjldPce2yJdyEw8QkPgsa1Sc+VM1DW1QEwVUXhzbOZE=;
+        b=ZCXlYLtO1HhhAvYgm5Ry07ov6AiX+xx4krxlrws71+xOuGsGllnOTg3NPWEDxeA3SN
+         pzLXabebX6+GccSV53GkbH4tSHy/Ka+EZq4dWbwkeZjGyecmANBBOS9e9/gz7HBZ4XIX
+         pXbiZsSswtQNHgvPzlM9cXV8pveWHKdyGzAHO9fk63dpO+22c4dZnSuGDlLPxzYdqpzO
+         IfjgUfGl+KmQor1uMLXiq4MXIQC7EP338fEkwWcHFbiR7Mvg1sB6oBSrwAk6YvNDXGC1
+         D5jr5goJUPHa1Uu6uua/uW10HKKxYIO/IgPWRlA4r7fNSVw6VfCAai0Inb2sNt1+GRZe
+         e8GQ==
+X-Gm-Message-State: AOAM530v+qx5yfLRurDQw5gWLVYe1cnAT3Ryh4JKIHCUFYs90UgDHhLR
+        1XhYhZbt83eQ7rNunq2YTSLFMfPHr921G+VxlFA=
+X-Google-Smtp-Source: ABdhPJzxUWBlVSljNHxpIsY5XnMvPdQXcPaHD+UNsf0kpp8DVp72RKtaDxFub39bTZ8wKw9yP+Lr9DcE0BajvkLGzW8=
+X-Received: by 2002:a2e:808d:: with SMTP id i13mr8930157ljg.172.1626262622573;
+ Wed, 14 Jul 2021 04:37:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YO2WUx0a5go71Vhm@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.125]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Received: by 2002:a2e:b8c4:0:0:0:0:0 with HTTP; Wed, 14 Jul 2021 04:37:02
+ -0700 (PDT)
+Reply-To: westuniontogounionpayment@gmail.com
+From:   emma prince <p846216@gmail.com>
+Date:   Wed, 14 Jul 2021 11:37:02 +0000
+Message-ID: <CA+ww1H0M0Lqn4_L0SY9RgE9fXet+mzwDKJDjJu5YUh6TS1xjYA@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/13 21:34, Matthew Wilcox wrote:
-> On Tue, Jul 13, 2021 at 09:13:51PM +0800, Miaohe Lin wrote:
->>>> When the MADV_FREE pages are redirtied before they could be reclaimed, the pages
->>>> should be put back to anonymous LRU list by setting SwapBacked flag, thus the
->>>> pages will be reclaimed in normal swapout way.
->>>
->>> Agreed. But the question is why this needs an explicit handling here
->>> when we already do handle this case when trying to unmap the page.
->>
->> This makes me think more. It seems even the page_ref_freeze call is guaranteed to
->> success as no one can grab the page refcnt after the page is successfully unmapped.
-> 
-> NO!  This is wrong.  Every page can have its refcount speculatively raised
-> (and then lowered).  The two prime candidates for this are lockless GUP
-> and page cache lookups, but there can be others too.
-> 
+ Pemenang yang terhormat,
 
-Many thanks for pointing this out. My overlook! Sorry!
-So, it seems lockless GUP can redirty the MADV_FREE page. But is it ok to just release
-a redirtied MADV_FREE pages? Because we hold the last reference here and the page will
-be freed anyway...
+Saya ingin mengucapkan selamat kepada Anda atas kemenangan besar ini, di mana
+Saya menelepon alamat email Anda. saya ingin kamu tahu
+Apa yang dirayakan lotere setiap tahun (Molotrie 2021). Ini adalah
+situs web tempat Anda dapat memeriksanya:
 
-> .
-> 
+(https://www.lotteryusa.com/missouri/lotto/year).
 
+(Nomor pemenang: 3 - 5 - 18 - 36 - 39 - 41)
+
+Lotere: $3 juta
+
+Semua peserta dipilih melalui sistem
+Pemungutan suara komputer.
+Terdiri dari Microsoft YAHOO / GMAIL / HOTMAIL / OUTLOOK
+
+Pengguna lebih dari 20.000 perusahaan dan 3.000.000 alamat email.
+Dan nama-nama unik dari seluruh dunia.
+
+Faktanya, alamat email Anda adalah sebuah alamat
+Alamat email yang ditentukan
+Siapa yang memenangkan permainan lotre bersponsor nasional (Molotrie
+2021) tahun ini.
+
+Uang $ 3 juta Anda akan ditransfer kepada Anda melalui Western
+Bersatu atas namamu,
+
+Kirim informasi lengkap Anda ke kantor rujukan Tony Elumelu, Anda akan
+menerima 5.000 masing-masing
+Sehari sampai dana Anda mengkonfirmasi $ 3 juta
+
+Email [westuniontogounionpayment@gmail.com]
+Kirimkan informasi lengkap Anda ke Tony Elumelu seperti gambar di bawah ini
+
+nama lengkap Anda .........
+Negaramu ......
+Nomor telepon Anda .....
+Salinan paspor Anda ......
+
+Kirimkan informasi lengkap Anda kepadanya
+[Westuniontogounionpayment@gmail.com]
