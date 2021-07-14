@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B68B3C8988
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAB23C8991
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhGNRSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S237299AbhGNRTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhGNRSQ (ORCPT
+        with ESMTP id S229631AbhGNRTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:18:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5649C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=kX9hKK1zO72+yBWFhZs3db5NllcwOVI8dLCu+ad+9IA=; b=h1H8yRGFNMYtQhBRHcFnIOv3sR
-        zEehWviMROtRkkzl8inD4QviXRaSWhD1fstkFSrsLAsJgIJl8mnPR1y8D7PGX0BbyJARINlRFh1sO
-        SA9dehEkYEZKmEkgs8eyJP+DM6XxfDj9nXCFeHPJ9WjgVncE1obqWnmfEFyfr5thqSYuJf6eD2Pxj
-        yp9Z+hIJcaZao6RfvYpbkHHKpRt6uu4t+MEZrjIW+V4Q2+qz8eNO7a6POsxPCH1p+pg/tolpF/Omw
-        IAU5ReM0eMuoCJZD/zOYZnyaoWJ0PTiSXLuk0sCTRtwpzF2LD7DHvl2SN2eaIchw/uK9JRlFjzUU0
-        1iC2ckdA==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3iTk-00EGmG-8I; Wed, 14 Jul 2021 17:15:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Lyude Paul <lyude@redhat.com>
-Subject: [PATCH -next] drm: nouveau: fix disp.c build when NOUVEAU_BACKLIGHT is not enabled
-Date:   Wed, 14 Jul 2021 10:15:23 -0700
-Message-Id: <20210714171523.413-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 14 Jul 2021 13:19:53 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD842C06175F;
+        Wed, 14 Jul 2021 10:16:59 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id t2so3754113edd.13;
+        Wed, 14 Jul 2021 10:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jpddBbK7GUBH/m3UB4sVJbslsEL30FqFzIQ3/5AgwUw=;
+        b=Hje4Ex5xc3s0O1a07kRaiLE/1Mi1hFAI7RZGQ+ELC7lvJtrCXrxRu087FCcssyGuxU
+         iysvxLWvNOCR86kB2/Is8ltLqX92BjWyn+eSHIWrM9VLdzuLkFV06tCTL4pdS7WNImdl
+         Xj2/azO5zT3lU5ySniz/UaQYA4+ZIH/mhTzPR/y6haUyEQOXF4OoUkGOtDpRJ2YIFyxr
+         Ff/1FrANU8Y8gAWic79Vtl+DDnun2jtYdjwg6c/bKy5+A7dfVBwEzfb+tdf9SzH6PZaM
+         O762smPcqNBou13h658IqX3YHvZX0qP5oUUpbLsDDu+gvEzmuZG2t1y4nQH9fmuHC+Ns
+         YzOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jpddBbK7GUBH/m3UB4sVJbslsEL30FqFzIQ3/5AgwUw=;
+        b=mzltYEvsxIXxdpbtU4ZsdFPsT+bSwbenaNON1l6PwLRJX2av/pT+RznAoLoycKtdCf
+         1FoUNisrZH8IxFrBXGe8xu4mV6TB+tYAoCxbsC/T0MPQwpAqDYcCwarXMsdHnctUUFen
+         lOKKwBLYRwVYEe0TOcqCDMznJQY+uRhFFmfFSDkr3fLzA4JQJXC7YtCjPCmQZ3X1QpmF
+         5X4gd6pVTrouBrWvxmNIAmWqX9k4/6waBWC7LnyX8BcT7CPnAJuQuAmgmFRvhmLqJPvE
+         Zv2qiGQ/qhKphDLmR6hWPbH6d6zggZnHXzZ9aan1KpDY80SacaVd01pzrsCvpc/wuOWj
+         iOvQ==
+X-Gm-Message-State: AOAM532+qlJwJtZo0g7GtLCMRyLgvGAdNh2ORRYx1xX1TLlkrgVsNrPM
+        07rVDEZa8R48ruJN/6jLsA==
+X-Google-Smtp-Source: ABdhPJyVTC0WA9Wy/r4k170BoZKcqgSiRMPyRRIn5eZgJvYEGA46FA7bmydXMJKsIJtK4S0SmVHw+Q==
+X-Received: by 2002:a05:6402:3450:: with SMTP id l16mr15104945edc.358.1626283018285;
+        Wed, 14 Jul 2021 10:16:58 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.253.115])
+        by smtp.gmail.com with ESMTPSA id s4sm1300446edu.49.2021.07.14.10.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 10:16:58 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 20:16:56 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        arnd@arndb.de
+Subject: Re: [PATCH] Decouple build from userspace headers
+Message-ID: <YO8cCEiWIpdV5pJI@localhost.localdomain>
+References: <YO3txvw87MjKfdpq@localhost.localdomain>
+ <YO7zEFNSXOY8pKCQ@infradead.org>
+ <YO8IoNwXS4h26+9v@localhost.localdomain>
+ <YO8JPuay5e3wz//n@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YO8JPuay5e3wz//n@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build errors and warnings when
-# CONFIG_DRM_NOUVEAU_BACKLIGHT is not set
+On Wed, Jul 14, 2021 at 04:56:46PM +0100, Christoph Hellwig wrote:
+> On Wed, Jul 14, 2021 at 06:54:08PM +0300, Alexey Dobriyan wrote:
+> > On Wed, Jul 14, 2021 at 03:22:08PM +0100, Christoph Hellwig wrote:
+> > > > -#define signals_blocked false
+> > > > +#define signals_blocked 0
+> > > 
+> > > Why can't we get at the kernel definition of false here?
+> > 
+> > Variable and other code surrounding this wants "int".
+> > I don't really want to expand into bool conversion.
+> 
+> Maybe split this into a separate prep patch then.
 
-../drivers/gpu/drm/nouveau/dispnv50/disp.c: In function ‘nv50_sor_atomic_disable’:
-../drivers/gpu/drm/nouveau/dispnv50/disp.c:1665:52: error: ‘struct nouveau_connector’ has no member named ‘backlight’
-  struct nouveau_backlight *backlight = nv_connector->backlight;
-                                                    ^~
-../drivers/gpu/drm/nouveau/dispnv50/disp.c:1670:28: error: dereferencing pointer to incomplete type ‘struct nouveau_backlight’
-  if (backlight && backlight->uses_dpcd) {
-
-and then fix subsequent build warnings after the above are fixed:
-
-../drivers/gpu/drm/nouveau/dispnv50/disp.c: In function ‘nv50_sor_atomic_disable’:
-../drivers/gpu/drm/nouveau/dispnv50/disp.c:1669:6: warning: unused variable ‘ret’ [-Wunused-variable]
-  int ret;
-      ^~~
-../drivers/gpu/drm/nouveau/dispnv50/disp.c:1662:22: warning: unused variable ‘drm’ [-Wunused-variable]
-  struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
-                      ^~~
-
-Fixes: 6eca310e8924 ("drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: nouveau@lists.freedesktop.org
-Cc: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/dispnv50/disp.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
---- linux-next-20210714.orig/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ linux-next-20210714/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -1659,23 +1659,27 @@ static void
- nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
- {
- 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
--	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
- 	struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
- 	struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
-+#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-+	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
- 	struct nouveau_backlight *backlight = nv_connector->backlight;
-+#endif
- 	struct drm_dp_aux *aux = &nv_connector->aux;
- 	int ret;
- 	u8 pwr;
- 
-+#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
- 	if (backlight && backlight->uses_dpcd) {
- 		ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
- 		if (ret < 0)
- 			NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
- 				 nv_connector->base.base.id, nv_connector->base.name, ret);
- 	}
-+#endif
- 
- 	if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
--		int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
-+		ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
- 
- 		if (ret == 0) {
- 			pwr &= ~DP_SET_POWER_MASK;
+And get accused of KPI padding? :-)
