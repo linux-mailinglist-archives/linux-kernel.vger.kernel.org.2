@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2273C913E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF463C9144
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241588AbhGNT7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:59:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46320 "EHLO mail.kernel.org"
+        id S241954AbhGNUAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:00:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240340AbhGNTtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 183136142C;
-        Wed, 14 Jul 2021 19:45:06 +0000 (UTC)
+        id S240423AbhGNTtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78C08613EC;
+        Wed, 14 Jul 2021 19:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291907;
-        bh=TkYPAsCuTIlrOlFQeq1qe/+qfXKTE7ebQ+zjODZcg1c=;
+        s=k20201202; t=1626291918;
+        bh=xfckHb1DN18f9AQFFFLurjJX9bQiiyD5zKs1XP2kAjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TiJaPK+qex8UqbislYXVzChgAbSQrWPEFInCeVxZWZQKSoKOvL8cAaWam0T9fhMMh
-         XnGpowoLbK/DE1N2G3P7MnVrRv12deGpMRSlEa0shCT4cBea7E6xQBum0wh/jxlzdW
-         eIswUMXtHijTdLaa4XwAz3VpcJq9jzxEzBITBE1hJrKp8oJzgJYlRPA+TgGUJ/eKmy
-         Y61va2FhTDzDbMSBqu3Cv3otXnPzLdmdtT4bs7n1hU+fHG2CBBUJE7zQswBzz+Pd/1
-         K0wx5KVBXTsULtyH72KQnELA2tze7V1NA6WiOfsLlU5tvXjINXlzyCXnq2OS72AblZ
-         dDAB0aEVcH/+A==
+        b=XfEmdYcGrid7cP9cNUCl2Km8RYKyxpj/0wQAejTUVKwLVPZxGgK9hkOvkxanysffK
+         j0JQMPpf9dXFIka44wKEEjMz9QQ01T1QVELdrGgMu9zF7GzSxsbetA7bRbheUXNyzq
+         wIYWSrhplx31xYoEtOUII8Mf7aFfp8rsFIKZQVTJo+3sI26To76kh5PNNAfEnbMEjA
+         hay3SYcN0i604KusH/KgJ4Ls4i0QUwvqAz2B2xErIkgXtwOe06X0UrWFXUNvOfPKT3
+         1CxZ6/6fsBSV9h50lsT7QCy1NT4rXbTFhbbGQjanTMJwHd57yrVxM5NOMV1xM8XQ6Z
+         hu08rRddOf3hw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        gushengxian <gushengxian@yulong.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+Cc:     Johan Jonker <jbx6244@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 84/88] perf/x86/intel/uncore: Clean up error handling path of iio mapping
-Date:   Wed, 14 Jul 2021 15:42:59 -0400
-Message-Id: <20210714194303.54028-84-sashal@kernel.org>
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 03/51] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+Date:   Wed, 14 Jul 2021 15:44:25 -0400
+Message-Id: <20210714194513.54827-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
-References: <20210714194303.54028-1-sashal@kernel.org>
+In-Reply-To: <20210714194513.54827-1-sashal@kernel.org>
+References: <20210714194513.54827-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,52 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit d4ba0b06306a70c99a43f9d452886a86e2d3bd26 ]
+[ Upstream commit dfbfb86a43f9a5bbd166d88bca9e07ee4e1bff31 ]
 
-The error handling path of iio mapping looks fragile. We already fixed
-one issue caused by it, commit f797f05d917f ("perf/x86/intel/uncore:
-Fix for iio mapping on Skylake Server"). Clean up the error handling
-path and make the code robust.
+A test with the command below aimed at powerpc generates
+notifications in the Rockchip ARM tree.
 
-Reported-by: gushengxian <gushengxian@yulong.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com
+Fix pinctrl "sleep" nodename by renaming it to "suspend"
+for rk3036-kylin and rk3288
+
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210126110221.10815-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/rk3036-kylin.dts | 2 +-
+ arch/arm/boot/dts/rk3288.dtsi      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 16159950fcf5..9c936d06fb61 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3752,11 +3752,11 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
- 	/* One more for NULL. */
- 	attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
- 	if (!attrs)
--		goto err;
-+		goto clear_topology;
+diff --git a/arch/arm/boot/dts/rk3036-kylin.dts b/arch/arm/boot/dts/rk3036-kylin.dts
+index fb3cf005cc90..2ef47ebeb0cb 100644
+--- a/arch/arm/boot/dts/rk3036-kylin.dts
++++ b/arch/arm/boot/dts/rk3036-kylin.dts
+@@ -390,7 +390,7 @@ sdmmc_pwr: sdmmc-pwr {
+ 		};
+ 	};
  
- 	eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
- 	if (!eas)
--		goto err;
-+		goto clear_attrs;
+-	sleep {
++	suspend {
+ 		global_pwroff: global-pwroff {
+ 			rockchip,pins = <2 RK_PA7 1 &pcfg_pull_none>;
+ 		};
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index cc893e154fe5..a452d4ea3938 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1575,7 +1575,7 @@ pcfg_pull_none_12ma: pcfg-pull-none-12ma {
+ 			drive-strength = <12>;
+ 		};
  
- 	for (die = 0; die < uncore_max_dies(); die++) {
- 		sprintf(buf, "die%ld", die);
-@@ -3777,7 +3777,9 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
- 	for (; die >= 0; die--)
- 		kfree(eas[die].attr.attr.name);
- 	kfree(eas);
-+clear_attrs:
- 	kfree(attrs);
-+clear_topology:
- 	kfree(type->topology);
- clear_attr_update:
- 	type->attr_update = NULL;
+-		sleep {
++		suspend {
+ 			global_pwroff: global-pwroff {
+ 				rockchip,pins = <0 RK_PA0 1 &pcfg_pull_none>;
+ 			};
 -- 
 2.30.2
 
