@@ -2,72 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4DF3C80A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FDC3C80A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238656AbhGNIuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:50:22 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:38445 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238432AbhGNIuV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:50:21 -0400
-Received: by mail-wm1-f48.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so3390097wmb.3;
-        Wed, 14 Jul 2021 01:47:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZcKu6JzHt5KJb3Xql7bkDVD+N0alIA9rphZxYoZe6yk=;
-        b=TXaPKzVBu0NkYrw75dK/PFQnjGY/gstqSbgpjxmD387DFsMMzDHu53+7091/aipGHp
-         ZexBdGP9ZWoNL1j5pZWoV5EaCwcTGeDU/dEPTaQltarZjc9Tva7daUUSFvF4m3keIGsC
-         ms1MAhQlujtYO4qCdjo14AHtypcLtyGBbNM7N1WMB7shmh5dzCzWJupqBh8ioL/Z3Cup
-         xyljQz0WTdg+I7DovmsrC5hD/JTBr/WRp7CriR7gE7+brxwQIztpIRo49huWLqm208yT
-         h4jvWaq6Jp2CaMHByzLwmDNqWrZYiC+Ub1LMYQ2xISaFponYDnbS/gTfzGdHjZtYXNKZ
-         0swA==
-X-Gm-Message-State: AOAM532SBxMuF/BZG0YZGjBS5cjF93czIKuch0nWcgSehdiRfs6odCCp
-        Jz8ENMsii9X5hHyaBGn5G2w=
-X-Google-Smtp-Source: ABdhPJx6gTDt7Mx/u77c//bGw9Tbdbun269RavkN2+RKuhQ+f+AA/+Z2bkSgxQYMmWgjXsDKti52Lg==
-X-Received: by 2002:a7b:c24a:: with SMTP id b10mr2780414wmj.37.1626252449320;
-        Wed, 14 Jul 2021 01:47:29 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id l20sm1506246wmq.3.2021.07.14.01.47.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 01:47:28 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 08:47:27 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH v3 1/1] PCI: hv: Support for create interrupt v3
-Message-ID: <20210714084727.y3cxrj3365k4sfw6@liuwe-devbox-debian-v2>
-References: <MW4PR21MB20026A6EA554A0B9EC696AA8C0159@MW4PR21MB2002.namprd21.prod.outlook.com>
+        id S238671AbhGNIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:51:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:60271 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238432AbhGNIvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:51:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207292799"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="207292799"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 01:48:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="494378636"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.169.74]) ([10.249.169.74])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 01:48:18 -0700
+Subject: Re: [LKP] Re: [mm/vmalloc] 5c1f4e690e:
+ BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, Mel Gorman <mgorman@suse.de>,
+        Hillf Danton <hdanton@sina.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+References: <20210713142414.GA28943@xsang-OptiPlex-9020>
+ <CAHk-=wj_uJayxT_6CFaGMkU5h4YYSgBhS=xYoN7iUVSs7BjnBA@mail.gmail.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <2f012f0a-11f5-ba3c-65b0-027eed5bcb98@intel.com>
+Date:   Wed, 14 Jul 2021 16:48:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW4PR21MB20026A6EA554A0B9EC696AA8C0159@MW4PR21MB2002.namprd21.prod.outlook.com>
+In-Reply-To: <CAHk-=wj_uJayxT_6CFaGMkU5h4YYSgBhS=xYoN7iUVSs7BjnBA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 09:58:18PM +0000, Sunil Muthuswamy wrote:
-> Hyper-V vPCI protocol version 1_4 adds support for create interrupt
-> v3. Create interrupt v3 essentially makes the size of the vector
-> field bigger in the message, thereby allowing bigger vector values.
-> For example, that will come into play for supporting LPI vectors
-> on ARM, which start at 8192.
-> 
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
 
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+
+On 7/14/2021 3:52 AM, Linus Torvalds wrote:
+> [ I've asked for this before, but I'll ask for it again.. ]
+> 
+> On Tue, Jul 13, 2021 at 7:06 AM kernel test robot <oliver.sang@intel.com> wrote:
+>>
+>>
+>> [  131.014885] BUG: sleeping function called from invalid context at mm/page_alloc.c:4992
+>> [  131.019428] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2928, name: trinity-c6
+>> [  131.023996] no locks held by trinity-c6/2928.
+>> [  131.027987] irq event stamp: 283042
+>> [  131.031844] hardirqs last  enabled at (283041): [<ffffffff8643af22>] _raw_spin_unlock_irqrestore+0x42/0x50
+>> [  131.036625] hardirqs last disabled at (283042): [<ffffffff81656d71>] __alloc_pages_bulk+0xae1/0xf20
+>> [  131.041305] softirqs last  enabled at (281858): [<ffffffff86800623>] __do_softirq+0x623/0x9db
+>> [  131.046157] softirqs last disabled at (281853): [<ffffffff8116dfee>] irq_exit_rcu+0xce/0xf0
+>> [  131.050925] CPU: 0 PID: 2928 Comm: trinity-c6 Not tainted 5.13.0+ #1
+>> [  131.055391] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+>> [  131.060133] Call Trace:
+>> [  131.064110]  dump_stack+0xa5/0xe6
+>> [  131.068192]  ___might_sleep.cold+0x147/0x177
+>> [  131.072324]  __alloc_pages+0x462/0x650
+> 
+> Btw, can I ask the kernel test robot to do the same thing I asked
+> syzbot to do - namely get better backtrace annotations?
+
+Hi Linus,
+
+Sorry for this, we enabled COMPILE_TEST for randconfig which is conflict
+with DEBUG_INFO, then "scripts/decode_stacktrace.sh" was ignored in this
+case, we'll fix it asap and have a double check next time.
+
+Best Regards,
+Rong Chen
+
+
+> 
+> It requires debug info in the kernel (but I think DEBUG_INFO_REDUCED
+> is sufficient, no need for the full one that blows sizes up a lot),
+> but it makes things _soo_ much easier to read. Not just because of
+> line numbers, but particularly with inlining information.
+> 
+> It's easy enough to do: just run the kernel output through
+> "scripts/decode_stacktrace.sh".
+> 
+> That will also do the "Code:" line instruction disassembly, which is
+> less critical, since that can be done later at any time with no loss
+> of information, but it can be a convenience.
+> 
+>                 Linus
+> _______________________________________________
+> LKP mailing list -- lkp@lists.01.org
+> To unsubscribe send an email to lkp-leave@lists.01.org
+> 
