@@ -2,158 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1E53C8622
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDAE3C862E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239510AbhGNOa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239481AbhGNOa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:30:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78716611AD;
-        Wed, 14 Jul 2021 14:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626272855;
-        bh=mNDabQnbs3PdxYHSy0gXLC5eeg9nVZF8v4geVZ5DNFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TEXopUiD3zuJ94daHSwHDo1cmAVsJ+gB5GMVd6ZlPecrfTKX5meOQumuFFEmsbO7j
-         z7Xl0hT4ahoAdynQQWUhHDzuM+YgpzlnTcDid+RIqjY83bQ9kzUZCDuq44ApLO6zJ+
-         1ORd8fGCFLoOyUYRjXsKIhjZ9kgIJ8ExnO3NYbDU=
-Date:   Wed, 14 Jul 2021 16:27:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Holger Kiehl <Holger.Kiehl@dwd.de>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-Message-ID: <YO70VCcsg3k35C4E@kroah.com>
-References: <20210712060912.995381202@linuxfoundation.org>
- <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
- <YO56HTE3k95JLeje@kroah.com>
- <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
- <df63b875-f140-606a-862a-73b102345cd@praktifix.dwd.de>
- <YO7nHhW2t4wEiI9G@kroah.com>
- <efa2bd81-2219-9e17-2841-d9b63fde22a1@praktifix.dwd.de>
+        id S232744AbhGNOdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:33:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232097AbhGNOdO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:33:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626273022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eiOYzmRxRkd9ALixnggbNVnpDMZpgQFXM4pqMgtPXZk=;
+        b=JEBgEgtqIg3Z49RHuBSknTKtTouq9TEqJNTDbACmsVYdiH6hkrvZJZa3V2e9qakgFI9B+n
+        ZNUTPRJNBVQgjGKVStzKWoDQ0DErJ1Ay/gO7xt3iotBmaYYOFR/dNJUsjgDDwm7zzxe75o
+        MtoB/XyqQ8IcuvEniO7yXLa7kTAT82A=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-yQZczRJXMl-s_pPeX7z0ng-1; Wed, 14 Jul 2021 10:30:20 -0400
+X-MC-Unique: yQZczRJXMl-s_pPeX7z0ng-1
+Received: by mail-qk1-f200.google.com with SMTP id i190-20020a3786c70000b02903b54f40b442so1433248qkd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 07:30:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=eiOYzmRxRkd9ALixnggbNVnpDMZpgQFXM4pqMgtPXZk=;
+        b=emxwxdhXsQGV/MmQbbR9VU4XMjI8o7uzX+n8cQNeRTtD7SgJYkXGaumEWYrMVqPvEj
+         Jf0XwSOemDCPrFynALKRvG+4VtOHmA67g62YkiKpHwLBQMRcrbqsPLEO7zL+gffaVbSW
+         bVxyAC46Aw7HOSpxc9nlqb2xB/63UpVx/aR0pxe3RzVWZJ8kZ2e/9yYcjgJxpIOikOOj
+         a9Ifa9n0LBUiBUJt9lGl+jVH6Qh9eBFnzlTNFRHPWqshVAEZblhHNuRsIhLJDoWUxEaZ
+         MNwnTUIOep6PG7mp5F/cz9HRBz04YRU4vgQrjtdFe/CHoQobsK4nr9aHbMcY3x1W8k54
+         HvGg==
+X-Gm-Message-State: AOAM533eCq3JuMDPk/dBuHQzo/gpwgWGmuONHViKbqQSRULTXFAvMIWR
+        h7iyQT7nJz+SblLHsIx8/K/eDepRBgGoRPzV1HCe48xSIyF8dpulrCNU+kmLgMGcQkBBsxGRJ1z
+        JFuHwS9eP8BWOj0q9TQBuSm3G
+X-Received: by 2002:a37:4cd:: with SMTP id 196mr10325580qke.139.1626273020483;
+        Wed, 14 Jul 2021 07:30:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVz0c742Inf37LaXP95rWdNCsTupMjjVqw3JTbr4OZoarpmvyJ5+f4N5GvgC6ff3/UOoyNLA==
+X-Received: by 2002:a37:4cd:: with SMTP id 196mr10325555qke.139.1626273020321;
+        Wed, 14 Jul 2021 07:30:20 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i2sm1092055qko.43.2021.07.14.07.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 07:30:19 -0700 (PDT)
+Subject: Re: [PATCH v4 1/4] fpga: dfl: expose feature revision from struct
+ dfl_device
+To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
+        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
+        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>
+References: <20210705101645.2040106-1-martin@geanix.com>
+ <20210705101645.2040106-2-martin@geanix.com>
+ <93a8e949-ec25-d00d-4740-72d9e18ebb68@redhat.com>
+ <4ffd5153-e182-c615-0a81-2f5dad4979f5@silicom.dk>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <cf535684-52fa-d4c6-fe40-77d3a6c043d5@redhat.com>
+Date:   Wed, 14 Jul 2021 07:30:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efa2bd81-2219-9e17-2841-d9b63fde22a1@praktifix.dwd.de>
+In-Reply-To: <4ffd5153-e182-c615-0a81-2f5dad4979f5@silicom.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 02:07:10PM +0000, Holger Kiehl wrote:
-> On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
-> 
-> > On Wed, Jul 14, 2021 at 01:26:26PM +0000, Holger Kiehl wrote:
-> > > On Wed, 14 Jul 2021, Holger Kiehl wrote:
-> > > 
-> > > > On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
-> > > > 
-> > > > > On Wed, Jul 14, 2021 at 05:39:43AM +0000, Holger Kiehl wrote:
-> > > > > > Hello,
-> > > > > > 
-> > > > > > On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
-> > > > > > 
-> > > > > > > This is the start of the stable review cycle for the 5.13.2 release.
-> > > > > > > There are 800 patches in this series, all will be posted as a response
-> > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > let me know.
-> > > > > > > 
-> > > > > > > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> > > > > > > Anything received after that time might be too late.
-> > > > > > > 
-> > > > > > With this my system no longer boots:
-> > > > > > 
-> > > > > >    [  OK  ] Reached target Swap.
-> > > > > >    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
-> > > > > >    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
-> > > > > >    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
-> > > > > >    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
-> > > > > >    See 'systemctl status systemd-udev-settle.service' for details.
-> > > > > >             Starting Activation of DM RAID sets...
-> > > > > >    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
-> > > > > >    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
-> > > > > > 
-> > > > > > System is a Fedora 34 with all updates applied. Two other similar
-> > > > > > systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
-> > > > > > and boots fine. The system where it does not boot has an Intel
-> > > > > > Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
-> > > > > > 
-> > > > > > Any idea which patch I should drop to see if it boots again. I already
-> > > > > > dropped
-> > > > > > 
-> > > > > >    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
-> > > > > > 
-> > > > > > and I just see that this one should also be dropped:
-> > > > > > 
-> > > > > >    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
-> > > > > > 
-> > > > > > Will still need to test this.
-> > > > > 
-> > > > > Can you run 'git bisect' to see what commit causes the problem?
-> > > > > 
-> > > > Yes, will try to do that. I think it will take some time ...
-> > > > 
-> > > With the help of Pavel Machek and Jiri Slaby I was able 'git bisect'
-> > > this to:
-> > > 
-> > >    yoda:/usr/src/kernels/linux-5.13.y# git bisect good
-> > >    a483f513670541227e6a31ac7141826b8c785842 is the first bad commit
-> > >    commit a483f513670541227e6a31ac7141826b8c785842
-> > >    Author: Jan Kara <jack@suse.cz>
-> > >    Date:   Wed Jun 23 11:36:33 2021 +0200
-> > > 
-> > >        bfq: Remove merged request already in bfq_requests_merged()
-> > > 
-> > >        [ Upstream commit a921c655f2033dd1ce1379128efe881dda23ea37 ]
-> > > 
-> > >        Currently, bfq does very little in bfq_requests_merged() and handles all
-> > >        the request cleanup in bfq_finish_requeue_request() called from
-> > >        blk_mq_free_request(). That is currently safe only because
-> > >        blk_mq_free_request() is called shortly after bfq_requests_merged()
-> > >        while bfqd->lock is still held. However to fix a lock inversion between
-> > >        bfqd->lock and ioc->lock, we need to call blk_mq_free_request() after
-> > >        dropping bfqd->lock. That would mean that already merged request could
-> > >        be seen by other processes inside bfq queues and possibly dispatched to
-> > >        the device which is wrong. So move cleanup of the request from
-> > >        bfq_finish_requeue_request() to bfq_requests_merged().
-> > > 
-> > >        Acked-by: Paolo Valente <paolo.valente@linaro.org>
-> > >        Signed-off-by: Jan Kara <jack@suse.cz>
-> > >        Link: https://lore.kernel.org/r/20210623093634.27879-2-jack@suse.cz
-> > >        Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > >        Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > 
-> > >     block/bfq-iosched.c | 41 +++++++++++++----------------------------
-> > >     1 file changed, 13 insertions(+), 28 deletions(-)
-> > > 
-> > > Holger
-> > 
-> > Wonderful!
-> > 
-> > So if you drop that, all works well?  I'll go drop that from the queues
-> > now.
-> > 
-> Yes. Just double checked it took a plain 5.13.1, patched it with
-> patch-5.13.2-rc1.xz and then reverted
-> 
->    PATCH-5.13-259-800-bfq-Remove-merged-request-already-in-bfq_requests_merged
-> 
-> and it booted fine with no problems. Tested several times.
-> Just wonder why it only happens on the Intel Broadwell CPU.
-> Maybe it is the 128MB eDRAM L4 Cache ...
 
-Wondeful!
+On 7/14/21 4:14 AM, Martin Hundebøll wrote:
+>
+>
+> On 06/07/2021 16.10, Tom Rix wrote:
+>>> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+>>> index 511b20ff35a3..9381c579d1cd 100644
+>>> --- a/drivers/fpga/dfl.c
+>>> +++ b/drivers/fpga/dfl.c
+>>> @@ -381,6 +381,7 @@ dfl_dev_add(struct dfl_feature_platform_data 
+>>> *pdata,
+>>>       ddev->type = feature_dev_id_type(pdev);
+>>>       ddev->feature_id = feature->id;
+>>> +    ddev->revision = feature->revision;
+>>>       ddev->cdev = pdata->dfl_cdev;
+>>>       /* add mmio resource */
+>>> @@ -717,6 +718,7 @@ struct build_feature_devs_info {
+>>>    */
+>>>   struct dfl_feature_info {
+>>>       u16 fid;
+>>> +    u8 rev;
+>>
+>> In other places 'revision' is the element name.
+>>
+>> For consistency, change rev to revision
+>
+> So is fid vs. feature. I deliberately chose 'rev' to be consistent
+> with other elements in struct dfl_feature_info.
 
-Could you test 5.14-rc1 to verify if this problem is there or not?  If
-it is, the developers need to know this so that they can work to fix the
-regression.
+Consistence for revision is important because we want to make it easy 
+for folks using grep to search for one string not several.
 
-thanks,
+fid vs feature_id is a problem, but one you do not need to solve.
 
-greg k-h
+Tom
+
+
+>
+> // Martin
+>
+
