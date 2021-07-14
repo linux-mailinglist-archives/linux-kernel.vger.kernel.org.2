@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168523C7E1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2443C7E00
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237991AbhGNFvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:51:32 -0400
-Received: from ofcsgdbm.dwd.de ([141.38.3.245]:37159 "EHLO ofcsgdbm.dwd.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237971AbhGNFvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:51:31 -0400
-X-Greylist: delayed 525 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 01:51:29 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by ofcsg2dn2.dwd.de (Postfix) with ESMTP id 4GPmXw1g5Fz2y0k
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 05:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
-        content-type:content-type:mime-version:references:message-id
-        :in-reply-to:subject:subject:from:from:date:date:received
-        :received:received:received:received:received:received:received;
-         s=dwd-csg20210107; t=1626241184; x=1627450785; bh=U59j7UzeM92zw
-        He1nvUvl+FppbR6AWCLbAxag5rWzr8=; b=QPwbwEit+VROKMJduUvhwiq+OPTIa
-        4BvTHMhPE2wiOotqXipn34scW/YSGmXCrWMgXSVVk2+h8bRBTzfiAPIL9m6XTyKr
-        ntVlROI8oAV057dZAaM/tSwIA7XXCabvJIOWZzdZWGoHiOHjjgWd2t96Vrewcxze
-        5Bxy27ioIBXifmNHSiYcZgiQ5CmrGbnMws4pbOASFxlDO1ECBJ0Qs1RFA3pvHLF7
-        LWQ+7gLGgW1Zwus1HneiI0WuytPMVBO+T89LBfAklbUsB1i6jHSg8MQzp2/J6aAo
-        1KSbKYk1yjERZtGeEQniSOYd7/EoIJBAbzOK8X+rQbBYpKQEDy9+Cq4uQ==
-X-Virus-Scanned: by amavisd-new at csg.dwd.de
-Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
-        by localhost (ofcsg2dn2.dwd.de [172.30.232.25]) (amavisd-new, port 10024)
-        with ESMTP id XoOn5KZlM8RW for <linux-kernel@vger.kernel.org>;
-        Wed, 14 Jul 2021 05:39:44 +0000 (UTC)
-Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 05D53C901F51
-        for <root@ofcsg2dn2.dwd.de>; Wed, 14 Jul 2021 05:39:44 +0000 (UTC)
-Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 04231C901F15
-        for <root@ofcsg2dn2.dwd.de>; Wed, 14 Jul 2021 05:39:44 +0000 (UTC)
-X-DDEI-TLS-USAGE: Unused
-Received: from ofcsgdbm.dwd.de (unknown [172.30.232.25])
-        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
-        for <root@ofcsg2dn2.dwd.de>; Wed, 14 Jul 2021 05:39:43 +0000 (UTC)
-Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
- Wed, 14 Jul 2021 05:39:44 -0000
-Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
-        by ofcsg2dn2.dwd.de (Postfix) with ESMTPS id 4GPmXv6q8Qz2xWb;
-        Wed, 14 Jul 2021 05:39:43 +0000 (UTC)
-Received: from ofmailhub.dwd.de (ofldap.dwd.de [141.38.39.196])
-        by ofcsg2dvf2.dwd.de  with ESMTP id 16E5dhZp008956-16E5dhZq008956;
-        Wed, 14 Jul 2021 05:39:43 GMT
-Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
-        by ofmailhub.dwd.de (Postfix) with ESMTP id 68EBEE2BEB;
-        Wed, 14 Jul 2021 05:39:43 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 05:39:43 +0000 (GMT)
-From:   Holger Kiehl <Holger.Kiehl@dwd.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-Message-ID: <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
-References: <20210712060912.995381202@linuxfoundation.org>
+        id S237937AbhGNFnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237802AbhGNFnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 01:43:32 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C04C0613EE
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:40:41 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id l26so1030028oic.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QBnwuBKRxZeDSW4QGiqymAuzRo+K3Iyzls75/osdlvc=;
+        b=asxkx/1UsDSGw3MeY3llVFdUkBuaw0FyNXL84TfALrLohJ4zBrLh6yRm9A54xlu5SQ
+         q5QlJ1hxVW/15s4nMKF5PEv0UyFINaFZE9dq2apkxdS2L8odPuuN3MGJnioIbfjlbAs5
+         OzHzjn05QFKxsrevQbCcdpgShJS724oVd57iz6C7d3X3PCLwOPyRliBnYLPIA6AtU52g
+         TvG2GzY4WK0VQii9Il68TaJYLCx02IXOvwNmgKP6P/+zBV0R7l8X4R8wk0QXEcltkJ4+
+         Bv/Tgb0pfNkNApWhc2CnVxoWHSamSuExPwccYmOJQ30iI0IktYI3vzy8lf36jBLgUmh8
+         BwYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QBnwuBKRxZeDSW4QGiqymAuzRo+K3Iyzls75/osdlvc=;
+        b=m7EQCL9fbGMNcT3bxRRYZKA3i32vBRHZcgmKXdNVdTYf2p8I8/XfLlp4t+AUUvCDdY
+         0fkBMqr/ckeRWMDWcCBBttUAofGzx77DT8klytBvHod68Th0kumgUXxQ4T3DBSjm2O23
+         ZTQO/Es6/B2x35wMWIWyTVA5arrjJirPD0EFjP2gbmdzTdX2BK6HuszYF+gZqE9mNSFO
+         II/52MxNAUAls6XVDxdLcX56a2UCBic78uqyAfZ/8+yQyYuTSpKdJzYHbm/Dq1DRkgBa
+         YV1YoU10zWjBvMmsReBARHI3/dLY5m285KSJD3lTureQw0n8VsfsIYYtaIZJSaJ5Q08v
+         UWZA==
+X-Gm-Message-State: AOAM532xmL1v8kr0qqW+cEKhn9Vst37BlcfZZCraDbAuCJvARS9TCnJ7
+        G1NAyqBQdk9aA5lgmgBbm6L/V4ePcf8P3nV+NAWQEA==
+X-Google-Smtp-Source: ABdhPJxMyKbaHPYLjI1W+Bc5q6MCpGy1B2M+e5JeRhMGebMYNwGIEAKA1DRB4YKkchRFoIAr0IY5gyoMjxELKQxwRNI=
+X-Received: by 2002:aca:5e06:: with SMTP id s6mr4518903oib.40.1626241241058;
+ Tue, 13 Jul 2021 22:40:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-FE-Policy-ID: 2:2:1:SYSTEM
-X-TMASE-Version: DDEI-5.1-8.6.1018-26280.005
-X-TMASE-Result: 10--11.674500-10.000000
-X-TMASE-MatchedRID: eVEkOcJu0F6WfDtBOz4q2ycRqaHJVb+namDMhjMSdnnk1kyQDpEj8E1N
-        J2MN+nPkSHSWZchqtCGn9WnUf4yXmVzhU0/oppo2uZBZOg7RfX9UIaneDj+GO2yIID37xcHKsb9
-        HPmxftEn5yPaI4eFKR/kuGZQ5f5nDnEMCM6PzyYEK4MBRf7I7prw+GCqPUrbcdRQm2zQUJy9NiQ
-        0QX2fZcvLlOXoBFD4JcNBmT2QB6gU9d1nHWxkekB/R5SKe31AR8wxV8JR3NqhOEILBOBemL2SSW
-        xIg3If8N/kqi/+CMmintV427o9FVLI9IhPaTqbkS0GlPH9kR3ItnKKO+U2eJejMOEZ5AL0SWeSe
-        ZNBL5JbNc1d0+ZnEhH8mA3sDDq0A5MIx11wv+CPiRhduhvElsvJT+hf62k2Y+gsSeW2jNCevG39
-        WDjVoN5Zl9Wi1ChMDXdzMgWuHHk1jfFUYBEvIH2A7bUFBqh2V
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-DDEI-PROCESSED-RESULT: Safe
+References: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
+In-Reply-To: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Wed, 14 Jul 2021 11:10:30 +0530
+Message-ID: <CAH=2Nty-Zi4g0wmNZ7mKNKz8CZu9X9jLqxeFDVJaXKnkOqsASA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] pinctrl: qcom/pinctrl-spmi-gpio: Add support for
+ pmic-gpio on SA8155p-adp
+To:     MSM <linux-arm-msm@vger.kernel.org>
+Cc:     bhupesh.linux@gmail.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Linus,
 
-On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+On Tue, 29 Jun 2021 at 18:04, Bhupesh Sharma <bhupesh.sharma@linaro.org> wrote:
+>
+> Changes since v3:
+> -----------------
+> - v3 series can be found here: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
+> - Rebased patchset on pinctrl/devel branch.
+> - Added Reviewed-by from Bjorn for patches 1 to 4 and Ack from Rob for
+>   patches 1 and 2.
+>
+> Changes since v2:
+> -----------------
+> - v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21
+> - Addressed review comments from Bjorn and Mark.
+> - As per suggestion from Bjorn, separated the patches in different
+>   patchsets (specific to each subsystem) to ease review and patch application.
+>
+> Changes since v1:
+> -----------------
+> - v1 series can be found here: https://lore.kernel.org/linux-arm-msm/20210607113840.15435-1-bhupesh.sharma@linaro.org/T/#mc524fe82798d4c4fb75dd0333318955e0406ad18
+> - Addressed review comments from Bjorn and Vinod received on the v1
+>   series.
+>
+> This series adds the pmic-gpio support code for SA8155p-adp board
+> which is based on Qualcomm snapdragon sa8155p SoC which in turn is
+> simiar to the sm8150 SoC.
+>
+> This board supports a new PMIC -> PMM8155AU.
+>
+> While at it, also make some cosmetic changes to the qcom pinctrl-spmi-gpio
+> driver and dt-bindings to make sure the compatibles are
+> in alphabetical order.
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+>
+> Bhupesh Sharma (4):
+>   dt-bindings: pinctrl: qcom,pmic-gpio: Arrange compatibles
+>     alphabetically
+>   dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for SA8155p-adp
+>   pinctrl: qcom/pinctrl-spmi-gpio: Arrange compatibles alphabetically
+>   pinctrl: qcom/pinctrl-spmi-gpio: Add compatible for pmic-gpio on
+>     SA8155p-adp
+>
+>  .../bindings/pinctrl/qcom,pmic-gpio.txt       | 64 ++++++++++---------
+>  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c      | 35 +++++-----
+>  2 files changed, 51 insertions(+), 48 deletions(-)
+>
+> --
+> 2.31.1
 
-> This is the start of the stable review cycle for the 5.13.2 release.
-> There are 800 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-With this my system no longer boots:
+Ping. Any comments on this version?
 
-   [  OK  ] Reached target Swap.
-   [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
-   [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
-   [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
-   [FAILED] Failed to start Wait for udev To Complete Device Initialization.
-   See 'systemctl status systemd-udev-settle.service' for details.
-            Starting Activation of DM RAID sets...
-   [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
-   [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
-
-System is a Fedora 34 with all updates applied. Two other similar
-systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
-and boots fine. The system where it does not boot has an Intel
-Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
-
-Any idea which patch I should drop to see if it boots again. I already
-dropped
-
-   [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
-
-and I just see that this one should also be dropped:
-
-   [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
-
-Will still need to test this.
-
-Holger
+Thanks,
+Bhupesh
