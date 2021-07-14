@@ -2,64 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9EA3C8B4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828D73C8B53
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhGNSzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:55:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:38422 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhGNSzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:55:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23136D6E;
-        Wed, 14 Jul 2021 11:52:20 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 417A83F774;
-        Wed, 14 Jul 2021 11:52:19 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 19:52:16 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 12/13] mailbox: pcc: Add support for PCCT extended PCC
- subspaces(type 3/4)
-Message-ID: <20210714185216.GE49078@e120937-lin>
-References: <20210708180851.2311192-1-sudeep.holla@arm.com>
- <20210708180851.2311192-13-sudeep.holla@arm.com>
+        id S229806AbhGNTAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:00:18 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33311 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229735AbhGNTAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:00:16 -0400
+Received: by mail-io1-f70.google.com with SMTP id i9-20020a0566021349b02904df6556dad4so1891508iov.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:57:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=FXh2bXqx9XOXDqPo/4Em2QPdfuhaE8nPMfQxb+O+VqE=;
+        b=kqeFoGxavbnzcz1dQuwrefZM0BtFzox2dX1q20wo2UUTy0hzZgCYn5ok+tFhpBaqiZ
+         WKGCF7mLqfcULHvN9kLWp9YnEAEaZCRNp5TEKdXWQYdvBBlA+X6o/i5MBsk4Ga8yNKVf
+         lCpiBiafSie4HeCA9lGGWF7Amo4N0W0YwTgIukWMvE/x5HZj6kYSVaErwqDdyMBi53mE
+         KkyJMlQ9yx8GxiFLxCZQPofUumsshk0mXNDrzJs1Y1T4s7tUqyNxRHl5yBb4qftd5Y1r
+         3jDZ7N/g26AmmUCwP4TpZHWhc+HHt/tafLW3ApAh+0NZOmEHhI9nfARozgYXOQnAUnBW
+         hmgg==
+X-Gm-Message-State: AOAM531+TXSiiUid4iRJUnPh/9hoXPlhYRRfaCCNjSx3SXBKvdiprZJW
+        8S6zGCh8h0wFL1gNL8zsFTFixtVnPcmgS22Uoq+K8GJ78AgP
+X-Google-Smtp-Source: ABdhPJxXBwnFfSM1fvlJm/v8iT+oOe2IOUF0qHWKcZN8vlxN2QTV9dSCMR6JOHBVSozuJwcJ1huXu8BttxRsaHarL1Mw8iRbS5yF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708180851.2311192-13-sudeep.holla@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a5d:9f11:: with SMTP id q17mr7746713iot.62.1626289043502;
+ Wed, 14 Jul 2021 11:57:23 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 11:57:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bd7c8a05c719ecf2@google.com>
+Subject: [syzbot] WARNING in internal_create_group
+From:   syzbot <syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 07:08:50PM +0100, Sudeep Holla wrote:
-> With all the plumbing in place to avoid accessing PCCT type and other
-> fields directly from the PCCT table all the time, let us now add the
-> support for extended PCC subspaces(type 3 and 4).
-> 
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
+Hello,
 
-Hi Sudeep,
+syzbot found the following issue on:
 
-just a few general observation on Type 3/4 subspaces from the spec
-Table 14.7:
+HEAD commit:    5d52c906f059 Merge git://git.kernel.org/pub/scm/linux/kern..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16acf1e2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=51ea6c9df4ed04c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=9937dc42271cd87d4b98
 
-- "If a slave-subspace is present in the PCCT, then the platform interrupt flag must be set to 1." table 14.7
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  Maybe is worth to WARN on this if this assumption is violated by the
-  ACPI table we found.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
 
-- "Note that if interrupts are edge triggered, then each subspace must have its own unique interrupt."
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 9350 at fs/sysfs/group.c:116 internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
+Modules linked in:
+CPU: 1 PID: 9350 Comm: syz-executor.4 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:internal_create_group+0x911/0xb20 fs/sysfs/group.c:116
+Code: 0f 85 e8 f7 ff ff 41 bd ea ff ff ff e9 34 fd ff ff e8 33 bc 82 ff 48 8b 7c 24 08 e8 89 11 ff ff e9 20 fd ff ff e8 1f bc 82 ff <0f> 0b 41 bd ea ff ff ff e9 0e fd ff ff e8 0d bc 82 ff 48 8b 14 24
+RSP: 0018:ffffc9000181f2b0 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 0000000000000000 RCX: ffffc90012931000
+RDX: 0000000000040000 RSI: ffffffff81f2c5f1 RDI: 0000000000000003
+RBP: ffff8880706b9d08 R08: 0000000000000000 R09: ffff8880706b9d0f
+R10: ffffffff81f2bd9e R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88809a948070 R14: 0000000000000000 R15: ffff88809a94807c
+FS:  00007feaac597700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000006f6c CR3: 000000009d5fa000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ blk_register_queue+0xda/0x570 block/blk-sysfs.c:871
+ __device_add_disk+0x7b5/0xd10 block/genhd.c:529
+ add_disk include/linux/genhd.h:217 [inline]
+ nbd_dev_add+0x712/0x900 drivers/block/nbd.c:1709
+ nbd_genl_connect+0x551/0x1660 drivers/block/nbd.c:1817
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x85b/0xda0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:723
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feaac597188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000008
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe11ff566f R14: 00007feaac597300 R15: 0000000000022000
 
-  Same here, maybe it's worth also to check this, so that after all the
-  pchan->db_irq has been obtained no edge triggered irqs are duplicated
-  before requesting them.
 
-Thanks,
-Cristian
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
