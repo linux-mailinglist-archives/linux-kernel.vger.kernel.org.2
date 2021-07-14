@@ -2,249 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613533C7B0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BB13C7B0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237301AbhGNB32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 21:29:28 -0400
-Received: from regular1.263xmail.com ([211.150.70.206]:57542 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237232AbhGNB32 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:29:28 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id 6950A1B10;
-        Wed, 14 Jul 2021 09:26:31 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.10] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P4316T140318764680960S1626225989068992_;
-        Wed, 14 Jul 2021 09:26:30 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <140d6f33f97e293553170d6170374a1a>
-X-RL-SENDER: andy.yan@rock-chips.com
-X-SENDER: yxj@rock-chips.com
-X-LOGIN-NAME: andy.yan@rock-chips.com
-X-FST-TO: kernel@collabora.com
-X-RCPT-COUNT: 14
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v2 2/2] drm/rockchip: dw_hdmi: add rk3568 support
-To:     Alex Bee <knaerzche@gmail.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
-        daniel@ffwll.ch, robh+dt@kernel.org, algea.cao@rock-chips.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20210707120323.401785-1-benjamin.gaignard@collabora.com>
- <20210707120323.401785-3-benjamin.gaignard@collabora.com>
- <a8c5a263-26a6-d4bf-47e7-9266ca1ae5a8@gmail.com>
-From:   Andy Yan <andy.yan@rock-chips.com>
-Message-ID: <ff1c398c-5140-2cf0-a4aa-b9cf7e0a68d3@rock-chips.com>
-Date:   Wed, 14 Jul 2021 09:26:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <a8c5a263-26a6-d4bf-47e7-9266ca1ae5a8@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S237317AbhGNBbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:31:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229843AbhGNBbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 21:31:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAED6128B;
+        Wed, 14 Jul 2021 01:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1626226094;
+        bh=1Kq4a+B3sv2xmZ3srIAChXuQ/hkTCRS9tvGxI9qxX8o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XgCjkHJYFA/5vw/DvI6zk8UZ1aqrcF7YGM2yT3HL34SM9KQBwYYX32sIeboXDLaE8
+         bpp+NJ9bHKY0FVX8vure3zT70Hkg2JMfIy+JRdhj91DgEv5gDdlzbka3xYxif/mmbJ
+         6m0iYWhtJnBZjO2zGBr+twF+gJMOhIiFbw1376Oc=
+Date:   Tue, 13 Jul 2021 18:28:13 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Subject: Re: 5.13.2-rc and others have many not for stable
+Message-Id: <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+In-Reply-To: <YO0zXVX9Bx9QZCTs@kroah.com>
+References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+        <YO0zXVX9Bx9QZCTs@kroah.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex:
+On Tue, 13 Jul 2021 08:31:57 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-On 7/13/21 7:40 PM, Alex Bee wrote:
-> Hi Benjamin,
->
-> Am 07.07.21 um 14:03 schrieb Benjamin Gaignard:
->> Add a new dw_hdmi_plat_data struct and new compatible for rk3568.
->> This version of the HDMI hardware block need two clocks to provide
->> phy reference clock: hclk_vio and hclk.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> version 2:
->> - Add the clocks needed for the phy.
->
-> If got Alega's comment correct, it wasn't about the hclks.
-> It looks like for this variant, there is another reference clock 
-> required (for the phy) like vpll is already (looks like downstream 
-> uses HPLL ( = "HDMI-PLL" ?) for that - which also has to switch the 
-> frequency according the the drm mode rate - the two clocks you added 
-> here are get just enabled (and disabled) here.
+> 
+> > Amongst the 2000+ patches posted today, there are a significant number
+> > of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
+> > yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
+> > 
+> > Am I out of date?  I thought that had been agreed not to happen:
+> > https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
+> > is the thread I found when I looked for confirmation, but I believe the
+> > same has been agreed before and since too.
+> > 
+> > Andrew goes to a lot of trouble to establish which Fixes from his tree
+> > ought to go to stable.  Of course there will be exceptions which we
+> > later decide should go in after all; but it's worrying when there's a
+> > wholesale breach like this, and I think most of them should be dropped.
+> > 
+> > To pick on just one of many examples (sorry Miaohe!), a patch that
+> > surprises me, but I've not had time to look into so far, and would
+> > not want accelerated into X stable releases, 385/800
+> > 
+> > > Miaohe Lin <linmiaohe@huawei.com>
+> > >     mm/shmem: fix shmem_swapin() race with swapoff
+> 
+> Sasha, and I, take patches from Linus's tree like the above one that
+> have "Fixes:" tags in them as many many maintainers do not remember to
+> put "cc: stable" on their patches.
 
+As do many many developers.  I always check.
 
-Yes, it's HPLL, and the frequency of HPLL and drm mode rate(vop dclk) 
-should keep 1:1.
+> The above patch says it fixes a problem in the 5.1 kernel release, so
+> Sasha queued it up for 5.10, 5.12, and 5.13.  Odds are he should have
+> also sent a "FAILED" notice for 5.4, but we don't always do that for
+> patches only with a Fixes tag all the time as we only have so much we
+> can do...
+> 
+> So is that tag incorrect?  If not, why was it not cc: stable?  Why is it
+> not valid for a stable release?
 
->
-> Alega, Andy: Is it really required to enable hclk_vio and hclk(_vop) 
-> in the hdmi driver? Are they required to be enabled for the other 
-> output variants (i.e. mipi, dsi, rgb ....) as well and shouldn't 
-> better be enabled in the (not-yet existing) vop2 driver?
+Usually because we judged that the seriousness of the problem did not
+justify the risk & churn of backporting its fix.
 
+>  So far, all automated testing seems to
+> show that there are no regressions in these releases with these commits
+> in them.  If there was a problem, how would it show up?
+> 
+> And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
+> bot, but that is not what caused this commit to be added to a stable
+> release.
+> 
+> Trying to keep a "do not apply" list for Fixes: tags only is much harder
+> for both of us as we do these semi-manually and review them
+> individually.  Trying to remember what subsystem only does Fixes tags
+> yet really doesn't mean it is an impossible task.
 
-hclk_vop should be enabled, other wise you can't access hdmi registers. 
-This is only required for HDMI(mipi dis, edp, rgb don't need it)
+Well, it shouldn't be super hard to skip all patches which have Fixes:,
+Signed-off-by:akpm and no cc:stable?
 
->
-> Overall: I'm not sure of the benefit of adding this hdmi variant for a 
-> SoC where the display driver isn't implemented upstream yet. The 
-> "VOP2" IP seems widely new and should probably be ported first. (even 
-> if the HDMI part seems a low hanging fruit according to the vendor 
-> sources)
+I'd really really prefer this, please.  At present this -stable
+promiscuity is overriding the (sometime carefully) considered decisions
+of the MM developers, and that's a bit scary.  I've actually been
+spending the past couple of years believing that if I left off
+cc:stable, the fix wasn't going to go into -stable!
 
-
-Yes, VOP2 IP is widely totaly new and complicated, I have a plan to do 
-the upstream. But I am in a rush now, so please give me a lite time😁.
-
->
-> Best,
-> Alex
->
->>
->>   drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 68 +++++++++++++++++++++
->>   1 file changed, 68 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c 
->> b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
->> index 830bdd5e9b7ce..dc0e255e45745 100644
->> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
->> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
->> @@ -50,6 +50,10 @@
->>   #define RK3399_GRF_SOC_CON20        0x6250
->>   #define RK3399_HDMI_LCDC_SEL        BIT(6)
->>   +#define RK3568_GRF_VO_CON1        0x0364
->> +#define RK3568_HDMI_SDAIN_MSK        BIT(15)
->> +#define RK3568_HDMI_SCLIN_MSK        BIT(14)
->> +
->>   #define HIWORD_UPDATE(val, mask)    (val | (mask) << 16)
->>     /**
->> @@ -71,6 +75,8 @@ struct rockchip_hdmi {
->>       const struct rockchip_hdmi_chip_data *chip_data;
->>       struct clk *vpll_clk;
->>       struct clk *grf_clk;
->> +    struct clk *hclk_vio;
->> +    struct clk *hclk_vop;
->>       struct dw_hdmi *hdmi;
->>       struct phy *phy;
->>   };
->> @@ -216,6 +222,26 @@ static int rockchip_hdmi_parse_dt(struct 
->> rockchip_hdmi *hdmi)
->>           return PTR_ERR(hdmi->grf_clk);
->>       }
->>   +    hdmi->hclk_vio = devm_clk_get(hdmi->dev, "hclk_vio");
->> +    if (PTR_ERR(hdmi->hclk_vio) == -ENOENT) {
->> +        hdmi->hclk_vio = NULL;
->> +    } else if (PTR_ERR(hdmi->hclk_vio) == -EPROBE_DEFER) {
->> +        return -EPROBE_DEFER;
->> +    } else if (IS_ERR(hdmi->hclk_vio)) {
->> +        dev_err(hdmi->dev, "failed to get hclk_vio clock\n");
->> +        return PTR_ERR(hdmi->hclk_vio);
->> +    }
->> +
->> +    hdmi->hclk_vop = devm_clk_get(hdmi->dev, "hclk");
->> +    if (PTR_ERR(hdmi->hclk_vop) == -ENOENT) {
->> +        hdmi->hclk_vop = NULL;
->> +    } else if (PTR_ERR(hdmi->hclk_vop) == -EPROBE_DEFER) {
->> +        return -EPROBE_DEFER;
->> +    } else if (IS_ERR(hdmi->hclk_vop)) {
->> +        dev_err(hdmi->dev, "failed to get hclk_vop clock\n");
->> +        return PTR_ERR(hdmi->hclk_vop);
->> +    }
->> +
->>       return 0;
->>   }
->>   @@ -467,6 +493,19 @@ static const struct dw_hdmi_plat_data 
->> rk3399_hdmi_drv_data = {
->>       .use_drm_infoframe = true,
->>   };
->>   +static struct rockchip_hdmi_chip_data rk3568_chip_data = {
->> +    .lcdsel_grf_reg = -1,
->> +};
->> +
->> +static const struct dw_hdmi_plat_data rk3568_hdmi_drv_data = {
->> +    .mode_valid = dw_hdmi_rockchip_mode_valid,
->> +    .mpll_cfg   = rockchip_mpll_cfg,
->> +    .cur_ctr    = rockchip_cur_ctr,
->> +    .phy_config = rockchip_phy_config,
->> +    .phy_data = &rk3568_chip_data,
->> +    .use_drm_infoframe = true,
->> +};
->> +
->>   static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
->>       { .compatible = "rockchip,rk3228-dw-hdmi",
->>         .data = &rk3228_hdmi_drv_data
->> @@ -480,6 +519,9 @@ static const struct of_device_id 
->> dw_hdmi_rockchip_dt_ids[] = {
->>       { .compatible = "rockchip,rk3399-dw-hdmi",
->>         .data = &rk3399_hdmi_drv_data
->>       },
->> +    { .compatible = "rockchip,rk3568-dw-hdmi",
->> +      .data = &rk3568_hdmi_drv_data
->> +    },
->>       {},
->>   };
->>   MODULE_DEVICE_TABLE(of, dw_hdmi_rockchip_dt_ids);
->> @@ -536,6 +578,28 @@ static int dw_hdmi_rockchip_bind(struct device 
->> *dev, struct device *master,
->>           return ret;
->>       }
->>   +    ret = clk_prepare_enable(hdmi->hclk_vio);
->> +    if (ret) {
->> +        dev_err(hdmi->dev, "Failed to enable HDMI hclk_vio: %d\n",
->> +            ret);
->> +        return ret;
->> +    }
->> +
->> +    ret = clk_prepare_enable(hdmi->hclk_vop);
->> +    if (ret) {
->> +        dev_err(hdmi->dev, "Failed to enable HDMI hclk_vop: %d\n",
->> +            ret);
->> +        return ret;
->> +    }
->> +
->> +    if (hdmi->chip_data == &rk3568_chip_data) {
->> +        regmap_write(hdmi->regmap, RK3568_GRF_VO_CON1,
->> +                 HIWORD_UPDATE(RK3568_HDMI_SDAIN_MSK |
->> +                       RK3568_HDMI_SCLIN_MSK,
->> +                       RK3568_HDMI_SDAIN_MSK |
->> +                       RK3568_HDMI_SCLIN_MSK));
->> +    }
->> +
->>       hdmi->phy = devm_phy_optional_get(dev, "hdmi");
->>       if (IS_ERR(hdmi->phy)) {
->>           ret = PTR_ERR(hdmi->phy);
->> @@ -559,6 +623,8 @@ static int dw_hdmi_rockchip_bind(struct device 
->> *dev, struct device *master,
->>           ret = PTR_ERR(hdmi->hdmi);
->>           drm_encoder_cleanup(encoder);
->>           clk_disable_unprepare(hdmi->vpll_clk);
->> +        clk_disable_unprepare(hdmi->hclk_vio);
->> +        clk_disable_unprepare(hdmi->hclk_vop);
->>       }
->>         return ret;
->> @@ -571,6 +637,8 @@ static void dw_hdmi_rockchip_unbind(struct device 
->> *dev, struct device *master,
->>         dw_hdmi_unbind(hdmi->hdmi);
->>       clk_disable_unprepare(hdmi->vpll_clk);
->> +    clk_disable_unprepare(hdmi->hclk_vio);
->> +    clk_disable_unprepare(hdmi->hclk_vop);
->>   }
->>     static const struct component_ops dw_hdmi_rockchip_ops = {
->>
->
->
->
->
+Alternatively I could just invent a new tag to replace the "Fixes:"
+("Fixes-no-backport?") to be used on patches which fix a known previous
+commit but which we don't want backported.
 
 
