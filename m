@@ -2,185 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047A93C7D10
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075893C7D1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237873AbhGNDmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 23:42:32 -0400
-Received: from mail-bn8nam12on2124.outbound.protection.outlook.com ([40.107.237.124]:57697
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S229712AbhGNEAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 00:00:20 -0400
+Received: from m32-153.88.com ([43.250.32.153]:27472 "EHLO email.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237486AbhGNDmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 23:42:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oWQK8Bc+fRHXWMlxsm7BOfDpLUNqFAE8mmass7F5A5NC0YEXEPB29CrumF3GEp197+ZDZVmCpYgW0swunupZsGpu4lYoZUNDSxsrJbyPKoLJG34Km9r3FDWH6tbWtXKhNZO30cjsd2cxBcJxNMrhLUghrVXOlJg46a7ugXtizxx/9dnCIJcIIZBOkMKoVKI+NM6iRWpx5tvlOuu/Jkmto/4+4Kdy6ijJbfoyITGQ1SkCJFrwJrxW8AkDjhowEQMCkacuOWS1R+SrAHFga2mKjvFQSgWkKk/8UXmXakeJ7caAuuu2Rc91qnuAz2KUE5hSIL+UdHqI8i4k4crhhSfvIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ivVXuIeNlPWIlUauHXlVoWQ2VjPlpMp8oJiaMIIMBh8=;
- b=lEBgnpneRPsf7ejqMv/nF3M9kJ9v1xoFH15JNfs9yWZ2zRPmI2W9/CdkvEYpqtufEEz+5d9xkPMGRcH68nWEvKIIEn+t06nJWrDIEbrLX0QhQ7VjzRREaTl67gB0VDU2axiUzLFIhrwNfFVuGCeKytQQvtuw3ETERhgE3lQYEAklAs6iHeYjn1aJYezbsNwRDw/7DNUHf3Fp/+YanGzlj7o2mh3HpXPMd0nCEBJ2JUjc9Oau875c/lsKDBZ1itS+VGGn6ehloVqLUtmSxatCr76DQnc/+5m8FjJYy1wwV3NmmwwcUmOrwofoiEgqMbrQAlcT5qK+gWs64QohL6bHjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ivVXuIeNlPWIlUauHXlVoWQ2VjPlpMp8oJiaMIIMBh8=;
- b=H0oGQWwU6/pKjMYHe7BPS0t2/7hsNmI6LUVXRjKtVCkHx1muZx1h8iWDSAPmm20WLkbWvSvwB5sfI7lOjXI9nA2BHae9lSsBcw3d2MZww6xQFAKgrNtamhnZSloH9N2/+rgIZAC7d7QYMNDN5Kv66/IkhHmSeljQQuypFCY4wkM=
-Authentication-Results: acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
- MW2PR0102MB3370.prod.exchangelabs.com (2603:10b6:302:2::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4308.22; Wed, 14 Jul 2021 03:39:05 +0000
-Received: from MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::452a:24fb:12cb:9d7e]) by MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::452a:24fb:12cb:9d7e%5]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
- 03:39:05 +0000
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-To:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc:     Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: [PATCH v5 3/3] bindings: ipmi: Add binding for SSIF BMC driver
-Date:   Wed, 14 Jul 2021 10:38:33 +0700
-Message-Id: <20210714033833.11640-4-quan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210714033833.11640-1-quan@os.amperecomputing.com>
-References: <20210714033833.11640-1-quan@os.amperecomputing.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR03CA0099.apcprd03.prod.outlook.com
- (2603:1096:203:b0::15) To MW2PR0102MB3482.prod.exchangelabs.com
- (2603:10b6:302:c::32)
+        id S229457AbhGNEAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 00:00:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=rm2lLaB6O1Qj6SBTUbJAP6ni2BTzbos2FjjL9
+        R4HcFk=; b=cKEzJ/RnSxRUN5Alr7ntEX15NQ0pli36+R/y1fB4bR8UbQWZxSR2H
+        5cFGOjb72xH7MAgQMlXYm78BCJ7y5mDxouDG521sz01sdQ7t8LBnRCOLpCP+IVGH
+        J1L3wcpZjeHjYkKAWbXUc36VgLZwR5ycOTPBHGevti1JNLFnlssvPw=
+Received: from [0.0.0.0] (unknown [113.251.12.220])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDnvfyhYO5gSb1SAA--.11711S3;
+        Wed, 14 Jul 2021 11:57:22 +0800 (CST)
+Subject: Re: [PATCH v3 3/4] docs/zh_TW: fix an issue while building
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210703143130.18349-1-src.res@email.cn>
+ <20210703143130.18349-3-src.res@email.cn> <87r1g3pied.fsf@meer.lwn.net>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <889b9541-43cf-a92d-b9f2-a46acd528120@email.cn>
+Date:   Wed, 14 Jul 2021 11:57:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by HK0PR03CA0099.apcprd03.prod.outlook.com (2603:1096:203:b0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 03:39:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f421526e-bbc6-42c8-878b-08d94678edc8
-X-MS-TrafficTypeDiagnostic: MW2PR0102MB3370:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW2PR0102MB33704E305CF87B21556F2B98F2139@MW2PR0102MB3370.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hN8WUCgP4V+AUSXGXUYR+TzSFRQPna0imlBOCROgusn17dXodrf+J56Pv48ZHqwYz/atY50l08jya/mCQndK3FDQWOo10aIIzxzlMs0oHv+H7ID3iY53s0V3nY1cQlQO/iCY3dguECstaBuDPRpA/eIDHspiODcydBbcyX1RTHwgv4ILj8X9F9wxCfRiOtu5UOzL0q5LOjD6ItRT8+cPfHhKk3Srnvz0isk7mDOVlgrQ6vqWYGmurpv8mXUxgKswhj84kCcGWvwY9cbLWjjdVq6dlkgpHj2v58qxAgOugSlb+3eynZ3KaFjI0cEhziJcP4CTNX9ackVfzlqylZeOdkoFt3T5aX+GbdxnnrY+X4A6GTO5yOv2VbdF06sD6wn64svyITWVyT5e8PtGwPk8NvYbDzFg+D4OYYSIDp8inp3wj8fVV5NWY0bJ162E1776fWqgwV3satpaB5li1hHoPDH04mn4CCA/9ZySH9Dh8ebyks+D/Dr3u74IdTgARLF0YSaQmyv3jhspmH4tAOHAkYjKdusaeIg6szn0jaN6awAe90jRQcEMCzDl1StZpdBY4nGXu4L2y4/H25M6njepyXGSh5oH2FGqi9vXWUmCIH9xPzapG/2iOvDVtCrON4kTUSm+TiMfwrs3+jEoZOtRcjRbCVGIB7yZpN72Pkt6HJdW0r60wrefHM5Ay7HZoYLidbDkrLRi9vw0OSq8ONYAT/FrUWkz8UxTGG8gehauFkXwx8h5Sndxf65N53qiZQDm0v8SID0tOOPr7I7CIhnQQL6w8rJinQAHOWdckfI4wH8gksLQgRyUJyV/cQVbWZCR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(39850400004)(396003)(4326008)(38100700002)(1076003)(38350700002)(2616005)(107886003)(956004)(8936002)(8676002)(6506007)(86362001)(110136005)(52116002)(5660300002)(54906003)(2906002)(6666004)(966005)(478600001)(26005)(186003)(66946007)(83380400001)(7416002)(66556008)(66476007)(6512007)(921005)(6486002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VFsUpDJtmJyvsQjsv6Fyo9rqHfBCvRotxpVPb00QiDLlnKc+TEThfYk4yq04?=
- =?us-ascii?Q?9wv5pTsGDq3m/BnEEYfDZ6ilQiGC+8NphtmKUVqWp9F0rROxeI0jOHxy3/E6?=
- =?us-ascii?Q?fk5DIYcU6X2BRFtRAIeuuq2t/o450gG7bOm+7IeA4IwdqE+rHzjnth7FVL6h?=
- =?us-ascii?Q?Zfh3kRqvL4dyMujiPgWT3fpHsitr7YETG6x21kPHwgmkvwXARgHoSJWskboE?=
- =?us-ascii?Q?FAff/a25Ns6rlX9OpBbGnLDg9ThB5OLro+FR30p8WGezIPm+BvbsLPsstmUd?=
- =?us-ascii?Q?2chsPoP558XABZScadpj3nHEjSh5Zutk4RG0OcAF+Lh+F3jRUV5bW+6k2+km?=
- =?us-ascii?Q?ZDVQS/nZslqvg7v0Z1fUmW1JN8LVeZn7KVp+MMDoE7ysn0i/Q3qIFExRQABk?=
- =?us-ascii?Q?LNY6zaZq+NBNxXC1n9rnZjI1z4ipGMoaseK7YjE9PBOhdHAWbZgbkuDFYQiZ?=
- =?us-ascii?Q?OBVaXanWUFX7jJKPJ/P6LAYasE0eW9HBibpSoTz9bUBYvR2ECr1anhsf7D2n?=
- =?us-ascii?Q?vwv47i+sh3thLrEqJupvkaf57iSMBKPrS42meY2Nz1AOGFOBwve/jD9pGj6J?=
- =?us-ascii?Q?TE+g6gmh5UBY1E0mj14R8W82GULy7oaILjtJpmqB/j/PIHt56up54jMFofGH?=
- =?us-ascii?Q?SpU6F5RZIxAcIjWcn4qbgDs5WaPn6VN4NsZPRCMrhpUIBl6rikDZxI7vUdK1?=
- =?us-ascii?Q?SUnvA5oAYTQo6RGMrVVDwFjeScW1RCa0gqwXrFGXRW479JO4xgvR02oVuAzK?=
- =?us-ascii?Q?8+vsd471XjZ4w7Qhp3p25fZ/UGi6P+7ZDkXqhAx+QMZdAa1DzP2gqZJEqay5?=
- =?us-ascii?Q?gZloK4aRRf/aBXLrbGlKbIRLi20+ItWTqhcBOk9Z3L1P7eGN6N0jVgYKNF1R?=
- =?us-ascii?Q?PpQ3Apb057qaEeVPtzbYZjstQNFJRWnkjpGNNtAzgOhLYW4LTmws2ZzLhqRT?=
- =?us-ascii?Q?fsHnx7jc6EB3Juk8lDEwbSXUdX04g2dlNcznDZTGdlGL4iyfyRsHNKloUpoe?=
- =?us-ascii?Q?mfVkQ+0N/LMVct+NcFPkASUQH4aIxBpq2XDT7waoHAm5duOVzEFt2wSkmmHl?=
- =?us-ascii?Q?OwH0xD1umWrh+/p3wJRdpTk35KFQ3+WWx88msztxGSwS2SG8VVmkWPVHhDka?=
- =?us-ascii?Q?c0f6djvTSJAUoae/oUqmdMTdekZcsUtTySDYJsnVLYhC5UrqTQhH12Yepqt9?=
- =?us-ascii?Q?43kfjKEwRA8DYyejjdGMfmkx9S5PS5nkHShF0j+Tx6+xVY6fsCdgYe8oU0zu?=
- =?us-ascii?Q?K+gem3rgzAhiPHNyy3ziR12A07kjlkiHbz4v9W9lbIrFnqhpj3nCMAE2sVWo?=
- =?us-ascii?Q?7sPxJm8DwOyAhCp+Nps3F3Mj?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f421526e-bbc6-42c8-878b-08d94678edc8
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 03:39:05.2525
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b/gl18wuRBD21qY/kJqLvJPI0kYjrB2+kz8FL6KrIk67xCBv0YRKKRX+DfVDTGP0bmGkU5E70GfSwBMmQx+ckr7q1qqMrX1WW9R7rZBd8lg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR0102MB3370
+In-Reply-To: <87r1g3pied.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: GiKnCgDnvfyhYO5gSb1SAA--.11711S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr45JFW7XFW3uF1fGFy7GFg_yoW8Gw1xpa
+        9rKFZ7tasrCFyUGFs7Gr12yw4FyrWI9a1rGF1Dt34kuwnxAFn3KFZIgr9I9FZ5urs5tFnY
+        qF4qqr95uw1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUymb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
+        z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0x
+        vYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_
+        Cr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbI
+        xvr21lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1U
+        Jr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+        14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jABM_UUUUU=
+X-Originating-IP: [113.251.12.220]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding document for the SSIF BMC driver.
 
-Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
----
-v5:
-  + None
+在 2021/7/13 上午1:10, Jonathan Corbet 写道:
+> Hu Haowen <src.res@email.cn> writes:
+>
+>> When building the documentation, the following issue was reported:
+>>
+>>     /home/src-resources/Coding/Projects/Other-Projects/Linux/Documentation/
+>>     translations/zh_TW/admin-guide/reporting-issues.rst:712: WARNING:
+>>     duplicate label translations/zh_tw/admin-guide/reporting-issues:
+>>     檢查「汙染」標誌, other instance in /home/src-resources/Coding/Projects/
+>>     Other-Projects/Linux/Documentation/translations/zh_TW/admin-guide/
+>>     reporting-issues.rst
+>>
+>> Consequently, replace "檢查「汙染」標誌" with "檢測「汙染」標誌" to
+>> solve it.
+>>
+>> Signed-off-by: Hu Haowen <src.res@email.cn>
+> Please, just update the original patch to not introduce the error in the
+> first place.  While you are at it, add the SPDX headers when you first
+> add the files rather than fixing it up afterward.
 
-v4:
-  + Fix warning with dt_binding_check [Rob]
-  + Change aspeed-ssif-bmc.yaml to ssif-bmc.yaml [Quan]
 
-v3:
-  + Switched to use DT schema format [Rob]
+Thanks for your notification. I'll pay more attention next time.
 
-v2:
-  + None
 
- .../devicetree/bindings/ipmi/ssif-bmc.yaml    | 38 +++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml
+> This is a vast amount of material that I am absolutely incapable of
+> making any sort of informed decision on.  Is there any chance that
+> somebody can review this work?
 
-diff --git a/Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml b/Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml
-new file mode 100644
-index 000000000000..917a577c2f29
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ipmi/ssif-bmc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: SSIF IPMI BMC interface
-+
-+description: SSIF IPMI BMC device bindings
-+
-+maintainers:
-+  - Quan Nguyen <quan@os.amperecomputing.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ampere,ssif-bmc
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ssif-bmc@10 {
-+            compatible = "ampere,ssif-bmc";
-+            reg = <0x10>;
-+        };
-+    };
--- 
-2.28.0
+
+I've already checked the files line by line and everything goes well.
+Considering nobody who is accustomed to the language can be contacted
+at the moment, you're able to apply these changes.
+
+Thx,
+Hu Haowen
+
+
+> Thanks,
+>
+> jon
 
