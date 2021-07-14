@@ -2,163 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867493C80E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2FE3C80E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238709AbhGNJCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:02:38 -0400
-Received: from mout.gmx.net ([212.227.15.18]:56161 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238643AbhGNJCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:02:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626253159;
-        bh=2PfUJGsN5axf79lyK53KIfWRTeJoSiAoNWHeXAJAm5k=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ABY8yG3fDvHwhdrriVKsu1KyjPfUEH6xW/YvrAHOvujzOyzGRKiy2dBPle0lASCBo
-         FTWMIPLDMSj9FHlaeVcQrgMGGrer/+CivY/XZabcjrajrSEg47XuH1fqxYNRg+JEt2
-         SiesIqzE1N5MQ+lQmUEQdMz5rxcbFOtjxgepeOng=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.152.136] ([217.61.152.136]) by web-mail.gmx.net
- (3c-app-gmx-bs01.server.lan [172.19.170.50]) (via HTTP); Wed, 14 Jul 2021
- 10:59:18 +0200
+        id S238727AbhGNJDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:03:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:32790 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238496AbhGNJDF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:03:05 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 68B5B229A9;
+        Wed, 14 Jul 2021 09:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626253213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7nexEeSK5d1RlNWBq51iG5GZh9OfW5rJvNt842iUuU=;
+        b=EUrCRKCV2F60DcDdTlWu0lFMKHMndJKH+nsSKpRlaenZUrpNUJfmzH5MwlOqTrp3azUzkg
+        HFKF4Im+EwwgYg4pI/JegSL/+qTiPjk7p3WdpsGRhpszpVkmmCstlytz8SdKFpq7bv0Gy4
+        7bJ5ZxEyTCFBCt2twNwb5QKTYzuLdzA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626253213;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7nexEeSK5d1RlNWBq51iG5GZh9OfW5rJvNt842iUuU=;
+        b=USMaLID+E9CO/qjDh+aHtbhP6hXDUg6Tw0N9o8LVQWkNbw4JgScG+7a6E5Ay91JIWfWyHj
+        IEE1T+sgZr+jsRAw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 584B2A3BA4;
+        Wed, 14 Jul 2021 09:00:13 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2F1051E0BD1; Wed, 14 Jul 2021 11:00:13 +0200 (CEST)
+Date:   Wed, 14 Jul 2021 11:00:13 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Javier Pello <javier.pello@urjc.es>
+Cc:     Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 1/1] fs/ext2: Avoid page_address on pages returned by
+ ext2_get_page
+Message-ID: <20210714090013.GA9457@quack2.suse.cz>
+References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
+ <20210713165918.10da0318af5b9b73e599a517@urjc.es>
+ <20210713163018.GF24271@quack2.suse.cz>
+ <20210713193319.a223cd12e3fb8687f0cae0e8@urjc.es>
 MIME-Version: 1.0
-Message-ID: <trinity-7d9ebdc9-4849-4d93-bfb5-429dcb4ee449-1626253158870@3c-app-gmx-bs01>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, yong.wu@mediatek.com,
-        youlin.pei@mediatek.com, Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        ming-fan.chen@mediatek.com, yi.kuo@mediatek.com,
-        acourbot@chromium.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Xia Jiang <xia.jiang@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Eizan Miyamoto <eizan@chromium.org>, anthony.huang@mediatek.com
-Subject: Aw: [PATCH v6 00/11] Clean up "mediatek,larb"
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 14 Jul 2021 10:59:18 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210714025626.5528-1-yong.wu@mediatek.com>
-References: <20210714025626.5528-1-yong.wu@mediatek.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:41hJo/XYrZUHIeMDY07beGhJR05vkLxAQITh9O1JknXiCDIPb9AnREzqsqzHICRgoA4aX
- +VAlF3wwHQHbYa/GGCgJhTDtD0i0iZcray5tchmyODDSQBszTPJ8Cg9gg9LgxbFhLS4m04MCLN53
- ePdYFNXzAkr1Xvyf64zJFgpHrtCx3fhmT3LqyYxoT0nRDwTxV6UVaYlwijr3k0aNzY44Q9GNsnWw
- Rl3go4EBz7ULxN81eHdqgXx4wZX5M3IQyIamHA+xF+0G23a388+8tJIl3y+MV5whXMki3Iq+biLW
- UE=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xahsKhf98lg=:Wfje5JxpoANcTNbcmTtKVK
- VQ+rHW0jjkDG7cM+BrzCqPqYP/W7Q1dk67RH/jENaakUoczFwa3fW3FrkGIkE8iEXSDP0y+iX
- Ldkppn4aANbjhSEDBEcwvT/JR4ia055MyjoHgIDw88+R+pZWLJS5VDabeYDqYbhwvTccliZyp
- 5ZOuEK9y2I+3WEqlIALyq4H90JQRlgfv2JMXK56pxhm/7USMsR20jYWECfsusG0aKbfWKSz5l
- DweHDC9nwaC6TLxhY+erDIbE15qyYxQDlB3mCOEle1bWCQqyOpBxKxvqHPkumeUOCKawIEp+N
- wdipQ94TPhtjo1lRZS5NeaSPWtZb4TzF0NFu+y+MjaSaC9mfYnPsZ7fBDfdYIbpWV6mWQhsxD
- wLwxpA6JR7FJa8k18pWGpAdTza2yTr7xbLHQmSVtTQ6xb7z3THroUiIXpu9eKVDCgfVnNXN4k
- gXyfw7FdiODoTHjK2YhrS2kkJnqop7Ax4FkHKh6zy+U2b0n26wbcmU0Wfk40t5km0pwxw3f0q
- V4jMISUBOvceIBWVNxuZMPZoeeNJ/1lseOLpWgHlbK/WW6jpCTsRrH0JNTzxgM6S+e3jHL6IV
- qyt6ZSNcW2Itd4NQsDmMhdkCuz50nuyBKhtqniFkzqPf0W0aXDbpGcdmCtEm9oLaJ+QVfj2T0
- KXiq7AM4wtYtVBe7EGPLR23WdO5yz7fSX4QQl0Q5E8wUUwWSGuVT84nIwpQjI8mhzfj1ilUg9
- NEVw5SgEn/3reKMV4uhqInc6YYW6Lg5WwQCEP7w6nuVvmv4BZPcvE0PY02uVNxvYpTMQ79gVP
- w5SwTV/kfrKGrTloRp4qsuf31tzQ2KQVg0453IpWqKtLrpRlpM=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713193319.a223cd12e3fb8687f0cae0e8@urjc.es>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue 13-07-21 19:33:19, Javier Pello wrote:
+> On Tue, 13 Jul 2021 18:30:18, Jan Kara wrote:
+> > > @@ -584,16 +584,16 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
+> > >   * ext2_delete_entry deletes a directory entry by merging it with the
+> > >   * previous entry. Page is up-to-date.
+> > >   */
+> > > -int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+> > > +int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
+> > > +                     void *kaddr)
+> > 
+> > Why not have 'kaddr' as char *. We type it to char * basically everywhere
+> > anyway.
+> 
+> I thought about that, as well, but in the end I leaned towards void *
+> because it is a generic pointer, conceptually. Would you rather have it
+> be char *?
 
-sorry this (or the 2 depency-series) cause a NULL Pointer deref in iommu_g=
-roup_remove_device on mt7623/bpi-r2
+Well, it depends on how you look at it. We can also think of kaddr as a
+start of buffer 'dir' is pointing to. Anyway given this is not some generic
+function but a very targetted one with only a few call sites I'd just lean
+towards making our life easy and making kaddr char *.
 
-i wonder why on bootup a cleanup is run, but have no hint about this.
-
-since "dts: mtk-mdp: remove mediatek, vpu property from primary MDP device=
-" all is good, i guess problem comes up while removing larb with DT
-
-this is backtrace
-
-[    6.274465] PC is at iommu_group_remove_device+0x28/0x148
-[    6.279877] LR is at iommu_release_device+0x4c/0x70
-
-[    6.674347] Backtrace:
-[    6.676797] [<c0c9c37c>] (iommu_group_remove_device) from [<c06bf028>] =
-(iomm)
-[    6.686221]  r7:00000000 r6:c06bf04c r5:c0d7a1ac r4:c21fc010
-[    6.691883] [<c06befdc>] (iommu_release_device) from [<c06bf064>] (remo=
-ve_io)
-[    6.700689]  r5:00000000 r4:00000000
-[    6.704265] [<c06bf04c>] (remove_iommu_group) from [<c0733434>] (bus_fo=
-r_eac)
-[    6.712725] [<c07333ac>] (bus_for_each_dev) from [<c06bf658>] (bus_set_=
-iommu)
-[    6.720753]  r6:c331f440 r5:c1406f58 r4:ffffffea
-[    6.725370] [<c06bf5a0>] (bus_set_iommu) from [<c06c1e88>] (mtk_iommu_p=
-robe+)
-[    6.733484]  r7:c32db0b8 r6:c21f9c00 r5:c331f1c0 r4:00000000
-[    6.739145] [<c06c1bfc>] (mtk_iommu_probe) from [<c0738c14>] (platform_=
-probe)
-[    6.747176]  r10:c21f9c10 r9:c2496f54 r8:c14623b8 r7:c14623b8 r6:c1405b=
-90 r50
-[    6.755012]  r4:00000000
-[    6.757544] [<c0738ba8>] (platform_probe) from [<c0735968>] (really_pro=
-be.pa)
-[    6.766006]  r7:c14623b8 r6:c1405b90 r5:00000000 r4:c21f9c10
-[    6.771667] [<c07358a0>] (really_probe.part.0) from [<c0735cec>] (reall=
-y_pro)
-[    6.779866]  r7:c21f9c10 r6:c2549e74 r5:c1405b90 r4:c21f9c10
-[    6.785527] [<c0735ca4>] (really_probe) from [<c0735de0>] (__driver_pro=
-be_de)
-[    6.793984]  r5:c1405b90 r4:c21f9c10
-[    6.797560] [<c0735d30>] (__driver_probe_device) from [<c0735fa0>] (dri=
-ver_p)
-[    6.806543]  r9:c2496f54 r8:00000008 r7:c21f9c10 r6:c2549e74 r5:c14c6ec=
-8 r4:4
-[    6.814291] [<c0735f5c>] (driver_probe_device) from [<c0736410>] (__dev=
-ice_a)
-[    6.823448]  r9:c2496f54 r8:00000000 r7:c21f9c10 r6:c2549e74 r5:c1405b9=
-0 r4:1
-[    6.831196] [<c073635c>] (__device_attach_driver) from [<c0733540>] (bu=
-s_for)
-[    6.840007]  r7:c14623b8 r6:c073635c r5:c2549e74 r4:00000000
-[    6.845669] [<c07334ac>] (bus_for_each_drv) from [<c07357e8>] (__device=
-_atta)
-[    6.854044]  r6:00000001 r5:c21f9c54 r4:c21f9c10
-[    6.858662] [<c07356e4>] (__device_attach) from [<c073662c>] (device_in=
-itial)
-[    6.867207]  r6:c21f9c10 r5:c1406f58 r4:c1406ca0
-[    6.871825] [<c0736610>] (device_initial_probe) from [<c07346dc>] (bus_=
-probe)
-[    6.880454] [<c0734648>] (bus_probe_device) from [<c0734cc8>] (deferred=
-_prob)
-
-
-bisect shows this commit as breaking:
-
-Author: Yong Wu <yong.wu@mediatek.com>
-Date:   Wed Jul 14 10:56:17 2021 +0800
-
-    iommu/mediatek: Add probe_defer for smi-larb
-
-    Prepare for adding device_link.
-
-regards Frank
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
