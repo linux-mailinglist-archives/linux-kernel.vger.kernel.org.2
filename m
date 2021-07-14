@@ -2,160 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F603C8B1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE97B3C8B23
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239819AbhGNSnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:43:49 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:57132 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhGNSnq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:43:46 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E6B2BCC;
-        Wed, 14 Jul 2021 20:40:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1626288053;
-        bh=RXoS7uOvpB5VAFXYDu8/3wKv0zzhGVf+fnUveMwoIj4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qPVHrCjjdWs4tRxJ93jLG6HYAIADnBtC++iJnkXd5xkVn0Aww1P1oWVW+lhUZj0Mg
-         EkLmqnjqvGFi8cfkh2oxikV6m4uZ1h5UBi8o7qU0HZY47PaqXeB6wQdL6OTnOOs6W8
-         tpM01/D8ncEFVCgyOxTiNwciOeEzxDuv8n7TAEJY=
-Date:   Wed, 14 Jul 2021 21:40:51 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Dennis Rachui <drachui@de.adit-jv.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
-Message-ID: <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
-References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
- <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
- <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
- <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S240057AbhGNSqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:46:01 -0400
+Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:63457
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230282AbhGNSqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 14:46:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D749d4o7qXE8CLzCxqrq6C/lwoUloCg0EU8vihUUzEijISmyuyNtQCQOTdfFc4zLAtDOEDjAu+9bKi5NEisQuUEGXGCxNC+x0qCcRFHZQjVuX8hPazhAVJqNztc45/6sh4Q4j/kOzqByJgo+JK1f1p3V64PBJWRJkV0Ki4Z67zICXM3edX13uknH1mK6xgvTosjpgkgFts1dPC8HY8NNA/mA/OKcvLZU2c7pa24hgzmmBqFHXdSXWcPRrFqXRpe6UGqUVtIMqGB8RsDyvZPvLan+la7dOLYdXdZFhuRZpfDRmfL98mmrsLCjqxyLV9ZBIgpVRRkHCYP7KWFff+8ayg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyDhrkjYLXRllGIbHvIamFDBfLqqM9BTil7jyksiN44=;
+ b=BCCiPMVo6xkKSZDGQBHCO3x6zNIlF9Rl6x/eqfF+qJ6H1Ses1WpqnriucbwGIpVVscAVYD+ufxW+hd2MzStPc7rmv7oIULPzHvwBEtsZhOIHkS4oeSl6qnvOwQINy2iG8tBci2bCpCHE1F1jCNyPx9lf15/awYOelKz7ddjLI215VDb2ydmwWxOSXznPjun6OLysJNMspBuef5ptrX+hO+CKVd8AzANnevhwmJjZ5mn5qEFEkstsdwDKqCm5//ZD+HOt7Y7CWyOCVwAw5toEBBWMe8zW6Wg32DS9GehOw1xL8bhiqlgct68f0uG3GBmpSusWErQFG31oszA8M71dbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyDhrkjYLXRllGIbHvIamFDBfLqqM9BTil7jyksiN44=;
+ b=OPr0QSNqOMhIkzuXVnjWwd489w4E2vYeU8RDmMQfSWtCigzDWGr1nPlh81d5Od0IPxloy3ygNVM8qNdeCmFkQ7EPoGuLuc2FCYD/kmb5T8zyCvcRTwdrLAwnczhCfhJMX7FeEzM2dMP9b/1oPy+lVHvnQp8pR4TP5L5XLvyYqyeHrnvYO0xT5wH1n4bk3rJgxUOQm3np77nhxH0i3OC9T9t+3lt3PUno3+lbXaXmjzAb3IvAoTQuV/VpKpPyHGzwerslChSOBxwi46RxwwIbB5nF+DJ2M29DpNgIuTNEdJy3X4+kxUWUKKBrbmO4WMzIkrB++50ig82n/+nIu2QjJw==
+Authentication-Results: de.ibm.com; dkim=none (message not signed)
+ header.d=none;de.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Wed, 14 Jul
+ 2021 18:43:05 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4331.021; Wed, 14 Jul 2021
+ 18:43:05 +0000
+Date:   Wed, 14 Jul 2021 15:43:01 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, alex.williamson@redhat.com,
+        Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <20210714184301.GA543781@nvidia.com>
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+ <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+ <20210713184517.48eacee6.pasic@linux.ibm.com>
+ <20210713170533.GF136586@nvidia.com>
+ <9512a7fb-cc55-cd9b-cdf9-7c19d0567311@linux.ibm.com>
+ <20210713192138.GG136586@nvidia.com>
+ <dc18ff02-80f6-e59e-5f08-417434e74706@linux.ibm.com>
+ <9c50fb1b-4574-0cfc-487c-64108d97ed73@de.ibm.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
+In-Reply-To: <9c50fb1b-4574-0cfc-487c-64108d97ed73@de.ibm.com>
+X-ClientProxiedBy: BY3PR05CA0031.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::6) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by BY3PR05CA0031.namprd05.prod.outlook.com (2603:10b6:a03:39b::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.12 via Frontend Transport; Wed, 14 Jul 2021 18:43:05 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m3jqX-002Lrq-GG; Wed, 14 Jul 2021 15:43:01 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d4424dbc-9ec8-44f1-aeda-08d946f7377f
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5144:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51443F673EA20D0E13B5138BC2139@BL1PR12MB5144.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ff7tOwOAsOSH5i1oNW9mOvR+SUgI3WWihhjDl+rqwmYS19kGNfWfUb86QZz3fbeU4uyJjgKrNYhVE0zCN++w0Nr+2F3OI6GwM7NXll5yIB/6kzf9BvsgR71JBhhpDUsaM2V8DcNQk98BgeH7JEF05o7FLIJ2ikHaRwIQR210D4mA2Og6sMl052N9v9AInb+AWunM56Ikv8TVpS+NgM4O0Z36fCPSRf+qkEkM2qgdkmm7NnkOJuzgS0lbUTchEdXPXnavFI79Xan578TiFQrEIr08tT/2w40VW1zqf+CAS72RqN9GOdQk37GK8l8f0m7/OWpCn1mZ7c2ox73GINhzOownwCS4Uf5Cjhx+UQ7LVlGO5DwvscU+tjAYnQDyHUpi3QwVQ1nwXKHPN/Tumpl8aBrKAczwsC68jPnNZB/Y24y8i3BEf1q3IPPt2SAEMwyF6h3kYLbUeJjYzV9CrkobIq3HTfzhqBB86wPj/REIorKz4RCi8t88suyY2c6D4gUGsyIrqj9+6SFhL/gP5nB+HfOOz9wxsM0rJWr/BJK9m/zzUMPjaBhLKeBG5w2cv2QTdbJ5GsauEDB5id0wG9WuQW/HxW4GugSITQ3gsSf6USrG1xJ1XhX55SfZRjx8InsGzmZZVmeBEBYPgjQqcTOTjCW6OcjW25SJXxu4wFFe9RnoZlBPIhINa2rNjN5U9nqfoPvRazMVjukYAMs0mhJx9g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(39860400002)(136003)(376002)(26005)(8936002)(1076003)(6916009)(8676002)(66946007)(5660300002)(9786002)(38100700002)(4326008)(66476007)(66556008)(316002)(86362001)(54906003)(36756003)(9746002)(2906002)(2616005)(7416002)(426003)(478600001)(186003)(33656002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YGTM1XUQmk3O7gGeXnnS107knOvX9dYpLPcOUEHYzHGN4h4XqFUjYCVEd0Ow?=
+ =?us-ascii?Q?NeDQ+Zd9VUD2vVMsHJOnsQzvRrXhHNMM4lCSZekRrOo+YERgvE9T8GcHNfMb?=
+ =?us-ascii?Q?K/Qdigh3ANwMJ7Edxo31PgQIkh8b6+TI8np9khIjO6Bn4OLi1H48l5Bgb3tL?=
+ =?us-ascii?Q?N2GAptT1lFGlXrXi7o5AKo/mRgJEoi0IBmvfH2NJcDj9YWXX8mZpaPLzWPya?=
+ =?us-ascii?Q?zMa0gMEhMfbxudz+kM94bXQt5wdyGJu1V+RwSwtDwQhalKbNdxEq0ZO5FSyz?=
+ =?us-ascii?Q?1cdFR52lVVPS4plT0z2rrPYtUr6FHDVk+dZLq9l1HYRq3PC7zirpLk9sYlo6?=
+ =?us-ascii?Q?ESF1XJV4PjU5WbrvCS/E1mVJzG0Rnr+59Ky43GEWgbUUYpCTYY68nsHtN7Ji?=
+ =?us-ascii?Q?NetemVDl4HrsNUGfsSHKpc1hMnjB10WT9jrnThyTZzSxrM77h0lkrk0xrUDo?=
+ =?us-ascii?Q?ey0t2mAje1qd1ko5nv63KLN2Yz6jEEz1X8fmSE1yufKjP+TSmysEPrx8iXCS?=
+ =?us-ascii?Q?DgI+8jx6iiGr/cnAg+pp+6K9PqAQiCbuvrfvOM92vZbfdnb2HHWHLNir6tFt?=
+ =?us-ascii?Q?eAWI8lU7Dw4Xn5OT4ce3xtGw2BfStDwW09W5rCX5Kg5/XXo3O/gTXIu4rWdX?=
+ =?us-ascii?Q?jVK/k0eFszdpYs36Ye11Q6DrVPL48dpWRCZrHCa01CKB1jSyzSDVTq/FPcyr?=
+ =?us-ascii?Q?BcpEIfX0wY6AOxwOaL8HBC/+Ws3DiQpwWM1eUIEXtVMoYhlvYRjv87xlaADy?=
+ =?us-ascii?Q?5A495wSiW041dN/+07aDvW20MYNqa4lbvUha/0HDllFk2OiCskFAd9BxE2/c?=
+ =?us-ascii?Q?GcJWP/oe342DvNykslsgQ3xsAwXXgNbAiR9mkFN+dEXNFBe3W03Qt+3TKU87?=
+ =?us-ascii?Q?TIasdZe5zzOC62gULWpY9WB1p4nBg/bjeu13FxJcFWrgchQNjmbPcjN1+g5A?=
+ =?us-ascii?Q?1bjPXTlVvlfoxF/7G7H5SuhbhtSg8nb8BBdY+lM/oQH8k/Rl5HWIej/uplHn?=
+ =?us-ascii?Q?Qovahfsiufur49FtSVBAtSsoN5mTlbGYxCNIHf+aWeBtVCaQpA83a2nmX5+l?=
+ =?us-ascii?Q?Na1LiH2IWGn2PO/JAlub20dvYSN28JMh1hyShy/2m59JYVQP40ZBkP1eWetg?=
+ =?us-ascii?Q?H4fv6LuSPlwPSy2MKgYNE/C3fMK5yHPRcIvAly6dYUu/HmP618qC6IqVyZD4?=
+ =?us-ascii?Q?lA01a5rCWLZPJ8WEGJPEyrT9nNo7FnMgTL4t+WTIA8FTZnsVr3SZZZrlJoLo?=
+ =?us-ascii?Q?CGE3Qmz0JwtwE9ZomsaWcL95jLPBZ1/CIAcURc1puAGlN9rTGESaxxYZEnv4?=
+ =?us-ascii?Q?am/vrfm8+5tYp3DQMIk1jfH2?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4424dbc-9ec8-44f1-aeda-08d946f7377f
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 18:43:05.3319
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e+BgSrf6w/CZQ1dFDqX9kYcllo6ugqra08zK2lvEgUmBct5IAE0954nTOQs3XcRv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Niklas,
-
-On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
-> On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
-> > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
-> > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
-> > > > Verify that streaming is not active before setting the pad format.
-> > > > 
-> > > > According to the VIDIOC documentation [1] changes to the active
-> > > > format of a media pad via the VIDIOC_SUBDEV_S_FMT ioctl are
-> > > > applied to the underlying hardware.
-> > > > In rcar-csi2 a format change only applies to hardware, when the
-> > > > pipeline is started. While the device is not in use, it is therefore
-> > > > okay to update the format.
-> > > > 
-> > > > However, when the pipeline is active, this leads to a format
-> > > > mismatch between driver and device.
-> > > > Other applications can query the format with
-> > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported
-> > > > a format that does not fit the current stream.
-> > > > 
-> > > > This commit prevents format update while streaming is active
-> > > > and returns -EBUSY to user space, as suggested by [1].
-> > > > 
-> > > > [1] Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rst
-> > > 
-> > > I like that this is addressed, but I wonder is this not something that 
-> > > should be fixed in the V4L2 core and not in drivers?
+On Wed, Jul 14, 2021 at 07:56:42PM +0200, Christian Borntraeger wrote:
+> > > In any event, I don't care anymore - please just get this merged, to
+> > > AlexW's tree so I don't have conflicts with the rest of the ap changes
+> > > for VFIO I've got queued up.
 > > 
-> > Some drivers may support format changes during streaming (that's allowed
-> > by the V4L2 API, I'm not sure if it's used anywhere though). While I'd
-> > favour not duplicating the same logic in different (and differently
-> > buggy) ways in drivers, I'm not sure how this could be implemented in a
-> > sane way in the V4L2 core in its current state.
+> > Christian, can you merge this with AlexW's tree? Halil suggested
+> > the 'fixes' and 'cc stable' tags ought to be removed, do I need
+> > to post another version or can you take those out when merging?
 > 
-> I understand it's possible from some devices to support to format 
-> changes during streaming, but as you point out it's the exception and 
-> not the rule, if used at all.
+> Normally this would go via the KVM/s390 or s390 tree (as Alex did
+> not want to handle s390 vfio devices).
+
+I would like to move the vfio driver(s) out of driver/s390 and over to
+vfio. This is the normal kernel process and after some discussion we
+decided with Thomas Gleixner that this is the right thing to do for
+things like the new Intel mdev.
+
+But that can be another discussion, thanks
+
+> Alex, as Jason is waiting for this to be in your tree could you take
+> this patch via your tree ?(please remove cc stable and Fixes for now
+> I want this to settle a bit).
 > 
-> So my point is if we start to enforce this in drivers we are headed down 
-> a road where this will be messier to clean up. Would it not make more 
-> sens to default the V4L2 core to disallow format changes while streaming 
-> and add a new flag to V4L2_SUBDEV_CAP_ to signal that the subdevice 
-> supports format changes while streaming?
-> 
-> We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a subdevice 
-> only supports read-only operations so I think it would not be too hard 
-> to move this functionality into the core?
+> To carry this patch in your tree with my kvm/s390 and s390 maintainer hat
+> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-Yes, that's something we could try. The subdev core will then need to
-track the streaming state, which may require wrapping the .s_stream()
-call. Locking should then also likely be handled by the core. Probably
-nothing impossible, but quite a bit of work. Any volunteer ? :-)
+Great!
 
-> > > > Note: after creation of this commit, it was noticed that Steve
-> > > > Longerbeam has a very similar solution in his fork.
-> > > > 
-> > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-> > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
-> > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
-> > > > ---
-> > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 ++++++++++++++++++++-
-> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > index e28eff0..98152e1 100644
-> > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct v4l2_subdev *sd,
-> > > >  {
-> > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
-> > > >  	struct v4l2_mbus_framefmt *framefmt;
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	mutex_lock(&priv->lock);
-> > > >  
-> > > >  	if (!rcsi2_code_to_fmt(format->format.code))
-> > > >  		format->format.code = rcar_csi2_formats[0].code;
-> > > >  
-> > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > > > +
-> > > > +		/*
-> > > > +		 * Do not apply changes to active format while streaming.
-> > > > +		 *
-> > > > +		 * Since video streams could be forwarded from sink pad to any
-> > > > +		 * source pad (depending on CSI-2 channel routing), all
-> > > > +		 * media pads are effected by this rule.
-> > > > +		 */
-> > > > +		if (priv->stream_count > 0) {
-> > > > +			ret = -EBUSY;
-> > > > +			goto out;
-> > > > +		}
-> > > > +
-> > > >  		priv->mf = format->format;
-> > > >  	} else {
-> > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > > >  		*framefmt = format->format;
-> > > >  	}
-> > > >  
-> > > > -	return 0;
-> > > > +out:
-> > > > +	mutex_unlock(&priv->lock);
-> > > > +
-> > > > +	return ret;
-> > > >  }
-> > > >  
-> > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
-
--- 
-Regards,
-
-Laurent Pinchart
+Jason
