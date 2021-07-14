@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377373C91D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82F83C91CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238842AbhGNULi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244370AbhGNULK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:11:10 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CFAC0251BA
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:05:27 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id v6so5690560lfp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GjVQmrIVGwltwK1r5dkwsbhATiXC528RkYBjqLevFP0=;
-        b=Ox4QzPp+RQGEZBJFDxx5UYrPFN4p4RoiXXBT+FyFJWV6ZUXeoxj+gDImRM83J1ujqR
-         ei6/kbKym7FZaiPdTn+r7szeDcTdbY6Zm6YmOauIZ3I7GkaFkjgekcuAsVzTmnnWq7SJ
-         SFvm/+rZ1ixzb9T0YIytnbpcK0kdy+Pmpgir4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GjVQmrIVGwltwK1r5dkwsbhATiXC528RkYBjqLevFP0=;
-        b=TaY3ju+Sn0gP5QITKrA9NfPpdSRZ90mKREAxEg80HLB25lPTC+60tzL35NANseqDjy
-         Keryk5mqB9aMnUYHAQMfVFP2Md1OvBwMb5+L3NkdtvZNvoibqcl+AO7CxtbYqXN4qrRf
-         47GgsoFGZre8wAI9EIGQNYoHPBqM+SwphWq2PWlWzGT4iCvh8qIifvPl30go4k276hy9
-         3TzgJpCXdQLcMf/nfLv1wYAoloPWRR+ip4Nt2JTODLBNlPz7bnMnEmvaVk0B/ouSj6o1
-         zPEsufWhY+LXC4SkN8Uect+dzT5ej7Bu5nA2c+oNtqIFEFfx9huySFNdF7i8FWKyC8ah
-         U6Cg==
-X-Gm-Message-State: AOAM533//AvBKknNSFZbl8Re0OUz6YHtZcRfp6lacocZVkRyj7IuHHuG
-        JcINDD3kbXsQjQEsuL2QppkhN2FBmbgI9WR+
-X-Google-Smtp-Source: ABdhPJx5CZBwzTq49XkgydFt0x63U1kr0hhSs2biKAbIQsonOKXyxeWTwMe8/uJAJ0SJrV1HhMEQSA==
-X-Received: by 2002:a19:5f06:: with SMTP id t6mr29909lfb.188.1626293125897;
-        Wed, 14 Jul 2021 13:05:25 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id b15sm237500lff.186.2021.07.14.13.05.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 13:05:25 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id a18so5659131lfs.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:05:25 -0700 (PDT)
-X-Received: by 2002:a05:6512:404:: with SMTP id u4mr32339lfk.40.1626293124769;
- Wed, 14 Jul 2021 13:05:24 -0700 (PDT)
+        id S235501AbhGNUHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:07:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235870AbhGNUGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 16:06:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 439F9613C0;
+        Wed, 14 Jul 2021 20:03:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626292992;
+        bh=nJrytn0I+MJykV0m0Dz87seolw0QnFNLAadswtmO1ME=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tOVolJ7oZ2YxyG535LgmwrKZvMcKQIN66corYHlWeD5HcqHrdcx0jQcxQAjtB5vic
+         zPfqq/lGnBrkadKNxWJTJ0liCoDwfNK8Q3KijvHu2DKRx9OKa2SyAOUEsGSl6yOArW
+         GStMvK0llNimmXr4HdutL8CAMAlXYEURJyQ85A4Vd7RzR2pSnrS40as4JP54NjKTJq
+         lS5ZexjWBk/XEIGUGxNPdnw9TytbNFqTrxnpnfDZtCYpzxPUJJhwc9QOYVxJ5sDsbB
+         xo1o7AcNm4IijxJGyOh/zrck7fnWJIVYwTGxxJQj6yGunzvKcV4P3PWvCJM8+Xrugd
+         RTNvpijHoRqFQ==
+Date:   Wed, 14 Jul 2021 15:05:23 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [GIT PULL] fallthrough fixes for Clang for 5.14-rc2
+Message-ID: <20210714200523.GA10606@embeddedor>
 MIME-Version: 1.0
-References: <YO8Rw23KxCDjzKeA@infradead.org>
-In-Reply-To: <YO8Rw23KxCDjzKeA@infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 14 Jul 2021 13:05:08 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjuDBQdUvaO=XaptgmvE_qeg_EuZjsUZf2vVoXPUMgAvg@mail.gmail.com>
-Message-ID: <CAHk-=wjuDBQdUvaO=XaptgmvE_qeg_EuZjsUZf2vVoXPUMgAvg@mail.gmail.com>
-Subject: Re: [GIT PULL] configfs fix for Linux 5.14
-To:     Christoph Hellwig <hch@infradead.org>,
-        Bart Van Assche <bvanassche@acm.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 9:33 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> configfs fix for Linux 5.14
->
->  - fix the read and write iterators (Bart Van Assche)
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-I've pulled this, but I'm somewhat disgusted by it.
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-The overflow "protection" is just wrong:
+are available in the Git repository at:
 
-+       to_copy = SIMPLE_ATTR_SIZE - 1 - pos;
-+       if (to_copy <= 0)
-+               return 0;
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc2
 
-because if users control "pos", then that "to_copy" could be a huge
-positive value even after overflow protection.
+for you to fetch changes up to b7eb335e26a9c7f258c96b3962c283c379d3ede0:
 
-I hope/think that we always end up checking 'pos' in the VFS layer so
-that this isn't a bug in practice, but people - the above is just
-fundamentally bad code.
+  Makefile: Enable -Wimplicit-fallthrough for Clang (2021-07-14 11:12:21 -0500)
 
-It's simply not the correct way to check limits. It does it badly, and
-it's hard to read (*).
+----------------------------------------------------------------
+fallthrough fixes for Clang for 5.14-rc2
 
-If you want to check limits, then do it (a) the obvious way and (b) right.
+Hi Linus,
 
-Something like
+Please, pull the following patches that fix many fall-through
+warnings when building with Clang and -Wimplicit-fallthrough.
 
-        if (pos < 0 || pos >= SIMPLE_ATTR_SIZE - 1)
-                return 0;
-        to_copy = SIMPLE_ATTR_SIZE - 1 - pos;
+This pull-request also contains the patch for Makefile that enables
+-Wimplicit-fallthrough for Clang, globally.
 
-would have been a hell of a lot more obvious, would have been CORRECT,
-and a compiler would likely be able to equally good code for it.
+It's also important to notice that since we have adopted the use of
+the pseudo-keyword macro fallthrough; we also want to avoid having
+more /* fall through */ comments being introduced. Notice that contrary
+to GCC, Clang doesn't recognize any comments as implicit fall-through
+markings when the -Wimplicit-fallthrough option is enabled. So, in
+order to avoid having more comments being introduced, we have to use
+the option -Wimplicit-fallthrough=5 for GCC, which similar to Clang,
+will cause a warning in case a code comment is intended to be used
+as a fall-through marking. The patch for Makefile also enforces this.
 
-Doing a "x <0 || x > C" test is actually nice and cheap, and compilers
-should all be smart enough to turn it into a single (unsigned)
-comparison.
+We had almost 4,000 of these issues for Clang in the beginning,
+and there might be a couple more out there when building some
+architectures with certain configurations. However, with the
+recent fixes I think we are in good shape and it is now possible
+to enable -Wimplicit-fallthrough for Clang. :)
 
-Possibly it even generates better code, since "to_copy" could then -
-and should - no longer be a 64-bit loff_t, since it's pointless. We've
-just checked the range of the values, so it can be the natural size
-for the machine.
+Thanks!
 
-Although from a small test, gcc does seem to be too simple to take
-advantage of that, and on 32-bit x86 it does the range check using
-64-bit arithmetic even when unnecessary (it should just check "are the
-upper 32 bits zero" rather than play around with doing a 64-bit
-sub/sbb - I'm surprised, because I thought gcc already knew about
-this, but maybe compiler people are starting to forget about 32-bit
-stuff too).
+----------------------------------------------------------------
+Gustavo A. R. Silva (27):
+      xfs: Fix multiple fall-through warnings for Clang
+      mt76: mt7921: Fix fall-through warning for Clang
+      nfp: flower-ct: Fix fall-through warning for Clang
+      drm/i915: Fix fall-through warning for Clang
+      kernel: debug: Fix unreachable code in gdb_serial_stub()
+      fcntl: Fix unreachable code in do_fcntl()
+      mtd: cfi_util: Fix unreachable code issue
+      drm/msm: Fix fall-through warning in msm_gem_new_impl()
+      cpufreq: Fix fall-through warning for Clang
+      math-emu: Fix fall-through warning
+      video: fbdev: Fix fall-through warning for Clang
+      scsi: libsas: Fix fall-through warning for Clang
+      PCI: Fix fall-through warning for Clang
+      mmc: jz4740: Fix fall-through warning for Clang
+      iommu/arm-smmu-v3: Fix fall-through warning for Clang
+      dmaengine: ipu: Fix fall-through warning for Clang
+      s390: Fix fall-through warnings for Clang
+      dmaengine: ti: k3-udma: Fix fall-through warning for Clang
+      power: supply: Fix fall-through warnings for Clang
+      ASoC: Mediatek: MT8183: Fix fall-through warning for Clang
+      MIPS: Fix fall-through warnings for Clang
+      MIPS: Fix unreachable code issue
+      powerpc/powernv: Fix fall-through warning for Clang
+      usb: gadget: fsl_qe_udc: Fix fall-through warning for Clang
+      dmaengine: mpc512x: Fix fall-through warning for Clang
+      powerpc/smp: Fix fall-through warning for Clang
+      Makefile: Enable -Wimplicit-fallthrough for Clang
 
-But even if the compiler doesn't figure it out, the simple "just check
-the limits" is a lot more readable for humans, and avoids the whole
-overflow issue. And maybe some compilers will do better at it.
-
-            Linus
-
-(*) Ok, it's easy to read if you ignore the overflow possibility. IOW,
-it's easy to read WRONG.
+ Makefile                                              |  9 +++------
+ arch/mips/include/asm/fpu.h                           |  2 +-
+ arch/mips/mm/tlbex.c                                  |  2 ++
+ arch/powerpc/platforms/powermac/smp.c                 |  1 +
+ arch/s390/kernel/uprobes.c                            |  1 +
+ drivers/char/powernv-op-panel.c                       |  1 +
+ drivers/cpufreq/longhaul.c                            |  2 --
+ drivers/dma/ipu/ipu_idmac.c                           |  2 ++
+ drivers/dma/mpc512x_dma.c                             |  1 +
+ drivers/dma/ti/k3-udma.c                              |  1 +
+ drivers/gpu/drm/i915/gem/i915_gem_shrinker.c          |  1 +
+ drivers/gpu/drm/msm/msm_gem.c                         |  2 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c           |  1 +
+ drivers/mmc/host/jz4740_mmc.c                         |  2 ++
+ drivers/mtd/chips/cfi_util.c                          |  4 ++--
+ drivers/net/ethernet/netronome/nfp/flower/conntrack.c |  1 +
+ drivers/net/wireless/mediatek/mt76/mt7921/main.c      |  1 +
+ drivers/pci/proc.c                                    |  2 +-
+ drivers/power/supply/ab8500_fg.c                      |  2 ++
+ drivers/power/supply/abx500_chargalg.c                |  1 +
+ drivers/s390/char/tape_char.c                         |  2 --
+ drivers/s390/net/ctcm_fsms.c                          |  1 +
+ drivers/s390/net/qeth_l3_main.c                       |  1 +
+ drivers/scsi/libsas/sas_discover.c                    |  2 +-
+ drivers/usb/gadget/udc/fsl_qe_udc.c                   |  1 +
+ drivers/video/fbdev/xilinxfb.c                        |  2 ++
+ fs/fcntl.c                                            |  2 +-
+ fs/xfs/libxfs/xfs_attr.c                              | 16 ++++++++--------
+ include/math-emu/op-common.h                          |  2 +-
+ kernel/debug/gdbstub.c                                |  2 +-
+ sound/soc/mediatek/mt8183/mt8183-dai-adda.c           |  1 +
+ 31 files changed, 44 insertions(+), 27 deletions(-)
