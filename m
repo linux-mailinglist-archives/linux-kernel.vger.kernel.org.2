@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182AF3C8970
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B68B3C8988
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237394AbhGNRQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:16:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:37398 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhGNRQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:16:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74511D6E;
-        Wed, 14 Jul 2021 10:13:29 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D64153F774;
-        Wed, 14 Jul 2021 10:13:28 -0700 (PDT)
-Subject: Re: [PATCH] cacheinfo: clear cache_leaves(cpu) in
- free_cache_attributes()
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, bobo.shaobowang@huawei.com
-References: <1626148058-55230-1-git-send-email-wangxiongfeng2@huawei.com>
- <20210713113315.thsvrvqvqptc7hje@bogus>
- <303cd2bf-7142-6ec9-548a-afe7f6e5ca8f@huawei.com>
- <20210713132612.gvx7xpdp3tjcmxxu@bogus>
- <ee4db21a-e1cc-5847-d1fb-1d7735cf2164@arm.com>
- <93e6b13b-10b3-f371-d905-ba114df803fd@huawei.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <ae05d599-3470-ec49-f354-79a6421c0d9c@arm.com>
-Date:   Wed, 14 Jul 2021 18:13:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229875AbhGNRSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhGNRSQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:18:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5649C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=kX9hKK1zO72+yBWFhZs3db5NllcwOVI8dLCu+ad+9IA=; b=h1H8yRGFNMYtQhBRHcFnIOv3sR
+        zEehWviMROtRkkzl8inD4QviXRaSWhD1fstkFSrsLAsJgIJl8mnPR1y8D7PGX0BbyJARINlRFh1sO
+        SA9dehEkYEZKmEkgs8eyJP+DM6XxfDj9nXCFeHPJ9WjgVncE1obqWnmfEFyfr5thqSYuJf6eD2Pxj
+        yp9Z+hIJcaZao6RfvYpbkHHKpRt6uu4t+MEZrjIW+V4Q2+qz8eNO7a6POsxPCH1p+pg/tolpF/Omw
+        IAU5ReM0eMuoCJZD/zOYZnyaoWJ0PTiSXLuk0sCTRtwpzF2LD7DHvl2SN2eaIchw/uK9JRlFjzUU0
+        1iC2ckdA==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3iTk-00EGmG-8I; Wed, 14 Jul 2021 17:15:24 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        Lyude Paul <lyude@redhat.com>
+Subject: [PATCH -next] drm: nouveau: fix disp.c build when NOUVEAU_BACKLIGHT is not enabled
+Date:   Wed, 14 Jul 2021 10:15:23 -0700
+Message-Id: <20210714171523.413-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <93e6b13b-10b3-f371-d905-ba114df803fd@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiongfeng,
+Fix build errors and warnings when
+# CONFIG_DRM_NOUVEAU_BACKLIGHT is not set
 
-(CC: dropping Greg, Rafael and Sudeep as this isn't likely to be of interest to them)
+../drivers/gpu/drm/nouveau/dispnv50/disp.c: In function ‘nv50_sor_atomic_disable’:
+../drivers/gpu/drm/nouveau/dispnv50/disp.c:1665:52: error: ‘struct nouveau_connector’ has no member named ‘backlight’
+  struct nouveau_backlight *backlight = nv_connector->backlight;
+                                                    ^~
+../drivers/gpu/drm/nouveau/dispnv50/disp.c:1670:28: error: dereferencing pointer to incomplete type ‘struct nouveau_backlight’
+  if (backlight && backlight->uses_dpcd) {
 
-On 14/07/2021 03:10, Xiongfeng Wang wrote:
-> On 2021/7/14 1:38, James Morse wrote:
->> On 13/07/2021 14:26, Sudeep Holla wrote:
->>> On Tue, Jul 13, 2021 at 08:46:19PM +0800, Xiongfeng Wang wrote:
->>>> Actually, it's our own code that crashed. My colleague Shaobo(CCed) tried to add
->>
->> Seems to have dropped off the CC list.
-> 
-> Yes. I don't know why I didn't CC him success. CCed again.
-> 
->>
->>>> MPAM support on ARM64.
->>
->> Do you want me to CC either of you on the series that refactor the resctrl code? This is
->> the bit that needs doing to get MPAM working upstream
-> 
-> It would be nice if you could CC him. His email address is
-> bobo.shaobowang@huawei.com. Thanks a lot !
+and then fix subsequent build warnings after the above are fixed:
 
-Thanks, I will!
+../drivers/gpu/drm/nouveau/dispnv50/disp.c: In function ‘nv50_sor_atomic_disable’:
+../drivers/gpu/drm/nouveau/dispnv50/disp.c:1669:6: warning: unused variable ‘ret’ [-Wunused-variable]
+  int ret;
+      ^~~
+../drivers/gpu/drm/nouveau/dispnv50/disp.c:1662:22: warning: unused variable ‘drm’ [-Wunused-variable]
+  struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+                      ^~~
 
+Fixes: 6eca310e8924 ("drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
+Cc: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/nouveau/dispnv50/disp.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> Below is the (openEuler version) MPAM support code he wrote based on your
-> private version in linux-arm.org repo:
-> https://gitee.com/openeuler/kernel/tree/openEuler-1.0-LTS/arch/arm64/kernel/mpam
-> It would be appreciated if you could give some advice.
-
-(I've not looked in any detail, but)
-
-Beware duplicating any of the code that is involved in the user facing ABI. This will
-create subtle differences between the behaviour of x86 and arm64 for the resctrl
-filesystem. This must not be allowed to happen as its bad for user-space.
-
-
-> console display:
-> [root@localhost ~]# mount -t resctrl resctrl /sys/fs/resctrl/ -o
-> cdpl3,caPbm,mbHdl,mbMax
-> [root@localhost ~]# cd /sys/fs/resctrl/
-> [root@localhost resctrl]# cat schemata
-> L3CODEPBM:0=7fff;1=7fff;2=7fff;3=7fff
-> L3DATAPBM:0=7fff;1=7fff;2=7fff;3=7fff
-> MBHDL:0=1;1=1;2=1;3=1
-> MBMAX:0=100;1=100;2=100;3=100
-
-Please don't create new 'things' visible to user-space.
-You should not need to change user-space software.
-
-The whole point of using resctrl is so that existing user-space software works, and linux
-has one behaviour across all architectures. (It doesn't matter if the names are wrong,
-only the behaviour matters)
-
-If new schema are needed, we should wait until we've got the existing resctrl stuff
-working upstream, then discuss it with the x86 folk, as any new schema must be possible to
-support on x86 too.
-
-
-Thanks,
-
-James
+--- linux-next-20210714.orig/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ linux-next-20210714/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -1659,23 +1659,27 @@ static void
+ nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+ {
+ 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+-	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+ 	struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
+ 	struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
++#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
++	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+ 	struct nouveau_backlight *backlight = nv_connector->backlight;
++#endif
+ 	struct drm_dp_aux *aux = &nv_connector->aux;
+ 	int ret;
+ 	u8 pwr;
+ 
++#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
+ 	if (backlight && backlight->uses_dpcd) {
+ 		ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
+ 		if (ret < 0)
+ 			NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
+ 				 nv_connector->base.base.id, nv_connector->base.name, ret);
+ 	}
++#endif
+ 
+ 	if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
+-		int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
++		ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
+ 
+ 		if (ret == 0) {
+ 			pwr &= ~DP_SET_POWER_MASK;
