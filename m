@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A073C913A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F8C3C9160
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241350AbhGNT7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:59:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46244 "EHLO mail.kernel.org"
+        id S241416AbhGNT7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239897AbhGNTt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C541F61419;
-        Wed, 14 Jul 2021 19:44:34 +0000 (UTC)
+        id S240004AbhGNTt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5318961421;
+        Wed, 14 Jul 2021 19:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291875;
-        bh=S8f7hXnO7LbGpXhz0IeSZWpMMMzugPoTBMCiQn49kGY=;
+        s=k20201202; t=1626291882;
+        bh=aj3HxPOJKM4Ei30vxcMcaN/Vk5UphhfB5L2vh7AnYhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QgiCtHXishu7V6kCOLFW1B9xTif0gRPuInXztBYjNfIdw3nJ93OVV8eRevo3O9lIv
-         2VZ9idQWpcPxKfPfu1A34g91Ra3if6DsI2jJavaWNU/CG7qkJtOSTeU7oLctlMhoM+
-         22cyCW2OqpQ9YvAWpQETOvOQdO8mdDqJ4w3Sl8K8p6mP1ALZZkO5DWf97B+ewrYBUv
-         rUk0kwrYEggh60l3d15mxjJivQbWL7GA2MBbbiGDadeHTx8LF0Gp01o5HzLJcfy0Of
-         Mjpk7zdZUGtUBItT5RX7qF5Z6bBJN509D9OqvZKhODNkkVcEO1AFdHz2KHBZGFo4/j
-         ay4hgdvP0tD1w==
+        b=M4wKT/Vy8XTbfQvJBEpJILGs8BJbmmAy8dnVG0Of9bWKUN1BjqDGM41xfzuqpRCQw
+         ixNiHYagAQtMsbkhzOBHhVzrDYhXJCH+kAE82XQ1jmfeW1wmcMgoHf43RkdhQUPPaq
+         MNyKOkAZPcaFzvLFxm3NHYF1kC/t33sPdPmBw6t3zT/u5BAWgFpp7jRf7JpE1Ac1zw
+         uV/c5rDaJUObwaj3wziSGguGEckyr95WCP2XN+LHucbxLWrJrwef7IDJwns8ldQR5C
+         t4TrSuSzduIXtfIHyB+nEajz6A24pShyrLmy79hBjdPrM2yvpfAmiQ8sP2OX/7qE7d
+         d8braLjWeyPHA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 61/88] ARM: dts: stm32: move stmmac axi config in ethernet node on stm32mp15
-Date:   Wed, 14 Jul 2021 15:42:36 -0400
-Message-Id: <20210714194303.54028-61-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 65/88] ARM: dts: stm32: fix stpmic node for stm32mp1 boards
+Date:   Wed, 14 Jul 2021 15:42:40 -0400
+Message-Id: <20210714194303.54028-65-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -45,49 +45,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexandre Torgue <alexandre.torgue@foss.st.com>
 
-[ Upstream commit fb1406335c067be074eab38206cf9abfdce2fb0b ]
+[ Upstream commit 4bf4abe19089245b7b12f35e5cafb5477b3e2c48 ]
 
-It fixes the following warning seen running "make dtbs_check W=1"
+On some STM32 MP15 boards, stpmic node is not correct which generates
+warnings running "make dtbs_check W=1" command. Issues are:
 
-Warning (simple_bus_reg): /soc/stmmac-axi-config: missing or empty
-reg/ranges property
+-"regulator-active-discharge" is not a boolean but an uint32.
+-"regulator-over-current-protection" is not a valid entry for vref_ddr.
+-LDO4 has a fixed voltage (3v3) so min/max entries are not allowed.
 
 Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp151.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/stm32mp157a-stinger96.dtsi   | 7 ++-----
+ arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 5 +----
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi   | 5 +----
+ arch/arm/boot/dts/stm32mp15xx-osd32.dtsi       | 7 ++-----
+ 4 files changed, 6 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 84757901cd8d..b479016fef00 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1395,12 +1395,6 @@ crc1: crc@58009000 {
- 			status = "disabled";
+diff --git a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
+index 58275bcf9e26..4dd138d691c7 100644
+--- a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
++++ b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
+@@ -184,8 +184,6 @@ vtt_ddr: ldo3 {
+ 
+ 			vdd_usb: ldo4 {
+ 				regulator-name = "vdd_usb";
+-				regulator-min-microvolt = <3300000>;
+-				regulator-max-microvolt = <3300000>;
+ 				interrupts = <IT_CURLIM_LDO4 0>;
+ 			};
+ 
+@@ -208,7 +206,6 @@ v1v8: ldo6 {
+ 			vref_ddr: vref_ddr {
+ 				regulator-name = "vref_ddr";
+ 				regulator-always-on;
+-				regulator-over-current-protection;
+ 			};
+ 
+ 			bst_out: boost {
+@@ -219,13 +216,13 @@ bst_out: boost {
+ 			vbus_otg: pwr_sw1 {
+ 				regulator-name = "vbus_otg";
+ 				interrupts = <IT_OCP_OTG 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
+ 			};
+ 
+ 			vbus_sw: pwr_sw2 {
+ 				regulator-name = "vbus_sw";
+ 				interrupts = <IT_OCP_SWOUT 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
+ 			};
  		};
  
--		stmmac_axi_config_0: stmmac-axi-config {
--			snps,wr_osr_lmt = <0x7>;
--			snps,rd_osr_lmt = <0x7>;
--			snps,blen = <0 0 0 0 16 8 4>;
--		};
--
- 		ethernet0: ethernet@5800a000 {
- 			compatible = "st,stm32mp1-dwmac", "snps,dwmac-4.20a";
- 			reg = <0x5800a000 0x2000>;
-@@ -1424,6 +1418,12 @@ ethernet0: ethernet@5800a000 {
- 			snps,axi-config = <&stmmac_axi_config_0>;
- 			snps,tso;
- 			status = "disabled";
-+
-+			stmmac_axi_config_0: stmmac-axi-config {
-+				snps,wr_osr_lmt = <0x7>;
-+				snps,rd_osr_lmt = <0x7>;
-+				snps,blen = <0 0 0 0 16 8 4>;
-+			};
+diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+index b5601d270c8f..2d9461006810 100644
+--- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
+@@ -173,8 +173,6 @@ vtt_ddr: ldo3 {
+ 
+ 			vdd_usb: ldo4 {
+ 				regulator-name = "vdd_usb";
+-				regulator-min-microvolt = <3300000>;
+-				regulator-max-microvolt = <3300000>;
+ 				interrupts = <IT_CURLIM_LDO4 0>;
+ 			};
+ 
+@@ -197,7 +195,6 @@ v1v2_hdmi: ldo6 {
+ 			vref_ddr: vref_ddr {
+ 				regulator-name = "vref_ddr";
+ 				regulator-always-on;
+-				regulator-over-current-protection;
+ 			};
+ 
+ 			 bst_out: boost {
+@@ -213,7 +210,7 @@ vbus_otg: pwr_sw1 {
+ 			 vbus_sw: pwr_sw2 {
+ 				regulator-name = "vbus_sw";
+ 				interrupts = <IT_OCP_SWOUT 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
+ 			 };
  		};
  
- 		usbh_ohci: usbh-ohci@5800c000 {
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index f496bbfa0be6..998ea30ae024 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -226,8 +226,6 @@ vtt_ddr: ldo3 {
+ 
+ 			vdd_usb: ldo4 {
+ 				regulator-name = "vdd_usb";
+-				regulator-min-microvolt = <3300000>;
+-				regulator-max-microvolt = <3300000>;
+ 				interrupts = <IT_CURLIM_LDO4 0>;
+ 			};
+ 
+@@ -249,7 +247,6 @@ v1v8: ldo6 {
+ 			vref_ddr: vref_ddr {
+ 				regulator-name = "vref_ddr";
+ 				regulator-always-on;
+-				regulator-over-current-protection;
+ 			};
+ 
+ 			bst_out: boost {
+@@ -265,7 +262,7 @@ vbus_otg: pwr_sw1 {
+ 			vbus_sw: pwr_sw2 {
+ 				regulator-name = "vbus_sw";
+ 				interrupts = <IT_OCP_SWOUT 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
+ 			};
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
+index 713485a95795..6706d8311a66 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
+@@ -146,8 +146,6 @@ vtt_ddr: ldo3 {
+ 
+ 			vdd_usb: ldo4 {
+ 				regulator-name = "vdd_usb";
+-				regulator-min-microvolt = <3300000>;
+-				regulator-max-microvolt = <3300000>;
+ 				interrupts = <IT_CURLIM_LDO4 0>;
+ 			};
+ 
+@@ -171,7 +169,6 @@ v1v2_hdmi: ldo6 {
+ 			vref_ddr: vref_ddr {
+ 				regulator-name = "vref_ddr";
+ 				regulator-always-on;
+-				regulator-over-current-protection;
+ 			};
+ 
+ 			bst_out: boost {
+@@ -182,13 +179,13 @@ bst_out: boost {
+ 			vbus_otg: pwr_sw1 {
+ 				regulator-name = "vbus_otg";
+ 				interrupts = <IT_OCP_OTG 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
+ 			};
+ 
+ 			vbus_sw: pwr_sw2 {
+ 				regulator-name = "vbus_sw";
+ 				interrupts = <IT_OCP_SWOUT 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
+ 			};
+ 		};
+ 
 -- 
 2.30.2
 
