@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86423C81AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3240E3C81B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238728AbhGNJgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238337AbhGNJgl (ORCPT
+        id S238846AbhGNJiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:38:20 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11302 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238189AbhGNJiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:36:41 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E132C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:33:47 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
-        by michel.telenet-ops.be with bizsmtp
-        id UxZl2500H1ccfby06xZlEd; Wed, 14 Jul 2021 11:33:45 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3bGz-0015V1-0Z; Wed, 14 Jul 2021 11:33:45 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3bGy-00A3Cq-Ay; Wed, 14 Jul 2021 11:33:44 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] arm: Typo s/PCI_IXP4XX_LEGACY/IXP4XX_PCI_LEGACY/
-Date:   Wed, 14 Jul 2021 11:33:43 +0200
-Message-Id: <82ce37c617293521f095a945a255456b9512769c.1626255077.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Jul 2021 05:38:19 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GPsgj0MNmz8skT;
+        Wed, 14 Jul 2021 17:30:57 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:35:25 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:35:25 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
+        <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH rfc v5 0/4] add frag page support in page pool
+Date:   Wed, 14 Jul 2021 17:34:41 +0800
+Message-ID: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kconfig symbol PCI_IXP4XX_LEGACY does not exist, but IXP4XX_PCI_LEGACY
-does.
+This patchset adds frag page support in page pool and
+enable skb's page frag recycling based on page pool in
+hns3 drvier.
 
-Fixes: d5d9f7ac58ea1041 ("ARM/ixp4xx: Make NEED_MACH_IO_H optional")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
-v2:
-  - Add Reviewed-by.
----
- arch/arm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+RFC v5:
+1. Rename dma_addr[0] to pp_frag_count and adjust codes
+   according to the rename.
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 3ea1c417339ff6bb..82f908fa5676ac15 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -395,7 +395,7 @@ config ARCH_IXP4XX
- 	select IXP4XX_IRQ
- 	select IXP4XX_TIMER
- 	# With the new PCI driver this is not needed
--	select NEED_MACH_IO_H if PCI_IXP4XX_LEGACY
-+	select NEED_MACH_IO_H if IXP4XX_PCI_LEGACY
- 	select USB_EHCI_BIG_ENDIAN_DESC
- 	select USB_EHCI_BIG_ENDIAN_MMIO
- 	help
+RFC v4:
+1. Use the dma_addr[1] to store bias.
+2. Default to a pagecnt_bias of PAGE_SIZE - 1.
+3. other minor comment suggested by Alexander.
+
+RFC v3:
+1. Implement the semantic of "page recycling only wait for the
+   page pool user instead of all user of a page"
+2. Support the frag allocation of different sizes
+3. Merge patch 4 & 5 to one patch as it does not make sense to
+   use page_pool_dev_alloc_pages() API directly with elevated
+   refcnt.
+4. other minor comment suggested by Alexander.
+
+RFC v2:
+1. Split patch 1 to more reviewable one.
+2. Repurpose the lower 12 bits of the dma address to store the
+   pagecnt_bias as suggested by Alexander.
+3. support recycling to pool->alloc for elevated refcnt case
+   too.
+
+Yunsheng Lin (4):
+  page_pool: keep pp info as long as page pool owns the page
+  page_pool: add interface to manipulate frag count in page pool
+  page_pool: add frag page recycling support in page pool
+  net: hns3: support skb's frag page recycling based on page pool
+
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |  82 +++++++++++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |   3 +
+ drivers/net/ethernet/marvell/mvneta.c           |   6 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   2 +-
+ drivers/net/ethernet/ti/cpsw.c                  |   2 +-
+ drivers/net/ethernet/ti/cpsw_new.c              |   2 +-
+ include/linux/mm_types.h                        |   8 +-
+ include/linux/skbuff.h                          |   4 +-
+ include/net/page_pool.h                         |  83 +++++++++++---
+ net/core/page_pool.c                            | 140 +++++++++++++++++++++---
+ 10 files changed, 283 insertions(+), 49 deletions(-)
+
 -- 
-2.25.1
+2.7.4
 
