@@ -2,272 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D14C3C89E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F4A3C89F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239743AbhGNRnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:43:08 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:33995 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229553AbhGNRnH (ORCPT
+        id S239811AbhGNRoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:44:30 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:52442 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239785AbhGNRo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:43:07 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 59CA2580A6F;
-        Wed, 14 Jul 2021 13:40:15 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Wed, 14 Jul 2021 13:40:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=jCX74UgdqAO5ih1wL2WZjVTsL6wF
-        OXIZazNpVZLX4KM=; b=whOY2qX0MxDBLiN7pHSESTpi1t8ZQd0kBHsYLG3l9QZz
-        aNLJus7YQrbreO4k2GVk1u8i6Y8h1YEcHOT8uHi5TPTM/SUx45HltuOYinZIS405
-        9Sjc1J09Cq1RI4wbP539EmoN7jXE/hQuKp/Srb/Q+Tub74lCe/zUYoCcAdAT2MzX
-        W4DLanp1oBG90fNdDHIh/WCsBg91vkQCmG+IajdJ9HrHbxKJXbe6HB5Rini9xHs5
-        aqGzBjfnnt3xIDowJ1ECRr/Wi0N2Tdm9Mmhj0F+vGjPlNS5Zm1Aqf4aVMNg4yrVN
-        YwVVgjUtIl4dIL8AjcIfiqk3L6Y/gziiwheOyzu6/g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=jCX74U
-        gdqAO5ih1wL2WZjVTsL6wFOXIZazNpVZLX4KM=; b=IEoCu4rUG+hjgDSjRuLuse
-        aPHzEPjQ8GVwhrIyy5wUGRk/VRFsFtOkU3nHK0AQBaXunMg6xgunTDTLl535AKrb
-        L7t3qDsZnE1+RZi/BdwlUFIPNPKPldNHZ7c1POMmFcr3BrnPLCFMIos7Xc0XAjZ4
-        o+dynyLw0vak/skyQ33RXKHdV0HLPb2nOpgvupLdipudupBaxhsaDaXHDFyaFeXm
-        OHnwgePlh+E0skJNiM8ZPtcRqgHFrYHHmdUm3UcGFS/mxs2Y5JftcccDh2OSBBXk
-        TkjRBd+ckGM2U9UDHEfqVxdxnP5EDyxa9XYfU60906fqOCZ6G9lHk6OpRnFCwpkQ
-        ==
-X-ME-Sender: <xms:fSHvYOiE9NQ5pHpQ7mjMujnCQOH5CpQ4Q4JxtS0gBOLgguqzsKu5zQ>
-    <xme:fSHvYPAiW1kY36a9GEWteJwzWUYzcLhPLVribq9r-9ox95oafDGvQM9t1T9yMXrGc
-    qeM1Dicg787ME965fI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekgdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:fSHvYGHY0TnBs9aqHxE98NhG1UwLNXaBKNLV9epUCuOC86Beem8J7Q>
-    <xmx:fSHvYHSzDwMulsijllycHkdI0hrmXcJi9gp8lHZl0BdNbBH39MTTlw>
-    <xmx:fSHvYLxkHaxwiRPRvncYBPwmw_0nyjqcxgBdKDpI8MSgmu_9x2DCtw>
-    <xmx:fyHvYALY0C_nhF8621_MXJtvTNCYTkWTqJHOn2ed5Phz86QiCedxuw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2685851C0060; Wed, 14 Jul 2021 13:40:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-533-gf73e617b8a-fm-20210712.002-gf73e617b
-Mime-Version: 1.0
-Message-Id: <d3fded2b-8f03-4848-a7ef-22884717ac39@www.fastmail.com>
-In-Reply-To: <e7dd955b-ae6b-bd1f-bf1f-4a1df61f1fc6@arm.com>
-References: <20210627143405.77298-1-sven@svenpeter.dev>
- <20210627143405.77298-2-sven@svenpeter.dev>
- <e7dd955b-ae6b-bd1f-bf1f-4a1df61f1fc6@arm.com>
-Date:   Wed, 14 Jul 2021 19:39:48 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Robin Murphy" <robin.murphy@arm.com>,
-        "Will Deacon" <will@kernel.org>, "Joerg Roedel" <joro@8bytes.org>
-Cc:     "Arnd Bergmann" <arnd@kernel.org>, devicetree@vger.kernel.org,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        "Marc Zyngier" <maz@kernel.org>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Stan Skowronek" <stan@corellium.com>,
-        linux-arm-kernel@lists.infradead.org,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Petr Mladek via iommu" <iommu@lists.linux-foundation.org>,
-        "Alexander Graf" <graf@amazon.com>,
-        "Alyssa Rosenzweig" <alyssa.rosenzweig@collabora.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Rouven Czerwinski" <r.czerwinski@pengutronix.de>
-Subject: Re: [PATCH v4 1/3] iommu: io-pgtable: add DART pagetable format
+        Wed, 14 Jul 2021 13:44:29 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16EHVMjB010037;
+        Wed, 14 Jul 2021 17:41:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=p37Z0ywMrzFyDt6rFETqMFNF2UAZUrJTJ5D/Lf9Jms4=;
+ b=IEINsmPpIRWTnOvbme/7eCtlh6KzpNnLK+uoTSSHpDzVTbZVJUwaP5foTxwq5tUN9Y5x
+ S15dsww2iL3hoDTZVbqdFNsyghe5KKvGalPLzoNFKRKA8nArJtjhalSocAcPXYRXu+rp
+ xrjgAO3QPS2jrfeYw7n62jJ4fCDxL2UA+IG7/u7uAaynP4EndUtUU9fN8ZS8Kua9jdmc
+ 3Mt0nn4tatO2coY+7LpPuPQsrN6+gWJdRLpUCjXq/2YxPZnSDXfMMN9SsJLB2Lk8+ZDv
+ fgZ+Y7ng7KxDrVd920NUURY5Z5vnyeBJVqkKZFruCgQyBIIXlNnpFdulUgWqQyjvy9jJ lA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=p37Z0ywMrzFyDt6rFETqMFNF2UAZUrJTJ5D/Lf9Jms4=;
+ b=rsGAogjjlZkQYeieZMyA+ilyb/1d9Oi32juFHWcIvZ39+IdA0qhP6S6pmlCtLYEwHsiS
+ K3Vo2tSKDtVlUlfYuViwV+0jq9QI1W4+jSQ1T30nEtG2pDAXQ3TmnOm/20+E91AiILaE
+ oP5ygT/A2B3pi5ZTLEIqRf+YYCHoCeHAIviLYqKxi3X11g3rGIht8IxzOVm30k/9rTk/
+ 6c7b3KYeG+F/9I400JBoxTF1Qf+gtUkoWC1vr2r5WcaV+O0hLaZWapBQ2we3QQHq8YQZ
+ 4y/yk6jSVBmWRrrW0Gb7WxxKm3Jg53mwnLyrRtjua36rHiXsXrqPC1swwIS0KO2DRK64 +A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39rqkb5ct1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 17:41:20 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16EHZ2OI065705;
+        Wed, 14 Jul 2021 17:41:19 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by userp3020.oracle.com with ESMTP id 39qnb3upxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 17:41:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f6SGB9pLbchV5/M2PmdWoG+UtX338ECk9E1Ycdkdcjzh+C3nVXFpUMsztFhG2J6Ow9rLIfjAADlYwb9iaqnkr8E3IZASK0mvjM2Fne8ABp0FTWYQhkBZZ1D+xgKW8nEDAYW4n1Pcxx2pjybzZ1ATOqAKJ5JL8Gt3nfHtcbAph7uY1BVuvDvvei9NIpKLqYMjzVfQ2LqH9WG52FAjlbGpgl4aKkHZpVCZzGAhTnlUCfqsTgE/Vzm5a8rV86n6u8B0rr80WysZkqMRQp+u8YKdF2h4OUc5GAOB3m8iiASg6mX0lCvSNAl3H4paTPkEGw5QrRkfWT5o+HNdljrw3OSICw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p37Z0ywMrzFyDt6rFETqMFNF2UAZUrJTJ5D/Lf9Jms4=;
+ b=QzmYLd7zXFIFPe+c0MMQQPeAxzh9o/AOwHuUuI4KQTXlT8IMeOOu+p06gPt7QT27svB1YKSQgoeQojCurbVaH+3u8KP3TM/nxJ8kRirq5quDcpGNenAApE4aXoyap/3yiTiEKcQ5IZpvW+nTKMlp1LlsKOZKDWaqhItNCNz8gaRZ+qkJm5pJbi7WksixZwAY3cBAYmGjdaYzYn/2wUDxi5faRaOMRZKjP7XJaGJtT3NzX0ZepZuTKOXIWDuoLu505Ht2wXv43TiFnhjvnVBH9G8OxdDIyS+fNGPlLwl7tg4iovzLKMWR/+jRbNp1X7wt+Y56tt97PnmcWckPYPMTsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p37Z0ywMrzFyDt6rFETqMFNF2UAZUrJTJ5D/Lf9Jms4=;
+ b=ztLgZ3MyAWqBgDsBHPvn1u9/8XjIE5jQUw6C6K6GAK6RxzTaZtSlgCzqAYMrVU4QVJxxn1sGPe+R3in0ZwBR31tbFsFimTAwa0KiM11xngfEvyGcUqujnWMPKg/R2NzxEwF/I7iIpX/oVnHY92UTzAWJg0IHBvaZbHZNJBCaIPg=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB3949.namprd10.prod.outlook.com (2603:10b6:208:186::11)
+ by BL0PR10MB3044.namprd10.prod.outlook.com (2603:10b6:208:33::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Wed, 14 Jul
+ 2021 17:41:17 +0000
+Received: from MN2PR10MB3949.namprd10.prod.outlook.com
+ ([fe80::cdfd:7130:67a7:ae3c]) by MN2PR10MB3949.namprd10.prod.outlook.com
+ ([fe80::cdfd:7130:67a7:ae3c%5]) with mapi id 15.20.4331.022; Wed, 14 Jul 2021
+ 17:41:16 +0000
+From:   Henry Willard <henry.willard@oracle.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>, <tabba@google.com>,
+        <keescook@chromium.org>, <ardb@kernel.org>,
+        <samitolvanen@google.com>, <joe@perches.com>,
+        <nixiaoming@huawei.com>, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: kexec: add support for kexec with spin-table
+Date:   Wed, 14 Jul 2021 10:41:13 -0700
+Message-Id: <1626284473-1168-1-git-send-email-henry.willard@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0158.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::13) To MN2PR10MB3949.namprd10.prod.outlook.com
+ (2603:10b6:208:186::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-dev-arm29.us.oracle.com (148.87.23.6) by SJ0PR13CA0158.namprd13.prod.outlook.com (2603:10b6:a03:2c7::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.8 via Frontend Transport; Wed, 14 Jul 2021 17:41:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7dbf89d1-f022-498f-57a2-08d946ee9506
+X-MS-TrafficTypeDiagnostic: BL0PR10MB3044:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB304451DC860C5F6A60929CDF8C139@BL0PR10MB3044.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yt7dl72Rsqttox6WgqxjJoe1t6STgQwcp1ikWcl8nBVGq4om+WDPVQBE/anLWWY9MmztD2wIcdZxw/R0eRPYQU3p6xJikPqLq5crmkkIqlNAehZzLV6A7FsfoIU2kN9DgpF2yIkcpUNBMtDjTUJST7KtCgZrOOFQ2wJ6EXhULy3s3BGa1Eppe7wDoR0wSMilg+bLNpLfto4f2riY5BR0cUSITsiaZGzaSaoevwrh+ph43IxtSkhfoA0TgIOPXVfMA10qGvGMmRX8TtvaXgmZG8cQGmT9AQoviJyR/OG/TituAOhl+0a5mh8PpoxqokM6Uxxx866BOI9dBSoxUpVNirfSqBfa2xYYgjtSSXJB6ZlZldyLcDWNzKHsdM/+ohbsjfiZhy4hWJw+6goEC2IkfoqTHLwqnRfREegM6GHyUwy+YleS9wrD51/A2N8rJEOJPgRPHa6wYAspyLPQgCXpKh0cqk98aDbVmp5RHr7O6zzpt/91J5CLde0SzqaHizkes+ezX9x1ZMQK7zLUZstTGJ0HMb9zlNA5PS2YR9jMXengfmFnYDAw7+Fdan9bUgSslC6FJ77SvLsfkA+pF1K47zruM/mD9Pqs7oHTeY7J8kCXxRkIFOP3/KA3PsaJQknT1qTYVceTg23U1GkolCSkcwbVv87yDaPN03p5/WR0yaxZEwSRv1PGEY1+PFPBdLvQDFRlEC4uG7AAbzl/aKagWrip2T5SSSlfHT9zPZcBGps=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB3949.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(39860400002)(346002)(366004)(38350700002)(36756003)(26005)(2616005)(44832011)(38100700002)(52116002)(5660300002)(8676002)(86362001)(2906002)(8936002)(110136005)(956004)(478600001)(7696005)(66946007)(186003)(7416002)(66556008)(66476007)(921005)(83380400001)(6486002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lPau621LB9KgmXnzzwLhMU0x5ILxlzoVc4HFgQM1Gn5qcLLwQ9E2Lb9PGyaP?=
+ =?us-ascii?Q?3KM5TG2pBONggp4/lWmH20nogWg6Rk8+GAU+NkHe6mfAKdEruAB41b+i18Mp?=
+ =?us-ascii?Q?N8esk3TxhvdSYHyqP4sVZa45UG+Tr757BF+ceRfX9tx14HzGPwsQrby/h9/i?=
+ =?us-ascii?Q?Pej286Yv7xAwBPnxmrvd4QIifgl3bWEaoob1L6zDcDIVO9mPb97B19OUMnPj?=
+ =?us-ascii?Q?c9iLz8EZ53bbMkspSrQHhuYG5SU0O5ISDB/xkdTM1Udfc1CPNHZrrlnmfJYp?=
+ =?us-ascii?Q?y1a2RbMbRUWFiglYZnfVhWMRQQrDmwm5h12BD+UcF7eCKvih8HUl75Sbb8oj?=
+ =?us-ascii?Q?8KkFoqjz/iOsrHPgKwiCgLubes7NsKWQe9BGgVskMXMyCnNyfzzN7ZyiqBxH?=
+ =?us-ascii?Q?C5uLwZita86THy0jp51gpoFRb35Nv6OnwupkF00wRKq80L3nSu6404ZyZSLp?=
+ =?us-ascii?Q?DmsGey1u3EEiOqeHKuF8wrzYyZ2pZulMD1j3YjD3RhRZX7sAcclDmPhpiHqy?=
+ =?us-ascii?Q?9XJVjI/Ob9kMSDWLdDjfEt8iyboiEfz/CcHBPaNy154rVisQ6u2srp5xCYdn?=
+ =?us-ascii?Q?Eo9Y8z7sEUASGRS/LSihxfGNgJuXGqQIacBRFn9Yt+wuNuGpEGBl8zsfvpGV?=
+ =?us-ascii?Q?F8lE14MQsjkC2OlTuCInx/y/3fEndxaaVG78QTUlOlTG/Q9g0mNMaZlMbEXo?=
+ =?us-ascii?Q?fr3fM+6GHAOg63Kc912iAIIxJ4RzIVsxYndB8fR3k5JfDsro5lessmmSdJGy?=
+ =?us-ascii?Q?7MYRuJuqA3AxxaPiPxx7cZ7l/0gCBbEY8aQjdnOT5ZlpdxvgMd7cRev3MhhX?=
+ =?us-ascii?Q?bHEfZbPyc0kGQsbXHK1OoBP0xoGuxRmjgIWbpO2dmurzzqfxY8ykddt9APf1?=
+ =?us-ascii?Q?kRyPCQiigD/zH74zsYGiopbqey1kU7j3PwkCWC2O3DNSLWnzJ9Zg/dVND7MC?=
+ =?us-ascii?Q?C10BWISDyfkenGsKeV1j3DpdIzqJO4E76XGl5cVRYf3rEbIr7lwrfUpBgBPR?=
+ =?us-ascii?Q?rAfIZRt/gY4G/mD+VyCZW0BT8OK9eSL7qZYapYlCKsr1gEqEu7J+W2NeYCsO?=
+ =?us-ascii?Q?AZWRj7+0niMwQRSMevgNq93fnPCd7xSyauxpvhF0fP9A09qFYtRh6Xi10Dfc?=
+ =?us-ascii?Q?eHhaGe9DjnSd73KmpsdYEFV9v2HP0YZ0vBUvbG2Ds6aX4lZ6V3Dk2RoPsKnW?=
+ =?us-ascii?Q?Q8mXP/cKLtSy3xij1ZleNxNb85NUniUuaaj5nL5dTnGztBbkemki9hG2ZgHK?=
+ =?us-ascii?Q?q9h6x8Tqeex0UCnyCsbzXLzQnxvSr6n40DvvmLEgxJiYfJMwrUzodlkaKjMX?=
+ =?us-ascii?Q?iRL+b6WZRcss0c6C95+SdUlN?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dbf89d1-f022-498f-57a2-08d946ee9506
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB3949.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 17:41:16.9225
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7DlR35cGnp4hl/SyfcKEzbPKXKlpf4QO5DQR49GLW4J1rnZUGxfRZLv4siy6g5YE3s7G7aKtrX/VHf9ga7LTXj7A+g/d2GJdwNIfN0sc5pM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB3044
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10045 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107140105
+X-Proofpoint-ORIG-GUID: rZxBCxagCnmkn6TWzhV-Y0vtdYUUxlxx
+X-Proofpoint-GUID: rZxBCxagCnmkn6TWzhV-Y0vtdYUUxlxx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+With one special exception kexec is not supported on systems
+that use spin-table as the cpu enablement method instead of PSCI.
+The spin-table implementation lacks cpu_die() and several other
+methods needed by the hotplug framework used by kexec on Arm64.
 
-On Tue, Jul 13, 2021, at 21:17, Robin Murphy wrote:
-> On 2021-06-27 15:34, Sven Peter wrote:
-> > Apple's DART iommu uses a pagetable format that shares some
-> > similarities with the ones already implemented by io-pgtable.c.
-> > Add a new format variant to support the required differences
-> > so that we don't have to duplicate the pagetable handling code.
-> > 
-> > Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> > ---
-> >   drivers/iommu/io-pgtable-arm.c | 62 ++++++++++++++++++++++++++++++++++
-> >   drivers/iommu/io-pgtable.c     |  1 +
-> >   include/linux/io-pgtable.h     |  7 ++++
-> >   3 files changed, 70 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> > index 87def58e79b5..1dd5c45b4b5b 100644
-> > --- a/drivers/iommu/io-pgtable-arm.c
-> > +++ b/drivers/iommu/io-pgtable-arm.c
-> > @@ -127,6 +127,9 @@
-> >   #define ARM_MALI_LPAE_MEMATTR_IMP_DEF	0x88ULL
-> >   #define ARM_MALI_LPAE_MEMATTR_WRITE_ALLOC 0x8DULL
-> >   
-> > +#define APPLE_DART_PTE_PROT_NO_WRITE (1<<7)
-> > +#define APPLE_DART_PTE_PROT_NO_READ (1<<8)
-> > +
-> >   /* IOPTE accessors */
-> >   #define iopte_deref(pte,d) __va(iopte_to_paddr(pte, d))
-> >   
-> > @@ -381,6 +384,15 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
-> >   {
-> >   	arm_lpae_iopte pte;
-> >   
-> > +	if (data->iop.fmt == ARM_APPLE_DART) {
-> > +		pte = 0;
-> > +		if (!(prot & IOMMU_WRITE))
-> > +			pte |= APPLE_DART_PTE_PROT_NO_WRITE;
-> > +		if (!(prot & IOMMU_READ))
-> > +			pte |= APPLE_DART_PTE_PROT_NO_READ;
-> > +		return pte;
-> > +	}
-> > +
-> >   	if (data->iop.fmt == ARM_64_LPAE_S1 ||
-> >   	    data->iop.fmt == ARM_32_LPAE_S1) {
-> >   		pte = ARM_LPAE_PTE_nG;
-> > @@ -1043,6 +1055,51 @@ arm_mali_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
-> >   	return NULL;
-> >   }
-> >   
-> > +static struct io_pgtable *
-> > +apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
-> > +{
-> > +	struct arm_lpae_io_pgtable *data;
-> > +	int i;
-> > +
-> > +	if (cfg->oas > 36)
-> > +		return NULL;
-> > +
-> > +	data = arm_lpae_alloc_pgtable(cfg);
-> > +	if (!data)
-> > +		return NULL;
-> > +
-> > +	/*
-> > +	 * Apple's DART always requires three levels with the first level being
-> > +	 * stored in four MMIO registers. We always concatenate the first and
-> > +	 * second level so that we only have to setup the MMIO registers once.
-> > +	 * This results in an effective two level pagetable.
-> > +	 */
-> 
-> Nit: I appreciate the effort to document the weirdness, but this comment 
-> did rather mislead me initially, and now that I (think I) understand how 
-> things work it seems a bit backwards. Could we say something like:
-> 
->    "The table format itself always uses two levels, but the total VA
->     space is mapped by four separate tables, making the MMIO registers
->     an effective "level 1". For simplicity, though, we treat this
->     equivalently to LPAE stage 2 concatenation at level 2, with the
->     additional TTBRs each just pointing at consecutive pages."
-> 
-> ?
-> 
+Some embedded systems may not have a need for the Arm Trusted
+Firmware, or they may lack it during early bring-up. Some of
+these may have a more primitive version of u-boot that uses a
+special device from which to load the kernel. Kexec can be
+especially useful for testing new kernels in such an environment.
 
-Sure, your version is much easier to understand! Thanks.
+What is needed to support kexec is some place for cpu_die to park
+the secondary CPUs outside the kernel while the primary copies
+the new kernel into place and starts it. One possibility is to
+use the control-code-page where arm64_relocate_new_kernel_size()
+executes, but that requires a complicated and racy dance to get
+the secondary CPUs from the control-code-page to the new
+kernel after it has been copied.
 
-> > +	if (data->start_level < 1)
-> > +		return NULL;
-> > +	if (data->start_level == 1 && data->pgd_bits > 2)
-> > +		return NULL;
-> > +	if (data->start_level > 1)
-> > +		data->pgd_bits = 0;
-> > +	data->start_level = 2;
-> > +	cfg->apple_dart_cfg.n_ttbrs = 1 << data->pgd_bits;
-> > +	data->pgd_bits += data->bits_per_level;
-> > +
-> > +	data->pgd = __arm_lpae_alloc_pages(ARM_LPAE_PGD_SIZE(data), GFP_KERNEL,
-> > +					   cfg);
-> > +	if (!data->pgd)
-> > +		goto out_free_data;
-> > +
-> > +	for (i = 0; i < cfg->apple_dart_cfg.n_ttbrs; ++i)
-> > +		cfg->apple_dart_cfg.ttbr[i] =
-> > +			virt_to_phys(data->pgd + i * ARM_LPAE_GRANULE(data));
-> > +
-> > +	return &data->iop;
-> > +
-> > +out_free_data:
-> > +	kfree(data);
-> > +	return NULL;
-> > +}
-> > +
-> >   struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s1_init_fns = {
-> >   	.alloc	= arm_64_lpae_alloc_pgtable_s1,
-> >   	.free	= arm_lpae_free_pgtable,
-> > @@ -1068,6 +1125,11 @@ struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns = {
-> >   	.free	= arm_lpae_free_pgtable,
-> >   };
-> >   
-> > +struct io_pgtable_init_fns io_pgtable_apple_dart_init_fns = {
-> > +	.alloc	= apple_dart_alloc_pgtable,
-> > +	.free	= arm_lpae_free_pgtable,
-> > +};
-> > +
-> >   #ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE_SELFTEST
-> >   
-> >   static struct io_pgtable_cfg *cfg_cookie __initdata;
-> > diff --git a/drivers/iommu/io-pgtable.c b/drivers/iommu/io-pgtable.c
-> > index 6e9917ce980f..fd8e6bd6caf9 100644
-> > --- a/drivers/iommu/io-pgtable.c
-> > +++ b/drivers/iommu/io-pgtable.c
-> > @@ -20,6 +20,7 @@ io_pgtable_init_table[IO_PGTABLE_NUM_FMTS] = {
-> >   	[ARM_64_LPAE_S1] = &io_pgtable_arm_64_lpae_s1_init_fns,
-> >   	[ARM_64_LPAE_S2] = &io_pgtable_arm_64_lpae_s2_init_fns,
-> >   	[ARM_MALI_LPAE] = &io_pgtable_arm_mali_lpae_init_fns,
-> > +	[ARM_APPLE_DART] = &io_pgtable_apple_dart_init_fns,
-> >   #endif
-> >   #ifdef CONFIG_IOMMU_IO_PGTABLE_ARMV7S
-> >   	[ARM_V7S] = &io_pgtable_arm_v7s_init_fns,
-> > diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
-> > index 4d40dfa75b55..a4bfac7f85f7 100644
-> > --- a/include/linux/io-pgtable.h
-> > +++ b/include/linux/io-pgtable.h
-> > @@ -16,6 +16,7 @@ enum io_pgtable_fmt {
-> >   	ARM_V7S,
-> >   	ARM_MALI_LPAE,
-> >   	AMD_IOMMU_V1,
-> > +	ARM_APPLE_DART,
-> 
-> s/ARM_// - this is pure Apple ;)
-> 
-> With that fixed and hopefully a somewhat clarified comment above,
-> 
-> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+The spin-table mechanism is setup before the Linux kernel
+is entered with details provided in the device tree. The
+"release-address" DT variable provides the address of a word the
+secondary CPUs are polling. The boot CPU will store the real address
+of secondary_holding_pen() at that address, and the secondary CPUs
+will branch to that address. secondary_holding_pen() is another
+loop where the secondary CPUs wait to be called up by the boot CPU.
 
-True, I'll remove the ARM_ prefix and also change the commit message to match the
-subsystem style as mentioned in your reply for the third patch.
+This patch uses that mechanism to implement cpu_die(). In modern
+versions of u-boot that implement spin-table, the address of the
+loop in protected memory can be derived from the "release-address"
+value. The patch validates the existence of the loop before
+proceeding. smp_spin_table_cpu_die() uses cpu_soft_restart() to
+branch to the loop with the MMU and caching turned off where the
+CPU waits until released by the new kernel. After that kexec
+reboot proceeds normally.
 
-Thanks for the review!
+The special exception is the kdump capture kernel, which gets
+started even if the secondaries can't be stopped.
 
-> 
-> >   	IO_PGTABLE_NUM_FMTS,
-> >   };
-> >   
-> > @@ -136,6 +137,11 @@ struct io_pgtable_cfg {
-> >   			u64	transtab;
-> >   			u64	memattr;
-> >   		} arm_mali_lpae_cfg;
-> > +
-> > +		struct {
-> > +			u64 ttbr[4];
-> > +			u32 n_ttbrs;
-> > +		} apple_dart_cfg;
-> >   	};
-> >   };
-> >   
-> > @@ -246,5 +252,6 @@ extern struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s2_init_fns;
-> >   extern struct io_pgtable_init_fns io_pgtable_arm_v7s_init_fns;
-> >   extern struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns;
-> >   extern struct io_pgtable_init_fns io_pgtable_amd_iommu_v1_init_fns;
-> > +extern struct io_pgtable_init_fns io_pgtable_apple_dart_init_fns;
-> >   
-> >   #endif /* __IO_PGTABLE_H */
-> > 
-> 
+Signed-off-by: Henry Willard <henry.willard@oracle.com>
+---
+ arch/arm64/kernel/smp_spin_table.c | 111 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
+diff --git a/arch/arm64/kernel/smp_spin_table.c b/arch/arm64/kernel/smp_spin_table.c
+index 7e1624ecab3c..35c7fa764476 100644
+--- a/arch/arm64/kernel/smp_spin_table.c
++++ b/arch/arm64/kernel/smp_spin_table.c
+@@ -13,16 +13,27 @@
+ #include <linux/mm.h>
+ 
+ #include <asm/cacheflush.h>
++#include <asm/daifflags.h>
+ #include <asm/cpu_ops.h>
+ #include <asm/cputype.h>
+ #include <asm/io.h>
+ #include <asm/smp_plat.h>
++#include <asm/mmu_context.h>
++#include <asm/kexec.h>
++
++#include "cpu-reset.h"
+ 
+ extern void secondary_holding_pen(void);
+ volatile unsigned long __section(".mmuoff.data.read")
+ secondary_holding_pen_release = INVALID_HWID;
+ 
+ static phys_addr_t cpu_release_addr[NR_CPUS];
++static unsigned int spin_table_loop[4] = {
++	0xd503205f,        /* wfe */
++	0x58000060,        /* ldr  x0, spin_table_cpu_release_addr */
++	0xb4ffffc0,        /* cbnz x0, 0b */
++	0xd61f0000         /* br   x0 */
++};
+ 
+ /*
+  * Write secondary_holding_pen_release in a way that is guaranteed to be
+@@ -119,9 +130,109 @@ static int smp_spin_table_cpu_boot(unsigned int cpu)
+ 	return 0;
+ }
+ 
++
++/*
++ * There is a four instruction loop set aside in protected
++ * memory by u-boot where secondary CPUs wait for the kernel to
++ * start.
++ *
++ * 0:       wfe
++ *          ldr    x0, spin_table_cpu_release_addr
++ *          cbz    x0, 0b
++ *          br     x0
++ * spin_table_cpu_release_addr:
++ *          .quad  0
++ *
++ * The address of spin_table_cpu_release_addr is passed in the
++ * "release-address" property in the device table.
++ * smp_spin_table_cpu_prepare() stores the real address of
++ * secondary_holding_pen() where the secondary CPUs loop
++ * until they are released one at a time by smp_spin_table_cpu_boot().
++ * We reuse the spin-table loop by clearing spin_table_cpu_release_addr,
++ * and branching to the beginning of the loop via cpu_soft_restart(),
++ * which turns off the MMU and caching.
++ */
++static void smp_spin_table_cpu_die(unsigned int cpu)
++{
++	__le64 __iomem *release_addr;
++	unsigned int *spin_table_inst;
++	unsigned long spin_table_start;
++
++	if (!cpu_release_addr[cpu])
++		goto spin;
++
++	spin_table_start = (cpu_release_addr[cpu] - sizeof(spin_table_loop));
++
++	/*
++	 * The cpu-release-addr may or may not be inside the linear mapping.
++	 * As ioremap_cache will either give us a new mapping or reuse the
++	 * existing linear mapping, we can use it to cover both cases. In
++	 * either case the memory will be MT_NORMAL.
++	 */
++	release_addr = ioremap_cache(spin_table_start,
++				sizeof(*release_addr) +
++				sizeof(spin_table_loop));
++
++	if (!release_addr)
++		goto spin;
++
++	spin_table_inst = (unsigned int *)release_addr;
++	if (spin_table_inst[0] != spin_table_loop[0] ||
++		spin_table_inst[1] != spin_table_loop[1] ||
++		spin_table_inst[2] != spin_table_loop[2] ||
++		spin_table_inst[3] != spin_table_loop[3])
++		goto spin;
++
++	/*
++	 * Clear the release address, so that we can use it again
++	 */
++	writeq_relaxed(0, release_addr + 2);
++	dcache_clean_inval_poc((__force unsigned long)(release_addr + 2),
++			(__force unsigned long)(release_addr + 2) +
++				    sizeof(*release_addr));
++
++	iounmap(release_addr);
++
++	local_daif_mask();
++	cpu_soft_restart(spin_table_start, 0, 0, 0);
++
++	BUG();  /* Should never get here */
++
++spin:
++	cpu_park_loop();
++
++}
++
++static int smp_spin_table_cpu_kill(unsigned int cpu)
++{
++	unsigned long start, end;
++
++	start = jiffies;
++	end = start + msecs_to_jiffies(100);
++
++	do {
++		if (!cpu_online(cpu)) {
++			pr_info("CPU%d killed\n", cpu);
++			return 0;
++		}
++	} while (time_before(jiffies, end));
++	pr_warn("CPU%d may not have shut down cleanly\n", cpu);
++	return -ETIMEDOUT;
++
++}
++
++/* Nothing to do here */
++static int smp_spin_table_cpu_disable(unsigned int cpu)
++{
++	return 0;
++}
++
+ const struct cpu_operations smp_spin_table_ops = {
+ 	.name		= "spin-table",
+ 	.cpu_init	= smp_spin_table_cpu_init,
+ 	.cpu_prepare	= smp_spin_table_cpu_prepare,
+ 	.cpu_boot	= smp_spin_table_cpu_boot,
++	.cpu_die	= smp_spin_table_cpu_die,
++	.cpu_kill	= smp_spin_table_cpu_kill,
++	.cpu_disable	= smp_spin_table_cpu_disable,
+ };
+-- 
+1.8.3.1
 
-Sven
