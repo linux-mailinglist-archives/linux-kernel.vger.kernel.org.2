@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924A93C9279
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFCD3C927D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbhGNUwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229782AbhGNUwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:52:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B204613C8;
-        Wed, 14 Jul 2021 20:49:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626295769;
-        bh=I13H3HNHji5pJUJzsVXYt/NaCUMH+vRYBnFEzoAGtzA=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=oD3Rl+InNyTLcDPBaK/B3hrr0XUMLPXPHvfLoK0F7GAK4g0z5wsqzGvwpgWDpMoz7
-         OvUKqnEcVDcrtZeEY9c7aPMK2arx7Qz9sau0IeRB8xrnvolAO/hJSCsnruTL2MaRm6
-         84m3QnhkkplWMbuNpbg0VOhKKyO1CDasQdqjNmKqHNMSj9r3fXMmhxlWmHzI4pllza
-         EwUN6eQqprDZqONZxp8bvTVFhRDuvU2VQ7ibr2A9BByKLW9OLXXj7cnSPjCV3ifp4q
-         TUidp/HGQgAUcOZXEGQqpSJgtE8NPhoRiXeSJrjJc7WYf6GW+SZIyno+nU3Rk4+05S
-         Z/9AadXMz/NMA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 04A015C0355; Wed, 14 Jul 2021 13:49:28 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 13:49:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, valentin.schneider@arm.com
-Subject: [PATCH rcu/urgent 0/2] Adjust for updated scheduler CPU-affinity
- semantics
-Message-ID: <20210714204928.GA2033276@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S233883AbhGNUxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:53:10 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:34622 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhGNUxI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 16:53:08 -0400
+Received: by mail-il1-f182.google.com with SMTP id e13so2945002ilc.1;
+        Wed, 14 Jul 2021 13:50:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xCdS+pd+oqZTwY0QnXLhGz1dPTl4CKLKedkVikROQ+g=;
+        b=euhY2eQ48gYp5GLwKrmCms+miTMy6+RlzBIKz6ro822t600M+AMqer3o4yQXjH8Mka
+         /g6XsoDEQAX/g5zQC+CY7wRBeMajvHWxt3nL5vjqJzNamzyvCR15rinGM53dNglRJqg1
+         SvBAGmaZv3/F7jpdg68iloMQg30+AcskdE2LVDFKfFraEakCdPVDtn2uQrgkDwgYm/DD
+         m8xJI/16DXcr2Lhx8BNllWB6LslJFvhmIsDO7+ZyGwEW9fyTExQfEwPVYIjy7wuLiL++
+         JebgKe4t5+1SluoWgesWKPt2syw3NT2xvLi/WpbtOhUCt/n1MqJWFReNeG64lI54mcLa
+         Xpug==
+X-Gm-Message-State: AOAM5322KrQPXjDtJY1dKc3UIc/vXGiNFbvhNUbB8w9Iekkw6zrG4+cr
+        ZRtTxin5vq0H/tGbtZY+eg==
+X-Google-Smtp-Source: ABdhPJxQwGvMEkFYajAJUIyivfiRf7BlgQI3ce+ysj6h13I0Ly7h/3FYfSec4W4fxYcV8fuR9aMgdw==
+X-Received: by 2002:a92:1802:: with SMTP id 2mr7422891ily.139.1626295816188;
+        Wed, 14 Jul 2021 13:50:16 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id m24sm1834459ion.3.2021.07.14.13.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 13:50:15 -0700 (PDT)
+Received: (nullmailer pid 3497655 invoked by uid 1000);
+        Wed, 14 Jul 2021 20:50:13 -0000
+Date:   Wed, 14 Jul 2021 14:50:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Kathiravan T <kathirav@codeaurora.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 2/5] dt-bindings: clock: qcom: rpmcc: Document SM6115
+ compatible
+Message-ID: <20210714205013.GA3493680@robh.at.kernel.org>
+References: <20210627185927.695411-1-iskren.chernev@gmail.com>
+ <20210627185927.695411-3-iskren.chernev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210627185927.695411-3-iskren.chernev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Sun, Jun 27, 2021 at 09:59:24PM +0300, Iskren Chernev wrote:
+> Add the dt-binding for the RPM Clock Controller on the SM4250/6115 SoCs.
+> 
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/clock/qcom,rpmcc.txt |  1 +
+>  include/dt-bindings/clock/qcom,rpmcc.h                 | 10 ++++++++++
+>  2 files changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt b/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
+> index 6cf5a7ec2b4c..0045583f02b5 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
+> +++ b/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
+> @@ -25,6 +25,7 @@ Required properties :
+>  			"qcom,rpmcc-msm8998", "qcom,rpmcc"
+>  			"qcom,rpmcc-qcs404", "qcom,rpmcc"
+>  			"qcom,rpmcc-sdm660", "qcom,rpmcc"
+> +			"qcom,rpmcc-sm6115", "qcom,rpmcc"
 
-This series converts smp_processor_id() calls to raw_smp_processor_id()
-calls in kthreads that are intended to be bound to a single CPU, but
-which are subject to human rebinding.  While in the area, it warns if
-set_cpus_allowed_ptr() returns failure.  The patches are as follows:
+This is going to conflict with sm6125 addition...
 
-1.	Avoid false-positive warnings in scftorture_invoker().
-
-2.	Avoid false-positive warnings in ref_scale_reader().
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- rcu/refscale.c |    6 +++---
- scftorture.c   |    6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+>  
+>  - #clock-cells : shall contain 1
+>  
+> diff --git a/include/dt-bindings/clock/qcom,rpmcc.h b/include/dt-bindings/clock/qcom,rpmcc.h
+> index 8aaba7cd9589..aa834d516234 100644
+> --- a/include/dt-bindings/clock/qcom,rpmcc.h
+> +++ b/include/dt-bindings/clock/qcom,rpmcc.h
+> @@ -149,5 +149,15 @@
+>  #define RPM_SMD_CE2_A_CLK			103
+>  #define RPM_SMD_CE3_CLK				104
+>  #define RPM_SMD_CE3_A_CLK			105
+> +#define RPM_SMD_QUP_CLK				106
+> +#define RPM_SMD_QUP_A_CLK			107
+> +#define RPM_SMD_MMRT_CLK			108
+> +#define RPM_SMD_MMRT_A_CLK			109
+> +#define RPM_SMD_MMNRT_CLK			110
+> +#define RPM_SMD_MMNRT_A_CLK			111
+> +#define RPM_SMD_SNOC_PERIPH_CLK			112
+> +#define RPM_SMD_SNOC_PERIPH_A_CLK		113
+> +#define RPM_SMD_SNOC_LPASS_CLK			114
+> +#define RPM_SMD_SNOC_LPASS_A_CLK		115
+>  
+>  #endif
+> -- 
+> 2.32.0
+> 
+> 
