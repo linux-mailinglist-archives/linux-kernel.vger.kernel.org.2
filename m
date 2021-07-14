@@ -2,95 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B63D3C88A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233CD3C88AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235503AbhGNQbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:31:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhGNQbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:31:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76DF861377;
-        Wed, 14 Jul 2021 16:28:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626280122;
-        bh=zFogal56+5VzoMhhb7Ry/HoN4yIF0xXrIgUmAs09/Ng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yuztd/HCEv2nl+0zA9Bpkj9BqVlK0EKI5kYmyLN4bmllexBJLOXkXUXR6G5NW1aMH
-         45RJud20VaiMsbxVes4ZwZhnQT0+lP6lMzvNY41kD3K0pHz5tgtmJWT3HC+Fec61kh
-         MxQ+CBgbclSto3VPPC8yiGV/RsdrWtJ/zXeVOdEiND+VpwRcljPkJP46XG16/dct7+
-         1FwqxTkzBkzTX8tK0MWsiNo7x28iCjKb0Bx7xyzY+oQqgILDvJK5iryIuGW6Oj0z5B
-         QKTAAb9ci5C8gJFenH/uky7Ou8J27jQWyXAkz5w5F8H8ukru5Mf701wmFViffOjiSB
-         PPKun2v3BD/vw==
-Date:   Wed, 14 Jul 2021 17:28:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Nandan, Apurva" <a-nandan@ti.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 1/2] spi: cadence-quadspi: Disable Auto-HW polling
-Message-ID: <20210714162805.GE4719@sirena.org.uk>
-References: <20210713125743.1540-1-a-nandan@ti.com>
- <20210713125743.1540-2-a-nandan@ti.com>
- <20210713182550.GG4098@sirena.org.uk>
- <f1947183-81d2-3519-d25f-71d93f59e434@ti.com>
+        id S235534AbhGNQdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:33:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229566AbhGNQdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 12:33:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626280209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B/KGvldDrB0eAalL1DiPGX7W1Lee3FENtfoeiX8YJwg=;
+        b=YTV5+7NMaGPIT9viLflUBMlzmKYXOoFeXjpdD1SCRy0pg49SZKhtGoxTjTZBOLNQWA/EpN
+        zqI+SsQrrEECCkF6IGmbGflFvtlKF7Evih52dfLZqfOrb73vGCitKvtpun97ih2mQpkbVG
+        effn9K6IeL1z1ddn8yFK3MnJWPB8M4w=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-Oyx9z_aZNuGkse2Xp7tGLQ-1; Wed, 14 Jul 2021 12:30:08 -0400
+X-MC-Unique: Oyx9z_aZNuGkse2Xp7tGLQ-1
+Received: by mail-wr1-f69.google.com with SMTP id a4-20020a0560001884b02901401e436a18so1759424wri.21
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 09:30:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=B/KGvldDrB0eAalL1DiPGX7W1Lee3FENtfoeiX8YJwg=;
+        b=jGWZ9Ia6jeNiIF6QwCwguoVRgBLGudBktnKRgy1M2ChLqsqy0NngWgV9wbC6Vi9TB/
+         KPxzshUvEo9abQ9jmxpnZq+m99HHr4p6JlpuDVfc8aM9KI0a7vfKhktuWEyICDVvi3fG
+         6YKk0Ma76LLlJLfKcQWkcGdQxvBX3Zpp9Lpif8dET5gARzrOxhGxUnmAO7W9H26se7oz
+         5J4S8SqTWgS9IJCtNxq35+cCnLI681N8gMARclRh+m49onFdc6mYvdGTN/3QGGtN5vmH
+         7PBc1xRVLzInCPKJDJG9jaO268IBddsjfKcQExZBCvfoQhijkIZZ8uk+WnZjgE6xpnN3
+         +NqQ==
+X-Gm-Message-State: AOAM531cocRQ4/gzaamLnsNmCiApZKG4Yi44+aLsDdjgRBcCvaip8OJm
+        jNi5waM/cBgzDoT9Mpulcqew6rqEUbavZaQqrvE16btrl68WbcXO060Dd6Tv4RZiAHDkQGRl/KY
+        mMhaJ1MT6Rufl+BVdeyMz0Eb0
+X-Received: by 2002:a5d:4561:: with SMTP id a1mr13810744wrc.259.1626280207062;
+        Wed, 14 Jul 2021 09:30:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOkWzlAEBVFt3MFLPq/RmRRAGntsLVLFQJ7RrjHjEb1hpdXy9atz6myPzK6KyqD9P4vJwl4Q==
+X-Received: by 2002:a5d:4561:: with SMTP id a1mr13810709wrc.259.1626280206860;
+        Wed, 14 Jul 2021 09:30:06 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c60d5.dip0.t-ipconnect.de. [91.12.96.213])
+        by smtp.gmail.com with ESMTPSA id n7sm5466790wmq.37.2021.07.14.09.30.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 09:30:06 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/1] pagemap: report swap location for shared pages
+From:   David Hildenbrand <david@redhat.com>
+To:     Peter Xu <peterx@redhat.com>,
+        Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
+Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
+        peterz@infradead.org, chinwen.chang@mediatek.com,
+        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
+        christian.brauner@ubuntu.com, ebiederm@xmission.com,
+        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
+        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+References: <20210714152426.216217-1-tiberiu.georgescu@nutanix.com>
+ <20210714152426.216217-2-tiberiu.georgescu@nutanix.com>
+ <YO8L5PTdAs+vPeIx@t490s> <0e38ef52-0ac7-c15b-114b-3316973fc7dc@redhat.com>
+Organization: Red Hat
+Message-ID: <f39be587-31f4-72c0-7d39-dad02a0f5777@redhat.com>
+Date:   Wed, 14 Jul 2021 18:30:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mR8QP4gmHujQHb1c"
-Content-Disposition: inline
-In-Reply-To: <f1947183-81d2-3519-d25f-71d93f59e434@ti.com>
-X-Cookie: C for yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0e38ef52-0ac7-c15b-114b-3316973fc7dc@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14.07.21 18:24, David Hildenbrand wrote:
+> On 14.07.21 18:08, Peter Xu wrote:
+>> On Wed, Jul 14, 2021 at 03:24:26PM +0000, Tiberiu Georgescu wrote:
+>>> When a page allocated using the MAP_SHARED flag is swapped out, its pagemap
+>>> entry is cleared. In many cases, there is no difference between swapped-out
+>>> shared pages and newly allocated, non-dirty pages in the pagemap interface.
+>>>
+>>> This patch addresses the behaviour and modifies pte_to_pagemap_entry() to
+>>> make use of the XArray associated with the virtual memory area struct
+>>> passed as an argument. The XArray contains the location of virtual pages
+>>> in the page cache, swap cache or on disk. If they are on either of the
+>>> caches, then the original implementation still works. If not, then the
+>>> missing information will be retrieved from the XArray.
+>>>
+>>> Co-developed-by: Florian Schmidt <florian.schmidt@nutanix.com>
+>>> Signed-off-by: Florian Schmidt <florian.schmidt@nutanix.com>
+>>> Co-developed-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
+>>> Signed-off-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
+>>> Co-developed-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
+>>> Signed-off-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
+>>> Signed-off-by: Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
+>>> ---
+>>>    fs/proc/task_mmu.c | 37 +++++++++++++++++++++++++++++--------
+>>>    1 file changed, 29 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+>>> index eb97468dfe4c..b17c8aedd32e 100644
+>>> --- a/fs/proc/task_mmu.c
+>>> +++ b/fs/proc/task_mmu.c
+>>> @@ -1359,12 +1359,25 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
+>>>    	return err;
+>>>    }
+>>>    
+>>> +static void *get_xa_entry_at_vma_addr(struct vm_area_struct *vma,
+>>> +		unsigned long addr)
+>>> +{
+>>> +	struct inode *inode = file_inode(vma->vm_file);
+>>> +	struct address_space *mapping = inode->i_mapping;
+>>> +	pgoff_t offset = linear_page_index(vma, addr);
+>>> +
+>>> +	return xa_load(&mapping->i_pages, offset);
+>>> +}
+>>> +
+>>>    static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+>>>    		struct vm_area_struct *vma, unsigned long addr, pte_t pte)
+>>>    {
+>>>    	u64 frame = 0, flags = 0;
+>>>    	struct page *page = NULL;
+>>>    
+>>> +	if (vma->vm_flags & VM_SOFTDIRTY)
+>>> +		flags |= PM_SOFT_DIRTY;
+>>> +
+>>>    	if (pte_present(pte)) {
+>>>    		if (pm->show_pfn)
+>>>    			frame = pte_pfn(pte);
+>>> @@ -1374,13 +1387,22 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+>>>    			flags |= PM_SOFT_DIRTY;
+>>>    		if (pte_uffd_wp(pte))
+>>>    			flags |= PM_UFFD_WP;
+>>> -	} else if (is_swap_pte(pte)) {
+>>> +	} else if (is_swap_pte(pte) || shmem_file(vma->vm_file)) {
+>>>    		swp_entry_t entry;
+>>> -		if (pte_swp_soft_dirty(pte))
+>>> -			flags |= PM_SOFT_DIRTY;
+>>> -		if (pte_swp_uffd_wp(pte))
+>>> -			flags |= PM_UFFD_WP;
+>>> -		entry = pte_to_swp_entry(pte);
+>>> +		if (is_swap_pte(pte)) {
+>>> +			entry = pte_to_swp_entry(pte);
+>>> +			if (pte_swp_soft_dirty(pte))
+>>> +				flags |= PM_SOFT_DIRTY;
+>>> +			if (pte_swp_uffd_wp(pte))
+>>> +				flags |= PM_UFFD_WP;
+>>> +		} else {
+>>> +			void *xa_entry = get_xa_entry_at_vma_addr(vma, addr);
+>>> +
+>>> +			if (xa_is_value(xa_entry))
+>>> +				entry = radix_to_swp_entry(xa_entry);
+>>> +			else
+>>> +				goto out;
+>>> +		}
+>>>    		if (pm->show_pfn)
+>>>    			frame = swp_type(entry) |
+>>>    				(swp_offset(entry) << MAX_SWAPFILES_SHIFT);
+>>> @@ -1393,9 +1415,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+>>>    		flags |= PM_FILE;
+>>>    	if (page && page_mapcount(page) == 1)
+>>>    		flags |= PM_MMAP_EXCLUSIVE;
+>>> -	if (vma->vm_flags & VM_SOFTDIRTY)
+>>> -		flags |= PM_SOFT_DIRTY;
+>>
+>> IMHO moving this to the entry will only work for the initial iteration, however
+>> it won't really help anything, as soft-dirty should always be used in pair with
+>> clear_refs written with value "4" first otherwise all pages will be marked
+>> soft-dirty then the pagemap data is meaningless.
+>>
+>> After the "write 4" op VM_SOFTDIRTY will be cleared and I expect the test case
+>> to see all zeros again even with the patch.
+>>
+>> I think one way to fix this is to do something similar to uffd-wp: we leave a
+>> marker in pte showing that this is soft-dirtied pte even if swapped out.
+> 
+> How exactly does such a pte look like? Simply pte_none() with another
+> bit set?
+> 
+>> However we don't have a mechanism for that yet in current linux, and the
+>> uffd-wp series is the first one trying to introduce something like that.
+> 
+> Can you give me a pointer? I'm very interested in learning how to
+> identify this case.
+> 
 
---mR8QP4gmHujQHb1c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I assume it's 
+https://lore.kernel.org/lkml/20210527202117.30689-1-peterx@redhat.com/
 
-On Wed, Jul 14, 2021 at 06:52:12PM +0530, Nandan, Apurva wrote:
-> On 13-Jul-21 11:55 PM, Mark Brown wrote:
-> > On Tue, Jul 13, 2021 at 12:57:41PM +0000, Apurva Nandan wrote:
+-- 
+Thanks,
 
-> >> cadence-quadspi controller doesn't allow an address phase when
-> >> auto-polling the busy bit on the status register. Unlike SPI NOR
+David / dhildenb
 
-> > Would it not be better to only disable this on NAND rather than
-> > disabling it completely?
-
-> I am not sure how it is possible currently in the controller, could you
-> please suggest a way? Also, should we have this logic of checking flash
-> device type in the cadence-quadspi controller? SPI controller should be
-> generic to all flash cores right?
-
-Surely the controller can tell if an address phase (or other unsupported
-feature) is present?
-
-> In my opinion, it shouldn't harm as spi-nor core doesn't depend on HW
-> polling anyways and auto-HW polling is a minor overhead.
-
-Flash stuff seems to quite often end up happening when the system is
-heavily loaded for other reasons, it's much more of an issue with things
-that are done more with PIO but still seems useful to avoid having to
-poll in software, either it'll reduce CPU load or reduce latency and
-increase throughput.
-
---mR8QP4gmHujQHb1c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvEJQACgkQJNaLcl1U
-h9AxFQf/WTaUN7hfuj94ba7jlHJH48lJ0H/pxdhV7O4Iy77V2V9LWohjaYuw7ZKh
-syOb2yUT6S2QpNo7nPuW3BQoGkDB0jvQnLmy/jzzKW6K6qU/fGEkzPpn6WX6tA3A
-+KW0mKB5W4r3zgVbPK4+ieduJ1QehvuE5QpnPiEDjl22wIz5rTMASiSUyOstwv+/
-iViSM2i9TL2CvmXs45F33W2AizBA658lw3VfuxDh9q1tFI3scKDoQCS5fHH2f4bK
-P7kZgEiMeg5ZRj4Aeo/v1EkyQPkybonKTenhlZio/D8Nv7wl/hvWN9AwegeMDMta
-IjCoUE/O4YdqTJ+t52NiCEbztMZsVQ==
-=dalX
------END PGP SIGNATURE-----
-
---mR8QP4gmHujQHb1c--
