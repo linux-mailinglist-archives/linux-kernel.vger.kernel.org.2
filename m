@@ -2,182 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F653C7CCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4EE3C7CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237758AbhGNDXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 23:23:37 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11274 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237694AbhGNDXg (ORCPT
+        id S237717AbhGNDWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 23:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237436AbhGNDWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 23:23:36 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GPjL15snkz1CJfb;
-        Wed, 14 Jul 2021 11:15:05 +0800 (CST)
-Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 11:20:39 +0800
-Received: from huawei.com (10.175.124.27) by dggpemm500015.china.huawei.com
- (7.185.36.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 14 Jul
- 2021 11:20:38 +0800
-From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
-CC:     <cj.chengjian@huawei.com>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <huawei.libin@huawei.com>,
-        <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
-        <johan.hedberg@gmail.com>, <linux-bluetooth@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Bluetooth: fix use-after-free error in lock_sock_nested()
-Date:   Wed, 14 Jul 2021 11:17:33 +0800
-Message-ID: <20210714031733.1395549-1-bobo.shaobowang@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 13 Jul 2021 23:22:53 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F14CC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 20:20:03 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id m83so800070pfd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 20:20:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dpsH7mIcXqvQoo7xmLF/2aa6XMVIAHRRWDLOhYJdccM=;
+        b=exIQaQBU3X0JT6wmWUXd6kAxACmjf23dI3nG1rlDlnC/fI0EDqHEc2xPy8NnUUec9z
+         XSCO5lzQ8eGi8OypTjRCcD4OBBcLiJNtmYC0fXO6UEYmdHwx9rWlB+szKkeIJ0Jt/Arz
+         7F1+20Xuz+EMaH8T32w26MtkbzseGg9t71/fk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dpsH7mIcXqvQoo7xmLF/2aa6XMVIAHRRWDLOhYJdccM=;
+        b=SVurwZ0RIqUwA4Cih+v3rig4Grs+AZAOcx3Inm/+AeRgJYX0O3IxUIMw6a2G0TJI6p
+         KocaX2zEVOtuoC6OF/FHplRQf1MVqMJUii6MeeA0OBPaYWl5O/NpA4rm2YXOTfO2VSAn
+         z0EnCGJ13PStqSMEHPUBb7JuxeQkOqAkdZa/N65EnYevFdr3IbpdDCyUYu497ksK+1J5
+         y3hS6knHk1w0NDF3AienSyxAR/rp08V8ZFB8bKaSiwtIWM5VHka78oG46hRZpQcPwcMQ
+         MYVTjxiKfrPBRfNv7lX17edGa/b0c2SDnjQI2zuDUkfV4Q1eeD1s3WBiDo7dnSP9MQns
+         YPXQ==
+X-Gm-Message-State: AOAM533sUm6tKhrsHUQVQn6Rbu5b5Td7Un11ObumkzlbqN0tqh4/JrgT
+        0T2XvzD+EBfKIq5HzJrIy8kyMA==
+X-Google-Smtp-Source: ABdhPJzOVvGLyGiNzawM6Viy1d2MdKlXSmP4iW8i14wLOD5oabfZ0EUyG/CZfoceK0ZK9nKoEgR90w==
+X-Received: by 2002:a05:6a00:170b:b029:32a:3950:f51b with SMTP id h11-20020a056a00170bb029032a3950f51bmr7770393pfc.64.1626232802699;
+        Tue, 13 Jul 2021 20:20:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t26sm569424pgu.35.2021.07.13.20.20.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 20:20:02 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Alexander Potapenko <glider@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        bowsingbetee@pm.me, Mikhail Morfikov <mmorfikov@gmail.com>,
+        stable@vger.kernelo.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2] mm: page_alloc: Fix page_poison=1 / INIT_ON_ALLOC_DEFAULT_ON interaction
+Date:   Tue, 13 Jul 2021 20:19:35 -0700
+Message-Id: <20210714031935.4094114-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500015.china.huawei.com (7.185.36.181)
-X-CFilter-Loop: Reflected
-To:     unlisted-recipients:; (no To-header on input)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3808; i=keescook@chromium.org; h=from:subject; bh=U6MyozWPzcduXf+KzHAMxmKTs+aNnI1dvJ/+PKKtCNA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg7lfG9y1F5wstRYTqbG4LzbstCIJIACpar5PRh85M YgemSkCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYO5XxgAKCRCJcvTf3G3AJivxD/ wLKbiaTdFdcJ2auwyD8LrRpRRvxdIm0vySRmwi4OKlsjhRX3L+HY1c4TPIaKAYV2t99KdFl/LPHXWA Q/d1MTwBauC/OqqTYORwkso383gxzC8WcHCcOZcQep6fexIdCANDkcR2JQDH/LEZRMeO+wfoQbXmKw JvqW5X2NxuaXChhAhmsWGSx6WDXmYattgmf+mkl0rldwG5P3acTM3BKLh0XdL7gXDup49IiHZ/Krrd 3KkaY4qq8FagiFqHzyI4cPqhDz2v+sCJbNXisc/bW/Kt3CJNSGYIWZoLGp6tE1mv79z6WeZjegbPnt GMgupTmGumSYZ7Tmvc7dWWB0yRcWF1Q0H2F9hoAyRNHO1jYebpsJyWMO9g8M5HUxOzaSzqKo6zsBB1 /TuB9HanA5bSvcJyDv5PfOwPeZo6QXaRPV6Uo5LU9lE2tljsjKfKh7NXe5/PvReGQr1YSfY5RC7O9B G+ZokHmmRGOcAx/L8AYo9fU3ppmNO0LTXBtavDFYkVA3T0lS7bQwAKLwhNJ5qjaXzBw9G4snXL05bj NTs+RaQ/ZBzZnz+WvPNgWPRt58Ui2E7IQt6CgGMer7Gu2EPoYTbDK3KtPdFczX2cokfrLp6GXZrIaA UkMN25RqPTDoVWYwscqcVSMeggk2t+5jDpcHQxll206XX44c2AY+A3Vawisg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-use-after-free error in lock_sock_nested() is reported:
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-[  179.140137][ T3731] =====================================================
-[  179.142675][ T3731] BUG: KMSAN: use-after-free in lock_sock_nested+0x280/0x2c0
-[  179.145494][ T3731] CPU: 4 PID: 3731 Comm: kworker/4:2 Not tainted 5.12.0-rc6+ #54
-[  179.148432][ T3731] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[  179.151806][ T3731] Workqueue: events l2cap_chan_timeout
-[  179.152730][ T3731] Call Trace:
-[  179.153301][ T3731]  dump_stack+0x24c/0x2e0
-[  179.154063][ T3731]  kmsan_report+0xfb/0x1e0
-[  179.154855][ T3731]  __msan_warning+0x5c/0xa0
-[  179.155579][ T3731]  lock_sock_nested+0x280/0x2c0
-[  179.156436][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.157257][ T3731]  l2cap_sock_teardown_cb+0xb8/0x890
-[  179.158154][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
-[  179.159141][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.159994][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
-[  179.160959][ T3731]  ? l2cap_sock_recv_cb+0x420/0x420
-[  179.161834][ T3731]  l2cap_chan_del+0x3e1/0x1d50
-[  179.162608][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.163435][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
-[  179.164406][ T3731]  l2cap_chan_close+0xeea/0x1050
-[  179.165189][ T3731]  ? kmsan_internal_unpoison_shadow+0x42/0x70
-[  179.166180][ T3731]  l2cap_chan_timeout+0x1da/0x590
-[  179.167066][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
-[  179.168023][ T3731]  ? l2cap_chan_create+0x560/0x560
-[  179.168818][ T3731]  process_one_work+0x121d/0x1ff0
-[  179.169598][ T3731]  worker_thread+0x121b/0x2370
-[  179.170346][ T3731]  kthread+0x4ef/0x610
-[  179.171010][ T3731]  ? process_one_work+0x1ff0/0x1ff0
-[  179.171828][ T3731]  ? kthread_blkcg+0x110/0x110
-[  179.172587][ T3731]  ret_from_fork+0x1f/0x30
-[  179.173348][ T3731]
-[  179.173752][ T3731] Uninit was created at:
-[  179.174409][ T3731]  kmsan_internal_poison_shadow+0x5c/0xf0
-[  179.175373][ T3731]  kmsan_slab_free+0x76/0xc0
-[  179.176060][ T3731]  kfree+0x3a5/0x1180
-[  179.176664][ T3731]  __sk_destruct+0x8af/0xb80
-[  179.177375][ T3731]  __sk_free+0x812/0x8c0
-[  179.178032][ T3731]  sk_free+0x97/0x130
-[  179.178686][ T3731]  l2cap_sock_release+0x3d5/0x4d0
-[  179.179457][ T3731]  sock_close+0x150/0x450
-[  179.180117][ T3731]  __fput+0x6bd/0xf00
-[  179.180787][ T3731]  ____fput+0x37/0x40
-[  179.181481][ T3731]  task_work_run+0x140/0x280
-[  179.182219][ T3731]  do_exit+0xe51/0x3e60
-[  179.182930][ T3731]  do_group_exit+0x20e/0x450
-[  179.183656][ T3731]  get_signal+0x2dfb/0x38f0
-[  179.184344][ T3731]  arch_do_signal_or_restart+0xaa/0xe10
-[  179.185266][ T3731]  exit_to_user_mode_prepare+0x2d2/0x560
-[  179.186136][ T3731]  syscall_exit_to_user_mode+0x35/0x60
-[  179.186984][ T3731]  do_syscall_64+0xc5/0x140
-[  179.187681][ T3731]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  179.188604][ T3731] =====================================================
+To reproduce the failure we need the following system:
+  - kernel command: page_poison=1 init_on_free=0 init_on_alloc=0
+  - kernel config:
+    * CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
+    * CONFIG_INIT_ON_FREE_DEFAULT_ON=y
+    * CONFIG_PAGE_POISONING=y
 
-In our case, there are two Thread A and B:
+    0000000085629bdd: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    0000000022861832: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00000000c597f5b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    CPU: 11 PID: 15195 Comm: bash Kdump: loaded Tainted: G     U     O      5.13.1-gentoo-x86_64 #1
+    Hardware name: System manufacturer System Product Name/PRIME Z370-A, BIOS 2801 01/13/2021
+    Call Trace:
+     dump_stack+0x64/0x7c
+     __kernel_unpoison_pages.cold+0x48/0x84
+     post_alloc_hook+0x60/0xa0
+     get_page_from_freelist+0xdb8/0x1000
+     __alloc_pages+0x163/0x2b0
+     __get_free_pages+0xc/0x30
+     pgd_alloc+0x2e/0x1a0
+     ? dup_mm+0x37/0x4f0
+     mm_init+0x185/0x270
+     dup_mm+0x6b/0x4f0
+     ? __lock_task_sighand+0x35/0x70
+     copy_process+0x190d/0x1b10
+     kernel_clone+0xba/0x3b0
+     __do_sys_clone+0x8f/0xb0
+     do_syscall_64+0x68/0x80
+     ? do_syscall_64+0x11/0x80
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Context: Thread A:              Context: Thread B:
+Before the 51cba1eb ("init_on_alloc: Optimize static branches")
+init_on_alloc never enabled static branch by default. It could
+only be enabed explicitly by init_mem_debugging_and_hardening().
 
-l2cap_chan_timeout()            __se_sys_shutdown()
-  l2cap_chan_close()              l2cap_sock_shutdown()
-    l2cap_chan_del()                l2cap_chan_close()
-      l2cap_sock_teardown_cb()        l2cap_sock_teardown_cb()
+But after the 51cba1eb static branch could already be enabled
+by default. There was no code to ever disable it. That caused
+page_poison=1 / init_on_free=1 conflict.
 
-Once l2cap_sock_teardown_cb() excuted, this sock will be marked as SOCK_ZAPPED,
-and can be treated as killable in l2cap_sock_kill() if sock_orphan() has
-excuted, at this time we close sock through sock_close() which end to call
-l2cap_sock_kill() like Thread C:
+This change extends init_mem_debugging_and_hardening() to also
+disable static branch disabling.
 
-Context: Thread C:
-
-sock_close()
-  l2cap_sock_release()
-    sock_orphan()
-    l2cap_sock_kill()  #free sock if refcnt is 1
-
-If C completed, Once A or B reaches l2cap_sock_teardown_cb() again,
-use-after-free happened.
-
-We should set chan->data to NULL if sock is freed, for telling teardown
-operation is not allowed in l2cap_sock_teardown_cb(), and also we should
-avoid killing an already killed socket in l2cap_sock_close_cb().
-
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+CC: Alexander Potapenko <glider@google.com>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Vlastimil Babka <vbabka@suse.cz>
+CC: linux-mm@kvack.org
+Reported-by: bowsingbetee@pm.me
+Reported-by: Mikhail Morfikov <mmorfikov@gmail.com>
+Fixes: 51cba1ebc60d ("init_on_alloc: Optimize static branches")
+Cc: stable@vger.kernelo.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Link: https://lore.kernel.org/r/20210712215816.1512739-1-slyfox@gentoo.org
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- net/bluetooth/l2cap_sock.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ mm/page_alloc.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index c99d65ef13b1..ddc6a692b237 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1215,14 +1215,18 @@ static int l2cap_sock_recvmsg(struct socket *sock, struct msghdr *msg,
-  */
- static void l2cap_sock_kill(struct sock *sk)
- {
-+	struct l2cap_chan *chan;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3b97e17806be..1f19365bc158 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -840,21 +840,24 @@ void init_mem_debugging_and_hardening(void)
+ 	}
+ #endif
+ 
+-	if (_init_on_alloc_enabled_early) {
+-		if (page_poisoning_requested)
+-			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
+-				"will take precedence over init_on_alloc\n");
+-		else
+-			static_branch_enable(&init_on_alloc);
+-	}
+-	if (_init_on_free_enabled_early) {
+-		if (page_poisoning_requested)
+-			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
+-				"will take precedence over init_on_free\n");
+-		else
+-			static_branch_enable(&init_on_free);
++	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early) &&
++	    page_poisoning_requested) {
++		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
++			"will take precedence over init_on_alloc and init_on_free\n");
++		_init_on_alloc_enabled_early = false;
++		_init_on_free_enabled_early = false;
+ 	}
+ 
++	if (_init_on_alloc_enabled_early)
++		static_branch_enable(&init_on_alloc);
++	else
++		static_branch_disable(&init_on_alloc);
 +
- 	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
++	if (_init_on_free_enabled_early)
++		static_branch_enable(&init_on_free);
++	else
++		static_branch_disable(&init_on_free);
++
+ #ifdef CONFIG_DEBUG_PAGEALLOC
+ 	if (!debug_pagealloc_enabled())
  		return;
- 
- 	BT_DBG("sk %p state %s", sk, state_to_string(sk->sk_state));
- 
- 	/* Kill poor orphan */
--
--	l2cap_chan_put(l2cap_pi(sk)->chan);
-+	chan = l2cap_pi(sk)->chan;
-+	l2cap_chan_put(chan);
-+	if (refcount_read(&sk->sk_refcnt) == 1)
-+		chan->data = NULL;
- 	sock_set_flag(sk, SOCK_DEAD);
- 	sock_put(sk);
- }
-@@ -1508,6 +1512,9 @@ static void l2cap_sock_close_cb(struct l2cap_chan *chan)
- {
- 	struct sock *sk = chan->data;
- 
-+	if (!sk)
-+		return;
-+
- 	l2cap_sock_kill(sk);
- }
- 
-@@ -1516,6 +1523,9 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
- 	struct sock *sk = chan->data;
- 	struct sock *parent;
- 
-+	if (!sk)
-+		return;
-+
- 	BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
- 
- 	/* This callback can be called both for server (BT_LISTEN)
 -- 
-2.27.0
+2.30.2
 
