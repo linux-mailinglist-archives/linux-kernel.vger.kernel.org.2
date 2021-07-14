@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0C83C91FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D223C9209
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhGNUZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231907AbhGNUZJ (ORCPT
+        id S236984AbhGNU0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:26:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44445 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235241AbhGNU0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:25:09 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183B7C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:22:17 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a12so5748526lfb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AWy+35KmmWPF9vsv4/yauNLhBLPVkzMejTzAkHJGLBM=;
-        b=V37VAVm5NvLVGqND/F0vTJg46VZeConitLxxTHCs1N4UC3kwCcitLTAuULgE9P0yJ7
-         JxRC/pqtzVf+u3u/c8M13eOZYvvD8y4ch9aoNPL3PEyFGZfOI7/lAvcnPkfI3gFhUBhB
-         KHaX4h+Jp8OCMJ7rNg+VURB4Q4FkA9BEozZbQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AWy+35KmmWPF9vsv4/yauNLhBLPVkzMejTzAkHJGLBM=;
-        b=c3vWLxCOnLt+CnZJRuXSyGU8/hK5AVGr8d2/fItH22HP8JVdx/2Uzirjz9qURaQDM/
-         4FAjH+MLbrD7zgDTTazosKiyl+hp0GrM/Z6C3iDgrjiFOgayCszbqDrNERMtm910w5Lj
-         wwLufi5P3pq9A9gmIYYXW4gVUtswPLyRneM0wlqyZ0SRbSBz4g15vMxpw4TzxmCF1k/Q
-         CaI673fSs737q5zf0Ax7X0OcqqWnr2GcMDII8ppNNpAE4376tZQSoyy3pyF8zA3GFhyw
-         qpq3dT0AD33eQlu9tQsddQJHkur84cmK2nR2jgcf5SII/VxKMZLwbCh69twwUitC8IvW
-         8CDQ==
-X-Gm-Message-State: AOAM531DzInWkWtjaGIhIOII5TuJl1sNE6m/YP5AwihfMiudOd7hx75b
-        tTkoUAjGIV4mzuPo2hccMSQW/KH808XQBglW
-X-Google-Smtp-Source: ABdhPJxh9FdJK59B+CsAs6sFDGCnKKomQyObqJBnCpTkyjhZsEsmQPZimWqkKie8PnXG2ki9bcgRBQ==
-X-Received: by 2002:ac2:54a4:: with SMTP id w4mr60634lfk.344.1626294135303;
-        Wed, 14 Jul 2021 13:22:15 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id p12sm240063lft.102.2021.07.14.13.22.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 13:22:13 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id r16so5283411ljk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:22:13 -0700 (PDT)
-X-Received: by 2002:a2e:81c4:: with SMTP id s4mr10564675ljg.251.1626294133222;
- Wed, 14 Jul 2021 13:22:13 -0700 (PDT)
+        Wed, 14 Jul 2021 16:26:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626294230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FkQL0/TmGD7gb6xNFLA0sWKjd2e7ZFTezB20AWmdyek=;
+        b=TfPv4/dgvJCigQWMS9NiDtvlzu3Ny3kNvdQCaptTifQoDLvgAljHLLcBWthTwApTHQkNhK
+        +9twkeNBowE0oYJ3AwgnZI5pTfhX1TDssa5mpntyPJLls24BxD2UZmBmCMu1NBlkEcvVMj
+        T7wQO7z/zdBk+mU/6FbEClyyHb+aBXA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-cvqwb-V3NMWwTZbmW1VrgQ-1; Wed, 14 Jul 2021 16:23:49 -0400
+X-MC-Unique: cvqwb-V3NMWwTZbmW1VrgQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C93381904A;
+        Wed, 14 Jul 2021 20:23:41 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-201.rdu2.redhat.com [10.10.114.201])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CCA0717AE2;
+        Wed, 14 Jul 2021 20:23:40 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 5CE9A22021C; Wed, 14 Jul 2021 16:23:40 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, virtio-fs@redhat.com,
+        v9fs-developer@lists.sourceforge.net, stefanha@redhat.com,
+        miklos@szeredi.hu, Vivek Goyal <vgoyal@redhat.com>
+Subject: [PATCH v3 0/3] support booting of arbitrary non-blockdevice file systems
+Date:   Wed, 14 Jul 2021 16:23:18 -0400
+Message-Id: <20210714202321.59729-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-3-ojeda@kernel.org>
- <CAKwvOdmhRuF5eTZ2ztZBrL6BvDkA57B7OfVuvCaEMfV8nkLXCQ@mail.gmail.com>
- <CAHk-=whzXv=Fu7dQshSTyd9H1-JS5=gyKwW-GMNGccAKs4Mwpg@mail.gmail.com> <87mtqo1wv6.fsf@disp2133>
-In-Reply-To: <87mtqo1wv6.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 14 Jul 2021 13:21:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whdi_biEOrzrYn7OC+wq+ckoaa5dFAATdM=n9P7Dp0YOA@mail.gmail.com>
-Message-ID: <CAHk-=whdi_biEOrzrYn7OC+wq+ckoaa5dFAATdM=n9P7Dp0YOA@mail.gmail.com>
-Subject: Re: [PATCH 02/17] kallsyms: increase maximum kernel symbol length to 512
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 1:09 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Are you thinking the hashed kernel symbols need to have their types
-> included in the hash?
+Hi,
 
-I think the hash should be the whole mangled name. So yes, for Rust
-symbols they'd have the the type information.
+This is V3 of patches. Christoph had posted V2 here.
 
->  Or is this just a hash to make the names a managable size?
+https://lore.kernel.org/linux-fsdevel/20210621062657.3641879-1-hch@lst.de/
 
-No, if that was the only point of it, the "just use two bytes for
-length" would be simpler.
+There was a small issue in last patch series that list_bdev_fs_names()
+did not put an extra '\0' at the end as current callers were expecting.
 
-But I don't think we want to do run-time de-mangling of names in the
-kernel when doing stack traces, which implies that the kallsym
-information in the kernel should be the de-mangled names.
+To fix this, I have modified list_bdev_fs_names() and split_fs_names()
+to return number of null terminated strings they have parsed. And
+modified callers to use that to loop through strings (instead of
+relying on an extra null at the end).
 
-That makes the names nice and readable, and also makes this "maximum
-symbol length" thing a non-issue.
+Christoph was finding it hard to find time so I took his patches, 
+added my changes in patch3 and reposting the patch series.
 
-BUT.
+I have tested it with 9p, virtiofs and ext4 filesystems as rootfs
+and it works for me.
 
-It also means that you can't use those names for linking purposes, so
-you'd then need to have a "full version" for that. But as Willy
-pointed out elsewhere, you might as well just use a constant-sized
-hash for that, rather than have both a manged and a de-mangled name.
+Thanks
+Vivek
 
-                   Linus
+Christoph Hellwig (3):
+  init: split get_fs_names
+  init: allow mounting arbitrary non-blockdevice filesystems as root
+  fs: simplify get_filesystem_list / get_all_fs_names
+
+ fs/filesystems.c   | 27 ++++++++------
+ include/linux/fs.h |  2 +-
+ init/do_mounts.c   | 90 +++++++++++++++++++++++++++++++++-------------
+ 3 files changed, 83 insertions(+), 36 deletions(-)
+
+-- 
+2.31.1
+
