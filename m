@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C0A3C7C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22953C7C27
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237758AbhGNCyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237706AbhGNCyd (ORCPT
+        id S237662AbhGNC5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:57:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20562 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237503AbhGNC5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:54:33 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55133C061786;
-        Tue, 13 Jul 2021 19:51:39 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i5so949806lfe.2;
-        Tue, 13 Jul 2021 19:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Wx8pDvbbu5dTXlPECC46V6TUte+9Hhh+Y0wI3IGyQc0=;
-        b=OSKHzfjYjQ/MFjOyxO2B6NTtjl9a1KDpfX4qqEPKyDIBDQ+O1XPDYmw+3zv6wG7Il4
-         PBG8L5WpEXhSVlISrumZB1FKUHca9EK7wPFZ7S4XjZ+1Z7hkkXKX8RfXZQa7iWw4ZAqp
-         7UZvuDBAdswJAoLapXvDkwpSPJNf8uIDq8t/EZNqh1xhThqZXOQvZeGLjxW07KcKGVQb
-         LthOBij1grVMHnlZmLSA4XhHjWVo3tq+0WYl5SlP3Ek7dZkYrsWNMmovleMcCBmh96g8
-         TF8oBEN4hwXWd+beSirKU8iDLQ9KAPDMRFatImHJsFNdI8xQeI8EkD3EI4mdQ9V1G5ZQ
-         yYdg==
+        Tue, 13 Jul 2021 22:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626231263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L8YuQd5Ts4JNGV6wtOAvCK5EPGDYCcnR+6g/ZGfnDJI=;
+        b=BAyyWUmPNx1uQ/8+GV32/pc5x7Rumus9OvFX2Q7B90oCLYtPc44dll/3Z8x+mKKhLLZR50
+        hR5Wi8i4IUDn4vg2V6DQfFOMeXfphdBlbGLSyU4mGiRjcs9gA7jgeikELD0nEgfHgRpOOP
+        x+hR3SO36L31sP8e+CjakIO3APs1AuQ=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-ZU6yGX0dP9qR0RQvaN-m3Q-1; Tue, 13 Jul 2021 22:54:22 -0400
+X-MC-Unique: ZU6yGX0dP9qR0RQvaN-m3Q-1
+Received: by mail-pl1-f198.google.com with SMTP id h9-20020a170902ac89b029012aec287bd5so596902plr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:54:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Wx8pDvbbu5dTXlPECC46V6TUte+9Hhh+Y0wI3IGyQc0=;
-        b=CbBZWgCazYRBfRpVh98OwCHwNzoabg4FAm0RMbzCWOYo5cuI/Lt14a1Zg+WyvZqgAV
-         UaDzsua0fWLNR8H2OJcFMsOFE1R4yXDRNvOczSG6vPd6g5H97+WvCJfSg97Mh6u5rgL0
-         3JzmtcPcVBlsdXU/MoUbhFJl9lSsv8uzRzntlBy4HrgZs6LJ7pnPA3z6/pdEuxFyvgbp
-         F3Rx3JXhE+GlJ8sBxs0yAZGB3d3usbrzfm9eJSbSFVnUFZrVXm2CAjtvDYikVKCj6SxS
-         O4n8vt9tTsFjbFCztKk/ihfdT7UdpFktGS7jybK0PJVMKMDBv9gZ6FUW7F7l8DQJFpR5
-         ZI+A==
-X-Gm-Message-State: AOAM531jzc9nQRzfu2Phte6e+ts4Ax7iOdSK/eDcx8JnEuMM5lARQmLw
-        rvfwbm4xzFh6sZXTn8mlfkE=
-X-Google-Smtp-Source: ABdhPJzRz4AHbJ/kQiPqB0+up5v0YxlHJmYwAsCiyo9hmi/IHmSy4pVD/0SV3XFRHvBiF1IwlnehKw==
-X-Received: by 2002:a05:6512:3091:: with SMTP id z17mr5973059lfd.395.1626231097764;
-        Tue, 13 Jul 2021 19:51:37 -0700 (PDT)
-Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.gmail.com with ESMTPSA id a10sm50281lfb.93.2021.07.13.19.51.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 19:51:37 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v2 7/7] ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
-Date:   Wed, 14 Jul 2021 05:51:27 +0300
-Message-Id: <20210714025127.2411-8-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210714025127.2411-1-digetx@gmail.com>
-References: <20210714025127.2411-1-digetx@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=L8YuQd5Ts4JNGV6wtOAvCK5EPGDYCcnR+6g/ZGfnDJI=;
+        b=jgx6W2u94v5V+I6KVjTP4rCm6yQQDpgs+MIAgwZsXCAagfTy6kbptFRhWzZUpwdozk
+         A8vJhR9hs2Mk7tVQ2lD3GZTIg4luFrQebKTJEwTgaXmD59H8GLDxbo048O7j38bCUzxY
+         X4tWbddptCEBFiTxZIGu4U+sgjZ7rJhdR9urgUgkVjTqwZBPJOAsUYX5tQaNvqoLiTr4
+         BvtGlNKDnGyUOnG8AinUk7EGV8stdkp07sIquesxZ4Dicf2DOKHpgwEy0QfhQEzFdYO0
+         PPit3d/d5AFk1XUqw2y+oMxpIMFZHx9hHP5q7Qww5+If5TWohRMMCWjEUZn3RAPf4n6p
+         2iLw==
+X-Gm-Message-State: AOAM531MNewWAOlvjR6i7s0dbMmZk3nXNiWUQpgueSvE86/HkTXSyd5R
+        3bivsuv8j/zrz9HB+Y/y9RTvzY/fzR2eRG+g03Q9LXa0kHoNipWHh/gtqpt3YMHkTJ1F+stDbj7
+        2V0KnqKyBqD/dqxd8kEF5BLMqu2pYsg864Zr2gPmI7RDJPGL5MH1/uF51Am7R8+NkIDYoDqkIjw
+        dr
+X-Received: by 2002:aa7:93cd:0:b029:328:9d89:a790 with SMTP id y13-20020aa793cd0000b02903289d89a790mr7769437pff.71.1626231261477;
+        Tue, 13 Jul 2021 19:54:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVcvRFQIHUh/wToTzbSqcRq399rxXFtmmAr5rDXhIuYW/QN+SkST9rmMlarwJcwx/uWSDVUw==
+X-Received: by 2002:aa7:93cd:0:b029:328:9d89:a790 with SMTP id y13-20020aa793cd0000b02903289d89a790mr7769384pff.71.1626231260928;
+        Tue, 13 Jul 2021 19:54:20 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id v11sm494452pjs.13.2021.07.13.19.54.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 19:54:20 -0700 (PDT)
+Subject: Re: [PATCH v9 16/17] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        joro@8bytes.org, gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210713084656.232-1-xieyongji@bytedance.com>
+ <20210713084656.232-17-xieyongji@bytedance.com> <20210713132741.GM1954@kadam>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <c42979dd-331f-4af5-fda6-18d80f22be2d@redhat.com>
+Date:   Wed, 14 Jul 2021 10:54:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210713132741.GM1954@kadam>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable NVIDIA Tegra30 SoC thermal sensor driver in multi_v7_defconfig.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ÔÚ 2021/7/13 ÏÂÎç9:27, Dan Carpenter Ð´µÀ:
+> On Tue, Jul 13, 2021 at 04:46:55PM +0800, Xie Yongji wrote:
+>> +static int vduse_dev_init_vdpa(struct vduse_dev *dev, const char *name)
+>> +{
+>> +	struct vduse_vdpa *vdev;
+>> +	int ret;
+>> +
+>> +	if (dev->vdev)
+>> +		return -EEXIST;
+>> +
+>> +	vdev = vdpa_alloc_device(struct vduse_vdpa, vdpa, dev->dev,
+>> +				 &vduse_vdpa_config_ops, name, true);
+>> +	if (!vdev)
+>> +		return -ENOMEM;
+> This should be an IS_ERR() check instead of a NULL check.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 65d1fede3825..739417c2acf8 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -525,6 +525,7 @@ CONFIG_BRCMSTB_THERMAL=m
- CONFIG_GENERIC_ADC_THERMAL=m
- CONFIG_ST_THERMAL_MEMMAP=y
- CONFIG_TEGRA_SOCTHERM=m
-+CONFIG_TEGRA30_TSENSOR=m
- CONFIG_UNIPHIER_THERMAL=y
- CONFIG_DA9063_WATCHDOG=m
- CONFIG_XILINX_WATCHDOG=y
--- 
-2.32.0
+
+Yes.
+
+
+>
+> The vdpa_alloc_device() macro is doing something very complicated but
+> I'm not sure what.  It calls container_of() and that looks buggy until
+> you spot the BUILD_BUG_ON_ZERO() compile time assert which ensures that
+> the container_of() is a no-op.
+>
+> Only one of the callers checks for error pointers correctly so maybe
+> it's too complicated or maybe there should be better documentation.
+
+
+We need better documentation for this macro and fix all the buggy callers.
+
+Yong Ji, want to do that?
+
+Thanks
+
+
+>
+> regards,
+> dan carpenter
+>
 
