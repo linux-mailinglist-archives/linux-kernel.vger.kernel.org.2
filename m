@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568933C949C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716DD3C94AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237014AbhGNXrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:47:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:44118 "EHLO foss.arm.com"
+        id S236171AbhGNXxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:53:30 -0400
+Received: from ozlabs.org ([203.11.71.1]:51131 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhGNXrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:47:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B578F31B;
-        Wed, 14 Jul 2021 16:44:12 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E5C43F7D8;
-        Wed, 14 Jul 2021 16:44:10 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
-In-Reply-To: <20210714231338.GA65963@lothringen>
-References: <20210714135420.69624-1-frederic@kernel.org> <20210714135420.69624-7-frederic@kernel.org> <YO8WWxWBmNuI0iUW@hirez.programming.kicks-ass.net> <20210714231338.GA65963@lothringen>
-Date:   Thu, 15 Jul 2021 00:44:08 +0100
-Message-ID: <87o8b4mpfb.mognet@arm.com>
+        id S229535AbhGNXx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 19:53:29 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GQDlZ1KHxz9sWS;
+        Thu, 15 Jul 2021 09:50:33 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626306635;
+        bh=TZ+Ih+kFcBCph+/kBsHHs9MZ5aSAXfKg0yPMfB7RdaQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=L9hw79C30kzPY1ZQnPrd/nNdKgeVFiP5BTeidq344loZ0P7d1thaudUm/lalQZ7Xj
+         FSFKkoazlztRv7XdxK4k0gpxK8+052/Vb4H7nsyMlbt6hJ5QFIyjMT0Vml07tDxd94
+         m3+3sIYUZnPAG8+lbwlWQxun8QFDT/bvpOk7ucaycNSccKfvMwKYA6ox1lVqe3ro9E
+         Z0vKu1PLOtRCAm5PCoMznUeO5BLiJ3XencZImcyiKa0hBe4/+n+I4/80loWk2WIQ4r
+         brmIBbimeO+u5iZ4yauWToiNKAWa42wxKzJp2OVC3GM1EtRwiN6NVUSr0yFJ5n3iVa
+         vPuHCaSoDQ+fA==
+Date:   Thu, 15 Jul 2021 09:50:32 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: linux-next: build failure in Linus' tree
+Message-ID: <20210715095032.6897f1f6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/r2jI.7wTppluivW9I5VE6nv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/21 01:13, Frederic Weisbecker wrote:
-> On Wed, Jul 14, 2021 at 06:52:43PM +0200, Peter Zijlstra wrote:
->>
->> cpusets already has means to create paritions; why are you creating
->> something else?
->
-> I was about to answer that the semantics of isolcpus, which reference
-> a NULL domain, are different from SD_LOAD_BALANCE implied by
-> cpuset.sched_load_balance. But then I realize that SD_LOAD_BALANCE has
-> been removed.
->
-> How cpuset.sched_load_balance is implemented then? Commit
-> e669ac8ab952df2f07dee1e1efbf40647d6de332 ("sched: Remove checks against
-> SD_LOAD_BALANCE") advertize that setting cpuset.sched_load_balance to 0
-> ends up creating NULL domain but that's not what I get. For example if I
-> mount a single cpuset root (no other cpuset mountpoints):
->
-> $ mount -t cgroup none ./cpuset -o cpuset
-> $ cd cpuset
-> $ cat cpuset.cpus
-> 0-7
-> $ cat cpuset.sched_load_balance
-> 1
-> $ echo 0 > cpuset.sched_load_balance
-> $ ls /sys/kernel/debug/domains/cpu1/
-> domain0  domain1
->
-> I still get the domains on all CPUs...
+--Sig_/r2jI.7wTppluivW9I5VE6nv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Huh. That's on v5.14-rc1 with an automounted cpuset:
+Hi all,
 
-$ cat /sys/fs/cgroup/cpuset/cpuset.cpus
-0-5
-$ cat /sys/fs/cgroup/cpuset/cpuset.sched_load_balance
-1
+While compiling Linus' tree, a powerpc-allmodconfig build (and others)
+with gcc 4.9 failed like this:
 
-$ ls /sys/kernel/debug/sched/domains/cpu*
-/sys/kernel/debug/sched/domains/cpu0:
-domain0  domain1
+drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c: In function 'ifh_enc=
+ode_bitfield':
+include/linux/compiler_types.h:328:38: error: call to '__compiletime_assert=
+_431' declared with attribute error: Unsupported width, must be <=3D 40
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                                      ^
+include/linux/compiler_types.h:309:4: note: in definition of macro '__compi=
+letime_assert'
+    prefix ## suffix();    \
+    ^
+include/linux/compiler_types.h:328:2: note: in expansion of macro '_compile=
+time_assert'
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+  ^
+drivers/net/ethernet/microchip/sparx5/sparx5_netdev.c:28:2: note: in expans=
+ion of macro 'compiletime_assert'
+  compiletime_assert(width <=3D 40, "Unsupported width, must be <=3D 40");
+  ^
 
-/sys/kernel/debug/sched/domains/cpu1:
-domain0  domain1
+Caused by commit
 
-/sys/kernel/debug/sched/domains/cpu2:
-domain0  domain1
+  f3cad2611a77 ("net: sparx5: add hostmode with phylink support")
 
-/sys/kernel/debug/sched/domains/cpu3:
-domain0  domain1
-
-/sys/kernel/debug/sched/domains/cpu4:
-domain0  domain1
-
-/sys/kernel/debug/sched/domains/cpu5:
-domain0  domain1
-
-$ echo 0 > /sys/fs/cgroup/cpuset/cpuset.sched_load_balance
-$ ls /sys/kernel/debug/sched/domains/cpu*
-/sys/kernel/debug/sched/domains/cpu0:
-
-/sys/kernel/debug/sched/domains/cpu1:
-
-/sys/kernel/debug/sched/domains/cpu2:
-
-/sys/kernel/debug/sched/domains/cpu3:
-
-/sys/kernel/debug/sched/domains/cpu4:
-
-/sys/kernel/debug/sched/domains/cpu5:
+I guess this is caused by the call to ifh_encode_bitfield() not being
+inlined.
 
 
-I also checked that you can keep cpuset.sched_load_balance=0 at the root
-and create exclusive child cpusets with different values of
-sched_load_balance, giving you some CPUs attached to the NULL domain and
-some others with a sched_domain hierarchy that stays within the cpuset span.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/r2jI.7wTppluivW9I5VE6nv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDveEgACgkQAVBC80lX
+0GwVUAgAiQDCnchrG4xRHyq7tAgVlXvSwS/XJHARhkuL8tFULxlc64XOTtiQ2MUH
+D6uw7acPR0GZo6M57zghh3j9SopBVh4w6dJHwgCOL5omwsEs3hoe96ckJizGTjmU
+x+TC90CeQJX/NELLFFvyrhSI8lC1e4u7UbF+Yfg8nEJ2kDDYAhSgu83uMM7jwV/Y
+T/ZxayQnS20hGAxGUfMJBmDS41tH+FO03NUpEuF/XyY4DrBbdfxDUg7wUvAsTk0s
+x8w7Pru61FjKogwHNwRq5mrbOaEIr1bFtSHz7Fp12lzvZIjYaLJ6Bv91eeCeE5V1
+Cu8i+z3o9Q1rwBPVKAZ4AiM+xeyiKQ==
+=S897
+-----END PGP SIGNATURE-----
+
+--Sig_/r2jI.7wTppluivW9I5VE6nv--
