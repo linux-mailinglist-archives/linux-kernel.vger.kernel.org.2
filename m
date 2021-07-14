@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121273C8143
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24FE3C8148
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238473AbhGNJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:20:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:62308 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238179AbhGNJUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:20:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207296715"
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
-   d="scan'208";a="207296715"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 02:17:17 -0700
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
-   d="scan'208";a="494122677"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 02:17:13 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m3b0s-00DFlH-HQ; Wed, 14 Jul 2021 12:17:06 +0300
-Date:   Wed, 14 Jul 2021 12:17:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd <nd@arm.com>
-Subject: Re: [PATCH v2 1/4] fs: introduce helper d_path_unsafe()
-Message-ID: <YO6rkgKpca/Z0LtH@smile.fi.intel.com>
-References: <20210623055011.22916-1-justin.he@arm.com>
- <20210623055011.22916-2-justin.he@arm.com>
- <YNL6jcrN42YjDWpB@smile.fi.intel.com>
- <AM6PR08MB4376C83428D8D5F61C0BF3F2F7079@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <AM6PR08MB4376DB011A86FCD8C76FE80DF7139@AM6PR08MB4376.eurprd08.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR08MB4376DB011A86FCD8C76FE80DF7139@AM6PR08MB4376.eurprd08.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S238567AbhGNJUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238179AbhGNJUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:20:49 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DEAC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:17:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x15-20020a25ce0f0000b029055bb0981111so1823809ybe.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:17:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=wlrejQF48WL4uSnd99LoOFS/aI1Cbh+kk7n1cuLb8Cw=;
+        b=P1U+2qmKrZFPH1F205C0/YpTnPSOtrtZBISVrVuEwKIgIwSqtTHUeBOxhmFB/MvPem
+         2cLbH//lBQbItf6/Yc3FkRmungVvfG2zSsBaUwKDE/P5z4CjvB7jWDetnL+2r9KzMUpi
+         gIbMOZMlPnGP5E9kj/cEmpbjW9wnXRnCakZzq6OaxHE7giuBuEMO2O54imLNby/x/Nsp
+         IE/Ktf90LufxxRvIiKvriv4sSdGNeXul5YdCxx2YJF0bfpJOYOhZIHbjzQAsMkbNOvRp
+         4jz/2/2oT3h6NQysEUnSd2ysPyr0MMSn/tdotxY0VoZTkoQ6It9txcbkrvge+5gddc90
+         3BUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=wlrejQF48WL4uSnd99LoOFS/aI1Cbh+kk7n1cuLb8Cw=;
+        b=BxT6fHywNw0cgVr40CnkH1WoimQaSaczD6yhleIlZ8B7Iv7zwcSeoMScc46A6ZR//V
+         j/KTZ83OBiWB2oIBwe22LF8NxvFheDAbxrFIS+m2WG7s8Lh8Gsdl9yN591SNrqqJii6a
+         8027lYmTXDD6K51FI3cvyscqzFazZOV5rIjaAm2eCCYLSHLmSBAYmFNUm4rShSCgMLwQ
+         8w+uqtt+GaK+TRUNGN3oHJnE12kmUYKtFMK5bvPSi27JV5DodFaQXwsJ+PkKWk8mD2+O
+         Tj/dlfISPR7Gyx8y3jX8QYVEwoSKeduaLKRakBigtLQEcQx1W2EgYilOnQV+ymuGqXNA
+         ZJNQ==
+X-Gm-Message-State: AOAM530PW81YUsYH044nHB463Z/Y2hgR4c2wCajU6fz86kpC8fZGDh9w
+        oK2CoBuQJGJKUzSm0VMk/jL8G0d8eYunKVqEzTo+JDoe9HoCEop2+fsDX9pmvn2+q3CnJE9gmB1
+        xZhbTd/YdXQQkkosZn77HzR91/7+cIx0AeSzbxPxw+idY7UA7IRiMwJQhEG9uPjjfyA==
+X-Google-Smtp-Source: ABdhPJzvZoBrVMLmKVofazWugPLVIdobBxAIACgaacdGRcC6DEb+OIp6+hpvaCQiE14wFI8hFJkY3Qjipw==
+X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:c569:463c:c488:ac2])
+ (user=morbo job=sendgmr) by 2002:a25:764b:: with SMTP id r72mr12013800ybc.254.1626254277400;
+ Wed, 14 Jul 2021 02:17:57 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 02:17:44 -0700
+Message-Id: <20210714091747.2814370-1-morbo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH 0/3] Fix clang -Wunused-but-set-variable warnings
+From:   Bill Wendling <morbo@google.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        "David S . Miller" <davem@davemloft.net>,
+        Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     Bill Wendling <morbo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 08:33:10AM +0000, Justin He wrote:
-> > From: Justin He
-> > Sent: Thursday, June 24, 2021 1:49 PM
-> > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > Sent: Wednesday, June 23, 2021 5:11 PM
-> > > On Wed, Jun 23, 2021 at 01:50:08PM +0800, Jia He wrote:
+These patches clean up warnings from clang's '-Wunused-but-set-variable' flag.
 
-...
+Bill Wendling (3):
+  base: remove unused variable 'no_warn'
+  bnx2x: remove unused variable 'cur_data_offset'
+  scsi: qla2xxx: remove unused variable 'status'
 
-> > > > +	const char *dname = smp_load_acquire(&name->name); /* ^^^ */
-> > >
-> > > I have commented on the comment here. What does it mean for mere reader?
-> > >
-> > 
-> > Do you suggest making the comment "/* ^^^ */" more clear?
-
-Yes.
-
-> > It is detailed already in prepend_name_with_len()'s comments:
-> > > * Load acquire is needed to make sure that we see that terminating NUL,
-> > > * which is similar to prepend_name().
+ drivers/base/module.c                             | 6 ++----
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 6 ------
+ drivers/scsi/qla2xxx/qla_nx.c                     | 2 --
+ 3 files changed, 2 insertions(+), 12 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.32.0.93.g670b81a890-goog
 
