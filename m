@@ -2,232 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAEB3C920A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9093C9215
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237883AbhGNU0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:26:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235678AbhGNU0o (ORCPT
+        id S234000AbhGNUdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:33:10 -0400
+Received: from mail-il1-f177.google.com ([209.85.166.177]:42965 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230004AbhGNUdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:26:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626294231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2fqywrBRfZ6vIlprnLyQxXJUpVoCVyWeCRv1boXOkNA=;
-        b=ZrcfcrAZ4ssZ4dnCZ744wn7NBAFZ+4xjvtlcTFFwMjEjKHwlCXi1S6ocx4QV+w3EcZE6fn
-        PBaUlGRk7saJ7h/4OsVMxNcmc13qz7KAmqcw2NrAy579VSMu+1djss6ixJ7QP3SsrGOLCF
-        PgXH2faZ4DMXx7zKvEYb92PzWxCM6ys=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-dddLU69fMQaRfSlmLakEgA-1; Wed, 14 Jul 2021 16:23:49 -0400
-X-MC-Unique: dddLU69fMQaRfSlmLakEgA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11F0381C86D;
-        Wed, 14 Jul 2021 20:23:42 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-201.rdu2.redhat.com [10.10.114.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C534560871;
-        Wed, 14 Jul 2021 20:23:40 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 66E61226DF0; Wed, 14 Jul 2021 16:23:40 -0400 (EDT)
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, virtio-fs@redhat.com,
-        v9fs-developer@lists.sourceforge.net, stefanha@redhat.com,
-        miklos@szeredi.hu, Vivek Goyal <vgoyal@redhat.com>
-Subject: [PATCH v3 3/3] fs: simplify get_filesystem_list / get_all_fs_names
-Date:   Wed, 14 Jul 2021 16:23:21 -0400
-Message-Id: <20210714202321.59729-4-vgoyal@redhat.com>
-In-Reply-To: <20210714202321.59729-1-vgoyal@redhat.com>
-References: <20210714202321.59729-1-vgoyal@redhat.com>
+        Wed, 14 Jul 2021 16:33:09 -0400
+Received: by mail-il1-f177.google.com with SMTP id h3so2862140ilc.9;
+        Wed, 14 Jul 2021 13:30:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M9lwU/VCLeE/+nWVD4Z39mOZ46afUvQ9sGuTfqHArMo=;
+        b=guRQ97nLNduG/9PQSYSQUYSR2sL6CdYBDg9VEgAPEfFBjtYj1Sa3/MDl66yDElSmMD
+         5DbpNv9QZHbPJcyg0kY8EaYKJVPYAHX7wT63c1MzV4bG8QH8pRa9ljd4BzBbQiro/rer
+         GD0h1uCthuV/cs/l74QpHC16+EnBuFE3kX7LU1E2G1ISN9+is29kLU2xUR66OD+D6iqL
+         WB49sIW6sS/QEBXnHF12gritIas7mXUS97dl9G+P1Z7Rk+fgtgjfE65zYN0Es9Yav60M
+         NnGApxbqAxUKaygmIXUBrn0q7KeZ7XB3y30z6eQt07MXyGKoYLRDvREW2FvvTPD07SOl
+         DKOw==
+X-Gm-Message-State: AOAM530Ec6maQY/ZOvALZDYneHTsa/oDZh4SXNdurelYgR08ReqrIBKD
+        rpufP3pljCsqODlH/kKQyA==
+X-Google-Smtp-Source: ABdhPJzuzxDWx8MQSmyJj28+lBodjVhYnmHjPlW4BVR12Iypy4Ks1HdtN9MJue3JLnOTdrlwpA06AA==
+X-Received: by 2002:a92:c544:: with SMTP id a4mr8336682ilj.266.1626294616647;
+        Wed, 14 Jul 2021 13:30:16 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id x1sm1721778ioa.54.2021.07.14.13.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 13:30:15 -0700 (PDT)
+Received: (nullmailer pid 3466302 invoked by uid 1000);
+        Wed, 14 Jul 2021 20:30:13 -0000
+Date:   Wed, 14 Jul 2021 14:30:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, list@opendingux.net,
+        Christophe Branchereau <cbranchereau@gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: display/panel: Add Innolux EJ030NA
+Message-ID: <20210714203013.GA3287208@robh.at.kernel.org>
+References: <20210625121045.81711-1-paul@crapouillou.net>
+ <YOk60yTP9L1gT3+W@ravnborg.org>
+ <HBW0WQ.NHPOJDIT9XWR1@crapouillou.net>
+ <YOlvev0nvXVYU01y@ravnborg.org>
+ <K4Y0WQ.MLS1MDCVFJWL3@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <K4Y0WQ.MLS1MDCVFJWL3@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+On Sat, Jul 10, 2021 at 11:21:56AM +0100, Paul Cercueil wrote:
+> 
+> [...]
+> 
+> > >  I am not sure; the doc states that this (additionalProperties:
+> > > false) "can't
+> > >  be used in case where another schema is referenced", which is the
+> > > case here,
+> > >  as we include "panel-common.yaml".
+> > 
+> > This DT schema already list all relevant properties like:
+> > 
+> > 	backlight: true
+> > 
+> > So "additionalProperties: false" tells that no other properties are
+> > allowed other than the listed properties.
+> > 
+> > To my best understanding unevaluatedProperties: false is less strict and
+> > should be used if one does not list all possilbe properties.
 
-Just output the '\0' separate list of supported file systems for block
-devices directly rather than going through a pointless round of string
-manipulation.
+Right. There's some value of listing which common properties you are 
+using as well.
 
-Based on an earlier patch from Al Viro <viro@zeniv.linux.org.uk>.
+> > This could be the case for a panel haging below a SPI controller as in
+> > this case. So in other words giving this some extra thought I think
+> > unevaluatedProperties: false is OK here.
+> 
+> A panel below a SPI controller would have all its SPI-specific properties
+> covered by spi-controller.yaml, I believe? So maybe "additionalProperties:
+> false" would work?
 
-Vivek:
-Modified list_bdev_fs_names() and split_fs_names() to return number of
-null terminted strings to caller. Callers now use that information to
-loop through all the strings instead of relying on one extra null char
-being present at the end.
+No. Because spi-controller.yaml is evaluated on the SPI host node and 
+this one is evaluated on the SPI slave. There's some work to address 
+this, but it means every SPI slave will have to reference a SPI device 
+schema. The bigger issue here is SPI controller specific device 
+properties. So for this case, we'll have to use unevaluatedProperties.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
----
- fs/filesystems.c   | 27 +++++++++++++++----------
- include/linux/fs.h |  2 +-
- init/do_mounts.c   | 49 ++++++++++++++++++++--------------------------
- 3 files changed, 39 insertions(+), 39 deletions(-)
-
-diff --git a/fs/filesystems.c b/fs/filesystems.c
-index 90b8d879fbaf..58b9067b2391 100644
---- a/fs/filesystems.c
-+++ b/fs/filesystems.c
-@@ -209,21 +209,28 @@ SYSCALL_DEFINE3(sysfs, int, option, unsigned long, arg1, unsigned long, arg2)
- }
- #endif
- 
--int __init get_filesystem_list(char *buf)
-+int __init list_bdev_fs_names(char *buf, size_t size)
- {
--	int len = 0;
--	struct file_system_type * tmp;
-+	struct file_system_type *p;
-+	size_t len;
-+	int count = 0;
- 
- 	read_lock(&file_systems_lock);
--	tmp = file_systems;
--	while (tmp && len < PAGE_SIZE - 80) {
--		len += sprintf(buf+len, "%s\t%s\n",
--			(tmp->fs_flags & FS_REQUIRES_DEV) ? "" : "nodev",
--			tmp->name);
--		tmp = tmp->next;
-+	for (p = file_systems; p; p = p->next) {
-+		if (!(p->fs_flags & FS_REQUIRES_DEV))
-+			continue;
-+		len = strlen(p->name) + 1;
-+		if (len > size) {
-+			pr_warn("%s: truncating file system list\n", __func__);
-+			break;
-+		}
-+		memcpy(buf, p->name, len);
-+		buf += len;
-+		size -= len;
-+		count++;
- 	}
- 	read_unlock(&file_systems_lock);
--	return len;
-+	return count;
- }
- 
- #ifdef CONFIG_PROC_FS
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 640574294216..c76dfc01cf9d 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3622,7 +3622,7 @@ int proc_nr_dentry(struct ctl_table *table, int write,
- 		  void *buffer, size_t *lenp, loff_t *ppos);
- int proc_nr_inodes(struct ctl_table *table, int write,
- 		   void *buffer, size_t *lenp, loff_t *ppos);
--int __init get_filesystem_list(char *buf);
-+int __init list_bdev_fs_names(char *buf, size_t size);
- 
- #define __FMODE_EXEC		((__force int) FMODE_EXEC)
- #define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index bdeb90b8d669..9b4a1f877e47 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -338,32 +338,22 @@ __setup("rootflags=", root_data_setup);
- __setup("rootfstype=", fs_names_setup);
- __setup("rootdelay=", root_delay_setup);
- 
--static void __init split_fs_names(char *page, char *names)
-+static int __init split_fs_names(char *page, char *names)
- {
--	strcpy(page, root_fs_names);
--	while (*page++) {
--		if (page[-1] == ',')
--			page[-1] = '\0';
--	}
--	*page = '\0';
--}
--
--static void __init get_all_fs_names(char *page)
--{
--	int len = get_filesystem_list(page);
--	char *s = page, *p, *next;
-+	int count = 0;
-+	char *p = page;
- 
--	page[len] = '\0';
--	for (p = page - 1; p; p = next) {
--		next = strchr(++p, '\n');
--		if (*p++ != '\t')
--			continue;
--		while ((*s++ = *p++) != '\n')
--			;
--		s[-1] = '\0';
-+	strcpy(p, root_fs_names);
-+	while (*p++) {
-+		if (p[-1] == ',')
-+			p[-1] = '\0';
- 	}
-+	*p = '\0';
-+
-+	for (p = page; *p; p += strlen(p)+1)
-+		count++;
- 
--	*s = '\0';
-+	return count;
- }
- 
- static int __init do_mount_root(const char *name, const char *fs,
-@@ -409,15 +399,16 @@ void __init mount_block_root(char *name, int flags)
- 	char *fs_names = page_address(page);
- 	char *p;
- 	char b[BDEVNAME_SIZE];
-+	int num_fs, i;
- 
- 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
- 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
- 	if (root_fs_names)
--		split_fs_names(fs_names, root_fs_names);
-+		num_fs = split_fs_names(fs_names, root_fs_names);
- 	else
--		get_all_fs_names(fs_names);
-+		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
- retry:
--	for (p = fs_names; *p; p += strlen(p)+1) {
-+	for (i = 0, p = fs_names; i < num_fs; i++, p += strlen(p)+1) {
- 		int err = do_mount_root(name, p, flags, root_mount_data);
- 		switch (err) {
- 			case 0:
-@@ -450,7 +441,7 @@ void __init mount_block_root(char *name, int flags)
- 	printk("List of all partitions:\n");
- 	printk_all_partitions();
- 	printk("No filesystem could mount root, tried: ");
--	for (p = fs_names; *p; p += strlen(p)+1)
-+	for (i = 0, p = fs_names; i < num_fs; i++, p += strlen(p)+1)
- 		printk(" %s", p);
- 	printk("\n");
- 	panic("VFS: Unable to mount root fs on %s", b);
-@@ -551,13 +542,15 @@ static int __init mount_nodev_root(void)
- {
- 	char *fs_names, *fstype;
- 	int err = -EINVAL;
-+	int num_fs, i;
- 
- 	fs_names = (void *)__get_free_page(GFP_KERNEL);
- 	if (!fs_names)
- 		return -EINVAL;
--	split_fs_names(fs_names, root_fs_names);
-+	num_fs = split_fs_names(fs_names, root_fs_names);
- 
--	for (fstype = fs_names; *fstype; fstype += strlen(fstype) + 1) {
-+	for (i = 0, fstype = fs_names; i < num_fs;
-+	     i++, fstype += strlen(fstype) + 1) {
- 		if (!fs_is_nodev(fstype))
- 			continue;
- 		err = do_mount_root(root_device_name, fstype, root_mountflags,
--- 
-2.31.1
-
+> 
+> In any case, if I use "additionalProperties: false", "make dt_binding_check"
+> complains that my example's "spi-max-frequency" property is not covered. So
+> maybe you are right.
+> 
+> > So my r-b is ok if you keep it as it.
+> > 
+> > PS. Where do you guys hang out with the downfall of freenode - somewhere
+> > on oftc?
+> 
+> We moved to #opendingux on Libera.
+> 
+> Cheers,
+> -Paul
+> 
+> 
+> 
