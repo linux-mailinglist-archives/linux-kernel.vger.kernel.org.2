@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45913C9078
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D66D3C907C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242255AbhGNTzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:55:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45124 "EHLO mail.kernel.org"
+        id S242382AbhGNTzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:55:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240584AbhGNTty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E0816143A;
-        Wed, 14 Jul 2021 19:45:39 +0000 (UTC)
+        id S240650AbhGNTt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D86F6143E;
+        Wed, 14 Jul 2021 19:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291940;
-        bh=3SXRqq5v7xjDEso32NNPYcnEN+DUJCLWJL65j8bmld4=;
+        s=k20201202; t=1626291945;
+        bh=vO6jLsstg1PqDiZfbP7AfOwVNt2TH0F65zgaoPMvmsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X2MNg+XDxCVMrXluo5UFzrMpxr8DGzbUDuIAWsOH8IJvh1jP/EwX2K3uNavjqq7lY
-         kmy1fPQpMxjyYK/0BOtbD99unWmKIZk65HOZf3WKItxvSHeDuabqsn/IRiprf6J0cH
-         3Gcr3/oGXSbnG8Fr9eALiCjt1XhBjFCwBvVNp+svrUnhuQ9fNH968WaW5gToC0KN7X
-         lztcP8kWrxqRxDxlANO3B7vF1wTshT/BSHeZvaGUF9J1sLMyKBHvyU3Q02j1yxsBo4
-         Jpqfgb/hfqBD5V2E7DdqDqGmw8H86vR6lJ6kBFYkVC92DbpAb1JuRwJwtA7vWbTQB+
-         ZGYVZXKz3YP0Q==
+        b=tswgjlQDr95KfXqJGDz9NK9xQkYEA+CuZwt0uFgbhzm/l9exZNHwExkXIEfJlGhco
+         saHBRrKt5HJArLmkFe4Vh8/sR87urzdS4ftVhUvSSkqmfz4rZwvoBtx6ROjFl9ocjk
+         Dl08Hd/l01yO2WnDx73KmtubSDDIwfgm3ID0KzYqc07vc50qhttlrvF2i7yWyV01dr
+         +Z7f7dnC70xHwyMykyqyYovElXX2SiFiFTiTlSo4hxjRyuACumPlFErPE3vmAFE9lh
+         1UjaA1XEJaFqZ8Bj4TSufDNxtpI0PS3VsFW81cLoMjgCVGMkgQzFYU1evBIIMRzf7k
+         pUE4+USxdho4Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 18/51] ARM: dts: imx25-pinfunc: Fix gpio function name for pads GPIO_[A-F]
-Date:   Wed, 14 Jul 2021 15:44:40 -0400
-Message-Id: <20210714194513.54827-18-sashal@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 22/51] kbuild: sink stdout from cmd for silent build
+Date:   Wed, 14 Jul 2021 15:44:44 -0400
+Message-Id: <20210714194513.54827-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194513.54827-1-sashal@kernel.org>
 References: <20210714194513.54827-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,64 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit e0cdd26af8eb9001689a4cde4f72c61c1c4b06be ]
+[ Upstream commit 174a1dcc96429efce4ef7eb2f5c4506480da2182 ]
 
-The pinfunc definitions used GPIO_A as function instead of GPIO_1_0 as
-done for all the other pins with GPIO functionality. Fix for consistency.
+When building with 'make -s', no output to stdout should be printed.
 
-There are no mainline users that needs adaption.
+As Arnd Bergmann reported [1], mkimage shows the detailed information
+of the generated images.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+I think this should be suppressed by the 'cmd' macro instead of by
+individual scripts.
+
+Insert 'exec >/dev/null;' in order to redirect stdout to /dev/null for
+silent builds.
+
+[Note about this implementation]
+
+'exec >/dev/null;' may look somewhat tricky, but this has a reason.
+
+Appending '>/dev/null' at the end of command line is a common way for
+redirection, so I first tried this:
+
+  cmd = @set -e; $(echo-cmd) $(cmd_$(1)) >/dev/null
+
+... but it would not work if $(cmd_$(1)) itself contains a redirection.
+
+For example, cmd_wrap in scripts/Makefile.asm-generic redirects the
+output from the 'echo' command into the target file.
+
+It would be expanded into:
+
+  echo "#include <asm-generic/$*.h>" > $@ >/dev/null
+
+Then, the target file gets empty because the string will go to /dev/null
+instead of $@.
+
+Next, I tried this:
+
+  cmd = @set -e; $(echo-cmd) { $(cmd_$(1)); } >/dev/null
+
+The form above would be expanded into:
+
+  { echo "#include <asm-generic/$*.h>" > $@; } >/dev/null
+
+This works as expected. However, it would be a syntax error if
+$(cmd_$(1)) is empty.
+
+When CONFIG_TRIM_UNUSED_KSYMS is disabled, $(call cmd,gen_ksymdeps) in
+scripts/Makefile.build would be expanded into:
+
+  set -e;  { ; } >/dev/null
+
+..., which causes an syntax error.
+
+I also tried this:
+
+  cmd = @set -e; $(echo-cmd) ( $(cmd_$(1)) ) >/dev/null
+
+... but this causes a syntax error for the same reason.
+
+So, finally I adopted:
+
+  cmd = @set -e; $(echo-cmd) exec >/dev/null; $(cmd_$(1))
+
+[1]: https://lore.kernel.org/lkml/20210514135752.2910387-1-arnd@kernel.org/
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx25-pinfunc.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ scripts/Kbuild.include | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx25-pinfunc.h b/arch/arm/boot/dts/imx25-pinfunc.h
-index f4516ccf2c1a..1e03b0f9b954 100644
---- a/arch/arm/boot/dts/imx25-pinfunc.h
-+++ b/arch/arm/boot/dts/imx25-pinfunc.h
-@@ -544,31 +544,31 @@
- #define MX25_PAD_DE_B__DE_B			0x1f0 0x3ec 0x000 0x00 0x000
- #define MX25_PAD_DE_B__GPIO_2_20		0x1f0 0x3ec 0x000 0x05 0x000
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 7da10afc92c6..b14a7d4a2f05 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -182,8 +182,13 @@ clean := -f $(srctree)/scripts/Makefile.clean obj
+ echo-cmd = $(if $($(quiet)cmd_$(1)),\
+ 	echo '  $(call escsq,$($(quiet)cmd_$(1)))$(echo-why)';)
  
--#define MX25_PAD_GPIO_A__GPIO_A			0x1f4 0x3f0 0x000 0x00 0x000
-+#define MX25_PAD_GPIO_A__GPIO_1_0		0x1f4 0x3f0 0x000 0x00 0x000
- #define MX25_PAD_GPIO_A__CAN1_TX		0x1f4 0x3f0 0x000 0x06 0x000
- #define MX25_PAD_GPIO_A__USBOTG_PWR		0x1f4 0x3f0 0x000 0x02 0x000
++# sink stdout for 'make -s'
++       redirect :=
++ quiet_redirect :=
++silent_redirect := exec >/dev/null;
++
+ # printing commands
+-cmd = @set -e; $(echo-cmd) $(cmd_$(1))
++cmd = @set -e; $(echo-cmd) $($(quiet)redirect) $(cmd_$(1))
  
--#define MX25_PAD_GPIO_B__GPIO_B			0x1f8 0x3f4 0x000 0x00 0x000
-+#define MX25_PAD_GPIO_B__GPIO_1_1		0x1f8 0x3f4 0x000 0x00 0x000
- #define MX25_PAD_GPIO_B__USBOTG_OC		0x1f8 0x3f4 0x57c 0x02 0x001
- #define MX25_PAD_GPIO_B__CAN1_RX		0x1f8 0x3f4 0x480 0x06 0x001
- 
--#define MX25_PAD_GPIO_C__GPIO_C			0x1fc 0x3f8 0x000 0x00 0x000
-+#define MX25_PAD_GPIO_C__GPIO_1_2		0x1fc 0x3f8 0x000 0x00 0x000
- #define MX25_PAD_GPIO_C__PWM4_PWMO		0x1fc 0x3f8 0x000 0x01 0x000
- #define MX25_PAD_GPIO_C__I2C2_SCL		0x1fc 0x3f8 0x51c 0x02 0x001
- #define MX25_PAD_GPIO_C__KPP_COL4		0x1fc 0x3f8 0x52c 0x03 0x001
- #define MX25_PAD_GPIO_C__CAN2_TX		0x1fc 0x3f8 0x000 0x06 0x000
- 
--#define MX25_PAD_GPIO_D__GPIO_D			0x200 0x3fc 0x000 0x00 0x000
-+#define MX25_PAD_GPIO_D__GPIO_1_3		0x200 0x3fc 0x000 0x00 0x000
- #define MX25_PAD_GPIO_D__I2C2_SDA		0x200 0x3fc 0x520 0x02 0x001
- #define MX25_PAD_GPIO_D__CAN2_RX		0x200 0x3fc 0x484 0x06 0x001
- 
--#define MX25_PAD_GPIO_E__GPIO_E			0x204 0x400 0x000 0x00 0x000
-+#define MX25_PAD_GPIO_E__GPIO_1_4		0x204 0x400 0x000 0x00 0x000
- #define MX25_PAD_GPIO_E__I2C3_CLK		0x204 0x400 0x524 0x01 0x002
- #define MX25_PAD_GPIO_E__LD16			0x204 0x400 0x000 0x02 0x000
- #define MX25_PAD_GPIO_E__AUD7_TXD		0x204 0x400 0x000 0x04 0x000
- #define MX25_PAD_GPIO_E__UART4_RXD		0x204 0x400 0x570 0x06 0x002
- 
--#define MX25_PAD_GPIO_F__GPIO_F			0x208 0x404 0x000 0x00 0x000
-+#define MX25_PAD_GPIO_F__GPIO_1_5		0x208 0x404 0x000 0x00 0x000
- #define MX25_PAD_GPIO_F__LD17			0x208 0x404 0x000 0x02 0x000
- #define MX25_PAD_GPIO_F__AUD7_TXC		0x208 0x404 0x000 0x04 0x000
- #define MX25_PAD_GPIO_F__UART4_TXD		0x208 0x404 0x000 0x06 0x000
+ ###
+ # if_changed      - execute command if any prerequisite is newer than
 -- 
 2.30.2
 
