@@ -2,104 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B5A3C8249
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379F63C81A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239040AbhGNKCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239030AbhGNKCC (ORCPT
+        id S238849AbhGNJgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:36:04 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6924 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238337AbhGNJgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:02:02 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC415C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:59:10 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id b12so1224411plh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=l1bjuoaTVbYtnhNI71QZX5Bx6fnm6uPZuv4M80rHUjI=;
-        b=EM4ks1xnAhxy/oyMPK+YmsxsS8bDIyg6oX+je8bM1orlDBciQn00YRtWkJ0vI93Prn
-         U8/+BVyPocLBJLw91waPql/4SmUgMaS5kDcPbxb9Pqb56PehJDlipv5vKTuglcl4oYUB
-         BY/uh9Gt3fJZDwJL3gVTrRsLNyQoTaI3jKQxgiaUy54G3AeuLrdn8Qf931iK5E1atSz7
-         qNHHsRAmujlZBUVJfgVhXfUv9e9xKxY79+WaKIxRqyBNFZxkPFG8pmsVUXptDTdlI1o7
-         swi/NTWbePwxQwz7qTU/7E1Sqpb/Awqp8F+b9t+etHf/aiZ/PTLqyCrm9y7HhlCGp++s
-         sToQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=l1bjuoaTVbYtnhNI71QZX5Bx6fnm6uPZuv4M80rHUjI=;
-        b=Y9BqBm2fXrRDrXGiYYPEpVFiw8f2uVDxqsEhbimcjiYItBZ2Lr8Qo0EHE0vfjGdiNq
-         WdUI7MmdyQiMZDy7eVxXm4QKF/dlUM9SaYBYIIrppjGfNXw+XW8TO2fguVDxVkhEnNeh
-         8e3sMdDFina7bjnFXeXieC+NevxiS8UXmVu/r2iougBtubrFUEqnY3t9zEhhTQHB62Dn
-         REALI5QlMkCo1+6rlMWEStRdXxOkUO2pI6pDNDmi3iefzL+IiGEsChwpFkGkG0rUNKm0
-         pRsP7ieBlF51ytEmkDyPy2rtmAken85aQ/P15ODFtmu2JacuaLDiEeIdG+HP8fqjzRbF
-         ZyEQ==
-X-Gm-Message-State: AOAM532WqYhqyaxuXnZRW5/AJE2S5p2wapm5CDEeVVVgKzuqpl/HnuMO
-        TLPQEfYyN5VMAxjw1KySiEi4cQ==
-X-Google-Smtp-Source: ABdhPJxzCVfEsbc0mVDVQlW7BG7ySqnlExnHTBB9BPUghBKax4eq63LO/nDMtA6PqW46DrcO1K6xTA==
-X-Received: by 2002:a17:902:d217:b029:105:e265:65c7 with SMTP id t23-20020a170902d217b0290105e26565c7mr7203320ply.16.1626256750527;
-        Wed, 14 Jul 2021 02:59:10 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id g1sm2283304pgs.23.2021.07.14.02.59.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 02:59:10 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Luca Weiss <luca@z3ntu.xyz>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v2 2/2] Input: pm8941-pwrkey - Respect reboot_mode for warm reset
-Date:   Wed, 14 Jul 2021 17:58:49 +0800
-Message-Id: <20210714095850.27185-3-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210714095850.27185-1-shawn.guo@linaro.org>
-References: <20210714095850.27185-1-shawn.guo@linaro.org>
+        Wed, 14 Jul 2021 05:36:02 -0400
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPsf71mxFz7BlB;
+        Wed, 14 Jul 2021 17:29:35 +0800 (CST)
+Received: from k03.huawei.com (10.67.174.111) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:33:08 +0800
+From:   He Fengqing <hefengqing@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [bpf-next, v2] bpf: verifier: Fix potential memleak and UAF in bpf verifier
+Date:   Wed, 14 Jul 2021 10:18:15 +0000
+Message-ID: <20210714101815.164322-1-hefengqing@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.111]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme751-chm.china.huawei.com (10.3.19.97)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some devices, e.g. Sony Xperia M4 Aqua, warm reset is used to reboot
-device into bootloader and recovery mode.  Instead of always doing hard
-reset, add a check on reboot_mode for possible warm reset.
+In bpf_patch_insn_data(), we first use the bpf_patch_insn_single() to
+insert new instructions, then use adjust_insn_aux_data() to adjust
+insn_aux_data. If the old env->prog have no enough room for new inserted
+instructions, we use bpf_prog_realloc to construct new_prog and free the
+old env->prog.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+There have two errors here. First, if adjust_insn_aux_data() return
+ENOMEM, we should free the new_prog. Second, if adjust_insn_aux_data()
+return ENOMEM, bpf_patch_insn_data() will return NULL, and env->prog has
+been freed in bpf_prog_realloc, but we will use it in bpf_check().
+
+So in this patch, we make the adjust_insn_aux_data() never fails. In
+bpf_patch_insn_data(), we first pre-malloc memory for the new
+insn_aux_data, then call bpf_patch_insn_single() to insert new
+instructions, at last call adjust_insn_aux_data() to adjust
+insn_aux_data.
+
+Fixes: 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
+
+Signed-off-by: He Fengqing <hefengqing@huawei.com>
+
+  v1->v2:
+    pre-malloc memory for new insn_aux_data first, then
+    adjust_insn_aux_data() will never fails.
 ---
- drivers/input/misc/pm8941-pwrkey.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/bpf/verifier.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/input/misc/pm8941-pwrkey.c b/drivers/input/misc/pm8941-pwrkey.c
-index cf8104454e74..9b14d6eb1918 100644
---- a/drivers/input/misc/pm8941-pwrkey.c
-+++ b/drivers/input/misc/pm8941-pwrkey.c
-@@ -27,6 +27,7 @@
- #define PON_PS_HOLD_RST_CTL2		0x5b
- #define  PON_PS_HOLD_ENABLE		BIT(7)
- #define  PON_PS_HOLD_TYPE_MASK		0x0f
-+#define  PON_PS_HOLD_TYPE_WARM_RESET	1
- #define  PON_PS_HOLD_TYPE_SHUTDOWN	4
- #define  PON_PS_HOLD_TYPE_HARD_RESET	7
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index be38bb930bf1..07cf791510f1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11425,10 +11425,11 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
+  * insni[off, off + cnt).  Adjust corresponding insn_aux_data by copying
+  * [0, off) and [off, end) to new locations, so the patched range stays zero
+  */
+-static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+-				struct bpf_prog *new_prog, u32 off, u32 cnt)
++static void adjust_insn_aux_data(struct bpf_verifier_env *env,
++				 struct bpf_insn_aux_data *new_data,
++				 struct bpf_prog *new_prog, u32 off, u32 cnt)
+ {
+-	struct bpf_insn_aux_data *new_data, *old_data = env->insn_aux_data;
++	struct bpf_insn_aux_data *old_data = env->insn_aux_data;
+ 	struct bpf_insn *insn = new_prog->insnsi;
+ 	u32 old_seen = old_data[off].seen;
+ 	u32 prog_len;
+@@ -11441,12 +11442,9 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+ 	old_data[off].zext_dst = insn_has_def32(env, insn + off + cnt - 1);
  
-@@ -93,7 +94,10 @@ static int pm8941_reboot_notify(struct notifier_block *nb,
- 		break;
- 	case SYS_RESTART:
- 	default:
--		reset_type = PON_PS_HOLD_TYPE_HARD_RESET;
-+		if (reboot_mode == REBOOT_WARM)
-+			reset_type = PON_PS_HOLD_TYPE_WARM_RESET;
-+		else
-+			reset_type = PON_PS_HOLD_TYPE_HARD_RESET;
- 		break;
+ 	if (cnt == 1)
+-		return 0;
++		return;
+ 	prog_len = new_prog->len;
+-	new_data = vzalloc(array_size(prog_len,
+-				      sizeof(struct bpf_insn_aux_data)));
+-	if (!new_data)
+-		return -ENOMEM;
++
+ 	memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
+ 	memcpy(new_data + off + cnt - 1, old_data + off,
+ 	       sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
+@@ -11457,7 +11455,7 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
  	}
+ 	env->insn_aux_data = new_data;
+ 	vfree(old_data);
+-	return 0;
++	return;
+ }
  
+ static void adjust_subprog_starts(struct bpf_verifier_env *env, u32 off, u32 len)
+@@ -11492,6 +11490,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+ 					    const struct bpf_insn *patch, u32 len)
+ {
+ 	struct bpf_prog *new_prog;
++	struct bpf_insn_aux_data *new_data = NULL;
++
++	if (len > 1) {
++		new_data = vzalloc(array_size(env->prog->len + len - 1,
++					      sizeof(struct bpf_insn_aux_data)));
++		if (!new_data)
++			return NULL;
++	}
+ 
+ 	new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
+ 	if (IS_ERR(new_prog)) {
+@@ -11499,10 +11505,12 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+ 			verbose(env,
+ 				"insn %d cannot be patched due to 16-bit range\n",
+ 				env->insn_aux_data[off].orig_idx);
++		if (new_data)
++			vfree(new_data);
++
+ 		return NULL;
+ 	}
+-	if (adjust_insn_aux_data(env, new_prog, off, len))
+-		return NULL;
++	adjust_insn_aux_data(env, new_data, new_prog, off, len);
+ 	adjust_subprog_starts(env, off, len);
+ 	adjust_poke_descs(new_prog, off, len);
+ 	return new_prog;
 -- 
-2.17.1
+2.25.1
 
