@@ -2,178 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1982B3C7F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F5D3C7F33
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238217AbhGNHRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:17:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55738 "EHLO mail.kernel.org"
+        id S238238AbhGNHSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:18:10 -0400
+Received: from ofcsgdbm.dwd.de ([141.38.3.245]:60035 "EHLO ofcsgdbm.dwd.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238104AbhGNHRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:17:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D55B76136E;
-        Wed, 14 Jul 2021 07:14:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626246881;
-        bh=0yl6LgRMCHVYko8d2lMXrL+3MvdopKXqIaK8azMmHiA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sy2D9hYch6cByjUdwHotcJLni9CRe4Udzfkjpi2g00LD3fWvpcszikx7+RePBWIFq
-         oM/aB035M7JeWxNw4vWM4Og/tFTJZ6TMzVcZrnLG5cwMAuCZJvVijDojm9tGjvwXyR
-         AR7DgR2G4qTSO2p+SJ3RYQO5RZQ2k6Zdicmkj1NvtM/pUhH1FxKGhIqdOs9AkJLGhT
-         7lTEfr9K/fBj/USa0JL1jPHKVbj7cJwRg3ETQNt5blN4vr7Df5C9bPbRJGWHv2cfPx
-         +DiIKcup2CS46vTssZXmjaSRGunEVThzDFcoGwjJiRjzsANJfA6vWpGh7NZceQGY0f
-         aZDTjejDL90rw==
-Date:   Wed, 14 Jul 2021 09:14:35 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Manivannan Sadhasivam <mani@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: Re: [PATCH v5 2/8] dt-bindings: phy: Add bindings for HiKey 970
- PCIe PHY
-Message-ID: <20210714091435.322d68b1@coco.lan>
-In-Reply-To: <20210714022649.GA1324196@robh.at.kernel.org>
-References: <cover.1626157454.git.mchehab+huawei@kernel.org>
-        <baa7e71e13953b28a11fffdcef35195099feb7fd.1626157454.git.mchehab+huawei@kernel.org>
-        <20210714022649.GA1324196@robh.at.kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S238129AbhGNHSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 03:18:05 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ofcsg2dn4.dwd.de (Postfix) with ESMTP id 4GPpg53jlBz3x4r
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 07:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
+        content-type:content-type:mime-version:references:message-id
+        :in-reply-to:subject:subject:from:from:date:date:received
+        :received:received:received:received:received:received:received;
+         s=dwd-csg20210107; t=1626246913; x=1627456514; bh=ptkvR+j9Q3EVi
+        0DqyoYMFGSpBgWBrLYb69e0XRuZ9Sw=; b=gZ8ynJyVoSc4jEG+9qezJYbOWTBc1
+        jLGw0dUHh4xDlYL7U6Wg6PY6QGnGurMQ+8opITqdMLg1qVYMdOB4vO1wkh1X3nq0
+        tsBr+zNy/EGxI3cDhPKxvWiLIllngxPkNXO/FnQaZ1Ug/B3Nh/7YBJetOQBrCtwi
+        UK2SbHF5LM6CvMAPoM1hCVTvxG5eZgUubdfGIPbYaO2RNYEMmfTdoZmgJYLtcTSa
+        PGWs88OfT4fj4NbFKT1IIdKo1KCDtIZobZxORysxVhbZhqIH9wkOMOG0a3KuPZVE
+        YYp/rESq/ilQ81lFPPbkCB4KK9SLD3qJT1ZfKG7WsncT4lgjo6dwoLG4w==
+X-Virus-Scanned: by amavisd-new at csg.dwd.de
+Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
+        by localhost (ofcsg2dn4.dwd.de [172.30.232.27]) (amavisd-new, port 10024)
+        with ESMTP id o7YOYxgF8rUF for <linux-kernel@vger.kernel.org>;
+        Wed, 14 Jul 2021 07:15:13 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 4BF67C902581
+        for <root@ofcsg2dn4.dwd.de>; Wed, 14 Jul 2021 07:15:13 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 4A109C901F15
+        for <root@ofcsg2dn4.dwd.de>; Wed, 14 Jul 2021 07:15:13 +0000 (UTC)
+X-DDEI-TLS-USAGE: Unused
+Received: from ofcsgdbm.dwd.de (unknown [172.30.232.27])
+        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
+        for <root@ofcsg2dn4.dwd.de>; Wed, 14 Jul 2021 07:15:13 +0000 (UTC)
+Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
+ Wed, 14 Jul 2021 07:15:13 -0000
+Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
+        by ofcsg2dn4.dwd.de (Postfix) with ESMTPS id 4GPpg51kYlz3wcY;
+        Wed, 14 Jul 2021 07:15:13 +0000 (UTC)
+Received: from ofmailhub.dwd.de (ofldap.dwd.de [141.38.39.196])
+        by ofcsg2dvf2.dwd.de  with ESMTP id 16E7FC2p012672-16E7FC2q012672;
+        Wed, 14 Jul 2021 07:15:12 GMT
+Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
+        by ofmailhub.dwd.de (Postfix) with ESMTP id B1443E2BEB;
+        Wed, 14 Jul 2021 07:15:12 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 07:15:12 +0000 (GMT)
+From:   Holger Kiehl <Holger.Kiehl@dwd.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+In-Reply-To: <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
+Message-ID: <1bb58e55-ed1a-9fd8-1d0-2f6c86b4294@praktifix.dwd.de>
+References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+X-FE-Policy-ID: 2:2:1:SYSTEM
+X-TMASE-Version: DDEI-5.1-8.6.1018-26280.006
+X-TMASE-Result: 10--20.763700-10.000000
+X-TMASE-MatchedRID: vEvJ7Rh1lGiWfDtBOz4q28bYuTb6+cQg69aS+7/zbj+qvcIF1TcLYJIF
+        RidW0GC6mA9yZrHVFoAYwvDSTCG2BJQlTsRs6bL83nHtGkYl/VpF/jSlPtma/r0/f33kf9Gljn9
+        2T7igP2sXndhpsXecxygywW45LfL0yFuWu3nxO+19j6Il8VAHF8ZU3kmz9C/H3pxmYneHU6t/cL
+        JHsj+DkZhk/6bphJLMKISk8WdGcXCHbsX/GOLqdgPZZctd3P4BuqgVqRoQsiB7lDzh8Z+EhhBmt
+        oCUanEvwgx24xjlvojzX5siSEObomsc2OVQ/NyCfid4LSHtIANuWkE39mLwR2zpNYa+Tlcne/cQ
+        kmt0G7GVIsnYOY5w/mah00JPACmxlwV2iaAfSWf+xOhjarOnHrHlqZYrZqdI+gtHj7OwNO2FR9H
+        au8GO7qfDnZdVcKQklExlQIQeRG0=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-DDEI-PROCESSED-RESULT: Safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 13 Jul 2021 20:26:49 -0600
-Rob Herring <robh@kernel.org> escreveu:
+On Wed, 14 Jul 2021, Holger Kiehl wrote:
 
-> On Tue, Jul 13, 2021 at 08:28:35AM +0200, Mauro Carvalho Chehab wrote:
+> Hello,
+> 
+> On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+> 
+> > This is the start of the stable review cycle for the 5.13.2 release.
+> > There are 800 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> > Anything received after that time might be too late.
+> > 
+> With this my system no longer boots:
+> 
+>    [  OK  ] Reached target Swap.
+>    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
+>    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
+>    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
+>    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
+>    See 'systemctl status systemd-udev-settle.service' for details.
+>             Starting Activation of DM RAID sets...
+>    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
+>    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
+> 
+> System is a Fedora 34 with all updates applied. Two other similar
+> systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
+> and boots fine. The system where it does not boot has an Intel
+> Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
+> 
+> Any idea which patch I should drop to see if it boots again. I already
+> dropped
+> 
+>    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
+> 
+> and I just see that this one should also be dropped:
+> 
+>    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
+> 
+> Will still need to test this.
+> 
+Dropping that did not fix it.
 
-> > +  reset-gpios:
-> > +    description: PCI PERST reset GPIOs
-> > +    maxItems: 4 =20
->=20
-> Hiding the 4 ports in the phy?
-
-Rob,
-
-I'm not trying to hide anything.
-
-There are several differences with regards to how PERST# is handled between
-HiKey 960 and HiKey 970.
-
-=46rom hardware perspective, you can see the schematics of both boards:
-
-	https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey9=
-60/hardware-docs/HiKey960_SoC_Reference_Manual.pdf
-	https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-do=
-cs/files/hikey970-schematics.pdf
-
-The 960 PHY has the SoC directly connected to a PCIE M.2 slot=20
-(model 10130616) without any external bridge chipset. It uses a single=20
-GPIO (GPIO 089) for the PERST# signal, connected via a voltage converter
-(from 1.8V to 3.3V).
-
-	$ lspci
-	00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
-
-The 970 PHY has an external PCI bridge chipset (PLX Technology PEX 8606).
-Besides the bridge, the hardware comes with an Ethernet PCI adapter, a
-M.2 slot and a mini-PCIe connector. Each one with its own PERST# signal,
-mapped to different GPIO pins, and each one using its own voltage
-converter.
-
-	$ lspci
-	00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
-	01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Expre=
-ss Gen 2 (5.0 GT/s) Switch (rev ba)
-	02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Expre=
-ss Gen 2 (5.0 GT/s) Switch (rev ba)
-	02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Expre=
-ss Gen 2 (5.0 GT/s) Switch (rev ba)
-	02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Expre=
-ss Gen 2 (5.0 GT/s) Switch (rev ba)
-	02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Expre=
-ss Gen 2 (5.0 GT/s) Switch (rev ba)
-	02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Expre=
-ss Gen 2 (5.0 GT/s) Switch (rev ba)
-	06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/=
-8411 PCI Express Gigabit Ethernet Controller (rev 07)
-
-On other words, there are 4 GPIOs mapped to different PERST# pins in
-the hardware:
-
-- GPIO 56 is connected to the PERST# pin at PEX 8606;
-- GPIO 25 is connected to the PERST# pin at the M.2 slot;
-- GPIO 220 is connected to the PERST# pin at the PCIe mini slot;
-- GPIO 203 is connected to the PERST# pin at the Ethernet chipset.
-
-Maybe due to different electrical requirements, the hardware design
-use different GPIOs instead of feeding them altogether.
-
-Anyway, the fact is that the PHY on 970 has 4 different GPIOs that are
-need in order for the hardware to work. and this is specific to this
-particular PHY.
-
-Now, from software perspective, the power on sequence on Hikey 960
-finishes sending PERST# signal to the M.2 slot:
-
-	static int hi3660_pcie_phy_power_on(struct phy *generic_phy)
-	{
-...
-		/* perst assert Endpoint */
-		if (!gpio_request(phy->gpio_id_reset, "pcie_perst")) {
-			usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
-			ret =3D gpio_direction_output(phy->gpio_id_reset, 1);
-			if (ret)
-				goto disable_clks;
-			usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
-			return 0;
-		}
-
-	disable_clks:
-		kirin_pcie_clk_ctrl(phy, false);
-		return ret;
-	}
-=09
-The 970 PHY, however, sends PERST# signal in the middle of the power
-on sequence, as, after sending reset, it needs to wait for the hardware
-to stabilize, in order to setup an eye diagram at the PHY:
-
-	static int hi3670_pcie_phy_power_on(struct phy *generic_phy)
-	{
-...
-		/* perst assert Endpoints */
-		usleep_range(21000, 23000);
-		for (i =3D 0; i < phy->n_gpio_resets; i++) {
-			ret =3D gpio_direction_output(phy->gpio_id_reset[i], 1);
-			if (ret)
-				return ret;
-		}
-		usleep_range(10000, 11000);
-
-		ret =3D is_pipe_clk_stable(phy);
-		if (!ret)
-			goto disable_clks;
-
-		hi3670_pcie_set_eyeparam(phy);
-
-		ret =3D hi3670_pcie_noc_power(phy, false);
-		if (ret)
-			goto disable_clks;
-
-		return 0;
-
-	disable_clks:
-		kirin_pcie_clk_ctrl(phy, false);
-		return ret;
-	}
-
-IMO, it makes a lot more sense to map this on DT as part of the
-PHY and not as part of the PCIe, but no matter how it is mapped,
-this PHY still requires 4 GPIOs for PERST#.
-
-Thanks,
-Mauro
+Holger
