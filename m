@@ -2,96 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD1D3C8422
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1137C3C8424
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239271AbhGNL7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S231281AbhGNMCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbhGNL7X (ORCPT
+        with ESMTP id S230405AbhGNMCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:59:23 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFC0C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:56:32 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id o72-20020a9d224e0000b02904bb9756274cso2166548ota.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:56:32 -0700 (PDT)
+        Wed, 14 Jul 2021 08:02:42 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D19C06175F;
+        Wed, 14 Jul 2021 04:59:50 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id w15so2105220pgk.13;
+        Wed, 14 Jul 2021 04:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9kEHUnMl2y/OZhBEqOnjX/XYWWhDHxeGf8k78fKCVaE=;
-        b=VkTKir8ElhxCJmMr1jc0FLJFJvgk9e1q2aS5Z1qN8srHoJ8hrpKeZaqR2Ghy9z+NRf
-         e3Q6ID0Q9yRNIpZdusUT0MprNK3M/ysIhjDgfp15sx37bjHOop6mRLu2K0M3zO+tPs8b
-         0sRdqWzkARz8P7qfJcXpuZBYiXEv+7k8Rgmp3ubaAMIEtBB9CM4KK+aE2N32qI/5EmAJ
-         l3Fn+kxzcwZPpmYGcdVQZiIl5fAs/jY+GECh/+Ydwni7QVBQ62Zayq2Pn3jjdHPTztYa
-         qRQs8hPsyS/6tkw+D1n3Z9iDZHYwTkfKsegVjW7eIcobmQ5OamazNBLdSQ0335RxxbBj
-         AM1w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BYAB0IcsIwM15U87TPked3FMLOx8gHDrWRUXhvAMX6s=;
+        b=Gufl/RwhzJ5LxDX9O9h23x6IyjJfJOsdRBrThWLFRUQEpYpWnyYv9U/0fDGtAzucI+
+         AQZCZTxDT71GTt9rakmmyCZZfPfVYBeK3MpDcAyEr+Cme8PlExajcePe9mYGVrBJxABH
+         fCfoFUUmCzyE4rVur6psK6+h45Ct8plwcUcPP+gJNGkE3aA8i7vvC1Wke3Pc5Sjb/9PH
+         shyeXTWTPgk5K6q9GU9pUxA0cbEOihndSAQmYlkMUrVZNdaKQNGkHOXxcCzrxYCbZFMX
+         lRCjGkQj6UIQtbH43VPYdlJP2ngKOho+v7FohpGP8D6L3GdbhRW8qDd6w9TaC/WHc+PJ
+         EbjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9kEHUnMl2y/OZhBEqOnjX/XYWWhDHxeGf8k78fKCVaE=;
-        b=BVlbNdQlwmYuSe+mEz8UUzPRcmxEl0ZG11hxh3OaT0/J9HZwhjcyoBCxm11dKokPqs
-         XmKiBHLwVVvThNd1izK1aKjIK5I+ZGQfdBo86uw3nGErvBmkdo55OYs3tjHWdgGFoSuG
-         YQ1H/qGlMCxu3S48KSUUjUSvRrsn4u4dQZMLvxzWpLD0TvVNoATYoW64wcRm42oN1AVe
-         joJd8wJSTAzD7pX0GARuXdv/QKMC10fAoiQVzgSjteTfPPI6dfUkPbKLA7zpjRgfYEwj
-         /OvNBh3bCt1+zmY52YXEbIuv6Rh6Lro4dbLNVt+3fW0GgsQ7hgZ8IzVFDeHWVKGdvcNG
-         0vuw==
-X-Gm-Message-State: AOAM530kP28Snx0ILOqutrRnr/DZ6kWNRh/6mxhRSsyarrJm/5P2osJn
-        6NDhi0bdnrP5TQKyy2xa0EKZueNP3sBTEeoTCQZ6oQ==
-X-Google-Smtp-Source: ABdhPJw7qhGI1OZWtnqDR5Iy6XFYur9FsMF6RC46M6UjN7JmUckEHDXIDorH3DGBdL9pOjsTZfZF+fiibNyeCP16ZUw=
-X-Received: by 2002:a05:6830:905:: with SMTP id v5mr7884304ott.17.1626263791564;
- Wed, 14 Jul 2021 04:56:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BYAB0IcsIwM15U87TPked3FMLOx8gHDrWRUXhvAMX6s=;
+        b=I00f37j/dmkKbW5g0X4XwQcIYD1SfSMBgdEo4GmEKrQTQDKy0IXpYyiKEhVw7Fgrid
+         IvOejHc/ANQxrsyxAgZxJ1X94H+/YYKgg5yuJB3+CfOEYe0NSGyi+46yRgDI4pUrl3Fy
+         OJjp/gXjIIuq0iaXegT3r/2WNulr3ujuhQdxdR3PQgJhyBdiPuz7F1ZQhrephhf4LV4o
+         9uy6ehGcs7Pt1/73NOWMwGvjlyCWVMMnhbd/+KXTYJwSt8dPU4660Oc6/fGUL+YIqc5g
+         mIHukeYiBI/sM571ecmSnn88W7Rq2x6yGkKupNHVyPkxhstUwzZoPN90j14oLWkZjdp2
+         cqig==
+X-Gm-Message-State: AOAM531V8XKOiT22asdC6KmrjDb4B/SXOjqlHdNyXC7DvFPf40KljItN
+        3DAF/MnXFt2UPuarkhYhO0M=
+X-Google-Smtp-Source: ABdhPJyt2AhECgFQf7u1LRvs/w4wkAonRtMrS76/76coZWeyWQZKmvZgWIQecPDnB8q6uQYWLAe/1A==
+X-Received: by 2002:a65:6404:: with SMTP id a4mr9330265pgv.175.1626263989620;
+        Wed, 14 Jul 2021 04:59:49 -0700 (PDT)
+Received: from localhost ([152.57.175.214])
+        by smtp.gmail.com with ESMTPSA id d2sm5715445pjo.50.2021.07.14.04.59.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 04:59:49 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 17:29:43 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Raphael Norwitz <raphael.norwitz@nutanix.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v9 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210714115943.sxld7obcmzvf6k56@archlinux>
+References: <20210705142138.2651-1-ameynarkhede03@gmail.com>
+ <20210705142138.2651-5-ameynarkhede03@gmail.com>
+ <20210711165056.GA30721@raphael-debian-dev>
 MIME-Version: 1.0
-References: <20210714113140.2949995-1-o451686892@gmail.com>
-In-Reply-To: <20210714113140.2949995-1-o451686892@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 14 Jul 2021 13:56:20 +0200
-Message-ID: <CANpmjNMe+wyuFLJ0nOk-4Sr57GgBf6VuHa3hmsVUZYJ1gjuC5A@mail.gmail.com>
-Subject: Re: [PATCH] kfence: defer kfence_test_init to ensure that kunit
- debugfs is created
-To:     Weizhao Ouyang <o451686892@gmail.com>
-Cc:     glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210711165056.GA30721@raphael-debian-dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 at 13:31, Weizhao Ouyang <o451686892@gmail.com> wrote:
-> kfence_test_init and kunit_init both use the same level late_initcall,
-> which means if kfence_test_init linked ahead of kunit_init,
-> kfence_test_init will get a NULL debugfs_rootdir as parent dentry,
-> then kfence_test_init and kfence_debugfs_init both create a debugfs
-> node named "kfence" under debugfs_mount->mnt_root, and it will throw
-> out "debugfs: Directory 'kfence' with parent '/' already present!" with
-> EEXIST. So kfence_test_init should be deferred.
+On 21/07/11 04:51PM, Raphael Norwitz wrote:
+> On Mon, Jul 05, 2021 at 07:51:34PM +0530, Amey Narkhede wrote:
+> > Add reset_method sysfs attribute to enable user to query and set user
+> > preferred device reset methods and their ordering.
+> >
+> > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
 >
-> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+> Just some spacing NITs.
+>
+> Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
+> >  drivers/pci/pci-sysfs.c                 | 103 ++++++++++++++++++++++++
+> >  2 files changed, 122 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > index ef00fada2..43f4e33c7 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -121,6 +121,25 @@ Description:
+> >  		child buses, and re-discover devices removed earlier
+> >  		from this part of the device tree.
+> >
+> > +What:		/sys/bus/pci/devices/.../reset_method
+> > +Date:		March 2021
+> > +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> > +Description:
+> > +		Some devices allow an individual function to be reset
+> > +		without affecting other functions in the same slot.
+> > +
+> > +		For devices that have this support, a file named
+> > +		reset_method will be present in sysfs. Initially reading
+> > +		this file will give names of the device supported reset
+> > +		methods and their ordering. After write, this file will
+> > +		give names and ordering of currently enabled reset methods.
+> > +		Writing the name or comma separated list of names of any of
+> > +		the device supported reset methods to this file will set
+> > +		the reset methods and their ordering to be used when
+> > +		resetting the device. Writing empty string to this file
+> > +		will disable ability to reset the device and writing
+> > +		"default" will return to the original value.
+> > +
+> >  What:		/sys/bus/pci/devices/.../reset
+> >  Date:		July 2009
+> >  Contact:	Michael S. Tsirkin <mst@redhat.com>
+> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > index 316f70c3e..8a740e211 100644
+> > --- a/drivers/pci/pci-sysfs.c
+> > +++ b/drivers/pci/pci-sysfs.c
+> > @@ -1334,6 +1334,108 @@ static const struct attribute_group pci_dev_rom_attr_group = {
+> >  	.is_bin_visible = pci_dev_rom_attr_is_visible,
+> >  };
+> >
+> > +static ssize_t reset_method_show(struct device *dev,
+>
+> Nit: spaces on the following two lines. "struct device_attribute *attr"
+> and "char *buf" should be in line with "struct device *dev"
+>
+Not sure what happened when creating the patches but on my editor spaces
+seems to consistent as you suggested here. For some reason git
+format-patch is acting weird.
 
-Tested-by: Marco Elver <elver@google.com>
-
-Thank you.
-
-> ---
->  mm/kfence/kfence_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Amey
+> > +				 struct device_attribute *attr,
+> > +				 char *buf)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	ssize_t len = 0;
+> > +	int i, idx;
+> > +
+> > +	for (i = 0; i < PCI_NUM_RESET_METHODS; i++) {
+> > +		idx = pdev->reset_methods[i];
+> > +		if (!idx)
+> > +			break;
+> > +
+> > +		len += sysfs_emit_at(buf, len, "%s%s", len ? "," : "",
+> > +				     pci_reset_fn_methods[idx].name);
+> > +	}
+> > +
+> > +	if (len)
+> > +		len += sysfs_emit_at(buf, len, "\n");
+> > +
+> > +	return len;
+> > +}
+> > +
+> > +static ssize_t reset_method_store(struct device *dev,
 >
-> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> index 7f24b9bcb2ec..942cbc16ad26 100644
-> --- a/mm/kfence/kfence_test.c
-> +++ b/mm/kfence/kfence_test.c
-> @@ -852,7 +852,7 @@ static void kfence_test_exit(void)
->         tracepoint_synchronize_unregister();
->  }
+> Nit: spaces on the following two lines
 >
-> -late_initcall(kfence_test_init);
-> +late_initcall_sync(kfence_test_init);
->  module_exit(kfence_test_exit);
+> > +				  struct device_attribute *attr,
+> > +				  const char *buf, size_t count)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	int n = 0;
+> > +	char *name, *options = NULL;
+> > +	u8 reset_methods[PCI_NUM_RESET_METHODS] = { 0 };
+> > +
+> > +	if (count >= (PAGE_SIZE - 1))
+> > +		return -EINVAL;
+> > +
+> > +	if (sysfs_streq(buf, "")) {
+> > +		pci_warn(pdev, "All device reset methods disabled by user");
+> > +		goto set_reset_methods;
+> > +	}
+> > +
+> > +	if (sysfs_streq(buf, "default")) {
+> > +		pci_init_reset_methods(pdev);
+> > +		return count;
+> > +	}
+> > +
+> > +	options = kstrndup(buf, count, GFP_KERNEL);
+> > +	if (!options)
+> > +		return -ENOMEM;
+> > +
+> > +	while ((name = strsep(&options, ",")) != NULL) {
+> > +		int i;
+> > +
+> > +		if (sysfs_streq(name, ""))
+> > +			continue;
+> > +
+> > +		name = strim(name);
+> > +
+> > +		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
+> > +			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
+> > +			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
+> > +				reset_methods[n++] = i;
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		if (i == PCI_NUM_RESET_METHODS) {
+> > +			kfree(options);
+> > +			return -EINVAL;
+> > +		}
+> > +	}
+> > +
+> > +	if (!pci_reset_fn_methods[1].reset_fn(pdev, 1) && reset_methods[0] != 1)
+> > +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+> > +
+> > +set_reset_methods:
+> > +	memcpy(pdev->reset_methods, reset_methods, sizeof(reset_methods));
+> > +	kfree(options);
+> > +	return count;
+> > +}
+> > +static DEVICE_ATTR_RW(reset_method);
+> > +
+> > +static struct attribute *pci_dev_reset_method_attrs[] = {
+> > +	&dev_attr_reset_method.attr,
+> > +	NULL,
+> > +};
+> > +
+> > +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
 >
->  MODULE_LICENSE("GPL v2");
-> --
-> 2.30.2
+> Nit: ditto - spacing.
+>
+> > +						    struct attribute *a, int n)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+> > +
+> > +	if (!pci_reset_supported(pdev))
+> > +		return 0;
+> > +
+> > +	return a->mode;
+> > +}
+> > +
+> > +static const struct attribute_group pci_dev_reset_method_attr_group = {
+> > +	.attrs = pci_dev_reset_method_attrs,
+> > +	.is_visible = pci_dev_reset_method_attr_is_visible,
+> > +};
+> > +
+> >  static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
+>
+> Nit: spacing following line.
+>
+> >  			   const char *buf, size_t count)
+> >  {
+> > @@ -1491,6 +1593,7 @@ const struct attribute_group *pci_dev_groups[] = {
+> >  	&pci_dev_config_attr_group,
+> >  	&pci_dev_rom_attr_group,
+> >  	&pci_dev_reset_attr_group,
+> > +	&pci_dev_reset_method_attr_group,
+> >  	&pci_dev_vpd_attr_group,
+> >  #ifdef CONFIG_DMI
+> >  	&pci_dev_smbios_attr_group,
+> > --
+> > 2.32.0
+> >
+> >
