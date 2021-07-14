@@ -2,147 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153133C7EBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B633C7EC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238179AbhGNGyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 02:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51446 "EHLO mail.kernel.org"
+        id S238156AbhGNGzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 02:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238104AbhGNGyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:54:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 827FF613B2;
-        Wed, 14 Jul 2021 06:51:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626245507;
-        bh=tWzM/nAg8eNclAWFOFTlsUjc9uWiLTSIVfdSSt10jL4=;
+        id S238035AbhGNGzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 02:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F98D613B2;
+        Wed, 14 Jul 2021 06:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626245548;
+        bh=gfomnotyu4Erw7nzcfeMW2MIbF6coS9Eyf1SJHIJYhY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sRJOxyu/EdZaF04N9N1DlqaOt2cGHZmWOh4usfSdHsFkoquPVsjfvtUmOKIe0ftRU
-         775JYYR3exPV1xcDXxSR9ymA5hulGZ9TxN0O+fp1LCFXwo7z6TBJEDO4RorDneLvYv
-         r/jacMiOvCX0K5NFYc4RqxwAAqJK/nhtVILg4FPM=
-Date:   Wed, 14 Jul 2021 08:51:44 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "frowand.list@gmail.com" <frowand.list@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "jackp@codeaurora.org" <jackp@codeaurora.org>
-Subject: Re: [PATCH v14 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
- requirements
-Message-ID: <YO6JgOG7QQ+pTRv8@kroah.com>
-References: <1625908395-5498-1-git-send-email-wcheng@codeaurora.org>
- <1625908395-5498-4-git-send-email-wcheng@codeaurora.org>
- <b65463e9-3a8d-1ee5-3e26-09990aa8ec53@synopsys.com>
- <87czrmzjym.fsf@kernel.org>
- <e08dac42-e999-fd97-21ab-34cd70429f03@synopsys.com>
+        b=gsx/9F1keHF3LUB1/WrL2m1/62D7y1j93txP7Lxb61q0dkIeu8/dZppx4tiayZOGa
+         XqLbg7W90cnZ5CKcUG4J9IIIeDWTPvRuj/H1f4JxcG9TdIVaele6BviNhkLKITLAuK
+         b6x6LcozT+VTyZD+uEvkw1e0zgt/OecF2I6yTqarY818IdqDjFtwpsg6DXT/hDZBEE
+         oRUqj5dbrPQVX0eW1Sjvn7lIFfclUTXiS1Z4ZPqXBKbXC2G0dJw1ijimH7zP2MYxuy
+         U8fetBvDdnAnML+hDXkF739KvXhVe269mpTY8mOpPqgiB4U45JVsz0CdE5HORQYtkL
+         TOeKFyLUK+QhA==
+Date:   Wed, 14 Jul 2021 09:52:22 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge
+Message-ID: <YO6JpnVGN2gKaINm@kernel.org>
+References: <git-mailbomb-linux-master-c742199a014de23ee92055c2473d91fe5561ffdf@kernel.org>
+ <CAMuHMdXShORDox-xxaeUfDW3wx2PeggFSqhVSHVZNKCGK-y_vQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e08dac42-e999-fd97-21ab-34cd70429f03@synopsys.com>
+In-Reply-To: <CAMuHMdXShORDox-xxaeUfDW3wx2PeggFSqhVSHVZNKCGK-y_vQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 03:10:25AM +0000, Thinh Nguyen wrote:
-> Felipe Balbi wrote:
-> > 
-> > Hi,
-> > 
-> > Thinh Nguyen <Thinh.Nguyen@synopsys.com> writes:
-> >> Wesley Cheng wrote:
-> >>> Some devices have USB compositions which may require multiple endpoints
-> >>> that support EP bursting.  HW defined TX FIFO sizes may not always be
-> >>> sufficient for these compositions.  By utilizing flexible TX FIFO
-> >>> allocation, this allows for endpoints to request the required FIFO depth to
-> >>> achieve higher bandwidth.  With some higher bMaxBurst configurations, using
-> >>> a larger TX FIFO size results in better TX throughput.
-> >>>
-> >>> By introducing the check_config() callback, the resizing logic can fetch
-> >>> the maximum number of endpoints used in the USB composition (can contain
-> >>> multiple configurations), which helps ensure that the resizing logic can
-> >>> fulfill the configuration(s), or return an error to the gadget layer
-> >>> otherwise during bind time.
-> >>>
-> >>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> >>> ---
-> >>>  drivers/usb/dwc3/core.c   |  15 +++
-> >>>  drivers/usb/dwc3/core.h   |  16 ++++
-> >>>  drivers/usb/dwc3/ep0.c    |   2 +
-> >>>  drivers/usb/dwc3/gadget.c | 232 ++++++++++++++++++++++++++++++++++++++++++++++
-> >>>  4 files changed, 265 insertions(+)
-> >>>
-> >>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> >>> index ba74ad7..b194aecd 100644
-> >>> --- a/drivers/usb/dwc3/core.c
-> >>> +++ b/drivers/usb/dwc3/core.c
-> >>> @@ -1267,6 +1267,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
-> >>>  	u8			rx_max_burst_prd;
-> >>>  	u8			tx_thr_num_pkt_prd;
-> >>>  	u8			tx_max_burst_prd;
-> >>> +	u8			tx_fifo_resize_max_num;
-> >>>  	const char		*usb_psy_name;
-> >>>  	int			ret;
-> >>>  
-> >>> @@ -1282,6 +1283,13 @@ static void dwc3_get_properties(struct dwc3 *dwc)
-> >>>  	 */
-> >>>  	hird_threshold = 12;
-> >>>  
-> >>> +	/*
-> >>> +	 * default to a TXFIFO size large enough to fit 6 max packets.  This
-> >>> +	 * allows for systems with larger bus latencies to have some headroom
-> >>> +	 * for endpoints that have a large bMaxBurst value.
-> >>> +	 */
-> >>> +	tx_fifo_resize_max_num = 6;
-> >>> +
-> >>>  	dwc->maximum_speed = usb_get_maximum_speed(dev);
-> >>>  	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
-> >>>  	dwc->dr_mode = usb_get_dr_mode(dev);
-> >>> @@ -1325,6 +1333,11 @@ static void dwc3_get_properties(struct dwc3 *dwc)
-> >>>  				&tx_thr_num_pkt_prd);
-> >>>  	device_property_read_u8(dev, "snps,tx-max-burst-prd",
-> >>>  				&tx_max_burst_prd);
-> >>> +	dwc->do_fifo_resize = device_property_read_bool(dev,
-> >>> +							"tx-fifo-resize");
-> >>> +	if (dwc->do_fifo_resize)
-> >>> +		device_property_read_u8(dev, "tx-fifo-max-num",
-> >>> +					&tx_fifo_resize_max_num);
-> >>
-> >> Why is this check here? The dwc->tx_fifo_resize_max_num should store
-> >> whatever property the user sets. Whether the driver wants to use this
-> > 
-> > Ack!
-> > 
-> >> property should depend on "dwc->do_fifo_resize". Also why don't we have
-> >> "snps," prefix to be consistent with the other properties?
-> > 
-> > Ack!
-> > 
-> >> Can we enforce to a single property? If the designer wants to enable
-> >> this feature, he/she can to provide the tx-fifo-max-num. This would
-> >> simplify the driver a bit. Since this is to optimize for performance,
-> >> the user should know/want/test the specific value if they want to set
-> >> for their setup and not hoping that the default setting not break their
-> >> setup. So we can remove the "do_fifo_resize" property and just check
-> >> whether tx_fifo_resize_max_num is set.
-> > 
-> > Ack!
-> > 
-> > All very valid points :-)
-> > 
+(added Anshuman)
+
+On Tue, Jul 13, 2021 at 04:39:25PM +0200, Geert Uytterhoeven wrote:
+> Hi Christophe,
 > 
-> Looks like this series already landed in Greg's testing branch. Not sure
-> how we usually handle this to address some of our concerns. Add fix
-> patches on top of Greg's testing branch?
+> On Fri, Jul 2, 2021 at 10:16 PM Linux Kernel Mailing List
+> <linux-kernel@vger.kernel.org> wrote:
+> > Commit:     c742199a014de23ee92055c2473d91fe5561ffdf
+> > Parent:     79c1c594f49a88fba9744cb5c85978c6b1b365ec
+> > Refname:    refs/heads/master
+> > Web:        https://git.kernel.org/torvalds/c/c742199a014de23ee92055c2473d91fe5561ffdf
+> > Author:     Christophe Leroy <christophe.leroy@csgroup.eu>
+> > AuthorDate: Wed Jun 30 18:48:03 2021 -0700
+> > Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+> > CommitDate: Wed Jun 30 20:47:26 2021 -0700
+> >
+> >     mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge
+> >
+> >     For architectures with no PMD and/or no PUD, add stubs similar to what we
+> >     have for architectures without P4D.
+> >
+> >     [christophe.leroy@csgroup.eu: arm64: define only {pud/pmd}_{set/clear}_huge when useful]
+> >       Link: https://lkml.kernel.org/r/73ec95f40cafbbb69bdfb43a7f53876fd845b0ce.1620990479.git.christophe.leroy@csgroup.eu
+> >     [christophe.leroy@csgroup.eu: x86: define only {pud/pmd}_{set/clear}_huge when useful]
+> >       Link: https://lkml.kernel.org/r/7fbf1b6bc3e15c07c24fa45278d57064f14c896b.1620930415.git.christophe.leroy@csgroup.eu
+> >
+> >     Link: https://lkml.kernel.org/r/5ac5976419350e8e048d463a64cae449eb3ba4b0.1620795204.git.christophe.leroy@csgroup.eu
+> >     Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> >     Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> >     Cc: Michael Ellerman <mpe@ellerman.id.au>
+> >     Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> >     Cc: Mike Rapoport <rppt@kernel.org>
+> >     Cc: Nicholas Piggin <npiggin@gmail.com>
+> >     Cc: Paul Mackerras <paulus@samba.org>
+> >     Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>
+> >     Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> Since this commit, both WARN_ON() tests in pud_huge_tests() are
+> triggering on arm64 if CONFIG_ARM64_VA_BITS_39=y and
+> CONFIG_PGTABLE_LEVELS=3:
+> 
+>     ------------[ cut here ]------------
+>     WARNING: CPU: 0 PID: 1 at mm/debug_vm_pgtable.c:438
+> debug_vm_pgtable+0x6d0/0x7c4
+>     Modules linked in:
+>     CPU: 0 PID: 1 Comm: swapper/0 Not tainted
+> 5.13.0-salvator-x-00209-gc742199a014d #1068
+>     Hardware name: Renesas Salvator-X 2nd version board based on r8a77951 (DT)
+>     pstate: a0400005 (NzCv daif +PAN -UAO -TCO BTYPE=--)
+>     pc : debug_vm_pgtable+0x6d0/0x7c4
+>     lr : debug_vm_pgtable+0x6cc/0x7c4
+>     sp : ffffffc0124cbd00
+>     x29: ffffffc0124cbd00 x28: 0000000000000c30 x27: ffffff84c5e465a0
+>     x26: ffffff84c5e46000 x25: ffffff84c5e42000 x24: 00000000000005a0
+>     x23: ffffffc010c41000 x22: 0020000050cb0fc3 x21: ffffff84c5e45ed0
+>     x20: ffffff84c27470a8 x19: ffffff84c2747040 x18: 0000000000000cc0
+>     x17: 00000000b2491cf5 x16: 0000000000000014 x15: 0000000000000000
+>     x14: 0000000000000002 x13: 00000000000b56dd x12: 0000000000000901
+>     x11: ffffffc01116d040 x10: 00000000000038e4 x9 : 00000000ffffffff
+>     x8 : 0000000000000000 x7 : ffffffc010cc4cd0 x6 : 0000000000000000
+>     x5 : 000000000004028e x4 : 0000000000000000 x3 : 0000000000000000
+>     x2 : 0000000000000001 x1 : 0000000000000000 x0 : ffffff84c08bc040
+>     Call trace:
+>      debug_vm_pgtable+0x6d0/0x7c4
+>      do_one_initcall+0xec/0x278
+>      kernel_init_freeable+0x220/0x224
+>      kernel_init+0x10/0x108
+>      ret_from_fork+0x10/0x18
+>     irq event stamp: 1062694
+>     hardirqs last  enabled at (1062693): [<ffffffc0101bb030>]
+> free_unref_page+0x120/0x138
+>     hardirqs last disabled at (1062694): [<ffffffc01085f31c>] el1_dbg+0x24/0x4c
+>     softirqs last  enabled at (1062636): [<ffffffc0100101c8>] _stext+0x1c8/0x43c
+>     softirqs last disabled at (1062627): [<ffffffc010080020>]
+> __irq_exit_rcu+0xdc/0x124
+>     ---[ end trace 864024bcea12ea00 ]---
+>     ------------[ cut here ]------------
+>     WARNING: CPU: 0 PID: 1 at mm/debug_vm_pgtable.c:439
+> debug_vm_pgtable+0x6d4/0x7c4
+>     Modules linked in:
+>     CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W
+> 5.13.0-salvator-x-00209-gc742199a014d #1068
+>     Hardware name: Renesas Salvator-X 2nd version board based on r8a77951 (DT)
+>     pstate: a0400005 (NzCv daif +PAN -UAO -TCO BTYPE=--)
+>     pc : debug_vm_pgtable+0x6d4/0x7c4
+>     lr : debug_vm_pgtable+0x6cc/0x7c4
+>     sp : ffffffc0124cbd00
+>     x29: ffffffc0124cbd00 x28: 0000000000000c30 x27: ffffff84c5e465a0
+>     x26: ffffff84c5e46000 x25: ffffff84c5e42000 x24: 00000000000005a0
+>     x23: ffffffc010c41000 x22: 0020000050cb0fc3 x21: ffffff84c5e45ed0
+>     x20: ffffff84c27470a8 x19: ffffff84c2747040 x18: 0000000000000cc0
+>     x17: 00000000b2491cf5 x16: 0000000000000014 x15: 0000000000000000
+>     x14: 0000000000000002 x13: 00000000000b56dd x12: 0000000000000901
+>     x11: ffffffc01116d040 x10: 00000000000038e4 x9 : 00000000ffffffff
+>     x8 : 0000000000000000 x7 : ffffffc010cc4cd0 x6 : 0000000000000000
+>     x5 : 000000000004028e x4 : 0000000000000000 x3 : 0000000000000000
+>     x2 : 0000000000000001 x1 : 0000000000000000 x0 : ffffff84c08bc040
+>     Call trace:
+>      debug_vm_pgtable+0x6d4/0x7c4
+>      do_one_initcall+0xec/0x278
+>      kernel_init_freeable+0x220/0x224
+>      kernel_init+0x10/0x108
+>      ret_from_fork+0x10/0x18
+>     irq event stamp: 1062706
+>     hardirqs last  enabled at (1062705): [<ffffffc01085ef80>]
+> exit_to_kernel_mode+0xf0/0x100
+>     hardirqs last disabled at (1062706): [<ffffffc01085f31c>] el1_dbg+0x24/0x4c
+>     softirqs last  enabled at (1062704): [<ffffffc0100101c8>] _stext+0x1c8/0x43c
+>     softirqs last disabled at (1062697): [<ffffffc010080020>]
+> __irq_exit_rcu+0xdc/0x124
+>     ---[ end trace 864024bcea12ea01 ]---
+> 
+> Switching to CONFIG_ARM64_VA_BITS_48=y and CONFIG_PGTABLE_LEVELS=4
+> makes the warning disappear.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> -- 
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
-Yes please send patches on top of this series.
-
-thanks,
-
-greg k-h
+-- 
+Sincerely yours,
+Mike.
