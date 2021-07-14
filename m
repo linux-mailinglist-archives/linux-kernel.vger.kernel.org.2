@@ -2,292 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA213C8719
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05003C8721
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239915AbhGNPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239806AbhGNPOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:14:44 -0400
-Received: from leibniz.telenet-ops.be (leibniz.telenet-ops.be [IPv6:2a02:1800:110:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D53CC0613BF
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:44 -0700 (PDT)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4GQ1Ds322WzMqcM5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 17:11:41 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
-        by baptiste.telenet-ops.be with bizsmtp
-        id V3Bf250024sai0K013Bf65; Wed, 14 Jul 2021 17:11:41 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXy-001ARe-PW; Wed, 14 Jul 2021 17:11:38 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXx-00AchN-UO; Wed, 14 Jul 2021 17:11:37 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 19/19] auxdisplay: ht16k33: Add LED support
-Date:   Wed, 14 Jul 2021 17:11:30 +0200
-Message-Id: <20210714151130.2531831-20-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210714151130.2531831-1-geert@linux-m68k.org>
-References: <20210714151130.2531831-1-geert@linux-m68k.org>
+        id S232419AbhGNPQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:16:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:36036 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232445AbhGNPQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 11:16:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11D0231B;
+        Wed, 14 Jul 2021 08:13:10 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 183423F694;
+        Wed, 14 Jul 2021 08:13:08 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 16:12:10 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 02/13] ACPI: CPPC: Fix doxygen comments
+Message-ID: <20210714151210.or4kburfmcsjo3u2@bogus>
+References: <20210708180851.2311192-1-sudeep.holla@arm.com>
+ <20210708180851.2311192-3-sudeep.holla@arm.com>
+ <CAJZ5v0ibgrdceoTqnbgbqHhCTZR74RuzKTDxVOzU2UR4VWJkGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0ibgrdceoTqnbgbqHhCTZR74RuzKTDxVOzU2UR4VWJkGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instantiate a single LED based on the "led" subnode in DT.
-This allows the user to control display brightness and blinking (backed
-by hardware support) through the LED class API and triggers, and exposes
-the display color.  The LED will be named
-"auxdisplay:<color>:<function>".
+On Wed, Jul 14, 2021 at 02:20:05PM +0200, Rafael J. Wysocki wrote:
+> On Thu, Jul 8, 2021 at 8:09 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > Clang complains about doxygen comments too with W=1 in the build.
+> >
+> >   | drivers/acpi/cppc_acpi.c:560: warning: Function parameter or member
+> >   |     'pcc_ss_id' not described in 'pcc_data_alloc'
+> >   | drivers/acpi/cppc_acpi.c:1343: warning: Function parameter or member
+> >   |     'cpu_num' not described in 'cppc_get_transition_latency'
+> >
+> > Fix it.
+> >
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  drivers/acpi/cppc_acpi.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> > index a4d4eebba1da..eb5685167d19 100644
+> > --- a/drivers/acpi/cppc_acpi.c
+> > +++ b/drivers/acpi/cppc_acpi.c
+> > @@ -562,6 +562,8 @@ bool __weak cpc_ffh_supported(void)
+> >  /**
+> >   * pcc_data_alloc() - Allocate the pcc_data memory for pcc subspace
+> >   *
+>
+> I would drop this empty line (and analogously below).
+>
 
-When running in dot-matrix mode and if no "led" subnode is found, the
-driver falls back to the traditional backlight mode, to preserve
-backwards compatibility.
+Sure
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v3:
-  - Remove unneeded C++ comment,
-  - Use "err" instead of "error" to be consistent with existing driver
-    naming style,
-  - Make the creation of the LED device dependent on the presence of the
-    "led" subnode in DT, so it can be used in dot-matrix mode too.
-  - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
-    all LED properties from DT, instead of manual LED name construction
-    based on just the "color" property,
+> > + * @pcc_ss_id: PCC Subspace channel identifier
+> > + *
+> >   * Check and allocate the cppc_pcc_data memory.
+> >   * In some processor configurations it is possible that same subspace
+> >   * is shared between multiple CPUs. This is seen especially in CPUs
+> > @@ -1347,10 +1349,15 @@ EXPORT_SYMBOL_GPL(cppc_set_perf);
+> >  /**
+> >   * cppc_get_transition_latency - returns frequency transition latency in ns
+> >   *
+> > + * @cpu_num: Logical index of the CPU for which latencty is requested
+> > + *
+> >   * ACPI CPPC does not explicitly specify how a platform can specify the
+> >   * transition latency for performance change requests. The closest we have
+> >   * is the timing information from the PCCT tables which provides the info
+> >   * on the number and frequency of PCC commands the platform can handle.
+> > + *
+> > + * Returns: frequency transition latency on success or CPUFREQ_ETERNAL on
+> > + * failure
+> 
+> Is this change needed?  The one-line summary already says this.
+>
 
-v2:
-  - Use "auxdisplay" instead of DRIVER_NAME in LED name.
----
- drivers/auxdisplay/ht16k33.c | 124 ++++++++++++++++++++++++++++++-----
- 1 file changed, 107 insertions(+), 17 deletions(-)
+Right, not required. I must have got confused with other place that expected
+return summary.
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 3b555e119e326cec..8c9a4a554a680ff2 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -18,6 +18,7 @@
- #include <linux/backlight.h>
- #include <linux/input.h>
- #include <linux/input/matrix_keypad.h>
-+#include <linux/leds.h>
- #include <linux/workqueue.h>
- #include <linux/mm.h>
- 
-@@ -34,6 +35,10 @@
- 
- #define REG_DISPLAY_SETUP		0x80
- #define REG_DISPLAY_SETUP_ON		BIT(0)
-+#define REG_DISPLAY_SETUP_BLINK_OFF	(0 << 1)
-+#define REG_DISPLAY_SETUP_BLINK_2HZ	(1 << 1)
-+#define REG_DISPLAY_SETUP_BLINK_1HZ	(2 << 1)
-+#define REG_DISPLAY_SETUP_BLINK_0HZ5	(3 << 1)
- 
- #define REG_ROWINT_SET			0xA0
- #define REG_ROWINT_SET_INT_EN		BIT(0)
-@@ -94,12 +99,14 @@ struct ht16k33_seg {
- struct ht16k33_priv {
- 	struct i2c_client *client;
- 	struct delayed_work work;
-+	struct led_classdev led;
- 	struct ht16k33_keypad keypad;
- 	union {
- 		struct ht16k33_fbdev fbdev;
- 		struct ht16k33_seg seg;
- 	};
- 	enum display_type type;
-+	uint8_t blink;
- };
- 
- static const struct fb_fix_screeninfo ht16k33_fb_fix = {
-@@ -158,7 +165,7 @@ static DEVICE_ATTR(map_seg14, 0644, map_seg_show, map_seg_store);
- 
- static int ht16k33_display_on(struct ht16k33_priv *priv)
- {
--	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON;
-+	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON | priv->blink;
- 
- 	return i2c_smbus_write_byte(priv->client, data);
- }
-@@ -173,8 +180,10 @@ static int ht16k33_brightness_set(struct ht16k33_priv *priv,
- {
- 	int err;
- 
--	if (brightness == 0)
-+	if (brightness == 0) {
-+		priv->blink = REG_DISPLAY_SETUP_BLINK_OFF;
- 		return ht16k33_display_off(priv);
-+	}
- 
- 	err = ht16k33_display_on(priv);
- 	if (err)
-@@ -184,6 +193,49 @@ static int ht16k33_brightness_set(struct ht16k33_priv *priv,
- 				    REG_BRIGHTNESS | (brightness - 1));
- }
- 
-+static int ht16k33_brightness_set_blocking(struct led_classdev *led_cdev,
-+					   enum led_brightness brightness)
-+{
-+	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
-+						 led);
-+
-+	return ht16k33_brightness_set(priv, brightness);
-+}
-+
-+static int ht16k33_blink_set(struct led_classdev *led_cdev,
-+			     unsigned long *delay_on, unsigned long *delay_off)
-+{
-+	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
-+						 led);
-+	unsigned int delay;
-+	uint8_t blink;
-+	int err;
-+
-+	if (!*delay_on && !*delay_off) {
-+		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
-+		delay = 1000;
-+	} else if (*delay_on <= 750) {
-+		blink = REG_DISPLAY_SETUP_BLINK_2HZ;
-+		delay = 500;
-+	} else if (*delay_on <= 1500) {
-+		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
-+		delay = 1000;
-+	} else {
-+		blink = REG_DISPLAY_SETUP_BLINK_0HZ5;
-+		delay = 2000;
-+	}
-+
-+	err = i2c_smbus_write_byte(priv->client,
-+				   REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON |
-+				   blink);
-+	if (err)
-+		return err;
-+
-+	priv->blink = blink;
-+	*delay_on = *delay_off = delay;
-+	return 0;
-+}
-+
- static void ht16k33_fb_queue(struct ht16k33_priv *priv)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-@@ -425,6 +477,35 @@ static void ht16k33_seg14_update(struct work_struct *work)
- 	i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
- }
- 
-+static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
-+			     unsigned int brightness)
-+{
-+	struct led_init_data init_data = {};
-+	struct device_node *node;
-+	int err;
-+
-+	/* The LED is optional */
-+	node = of_get_child_by_name(dev->of_node, "led");
-+	if (!node)
-+		return 0;
-+
-+	led->brightness_set_blocking = ht16k33_brightness_set_blocking;
-+	led->blink_set = ht16k33_blink_set;
-+	led->flags = LED_CORE_SUSPENDRESUME;
-+	led->brightness = brightness;
-+	led->max_brightness = MAX_BRIGHTNESS;
-+
-+	init_data.fwnode = of_fwnode_handle(node);
-+	init_data.devicename = "auxdisplay";
-+	init_data.devname_mandatory = true;
-+
-+	err = devm_led_classdev_register_ext(dev, led, &init_data);
-+	if (err)
-+		dev_err(dev, "Failed to register LED\n");
-+
-+	return err;
-+}
-+
- static int ht16k33_keypad_probe(struct i2c_client *client,
- 				struct ht16k33_keypad *keypad)
- {
-@@ -498,24 +579,28 @@ static int ht16k33_fbdev_probe(struct device *dev, struct ht16k33_priv *priv,
- 			       uint32_t brightness)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
--	struct backlight_properties bl_props;
--	struct backlight_device *bl;
-+	struct backlight_device *bl = NULL;
- 	int err;
- 
--	/* Backlight */
--	memset(&bl_props, 0, sizeof(struct backlight_properties));
--	bl_props.type = BACKLIGHT_RAW;
--	bl_props.max_brightness = MAX_BRIGHTNESS;
-+	if (!priv->led.dev) {
-+		/* backwards compatibility with DT lacking an led subnode */
-+		struct backlight_properties bl_props;
- 
--	bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev, priv,
--					    &ht16k33_bl_ops, &bl_props);
--	if (IS_ERR(bl)) {
--		dev_err(dev, "failed to register backlight\n");
--		return PTR_ERR(bl);
--	}
-+		memset(&bl_props, 0, sizeof(struct backlight_properties));
-+		bl_props.type = BACKLIGHT_RAW;
-+		bl_props.max_brightness = MAX_BRIGHTNESS;
-+
-+		bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev,
-+						    priv, &ht16k33_bl_ops,
-+						    &bl_props);
-+		if (IS_ERR(bl)) {
-+			dev_err(dev, "failed to register backlight\n");
-+			return PTR_ERR(bl);
-+		}
- 
--	bl->props.brightness = brightness;
--	ht16k33_bl_update_status(bl);
-+		bl->props.brightness = brightness;
-+		ht16k33_bl_update_status(bl);
-+	}
- 
- 	/* Framebuffer (2 bytes per column) */
- 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
-@@ -575,7 +660,7 @@ static int ht16k33_seg_probe(struct device *dev, struct ht16k33_priv *priv,
- 	struct ht16k33_seg *seg = &priv->seg;
- 	int err;
- 
--	err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
-+	err = ht16k33_brightness_set(priv, brightness);
- 	if (err)
- 		return err;
- 
-@@ -653,6 +738,11 @@ static int ht16k33_probe(struct i2c_client *client)
- 		dft_brightness = MAX_BRIGHTNESS;
- 	}
- 
-+	/* LED */
-+	err = ht16k33_led_probe(dev, &priv->led, dft_brightness);
-+	if (err)
-+		return err;
-+
- 	/* Keypad */
- 	if (client->irq > 0) {
- 		err = ht16k33_keypad_probe(client, &priv->keypad);
 -- 
-2.25.1
-
+Regards,
+Sudeep
