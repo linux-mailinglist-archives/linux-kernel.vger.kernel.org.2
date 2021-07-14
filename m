@@ -2,50 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18F23C7B14
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14023C7B24
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237343AbhGNBeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 21:34:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237286AbhGNBeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:34:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4EB56128B;
-        Wed, 14 Jul 2021 01:31:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1626226284;
-        bh=GhhAgrzg6+D3QZxWK/qCyoqLLb801ORLrL4xD0yZs7c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1jfYwAwWnlof215iZQWp18105XkOaH44dMKb/2tpkwfIWo/PnFEQpMjYpij0Rcy1K
-         /jmfPGqEx8TD+03EXZXQU1gSvpqoI0/HYNuI7z8OVFuK9H0ExwEDHXjd11ccXidEm0
-         DrCK/UbiAz4LXhaAhbAFnzRf5N4JK4FKSj9aS4Po=
-Date:   Tue, 13 Jul 2021 18:31:23 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] mm: call flush_dcache_page in memcpy_to_page and
- memzero_page
-Message-Id: <20210713183123.699769a1b0ee95d69606c35d@linux-foundation.org>
-In-Reply-To: <20210713055231.137602-2-hch@lst.de>
-References: <20210713055231.137602-1-hch@lst.de>
-        <20210713055231.137602-2-hch@lst.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237368AbhGNBqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:46:35 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:10479 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhGNBqf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 21:46:35 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPgDn2BgHzccSB;
+        Wed, 14 Jul 2021 09:40:25 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 09:43:42 +0800
+Received: from linux-ibm.site (10.175.102.37) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 09:43:41 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <sudeep.holla@arm.com>, <james.morse@arm.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bobo.shaobowang@huawei.com>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH v2] cacheinfo: clear cache_leaves(cpu) in free_cache_attributes()
+Date:   Wed, 14 Jul 2021 09:32:55 +0800
+Message-ID: <1626226375-58730-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 07:52:30 +0200 Christoph Hellwig <hch@lst.de> wrote:
+On ARM64, when PPTT(Processor Properties Topology Table) is not
+implemented in ACPI boot, we will goto 'free_ci' with the following
+print:
+  Unable to detect cache hierarchy for CPU 0
 
-> memcpy_to_page and memzero_page can write to arbitrary pages, which could
-> be in the page cache or in high memory, so  call flush_kernel_dcache_pages
-> to flush the dcache.
+But some other codes may still use 'num_leaves' to iterate through the
+'info_list', such as get_cpu_cacheinfo_id(). If 'info_list' is NULL , it
+would crash. So clear 'num_leaves' in free_cache_attributes().
 
-I assume this presently is not known to cause any problems, but that
-some problems might be discovered in the future?  In which case,
-should we cc:stable?
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+---
+v1 -> v2: Drop the Fixes tag as it doesn't fix anything in upstream.
+---
+ drivers/base/cacheinfo.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
+index bfc0959..dad2962 100644
+--- a/drivers/base/cacheinfo.c
++++ b/drivers/base/cacheinfo.c
+@@ -297,6 +297,7 @@ static void free_cache_attributes(unsigned int cpu)
+ 
+ 	kfree(per_cpu_cacheinfo(cpu));
+ 	per_cpu_cacheinfo(cpu) = NULL;
++	cache_leaves(cpu) = 0;
+ }
+ 
+ int __weak init_cache_level(unsigned int cpu)
+-- 
+1.7.12.4
 
