@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387463C914F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6E43C9185
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242789AbhGNUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:00:42 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:41934 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240778AbhGNTuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:50:04 -0400
-Received: by mail-io1-f42.google.com with SMTP id z9so3538219iob.8;
-        Wed, 14 Jul 2021 12:47:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3V8nZmi/KX6WV/3eY0dps9KX5cZgW01GINnuyCZFNQ8=;
-        b=lkca+N7KzKC7iSwakJfi+XnZk2e2bROh/CchHE7/ukwkxM88OtsdEqbhShQem/EfeR
-         KKtfAKxFVOJ6pKbKoW6GLStUmV10E0dhbaekDGFsZDSDl97vRIRu04elCsLShwVW7U2P
-         NGBAs0GOTs85tggaob750INCz+MDFluvL6MO3QSzliA1DrxFI4YR11VYgkDOeoH8C32F
-         PAgj/9LXS1hLW2v487PDwvKUy2Z0KbvNozidaLtvDmVhhLCJsZVUw/kpVak/dIzSxX2t
-         KhEouHZNfKAD2WrXn1x2KyrQDiacvp/8coukg0xp02QmD64rGTRlSLfPLXfghOE0yimJ
-         /bfQ==
-X-Gm-Message-State: AOAM533FYnBx8qjpwINoqs4WYQlOaviEBf+PZ5Kt6pNilf5CgBOeXzNP
-        x6Y5EgK/rmWEAsdBVB3Gtg==
-X-Google-Smtp-Source: ABdhPJwpbtBXJYHQG5252lxL69KkSHkS5KRtgQnqEhEK/RRyDCmq/ly16p21u7NdLsnKBh1SpzA4dA==
-X-Received: by 2002:a5d:87cc:: with SMTP id q12mr8285823ios.131.1626292031269;
-        Wed, 14 Jul 2021 12:47:11 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id b3sm1594371ilm.73.2021.07.14.12.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 12:47:10 -0700 (PDT)
-Received: (nullmailer pid 3236404 invoked by uid 1000);
-        Wed, 14 Jul 2021 19:47:08 -0000
-Date:   Wed, 14 Jul 2021 13:47:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     git@xilinx.com, monstr@monstr.eu, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        kw@linux.com, bharat.kumar.gogada@xilinx.com,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: pci: xilinx-nwl: Document optional
- clock property
-Message-ID: <20210714194708.GA3236304@robh.at.kernel.org>
-References: <cover.1624618100.git.michal.simek@xilinx.com>
- <67aa2c189337181bb2d7721fb616db5640587d2a.1624618100.git.michal.simek@xilinx.com>
+        id S234966AbhGNUCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:02:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241445AbhGNTuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:50:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 910CE613B5;
+        Wed, 14 Jul 2021 19:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626292065;
+        bh=LBXD4Wz1qxz5k3KFOfls2JXbaV7WDf+oET1woDyQzbA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aGcgyIh+J10Q3BslCQksd8ePtXbPFp1ODQljF95dKb2GyIEcUh5WPys+2OOjBbF3O
+         YoA5H0M9jG8NwmDjDII0rsfoNbrtdSbyTAwSkJyczwAFAOO8iDFEQMYjVN1AviPpxX
+         AyCIBuphiga4TGA7PGWVNxsxypCOMDOZnZwK0MZQ6uHvMDy3jSdzbiUtfHdJIGKb+E
+         2vE+XltKFdGvhoy15/qdZJAOF85+oG3D3TZ613m6c04dpRx/rbUrxM2BO7VDqeOoNo
+         c30HSw8sqTb9hNry/unKU6VGTtmrhHPNLLAFAKnJ8dTNpfac0dxUoZeLa6/eZlebN3
+         CbQ39f5IzIykw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 14/28] ARM: imx: pm-imx5: Fix references to imx5_cpu_suspend_info
+Date:   Wed, 14 Jul 2021 15:47:09 -0400
+Message-Id: <20210714194723.55677-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210714194723.55677-1-sashal@kernel.org>
+References: <20210714194723.55677-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67aa2c189337181bb2d7721fb616db5640587d2a.1624618100.git.michal.simek@xilinx.com>
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 12:48:22 +0200, Michal Simek wrote:
-> Clock property hasn't been documented in binding document but it is used
-> for quite a long time where clock was specified by commit 9c8a47b484ed
-> ("arm64: dts: xilinx: Add the clock nodes for zynqmp").
-> 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> 
-> (no changes since v2)
-> 
-> Changes in v2:
-> - new patch in this series because I found that it has never been sent
-> 
-> Bharat: Can you please start to work on converting it to yaml?
-> 
-> ---
->  Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+From: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-Acked-by: Rob Herring <robh@kernel.org>
+[ Upstream commit 89b759469d525f4d5f9c29cd3b1f490311c67f85 ]
+
+The name of the struct, as defined in arch/arm/mach-imx/pm-imx5.c,
+is imx5_cpu_suspend_info.
+
+Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/mach-imx/suspend-imx53.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-imx/suspend-imx53.S b/arch/arm/mach-imx/suspend-imx53.S
+index 5ed078ad110a..f12d24104075 100644
+--- a/arch/arm/mach-imx/suspend-imx53.S
++++ b/arch/arm/mach-imx/suspend-imx53.S
+@@ -33,11 +33,11 @@
+  *                              ^
+  *                              ^
+  *                      imx53_suspend code
+- *              PM_INFO structure(imx53_suspend_info)
++ *              PM_INFO structure(imx5_cpu_suspend_info)
+  * ======================== low address =======================
+  */
+ 
+-/* Offsets of members of struct imx53_suspend_info */
++/* Offsets of members of struct imx5_cpu_suspend_info */
+ #define SUSPEND_INFO_MX53_M4IF_V_OFFSET		0x0
+ #define SUSPEND_INFO_MX53_IOMUXC_V_OFFSET	0x4
+ #define SUSPEND_INFO_MX53_IO_COUNT_OFFSET	0x8
+-- 
+2.30.2
+
