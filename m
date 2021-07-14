@@ -2,136 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623FA3C7FB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F583C7FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238435AbhGNIER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:04:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36293 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238287AbhGNIEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:04:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626249684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=iXoTNlB3iob2gMnywuKCDb+yqav38lEUGUEK1vN/CuE=;
-        b=WeUOoSGIsccaW3eOqN/Hi6opssc0UmN3jridT0+sj8KJ/ZFG7M+jpjf9YNoIe2SqmsluH8
-        /H0tDnaVn25NazGUDq3fs5LNAUmNPFLTz0o/N/79in87Tithvz7XlfRZ2Y5ylbj6KzwCtg
-        5+t6kAnng9dpiHIQHF3a8eOkl0D6ekU=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-tHJwKQQBPF2ivgIAz-rdRQ-1; Wed, 14 Jul 2021 04:01:22 -0400
-X-MC-Unique: tHJwKQQBPF2ivgIAz-rdRQ-1
-Received: by mail-ej1-f70.google.com with SMTP id d2-20020a1709072722b02904c99c7e6ddfso439828ejl.15
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:01:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=iXoTNlB3iob2gMnywuKCDb+yqav38lEUGUEK1vN/CuE=;
-        b=gYOnYCJRESOYllQ1P3Om1MKOGsPkpEjvib/uFpz+DrrQzCv/93GhXSFD6SEtP2/NDl
-         0gJmhNbB1mqq43CODNdSCTzI5PyxnrNA5dxWZv7925r5KRSzspcGF/1cUrxsVuPPgJ48
-         2ts6GNYZdnYxuHiJhygnjFma925a/5Z3YLuD1BOAxA5n8uN5yk5beNcTZfEFuoioI3jM
-         UCiij6BaNhVx5Y68AEy3B/82Fvx9hoUeXJso83+1pctBvKKr6Z4xKdlNsSOxq6Mf5RV0
-         ghNCjJq5yiYYKIko+O6RL/Q42XJuhks3Eotet4iF/C1apJLu0+t4o9L6/pKqMwf84RnA
-         HVWQ==
-X-Gm-Message-State: AOAM532wJkNUBjSQTyRZeDOHucuq6OFqm6sVCt5ifsTfJbFkvk+KFVbB
-        jrXhwVAbePUVPSgwBdYV5i4qbHmMkZV70DlF7KAjadm4BTrAAjYljbHPA+sG+w5PEViN3Sd9W5e
-        hkMrNoX8dWsH8nWlIuqlecO+5
-X-Received: by 2002:a17:906:4a0a:: with SMTP id w10mr11025133eju.371.1626249681657;
-        Wed, 14 Jul 2021 01:01:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyw4G8ONsaFpNUgqwdybfa3B8qxGCHlcdOO9r6+hxGAI9WobpsqhyRAe/cvOi4Dzcb0hl0hrA==
-X-Received: by 2002:a17:906:4a0a:: with SMTP id w10mr11025108eju.371.1626249681418;
-        Wed, 14 Jul 2021 01:01:21 -0700 (PDT)
-Received: from x1.bristot.me (host-79-37-206-118.retail.telecomitalia.it. [79.37.206.118])
-        by smtp.gmail.com with ESMTPSA id g11sm581213edt.85.2021.07.14.01.01.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 01:01:21 -0700 (PDT)
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-Message-ID: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
-Date:   Wed, 14 Jul 2021 10:01:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238425AbhGNIJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238385AbhGNIJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:09:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58FA3613AF;
+        Wed, 14 Jul 2021 08:06:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626250008;
+        bh=Ya3u94eMIcTHm5PPl4FfDKsZbgE5F56Nv1jfp2qsi8Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DXxuwXaLwhI9n2rtysmsiXshuTT4jZIfwP4LrA8Ah/69Pg8rJrWjavP4kfhSitSjV
+         RwBrWYuFqveLqZQ3dL49cWAfoX8Q9wVcpifnpnhN1lf6+yPStO6CfSONrSpRpbg2bI
+         4r5TvL3Ys2wrVVg3WbxJZjN4bMtidPRa5jBwpbNwtWHEDan78BlHil4rrffWNwzZWt
+         PhJZwdhW8wG2EhN84fi82OMR9PfwxVlnbYuDmYU37SdVhZTYOcVUsBSscWjyDJqldW
+         nkuXzshcT6Np4Te4lpzrtBpl0GWHc5gaxfP8YKrXwrWwM3UxsRxDRbwW9Pmg14o6yK
+         9iyVHMskpfQOw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1m3ZuX-0007LK-KG; Wed, 14 Jul 2021 10:06:30 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>
+Subject: [PATCH] serial: 8250: fix handle_irq locking
+Date:   Wed, 14 Jul 2021 10:04:27 +0200
+Message-Id: <20210714080427.28164-1-johan@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGV5DQoNCkkgdXNlIGt2bS12bSBmb3IgcmVndWxhciBkZXZlbG9wbWVudCwgYW5kIHdoaWxl
-IHVzaW5nIHRoZSBrZXJuZWwtcnQgdjUuMTMtcnQxDQoodGhlIGxhdGVzdCkgb24gdGhlIGhv
-c3QsIGFuZCBhIHJlZ3VsYXIga2VybmVsIG9uIHRoZSBndWVzdCwgYWZ0ZXIgYSB3aGlsZSwN
-CnRoaXMgaGFwcGVuczoNCg0KWyAxNzIzLjQwNDk3OV0gLS0tLS0tLS0tLS0tWyBjdXQgaGVy
-ZSBdLS0tLS0tLS0tLS0tDQpbIDE3MjMuNDA0OTgxXSBXQVJOSU5HOiBDUFU6IDEyIFBJRDog
-MjU1NCBhdCBmcy9ldmVudGZkLmM6NzQgZXZlbnRmZF9zaWduYWwrMHg3ZS8weDkwDQpbIDE3
-MjMuNDA0OTg5XSBNb2R1bGVzIGxpbmtlZCBpbjogdmhvc3RfbmV0IHZob3N0IHZob3N0X2lv
-dGxiIHRhcCB0dW4gcmZjb21tIHNuZF9zZXFfZHVtbXkgc25kX2hydGltZXIgeHRfQ0hFQ0tT
-VU0geHRfTUFTUVVFUkFERSB4dF9jb25udHJhY2sgaXB0X1JFSkVDVCBuZl9uYXRfdGZ0cCBu
-Zl9jb25udHJhY2tfdGZ0cCBicmlkZ2Ugc3RwIGxsYyBjY20gbmZ0X29ianJlZiBuZl9jb25u
-dHJhY2tfbmV0Ymlvc19ucyBuZl9jb25udHJhY2tfYnJvYWRjYXN0IG5mdF9maWJfaW5ldCBu
-ZnRfZmliX2lwdjQgbmZ0X2ZpYl9pcHY2IG5mdF9maWIgbmZ0X3JlamVjdF9pbmV0IG5mX3Jl
-amVjdF9pcHY0IG5mX3JlamVjdF9pcHY2IG5mdF9yZWplY3QgbmZ0X2N0IG5mdF9jaGFpbl9u
-YXQgaXA2dGFibGVfbmF0IGlwNnRhYmxlX21hbmdsZSBpcDZ0YWJsZV9yYXcgaXA2dGFibGVf
-c2VjdXJpdHkgaXB0YWJsZV9uYXQgbmZfbmF0IG5mX2Nvbm50cmFjayBuZl9kZWZyYWdfaXB2
-NiBuZl9kZWZyYWdfaXB2NCBpcHRhYmxlX21hbmdsZSBpcHRhYmxlX3JhdyBpcHRhYmxlX3Nl
-Y3VyaXR5IGlwX3NldCBuZl90YWJsZXMgbmZuZXRsaW5rIGlwNnRhYmxlX2ZpbHRlciBpcDZf
-dGFibGVzIGlwdGFibGVfZmlsdGVyIGNtYWMgYm5lcCBpbnRlbF9yYXBsX21zciBzdW5ycGMg
-aW50ZWxfcmFwbF9jb21tb24ga3ZtX2FtZCBrdm0gYXRoMTBrX3BjaSBzbmRfaGRhX2NvZGVj
-X3JlYWx0ZWsgYXRoMTBrX2NvcmUgc25kX2hkYV9jb2RlY19nZW5lcmljIGxlZHRyaWdfYXVk
-aW8gc25kX2hkYV9jb2RlY19oZG1pIHNuZF9oZGFfaW50ZWwgc25kX2ludGVsX2RzcGNmZyBz
-bmRfaGRhX2NvZGVjIGF0aCBidHVzYiBtYWM4MDIxMSBzbmRfaHdkZXAgYnRydGwgc25kX2hk
-YV9jb3JlIGJ0YmNtIHNuZF9zZXEgaXJxYnlwYXNzIHJhcGwgdmZhdCBzbmRfc2VxX2Rldmlj
-ZSBidGludGVsIGRlbGxfd21pX2Rlc2NyaXB0b3IgYWxpZW53YXJlX3dtaSB3bWlfYm1vZiBs
-aWJhcmM0IGZhdCBwY3Nwa3Igc25kX3BjbQ0KWyAxNzIzLjQwNTAzM10gIGJsdWV0b290aCBq
-b3lkZXYgazEwdGVtcCBpMmNfcGlpeDQgY2ZnODAyMTEgc25kX3RpbWVyIHNuZCBzb3VuZGNv
-cmUgZWNkaF9nZW5lcmljIGVjYyByZmtpbGwgZ3Bpb19hbWRwdCBncGlvX2dlbmVyaWMgYWNw
-aV9jcHVmcmVxIHpyYW0gaXBfdGFibGVzIG5vdXZlYXUgaGlkX2xvZ2l0ZWNoX2hpZHBwIHZp
-ZGVvIGRybV90dG1faGVscGVyIHR0bSBpMmNfYWxnb19iaXQgbXhtX3dtaSBkcm1fa21zX2hl
-bHBlciBjcmN0MTBkaWZfcGNsbXVsIGNyYzMyX3BjbG11bCBjcmMzMmNfaW50ZWwgY2VjIGRy
-bSBnaGFzaF9jbG11bG5pX2ludGVsIHI4MTY5IG52bWUgaGlkX2xvZ2l0ZWNoX2RqIGNjcCBu
-dm1lX2NvcmUgc3A1MTAwX3RjbyB3bWkgZnVzZQ0KWyAxNzIzLjQwNTA1MV0gQ1BVOiAxMiBQ
-SUQ6IDI1NTQgQ29tbTogdmhvc3QtMjUyOSBOb3QgdGFpbnRlZCA1LjEzLjAtcnQtcnQxKyAj
-Mg0KWyAxNzIzLjQwNTA1NF0gSGFyZHdhcmUgbmFtZTogQWxpZW53YXJlIEFsaWVud2FyZSBB
-dXJvcmEgUnl6ZW4gRWRpdGlvbi8wVFlSMFgsIEJJT1MgMi4xLjIgMDIvMjUvMjAyMQ0KWyAx
-NzIzLjQwNTA1NV0gUklQOiAwMDEwOmV2ZW50ZmRfc2lnbmFsKzB4N2UvMHg5MA0KWyAxNzIz
-LjQwNTA1OV0gQ29kZTogMDEgMDAgMDAgMDAgYmUgMDMgMDAgMDAgMDAgNGMgODkgZWYgZTgg
-NWIgZWMgZDkgZmYgNjUgZmYgMGQgZTQgMzQgYzkgNWEgNGMgODkgZWYgZTggZWMgYTggODYg
-MDAgNGMgODkgZTAgNWIgNWQgNDEgNWMgNDEgNWQgYzMgPDBmPiAwYiA0NSAzMSBlNCA1YiA1
-ZCA0YyA4OSBlMCA0MSA1YyA0MSA1ZCBjMyAwZiAxZiAwMCAwZiAxZiA0NCAwMA0KWyAxNzIz
-LjQwNTA2MF0gUlNQOiAwMDE4OmZmZmZiNzE5YzJmNjdkNzAgRUZMQUdTOiAwMDAxMDIwMg0K
-WyAxNzIzLjQwNTA2Ml0gUkFYOiAwMDAwMDAwMDAwMDAwMDAxIFJCWDogZmZmZjlmNDg5NzM2
-NGFlMCBSQ1g6IDAwMDAwMDAwMDAwMDAwMDANClsgMTcyMy40MDUwNjNdIFJEWDogMDAwMDAw
-MDAwMDAwMDc5MSBSU0k6IDAwMDAwMDAwMDAwMDAwMDEgUkRJOiBmZmZmOWY0ODlhZTY0N2Uw
-DQpbIDE3MjMuNDA1MDY0XSBSQlA6IDAwMDAwMDAwMDAwMDAxMDAgUjA4OiAwMDAwMDAwMDAw
-MDAwMDAwIFIwOTogMDAwMDAwMDAwMDAwMDAwMQ0KWyAxNzIzLjQwNTA2NV0gUjEwOiAwMDAw
-MDAwMDAwMDQ3MTVlIFIxMTogMDAwMDAwMDAwMDAwMzZlMCBSMTI6IDAwMDAwMDAwMDAwMDAw
-MDENClsgMTcyMy40MDUwNjZdIFIxMzogZmZmZjlmNDg5Yjc2NDNjMCBSMTQ6IGZmZmZiNzE5
-YzJmNjdlMjAgUjE1OiBmZmZmOWY0ODk3MzY0YWUwDQpbIDE3MjMuNDA1MDY3XSBGUzogIDAw
-MDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjlmNGY5ZWQwMDAwMCgwMDAwKSBrbmxHUzow
-MDAwMDAwMDAwMDAwMDAwDQpbIDE3MjMuNDA1MDY4XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6
-IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpbIDE3MjMuNDA1MDY5XSBDUjI6IDAwMDA3
-ZmZhNzgzNTUwMDAgQ1IzOiAwMDAwMDAwMTE0YjdjMDAwIENSNDogMDAwMDAwMDAwMDc1MGVl
-MA0KWyAxNzIzLjQwNTA3MV0gUEtSVTogNTU1NTU1NTQNClsgMTcyMy40MDUwNzFdIENhbGwg
-VHJhY2U6DQpbIDE3MjMuNDA1MDc4XSAgdmhvc3RfdHhfYmF0Y2guY29uc3Rwcm9wLjArMHg3
-ZC8weGMwIFt2aG9zdF9uZXRdDQpbIDE3MjMuNDA1MDgzXSAgaGFuZGxlX3R4X2NvcHkrMHgx
-NWIvMHg1YzAgW3Zob3N0X25ldF0NClsgMTcyMy40MDUwODhdICA/IF9fdmhvc3RfYWRkX3Vz
-ZWRfbisweDIwMC8weDIwMCBbdmhvc3RdDQpbIDE3MjMuNDA1MDkyXSAgaGFuZGxlX3R4KzB4
-YTUvMHhlMCBbdmhvc3RfbmV0XQ0KWyAxNzIzLjQwNTA5NV0gIHZob3N0X3dvcmtlcisweDkz
-LzB4ZDAgW3Zob3N0XQ0KWyAxNzIzLjQwNTA5OV0gIGt0aHJlYWQrMHgxODYvMHgxYTANClsg
-MTcyMy40MDUxMDNdICA/IF9fa3RocmVhZF9wYXJrbWUrMHhhMC8weGEwDQpbIDE3MjMuNDA1
-MTA1XSAgcmV0X2Zyb21fZm9yaysweDIyLzB4MzANClsgMTcyMy40MDUxMTBdIC0tLVsgZW5k
-IHRyYWNlIDAwMDAwMDAwMDAwMDAwMDIgXS0tLQ0KDQphbmQgbXkgY29tbXVuaWNhdGlvbiB3
-aXRoIHRoZSBWTSBkaWVzLiBSZWJvb3RpbmcgdGhlIFZNIG1ha2VzIGl0IHdvcmsgYWdhaW4u
-DQoNCi0tIERhbmllbA0K
+The 8250 handle_irq callback is not just called from the interrupt
+handler but also from a timer callback when polling (e.g. for ports
+without an interrupt line). Consequently the callback must explicitly
+disable interrupts to avoid a potential deadlock with another interrupt
+in polled mode.
+
+Add back an irqrestore-version of the sysrq port-unlock helper and use
+it in the 8250 callbacks that need it.
+
+Fixes: 75f4e830fa9c ("serial: do not restore interrupt state in sysrq helper")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Cc: stable@vger.kernel.org	# 5.13
+Cc: Joel Stanley <joel@jms.id.au>
+Cc: Andrew Jeffery <andrew@aj.id.au>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/tty/serial/8250/8250_aspeed_vuart.c |  5 +++--
+ drivers/tty/serial/8250/8250_fsl.c          |  5 +++--
+ drivers/tty/serial/8250/8250_port.c         |  5 +++--
+ include/linux/serial_core.h                 | 24 +++++++++++++++++++++
+ 4 files changed, 33 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+index 4caab8714e2c..2350fb3bb5e4 100644
+--- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
++++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+@@ -329,6 +329,7 @@ static int aspeed_vuart_handle_irq(struct uart_port *port)
+ {
+ 	struct uart_8250_port *up = up_to_u8250p(port);
+ 	unsigned int iir, lsr;
++	unsigned long flags;
+ 	unsigned int space, count;
+ 
+ 	iir = serial_port_in(port, UART_IIR);
+@@ -336,7 +337,7 @@ static int aspeed_vuart_handle_irq(struct uart_port *port)
+ 	if (iir & UART_IIR_NO_INT)
+ 		return 0;
+ 
+-	spin_lock(&port->lock);
++	spin_lock_irqsave(&port->lock, flags);
+ 
+ 	lsr = serial_port_in(port, UART_LSR);
+ 
+@@ -370,7 +371,7 @@ static int aspeed_vuart_handle_irq(struct uart_port *port)
+ 	if (lsr & UART_LSR_THRE)
+ 		serial8250_tx_chars(up);
+ 
+-	uart_unlock_and_check_sysrq(port);
++	uart_unlock_and_check_sysrq_irqrestore(port, flags);
+ 
+ 	return 1;
+ }
+diff --git a/drivers/tty/serial/8250/8250_fsl.c b/drivers/tty/serial/8250/8250_fsl.c
+index 4e75d2e4f87c..fc65a2293ce9 100644
+--- a/drivers/tty/serial/8250/8250_fsl.c
++++ b/drivers/tty/serial/8250/8250_fsl.c
+@@ -30,10 +30,11 @@ struct fsl8250_data {
+ int fsl8250_handle_irq(struct uart_port *port)
+ {
+ 	unsigned char lsr, orig_lsr;
++	unsigned long flags;
+ 	unsigned int iir;
+ 	struct uart_8250_port *up = up_to_u8250p(port);
+ 
+-	spin_lock(&up->port.lock);
++	spin_lock_irqsave(&up->port.lock, flags);
+ 
+ 	iir = port->serial_in(port, UART_IIR);
+ 	if (iir & UART_IIR_NO_INT) {
+@@ -82,7 +83,7 @@ int fsl8250_handle_irq(struct uart_port *port)
+ 
+ 	up->lsr_saved_flags = orig_lsr;
+ 
+-	uart_unlock_and_check_sysrq(&up->port);
++	uart_unlock_and_check_sysrq_irqrestore(&up->port, flags);
+ 
+ 	return 1;
+ }
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 2164290cbd31..d65778c4e4ca 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -1893,11 +1893,12 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
+ 	unsigned char status;
+ 	struct uart_8250_port *up = up_to_u8250p(port);
+ 	bool skip_rx = false;
++	unsigned long flags;
+ 
+ 	if (iir & UART_IIR_NO_INT)
+ 		return 0;
+ 
+-	spin_lock(&port->lock);
++	spin_lock_irqsave(&port->lock, flags);
+ 
+ 	status = serial_port_in(port, UART_LSR);
+ 
+@@ -1923,7 +1924,7 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
+ 		(up->ier & UART_IER_THRI))
+ 		serial8250_tx_chars(up);
+ 
+-	uart_unlock_and_check_sysrq(port);
++	uart_unlock_and_check_sysrq_irqrestore(port, flags);
+ 
+ 	return 1;
+ }
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index 52d7fb92a69d..c58cc142d23f 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -518,6 +518,25 @@ static inline void uart_unlock_and_check_sysrq(struct uart_port *port)
+ 	if (sysrq_ch)
+ 		handle_sysrq(sysrq_ch);
+ }
++
++static inline void uart_unlock_and_check_sysrq_irqrestore(struct uart_port *port,
++		unsigned long flags)
++{
++	int sysrq_ch;
++
++	if (!port->has_sysrq) {
++		spin_unlock_irqrestore(&port->lock, flags);
++		return;
++	}
++
++	sysrq_ch = port->sysrq_ch;
++	port->sysrq_ch = 0;
++
++	spin_unlock_irqrestore(&port->lock, flags);
++
++	if (sysrq_ch)
++		handle_sysrq(sysrq_ch);
++}
+ #else	/* CONFIG_MAGIC_SYSRQ_SERIAL */
+ static inline int uart_handle_sysrq_char(struct uart_port *port, unsigned int ch)
+ {
+@@ -531,6 +550,11 @@ static inline void uart_unlock_and_check_sysrq(struct uart_port *port)
+ {
+ 	spin_unlock(&port->lock);
+ }
++static inline void uart_unlock_and_check_sysrq_irqrestore(struct uart_port *port,
++		unsigned long flags)
++{
++	spin_unlock_irqrestore(&port->lock, flags);
++}
+ #endif	/* CONFIG_MAGIC_SYSRQ_SERIAL */
+ 
+ /*
+-- 
+2.31.1
 
