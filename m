@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603E53C829E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B973C82A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239060AbhGNKUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
+        id S239107AbhGNKWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239013AbhGNKUb (ORCPT
+        with ESMTP id S238638AbhGNKWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:20:31 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6277DC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:17:39 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
-        by albert.telenet-ops.be with bizsmtp
-        id UyHd2500Y1ccfby06yHdua; Wed, 14 Jul 2021 12:17:37 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3bxR-0016dr-J9; Wed, 14 Jul 2021 12:17:37 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3bxR-00A6PD-67; Wed, 14 Jul 2021 12:17:37 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH resend] clk: Align provider-specific CLK_* bit definitions
-Date:   Wed, 14 Jul 2021 12:17:36 +0200
-Message-Id: <5468cd9e50cda8fc59cb6baab9413c6c0de1a974.1626257689.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Jul 2021 06:22:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05484C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Xe3dguhWCsGlums2k2x94NYL3ilyvsPEmKUpmyGp7Cw=; b=Lr0qhmEPWfVuUbAbA+qBtFQLip
+        uqTrSTuOzD20H9fb8PWwPaPppm6WB6zAHLM/bEXb6HENdHixoN69J0+sT3ADmd6SKYsKitM/kjLHI
+        CMEVf+TiDmvMa6VWiZBMvVoeffPq1M5YqDqliIDyG/0wdpmuXHLlEk5QwRsRvZKpLQ6Wi6VET3O6F
+        WLm3zJ4kXlqvgm3vWBVHOotMEuuyyutUMYJDOYffBUT3F7La9M1fKVmqkGpckDJdJuG7kpquFyYP/
+        nk3nknbFvvbnFZ1IfKL7eqe9G6n55PmyRPlph/KwwWnZijcxCZzdiLBG1W5+rD9+dKaqvEW9pHB0V
+        AsmQ69Xw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3byM-0026La-6T; Wed, 14 Jul 2021 10:18:39 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0776798689D; Wed, 14 Jul 2021 12:18:31 +0200 (CEST)
+Date:   Wed, 14 Jul 2021 12:18:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 14/50] locking/rtmutex: Add wake_state to rt_mutex_waiter
+Message-ID: <20210714101831.GC2591@worktop.programming.kicks-ass.net>
+References: <20210713151054.700719949@linutronix.de>
+ <20210713160747.320345860@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713160747.320345860@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The definition of CLK_MULTIPLIER_ROUND_CLOSEST is not aligned to the two
-bit definitions next to it.  A deeper inspection reveals that the
-alignment of CLK_MULTIPLIER_ROUND_CLOSEST does match the most common
-alignment.
+On Tue, Jul 13, 2021 at 05:11:08PM +0200, Thomas Gleixner wrote:
+> @@ -33,6 +34,7 @@ struct rt_mutex_waiter {
+>  	struct rb_node		pi_tree_entry;
+>  	struct task_struct	*task;
+>  	struct rt_mutex		*lock;
+> +	int			wake_state;
+>  	int			prio;
+>  	u64			deadline;
 
-Align the bit definitions for the various provider types throughout the
-file at 40 columns, to increase uniformity.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- include/linux/clk-provider.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index d83b829305c05d40..7be81d5fcf8c4844 100644
---- a/include/linux/clk-provider.h
-+++ b/include/linux/clk-provider.h
-@@ -342,7 +342,7 @@ struct clk_fixed_rate {
- 	unsigned long	flags;
- };
- 
--#define CLK_FIXED_RATE_PARENT_ACCURACY		BIT(0)
-+#define CLK_FIXED_RATE_PARENT_ACCURACY	BIT(0)
- 
- extern const struct clk_ops clk_fixed_rate_ops;
- struct clk_hw *__clk_hw_register_fixed_rate(struct device *dev,
-@@ -1020,8 +1020,8 @@ struct clk_fractional_divider {
- 
- #define to_clk_fd(_hw) container_of(_hw, struct clk_fractional_divider, hw)
- 
--#define CLK_FRAC_DIVIDER_ZERO_BASED		BIT(0)
--#define CLK_FRAC_DIVIDER_BIG_ENDIAN		BIT(1)
-+#define CLK_FRAC_DIVIDER_ZERO_BASED	BIT(0)
-+#define CLK_FRAC_DIVIDER_BIG_ENDIAN	BIT(1)
- 
- extern const struct clk_ops clk_fractional_divider_ops;
- struct clk *clk_register_fractional_divider(struct device *dev,
-@@ -1069,9 +1069,9 @@ struct clk_multiplier {
- 
- #define to_clk_multiplier(_hw) container_of(_hw, struct clk_multiplier, hw)
- 
--#define CLK_MULTIPLIER_ZERO_BYPASS		BIT(0)
-+#define CLK_MULTIPLIER_ZERO_BYPASS	BIT(0)
- #define CLK_MULTIPLIER_ROUND_CLOSEST	BIT(1)
--#define CLK_MULTIPLIER_BIG_ENDIAN		BIT(2)
-+#define CLK_MULTIPLIER_BIG_ENDIAN	BIT(2)
- 
- extern const struct clk_ops clk_multiplier_ops;
- 
--- 
-2.25.1
-
+State is 'unsigned int', but we're (luckily) not yet at the MSB so it's
+a bit moot, still...
