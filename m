@@ -2,106 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59163C8154
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461DE3C8164
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238804AbhGNJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
+        id S238359AbhGNJXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238728AbhGNJU7 (ORCPT
+        with ESMTP id S238147AbhGNJXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:20:59 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAE4C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:18:07 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j186-20020a25d2c30000b029055ed6ffbea6so1776545ybg.14
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:18:07 -0700 (PDT)
+        Wed, 14 Jul 2021 05:23:43 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716E1C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:20:52 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id v14so1187318plg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=FcI/RIY6fqkfvACcmmOBOBRj9VFnw/wDoj5wb2ryU84=;
-        b=TNW6CpKuyM53R38THHQO0l30/FsZ9YikSCaulyuCOpmdp6eXcsXkoxcbkYcVlTa3HD
-         x5q6GlfQUimHaaisAjdfphUOz0/lKnbvGxdC7Oi6oP5BWmA7oqA7E3vm+QLuu6KygR9u
-         7yXW9+luCs5FgL4y1khvw0TU3nzvQa7VivWYxwQur9hapOKYRW2OkZubYBaudJiGGbWS
-         bKx9ntWf5faubfJyRLuMSGX8nYX+mPHREiJSDZsAXBBYqLWVPb5DwY/88NJsaN3WrC5W
-         9r2Hm467OjHp1bMdchvb14u00iAstp/YVlY8woschlERs0/4VVpFxu1lpj9OrCNU+r2e
-         +4eA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+1Zi925Y3jPcRtbAKIcVV1fKTrsYAIlXF0kFmPpmxQ=;
+        b=FvwWysAqaTK/8OoCr2rcrbgk8UIkYwN62kiGJOH1QSeJmvGlGaOsEwcfAJPNcnS1np
+         BRTqw0hikwNjpkY6GexEqx9l0LOpOtC/IvLwsX75QDKxid+isjHlxaj04dgCYvDAOyRb
+         vGJiiboAWUqCvUqJ6ql8uB4m087UrhwS6l3KJMa49e0CCpxpjvfRL44KiqldRcdJQRJX
+         jWps8MTWlDFyNHg9lrISjLChE2CF999UbzU5mYNuxGQHW4md8cirwvCuiRs8+TuNcoOt
+         ZbbDEd8uohJBWcOl8jxjWR3lPCwOmLYMqJRPbKAj5Kz5hnrz7Vv2mQqzVCr92cP791wI
+         13/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=FcI/RIY6fqkfvACcmmOBOBRj9VFnw/wDoj5wb2ryU84=;
-        b=dzrPuiff00tzBuVk5pTIUQ/a4I8PM2Pym4LE814bh96IGy8d68nnUP9yinEUjsn58h
-         tTxEx7CSbY0xovmqtaqWK8EDvF97fOczD+YvdXSDxw4Xz1IPzl16/ptZ9KSg1OfFCHsc
-         gWgA/8XHVabGjdjCumak3p4c37j+EecAmO1HPTJNBwGENo7M3c0xX+5d++GG8aY2nIph
-         cqEbzQM0u12UMThuyuM7OR3RxC7+BZeypj0gUVjysFz+X0hQJg5IgQQjYrT1hn64VyBI
-         RsWdgbpCvBFdxw1lGK7KzyoQ9xIES95qZUrQQR3Xxsa1pHrdHli6VG3BHNU9APAfu91P
-         sNYQ==
-X-Gm-Message-State: AOAM531ctFAZmFGW5Yt9ruobdz1GJ2CAxyWVOrOP7thaea+ANC7IMALG
-        +gmzFi2adQ6cB5OmdRgapnL6O9s56jR1AVNcWKUZFDzIIiSr/y2M65jLHimNj5xCQ7gfukK7adW
-        zWMfRFbtQ5Vao9SIA7AS3BG5QvN93bzrobc2xs/B2OnYMz1RSNjG6JM5RrpxqzZPtAg==
-X-Google-Smtp-Source: ABdhPJwQumiJEuoqIwwwDHzc73CCuMQCDncvnVhvq5UA/X4SUeW+Mf62MlhxfQh8V4UyJqwzttHAa/vVQw==
-X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:c569:463c:c488:ac2])
- (user=morbo job=sendgmr) by 2002:a25:7355:: with SMTP id o82mr11572449ybc.471.1626254286988;
- Wed, 14 Jul 2021 02:18:06 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 02:17:47 -0700
-In-Reply-To: <20210714091747.2814370-1-morbo@google.com>
-Message-Id: <20210714091747.2814370-4-morbo@google.com>
-Mime-Version: 1.0
-References: <20210714091747.2814370-1-morbo@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH 3/3] scsi: qla2xxx: remove unused variable 'status'
-From:   Bill Wendling <morbo@google.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+1Zi925Y3jPcRtbAKIcVV1fKTrsYAIlXF0kFmPpmxQ=;
+        b=C2rFz+s2Dk/1iIdzZiK/GecKUGRJoQkS1jPnILTn80hr2AAGSPGz0hdcyQV/aSC92E
+         0zd7wgpOZ5muVeWEritInMTvWF4WK2TnAP63qzc2ohdkgiPhUjRgKxwvqJkVR5rspM3N
+         IaI5puJjtSRp5eCwuZl5O+6aSpM1WLp4EP4OeLoJmEcXdDs/9w+VLBbgz5kITNWV+P0h
+         UEoByKCvjm42GUSPJKyd8aJmFeLGXoDFw/Kl8ypiRM2tm2YwoUK3pDj/qluBZ0DjsMtq
+         RMT8VY/AQJhs1Y77xKp97MJ/OYz4l411dlNNREPcpiAK1GTlRK8rBzQZaL6cIR5dcJPT
+         6KdA==
+X-Gm-Message-State: AOAM530cYG3hSBiogysRip00lhKq3lRkCIHcqRRd3yDFsINpCtWimuqc
+        IwSBmtzeWfG+izD9fbf81QPQtA==
+X-Google-Smtp-Source: ABdhPJzlFEfeANIpePsNfcifpvtfVZ7BKkvkdB69fY8s3YLkJ5V8SsI5wTMABLZPOXw/Z8jgOP4bPA==
+X-Received: by 2002:a17:902:848e:b029:12b:57b:7f3e with SMTP id c14-20020a170902848eb029012b057b7f3emr7145216plo.61.1626254451873;
+        Wed, 14 Jul 2021 02:20:51 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.243])
+        by smtp.gmail.com with ESMTPSA id k19sm1742540pji.32.2021.07.14.02.20.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Jul 2021 02:20:51 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
+        corbet@lwn.net
+Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, zhengqi.arch@bytedance.com,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH 0/5] Free the 2nd vmemmap page associated with each HugeTLB page
+Date:   Wed, 14 Jul 2021 17:17:55 +0800
+Message-Id: <20210714091800.42645-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the clang build warning:
+After the feature of "Free sonme vmemmap pages of HugeTLB page" is enabled,
+the mapping of the vmemmap addresses associated with a 2MB HugeTLB page
+becomes the figure below.
 
-  drivers/scsi/qla2xxx/qla_nx.c:2209:6: error: variable 'status' set but not used [-Werror,-Wunused-but-set-variable]
-        int status = 0;
+     HugeTLB                  struct pages(8 pages)         page frame(8 pages)
+ +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+---> PG_head
+ |           |                     |     0     | -------------> |     0     |
+ |           |                     +-----------+                +-----------+
+ |           |                     |     1     | -------------> |     1     |
+ |           |                     +-----------+                +-----------+
+ |           |                     |     2     | ----------------^ ^ ^ ^ ^ ^
+ |           |                     +-----------+                   | | | | |
+ |           |                     |     3     | ------------------+ | | | |
+ |           |                     +-----------+                     | | | |
+ |           |                     |     4     | --------------------+ | | |
+ |    2MB    |                     +-----------+                       | | |
+ |           |                     |     5     | ----------------------+ | |
+ |           |                     +-----------+                         | |
+ |           |                     |     6     | ------------------------+ |
+ |           |                     +-----------+                           |
+ |           |                     |     7     | --------------------------+
+ |           |                     +-----------+
+ |           |
+ |           |
+ |           |
+ +-----------+
 
-Signed-off-by: Bill Wendling <morbo@google.com>
----
- drivers/scsi/qla2xxx/qla_nx.c | 2 --
- 1 file changed, 2 deletions(-)
+As we can see, the 2nd vmemmap page frame (indexed by 1) is reused and remaped.
+However, the 2nd vmemmap page frame is also can be freed to the buddy allocator,
+then we can change the mapping from the figure above to the figure below.
 
-diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
-index 615e44af1ca6..11aad97dfca8 100644
---- a/drivers/scsi/qla2xxx/qla_nx.c
-+++ b/drivers/scsi/qla2xxx/qla_nx.c
-@@ -2166,7 +2166,6 @@ qla82xx_poll(int irq, void *dev_id)
- 	struct qla_hw_data *ha;
- 	struct rsp_que *rsp;
- 	struct device_reg_82xx __iomem *reg;
--	int status = 0;
- 	uint32_t stat;
- 	uint32_t host_int = 0;
- 	uint16_t mb[8];
-@@ -2195,7 +2194,6 @@ qla82xx_poll(int irq, void *dev_id)
- 		case 0x10:
- 		case 0x11:
- 			qla82xx_mbx_completion(vha, MSW(stat));
--			status |= MBX_INTERRUPT;
- 			break;
- 		case 0x12:
- 			mb[0] = MSW(stat);
+    HugeTLB                  struct pages(8 pages)         page frame(8 pages)
+ +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+---> PG_head
+ |           |                     |     0     | -------------> |     0     |
+ |           |                     +-----------+                +-----------+
+ |           |                     |     1     | ---------------^ ^ ^ ^ ^ ^ ^
+ |           |                     +-----------+                  | | | | | |
+ |           |                     |     2     | -----------------+ | | | | |
+ |           |                     +-----------+                    | | | | |
+ |           |                     |     3     | -------------------+ | | | |
+ |           |                     +-----------+                      | | | |
+ |           |                     |     4     | ---------------------+ | | |
+ |    2MB    |                     +-----------+                        | | |
+ |           |                     |     5     | -----------------------+ | |
+ |           |                     +-----------+                          | |
+ |           |                     |     6     | -------------------------+ |
+ |           |                     +-----------+                            |
+ |           |                     |     7     | ---------------------------+
+ |           |                     +-----------+
+ |           |
+ |           |
+ |           |
+ +-----------+
+
+After we do this, all tail vmemmap pages (1-7) are mapped to the head vmemmap
+page frame (0). In other words, there are more than one page struct with
+PG_head associated with each HugeTLB page.  We __know__ that there is only one
+head page struct, the tail page structs with PG_head are fake head page structs.
+We need an approach to distinguish between those two different types of page
+structs so that compound_head(), PageHead() and PageTail() can work properly
+if the parameter is the tail page struct but with PG_head.
+
+The following code snippet describes how to distinguish between real and fake
+head page struct.
+
+	if (test_bit(PG_head, &page->flags)) {
+		unsigned long head = READ_ONCE(page[1].compound_head);
+
+		if (head & 1) {
+			if (head == (unsigned long)page + 1)
+				==> head page struct
+			else
+				==> tail page struct
+		} else
+			==> head page struct
+	}
+
+We can safely access the field of the @page[1] with PG_head because the @page
+is a compound page composed with at least two contiguous pages. The main
+implementation is in the patch 3.
+
+In our server, we can save extra 2GB memory with this patchset applied if there
+are 1 TB HugeTLB (2 MB) pages. If the size of the HugeTLB page is 1 GB, it only
+can save 4MB. For 2 MB HugeTLB page, it is a nice gain.
+
+Muchun Song (5):
+  mm: introduce PAGEFLAGS_MASK to replace ((1UL << NR_PAGEFLAGS) - 1)
+  mm: introduce save_page_flags to cooperate with show_page_flags
+  mm: hugetlb: free the 2nd vmemmap page associated with each HugeTLB
+    page
+  mm: hugetlb: replace hugetlb_free_vmemmap_enabled with a static_key
+  mm: sparsemem: use page table lock to protect kernel pmd operations
+
+ Documentation/admin-guide/kernel-parameters.txt |   2 +-
+ include/linux/hugetlb.h                         |   6 +-
+ include/linux/page-flags.h                      | 103 ++++++++++++++++++++++--
+ include/trace/events/mmflags.h                  |   4 +
+ include/trace/events/page_ref.h                 |   8 +-
+ lib/test_printf.c                               |   2 +-
+ lib/vsprintf.c                                  |   2 +-
+ mm/hugetlb_vmemmap.c                            |  67 ++++++++-------
+ mm/ptdump.c                                     |  16 +++-
+ mm/sparse-vmemmap.c                             |  70 ++++++++++++----
+ 10 files changed, 218 insertions(+), 62 deletions(-)
+
 -- 
-2.32.0.93.g670b81a890-goog
+2.11.0
 
