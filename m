@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793EF3C8416
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988EF3C8420
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhGNLwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:52:15 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:44014 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230405AbhGNLwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:52:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1626263363;
-  x=1657799363;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=132bNXd2CFbUt9KYv8y9sYjf5aFnD3ITjQqBDf11vlA=;
-  b=XWDKI9O/Ehj5blDEF4UqcXmEB6dJ8yPRduCLblra7Jx5NFO3i88B6Jiv
-   cLR35YC5ZKCe+E+qtWIwFKdVDaUQCrk5noswD7cm5i8QJEHFVHqeNap3C
-   NmiN7SXuyBjU/XTXicxIqbr5FHL31PpI+dZjfuZ0tjYNM8ZnfXh6zvKZA
-   USEWRWWD97OmmZritIVFqnn6883w0/ZgfeR0zMimbhXq2e7ILtfYeI5fw
-   XSCG6EwF4dRxEzls0wvLw+9Y7KnMSDXMIdnsMTras+0AW0T6BelKdx1gW
-   BUyFCtQM70njROSVkioLP1vE9FrtWtquMbLmZBfY09pR97gP+vnDeNgkt
-   Q==;
-Date:   Wed, 14 Jul 2021 13:49:21 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Jaehoon Chung <jh80.chung@samsung.com>
-CC:     Ulf Hansson <ulf.hansson@linaro.org>, kernel <kernel@axis.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mmc: dw_mmc: Fix hang on data CRC error
-Message-ID: <20210714114921.GA22706@axis.com>
-References: <CGME20210630102240epcas1p33bbdffb5eb553a49badaffab756d482c@epcas1p3.samsung.com>
- <20210630102232.16011-1-vincent.whitchurch@axis.com>
- <81c1b56d-e1be-b3fb-6b44-fc8054f1dd8b@samsung.com>
+        id S239257AbhGNL6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:58:08 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:41429 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230405AbhGNL6H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 07:58:07 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 16EBssxl030572
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:54:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 16EBssxl030572
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626263694;
+        bh=Sz3iImpUukCR0yg6rBq7bSklYInDXr9aiKQBe2KLL18=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PoB47dgfFXBipUpE6p8yx4kxGqgP/GmHua16XAIDvNxnBsng3UaSUytsANILwwxrC
+         z5KFUq7zxx/aQF1My/orx7fXqXunfOpJi8MglOQRpMP88eZFt+apLX6eq9RWzNhCeg
+         k1x7mnGrE0tpm2Sov75wmMFcB8ZUHQTJ69HefKRVkFs0PXXmjV+/2ooJgujySRyc7Z
+         ypSGlKfOirfcG1IFx67TJXcvXoYHcIw7K51mA8h5DwdXXdSO5NJUD8VoZ0gwd/jimp
+         H/PHRP5ghAL/+y5hdjbuNueMpk/9ivoip0ONomY3Q6FJZx4WjQ6EE5HEpF1MH8/TKu
+         TQHTFSy9N38gw==
+X-Nifty-SrcIP: [209.85.214.180]
+Received: by mail-pl1-f180.google.com with SMTP id j3so1358116plx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:54:54 -0700 (PDT)
+X-Gm-Message-State: AOAM530LPei2Sj+TM6h81gW8/7r77bZ2kbToOFCIBejv08H7PaV7Ig59
+        avB8CJtPjEjozrCT6ZcswCj25na2FkFWVipEqUU=
+X-Google-Smtp-Source: ABdhPJwpMgJglG84BMVFWhZVSqSUEqeGd8/M3jl2S4pghaId232z7ANvIWEyOwMkTphljP88pw4eAX0TnO1zgke/bP0=
+X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr3454897pjt.198.1626263693958;
+ Wed, 14 Jul 2021 04:54:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <81c1b56d-e1be-b3fb-6b44-fc8054f1dd8b@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com>
+ <YOyGrUvA4LjydcP3@kroah.com> <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
+ <YOyVH3qD9O3qsNUL@kroah.com> <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com>
+ <87tukzgrkg.fsf@ungleich.ch> <alpine.LRH.2.02.2107130454430.3795@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <alpine.LRH.2.02.2107130454430.3795@file01.intranet.prod.int.rdu2.redhat.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 14 Jul 2021 20:54:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQkZSyNjoxVfrKr2goP7rNB0OAPXS6B-p24=8QjDcYWFA@mail.gmail.com>
+Message-ID: <CAK7LNAQkZSyNjoxVfrKr2goP7rNB0OAPXS6B-p24=8QjDcYWFA@mail.gmail.com>
+Subject: Re: [PATCH v3] scripts/setlocalversion: fix a bug when LOCALVERSION
+ is empty
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 12:06:31AM +0200, Jaehoon Chung wrote:
-> On 6/30/21 7:22 PM, Vincent Whitchurch wrote:
-> > When a Data CRC interrupt is received, the driver disables the DMA, then
-> > sends the stop/abort command and then waits for Data Transfer Over.
-> > 
-> > However, sometimes, when a data CRC error is received in the middle of a
-> > multi-block write transfer, the Data Transfer Over interrupt is never
-> > received, and the driver hangs and never completes the request.
-> > 
-> > The driver sets the BMOD.SWR bit (SDMMC_IDMAC_SWRESET) when stopping the
-> > DMA, but according to the manual CMD.STOP_ABORT_CMD should be programmed
-> > "before assertion of SWR".  Do these operations in the recommended
-> > order.  With this change the Data Transfer Over is always received
-> > correctly in my tests.
-> 
-> I will check with your patch. I didn't see any CRC error on my targets before.
+On Tue, Jul 13, 2021 at 5:59 PM Mikulas Patocka <mpatocka@redhat.com> wrote:
+>
+>
+>
+> On Mon, 12 Jul 2021, Nico Schottelius wrote:
+>
+> >
+> > Sorry to say, but I am not convinced by the patch.
+> >
+> > While yes, we might have changed the behaviour slightly, reading
+> > something on the line of
+> >
+> > if [ -z ... ]
+> >
+> > is significantly more simple, elegant and easier to maintain, than
+> > a rather atypical special case for setting a variable to empty,
+> > using
+> >
+> > if [ "${LOCALVERSION+set}" != "set" ] ..
+> >
+> > *and* because it is so atypical, adding a long comment for it, too.
+> >
+> > Additonally, -z should be correct if the variable *is* truly empty. I
+> > assume it actually isn't and contains whitespace, which is not the same
+> > as being set and empty.
+> >
+> > Instead of re-adding complexity, could you consider changing the build
+> > flow so that LOCALVERSION is either unset or empty?
+> >
+> > Nico
+>
+> I set LOCALVERSION to an empty string (with "export LOCALVERSION="). This
+> prevented the kernel from adding a "+" sign to the kernel version. Since
+> the commit 042da426f8eb, it no longer works and the kernel adds a "+" sign
+> if LOCALVERSION is set and empty.
+>
+> If you don't like "if [ "${LOCALVERSION+set}" != "set" ]", then please
+> provide some other way how to test if the variable is set.
 
-Have you had a chance to check it?  You can use the fault-injection
-patch if you want to trigger aborted transfers without getting real CRC
-errors:
+if [ -z "${LOCALVERSION+set}" ]
 
- https://lore.kernel.org/linux-mmc/20210701080534.23138-1-vincent.whitchurch@axis.com/
+is the alternative way I came up with, but
+I am OK with your v3.
+
+
+I will pick it up for -rc2.
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
