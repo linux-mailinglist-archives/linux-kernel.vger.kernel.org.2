@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2ED3C7BAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408BB3C7BAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237555AbhGNCYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:24:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:55724 "EHLO foss.arm.com"
+        id S237579AbhGNCYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:24:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:55732 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237495AbhGNCX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:23:59 -0400
+        id S237495AbhGNCYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:24:03 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AD331042;
-        Tue, 13 Jul 2021 19:21:08 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C8FB1FB;
+        Tue, 13 Jul 2021 19:21:12 -0700 (PDT)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.65.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 37FBE3F7D8;
-        Tue, 13 Jul 2021 19:21:04 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 194C13F7D8;
+        Tue, 13 Jul 2021 19:21:08 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
@@ -24,9 +24,9 @@ Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
         mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
         maz@kernel.org, james.morse@arm.com, steven.price@arm.com,
         Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [RFC 01/10] mm/mmap: Dynamically initialize protection_map[]
-Date:   Wed, 14 Jul 2021 07:51:22 +0530
-Message-Id: <1626229291-6569-2-git-send-email-anshuman.khandual@arm.com>
+Subject: [RFC 02/10] arm64/mm: Consolidate TCR_EL1 fields
+Date:   Wed, 14 Jul 2021 07:51:23 +0530
+Message-Id: <1626229291-6569-3-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
 References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
@@ -34,67 +34,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The protection_map[] elements (__PXXX and __SXXX) might sometimes contain
-runtime variables in certain platforms like arm64 preventing a successful
-build because of the current static initialization. So it just defers the
-initialization until mmmap_init() via a new helper init_protection_map().
+This renames and moves SYS_TCR_EL1_TCMA1 and SYS_TCR_EL1_TCMA0 definitions
+into pgtable-hwdef.h thus consolidating all TCR fields in a single header.
+This does not cause any functional change.
 
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- mm/mmap.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/pgtable-hwdef.h | 2 ++
+ arch/arm64/include/asm/sysreg.h        | 4 ----
+ arch/arm64/mm/proc.S                   | 2 +-
+ 3 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index ca54d36..a95b078 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -100,10 +100,7 @@ static void unmap_region(struct mm_struct *mm,
-  *								w: (no) no
-  *								x: (yes) yes
-  */
--pgprot_t protection_map[16] __ro_after_init = {
--	__P000, __P001, __P010, __P011, __P100, __P101, __P110, __P111,
--	__S000, __S001, __S010, __S011, __S100, __S101, __S110, __S111
--};
-+pgprot_t protection_map[16] __ro_after_init;
+diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+index 40085e5..66671ff 100644
+--- a/arch/arm64/include/asm/pgtable-hwdef.h
++++ b/arch/arm64/include/asm/pgtable-hwdef.h
+@@ -273,6 +273,8 @@
+ #define TCR_NFD1		(UL(1) << 54)
+ #define TCR_E0PD0		(UL(1) << 55)
+ #define TCR_E0PD1		(UL(1) << 56)
++#define TCR_TCMA0		(UL(1) << 57)
++#define TCR_TCMA1		(UL(1) << 58)
  
- #ifndef CONFIG_ARCH_HAS_FILTER_PGPROT
- static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
-@@ -3708,6 +3705,26 @@ void mm_drop_all_locks(struct mm_struct *mm)
- 	mutex_unlock(&mm_all_locks_mutex);
- }
- 
-+static void init_protection_map(void)
-+{
-+	protection_map[0] = __P000;
-+	protection_map[1] = __P001;
-+	protection_map[2] = __P010;
-+	protection_map[3] = __P011;
-+	protection_map[4] = __P100;
-+	protection_map[5] = __P101;
-+	protection_map[6] = __P110;
-+	protection_map[7] = __P111;
-+	protection_map[8] = __S000;
-+	protection_map[9] = __S001;
-+	protection_map[10] = __S010;
-+	protection_map[11] = __S011;
-+	protection_map[12] = __S100;
-+	protection_map[13] = __S101;
-+	protection_map[14] = __S110;
-+	protection_map[15] = __S111;
-+}
-+
  /*
-  * initialise the percpu counter for VM
-  */
-@@ -3715,6 +3732,7 @@ void __init mmap_init(void)
- {
- 	int ret;
+  * TTBR.
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 7b9c3ac..5cbfaf6 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -1059,10 +1059,6 @@
+ #define CPACR_EL1_ZEN_EL0EN	(BIT(17)) /* enable EL0 access, if EL1EN set */
+ #define CPACR_EL1_ZEN		(CPACR_EL1_ZEN_EL1EN | CPACR_EL1_ZEN_EL0EN)
  
-+	init_protection_map();
- 	ret = percpu_counter_init(&vm_committed_as, 0, GFP_KERNEL);
- 	VM_BUG_ON(ret);
- }
+-/* TCR EL1 Bit Definitions */
+-#define SYS_TCR_EL1_TCMA1	(BIT(58))
+-#define SYS_TCR_EL1_TCMA0	(BIT(57))
+-
+ /* GCR_EL1 Definitions */
+ #define SYS_GCR_EL1_RRND	(BIT(16))
+ #define SYS_GCR_EL1_EXCL_MASK	0xffffUL
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index 35936c5..1ae0c2b 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -46,7 +46,7 @@
+ #endif
+ 
+ #ifdef CONFIG_KASAN_HW_TAGS
+-#define TCR_MTE_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1 | TCR_TBID1
++#define TCR_MTE_FLAGS TCR_TCMA1 | TCR_TBI1 | TCR_TBID1
+ #else
+ /*
+  * The mte_zero_clear_page_tags() implementation uses DC GZVA, which relies on
 -- 
 2.7.4
 
