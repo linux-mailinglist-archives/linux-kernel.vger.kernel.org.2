@@ -2,109 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4863C7AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21373C7AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237265AbhGNBPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 21:15:05 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33625 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237198AbhGNBPE (ORCPT
+        id S237315AbhGNBQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:16:14 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:46052 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237198AbhGNBQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:15:04 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 922075C01A3;
-        Tue, 13 Jul 2021 21:12:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 13 Jul 2021 21:12:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=EsgNCm
-        QMp0sVxZo1hnQjnHJ7usJKDbWwUiB8a7dFg/k=; b=YE4H9V3yEq6ZVue1ho6gt9
-        Y/Ewm5PRZazkDeXYptHAy9Sb8FZcDSFggs/ZE2kLiM1R73iloLqQVrvKWF/9vAi+
-        aoYWf+T82uXlnYWLuPL5+CwCc49EGEYe+OGRJVoZKOVzE6dOOb9KibwhPAZOkRnP
-        SUKjEK/ygMtA1wBBUaIy/qe/vr4AhFcEx2H66P5dtFyTd63yXagN9aHkOI/KOnbq
-        SBD4XseVpkvHEKIqxjc2cOHf9W+0pAAn8FUql/r1G+/vaUD1C+zzBQEiPms69/vI
-        w2atrxDp3xOtX1owEZwnRusQWUKVR6JN3j4K2Srh7ot3zpwKXzax+N4eO+Swx+cg
-        ==
-X-ME-Sender: <xms:7TnuYEEjNLP6vO3QYTEUcecLnCo2abzQzst-gtU2zUbWPamocR-njQ>
-    <xme:7TnuYNWEwUqszRN7RG3XDe_K5sriWZ6WCp6BnZgsG1svoG2VGS1unxVuarvLLJ8er
-    MoRUrj8qq0y26-Ifxw>
-X-ME-Received: <xmr:7TnuYOJEedPfRS5vmAHqA5mTzo0eqKEjN1rVkbaghMZ_mE2uMiYuqnaP4sfk3Pvy935GkngDkPGsl1DQgu7NffU1xuZoydw8-2E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejgdefiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffujgfkfhggtgesmhdtreertd
-    dtjeenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhm
-    ieekkhdrohhrgheqnecuggftrfgrthhtvghrnhepfeffjeeigfehveehfeevhfetgefgie
-    ejieeviefhffffudfgfeekleffhffghedvnecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:7TnuYGHMwL9R99BXWPwwZp-jfRDxNpvxtOPR0cgzDktTmy13ZCHt4A>
-    <xmx:7TnuYKXvZaDdgTNGQiTPgcl0wL6YxrZ_Pf6PUXeX1AyWZUdShuJiaw>
-    <xmx:7TnuYJPjt2O_wJKobSvd4ejWJhSUJCvDstBLdeeViEWBB2zv9QuMHw>
-    <xmx:7TnuYFCd_8F_TJikT_OH9IbeIxkkMec8vxMI7A9RlUFqGuPU9ccuvA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Jul 2021 21:12:11 -0400 (EDT)
-Date:   Wed, 14 Jul 2021 11:12:05 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/5] bus: Make remove callback return void
-In-Reply-To: <20210713193522.1770306-6-u.kleine-koenig@pengutronix.de>
-Message-ID: <1a4ba24-8bab-47b8-b25d-cc31ce16ca1f@linux-m68k.org>
-References: <20210713193522.1770306-1-u.kleine-koenig@pengutronix.de> <20210713193522.1770306-6-u.kleine-koenig@pengutronix.de>
+        Tue, 13 Jul 2021 21:16:11 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16E0vOMf025444;
+        Wed, 14 Jul 2021 01:13:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=k3E8SgrRNT6PIN4HvMZBjqxbWCdbAtLefyJKk3kl3Ms=;
+ b=AslnwyNy7ZxihvqX5QTn3VY7Z3EHHspkUdLiyJBSFLwDpezftOZgF2raVClbcpeZNETb
+ U9RieLo6gXd4qEH34Z9wuDtBk8tYvfXg5Afxbml/zD+nOS6/7RQPI/bbMKYbxIApPriu
+ KyKAtu/EQEJshuyQ4dfwamQKUA7Jz6JWyDlvkwvHDTbz69D01Zem35KunNGPHoTzqSdM
+ oQTIQpwgqfXUR043QCoIaZf0srSlfdYqyg7hycZezHQ/eQdZgKpqvFEvl8u5VEeFCjEt
+ 3mtaikzMhru9Hv5OO0E1GzrkhVjISlw819qpp9nFD3ZtUcHCZyjQemRL3Cq1F/8rXUKc VA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39rnxdktcs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 01:13:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16E0suUG035645;
+        Wed, 14 Jul 2021 01:12:59 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2171.outbound.protection.outlook.com [104.47.73.171])
+        by userp3020.oracle.com with ESMTP id 39qnb1cvc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 01:12:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kd9mZKGfcf3Ohbq6QsPaUQ//BIfaGe2PU/teH8SJ+WgsUx0sa7mypyfsxbZ7asBHPi+U4nBJt9/WMR/gV8Q5CcMigSuqMUEX1mnmv2wEGQslGXrseWrbdyNtKT1xc/bEIwSnIvVIkaNEF31u4Ltgx6+myJNaAlJeSxn/2aCl+aWoOJHxhOZoA0lgMOWpr3aaNO2pBY9+N+fHGm1O/jc5DjGqSk8IW6Gqj+rhgbujPB5pCbaDVnNEhyAZ/yqjdQ1+7q24F2Aa/2nyCX0aGtqagaUHNWfaAW1SIsQSxr+vlRvNgIO8d5IEe339CWcw62ZSm/kd93H6B9YuFYMYYQ4l0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k3E8SgrRNT6PIN4HvMZBjqxbWCdbAtLefyJKk3kl3Ms=;
+ b=h9W+pIW6/KNri/6BAkXX3VErzQIWURRmN4hRHJ55X4dOOl+hk4mH+2M/sbvpYy9jRI3pC+Oq2Qtu0Nn/n1qHr/7YfPqMPuVK/XOx0U6lKjolb3vfcFKoka5Nlle85ENKi5uymxWbTsiCL5EWk58ijZ6T2cD3cfm7dz5ea7Mgu/VjaOpijezk99yqhMyh1ywEXTQyNX3WT5d/ThH9mLqQUnwrQO8obReBFBUOcQT/x8OxNzhqxkaG2z8aVQG6biv6IQ88Mazi+ZUfeq9k4zd6elu6PmyDoc2KfrsZzI1o419bjGqkG4IoeFjICx9uga5CKuH4DKaIWndY0aZrJmJiYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k3E8SgrRNT6PIN4HvMZBjqxbWCdbAtLefyJKk3kl3Ms=;
+ b=vfbBaVa0M81yA42x1qpOb98Q7Xjd/HSDgogVCAGe9ZsCdTDeYYfSEM9ji+HKcN848U4tlRhN3vJL5I4t4a5ahp7OkymQx7NZjRjhkHYQXFZFyDbXWHXUkvebfsIKolDHj7rJIfT2d73wL0i+jVSMLCDEaV8Wc0RDdwmXwYZ6GLg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from CO1PR10MB4722.namprd10.prod.outlook.com (2603:10b6:303:9e::12)
+ by MWHPR10MB1629.namprd10.prod.outlook.com (2603:10b6:301:9::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Wed, 14 Jul
+ 2021 01:12:51 +0000
+Received: from CO1PR10MB4722.namprd10.prod.outlook.com
+ ([fe80::f8c1:a59:f070:5a5f]) by CO1PR10MB4722.namprd10.prod.outlook.com
+ ([fe80::f8c1:a59:f070:5a5f%3]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
+ 01:12:51 +0000
+Subject: Re: [smartpqi updates V2 PATCH 2/9] smartpqi: update copyright
+ notices
+To:     Don Brace <don.brace@microchip.com>, hch@infradead.org,
+        martin.peterson@oracle.com, jejb@linux.vnet.ibm.com,
+        linux-scsi@vger.kernel.org
+Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
+        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
+        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
+        mike.mcgowen@microchip.com, murthy.bhat@microchip.com,
+        balsundar.p@microchip.com, joseph.szczypek@hpe.com,
+        jeff@canonical.com, POSWALD@suse.com, mwilck@suse.com,
+        pmenzel@molgen.mpg.de, linux-kernel@vger.kernel.org
+References: <20210713210243.40594-1-don.brace@microchip.com>
+ <20210713210243.40594-3-don.brace@microchip.com>
+From:   John Donnelly <john.p.donnelly@oracle.com>
+Message-ID: <690fc3f0-004b-0c4c-f772-8f0d9b55d8ac@oracle.com>
+Date:   Tue, 13 Jul 2021 20:12:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210713210243.40594-3-don.brace@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM3PR11CA0011.namprd11.prod.outlook.com
+ (2603:10b6:0:54::21) To CO1PR10MB4722.namprd10.prod.outlook.com
+ (2603:10b6:303:9e::12)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-790401653-1626225063=:6"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.106] (47.220.66.60) by DM3PR11CA0011.namprd11.prod.outlook.com (2603:10b6:0:54::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 01:12:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a0844e24-233d-4c85-ad76-08d94664802b
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1629:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB162985B30852F32C8D61F029C7139@MWHPR10MB1629.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1grrMiI3CcDrQ0xGZCrnY7xBW16rFyF7avLhV2p+LqoCfH2CVq3sItrK7+aFvD6Pz0uRBRRbczuuTwrgQLoOLI4gr1mTXCobTqF326IpRtfkg0kcZM8b1Q0kfdU9DYSO/kXxuW4vKPTvkbzo0tIPH2/ENDUmwyuFgCmhu95DtzYQRbEJTzMe1fXsPAi8ELVbBa6z/ZY1MIsQE6xT04VXPhUB1+TF8HA+8IyEqVl+3uRoLDn9FTQ06l/2HCfzrkAT9Q4UlHqnmywDkOZ31vb6Cp7X+DzEvkHwmiRH+/sEoufOxVgkkj2ZthJjwV0CFFlHcoB0MdhejfQdA1dXv17DUgWEMZ5yDp/u1loFYvYweJRCExoj7G3xL8fu7SfEoJWdbdpS4gk8wG3nky4OXzVRMU0QqpAPTzXgI0+h9ffXOcRS4NQ2zB/N2hsJ+sSFOsYYHJ+zSpY0fUBtLXM9YlywFSMIkgqQzqrxlT2nkYHqsJgzDfQXKi904+hqm5i0/pdssGySnIvlex2xkuBJ2qP8byPnpMc5l0O3VsobKNI3SyjSTwxdRqNGD+Y28ykYhysZ/nsGpQt8XRAJgaMfSBqwcOVN+MtJ6zfvc4dTY1vhnMuzgYneXrWoHnxjdM/3mvaEmRTFFHgJP/+XEJjpRMjp+L3GENJtfGe+Lqi7Z0FkH4Ph0guwouVTskzCHvK/z7gr0wOGLY4R5rjangFgmi1yLVAEBPubBpzJCxn/H4vbB7A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4722.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(136003)(376002)(396003)(366004)(7416002)(4326008)(478600001)(83380400001)(2906002)(6666004)(66946007)(15650500001)(36756003)(16576012)(66476007)(66556008)(2616005)(956004)(86362001)(31696002)(38100700002)(31686004)(316002)(53546011)(26005)(8936002)(186003)(6486002)(8676002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aW90YUpIK1p2aThRa05VWmRuM296OS9uMUcrTUcwMVZWMEkzUVRQVGZlZGZa?=
+ =?utf-8?B?OTF6emY3MDZiS2Y3QTVNclpVdTBxb1hQSXNwVFlsRVNVeFlSMnkzMTY3MmVn?=
+ =?utf-8?B?cldBbUdBbmtsMGlDcmtPN2Jnc1oyWEFET0ZSejljWVJ3SFliQjNNMURVdEM4?=
+ =?utf-8?B?dGtPOWZZUEF2UzUxczV2VUZHY1piSE4wL2ErMmdGRG5QdlhOVldKejJRRGhS?=
+ =?utf-8?B?cFhSa3NxelhUUkpSbGtnOTJsTENQQVdLYnhqN0FROEthbWhNY1VpQitJM2tC?=
+ =?utf-8?B?aU5HSCt3M1Z5RXYzV1hOeDVuOXhrSjRXU2xXTFM0My9WQnJWbGdPZTFoUXJp?=
+ =?utf-8?B?ME5HQnZocytxQUY4SGZGbmZ3Z21tQmxtaDJyWTN4VE9ZMXNWY1BkL3hwQkdB?=
+ =?utf-8?B?RlZvM1JuOGZWeEwzVXQ4VHB0UkVRdGhLclk3dEFRU2RSSFloNVh6dGF1RFE5?=
+ =?utf-8?B?b1hTSGF2UkEwU3ZCOXViZ05qaldFZHRDWjNuR3A4ZlFFQ1FrRzE5UkNnSUNR?=
+ =?utf-8?B?ZmsyTm9NYk14c3JwMS9iRUp0K0JNTXBubXdpTGtvMVpRR2pXTEJjbXU0UGRJ?=
+ =?utf-8?B?R09RMWU5NHZxZkhkR1R0c1VqN0ZwVTBaeDFGYUdUQkg3TVRBdWloTzQ2bzV6?=
+ =?utf-8?B?VXhIZ0JITkNzU0tQb0RoR1hKc2pZOUR0OWR4d0t4R0Z4UlA2Vnl2Z1FDYW5N?=
+ =?utf-8?B?b2dvTDBPazVIdi92cWtBNWFOT2tzSWQwT003RjBhcEFkWk5qTmNCQmVPOUZt?=
+ =?utf-8?B?SWtGOXlvRHkzOEVqbWlFS09VV2dWUzRvZlg2UnRJa0FONWltUUM2bjNwOEVj?=
+ =?utf-8?B?ZVJqSEVsQ2pOYU9vRUlteGlMWHdkNHQ0NUxCM3JneXh3eUdTU2NGdDlHTjd3?=
+ =?utf-8?B?cVRCVjRmVDVpZDNqVUQ1TklUYWd2ZU9aOFpINC8ydEMxMVFBU3R0Q01jbGVl?=
+ =?utf-8?B?ZDVWL3Q5U2ljamMvM24zUHE1N2xjYXZtMlB0S0Rva0VqUVUvOEhTS3pMdW9K?=
+ =?utf-8?B?aThUYlNHaUxES3pWVE1IR0FyR2cyOWNHMzVJeW8yZ3AxbUE2bytxNTdkbDBH?=
+ =?utf-8?B?TThMRUt5ZHc5ME9QcmtDQU0rV2hoU0Q5M2lnZXRXWWxreXVCc2JQcld4bUhH?=
+ =?utf-8?B?dDhRRklUMWE4Q3pwckc4eE9sREtxbmgrS2piNjYvWFFzUFg3WElJTm8vKzVV?=
+ =?utf-8?B?ZldBcVZsbzdIaGZLSXdDU3Q0YVJpRVBjYkdpSUpyYlJKMHZ4TjlnYS8vbS9z?=
+ =?utf-8?B?dFhDMVFHcHRObGN0MFB4bUc0eXp4ZXpjZkg0R24xeExxcHhkditoaFErYTV5?=
+ =?utf-8?B?SWJxYisyRWVTYnNHTzYzbzFCbWpHaXF3TGNFUnUrbzl2YTBOWW96RUhBWXlB?=
+ =?utf-8?B?Ym9JeENwSXppcHdhUzRXSk9RcDA0czNLRXpFdFlONEVDSldEdURqR2xlcDg1?=
+ =?utf-8?B?Qndab0pMZk9DMUFrcTFOY05HeWRvbUYxTDliVllOOFFaL2ZESzUwdzJZNWVQ?=
+ =?utf-8?B?eEFxZVl0Y2dpRnZXM0JsTXJaTEhsNWVCcEM2VEIrbDlsYkxBekUzNmlpYzY3?=
+ =?utf-8?B?ZmdOS2JEVndSbUlGY0ZCNjNtMEFKUFdTaTU3Mk4rZnhVUGRzWHk5VUFsNlUr?=
+ =?utf-8?B?UWhCNVFoTjZSaHFpYktoOEw5Mm9NWGlreEZJSVlvaVBTdlhwcmRpcFFSbm9N?=
+ =?utf-8?B?QXpPOGU1T1d3RHpZOEJIUkF4ZEViZFJlNlVzYklzTTB6bXhramtpNy9yd0kv?=
+ =?utf-8?Q?oHuIyh7VCTuaa3+n5Th8CpF43sG0wYz5URggPpu?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0844e24-233d-4c85-ad76-08d94664802b
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4722.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 01:12:51.2149
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1maILkI1CTIOOXAqobf1HV4EZR5NwmSUfibeL8Le3mIpJsaRh/MGycS0J1eNLmlAkNMYFZMcGiT2kQCbtGx5Im7kYr4PRsqMCWDPQ9+d2FI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1629
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10044 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107140003
+X-Proofpoint-GUID: T8Vwkqv-V8UTr2L-yYr2v7FC5ZY-_2At
+X-Proofpoint-ORIG-GUID: T8Vwkqv-V8UTr2L-yYr2v7FC5ZY-_2At
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 7/13/21 4:02 PM, Don Brace wrote:
+> From: Kevin Barnett <kevin.barnett@microchip.com>
+> 
+> Updated copyright notices and company name strings to reflect
+> Microchip ownership.
+> 
+> Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
+> Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+> Reviewed-by: Scott Teel <scott.teel@microchip.com>
+> Signed-off-by: Kevin Barnett <kevin.barnett@microchip.com>
+> Signed-off-by: Don Brace <don.brace@microchip.com>
 
----1463811774-790401653-1626225063=:6
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+  John Donnelly <john.p.donnelly@oracle.com>
 
-On Tue, 13 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
+> ---
+>   drivers/scsi/smartpqi/Kconfig                  | 2 +-
+>   drivers/scsi/smartpqi/smartpqi.h               | 6 +++---
+>   drivers/scsi/smartpqi/smartpqi_init.c          | 4 ++--
+>   drivers/scsi/smartpqi/smartpqi_sas_transport.c | 4 ++--
+>   drivers/scsi/smartpqi/smartpqi_sis.c           | 4 ++--
+>   drivers/scsi/smartpqi/smartpqi_sis.h           | 4 ++--
+>   6 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/scsi/smartpqi/Kconfig b/drivers/scsi/smartpqi/Kconfig
+> index cb9e4e968b60..eac7baecf42f 100644
+> --- a/drivers/scsi/smartpqi/Kconfig
+> +++ b/drivers/scsi/smartpqi/Kconfig
+> @@ -1,7 +1,7 @@
+>   #
+>   # Kernel configuration file for the SMARTPQI
+>   #
+> -# Copyright (c) 2019-2020 Microchip Technology Inc. and its subsidiaries
+> +# Copyright (c) 2019-2021 Microchip Technology Inc. and its subsidiaries
+>   # Copyright (c) 2017-2018 Microsemi Corporation
+>   # Copyright (c) 2016 Microsemi Corporation
+>   # Copyright (c) 2016 PMC-Sierra, Inc.
+> diff --git a/drivers/scsi/smartpqi/smartpqi.h b/drivers/scsi/smartpqi/smartpqi.h
+> index d7dac5572274..f340afc011b5 100644
+> --- a/drivers/scsi/smartpqi/smartpqi.h
+> +++ b/drivers/scsi/smartpqi/smartpqi.h
+> @@ -1,7 +1,7 @@
+>   /* SPDX-License-Identifier: GPL-2.0 */
+>   /*
+> - *    driver for Microsemi PQI-based storage controllers
+> - *    Copyright (c) 2019-2020 Microchip Technology Inc. and its subsidiaries
+> + *    driver for Microchip PQI-based storage controllers
+> + *    Copyright (c) 2019-2021 Microchip Technology Inc. and its subsidiaries
+>    *    Copyright (c) 2016-2018 Microsemi Corporation
+>    *    Copyright (c) 2016 PMC-Sierra, Inc.
+>    *
+> @@ -59,7 +59,7 @@ struct pqi_device_registers {
+>   /*
+>    * controller registers
+>    *
+> - * These are defined by the Microsemi implementation.
+> + * These are defined by the Microchip implementation.
+>    *
+>    * Some registers (those named sis_*) are only used when in
+>    * legacy SIS mode before we transition the controller into
+> diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+> index 64ea4650ca10..6ce17a191c0b 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_init.c
+> +++ b/drivers/scsi/smartpqi/smartpqi_init.c
+> @@ -1,7 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - *    driver for Microsemi PQI-based storage controllers
+> - *    Copyright (c) 2019-2020 Microchip Technology Inc. and its subsidiaries
+> + *    driver for Microchip PQI-based storage controllers
+> + *    Copyright (c) 2019-2021 Microchip Technology Inc. and its subsidiaries
+>    *    Copyright (c) 2016-2018 Microsemi Corporation
+>    *    Copyright (c) 2016 PMC-Sierra, Inc.
+>    *
+> diff --git a/drivers/scsi/smartpqi/smartpqi_sas_transport.c b/drivers/scsi/smartpqi/smartpqi_sas_transport.c
+> index dd628cc87f78..afd9bafebd1d 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_sas_transport.c
+> +++ b/drivers/scsi/smartpqi/smartpqi_sas_transport.c
+> @@ -1,7 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - *    driver for Microsemi PQI-based storage controllers
+> - *    Copyright (c) 2019-2020 Microchip Technology Inc. and its subsidiaries
+> + *    driver for Microchip PQI-based storage controllers
+> + *    Copyright (c) 2019-2021 Microchip Technology Inc. and its subsidiaries
+>    *    Copyright (c) 2016-2018 Microsemi Corporation
+>    *    Copyright (c) 2016 PMC-Sierra, Inc.
+>    *
+> diff --git a/drivers/scsi/smartpqi/smartpqi_sis.c b/drivers/scsi/smartpqi/smartpqi_sis.c
+> index c954620628e0..d63c46a8e38b 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_sis.c
+> +++ b/drivers/scsi/smartpqi/smartpqi_sis.c
+> @@ -1,7 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - *    driver for Microsemi PQI-based storage controllers
+> - *    Copyright (c) 2019-2020 Microchip Technology Inc. and its subsidiaries
+> + *    driver for Microchip PQI-based storage controllers
+> + *    Copyright (c) 2019-2021 Microchip Technology Inc. and its subsidiaries
+>    *    Copyright (c) 2016-2018 Microsemi Corporation
+>    *    Copyright (c) 2016 PMC-Sierra, Inc.
+>    *
+> diff --git a/drivers/scsi/smartpqi/smartpqi_sis.h b/drivers/scsi/smartpqi/smartpqi_sis.h
+> index 12cd2ab1aead..d29c1352a826 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_sis.h
+> +++ b/drivers/scsi/smartpqi/smartpqi_sis.h
+> @@ -1,7 +1,7 @@
+>   /* SPDX-License-Identifier: GPL-2.0 */
+>   /*
+> - *    driver for Microsemi PQI-based storage controllers
+> - *    Copyright (c) 2019-2020 Microchip Technology Inc. and its subsidiaries
+> + *    driver for Microchip PQI-based storage controllers
+> + *    Copyright (c) 2019-2021 Microchip Technology Inc. and its subsidiaries
+>    *    Copyright (c) 2016-2018 Microsemi Corporation
+>    *    Copyright (c) 2016 PMC-Sierra, Inc.
+>    *
+> 
 
-> The driver core ignores the return value of this callback because there
-> is only little it can do when a device disappears.
->=20
-> This is the final bit of a long lasting cleanup quest where several
-> buses were converted to also return void from their remove callback.
-> Additionally some resource leaks were fixed that were caused by drivers
-> returning an error code in the expectation that the driver won't go
-> away.
->=20
-> With struct bus_type::remove returning void it's prevented that newly
-> implemented buses return an ignored error code and so don't anticipate
-> wrong expectations for driver authors.
->=20
-
-=2E..
-
-> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
-> index ad3d17c42e23..d9d04f27f89b 100644
-> --- a/drivers/nubus/bus.c
-> +++ b/drivers/nubus/bus.c
-> @@ -29,14 +29,12 @@ static int nubus_device_probe(struct device *dev)
->  =09return err;
->  }
-> =20
-> -static int nubus_device_remove(struct device *dev)
-> +static void nubus_device_remove(struct device *dev)
->  {
->  =09struct nubus_driver *ndrv =3D to_nubus_driver(dev->driver);
-> -=09int err =3D -ENODEV;
-> =20
->  =09if (dev->driver && ndrv->remove)
-> -=09=09err =3D ndrv->remove(to_nubus_board(dev));
-> -=09return err;
-> +=09=09ndrv->remove(to_nubus_board(dev));
->  }
-> =20
->  struct bus_type nubus_bus_type =3D {
-
-Acked-by: Finn Thain <fthain@linux-m68k.org>
----1463811774-790401653-1626225063=:6--
