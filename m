@@ -2,238 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD643C8ABF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5133C8AB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhGNSYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
+        id S240033AbhGNSXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240039AbhGNSXu (ORCPT
+        with ESMTP id S229806AbhGNSXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:23:50 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A21BC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:20:58 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 8so5160304lfp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YIyhhFVB7lAJhhYlHC8Aypf2fwXB60EEf6/ds0a06qs=;
-        b=WjWBbDP+tcAoBdyhzpem1Lt+enhBtxIdl7M/LZz7pvw2fcnfLkxB9LPDvEnrEoF1d7
-         cN7vgiiYCkEXNbXuCy8FBQx+2pKOOHn8AUC2EyBSHQD1NnfdhyiW8CQNXiExKTPcfWh5
-         HHek690m5HL4ZA6zm3mVcPfE3SwmsNv2kAgTEb2QQ8PszDqWMmFrSzSNrigP9XtUcSRA
-         huzgAwiB3oced8ka9MN9OPRc2k8ZBQvS/jcroEw+iI0hJAd6d9S+6F3eaw7fDlQC1//i
-         AVFxM4Us8XoLCmwsvE5u8YxooJy5tSa40XWL6dn57LJ/g0HJtaLFUZejCGKjq/Ebzyz5
-         mijg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YIyhhFVB7lAJhhYlHC8Aypf2fwXB60EEf6/ds0a06qs=;
-        b=V2QcQBVe/Q4bnHC6T/ls/wVZj4sOWI1GKRPnodkWob5rAZzK9Am+8lH55PAUnXD2vZ
-         hUq+VAbvW3WhPoFtJkzqf6K56qmE6Slg11XeuS5IaOqKLzdJ5qEe2u/U27yyUQY/ypoL
-         NygONEB8L82E/4vaPwKoFaizvuLsxs7Y01K3HbWL+SwkMWFUbragNVbROCF1DsUQs96Q
-         j3b3AniFtupClkueTJEg5dRHIqa1LwKv2scR3DcJiKov5nQCqTRF5sg6WrzeOM/tCUvW
-         RwxbAaCKBRadKsI85gLtZMBWdC29CFMr3y2QJNXVlsTWvT/Clpl8l0+N5rnbHV07MUIV
-         6ZWA==
-X-Gm-Message-State: AOAM531UDXC00Hwkm+iPWCmUQTBI+PnU80H6jskEZi+CO9hPYy6w3ZID
-        bjOsTnwK5rj46+CtOSWZmcc/mwVT6yQ9k+mFRB3M3g==
-X-Google-Smtp-Source: ABdhPJxnH4NvQGYqbyk8YkNhDQI/yZpwt8HCAd8tHuT3h7Tmoj24r5uK2DyIdsNuBU+BZee+ngnFx20Yy8qqdce7lNY=
-X-Received: by 2002:a19:4916:: with SMTP id w22mr9201976lfa.374.1626286856158;
- Wed, 14 Jul 2021 11:20:56 -0700 (PDT)
+        Wed, 14 Jul 2021 14:23:48 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36AFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:20:56 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 4ED02C8007F;
+        Wed, 14 Jul 2021 20:20:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 2zIN8GVCgxDm; Wed, 14 Jul 2021 20:20:54 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f13:3500:839f:11f6:c93a:c68b] (p200300E37F133500839f11f6c93ac68b.dip0.t-ipconnect.de [IPv6:2003:e3:7f13:3500:839f:11f6:c93a:c68b])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id E2C1EC8007C;
+        Wed, 14 Jul 2021 20:20:52 +0200 (CEST)
+Subject: Re: [PATCH v5 17/17] drm/amd/display: Add handling for new "Broadcast
+ RGB" property
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        emil.l.velikov@gmail.com
+References: <20210630151018.330354-1-wse@tuxedocomputers.com>
+ <20210630151018.330354-18-wse@tuxedocomputers.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <206d45be-86d9-9cc3-0b4a-317342221988@tuxedocomputers.com>
+Date:   Wed, 14 Jul 2021 20:20:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-3-ojeda@kernel.org>
-In-Reply-To: <20210704202756.29107-3-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Jul 2021 11:20:44 -0700
-Message-ID: <CAKwvOdmhRuF5eTZ2ztZBrL6BvDkA57B7OfVuvCaEMfV8nkLXCQ@mail.gmail.com>
-Subject: Re: [PATCH 02/17] kallsyms: increase maximum kernel symbol length to 512
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210630151018.330354-18-wse@tuxedocomputers.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 1:28 PM <ojeda@kernel.org> wrote:
+Am 30.06.21 um 17:10 schrieb Werner Sembach:
+> This commit implements the "Broadcast RGB" drm property for the AMD GPU
+> driver.
 >
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> Rust symbols can become quite long due to namespacing introduced
-> by modules, types, traits, generics, etc. For instance, for:
->
->     pub mod my_module {
->         pub struct MyType;
->         pub struct MyGenericType<T>(T);
->
->         pub trait MyTrait {
->             fn my_method() -> u32;
->         }
->
->         impl MyTrait for MyGenericType<MyType> {
->             fn my_method() -> u32 {
->                 42
->             }
->         }
->     }
->
-> generates a symbol of length 96 when using the upcoming v0 mangling scheme:
->
->     _RNvXNtCshGpAVYOtgW1_7example9my_moduleINtB2_13MyGenericTypeNtB2_6MyTypeENtB2_7MyTrait9my_method
-
-For C++ demangling, we have c++filt.
-
-A quick search turned up: https://github.com/luser/rustfilt
-
-but if the v0 mangling scheme is upcoming, I doubt a repo that hasn't
-been updated supports an upcoming scheme.  Is there a more official
-equivalent?
-
-Do we demangle rust symbols when printing a trace from a warn/panic?
-That would be nice.
-
->
-> At the moment, Rust symbols may reach up to 300 in length.
-> Setting 512 as the maximum seems like a reasonable choice to
-> keep some headroom.
->
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Co-developed-by: Finn Behrens <me@kloenk.de>
-> Signed-off-by: Finn Behrens <me@kloenk.de>
-> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 > ---
->  include/linux/kallsyms.h            | 2 +-
->  kernel/livepatch/core.c             | 4 ++--
->  scripts/kallsyms.c                  | 2 +-
->  tools/include/linux/kallsyms.h      | 2 +-
->  tools/include/linux/lockdep.h       | 2 +-
->  tools/lib/perf/include/perf/event.h | 2 +-
->  tools/lib/symbol/kallsyms.h         | 2 +-
->  7 files changed, 8 insertions(+), 8 deletions(-)
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 14 +++++++++++---
+>   .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |  4 ++++
+>   2 files changed, 15 insertions(+), 3 deletions(-)
 >
-> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-> index 465060acc98..5cdc6903abc 100644
-> --- a/include/linux/kallsyms.h
-> +++ b/include/linux/kallsyms.h
-> @@ -14,7 +14,7 @@
->
->  #include <asm/sections.h>
->
-> -#define KSYM_NAME_LEN 128
-> +#define KSYM_NAME_LEN 512
->  #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
->                          2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
->
-> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> index 335d988bd81..73874e5edfd 100644
-> --- a/kernel/livepatch/core.c
-> +++ b/kernel/livepatch/core.c
-> @@ -213,7 +213,7 @@ static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
->          * we use the smallest/strictest upper bound possible (56, based on
->          * the current definition of MODULE_NAME_LEN) to prevent overflows.
->          */
-> -       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 128);
-> +       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 512);
->
->         relas = (Elf_Rela *) relasec->sh_addr;
->         /* For each rela in this klp relocation section */
-> @@ -227,7 +227,7 @@ static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
->
->                 /* Format: .klp.sym.sym_objname.sym_name,sympos */
->                 cnt = sscanf(strtab + sym->st_name,
-> -                            ".klp.sym.%55[^.].%127[^,],%lu",
-> +                            ".klp.sym.%55[^.].%511[^,],%lu",
->                              sym_objname, sym_name, &sympos);
->                 if (cnt != 3) {
->                         pr_err("symbol %s has an incorrectly formatted name\n",
-> diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-> index bcdabee13aa..9bab5f55ade 100644
-> --- a/scripts/kallsyms.c
-> +++ b/scripts/kallsyms.c
-> @@ -27,7 +27,7 @@
->
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
->
-> -#define KSYM_NAME_LEN          128
-> +#define KSYM_NAME_LEN          512
->
->  struct sym_entry {
->         unsigned long long addr;
-> diff --git a/tools/include/linux/kallsyms.h b/tools/include/linux/kallsyms.h
-> index efb6c3f5f2a..5a37ccbec54 100644
-> --- a/tools/include/linux/kallsyms.h
-> +++ b/tools/include/linux/kallsyms.h
-> @@ -6,7 +6,7 @@
->  #include <stdio.h>
->  #include <unistd.h>
->
-> -#define KSYM_NAME_LEN 128
-> +#define KSYM_NAME_LEN 512
->
->  struct module;
->
-> diff --git a/tools/include/linux/lockdep.h b/tools/include/linux/lockdep.h
-> index e56997288f2..d9c163f3ab2 100644
-> --- a/tools/include/linux/lockdep.h
-> +++ b/tools/include/linux/lockdep.h
-> @@ -47,7 +47,7 @@ static inline int debug_locks_off(void)
->
->  #define task_pid_nr(tsk) ((tsk)->pid)
->
-> -#define KSYM_NAME_LEN 128
-> +#define KSYM_NAME_LEN 512
->  #define printk(...) dprintf(STDOUT_FILENO, __VA_ARGS__)
->  #define pr_err(format, ...) fprintf (stderr, format, ## __VA_ARGS__)
->  #define pr_warn pr_err
-> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-> index 4d0c02ba3f7..095d60144a7 100644
-> --- a/tools/lib/perf/include/perf/event.h
-> +++ b/tools/lib/perf/include/perf/event.h
-> @@ -95,7 +95,7 @@ struct perf_record_throttle {
->  };
->
->  #ifndef KSYM_NAME_LEN
-> -#define KSYM_NAME_LEN 256
-> +#define KSYM_NAME_LEN 512
->  #endif
->
->  struct perf_record_ksymbol {
-> diff --git a/tools/lib/symbol/kallsyms.h b/tools/lib/symbol/kallsyms.h
-> index 72ab9870454..542f9b059c3 100644
-> --- a/tools/lib/symbol/kallsyms.h
-> +++ b/tools/lib/symbol/kallsyms.h
-> @@ -7,7 +7,7 @@
->  #include <linux/types.h>
->
->  #ifndef KSYM_NAME_LEN
-> -#define KSYM_NAME_LEN 256
-> +#define KSYM_NAME_LEN 512
->  #endif
->
->  static inline u8 kallsyms2elf_binding(char type)
-> --
-> 2.32.0
->
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 02a5809d4993..80d5a11fb0c5 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -5247,7 +5247,8 @@ get_aspect_ratio(const struct drm_display_mode *mode_in)
+>   }
+>   
+>   static enum dc_color_space
+> -get_output_color_space(const struct dc_crtc_timing *dc_crtc_timing)
+> +get_output_color_space(const struct dc_crtc_timing *dc_crtc_timing,
+> +		       enum drm_mode_color_range preferred_color_range)
+>   {
+>   	enum dc_color_space color_space = COLOR_SPACE_SRGB;
+>   
+> @@ -5278,7 +5279,10 @@ get_output_color_space(const struct dc_crtc_timing *dc_crtc_timing)
+>   	}
+>   	break;
+>   	case PIXEL_ENCODING_RGB:
+> -		color_space = COLOR_SPACE_SRGB;
+> +		if (preferred_color_range == DRM_MODE_COLOR_RANGE_LIMITED_16_235)
+> +			color_space = COLOR_SPACE_SRGB_LIMITED;
+> +		else
+> +			color_space = COLOR_SPACE_SRGB;
+>   		break;
 
+After some testing I found out, that what I did here, was useless.
 
--- 
-Thanks,
-~Nick Desaulniers
+amdgpu actually never sets the quantization_range range in the 
+hdmi_avi_infoframe and from that I guess any quantization range, besides 
+the default one, is not implemented in multiple places
+
+Until limited RGB is properly implemented in amdgpu there kind of is no 
+purpose of generalizing the Broadcast RGB switch.
+
+>   
+>   	default:
+> @@ -5424,7 +5428,10 @@ static void fill_stream_properties_from_drm_display_mode(
+>   
+>   	timing_out->aspect_ratio = get_aspect_ratio(mode_in);
+>   
+> -	stream->output_color_space = get_output_color_space(timing_out);
+> +	stream->output_color_space = get_output_color_space(timing_out,
+> +							    connector_state ?
+> +							    connector_state->preferred_color_range :
+> +							    DRM_MODE_COLOR_RANGE_UNSET);
+>   
+>   	stream->out_transfer_func->type = TF_TYPE_PREDEFINED;
+>   	stream->out_transfer_func->tf = TRANSFER_FUNCTION_SRGB;
+> @@ -7775,6 +7782,7 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
+>   		drm_connector_attach_active_bpc_property(&aconnector->base, 8, 16);
+>   		drm_connector_attach_preferred_color_format_property(&aconnector->base);
+>   		drm_connector_attach_active_color_format_property(&aconnector->base);
+> +		drm_connector_attach_preferred_color_range_property(&aconnector->base);
+>   		drm_connector_attach_active_color_range_property(&aconnector->base);
+>   	}
+>   
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> index 2563788ba95a..80e1389fd0ec 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> @@ -421,6 +421,10 @@ dm_dp_add_mst_connector(struct drm_dp_mst_topology_mgr *mgr,
+>   	if (connector->active_color_format_property)
+>   		drm_connector_attach_active_color_format_property(&aconnector->base);
+>   
+> +	connector->preferred_color_range_property = master->base.preferred_color_range_property;
+> +	if (connector->preferred_color_range_property)
+> +		drm_connector_attach_preferred_color_range_property(&aconnector->base);
+> +
+>   	connector->active_color_range_property = master->base.active_color_range_property;
+>   	if (connector->active_color_range_property)
+>   		drm_connector_attach_active_color_range_property(&aconnector->base);
