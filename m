@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE9D3C9356
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A23F3C934B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236135AbhGNVtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        id S236037AbhGNVr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236052AbhGNVtT (ORCPT
+        with ESMTP id S235956AbhGNVrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:49:19 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E652EC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 14:46:26 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f30so6172742lfj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 14:46:26 -0700 (PDT)
+        Wed, 14 Jul 2021 17:47:55 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7D9C06175F;
+        Wed, 14 Jul 2021 14:45:03 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q10so3206440pfj.12;
+        Wed, 14 Jul 2021 14:45:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lH52iQ89d3JdCw1yanWMdKAt6CiDTmROo7xBwGJBkCg=;
-        b=NgWFUD3QKKcxsdDRCUmDEUk0IUlU+0aZxk181PRlYjy3+yp4sKxFeE2SHIQdRZRp7k
-         yeDjlZt+T3LJO9mvxPhk+fyEISHQScsymlKCKXpCY6hWaPfmwlW6y/aO6I1HScGNzYEB
-         dM/EcQ+2GyCPJKxxcG1QHM84dML02BbnhB+PqpfdPVuWTQgH05Z1ZOT0URsLXLu20l95
-         iNdUfnE+sAlfnPT7RaAhmYtZhmUIHZNOcQOGQkPw+wTWiXbj8jEK4aJc6rgt5Yu0PEOi
-         LYObgPue2y1HiWqD2fE09rH2oRfcx/NWk+N4RlT9qM3tv3KZ4dO0uIAOX6S0GHFvtDIM
-         kXBA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/ecMCBD0DRX8i6ceCMBbDcAoHrM9zIxqgKO1lRrTFgA=;
+        b=ZU1rg2kxF1xhpB09DWxWH4ZRjGXZTX9WF60dLpoChO4lv7ueN8II8Rohp5s90/BTRe
+         8a5l2kCFNXFmCY/eD1S7M9HhUknYtZNpSBpfQ1qfAhh0yQKHtfUxl8h0ojNACKkvY0bz
+         J1YnxNKCaYzIzEXgEeYA79d2sONF4bQtGwIjil4PeQDj7aHhhjXhAdsyBXJG4sGIP5TT
+         bPUdfZVLoCf5s3OuKPh2KQvJDm/fdyHT8jIuU1lyS6HMYvHxcS7KWFGBenCpK7KXDuDi
+         t+VbQwLsgKkExDC3PD3pv4KLRSJYBVoDaX2DjoSj07tBkqcLnuIbQGX1dmjh6h4RTBEC
+         +eeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lH52iQ89d3JdCw1yanWMdKAt6CiDTmROo7xBwGJBkCg=;
-        b=skJvkcfVCwOmVvMdysxlOrY+NEe1b2LsJG85pvixEEWXbdWaLFXt4llzrf0MgB0boI
-         TQwv1fPtMfpW9ZKt+hEiOE/L7OigRR2SDKDrdIHIQd3Jm34c+5TUIB39Ka62Gp1gOvun
-         EB5YcpiPzfHXW1YxsCGXNCb2B/1wob+3zdugPI0TquyqLR9wOSiStuSrDIb27eAVtAN6
-         m5mjgmCkUQtFoW0bwWZohhKFGnewVy6mEiO1FW0TY1iZf+1LABg6DAhI/+rvvOs3o3s/
-         TvW+5peFoTJSsttuOGxGjE644KzGdoLuA8oVAWPs91cnPtrxoe+KXqEJO1Y8FLtR6jI9
-         M5sw==
-X-Gm-Message-State: AOAM530p6m3phTjcHYW5hFiU3JbAeUfkKmpzZRCpHjorhsC/ibMlINIQ
-        ISgmGpHyW02Mkj0p3TxjUrp99J7F6Rkgwo1C
-X-Google-Smtp-Source: ABdhPJxthwLdCnryFxZ0ELE1D9Row/k0pt3HWvAqvkLVx29rmwps7QRVOmbjdXWaN/OZYocOukHVqw==
-X-Received: by 2002:a19:6d01:: with SMTP id i1mr214902lfc.422.1626299185256;
-        Wed, 14 Jul 2021 14:46:25 -0700 (PDT)
-Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id s21sm370837lji.57.2021.07.14.14.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 14:46:24 -0700 (PDT)
-From:   Marcin Wojtas <mw@semihalf.com>
-To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org
-Cc:     jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
-        Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robert.moore@intel.com,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH 2/2] ACPI: SPCR: Add support for the new 16550-compatible Serial Port Subtype
-Date:   Wed, 14 Jul 2021 23:43:46 +0200
-Message-Id: <20210714214346.1397942-3-mw@semihalf.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210714214346.1397942-1-mw@semihalf.com>
-References: <20210714214346.1397942-1-mw@semihalf.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/ecMCBD0DRX8i6ceCMBbDcAoHrM9zIxqgKO1lRrTFgA=;
+        b=Nnnesi9AUps0lp2aZOEDMGhp5NQrNykvMTrJUg54qQWmGSd+ooP4iVtlV/4g7NB+DM
+         9XNTBI27yAvSIVyIkQ/nXGrkBY6Fhl0Y0R00D3+2P4TZIgdlqZXC4uRD3ZvUMWtOO5wC
+         MNhzC+mb2Kb1s4a24UqvXWC/ZXpB6KYUnJZR2kHTOoqizAc7W17suM23d+Tsejz8J7iG
+         kHgVZbWVXyH8azEZJlzM5+ylyxH2yztPodMWZHfpZgJ65bIvqaL4udyv1lbH8UKsdFfg
+         U7fCPxeoJXsN07gBjuayO5hF+YmA3RVuoF0JOTlqwsWXvZFCNTYs/tX5ktd3FcEyCboM
+         t0sQ==
+X-Gm-Message-State: AOAM533LxLSp/fKvXpEdJIyGXjBE7biq4DOlckXBzv2P9JGC69CZ0KBN
+        T+8JL0/3g7z9TZgYAPf3S25KnNQlCx3cIE0iL0A=
+X-Google-Smtp-Source: ABdhPJyHP9qOXZGGjYLNzUYOXa+IYsiRjHpSR1L7qfsw6lFcTuGCybzVDU32v4snFsCu3o4uuFYO7tTrWLx3Fffne/Q=
+X-Received: by 2002:aa7:81d8:0:b029:308:1d33:a5fa with SMTP id
+ c24-20020aa781d80000b02903081d33a5famr51074pfn.55.1626299103098; Wed, 14 Jul
+ 2021 14:45:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210712234434.GA29205@raspberrypi> <e0a2655b-3bc6-fd45-bd84-8df2dc6bc5f@namei.org>
+In-Reply-To: <e0a2655b-3bc6-fd45-bd84-8df2dc6bc5f@namei.org>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Thu, 15 Jul 2021 06:44:52 +0900
+Message-ID: <CADLLry6RmSDuB4nmVKDEiqxXmEU0xrhMn2wieuuVTypMWqc4cQ@mail.gmail.com>
+Subject: Re: [PATCH] LSM: add NULL check for kcalloc()
+To:     James Morris <jmorris@namei.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>,
+        kernel-team@lge.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Microsoft Debug Port Table 2 (DBG2) specification revision
-May 31, 2017 added definition of the 16550-compatible Serial Port
-Subtype with parameters defined in Generic Address Structure (GAS) [1]
+2021=EB=85=84 7=EC=9B=94 15=EC=9D=BC (=EB=AA=A9) =EC=98=A4=EC=A0=84 4:12, J=
+ames Morris <jmorris@namei.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, 13 Jul 2021, Austin Kim wrote:
+>
+> > From: Austin Kim <austin.kim@lge.com>
+> >
+> > kcalloc() may return NULL when memory allocation fails.
+> > So it is necessary to add NULL check after the call to kcalloc() is mad=
+e.
+> >
+> > Signed-off-by: Austin Kim <austin.kim@lge.com>
+> > ---
+> >  security/security.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/security/security.c b/security/security.c
+> > index 09533cbb7221..f885c9e9bc35 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -321,6 +321,8 @@ static void __init ordered_lsm_init(void)
+> >
+> >       ordered_lsms =3D kcalloc(LSM_COUNT + 1, sizeof(*ordered_lsms),
+> >                               GFP_KERNEL);
+> > +     if (ordered_lsms)
+> > +             return;
+>
+> Your logic is reversed here.
 
-Add its support in the SPCR table parsing routine.
+I feel very sorry for my terrible mistake.
+'if (ordered_lsms)' should have been 'if (!ordered_lsms)'.
 
-[1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acpi-debug-port-table
+Let me resend patch(v2) soon.
 
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
----
- drivers/acpi/spcr.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Austin Kim
 
-diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
-index 88460bacd5ae..25c2d0be953e 100644
---- a/drivers/acpi/spcr.c
-+++ b/drivers/acpi/spcr.c
-@@ -136,6 +136,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
- 		break;
- 	case ACPI_DBG2_16550_COMPATIBLE:
- 	case ACPI_DBG2_16550_SUBSET:
-+	case ACPI_DBG2_16550_WITH_GAS:
- 		uart = "uart";
- 		break;
- 	default:
--- 
-2.29.0
-
+>
+> Should this also be a kernel panic?
+>
+> >
+> >       if (chosen_lsm_order) {
+> >               if (chosen_major_lsm) {
+> > --
+> > 2.20.1
+> >
+>
+> --
+> James Morris
+> <jmorris@namei.org>
+>
