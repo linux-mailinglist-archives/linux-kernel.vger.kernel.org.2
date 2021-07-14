@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CEC3C8996
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4049A3C8999
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237980AbhGNRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhGNRUp (ORCPT
+        id S238387AbhGNRVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:21:09 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:56190 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhGNRVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:20:45 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB37C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:17:53 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s18so3174297pgq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bENsX+LeMytA2zjVecvBK1VL3puGtwAJgEyJncEZ4GQ=;
-        b=I2FYLupL1xI0cs2auUwgoUh+J5wb2099XljgutjGzDdgMC2NOVMZ1chfJn4Lxcgyf1
-         gZY603cMnrg3wfp1vnXHTZ+0n6CPuKLv/xU4t/WskvzHm7tRGfr+TyFDGZaBbNIOOMsA
-         G+nR/GkUT9NOrY2Sxh3428qnfANgBfZoiD8VA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bENsX+LeMytA2zjVecvBK1VL3puGtwAJgEyJncEZ4GQ=;
-        b=oH/JgzUVReKMRKKVFGPfoYvFasoliicyK4jXbudxwCv1yUahesO+2plJLcc6yV42lr
-         eXvwjwICqJDJX7xJqNyhgKyrQ90Dr2jfSoOdd5Qhc9zqPUFpy5PJJ4qednsG2G5S3o9I
-         bZbN9dK7jjDv+Qb4bFbmS5p3xWLdXBNAq43XFFo+N+oEZcEgXWAm2Y/2CkvXTmn4/9eU
-         f4J1i/SToAG5tEwN4aAnlma4J0tkLZZwSqZ4TUCic1KygGWU10ffNCApWNOrDWC83aoS
-         WtS5A9l8052QbV1gZrdA3eOnDM3Md+yRBtLpzCqZyJkLRw0eQP0yRHGH7Mhc2veSVQMR
-         dEPg==
-X-Gm-Message-State: AOAM5315YOao02ufg+az5a3g8TXTy4i3RYSt+V8Ff3k+nCJawJHlCfkR
-        aokEJ3bV06W2nsVhglC0GOeKMA==
-X-Google-Smtp-Source: ABdhPJx7n6zTW3KQXf0LlLAL9PN0ojlSxrYavYaK8+VTBLX/hRmUNxtquGxKS1TGfMSy9Px9Y/de8g==
-X-Received: by 2002:a62:80c5:0:b029:327:b54f:72f7 with SMTP id j188-20020a6280c50000b0290327b54f72f7mr11278437pfd.42.1626283073099;
-        Wed, 14 Jul 2021 10:17:53 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:5a9d:ef42:7eb4:5fea])
-        by smtp.gmail.com with ESMTPSA id t2sm6502681pjq.0.2021.07.14.10.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 10:17:52 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/dp: For drm_panel_dp_aux_backlight(), init backlight as disabled
-Date:   Wed, 14 Jul 2021 10:17:46 -0700
-Message-Id: <20210714101744.1.Ifc22696b27930749915e383f0108b7bcdc015a6e@changeid>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        Wed, 14 Jul 2021 13:21:08 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D3FC8CC;
+        Wed, 14 Jul 2021 19:18:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626283095;
+        bh=ZGkMV8sDWIogo+fVef+xYu8TVBeuYIR2zPF/V59CSjI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=go82Ez756GWFpyWT00c5spMYfJOmtnUfukPm4ZLdDiKOvOnpm9Tkop0iNqrgxZHJU
+         KBHONmJDj9W+P2wc5QKBEkBNerVZbZl3G0+qYnjAHobS73E9aGNqnPudvN9o+uNC1L
+         k300l/44mowdcYgFdBpaUmngm5cSlVsjod6gWZpI=
+Date:   Wed, 14 Jul 2021 20:18:13 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+Message-ID: <YO8cVWNmUvU/LKGi@pendragon.ideasonboard.com>
+References: <CAHp75VeyNyYSbTMgS+5tXxOZehfxt6Wws9jScKYRKQhRRGDwsg@mail.gmail.com>
+ <20210712133428.GD4435@sirena.org.uk>
+ <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
+ <20210712170120.GG4435@sirena.org.uk>
+ <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
+ <20210713152454.GC4098@sirena.org.uk>
+ <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
+ <20210713181837.GE4098@sirena.org.uk>
+ <YO6RTh8ngNKZxzj+@pendragon.ideasonboard.com>
+ <20210714165948.GG4719@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210714165948.GG4719@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even after the DP AUX backlight on my board worked OK after applying
-the patch ("drm/panel-simple: Power the panel when probing DP AUX
-backlight") [1], I still noticed some strange timeouts being reported
-by ti_sn_aux_transfer(). Digging, I realized the problem was this:
-* Even though `enabled` in `struct dp_aux_backlight` was false, the
-  base backlight structure (`base` in that structure) thought that the
-  backlight was powered on.
-* If userspace wrote to sysfs in this state then we'd try to enable
-  the backlight.
-* Unfortunatley, enabling the backlight didn't work because the panel
-  itself wasn't powered.
+On Wed, Jul 14, 2021 at 05:59:48PM +0100, Mark Brown wrote:
+> On Wed, Jul 14, 2021 at 10:25:02AM +0300, Laurent Pinchart wrote:
+> > On Tue, Jul 13, 2021 at 07:18:37PM +0100, Mark Brown wrote:
+> 
+> > > Like I said in the other mail fwnode is a nice hack for systems that are
+> > > using ACPI but have hardware that's doing something totally outside the
+> > > ACPI model to allow them to reuse work that's been done for DT, it's not
+> > > a universal solution to the lack of appropriate support for describing
+> > > modern systems in ACPI.
+> 
+> > fwnode, as an abstraction of ACPI and OF, is quite useful for camera
+> > sensor drivers for instance. They need to read firmware properties (for
+> > instance to identify whether a camera is located on the front or back of
+> > the device, or to what port of the SoC it's connected), and being able
+> > to do so without duplicating OF and ACPI code in drivers is useful.
+> 
+> I'd still say that's a bit of a hack, it's the sort of area where ACPI
+> just has absolutely no handling at all and so picking up the DT bindings
+> will work effectively although it results in something that's really not
+> at all idiomatic for ACPI since idiomatic DT and idiomatic ACPI don't
+> really look like each other and AIUI this stuff isn't getting adopted
+> for actual firmware (as opposed to swnodes) outside of the embedded x86
+> space.
 
-We can only use the backlight if the panel is on and the panel is not
-officially on when we probe (it's temporarily just on enough for us to
-talk to it).
+It's only one data point, but we're seeing adoption of the ACPI
+DT-in-DSD for camera. It's still not pretty of course.
 
-The important thing we want here is to get `BL_CORE_FBBLANK` set since
-userspace can't mess with that. This will keep us disabled until
-drm_panel enables us, which means that the panel is enabled
-first. Ideally we'd just set this in our `props` before calling
-devm_backlight_device_register() but the comments in the header file
-are pretty explicit that we're not supposed to much with the `state`
-ourselves. Because of this, there may be a small window where the
-backlight device is registered and someone could try to tweak with the
-backlight. This isn't likely to happen and even if it did, I don't
-believe this causes any huge problem.
+> > swnode, on the other hand, is indeed more of a workaround for a
+> > more-often-than-not broken ACPI implementation. It's ironic to think
+> > that x86 ACPI-based systems, touted as being superior to ARM, are now in
+> > a worst state than OF-based systems.
+> 
+> The unfortunate thing is that ACPI is super limited in what systems it
+> models, making assumptions that only really work for fairly simple
+> server class systems.  Outside of that the models it's offering just
+> can't cope with actual hardware yet people still insist on building
+> those systems with ACPI system descriptions so you end up with huge
+> piles of platform quirks.  Audio support for modern x86 laptops is just
+> an endless procession of quirks :(
 
-[1] https://lore.kernel.org/lkml/20210714093334.1.Idb41f87e5abae4aee0705db7458b0097fc50e7ab@changeid/
+I feel your pain. On the camera side, we have a case of an I2C
+controller that has a PCI driver in the kernel used when dealing with
+the camera sensor, and an AML "driver" used by an I2C GPIO expander,
+completely modelled in the DSDT. Both poke the same PCI registers of the
+I2C controller. I tried to get information from Intel on how this was
+meant to be handled, but I think the people responsible for the design
+have been exfiltrated to Guantanamo, or are expiating their sins in a
+monastery lost in a mountain.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Once travel will be easier again, we'll plot a take over of the world in
+a bar. Dealing with ACPI requires lots of whisky :-)
 
- drivers/gpu/drm/drm_dp_helper.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index e8eec20ab364..b5f75ca05774 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -3568,6 +3568,8 @@ int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux)
- 	if (IS_ERR(bl->base))
- 		return PTR_ERR(bl->base);
- 
-+	backlight_disable(bl->base);
-+
- 	panel->backlight = bl->base;
- 
- 	return 0;
 -- 
-2.32.0.93.g670b81a890-goog
+Regards,
 
+Laurent Pinchart
