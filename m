@@ -2,201 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736383C89BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D43D3C89B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239743AbhGNR2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239684AbhGNR2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239641AbhGNR2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 14 Jul 2021 13:28:22 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EE4C06175F;
-        Wed, 14 Jul 2021 10:25:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id dj21so4276199edb.0;
-        Wed, 14 Jul 2021 10:25:29 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhGNR2U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:28:20 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26783C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:25:29 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so3355769otl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HDdCuzsEIRQEbRqLmbLMr2Fppo157cgcX7veAgVnwEU=;
-        b=TzmPBxh3FWomK3cu+C3DIxWGyEoanH1pzsFzSntP9kxCNDpVNaQUiFLNee1Box43iM
-         ZDUfQ4JNpb+CHvvX2upwIg4eje5SwmM2gXT/44LFl30KM7u6isNs5LMqO9VIke3uOb0g
-         cwajO1CNW13jcCD5XQBTIk6dIu9K3zcYHBf+/qnSmWxUfk+IbQaKi6HSjS35dIWesMap
-         TcSWXjoLOcwXeIpqQOkzkGnQEzZw35lbiuZLr3OB7Wu7941jqf2+RLiRKkrKFSp+i3Kf
-         PHWXqWEFoF5Cn8+OiOVwy7M+BPZs33r5xpHhX5RXa9rdaqSZGO3gfBuw3cqEDQYy2BTU
-         hCOQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4Kumx3nS5y9nz9rWe/sEdbMMcdp5ffd/gZuxBQbNya4=;
+        b=IYaHXcWbRW58qcNEf1nShgqUxB13n2Xl2hBMhmSAeknojrMiTnIh/2w4JC4WBEpmz3
+         SjsdAEJcE6QHDole4Fe40mfdpoQe7eTNuRHMvrbu5DY4npCrSRtmnEGzwk0kXkCXLwqj
+         VqEYbOkVuh5L0askie7wCgU6nQz3cBemjnAAOgjOejBCCFamATFLSzf7i4AQl7DnQJVP
+         BngZkmi/1fck4UB01js5oqRrhRLFw7+YHWPRWaRMAjehCeUjQmVelorxsV8o3FEoUtvz
+         8UostLjfjTNF/+gHVkAP/xzWPeAScK9lPVT1L4pZ/ebzY1x+KYYtJp71a8k1+K+l680o
+         9wbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HDdCuzsEIRQEbRqLmbLMr2Fppo157cgcX7veAgVnwEU=;
-        b=qm3x/3oG4/3Qg4iBV85Zp4MG0kX8vvYORndxbcPh4Ji2BGasonMSRkii3ThmHH12CA
-         DP415q443YIaAaBpjbtNvKoyuGWCCk59TmTVeWtl3ac2grl42L3FDBWKfcrDcX3INkZf
-         g2KKsaIWNbO+JdQZF3ESv5abI3egCxwpJXCG09WoJ2WlkwJeCwq3WtkvZ1YAH32S0v1b
-         9iX9jChlirRkICMW+pYWvfyrbzIgfa7xDIra/AYK4CYEQVsdrlLcC++zzxTFsOvn8EgH
-         iMsQpIF+kz9YACqnXnjXm+0DsFNKTjFdjCN+lIRtJiszi9fa6FUhdPnAST/GQGLuNf8A
-         BONg==
-X-Gm-Message-State: AOAM532rnqTEPsT085nhmOYPh3stnN9JaMMHwsdDBxmevtS6/y+kS4QF
-        YQ5HHLYDhewQZ+bvvro0rvl+bFgqNE2PEjukdV0=
-X-Google-Smtp-Source: ABdhPJzcmA22NEs/yt9L3GEI+PYHcmiGVgaPU9Jc2/SrrPTJMDEJEyCfK4ZSeMMHL6UYvAFdyJyUbjgshPbU8UU7qRU=
-X-Received: by 2002:aa7:d344:: with SMTP id m4mr15199160edr.184.1626283527708;
- Wed, 14 Jul 2021 10:25:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Kumx3nS5y9nz9rWe/sEdbMMcdp5ffd/gZuxBQbNya4=;
+        b=OX7+ZXzlX7DkYFX5qn02v9LtupWSpTE7QIvreQNlvIxq/m6bEtYgG1yqPWvJd2IXBW
+         Nq1qTnfAN71+LCM2Cxf0FAFv+kXSwWovbyjXlLMN/ftXt4AdSbOo2iKdd8FzpKtfrhHh
+         v+qQEQl26SrIIIVYczZh0jabzrdjf5Xyhw8K9vPBdadvQvWqFpE/daVWBor9OgZRTCFy
+         OF5eKkFUVFGXSLw7FSLpYcEme6YIKUIKfmF3jeesITF8Q1JQw4hV3tv6DZKsG5LJ39l8
+         AOEo2KMATwnLvKdWTrzxvQu5On/T74hly1XHejBeUZjkQm3vUBEfwncJvoVCwm0oHQPO
+         Xx7Q==
+X-Gm-Message-State: AOAM530gWUhKkmV/jL0ilmLAtr/GZE6i4gQlalc9xmnjWjKv0GmYC5bi
+        aR6IhEaldHP6XQIxc/DeZEvxUg==
+X-Google-Smtp-Source: ABdhPJxJhQltkVBXqegdnO9IaV/+FtL3Hn5ISoeGdm1cXIRjDt1pi4WI2yOMSRkOnK2cup+024ClQg==
+X-Received: by 2002:a9d:4916:: with SMTP id e22mr9268121otf.112.1626283528429;
+        Wed, 14 Jul 2021 10:25:28 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p9sm553538otl.64.2021.07.14.10.25.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 10:25:27 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 12:25:25 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] Bluetooth: hci_qca: merge qca_power into
+ qca_serdev
+Message-ID: <YO8eBZfLd0vnTy/x@yoga>
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-5-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-References: <20210713055227.1142-1-linux.amoon@gmail.com> <20210713055227.1142-2-linux.amoon@gmail.com>
- <CAFBinCD3ahpNQhP_jWZ3-4nXx8OqZOAANCpTN3BrsULRbYZHVw@mail.gmail.com>
- <CANAwSgTh02qg=cMT8tpHcEfAs5yW2vHQ7tPOkvuKXos_fOmh8A@mail.gmail.com>
- <CAFBinCC-kD-MW+bwqCZH5AjYDhxWa_pN2WEnHuiZpx=RhUdROQ@mail.gmail.com> <CANAwSgTf4sjoufrZuK-EjE=+yA8zSoVbqhEyNhJJFBLUCOVZmQ@mail.gmail.com>
-In-Reply-To: <CANAwSgTf4sjoufrZuK-EjE=+yA8zSoVbqhEyNhJJFBLUCOVZmQ@mail.gmail.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Wed, 14 Jul 2021 22:55:15 +0530
-Message-ID: <CANAwSgR5nNN3D+NZjqNNjyp=rVYE=RG2icnJAc=5F23xSh9Bvg@mail.gmail.com>
-Subject: Re: [PATCHv1 1/3] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621223141.1638189-5-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin.
+On Mon 21 Jun 17:31 CDT 2021, Dmitry Baryshkov wrote:
 
-On Wed, 14 Jul 2021 at 17:29, Anand Moon <linux.amoon@gmail.com> wrote:
->
-> Hi Martin,
->
-> On Wed, 14 Jul 2021 at 02:05, Martin Blumenstingl
-> <martin.blumenstingl@googlemail.com> wrote:
-> >
-> > Hi Anand,
-> >
-> > On Tue, Jul 13, 2021 at 8:45 PM Anand Moon <linux.amoon@gmail.com> wrote:
-> > >
-> > > Hi Martin,
-> > >
-> > > Thanks for reviewing the changes,
-> > >
-> > > On Tue, 13 Jul 2021 at 20:35, Martin Blumenstingl
-> > > <martin.blumenstingl@googlemail.com> wrote:
-> > > >
-> > > > Hi Anand,
-> > > >
-> > > > On Tue, Jul 13, 2021 at 7:53 AM Anand Moon <linux.amoon@gmail.com> wrote:
-> > > > >
-> > > > > Add missing usb phy power node for phy mode fix below warning.
-> > > > >
-> > > > > [    1.253149] phy phy-c1108820.phy.0: Looking up phy-supply from device tree
-> > > > > [    1.253166] phy phy-c1108820.phy.0: Looking up phy-supply property
-> > > > >                 in node /soc/cbus@c1100000/phy@8820 failed
-> > > > I did some testing on my own Odroid-C1+ and this patch is not doing
-> > > > anything for me.
-> > > > more information below.
-> > > Some device node for USB will have
-> > The mistake I made before is considering USB VBUS as PHY power supply.
-> > I believe the USB PHY is actually powered by the AVDD18_USB_ADC and
-> > USB33_VDDIOH signals. See the S905 datasheet [0], page 25
-> > These are 1.8V and 3.3V signals while you are adding a 5V regulator.
-> >
-> OK, thanks.
-> > [...]
-> > > > > +               /*
-> > > > > +                * signal name from schematics: USB_POWER
-> > > > > +                */
-> > > > Just a few lines below you're saying that the name from the schematics is PWREN
-> > > > If this patch is getting another round then please clarify the actual
-> > > > signal name, or name both signals if the schematics is actually using
-> > > > both names.
-> > > >
-> > > As per the schematics.
-> > > PWREN ---> GPIOAO.BIT5      gpio pin control
-> > > USB_POWER ---> P5V0          power source regulator.
-> > ah, thanks for clarifying this
-> > my suggestion is to put that exact paragraph into the comment to avoid confusion
-> >
-> > [...]
-> > > > Can you please give this a try on your Odroid-C1 as well?
-> > > > The conclusion from my own testing is that GPIOAO_5 doesn't seem to be
-> > > > related to USB1 (host-only) because if it was then inverting the
-> > > > polarity (from active high to active low) should result in a change.
-> > > >
-> > >
-> > > Ok I have modified as per above but not changes in gpio polarity
-> > > from active high to active low. see below.
-> > >
-> > > # Odroid C1
-> > > [alarm@archl-c1e ~]$ sudo cat /sys/kernel/debug/gpio | grep USB
-> > >  gpio-1953 (USB_HUB_RST_N       |usb-hub-reset       ) out hi
-> > >  gpio-1954 (USB_OTG_PWREN       |regulator-usbp_pwr_e) out hi
-> > >
-> > > # Odroid C2
-> > > [alarm@archl-c2lm ~]$  sudo cat /sys/kernel/debug/gpio | grep usb
-> > >  gpio-501 (USB HUB nRESET      |usb-hub-reset       ) out hi
-> > >  gpio-502 (USB OTG Power En    |regulator-usb-pwrs  ) out hi
-> > that's strange, my result is different
-> >
-> >   gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
-> >   enable-active-high;
-> > gives me:
-> >   # grep USB_OTG_PWREN /sys/kernel/debug/gpio
-> >   gpio-418 (USB_OTG_PWREN       |regulator-usb-pwr-en) out hi
-> >
-> >   gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_LOW>;
-> > gives me:
-> >   # grep USB_OTG_PWREN /sys/kernel/debug/gpio
-> >   gpio-418 (USB_OTG_PWREN       |regulator-usb-pwr-en) out lo ACTIVE LOW
-> This gpio pin number dose not match the gpio pin on Odroid c1+, see below.
-> >
-> > Did you remove the "enable-active-high;" in your "active low" test?
-> No
-> > GPIO polarity for regulators is managed with that flag, not just with
-> > GPIO_ACTIVE_{HIGH,LOW}
->
-> It's just with changes the following, below
-> +++ b/arch/arm/boot/dts/meson8b-odroidc1.dts
-> @@ -47,7 +47,7 @@ usb_pwr_en: regulator-usb-pwr-en {
->                 /*
->                  * signal name from schematics: PWREN
->                  */
-> -               gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
-> +               gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_LOW>;
->                 enable-active-high;
->         };
->
+> There is no need to allocate separate structure for handling regulators
+> used by QCA chips, we gain nothing from it. Move all used data fields
+> directly to struct qca_serdev.
+> 
 
-Can you give these small changes a try,
-$ git diff
-diff --git a/arch/arm/boot/dts/meson8b-odroidc1.dts
-b/arch/arm/boot/dts/meson8b-odroidc1.dts
-index 748f4c6a050a..066523f14074 100644
---- a/arch/arm/boot/dts/meson8b-odroidc1.dts
-+++ b/arch/arm/boot/dts/meson8b-odroidc1.dts
-@@ -47,8 +47,9 @@ usb_pwr_en: regulator-usb-pwr-en {
-                /*
-                 * signal name from schematics: PWREN
-                 */
--               gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
-+               gpio = <&gpio_ao GPIOAO_5 GPIO_OPEN_DRAIN>;
-                enable-active-high;
-+               regulator-always-on;
-        };
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[alarm@archl-c1e ~]$ sudo cat /sys/kernel/debug/gpio | grep usb
- gpio-1953 (USB_HUB_RST_N       |usb-hub-reset       ) out hi
- gpio-1954 (USB_OTG_PWREN       |regulator-usb-pwr-en) out lo
+Regards,
+Bjorn
 
-Thanks
--Anand
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/bluetooth/hci_qca.c | 58 ++++++++++++++-----------------------
+>  1 file changed, 22 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> index 3704dbadba1d..9cc8a9153d76 100644
+> --- a/drivers/bluetooth/hci_qca.c
+> +++ b/drivers/bluetooth/hci_qca.c
+> @@ -208,20 +208,15 @@ struct qca_device_data {
+>  /*
+>   * Platform data for the QCA Bluetooth power driver.
+>   */
+> -struct qca_power {
+> -	struct device *dev;
+> -	struct regulator_bulk_data *vreg_bulk;
+> -	int num_vregs;
+> -	bool vregs_on;
+> -};
+> -
+>  struct qca_serdev {
+>  	struct hci_uart	 serdev_hu;
+>  	struct gpio_desc *bt_en;
+>  	struct gpio_desc *sw_ctrl;
+>  	struct clk	 *susclk;
+>  	enum qca_btsoc_type btsoc_type;
+> -	struct qca_power *bt_power;
+> +	struct regulator_bulk_data *vreg_bulk;
+> +	int num_vregs;
+> +	bool vregs_on;
+>  	u32 init_speed;
+>  	u32 oper_speed;
+>  	const char *firmware_name;
+> @@ -1602,7 +1597,7 @@ static int qca_regulator_init(struct hci_uart *hu)
+>  	 * off the voltage regulator.
+>  	 */
+>  	qcadev = serdev_device_get_drvdata(hu->serdev);
+> -	if (!qcadev->bt_power->vregs_on) {
+> +	if (!qcadev->vregs_on) {
+>  		serdev_device_close(hu->serdev);
+>  		ret = qca_regulator_enable(qcadev);
+>  		if (ret)
+> @@ -1945,20 +1940,19 @@ static int qca_power_off(struct hci_dev *hdev)
+>  
+>  static int qca_regulator_enable(struct qca_serdev *qcadev)
+>  {
+> -	struct qca_power *power = qcadev->bt_power;
+>  	int ret;
+>  
+>  	/* Already enabled */
+> -	if (power->vregs_on)
+> +	if (qcadev->vregs_on)
+>  		return 0;
+>  
+> -	BT_DBG("enabling %d regulators)", power->num_vregs);
+> +	BT_DBG("enabling %d regulators)", qcadev->num_vregs);
+>  
+> -	ret = regulator_bulk_enable(power->num_vregs, power->vreg_bulk);
+> +	ret = regulator_bulk_enable(qcadev->num_vregs, qcadev->vreg_bulk);
+>  	if (ret)
+>  		return ret;
+>  
+> -	power->vregs_on = true;
+> +	qcadev->vregs_on = true;
+>  
+>  	ret = clk_prepare_enable(qcadev->susclk);
+>  	if (ret)
+> @@ -1969,38 +1963,37 @@ static int qca_regulator_enable(struct qca_serdev *qcadev)
+>  
+>  static void qca_regulator_disable(struct qca_serdev *qcadev)
+>  {
+> -	struct qca_power *power;
+> -
+>  	if (!qcadev)
+>  		return;
+>  
+> -	power = qcadev->bt_power;
+> -
+>  	/* Already disabled? */
+> -	if (!power->vregs_on)
+> +	if (!qcadev->vregs_on)
+>  		return;
+>  
+> -	regulator_bulk_disable(power->num_vregs, power->vreg_bulk);
+> -	power->vregs_on = false;
+> +	regulator_bulk_disable(qcadev->num_vregs, qcadev->vreg_bulk);
+> +	qcadev->vregs_on = false;
+>  
+>  	clk_disable_unprepare(qcadev->susclk);
+>  }
+>  
+> -static int qca_init_regulators(struct qca_power *qca,
+> -				const struct qca_vreg *vregs, size_t num_vregs)
+> +static int qca_init_regulators(struct device *dev, struct qca_serdev *qca,
+> +			       const struct qca_vreg *vregs, size_t num_vregs)
+>  {
+>  	struct regulator_bulk_data *bulk;
+>  	int ret;
+>  	int i;
+>  
+> -	bulk = devm_kcalloc(qca->dev, num_vregs, sizeof(*bulk), GFP_KERNEL);
+> +	if (!num_vregs)
+> +		return 0;
+> +
+> +	bulk = devm_kcalloc(dev, num_vregs, sizeof(*bulk), GFP_KERNEL);
+>  	if (!bulk)
+>  		return -ENOMEM;
+>  
+>  	for (i = 0; i < num_vregs; i++)
+>  		bulk[i].supply = vregs[i].name;
+>  
+> -	ret = devm_regulator_bulk_get(qca->dev, num_vregs, bulk);
+> +	ret = devm_regulator_bulk_get(dev, num_vregs, bulk);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -2044,21 +2037,15 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+>  	if ((qca_is_wcn399x(data->soc_type) ||
+>  	     qca_is_wcn6750(data->soc_type))) {
+>  		qcadev->btsoc_type = data->soc_type;
+> -		qcadev->bt_power = devm_kzalloc(&serdev->dev,
+> -						sizeof(struct qca_power),
+> -						GFP_KERNEL);
+> -		if (!qcadev->bt_power)
+> -			return -ENOMEM;
+> -
+> -		qcadev->bt_power->dev = &serdev->dev;
+> -		err = qca_init_regulators(qcadev->bt_power, data->vregs,
+> +
+> +		err = qca_init_regulators(&serdev->dev, qcadev, data->vregs,
+>  					  data->num_vregs);
+>  		if (err) {
+>  			BT_ERR("Failed to init regulators:%d", err);
+>  			return err;
+>  		}
+>  
+> -		qcadev->bt_power->vregs_on = false;
+> +		qcadev->vregs_on = false;
+>  
+>  		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
+>  					       GPIOD_OUT_LOW);
+> @@ -2139,11 +2126,10 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+>  static void qca_serdev_remove(struct serdev_device *serdev)
+>  {
+>  	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
+> -	struct qca_power *power = qcadev->bt_power;
+>  
+>  	if ((qca_is_wcn399x(qcadev->btsoc_type) ||
+>  	     qca_is_wcn6750(qcadev->btsoc_type)) &&
+> -	     power->vregs_on)
+> +	     qcadev->vregs_on)
+>  		qca_power_shutdown(&qcadev->serdev_hu);
+>  	else if (qcadev->susclk)
+>  		clk_disable_unprepare(qcadev->susclk);
+> -- 
+> 2.30.2
+> 
