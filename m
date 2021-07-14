@@ -2,319 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B353C7FD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A023C7FD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238421AbhGNIQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:16:01 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48736 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237159AbhGNIQA (ORCPT
+        id S238466AbhGNIRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhGNIRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:16:00 -0400
-Received: from [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623] (unknown [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 516A11F42B01;
-        Wed, 14 Jul 2021 09:13:06 +0100 (BST)
-Subject: Re: [PATCH v6 01/11] dt-binding: mediatek: Get rid of mediatek, larb
- for multimedia HW
-To:     Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        ming-fan.chen@mediatek.com, yi.kuo@mediatek.com,
-        acourbot@chromium.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Xia Jiang <xia.jiang@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Eizan Miyamoto <eizan@chromium.org>, anthony.huang@mediatek.com
-References: <20210714025626.5528-1-yong.wu@mediatek.com>
- <20210714025626.5528-2-yong.wu@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <56885a72-9130-c6be-e9e5-cb4755ff0827@collabora.com>
-Date:   Wed, 14 Jul 2021 10:13:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 14 Jul 2021 04:17:38 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1A5C06175F;
+        Wed, 14 Jul 2021 01:14:46 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id c17so1906981ejk.13;
+        Wed, 14 Jul 2021 01:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VaUCVoNr+2EuGOH3CuGBqSBfdj5qCHl1IbtbxJNGpJg=;
+        b=gSTtx/KWr94p6z1RtbmqFP4v1e2SmEtdC6IRqdDx/xUw/Q2Q18VNAW6fPxkvT2Jjs+
+         jzV3i0Vq4r5flzvRuvRvb7HWNVWIPBNUN59Blot0+2G0nS+mno8UwIVmjlikSGvmXLME
+         Z5KqrlaT8QKPv1O6JfwRA6u6R4O0j1BQLLpxMsTxMjaVoU27dK2gNzDtUaixzPwDdgia
+         LcF5P7igr0LHk83T2HisRApPAGhTnj+GSAIOWziBKWSDX9bdW55hfvgHnEZEtoBPsDM3
+         h2zFybo8x14h2d6dufResiKTEurRXdrBZGg8g6AFWq8r/w3xoLmVo7PiSSTv8ax8xzJV
+         8Cfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VaUCVoNr+2EuGOH3CuGBqSBfdj5qCHl1IbtbxJNGpJg=;
+        b=cniOF2Wfkv3aaKHFLIXPJAqTEKwTryNFXnv+gafH4Qkc1eOL0iZVXspMXGygEQGq3c
+         h59e2mv5ubpM/hxXB8oEWx4n7PJ/rmaBXbqYKKIDyOb9bd32tq4Xe8HfltzwfatMSOzr
+         7kUmFGEqtcz6ph6xdpIzX0Y9m06AAkTHWIYoRHuSGeasuo8axUBBINV2EP3RDTzql7Pv
+         E0zocHYM1342+kh/M339kU8ApxWqVZmvWcND//ePa+AVENpQcrwPhgLK3espPNbKLIHZ
+         FUhL/qlDNB9bBD+MNUpPPUJPcD7M2KIF/oCae9qDkEUWbBjB217G6Jr0IHWj/cvCdhpy
+         4o4w==
+X-Gm-Message-State: AOAM532OP5R/cL12SXHdSGzqOn+5n1/apSZFZVnCW5eLw/YkcFBEOepB
+        PSzVKo1TC9ShbfGGxb0suCN4F50dGu/ySLAKKVU=
+X-Google-Smtp-Source: ABdhPJw5UhysBN6BMKKYdUzC2Pk1da8QCisRxuR5IYZoAp0LtO/Y3hB/3rENMmF2MNa1tbPRLWbAuoBnlFWrM/56JqU=
+X-Received: by 2002:a17:906:4784:: with SMTP id cw4mr11008310ejc.160.1626250485010;
+ Wed, 14 Jul 2021 01:14:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210714025626.5528-2-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210714081127.675743-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210714081127.675743-1-mudongliangabcd@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 14 Jul 2021 16:14:18 +0800
+Message-ID: <CAD-N9QXRRipmyOiUFDx9OdM47c37Y+oAa+T-ntZAGZXrd8MTrA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] usb: hso: fix error handling code of hso_create_net_device
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        linux-usb@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-thanks for the patch
+On Wed, Jul 14, 2021 at 4:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> The current error handling code of hso_create_net_device is
+> hso_free_net_device, no matter which errors lead to. For example,
+> WARNING in hso_free_net_device [1].
+>
+> Fix this by refactoring the error handling code of
+> hso_create_net_device by handling different errors by different code.
+>
 
-On 14.07.21 04:56, Yong Wu wrote:
-> After adding device_link between the consumer with the smi-larbs,
-> if the consumer call its owner pm_runtime_get(_sync), the
-> pm_runtime_get(_sync) of smi-larb and smi-common will be called
-> automatically. Thus, the consumer don't need the property.
-> 
-> And IOMMU also know which larb this consumer connects with from
-> iommu id in the "iommus=" property.
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Evan Green <evgreen@chromium.org>
+Hi Dan,
+
+Please take a look at this version. I forget about the changelog about
+this patch. I will send a version v3 with your further comment if you
+have.
+
+> [1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
+>
+> Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
+> Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 > ---
->   .../bindings/display/mediatek/mediatek,disp.txt          | 9 ---------
->   .../devicetree/bindings/media/mediatek-jpeg-decoder.yaml | 9 ---------
->   .../devicetree/bindings/media/mediatek-jpeg-encoder.yaml | 9 ---------
-
-On which repo are these patches based on ?
-In linux-next the file mediatek-jpeg-encoder.yaml don't exist
-
-Thanks,
-Dafna
-
->   Documentation/devicetree/bindings/media/mediatek-mdp.txt | 8 --------
->   .../devicetree/bindings/media/mediatek-vcodec.txt        | 4 ----
->   5 files changed, 39 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-> index fbb59c9ddda6..867bd82e2f03 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-> @@ -61,8 +61,6 @@ Required properties (DMA function blocks):
->   	"mediatek,<chip>-disp-rdma"
->   	"mediatek,<chip>-disp-wdma"
->     the supported chips are mt2701, mt8167 and mt8173.
-> -- larb: Should contain a phandle pointing to the local arbiter device as defined
-> -  in Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
->   - iommus: Should point to the respective IOMMU block with master port as
->     argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
->     for details.
-> @@ -91,7 +89,6 @@ ovl0: ovl@1400c000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_OVL0>;
->   	iommus = <&iommu M4U_PORT_DISP_OVL0>;
-> -	mediatek,larb = <&larb0>;
->   };
->   
->   ovl1: ovl@1400d000 {
-> @@ -101,7 +98,6 @@ ovl1: ovl@1400d000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_OVL1>;
->   	iommus = <&iommu M4U_PORT_DISP_OVL1>;
-> -	mediatek,larb = <&larb4>;
->   };
->   
->   rdma0: rdma@1400e000 {
-> @@ -111,7 +107,6 @@ rdma0: rdma@1400e000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_RDMA0>;
->   	iommus = <&iommu M4U_PORT_DISP_RDMA0>;
-> -	mediatek,larb = <&larb0>;
->   	mediatek,rdma-fifosize = <8192>;
->   };
->   
-> @@ -122,7 +117,6 @@ rdma1: rdma@1400f000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_RDMA1>;
->   	iommus = <&iommu M4U_PORT_DISP_RDMA1>;
-> -	mediatek,larb = <&larb4>;
->   };
->   
->   rdma2: rdma@14010000 {
-> @@ -132,7 +126,6 @@ rdma2: rdma@14010000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_RDMA2>;
->   	iommus = <&iommu M4U_PORT_DISP_RDMA2>;
-> -	mediatek,larb = <&larb4>;
->   };
->   
->   wdma0: wdma@14011000 {
-> @@ -142,7 +135,6 @@ wdma0: wdma@14011000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_WDMA0>;
->   	iommus = <&iommu M4U_PORT_DISP_WDMA0>;
-> -	mediatek,larb = <&larb0>;
->   };
->   
->   wdma1: wdma@14012000 {
-> @@ -152,7 +144,6 @@ wdma1: wdma@14012000 {
->   	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   	clocks = <&mmsys CLK_MM_DISP_WDMA1>;
->   	iommus = <&iommu M4U_PORT_DISP_WDMA1>;
-> -	mediatek,larb = <&larb4>;
->   };
->   
->   color0: color@14013000 {
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
-> index 9b87f036f178..052e752157b4 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
-> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
-> @@ -42,13 +42,6 @@ properties:
->     power-domains:
->       maxItems: 1
->   
-> -  mediatek,larb:
-> -    $ref: '/schemas/types.yaml#/definitions/phandle'
-> -    description: |
-> -      Must contain the local arbiters in the current Socs, see
-> -      Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-> -      for details.
-> -
->     iommus:
->       maxItems: 2
->       description: |
-> @@ -63,7 +56,6 @@ required:
->     - clocks
->     - clock-names
->     - power-domains
-> -  - mediatek,larb
->     - iommus
->   
->   additionalProperties: false
-> @@ -83,7 +75,6 @@ examples:
->         clock-names = "jpgdec-smi",
->                       "jpgdec";
->         power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
-> -      mediatek,larb = <&larb2>;
->         iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
->                  <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
->       };
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-> index fcd9b829e036..8bfdfdfaba59 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
-> @@ -35,13 +35,6 @@ properties:
->     power-domains:
->       maxItems: 1
->   
-> -  mediatek,larb:
-> -    $ref: '/schemas/types.yaml#/definitions/phandle'
-> -    description: |
-> -      Must contain the local arbiters in the current Socs, see
-> -      Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-> -      for details.
-> -
->     iommus:
->       maxItems: 2
->       description: |
-> @@ -56,7 +49,6 @@ required:
->     - clocks
->     - clock-names
->     - power-domains
-> -  - mediatek,larb
->     - iommus
->   
->   additionalProperties: false
-> @@ -75,7 +67,6 @@ examples:
->         clocks =  <&imgsys CLK_IMG_VENC>;
->         clock-names = "jpgenc";
->         power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
-> -      mediatek,larb = <&larb2>;
->         iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
->                  <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
->       };
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-mdp.txt b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-> index caa24943da33..53ef26e2c857 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-> +++ b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-> @@ -27,9 +27,6 @@ Required properties (DMA function blocks, child node):
->   - iommus: should point to the respective IOMMU block with master port as
->     argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
->     for details.
-> -- mediatek,larb: must contain the local arbiters in the current Socs, see
-> -  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
-> -  for details.
->   
->   Example:
->   	mdp_rdma0: rdma@14001000 {
-> @@ -40,7 +37,6 @@ Example:
->   			 <&mmsys CLK_MM_MUTEX_32K>;
->   		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   		iommus = <&iommu M4U_PORT_MDP_RDMA0>;
-> -		mediatek,larb = <&larb0>;
->   		mediatek,vpu = <&vpu>;
->   	};
->   
-> @@ -51,7 +47,6 @@ Example:
->   			 <&mmsys CLK_MM_MUTEX_32K>;
->   		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   		iommus = <&iommu M4U_PORT_MDP_RDMA1>;
-> -		mediatek,larb = <&larb4>;
->   	};
->   
->   	mdp_rsz0: rsz@14003000 {
-> @@ -81,7 +76,6 @@ Example:
->   		clocks = <&mmsys CLK_MM_MDP_WDMA>;
->   		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   		iommus = <&iommu M4U_PORT_MDP_WDMA>;
-> -		mediatek,larb = <&larb0>;
->   	};
->   
->   	mdp_wrot0: wrot@14007000 {
-> @@ -90,7 +84,6 @@ Example:
->   		clocks = <&mmsys CLK_MM_MDP_WROT0>;
->   		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   		iommus = <&iommu M4U_PORT_MDP_WROT0>;
-> -		mediatek,larb = <&larb0>;
->   	};
->   
->   	mdp_wrot1: wrot@14008000 {
-> @@ -99,5 +92,4 @@ Example:
->   		clocks = <&mmsys CLK_MM_MDP_WROT1>;
->   		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
->   		iommus = <&iommu M4U_PORT_MDP_WROT1>;
-> -		mediatek,larb = <&larb4>;
->   	};
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> index ad1321e5a22d..71237355cc7e 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> @@ -13,7 +13,6 @@ Required properties:
->   - reg : Physical base address of the video codec registers and length of
->     memory mapped region.
->   - interrupts : interrupt number to the cpu.
-> -- mediatek,larb : must contain the local arbiters in the current Socs.
->   - clocks : list of clock specifiers, corresponding to entries in
->     the clock-names property.
->   - clock-names: avc encoder must contain "venc_sel", vp8 encoder must
-> @@ -46,7 +45,6 @@ vcodec_dec: vcodec@16000000 {
->             <0 0x16027800 0 0x800>,   /*VP8_VL*/
->             <0 0x16028400 0 0x400>;   /*VP9_VD*/
->       interrupts = <GIC_SPI 204 IRQ_TYPE_LEVEL_LOW>;
-> -    mediatek,larb = <&larb1>;
->       iommus = <&iommu M4U_PORT_HW_VDEC_MC_EXT>,
->                <&iommu M4U_PORT_HW_VDEC_PP_EXT>,
->                <&iommu M4U_PORT_HW_VDEC_AVC_MV_EXT>,
-> @@ -99,7 +97,6 @@ vcodec_enc_avc: vcodec@18002000 {
->                <&iommu M4U_PORT_VENC_REF_CHROMA>,
->                <&iommu M4U_PORT_VENC_NBM_RDMA>,
->                <&iommu M4U_PORT_VENC_NBM_WDMA>;
-> -    mediatek,larb = <&larb3>;
->       mediatek,vpu = <&vpu>;
->       clocks = <&topckgen CLK_TOP_VENC_SEL>;
->       clock-names = "venc_sel";
-> @@ -120,7 +117,6 @@ vcodec_enc_vp8: vcodec@19002000 {
->                <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
->                <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
->                <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
-> -    mediatek,larb = <&larb5>;
->       mediatek,vpu = <&vpu>;
->       clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
->       clock-names = "venc_lt_sel";
-> 
+>  drivers/net/usb/hso.c | 33 +++++++++++++++++++++++----------
+>  1 file changed, 23 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+> index 54ef8492ca01..39c4e88eab62 100644
+> --- a/drivers/net/usb/hso.c
+> +++ b/drivers/net/usb/hso.c
+> @@ -2495,7 +2495,7 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+>                            hso_net_init);
+>         if (!net) {
+>                 dev_err(&interface->dev, "Unable to create ethernet device\n");
+> -               goto exit;
+> +               goto err_hso_dev;
+>         }
+>
+>         hso_net = netdev_priv(net);
+> @@ -2508,13 +2508,13 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+>                                       USB_DIR_IN);
+>         if (!hso_net->in_endp) {
+>                 dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
+> -               goto exit;
+> +               goto err_net;
+>         }
+>         hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
+>                                        USB_DIR_OUT);
+>         if (!hso_net->out_endp) {
+>                 dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
+> -               goto exit;
+> +               goto err_net;
+>         }
+>         SET_NETDEV_DEV(net, &interface->dev);
+>         SET_NETDEV_DEVTYPE(net, &hso_type);
+> @@ -2523,18 +2523,18 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+>         for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
+>                 hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
+>                 if (!hso_net->mux_bulk_rx_urb_pool[i])
+> -                       goto exit;
+> +                       goto err_mux_bulk_rx;
+>                 hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
+>                                                            GFP_KERNEL);
+>                 if (!hso_net->mux_bulk_rx_buf_pool[i])
+> -                       goto exit;
+> +                       goto err_mux_bulk_rx;
+>         }
+>         hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
+>         if (!hso_net->mux_bulk_tx_urb)
+> -               goto exit;
+> +               goto err_mux_bulk_rx;
+>         hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
+>         if (!hso_net->mux_bulk_tx_buf)
+> -               goto exit;
+> +               goto err_mux_bulk_tx;
+>
+>         add_net_device(hso_dev);
+>
+> @@ -2542,7 +2542,7 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+>         result = register_netdev(net);
+>         if (result) {
+>                 dev_err(&interface->dev, "Failed to register device\n");
+> -               goto exit;
+> +               goto err_register;
+>         }
+>
+>         hso_log_port(hso_dev);
+> @@ -2550,8 +2550,21 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+>         hso_create_rfkill(hso_dev, interface);
+>
+>         return hso_dev;
+> -exit:
+> -       hso_free_net_device(hso_dev, true);
+> +
+> +err_register:
+> +       remove_net_device(hso_dev);
+> +       kfree(hso_net->mux_bulk_tx_buf);
+> +err_mux_bulk_tx:
+> +       usb_free_urb(hso_net->mux_bulk_tx_urb);
+> +err_mux_bulk_rx:
+> +       for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
+> +               usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
+> +               kfree(hso_net->mux_bulk_rx_buf_pool[i]);
+> +       }
+> +err_net:
+> +       free_netdev(net);
+> +err_hso_dev:
+> +       kfree(hso_dev);
+>         return NULL;
+>  }
+>
+> --
+> 2.25.1
+>
