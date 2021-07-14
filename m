@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A233C85FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8629E3C8608
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhGNOX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:23:56 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33729 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232097AbhGNOXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:23:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210170332"
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
-   d="scan'208";a="210170332"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 07:21:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
-   d="scan'208";a="413300245"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 07:20:58 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m3fkq-00DLq4-QY; Wed, 14 Jul 2021 17:20:52 +0300
-Date:   Wed, 14 Jul 2021 17:20:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     shruthi.sanil@intel.com,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, kris.pan@linux.intel.com,
-        Mark Gross <mgross@linux.intel.com>,
-        srikanth.thokala@intel.com,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        mallikarjunappa.sangannavar@intel.com
-Subject: Re: [PATCH v4 1/2] dt-bindings: timer: Add bindings for Intel Keem
- Bay SoC Timer
-Message-ID: <YO7yxEgdzobD1jeu@smile.fi.intel.com>
-References: <20210628061410.8009-1-shruthi.sanil@intel.com>
- <20210628061410.8009-2-shruthi.sanil@intel.com>
- <20210714024756.GA1355219@robh.at.kernel.org>
- <YO6ome7Opd6kjqua@smile.fi.intel.com>
- <CAL_Jsq+4vEfL5ZQzREXU7Mo1AUx1ZbdHTmJDwauEL890O7S7qg@mail.gmail.com>
+        id S232252AbhGNOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231977AbhGNOZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:25:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEC8C06175F;
+        Wed, 14 Jul 2021 07:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hbo3XSupWSCKSRuwZnseKrr9Q5lRrR0wScUsbhREDp8=; b=jtal+prTNziB/n3KcqRrm7KUsO
+        fe10Y7R3s6gWqkCEXhbA10Ubl1nKC3tuGMVphwhAWYxsjSYuGoIRYlTiukdVf0Ujb4WZhC26M+nwL
+        724qGyU3+2fl93eX/58UegwyIKrvkxYW7ZYiEiOuQMF8HZKTu+TWeWAJWbrmq2LOf2w8KaV9T/0UW
+        1LX3Vss0kbxRfgjVh5Uo6vNfO/aisTkKdpSMxS8AJxeBuc4fI2oTqrGQcVvxWFoizMOa918tnpLH4
+        aJ+7IOy1MwrK2bCJaz79jI00XExW2M7TtCw7x7OJJY0cLcsEsa4Ot4Jl2Al8JihiOgijvyXEDayAE
+        v3tyNRDw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3fm4-002HPc-AF; Wed, 14 Jul 2021 14:22:23 +0000
+Date:   Wed, 14 Jul 2021 15:22:08 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        arnd@arndb.de
+Subject: Re: [PATCH] Decouple build from userspace headers
+Message-ID: <YO7zEFNSXOY8pKCQ@infradead.org>
+References: <YO3txvw87MjKfdpq@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+4vEfL5ZQzREXU7Mo1AUx1ZbdHTmJDwauEL890O7S7qg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YO3txvw87MjKfdpq@localhost.localdomain>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 08:07:44AM -0600, Rob Herring wrote:
-> On Wed, Jul 14, 2021 at 3:04 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Jul 13, 2021 at 08:47:56PM -0600, Rob Herring wrote:
-> > > On Mon, Jun 28, 2021 at 11:44:09AM +0530, shruthi.sanil@intel.com wrote:
-> >
-> > > > +  The parent node represents the common general configuration details and
-> > > > +  the child nodes represents the counter and timers.
-> > >
-> > > I don't think all the child nodes are necessary. Are the counters and
-> > > timers configurable (say on another SoC)? If not, then a single node
-> > > here would suffice.
-> >
-> > If you may notice the children may have different properties that can't be
-> > known ahead, such as IRQ line. On some platforms it may be this mapping, on
-> > another it maybe different.
-> 
-> What I noticed is it's all the same clock and 1 interrupt for each
-> timer can be just a single 'interrupts' property with 8 entries.
+> -#define signals_blocked false
+> +#define signals_blocked 0
 
-This may work.
+Why can't we get at the kernel definition of false here?
 
-> Is there a platform that's different or that's a hypothetical? Because
-> hypothetically, every aspect of every IP could change. But we don't
-> try to parameterize everything in DT. It's a judgement call between
-> implying things from compatible and explicit DT properties.
-> 
-> > With all respect for the simplification I think we can't do it here.
-> 
-> You can. Any data in DT could be in the kernel. It's a question of
-> balance, not can or can't.
+> new file mode 100644
+> --- /dev/null
+> +++ b/include/stdarg.h
+> @@ -0,0 +1,9 @@
+> +#ifndef _LINUX_STDARG_H
+> +#define _LINUX_STDARG_H
+> +typedef __builtin_va_list __gnuc_va_list;
+> +typedef __builtin_va_list va_list;
+> +#define va_start(v, l)	__builtin_va_start(v, l)
+> +#define va_end(v)	__builtin_va_end(v)
+> +#define va_arg(v, T)	__builtin_va_arg(v, T)
+> +#define va_copy(d, s)	__builtin_va_copy(d, s)
+> +#endif
 
-Not only, it's also matters of what exactly hardware is: 8 timers or timer with
-8 channels. If it's the former one, I prefer to have DT exactly like originally
-suggested, otherwise I will agree on your proposal.
+Empty lines before and after the include guards would be nice.
 
--- 
-With Best Regards,
-Andy Shevchenko
+What do we need the __gnuc_va_list typedef for?
 
-
+Otherwise this looks great.  As a follow on maybe move the new header
+to <linux/stdarg.h> to make clear to everyone that we are using our
+own version.
