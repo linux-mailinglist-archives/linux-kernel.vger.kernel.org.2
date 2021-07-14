@@ -2,187 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27743C7B2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEF23C7B35
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbhGNB4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 21:56:41 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11298 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhGNB4k (ORCPT
+        id S229843AbhGNB63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237370AbhGNB62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:56:40 -0400
-Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GPgR26GCCz8sd4;
-        Wed, 14 Jul 2021 09:49:18 +0800 (CST)
-Received: from [10.67.110.55] (10.67.110.55) by dggeme751-chm.china.huawei.com
- (10.3.19.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
- Jul 2021 09:53:46 +0800
-Subject: Re: [bpf-next 3/3] bpf: Fix a use after free in bpf_check()
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210707043811.5349-1-hefengqing@huawei.com>
- <20210707043811.5349-4-hefengqing@huawei.com>
- <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com>
- <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com>
- <CAADnVQJ0Q0dLVs5UM-CyJe90N+KHomccAy-S_LOOARa9nXkXsA@mail.gmail.com>
- <bc75c9c5-7479-5021-58ea-ed8cf53fb331@huawei.com>
- <CAADnVQJ2DnoC07XLki_=xPti7V=wH153tQb1bowP+xdLwn580w@mail.gmail.com>
- <21d8cd9e-487e-411f-1cfd-67cebc86b221@huawei.com>
- <CAADnVQ+XGGaXfte6aDdEp6euYckGtyP6S+VDUe4JusUz7xDLLg@mail.gmail.com>
-From:   He Fengqing <hefengqing@huawei.com>
-Message-ID: <cdb39df7-dbfa-c935-e819-97c2134dd2cf@huawei.com>
-Date:   Wed, 14 Jul 2021 09:53:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 13 Jul 2021 21:58:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BC3C0613DD;
+        Tue, 13 Jul 2021 18:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+Ip3TBvUfjZRsOcT+hgS0o0GXh0afk99oSwV3nbjP1c=; b=eTTB/6RxmN+yTTQe5iKEdBvKTF
+        2mfzJM3XsKao86MCSITohbwpp0HIyDoIYdLRI6GBbf8irM5vD5DQRhjCgrgK8gmIoUYfsgsLBExcD
+        jvaQW54RfIIpAP9ATmybg8AE1m7MvqTRbFtLeEje76WXe2bwZbmLIDqH2zyslVEz8lbLJsjqOGOPv
+        w7vNFXsjbbaSm1mgmxIAVD/Bl4XYKck1id9cd85MMmrfd7J/Iq7HzVo26h4Y2arHi+sW4uxLDw4AF
+        7w4yo2lb+nOTxessQF8hs75P7neKxoKr4UJqm6ZtVVohuXtrNa1wQOeND2gvwwu9pAibLcQMj4xsH
+        f3tkg1RQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3U77-001jGC-PW; Wed, 14 Jul 2021 01:55:09 +0000
+Date:   Wed, 14 Jul 2021 02:55:05 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
+Message-ID: <YO5D+XX06TA7CQ6e@casper.infradead.org>
+References: <20210712030701.4000097-1-willy@infradead.org>
+ <20210712030701.4000097-11-willy@infradead.org>
+ <YOzdKYejOEUbjvMj@cmpxchg.org>
+ <YOz3Lms9pcsHPKLt@casper.infradead.org>
+ <20210713091533.GB4132@worktop.programming.kicks-ass.net>
+ <YO23WOUhhZtL6Gtn@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+XGGaXfte6aDdEp6euYckGtyP6S+VDUe4JusUz7xDLLg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.55]
-X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
- dggeme751-chm.china.huawei.com (10.3.19.97)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YO23WOUhhZtL6Gtn@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2021/7/14 7:17, Alexei Starovoitov 写道:
-> On Sun, Jul 11, 2021 at 7:17 PM He Fengqing <hefengqing@huawei.com> wrote:
->>
->>
->>
->> 在 2021/7/9 23:12, Alexei Starovoitov 写道:
->>> On Fri, Jul 9, 2021 at 4:11 AM He Fengqing <hefengqing@huawei.com> wrote:
->>>>
->>>>
->>>>
->>>> 在 2021/7/8 11:09, Alexei Starovoitov 写道:
->>>>> On Wed, Jul 7, 2021 at 8:00 PM He Fengqing <hefengqing@huawei.com> wrote:
->>>>>>
->>>>>> Ok, I will change this in next version.
->>>>>
->>>>> before you spam the list with the next version
->>>>> please explain why any of these changes are needed?
->>>>> I don't see an explanation in the patches and I don't see a bug in the code.
->>>>> Did you check what is the prog clone ?
->>>>> When is it constructed? Why verifier has anything to do with it?
->>>>> .
->>>>>
->>>>
->>>>
->>>> I'm sorry, I didn't describe these errors clearly.
->>>>
->>>> bpf_check(bpf_verifier_env)
->>>>        |
->>>>        |->do_misc_fixups(env)
->>>>        |    |
->>>>        |    |->bpf_patch_insn_data(env)
->>>>        |    |    |
->>>>        |    |    |->bpf_patch_insn_single(env->prog)
->>>>        |    |    |    |
->>>>        |    |    |    |->bpf_prog_realloc(env->prog)
->>>>        |    |    |    |    |
->>>>        |    |    |    |    |->construct new_prog
->>>>        |    |    |    |    |    free old_prog(env->prog)
->>>>        |    |    |    |    |
->>>>        |    |    |    |    |->return new_prog;
->>>>        |    |    |    |
->>>>        |    |    |    |->return new_prog;
->>>>        |    |    |
->>>>        |    |    |->adjust_insn_aux_data
->>>>        |    |    |    |
->>>>        |    |    |    |->return ENOMEM;
->>>>        |    |    |
->>>>        |    |    |->return NULL;
->>>>        |    |
->>>>        |    |->return ENOMEM;
->>>>
->>>> bpf_verifier_env->prog had been freed in bpf_prog_realloc function.
->>>>
->>>>
->>>> There are two errors here, the first is memleak in the
->>>> bpf_patch_insn_data function, and the second is use after free in the
->>>> bpf_check function.
->>>>
->>>> memleak in bpf_patch_insn_data:
->>>>
->>>> Look at the call chain above, if adjust_insn_aux_data function return
->>>> ENOMEM, bpf_patch_insn_data will return NULL, but we do not free the
->>>> new_prog.
->>>>
->>>> So in the patch 2, before bpf_patch_insn_data return NULL, we free the
->>>> new_prog.
->>>>
->>>> use after free in bpf_check:
->>>>
->>>> If bpf_patch_insn_data function return NULL, we will not assign new_prog
->>>> to the bpf_verifier_env->prog, but bpf_verifier_env->prog has been freed
->>>> in the bpf_prog_realloc function. Then in bpf_check function, we will
->>>> use bpf_verifier_env->prog after do_misc_fixups function.
->>>>
->>>> In the patch 3, I added a free_old parameter to bpf_prog_realloc, in
->>>> this scenario we don't free old_prog. Instead, we free it in the
->>>> do_misc_fixups function when bpf_patch_insn_data return a valid new_prog.
->>>
->>> Thanks for explaining.
->>> Why not to make adjust_insn_aux_data() in bpf_patch_insn_data() first then?
->>> Just changing the order will resolve both issues, no?
->>> .
->>>
->> adjust_insn_aux_data() need the new constructed new_prog as an input
->> parameter, so we must call bpf_patch_insn_single() before
->> adjust_insn_aux_data().
+On Tue, Jul 13, 2021 at 11:55:04AM -0400, Johannes Weiner wrote:
+> On Tue, Jul 13, 2021 at 11:15:33AM +0200, Peter Zijlstra wrote:
+> > On Tue, Jul 13, 2021 at 03:15:10AM +0100, Matthew Wilcox wrote:
+> > > On Mon, Jul 12, 2021 at 08:24:09PM -0400, Johannes Weiner wrote:
+> > > > On Mon, Jul 12, 2021 at 04:04:54AM +0100, Matthew Wilcox (Oracle) wrote:
+> > > > > +/* Whether there are one or multiple pages in a folio */
+> > > > > +static inline bool folio_single(struct folio *folio)
+> > > > > +{
+> > > > > +	return !folio_head(folio);
+> > > > > +}
+> > > > 
+> > > > Reading more converted code in the series, I keep tripping over the
+> > > > new non-camelcased flag testers.
+> > > 
+> > > Added PeterZ as he asked for it.
+> > > 
+> > > https://lore.kernel.org/linux-mm/20210419135528.GC2531743@casper.infradead.org/
+> > 
+> > Aye; I hate me some Camels with a passion. And Linux Coding style
+> > explicitly not having Camels these things were always a sore spot. I'm
+> > very glad to see them go.
+> > 
+> > > > It's not an issue when it's adjectives: folio_uptodate(),
+> > > > folio_referenced(), folio_locked() etc. - those are obvious. But nouns
+> > > > and words that overlap with struct member names can easily be confused
+> > > > with non-bool accessors and lookups. Pop quiz: flag test or accessor?
+> > > > 
+> > > > folio_private()
+> > > > folio_lru()
+> > > > folio_nid()
+> > > > folio_head()
+> > > > folio_mapping()
+> > > > folio_slab()
+> > > > folio_waiters()
+> > > 
+> > > I know the answers to each of those, but your point is valid.  So what's
+> > > your preferred alternative?  folio_is_lru(), folio_is_uptodate(),
+> > > folio_is_slab(), etc?  I've seen suggestions for folio_test_lru(),
+> > > folio_test_uptodate(), and I don't much care for that alternative.
+> > 
+> > Either _is_ or _test_ works for me, with a slight preference to _is_ on
+> > account it of being shorter.
 > 
-> Right. I forgot about insn_has_def32() logic and
-> commit b325fbca4b13 ("bpf: verifier: mark patched-insn with
-> sub-register zext flag")
-> that added that extra parameter.
+> I agree that _is_ reads nicer by itself, but paired with other ops
+> such as testset, _test_ might be better.
 > 
->> But we can make adjust_insn_aux_data() never return ENOMEM. In
->> bpf_patch_insn_data(), first we pre-malloc memory for new aux_data, then
->> call bpf_patch_insn_single() to constructed the new_prog, at last call
->> adjust_insn_aux_data() functin. In this way, adjust_insn_aux_data()
->> never fails.
->>
->> bpf_patch_insn_data(env) {
->>          struct bpf_insn_aux_data *new_data = vzalloc();
->>          struct bpf_prog *new_prog;
->>          if (new_data == NULL)
->>                  return NULL;
->>
->>          new_prog = bpf_patch_insn_single(env->prog);
->>          if (new_prog == NULL) {
->>                  vfree(new_data);
->>                  return NULL;
->>          }
->>
->>          adjust_insn_aux_data(new_prog, new_data);
->>          return new_prog;
->> }
->> What do you think about it?
+> For example, in __set_page_dirty_no_writeback()
 > 
-> That's a good idea. Let's do that. The new size for vzalloc is easy to compute.
-> What should be the commit in the Fixes tag?
-> commit 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
-> right?
+> 	if (folio_is_dirty())
+> 		return !folio_testset_dirty()
+> 
+> is less clear about what's going on than would be:
+> 
+> 	if (folio_test_dirty())
+> 		return !folio_testset_dirty()
+> 
+> My other example wasn't quoted, but IMO set and clear naming should
+> also match testing to not cause confusion. I.e. the current:
+> 
+> 	if (folio_idle())
+> 		folio_clear_idle_flag()
+> 
+> can make you think two different things are being tested and modified
+> (as in if (page_evictable()) ClearPageUnevictable()). IMO easier:
+> 
+> 	if (folio_test_idle())
+> 		folio_clear_idle()
+> 
+> Non-atomics would have the __ modifier in front of folio rather than
+> read __clear or __set, which works I suppose?
+> 
+> 	__folio_clear_dirty()
+> 
+> With all that, we'd have something like:
+> 
+> 	folio_test_foo()
+> 	folio_set_foo()
+> 	folio_clear_foo()
+> 	folio_testset_foo()
+> 	folio_testclear_foo()
+> 
+> 	__folio_test_foo()
 
-Ok, I will add this in the commit message.
+BTW, this one doesn't exist.
 
-> 4 year old bug then.
-> I wonder why syzbot with malloc error injection didn't catch it sooner.
-> .
+> 	__folio_set_foo()
+> 	__folio_clear_foo()
 > 
+> Would that be a workable compromise for everybody?
+
+I think it has to be, because not all these work (marked with *):
+
+  folio_is_locked()
+  folio_is_referenced()
+  folio_is_uptodate()
+  folio_is_dirty()
+* folio_is_lru()
+  folio_is_active()
+  folio_is_workingset()
+* folio_is_waiters()
+  folio_is_error()
+  folio_is_slab()
+* folio_is_owner_priv_1()
+* folio_is_arch_1()
+  folio_is_reserved()
+* folio_is_private()
+* folio_is_private_2()
+  folio_is_writeback()
++ folio_is_head()
+  folio_is_mappedtodisk()
+* folio_is_reclaim()
+  folio_is_swapbacked()
+  folio_is_unevictable()
+  folio_is_mlocked()
+  folio_is_uncached()
+* folio_is_hwpoison()
+  folio_is_young()
+  folio_is_idle()
+  folio_is_arch_2()
+* folio_is_skip_kasan_poison()
+  folio_is_readahead()
+  folio_is_checked()
+  folio_is_swapcache()
+  folio_is_fscache()
+  folio_is_pinned()
+  folio_is_savepinned()
+  folio_is_foreign()
+  folio_is_xen_remapped()
+  folio_is_slob_free()
+  folio_is_double_map()
+  folio_is_isolated()
+* folio_is_reported()
+
+> > Yes, we -tip folk tend to also prefer consistent prefix_ naming, and
+> > every time something big gets refactorered we make sure to make it so.
+> > 
+> > Look at it like a namespace; you can read it like
+> > folio::del_from_lru_list() if you want. Obviously there's nothing like
+> > 'using folio' for this being C and not C++.
+> 
+> Yeah the lack of `using` is my concern.
+> 
+> Namespacing is nice for more contained APIs. Classic class + method
+> type deals, with non-namespaced private helpers implementing public
+> methods, and public methods not layered past trivial stuff like
+> foo_insert() calling __foo_insert() with a lock held.
+> 
+> memcg, vmalloc, kobject, you name it.
+> 
+> But the page api is pretty sprawling with sizable overlaps between
+> interface and implementation, and heavy layering in both. `using`
+> would be great to avoid excessive repetition where file or function
+> context already does plenty of namespacing. Alas, it's not an option.
+
+I mean, we could do ...
+
+#include <linux/using_folio.h>
+
+which makes
+	bool test_writeback(struct folio *)
+an alias of folio_test_writeback.  But I don't know that's a great
+thing to do.  It makes it hard for people to get started in mm,
+hard to move code between mm and other parts of the kernel, or
+between mm/ and include/
+
+Maybe I'm missing something important about 'using'.  It's been over
+twenty years since I wrote Java in earnest and twenty-five since
+I wrote a single line of Ada, so I'm a little rusty with the concept
+of namespacing.
+
+> If everybody agrees we'll be fine, I won't stand in the way. But I do
+> think the page API is a bit unusual in that regard. And while it is
+> nice for the outward-facing filesystem interface - and I can see why
+> fs people love it - the cost of it seems to be carried by the MM
+> implementation code.
+
+I'm actually OK with that tradeoff.  There are more filesystem people than
+MM people, and their concern is with how to implement their filesystem,
+not with how the page cache works.  So if the MM side of the house needs
+to be a little more complicated to make filesystems simpler, then that's
+fine with me.
+
+> Although I will say, folio_del_from_lru_list() reads a bit like
+> 'a'.append_to(string) to me. lruvec_add_folio() would match more
+> conventional object hierarchy for container/collection/list/array
+> interactions, like with list_add, xa_store, rb_insert, etc.
+> 
+> Taking all of the above, we'd have:
+> 
+> 	if (!folio_test_active(folio) && !folio_test_unevictable(folio)) {
+> 		lruvec_del_folio(folio, lruvec);
+> 		folio_set_active(folio);
+> 		lruvec_add_folio(folio, lruvec);
+> 		trace_mm_lru_activate(&folio->page);
+> 	}
+> 
+> which reads a little better overall, IMO.
+> 
+> Is that a direction we could agree on?
+
+Yes!  I have that ordering already with filemap_add_folio().  I don't
+mind doing that for lruvec too.  But, it should then be:
+
+		lruvec_del_folio(lruvec, folio);
+		folio_set_active(folio);
+		lruvec_add_folio(lruvec, folio);
+		trace_mm_lru_activate(folio);
+
