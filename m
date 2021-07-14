@@ -2,182 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2203C8A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA7B3C8AA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240014AbhGNST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhGNST0 (ORCPT
+        id S238941AbhGNSUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:20:34 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:38413 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229651AbhGNSUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:19:26 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD66C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:16:33 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 8so5136115lfp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gdYfStJb5mwOOj1KojUyVafFJ1o2WedkSsc19T3H7UY=;
-        b=NWbdnzBEli+FCtVqOVGaPss2MwLIRyY/wdM4+OblEBSOHLPtHRJx4v4lqeWS87OiJq
-         GrCDPu7eUBhilt/v8alOd8G8WOI58C8iirfAC7Bz5pOBy2GTDt8ZNdlBxGQUO3n4YrBX
-         0YKG1LOyZQ9udog24gV/2cMfql+Vkwc1NHmxZvx5GcfwE8hcU6pFqbjySrUJjrRw2Wp9
-         mApyz4NWpEbcuSm3WOHq4Qb6GYGwKDFVRWXkeey6gBTkA2EnAqy9IxDqE3imgbiOZ+V1
-         pU7DeFfq4lKx0B5Opnxs9bmnjeQZ7/8mdW9zD4wwqb+xlxZyqrUAVcx6lpH5Y8+P6nMC
-         F3WA==
+        Wed, 14 Jul 2021 14:20:34 -0400
+Received: by mail-ot1-f49.google.com with SMTP id 42-20020a9d012d0000b02904b98d90c82cso3451140otu.5;
+        Wed, 14 Jul 2021 11:17:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gdYfStJb5mwOOj1KojUyVafFJ1o2WedkSsc19T3H7UY=;
-        b=QrIYunNVZdyAy/bC/oTVhThDgAJlOtERK7+iiB3tPitF9jfkqWMSakU1ZqIFwY4zag
-         b2HF0d2RX+1DHYSz0lyKE9THS18dfLWHf7eT4FHExXr1/0gxzdR2qtPJDrkAvXtYmwfX
-         NZbGpLbFIgOn6FruM65rWWZ0E+qo2fWwKmlttpAkGKy8CverJDOTzcgU0GqrS1+U5E0e
-         Qsev1uWGvGmHZnW9vCo33g031sFcUgssc9sH9HWJLdRy2o7REA6uMcw5tcg2ZZLOUHk+
-         jqItDqT0oaQAYhRof7P/0eMBl3pWmN+nnmtIQXyBqI3a/lVo4tMnbg1ldoKWAxbs/69H
-         4Uow==
-X-Gm-Message-State: AOAM531DFCtn6+DlwuBNCxBByQlZu9BRvpcr2LAJ3sd3XQpl937c9sxC
-        27NzVMN5ft0NyRnarztQFNKDVoz1IbwjmAsusLrH4Q==
-X-Google-Smtp-Source: ABdhPJzEKs9SRTQ6+N8LhT06hWiRWkYkLtuXtaEpRgI5+ZlKGUTLSDyWY2UH/XyxBPnSN/RKA3eJ4h/aWPEjT0jZRRI=
-X-Received: by 2002:ac2:59db:: with SMTP id x27mr5574226lfn.547.1626286592091;
- Wed, 14 Jul 2021 11:16:32 -0700 (PDT)
+        bh=8NtKqh/hhXyEdtvjJOvCHjkNgClG5kHRWw+SH0tD8do=;
+        b=bQ0ynAeWR3KMhFQBKSBzJGpB8JzZXX+zVTPAO0msz9XcXfEDUp4AX7prlB1nUz7Ydt
+         RrGdEyXwizVg4hvVuxdK5xk0d3CNiLZRY5vmqp8FkFNTqgGOzALqfgxM7b2tcyHJ+r2G
+         qVxtBpywgLj4CWsRqM8w8CHxe7q6h1htYRMysErQj09wLUen4zMYyL6D15LNIkkZ4PA4
+         2Gb9ty9iztOLo9UD2cjDlFmgb5ovLE70uwZPryL1f4YEItFnh42jujoRWumu+Wvom08M
+         ONIA3F29D69+OIG3DWFoWCTu2uegUhhQK0cxeyeF7DBfESm37qLZ6O+zzNqcGW4TkGOU
+         NWXQ==
+X-Gm-Message-State: AOAM5301mFAfwqCVhvq2faQAKfhggH/VmRoXz6hhV92/+Ihzz09raw5v
+        9fUWtUrsCTIc1L31FNgBfWbYSxaVUmjRmSW92RA=
+X-Google-Smtp-Source: ABdhPJwqSGLdbvDOnyhxufSLXfr0OqA2WwkMn6qYj3wJJCkj8VVcnwuSy6B/oTZlRErz8BiBRyroH9X6GXd2WgbvRHY=
+X-Received: by 2002:a9d:5f19:: with SMTP id f25mr9693465oti.206.1626286661751;
+ Wed, 14 Jul 2021 11:17:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-4-ojeda@kernel.org>
- <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
-In-Reply-To: <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Jul 2021 11:16:20 -0700
-Message-ID: <CAKwvOdm3_TbPPCZRvpdsfZW7szWEEnpb4NyqQ39P8a=7YGCb=g@mail.gmail.com>
-Subject: Re: [PATCH 03/17] Makefile: generate `CLANG_FLAGS` even in GCC builds
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+References: <2780027.e9J7NaK4W3@kreacher> <YOyMdICr/30LhTao@smile.fi.intel.com>
+In-Reply-To: <YOyMdICr/30LhTao@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 14 Jul 2021 20:17:30 +0200
+Message-ID: <CAJZ5v0jhUjo-Gs=bWeNFaUY=nz3T-LAmVYbK_mDGM-LzEGbyCw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] ACPI: glue / driver core: Eliminate
+ acpi_platform_notify() and split device_platform_notify()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:13 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Mon, Jul 12, 2021 at 8:39 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Sun, Jul 4, 2021 at 1:28 PM <ojeda@kernel.org> wrote:
+> On Mon, Jul 12, 2021 at 07:19:57PM +0200, Rafael J. Wysocki wrote:
+> > Hi Greg et al,
 > >
-> > From: Miguel Ojeda <ojeda@kernel.org>
+> > This series doesn't change functionality (at least not intentionally), but
+> > it get rids of a few unneeded checks, parameter passing etc.
 > >
-> > To support Rust under GCC-built kernels, we need to save the flags that
-> > would have been passed if the kernel was being compiled with Clang.
+> > Patches [1-2/6] simplify the ACPI "glue" code.
 > >
-> > The reason is that `bindgen` -- the tool we use to generate Rust
-> > bindings to the C side of the kernel -- relies on `libclang` to
-> > parse C. Ideally:
+> > Patch [3/6] renames a couple of ACPI functions to avoid name collisions going
+> > forward.
 > >
-> >   - `bindgen` would support a GCC backend (requested at [1]),
+> > Patch [4/6] gets rid of acpi_platform_notify().
 > >
-> >   - or the Clang driver would be perfectly compatible with GCC,
-> >     including plugins. Unlikely, of course, but perhaps a big
-> >     subset of configs may be possible to guarantee to be kept
-> >     compatible nevertheless.
+> > Patch [5/6] rearranges the software nodes code along the lines of what happens
+> > to the ACPI "glue" code in patch [4/6].
 > >
-> > This is also the reason why GCC builds are very experimental and some
-> > configurations may not work (e.g. `GCC_PLUGIN_RANDSTRUCT`). However,
-> > we keep GCC builds working (for some example configs) in the CI
-> > to avoid diverging/regressing further, so that we are better prepared
-> > for the future when a solution might become available.
+> > Patch [6/6] deals with device_platform_notify().
 > >
-> > [1] https://github.com/rust-lang/rust-bindgen/issues/1949
-> >
-> > Link: https://github.com/Rust-for-Linux/linux/issues/167
-> > Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> > Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> > Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
-> > Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
-> > Co-developed-by: Finn Behrens <me@kloenk.de>
-> > Signed-off-by: Finn Behrens <me@kloenk.de>
-> > Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> > Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> > Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> > Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> > Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> > Please review and let me know if there are any concerns regarding this.
 >
-> Patch LGTM; please keep an eye on the series:
-> https://lore.kernel.org/lkml/20210707224310.1403944-2-ndesaulniers@google.com/
+> The result looks good to me, but perhaps the ordering can be changed to
+> minimize addition of the lines that are going to be removed inside the same
+> series.
 >
-> If that lands in kbuild before this, this patch will need to be
-> rebased to avoid a conflict in linux-next.
->
-> So (tentatively :-P):
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> If the patch needs to be rebased on the series linked above, please
-> drop my reviewed by tag and I will re-review. Perhaps putting me
-> explicitly on Cc: in the commit message will help notify me if there
-> are successive versions?
->
-> > ---
-> >  Makefile | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 0565caea036..6e823d8bd64 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -573,18 +573,23 @@ endif
-> >  # and from include/config/auto.conf.cmd to detect the compiler upgrade.
-> >  CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
-> >
-> > -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> > +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
+> In either case, feel free to add
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Also, consider whether `BINDGEN_FLAGS` would be more descriptive (and
-less verbose) than `TENTATIVE_CLANG_FLAGS`.
-
-> > +
-> >  ifneq ($(CROSS_COMPILE),)
-> > -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> > +TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> >  endif
-> >  ifeq ($(LLVM_IAS),1)
-> > -CLANG_FLAGS    += -integrated-as
-> > +TENTATIVE_CLANG_FLAGS  += -integrated-as
-> >  else
-> > -CLANG_FLAGS    += -no-integrated-as
-> > +TENTATIVE_CLANG_FLAGS  += -no-integrated-as
-> >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> > -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> > +TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> >  endif
-> > -CLANG_FLAGS    += -Werror=unknown-warning-option
-> > +
-> > +export TENTATIVE_CLANG_FLAGS
-> > +
-> > +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> > +CLANG_FLAGS    += $(TENTATIVE_CLANG_FLAGS)
-> >  KBUILD_CFLAGS  += $(CLANG_FLAGS)
-> >  KBUILD_AFLAGS  += $(CLANG_FLAGS)
-> >  export CLANG_FLAGS
-> > --
-> > 2.32.0
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Thanks!
