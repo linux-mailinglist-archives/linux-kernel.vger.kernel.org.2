@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3688E3C81CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFFB3C8206
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238860AbhGNJkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:40:46 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:11414 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238866AbhGNJkJ (ORCPT
+        id S238865AbhGNJvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238337AbhGNJvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:40:09 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPslC2yGkzcdKD;
-        Wed, 14 Jul 2021 17:33:59 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 17:37:16 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
- Jul 2021 17:37:16 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH 3/3] block, bfq: consider request size in bfq_asymmetric_scenario()
-Date:   Wed, 14 Jul 2021 17:45:29 +0800
-Message-ID: <20210714094529.758808-4-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210714094529.758808-1-yukuai3@huawei.com>
-References: <20210714094529.758808-1-yukuai3@huawei.com>
+        Wed, 14 Jul 2021 05:51:05 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF63C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:48:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
+        by michel.telenet-ops.be with bizsmtp
+        id Uxo82500J1ccfby06xo8ct; Wed, 14 Jul 2021 11:48:12 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3bUu-0015hM-FF; Wed, 14 Jul 2021 11:48:08 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3bUu-00A3Yx-0R; Wed, 14 Jul 2021 11:48:08 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Fabio Estevam <festevam@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v2] drm/bridge: nwl-dsi: Avoid potential multiplication overflow on 32-bit
+Date:   Wed, 14 Jul 2021 11:48:06 +0200
+Message-Id: <ebb82941a86b4e35c4fcfb1ef5a5cfad7c1fceab.1626255956.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a special case when bfq do not need to idle when more than
-one groups is active:
+As nwl_dsi.lanes is u32, and NSEC_PER_SEC is 1000000000L, the second
+multiplication in
 
- 1) all active queues have the same weight,
- 2) all active queues have the same request size.
- 3) all active queues belong to the same I/O-priority class,
+    dsi->lanes * 8 * NSEC_PER_SEC
 
-Each time a request is dispatched, bfq can switch in service queue
-safely, since the throughput of each active queue is guaranteed to
-be equivalent.
+will overflow on a 32-bit platform.  Fix this by making the constant
+unsigned long long, forcing 64-bit arithmetic.
 
-Test procedure:
-run "fio -numjobs=1 -ioengine=psync -bs=4k -direct=1 -rw=randread..." in
-different cgroup(not root).
+As iMX8 is arm64, this driver is currently used on 64-bit platforms
+only, where long is 64-bit, so this cannot happen.  But the issue will
+start to happen when the driver is reused for a 32-bit SoC (e.g.
+i.MX7ULP), or when code is copied for a new driver.
 
-Test result: total bandwidth(Mib/s)
-| total jobs | before this patch | after this patch      |
-| ---------- | ----------------- | --------------------- |
-| 1          | 33.8              | 33.8                  |
-| 2          | 33.8              | 65.4 (32.7 each job)  |
-| 4          | 33.8              | 106.8 (26.7 each job) |
-| 8          | 33.8              | 126.4 (15.8 each job) |
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- block/bfq-iosched.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Compile-tested only.
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index e5a1093ec30a..b78fe8a1537e 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -268,6 +268,15 @@ static struct kmem_cache *bfq_pool;
-  */
- #define BFQ_RATE_SHIFT		16
+v2:
+  - Add Reviewed-by,
+  - Add reference to i.MX7ULP.
+---
+ drivers/gpu/drm/bridge/nwl-dsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+index 873995f0a7416e58..6002404ffcb9df08 100644
+--- a/drivers/gpu/drm/bridge/nwl-dsi.c
++++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+@@ -196,7 +196,7 @@ static u32 ps2bc(struct nwl_dsi *dsi, unsigned long long ps)
+ 	u32 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
  
-+/*
-+ * 1) bfq keep dispatching requests with same size for at least one second.
-+ * 2) bfq dispatch at lease 1024 requests
-+ *
-+ * We think bfq are dispatching request with same size if the above two
-+ * conditions hold true.
-+ */
-+#define VARIED_REQUEST_SIZE(bfqd) ((bfqd)->dispatch_count < 1024 ||\
-+		time_before(jiffies, (bfqd)->dispatch_time + HZ))
+ 	return DIV64_U64_ROUND_UP(ps * dsi->mode.clock * bpp,
+-				  dsi->lanes * 8 * NSEC_PER_SEC);
++				  dsi->lanes * 8ULL * NSEC_PER_SEC);
+ }
+ 
  /*
-  * When configured for computing the duration of the weight-raising
-  * for interactive queues automatically (see the comments at the
-@@ -724,7 +733,8 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
- 	bool multiple_classes_busy;
- 
- #ifdef CONFIG_BFQ_GROUP_IOSCHED
--	if (bfqd->num_groups_with_pending_reqs > 1)
-+	if (bfqd->num_groups_with_pending_reqs > 1 &&
-+	    VARIED_REQUEST_SIZE(bfqd))
- 		return true;
- #endif
- 
 -- 
-2.31.1
+2.25.1
 
