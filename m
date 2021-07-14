@@ -2,130 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59373C8B15
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F603C8B1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240020AbhGNSlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhGNSlA (ORCPT
+        id S239819AbhGNSnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:43:49 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57132 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhGNSnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:41:00 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B63C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:38:08 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u25so4827575ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:38:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UdE1i3Kh9CyaztlMs6Tom/6/6Qs2gen6RQY/2APYkeY=;
-        b=AXUtjv8MBQH8lKyt8M63dEIAEyBBfZrNFhon2JDYHbP1g+yLEi5UGwHgeTtHD7JMzD
-         5/meP3Fz2bjUIG/4XaEtp2OAIWuDOfPQSLD3N1sGNVUh2JuTITrBZZdz75qhCHORTJva
-         TtLgvs1nXcRVcFsizTQ9LbO1cPauI/fXnLalwCGRrDV7BNs427ICRgamdxMMNO/Cq15e
-         g7qq3ze+lwC8sSIHZvHWvcvcmZnpGdlw0t5u0Qj721Gl1aiJpZDjnZYTm38s9bF7kpx0
-         gbcacwGpEZDQ0tfvCS4UG5t6MWlmfOP8V87XlK64YFbJkovf0LCvSyn9LdUtUgGQOpfj
-         G39g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UdE1i3Kh9CyaztlMs6Tom/6/6Qs2gen6RQY/2APYkeY=;
-        b=tdwIaHd5UHs7+ldNr+X1jkluJrGAPK30KId+IOoi2E3A3+7zml3jnjt+78/Fi6mHCo
-         n7jm1/UnMnMfRtKaNsW4zwNYgHtmS7xemaMfNpMabuAMFHFUlUvd2hpZDhZ+E3xSANUE
-         SbC9XHtV3B+FTuAriU8jGCRC44YhVu61hYHzO/u8KE/WSSauGvvuQbSFWjbDQxvJAqTW
-         2pU2SODUjB8QaMqZlULIvWtRSMNlBrf7Fsl/hJBRsBbNRTCd3PUB8jqhUx/9UyL1R0GR
-         XUnzrDxmy8bR0CL36Jmyqhy4BqGI7BFuB3NHmaiqI7GlLAPiNFojH2N08J+2Bo9rZf+t
-         XJtA==
-X-Gm-Message-State: AOAM530dpgkHzV4vfLPpLjSR7R1g6bTRfAfuOk4YGhbAMe7fSBVbBDdX
-        Xk8IoFzid3veCaz08TGSuC7dgC8IKR6eaLSNoKHDnw==
-X-Google-Smtp-Source: ABdhPJzc+8HrSkvVMTS1cH/YGyicPG4iEYUp9Do12RUNJ4Kv+xTpm0YsDfVyh/mgmhohYw2Rn99Fy6m4zbhW4b0l6yE=
-X-Received: by 2002:a2e:8247:: with SMTP id j7mr10122299ljh.495.1626287886436;
- Wed, 14 Jul 2021 11:38:06 -0700 (PDT)
+        Wed, 14 Jul 2021 14:43:46 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E6B2BCC;
+        Wed, 14 Jul 2021 20:40:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626288053;
+        bh=RXoS7uOvpB5VAFXYDu8/3wKv0zzhGVf+fnUveMwoIj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qPVHrCjjdWs4tRxJ93jLG6HYAIADnBtC++iJnkXd5xkVn0Aww1P1oWVW+lhUZj0Mg
+         EkLmqnjqvGFi8cfkh2oxikV6m4uZ1h5UBi8o7qU0HZY47PaqXeB6wQdL6OTnOOs6W8
+         tpM01/D8ncEFVCgyOxTiNwciOeEzxDuv8n7TAEJY=
+Date:   Wed, 14 Jul 2021 21:40:51 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+Cc:     Dennis Rachui <drachui@de.adit-jv.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
+Message-ID: <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
+References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
+ <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
+ <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
+ <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-14-ojeda@kernel.org>
-In-Reply-To: <20210704202756.29107-14-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Jul 2021 11:37:54 -0700
-Message-ID: <CAKwvOdmei2Ckfk5xgkvo8wEXEFK=Yv5-yjKhHoi_bmVr4MiEnw@mail.gmail.com>
-Subject: Re: [PATCH 13/17] docs: add Rust documentation
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Douglas Su <d0u9.su@outlook.com>, Yuki Okushi <jtitor@2k36.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 1:29 PM <ojeda@kernel.org> wrote:
->
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> Most of the documentation for Rust is written within the source code
-> itself, as it is idiomatic for Rust projects. This applies to both
-> the shared infrastructure at `rust/` as well as any other Rust module
-> (e.g. drivers) written across the kernel.
->
-> These documents contain general information that does not fit
-> particularly well in the source code, like the Quick Start guide.
->
-... snip ...
-> +rust-analyzer
-> +*************
-> +
-> +The `rust-analyzer <https://rust-analyzer.github.io/>`_ language server can
-> +be used with many editors to enable syntax highlighting, completion, go to
-> +definition, and other features.
-> +
-> +``rust-analyzer`` will need to be
-> +`configured <https://rust-analyzer.github.io/manual.html#non-cargo-based-projects>`_
-> +to work with the kernel by adding a ``rust-project.json`` file in the root folder.
-> +A ``rust-project.json`` can be generated by building the Make target ``rust-analyzer``,
-> +which will create a ``rust-project.json`` in the root of the output directory.
+Hi Niklas,
 
-Is rust-analyzer necessary to talk about? I think most kernel
-developers aren't using LSP clients, so it doesn't seem necessary to
-talk about for kernel development IMO.  If a developer would like to
-use an LSP client, they should refer to the documentation of their LSP
-client.
+On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
+> On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
+> > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
+> > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
+> > > > Verify that streaming is not active before setting the pad format.
+> > > > 
+> > > > According to the VIDIOC documentation [1] changes to the active
+> > > > format of a media pad via the VIDIOC_SUBDEV_S_FMT ioctl are
+> > > > applied to the underlying hardware.
+> > > > In rcar-csi2 a format change only applies to hardware, when the
+> > > > pipeline is started. While the device is not in use, it is therefore
+> > > > okay to update the format.
+> > > > 
+> > > > However, when the pipeline is active, this leads to a format
+> > > > mismatch between driver and device.
+> > > > Other applications can query the format with
+> > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported
+> > > > a format that does not fit the current stream.
+> > > > 
+> > > > This commit prevents format update while streaming is active
+> > > > and returns -EBUSY to user space, as suggested by [1].
+> > > > 
+> > > > [1] Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rst
+> > > 
+> > > I like that this is addressed, but I wonder is this not something that 
+> > > should be fixed in the V4L2 core and not in drivers?
+> > 
+> > Some drivers may support format changes during streaming (that's allowed
+> > by the V4L2 API, I'm not sure if it's used anywhere though). While I'd
+> > favour not duplicating the same logic in different (and differently
+> > buggy) ways in drivers, I'm not sure how this could be implemented in a
+> > sane way in the V4L2 core in its current state.
+> 
+> I understand it's possible from some devices to support to format 
+> changes during streaming, but as you point out it's the exception and 
+> not the rule, if used at all.
+> 
+> So my point is if we start to enforce this in drivers we are headed down 
+> a road where this will be messier to clean up. Would it not make more 
+> sens to default the V4L2 core to disallow format changes while streaming 
+> and add a new flag to V4L2_SUBDEV_CAP_ to signal that the subdevice 
+> supports format changes while streaming?
+> 
+> We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a subdevice 
+> only supports read-only operations so I think it would not be too hard 
+> to move this functionality into the core?
 
+Yes, that's something we could try. The subdev core will then need to
+track the streaming state, which may require wrapping the .s_stream()
+call. Locking should then also likely be handled by the core. Probably
+nothing impossible, but quite a bit of work. Any volunteer ? :-)
 
+> > > > Note: after creation of this commit, it was noticed that Steve
+> > > > Longerbeam has a very similar solution in his fork.
+> > > > 
+> > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
+> > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
+> > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
+> > > > ---
+> > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 ++++++++++++++++++++-
+> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > index e28eff0..98152e1 100644
+> > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct v4l2_subdev *sd,
+> > > >  {
+> > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
+> > > >  	struct v4l2_mbus_framefmt *framefmt;
+> > > > +	int ret = 0;
+> > > > +
+> > > > +	mutex_lock(&priv->lock);
+> > > >  
+> > > >  	if (!rcsi2_code_to_fmt(format->format.code))
+> > > >  		format->format.code = rcar_csi2_formats[0].code;
+> > > >  
+> > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+> > > > +
+> > > > +		/*
+> > > > +		 * Do not apply changes to active format while streaming.
+> > > > +		 *
+> > > > +		 * Since video streams could be forwarded from sink pad to any
+> > > > +		 * source pad (depending on CSI-2 channel routing), all
+> > > > +		 * media pads are effected by this rule.
+> > > > +		 */
+> > > > +		if (priv->stream_count > 0) {
+> > > > +			ret = -EBUSY;
+> > > > +			goto out;
+> > > > +		}
+> > > > +
+> > > >  		priv->mf = format->format;
+> > > >  	} else {
+> > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
+> > > >  		*framefmt = format->format;
+> > > >  	}
+> > > >  
+> > > > -	return 0;
+> > > > +out:
+> > > > +	mutex_unlock(&priv->lock);
+> > > > +
+> > > > +	return ret;
+> > > >  }
+> > > >  
+> > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
 
-Should Documentation/process/changes.rst be updated to note which
-versions of all of these tools are currently supported?
-
-
-> +     - ``armv6`` and compatible only, ``RUST_OPT_LEVEL >= 2``
-
-For the compat table, for 32b ARM, why is v6 supported but not v7? Why
-only when optimizations are enabled?
-
-> +Currently, the Rust compiler (``rustc``) uses LLVM for code generation,
-> +which limits the supported architectures we can target. In addition, support
-> +for building the kernel with LLVM/Clang varies (see :ref:`kbuild_llvm`),
-> +which ``bindgen`` relies on through ``libclang``.
-
-Doesn't this also depend on rustc having support for a given target
-triple? Just because LLVM has a backend for a given architecture
-doesn't mean rustc can target it, right?
 -- 
-Thanks,
-~Nick Desaulniers
+Regards,
+
+Laurent Pinchart
