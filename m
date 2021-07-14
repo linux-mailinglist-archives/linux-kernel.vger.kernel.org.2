@@ -2,161 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FD93C8AA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7A13C8AA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239992AbhGNSVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:21:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:38056 "EHLO foss.arm.com"
+        id S240006AbhGNSVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:21:55 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:34724 "EHLO srv6.fidu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhGNSVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:21:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 694A6D6E;
-        Wed, 14 Jul 2021 11:18:46 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8769E3F774;
-        Wed, 14 Jul 2021 11:18:45 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 19:18:43 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 06/13] mailbox: pcc: Add pcc_mbox_chan structure to hold
- shared memory region info
-Message-ID: <20210714181843.GC49078@e120937-lin>
-References: <20210708180851.2311192-1-sudeep.holla@arm.com>
- <20210708180851.2311192-7-sudeep.holla@arm.com>
+        id S229736AbhGNSVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 14:21:54 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 0F050C8007F;
+        Wed, 14 Jul 2021 20:19:02 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 2it8oTSVRxKX; Wed, 14 Jul 2021 20:19:00 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f13:3500:839f:11f6:c93a:c68b] (p200300e37F133500839f11F6c93aC68B.dip0.t-ipconnect.de [IPv6:2003:e3:7f13:3500:839f:11f6:c93a:c68b])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id E1538C8007C;
+        Wed, 14 Jul 2021 20:18:58 +0200 (CEST)
+Subject: Re: [PATCH v4 03/17] drm/uAPI: Add "active bpc" as feedback channel
+ for "max bpc" drm property
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        tzimmermann@suse.de, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+ <20210618091116.14428-4-wse@tuxedocomputers.com>
+ <18bbd0cf-4c37-ce9d-eb63-de4131a201e1@tuxedocomputers.com>
+ <11cd3340-46a1-9a6a-88f5-95c225863509@tuxedocomputers.com>
+ <20210630112141.319f67eb@eldfell>
+ <ca2827b5-9f6f-164b-6b3f-3f01898d3202@tuxedocomputers.com>
+ <20210701104256.247538e1@eldfell>
+ <b8db0280-f979-26a6-bf1b-148f8c4cc638@tuxedocomputers.com>
+Message-ID: <d55fcc23-2531-9da8-5c0c-68454e15411b@tuxedocomputers.com>
+Date:   Wed, 14 Jul 2021 20:18:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708180851.2311192-7-sudeep.holla@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b8db0280-f979-26a6-bf1b-148f8c4cc638@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 07:08:44PM +0100, Sudeep Holla wrote:
-> Currently PCC mailbox controller sets con_priv in each channel to hold
-> the pointer to pcct subspace entry it corresponds to. The mailbox uses
+Am 01.07.21 um 13:30 schrieb Werner Sembach:
+> Am 01.07.21 um 09:42 schrieb Pekka Paalanen:
+>> On Wed, 30 Jun 2021 11:42:10 +0200
+>> Werner Sembach <wse@tuxedocomputers.com> wrote:
+>>
+>>> Am 30.06.21 um 10:21 schrieb Pekka Paalanen:
+>>>> On Tue, 29 Jun 2021 13:02:05 +0200
+>>>> Werner Sembach <wse@tuxedocomputers.com> wrote:
+>>>>   
+>>>>> Am 28.06.21 um 19:03 schrieb Werner Sembach:
+>>>>>> Am 18.06.21 um 11:11 schrieb Werner Sembach:
+>>>>>>> Add a new general drm property "active bpc" which can be used by graphic
+>>>>>>> drivers to report the applied bit depth per pixel back to userspace.
+>>>>>>>
+>>>>>>> While "max bpc" can be used to change the color depth, there was no way to
+>>>>>>> check which one actually got used. While in theory the driver chooses the
+>>>>>>> best/highest color depth within the max bpc setting a user might not be
+>>>>>>> fully aware what his hardware is or isn't capable off. This is meant as a
+>>>>>>> quick way to double check the setup.
+>>>>>>>
+>>>>>>> In the future, automatic color calibration for screens might also depend on
+>>>>>>> this information being available.
+>>>>>>>
+>>>>>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>>>>>>> ---
+>>>>>>>    drivers/gpu/drm/drm_connector.c | 51 +++++++++++++++++++++++++++++++++
+>>>>>>>    include/drm/drm_connector.h     |  8 ++++++
+>>>>>>>    2 files changed, 59 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+>>>>>>> index da39e7ff6965..943f6b61053b 100644
+>>>>>>> --- a/drivers/gpu/drm/drm_connector.c
+>>>>>>> +++ b/drivers/gpu/drm/drm_connector.c
+>>>>>>> @@ -1197,6 +1197,14 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>>>>>>>     *	drm_connector_attach_max_bpc_property() to create and attach the
+>>>>>>>     *	property to the connector during initialization.
+>>>>>>>     *
+>>>>>>> + * active bpc:
+>>>>>>> + *	This read-only range property tells userspace the pixel color bit depth
+>>>>>>> + *	actually used by the hardware display engine on "the cable" on a
+>>>>>>> + *	connector. The chosen value depends on hardware capabilities, both
+>>>>>>> + *	display engine and connected monitor, and the "max bpc" property.
+>>>>>>> + *	Drivers shall use drm_connector_attach_active_bpc_property() to install
+>>>>>>> + *	this property.
+>>>>>>> + *
+>>>>>> Regarding "on the cable" and dithering: As far as I can tell, what the dithering option does, is setting a hardware
+>>>>>> register here:
+>>>>>>
+>>>>>> - https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4534
+>>>>>>
+>>>>>> - https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4571
+>>>>>>
+>>>>>> So dithering seems to be calculated by fixed purpose hardware/firmware outside of the driver?
+>>>>>>
+>>>>>> The Intel driver does not seem to set a target bpc/bpp for this hardware so I guess it defaults to 6 or 8 bpc?
+>>>>> Never mind it does. This switch-case does affect the dithering output:
+>>>>> https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4537
+>>>> Hi,
+>>>>
+>>>> I obviously do not know the intel driver or hardware at all, but
+>>>> to me that just looks like translating from bits per pixel to bits per
+>>>> channel in RGB mapping?
+>>> No, if i understand the documentation correctly: Writing bit depth here
+>>> with dithering enabled sets the dithering target bpc.
+>>>>   
+>>>>> As found in this documentation p.548:
+>>>>> https://01.org/sites/default/files/documentation/intel-gfx-prm-osrc-lkf-vol02c-commandreference-registers-part2.pdf
+>>>>>
+>>>>> So max bpc and active bpc are affecting/affected by the bpc after dithering.
+>>>> By definition, if the cable carries N bpc, then dithering does not
+>>>> change that. The cable still carries N bpc, but due to spatial or
+>>>> temporal dithering, the *observed* color resolution may or may not be
+>>>> higher than the cable bpc.
+>>> Yes, and max bpc and active bpc tell the cable bpc ist not the
+>>> *observed* bpc.
+>>>> Of course, if the cable bpc is 8, and dithering targets 6 bpc, then 2
+>>>> LSB on the cable are always zero, right?
+>>> I would assume that in this case only 6 bpc are actually send? Isn't the
+>>> whole thing of dithering that you can't send, for example, 8 bpc?
+>>>> Maybe one would want to do that if the monitor has a 6 bit panel and it
+>>>> simply ignored the 2 LSB, and the cable cannot go down to 6 bpc.
+>>> Is there dithering actually doing this? aka is my assumption above wrong?
+>>>
+>>> AMD code that confused me before, is hinting that you might be right:
+>>> https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c#L826
+>>>
+>>> there is a set_clamp depth and a separate DCP_SPATIAL_DITHER_DEPTH_30BPP
+>>>
+>>>> So, what does "max bpc" mean right now?
+>>>>
+>>>> It seems like dither on/off is insufficient information, one would also
+>>>> need to control the dithering target bpc. I suppose the driver has a
+>>>> policy on how it chooses the target bpc, but what is that policy? Is
+>>>> the dither target bpc the cable bpc or the sink bpc?
+>>>>
+>>>> Needless to say, I'm quite confused.
+>>> ... We need someone who knows what dithering on intel and amd gpu
+>>> actually means.
+>>>
+>>> But I don't want this to become a blocker for this patchset, because if
+>>> there is no dithering, which seems to be the norm, the active bpc
+>>> property is already really usefull as it is. So add a note to the docs
+>>> that the value might be invalid when dithering is active for now?
+>> Hi,
+>>
+>> not necessarily invalid. It all depends on how "max bpc" and "active
+>> bpc" are defined.
+>>
+>> If they are defined and implemented as "on the cable", then they are
+>> both well-defined and always valid, regardless of what dithering or bit
+>> clamping does, so this is the semantics I'd would prefer. It's clear,
+>> but of course does not tell full story.
+>>
+>> When better properties for dithering are added, those can then define
+>> how it works on top of cable bpc, with no impact on "max bpc" or
+>> "active bpc" properties.
+>>
+>> So if we cannot tell what "max bpc" is, then "active bpc" should just
+>> be defined as the same thing as "max bpc" affects, and leave the
+>> precise definition of both for later.
+> But as long as I don't know exactly how dithering is affected by max bpc I can't tell for sure if active bpc is acting
+> the same. That's why I wrote it is "undefined" to not run into a trap where the actual behavior have to change after the
+> fact.
+>> If the definition was observed bpc, then we would have problems and
+>> would need to know everything right now. But you can't really make
+>> promises of observed bpc anyway, because you don't know what the
+>> monitor does to the video signal I suppose. Unless you define it "as if
+>> observed through an ideal theoretical monitor" which then gets awkward
+>> to explain.
+> Yes, that's why I think describing the "raw" signal is the best and leave it to the user to know what his or her Monitor
+> is making out of it.
+>>
+>> Thanks,
+>> pq
+New idea: Instead of the "active"-properties with various if cases in 
+the kernel code, there could just be blob properties exposing the hdmi 
+infoframes, hdmi general control packages, dp misc0 and misc1 and dp vsc 
+sdp.
 
-nit: s/uses/users
+Combined they have all the color information and it is made sure that 
+it's what is actually send to the monitor (I would consider sending 
+something differed then what is told in the infoframes a bug).
 
-> will then fetch this pointer from the channel descriptor they get when
-> they request for the channel. Using that pointer they then parse the
-> pcct entry again to fetch all the information about shared memory region.
-> 
-> In order to remove individual users of PCC mailbox parsing the PCCT
-> subspace entries to fetch same information, let us consolidate the same
-> in pcc mailbox controller by parsing all the shared memory region
-> information into a structure that can also hold the mbox_chan pointer it
-> represent.
-> 
-> This can then be used as main PCC mailbox channel pointer that we can
-> return as part of pcc_mbox_request_channel instead of standard mailbox
-> channel pointer.
-> 
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/mailbox/pcc.c | 27 +++++++++++++++++++++++++++
->  include/acpi/pcc.h    |  9 +++++++++
->  2 files changed, 36 insertions(+)
-> 
-> diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-> index 5f19bee71c04..affde0995d52 100644
-> --- a/drivers/mailbox/pcc.c
-> +++ b/drivers/mailbox/pcc.c
-> @@ -67,11 +67,13 @@ static struct mbox_chan *pcc_mbox_channels;
->  /**
->   * struct pcc_chan_info - PCC channel specific information
->   *
-> + * @chan: PCC channel information with Shared Memory Region info
->   * @db_vaddr: cached virtual address for doorbell register
->   * @db_ack_vaddr: cached virtual address for doorbell ack register
->   * @db_irq: doorbell interrupt
->   */
->  struct pcc_chan_info {
-> +	struct pcc_mbox_chan chan;
->  	void __iomem *db_vaddr;
->  	void __iomem *db_ack_vaddr;
->  	int db_irq;
-> @@ -469,6 +471,27 @@ static void pcc_parse_subspace_db_reg(struct pcc_chan_info *pchan,
->  						  db_reg->bit_width / 8);
->  }
->  
-> +/**
-> + * pcc_parse_subspace_shmem - Parse the PCC Shared Memory Region information
-> + *
-> + * @pchan: Pointer to the PCC channel info structure.
-> + * @pcct_entry: Pointer to the ACPI subtable header.
-> + *
-> + */
-> +static void pcc_parse_subspace_shmem(struct pcc_chan_info *pchan,
-> +				     struct acpi_subtable_header *pcct_entry)
-> +{
-> +	struct acpi_pcct_subspace *pcct_ss;
-> +
-> +	pcct_ss = (struct acpi_pcct_subspace *)pcct_entry;
-> +
-> +	pchan->chan.shmem_base_addr = pcct_ss->base_address;
-> +	pchan->chan.shmem_size = pcct_ss->length;
-> +	pchan->chan.latency = pcct_ss->latency;
-> +	pchan->chan.max_access_rate = pcct_ss->max_access_rate;
-> +	pchan->chan.min_turnaround_time = pcct_ss->min_turnaround_time;
-> +}
-> +
+They also have built in version numbers, if in the future they contain 
+more information.
 
-Out of curiosity this ACPI provided latency/max_access/turnaround_time
-are supposed to be considered and/or enforced where ? by the clients
-using this controller ?
+Only disadvantage: We leave parsing for human readable output to the 
+userspace.
 
->  /**
->   * acpi_pcc_probe - Parse the ACPI tree for the PCCT.
->   *
-> @@ -536,6 +559,8 @@ static int __init acpi_pcc_probe(void)
->  		struct pcc_chan_info *pchan = chan_info + i;
->  		pcc_mbox_channels[i].con_priv = pcct_entry;
->  
-> +		pchan->chan.mchan = &pcc_mbox_channels[i];
-> +
->  		if (pcc_mbox_ctrl.txdone_irq) {
->  			rc = pcc_parse_subspace_irq(pchan, pcct_entry);
->  			if (rc < 0)
-> @@ -543,6 +568,8 @@ static int __init acpi_pcc_probe(void)
->  		}
->  		pcc_parse_subspace_db_reg(pchan, pcct_entry);
->  
-> +		pcc_parse_subspace_shmem(pchan, pcct_entry);
-> +
->  		pcct_entry = (struct acpi_subtable_header *)
->  			((unsigned long) pcct_entry + pcct_entry->length);
->  	}
-> diff --git a/include/acpi/pcc.h b/include/acpi/pcc.h
-> index 4dec4ed138cd..5e510a6b8052 100644
-> --- a/include/acpi/pcc.h
-> +++ b/include/acpi/pcc.h
-> @@ -9,6 +9,15 @@
->  #include <linux/mailbox_controller.h>
->  #include <linux/mailbox_client.h>
->  
-> +struct pcc_mbox_chan {
-> +	struct mbox_chan *mchan;
-> +	u64 shmem_base_addr;
-> +	u64 shmem_size;
-> +	u32 latency;
-> +	u32 max_access_rate;
-> +	u16 min_turnaround_time;
-> +};
-> +
->  #define MAX_PCC_SUBSPACES	256
->  #ifdef CONFIG_PCC
->  extern struct mbox_chan *pcc_mbox_request_channel(struct mbox_client *cl,
-> -- 
-> 2.25.1
+Alternatively keep the "active"-properties but fill them from the 
+infoframes.
 
+I'm not entirely sure where to do that on amd, because there the 
+infoframes are directly created in the dc code shortly before writing 
+them to the hardware registers and immediately forgotten afterwards. But 
+you still have access to the connector struct from that code so the 
+property could be updated directly there.
 
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-
-Thanks,
-Cristian
