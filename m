@@ -2,163 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025EC3C84D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658DA3C84C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239344AbhGNM6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:58:30 -0400
-Received: from mta02.hs-regensburg.de ([194.95.104.12]:57498 "EHLO
-        mta02.hs-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhGNM63 (ORCPT
+        id S239506AbhGNMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239410AbhGNMxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:58:29 -0400
-X-Greylist: delayed 343 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 08:58:28 EDT
-Received: from E16S03.hs-regensburg.de (e16s03.hs-regensburg.de [IPv6:2001:638:a01:8013::93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client CN "E16S03", Issuer "E16S03" (not verified))
-        by mta02.hs-regensburg.de (Postfix) with ESMTPS id 4GPy5D0TgKzyKv;
-        Wed, 14 Jul 2021 14:49:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oth-regensburg.de;
-        s=mta01-20160622; t=1626266992;
-        bh=0CtFi6kf50KzSJTbgdjhxL+nHslBoWYbSgQkNnXWe48=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To:From;
-        b=twUaIoDXiGsfy4Hi2vPBV4v2dKleUXUGQoE1ndXp5yCESnUW3hJ8Zp/EKgiWoxiA/
-         uapj2Nvc1wyJ9H7HCfrF1YcxQVT8gqUo20NW0tpu4X/NMf2itNXxHtyxUI2G1fAx9E
-         o6qVkhB+COr7mbIvEnwQpk1qI2ukmykhOb5hw3Z2U/usotCJeKUYtrnUeaK85niKAu
-         jPg/SpcmdtLlC3kio/glzALlpA69GVI9eaM9m5ml17afwvvFi9s98eVRUvrKyQrNjK
-         5bDnUhHd4BRv0H/4Rxf0r2vbCp8ZdxJhyuC+fTGPXDidNfagUJYrZAp3ZjttOX64+r
-         gGHvGbOH8Si7w==
-Received: from [IPv6:2001:638:a01:8061:5c51:6883:5436:5db]
- (2001:638:a01:8013::138) by E16S03.hs-regensburg.de (2001:638:a01:8013::93)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.10; Wed, 14 Jul
- 2021 14:49:51 +0200
-Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
- <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
- <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
-From:   Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Message-ID: <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
-Date:   Wed, 14 Jul 2021 14:49:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 14 Jul 2021 08:53:42 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004F0C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 05:50:50 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
+        by baptiste.telenet-ops.be with bizsmtp
+        id V0qW250061ccfby010qWMr; Wed, 14 Jul 2021 14:50:49 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3eLO-0018dL-En; Wed, 14 Jul 2021 14:50:30 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3eLN-00AaDl-Lw; Wed, 14 Jul 2021 14:50:29 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Mike Rapoport <rppt@kernel.org>
+Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v4 00/10] Add generic support for kdump DT properties
+Date:   Wed, 14 Jul 2021 14:50:10 +0200
+Message-Id: <cover.1626266516.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [2001:638:a01:8013::138]
-X-ClientProxiedBy: E16S04.hs-regensburg.de (2001:638:a01:8013::94) To
- E16S03.hs-regensburg.de (2001:638:a01:8013::93)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+	Hi all,
+
+This patch series adds generic support for parsing DT properties related
+to crash dump kernels ("linux,elfcorehdr" and "linux,elfcorehdr" under
+the "/chosen" node), makes use of it on arm64, arm32, and (partially)
+riscv, and performs a few cleanups.  It is an evolution of the
+combination of [1] and [2].
+
+The series consists of 5 parts:
+  1. Patches 1-2 prepare (the visibility of) variables used to hold
+     information retrieved from the DT properties.
+  2. Patches 3-5 add support to the FDT core for parsing the properties.
+     This can co-exist safely with architecture-specific parsing, until
+     the latter has been removed.
+  3. Patch 6 removes the non-standard handling of "linux,elfcorehdr" on
+     riscv.
+     I think this can be applied independently, as the non-standard
+     handling is in v5.13, but upstream riscv kdump support is still
+     incomplete.
+  4. Patches 7-9 convert arm64 to use the generic handling instead of
+     its own implementation.
+  5. Patch 10 adds support for kdump properties to arm32.
+     The corresponding patch for kexec-tools is "[PATCH] arm: kdump: Add
+     DT properties to crash dump kernel's DTB"[3], which is still valid.
+
+Changes compared to the previous versions:
+  - Make elfcorehdr_{addr,size} always visible,
+  - Add variables for usable memory limitation,
+  - Use IS_ENABLED() instead of #ifdef (incl. initrd and arm64),
+  - Clarify what architecture-specific code is still responsible for,
+  - Add generic support for parsing linux,usable-memory-range,
+  - Remove custom linux,usable-memory-range parsing on arm64,
+  - Use generic handling on ARM.
+  
+This has been tested on arm32 and arm64, and compile-tested on riscv64.
+
+Thanks for your comments!
+
+[1] "[PATCH v3] ARM: Parse kdump DT properties"
+    https://lore.kernel.org/r/20210317113130.2554368-1-geert+renesas@glider.be/
+[2] "[PATCH 0/3] Add generic-support for linux,elfcorehdr and fix riscv"
+    https://lore.kernel.org/r/cover.1623780059.git.geert+renesas@glider.be/
+[3] "[PATCH] arm: kdump: Add DT properties to crash dump kernel's DTB"
+    https://lore.kernel.org/linux-arm-kernel/20200902154129.6358-1-geert+renesas@glider.be/
 
 
-On 14/07/2021 08:54, Jiri Slaby wrote:
-> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
->> There is no need to try MSI/MSI-X only on selected devices.
->> If MSI is not supported while neing advertised it means device
-> 
-> being
-> 
->> is broken and we rather introduce a list of such devices which
->> hopefully will be small or never appear.
-> 
-> Hmm, have you checked the commit which introduced the whitelist?
-> 
->     Nevertheless, this needs to handled with care: while many 8250 devices
->     actually claim to support MSI(-X) interrupts it should not be
-> enabled be
->     default. I had at least one device in my hands with broken MSI
->     implementation.
-> 
->     So better introduce a whitelist with devices that are known to support
->     MSI(-X) interrupts. I tested all devices mentioned in the patch.
-> 
-> 
-> You should have at least CCed the author for an input.
+Geert Uytterhoeven (10):
+  crash_dump: Make elfcorehdr_{addr,size} always visible
+  memblock: Add variables for usable memory limitation
+  of: fdt: Add generic support for parsing elf core headers property
+  of: fdt: Add generic support for parsing usable memory range property
+  of: fdt: Use IS_ENABLED(CONFIG_BLK_DEV_INITRD) instead of #ifdef
+  riscv: Remove non-standard linux,elfcorehdr handling
+  arm64: kdump: Remove custom linux,elfcorehdr parsing
+  arm64: kdump: Remove custom linux,usable-memory-range parsing
+  arm64: kdump: Use IS_ENABLED(CONFIG_CRASH_DUMP) instead of #ifdef
+  ARM: Parse kdump DT properties
 
-Yep, back then I was testing three different 8250 pci cards. All of them
-claimed to support MSI, while one really worked with MSI, the one that I
-whitelisted. So I thought it would be better to use legacy IRQs as long
-as no one tested a specific card to work with MSI.
+ Documentation/devicetree/bindings/chosen.txt  | 12 ++--
+ .../arm/boot/compressed/fdt_check_mem_start.c | 48 ++++++++++++--
+ arch/arm/mm/init.c                            | 30 +++++++++
+ arch/arm64/mm/init.c                          | 63 +------------------
+ arch/riscv/mm/init.c                          | 20 ------
+ drivers/of/fdt.c                              | 63 ++++++++++++++++---
+ include/linux/crash_dump.h                    |  7 ++-
+ include/linux/memblock.h                      |  6 ++
+ mm/memblock.c                                 |  2 +
+ 9 files changed, 148 insertions(+), 103 deletions(-)
 
-> 
->> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> ---
->>   drivers/tty/serial/8250/8250_pci.c | 28 ++++++++--------------------
->>   1 file changed, 8 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/tty/serial/8250/8250_pci.c
->> b/drivers/tty/serial/8250/8250_pci.c
->> index 937861327aca..02825c8c5f84 100644
->> --- a/drivers/tty/serial/8250/8250_pci.c
->> +++ b/drivers/tty/serial/8250/8250_pci.c
->> @@ -58,18 +58,6 @@ struct serial_private {
->>     #define PCI_DEVICE_ID_HPE_PCI_SERIAL    0x37e
->>   -static const struct pci_device_id pci_use_msi[] = {
->> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9900,
->> -             0xA000, 0x1000) },
->> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9912,
->> -             0xA000, 0x1000) },
->> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9922,
->> -             0xA000, 0x1000) },
->> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_HP_3PAR,
->> PCI_DEVICE_ID_HPE_PCI_SERIAL,
->> -             PCI_ANY_ID, PCI_ANY_ID) },
->> -    { }
->> -};
->> -
+-- 
+2.25.1
 
-Don't do that… And don't convert it to a blacklist. A blacklist will
-break users until they report that something doesn't work.
+Gr{oetje,eeting}s,
 
-  Ralf
+						Geert
 
->>   static int pci_default_setup(struct serial_private*,
->>         const struct pciserial_board*, struct uart_8250_port *, int);
->>   @@ -3994,14 +3982,9 @@ pciserial_init_ports(struct pci_dev *dev,
->> const struct pciserial_board *board)
->>       if (board->flags & FL_NOIRQ) {
->>           uart.port.irq = 0;
->>       } else {
->> -        if (pci_match_id(pci_use_msi, dev)) {
->> -            dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
->> -            pci_set_master(dev);
->> -            rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
->> -        } else {
->> -            dev_dbg(&dev->dev, "Using legacy interrupts\n");
->> -            rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
->> -        }
->> +        pci_set_master(dev);
-> 
-> But bus mastering is not about MSIs. I *think* it's still OK, but you
-> need to document that in the commit log too.
-> 
-> Actually, why the commit which added this code turns on bus mastering?
-> 
->> +
->> +        rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
->>           if (rc < 0) {
->>               kfree(priv);
->>               priv = ERR_PTR(rc);
->> @@ -4009,6 +3992,11 @@ pciserial_init_ports(struct pci_dev *dev, const
->> struct pciserial_board *board)
->>           }
->>             uart.port.irq = pci_irq_vector(dev, 0);
->> +
->> +        if (pci_dev_msi_enabled(dev))
->> +            dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
->> +        else
->> +            dev_dbg(&dev->dev, "Using legacy interrupts\n");
->>       }
->>         uart.port.dev = &dev->dev;
->>
-> 
-> thanks,
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
