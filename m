@@ -2,274 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4BB3C8A77
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8E23C8A7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239689AbhGNSLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:11:13 -0400
-Received: from comms.puri.sm ([159.203.221.185]:55388 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229651AbhGNSLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:11:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 9AC38DFCFB;
-        Wed, 14 Jul 2021 11:07:50 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4QRBzjwfMO9H; Wed, 14 Jul 2021 11:07:49 -0700 (PDT)
-Message-ID: <eae3abb65452a09f822088eab10b26a5d35273ea.camel@puri.sm>
-Subject: Re: [PATCH v6 1/3] dt-bindings: media: document the
- nxp,imx8mq-mipi-csi2 receiver phy and controller
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
-        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
-        shawnguo@kernel.org, slongerbeam@gmail.com
-Date:   Wed, 14 Jul 2021 20:07:44 +0200
-In-Reply-To: <YO8kgHoV/PVlF3oV@pendragon.ideasonboard.com>
-References: <20210714111931.324485-1-martin.kepplinger@puri.sm>
-         <20210714111931.324485-2-martin.kepplinger@puri.sm>
-         <YO8kgHoV/PVlF3oV@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
-Content-Transfer-Encoding: 8bit
+        id S239861AbhGNSMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:12:16 -0400
+Received: from mail-pg1-f179.google.com ([209.85.215.179]:39757 "EHLO
+        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229651AbhGNSMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 14:12:15 -0400
+Received: by mail-pg1-f179.google.com with SMTP id a2so3319630pgi.6;
+        Wed, 14 Jul 2021 11:09:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LIzD3a4Y0Ejr+434x3kFvkLLT9Fc2hxKYkwrbGXVjSY=;
+        b=enqIO1V/DfyIEJFQR86o+piWXwL4Ut323CcN7t9BSZkB4QtHUPQipbrILyqSCZbPO6
+         fkE3apmIc7rzYSEwglk6hhdtsaYUEqNWaxYZ+rNBRn71oViLc+ZSz5Uj4T4rxhHhb0uK
+         tzb3/tK2XoXMaDfdSJXJrgr1uFfcwYNI8uemM8mWn9VOPxuR8Oe2uHQ0E5H/alirItnL
+         qiB40yr/EHlkLgb9YRmnqENXS7hBHEel79UMpTbnoxCtmP+JIHa0D26dCS1kMc01RuBB
+         Ar9Zosq0eYNYfE7fOUIz9Tf1NmuFZyvcnUpaUUF/G6M+K9u3Mki58FdkhpXcX2lZdKM5
+         Ossg==
+X-Gm-Message-State: AOAM5322m2GsCN0EgVvYe+NXGa81o5D9mQkymxBNNmGc1hsEKl3ltDLp
+        Ja/NKctCvKALJ73AAGHkUMk=
+X-Google-Smtp-Source: ABdhPJx9teTmAtYN19Yd/nQG8C6ZbdsPelnS5mxH8YBC7VR+v8bydqlC8BZSICOe/VSBsiH69KOoAw==
+X-Received: by 2002:a63:e26:: with SMTP id d38mr5923790pgl.42.1626286163206;
+        Wed, 14 Jul 2021 11:09:23 -0700 (PDT)
+Received: from ?IPv6:2620:0:1000:2004:91cc:a7b9:6739:15bc? ([2620:0:1000:2004:91cc:a7b9:6739:15bc])
+        by smtp.gmail.com with ESMTPSA id q17sm2787438pjd.42.2021.07.14.11.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 11:09:22 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: add missing host_lock in setup_xfer_req
+To:     Bean Huo <huobean@gmail.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
+        Asutosh Das <asutoshd@codeaurora.org>
+References: <20210701005117.3846179-1-jaegeuk@kernel.org>
+ <38432018-e8bf-f9f3-00bf-cd4b81c95c88@acm.org>
+ <69b367bc44084f901d0d71fb8f9633ea7e5df36b.camel@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <b0cd26d0-6ebc-b633-8669-a558597cc91d@acm.org>
+Date:   Wed, 14 Jul 2021 11:09:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <69b367bc44084f901d0d71fb8f9633ea7e5df36b.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 14.07.2021 um 20:53 +0300 schrieb Laurent Pinchart:
-> Hi Martin,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Jul 14, 2021 at 01:19:29PM +0200, Martin Kepplinger wrote:
-> > The i.MX8MQ SoC integrates a different MIPI CSI receiver as the
-> > i.MX8MM so
-> > describe the DT bindings for it.
-> > 
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 173
-> > ++++++++++++++++++
-> >  1 file changed, 173 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-
-> > mipi-csi2.yaml
-> > b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
-> > new file mode 100644
-> > index 000000000000..97222485f223
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-
-> > csi2.yaml
-> > @@ -0,0 +1,173 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: 
-> > http://devicetree.org/schemas/media/nxp,imx8mq-mipi-csi2.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: NXP i.MX8MQ MIPI CSI-2 receiver
-> > +
-> > +maintainers:
-> > +  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> > +
-> > +description: |-
-> > +  This binding covers the CSI-2 RX PHY and host controller
-> > included in the
-> > +  NXP i.MX8MQ SoC. It handles the sensor/image input and process
-> > for all the
-> > +  input imaging devices.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - fsl,imx8mq-mipi-csi2
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: core is the RX Controller Core Clock input.
-> > This clock
-> > +                     must be exactly equal to or faster than the
-> > receive
-> > +                     byteclock from the RX DPHY.
-> > +      - description: esc is the Rx Escape Clock. This must be the
-> > same escape
-> > +                     clock that the RX DPHY receives.
-> > +      - description: ui is the pixel clock (phy_ref up to 333Mhz).
-> 
-> Where did you get the 333MHz limit from ? The information I've
-> received
-> indicate a limit of 125MHz for the UI clock (and 266 and 133 MHz for
-> the
-> core and esc clocks respectively).
+On 7/13/21 12:45 PM, Bean Huo wrote:
+> This change only impacts on the Samsung exynos platform. and Can's
+> optimization patch is to optimise the host_lock,, and removed
+> host_lock, now add back in this function makes sense to me.
+> but I am thinking how about hba->host_sem?
 
-The latest ref.manual revison has this corrected to 333Mhz. Look at the
-"changelog" they have in the RM, to find it quickly.
+Hi Bean,
 
-> 
-> With this addressed,
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> > +                     See the reference manual for details.
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: core
-> > +      - const: esc
-> > +      - const: ui
-> > +
-> > +  power-domains:
-> > +    maxItems: 1
-> > +
-> > +  resets:
-> > +    items:
-> > +      - description: CORE_RESET reset register bit definition
-> > +      - description: PHY_REF_RESET reset register bit definition
-> > +      - description: ESC_RESET reset register bit definition
-> > +
-> > +  fsl,mipi-phy-gpr:
-> > +    description: |
-> > +      The phandle to the imx8mq syscon iomux-gpr with the register
-> > +      for setting RX_ENABLE for the mipi receiver.
-> > +
-> > +      The format should be as follows:
-> > +      <gpr req_gpr>
-> > +      gpr is the phandle to general purpose register node.
-> > +      req_gpr is the gpr register offset of RX_ENABLE for the mipi
-> > phy.
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    items:
-> > +      items:
-> > +        - description: The 'gpr' is the phandle to general purpose
-> > register node.
-> > +        - description: The 'req_gpr' is the gpr register offset
-> > containing
-> > +                       CSI2_1_RX_ENABLE or CSI2_2_RX_ENABLE
-> > respectively.
-> > +          maximum: 0xff
-> > +
-> > +  interconnects:
-> > +    maxItems: 1
-> > +
-> > +  interconnect-names:
-> > +    const: dram
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        $ref: /schemas/graph.yaml#/$defs/port-base
-> > +        unevaluatedProperties: false
-> > +        description:
-> > +          Input port node, single endpoint describing the CSI-2
-> > transmitter.
-> > +
-> > +        properties:
-> > +          endpoint:
-> > +            $ref: video-interfaces.yaml#
-> > +            unevaluatedProperties: false
-> > +
-> > +            properties:
-> > +              data-lanes:
-> > +                items:
-> > +                  minItems: 1
-> > +                  maxItems: 4
-> > +                  items:
-> > +                    - const: 1
-> > +                    - const: 2
-> > +                    - const: 3
-> > +                    - const: 4
-> > +
-> > +            required:
-> > +              - data-lanes
-> > +
-> > +      port@1:
-> > +        $ref: /schemas/graph.yaml#/properties/port
-> > +        description:
-> > +          Output port node
-> > +
-> > +    required:
-> > +      - port@0
-> > +      - port@1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - power-domains
-> > +  - resets
-> > +  - fsl,mipi-phy-gpr
-> > +  - ports
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/imx8mq-clock.h>
-> > +    #include <dt-bindings/interconnect/imx8mq.h>
-> > +
-> > +    csi@30a70000 {
-> > +        compatible = "fsl,imx8mq-mipi-csi2";
-> > +        reg = <0x30a70000 0x1000>;
-> > +        clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-> > +                 <&clk IMX8MQ_CLK_CSI1_ESC>,
-> > +                 <&clk IMX8MQ_CLK_CSI1_PHY_REF>;
-> > +        clock-names = "core", "esc", "ui";
-> > +        assigned-clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-> > +                          <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-> > +                          <&clk IMX8MQ_CLK_CSI1_ESC>;
-> > +        assigned-clock-rates = <266000000>, <200000000>,
-> > <66000000>;
-> > +        assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-> > +                                 <&clk IMX8MQ_SYS2_PLL_1000M>,
-> > +                                 <&clk IMX8MQ_SYS1_PLL_800M>;
-> > +        power-domains = <&pgc_mipi_csi1>;
-> > +        resets = <&src IMX8MQ_RESET_MIPI_CSI1_CORE_RESET>,
-> > +                 <&src IMX8MQ_RESET_MIPI_CSI1_PHY_REF_RESET>,
-> > +                 <&src IMX8MQ_RESET_MIPI_CSI1_ESC_RESET>;
-> > +        fsl,mipi-phy-gpr = <&iomuxc_gpr 0x88>;
-> > +        interconnects = <&noc IMX8MQ_ICM_CSI1 &noc
-> > IMX8MQ_ICS_DRAM>;
-> > +        interconnect-names = "dram";
-> > +
-> > +        ports {
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +
-> > +            port@0 {
-> > +                reg = <0>;
-> > +
-> > +                imx8mm_mipi_csi_in: endpoint {
-> > +                    remote-endpoint = <&imx477_out>;
-> > +                    data-lanes = <1 2 3 4>;
-> > +                };
-> > +            };
-> > +
-> > +            port@1 {
-> > +                reg = <1>;
-> > +
-> > +                imx8mm_mipi_csi_out: endpoint {
-> > +                    remote-endpoint = <&csi_in>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > +
-> > +...
-> 
+Calls of exynos_ufs_specify_nexus_t_xfer_req() must be serialized, hence 
+Jaegeuks' patch. This function is called from the I/O submission path so 
+performance matters. My understanding is that spinlocks have less 
+overhead than semaphores. Hence the choice for a spinlock.
 
+Thanks,
 
+Bart.
