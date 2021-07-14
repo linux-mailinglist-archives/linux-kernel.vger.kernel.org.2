@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928893C80F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5453C80EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238141AbhGNJHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:07:37 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3392 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238113AbhGNJHg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:07:36 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GPrmn11kbz6D8yT;
-        Wed, 14 Jul 2021 16:50:17 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 11:04:43 +0200
-Received: from localhost (10.47.88.217) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 14 Jul
- 2021 10:04:42 +0100
-Date:   Wed, 14 Jul 2021 10:04:22 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Pavel Machek <pavel@denx.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        frank zago <frank@zago.net>
-Subject: Re: [PATCH 5.10 073/593] iio: light: tcs3472: do not free
- unallocated IRQ
-Message-ID: <20210714100422.000051a2@Huawei.com>
-In-Reply-To: <20210713213128.GA23770@amd>
-References: <20210712060843.180606720@linuxfoundation.org>
-        <20210712060851.173417192@linuxfoundation.org>
-        <20210713213128.GA23770@amd>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S238607AbhGNJH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:07:28 -0400
+Received: from mga06.intel.com ([134.134.136.31]:54258 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238496AbhGNJH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:07:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="271424073"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="271424073"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 02:04:34 -0700
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="430363351"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 02:04:31 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m3aob-00DFaO-0v; Wed, 14 Jul 2021 12:04:25 +0300
+Date:   Wed, 14 Jul 2021 12:04:25 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     shruthi.sanil@intel.com, daniel.lezcano@linaro.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH v4 1/2] dt-bindings: timer: Add bindings for Intel Keem
+ Bay SoC Timer
+Message-ID: <YO6ome7Opd6kjqua@smile.fi.intel.com>
+References: <20210628061410.8009-1-shruthi.sanil@intel.com>
+ <20210628061410.8009-2-shruthi.sanil@intel.com>
+ <20210714024756.GA1355219@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.88.217]
-X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714024756.GA1355219@robh.at.kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 23:31:28 +0200
-Pavel Machek <pavel@denx.de> wrote:
+On Tue, Jul 13, 2021 at 08:47:56PM -0600, Rob Herring wrote:
+> On Mon, Jun 28, 2021 at 11:44:09AM +0530, shruthi.sanil@intel.com wrote:
 
-> Hi!
+> > +  The parent node represents the common general configuration details and
+> > +  the child nodes represents the counter and timers.
 > 
-> > commit 7cd04c863f9e1655d607705455e7714f24451984 upstream.
-> > 
-> > Allocating an IRQ is conditional to the IRQ existence, but freeing it
-> > was not. If no IRQ was allocate, the driver would still try to free
-> > IRQ 0. Add the missing checks.
-> > 
-> > This fixes the following trace when the driver is removed:
-> > 
-> > [  100.667788] Trying to free already-free IRQ 0  
-> 
-> AFAICT this will need more fixing, because IRQ == 0 is a valid
-> IRQ. NO_IRQ (aka -1) should be safe to use for "no irq assigned".
-> 
+> I don't think all the child nodes are necessary. Are the counters and 
+> timers configurable (say on another SoC)? If not, then a single node 
+> here would suffice.
 
-I thought we had long put this to bed.  IRQ == 0 is not a valid irq number.
-If there is an error in parsing DT (e.g. no irq specified) it returns 0
-not NO_IRQ.  Naturally irq chips can have a 0, but that's pre translation to
-virtual IRQ space.
+If you may notice the children may have different properties that can't be
+known ahead, such as IRQ line. On some platforms it may be this mapping, on
+another it maybe different.
 
-Many years ago, ARM did have 0 as as valid IRQ, but that got cleaned up
-to make it easier to do generic code like this.
+With all respect for the simplification I think we can't do it here.
 
-Jonathan
+-- 
+With Best Regards,
+Andy Shevchenko
 
-
-> Best regards,
-> 								Pavel
-> 
-> > +++ b/drivers/iio/light/tcs3472.c
-> > @@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_clie
-> >  	return 0;
-> >  
-> >  free_irq:
-> > -	free_irq(client->irq, indio_dev);
-> > +	if (client->irq)
-> > +		free_irq(client->irq, indio_dev);
-> >  buffer_cleanup:
-> >  	iio_triggered_buffer_cleanup(indio_dev);
-> >  	return ret;  
-> 
 
