@@ -2,227 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A5E3C8983
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDCC3C8966
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239641AbhGNRRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:17:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35631 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239234AbhGNRR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:17:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="232208058"
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
-   d="scan'208";a="232208058"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 10:14:36 -0700
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
-   d="scan'208";a="413353793"
-Received: from alpinagh-mobl1.amr.corp.intel.com (HELO [10.212.71.223]) ([10.212.71.223])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 10:14:35 -0700
-Subject: Re: [PATCH v2 12/16] ASoC: qcom: audioreach: add q6prm support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.de,
-        plai@codeaurora.org, linux-kernel@vger.kernel.org
-References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-13-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <65c935b8-fb36-8da7-9a27-1ecd6559c41b@linux.intel.com>
-Date:   Wed, 14 Jul 2021 12:09:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S237468AbhGNRNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhGNRNH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:13:07 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91065C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:10:14 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id b14-20020a056830310eb02904c7e78705f4so3190633ots.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WljVwMgt8MmNIHRKgOl9FuBOXN9yb1WIc0SSJd8F1g8=;
+        b=FRGUPPRXo0hHbuF+jBDSkTQ4iqndt8V5NTcAOFVGAThqMwCCzwZk5K8tPXv3w7BSxc
+         H5vHHmNXht7h/k2YbrL+cC8dTSSkBgo6nEBu2xjeHv1RPfS+t7+iqImknJVDQKz2wLuq
+         z2XZBihUpbHe/UwEuBhXIAe0ml1gyRDe8jz7738KOq3L6iBOE01PXMIkqrbT4iBwZGdf
+         aVE30AmAd+7LTLpUY10fj8M/x2ACQAkIr45arQ6F/oeE5EVqHVD4/6J2cvvRt1/ZwD9r
+         korpQK4VwcptZsV0WXhyUOZ/IM/s6yBarr6tYxHfiNmb/EoVAA4dSbGJVGZHK5gro/OA
+         YblQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WljVwMgt8MmNIHRKgOl9FuBOXN9yb1WIc0SSJd8F1g8=;
+        b=AaForwpzHczb6EQwYWDkc+EklTMvOazXSoFEOEC7G8XTfhDqv9T4ZIMuDn52d9Harq
+         REj/ViFJZ5/T0WL9btTmnWqkuEsVxnznx01fEkfbQJ1/arapZK7t6cOb5qvoGbobHbBV
+         kF9W6/MyLzLvCAea4QD8r9r8OIz0XKHbhPJ7xSTkez2RRGLRRZYyQYgApEmbasCwglcF
+         NoO+YxeYsEySw4T+IOKV6F6Q1UG9wCKjw9hOxH5CwdmHS9inSiUrcGoyWTd5M/gUzikL
+         ieQ+QYbEkPI2EzK6kDph2cLywMC0IZ4CkbFRqEOTQG3CYnTT5VIUftzGut2K3CQsAyLt
+         //dA==
+X-Gm-Message-State: AOAM532HsgPw1B8eQ01wWvUnTAVmGkmIOT8jkglrDL2QBslfqa9S475G
+        CGggO/9Yp7PoL9NhPWbQavec4g==
+X-Google-Smtp-Source: ABdhPJzj4XrbFecWv5la+KvE6ks1sWoks2nxcoBXwLoxijbRm2q4j+1XJjRlx6BCSdTVX6lyGC7ESg==
+X-Received: by 2002:a05:6830:1118:: with SMTP id w24mr9162120otq.89.1626282613845;
+        Wed, 14 Jul 2021 10:10:13 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id i188sm615879oih.7.2021.07.14.10.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 10:10:13 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 12:10:10 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+Message-ID: <YO8ackdFtbGhAqtM@yoga>
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
+ <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+ <20210706115517.GB4529@sirena.org.uk>
+ <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
+ <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com>
+ <20210714164710.GC2719790@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210714153039.28373-13-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714164710.GC2719790@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 14 Jul 11:47 CDT 2021, Rob Herring wrote:
 
+> On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
+> > Hi,
+> > 
+> > On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > - Peter (the email was bouncing)
+> > 
+> > + Peter's kernel.org address
+> > 
+> > >
+> > > On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
+> > > >
+> > > > On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+> > > > > On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+> > > >
+> > > > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > > > > > being controlled through the UART and WiFi being present on PCIe
+> > > > > > bus. Both blocks share common power sources. Add device driver handling
+> > > > > > power sequencing of QCA6390/1.
+> > > >
+> > > > > Power sequencing of discoverable buses have been discussed several
+> > > > > times before at LKML. The last attempt [1] I am aware of, was in 2017
+> > > > > from Peter Chen. I don't think there is a common solution, yet.
+> > > >
+> > > > This feels a bit different to the power sequencing problem - it's not
+> > > > exposing the individual inputs to the device but rather is a block that
+> > > > manages everything but needs a bit of a kick to get things going (I'd
+> > > > guess that with ACPI it'd be triggered via AML).  It's in the same space
+> > > > but it's not quite the same issue I think, something that can handle
+> > > > control of the individual resources might still struggle with this.
+> > >
+> > > Well, to me it looks very similar to those resouses we could manage
+> > > with the mmc pwrseq, for SDIO. It's also typically the same kind of
+> > > combo-chips that moved from supporting SDIO to PCIe, for improved
+> > > performance I guess. More importantly, the same constraint to
+> > > pre-power on the device is needed to allow it to be discovered/probed.
+> > 
+> > In our case we'd definitely use pwrseq for PCIe bus and we can also
+> > benefit from using pwrseq for serdev and for platform busses also (for
+> > the same story of WiFi+BT chips).
+> > 
+> > I can take a look at rewriting pwrseq code to also handle the PCIe
+> > bus. Rewriting it to be a generic lib seems like an easy task,
+> > plugging it into PCIe code would be more fun.
+> > 
+> > Platform and serdev... Definitely even more fun.
+> 
+> I don't want to see pwrseq (the binding) expanded to other buses. If 
+> that was the answer, we wouldn't be having this discussion. It was a 
+> mistake for MMC IMO. 
+> 
 
+But what do you want to see?
 
-> +static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt,
-> +			uint32_t rsp_opcode)
-> +{
-> +	gpr_device_t *gdev = prm->gdev;
-> +	struct gpr_hdr *hdr = &pkt->hdr;
-> +	int rc;
-> +
-> +	mutex_lock(&prm->lock);
-> +	prm->result.opcode = 0;
-> +	prm->result.status = 0;
-> +
-> +	rc = gpr_send_pkt(prm->gdev, pkt);
-> +	if (rc < 0)
-> +		goto err;
-> +
-> +	if (rsp_opcode)
-> +		rc = wait_event_timeout(prm->wait,
-> +					(prm->result.opcode == hdr->opcode) ||
-> +					(prm->result.opcode == rsp_opcode),
-> +					5 * HZ);
-> +	else
-> +		rc = wait_event_timeout(prm->wait,
-> +					(prm->result.opcode == hdr->opcode),
-> +					5 * HZ);
-> +
-> +	if (!rc) {
-> +		dev_err(&gdev->dev, "CMD timeout for [%x] opcode\n",
-> +			hdr->opcode);
-> +		rc = -ETIMEDOUT;
-> +	} else if (prm->result.status > 0) {
-> +		dev_err(&gdev->dev, "DSP returned error[%x] %x\n", hdr->opcode,
-> +			prm->result.status);
-> +		rc = -EINVAL;
-> +	} else {
-> +		dev_err(&gdev->dev, "DSP returned [%x]\n",
-> +			prm->result.status);
-> +		rc = 0;
-> +	}
-> +
-> +err:
-> +	mutex_unlock(&prm->lock);
-> +	return rc;
-> +}
+We have a single piece of hardware that needs a specific power sequence,
+which is interacted with using both UART and PCIe.
 
-In patch7 you had more or less the same code. can a helper be used?
+> If pwrseq works as a kernel library/api, then I have no issue with that.
+> 
+> > 
+> > > Therefore, I think it would be worth having a common solution for
+> > > this, rather than a solution per subsystem or even worse, per device.
+> 
+> Power sequencing requirements are inheritently per device unless we're 
+> talking about standard connectors. 
+> 
 
-+int audioreach_graph_send_cmd_sync(struct q6apm_graph *graph,
-+				   struct gpr_pkt *pkt, uint32_t rsp_opcode)
-+{
-+
-+	struct device *dev = graph->dev;
-+	struct gpr_hdr *hdr = &pkt->hdr;
-+	int rc;
-+
-+	mutex_lock(&graph->cmd_lock);
-+	graph->result.opcode = 0;
-+	graph->result.status = 0;
-+
-+	rc = gpr_send_port_pkt(graph->port, pkt);
-+	if (rc < 0)
-+		goto err;
-+
-+	if (rsp_opcode)
-+		rc = wait_event_timeout(graph->cmd_wait,
-+					(graph->result.opcode == hdr->opcode) ||
-+					(graph->result.opcode == rsp_opcode),
-+					5 * HZ);
-+	else
-+		rc = wait_event_timeout(graph->cmd_wait,
-+					(graph->result.opcode == hdr->opcode),
-+					5 * HZ);
-+
-+	if (!rc) {
-+		dev_err(dev, "CMD timeout for [%x] opcode\n", hdr->opcode);
-+		rc = -ETIMEDOUT;
-+	} else if (graph->result.status > 0) {
-+		dev_err(dev, "DSP returned error[%x] %x\n", hdr->opcode,
-+			graph->result.status);
-+		rc = -EINVAL;
-+	} else {
-+		dev_err(dev, "DSP returned [%x]\n", graph->result.status);
-+		rc = 0;
-+	}
-+
-+err:
-+	mutex_unlock(&graph->cmd_lock);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(audioreach_graph_send_cmd_sync);
+Do you mean "device" as in the IC or device as in struct device? Because
+we do have one physical IC, that has a need for a specific power on
+sequence, but we have two struct device, on two different busses in
+Linux interacting with this thing.
 
+> This is a solved problem on MDIO. It's quite simple. If there's a DT 
+> node for a device you haven't discovered, then probe it anyways.
+> 
 
-> +static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id,   bool enable)
-> +{
-> +	struct prm_cmd_request_hw_core *req;
-> +	struct apm_module_param_data *param_data;
-> +	struct gpr_pkt *pkt;
-> +	struct q6prm *prm = dev_get_drvdata(dev);
-> +	gpr_device_t *gdev  = prm->gdev;
-> +	void *p;
-> +	int rc = 0;
-> +	uint32_t opcode, rsp_opcode;
-> +
-> +	if (enable) {
-> +		opcode = PRM_CMD_REQUEST_HW_RSC;
-> +		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
-> +	} else {
-> +		opcode = PRM_CMD_RELEASE_HW_RSC;
-> +		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
-> +	}
-> +
-> +	p = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->svc.id,
-> +				     GPR_PRM_MODULE_IID);
-> +	if (IS_ERR(p))
-> +		return -ENOMEM;
-> +
-> +	pkt = p;
-> +	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-> +
-> +	param_data = &req->param_data;
-> +
-> +	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-> +	param_data->error_code = 0;
-> +	param_data->param_id = PARAM_ID_RSC_HW_CORE;
-> +	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-> +
-> +	req->hw_clk_id = hw_block_id;
-> +
-> +	q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
-> +
-> +	kfree(pkt);
-> +
-> +	return rc;
+Okay, so DT tells us that there's actually a WiFi thing on the PCIe bus,
+even though we can't find it, so we probe something...then what?
 
-rc is not assigned, should this not trap the result of sending a command?
-
-> +}
-> +
-> +static int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr,
-> +				 int clk_root, unsigned int freq)
-> +{
-> +	struct prm_cmd_request_rsc *req;
-> +	struct apm_module_param_data *param_data;
-> +	struct gpr_pkt *pkt;
-> +	struct q6prm *prm = dev_get_drvdata(dev);
-> +	gpr_device_t *gdev  = prm->gdev;
-> +	void *p;
-> +	int rc = 0;
-> +
-> +	p = audioreach_alloc_cmd_pkt(sizeof(*req), PRM_CMD_REQUEST_HW_RSC,
-> +				     0, gdev->svc.id, GPR_PRM_MODULE_IID);
-> +	if (IS_ERR(p))
-> +		return -ENOMEM;
-> +
-> +	pkt = p;
-> +	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-> +
-> +	param_data = &req->param_data;
-> +
-> +	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-> +	param_data->error_code = 0;
-> +	param_data->param_id = PARAM_ID_RSC_AUDIO_HW_CLK;
-> +	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-> +
-> +	req->num_clk_id = 1;
-> +	req->clock_ids[0].clock_id = clk_id;
-> +	req->clock_ids[0].clock_freq = freq;
-> +	req->clock_ids[0].clock_attri = clk_attr;
-> +	req->clock_ids[0].clock_root = clk_root;
-> +
-> +	q6prm_send_cmd_sync(prm, pkt, PRM_CMD_RSP_REQUEST_HW_RSC);
-
-rc = q6prm_send_cmd_sync(prm, pkt, PRM_CMD_RSP_REQUEST_HW_RSC);
-
-?
-
-> +
-> +	kfree(pkt);
-> +
-> +	return rc;
-> +}
-> +
+Regards,
+Bjorn
