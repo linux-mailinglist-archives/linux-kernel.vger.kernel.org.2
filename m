@@ -2,217 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71F53C7C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209493C7C75
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 05:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237655AbhGNDM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 23:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237436AbhGNDMz (ORCPT
+        id S237711AbhGNDNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 23:13:22 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:50120 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237435AbhGNDNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 23:12:55 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D8CC0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 20:10:03 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m83so766769pfd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 20:10:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0Jd8IZTQd2Xo6YcQuTq7axTVaDs+ebyxKHsj9sYi5wk=;
-        b=TAcm7bx0cV65HGTmGl9RI4K8frOjQp3vH6tMqdpPabG1i5GqiK71GSHaEFQQvSjyYK
-         s1EAPWrcypdEuKekGs3TwuS0GVWwZ3mBYVOF7p1JeLR5NKXtgtFLJg/NgL58bHIolLhH
-         5wmP22T5MPZ+lMRoN3boZeFBeuWFnVpHYPSjc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0Jd8IZTQd2Xo6YcQuTq7axTVaDs+ebyxKHsj9sYi5wk=;
-        b=UhGSdEATnmLLhn5mOZd6wLdyh7tRQxnjzux1G+y97qnzjvuzjKazl9K+5gaTLitlwI
-         +040MnXXsECKEOhSFph0dK6QvcdcU0Qmmk2Z17+5W9QcL8YAM7hWX3kHciCCZNuQc8/g
-         NrBbjjosDcLuW3jO1mzAUZjAcBP8M7lKnxqIQbFeMFyvGMxrVi433EAkHLn64uEtRsLA
-         49lYWjYyrEUMFD0E69LeheWoQWWuZ5kQprTZ2THdaTzDpE03p0zZFVJ/KpmAoPne5ioQ
-         7HozaVVymLwxLkPD+Uks/fgTI3QSH3sSzKZrGrgts/VORJt90wDpIVpa1FXPvfXUki4l
-         3EHg==
-X-Gm-Message-State: AOAM530QHPVq2OV8Du6jEVmSzCI/LYB3O5C+EZceFf+9Phb6Ep03AT43
-        X4xRJ5ku1eqetDCkcno0CnJaMA==
-X-Google-Smtp-Source: ABdhPJwXDrW9T0QbuKSZNzx6cpmaP+iYIbNR7ehR2k2xKhMmc5Oz0c7TnNyO/o5N/PpmJO+Ha6yVvw==
-X-Received: by 2002:a63:405:: with SMTP id 5mr7300613pge.132.1626232203008;
-        Tue, 13 Jul 2021 20:10:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id cx4sm4258976pjb.53.2021.07.13.20.10.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 20:10:02 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 20:10:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sergei Trofimovich <slyfox@gentoo.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, bowsingbetee@pm.me
-Subject: Re: [PATCH] mm: page_alloc: fix page_poison=1 /
- INIT_ON_ALLOC_DEFAULT_ON interaction
-Message-ID: <202107131953.BB3627156@keescook>
-References: <20210712005732.4f9bfa78@zn3>
- <20210712215816.1512739-1-slyfox@gentoo.org>
+        Tue, 13 Jul 2021 23:13:21 -0400
+Received: from mailhost.synopsys.com (us03-mailhost2.synopsys.com [10.4.17.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 850E3C0B6B;
+        Wed, 14 Jul 2021 03:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1626232230; bh=0ciTjj5l8ebJNhNeqqjKPAQCpdxc6zYM2IbVWnHTSYU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=ODxmpClaiGW26SuPORuNFf0WhxDhKfDDbEWNNZJP12P2v9KzEmRJef+rQCe7sFBR3
+         Jol0ioBz5JtZU8FqeelxPwOdx1+ZyEf7tyntKLqw3H83Uo+PdmE9gKIm/9cGzrIPui
+         4IN4FrRWMEeuCHxjbSskYSfSsF7FP4Hm5S+yHu7Bb9V7wgujt778OsozNCitJdo1ca
+         NK4Xbm0EU3VtMTqGh1EeN0eFZkncQU+jbA2pnRjh9Wz/HoupUzAODdcPECfyg8fu/9
+         7mD7ulqk8RJQpPjT5+BqT5Ggr8klq/RyUioXEutbIQfbmo5yJ+goNLHZh32ckYy8gj
+         10loJ4NEdAa7Q==
+Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 8DBA0A0081;
+        Wed, 14 Jul 2021 03:10:28 +0000 (UTC)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 377004011B;
+        Wed, 14 Jul 2021 03:10:27 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=thinhn@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="JklevVAo";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZdLPJqtek0FWlSG72TkAJZXLnO/xZfmLWjCyL0dyC/Uk9x5oDmQ5GWb4erqCE1qHeKeJH8WKTs5S3XanuDjI1b42C6/gicN+M9eC65AWFuTh978n9dtGYNzowGp2twMIg2sWFKtZUEso34PJzItFYyiESwt63B2O5K4f6d41ByAXj5pir7BU2WMhCrHkXDeYiAetdkHdQPlVZ9K+jbt8Zq7IkDrdLSMa/GxXBzZ3cJ4tw7+7mG2ewjLo7iYe7VGiBgnT4NL+EGxb6cefQ96gqvHCDEvjRQlriqpb6wkYXJow3CEgZqR+bjSpHFCIjvuR1h9BeSY2H4l34MXX9KKjRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ciTjj5l8ebJNhNeqqjKPAQCpdxc6zYM2IbVWnHTSYU=;
+ b=FkOjmBLhb/A4pDgkkUFPuTREV16ddxUhTl8w93ExMXDyNOXp1h2QXx3mKaGDENI0w+JroLeuJN4JQ09M/i0dbbidOJo+dAJEkFlpEWA4BBalkQuypPMbgBeCj9WMga5mvhfCLFbj4Dodb9p/W3zv/TmtFVtg5Twxrd7R3E+EY9e94YHscbHQY6nKeUW+lN0gtQO5QWds0ENFilbsnasyaCqq1nNtjKdt1f+Hys4N04Ci6r94TxtccBdVdKLicWWJ13/e2kUElNwEGv4S96YUvXesQ/udR3WWAKJUygu8+h5MXVFN09G7TElPfL8qbX1Vp8OuIcnenHro/Dw+aHkjew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ciTjj5l8ebJNhNeqqjKPAQCpdxc6zYM2IbVWnHTSYU=;
+ b=JklevVAo3w+WkojFyhV0C8krfcRU2DW3wwTCHi+x0E9F3tu/y+m9ahieXrJEM+xj3/Ynxr/kgY98sH3NafEGptJp4ZPbLsiVbxH5s3bUQiyi4kLEtOiy4S4jtV/a1og7+oCeW9J5ZKo8Jv9IpVcDs4HZrbzbM2mwrRdMGsS9HV8=
+Received: from BYAPR12MB4791.namprd12.prod.outlook.com (2603:10b6:a03:10a::12)
+ by BY5PR12MB4116.namprd12.prod.outlook.com (2603:10b6:a03:210::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Wed, 14 Jul
+ 2021 03:10:25 +0000
+Received: from BYAPR12MB4791.namprd12.prod.outlook.com
+ ([fe80::1582:d559:a0db:29e4]) by BYAPR12MB4791.namprd12.prod.outlook.com
+ ([fe80::1582:d559:a0db:29e4%5]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
+ 03:10:25 +0000
+X-SNPS-Relay: synopsys.com
+From:   Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "frowand.list@gmail.com" <frowand.list@gmail.com>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+Subject: Re: [PATCH v14 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+Thread-Topic: [PATCH v14 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+Thread-Index: AQHXdWvmr0dK2TF02kiXSnoLeHYyUatAA0oAgACW+4CAATZ2AA==
+Date:   Wed, 14 Jul 2021 03:10:25 +0000
+Message-ID: <e08dac42-e999-fd97-21ab-34cd70429f03@synopsys.com>
+References: <1625908395-5498-1-git-send-email-wcheng@codeaurora.org>
+ <1625908395-5498-4-git-send-email-wcheng@codeaurora.org>
+ <b65463e9-3a8d-1ee5-3e26-09990aa8ec53@synopsys.com>
+ <87czrmzjym.fsf@kernel.org>
+In-Reply-To: <87czrmzjym.fsf@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=synopsys.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ba0744cf-4ed3-463d-c4de-08d94674ecf0
+x-ms-traffictypediagnostic: BY5PR12MB4116:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR12MB41169EC8395D941FD5DF9AE6AA139@BY5PR12MB4116.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5+/mo7RRHbqbcits8km5TqZCNc5y24mWhf7BtU8QwYOPuR9+k+KCtwOeedOM3Lyui2o1zwWBjUb5UfH2WpRHd8i5jbARjivmIaonTWOiE2rGAYDp3QoyPybLQyqnEPMJOGRr2J+Sl4KDBzFPRf2wCQdoGGcip23QZy26o4OUSw6G/D1p/2LyfeIHOM5oCPaCOev6weP7q7m+0mZkczeRToQlFUz5dRh4C5/DLJmwDwgaNAz/Qo4+14AYPOO7aGz9EcA8f8KgfxWPp0hmSwU6EggtQ2xtOh5eCGpebau/HdT/4iKMthp6LwmePUMlaMmOHaYLjd2zVoBIGLjo8l8KPrLsH9UnlB1oVXEQT7KyrqM/DI175lrQf9jtAXU7GPvYJ0/3A+9sgTT6DOBSpsBxhTUYsy5G/nRjLaJtIWtAAQBOoI92AlIew/tORCKK/BAMt3mPET4a+4dqNiXUfsDFS6vUYBTEcJavANGuUC4q5fAgB2IDCXU14WHNpo5R9jbsPb/dWzCEH6kgMW+zJhesIpb+7Au95Yvhs0lBWzsgtyQywOAlok89OACv68wIzcOORJ75CyxTnfXqN9AzFjV6mOTMLXlJ8MClJAh31Erix7srae4zXJFYnVc/dpsDtGEfEW8hwz1WPkcCgHb2SvjWxKXbyhJqj5Qx4eYiXqxFHyTIybHaPWrzuqv32+4jI9VeE938cJANzhsvZyDTMFLnjmV1GK19hHhS7Bk2N13qgXzklhaDlLTJwvYX78/YMFFB+I9A83H5ZF5LJ56y6x3CqQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4791.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(8936002)(8676002)(110136005)(36756003)(38100700002)(316002)(4326008)(54906003)(7416002)(478600001)(2616005)(66476007)(66446008)(6506007)(186003)(6486002)(2906002)(86362001)(76116006)(122000001)(31696002)(31686004)(66946007)(5660300002)(66556008)(64756008)(6512007)(83380400001)(26005)(71200400001)(38070700004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YzB4U09QdWhmaTg5WGRpSXdkWkNsQUJ1WXFibTVUd2lXa0IrMUR0SWFkUzJU?=
+ =?utf-8?B?RFdJdktUcEN1K0FmMFA4RFREc3dYblhRWUFOanlzSVQ4VlFoS1VZMGtUaW5R?=
+ =?utf-8?B?U0hWNHVxUk51Rll3elJ6Zm5uVDU2RzNiRDU4ZW9tK3diTFAxUTNLeXRwQTVI?=
+ =?utf-8?B?WUg5eUpjeXJQY09pRG4zdFp5eGlYN1JzT0xibFZnRWhidktyVkZLbkJlcG9w?=
+ =?utf-8?B?U0c1Z3JHdk8zZ1g1c0RyenAxbVgrUlFrUmhMbEx6d1VYQ1NCeXRyalVLQStn?=
+ =?utf-8?B?NytpeFF5blBZWXJnNHlYV2pzUld6TlZUSGFiUDR6aGJyK3RCZGs2ekxZbWN6?=
+ =?utf-8?B?Y0d4aGhYUzkxajhHdkVybXM3QUEzL1NlWDRLMFJQRXlBdDhnQVZQeTF5MUwr?=
+ =?utf-8?B?ZmhycURvbExrSCsycmo1TkJrQ2xMOHJBUFJwN3htb2s0NFBJQVNyRXBlU2Zn?=
+ =?utf-8?B?cG10UFlqK1dtTnZZNVhHdDBTOFVPTm5TbUU2TlB5TGxSL0k0ellUMmw3OENs?=
+ =?utf-8?B?SVl0MENJTmhZSTV6a2JsUERraHpmSks2dFk1eXJoUm9wYkQ2TFc4R21ZUzVD?=
+ =?utf-8?B?dG8zMktSWHZUSXNydG1lU1liWWVIbmtldjY4NmlTMGxrVFlscWFyd1NTNlZW?=
+ =?utf-8?B?clUwVlc0STl6Y2o0N1ZqQjRGdWNyeENQdUZuNmhHMXRDZGdURGNZR1BnRkF4?=
+ =?utf-8?B?OXNtVnBwK2IzOHJzYUlmNXAxb1UyWDRoT3J0Q2VWR3BFMENCUDZnNFVXbXhV?=
+ =?utf-8?B?Vk5SR3NSeFRHZ25VL09KeTdaVEthUGpCQ0g3RUxsVzFlV0kxeU1zMFBsVStC?=
+ =?utf-8?B?VTl6cmJ2eTJKaURJMzI0Y0h4eDc0Z09SeHNtTldLSjNyOXZKY3RqS2cvckdF?=
+ =?utf-8?B?aFl0azM4azVJVnBtUkNlYVVOLzlGQXozSXczSGtIQ0o5bHlpQWNBbzlJMzR3?=
+ =?utf-8?B?TDEyZkxzR091UWRORllaVkt0d3NjWG5CcHJOVkpIazAyc2U4RTFQclpGdlBx?=
+ =?utf-8?B?amE5NlZBTXYwTFB3THJpcFZFNTZBUzhDaHk2Q3NBdnkrQ2xtd1ZLbG01U21k?=
+ =?utf-8?B?NThRS1NGVEVTSldQY2NqZW5Fc2xaeXRONTlqN1pKcFMrcHM2Vzdqem9WRkxY?=
+ =?utf-8?B?NGErbGlJSnBGaGMrKzlqR2wyMDByQk1QZHpxQXFqbGxGK3FSN3RlZzRGQ253?=
+ =?utf-8?B?RmJQa1JxY3BjOUx6RG5nZW9BQzJEWGs0TFF0bjJOQjJXeEdhcStFTHZoaHM1?=
+ =?utf-8?B?dnlCVGpqOVc4YjNEYTlTSnB6M0RUMmNZKzlVRlphNVFmTFlvd2V3OWF4VUNm?=
+ =?utf-8?B?RUl1WnNxdWRHWk92c2dCV1ZWTThYaHJPTy9kOHF6VDAvWDNpQmpJVEV6VXN0?=
+ =?utf-8?B?YzlEMlJzQi82UjVDaWFCZWtBczljeW1xWmJObExMM3gxcFpnQ3AxdkVZM2Rn?=
+ =?utf-8?B?aGtzZERBWEFqd0FRV0JTenFtbFVEOUcxUllKUGd6eVNKY3k4ZFc5bS85R2Zn?=
+ =?utf-8?B?MzV6eHJlOFM4blBtRVNpb3M1QjdUa0YzRlRpbjlIeEhVNmVnaGxiMVlaTTlH?=
+ =?utf-8?B?eGc4YjRiWS9yRk56RnkxL3gwY1FOeU1jd1BBNS9qcTQ4bW0wOWZ1T0JjejIy?=
+ =?utf-8?B?WWg3VXJucW9XRzQyZzEzdU5BakQ2NjZnR2pzaE1USS92TXM2VmlpVlM2aHIy?=
+ =?utf-8?B?clIvYU9yU0F3UnN5b0x1ak93QkdTT1VUd0VpTHRRa2FKUS93Q3pPSzNmbERj?=
+ =?utf-8?Q?OUeF6Ji6KaWax78W3o=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <08EAD1BC5545ED4883B5A4D5B278AE24@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712215816.1512739-1-slyfox@gentoo.org>
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4791.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba0744cf-4ed3-463d-c4de-08d94674ecf0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2021 03:10:25.3829
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F7uXg6/TeqC1XVP3GBv3RgzrV8/BIFMRWhg+v2KNlijTepmVt/ZcjAV4HsBabyvqAIVeZ/u08F/w3OacSx1yrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:58:16PM +0100, Sergei Trofimovich wrote:
-> To reproduce the failure we need the following system:
->   - kernel command: page_poison=1 init_on_free=0 init_on_alloc=0
->   - kernel config:
->     * CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
->     * CONFIG_INIT_ON_FREE_DEFAULT_ON=y
->     * CONFIG_PAGE_POISONING=y
-> 
->     0000000085629bdd: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     0000000022861832: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00000000c597f5b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     CPU: 11 PID: 15195 Comm: bash Kdump: loaded Tainted: G     U     O      5.13.1-gentoo-x86_64 #1
->     Hardware name: System manufacturer System Product Name/PRIME Z370-A, BIOS 2801 01/13/2021
->     Call Trace:
->      dump_stack+0x64/0x7c
->      __kernel_unpoison_pages.cold+0x48/0x84
->      post_alloc_hook+0x60/0xa0
->      get_page_from_freelist+0xdb8/0x1000
->      __alloc_pages+0x163/0x2b0
->      __get_free_pages+0xc/0x30
->      pgd_alloc+0x2e/0x1a0
->      ? dup_mm+0x37/0x4f0
->      mm_init+0x185/0x270
->      dup_mm+0x6b/0x4f0
->      ? __lock_task_sighand+0x35/0x70
->      copy_process+0x190d/0x1b10
->      kernel_clone+0xba/0x3b0
->      __do_sys_clone+0x8f/0xb0
->      do_syscall_64+0x68/0x80
->      ? do_syscall_64+0x11/0x80
->      entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Before the 51cba1eb ("init_on_alloc: Optimize static branches")
-> init_on_alloc never enabled static branch by default. It could
-> only be enabed explicitly by init_mem_debugging_and_hardening().
-
-But init_mem_debugging_and_hardening() is always called (by mm_init()).
-
-> But after the 51cba1eb static branch could already be enabled
-> by default. There was no code to ever disable it. That caused
-> page_poison=1 / init_on_free=1 conflict.
-> 
-> This change extends init_mem_debugging_and_hardening() to also
-> disable static branch disabling.
-> 
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> CC: Kees Cook <keescook@chromium.org>
-> CC: Alexander Potapenko <glider@google.com>
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> CC: Vlastimil Babka <vbabka@suse.cz>
-> CC: linux-mm@kvack.org
-> Reported-by: bowsingbetee@pm.me
-> Reported-by: Mikhail Morfikov
-> Fixes: 51cba1eb ("init_on_alloc: Optimize static branches")
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> ---
->  mm/page_alloc.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3b97e17806be..46cb4a9c2b50 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -840,18 +840,22 @@ void init_mem_debugging_and_hardening(void)
->  	}
->  #endif
->  
-> -	if (_init_on_alloc_enabled_early) {
-> -		if (page_poisoning_requested)
-> +	if (_init_on_alloc_enabled_early ||
-> +	    IS_ENABLED(CONFIG_INIT_ON_ALLOC_DEFAULT_ON)) {
-
-This doesn't look right. _init_on_alloc_enabled_early already has the
-same value:
-
-static bool _init_on_alloc_enabled_early __read_mostly
-                                = IS_ENABLED(CONFIG_INIT_ON_ALLOC_DEFAULT_ON);
-
-So checking this is just a side-effect of how static_branch_maybe()
-happens to be behaving.
-
-> +		if (page_poisoning_requested) {
->  			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
->  				"will take precedence over init_on_alloc\n");
-> -		else
-> +			static_branch_disable(&init_on_alloc);
-> +		} else
->  			static_branch_enable(&init_on_alloc);
->  	}
-> -	if (_init_on_free_enabled_early) {
-> -		if (page_poisoning_requested)
-> +	if (_init_on_free_enabled_early ||
-> +	    IS_ENABLED(CONFIG_INIT_ON_FREE_DEFAULT_ON)) {
-> +		if (page_poisoning_requested) {
->  			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
->  				"will take precedence over init_on_free\n");
-> -		else
-> +			static_branch_disable(&init_on_free);
-> +		} else
->  			static_branch_enable(&init_on_free);
->  	}
-
-I think it would be better to clean this up without additional
-confusion involving the CONFIGs:
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3b97e17806be..1f19365bc158 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -840,21 +840,24 @@ void init_mem_debugging_and_hardening(void)
- 	}
- #endif
- 
--	if (_init_on_alloc_enabled_early) {
--		if (page_poisoning_requested)
--			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
--				"will take precedence over init_on_alloc\n");
--		else
--			static_branch_enable(&init_on_alloc);
--	}
--	if (_init_on_free_enabled_early) {
--		if (page_poisoning_requested)
--			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
--				"will take precedence over init_on_free\n");
--		else
--			static_branch_enable(&init_on_free);
-+	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early) &&
-+	    page_poisoning_requested) {
-+		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
-+			"will take precedence over init_on_alloc and init_on_free\n");
-+		_init_on_alloc_enabled_early = false;
-+		_init_on_free_enabled_early = false;
- 	}
- 
-+	if (_init_on_alloc_enabled_early)
-+		static_branch_enable(&init_on_alloc);
-+	else
-+		static_branch_disable(&init_on_alloc);
-+
-+	if (_init_on_free_enabled_early)
-+		static_branch_enable(&init_on_free);
-+	else
-+		static_branch_disable(&init_on_free);
-+
- #ifdef CONFIG_DEBUG_PAGEALLOC
- 	if (!debug_pagealloc_enabled())
- 		return;
-
--- 
-Kees Cook
+RmVsaXBlIEJhbGJpIHdyb3RlOg0KPiANCj4gSGksDQo+IA0KPiBUaGluaCBOZ3V5ZW4gPFRoaW5o
+Lk5ndXllbkBzeW5vcHN5cy5jb20+IHdyaXRlczoNCj4+IFdlc2xleSBDaGVuZyB3cm90ZToNCj4+
+PiBTb21lIGRldmljZXMgaGF2ZSBVU0IgY29tcG9zaXRpb25zIHdoaWNoIG1heSByZXF1aXJlIG11
+bHRpcGxlIGVuZHBvaW50cw0KPj4+IHRoYXQgc3VwcG9ydCBFUCBidXJzdGluZy4gIEhXIGRlZmlu
+ZWQgVFggRklGTyBzaXplcyBtYXkgbm90IGFsd2F5cyBiZQ0KPj4+IHN1ZmZpY2llbnQgZm9yIHRo
+ZXNlIGNvbXBvc2l0aW9ucy4gIEJ5IHV0aWxpemluZyBmbGV4aWJsZSBUWCBGSUZPDQo+Pj4gYWxs
+b2NhdGlvbiwgdGhpcyBhbGxvd3MgZm9yIGVuZHBvaW50cyB0byByZXF1ZXN0IHRoZSByZXF1aXJl
+ZCBGSUZPIGRlcHRoIHRvDQo+Pj4gYWNoaWV2ZSBoaWdoZXIgYmFuZHdpZHRoLiAgV2l0aCBzb21l
+IGhpZ2hlciBiTWF4QnVyc3QgY29uZmlndXJhdGlvbnMsIHVzaW5nDQo+Pj4gYSBsYXJnZXIgVFgg
+RklGTyBzaXplIHJlc3VsdHMgaW4gYmV0dGVyIFRYIHRocm91Z2hwdXQuDQo+Pj4NCj4+PiBCeSBp
+bnRyb2R1Y2luZyB0aGUgY2hlY2tfY29uZmlnKCkgY2FsbGJhY2ssIHRoZSByZXNpemluZyBsb2dp
+YyBjYW4gZmV0Y2gNCj4+PiB0aGUgbWF4aW11bSBudW1iZXIgb2YgZW5kcG9pbnRzIHVzZWQgaW4g
+dGhlIFVTQiBjb21wb3NpdGlvbiAoY2FuIGNvbnRhaW4NCj4+PiBtdWx0aXBsZSBjb25maWd1cmF0
+aW9ucyksIHdoaWNoIGhlbHBzIGVuc3VyZSB0aGF0IHRoZSByZXNpemluZyBsb2dpYyBjYW4NCj4+
+PiBmdWxmaWxsIHRoZSBjb25maWd1cmF0aW9uKHMpLCBvciByZXR1cm4gYW4gZXJyb3IgdG8gdGhl
+IGdhZGdldCBsYXllcg0KPj4+IG90aGVyd2lzZSBkdXJpbmcgYmluZCB0aW1lLg0KPj4+DQo+Pj4g
+U2lnbmVkLW9mZi1ieTogV2VzbGV5IENoZW5nIDx3Y2hlbmdAY29kZWF1cm9yYS5vcmc+DQo+Pj4g
+LS0tDQo+Pj4gIGRyaXZlcnMvdXNiL2R3YzMvY29yZS5jICAgfCAgMTUgKysrDQo+Pj4gIGRyaXZl
+cnMvdXNiL2R3YzMvY29yZS5oICAgfCAgMTYgKysrKw0KPj4+ICBkcml2ZXJzL3VzYi9kd2MzL2Vw
+MC5jICAgIHwgICAyICsNCj4+PiAgZHJpdmVycy91c2IvZHdjMy9nYWRnZXQuYyB8IDIzMiArKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+Pj4gIDQgZmlsZXMg
+Y2hhbmdlZCwgMjY1IGluc2VydGlvbnMoKykNCj4+Pg0KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3VzYi9kd2MzL2NvcmUuYyBiL2RyaXZlcnMvdXNiL2R3YzMvY29yZS5jDQo+Pj4gaW5kZXggYmE3
+NGFkNy4uYjE5NGFlY2QgMTAwNjQ0DQo+Pj4gLS0tIGEvZHJpdmVycy91c2IvZHdjMy9jb3JlLmMN
+Cj4+PiArKysgYi9kcml2ZXJzL3VzYi9kd2MzL2NvcmUuYw0KPj4+IEBAIC0xMjY3LDYgKzEyNjcs
+NyBAQCBzdGF0aWMgdm9pZCBkd2MzX2dldF9wcm9wZXJ0aWVzKHN0cnVjdCBkd2MzICpkd2MpDQo+
+Pj4gIAl1OAkJCXJ4X21heF9idXJzdF9wcmQ7DQo+Pj4gIAl1OAkJCXR4X3Rocl9udW1fcGt0X3By
+ZDsNCj4+PiAgCXU4CQkJdHhfbWF4X2J1cnN0X3ByZDsNCj4+PiArCXU4CQkJdHhfZmlmb19yZXNp
+emVfbWF4X251bTsNCj4+PiAgCWNvbnN0IGNoYXIJCSp1c2JfcHN5X25hbWU7DQo+Pj4gIAlpbnQJ
+CQlyZXQ7DQo+Pj4gIA0KPj4+IEBAIC0xMjgyLDYgKzEyODMsMTMgQEAgc3RhdGljIHZvaWQgZHdj
+M19nZXRfcHJvcGVydGllcyhzdHJ1Y3QgZHdjMyAqZHdjKQ0KPj4+ICAJICovDQo+Pj4gIAloaXJk
+X3RocmVzaG9sZCA9IDEyOw0KPj4+ICANCj4+PiArCS8qDQo+Pj4gKwkgKiBkZWZhdWx0IHRvIGEg
+VFhGSUZPIHNpemUgbGFyZ2UgZW5vdWdoIHRvIGZpdCA2IG1heCBwYWNrZXRzLiAgVGhpcw0KPj4+
+ICsJICogYWxsb3dzIGZvciBzeXN0ZW1zIHdpdGggbGFyZ2VyIGJ1cyBsYXRlbmNpZXMgdG8gaGF2
+ZSBzb21lIGhlYWRyb29tDQo+Pj4gKwkgKiBmb3IgZW5kcG9pbnRzIHRoYXQgaGF2ZSBhIGxhcmdl
+IGJNYXhCdXJzdCB2YWx1ZS4NCj4+PiArCSAqLw0KPj4+ICsJdHhfZmlmb19yZXNpemVfbWF4X251
+bSA9IDY7DQo+Pj4gKw0KPj4+ICAJZHdjLT5tYXhpbXVtX3NwZWVkID0gdXNiX2dldF9tYXhpbXVt
+X3NwZWVkKGRldik7DQo+Pj4gIAlkd2MtPm1heF9zc3BfcmF0ZSA9IHVzYl9nZXRfbWF4aW11bV9z
+c3BfcmF0ZShkZXYpOw0KPj4+ICAJZHdjLT5kcl9tb2RlID0gdXNiX2dldF9kcl9tb2RlKGRldik7
+DQo+Pj4gQEAgLTEzMjUsNiArMTMzMywxMSBAQCBzdGF0aWMgdm9pZCBkd2MzX2dldF9wcm9wZXJ0
+aWVzKHN0cnVjdCBkd2MzICpkd2MpDQo+Pj4gIAkJCQkmdHhfdGhyX251bV9wa3RfcHJkKTsNCj4+
+PiAgCWRldmljZV9wcm9wZXJ0eV9yZWFkX3U4KGRldiwgInNucHMsdHgtbWF4LWJ1cnN0LXByZCIs
+DQo+Pj4gIAkJCQkmdHhfbWF4X2J1cnN0X3ByZCk7DQo+Pj4gKwlkd2MtPmRvX2ZpZm9fcmVzaXpl
+ID0gZGV2aWNlX3Byb3BlcnR5X3JlYWRfYm9vbChkZXYsDQo+Pj4gKwkJCQkJCQkidHgtZmlmby1y
+ZXNpemUiKTsNCj4+PiArCWlmIChkd2MtPmRvX2ZpZm9fcmVzaXplKQ0KPj4+ICsJCWRldmljZV9w
+cm9wZXJ0eV9yZWFkX3U4KGRldiwgInR4LWZpZm8tbWF4LW51bSIsDQo+Pj4gKwkJCQkJJnR4X2Zp
+Zm9fcmVzaXplX21heF9udW0pOw0KPj4NCj4+IFdoeSBpcyB0aGlzIGNoZWNrIGhlcmU/IFRoZSBk
+d2MtPnR4X2ZpZm9fcmVzaXplX21heF9udW0gc2hvdWxkIHN0b3JlDQo+PiB3aGF0ZXZlciBwcm9w
+ZXJ0eSB0aGUgdXNlciBzZXRzLiBXaGV0aGVyIHRoZSBkcml2ZXIgd2FudHMgdG8gdXNlIHRoaXMN
+Cj4gDQo+IEFjayENCj4gDQo+PiBwcm9wZXJ0eSBzaG91bGQgZGVwZW5kIG9uICJkd2MtPmRvX2Zp
+Zm9fcmVzaXplIi4gQWxzbyB3aHkgZG9uJ3Qgd2UgaGF2ZQ0KPj4gInNucHMsIiBwcmVmaXggdG8g
+YmUgY29uc2lzdGVudCB3aXRoIHRoZSBvdGhlciBwcm9wZXJ0aWVzPw0KPiANCj4gQWNrIQ0KPiAN
+Cj4+IENhbiB3ZSBlbmZvcmNlIHRvIGEgc2luZ2xlIHByb3BlcnR5PyBJZiB0aGUgZGVzaWduZXIg
+d2FudHMgdG8gZW5hYmxlDQo+PiB0aGlzIGZlYXR1cmUsIGhlL3NoZSBjYW4gdG8gcHJvdmlkZSB0
+aGUgdHgtZmlmby1tYXgtbnVtLiBUaGlzIHdvdWxkDQo+PiBzaW1wbGlmeSB0aGUgZHJpdmVyIGEg
+Yml0LiBTaW5jZSB0aGlzIGlzIHRvIG9wdGltaXplIGZvciBwZXJmb3JtYW5jZSwNCj4+IHRoZSB1
+c2VyIHNob3VsZCBrbm93L3dhbnQvdGVzdCB0aGUgc3BlY2lmaWMgdmFsdWUgaWYgdGhleSB3YW50
+IHRvIHNldA0KPj4gZm9yIHRoZWlyIHNldHVwIGFuZCBub3QgaG9waW5nIHRoYXQgdGhlIGRlZmF1
+bHQgc2V0dGluZyBub3QgYnJlYWsgdGhlaXINCj4+IHNldHVwLiBTbyB3ZSBjYW4gcmVtb3ZlIHRo
+ZSAiZG9fZmlmb19yZXNpemUiIHByb3BlcnR5IGFuZCBqdXN0IGNoZWNrDQo+PiB3aGV0aGVyIHR4
+X2ZpZm9fcmVzaXplX21heF9udW0gaXMgc2V0Lg0KPiANCj4gQWNrIQ0KPiANCj4gQWxsIHZlcnkg
+dmFsaWQgcG9pbnRzIDotKQ0KPiANCg0KTG9va3MgbGlrZSB0aGlzIHNlcmllcyBhbHJlYWR5IGxh
+bmRlZCBpbiBHcmVnJ3MgdGVzdGluZyBicmFuY2guIE5vdCBzdXJlDQpob3cgd2UgdXN1YWxseSBo
+YW5kbGUgdGhpcyB0byBhZGRyZXNzIHNvbWUgb2Ygb3VyIGNvbmNlcm5zLiBBZGQgZml4DQpwYXRj
+aGVzIG9uIHRvcCBvZiBHcmVnJ3MgdGVzdGluZyBicmFuY2g/DQoNCkJSLA0KVGhpbmgNCg0K
