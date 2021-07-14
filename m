@@ -2,105 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6BD3C7D2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C663C7D49
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237725AbhGNEM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 00:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhGNEMY (ORCPT
+        id S237815AbhGNEWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 00:22:11 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33310
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229923AbhGNEWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 00:12:24 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3AAC0613DD;
-        Tue, 13 Jul 2021 21:09:33 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id j3so858829plx.7;
-        Tue, 13 Jul 2021 21:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=dNtQuwwmGDuffyzJJxrC7J0rgzq3v1ZDzE0BZBmT5ME=;
-        b=sxOlB05EOu4kn6zBdjcf/8lnqNeshmDp+JV2COQqQu3eiCOXAlCW2olxWyiux6I+cR
-         m1fQCMhPWt1EJf3XgyTYjmTyqbItav6hVhx49OHEZ/1tiuLt+nG2C1YfW+X/dFO+2y1w
-         kWxr5DUB8320YFJTUu/6OTMiDjYcGoxW/0xsOyX2GPbvaopJhuLL0Wau/Po7AITJgeuy
-         ajetYOHwZWIofp8OCYSqVtWcIWIwJ/yFAMvylIkaFesFCjTCeLuAUkvXckFOx99zitMk
-         9kh0djrXPHWJSLcJAIae59fRH8vXJ+ZiOtfWy566QkZZG7leZeWM+CUb02iH2qDQ3jTj
-         0gaQ==
+        Wed, 14 Jul 2021 00:22:08 -0400
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 1C50C40651
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626236354;
+        bh=5PEtQOiG2pwavHSstsclnvY/ZQMI7gfpVsfSDY7O4SI=;
+        h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
+        b=bZVO2Z6HxiaOXZMVaP665YyZFnPaE2a5/6mfVcTQpEtN2uktqW/N6bPwH+2Mde+P5
+         EC9OOx8CsAAaXc4oVqXcndFm5UlLa8Cq5AiKUfmX8xmcbIqSo4TK4xu+EqK5yu7Dk+
+         4WvJN7RYi/Ynd7Ngz2ebwcYdQoLJHp73MBQ5W4z+9CdP8Xt0MRDu++QksRRydCAcJr
+         2zmNEMDUeEqCe+o1IBU2HRWMbGq1a9gYuGQp/ihciYcPE8Jc+tKK0L8vw0WPByR5HC
+         ApSFJJu58/39ppkfsz7r/B9oGy8lntIjsoli986fhrvEI0YhYuengypCPyDeDc/0hq
+         88RZDh9Jy0yWw==
+Received: by mail-ej1-f71.google.com with SMTP id ia10-20020a170907a06ab02904baf8000951so240523ejc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 21:19:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=dNtQuwwmGDuffyzJJxrC7J0rgzq3v1ZDzE0BZBmT5ME=;
-        b=Pv4P7L5Ro2kTZafsR76Q6ANhePMhGH1IHHxKjgQa3rUlxnWvSSHCFGu+DXAv8jY5rg
-         FZub3WF7RiJ2Qo6sMmh2IK5aCzbAzoDWXs865/sR1ICSaMd2b9y/VHMIbFZ7woLtWaV7
-         C7guc5RdQEsRkrsiGtGJgk883HmsGxaO76G307G1+rw3K6+wANqaR9v3aAhgzk+KIv+h
-         rsDeKsu638b9sXoqEqoQX18BWLHDqnbLpbsza04Xdoa9QNDzwDzuoo4mn6Qjgskw6LRL
-         fPMt6ET+iZ8skEdwuKEgXYkVRqZ5cKxkowgjviEasV2lGj0qU8EE1MHa7CmerfSi1uCN
-         w4TA==
-X-Gm-Message-State: AOAM532wMCBORvJ2wGTRG4MfNbKAS5Ls2wVZBKvoAKRY+pbDHWeg+XwI
-        AgH8Cp6/eXTSV/BN8PyK7aLU/frvPT+5RaY=
-X-Google-Smtp-Source: ABdhPJxaKwld9avLXJiiCQB2C3ZpjTPxhGiFfOKosko60ULcCDLejOTZxvqG/4n0ipsTr8oB8dEiTA==
-X-Received: by 2002:a17:90a:db53:: with SMTP id u19mr7808849pjx.4.1626235772271;
-        Tue, 13 Jul 2021 21:09:32 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id v23sm3675964pje.33.2021.07.13.21.09.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Jul 2021 21:09:31 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sam@ravnborg.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH v2] video: fbdev: kyro: fix a DoS bug by restricting user input
-Date:   Wed, 14 Jul 2021 04:09:22 +0000
-Message-Id: <1626235762-2590-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5PEtQOiG2pwavHSstsclnvY/ZQMI7gfpVsfSDY7O4SI=;
+        b=sbnjwlL5H/ROr3T/VliyfFiwsHjKC3t0s9Tgr9y0VGx9r64oJGmJhV0ki/lcAqoPP9
+         FCxsxT13IMuuislD66MwLNinNvJtmut1HelRpHPPIMa/LOD6u2pu3+wNcObte5V3J9dn
+         7+hoGpe5mAqvmTwZE6oNA/+ie26BSq2GFFhMSo2xzANcsVm5ysO1bpaYWFGGXgQK0JVK
+         Vz2R+BYlO17zDK1bQlSoU6EYdKQITYx8AlJmM07i/J93uEW2ahZfcU2Dj2ysMYz//0Iw
+         fxk7fAbcRtrk1ZU0cOLjgJjC1vQFH/LEzxeNUUu0HOBSqyvG9BpkXu9x4B4lYt5HNo4z
+         spzQ==
+X-Gm-Message-State: AOAM531Dua+mFWM4mE3VktvqNWU/2L09q2xF5/DQv77YXZlUm03GDMpF
+        tpu/mVFOBsGGra4rb1KtfPuM+g65l9C0geXwLfO8fLg6vBzBHwEnDTmSawxQVEHr7w5kU3kVJh3
+        P6Xj6BdUIv+6TRaOWp76MxAJRGVQKafgY8ix+ZTsUoYCHrmHAzHDTDAby6w==
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10290893ejc.192.1626236353769;
+        Tue, 13 Jul 2021 21:19:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9iF3tigH6vILcTcBCopTqFYrQkarYwFyvGc+O4uxcUZ2xrWZXx+LXz5xx80QkB6010+HKT9MfuyABYvuHrQM=
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10290865ejc.192.1626236353519;
+ Tue, 13 Jul 2021 21:19:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210712133500.1126371-1-kai.heng.feng@canonical.com> <d0bc9dbd-9b7a-5807-2ade-e710964a05a1@intel.com>
+In-Reply-To: <d0bc9dbd-9b7a-5807-2ade-e710964a05a1@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 14 Jul 2021 12:19:00 +0800
+Message-ID: <CAAd53p5rKLNv9w4Z8YBSW=ztLAV68mc+BxUSyfOi11TLSuh6bg@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH 1/3] e1000e: Separate TGP from SPT
+To:     Sasha Neftin <sasha.neftin@intel.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user can pass in any value to the driver through the 'ioctl'
-interface. The driver dost not check, which may cause DoS bugs.
+Hi Sasha,
 
-The following log reveals it:
+On Wed, Jul 14, 2021 at 1:58 AM Sasha Neftin <sasha.neftin@intel.com> wrote:
+>
+> On 7/12/2021 16:34, Kai-Heng Feng wrote:
+> > Separate TGP from SPT so we can apply specific quirks to TGP.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >   drivers/net/ethernet/intel/e1000e/e1000.h   |  4 +++-
+> >   drivers/net/ethernet/intel/e1000e/ich8lan.c | 20 ++++++++++++++++++++
+> >   drivers/net/ethernet/intel/e1000e/netdev.c  | 13 +++++++------
+> >   3 files changed, 30 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/intel/e1000e/e1000.h b/drivers/net/ethernet/intel/e1000e/e1000.h
+> > index 5b2143f4b1f8..3178efd98006 100644
+> > --- a/drivers/net/ethernet/intel/e1000e/e1000.h
+> > +++ b/drivers/net/ethernet/intel/e1000e/e1000.h
+> > @@ -113,7 +113,8 @@ enum e1000_boards {
+> >       board_pch2lan,
+> >       board_pch_lpt,
+> >       board_pch_spt,
+> > -     board_pch_cnp
+> > +     board_pch_cnp,
+> Hello Kai-Heng,
+> I would agree with you here. I would suggest extending it also for other
+> PCH (at least ADP and MTP).  The same controller on a different PCH.
+> We will be able to differentiate between boards via MAC type and submit
+> quirks if need.
 
-divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
-Call Trace:
- kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
- kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
- do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
- fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
- do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+Sure, will do in v2.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
-Changes in v2:
-    - Validate the inputs on a higher level
----
- drivers/video/fbdev/kyro/fbdev.c | 5 +++++
- 1 file changed, 5 insertions(+)
+The issue patch [3/3] addresses may be fixed by [1], but I'll need to
+dig the affected system out and do some testing.
+Meanwhile, many users are affected by the RX issue patch [2/3]
+addresses, so it'll be great if someone can review it.
 
-diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
-index 8fbde92ae8b9..eb0cbd1d12d5 100644
---- a/drivers/video/fbdev/kyro/fbdev.c
-+++ b/drivers/video/fbdev/kyro/fbdev.c
-@@ -372,6 +372,11 @@ static int kyro_dev_overlay_viewport_set(u32 x, u32 y, u32 ulWidth, u32 ulHeight
- 		/* probably haven't called CreateOverlay yet */
- 		return -EINVAL;
- 
-+	if (ulWidth == 0 || ulWidth == 0xffffffff ||
-+		ulHeight == 0 || ulHeight == 0xffffffff ||
-+		(x < 2 && ulWidth + 2 == 0))
-+		return -EINVAL;
-+
- 	/* Stop Ramdac Output */
- 	DisableRamdacOutput(deviceInfo.pSTGReg);
- 
--- 
-2.17.6
+[1] https://patchwork.ozlabs.org/project/intel-wired-lan/list/?series=250480
 
+Kai-Heng
+
+> > +     board_pch_tgp
+> >   };
+> >
+> >   struct e1000_ps_page {
+> > @@ -499,6 +500,7 @@ extern const struct e1000_info e1000_pch2_info;
+> >   extern const struct e1000_info e1000_pch_lpt_info;
+> >   extern const struct e1000_info e1000_pch_spt_info;
+> >   extern const struct e1000_info e1000_pch_cnp_info;
+> > +extern const struct e1000_info e1000_pch_tgp_info;
+> >   extern const struct e1000_info e1000_es2_info;
+> >
+> >   void e1000e_ptp_init(struct e1000_adapter *adapter);
+> > diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+> > index cf7b3887da1d..654dbe798e55 100644
+> > --- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
+> > +++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+> > @@ -5967,3 +5967,23 @@ const struct e1000_info e1000_pch_cnp_info = {
+> >       .phy_ops                = &ich8_phy_ops,
+> >       .nvm_ops                = &spt_nvm_ops,
+> >   };
+> > +
+> > +const struct e1000_info e1000_pch_tgp_info = {
+> > +     .mac                    = e1000_pch_tgp,
+> > +     .flags                  = FLAG_IS_ICH
+> > +                               | FLAG_HAS_WOL
+> > +                               | FLAG_HAS_HW_TIMESTAMP
+> > +                               | FLAG_HAS_CTRLEXT_ON_LOAD
+> > +                               | FLAG_HAS_AMT
+> > +                               | FLAG_HAS_FLASH
+> > +                               | FLAG_HAS_JUMBO_FRAMES
+> > +                               | FLAG_APME_IN_WUC,
+> > +     .flags2                 = FLAG2_HAS_PHY_STATS
+> > +                               | FLAG2_HAS_EEE,
+> > +     .pba                    = 26,
+> > +     .max_hw_frame_size      = 9022,
+> > +     .get_variants           = e1000_get_variants_ich8lan,
+> > +     .mac_ops                = &ich8_mac_ops,
+> > +     .phy_ops                = &ich8_phy_ops,
+> > +     .nvm_ops                = &spt_nvm_ops,
+> > +};
+> > diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> > index d150dade06cf..5835d6cf2f51 100644
+> > --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> > +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> > @@ -51,6 +51,7 @@ static const struct e1000_info *e1000_info_tbl[] = {
+> >       [board_pch_lpt]         = &e1000_pch_lpt_info,
+> >       [board_pch_spt]         = &e1000_pch_spt_info,
+> >       [board_pch_cnp]         = &e1000_pch_cnp_info,
+> > +     [board_pch_tgp]         = &e1000_pch_tgp_info,
+> >   };
+> >
+> >   struct e1000_reg_info {
+> > @@ -7843,12 +7844,12 @@ static const struct pci_device_id e1000_pci_tbl[] = {
+> >       { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_CMP_I219_V11), board_pch_cnp },
+> >       { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_CMP_I219_LM12), board_pch_spt },
+> >       { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_CMP_I219_V12), board_pch_spt },
+> > -     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_LM13), board_pch_cnp },
+> > -     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_V13), board_pch_cnp },
+> > -     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_LM14), board_pch_cnp },
+> > -     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_V14), board_pch_cnp },
+> > -     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_LM15), board_pch_cnp },
+> > -     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_V15), board_pch_cnp },
+> > +     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_LM13), board_pch_tgp },
+> > +     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_V13), board_pch_tgp },
+> > +     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_LM14), board_pch_tgp },
+> > +     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_V14), board_pch_tgp },
+> > +     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_LM15), board_pch_tgp },
+> > +     { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_TGP_I219_V15), board_pch_tgp },
+> >       { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_ADP_I219_LM16), board_pch_cnp },
+> >       { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_ADP_I219_V16), board_pch_cnp },
+> >       { PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_ADP_I219_LM17), board_pch_cnp },
+> >
+> Thanks,
+> Sasha
