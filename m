@@ -2,183 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DDE3C8136
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66413C8139
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbhGNJRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:17:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238147AbhGNJRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:17:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B6D961369;
-        Wed, 14 Jul 2021 09:14:48 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 11:14:46 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>,
-        brauner@kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        gscrivan@redhat.com, Christoph Hellwig <hch@lst.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable-commits@vger.kernel.org, stable <stable@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
-Message-ID: <20210714091446.vt4ieretnkjzi7qg@wittgenstein>
-References: <00000000000069c40405be6bdad4@google.com>
- <000000000000b00c1105c6f971b2@google.com>
- <CAHk-=wgWv1s1FbTxS+T7kbF-7LLm9Nz1eC+WBn+kr1WdYGtisA@mail.gmail.com>
- <20210714075925.jtlfrhhuj4bzff3m@wittgenstein>
+        id S238571AbhGNJSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238414AbhGNJSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:18:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC349C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:15:18 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso3431363wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QsvEVd+O3AeP9bFc1b9vU3D6n5a6m9JnHWCR1Xra61w=;
+        b=PP5L6uhzpzmF1tECCfpvl+VjUbUtmtRh+Zxq/mxc/LmRpck9gMRbRb/nkVxTxoxX51
+         wnK6T3iFd06nEgYZ8Njrg6zkdcYAwWcAGnKnSc+PWmiXLKa0j7TNmJBMLMZXOex5BGM0
+         g9CRgi3KRbz084F2tFve9aylTYXsFkaqnM42D2M+iBcJ3XuP/E+wNnsEl93fzS9tOE0E
+         cNwDqeyvlUPyhUw75Kew62O+jpta2kwZcy+7HK6oUNjCjgIkgnzI8YaVzLesic/7lVdA
+         +rR4klVHonFhw1Ghg/AkzQ3P8mOLTqDMbbWaY3krhjRuGoiHGtxnMeNElOxU8/k9Qkzy
+         UnJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=QsvEVd+O3AeP9bFc1b9vU3D6n5a6m9JnHWCR1Xra61w=;
+        b=cuNKm0lI6b1zcinvjkOO+19NMzmivdtjuDgh6WwhOUK4LFBMnNhVoLsRAuK50aGvho
+         zdIm7Ryg96Jy1mOgkksi4ZObbpU+SFGX2M8l1X2B1z7qTaMi9TE/fpxogVL+6nGXVQSG
+         dHpeDT76RwTnmXjLuIyIY0UC8WNJqo5IUMeRER3FJZ0evKy7qFQjfjYeAfouWA+4+9Oh
+         EgIndDqItMebXcLVLjWiKYhfIyDVJHx7cHLSPeX3PACbOZ2PTJVsqmDr8fvc+P+VpBTR
+         BXMrBnfeI+p6K4O/0pNq7infz2F5Av5YioWIPLrErB6c+dZjnz57IvVLPyM+PhN1ptXE
+         h8wQ==
+X-Gm-Message-State: AOAM531FVtsSL19xOlMVHjQLrlbd3WXz2ZLzoitn6nxAqhey4FYBIIa+
+        EF8zICZdUfmhmsvr54Yj7+lP67UrPGTAOzrEwnw=
+X-Google-Smtp-Source: ABdhPJyjKBl++0RwjmvseJC74RjbaE++ToMFmZ9w1Vh+bsc0dkuI9JtjZAXWGq+WzaCUbzcLn/ZGQkdKC/npdoJAO+U=
+X-Received: by 2002:a1c:7715:: with SMTP id t21mr2900369wmi.121.1626254117382;
+ Wed, 14 Jul 2021 02:15:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210714075925.jtlfrhhuj4bzff3m@wittgenstein>
+Received: by 2002:a5d:48cb:0:0:0:0:0 with HTTP; Wed, 14 Jul 2021 02:15:17
+ -0700 (PDT)
+Reply-To: orlandomoris56@gmail.com
+From:   orlando moris <op183945@gmail.com>
+Date:   Wed, 14 Jul 2021 09:15:17 +0000
+Message-ID: <CAKAyO-Z==qyBedWKgG3iWK1SYmykSDV0nG9Af_XQSmOc-wyUPA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:59:25AM +0200, Christian Brauner wrote:
-> On Tue, Jul 13, 2021 at 11:49:14AM -0700, Linus Torvalds wrote:
-> > On Mon, Jul 12, 2021 at 9:12 PM syzbot
-> > <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com> wrote:
-> > >
-> > > syzbot has found a reproducer for the following issue on:
-> > 
-> > Hmm.
-> > 
-> > This issue is reported to have been already fixed:
-> > 
-> >     Fix commit: 9b5b8722 file: fix close_range() for unshare+cloexec
-> > 
-> > and that fix is already in the reported HEAD commit:
-> > 
-> > > HEAD commit:    7fef2edf sd: don't mess with SD_MINORS for CONFIG_DEBUG_BL..
-> > 
-> > and the oops report clearly is from that:
-> > 
-> > > CPU: 1 PID: 8445 Comm: syz-executor493 Not tainted 5.14.0-rc1-syzkaller #0
-> > 
-> > so the alleged fix is already there.
-> > 
-> > So clearly commit 9b5b872215fe ("file: fix close_range() for
-> > unshare+cloexec") does *NOT* fix the issue.
-> > 
-> > This was originally bisected to that 582f1fb6b721 ("fs, close_range:
-> > add flag CLOSE_RANGE_CLOEXEC") in
-> > 
-> >      https://syzkaller.appspot.com/bug?id=1bef50bdd9622a1969608d1090b2b4a588d0c6ac
-> > 
-> > which is where the "fix" is from.
-> > 
-> > It would probably be good if sysbot made this kind of "hey, it was
-> > reported fixed, but it's not" very clear.
-> > 
-> > The KASAN report looks like a use-after-free, and that "use" is
-> > actually the sanity check that the file count is non-zero, so it's
-> > really a "struct file *" that has already been free'd.
-> > 
-> > That bogus free is a regular close() system call
-> > 
-> > >  filp_close+0x22/0x170 fs/open.c:1306
-> > >  close_fd+0x5c/0x80 fs/file.c:628
-> > >  __do_sys_close fs/open.c:1331 [inline]
-> > >  __se_sys_close fs/open.c:1329 [inline]
-> > 
-> > And it was opened by a "creat()" system call:
-> > 
-> > > Allocated by task 8445:
-> > >  __alloc_file+0x21/0x280 fs/file_table.c:101
-> > >  alloc_empty_file+0x6d/0x170 fs/file_table.c:150
-> > >  path_openat+0xde/0x27f0 fs/namei.c:3493
-> > >  do_filp_open+0x1aa/0x400 fs/namei.c:3534
-> > >  do_sys_openat2+0x16d/0x420 fs/open.c:1204
-> > >  do_sys_open fs/open.c:1220 [inline]
-> > >  __do_sys_creat fs/open.c:1294 [inline]
-> > >  __se_sys_creat fs/open.c:1288 [inline]
-> > >  __x64_sys_creat+0xc9/0x120 fs/open.c:1288
-> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > 
-> > But it has apparently already been closed from a workqueue:
-> > 
-> > > Freed by task 8445:
-> > >  __fput+0x288/0x920 fs/file_table.c:280
-> > >  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
-> > 
-> > So it's some kind of confusion and re-use of a struct file pointer.
-> > 
-> > Which is certainly consistent with the "fix" in 9b5b872215fe ("file:
-> > fix close_range() for unshare+cloexec"), but it very much looks like
-> > that fix was incomplete and not the full story.
-> > 
-> > Some fdtable got re-allocated? The fix that wasn't a fix ends up
-> > re-checking the maximum file number under the file_lock, but there's
-> > clearly something else going on too.
-> > 
-> > Christian?
-> 
-> Looking into this now.
-> 
-> I have to say I'm very confused by the syzkaller report here.
-> 
-> If I go to
-> 
-> https://syzkaller.appspot.com/bug?extid=283ce5a46486d6acdbaf
-> 
-> which is the original link in the report it shows me
-> 
-> android-54	KASAN: use-after-free Read in filp_close	C			2	183d	183d	0/1	upstream: reported C repro on 2021/01/11 12:38
-> 
-> which seems to indicate that this happened on an Android specific 5.4
-> kernel?
-> 
-> But ok, so I click on the link "upstream: reported C repro on 2021/01/11 12:38"
-> which takes me to a google group
-> 
-> https://groups.google.com/g/syzkaller-android-bugs/c/FQj0qcRSy_M/m/wrY70QFzBAAJ
-> 
-> which again strongly indicates that this is an Android specific kernel?
-> 
-> HEAD commit: c9951e5d Merge 5.4.88 into android12-5.4
-> git tree: android12-5.4
-> 
-> but then I can click on the dashboard link for that crash report and it
-> takes me to:
-> 
-> https://syzkaller.appspot.com/bug?extid=53897bcb31b82c7a08fe
-> 
-> which seems to be the upstream report?
-> 
-> So I'm a bit confused whether I'm even looking at the correct bug report
-> but I'll just give the repro a try and see what's going on.
-
-Ok, reproduced and I think I found the issue. It's not related to
-close_fd((), I think it's caused by a UAF when FSCONFIG_SET_FD is with
-the key "source" and a valid fd passed through "aux".
-
-Briefly, fs_parameter is a union:
-
-struct fs_parameter {
-	const char		*key;		/* Parameter name */
-	enum fs_value_type	type:8;		/* The type of value here */
-	union {
-		char		*string;
-		void		*blob;
-		struct filename	*name;
-		struct file	*file;
-	};
-	size_t	size;
-	int	dirfd;
-};
-
-and cgroup1_parse_param is copying out param->string when the param's
-key is "source" without verifying that param->type is actually
-fs_value_is_string.
-
-I'll explain in detail in the commit once I've confirmed and tested that
-my suspicion is correct.
-
-Christian
+Hola, Le informamos que este correo electr=C3=B3nico que lleg=C3=B3 a su bu=
+z=C3=B3n
+no es un error, sino que fue dirigido espec=C3=ADficamente a usted para su
+consideraci=C3=B3n. Tengo una propuesta de ($ 7.500.000.00) que me dej=C3=
+=B3 mi
+cliente fallecido, el ingeniero Carlos, que lleva el mismo nombre que
+usted, que sol=C3=ADa trabajar y viv=C3=ADa aqu=C3=AD en Lom=C3=A9 Togo. Mi=
+ cliente
+fallecido y mi familia se vieron involucrados en un accidente
+automovil=C3=ADstico que les quit=C3=B3 la vida. . Me estoy comunicando con
+usted como familiar m=C3=A1s cercano del fallecido para que pueda recibir
+los fondos en caso de reclamos. Tras su pronta respuesta, le informare
+de los modos de
+ejecuci=C3=B3n de este pacto., cont=C3=A1cteme en este correo electr=C3=B3n=
+ico
+(orlandomoris56@gmail.com)
