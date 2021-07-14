@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76D13C8798
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5B03C8799
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239944AbhGNPeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S239955AbhGNPeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239813AbhGNPeK (ORCPT
+        with ESMTP id S239892AbhGNPeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:34:10 -0400
+        Wed, 14 Jul 2021 11:34:12 -0400
 Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F8EC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:31:18 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so1708568wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:31:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E021C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:31:20 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso3664280wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/OyLLqXUZS1RpS+YuJ/yD57hTXnorkIuGBmzsYS7+c4=;
-        b=I9awJWJ0TeowLx8ez7hQQZ/8uuMucKaiP0yybxoMUtTzmz+q9AuGACZsNk4a1dv1vn
-         3zsplkFV6BR0AaOQKcx+YX73pjEwcEboTLS2zlV1drc9hjq15nfUlPo8y60oKguSMZn1
-         ffeEPFk0EekBEpfBL0jXzkhgvuXrXN30/ZXkeu1LZry0im3i3gOGtxFC4dcUttgzwq9j
-         5cWwAbbiXdgSbwUrZNLpef0zckbyjC77iqz2aLQG62TWbEyPNlqVIEQtzPs/vELhVeDa
-         8ebT5xlk91pGSlnmm0z81JflnM7bgGD/Vl9kB8gnaKpmsyw92587tFyKWXyCLVVY+hyp
-         rGNg==
+        bh=ZEdZ+N0eteL07jx0I8YEw4d+MAwVooRKuXAZfHn0G4c=;
+        b=o8OW1IjbQQi6PtfzBXMIEY4tiI0ap0Kt2MGwbR8boavQl52oeAP5UXZvaeWqaouKmD
+         LtIfYmHledzcF5ZIZJfec+Vp4q4/jCUxWDg13hEcjltXz4oIVTEwxostfSpqfCtJeDDT
+         TS2CJaTjHqIr3mNnNiVQeRBpIGQAsSGkTqhZ+mo5e8m2rXsF0ADLSLDr/zRWpESZlFaA
+         AFcPtm/LzZMs4mc9MAnnR4HE5olfQ0m4oJhIi1OZdnd3DCnqCNhxt6NPYEA3dgCzNsJg
+         3U82hCMZf6la8KXXJbcnUj9agzFhAVQutht5hmY3aXOaj/IcMpiSyo8MomJryKTMWbLe
+         kRMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/OyLLqXUZS1RpS+YuJ/yD57hTXnorkIuGBmzsYS7+c4=;
-        b=Iz5RnwG3q18F4eXeLxxNK7Z4xhNLNKfO2LGucj2m/BTE9PonBBaoOQ7Wd0OAgMV/xF
-         UvdYPQacMeHvlwOhf1HD7e0sXl1yb13UD70DxvYnBLGlio6wpUTqZ2fGQzu5PgvmCQrb
-         f8yMAtdXk8O0v1HVv+2ZGjgrHJ0Gw3uDsERP+SGkMK3ZX9FPPXjHcYtQnIcegp4mIL5F
-         t1dlbxSDFLPOm9SaJWWOcIm9vGXXDdPcwqNSA3rcJcp72nYEfI/AKko8WPwI5GUVv6QB
-         nne9U+AvfyUgYapu959hYU02Zon7BOafTQRPnKCrdDYS0nOOjp/i10dY8fLwV+JtDJfe
-         kvFQ==
-X-Gm-Message-State: AOAM533lZB8Pwt6GbRcQ7Oww8orzY7ihldIqYtQqtLQAwCHvJMG1wd66
-        8D+hhiO5yzOzMo2as9fYFPDzLw==
-X-Google-Smtp-Source: ABdhPJw2hvqQsZQb1WOpVNbwCMQq/ueOlos522YhpGCyQEfSKmNIq0bd5/Bxni1/zrsfBOuKSxXr+A==
-X-Received: by 2002:a1c:9dd6:: with SMTP id g205mr12006785wme.82.1626276677494;
-        Wed, 14 Jul 2021 08:31:17 -0700 (PDT)
+        bh=ZEdZ+N0eteL07jx0I8YEw4d+MAwVooRKuXAZfHn0G4c=;
+        b=Y2RU+knxqHm39wNghPlk2k1VfSviw4lTGBQvOgSbm9I4es6YRFHvsF02JKThr/WSIS
+         9FLxX4FG08Z7GKJN3jFLvR7cfFqVldTUngN9aKHlIYIFZ16gruofAhnOKiwzSZr/WvQO
+         rWUBU7Yr8BY1uuHSmCkuhiuiEpc8mEIzLmIdWRFVidq4srxM/7DTWxoeT9dMsqCwCu5S
+         Rg2xnHRcj1QWTdnwBaF7hEoLsBofi5bNONSyD+1Wh+vTjWx9ML3SRBXD/YLGTzGcg5+j
+         C0JIgogbBPy6eiR07hbg2hXstDrnyNJZAJCLvDZHMiAsjnj3yGAWuoYLH7lyAOZEOTdz
+         3WFQ==
+X-Gm-Message-State: AOAM532sG0zZjOcvw6mjEWmyvnR52pDPEbPbqFUcoDSoX9/a3+vBUTRP
+        EKswYCrTY6lSFOVi6STPR2S+5A==
+X-Google-Smtp-Source: ABdhPJxMq5u6bp0AhaCau+hfSV80bZY1Xk5pC2hJLFrKZKsutCwD7Upe/TiV9izAmYHXf6hBb3CQDQ==
+X-Received: by 2002:a05:600c:3b93:: with SMTP id n19mr4772987wms.3.1626276678690;
+        Wed, 14 Jul 2021 08:31:18 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id y6sm2465174wma.48.2021.07.14.08.31.16
+        by smtp.gmail.com with ESMTPSA id y6sm2465174wma.48.2021.07.14.08.31.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 08:31:16 -0700 (PDT)
+        Wed, 14 Jul 2021 08:31:18 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 Cc:     plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
         bgoswami@codeaurora.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 15/16] ASoC: qcom: audioreach: topology add dapm pga support
-Date:   Wed, 14 Jul 2021 16:30:38 +0100
-Message-Id: <20210714153039.28373-16-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 16/16] ASoC: qcom: sm8250: Add audioreach support
+Date:   Wed, 14 Jul 2021 16:30:39 +0100
+Message-Id: <20210714153039.28373-17-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
 References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
@@ -67,113 +67,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds support for parsing dt for AudioReach based soundcards
+which only have backend DAI links in DT.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/audioreach/topology.c | 62 +++++++++++++++++++++++++++-
- 1 file changed, 61 insertions(+), 1 deletion(-)
+ sound/soc/qcom/sm8250.c | 144 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 143 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/audioreach/topology.c b/sound/soc/qcom/audioreach/topology.c
-index 8080243a47ef..14ecb115e63e 100644
---- a/sound/soc/qcom/audioreach/topology.c
-+++ b/sound/soc/qcom/audioreach/topology.c
-@@ -706,6 +706,25 @@ static int audioreach_widget_load_mixer(struct snd_soc_component *component,
- 	return 0;
- }
- 
-+static int audioreach_widget_load_pga(struct snd_soc_component *component,
-+					int index, struct snd_soc_dapm_widget *w,
-+					struct snd_soc_tplg_dapm_widget *tplg_w)
-+{
-+	struct audioreach_module *mod;
-+	struct snd_soc_dobj *dobj;
-+	int ret;
-+
-+	ret = audioreach_widget_load_module_common(component, index, w, tplg_w);
-+	if (ret)
-+		return ret;
-+
-+	dobj = &w->dobj;
-+	mod = dobj->private;
-+	mod->gain = VOL_CTRL_DEFAULT_GAIN;
-+
-+	return 0;
-+}
-+
- static int audioreach_widget_ready(struct snd_soc_component *component,
- 				   int index, struct snd_soc_dapm_widget *w,
- 				   struct snd_soc_tplg_dapm_widget *tplg_w)
-@@ -725,8 +744,9 @@ static int audioreach_widget_ready(struct snd_soc_component *component,
- 		break;
- 	case snd_soc_dapm_mixer:
- 		return audioreach_widget_load_mixer(component, index, w, tplg_w);
--	case snd_soc_dapm_dai_link:
- 	case snd_soc_dapm_pga:
-+		return audioreach_widget_load_pga(component, index, w, tplg_w);
-+	case snd_soc_dapm_dai_link:
- 	case snd_soc_dapm_scheduler:
- 	case snd_soc_dapm_out_drv:
- 	default:
-@@ -898,6 +918,40 @@ static int audioreach_put_audio_mixer(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static int audioreach_get_vol_ctrl_audio_mixer(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *dw = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct audioreach_module *mod = dw->dobj.private;
-+
-+	/* Check if the graph is active or not */
-+	ucontrol->value.integer.value[0] = mod->gain;
-+
-+	return 0;
-+}
-+
-+static int audioreach_put_vol_ctrl_audio_mixer(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *dw = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct snd_soc_component *c = snd_soc_dapm_to_component(dapm);
-+	struct audioreach_module *mod = dw->dobj.private;
-+	struct q6apm *apm = dev_get_drvdata(c->dev);
-+	int vol = ucontrol->value.integer.value[0];
-+
-+	/* Check if the graph is active or not */
-+	if (dw->power) {
-+		audioreach_gain_set_vol_ctrl(apm, mod, vol);
-+		mod->gain = vol;
-+		return 1;
-+	}
-+
-+	dev_err(apm->dev, "Unable to set volume as graph is not	active\n");
-+	return 0;
-+
-+}
-+
- static int audioreach_control_load_mix(struct snd_soc_component *scomp,
- 					  struct snd_ar_control *scontrol,
- 					  struct snd_kcontrol_new *kc,
-@@ -948,6 +1002,10 @@ static int audioreach_control_load(struct snd_soc_component *scomp, int index,
- 		dobj = &sm->dobj;
- 		ret = audioreach_control_load_mix(scomp, scontrol, kc, hdr);
- 		break;
-+	case SND_SOC_AR_TPLG_VOL_CTL:
-+		sm = (struct soc_mixer_control *)kc->private_value;
-+		dobj = &sm->dobj;
-+		break;
- 	default:
- 		dev_warn(scomp->dev, "control type not supported %d:%d:%d\n",
- 			 hdr->ops.get, hdr->ops.put, hdr->ops.info);
-@@ -972,6 +1030,8 @@ static int audioreach_control_unload(struct snd_soc_component *scomp,
- static const struct snd_soc_tplg_kcontrol_ops audioreach_io_ops[] = {
- 	{SND_SOC_AR_TPLG_FE_BE_GRAPH_CTL_MIX, audioreach_get_audio_mixer,
- 		audioreach_put_audio_mixer, snd_soc_info_volsw},
-+	{SND_SOC_AR_TPLG_VOL_CTL, audioreach_get_vol_ctrl_audio_mixer,
-+		audioreach_put_vol_ctrl_audio_mixer, snd_soc_info_volsw},
+diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
+index fe8fd7367e21..421f9d1d2bed 100644
+--- a/sound/soc/qcom/sm8250.c
++++ b/sound/soc/qcom/sm8250.c
+@@ -20,6 +20,141 @@ struct sm8250_snd_data {
+ 	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
  };
  
- static struct snd_soc_tplg_ops audioreach_tplg_ops  = {
++static int qcom_audioreach_snd_parse_of(struct snd_soc_card *card)
++{
++	struct device_node *np;
++	struct device_node *codec = NULL;
++	struct device_node *platform = NULL;
++	struct device_node *cpu = NULL;
++	struct device *dev = card->dev;
++	struct snd_soc_dai_link *link;
++	struct of_phandle_args args;
++	struct snd_soc_dai_link_component *dlc;
++	int ret, num_links;
++
++	ret = snd_soc_of_parse_card_name(card, "model");
++	if (ret) {
++		dev_err(dev, "Error parsing card name: %d\n", ret);
++		return ret;
++	}
++
++	/* DAPM routes */
++	if (of_property_read_bool(dev->of_node, "audio-routing")) {
++		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
++		if (ret)
++			return ret;
++	}
++
++	/* Populate links */
++	num_links = of_get_child_count(dev->of_node);
++
++	/* Allocate the DAI link array */
++	card->dai_link = devm_kcalloc(dev, num_links, sizeof(*link), GFP_KERNEL);
++	if (!card->dai_link)
++		return -ENOMEM;
++
++	card->num_links = num_links;
++	link = card->dai_link;
++
++	for_each_child_of_node(dev->of_node, np) {
++
++		dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
++		if (!dlc) {
++			ret = -ENOMEM;
++			goto err_put_np;
++		}
++
++		link->cpus	= &dlc[0];
++		link->platforms	= &dlc[1];
++
++		link->num_cpus		= 1;
++		link->num_platforms	= 1;
++
++
++		ret = of_property_read_string(np, "link-name", &link->name);
++		if (ret) {
++			dev_err(card->dev, "error getting codec dai_link name\n");
++			goto err_put_np;
++		}
++
++		cpu = of_get_child_by_name(np, "cpu");
++		platform = of_get_child_by_name(np, "platform");
++		codec = of_get_child_by_name(np, "codec");
++		if (!cpu) {
++			dev_err(dev, "%s: Can't find cpu DT node\n", link->name);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		if (!platform) {
++			dev_err(dev, "%s: Can't find platform DT node\n", link->name);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		if (!codec) {
++			dev_err(dev, "%s: Can't find codec DT node\n", link->name);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		ret = of_parse_phandle_with_args(cpu, "sound-dai", "#sound-dai-cells", 0, &args);
++		if (ret) {
++			dev_err(card->dev, "%s: error getting cpu phandle\n", link->name);
++			goto err;
++		}
++
++		link->cpus->of_node = args.np;
++		link->id = args.args[0];
++
++		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
++		if (ret) {
++			if (ret != -EPROBE_DEFER)
++				dev_err(card->dev, "%s: error getting cpu dai name: %d\n",
++					link->name, ret);
++			goto err;
++		}
++
++		link->platforms->of_node = of_parse_phandle(platform, "sound-dai", 0);
++		if (!link->platforms->of_node) {
++			dev_err(card->dev, "%s: platform dai not found\n", link->name);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++		if (ret < 0) {
++			if (ret != -EPROBE_DEFER)
++				dev_err(card->dev, "%s: codec dai not found: %d\n",
++					link->name, ret);
++			goto err;
++		}
++
++		/* DPCM backend */
++		link->no_pcm = 1;
++		link->ignore_pmdown_time = 1;
++		link->ignore_suspend = 1;
++
++		link->stream_name = link->name;
++		snd_soc_dai_link_set_capabilities(link);
++		link++;
++
++		of_node_put(cpu);
++		of_node_put(codec);
++		of_node_put(platform);
++
++	}
++
++	return 0;
++err:
++	of_node_put(cpu);
++	of_node_put(codec);
++	of_node_put(platform);
++err_put_np:
++	of_node_put(np);
++	return ret;
++}
++
+ static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 				     struct snd_pcm_hw_params *params)
+ {
+@@ -199,7 +334,12 @@ static int sm8250_platform_probe(struct platform_device *pdev)
+ 	card->dev = dev;
+ 	dev_set_drvdata(dev, card);
+ 	snd_soc_card_set_drvdata(card, data);
+-	ret = qcom_snd_parse_of(card);
++	if (of_device_is_compatible(dev->of_node, "qcom,sm8250-audioreach-sndcard") ||
++		of_device_is_compatible(dev->of_node, "qcom,qrb5165-rb5-audioreach-sndcard"))
++		ret = qcom_audioreach_snd_parse_of(card);
++	else
++		ret = qcom_snd_parse_of(card);
++
+ 	if (ret)
+ 		return ret;
+ 
+@@ -211,6 +351,8 @@ static int sm8250_platform_probe(struct platform_device *pdev)
+ static const struct of_device_id snd_sm8250_dt_match[] = {
+ 	{.compatible = "qcom,sm8250-sndcard"},
+ 	{.compatible = "qcom,qrb5165-rb5-sndcard"},
++	{.compatible = "qcom,sm8250-audioreach-sndcard" },
++	{.compatible = "qcom,qrb5165-rb5-audioreach-sndcard" },
+ 	{}
+ };
+ 
 -- 
 2.21.0
 
