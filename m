@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA673C88CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7DE3C88CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhGNQkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:40:36 -0400
-Received: from mail-il1-f179.google.com ([209.85.166.179]:35440 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235968AbhGNQkg (ORCPT
+        id S236268AbhGNQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:40:57 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:46410 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229595AbhGNQk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:40:36 -0400
-Received: by mail-il1-f179.google.com with SMTP id a11so2226489ilf.2;
-        Wed, 14 Jul 2021 09:37:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wvSV9DfDpsl5FoylhFtZyQDYFQqbILb6lth89U0RgXo=;
-        b=eqU+kGuPYvB+vTueQhdU8Cx6fNymK5Qql3ki0ay0KWRKrR0mkPEVGBxs9rklUiN4AA
-         ZIm+3QpGyMtt/mAW0KMvUA3HBdRfgY24QjBCU79YzeufGC2BepQdTlIHsuXlHHia8G+5
-         xv8uMmPJtPSu9V7UYnYVxFCRXeI6AKTThaltxxgBCInUemJlWG2h6c1lY0PJ+z6Xi3JZ
-         1vgZdLy6p6hoXrwvPk7a4EiNUjlfE5UhO2l2zSttAcjIOd/7+O/L6StRirayPOC/T4JT
-         Jkl7YTEL7wIMY7RgeiH3KzbNzX5f2BzTKqFf7lRKcvGb0S5Af92HajCOFN5xJ7EZp2Ql
-         EAQQ==
-X-Gm-Message-State: AOAM531dsGok6vTxtVK9pqWIJq6yFNQtTNRSmrIcK59II5yBMGwbxBYX
-        Zu5z35Q2fMmhddxszOEYPA==
-X-Google-Smtp-Source: ABdhPJybfnKLyt3zWGR1Mz5MrmFhJLmJDYIPJ/v58lFR0tKBQH/gG7+vZ28acd295aiviIieUK1I9w==
-X-Received: by 2002:a05:6e02:1091:: with SMTP id r17mr7232171ilj.160.1626280664250;
-        Wed, 14 Jul 2021 09:37:44 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p6sm1543333ilg.4.2021.07.14.09.37.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 09:37:43 -0700 (PDT)
-Received: (nullmailer pid 2720225 invoked by uid 1000);
-        Wed, 14 Jul 2021 16:37:41 -0000
-Date:   Wed, 14 Jul 2021 10:37:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, soc@kernel.org
-Subject: Re: [PATCH v2 3/4] dt-bindings: arm: fsl: add SKOV imx6q and imx6dl
- based boards
-Message-ID: <20210714163741.GB2719790@robh.at.kernel.org>
-References: <20210714045349.10963-1-o.rempel@pengutronix.de>
- <20210714045349.10963-4-o.rempel@pengutronix.de>
+        Wed, 14 Jul 2021 12:40:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UfnzWK-_1626280681;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfnzWK-_1626280681)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 15 Jul 2021 00:38:03 +0800
+Date:   Thu, 15 Jul 2021 00:38:00 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Rafa?? Mi??ecki <zajec5@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+Message-ID: <YO8S6IK8/WsInasF@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Rafa?? Mi??ecki <zajec5@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <30c7ec73-4ad5-3c4e-4745-061eb22f2c8a@redhat.com>
+ <CAHk-=wjW7Up3KD-2EqVg7+ca8Av0-rC5Kd7yK+=m6Dwk3D4Q+A@mail.gmail.com>
+ <YO30DKw5FKLz4QuF@zeniv-ca.linux.org.uk>
+ <bea2bcf2-02f6-f247-9e06-7b9ec154377a@gmail.com>
+ <YO755O8JnxG44YaT@kroah.com>
+ <7f4a96bc-3912-dfb6-4a32-f0c6487d977b@gmail.com>
+ <20210714161352.GA22357@magnolia>
+ <YO8OP7vzHIuKvO6X@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210714045349.10963-4-o.rempel@pengutronix.de>
+In-Reply-To: <YO8OP7vzHIuKvO6X@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 06:53:48 +0200, Oleksij Rempel wrote:
-> Add SKOV imx6q/dl LT2, LT6 and mi1010ait-1cp1 boards.
+Hi Christoph,
+
+On Wed, Jul 14, 2021 at 05:18:07PM +0100, Christoph Hellwig wrote:
+> On Wed, Jul 14, 2021 at 09:13:52AM -0700, Darrick J. Wong wrote:
+> > Porting to fs/iomap can be done after merge, so long as the ntfs3
+> > driver doesn't depend on crazy reworking of buffer heads or whatever.
+> > AFAICT it didn't, so ... yes, my earlier statements still apply: "later
+> > as a clean up".
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> I on the other hand hate piling up mor of this legacy stuff, as it tends
+> to not be cleaned up by the submitted.  Example: erofs still hasn't
+> switched to iomap despite broad claims, also we still have a huge
 
+Just some word of this, I've been always actively developing and
+converting legacy stuffs to new APIs these years, such as new mount
+APIs, xarray, which can be seen by changelog compared with other
+filesystems. The iomap buffered I/O stuff is mainly because it
+doesn't support tailing-packing inline, although which has been
+requested for people who cares more about storage itself, like:
+https://lore.kernel.org/lkml/3dbeff43-0905-3421-4652-41b7a935f3c1@gmail.com/
+And I can also show the benefits by using tailing-packing inline
+by taking Linux source code tree (many random tail blocks) as an
+example...
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+I'm now working on this tailing-packing inline iomap support as
+well. But Anyway, erofs didn't use buffer head in the beginning
+since I can see some flew of buffer head approach itself, it just
+works on raw bio and page cache interfaces for now.
 
-If a tag was not added on purpose, please state why and what changed.
+Thanks,
+Gao Xiang
 
+> backlog in the switch to the new mount API.
