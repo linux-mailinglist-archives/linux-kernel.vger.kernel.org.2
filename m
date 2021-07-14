@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449BB3C943E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DC23C9441
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhGNXQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229928AbhGNXQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:16:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D618613B5;
-        Wed, 14 Jul 2021 23:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626304420;
-        bh=o0mDIUs1526mrpRK4KxArL/CQBdeSIY/Gl5t2TV+hs8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mI9LO31I1isUyOjRP0Uk812+LdZPasqkB9mc/RUEj4g+IVLbDsOQDtEwKCBsqdzqP
-         ZXYdOCyQcXl7WvtXborY+saEmD23YoWuxOegpLFEdKLMOWWovNO0oR/zwcLWjT6KPC
-         uc6fMjTOaRxR4//aJe0/j9Q16Mmn+zz4SVO9fkbpbTc3UkDcad88qr2E8p3+EVetmF
-         9Wrxrr7o9EqX5N+KUYwmIgj025VbH3kbVaXj8Caxm73YyzVifQhVWvYWXEMcbuL7R0
-         17j5WIlscgJa+aUdJenZiThkLDVXcK3eiHqKtJD/DXJEb0Pi2pkaEU0GCRyb68RxoL
-         tC9LGmlUlHSUA==
-Date:   Thu, 15 Jul 2021 01:13:38 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
-Message-ID: <20210714231338.GA65963@lothringen>
-References: <20210714135420.69624-1-frederic@kernel.org>
- <20210714135420.69624-7-frederic@kernel.org>
- <YO8WWxWBmNuI0iUW@hirez.programming.kicks-ass.net>
+        id S234875AbhGNXQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:16:58 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:38700 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhGNXQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 19:16:55 -0400
+Received: by mail-io1-f53.google.com with SMTP id k11so4219029ioa.5;
+        Wed, 14 Jul 2021 16:14:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yctG1YdIV6Px1SU8AGyelV3I04Eay9VEBZw3/gPji0I=;
+        b=J7WtvQXYABOKqMy9t0fVEhBaknmr0kCM3XDtpratd1Eds9/9J1vZFDqHEBIH0yd8Rw
+         2W+kk0UlIY/VZdLiW2uPqICi8iA5CfK0xvSBPUKWOwyR42IevIOU6dz9FPtKltkxVcYE
+         JcTmk1KyUpqWSDDkLeTp3RAAHkDb5sCQef49D5LQ+/f7l9R9BN5INL0v26ATcoTqxbtZ
+         WNShKZw6K3WXjrRZkL6KHVD+5gLK7MhQxNeeV9gcwfm1IcX6GPGrj6DgcyrESdbzeg56
+         IL7qHxoDX19ih4sh/wSBmFkwkP4dAKBKHDlcWb+z2GDFP1LuBZIM2o1gpYoPqcwoQmb+
+         gMTQ==
+X-Gm-Message-State: AOAM532xxlWPlr+vdL1CLn/BYUmcUsiZJxmlQrUcQSSzc8UmJYhd8Mqz
+        tZ62P80m9t7KAzfg+Lv2Aw==
+X-Google-Smtp-Source: ABdhPJwGGiAhes2rUVASRwJcoN46W1Ft9CMHVmWXDoXe7onpUc9CAAeihSmKlq4JbiFGP1n65a40Fg==
+X-Received: by 2002:a5e:9917:: with SMTP id t23mr426233ioj.158.1626304442393;
+        Wed, 14 Jul 2021 16:14:02 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id q1sm2119376ioi.42.2021.07.14.16.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 16:14:01 -0700 (PDT)
+Received: (nullmailer pid 3720101 invoked by uid 1000);
+        Wed, 14 Jul 2021 23:13:59 -0000
+Date:   Wed, 14 Jul 2021 17:13:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Yunfei Dong <Yunfei.Dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH v1, 04/14] dt-bindings: media: mtk-vcodec: Separate video
+ encoder and decoder dt-bindings
+Message-ID: <20210714231359.GA3715372@robh.at.kernel.org>
+References: <20210707062157.21176-1-yunfei.dong@mediatek.com>
+ <20210707062157.21176-5-yunfei.dong@mediatek.com>
+ <CA+Px+wWQREny2KSjDfgdnMvk8GKKqr+QvRdSR8YXc1i73wbJSQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YO8WWxWBmNuI0iUW@hirez.programming.kicks-ass.net>
+In-Reply-To: <CA+Px+wWQREny2KSjDfgdnMvk8GKKqr+QvRdSR8YXc1i73wbJSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 06:52:43PM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 14, 2021 at 03:54:20PM +0200, Frederic Weisbecker wrote:
-> > Add a new cpuset.isolation_mask file in order to be able to modify the
-> > housekeeping cpumask for each individual isolation feature on runtime.
-> > In the future this will include nohz_full, unbound timers,
-> > unbound workqueues, unbound kthreads, managed irqs, etc...
-> > 
-> > Start with supporting domain exclusion and CPUs passed through
-> > "isolcpus=".
-> > 
-> > The cpuset.isolation_mask defaults to 0. Setting it to 1 will exclude
-> > the given cpuset from the domains (they will be attached to NULL domain).
-> > As long as a CPU is part of any cpuset with cpuset.isolation_mask set to
-> > 1, it will remain isolated even if it overlaps with another cpuset that
-> > has cpuset.isolation_mask  set to 0. The same applies to parent and
-> > subdirectories.
-> > 
-> > If a cpuset is a subset of "isolcpus=", it automatically maps it and
-> > cpuset.isolation_mask will be set to 1. This subset is then cleared from
-> > the initial "isolcpus=" mask. The user is then free to override
-> > cpuset.isolation_mask to 0 in order to revert the effect of "isolcpus=".
-> > 
-> > Here is an example of use where the CPU 7 has been isolated on boot and
-> > get re-attached to domains later from cpuset:
-> > 
-> > 	$ cat /proc/cmdline
-> > 		isolcpus=7
-> > 	$ cd /sys/fs/cgroup/cpuset
-> > 	$ mkdir cpu7
-> > 	$ cd cpu7
-> > 	$ cat cpuset.cpus
-> > 		0-7
-> > 	$ cat cpuset.isolation_mask
-> > 		0
-> > 	$ ls /sys/kernel/debug/domains/cpu7	# empty because isolcpus=7
-> > 	$ echo 7 > cpuset.cpus
-> > 	$ cat cpuset.isolation_mask	# isolcpus subset automatically mapped
-> > 		1
-> > 	$ echo 0 > cpuset.isolation_mask
-> > 	$ ls /sys/kernel/debug/domains/cpu7/
-> > 		domain0  domain1
-> > 
+On Thu, Jul 08, 2021 at 06:04:54PM +0800, Tzung-Bi Shih wrote:
+> On Wed, Jul 7, 2021 at 2:22 PM Yunfei Dong <yunfei.dong@mediatek.com> wrote:
+> >  .../media/mediatek-vcodec-decoder.txt         | 169 ++++++++++++++++++
+> >  .../media/mediatek-vcodec-encoder.txt         |  73 ++++++++
+> >  2 files changed, 242 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec-decoder.txt
+> >  create mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec-encoder.txt
+> The patch is weird.  Its title says "separate" but the changes are all
+> creating new content.
 > 
-> cpusets already has means to create paritions; why are you creating
-> something else?
+> Would expect the patch to remove content from some files (e.g.
+> Documentation/devicetree/bindings/media/mediatek-vcodec.txt) and
+> separate into 2 files.
 
-I was about to answer that the semantics of isolcpus, which reference
-a NULL domain, are different from SD_LOAD_BALANCE implied by
-cpuset.sched_load_balance. But then I realize that SD_LOAD_BALANCE has
-been removed.
+Except h/w doesn't change. Using the component framework is not a reason 
+to change bindings.
 
-How cpuset.sched_load_balance is implemented then? Commit
-e669ac8ab952df2f07dee1e1efbf40647d6de332 ("sched: Remove checks against
-SD_LOAD_BALANCE") advertize that setting cpuset.sched_load_balance to 0
-ends up creating NULL domain but that's not what I get. For example if I
-mount a single cpuset root (no other cpuset mountpoints):
+Also, note that any major changes or additions should be in schema 
+format now.
 
-$ mount -t cgroup none ./cpuset -o cpuset
-$ cd cpuset
-$ cat cpuset.cpus
-0-7
-$ cat cpuset.sched_load_balance
-1
-$ echo 0 > cpuset.sched_load_balance
-$ ls /sys/kernel/debug/domains/cpu1/
-domain0  domain1
-
-I still get the domains on all CPUs...
+Rob
