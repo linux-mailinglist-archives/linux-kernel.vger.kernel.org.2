@@ -2,105 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332413C9369
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B983C9370
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhGNV43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhGNV42 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:56:28 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C189C06175F;
-        Wed, 14 Jul 2021 14:53:36 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 31C89CC;
-        Wed, 14 Jul 2021 23:53:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1626299614;
-        bh=pWKpxPOvoAW7FKSdGJi+ZdPivLsbxsmn5uEaNivCJZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HxupBf46z7lsaydCKXHIGaIcqgX6jf/wgEJkDCEodah700UlwEICBYdBA2nFI7O//
-         WfC95RiNsYHoVTcTx5m274S21CFjGuF/hOn8XODn0+G4k+EGOpNH3TSQFN5WIdkPC4
-         PnTqUYo3Ta4cAjkCynTVR5QbaHEHe0kEh8tZ6Nmo=
-Date:   Thu, 15 Jul 2021 00:53:32 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        kieran.bingham@ideasonboard.com,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-Message-ID: <YO9c3Aofj0UJ1c3f@pendragon.ideasonboard.com>
-References: <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
- <20210713152454.GC4098@sirena.org.uk>
- <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
- <20210713181837.GE4098@sirena.org.uk>
- <YO6RTh8ngNKZxzj+@pendragon.ideasonboard.com>
- <20210714165948.GG4719@sirena.org.uk>
- <YO8cVWNmUvU/LKGi@pendragon.ideasonboard.com>
- <20210714172846.GI4719@sirena.org.uk>
- <YO8hxyrHqY7K43wp@pendragon.ideasonboard.com>
- <20210714191855.GJ4719@sirena.org.uk>
+        id S234875AbhGNV72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhGNV71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 17:59:27 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0772D61362;
+        Wed, 14 Jul 2021 21:56:34 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 17:56:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [GIT PULL] tracing: Add __string_len() and __assign_str_len()
+ helpers
+Message-ID: <20210714175633.3b53346a@oasis.local.home>
+In-Reply-To: <CAHk-=wj5Pp5J-CAPck22RSQ13k3cEOVnJHUA-WocAZqCJK1BZw@mail.gmail.com>
+References: <20210713171143.7784697e@oasis.local.home>
+ <CAHk-=wj5Pp5J-CAPck22RSQ13k3cEOVnJHUA-WocAZqCJK1BZw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210714191855.GJ4719@sirena.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 08:18:55PM +0100, Mark Brown wrote:
-> On Wed, Jul 14, 2021 at 08:41:27PM +0300, Laurent Pinchart wrote:
-> > On Wed, Jul 14, 2021 at 06:28:46PM +0100, Mark Brown wrote:
-> > > On Wed, Jul 14, 2021 at 08:18:13PM +0300, Laurent Pinchart wrote:
-> > > > It's only one data point, but we're seeing adoption of the ACPI
-> > > > DT-in-DSD for camera. It's still not pretty of course.
-> > >
-> > > By non-Linux system vendors?
+On Wed, 14 Jul 2021 12:20:47 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Tue, Jul 13, 2021 at 2:11 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 > >
-> > For Windows-based machines, yes. It's fairly new, and the information I
-> > have is that those machines may ship DSDT containing both Windows-style
-> > (read: crap) data and Linux-style data for the same nodes. My fear is
-> > that only the former will be properly tested and the latter will thus be
-> > incorrect. The future will tell (I'm as usual very hopeful).
+> > Add macros for the TRACE_EVENT() macro that can be used to assign strings
+> > that either need to be truncated, or have no nul terminator, and depends
+> > on a length attribute to assign.  
 > 
-> Adding the Intel audio people - it'd be good if we could get some
-> similar stuff started for the audio things.  Sadly in these sorts of
-> cases AIUI the Windows thing is broadly to match DMI data and supply
-> platform data so it's more a case of just not having essential
-> information in firmware, a bad format would be better TBH (assuming it's
-> accurate which also requires loads of quirks...).
+> I pulled this, but then I looked at the actual patch, and decided it's
+> not acceptable.
+> 
+> > +#define __assign_str_len(dst, src, len)                                                \
+> > +       strncpy(__get_str(dst), (src) ? (const char *)(src) : "(null)", len);   \
+> > +       __get_str(dst)[len] = '\0';  
+> 
+> I can see so many problems in the above that it's not even funny.
 
-On the camera side, the Windows-based machines I've worked with (Skylake
-and Kabylak) have data in the DSDT. There's data we can use directly,
-and there's a lot that is hardcoded in the Windows driver (including
-what voltage to program on the different outputs of an I2C-controlled
-regulator - you get that wrong, you fry your camera). I believe Intel
-provides a small set of reference designs with several options to the
-OEMs, and I wouldn't be surprised if some of the data present in ACPI
-that we don't know how to interpret would identify these options. I
-don't think the Windows driver has DMI-based quirks, the driver isn't
-machine-specific as far as I can tell.
+It's part of the ugliness of the TRACE_EVENT() macro helpers, as these
+macros should never be used outside of the TP_fast_assign() logic.
+They're internal helper macros, that have a lot of assumptions. It's
+probably time to add a bunch of comments to them.
 
-For newer devices, ACPI should contain Windows data in a format that the
-Windows team decides on its own, and data that is actually usable in the
-_DSD for Linux. I've also heard that the power management would be
-saner, with PM actually implemented in the DSDT. I haven't seen those
-DSDT yet though.
+> 
+> Maybe all users would end up avoiding the pitfalls, but the above
+> really is disgusting.
+> 
+> And yes, there's a pre-existing multi-statement macro without any
+> grouping, but that's not an excuse for doing more of them, and doing
+> them badly.
 
--- 
-Regards,
+Adding the "do { } while(0)" is probably a good idea here. I haven't
+thought it necessary because of the limited use cases. But I have seen
+people get crazy inside the TP_fast_assign(), so it probably should be
+included. But other than that, I don't see any issues.
 
-Laurent Pinchart
+> 
+> And by "badly" I mean - among other things - the questionable NUL
+> termination that *overflows* the size that was specified, but also
+> using strncpy() at all.
+> 
+> Hint: use strscpy instead of re-implementing it badly. If you really
+> want the crazy NUL padding that strncpy does - which I doubt you do -
+> use strscpy_pad(), making it explicit.
+
+Note, the source is guaranteed to be a smaller buffer than the
+destination. The destination is allocated to len + 1, we only want to
+copy the full source string, which does not have a terminating '\0',
+and add it to a string that we will add a terminating '\0' too.
+
+In other words, strscpy is not any better, because we have to add one
+more anyway.
+
+If you look at how that is allocated, we have:
+
++#undef __string_len
++#define __string_len(item, src, len) __dynamic_array(char, item, (len) + 1)
+
+
+That "(len)+1" adds the extra byte for the '0'. Hence, it is similar to:
+
+	dst = kmalloc(len + 1, GFP_KERNEL);
+	strncpy(dst, src, len);
+	dst[len] = '\0';
+
+Where the requirement is that you want to save len bytes of source into
+dst, where len must be at least the size of src.
+
+The use case for such a thing is:
+
+TRACE_EVENT(foo,
+	TP_PROTO(const char *foobar, int len),
+	TP_STRUCT__entry(
+		__string_len(	str,	foobar,		len)
+	),
+	TP_fast_assign(
+		__assign_str_len(str, foobar, len);
+	),
+	TP_printk("str=%s", __get_str(str))
+);
+
+
+This creates the event "foo" where in the kernel proper, you have:
+
+	trace_foo(myfoo, myfoo_len);
+
+Where myfoo_len, is known to be all the characters to copy from myfoo
+(where myfoo has no terminator)
+
+The TRACE_EVENT macro turns into:
+
+ I manually substituted the __string_len() and __assign_str_len() macros
+ to show what the functions end up as.
+
+(created by the macro magic in include/trace/trace_events.h)
+
+
+// trace_event_get_offsets_foo is used to calculate the dynamic fields
+// of the trace event, and figure out where they will be located.
+
+static inline notrace int trace_event_get_offsets_foo(
+	struct trace_event_data_offsets_foo *__data_offsets, const char *foobar, int len)
+{
+	int __data_size = 0;
+	int __maybe_unused __item_length;
+	struct trace_event_raw_foo __maybe_unused *entry;
+
+// The "(len)+1" will be used to calculate the __item_length below
+
+	__item_length = (len + 1) * sizeof(char);
+
+// the dynamic fields (strings and such) are located after the static
+// fields in the trace event, and the offset is recorded in the bottom
+// 16 bits of a 32 bit word, and the size in the top 16 bits.
+
+	__data_offsets->item = __data_size +
+			       offsetof(typeof(*entry), __data);
+	__data_offsets->item |= __item_length << 16;
+	__data_size += __item_length;
+
+
+// Each "__string_len()" or "__string()" in the TP_STRUCT__entry is inserted
+// into this macro created function. Thus, the above code is duplicated for
+// each field that uses __string(), __string_len() or __dynamic_array().
+
+
+	return __data_size;
+}
+
+#define __get_str(str)	\
+		((void *)__entry + (__entry->__data_loc_str & 0xffff))
+
+// The trace_event_raw_event_foo() is called by the trace_foo()
+// when the trace foo event is enabled (via static branch).
+
+static notrace void
+trace_event_raw_event_foo(void *__data, const char **foobar, int len)
+{
+	struct trace_event_file *trace_file = __data;
+	struct trace_event_data_offsets_foo __maybe_unused __data_offsets;
+	struct trace_event_buffer fbuffer;
+	struct trace_event_raw_foo *entry;
+	int __data_size;
+
+// First the size is calculated from the above code to find out how much
+// needs to be allocated on the ring buffer.
+
+	__data_size = trace_event_get_offsets_foo(&__data_offsets, foobar, len);
+
+	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
+				 sizeof(*entry) + __data_size);
+
+	if (!entry)
+		return;
+
+// The below is the __assign_str_len() that is in the TP_fast_assign() which
+// is expanded here.
+
+	strncpy(__get_str(str), (foorbar) ? (const char *)(foobar) : "(null)", len);
+	__get_str(str)[len] = '\0';
+
+// The above will not overflow, as the caller is expected to pass in a len
+// that has fewer than or equal to characters of the string (or that is a bug).
+// The destination was allocated as len + 1, so it will not overflow
+
+	trace_event_buffer_commit(&fbuffer);
+}
+
+There is no overflow, because the __string_len() automatically
+allocated len+1, and len is used here.
+
+I agree that for __assign_str_len() that it should have a do { }
+while(0) because someone could have:
+
+	TP_fast_assign(
+		if (len > 10)
+			__assign_str_len(str, foobar, 10);
+		else
+			__assign_str_len(str, foobar, len);
+
+and this would break with the current logic.
+
+I admit TRACE_EVENT() logic is rather ugly, but it was done this way to
+make it really easy to create events, otherwise, people would need to
+do all this by hand, and that would be difficult and error prone. The
+fact that we have over 1000 events proves that it was easy ;-)
+
+But, besides wrapping the __assign_str_len() in a do { } while (0), I
+don't see an overflow or other bug in this code.
+
+-- Steve
+
