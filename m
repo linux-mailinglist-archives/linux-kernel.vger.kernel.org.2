@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2233C92A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301333C92A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhGNU7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:59:06 -0400
-Received: from mail-io1-f47.google.com ([209.85.166.47]:43933 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhGNU64 (ORCPT
+        id S234624AbhGNU7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:59:37 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:44888 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhGNU7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:58:56 -0400
-Received: by mail-io1-f47.google.com with SMTP id k16so3798791ios.10;
-        Wed, 14 Jul 2021 13:56:03 -0700 (PDT)
+        Wed, 14 Jul 2021 16:59:35 -0400
+Received: by mail-io1-f46.google.com with SMTP id v26so3814367iom.11;
+        Wed, 14 Jul 2021 13:56:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=EnXGA3+YFuTeU9FgBeezkUFsCLztW7qvPFMTFHbshIE=;
-        b=geiflgiHlgWYlABVSNxupNF5PEQju3Gkn9EuC8hy4z+aUrb5U21OF9rxRHXegQqvCt
-         1SdFSJhuPvuLeIhnBE3oBXnF2V+96NWbXOBrzwe2LHovJP8w7Sy8y4PZz70lbq4BbYni
-         G79QGsijJ/dfSs+4ZYcJqW9rhzVBvURYLq0p1yWrKSHPI/tlHj7sz2g8JMSdtLYFmFp0
-         3ddYrGd3NFE6ffkE4fpBbqHQhDRWhbUNhhEjcvodOWZt01c/qAU1oNfQ1VSpmUkwwQWX
-         nDdhhGNCSsidqWmWl2Fggc7PWgHv1hwQZJSlomV7Dz78FgYn6rkrd7V8xQgNOVdMK++u
-         1Wtg==
-X-Gm-Message-State: AOAM5315INXpfNYMPBv4OYpHiA9HctEaPQXZ4ZO0lwYCsUmmTdcaQGi3
-        weyI6bk1P05XMFewD4suFQ==
-X-Google-Smtp-Source: ABdhPJw0iescfn8O25Yt7XsiSUUqM/GRNh7g3KtGLFJc/07iO22Wlyt6LTh+CH9Qvxaegp7wOQhRcA==
-X-Received: by 2002:a6b:7619:: with SMTP id g25mr25255iom.151.1626296163599;
-        Wed, 14 Jul 2021 13:56:03 -0700 (PDT)
+        bh=zf2RhNz05fNIFckY0kQkShTw8ZYBNokJL+AFOEm4i58=;
+        b=Qd7jIiD3wOhfydrCuCa7q5U8lpGEl1UkbmTsbPM/YFHW9QLXP1uPc2z7jF39L7r7s6
+         7OHR6h1H+AiWx7v0WQcN9KAwy9RZftj0bcNITCWjxVKxOpCbsouHGyiNAbbTBFNdg19G
+         EMG6cE/IqNIvG7KF8P/wgzT1yvoPyYKQVvz9x3bQQV8+hdA7Dh9nKDrJw9EEknGE4LAz
+         N1y3N1x7FwoIvFnynhbkyyxDtOItIUfwJAh0lR8BhviPrJS66v6TDWe553vgE0eu7E4k
+         frknDYS4l242YjpRw59j+YGyFFRG6eJjFThJkecFp/5NjQrAKMkScBH7wow+HUeZc/3B
+         /lgA==
+X-Gm-Message-State: AOAM530KhdOoRkKDm4E0tFmc4dHYSfrdc5aXHCJ08idSpQJsmst07R3G
+        5AQzoYVi+60lchD4xIJREw==
+X-Google-Smtp-Source: ABdhPJwASkvpIiVzj1ASbW61fxJa7NjZnlUa3KsA+3U1bqynlTf2XJy/CRTduCy7UroAfteTgzQ1lg==
+X-Received: by 2002:a05:6638:144f:: with SMTP id l15mr152564jad.67.1626296202679;
+        Wed, 14 Jul 2021 13:56:42 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id i14sm1714108ilu.71.2021.07.14.13.56.02
+        by smtp.gmail.com with ESMTPSA id p19sm1849694iob.7.2021.07.14.13.56.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:56:03 -0700 (PDT)
-Received: (nullmailer pid 3507153 invoked by uid 1000);
-        Wed, 14 Jul 2021 20:56:02 -0000
-Date:   Wed, 14 Jul 2021 14:56:02 -0600
+        Wed, 14 Jul 2021 13:56:42 -0700 (PDT)
+Received: (nullmailer pid 3508255 invoked by uid 1000);
+        Wed, 14 Jul 2021 20:56:40 -0000
+Date:   Wed, 14 Jul 2021 14:56:40 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        robh+dt@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] dt-bindings: PCI: ftpci100: convert faraday,ftpci100
- to YAML
-Message-ID: <20210714205602.GA3507072@robh.at.kernel.org>
-References: <20210628193508.2826903-1-clabbe@baylibre.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: qcom: spmi-gpio: Add pmc8180 & pmc8180c
+Message-ID: <20210714205640.GA3508199@robh.at.kernel.org>
+References: <20210629003851.1787673-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210628193508.2826903-1-clabbe@baylibre.com>
+In-Reply-To: <20210629003851.1787673-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Jun 2021 19:35:08 +0000, Corentin Labbe wrote:
-> Converts pci/faraday,ftpci100.txt to yaml.
-> Some change are also made:
-> - example has wrong interrupts place
+On Mon, 28 Jun 2021 17:38:51 -0700, Bjorn Andersson wrote:
+> The SC8180x platform comes with PMC8180 and PMC8180c, add support for
+> the GPIO controller in these PMICs.
 > 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-> Changes since v1:
-> - fixed issues reported by Rob Herring https://patchwork.kernel.org/project/linux-pci/patch/20210503185228.1518131-1-clabbe@baylibre.com/
-> - moved comment as asked by Linus Walleij
-> 
-> Changes since v2:
-> - fixed issues reported by Rob Herring https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210510203041.4024411-1-clabbe@baylibre.com/
-> 
->  .../bindings/pci/faraday,ftpci100.txt         | 135 --------------
->  .../bindings/pci/faraday,ftpci100.yaml        | 176 ++++++++++++++++++
->  2 files changed, 176 insertions(+), 135 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/faraday,ftpci100.txt
->  create mode 100644 Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
+>  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 4 ++++
+>  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c                     | 2 ++
+>  2 files changed, 6 insertions(+)
 > 
 
-Applied, thanks!
+Acked-by: Rob Herring <robh@kernel.org>
