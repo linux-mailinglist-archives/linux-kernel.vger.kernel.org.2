@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68073C8441
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C93E3C8464
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239257AbhGNMJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:09:41 -0400
-Received: from mout.gmx.net ([212.227.17.21]:37231 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230492AbhGNMJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:09:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626264406;
-        bh=lxpFcYvSv+ZN5kjSF8j1xFhmw+hDTGIGlO0mGRo2Hso=;
-        h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
-        b=kg8Gvkmah6oC5hZtqHGw8EkJ+vTXjhVAgdl8r+/ZXk7aX3/brNfa3mxahGoMcoboG
-         pdzoqoom8OhENs6Mo6tjFswF3QUIurJerCFI3dk9EiUbstTl0YRs0X5TtMrwxSMH4Y
-         +g0iv9mCB6j4OttXDhkDuUxa2ojUMBkaZW92eNds=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from obelix.fritz.box ([46.142.1.123]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSKy8-1lb0yE2jRw-00SjUT; Wed, 14
- Jul 2021 14:06:46 +0200
-From:   Ronald Warsow <rwarsow@gmx.de>
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Message-ID: <fdce0566-617d-cc0c-368a-761f8015c79a@gmx.de>
-Date:   Wed, 14 Jul 2021 14:06:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239295AbhGNMWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:22:38 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:14630 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231210AbhGNMWh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:22:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1626265186; x=1657801186;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Nv5nk+ECy/d9fRDzwKxZzJlxuyKt8LLKdgHIZPWRSZw=;
+  b=qSP25WcN/OUtTBromxjw9RTWclKkLV3cLea/lUNwhtJQh993+FZkfA9G
+   Ax10D4nLEZTsKaBJGFYEwTcEIOWCB9HPP8UVxno1NyJMy0FN30piDR9vh
+   7re00SpYaVP3WMXT1HGwfRWgEww1OE7ymwLgQ1agrfu7JtwYMEyuxClKP
+   g=;
+X-IronPort-AV: E=Sophos;i="5.84,239,1620691200"; 
+   d="scan'208";a="126827527"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 14 Jul 2021 12:07:47 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id D05B92208F6;
+        Wed, 14 Jul 2021 12:07:46 +0000 (UTC)
+Received: from EX13D02ANC003.ant.amazon.com (10.43.157.69) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Wed, 14 Jul 2021 12:07:46 +0000
+Received: from 147ddabc1818.ant.amazon.com (10.43.162.164) by
+ EX13D02ANC003.ant.amazon.com (10.43.157.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Wed, 14 Jul 2021 12:07:43 +0000
+From:   Takahiro Itazuri <itazur@amazon.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Takahiro Itazuri <itazur@amazon.com>,
+        Takahiro Itazuri <zulinx86@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kuniyuki Iwashima" <kuniyu@amazon.co.jp>, <trivial@kernel.org>
+Subject: [PATCH] pid: Cleanup the stale comment mentioning pidmap_init().
+Date:   Wed, 14 Jul 2021 21:07:13 +0900
+Message-ID: <20210714120713.19825-1-itazur@amazon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:t65iRbTh5+mBCuPXyIrHQ6N4GkHmWuW7BcOyvJMCd2KB53nP99E
- jYi1d2NTwDBGbHY8kbOnqRfYisXYpKDOMrZNR5vJiMK+TNG0RhbAx75eOZwJKZl2YKSi4iQ
- fLhFjr9xe+8HrOww3QWge37k6butv8XdxnugFx/YPQWVgi2JS5qw9ELc2moEl4/FRFfZ0tV
- mR+4Z7hgIcsd3k99sJzhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9knAF4K6514=:dpJYqfor1fBCaAUqLQR7qX
- 8rc0Ko+5exakDZVq+CyZWJUNFA02fHxnW8vYZnI2i0Yy5O3GEzo8p+D6IvbIMUC3VAxzu/+F/
- CR+zoIyfH3wGCBSML2vKqewMIaAZfm8QCHOoZjLzn0IBsKj7aJwkiSlA6qQINDB5f6U4+QO63
- NAyuHNLMCnaUt+faAqMnCG5SrhnVJ+9mHGajyYi0QRGuHpD1YWwvwiSmonawbrndV2o7dEXZT
- gP55TiAQR/rOo3UucZCIY54c+b1C+kr8TtrnRBkvEWRb2gFC1UQsvwEfszALQePuA9ZZzGoHU
- mW0Eu0u90xZTvfTkzOYQRqynRRhhRBq71yNX9TuidJhPezUHsalqcHuPhw4b6fKsCCdKl08G3
- WVoiTvUetQweSENkust4dXbx8+LRLpdOi4Nn7YAfT6ZjINmOw/3fufOg+FBMLPCHh2firLALY
- xXTReMbTT4XaKCIQ7X2XL1uyh2SSdBJouwsgt6FLMOW6PG8FH1NESI6IvWBodzE1V+IVhYS33
- mvxBcttaQhDZAas2euM/7SERuUbQ5ccfxhQQX8NrxmsuUTmk2DOR5pPjYN2n5CtDoQzcVq7aE
- sdES38Gbgb+DBwm1Ht2NuSW9wPNgyfthGBcLpHrBvaw1umVbCubvPYNc3N0bO/4zYx9Oh7Ufd
- skv80OwDCnVXpB9lRdf7LWi+p88aVNCzRgs91wiryR1rokNrJl8CzKegw0RGtYGEO54rre7AM
- ye11bYk7vsy65C+MSw5mLjKSbQGyLj3kf9tp/LTKNwJiY9kPfrev7bwVo7yOtSWyF5RI0LqxL
- niEBsNmuVN6H8GGC4GaghCNlF9P8eUY21a34K+cFcINWZHrVWpSPK/mGa6kZQAeEq89SNaPX4
- NpdNy1kd+bnrwVEHN1hCfF8obQH63OsF2eO6i4gUwCL0UfdHFcfB1rr4CS0ag8pyiblTnklR8
- +qb89lqk+774Fn71iFj907VKVhWS9PE+iLpriCh5B5QK8iCbLCcAtU3CCrV/S1gktttOtCkS6
- uO4yE4w8n7Ho0NPJdUn/T/4LxTjNXCb6iIE7t/kWYShhE4rFI0Js5wVPxxGwN68EzPIAEo5LI
- EwqdABW5POtCEPMPc0FcPwYAWxVmCh9mEMQ
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.164]
+X-ClientProxiedBy: EX13D11UWB002.ant.amazon.com (10.43.161.20) To
+ EX13D02ANC003.ant.amazon.com (10.43.157.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hallo
+pidmap_init() has already been replaced with pid_idr_init() in the
+commit 95846ecf9dac ("pid: replace pid bitmap implementation with
+IDR API").
+Cleanup the stale comment which still mentions it.
 
-all fine here on an Intel i7-6700 box.
+Signed-off-by: Takahiro Itazuri <itazur@amazon.com>
+---
+ include/linux/threads.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks
+diff --git a/include/linux/threads.h b/include/linux/threads.h
+index 18d5a74bcc3d..c34173e6c5f1 100644
+--- a/include/linux/threads.h
++++ b/include/linux/threads.h
+@@ -38,7 +38,7 @@
+  * Define a minimum number of pids per cpu.  Heuristically based
+  * on original pid max of 32k for 32 cpus.  Also, increase the
+  * minimum settable value for pid_max on the running system based
+- * on similar defaults.  See kernel/pid.c:pidmap_init() for details.
++ * on similar defaults.  See kernel/pid.c:pid_idr_init() for details.
+  */
+ #define PIDS_PER_CPU_DEFAULT	1024
+ #define PIDS_PER_CPU_MIN	8
+-- 
+2.31.1
 
-
-+++ UPDATE +++
-##############
-
-Regarding the above I need to be more accurate:
-The kernel compiles, boots and runs without errors -so far -.
-
-BUT: it seems under load it could lead to an dead box.
-
-
-what I did:
-
-running in one terminal: dmesg -w
-
-and in an second terminal:
-
-make clean && ccache -Czs && time make all -j $(nproc)
-
-
-leads within a minutes to an complete dead box after make has started !
-
-
-- no output regarding crashes, etc. in the first terminal running dmesg
-- no mouse, no keyboard, no switch via CRTL+ALT+F3 to a console
-- the box is dead
-- only the power button helps
-
-
-with kernel 5.13.1 all the above is fine
-
-
-anyone (too) ?
-
-=2D-
-regards
-
-Ronald
