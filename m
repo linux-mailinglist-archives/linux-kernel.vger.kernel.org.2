@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531773C91C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2063C91C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241450AbhGNUHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:07:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:39722 "EHLO foss.arm.com"
+        id S241625AbhGNUHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:07:20 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:43942 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240317AbhGNT6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:58:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9375FD6E;
-        Wed, 14 Jul 2021 12:55:42 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.2.150])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE00E3F774;
-        Wed, 14 Jul 2021 12:55:41 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 20:55:38 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [peterz-queue:locking/core 21/21] WARNING: modpost:
- vmlinux.o(.text.unlikely+0x253ac): Section mismatch in reference from the
- function __set_bit() to the variable .init.data:initcall_level_names
-Message-ID: <20210714195538.GC28555@C02TD0UTHF1T.local>
-References: <202107140904.leaDN2j0-lkp@intel.com>
+        id S242214AbhGNUAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 16:00:21 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m3l0X-0007dL-3M; Wed, 14 Jul 2021 21:57:25 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     cl@rock-chips.com, lee.jones@linaro.org
+Cc:     robh+dt@kernel.org, jbx6244@gmail.com, zhangqing@rock-chips.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Liang Chen <cl@rock-chips.com>
+Subject: Re: [PATCH v1 2/3] dt-binding: mfd: syscon: add rk3568 QoS register compatible
+Date:   Wed, 14 Jul 2021 21:57:24 +0200
+Message-ID: <5440081.dumfJixkPq@diego>
+In-Reply-To: <20210624114719.1685-3-cl@rock-chips.com>
+References: <20210624114719.1685-1-cl@rock-chips.com> <20210624114719.1685-3-cl@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107140904.leaDN2j0-lkp@intel.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Jul 14, 2021 at 09:08:08AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/core
-> head:   ceb71d863ae0bfca14303c189bbf5903a02ff95a
-> commit: ceb71d863ae0bfca14303c189bbf5903a02ff95a [21/21] locking/atomic: add generic arch_*() bitops
-> config: xtensa-allyesconfig (attached as .config)
-> compiler: xtensa-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?id=ceb71d863ae0bfca14303c189bbf5903a02ff95a
->         git remote add peterz-queue https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git
->         git fetch --no-tags peterz-queue locking/core
->         git checkout ceb71d863ae0bfca14303c189bbf5903a02ff95a
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
+Am Donnerstag, 24. Juni 2021, 13:47:18 CEST schrieb cl@rock-chips.com:
+> From: Liang Chen <cl@rock-chips.com>
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Document rk3568 compatible for QoS registers.
 > 
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
+
+Acked-by: Heiko Stuebner <heiko@sntech.de>
+
+@Lee: I guess this one is yours :-)
+
+
+> ---
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> >> WARNING: modpost: vmlinux.o(.text.unlikely+0x253ac): Section mismatch in reference from the function __set_bit() to the variable .init.data:initcall_level_names
-> The function __set_bit() references
-> the variable __initdata initcall_level_names.
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index f14ae6da0068..206f73ffc249 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -48,6 +48,7 @@ properties:
+>                - rockchip,rk3066-qos
+>                - rockchip,rk3288-qos
+>                - rockchip,rk3399-qos
+> +              - rockchip,rk3568-qos
+>                - samsung,exynos3-sysreg
+>                - samsung,exynos4-sysreg
+>                - samsung,exynos5-sysreg
+> 
 
-I can reproduce this with the kernel.org cross toolchain:
 
-https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/9.3.0/x86_64-gcc-9.3.0-nolibc-xtensa-linux.tar.gz
 
-... but the warning looks to be bogus; __set_bit() doesn't use that
-symbol, and where that symbol is defined it looks to be used safely.
 
-On the prior commit there was a similarly bogus warning in place of this
-one:
-
-| WARNING: modpost: vmlinux.o(.text.unlikely+0x24a10): Section mismatch in reference from the function bfq_pos_tree_add_move() to the variable .init.data:initcall_level_names
-| The function bfq_pos_tree_add_move() references
-| the variable __initdata initcall_level_names.
-| This is often because bfq_pos_tree_add_move lacks a __initdata
-| annotation or the annotation of initcall_level_names is wrong.
-
-... so I think there is a latent bug here with the section mismatch
-warning, and this commit has simply changed the bogus symbol it reports.
-
-Given that, I think we should ignore this.
-
-Thanks,
-Mark.
