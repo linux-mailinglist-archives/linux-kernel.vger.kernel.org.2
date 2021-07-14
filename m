@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F1E3C8F7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E243C8F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238456AbhGNTwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:52:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46244 "EHLO mail.kernel.org"
+        id S238146AbhGNTwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:52:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238634AbhGNTsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238637AbhGNTsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Jul 2021 15:48:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E04613E2;
-        Wed, 14 Jul 2021 19:43:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A4A7613EB;
+        Wed, 14 Jul 2021 19:43:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291815;
-        bh=cBakN/sw+SBG0A4dFB+/8gCBgPbiPQRJAWuWq+SFgug=;
+        s=k20201202; t=1626291819;
+        bh=zk2+0tbakUZ/9PwNRSvSTCtLeNsiqr4jud6adup3Yng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UWc5obfDZb389kMgYWtY45KEB0iI3N1j7VN+74UwDQBY0Mpn/5t/sruo8H1VzVCSR
-         ZqQvCm3o5kkZ2/za9bH2dDWbun2F7TF3cmp96ZJF2uifapW51pZ2P0gRJM5AgW4XwV
-         VlRMIyiFYKJBbA2LJQRhKYSDN8kbMp+Kq3+e5XuAVrVWziK7i/VKUjvMBGapu5vkyU
-         fBdnGudCsy7J/XTDwo0V08x4u65yt8K2NRQJWPvMC5cbr0b51V2DpnH+R1t6MBVuFI
-         UTtiTg63mePHtGqDWGsXC4Jkdet1z4XwWg1UlmTPuObp0nAh97JPdhjlbM88pUEajV
-         cGTXNtmclUkXg==
+        b=sq/iYU7R62YG+puH1pr+Ooay4vIpF1pmVflY2iKYS3JsMrHjl43aflL9eBLCUCMO6
+         yAB0UwkZgkOOQTIWcPgsLiGFJMpcON9Hfhtf0lqfIkNu09UcV1ac4BkbYhpIVoXNHv
+         lmYaIBD9RdoHSVY/zLge7h2BEjvl2Of1QabkbkNw3v9lG384FJkEEv9abhH3H3kOsh
+         oqSp1BlZcHmVPB3kk7jNE59mzZ7gas3ugpFMfFr4GWgoq0OKqVysMppHMBl06RaLxX
+         w4uyHwsieEbq9wTpjSHYABtqatlilp8VOM+JVthc5e7xHBZ6TxN4NodmhqmQpo+iXn
+         b5lWFVJZXYxoQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 19/88] ARM: dts: Hurricane 2: Fix NAND nodes names
-Date:   Wed, 14 Jul 2021 15:41:54 -0400
-Message-Id: <20210714194303.54028-19-sashal@kernel.org>
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 21/88] ARM: dts: exynos: align Broadcom WiFi with dtschema
+Date:   Wed, 14 Jul 2021 15:41:56 -0400
+Message-Id: <20210714194303.54028-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,32 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit a4528d9029e2eda16e4fc9b9da1de1fbec10ab26 ]
+[ Upstream commit cc29e39412b9a78b43f7dfa09d739f8ba9fa7984 ]
 
-This matches nand-controller.yaml requirements.
+The Broadcom BCM4329 family dtschema expects devices to be compatible
+also with brcm,bcm4329-fmac:
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+  arch/arm/boot/dts/exynos3250-rinato.dt.yaml: wifi@1: compatible: 'oneOf' conditional failed, one must be fixed:
+    ['brcm,bcm4334-fmac'] is too short
+    'brcm,bcm4329-fmac' was expected
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210505135941.59898-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm-hr2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/exynos3250-rinato.dts         | 2 +-
+ arch/arm/boot/dts/exynos4210-i9100.dts          | 2 +-
+ arch/arm/boot/dts/exynos4210-trats.dts          | 2 +-
+ arch/arm/boot/dts/exynos4210-universal_c210.dts | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
-index e8df458aad39..84cda16f68a2 100644
---- a/arch/arm/boot/dts/bcm-hr2.dtsi
-+++ b/arch/arm/boot/dts/bcm-hr2.dtsi
-@@ -179,7 +179,7 @@ amac0: ethernet@22000 {
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/boot/dts/exynos3250-rinato.dts b/arch/arm/boot/dts/exynos3250-rinato.dts
+index f9e3b13d3aac..8ef20a66e24e 100644
+--- a/arch/arm/boot/dts/exynos3250-rinato.dts
++++ b/arch/arm/boot/dts/exynos3250-rinato.dts
+@@ -653,7 +653,7 @@ &mshc_1 {
+ 	mmc-pwrseq = <&wlan_pwrseq>;
  
--		nand: nand@26000 {
-+		nand_controller: nand-controller@26000 {
- 			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
- 			reg = <0x26000 0x600>,
- 			      <0x11b408 0x600>,
+ 	brcmf: wifi@1 {
+-		compatible = "brcm,bcm4334-fmac";
++		compatible = "brcm,bcm4334-fmac", "brcm,bcm4329-fmac";
+ 		reg = <1>;
+ 
+ 		interrupt-parent = <&gpx1>;
+diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
+index 7777bf51a6e6..083408f3f695 100644
+--- a/arch/arm/boot/dts/exynos4210-i9100.dts
++++ b/arch/arm/boot/dts/exynos4210-i9100.dts
+@@ -746,7 +746,7 @@ &sdhci_3 {
+ 	pinctrl-0 = <&sd3_clk>, <&sd3_cmd>, <&sd3_bus4>;
+ 
+ 	brcmf: wifi@1 {
+-		compatible = "brcm,bcm4330-fmac";
++		compatible = "brcm,bcm4330-fmac", "brcm,bcm4329-fmac";
+ 		reg = <1>;
+ 
+ 		interrupt-parent = <&gpx2>;
+diff --git a/arch/arm/boot/dts/exynos4210-trats.dts b/arch/arm/boot/dts/exynos4210-trats.dts
+index a226bec56a45..68635dad541f 100644
+--- a/arch/arm/boot/dts/exynos4210-trats.dts
++++ b/arch/arm/boot/dts/exynos4210-trats.dts
+@@ -501,7 +501,7 @@ &sdhci_3 {
+ 	pinctrl-0 = <&sd3_clk>, <&sd3_cmd>, <&sd3_bus4>;
+ 
+ 	brcmf: wifi@1 {
+-		compatible = "brcm,bcm4330-fmac";
++		compatible = "brcm,bcm4330-fmac", "brcm,bcm4329-fmac";
+ 		reg = <1>;
+ 
+ 		interrupt-parent = <&gpx2>;
+diff --git a/arch/arm/boot/dts/exynos4210-universal_c210.dts b/arch/arm/boot/dts/exynos4210-universal_c210.dts
+index 08284e8f3624..28361994ff80 100644
+--- a/arch/arm/boot/dts/exynos4210-universal_c210.dts
++++ b/arch/arm/boot/dts/exynos4210-universal_c210.dts
+@@ -596,7 +596,7 @@ &sdhci_3 {
+ 	pinctrl-0 = <&sd3_clk>, <&sd3_cmd>, <&sd3_bus4>;
+ 
+ 	brcmf: wifi@1 {
+-		compatible = "brcm,bcm4330-fmac";
++		compatible = "brcm,bcm4330-fmac", "brcm,bcm4329-fmac";
+ 		reg = <1>;
+ 		interrupt-parent = <&gpx2>;
+ 		interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.30.2
 
