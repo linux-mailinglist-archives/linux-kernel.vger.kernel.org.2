@@ -2,97 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E574D3C8915
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988583C891E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhGNQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:57:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:37166 "EHLO foss.arm.com"
+        id S237268AbhGNQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:58:10 -0400
+Received: from mga01.intel.com ([192.55.52.88]:33613 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235859AbhGNQ5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:57:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60CBED6E;
-        Wed, 14 Jul 2021 09:54:39 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 811A13F774;
-        Wed, 14 Jul 2021 09:54:37 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 17:54:34 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 03/13] mailbox: pcc: Refactor all PCC channel information
- into a structure
-Message-ID: <20210714165434.GC6592@e120937-lin>
-References: <20210708180851.2311192-1-sudeep.holla@arm.com>
- <20210708180851.2311192-4-sudeep.holla@arm.com>
+        id S229610AbhGNQ6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 12:58:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="232203008"
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="232203008"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 09:55:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="412846925"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 14 Jul 2021 09:55:16 -0700
+Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 14 Jul 2021 09:55:15 -0700
+Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
+ fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 14 Jul 2021 09:55:15 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Wed, 14 Jul 2021 09:55:15 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Wed, 14 Jul 2021 09:55:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h1Y6byvy6YVzVSflystU/Fjrms8Awror7Dhef1M1zAa2s/5kjrRQHwbQ0tP2y9kN2d+ABlMNSGyMqgJbrgf9M3YWCqDVymWyCfO5GRpKIruTT5XsvZGpFhJ709Sx2yRD/j6ksv90TRPLgOGzbil/EFQFaqb9Etz0Yex0LlKj2MQwoPPYbW98IcGl9TfiBR1jyEN0ZfrTc/5ffZCSUkKkQUlPaHruTPQzB+lRTpNIw9zrEU8kpp1eK8MgpRbXA/AM/fhA6joYa/d+VXDWpPhuoMWI4kAX3yJjgXxJOnkBKkoESuM10nvNLaJGmHS6ovqr3wf8bWlwcEjNIZfjXdeztQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tZbE4WQxJXy09sd8laaEUvkwqEjlGNl8E4l+7bySscM=;
+ b=VRTCG45xFw7YW3hqw+GoRjWlvE0w55FwaW+/afJyTxhg55kAUl/x4oTVC6sXgxa4orWjirJdEuOjwJ2YzbH/NpB2Y3dA2i/+mNJg7qb+zVzS/gfWIJiMmxBKQiDFDMFQ3WhcQgFgC8zYWzKNWpM3uha5ZOVeypdekJ/6IzKhPPQX245G7+BaCGdwzJ5cKCTkvHigrj6Ro0e3YcBXL5TS+KKbW+IB9paY/T5+/K0PH9XoL4CZSHVCLVgaugjzZxXpn5uT26Vkn0/p776OYxda//fCBNn5x23cTFFO/XjOl/Om+3nYha4vDt7bYF2tO4g/ExKnQgyFJKev8K3Yo6xeXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tZbE4WQxJXy09sd8laaEUvkwqEjlGNl8E4l+7bySscM=;
+ b=rkwqluY9FGbx6q43fDqaG1zEqnFrvt2e0V1HrmSdyv/sbr55ugGzIsy1htTIQx3PyHjUyEIRVGraT39PdkrSrL1rvMdJ4Z7w10X3eNWcqjFJSVkino3W/NUphvSx7vtM2UrdX52ZKQCd2DLHKpvUTZWPI0Mc/OU6i1bWYrpncis=
+Received: from SJ0PR11MB5150.namprd11.prod.outlook.com (2603:10b6:a03:2d4::18)
+ by SJ0PR11MB4848.namprd11.prod.outlook.com (2603:10b6:a03:2af::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Wed, 14 Jul
+ 2021 16:54:47 +0000
+Received: from SJ0PR11MB5150.namprd11.prod.outlook.com
+ ([fe80::15f9:1166:732a:313d]) by SJ0PR11MB5150.namprd11.prod.outlook.com
+ ([fe80::15f9:1166:732a:313d%3]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
+ 16:54:47 +0000
+From:   "Williams, Dan J" <dan.j.williams@intel.com>
+To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+CC:     "corbet@lwn.net" <corbet@lwn.net>,
+        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
+Subject: Re: [PATCH 01/14] x86/cpu: Move intel-family to arch-independent
+ headers
+Thread-Topic: [PATCH 01/14] x86/cpu: Move intel-family to arch-independent
+ headers
+Thread-Index: AQHXeND05/moFbfIGEiP1vtR+0W8tA==
+Date:   Wed, 14 Jul 2021 16:54:47 +0000
+Message-ID: <32c71687f11fb418dafa45ecf15f7c6b50dd0397.camel@intel.com>
+References: <20210712220447.957418-1-iwona.winiarska@intel.com>
+         <20210712220447.957418-2-iwona.winiarska@intel.com>
+In-Reply-To: <20210712220447.957418-2-iwona.winiarska@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7ba5cb94-f48a-448c-042b-08d946e816cc
+x-ms-traffictypediagnostic: SJ0PR11MB4848:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB4848AC1439D9F467E2990B4AC6139@SJ0PR11MB4848.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ms36BOIrW4cgSv9+UUBcny8R6M3T3CH8DpeFpIi9xDVV/4apPzLYIKIyC3Jbjs9dEUMT0I6mHfiqyoqYTo6zLFez0haTcJa4WkmzCmnvQyDBWDt3q0Ec7ojU1UI7sC6djx6uvJyGV9vDmm9kzT2buo6McSuib0nabvYzfGW230kyWpuD21gecBT+scLNqIBXcRoGDwtUJd0i4QOgCnAjOyfC9rrerUwi3ELiDMl2zgQznl3YbVcVcOsTF5IB61aPlFOimkDMpPTy1dDT/IwFMa21K6Rf51S60KceSsseBMRsLnIBfG9vM/bXSGfU4421vqMdvNv6+wgK632NC/RZwOz+wmrH679PTWmm5Gp7YaifWOExpL6jiMl+36fSuxTLwRtQMxzoS3pTZSpgk3QzuxH3mq7RSJSaBV3r8ZAgpC999pg49T8EGGUopQAMYFk3Ji+glp3JLxax9Txl4hPw5iMzdBS6H2h+ClejS/vX5z2pEcJHMqz3D3JNwA9J5XnYBV/dSHX9OFO9gF08soXU6yUylkyKhez2hFXDewjddFncTbZwFEhNSvvrZuMimutoxaEjggWqslSE4nJHfiZlhb1UHX6DkjaPi9phnOgHqF4ge5qLBes95c0sVBkC7WFwURVYK9WG2jariRX7nIi+yVU8lMhybMdgkLqqvfmS4j2JqPomloj6Zdti4J/9pvjPg/tCJhxNEqRZZWYW9IWyaQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5150.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(366004)(346002)(376002)(136003)(6512007)(7416002)(186003)(122000001)(110136005)(71200400001)(316002)(86362001)(83380400001)(54906003)(6486002)(4326008)(2906002)(8676002)(38100700002)(36756003)(66476007)(66946007)(8936002)(5660300002)(478600001)(91956017)(76116006)(2616005)(64756008)(66446008)(66556008)(6506007)(26005)(38070700004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N2MrVFhDL0ZzTEtpWHhKQmlxNEpSLzhQcU1jdTk1YTcrUG8wNkJjRVNMTXJV?=
+ =?utf-8?B?cFB3Qkd1UTNpSmlyYnNtemJqcVQrRmM1S0I3a21nbHhXTHQyTDhxbnNsODk0?=
+ =?utf-8?B?VTNwY3I1Z0kwZ0srekdCVmlnUUY3N0cyS3dTaDBNS015Z3k0MGI4bys3by9L?=
+ =?utf-8?B?YXVxamxPaEZsVlFGRHJORi9Ya0VydDZxQnpidmM4TFBKd0VsVlBHb3R3VnBr?=
+ =?utf-8?B?aEFuTHBWM0s5Mm5lMFdZeGFDeUNlOWpuajhmTCtVbzc2ZHNJZk12Wnk2Y2Zu?=
+ =?utf-8?B?aldpZzVheFo2NGtMY1YwT2FKS3JEWTVoTlR0a1JzWkQwWmpRdGJOL2Vyalgy?=
+ =?utf-8?B?RU1FeCtpWTZjc0pIY2NjUk9SWGlJMUhGSStLYTVvNzZXeFRMQmREemF1RmY5?=
+ =?utf-8?B?MUJUNUNsRDlkZ2RjbnV2cWxVbDU2bW82SEFkOU94WlRvTmErSXBBc3F1TGk3?=
+ =?utf-8?B?di9FYTBBVEU3MVZta0Y4dk5Ta0cyNjV1dWI2UWVQTkJ1RGlSQzR0YWI2ZlM2?=
+ =?utf-8?B?V1BVOEY0K051ek1lWnJZdXNNNzRHSWRQUkdzZU5oTEIyamlmMmlTeCtmN2dv?=
+ =?utf-8?B?cmNaOHc2c2tKbTZKK2hsMlpQbGREVHdLQ2FBbTVraE53SnpwbHQ5UmxGYWdM?=
+ =?utf-8?B?S1lNUENxRk1JMFpkME02cFlMcTFLNGMwSUxlSG9pWndSa085OVVVc1MrUW51?=
+ =?utf-8?B?ckh5dElqNjN3RVlJenNwdnpsVlBhZW40WUhzRmV5YlBNKzdzdDUxMHFlUGhv?=
+ =?utf-8?B?M3k3WXRGdTAraVFOZkJmUlBKR3RMTVdab2F5Q2MySGF3cHBObEpqNzYvbEps?=
+ =?utf-8?B?UXpPTjgrK1h3T241Rk9sNGliRmNGZVRHb1Rha2h1emZmVTdaR2dhTjRhUEtw?=
+ =?utf-8?B?R1lwY25Cem1nNXpTWlltRFV3cXM5dGFVQ2hsa0hwNjV2WmxJM2x4ZVJTekw3?=
+ =?utf-8?B?MldaM29HRWxDcDN3cG1KTElZUktHSjZSV2kwTlVMTGUwa2VwTEFYMy8xWjAz?=
+ =?utf-8?B?eDVqTWlDdHBsT1ZHNm9MejBjQmkvbldTUXFFNWhJQllhVmhkNjZlSnpVZzJJ?=
+ =?utf-8?B?NWJzL3luSDNjdlYrTWtNak5oQWpNYWtGZk1CUFFwVURoODlDK1RWekl3eVJI?=
+ =?utf-8?B?TnZCZlJFMVRRenl1TXhrTUVKNU96RUNqR3lIU1dqQ3g2WmorcEU1MDY3cGRk?=
+ =?utf-8?B?ZzA0dnllOGRQV2ZWTmhrajkrYUxncTBMOW5GSzRXeHhPS3lnSk9hRDJsaGYz?=
+ =?utf-8?B?UFpIbDRUZ0hOckZ5Sm5oc2k3UXR4OUNTc3A4L1lNbE5lMklhS3J5bVBqSzM4?=
+ =?utf-8?B?L0xzQ3RvemNqczhKVTJpdWVDYktYZ04yVnFDWVJZVG9KYnBwQnA5Q1ExOWJT?=
+ =?utf-8?B?YTQrUnFLYU9RaEdGdlZjQkZtV215YXZrZ0tENXh6azdac0huUVNOYzNFaHhk?=
+ =?utf-8?B?TjdhQWZVMGtSQUFpRjlwUDNKV2Z6TmdNeEpHYXNWZVJBQ2hlTmVNa2kzTm1Z?=
+ =?utf-8?B?UVhVLzFKSUpEVnVvNDRBU3hKazlvWWwxSUl1M0ZZTEx3dnUxMFJ5WmtTRWxS?=
+ =?utf-8?B?NjN2T1RaQWdRR0tYVjhCc1lzQ1NleWI4eVdINTF3T0kySlUrSFRnMS8wWDFG?=
+ =?utf-8?B?djNac1ZJcEVON3N0WlBxQTlMMlVjWWZCU3RGektkRFQxcGU1ekFhOVMra0Fi?=
+ =?utf-8?B?QUFKOFVXU2EvUm5mZWVFa2w0T1g2ZXgzVnYrLy9CUyszS3pPbTVOckhtMWFS?=
+ =?utf-8?B?NkJUcFJTQjRLUkM2SXNDUks5K3FtNndaMHNMWFZINVJHTjB3disxbUJFUHVZ?=
+ =?utf-8?B?cVZqNDZicGk0NWQyQjdzZz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <39D7E6ABDB11D547A079BA19DC69F6D9@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708180851.2311192-4-sudeep.holla@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5150.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ba5cb94-f48a-448c-042b-08d946e816cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2021 16:54:47.6401
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TPLwfv8DDzq47NofuI4CdAhfCXF1bzdcLRI4mBolTBLv8EbZILbv8VgFdw4Buuidbj7vusW4N/01+O/ADCdeYCCnlWdSfoo79WxRo60rCpE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4848
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 07:08:41PM +0100, Sudeep Holla wrote:
-> Currently all the PCC channel specific information are stored/maintained
-> in global individual arrays for each of those information. It is not
-> scalable and not clean if we have to stash more channel specific
-> information. Couple of reasons to stash more information are to extend
-> the support to Type 3/4 PCCT subspace and also to avoid accessing the
-> PCCT table entries themselves each time we need the information.
-> 
-> This patch moves all those PCC channel specific information into a
-> separate structure pcc_chan_info.
-> 
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
-
-Hi Sudeep,
-
->  drivers/mailbox/pcc.c | 106 +++++++++++++++++++++---------------------
->  1 file changed, 53 insertions(+), 53 deletions(-)
-> 
-> diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-> index 23391e224a68..c5f481a615b0 100644
-> --- a/drivers/mailbox/pcc.c
-> +++ b/drivers/mailbox/pcc.c
-> @@ -64,12 +64,20 @@
->  
->  static struct mbox_chan *pcc_mbox_channels;
->  
-> -/* Array of cached virtual address for doorbell registers */
-> -static void __iomem **pcc_doorbell_vaddr;
-> -/* Array of cached virtual address for doorbell ack registers */
-> -static void __iomem **pcc_doorbell_ack_vaddr;
-> -/* Array of doorbell interrupts */
-> -static int *pcc_doorbell_irq;
-> +/**
-> + * struct pcc_chan_info - PCC channel specific information
-> + *
-> + * @db_vaddr: cached virtual address for doorbell register
-> + * @db_ack_vaddr: cached virtual address for doorbell ack register
-> + * @db_irq: doorbell interrupt
-> + */
-> +struct pcc_chan_info {
-> +	void __iomem *db_vaddr;
-> +	void __iomem *db_ack_vaddr;
-> +	int db_irq;
-> +};
-
-Given that this db_irq represents the optional completion interrupt that is
-used platform-->OSPM to signal command completions and/or notifications/
-delayed_responses and it is mentioned indeed in ACPI 6.4 as "Platform
-Interrupt" and also referred in this driver as such somewherelse, is it not
-misleading to call it then here "doorbell interrupt" since the "doorbell" in
-this context is usually the interrupt that goes the other way around
-OSPM-->Platform and is indeed handled by a different set of dedicated Doorbell
-registers ? (that are indeed called Doorbell throughout this driver down below
-...but I understand this was the nomenclature used also before in this driver)
-
-Thanks,
-Cristian
-
+T24gVHVlLCAyMDIxLTA3LTEzIGF0IDAwOjA0ICswMjAwLCBJd29uYSBXaW5pYXJza2Egd3JvdGU6
+DQo+IEJhc2Vib2FyZCBtYW5hZ2VtZW50IGNvbnRyb2xsZXJzIChCTUMpIG9mdGVuIHJ1biBMaW51
+eCBidXQgYXJlIHVzdWFsbHkNCj4gaW1wbGVtZW50ZWQgd2l0aCBub24tWDg2IHByb2Nlc3NvcnMu
+IFRoZXkgY2FuIHVzZSBQRUNJIHRvIGFjY2VzcyBwYWNrYWdlDQo+IGNvbmZpZyBzcGFjZSAoUENT
+KSByZWdpc3RlcnMgb24gdGhlIGhvc3QgQ1BVIGFuZCBzaW5jZSBzb21lIGluZm9ybWF0aW9uLA0K
+PiBlLmcuIGZpZ3VyaW5nIG91dCB0aGUgY29yZSBjb3VudCwgY2FuIGJlIG9idGFpbmVkIHVzaW5n
+IGRpZmZlcmVudA0KPiByZWdpc3RlcnMgb24gZGlmZmVyZW50IENQVSBnZW5lcmF0aW9ucywgdGhl
+eSBuZWVkIHRvIGRlY29kZSB0aGUgZmFtaWx5DQo+IGFuZCBtb2RlbC4NCj4gDQo+IE1vdmUgdGhl
+IGRhdGEgZnJvbSBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9pbnRlbC1mYW1pbHkuaCBpbnRvIGEgbmV3
+IGZpbGUNCj4gaW5jbHVkZS9saW51eC94ODYvaW50ZWwtZmFtaWx5Lmggc28gdGhhdCBpdCBjYW4g
+YmUgdXNlZCBieSBvdGhlcg0KPiBhcmNoaXRlY3R1cmVzLg0KDQpBdCBsZWFzdCBpdCB3b3VsZCBt
+YWtlIHRoZSBkaWZmc3RhdCBzbWFsbGVyIHRvIGFsbG93IGZvciByZW5hbWUNCmRldGVjdGlvbiB3
+aGVuIHRoZSBvbGQgZmlsZSBpcyBkZWxldGVkIGluIHRoZSBzYW1lIHBhdGNoOg0KDQogTUFJTlRB
+SU5FUlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDEg
+Kw0KIHthcmNoL3g4Ni9pbmNsdWRlL2FzbSA9PiBpbmNsdWRlL2xpbnV4L3g4Nn0vaW50ZWwtZmFt
+aWx5LmggfCA2ICsrKy0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAzIGRl
+bGV0aW9ucygtKQ0KDQouLi5vbmUgdGhpbmcgcGVvcGxlIGhhdmUgZG9uZSBpbiB0aGUgcGFzdCBp
+cyBpbmNsdWRlIGEgY29udmVyc2lvbg0Kc2NyaXB0IGluIHRoZSBjaGFuZ2Vsb2cgdGhhdCBwcm9k
+dWNlZCB0aGUgZGlmZi4gVGhhdCB3YXkgaWYgYQ0KbWFpbnRhaW5lciB3YW50cyB0byBiZSBzdXJl
+IHRvIGNhdGNoIGFueSBuZXcgdXNhZ2Ugb2YgdGhlIGhlYWRlciBhdA0KdGhlIG9sZCBsb2NhdGlv
+biB0aGV5IGp1c3QgcnVuIHRoZSBzY3JpcHQuDQoNCkkgYW0gbm90IGF3YXJlIG9mIHg4NiBtYWlu
+dGFpbmVyIHByZWZlcmVuY2UgaGVyZS4gRWl0aGVyIHdheSB5b3UgZGVjaWRlDQp0byBnbyB5b3Ug
+Y2FuIGFkZDoNCg0KUmV2aWV3ZWQtYnk6IERhbiBXaWxsaWFtcyA8ZGFuLmoud2lsbGlhbXNAaW50
+ZWwuY29tPg0KDQo=
