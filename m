@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA503C85A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AF63C85A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239364AbhGNN5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45154 "EHLO mail.kernel.org"
+        id S239440AbhGNN51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:57:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhGNN5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:57:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 763F7613BE;
-        Wed, 14 Jul 2021 13:54:28 +0000 (UTC)
+        id S239284AbhGNN5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 09:57:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B84A613D1;
+        Wed, 14 Jul 2021 13:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626270870;
-        bh=t+6P8ruMEieGtHTBjM2M2aNiGF22kEbrvG+svMNP+AI=;
+        s=k20201202; t=1626270873;
+        bh=hwa9dZbwQb6e2uewfwoomlLnro+e6qpIwA8eeMY71nI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u7w58994SAuYUULuNNKE9wHQEbF243glAKHGQhS4i2VBpa9s0uONXPgE++p8edcgi
-         s3IkO48btLm/ozz1XY4qULf7ThaL8djeIgGhgqFSgABu12d12pyy7GwSbf831pXHXp
-         sS/NXX2S+jrHVBGpfnYzYb1vOBLvcNJtzrQL74ORG7kX3wCZfDrYGSRxq1DuZUWBNP
-         XykgYEe9CseC6Yg4ZZ0WAHAQnYeEXRtX1q/V0kb3iu8VXVhM10sF59Cc2latwh1DBo
-         Nplw2wge8CMwVUfKRdgDou909WDHuFrQWaxDKDfjPkG31DhS5w27PX7Ir+HLq7sOuJ
-         JGpxMGBf4l6MQ==
+        b=jdFGzMH5oquC8WgqwTxb2xAa21B/AY2Q2QiVRrxuA65Ag1vzw2uvXbsV+GSyv8cQn
+         CA2SLYGD7WLt9fADtnbS9SMCMrqqszAmMHNQnR+df1QJ04Kb63Ox/+wzq34PP37FK8
+         Mx5TloljxZAqEzPAYzp1xiE3EnVngQFm/AwdxcoRiGgNm46eeRr0xRg4dTcDIHml2b
+         AsUwELbPxfL3hlKGXr4d/B/5nEsNOQfS5PrsiB/KUBsaf2GpsqxOLQGWD175OjdD4+
+         fnLrOjLkcnAoRdNksf37PLxD8Ix+WhQsqi8/aNDVFv0QmOC2djU97Nio1FvNIq92H8
+         ULW5vsPmB+T3Q==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
@@ -35,10 +35,10 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Nicolas Saenz <nsaenzju@redhat.com>,
         Christoph Lameter <cl@gentwo.de>,
         Marcelo Tosatti <mtosatti@redhat.com>,
-        "Zefan Li cgroups @ vger . kernel . org" <lizefan.x@bytedance.com>
-Subject: [RFC PATCH 1/6] pci: Decouple HK_FLAG_WQ and HK_FLAG_DOMAIN cpumask fetch
-Date:   Wed, 14 Jul 2021 15:54:15 +0200
-Message-Id: <20210714135420.69624-2-frederic@kernel.org>
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: [RFC PATCH 2/6] workqueue: Decouple HK_FLAG_WQ and HK_FLAG_DOMAIN cpumask fetch
+Date:   Wed, 14 Jul 2021 15:54:16 +0200
+Message-Id: <20210714135420.69624-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210714135420.69624-1-frederic@kernel.org>
 References: <20210714135420.69624-1-frederic@kernel.org>
@@ -65,55 +65,29 @@ Cc: Tejun Heo <tj@kernel.org>
 Cc: Zefan Li <lizefan.x@bytedance.com>
 Cc: Alex Belits <abelits@marvell.com>
 ---
- drivers/pci/pci-driver.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ kernel/workqueue.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-index 3a72352aa5cf..ab84fa81c29a 100644
---- a/drivers/pci/pci-driver.c
-+++ b/drivers/pci/pci-driver.c
-@@ -336,7 +336,6 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
- 			  const struct pci_device_id *id)
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 50142fc08902..d29c5b61a333 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5938,13 +5938,13 @@ static void __init wq_numa_init(void)
+ void __init workqueue_init_early(void)
  {
- 	int error, node, cpu;
+ 	int std_nice[NR_STD_WORKER_POOLS] = { 0, HIGHPRI_NICE_LEVEL };
 -	int hk_flags = HK_FLAG_DOMAIN | HK_FLAG_WQ;
- 	struct drv_dev_and_id ddi = { drv, dev, id };
+ 	int i, cpu;
  
- 	/*
-@@ -354,17 +353,29 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
- 	 * device is probed from work_on_cpu() of the Physical device.
- 	 */
- 	if (node < 0 || node >= MAX_NUMNODES || !node_online(node) ||
--	    pci_physfn_is_probed(dev))
-+	    pci_physfn_is_probed(dev)) {
- 		cpu = nr_cpu_ids;
--	else
-+	} else {
-+		cpumask_var_t wq_domain_mask;
-+
-+		if (!zalloc_cpumask_var(&wq_domain_mask, GFP_KERNEL)) {
-+			error = -ENOMEM;
-+			goto out;
-+		}
-+		cpumask_and(wq_domain_mask,
-+			    housekeeping_cpumask(HK_FLAG_WQ),
-+			    housekeeping_cpumask(HK_FLAG_DOMAIN));
-+
- 		cpu = cpumask_any_and(cpumask_of_node(node),
--				      housekeeping_cpumask(hk_flags));
-+				      wq_domain_mask);
-+		free_cpumask_var(wq_domain_mask);
-+	}
+ 	BUILD_BUG_ON(__alignof__(struct pool_workqueue) < __alignof__(long long));
  
- 	if (cpu < nr_cpu_ids)
- 		error = work_on_cpu(cpu, local_pci_probe, &ddi);
- 	else
- 		error = local_pci_probe(&ddi);
--
-+out:
- 	dev->is_probed = 0;
- 	cpu_hotplug_enable();
- 	return error;
+ 	BUG_ON(!alloc_cpumask_var(&wq_unbound_cpumask, GFP_KERNEL));
+-	cpumask_copy(wq_unbound_cpumask, housekeeping_cpumask(hk_flags));
++	cpumask_copy(wq_unbound_cpumask, housekeeping_cpumask(HK_FLAG_WQ));
++	cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, housekeeping_cpumask(HK_FLAG_DOMAIN));
+ 
+ 	pwq_cache = KMEM_CACHE(pool_workqueue, SLAB_PANIC);
+ 
 -- 
 2.25.1
 
