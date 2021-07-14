@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451E23C8582
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196603C8585
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhGNNsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhGNNsq (ORCPT
+        id S232170AbhGNNt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:49:29 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:45679 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhGNNt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:48:46 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96794C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:45:53 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id d9-20020a17090ae289b0290172f971883bso3877100pjz.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:45:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YEHNelSphOfhN2CYAYUItmw3NXf1k9VBjpF1JvYJEVg=;
-        b=Zy2/ynkygPoMjSuWqCGo4hfTMMhOP6yP+Sl0eFkkgaPX8y53+jbbMLHIZ0XpS7AxgV
-         kY5VpSM8GUG6XZNTmg+cZvomjzhFte4va1maXe8xmMMtfeDgMTi6fM1DCj65UpV+B6nc
-         9aT2Fx6yWcv8n06o04B62h6M8i9Xe0tC9ocBPVrSzEigLK+zENbKgYsTlzsrNqVjU9Ry
-         iIQBFKw3MrAmKjHSoCrgO3GJu143h+hNB749z6balhWG5Hj0AuiT2a9LTFlf/xysn8DU
-         eLOXLZe6v7Ii/9kX3Gvu6SK4JAZv686/nGnmHFkRdk4iKoiOeSHh0k4kdvTOqLpQ2bEr
-         2yLw==
+        Wed, 14 Jul 2021 09:49:28 -0400
+Received: by mail-il1-f182.google.com with SMTP id b6so1602025iln.12;
+        Wed, 14 Jul 2021 06:46:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YEHNelSphOfhN2CYAYUItmw3NXf1k9VBjpF1JvYJEVg=;
-        b=MShfO0TwqhH8uEzG9JFrp4pwQ54ksKkTmGrzaheqX6qjQMAz9SS7h3iOWfB80WFBd4
-         vUGaXiZ0vkmoC8kzRv+3aMKuz7bfq7UprtyiCk4x5qfdDOBsC8Buja0EGTZTvvWCtLEl
-         LOVBVbGNjBtZmT3VXVXQMBoeV3qGuS4NbzYDwRsK/UOlvF8u5cQYz6lQdPo/XlqWHs4x
-         sA+HZ2ysQBI2NfUgVwkAxLf24L311HL34oYDRoKX2MYjt57ZbrtlerHLr09cVbu+CGbd
-         HIAMsjB1SNv03Cu3F3BIzHWxKXTjBHpNOgm28vr8xwfzodjzo4qi2MCjUtkEg1ecDED9
-         v0ow==
-X-Gm-Message-State: AOAM530l1zkizyagdjfpxtUWlHWgA0yCKHNT+l77s2F1MKS5uxdITCie
-        70TgGtYJ54UFfhs6VzjJ2x0=
-X-Google-Smtp-Source: ABdhPJxJFc4V0yHzNyzRNPg3A4LXlzSl3Qxlx870Trim8fuLxBUSW33NVSfCoxUymp5cwf8BWeoHeA==
-X-Received: by 2002:a17:90a:1c02:: with SMTP id s2mr9796635pjs.172.1626270352963;
-        Wed, 14 Jul 2021 06:45:52 -0700 (PDT)
-Received: from archl-c2lm.. ([103.51.72.31])
-        by smtp.gmail.com with ESMTPSA id d2sm3033625pfa.84.2021.07.14.06.45.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bylNDni7LUKM7pnvITfXsrZTIr6B2PAmOuvv1NHx8Os=;
+        b=P4v8PyWHHHFOwzlU2Utzs6Lv5JtidYpO/wKUoPdmE5IgsQeBxcviWg8XJsio6vmGtK
+         TRYg3rh6EPQBzV+yeDY2Et6TcF33dqidoxkztK2hSQdiy7/xi64DEXLcALuNem9N5JiX
+         o0Dgl4H/1xp7iEpYJAuJH1QxPsRNSwb+Dloe5G+xWIsvZmtyg3Xp+yCemRp3B2jgLZsF
+         8S66UdxdaO4poFuoBXLgLEKG8Mw95mH0+xVRhYJLSMhS9gDqjrT3cLLfIujzEwSKj19b
+         KygcGcvYt3thvtT4yvjR30LYyDE64GKeL5xaNdk+kcrTXmH1AdOagBbZfA/VjTO7SASy
+         hZFw==
+X-Gm-Message-State: AOAM531joPPc+CuKm2vOT70WibT1cyPMAuPgxicja2swMgGfvZZm5BGX
+        z2kXaAgo74YBnl35JmRNiw==
+X-Google-Smtp-Source: ABdhPJwzly6VLXsrTTboxhXnHeZCdEuUQxDBu27t3pSa2+1X8fR4x8BA5P9eHwkkY5vz+JeKbPGq8A==
+X-Received: by 2002:a92:8712:: with SMTP id m18mr6301471ild.132.1626270397009;
+        Wed, 14 Jul 2021 06:46:37 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t8sm1178729iog.21.2021.07.14.06.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 06:45:52 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Shawn Guo <shawnguo@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lionel Debieve <lionel.debieve@st.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] ARM: multi_v7_defconfig: Enable CONFIG_MMC_MESON_MX_SDHC
-Date:   Wed, 14 Jul 2021 13:45:32 +0000
-Message-Id: <20210714134540.1722-1-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 14 Jul 2021 06:46:36 -0700 (PDT)
+Received: (nullmailer pid 2452887 invoked by uid 1000);
+        Wed, 14 Jul 2021 13:46:32 -0000
+Date:   Wed, 14 Jul 2021 07:46:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] crash_dump: Make elfcorehdr_{addr,size} always
+ visible
+Message-ID: <20210714134632.GA2441138@robh.at.kernel.org>
+References: <cover.1626266516.git.geert+renesas@glider.be>
+ <0721f629d5e75b7b7e655458a63cbd767baaa409.1626266516.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0721f629d5e75b7b7e655458a63cbd767baaa409.1626266516.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CONFIG_MMC_MESON_MX_SDHC so that SDHC host controller
-on Anlogic SoCs boards enable support for eMMC and MMC drivers.
+On Wed, Jul 14, 2021 at 02:50:11PM +0200, Geert Uytterhoeven wrote:
+> Make the forward declarations of elfcorehdr_addr and elfcorehdr_size
+> always available, like is done for phys_initrd_start and
+> phys_initrd_size.  Code referring to these symbols can then just check
+> for IS_ENABLED(CONFIG_CRASH_DUMP), instead of requiring conditional
+> compilation using an #ifdef, thus preparing to increase compile
+> coverage.
+> 
+> Suggested-by: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v4:
+>   - New.
+> ---
+>  include/linux/crash_dump.h | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+> index a5192b718dbe4f9a..ad31893d13d634de 100644
+> --- a/include/linux/crash_dump.h
+> +++ b/include/linux/crash_dump.h
+> @@ -10,13 +10,14 @@
+>  
+>  #include <linux/pgtable.h> /* for pgprot_t */
+>  
+> +/* For IS_ENABLED(CONFIG_CRASH_DUMP) */
+> +extern unsigned long long elfcorehdr_addr;
+> +extern unsigned long long elfcorehdr_size;
+> +
+>  #ifdef CONFIG_CRASH_DUMP
+>  #define ELFCORE_ADDR_MAX	(-1ULL)
+>  #define ELFCORE_ADDR_ERR	(-2ULL)
 
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
-Tested on Odroid C1+
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Seems like these could be needed and no need to hide them, so perhaps 
+just move the #ifdef down.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 52a0400fdd92..8b3f62a0eb22 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -870,6 +870,7 @@ CONFIG_MMC_SDHCI_PXAV2=m
- CONFIG_MMC_SDHCI_SPEAR=y
- CONFIG_MMC_SDHCI_S3C_DMA=y
- CONFIG_MMC_SDHCI_BCM_KONA=y
-+CONFIG_MMC_MESON_MX_SDHC=y
- CONFIG_MMC_MESON_MX_SDIO=y
- CONFIG_MMC_SDHCI_ST=y
- CONFIG_MMC_OMAP=y
--- 
-2.32.0
-
+>  
+> -extern unsigned long long elfcorehdr_addr;
+> -extern unsigned long long elfcorehdr_size;
+> -
+>  extern int elfcorehdr_alloc(unsigned long long *addr, unsigned long long *size);
+>  extern void elfcorehdr_free(unsigned long long addr);
+>  extern ssize_t elfcorehdr_read(char *buf, size_t count, u64 *ppos);
+> -- 
+> 2.25.1
+> 
+> 
