@@ -2,93 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1ACE3C87CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439863C87D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239709AbhGNPip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:38:45 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46024 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239584AbhGNPin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:38:43 -0400
-Received: from callcc.thunk.org (96-65-121-81-static.hfc.comcastbusiness.net [96.65.121.81])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16EFZTW3011784
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 11:35:30 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 8F7244202F5; Wed, 14 Jul 2021 11:35:29 -0400 (EDT)
-Date:   Wed, 14 Jul 2021 11:35:29 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO8EQZF4+iQ13QU/@mit.edu>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com>
- <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
- <YO6r1k7CIl16o61z@kroah.com>
- <YO7sNd+6Vlw+hw3y@sashalap>
+        id S232446AbhGNPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:41:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:36280 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232354AbhGNPlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 11:41:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D11C631B;
+        Wed, 14 Jul 2021 08:38:17 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49CB13F7D8;
+        Wed, 14 Jul 2021 08:38:16 -0700 (PDT)
+Subject: Re: [RFC 06/10] arm64/mm: Add FEAT_LPA2 specific encoding
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
+        mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        maz@kernel.org, james.morse@arm.com
+References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
+ <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <9f0d9925-3694-3fae-0d09-00adbecd1878@arm.com>
+Date:   Wed, 14 Jul 2021 16:38:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO7sNd+6Vlw+hw3y@sashalap>
+In-Reply-To: <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:52:53AM -0400, Sasha Levin wrote:
-> On Wed, Jul 14, 2021 at 11:18:14AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Jul 13, 2021 at 06:28:13PM -0700, Andrew Morton wrote:
-> > > Alternatively I could just invent a new tag to replace the "Fixes:"
-> > > ("Fixes-no-backport?") to be used on patches which fix a known previous
-> > > commit but which we don't want backported.
-> > 
-> > No please, that's not needed, I'll just ignore these types of patches
-> > now, and will go drop these from the queues.
-> > 
-> > Sasha, can you also add these to your "do not apply" script as well?
+On 14/07/2021 03:21, Anshuman Khandual wrote:
+> FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
+> page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
+> ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
+> would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
+> and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
+> the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
+> to accept a temporary variable and changes impacted call sites.
 > 
-> Sure, but I don't see how this is viable in the long term. Look at
-> distros that don't follow LTS trees and cherry pick only important
-> fixes, and see how many of those don't have a stable@ tag.
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/include/asm/assembler.h     | 23 +++++++++++++++++++----
+>  arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
+>  arch/arm64/include/asm/pgtable.h       |  4 ++++
+>  arch/arm64/kernel/head.S               | 25 +++++++++++++------------
+>  4 files changed, 40 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> index fedc202..0492543 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -606,7 +606,7 @@ alternative_endif
+>  #endif
+>  	.endm
+>  
+> -	.macro	phys_to_pte, pte, phys
+> +	.macro	phys_to_pte, pte, phys, tmp
+>  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
+>  	/*
+>  	 * We assume \phys is 64K aligned and this is guaranteed by only
+> @@ -614,6 +614,17 @@ alternative_endif
+>  	 */
+>  	orr	\pte, \phys, \phys, lsr #36
+>  	and	\pte, \pte, #PTE_ADDR_MASK
+> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
+> +	orr	\pte, \phys, \phys, lsr #42
+> +
+> +	/*
+> +	 * The 'tmp' is being used here to just prepare
+> +	 * and hold PTE_ADDR_MASK which cannot be passed
+> +	 * to the subsequent 'and' instruction.
+> +	 */
+> +	mov	\tmp, #PTE_ADDR_LOW
+> +	orr	\tmp, \tmp, #PTE_ADDR_HIGH
+> +	and	\pte, \pte, \tmp
 
-I've been talking to an enterprise distro who chooses not to use the
-LTS releases, and it's mainly because they tried it, and there was too
-many regressions leading to their customers filing problem reports
-which get escalated to their engineers, leading to unhappy customers
-and extra work for their engineers.  (And they have numbers to back up
-this assertion; this isn't just a gut feel sort of thing.)
+Rather than adding an extra temporary register (and the fallout of
+various other macros needing an extra register), this can be done with
+two AND instructions:
 
-There are a couple of ways of solving it.  Once is that perhaps we
-need to have more people testing the stable trees --- and not just for
-functional regressions but also for performance regressions.  Ideally
-we would be doing lots of performance regression testing all the time,
-for all releases, and not just for the stable kernels, but the reality
-is that performance testing takes a lot of time, effort, and in some
-cases large amounts of expensive equipment.
+	/* PTE_ADDR_MASK cannot be encoded as an immediate, so
+         * mask off all but two bits, followed by masking the
+         * extra two bits
+         */
+	and	\pte, \pte, #PTE_ADDR_MASK | (3 << 10)
+	and	\pte, \pte, #~(3 << 10)
 
-We have syzbot and the zero-day bot; perhaps we can see if some
-company might be interested in setting up a "perfbot"?
+Steve
 
-Another solution (and these don't have to be mutually exclusive) might
-be for maintainers can explicitly state that certain patches shouldn't
-be backported into stable kernels.  I think having an explicit
-"No-Backport: <Reason>" might be useful, since it documents why a
-maintainer requested that the patch not be backported, and being an
-explicit tag, it makes it clear that it wasn't just a case of the
-developer forgetting the "Cc: stable" tag.  This makes it much better
-than implicit rules such as "If from: akpm then don't backport" hidden
-in various stable maintainers' scripts.
+>  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
+>  	mov	\pte, \phys
+>  #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
+> @@ -621,9 +632,13 @@ alternative_endif
+>  
+>  	.macro	pte_to_phys, phys, pte
+>  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
+> -	ubfiz	\phys, \pte, #(48 - 16 - 12), #16
+> -	bfxil	\phys, \pte, #16, #32
+> -	lsl	\phys, \phys, #16
+> +	ubfiz	\phys, \pte, #(48 - PAGE_SHIFT - 12), #16
+> +	bfxil	\phys, \pte, #PAGE_SHIFT, #(48 - PAGE_SHIFT)
+> +	lsl	\phys, \phys, #PAGE_SHIFT
+> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
+> +	ubfiz	\phys, \pte, #(52 - PAGE_SHIFT - 10), #10
+> +	bfxil	\phys, \pte, #PAGE_SHIFT, #(50 - PAGE_SHIFT)
+> +	lsl	\phys, \phys, #PAGE_SHIFT
+>  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
+>  	and	\phys, \pte, #PTE_ADDR_MASK
+>  #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
+> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+> index f375bcf..c815a85 100644
+> --- a/arch/arm64/include/asm/pgtable-hwdef.h
+> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
+> @@ -159,6 +159,10 @@
+>  #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
+>  #define PTE_ADDR_HIGH		(_AT(pteval_t, 0xf) << 12)
+>  #define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
+> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
+> +#define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (50 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
+> +#define PTE_ADDR_HIGH		(_AT(pteval_t, 0x3) << 8)
+> +#define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
+>  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
+>  #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
+>  #define PTE_ADDR_MASK		PTE_ADDR_LOW
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 3c57fb2..5e7e402 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -70,6 +70,10 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+>  #define __pte_to_phys(pte)	\
+>  	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
+>  #define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
+> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
+> +#define __pte_to_phys(pte)	\
+> +	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 42))
+> +#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 42)) & PTE_ADDR_MASK)
+>  #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
+>  #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
+>  #define __phys_to_pte_val(phys)	(phys)
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index c5c994a..6444147 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -134,9 +134,9 @@ SYM_CODE_END(preserve_boot_args)
+>   * Corrupts:	ptrs, tmp1, tmp2
+>   * Returns:	tbl -> next level table page address
+>   */
+> -	.macro	create_table_entry, tbl, virt, shift, ptrs, tmp1, tmp2
+> +	.macro	create_table_entry, tbl, virt, shift, ptrs, tmp1, tmp2, tmp3
+>  	add	\tmp1, \tbl, #PAGE_SIZE
+> -	phys_to_pte \tmp2, \tmp1
+> +	phys_to_pte \tmp2, \tmp1, \tmp3
+>  	orr	\tmp2, \tmp2, #PMD_TYPE_TABLE	// address of next table and entry type
+>  	lsr	\tmp1, \virt, #\shift
+>  	sub	\ptrs, \ptrs, #1
+> @@ -161,8 +161,8 @@ SYM_CODE_END(preserve_boot_args)
+>   * Corrupts:	index, tmp1
+>   * Returns:	rtbl
+>   */
+> -	.macro populate_entries, tbl, rtbl, index, eindex, flags, inc, tmp1
+> -.Lpe\@:	phys_to_pte \tmp1, \rtbl
+> +	.macro populate_entries, tbl, rtbl, index, eindex, flags, inc, tmp1, tmp2
+> +.Lpe\@:	phys_to_pte \tmp1, \rtbl, \tmp2
+>  	orr	\tmp1, \tmp1, \flags	// tmp1 = table entry
+>  	str	\tmp1, [\tbl, \index, lsl #3]
+>  	add	\rtbl, \rtbl, \inc	// rtbl = pa next level
+> @@ -224,31 +224,32 @@ SYM_CODE_END(preserve_boot_args)
+>   * Preserves:	vstart, vend, flags
+>   * Corrupts:	tbl, rtbl, istart, iend, tmp, count, sv
+>   */
+> -	.macro map_memory, tbl, rtbl, vstart, vend, flags, phys, pgds, istart, iend, tmp, count, sv
+> +	.macro map_memory, tbl, rtbl, vstart, vend, flags, phys, pgds, istart, iend, \
+> +								tmp, tmp1, count, sv
+>  	add \rtbl, \tbl, #PAGE_SIZE
+>  	mov \sv, \rtbl
+>  	mov \count, #0
+>  	compute_indices \vstart, \vend, #PGDIR_SHIFT, \pgds, \istart, \iend, \count
+> -	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
+> +	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp, \tmp1
+>  	mov \tbl, \sv
+>  	mov \sv, \rtbl
+>  
+>  #if SWAPPER_PGTABLE_LEVELS > 3
+>  	compute_indices \vstart, \vend, #PUD_SHIFT, #PTRS_PER_PUD, \istart, \iend, \count
+> -	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
+> +	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp, \tmp1
+>  	mov \tbl, \sv
+>  	mov \sv, \rtbl
+>  #endif
+>  
+>  #if SWAPPER_PGTABLE_LEVELS > 2
+>  	compute_indices \vstart, \vend, #SWAPPER_TABLE_SHIFT, #PTRS_PER_PMD, \istart, \iend, \count
+> -	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
+> +	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp, \tmp1
+>  	mov \tbl, \sv
+>  #endif
+>  
+>  	compute_indices \vstart, \vend, #SWAPPER_BLOCK_SHIFT, #PTRS_PER_PTE, \istart, \iend, \count
+>  	bic \count, \phys, #SWAPPER_BLOCK_SIZE - 1
+> -	populate_entries \tbl, \count, \istart, \iend, \flags, #SWAPPER_BLOCK_SIZE, \tmp
+> +	populate_entries \tbl, \count, \istart, \iend, \flags, #SWAPPER_BLOCK_SIZE, \tmp, \tmp1
+>  	.endm
+>  
+>  /*
+> @@ -343,7 +344,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  #endif
+>  
+>  	mov	x4, EXTRA_PTRS
+> -	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6, x20
+>  #else
+>  	/*
+>  	 * If VA_BITS == 48, we don't have to configure an additional
+> @@ -356,7 +357,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  	ldr_l	x4, idmap_ptrs_per_pgd
+>  	adr_l	x6, __idmap_text_end		// __pa(__idmap_text_end)
+>  
+> -	map_memory x0, x1, x3, x6, x7, x3, x4, x10, x11, x12, x13, x14
+> +	map_memory x0, x1, x3, x6, x7, x3, x4, x10, x11, x12, x20, x13, x14
+>  
+>  	/*
+>  	 * Map the kernel image (starting with PHYS_OFFSET).
+> @@ -370,7 +371,7 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  	sub	x6, x6, x3			// _end - _text
+>  	add	x6, x6, x5			// runtime __va(_end)
+>  
+> -	map_memory x0, x1, x5, x6, x7, x3, x4, x10, x11, x12, x13, x14
+> +	map_memory x0, x1, x5, x6, x7, x3, x4, x10, x11, x12, x20, x13, x14
+>  
+>  	/*
+>  	 * Since the page tables have been populated with non-cacheable
+> 
 
-						- Ted
