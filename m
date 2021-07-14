@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071DF3C7B3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7245C3C7B2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237405AbhGNCBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:01:45 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:35616 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237371AbhGNCBo (ORCPT
+        id S237375AbhGNByR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:54:17 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:11272 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237295AbhGNByQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:01:44 -0400
-Received: by mail-io1-f45.google.com with SMTP id d9so141680ioo.2;
-        Tue, 13 Jul 2021 18:58:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uOqifUzkRaN6450fZqsUf49bx6RwvzQf56ULmH/5myE=;
-        b=YtiwivXmMbHBdnuJMfDV5rbcChzYBxr3zNvM2qFuUwQ86Ff7ceTwCi9MaSf4MKuyFF
-         xmUyglnrfJuK2RQh46FDHhcp46uN6+uv0eT3F0FMbrgoXSahbLqYtdYFOldsBESVtIlt
-         4c9z+0W9/7v4wBz8eZgcsSk12OUuNymV8AbPvVWXYWL+aKydOXhN5MfSmNaOMDnihGRf
-         uHlM79njxk77c+shJsysaZBnXeX932BIlTMZkXrNiu8qv9K+63EFFxN2VUZgQ6huJlJ8
-         1GRNu6ipTUN4iKbpiQ4V6d3oxlo4WTNGOPTRpKSDxuBQqSYDUK7nTalI8UhbBsFPP1g1
-         QZNA==
-X-Gm-Message-State: AOAM533Np/aWeEAWpKanDUvAOQSjxQSIPmszZ4mRSw1pxDrcbqD+5ZVy
-        duULHgOUbUK6pP+RoHN5YA==
-X-Google-Smtp-Source: ABdhPJyT8TYsSlaL+L00/kHbPjyHO8V/A9ECsVjD8XtNKMYIt96lMs9INqqlpooOnhrZOVYrOX4MKA==
-X-Received: by 2002:a05:6602:25da:: with SMTP id d26mr5426788iop.106.1626227933715;
-        Tue, 13 Jul 2021 18:58:53 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r6sm443341ilh.35.2021.07.13.18.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 18:58:53 -0700 (PDT)
-Received: (nullmailer pid 1286017 invoked by uid 1000);
-        Wed, 14 Jul 2021 01:58:49 -0000
-Date:   Tue, 13 Jul 2021 19:58:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Christine Zhu <Christine.Zhu@mediatek.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, matthias.bgg@gmail.com,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        seiya.wang@mediatek.com
-Subject: Re: [v5,2/3] dt-bindings: reset: mt8195: add toprgu reset-controller
- head file
-Message-ID: <20210714015849.GA1283155@robh.at.kernel.org>
-References: <20210628113730.26107-1-Christine.Zhu@mediatek.com>
- <20210628113730.26107-3-Christine.Zhu@mediatek.com>
+        Tue, 13 Jul 2021 21:54:16 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GPgLy72Q6z1CJHc;
+        Wed, 14 Jul 2021 09:45:46 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 09:51:24 +0800
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 09:51:23 +0800
+From:   Chen Wandun <chenwandun@huawei.com>
+To:     <akpm@linux-foundation.org>, <serapheim.dimitro@delphix.com>,
+        <urezki@gmail.com>, <wangkefeng.wang@huawei.com>,
+        <weiyongjun1@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <chenwandun@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] mm/vmalloc: fix wrong behavior in vread
+Date:   Wed, 14 Jul 2021 09:59:59 +0800
+Message-ID: <20210714015959.3204871-1-chenwandun@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628113730.26107-3-Christine.Zhu@mediatek.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 07:37:30PM +0800, Christine Zhu wrote:
-> From: "Christine Zhu" <Christine.Zhu@mediatek.com>
-> 
-> Add toprgu reset-controller head file for MT8195 platform.
+commit f608788cd2d6 ("mm/vmalloc: use rb_tree instead of list for vread()
+lookups") use rb_tree instread of list to speed up lookup, but function
+__find_vmap_area is try to find a vmap_area that include target address,
+if target address is smaller than the leftmost node in vmap_area_root,
+it will return NULL, then vread will read nothing. This behavior is
+different from the primitive semantics.
 
-s/head/header/
+The correct way is find the first vmap_are that bigger than target addr,
+that is what function find_vmap_area_exceed_addr does.
 
-And the subject too.
+Fixes: f608788cd2d6 ("mm/vmalloc: use rb_tree instead of list for vread() lookups")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+---
+ mm/vmalloc.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-> 
-> Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-> ---
->  .../reset-controller/mt8195-resets.h          | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
->  create mode 100644 include/dt-bindings/reset-controller/mt8195-resets.h
-> 
-> diff --git a/include/dt-bindings/reset-controller/mt8195-resets.h b/include/dt-bindings/reset-controller/mt8195-resets.h
-> new file mode 100644
-> index 000000000000..7ec27a64afc7
-> --- /dev/null
-> +++ b/include/dt-bindings/reset-controller/mt8195-resets.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d5cd52805149..47c3a551b6dc 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -787,6 +787,28 @@ unsigned long vmalloc_nr_pages(void)
+ 	return atomic_long_read(&nr_vmalloc_pages);
+ }
+ 
++static struct vmap_area *find_vmap_area_exceed_addr(unsigned long addr)
++{
++	struct vmap_area *va = NULL;
++	struct rb_node *n = vmap_area_root.rb_node;
++
++	while (n) {
++		struct vmap_area *tmp;
++
++		tmp = rb_entry(n, struct vmap_area, rb_node);
++		if (tmp->va_end > addr) {
++			va = tmp;
++			if (tmp->va_start <= addr)
++				break;
++
++			n = n->rb_left;
++		} else
++			n = n->rb_right;
++	}
++
++	return va;
++}
++
+ static struct vmap_area *__find_vmap_area(unsigned long addr)
+ {
+ 	struct rb_node *n = vmap_area_root.rb_node;
+@@ -3267,9 +3289,14 @@ long vread(char *buf, char *addr, unsigned long count)
+ 		count = -(unsigned long) addr;
+ 
+ 	spin_lock(&vmap_area_lock);
+-	va = __find_vmap_area((unsigned long)addr);
++	va = find_vmap_area_exceed_addr((unsigned long)addr);
+ 	if (!va)
+ 		goto finished;
++
++	/* no intersects with alive vmap_area */
++	if ((unsigned long)addr + count <= va->va_start)
++		goto finished;
++
+ 	list_for_each_entry_from(va, &vmap_area_list, list) {
+ 		if (!count)
+ 			break;
+-- 
+2.25.1
 
-Dual license please.
-
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Crystal Guo <crystal.guo@mediatek.com>
-
-According to the S-o-b and patch author, you are the author.
-
-> + */
-> +
-> +#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
-> +#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
-> +
-> +#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
-> +#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
-> +#define MT8195_TOPRGU_APU_SW_RST               2
-> +#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
-> +#define MT8195_TOPRGU_MMSYS_SW_RST             7
-> +#define MT8195_TOPRGU_MFG_SW_RST               8
-> +#define MT8195_TOPRGU_VENC_SW_RST              9
-> +#define MT8195_TOPRGU_VDEC_SW_RST              10
-> +#define MT8195_TOPRGU_IMG_SW_RST               11
-> +#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
-> +#define MT8195_TOPRGU_AUDIO_SW_RST             14
-> +#define MT8195_TOPRGU_CAMSYS_SW_RST            15
-> +#define MT8195_TOPRGU_EDPTX_SW_RST             16
-> +#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
-> +#define MT8195_TOPRGU_DPTX_SW_RST              22
-> +#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
-> +
-> +#define MT8195_TOPRGU_SW_RST_NUM               16
-> +
-> +#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
-> -- 
-> 2.18.0
-> 
-> 
