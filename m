@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AC63C7DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A8A3C7DEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237925AbhGNF1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237910AbhGNF1G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:27:06 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C42C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:24:14 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id hc15so1296994ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IR3H7P/Qqdz0+z7mAz+4BcJc0mjzsggsr8mNH8312vk=;
-        b=J2IDtTc5DxsvAMq/DAkPuYqj0Y7dNpRgm5w+Q5Mo3F1Au3zIy957DexG4xM3ot9TeB
-         gz7qUXOBffxs7ZJq8NwJJx3+F2yWdVty637g3WtUU13nzkMXjdWWulrIly/TOJxD+Hyy
-         /NqXLpxJ8/rX9zvF4onj7kuKA/hY855NC/q2nDjsHgyYw3/sSLkn4POQUtEcySzhEGrh
-         CDn9h5b45a/ov20IIHnvFDOFr1x5Vomj6Ve9ZjPNFGa6QG+3p9U0VzK3a00J7z6C/fWK
-         eWV/SVtA1pGWD7wh4Q6+tQY/Bv7Ble6R8AihTwasCDJOPdVPj+NAufXpshOEW+KCfFKO
-         W7Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IR3H7P/Qqdz0+z7mAz+4BcJc0mjzsggsr8mNH8312vk=;
-        b=sh5fdB94Odic56NnJM9WVXBmh8+JWlYps7M/AK6JhnOsKuIUCCQhYX3roKxJ5t7ohc
-         anUmwnurfOqp8rCMBdc2YbC89sdEMYmfjKgV+aZbu8XgJUsW12aIrSqlUSmbQ45lE+sx
-         JqXp6gS8jCwtPufTOy53s68QLEzvo+VMTagq1Wps+7iabpvMCUiNUbuNB6r8fo+xIGZP
-         RKaPVA9HKhx/KjMsb/qTBTusjF3a8gmOZPdRlSkS9D2UYJbVWMA2KIMUPlhTvhakmbMJ
-         IBYMhYRv4IP+7s6/UEVwZ5tuoUjzTZBXwPohSZbGbeVaPaaDmCMUGfTnQN8XpJ65RNju
-         yDsQ==
-X-Gm-Message-State: AOAM530LNUGbPauCnAkw2HJnA5Hb2opq3qVTkStJIaAKk4hzuSWZH2RV
-        O2VXRkVgoPQsNCy5SIfSIDLH9vvrAi99Uda9C/GJ
-X-Google-Smtp-Source: ABdhPJwiVScNvW759FNHFZbUm6bF1Hh8xD+5SHXF+XpeC6RBKLMlly39eCK/TlQciP+Rhit5f+SlsKPq8Beb+93M0R0=
-X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr10270164ejv.247.1626240253024;
- Tue, 13 Jul 2021 22:24:13 -0700 (PDT)
+        id S237931AbhGNF2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:28:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:57758 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237802AbhGNF2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 01:28:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF72B6D;
+        Tue, 13 Jul 2021 22:25:24 -0700 (PDT)
+Received: from [10.163.65.222] (unknown [10.163.65.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89AF83F694;
+        Tue, 13 Jul 2021 22:25:22 -0700 (PDT)
+Subject: Re: [PATCH 00/12] mm/debug_vm_pgtable: Enhancements
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com,
+        chuhu@redhat.com
+References: <20210706061748.161258-1-gshan@redhat.com>
+ <42a26202-10f7-e744-3fc5-c9e5a7445193@arm.com>
+ <a8539200-35ac-2478-c763-e13c95556b25@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <30a938df-f5c8-910c-8ddc-52a2d2a0a11e@arm.com>
+Date:   Wed, 14 Jul 2021 10:56:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210713084656.232-1-xieyongji@bytedance.com> <20210713084656.232-14-xieyongji@bytedance.com>
- <20210713113114.GL1954@kadam>
-In-Reply-To: <20210713113114.GL1954@kadam>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Wed, 14 Jul 2021 13:24:02 +0800
-Message-ID: <CACycT3uKwu5xzj2ynWH5njCKHaYyOPkDb8BVLTHE5NJ-qpD3xQ@mail.gmail.com>
-Subject: Re: [PATCH v9 13/17] vdpa: factor out vhost_vdpa_pa_map() and vhost_vdpa_pa_unmap()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        joro@8bytes.org, Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a8539200-35ac-2478-c763-e13c95556b25@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 7:31 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Tue, Jul 13, 2021 at 04:46:52PM +0800, Xie Yongji wrote:
-> > @@ -613,37 +618,28 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
-> >       }
-> >  }
-> >
-> > -static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
-> > -                                        struct vhost_iotlb_msg *msg)
-> > +static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
-> > +                          u64 iova, u64 size, u64 uaddr, u32 perm)
-> >  {
-> >       struct vhost_dev *dev = &v->vdev;
-> > -     struct vhost_iotlb *iotlb = dev->iotlb;
-> >       struct page **page_list;
-> >       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
-> >       unsigned int gup_flags = FOLL_LONGTERM;
-> >       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
-> >       unsigned long lock_limit, sz2pin, nchunks, i;
-> > -     u64 iova = msg->iova;
-> > +     u64 start = iova;
-> >       long pinned;
-> >       int ret = 0;
-> >
-> > -     if (msg->iova < v->range.first ||
-> > -         msg->iova + msg->size - 1 > v->range.last)
-> > -             return -EINVAL;
->
-> This is not related to your patch, but can the "msg->iova + msg->size"
-> addition can have an integer overflow.  From looking at the callers it
-> seems like it can.  msg comes from:
->   vhost_chr_write_iter()
->   --> dev->msg_handler(dev, &msg);
->       --> vhost_vdpa_process_iotlb_msg()
->          --> vhost_vdpa_process_iotlb_update()
->
-> If I'm thinking of the right thing then these are allowed to overflow to
-> 0 because of the " - 1" but not further than that.  I believe the check
-> needs to be something like:
->
->         if (msg->iova < v->range.first ||
->             msg->iova - 1 > U64_MAX - msg->size ||
->             msg->iova + msg->size - 1 > v->range.last)
->
 
-Make sense.
 
-> But writing integer overflow check correctly is notoriously difficult.
-> Do you think you could send a fix for that which is separate from the
-> patcheset?  We'd want to backport it to stable.
->
+On 7/13/21 6:50 AM, Gavin Shan wrote:
+> Hi Anshuman,
+> 
+> On 7/12/21 2:14 PM, Anshuman Khandual wrote:
+>> Though I have not jumped into the details for all individual
+>> patches here but still have some high level questions below.
+>>
+>> On 7/6/21 11:47 AM, Gavin Shan wrote:
+>>> There are couple of issues with current implementations and this series
+>>> tries to resolve the issues:
+>>>
+>>>    (a) All needed information are scattered in variables, passed to various
+>>>        test functions. The code is organized in pretty much relaxed fashion.
+>> All these variables are first prepared in debug_vm_pgtable(), before
+>> getting passed into respective individual test functions. Also these
+>> test functions receive only the required number of variables not all.
+>> Adding a structure that captures all test parameters at once before
+>> passing them down will be unnecessary. I am still wondering what will
+>> be the real benefit of this large code churn ?
+>>
+> 
+> Thanks for your review. There are couple of reasons to have "struct vm_pgtable_debug".
+> 
+> (1) With the struct, the old and new implementation can coexist. In this way,
+>     the patches in this series can be stacked up easily.
 
-OK, I will send a patch to fix it.
+Makes sense.
 
-Thanks,
-Yongji
+> (2) I think passing single struct to individual test functions improves the
+>     code readability. Besides, it also makes the empty stubs simplified.
+
+Empty stub simplified - reduced argument set in the empty stubs ?
+
+> (3) The code can be extended easily if we need in future.
+
+Agreed.
+
+> 
+>>>
+>>>    (b) The page isn't allocated from buddy during page table entry modifying
+>>>        tests. The page can be invalid, conflicting to the implementations
+>>>        of set_{pud, pmd, pte}_at() on ARM64. The target page is accessed
+>>>        so that the iCache can be flushed when execution permission is given
+>>>        on ARM64. Besides, the target page can be unmapped and access to
+>>>        it causes kernel crash.
+>>
+>> Using 'start_kernel' based method for struct page usage, enabled this
+>> test to run on platforms which might not have enough memory required
+>> for various individual test functions. This method is not a problem for
+>> tests that just need an aligned pfn (which creates a page table entry)
+>> not a real struct page.
+>>
+>> But not allocating and owning the struct page might be problematic for
+>> tests that expect a real struct page and transform its state via set_
+>> {pud, pmd, pte}_at() functions as reported here.
+>>
+> 
+> Yeah, I totally agree. The series follows what you explained: Except the
+> test cases where set_{pud, pmd, pte}_at() is used, the allocated page
+> is used. For other test cases, 'start_kernel' based PFN is used as before.
+> 
+>>>
+>>> "struct vm_pgtable_debug" is introduced to address issue (a). For issue
+>>> (b), the used page is allocated from buddy in page table entry modifying
+>>> tests. The corresponding tets will be skipped if we fail to allocate the
+>>> (huge) page. For other test cases, the original page around to kernel
+>>> symbol (@start_kernel) is still used.
+>>
+>> For all basic pfn requiring tests, existing 'start_kernel' based method
+>> should continue but allocate a struct page for other tests which change
+>> the passed struct page. Skipping the tests when allocation fails is the
+>> right thing to do.
+>>
+> 
+> Yes, it's exactly what this series does. Hope you can jump into the details
+> when you get a chance :)
+
+I have already started looking into the series. But still wondering if
+the huge page memory allocation change and the arm64 specific page fix
+should be completed first, before getting into the new structure based
+arguments (in a separate series). Although the end result would still
+remain the same, the transition there would be better I guess. Do you
+see any challenges in achieving that ?
+
+- Anshuman
