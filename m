@@ -2,223 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE52E3C849F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563603C84A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239337AbhGNMrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:47:14 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:15325 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhGNMrM (ORCPT
+        id S239284AbhGNMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:50:15 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:37818 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231260AbhGNMuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:47:12 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 59B93240005;
-        Wed, 14 Jul 2021 12:44:17 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 14:44:17 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-clk@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: More dropping redundant minItems/maxItems
-Message-ID: <YO7cIQLn3i4+zOK/@piout.net>
-References: <20210713193453.690290-1-robh@kernel.org>
+        Wed, 14 Jul 2021 08:50:13 -0400
+Received: by mail-io1-f71.google.com with SMTP id p7-20020a6b63070000b029050017e563a6so1158862iog.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 05:47:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+s3n4qWrtDMRm0uF1xF47boitAjAuz09jDtLN5Z2zUQ=;
+        b=kCYGT9CfCILCTcRd+E2fFVm2XU71RVAAmJoFFRAXfA2spxR9j8zktcFxH9zmGUiAek
+         7zAWCuD4p1xmobXG3ckevaciKBgw43Smiy9i6fZfVdpoaGG24IfkLHHI2gHi7hfBWyTW
+         3J2F7PWSPeFlw9/c3AN/THNbpXaLRmwoWkW7E/2F8B2GMLvctdbC+zWC8qarhPHG4ko2
+         me92LsgTZdMdfKtSBxgpKLrIByBCEQ5w+EjTVuokz2Easv3Y4JK3gvV1TDemcWKShS8M
+         07z+l1TUhYj/+TR0GP3/81o67ywKCVQVTKZAI9e3XPnaX4N2a55DZdP0/kG6/MLY84K3
+         tFoQ==
+X-Gm-Message-State: AOAM533ByF1qb1tKQbhd0tVLLH1vmH6CSs/wqwBarwsK2/kTfr8nGmlc
+        qlWB0r/h/CFsalnDEklycB0r4x5FOZ/E0tg+X4xIC3w+JKmA
+X-Google-Smtp-Source: ABdhPJww5+rallpvcS9/lG7WRwlzFcraa+5AzdSR4KRClUM8zU2hapspipP7BW22uGMMmHzL//i5p3xxzYE8GgV+DYLiBMC1LIaJ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713193453.690290-1-robh@kernel.org>
+X-Received: by 2002:a05:6602:2204:: with SMTP id n4mr7092213ion.181.1626266841187;
+ Wed, 14 Jul 2021 05:47:21 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 05:47:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000610af005c714c1d1@google.com>
+Subject: [syzbot] UBSAN: shift-out-of-bounds in profile_init
+From:   syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2021 13:34:53-0600, Rob Herring wrote:
-> Another round of removing redundant minItems/maxItems from new schema in
-> the recent merge window.
-> 
-> If a property has an 'items' list, then a 'minItems' or 'maxItems' with the
-> same size as the list is redundant and can be dropped. Note that is DT
-> schema specific behavior and not standard json-schema behavior. The tooling
-> will fixup the final schema adding any unspecified minItems/maxItems.
-> 
-> This condition is partially checked with the meta-schema already, but
-> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
-> An improved meta-schema is pending.
-> 
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Alessandro Zummo <a.zummo@towertech.it>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Sebastian Siewior <bigeasy@linutronix.de>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: linux-clk@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Hello,
 
-> ---
->  .../devicetree/bindings/clock/brcm,iproc-clocks.yaml      | 1 -
->  .../devicetree/bindings/iommu/rockchip,iommu.yaml         | 2 --
->  .../bindings/memory-controllers/arm,pl353-smc.yaml        | 1 -
->  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml  | 8 --------
->  .../devicetree/bindings/rtc/faraday,ftrtc010.yaml         | 1 -
->  Documentation/devicetree/bindings/usb/nxp,isp1760.yaml    | 2 --
->  6 files changed, 15 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
-> index 8dc7b404ee12..1174c9aa9934 100644
-> --- a/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
-> +++ b/Documentation/devicetree/bindings/clock/brcm,iproc-clocks.yaml
-> @@ -50,7 +50,6 @@ properties:
->  
->    reg:
->      minItems: 1
-> -    maxItems: 3
->      items:
->        - description: base register
->        - description: power register
-> diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> index d2e28a9e3545..ba9124f721f1 100644
-> --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> @@ -28,14 +28,12 @@ properties:
->        - description: configuration registers for MMU instance 0
->        - description: configuration registers for MMU instance 1
->      minItems: 1
-> -    maxItems: 2
->  
->    interrupts:
->      items:
->        - description: interruption for MMU instance 0
->        - description: interruption for MMU instance 1
->      minItems: 1
-> -    maxItems: 2
->  
->    clocks:
->      items:
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
-> index 7a63c85ef8c5..01c9acf9275d 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/arm,pl353-smc.yaml
-> @@ -57,7 +57,6 @@ properties:
->  
->    ranges:
->      minItems: 1
-> -    maxItems: 3
->      description: |
->        Memory bus areas for interacting with the devices. Reflects
->        the memory layout with four integer values following:
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> index e5f1a33332a5..dd5a64969e37 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> @@ -84,7 +84,6 @@ properties:
->  
->    interrupts:
->      minItems: 1
-> -    maxItems: 3
->      items:
->        - description: NAND CTLRDY interrupt
->        - description: FLASH_DMA_DONE if flash DMA is available
-> @@ -92,7 +91,6 @@ properties:
->  
->    interrupt-names:
->      minItems: 1
-> -    maxItems: 3
->      items:
->        - const: nand_ctlrdy
->        - const: flash_dma_done
-> @@ -148,8 +146,6 @@ allOf:
->      then:
->        properties:
->          reg-names:
-> -          minItems: 2
-> -          maxItems: 2
->            items:
->              - const: nand
->              - const: nand-int-base
-> @@ -161,8 +157,6 @@ allOf:
->      then:
->        properties:
->          reg-names:
-> -          minItems: 3
-> -          maxItems: 3
->            items:
->              - const: nand
->              - const: nand-int-base
-> @@ -175,8 +169,6 @@ allOf:
->      then:
->        properties:
->          reg-names:
-> -          minItems: 3
-> -          maxItems: 3
->            items:
->              - const: nand
->              - const: iproc-idm
-> diff --git a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
-> index 657c13b62b67..056d42daae06 100644
-> --- a/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
-> @@ -30,7 +30,6 @@ properties:
->      maxItems: 1
->  
->    clocks:
-> -    minItems: 2
->      items:
->        - description: PCLK clocks
->        - description: EXTCLK clocks. Faraday calls it CLK1HZ and says the clock
-> diff --git a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
-> index a88f99adfe8e..f238848ad094 100644
-> --- a/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
-> +++ b/Documentation/devicetree/bindings/usb/nxp,isp1760.yaml
-> @@ -25,14 +25,12 @@ properties:
->  
->    interrupts:
->      minItems: 1
-> -    maxItems: 2
->      items:
->        - description: Host controller interrupt
->        - description: Device controller interrupt in isp1761
->  
->    interrupt-names:
->      minItems: 1
-> -    maxItems: 2
->      items:
->        - const: host
->        - const: peripheral
-> -- 
-> 2.27.0
-> 
+syzbot found the following issue on:
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11342328300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+dashboard link: https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149a96d2300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114e5bc4300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+
+kernel profiling enabled (shift: 1000000)
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
+shift exponent 1000000 is too large for 64-bit type 'long int'
+CPU: 0 PID: 8453 Comm: syz-executor969 Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+ profile_init+0xfc/0x110 kernel/profile.c:110
+ profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
+ kobj_attr_store+0x50/0x80 lib/kobject.c:856
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2114 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x796/0xa30 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ee69
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffee8801868 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee69
+RDX: 00000000ffffff82 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 0000000000402e50 R08: 0000000000000000 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ee0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
