@@ -2,885 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075E63C92F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67C43C92FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhGNVWE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Jul 2021 17:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhGNVWD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:22:03 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DC9C06175F;
-        Wed, 14 Jul 2021 14:19:10 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 9999C1F41F83
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, pgriffais@valvesoftware.com,
-        z.figura12@gmail.com, joel@joelfernandes.org,
-        malteskarupke@fastmail.fm, linux-api@vger.kernel.org,
-        fweimer@redhat.com, libc-alpha@sourceware.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, acme@kernel.org,
-        corbet@lwn.net, Peter Oskolkov <posk@posk.io>,
-        Andrey Semashev <andrey.semashev@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>
-Subject: Re: [PATCH v5 02/11] futex2: Implement vectorized wait
-Organization: Collabora
-References: <20210709001328.329716-1-andrealmeid@collabora.com>
-        <20210709001328.329716-3-andrealmeid@collabora.com>
-Date:   Wed, 14 Jul 2021 17:19:05 -0400
-In-Reply-To: <20210709001328.329716-3-andrealmeid@collabora.com>
- (=?utf-8?Q?=22Andr=C3=A9?=
-        Almeida"'s message of "Thu, 8 Jul 2021 21:13:19 -0300")
-Message-ID: <87zguomw52.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S234610AbhGNVYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:24:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:57845 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230297AbhGNVYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 17:24:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="232252371"
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="232252371"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 14:21:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="430569328"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga002.jf.intel.com with ESMTP; 14 Jul 2021 14:21:47 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 14 Jul 2021 14:21:47 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 14 Jul 2021 14:21:46 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Wed, 14 Jul 2021 14:21:46 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Wed, 14 Jul 2021 14:21:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OFwwHkOBuUMFEsLS+UKJqUWcI1KbMAtBXCODeocRZUvE0TyqY2f1whHLtZidXoKElvIsT1A3KmxQv6ejaR7qo4Sbr7IuD+7/VFGyx0heupShYObypowWKh63hIjBaSubumsI0mTfGPZ2R1t1+XE2CvE6miw/EmzJZa+6k4ZvFHNo2D27Y4ZPvXjeroAtcy4yxiPe2KjRVkxpDVmTtQ0ecZF+2x1EEe9obt48EFNhWkZ8/lmD6Ce+82789AedNqM1qpUOtJlDEXcsTYn0SbE9kbhSYYMg/yd3jZb3z86JSatBh69vGi5bzD/RQDFbPMoseLpmIIJmGrTOiWejdWImRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K7el5C9HHDN3kvo2QJ8Hz9uBvqcBHEdBlX6TTWPgrDE=;
+ b=Y+OlDQh/nqCdsgm8miw5klS7ZqZKN9/mZkva9UGJAFRc76UqX8Va6OpfTCN6C630OA3kST1sVUfrLc1d4vtMQvjmOEWEXo7MWO4mmIHn+pqMqdKAz68n1InNCxEKDl4gU597/YVmtLS+Okl9PGAI1kLMyxHa06SpKYZhgChh7/rQOt+Cqf+l3xrhOP8Cx37QaAZ5HskuwyjJWrrJA4wWSRE0BVYtTBOuh2/qUxWQDX7bESmyhdMunmNqJTltoiRjbOmNE/WydU+o5GDhlWlzMycRRvIT0ZhNE3zLzHiV45rh2aKrCaVrzpTh1rC/R7+UhphJHBWH1YDS0Y+3CNgOtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K7el5C9HHDN3kvo2QJ8Hz9uBvqcBHEdBlX6TTWPgrDE=;
+ b=ko77qYyfthK8SZ3O/HmMXHje47zaM3lXzpjCv2ePqgXeHdi1lObbPzjUMHzYhc0kUFW8/bUmcdLByOgIlf42TxGJ4Yl66+7o4SLPBXXPdRsRHVL6oOxYfpeZCKzGrGa5b75U4QwMZpQcB0Q/a8SRhDuuPJcrQvZQH+QOOoSGMvk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
+ by BN6PR1101MB2113.namprd11.prod.outlook.com (2603:10b6:405:51::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.24; Wed, 14 Jul
+ 2021 21:21:43 +0000
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::202f:e602:3983:e631]) by BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::202f:e602:3983:e631%8]) with mapi id 15.20.4331.022; Wed, 14 Jul 2021
+ 21:21:42 +0000
+Subject: Re: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210708181423.1312359-1-tony.luck@intel.com>
+ <20210708181423.1312359-2-tony.luck@intel.com>
+ <93845f78-120d-7522-bd3e-fe042380d29e@intel.com>
+ <31668f36583844cbbae0b10a594193d6@intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <00114991-9075-84f4-797d-f0f953d34660@intel.com>
+Date:   Wed, 14 Jul 2021 14:21:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
+In-Reply-To: <31668f36583844cbbae0b10a594193d6@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR08CA0067.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::44) To BN0PR11MB5744.namprd11.prod.outlook.com
+ (2603:10b6:408:166::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.219] (71.238.111.198) by BYAPR08CA0067.namprd08.prod.outlook.com (2603:10b6:a03:117::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 21:21:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc271489-d0a4-446e-fc90-08d9470d6073
+X-MS-TrafficTypeDiagnostic: BN6PR1101MB2113:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR1101MB2113E85D35801ECA7D917501F8139@BN6PR1101MB2113.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KS+Pb2FfC4xcXNgRmDz8bLxrXaTQhYzsZG6Q7R/VmwFLNENoK3sNrSDqa4DaYzpzcTAXOcarBrRXFgJKZVypmnSfj9K7JJZGpTc8pAGmBWS1Xtfku3pIjd2Ps/4LsJg78ofRQQ/V+knwO5RPfTO2upRq0p0AWzQHsWEjiejTHOm+ZsZ/z6rUh+urh4qPP6hdNUz/cGBhzTvLdgGXk46Y/TC9PRUht5GKDerq3uhHU4+xgSIzKnJNGAbGxGbtvLQ+Jj/UHyFzolJ3IibpWjQMNO0nVHAwUvc5YRo9eOhe0XAcmJ9smduQht0OpvsQfViuXbi/JYm10Th8nN1vQoBoj6oGwInUK36yGobU6/0JhmpDZlZw3MOU3guLap37ldGdtbpO2hnyMumgji5KKX/jnI34yoeMVnEL9L+uOjFJihr6xYq8buW3Pj4n3DCG0trA3gPF4kXB604Q5NP+0lSScUyvjFdQ2r4hUcSmD0C0TGK0Fu8n+I222q4CaOhTiLphSzpR5JgKkfFrmyhl2awBXAdlncrOpG/keXzIX5oWnL+tRBEvl8fErllxz9Vtb39M0cKpHo2A+LbfpGFYEPGD+kyrvznnCZD6nKlFMO9CqLXbNheQCOsIT3Rfp1YQRGR6shwztE4PVT7w629YMZ5016hM6WjfY7Uo8ghljF9wRcPgd+bZ0g/fktFxB/DX6ZkWK2Cc4T83PCxfIqYeeEEGgBp/joRiba9H2pVXFhUszFWTFI1KY9807DmnsGvTREholSVX+v8lOQ7iDrXJXHnJZE85yTrebXB/brAeUr9C7yn5DwNvELuLGr2ynAPi3UCy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(396003)(136003)(39860400002)(31686004)(26005)(6636002)(5660300002)(8936002)(4326008)(956004)(31696002)(44832011)(86362001)(8676002)(6862004)(2616005)(83380400001)(37006003)(2906002)(478600001)(316002)(66556008)(16576012)(36756003)(66476007)(966005)(6486002)(53546011)(66946007)(54906003)(186003)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnR4dEpBZ3BZcm8wTDEwcnR5WmRWTDFoZ3VlbGk5KzlFZ1RWSkhsUVdtdXll?=
+ =?utf-8?B?K2hXTitwMzFTYkp5U1ZlMUgvV3lKclJOY1Rxd2ZBa09oQTdwMTE0TkNuZE9O?=
+ =?utf-8?B?L1NhZUliUDYxUEhyZmJuaVM1VW9iSWlWLzFQeWNNeFZSUTRWTGtSSFc0eVNw?=
+ =?utf-8?B?MHdYcS8wdTR4Y1FGQ1l0NVdENFpNeDFybkhrSGFMa0VnYk5hdllFQW1VMHA4?=
+ =?utf-8?B?WTl2YkFnMTJQbStpOS8rK3BiYzVMY2hlY2lrMXVBTW9vTnMwN1c5a2luRzBP?=
+ =?utf-8?B?Q0ppVDNRbU8yOE9RdlNLTXpNQ0thMGE3UWs2djM0Y3d5UHFVZWNQS1J3R3E3?=
+ =?utf-8?B?QnlHMGNCSnIxajVya3dXa1RGTzgrUG1XUnB5eHFyNXVYenB2cnBRVHRHQ0xy?=
+ =?utf-8?B?TnpRdXlxRk04WVFKTHJhYU5YUVkzYnBPcDFxdzJVL0JPaWppb29HWnFnR0V6?=
+ =?utf-8?B?TFNpSDdwWmhNVFA5a3MycGk5NzZsN3hEc2hnTDR2elJRaHJsU1prdmlTVy9G?=
+ =?utf-8?B?Q2g3MEIrYmNXZmZKQ1l2OXVNQVVUaEc4K1F1ZGw3TytZV2g0ZHZTZGx0OHRp?=
+ =?utf-8?B?d2I2TGcweGpVK1lZVldMUWN4K2FGYldMVDFzR1Y1cDkwb0RDWHdhRW1WN2Q5?=
+ =?utf-8?B?R0FkUlpmZFc2SHc4TXFMVVpweGZxWVo3emp2a01tcC95Y21HWG81ejk2QUhM?=
+ =?utf-8?B?VDBsQ1ZaQ01rWHh2eTRGekpLeXg3RU9ER1RIbDllUVJzYk84OTJBMGNGSmlw?=
+ =?utf-8?B?djRiYmFvNEc1aExOTW5taW5YbURNenNZdGdSc1NaOEtQZzFyS0dpOXdHU21n?=
+ =?utf-8?B?VDZsM2RCU0QxWDlmeWdwWS8vdnBETUV1eHFuNkhUL3dHaWdrSFZ1L3ZPME1W?=
+ =?utf-8?B?OHA0TFpCamRXRlVrN08xQzlGWHhKNjdKclFWWnk1U0E4RHEveVdpN25ianAx?=
+ =?utf-8?B?MmEvbGlScmdLUnVQMWxYdDRXc3I4QWxpNnBPOEVmTWJROXVpR0NobEUra0hq?=
+ =?utf-8?B?eXRsSnhrdFd0RE9SWURaT3RNWVZVYU9LcGxSQkZBTzd5NHgwYnFvS2Y2c0RR?=
+ =?utf-8?B?KzhMdC9SMTFWTFdCOGUvNXFPNFpvaDIrLzdFVEtKSFg3ZmYrdFBrcXNkeEhK?=
+ =?utf-8?B?R3kzV25FeEdDSDM0NUZVMTVrZXRjR0FMK0wxTm43RXdLQWE2SnM5djM0djc2?=
+ =?utf-8?B?WCtzZTdOZk5LMXBGYTdQaFNqenVOM0g5UmhObmpaYU05NGNKNnN1VUhySUV3?=
+ =?utf-8?B?aVUreVhlalh3dkxqUXI5RjhTWDdsR2xxSFBwSmR6SGZyS05ZaVN0ZFM3V3Fk?=
+ =?utf-8?B?NnExckl2TkRraDBpTUlhTDhDMndVQVRSOTl4SjRkRkZVZHU2ZWZuVUJrWWhr?=
+ =?utf-8?B?RXIvamtIL1ovSjl4Wmo1WlRUMFRJejY1V00za1pVYzBNUHZaelVWM0tvSW02?=
+ =?utf-8?B?a2E1cmN4UzhFYzVtOEJSRHdMYlM4WUdOZTNZUXVPc2xaZitSSW1zdmZJQ1Z0?=
+ =?utf-8?B?bUVDRTBCaWRSTkJwbUp2UHpUQ1dXY2dUbDkxVkU2TGNEa3Vac2kwQWJiUGgy?=
+ =?utf-8?B?eEZPRitOSENjYVV2bm93L3htYktwVTV0UVJzdFB3Y0p5c2F4Tnhid0RkTGJq?=
+ =?utf-8?B?ZVM1OFI1Ui9rSU4zT2c5aFBSSmk5bU4zRS9HM1EySTkzQUFQRTNISlYvbERu?=
+ =?utf-8?B?SjFKZWpMY3FsbjdrNjlUS2VwVUdBdHNFVGhuRFBYRmRFSlgrN1BxYnVkdm5a?=
+ =?utf-8?Q?ou7Y/RUCDB0KfYSL7D65MWKxg1ug8VtDegVZW84?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc271489-d0a4-446e-fc90-08d9470d6073
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 21:21:42.9649
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NldLi5AyOIJiYqgNCk77nMkUlF4Xwc5Ag2rvaozxZly9EmaFqx6dCdFd4IXJOEg1AGqa1Xu+/kcSCwthlUpYJ64zi8RWcneLpqyRb21UFz8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2113
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-André Almeida <andrealmeid@collabora.com> writes:
+Hi Tony,
 
-> Add support to wait on multiple futexes. This is the interface
-> implemented by this syscall:
->
-> futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
-> 	    unsigned int flags, struct timespec *timo)
->
-> struct futex_waitv {
-> 	__u64 val;
-> 	void *uaddr;
-> 	unsigned int flags;
-> };
->
-> Given an array of struct futex_waitv, wait on each uaddr. The thread
-> wakes if a futex_wake() is performed at any uaddr. The syscall returns
-> immediately if any waiter has *uaddr != val. *timo is an optional
-> timeout value for the operation. The flags argument of the syscall
-> should be used solely for specifying the timeout clock as realtime, if
-> needed.  Flags for shared futexes, sizes, etc. should be used on the
-> individual flags of each waiter.
->
-> Returns the array index of one of the awakened futexes. There’s no given
-> information of how many were awakened, or any particular attribute of it
-> (if it’s the first awakened, if it is of the smaller index...).
->
-> Signed-off-by: André Almeida <andrealmeid@collabora.com>
+On 7/14/2021 1:59 PM, Luck, Tony wrote:
+>> Could this tracking be done at the enclave page (struct sgx_encl_page)
+>> instead?
+> 
+> In principle yes. Though Sean has some issues with me tracking types
+> at all.
 
-Hi,
+For the SGX2 work knowing the page types are useful. Some instructions 
+only work on certain page types and knowing beforehand whether an 
+instruction could work helps to avoid dealing with the errors when it 
+does not work.
 
-First of all, half of this patch is simply moving code to a header file
-to make it available on futex2.c.  In turn, futex2.c is simply a wrapper
-to invoke the actual implementation in futex.c.  Still, these changes
-are intermixed with the actual futex_wait_multiple code, making this
-patch much, much harder to review.  If you drop those, this patch is almost
-exactly the same I sent over one year ago, except it doesn't use the
-multiplex interface.
+>> The enclave page's EPC page information is not available when
+>> the page is in swap and it would be useful to know the page type without
+>> loading the page from swap. The information would continue to be
+>> accessible from struct epc_page via the owner pointer that may make some
+>> of the changes easier since it would not be needed to pass the page type
+>> around so much and thus possibly address the SECS page issue that Sean
+>> pointed out in
+>> https://lore.kernel.org/lkml/YO3FuBupQTKYaKBf@google.com/
+> 
+> I think I noticed that the "owner" pointer in sgx_encl_page doesn't point
+> back to the epc_page for all types of SGX pages. So some additional
+> changes would be needed. I'm not at all sure why this is different (or
+> what use the non-REG pages use "owner" for.
 
-Now, I get the desire to have a fully functional new interface.  But I
-hate that an actual feature is being hidden in the middle of a series to
-rewrite an interface.
+This may be VA pages? struct sgx_va_page also contains a pointer to an 
+EPC page. I did not consider that for this case. Perhaps these could be 
+identified uniquely.
 
-Futex Wait Multiple is a new feature with valid use cases and the only
-new semantics implemented in this patchset.  We know what its interface
-should look like, and it doesn't have any real dependencies on wait/wake
-functions.  So why make wait/wake part of the discussion? It should be a
-different discussion.
-
-Can we split these two?  Futex wait multiple, or futexv, however we call
-it, IS a new feature, implemented by a new system call.  Can we see a
-patchset that only does that, with proper documentation and testing?
-That is, without it having to reinvent the wheel for
-wait/wake/requeue at the same time?
-
-Otherwise, I feel this is just going to spin forever on issues that are
-completely unrelated to futex_wait_multiple for no good reasons.
-
-> ---
->  arch/x86/entry/syscalls/syscall_32.tbl |   1 +
->  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
->  include/linux/compat.h                 |   9 +
->  include/linux/futex.h                  | 108 ++++++--
->  include/uapi/asm-generic/unistd.h      |   4 +-
->  include/uapi/linux/futex.h             |  15 ++
->  kernel/futex.c                         |  72 +-----
->  kernel/futex2.c                        | 345 +++++++++++++++++++++++++
->  kernel/sys_ni.c                        |   2 +
->  9 files changed, 477 insertions(+), 80 deletions(-)
->
-> diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-> index e3b827a9c094..5573437c1914 100644
-> --- a/arch/x86/entry/syscalls/syscall_32.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_32.tbl
-> @@ -453,3 +453,4 @@
->  446	i386	landlock_restrict_self	sys_landlock_restrict_self
->  447	i386	futex_wait		sys_futex_wait			compat_sys_futex_wait
->  448	i386	futex_wake		sys_futex_wake
-> +449	i386	futex_waitv		sys_futex_waitv			compat_sys_futex_waitv
-> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-> index 63b447255df2..bad4aca3e9ba 100644
-> --- a/arch/x86/entry/syscalls/syscall_64.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
-> @@ -370,6 +370,7 @@
->  446	common	landlock_restrict_self	sys_landlock_restrict_self
->  447	common	futex_wait		sys_futex_wait
->  448	common	futex_wake		sys_futex_wake
-> +449	common	futex_waitv		sys_futex_waitv
->  
->  #
->  # Due to a historical design error, certain syscalls are numbered differently
-> diff --git a/include/linux/compat.h b/include/linux/compat.h
-> index 5a910e0c437a..75b90e41e05b 100644
-> --- a/include/linux/compat.h
-> +++ b/include/linux/compat.h
-> @@ -368,6 +368,12 @@ struct compat_robust_list_head {
->  	compat_uptr_t			list_op_pending;
->  };
->  
-> +struct compat_futex_waitv {
-> +	compat_u64 val;
-> +	compat_uptr_t uaddr;
-> +	compat_uint_t flags;
-> +};
-> +
->  #ifdef CONFIG_COMPAT_OLD_SIGACTION
->  struct compat_old_sigaction {
->  	compat_uptr_t			sa_handler;
-> @@ -696,6 +702,9 @@ compat_sys_get_robust_list(int pid, compat_uptr_t __user *head_ptr,
->  asmlinkage long compat_sys_futex_wait(void __user *uaddr, compat_u64 val,
->  				      unsigned int flags,
->  				      struct __kernel_timespec __user *timo);
-> +asmlinkage long compat_sys_futex_waitv(struct compat_futex_waitv *waiters,
-> +				       compat_uint_t nr_futexes, compat_uint_t flags,
-> +				       struct __kernel_timespec __user *timo);
->  /* kernel/itimer.c */
->  asmlinkage long compat_sys_getitimer(int which,
->  				     struct old_itimerval32 __user *it);
-> diff --git a/include/linux/futex.h b/include/linux/futex.h
-> index f0eaa05ec8bc..7afef5bb3da2 100644
-> --- a/include/linux/futex.h
-> +++ b/include/linux/futex.h
-> @@ -29,6 +29,22 @@ struct task_struct;
->  #define FUT_OFF_INODE    1 /* We set bit 0 if key has a reference on inode */
->  #define FUT_OFF_MMSHARED 2 /* We set bit 1 if key has a reference on mm */
->  
-> +/*
-> + * Futex flags used to encode options to functions and preserve them across
-> + * restarts.
-> + */
-> +#ifdef CONFIG_MMU
-> +# define FLAGS_SHARED		0x01
-> +#else
-> +/*
-> + * NOMMU does not have per process address space. Let the compiler optimize
-> + * code away.
-> + */
-> +# define FLAGS_SHARED		0x00
-> +#endif
-> +#define FLAGS_CLOCKRT		0x02
-> +#define FLAGS_HAS_TIMEOUT	0x04
-> +
->  union futex_key {
->  	struct {
->  		u64 i_seq;
-> @@ -50,6 +66,63 @@ union futex_key {
->  	} both;
->  };
->  
-> +/**
-> + * struct futex_q - The hashed futex queue entry, one per waiting task
-> + * @list:		priority-sorted list of tasks waiting on this futex
-> + * @task:		the task waiting on the futex
-> + * @lock_ptr:		the hash bucket lock
-> + * @key:		the key the futex is hashed on
-> + * @pi_state:		optional priority inheritance state
-> + * @rt_waiter:		rt_waiter storage for use with requeue_pi
-> + * @requeue_pi_key:	the requeue_pi target futex key
-> + * @bitset:		bitset for the optional bitmasked wakeup
-> + *
-> + * We use this hashed waitqueue, instead of a normal wait_queue_entry_t, so
-> + * we can wake only the relevant ones (hashed queues may be shared).
-> + *
-> + * A futex_q has a woken state, just like tasks have TASK_RUNNING.
-> + * It is considered woken when plist_node_empty(&q->list) || q->lock_ptr == 0.
-> + * The order of wakeup is always to make the first condition true, then
-> + * the second.
-> + *
-> + * PI futexes are typically woken before they are removed from the hash list via
-> + * the rt_mutex code. See unqueue_me_pi().
-> + */
-> +struct futex_q {
-> +	struct plist_node list;
-> +
-> +	struct task_struct *task;
-> +	spinlock_t *lock_ptr;
-> +	union futex_key key;
-> +	struct futex_pi_state *pi_state;
-> +	struct rt_mutex_waiter *rt_waiter;
-> +	union futex_key *requeue_pi_key;
-> +	u32 bitset;
-> +} __randomize_layout;
-> +
-> +/**
-> + * struct futex_vector - Auxiliary struct for futex_waitv()
-> + * @w: Userspace provided data
-> + * @q: Kernel side data
-> + *
-> + * Struct used to build an array with all data need for futex_waitv()
-> + */
-> +struct futex_vector {
-> +	struct futex_waitv w;
-> +	struct futex_q q;
-> +};
-> +
-> +/*
-> + * Hash buckets are shared by all the futex_keys that hash to the same
-> + * location.  Each key may have multiple futex_q structures, one for each task
-> + * waiting on a futex.
-> + */
-> +struct futex_hash_bucket {
-> +	atomic_t waiters;
-> +	spinlock_t lock;
-> +	struct plist_head chain;
-> +} ____cacheline_aligned_in_smp;
-> +
->  #define FUTEX_KEY_INIT (union futex_key) { .both = { .ptr = 0ULL } }
->  
->  #ifdef CONFIG_FUTEX
-> @@ -59,6 +132,11 @@ enum {
->  	FUTEX_STATE_DEAD,
->  };
->  
-> +enum futex_access {
-> +	FUTEX_READ,
-> +	FUTEX_WRITE
-> +};
-> +
->  static inline void futex_init_task(struct task_struct *tsk)
->  {
->  	tsk->robust_list = NULL;
-> @@ -81,22 +159,22 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
->  int futex_wake(u32 __user *uaddr, unsigned int flags, int nr_wake, u32 bitset);
->  int futex_wait(u32 __user *uaddr, unsigned int flags, u32 val, ktime_t *abs_time,
->  	       u32 bitset);
-> +void queue_me(struct futex_q *q, struct futex_hash_bucket *hb);
-> +int unqueue_me(struct futex_q *q);
-> +void queue_unlock(struct futex_hash_bucket *hb);
-> +int get_futex_value_locked(u32 *dest, u32 __user *from);
-> +int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
-> +		  enum futex_access rw);
-> +struct futex_hash_bucket *queue_lock(struct futex_q *q);
-> +struct hrtimer_sleeper *futex_setup_timer(ktime_t *time,
-> +					  struct hrtimer_sleeper *timeout,
-> +					  int flags, u64 range_ns);
->  
-> -/*
-> - * Futex flags used to encode options to functions and preserve them across
-> - * restarts.
-> - */
-> -#ifdef CONFIG_MMU
-> -# define FLAGS_SHARED		0x01
-> -#else
-> -/*
-> - * NOMMU does not have per process address space. Let the compiler optimize
-> - * code away.
-> - */
-> -# define FLAGS_SHARED		0x00
-> -#endif
-> -#define FLAGS_CLOCKRT		0x02
-> -#define FLAGS_HAS_TIMEOUT	0x04
-> +static const struct futex_q futex_q_init = {
-> +	/* list gets initialized in queue_me()*/
-> +	.key = FUTEX_KEY_INIT,
-> +	.bitset = FUTEX_BITSET_MATCH_ANY
-> +};
-
-All of these changes should either disappear if you merge futex2.c and
-futex.c or they should go in a new commit, to avoid the noise in the review.
-
-
->  #else
->  static inline void futex_init_task(struct task_struct *tsk) { }
-> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> index df9fe2e23ee0..57acb3a0f69f 100644
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -876,9 +876,11 @@ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
->  __SC_COMP(__NR_futex_wait, sys_futex_wait, compat_sys_futex_wait)
->  #define __NR_futex_wake 448
->  __SYSCALL(__NR_futex_wake, sys_futex_wake)
-> +#define __NR_futex_waitv 449
-> +__SC_COMP(__NR_futex_waitv, sys_futex_waitv, compat_sys_futex_waitv)
->  
->  #undef __NR_syscalls
-> -#define __NR_syscalls 449
-> +#define __NR_syscalls 450
->  
->  /*
->   * 32 bit systems traditionally used different
-> diff --git a/include/uapi/linux/futex.h b/include/uapi/linux/futex.h
-> index 44750caa261e..daa135bdedda 100644
-> --- a/include/uapi/linux/futex.h
-> +++ b/include/uapi/linux/futex.h
-> @@ -45,6 +45,21 @@
->  #define FUTEX_32	2
->  #define FUTEX_SHARED_FLAG 8
->  #define FUTEX_SIZE_MASK	0x3
-> +
-> +#define FUTEX_WAITV_MAX 128
-> +
-> +/**
-> + * struct futex_waitv - A waiter for vectorized wait
-> + * @val:   Expected value at uaddr
-> + * @uaddr: User address to wait on
-> + * @flags: Flags for this waiter
-> + */
-> +struct futex_waitv {
-> +	__u64 val;
-> +	void __user *uaddr;
-> +	unsigned int flags;
-> +};
-> +
->  /*
->   * Support for robust futexes: the kernel cleans up held futexes at
->   * thread exit time.
-> diff --git a/kernel/futex.c b/kernel/futex.c
-> index ef7131bd8bc4..135782fc3461 100644
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -171,57 +171,6 @@ struct futex_pi_state {
->  	union futex_key key;
->  } __randomize_layout;
->  
-> -/**
-> - * struct futex_q - The hashed futex queue entry, one per waiting task
-> - * @list:		priority-sorted list of tasks waiting on this futex
-> - * @task:		the task waiting on the futex
-> - * @lock_ptr:		the hash bucket lock
-> - * @key:		the key the futex is hashed on
-> - * @pi_state:		optional priority inheritance state
-> - * @rt_waiter:		rt_waiter storage for use with requeue_pi
-> - * @requeue_pi_key:	the requeue_pi target futex key
-> - * @bitset:		bitset for the optional bitmasked wakeup
-> - *
-> - * We use this hashed waitqueue, instead of a normal wait_queue_entry_t, so
-> - * we can wake only the relevant ones (hashed queues may be shared).
-> - *
-> - * A futex_q has a woken state, just like tasks have TASK_RUNNING.
-> - * It is considered woken when plist_node_empty(&q->list) || q->lock_ptr == 0.
-> - * The order of wakeup is always to make the first condition true, then
-> - * the second.
-> - *
-> - * PI futexes are typically woken before they are removed from the hash list via
-> - * the rt_mutex code. See unqueue_me_pi().
-> - */
-> -struct futex_q {
-> -	struct plist_node list;
-> -
-> -	struct task_struct *task;
-> -	spinlock_t *lock_ptr;
-> -	union futex_key key;
-> -	struct futex_pi_state *pi_state;
-> -	struct rt_mutex_waiter *rt_waiter;
-> -	union futex_key *requeue_pi_key;
-> -	u32 bitset;
-> -} __randomize_layout;
-> -
-> -static const struct futex_q futex_q_init = {
-> -	/* list gets initialized in queue_me()*/
-> -	.key = FUTEX_KEY_INIT,
-> -	.bitset = FUTEX_BITSET_MATCH_ANY
-> -};
-> -
-> -/*
-> - * Hash buckets are shared by all the futex_keys that hash to the same
-> - * location.  Each key may have multiple futex_q structures, one for each task
-> - * waiting on a futex.
-> - */
-> -struct futex_hash_bucket {
-> -	atomic_t waiters;
-> -	spinlock_t lock;
-> -	struct plist_head chain;
-> -} ____cacheline_aligned_in_smp;
-> -
->  /*
->   * The base of the bucket array and its size are always used together
->   * (after initialization only in hash_futex()), so ensure that they
-> @@ -364,11 +313,6 @@ static inline int match_futex(union futex_key *key1, union futex_key *key2)
->  		&& key1->both.offset == key2->both.offset);
->  }
->  
-> -enum futex_access {
-> -	FUTEX_READ,
-> -	FUTEX_WRITE
-> -};
-> -
->  /**
->   * futex_setup_timer - set up the sleeping hrtimer.
->   * @time:	ptr to the given timeout value
-> @@ -379,7 +323,7 @@ enum futex_access {
->   * Return: Initialized hrtimer_sleeper structure or NULL if no timeout
->   *	   value given
->   */
-> -static inline struct hrtimer_sleeper *
-> +inline struct hrtimer_sleeper *
->  futex_setup_timer(ktime_t *time, struct hrtimer_sleeper *timeout,
->  		  int flags, u64 range_ns)
->  {
-> @@ -465,8 +409,8 @@ static u64 get_inode_sequence_number(struct inode *inode)
->   *
->   * lock_page() might sleep, the caller should not hold a spinlock.
->   */
-> -static int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
-> -			 enum futex_access rw)
-> +int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
-> +		  enum futex_access rw)
->  {
->  	unsigned long address = (unsigned long)uaddr;
->  	struct mm_struct *mm = current->mm;
-> @@ -698,7 +642,7 @@ static int cmpxchg_futex_value_locked(u32 *curval, u32 __user *uaddr,
->  	return ret;
->  }
->  
-> -static int get_futex_value_locked(u32 *dest, u32 __user *from)
-> +inline int get_futex_value_locked(u32 *dest, u32 __user *from)
->  {
->  	int ret;
->  
-> @@ -2173,7 +2117,7 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
->  }
->  
->  /* The key must be already stored in q->key. */
-> -static inline struct futex_hash_bucket *queue_lock(struct futex_q *q)
-> +inline struct futex_hash_bucket *queue_lock(struct futex_q *q)
->  	__acquires(&hb->lock)
->  {
->  	struct futex_hash_bucket *hb;
-> @@ -2196,7 +2140,7 @@ static inline struct futex_hash_bucket *queue_lock(struct futex_q *q)
->  	return hb;
->  }
->  
-> -static inline void
-> +inline void
->  queue_unlock(struct futex_hash_bucket *hb)
->  	__releases(&hb->lock)
->  {
-> @@ -2235,7 +2179,7 @@ static inline void __queue_me(struct futex_q *q, struct futex_hash_bucket *hb)
->   * state is implicit in the state of woken task (see futex_wait_requeue_pi() for
->   * an example).
->   */
-> -static inline void queue_me(struct futex_q *q, struct futex_hash_bucket *hb)
-> +inline void queue_me(struct futex_q *q, struct futex_hash_bucket *hb)
->  	__releases(&hb->lock)
->  {
->  	__queue_me(q, hb);
-> @@ -2253,7 +2197,7 @@ static inline void queue_me(struct futex_q *q, struct futex_hash_bucket *hb)
->   *  - 1 - if the futex_q was still queued (and we removed unqueued it);
->   *  - 0 - if the futex_q was already removed by the waking thread
->   */
-> -static int unqueue_me(struct futex_q *q)
-> +int unqueue_me(struct futex_q *q)
->  {
->  	spinlock_t *lock_ptr;
->  	int ret = 0;
-> diff --git a/kernel/futex2.c b/kernel/futex2.c
-> index 990c665280fd..cc1f31afb281 100644
-> --- a/kernel/futex2.c
-> +++ b/kernel/futex2.c
-> @@ -7,6 +7,7 @@
->  
->  #include <asm/futex.h>
->  
-> +#include <linux/freezer.h>
->  #include <linux/syscalls.h>
->  
->  /*
-> @@ -14,6 +15,350 @@
->   */
->  #define FUTEX2_MASK (FUTEX_SIZE_MASK | FUTEX_SHARED_FLAG | FUTEX_CLOCK_REALTIME)
->  
-> +/* Mask for each futex in futex_waitv list */
-> +#define FUTEXV_WAITER_MASK (FUTEX_SIZE_MASK | FUTEX_SHARED_FLAG)
-> +
-> +/* Mask for sys_futex_waitv flag */
-> +#define FUTEXV_MASK (FUTEX_CLOCK_REALTIME)
-> +
-> +/**
-> + * unqueue_multiple() - Remove various futexes from their futex_hash_bucket
-> + * @v:	   The list of futexes to unqueue
-> + * @count: Number of futexes in the list
-> + *
-> + * Helper to unqueue a list of futexes. This can't fail.
-> + *
-> + * Return:
-> + *  - >=0 - Index of the last futex that was awoken;
-> + *  - -1  - No futex was awoken
-> + */
-> +static int unqueue_multiple(struct futex_vector *v, int count)
-> +{
-> +	int ret = -1, i;
-> +
-> +	for (i = 0; i < count; i++) {
-> +		if (!unqueue_me(&v[i].q))
-> +			ret = i;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * futex_wait_multiple_setup() - Prepare to wait and enqueue multiple futexes
-> + * @vs:		The corresponding futex list
-> + * @count:	The size of the list
-> + * @awaken:	Index of the last awoken futex (return parameter)
-> + *
-> + * Prepare multiple futexes in a single step and enqueue them. This may fail if
-> + * the futex list is invalid or if any futex was already awoken. On success the
-> + * task is ready to interruptible sleep.
-> + *
-> + * Return:
-> + *  -  1 - One of the futexes was awaken by another thread
-> + *  -  0 - Success
-> + *  - <0 - -EFAULT, -EWOULDBLOCK or -EINVAL
-> + */
-> +static int futex_wait_multiple_setup(struct futex_vector *vs, int count, int *awaken)
-> +{
-> +	struct futex_hash_bucket *hb;
-> +	int ret, i;
-> +	u32 uval;
-> +
-> +	/*
-> +	 * Enqueuing multiple futexes is tricky, because we need to
-> +	 * enqueue each futex in the list before dealing with the next
-> +	 * one to avoid deadlocking on the hash bucket.  But, before
-> +	 * enqueuing, we need to make sure that current->state is
-> +	 * TASK_INTERRUPTIBLE, so we don't absorb any awake events, which
-> +	 * cannot be done before the get_futex_key of the next key,
-> +	 * because it calls get_user_pages, which can sleep.  Thus, we
-> +	 * fetch the list of futexes keys in two steps, by first pinning
-> +	 * all the memory keys in the futex key, and only then we read
-> +	 * each key and queue the corresponding futex.
-> +	 */
-> +retry:
-> +	for (i = 0; i < count; i++) {
-> +		ret = get_futex_key(vs[i].w.uaddr,
-> +				    vs[i].w.flags & FUTEX_SHARED_FLAG,
-> +				    &vs[i].q.key, FUTEX_READ);
-> +		if (unlikely(ret))
-> +			return ret;
-> +	}
-> +
-> +	set_current_state(TASK_INTERRUPTIBLE);
-> +
-> +	for (i = 0; i < count; i++) {
-> +		struct futex_q *q = &vs[i].q;
-> +		struct futex_waitv *waitv = &vs[i].w;
-> +
-> +		hb = queue_lock(q);
-> +		ret = get_futex_value_locked(&uval, waitv->uaddr);
-> +		if (ret) {
-> +			/*
-> +			 * We need to try to handle the fault, which
-> +			 * cannot be done without sleep, so we need to
-> +			 * undo all the work already done, to make sure
-> +			 * we don't miss any wake ups.  Therefore, clean
-> +			 * up, handle the fault and retry from the
-> +			 * beginning.
-> +			 */
-> +			queue_unlock(hb);
-> +			__set_current_state(TASK_RUNNING);
-> +
-> +			*awaken = unqueue_multiple(vs, i);
-> +			if (*awaken >= 0)
-> +				return 1;
-> +
-> +			if (get_user(uval, (u32 __user *)waitv->uaddr))
-> +				return -EINVAL;
-> +
-> +			goto retry;
-> +		}
-> +
-> +		if (uval != waitv->val) {
-> +			queue_unlock(hb);
-> +			__set_current_state(TASK_RUNNING);
-> +
-> +			/*
-> +			 * If something was already awaken, we can
-> +			 * safely ignore the error and succeed.
-> +			 */
-> +			*awaken = unqueue_multiple(vs, i);
-> +			if (*awaken >= 0)
-> +				return 1;
-> +
-> +			return -EWOULDBLOCK;
-> +		}
-> +
-> +		/*
-> +		 * The bucket lock can't be held while dealing with the
-> +		 * next futex. Queue each futex at this moment so hb can
-> +		 * be unlocked.
-> +		 */
-> +		queue_me(&vs[i].q, hb);
-> +	}
-> +	return 0;
-> +}
-
-I think futex_wait_setup should be modified to work with multiple
-futexes.  Then you can just use it on both, single and multiple pathes
-without any problem and avoid some code duplication.
-
-Note the futex vector will already have been loaded from userspace, so
-there is not the performance penalty of the extra get_user that would
-exist when using futex_wait_multiple for a single futex.
-
-> +
-> +/**
-> + * futex_wait_multiple() - Prepare to wait on and enqueue several futexes
-> + * @vs:		The list of futexes to wait on
-> + * @count:	The number of objects
-> + * @to:		Timeout before giving up and returning to userspace
-> + *
-> + * Entry point for the FUTEX_WAIT_MULTIPLE futex operation, this function
-> + * sleeps on a group of futexes and returns on the first futex that
-> + * triggered, or after the timeout has elapsed.
-> + *
-> + * Return:
-> + *  - >=0 - Hint to the futex that was awoken
-> + *  - <0  - On error
-> + */
-> +static int futex_wait_multiple(struct futex_vector *vs, unsigned int count,
-> +			       struct hrtimer_sleeper *to)
-> +{
-> +	int ret, hint = 0;
-> +	unsigned int i;
-> +
-> +	while (1) {
-> +		ret = futex_wait_multiple_setup(vs, count, &hint);
-> +		if (ret) {
-> +			if (ret > 0) {
-> +				/* A futex was awaken during setup */
-> +				ret = hint;
-> +			}
-> +			return ret;
-> +		}
-> +
-> +		if (to)
-> +			hrtimer_start_expires(&to->timer, HRTIMER_MODE_ABS);
-> +
-> +		/*
-> +		 * Avoid sleeping if another thread already tried to
-> +		 * wake us.
-> +		 */
-> +		for (i = 0; i < count; i++) {
-> +			if (plist_node_empty(&vs[i].q.list))
-> +				break;
-> +		}
-> +
-> +		if (i == count && (!to || to->task))
-> +			freezable_schedule();
-> +
-> +		__set_current_state(TASK_RUNNING);
-> +
-> +		ret = unqueue_multiple(vs, count);
-> +		if (ret >= 0)
-> +			return ret;
-> +
-> +		if (to && !to->task)
-> +			return -ETIMEDOUT;
-> +		else if (signal_pending(current))
-> +			return -ERESTARTSYS;
-> +		/*
-> +		 * The final case is a spurious wakeup, for
-> +		 * which just retry.
-> +		 */
-> +	}
-> +}
-> +
-> +#ifdef CONFIG_COMPAT
-> +/**
-> + * compat_futex_parse_waitv - Parse a waitv array from userspace
-> + * @futexv:	Kernel side list of waiters to be filled
-> + * @uwaitv:     Userspace list to be parsed
-> + * @nr_futexes: Length of futexv
-> + *
-> + * Return: Error code on failure, pointer to a prepared futexv otherwise
-> + */
-> +static int compat_futex_parse_waitv(struct futex_vector *futexv,
-> +				    struct compat_futex_waitv __user *uwaitv,
-> +				    unsigned int nr_futexes)
-> +{
-> +	struct compat_futex_waitv aux;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr_futexes; i++) {
-> +		if (copy_from_user(&aux, &uwaitv[i], sizeof(aux)))
-> +			return -EFAULT;
-> +
-> +		if ((aux.flags & ~FUTEXV_WAITER_MASK) ||
-> +		    (aux.flags & FUTEX_SIZE_MASK) != FUTEX_32)
-> +			return -EINVAL;
-> +
-> +		futexv[i].w.flags = aux.flags;
-> +		futexv[i].w.val = aux.val;
-> +		futexv[i].w.uaddr = compat_ptr(aux.uaddr);
-> +		futexv[i].q = futex_q_init;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +COMPAT_SYSCALL_DEFINE4(futex_waitv, struct compat_futex_waitv __user *, waiters,
-> +		       unsigned int, nr_futexes, unsigned int, flags,
-> +		       struct __kernel_timespec __user *, timo)
-> +{
-> +	struct hrtimer_sleeper to;
-> +	struct futex_vector *futexv;
-> +	struct timespec64 ts;
-> +	ktime_t time;
-> +	int ret;
-> +
-> +	if (flags & ~FUTEXV_MASK)
-> +		return -EINVAL;
-> +
-> +	if (!nr_futexes || nr_futexes > FUTEX_WAITV_MAX || !waiters)
-> +		return -EINVAL;
-> +
-> +	if (timo) {
-> +		int flag_clkid = 0;
-> +
-> +		if (get_timespec64(&ts, timo))
-> +			return -EFAULT;
-> +
-> +		if (!timespec64_valid(&ts))
-> +			return -EINVAL;
-> +
-> +		if (flags & FUTEX_CLOCK_REALTIME)
-> +			flag_clkid = FLAGS_CLOCKRT;
-> +
-> +		time = timespec64_to_ktime(ts);
-> +		futex_setup_timer(&time, &to, flag_clkid, 0);
-> +	}
-> +
-> +	futexv = kcalloc(nr_futexes, sizeof(*futexv), GFP_KERNEL);
-> +	if (!futexv)
-> +		return -ENOMEM;
-> +
-> +	ret = compat_futex_parse_waitv(futexv, waiters, nr_futexes);
-> +	if (!ret)
-> +		ret = futex_wait_multiple(futexv, nr_futexes, timo ? &to : NULL);
-> +
-> +	if (timo) {
-> +		hrtimer_cancel(&to.timer);
-> +		destroy_hrtimer_on_stack(&to.timer);
-> +	}
-> +
-> +	kfree(futexv);
-> +	return ret;
-> +}
-> +#endif
-> +
-> +static int futex_parse_waitv(struct futex_vector *futexv,
-> +			     struct futex_waitv __user *uwaitv,
-> +			     unsigned int nr_futexes)
-> +{
-> +	struct futex_waitv aux;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr_futexes; i++) {
-> +		if (copy_from_user(&aux, &uwaitv[i], sizeof(aux)))
-> +			return -EFAULT;
-> +
-> +		if ((aux.flags & ~FUTEXV_WAITER_MASK) ||
-> +		    (aux.flags & FUTEX_SIZE_MASK) != FUTEX_32)
-> +			return -EINVAL;
-> +
-> +		futexv[i].w.flags = aux.flags;
-> +		futexv[i].w.val = aux.val;
-> +		futexv[i].w.uaddr = aux.uaddr;
-> +		futexv[i].q = futex_q_init;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +SYSCALL_DEFINE4(futex_waitv, struct futex_waitv __user *, waiters,
-> +		unsigned int, nr_futexes, unsigned int, flags,
-> +		struct __kernel_timespec __user *, timo)
-> +{
-> +	struct hrtimer_sleeper to;
-> +	struct futex_vector *futexv;
-> +	struct timespec64 ts;
-> +	ktime_t time;
-> +	int ret;
-> +
-> +	if (flags & ~FUTEXV_MASK)
-> +		return -EINVAL;
-> +
-> +	if (!nr_futexes || nr_futexes > FUTEX_WAITV_MAX || !waiters)
-> +		return -EINVAL;
-> +
-> +	if (timo) {
-> +		int flag_clkid = 0;
-> +
-> +		if (get_timespec64(&ts, timo))
-> +			return -EFAULT;
-> +
-> +		if (!timespec64_valid(&ts))
-> +			return -EINVAL;
-> +
-> +		if (flags & FUTEX_CLOCK_REALTIME)
-> +			flag_clkid = FLAGS_CLOCKRT;
-> +
-> +		time = timespec64_to_ktime(ts);
-> +		futex_setup_timer(&time, &to, flag_clkid, 0);
-> +	}
-> +
-> +	futexv = kcalloc(nr_futexes, sizeof(*futexv), GFP_KERNEL);
-> +	if (!futexv)
-> +		return -ENOMEM;
-> +
-> +	ret = futex_parse_waitv(futexv, waiters, nr_futexes);
-> +	if (!ret)
-> +		ret = futex_wait_multiple(futexv, nr_futexes, timo ? &to : NULL);
-> +
-> +	if (timo) {
-> +		hrtimer_cancel(&to.timer);
-> +		destroy_hrtimer_on_stack(&to.timer);
-> +	}
-> +
-> +	kfree(futexv);
-> +	return ret;
-> +}
-> +
->  static long ksys_futex_wait(void __user *uaddr, u64 val, unsigned int flags,
->  			    struct __kernel_timespec __user *timo)
->  {
-> diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-> index dbe397eaea46..93807bb7be51 100644
-> --- a/kernel/sys_ni.c
-> +++ b/kernel/sys_ni.c
-> @@ -155,6 +155,8 @@ COND_SYSCALL_COMPAT(get_robust_list);
->  COND_SYSCALL(futex_wait);
->  COND_SYSCALL_COMPAT(futex_wait);
->  COND_SYSCALL(futex_wake);
-> +COND_SYSCALL(futex_waitv);
-> +COND_SYSCALL_COMPAT(futex_waitv);
->  
->  /* kernel/hrtimer.c */
-
--- 
-Gabriel Krisman Bertazi
+Reinette
