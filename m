@@ -2,142 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E803C7DE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AC63C7DEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237899AbhGNFTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:19:15 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:54055 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhGNFTN (ORCPT
+        id S237925AbhGNF1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237910AbhGNF1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:19:13 -0400
-Received: by mail-io1-f69.google.com with SMTP id c18-20020a5d9a920000b0290515fa57d24aso376472iom.20
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:16:21 -0700 (PDT)
+        Wed, 14 Jul 2021 01:27:06 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C42C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:24:14 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id hc15so1296994ejc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IR3H7P/Qqdz0+z7mAz+4BcJc0mjzsggsr8mNH8312vk=;
+        b=J2IDtTc5DxsvAMq/DAkPuYqj0Y7dNpRgm5w+Q5Mo3F1Au3zIy957DexG4xM3ot9TeB
+         gz7qUXOBffxs7ZJq8NwJJx3+F2yWdVty637g3WtUU13nzkMXjdWWulrIly/TOJxD+Hyy
+         /NqXLpxJ8/rX9zvF4onj7kuKA/hY855NC/q2nDjsHgyYw3/sSLkn4POQUtEcySzhEGrh
+         CDn9h5b45a/ov20IIHnvFDOFr1x5Vomj6Ve9ZjPNFGa6QG+3p9U0VzK3a00J7z6C/fWK
+         eWV/SVtA1pGWD7wh4Q6+tQY/Bv7Ble6R8AihTwasCDJOPdVPj+NAufXpshOEW+KCfFKO
+         W7Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=USd2GMqDDR83g9HOIvITJBl6roJLZm/Z57kOOP6/pBs=;
-        b=jCrqUnIjvCruwnJ+dy23RMUMOAzGU4JP4y3YEelnRObx70xk7HkTcLSbbGBv7kddyx
-         4Zbv0khfwuBv14Gcdggx0xpRoPTd3Ea1dV0a4Q3Nmx2MUycCarCHQsBtP8cUXrX41zsb
-         l+r3gA+pGlJSjQFazunUL6kyHjNGqjLJsesOCA4MrcXsPsgrsQT5zbo8uxpZ0Y3Sr6I7
-         hXM9+KnAX2rHAVd0Tpykl+I5KeuemD4hwe2mt7vuQEfFIpywbEqxKUeTrBsa1zEJDSg3
-         6B8NGk92EjwgFaMNNLapcjMwdYnDFpUCO3WPktwWi1d0gWXWFLTq+Sqe4yUtfk9pkWOl
-         AMTQ==
-X-Gm-Message-State: AOAM5309nYSDxZlag4PIi8p3sz8poqzCTSO9aY3yS2fJlxxhtjoo+qwu
-        MUHSqDsIkNtXck8/6PzTXjG4dIiRb/VFxEsKEBNYdCJLsfe2
-X-Google-Smtp-Source: ABdhPJyJw2fODUdEtUAQ4caDJR3Bu4OQUFl+xJx0e6pAoXbSOtURb7gC5i1oq7EyVUMBXD7JGflxeD0OHTH/FPc1o3nX9WxMmxb+
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IR3H7P/Qqdz0+z7mAz+4BcJc0mjzsggsr8mNH8312vk=;
+        b=sh5fdB94Odic56NnJM9WVXBmh8+JWlYps7M/AK6JhnOsKuIUCCQhYX3roKxJ5t7ohc
+         anUmwnurfOqp8rCMBdc2YbC89sdEMYmfjKgV+aZbu8XgJUsW12aIrSqlUSmbQ45lE+sx
+         JqXp6gS8jCwtPufTOy53s68QLEzvo+VMTagq1Wps+7iabpvMCUiNUbuNB6r8fo+xIGZP
+         RKaPVA9HKhx/KjMsb/qTBTusjF3a8gmOZPdRlSkS9D2UYJbVWMA2KIMUPlhTvhakmbMJ
+         IBYMhYRv4IP+7s6/UEVwZ5tuoUjzTZBXwPohSZbGbeVaPaaDmCMUGfTnQN8XpJ65RNju
+         yDsQ==
+X-Gm-Message-State: AOAM530LNUGbPauCnAkw2HJnA5Hb2opq3qVTkStJIaAKk4hzuSWZH2RV
+        O2VXRkVgoPQsNCy5SIfSIDLH9vvrAi99Uda9C/GJ
+X-Google-Smtp-Source: ABdhPJwiVScNvW759FNHFZbUm6bF1Hh8xD+5SHXF+XpeC6RBKLMlly39eCK/TlQciP+Rhit5f+SlsKPq8Beb+93M0R0=
+X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr10270164ejv.247.1626240253024;
+ Tue, 13 Jul 2021 22:24:13 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1316:: with SMTP id r22mr7314690jad.89.1626239781656;
- Tue, 13 Jul 2021 22:16:21 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 22:16:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000815b9605c70e74f8@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in vga16fb_fillrect
-From:   syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, b.zolnierkie@samsung.com,
-        colin.king@canonical.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
-        syzkaller-bugs@googlegroups.com
+References: <20210713084656.232-1-xieyongji@bytedance.com> <20210713084656.232-14-xieyongji@bytedance.com>
+ <20210713113114.GL1954@kadam>
+In-Reply-To: <20210713113114.GL1954@kadam>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Wed, 14 Jul 2021 13:24:02 +0800
+Message-ID: <CACycT3uKwu5xzj2ynWH5njCKHaYyOPkDb8BVLTHE5NJ-qpD3xQ@mail.gmail.com>
+Subject: Re: [PATCH v9 13/17] vdpa: factor out vhost_vdpa_pa_map() and vhost_vdpa_pa_unmap()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        joro@8bytes.org, Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jul 13, 2021 at 7:31 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Tue, Jul 13, 2021 at 04:46:52PM +0800, Xie Yongji wrote:
+> > @@ -613,37 +618,28 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+> >       }
+> >  }
+> >
+> > -static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+> > -                                        struct vhost_iotlb_msg *msg)
+> > +static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
+> > +                          u64 iova, u64 size, u64 uaddr, u32 perm)
+> >  {
+> >       struct vhost_dev *dev = &v->vdev;
+> > -     struct vhost_iotlb *iotlb = dev->iotlb;
+> >       struct page **page_list;
+> >       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+> >       unsigned int gup_flags = FOLL_LONGTERM;
+> >       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
+> >       unsigned long lock_limit, sz2pin, nchunks, i;
+> > -     u64 iova = msg->iova;
+> > +     u64 start = iova;
+> >       long pinned;
+> >       int ret = 0;
+> >
+> > -     if (msg->iova < v->range.first ||
+> > -         msg->iova + msg->size - 1 > v->range.last)
+> > -             return -EINVAL;
+>
+> This is not related to your patch, but can the "msg->iova + msg->size"
+> addition can have an integer overflow.  From looking at the callers it
+> seems like it can.  msg comes from:
+>   vhost_chr_write_iter()
+>   --> dev->msg_handler(dev, &msg);
+>       --> vhost_vdpa_process_iotlb_msg()
+>          --> vhost_vdpa_process_iotlb_update()
+>
+> If I'm thinking of the right thing then these are allowed to overflow to
+> 0 because of the " - 1" but not further than that.  I believe the check
+> needs to be something like:
+>
+>         if (msg->iova < v->range.first ||
+>             msg->iova - 1 > U64_MAX - msg->size ||
+>             msg->iova + msg->size - 1 > v->range.last)
+>
 
-syzbot found the following issue on:
+Make sense.
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1323c402300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f0e772300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1114b9b0300000
+> But writing integer overflow check correctly is notoriously difficult.
+> Do you think you could send a fix for that which is separate from the
+> patcheset?  We'd want to backport it to stable.
+>
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+OK, I will send a patch to fix it.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10fa45d8300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12fa45d8300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14fa45d8300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffff888001000050
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0003) - permissions violation
-PGD 10e01067 P4D 10e01067 PUD 10e02067 PMD 80000000010001e1 
-Oops: 0003 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8433 Comm: syz-executor067 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:writeb arch/x86/include/asm/io.h:65 [inline]
-RIP: 0010:vga16fb_fillrect+0x993/0x18d0 drivers/video/fbdev/vga16fb.c:923
-Code: 6c fd 48 63 44 24 10 45 31 f6 48 89 04 24 e8 44 a6 6c fd 31 ff 89 de 31 ed e8 79 ad 6c fd 85 db 4d 89 ec 74 22 e8 2d a6 6c fd <45> 88 34 24 83 c5 01 89 df 49 83 c4 01 89 ee e8 49 ae 6c fd 39 eb
-RSP: 0018:ffffc90000eff848 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 000000000000001b RCX: 0000000000000000
-RDX: ffff88802d949c40 RSI: ffffffff8408e403 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8408dd8d
-R10: ffffffff8408e3f7 R11: 0000000000000000 R12: ffff888001000050
-R13: ffff888001000050 R14: 0000000000000000 R15: 000000000ffeb7ff
-FS:  0000000001aa2300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff888001000050 CR3: 00000000346fb000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- bit_clear_margins+0x3f6/0x4b0 drivers/video/fbdev/core/bitblit.c:224
- fbcon_clear_margins+0x1f1/0x280 drivers/video/fbdev/core/fbcon.c:1315
- fbcon_switch+0xa8c/0x1620 drivers/video/fbdev/core/fbcon.c:2146
- redraw_screen+0x2b9/0x740 drivers/tty/vt/vt.c:1021
- fbcon_modechanged+0x593/0x6d0 drivers/video/fbdev/core/fbcon.c:2651
- fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:2696
- do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1110
- fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43efd9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc362df848 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043efd9
-RDX: 0000000020000200 RSI: 0000000000004601 RDI: 0000000000000003
-RBP: 0000000000402fc0 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403050
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
-CR2: ffff888001000050
----[ end trace 39dce64bc5621bd3 ]---
-RIP: 0010:writeb arch/x86/include/asm/io.h:65 [inline]
-RIP: 0010:vga16fb_fillrect+0x993/0x18d0 drivers/video/fbdev/vga16fb.c:923
-Code: 6c fd 48 63 44 24 10 45 31 f6 48 89 04 24 e8 44 a6 6c fd 31 ff 89 de 31 ed e8 79 ad 6c fd 85 db 4d 89 ec 74 22 e8 2d a6 6c fd <45> 88 34 24 83 c5 01 89 df 49 83 c4 01 89 ee e8 49 ae 6c fd 39 eb
-RSP: 0018:ffffc90000eff848 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 000000000000001b RCX: 0000000000000000
-RDX: ffff88802d949c40 RSI: ffffffff8408e403 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8408dd8d
-R10: ffffffff8408e3f7 R11: 0000000000000000 R12: ffff888001000050
-R13: ffff888001000050 R14: 0000000000000000 R15: 000000000ffeb7ff
-FS:  0000000001aa2300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff888001000050 CR3: 00000000346fb000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks,
+Yongji
