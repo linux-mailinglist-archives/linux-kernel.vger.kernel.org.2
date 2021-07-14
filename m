@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938513C91E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E793C3C91E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhGNURk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:17:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62806 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230342AbhGNURi (ORCPT
+        id S235762AbhGNURp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhGNURl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:17:38 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16EK3g8i084171;
-        Wed, 14 Jul 2021 16:13:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=O91ChT6aq6gFj1s1eeKJPhJgYPpsA9fr7zrKDQPlVMI=;
- b=F78hDwxT8p5Hi5ea4iRmX5YeibVAKo+ISPXe/ejlEYJV1dC3zfaPdt/8SfrQMnToMzqc
- PTp7Sxg7CGgJ6765F47q1xHtVlrHlq/ZyO6D5+DhL+FXOCde+9CJnqUYe/odcWPC1lUR
- K+cZ58Nhyy6TsLLhwXT6rLIfcS5swNDkv2qnUtRdzr1VY9DsFk51ZAW/psKjI0wy/mBi
- DGzhSg+MEbCzQUNlNKfFY01l/RCorJ2BBWBz8yN1IA+VM2nZrnYHxCXyZEqseij9o3qe
- /ZmBVBPct3F4dItCcdBCX4QhVoLrXNIRADXchr2nSZer+zyoUCgWhmBMCyJ7ImRY2JLc ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39sc8kfb2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 16:13:24 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16EK3sS4084604;
-        Wed, 14 Jul 2021 16:13:24 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39sc8kfb13-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 16:13:23 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16EKB4nX032501;
-        Wed, 14 Jul 2021 20:13:21 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 39q3689x6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 20:13:20 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16EKDHkb36307240
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Jul 2021 20:13:17 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CCFC7AE051;
-        Wed, 14 Jul 2021 20:13:17 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC7C0AE04D;
-        Wed, 14 Jul 2021 20:13:15 +0000 (GMT)
-Received: from osiris (unknown [9.145.80.156])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 14 Jul 2021 20:13:15 +0000 (GMT)
-Date:   Wed, 14 Jul 2021 22:13:14 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-acpi@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jia He <justin.he@arm.com>, Joe Perches <joe@perches.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH v1 1/4] mm/memory_hotplug: use "unsigned long" for PFN in
- zone_for_pfn_range()
-Message-ID: <YO9FWrT9h21e/G8X@osiris>
-References: <20210712124052.26491-1-david@redhat.com>
- <20210712124052.26491-2-david@redhat.com>
+        Wed, 14 Jul 2021 16:17:41 -0400
+Received: from mx2.securetransport.de (mx2.securetransport.de [IPv6:2a03:4000:13:6c7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFA4C06175F;
+        Wed, 14 Jul 2021 13:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+        s=dhelectronicscom; t=1626293633;
+        bh=u62i/JJ2Q5UmQ3ZJBwRVwxZWz6ZFbq47acPIhISaOXo=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=gJndAW0ATYOgVEHCjqrhgUgd0wcOXImfnb4/g6vtdW4yX4QvMvFeHeV4lleNqcmzR
+         gLfYzbpNvCTDlbkxoY6nGpHPS1vZsMWEcGBQ8Gcboux6q7LGdPbJ338aAmnP9jd29O
+         ufkLbZxctLAC4Ldu+3h0NCVCfwzU9Umgx5aSBT4bcujo/X5kCBfMm17jTsE/V6VfCJ
+         97ZJ2GV343/QJZjyBc249SY4rKWXvP0BOXtPaZClzXHQ7xxvXWnSt5hg0NF85B1VDa
+         5vO1zXjqGuv8Y1o5/D9oiKugVDdSYqRKuQ0r9nRgwmvaF5aWUjsS/+wDeC40JJdC7s
+         zI1NuJTbpSgWw==
+X-secureTransport-forwarded: yes
+From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Complaints-To: abuse@cubewerk.de
+To:     Shawn Guo <shawnguo@kernel.org>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@dh-electronics.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "Marek MV. Vasut" <marex@denx.de>
+Subject: RE: [PATCH V2] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM
+ DRC02 boards
+Thread-Topic: [PATCH V2] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM
+ DRC02 boards
+Thread-Index: AQHXUXKxVloH3v/6CkGMRLXBETQyyKsBDI+AgBWQzrD//+TigIAicn3wgAj1bYCAAUtcoA==
+Date:   Wed, 14 Jul 2021 20:13:41 +0000
+Message-ID: <ef31532700834256b6adad98a8ec5442@dh-electronics.com>
+References: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
+ <20210602195009.GA3870858@robh.at.kernel.org>
+ <b765351a7c3542d2a66ab1168f1ff222@dh-electronics.com>
+ <bfbd70ca-b5a6-f7a7-4c7d-72ac86874227@denx.de>
+ <76d6cc846f4f473083e597303956ff11@dh-electronics.com>
+ <20210714022354.GA31370@dragon>
+In-Reply-To: <20210714022354.GA31370@dragon>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712124052.26491-2-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _R4J7Ka4suONfylmv2kX6PD4cpzO6szw
-X-Proofpoint-ORIG-GUID: NPoolV9OQ2VwpTmyT54T1Ri1bj2r49ZC
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-14_10:2021-07-14,2021-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- adultscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=805 spamscore=0 suspectscore=0 impostorscore=0 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107140119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 02:40:49PM +0200, David Hildenbrand wrote:
-> Checkpatch complained on a follow-up patch that we are using "unsigned"
-> here, which defaults to "unsigned int" and checkpatch is correct.
-> 
-> Use "unsigned long" instead, just as we do in other places when handling
-> PFNs. This can bite us once we have physical addresses in the range of
-> multiple TB.
-> 
-> Fixes: e5e689302633 ("mm, memory_hotplug: display allowed zones in the preferred ordering")
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  include/linux/memory_hotplug.h | 4 ++--
->  mm/memory_hotplug.c            | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-
-I'd propose to add Cc: <stable@vger.kernel.org> since I actually had
-the fun to try to debug something like this a couple of years ago:
-6cdb18ad98a4 ("mm/vmstat: fix overflow in mod_zone_page_state()")
+RnJvbTogU2hhd24gR3VvIFttYWlsdG86c2hhd25ndW9Aa2VybmVsLm9yZ10NClNlbnQ6IFdlZG5l
+c2RheSwgSnVseSAxNCwgMjAyMSA0OjI0IEFNDQo+IE9uIFRodSwgSnVsIDA4LCAyMDIxIGF0IDA3
+OjM4OjQ0QU0gKzAwMDAsIENocmlzdG9waCBOaWVkZXJtYWllciB3cm90ZToNCj4+IEZyb206IE1h
+cmVrIFZhc3V0IFttYWlsdG86bWFyZXhAZGVueC5kZV0NCj4+IFNlbnQ6IFdlZG5lc2RheSwgSnVu
+ZSAxNiwgMjAyMSAxOjMzIFBNDQo+Pg0KPj4NCj4+PiBPbiA2LzE2LzIxIDE6MTkgUE0sIENocmlz
+dG9waCBOaWVkZXJtYWllciB3cm90ZToNCj4+Pj4gU2VuZCByZXBseSBhbHNvIHRvIFJvYiBIZXJy
+aW5ncyArZHQgZW1haWwgYWRkcmVzczoNCj4+Pj4NCj4+Pj4gRnJvbTogUm9iIEhlcnJpbmcgPHJv
+YmhAa2VybmVsLm9yZz4NCj4+Pj4gU2VudDogV2VkbmVzZGF5LCBKdW5lIDIsIDIwMjEgOTo1MCBQ
+TQ0KPj4+Pg0KPj4+Pj4gT24gVHVlLCBNYXkgMjUsIDIwMjEgYXQgMDQ6MzA6MDFQTSArMDIwMCwg
+Q2hyaXN0b3BoIE5pZWRlcm1haWVyIHdyb3RlOg0KPj4+Pj4+IEFkZCBESCBlbGVjdHJvbmljcyBE
+SENPTSBQaWNvSVRYIGFuZCBESENPTSBEUkMwMiBib2FyZHMuDQo+Pj4+Pj4NCj4+Pj4+PiBTaWdu
+ZWQtb2ZmLWJ5OiBDaHJpc3RvcGggTmllZGVybWFpZXIgPGNuaWVkZXJtYWllckBkaC1lbGVjdHJv
+bmljcy5jb20+DQo+Pj4+Pj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9y
+Zw0KPj4+Pj4+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+Pj4+Pj4gQ2M6IHJv
+YmgrZHRAa2VybmVsLm9yZw0KPj4+Pj4+IENjOiBTaGF3biBHdW8gPHNoYXduZ3VvQGtlcm5lbC5v
+cmc+DQo+Pj4+Pj4gQ2M6IGtlcm5lbEBkaC1lbGVjdHJvbmljcy5jb20NCj4+Pj4+PiBUbzogZGV2
+aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4+Pj4+PiAtLS0NCj4+Pj4+PiBWMjogUmVtb3ZlIGxp
+bmUgd2l0aCBmc2wsaW14NnMgb24gdGhlIERSQzAyIEJvYXJkDQo+Pj4+Pj4gLS0tDQo+Pj4+Pj4g
+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2ZzbC55YW1sIHwgMTIgKysr
+KysrKysrKysrDQo+Pj4+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKQ0KPj4+
+Pj4+DQo+Pj4+Pj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9hcm0vZnNsLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2Zz
+bC55YW1sDQo+Pj4+Pj4gaW5kZXggZmNlMmE4NjcwYjQ5Li4zYzRmZjc5YTNiZTcgMTAwNjQ0DQo+
+Pj4+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9mc2wueWFt
+bA0KPj4+Pj4+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vZnNs
+LnlhbWwNCj4+Pj4+PiBAQCAtNDA3LDYgKzQwNywxMiBAQCBwcm9wZXJ0aWVzOg0KPj4+Pj4+ICAg
+ICAgICAgICAgIC0gY29uc3Q6IGRmaSxmczcwMGUtbTYwDQo+Pj4+Pj4gICAgICAgICAgICAgLSBj
+b25zdDogZnNsLGlteDZkbA0KPj4+Pj4+DQo+Pj4+Pj4gKyAgICAgIC0gZGVzY3JpcHRpb246IGku
+TVg2REwgREhDT00gUGljb0lUWCBCb2FyZA0KPj4+Pj4+ICsgICAgICAgIGl0ZW1zOg0KPj4+Pj4+
+ICsgICAgICAgICAgLSBjb25zdDogZGgsaW14NmRsLWRoY29tLXBpY29pdHgNCj4+Pj4+PiArICAg
+ICAgICAgIC0gY29uc3Q6IGRoLGlteDZkbC1kaGNvbS1zb20NCj4+Pj4+PiArICAgICAgICAgIC0g
+Y29uc3Q6IGZzbCxpbXg2ZGwNCj4+Pj4+PiArDQo+Pj4+Pj4gICAgICAgICAtIGRlc2NyaXB0aW9u
+OiBpLk1YNkRMIEdhdGV3b3JrcyBWZW50YW5hIEJvYXJkcw0KPj4+Pj4+ICAgICAgICAgICBpdGVt
+czoNCj4+Pj4+PiAgICAgICAgICAgICAtIGVudW06DQo+Pj4+Pj4gQEAgLTQ1OCw2ICs0NjQsMTIg
+QEAgcHJvcGVydGllczoNCj4+Pj4+PiAgICAgICAgICAgICAtIGNvbnN0OiB0b3JhZGV4LGNvbGli
+cmlfaW14NmRsICAgICAgICAgICMgQ29saWJyaSBpTVg2IE1vZHVsZQ0KPj4+Pj4+ICAgICAgICAg
+ICAgIC0gY29uc3Q6IGZzbCxpbXg2ZGwNCj4+Pj4+Pg0KPj4+Pj4+ICsgICAgICAtIGRlc2NyaXB0
+aW9uOiBpLk1YNlMgREhDT00gRFJDMDIgQm9hcmQNCj4+Pj4+PiArICAgICAgICBpdGVtczoNCj4+
+Pj4+PiArICAgICAgICAgIC0gY29uc3Q6IGRoLGlteDZzLWRoY29tLWRyYzAyDQo+Pj4+Pj4gKyAg
+ICAgICAgICAtIGNvbnN0OiBkaCxpbXg2cy1kaGNvbS1zb20NCj4+Pj4+PiArICAgICAgICAgIC0g
+Y29uc3Q6IGZzbCxpbXg2ZGwNCj4+Pj4+DQo+Pj4+PiBmc2wsaW14NnM/DQo+Pj4+DQo+Pj4+IElu
+IHRoZSBmaXJzdCB2ZXJzaW9uIEkgaGFkIGhlcmUgYW4gYWRkaXRpb25hbCBsaW5lIHdpdGggImZz
+bCxpbXg2cyIsDQo+Pj4+IGJ1dCBjdXJyZW50bHkgdGhlIGtlcm5lbCBpc24ndCBzdXBwb3J0aW5n
+IHRoYXQgY29tcGF0aWJsZS4gVGhlIGkuTVg2DQo+Pj4+IFNvbG8gaXMgY3VycmVudGx5IHN1cHBv
+cnRlZCBieSAiZnNsLGlteDZkbCIuIFNvIG15IGlkZWEgd2FzIHRvIGFkZA0KPj4+PiBib3RoICJm
+c2wsaW14NmRsIiBhbmQgImZzbCxpbXg2cyIgdG8gbWF0Y2ggaXQgbWF5YmUgb24gYSBsYXRlciBr
+ZXJuZWwNCj4+Pj4gdmVyc2lvbi4gSWYgdGhlcmUgaXMgbm8gbWF0Y2ggd2l0aCB0aGUgU29sbyBu
+b3csIGl0IHdpbGwgZmFsbCBiYWNrIHRvDQo+Pj4+IHRoZSBpLk1YNiBEdWFsTGl0ZS4gVGhhdCBp
+cyB3aHkgSSBoYWQgYm90aCBmc2wsaW14NnMgYW5kIGZzbCxpbXg2ZGwNCj4+Pj4gaW4gdGhhdCBv
+cmRlci4gT24gRmFiaW8ncyBhZHZpY2UsIEkgcmVtb3ZlZCB0aGUgbGluZSB3aXRoICJmc2wsaW14
+NnMiDQo+Pj4+IGluIHZlcnNpb24gMi4NCj4+Pj4gSXMgdGhpcyB3aGF0IHlvdSBtZWFudCBieSB5
+b3VyIGNvbW1lbnQ/DQo+Pj4NCj4+PiBJIGRpZG4ndCBub3RpY2UgdGhhdCBhdCBmaXJzdCBteXNl
+bGYsIGJ1dCBJIHRoaW5rIHdoYXQgUm9iIG1lYW5zIGlzDQo+Pj4NCj4+PiAtIGNvbnN0OiBkaCxp
+bXg2cy1kaGNvbS1kcmMwMg0KPj4+IC0gY29uc3Q6IGRoLGlteDZzLWRoY29tLXNvbQ0KPj4+IC0g
+Y29uc3Q6IGZzbCxpbXg2ZGwgPC0tLS0tLSB0aGlzIHNob3VsZCBiZSBjb25zaXN0ZW50IHdpdGgg
+dGhlIHR3byBhYm92ZQ0KPj4+DQo+Pj4gdGhhdCBpcw0KPj4+DQo+Pj4gICAtIGNvbnN0OiBkaCxp
+bXg2cy1kaGNvbS1kcmMwMg0KPj4+ICAgLSBjb25zdDogZGgsaW14NnMtZGhjb20tc29tDQo+Pj4g
+LS0gY29uc3Q6IGZzbCxpbXg2ZGwNCj4+PiArLSBjb25zdDogZnNsLGlteDZzDQo+Pj4gICAgICAg
+ICAgICAgICAgXl5eXl4NCj4+Pg0KPj4+IEJ1dCB0aGF0IGlzIGEgYml0IG9kZCBoZXJlOg0KPj4+
+IC0gVGhlIE1YNlMgaXMgTVg2REwgd2l0aCBvbmUgQ1BVIGNvcmUgZGlzYWJsZWQuDQo+Pj4gLSBU
+aGUgRFJDMDIgZGV2aWNlIGNhbiBvbmx5IGhvdXNlIGEgU09NIHdpdGggTVg2UyBhbmQgTk9UIHdp
+dGggTVg2REwNCj4+PiAoZHVlIHRvIHNvbWUgdGhlcm1hbCBkZXNpZ24gY29uc2lkZXJhdGlvbiBv
+ciBzb21ldGhpbmcpLg0KPj4+IC0gVGhlIGtlcm5lbCBkaXNjZXJucyB0aGUgTVg2Uy9NWDZETCBh
+dXRvbWF0aWNhbGx5IGJhc2VkIG9uIHRoZSBudW1iZXINCj4+PiBvZiBjb3JlcyBpdCByZWFkcyBm
+cm9tIHNvbWUgcmVnaXN0ZXIsIHRoZXJlZm9yZSBpdCBvbmx5IGhhcyB0aGUNCj4+PiBmc2wsbXg2
+ZGwgY29tcGF0aWJsZSB0byBjb3ZlciBib3RoIE1YNlMgYW5kIE1YNkRMLg0KPj4+IFNvLCB0aGUg
+Y2xvc2VzdCBmYWxsYmFjayBjb21wYXRpYmxlIGZvciB0aGlzIGRldmljZSByZWFsbHkgaXMgdGhl
+IE1YNkRMLA0KPj4+IGkuZS4gZnNsLGlteDZkbC4NCj4+Pg0KPj4+IFNvIEkgdGhpbmsgdGhpcyBw
+YXRjaCBpcyBjb3JyZWN0IGFzLWlzLCBubyA/DQo+Pg0KPj4gSXMgdGhpcyBQYXRjaCBPSz8NCj4g
+DQo+IENhbiB3ZSBleHBsYWluIHRoYXQgZnNsLGlteDZzIHRoaW5nIGEgYml0IHdpdGggc29tZSBj
+b21tZW50cyBvciBjb21taXQNCj4gbG9nPw0KPiANCj4gU2hhd24NCg0KSSB3aWxsIHNlbmQgYSB2
+ZXJzaW9uIDMuDQoNClJlZ2FyZHMNCkNocmlzdG9waA0K
