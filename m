@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1AC3C91DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938513C91E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239864AbhGNUMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:12:08 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:55832 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238029AbhGNUMD (ORCPT
+        id S235717AbhGNURk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:17:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62806 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230342AbhGNURi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:12:03 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:37656)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m3lBu-00G2fD-3g; Wed, 14 Jul 2021 14:09:10 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:50644 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m3lBs-008XEt-12; Wed, 14 Jul 2021 14:09:09 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-References: <20210704202756.29107-1-ojeda@kernel.org>
-        <20210704202756.29107-3-ojeda@kernel.org>
-        <CAKwvOdmhRuF5eTZ2ztZBrL6BvDkA57B7OfVuvCaEMfV8nkLXCQ@mail.gmail.com>
-        <CAHk-=whzXv=Fu7dQshSTyd9H1-JS5=gyKwW-GMNGccAKs4Mwpg@mail.gmail.com>
-Date:   Wed, 14 Jul 2021 15:09:01 -0500
-In-Reply-To: <CAHk-=whzXv=Fu7dQshSTyd9H1-JS5=gyKwW-GMNGccAKs4Mwpg@mail.gmail.com>
-        (Linus Torvalds's message of "Wed, 14 Jul 2021 12:04:08 -0700")
-Message-ID: <87mtqo1wv6.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 14 Jul 2021 16:17:38 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16EK3g8i084171;
+        Wed, 14 Jul 2021 16:13:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=O91ChT6aq6gFj1s1eeKJPhJgYPpsA9fr7zrKDQPlVMI=;
+ b=F78hDwxT8p5Hi5ea4iRmX5YeibVAKo+ISPXe/ejlEYJV1dC3zfaPdt/8SfrQMnToMzqc
+ PTp7Sxg7CGgJ6765F47q1xHtVlrHlq/ZyO6D5+DhL+FXOCde+9CJnqUYe/odcWPC1lUR
+ K+cZ58Nhyy6TsLLhwXT6rLIfcS5swNDkv2qnUtRdzr1VY9DsFk51ZAW/psKjI0wy/mBi
+ DGzhSg+MEbCzQUNlNKfFY01l/RCorJ2BBWBz8yN1IA+VM2nZrnYHxCXyZEqseij9o3qe
+ /ZmBVBPct3F4dItCcdBCX4QhVoLrXNIRADXchr2nSZer+zyoUCgWhmBMCyJ7ImRY2JLc ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39sc8kfb2g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 16:13:24 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16EK3sS4084604;
+        Wed, 14 Jul 2021 16:13:24 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39sc8kfb13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 16:13:23 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16EKB4nX032501;
+        Wed, 14 Jul 2021 20:13:21 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 39q3689x6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 20:13:20 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16EKDHkb36307240
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 20:13:17 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCFC7AE051;
+        Wed, 14 Jul 2021 20:13:17 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC7C0AE04D;
+        Wed, 14 Jul 2021 20:13:15 +0000 (GMT)
+Received: from osiris (unknown [9.145.80.156])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 14 Jul 2021 20:13:15 +0000 (GMT)
+Date:   Wed, 14 Jul 2021 22:13:14 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-acpi@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jia He <justin.he@arm.com>, Joe Perches <joe@perches.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH v1 1/4] mm/memory_hotplug: use "unsigned long" for PFN in
+ zone_for_pfn_range()
+Message-ID: <YO9FWrT9h21e/G8X@osiris>
+References: <20210712124052.26491-1-david@redhat.com>
+ <20210712124052.26491-2-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m3lBs-008XEt-12;;;mid=<87mtqo1wv6.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+RhqiLRuXkUrC80vE88JVm8tG24B3OT+w=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3777]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1522 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 18 (1.2%), b_tie_ro: 16 (1.0%), parse: 1.98
-        (0.1%), extract_message_metadata: 16 (1.0%), get_uri_detail_list: 1.35
-        (0.1%), tests_pri_-1000: 7 (0.4%), tests_pri_-950: 1.51 (0.1%),
-        tests_pri_-900: 1.18 (0.1%), tests_pri_-90: 217 (14.2%), check_bayes:
-        205 (13.5%), b_tokenize: 7 (0.5%), b_tok_get_all: 6 (0.4%),
-        b_comp_prob: 2.2 (0.1%), b_tok_touch_all: 187 (12.3%), b_finish: 0.97
-        (0.1%), tests_pri_0: 1238 (81.4%), check_dkim_signature: 0.63 (0.0%),
-        check_dkim_adsp: 3.1 (0.2%), poll_dns_idle: 1.10 (0.1%), tests_pri_10:
-        3.2 (0.2%), tests_pri_500: 14 (0.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 02/17] kallsyms: increase maximum kernel symbol length to 512
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712124052.26491-2-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _R4J7Ka4suONfylmv2kX6PD4cpzO6szw
+X-Proofpoint-ORIG-GUID: NPoolV9OQ2VwpTmyT54T1Ri1bj2r49ZC
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-14_10:2021-07-14,2021-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=805 spamscore=0 suspectscore=0 impostorscore=0 clxscore=1011
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107140119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Mon, Jul 12, 2021 at 02:40:49PM +0200, David Hildenbrand wrote:
+> Checkpatch complained on a follow-up patch that we are using "unsigned"
+> here, which defaults to "unsigned int" and checkpatch is correct.
+> 
+> Use "unsigned long" instead, just as we do in other places when handling
+> PFNs. This can bite us once we have physical addresses in the range of
+> multiple TB.
+> 
+> Fixes: e5e689302633 ("mm, memory_hotplug: display allowed zones in the preferred ordering")
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  include/linux/memory_hotplug.h | 4 ++--
+>  mm/memory_hotplug.c            | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 
-> On Wed, Jul 14, 2021 at 11:20 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
->>
->> Do we demangle rust symbols when printing a trace from a warn/panic?
->> That would be nice.
->
-> I think it would be pretty much required. Otherwise stack traces are
-> going to be very very painful.
->
-> In fact, I'm starting to think that Willy is right: we should use
-> hashes for the "real" symbol name, and have demangled names for
-> printing, and at no point would the kernel actually want or need to
-> have the nasty mangled names.
->
-> (This wouldn't be rust-specific - using hashes for module linking
-> sounds like a good diea for C code as well, even if the de-mangled
-> names for printing are then the regular ones)
->
-> Anybody interested in looking into that? It would make this "big
-> kernel symbols" patch immaterial.
-
-Are you thinking the hashed kernel symbols need to have their types
-included in the hash?  Or is this just a hash to make the names a
-managable size?
-
-Eric
+I'd propose to add Cc: <stable@vger.kernel.org> since I actually had
+the fun to try to debug something like this a couple of years ago:
+6cdb18ad98a4 ("mm/vmstat: fix overflow in mod_zone_page_state()")
