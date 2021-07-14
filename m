@@ -2,179 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B03C89AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC213C89AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbhGNR0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:26:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229559AbhGNRZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:25:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69877613B5;
-        Wed, 14 Jul 2021 17:23:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626283386;
-        bh=a4RmxSst2iAvfD+fRuC5inYX86CvpXntYp8kuy6Kfjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pwR9/wgVtF8w0FtR7bO14PUbHS8f4TRJdz9MTRQrIYXUYECi/uRgw5+bAQHupOBJg
-         Yj1TEPhlDi2W+UpyI5/ECIym2X08k7QYg3tH3dUmL6vgeSy8u+5V21k2LQOO0PFoul
-         tvMbvwT5rLweAsjwuA6+IOSUW0HYr55b+/0GiOu8=
-Date:   Wed, 14 Jul 2021 19:23:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     longli@linuxonhyperv.com
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        Long Li <longli@microsoft.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
-Subject: Re: [Patch v3 2/3] Drivers: hv: add Azure Blob driver
-Message-ID: <YO8deHGP7GBYQp5x@kroah.com>
-References: <1626230722-1971-1-git-send-email-longli@linuxonhyperv.com>
- <1626230722-1971-3-git-send-email-longli@linuxonhyperv.com>
+        id S238430AbhGNR0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhGNR0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:26:37 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF3BC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:23:45 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id e11so81132oii.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xQZN3icDsBkvO9cDDwLhgogPceNHTrTo1SCrhA6YUsI=;
+        b=zay8GJlYMMCpW9N+3AwgKok2LmG/Fcup6oo9MKk+B6g3v8LF0bJocGP01P9Y0yNQ8S
+         qxQQYHaX+dIZjK6/fvxuozcpC8G1nWY+Pruy/FoN/ofrFlFo3t6HnkMJwPcOF6a0lG1n
+         fhCAUX9m7FIkv4ZmCkZwS1MsQOEPyMTWOSutcSHq9er35C3PzgNGBvcD3H9fcl3JjmlE
+         WNOJAVT55UZV1pBIsaW6ig5FVKGhe2N1sogoQWmLLsvV77JwH7kd1mFUvqA/hP3q7z23
+         dsMvqaqYJDvK4x1qZPoKvO6G+cfYRW7Tp0lt1EayHinr+zk8QaZY7DCCMV6sv8dy3AOZ
+         SXZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xQZN3icDsBkvO9cDDwLhgogPceNHTrTo1SCrhA6YUsI=;
+        b=F+4PIAAbX5E7s8SG8XoTctqDkmk4V1e1+J8h4xZ34+fdy6SjDKzhTMR9xjC/y9Z/Aj
+         7ePOMZz7Ac9gOTcy1xSPRPtcj3gysHbn0zdWn1j+fqTOqDdeejSiyLUxxfHHe/9JSuLN
+         SbBeDnSlhqh3fjb8oceix53ln70gGoFmzhLCMtwsvObm7XFkjTBL2831hAR4vU3O8TWo
+         xltT2LTDlFqF8GEup5HduAxOVk+IOrIsqVG1F/Mabst7JnnFUrf53pHqSIKkG+bfQrkE
+         YnUn9pT/nGLHM48LVnUOQ/cSp+RxQKhTpsJPyNbQG7UyMP/kEN5b5qYJSaG3kCoLVfe/
+         mXLg==
+X-Gm-Message-State: AOAM530NCVu0M/qCuOf8zgtaNjYzK2WOf3uIOnaU/dLGsoeEHbapIrqG
+        CHaHr6yXigU9jBtSKVcAPLQd1A==
+X-Google-Smtp-Source: ABdhPJwM0np9CfM0k4rj4WeO6SuzIyzCjbFRY9p44kNiFnz2AL6mmIc1PvRhoUdlc97FFDvMcoHxSA==
+X-Received: by 2002:aca:ef84:: with SMTP id n126mr8158730oih.59.1626283425029;
+        Wed, 14 Jul 2021 10:23:45 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y6sm620261oiy.18.2021.07.14.10.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 10:23:44 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 12:23:41 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+Message-ID: <YO8dnRE9pq5T64PD@yoga>
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
+ <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+ <20210706115517.GB4529@sirena.org.uk>
+ <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626230722-1971-3-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 07:45:21PM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+On Thu 08 Jul 05:09 CDT 2021, Ulf Hansson wrote:
+
+> - Peter (the email was bouncing)
 > 
-> Azure Blob storage provides scalable and durable data storage for Azure.
-> (https://azure.microsoft.com/en-us/services/storage/blobs/)
+> On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+> > > On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+> >
+> > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > > > being controlled through the UART and WiFi being present on PCIe
+> > > > bus. Both blocks share common power sources. Add device driver handling
+> > > > power sequencing of QCA6390/1.
+> >
+> > > Power sequencing of discoverable buses have been discussed several
+> > > times before at LKML. The last attempt [1] I am aware of, was in 2017
+> > > from Peter Chen. I don't think there is a common solution, yet.
+> >
+> > This feels a bit different to the power sequencing problem - it's not
+> > exposing the individual inputs to the device but rather is a block that
+> > manages everything but needs a bit of a kick to get things going (I'd
+> > guess that with ACPI it'd be triggered via AML).  It's in the same space
+> > but it's not quite the same issue I think, something that can handle
+> > control of the individual resources might still struggle with this.
 > 
-> This driver adds support for accelerated access to Azure Blob storage. As an
-> alternative to REST APIs, it provides a fast data path that uses host native
-> network stack and secure direct data link for storage server access.
-
-So it goes around the block layer?  Why?
-
-> This driver will be ported to FreeBSD. It's dual licensed for BSD and GPL.
-
-Being the copyright holder, you are free to relicense this code to any
-other license you want to.  So why is this single HV driver different
-from all the other ones in this regard when it comes to the license?
-
-Given that this driver only works when talking to GPL-only symbols in
-the kernel, how could it be ported to freebsd as-is by anyone who is not
-the copyright holder?
-
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: Stephen Hemminger <sthemmin@microsoft.com>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Maximilian Luz <luzmaximilian@gmail.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Ben Widawsky <ben.widawsky@intel.com>
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Cc: Andra Paraschiv <andraprs@amazon.com>
-> Cc: Siddharth Gupta <sidgup@codeaurora.org>
-> Cc: Hannes Reinecke <hare@suse.de>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: Long Li <longli@microsoft.com>
-> ---
->  Documentation/userspace-api/ioctl/ioctl-number.rst |   2 +
->  drivers/hv/Kconfig                                 |  10 +
->  drivers/hv/Makefile                                |   1 +
->  drivers/hv/azure_blob.c                            | 625 +++++++++++++++++++++
->  drivers/hv/channel_mgmt.c                          |   7 +
->  include/linux/hyperv.h                             |   9 +
->  include/uapi/misc/azure_blob.h                     |  34 ++
->  7 files changed, 688 insertions(+)
->  create mode 100644 drivers/hv/azure_blob.c
->  create mode 100644 include/uapi/misc/azure_blob.h
+> Well, to me it looks very similar to those resouses we could manage
+> with the mmc pwrseq, for SDIO. It's also typically the same kind of
+> combo-chips that moved from supporting SDIO to PCIe, for improved
+> performance I guess. More importantly, the same constraint to
+> pre-power on the device is needed to allow it to be discovered/probed.
 > 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 9bfc2b5..d3c2a90 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -180,6 +180,8 @@ Code  Seq#    Include File                                           Comments
->  'R'   01     linux/rfkill.h                                          conflict!
->  'R'   C0-DF  net/bluetooth/rfcomm.h
->  'R'   E0     uapi/linux/fsl_mc.h
-> +'R'   F0-FF  uapi/misc/azure_blob.h                                  Microsoft Azure Blob driver
-> +                                                                     <mailto:longli@microsoft.com>
->  'S'   all    linux/cdrom.h                                           conflict!
->  'S'   80-81  scsi/scsi_ioctl.h                                       conflict!
->  'S'   82-FF  scsi/scsi.h                                             conflict!
-> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-> index 66c794d..e08b8d3 100644
-> --- a/drivers/hv/Kconfig
-> +++ b/drivers/hv/Kconfig
-> @@ -27,4 +27,14 @@ config HYPERV_BALLOON
->  	help
->  	  Select this option to enable Hyper-V Balloon driver.
->  
-> +config HYPERV_AZURE_BLOB
-> +	tristate "Microsoft Azure Blob driver"
-> +	depends on HYPERV && X86_64
-> +	help
-> +	  Select this option to enable Microsoft Azure Blob driver.
-> +
-> +	  This driver supports accelerated Microsoft Azure Blob access.
+> Therefore, I think it would be worth having a common solution for
+> this, rather than a solution per subsystem or even worse, per device.
+> 
 
-No definition of what this is?
+Representing the chip and its power needs, separate from the busses does
+seem reasonable. It's pretty much what Dmitry suggested originally, but
+his attempts to use either power-domain or regulator references to
+ensure ordering has been objected.
 
-> +	  To compile this driver as a module, choose M here. The module will be
-> +	  called azure_blob.
-> +
->  endmenu
-> diff --git a/drivers/hv/Makefile b/drivers/hv/Makefile
-> index 94daf82..a322575 100644
-> --- a/drivers/hv/Makefile
-> +++ b/drivers/hv/Makefile
-> @@ -2,6 +2,7 @@
->  obj-$(CONFIG_HYPERV)		+= hv_vmbus.o
->  obj-$(CONFIG_HYPERV_UTILS)	+= hv_utils.o
->  obj-$(CONFIG_HYPERV_BALLOON)	+= hv_balloon.o
-> +obj-$(CONFIG_HYPERV_AZURE_BLOB)	+= azure_blob.o
 
-Your naming scheme is different from the other hv modules, why?
+Beyond this, there is a similar case (that you and I have talked about
+earlier) in supporting the SDX55 PCIe modem found in some devices.
+Where in addition to ensuring that the power rails are configured, a
+couple of gpios needs to be controlled and there's an incoming gpio line
+indicating that the firmware of the device has locked up and the power
+needs to be toggled and the device re-enumerated.
 
->  
->  CFLAGS_hv_trace.o = -I$(src)
->  CFLAGS_hv_balloon.o = -I$(src)
-> diff --git a/drivers/hv/azure_blob.c b/drivers/hv/azure_blob.c
-> new file mode 100644
-> index 0000000..5367d5e
-> --- /dev/null
-> +++ b/drivers/hv/azure_blob.c
-> @@ -0,0 +1,625 @@
-> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-only WITH Linux-syscall-note
+> Unfortunately, it looks like Peter's email is bouncing so we can't get
+> an update from him.
+> 
 
-.c files can NOT have the syscall note license, as that makes no sense
-at all.
+And for this second part, where we need some additional logic it seems
+to go beyond what the power sequence discussions has touched upon so
+far.
 
-I'm stopping here.  Please go run this through your legal department and
-get them to sign off on this as it does not seem that you all understand
-the issues when it comes to licenses and the Linux kernel at all.  I
-want to see a lawyer sign off on this patch next time if you all want to
-attempt something crazy like this.
-
-> +/* Copyright (c) Microsoft Corporation. */
-
-You forgot a date, your lawyers will be signing you up for some
-education classes now, have fun!
-
-gre gk-h
+Regards,
+Bjorn
