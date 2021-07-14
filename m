@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DF23C8FF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8B3C9010
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240621AbhGNTxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45690 "EHLO mail.kernel.org"
+        id S240691AbhGNTxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:53:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239589AbhGNTtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7FED6141D;
-        Wed, 14 Jul 2021 19:44:22 +0000 (UTC)
+        id S239654AbhGNTtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6C50613B5;
+        Wed, 14 Jul 2021 19:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291863;
-        bh=jZnR+OKmW5BxyLXY45C4iTzEQyWzRuvZLowEeHhGgnA=;
+        s=k20201202; t=1626291866;
+        bh=vswd9vLlAh48k+hOubWqFw2XWvN+q9gpk74CyZFCUtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TAXRngNlXfDT36MVjEKx25FUD2oLdgIIPrRzSZ3Onfxfo6V2squ/RT9Gfzfv+aKcf
-         wB/bM3wz7WTv5eFoi3hsSGMImg1YG20+akrxNFIvbA2t5fRE5L6nF6jhcrhTwbyRgz
-         zn1Ub1ks1ih5uapFYyHPK9+3TOav0f9g40X7nAIqBA+TRMuTbdOM/8ZJ5Cin0rPook
-         dY0T25OHzT94+wlCw2ERIZm9UsoZ57u26caOfAfM4zduv9/Ost+AJ1JKwKINWM1Lj4
-         Vusb6DT60bsnVpz1n5C7mDieXlEcIf0KUADczMWtT1Q5HI4MrdcCf+J6VqhCpFjOJn
-         hzo01UViFp4lQ==
+        b=hjzJ0sHjibaCrLL+Jgk7F5x1sKkk5VosaONNtcNsDTzQIhpwIyX+qicVF2vg1ekZV
+         y8/2ucG3CcpYo/noqyyLTSkryShDu7qex0pSCm4A1AuDzEosTRxUEu5kZwz9Jy336S
+         wZRW7AllTX/qsIDuNE48wSDX3umAs6QfIzV6snDaVC+3T6UH76tNhI8l8jeHO1yyi5
+         rCTD1qYatyIyaCXGMag/QywPzsAt4YAwLE2hLXTMOcsQVx5Cjprx4c8UAjAZ6tutX6
+         HQ0oiRNLQr26c7HCMHFpclC1ej7lPb5PrhM+tzWixYduJMybZpvVktPk5M6gj22MWn
+         w6cOp/ZGRWk9g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
         kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 53/88] memory: tegra: Fix compilation warnings on 64bit platforms
-Date:   Wed, 14 Jul 2021 15:42:28 -0400
-Message-Id: <20210714194303.54028-53-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 55/88] firmware: arm_scmi: Fix the build when CONFIG_MAILBOX is not selected
+Date:   Wed, 14 Jul 2021 15:42:30 -0400
+Message-Id: <20210714194303.54028-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -45,55 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit e0740fb869730110b36a4afcf05ad1b9d6f5fb6d ]
+[ Upstream commit ab7766b72855e6a68109b915d071181b93086e29 ]
 
-Fix compilation warning on 64bit platforms caused by implicit promotion
-of 32bit signed integer to a 64bit unsigned value which happens after
-enabling compile-testing of the EMC drivers.
+0day CI kernel test robot reported following build error with randconfig
 
+aarch64-linux-ld: drivers/firmware/arm_scmi/driver.o:(.rodata+0x1e0):
+		undefined reference to `scmi_mailbox_desc'
+
+Fix the error by adding CONFIG_MAILBOX dependency for scmi_mailbox_desc.
+
+Link: https://lore.kernel.org/r/20210603072631.1660963-1-sudeep.holla@arm.com
+Cc: Etienne Carriere <etienne.carriere@linaro.org>
+Cc: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Etienne Carriere <etienne.carriere@linaro.org>
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Tested-by: Cristian Marussi <cristian.marussi@arm.com>
 Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/tegra/tegra124-emc.c | 4 ++--
- drivers/memory/tegra/tegra30-emc.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/firmware/arm_scmi/driver.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
-index 76ace42a688a..dae816e840a9 100644
---- a/drivers/memory/tegra/tegra124-emc.c
-+++ b/drivers/memory/tegra/tegra124-emc.c
-@@ -265,8 +265,8 @@
- #define EMC_PUTERM_ADJ				0x574
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 6b2ce3f28f7b..7efbf66f117b 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -918,7 +918,9 @@ ATTRIBUTE_GROUPS(versions);
  
- #define DRAM_DEV_SEL_ALL			0
--#define DRAM_DEV_SEL_0				(2 << 30)
--#define DRAM_DEV_SEL_1				(1 << 30)
-+#define DRAM_DEV_SEL_0				BIT(31)
-+#define DRAM_DEV_SEL_1				BIT(30)
- 
- #define EMC_CFG_POWER_FEATURES_MASK		\
- 	(EMC_CFG_DYN_SREF | EMC_CFG_DRAM_ACPD | EMC_CFG_DRAM_CLKSTOP_SR | \
-diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
-index 055af0e08a2e..1bd6d3d827aa 100644
---- a/drivers/memory/tegra/tegra30-emc.c
-+++ b/drivers/memory/tegra/tegra30-emc.c
-@@ -145,8 +145,8 @@
- #define EMC_SELF_REF_CMD_ENABLED		BIT(0)
- 
- #define DRAM_DEV_SEL_ALL			(0 << 30)
--#define DRAM_DEV_SEL_0				(2 << 30)
--#define DRAM_DEV_SEL_1				(1 << 30)
-+#define DRAM_DEV_SEL_0				BIT(31)
-+#define DRAM_DEV_SEL_1				BIT(30)
- #define DRAM_BROADCAST(num) \
- 	((num) > 1 ? DRAM_DEV_SEL_ALL : DRAM_DEV_SEL_0)
- 
+ /* Each compatible listed below must have descriptor associated with it */
+ static const struct of_device_id scmi_of_match[] = {
++#ifdef CONFIG_MAILBOX
+ 	{ .compatible = "arm,scmi", .data = &scmi_mailbox_desc },
++#endif
+ #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+ 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
+ #endif
 -- 
 2.30.2
 
