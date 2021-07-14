@@ -2,264 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968B73C8563
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021703C8565
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhGNNib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S239284AbhGNNjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231544AbhGNNi3 (ORCPT
+        with ESMTP id S232963AbhGNNjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:38:29 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52F6C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:35:37 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id z25so1812642qto.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:35:37 -0700 (PDT)
+        Wed, 14 Jul 2021 09:39:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04CEC06175F;
+        Wed, 14 Jul 2021 06:36:12 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id my10so1522261pjb.1;
+        Wed, 14 Jul 2021 06:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gezvR5OfWZEWK2TINd2PVmo/b1ZbFygnVhycPzHy+1c=;
-        b=iIy+9GSk+zYyAeMPjHL4uxaQ+VRSxHyvLemv6SdeDForAaOLO96KR6F4Oirhi6E4mT
-         dRQSiEO63qs8RIylfOlbHut9wIAE3UKvoUwo1dHevzTGpDEVY/ZjLw4piW1Bxy0tIC1p
-         FZD21VNTrLIh/awNsx50LT0NfrI5d85JM6UaNeCwk4t9KcRv2XADcMeepIWVgx2Xsqx9
-         q3AgIVFayuSe7UduLS/mKtyGoeabwpwL8292TftpMQZzaYhYSI0P3uBXw9/OMIDLn9+F
-         mpjW5cGWLQBjpT33lLmlgQwgcwipQg86TKe44W3/kRJBp4S818Njgg4CFZo8kjEVY450
-         A7Og==
+         :cc:content-transfer-encoding;
+        bh=r8rf2O/45yj1RALgOIqdf32BOBJWpRrDU+lYRG2lttI=;
+        b=bQtMtAvI0Z/YmPs8EPQvMyVhFWYyZxlB6CHVdgcJTtc/pJDlDiLz1YUW9CB89dwEYQ
+         /F5m3r0Ar6JLPAsVICIGlR9/71zhZiTZwJAOwFFQ/bFcBR7fr9oZgT/LHpLRCqXge3bO
+         667+dbc4R0Jo6P9olYMnhsQjZrWjd5GFaeIKmcf73we32G3AeT54WQX/SvFXsfkcZMWB
+         XdXLGmc9p5ECEQrxNyUJ4M+S6VJekUJH8d8x38K8dwkSpA5DuKqzidrXBQSI8zeICmiT
+         q5G85Kn00NfZ5tj9bOo8nsIJHtRvGyYwyliBu36HhIZNZQF38EuFTp5I9LRt1eluQ7wY
+         OnrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gezvR5OfWZEWK2TINd2PVmo/b1ZbFygnVhycPzHy+1c=;
-        b=U93oxt9PDXJxzSxxCkAGjGcBXJ55W55/jAtAMg2M3+DR3JlogKxNWhxR9pBaslowS+
-         LBDvkDWSa5H23wcyaAqSmil1JhhK4zRH2kUUTmzbVkGy6VZFSnj0YMRb+HU9EI1eXHQl
-         bENWa6bkg57dPOoiSw/Cx8A8DF9rw2MlhFrGKJaSkkdoeRZoSolUIjRM31+1IxrP/F2Q
-         bC21B312h4TrmAMbKnbhD0RyMQIlEQon+ndNCb1kepU7jsi+f/h+OcK01mst04EYT0YS
-         WHYC9oPZKUYhJyTV0e7Fb5UBgG0v6s1oIocZmZdo318KaROhQ44m8QxHnWaQXzC6b3dq
-         J6Yw==
-X-Gm-Message-State: AOAM532i5ju+SqsZP/Aq7EvbkZI7O0CKn4X5SR3+RHRPtF7/qI2Z+VLv
-        xb72fU6CyczpQHhEAiR0RGzt2r8pBdhck8oTpEKqEw==
-X-Google-Smtp-Source: ABdhPJypSv0TU7nBnxqsDHmSUMM1jMnGMe3CBMSxE5apXqTiTt8f2xDtYPwfN2OTi2rinidVsdixs65t6ruo5TJDyGw=
-X-Received: by 2002:a05:622a:409:: with SMTP id n9mr9370891qtx.261.1626269736594;
- Wed, 14 Jul 2021 06:35:36 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=r8rf2O/45yj1RALgOIqdf32BOBJWpRrDU+lYRG2lttI=;
+        b=RzbZgqTjg6X8kgtd/uNwgwkXw9/LpSxLMpUgOC0cJCrXVdZcCjKOM2D8Iv9x2qWpw/
+         6Z215YYWbLjw+MwLuhmWrcKJIuipKvzCMpdByDusRn3hE0Rdiq8WkoByHnQ4g6nv1uzm
+         uU9zUEQ431CLHD5BIuhR+VNPR3msTvTUbk5tW6W+R63IOxCY5TIApINNm+al5mJZFFle
+         7tOZxAds2QhFdsPOV379tcHepksMLO76GxPFeLrX0aiqb54SyXSFBWbesZhdcAiRi1FH
+         I+TC/+PLbhXMuARs+M6edfPK2yb4wJhHSAZwCGRKPAg7l1qioGFJnmzaKPARUblmPXmP
+         LkWQ==
+X-Gm-Message-State: AOAM530LG/GBATqP6jlnKHEIeN0eq4/RzenE/dWAl4lJPPD+KRgnN3lB
+        mVspP8v42CBlsl64t7F+3z5B0xzgeKuPjNujcEU=
+X-Google-Smtp-Source: ABdhPJxezE5KBs6D/+ePsTzKwWRKo7P7kKcKrhHjRzBXt7gm1cnoVqpPOa2AaqPPZNjU8ZIIfjPDgGK30kE6FDhf1to=
+X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr3874618pjq.129.1626269772407;
+ Wed, 14 Jul 2021 06:36:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707183616.5620-1-brijesh.singh@amd.com> <20210707183616.5620-21-brijesh.singh@amd.com>
-In-Reply-To: <20210707183616.5620-21-brijesh.singh@amd.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Wed, 14 Jul 2021 06:35:25 -0700
-Message-ID: <CAA03e5FMD8xvvBdf9gqdoR05xF9+scLZBNLpx9iP6WVWK84xdw@mail.gmail.com>
-Subject: Re: [PATCH Part2 RFC v4 20/40] KVM: SVM: Make AVIC backing, VMSA and
- VMCB memory allocation SNP safe
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+ <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org> <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
+In-Reply-To: <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 14 Jul 2021 16:35:33 +0300
+Message-ID: <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
+To:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 11:38 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> When SEV-SNP is globally enabled on a system, the VMRUN instruction
-> performs additional security checks on AVIC backing, VMSA, and VMCB page.
-> On a successful VMRUN, these pages are marked "in-use" by the
-> hardware in the RMP entry, and any attempt to modify the RMP entry for
-> these pages will result in page-fault (RMP violation check).
->
-> While performing the RMP check, hardware will try to create a 2MB TLB
-> entry for the large page accesses. When it does this, it first reads
-> the RMP for the base of 2MB region and verifies that all this memory is
-> safe. If AVIC backing, VMSA, and VMCB memory happen to be the base of
-> 2MB region, then RMP check will fail because of the "in-use" marking for
-> the base entry of this 2MB region.
->
-> e.g.
->
-> 1. A VMCB was allocated on 2MB-aligned address.
-> 2. The VMRUN instruction marks this RMP entry as "in-use".
-> 3. Another process allocated some other page of memory that happened to be
->    within the same 2MB region.
-> 4. That process tried to write its page using physmap.
->
-> If the physmap entry in step #4 uses a large (1G/2M) page, then the
-> hardware will attempt to create a 2M TLB entry. The hardware will find
-> that the "in-use" bit is set in the RMP entry (because it was a
-> VMCB page) and will cause an RMP violation check.
->
-> See APM2 section 15.36.12 for more information on VMRUN checks when
-> SEV-SNP is globally active.
->
-> A generic allocator can return a page which are 2M aligned and will not
-> be safe to be used when SEV-SNP is globally enabled. Add a
-> snp_safe_alloc_page() helper that can be used for allocating the
-> SNP safe memory. The helper allocated 2 pages and splits them into order-1
-> allocation. It frees one page and keeps one of the page which is not
-> 2M aligned.
->
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
+<ralf.ramsauer@oth-regensburg.de> wrote:
+> On 14/07/2021 08:54, Jiri Slaby wrote:
+> > On 13. 07. 21, 12:40, Andy Shevchenko wrote:
 
-Co-developed-by: Marc Orr <marcorr@google.com>
+> > Hmm, have you checked the commit which introduced the whitelist?
+> >
+> >     Nevertheless, this needs to handled with care: while many 8250 devi=
+ces
+> >     actually claim to support MSI(-X) interrupts it should not be
+> > enabled be
+> >     default. I had at least one device in my hands with broken MSI
+> >     implementation.
+> >
+> >     So better introduce a whitelist with devices that are known to supp=
+ort
+> >     MSI(-X) interrupts. I tested all devices mentioned in the patch.
+> >
+> >
+> > You should have at least CCed the author for an input.
+>
+> Yep, back then I was testing three different 8250 pci cards. All of them
+> claimed to support MSI, while one really worked with MSI, the one that I
+> whitelisted. So I thought it would be better to use legacy IRQs as long
+> as no one tested a specific card to work with MSI.
 
-The original version of this patch had this tag. I think it got
-dropped on accident.
+Can you shed a light eventually what those cards are?
 
-> ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/lapic.c            |  5 ++++-
->  arch/x86/kvm/svm/sev.c          | 27 +++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c          | 16 ++++++++++++++--
->  arch/x86/kvm/svm/svm.h          |  1 +
->  5 files changed, 47 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 55efbacfc244..188110ab2c02 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1383,6 +1383,7 @@ struct kvm_x86_ops {
->         int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
->
->         void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
-> +       void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
->  };
->
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index c0ebef560bd1..d4c77f66d7d5 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2441,7 +2441,10 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
->
->         vcpu->arch.apic = apic;
->
-> -       apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
-> +       if (kvm_x86_ops.alloc_apic_backing_page)
-> +               apic->regs = kvm_x86_ops.alloc_apic_backing_page(vcpu);
-> +       else
-> +               apic->regs = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
->         if (!apic->regs) {
->                 printk(KERN_ERR "malloc apic regs error for vcpu %x\n",
->                        vcpu->vcpu_id);
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index b8505710c36b..411ed72f63af 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2692,3 +2692,30 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->                 break;
->         }
->  }
-> +
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
-> +{
-> +       unsigned long pfn;
-> +       struct page *p;
-> +
-> +       if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +               return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +
-> +       p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
-> +       if (!p)
-> +               return NULL;
-> +
-> +       /* split the page order */
-> +       split_page(p, 1);
-> +
-> +       /* Find a non-2M aligned page */
-> +       pfn = page_to_pfn(p);
-> +       if (IS_ALIGNED(__pfn_to_phys(pfn), PMD_SIZE)) {
-> +               pfn++;
-> +               __free_page(p);
-> +       } else {
-> +               __free_page(pfn_to_page(pfn + 1));
-> +       }
-> +
-> +       return pfn_to_page(pfn);
-> +}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 2acf187a3100..a7adf6ca1713 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1336,7 +1336,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
->         svm = to_svm(vcpu);
->
->         err = -ENOMEM;
-> -       vmcb01_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +       vmcb01_page = snp_safe_alloc_page(vcpu);
->         if (!vmcb01_page)
->                 goto out;
->
-> @@ -1345,7 +1345,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
->                  * SEV-ES guests require a separate VMSA page used to contain
->                  * the encrypted register state of the guest.
->                  */
-> -               vmsa_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +               vmsa_page = snp_safe_alloc_page(vcpu);
->                 if (!vmsa_page)
->                         goto error_free_vmcb_page;
->
-> @@ -4439,6 +4439,16 @@ static int svm_vm_init(struct kvm *kvm)
->         return 0;
->  }
->
-> +static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
-> +{
-> +       struct page *page = snp_safe_alloc_page(vcpu);
-> +
-> +       if (!page)
-> +               return NULL;
-> +
-> +       return page_address(page);
-> +}
-> +
->  static struct kvm_x86_ops svm_x86_ops __initdata = {
->         .hardware_unsetup = svm_hardware_teardown,
->         .hardware_enable = svm_hardware_enable,
-> @@ -4564,6 +4574,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->         .complete_emulated_msr = svm_complete_emulated_msr,
->
->         .vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
-> +
-> +       .alloc_apic_backing_page = svm_alloc_apic_backing_page,
->  };
->
->  static struct kvm_x86_init_ops svm_init_ops __initdata = {
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 5f874168551b..1175edb02d33 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -554,6 +554,7 @@ void sev_es_create_vcpu(struct vcpu_svm *svm);
->  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
->  void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
->  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
->
->  /* vmenter.S */
->
-> --
-> 2.17.1
->
->
+> Don't do that=E2=80=A6 And don't convert it to a blacklist. A blacklist w=
+ill
+> break users until they report that something doesn't work.
+
+White list is not okay either. MSI in general is a right thing to do.
+preventing users from MSI is asking for the performance degradation
+and IRQ resource conflicts (in case the IRQ line is shared).
+
+Besides that, shouldn't it be rather the specific field in private (to
+8250_pci) structure than constantly growing list?
+
+--=20
+With Best Regards,
+Andy Shevchenko
