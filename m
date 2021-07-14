@@ -2,90 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066B43C7D5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEB63C7D8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhGNE10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 00:27:26 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:25376 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhGNE1Z (ORCPT
+        id S237758AbhGNEcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 00:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhGNEci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 00:27:25 -0400
-Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 16E4O4FH010782;
-        Wed, 14 Jul 2021 13:24:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 16E4O4FH010782
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626236645;
-        bh=ohs8UNiQH5xgT/ayqacDhxQJOOlXZzRqYgRVd0ZV1T0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=z+cfyXhIcCSvPPL3Q3ZZSlmgsMYXspWCHUpyovi5cD1WU4L+KAz35ctT/nEF2+0iG
-         UdPlqi5m29Wjw7qZFDi2RbraWBtV5mHg80U/JzgyOYU+x2QzW3wXToU0ILtLxFazQc
-         u1vJqwHD7kEz7GeMX/lQ6WuPhZKy2mGs8otO4cPs4CEMQKsNWhNlrVgJphc9vlGRtA
-         chIQkBDKOk1YrxxDOw5O6X10gd1zN/n4MiUdZF3CtFu8MmLDgKIMkNN18MnSwhUSFQ
-         QAmcVWqyUkM1tW861D3z5IL1rni6aYPMNX1JWwizXOe2Li5WmwFKUZ+EMNEmIg58sL
-         bByPFYwm7pxWg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: do not suppress Kconfig prompts for silent build
-Date:   Wed, 14 Jul 2021 13:23:49 +0900
-Message-Id: <20210714042349.219199-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 14 Jul 2021 00:32:38 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387A4C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 21:29:46 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id s18so1106290pgg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 21:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s2ZQ8ujhWzVIK0zK2PTJkbjCuA2OkrMr2jEng12Bd3Q=;
+        b=lvhb92fxw2ccVjrFAvZiR7umKlbAQwxFJUwU52ZZQ/5LC4RcV13w9x3/IpLCKNTlCQ
+         pzw3BiUpagPMWG5nQgCGoxXdVJUDe27PrfNm1mIdZUOdXE+K6FQb10lTyvA0gBCMJIAY
+         Az2bguTq6qX9yJKjQwVl9jyqkkOkHrxAOHQNXQkVNu0Qd9Dm3whOMIGyg3gXr/YrKCwM
+         +Pd2gxZ3WFrbedeSDdw8nagWbhAltrs/yGtk1SOBUVOXX/HeNhhgCb2I2hRTMu/bkanF
+         EBqW3YcmBgFg5BTmV8It0VuqwJqGDDBJbHqdh7A1+MrZR950VYbm++mMpYLHPpMMhrgG
+         +dvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s2ZQ8ujhWzVIK0zK2PTJkbjCuA2OkrMr2jEng12Bd3Q=;
+        b=Z2zD82JvVf46sEqmB9/crqkFBOQCuGaCjH6YOpTJ4HOG7uWEMuNJ5cjgSXDSSAHFlm
+         c0b9WIkwqQ+UTgu9nzshTRbwiMczraOSOpR5hcoa6g4QLT7CZQOQiQR3/qpuuOoNfWj2
+         iMeEOf6xmgzpMda85BkGaAp24BOTm7vMsrZiE+rEWaXQoFPBvB2t6f9UvLj/YGuQGsiK
+         CziOPgxhVifFK/jXfDxIhhdpSnA2CnTe3ku6FYT84bx/mDdWxvTfL9GZUlBvhvdDaDCC
+         uGOgm7NgvOSnkpy+SbuD5KxKWKJdzsfGSi6L3QdDH3Z2/SisNjkyutP7/3K+nR8OFuT+
+         hQUw==
+X-Gm-Message-State: AOAM530PxWTKDWMqInYxrXqQCqjt3zw8XsIklIPAixqMKdNbBG0IyjDv
+        qC/9Gzv1r/u27NDD6zju5CszwctoD98K+A==
+X-Google-Smtp-Source: ABdhPJy9j81oXr3JAiPOsuL5/LfqPNL5xtpBbvzgslN882UssSrD7cItt+IdR9UQwvnLHmwvtu6vNg==
+X-Received: by 2002:a65:5684:: with SMTP id v4mr1045078pgs.388.1626236985212;
+        Tue, 13 Jul 2021 21:29:45 -0700 (PDT)
+Received: from anisinha-lenovo.ba.nuagenetworks.net ([115.96.109.231])
+        by smtp.googlemail.com with ESMTPSA id x10sm820253pfd.175.2021.07.13.21.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 21:29:44 -0700 (PDT)
+From:   Ani Sinha <ani@anisinha.ca>
+To:     linux-kernel@vger.kernel.org
+Cc:     anirban.sinha@nokia.com, mikelley@microsoft.com,
+        Ani Sinha <ani@anisinha.ca>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] checkpatch: add a rule to check general block comment style
+Date:   Wed, 14 Jul 2021 09:59:14 +0530
+Message-Id: <20210714042914.2159660-1-ani@anisinha.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a new CONFIG option is available, Kbuild shows a prompt to get
-the user input.
+The preferred style for long (multi-line) comments is:
 
-  $ make
-  [ snip ]
-  Core Scheduling for SMT (SCHED_CORE) [N/y/?] (NEW)
+.. code-block:: c
 
-This is the only interactive place during the build process.
+	/*
+	 * This is the preferred style for multi-line
+	 * comments in the Linux kernel source code.
+	 * Please use it consistently.
+	 *
+	 * Description:  A column of asterisks on the left side,
+	 * with beginning and ending almost-blank lines.
+	 */
+It seems rule in checkpatch.pl is missing to ensure this for
+non-networking related changes. This patch adds this rule.
 
-Commit 174a1dcc9642 ("kbuild: sink stdout from cmd for silent build")
-suppressed Kconfig prompts as well because syncconfig is invoked by
-the 'cmd' macro. You cannot notice the fact that Kconfig is waiting
-for the user input.
+Tested with
+$ cat drivers/net/t.c
+    /* foo */
 
-Use 'kecho' to show the equivalent short log without suppressing stdout
-from sub-make.
+    /*
+     * foo
+     */
 
-Fixes: 174a1dcc9642 ("kbuild: sink stdout from cmd for silent build")
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+    /* foo
+     */
+
+    /* foo
+     * bar */
+
+$ ./scripts/checkpatch.pl -f drivers/net/t.c
+WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
++    /* foo */
+
+WARNING: networking block comments don't use an empty /* line, use /* Comment...
++    /*
++     * foo
+
+WARNING: Block comments use a trailing */ on a separate line
++     * bar */
+
+total: 0 errors, 3 warnings, 0 checks, 11 lines checked
+
+For one of my own patches where block comment did not start with an empty
+line,
+$ ./scripts/checkpatch.pl 0001-my.patch
+WARNING: Block comments use a leading /* on a separate line
++	/* TSC should be marked as unstable only after Hyper-V
+
+total: 0 errors, 1 warnings, 20 lines checked
+
+The patch is question is posted here: https://lkml.org/lkml/2021/7/12/3527
+
+Signed-off-by: Ani Sinha <ani@anisinha.ca>
 ---
+ scripts/checkpatch.pl | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
- Makefile | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index c3f9bd191b89..6272126abe23 100644
---- a/Makefile
-+++ b/Makefile
-@@ -728,11 +728,9 @@ $(KCONFIG_CONFIG):
- # This exploits the 'multi-target pattern rule' trick.
- # The syncconfig should be executed only once to make all the targets.
- # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
--quiet_cmd_syncconfig = SYNC    $@
--      cmd_syncconfig = $(MAKE) -f $(srctree)/Makefile syncconfig
--
- %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
--	+$(call cmd,syncconfig)
-+	$(Q)$(kecho) "  SYNC    $@"
-+	$(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
- else # !may-sync-config
- # External modules and some install targets need include/generated/autoconf.h
- # and include/config/auto.conf but do not care if they are up-to-date.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23697a6b1eaa..5f047b762aa1 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3833,6 +3833,14 @@ sub process {
+ 			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+ 		}
+ 
++# Block comments use /* on a line of its own
++		if (!($realfile =~ m@^(drivers/net/|net/)@) &&
++		    $rawline !~ m@^\+.*/\*.*\*/[ \t)}]*$@ &&	#inline /*...*/
++		    $rawline =~ m@^\+.*/\*\*?+[ \t]*[^ \t]@) { # /* or /** non-blank
++		    WARN("BLOCK_COMMENT_STYLE",
++			 "Block comments use a leading /* on a separate line\n" . $herecurr);
++		}
++
+ # Block comments use * on subsequent lines
+ 		if ($prevline =~ /$;[ \t]*$/ &&			#ends in comment
+ 		    $prevrawline =~ /^\+.*?\/\*/ &&		#starting /*
 -- 
-2.27.0
+2.25.1
 
