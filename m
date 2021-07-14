@@ -2,67 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376D23C805B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7042A3C806C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238594AbhGNIjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:39:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6816 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238482AbhGNIjI (ORCPT
+        id S238603AbhGNInw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238432AbhGNInv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:39:08 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPrL53bH6zXsNC;
-        Wed, 14 Jul 2021 16:30:37 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 16:36:15 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 14 Jul
- 2021 16:36:14 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <kraxel@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-Subject: [PATCH -next] drm/bochs: Fix missing pci_disable_device() on error in bochs_pci_probe()
-Date:   Wed, 14 Jul 2021 16:39:03 +0800
-Message-ID: <20210714083903.205552-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Jul 2021 04:43:51 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F709C06175F;
+        Wed, 14 Jul 2021 01:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=HO9aj6B1WjYj8qsLsiziGZ5099hZ4tz+d5ON9qD4q5w=; b=d8cUJ5EJK8sII/t/B+2QPL1G/
+        kxh260fNM8iyZQ1aLQNZFrMiCwROlnhMLFjMlUh27iZkJLHQNXi5N3vfbxJBLVhRRvAIB3mbAn8ZI
+        7ZbwQCvsHvwXvjvOuHJuDEI3JAIeKoui08fdMyVBQWAi6nR8vpe+b/kPcN/oal67TYm+pEA83K+x8
+        DqvV3rZXHwHXbRey4tU9Z626ywvTL1mLkS+1aYkot9wCferIwr+OxHWcemeWH0hVRmpPpBeDTSihU
+        NhEYMUxgHKzNMv1MqDgEDMycwR6v9OyztoXXnhZ784qQaTjxHJ5P/yVkXydcW/i7GNCBHRuOSz5bA
+        hnyL5T2xQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46084)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m3aRT-000762-AL; Wed, 14 Jul 2021 09:40:31 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m3aRD-00018I-Ky; Wed, 14 Jul 2021 09:40:15 +0100
+Date:   Wed, 14 Jul 2021 09:40:15 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
+ compat_auxtrace_mmap__{read_head|write_tail}
+Message-ID: <20210714084015.GM22278@shell.armlinux.org.uk>
+References: <20210711104105.505728-1-leo.yan@linaro.org>
+ <20210711104105.505728-12-leo.yan@linaro.org>
+ <20210712144410.GE22278@shell.armlinux.org.uk>
+ <20210713154602.GD748506@leoy-ThinkPad-X240s>
+ <20210713161441.GK22278@shell.armlinux.org.uk>
+ <20210713181301.GE13181@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713181301.GE13181@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the missing pci_disable_device() before return
-from bochs_pci_probe() in the error handling case.
+On Tue, Jul 13, 2021 at 07:13:02PM +0100, Catalin Marinas wrote:
+> We could try to clarify E2.2.1 to simply state that naturally aligned
+> LDRD/STRD are single-copy atomic without any subsequent statement on the
+> translation table.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/gpu/drm/tiny/bochs.c | 1 +
- 1 file changed, 1 insertion(+)
+I think that clarification would be most helpful. Thanks.
 
-diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/bochs.c
-index a2cfecfa8556..74832b9d3eae 100644
---- a/drivers/gpu/drm/tiny/bochs.c
-+++ b/drivers/gpu/drm/tiny/bochs.c
-@@ -666,6 +666,7 @@ static int bochs_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent
- 	return ret;
- 
- err_free_dev:
-+	pci_disable_device(pdev);
- 	drm_dev_put(dev);
- 	return ret;
- }
 -- 
-2.25.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
