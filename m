@@ -2,148 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F743C82F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C253C82CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbhGNKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239129AbhGNKcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:32:31 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591FBC061762;
-        Wed, 14 Jul 2021 03:29:40 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id 201so1025615qkj.13;
-        Wed, 14 Jul 2021 03:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MjtB63O8D6JZEGLQ/GVfQXEaFWYKcg+D2+varZhpuDo=;
-        b=LjjPBgmN78m+5VJLZrewYnBR6ZZfRjNoneQMnEhrS8cFOWElmH+4HuwQyWnXuPcXM4
-         iCQwcyvT8BTPK1FIFjkX52293Yp8b8UTC53P7nmMTZucD4LUpG6KNwp7kJZP+UKbiGN8
-         cIJ3gfHHwxtUE+YIMpsvMIu3d8CBccf9I4+iSwJtLLi2LXaJoFW6Am4STjGjCYTmTQVJ
-         ex0DYEh8X6fT+fn8hymR2j63fp3x5bt/66pSU0O5DzwskWcacPErIy3HFb6C+B5iKVPf
-         GJu6F1XpFIgumjfo5l7D2WP+EcMFIf3RBEWclTmwg60T7Rub9TZo+swD06lSfT7kBgM5
-         BOpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MjtB63O8D6JZEGLQ/GVfQXEaFWYKcg+D2+varZhpuDo=;
-        b=eTwfpBuyLUbS2d5grrCR4OD2/B08nQ8e61oSDc2LGZcrB4NcTf+2+2fZ3GpX/MIUJ7
-         bdqF5p+3eUBtA/WsUZD+s+KCEjRmOHg+dn9X9yBc7R91z5uQEhUTCsV+xk6LiLcXMFf4
-         r/ixRyUQpqpgsbmHUDDMJ0Mys7ALHC2cNheSBHENA9BRr/Z3+Wbe/bC6aQw7ccP+pdEJ
-         sY6Lrx3N80mvZHUtj+kMXMG912LdMO+ft4y9/QJs+DEcYCwe3tOu0tKo6/5J4GhfBPQF
-         ht8tP+tPP6lAgHqryA5yFDo0TajO6IWdXT+nOpyUz2aECopEJDpasO3PQ3oTcIFGsN+z
-         +ZvA==
-X-Gm-Message-State: AOAM5323PDrDft8QddnE7o3ZUDTdOGPVl36efqFa0rvRIdeHXnnDyFey
-        lXuZcQHiYUgZvblf8ll6fbc=
-X-Google-Smtp-Source: ABdhPJyIQ4bAu5TuRkSktzpUaxKE9S5Kn2Eipv5skl92L4xZ/DaDosYBF1hPBKslEuM4tJ2Q72EAww==
-X-Received: by 2002:ae9:e002:: with SMTP id m2mr9208764qkk.474.1626258578690;
-        Wed, 14 Jul 2021 03:29:38 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id k6sm614543qtg.78.2021.07.14.03.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 03:29:38 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 72D4F27C005A;
-        Wed, 14 Jul 2021 06:29:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 14 Jul 2021 06:29:37 -0400
-X-ME-Sender: <xms:kbzuYDViUfRItF8rPHX6vN-ic8is2MZWkqlW_bXywEo6Jrl5nibUHA>
-    <xme:kbzuYLmKtOvCqIwXhLl7WmY7BRuDXzVGcOtzlADRJROXPgcIOJ_l96vDq5blR8aqw
-    _RDQJ-v01JDLI7LCA>
-X-ME-Received: <xmr:kbzuYPaebdiUUw5n5lWFDeq_0BaIMtRcnlA5PPyhn0NVJs_UvQZdSwB1zyhIpQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeehvdevteefgfeiudettdefvedvvdelkeejueffffelgeeuhffhjeetkeeiueeu
-    leenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:kbzuYOUeKcfcythj7uzBsnvXkLUEruYwgfH4En_JWPMTrEvtmu6WNA>
-    <xmx:kbzuYNmpowsRfbNGzZYYya4v1-pWzunrJO3_SZu8H_YdkyzURBIj_g>
-    <xmx:kbzuYLfjOkJu3TxOJ-WO9o8n2Gd9uk_XjmlMWDILc9wDbtzmWKmIEw>
-    <xmx:kbzuYMfbLHVurHIjUzOYJ7AwOxYUVtcmfbpkSyZ0kzUgFCJevzVTAAMMzEQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Jul 2021 06:29:37 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [RFC v4 7/7] PCI: hv: Turn on the host bridge probing on ARM64
-Date:   Wed, 14 Jul 2021 18:27:37 +0800
-Message-Id: <20210714102737.198432-8-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714102737.198432-1-boqun.feng@gmail.com>
-References: <20210714102737.198432-1-boqun.feng@gmail.com>
+        id S238774AbhGNKa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:30:56 -0400
+Received: from ofcsgdbm.dwd.de ([141.38.3.245]:35727 "EHLO ofcsgdbm.dwd.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237788AbhGNKax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 06:30:53 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ofcsg2dn3.dwd.de (Postfix) with ESMTP id 4GPtxX3kqnz2wYp
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
+        content-type:content-type:mime-version:references:message-id
+        :in-reply-to:subject:subject:from:from:date:date:received
+        :received:received:received:received:received:received:received;
+         s=dwd-csg20210107; t=1626258480; x=1627468081; bh=yzWLLNTYHL5hK
+        hXO7ycHIL/Wes7VmJaRNg+XaDlat5I=; b=6tXejo+vRHUKeiosnRxGkuJfbTAtr
+        FP/M0Cl/me6nxr41eL6Ak385NSOUPhuQi9LneAPQmHDqejElC8HL1W5E3rbW1r2p
+        I9GbXw5IA4ikE9gKOChqp3xM6hAaKNPsO9gZH9k0B+ww86oZU5xYkqvnBh+bR0h7
+        8j5nnHX5hhanJKYJzVfiW26bMpikKs/wHVKs89wEjvNTQN35ifE0XNG6bJvvNdGi
+        iTQzzGyYbFZ3Ne9V9kX+NZc1sNS5wu3jArLrws/8xCkV8pVa4D2f0y2cx7nSWoJz
+        /Eanff5WeFL6bUMkNjX0oVmRIa93tUeUIpj7MFjeGOaS1zgkQjcPwRtuQ==
+X-Virus-Scanned: by amavisd-new at csg.dwd.de
+Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
+        by localhost (ofcsg2dn3.dwd.de [172.30.232.26]) (amavisd-new, port 10024)
+        with ESMTP id nTi5zGn2chxi for <linux-kernel@vger.kernel.org>;
+        Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 570C5C9024FE
+        for <root@ofcsg2dn3.dwd.de>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 4BCD4C902581
+        for <root@ofcsg2dn3.dwd.de>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
+X-DDEI-TLS-USAGE: Unused
+Received: from ofcsgdbm.dwd.de (unknown [172.30.232.26])
+        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
+        for <root@ofcsg2dn3.dwd.de>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
+Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
+ Wed, 14 Jul 2021 10:28:00 -0000
+Received: from ofcsg2dvf1.dwd.de (ofcsg2dvf1.dwd.de [172.30.232.10])
+        by ofcsg2dn3.dwd.de (Postfix) with ESMTPS id 4GPtxX1npFz2xjg;
+        Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
+Received: from ofmailhub.dwd.de (oflxs04.dwd.de [141.38.39.196])
+        by ofcsg2dvf1.dwd.de  with ESMTP id 16EARxJC024861-16EARxJD024861;
+        Wed, 14 Jul 2021 10:27:59 GMT
+Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
+        by ofmailhub.dwd.de (Postfix) with ESMTP id A002EE27A3;
+        Wed, 14 Jul 2021 10:27:59 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 10:27:59 +0000 (GMT)
+From:   Holger Kiehl <Holger.Kiehl@dwd.de>
+To:     Jiri Slaby <jirislaby@kernel.org>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+In-Reply-To: <a59b73aa-24f6-7395-6b99-d6c62feb0fc4@kernel.org>
+Message-ID: <83b8a9a7-a29c-526-d36-78737cb9f56b@praktifix.dwd.de>
+References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de> <YO56HTE3k95JLeje@kroah.com> <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de> <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
+ <a59b73aa-24f6-7395-6b99-d6c62feb0fc4@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-FE-Policy-ID: 2:2:1:SYSTEM
+X-TMASE-Version: DDEI-5.1-8.6.1018-26280.007
+X-TMASE-Result: 10--11.724800-10.000000
+X-TMASE-MatchedRID: csPTYAMX1+GWfDtBOz4q28bYuTb6+cQg69aS+7/zbj+qvcIF1TcLYIR4
+        RLK5G1ih+5xFZGxCCqj89WDKQGB2Lg6ELeSw1PSqbMGKOuLn5FUB4JHtiamkLOyiG9Aw9qJGS6j
+        EzaLelQhA5GooFgjK1/fNFVA4Doasq6H6eyKIRsNZMZ6MZ0H1Ugv/9UzFeXITP4H+2nyK0FPiKq
+        oPfA0a+hkNsHcU+86WuC2c3pw4Rj9Dq2SVEk72KAtuKBGekqUpIG4YlbCDECvS3Rxy14J4N4p0C
+        7+/C6eQTyCQ6yWirTTnV+U0dx6aYoKeC+afFO7XPpCuffGH9zI=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-DDEI-PROCESSED-RESULT: Safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we have everything we need, just provide a proper sysdata type for
-the bus to use on ARM64 and everything else works.
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- drivers/pci/controller/pci-hyperv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Wed, 14 Jul 2021, Jiri Slaby wrote:
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index e6276aaa4659..62dbe98d1fe1 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -40,6 +40,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pci-ecam.h>
- #include <linux/delay.h>
- #include <linux/semaphore.h>
- #include <linux/irqdomain.h>
-@@ -448,7 +449,11 @@ enum hv_pcibus_state {
- };
- 
- struct hv_pcibus_device {
-+#ifdef CONFIG_X86
- 	struct pci_sysdata sysdata;
-+#elif defined(CONFIG_ARM64)
-+	struct pci_config_window sysdata;
-+#endif
- 	struct pci_host_bridge *bridge;
- 	struct fwnode_handle *fwnode;
- 	/* Protocol version negotiated with the host */
-@@ -3075,7 +3080,9 @@ static int hv_pci_probe(struct hv_device *hdev,
- 			 dom_req, dom);
- 
- 	hbus->bridge->domain_nr = dom;
-+#ifdef CONFIG_X86
- 	hbus->sysdata.domain = dom;
-+#endif
- 
- 	hbus->hdev = hdev;
- 	INIT_LIST_HEAD(&hbus->children);
--- 
-2.30.2
+> On 14. 07. 21, 10:15, Holger Kiehl wrote:
+> >> Yes, will try to do that. I think it will take some time ...
+> >>
+> > Hmm, I am doing something wrong?
+> 
+> No, you are not: -rcs are not tagged.
+> 
+> >     git clone
+> >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> >     linux-5.13.y
+> >     cd linux-5.13.y/
+> >     git tag|grep v5.13
+> >     v5.13
+> >     v5.13-rc1
+> >     v5.13-rc2
+> >     v5.13-rc3
+> >     v5.13-rc4
+> >     v5.13-rc5
+> >     v5.13-rc6
+> >     v5.13-rc7
+> >     v5.13.1
+> > 
+> > There is no v5.13.2-rc1. It is my first time with 'git bisect'. Must be
+> > doing something wrong. How can I get the correct git kernel rc version?
+> 
+> So just bisect v5.13.1..linux-5.13.y.
+> 
+But what do I say for bad?
 
+   git bisect bad linux-5.13.y
+   error: Bad rev input: linux-5.13.y
+
+Just saying:
+
+   git bisect bad
+   git bisect good v5.13.1
+   Bisecting: a merge base must be tested
+   [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+
+If I read this correctly it now set v5.13 as bad and v5.13.1 as good.
+How to set the correct bad?
+
+Holger
