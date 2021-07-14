@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A713C9238
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090E53C923F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhGNUkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhGNUkC (ORCPT
+        id S231452AbhGNUlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:41:40 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:34378 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhGNUli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:40:02 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4A5C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:37:10 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so2533696pjo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZVoghOGzFUo2g1EHO3svD45q6oPjKQ3+d8OVWxkKeFs=;
-        b=JiU2GbbPqJEfjdLSrQJtgYY3oWalcHVF5itcoxrvKNVRdaiNBcHkThvP5a13TSbF/F
-         975P58r0yXUBYucj06Qebr86YNALTQ+WyrW8dwDAzxB5rRtElAwzRA5OLP/QBpJbUPw0
-         EXbFkofXnP6BHr0opiIKPx1G6cbmQMXpNY2Ft4SImg1JUU9x0QpEdd9rY9la8Lc6KI6Q
-         /tBVkTIXZpTN14WonkOF+PsfWoFfhZeFXuH3VW2oazKiJSWXyLBV7BAcC3wIrR+eR9oF
-         M6re8cCcSA0q47xQspQh2x4zNkVDMuZ8Fmn8Z59RpcGleVkcOUjcm7nBPQLI7V+hGLzL
-         eMSw==
+        Wed, 14 Jul 2021 16:41:38 -0400
+Received: by mail-il1-f169.google.com with SMTP id e13so2914265ilc.1;
+        Wed, 14 Jul 2021 13:38:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZVoghOGzFUo2g1EHO3svD45q6oPjKQ3+d8OVWxkKeFs=;
-        b=ih56b3k0DuDWsuKZApUTGgikBiLuq9eEEAZxGdzoPDVKyy4DhiRBQC6AB3XjBpd0lw
-         hlze3xNqkJZyHry9054ZfJSddHa4Ep26guKS3SMaFH52yLmNM93a0yP4ugwEQI+KP/aZ
-         4DlqbltVxUw33Av9KcywBA+aWvxFl0F/CZl+zQH5vv5m/47VDN4SwW+s8L94R3eoixUA
-         eWlO8HynIQ7FwC/uRuW5zltKqHbgStXBw+ADmalzsBLINZ6XtYTxf5xduFC8GlaJ2BMB
-         XB7/MRIggsZJ9BDFW+1iClnpHUWXkPDCOsJs4VUTjE9kuDJAjkCc14OzvpjRNBIKysck
-         O62Q==
-X-Gm-Message-State: AOAM531qje1ywKsfdtXunBo1CPc3ITz6YGrGFjKuBEFm/QLV3yZ15/m+
-        Z+xFHOIx+XRcBN6VAWfDbdbCbORYChdtNw==
-X-Google-Smtp-Source: ABdhPJwUL+v46lDMA+LqJ5QvGmnIpHnxv/opqwJmq3pJ98w6lIS+a2sQ5Xiu1judhEtQf2xwoOjymw==
-X-Received: by 2002:a17:90b:b88:: with SMTP id bd8mr5383285pjb.26.1626295029550;
-        Wed, 14 Jul 2021 13:37:09 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t37sm3942693pfg.14.2021.07.14.13.37.08
+        bh=Oqs7vKoe0auqSEgHvahfMsrIgLQ6xSdlLGxvngtPTW0=;
+        b=lZWyZy84L3Mwl+chTO9YbN+zHi1bD2H64ot6MET1X9dfRIzfGvT32eaE7j5h+Xs51B
+         LlH4/1VPdPEcnPvAe4mJZNav4v1C3J6a4yHvFxcfepRiAelP/sphk37mHmmO1BVQGQAV
+         Zguw/dqTQC7D53jNnP0QApcpIt3bwwakfHMN36LM5dNjC5tByIYy4/2aOIZni6cNdU9E
+         9uf5kixfYKzrawtSRewtssyY98OErSKJHEoD9AlIlHBgJScGX9j1bCD6ncZuc8CGokCt
+         rGl/BisMwR5yvsSjl2qVQJjuGQWhN6DOzdOgP9caQKZnRL2a8Tbq8q8rwOTtHg/z1DIY
+         w/2w==
+X-Gm-Message-State: AOAM5326fekI5bTHMSkHEZNlgr1apF9LqeGligmo79g3mOT0Wd+ZBdM9
+        3kP8IafaJEK5YciycgTMdA==
+X-Google-Smtp-Source: ABdhPJwPefrXwGntr2qsp3ELCMjmMkRcSBjrRY1W4wOOnZH0vqUq7wSCEqfDGTkHZDh0OER6jPRbRQ==
+X-Received: by 2002:a92:a013:: with SMTP id e19mr7743754ili.206.1626295126628;
+        Wed, 14 Jul 2021 13:38:46 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id x10sm1670958ill.26.2021.07.14.13.38.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:37:08 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 20:37:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 02/40] KVM: SVM: Provide the Hypervisor
- Feature support VMGEXIT
-Message-ID: <YO9K8akh1CdY1kjd@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-3-brijesh.singh@amd.com>
+        Wed, 14 Jul 2021 13:38:46 -0700 (PDT)
+Received: (nullmailer pid 3479516 invoked by uid 1000);
+        Wed, 14 Jul 2021 20:38:43 -0000
+Date:   Wed, 14 Jul 2021 14:38:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
+Message-ID: <20210714203843.GA3476672@robh.at.kernel.org>
+References: <20210625224744.1020108-1-kernel@esmil.dk>
+ <20210625224744.1020108-3-kernel@esmil.dk>
+ <YO1aSSSankv+cAru@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-3-brijesh.singh@amd.com>
+In-Reply-To: <YO1aSSSankv+cAru@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> Version 2 of the GHCB specification introduced advertisement of features
-> that are supported by the Hypervisor.
+On Tue, Jul 13, 2021 at 10:18:01AM +0100, Lee Jones wrote:
+> On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
 > 
-> Now that KVM supports version 2 of the GHCB specification, bump the
-> maximum supported protocol version.
-
-Heh, the changelog doesn't actually state that it's adding support for said
-advertisement of features.  It took me a few seconds to figure out what the
-patch was doing, even though it's quite trivial in the end.
-
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/uapi/asm/svm.h |  4 ++--
->  arch/x86/kvm/svm/sev.c          | 14 ++++++++++++++
->  arch/x86/kvm/svm/svm.h          |  3 ++-
->  3 files changed, 18 insertions(+), 3 deletions(-)
+> > The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
+> > the SoC, but it is still useful to be able to reach the PMIC over I2C
 > 
-> diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
-> index 9aaf0ab386ef..ba4137abf012 100644
-> --- a/arch/x86/include/uapi/asm/svm.h
-> +++ b/arch/x86/include/uapi/asm/svm.h
-> @@ -115,7 +115,7 @@
->  #define SVM_VMGEXIT_AP_CREATE_ON_INIT		0
->  #define SVM_VMGEXIT_AP_CREATE			1
->  #define SVM_VMGEXIT_AP_DESTROY			2
-> -#define SVM_VMGEXIT_HYPERVISOR_FEATURES		0x8000fffd
-> +#define SVM_VMGEXIT_HV_FT			0x8000fffd
+> What is still useful?
+> 
+> The GPIO and Regulator drivers?
+> 
+> > for the other functionality it provides.
+> > 
+> > [1] https://github.com/beagleboard/beaglev-starlight
+> > 
+> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > ---
+> >  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
+> >  drivers/mfd/tps65086.c                        | 21 ++++++++++---------
+> >  2 files changed, 11 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> > index ba638bd10a58..4b629fcc0df9 100644
+> > --- a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> > @@ -87,9 +87,6 @@ additionalProperties: false
+> >  required:
+> >    - compatible
+> >    - reg
+> > -  - interrupts
+> > -  - interrupt-controller
+> > -  - '#interrupt-cells'
+> 
+> I can't say that I've been keeping up with the latest DT binding
+> changes, but shouldn't these lines be relocated into some kind of
+> optional listing?
+> 
+> Or are optional properties omitted from documentation?
 
-This is fixing up commit 3 from Part1, though I think it can and should be
-omitted from that patch entirely since it's not relevant to the guest, only to
-KVM.
+Optional properties are the ones not listed in the 'required' list.
 
-And FWIW, I like the verbose name, though it looks like Boris requested the
-shorter names for the guest.  Can we keep the verbose form for KVM-only VMEGXIT
-name?  Hyper-V has mostly laid claim to "HV", and feature is not the first thing
-that comes to mind for "FT".
-
->  #define SVM_VMGEXIT_UNSUPPORTED_EVENT		0x8000ffff
+Rob
