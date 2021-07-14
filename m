@@ -2,156 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727663C8170
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B37E3C8173
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238450AbhGNJYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:24:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38214 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238430AbhGNJYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:24:40 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A4E34229FB;
-        Wed, 14 Jul 2021 09:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626254508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+sy6PE7HATWBWi34Qlea4lbKHZ+KnRq7LLyXvTID244=;
-        b=vDW7bGOHgACaftgmRFKcf2uC85NIjfPs7tQ53GmXvArDj3A+YkZyPX1Ky8NTzoxK+CRrRO
-        nWct9nywqfjLai5vHgfqTpoDay5oHoktrdudplrEvF6kuj8aQcrrKsRy2X5m2LwmCYK5fd
-        y1mFy/FppTy22dqTuHmvWNkaPojbjpg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626254508;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+sy6PE7HATWBWi34Qlea4lbKHZ+KnRq7LLyXvTID244=;
-        b=FFN7W871YuS2QtltDc9AkbXq0vaXp5Tnr7l06lsLAus59nCrB414VZeejuDQTLO9S3p6B2
-        dQ1nN46qDv6nblCw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6F14C13A79;
-        Wed, 14 Jul 2021 09:21:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id jWIyGays7mCwCwAAGKfGzw
-        (envelope-from <tzimmermann@suse.de>); Wed, 14 Jul 2021 09:21:48 +0000
-Subject: Re: [PATCH -next] drm/bochs: Fix missing pci_disable_device() on
- error in bochs_pci_probe()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Cc:     airlied@linux.ie, kraxel@redhat.com
-References: <20210714083903.205552-1-yangyingliang@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <e75736ae-dbe0-7422-1b03-72de84755090@suse.de>
-Date:   Wed, 14 Jul 2021 11:21:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238774AbhGNJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:25:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238291AbhGNJZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:25:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82EB061396;
+        Wed, 14 Jul 2021 09:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626254531;
+        bh=iWkXEwS6/RcWzpnSyrd1venxnCkUIGN1a2E3Y4jNlIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d3KIgw3frS2stjRSJpH4g3zTtpI/eyVJo/VgNbULk5igfTHXNYdtuK1PUw14nIpAJ
+         vPUG3SLDi1vdBM6um4ud95MHjbT/Q+Hd3z3SAdcRfsKWtimHNURmI6C/gyDKiJzhbc
+         Tx7T9X+VIciaBXyawivAgcTdEsngo0MsuwmWk1NE=
+Date:   Wed, 14 Jul 2021 11:22:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuo Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, fei1.li@intel.com
+Subject: Re: [PATCH] MAINTAINERS: Change ACRN HSM driver maintainer
+Message-ID: <YO6sv1zUxljRRcdN@kroah.com>
+References: <20210714082614.88560-1-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210714083903.205552-1-yangyingliang@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="eh8yMvZ2QsKcqPVd8H4Fhlq6BNHbG7ueO"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714082614.88560-1-shuo.a.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---eh8yMvZ2QsKcqPVd8H4Fhlq6BNHbG7ueO
-Content-Type: multipart/mixed; boundary="D2w0zk9in6VlbyWGfW2rRh68ZFFcEYAL0";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
-Cc: airlied@linux.ie, kraxel@redhat.com
-Message-ID: <e75736ae-dbe0-7422-1b03-72de84755090@suse.de>
-Subject: Re: [PATCH -next] drm/bochs: Fix missing pci_disable_device() on
- error in bochs_pci_probe()
-References: <20210714083903.205552-1-yangyingliang@huawei.com>
-In-Reply-To: <20210714083903.205552-1-yangyingliang@huawei.com>
-
---D2w0zk9in6VlbyWGfW2rRh68ZFFcEYAL0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 14.07.21 um 10:39 schrieb Yang Yingliang:
-> Fix the missing pci_disable_device() before return
-> from bochs_pci_probe() in the error handling case.
-
-It's maybe better to replace pci_enable_device() with=20
-pcim_enable_device(), [1] so that the release happens automatically.=20
-Does this work?
-
-Best regards
-Thomas
-
-https://elixir.bootlin.com/linux/v5.13.1/source/drivers/pci/pci.c#L2042
-
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+On Wed, Jul 14, 2021 at 04:26:14PM +0800, Shuo Liu wrote:
+> Shuo steps down, Fei will take over.
+> 
+> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 > ---
->   drivers/gpu/drm/tiny/bochs.c | 1 +
->   1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/bochs.=
-c
-> index a2cfecfa8556..74832b9d3eae 100644
-> --- a/drivers/gpu/drm/tiny/bochs.c
-> +++ b/drivers/gpu/drm/tiny/bochs.c
-> @@ -666,6 +666,7 @@ static int bochs_pci_probe(struct pci_dev *pdev, co=
-nst struct pci_device_id *ent
->   	return ret;
->  =20
->   err_free_dev:
-> +	pci_disable_device(pdev);
->   	drm_dev_put(dev);
->   	return ret;
->   }
->=20
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+We need an ack from the person you are assigning this to :)
 
+thanks,
 
---D2w0zk9in6VlbyWGfW2rRh68ZFFcEYAL0--
-
---eh8yMvZ2QsKcqPVd8H4Fhlq6BNHbG7ueO
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmDurKsFAwAAAAAACgkQlh/E3EQov+Bc
-/w//YU2JJd6L4kcRmcl/W7fZNpNN5tzcjL4jMdquWM+H1PKXSRUZAq+YT2RYCDTzJV7hZUhttwXH
-pPgYq3bmAhz8tB0sZZcJCMRCWjM6UaTTGKNQSglCEOpXoB+LDPdcl2kd2CcHvKgnOPvtkIqY8QRr
-qGla2LBE7dKNi7oqn9G2QQ71Y3PrdtJDQ3hOGBTiq6KfnjfPjflJBCTPZub33XhbBK9rOST5WHrR
-s8D4zUlTMk+u33CW7I0n3+NbUA1o0qWYP9gzkS0vf6vMgYyay0eSXp0cqnyTNSluTauKsH/ONI49
-YKGzJcfDbuzVMAfKEmLXFMGfjvUclsCutCtokTEDSmASH47P6KmF5GvAREFtFH1T+QJi8kirdCEq
-+hV8XfOmv47cFIfRLlTII28gJDcD8YtQhUO7qt7rz4xst4qfh7ua2vXfHQEmzVsX3peizxVBtPC6
-5T3nFoW9rZvOdjK4qEMZMxuSY+iznMW0Bi3K62rDh+T7gFBo4k8oo0INKIXo059OrIcUR7yHb0/y
-GH+CaVjnWavJAfHf2xLznLymm32AHlFefxiZeZTbIHGVoX3Qumo5D219IQUVbA/QkHDXizEgrdJK
-24H9rYbhd9F7qINHgBgOJgWOD4b/QjfRGg8SNwbpAh7EWg34jmo/5Uxtb7GL2v8lAAuRqCn9k2eJ
-9as=
-=g/fx
------END PGP SIGNATURE-----
-
---eh8yMvZ2QsKcqPVd8H4Fhlq6BNHbG7ueO--
+greg k-h
