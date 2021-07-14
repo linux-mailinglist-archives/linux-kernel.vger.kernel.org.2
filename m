@@ -2,242 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25553C7B8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13E53C7B90
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237428AbhGNCQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:16:44 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:39567 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237349AbhGNCQn (ORCPT
+        id S237478AbhGNCRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:17:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24242 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237439AbhGNCRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:16:43 -0400
-Received: by mail-io1-f48.google.com with SMTP id h6so159884iok.6;
-        Tue, 13 Jul 2021 19:13:51 -0700 (PDT)
+        Tue, 13 Jul 2021 22:17:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626228888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lETjBLf02DlKWY99ILUZ8EMCaetURHel393ebRunFe0=;
+        b=RpanRK4do7fmp5b/4CL2veP13uT33cWzgV4AxMm8fCh2lRD5BVlU7EWkK5WiUGZ+PL6+2S
+        1vji2GCy00j8WYjqi7eRw9kvwLx0fYZoE7VPje+IrQ7xP5ng09w+2deSH7oVggqWUkhLlW
+        eaudGc368XAVesmd5r8TNo66Ez40IyA=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-4kphtghsMCe93rcY52F2Zw-1; Tue, 13 Jul 2021 22:14:47 -0400
+X-MC-Unique: 4kphtghsMCe93rcY52F2Zw-1
+Received: by mail-pf1-f197.google.com with SMTP id b10-20020a056a000ccab029032dc5f71f6aso491357pfv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:14:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/Z/tZKf0aO1xZoDSmm5DT5QLfVwlo8xPEjAU//SkRvw=;
-        b=ohJxfK1yBHVjiovH634DdI2n/C72NjvhTB/yblm1tNW8Cm25xo+QF8/ETm/OVFCf0I
-         1jbz5d2bq4vf8OL8aGp1Oz/jCTpwcs+uxJIxhwwW+eGDZMJou9R7ixZHQIJkDJfBsv8i
-         Z2+PerNJED3CA8IIXAshNULGY80iUzzbdtnkcfILD6WQHwGOuWbkkDrJd9qnKNfTJI7x
-         kPjW56KgaSNaO4ZUqe+7jOEZjY/7F6rihQyZdGP4Www/lZ1YsT0FoGXPui2qXf/55d96
-         pchznHihC6wzLa9r1wg+qpnABDrBbzLHA67j9PD84jDWFAoEDxMX3VzjspHrjPzKIbeI
-         ae/Q==
-X-Gm-Message-State: AOAM531k0Nz+88lGmavFQohc8IGNSZ+/zPn0u+xIvRwlc2+DmH/TLa2q
-        7PAG4lJbY6kK2NQv4aAHjA==
-X-Google-Smtp-Source: ABdhPJyGycRTbO/9c2EWLHRjrDhvSrVs9AADZSCbP1Zmc+vSCeJI8j7lLZxtqwcsyaMkFhpNIMVurQ==
-X-Received: by 2002:a5e:a816:: with SMTP id c22mr5597258ioa.94.1626228831107;
-        Tue, 13 Jul 2021 19:13:51 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id w1sm424335ilv.59.2021.07.13.19.13.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 19:13:50 -0700 (PDT)
-Received: (nullmailer pid 1309349 invoked by uid 1000);
-        Wed, 14 Jul 2021 02:13:48 -0000
-Date:   Tue, 13 Jul 2021 20:13:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, smohanad@codeaurora.org,
-        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
-        skananth@codeaurora.org, vpernami@codeaurora.org,
-        vbadigan@codeaurora.org
-Subject: Re: [PATCH v5 1/3] dt-bindings: pci: Add devicetree binding for
- Qualcomm PCIe EP controller
-Message-ID: <20210714021348.GA1302552@robh.at.kernel.org>
-References: <20210630034653.10260-1-manivannan.sadhasivam@linaro.org>
- <20210630034653.10260-2-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lETjBLf02DlKWY99ILUZ8EMCaetURHel393ebRunFe0=;
+        b=eghunmIH9hf6awJU/ApseP+QCQjtsKpZFSKSSJVRh7E4DJeKqfmx4sro1VaV3NehLW
+         pYxzbqBqX71iehVnKGE7kVTH8GBT3n6pgGfLAvSZ5f4jXzimcuJvmCD9SKpgch6d15et
+         b2TlcJ1yq+GAbfS7Ngyw1XDyaXzpgfnfSLA1C5pfgORVXo3IBcca5xdYb2sRaNxf2qsi
+         9/E3jLya8ZpT+yXf8SOK1fyvaU6XvR0SQNZ2CGhLm6MnDkwPR64eIpDAMasMyvKnn5z0
+         fLcJhmGm9cRmrfIIcbkUroiEaauDUjSfwWJ9jE7e3ChIHbYy79C3d5/xRycUCwgkykJE
+         j1OQ==
+X-Gm-Message-State: AOAM5304rTcZWo9vmPGhxBp37KXj/qEFSBuhw84sq3sTQ/A27rz8Zcpu
+        ApnYEwcpxSpaQu2faG8YXuCL/h5yvmo8zpNv8Ovuh41EzAMH39dQMUXVW1G9UMyHrHqEyKkLHxT
+        vFfy4Ky6dnv9T95+eVYPHRKLXrCVA8riuWR5DFtckxBXtHR+ExmZVD+QGA0ZePiTAOlXz8c/A7m
+        X9
+X-Received: by 2002:a17:90a:5b10:: with SMTP id o16mr7219063pji.76.1626228885738;
+        Tue, 13 Jul 2021 19:14:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOiPXFxUcdLZWrtqR5/IHD7VsylcBTQze23cRfzIoKwRQb/qtzHoUNsMb4X6hRI8thHVVbZQ==
+X-Received: by 2002:a17:90a:5b10:: with SMTP id o16mr7219014pji.76.1626228885330;
+        Tue, 13 Jul 2021 19:14:45 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id p40sm469474pfw.79.2021.07.13.19.14.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 19:14:44 -0700 (PDT)
+Subject: Re: [PATCH v9 13/17] vdpa: factor out vhost_vdpa_pa_map() and
+ vhost_vdpa_pa_unmap()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        joro@8bytes.org, gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210713084656.232-1-xieyongji@bytedance.com>
+ <20210713084656.232-14-xieyongji@bytedance.com> <20210713113114.GL1954@kadam>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <20e75b53-0dce-2f2d-b717-f78553bddcd8@redhat.com>
+Date:   Wed, 14 Jul 2021 10:14:32 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630034653.10260-2-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20210713113114.GL1954@kadam>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:16:51AM +0530, Manivannan Sadhasivam wrote:
-> Add devicetree binding for Qualcomm PCIe EP controller used in platforms
-> like SDX55. The EP controller is based on the Designware core with
-> Qualcomm specific wrappers.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 160 ++++++++++++++++++
->  1 file changed, 160 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> new file mode 100644
-> index 000000000000..9110d33809cd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> @@ -0,0 +1,160 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm PCIe Endpoint Controller binding
-> +
-> +maintainers:
-> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> +
-> +allOf:
-> +  - $ref: "pci-ep.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sdx55-pcie-ep
-> +
-> +  reg:
-> +    items:
-> +      - description: Qualcomm specific PARF configuration registers
-> +      - description: Designware PCIe registers
-> +      - description: External local bus interface registers
-> +      - description: Address Translation Unit (ATU) registers
-> +      - description: Memory region used to map remote RC address space
-> +      - description: BAR memory region
-> +
-> +  reg-names:
-> +    items:
-> +      - const: parf
-> +      - const: dbi
-> +      - const: elbi
-> +      - const: atu
-> +      - const: addr_space
-> +      - const: mmio
-> +
-> +  clocks:
-> +    items:
-> +      - description: PCIe Auxiliary clock
-> +      - description: PCIe CFG AHB clock
-> +      - description: PCIe Master AXI clock
-> +      - description: PCIe Slave AXI clock
-> +      - description: PCIe Slave Q2A AXI clock
-> +      - description: PCIe Sleep clock
-> +      - description: PCIe Reference clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: aux
-> +      - const: cfg
-> +      - const: bus_master
-> +      - const: bus_slave
-> +      - const: slave_q2a
-> +      - const: sleep
-> +      - const: ref
-> +
-> +  qcom,perst-regs:
-> +    description: Reference to a syscon representing TCSR followed by the two
-> +                 offsets within syscon for Perst enable and Perst separation
-> +                 enable registers
-> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-> +    items:
-> +      minItems: 3
-> +      maxItems: 3
-> +
-> +  interrupts:
-> +    items:
-> +      - description: PCIe Global interrupt
-> +      - description: PCIe Doorbell interrupt
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: global
-> +      - const: doorbell
-> +
-> +  reset-gpios:
-> +    description: GPIO that is being used as PERST# input signal
-> +    maxItems: 1
-> +
-> +  wake-gpios:
-> +    description: GPIO that is being used as WAKE# output signal
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    const: core
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  phy-names:
-> +    const: pciephy
-> +
-> +  num-lanes:
-> +    default: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - qcom,perst-regs
-> +  - interrupts
-> +  - interrupt-names
-> +  - reset-gpios
-> +  - resets
-> +  - reset-names
-> +  - power-domains
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sdx55.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    pcie_ep: pcie-ep@40000000 {
-> +        compatible = "qcom,sdx55-pcie-ep";
-> +        reg = <0x01c00000 0x3000>,
-> +              <0x40000000 0xf1d>,
-> +              <0x40000f20 0xc8>,
-> +              <0x40001000 0x1000>,
-> +              <0x40002000 0x1000>,
-> +              <0x01c03000 0x3000>;
-> +        reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-> +                    "mmio";
-> +
-> +        clocks = <&gcc GCC_PCIE_AUX_CLK>,
-> +             <&gcc GCC_PCIE_CFG_AHB_CLK>,
-> +             <&gcc GCC_PCIE_MSTR_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLV_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLV_Q2A_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLEEP_CLK>,
-> +             <&gcc GCC_PCIE_0_CLKREF_CLK>;
-> +        clock-names = "aux", "cfg", "bus_master", "bus_slave",
-> +                      "slave_q2a", "sleep", "ref";
-> +
-> +        qcom,perst-regs = <&tcsr 0xb258 0xb270>;
-> +
-> +        interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
-> +        	     <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "global", "doorbell";
-> +        reset-gpios = <&tlmm 57 GPIO_ACTIVE_HIGH>;
-> +        wake-gpios = <&tlmm 53 GPIO_ACTIVE_LOW>;
-> +        resets = <&gcc GCC_PCIE_BCR>;
-> +        reset-names = "core";
-> +        power-domains = <&gcc PCIE_GDSC>;
-> +        phys = <&pcie0_lane>;
-> +        phy-names = "pciephy";
-> +        max-link-speed = <3>;
-> +        num-lanes = <2>;
-> +
-> +        status = "disabled";
 
-Why are you disabling the example? Drop status.
+ÔÚ 2021/7/13 ÏÂÎç7:31, Dan Carpenter Ð´µÀ:
+> On Tue, Jul 13, 2021 at 04:46:52PM +0800, Xie Yongji wrote:
+>> @@ -613,37 +618,28 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+>>   	}
+>>   }
+>>   
+>> -static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>> -					   struct vhost_iotlb_msg *msg)
+>> +static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
+>> +			     u64 iova, u64 size, u64 uaddr, u32 perm)
+>>   {
+>>   	struct vhost_dev *dev = &v->vdev;
+>> -	struct vhost_iotlb *iotlb = dev->iotlb;
+>>   	struct page **page_list;
+>>   	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+>>   	unsigned int gup_flags = FOLL_LONGTERM;
+>>   	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
+>>   	unsigned long lock_limit, sz2pin, nchunks, i;
+>> -	u64 iova = msg->iova;
+>> +	u64 start = iova;
+>>   	long pinned;
+>>   	int ret = 0;
+>>   
+>> -	if (msg->iova < v->range.first ||
+>> -	    msg->iova + msg->size - 1 > v->range.last)
+>> -		return -EINVAL;
+> This is not related to your patch, but can the "msg->iova + msg->size"
+> addition can have an integer overflow.  From looking at the callers it
+> seems like it can.  msg comes from:
+>    vhost_chr_write_iter()
+>    --> dev->msg_handler(dev, &msg);
+>        --> vhost_vdpa_process_iotlb_msg()
+>           --> vhost_vdpa_process_iotlb_update()
 
-With that,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Yes.
+
+
+>
+> If I'm thinking of the right thing then these are allowed to overflow to
+> 0 because of the " - 1" but not further than that.  I believe the check
+> needs to be something like:
+>
+> 	if (msg->iova < v->range.first ||
+> 	    msg->iova - 1 > U64_MAX - msg->size ||
+
+
+I guess we don't need - 1 here?
+
+Thanks
+
+
+> 	    msg->iova + msg->size - 1 > v->range.last)
+>
+> But writing integer overflow check correctly is notoriously difficult.
+> Do you think you could send a fix for that which is separate from the
+> patcheset?  We'd want to backport it to stable.
+>
+> regards,
+> dan carpenter
+>
+
