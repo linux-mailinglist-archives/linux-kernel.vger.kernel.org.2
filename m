@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E653C7A9D
+	by mail.lfdr.de (Postfix) with ESMTP id ABB6F3C7A9E
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 02:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237218AbhGNAhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 20:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        id S237242AbhGNAhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 20:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237198AbhGNAhj (ORCPT
+        with ESMTP id S237226AbhGNAhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 20:37:39 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E746C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 17:34:48 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id x16so312656pfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 17:34:48 -0700 (PDT)
+        Tue, 13 Jul 2021 20:37:41 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FD9C0613EF
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 17:34:49 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id t9so193843pgn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 17:34:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JE7W+Yd8WHQzk8V5Xe0vhncZeoTcU/+HKmbQiqaEI34=;
-        b=XxMsSDE9+zYoHdp1NA4CQsb4vSYGKaQWOlDVqPh0x5Q1Juu77zgX6+/wVwIJDbJ0J5
-         fVttK2wuVb35pZOnksG+M/JYBmu+0c1FFKe9Tiogd9t53bzwcI9P8Zz5nvVCwK9XdiU8
-         Y+RAXb+Qfyb4ov/M7Hb9uwDJbwex4paGQKm9IVvSEKT+oHSIqZ7XXMwTKU3ckOHQN4dL
-         JhhMUrLxuj7SC9uKGUUcyxUv2bI+2f0QX5HXXytiCUHk6C1JHEaqCTcFNnCDTCVyDt/G
-         aE3ezyoC3jSqCVfrBUyLzMYgNhplieoZU17VkNXAQYQnEqZi52LOknDXIns7vc0RQDvl
-         HzQQ==
+        bh=FDm3lJYHGGaxvtivXokPORl5JWRQ690WY2gWwBN/M4s=;
+        b=qesyhibu30an5buJETLm55Cy+AEcE3HgMBCdY8QypdHwbsOeErWTIKuUfCZv/BNtUU
+         H1li/17O+8In5hNoMTBKzhAgAByyIhtlMSHA3V8E9A6UAl7GCjl7n/tGVHZ1UlgqPAeF
+         EI53gATUYT5pSCm10mdHWUx0Jgko3SqN4W09d2JYigjzCfPM2RQsRglZRXGcCvJCROhE
+         /5lTWTV02UCCNKB4Gokf1wR5n909JCoV3cQHEdvHjEI0hB9g34pFOnXhBc0BZP76JXgt
+         4edXmL01/DvAvzEm8BCjNsVUkwZHNN7NV+aRLJBoX60Lr0lInyVM7NrJB+yIx3yA+JD+
+         Ku6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=JE7W+Yd8WHQzk8V5Xe0vhncZeoTcU/+HKmbQiqaEI34=;
-        b=e/HYOEazdnOn5Lg3GwctQ+tr06jdgCa5RWpTNjcPNbwvkYQ6ZpIiJ8Uk9yWaCYvJVT
-         P4MsrQGbyU9eMy4cAiD54MwCJ8cyqEBojYftUnBUZouH21a0Bksl16GdvFO6GTWqqeA7
-         ybMDd3Ue7bJ69qnvJYicLEMnGhZQbyqHohB36kSSgvb1avmivkqPthQ1kG0xxrXCfqOD
-         Gdm0IHfSrvffcwfBUnDZOjoYGes+9SlLI0k6UYJSqcZyr7qxTINav0bvrwqOf8Et1506
-         VojiosHjITSLG2Jht2AVWYgbt4HPGCFu6HpZnW7rr6pWf2/5Poip4okZwRfV5RKHXM/d
-         i5cw==
-X-Gm-Message-State: AOAM5312BsDyIumMJ0ec8AL84YPhs5I/0BTYfu8llqci/2z/MEZZ/1Ni
-        bCNc0GJ6rtaJcTZiXq8/bVw=
-X-Google-Smtp-Source: ABdhPJz6MT+lWH9xNfFUsD82ChwvfD18IQl/ePgCh2kMvHMbZ6aKvE71elBKqBZAo6yaiEi+ftXAUw==
-X-Received: by 2002:a65:6191:: with SMTP id c17mr6710991pgv.153.1626222887787;
-        Tue, 13 Jul 2021 17:34:47 -0700 (PDT)
+        bh=FDm3lJYHGGaxvtivXokPORl5JWRQ690WY2gWwBN/M4s=;
+        b=hRx3wvctBlJjOLc9MZBiUXP6lC5a1XHiH5nuBYKFQVJ2V+O9cixgVnaAa/YTNqu8tN
+         2xus5HcjyadNb+d17NbHlt3pH3xBPF3DRkcPLNWffmIK6JXjRYj7I3d7zeeyPt1i1OV3
+         I71Krlqo9QUXGIyiR4KLALLvhln8G1tmevZOmBjVyn1DWGU3cqNFEkYbDnASnFy0zYEq
+         Ud3W13yZDU7SiYZX+LBhH81/9M2Fs067yO8KkEchsR+EmW6G9sOXmfTZTpvEBwqdVYWD
+         TxecCprZgVmcTCx+7CSo7XWHndPCJt5eLi0ZEytGOKRK7eMDgQsPI91WFOpYgbS3aPfX
+         aChA==
+X-Gm-Message-State: AOAM533N4SLkyFCpQt2ztdscNEkM5lfDjVA+dksB7nLW2S0LhBB9LKGd
+        4Gj6ijyUTZw9AD3mBw9r1lo=
+X-Google-Smtp-Source: ABdhPJwqpyznI3YlQD6teLmYXmLgVtl/dLkFmBFhXctP8/NA5e2Mqak8pHhEI3qEbI81t++uNTtexw==
+X-Received: by 2002:a63:3387:: with SMTP id z129mr6522500pgz.227.1626222889149;
+        Tue, 13 Jul 2021 17:34:49 -0700 (PDT)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:9b12:1fd4:6232:5315])
-        by smtp.gmail.com with ESMTPSA id x6sm285896pgq.67.2021.07.13.17.34.46
+        by smtp.gmail.com with ESMTPSA id x6sm285896pgq.67.2021.07.13.17.34.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 17:34:47 -0700 (PDT)
+        Tue, 13 Jul 2021 17:34:48 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,9 +58,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         Ian Rogers <irogers@google.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 2/5] perf tools: Pass a fd to perf_file_header__read_pipe()
-Date:   Tue, 13 Jul 2021 17:34:39 -0700
-Message-Id: <20210714003442.1111502-3-namhyung@kernel.org>
+Subject: [PATCH 3/5] perf inject: Fix output from a pipe to a file
+Date:   Tue, 13 Jul 2021 17:34:40 -0700
+Message-Id: <20210714003442.1111502-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 In-Reply-To: <20210714003442.1111502-1-namhyung@kernel.org>
 References: <20210714003442.1111502-1-namhyung@kernel.org>
@@ -70,151 +70,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently it unconditionally writes to stdout for repipe.  But perf
-inject can direct its output to a regular file.  Then it needs to
-write the header to the file as well.
+Sometimes it needs to save the perf inject data to a file for
+debugging.  But normally it assumes the same format for input and
+output, so the end result cannot be used due to a broken format.
+
+  # perf record -a -o - sleep 1 | perf inject -b -o my.data
+
+  # perf report -i my.data --stdio
+  0x208 [0]: failed to process type: 0 [Invalid argument]
+  Error:
+  failed to process sample
+  # To display the perf.data header info, please use --header/--header-only options.
+  #
+
+In this case, it thought the data has a regular file header since the
+output is not a pipe.  But actually it doesn't have one and has a pipe
+file header.  At the end of the session, it tries to rewrite the
+regular file header with updated features and it overwrites the data
+just follows the pipe header.
+
+Fix it by checking either the input and the output is a pipe.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-inject.c |  1 +
- tools/perf/util/header.c    | 12 ++++++------
- tools/perf/util/header.h    |  2 +-
- tools/perf/util/session.c   |  8 ++++----
- tools/perf/util/session.h   |  4 ++--
- 5 files changed, 14 insertions(+), 13 deletions(-)
+ tools/perf/builtin-inject.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 3cffb12f01be..d99f4538d2fc 100644
+index d99f4538d2fc..7c126597d3f5 100644
 --- a/tools/perf/builtin-inject.c
 +++ b/tools/perf/builtin-inject.c
-@@ -992,6 +992,7 @@ int cmd_inject(int argc, const char **argv)
+@@ -46,6 +46,7 @@ struct perf_inject {
+ 	bool			jit_mode;
+ 	bool			in_place_update;
+ 	bool			in_place_update_dry_run;
++	bool			is_pipe;
+ 	const char		*input_name;
+ 	struct perf_data	output;
+ 	u64			bytes_written;
+@@ -126,7 +127,7 @@ static int perf_event__repipe_attr(struct perf_tool *tool,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!inject->output.is_pipe)
++	if (!inject->is_pipe)
+ 		return 0;
+ 
+ 	return perf_event__repipe_synth(tool, event);
+@@ -825,14 +826,14 @@ static int __cmd_inject(struct perf_inject *inject)
+ 	if (!inject->itrace_synth_opts.set)
+ 		auxtrace_index__free(&session->auxtrace_index);
+ 
+-	if (!data_out->is_pipe && !inject->in_place_update)
++	if (!inject->is_pipe && !inject->in_place_update)
+ 		lseek(fd, output_data_offset, SEEK_SET);
+ 
+ 	ret = perf_session__process_events(session);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!data_out->is_pipe && !inject->in_place_update) {
++	if (!inject->is_pipe && !inject->in_place_update) {
+ 		if (inject->build_ids)
+ 			perf_header__set_feat(&session->header,
+ 					      HEADER_BUILD_ID);
+@@ -991,7 +992,10 @@ int cmd_inject(int argc, const char **argv)
+ 	}
  
  	data.path = inject.input_name;
- 	inject.session = __perf_session__new(&data, inject.output.is_pipe,
-+					     perf_data__fd(&inject.output),
+-	inject.session = __perf_session__new(&data, inject.output.is_pipe,
++	if (!strcmp(inject.input_name, "-") || inject.output.is_pipe)
++		inject.is_pipe = true;
++
++	inject.session = __perf_session__new(&data, inject.is_pipe,
+ 					     perf_data__fd(&inject.output),
  					     &inject.tool);
  	if (IS_ERR(inject.session))
- 		return PTR_ERR(inject.session);
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 0158d2945bab..4f1a7b6df7ee 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -3865,10 +3865,10 @@ static int perf_file_section__process(struct perf_file_section *section,
- static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
- 				       struct perf_header *ph,
- 				       struct perf_data* data,
--				       bool repipe)
-+				       bool repipe, int repipe_fd)
- {
- 	struct feat_fd ff = {
--		.fd = STDOUT_FILENO,
-+		.fd = repipe_fd,
- 		.ph = ph,
- 	};
- 	ssize_t ret;
-@@ -3891,13 +3891,13 @@ static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
- 	return 0;
- }
- 
--static int perf_header__read_pipe(struct perf_session *session)
-+static int perf_header__read_pipe(struct perf_session *session, int repipe_fd)
- {
- 	struct perf_header *header = &session->header;
- 	struct perf_pipe_file_header f_header;
- 
- 	if (perf_file_header__read_pipe(&f_header, header, session->data,
--					session->repipe) < 0) {
-+					session->repipe, repipe_fd) < 0) {
- 		pr_debug("incompatible file format\n");
- 		return -EINVAL;
- 	}
-@@ -3995,7 +3995,7 @@ static int evlist__prepare_tracepoint_events(struct evlist *evlist, struct tep_h
- 	return 0;
- }
- 
--int perf_session__read_header(struct perf_session *session)
-+int perf_session__read_header(struct perf_session *session, int repipe_fd)
- {
- 	struct perf_data *data = session->data;
- 	struct perf_header *header = &session->header;
-@@ -4016,7 +4016,7 @@ int perf_session__read_header(struct perf_session *session)
- 	 * We can read 'pipe' data event from regular file,
- 	 * check for the pipe header regardless of source.
- 	 */
--	err = perf_header__read_pipe(session);
-+	err = perf_header__read_pipe(session, repipe_fd);
- 	if (!err || perf_data__is_pipe(data)) {
- 		data->is_pipe = true;
- 		return err;
-diff --git a/tools/perf/util/header.h b/tools/perf/util/header.h
-index ae6b1cf19a7d..c9e3265832d9 100644
---- a/tools/perf/util/header.h
-+++ b/tools/perf/util/header.h
-@@ -115,7 +115,7 @@ struct perf_session;
- struct perf_tool;
- union perf_event;
- 
--int perf_session__read_header(struct perf_session *session);
-+int perf_session__read_header(struct perf_session *session, int repipe_fd);
- int perf_session__write_header(struct perf_session *session,
- 			       struct evlist *evlist,
- 			       int fd, bool at_exit);
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index f76b18e3c061..a40dd37ac71e 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -102,11 +102,11 @@ static int perf_session__deliver_event(struct perf_session *session,
- 				       struct perf_tool *tool,
- 				       u64 file_offset);
- 
--static int perf_session__open(struct perf_session *session)
-+static int perf_session__open(struct perf_session *session, int repipe_fd)
- {
- 	struct perf_data *data = session->data;
- 
--	if (perf_session__read_header(session) < 0) {
-+	if (perf_session__read_header(session, repipe_fd) < 0) {
- 		pr_err("incompatible file format (rerun with -v to learn more)\n");
- 		return -1;
- 	}
-@@ -186,7 +186,7 @@ static int ordered_events__deliver_event(struct ordered_events *oe,
- }
- 
- struct perf_session *__perf_session__new(struct perf_data *data,
--					 bool repipe,
-+					 bool repipe, int repipe_fd,
- 					 struct perf_tool *tool)
- {
- 	int ret = -ENOMEM;
-@@ -211,7 +211,7 @@ struct perf_session *__perf_session__new(struct perf_data *data,
- 		session->data = data;
- 
- 		if (perf_data__is_read(data)) {
--			ret = perf_session__open(session);
-+			ret = perf_session__open(session, repipe_fd);
- 			if (ret < 0)
- 				goto out_delete;
- 
-diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-index 9d19d2a918c6..5d8bd14a0a39 100644
---- a/tools/perf/util/session.h
-+++ b/tools/perf/util/session.h
-@@ -55,13 +55,13 @@ struct decomp {
- struct perf_tool;
- 
- struct perf_session *__perf_session__new(struct perf_data *data,
--					 bool repipe,
-+					 bool repipe, int repipe_fd,
- 					 struct perf_tool *tool);
- 
- static inline struct perf_session *perf_session__new(struct perf_data *data,
- 						     struct perf_tool *tool)
- {
--	return __perf_session__new(data, false, tool);
-+	return __perf_session__new(data, false, -1, tool);
- }
- 
- void perf_session__delete(struct perf_session *session);
 -- 
 2.32.0.93.g670b81a890-goog
 
