@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361DB3C85F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A233C85FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239460AbhGNOWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51898 "EHLO mail.kernel.org"
+        id S232294AbhGNOX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:23:56 -0400
+Received: from mga14.intel.com ([192.55.52.115]:33729 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231543AbhGNOWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:22:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E64613D2;
-        Wed, 14 Jul 2021 14:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626272364;
-        bh=Z6upmCVFtsDIQuNaf3MDnsNQ47RpnTy+0pUzdx4gsOY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ISq87PJFGQ+QY8QX/hSqifenHkHQ64DouZ0oR5webTjVggnG4wUBDLPQM4GVYS1Ni
-         YoCjbclkDcKepZz97LfJvVaNegbbjUg6XFzZtZS5Qs/V11BSDOGDbBNkfqA5G11lPa
-         16H2wI8wkfff6STRN0YP0987cJuGKPPNLRQYPI3ElO88vCZ7Tu4GhT/UrFkEHm4yTr
-         cFwQjIE87XFbw5WBDu9bI7KYOg/7LczFBQ7RdOTo51stikoH/skGNkZFco5DjLxVNv
-         HEehnuDjFKSyCe3eUCrrPPKBoZjmovoMvKAW9Cbj5R3Zj8IHIsixWCVZCm4bKLVDcQ
-         i9MXobHZuqTAg==
-Received: by mail-ed1-f44.google.com with SMTP id t2so2946098edd.13;
-        Wed, 14 Jul 2021 07:19:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532tV96ZeqRybE5E+VrEaZVrB8XsO4yPAK+ujXp6EuM/ArjnhSuj
-        4+amwNZWjlsNJADGnEIz7uZInGjvwsrpiplo0g==
-X-Google-Smtp-Source: ABdhPJznKXoJRvB40YWJoo+5QJLF5eujnJu6K23tda1AvQp+YMebU+bksEpUgf6yrVl8h9VjXWSjQlEug6nip9TThXY=
-X-Received: by 2002:a50:9345:: with SMTP id n5mr14184472eda.289.1626272362692;
- Wed, 14 Jul 2021 07:19:22 -0700 (PDT)
+        id S232097AbhGNOXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:23:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210170332"
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="210170332"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 07:21:01 -0700
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="413300245"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 07:20:58 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m3fkq-00DLq4-QY; Wed, 14 Jul 2021 17:20:52 +0300
+Date:   Wed, 14 Jul 2021 17:20:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     shruthi.sanil@intel.com,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, kris.pan@linux.intel.com,
+        Mark Gross <mgross@linux.intel.com>,
+        srikanth.thokala@intel.com,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH v4 1/2] dt-bindings: timer: Add bindings for Intel Keem
+ Bay SoC Timer
+Message-ID: <YO7yxEgdzobD1jeu@smile.fi.intel.com>
+References: <20210628061410.8009-1-shruthi.sanil@intel.com>
+ <20210628061410.8009-2-shruthi.sanil@intel.com>
+ <20210714024756.GA1355219@robh.at.kernel.org>
+ <YO6ome7Opd6kjqua@smile.fi.intel.com>
+ <CAL_Jsq+4vEfL5ZQzREXU7Mo1AUx1ZbdHTmJDwauEL890O7S7qg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210712085535.11907-1-s.riedmueller@phytec.de>
- <20210712085535.11907-6-s.riedmueller@phytec.de> <20210714021904.GA1312716@robh.at.kernel.org>
- <99b0b3ad4eac3a5653e0e4630bf59fc63eef114d.camel@phytec.de>
-In-Reply-To: <99b0b3ad4eac3a5653e0e4630bf59fc63eef114d.camel@phytec.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 14 Jul 2021 08:19:10 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+xJsmae3cu1oVdiUPnUWPb+61UYzMYMq4FaQ1M9Su-sQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+xJsmae3cu1oVdiUPnUWPb+61UYzMYMq4FaQ1M9Su-sQ@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] media: dt-bindings: mt9p031: Convert bindings to yaml
-To:     =?UTF-8?Q?Stefan_Riedm=C3=BCller?= <S.Riedmueller@phytec.de>
-Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_Jsq+4vEfL5ZQzREXU7Mo1AUx1ZbdHTmJDwauEL890O7S7qg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 4:01 AM Stefan Riedm=C3=BCller
-<S.Riedmueller@phytec.de> wrote:
->
-> Hi Rob,
->
-> On Tue, 2021-07-13 at 20:19 -0600, Rob Herring wrote:
-> > On Mon, Jul 12, 2021 at 10:55:34AM +0200, Stefan Riedmueller wrote:
-> > > Convert mt9p031 sensor bindings to yaml schema. Also update the
-> > > MAINTAINERS entry.
-> > >
-> > > Although input-clock-frequency and pixel-clock-frequency have not bee=
-n
-> > > definded as endpoint propierties in the textual bindings, the sensor
-> > > does parse them from the endpoint. Thus move these properties to the
-> > > endpoint in the new yaml bindings.
-> > >
-> > > Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> > > ---
-> > >  .../bindings/media/i2c/aptina,mt9p031.yaml    | 75 +++++++++++++++++=
-++
-> > >  .../devicetree/bindings/media/i2c/mt9p031.txt | 40 ----------
-> > >  MAINTAINERS                                   |  1 +
-> > >  3 files changed, 76 insertions(+), 40 deletions(-)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> > >  delete mode 100644
-> > > Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> > >
-> > > diff --git
-> > > a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> > > b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> > > new file mode 100644
-> > > index 000000000000..ad9a2db73d86
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> > > @@ -0,0 +1,75 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/i2c/aptina,mt9p031.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Aptina 1/2.5-Inch 5Mp CMOS Digital Image Sensor
-> > > +
-> > > +maintainers:
-> > > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > +
-> > > +description: |
-> > > +  The Aptina MT9P031 is a 1/2.5-inch CMOS active pixel digital image
-> > > sensor
-> > > +  with an active array size of 2592H x 1944V. It is programmable thr=
-ough
-> > > a
-> > > +  simple two-wire serial interface.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - aptina,mt9p031
-> > > +      - aptina,mt9p031m
-> > > +
-> > > +  reg:
-> > > +    description: I2C device address
-> > > +    maxItems: 1
-> > > +
-> > > +  reset-gpios:
-> > > +    maxItems: 1
-> > > +    description: Chip reset GPIO
-> > > +
-> > > +  port:
-> > > +    $ref: /schemas/graph.yaml#/$defs/port-base
-> > > +    additionalProperties: false
-> > > +
-> > > +    properties:
-> > > +      endpoint:
-> > > +        $ref: /schemas/media/video-interfaces.yaml#
+On Wed, Jul 14, 2021 at 08:07:44AM -0600, Rob Herring wrote:
+> On Wed, Jul 14, 2021 at 3:04 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Jul 13, 2021 at 08:47:56PM -0600, Rob Herring wrote:
+> > > On Mon, Jun 28, 2021 at 11:44:09AM +0530, shruthi.sanil@intel.com wrote:
 > >
-> > Doesn't look like you use any properties from video-interfaces.yaml. Yo=
-u
-> > should just reference graph.yaml#/$defs/endpoint-base instead.
->
-> Thanks for your comment. It made me realize, that I have something wrong.=
- The
-> driver does use properties from the video interface as it parses the bus
-> configuration from the endpoint. But I thought these properties were
-> implicitly used by referencing the video-interfaces schema. Now I assume =
-that
-> I have to mention them here explicitly. Correct?
+> > > > +  The parent node represents the common general configuration details and
+> > > > +  the child nodes represents the counter and timers.
+> > >
+> > > I don't think all the child nodes are necessary. Are the counters and
+> > > timers configurable (say on another SoC)? If not, then a single node
+> > > here would suffice.
+> >
+> > If you may notice the children may have different properties that can't be
+> > known ahead, such as IRQ line. On some platforms it may be this mapping, on
+> > another it maybe different.
+> 
+> What I noticed is it's all the same clock and 1 interrupt for each
+> timer can be just a single 'interrupts' property with 8 entries.
 
-Yes, because presumably you only support some subset of possible values.
+This may work.
 
-Rob
+> Is there a platform that's different or that's a hypothetical? Because
+> hypothetically, every aspect of every IP could change. But we don't
+> try to parameterize everything in DT. It's a judgement call between
+> implying things from compatible and explicit DT properties.
+> 
+> > With all respect for the simplification I think we can't do it here.
+> 
+> You can. Any data in DT could be in the kernel. It's a question of
+> balance, not can or can't.
+
+Not only, it's also matters of what exactly hardware is: 8 timers or timer with
+8 channels. If it's the former one, I prefer to have DT exactly like originally
+suggested, otherwise I will agree on your proposal.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
