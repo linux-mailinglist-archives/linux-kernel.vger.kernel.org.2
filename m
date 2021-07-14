@@ -2,104 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA103C804E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275783C8053
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238654AbhGNIgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238653AbhGNIgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:36:41 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156D8C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:33:50 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso3217977pjx.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MBGbqvseaowVXgAUsLtxjTmL1uju2aQqqvQPrdOEUMI=;
-        b=DJ9YnE3ngEe0jYQuWtwKj6BzT1epPGW0zyW78ZbCveShTZTUHkL/JiQP9S6bzo8F8F
-         l3paefGgmM9pRe5VtkkRq+WeH7yGtHUihQ0DsOtD1TwMVV0fdr92lRnSgTk1ySg6TuXA
-         Fzk+wh2ARsgs/b/dkmLIeNHk7sU+KLvZzM2oHC05J0oDHNC4I9dppJ0FjIw757H7JiwK
-         nXVqD+jZ2zq16S9diEyUYkwx0/MCtzlVoOUQLcmbXGoaaQFXb7fC12Hgmxk4cZjqrRlM
-         WrNJzOwc0/VkCV6CYJtEU/4gBDZPIKMo7GC1bBaS7EqQuXtUiN+aaPbQQwpFsHeQaTT1
-         W7Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MBGbqvseaowVXgAUsLtxjTmL1uju2aQqqvQPrdOEUMI=;
-        b=listR97t4afb2QRapBezLXO1kY3FqQ+2rhR0tjDtIgfQZ33lQ9EF9v/y/0nNxPuf1c
-         wmLAqkrZVgdN0Tzusa75YykZ0cMJe4Dfx3/DpeCLXRzl5c30osByRA5WVGS5+DHxIMzp
-         ZfGNf5lNpVMu/8Utfl/TXzdxueXZlXezhJI823i5fvm9CKJfDbiBTnB8ggCul5Q2Ve3V
-         nlqeyVRkmLJpq/hjhuhLENUP3tLL0BzoEmtpeWhATvWkxJAGPNOusUZBMFRYbYLxAU65
-         jt/VWfHNU9G0/xlMTie3GWtPOBEcMhUR4XObSKwouJMnuf6cEWO/EGAbep8tVJdYrKbf
-         qYGQ==
-X-Gm-Message-State: AOAM533g/hWmb6tHujYfiONLre6e4eO9JP3OtJytcRPVWI9PWbiYXyRv
-        sYYVnPg+M/aG1g8GFK90v32j
-X-Google-Smtp-Source: ABdhPJxVPTaoeeFm4HleyI7+aCvHDOhg5OcAq43DlRs3qQUlyHhh3E3vCjq9zoPN+9VtgoXRvcvR/g==
-X-Received: by 2002:a17:90a:5907:: with SMTP id k7mr8764652pji.196.1626251629553;
-        Wed, 14 Jul 2021 01:33:49 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.13.241])
-        by smtp.gmail.com with ESMTPSA id p40sm1774446pfw.79.2021.07.14.01.33.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 01:33:49 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, smohanad@codeaurora.org,
-        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
-        skananth@codeaurora.org, vpernami@codeaurora.org,
-        vbadigan@codeaurora.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v6 3/3] MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
-Date:   Wed, 14 Jul 2021 14:03:16 +0530
-Message-Id: <20210714083316.7835-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210714083316.7835-1-manivannan.sadhasivam@linaro.org>
-References: <20210714083316.7835-1-manivannan.sadhasivam@linaro.org>
+        id S238685AbhGNIg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:36:57 -0400
+Received: from mga06.intel.com ([134.134.136.31]:53376 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238666AbhGNIg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:36:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="271420774"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="271420774"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 01:33:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="571083606"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Jul 2021 01:33:54 -0700
+Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        viresh.kumar@linaro.org, stefanha@redhat.com,
+        gregkh@linuxfoundation.org
+References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
+ <20210713113607-mutt-send-email-mst@kernel.org>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <16bed918-f26a-cc20-0566-54c70d453179@intel.com>
+Date:   Wed, 14 Jul 2021 16:33:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210713113607-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for Qualcomm PCIe Endpoint driver and its
-devicetree binding. While at it, let's also fix the PCIE RC entry to
-cover only the RC driver.
+On 2021/7/13 23:38, Michael S. Tsirkin wrote:
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- MAINTAINERS | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> I think we should tweak this such that we add multiple buffers but
+> only make them visible to host after all add commands were successful.
+> With split this is possible by deffering avail idx update,
+> with packed by deferring update of the avail bit in the descriptor.
+> I'll write a patch to add an API like that to virtio, then we
+> can switch to that.
+>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..cdd370138b9f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14254,7 +14254,15 @@ M:	Stanimir Varbanov <svarbanov@mm-sol.com>
- L:	linux-pci@vger.kernel.org
- L:	linux-arm-msm@vger.kernel.org
- S:	Maintained
--F:	drivers/pci/controller/dwc/*qcom*
-+F:	drivers/pci/controller/dwc/pcie-qcom.c
-+
-+PCIE ENDPOINT DRIVER FOR QUALCOMM
-+M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+L:	linux-pci@vger.kernel.org
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-+F:	drivers/pci/controller/dwc/pcie-qcom-ep.c
- 
- PCIE DRIVER FOR ROCKCHIP
- M:	Shawn Lin <shawn.lin@rock-chips.com>
--- 
-2.25.1
+That's great !  Looking forward to seeing that API.
+
 
