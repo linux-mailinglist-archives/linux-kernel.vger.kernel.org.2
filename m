@@ -2,128 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C253C82CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21DF3C82F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238774AbhGNKa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:30:56 -0400
-Received: from ofcsgdbm.dwd.de ([141.38.3.245]:35727 "EHLO ofcsgdbm.dwd.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237788AbhGNKax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:30:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ofcsg2dn3.dwd.de (Postfix) with ESMTP id 4GPtxX3kqnz2wYp
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
-        content-type:content-type:mime-version:references:message-id
-        :in-reply-to:subject:subject:from:from:date:date:received
-        :received:received:received:received:received:received:received;
-         s=dwd-csg20210107; t=1626258480; x=1627468081; bh=yzWLLNTYHL5hK
-        hXO7ycHIL/Wes7VmJaRNg+XaDlat5I=; b=6tXejo+vRHUKeiosnRxGkuJfbTAtr
-        FP/M0Cl/me6nxr41eL6Ak385NSOUPhuQi9LneAPQmHDqejElC8HL1W5E3rbW1r2p
-        I9GbXw5IA4ikE9gKOChqp3xM6hAaKNPsO9gZH9k0B+ww86oZU5xYkqvnBh+bR0h7
-        8j5nnHX5hhanJKYJzVfiW26bMpikKs/wHVKs89wEjvNTQN35ifE0XNG6bJvvNdGi
-        iTQzzGyYbFZ3Ne9V9kX+NZc1sNS5wu3jArLrws/8xCkV8pVa4D2f0y2cx7nSWoJz
-        /Eanff5WeFL6bUMkNjX0oVmRIa93tUeUIpj7MFjeGOaS1zgkQjcPwRtuQ==
-X-Virus-Scanned: by amavisd-new at csg.dwd.de
-Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
-        by localhost (ofcsg2dn3.dwd.de [172.30.232.26]) (amavisd-new, port 10024)
-        with ESMTP id nTi5zGn2chxi for <linux-kernel@vger.kernel.org>;
-        Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
-Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 570C5C9024FE
-        for <root@ofcsg2dn3.dwd.de>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
-Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 4BCD4C902581
-        for <root@ofcsg2dn3.dwd.de>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
-X-DDEI-TLS-USAGE: Unused
-Received: from ofcsgdbm.dwd.de (unknown [172.30.232.26])
-        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
-        for <root@ofcsg2dn3.dwd.de>; Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
-Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
- Wed, 14 Jul 2021 10:28:00 -0000
-Received: from ofcsg2dvf1.dwd.de (ofcsg2dvf1.dwd.de [172.30.232.10])
-        by ofcsg2dn3.dwd.de (Postfix) with ESMTPS id 4GPtxX1npFz2xjg;
-        Wed, 14 Jul 2021 10:28:00 +0000 (UTC)
-Received: from ofmailhub.dwd.de (oflxs04.dwd.de [141.38.39.196])
-        by ofcsg2dvf1.dwd.de  with ESMTP id 16EARxJC024861-16EARxJD024861;
-        Wed, 14 Jul 2021 10:27:59 GMT
-Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
-        by ofmailhub.dwd.de (Postfix) with ESMTP id A002EE27A3;
-        Wed, 14 Jul 2021 10:27:59 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 10:27:59 +0000 (GMT)
-From:   Holger Kiehl <Holger.Kiehl@dwd.de>
-To:     Jiri Slaby <jirislaby@kernel.org>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-In-Reply-To: <a59b73aa-24f6-7395-6b99-d6c62feb0fc4@kernel.org>
-Message-ID: <83b8a9a7-a29c-526-d36-78737cb9f56b@praktifix.dwd.de>
-References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de> <YO56HTE3k95JLeje@kroah.com> <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de> <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
- <a59b73aa-24f6-7395-6b99-d6c62feb0fc4@kernel.org>
+        id S239144AbhGNKdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:33:45 -0400
+Received: from mail-yb1-f173.google.com ([209.85.219.173]:40721 "EHLO
+        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238368AbhGNKdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 06:33:43 -0400
+Received: by mail-yb1-f173.google.com with SMTP id p22so2358830yba.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ggejrFIHU4IU1zUZ09RQHXUpmIfLwxhtZeNfhpEhkw0=;
+        b=LfZvYfzouybIJIZ2GnjkLMwv3EUsmnGzVsIuKMfbs/zU0etPUMavJTsV/OeUqU4DXi
+         kwNlvU7ySI3RPtbzTTWYBU53LaEhIwJ/TOdwt2VA4R9liVPoM1ZIWuZd5BDvMbkq9ps5
+         sqqFuszv/QfBE+ExD6PjAVhl3W4YUBUOMM1YWylHFrB1VD2gesv2wJ/2+03KDJV3WO9o
+         332S9aXP46aR1GaFtJBiRhmfCAlB3ZYATQbg2SxoHF5aSYFnJmUQCgkQMjbDiKwbVjQP
+         MIKdbFw+G85tRyoLLP0KSIJo0QrSPvoINOpUsktGKbk5mSezmUNu/3jQVb6wgJInMv2/
+         uT5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ggejrFIHU4IU1zUZ09RQHXUpmIfLwxhtZeNfhpEhkw0=;
+        b=AHFhh/BNFWXw17fLqGxlVMDpBtaCoTX79jYBfr0FbxYyffQKpnhgHc/kE4jpPz1bV6
+         KENzo2w3nVO/ZBLTQrzyqX7AY1vpyhUR/jcuh3E+n+5lCQ3/kM5O2mkz/EKOrDpedSwk
+         ZYjyRBN0ejX3UaZWJEN4374zrkm7XJo1yrvHq7OmHfhIvo3m/e0fT0qLa7bB8FTSdcBZ
+         dhiVf4/NZd6WA4h7kdF7rDVeC/MDkV4P0XDSe321jRZLp3zDRNEgvH2NdLAyAXzVAFoq
+         QKqTo8+Ee8jDjtSDJUpRQuTr4YMzRjaHViqY6K228bol9Lp3Tw0PUigv3Cp7GR8s0fLF
+         KyQw==
+X-Gm-Message-State: AOAM531uk9V4CPk2VtRKsixKHacaxkxeYPv7B3OZcSi3EQ8zKP9jU8DP
+        hiv2/ubRr7pbTtShOeFaGMF0I60hLn4gu2hyDUx2KA==
+X-Google-Smtp-Source: ABdhPJwohQQfGujAxrjDnl/WzZ7yPW3sL98NAebnW7oqyg68J8JI4cEvHL8KAYJscK8ikkCta38YZuBlDiOPCy5NZ0c=
+X-Received: by 2002:a25:fc1c:: with SMTP id v28mr12809647ybd.408.1626258575771;
+ Wed, 14 Jul 2021 03:29:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-FE-Policy-ID: 2:2:1:SYSTEM
-X-TMASE-Version: DDEI-5.1-8.6.1018-26280.007
-X-TMASE-Result: 10--11.724800-10.000000
-X-TMASE-MatchedRID: csPTYAMX1+GWfDtBOz4q28bYuTb6+cQg69aS+7/zbj+qvcIF1TcLYIR4
-        RLK5G1ih+5xFZGxCCqj89WDKQGB2Lg6ELeSw1PSqbMGKOuLn5FUB4JHtiamkLOyiG9Aw9qJGS6j
-        EzaLelQhA5GooFgjK1/fNFVA4Doasq6H6eyKIRsNZMZ6MZ0H1Ugv/9UzFeXITP4H+2nyK0FPiKq
-        oPfA0a+hkNsHcU+86WuC2c3pw4Rj9Dq2SVEk72KAtuKBGekqUpIG4YlbCDECvS3Rxy14J4N4p0C
-        7+/C6eQTyCQ6yWirTTnV+U0dx6aYoKeC+afFO7XPpCuffGH9zI=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-DDEI-PROCESSED-RESULT: Safe
+References: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
+ <1626255285-5079-3-git-send-email-linyunsheng@huawei.com> <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
+In-Reply-To: <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Wed, 14 Jul 2021 13:28:55 +0300
+Message-ID: <CAC_iWj+HrRBtscrgR041OJov9MtaKnosw=w8A0L3tBx5e=Cguw@mail.gmail.com>
+Subject: Re: [PATCH rfc v5 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 14 Jul 2021 at 13:18, Jesper Dangaard Brouer <jbrouer@redhat.com> wrote:
+>
+>
+>
+> On 14/07/2021 11.34, Yunsheng Lin wrote:
+> > As suggested by Alexander, "A DMA mapping should be page
+> > aligned anyway so the lower 12 bits would be reserved 0",
+> > so it might make more sense to repurpose the lower 12 bits
+> > of the dma address to store the frag count for frag page
+> > support in page pool for 32 bit systems with 64 bit dma,
+> > which should be rare those days.
+>
+> Do we have any real driver users with 32-bit arch and 64-bit DMA, that
+> want to use this new frag-count system you are adding to page_pool?
+>
+> This "lower 12-bit use" complicates the code we need to maintain
+> forever. My guess is that it is never used, but we need to update and
+> maintain it, and it will never be tested.
+>
+> Why don't you simply reject using page_pool flag PP_FLAG_PAGE_FRAG
+> during setup of the page_pool for this case?
+>
+>   if ((pool->p.flags & PP_FLAG_PAGE_FRAG) &&
+>       (sizeof(dma_addr_t) > sizeof(unsigned long)))
+>     goto reject-setup;
+>
 
-On Wed, 14 Jul 2021, Jiri Slaby wrote:
++1
 
-> On 14. 07. 21, 10:15, Holger Kiehl wrote:
-> >> Yes, will try to do that. I think it will take some time ...
-> >>
-> > Hmm, I am doing something wrong?
-> 
-> No, you are not: -rcs are not tagged.
-> 
-> >     git clone
-> >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> >     linux-5.13.y
-> >     cd linux-5.13.y/
-> >     git tag|grep v5.13
-> >     v5.13
-> >     v5.13-rc1
-> >     v5.13-rc2
-> >     v5.13-rc3
-> >     v5.13-rc4
-> >     v5.13-rc5
-> >     v5.13-rc6
-> >     v5.13-rc7
-> >     v5.13.1
-> > 
-> > There is no v5.13.2-rc1. It is my first time with 'git bisect'. Must be
-> > doing something wrong. How can I get the correct git kernel rc version?
-> 
-> So just bisect v5.13.1..linux-5.13.y.
-> 
-But what do I say for bad?
-
-   git bisect bad linux-5.13.y
-   error: Bad rev input: linux-5.13.y
-
-Just saying:
-
-   git bisect bad
-   git bisect good v5.13.1
-   Bisecting: a merge base must be tested
-   [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
-
-If I read this correctly it now set v5.13 as bad and v5.13.1 as good.
-How to set the correct bad?
-
-Holger
+>
+> > For normal system, the dma_addr[1] in 'struct page' is not
+> > used, so we can reuse one of the dma_addr for storing frag
+> > count, which means how many frags this page might be splited
+> > to.
+> >
+> > The PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to decide
+> > where to store the frag count, as the "sizeof(dma_addr_t) >
+> > sizeof(unsigned long)" is false for most systems those days,
+> > so hopefully the compiler will optimize out the unused code
+> > for those systems.
+> >
+> > The newly added page_pool_set_frag_count() should be called
+> > before the page is passed to any user. Otherwise, call the
+> > newly added page_pool_atomic_sub_frag_count_return().
+> >
+> > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> > ---
+> >   include/linux/mm_types.h |  8 +++++--
+> >   include/net/page_pool.h  | 54 ++++++++++++++++++++++++++++++++++++++++++------
+> >   net/core/page_pool.c     | 10 +++++++++
+> >   3 files changed, 64 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index d33d97c..82bcbb0 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -103,11 +103,15 @@ struct page {
+> >                       unsigned long pp_magic;
+> >                       struct page_pool *pp;
+> >                       unsigned long _pp_mapping_pad;
+> > +                     atomic_long_t pp_frag_count;
+> >                       /**
+> >                        * @dma_addr: might require a 64-bit value on
+> > -                      * 32-bit architectures.
+> > +                      * 32-bit architectures, if so, store the lower 32
+> > +                      * bits in pp_frag_count, and a DMA mapping should
+> > +                      * be page aligned, so the frag count can be stored
+> > +                      * in lower 12 bits for 4K page size.
+> >                        */
+> > -                     unsigned long dma_addr[2];
+> > +                     unsigned long dma_addr;
+> >               };
+> >               struct {        /* slab, slob and slub */
+> >                       union {
+> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> > index 8d7744d..ef449c2 100644
+> > --- a/include/net/page_pool.h
+> > +++ b/include/net/page_pool.h
+> > @@ -198,19 +198,61 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+> >       page_pool_put_full_page(pool, page, true);
+> >   }
+> >
+> > +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT      \
+> > +                     (sizeof(dma_addr_t) > sizeof(unsigned long))
+> > +
+> >   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+> >   {
+> > -     dma_addr_t ret = page->dma_addr[0];
+> > -     if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> > -             ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+> > +     dma_addr_t ret = page->dma_addr;
+> > +
+> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+> > +             ret <<= 32;
+> > +             ret |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
+> > +     }
+> > +
+> >       return ret;
+> >   }
+> >
+> >   static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> >   {
+> > -     page->dma_addr[0] = addr;
+> > -     if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> > -             page->dma_addr[1] = upper_32_bits(addr);
+> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+> > +             atomic_long_set(&page->pp_frag_count, addr & PAGE_MASK);
+> > +             addr >>= 32;
+> > +     }
+> > +
+> > +     page->dma_addr = addr;
+> > +}
+> > +
+> > +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+> > +                                                       long nr)
+> > +{
+> > +     long frag_count = atomic_long_read(&page->pp_frag_count);
+> > +     long ret;
+> > +
+> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+> > +             if ((frag_count & ~PAGE_MASK) == nr)
+> > +                     return 0;
+> > +
+> > +             ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+> > +             WARN_ON((ret & PAGE_MASK) != (frag_count & PAGE_MASK));
+> > +             ret &= ~PAGE_MASK;
+> > +     } else {
+> > +             if (frag_count == nr)
+> > +                     return 0;
+> > +
+> > +             ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+> > +             WARN_ON(ret < 0);
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static inline void page_pool_set_frag_count(struct page *page, long nr)
+> > +{
+> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> > +             nr |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
+> > +
+> > +     atomic_long_set(&page->pp_frag_count, nr);
+> >   }
+> >
+> >   static inline bool is_page_pool_compiled_in(void)
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index 78838c6..0082f33 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -198,6 +198,16 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+> >       if (dma_mapping_error(pool->p.dev, dma))
+> >               return false;
+> >
+> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+> > +         WARN_ON(pool->p.flags & PP_FLAG_PAGE_FRAG &&
+> > +                 dma & ~PAGE_MASK)) {
+> > +             dma_unmap_page_attrs(pool->p.dev, dma,
+> > +                                  PAGE_SIZE << pool->p.order,
+> > +                                  pool->p.dma_dir,
+> > +                                  DMA_ATTR_SKIP_CPU_SYNC);
+> > +             return false;
+> > +     }
+> > +
+> >       page_pool_set_dma_addr(page, dma);
+> >
+> >       if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> >
+>
