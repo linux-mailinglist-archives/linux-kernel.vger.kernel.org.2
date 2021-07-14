@@ -2,128 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF593C941D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF983C941F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237356AbhGNW7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 18:59:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237252AbhGNW7U (ORCPT
+        id S237365AbhGNXAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234988AbhGNXAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 18:59:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626303388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p53AiDq4RRf5s7Uh7mGyD6/R6lQu0pl6+URNGF7eeJg=;
-        b=XL2mBR+3yVDMmwBxEAC2hCfs5f1q08TtP++VAZxkLV0an87ImUf0IT6rZdkb564Of1dzca
-        nRNFVz7JBTJm5X7MZ1WCzzpIYMYyWUZ6znhZ0DfT0D3FI2LSRU9IQaRoEplL+6Pivcg3Hc
-        aee8Xktnm9xrdKsWygaV1ich8l5s4yY=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-I1FCiPKFPLmDWmb2TzdSng-1; Wed, 14 Jul 2021 18:56:27 -0400
-X-MC-Unique: I1FCiPKFPLmDWmb2TzdSng-1
-Received: by mail-oi1-f199.google.com with SMTP id u30-20020a056808151eb029025a08429ca1so2197442oiw.23
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:56:26 -0700 (PDT)
+        Wed, 14 Jul 2021 19:00:44 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB75C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:57:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id w5-20020a0569021005b029055b51419c7dso4800188ybt.23
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=tbdzyFamT8pQc1mVhk+2w4TImGXTQGfmsYo5ttrPBMU=;
+        b=dE4Ts12Dib3b6drnj9ehCuKIL5IDPt2R/QW/Y5We/zaTkYzbjMcXxdPeM5xLYulvCV
+         zxk2pC5zASse0Z193x4YZWlnJYWxB1Dq36jJm5EMiceaZr7pZPpkLcfSbSTXi8Aqfoy0
+         EMVxXwqrWnC/FzxnwhNHtfCRxbPMZMkJ7QcIFKgnCoH02TVhr3nq1f8TmT/ITZGopuAv
+         6jaDx01EAEf8LAU9EOAkTLrCHCM69Jf4ZXcZNXMB4vGD3utoAdeLGDfNUII9wIxxb235
+         YKXoyBi9q9CXr8a0CpAQtc2SE3bptrRpTTZeEUf+xZPXR+ozOdrQXl+ZqqCLzKCZSGpL
+         AgKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p53AiDq4RRf5s7Uh7mGyD6/R6lQu0pl6+URNGF7eeJg=;
-        b=YjhB1RzOKEIoZ7INXqS5lTo6STyoFynQNW1WyiBNIYeAwZ5GSeglJBgSbUaGbM5ngi
-         IjvkhgCavcJ+/pKqr1BfNyRia2aDZQ3yHScAFynO3YPHpQhhe7LhXad33v8ADG8d+wTv
-         Wcv3WdrlOPrl9wP031y4bzKy6ZQhcJtAKEECiwy1EjtQ+7Bdwct9nfnzR02aLoy+B1GT
-         aJjzXWC8aWAULJQXhX5wqPPSf24Zi9KCoBwE4kQd/f8MRcTXWm2qEGA2hr4G+/Vy30zL
-         phmmOkpUaOYPctWQ0tZQdNA+L2NIDvZ/QkRm0tmIrLtxuYkYYISmIqHSYa/3Exq+nkqc
-         p1uQ==
-X-Gm-Message-State: AOAM533vKFW39KzRmJO9fy1X8C+0XHu0l9StJX/FjJBCJ6g/LDqajqOe
-        AEAfsWt41qR8I4/H514c63puZZfYe9mzqXyRQVgapviOH+J4PN2ypTgaBvmr7DsJvTKlc2O8Y3r
-        clcWbLAZBG1YFGvxmCnOxRktS
-X-Received: by 2002:a05:6830:1d8c:: with SMTP id y12mr419769oti.75.1626303386330;
-        Wed, 14 Jul 2021 15:56:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFKmf1VsQgh+UBBi+EvUXyhVVpNx63nHwBogYk7AYyZyKjx3X4wwKOQ8itqMq1hX+iXCyWMQ==
-X-Received: by 2002:a05:6830:1d8c:: with SMTP id y12mr419761oti.75.1626303386189;
-        Wed, 14 Jul 2021 15:56:26 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id x29sm665755ooj.10.2021.07.14.15.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 15:56:25 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 16:56:24 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shanker R Donthineni <sdonthineni@nvidia.com>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 7/8] PCI: Add support for ACPI _RST reset method
-Message-ID: <20210714165624.47272c2d.alex.williamson@redhat.com>
-In-Reply-To: <e8f0b236-dfb3-c9cf-4683-c43e8bc0c0b4@nvidia.com>
-References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
-        <20210709123813.8700-8-ameynarkhede03@gmail.com>
-        <20210712170920.2a0868ac.alex.williamson@redhat.com>
-        <e8f0b236-dfb3-c9cf-4683-c43e8bc0c0b4@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=tbdzyFamT8pQc1mVhk+2w4TImGXTQGfmsYo5ttrPBMU=;
+        b=frW9Al2s7c0kWbRh7wYETjNPEKfYjiKASx0YnWedBg4U2PL1Na3gFToSCA+WZ/27yY
+         xKh9RdKHJpC1HTWSoglSLDFzPAd4X7gyB5tC5fFw1XgZi7Bmnz+6CoK6n6VBAL+PQlB3
+         HplsDiMB7tOQadgjR4SKHx1tjNJ2OcpOH4lHPYvU/+PZT+OcT2UpaKJIVSxFyWVajpuh
+         +2VAC6+QQwFOhLaO+tP6O2vaDFgXZa3toPjPxQJQ0l6Ow14zZA4XTgVkhake3CuSjhz3
+         BfaRXQyZ4i4eEsPLZFDGHsIVTVX872dQHAbNFaXDhmlbk/vM1BvnC6lh/xOv1OAtk9BW
+         1JsA==
+X-Gm-Message-State: AOAM531ye8ieEIEjTYJXvCgtQ/g2qWUZEVeVaTaXGj84nTmoUZ3BxTZp
+        Mp634N6yDgLiFXQupewciCDQQQi4B17AxA==
+X-Google-Smtp-Source: ABdhPJzRF6rMCOf3MuTpQGBRvbBUQggRO29Fofpahr0ehl5/h1cybvz/6F+1V5BLmDeEp5ZCo/oyZYukCfVwrg==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:1109:2a1e:ff11:1796])
+ (user=dlatypov job=sendgmr) by 2002:a25:e803:: with SMTP id
+ k3mr460065ybd.268.1626303471176; Wed, 14 Jul 2021 15:57:51 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 15:57:41 -0700
+Message-Id: <20210714225741.882178-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] kunit: tool: add --kernel_args to allow setting module params
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 19:51:41 -0500
-Shanker R Donthineni <sdonthineni@nvidia.com> wrote:
+kunit.py currently does not make it possible for users to specify module
+parameters (/kernel arguments more generally) unless one directly tweaks
+the kunit.py code itself.
 
-> Hi Alex,
-> 
-> On 7/12/21 6:09 PM, Alex Williamson wrote:
-> >> +/**
-> >> + * pci_dev_acpi_reset - do a function level reset using _RST method
-> >> + * @dev: device to reset
-> >> + * @probe: check if _RST method is included in the acpi_device context.
-> >> + */
-> >> +int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-> >> +{
-> >> +     acpi_handle handle = ACPI_HANDLE(&dev->dev);
-> >> +
-> >> +     if (!handle || !acpi_has_method(handle, "_RST"))
-> >> +             return -ENOTTY;
-> >> +
-> >> +     if (probe)
-> >> +             return 0;
-> >> +
-> >> +     if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
-> >> +             pci_warn(dev, "ACPI _RST failed\n");
-> >> +             return -EINVAL;  
-> > Should we return -ENOTTY here instead to give a possible secondary
-> > reset method a chance?  Thanks,  
-> Thanks for reviewing patches.
-> 
-> ACPI/AML _RST method type is VOID. The only possibility of failure would be
-> either system is running out of memory or bugs in ACPICA. There is no strong
-> reason not to return -NOTTY.
-> 
-> I'll fix in the next version. Is there opportunity to include reset feature in v5.14-rc2?
+This hasn't mattered much so far, but this would make it easier to port
+existing tests that expose module parameters over to KUnit and/or let
+current KUnit tests take advantage of them.
 
-Sounds good, it's a corner case but since we've got a series of methods
-we can try and part of the point of Amey's series is giving the user
-control of the order and methods to try, we might as well make use of
-it.  I think there's also some precedence in the quirks that they can
-fail and fall through to standard resets.
+Tested using an kunit internal parameter:
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit \
+    --kernel_args=kunit.filter_glob=kunit_status
+...
+Testing complete. 2 tests run. 0 failed. 0 crashed. 0 skipped.
 
-I'll leave any upstream timing questions to Bjorn, but we've passed the
-v5.14 merge window when new functionality is generally accepted.
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ Documentation/dev-tools/kunit/running_tips.rst | 10 ++++++++++
+ tools/testing/kunit/kunit.py                   | 16 ++++++++++++----
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
-> Can I add your reviewed-by since no other comments to this patch?
+diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
+index 7d99386cf94a..bc37a2ad1598 100644
+--- a/Documentation/dev-tools/kunit/running_tips.rst
++++ b/Documentation/dev-tools/kunit/running_tips.rst
+@@ -80,6 +80,16 @@ file ``.kunitconfig``, you can just pass in the dir, e.g.
+ 	automagically, but tests could theoretically depend on incompatible
+ 	options, so handling that would be tricky.
+ 
++Setting kernel commandline parameters
++-------------------------------------
++
++You can use ``--kernel_arg`` to pass arbitrary kernel arguments, e.g.
++
++.. code-block:: bash
++
++	$ ./tools/testing/kunit/kunit.py run --kernel_arg=param=42 --kernel_arg=param2=false
++
++
+ Generating code coverage reports under UML
+ ------------------------------------------
+ 
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index be8d8d4a4e08..03f3bc406955 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -28,12 +28,13 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
+ 			       ['jobs', 'build_dir', 'alltests',
+ 				'make_options'])
+ KunitExecRequest = namedtuple('KunitExecRequest',
+-			      ['timeout', 'build_dir', 'alltests', 'filter_glob'])
++                              ['timeout', 'build_dir', 'alltests',
++                               'filter_glob', 'kernel_args'])
+ KunitParseRequest = namedtuple('KunitParseRequest',
+ 			       ['raw_output', 'input_data', 'build_dir', 'json'])
+ KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
+ 					   'build_dir', 'alltests', 'filter_glob',
+-					   'json', 'make_options'])
++					   'kernel_args', 'json', 'make_options'])
+ 
+ KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
+ 
+@@ -92,6 +93,7 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
+ 	test_start = time.time()
+ 	result = linux.run_kernel(
++		args=request.kernel_args,
+ 		timeout=None if request.alltests else request.timeout,
+                 filter_glob=request.filter_glob,
+ 		build_dir=request.build_dir)
+@@ -150,7 +152,8 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 		return build_result
+ 
+ 	exec_request = KunitExecRequest(request.timeout, request.build_dir,
+-					request.alltests, request.filter_glob)
++				 request.alltests, request.filter_glob,
++				 request.kernel_args)
+ 	exec_result = exec_tests(linux, exec_request)
+ 	if exec_result.status != KunitStatus.SUCCESS:
+ 		return exec_result
+@@ -236,6 +239,9 @@ def add_exec_opts(parser) -> None:
+ 			    nargs='?',
+ 			    default='',
+ 			    metavar='filter_glob')
++	parser.add_argument('--kernel_args',
++			    help='Kernel command-line parameters. Maybe be repeated',
++			     action='append')
+ 
+ def add_parse_opts(parser) -> None:
+ 	parser.add_argument('--raw_output', help='don\'t format output from kernel',
+@@ -307,6 +313,7 @@ def main(argv, linux=None):
+ 				       cli_args.build_dir,
+ 				       cli_args.alltests,
+ 				       cli_args.filter_glob,
++				       cli_args.kernel_args,
+ 				       cli_args.json,
+ 				       cli_args.make_options)
+ 		result = run_tests(linux, request)
+@@ -361,7 +368,8 @@ def main(argv, linux=None):
+ 		exec_request = KunitExecRequest(cli_args.timeout,
+ 						cli_args.build_dir,
+ 						cli_args.alltests,
+-						cli_args.filter_glob)
++						cli_args.filter_glob,
++						cli_args.kernel_args)
+ 		exec_result = exec_tests(linux, exec_request)
+ 		parse_request = KunitParseRequest(cli_args.raw_output,
+ 						  exec_result.result,
 
-Yeah, s/-EINVAL/-ENOTTY/
-
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-
-Thanks!
+base-commit: 8096acd7442e613fad0354fc8dfdb2003cceea0b
+-- 
+2.32.0.93.g670b81a890-goog
 
