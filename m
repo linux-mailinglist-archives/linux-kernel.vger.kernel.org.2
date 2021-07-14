@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398AA3C925A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6663C9262
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbhGNUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:47:22 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:41950 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhGNUrU (ORCPT
+        id S232051AbhGNUtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:49:43 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:38572 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhGNUtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:47:20 -0400
-Received: by mail-io1-f44.google.com with SMTP id z9so3726536iob.8;
-        Wed, 14 Jul 2021 13:44:27 -0700 (PDT)
+        Wed, 14 Jul 2021 16:49:41 -0400
+Received: by mail-il1-f171.google.com with SMTP id e2so2933377ilu.5;
+        Wed, 14 Jul 2021 13:46:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=g6H++hBdOFlsPrFG3lRFDsMHXTwNVj5BH9F2OFn1oSM=;
-        b=UCspghrCQqBfuGwDWuDZka1OJtN+79AO2RCSS1NZ7g1u1DRmiG/gb3jLZ1FFAssbxa
-         exK72aFeNZkFGXMaeoVp6b+RrXGcYocRokTNcb54Ah3WCZrqUr75Tv5Z0JuGKQOg9w30
-         2DebuEeZcC4UdcbdBXs6TD/jyOvAqxm7G5PRrMq3sZR90NSwjBU5cLKBd2SgrgAR1Gwn
-         aA/nVN5NwZx/egLude5G1g1F4u/S6siUt59V18oqtgwEig/X/xzmtHFlVpng9G1ITIJw
-         HS5BGEtk+VkMMDOYzzJYamU0knQDtQZMuEAcNdLluStzc1y8RuCdIBurPzaBVrq8IT5l
-         bAXQ==
-X-Gm-Message-State: AOAM532UspfPsUE5nsBSj3WzJge4uP23/KTbbxeCWW7U4nODcL2rLzBM
-        q3RyDyQB2LV5etBNvJrR7Q==
-X-Google-Smtp-Source: ABdhPJwBF3Ms2hTWsmz9XIX3sQ6Uq1h/FsrKa4l+6hTkaM09+VSyZ4uuVDqdoIuhBGn448bKZ6Px+w==
-X-Received: by 2002:a05:6638:1316:: with SMTP id r22mr113288jad.89.1626295467444;
-        Wed, 14 Jul 2021 13:44:27 -0700 (PDT)
+        bh=Bgvj/SJ/AqigmGZ6fxs5N5l8G6izL9YxC3iPTOMdD6s=;
+        b=SVA9CX9rAtY8KuE1kpMG4f0GGznAOcvHYY6Kq2WMBAA/AMtTxk4kj+iR15WaqTooke
+         TtVgCcuUYBkdtNgu9aGVqq2mOtdEGW5dzb6WzN/pUi1bdvxofpFZFY7yvKiauCeqSA2k
+         h9vD7VSbeWzDtIAvQ6dGQlAaOSd70LK2Qt4dGdGVsiCxdcvdMC2AFh5hWCy33c6AaRAf
+         v9cFfo+E+loZzAkaSR8Y0BH6WwzFQpZ1O+dWvaXF6AmpaOyV+grWjtdWT5n2yOjOX0sv
+         eyfe9a37p6Paln9GI5fZq+90TPeSvwEoHza9et4aUrfw3CwZYAVuQHm53iMHfgllxyGl
+         ZtVg==
+X-Gm-Message-State: AOAM5305DUo3g15sumRXf+jqPdj2crYrSHcU8dMtu01KfaDBYBUL8ksi
+        JrqAEX1dxzrtVV/RZBfkWQ==
+X-Google-Smtp-Source: ABdhPJyuEc2hl418Ur5eqpgXhulnn/slL25AuA2kwT0+WKbjntZFyl4jzNA/MF3uxvxiked/D64mQQ==
+X-Received: by 2002:a92:d083:: with SMTP id h3mr7978120ilh.157.1626295608626;
+        Wed, 14 Jul 2021 13:46:48 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id h24sm181586ioj.32.2021.07.14.13.44.26
+        by smtp.gmail.com with ESMTPSA id x11sm1680021ilc.40.2021.07.14.13.46.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:44:27 -0700 (PDT)
-Received: (nullmailer pid 3488249 invoked by uid 1000);
-        Wed, 14 Jul 2021 20:44:25 -0000
-Date:   Wed, 14 Jul 2021 14:44:25 -0600
+        Wed, 14 Jul 2021 13:46:48 -0700 (PDT)
+Received: (nullmailer pid 3492030 invoked by uid 1000);
+        Wed, 14 Jul 2021 20:46:46 -0000
+Date:   Wed, 14 Jul 2021 14:46:46 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Sebastian Reichel <sre@kernel.org>, "Andrew F. Davis" <afd@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
-Message-ID: <20210714204425.GA3488195@robh.at.kernel.org>
-References: <20210625224744.1020108-1-kernel@esmil.dk>
- <20210625224744.1020108-3-kernel@esmil.dk>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: clk: qcom: gcc-sm6115: Document
+ SM6115 GCC
+Message-ID: <20210714204646.GA3491973@robh.at.kernel.org>
+References: <20210627185538.690277-1-iskren.chernev@gmail.com>
+ <20210627185538.690277-2-iskren.chernev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625224744.1020108-3-kernel@esmil.dk>
+In-Reply-To: <20210627185538.690277-2-iskren.chernev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Jun 2021 00:47:43 +0200, Emil Renner Berthing wrote:
-> The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
-> the SoC, but it is still useful to be able to reach the PMIC over I2C
-> for the other functionality it provides.
+On Sun, 27 Jun 2021 21:55:37 +0300, Iskren Chernev wrote:
+> Add device tree bindings for global clock controller on SM6115 and
+> SM4250 SoCs (pin and software compatible).
 > 
-> [1] https://github.com/beagleboard/beaglev-starlight
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
 > ---
->  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
->  drivers/mfd/tps65086.c                        | 21 ++++++++++---------
->  2 files changed, 11 insertions(+), 13 deletions(-)
+>  .../bindings/clock/qcom,gcc-sm6115.yaml       |  72 +++++++
+>  include/dt-bindings/clock/qcom,gcc-sm6115.h   | 201 ++++++++++++++++++
+>  2 files changed, 273 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6115.h
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
