@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE463C7DB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00E43C7DBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237857AbhGNE6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 00:58:41 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:63965 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhGNE6k (ORCPT
+        id S237864AbhGNFCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:02:30 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47076
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229451AbhGNFC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 00:58:40 -0400
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 16E4tbgB022054;
-        Wed, 14 Jul 2021 13:55:37 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16E4tbgB022054
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626238537;
-        bh=RG3mFTWRkOy23j6Tuz6mqRZldb0E49OGrpWqNp//4bE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KX6SCE+7lLsGEKV6nc0a6h9WbdKLbXdWFed2jCZ6rqmV+AuQriC4/75EGoYhnZe8I
-         /YdXmGZAbsqlicbMLwkghGvu6qdARGtVHnbHRJ1zjcs7G2a29Nw0IbGThKRub68m/6
-         6AFtsCTapULyQ0fBsWEmP6T/EpkzgMiPAQUic1VKvkp7bdSXvjaXzHDzeFUkSCB5iq
-         r4N/zzQF00k9BYIBJbgBXHOBDF8OeU7TuGDsvn3q6NZhiCCai4GwsFNjMEgzFkKcZh
-         lUtZlihQEfbtqiyVcmuLFJUuXW5tC2QrpBWXDqM5npBqZrT278kO2pxkNlm6EXbnQd
-         CJ/MhfDgk/+Dw==
-X-Nifty-SrcIP: [209.85.214.169]
-Received: by mail-pl1-f169.google.com with SMTP id j3so909759plx.7;
-        Tue, 13 Jul 2021 21:55:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533Utrtcpho60d0T0aLq6HDchbyzzg4B4yx5onDOT65JIRF6J0YS
-        y2Q2usTd36ftMMqdKrRD8OezmPW5xFSfh8Qky9o=
-X-Google-Smtp-Source: ABdhPJwWrK3LMXMkxe0SnnVE3tQhZ3hhBYm79wwh+zAMvIZ4TB8bGaHZkHHEL78BVzJIJeAvMP8Ma0WRGCPjiDxoYes=
-X-Received: by 2002:a17:902:8ec7:b029:11b:acb4:ac43 with SMTP id
- x7-20020a1709028ec7b029011bacb4ac43mr6217143plo.1.1626238536711; Tue, 13 Jul
- 2021 21:55:36 -0700 (PDT)
+        Wed, 14 Jul 2021 01:02:29 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 59D614054E
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626238777;
+        bh=IuNCZleIvRlLDBhEJUxcoa5xesWkXuXCrji39Y/aMPw=;
+        h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
+        b=oRphYpdinUW/r8iLyGw3EUSNu2NsivHyjeqX2j8GRgZ8bjLta2Ygj4h0Ajz4Fi4y/
+         n+vldnmywXFuU7cbngTgTso66ZWOhjlvOPRiK27haqSN0xFEh/4QhCeSJCkqIXtYjn
+         37jOMvptS2FCK50fYlXaNcCKp11RlGtE1RmmNK2hro8W0QkhZqX/BOMGrYY6B0dxHF
+         CHI9No5i0VhlyNUIH7XmCJ3JLuCpY9UuBiNl6bJBlRI+YTcsxGuz/07+r3tFHpPCPl
+         To5ngp+FPR/yQan+hAHm2FaVhH7KqdRWBM6kNRwYmvhxOAJeg8gAfq894Ot8MKIyGl
+         iraVwnxcqjEpA==
+Received: by mail-ed1-f71.google.com with SMTP id v4-20020a50a4440000b02903ab1f22e1dcso546057edb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 21:59:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IuNCZleIvRlLDBhEJUxcoa5xesWkXuXCrji39Y/aMPw=;
+        b=cbmbNHAvG/BxapAqr3v/XH15KO/J/MFWshzIsfsvG+x7/+0IDUJyRfEvonmFavzp2u
+         F9Cc3mQ0kvhOtyN+v9EClyzjrvGk1aJ079oLl6Ei2MIEeAxZ25Yd//zwB+zg/dIvu+w+
+         hkxq9MGUoefoC2kbxp6dHbq4/Xm+TjrptE0qDouQlk9iKATWVPqfTMEKrlMW9xtTcAyz
+         SIeirmOfiXJg6dpP3YVGj383XAep9P3HrCZu9i7lH1+wcc2sz0c7FvwBxAzZ2pTUdznT
+         ELBNgv3zJqAQCHwx3YRcKZaDtn2xQwSzHnj7zROa9QbxRkEMb9UK+0/9OqmT5U5UbxA/
+         8K2Q==
+X-Gm-Message-State: AOAM531OGFfBXYl4O8Zk+MfbGVh6WYncgrXOmOXH2rSi9y5/dZDyJNS8
+        Elk0cbLpp+yfaAi6iMbJGhdotzTEXqtCEXcvC8QRDNM3LXuAkCL1kFTOhoY8Ga6U/Yz2nEPOnfy
+        C1tT97/fAfl8tbXsiYlSTxl90VBmJhOxz6q4LDRagofZ2wOAU6TlDIUw4/Q==
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10478505ejc.192.1626238777054;
+        Tue, 13 Jul 2021 21:59:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRbJHePPsqGNhB2jafTmgA7eCmZexPsfPxuY56irzwgXiVYXY8NchRXgcLJLBngqftlOI645bXKZZ6n8PRSoc=
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10478490ejc.192.1626238776826;
+ Tue, 13 Jul 2021 21:59:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <YO3txvw87MjKfdpq@localhost.localdomain>
-In-Reply-To: <YO3txvw87MjKfdpq@localhost.localdomain>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 14 Jul 2021 13:54:59 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATVysAEkcq86AD75njoXis67M4i+QVEfg5LawWzfC1h9g@mail.gmail.com>
-Message-ID: <CAK7LNATVysAEkcq86AD75njoXis67M4i+QVEfg5LawWzfC1h9g@mail.gmail.com>
-Subject: Re: [PATCH] Decouple build from userspace headers
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210708074232.924844-1-kai.heng.feng@canonical.com>
+ <YObFJREB9/JlcNZP@8bytes.org> <fde11cec-d1bd-49be-f129-c69a973d1b3b@arm.com>
+ <CAAd53p40RcG0oeYr9QAKMjYRtyq7he=d_b_a39n4Rt5JSVScRQ@mail.gmail.com>
+ <f3bdedcb-5602-cbca-7df1-019e8b8c4217@arm.com> <YO4odF0EwqxfNLFq@fedora>
+In-Reply-To: <YO4odF0EwqxfNLFq@fedora>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 14 Jul 2021 12:59:25 +0800
+Message-ID: <CAAd53p4jgKGuLOyZH+KEzz-KiR2D0Th4MCBo13m4JO+a=n2Lhw@mail.gmail.com>
+Subject: Re: [PATCH] iommu/amd: Enable swiotlb if any device supports iommu v2
+ and uses identity mapping
+To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>, will@kernel.org,
+        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 4:47 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Wed, Jul 14, 2021 at 7:57 AM Konrad Rzeszutek Wilk <konrad@darnok.org> wrote:
 >
-> In theory, userspace headers can be under incompatible license.
+> On Thu, Jul 08, 2021 at 03:43:42PM +0100, Robin Murphy wrote:
+> > On 2021-07-08 14:57, Kai-Heng Feng wrote:
+> > > On Thu, Jul 8, 2021 at 6:18 PM Robin Murphy <robin.murphy@arm.com> wrote:
+> > > >
+> > > > On 2021-07-08 10:28, Joerg Roedel wrote:
+> > > > > On Thu, Jul 08, 2021 at 03:42:32PM +0800, Kai-Heng Feng wrote:
+> > > > > > @@ -344,6 +344,9 @@ static int iommu_init_device(struct device *dev)
+> > > > > >
+> > > > > >               iommu = amd_iommu_rlookup_table[dev_data->devid];
+> > > > > >               dev_data->iommu_v2 = iommu->is_iommu_v2;
+> > > > > > +
+> > > > > > +            if (dev_data->iommu_v2)
+> > > > > > +                    swiotlb = 1;
+> > > > >
+> > > > > This looks like the big hammer, as it will affect all other systems
+> > > > > where the AMD GPUs are in their own group.
+> > > > >
+> > > > > What is needed here is an explicit check whether a non-iommu-v2 device
+> > > > > is direct-mapped because it shares a group with the GPU, and only enable
+> > > > > swiotlb in this case.
+> > > >
+> > > > Right, it's basically about whether any DMA-limited device might at any
+> > > > time end up in an IOMMU_DOMAIN_IDENTITY domain. And given the
+> > > > possibility of device hotplug and the user being silly with the sysfs
+> > > > interface, I don't think we can categorically determine that at boot time.
+> > > >
+> > > > Also note that Intel systems are likely to be similarly affected (in
+> > > > fact intel-iommu doesn't even have the iommu_default_passthough() check
+> > > > so it's probably even easier to blow up).
+> > >
+> > > swiotlb is enabled by pci_swiotlb_detect_4gb() and intel-iommu doesn't
+> > > disable it.
+> >
+> > Oh, right... I did say I found this dance hard to follow. Clearly I
+> > shouldn't have trusted what I thought I remembered from looking at it
+> > yesterday :)
+> >
+> > Also not helped by the fact that it sets iommu_detected which *does* disable
+> > SWIOTLB, but only on IA-64.
+> >
+> > > I wonder if we can take the same approach in amd-iommu?
+> >
+> > Certainly if there's a precedent for leaving SWIOTLB enabled even if it
+> > *might* be redundant, that seems like the easiest option (it's what we do on
+> > arm64 too, but then we have system topologies where some devices may not be
+> > behind IOMMUs even when others are). More fun would be to try to bring it up
+> > at the first sign of IOMMU_DOMAIN_IDENTITY if it was disabled previously,
+> > but I don't have the highest hope of that being practical.
 >
-> Linux by virtue of being OS kernel is fully independent piece of code
-> and should not require anything from userspace.
-
-As far as I know,
-<stdarg.h> was the only exception,
-which was borrowed from the compiler.
-
-
-I like this as long as:
-  - license is clear (please add SPDX tag to the new header)
-  - it works for both gcc and clang (I guess the answer is yes)
-
-
-I think removing <stdbool.h> and <stddef.h> are non-controversial.
-Mayby, you can split it into 1/2.
-
-
-
-
+> <scratches his head>
+> It is kind of silly to enable SWIOTLB which will just eat 64MB of memory
+> "just in case".
 >
-> For this:
+> The SWIOTLB does have support to do late initialization (xen-pcifront
+> does that for example - so if you add devices that can't do 64-bit it
+> will allocate something like 4MB).
 >
-> * ship minimal <stdarg.h>
->         2 types, 4 macros
->
-> * delete "-isystem"
->         This is what enables leakage.
->
-> * fixup compilation where necessary.
->
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
->
->  Makefile                                                               |    2 +-
->  arch/um/include/shared/irq_user.h                                      |    1 -
->  arch/um/os-Linux/signal.c                                              |    2 +-
->  crypto/aegis128-neon-inner.c                                           |    2 --
->  drivers/net/wwan/iosm/iosm_ipc_imem.h                                  |    1 -
->  drivers/pinctrl/aspeed/pinmux-aspeed.h                                 |    1 -
->  drivers/staging/media/atomisp/pci/hive_isp_css_common/host/isp_local.h |    2 --
->  include/stdarg.h                                                       |    9 +++++++++
->  sound/aoa/codecs/onyx.h                                                |    1 -
->  sound/aoa/codecs/tas.c                                                 |    1 -
->  10 files changed, 11 insertions(+), 11 deletions(-)
->
+> Would that be a better choice going forward - that is allocate this
+> under those conditions?
 
-> new file mode 100644
-> --- /dev/null
-> +++ b/include/stdarg.h
-> @@ -0,0 +1,9 @@
+But how to practically do swiotlb late init on 32-bit capable devices?
+On the first DMA map requested by the driver?
 
+Kai-Heng
 
-This is a new file, so please add the SPDX tag.
-What project did you copy the code from?
-
-  If gcc, is it GPL v3 (but not compatible for GPL v2) ?
-  If clang, is it
-   SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-
-Or, can we license this small portion of code
-as GPL v2?
-
-
-
-> +#ifndef _LINUX_STDARG_H
-> +#define _LINUX_STDARG_H
-> +typedef __builtin_va_list __gnuc_va_list;
-
-Where is __gnuc_va_list needed?
-
-
-
-
-BTW, once this is accepted, I'd like to
-change all <stdarg.h>  to <linux/stdarg.h>.
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> >
+> > Robin.
