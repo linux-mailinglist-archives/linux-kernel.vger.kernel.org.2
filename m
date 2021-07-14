@@ -2,336 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9930E3C8B91
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F6E3C8B93
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240132AbhGNTY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:24:27 -0400
-Received: from mail-io1-f46.google.com ([209.85.166.46]:37618 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhGNTYZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:24:25 -0400
-Received: by mail-io1-f46.google.com with SMTP id l18so3514219iow.4;
-        Wed, 14 Jul 2021 12:21:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gh4zEBeE3cSd66l13kaZQNROzup4xRXlw8Sc/SVaLe8=;
-        b=qfGB/8iYTWhXtPbapJUEdJw5TYBwvmePUdRANPMZAGYUyJil7ug9XgoweNlvJL/wuh
-         ZRc1lgJoA6Svp4s5VPcjDA9o3SHkPvGWmjaMWULy8fxfXTlttY0uLn+7MqWyje8RWr1C
-         4EUmLVwNO8tzG97MuMJA3esn7d/GneJm50nBa0S+bSSImDUjmDR+Rgp7PsgaEMgCuJBA
-         5deRA9u1yeuHW49JNXXr4dyuWYa6BYb31rzy+rKF3ZFMPJZog5lIAagYo23iy+nQkT2x
-         edImNVsov+/3JdGNWbW4yz5JmJUKl3kfXBDCxsUMfrQ3sFpXoLs7TXthTy4+dNDPd5EP
-         rj9A==
-X-Gm-Message-State: AOAM531Ste7vyBuw2czP7xeFflEqIIRLUuOFvR/6ZdmGtaoUIOgJz8uS
-        WUR5zMOyHCogKK83ACtc6g==
-X-Google-Smtp-Source: ABdhPJyp5uwIvrM7x/U669N+F147QBA4aAH/5x91kG+HuQhypzMASH9JvRdzCQWlMmplswGOjlMLhA==
-X-Received: by 2002:a6b:5c07:: with SMTP id z7mr8294147ioh.26.1626290492683;
-        Wed, 14 Jul 2021 12:21:32 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id t15sm1675455iln.36.2021.07.14.12.21.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 12:21:32 -0700 (PDT)
-Received: (nullmailer pid 3050937 invoked by uid 1000);
-        Wed, 14 Jul 2021 19:21:30 -0000
-Date:   Wed, 14 Jul 2021 13:21:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        id S240157AbhGNTZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:25:13 -0400
+Received: from mail-bn8nam12on2070.outbound.protection.outlook.com ([40.107.237.70]:53536
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229821AbhGNTZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:25:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SZ60j1baSLCEN2SU1gvIMYmq9t5fz3QV0ooOFKvKnscB+6Hi16ZqZiPf2MTMRecEOlTpWJLM24Xc41fEtyzii4MUxSWkFC/AmDu2W8PXjNoAiycOhpO4aUj9Chbsav2oEGvtIPmYv3pRIRQJgNFXNQiUmwJpbDA7YkMRVSpy6QjnCYJoITxZqpHwriP395jy5QuWT9TSqHVK8Yc7wm5Nx+WGBUd6QMsqagTu+UxxkLtaaNXpa3Gjj6Caeccb27EG0IhhnRAfobQBI9uDPt1jUByR3MjEPQglIv0gs9+sOt4ZJIdnmqa4UnLZOx86P++XWAo7rjMUokDbpia3w2t5ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q+ENdjkt8ZjVCsuUcaZQ6nZJvwaepTVBjpVrc2b3SqA=;
+ b=MXpkL/TC4oPJombDKkaoDshyprO8486I5vXgZRhWv0vVdzzav6ysg43ICnTE4HxrIlNtVX3PsXjO/IlLZThkhbA4J2Cykj0fnhZVvdtlcnxu4P/6B9U+9nghzQnKMQaX+9oxgLrkhKZy0jI00AoILkhSUJlFOk+TlGcMl+RL77meybBxgqy0KCRgh1UUV8o1zJhwtBj5SmBzqZPTJPTVHwL6Ar67YpsnMITBHCng2jXdsa8Ll30aBeTWTvtJJfxzIcVQVY10mNYDV3Dfxcw3wcBgYwlTwmm2w9pnZF5scwqkNu1iKG/zo5HnXkejbeoQfovSvqyMeZHU/KVypUlkkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q+ENdjkt8ZjVCsuUcaZQ6nZJvwaepTVBjpVrc2b3SqA=;
+ b=yNHpJFCWiSNeK0zLrpbC9UTHtttkZlkkXEdvN0ZrJWQWC88GKreyyqN0wP63oRSUbJJupG+OGnR1Rws/Cwov682QYHpcWL/RgcYAjylI71SQT26wDNPNoiuXUYVJgoIvunnBY56PsSEOi+hPOohvvnHYIWfUnsVb/iI5el2zPp4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN1PR12MB2448.namprd12.prod.outlook.com (2603:10b6:802:28::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Wed, 14 Jul
+ 2021 19:22:17 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
+ 19:22:17 +0000
+Cc:     brijesh.singh@amd.com, Lars Bull <larsbull@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] clk: visconti: Add support common clock driver
- and reset driver
-Message-ID: <20210714192130.GA3000985@robh.at.kernel.org>
-References: <20210624034337.282386-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210624034337.282386-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: Re: [PATCH 2/3 V2] KVM, SEV: Add support for SEV intra host migration
+To:     Peter Gonda <pgonda@google.com>
+References: <20210714160143.2116583-1-pgonda@google.com>
+ <20210714160143.2116583-3-pgonda@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <5e2cd2a9-99ff-09f2-c391-27c75b4f343c@amd.com>
+Date:   Wed, 14 Jul 2021 14:22:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210714160143.2116583-3-pgonda@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0191.namprd11.prod.outlook.com
+ (2603:10b6:806:1bc::16) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624034337.282386-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SA0PR11CA0191.namprd11.prod.outlook.com (2603:10b6:806:1bc::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21 via Frontend Transport; Wed, 14 Jul 2021 19:22:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a3b706ab-d247-492e-2116-08d946fcb160
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2448:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB24485F1B915C90EDAA575B7EE5139@SN1PR12MB2448.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xqokrHTjejGmerr+ZmR46Gh/FLeAwFPdf4Uo286H2J1p57oOBpjlaS0AVRPKPnIZIBZm875jgY0m8ftis+48QgpFcR1jrj86lNdoo7+31U/Xv5n19REnqmkTg0nRGbIKBJTQcv+H2MJBCfcLOkBmugg0GGLefUY9yn/i9OkMaPJjnqT/p9RwsDSyYR7UAaABgzrCa4OoIWdbGEMr/L/xX+0kIxeMbNtznnxiKPhHIp9QJdTSOFCojD6Lr84XtbSnbRd0dJJULsKVxx70NMiZ7FnEHmSsDcV5Q7W6prleX8OTtM7G7jTC9vJSVFMKNs0rtc5kn1t2PzrPgaKjmxkzoqYplGGKqcECFlz0Xxp1UI2vUEOB7O6CJLVh8aYry37ZBbHP2r6SV6FrjFRv/y/HaVQoggNhfVqkcVBp6hDkumT9wEZKFOTiSFz3XQBWu4Cu0iWT+Mbbisv1z4EYJ1Nz4bCRUKP38EcYJQHDVemH0jUB/Mars0T2x/JhbspLE3XQ+KUMT3VywektpB3ubgL949TQ/00yqeN6TysrdCMazApQ9AliOuE973Wy3qAR6YJ8rpjI2Elrl5W0DK1gucRVjnKsgW28YH1ZNzqu4R21d+bVfaBBsfq78mR7mCZRh0G5BCxbUwxfC3yUCXm/AtWD3Xc/cWec91YrSGnurPido+YGBuCQETO4ZLnDb89MQAKkTqn9THnTuiSP5XflJgD0FYMurxdjg0Q3dayziGPmlRc1dpB+9GSa3yA61IqWFYC8WYhl27c3uYkEXJtUuE9HLg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(346002)(376002)(366004)(186003)(2906002)(7416002)(52116002)(54906003)(36756003)(6486002)(31696002)(316002)(16576012)(83380400001)(478600001)(86362001)(956004)(8936002)(53546011)(6916009)(66946007)(5660300002)(38100700002)(2616005)(4326008)(38350700002)(26005)(66476007)(66556008)(44832011)(31686004)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UzFuZE8wU3NkbDBTd1kyYmRJVFRJVFhWcTErYWdzWEtzVVFScXJEMG5hbi93?=
+ =?utf-8?B?NHp5R25jWTUyKzhLU3RRM2N4eHJtTnV0ZEpsbmJEWEQ0cjY2UVNEZUdJcjBh?=
+ =?utf-8?B?TWdRcHhCeW9NQnhUMEV4OWVyVmJoSFlzb0ZZanJLVzZyTWFtdDk0TDdWcEZG?=
+ =?utf-8?B?WXROOU96RWtqem9uL0xOeTZUYXdFM1UvMmpPM0lIWnBncld6OEJTQmZFc2NH?=
+ =?utf-8?B?ajBSaVBqUEZQSk1GaWxiVWs4TTl6TXloQ1YrdDNSelRvU3F1R2pXWXE0c0lQ?=
+ =?utf-8?B?a09ZVUQwQjQwbktMb003RytlanpySFQ4ajlKa1phY0E1Yys0emxRakFYWGsz?=
+ =?utf-8?B?SGpGZnRjZkFrRTdRUTlZVTZHK1hGREE3OGRhdGd4K2lRSzRrZmxqWUNxOWQ2?=
+ =?utf-8?B?ZmFtVHBQSjRPc3ArTW9zSWpJQ1lIOXQzSXVSbkhmZ25pSTJkSXR5R044QStu?=
+ =?utf-8?B?NTNMU3ljNUw4elBPNHdrU3lrVnlSYkNFMWRrV1hVM0EzRm85R3JkT09LbzJ0?=
+ =?utf-8?B?cXRsazJiZjN3ZWtkaHV3VXlqRHI1MWFTMGNmcWsyajFZOGF0VFdZN2NwS1dM?=
+ =?utf-8?B?M2FzYyswR01ZN1Y3dGpFMUI3MDJ4M3ZpdnR3NHUwNzBrZ29Na1UzQWFZaFFs?=
+ =?utf-8?B?cFZKL2lhNTFLeEN4d1VnU0l2cUxHcVRZUEQyakMvTDZ5UkNFL25TZ1NCelVV?=
+ =?utf-8?B?SWxQRzk1anVHc0YwYlEyaHJOa0creHpQWUdPM1ZkbUl0M0tPY3FXNTU0MUxD?=
+ =?utf-8?B?WUZJZEF6MnVaUmY1eXBzRkpCYk5TNjNDUVVQS3ZEZGw2QU10OW9uZ1hMOXdw?=
+ =?utf-8?B?TDB4VjZXV2dVTE9lMS82ZDdyd3RqRVMxOTFTcVZPakJjWjdTcWZNSzRvUksz?=
+ =?utf-8?B?UkdRRDJaOXdYcjJLeTkyK2JUbDUrZTRCUmgzTnJZUFBlaFljVmVGaVRQM2Qr?=
+ =?utf-8?B?WWpER0pJOW1TcFJYVlZvQlZJOVcyNjJMREplUnFOVFpnQTVIYmcvbndMMjRz?=
+ =?utf-8?B?aGJuYUtieGFvZjROTWVhNWtFQ0pYYmVjTWdZa1NMTGRnRS9TMVVubEQyck5E?=
+ =?utf-8?B?UHBMcEpoOEdxR1NIQUtYcWdFdWVWOFVXRExhYUZOWGlUVXlJYkN1VWovNm1x?=
+ =?utf-8?B?MnNCMDQwTXBzVWNydlgvcmxvMnUxRUtKWkpmN3JNbjltZStyYnVlTmo3MC8r?=
+ =?utf-8?B?bnhoU1RKMUR1YzdYR2x3OXVoZ3doZDJYWFBxOUVRRzl5VFRoM3FsZU81VEpB?=
+ =?utf-8?B?TWp1WW1WS0l6TkRkeUlZL2NESkZwN0U1ZTBrNVh6bmgzaDNMeE4wMWNqKzBh?=
+ =?utf-8?B?NkY4V1ZnVEFGUmRUcXhqWERxazhhRUJwcFBPTERGTzA4bkUxVW9DMVZBL3BN?=
+ =?utf-8?B?YUpYL2xFNzQ2VThMZTJwQkZDek9Zb25PaWc3OTNFUzg0S1pXWDZCNE5MQ2NQ?=
+ =?utf-8?B?Yi90SzdiRmhQNXRjTDhVL25mVkFHc3VRa3JtNDBMcklvOXc4NHRLdTVnUHdN?=
+ =?utf-8?B?M3dZTzgrbE1NcUptYklldW5GZnBMaGhETCtsV2VtQVNwM0x2bXF3M1c3MmVz?=
+ =?utf-8?B?aTNoZDMzckxBWmVCUFVEWUNGTWl5azYrdnlxd05MNUNmSDd3ZlBjNkl3U2xq?=
+ =?utf-8?B?djFMaG56eFluMDYrVWpwdWZ0ZWZyTERjSnNjWFp4ZXNIMjBSSndvN2RYc3RN?=
+ =?utf-8?B?TjNHWk02QUkvZlBJbnBveFpxR3ZWVGoyT2ZoN2I1a3VrR2NXVHQ4c1ZYNTRR?=
+ =?utf-8?Q?ecEmoRbXLTi7d9qRAC3K1rtxlRkgJ/divyWVyTA?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3b706ab-d247-492e-2116-08d946fcb160
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 19:22:17.5213
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GsGn9xFdTkws3SvDCiQ4FQJJi4s7n5IyYRI5k6vNfzbQ1B4SpU0mKfoBM+hvIKy038ENpOcC3aXCnBPHb+L59g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2448
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 12:43:34PM +0900, Nobuhiro Iwamatsu wrote:
-> This adds support for common interface of the common clock and reset driver
-> for Toshiba Visconti5 and its SoC, TMPV7708. The PIPLLCT provides the PLL,
-> and the PISMU provides clock and reset functionality.
-> Each drivers are provided in this patch.
+
+
+On 7/14/21 11:01 AM, Peter Gonda wrote:
+> For SEV to work with intra host migration, contents of the SEV info struct
+> such as the ASID (used to index the encryption key in the AMD SP) and
+> the list of memory regions need to be transferred to the target VM.
+> This change adds commands for sending and receiving the sev info.
 > 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  drivers/clk/Makefile                         |   1 +
->  drivers/clk/visconti/Makefile                |   5 +
->  drivers/clk/visconti/clkc-tmpv770x.c         | 246 +++++++++++++
->  drivers/clk/visconti/clkc.c                  | 220 +++++++++++
->  drivers/clk/visconti/clkc.h                  |  75 ++++
->  drivers/clk/visconti/pll-tmpv770x.c          |  96 +++++
->  drivers/clk/visconti/pll.c                   | 369 +++++++++++++++++++
->  drivers/clk/visconti/pll.h                   |  63 ++++
->  drivers/clk/visconti/reset.c                 | 111 ++++++
->  drivers/clk/visconti/reset.h                 |  35 ++
-
->  include/dt-bindings/clock/toshiba,tmpv770x.h | 181 +++++++++
->  include/dt-bindings/reset/toshiba,tmpv770x.h |  41 +++
-
-These belong with the binding.
-
->  12 files changed, 1443 insertions(+)
->  create mode 100644 drivers/clk/visconti/Makefile
->  create mode 100644 drivers/clk/visconti/clkc-tmpv770x.c
->  create mode 100644 drivers/clk/visconti/clkc.c
->  create mode 100644 drivers/clk/visconti/clkc.h
->  create mode 100644 drivers/clk/visconti/pll-tmpv770x.c
->  create mode 100644 drivers/clk/visconti/pll.c
->  create mode 100644 drivers/clk/visconti/pll.h
->  create mode 100644 drivers/clk/visconti/reset.c
->  create mode 100644 drivers/clk/visconti/reset.h
->  create mode 100644 include/dt-bindings/clock/toshiba,tmpv770x.h
->  create mode 100644 include/dt-bindings/reset/toshiba,tmpv770x.h
-
-> diff --git a/include/dt-bindings/clock/toshiba,tmpv770x.h b/include/dt-bindings/clock/toshiba,tmpv770x.h
-> new file mode 100644
-> index 000000000000..923b47a11730
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/toshiba,tmpv770x.h
-> @@ -0,0 +1,181 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-
-Dual license DT headers please.
-
-> +
-> +#ifndef _DT_BINDINGS_CLOCK_TOSHIBA_TMPV770X_H_
-> +#define _DT_BINDINGS_CLOCK_TOSHIBA_TMPV770X_H_
-> +
-> +/* PLL */
-> +#define TMPV770X_PLL_PIPLL0		0
-> +#define TMPV770X_PLL_PIPLL1		1
-> +#define TMPV770X_PLL_PIDNNPLL		2
-> +#define TMPV770X_PLL_PIETHERPLL		3
-> +#define TMPV770X_PLL_PIDDRCPLL		4
-> +#define TMPV770X_PLL_PIVOIFPLL		5
-> +#define TMPV770X_PLL_PIIMGERPLL		6
-> +#define TMPV770X_NR_PLL		7
-> +
-> +/* Clocks */
-> +#define TMPV770X_CLK_PIPLL1_DIV1	0
-> +#define TMPV770X_CLK_PIPLL1_DIV2	1
-> +#define TMPV770X_CLK_PIPLL1_DIV4	2
-> +#define TMPV770X_CLK_PIDNNPLL_DIV1	3
-> +#define TMPV770X_CLK_DDRC_PHY_PLL0	4
-> +#define TMPV770X_CLK_DDRC_PHY_PLL1	5
-> +#define TMPV770X_CLK_D_PHYPLL		6
-> +#define TMPV770X_CLK_PHY_PCIEPLL	7
-> +#define TMPV770X_CLK_CA53CL0		8
-> +#define TMPV770X_CLK_CA53CL1		9
-> +#define TMPV770X_CLK_PISDMAC		10
-> +#define TMPV770X_CLK_PIPDMAC0		11
-> +#define TMPV770X_CLK_PIPDMAC1		12
-> +#define TMPV770X_CLK_PIWRAM		13
-> +#define TMPV770X_CLK_DDRC0		14
-> +#define TMPV770X_CLK_DDRC0_SCLK		15
-> +#define TMPV770X_CLK_DDRC0_NCLK		16
-> +#define TMPV770X_CLK_DDRC0_MCLK		17
-> +#define TMPV770X_CLK_DDRC0_APBCLK	18
-> +#define TMPV770X_CLK_DDRC1		19
-> +#define TMPV770X_CLK_DDRC1_SCLK		20
-> +#define TMPV770X_CLK_DDRC1_NCLK		21
-> +#define TMPV770X_CLK_DDRC1_MCLK		22
-> +#define TMPV770X_CLK_DDRC1_APBCLK	23
-> +#define TMPV770X_CLK_HOX		24
-> +#define TMPV770X_CLK_PCIE_MSTR		25
-> +#define TMPV770X_CLK_PCIE_AUX		26
-> +#define TMPV770X_CLK_PIINTC		27
-> +#define TMPV770X_CLK_PIETHER_BUS	28
-> +#define TMPV770X_CLK_PISPI0		29
-> +#define TMPV770X_CLK_PISPI1		30
-> +#define TMPV770X_CLK_PISPI2		31
-> +#define TMPV770X_CLK_PISPI3		32
-> +#define TMPV770X_CLK_PISPI4		33
-> +#define TMPV770X_CLK_PISPI5		34
-> +#define TMPV770X_CLK_PISPI6		35
-> +#define TMPV770X_CLK_PIUART0		36
-> +#define TMPV770X_CLK_PIUART1		37
-> +#define TMPV770X_CLK_PIUART2		38
-> +#define TMPV770X_CLK_PIUART3		39
-> +#define TMPV770X_CLK_PII2C0		40
-> +#define TMPV770X_CLK_PII2C1		41
-> +#define TMPV770X_CLK_PII2C2		42
-> +#define TMPV770X_CLK_PII2C3		43
-> +#define TMPV770X_CLK_PII2C4		44
-> +#define TMPV770X_CLK_PII2C5		45
-> +#define TMPV770X_CLK_PII2C6		46
-> +#define TMPV770X_CLK_PII2C7		47
-> +#define TMPV770X_CLK_PII2C8		48
-> +#define TMPV770X_CLK_PIGPIO		49
-> +#define TMPV770X_CLK_PIPGM		50
-> +#define TMPV770X_CLK_PIPCMIF		51
-> +#define TMPV770X_CLK_PIPCMIF_AUDIO_O	52
-> +#define TMPV770X_CLK_PIPCMIF_AUDIO_I	53
-> +#define TMPV770X_CLK_PICMPT0		54
-> +#define TMPV770X_CLK_PICMPT1		55
-> +#define TMPV770X_CLK_PITSC		56
-> +#define TMPV770X_CLK_PIUWDT		57
-> +#define TMPV770X_CLK_PISWDT		58
-> +#define TMPV770X_CLK_WDTCLK		59
-> +#define TMPV770X_CLK_PISUBUS_150M	60
-> +#define TMPV770X_CLK_PISUBUS_300M	61
-> +#define TMPV770X_CLK_PIPMU		62
-> +#define TMPV770X_CLK_PIGPMU		63
-> +#define TMPV770X_CLK_PITMU		64
-> +#define TMPV770X_CLK_WRCK		65
-> +#define TMPV770X_CLK_PIEMM		66
-> +#define TMPV770X_CLK_PIMISC		67
-> +#define TMPV770X_CLK_PIGCOMM		68
-> +#define TMPV770X_CLK_PIDCOMM		69
-> +#define TMPV770X_CLK_PICKMON		70
-> +#define TMPV770X_CLK_PIMBUS		71
-> +#define TMPV770X_CLK_SBUSCLK		72
-> +#define TMPV770X_CLK_DDR0_APBCLKCLK	73
-> +#define TMPV770X_CLK_DDR1_APBCLKCLK	74
-> +#define TMPV770X_CLK_DSP0_PBCLK		75
-> +#define TMPV770X_CLK_DSP1_PBCLK		76
-> +#define TMPV770X_CLK_DSP2_PBCLK		77
-> +#define TMPV770X_CLK_DSP3_PBCLK		78
-> +#define TMPV770X_CLK_DSVIIF0_APBCLK	79
-> +#define TMPV770X_CLK_VIIF0_APBCLK	80
-> +#define TMPV770X_CLK_VIIF0_CFGCLK	81
-> +#define TMPV770X_CLK_VIIF1_APBCLK	82
-> +#define TMPV770X_CLK_VIIF1_CFGCLK	83
-> +#define TMPV770X_CLK_VIIF2_APBCLK	84
-> +#define TMPV770X_CLK_VIIF2_CFGCLK	85
-> +#define TMPV770X_CLK_VIIF3_APBCLK	86
-> +#define TMPV770X_CLK_VIIF3_CFGCLK	87
-> +#define TMPV770X_CLK_VIIF4_APBCLK	88
-> +#define TMPV770X_CLK_VIIF4_CFGCLK	89
-> +#define TMPV770X_CLK_VIIF5_APBCLK	90
-> +#define TMPV770X_CLK_VIIF5_CFGCLK	91
-> +#define TMPV770X_CLK_VOIF_SBUSCLK	92
-> +#define TMPV770X_CLK_VOIF_PROCCLK	93
-> +#define TMPV770X_CLK_VOIF_DPHYCFGCLK	94
-> +#define TMPV770X_CLK_DNN0		95
-> +#define TMPV770X_CLK_STMAT		96
-> +#define TMPV770X_CLK_HWA0		97
-> +#define TMPV770X_CLK_AFFINE0		98
-> +#define TMPV770X_CLK_HAMAT		99
-> +#define TMPV770X_CLK_SMLDB		100
-> +#define TMPV770X_CLK_HWA0_ASYNC		101
-> +#define TMPV770X_CLK_HWA2		102
-> +#define TMPV770X_CLK_FLMAT		103
-> +#define TMPV770X_CLK_PYRAMID		104
-> +#define TMPV770X_CLK_HWA2_ASYNC		105
-> +#define TMPV770X_CLK_DSP0		106
-> +#define TMPV770X_CLK_VIIFBS0		107
-> +#define TMPV770X_CLK_VIIFBS0_L2ISP	108
-> +#define TMPV770X_CLK_VIIFBS0_L1ISP	109
-> +#define TMPV770X_CLK_VIIFBS0_PROC	110
-> +#define TMPV770X_CLK_VIIFBS1		111
-> +#define TMPV770X_CLK_VIIFBS2		112
-> +#define TMPV770X_CLK_VIIFOP_MBUS	113
-> +#define TMPV770X_CLK_VIIFOP0_PROC	114
-> +#define TMPV770X_CLK_PIETHER_2P5M	115
-> +#define TMPV770X_CLK_PIETHER_25M	116
-> +#define TMPV770X_CLK_PIETHER_50M	117
-> +#define TMPV770X_CLK_PIETHER_125M	118
-> +#define TMPV770X_CLK_VOIF0_DPHYCFG	119
-> +#define TMPV770X_CLK_VOIF0_PROC		120
-> +#define TMPV770X_CLK_VOIF0_SBUS		121
-> +#define TMPV770X_CLK_VOIF0_DSIREF	122
-> +#define TMPV770X_CLK_VOIF0_PIXEL	123
-> +#define TMPV770X_CLK_PIREFCLK		124
-> +#define TMPV770X_CLK_SBUS		125
-> +#define TMPV770X_CLK_BUSLCK		126
-> +#define TMPV770X_NR_CLK			127
-> +
-> +/* Reset */
-> +#define TMPV770X_RESET_PIETHER_2P5M	0
-> +#define TMPV770X_RESET_PIETHER_25M	1
-> +#define TMPV770X_RESET_PIETHER_50M	2
-> +#define TMPV770X_RESET_PIETHER_125M	3
-> +#define TMPV770X_RESET_HOX		4
-> +#define TMPV770X_RESET_PCIE_MSTR	5
-> +#define TMPV770X_RESET_PCIE_AUX		6
-> +#define TMPV770X_RESET_PIINTC		7
-> +#define TMPV770X_RESET_PIETHER_BUS	8
-> +#define TMPV770X_RESET_PISPI0		9
-> +#define TMPV770X_RESET_PISPI1		10
-> +#define TMPV770X_RESET_PISPI2		11
-> +#define TMPV770X_RESET_PISPI3		12
-> +#define TMPV770X_RESET_PISPI4		13
-> +#define TMPV770X_RESET_PISPI5		14
-> +#define TMPV770X_RESET_PISPI6		15
-> +#define TMPV770X_RESET_PIUART0		16
-> +#define TMPV770X_RESET_PIUART1		17
-> +#define TMPV770X_RESET_PIUART2		18
-> +#define TMPV770X_RESET_PIUART3		19
-> +#define TMPV770X_RESET_PII2C0		20
-> +#define TMPV770X_RESET_PII2C1		21
-> +#define TMPV770X_RESET_PII2C2		22
-> +#define TMPV770X_RESET_PII2C3		23
-> +#define TMPV770X_RESET_PII2C4		24
-> +#define TMPV770X_RESET_PII2C5		25
-> +#define TMPV770X_RESET_PII2C6		26
-> +#define TMPV770X_RESET_PII2C7		27
-> +#define TMPV770X_RESET_PII2C8		28
-> +#define TMPV770X_RESET_PIPCMIF		29
-> +#define TMPV770X_RESET_PICKMON		30
-> +#define TMPV770X_RESET_SBUSCLK		31
-> +#define TMPV770X_NR_RESET		32
-> +
-> +#endif /*_DT_BINDINGS_CLOCK_TOSHIBA_TMPV770X_H_ */
-> diff --git a/include/dt-bindings/reset/toshiba,tmpv770x.h b/include/dt-bindings/reset/toshiba,tmpv770x.h
-> new file mode 100644
-> index 000000000000..080de7e69e68
-> --- /dev/null
-> +++ b/include/dt-bindings/reset/toshiba,tmpv770x.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _DT_BINDINGS_RESET_TOSHIBA_TMPV770X_H_
-> +#define _DT_BINDINGS_RESET_TOSHIBA_TMPV770X_H_
-> +
-> +/* Reset */
-> +#define TMPV770X_RESET_PIETHER_2P5M	0
-> +#define TMPV770X_RESET_PIETHER_25M	1
-> +#define TMPV770X_RESET_PIETHER_50M	2
-> +#define TMPV770X_RESET_PIETHER_125M	3
-> +#define TMPV770X_RESET_HOX		4
-> +#define TMPV770X_RESET_PCIE_MSTR	5
-> +#define TMPV770X_RESET_PCIE_AUX		6
-> +#define TMPV770X_RESET_PIINTC		7
-> +#define TMPV770X_RESET_PIETHER_BUS	8
-> +#define TMPV770X_RESET_PISPI0		9
-> +#define TMPV770X_RESET_PISPI1		10
-> +#define TMPV770X_RESET_PISPI2		11
-> +#define TMPV770X_RESET_PISPI3		12
-> +#define TMPV770X_RESET_PISPI4		13
-> +#define TMPV770X_RESET_PISPI5		14
-> +#define TMPV770X_RESET_PISPI6		15
-> +#define TMPV770X_RESET_PIUART0		16
-> +#define TMPV770X_RESET_PIUART1		17
-> +#define TMPV770X_RESET_PIUART2		18
-> +#define TMPV770X_RESET_PIUART3		19
-> +#define TMPV770X_RESET_PII2C0		20
-> +#define TMPV770X_RESET_PII2C1		21
-> +#define TMPV770X_RESET_PII2C2		22
-> +#define TMPV770X_RESET_PII2C3		23
-> +#define TMPV770X_RESET_PII2C4		24
-> +#define TMPV770X_RESET_PII2C5		25
-> +#define TMPV770X_RESET_PII2C6		26
-> +#define TMPV770X_RESET_PII2C7		27
-> +#define TMPV770X_RESET_PII2C8		28
-> +#define TMPV770X_RESET_PIPCMIF		29
-> +#define TMPV770X_RESET_PICKMON		30
-> +#define TMPV770X_RESET_SBUSCLK		31
-> +#define TMPV770X_NR_RESET		32
-> +
-> +#endif /*_DT_BINDINGS_RESET_TOSHIBA_TMPV770X_H_ */
-> -- 
-> 2.32.0
+> To avoid exposing this internal state to userspace and prevent other
+> processes from importing state they shouldn't have access to, the send
+> returns a token to userspace that is handed off to the target VM. The
+> target passes in this token to receive the sent state. The token is only
+> valid for one-time use. Functionality on the source becomes limited
+> after send has been performed. If the source is destroyed before the
+> target has received, the token becomes invalid.
 > 
+> The target is expected to be initialized (sev_guest_init), but not
+> launched state (sev_launch_start) when performing receive. Once the
+> target has received, it will be in a launched state and will not
+> need to perform the typical SEV launch commands.
 > 
+> Co-developed-by: Lars Bull <larsbull@google.com>
+> Signed-off-by: Lars Bull <larsbull@google.com>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Reviewed-by: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+
+thanks
