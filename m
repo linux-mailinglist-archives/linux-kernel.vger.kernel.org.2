@@ -2,79 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F1D3C838B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555243C8387
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239088AbhGNLSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:18:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239078AbhGNLSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:18:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A72A8613B2;
-        Wed, 14 Jul 2021 11:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626261330;
-        bh=gln4o9RYzRUbHOmzZqjlvV9yan+8+ZdEpUYMAg5gL/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oKMWmnZStjX2CGk2zjgDWd8X8ttujb7VrM/P4zovZfZH35IfrCIvb91yoG84Wx2aW
-         MgKYD8aBlwy0J/5fxgNEQqLUSC/McZ265/AOgb64FzufAe1o6PeeawnZFcI+cIVzyY
-         saubQqi4nY2uFzaCX3mrKcbrFYYMOKIkYFkORC+hvXhmHhf/FvpqAHNlB60tBsjat5
-         8KpvKz8V/B0TAUPxFDcg667k9h5U5EZO6OOtOUxiqSr4iCjJO6SkKO1EWfVu7EO9Q0
-         hRj2eie/pM4Zc28xgIlhj6Fda21Dep2ZcCfRv4xCjdPsL/cojUselnyrXbXK7eC5UT
-         KDG1DMBkciKOQ==
-Date:   Wed, 14 Jul 2021 12:14:53 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Saravanan Sekar <sravanhome@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Troy Kisky <troy.kisky@boundarydevices.com>,
-        linux-hwmon@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Move fixed string 'patternProperties' to
- 'properties'
-Message-ID: <20210714111453.GA4719@sirena.org.uk>
-References: <20210713193514.690894-1-robh@kernel.org>
+        id S239070AbhGNLSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:18:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22877 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239030AbhGNLSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 07:18:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626261319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z981OS1uXu1xWcE4bmmWH5UA+7i0ZIyGX9+WawOYgZo=;
+        b=fPAEgyLwXPgYpdJOc4jqXnQVSdHHi5Fd5FOzfKjbzyJtuHJ2i1VGJ/7TKaMBlTps9lfS6R
+        vS/oiySyQLkcf4e0l25rBoxVP+kZd9a54Dkt18zRYYT5YczAJc17bf1hc1+iFhwBpm1VxI
+        7zjQWhLKbCZYoT9l8fOKvril9RoVowI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-PgOdrNLbPd63ACm2TLfW9w-1; Wed, 14 Jul 2021 07:15:18 -0400
+X-MC-Unique: PgOdrNLbPd63ACm2TLfW9w-1
+Received: by mail-ed1-f70.google.com with SMTP id i19-20020a05640200d3b02903948b71f25cso1079004edu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:15:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Z981OS1uXu1xWcE4bmmWH5UA+7i0ZIyGX9+WawOYgZo=;
+        b=RalquElN1pnTyZMd8wq1+pX3MryQ/WxbDT6Ox8S2dstmrZeGn+E4fYlWXwuO3SDFWb
+         LCwbBwjMl3QcuJp/zPBzvRY42VT4aYrRQPUz5e87ibkIrPAJHM6Q75fEwtb75cnF8UZV
+         KBgJg11eMdUa5BWT0+/xdSh6pgjh1eOEEaKZDg0w+YyuZynmbCTWb3+cMW5Pc5JtiP2y
+         aAeMwKGgrzv6LC5pCU8HKPe/tjyKfHAx3vzHIlRRDxXTlOiL8VTdjzrGpkvVo/F03pWF
+         aIxc7Vh3y8mRDl/wPcA9mc+Zwnl3YUyBV2yZJId4LktF8K39TBlYVAxkiC8MGapNszEh
+         YxQg==
+X-Gm-Message-State: AOAM533OZQ5SnKgiAbsimEujmu7b8Dd2GSv3nUMHPOBE1z/dpniCFRl9
+        nfXXUFedBuM6T6CGYbvYzoz9i8hRzIrzxRDlowLPzBCPpCERkxA872DqU7W96uQgxlJ61Ej810+
+        Ak3kyRvhVnyYl52VvVPMjCYYN
+X-Received: by 2002:a17:906:69b:: with SMTP id u27mr11926780ejb.338.1626261316851;
+        Wed, 14 Jul 2021 04:15:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw5zumagCRkCslZ2/AUY9GUUlZ8EfDeo1zQ/HZbuzDOyv8xHdWXLhu2I/TDon6OVtivEdWwjg==
+X-Received: by 2002:a17:906:69b:: with SMTP id u27mr11926750ejb.338.1626261316611;
+        Wed, 14 Jul 2021 04:15:16 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id n11sm676315ejg.111.2021.07.14.04.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 04:15:16 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-doc@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number
+ of vcpus per guest
+In-Reply-To: <20210701154105.23215-7-jgross@suse.com>
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-7-jgross@suse.com>
+Date:   Wed, 14 Jul 2021 13:15:14 +0200
+Message-ID: <87h7gx2lkt.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
-Content-Disposition: inline
-In-Reply-To: <20210713193514.690894-1-robh@kernel.org>
-X-Cookie: C for yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Juergen Gross <jgross@suse.com> writes:
 
---Kj7319i9nmIyA2yE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Today the maximum number of vcpus of a kvm guest is set via a #define
+> in a header file.
+>
+> In order to support higher vcpu numbers for guests without generally
+> increasing the memory consumption of guests on the host especially on
+> very large systems add a boot parameter for specifying the number of
+> allowed vcpus for guests.
+>
+> The default will still be the current setting of 288. The value 0 has
+> the special meaning to limit the number of possible vcpus to the
+> number of possible cpus of the host.
+>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 10 ++++++++++
+>  arch/x86/include/asm/kvm_host.h                 |  5 ++++-
+>  arch/x86/kvm/x86.c                              |  7 +++++++
+>  3 files changed, 21 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 99bfa53a2bbd..8eb856396ffa 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2373,6 +2373,16 @@
+>  			guest can't have more vcpus than the set value + 1.
+>  			Default: 1023
+>  
+> +	kvm.max_vcpus=	[KVM,X86] Set the maximum allowed numbers of vcpus per
+> +			guest. The special value 0 sets the limit to the number
+> +			of physical cpus possible on the host (including not
+> +			yet hotplugged cpus). Higher values will result in
+> +			slightly higher memory consumption per guest. Depending
+> +			on the value and the virtual topology the maximum
+> +			allowed vcpu-id might need to be raised, too (see
+> +			kvm.max_vcpu_id parameter).
 
-On Tue, Jul 13, 2021 at 01:35:14PM -0600, Rob Herring wrote:
-> There's no need for fixed strings to be under 'patternProperties', so move
-> them under 'properties' instead.
+I'd suggest to at least add a sanity check: 'max_vcpu_id' should always
+be >= 'max_vcpus'. Alternatively, we can replace 'max_vcpu_id' with say
+'vcpu_id_to_vcpus_ratio' and set it to e.g. '4' by default.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> +			Default: 288
+> +
+>  	l1tf=           [X86] Control mitigation of the L1TF vulnerability on
+>  			      affected CPUs
+>  
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 39cbc4b6bffb..65ae82a5d444 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -37,7 +37,8 @@
+>  
+>  #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>  
+> -#define KVM_MAX_VCPUS 288
+> +#define KVM_DEFAULT_MAX_VCPUS 288
+> +#define KVM_MAX_VCPUS max_vcpus
+>  #define KVM_SOFT_MAX_VCPUS 240
+>  #define KVM_DEFAULT_MAX_VCPU_ID 1023
+>  #define KVM_MAX_VCPU_ID max_vcpu_id
+> @@ -1509,6 +1510,8 @@ extern u64  kvm_max_tsc_scaling_ratio;
+>  extern u64  kvm_default_tsc_scaling_ratio;
+>  /* bus lock detection supported? */
+>  extern bool kvm_has_bus_lock_exit;
+> +/* maximum number of vcpus per guest */
+> +extern unsigned int max_vcpus;
+>  /* maximum vcpu-id */
+>  extern unsigned int max_vcpu_id;
+>  /* per cpu vcpu bitmasks (disable preemption during usage) */
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a9b0bb2221ea..888c4507504d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -177,6 +177,10 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
+>  int __read_mostly pi_inject_timer = -1;
+>  module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+>  
+> +unsigned int __read_mostly max_vcpus = KVM_DEFAULT_MAX_VCPUS;
+> +module_param(max_vcpus, uint, S_IRUGO);
+> +EXPORT_SYMBOL_GPL(max_vcpus);
+> +
+>  unsigned int __read_mostly max_vcpu_id = KVM_DEFAULT_MAX_VCPU_ID;
+>  module_param(max_vcpu_id, uint, S_IRUGO);
+>  
+> @@ -10648,6 +10652,9 @@ int kvm_arch_hardware_setup(void *opaque)
+>  	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>  		rdmsrl(MSR_IA32_XSS, host_xss);
+>  
+> +	if (max_vcpus == 0)
+> +		max_vcpus = num_possible_cpus();
 
---Kj7319i9nmIyA2yE
-Content-Type: application/pgp-signature; name="signature.asc"
+Is this special case really needed? I mean 'max_vcpus' is not '0' by
+default so whoever sets it manually probably knows how big his guests
+are going to be anyway and it is not always obvious how many CPUs are
+reported by 'num_possible_cpus()' (ACPI tables can be weird for example).
 
------BEGIN PGP SIGNATURE-----
+> +
+>  	kvm_pcpu_vcpu_mask = __alloc_percpu(KVM_VCPU_MASK_SZ,
+>  					    sizeof(unsigned long));
+>  	kvm_hv_vp_bitmap = __alloc_percpu(KVM_HV_VPMAP_SZ, sizeof(u64));
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDuxywACgkQJNaLcl1U
-h9Bc7wf/VFIPyyWWMsNINwBGSVPcM1hXRLA6fZcXy+7sLbycWy8SufjBoG59RLn/
-C4HNt7T8YDEdRgHUu7T0wfXxdfObm8W2RleX8FPEZ7IjD1e7/tY1+cNBBOQNdTdT
-T4s9TLh4c0aVjTXwB6TGAANL9kk7kS/bNwpxtnpb1P1rHAvcGyk/vkYNPs9m97MO
-KKkpVAzJoJpX9nQxUq+u/xdXkLawzGwA4lv+2Y2XPC0DwWLVGNB6al6tiU/sPlry
-pJ+ndFbDfT0lFWG8ZQbnpNW7aDy+ez12Lz6Fksi6s1eEKTCkmNd8FElGbJyAwiIR
-m6LUlCuJM3gflOnm28ExPSQjRXv9Qg==
-=583K
------END PGP SIGNATURE-----
+-- 
+Vitaly
 
---Kj7319i9nmIyA2yE--
