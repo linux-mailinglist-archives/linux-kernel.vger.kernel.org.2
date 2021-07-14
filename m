@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F7F3C8ED5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D413C8ED8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240336AbhGNTtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:49:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37098 "EHLO mail.kernel.org"
+        id S240464AbhGNTts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:49:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236558AbhGNTp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:45:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F86261404;
-        Wed, 14 Jul 2021 19:42:16 +0000 (UTC)
+        id S237141AbhGNTp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:45:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6C8D613EF;
+        Wed, 14 Jul 2021 19:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291737;
-        bh=1dAUiCV8RZ3na6Q4TsF8CKkJ/0h5oRkuovNOqnr14dg=;
+        s=k20201202; t=1626291738;
+        bh=fP7fCZMwaijQI8r2+ZPDPxAVoNP7Q+G8DH1ivMJ2CJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dskQIDVF1QzsL83SWSj7XxoZdw0khtUtM+YwgWCqsLgnR0J81VZRMJJafJdve5rZi
-         WUPOVLRQ9LIKtmFuK2j2U9bZX/CJXhGGrvas/fUQ9Qe7cIImgxGFO5qvuPpgv1Tpvq
-         HZdRK5frpl1yE0v9xiWQQnISgLlwfzA6eGGL6pleTeTxSZC/9rVNdRJFP0/Vp03GCC
-         dgvIk4g00LZGWx+C+QtDeKuRzBMFh891I8Vn/i62JdzhEx+Wxprozy0ZVQ0AP5J9F1
-         JjyYVLnud3L++8XVbIPozJ3i4C7Zzn+gS++lfN1D8FVz1FPqIqRA+33/XjPaqZ+GWW
-         oc/ZyDUzZXSnQ==
+        b=IasiCus4Dl3QKbxzOqoWVzMA0eOOSCtC2it1Ljc4CdDI5hWEEHeSXusMlWR5pojX5
+         w0mDdvcCdSC3XHPlKVaBAct/RcIge9Q/8vGKbB7v8DAWkbgdOp/Ws6WY216FwyZt/O
+         BZVA21kKbUYJGBql0EwSNWgYfhDila5EpHfZKWhpy2XyY/pn/K5GNYGSLlaTSgQoEn
+         WI+QrgxKTZDbmolfMgSYjfUBH+97lSrC7YhJ7nw2gx25J9SC1EuEM3gtpZgQXvSdsz
+         UCoxxJnaQQ67KuiaqnH7PoYPg6PwU/Ksf54l78Lbk4ZzUnIL0HI5lG9Hc8oeikCmum
+         pTOkm/fxX2onA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Grzegorz Szymaszek <gszymaszek@short.pl>,
+Cc:     Marek Vasut <marex@denx.de>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        kernel@dh-electronics.com,
         linux-stm32@st-md-mailman.stormreply.com,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.12 071/102] ARM: dts: stm32: fix the Odyssey SoM eMMC VQMMC supply
-Date:   Wed, 14 Jul 2021 15:40:04 -0400
-Message-Id: <20210714194036.53141-71-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 072/102] ARM: dts: stm32: Drop unused linux,wakeup from touchscreen node on DHCOM SoM
+Date:   Wed, 14 Jul 2021 15:40:05 -0400
+Message-Id: <20210714194036.53141-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194036.53141-1-sashal@kernel.org>
 References: <20210714194036.53141-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,35 +47,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szymaszek <gszymaszek@short.pl>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit f493162319788802b6a49634f7268e691b4c10ec ]
+[ Upstream commit 5247a50c8b53ca214a488da648e1bb35c35c2597 ]
 
-The Seeed SoM-STM32MP157C device tree had the eMMC’s (SDMMC2) VQMMC
-supply set to v3v3 (buck4), the same as the VMMC supply. That was
-incorrect, as on the SoM, the VQMMC supply is provided from vdd (buck3)
-instead.
+Fix the following dtbs_check warning:
+touchscreen@38: 'linux,wakeup' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: kernel@dh-electronics.com
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-index 6cf49a0a9e69..b5601d270c8f 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-@@ -269,7 +269,7 @@ &sdmmc2 {
- 	st,neg-edge;
- 	bus-width = <8>;
- 	vmmc-supply = <&v3v3>;
--	vqmmc-supply = <&v3v3>;
-+	vqmmc-supply = <&vdd>;
- 	mmc-ddr-3_3v;
- 	status = "okay";
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index b8c8f0b284c3..c5ea08fec535 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -187,7 +187,6 @@ touchscreen@38 {
+ 		reg = <0x38>;
+ 		interrupt-parent = <&gpiog>;
+ 		interrupts = <2 IRQ_TYPE_EDGE_FALLING>; /* GPIO E */
+-		linux,wakeup;
+ 	};
  };
+ 
 -- 
 2.30.2
 
