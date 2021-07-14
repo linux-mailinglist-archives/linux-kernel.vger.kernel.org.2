@@ -2,146 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A4D3C8B5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D183C8B5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhGNTEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhGNTEm (ORCPT
+        id S240064AbhGNTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:05:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26826 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229491AbhGNTFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:04:42 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8B1C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 12:01:49 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id p17so1920315plf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 12:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=t+S5VMEjBgR7YbUh7lHZQebY6xrdUNsIJ8awUiWwlAo=;
-        b=s4y3jQYLJ3sWce/75FApnRQPB73sXl9G83vK6s1c3/cYg4zsK/eOd4BIVm9NHfkh/c
-         HUudSQTcCvPv6/4j1vKsSYP0FkZi7B1Bw29diygdC57B7t5r0rZvdVBS5YPxeyB+LdwG
-         NQi/RrxeQcRAV3jZBRVNqfxLZqj6mNvXlg6WmqB7pPJDdEE5BjJktdN93wwdXrV9YZAO
-         PxFSLCuSasVoQQwxtkDKZdoGcqRIxEH/IrSQUZG/nxmhHwuS9xRiCUodyJNP6Bsi0ET5
-         1N++egGRmNy0QtCxgDYUYEo5BruGVyO87SCANIQE8Z0eGSidZ7kkj064R0Osn6a8Ptjs
-         3OcQ==
+        Wed, 14 Jul 2021 15:05:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626289332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jFMVPE+n/KeTvvfcTz8BsFDOSTNgAFC7F/IHRyxFJmc=;
+        b=bXxRhIFoazTxxpLl8yyC6bTqj8RdeKujseY9BxPdfJatSPWX2rWvTMU+nOEZ+icyKmH0fv
+        ZgPQYQYVkqzMxFweW/AntkTkixdG2q5qrEuF2eP9HXn0hulmer7UuHKR/h58og7EbIC8I1
+        eQXpJtGzvd3NVK/F7dWDWbxwraA0eK8=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-NRK9HpPhP2ugnhllqbmT5A-1; Wed, 14 Jul 2021 15:02:11 -0400
+X-MC-Unique: NRK9HpPhP2ugnhllqbmT5A-1
+Received: by mail-ot1-f70.google.com with SMTP id y59-20020a9d22c10000b0290451891192f0so2720858ota.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 12:02:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=t+S5VMEjBgR7YbUh7lHZQebY6xrdUNsIJ8awUiWwlAo=;
-        b=mj0rY1rzhqDH9HAamdZGSDEj2+SLzf7UiovtrMCzpHScys1HVCkSR2SY0kXiK1qRvf
-         uEJ03B9XplIkHdgBj2BG/3as3osHL/5fQrXQLSloRQsVThsEQG6qRepuUMwZJmBwVGEX
-         xYHKY086fCVxipInt7oC41jS4EUWwaGH6se9VOpfEQ0S5r9flxKIXMzUhH+kA1wnKUI7
-         Nx+pK6Bh80K8cwfNf6TexBg5kNewQ+1CFPO4/kMHNDVQgQEo6PeT461ZE6kmRQTa/rwO
-         q7BR7M8OYxj1gMflzr7bjRBHLj/OVnv82Mhai0p/KhIYGGTwVRo1EoIQ0JYSy/Qiu0UT
-         ufJQ==
-X-Gm-Message-State: AOAM531yhrb8z4MM3CoDWMI42VIo6TdEQ7w4s3TXFnBygkK0P7rgB9OR
-        5KIsgBqaDWyYPxta484ZOFI=
-X-Google-Smtp-Source: ABdhPJxVlU2+daSLGaCkXrOL7wLe4hk/LWvR00dlwZxBrcTi8bJkpUrAdvm9YwNVQwCI6haaws2+Aw==
-X-Received: by 2002:a17:90a:7546:: with SMTP id q64mr5225514pjk.174.1626289309111;
-        Wed, 14 Jul 2021 12:01:49 -0700 (PDT)
-Received: from ?IPv6:2804:14c:482:92eb:ffdf:6b35:b94d:258? ([2804:14c:482:92eb:ffdf:6b35:b94d:258])
-        by smtp.gmail.com with ESMTPSA id f19sm2981386pjj.22.2021.07.14.12.01.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jFMVPE+n/KeTvvfcTz8BsFDOSTNgAFC7F/IHRyxFJmc=;
+        b=dPiIJwgcr6TPb4vEHsX2TftJy/6588aktsXsMhdFHiwfsKGbySKYa7uuHPGAHHalbz
+         2ZRqaEdrkrMWw3GDfsl6h9fQ/fpkcsn3mgNUogOFqvlFeTM+g3qeuumHfEyEwfgoS/EY
+         zlObqexWoHVKUnl+nQVXAfRTkvIXc6YgM6XcBm/SxV6/Z1N6eLUlXGK3zPdwEoHDrUM7
+         IPtXZ8mLNSVTQYmm08gfWa6ioonZ/VV7ATIjpiKE4WFBUSswvB73Ek4QWA9OehBiqUp2
+         6wUjAzEYrot99TRxjliXb1+QUf4MfqzOfd+ZOfBgQMtb2ISw2JwbABGax8ePhJxofupM
+         lz3w==
+X-Gm-Message-State: AOAM530l9ctBSwpmNI3IqeDGstuM+WyOHZF4zaz0eoMxTT4Em5uEktEt
+        3ww78fGgH0AVmTB7I1j3n/nFYo/0M5o0O7T9gehoWKYRMQE1UsAEgNTM4b1qXXEowgq6V8VXyc6
+        GXJt7lv+YB4uKEy8NtB62a7Nq
+X-Received: by 2002:a05:6808:68d:: with SMTP id k13mr8538416oig.83.1626289331021;
+        Wed, 14 Jul 2021 12:02:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmWMx0geU1BNiLf2IsT9q6idWWJuEft9e76PzdT0hS84lYGsbY/IMct48LwOS/vpZ04uvQvA==
+X-Received: by 2002:a05:6808:68d:: with SMTP id k13mr8538396oig.83.1626289330814;
+        Wed, 14 Jul 2021 12:02:10 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id l8sm654946oie.0.2021.07.14.12.02.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 12:01:48 -0700 (PDT)
-Message-ID: <ff03c08047e0cdc79471d7bc35e48fa70efc1215.camel@gmail.com>
-Subject: Re: [PATCH v4 07/11] powerpc/pseries/iommu: Reorganize
- iommu_table_setparms*() with new helper
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Wed, 14 Jul 2021 16:02:00 -0300
-In-Reply-To: <88e3b97e-201d-0782-0e95-8e3d2d850a38@ozlabs.ru>
-References: <20210430163145.146984-1-leobras.c@gmail.com>
-         <20210430163145.146984-8-leobras.c@gmail.com>
-         <e4984fa0-2afe-a987-4fb8-61b878431b1f@ozlabs.ru>
-         <97626d3883ed207b818760a8239babb08a6b5c59.camel@gmail.com>
-         <b25dff0f130b9ab721b8b524e55a3cd4c244a8f3.camel@gmail.com>
-         <88e3b97e-201d-0782-0e95-8e3d2d850a38@ozlabs.ru>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        Wed, 14 Jul 2021 12:02:10 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 13:02:08 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <20210714130208.1eb5c677.alex.williamson@redhat.com>
+In-Reply-To: <9c50fb1b-4574-0cfc-487c-64108d97ed73@de.ibm.com>
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+        <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+        <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+        <20210713184517.48eacee6.pasic@linux.ibm.com>
+        <20210713170533.GF136586@nvidia.com>
+        <9512a7fb-cc55-cd9b-cdf9-7c19d0567311@linux.ibm.com>
+        <20210713192138.GG136586@nvidia.com>
+        <dc18ff02-80f6-e59e-5f08-417434e74706@linux.ibm.com>
+        <9c50fb1b-4574-0cfc-487c-64108d97ed73@de.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-14 at 18:32 +1000, Alexey Kardashevskiy wrote:
-> 
-> 
-> On 13/07/2021 14:47, Leonardo Brás wrote:
-> > Hello Alexey,
+On Wed, 14 Jul 2021 19:56:42 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+
+> On 14.07.21 15:25, Tony Krowiak wrote:
+> >   
+> >> This patch shows it works as a rwsem - look at what had to be changed
+> >> to make it so and you will find some clue to where the problems are in
+> >> kvm_busy version.
+> >>
+> >> In any event, I don't care anymore - please just get this merged, to
+> >> AlexW's tree so I don't have conflicts with the rest of the ap changes
+> >> for VFIO I've got queued up.  
 > > 
-> > On Fri, 2021-06-18 at 19:26 -0300, Leonardo Brás wrote:
-> > > > 
-> > > > > +                                        unsigned long liobn,
-> > > > > unsigned long win_addr,
-> > > > > +                                        unsigned long
-> > > > > window_size,
-> > > > > unsigned long page_shift,
-> > > > > +                                        unsigned long base,
-> > > > > struct
-> > > > > iommu_table_ops *table_ops)
-> > > > 
-> > > > 
-> > > > iommu_table_setparms() rather than passing 0 around.
-> > > > 
-> > > > The same comment about "liobn" - set it in
-> > > > iommu_table_setparms_lpar().
-> > > > The reviewer will see what field atters in what situation imho.
-> > > > 
-> > > 
-> > > The idea here was to keep all tbl parameters setting in
-> > > _iommu_table_setparms (or iommu_table_setparms_common).
-> > > 
-> > > I understand the idea that each one of those is optional in the
-> > > other
-> > > case, but should we keep whatever value is present in the other
-> > > variable (not zeroing the other variable), or do someting like:
-> > > 
-> > > tbl->it_index = 0;
-> > > tbl->it_base = basep;
-> > > (in iommu_table_setparms)
-> > > 
-> > > tbl->it_index = liobn;
-> > > tbl->it_base = 0;
-> > > (in iommu_table_setparms_lpar)
-> > > 
-> > 
-> > This one is supposed to be a question, but I missed the question
-> > mark.
-> > Sorry about that.
+> > Christian, can you merge this with AlexW's tree? Halil suggested
+> > the 'fixes' and 'cc stable' tags ought to be removed, do I need
+> > to post another version or can you take those out when merging?  
 > 
-> Ah ok :)
+> Normally this would go via the KVM/s390 or s390 tree (as Alex did
+> not want to handle s390 vfio devices).
 > 
-> > I would like to get your opinion in this :)
+> Alex, as Jason is waiting for this to be in your tree could you take
+> this patch via your tree ?(please remove cc stable and Fixes for now
+> I want this to settle a bit).
 > 
-> Besides making the "base" parameter a pointer, I really do not have 
-> strong preference, just make it not hurting eyes of a reader, that's
-> all :)
+> To carry this patch in your tree with my kvm/s390 and s390 maintainer hat
+> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-Ok, done :)
+Is this intended for v5.14 or v5.15?  I don't have a v5.15 next branch
+yet, so if this were to get into v5.14 before I create that, it'd be
+there for Jason as well.  Posting a branch that we both merge into our
+linux-next branches would be another option.  I can take it either way,
+just trying to understand what we're wanting to achieve.  Thanks,
 
-> imho in general, rather than answering 5 weeks later, it is more 
-> productive to address whatever comments were made, add comments (in
-> the 
-> code or commit logs) why you are sticking to your initial approach, 
-> rebase and repost the whole thing. Thanks,
-
-Thanks for the tip, and for the reviewing :)
-
-Best regards,
-Leonardo Bras
-
+Alex
 
