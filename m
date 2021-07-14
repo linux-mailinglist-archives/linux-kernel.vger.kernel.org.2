@@ -2,153 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971523C7FDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360143C7FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238475AbhGNIR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:17:56 -0400
-Received: from ofcsgdbm.dwd.de ([141.38.3.245]:56333 "EHLO ofcsgdbm.dwd.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238450AbhGNIRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:17:55 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ofcsg2dn4.dwd.de (Postfix) with ESMTP id 4GPr070Hchz3vbR
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:15:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
-        content-type:content-type:mime-version:references:message-id
-        :in-reply-to:subject:subject:from:from:date:date:received
-        :received:received:received:received:received:received:received;
-         s=dwd-csg20210107; t=1626250502; x=1627460103; bh=e5pnm72OJF8lq
-        bUh1JoO9W40SSc2JAzCwfBIeXGRxU4=; b=KPAO/C46f2RrK9SG1ExbwpQMlSfqO
-        G8tbP93au76HPG5Xm+T3Di6XM+JXUE2bFE0szT6nPZ59RY1D7lysAAzwwDNQJ/5o
-        sdZdYdXiRD3wPiNml4O7D/qnHOuuRLmxD3+5ZOVPPhtUBODepqlnK3TJYdr6mjgM
-        H3rRdT0kEOhy/PaIXu/tXJOo1vdDt8PGudLkSwM8cU3uqi4eWxAnQSKTG53+Th7k
-        /tU7cnuG7U14BtvEFJZfnCG42ZqXROtqWv6telShQeDp1OF9T1FdRkoqdxc6McYf
-        JYZynMpQAPy2saYVCV5sj64f08wIfU1apmwIGNCsN0iee0CSynMz7/5RA==
-X-Virus-Scanned: by amavisd-new at csg.dwd.de
-Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
-        by localhost (ofcsg2dn4.dwd.de [172.30.232.27]) (amavisd-new, port 10024)
-        with ESMTP id emv9Mx8cbcJS for <linux-kernel@vger.kernel.org>;
-        Wed, 14 Jul 2021 08:15:02 +0000 (UTC)
-Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id CA04BC902556
-        for <root@ofcsg2dn4.dwd.de>; Wed, 14 Jul 2021 08:15:02 +0000 (UTC)
-Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id C8604C90245B
-        for <root@ofcsg2dn4.dwd.de>; Wed, 14 Jul 2021 08:15:02 +0000 (UTC)
-X-DDEI-TLS-USAGE: Unused
-Received: from ofcsgdbm.dwd.de (unknown [172.30.232.27])
-        by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
-        for <root@ofcsg2dn4.dwd.de>; Wed, 14 Jul 2021 08:15:02 +0000 (UTC)
-Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
- Wed, 14 Jul 2021 08:15:02 -0000
-Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
-        by ofcsg2dn4.dwd.de (Postfix) with ESMTPS id 4GPr065Nx3z3wTw;
-        Wed, 14 Jul 2021 08:15:02 +0000 (UTC)
-Received: from ofmailhub.dwd.de (ofldap.dwd.de [141.38.39.196])
-        by ofcsg2dvf2.dwd.de  with ESMTP id 16E8F2Gh015635-16E8F2Gi015635;
-        Wed, 14 Jul 2021 08:15:02 GMT
-Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
-        by ofmailhub.dwd.de (Postfix) with ESMTP id 21608E2BEC;
-        Wed, 14 Jul 2021 08:15:02 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 08:15:02 +0000 (GMT)
-From:   Holger Kiehl <Holger.Kiehl@dwd.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-In-Reply-To: <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
-Message-ID: <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
-References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de> <YO56HTE3k95JLeje@kroah.com> <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
+        id S238398AbhGNIUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhGNIUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:20:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B326EC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:17:28 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1m3a4v-00059P-Hz; Wed, 14 Jul 2021 10:17:13 +0200
+Message-ID: <efae56878575297039d745c61503b96321d31e52.camel@pengutronix.de>
+Subject: Re: [PATCH v16 05/12] dmaengine: dma: imx-sdma: add fw_loaded and
+ is_ram_script
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Robin Gong <yibin.gong@nxp.com>, vkoul@kernel.org,
+        mark.rutland@arm.com, broonie@kernel.org, robh+dt@kernel.org,
+        catalin.marinas@arm.com, will.deacon@arm.com, shawnguo@kernel.org,
+        festevam@gmail.com, s.hauer@pengutronix.de,
+        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
+        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
+        frieder.schrempf@kontron.de, m.felsch@pengutronix.de,
+        xiaoning.wang@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Wed, 14 Jul 2021 10:17:04 +0200
+In-Reply-To: <1626258052-22198-6-git-send-email-yibin.gong@nxp.com>
+References: <1626258052-22198-1-git-send-email-yibin.gong@nxp.com>
+         <1626258052-22198-6-git-send-email-yibin.gong@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-FE-Policy-ID: 2:2:1:SYSTEM
-X-TMASE-Version: DDEI-5.1-8.6.1018-26280.006
-X-TMASE-Result: 10--21.179100-10.000000
-X-TMASE-MatchedRID: PL66URbwWA+WfDtBOz4q28bYuTb6+cQg69aS+7/zbj/mNRhvDVinv2Kp
-        MJoimBcbPsj5qjS+dCEYwvDSTCG2BJQlTsRs6bL83nHtGkYl/VpF/jSlPtma/r0/f33kf9Gljn9
-        2T7igP2sXndhpsXecxygywW45LfL0yFuWu3nxO+19j6Il8VAHF8ZU3kmz9C/H3pxmYneHU6t/cL
-        JHsj+DkZhk/6bphJLMKISk8WdGcXCHbsX/GOLqdgPZZctd3P4BuqgVqRoQsiB7lDzh8Z+EhhBmt
-        oCUanEvwgx24xjlvojzX5siSEObomsc2OVQ/NyCfid4LSHtIANuWkE39mLwR2zpNYa+Tlcne/cQ
-        kmt0G7GVIsnYOY5w/uF45apSJW4bV6HcTxi1U3IqkSeDPauzryIk3dpe5X+hy5JfHvVu9It4yU/
-        xJmlyD5xLNR1DtMjuAbnTY7qqRyLvcjreWe4HbPbta0OAYFzy+wLfgJ/bqPM8sS0dkmSGjDzprL
-        002Ijx4vM1YF6AJbY65tgsJWcFUd934/rDAK3zGjFMngtLLWhJFQD69E10vA==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-DDEI-PROCESSED-RESULT: Safe
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, 14 Jul 2021, Holger Kiehl wrote:
-
-> On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
+Am Mittwoch, dem 14.07.2021 um 18:20 +0800 schrieb Robin Gong:
+> Add 'fw_loaded' and 'is_ram_script' to check if the script used by channel
+> is ram script and it's loaded or not, so that could prevent meaningless
+> following malloc dma descriptor and bd allocate in sdma_transfer_init(),
+> otherwise memory may be consumed out potentially without free in case
+> that spi fallback into pio while dma transfer failed by sdma firmware not
+> ready(next ERR009165 patch depends on sdma RAM scripts/firmware).
 > 
-> > On Wed, Jul 14, 2021 at 05:39:43AM +0000, Holger Kiehl wrote:
-> > > Hello,
-> > > 
-> > > On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
-> > > 
-> > > > This is the start of the stable review cycle for the 5.13.2 release.
-> > > > There are 800 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > With this my system no longer boots:
-> > > 
-> > >    [  OK  ] Reached target Swap.
-> > >    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
-> > >    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
-> > >    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
-> > >    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
-> > >    See 'systemctl status systemd-udev-settle.service' for details.
-> > >             Starting Activation of DM RAID sets...
-> > >    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
-> > >    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
-> > > 
-> > > System is a Fedora 34 with all updates applied. Two other similar
-> > > systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
-> > > and boots fine. The system where it does not boot has an Intel
-> > > Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
-> > > 
-> > > Any idea which patch I should drop to see if it boots again. I already
-> > > dropped
-> > > 
-> > >    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
-> > > 
-> > > and I just see that this one should also be dropped:
-> > > 
-> > >    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
-> > > 
-> > > Will still need to test this.
-> > 
-> > Can you run 'git bisect' to see what commit causes the problem?
-> > 
-> Yes, will try to do that. I think it will take some time ...
+> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+> Acked-by: Vinod Koul <vkoul@kernel.org>
+
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+
+> ---
+>  drivers/dma/imx-sdma.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-Hmm, I am doing something wrong?
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index 665ccbf..d366198 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -435,6 +435,7 @@ struct sdma_channel {
+>  	enum dma_status			status;
+>  	struct imx_dma_data		data;
+>  	struct work_struct		terminate_worker;
+> +	bool				is_ram_script;
+>  };
+>  
+>  #define IMX_DMA_SG_LOOP		BIT(0)
+> @@ -498,6 +499,7 @@ struct sdma_engine {
+>  	struct sdma_buffer_descriptor	*bd0;
+>  	/* clock ratio for AHB:SDMA core. 1:1 is 1, 2:1 is 0*/
+>  	bool				clk_ratio;
+> +	bool                            fw_loaded;
+>  };
+>  
+>  static int sdma_config_write(struct dma_chan *chan,
+> @@ -918,6 +920,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  	sdmac->pc_to_device = 0;
+>  	sdmac->device_to_device = 0;
+>  	sdmac->pc_to_pc = 0;
+> +	sdmac->is_ram_script = false;
+>  
+>  	switch (peripheral_type) {
+>  	case IMX_DMATYPE_MEMORY:
+> @@ -953,6 +956,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  	case IMX_DMATYPE_SSI_DUAL:
+>  		per_2_emi = sdma->script_addrs->ssish_2_mcu_addr;
+>  		emi_2_per = sdma->script_addrs->mcu_2_ssish_addr;
+> +		sdmac->is_ram_script = true;
+>  		break;
+>  	case IMX_DMATYPE_SSI_SP:
+>  	case IMX_DMATYPE_MMC:
+> @@ -967,6 +971,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  		per_2_emi = sdma->script_addrs->asrc_2_mcu_addr;
+>  		emi_2_per = sdma->script_addrs->asrc_2_mcu_addr;
+>  		per_2_per = sdma->script_addrs->per_2_per_addr;
+> +		sdmac->is_ram_script = true;
+>  		break;
+>  	case IMX_DMATYPE_ASRC_SP:
+>  		per_2_emi = sdma->script_addrs->shp_2_mcu_addr;
+> @@ -1363,6 +1368,11 @@ static struct sdma_desc *sdma_transfer_init(struct sdma_channel *sdmac,
+>  {
+>  	struct sdma_desc *desc;
+>  
+> +	if (!sdmac->sdma->fw_loaded && sdmac->is_ram_script) {
+> +		dev_warn_once(sdmac->sdma->dev, "sdma firmware not ready!\n");
+> +		goto err_out;
+> +	}
+> +
+>  	desc = kzalloc((sizeof(*desc)), GFP_NOWAIT);
+>  	if (!desc)
+>  		goto err_out;
+> @@ -1792,6 +1802,8 @@ static void sdma_load_firmware(const struct firmware *fw, void *context)
+>  
+>  	sdma_add_scripts(sdma, addr);
+>  
+> +	sdma->fw_loaded = true;
+> +
+>  	dev_info(sdma->dev, "loaded firmware %d.%d\n",
+>  			header->version_major,
+>  			header->version_minor);
 
-   git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-   cd linux-5.13.y/
-   git tag|grep v5.13
-   v5.13
-   v5.13-rc1
-   v5.13-rc2
-   v5.13-rc3
-   v5.13-rc4
-   v5.13-rc5
-   v5.13-rc6
-   v5.13-rc7
-   v5.13.1
 
-There is no v5.13.2-rc1. It is my first time with 'git bisect'. Must be
-doing something wrong. How can I get the correct git kernel rc version?
-
-Holger
