@@ -2,66 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039D53C7F7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEDE3C7F7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238339AbhGNHrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:47:16 -0400
-Received: from smtp20.cstnet.cn ([159.226.251.20]:34362 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238139AbhGNHrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:47:14 -0400
-X-Greylist: delayed 495 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 03:47:14 EDT
-Received: by ajax-webmail-APP-10 (Coremail) ; Wed, 14 Jul 2021 15:35:36
- +0800 (GMT+08:00)
-X-Originating-IP: [106.120.127.5]
-Date:   Wed, 14 Jul 2021 15:35:36 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   wuzhouhui <wuzhouhui14@mails.ucas.ac.cn>
-To:     "yong w" <yongw.pur@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, nico@fluxnic.net, wang.yong12@zte.com.cn
-Subject: Re: Re: [BUG] ramfs system panic when using dd to create files
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn cnic.cn
-In-Reply-To: <CAOH5QeC0PhnZY6Cpe4zZ8o07XHA4-5B3xGEontkezrYu=Jt0VQ@mail.gmail.com>
-References: <CAOH5QeChR8s6vENfRdGtUeeqKsSSbeFkY9TArmOyDcUvgAgU7Q@mail.gmail.com>
- <CAOH5QeC0PhnZY6Cpe4zZ8o07XHA4-5B3xGEontkezrYu=Jt0VQ@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S238322AbhGNHoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238139AbhGNHoV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 03:44:21 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C1FC06175F;
+        Wed, 14 Jul 2021 00:41:29 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id l6so973904wmq.0;
+        Wed, 14 Jul 2021 00:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HaPuVlFN93lFNEwDlqhYSbss+sw9P7bEYo9pp9pFNBY=;
+        b=gpnWT3y8tV1w32BBPQhcFuhxi09k8qADlLloU8h5+tdIBgUgIjm+xIrrQ9sXdK89fC
+         gtNJoJ/bAZPHxBMtRnlyr/TlCT6rfnRx8bu4tIs0xoZS32g/Pa2PW4IByyUB2uPNktlo
+         d+BcQ1MPyPa3jllQ1Tjv8d6yFbaIjQmL+R5V68NQmZj2NXfHQc5pyRjAfUHmVdcPbQm5
+         kBDDMIZ1OunkW8XBYvhzj0MtGU5wCKVx0Orz3DZH0E/M2d3urNQjcri7yR2pZiiSuyx+
+         qTNOxzRyU4lLXkpVoQpjtSiN2ToQUN40mEu1fxdbg5332StcnywgLF4vzgIE5qM7trMD
+         8AKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HaPuVlFN93lFNEwDlqhYSbss+sw9P7bEYo9pp9pFNBY=;
+        b=fXzlvynHKxgz/QmSYhSiAt3TR9cfeOFAHB/QFHGtReOyQ3RoM+kIcTEK7HGYJriQkr
+         sDKj5TpTfeC/Vq4jR7/dtlKqLR0y0ijDUXNeEGfrtl9WP3cmZjQ0qhJIsrRCcILOeaxu
+         gSiMgQ6rJv8pUa9JHiApP2vMr6Cf97tYASwsPATgRM1L6n3vZ/kKGzTnXfDeeMhUY3Cy
+         4ZUMNAjZO+viHZTOBaHllKepuWSQU3nWtwB5ysaAPBfOw8mPecVzMc6N96zzoRdRSfwA
+         IqXOtvKdBpPllYachztgs9VnlBqwXgPwilYOh87d+lPQ/zsC9irhvj3KpM8eIG0lntaB
+         piaQ==
+X-Gm-Message-State: AOAM532U/lnqCinpj/ZhFuipppkYKxDwIj7Ajq0UehEPDfAYuzBpF27J
+        NHk9LHQ3O1eKHCM6PZSLvYM=
+X-Google-Smtp-Source: ABdhPJyUT5jMW/owtA/QgMEvgs+6KvHjgyA1PLfmkdMXeI7lpLNXKeK1ovn3oejwGVdR29Uia3XS8Q==
+X-Received: by 2002:a05:600c:4ecc:: with SMTP id g12mr2604039wmq.118.1626248487936;
+        Wed, 14 Jul 2021 00:41:27 -0700 (PDT)
+Received: from localhost (p200300e41f023e00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f02:3e00:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id l15sm1510464wrv.87.2021.07.14.00.41.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 00:41:26 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] pwm: Fixes for v5.14-rc2
+Date:   Wed, 14 Jul 2021 09:43:26 +0200
+Message-Id: <20210714074326.89692-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Message-ID: <7074179d.c3fd.17aa3f148cc.Coremail.wuzhouhui14@mails.ucas.ac.cn>
-X-Coremail-Locale: en_US
-X-CM-TRANSID: tACowACHE_DKk+5g1tYAAA--.5115W
-X-CM-SenderInfo: xzx2x05xkxxi2u6ptx1ovo3u1dvotugofq/1tbiCQcCAV02aWP1xg
-        ABse
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWUCw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jmd0OyAtLS0tLU9yaWdpbmFsIE1lc3NhZ2VzLS0tLS0KJmd0OyBGcm9tOiAieW9uZyB3IiA8eW9u
-Z3cucHVyQGdtYWlsLmNvbT4KJmd0OyBTZW50IFRpbWU6IDIwMjEtMDctMTQgMDg6MjQ6MjMgKFdl
-ZG5lc2RheSkKJmd0OyBUbzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZywgbGludXgtbW1A
-a3ZhY2sub3JnLCBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnLCBuaWNvQGZsdXhuaWMubmV0LCB3
-YW5nLnlvbmcxMkB6dGUuY29tLmNuCiZndDsgQ2M6IAomZ3Q7IFN1YmplY3Q6IFJlOiBbQlVHXSBy
-YW1mcyBzeXN0ZW0gcGFuaWMgd2hlbiB1c2luZyBkZCB0byBjcmVhdGUgZmlsZXMKJmd0OyAKJmd0
-OyBIZWxsbywgaXMgdGhlcmUgYW55IHNvbHV0aW9uLCBvciBob3cgdG8gYXZvaWQgdGhpcyBwcm9i
-bGVtIHdoZW4gdXNpbmcgcmFtZnM/CgpMaW1pdCBtYXggc2l6ZSBvZiByYW1mcy4KCiZndDsgCiZn
-dDsgeW9uZyB3IDx5b25ndy5wdXJAZ21haWwuY29tPiDkuo4yMDIx5bm0N+aciDfml6XlkajkuIkg
-5LiL5Y2INTo1OOWGmemBk++8mgomZ3Q7ICZndDsKJmd0OyAmZ3Q7IFdoZW4gSSAgdXNlIGRkIHRv
-IGNyZWF0ZSBmaWxlcyBtdWx0aXBsZSB0aW1lcyB1bmRlciB0aGUgcmFtZnMgZmlsZQomZ3Q7ICZn
-dDsgc3lzdGVt77yMUGFuaWMgYXBwZWFycywgaW5kaWNhdGluZyB0aGF0IHRoZXJlIGlzIG5vIHBy
-b2Nlc3MgdG8ga2lsbC4KJmd0OyAmZ3Q7IEkgbGVhcm4gdGhhdCByYW1mcyB3aWxsIGF1dG9tYXRp
-Y2FsbHkgZ3JvdyBzcGFjZSBkdWUgdG8gZGF0YSB3cml0aW5nLAomZ3Q7ICZndDsgY2F1c2luZyBh
-bGwgdGhlIHN5c3RlbSBtZW1vcnkgdG8gcnVuIG91dCwgIGJ1dCBpIHRoaW5rIGl0IHNob3VsZG4n
-dAomZ3Q7ICZndDsgY2F1c2UgdGhlIHN5c3RlbSB0byBwYW5pYy4KClRoZSBjb21tZW50cyBhbHJl
-YWR5IGV4cGxhaW5zIHdoeSBrZXJuZWwgc2hvdWxkIHBhbmljIG9uIHRoaXMgc2l0dWF0aW9uOgog
-ICAgICAgICAgICAvKgogICAgICAgICAgICAgKiBJZiB3ZSBnb3QgaGVyZSBkdWUgdG8gYW4gYWN0
-dWFsIGFsbG9jYXRpb24gYXQgdGhlCiAgICAgICAgICAgICAqIHN5c3RlbSBsZXZlbCwgd2UgY2Fu
-bm90IHN1cnZpdmUgdGhpcyBhbmQgd2lsbCBlbnRlcgogICAgICAgICAgICAgKiBhbiBlbmRsZXNz
-IGxvb3AgaW4gdGhlIGFsbG9jYXRvci4gQmFpbCBvdXQgbm93LgogICAgICAgICAgICAgKi8KPC95
-b25ndy5wdXJAZ21haWwuY29tPjwveW9uZ3cucHVyQGdtYWlsLmNvbT4=
+Hi Linus,
+
+The following changes since commit bebedf2bb4a9e0cb4ffa72cbc960728051b338a4:
+
+  pwm: Remove redundant assignment to pointer pwm (2021-07-07 21:43:32 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.14-rc2
+
+for you to fetch changes up to f4a8e31ed84ec646c158824f423cb22d1f362bbf:
+
+  pwm: ep93xx: Ensure configuring period and duty_cycle isn't wrongly skipped (2021-07-08 16:09:30 +0200)
+
+Thanks,
+Thierry
+
+----------------------------------------------------------------
+pwm: Fixes for v5.14-rc2
+
+This contains a couple of fixes from Uwe that I missed for v5.14-rc1.
+
+----------------------------------------------------------------
+Uwe Kleine-König (5):
+      pwm: sprd: Ensure configuring period and duty_cycle isn't wrongly skipped
+      pwm: spear: Ensure configuring period and duty_cycle isn't wrongly skipped
+      pwm: tiecap: Ensure configuring period and duty_cycle isn't wrongly skipped
+      pwm: berlin: Ensure configuring period and duty_cycle isn't wrongly skipped
+      pwm: ep93xx: Ensure configuring period and duty_cycle isn't wrongly skipped
+
+ drivers/pwm/pwm-berlin.c |  9 ++---
+ drivers/pwm/pwm-ep93xx.c | 85 +++++++++++++++++++++++-------------------------
+ drivers/pwm/pwm-spear.c  |  9 ++---
+ drivers/pwm/pwm-sprd.c   | 11 +++----
+ drivers/pwm/pwm-tiecap.c | 15 ++++-----
+ 5 files changed, 56 insertions(+), 73 deletions(-)
