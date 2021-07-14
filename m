@@ -2,75 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8E23C8A7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EDC3C8A7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239861AbhGNSMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:12:16 -0400
-Received: from mail-pg1-f179.google.com ([209.85.215.179]:39757 "EHLO
-        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhGNSMP (ORCPT
+        id S239944AbhGNSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229651AbhGNSMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:12:15 -0400
-Received: by mail-pg1-f179.google.com with SMTP id a2so3319630pgi.6;
-        Wed, 14 Jul 2021 11:09:23 -0700 (PDT)
+        Wed, 14 Jul 2021 14:12:31 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDA6C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:09:38 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id i5so5162178lfe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ij5c5QtyImKnAJ85AhNr0s4HqHfwN57z+cA0A4w9TXQ=;
+        b=tP02GM10ESokXnfzuxqxyGhn+LXYrrm8TTsb0+WcG/RMMEk6ZIvyOA8njSVXinuPi0
+         8OwwVj78Cn36LsfAMVQzjEHdchb6s8HzynJKXNFaXWXyZgrttIZwZFNs0UaXLPTchX9j
+         4ebjWYjT3oVH01OKeOU9OCs90UQCyM0oN3DoHI0Q9aLfZCue3M7sOeSj8kENCZHrlqjU
+         zu8AVJD/bCI2Y2osCvdQEE6rnLXPf6c5NW0xSwWiNwsaz6DnHrSmUYX98wQY9UiCD+il
+         AARZX0oSlWsL+Vh8fDDpvJWY5oXQNSjZ2c6hfqx3VwCKvo6ysGipm+rBBTCOgTMIR3wQ
+         YFJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LIzD3a4Y0Ejr+434x3kFvkLLT9Fc2hxKYkwrbGXVjSY=;
-        b=enqIO1V/DfyIEJFQR86o+piWXwL4Ut323CcN7t9BSZkB4QtHUPQipbrILyqSCZbPO6
-         fkE3apmIc7rzYSEwglk6hhdtsaYUEqNWaxYZ+rNBRn71oViLc+ZSz5Uj4T4rxhHhb0uK
-         tzb3/tK2XoXMaDfdSJXJrgr1uFfcwYNI8uemM8mWn9VOPxuR8Oe2uHQ0E5H/alirItnL
-         qiB40yr/EHlkLgb9YRmnqENXS7hBHEel79UMpTbnoxCtmP+JIHa0D26dCS1kMc01RuBB
-         Ar9Zosq0eYNYfE7fOUIz9Tf1NmuFZyvcnUpaUUF/G6M+K9u3Mki58FdkhpXcX2lZdKM5
-         Ossg==
-X-Gm-Message-State: AOAM5322m2GsCN0EgVvYe+NXGa81o5D9mQkymxBNNmGc1hsEKl3ltDLp
-        Ja/NKctCvKALJ73AAGHkUMk=
-X-Google-Smtp-Source: ABdhPJx9teTmAtYN19Yd/nQG8C6ZbdsPelnS5mxH8YBC7VR+v8bydqlC8BZSICOe/VSBsiH69KOoAw==
-X-Received: by 2002:a63:e26:: with SMTP id d38mr5923790pgl.42.1626286163206;
-        Wed, 14 Jul 2021 11:09:23 -0700 (PDT)
-Received: from ?IPv6:2620:0:1000:2004:91cc:a7b9:6739:15bc? ([2620:0:1000:2004:91cc:a7b9:6739:15bc])
-        by smtp.gmail.com with ESMTPSA id q17sm2787438pjd.42.2021.07.14.11.09.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 11:09:22 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: add missing host_lock in setup_xfer_req
-To:     Bean Huo <huobean@gmail.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
-        Asutosh Das <asutoshd@codeaurora.org>
-References: <20210701005117.3846179-1-jaegeuk@kernel.org>
- <38432018-e8bf-f9f3-00bf-cd4b81c95c88@acm.org>
- <69b367bc44084f901d0d71fb8f9633ea7e5df36b.camel@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b0cd26d0-6ebc-b633-8669-a558597cc91d@acm.org>
-Date:   Wed, 14 Jul 2021 11:09:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ij5c5QtyImKnAJ85AhNr0s4HqHfwN57z+cA0A4w9TXQ=;
+        b=A3O+ceUr07SXnMplwT0fDYXoa3dWtdIDtOqjtrSJ7ttMDV9HzWwjwFvxiQAXITvAvd
+         kD0kRRmUeDWdtSG0InTAm5te6NuIcRb5WlKaGMEHCaxVaZodn0jbHQXl8zNqzU83/JZR
+         9io+wEpmJztPtanThmRLvXrWwvGlqo6ajUb/0dBW2EwOrTPvf5wdB+JjCgaswEoCY8/Q
+         fhrkcW98EeYY77TOb0Er90gNRHRJbrXhn35UduzAHJurGNt20buO7GrvRLTwQNY2gDJV
+         GVrNU9pSJwT31ShJI3GIuMB3lLBsQCzGGaVbqSm9CxEmy+f+1ljrtxVx41tj1xv/aNo3
+         RD8A==
+X-Gm-Message-State: AOAM530mXYEwDOt1V7QG/GDPZg3PAjUFP3ZjIqaS4LNbZEl5+qN6bTGH
+        vrGJxznDjL1AXhWBguiY7OGKkY0kQJpjzCj1M+L8mA==
+X-Google-Smtp-Source: ABdhPJx4KbBG6lrTeab1p1OzfGrztNprrxVheKM54pSelWmgS8ycp9fITsymufFWStCtFwAgfHJPrlZycm5VIuP6blA=
+X-Received: by 2002:a05:6512:3e0c:: with SMTP id i12mr8754331lfv.122.1626286176530;
+ Wed, 14 Jul 2021 11:09:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <69b367bc44084f901d0d71fb8f9633ea7e5df36b.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210707224310.1403944-1-ndesaulniers@google.com>
+ <YOaR1ZjToP/kgNsC@infradead.org> <CAK8P3a1ctLcHuLZfBJ7wXHRmidpQZ4EZdML1nqPJVGYVTgHmaw@mail.gmail.com>
+ <CAKwvOdkaifETNvtTA3O9EToVHAK0N50wkT-bHOpQ2RmFg7qk0A@mail.gmail.com> <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 14 Jul 2021 11:09:24 -0700
+Message-ID: <CAKwvOdkUUJU8Ktg8Wcvg3pbsyUWLCH0320nF-aQWre0hGTP2Ag@mail.gmail.com>
+Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/21 12:45 PM, Bean Huo wrote:
-> This change only impacts on the Samsung exynos platform. and Can's
-> optimization patch is to optimise the host_lock,, and removed
-> host_lock, now add back in this function makes sense to me.
-> but I am thinking how about hba->host_sem?
+On Fri, Jul 9, 2021 at 1:07 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Thu, Jul 8, 2021 at 8:04 PM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> > > /usr/bin/powerpc64-linux-gnu-gcc-5.2.0
+> > > /usr/bin/powerpc64-linux-gnu-gcc -> powerpc64-linux-gnu-gcc-5.2.0
+> > > /usr/local/bin/ppc64le-linux-gcc-9
+> > > ~/bin/powerpc/powerpc-linux-unknown-gcc-12.0.20210708.experimental
+> > >
+> > > all of these should be able to cross-build any powerpc kernel, but
+> > > there is no obvious first choice (highest version, first in path,
+> > > ordered list of target triples, ...). I tried coming up with a heuristic
+> > > to pick a reasonable toolchain, but at some point gave up because
+> > > I failed to express that in a readable bash or Makefile syntax.
+> >
+> > Right; foremost in my mind was arm-linux-gnueabi-gcc vs
+> > arm-linux-gnueabihf-gcc.  That's not even to mention the versioned
+> > suffixes.
+> >
+> > In terms of multiversion support; this series doesn't regress doing
+> > things the hard/verbose way.  But I think for most users we can have a
+> > simpler common case; folks can play with their $PATH or focus on more
+> > hermetic builds if they want this new feature (CROSS_COMPILE
+> > inference) AND support for multiple versions of the same toolchain.
+>
+> Fair enough. So how something like this:
+>
+> powerpc-targets := powerpc32 powerpc64 powerpc32le \
+>         powerpc32be powerpc64le powerpc64be ppc64le ppc64be
+> arm-targets := arm-linux-gnueabi arm-linux-gnueabihf
+> x86-targets := x86_64 i386 i686
+> x86_64-targets := x86
+> i386-targets := i686 x86 x86_64
+> parisc-targets := hppa64 hppa
+> ...
+>
+> CROSS_COMPILE ?= `find-toolchain $(ARCH) $($(ARCH)-targets)`
+>
+> where find-toolchain just finds the first working toolchain based, looking
+> for $(target)-linux-gcc $(target)-gcc $(target)-unknown-linux-gcc etc
+> in $(PATH) but ignoring the versions?
 
-Hi Bean,
+Sure, debian doesn't even package different versions of the cross GCC
+packages AFAIK; no idea about other distros.  Though the user may have
+built from source, or have multiple versions fetched from tarballs.
 
-Calls of exynos_ufs_specify_nexus_t_xfer_req() must be serialized, hence 
-Jaegeuks' patch. This function is called from the I/O submission path so 
-performance matters. My understanding is that spinlocks have less 
-overhead than semaphores. Hence the choice for a spinlock.
+I think we can simplify the common case of "I just wan't to cross
+compile, I don't necessarily care about an older compiler version
+co-installed with a newer one." ("and if I did, I could still use
+CROSS_COMPILE the verbose way").
 
+> What I had actually planned was a set of helpers that allow you to
+> do this in multiple steps:
+>
+> - if $(objtree)/scripts/cross/bin/gcc (or something else we pick)
+>   exists and CROSS_COMPILE is not set, set CROSS_COMPILE
+>   to $(objtree)/scripts/cross/bin/ in the Makefile
+> - add script to enumerate the installed toolchains
+> - add a second script to symlink one of those toolchains to
+>   $(objtree)/scripts/cross/bin
+
+(and check the symlink isn't broken should the user uninstall a
+toolchain, or have their distro update their toolchain version)
+
+> - add a third script to download a cross-toolchain from kernel.org
+>   for $(ARCH) and install it to one of the locations that the first
+>   script looks for (/opt/cross/, $(HOME)/cross/, $(objtree)scripts/cross/)
+
+Would the user be prompted for the download? So during
+`defconfig`/configuration we could prompt and say "it looks like
+you're cross compiling without setting CROSS_COMPILE, would you like
+me to fetch a cross compiler for you?"
+
+Seems reasonable, when cross compiling with GCC.
+-- 
 Thanks,
-
-Bart.
+~Nick Desaulniers
