@@ -2,86 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C75D3C8034
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FF63C8033
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238613AbhGNIfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:35:37 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:28292 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238592AbhGNIfa (ORCPT
+        id S238607AbhGNIfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:35:33 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49752 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238589AbhGNIf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:35:30 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d85 with ME
-        id UwYb2500C21Fzsu03wYbte; Wed, 14 Jul 2021 10:32:37 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 14 Jul 2021 10:32:37 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: switchdev: Simplify 'mlxsw_sp_mc_write_mdb_entry()'
-Date:   Wed, 14 Jul 2021 10:32:33 +0200
-Message-Id: <fbc480268644caf24aef68a3b893bdaef71d7306.1626251484.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 14 Jul 2021 04:35:29 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF960CC;
+        Wed, 14 Jul 2021 10:32:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626251556;
+        bh=jKDxdCR/47jG5iunXdfBy5N82ZjyM5+IZvoSipRRYFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MPwRm6krENd5glAHM+t2YcpCx17rA11v9T9jJBX0LtPAeALZMivtNOUYAnT1Pk0Qv
+         j88ETcxfAbZ4gBvsmbOPh1tIma46LxIt8CAAFrx6lWEfrlsr2zgGA6+IxV3IpEg7S8
+         exLHrb8bHdW05GPVPTC4gWiKsNxE/bGFLoFIk7tE=
+Date:   Wed, 14 Jul 2021 11:32:35 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 1/4] dt-bindings:drm/bridge:anx7625:add vendor define
+ flags
+Message-ID: <YO6hIzlOuMsDXztW@pendragon.ideasonboard.com>
+References: <cover.1624349479.git.xji@analogixsemi.com>
+ <308427448195e2db37a32997c6d32905c96ca876.1624349480.git.xji@analogixsemi.com>
+ <CAG3jFys6D=-L-Aez4aWuE4nM7qJCtn4wPws3TKxbkRzcAoFR0A@mail.gmail.com>
+ <20210707073051.GA936385@anxtwsw-Precision-3640-Tower>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210707073051.GA936385@anxtwsw-Precision-3640-Tower>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'bitmap_alloc()/bitmap_free()' instead of hand-writing it.
-This makes the code less verbose.
+Hi Xin,
 
-Also, use 'bitmap_alloc()' instead of 'bitmap_zalloc()' because the bitmap
-is fully overridden by a 'bitmap_copy()' call just after its allocation.
+On Wed, Jul 07, 2021 at 03:30:51PM +0800, Xin Ji wrote:
+> On Thu, Jun 24, 2021 at 01:57:22PM +0200, Robert Foss wrote:
+> > Hey Xin,
+> > 
+> > I would like to merge this series now, but this patch needs a review
+> > first. Maybe Laurent/Rob Herring are good candidates.
+>
+> Hi Rob, I get Laurent/Rob comments before, and explained why we needs
+> these DT properties, so far, I didn't get any response.
+> 
+> Hi Rob Herring and Laurent, for the DT property lane0/1-swing, Google
+> engineer has strong demond for them, they don't want to move DP swing
+> adjusting to kernel, thus may cause change the driver code in each
+> project, so config them in DT is a best option.
 
-While at it, remove an extra and unneeded space.
+Hardcoding it in the driver is certainly not a good option, but
+hardcoding it in DT isn't either unless you can explain how the value
+should be computed. "Contact the vendor" isn't good enough.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+> > On Tue, 22 Jun 2021 at 14:31, Xin Ji <xji@analogixsemi.com> wrote:
+> > >
+> > > Add 'bus-type' and 'data-lanes' define for port0. Define DP tx lane0,
+> > > lane1 swing register array define, and audio enable flag.
+> > >
+> > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > > ---
+> > >  .../display/bridge/analogix,anx7625.yaml      | 57 ++++++++++++++++++-
+> > >  1 file changed, 56 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > index ab48ab2f4240..9e604d19a3d5 100644
+> > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > @@ -43,6 +43,26 @@ properties:
+> > >    vdd33-supply:
+> > >      description: Regulator that provides the supply 3.3V power.
+> > >
+> > > +  analogix,lane0-swing:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +    minItems: 1
+> > > +    maxItems: 20
+> > > +    description:
+> > > +      an array of swing register setting for DP tx lane0 PHY, please don't
+> > > +      add this property, or contact vendor.
+> > > +
+> > > +  analogix,lane1-swing:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +    minItems: 1
+> > > +    maxItems: 20
+> > > +    description:
+> > > +      an array of swing register setting for DP tx lane1 PHY, please don't
+> > > +      add this property, or contact vendor.
+> > > +
+> > > +  analogix,audio-enable:
+> > > +    type: boolean
+> > > +    description: let the driver enable audio HDMI codec function or not.
+> > > +
+> > >    ports:
+> > >      $ref: /schemas/graph.yaml#/properties/ports
+> > >
+> > > @@ -50,13 +70,43 @@ properties:
+> > >        port@0:
+> > >          $ref: /schemas/graph.yaml#/properties/port
+> > >          description:
+> > > -          Video port for MIPI DSI input.
+> > > +          MIPI DSI/DPI input.
+> > > +
+> > > +        properties:
+> > > +          endpoint:
+> > > +            $ref: /schemas/media/video-interfaces.yaml#
+> > > +            type: object
+> > > +            additionalProperties: false
+> > > +
+> > > +            properties:
+> > > +              remote-endpoint: true
+> > > +              bus-type: true
+> > > +              data-lanes: true
+> > > +
+> > > +            required:
+> > > +              - remote-endpoint
+> > > +
+> > > +        required:
+> > > +          - endpoint
+> > > +
+> > >
+> > >        port@1:
+> > >          $ref: /schemas/graph.yaml#/properties/port
+> > >          description:
+> > >            Video port for panel or connector.
+> > >
+> > > +        properties:
+> > > +          endpoint:
+> > > +            $ref: /schemas/media/video-interfaces.yaml#
+> > > +            type: object
+> > > +            additionalProperties: false
+> > > +
+> > > +            properties:
+> > > +              remote-endpoint: true
+> > > +
+> > > +            required:
+> > > +              - remote-endpoint
+> > > +
+> > >      required:
+> > >        - port@0
+> > >        - port@1
+> > > @@ -87,6 +137,9 @@ examples:
+> > >              vdd10-supply = <&pp1000_mipibrdg>;
+> > >              vdd18-supply = <&pp1800_mipibrdg>;
+> > >              vdd33-supply = <&pp3300_mipibrdg>;
+> > > +            analogix,audio-enable;
+> > > +            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
+> > > +            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
+> > >
+> > >              ports {
+> > >                  #address-cells = <1>;
+> > > @@ -96,6 +149,8 @@ examples:
+> > >                      reg = <0>;
+> > >                      anx7625_in: endpoint {
+> > >                          remote-endpoint = <&mipi_dsi>;
+> > > +                        bus-type = <5>;
+> > > +                        data-lanes = <0 1 2 3>;
+> > >                      };
+> > >                  };
+> > >
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
-index c5ef9aa64efe..61911fed6aeb 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
-@@ -1569,7 +1569,6 @@ mlxsw_sp_mc_write_mdb_entry(struct mlxsw_sp *mlxsw_sp,
- {
- 	long *flood_bitmap;
- 	int num_of_ports;
--	int alloc_size;
- 	u16 mid_idx;
- 	int err;
- 
-@@ -1579,18 +1578,17 @@ mlxsw_sp_mc_write_mdb_entry(struct mlxsw_sp *mlxsw_sp,
- 		return false;
- 
- 	num_of_ports = mlxsw_core_max_ports(mlxsw_sp->core);
--	alloc_size = sizeof(long) * BITS_TO_LONGS(num_of_ports);
--	flood_bitmap = kzalloc(alloc_size, GFP_KERNEL);
-+	flood_bitmap = bitmap_alloc(num_of_ports, GFP_KERNEL);
- 	if (!flood_bitmap)
- 		return false;
- 
--	bitmap_copy(flood_bitmap,  mid->ports_in_mid, num_of_ports);
-+	bitmap_copy(flood_bitmap, mid->ports_in_mid, num_of_ports);
- 	mlxsw_sp_mc_get_mrouters_bitmap(flood_bitmap, bridge_device, mlxsw_sp);
- 
- 	mid->mid = mid_idx;
- 	err = mlxsw_sp_port_smid_full_entry(mlxsw_sp, mid_idx, flood_bitmap,
- 					    bridge_device->mrouter);
--	kfree(flood_bitmap);
-+	bitmap_free(flood_bitmap);
- 	if (err)
- 		return false;
- 
 -- 
-2.30.2
+Regards,
 
+Laurent Pinchart
