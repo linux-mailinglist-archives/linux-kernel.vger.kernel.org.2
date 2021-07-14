@@ -2,123 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390153C868E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358163C86A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239510AbhGNPFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
+        id S232360AbhGNPJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbhGNPFQ (ORCPT
+        with ESMTP id S239533AbhGNPJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:05:16 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C916C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:02:23 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id u1so3657578wrs.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:02:23 -0700 (PDT)
+        Wed, 14 Jul 2021 11:09:43 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8E0C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:06:51 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 42-20020a9d012d0000b02904b98d90c82cso2784613otu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=69w+z8JoXYSnbwOBKKpmUamhnEyqL/avmTKA+C4lMEY=;
-        b=EPZ3o0qksnwmpDdR5qBMIUCBF2nDe1/LnvgVsRL0Uwn4u1966C5R0oynHkzDAMKTep
-         MWRMvT9QbZRvzkJH2VgevF1v1XtiDt9PyMkkstslRN8KAOYbR7+kEj2EfRfUyeYHDSuF
-         27Z0DYgyvF/y9RpbDW5K8wF1/NZF8S8cRl0j4=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8YiH8+P/GYggmS9FkGJgJ7JmHee/6ylMrnanql7uyQo=;
+        b=LP05I3DgupzAgfL4J5btk9IhIEy02Yv9jrcfj9/XbgglJLC745V5qheogVfIs4Ow0Q
+         hxlHqnYGaKKoMU+US66ZRH23IT7uBIQFjxJ4PFF4Fno1P3rrfY7lBBYbVNI2HyKTraAy
+         H898D6Llhi15EGceNXC21s7ZwQE6C2YXv7Ku+RupGb5kAE2Wl0CTuRTiH7z/Ly1iQSfo
+         jp5t6bnTJ2sEwzwUoZdOlLNhgfKGGPoWj0zVS0Ea1T/3ntzi5+q8JVtGQIIfL4Wh0IpN
+         03DMNL3VYn55sQB8yv85ywC6VPv+7whiWHTpWXZxMJti315W++e3+7MPiE0Co6wfa/+c
+         68Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=69w+z8JoXYSnbwOBKKpmUamhnEyqL/avmTKA+C4lMEY=;
-        b=GEmldtXoA9sakpa7pJ3+tnieJx9fB3fY0h3H7lFq6399Yw91qgVPupcKgKype6YHuV
-         xBkYqgMflKDXiMqWtK9HIyGQzW/7tvBe2kGiaupieZ2t7iFxpGZoUdq/3vPRljx3U/NM
-         ZFlQzRQdSNGs/8NraFCIk22WRsmedUjNue13BMSdZ4V9BLNmlFr8WWVNmTMPtGEydnza
-         +eEmcjqJMd8fNmUdOD6Yr0Bp3TsxfKU2418BU74Z7JEeVtr6FxPvwn5v0A+j7t6dvRJE
-         1zBtIYzOVroRk0gMpzcsw7ARhJwyDpWekZ7OmXzZoGuJ1yFG2oRXWscdXRllu/MII6gh
-         qBjg==
-X-Gm-Message-State: AOAM532fcVxtENZHPsoMVJsAyN7+YFagNQE64UeX6ZCqT3Do5NGPGuRf
-        Ah69tUOBQbqGPM1WlmEv84Pjrg==
-X-Google-Smtp-Source: ABdhPJy9TYv3Dvc+7HTbNWDhitjGCLCY3N4IXMufP5bnqtdWagmFMkGNl9XOCiGVaKFbQMoPLbiAnw==
-X-Received: by 2002:a05:6000:136a:: with SMTP id q10mr13713546wrz.25.1626274941640;
-        Wed, 14 Jul 2021 08:02:21 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b187sm5753264wmd.40.2021.07.14.08.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 08:02:20 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 17:02:18 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, airlied@linux.ie,
-        daniel@ffwll.ch, Alistair Popple <apopple@nvidia.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>, bskeggs@redhat.com,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: nouveau: failed to initialise sync
-Message-ID: <YO78eo/MNcPMYAgC@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, airlied@linux.ie,
-        Alistair Popple <apopple@nvidia.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>, bskeggs@redhat.com,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <YOC4uekpD7iA3xPi@Red>
- <1682547.0nLxAY2a9E@nvdebian>
- <dace0dea-7ca9-99cb-ad80-106824cb5e3f@amd.com>
- <20210714125652.eohw2s2pncplxovx@box.shutemov.name>
- <8fd70eb5-7306-89a3-57f9-d633243c9df5@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8YiH8+P/GYggmS9FkGJgJ7JmHee/6ylMrnanql7uyQo=;
+        b=SyS8vwUY6lCYkyKoakOF3cAjhtcrSinXatKaYg9+kUW4D46r/EbUGjmPQOGan4vCfX
+         qJATJKg4w7zykITwLMBAoBcmNWdmROWgsOUnWMJn1NommvTk1DmyV3qnJXy5ulF5xRI9
+         CnGnLZ/FoLQytTW5gaweW4A5pl2VcpG5PNz9bmijGExg604rb4fIPzL6Z2EtALklyMYY
+         1w8WykWuA8Ws/ayDSDPNr8wtJOYZJmOGrEM5xIaNyzT/aStOskZrU5X0XbFUqI9He9mm
+         4DmC5ksH5HEZs4KS0a5kPYA5wOC9jjpoOs8/HdjLi2zcn+fkUtk9GatiFfs29WjzeHCN
+         rtUA==
+X-Gm-Message-State: AOAM533yknCurmX+44mhny3TcXzp+tp17/V9vmRbF3USrPEvl/7FUVfp
+        IYINa8lAj/kky8TATm+vq4g54yaQ9lfMuaBD5z3oqq5XNPnEHg==
+X-Google-Smtp-Source: ABdhPJxxWjFSbu10XUt6ENkGkcYIsqHhifAJ2KXMlLHv0EUApj91lhGmpBGjyb7d74F82HXlMaGXswhZJJ3WqsqIgRg=
+X-Received: by 2002:a9d:d04:: with SMTP id 4mr8898501oti.251.1626275210727;
+ Wed, 14 Jul 2021 08:06:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8fd70eb5-7306-89a3-57f9-d633243c9df5@amd.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+References: <20210714143239.2529044-1-geert@linux-m68k.org> <CAMuHMdWv8-6fBDLb8cFvvLxsb7RkEVkLNUBeCm-9yN9_iJkg-g@mail.gmail.com>
+In-Reply-To: <CAMuHMdWv8-6fBDLb8cFvvLxsb7RkEVkLNUBeCm-9yN9_iJkg-g@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 14 Jul 2021 17:06:23 +0200
+Message-ID: <CANpmjNO7reWQQCce+grJsfEjNcGzvrrsF2450DhE4CzCkvFt0w@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.14-rc1
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 03:02:21PM +0200, Christian König wrote:
-> Am 14.07.21 um 14:56 schrieb Kirill A. Shutemov:
-> > On Tue, Jul 06, 2021 at 08:58:37AM +0200, Christian König wrote:
-> > > Hi guys,
-> > > 
-> > > yes nouveau was using the same functionality for internal BOs without
-> > > noticing it. This is fixes by the following commit:
-> > > 
-> > > commit d098775ed44021293b1962dea61efb19297b8d02
-> > > Author: Christian König <christian.koenig@amd.com>
-> > > Date:   Wed Jun 9 19:25:56 2021 +0200
-> > > 
-> > >      drm/nouveau: init the base GEM fields for internal BOs
-> > > 
-> > >      TTMs buffer objects are based on GEM objects for quite a while
-> > >      and rely on initializing those fields before initializing the TTM BO.
-> > > 
-> > >      Nouveau now doesn't init the GEM object for internally allocated BOs,
-> > >      so make sure that we at least initialize some necessary fields.
-> > > 
-> > > Could be that the patch needs to be send to stable as well.
-> > The regression is present in v5.14-rc1. Any idea when it will hit
-> > upstream? I don't see it being applied to drm=next.
-> 
-> Well that question needs to answer Dave or somebody else from the drm-misc
-> maintainer team.
-> 
-> This fix together with some others are already in drm-misc-next-fixes
-> waiting to be pushed upstream, but it looks like that hasn't happened yet.
-> 
-> Even Linus already pinged me where the fix for qxl got stuck.
+On Wed, 14 Jul 2021 at 16:44, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+[...]
+>   + /kisskb/src/include/linux/compiler_attributes.h: error:
+> "__GCC4_has_attribute___no_sanitize_coverage__" is not defined
+> [-Werror=undef]:  => 29:29
 
-Yeah there was some missed patches. drm-misc-fixes is now in drm-fixes,
-and drm-misc-next-fixes is included in drm-misc-fixes, for which Thomas
-will do a pull request on Thu so it will land in -rc2.
+https://lkml.kernel.org/r/20210714150159.2866321-1-elver@google.com
 
-It should also now be in linux-next.
-
-But yes somehow bugfixes got a bit lost during the merge window.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks for the report.
