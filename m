@@ -2,75 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C9E3C944B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2E63C9454
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbhGNXTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:19:16 -0400
-Received: from mail-io1-f43.google.com ([209.85.166.43]:43829 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhGNXTK (ORCPT
+        id S236013AbhGNXVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:21:41 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:40682 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhGNXVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:19:10 -0400
-Received: by mail-io1-f43.google.com with SMTP id k16so4195444ios.10;
-        Wed, 14 Jul 2021 16:16:17 -0700 (PDT)
+        Wed, 14 Jul 2021 19:21:39 -0400
+Received: by mail-io1-f48.google.com with SMTP id l5so4229111iok.7;
+        Wed, 14 Jul 2021 16:18:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uOGySO5B775xqBKJyV7FjQ7diOPsFl6eDHJ1rU7rF6g=;
-        b=UUTOcQZ1nwBa7dFEhXoj3uo4cnZUwqkfDexJjj+pFrif11IS+Ike3DmJl90p37uoJ7
-         Z/bxUDSX71TMFPrJsW1QXJVrJOQIGpMa31AkNu7PxVo70xriTgm+T6fTX/GXTzJdZWuI
-         OqhXANGb6AI88UnnqWy0wx/ZHSEww1w9P8fd7+lmRfbAn+Dm9N7RsfWCeoLrB6dpRLRo
-         WCnB/Zf1Ob9DyeZd6VeaeW5/FQA2XHq3IAR/bjK+Jz9lx5kJJzaO4EPfsDDEL+fH1g5H
-         CO04Qy+AnlLKLN/PvCJj5n89DG/eczPqpCoREh2jV34W+Me4SSQYB8Y+NX5DnRunJmR+
-         n0BQ==
-X-Gm-Message-State: AOAM5317eDeynDpzGduxafVR1H9jMSv9nTiFvxg9bwhj5lGYuVaXvu75
-        pQf4PHre9H8l7eAJohL3Ww==
-X-Google-Smtp-Source: ABdhPJxpLMV2kkl1j27F3b5jtqtuy1/rscEVt9YI++ng8OF52WRC44YMZOzjVkH91U/Jr9tzCzfR9A==
-X-Received: by 2002:a5d:9396:: with SMTP id c22mr433920iol.204.1626304577478;
-        Wed, 14 Jul 2021 16:16:17 -0700 (PDT)
+        bh=FdCuHjoP1NxBak0aeuDJS4GB02OelsJIJfGisEvtn9Y=;
+        b=qH0oSl60vriukOTx2xV3Gk4yPWQrp3st2gjFQHfFp5cdeAPGtAE6jNWjMcFMm/qoWi
+         gplZnbPcy+Nha7DSbCbUkmJNQ7rWOZ9SohwbMIeomDNH1P4jq9c67rxvlFSKlKrUKV+e
+         Z0hrLfPu1U1d11qBuhxnexKfSmLmHNQyvd4ODzIwjqaQrUdO0Io3//evrAb0UZxB6enb
+         Z2VolyQSZJrKm0eByh85FWNrDFURE94DfSEFvpnRcTHHxhIyyXw0icKU9EgUa81RSYcV
+         2lx7o8nkxi0t3dzCWkJvOsifhVdDA631EFktHixHhO9XzUjYuPoJcundv5dMFXmm/E80
+         dyrw==
+X-Gm-Message-State: AOAM530PXlp+bW4WciYYXqCS6gT1i3XW+FEAnR97Ngg1Vsn6M6+uF79c
+        MS51FBvP/nfoPE3Hm995cg==
+X-Google-Smtp-Source: ABdhPJzG3c7oabuQlVbl5iiFgVJiq7JRZ9AG0ODhFSYUK8MJoATHyCvOY8D5wmh81aijlp75MufimQ==
+X-Received: by 2002:a02:9508:: with SMTP id y8mr588048jah.28.1626304727482;
+        Wed, 14 Jul 2021 16:18:47 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c4sm1968039ilq.70.2021.07.14.16.16.14
+        by smtp.gmail.com with ESMTPSA id r4sm2021422ilb.42.2021.07.14.16.18.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 16:16:16 -0700 (PDT)
-Received: (nullmailer pid 3723842 invoked by uid 1000);
-        Wed, 14 Jul 2021 23:16:12 -0000
-Date:   Wed, 14 Jul 2021 17:16:12 -0600
+        Wed, 14 Jul 2021 16:18:46 -0700 (PDT)
+Received: (nullmailer pid 3727815 invoked by uid 1000);
+        Wed, 14 Jul 2021 23:18:44 -0000
+Date:   Wed, 14 Jul 2021 17:18:44 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     djw@t-chip.com.cn
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        David Bauer <mail@david-bauer.net>,
-        Tianling Shen <cnsztl@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Liang Chen <cl@rock-chips.com>,
-        linux-rockchip@lists.infradead.org,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        devicetree@vger.kernel.org, Wayne Chou <zxf@t-chip.com.cn>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v0 1/2] dt-bindings: add doc for Firefly ROC-RK3328-PC
-Message-ID: <20210714231612.GA3723790@robh.at.kernel.org>
-References: <20210709080126.17045-1-djw@t-chip.com.cn>
- <20210709080126.17045-2-djw@t-chip.com.cn>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH V1 net-next 3/5] net: fec: add imx8mq and imx8qm new
+ versions support
+Message-ID: <20210714231844.GA3723991@robh.at.kernel.org>
+References: <20210709081823.18696-1-qiangqing.zhang@nxp.com>
+ <20210709081823.18696-4-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709080126.17045-2-djw@t-chip.com.cn>
+In-Reply-To: <20210709081823.18696-4-qiangqing.zhang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 09 Jul 2021 16:01:25 +0800, djw@t-chip.com.cn wrote:
-> From: Levin Du <djw@t-chip.com.cn>
+On Fri, Jul 09, 2021 at 04:18:21PM +0800, Joakim Zhang wrote:
+> From: Fugang Duan <fugang.duan@nxp.com>
 > 
-> Add devicetree binding documentation for the Firefly ROC-RK3328-PC.
+> The ENET of imx8mq and imx8qm are basically the same as imx6sx,
+> but they have new features support based on imx6sx, like:
+> - imx8mq: supports IEEE 802.3az EEE standard.
+> - imx8qm: supports RGMII mode delayed clock.
 > 
-> Signed-off-by: Levin Du <djw@t-chip.com.cn>
+> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 > ---
+>  drivers/net/ethernet/freescale/fec.h      | 13 ++++++++++
+>  drivers/net/ethernet/freescale/fec_main.c | 30 +++++++++++++++++++++++
+>  2 files changed, 43 insertions(+)
 > 
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+> index 2e002e4b4b4a..c1f93aa79d63 100644
+> --- a/drivers/net/ethernet/freescale/fec.h
+> +++ b/drivers/net/ethernet/freescale/fec.h
+> @@ -472,6 +472,19 @@ struct bufdesc_ex {
+>   */
+>  #define FEC_QUIRK_HAS_MULTI_QUEUES	(1 << 19)
+>  
+> +/* i.MX8MQ ENET IP version add new feature to support IEEE 802.3az EEE
+> + * standard. For the transmission, MAC supply two user registers to set
+> + * Sleep (TS) and Wake (TW) time.
+> + */
+> +#define FEC_QUIRK_HAS_EEE		(1 << 20)
+> +
+> +/* i.MX8QM ENET IP version add new feture to generate delayed TXC/RXC
+> + * as an alternative option to make sure it works well with various PHYs.
+> + * For the implementation of delayed clock, ENET takes synchronized 250MHz
+> + * clocks to generate 2ns delay.
+> + */
+> +#define FEC_QUIRK_DELAYED_CLKS_SUPPORT	(1 << 21)
+> +
+>  struct bufdesc_prop {
+>  	int qid;
+>  	/* Address of Rx and Tx buffers */
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 8aea707a65a7..dd0b8715e84e 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -135,6 +135,26 @@ static const struct fec_devinfo fec_imx6ul_info = {
+>  		  FEC_QUIRK_HAS_COALESCE | FEC_QUIRK_CLEAR_SETUP_MII,
+>  };
+>  
+> +static const struct fec_devinfo fec_imx8mq_info = {
+> +	.quirks = FEC_QUIRK_ENET_MAC | FEC_QUIRK_HAS_GBIT |
+> +		  FEC_QUIRK_HAS_BUFDESC_EX | FEC_QUIRK_HAS_CSUM |
+> +		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_HAS_AVB |
+> +		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
+> +		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE |
+> +		  FEC_QUIRK_CLEAR_SETUP_MII | FEC_QUIRK_HAS_MULTI_QUEUES |
+> +		  FEC_QUIRK_HAS_EEE,
+> +};
+> +
+> +static const struct fec_devinfo fec_imx8qm_info = {
+> +	.quirks = FEC_QUIRK_ENET_MAC | FEC_QUIRK_HAS_GBIT |
+> +		  FEC_QUIRK_HAS_BUFDESC_EX | FEC_QUIRK_HAS_CSUM |
+> +		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_HAS_AVB |
+> +		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
+> +		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE |
+> +		  FEC_QUIRK_CLEAR_SETUP_MII | FEC_QUIRK_HAS_MULTI_QUEUES |
+> +		  FEC_QUIRK_DELAYED_CLKS_SUPPORT,
+> +};
+> +
+>  static struct platform_device_id fec_devtype[] = {
+>  	{
+>  		/* keep it for coldfire */
+> @@ -161,6 +181,12 @@ static struct platform_device_id fec_devtype[] = {
+>  	}, {
+>  		.name = "imx6ul-fec",
+>  		.driver_data = (kernel_ulong_t)&fec_imx6ul_info,
+> +	}, {
+> +		.name = "imx8mq-fec",
+> +		.driver_data = (kernel_ulong_t)&fec_imx8mq_info,
+> +	}, {
+> +		.name = "imx8qm-fec",
+> +		.driver_data = (kernel_ulong_t)&fec_imx8qm_info,
+>  	}, {
+>  		/* sentinel */
+>  	}
+> @@ -175,6 +201,8 @@ enum imx_fec_type {
+>  	MVF600_FEC,
+>  	IMX6SX_FEC,
+>  	IMX6UL_FEC,
+> +	IMX8MQ_FEC,
+> +	IMX8QM_FEC,
+>  };
+>  
+>  static const struct of_device_id fec_dt_ids[] = {
+> @@ -185,6 +213,8 @@ static const struct of_device_id fec_dt_ids[] = {
+>  	{ .compatible = "fsl,mvf600-fec", .data = &fec_devtype[MVF600_FEC], },
+>  	{ .compatible = "fsl,imx6sx-fec", .data = &fec_devtype[IMX6SX_FEC], },
+>  	{ .compatible = "fsl,imx6ul-fec", .data = &fec_devtype[IMX6UL_FEC], },
+> +	{ .compatible = "fsl,imx8mq-fec", .data = &fec_devtype[IMX8MQ_FEC], },
+> +	{ .compatible = "fsl,imx8qm-fec", .data = &fec_devtype[IMX8QM_FEC], },
 
-Acked-by: Rob Herring <robh@kernel.org>
+I don't think these are documented.
+
+Rob
