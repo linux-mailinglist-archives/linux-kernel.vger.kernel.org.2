@@ -2,91 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6D93C7BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883A43C7C04
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237682AbhGNCt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:49:27 -0400
-Received: from mga09.intel.com ([134.134.136.24]:8778 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237678AbhGNCt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:49:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210253422"
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
-   d="scan'208";a="210253422"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 19:46:35 -0700
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
-   d="scan'208";a="493593226"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 19:46:33 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org,
-        srinivas.kandagatla@linaro.org,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH 4/6] ASoC: SOF: intel: move sof_intel_dsp_desc() forward
-Date:   Wed, 14 Jul 2021 10:46:12 +0800
-Message-Id: <20210714024614.9357-5-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210714024614.9357-1-yung-chuan.liao@linux.intel.com>
-References: <20210714024614.9357-1-yung-chuan.liao@linux.intel.com>
+        id S237722AbhGNCuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:50:16 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:43013 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237711AbhGNCuP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:50:15 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 16E2kpEp022366;
+        Wed, 14 Jul 2021 11:47:02 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 16E2kpEp022366
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626230823;
+        bh=LnUl50BHavFxu7eFMFZuwtQbwZaQ3SxkzsrU6pPoM7I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Psy593hpyuA7XOSRMzLMTnIeUC25fyGRxvJibNDgsQjrqHZnaNDKKrN20sKNAZkes
+         r5scIcpH+sssgVPnbqdapUVPjk1bXKq21cEVedya811OPMq6RU4+GTssyJbmLtH1+k
+         VhA8McCMD4e6sdjhXW2yiQ8LRtKmnB46TxqoEDwQxIvRgwa6nGzb1GKegIjvrgWwUw
+         MTPNHDmOVAtJHcxTJLnaHl6rnKeff9/4oRTCsXg4xy6WZe3+ILQ9RWUF3LL8fEgXbQ
+         Hnutfpn4CiOeDBxtUxIO2spRVzu9S42+cTE215XZwoMfJjtpSTZq2PzoD32oTykbr0
+         GMqE8rFGKo96A==
+X-Nifty-SrcIP: [209.85.214.178]
+Received: by mail-pl1-f178.google.com with SMTP id v14so717196plg.9;
+        Tue, 13 Jul 2021 19:47:02 -0700 (PDT)
+X-Gm-Message-State: AOAM533fEbf4QTfEhx+yg1q5rEcScgs1lFGQG39UWVA50ZmZxlNxipwF
+        VPZF/n+RHCF9587igrUxIc9ArvMxN4iWDs2hzV0=
+X-Google-Smtp-Source: ABdhPJwwKKjEscz68JVWRgG4ZYpXN5JKyz17jntsgNjmA2/okmM6afoXWFQVE2RdaNpdPicvxh19YzCCS35gVawEM2Y=
+X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr1447795pjt.198.1626230811130;
+ Tue, 13 Jul 2021 19:46:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <a6eea2c4-6d90-3ddf-33d6-973d1ae917e7@mailbox.org>
+In-Reply-To: <a6eea2c4-6d90-3ddf-33d6-973d1ae917e7@mailbox.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 14 Jul 2021 11:46:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT9oMkSthmCJ9sq3PFRcYgZoC6O0o==WQnKOU0znzT6hQ@mail.gmail.com>
+Message-ID: <CAK7LNAT9oMkSthmCJ9sq3PFRcYgZoC6O0o==WQnKOU0znzT6hQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] Kbuild, clang: add option for choosing a ThinLTO
+ cache directory
+To:     Tor Vic <torvic9@mailbox.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sof_intel_dsp_desc() will be used by hda_dsp_check_sdw_irq() in the
-following commit.
+On Wed, Jul 14, 2021 at 1:41 AM Tor Vic <torvic9@mailbox.org> wrote:
+>
+> On some distros and configurations, it might be useful to allow for
+> specifying a directory where Clang stores its ThinLTO cache.
+>
+> More specifically, when building the VirtualBox extramodules on Arch with
+> its proper 'makepkg' build system and DKMS, against an already installed
+> ThinLTO kernel, the build fails because it tries to create the ThinLTO
+> cache in a directory that is not user-writable.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/intel/hda.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index e48e030f6005..79388489c4e2 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -41,6 +41,17 @@
- #define EXCEPT_MAX_HDR_SIZE	0x400
- #define HDA_EXT_ROM_STATUS_SIZE 8
- 
-+static const struct sof_intel_dsp_desc
-+	*get_chip_info(struct snd_sof_pdata *pdata)
-+{
-+	const struct sof_dev_desc *desc = pdata->desc;
-+	const struct sof_intel_dsp_desc *chip_info;
-+
-+	chip_info = desc->chip_info;
-+
-+	return chip_info;
-+}
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
- 
- /*
-@@ -668,17 +679,6 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 	return 0;
- }
- 
--static const struct sof_intel_dsp_desc
--	*get_chip_info(struct snd_sof_pdata *pdata)
--{
--	const struct sof_dev_desc *desc = pdata->desc;
--	const struct sof_intel_dsp_desc *chip_info;
--
--	chip_info = desc->chip_info;
--
--	return chip_info;
--}
--
- static irqreturn_t hda_dsp_interrupt_handler(int irq, void *context)
- {
- 	struct snd_sof_dev *sdev = context;
+Again, I do not understand.
+
+Is this fixing the root cause?
+
+To me, it looks like
+"Anyway, this worked for me" patch.
+
+Besides, 'make clean' will never clean up the
+cache directory.
+
+
+
+
+
+> A similar problem has been reported with openSUSE's OBS build system.
+>
+> Add a Kconfig option that allows users to choose a directory in which
+> Clang's ThinLTO can store its cache.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1104
+> Signed-off-by: Tor Vic <torvic9@mailbox.org>
+> ---
+> Changes from v1 to v2: remove unneeded changes in scripts/Makefile
+>
+>  Makefile     |  5 +++--
+>  arch/Kconfig | 10 ++++++++++
+>  2 files changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index c3f9bd191b89..472bc8bfff03 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -932,7 +932,8 @@ endif
+>  ifdef CONFIG_LTO_CLANG
+>  ifdef CONFIG_LTO_CLANG_THIN
+>  CC_FLAGS_LTO   := -flto=thin -fsplit-lto-unit
+> -KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod_prefix).thinlto-cache
+> +export thinlto-dir = $(if
+> $(CONFIG_LTO_CLANG_THIN_CACHEDIR),$(CONFIG_LTO_CLANG_THIN_CACHEDIR)/)
+> +KBUILD_LDFLAGS +=
+> --thinlto-cache-dir=$(thinlto-dir)$(extmod_prefix).thinlto-cache
+>  else
+>  CC_FLAGS_LTO   := -flto
+>  endif
+> @@ -1728,7 +1729,7 @@ PHONY += compile_commands.json
+>
+>  clean-dirs := $(KBUILD_EXTMOD)
+>  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers
+> $(KBUILD_EXTMOD)/modules.nsdeps \
+> -       $(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
+> +       $(KBUILD_EXTMOD)/compile_commands.json
+> $(thinlto-dir)$(KBUILD_EXTMOD)/.thinlto-cache
+>
+>  PHONY += help
+>  help:
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 129df498a8e1..19e4d140e12a 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -696,6 +696,16 @@ config LTO_CLANG_THIN
+>             https://clang.llvm.org/docs/ThinLTO.html
+>
+>           If unsure, say Y.
+> +
+> +config LTO_CLANG_THIN_CACHEDIR
+> +       string "Clang ThinLTO cache directory"
+> +       depends on LTO_CLANG_THIN
+> +       default ""
+> +       help
+> +         This option allows users to choose a directory that stores
+> +         Clang's ThinLTO cache.
+> +         Leave empty for default.
+> +
+>  endchoice
+>
+>  config ARCH_SUPPORTS_CFI_CLANG
+> --
+> 2.32.0
+>
+
+
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
