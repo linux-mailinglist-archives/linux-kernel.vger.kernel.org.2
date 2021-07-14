@@ -2,171 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF983C941F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4683E3C942A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237365AbhGNXAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbhGNXAo (ORCPT
+        id S237380AbhGNXEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:04:37 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:34506 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230388AbhGNXEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:00:44 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB75C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:57:51 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id w5-20020a0569021005b029055b51419c7dso4800188ybt.23
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=tbdzyFamT8pQc1mVhk+2w4TImGXTQGfmsYo5ttrPBMU=;
-        b=dE4Ts12Dib3b6drnj9ehCuKIL5IDPt2R/QW/Y5We/zaTkYzbjMcXxdPeM5xLYulvCV
-         zxk2pC5zASse0Z193x4YZWlnJYWxB1Dq36jJm5EMiceaZr7pZPpkLcfSbSTXi8Aqfoy0
-         EMVxXwqrWnC/FzxnwhNHtfCRxbPMZMkJ7QcIFKgnCoH02TVhr3nq1f8TmT/ITZGopuAv
-         6jaDx01EAEf8LAU9EOAkTLrCHCM69Jf4ZXcZNXMB4vGD3utoAdeLGDfNUII9wIxxb235
-         YKXoyBi9q9CXr8a0CpAQtc2SE3bptrRpTTZeEUf+xZPXR+ozOdrQXl+ZqqCLzKCZSGpL
-         AgKg==
+        Wed, 14 Jul 2021 19:04:36 -0400
+Received: by mail-io1-f44.google.com with SMTP id g22so4202866iom.1;
+        Wed, 14 Jul 2021 16:01:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=tbdzyFamT8pQc1mVhk+2w4TImGXTQGfmsYo5ttrPBMU=;
-        b=frW9Al2s7c0kWbRh7wYETjNPEKfYjiKASx0YnWedBg4U2PL1Na3gFToSCA+WZ/27yY
-         xKh9RdKHJpC1HTWSoglSLDFzPAd4X7gyB5tC5fFw1XgZi7Bmnz+6CoK6n6VBAL+PQlB3
-         HplsDiMB7tOQadgjR4SKHx1tjNJ2OcpOH4lHPYvU/+PZT+OcT2UpaKJIVSxFyWVajpuh
-         +2VAC6+QQwFOhLaO+tP6O2vaDFgXZa3toPjPxQJQ0l6Ow14zZA4XTgVkhake3CuSjhz3
-         BfaRXQyZ4i4eEsPLZFDGHsIVTVX872dQHAbNFaXDhmlbk/vM1BvnC6lh/xOv1OAtk9BW
-         1JsA==
-X-Gm-Message-State: AOAM531ye8ieEIEjTYJXvCgtQ/g2qWUZEVeVaTaXGj84nTmoUZ3BxTZp
-        Mp634N6yDgLiFXQupewciCDQQQi4B17AxA==
-X-Google-Smtp-Source: ABdhPJzRF6rMCOf3MuTpQGBRvbBUQggRO29Fofpahr0ehl5/h1cybvz/6F+1V5BLmDeEp5ZCo/oyZYukCfVwrg==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:1109:2a1e:ff11:1796])
- (user=dlatypov job=sendgmr) by 2002:a25:e803:: with SMTP id
- k3mr460065ybd.268.1626303471176; Wed, 14 Jul 2021 15:57:51 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 15:57:41 -0700
-Message-Id: <20210714225741.882178-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] kunit: tool: add --kernel_args to allow setting module params
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iWYj7BYmLf4sE9pZYmPOjA7KWU/Cdxu9ZYSyNE9Xa2o=;
+        b=CQX9I86nolMTA+nUCqykOHWs1MpTYKS1kP4Xoh+GVhuif5TTLZ+rBapSAP5afKv9ga
+         yiO8k80LBmwnd+2t62Sgk8UjPfWkW5J7EmzfybmH2zaNoW0t2U9T81/BdrKwqzYFvn7h
+         SZzihneyU/I67HaOL1n5mql4FS2AVJByG9ixER06ynfQ6K66Ff2KKm+zP5dTcl67fnz1
+         MckFkKlFK6wxo58/k+WKGwNL9HRdjeJgfl4eOaZoqfNnLqHZ0C0DPLiaS6v/F9TrajgL
+         /WXVT6UDUqwQWdxh03CM5GLkK7gND5rC/Om+EjNjdlZxt6TPwnq4RpN5SqS7VYh7GDlu
+         RmIg==
+X-Gm-Message-State: AOAM5324E19B95MeIlgVa0Fc9b+dkLKKeQW5t5nZ9G0ZhLLl6hQdICEp
+        dafCAAIgjqrQCuxa2akB8g==
+X-Google-Smtp-Source: ABdhPJxRnII1A4P7617nk+P/dL3rkhW199nEWSWXEjBvCWsHF3w+QlDdvckSGvOuEEncV11dSrn9uQ==
+X-Received: by 2002:a6b:6016:: with SMTP id r22mr407400iog.12.1626303703032;
+        Wed, 14 Jul 2021 16:01:43 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id l8sm2217302iok.26.2021.07.14.16.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 16:01:42 -0700 (PDT)
+Received: (nullmailer pid 3701173 invoked by uid 1000);
+        Wed, 14 Jul 2021 23:01:40 -0000
+Date:   Wed, 14 Jul 2021 17:01:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v3 06/12] dt-bindings: power: supply: smb347-charger:
+ Document USB VBUS regulator
+Message-ID: <20210714230140.GA3697673@robh.at.kernel.org>
+References: <20210704225433.32029-1-digetx@gmail.com>
+ <20210704225433.32029-7-digetx@gmail.com>
+ <20210712153905.GA1980362@robh.at.kernel.org>
+ <9032e807-b4d3-bacf-6c39-d3a2c7c57f3e@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9032e807-b4d3-bacf-6c39-d3a2c7c57f3e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kunit.py currently does not make it possible for users to specify module
-parameters (/kernel arguments more generally) unless one directly tweaks
-the kunit.py code itself.
+On Tue, Jul 13, 2021 at 03:22:40AM +0300, Dmitry Osipenko wrote:
+> 12.07.2021 18:39, Rob Herring пишет:
+> >> +  summit,inok-polarity:
+> >> +    description: |
+> >> +      Polarity of INOK signal indicating presence of external power supply.
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +    enum:
+> >> +      - 0 # SMB3XX_SYSOK_INOK_ACTIVE_LOW
+> >> +      - 1 # SMB3XX_SYSOK_INOK_ACTIVE_HIGH
+> >> +
+> >> +  usb-vbus:
+> >> +    $ref: "../../regulator/regulator.yaml#"
+> >> +    type: object
+> >        unevaluatedProperties: false
+> > 
+> > With that,
+> > 
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > 
+> 
+> I tried to add the unevaluatedProperties + a random unrelated property
+> to the example usb-vbus node and dt_binding_check is happy with that. So
+> the unevaluatedProperties has no effect, is it supposed to be so?
 
-This hasn't mattered much so far, but this would make it easier to port
-existing tests that expose module parameters over to KUnit and/or let
-current KUnit tests take advantage of them.
+Yes, until support lands upstream[1].
 
-Tested using an kunit internal parameter:
-$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit \
-    --kernel_args=kunit.filter_glob=kunit_status
-...
-Testing complete. 2 tests run. 0 failed. 0 crashed. 0 skipped.
+Rob
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- Documentation/dev-tools/kunit/running_tips.rst | 10 ++++++++++
- tools/testing/kunit/kunit.py                   | 16 ++++++++++++----
- 2 files changed, 22 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-index 7d99386cf94a..bc37a2ad1598 100644
---- a/Documentation/dev-tools/kunit/running_tips.rst
-+++ b/Documentation/dev-tools/kunit/running_tips.rst
-@@ -80,6 +80,16 @@ file ``.kunitconfig``, you can just pass in the dir, e.g.
- 	automagically, but tests could theoretically depend on incompatible
- 	options, so handling that would be tricky.
- 
-+Setting kernel commandline parameters
-+-------------------------------------
-+
-+You can use ``--kernel_arg`` to pass arbitrary kernel arguments, e.g.
-+
-+.. code-block:: bash
-+
-+	$ ./tools/testing/kunit/kunit.py run --kernel_arg=param=42 --kernel_arg=param2=false
-+
-+
- Generating code coverage reports under UML
- ------------------------------------------
- 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index be8d8d4a4e08..03f3bc406955 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -28,12 +28,13 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
- 			       ['jobs', 'build_dir', 'alltests',
- 				'make_options'])
- KunitExecRequest = namedtuple('KunitExecRequest',
--			      ['timeout', 'build_dir', 'alltests', 'filter_glob'])
-+                              ['timeout', 'build_dir', 'alltests',
-+                               'filter_glob', 'kernel_args'])
- KunitParseRequest = namedtuple('KunitParseRequest',
- 			       ['raw_output', 'input_data', 'build_dir', 'json'])
- KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
- 					   'build_dir', 'alltests', 'filter_glob',
--					   'json', 'make_options'])
-+					   'kernel_args', 'json', 'make_options'])
- 
- KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
- 
-@@ -92,6 +93,7 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree,
- 	kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
- 	test_start = time.time()
- 	result = linux.run_kernel(
-+		args=request.kernel_args,
- 		timeout=None if request.alltests else request.timeout,
-                 filter_glob=request.filter_glob,
- 		build_dir=request.build_dir)
-@@ -150,7 +152,8 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 		return build_result
- 
- 	exec_request = KunitExecRequest(request.timeout, request.build_dir,
--					request.alltests, request.filter_glob)
-+				 request.alltests, request.filter_glob,
-+				 request.kernel_args)
- 	exec_result = exec_tests(linux, exec_request)
- 	if exec_result.status != KunitStatus.SUCCESS:
- 		return exec_result
-@@ -236,6 +239,9 @@ def add_exec_opts(parser) -> None:
- 			    nargs='?',
- 			    default='',
- 			    metavar='filter_glob')
-+	parser.add_argument('--kernel_args',
-+			    help='Kernel command-line parameters. Maybe be repeated',
-+			     action='append')
- 
- def add_parse_opts(parser) -> None:
- 	parser.add_argument('--raw_output', help='don\'t format output from kernel',
-@@ -307,6 +313,7 @@ def main(argv, linux=None):
- 				       cli_args.build_dir,
- 				       cli_args.alltests,
- 				       cli_args.filter_glob,
-+				       cli_args.kernel_args,
- 				       cli_args.json,
- 				       cli_args.make_options)
- 		result = run_tests(linux, request)
-@@ -361,7 +368,8 @@ def main(argv, linux=None):
- 		exec_request = KunitExecRequest(cli_args.timeout,
- 						cli_args.build_dir,
- 						cli_args.alltests,
--						cli_args.filter_glob)
-+						cli_args.filter_glob,
-+						cli_args.kernel_args)
- 		exec_result = exec_tests(linux, exec_request)
- 		parse_request = KunitParseRequest(cli_args.raw_output,
- 						  exec_result.result,
-
-base-commit: 8096acd7442e613fad0354fc8dfdb2003cceea0b
--- 
-2.32.0.93.g670b81a890-goog
-
+[1] https://github.com/Julian/jsonschema/pull/817
