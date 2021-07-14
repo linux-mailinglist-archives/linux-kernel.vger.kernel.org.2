@@ -2,82 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C93E3C8464
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD523C8444
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239295AbhGNMWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:22:38 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:14630 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhGNMWh (ORCPT
+        id S239305AbhGNMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:10:12 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:38773 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239273AbhGNMKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:22:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1626265186; x=1657801186;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Nv5nk+ECy/d9fRDzwKxZzJlxuyKt8LLKdgHIZPWRSZw=;
-  b=qSP25WcN/OUtTBromxjw9RTWclKkLV3cLea/lUNwhtJQh993+FZkfA9G
-   Ax10D4nLEZTsKaBJGFYEwTcEIOWCB9HPP8UVxno1NyJMy0FN30piDR9vh
-   7re00SpYaVP3WMXT1HGwfRWgEww1OE7ymwLgQ1agrfu7JtwYMEyuxClKP
-   g=;
-X-IronPort-AV: E=Sophos;i="5.84,239,1620691200"; 
-   d="scan'208";a="126827527"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 14 Jul 2021 12:07:47 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id D05B92208F6;
-        Wed, 14 Jul 2021 12:07:46 +0000 (UTC)
-Received: from EX13D02ANC003.ant.amazon.com (10.43.157.69) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Wed, 14 Jul 2021 12:07:46 +0000
-Received: from 147ddabc1818.ant.amazon.com (10.43.162.164) by
- EX13D02ANC003.ant.amazon.com (10.43.157.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Wed, 14 Jul 2021 12:07:43 +0000
-From:   Takahiro Itazuri <itazur@amazon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Takahiro Itazuri <itazur@amazon.com>,
-        Takahiro Itazuri <zulinx86@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kuniyuki Iwashima" <kuniyu@amazon.co.jp>, <trivial@kernel.org>
-Subject: [PATCH] pid: Cleanup the stale comment mentioning pidmap_init().
-Date:   Wed, 14 Jul 2021 21:07:13 +0900
-Message-ID: <20210714120713.19825-1-itazur@amazon.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 14 Jul 2021 08:10:11 -0400
+Received: by mail-il1-f199.google.com with SMTP id s7-20020a92cb070000b02902021736bb95so1020910ilo.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=PcjvOVN6qCyIv1/fl9MgyXde4qoSrkYo4xHcDWPqJyE=;
+        b=jP9PdIMcyOi3oLaJKG0nY/HunlDCYefJ7toK9j5/EB7PSfBx/QqKgSMJWVhgGJA2z/
+         T5leIr7u6PYJqJPnEetvG1zcAmwNP6LVh4qzhyC7GPL1R/XYI+GNejxJedwuwbm/lm5i
+         f4yorxy5BB0yQaXsPIqddsZMBpEniZstEi2vYSAV/Z+O2YhP/xEotLGegwRO1N5w5MtT
+         E271QGxdB/uLfIZj/8WegSAMsSmOFdu0rex81RAhbCWUL2X+g/PNudMrUahs0vQ2zgUp
+         RxM8GyYTOcUW91JxfZxOrOvbNY9k4mRnEQhBrxRqUrFpb9olgjE09+zYE5e9HxYZuRg0
+         NW1w==
+X-Gm-Message-State: AOAM532isbpe8HwF/voQJJrjVKE8pWOArykQq/lcq78jg7UKRB1GWR81
+        5u9kkCV9yqrqaWsvAHY5BDtMkuwbygaqFPlqWbSCH6quBI0I
+X-Google-Smtp-Source: ABdhPJz57yC1sHnIwLiEslTVL3igJLY28gGHjev9aTUb9D8ixma2il2Ss92QcCo6YP5rfZ1y0dfYGQLFAbtKdjPfTY1FQFu5gVw9
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.164]
-X-ClientProxiedBy: EX13D11UWB002.ant.amazon.com (10.43.161.20) To
- EX13D02ANC003.ant.amazon.com (10.43.157.69)
+X-Received: by 2002:a05:6638:25c7:: with SMTP id u7mr4155293jat.26.1626264439681;
+ Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 05:07:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003cf65205c71432d0@google.com>
+Subject: [syzbot] WARNING in vmap_pages_range_noflush
+From:   syzbot <syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pidmap_init() has already been replaced with pid_idr_init() in the
-commit 95846ecf9dac ("pid: replace pid bitmap implementation with
-IDR API").
-Cleanup the stale comment which still mentions it.
+Hello,
 
-Signed-off-by: Takahiro Itazuri <itazur@amazon.com>
+syzbot found the following issue on:
+
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1528f19c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=90b227e3653ac0d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=4f4d23fa0b2b2bb23e38
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
+Modules linked in:
+CPU: 0 PID: 21050 Comm: syz-executor.3 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+RIP: 0010:vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+RIP: 0010:vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+RIP: 0010:vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+RIP: 0010:vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
+RIP: 0010:vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
+Code: c5 ff 4c 89 f8 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 62 02 00 00 49 8b 1f e9 6d fd ff ff e8 4d 37 c5 ff <0f> 0b 41 bc f4 ff ff ff e9 62 ff ff ff e8 3b 37 c5 ff 31 ff 48 89
+RSP: 0018:ffffc900025979b8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff888000100220 RCX: ffffc9000f762000
+RDX: 0000000000040000 RSI: ffffffff81af8783 RDI: 0000000000000003
+RBP: ffffea0002472c00 R08: 0000000000000000 R09: ffffffff90a01847
+R10: ffffffff81af85bf R11: 0000000000000001 R12: ffffc9002ac00000
+R13: 0000070700000000 R14: ffffc9002aa44000 R15: 8000000000000163
+FS:  00007f4f610c4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000544038 CR3: 000000001eaa7000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ vmap_pages_range mm/vmalloc.c:592 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2861 [inline]
+ __vmalloc_node_range+0x659/0x960 mm/vmalloc.c:2947
+ __bpf_map_area_alloc+0xd5/0x150 kernel/bpf/syscall.c:311
+ queue_stack_map_alloc+0xf0/0x1d0 kernel/bpf/queue_stack_maps.c:76
+ find_and_alloc_map kernel/bpf/syscall.c:127 [inline]
+ map_create+0x4a0/0x14c0 kernel/bpf/syscall.c:833
+ __sys_bpf+0x8bc/0x4750 kernel/bpf/syscall.c:4451
+ __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4f610c4188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000040 RSI: 00000000200001c0 RDI: 0000000000000000
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffff9d98a9f R14: 00007f4f610c4300 R15: 0000000000022000
+
+
 ---
- include/linux/threads.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/threads.h b/include/linux/threads.h
-index 18d5a74bcc3d..c34173e6c5f1 100644
---- a/include/linux/threads.h
-+++ b/include/linux/threads.h
-@@ -38,7 +38,7 @@
-  * Define a minimum number of pids per cpu.  Heuristically based
-  * on original pid max of 32k for 32 cpus.  Also, increase the
-  * minimum settable value for pid_max on the running system based
-- * on similar defaults.  See kernel/pid.c:pidmap_init() for details.
-+ * on similar defaults.  See kernel/pid.c:pid_idr_init() for details.
-  */
- #define PIDS_PER_CPU_DEFAULT	1024
- #define PIDS_PER_CPU_MIN	8
--- 
-2.31.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
