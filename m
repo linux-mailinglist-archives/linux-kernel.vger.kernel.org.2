@@ -2,308 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C073C80D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102873C80D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238670AbhGNI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S238767AbhGNI7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238744AbhGNI7Q (ORCPT
+        with ESMTP id S238751AbhGNI7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:59:16 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6177CC061762;
-        Wed, 14 Jul 2021 01:56:22 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id y42so2383998lfa.3;
-        Wed, 14 Jul 2021 01:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7LwN2td1/KD+1FkqYyPi+/7/tXhbjux8KJUPBU1pkzk=;
-        b=oDKGgJQUMDvMbJ1mp0oXQUS68rU4zMQpDwh2v5bHhATGlO3jMpBddqSk/w0Xe1wz9e
-         ySpGqFytP/7SCwq8wgtTucQXZuVEIWKjWkw6q8Mz7Lopzo3GWVdMWfT3QvahcWTYO9I0
-         V+Sf6WuxMdDUUyaSfMAs+7tnIXvDPrrDhO92yALlJzjN/sQ/jgvgDcA+laA5llCC6P17
-         S7ZvijNmz5j16he9+gcy4AyYAz9h1ChGoKuEcTK00hA3WoUW8a3xhtSZRhoxFdMAH9v1
-         so7jVKvDgNtEflQqziEuJnfQ7cURHVXoTCaQ2wM9b1GLJPiAxdpmP46XoJDBDiHBUYQz
-         KPKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7LwN2td1/KD+1FkqYyPi+/7/tXhbjux8KJUPBU1pkzk=;
-        b=Usy14SnK/XW/KU4aJFKNOcJC6DexU8i13rt+LfWREhzvdXFfhEV0ZGk8vfPnKu0IeK
-         TYpOZ0r3dK0CC9F8qwOlxXFaq7aCnEHtplqlL9L8ooqAHDzyNtLIABEHzT/JWs+lI4+9
-         Qks3xrAjbZEUolvWoWW5c4Z4KWPN06XxiixrJ/yAEw/zAOi9KUBoKWEPerCHOVgTaPSj
-         OFGqxAcLb57SDvzt3oDX//ThEW1nY93EUzmhQg5Gh5g1pMOSS9ZPubiWCQirxKQ3ECDt
-         saW8m5LD41SUVs0D1lGJbZjq71HMmqq6YDoeGyfkyklVq6S9d064f3l2/6VLpzt8tdZZ
-         SgdQ==
-X-Gm-Message-State: AOAM531lkDEes/cwYCiI2K0YlrE3kpdxvwOnkK4cPxQoYt2Eet8e5SE4
-        ydTyeXpKwFj3E9bkbhSoPfM=
-X-Google-Smtp-Source: ABdhPJzWzf010n3vV9AfaeBr8Z4iJPxhkTxWeehnk18gSraXUJkYNl2aPt4PAhabZFN9t4fWHULNcg==
-X-Received: by 2002:a19:4959:: with SMTP id l25mr6973468lfj.225.1626252981298;
-        Wed, 14 Jul 2021 01:56:21 -0700 (PDT)
-Received: from asus ([93.95.240.58])
-        by smtp.gmail.com with ESMTPSA id c16sm114983lfi.18.2021.07.14.01.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 01:56:21 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 14:56:18 +0600
-From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-To:     shuah@kernel.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, tyhicks@linux.microsoft.com,
-        pasha.tatashin@soleen.com
-Subject: [PATCH v2 4/4] selftests: vm: add KSM merging across nodes test
-Message-ID: <071c17b5b04ebb0dfeba137acc495e5dd9d2a719.1626252248.git.zhansayabagdaulet@gmail.com>
-References: <cover.1626252248.git.zhansayabagdaulet@gmail.com>
+        Wed, 14 Jul 2021 04:59:18 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1ADC06175F;
+        Wed, 14 Jul 2021 01:56:25 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623] (unknown [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 4DB701F42B69;
+        Wed, 14 Jul 2021 09:56:23 +0100 (BST)
+Subject: Re: [PATCH v6 00/11] Clean up "mediatek,larb"
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
+        ming-fan.chen@mediatek.com, yi.kuo@mediatek.com,
+        acourbot@chromium.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Xia Jiang <xia.jiang@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>, anthony.huang@mediatek.com
+References: <20210714025626.5528-1-yong.wu@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <672ef386-aa95-da45-0f17-acb398a1f6e0@collabora.com>
+Date:   Wed, 14 Jul 2021 10:56:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1626252248.git.zhansayabagdaulet@gmail.com>
+In-Reply-To: <20210714025626.5528-1-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check_ksm_numa_merge() function  to test that pages in different NUMA
-nodes are being handled properly. First, two duplicate pages are allocated
-in two separate NUMA nodes using the libnuma library. Since there is one
-unique page in each node, with merge_across_nodes = 0, there won't be any
-shared pages. If merge_across_nodes is set to 1, the pages will be
-treated as usual duplicate pages and will be merged. If NUMA config is
-not enabled or the number of NUMA nodes is less than two, then the test
-is skipped. The test is run as follows: ./ksm_tests -N
+Hi
 
-Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
----
- tools/testing/selftests/vm/Makefile       |  2 +
- tools/testing/selftests/vm/ksm_tests.c    | 88 ++++++++++++++++++++++-
- tools/testing/selftests/vm/run_vmtests.sh | 32 +++++++++
- 3 files changed, 119 insertions(+), 3 deletions(-)
+Thanks for the patchset.
 
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index e6f22a801b71..d9605bd10f2d 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -146,6 +146,8 @@ $(OUTPUT)/hmm-tests: local_config.h
- # HMM_EXTRA_LIBS may get set in local_config.mk, or it may be left empty.
- $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXTRA_LIBS)
- 
-+$(OUTPUT)/ksm_tests: LDLIBS += -lnuma
-+
- local_config.mk local_config.h: check_config.sh
- 	/bin/sh ./check_config.sh $(CC)
- 
-diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
-index 5843526471e1..cdeb4a028538 100644
---- a/tools/testing/selftests/vm/ksm_tests.c
-+++ b/tools/testing/selftests/vm/ksm_tests.c
-@@ -4,6 +4,7 @@
- #include <stdbool.h>
- #include <time.h>
- #include <string.h>
-+#include <numa.h>
- 
- #include "../kselftest.h"
- 
-@@ -13,6 +14,7 @@
- #define KSM_PAGE_COUNT_DEFAULT 10l
- #define KSM_PROT_STR_DEFAULT "rw"
- #define KSM_USE_ZERO_PAGES_DEFAULT false
-+#define KSM_MERGE_ACROSS_NODES_DEFAULT true
- 
- struct ksm_sysfs {
- 	unsigned long max_page_sharing;
-@@ -27,7 +29,8 @@ struct ksm_sysfs {
- enum ksm_test_name {
- 	CHECK_KSM_MERGE,
- 	CHECK_KSM_UNMERGE,
--	CHECK_KSM_ZERO_PAGE_MERGE
-+	CHECK_KSM_ZERO_PAGE_MERGE,
-+	CHECK_KSM_NUMA_MERGE
- };
- 
- static int ksm_write_sysfs(const char *file_path, unsigned long val)
-@@ -83,11 +86,12 @@ static int str_to_prot(char *prot_str)
- static void print_help(void)
- {
- 	printf("usage: ksm_tests [-h] <test type> [-a prot] [-p page_count] [-l timeout]\n"
--	       "[-z use_zero_pages]\n");
-+	       "[-z use_zero_pages] [-m merge_across_nodes]\n");
- 
- 	printf("Supported <test type>:\n"
- 	       " -M (page merging)\n"
- 	       " -Z (zero pages merging)\n"
-+	       " -N (merging of pages in different NUMA nodes)\n"
- 	       " -U (page unmerging)\n\n");
- 
- 	printf(" -a: specify the access protections of pages.\n"
-@@ -99,6 +103,8 @@ static void print_help(void)
- 	       "     Default: %d seconds\n", KSM_SCAN_LIMIT_SEC_DEFAULT);
- 	printf(" -z: change use_zero_pages tunable\n"
- 	       "     Default: %d\n", KSM_USE_ZERO_PAGES_DEFAULT);
-+	printf(" -m: change merge_across_nodes tunable\n"
-+	       "     Default: %d\n", KSM_MERGE_ACROSS_NODES_DEFAULT);
- 
- 	exit(0);
- }
-@@ -339,6 +345,68 @@ static int check_ksm_zero_page_merge(int mapping, int prot, long page_count, int
- 	return KSFT_FAIL;
- }
- 
-+static int check_ksm_numa_merge(int mapping, int prot, int timeout, bool merge_across_nodes,
-+				size_t page_size)
-+{
-+	void *numa1_map_ptr, *numa2_map_ptr;
-+	struct timespec start_time;
-+	int page_count = 2;
-+
-+	if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
-+		perror("clock_gettime");
-+		return KSFT_FAIL;
-+	}
-+
-+	if (numa_available() < 0) {
-+		perror("NUMA support not enabled");
-+		return KSFT_SKIP;
-+	}
-+	if (numa_max_node() < 1) {
-+		printf("At least 2 NUMA nodes must be available\n");
-+		return KSFT_SKIP;
-+	}
-+	if (ksm_write_sysfs(KSM_FP("merge_across_nodes"), merge_across_nodes))
-+		return KSFT_FAIL;
-+
-+	/* allocate 2 pages in 2 different NUMA nodes and fill them with the same data */
-+	numa1_map_ptr = numa_alloc_onnode(page_size, 0);
-+	numa2_map_ptr = numa_alloc_onnode(page_size, 1);
-+	if (!numa1_map_ptr || !numa2_map_ptr) {
-+		perror("numa_alloc_onnode");
-+		return KSFT_FAIL;
-+	}
-+
-+	memset(numa1_map_ptr, '*', page_size);
-+	memset(numa2_map_ptr, '*', page_size);
-+
-+	/* try to merge the pages */
-+	if (ksm_merge_pages(numa1_map_ptr, page_size, start_time, timeout) ||
-+	    ksm_merge_pages(numa2_map_ptr, page_size, start_time, timeout))
-+		goto err_out;
-+
-+       /*
-+	* verify that the right number of pages are merged:
-+	* 1) if merge_across_nodes was enabled, 2 duplicate pages will be merged;
-+	* 2) if merge_across_nodes = 0, there must be 0 merged pages, since there is
-+	*    only 1 unique page in each node and they can't be shared.
-+	*/
-+	if (merge_across_nodes && !assert_ksm_pages_count(page_count))
-+		goto err_out;
-+	else if (!merge_across_nodes && !assert_ksm_pages_count(0))
-+		goto err_out;
-+
-+	numa_free(numa1_map_ptr, page_size);
-+	numa_free(numa2_map_ptr, page_size);
-+	printf("OK\n");
-+	return KSFT_PASS;
-+
-+err_out:
-+	numa_free(numa1_map_ptr, page_size);
-+	numa_free(numa2_map_ptr, page_size);
-+	printf("Not OK\n");
-+	return KSFT_FAIL;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int ret, opt;
-@@ -349,8 +417,9 @@ int main(int argc, char *argv[])
- 	struct ksm_sysfs ksm_sysfs_old;
- 	int test_name = CHECK_KSM_MERGE;
- 	bool use_zero_pages = KSM_USE_ZERO_PAGES_DEFAULT;
-+	bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
- 
--	while ((opt = getopt(argc, argv, "ha:p:l:z:MUZ")) != -1) {
-+	while ((opt = getopt(argc, argv, "ha:p:l:z:m:MUZN")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			prot = str_to_prot(optarg);
-@@ -378,6 +447,12 @@ int main(int argc, char *argv[])
- 			else
- 				use_zero_pages = 1;
- 			break;
-+		case 'm':
-+			if (strcmp(optarg, "0") == 0)
-+				merge_across_nodes = 0;
-+			else
-+				merge_across_nodes = 1;
-+			break;
- 		case 'M':
- 			break;
- 		case 'U':
-@@ -386,6 +461,9 @@ int main(int argc, char *argv[])
- 		case 'Z':
- 			test_name = CHECK_KSM_ZERO_PAGE_MERGE;
- 			break;
-+		case 'N':
-+			test_name = CHECK_KSM_NUMA_MERGE;
-+			break;
- 		default:
- 			return KSFT_FAIL;
- 		}
-@@ -423,6 +501,10 @@ int main(int argc, char *argv[])
- 		ret = check_ksm_zero_page_merge(MAP_PRIVATE | MAP_ANONYMOUS, prot, page_count,
- 						ksm_scan_limit_sec, use_zero_pages, page_size);
- 		break;
-+	case CHECK_KSM_NUMA_MERGE:
-+		ret = check_ksm_numa_merge(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
-+					   merge_across_nodes, page_size);
-+		break;
- 	}
- 
- 	if (ksm_restore(&ksm_sysfs_old)) {
-diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
-index 9b4e444fc4ed..45e803af7c77 100755
---- a/tools/testing/selftests/vm/run_vmtests.sh
-+++ b/tools/testing/selftests/vm/run_vmtests.sh
-@@ -441,6 +441,38 @@ else
- 	exitcode=1
- fi
- 
-+echo "-------------------------------------------------------------"
-+echo "running KSM test with 2 NUMA nodes and merge_across_nodes = 1"
-+echo "-------------------------------------------------------------"
-+./ksm_tests -N -m 1
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	 echo "[SKIP]"
-+	 exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
-+echo "-------------------------------------------------------------"
-+echo "running KSM test with 2 NUMA nodes and merge_across_nodes = 0"
-+echo "-------------------------------------------------------------"
-+./ksm_tests -N -m 0
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	 echo "[SKIP]"
-+	 exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
- exit $exitcode
- 
- exit $exitcode
--- 
-2.25.1
+I tested it on mt8173 (elm) with chromeos userspace.
+Before that patchset, the test:
 
+tast -verbose run -build=false 10.42.0.175 video.DecodeAccel.h264
+
+sometimes passed and sometimes failed with 'context deadline exceeded'.
+With this patchset it seems that the test always passes so I added tested-by:
+
+Tested-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+
+Thanks,
+Dafna
+
+
+
+
+On 14.07.21 04:56, Yong Wu wrote:
+> MediaTek IOMMU block diagram always like below:
+> 
+>          M4U
+>           |
+>      smi-common
+>           |
+>    -------------
+>    |         |  ...
+>    |         |
+> larb1     larb2
+>    |         |
+> vdec       venc
+> 
+> All the consumer connect with smi-larb, then connect with smi-common.
+> 
+> When the consumer works, it should enable the smi-larb's power which also
+> need enable the smi-common's power firstly.
+> 
+> Thus, Firstly, use the device link connect the consumer and the
+> smi-larbs. then add device link between the smi-larb and smi-common.
+> 
+> After adding the device_link, then "mediatek,larb" property can be removed.
+> the iommu consumer don't need call the mtk_smi_larb_get/put to enable
+> the power and clock of smi-larb and smi-common.
+> 
+> About the MM dt-binding/dtsi patches, I guess they should go together, thus
+> I don't split them for each a MM module and each a SoC.
+> 
+> Base on v5.14-rc1, and a jpeg[1] and mdp[2] patchset.
+> 
+> [1] https://lore.kernel.org/linux-mediatek/20210702102304.3346429-1-hsinyi@chromium.org/
+> [2] https://lore.kernel.org/linux-mediatek/20210709022324.1607884-1-eizan@chromium.org/
+> 
+> Change notes:
+> v6: 1) rebase on v5.14-rc1.
+>      2) Fix the issue commented in v5 from Dafna and Hsin-Yi.
+>      3) Remove the patches about using pm_runtime_resume_and_get since they have
+>         already been merged by other patches.
+> 
+> v5: https://lore.kernel.org/linux-mediatek/20210410091128.31823-1-yong.wu@mediatek.com/
+>      1) Base v5.12-rc2.
+>      2) Remove changing the mtk-iommu to module_platform_driver patch, It have already been a
+>      independent patch.
+> 
+> v4: https://lore.kernel.org/linux-mediatek/1590826218-23653-1-git-send-email-yong.wu@mediatek.com/
+>      base on v5.7-rc1.
+>    1) Move drm PM patch before smi patchs.
+>    2) Change builtin_platform_driver to module_platform_driver since we may need
+>       build as module.
+>    3) Rebase many patchset as above.
+> 
+> v3: https://lore.kernel.org/linux-iommu/1567503456-24725-1-git-send-email-yong.wu@mediatek.com/
+>      1) rebase on v5.3-rc1 and the latest mt8183 patchset.
+>      2) Use device_is_bound to check whether the driver is ready from Matthias.
+>      3) Add DL_FLAG_STATELESS flag when calling device_link_add and explain the
+>     reason in the commit message[3/14].
+>      4) Add a display patch[12/14] into this series. otherwise it may affect
+>     display HW fastlogo even though it don't happen in mt8183.
+>     
+> v2: https://lore.kernel.org/linux-iommu/1560171313-28299-1-git-send-email-yong.wu@mediatek.com/
+>     1) rebase on v5.2-rc1.
+>     2) Move adding device_link between the consumer and smi-larb into
+> iommu_add_device from Robin.
+>     3) add DL_FLAG_AUTOREMOVE_CONSUMER even though the smi is built-in from Evan.
+>     4) Remove the shutdown callback in iommu.
+> 
+> v1: https://lore.kernel.org/linux-iommu/1546318276-18993-1-git-send-email-yong.wu@mediatek.com/
+> 
+> Yong Wu (10):
+>    dt-binding: mediatek: Get rid of mediatek,larb for multimedia HW
+>    iommu/mediatek: Add probe_defer for smi-larb
+>    iommu/mediatek: Add device_link between the consumer and the larb
+>      devices
+>    media: mtk-jpeg: Get rid of mtk_smi_larb_get/put
+>    media: mtk-mdp: Get rid of mtk_smi_larb_get/put
+>    drm/mediatek: Get rid of mtk_smi_larb_get/put
+>    media: mtk-vcodec: Get rid of mtk_smi_larb_get/put
+>    memory: mtk-smi: Get rid of mtk_smi_larb_get/put
+>    arm: dts: mediatek: Get rid of mediatek,larb for MM nodes
+>    arm64: dts: mediatek: Get rid of mediatek,larb for MM nodes
+> 
+> Yongqiang Niu (1):
+>    drm/mediatek: Add pm runtime support for ovl and rdma
+> 
+>   .../display/mediatek/mediatek,disp.txt        |  9 ----
+>   .../bindings/media/mediatek-jpeg-decoder.yaml |  9 ----
+>   .../bindings/media/mediatek-jpeg-encoder.yaml |  9 ----
+>   .../bindings/media/mediatek-mdp.txt           |  8 ----
+>   .../bindings/media/mediatek-vcodec.txt        |  4 --
+>   arch/arm/boot/dts/mt2701.dtsi                 |  2 -
+>   arch/arm/boot/dts/mt7623n.dtsi                |  5 --
+>   arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 16 -------
+>   arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  6 ---
+>   drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  9 +++-
+>   drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  9 +++-
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 19 ++++----
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   | 36 +--------------
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |  1 -
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  5 +-
+>   drivers/iommu/mtk_iommu.c                     | 24 +++++++++-
+>   drivers/iommu/mtk_iommu_v1.c                  | 22 ++++++++-
+>   .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 45 +-----------------
+>   .../media/platform/mtk-jpeg/mtk_jpeg_core.h   |  2 -
+>   drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 46 +------------------
+>   drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  2 -
+>   drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  1 -
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 37 ++-------------
+>   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  3 --
+>   .../platform/mtk-vcodec/mtk_vcodec_enc.c      |  1 -
+>   .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   | 44 ++----------------
+>   drivers/memory/mtk-smi.c                      | 14 ------
+>   include/soc/mediatek/smi.h                    | 20 --------
+>   28 files changed, 85 insertions(+), 323 deletions(-)
+> 
