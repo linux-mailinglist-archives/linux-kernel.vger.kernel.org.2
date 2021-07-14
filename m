@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666D23C93B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5CB3C93B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhGNWYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 18:24:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32800 "EHLO
+        id S235139AbhGNWYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 18:24:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47942 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236789AbhGNWY1 (ORCPT
+        by vger.kernel.org with ESMTP id S236834AbhGNWY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 18:24:27 -0400
+        Wed, 14 Jul 2021 18:24:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626301295;
+        s=mimecast20190719; t=1626301296;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qiHbtSxpM+Odw+UliFXdE+ZYHxP5T/ev+d+bKicm4LE=;
-        b=EhKhen8TIJn4waSulYTXh7eswdVdxUa5IKx4wPd/dW1Ucb20k0kqrQwlSq+AcDxwJsfTfD
-        NBn9rBMx8edH0fY36xCJM5UCF9GruvmMQH31B6mOdFX8e1zHEGwY2WiMcStSTw9vdRxtAH
-        wotjdvp4zMs/NDTuePmVEJE55C9Gr4g=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-jXhsJuUpOJWlPxALF2970w-1; Wed, 14 Jul 2021 18:21:34 -0400
-X-MC-Unique: jXhsJuUpOJWlPxALF2970w-1
-Received: by mail-qv1-f72.google.com with SMTP id z93-20020a0ca5e60000b02902e558bb7a04so2683834qvz.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:21:34 -0700 (PDT)
+        bh=EGgwjvpJa6wLNwtGExzq+9oKBigK+KwEv4SzKA2ZKkU=;
+        b=e9j4PJ7fmO6xkfdXl7jM5K1S4A5TqUvNLvsi/2QNxJDycRvChr31fEsSYgOKx+eqYlSZof
+        CUdj4Tfh8VEG/AEYlnEdAj+QmYXRKkUInX083il3X+H5jMrhMMuUfDPh3c6gZ+Uv/1YnR4
+        V/mpUwPtvXYABQt9JwkEpG2F4YDrwIA=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-51-YeYYwF95NHSMrV0FL-WL5w-1; Wed, 14 Jul 2021 18:21:36 -0400
+X-MC-Unique: YeYYwF95NHSMrV0FL-WL5w-1
+Received: by mail-qk1-f198.google.com with SMTP id bk12-20020a05620a1a0cb02903b899a4309cso2297615qkb.14
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:21:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qiHbtSxpM+Odw+UliFXdE+ZYHxP5T/ev+d+bKicm4LE=;
-        b=pncSmDcZGwZ/v9lbaqMhoO6NDJNJZbn2io6I97MeiNK8FYG7Vv//mAJwl73dbsOuqH
-         s2tEyk6QIgYuvJkddtRxM6YsYH5XOCT97o9g8mOVEVBXgN5jcocB4hm/6x+gYipW3H0H
-         2LO1yiDzhyNAkxCjo7PWGHllev9PUJL+eikFFfgDih309OUqLaMckeKR37UOocdGDvLE
-         oxWMvDlJTxAOpnzqLzLllWzbHwHceQ4ipOmyBpd25cFtN7//4Dvc67vK//8Qc8k8o/6y
-         wJsoQXTnWlzj/gyu302d/7grkQ/ZPv+9aVGVPEeqYIx1ipoyz/GhUj/3xJXSsA/mprx5
-         fVGA==
-X-Gm-Message-State: AOAM530jKFYWHDkwKpeH4RLtmcKFJ6q7nnhbm23JwNlGkKNBw6l7g0fu
-        i2vi8wSUIy4nbGyPiE7tqd16pb6EeVtrX02tEugi2dA/JMsbC17wXEyJr4TsYb/MDy54jt4gveR
-        ynjgcrn1ekvkiqQtIH/95Qy6VxeOcY240VieZW2hD9rGv6CFWTttcBjnyrzpPRpmViBiLuZ7Wwg
+        bh=EGgwjvpJa6wLNwtGExzq+9oKBigK+KwEv4SzKA2ZKkU=;
+        b=sJlAzQVUUoLbU9oA6/G1fEy8HIrzokoT0sKYj8aw0hGCVhPtzCugX7ESK2udtR/z3x
+         SoOWUYrk9mkJgnaTggNRtTZMYyqnCD3LaMCElHOGfqc03ey5g/xk/qvvfMjRykWpXlHk
+         a+SAfqIpC+oZ2TIwE9zDZ2Yy2fOuJDAYK983KWQmk4VJBhU4bJtGzp+V2s83Y89aXk4+
+         p/4Zsdhqkb1qWesEY7Di9rKjP0QTL0ghyIHJfowL/R4yvmpJmidpQ1+YAj/P9IWbXZSU
+         XPP14adOz7CCPcI953ocbXwihFfLvw8jSOed9TibvqR7hhUuDBESPKXfGbXK29ys2scC
+         ryzA==
+X-Gm-Message-State: AOAM532x5R3Rsoyt38XOjhrb3MfFLehnWwkbZezA1NltDgubeSjkkzJ6
+        0pUfzpHsCsqnZ/w4ZY4RAEW3Y+SV41cRinNZ4+JSF93eS1/luucSK+sP9Gjzwo9CxpjZAo2fMfp
+        TZwA3P8n0xFauti3/oNdepqUHSVGNrhQYZ2cCfRU1gjbjebEF7JN6GXf0M9srvuaVcuH1Pag1MQ
         ==
-X-Received: by 2002:a05:622a:180e:: with SMTP id t14mr295696qtc.375.1626301293308;
-        Wed, 14 Jul 2021 15:21:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNGf06mrGz5E8vMivuFkNGw2IaWWFm6VxJucFi8ZYzevcV28jRdodL7+fGsf4xJxP2fA6pRQ==
-X-Received: by 2002:a05:622a:180e:: with SMTP id t14mr295658qtc.375.1626301293057;
-        Wed, 14 Jul 2021 15:21:33 -0700 (PDT)
+X-Received: by 2002:a05:622a:606:: with SMTP id z6mr331760qta.274.1626301294991;
+        Wed, 14 Jul 2021 15:21:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznmkYMfpfk9MyPUyGhCbV3tJ5/PwvweoAj+ICAnQortiwZdCkTLIHXggzx/+vr1Cu0MJIdoA==
+X-Received: by 2002:a05:622a:606:: with SMTP id z6mr331721qta.274.1626301294698;
+        Wed, 14 Jul 2021 15:21:34 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id b25sm1625854qka.123.2021.07.14.15.21.31
+        by smtp.gmail.com with ESMTPSA id b25sm1625854qka.123.2021.07.14.15.21.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 15:21:32 -0700 (PDT)
+        Wed, 14 Jul 2021 15:21:34 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, peterx@redhat.com,
@@ -68,9 +68,9 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, peterx@redhat.com,
         Mike Kravetz <mike.kravetz@oracle.com>,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         David Hildenbrand <david@redhat.com>
-Subject: [PATCH v4 07/26] mm: Drop first_index/last_index in zap_details
-Date:   Wed, 14 Jul 2021 18:20:58 -0400
-Message-Id: <20210714222117.47648-8-peterx@redhat.com>
+Subject: [PATCH v4 08/26] mm: Introduce zap_details.zap_flags
+Date:   Wed, 14 Jul 2021 18:20:59 -0400
+Message-Id: <20210714222117.47648-9-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210714222117.47648-1-peterx@redhat.com>
 References: <20210714222117.47648-1-peterx@redhat.com>
@@ -80,109 +80,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first_index/last_index parameters in zap_details are actually only used in
-unmap_mapping_range_tree().  At the meantime, this function is only called by
-unmap_mapping_pages() once.  Instead of passing these two variables through the
-whole stack of page zapping code, remove them from zap_details and let them
-simply be parameters of unmap_mapping_range_tree(), which is inlined.
+Instead of trying to introduce one variable for every new zap_details fields,
+let's introduce a flag so that it can start to encode true/false informations.
 
-Reviewed-by: Alistair Popple <apopple@nvidia.com>
+Let's start to use this flag first to clean up the only check_mapping variable.
+Firstly, the name "check_mapping" implies this is a "boolean", but actually it
+stores the mapping inside, just in a way that it won't be set if we don't want
+to check the mapping.
+
+To make things clearer, introduce the 1st zap flag ZAP_FLAG_CHECK_MAPPING, so
+that we only check against the mapping if this bit set.  At the same time, we
+can rename check_mapping into zap_mapping and set it always.
+
+Since at it, introduce another helper zap_check_mapping_skip() and use it in
+zap_pte_range() properly.
+
+Some old comments have been removed in zap_pte_range() because they're
+duplicated, and since now we're with ZAP_FLAG_CHECK_MAPPING flag, it'll be very
+easy to grep this information by simply grepping the flag.
+
+It'll also make life easier when we want to e.g. pass in zap_flags into the
+callers like unmap_mapping_pages() (instead of adding new booleans besides the
+even_cows parameter).
+
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/mm.h |  2 --
- mm/memory.c        | 29 ++++++++++++++++-------------
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ include/linux/mm.h | 19 ++++++++++++++++++-
+ mm/memory.c        | 34 ++++++++++------------------------
+ 2 files changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 57453dba41b9..795b3cd643ca 100644
+index 795b3cd643ca..26088174daab 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -1720,8 +1720,6 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+@@ -1715,14 +1715,31 @@ static inline bool can_do_mlock(void) { return false; }
+ extern int user_shm_lock(size_t, struct ucounts *);
+ extern void user_shm_unlock(size_t, struct ucounts *);
+ 
++/* Whether to check page->mapping when zapping */
++#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
++
+ /*
+  * Parameter block passed down to zap_pte_range in exceptional cases.
   */
  struct zap_details {
- 	struct address_space *check_mapping;	/* Check page->mapping if set */
--	pgoff_t	first_index;			/* Lowest page->index to unmap */
--	pgoff_t last_index;			/* Highest page->index to unmap */
+-	struct address_space *check_mapping;	/* Check page->mapping if set */
++	struct address_space *zap_mapping;
  	struct page *single_page;		/* Locked page to be unmapped */
++	unsigned long zap_flags;
  };
  
++/* Return true if skip zapping this page, false otherwise */
++static inline bool
++zap_skip_check_mapping(struct zap_details *details, struct page *page)
++{
++	if (!details || !page)
++		return false;
++
++	if (!(details->zap_flags & ZAP_FLAG_CHECK_MAPPING))
++		return false;
++
++	return details->zap_mapping != page_rmapping(page);
++}
++
+ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+ 			     pte_t pte);
+ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
 diff --git a/mm/memory.c b/mm/memory.c
-index ba8033ca6682..4c269d7b3d83 100644
+index 4c269d7b3d83..2a5a6650f069 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -3322,20 +3322,20 @@ static void unmap_mapping_range_vma(struct vm_area_struct *vma,
- }
+@@ -1333,16 +1333,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			struct page *page;
  
- static inline void unmap_mapping_range_tree(struct rb_root_cached *root,
-+					    pgoff_t first_index,
-+					    pgoff_t last_index,
- 					    struct zap_details *details)
- {
- 	struct vm_area_struct *vma;
- 	pgoff_t vba, vea, zba, zea;
+ 			page = vm_normal_page(vma, addr, ptent);
+-			if (unlikely(details) && page) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping &&
+-				    details->check_mapping != page_rmapping(page))
+-					continue;
+-			}
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+ 							tlb->fullmm);
+ 			tlb_remove_tlb_entry(tlb, pte, addr);
+@@ -1375,17 +1367,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 		    is_device_exclusive_entry(entry)) {
+ 			struct page *page = pfn_swap_entry_to_page(entry);
  
--	vma_interval_tree_foreach(vma, root,
--			details->first_index, details->last_index) {
+-			if (unlikely(details && details->check_mapping)) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping !=
+-				    page_rmapping(page))
+-					continue;
+-			}
 -
-+	vma_interval_tree_foreach(vma, root, first_index, last_index) {
- 		vba = vma->vm_pgoff;
- 		vea = vba + vma_pages(vma) - 1;
--		zba = details->first_index;
-+		zba = first_index;
- 		if (zba < vba)
- 			zba = vba;
--		zea = details->last_index;
-+		zea = last_index;
- 		if (zea > vea)
- 			zea = vea;
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+ 			rss[mm_counter(page)]--;
  
-@@ -3361,18 +3361,21 @@ void unmap_mapping_page(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct zap_details details = { };
-+	pgoff_t	first_index, last_index;
+@@ -3369,8 +3352,9 @@ void unmap_mapping_page(struct page *page)
+ 	first_index = page->index;
+ 	last_index = page->index + thp_nr_pages(page) - 1;
  
- 	VM_BUG_ON(!PageLocked(page));
- 	VM_BUG_ON(PageTail(page));
- 
-+	first_index = page->index;
-+	last_index = page->index + thp_nr_pages(page) - 1;
-+
- 	details.check_mapping = mapping;
--	details.first_index = page->index;
--	details.last_index = page->index + thp_nr_pages(page) - 1;
+-	details.check_mapping = mapping;
++	details.zap_mapping = mapping;
  	details.single_page = page;
++	details.zap_flags = ZAP_FLAG_CHECK_MAPPING;
  
  	i_mmap_lock_write(mapping);
  	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
--		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-+					 last_index, &details);
- 	i_mmap_unlock_write(mapping);
- }
- 
-@@ -3391,17 +3394,17 @@ void unmap_mapping_page(struct page *page)
- void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+@@ -3395,9 +3379,11 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
  		pgoff_t nr, bool even_cows)
  {
-+	pgoff_t	first_index = start, last_index = start + nr - 1;
- 	struct zap_details details = { };
+ 	pgoff_t	first_index = start, last_index = start + nr - 1;
+-	struct zap_details details = { };
++	struct zap_details details = { .zap_mapping = mapping };
++
++	if (!even_cows)
++		details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
  
- 	details.check_mapping = even_cows ? NULL : mapping;
--	details.first_index = start;
--	details.last_index = start + nr - 1;
--	if (details.last_index < details.first_index)
--		details.last_index = ULONG_MAX;
-+	if (last_index < first_index)
-+		last_index = ULONG_MAX;
- 
- 	i_mmap_lock_write(mapping);
- 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
--		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-+					 last_index, &details);
- 	i_mmap_unlock_write(mapping);
- }
+-	details.check_mapping = even_cows ? NULL : mapping;
+ 	if (last_index < first_index)
+ 		last_index = ULONG_MAX;
  
 -- 
 2.31.1
