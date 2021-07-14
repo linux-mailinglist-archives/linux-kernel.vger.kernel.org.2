@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4683E3C942A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCA03C942F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237380AbhGNXEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:04:37 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:34506 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhGNXEg (ORCPT
+        id S235059AbhGNXH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:07:26 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:42838 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229928AbhGNXH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:04:36 -0400
-Received: by mail-io1-f44.google.com with SMTP id g22so4202866iom.1;
-        Wed, 14 Jul 2021 16:01:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iWYj7BYmLf4sE9pZYmPOjA7KWU/Cdxu9ZYSyNE9Xa2o=;
-        b=CQX9I86nolMTA+nUCqykOHWs1MpTYKS1kP4Xoh+GVhuif5TTLZ+rBapSAP5afKv9ga
-         yiO8k80LBmwnd+2t62Sgk8UjPfWkW5J7EmzfybmH2zaNoW0t2U9T81/BdrKwqzYFvn7h
-         SZzihneyU/I67HaOL1n5mql4FS2AVJByG9ixER06ynfQ6K66Ff2KKm+zP5dTcl67fnz1
-         MckFkKlFK6wxo58/k+WKGwNL9HRdjeJgfl4eOaZoqfNnLqHZ0C0DPLiaS6v/F9TrajgL
-         /WXVT6UDUqwQWdxh03CM5GLkK7gND5rC/Om+EjNjdlZxt6TPwnq4RpN5SqS7VYh7GDlu
-         RmIg==
-X-Gm-Message-State: AOAM5324E19B95MeIlgVa0Fc9b+dkLKKeQW5t5nZ9G0ZhLLl6hQdICEp
-        dafCAAIgjqrQCuxa2akB8g==
-X-Google-Smtp-Source: ABdhPJxRnII1A4P7617nk+P/dL3rkhW199nEWSWXEjBvCWsHF3w+QlDdvckSGvOuEEncV11dSrn9uQ==
-X-Received: by 2002:a6b:6016:: with SMTP id r22mr407400iog.12.1626303703032;
-        Wed, 14 Jul 2021 16:01:43 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l8sm2217302iok.26.2021.07.14.16.01.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 16:01:42 -0700 (PDT)
-Received: (nullmailer pid 3701173 invoked by uid 1000);
-        Wed, 14 Jul 2021 23:01:40 -0000
-Date:   Wed, 14 Jul 2021 17:01:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v3 06/12] dt-bindings: power: supply: smb347-charger:
- Document USB VBUS regulator
-Message-ID: <20210714230140.GA3697673@robh.at.kernel.org>
-References: <20210704225433.32029-1-digetx@gmail.com>
- <20210704225433.32029-7-digetx@gmail.com>
- <20210712153905.GA1980362@robh.at.kernel.org>
- <9032e807-b4d3-bacf-6c39-d3a2c7c57f3e@gmail.com>
+        Wed, 14 Jul 2021 19:07:26 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id B01EEC0BBE;
+        Wed, 14 Jul 2021 23:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1626303873; bh=sN8/PJ4qyNt5quiwEKpJiNDyd7Pwo/pNX7RtiBN1ayQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=P+EQDqMNdfa+wzmDaylrHVgmpE00ScY4o0n6uY2QXLPp7HREIE2Bv9UBxCSyuePRa
+         XIEA/hhGFh4/xzPp/QgWAySY8u+lgjN1RcNfIp6QXCxDUFz/y5CDd/7j4PraYhmGJ2
+         2xzvy25oq8BCJyr3lMayIQM2TdJQsr9ySfKucKvDO09+VNPvtwiyplfjasZ4N+AVr+
+         pyzPBNqQ7lCtHw5a9Tge74yOb0HjA9npMygIJSAHerS0+PSYUhmfXdeld71ESfNJhn
+         ZJAB6tn3T/qzDvJc3am9ocGzdUMpgdeVWoFJAwgsNyx/eaw/vsl+t57uPITdidqo18
+         tqJBT1gmSAeOw==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 42A88A0251;
+        Wed, 14 Jul 2021 23:04:30 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-snps-arc@lists.infradead.org, libc-alpha@sourceware.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] ARC: fp: set FPU_STATUS.FWE to enable FPU_STATUS update on context switch
+Date:   Wed, 14 Jul 2021 16:04:26 -0700
+Message-Id: <20210714230426.7141-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9032e807-b4d3-bacf-6c39-d3a2c7c57f3e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 03:22:40AM +0300, Dmitry Osipenko wrote:
-> 12.07.2021 18:39, Rob Herring пишет:
-> >> +  summit,inok-polarity:
-> >> +    description: |
-> >> +      Polarity of INOK signal indicating presence of external power supply.
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +    enum:
-> >> +      - 0 # SMB3XX_SYSOK_INOK_ACTIVE_LOW
-> >> +      - 1 # SMB3XX_SYSOK_INOK_ACTIVE_HIGH
-> >> +
-> >> +  usb-vbus:
-> >> +    $ref: "../../regulator/regulator.yaml#"
-> >> +    type: object
-> >        unevaluatedProperties: false
-> > 
-> > With that,
-> > 
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > 
-> 
-> I tried to add the unevaluatedProperties + a random unrelated property
-> to the example usb-vbus node and dt_binding_check is happy with that. So
-> the unevaluatedProperties has no effect, is it supposed to be so?
+FPU_STATUS register contains FP exception flags bits which are updated
+as side-effect of FP instructions but can also be manually wiggled such
+as by glibc C99 functions fe{raise,clear,test}except() etc.
+To effect the update, the programming model requires OR'ing FWE
+bit(231). This bit is write-only and RAZ, meaning it is effectively
+auto-cleared after a write and thus needs to be set everytime which
+is how glibc implements this.
 
-Yes, until support lands upstream[1].
+However there's another usecase of FPU_STATUS update, at the time of
+Linux task switch when incoming task value needs to be programmed into
+the register. This was added as part of f45ba2bd6da0dc ("ARCv2:
+fpu: preserve userspace fpu state") which however missing the OR'ing
+with FWE bit, meaning the new value is not effectively being written at
+all, which is what this patch fixes. This was not caught in interm glibc
+testing as the race window which relies on a specific exception bit to be
+set/clear is really small and will end up causing extremely hard to
+reproduce/debug issues.
 
-Rob
+Fortunately this was caught by glibc's math/test-fenv-tls test which
+repeatedly set/clear exception flags in a big loop, concurrently in main
+program and also in a thread.
 
-[1] https://github.com/Julian/jsonschema/pull/817
+Fixes: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/54
+Fixes: f45ba2bd6da0dc ("ARCv2: fpu: preserve userspace fpu state")
+Cc: stable@vger.kernel.org	#5.6+
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/kernel/fpu.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arc/kernel/fpu.c b/arch/arc/kernel/fpu.c
+index c67c0f0f5f77..ec640219d989 100644
+--- a/arch/arc/kernel/fpu.c
++++ b/arch/arc/kernel/fpu.c
+@@ -57,23 +57,26 @@ void fpu_save_restore(struct task_struct *prev, struct task_struct *next)
+ 
+ void fpu_init_task(struct pt_regs *regs)
+ {
++	const unsigned int fwe = 0x80000000;
++
+ 	/* default rounding mode */
+ 	write_aux_reg(ARC_REG_FPU_CTRL, 0x100);
+ 
+-	/* set "Write enable" to allow explicit write to exception flags */
+-	write_aux_reg(ARC_REG_FPU_STATUS, 0x80000000);
++	/* Initialize to zero: setting requires FWE be set */
++	write_aux_reg(ARC_REG_FPU_STATUS, fwe);
+ }
+ 
+ void fpu_save_restore(struct task_struct *prev, struct task_struct *next)
+ {
+ 	struct arc_fpu *save = &prev->thread.fpu;
+ 	struct arc_fpu *restore = &next->thread.fpu;
++	const unsigned int fwe = 0x80000000;
+ 
+ 	save->ctrl = read_aux_reg(ARC_REG_FPU_CTRL);
+ 	save->status = read_aux_reg(ARC_REG_FPU_STATUS);
+ 
+ 	write_aux_reg(ARC_REG_FPU_CTRL, restore->ctrl);
+-	write_aux_reg(ARC_REG_FPU_STATUS, restore->status);
++	write_aux_reg(ARC_REG_FPU_STATUS, (fwe | restore->status));
+ }
+ 
+ #endif
+-- 
+2.25.1
+
