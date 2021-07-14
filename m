@@ -2,204 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233CD3C88AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E793C88AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhGNQdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:33:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20566 "EHLO
+        id S235859AbhGNQfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:35:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22299 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229566AbhGNQdB (ORCPT
+        by vger.kernel.org with ESMTP id S229595AbhGNQe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:33:01 -0400
+        Wed, 14 Jul 2021 12:34:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626280209;
+        s=mimecast20190719; t=1626280327;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B/KGvldDrB0eAalL1DiPGX7W1Lee3FENtfoeiX8YJwg=;
-        b=YTV5+7NMaGPIT9viLflUBMlzmKYXOoFeXjpdD1SCRy0pg49SZKhtGoxTjTZBOLNQWA/EpN
-        zqI+SsQrrEECCkF6IGmbGflFvtlKF7Evih52dfLZqfOrb73vGCitKvtpun97ih2mQpkbVG
-        effn9K6IeL1z1ddn8yFK3MnJWPB8M4w=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-Oyx9z_aZNuGkse2Xp7tGLQ-1; Wed, 14 Jul 2021 12:30:08 -0400
-X-MC-Unique: Oyx9z_aZNuGkse2Xp7tGLQ-1
-Received: by mail-wr1-f69.google.com with SMTP id a4-20020a0560001884b02901401e436a18so1759424wri.21
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 09:30:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=B/KGvldDrB0eAalL1DiPGX7W1Lee3FENtfoeiX8YJwg=;
-        b=jGWZ9Ia6jeNiIF6QwCwguoVRgBLGudBktnKRgy1M2ChLqsqy0NngWgV9wbC6Vi9TB/
-         KPxzshUvEo9abQ9jmxpnZq+m99HHr4p6JlpuDVfc8aM9KI0a7vfKhktuWEyICDVvi3fG
-         6YKk0Ma76LLlJLfKcQWkcGdQxvBX3Zpp9Lpif8dET5gARzrOxhGxUnmAO7W9H26se7oz
-         5J4S8SqTWgS9IJCtNxq35+cCnLI681N8gMARclRh+m49onFdc6mYvdGTN/3QGGtN5vmH
-         7PBc1xRVLzInCPKJDJG9jaO268IBddsjfKcQExZBCvfoQhijkIZZ8uk+WnZjgE6xpnN3
-         +NqQ==
-X-Gm-Message-State: AOAM531cocRQ4/gzaamLnsNmCiApZKG4Yi44+aLsDdjgRBcCvaip8OJm
-        jNi5waM/cBgzDoT9Mpulcqew6rqEUbavZaQqrvE16btrl68WbcXO060Dd6Tv4RZiAHDkQGRl/KY
-        mMhaJ1MT6Rufl+BVdeyMz0Eb0
-X-Received: by 2002:a5d:4561:: with SMTP id a1mr13810744wrc.259.1626280207062;
-        Wed, 14 Jul 2021 09:30:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOkWzlAEBVFt3MFLPq/RmRRAGntsLVLFQJ7RrjHjEb1hpdXy9atz6myPzK6KyqD9P4vJwl4Q==
-X-Received: by 2002:a5d:4561:: with SMTP id a1mr13810709wrc.259.1626280206860;
-        Wed, 14 Jul 2021 09:30:06 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c60d5.dip0.t-ipconnect.de. [91.12.96.213])
-        by smtp.gmail.com with ESMTPSA id n7sm5466790wmq.37.2021.07.14.09.30.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 09:30:06 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/1] pagemap: report swap location for shared pages
-From:   David Hildenbrand <david@redhat.com>
-To:     Peter Xu <peterx@redhat.com>,
-        Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
-        peterz@infradead.org, chinwen.chang@mediatek.com,
-        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
-        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <20210714152426.216217-1-tiberiu.georgescu@nutanix.com>
- <20210714152426.216217-2-tiberiu.georgescu@nutanix.com>
- <YO8L5PTdAs+vPeIx@t490s> <0e38ef52-0ac7-c15b-114b-3316973fc7dc@redhat.com>
-Organization: Red Hat
-Message-ID: <f39be587-31f4-72c0-7d39-dad02a0f5777@redhat.com>
-Date:   Wed, 14 Jul 2021 18:30:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=wJZb0LYGB1j1vgISO3m5tNd0L/csn6OWG2/ru8UON6U=;
+        b=QZNwSu4Qz2ydP+lz9qlFjtOCiz8ZMF8En1/2cD7TZ9VNg9tOsx9dZmbTvSk7sbS6pHUdAq
+        JFBSwMEUy0m6lZ/a1O/lOIKo0QgbKDImeWdEei1u5RMOMZ7Y7n+AurBY81XTaqlC548PEm
+        st/kXKrRTfmG3YaOnCZss38CdfYK3Jc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-qlensUk0OR2j1IpJVsl9mw-1; Wed, 14 Jul 2021 12:32:06 -0400
+X-MC-Unique: qlensUk0OR2j1IpJVsl9mw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9669804140;
+        Wed, 14 Jul 2021 16:32:04 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A14FE60871;
+        Wed, 14 Jul 2021 16:32:01 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id A0F994172ED4; Wed, 14 Jul 2021 13:31:57 -0300 (-03)
+Date:   Wed, 14 Jul 2021 13:31:57 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Saenz <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
+Message-ID: <20210714163157.GA140679@fuller.cnet>
+References: <20210714135420.69624-1-frederic@kernel.org>
+ <20210714135420.69624-7-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0e38ef52-0ac7-c15b-114b-3316973fc7dc@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714135420.69624-7-frederic@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.21 18:24, David Hildenbrand wrote:
-> On 14.07.21 18:08, Peter Xu wrote:
->> On Wed, Jul 14, 2021 at 03:24:26PM +0000, Tiberiu Georgescu wrote:
->>> When a page allocated using the MAP_SHARED flag is swapped out, its pagemap
->>> entry is cleared. In many cases, there is no difference between swapped-out
->>> shared pages and newly allocated, non-dirty pages in the pagemap interface.
->>>
->>> This patch addresses the behaviour and modifies pte_to_pagemap_entry() to
->>> make use of the XArray associated with the virtual memory area struct
->>> passed as an argument. The XArray contains the location of virtual pages
->>> in the page cache, swap cache or on disk. If they are on either of the
->>> caches, then the original implementation still works. If not, then the
->>> missing information will be retrieved from the XArray.
->>>
->>> Co-developed-by: Florian Schmidt <florian.schmidt@nutanix.com>
->>> Signed-off-by: Florian Schmidt <florian.schmidt@nutanix.com>
->>> Co-developed-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
->>> Signed-off-by: Carl Waldspurger <carl.waldspurger@nutanix.com>
->>> Co-developed-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
->>> Signed-off-by: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
->>> Signed-off-by: Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
->>> ---
->>>    fs/proc/task_mmu.c | 37 +++++++++++++++++++++++++++++--------
->>>    1 file changed, 29 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
->>> index eb97468dfe4c..b17c8aedd32e 100644
->>> --- a/fs/proc/task_mmu.c
->>> +++ b/fs/proc/task_mmu.c
->>> @@ -1359,12 +1359,25 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
->>>    	return err;
->>>    }
->>>    
->>> +static void *get_xa_entry_at_vma_addr(struct vm_area_struct *vma,
->>> +		unsigned long addr)
->>> +{
->>> +	struct inode *inode = file_inode(vma->vm_file);
->>> +	struct address_space *mapping = inode->i_mapping;
->>> +	pgoff_t offset = linear_page_index(vma, addr);
->>> +
->>> +	return xa_load(&mapping->i_pages, offset);
->>> +}
->>> +
->>>    static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
->>>    		struct vm_area_struct *vma, unsigned long addr, pte_t pte)
->>>    {
->>>    	u64 frame = 0, flags = 0;
->>>    	struct page *page = NULL;
->>>    
->>> +	if (vma->vm_flags & VM_SOFTDIRTY)
->>> +		flags |= PM_SOFT_DIRTY;
->>> +
->>>    	if (pte_present(pte)) {
->>>    		if (pm->show_pfn)
->>>    			frame = pte_pfn(pte);
->>> @@ -1374,13 +1387,22 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
->>>    			flags |= PM_SOFT_DIRTY;
->>>    		if (pte_uffd_wp(pte))
->>>    			flags |= PM_UFFD_WP;
->>> -	} else if (is_swap_pte(pte)) {
->>> +	} else if (is_swap_pte(pte) || shmem_file(vma->vm_file)) {
->>>    		swp_entry_t entry;
->>> -		if (pte_swp_soft_dirty(pte))
->>> -			flags |= PM_SOFT_DIRTY;
->>> -		if (pte_swp_uffd_wp(pte))
->>> -			flags |= PM_UFFD_WP;
->>> -		entry = pte_to_swp_entry(pte);
->>> +		if (is_swap_pte(pte)) {
->>> +			entry = pte_to_swp_entry(pte);
->>> +			if (pte_swp_soft_dirty(pte))
->>> +				flags |= PM_SOFT_DIRTY;
->>> +			if (pte_swp_uffd_wp(pte))
->>> +				flags |= PM_UFFD_WP;
->>> +		} else {
->>> +			void *xa_entry = get_xa_entry_at_vma_addr(vma, addr);
->>> +
->>> +			if (xa_is_value(xa_entry))
->>> +				entry = radix_to_swp_entry(xa_entry);
->>> +			else
->>> +				goto out;
->>> +		}
->>>    		if (pm->show_pfn)
->>>    			frame = swp_type(entry) |
->>>    				(swp_offset(entry) << MAX_SWAPFILES_SHIFT);
->>> @@ -1393,9 +1415,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
->>>    		flags |= PM_FILE;
->>>    	if (page && page_mapcount(page) == 1)
->>>    		flags |= PM_MMAP_EXCLUSIVE;
->>> -	if (vma->vm_flags & VM_SOFTDIRTY)
->>> -		flags |= PM_SOFT_DIRTY;
->>
->> IMHO moving this to the entry will only work for the initial iteration, however
->> it won't really help anything, as soft-dirty should always be used in pair with
->> clear_refs written with value "4" first otherwise all pages will be marked
->> soft-dirty then the pagemap data is meaningless.
->>
->> After the "write 4" op VM_SOFTDIRTY will be cleared and I expect the test case
->> to see all zeros again even with the patch.
->>
->> I think one way to fix this is to do something similar to uffd-wp: we leave a
->> marker in pte showing that this is soft-dirtied pte even if swapped out.
+On Wed, Jul 14, 2021 at 03:54:20PM +0200, Frederic Weisbecker wrote:
+> Add a new cpuset.isolation_mask file in order to be able to modify the
+> housekeeping cpumask for each individual isolation feature on runtime.
+> In the future this will include nohz_full, unbound timers,
+> unbound workqueues, unbound kthreads, managed irqs, etc...
 > 
-> How exactly does such a pte look like? Simply pte_none() with another
-> bit set?
-> 
->> However we don't have a mechanism for that yet in current linux, and the
->> uffd-wp series is the first one trying to introduce something like that.
-> 
-> Can you give me a pointer? I'm very interested in learning how to
-> identify this case.
-> 
+> Start with supporting domain exclusion and CPUs passed through
+> "isolcpus=".
 
-I assume it's 
-https://lore.kernel.org/lkml/20210527202117.30689-1-peterx@redhat.com/
+It is possible to just add return -ENOTSUPPORTED for the features 
+whose support is not present?
 
--- 
-Thanks,
+> The cpuset.isolation_mask defaults to 0. Setting it to 1 will exclude
+> the given cpuset from the domains (they will be attached to NULL domain).
+> As long as a CPU is part of any cpuset with cpuset.isolation_mask set to
+> 1, it will remain isolated even if it overlaps with another cpuset that
+> has cpuset.isolation_mask  set to 0. The same applies to parent and
+> subdirectories.
+> 
+> If a cpuset is a subset of "isolcpus=", it automatically maps it and
+> cpuset.isolation_mask will be set to 1. This subset is then cleared from
+> the initial "isolcpus=" mask. The user is then free to override
+> cpuset.isolation_mask to 0 in order to revert the effect of "isolcpus=".
+> 
+> Here is an example of use where the CPU 7 has been isolated on boot and
+> get re-attached to domains later from cpuset:
+> 
+> 	$ cat /proc/cmdline
+> 		isolcpus=7
+> 	$ cd /sys/fs/cgroup/cpuset
+> 	$ mkdir cpu7
+> 	$ cd cpu7
+> 	$ cat cpuset.cpus
+> 		0-7
+> 	$ cat cpuset.isolation_mask
+> 		0
+> 	$ ls /sys/kernel/debug/domains/cpu7	# empty because isolcpus=7
+> 	$ echo 7 > cpuset.cpus
+> 	$ cat cpuset.isolation_mask	# isolcpus subset automatically mapped
+> 		1
+> 	$ echo 0 > cpuset.isolation_mask
+> 	$ ls /sys/kernel/debug/domains/cpu7/
+> 		domain0  domain1
+> 
+> CHECKME: Should we have individual cpuset.isolation.$feature files for
+>          each isolation feature instead of a single mask file?
 
-David / dhildenb
+Yes, guess that is useful, for example due to the -ENOTSUPPORTED
+comment above.
+
+
+Guarantees on updates
+=====================
+
+Perhaps start with a document with:
+
+On return to the write to the cpumask file, what are the guarantees?
+
+For example, for kthread it is that any kernel threads from that point
+on should start with the new mask. Therefore userspace should 
+respect the order:
+
+1) Change kthread mask.
+2) Move threads.
+
+
+Updates to interface
+====================
+
+Also, thinking about updates to the interface (which today are one
+cpumask per isolation feature) might be useful. What can happen:
+
+1) New isolation feature is added, feature name added to the interface.
+
+Userspace must support new filename. If not there, then thats an 
+old kernel without support for it.
+
+2) If an isolation feature is removed, a file will be gone. What should
+be the behaviour there? Remove the file? (userspace should probably 
+ignore the failure in that case?) (then features names should not be
+reused, as that can confuse #1 above).
+
+Or maybe have a versioned scheme?
+
+> 
+> CHECKME: The scheduler is unhappy when _every_ CPUs are isolated
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+> Cc: Nitesh Lal <nilal@redhat.com>
+> Cc: Nicolas Saenz <nsaenzju@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Christoph Lameter <cl@gentwo.de>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Alex Belits <abelits@marvell.com>
+> ---
+>  kernel/cgroup/cpuset.c | 111 +++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 107 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index adb5190c4429..ecb63be04408 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -82,6 +82,7 @@ struct cpuset {
+>  	struct cgroup_subsys_state css;
+>  
+>  	unsigned long flags;		/* "unsigned long" so bitops work */
+> +	unsigned long isol_flags;
+>  
+>  	/*
+>  	 * On default hierarchy:
+> @@ -258,6 +259,17 @@ static inline int is_spread_slab(const struct cpuset *cs)
+>  	return test_bit(CS_SPREAD_SLAB, &cs->flags);
+>  }
+>  
+> +/* bits in struct cpuset flags field */
+> +typedef enum {
+> +	CS_ISOL_DOMAIN,
+> +	CS_ISOL_MAX
+> +} isol_flagbits_t;
+> +
+> +static inline int is_isol_domain(const struct cpuset *cs)
+> +{
+> +	return test_bit(CS_ISOL_DOMAIN, &cs->isol_flags);
+> +}
+> +
+>  static inline int is_partition_root(const struct cpuset *cs)
+>  {
+>  	return cs->partition_root_state > 0;
+> @@ -269,6 +281,13 @@ static struct cpuset top_cpuset = {
+>  	.partition_root_state = PRS_ENABLED,
+>  };
+>  
+> +/*
+> + * CPUs passed through "isolcpus=" on boot, waiting to be mounted
+> + * as soon as we meet a cpuset directory whose cpus_allowed is a
+> + * subset of "isolcpus="
+> + */
+> +static cpumask_var_t unmounted_isolcpus_mask;
+> +
+>  /**
+>   * cpuset_for_each_child - traverse online children of a cpuset
+>   * @child_cs: loop cursor pointing to the current child
+> @@ -681,6 +700,39 @@ static inline int nr_cpusets(void)
+>  	return static_key_count(&cpusets_enabled_key.key) + 1;
+>  }
+>  
+> +static int update_domain_housekeeping_mask(void)
+> +{
+> +	struct cpuset *cp;	/* top-down scan of cpusets */
+> +	struct cgroup_subsys_state *pos_css;
+> +	cpumask_var_t domain_mask;
+> +
+> +	if (!zalloc_cpumask_var(&domain_mask, GFP_KERNEL))
+> +		return -ENOMEM;
+> +
+> +	cpumask_andnot(domain_mask, cpu_possible_mask, unmounted_isolcpus_mask);
+> +
+> +	rcu_read_lock();
+> +	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
+> +		if (is_isol_domain(cp))
+> +			cpumask_andnot(domain_mask, domain_mask, cp->cpus_allowed);
+> +
+> +		if (cpumask_subset(cp->cpus_allowed, unmounted_isolcpus_mask)) {
+> +			unsigned long flags;
+> +			cpumask_andnot(unmounted_isolcpus_mask, unmounted_isolcpus_mask,
+> +				       cp->cpus_allowed);
+> +			spin_lock_irqsave(&callback_lock, flags);
+> +			cp->isol_flags |= BIT(CS_ISOL_DOMAIN);
+> +			spin_unlock_irqrestore(&callback_lock, flags);
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	housekeeping_cpumask_set(domain_mask, HK_FLAG_DOMAIN);
+> +	free_cpumask_var(domain_mask);
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * generate_sched_domains()
+>   *
+> @@ -741,6 +793,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>  	struct cpuset **csa;	/* array of all cpuset ptrs */
+>  	int csn;		/* how many cpuset ptrs in csa so far */
+>  	int i, j, k;		/* indices for partition finding loops */
+> +	int err;
+>  	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
+>  	struct sched_domain_attr *dattr;  /* attributes for custom domains */
+>  	int ndoms = 0;		/* number of sched domains in result */
+> @@ -752,6 +805,10 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>  	dattr = NULL;
+>  	csa = NULL;
+>  
+> +	err = update_domain_housekeeping_mask();
+> +	if (err < 0)
+> +		pr_err("Can't update housekeeping cpumask\n");
+> +
+>  	/* Special case for the 99% of systems with one, full, sched domain */
+>  	if (root_load_balance && !top_cpuset.nr_subparts_cpus) {
+>  		ndoms = 1;
+> @@ -1449,7 +1506,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+>  		 * root as well.
+>  		 */
+>  		if (!cpumask_empty(cp->cpus_allowed) &&
+> -		    is_sched_load_balance(cp) &&
+> +		    (is_sched_load_balance(cp) || is_isol_domain(cs)) &&
+>  		   (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) ||
+>  		    is_partition_root(cp)))
+>  			need_rebuild_sched_domains = true;
+> @@ -1935,6 +1992,30 @@ static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
+>  	return err;
+>  }
+>  
+> +/*
+> + * update_isol_flags - read a 0 or a 1 in a file and update associated isol flag
+> + * mask:	the new mask value to apply (see isol_flagbits_t)
+> + * cs:		the cpuset to update
+> + *
+> + * Call with cpuset_mutex held.
+> + */
+> +static int update_isol_flags(struct cpuset *cs, u64 mask)
+> +{
+> +	unsigned long old_mask = cs->isol_flags;
+> +
+> +	if (mask & ~(BIT_ULL(CS_ISOL_MAX) - 1))
+> +		return -EINVAL;
+> +
+> +	spin_lock_irq(&callback_lock);
+> +	cs->isol_flags = (unsigned long)mask;
+> +	spin_unlock_irq(&callback_lock);
+> +
+> +	if (mask ^ old_mask)
+> +		rebuild_sched_domains_locked();
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * update_prstate - update partititon_root_state
+>   * cs:	the cpuset to update
+> @@ -2273,6 +2354,9 @@ typedef enum {
+>  	FILE_MEMORY_PRESSURE,
+>  	FILE_SPREAD_PAGE,
+>  	FILE_SPREAD_SLAB,
+> +//CHECKME: should we have individual cpuset.isolation.$feature files
+> +//instead of a mask of features in a single file?
+> +	FILE_ISOLATION_MASK,
+>  } cpuset_filetype_t;
+>  
+>  static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+> @@ -2314,6 +2398,9 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+>  	case FILE_SPREAD_SLAB:
+>  		retval = update_flag(CS_SPREAD_SLAB, cs, val);
+>  		break;
+> +	case FILE_ISOLATION_MASK:
+> +		retval = update_isol_flags(cs, val);
+> +		break;
+>  	default:
+>  		retval = -EINVAL;
+>  		break;
+> @@ -2481,6 +2568,8 @@ static u64 cpuset_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
+>  		return is_spread_page(cs);
+>  	case FILE_SPREAD_SLAB:
+>  		return is_spread_slab(cs);
+> +	case FILE_ISOLATION_MASK:
+> +		return cs->isol_flags;
+>  	default:
+>  		BUG();
+>  	}
+> @@ -2658,6 +2747,13 @@ static struct cftype legacy_files[] = {
+>  		.private = FILE_MEMORY_PRESSURE_ENABLED,
+>  	},
+>  
+> +	{
+> +		.name = "isolation_mask",
+> +		.read_u64 = cpuset_read_u64,
+> +		.write_u64 = cpuset_write_u64,
+> +		.private = FILE_ISOLATION_MASK,
+> +	},
+> +
+>  	{ }	/* terminate */
+>  };
+>  
+> @@ -2834,9 +2930,12 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
+>  	if (is_partition_root(cs))
+>  		update_prstate(cs, 0);
+>  
+> -	if (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys) &&
+> -	    is_sched_load_balance(cs))
+> -		update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
+> +	if (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys)) {
+> +		if (is_sched_load_balance(cs))
+> +			update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
+> +		if (is_isol_domain(cs))
+> +			update_isol_flags(cs, cs->isol_flags & ~BIT(CS_ISOL_DOMAIN));
+> +	}
+>  
+>  	if (cs->use_parent_ecpus) {
+>  		struct cpuset *parent = parent_cs(cs);
+> @@ -2873,6 +2972,9 @@ static void cpuset_bind(struct cgroup_subsys_state *root_css)
+>  		top_cpuset.mems_allowed = top_cpuset.effective_mems;
+>  	}
+>  
+> +	cpumask_andnot(unmounted_isolcpus_mask, cpu_possible_mask,
+> +		       housekeeping_cpumask(HK_FLAG_DOMAIN));
+> +
+>  	spin_unlock_irq(&callback_lock);
+>  	percpu_up_write(&cpuset_rwsem);
+>  }
+> @@ -2932,6 +3034,7 @@ int __init cpuset_init(void)
+>  	top_cpuset.relax_domain_level = -1;
+>  
+>  	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+> +	BUG_ON(!alloc_cpumask_var(&unmounted_isolcpus_mask, GFP_KERNEL));
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
+> 
 
