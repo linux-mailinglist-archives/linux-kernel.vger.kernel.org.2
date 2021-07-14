@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4483C882C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48A63C8832
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239708AbhGNQBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
+        id S239813AbhGNQBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232429AbhGNQBO (ORCPT
+        with ESMTP id S239755AbhGNQBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:01:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541B3C061760;
-        Wed, 14 Jul 2021 08:58:23 -0700 (PDT)
+        Wed, 14 Jul 2021 12:01:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C60EC06175F;
+        Wed, 14 Jul 2021 08:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8hYbifPc76LOzb2J+B8p5+vM4MPArprBkZh5uX63Hig=; b=VoMLlign6ABzQtnSPGgC8GeY3N
-        TCkfMzz6Zjc1Yx2M2uY1bp4yCW5ASHcc4ZUvYaUuQAOOsYgrhLwKqrbuMYdU0yK30q8Fi8tCa8UGt
-        ppaCgr+M2tP1VHdULFfST/DUV3ly4CavZFUFxJfgxdC7Z3+mlpEfeW+EL8A/H/753OyQYzxR1xGaA
-        RdLVfK6TcZWRYg9xYmKlKY7i2GXWl4ZykuGDVl2s3RFHFPQVkt42yQUJGHkv70bFGm8+2CXwxPkhR
-        E28fbhmbY+z95NKpr6gLzHgOaHeKOgNet3Gqeq9W4JKwsvq9uDvaXVVXWNz7TqTt9dCpW+96EyFQ+
-        0sQpnDvg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3hFe-002LYj-8m; Wed, 14 Jul 2021 15:57:12 +0000
-Date:   Wed, 14 Jul 2021 16:56:46 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, arnd@arndb.de
-Subject: Re: [PATCH] Decouple build from userspace headers
-Message-ID: <YO8JPuay5e3wz//n@infradead.org>
-References: <YO3txvw87MjKfdpq@localhost.localdomain>
- <YO7zEFNSXOY8pKCQ@infradead.org>
- <YO8IoNwXS4h26+9v@localhost.localdomain>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Y1Jp3Hl9M92Nuxfx1/QPNtiZMokbdLy8C2g312gTFpE=; b=f5AG1TID/mHLpBe7BGBRWsZwoc
+        rBZXS3oEmW1hXvNgLhkJ44E6W+F9iKxbG44bHKNBk8RQfuy9XCQB4izsMT1/gdiA1Fyd7c1FEqpKT
+        kzNUydoO5S0GV8zbk/VVzrWcAkObNrw/1Lf8NopOmaTuGy87CzHaKmBUV0/CxKsAk4W7bvXovEK6S
+        eBEku3kB6355htju8UAu/yKhYSSHJJ9RZGmxNmP2juAN5lLBj0WWIad0EpggGbebC1w2kk5RAccpP
+        Uc0OiQsdDU6hKHg2GVvW8yYn5+tncNhbUnXzVqw2IMtLsGqL5gy4Z6ME32E13YsFj64+sytSwtCPT
+        NbUhb+yw==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3hHT-00E1XK-3X; Wed, 14 Jul 2021 15:58:39 +0000
+Subject: Re: Build regressions/improvements in v5.14-rc1
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        netdev <netdev@vger.kernel.org>
+References: <20210714143239.2529044-1-geert@linux-m68k.org>
+ <CAMuHMdWv8-6fBDLb8cFvvLxsb7RkEVkLNUBeCm-9yN9_iJkg-g@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b85a17e0-5e64-b48f-ceab-7cec19059780@infradead.org>
+Date:   Wed, 14 Jul 2021 08:58:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO8IoNwXS4h26+9v@localhost.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAMuHMdWv8-6fBDLb8cFvvLxsb7RkEVkLNUBeCm-9yN9_iJkg-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 06:54:08PM +0300, Alexey Dobriyan wrote:
-> On Wed, Jul 14, 2021 at 03:22:08PM +0100, Christoph Hellwig wrote:
-> > > -#define signals_blocked false
-> > > +#define signals_blocked 0
-> > 
-> > Why can't we get at the kernel definition of false here?
-> 
-> Variable and other code surrounding this wants "int".
-> I don't really want to expand into bool conversion.
+On 7/14/21 7:44 AM, Geert Uytterhoeven wrote:
 
-Maybe split this into a separate prep patch then.
+> 
+>   + /kisskb/src/drivers/scsi/arm/fas216.c: error: 'GOOD' undeclared
+> (first use in this function):  => 2013:47
+
+https://lore.kernel.org/linux-scsi/20210711033623.11267-1-bvanassche@acm.org/
+
+
+-- 
+~Randy
+
