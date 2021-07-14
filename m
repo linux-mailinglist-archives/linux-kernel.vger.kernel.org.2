@@ -2,408 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8AB3C7EC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45323C7ECD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238196AbhGNG4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 02:56:19 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:11411 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237948AbhGNG4S (ORCPT
+        id S238206AbhGNG5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 02:57:36 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:41780 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238104AbhGNG5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:56:18 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPp6667y9zccg5;
-        Wed, 14 Jul 2021 14:50:06 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 14:53:24 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 14:53:23 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <mhiramat@kernel.org>,
-        <irogers@google.com>, <fche@redhat.com>,
-        <ravi.bangoria@linux.ibm.com>, <yao.jin@linux.intel.com>,
-        <srikar@linux.vnet.ibm.com>, <Jianlin.Lv@arm.com>,
-        <lihuafei1@huawei.com>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH] perf probe: Fix add event failed when 32-bit perf running in 64-bit kernel
-Date:   Wed, 14 Jul 2021 14:54:32 +0800
-Message-ID: <20210714065432.188061-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+        Wed, 14 Jul 2021 02:57:34 -0400
+Received: by mail-wr1-f45.google.com with SMTP id k4so1809975wrc.8;
+        Tue, 13 Jul 2021 23:54:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=krbJiHzO9v7NiomaRq+vI2Zouy+TLw2zKDa7Ig1bng0=;
+        b=ICKdiKx0Uo3z5XWzvsX9d2kOsYbzyh9YWED+Dp3CG2gGGN8jQ50a+fsMhFLNTMPkhx
+         1l3oFvVt5B19WGcJjIo559vuww5ZV/j+0NkHj25+PLM46Tx+5RBQSwdrfi1M4tVU45sN
+         2Tl4AwXh5kkBP1q6h9JX6t8B6msSA8TrhIVzYTIssg6UOzCxp8Ae2KuBgUNvo7WmPZAv
+         4OQVynroNZmaw8qNT7U/TaFw9bsY+7KFtrYCVWq7u2O/pbXWWtQ2mGBJTx/h1tiZvPJI
+         KYUe9A3KtxoQJEgC/Kh9ORlMggp5ae//C1bBywBAwq4VlAFlieV+kOFA3oE/zetbSJn7
+         jTAw==
+X-Gm-Message-State: AOAM532Tt6ef/uPBusGRR9ce8YtUhXniXsqgP9WvdyCkgUePnVqeR5Rn
+        1ggG7ihGL1dRF+bUrg5wNdQ=
+X-Google-Smtp-Source: ABdhPJzJ1pu7xDxgzV2No4aaHhVSpHGm2+EaKL+TXWjLPszrmlvx6Mt1de12V59EYRDe/0tQatOhQA==
+X-Received: by 2002:a5d:6dd2:: with SMTP id d18mr11005264wrz.94.1626245681918;
+        Tue, 13 Jul 2021 23:54:41 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id o3sm1359925wrm.5.2021.07.13.23.54.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 23:54:41 -0700 (PDT)
+Subject: Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
+Date:   Wed, 14 Jul 2021 08:54:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "address" member  of "struct probe_trace_point" uses long data type.
-If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
-32 bits. As a result, upper 32 bits of address read from kernel are truncated,
-An error occurs during address comparison in kprobe_warn_out_range function.
+On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+> There is no need to try MSI/MSI-X only on selected devices.
+> If MSI is not supported while neing advertised it means device
 
-Before:
+being
 
-  # perf probe -a schedule
-  schedule is out of .text, skip it.
-    Error: Failed to add events.
+> is broken and we rather introduce a list of such devices which
+> hopefully will be small or never appear.
 
-Solution:
-  Change data type of "address" variable to u64 and change corresponding
-address printing and value assignment.
+Hmm, have you checked the commit which introduced the whitelist?
 
-After:
+     Nevertheless, this needs to handled with care: while many 8250 devices
+     actually claim to support MSI(-X) interrupts it should not be 
+enabled be
+     default. I had at least one device in my hands with broken MSI
+     implementation.
 
-  # perf.new.new probe -a schedule
-  Added new event:
-    probe:schedule       (on schedule)
+     So better introduce a whitelist with devices that are known to support
+     MSI(-X) interrupts. I tested all devices mentioned in the patch.
 
-  You can now use it in all perf tools, such as:
 
-          perf record -e probe:schedule -aR sleep 1
+You should have at least CCed the author for an input.
 
-  # perf probe -l
-    probe:schedule       (on schedule)
-  # perf record -e probe:schedule -aR sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.156 MB perf.data (1366 samples) ]
-  # perf report --stdio
-  # To display the perf.data header info, please use --header/--header-only options.
-  #
-  #
-  # Total Lost Samples: 0
-  #
-  # Samples: 1K of event 'probe:schedule'
-  # Event count (approx.): 1366
-  #
-  # Overhead  Command          Shared Object      Symbol
-  # ........  ...............  .................  ............
-  #
-       6.22%  migration/0      [kernel.kallsyms]  [k] schedule
-       6.22%  migration/1      [kernel.kallsyms]  [k] schedule
-       6.22%  migration/2      [kernel.kallsyms]  [k] schedule
-       6.22%  migration/3      [kernel.kallsyms]  [k] schedule
-       6.15%  migration/10     [kernel.kallsyms]  [k] schedule
-       6.15%  migration/11     [kernel.kallsyms]  [k] schedule
-       6.15%  migration/12     [kernel.kallsyms]  [k] schedule
-       6.15%  migration/13     [kernel.kallsyms]  [k] schedule
-       6.15%  migration/14     [kernel.kallsyms]  [k] schedule
-       6.15%  migration/15     [kernel.kallsyms]  [k] schedule
-       6.15%  migration/4      [kernel.kallsyms]  [k] schedule
-       6.15%  migration/5      [kernel.kallsyms]  [k] schedule
-       6.15%  migration/6      [kernel.kallsyms]  [k] schedule
-       6.15%  migration/7      [kernel.kallsyms]  [k] schedule
-       6.15%  migration/8      [kernel.kallsyms]  [k] schedule
-       6.15%  migration/9      [kernel.kallsyms]  [k] schedule
-       0.22%  rcu_sched        [kernel.kallsyms]  [k] schedule
-  ...
-  #
-  # (Cannot load tips.txt file, please install perf!)
-  #
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>   drivers/tty/serial/8250/8250_pci.c | 28 ++++++++--------------------
+>   1 file changed, 8 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+> index 937861327aca..02825c8c5f84 100644
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -58,18 +58,6 @@ struct serial_private {
+>   
+>   #define PCI_DEVICE_ID_HPE_PCI_SERIAL	0x37e
+>   
+> -static const struct pci_device_id pci_use_msi[] = {
+> -	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9900,
+> -			 0xA000, 0x1000) },
+> -	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9912,
+> -			 0xA000, 0x1000) },
+> -	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9922,
+> -			 0xA000, 0x1000) },
+> -	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
+> -			 PCI_ANY_ID, PCI_ANY_ID) },
+> -	{ }
+> -};
+> -
+>   static int pci_default_setup(struct serial_private*,
+>   	  const struct pciserial_board*, struct uart_8250_port *, int);
+>   
+> @@ -3994,14 +3982,9 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
+>   	if (board->flags & FL_NOIRQ) {
+>   		uart.port.irq = 0;
+>   	} else {
+> -		if (pci_match_id(pci_use_msi, dev)) {
+> -			dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
+> -			pci_set_master(dev);
+> -			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
+> -		} else {
+> -			dev_dbg(&dev->dev, "Using legacy interrupts\n");
+> -			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
+> -		}
+> +		pci_set_master(dev);
 
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
- tools/perf/util/probe-event.c  | 49 ++++++++++++++++------------------
- tools/perf/util/probe-event.h  |  4 +--
- tools/perf/util/probe-finder.c | 10 +++----
- tools/perf/util/probe-finder.h |  2 +-
- 4 files changed, 31 insertions(+), 34 deletions(-)
+But bus mastering is not about MSIs. I *think* it's still OK, but you 
+need to document that in the commit log too.
 
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index c14e1d228e56..691b7a0988c6 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -237,8 +237,8 @@ static void clear_probe_trace_events(struct probe_trace_event *tevs, int ntevs)
- 		clear_probe_trace_event(tevs + i);
- }
- 
--static bool kprobe_blacklist__listed(unsigned long address);
--static bool kprobe_warn_out_range(const char *symbol, unsigned long address)
-+static bool kprobe_blacklist__listed(u64 address);
-+static bool kprobe_warn_out_range(const char *symbol, u64 address)
- {
- 	struct map *map;
- 	bool ret = false;
-@@ -398,8 +398,7 @@ static int find_alternative_probe_point(struct debuginfo *dinfo,
- 	pr_debug("Symbol %s address found : %" PRIx64 "\n",
- 			pp->function, address);
- 
--	ret = debuginfo__find_probe_point(dinfo, (unsigned long)address,
--					  result);
-+	ret = debuginfo__find_probe_point(dinfo, address, result);
- 	if (ret <= 0)
- 		ret = (!ret) ? -ENOENT : ret;
- 	else {
-@@ -587,7 +586,7 @@ static void debuginfo_cache__exit(void)
- }
- 
- 
--static int get_text_start_address(const char *exec, unsigned long *address,
-+static int get_text_start_address(const char *exec, u64 *address,
- 				  struct nsinfo *nsi)
- {
- 	Elf *elf;
-@@ -632,7 +631,7 @@ static int find_perf_probe_point_from_dwarf(struct probe_trace_point *tp,
- 					    bool is_kprobe)
- {
- 	struct debuginfo *dinfo = NULL;
--	unsigned long stext = 0;
-+	u64 stext = 0;
- 	u64 addr = tp->address;
- 	int ret = -ENOENT;
- 
-@@ -660,8 +659,7 @@ static int find_perf_probe_point_from_dwarf(struct probe_trace_point *tp,
- 
- 	dinfo = debuginfo_cache__open(tp->module, verbose <= 0);
- 	if (dinfo)
--		ret = debuginfo__find_probe_point(dinfo,
--						 (unsigned long)addr, pp);
-+		ret = debuginfo__find_probe_point(dinfo, addr, pp);
- 	else
- 		ret = -ENOENT;
- 
-@@ -676,7 +674,7 @@ static int find_perf_probe_point_from_dwarf(struct probe_trace_point *tp,
- 
- /* Adjust symbol name and address */
- static int post_process_probe_trace_point(struct probe_trace_point *tp,
--					   struct map *map, unsigned long offs)
-+					   struct map *map, u64 offs)
- {
- 	struct symbol *sym;
- 	u64 addr = tp->address - offs;
-@@ -719,7 +717,7 @@ post_process_offline_probe_trace_events(struct probe_trace_event *tevs,
- 					int ntevs, const char *pathname)
- {
- 	struct map *map;
--	unsigned long stext = 0;
-+	u64 stext = 0;
- 	int i, ret = 0;
- 
- 	/* Prepare a map for offline binary */
-@@ -745,7 +743,7 @@ static int add_exec_to_probe_trace_events(struct probe_trace_event *tevs,
- 					  struct nsinfo *nsi)
- {
- 	int i, ret = 0;
--	unsigned long stext = 0;
-+	u64 stext = 0;
- 
- 	if (!exec)
- 		return 0;
-@@ -790,7 +788,7 @@ post_process_module_probe_trace_events(struct probe_trace_event *tevs,
- 	mod_name = find_module_name(module);
- 	for (i = 0; i < ntevs; i++) {
- 		ret = post_process_probe_trace_point(&tevs[i].point,
--						map, (unsigned long)text_offs);
-+						map, text_offs);
- 		if (ret < 0)
- 			break;
- 		tevs[i].point.module =
-@@ -1534,7 +1532,7 @@ static int parse_perf_probe_point(char *arg, struct perf_probe_event *pev)
- 		 * so tmp[1] should always valid (but could be '\0').
- 		 */
- 		if (tmp && !strncmp(tmp, "0x", 2)) {
--			pp->abs_address = strtoul(pp->function, &tmp, 0);
-+			pp->abs_address = strtoull(pp->function, &tmp, 0);
- 			if (*tmp != '\0') {
- 				semantic_error("Invalid absolute address.\n");
- 				return -EINVAL;
-@@ -1909,7 +1907,7 @@ int parse_probe_trace_command(const char *cmd, struct probe_trace_event *tev)
- 			argv[i] = NULL;
- 			argc -= 1;
- 		} else
--			tp->address = strtoul(fmt1_str, NULL, 0);
-+			tp->address = strtoull(fmt1_str, NULL, 0);
- 	} else {
- 		/* Only the symbol-based probe has offset */
- 		tp->symbol = strdup(fmt1_str);
-@@ -2155,7 +2153,7 @@ synthesize_uprobe_trace_def(struct probe_trace_point *tp, struct strbuf *buf)
- 		return -EINVAL;
- 
- 	/* Use the tp->address for uprobes */
--	err = strbuf_addf(buf, "%s:0x%lx", tp->module, tp->address);
-+	err = strbuf_addf(buf, "%s:0x%" PRIx64, tp->module, tp->address);
- 
- 	if (err >= 0 && tp->ref_ctr_offset) {
- 		if (!uprobe_ref_ctr_is_supported())
-@@ -2170,7 +2168,7 @@ synthesize_kprobe_trace_def(struct probe_trace_point *tp, struct strbuf *buf)
- {
- 	if (!strncmp(tp->symbol, "0x", 2)) {
- 		/* Absolute address. See try_to_find_absolute_address() */
--		return strbuf_addf(buf, "%s%s0x%lx", tp->module ?: "",
-+		return strbuf_addf(buf, "%s%s0x%" PRIx64, tp->module ?: "",
- 				  tp->module ? ":" : "", tp->address);
- 	} else {
- 		return strbuf_addf(buf, "%s%s%s+%lu", tp->module ?: "",
-@@ -2269,7 +2267,7 @@ static int convert_to_perf_probe_point(struct probe_trace_point *tp,
- 		pp->function = strdup(tp->symbol);
- 		pp->offset = tp->offset;
- 	} else {
--		ret = e_snprintf(buf, 128, "0x%" PRIx64, (u64)tp->address);
-+		ret = e_snprintf(buf, 128, "0x%" PRIx64, tp->address);
- 		if (ret < 0)
- 			return ret;
- 		pp->function = strdup(buf);
-@@ -2450,8 +2448,8 @@ void clear_probe_trace_event(struct probe_trace_event *tev)
- 
- struct kprobe_blacklist_node {
- 	struct list_head list;
--	unsigned long start;
--	unsigned long end;
-+	u64 start;
-+	u64 end;
- 	char *symbol;
- };
- 
-@@ -2496,7 +2494,7 @@ static int kprobe_blacklist__load(struct list_head *blacklist)
- 		}
- 		INIT_LIST_HEAD(&node->list);
- 		list_add_tail(&node->list, blacklist);
--		if (sscanf(buf, "0x%lx-0x%lx", &node->start, &node->end) != 2) {
-+		if (sscanf(buf, "0x%" PRIx64 "-0x%" PRIx64, &node->start, &node->end) != 2) {
- 			ret = -EINVAL;
- 			break;
- 		}
-@@ -2512,7 +2510,7 @@ static int kprobe_blacklist__load(struct list_head *blacklist)
- 			ret = -ENOMEM;
- 			break;
- 		}
--		pr_debug2("Blacklist: 0x%lx-0x%lx, %s\n",
-+		pr_debug2("Blacklist: 0x%" PRIx64 "-0x%" PRIx64 ", %s\n",
- 			  node->start, node->end, node->symbol);
- 		ret++;
- 	}
-@@ -2524,8 +2522,7 @@ static int kprobe_blacklist__load(struct list_head *blacklist)
- }
- 
- static struct kprobe_blacklist_node *
--kprobe_blacklist__find_by_address(struct list_head *blacklist,
--				  unsigned long address)
-+kprobe_blacklist__find_by_address(struct list_head *blacklist, u64 address)
- {
- 	struct kprobe_blacklist_node *node;
- 
-@@ -2553,7 +2550,7 @@ static void kprobe_blacklist__release(void)
- 	kprobe_blacklist__delete(&kprobe_blacklist);
- }
- 
--static bool kprobe_blacklist__listed(unsigned long address)
-+static bool kprobe_blacklist__listed(u64 address)
- {
- 	return !!kprobe_blacklist__find_by_address(&kprobe_blacklist, address);
- }
-@@ -3221,7 +3218,7 @@ static int try_to_find_absolute_address(struct perf_probe_event *pev,
- 	 * In __add_probe_trace_events, a NULL symbol is interpreted as
- 	 * invalid.
- 	 */
--	if (asprintf(&tp->symbol, "0x%lx", tp->address) < 0)
-+	if (asprintf(&tp->symbol, "0x%" PRIx64, tp->address) < 0)
- 		goto errout;
- 
- 	/* For kprobe, check range */
-@@ -3232,7 +3229,7 @@ static int try_to_find_absolute_address(struct perf_probe_event *pev,
- 		goto errout;
- 	}
- 
--	if (asprintf(&tp->realname, "abs_%lx", tp->address) < 0)
-+	if (asprintf(&tp->realname, "abs_%" PRIx64, tp->address) < 0)
- 		goto errout;
- 
- 	if (pev->target) {
-diff --git a/tools/perf/util/probe-event.h b/tools/perf/util/probe-event.h
-index 65769d7949a3..8ad5b1579f1d 100644
---- a/tools/perf/util/probe-event.h
-+++ b/tools/perf/util/probe-event.h
-@@ -33,7 +33,7 @@ struct probe_trace_point {
- 	char		*module;	/* Module name */
- 	unsigned long	offset;		/* Offset from symbol */
- 	unsigned long	ref_ctr_offset;	/* SDT reference counter offset */
--	unsigned long	address;	/* Actual address of the trace point */
-+	u64		address;	/* Actual address of the trace point */
- 	bool		retprobe;	/* Return probe flag */
- };
- 
-@@ -70,7 +70,7 @@ struct perf_probe_point {
- 	bool		retprobe;	/* Return probe flag */
- 	char		*lazy_line;	/* Lazy matching pattern */
- 	unsigned long	offset;		/* Offset from function entry */
--	unsigned long	abs_address;	/* Absolute address of the point */
-+	u64		abs_address;	/* Absolute address of the point */
- };
- 
- /* Perf probe probing argument field chain */
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 02ef0d78053b..8ba01bbdf05c 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -668,7 +668,7 @@ static int convert_to_trace_point(Dwarf_Die *sp_die, Dwfl_Module *mod,
- 	}
- 
- 	tp->offset = (unsigned long)(paddr - eaddr);
--	tp->address = (unsigned long)paddr;
-+	tp->address = paddr;
- 	tp->symbol = strdup(symbol);
- 	if (!tp->symbol)
- 		return -ENOMEM;
-@@ -1707,7 +1707,7 @@ int debuginfo__get_text_offset(struct debuginfo *dbg, Dwarf_Addr *offs,
- }
- 
- /* Reverse search */
--int debuginfo__find_probe_point(struct debuginfo *dbg, unsigned long addr,
-+int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
- 				struct perf_probe_point *ppt)
- {
- 	Dwarf_Die cudie, spdie, indie;
-@@ -1720,7 +1720,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, unsigned long addr,
- 		addr += baseaddr;
- 	/* Find cu die */
- 	if (!dwarf_addrdie(dbg->dbg, (Dwarf_Addr)addr, &cudie)) {
--		pr_warning("Failed to find debug information for address %lx\n",
-+		pr_warning("Failed to find debug information for address %" PRIx64 "\n",
- 			   addr);
- 		ret = -EINVAL;
- 		goto end;
-@@ -1742,7 +1742,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, unsigned long addr,
- 		}
- 
- 		fname = dwarf_decl_file(&spdie);
--		if (addr == (unsigned long)baseaddr) {
-+		if (addr == baseaddr) {
- 			/* Function entry - Relative line number is 0 */
- 			lineno = baseline;
- 			goto post;
-@@ -1788,7 +1788,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, unsigned long addr,
- 	if (lineno)
- 		ppt->line = lineno - baseline;
- 	else if (basefunc) {
--		ppt->offset = addr - (unsigned long)baseaddr;
-+		ppt->offset = addr - baseaddr;
- 		func = basefunc;
- 	}
- 
-diff --git a/tools/perf/util/probe-finder.h b/tools/perf/util/probe-finder.h
-index 2febb5875678..8bc1c80d3c1c 100644
---- a/tools/perf/util/probe-finder.h
-+++ b/tools/perf/util/probe-finder.h
-@@ -46,7 +46,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
- 				 struct probe_trace_event **tevs);
- 
- /* Find a perf_probe_point from debuginfo */
--int debuginfo__find_probe_point(struct debuginfo *dbg, unsigned long addr,
-+int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
- 				struct perf_probe_point *ppt);
- 
- int debuginfo__get_text_offset(struct debuginfo *dbg, Dwarf_Addr *offs,
+Actually, why the commit which added this code turns on bus mastering?
+
+> +
+> +		rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
+>   		if (rc < 0) {
+>   			kfree(priv);
+>   			priv = ERR_PTR(rc);
+> @@ -4009,6 +3992,11 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
+>   		}
+>   
+>   		uart.port.irq = pci_irq_vector(dev, 0);
+> +
+> +		if (pci_dev_msi_enabled(dev))
+> +			dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
+> +		else
+> +			dev_dbg(&dev->dev, "Using legacy interrupts\n");
+>   	}
+>   
+>   	uart.port.dev = &dev->dev;
+> 
+
+thanks,
 -- 
-2.30.GIT
-
+js
+suse labs
