@@ -2,88 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F60C3C89A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4B03C89AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236088AbhGNRZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:25:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32785 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229592AbhGNRZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:25:09 -0400
-Received: from callcc.thunk.org (96-65-121-81-static.hfc.comcastbusiness.net [96.65.121.81])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16EHLxpS021655
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 13:22:00 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 59F2A4202F5; Wed, 14 Jul 2021 13:21:59 -0400 (EDT)
-Date:   Wed, 14 Jul 2021 13:21:59 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO8dN9U7J2bi1gkf@mit.edu>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com>
- <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
- <YO6r1k7CIl16o61z@kroah.com>
- <YO7sNd+6Vlw+hw3y@sashalap>
- <YO8EQZF4+iQ13QU/@mit.edu>
- <YO8Gzl2zmg8+R8Uu@kroah.com>
+        id S237892AbhGNR0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229559AbhGNRZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:25:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69877613B5;
+        Wed, 14 Jul 2021 17:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626283386;
+        bh=a4RmxSst2iAvfD+fRuC5inYX86CvpXntYp8kuy6Kfjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pwR9/wgVtF8w0FtR7bO14PUbHS8f4TRJdz9MTRQrIYXUYECi/uRgw5+bAQHupOBJg
+         Yj1TEPhlDi2W+UpyI5/ECIym2X08k7QYg3tH3dUmL6vgeSy8u+5V21k2LQOO0PFoul
+         tvMbvwT5rLweAsjwuA6+IOSUW0HYr55b+/0GiOu8=
+Date:   Wed, 14 Jul 2021 19:23:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     longli@linuxonhyperv.com
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Long Li <longli@microsoft.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
+Subject: Re: [Patch v3 2/3] Drivers: hv: add Azure Blob driver
+Message-ID: <YO8deHGP7GBYQp5x@kroah.com>
+References: <1626230722-1971-1-git-send-email-longli@linuxonhyperv.com>
+ <1626230722-1971-3-git-send-email-longli@linuxonhyperv.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YO8Gzl2zmg8+R8Uu@kroah.com>
+In-Reply-To: <1626230722-1971-3-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 05:46:22PM +0200, Greg Kroah-Hartman wrote:
+On Tue, Jul 13, 2021 at 07:45:21PM -0700, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
 > 
-> The number of valid cases where someone puts a "Fixes:" tag, and that
-> patch should NOT be backported is really really slim.  Why would you put
-> that tag and not want to have known-broken kernels fixed?
+> Azure Blob storage provides scalable and durable data storage for Azure.
+> (https://azure.microsoft.com/en-us/services/storage/blobs/)
 > 
-> If it really is not an issue, just do not put the "Fixes:" tag?
+> This driver adds support for accelerated access to Azure Blob storage. As an
+> alternative to REST APIs, it provides a fast data path that uses host native
+> network stack and secure direct data link for storage server access.
 
-I think it really boils down to what the tags are supposed to mean and
-what do they imply.
+So it goes around the block layer?  Why?
 
-The argument from the other side is if the Stable maintainers are
-interpreting the Fixes: tag as an implicit "CC: stable", why should we
-have the "Cc: stable" tag at all in that case?
+> This driver will be ported to FreeBSD. It's dual licensed for BSD and GPL.
 
-We could also have the policy that in the case where you have a fix
-for a bug, but it's super subtle, and shouldn't be automatically
-backported, that the this should be explained in the commit, e.g.,
+Being the copyright holder, you are free to relicense this code to any
+other license you want to.  So why is this single HV driver different
+from all the other ones in this regard when it comes to the license?
 
-   This commit fixes a bug in "1adeadbeef33: lorem ipsum dolor sit
-   amet" but it is touching code which subtle and quick to anger, the
-   bug isn't all that serious.  So please don't backport it
-   automatically; someone should manually do the backport and run the
-   fooblat test before sumitting it to the stable maintainers.
+Given that this driver only works when talking to GPL-only symbols in
+the kernel, how could it be ported to freebsd as-is by anyone who is not
+the copyright holder?
 
-Andrew seems to be of the opinion that these sorts of cases are very
-common.  I don't have enough data to have a strong opinion either way.
-But if you are right that it is a rare case, then sure, simply
-omitting the Fixes: tag and using text in the commit description would
-work.  We just need to agree that this is the convention that we all
-shoulf be using.
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Maximilian Luz <luzmaximilian@gmail.com>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Ben Widawsky <ben.widawsky@intel.com>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Andra Paraschiv <andraprs@amazon.com>
+> Cc: Siddharth Gupta <sidgup@codeaurora.org>
+> Cc: Hannes Reinecke <hare@suse.de>
+> Cc: linux-doc@vger.kernel.org
+> Signed-off-by: Long Li <longli@microsoft.com>
+> ---
+>  Documentation/userspace-api/ioctl/ioctl-number.rst |   2 +
+>  drivers/hv/Kconfig                                 |  10 +
+>  drivers/hv/Makefile                                |   1 +
+>  drivers/hv/azure_blob.c                            | 625 +++++++++++++++++++++
+>  drivers/hv/channel_mgmt.c                          |   7 +
+>  include/linux/hyperv.h                             |   9 +
+>  include/uapi/misc/azure_blob.h                     |  34 ++
+>  7 files changed, 688 insertions(+)
+>  create mode 100644 drivers/hv/azure_blob.c
+>  create mode 100644 include/uapi/misc/azure_blob.h
+> 
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 9bfc2b5..d3c2a90 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -180,6 +180,8 @@ Code  Seq#    Include File                                           Comments
+>  'R'   01     linux/rfkill.h                                          conflict!
+>  'R'   C0-DF  net/bluetooth/rfcomm.h
+>  'R'   E0     uapi/linux/fsl_mc.h
+> +'R'   F0-FF  uapi/misc/azure_blob.h                                  Microsoft Azure Blob driver
+> +                                                                     <mailto:longli@microsoft.com>
+>  'S'   all    linux/cdrom.h                                           conflict!
+>  'S'   80-81  scsi/scsi_ioctl.h                                       conflict!
+>  'S'   82-FF  scsi/scsi.h                                             conflict!
+> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
+> index 66c794d..e08b8d3 100644
+> --- a/drivers/hv/Kconfig
+> +++ b/drivers/hv/Kconfig
+> @@ -27,4 +27,14 @@ config HYPERV_BALLOON
+>  	help
+>  	  Select this option to enable Hyper-V Balloon driver.
+>  
+> +config HYPERV_AZURE_BLOB
+> +	tristate "Microsoft Azure Blob driver"
+> +	depends on HYPERV && X86_64
+> +	help
+> +	  Select this option to enable Microsoft Azure Blob driver.
+> +
+> +	  This driver supports accelerated Microsoft Azure Blob access.
 
-I still wonder though what's the point of having the "Cc: stable" tag
-if it's implicitly assumed to be there if there is a Fixes: tagle.
+No definition of what this is?
 
-Cheers,
+> +	  To compile this driver as a module, choose M here. The module will be
+> +	  called azure_blob.
+> +
+>  endmenu
+> diff --git a/drivers/hv/Makefile b/drivers/hv/Makefile
+> index 94daf82..a322575 100644
+> --- a/drivers/hv/Makefile
+> +++ b/drivers/hv/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_HYPERV)		+= hv_vmbus.o
+>  obj-$(CONFIG_HYPERV_UTILS)	+= hv_utils.o
+>  obj-$(CONFIG_HYPERV_BALLOON)	+= hv_balloon.o
+> +obj-$(CONFIG_HYPERV_AZURE_BLOB)	+= azure_blob.o
 
-					- Ted
+Your naming scheme is different from the other hv modules, why?
+
+>  
+>  CFLAGS_hv_trace.o = -I$(src)
+>  CFLAGS_hv_balloon.o = -I$(src)
+> diff --git a/drivers/hv/azure_blob.c b/drivers/hv/azure_blob.c
+> new file mode 100644
+> index 0000000..5367d5e
+> --- /dev/null
+> +++ b/drivers/hv/azure_blob.c
+> @@ -0,0 +1,625 @@
+> +// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0-only WITH Linux-syscall-note
+
+.c files can NOT have the syscall note license, as that makes no sense
+at all.
+
+I'm stopping here.  Please go run this through your legal department and
+get them to sign off on this as it does not seem that you all understand
+the issues when it comes to licenses and the Linux kernel at all.  I
+want to see a lawyer sign off on this patch next time if you all want to
+attempt something crazy like this.
+
+> +/* Copyright (c) Microsoft Corporation. */
+
+You forgot a date, your lawyers will be signing you up for some
+education classes now, have fun!
+
+gre gk-h
