@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0B83C9190
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6F23C9129
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241600AbhGNUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47276 "EHLO mail.kernel.org"
+        id S239774AbhGNT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:58:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238902AbhGNTss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E10D61416;
-        Wed, 14 Jul 2021 19:43:58 +0000 (UTC)
+        id S239105AbhGNTtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23732613D3;
+        Wed, 14 Jul 2021 19:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291839;
-        bh=61zfSRzG8fZ7cjyr30XK1KAYJ+D4Q/kZXSuqGCbjFjQ=;
+        s=k20201202; t=1626291842;
+        bh=kZF8/ieUsXrMmaq/wXqVUkL5F7XLLCOj7SNQ9omZ0V4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DcNVH0GdcNVhIjEe0LoH7CMn3C8K+o8wDvyev5VvgrU1qVLcrSOI2r0Riu1qfeNiV
-         H+69y8BeFWnBK/yK3AIRU8fAQQWMByFXs55dzFaKY5AYWIABOnNhBH7U508L2LTWln
-         4Eg92+nXDpUzEfQtQdk9eoBvGNQAkAHC5LovqP9wbfEZXE/ABS8cXs6dFISlkO7/87
-         9/SbWdiKDmQ7LIl7UYuUXGCvioFCDiC2hRC05Gxynz6U70tkZpWHIyt14s3Xu74Uv7
-         qO5m62M0lA/0Kus5sVqLwmgKdz3I5lcQvHiTUNfSg1XzrNMC3ZJMsMNrA7Cl4QIjd5
-         MsVotCoKkcYXQ==
+        b=RiUcmxi/IVpW5WGtIKWkGheATCmi5g9B79ONYuw1FcNYCbsa+t9nqzKyOCioR2Pb6
+         ZU3tWQfOL8xPifdVS6OT4+TcvitTnchNNEgF65AIFarCjVjx6JrHUCqKYffcZ9P0HI
+         rOK6fx2Cnh/lZtcF5ZhLxsddzpg2FfePAzfMcrCF4qdTO5BgK1DS9Hv4HNYhmG8c/8
+         lHWF7FwBFdE+/geTvA6zr40OS20YQGuFWg5d/qKdFRGEHcsKb378v8eqcN9UVHt9vn
+         icZKkp9LBdw1L09vpVmMR7uBAdihqwYbxwYHukzAOTvUl2VE3sDJf5x0kEqxMTqog+
+         WqDp6p/UjiAHg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
         Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 36/88] ARM: dts: omap5-board-common: align gpio hog names with dt-schema
-Date:   Wed, 14 Jul 2021 15:42:11 -0400
-Message-Id: <20210714194303.54028-36-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 38/88] ARM: dts: am57xx-cl-som-am57x: fix ti,no-reset-on-init flag for gpios
+Date:   Wed, 14 Jul 2021 15:42:13 -0400
+Message-Id: <20210714194303.54028-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -45,31 +45,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit 4823117cb80eedf31ddbc126b9bd92e707bd9a26 ]
+[ Upstream commit b644c5e01c870056e13a096e14b9a92075c8f682 ]
 
-The GPIO Hog dt-schema node naming convention expect GPIO hogs node names
-to end with a 'hog' suffix.
+The ti,no-reset-on-init flag need to be at the interconnect target module
+level for the modules that have it defined.
+The ti-sysc driver handles this case, but produces warning, not a critical
+issue.
 
 Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap5-board-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/am57xx-cl-som-am57x.dts | 5 ++---
+ arch/arm/boot/dts/dra7-l4.dtsi            | 4 ++--
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap5-board-common.dtsi b/arch/arm/boot/dts/omap5-board-common.dtsi
-index d8f13626cfd1..45435bb88c89 100644
---- a/arch/arm/boot/dts/omap5-board-common.dtsi
-+++ b/arch/arm/boot/dts/omap5-board-common.dtsi
-@@ -149,7 +149,7 @@ sound: sound {
+diff --git a/arch/arm/boot/dts/am57xx-cl-som-am57x.dts b/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
+index 0d5fe2bfb683..39eba2bc36dd 100644
+--- a/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
++++ b/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
+@@ -610,12 +610,11 @@ &mcasp3 {
+ 	>;
+ };
  
- &gpio8 {
- 	/* TI trees use GPIO instead of msecure, see also muxing */
--	p234 {
-+	msecure-hog {
- 		gpio-hog;
- 		gpios = <10 GPIO_ACTIVE_HIGH>;
- 		output-high;
+-&gpio3 {
+-	status = "okay";
++&gpio3_target {
+ 	ti,no-reset-on-init;
+ };
+ 
+-&gpio2 {
++&gpio2_target {
+ 	status = "okay";
+ 	ti,no-reset-on-init;
+ };
+diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+index a294a02f2d23..d1ff8a4121f5 100644
+--- a/arch/arm/boot/dts/dra7-l4.dtsi
++++ b/arch/arm/boot/dts/dra7-l4.dtsi
+@@ -1315,7 +1315,7 @@ gpio8: gpio@0 {
+ 			};
+ 		};
+ 
+-		target-module@55000 {			/* 0x48055000, ap 13 0e.0 */
++		gpio2_target: target-module@55000 {		/* 0x48055000, ap 13 0e.0 */
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+ 			reg = <0x55000 0x4>,
+ 			      <0x55010 0x4>,
+@@ -1348,7 +1348,7 @@ gpio2: gpio@0 {
+ 			};
+ 		};
+ 
+-		target-module@57000 {			/* 0x48057000, ap 15 06.0 */
++		gpio3_target: target-module@57000 {		/* 0x48057000, ap 15 06.0 */
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+ 			reg = <0x57000 0x4>,
+ 			      <0x57010 0x4>,
 -- 
 2.30.2
 
