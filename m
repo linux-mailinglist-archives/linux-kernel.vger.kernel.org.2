@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE67A3C8BDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159603C8C01
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhGNTjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:39:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34402 "EHLO mail.kernel.org"
+        id S230282AbhGNTk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhGNTjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:39:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9465D613D1;
-        Wed, 14 Jul 2021 19:36:32 +0000 (UTC)
+        id S229531AbhGNTkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:40:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6339F61370;
+        Wed, 14 Jul 2021 19:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291393;
-        bh=+iqpkm/0K4nuKXlZXVcZmdElgnXPYVY1LAS9lTfXG0w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kearmtzoruo05Xf6AEoBNGVIXH5167+Cbnq9jreTvWfAzPjnKzDT3yWCXlf9Kcadp
-         a5zEgnsudbJHEJlL7sppLPjUrRcnCekYqxrIVQ5VAbOe/mpfu7EhhY53kcfs+/GrAn
-         GWU7BMNzb01XontcUuZ/dgnHrQUrjajZd3VQt95+LT7xAn535vdXUCg0ZKva9UfLA1
-         q83HISJQKo7AwwtGBnKn+C4BEcq52OIoM0xjiamzLB0JEDY8vYeiD4KHJZsVyuKgGp
-         l/hoiyslf1CiZ6UxLncTLyOeRDgnqYK23zljzhPCT5SBqE0X9xwOpiw0EVtYmKv4T3
-         uRBdliHweLPmA==
-From:   Mark Brown <broonie@kernel.org>
-To:     vkoul@kernel.org, alsa-devel@alsa-project.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        pierre-louis.bossart@linux.intel.com,
-        srinivas.kandagatla@linaro.org, bard.liao@intel.com,
-        vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
-        sanyog.r.kale@intel.com
-Subject: Re: (subset) [PATCH 00/10] soundwire/ASoC: add mockup codec support
-Date:   Wed, 14 Jul 2021 20:35:56 +0100
-Message-Id: <162629086374.53311.4247206766252361294.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
-References: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
+        s=k20201202; t=1626291483;
+        bh=b2myPu/aXK9mAritJxN5S2+erPrjZkldEn9CKCLPE84=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qzsF9VxihgyLlQz7GfOEFjGsVoFUPTNLS3/nQHzAp27iQf+M33fzVx7do5IbOlEht
+         NggNypLspQc5SsEHf32Un98oxk59Y80y1puOlzYiizSjZqQx5b1M6MUW+q/3yVTn/t
+         BHjNBYR/KBImcPxLPXLefXI2SqpLAhWMpaDKv/6fyG9n/I5UxfkF31AsxS96IoAsFN
+         7c4YECoVNj/1LWaiW0Gkr1zp8e2Sf6VCtZc+BuYzfBR8IQ7rpvir987AWEj1JaHp8I
+         /rvui/Jd9hRSj9Ue37CCj871O3i9tliX/lqOgN3aH0/vZVk+7Uv/IPOZStWcpi8nKe
+         w73uMHGA7SABg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Corentin Labbe <clabbe@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 001/108] ARM: dts: gemini: rename mdio to the right name
+Date:   Wed, 14 Jul 2021 15:36:13 -0400
+Message-Id: <20210714193800.52097-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 11:21:59 +0800, Bard Liao wrote:
-> Adding mockup SoundWire codec is useful to debug driver/topology changes
-> without having any actual device connected.
-> 
-> Bard Liao (2):
->   soundwire: stream: don't abort bank switch on Command_Ignored/-ENODATA
->   soundwire: stream: don't program mockup device ports
-> 
-> [...]
+From: Corentin Labbe <clabbe@baylibre.com>
 
-Applied to
+[ Upstream commit fc5b59b945b546e27977e99a5ca6fe61179ff0d2 ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+ethernet-phy is not the right name for mdio, fix it.
 
-Thanks!
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/gemini-dlink-dns-313.dts | 2 +-
+ arch/arm/boot/dts/gemini-nas4220b.dts      | 2 +-
+ arch/arm/boot/dts/gemini-rut1xx.dts        | 2 +-
+ arch/arm/boot/dts/gemini-wbd111.dts        | 2 +-
+ arch/arm/boot/dts/gemini-wbd222.dts        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-[01/10] ASoC: codecs: add SoundWire mockup device support
-        commit: 81d3d3d0bf09e606dbc1e3daad1c7cef3976fca2
-[02/10] ASoC: soc-acpi: cnl: add table for SoundWire mockup devices
-        commit: 2694cda7a4393fbd436e28474832a053e70e0733
-[03/10] ASoC: soc-acpi: tgl: add table for SoundWire mockup devices
-        commit: 3025d398c436d313f9b6b5c1f53918efeafcf5dc
-[04/10] ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests
-        commit: 0ccac3bcf3564cbcba483dec20c7550939873f59
+diff --git a/arch/arm/boot/dts/gemini-dlink-dns-313.dts b/arch/arm/boot/dts/gemini-dlink-dns-313.dts
+index c6f3d90e3e90..b8acc6eaaa6d 100644
+--- a/arch/arm/boot/dts/gemini-dlink-dns-313.dts
++++ b/arch/arm/boot/dts/gemini-dlink-dns-313.dts
+@@ -140,7 +140,7 @@ map1 {
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		/* Uses MDC and MDIO */
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+diff --git a/arch/arm/boot/dts/gemini-nas4220b.dts b/arch/arm/boot/dts/gemini-nas4220b.dts
+index 43c45f7e1e0a..13112a8a5dd8 100644
+--- a/arch/arm/boot/dts/gemini-nas4220b.dts
++++ b/arch/arm/boot/dts/gemini-nas4220b.dts
+@@ -62,7 +62,7 @@ led-green-os {
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
+index 9611ddf06792..79f17988884f 100644
+--- a/arch/arm/boot/dts/gemini-rut1xx.dts
++++ b/arch/arm/boot/dts/gemini-rut1xx.dts
+@@ -56,7 +56,7 @@ led-power {
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+diff --git a/arch/arm/boot/dts/gemini-wbd111.dts b/arch/arm/boot/dts/gemini-wbd111.dts
+index 3a2761dd460f..5602ba8f30f2 100644
+--- a/arch/arm/boot/dts/gemini-wbd111.dts
++++ b/arch/arm/boot/dts/gemini-wbd111.dts
+@@ -68,7 +68,7 @@ led-greeb-l3 {
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+diff --git a/arch/arm/boot/dts/gemini-wbd222.dts b/arch/arm/boot/dts/gemini-wbd222.dts
+index 52b4dbc0c072..a4a260c36d75 100644
+--- a/arch/arm/boot/dts/gemini-wbd222.dts
++++ b/arch/arm/boot/dts/gemini-wbd222.dts
+@@ -67,7 +67,7 @@ led-green-l3 {
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+-- 
+2.30.2
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
