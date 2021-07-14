@@ -2,105 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FDC3C80A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F793C80AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238671AbhGNIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:51:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:60271 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238432AbhGNIvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:51:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207292799"
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
-   d="scan'208";a="207292799"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 01:48:22 -0700
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
-   d="scan'208";a="494378636"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.169.74]) ([10.249.169.74])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 01:48:18 -0700
-Subject: Re: [LKP] Re: [mm/vmalloc] 5c1f4e690e:
- BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, Mel Gorman <mgorman@suse.de>,
-        Hillf Danton <hdanton@sina.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-References: <20210713142414.GA28943@xsang-OptiPlex-9020>
- <CAHk-=wj_uJayxT_6CFaGMkU5h4YYSgBhS=xYoN7iUVSs7BjnBA@mail.gmail.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <2f012f0a-11f5-ba3c-65b0-027eed5bcb98@intel.com>
-Date:   Wed, 14 Jul 2021 16:48:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S238687AbhGNIwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238527AbhGNIwH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:52:07 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AECFC06175F;
+        Wed, 14 Jul 2021 01:49:15 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623] (unknown [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AB7711F4232B;
+        Wed, 14 Jul 2021 09:49:12 +0100 (BST)
+Subject: Re: [PATCH v6 01/11] dt-binding: mediatek: Get rid of mediatek, larb
+ for multimedia HW
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
+        ming-fan.chen@mediatek.com, yi.kuo@mediatek.com,
+        acourbot@chromium.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Xia Jiang <xia.jiang@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>, anthony.huang@mediatek.com
+References: <20210714025626.5528-1-yong.wu@mediatek.com>
+ <20210714025626.5528-2-yong.wu@mediatek.com>
+ <56885a72-9130-c6be-e9e5-cb4755ff0827@collabora.com>
+Message-ID: <6a854db5-10d6-21d5-655b-cbc3de7a07ef@collabora.com>
+Date:   Wed, 14 Jul 2021 10:49:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wj_uJayxT_6CFaGMkU5h4YYSgBhS=xYoN7iUVSs7BjnBA@mail.gmail.com>
+In-Reply-To: <56885a72-9130-c6be-e9e5-cb4755ff0827@collabora.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/14/2021 3:52 AM, Linus Torvalds wrote:
-> [ I've asked for this before, but I'll ask for it again.. ]
+On 14.07.21 10:13, Dafna Hirschfeld wrote:
+> Hi,
+> thanks for the patch
 > 
-> On Tue, Jul 13, 2021 at 7:06 AM kernel test robot <oliver.sang@intel.com> wrote:
+> On 14.07.21 04:56, Yong Wu wrote:
+>> After adding device_link between the consumer with the smi-larbs,
+>> if the consumer call its owner pm_runtime_get(_sync), the
+>> pm_runtime_get(_sync) of smi-larb and smi-common will be called
+>> automatically. Thus, the consumer don't need the property.
 >>
+>> And IOMMU also know which larb this consumer connects with from
+>> iommu id in the "iommus=" property.
 >>
->> [  131.014885] BUG: sleeping function called from invalid context at mm/page_alloc.c:4992
->> [  131.019428] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2928, name: trinity-c6
->> [  131.023996] no locks held by trinity-c6/2928.
->> [  131.027987] irq event stamp: 283042
->> [  131.031844] hardirqs last  enabled at (283041): [<ffffffff8643af22>] _raw_spin_unlock_irqrestore+0x42/0x50
->> [  131.036625] hardirqs last disabled at (283042): [<ffffffff81656d71>] __alloc_pages_bulk+0xae1/0xf20
->> [  131.041305] softirqs last  enabled at (281858): [<ffffffff86800623>] __do_softirq+0x623/0x9db
->> [  131.046157] softirqs last disabled at (281853): [<ffffffff8116dfee>] irq_exit_rcu+0xce/0xf0
->> [  131.050925] CPU: 0 PID: 2928 Comm: trinity-c6 Not tainted 5.13.0+ #1
->> [  131.055391] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
->> [  131.060133] Call Trace:
->> [  131.064110]  dump_stack+0xa5/0xe6
->> [  131.068192]  ___might_sleep.cold+0x147/0x177
->> [  131.072324]  __alloc_pages+0x462/0x650
+>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Reviewed-by: Evan Green <evgreen@chromium.org>
+>> ---
+>>   .../bindings/display/mediatek/mediatek,disp.txt          | 9 ---------
+>>   .../devicetree/bindings/media/mediatek-jpeg-decoder.yaml | 9 ---------
+>>   .../devicetree/bindings/media/mediatek-jpeg-encoder.yaml | 9 ---------
 > 
-> Btw, can I ask the kernel test robot to do the same thing I asked
-> syzbot to do - namely get better backtrace annotations?
+> On which repo are these patches based on ?
+> In linux-next the file mediatek-jpeg-encoder.yaml don't exist
+> 
+> Thanks,
+> Dafna
 
-Hi Linus,
+sorry, I see you reference the patch that convert to yaml in the cover letter.
 
-Sorry for this, we enabled COMPILE_TEST for randconfig which is conflict
-with DEBUG_INFO, then "scripts/decode_stacktrace.sh" was ignored in this
-case, we'll fix it asap and have a double check next time.
-
-Best Regards,
-Rong Chen
-
+Thanks,
+Dafna
 
 > 
-> It requires debug info in the kernel (but I think DEBUG_INFO_REDUCED
-> is sufficient, no need for the full one that blows sizes up a lot),
-> but it makes things _soo_ much easier to read. Not just because of
-> line numbers, but particularly with inlining information.
-> 
-> It's easy enough to do: just run the kernel output through
-> "scripts/decode_stacktrace.sh".
-> 
-> That will also do the "Code:" line instruction disassembly, which is
-> less critical, since that can be done later at any time with no loss
-> of information, but it can be a convenience.
-> 
->                 Linus
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
-> 
+>>   Documentation/devicetree/bindings/media/mediatek-mdp.txt | 8 --------
+>>   .../devicetree/bindings/media/mediatek-vcodec.txt        | 4 ----
+>>   5 files changed, 39 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+>> index fbb59c9ddda6..867bd82e2f03 100644
+>> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+>> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+>> @@ -61,8 +61,6 @@ Required properties (DMA function blocks):
+>>       "mediatek,<chip>-disp-rdma"
+>>       "mediatek,<chip>-disp-wdma"
+>>     the supported chips are mt2701, mt8167 and mt8173.
+>> -- larb: Should contain a phandle pointing to the local arbiter device as defined
+>> -  in Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+>>   - iommus: Should point to the respective IOMMU block with master port as
+>>     argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+>>     for details.
+>> @@ -91,7 +89,6 @@ ovl0: ovl@1400c000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_OVL0>;
+>>       iommus = <&iommu M4U_PORT_DISP_OVL0>;
+>> -    mediatek,larb = <&larb0>;
+>>   };
+>>   ovl1: ovl@1400d000 {
+>> @@ -101,7 +98,6 @@ ovl1: ovl@1400d000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_OVL1>;
+>>       iommus = <&iommu M4U_PORT_DISP_OVL1>;
+>> -    mediatek,larb = <&larb4>;
+>>   };
+>>   rdma0: rdma@1400e000 {
+>> @@ -111,7 +107,6 @@ rdma0: rdma@1400e000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_RDMA0>;
+>>       iommus = <&iommu M4U_PORT_DISP_RDMA0>;
+>> -    mediatek,larb = <&larb0>;
+>>       mediatek,rdma-fifosize = <8192>;
+>>   };
+>> @@ -122,7 +117,6 @@ rdma1: rdma@1400f000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+>>       iommus = <&iommu M4U_PORT_DISP_RDMA1>;
+>> -    mediatek,larb = <&larb4>;
+>>   };
+>>   rdma2: rdma@14010000 {
+>> @@ -132,7 +126,6 @@ rdma2: rdma@14010000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_RDMA2>;
+>>       iommus = <&iommu M4U_PORT_DISP_RDMA2>;
+>> -    mediatek,larb = <&larb4>;
+>>   };
+>>   wdma0: wdma@14011000 {
+>> @@ -142,7 +135,6 @@ wdma0: wdma@14011000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_WDMA0>;
+>>       iommus = <&iommu M4U_PORT_DISP_WDMA0>;
+>> -    mediatek,larb = <&larb0>;
+>>   };
+>>   wdma1: wdma@14012000 {
+>> @@ -152,7 +144,6 @@ wdma1: wdma@14012000 {
+>>       power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>       clocks = <&mmsys CLK_MM_DISP_WDMA1>;
+>>       iommus = <&iommu M4U_PORT_DISP_WDMA1>;
+>> -    mediatek,larb = <&larb4>;
+>>   };
+>>   color0: color@14013000 {
+>> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+>> index 9b87f036f178..052e752157b4 100644
+>> --- a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+>> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.yaml
+>> @@ -42,13 +42,6 @@ properties:
+>>     power-domains:
+>>       maxItems: 1
+>> -  mediatek,larb:
+>> -    $ref: '/schemas/types.yaml#/definitions/phandle'
+>> -    description: |
+>> -      Must contain the local arbiters in the current Socs, see
+>> -      Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+>> -      for details.
+>> -
+>>     iommus:
+>>       maxItems: 2
+>>       description: |
+>> @@ -63,7 +56,6 @@ required:
+>>     - clocks
+>>     - clock-names
+>>     - power-domains
+>> -  - mediatek,larb
+>>     - iommus
+>>   additionalProperties: false
+>> @@ -83,7 +75,6 @@ examples:
+>>         clock-names = "jpgdec-smi",
+>>                       "jpgdec";
+>>         power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
+>> -      mediatek,larb = <&larb2>;
+>>         iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
+>>                  <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
+>>       };
+>> diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+>> index fcd9b829e036..8bfdfdfaba59 100644
+>> --- a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+>> +++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.yaml
+>> @@ -35,13 +35,6 @@ properties:
+>>     power-domains:
+>>       maxItems: 1
+>> -  mediatek,larb:
+>> -    $ref: '/schemas/types.yaml#/definitions/phandle'
+>> -    description: |
+>> -      Must contain the local arbiters in the current Socs, see
+>> -      Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+>> -      for details.
+>> -
+>>     iommus:
+>>       maxItems: 2
+>>       description: |
+>> @@ -56,7 +49,6 @@ required:
+>>     - clocks
+>>     - clock-names
+>>     - power-domains
+>> -  - mediatek,larb
+>>     - iommus
+>>   additionalProperties: false
+>> @@ -75,7 +67,6 @@ examples:
+>>         clocks =  <&imgsys CLK_IMG_VENC>;
+>>         clock-names = "jpgenc";
+>>         power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
+>> -      mediatek,larb = <&larb2>;
+>>         iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
+>>                  <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
+>>       };
+>> diff --git a/Documentation/devicetree/bindings/media/mediatek-mdp.txt b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
+>> index caa24943da33..53ef26e2c857 100644
+>> --- a/Documentation/devicetree/bindings/media/mediatek-mdp.txt
+>> +++ b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
+>> @@ -27,9 +27,6 @@ Required properties (DMA function blocks, child node):
+>>   - iommus: should point to the respective IOMMU block with master port as
+>>     argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+>>     for details.
+>> -- mediatek,larb: must contain the local arbiters in the current Socs, see
+>> -  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+>> -  for details.
+>>   Example:
+>>       mdp_rdma0: rdma@14001000 {
+>> @@ -40,7 +37,6 @@ Example:
+>>                <&mmsys CLK_MM_MUTEX_32K>;
+>>           power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>           iommus = <&iommu M4U_PORT_MDP_RDMA0>;
+>> -        mediatek,larb = <&larb0>;
+>>           mediatek,vpu = <&vpu>;
+>>       };
+>> @@ -51,7 +47,6 @@ Example:
+>>                <&mmsys CLK_MM_MUTEX_32K>;
+>>           power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>           iommus = <&iommu M4U_PORT_MDP_RDMA1>;
+>> -        mediatek,larb = <&larb4>;
+>>       };
+>>       mdp_rsz0: rsz@14003000 {
+>> @@ -81,7 +76,6 @@ Example:
+>>           clocks = <&mmsys CLK_MM_MDP_WDMA>;
+>>           power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>           iommus = <&iommu M4U_PORT_MDP_WDMA>;
+>> -        mediatek,larb = <&larb0>;
+>>       };
+>>       mdp_wrot0: wrot@14007000 {
+>> @@ -90,7 +84,6 @@ Example:
+>>           clocks = <&mmsys CLK_MM_MDP_WROT0>;
+>>           power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>           iommus = <&iommu M4U_PORT_MDP_WROT0>;
+>> -        mediatek,larb = <&larb0>;
+>>       };
+>>       mdp_wrot1: wrot@14008000 {
+>> @@ -99,5 +92,4 @@ Example:
+>>           clocks = <&mmsys CLK_MM_MDP_WROT1>;
+>>           power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>           iommus = <&iommu M4U_PORT_MDP_WROT1>;
+>> -        mediatek,larb = <&larb4>;
+>>       };
+>> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+>> index ad1321e5a22d..71237355cc7e 100644
+>> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+>> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+>> @@ -13,7 +13,6 @@ Required properties:
+>>   - reg : Physical base address of the video codec registers and length of
+>>     memory mapped region.
+>>   - interrupts : interrupt number to the cpu.
+>> -- mediatek,larb : must contain the local arbiters in the current Socs.
+>>   - clocks : list of clock specifiers, corresponding to entries in
+>>     the clock-names property.
+>>   - clock-names: avc encoder must contain "venc_sel", vp8 encoder must
+>> @@ -46,7 +45,6 @@ vcodec_dec: vcodec@16000000 {
+>>             <0 0x16027800 0 0x800>,   /*VP8_VL*/
+>>             <0 0x16028400 0 0x400>;   /*VP9_VD*/
+>>       interrupts = <GIC_SPI 204 IRQ_TYPE_LEVEL_LOW>;
+>> -    mediatek,larb = <&larb1>;
+>>       iommus = <&iommu M4U_PORT_HW_VDEC_MC_EXT>,
+>>                <&iommu M4U_PORT_HW_VDEC_PP_EXT>,
+>>                <&iommu M4U_PORT_HW_VDEC_AVC_MV_EXT>,
+>> @@ -99,7 +97,6 @@ vcodec_enc_avc: vcodec@18002000 {
+>>                <&iommu M4U_PORT_VENC_REF_CHROMA>,
+>>                <&iommu M4U_PORT_VENC_NBM_RDMA>,
+>>                <&iommu M4U_PORT_VENC_NBM_WDMA>;
+>> -    mediatek,larb = <&larb3>;
+>>       mediatek,vpu = <&vpu>;
+>>       clocks = <&topckgen CLK_TOP_VENC_SEL>;
+>>       clock-names = "venc_sel";
+>> @@ -120,7 +117,6 @@ vcodec_enc_vp8: vcodec@19002000 {
+>>                <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
+>>                <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
+>>                <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
+>> -    mediatek,larb = <&larb5>;
+>>       mediatek,vpu = <&vpu>;
+>>       clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+>>       clock-names = "venc_lt_sel";
+>>
