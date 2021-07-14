@@ -2,209 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F073C7A77
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 02:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3CE3C7A7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 02:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237095AbhGNASO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 20:18:14 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:27720 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236981AbhGNASN (ORCPT
+        id S237163AbhGNAUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 20:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237022AbhGNAUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 20:18:13 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16E0BBXi025873;
-        Wed, 14 Jul 2021 00:15:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=WQMe8cxBDBjvWlR6Mys1FIL/vDdGCqW8iUhlSVxFSDI=;
- b=OCESkwgql26LCCMuJg8nhywPPQcI5v0CUTn07b4KFiQTmpTkC6HPqhc8cJ+nkI1JCgxi
- gryWtlBIzP5dltxtMTbO3seSCnmxDs09NY64F0XwpsjviMBX8jBXxSSqqA1+PZ7ok+4K
- sPQ6PRV6KI8uS9PKv8B5Ci+qcmpdq5Yd4HmuiqLagTWiY5zeMTcDaaGIcTKoiDP2UiuF
- 0144I20mE9JfqUaZr9t3JcR9iDlLiguCsEbuDSM8DnMBqTijbDzEtb771bMo97iACh4P
- Mix+4LKRq6GvJtzdibXWTSLwpZqiCQCX+nofkZO2Dv/fCkOKxpvDwIpkLwuZF0acB+TP Xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39rqkb3ksh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Jul 2021 00:15:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16E0AwwA015456;
-        Wed, 14 Jul 2021 00:15:14 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2176.outbound.protection.outlook.com [104.47.73.176])
-        by aserp3030.oracle.com with ESMTP id 39qycxnaww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Jul 2021 00:15:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TVH2p4sFCeLeRcWIv0yo2w0o4M5i1WlFNcG/zgHQLqb9jOaLG2Ewhg5UhZrifPie7kUOPabPeBOXeUbP3YkyxLtUC/98Wlj0sxNWfdT7IdtEiQcuPlCNdqrVFC/pxG7hEf8k/+GvuzyAZLm/f9YUn7UmYjHRPWlxOjZXhxoUfaHGzIawhSts/uV1RH7VOvyjWmOCeljRiJ6bXi4CVXxPQ1c6M/b7hG6HYpE1vnik3NfFtIO+X1m2fUZP/aVUcojgOtCR6ynfcfdU3yNWyHIrXrdRAq/7WuytANzHuA/WWC8CLccMc7f2euEofHecmF5eyxojeynTBDkX7Ld9ZssfvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WQMe8cxBDBjvWlR6Mys1FIL/vDdGCqW8iUhlSVxFSDI=;
- b=K5MzG7ADifiMtwTKi8lmFzTPrSNxq2Qo9aLSLQVoBiCYgQwkT9V0GFouuzlWBb8AJzltOnsQykNvHaISsVLpABdDtqU61lU9Is2Ni5klZ+iFHPnmLyVZqKOUBAucrcCpoe41pWjNf6yDROfynRV7j8g3yPbOEHouma0jlspFl4or68/9d4/uf1YSliZ3k5Sl4teo49YkUGpnVP3BNi3aw4NX9IEoZ7+f3evRPbztFpOM/8jPQmLlp55+ULow7T53MJJ8teFheY2Yzynjf4Fk36MVjEl/+ci5irrDaI4zKhihdj4Dns7l29ho06iIqiQfeQavcKGbepESi+FbXpu5wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 13 Jul 2021 20:20:30 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AB8C0613DD;
+        Tue, 13 Jul 2021 17:17:39 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso692960otu.10;
+        Tue, 13 Jul 2021 17:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WQMe8cxBDBjvWlR6Mys1FIL/vDdGCqW8iUhlSVxFSDI=;
- b=LaGwn8Lxl3kjcZ9A0mqh18UpCznj648MCHnVFAcqDWXiuTnK/NxPLQpNyeSDbfI7yw88stDKz6qXXqd1fvzPQ82Afq+PkqtWW2oYZBvDO8ByDZRtua/ogEPBeL9PMvgRWkU66Q5jekq9QGJzhL3oh1/TJd9VBZV22zH6YwQ4pMo=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB3733.namprd10.prod.outlook.com (2603:10b6:a03:120::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Wed, 14 Jul
- 2021 00:15:11 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::8111:d8f1:c262:808d]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::8111:d8f1:c262:808d%6]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
- 00:15:11 +0000
-Date:   Tue, 13 Jul 2021 20:15:07 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Roman Skakun <rm.skakun@gmail.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Roman Skakun <roman_skakun@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>
-Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc addresses
-Message-ID: <YO4si0to/XYximwM@fedora>
-References: <20210616154436.GA7619@lst.de>
- <20210622133414.132754-1-rm.skakun@gmail.com>
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ANBre7e/SeOgwL/kzxB4MEQhrNdFwAa+nXG5MhaUU/0=;
+        b=twt0VPxbYbALN1uhWFP6Q0BG5HRHqjR3t2ca4CF8GG5CU/m30bRD3WkEtSJ6tHEG+4
+         vSUWF4kkATG9F+c81vIvEas4+9lQu/S+LbMIfpCP8KLwlTrErq3QPIK5szgJRP1d0hs0
+         FLVE13Y4IPT9W4WJOSUToCNSMqSONZyqJOG2bTnAvcdD5VsM+6gbsxHqQs9kzXws7O3z
+         L+MgSqzTp4W3V70D+WkwXZjsC9/QbLQzBVZcuSAzmi1sMbS/IMqYByrFyGlwsMGgA+l4
+         J/C7HFkvfe0f59+oc5TxXzip62eZYk6netAVqjPfRWWkAhiIExvfejPDKMgzceiOelHB
+         pUHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=ANBre7e/SeOgwL/kzxB4MEQhrNdFwAa+nXG5MhaUU/0=;
+        b=mjUAO3zCQ0V+Fk4Xn7OTNxsjsEnX7j1LWkyy2wUvGLCUsHTku+urm9uXG7hsJ9q3dW
+         SAyccQqSTOgtUI5ggw7oM9aMSWaE47rQwr/B83x9X0PQgBd907qzgiHR/BMTMCRA+6iH
+         k4r/Fu3oHPzj6j8fkpPXIHcvUa2g0cy1fGo0eujr3uiBPoMMQNZQ43Zk8SpB2SjsW1DW
+         Z6wss5ZQtu4TohuwrM5LkWJFyclBVZi+69MpSUSl5fy+oHG2KsBTnbjsfNTZLwYHTYu0
+         iRaErYxUXJO1hchxva8BfGYQcpBcJI6QcAWpElHnOXjTTKVnNNE/J2bPlB4KoHRzqDvV
+         0mAg==
+X-Gm-Message-State: AOAM5304Mxk+kCxBgpaAuR5sd43kHzjxvyEyO6cBmXPeSWsP5hyPgSwM
+        3x2gJ+2nPKEocViQYxmxxA==
+X-Google-Smtp-Source: ABdhPJwl33HIb5+qvgtynzyVDjT324T1pKdLQUnPLKYfWQHVqv5GYScqiZwm0JmSDRuTot9Y/rHQKA==
+X-Received: by 2002:a9d:2c61:: with SMTP id f88mr5834409otb.62.1626221858570;
+        Tue, 13 Jul 2021 17:17:38 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.156.158])
+        by smtp.gmail.com with ESMTPSA id s29sm170136oiw.54.2021.07.13.17.17.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 17:17:38 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:6938:a190:9608:2d5d])
+        by serve.minyard.net (Postfix) with ESMTPSA id 3ADD518005A;
+        Wed, 14 Jul 2021 00:17:37 +0000 (UTC)
+Date:   Tue, 13 Jul 2021 19:17:36 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [PATCH v4 0/3] Add SSIF BMC driver
+Message-ID: <20210714001736.GD3406@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210713055425.30636-1-quan@os.amperecomputing.com>
+ <20210713154405.GB3406@minyard.net>
+ <f7dd5b0f-a2a7-0a5f-3521-6721e8e52cb5@os.amperecomputing.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622133414.132754-1-rm.skakun@gmail.com>
-X-ClientProxiedBy: BL0PR0102CA0032.prod.exchangelabs.com
- (2603:10b6:207:18::45) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fedora (130.44.160.152) by BL0PR0102CA0032.prod.exchangelabs.com (2603:10b6:207:18::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 14 Jul 2021 00:15:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b59f7ce4-26e7-4932-510e-08d9465c721d
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3733:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB373356F4950D36E3F60A71C789139@BYAPR10MB3733.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kjnHpK1WThdaq9Sb1h0jSXXe+H8yW5djUSXBOGr3Euap/1gehas6xsx6/9rD2P4sX9/54pqqv2L7jvY8KiJfD42hQ5fzO1BXZy6yHxxuXEMFuy4Qcxvajvy3ZfPNTLVgeG7DD8nxbl5msHiZmBknvePRHW1pAQ+ZArLxy2oqOy0infnuFA+C9aYirEDe5mwHQTkzoxCIWfr3LBSJxydHrnZXfblWJyIyvKVmDuMHzeiW4hJMWlq6t+S15JAQdG4NVuywS0JXfsjM2ilNYWBqfRRQqh5taBZu//CjYznE25gbMJZsPiLjR+hxXJb61afTMPLH/wa7fJ8sXOlE0fneZCDzWmht8qdx05cfPPnMaPoDmrnMxa5+v6hRwKsSXp4zIJAlh6QyMpkj1Q7AHTZ0/IJFkLw7X2FRIlPRsjkGIF09y6DRJqA72z1ywMftZ5QZN/f5hfg79Cf81me9Xjx4xWLmpkysdWp9hhOOMO6uNGVFW/zm+talf/8u28qjVicnJQWwtzjqfaHLxFb1rHyVDzxpmJe03La5WKievCz1Ex+UhLX3xEt5XG5sI9ZToBB3+jSjOQZIgcv2K/R4rIZB5zhEm5eEvL/DCgkrBRCIE7pO6aon+4JUiWTCD2pQ5LAv0qTD24l3YR08xgOBWx7e1C/D4kSZJ8K/aNYCFh8sdHN9ep5XGUy3OAKxdN+bEbGCy8BlDl7YR+29hcA9LiVQAg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(376002)(396003)(136003)(186003)(316002)(2906002)(8676002)(8936002)(6666004)(66556008)(38100700002)(33716001)(26005)(66476007)(6916009)(66946007)(54906003)(52116002)(4326008)(5660300002)(6496006)(956004)(55016002)(478600001)(86362001)(9576002)(7416002)(83380400001)(9686003)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mk2Z3lWCjur9fjoKdKhkq1037NdTgBJ8bEHfxSZJYOH2JaavmfxMo7sXLqce?=
- =?us-ascii?Q?6UTNCtX5tcpfoP6moupeQecJfm6PO+yOY9DwNH/K0KPO4V6j+oIBC7UkykWj?=
- =?us-ascii?Q?hVVsE4Bmd64PbMtIT2VtJfzxsrDhmvveuJBqBBnCfCgQ957b6czCfdvQeiUI?=
- =?us-ascii?Q?wDqrwsugQSkVdVlk5mXvqySFR0I7HREnw1uDOKEIfmPcRvI9aRNJQUpnKjlA?=
- =?us-ascii?Q?uAnKhtq/hXNhY72sYYOu+GeT5kWzJpImlbaBhTos1qS/k4k78SWXwk7PWVhb?=
- =?us-ascii?Q?vWV5uWgU3GhW0y4ORQJUU06HhBCcqRVJc/CENKf73eKfYvltTmmBksh4H7wa?=
- =?us-ascii?Q?kxB+3S+x+Z4C826fqdzv58h/S3x6qV1mJQihn1EkGHwzRKcjCVY+JDjZbjBW?=
- =?us-ascii?Q?gzSUE64IajGfloHBDa9ROIG4ITjL8QhgArmH+M55GfZEcP3Rg0PKD3rr1ISl?=
- =?us-ascii?Q?h63UrrDTM4LGNac9hTsDSqyv+zKkRqGwg0TZZ9eGkVXJI2IwpIAw/UGukhLS?=
- =?us-ascii?Q?skwLNcj4Ymq7tN8dgUX7jcUHWmstafvoZWOERmLio6Vhq7y2BZ8ZpERS7D2A?=
- =?us-ascii?Q?9uyYYYPbStavXGVfHr9zYLk8QL4jpYInhIqT7zY4Sks4nc89BFiGw2iTmxU0?=
- =?us-ascii?Q?vuh7TLv9D26QVwdYkZuAtmp2MizKRVa2L9FMxXD2y8AJDnClGmmp+tzz745o?=
- =?us-ascii?Q?TxgEh0m+DugvBG8wxpwu4FzAFbaPcS1RG+7rWQS6Snceu2a5//58Mng9Edxh?=
- =?us-ascii?Q?CCmdBF/CkU2ASqoMju/Zx+qU3SPoQsiYIeiwF7SlLdoXQgpxVDGz4txg5BxL?=
- =?us-ascii?Q?GoODGY/c4EGUvOUFfMztp9NyKiS62tPSX+sSRGYNoFq8LZqh5iE3WIrdSP8/?=
- =?us-ascii?Q?lKFI9kR1rF3BOS0VRGV6IIKR6/0hF2uVd1Rm9sc3JZXpWsZkW5fsFlMFB56y?=
- =?us-ascii?Q?NfQipg9medhrclsGMhmsEQkfSU3NoHjUtrMZHYVNnmfjh2PS4XkK7BIQKLFQ?=
- =?us-ascii?Q?jyL8+Ch83Gk7AemKyY4O4u518GljQREYf1igMXR0LT6I2Z5pZFsHBtiv2Xhm?=
- =?us-ascii?Q?qpDoW4pBOFHSOsLVvZ3nyMUo+D8eFChaToqRgEe/jSQDEfpRZDli8+NX2W5G?=
- =?us-ascii?Q?x4tEPcUQyBRvRw1ONZZ2qiXClmmp6tu7AOscvLpFMIsY83S02pB71IRwrUmb?=
- =?us-ascii?Q?XnKc88Z60PkeZcpmw6lb0/BZ+pN1istun9cQS8RE/XKEcoY9+Dy9AULATTY8?=
- =?us-ascii?Q?kxRxbKY6++9uobm8i1SD3ChwvT6gQ846jmnzP8e22+reKHDjcN2ZKReXPf9V?=
- =?us-ascii?Q?xa7HcGgj08FEwcXV2ojiHbir?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b59f7ce4-26e7-4932-510e-08d9465c721d
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 00:15:11.7074
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V1nfl1b5cnrqXRriiI+l5uq+KvKwuhNKm9BOGzC6lOpN+Z33eNcNEi8u7XwM5sr5Y0Udiy6uCestWYIWcNX9pQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3733
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10044 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107130148
-X-Proofpoint-ORIG-GUID: d74-teT1IVuI8AP4KMenCHcngSLjVCvo
-X-Proofpoint-GUID: d74-teT1IVuI8AP4KMenCHcngSLjVCvo
+In-Reply-To: <f7dd5b0f-a2a7-0a5f-3521-6721e8e52cb5@os.amperecomputing.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 04:34:14PM +0300, Roman Skakun wrote:
-> This commit is dedicated to fix incorrect conversion from
-> cpu_addr to page address in cases when we get virtual
-> address which allocated in the vmalloc range.
-> As the result, virt_to_page() cannot convert this address
-> properly and return incorrect page address.
+On Wed, Jul 14, 2021 at 06:29:27AM +0700, Quan Nguyen wrote:
+> On 13/07/2021 22:44, Corey Minyard wrote:
+> > On Tue, Jul 13, 2021 at 12:54:22PM +0700, Quan Nguyen wrote:
+> > > This series add support the SSIF BMC driver which is to perform in-band
+> > > IPMI communication with their host in management (BMC) side.
+> > 
+> > Per the kernel build robot, looks like patch 3 introduces slave_enable()
+> > but patch 1 uses it.
+> > 
+> > -corey
+> > 
+> Thanks Corey,
 > 
-> Need to detect such cases and obtains the page address using
-> vmalloc_to_page() instead.
-> 
-> Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-> Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
-> ---
-> Hey!
-> Thanks for suggestions, Christoph!
-> I updated the patch according to your advice.
-> But, I'm so surprised because nobody catches this problem
-> in the common code before. It looks a bit strange as for me. 
+> The order is not correct and kernel build robot found this hurts
+> bisectibility.
+> The patch 3 should be the first patch.
 
-This looks like it wasn't picked up? Should it go in rc1?
+Ok, can you re-submit in the right order?
+
+Thanks,
+
+-corey
+
 > 
+> - Quan
 > 
->  kernel/dma/ops_helpers.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-> index 910ae69cae77..782728d8a393 100644
-> --- a/kernel/dma/ops_helpers.c
-> +++ b/kernel/dma/ops_helpers.c
-> @@ -5,6 +5,14 @@
->   */
->  #include <linux/dma-map-ops.h>
->  
-> +static struct page *cpu_addr_to_page(void *cpu_addr)
-> +{
-> +	if (is_vmalloc_addr(cpu_addr))
-> +		return vmalloc_to_page(cpu_addr);
-> +	else
-> +		return virt_to_page(cpu_addr);
-> +}
-> +
->  /*
->   * Create scatter-list for the already allocated DMA buffer.
->   */
-> @@ -12,7 +20,7 @@ int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
->  		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
->  		 unsigned long attrs)
->  {
-> -	struct page *page = virt_to_page(cpu_addr);
-> +	struct page *page = cpu_addr_to_page(cpu_addr);
->  	int ret;
->  
->  	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-> @@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
->  		return -ENXIO;
->  
->  	return remap_pfn_range(vma, vma->vm_start,
-> -			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-> +			page_to_pfn(cpu_addr_to_page(cpu_addr)) + vma->vm_pgoff,
->  			user_count << PAGE_SHIFT, vma->vm_page_prot);
->  #else
->  	return -ENXIO;
-> -- 
-> 2.25.1
+> > > 
+> > > SSIF BMC driver in this series is tested with Aspeed AST2500.
+> > > 
+> > > v4:
+> > >    + Fix recursive spinlock                                      [Graeme]
+> > >    + Send response with Completion code 0xFF when aborting         [Quan]
+> > >    + Fix warning with dt_binding_check                              [Rob]
+> > >    + Change aspeed-ssif-bmc.yaml to ssif-bmc.yaml                  [Quan]
+> > >    + Added bounding check on SMBus writes and the whole request     [Dan]
+> > >    + Moved buffer to end of struct ssif_bmc_ctx to avoid context
+> > >      corruption if somehow buffer is written past the end           [Dan]
+> > >    + Return -EINVAL if userspace buffer too small, dont
+> > >      silence truncate                                       [Corey, Joel]
+> > >    + Not necessary to check NONBLOCK in lock                      [Corey]
+> > >    + Enforce one user at a time                                    [Joel]
+> > >    + Reject write with invalid response length from userspace     [Corey]
+> > >    + Add state machines for better ssif bmc state handling         [Quan]
+> > >    + Drop ssif_bmc_aspeed.c and make ssif_bmc.c is generic
+> > >      SSIF BMC driver                                               [Quan]
+> > >    + Change compatible string "aspeed,ast2500-ssif-bmc" to
+> > >      "ampere,ssif-bmc"                                             [Quan]
+> > >    + Toggle Slave enable in i2c-aspeed to turn on/off slave mode   [Ryan]
+> > >    + Added slave_enable() to struct i2c_algorithm to control
+> > >      slave mode and to address the recursive spinlock      [Graeme, Ryan]
+> > >    + Abort current request with invalid SMBus write or
+> > >      invalid command                                               [Quan]
+> > >    + Abort all request if there is pending response                [Quan]
+> > >    + Changed validate_pec() to validate_request()                  [Quan]
+> > >    + Add unsupported_smbus_cmd() to handle unknown SMBus command   [Quan]
+> > >    + Print internal state string for ease investigating issue      [Quan]
+> > >    + Move to READY state on SLAVE_STOP event                       [Quan]
+> > >    + Change initilize_transfer() to process_smbus_cmd()            [Quan]
+> > >    + Introduce functions for each slave event                      [Quan]
+> > > 
+> > > v3:
+> > >    + Switched binding doc to use DT schema format [Rob]
+> > >    + Splited into generic ssif_bmc and aspeed-specific [Corey, Joel]
+> > >    + Removed redundant license info [Joel]
+> > >    + Switched to use traditional if-else [Joel]
+> > >    + Removed unused ssif_bmc_ioctl() [Joel]
+> > >    + Made handle_request()/complete_response() to return void [Joel]
+> > >    + Refactored send_ssif_bmc_response()/receive_ssif_bmc_request()
+> > >    [Corey]
+> > >    + Remove mutex [Corey]
+> > >    + Use spin_lock/unlock_irqsave/restore in callback [Corey]
+> > >    + Removed the unnecessary memset [Corey]
+> > >    + Switch to use dev_err() [Corey]
+> > >    + Combine mask/unmask two interrupts together [Corey]
+> > >    + Fixed unhandled Tx done with NAK [Quan]
+> > >    + Late ack'ed Tx done w/wo Ack irq [Quan]
+> > >    + Use aspeed-specific exported aspeed_set_slave_busy() when slave busy
+> > >    to fix the deadlock [Graeme, Philipp, Quan]
+> > >    + Clean buffer for last multipart read [Quan]
+> > >    + Handle unknown incoming command [Quan]
+> > > 
+> > > v2:
+> > >    + Fixed compiling error with COMPILE_TEST for arc
+> > > 
+> > > Quan Nguyen (3):
+> > >    ipmi: ssif_bmc: Add SSIF BMC driver
+> > >    bindings: ipmi: Add binding for SSIF BMC driver
+> > >    i2c: aspeed: Add slave_enable() to toggle slave mode
+> > > 
+> > >   .../devicetree/bindings/ipmi/ssif-bmc.yaml    |  38 +
+> > >   drivers/char/ipmi/Kconfig                     |  11 +
+> > >   drivers/char/ipmi/Makefile                    |   1 +
+> > >   drivers/char/ipmi/ssif_bmc.c                  | 781 ++++++++++++++++++
+> > >   drivers/char/ipmi/ssif_bmc.h                  | 106 +++
+> > >   drivers/i2c/busses/i2c-aspeed.c               |  20 +
+> > >   include/linux/i2c.h                           |   2 +
+> > >   7 files changed, 959 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml
+> > >   create mode 100644 drivers/char/ipmi/ssif_bmc.c
+> > >   create mode 100644 drivers/char/ipmi/ssif_bmc.h
+> > > 
+> > > -- 
+> > > 2.28.0
+> > > 
 > 
