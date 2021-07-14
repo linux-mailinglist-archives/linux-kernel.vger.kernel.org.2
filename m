@@ -2,181 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555243C8387
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D88D3C8392
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239070AbhGNLSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:18:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22877 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239030AbhGNLSL (ORCPT
+        id S239090AbhGNLTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:19:24 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:34975 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232161AbhGNLTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:18:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626261319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z981OS1uXu1xWcE4bmmWH5UA+7i0ZIyGX9+WawOYgZo=;
-        b=fPAEgyLwXPgYpdJOc4jqXnQVSdHHi5Fd5FOzfKjbzyJtuHJ2i1VGJ/7TKaMBlTps9lfS6R
-        vS/oiySyQLkcf4e0l25rBoxVP+kZd9a54Dkt18zRYYT5YczAJc17bf1hc1+iFhwBpm1VxI
-        7zjQWhLKbCZYoT9l8fOKvril9RoVowI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-PgOdrNLbPd63ACm2TLfW9w-1; Wed, 14 Jul 2021 07:15:18 -0400
-X-MC-Unique: PgOdrNLbPd63ACm2TLfW9w-1
-Received: by mail-ed1-f70.google.com with SMTP id i19-20020a05640200d3b02903948b71f25cso1079004edu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:15:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Z981OS1uXu1xWcE4bmmWH5UA+7i0ZIyGX9+WawOYgZo=;
-        b=RalquElN1pnTyZMd8wq1+pX3MryQ/WxbDT6Ox8S2dstmrZeGn+E4fYlWXwuO3SDFWb
-         LCwbBwjMl3QcuJp/zPBzvRY42VT4aYrRQPUz5e87ibkIrPAJHM6Q75fEwtb75cnF8UZV
-         KBgJg11eMdUa5BWT0+/xdSh6pgjh1eOEEaKZDg0w+YyuZynmbCTWb3+cMW5Pc5JtiP2y
-         aAeMwKGgrzv6LC5pCU8HKPe/tjyKfHAx3vzHIlRRDxXTlOiL8VTdjzrGpkvVo/F03pWF
-         aIxc7Vh3y8mRDl/wPcA9mc+Zwnl3YUyBV2yZJId4LktF8K39TBlYVAxkiC8MGapNszEh
-         YxQg==
-X-Gm-Message-State: AOAM533OZQ5SnKgiAbsimEujmu7b8Dd2GSv3nUMHPOBE1z/dpniCFRl9
-        nfXXUFedBuM6T6CGYbvYzoz9i8hRzIrzxRDlowLPzBCPpCERkxA872DqU7W96uQgxlJ61Ej810+
-        Ak3kyRvhVnyYl52VvVPMjCYYN
-X-Received: by 2002:a17:906:69b:: with SMTP id u27mr11926780ejb.338.1626261316851;
-        Wed, 14 Jul 2021 04:15:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5zumagCRkCslZ2/AUY9GUUlZ8EfDeo1zQ/HZbuzDOyv8xHdWXLhu2I/TDon6OVtivEdWwjg==
-X-Received: by 2002:a17:906:69b:: with SMTP id u27mr11926750ejb.338.1626261316611;
-        Wed, 14 Jul 2021 04:15:16 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n11sm676315ejg.111.2021.07.14.04.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 04:15:16 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        Wed, 14 Jul 2021 07:19:23 -0400
+X-UUID: 278399093b1c47ff99b8fa073b4ed77b-20210714
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=I1AIYOviiCLaz5bYm8DUlQalApcOd6QrzCO//5CMBTY=;
+        b=ADHw3ajNtu6FHv6+8fzGn58ykua4BCJSnSeVfH6yYIL2tAzFlw0XO9ClzNBfAD3TYzC/8S2rom3QYUzHG2Siwz1zKbU0uQi4P1BEmXC/gct44uNDu+Bef3Ls/LS5knhoNxBJw/qHS1+nO5UOba1Jsx1aVqx0j0/vItJrFHpsIsQ=;
+X-UUID: 278399093b1c47ff99b8fa073b4ed77b-20210714
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2053316303; Wed, 14 Jul 2021 19:16:28 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
+ 2021 19:16:25 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Jul 2021 19:16:24 +0800
+Message-ID: <1626261384.14352.13.camel@mhfsdcap03>
+Subject: Re: [PATCH v6 03/11] iommu/mediatek: Add device_link between the
+ consumer and the larb devices
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
         Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-doc@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number
- of vcpus per guest
-In-Reply-To: <20210701154105.23215-7-jgross@suse.com>
-References: <20210701154105.23215-1-jgross@suse.com>
- <20210701154105.23215-7-jgross@suse.com>
-Date:   Wed, 14 Jul 2021 13:15:14 +0200
-Message-ID: <87h7gx2lkt.fsf@vitty.brq.redhat.com>
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        "Will Deacon" <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
+        <ming-fan.chen@mediatek.com>, <yi.kuo@mediatek.com>,
+        <acourbot@chromium.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Xia Jiang <xia.jiang@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        "Eizan Miyamoto" <eizan@chromium.org>, <anthony.huang@mediatek.com>
+Date:   Wed, 14 Jul 2021 19:16:24 +0800
+In-Reply-To: <f7b2c5e5-f540-b885-f063-9611031035bc@collabora.com>
+References: <20210714025626.5528-1-yong.wu@mediatek.com>
+         <20210714025626.5528-4-yong.wu@mediatek.com>
+         <f7b2c5e5-f540-b885-f063-9611031035bc@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
+X-TM-SNTS-SMTP: 0F41A4D2E10A0920DEDC22C00094324303009B46911208F4D64AC685FD3491552000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Juergen Gross <jgross@suse.com> writes:
-
-> Today the maximum number of vcpus of a kvm guest is set via a #define
-> in a header file.
->
-> In order to support higher vcpu numbers for guests without generally
-> increasing the memory consumption of guests on the host especially on
-> very large systems add a boot parameter for specifying the number of
-> allowed vcpus for guests.
->
-> The default will still be the current setting of 288. The value 0 has
-> the special meaning to limit the number of possible vcpus to the
-> number of possible cpus of the host.
->
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 10 ++++++++++
->  arch/x86/include/asm/kvm_host.h                 |  5 ++++-
->  arch/x86/kvm/x86.c                              |  7 +++++++
->  3 files changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 99bfa53a2bbd..8eb856396ffa 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -2373,6 +2373,16 @@
->  			guest can't have more vcpus than the set value + 1.
->  			Default: 1023
->  
-> +	kvm.max_vcpus=	[KVM,X86] Set the maximum allowed numbers of vcpus per
-> +			guest. The special value 0 sets the limit to the number
-> +			of physical cpus possible on the host (including not
-> +			yet hotplugged cpus). Higher values will result in
-> +			slightly higher memory consumption per guest. Depending
-> +			on the value and the virtual topology the maximum
-> +			allowed vcpu-id might need to be raised, too (see
-> +			kvm.max_vcpu_id parameter).
-
-I'd suggest to at least add a sanity check: 'max_vcpu_id' should always
-be >= 'max_vcpus'. Alternatively, we can replace 'max_vcpu_id' with say
-'vcpu_id_to_vcpus_ratio' and set it to e.g. '4' by default.
-
-> +			Default: 288
-> +
->  	l1tf=           [X86] Control mitigation of the L1TF vulnerability on
->  			      affected CPUs
->  
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 39cbc4b6bffb..65ae82a5d444 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -37,7 +37,8 @@
->  
->  #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
->  
-> -#define KVM_MAX_VCPUS 288
-> +#define KVM_DEFAULT_MAX_VCPUS 288
-> +#define KVM_MAX_VCPUS max_vcpus
->  #define KVM_SOFT_MAX_VCPUS 240
->  #define KVM_DEFAULT_MAX_VCPU_ID 1023
->  #define KVM_MAX_VCPU_ID max_vcpu_id
-> @@ -1509,6 +1510,8 @@ extern u64  kvm_max_tsc_scaling_ratio;
->  extern u64  kvm_default_tsc_scaling_ratio;
->  /* bus lock detection supported? */
->  extern bool kvm_has_bus_lock_exit;
-> +/* maximum number of vcpus per guest */
-> +extern unsigned int max_vcpus;
->  /* maximum vcpu-id */
->  extern unsigned int max_vcpu_id;
->  /* per cpu vcpu bitmasks (disable preemption during usage) */
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a9b0bb2221ea..888c4507504d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -177,6 +177,10 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
->  int __read_mostly pi_inject_timer = -1;
->  module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
->  
-> +unsigned int __read_mostly max_vcpus = KVM_DEFAULT_MAX_VCPUS;
-> +module_param(max_vcpus, uint, S_IRUGO);
-> +EXPORT_SYMBOL_GPL(max_vcpus);
-> +
->  unsigned int __read_mostly max_vcpu_id = KVM_DEFAULT_MAX_VCPU_ID;
->  module_param(max_vcpu_id, uint, S_IRUGO);
->  
-> @@ -10648,6 +10652,9 @@ int kvm_arch_hardware_setup(void *opaque)
->  	if (boot_cpu_has(X86_FEATURE_XSAVES))
->  		rdmsrl(MSR_IA32_XSS, host_xss);
->  
-> +	if (max_vcpus == 0)
-> +		max_vcpus = num_possible_cpus();
-
-Is this special case really needed? I mean 'max_vcpus' is not '0' by
-default so whoever sets it manually probably knows how big his guests
-are going to be anyway and it is not always obvious how many CPUs are
-reported by 'num_possible_cpus()' (ACPI tables can be weird for example).
-
-> +
->  	kvm_pcpu_vcpu_mask = __alloc_percpu(KVM_VCPU_MASK_SZ,
->  					    sizeof(unsigned long));
->  	kvm_hv_vp_bitmap = __alloc_percpu(KVM_HV_VPMAP_SZ, sizeof(u64));
-
--- 
-Vitaly
+T24gV2VkLCAyMDIxLTA3LTE0IGF0IDEwOjI2ICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
+Og0KPiANCj4gT24gMTQuMDcuMjEgMDQ6NTYsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gTWVkaWFUZWsg
+SU9NTVUtU01JIGRpYWdyYW0gaXMgbGlrZSBiZWxvdy4gYWxsIHRoZSBjb25zdW1lciBjb25uZWN0
+IHdpdGgNCj4gPiBzbWktbGFyYiwgdGhlbiBjb25uZWN0IHdpdGggc21pLWNvbW1vbi4NCj4gPiAN
+Cj4gPiAgICAgICAgICBNNFUNCj4gPiAgICAgICAgICAgfA0KPiA+ICAgICAgc21pLWNvbW1vbg0K
+PiA+ICAgICAgICAgICB8DQo+ID4gICAgLS0tLS0tLS0tLS0tLQ0KPiA+ICAgIHwgICAgICAgICB8
+ICAgIC4uLg0KPiA+ICAgIHwgICAgICAgICB8DQo+ID4gbGFyYjEgICAgIGxhcmIyDQo+ID4gICAg
+fCAgICAgICAgIHwNCj4gPiB2ZGVjICAgICAgIHZlbmMNCj4gPiANCj4gPiBXaGVuIHRoZSBjb25z
+dW1lciB3b3JrcywgaXQgc2hvdWxkIGVuYWJsZSB0aGUgc21pLWxhcmIncyBwb3dlciB3aGljaA0K
+PiA+IGFsc28gbmVlZCBlbmFibGUgdGhlIHNtaS1jb21tb24ncyBwb3dlciBmaXJzdGx5Lg0KPiA+
+IA0KPiA+IFRodXMsIEZpcnN0IG9mIGFsbCwgdXNlIHRoZSBkZXZpY2UgbGluayBjb25uZWN0IHRo
+ZSBjb25zdW1lciBhbmQgdGhlDQo+ID4gc21pLWxhcmJzLiB0aGVuIGFkZCBkZXZpY2UgbGluayBi
+ZXR3ZWVuIHRoZSBzbWktbGFyYiBhbmQgc21pLWNvbW1vbi4NCj4gPiANCj4gPiBUaGlzIHBhdGNo
+IGFkZHMgZGV2aWNlX2xpbmsgYmV0d2VlbiB0aGUgY29uc3VtZXIgYW5kIHRoZSBsYXJicy4NCj4g
+PiANCj4gPiBXaGVuIGRldmljZV9saW5rX2FkZCwgSSBhZGQgdGhlIGZsYWcgRExfRkxBR19TVEFU
+RUxFU1MgdG8gYXZvaWQgY2FsbGluZw0KPiA+IHBtX3J1bnRpbWVfeHggdG8ga2VlcCB0aGUgb3Jp
+Z2luYWwgc3RhdHVzIG9mIGNsb2Nrcy4gSXQgY2FuIGF2b2lkIHR3bw0KPiA+IGlzc3VlczoNCj4g
+PiAxKSBEaXNwbGF5IEhXIHNob3cgZmFzdGxvZ28gYWJub3JtYWxseSByZXBvcnRlZCBpbiBbMV0u
+IEF0IHRoZSBiZWdnaW5pbmcsDQo+ID4gYWxsIHRoZSBjbG9ja3MgYXJlIGVuYWJsZWQgYmVmb3Jl
+IGVudGVyaW5nIGtlcm5lbCwgYnV0IHRoZSBjbG9ja3MgZm9yDQo+ID4gZGlzcGxheSBIVyhhbHdh
+eXMgaW4gbGFyYjApIHdpbGwgYmUgZ2F0ZWQgYWZ0ZXIgY2xrX2VuYWJsZSBhbmQgY2xrX2Rpc2Fi
+bGUNCj4gPiBjYWxsZWQgZnJvbSBkZXZpY2VfbGlua19hZGQoLT5wbV9ydW50aW1lX3Jlc3VtZSkg
+YW5kIHJwbV9pZGxlLiBUaGUgY2xvY2sNCj4gPiBvcGVyYXRpb24gaGFwcGVuZWQgYmVmb3JlIGRp
+c3BsYXkgZHJpdmVyIHByb2JlLiBBdCB0aGF0IHRpbWUsIHRoZSBkaXNwbGF5DQo+ID4gSFcgd2ls
+bCBiZSBhYm5vcm1hbC4NCj4gPiANCj4gPiAyKSBBIGRlYWRsb2NrIGlzc3VlIHJlcG9ydGVkIGlu
+IFsyXS4gVXNlIERMX0ZMQUdfU1RBVEVMRVNTIHRvIHNraXANCj4gPiBwbV9ydW50aW1lX3h4IHRv
+IGF2b2lkIHRoZSBkZWFkbG9jay4NCj4gPiANCj4gPiBDb3JyZXNwb25kaW5nLCBETF9GTEFHX0FV
+VE9SRU1PVkVfQ09OU1VNRVIgY2FuJ3QgYmUgYWRkZWQsIHRoZW4NCj4gPiBkZXZpY2VfbGlua19y
+ZW1vdmVkIHNob3VsZCBiZSBhZGRlZCBleHBsaWNpdGx5Lg0KPiA+IA0KPiA+IFsxXSBodHRwczov
+L2xvcmUua2VybmVsLm9yZy9saW51eC1tZWRpYXRlay8xNTY0MjEzODg4LjIyOTA4LjQuY2FtZWxA
+bWhmc2RjYXAwMy8NCj4gPiBbMl0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3Bh
+dGNoLzEwODY1NjkvDQo+ID4gDQo+ID4gU3VnZ2VzdGVkLWJ5OiBUb21hc3ogRmlnYSA8dGZpZ2FA
+Y2hyb21pdW0ub3JnPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0
+ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyAgICB8IDIy
+ICsrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgIGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11X3Yx
+LmMgfCAyMCArKysrKysrKysrKysrKysrKysrLQ0KPiA+ICAgMiBmaWxlcyBjaGFuZ2VkLCA0MSBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvaW9tbXUvbXRrX2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+ID4gaW5k
+ZXggYTAyZGRlMDk0Nzg4Li5lZTc0MjkwMGNmNGIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9p
+b21tdS9tdGtfaW9tbXUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMNCj4g
+PiBAQCAtNTcxLDIyICs1NzEsNDQgQEAgc3RhdGljIHN0cnVjdCBpb21tdV9kZXZpY2UgKm10a19p
+b21tdV9wcm9iZV9kZXZpY2Uoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ICAgew0KPiA+ICAgCXN0
+cnVjdCBpb21tdV9md3NwZWMgKmZ3c3BlYyA9IGRldl9pb21tdV9md3NwZWNfZ2V0KGRldik7DQo+
+ID4gICAJc3RydWN0IG10a19pb21tdV9kYXRhICpkYXRhOw0KPiA+ICsJc3RydWN0IGRldmljZV9s
+aW5rICpsaW5rOw0KPiA+ICsJc3RydWN0IGRldmljZSAqbGFyYmRldjsNCj4gPiArCXVuc2lnbmVk
+IGludCBsYXJiaWQ7DQo+ID4gICANCj4gPiAgIAlpZiAoIWZ3c3BlYyB8fCBmd3NwZWMtPm9wcyAh
+PSAmbXRrX2lvbW11X29wcykNCj4gPiAgIAkJcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7IC8qIE5v
+dCBhIGlvbW11IGNsaWVudCBkZXZpY2UgKi8NCj4gPiAgIA0KPiA+ICAgCWRhdGEgPSBkZXZfaW9t
+bXVfcHJpdl9nZXQoZGV2KTsNCj4gPiAgIA0KPiA+ICsJLyoNCj4gPiArCSAqIExpbmsgdGhlIGNv
+bnN1bWVyIGRldmljZSB3aXRoIHRoZSBzbWktbGFyYiBkZXZpY2Uoc3VwcGxpZXIpDQo+ID4gKwkg
+KiBUaGUgZGV2aWNlIGluIGVhY2ggYSBsYXJiIGlzIGEgaW5kZXBlbmRlbnQgSFcuIHRodXMgb25s
+eSBsaW5rDQo+ID4gKwkgKiBvbmUgbGFyYiBoZXJlLg0KPiA+ICsJICovDQo+ID4gKwlsYXJiaWQg
+PSBNVEtfTTRVX1RPX0xBUkIoZndzcGVjLT5pZHNbMF0pOw0KPiA+ICsJbGFyYmRldiA9IGRhdGEt
+PmxhcmJfaW11W2xhcmJpZF0uZGV2Ow0KPiA+ICsJbGluayA9IGRldmljZV9saW5rX2FkZChkZXYs
+IGxhcmJkZXYsDQo+ID4gKwkJCSAgICAgICBETF9GTEFHX1BNX1JVTlRJTUUgfCBETF9GTEFHX1NU
+QVRFTEVTUyk7DQo+ID4gKwlpZiAoIWxpbmspDQo+ID4gKwkJZGV2X2VycihkZXYsICJVbmFibGUg
+dG8gbGluayAlc1xuIiwgZGV2X25hbWUobGFyYmRldikpOw0KPiBzaG91ZG4ndCBFUlJfUFRSIGJl
+IHJldHVybmVkIGluIGNhc2Ugb2YgZmFpbHVyZT8NCg0KSW4gdGhlIHByZXZpb3VzIGRlc2lnbiwg
+dGhpcyBpcyBub3QgYSBmYXRhbCBlcnJvci4gdGhlIGNvbnN1bWVyIGRldmljZQ0KY291bGQgcHJv
+YmUgY29udGludW91c2x5IGV2ZW4gdGhvdWdoIGl0IGZhaWwgaGVyZS4uUmV0dXJuaW5nIGhlcmUg
+bWF5DQpsZXQgdGhlIGlzc3VlIGJlIGNhdWdodCBlYXJsaWVyLCBJIHdpbGwgYWRkIHRoaXMgaW4g
+bmV4dCB2ZXJzaW9uLg0KDQogaWYgKCFsaW5rKSB7DQogICAgICAuLi4NCiAgICAgIHJldHVybiBF
+UlJfUFRSKEVJTlZBTCk7DQogIH0NCg0KPiANCj4gVGhhbmtzLA0KPiBEYWZuYQ0KPiANCj4gPiAg
+IAlyZXR1cm4gJmRhdGEtPmlvbW11Ow0KPiA+ICAgfQ0KPiA+ICAgDQo+ID4gICBzdGF0aWMgdm9p
+ZCBtdGtfaW9tbXVfcmVsZWFzZV9kZXZpY2Uoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ICAgew0K
+PiA+ICAgCXN0cnVjdCBpb21tdV9md3NwZWMgKmZ3c3BlYyA9IGRldl9pb21tdV9md3NwZWNfZ2V0
+KGRldik7DQo+ID4gKwlzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGE7DQo+ID4gKwlzdHJ1Y3Qg
+ZGV2aWNlICpsYXJiZGV2Ow0KPiA+ICsJdW5zaWduZWQgaW50IGxhcmJpZDsNCj4gPiAgIA0KPiA+
+ICAgCWlmICghZndzcGVjIHx8IGZ3c3BlYy0+b3BzICE9ICZtdGtfaW9tbXVfb3BzKQ0KPiA+ICAg
+CQlyZXR1cm47DQo+ID4gICANCj4gPiArCWRhdGEgPSBkZXZfaW9tbXVfcHJpdl9nZXQoZGV2KTsN
+Cj4gPiArCWxhcmJpZCA9IE1US19NNFVfVE9fTEFSQihmd3NwZWMtPmlkc1swXSk7DQo+ID4gKwls
+YXJiZGV2ID0gZGF0YS0+bGFyYl9pbXVbbGFyYmlkXS5kZXY7DQo+ID4gKwlkZXZpY2VfbGlua19y
+ZW1vdmUoZGV2LCBsYXJiZGV2KTsNCj4gPiArDQo+ID4gICAJaW9tbXVfZndzcGVjX2ZyZWUoZGV2
+KTsNCj4gPiAgIH0NCj4gPiAgIA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L210a19p
+b21tdV92MS5jIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXVfdjEuYw0KPiA+IGluZGV4IGQ5MzY1
+YTNkOGRjOS4uZDJhN2M2NmI4MjM5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvaW9tbXUvbXRr
+X2lvbW11X3YxLmMNCj4gPiArKysgYi9kcml2ZXJzL2lvbW11L210a19pb21tdV92MS5jDQo+ID4g
+QEAgLTQyNCw3ICs0MjQsOSBAQCBzdGF0aWMgc3RydWN0IGlvbW11X2RldmljZSAqbXRrX2lvbW11
+X3Byb2JlX2RldmljZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gICAJc3RydWN0IGlvbW11X2Z3
+c3BlYyAqZndzcGVjID0gZGV2X2lvbW11X2Z3c3BlY19nZXQoZGV2KTsNCj4gPiAgIAlzdHJ1Y3Qg
+b2ZfcGhhbmRsZV9hcmdzIGlvbW11X3NwZWM7DQo+ID4gICAJc3RydWN0IG10a19pb21tdV9kYXRh
+ICpkYXRhOw0KPiA+IC0JaW50IGVyciwgaWR4ID0gMDsNCj4gPiArCWludCBlcnIsIGlkeCA9IDAs
+IGxhcmJpZDsNCj4gPiArCXN0cnVjdCBkZXZpY2VfbGluayAqbGluazsNCj4gPiArCXN0cnVjdCBk
+ZXZpY2UgKmxhcmJkZXY7DQo+ID4gICANCj4gPiAgIAl3aGlsZSAoIW9mX3BhcnNlX3BoYW5kbGVf
+d2l0aF9hcmdzKGRldi0+b2Zfbm9kZSwgImlvbW11cyIsDQo+ID4gICAJCQkJCSAgICIjaW9tbXUt
+Y2VsbHMiLA0KPiA+IEBAIC00NDUsNiArNDQ3LDE0IEBAIHN0YXRpYyBzdHJ1Y3QgaW9tbXVfZGV2
+aWNlICptdGtfaW9tbXVfcHJvYmVfZGV2aWNlKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPiAgIA0K
+PiA+ICAgCWRhdGEgPSBkZXZfaW9tbXVfcHJpdl9nZXQoZGV2KTsNCj4gPiAgIA0KPiA+ICsJLyog
+TGluayB0aGUgY29uc3VtZXIgZGV2aWNlIHdpdGggdGhlIHNtaS1sYXJiIGRldmljZShzdXBwbGll
+cikgKi8NCj4gPiArCWxhcmJpZCA9IG10MjcwMV9tNHVfdG9fbGFyYihmd3NwZWMtPmlkc1swXSk7
+DQo+ID4gKwlsYXJiZGV2ID0gZGF0YS0+bGFyYl9pbXVbbGFyYmlkXS5kZXY7DQo+ID4gKwlsaW5r
+ID0gZGV2aWNlX2xpbmtfYWRkKGRldiwgbGFyYmRldiwNCj4gPiArCQkJICAgICAgIERMX0ZMQUdf
+UE1fUlVOVElNRSB8IERMX0ZMQUdfU1RBVEVMRVNTKTsNCj4gPiArCWlmICghbGluaykNCj4gPiAr
+CQlkZXZfZXJyKGRldiwgIlVuYWJsZSB0byBsaW5rICVzXG4iLCBkZXZfbmFtZShsYXJiZGV2KSk7
+DQo+ID4gKw0KPiA+ICAgCXJldHVybiAmZGF0YS0+aW9tbXU7DQo+ID4gICB9DQo+ID4gICANCj4g
+PiBAQCAtNDY1LDEwICs0NzUsMTggQEAgc3RhdGljIHZvaWQgbXRrX2lvbW11X3Byb2JlX2ZpbmFs
+aXplKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPiAgIHN0YXRpYyB2b2lkIG10a19pb21tdV9yZWxl
+YXNlX2RldmljZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gICB7DQo+ID4gICAJc3RydWN0IGlv
+bW11X2Z3c3BlYyAqZndzcGVjID0gZGV2X2lvbW11X2Z3c3BlY19nZXQoZGV2KTsNCj4gPiArCXN0
+cnVjdCBtdGtfaW9tbXVfZGF0YSAqZGF0YTsNCj4gPiArCXN0cnVjdCBkZXZpY2UgKmxhcmJkZXY7
+DQo+ID4gKwl1bnNpZ25lZCBpbnQgbGFyYmlkOw0KPiA+ICAgDQo+ID4gICAJaWYgKCFmd3NwZWMg
+fHwgZndzcGVjLT5vcHMgIT0gJm10a19pb21tdV9vcHMpDQo+ID4gICAJCXJldHVybjsNCj4gPiAg
+IA0KPiA+ICsJZGF0YSA9IGRldl9pb21tdV9wcml2X2dldChkZXYpOw0KPiA+ICsJbGFyYmlkID0g
+bXQyNzAxX200dV90b19sYXJiKGZ3c3BlYy0+aWRzWzBdKTsNCj4gPiArCWxhcmJkZXYgPSBkYXRh
+LT5sYXJiX2ltdVtsYXJiaWRdLmRldjsNCj4gPiArCWRldmljZV9saW5rX3JlbW92ZShkZXYsIGxh
+cmJkZXYpOw0KPiA+ICsNCj4gPiAgIAlpb21tdV9md3NwZWNfZnJlZShkZXYpOw0KPiA+ICAgfQ0K
+PiA+ICAgDQo+ID4gDQoNCg==
 
