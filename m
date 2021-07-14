@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BFA3C85BF
+	by mail.lfdr.de (Postfix) with ESMTP id 93DEE3C85C0
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239429AbhGNOHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S233139AbhGNOHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbhGNOHF (ORCPT
+        with ESMTP id S231543AbhGNOHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:07:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C67C06175F;
-        Wed, 14 Jul 2021 07:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WOmlUxJ/fNDV743IUVs9ki0OfQCNwpCeAeNQZqslUxs=; b=JdFOgclV2hYdDuLhl/7tmnxIFu
-        Yp5ZTizwqbUY0ckDTQPlYCtnyqBsO3MjWmPfkjKm+Npgjro/enXyebDYDa9dlqu3NMlJgwWI2XvpR
-        0u3z1aZXDyCY4TdYOWutI2Jus3QPdOUwzDKRbTJd8WCEvDGSmwtH3rQtyYwo8BBdqAAveyQU3/rE0
-        HeXBJXKEJQ5V4qU1XExMKVeneNZEio4D66+f98O2u8nq5Y51mnpGl767Ulz23xswqEftIVEYK2QoC
-        T4vsnvwyCxinQzcFv9Luugqi4hlmlyW/m7WBfamRk+mkJq0EV2LuBivg/g6jg0hcmloUSpNnhmfb1
-        zULYF3tA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3fUF-002GdH-Vh; Wed, 14 Jul 2021 14:03:48 +0000
-Date:   Wed, 14 Jul 2021 15:03:43 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
-Message-ID: <YO7uv8tBI7yQiLb/@casper.infradead.org>
-References: <20210712030701.4000097-1-willy@infradead.org>
- <20210712030701.4000097-11-willy@infradead.org>
- <YOzdKYejOEUbjvMj@cmpxchg.org>
- <YOz3Lms9pcsHPKLt@casper.infradead.org>
- <20210713091533.GB4132@worktop.programming.kicks-ass.net>
- <YO23WOUhhZtL6Gtn@cmpxchg.org>
- <20210713185628.9962f4ce987fd952515c83fa@linux-foundation.org>
+        Wed, 14 Jul 2021 10:07:00 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F8CC06175F;
+        Wed, 14 Jul 2021 07:04:09 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id v32-20020a0568300920b02904b90fde9029so2554789ott.7;
+        Wed, 14 Jul 2021 07:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZziUwL+M2w730ClvqNdJYiu4SC1wJywplU+5JkQfL4=;
+        b=HlzOW3cQoA1QoGQZjHbgn4ILjfXFrLzvqmIt2lPaPUucIfYdqUPlzurKfsFEWaeG0H
+         5+EfyyfbF1PZPN1SXhX2h94Fre9jQLh4UZC1COm4Gg/EIifu5dB6qKDvODtH4QFB6SOi
+         /+l6LPYDm279wnuPv+2XbzoMWRDNkX6IAQZUBQXf5ORWaQV763j3INsNArSLeF+dNgpK
+         hq5a0NMqkNlmsIu0eLhPYCp5l/23V+iheToBy2PZWVhz0Bx8JlmLUbXL397vxfrg/L5W
+         YoxurOaFc2pUTaV5gtiVGW4xFIs4aYy3LJ2DSLi9dMvQXsWeWG45voxcG8ryAymW27cA
+         ZIwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZziUwL+M2w730ClvqNdJYiu4SC1wJywplU+5JkQfL4=;
+        b=Hz/7fpO4Od69OrYR8B+73B+lbdMsYCMwi9cnP+IEe2eTKtoZFJNmwtvcw/89DyfoTi
+         cTOjGPc1aznovHX//vWU2RrRy9qw5h+CxA0bYpSnEQFekdcAG5g8Szp1FPInRxYZVULk
+         w6bwMJoBMSRmYs6SlDUY/VKDYvpm5cyYpHdALkRd183q8WznijTkFH685VJK3oi7v+Mz
+         Z/FDhbi/tCmYCdsFvC8JipRjtIY+LpnSlgSsWdPy05GZ2cQZ/4QJG3/cuScIUm3U/Q07
+         h++KZrqgoXWR/UeGTVQMHnCJqi9MA7nVhijW0vNDb4ZlunMwi8xcQqVzkoXdWvp8yOid
+         FPNw==
+X-Gm-Message-State: AOAM533En3eD8fzur4lnfer5fai6MrFQWaXkrn0GuJW/yR9OKY1WtPVS
+        OLuUs7lCHdgyf6MJNHB6+V6fzT+Dc4Kr9OFLwAQ=
+X-Google-Smtp-Source: ABdhPJyeowY6sKdOkSN1oqD0CTSf04bn/X5iMfBstx2S5hpuYx6gteWjVwa+Om6ZLAm/oHzITr9E8FsJ0sSOcw7R2qc=
+X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr8483724otb.362.1626271448603;
+ Wed, 14 Jul 2021 07:04:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713185628.9962f4ce987fd952515c83fa@linux-foundation.org>
+References: <20210714134850.402-1-dafna.hirschfeld@collabora.com>
+In-Reply-To: <20210714134850.402-1-dafna.hirschfeld@collabora.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 14 Jul 2021 16:03:56 +0200
+Message-ID: <CAFqH_52s0qtPT5SE1BUQrsrwg1XB7hLSExeC-ER5nTggKaeeOA@mail.gmail.com>
+Subject: Re: [PATCH] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Collabora Kernel ML <kernel@collabora.com>, dafna3@gmail.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 06:56:28PM -0700, Andrew Morton wrote:
-> On Tue, 13 Jul 2021 11:55:04 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > I agree that _is_ reads nicer by itself, but paired with other ops
-> > such as testset, _test_ might be better.
-> > 
-> > For example, in __set_page_dirty_no_writeback()
-> > 
-> > 	if (folio_is_dirty())
-> > 		return !folio_testset_dirty()
-> > 
-> > is less clear about what's going on than would be:
-> > 
-> > 	if (folio_test_dirty())
-> > 		return !folio_testset_dirty()
-> 
-> I like folio_is_foo().  As long as it is used consistently, we'll get
-> used to it quickly.
+Hi Dafna,
 
-I'm not sure that folio_is_private(), folio_is_lru(),
-folio_is_waiters(), or folio_is_reclaim() really work.
+Thank you for working on this and sending the patch to upstream for
+further discussion.
 
-> Some GNU tools are careful about appending "_p" to
-> functions-which-test-something (stands for "predicate").  Having spent
-> a lot of time a long time ago with my nose in this stuff, I found the
-> convention to be very useful.  I think foo_is_bar() is as good as
-> foo_bar_p() in this regard.
+Missatge de Dafna Hirschfeld <dafna.hirschfeld@collabora.com> del dia
+dc., 14 de jul. 2021 a les 15:49:
+>
+> From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>
 
-I just wish C let us put '?' on the end of a function name, but I
-recognise the ambiguity with foo?bar:baz;
+Sorry to confuse you, but I'm not the author of this patch, my from is
+only here because I shared with you that patch that I really picked
+from a discussion that took place here:
 
-> And sure, the CaMeLcAsE is fugly, but it sure is useful. 
-> set_page_dirty() is very different from SetPageDirty() and boy that
-> visual differentiation is a relief.
+  https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2251840
 
-Oh, I'm glad you brought that up </sarcasm>
+It'd be really nice to continue the discussion here and set a proper
+fix and understand better the root cause and the fix. The patch really
+fixes an issue in mainline for mtk-vcodec driver on the mt8173
+devices, I can confirm that without it doesn't work properly.
 
-In folios, here's how that ends up looking:
+Waiting for your thoughts,
+  Enric
 
-SetPageDirty() -> folio_set_dirty_flag()
-		 (johannes proposes folio_set_dirty instead)
-set_page_dirty() -> folio_mark_dirty()
-aops->set_page_dirty() -> aops->dirty_folio()
-__set_page_dirty() -> __folio_mark_dirty()
-__set_page_dirty_buffers() -> block_dirty_folio()
-__set_page_dirty_nobuffers() -> filemap_dirty_folio()
-__set_page_dirty_no_writeback() -> dirty_folio_no_writeback()
-
-I kind of feel that last one should be nowb_dirty_folio(), but I'm also
-hoping to eliminate it; if the filesystem sets AS_NO_WRITEBACK_TAGS
-in mapping->flags, then we just inline the no-writeback case into
-folio_mark_dirty() (which already has it for the !mapping case).
+> When running memcpy_toio:
+> memcpy_toio(send_obj->share_buf, buf, len);
+> it was found that errors appear if len is not a multiple of 8:
+>
+> [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
+>
+> This patch ensure copy of a multile of 8 size by calling
+> round_up(len, 8) when copying
+>
+> Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
+> Reported-by: Alexandre Courbot <acourbot@chromium.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+>  drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+> index ec290dde59cf..b464d8192119 100644
+> --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
+> +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+> @@ -316,6 +316,7 @@ int vpu_ipi_send(struct platform_device *pdev,
+>  {
+>         struct mtk_vpu *vpu = platform_get_drvdata(pdev);
+>         struct share_obj __iomem *send_obj = vpu->send_buf;
+> +       unsigned char data[SHARE_BUF_SIZE];
+>         unsigned long timeout;
+>         int ret = 0;
+>
+> @@ -349,7 +350,9 @@ int vpu_ipi_send(struct platform_device *pdev,
+>                 }
+>         } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
+>
+> -       memcpy_toio(send_obj->share_buf, buf, len);
+> +       memset(data, 0, sizeof(data));
+> +       memcpy(data, buf, len);
+> +       memcpy_toio(send_obj->share_buf, data, round_up(len, 8));
+>         writel(len, &send_obj->len);
+>         writel(id, &send_obj->id);
+>
+> --
+> 2.17.1
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
