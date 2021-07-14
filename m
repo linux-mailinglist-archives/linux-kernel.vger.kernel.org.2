@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFAC3C848A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B753C848B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239349AbhGNMkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:40:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56324 "EHLO mail.kernel.org"
+        id S239364AbhGNMkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239284AbhGNMkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:40:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C8F613B7;
-        Wed, 14 Jul 2021 12:37:45 +0000 (UTC)
+        id S239284AbhGNMkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:40:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C6E0613B2;
+        Wed, 14 Jul 2021 12:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626266267;
-        bh=HDxU9C4XWcZvXj9PvP7Rf+xajNX1bDrKnIsSd+7fGbQ=;
+        s=k20201202; t=1626266269;
+        bh=eB/aRbWx8Vg1xHTIrqr77rlGb+2tSbVzgP7O9bEwkBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qXX49VE8d7FWEc2fS7HJKBW6kNmhoyDmD4rHk8igoXeJCwBBrozG3EdVpO8lebiFM
-         6QPXQ62hwcKB+b7k6Px3KTXPFa+O/UdIfL0QCX2wk6Mq6FaB7BYirB6pSyj2vTc/OG
-         S7MIPd+PfTRwGYlmW4LPvnQpvI0ZOsAd2oXz1+xn5D536+UsqTbT1GiQUAs8fW6Exf
-         dKu8ZhQkBBLr45l25xI4uhA0ZMkvw3u1HCA1a42LT+MCKh60EjOMfMHuLflyFgsuMf
-         00T9stDHhgXyvJ8isLvbXiHUPy7++oW6IIeEIF1Hdv0zrAQiQVzxD+H43vbBSTKTUE
-         HVLtiMCYiZZgA==
+        b=S+ItVP07qAEbowMHt4gfGRJUCIn8EOeLWLjo6p4sfLljEhAitwNh+Elx3WQtpkzuF
+         R5LEgraLcJpkXSkG/+iwTvOFDir7K2gNcvMH2sHYpERbl0AQDvEHgmAXLR+ZFSdLNr
+         vuckqr1QmJrfGAEX9hcHmgBQja0fYry66MFN3wWDBhtcpUbqD0cXicGUOfygflCug8
+         BBpJfGQq/ZR4EEBhz+jYw0x1xtNFI7x9+9tXzV5w54oEsmhibQpqrd50pFjAJTwWLR
+         C/siixYK7AvMvBnBu1uLmu9zscM5Zt0nUwLx4AUcbHjMrLjF5QGu9lF5w6wwKS4gUQ
+         tFu3Dv0Lo/g0g==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>,
         Mike Rapoport <rppt@linux.ibm.com>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 1/4] mm/page_alloc: always initialize memory map for the holes
-Date:   Wed, 14 Jul 2021 15:37:36 +0300
-Message-Id: <20210714123739.16493-2-rppt@kernel.org>
+Subject: [PATCH 2/4] microblaze: simplify pte_alloc_one_kernel()
+Date:   Wed, 14 Jul 2021 15:37:37 +0300
+Message-Id: <20210714123739.16493-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210714123739.16493-1-rppt@kernel.org>
 References: <20210714123739.16493-1-rppt@kernel.org>
@@ -42,57 +42,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-Currently memory map for the holes is initialized only when SPARSEMEM
-memory model is used. Yet, even with FLATMEM there could be holes in the
-physical memory layout that have memory map entries.
+The microblaze's implementation of pte_alloc_one_kernel() used
+memblock_alloc_try_nid_raw() along with clear_page() to allocated a zeroed
+page during early setup.
 
-For instance, the memory reserved using e820 API on i386 or
-"reserved-memory" nodes in device tree would not appear in memblock.memory
-and hence the struct pages for such holes will be skipped during memory map
-initialization.
+Replace calls of these functions with a call to memblock_alloc_try_nid()
+that already returns zeroed page and respects the same allocation limits as
+memblock_alloc_try_nid_raw().
 
-These struct pages will be zeroed because the memory map for FLATMEM
-systems is allocated with memblock_alloc_node() that clears the allocated
-memory. While zeroed struct pages do not cause immediate problems, the
-correct behaviour is to initialize every page using __init_single_page().
-Besides, enabling page poison for FLATMEM case will trigger
-PF_POISONED_CHECK() unless the memory map is properly initialized.
-
-Make sure init_unavailable_range() is called for both SPARSEMEM and FLATMEM
-so that struct pages representing memory holes would appear as PG_Reserved
-with any memory layout.
+While on it drop early_get_page() wrapper that was only used in
+pte_alloc_one_kernel().
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- mm/page_alloc.c | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/microblaze/include/asm/pgtable.h |  2 --
+ arch/microblaze/mm/init.c             | 12 ------------
+ arch/microblaze/mm/pgtable.c          | 17 ++++++++---------
+ 3 files changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3b97e17806be..878d7af4403d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6624,7 +6624,6 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
+diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+index 71cd547655d9..c136a01e467e 100644
+--- a/arch/microblaze/include/asm/pgtable.h
++++ b/arch/microblaze/include/asm/pgtable.h
+@@ -443,8 +443,6 @@ extern int mem_init_done;
+ 
+ asmlinkage void __init mmu_init(void);
+ 
+-void __init *early_get_page(void);
+-
+ #endif /* __ASSEMBLY__ */
+ #endif /* __KERNEL__ */
+ 
+diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+index ab55c70380a5..952f35b335b2 100644
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -265,18 +265,6 @@ asmlinkage void __init mmu_init(void)
+ 	dma_contiguous_reserve(memory_start + lowmem_size - 1);
  }
  
--#if !defined(CONFIG_FLATMEM)
- /*
-  * Only struct pages that correspond to ranges defined by memblock.memory
-  * are zeroed and initialized by going through __init_single_page() during
-@@ -6669,13 +6668,6 @@ static void __init init_unavailable_range(unsigned long spfn,
- 		pr_info("On node %d, zone %s: %lld pages in unavailable ranges",
- 			node, zone_names[zone], pgcnt);
- }
--#else
--static inline void init_unavailable_range(unsigned long spfn,
--					  unsigned long epfn,
--					  int zone, int node)
+-/* This is only called until mem_init is done. */
+-void __init *early_get_page(void)
 -{
+-	/*
+-	 * Mem start + kernel_tlb -> here is limit
+-	 * because of mem mapping from head.S
+-	 */
+-	return memblock_alloc_try_nid_raw(PAGE_SIZE, PAGE_SIZE,
+-				MEMBLOCK_LOW_LIMIT, memory_start + kernel_tlb,
+-				NUMA_NO_NODE);
 -}
--#endif
+-
+ void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
+ {
+ 	void *p;
+diff --git a/arch/microblaze/mm/pgtable.c b/arch/microblaze/mm/pgtable.c
+index 38ccb909bc9d..c1833b159d3b 100644
+--- a/arch/microblaze/mm/pgtable.c
++++ b/arch/microblaze/mm/pgtable.c
+@@ -33,6 +33,7 @@
+ #include <linux/init.h>
+ #include <linux/mm_types.h>
+ #include <linux/pgtable.h>
++#include <linux/memblock.h>
  
- static void __init memmap_init_zone_range(struct zone *zone,
- 					  unsigned long start_pfn,
+ #include <asm/pgalloc.h>
+ #include <linux/io.h>
+@@ -242,15 +243,13 @@ unsigned long iopa(unsigned long addr)
+ 
+ __ref pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+ {
+-	pte_t *pte;
+-	if (mem_init_done) {
+-		pte = (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+-	} else {
+-		pte = (pte_t *)early_get_page();
+-		if (pte)
+-			clear_page(pte);
+-	}
+-	return pte;
++	if (mem_init_done)
++		return (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
++	else
++		return memblock_alloc_try_nid(PAGE_SIZE, PAGE_SIZE,
++					      MEMBLOCK_LOW_LIMIT,
++					      memory_start + kernel_tlb,
++					      NUMA_NO_NODE);
+ }
+ 
+ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t flags)
 -- 
 2.28.0
 
