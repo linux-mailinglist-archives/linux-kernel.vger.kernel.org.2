@@ -2,123 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD523C8444
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4BF3C844E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239305AbhGNMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:10:12 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:38773 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239273AbhGNMKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:10:11 -0400
-Received: by mail-il1-f199.google.com with SMTP id s7-20020a92cb070000b02902021736bb95so1020910ilo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PcjvOVN6qCyIv1/fl9MgyXde4qoSrkYo4xHcDWPqJyE=;
-        b=jP9PdIMcyOi3oLaJKG0nY/HunlDCYefJ7toK9j5/EB7PSfBx/QqKgSMJWVhgGJA2z/
-         T5leIr7u6PYJqJPnEetvG1zcAmwNP6LVh4qzhyC7GPL1R/XYI+GNejxJedwuwbm/lm5i
-         f4yorxy5BB0yQaXsPIqddsZMBpEniZstEi2vYSAV/Z+O2YhP/xEotLGegwRO1N5w5MtT
-         E271QGxdB/uLfIZj/8WegSAMsSmOFdu0rex81RAhbCWUL2X+g/PNudMrUahs0vQ2zgUp
-         RxM8GyYTOcUW91JxfZxOrOvbNY9k4mRnEQhBrxRqUrFpb9olgjE09+zYE5e9HxYZuRg0
-         NW1w==
-X-Gm-Message-State: AOAM532isbpe8HwF/voQJJrjVKE8pWOArykQq/lcq78jg7UKRB1GWR81
-        5u9kkCV9yqrqaWsvAHY5BDtMkuwbygaqFPlqWbSCH6quBI0I
-X-Google-Smtp-Source: ABdhPJz57yC1sHnIwLiEslTVL3igJLY28gGHjev9aTUb9D8ixma2il2Ss92QcCo6YP5rfZ1y0dfYGQLFAbtKdjPfTY1FQFu5gVw9
+        id S239310AbhGNMPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:15:15 -0400
+Received: from mail-vi1eur05on2087.outbound.protection.outlook.com ([40.107.21.87]:5728
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230492AbhGNMPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:15:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HKOaKRcL583rznPimSuzMfaxKeYMGCqpfVnvs1uPJGkFt0TmeSY/vyVcVeQ+z6pJi8Wf4LbKfukRwpXn+9c3HxA5w5BZ+tMqiVwrqqVVpFg6lg8Vao5bya9XCXtts7UvUIYhY/SrKMvGbnp+PJUQB5VjFAne4+cVrWoppXI4N/6cxyQ4cj7mJG+9wjBYwjR4thcLx38S0GV5BWWR15AmBbaUrM56tv3SNAeGpgc36e2dwj0MZx4lwcFyolIMfG90rtq6G7CnqBcwpzXsdvc4uiTtX538UIoAh2w4kWBzABf6p1K0cFFmeMZvhrnNZLn+xRcVMMCRiBKQjLZKNkWFAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=egPTD6dVq3rStzhk+ouh9WWtfcIaWQVfu19UjR5XfOE=;
+ b=ZfMteKMvXw4DEg6+OJTT+5119TuLsGcJowHz1VZhUcI+s2RtRqLNa4eLZqMl40ZBJMiZbooM7h66wtu+dAYPBr76h2AQf62uom1TGhsKCq08ZfZ48Q8HvrBpjtngUbSP/F7CsKV7vqt3z8fY3YOb/5iZDOxkMB+E4nlTfq0+JKwO15fvrEDnS6rvEmauXwSKYD/zTraJ7XfdT0ibldF6kJvKsCTvztJP1XneYFC/T2nMf3YuhIozKSZxlo4qxIHhh+Ad3XYCy272N5PNyiGTG5hZNTmeGVrDBrXhDexX8rlreqw9r6GWJzwkq7XLxQUG+gSxUuqUvtcuR0wjf8J/tQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kococonnector.com; dmarc=pass action=none
+ header.from=kococonnector.com; dkim=pass header.d=kococonnector.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=KoCoConnector.onmicrosoft.com; s=selector2-KoCoConnector-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=egPTD6dVq3rStzhk+ouh9WWtfcIaWQVfu19UjR5XfOE=;
+ b=XII/pmPueD5lhxeQywkDwBkQahrU9d7v6niOo4xqQFLitTB+D1DGpy6utQdRPNEvoWiEM8GMFgH2re5UO4+JdkeQnyjOphC5SFf8OA76CeOFdc2+e+x72n/YEjkakexb5rDtm1z7RZv9imkR2/Lo/rWmU/JBZ0/NZ+wkAYvgJYA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=kococonnector.com;
+Received: from AM9PR09MB4884.eurprd09.prod.outlook.com (2603:10a6:20b:281::9)
+ by AM4PR0902MB1748.eurprd09.prod.outlook.com (2603:10a6:200:96::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Wed, 14 Jul
+ 2021 12:12:20 +0000
+Received: from AM9PR09MB4884.eurprd09.prod.outlook.com
+ ([fe80::60d1:9cfe:5e26:92b5]) by AM9PR09MB4884.eurprd09.prod.outlook.com
+ ([fe80::60d1:9cfe:5e26:92b5%6]) with mapi id 15.20.4331.022; Wed, 14 Jul 2021
+ 12:12:19 +0000
+From:   Oliver Graute <oliver.graute@kococonnector.com>
+To:     shawnguo@kernel.org
+Cc:     devicetree@vger.kernel.org, aisheng.dong@nxp.com,
+        fabio.estevam@nxp.com,
+        Oliver Graute <oliver.graute@kococonnector.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: imx8qm: add compatible string for usdhc3
+Date:   Wed, 14 Jul 2021 14:09:16 +0200
+Message-Id: <20210714120925.23571-1-oliver.graute@kococonnector.com>
+X-Mailer: git-send-email 2.17.1
+X-Patchwork-Bot: notify
+Content-Type: text/plain
+X-ClientProxiedBy: AM3PR05CA0140.eurprd05.prod.outlook.com
+ (2603:10a6:207:3::18) To AM9PR09MB4884.eurprd09.prod.outlook.com
+ (2603:10a6:20b:281::9)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:25c7:: with SMTP id u7mr4155293jat.26.1626264439681;
- Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 05:07:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003cf65205c71432d0@google.com>
-Subject: [syzbot] WARNING in vmap_pages_range_noflush
-From:   syzbot <syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2.207.138.2) by AM3PR05CA0140.eurprd05.prod.outlook.com (2603:10a6:207:3::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 14 Jul 2021 12:12:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9900fada-8ed8-45c7-01da-08d946c0a0c6
+X-MS-TrafficTypeDiagnostic: AM4PR0902MB1748:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM4PR0902MB17487CF4BA2E13017A902354EB139@AM4PR0902MB1748.eurprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +1BePl+bDiYYyYQwJgxESy+5a8wm2PCcKJarhihS0bPFdln7tI99K3fyBaE7Gxg5/KVLvlUp1DzrWz6GxnyA7NFcQyNczS1IdQucW3JkIaF6Y6rRvxoNtyn9w+EogAqLJ2wA/qrraP7SiTXlijojG4fP5h0hM4TrRSFsuOTVFWk6hoHVwC9sNa6NiecBF1DsgGDstscgkSIMiTPAD3zXrhPt8rd62SSqIYEESmrKZsLge3jstRTGGoNnSkNnUBsD5VQMi0cPYKGoC4FqoT2Su3Ra8NidIJLnS5Pv7LCW7NiNMjAq1GBda76Us29C6OT3mx8NKabB5CBZoh55dbDoqqnsyxVCiS4vq0U0EFF37wfunw7p80XeNmjFoofaArUB+7E5GcMjFO76KoaoHOaw5T70LN8pPY2+JfuxQq1IHNKLAnATUkMemxCXKC2VOS7NSAsvYrF2CyDhbKzwEmxrYcdxMfnJ57V/DU5mjGmiPVC2UJJgmhCOTefmtA/XtHQUHrNS12614MRCuaD5WZYt1zDJGLFA/5xvBJcCILVAjP4h8kwldePmlbeOSM6QzsqmEbOqIm1tOIvA/tq61Ha6HbqHvLwR+iRR86e+j8PSUb/J2cz3NvkXra0UwrPiUNEDALTj04qhuDzzOTEhQwDOwTBb/p09kAfnjlC762AkhyarQlyP6iltTfBW2tWO7duBvWtbs9lT7iXV0fhFCvL7QC3puHIOAQ1ek5RJM7hzcu8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR09MB4884.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(366004)(39830400003)(136003)(376002)(7416002)(1076003)(316002)(4744005)(6486002)(8676002)(54906003)(86362001)(38100700002)(478600001)(6666004)(956004)(6916009)(36756003)(38350700002)(6496006)(26005)(52116002)(4326008)(8936002)(66476007)(186003)(5660300002)(66556008)(44832011)(66946007)(2906002)(2616005)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wZLjoY5pzUR3WlTkNDL2RQ+KvK+aMEAdPYKnXgfhA+7If70PYeD7rb5mF2VW?=
+ =?us-ascii?Q?uYj6yr6PQfCixmyOvF5/uDKF7HCMlc8fbf7mJitkxO48dcje8yi/e1o1URlB?=
+ =?us-ascii?Q?zxUGs7i13bqLm0SQKq4hzPEcLYXcHwth87y1npsn6wuPFL7KWd+Ec7ncJ7Sj?=
+ =?us-ascii?Q?YZmW8dxB6Q7kkMqttINT2Nm109g+eyatqMim1ZWUvSHl8HiigEDgRYGGMSM9?=
+ =?us-ascii?Q?KPz7rh91CbnNhKpNtr73mx8xV7plylYeNnl5kNxumFERHpeBQ5DG8fal5eqZ?=
+ =?us-ascii?Q?sC+8q33XOIQZGUYTNPUiZI7Mi+6nyk3vkySy+ZugcjNsbSJaSaQaD/3QaomR?=
+ =?us-ascii?Q?5tRoQK0Wy8tC4sYzX2pX56Eq5hBY8piRW3G8FPXI+pVOYA4A0mNEubBjrJCb?=
+ =?us-ascii?Q?LxJFA5Stxd5zIvXI6UeAef5FX3YAGsU7j73oV5M5r9zR7Okd+EbhNnehHgpX?=
+ =?us-ascii?Q?Km4NQLpKJME6AP3Tsn705Gk5makXmuCsCZAB1Y07becEAQQ7LBQZeCGHufHE?=
+ =?us-ascii?Q?07bTTzH/M6zrLXLA5dUyX59r4IWLAQUXSEHDrDoaGM5zLpgO9ylORk7hgUTF?=
+ =?us-ascii?Q?6Jj6mdMY+7OtZJD7Tjj32DIh3PlJWg1/+XXKMK++ywLkt46EjCP5m5MOZgty?=
+ =?us-ascii?Q?qIsuQRgKeFtl21mh+Qcxi8VdZmov0GFGfUbdsGrtNGe2ecty0u2F3QxxF8WC?=
+ =?us-ascii?Q?2Of6OsO5FfSUiRkg72Y8Z8/CQJEGKDoMRA062F5pwvxYyt/qPZYQMkqJLSLs?=
+ =?us-ascii?Q?TomzQG7b/VQb0L2whN0yHKyNNePwnHSEb8+KIDiS/GPnOca44fhIiCxuJ/2l?=
+ =?us-ascii?Q?hEu7ltB0gvgciJs2FyKEDvz/E5o/lDXpvIXXlqBeJiCQANFV52lbsKvWXYEJ?=
+ =?us-ascii?Q?97nSjgidAkC9uDsWnYJfDARqboynvX5mAXsfXIejckrISPzS0wpUNvnDbq97?=
+ =?us-ascii?Q?OlN/MJ0gBO0q/0eNcOVovM0Iq84ZYOgaslArCRc1RW9cNlSVlF+Dnw47nj7E?=
+ =?us-ascii?Q?wNEnKLwlDvj5CIK2+0GSelkjoe+/ebytF85Vy9RRITujCcLKEbvDWGKD1iyw?=
+ =?us-ascii?Q?//G9gZHgRPTyhk1jElzhIBSqUk7tcMjdXknDzSgdTYBbhZIL1jzASW7hQLy1?=
+ =?us-ascii?Q?RBq8IdNbukDb2Nbo2avbGfPmORg3EoQbwZ26HrE5VKSPC0j3B92sNlHUNlVm?=
+ =?us-ascii?Q?9gwdLTgdlmkowP8hJESX3hgzMY3UFz04zOdauTomKdtGs0IbEoMC3Nt+9PCk?=
+ =?us-ascii?Q?Hkagp25UzDkhTZC9pA1gp021OPwRYnndDCT1Q2VsLP7h4euxXz4D/iJTwURk?=
+ =?us-ascii?Q?4SR+CGR3Mflq+eaWsQErHhOg?=
+X-OriginatorOrg: kococonnector.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9900fada-8ed8-45c7-01da-08d946c0a0c6
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR09MB4884.eurprd09.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 12:12:19.6712
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 59845429-0644-4099-bd7e-17fba65a2f2b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YVnRUnUMMGaDTSbP/0IEYEyXJ9whh1UQ7IeV0tH9R6QM/Cll2c0yLYQZ6KMvSXID4rMD9WHqkahvbFeWPE0yqjMPj9M+WFrCGicdu7RUwEE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0902MB1748
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+add compatible string for usdhc3
 
-syzbot found the following issue on:
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Sascha Hauer <kernel@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Dong Aisheng <aisheng.dong@nxp.com>
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1528f19c300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=90b227e3653ac0d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f4d23fa0b2b2bb23e38
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pte_range mm/vmalloc.c:448 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pud_range mm/vmalloc.c:489 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
-Modules linked in:
-CPU: 0 PID: 21050 Comm: syz-executor.3 Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:vmap_pages_pte_range mm/vmalloc.c:448 [inline]
-RIP: 0010:vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
-RIP: 0010:vmap_pages_pud_range mm/vmalloc.c:489 [inline]
-RIP: 0010:vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
-RIP: 0010:vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
-RIP: 0010:vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
-Code: c5 ff 4c 89 f8 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 62 02 00 00 49 8b 1f e9 6d fd ff ff e8 4d 37 c5 ff <0f> 0b 41 bc f4 ff ff ff e9 62 ff ff ff e8 3b 37 c5 ff 31 ff 48 89
-RSP: 0018:ffffc900025979b8 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff888000100220 RCX: ffffc9000f762000
-RDX: 0000000000040000 RSI: ffffffff81af8783 RDI: 0000000000000003
-RBP: ffffea0002472c00 R08: 0000000000000000 R09: ffffffff90a01847
-R10: ffffffff81af85bf R11: 0000000000000001 R12: ffffc9002ac00000
-R13: 0000070700000000 R14: ffffc9002aa44000 R15: 8000000000000163
-FS:  00007f4f610c4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000544038 CR3: 000000001eaa7000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- vmap_pages_range mm/vmalloc.c:592 [inline]
- __vmalloc_area_node mm/vmalloc.c:2861 [inline]
- __vmalloc_node_range+0x659/0x960 mm/vmalloc.c:2947
- __bpf_map_area_alloc+0xd5/0x150 kernel/bpf/syscall.c:311
- queue_stack_map_alloc+0xf0/0x1d0 kernel/bpf/queue_stack_maps.c:76
- find_and_alloc_map kernel/bpf/syscall.c:127 [inline]
- map_create+0x4a0/0x14c0 kernel/bpf/syscall.c:833
- __sys_bpf+0x8bc/0x4750 kernel/bpf/syscall.c:4451
- __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4f610c4188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000000000040 RSI: 00000000200001c0 RDI: 0000000000000000
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffff9d98a9f R14: 00007f4f610c4300 R15: 0000000000022000
-
-
+Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
+index 00ae820d5175..8c33edf0744f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-conn.dtsi
+@@ -19,3 +19,7 @@
+ &usdhc2 {
+ 	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+ };
++
++&usdhc3 {
++	compatible = "fsl,imx8qm-usdhc", "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
++};
+-- 
+2.17.1
+
