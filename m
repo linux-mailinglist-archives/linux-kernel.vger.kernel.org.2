@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB963C83EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AC43C83EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239154AbhGNLfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhGNLfu (ORCPT
+        id S239192AbhGNLgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:36:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60702 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230164AbhGNLgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:35:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6346EC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:32:59 -0700 (PDT)
+        Wed, 14 Jul 2021 07:36:15 -0400
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626262377;
+        s=2020; t=1626262403;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=p1qWCK0RQ57NjZHmP+mdTUr72CZPEysuuwKFequOuG8=;
-        b=j+5GJVHyIefGeX9yGFjaZXLQF8iok9YrzARwBO+CXmznumu1iNWJJ8HniQ0OeLZDrG7tCX
-        kCPb31er76rpndD2A0eZ2Hj730/ykk9glF4EiUr6DSbp+0tgj5z/KGb51nsBbHEAiruGgh
-        9mERb4s4st+4oxv8YsUt2HXDvF84YRbzyT3+BexkqUo6T2w5FKQnsdjckqqTM6OzcsAE4l
-        zysxhYvrhiWYOEBrsecH7KpnccHrdKnZB6EeBJ+lhqPmQUxW75her9pcKVVD0WNaAc52m1
-        Nk2nsCZgmShiBj/NtNC/aEt8/IotjI71dJ4Il+taCEdQi5DjUxwsU0c0wb0N9g==
+        bh=EcaBntY+oSlhBqgrCZGx/dkv2Mafgo8FgMjqNZcerkg=;
+        b=tfVwLL7KilpXwfngcy8oboF5AkXvv5s05Q4WOxT/DAaU+BtWaK2WAYtBsHA9VpiIuD9FJt
+        +yKAuT48FqTUywKpzulm+uwMq53Jl4RdLNtfOgeFYIfbWlpcH/lNbZtqGgnlsQ8xaURLU9
+        q3SbTyC5wUC3cJZW46miadIsizbAxdWRPb9PxcGfcOfUKLbToGsizzUJz+P/sRDJOanevs
+        3ikP3dyKNmwleeuycnGjigxjgcO5YCXJcMu05rluhWzg2+mI84/pWZ8P/5XTVpbtONXGqu
+        va2zeeomZgfWruiyDpnOmzPexTDjrSmHK/3ydt4d8fRjmFesZbl2cZ39bV89Qw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626262377;
+        s=2020e; t=1626262403;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=p1qWCK0RQ57NjZHmP+mdTUr72CZPEysuuwKFequOuG8=;
-        b=QsPos8q5sHWaU+G3OfI5rJ9i0Y4GwFpKuW3Mdx4gop8ebh+aPuJ9lwjBUJ6ZVv5HKuNnbK
-        LSxRf8EdqEIJjzAg==
+        bh=EcaBntY+oSlhBqgrCZGx/dkv2Mafgo8FgMjqNZcerkg=;
+        b=Q9X5Zd3o/84fsKNWFpfFRmfvvvid5KIFc5EjTBeBhb3TUUeRlnF11Iheyg5qMKdlW87GwN
+        xfTNrOIG4C73G3CQ==
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -46,29 +43,29 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 05/50] sched: Provide schedule point for RT locks
-In-Reply-To: <20210714101705.GB2591@worktop.programming.kicks-ass.net>
-References: <20210713151054.700719949@linutronix.de> <20210713160746.410991567@linutronix.de> <20210714082820.GB2725@worktop.programming.kicks-ass.net> <87y2a9b4xw.ffs@nanos.tec.linutronix.de> <20210714101705.GB2591@worktop.programming.kicks-ass.net>
-Date:   Wed, 14 Jul 2021 13:32:56 +0200
-Message-ID: <87o8b5b05z.ffs@nanos.tec.linutronix.de>
+Subject: Re: [patch 14/50] locking/rtmutex: Add wake_state to rt_mutex_waiter
+In-Reply-To: <20210714101831.GC2591@worktop.programming.kicks-ass.net>
+References: <20210713151054.700719949@linutronix.de> <20210713160747.320345860@linutronix.de> <20210714101831.GC2591@worktop.programming.kicks-ass.net>
+Date:   Wed, 14 Jul 2021 13:33:23 +0200
+Message-ID: <87lf69b058.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14 2021 at 12:17, Peter Zijlstra wrote:
-> On Wed, Jul 14, 2021 at 11:49:47AM +0200, Thomas Gleixner wrote:
->> On Wed, Jul 14 2021 at 10:28, Peter Zijlstra wrote:
->> >
->> > #define SM_MASK_STATE          (~0U)
->> >
->> > Be even better?
->> 
->> SM_MASK_STATE is overengineered. See combo patch 4+5 below
->
-> Yep, that should result in similar code as my proposal, thanks!
->
-> nit: you like UINT_MAX better than (~0U) ?
+On Wed, Jul 14 2021 at 12:18, Peter Zijlstra wrote:
 
-No strong preference.
+> On Tue, Jul 13, 2021 at 05:11:08PM +0200, Thomas Gleixner wrote:
+>> @@ -33,6 +34,7 @@ struct rt_mutex_waiter {
+>>  	struct rb_node		pi_tree_entry;
+>>  	struct task_struct	*task;
+>>  	struct rt_mutex		*lock;
+>> +	int			wake_state;
+>>  	int			prio;
+>>  	u64			deadline;
+>
+> State is 'unsigned int', but we're (luckily) not yet at the MSB so it's
+> a bit moot, still...
+
+Still. Fixed locally
