@@ -2,223 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DA93C816F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79D63C8156
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238801AbhGNJYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238845AbhGNJYO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:24:14 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798E0C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:21:22 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id u3so1194088plf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0sSF06QuAY7kUNXCT+H8hO7WNAzsL+XHoJo4uKapYUQ=;
-        b=hWbxjhh0bB5B6m4rcT6U6l1KYThmR4c2fqxERQD3zKLqXkWJMG/SysrhsRf+SH6gzN
-         JEvfZCrpYNToVVx1FkVeze7w0t73ZfLF5XBrOqO7WP6KJN+q2Tx8Es0D/dBSjxvxJra9
-         W3IWsb4howhaF1lP3TRBoD8r+btX3cApquQw7dBUSWmYpU+t2e+xBLLJPwv5crFsoxqn
-         QwJKXSegIhAsNoxYnw+UkwIfkHX7fs+RO0mU8Pfyir0agDJugBedGS3RoIyyGn9qYyT5
-         hggFWsM8Dbszg55bzNtvl5DFHAcfG1OGjoELlI2kE8QKY+CKDEJS5v2xnv37+xjmmq4L
-         HT1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0sSF06QuAY7kUNXCT+H8hO7WNAzsL+XHoJo4uKapYUQ=;
-        b=gTQNYP5xK3HKcmy9/EW1ySoCH01bdVIEaIIW+uTDpEV2UwiFRNNPfaBqcFpLk941Bp
-         oC0jqVYB5Y/Id2xbOEN3RS/o9+Q10O+v2rdkmoL6XVDurhBsg6GWGO1hBjK+m2pIC3dz
-         USOdmlBDmHxyqODhRRm/zH1jJT0LC+YvDamHgIx5NGvKLn3yquyorgh9eBcWx/sHf9fQ
-         08IUz7HXkd+7xTG97nlCMTQa96G51e1YZ0reMMYklZQvaBOYs1Wyog9viiWdrE+Srh2/
-         FdukvAX9+jIyPJpahU+SHR0odHSKLtjThxrHXL0xe7EARtPGdFMGtQAihVWQgnW98n0z
-         YnqQ==
-X-Gm-Message-State: AOAM531GDT1CeQPa98PErhkgXUloHyDUaVHrTu0NZMuLxJH9vsdIADWK
-        1jwzh6Pcb/Qa3rAQrIYW+RTAVw==
-X-Google-Smtp-Source: ABdhPJxDHd9SN5fagjQhrWthsjzWABX4QS3GgblMv9qSYLWRITZkU4ZRFkOcw5Ylui6X2JqBjrTSLA==
-X-Received: by 2002:a17:903:2309:b029:12a:965b:333 with SMTP id d9-20020a1709032309b029012a965b0333mr6943494plh.31.1626254481985;
-        Wed, 14 Jul 2021 02:21:21 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.243])
-        by smtp.gmail.com with ESMTPSA id k19sm1742540pji.32.2021.07.14.02.21.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Jul 2021 02:21:21 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
-        corbet@lwn.net
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, zhengqi.arch@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 5/5] mm: sparsemem: use page table lock to protect kernel pmd operations
-Date:   Wed, 14 Jul 2021 17:18:00 +0800
-Message-Id: <20210714091800.42645-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210714091800.42645-1-songmuchun@bytedance.com>
-References: <20210714091800.42645-1-songmuchun@bytedance.com>
+        id S238302AbhGNJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:21:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238189AbhGNJVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:21:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78FC361370;
+        Wed, 14 Jul 2021 09:18:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626254298;
+        bh=TaQMEAMiqW5ftXExwf1yrkJI+SslnJWeSCkRVn4NqSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o4lGqiJB0Ge6QP1LDnusUIRfmL1dsAT0/rUkEMH5n8Yf3vspME4x08nh2OS08T31K
+         Uo/egFjhyyY3YuzXS/RnJu3WEdtbL2V7l3i9G8KxcsbKg4FTsZKd03We97jVVBMR5n
+         ycrBXBZsvuCyIdzk03FUSlq3NfQaW34/Dwma9yQI=
+Date:   Wed, 14 Jul 2021 11:18:14 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Michal Hocko <mhocko@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Subject: Re: 5.13.2-rc and others have many not for stable
+Message-ID: <YO6r1k7CIl16o61z@kroah.com>
+References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+ <YO0zXVX9Bx9QZCTs@kroah.com>
+ <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The init_mm.page_table_lock is used to protect kernel page tables, we
-can use it to serialize splitting vmemmap PMD mappings instead of mmap
-write lock, which can increase the concurrency of vmemmap_remap_free().
+On Tue, Jul 13, 2021 at 06:28:13PM -0700, Andrew Morton wrote:
+> On Tue, 13 Jul 2021 08:31:57 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > 
+> > > Amongst the 2000+ patches posted today, there are a significant number
+> > > of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
+> > > yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
+> > > 
+> > > Am I out of date?  I thought that had been agreed not to happen:
+> > > https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
+> > > is the thread I found when I looked for confirmation, but I believe the
+> > > same has been agreed before and since too.
+> > > 
+> > > Andrew goes to a lot of trouble to establish which Fixes from his tree
+> > > ought to go to stable.  Of course there will be exceptions which we
+> > > later decide should go in after all; but it's worrying when there's a
+> > > wholesale breach like this, and I think most of them should be dropped.
+> > > 
+> > > To pick on just one of many examples (sorry Miaohe!), a patch that
+> > > surprises me, but I've not had time to look into so far, and would
+> > > not want accelerated into X stable releases, 385/800
+> > > 
+> > > > Miaohe Lin <linmiaohe@huawei.com>
+> > > >     mm/shmem: fix shmem_swapin() race with swapoff
+> > 
+> > Sasha, and I, take patches from Linus's tree like the above one that
+> > have "Fixes:" tags in them as many many maintainers do not remember to
+> > put "cc: stable" on their patches.
+> 
+> As do many many developers.  I always check.
+> 
+> > The above patch says it fixes a problem in the 5.1 kernel release, so
+> > Sasha queued it up for 5.10, 5.12, and 5.13.  Odds are he should have
+> > also sent a "FAILED" notice for 5.4, but we don't always do that for
+> > patches only with a Fixes tag all the time as we only have so much we
+> > can do...
+> > 
+> > So is that tag incorrect?  If not, why was it not cc: stable?  Why is it
+> > not valid for a stable release?
+> 
+> Usually because we judged that the seriousness of the problem did not
+> justify the risk & churn of backporting its fix.
+> 
+> >  So far, all automated testing seems to
+> > show that there are no regressions in these releases with these commits
+> > in them.  If there was a problem, how would it show up?
+> > 
+> > And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
+> > bot, but that is not what caused this commit to be added to a stable
+> > release.
+> > 
+> > Trying to keep a "do not apply" list for Fixes: tags only is much harder
+> > for both of us as we do these semi-manually and review them
+> > individually.  Trying to remember what subsystem only does Fixes tags
+> > yet really doesn't mean it is an impossible task.
+> 
+> Well, it shouldn't be super hard to skip all patches which have Fixes:,
+> Signed-off-by:akpm and no cc:stable?
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/ptdump.c         | 16 ++++++++++++----
- mm/sparse-vmemmap.c | 49 ++++++++++++++++++++++++++++++++++---------------
- 2 files changed, 46 insertions(+), 19 deletions(-)
+Ok, I will do this now (goes and writes this down...)
 
-diff --git a/mm/ptdump.c b/mm/ptdump.c
-index da751448d0e4..eea3d28d173c 100644
---- a/mm/ptdump.c
-+++ b/mm/ptdump.c
-@@ -40,8 +40,10 @@ static int ptdump_pgd_entry(pgd_t *pgd, unsigned long addr,
- 	if (st->effective_prot)
- 		st->effective_prot(st, 0, pgd_val(val));
- 
--	if (pgd_leaf(val))
-+	if (pgd_leaf(val)) {
- 		st->note_page(st, addr, 0, pgd_val(val));
-+		walk->action = ACTION_CONTINUE;
-+	}
- 
- 	return 0;
- }
-@@ -61,8 +63,10 @@ static int ptdump_p4d_entry(p4d_t *p4d, unsigned long addr,
- 	if (st->effective_prot)
- 		st->effective_prot(st, 1, p4d_val(val));
- 
--	if (p4d_leaf(val))
-+	if (p4d_leaf(val)) {
- 		st->note_page(st, addr, 1, p4d_val(val));
-+		walk->action = ACTION_CONTINUE;
-+	}
- 
- 	return 0;
- }
-@@ -82,8 +86,10 @@ static int ptdump_pud_entry(pud_t *pud, unsigned long addr,
- 	if (st->effective_prot)
- 		st->effective_prot(st, 2, pud_val(val));
- 
--	if (pud_leaf(val))
-+	if (pud_leaf(val)) {
- 		st->note_page(st, addr, 2, pud_val(val));
-+		walk->action = ACTION_CONTINUE;
-+	}
- 
- 	return 0;
- }
-@@ -101,8 +107,10 @@ static int ptdump_pmd_entry(pmd_t *pmd, unsigned long addr,
- 
- 	if (st->effective_prot)
- 		st->effective_prot(st, 3, pmd_val(val));
--	if (pmd_leaf(val))
-+	if (pmd_leaf(val)) {
- 		st->note_page(st, addr, 3, pmd_val(val));
-+		walk->action = ACTION_CONTINUE;
-+	}
- 
- 	return 0;
- }
-diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-index 62e3d20648ce..e636943ccfc4 100644
---- a/mm/sparse-vmemmap.c
-+++ b/mm/sparse-vmemmap.c
-@@ -64,8 +64,8 @@ struct vmemmap_remap_walk {
-  */
- #define NR_RESET_STRUCT_PAGE		3
- 
--static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
--				  struct vmemmap_remap_walk *walk)
-+static int __split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
-+				    struct vmemmap_remap_walk *walk)
- {
- 	pmd_t __pmd;
- 	int i;
-@@ -87,15 +87,37 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
- 		set_pte_at(&init_mm, addr, pte, entry);
- 	}
- 
--	/* Make pte visible before pmd. See comment in __pte_alloc(). */
--	smp_wmb();
--	pmd_populate_kernel(&init_mm, pmd, pgtable);
-+	spin_lock(&init_mm.page_table_lock);
-+	if (likely(pmd_leaf(*pmd))) {
-+		/* Make pte visible before pmd. See comment in __pte_alloc(). */
-+		smp_wmb();
-+		pmd_populate_kernel(&init_mm, pmd, pgtable);
-+		flush_tlb_kernel_range(start, start + PMD_SIZE);
-+		spin_unlock(&init_mm.page_table_lock);
- 
--	flush_tlb_kernel_range(start, start + PMD_SIZE);
-+		return 0;
-+	}
-+	spin_unlock(&init_mm.page_table_lock);
-+	pte_free_kernel(&init_mm, pgtable);
- 
- 	return 0;
- }
- 
-+static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
-+				  struct vmemmap_remap_walk *walk)
-+{
-+	int ret;
-+
-+	spin_lock(&init_mm.page_table_lock);
-+	ret = pmd_leaf(*pmd);
-+	spin_unlock(&init_mm.page_table_lock);
-+
-+	if (ret)
-+		ret = __split_vmemmap_huge_pmd(pmd, start, walk);
-+
-+	return ret;
-+}
-+
- static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
- 			      unsigned long end,
- 			      struct vmemmap_remap_walk *walk)
-@@ -132,13 +154,12 @@ static int vmemmap_pmd_range(pud_t *pud, unsigned long addr,
- 
- 	pmd = pmd_offset(pud, addr);
- 	do {
--		if (pmd_leaf(*pmd)) {
--			int ret;
-+		int ret;
-+
-+		ret = split_vmemmap_huge_pmd(pmd, addr & PMD_MASK, walk);
-+		if (ret)
-+			return ret;
- 
--			ret = split_vmemmap_huge_pmd(pmd, addr & PMD_MASK, walk);
--			if (ret)
--				return ret;
--		}
- 		next = pmd_addr_end(addr, end);
- 		vmemmap_pte_range(pmd, addr, next, walk);
- 	} while (pmd++, addr = next, addr != end);
-@@ -321,10 +342,8 @@ int vmemmap_remap_free(unsigned long start, unsigned long end,
- 	 */
- 	BUG_ON(start - reuse != PAGE_SIZE);
- 
--	mmap_write_lock(&init_mm);
-+	mmap_read_lock(&init_mm);
- 	ret = vmemmap_remap_range(reuse, end, &walk);
--	mmap_write_downgrade(&init_mm);
--
- 	if (ret && walk.nr_walked) {
- 		end = reuse + walk.nr_walked * PAGE_SIZE;
- 		/*
--- 
-2.11.0
+But it really feels odd that you all take the time to add a "Hey, this
+fixes this specific commit!" tag in the changelog, yet you do not
+actually want to go and fix the kernels that have that commit in it.
+This is an odd signal to others that watch the changelogs for context
+clues.  Perhaps you might not want to do that anymore.
 
+> I'd really really prefer this, please.  At present this -stable
+> promiscuity is overriding the (sometime carefully) considered decisions
+> of the MM developers, and that's a bit scary.  I've actually been
+> spending the past couple of years believing that if I left off
+> cc:stable, the fix wasn't going to go into -stable!
+
+That used to be the case, but we have had to deal with all of the
+subsystems where people were NOT putting cc: stable on them, and only
+Fixes: tags.  It's slowly getting better, but some subsystems refuse to
+do this for some reason (it's hard to wrangle 4000 people to all do the
+same thing...)
+
+> Alternatively I could just invent a new tag to replace the "Fixes:"
+> ("Fixes-no-backport?") to be used on patches which fix a known previous
+> commit but which we don't want backported.
+
+No please, that's not needed, I'll just ignore these types of patches
+now, and will go drop these from the queues.
+
+Sasha, can you also add these to your "do not apply" script as well?
+
+thanks,
+
+greg k-h
