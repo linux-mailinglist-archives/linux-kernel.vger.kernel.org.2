@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E243C8F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D9A3C8F93
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbhGNTwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:52:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46242 "EHLO mail.kernel.org"
+        id S240029AbhGNTwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238637AbhGNTsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:48:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A4A7613EB;
-        Wed, 14 Jul 2021 19:43:38 +0000 (UTC)
+        id S236618AbhGNTsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:48:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF28161404;
+        Wed, 14 Jul 2021 19:43:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291819;
-        bh=zk2+0tbakUZ/9PwNRSvSTCtLeNsiqr4jud6adup3Yng=;
+        s=k20201202; t=1626291824;
+        bh=jh2jcy3zaJ/o2I2ivrDEqRXe026FW98yPavfk4B6pAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sq/iYU7R62YG+puH1pr+Ooay4vIpF1pmVflY2iKYS3JsMrHjl43aflL9eBLCUCMO6
-         yAB0UwkZgkOOQTIWcPgsLiGFJMpcON9Hfhtf0lqfIkNu09UcV1ac4BkbYhpIVoXNHv
-         lmYaIBD9RdoHSVY/zLge7h2BEjvl2Of1QabkbkNw3v9lG384FJkEEv9abhH3H3kOsh
-         oqSp1BlZcHmVPB3kk7jNE59mzZ7gas3ugpFMfFr4GWgoq0OKqVysMppHMBl06RaLxX
-         w4uyHwsieEbq9wTpjSHYABtqatlilp8VOM+JVthc5e7xHBZ6TxN4NodmhqmQpo+iXn
-         b5lWFVJZXYxoQ==
+        b=sbb3bk+QJABBOpWrfiSITNuIWZrGC9I/abNkJNdxB7dkKpSmhYLTQ7+iKrEsLICi9
+         3W0OVeKCRH7CkX/UXOzS6AvpTqDR8U0VKsNpmINYS2LaD2WgDuvyVcRE6XOjChaiM4
+         TJLp6CdGvfOfPEDM2/+w0y34X3WTpP7DwyGpeH9he/4nI6LFE+yKegyysO2+YD5VhF
+         2r/4sgK3LVWlN4Mp9FxVg/uaUT8w25pqI3sh7LyKo3DBG8CNAL+KnUUfiDaKt+Puu2
+         Z+t5lBIamLUqnskiRyj/iA3FFcpamb1Rwc1k+eFUkivzHJkkb0YH52tUxH4HUm7VfF
+         7JMD/5QgEFH2A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 21/88] ARM: dts: exynos: align Broadcom WiFi with dtschema
-Date:   Wed, 14 Jul 2021 15:41:56 -0400
-Message-Id: <20210714194303.54028-21-sashal@kernel.org>
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 25/88] ARM: dts: ux500: Fix interrupt cells
+Date:   Wed, 14 Jul 2021 15:42:00 -0400
+Message-Id: <20210714194303.54028-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -43,79 +43,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-[ Upstream commit cc29e39412b9a78b43f7dfa09d739f8ba9fa7984 ]
+[ Upstream commit e4ff0112a03c2e353c8457cd33c88feb89dfec41 ]
 
-The Broadcom BCM4329 family dtschema expects devices to be compatible
-also with brcm,bcm4329-fmac:
+Fix interrupt cells in DT AB8500/AB8505 source files. The
+compiled DTB files will stay the same.
 
-  arch/arm/boot/dts/exynos3250-rinato.dt.yaml: wifi@1: compatible: 'oneOf' conditional failed, one must be fixed:
-    ['brcm,bcm4334-fmac'] is too short
-    'brcm,bcm4329-fmac' was expected
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210505135941.59898-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos3250-rinato.dts         | 2 +-
- arch/arm/boot/dts/exynos4210-i9100.dts          | 2 +-
- arch/arm/boot/dts/exynos4210-trats.dts          | 2 +-
- arch/arm/boot/dts/exynos4210-universal_c210.dts | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/ste-ab8500.dtsi | 26 +++++++++++++-------------
+ arch/arm/boot/dts/ste-ab8505.dtsi | 22 +++++++++++-----------
+ 2 files changed, 24 insertions(+), 24 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos3250-rinato.dts b/arch/arm/boot/dts/exynos3250-rinato.dts
-index f9e3b13d3aac..8ef20a66e24e 100644
---- a/arch/arm/boot/dts/exynos3250-rinato.dts
-+++ b/arch/arm/boot/dts/exynos3250-rinato.dts
-@@ -653,7 +653,7 @@ &mshc_1 {
- 	mmc-pwrseq = <&wlan_pwrseq>;
+diff --git a/arch/arm/boot/dts/ste-ab8500.dtsi b/arch/arm/boot/dts/ste-ab8500.dtsi
+index aab5719cc1a9..5fde474ade22 100644
+--- a/arch/arm/boot/dts/ste-ab8500.dtsi
++++ b/arch/arm/boot/dts/ste-ab8500.dtsi
+@@ -42,15 +42,15 @@ ab8500_gpio: ab8500-gpio {
  
- 	brcmf: wifi@1 {
--		compatible = "brcm,bcm4334-fmac";
-+		compatible = "brcm,bcm4334-fmac", "brcm,bcm4329-fmac";
- 		reg = <1>;
+ 				ab8500-rtc {
+ 					compatible = "stericsson,ab8500-rtc";
+-					interrupts = <17 IRQ_TYPE_LEVEL_HIGH
+-						      18 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <17 IRQ_TYPE_LEVEL_HIGH>,
++						     <18 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "60S", "ALARM";
+ 				};
  
- 		interrupt-parent = <&gpx1>;
-diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
-index 7777bf51a6e6..083408f3f695 100644
---- a/arch/arm/boot/dts/exynos4210-i9100.dts
-+++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -746,7 +746,7 @@ &sdhci_3 {
- 	pinctrl-0 = <&sd3_clk>, <&sd3_cmd>, <&sd3_bus4>;
+ 				gpadc: ab8500-gpadc {
+ 					compatible = "stericsson,ab8500-gpadc";
+-					interrupts = <32 IRQ_TYPE_LEVEL_HIGH
+-						      39 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <32 IRQ_TYPE_LEVEL_HIGH>,
++						     <39 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "HW_CONV_END", "SW_CONV_END";
+ 					vddadc-supply = <&ab8500_ldo_tvout_reg>;
+ 					#address-cells = <1>;
+@@ -169,13 +169,13 @@ ab8500_chargalg {
  
- 	brcmf: wifi@1 {
--		compatible = "brcm,bcm4330-fmac";
-+		compatible = "brcm,bcm4330-fmac", "brcm,bcm4329-fmac";
- 		reg = <1>;
+ 				ab8500_usb {
+ 					compatible = "stericsson,ab8500-usb";
+-					interrupts = < 90 IRQ_TYPE_LEVEL_HIGH
+-						       96 IRQ_TYPE_LEVEL_HIGH
+-						       14 IRQ_TYPE_LEVEL_HIGH
+-						       15 IRQ_TYPE_LEVEL_HIGH
+-						       79 IRQ_TYPE_LEVEL_HIGH
+-						       74 IRQ_TYPE_LEVEL_HIGH
+-						       75 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <90 IRQ_TYPE_LEVEL_HIGH>,
++						     <96 IRQ_TYPE_LEVEL_HIGH>,
++						     <14 IRQ_TYPE_LEVEL_HIGH>,
++						     <15 IRQ_TYPE_LEVEL_HIGH>,
++						     <79 IRQ_TYPE_LEVEL_HIGH>,
++						     <74 IRQ_TYPE_LEVEL_HIGH>,
++						     <75 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "ID_WAKEUP_R",
+ 							  "ID_WAKEUP_F",
+ 							  "VBUS_DET_F",
+@@ -192,8 +192,8 @@ ab8500_usb {
  
- 		interrupt-parent = <&gpx2>;
-diff --git a/arch/arm/boot/dts/exynos4210-trats.dts b/arch/arm/boot/dts/exynos4210-trats.dts
-index a226bec56a45..68635dad541f 100644
---- a/arch/arm/boot/dts/exynos4210-trats.dts
-+++ b/arch/arm/boot/dts/exynos4210-trats.dts
-@@ -501,7 +501,7 @@ &sdhci_3 {
- 	pinctrl-0 = <&sd3_clk>, <&sd3_cmd>, <&sd3_bus4>;
+ 				ab8500-ponkey {
+ 					compatible = "stericsson,ab8500-poweron-key";
+-					interrupts = <6 IRQ_TYPE_LEVEL_HIGH
+-						      7 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <6 IRQ_TYPE_LEVEL_HIGH>,
++						     <7 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "ONKEY_DBF", "ONKEY_DBR";
+ 				};
  
- 	brcmf: wifi@1 {
--		compatible = "brcm,bcm4330-fmac";
-+		compatible = "brcm,bcm4330-fmac", "brcm,bcm4329-fmac";
- 		reg = <1>;
+diff --git a/arch/arm/boot/dts/ste-ab8505.dtsi b/arch/arm/boot/dts/ste-ab8505.dtsi
+index 67bc69e67b33..dbaedda2824d 100644
+--- a/arch/arm/boot/dts/ste-ab8505.dtsi
++++ b/arch/arm/boot/dts/ste-ab8505.dtsi
+@@ -38,8 +38,8 @@ ab8505_gpio: ab8505-gpio {
  
- 		interrupt-parent = <&gpx2>;
-diff --git a/arch/arm/boot/dts/exynos4210-universal_c210.dts b/arch/arm/boot/dts/exynos4210-universal_c210.dts
-index 08284e8f3624..28361994ff80 100644
---- a/arch/arm/boot/dts/exynos4210-universal_c210.dts
-+++ b/arch/arm/boot/dts/exynos4210-universal_c210.dts
-@@ -596,7 +596,7 @@ &sdhci_3 {
- 	pinctrl-0 = <&sd3_clk>, <&sd3_cmd>, <&sd3_bus4>;
+ 				ab8500-rtc {
+ 					compatible = "stericsson,ab8500-rtc";
+-					interrupts = <17 IRQ_TYPE_LEVEL_HIGH
+-						      18 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <17 IRQ_TYPE_LEVEL_HIGH>,
++						     <18 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "60S", "ALARM";
+ 				};
  
- 	brcmf: wifi@1 {
--		compatible = "brcm,bcm4330-fmac";
-+		compatible = "brcm,bcm4330-fmac", "brcm,bcm4329-fmac";
- 		reg = <1>;
- 		interrupt-parent = <&gpx2>;
- 		interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
+@@ -131,13 +131,13 @@ ab8500_chargalg {
+ 
+ 				ab8500_usb: ab8500_usb {
+ 					compatible = "stericsson,ab8500-usb";
+-					interrupts = < 90 IRQ_TYPE_LEVEL_HIGH
+-						       96 IRQ_TYPE_LEVEL_HIGH
+-						       14 IRQ_TYPE_LEVEL_HIGH
+-						       15 IRQ_TYPE_LEVEL_HIGH
+-						       79 IRQ_TYPE_LEVEL_HIGH
+-						       74 IRQ_TYPE_LEVEL_HIGH
+-						       75 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <90 IRQ_TYPE_LEVEL_HIGH>,
++						     <96 IRQ_TYPE_LEVEL_HIGH>,
++						     <14 IRQ_TYPE_LEVEL_HIGH>,
++						     <15 IRQ_TYPE_LEVEL_HIGH>,
++						     <79 IRQ_TYPE_LEVEL_HIGH>,
++						     <74 IRQ_TYPE_LEVEL_HIGH>,
++						     <75 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "ID_WAKEUP_R",
+ 							  "ID_WAKEUP_F",
+ 							  "VBUS_DET_F",
+@@ -154,8 +154,8 @@ ab8500_usb: ab8500_usb {
+ 
+ 				ab8500-ponkey {
+ 					compatible = "stericsson,ab8500-poweron-key";
+-					interrupts = <6 IRQ_TYPE_LEVEL_HIGH
+-						      7 IRQ_TYPE_LEVEL_HIGH>;
++					interrupts = <6 IRQ_TYPE_LEVEL_HIGH>,
++						     <7 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupt-names = "ONKEY_DBF", "ONKEY_DBR";
+ 				};
+ 
 -- 
 2.30.2
 
