@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1153C7FE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14023C7FEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238459AbhGNIVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S238450AbhGNIXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhGNIVF (ORCPT
+        with ESMTP id S229940AbhGNIXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:21:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A63C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:18:14 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1m3a5h-0005Hf-Ex; Wed, 14 Jul 2021 10:18:01 +0200
-Message-ID: <152cb353c4c6fe66ba40c084cd62947967080011.camel@pengutronix.de>
-Subject: Re: [PATCH v16 09/12] dmaengine: imx-sdma: remove ERR009165 on
- i.mx6ul
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Robin Gong <yibin.gong@nxp.com>, vkoul@kernel.org,
-        mark.rutland@arm.com, broonie@kernel.org, robh+dt@kernel.org,
-        catalin.marinas@arm.com, will.deacon@arm.com, shawnguo@kernel.org,
-        festevam@gmail.com, s.hauer@pengutronix.de,
-        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
-        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
-        frieder.schrempf@kontron.de, m.felsch@pengutronix.de,
-        xiaoning.wang@nxp.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Date:   Wed, 14 Jul 2021 10:17:59 +0200
-In-Reply-To: <1626258052-22198-10-git-send-email-yibin.gong@nxp.com>
-References: <1626258052-22198-1-git-send-email-yibin.gong@nxp.com>
-         <1626258052-22198-10-git-send-email-yibin.gong@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Wed, 14 Jul 2021 04:23:35 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D2AC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:20:42 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id qb4so1942109ejc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F8Io+rg1Po7RKIeX6xd4nWzyFfLG9bRShMsVJw7hf0Q=;
+        b=BqDNNSk7ZSAQK4poF+WsKbLWA5YzfU2H6DRP7g8AhtSDx5oKXqIwkX0gVqTCYATcr6
+         KdZNQhf6s/NGfcPR7o2nXA1mgBXVkIW0M/UZ3+t8xQbVX48lyvKTcbI5hpf3lcsDlluq
+         ws/Jpup4YIz+yoWrpKldXbBmt9Su6Kr7udKSTTIXkAVmGiqUXOxIKBMuExp8lx/W+Dma
+         Zmc60wFDKsTgka2ASyEWGzS2eqPr6GKDIYk5gBnrU3AGYkFP/JXIz/A83L1wX+N/Ty1e
+         QESK19pnJYhm5QTym0rIpglmWTStHqJFnCF0KheLKuNv1HUlqrZZlyxwYvjuO9TBlI26
+         a5jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F8Io+rg1Po7RKIeX6xd4nWzyFfLG9bRShMsVJw7hf0Q=;
+        b=f6qdYvGO0Y4LB7udnMFduwVT2LY0WbjggxrPgwoKM51ZIWjcKvI4ehhJGS1UCXeIHS
+         atbuTBEm5n31ndQTF5mwVMAE1erTQT633R76vhffSIdqtwTwbVfpZy473hf20baESkJw
+         L3FCQzMzST74KHuUkyhYUDJwD31Fcz5UyqNGFk4EJ+ieiE9dQVI2X7ibj884/6jfHx5t
+         DyTlWFTtx0KcfUHzoymEaZLII7zzSOIfKglD9nqp1BgPUxMIEG5IM0ekjLak0T7ENKsx
+         w8eQMuz+Q639lKCJlDaiAHt3DV58ZNSf6zB1o/TgdiX3Y+1QEWHHSWD+2D5jZtwFUGwa
+         MDFA==
+X-Gm-Message-State: AOAM531eeD3B13BCDIcqzs+Xm5spIkrcRG9N68XkQeTcDZk4x50RcLkc
+        EAEzko9KGaVqgYKuenizXvw3ag==
+X-Google-Smtp-Source: ABdhPJzyuroGTikKGPkfvMs8+Wj2CvFr44B6AtpScg3Pu1k9Wf/sWWAM9fXM7DM7RVR/SHddJJE5BQ==
+X-Received: by 2002:a17:906:24c3:: with SMTP id f3mr11047240ejb.145.1626250841411;
+        Wed, 14 Jul 2021 01:20:41 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id s5sm602820edi.93.2021.07.14.01.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 01:20:40 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 10:20:21 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device
+ subnode
+Message-ID: <YO6eRXz/J1tPOi0P@myrica>
+References: <cover.1626173013.git.viresh.kumar@linaro.org>
+ <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+ <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
+ <20210713151917.zouwfckidnjxvohn@vireshk-i7>
+ <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
+ <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 14.07.2021 um 18:20 +0800 schrieb Robin Gong:
-> ECSPI issue fixed from i.mx6ul at hardware level, no need
-> ERR009165 anymore on those chips such as i.mx8mq.
+On Tue, Jul 13, 2021 at 10:34:03PM +0200, Arnd Bergmann wrote:
+> > > Is it going to be a problem if two devices in kernel use the same
+> > > of_node ?
+> >
+> > There shouldn't be. We have nodes be multiple providers (e.g clocks
+> > and resets) already.
 > 
-> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-> Acked-by: Vinod Koul <vkoul@kernel.org>
-
-Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-
-> ---
->  drivers/dma/imx-sdma.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
+> I think this would be a little different, but it can still work. There is in
+> fact already some precedent of doing this, with Jean-Philippe's virtio-iommu
+> binding, which is documented in both
 > 
-> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-> index 5969df8..cfcd413 100644
-> --- a/drivers/dma/imx-sdma.c
-> +++ b/drivers/dma/imx-sdma.c
-> @@ -476,6 +476,13 @@ struct sdma_driver_data {
->  	int num_events;
->  	struct sdma_script_start_addrs	*script_addrs;
->  	bool check_ratio;
-> +	/*
-> +	 * ecspi ERR009165 fixed should be done in sdma script
-> +	 * and it has been fixed in soc from i.mx6ul.
-> +	 * please get more information from the below link:
-> +	 * https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf
-> +	 */
-> +	bool ecspi_fixed;
->  };
->  
->  struct sdma_engine {
-> @@ -596,6 +603,13 @@ static struct sdma_driver_data sdma_imx6q = {
->  	.script_addrs = &sdma_script_imx6q,
->  };
->  
-> +static struct sdma_driver_data sdma_imx6ul = {
-> +	.chnenbl0 = SDMA_CHNENBL0_IMX35,
-> +	.num_events = 48,
-> +	.script_addrs = &sdma_script_imx6q,
-> +	.ecspi_fixed = true,
-> +};
-> +
->  static struct sdma_script_start_addrs sdma_script_imx7d = {
->  	.ap_2_ap_addr = 644,
->  	.uart_2_mcu_addr = 819,
-> @@ -629,6 +643,7 @@ static const struct of_device_id sdma_dt_ids[] = {
->  	{ .compatible = "fsl,imx31-sdma", .data = &sdma_imx31, },
->  	{ .compatible = "fsl,imx25-sdma", .data = &sdma_imx25, },
->  	{ .compatible = "fsl,imx7d-sdma", .data = &sdma_imx7d, },
-> +	{ .compatible = "fsl,imx6ul-sdma", .data = &sdma_imx6ul, },
->  	{ .compatible = "fsl,imx8mq-sdma", .data = &sdma_imx8mq, },
->  	{ /* sentinel */ }
->  };
-> @@ -948,8 +963,15 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
->  		break;
->  	case IMX_DMATYPE_CSPI:
->  		per_2_emi = sdma->script_addrs->app_2_mcu_addr;
-> -		emi_2_per = sdma->script_addrs->mcu_2_ecspi_addr;
-> -		sdmac->is_ram_script = true;
-> +
-> +		/* Use rom script mcu_2_app if ERR009165 fixed */
-> +		if (sdmac->sdma->drvdata->ecspi_fixed) {
-> +			emi_2_per = sdma->script_addrs->mcu_2_app_addr;
-> +		} else {
-> +			emi_2_per = sdma->script_addrs->mcu_2_ecspi_addr;
-> +			sdmac->is_ram_script = true;
-> +		}
-> +
->  		break;
->  	case IMX_DMATYPE_EXT:
->  	case IMX_DMATYPE_SSI:
+> Documentation/devicetree/bindings/virtio/iommu.txt
+> Documentation/devicetree/bindings/virtio/mmio.txt
+> 
+> Unfortunately, those are still slightly different from where I think we should
+> be going here, but it's probably close enough to fit into the general
+> system.
+> 
+> What we have with virtio-iommu is two special hacks:
+>  - on virtio-mmio, a node with 'compatible="virtio,mmio"' may optionally
+>    have an '#iommu-cells=<1>', in which case we assume it's an iommu.
+>  - for virtio-pci, the node has the standard PCI 'reg' property but a special
+>    'compatible="virtio,pci-iommu"' property that I think is different from any
+>    other PCI node.
 
+Yes in retrospect I don't think the compatible property on the PCI
+endpoint node is necessary nor useful, we could deprecate it. The OS gets
+the IOMMU topology information early from 'iommus', 'iommu-map' and
+'#iommu-cells' properties, which is the only reason we need this PCI
+endpoint explicitly described in DT. The rest is discovered while probing
+just like virtio-mmio.
 
+Thanks,
+Jean
