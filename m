@@ -2,209 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B3C3C7E56
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B2B3C7E55
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238008AbhGNGIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 02:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237960AbhGNGIJ (ORCPT
+        id S238022AbhGNGGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 02:06:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237958AbhGNGF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:08:09 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFF3C0613DD
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:05:18 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id d9-20020a17090ae289b0290172f971883bso3166929pjz.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n3xrLCowHoV9+qyE8ZVGJpCIjAP5+VxK4UkQj5GcY2w=;
-        b=kLFkLuzZN/EMGHwlQGVS/UYmwM1Jor+xNSxXNx0vwbUEejkcyGW3ZmWZwpiB1TMCi/
-         X2cTIJGs3M4vgTulRuQtElHfqpwfIWordoE8h7elKxyTNW4Vj/KhFEuk/g+f8IzSVtWR
-         1IkdCBY3OhNxNLCR8lAti4i9lqmVQ4fX4VV78=
+        Wed, 14 Jul 2021 02:05:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626242587;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c7Q8ciSmkkFwqcK9Ly2flr5V7ufFOKmLdTuweetcBqc=;
+        b=E1kUuGEwUuWTqdjMtWx/JNg0XuPX2Q5Kmg0wsr0gq6DuFWgMr1yHK2wB3zqw+zKTLxJCkW
+        NIQtMuTL2jq+lus1ptoRUf7VLZzUvhFKhtsnaNwhOt0IVvs3UFeHLePXE77EoHYwUVad1V
+        unYs1m7ZcSgRsFBnmjL42U+JIzTLvrw=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-6nMhLxyiMs2XldbDoN871Q-1; Wed, 14 Jul 2021 02:03:05 -0400
+X-MC-Unique: 6nMhLxyiMs2XldbDoN871Q-1
+Received: by mail-pl1-f197.google.com with SMTP id a6-20020a1709027d86b02901019f88b046so727168plm.21
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:03:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n3xrLCowHoV9+qyE8ZVGJpCIjAP5+VxK4UkQj5GcY2w=;
-        b=VQijLV/dJ9Zb0I4rDp9X3lgt3w4FGEPFOoVP1LtjrBXoa3z525DLQ7TUI8xsz8r6Ec
-         JadxY9eMLTHypck5QCGqbCHEWlvQsa+0TxyLcPHZvvxtYa6TicyFGmdwRiPR9YBnX/F8
-         /5aENoArslRR9S0/+ny+2yjIUQj21QJ/BJNOUYyKrVluV2Zir4Gr7hU0oG0KSFMUTLRT
-         H0+fHnn00mguAUXFVr8UN2Ommbbox6KWqAuqu9FehxFY4hL3+p5SBMBMleZaCTXiznDN
-         o9VXBAcS0o5mJQhQiAJrUzzzspoy54YKG0ViWBHBrMbEn3uYl4s1yP1PeCPwbwMpUsaE
-         xLkg==
-X-Gm-Message-State: AOAM532D8xbRp0kFoCdvwAgg9Xbirbk5GAjlIR2EcUiablyw3mBdlP1r
-        gpvwe+272GEQMOB6RAxv4qf73w==
-X-Google-Smtp-Source: ABdhPJxMHrnpzw0TqHvFJSj9wz6UUif9iub0qocjpvcy/+qmAdEUClh8smx1q3mPpPVrt62tv/yGCA==
-X-Received: by 2002:a17:902:ff0c:b029:11d:3e9e:41ec with SMTP id f12-20020a170902ff0cb029011d3e9e41ecmr6557656plj.1.1626242717623;
-        Tue, 13 Jul 2021 23:05:17 -0700 (PDT)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id m19sm4524468pjl.13.2021.07.13.23.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 23:05:17 -0700 (PDT)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Xin Ji <xji@analogixsemi.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Yu Jiahua <yujiahua1@huawei.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH] drm/bridge: anx7625: Use pm_runtime_force_{suspend,resume}
-Date:   Wed, 14 Jul 2021 14:01:59 +0800
-Message-Id: <20210714060221.1483752-1-pihsun@chromium.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=c7Q8ciSmkkFwqcK9Ly2flr5V7ufFOKmLdTuweetcBqc=;
+        b=SewI4R1x7offw8NhasIDPOMvaOcrTIi5TRn+30D/+CDqyRst6gV5BZTPi5yu+BCSW0
+         l3BSRWus/6Rigd2FGqVGgKKWMDAunq8rgw0izKnRE6yy/f0dmAN/KkigLmCZvwswku5K
+         Mor2Tzj4HAuqFN3fcHJL93M0gGayTNWGDXo6Gaythbo0oSt0S0C52WLZ6eHCVQTbFIG+
+         U4O7NFYgURvenxaLhMBmL9Ky7zEwsJCMDNCS7mAJc5+uK9ExvziCMt1tJHv8EdsnqHnZ
+         0YpfK+xwn6e+GCWujlSEB4YCLg59CVw05022hU/DepgRUojZcqMevnvgOzbxlHACM3hU
+         M/ag==
+X-Gm-Message-State: AOAM531cZ3DXMALNMCiHSyx0HgggTBgHFLg35XQYClaStF1OWh2HMbtf
+        wddiVWtOFzhjcHDqwH1IdoC10clBIxMNWtxKwMow+bvhEUb+JQRy1TcKC4fqVsocHLt3AYmPkNR
+        kgxzazbIEtfzz7oeTpPsK79H/GDrKQJO1aclwlHikyhsVK4IKeMr4h6YrelRNc8g4rIj3hW60sq
+        Tu
+X-Received: by 2002:a63:111a:: with SMTP id g26mr7785904pgl.103.1626242584167;
+        Tue, 13 Jul 2021 23:03:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdA7Ox90h5XXIshMvBjDNcFMeGycsIxzhnY5/F/BBeS8iYsHUo11OJSfqeDY+OH4iEPOdWBg==
+X-Received: by 2002:a63:111a:: with SMTP id g26mr7785847pgl.103.1626242583780;
+        Tue, 13 Jul 2021 23:03:03 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id d2sm4572795pjo.50.2021.07.13.23.02.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 23:03:02 -0700 (PDT)
+Subject: Re: [PATCH v9 16/17] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Xie Yongji <xieyongji@bytedance.com>, stefanha@redhat.com,
+        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210713084656.232-1-xieyongji@bytedance.com>
+ <20210713084656.232-17-xieyongji@bytedance.com>
+ <26116714-f485-eeab-4939-71c4c10c30de@redhat.com>
+ <20210714014817-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0565ed6c-88e2-6d93-7cc6-7b4afaab599c@redhat.com>
+Date:   Wed, 14 Jul 2021 14:02:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210714014817-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pm_runtime_force_suspend and pm_runtime_force_resume to ensure that
-anx7625 would always be powered off when suspended. Also update the
-bridge enable hook to always ensure that the anx7625 is powered on
-before starting DP operations.
 
-Fixes: 409776fa3c42 ("drm/bridge: anx7625: add suspend / resume hooks")
+ÔÚ 2021/7/14 ÏÂÎç1:54, Michael S. Tsirkin Ð´µÀ:
+> On Wed, Jul 14, 2021 at 01:45:39PM +0800, Jason Wang wrote:
+>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+>>> +			      struct vduse_dev_msg *msg)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	init_waitqueue_head(&msg->waitq);
+>>> +	spin_lock(&dev->msg_lock);
+>>> +	msg->req.request_id = dev->msg_unique++;
+>>> +	vduse_enqueue_msg(&dev->send_list, msg);
+>>> +	wake_up(&dev->waitq);
+>>> +	spin_unlock(&dev->msg_lock);
+>>> +
+>>> +	wait_event_killable_timeout(msg->waitq, msg->completed,
+>>> +				    VDUSE_REQUEST_TIMEOUT * HZ);
+>>> +	spin_lock(&dev->msg_lock);
+>>> +	if (!msg->completed) {
+>>> +		list_del(&msg->list);
+>>> +		msg->resp.result = VDUSE_REQ_RESULT_FAILED;
+>>> +	}
+>>> +	ret = (msg->resp.result == VDUSE_REQ_RESULT_OK) ? 0 : -EIO;
+>>
+>> I think we should mark the device as malfunction when there is a timeout and
+>> forbid any userspace operations except for the destroy aftwards for safety.
+> This looks like if one tried to run gdb on the program the behaviour
+> will change completely because kernel wants it to respond within
+> specific time. Looks like a receipe for heisenbugs.
+>
+> Let's not build interfaces with arbitrary timeouts like that.
+> Interruptible wait exists for this very reason.
 
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
 
----
+The problem is. Do we want userspace program like modprobe to be stuck 
+for indefinite time and expect the administrator to kill that?
 
-An issue was found that the anx7625 driver won't power off when used as
-eDP bridge on Asurada board if suspend is entered via VT2.
+Thanks
 
-The reason is that in this case, anx7625_suspend won't power off anx7625
-(since intp_irq is not set). And anx7625_bridge_disable is only called
-indirectly by other driver's (mediatek-drm) suspend.
-pm_runtime_put_sync won't do anything since it's already in system
-suspend.
 
-If not in VT2, the bridge disable is indirectly called when Chrome
-stops, so anx7625 will be powered off correctly.
-
-To fix the issue, the suspend resume hooks are changed to
-pm_runtime_force_{suspend,resume} to ensure the runtime suspend / resume
-is always called correctly when system suspend / resume.
-(Note that IRQ no longer needs to be disabled on suspend after commit
-f03ab6629c7b ("drm/bridge: anx7625: Make hpd workqueue freezable"))
-
-Since bridge disable is called indirectly by mediatek-drm driver's
-suspend, it might happens after anx7625 suspend is called. So a check
-if the driver is already suspended via pm_runtime_force_suspend is also
-added, to ensure that the anx7625_dp_stop won't be called when power
-is off. And also since bridge enable might happens before anx7625 resume
-is called, a check to that is also added, and would force resume the
-device in this case.
-
-I'm not sure if the approach to fix this is the most appropriate way,
-since using pm_runtime_force_resume in bridge enable kinda feels hacky
-to me. I'm open to any suggestions.
-
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 55 +++++++++--------------
- 1 file changed, 20 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index a3d82377066b..9d0f5dc88b16 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -1559,7 +1559,20 @@ static void anx7625_bridge_enable(struct drm_bridge *bridge)
- 
- 	DRM_DEV_DEBUG_DRIVER(dev, "drm enable\n");
- 
--	pm_runtime_get_sync(dev);
-+	/*
-+	 * The only case where pm_runtime is disabled here is when the function
-+	 * is called other driver's resume hook by
-+	 * drm_mode_config_helper_resume, but when the pm_runtime_force_resume
-+	 * hasn't been called on this device.
-+	 *
-+	 * pm_runtime_get_sync won't power on anx7625 in this case since we're
-+	 * in system resume, so instead we force resume anx7625 to make sure
-+	 * the following anx7625_dp_start would succeed.
-+	 */
-+	if (pm_runtime_enabled(dev))
-+		pm_runtime_get_sync(dev);
-+	else
-+		pm_runtime_force_resume(dev);
- 
- 	anx7625_dp_start(ctx);
- }
-@@ -1571,9 +1584,10 @@ static void anx7625_bridge_disable(struct drm_bridge *bridge)
- 
- 	DRM_DEV_DEBUG_DRIVER(dev, "drm disable\n");
- 
--	anx7625_dp_stop(ctx);
--
--	pm_runtime_put_sync(dev);
-+	if (pm_runtime_enabled(dev)) {
-+		anx7625_dp_stop(ctx);
-+		pm_runtime_put_sync(dev);
-+	}
- }
- 
- static enum drm_connector_status
-@@ -1705,38 +1719,9 @@ static int __maybe_unused anx7625_runtime_pm_resume(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused anx7625_resume(struct device *dev)
--{
--	struct anx7625_data *ctx = dev_get_drvdata(dev);
--
--	if (!ctx->pdata.intp_irq)
--		return 0;
--
--	if (!pm_runtime_enabled(dev) || !pm_runtime_suspended(dev)) {
--		enable_irq(ctx->pdata.intp_irq);
--		anx7625_runtime_pm_resume(dev);
--	}
--
--	return 0;
--}
--
--static int __maybe_unused anx7625_suspend(struct device *dev)
--{
--	struct anx7625_data *ctx = dev_get_drvdata(dev);
--
--	if (!ctx->pdata.intp_irq)
--		return 0;
--
--	if (!pm_runtime_enabled(dev) || !pm_runtime_suspended(dev)) {
--		anx7625_runtime_pm_suspend(dev);
--		disable_irq(ctx->pdata.intp_irq);
--	}
--
--	return 0;
--}
--
- static const struct dev_pm_ops anx7625_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(anx7625_suspend, anx7625_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- 	SET_RUNTIME_PM_OPS(anx7625_runtime_pm_suspend,
- 			   anx7625_runtime_pm_resume, NULL)
- };
-
-base-commit: c0d438dbc0b74901f1901d97a6c84f38daa0c831
--- 
-2.32.0.93.g670b81a890-goog
+>   Let userspace have its
+> own code to set and use timers. This does mean that userspace will
+> likely have to change a bit to support this driver, such is life.
+>
 
