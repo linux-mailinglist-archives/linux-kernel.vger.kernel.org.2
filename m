@@ -2,285 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92603C7E83
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8495B3C7E7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238104AbhGNG1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 02:27:14 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:11410 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238003AbhGNG1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:27:12 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPnSX0VS5zccty;
-        Wed, 14 Jul 2021 14:21:00 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 14:24:17 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 14 Jul
- 2021 14:24:16 +0800
-Subject: Re: [PATCH rfc v4 2/4] page_pool: add interface to manipulate bias in
- page pool
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Will Deacon" <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
-        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "Alexander Lobakin" <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        <kpsingh@kernel.org>, <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <1626168272-25622-1-git-send-email-linyunsheng@huawei.com>
- <1626168272-25622-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0UevHk7n=Lnfkvw1t04HvRCX9vtyc0a6_2cda3c6hgDdJg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <5bdaac3b-1148-4cbd-ca67-9c06e67933fb@huawei.com>
-Date:   Wed, 14 Jul 2021 14:24:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S238074AbhGNG0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 02:26:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:58492 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237958AbhGNG03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 02:26:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 601BC6D;
+        Tue, 13 Jul 2021 23:23:38 -0700 (PDT)
+Received: from [10.163.65.222] (unknown [10.163.65.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E44C43F774;
+        Tue, 13 Jul 2021 23:23:34 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH 01/12] mm/debug_vm_pgtable: Introduce struct
+ vm_pgtable_debug
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com,
+        chuhu@redhat.com
+References: <20210706061748.161258-1-gshan@redhat.com>
+ <20210706061748.161258-2-gshan@redhat.com>
+Message-ID: <a74549ac-6794-25a0-7238-2591745e6810@arm.com>
+Date:   Wed, 14 Jul 2021 11:54:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UevHk7n=Lnfkvw1t04HvRCX9vtyc0a6_2cda3c6hgDdJg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210706061748.161258-2-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/14 2:41, Alexander Duyck wrote:
-> On Tue, Jul 13, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> As suggested by Alexander, "A DMA mapping should be page
->> aligned anyway so the lower 12 bits would be reserved 0",
->> so it might make more sense to repurpose the lower 12 bits
->> of the dma address to store the bias for frag page support
->> in page pool for 32 bit systems with 64 bit dma, which
->> should be rare those days.
->>
->> For normal system, the dma_addr[1] in 'struct page' is not
->> used, so we can reuse the dma_addr[1] for storing bias.
->>
->> The PAGE_POOP_USE_DMA_ADDR_1 macro is used to decide where
->> to store the bias, as the "sizeof(dma_addr_t) > sizeof(
->> unsigned long)" is false for normal system, so hopefully the
->> compiler will optimize out the unused code for those system.
-> 
-> I assume the name is a typo and you meant PAGE_POOL_USE_DMA_ADDR_1?
 
-Yes, will use the PAGE_POOL_DMA_USE_PP_FRAG_COUNT you suggested below.
-
+On 7/6/21 11:47 AM, Gavin Shan wrote:
+> In debug_vm_pgtable(), there are many local variables introduced
+> to track the needed information and they are passed to the functions
+> for various test cases. It'd better to introduce a struct as place
+> holder for these information. With it, what the functions for various
+> test cases need is the struct, to simplify the code. It makes the code
+> easier to be maintained.
 > 
->> The newly added page_pool_set_bias() should be called before
->> the page is passed to any user. Otherwise, call the newly
->> added page_pool_atomic_sub_bias_return().
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->>  include/net/page_pool.h | 70 ++++++++++++++++++++++++++++++++++++++++++++++---
->>  net/core/page_pool.c    | 10 +++++++
->>  2 files changed, 77 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
->> index 8d7744d..315b9f2 100644
->> --- a/include/net/page_pool.h
->> +++ b/include/net/page_pool.h
->> @@ -198,21 +198,85 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->>         page_pool_put_full_page(pool, page, true);
->>  }
->>
->> +#define PAGE_POOP_USE_DMA_ADDR_1       (sizeof(dma_addr_t) > sizeof(unsigned long))
->> +
->>  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->>  {
->> -       dma_addr_t ret = page->dma_addr[0];
->> -       if (sizeof(dma_addr_t) > sizeof(unsigned long))
->> +       dma_addr_t ret;
->> +
->> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
->> +               ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
->>                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
-> 
-> Alternatively we could change things a bit and rename things so we
-> have the MSB of dma_addr where dma_addr[1] is and we rename
-> dma_addr[0] to pp_frag_count we could have it also contain the lower
-> bits and handle it like so:
->     ret = page->dma_addr;
->     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
->         ret <<= 32;
->         ret |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
->     }
+> Besides, set_pte_at() could access the data on the corresponding pages.
 
-Ok, it seems better.
+s/set_pte_at()/set_pxx_at() to accommodate similar helpers in other page
+table modifying tests as well.
+
+> So the test cases using set_pte_at() should have the pages allocated
+> from buddy. Otherwise, we're acceessing pages that aren't owned by us.
+
+typo here. s/acceessing/accessing/
+
+> This causes issues like page flag corruption. So we need the allocated
+> pages for these tests where set_pte_at() is used. The struct is introduced
+> so that the old and new implementation can coexist so that the patches
+> can be organized in a easy way.
+
+s/a easy/an easy/
+
+The rationale for the structure should be explained better. I am wondering
+whether it would be preferable to solve the dynamic page allocation problem
+first in respective test functions, before introducing this structure which
+will convert all test functions.
 
 > 
->> +       } else {
->> +               ret = page->dma_addr[0];
->> +       }
->> +
->>         return ret;
->>  }
->>
->>  static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->>  {
->>         page->dma_addr[0] = addr;
->> -       if (sizeof(dma_addr_t) > sizeof(unsigned long))
->> +       if (PAGE_POOP_USE_DMA_ADDR_1)
->>                 page->dma_addr[1] = upper_32_bits(addr);
-> 
-> So assuming similar logic to above we could do something like:
->     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
->         atomic_long_set(&page->pp_frag_count, addr & PAGE_MASK);
->         addr >>= 32;
->     }
->     pp->dma_addr = addr;
+> This introduces "struct vm_pgtable_debug" for above purposes. The struct
+> is initialized and destroyed, but the information in the struct isn't
+> used yet. They will be used in subsequent patches.
 
-ok.
+There are two set of resources before all functions use the new structure.
+Makes sense.
 
 > 
->>  }
->>
->> +static inline int page_pool_atomic_sub_bias_return(struct page *page, int nr)
->> +{
->> +       int bias;
->> +
->> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
->> +               unsigned long *bias_ptr = &page->dma_addr[0];
->> +               unsigned long old_bias = READ_ONCE(*bias_ptr);
->> +               unsigned long new_bias;
->> +
->> +               do {
->> +                       bias = (int)(old_bias & ~PAGE_MASK);
->> +
->> +                       /* Warn when page_pool_dev_alloc_pages() is called
->> +                        * with PP_FLAG_PAGE_FRAG flag in driver.
->> +                        */
->> +                       WARN_ON(!bias);
->> +
->> +                       /* already the last user */
->> +                       if (!(bias - nr))
->> +                               return 0;
->> +
->> +                       new_bias = old_bias - nr;
->> +               } while (!try_cmpxchg(bias_ptr, &old_bias, new_bias));
->> +
->> +               WARN_ON((new_bias & PAGE_MASK) != (old_bias & PAGE_MASK));
->> +
->> +               bias = new_bias & ~PAGE_MASK;
->> +       } else {
->> +               atomic_t *v = (atomic_t *)&page->dma_addr[1];
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  mm/debug_vm_pgtable.c | 210 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 209 insertions(+), 1 deletion(-)
 > 
-> The problem with casting like this is that it makes assumptions about
-> byte ordering in the case that atomic_t is a 32b value and dma_addr is
-> a long value.
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 1c922691aa61..225e2ea4d72f 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -58,6 +58,36 @@
+>  #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>  #define RANDOM_NZVALUE	GENMASK(7, 0)
+>  
+> +struct vm_pgtable_debug {
 
-Will define a pp_frag_count as type of atomic_long_t to replace
-dma_addr[1].
+Name should contain 'args'. Probably something like pgtable_debug_args ?
 
-> 
->> +
->> +               if (atomic_read(v) == nr)
->> +                       return 0;
->> +
->> +               bias = atomic_sub_return(nr, v);
->> +               WARN_ON(bias < 0);
->> +       }
-> 
-> Rather than have 2 versions of this function it might work better to
-> just use the atomic_long version of these functions instead. Then you
-> shouldn't need to have two versions of the code.
-> 
-> You could just modify the block on the end to check for new_frag_count
-> vs old_frag_count if PAGE_POOL_USE_PP_FRAG_COUNT is true, or
-> new_frag_count < 0 if false.
+> +	struct mm_struct	*mm;
+> +	struct vm_area_struct	*vma;
 
-When implementing the above, it seems it may still be better to have two
-big blocks when both are using the atomic_long_sub_return(), otherwise we
-may have many small blocks.
+Linked objects..
 
-> 
->> +
->> +       return bias;
->> +}
->> +
->> +static inline void page_pool_set_bias(struct page *page, int bias)
->> +{
->> +       if (PAGE_POOP_USE_DMA_ADDR_1) {
->> +               unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
->> +
->> +               dma_addr_0 &= PAGE_MASK;
->> +               dma_addr_0 |= bias;
->> +
->> +               WRITE_ONCE(page->dma_addr[0], dma_addr_0);
->> +       } else {
->> +               atomic_t *v = (atomic_t *)&page->dma_addr[1];
->> +
->> +               atomic_set(v, bias);
->> +       }
-> 
-> Similarly here you could just update bias to include the dma_addr in
-> the if case, and then use atomic_long_set for both cases.
+> +
+> +	pgd_t			*pgdp;
+> +	p4d_t			*p4dp;
+> +	pud_t			*pudp;
+> +	pmd_t			*pmdp;
+> +	pte_t			*ptep;
 
-ok.
+pgtable pointers..
 
-> 
->> +}
->> +
->>  static inline bool is_page_pool_compiled_in(void)
->>  {
->>  #ifdef CONFIG_PAGE_POOL
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 78838c6..6ac5b00 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
->> @@ -198,6 +198,16 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>         if (dma_mapping_error(pool->p.dev, dma))
->>                 return false;
->>
->> +       if (PAGE_POOP_USE_DMA_ADDR_1 &&
->> +           WARN_ON(pool->p.flags & PP_FLAG_PAGE_FRAG &&
->> +                   dma & ~PAGE_MASK)) {
->> +               dma_unmap_page_attrs(pool->p.dev, dma,
->> +                                    PAGE_SIZE << pool->p.order,
->> +                                    pool->p.dma_dir,
->> +                                    DMA_ATTR_SKIP_CPU_SYNC);
->> +               return false;
->> +       }
->> +
->>         page_pool_set_dma_addr(page, dma);
->>
->>         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->> --
->> 2.7.4
->>
-> .
-> 
+> +
+> +	p4d_t			*start_p4dp;
+> +	pud_t			*start_pudp;
+> +	pmd_t			*start_pmdp;
+> +	pgtable_t		start_ptep;
+
+Saved pgtable pointers..
+
+> +
+> +	unsigned long		vaddr;
+> +	pgprot_t		page_prot;
+> +	pgprot_t		page_prot_none;
+
+Other miscellaneous objects..
+
+> +
+> +	unsigned long		pud_pfn;
+> +	unsigned long		pmd_pfn;
+> +	unsigned long		pte_pfn;
+
+Dynamically allocated objects..
+
+> +
+> +	unsigned long		fixed_pgd_pfn;
+> +	unsigned long		fixed_p4d_pfn;
+> +	unsigned long		fixed_pud_pfn;
+> +	unsigned long		fixed_pmd_pfn;
+> +	unsigned long		fixed_pte_pfn;
+> +};
+
+Derived from symbol 'start_kernel' objects..
+
+> +
+>  static void __init pte_basic_tests(unsigned long pfn, int idx)
+>  {
+>  	pgprot_t prot = protection_map[idx];
+> @@ -955,8 +985,180 @@ static unsigned long __init get_random_vaddr(void)
+>  	return random_vaddr;
+>  }
+>  
+> +static void __init free_mem(struct vm_pgtable_debug *debug)
+> +{
+> +	struct page *page = NULL;
+> +	int order = 0;
+> +
+> +	/* Free (huge) page */
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+
+Replace #ifdef with IS_ENABLED(). There is no symbol visibility problem
+without those #ifdef here.
+
+> +	if (has_transparent_hugepage() &&
+> +	    debug->pud_pfn != ULONG_MAX) {
+> +		page = pfn_to_page(debug->pud_pfn);
+> +		order = HPAGE_PUD_SHIFT - PAGE_SHIFT;
+> +	}
+> +#endif
+> +
+> +	if (has_transparent_hugepage() &&
+> +	    debug->pmd_pfn != ULONG_MAX && !page) {
+> +		page = pfn_to_page(debug->pmd_pfn);
+> +		order = HPAGE_PMD_ORDER;
+> +	}
+> +#endif
+> +
+> +	if (debug->pte_pfn != ULONG_MAX && !page) {
+> +		page = pfn_to_page(debug->pte_pfn);
+> +		order = 0;
+> +	}
+
+This could be further simplified.
+
+	if (debug->pud_pfn) {
+		__free_pages(page, PUD_ORDER)
+		done
+	}
+
+	if (debug->pmd_pfn) {
+		__free_pages(page, PMD_ORDER)
+		done
+	}
+
+	if (debug->pte_pfn)
+		__free_pages(page, 0)
+
+If the debug->pxx_pfn is positive and (!= ULONG_MAX), it can be assumed
+that pxx level memory was allocated successfully and is being freed up
+here. Just need to start from the highest order though.
+
+> +
+> +	if (page)
+> +		__free_pages(page, order);
+
+From here...
+
+> +
+> +	/* Free page table */
+> +	if (debug->start_ptep) {
+> +		pte_free(debug->mm, debug->start_ptep);
+> +		mm_dec_nr_ptes(debug->mm);
+> +	}
+> +
+> +	if (debug->start_pmdp) {
+> +		pmd_free(debug->mm, debug->start_pmdp);
+> +		mm_dec_nr_pmds(debug->mm);
+> +	}
+> +
+> +	if (debug->start_pudp) {
+> +		pud_free(debug->mm, debug->start_pudp);
+> +		mm_dec_nr_puds(debug->mm);
+> +	}
+> +
+> +	if (debug->start_p4dp)
+> +		p4d_free(debug->mm, debug->p4dp);
+> +
+> +	/* Free vma and mm struct */
+> +	if (debug->vma)
+> +		vm_area_free(debug->vma);
+> +	if (debug->mm)
+> +		mmdrop(debug->mm);
+> +}
+
+Till here...
+
+I am wondering whether it is really necessary to cross check all these
+elements here for being non-NULL, before freeing or rather destroying.
+Except for the allocated huge memory containing pfns and pages, all
+other elements should be asserted before proceeding with the test.
+Hence no additional checks should be required while freeing.
+
+> +
+> +static int __init alloc_mem(struct vm_pgtable_debug *debug)
+> +{
+> +	struct page *page = NULL;
+> +	phys_addr_t phys;
+> +	int ret = 0;
+> +
+> +	/* Initialize the debugging data */
+> +	debug->mm             = NULL;
+> +	debug->vma            = NULL;
+> +	debug->pgdp           = NULL;
+> +	debug->p4dp           = NULL;
+> +	debug->pudp           = NULL;
+> +	debug->pmdp           = NULL;
+> +	debug->ptep           = NULL;
+> +	debug->start_p4dp     = NULL;
+> +	debug->start_pudp     = NULL;
+> +	debug->start_pmdp     = NULL;
+> +	debug->start_ptep     = NULL;
+> +	debug->vaddr          = 0UL;
+> +	debug->page_prot      = vm_get_page_prot(VM_READ | VM_WRITE | VM_EXEC);
+
+Should use VMFLAGS instead.
+
+> +	debug->page_prot_none = __P000;
+> +	debug->pud_pfn        = ULONG_MAX;
+> +	debug->pmd_pfn        = ULONG_MAX;
+> +	debug->pte_pfn        = ULONG_MAX;
+> +	debug->fixed_pgd_pfn  = ULONG_MAX;
+> +	debug->fixed_p4d_pfn  = ULONG_MAX;
+> +	debug->fixed_pud_pfn  = ULONG_MAX;
+> +	debug->fixed_pmd_pfn  = ULONG_MAX;
+> +	debug->fixed_pte_pfn  = ULONG_MAX;
+
+It should instead define yet another helper, which would reset all
+structure elements to NULL or some unusable values before they get
+initialized here. Possibly [reset/clr]_debug_pgtable_args() ?
+
+> +
+> +	/* Allocate mm and vma */
+> +	debug->mm = mm_alloc();
+> +	if (!debug->mm) {
+> +		pr_warn("Failed to allocate mm struct\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	debug->vma = vm_area_alloc(debug->mm);
+> +	if (!debug->vma) {
+> +		pr_warn("Failed to allocate vma\n");
+
+s/pr_warn/pr_err. Please dont change any warning levels here.
+
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	/* Figure out the virtual address and allocate page table entries */
+> +	debug->vaddr = get_random_vaddr();
+> +	debug->pgdp = pgd_offset(debug->mm, debug->vaddr);
+> +	debug->p4dp = p4d_alloc(debug->mm, debug->pgdp, debug->vaddr);
+> +	debug->pudp = debug->p4dp ?
+> +		      pud_alloc(debug->mm, debug->p4dp, debug->vaddr) : NULL;
+> +	debug->pmdp = debug->pudp ?
+> +		      pmd_alloc(debug->mm, debug->pudp, debug->vaddr) : NULL;
+> +	debug->ptep = debug->pmdp ?
+> +		      pte_alloc_map(debug->mm, debug->pmdp, debug->vaddr) : NULL;
+
+(PXXX ?) construct is really required here. Should not pxx_alloc()
+return NULL if the previous level pointer is NULL ? Regardless it
+might be better to just assert that these intermediary levels are
+allocated before proceeding further. It does not make sense to go
+ahead with the test if any of the allocations failed ! Similar to
+mm and vma.
+
+
+> +	if (!debug->ptep) {
+> +		pr_warn("Failed to allocate page table\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	/*
+> +	 * The above page table entries will be modified. Lets save the
+> +	 * page table entries so that they can be released when the tests
+> +	 * are completed.
+> +	 */
+> +	debug->start_p4dp = p4d_offset(debug->pgdp, 0UL);
+> +	debug->start_pudp = pud_offset(debug->p4dp, 0UL);
+> +	debug->start_pmdp = pmd_offset(debug->pudp, 0UL);
+> +	debug->start_ptep = pmd_pgtable(*(debug->pmdp));
+
+Please keep the existing construct via tmp pointer obtained from
+READ_ONCE() on (debug->pmdp) before getting used in pmd_pgtable().
+
+> +
+> +	/*
+> +	 * Figure out the fixed addresses, which are all around the kernel
+> +	 * symbol (@start_kernel). The corresponding PFNs might be invalid,
+> +	 * but it's fine as the following tests won't access the pages.
+> +	 */
+> +	phys = __pa_symbol(&start_kernel);
+> +	debug->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
+> +	debug->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
+> +	debug->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
+> +	debug->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
+> +	debug->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
+> +
+> +	/*
+> +	 * Allocate (huge) pages because some of the tests need to access
+> +	 * the data in the pages. The corresponding tests will be skipped
+> +	 * if we fail to allocate (huge) pages.
+> +	 */
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+
+There is no symbol visibility problem without this #ifdef. Hence
+please use IS_ENABLED() constructs here instead.
+
+> +	if (has_transparent_hugepage()) {
+> +		page = alloc_pages(GFP_KERNEL, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+> +		if (page)
+> +			debug->pud_pfn = page_to_pfn(page);
+			debug->pmd_pfn = debug->pud_pfn;
+			debug->pte_pfn = debug->pud_pfn;
+			done; skip;
+> +	}
+> +#endif
+> +
+> +	if (has_transparent_hugepage()) {
+> +		page = page ? page : alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
+> +		if (page)
+> +			debug->pmd_pfn = page_to_pfn(page);
+			debug->pte_pfn = debug->pmd_pfn;
+			done; skip;
+> +	}
+> +#endif
+> +
+> +	page = page ? page : alloc_pages(GFP_KERNEL, 0);
+> +	if (page)
+> +		debug->pte_pfn = page_to_pfn(page);
+
+With the above mentioned changes (page ?) constructs should not be
+required anymore.
+
+> +
+> +	return 0;
+> +
+> +error:
+> +	free_mem(debug);
+> +	return ret;
+> +}
+> +
+>  static int __init debug_vm_pgtable(void)
+>  {
+> +	struct vm_pgtable_debug debug;
+
+This should be renamed.
+
+s/debug/pgtable_args ?
+
+>  	struct vm_area_struct *vma;
+>  	struct mm_struct *mm;
+>  	pgd_t *pgdp;
+> @@ -970,9 +1172,13 @@ static int __init debug_vm_pgtable(void)
+>  	unsigned long vaddr, pte_aligned, pmd_aligned;
+>  	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
+>  	spinlock_t *ptl = NULL;
+> -	int idx;
+> +	int idx, ret;
+>  
+>  	pr_info("Validating architecture page table helpers\n");
+> +	ret = alloc_mem(&debug);
+> +	if (ret)
+> +		return ret;
+> +
+>  	prot = vm_get_page_prot(VMFLAGS);
+>  	vaddr = get_random_vaddr();
+>  	mm = mm_alloc();
+> @@ -1127,6 +1333,8 @@ static int __init debug_vm_pgtable(void)
+>  	mm_dec_nr_pmds(mm);
+>  	mm_dec_nr_ptes(mm);
+>  	mmdrop(mm);
+> +
+> +	free_mem(&debug);
+>  	return 0;
+>  }
+>  late_initcall(debug_vm_pgtable);
+>
