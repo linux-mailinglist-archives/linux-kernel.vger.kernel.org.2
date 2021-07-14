@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09943C9331
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B983C9335
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhGNVlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:41:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229657AbhGNVlm (ORCPT
+        id S234855AbhGNVm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhGNVmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:41:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626298730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AS2PhfoWmQKR8Ft5CX0e3UMsUDYv8nJr/WqBjmF1Fek=;
-        b=IDlFRxObJsHVuTeKtwnpZp9BwSL31ZlHRXa7Pghpg0GA9/b92MaTE+vDkmWdRoxJsGf2jq
-        FqbYoLRhvFUwTjPJZs+u1BCIjfsvXsPnIvw4FhaZ/cOMgGntAZ7oz+bzww+NzRZcDYETcb
-        9mBCuvBNTWTbyVdNLbgReRpcWfMFwh0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-l4tbBZzgNjqr1nduikmTsw-1; Wed, 14 Jul 2021 17:38:48 -0400
-X-MC-Unique: l4tbBZzgNjqr1nduikmTsw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46B7710C1ADC;
-        Wed, 14 Jul 2021 21:38:47 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA2435D9DD;
-        Wed, 14 Jul 2021 21:38:46 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, Stas Sergeev <stsp2@yandex.ru>
-Subject: [PATCH] KVM: x86: accept userspace interrupt only if no event is injected
-Date:   Wed, 14 Jul 2021 17:38:46 -0400
-Message-Id: <20210714213846.854837-1-pbonzini@redhat.com>
+        Wed, 14 Jul 2021 17:42:25 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D07C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 14:39:32 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id n187-20020a4a40c40000b029025e72bdf5d6so1011614ooa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 14:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=7yU/lXVPq8v5DxUavviakd+XqTwyKh5GL+eckjJwhhU=;
+        b=Huzsn41/m5wNJTthgcAkHFWvNusXC97KqI0iRCAyi4I1V8yYIvTOhj+iZO052RBDgY
+         /jxRFEZK8vH/CEYJ5CnaKLfuPND5/1DeDeNXoS5qhh5axGrqcLRDIAgCJvKCy8aLX8g1
+         uCSMpbZnly1BXgEIB0LWc1Jh/Ao6j+lmqofVM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=7yU/lXVPq8v5DxUavviakd+XqTwyKh5GL+eckjJwhhU=;
+        b=nbqRoWWgpalotwVMZ1kihcWYQkjgQITk2gyEMXOKfOu/aFj3qS4LrZh5ewTUwADBqV
+         YbW+FsoOn6OypXBHlYsVS+IP1NWe8Uzd0VaZG3zOC34VTChYC9agcwZE2qGjCp9n81L1
+         lBBYGERBTNP81wj49J6g/3sX24SV9pwd7BJajBcBcCmP4h2EFM6DyIr9Suj7HVXz180+
+         tt/kEmJhiHlQsE112mlTT43HNG4DScDFbKqU1PWTMQ2Jfjh7sI2yjXP/pYLVFTpVilZD
+         qL+B/6QmIBSs75zO4b/lQurQQTWyFTFgdoQPeO5AEjpHySSYV3pxae3nVaXX5cXQ5075
+         YcGQ==
+X-Gm-Message-State: AOAM530JovNHxPlnFf1UeeVPovA02St1EUtnIy/31dF7IfCsZDORSn8a
+        YGLY6E1QElOv/rEsTTo5LuNqHVJpgxKPOgT/NmPe0g==
+X-Google-Smtp-Source: ABdhPJwE2R3+k8+ce7HwbkPywG7nnMFEF4vtMpBltJIbIWP52CkUWZLrAOaoBO6XdJi33DjezNuNWFNaiYMAd18hPNU=
+X-Received: by 2002:a4a:e206:: with SMTP id b6mr17846oot.16.1626298771497;
+ Wed, 14 Jul 2021 14:39:31 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 14 Jul 2021 23:39:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210709024834.29680-1-jrdr.linux@gmail.com>
+References: <20210709024834.29680-1-jrdr.linux@gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 14 Jul 2021 23:39:30 +0200
+Message-ID: <CAE-0n51cqCz4JD75n4ZZV2LDxbB6b0QwJ-La2hU8mnPcckNmSg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: Remove unused variable
+To:     Souptick Joarder <jrdr.linux@gmail.com>, abhinavk@codeaurora.org,
+        airlied@linux.ie, chandanu@codeaurora.org, daniel@ffwll.ch,
+        dmitry.baryshkov@linaro.org, khsieh@codeaurora.org,
+        robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once an exception has been injected, any side effects related to
-the exception (such as setting CR2 or DR6) have been taked place.
-Therefore, once KVM sets the VM-entry interruption information
-field or the AMD EVENTINJ field, the next VM-entry must deliver that
-exception.
+Quoting Souptick Joarder (2021-07-08 19:48:34)
+> Kernel test roobot throws below warning ->
+>
+> drivers/gpu/drm/msm/dp/dp_display.c:1017:21:
+> warning: variable 'drm' set but not used [-Wunused-but-set-variable]
+>
+> Removed unused variable drm.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
 
-Pending interrupts are processed after injected exceptions, so
-in theory it would not be a problem to use KVM_INTERRUPT when
-an injected exception is present.  However, DOSBox is using
-run->ready_for_interrupt_injection to detect interrupt windows
-and then using KVM_SET_SREGS/KVM_SET_REGS to inject the
-interrupt manually.  For this to work, the interrupt window
-must be delayed after the completion of the previous event
-injection.
-
-Cc: stable@vger.kernel.org
-Reported-by: Stas Sergeev <stsp2@yandex.ru>
-Tested-by: Stas Sergeev <stsp2@yandex.ru>
-Fixes: 71cc849b7093 ("KVM: x86: Fix split-irqchip vs interrupt injection window request")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fe3aaf195292..7fbab29b3569 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4342,6 +4342,9 @@ static int kvm_vcpu_ioctl_set_lapic(struct kvm_vcpu *vcpu,
- 
- static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
- {
-+	if (kvm_event_needs_reinjection(vcpu))
-+		return false;
-+
- 	/*
- 	 * We can accept userspace's request for interrupt injection
- 	 * as long as we have a place to store the interrupt number.
--- 
-2.27.0
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
