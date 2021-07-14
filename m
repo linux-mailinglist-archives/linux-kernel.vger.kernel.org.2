@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439D43C832D
+	by mail.lfdr.de (Postfix) with ESMTP id AF9983C832E
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239119AbhGNKr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:47:28 -0400
-Received: from smtprelay0009.hostedemail.com ([216.40.44.9]:60952 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239148AbhGNKr0 (ORCPT
+        id S239220AbhGNKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:47:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28391 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239148AbhGNKrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:47:26 -0400
-Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 4D6742AF17;
-        Wed, 14 Jul 2021 10:44:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 5B78427DD3E;
-        Wed, 14 Jul 2021 10:44:32 +0000 (UTC)
-Message-ID: <91d4f67011eb83c4e4b17c7cfb4f4b8aef190978.camel@perches.com>
-Subject: Re: [PATCH v1 1/4] serial: 8250_pci: Refactor the loop in
- pci_ite887x_init()
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Date:   Wed, 14 Jul 2021 03:44:31 -0700
-In-Reply-To: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 14 Jul 2021 06:47:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626259485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nOKE2GZL6fTWgITADtSj3+kfbdCqczacGjJyqa6cu2Q=;
+        b=UuFMdrRpwhx5o65V1/BPJpahs/4o5mfLJ4DJD3FOmZR472JnrVdRvCpUKkrwz9j1ZmBBQW
+        uBA0P02AsnojpMi4ZHgT1diYOq5vbcsM3/oiiGCuoGpd1RkGZuE7FewrLxtRQtuOmmYg68
+        oqW8EspCStHwt987b3djXdg+dv6zs9A=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-q11ZtIv3Plqvit6r1w7z6Q-1; Wed, 14 Jul 2021 06:44:42 -0400
+X-MC-Unique: q11ZtIv3Plqvit6r1w7z6Q-1
+Received: by mail-wr1-f71.google.com with SMTP id k3-20020a5d52430000b0290138092aea94so1280984wrc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:44:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nOKE2GZL6fTWgITADtSj3+kfbdCqczacGjJyqa6cu2Q=;
+        b=dqbqVLS7vufS/GGyPVKFC13DZmvoQjyjniTRxkBT8SKSXqI+FvUcUNt5SkWDdsh2n4
+         1qj5pftAUFD9aD57/ARn4uxAN4sUeNG8oFG7nmoOkf5ZbF/JhXjKInUdE8jq/QQ5QqcA
+         ubVqPrNa26MyRYXNEHwIlOxEKJXhC5bBV6QuF2THJa7mozavityXXmIDZ5llLEjgjn5x
+         z8crgWsi4cg4hn+G+tWfiVcP6uVLTxhehblmFu7Y98E4FCoNMx8mNtuKjsK4q+lQuDdv
+         ZuaMueZSnCDf/eEmPk2aH55hjtJBK2u6u45OiYWX3ha16lW0dWRXKqwzzX7N0iMQ9iFt
+         r8VA==
+X-Gm-Message-State: AOAM531WjuHVylxW770Uf2M/aFfF3t0qW8iQIZfmr1/usqA9Fzbh33cB
+        vBuzC/iM4zbix3iDsMX91onGq+8S4VoGp2nc7ihNQDrwCtUKmEMHDrUptURzV7hNyAGVEuixhUV
+        4AsTeCGYb2sY8X0+lApGyHUxJ
+X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr12065470wrt.293.1626259480992;
+        Wed, 14 Jul 2021 03:44:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyBrhPbsqvtDXxSIp+KaPgOZIl+LpZ7BZeaQ/21MrKE7Luf9eg3eKwmIBISMRnttuaBR9R+yg==
+X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr12065451wrt.293.1626259480804;
+        Wed, 14 Jul 2021 03:44:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id 19sm1750935wmu.17.2021.07.14.03.44.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 03:44:39 -0700 (PDT)
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <jlelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        He Zhe <zhe.he@windriver.com>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <20210714063814-mutt-send-email-mst@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <6aa0d9b6-94f8-6321-9015-da56ac93d863@redhat.com>
+Date:   Wed, 14 Jul 2021 12:44:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.06
-X-Stat-Signature: htenwmm663a1y4q5mmh17wpywfynss3u
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 5B78427DD3E
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/8sEb/SnuH+4J1L45TBkLGiY5c7ic2qm8=
-X-HE-Tag: 1626259472-225770
+In-Reply-To: <20210714063814-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-13 at 13:40 +0300, Andy Shevchenko wrote:
-> The loop can be refactored by using ARRAY_SIZE() instead of NULL terminator.
-> This reduces code base and makes it easier to read and understand.
-[]
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-[]
-> @@ -897,37 +897,31 @@ static int pci_netmos_init(struct pci_dev *dev)
->  /* enable IO_Space bit */
->  #define ITE_887x_POSIO_ENABLE		(1 << 31)
->  
+On 14/07/21 12:41, Michael S. Tsirkin wrote:
+>> --------------- 8< ---------------
+>> From: Paolo Bonzini <pbonzini@redhat.com>
+>> Subject: [PATCH] eventfd: protect eventfd_wake_count with a local_lock
+>>
+>> eventfd_signal assumes that spin_lock_irqsave/spin_unlock_irqrestore is
+>> non-preemptable and therefore increments and decrements the percpu
+>> variable inside the critical section.
+>>
+>> This obviously does not fly with PREEMPT_RT.  If eventfd_signal is
+>> preempted and an unrelated thread calls eventfd_signal, the result is
+>> a spurious WARN.  To avoid this, protect the percpu variable with a
+>> local_lock.
+>>
+>> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+>> Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
+>> Cc: stable@vger.kernel.org
+>> Cc: He Zhe <zhe.he@windriver.com>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > 
-> +/* inta_addr are the configuration addresses of the ITE */
-> +static const short inta_addr[] = { 0x2a0, 0x2c0, 0x220, 0x240, 0x1e0, 0x200, 0x280, };
-
-Why move this outside the only function it's used in?
-The trailing comma isn't necessary/useful and possibly confusing too.
-
->  static int pci_ite887x_init(struct pci_dev *dev)
->  {
-> -	/* inta_addr are the configuration addresses of the ITE */
-> -	static const short inta_addr[] = { 0x2a0, 0x2c0, 0x220, 0x240, 0x1e0,
-> -							0x200, 0x280, 0 };
->  	int ret, i, type;
->  	struct resource *iobase = NULL;
->  	u32 miscr, uartbar, ioport;
 > 
->  	/* search for the base-ioport */
-> -	i = 0;
-> -	while (inta_addr[i] && iobase == NULL) {
-> -		iobase = request_region(inta_addr[i], ITE_887x_IOSIZE,
-> -								"ite887x");
-> +	for (i = 0; i < ARRAY_SIZE(inta_addr); i++) {
-> +		iobase = request_region(inta_addr[i], ITE_887x_IOSIZE, "ite887x");
->  		if (iobase != NULL) {
-
-continue and unindent the block below?
-
->  			/* write POSIO0R - speed | size | ioport */
->  			pci_write_config_dword(dev, ITE_887x_POSIO0,
->  				ITE_887x_POSIO_ENABLE | ITE_887x_POSIO_SPEED |
->  				ITE_887x_POSIO_IOSIZE_32 | inta_addr[i]);
->  			/* write INTCBAR - ioport */
-> -			pci_write_config_dword(dev, ITE_887x_INTCBAR,
-> -								inta_addr[i]);
-> +			pci_write_config_dword(dev, ITE_887x_INTCBAR, inta_addr[i]);
->  			ret = inb(inta_addr[i]);
->  			if (ret != 0xff) {
->  				/* ioport connected */
->  				break;
->  			}
->  			release_region(iobase->start, ITE_887x_IOSIZE);
-> -			iobase = NULL;
->  		}
-> -		i++;
->  	}
->  
+> Makes sense ...
 > 
->  	if (!inta_addr[i]) {
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> 
+> want to send this to the windriver guys so they can test?
+> Here's the list from that thread:
 
+I included He Zhe, but it should be enough for Daniel to test it.  The 
+bug is quite obvious once you wear your PREEMPT_RT goggles.
+
+Paolo
 
