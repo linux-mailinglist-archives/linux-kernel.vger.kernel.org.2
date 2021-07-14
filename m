@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ED73C846B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914923C845C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239277AbhGNMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:30:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:34516 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239255AbhGNMaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:30:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FA4BD6E;
-        Wed, 14 Jul 2021 05:27:31 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 947203F694;
-        Wed, 14 Jul 2021 05:27:29 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Yafang Shao <laoar.shao@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/1] sched: do active load balance in balance callback
-In-Reply-To: <CALOAHbAS26LP2p9Fe7m6xynZmazYENmx_HfTV4LebwPWr7XLmA@mail.gmail.com>
-References: <CALOAHbAS26LP2p9Fe7m6xynZmazYENmx_HfTV4LebwPWr7XLmA@mail.gmail.com>
-Date:   Wed, 14 Jul 2021 13:27:24 +0100
-Message-ID: <87tukxm66r.mognet@arm.com>
+        id S239378AbhGNMQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:16:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6927 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239209AbhGNMQy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:16:54 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPxCk6Cwzz7BR9;
+        Wed, 14 Jul 2021 20:10:26 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by dggeml757-chm.china.huawei.com
+ (10.1.199.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
+ Jul 2021 20:13:59 +0800
+From:   Yi Zhuang <zhuangyi1@huawei.com>
+To:     <benh@kernel.crashing.org>, <paulus@samba.org>
+CC:     <zhuangyi1@huawei.com>, <hegdevasant@linux.vnet.ibm.com>,
+        <mpe@ellerman.id.au>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] powerpc/rtas_flash: fix a potential buffer overflow
+Date:   Wed, 14 Jul 2021 20:27:53 +0800
+Message-ID: <20210714122753.76021-1-zhuangyi1@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/07/21 15:40, Yafang Shao wrote:
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 4ca80df205ce..a0a90a37e746 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8208,6 +8208,7 @@ void __init sched_init(void)
->                 rq->cpu_capacity = rq->cpu_capacity_orig = SCHED_CAPACITY_SCALE;
->                 rq->balance_callback = &balance_push_callback;
->                 rq->active_balance = 0;
-> +               rq->active_balance_target = NULL;
->                 rq->next_balance = jiffies;
->                 rq->push_cpu = 0;
->                 rq->cpu = i;
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 23663318fb81..9aaa75250cdc 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7751,36 +7751,6 @@ static void detach_task(struct task_struct *p,
-> struct lb_env *env)
+Since snprintf() returns the possible output size instead of the
+actual output size, the available flash_msg length returned by
+get_validate_flash_msg may exceed the given buffer limit when
+simple_read_from_buffer calls copy_to_user
 
-Your mail client is breaking lines which pretty much wrecks the
-patch. Please use git send-email to submit patches, or look at
-Documentation/process/email-clients.rst to figure out how to tweak your
-client. 
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: a94a14720eaf5 powerpc/rtas_flash: Fix validate_flash buffer overflow issue
+Signed-off-by: Yi Zhuang <zhuangyi1@huawei.com>
+---
+ arch/powerpc/kernel/rtas_flash.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/rtas_flash.c b/arch/powerpc/kernel/rtas_flash.c
+index a99179d83538..062f0724c2ff 100644
+--- a/arch/powerpc/kernel/rtas_flash.c
++++ b/arch/powerpc/kernel/rtas_flash.c
+@@ -470,9 +470,14 @@ static int get_validate_flash_msg(struct rtas_validate_flash_t *args_buf,
+ 	if (args_buf->status >= VALIDATE_TMP_UPDATE) { 
+ 		n = sprintf(msg, "%d\n", args_buf->update_results);
+ 		if ((args_buf->update_results >= VALIDATE_CUR_UNKNOWN) ||
+-		    (args_buf->update_results == VALIDATE_TMP_UPDATE))
++		    (args_buf->update_results == VALIDATE_TMP_UPDATE)) {
+ 			n += snprintf(msg + n, msglen - n, "%s\n",
+ 					args_buf->buf);
++			if (n >= msglen) {
++				n = msglen;
++				printk(KERN_ERR "FLASH: msg too long.\n");
++			}
++		}
+ 	} else {
+ 		n = sprintf(msg, "%d\n", args_buf->status);
+ 	}
+-- 
+2.26.0.106.g9fadedd
+
