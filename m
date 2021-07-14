@@ -2,197 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA6A3C7F96
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17ED3C7F98
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238359AbhGNHuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:50:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:23039 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238139AbhGNHuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:50:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626248880; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=SFKw+GHBRVetr42G54iytoT6j/yGrxSa5sLEwFKpf3M=;
- b=Ohpc0ktzuZ1aISFaYUDNtnsJoO3twcTav1NyfT5FSzf0pvFMKIEWBmQSHeIjqesYcZaHfgAS
- vEZOr+qDRI/eyDzA8CPHNtj9deOVgnp6k2JSZRf2r9uYPSzlrZ8cTVgH7GjMK20N4kcjIINC
- gWd39AaDulmyFfeP6T4k77nhXCE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60ee969706ea41c941a5a46c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Jul 2021 07:47:35
- GMT
-Sender: rojay=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62FEDC4323A; Wed, 14 Jul 2021 07:47:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rojay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 64FCCC433D3;
-        Wed, 14 Jul 2021 07:47:33 +0000 (UTC)
+        id S238349AbhGNHwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:52:42 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:6865 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238139AbhGNHwm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 03:52:42 -0400
+X-UUID: 0f1004db9e8a48768ff45d7776ca9fe5-20210714
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2/O2pQ4HOC6eVJtd8Q1VhIMzPQ0HWNoStIpcHrk56vk=;
+        b=i+4WAhn3U+4xtlazIPxo5WsoE8uIfn8ka8+MK/d3EUf958blfDVZht7t+4FyJguNc0JdsLXnKOfXQYLlgI8my12oLD1lF4hOQwXOhaKYkGllWUW1F0zA7HvIHrJYrs4bgya2g0naPHqI+uSSfjU7bEMz9H78jqXac5tiGvceXoA=;
+X-UUID: 0f1004db9e8a48768ff45d7776ca9fe5-20210714
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2130778656; Wed, 14 Jul 2021 15:49:45 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
+ 2021 15:49:39 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Jul 2021 15:49:39 +0800
+Message-ID: <1626248978.8985.4.camel@mhfsdcap03>
+Subject: Re: [PATCH V3 2/3] dt-bindings: i2c: add attribute
+ default-timing-adjust
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <wsa@the-dreams.de>, <bbrezillon@kernel.org>,
+        <matthias.bgg@gmail.com>, <mark.rutland@arm.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
+        <xinping.qian@mediatek.com>, <ot_daolong.zhu@mediatek.com>
+Date:   Wed, 14 Jul 2021 15:49:38 +0800
+In-Reply-To: <20210712205342.GA2469648@robh.at.kernel.org>
+References: <1624271985-23591-1-git-send-email-kewei.xu@mediatek.com>
+         <1624271985-23591-3-git-send-email-kewei.xu@mediatek.com>
+         <20210712205342.GA2469648@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 14 Jul 2021 13:17:33 +0530
-From:   rojay@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>, robh+dt@kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        rajpat@codeaurora.org
-Subject: Re: [PATCH V3 1/3] arm64: dts: sc7280: Add QSPI node
-In-Reply-To: <CAE-0n51NfHSwRQvG0HnTcHBkv=Huy-CXEwJCxLG03MN3dSe5kA@mail.gmail.com>
-References: <20210604135439.19119-1-rojay@codeaurora.org>
- <20210604135439.19119-2-rojay@codeaurora.org> <YLxHTDxVcSvVxsd5@builder.lan>
- <98befc79fc039496b0c12d7983319c92@codeaurora.org>
- <2ad7a00924b5065bf61c47e8b6d24339@codeaurora.org>
- <CAE-0n51NfHSwRQvG0HnTcHBkv=Huy-CXEwJCxLG03MN3dSe5kA@mail.gmail.com>
-Message-ID: <498a2359eec36c6a0b811337ee187df8@codeaurora.org>
-X-Sender: rojay@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-TM-SNTS-SMTP: F8EAEF2BEC1C758AA1F1F56F12303E5B8C124DDF5593E1195846295ACC508F7A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-09 06:26, Stephen Boyd wrote:
-> Quoting rojay@codeaurora.org (2021-07-06 02:19:27)
->> On 2021-06-08 13:37, rojay@codeaurora.org wrote:
->> > On 2021-06-06 09:25, Bjorn Andersson wrote:
->> >> On Fri 04 Jun 08:54 CDT 2021, Roja Rani Yarubandi wrote:
->> >>
->> >>> Add QSPI DT node for SC7280 SoC.
->> >>>
->> >>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
->> >>> ---
->> >>> Changes in V3:
->> >>>  - Broken the huge V2 patch into 3 smaller patches.
->> >>>    1. QSPI DT nodes
->> >>>    2. QUP wrapper_0 DT nodes
->> >>>    3. QUP wrapper_1 DT nodes
->> >>>
->> >>> Changes in V2:
->> >>>  - As per Doug's comments removed pinmux/pinconf subnodes.
->> >>>  - As per Doug's comments split of SPI, UART nodes has been done.
->> >>>  - Moved QSPI node before aps_smmu as per the order.
->> >>>
->> >>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 29 ++++++++++++
->> >>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 61
->> >>> +++++++++++++++++++++++++
->> >>>  2 files changed, 90 insertions(+)
->> >>>
->> >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> >>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> >>> index 3900cfc09562..d0edffc15736 100644
->> >>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> >>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> >>> @@ -268,6 +268,22 @@ pmr735b_die_temp {
->> >>>             };
->> >>>  };
->> >>>
->> >>> +&qspi {
->> >>> +   status = "okay";
->> >>> +   pinctrl-names = "default";
->> >>> +   pinctrl-0 = <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
->> >>> +
->> >>> +   flash@0 {
->> >>> +           compatible = "jedec,spi-nor";
->> >>> +           reg = <0>;
->> >>> +
->> >>> +           /* TODO: Increase frequency after testing */
->> >>> +           spi-max-frequency = <25000000>;
->> >>> +           spi-tx-bus-width = <2>;
->> >>> +           spi-rx-bus-width = <2>;
->> >>> +   };
->> >>> +};
->> >>> +
->> >>>  &qupv3_id_0 {
->> >>>     status = "okay";
->> >>>  };
->> >>> @@ -278,6 +294,19 @@ &uart5 {
->> >>>
->> >>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
->> >>>
->> >>> +&qspi_cs0 {
->> >>> +   bias-disable;
->> >>> +};
->> >>> +
->> >>> +&qspi_clk {
->> >>> +   bias-disable;
->> >>> +};
->> >>> +
->> >>> +&qspi_data01 {
->> >>> +   /* High-Z when no transfers; nice to park the lines */
->> >>> +   bias-pull-up;
->> >>> +};
->> >>> +
->> >>>  &qup_uart5_default {
->> >>>     tx {
->> >>>             pins = "gpio46";
->> >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> index 6c9d5eb93f93..3047ab802cd2 100644
->> >>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >>> @@ -1061,6 +1061,42 @@ apss_merge_funnel_in: endpoint {
->> >>>                     };
->> >>>             };
->> >>>
->> >>> +           qspi_opp_table: qspi-opp-table {
->> >>
->> >> This node doesn't represents anything on the mmio bus, so it shouldn't
->> >> live in in /soc. Can't you move it into &qspi?
->> >>
->> >> Regards,
->> >> Bjorn
->> >>
->> >
->> > Sure, will move it into qspi node.
->> >
->> > Thanks,
->> > Roja
->> >
->> 
->> Hi Bjorn,
->> 
->> Moving "qspi_opp_table" inside &qspi node causing this warning:
->> arch/arm64/boot/dts/qcom/sc7280.dtsi:1055.35-1072.6: Warning
->> (spi_bus_reg): /soc@0/spi@88dc000/qspi-opp-table: missing or empty reg
->> property
-> 
-> If DT folks are OK I think we should hard-code 'opp-table' as not a
-> device for spi to populate on the spi bus and relax the warning in the
-> devicetree compiler (see [1] for more details). Technically, nodes that
-> are bus controllers assume all child nodes are devices on that bus.  In
-> this case, we want to stick the opp table as a child of the spi node so
-> that it can be called 'opp-table' and not be a node in the root of DT.
-> 
->> 
->> Shall I keep the qspi-opp-table out of &qspi node?
->> 
-> 
-> If you do, please move it to / instead of putting it under /soc as it
-> doesn't have an address or a reg property.
-> 
+T24gTW9uLCAyMDIxLTA3LTEyIGF0IDE0OjUzIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gTW9uLCBKdW4gMjEsIDIwMjEgYXQgMDY6Mzk6NDRQTSArMDgwMCwga2V3ZWkueHVAbWVkaWF0
+ZWsuY29tIHdyb3RlOg0KPiA+IEZyb206IEtld2VpIFh1IDxrZXdlaS54dUBtZWRpYXRlay5jb20+
+DQo+ID4gDQo+ID4gQWRkIGF0dHJpYnV0ZSBkZWZhdWx0LXRpbWluZy1hZGp1c3QgZm9yIERULWJp
+bmRpbmcgZG9jdW1lbnQuDQo+ID4gDQo+ID4gRml4ZXM6IGJlNWNlMGU5N2NjNyAoImkyYzogbWVk
+aWF0ZWs6IEFkZCBpMmMgYWMtdGltaW5nIGFkanVzdCBzdXBwb3J0IikNCj4gDQo+IFlvdSB3YW50
+IHRvIGZpeCBhIGtlcm5lbCBjaGFuZ2Ugd2l0aCBhIERUIGNoYW5nZT8gVGhhdCdzIG5vdCBhIA0K
+PiBjb21wYXRpYmxlIGNoYW5nZSAoYW5kIEkgZ3Vlc3MgbmVpdGhlciB3YXMgdGhlIGtlcm5lbCBj
+aGFuZ2UpLiBTb3VuZHMgDQo+IGxpa2UgdGhlIGFib3ZlIGNvbW1pdCBzaG91bGQgYmUgcmV2ZXJ0
+ZWQgYW5kIHJldGhpbmsgaG93IHRvIGFkZCBhIG5ldyANCj4gZmVhdHVyZS4uLg0KPiANCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBLZXdlaSBYdSA8a2V3ZWkueHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0K
+PiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1tdDY1eHgudHh0
+IHwgMiArKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4g
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLW10
+NjV4eC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1tdDY1
+eHgudHh0DQo+ID4gaW5kZXggN2M0OTE1YmMuLjdiODBhMTEgMTAwNjQ0DQo+ID4gLS0tIGEvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXQ2NXh4LnR4dA0KPiA+ICsr
+KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLW10NjV4eC50eHQN
+Cj4gPiBAQCAtMzMsNiArMzMsOCBAQCBPcHRpb25hbCBwcm9wZXJ0aWVzOg0KPiA+ICAgIC0gbWVk
+aWF0ZWssaGF2ZS1wbWljOiBwbGF0Zm9ybSBjYW4gY29udHJvbCBpMmMgZm9ybSBzcGVjaWFsIHBt
+aWMgc2lkZS4NCj4gPiAgICAgIE9ubHkgbXQ2NTg5IGFuZCBtdDgxMzUgc3VwcG9ydCB0aGlzIGZl
+YXR1cmUuDQo+ID4gICAgLSBtZWRpYXRlayx1c2UtcHVzaC1wdWxsOiBJTyBjb25maWcgdXNlIHB1
+c2gtcHVsbCBtb2RlLg0KPiA+ICsgIC0gbWVkaWF0ZWssZGVmYXVsdC10aW1pbmctYWRqdXN0OiB1
+c2UgZGVmYXVsdCB0aW1pbmcgY2FsY3VsYXRpb24sIG5vIHRpbWluZw0KPiA+ICsgICAgYWRqdXN0
+bWVudC4NCj4gPiAgDQo+ID4gIEV4YW1wbGU6DQo+ID4gIA0KPiA+IC0tIA0KPiA+IDEuOS4xDQo+
+ID4gDQo+ID4gDQoNCkhpIFJvYiwNCg0KSW4gdGhlIGNvbW1pdCBiZTVjZTBlOTdjYzcgKCJpMmM6
+IG1lZGlhdGVrOiBBZGQgaTJjIGFjLXRpbWluZyBhZGp1c3QNCnN1cHBvcnQiKSwgdGhlIEkyQyB0
+aW1pbmcgY2FsY3VsYXRpb24gaGFzIGJlZW4gcmV2aXNlZCB0byBzdXBwb3J0DQphYy10aW1pbmcg
+YWRqdXN0bWVudC5CdXQgaW4gb3VyIGRlc2lnbiwgaXQgd2lsbCBtYWtlDQp0U1UsU1RBL3RIRCxT
+VEEvdFNVLFNUTyBzaG9ydGVyIHdoZW4gdGhlIHNsYXZlIGRldmljZSBoYXZlDQpjbG9jay1zdHJl
+dGNoaW5nIGZlYXR1cmUuDQpUaGVuIHdlIHVwbG9hZCB0aGUgY29tbWl0IGE4MGYyNDk0NWZjZiAo
+ImkyYzogbWVkaWF0ZWs6IFVzZQ0Kc2NsX2ludF9kZWxheV9ucyB0byBjb21wZW5zYXRlIGNsb2Nr
+LXN0cmV0Y2hpbmciKSB0byBzdXBwb3J0IGFkanVzdGluZw0KdFNVLFNUQS90SEQsU1RBL3RTVSxT
+VE8gd2hlbiB0aGUgc2xhdmUgZGV2aWNlIGNsb2NrLXN0cmV0Y2hpbmcuIEJ1dCBpZg0KdGhlIHNs
+YXZlIGRldmljZSBzdHJldGNoIHRoZSBTQ0wgbGluZSBmb3IgdG9vIGxvbmcgdGltZSwgb3VyIGRl
+c2lnbg0Kc3RpbGwgY2Fubm90IG1ha2UgdFNVLFNUQS90SEQsU1RBL3RTVSxTVE8gbWVldCBzcGVj
+Lg0KSG93ZXZlciBpbiB0aGUgb2xkIChkZWZhdWx0KSB0aW1pbmcgYWxnb3JpdGhtIGJlZm9yZSB0
+aGUgY29tbWl0DQpiZTVjZTBlOTdjYzcgKCJpMmM6IG1lZGlhdGVrOiBBZGQgaTJjIGFjLXRpbWlu
+ZyBhZGp1c3Qgc3VwcG9ydCIpLA0KdFNVLFNUQS90SEQsU1RBL3RTVSxTVE8gY2FuIG1lZXQgc3Bl
+Yy4gU28gd2Ugd2FudCB0byBkZWZpbmUgYSBuZXcNCnNldHRpbmcgImRlZmF1bHQtYWRqdXN0LXRp
+bWluZyIgZm9yIHVzaW5nIHRoZSBvbGQgKGRlZmF1bHQpIHRpbWluZw0KYWxnb3JpdGhtLg0KDQp0
+aGFua3MNCmtld2VpDQo=
 
-Hi Bjorn, Rob
-
-Can we move this "qspi_opp_table" to / from /soc?
-
-Thanks,
-Roja
-
-> [1]
-> https://github.com/dgibson/dtc/blob/69595a167f06c4482ce784e30df1ac9b16ceb5b0/checks.c#L1844
