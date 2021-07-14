@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0963C93E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E553C93E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236304AbhGNWd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 18:33:57 -0400
-Received: from mail-il1-f179.google.com ([209.85.166.179]:35607 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235650AbhGNWd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 18:33:56 -0400
-Received: by mail-il1-f179.google.com with SMTP id a11so3179622ilf.2;
-        Wed, 14 Jul 2021 15:31:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IdK0IO2DN+mRcPjrdhNoWbulNJtj9bPZcIWuLX28H2o=;
-        b=eHzVErcInt+tFYxYjw1MG/eelsVMbLiatHM49iwbJoVIthXMIoq+klYkzNmyTyMu0A
-         yiiaV2uwtjRZhQEI7RrIa6sz0rDumr8tmUKGZo+W3QIQobUlPyYZ8cVPtRR40iP+H23A
-         a1LQm7kHcNV7N35W49EcTRxo3ps5wK/gMOmlor0EIrot1M1xN5PGSnLWuEXLyJiO0icl
-         bWWXFT1zvWqZjSKbP6DRBHtmURM0G+0mxlIacZucJ2Yq0l+evu3FxRzdUYZKr5hEXNms
-         1HOlgoq0GN0jCdrJWahPCuO7QVvjBDdTKOha71GG1EwmD7YXmqG9MMOQrF3qLTSwx2vN
-         6fvA==
-X-Gm-Message-State: AOAM532dLkhzc6blQzUxCfMiuFAb9ZW0MhEsziGPSptDwXwp/GmlU7hZ
-        lBtun3Ap8PToC/aOrL/fnA==
-X-Google-Smtp-Source: ABdhPJwkQqrE9WhjInb9jEM0M38D4KnzR/ziBq0L5GV92HdpriU7PYWwrXjCPOgBtnNAiz3ZF5QHPQ==
-X-Received: by 2002:a05:6e02:1154:: with SMTP id o20mr105554ill.168.1626301863235;
-        Wed, 14 Jul 2021 15:31:03 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p6sm1997996ilg.4.2021.07.14.15.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 15:31:02 -0700 (PDT)
-Received: (nullmailer pid 3653436 invoked by uid 1000);
-        Wed, 14 Jul 2021 22:30:59 -0000
-Date:   Wed, 14 Jul 2021 16:30:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
-Cc:     "ohkwon1043@gmail.com" <ohkwon1043@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "frowand.list@gmail.com" <frowand.list@gmail.com>
-Subject: Re: [PATCH] of: base: remove unnecessary for loop
-Message-ID: <20210714223059.GA3653253@robh.at.kernel.org>
-References: <CGME20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
- <20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
+        id S235650AbhGNWfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 18:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhGNWfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 18:35:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A223613C9;
+        Wed, 14 Jul 2021 22:32:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1626301929;
+        bh=EHY882iGgDnDRGkqCFxlcI9IHP3HEwM+N+ik+0IVVjA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oDTjyZtKIPXeq1bX83YD6pIo2C+3MPcxM8jSvTVZyorJQS/g82Cw8MEH5KB/6U0+D
+         rmax19QPt6/22JIXx3UGw6UBlCbFrxH9A5N+9ylZeHjwCqszBlEc8Wd9fJDD4nhCZx
+         8jmoIbjNW5iDwasSKYXK9FfNF25GDeBfpYBG8PmI=
+Date:   Wed, 14 Jul 2021 15:32:08 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 3/4] mm: introduce memmap_alloc() to unify memory map
+ allocation
+Message-Id: <20210714153208.ef96cfc7c6bac360598101ed@linux-foundation.org>
+In-Reply-To: <20210714123739.16493-4-rppt@kernel.org>
+References: <20210714123739.16493-1-rppt@kernel.org>
+        <20210714123739.16493-4-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Jul 2021 23:03:28 +0900, 권오훈 wrote:
-> In __of_get_next_child function, loop iteration for getting next node is
-> unnecessary.
-> 
-> for loop is already checking if next is NULL or not, and
-> of_node_get(next) always returns next itself.
-> 
-> Therefore checking return value in the if clause always evaluates to
-> true, and thus it always breaks out from for loop in the first iteration.
-> 
-> Remove the unnecessary for loop for readability.
-> 
-> I tested the code as below, and it showed that BUG was never called.
-> 
-> -       for (; next; next = next->sibling)
-> +       for (; next; next = next->sibling) {
->                 if (of_node_get(next))
->                         break;
-> +               BUG();
-> +       }
-> 
-> Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
-> ---
->  drivers/of/base.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
+On Wed, 14 Jul 2021 15:37:38 +0300 Mike Rapoport <rppt@kernel.org> wrote:
 
-Applied, thanks!
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There are several places that allocate memory for the memory map:
+> alloc_node_mem_map() for FLATMEM, sparse_buffer_init() and
+> __populate_section_memmap() for SPARSEMEM.
+> 
+> The memory allocated in the FLATMEM case is zeroed and it is never
+> poisoned, regardless of CONFIG_PAGE_POISON setting.
+> 
+> The memory allocated in the SPARSEMEM cases is not zeroed and it is
+> implicitly poisoned inside memblock if CONFIG_PAGE_POISON is set.
+> 
+> Introduce memmap_alloc() wrapper for memblock allocators that will be used
+> for both FLATMEM and SPARSEMEM cases and will makei memory map zeroing and
+> poisoning consistent for different memory models.
+> 
+> ...
+>
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6730,6 +6730,26 @@ static void __init memmap_init(void)
+>  		init_unavailable_range(hole_pfn, end_pfn, zone_id, nid);
+>  }
+>  
+> +void __init *memmap_alloc(phys_addr_t size, phys_addr_t align,
+> +			  phys_addr_t min_addr, int nid, bool exact_nid)
+> +{
+> +	void *ptr;
+> +
+> +	if (exact_nid)
+> +		ptr = memblock_alloc_exact_nid_raw(size, align, min_addr,
+> +						   MEMBLOCK_ALLOC_ACCESSIBLE,
+> +						   nid);
+> +	else
+> +		ptr = memblock_alloc_try_nid_raw(size, align, min_addr,
+> +						 MEMBLOCK_ALLOC_ACCESSIBLE,
+> +						 nid);
+> +
+> +	if (ptr && size > 0)
+> +		page_init_poison(ptr, size);
+> +
+> +	return ptr;
+> +}
+> +
+>  static int zone_batchsize(struct zone *zone)
+>  {
+>  #ifdef CONFIG_MMU
+> @@ -7501,8 +7521,8 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
+>  		end = pgdat_end_pfn(pgdat);
+>  		end = ALIGN(end, MAX_ORDER_NR_PAGES);
+>  		size =  (end - start) * sizeof(struct page);
+> -		map = memblock_alloc_node(size, SMP_CACHE_BYTES,
+> -					  pgdat->node_id);
+> +		map = memmap_alloc(size, SMP_CACHE_BYTES, MEMBLOCK_LOW_LIMIT,
+> +				   pgdat->node_id, false);
+
+Mostly offtopic, but...  Why is alloc_node_mem_map() marked __ref? 
+afaict it can be __init?
