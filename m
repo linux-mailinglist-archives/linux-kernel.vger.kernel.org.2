@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D13A3C8A44
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3823C8A49
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239860AbhGNR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:59:18 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37695 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229701AbhGNR7B (ORCPT
+        id S238085AbhGNR7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:59:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63604 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229736AbhGNR7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:59:01 -0400
-Received: from callcc.thunk.org (96-65-121-81-static.hfc.comcastbusiness.net [96.65.121.81])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16EHu2bs002918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Jul 2021 13:56:03 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 2D3B44202F5; Wed, 14 Jul 2021 13:56:02 -0400 (EDT)
-Date:   Wed, 14 Jul 2021 13:56:02 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: ext4_xattr_ibody_find:2180: inode #2669312: comm
- systemd-journal: corrupted in-inode xattr
-Message-ID: <YO8lMpNOUsLjBqIG@mit.edu>
-References: <CAMdYzYqvT+X9C_YZ+DtspgHLSeb=RVHLeS2-0pEHeotyvb+iXQ@mail.gmail.com>
- <20210713154310.GE24271@quack2.suse.cz>
- <CAMdYzYroicgDkWuiQ7Xaw_5aYD9mLkrz8qvE9WwS6mPw9uWe8g@mail.gmail.com>
+        Wed, 14 Jul 2021 13:59:42 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16EHXRe3178379;
+        Wed, 14 Jul 2021 13:56:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=i9bwBZ8IqeFc9nLc0MfjYTOu7SfcLlWpJZJth8+oVKk=;
+ b=rn2klkTmWK4W5w1hWgvYfdCWMvCSJ9wmxqUVb2PKFQZinO7ugvs41MDS103NoxOU/ZDp
+ E9L7jq43OLazgEvVYSEXBpGyf9Zr1hq1wJpK4FMidSLy/mko74DlwW2xg+a+McdaNG6R
+ KenCLYvij6LPYPkrmEOu54DOLEgBwrLaVK9e/n9+vICTs6IdfUSz1zjWUM9SnoN864yC
+ TCjyBv9SgZiKQOmJSUvaPXr1vFjPPCUjuGIA6ZqHsk13pHACiRA7Bn9jl28sSk5hKsQQ
+ 0TidVWJ3uRHuyQnFqcYEDO6gA5VY9kd5PDTVpQR3LHmYULsGpHzmuMsmJGIYhudq2uVo 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39ssmrcgqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 13:56:48 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16EHYpBc187192;
+        Wed, 14 Jul 2021 13:56:48 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39ssmrcgpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 13:56:48 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16EHmvgK012696;
+        Wed, 14 Jul 2021 17:56:46 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 39q3689vxf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 17:56:46 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16EHugP832178542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 17:56:43 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D3C4F11C04C;
+        Wed, 14 Jul 2021 17:56:42 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4478C11C04A;
+        Wed, 14 Jul 2021 17:56:42 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.81.11])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 14 Jul 2021 17:56:42 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, alex.williamson@redhat.com
+Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+ <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+ <20210713184517.48eacee6.pasic@linux.ibm.com>
+ <20210713170533.GF136586@nvidia.com>
+ <9512a7fb-cc55-cd9b-cdf9-7c19d0567311@linux.ibm.com>
+ <20210713192138.GG136586@nvidia.com>
+ <dc18ff02-80f6-e59e-5f08-417434e74706@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <9c50fb1b-4574-0cfc-487c-64108d97ed73@de.ibm.com>
+Date:   Wed, 14 Jul 2021 19:56:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMdYzYroicgDkWuiQ7Xaw_5aYD9mLkrz8qvE9WwS6mPw9uWe8g@mail.gmail.com>
+In-Reply-To: <dc18ff02-80f6-e59e-5f08-417434e74706@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ZjTRbgEzRYPzOr3ZuGsF5gBBpfwf1gEN
+X-Proofpoint-GUID: c1spNyS56X5voCqnnhZfMd5GzRcrwV1-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-14_10:2021-07-14,2021-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 adultscore=0 mlxlogscore=982
+ bulkscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107140105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 04:52:11PM -0400, Peter Geis wrote:
-> > This seems to have fallen through the cracks. Have you managed to fix your
-> > filesystem? If not, please obtain filesystem image using e2image (it will
-> > contain only fs metadata, not any data), compress it and put it somewhere for
-> > download so that we can better diagnose the issue. Thanks!
+
+
+On 14.07.21 15:25, Tony Krowiak wrote:
 > 
-> Unfortunately no I don't have the file system anymore.
-> I put about two weeks into trying to fix it, but in the end I had to
-> nuke it from orbit.
+>> This patch shows it works as a rwsem - look at what had to be changed
+>> to make it so and you will find some clue to where the problems are in
+>> kvm_busy version.
+>>
+>> In any event, I don't care anymore - please just get this merged, to
+>> AlexW's tree so I don't have conflicts with the rest of the ap changes
+>> for VFIO I've got queued up.
+> 
+> Christian, can you merge this with AlexW's tree? Halil suggested
+> the 'fixes' and 'cc stable' tags ought to be removed, do I need
+> to post another version or can you take those out when merging?
 
-Sorry we didn't get back to you right away.  As Jan said, if this
-happens again, it would be really helpful to use e2image.  There is a
-discussion about this in the e2fsck man page, in the "REPORTING BUGS"
-section.
+Normally this would go via the KVM/s390 or s390 tree (as Alex did
+not want to handle s390 vfio devices).
 
-In this specific case where there was an inode with a corrupted
-extended attribute stored in the inode, you can use debugfs to print
-out the inode data structure:
+Alex, as Jason is waiting for this to be in your tree could you take
+this patch via your tree ?(please remove cc stable and Fixes for now
+I want this to settle a bit).
 
-debugfs:  inode_dump testfile
-0000  a481 0000 0000 0000 cf23 ef60 d523 ef60  .........#.`.#.`
-0020  cf23 ef60 0000 0000 0000 0100 0000 0000  .#.`............
-0040  0000 0800 0100 0000 0af3 0000 0400 0000  ................
-0060  0000 0000 0000 0000 0000 0000 0000 0000  ................
-*
-0140  0000 0000 6867 c27f 0000 0000 0000 0000  ....hg..........
-0160  0000 0000 0000 0000 0000 0000 9fbc 0000  ................
-0200  2000 e8f9 34cc 39ec fcaf ee61 fcaf ee61   ...4.9....a...a
-0220  cf23 ef60 fcaf ee61 0000 0000 0000 0000  .#.`...a........
-0240  0000 02ea 0401 5400 0000 0000 0600 0000  ......T.........
-0260  0000 0000 7465 7374 0000 0000 0000 0000  ....test........
-0300  0000 0000 0000 0000 0000 0000 0000 0000  ................
-*
-0360  0000 0000 0000 0000 7473 7476 616c 0000  ........tstval..
+To carry this patch in your tree with my kvm/s390 and s390 maintainer hat
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-debugfs:  inode_dump -x testfile
-magic = ea020000, length = 96, value_start =4 
 
-offset = 4 (0004), name_len = 4, name_index = 1
-value_offset = 84 (0130), value_inum = 0, value_size = 6
-name = test
-value = tstval
-
-last entry found at offset 24 (0030)
-
-(And if you don't have the pathname to the file, you can also specify
-the inode using the inode number in angle brackers, e.g., "inode_dump <12>")
-
-Hopefully this won't happen to you again, but if it does, please do
-let us know.
-
-Cheers,
-
-						- Ted
