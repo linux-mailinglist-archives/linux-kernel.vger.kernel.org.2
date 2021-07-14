@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FEC3C7BF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EED83C7BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237639AbhGNCsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:48:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51150 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237589AbhGNCsW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:48:22 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 5BF9220B8010; Tue, 13 Jul 2021 19:45:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5BF9220B8010
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1626230731;
-        bh=PKFf+8kO5A52jhZV/QqpXtSFFDIo+ssp3V5q80tnB24=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D/yF84j6oYhathmAUX2BExJbnLWTpK2yERECcajBskmEbY57tYOxgE+AM4fpHnueP
-         Uq+KqoVYPpa45Kmzv9Bz8eZ0WpHfwKKTS1yL+PC4ERmt0AbOXWPgNfOqg2TOZaj8Sl
-         pNWbqGE0Yjg4qUV9wXVXVIbIo77DxxCkbckl9C14=
-From:   longli@linuxonhyperv.com
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
-Subject: [Patch v3 3/3] Drivers: hv: Add to maintainer for Azure Blob driver
-Date:   Tue, 13 Jul 2021 19:45:22 -0700
-Message-Id: <1626230722-1971-4-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1626230722-1971-1-git-send-email-longli@linuxonhyperv.com>
-References: <1626230722-1971-1-git-send-email-longli@linuxonhyperv.com>
+        id S237646AbhGNCtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:49:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:8778 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237570AbhGNCtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:49:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210253403"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="210253403"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 19:46:25 -0700
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="493593189"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 19:46:22 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org,
+        srinivas.kandagatla@linaro.org,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH 0/6] soundwire/ASoC: abstract platform-dependent bases
+Date:   Wed, 14 Jul 2021 10:46:08 +0800
+Message-Id: <20210714024614.9357-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+shim base and alh base are platform-dependent. This series suggests
+to use variables for those bases. It allows us to use different bases
+for new platforms.
 
-Add longli@microsoft.com to maintainer list for Azure Blob driver.
+Bard Liao (6):
+  soundwire: move intel sdw register definitions to sdw_intel.h
+  ASoC: SOF: intel: add sdw_shim/alh_base to sof_intel_dsp_desc
+  ASoC: SOF: intel: hda: remove HDA_DSP_REG_SNDW_WAKE_STS definition
+  ASoC: SOF: intel: move sof_intel_dsp_desc() forward
+  ASoC: SOF: intel: add snd_sof_dsp_check_sdw_irq ops
+  soundwire: intel: introduce shim and alh base
 
-Cc: K. Y. Srinivasan <kys@microsoft.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Stephen Hemminger <sthemmin@microsoft.com>
-Cc: Wei Liu <wei.liu@kernel.org>
-Cc: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Long Li <longli@microsoft.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soundwire/intel.c           | 74 ------------------------
+ drivers/soundwire/intel_init.c      | 14 ++---
+ include/linux/soundwire/sdw_intel.h | 87 +++++++++++++++++++++++++++++
+ sound/soc/sof/intel/cnl.c           |  6 ++
+ sound/soc/sof/intel/hda.c           | 39 ++++++++-----
+ sound/soc/sof/intel/hda.h           |  8 ++-
+ sound/soc/sof/intel/icl.c           |  3 +
+ sound/soc/sof/intel/shim.h          |  3 +
+ sound/soc/sof/intel/tgl.c           | 12 ++++
+ 9 files changed, 149 insertions(+), 97 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9487061..b547eb9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8440,6 +8440,7 @@ M:	Haiyang Zhang <haiyangz@microsoft.com>
- M:	Stephen Hemminger <sthemmin@microsoft.com>
- M:	Wei Liu <wei.liu@kernel.org>
- M:	Dexuan Cui <decui@microsoft.com>
-+M:	Long Li <longli@microsoft.com>
- L:	linux-hyperv@vger.kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git
 -- 
-1.8.3.1
+2.17.1
 
