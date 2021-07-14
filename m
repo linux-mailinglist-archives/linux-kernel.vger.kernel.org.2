@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB943C8B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8599A3C8B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240041AbhGNSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:48:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32848 "EHLO
+        id S240060AbhGNSuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:50:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55799 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229806AbhGNSsC (ORCPT
+        by vger.kernel.org with ESMTP id S239819AbhGNSuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:48:02 -0400
+        Wed, 14 Jul 2021 14:50:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626288310;
+        s=mimecast20190719; t=1626288438;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=1ZAdf0GJIbLpyyVrXbwjxcRS9oM/2mE5p8d6as6VgdU=;
-        b=Y4225D4M+yn1TxmDXHNDZzkXBmrB5iYZXO/hrkJ3YXZQGRHuV/OmdE687KB0NHpiJCpgMm
-        3I5VAsAyOCc6d1XnhjEtSwSqbh272DQ4Y0GfWaGnFCcRNxJJ0RlFif9lOqtj9w7vBdwcAK
-        6wONMuIdtE/X9q3NFaJL4+Ytxs78DBg=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-Aup0fPhsM7uyW4wZPLJMmQ-1; Wed, 14 Jul 2021 14:45:09 -0400
-X-MC-Unique: Aup0fPhsM7uyW4wZPLJMmQ-1
-Received: by mail-qt1-f197.google.com with SMTP id p20-20020a05622a0494b029024f09fe9ec9so2516736qtx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:45:09 -0700 (PDT)
+        b=a9BQmLfRtzP8ErEddIG1AUD0VJ2LVQE7R3DKjm/q6N1IZY3fqUMmIjZiU9KfpVuZ32+E/t
+        pXLXbpxBfGPDR0PY6eKOEH7OZHfDkXc0DBlwhY/AICQGMCmNbN5Bo1c1j1j2Ud/DS2JTNn
+        yqiO6VgLmPOKdsDhjQB1BUtrnWiJFGQ=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-GceU5Ge-OHWHUCrTf1uV2Q-1; Wed, 14 Jul 2021 14:47:16 -0400
+X-MC-Unique: GceU5Ge-OHWHUCrTf1uV2Q-1
+Received: by mail-qt1-f199.google.com with SMTP id j16-20020ac855100000b029025bf786be09so2468430qtq.20
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:47:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
          :references:organization:user-agent:mime-version
          :content-transfer-encoding;
         bh=1ZAdf0GJIbLpyyVrXbwjxcRS9oM/2mE5p8d6as6VgdU=;
-        b=PDL7bhB//dzPP9RhBUyWolBGNCi/GLW/8I0JxMf/+9W6CzIRrOo2ZSn6+X5RnvCnNE
-         LJUkhlNfpLRd4jk78zNmIUGNPnPm6eK7hOrHvxZ5m779oahZck6tLSMFLgv6fHqW6OHJ
-         a3poAvkrnWinMMFJ9dTSHXzQBXIIqsqF8zGOFaMJS9pgElW2TH/+G/fwFmjIkMYRjPdc
-         EaIHcOPQRaZoIjf3s02ec0bLLTav0dmMpnJBrT6Y1PBqAEQeDLL2Xe42FfuPC9Yo/RdK
-         uAnhteTgZi73iCHityftOwgRwcJuhX+cR7W1PeG+Mxd6JvPbfY1J0jz9buiIJXbbpWMS
-         pbMw==
-X-Gm-Message-State: AOAM531kWaMmlJFTk2J4hHIIadvAfKEEhiKtfbiuTQJNCcGf7AGMxx41
-        ShSFaNQEvu35ADw1eor8Sw8PJbWhUnVqr+Vr88xYJCgORG8pdU3cHwwBR6OKzZLF7PfMT0EMJvu
-        JryMWeH3KyJwCeUx3Ea7ZuVWx
-X-Received: by 2002:a05:620a:31aa:: with SMTP id bi42mr11236395qkb.425.1626288308708;
-        Wed, 14 Jul 2021 11:45:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyk7kMcvMar0jLNDySN2hM8tTHtPUpoD6ejpE/O4waO1AawEFynsB5XM12PtGqCXW7BIy7C9w==
-X-Received: by 2002:a05:620a:31aa:: with SMTP id bi42mr11236374qkb.425.1626288308567;
-        Wed, 14 Jul 2021 11:45:08 -0700 (PDT)
+        b=uDhjsThH3fuSCvF/m9POGF+FibQsWP+0VdGB0Qs5BhdB1MaFLrxu76p3xwuIICSFbJ
+         koWG6KFVnVGqWGyN0WZwWy3NeVeC7/A8IjSBOlfnqs/5aKYxX0uwHf2R+z0D8XQw110d
+         hCuVDFDXEHjEBW7WxfNNVEWoZkR1OgOhGh+1vGawh5WUMvYXnBZfzCOi5eKZfxbs+sUq
+         WBKgJlsq3ruDVln+gJgMMQ7aBccRLl2uVQ9fDm/4OZtCr0eBpuWAJO3d8tx3I9ldpD2r
+         zeK35VFQF9dNrQyxmhO27s4K/83KDk/U4F0YVMm+5mVd1AzAd1Bw2ut8j5MOa0pKebDD
+         UdHA==
+X-Gm-Message-State: AOAM531sy+kVoTnWzhuSldeJ/2TjMQrKaQPsnylesUBIgAD3WxwmPkya
+        1TvgYpk5ikC5oSbNAyQ8Fc8sUPG4OKPPkqqTFjn/PcF9hF3aiZZzGoKiwYb87tvWAAOqC9Oh81Q
+        fOLVOoeR/pjilUAd8cPZ2+f7G
+X-Received: by 2002:a37:92c6:: with SMTP id u189mr11120309qkd.237.1626288436373;
+        Wed, 14 Jul 2021 11:47:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyyuPjo6u3d3oihQtSUPwjxpsOvapJdz8AnSL3MR4aGpMOemxXK7gfWNaVRhGG4ZtPhG0lJQg==
+X-Received: by 2002:a37:92c6:: with SMTP id u189mr11120295qkd.237.1626288436230;
+        Wed, 14 Jul 2021 11:47:16 -0700 (PDT)
 Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id j3sm1354331qka.96.2021.07.14.11.45.07
+        by smtp.gmail.com with ESMTPSA id d24sm1398962qkk.61.2021.07.14.11.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 11:45:08 -0700 (PDT)
-Message-ID: <281cfad8220d37683ac433f583e37f5f2667aedd.camel@redhat.com>
+        Wed, 14 Jul 2021 11:47:15 -0700 (PDT)
+Message-ID: <64687ac7602bfd44914ca5b31fe70bb8b87ef313.camel@redhat.com>
 Subject: Re: [PATCH] drm/dp: For drm_panel_dp_aux_backlight(), init
  backlight as disabled
 From:   Lyude Paul <lyude@redhat.com>
@@ -68,7 +68,7 @@ Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Wed, 14 Jul 2021 14:45:06 -0400
+Date:   Wed, 14 Jul 2021 14:47:14 -0400
 In-Reply-To: <20210714101744.1.Ifc22696b27930749915e383f0108b7bcdc015a6e@changeid>
 References: <20210714101744.1.Ifc22696b27930749915e383f0108b7bcdc015a6e@changeid>
 Organization: Red Hat
