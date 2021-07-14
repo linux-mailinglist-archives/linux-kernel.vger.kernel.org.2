@@ -2,192 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56913C8620
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1E53C8622
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239494AbhGNOaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:30:12 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:34328 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231977AbhGNOaK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:30:10 -0400
-Received: by mail-io1-f70.google.com with SMTP id c7-20020a5e8f070000b02905286f544a84so272921iok.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 07:27:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nUJZTDOZuoAo74BmQ/Ot4FIzrfXIFCmoVdPip3kBnYU=;
-        b=ZgZqiR4EhzzoshYmfuem2Twrew2qLWwTAYmW5WJTfM19JB059oYnL8YHqJTRi/TSa6
-         y8BNBR9fZWpYGYgmMh94wD4sLOmdVZ6Iy4A0VSUPBa0GHRtMsXXZrLBiFETVgzy1akyK
-         7G2/bA7MnseonnQND2b4cc/8aD1oKWI8oao3bptM5CLxHPHZuulBSwBnDQgywZZ2HaAY
-         SZYL7DJdgsK5I56kW+5lo3zpNwWVbcHs9fXpBDD8kGas3HVyqO/DhTOdqmGz2uTVUlA2
-         lzortoPDvHlajarxNghufZqhBJ1hV1BtpXbD+MRjxhQnccgcx3WW2JbG3GBotrI0Z1QP
-         Z45g==
-X-Gm-Message-State: AOAM531A98Qg8yj0bc5xnKcr6fI8ntUEQrWVrnaMeYH9XPLTfwHmosNj
-        kVAb+ocELHGhTp3geL+jIDHbUdY5ifw2ti507gn49sEui7pJ
-X-Google-Smtp-Source: ABdhPJzU484Ek9khlpTDPupbwTcposSoBJ0clG/8ANZ5kNi+Png8s5hXuLk8xjia8g22dwCl0Ysy5Td4j+QPNK2KtrDQ9fSpoI9n
+        id S239510AbhGNOa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239481AbhGNOa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:30:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78716611AD;
+        Wed, 14 Jul 2021 14:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626272855;
+        bh=mNDabQnbs3PdxYHSy0gXLC5eeg9nVZF8v4geVZ5DNFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TEXopUiD3zuJ94daHSwHDo1cmAVsJ+gB5GMVd6ZlPecrfTKX5meOQumuFFEmsbO7j
+         z7Xl0hT4ahoAdynQQWUhHDzuM+YgpzlnTcDid+RIqjY83bQ9kzUZCDuq44ApLO6zJ+
+         1ORd8fGCFLoOyUYRjXsKIhjZ9kgIJ8ExnO3NYbDU=
+Date:   Wed, 14 Jul 2021 16:27:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Holger Kiehl <Holger.Kiehl@dwd.de>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+Message-ID: <YO70VCcsg3k35C4E@kroah.com>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
+ <YO56HTE3k95JLeje@kroah.com>
+ <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
+ <df63b875-f140-606a-862a-73b102345cd@praktifix.dwd.de>
+ <YO7nHhW2t4wEiI9G@kroah.com>
+ <efa2bd81-2219-9e17-2841-d9b63fde22a1@praktifix.dwd.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4109:: with SMTP id ay9mr9027786jab.81.1626272837952;
- Wed, 14 Jul 2021 07:27:17 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 07:27:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d068cf05c716264c@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in em28xx_close_extension
-From:   syzbot <syzbot+005037419ebdf14e1d87@syzkaller.appspotmail.com>
-To:     hverkuil-cisco@xs4all.nl, igormtorrente@gmail.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mchehab+huawei@kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efa2bd81-2219-9e17-2841-d9b63fde22a1@praktifix.dwd.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jul 14, 2021 at 02:07:10PM +0000, Holger Kiehl wrote:
+> On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
+> 
+> > On Wed, Jul 14, 2021 at 01:26:26PM +0000, Holger Kiehl wrote:
+> > > On Wed, 14 Jul 2021, Holger Kiehl wrote:
+> > > 
+> > > > On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
+> > > > 
+> > > > > On Wed, Jul 14, 2021 at 05:39:43AM +0000, Holger Kiehl wrote:
+> > > > > > Hello,
+> > > > > > 
+> > > > > > On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+> > > > > > 
+> > > > > > > This is the start of the stable review cycle for the 5.13.2 release.
+> > > > > > > There are 800 patches in this series, all will be posted as a response
+> > > > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > > > let me know.
+> > > > > > > 
+> > > > > > > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> > > > > > > Anything received after that time might be too late.
+> > > > > > > 
+> > > > > > With this my system no longer boots:
+> > > > > > 
+> > > > > >    [  OK  ] Reached target Swap.
+> > > > > >    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
+> > > > > >    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
+> > > > > >    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
+> > > > > >    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
+> > > > > >    See 'systemctl status systemd-udev-settle.service' for details.
+> > > > > >             Starting Activation of DM RAID sets...
+> > > > > >    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
+> > > > > >    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
+> > > > > > 
+> > > > > > System is a Fedora 34 with all updates applied. Two other similar
+> > > > > > systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
+> > > > > > and boots fine. The system where it does not boot has an Intel
+> > > > > > Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
+> > > > > > 
+> > > > > > Any idea which patch I should drop to see if it boots again. I already
+> > > > > > dropped
+> > > > > > 
+> > > > > >    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
+> > > > > > 
+> > > > > > and I just see that this one should also be dropped:
+> > > > > > 
+> > > > > >    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
+> > > > > > 
+> > > > > > Will still need to test this.
+> > > > > 
+> > > > > Can you run 'git bisect' to see what commit causes the problem?
+> > > > > 
+> > > > Yes, will try to do that. I think it will take some time ...
+> > > > 
+> > > With the help of Pavel Machek and Jiri Slaby I was able 'git bisect'
+> > > this to:
+> > > 
+> > >    yoda:/usr/src/kernels/linux-5.13.y# git bisect good
+> > >    a483f513670541227e6a31ac7141826b8c785842 is the first bad commit
+> > >    commit a483f513670541227e6a31ac7141826b8c785842
+> > >    Author: Jan Kara <jack@suse.cz>
+> > >    Date:   Wed Jun 23 11:36:33 2021 +0200
+> > > 
+> > >        bfq: Remove merged request already in bfq_requests_merged()
+> > > 
+> > >        [ Upstream commit a921c655f2033dd1ce1379128efe881dda23ea37 ]
+> > > 
+> > >        Currently, bfq does very little in bfq_requests_merged() and handles all
+> > >        the request cleanup in bfq_finish_requeue_request() called from
+> > >        blk_mq_free_request(). That is currently safe only because
+> > >        blk_mq_free_request() is called shortly after bfq_requests_merged()
+> > >        while bfqd->lock is still held. However to fix a lock inversion between
+> > >        bfqd->lock and ioc->lock, we need to call blk_mq_free_request() after
+> > >        dropping bfqd->lock. That would mean that already merged request could
+> > >        be seen by other processes inside bfq queues and possibly dispatched to
+> > >        the device which is wrong. So move cleanup of the request from
+> > >        bfq_finish_requeue_request() to bfq_requests_merged().
+> > > 
+> > >        Acked-by: Paolo Valente <paolo.valente@linaro.org>
+> > >        Signed-off-by: Jan Kara <jack@suse.cz>
+> > >        Link: https://lore.kernel.org/r/20210623093634.27879-2-jack@suse.cz
+> > >        Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> > >        Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > 
+> > >     block/bfq-iosched.c | 41 +++++++++++++----------------------------
+> > >     1 file changed, 13 insertions(+), 28 deletions(-)
+> > > 
+> > > Holger
+> > 
+> > Wonderful!
+> > 
+> > So if you drop that, all works well?  I'll go drop that from the queues
+> > now.
+> > 
+> Yes. Just double checked it took a plain 5.13.1, patched it with
+> patch-5.13.2-rc1.xz and then reverted
+> 
+>    PATCH-5.13-259-800-bfq-Remove-merged-request-already-in-bfq_requests_merged
+> 
+> and it booted fine with no problems. Tested several times.
+> Just wonder why it only happens on the Intel Broadwell CPU.
+> Maybe it is the 128MB eDRAM L4 Cache ...
 
-syzbot found the following issue on:
+Wondeful!
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=158cf1e2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=005037419ebdf14e1d87
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169746b0300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157e89c4300000
+Could you test 5.14-rc1 to verify if this problem is there or not?  If
+it is, the developers need to know this so that they can work to fix the
+regression.
 
-The issue was bisected to:
+thanks,
 
-commit ac5688637144644f06ed1f3c6d4dd8bb7db96020
-Author: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Date:   Tue May 4 18:32:49 2021 +0000
-
-    media: em28xx: Fix possible memory leak of em28xx struct
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1742cffc300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14c2cffc300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c2cffc300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+005037419ebdf14e1d87@syzkaller.appspotmail.com
-Fixes: ac5688637144 ("media: em28xx: Fix possible memory leak of em28xx struct")
-
-usb 1-1: bad CDC descriptors
-usb 1-1: USB disconnect, device number 2
-em28xx 1-1:64.138: Disconnecting em28xx
-em28xx 1-1:64.138: Closing input extension
-em28xx 1-1:64.138: Freeing device
-==================================================================
-BUG: KASAN: use-after-free in __list_del_entry_valid+0xcc/0xf0 lib/list_debug.c:42
-Read of size 8 at addr ffff888021aa8258 by task kworker/1:2/3456
-
-CPU: 1 PID: 3456 Comm: kworker/1:2 Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
- __list_del_entry_valid+0xcc/0xf0 lib/list_debug.c:42
- __list_del_entry include/linux/list.h:132 [inline]
- list_del include/linux/list.h:146 [inline]
- em28xx_close_extension+0x10b/0x2a0 drivers/media/usb/em28xx/em28xx-core.c:1146
- em28xx_usb_disconnect.cold+0x14b/0x237 drivers/media/usb/em28xx/em28xx-cards.c:4140
- usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
- __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1181
- device_release_driver_internal drivers/base/dd.c:1212 [inline]
- device_release_driver+0x26/0x40 drivers/base/dd.c:1235
- bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
- device_del+0x502/0xd40 drivers/base/core.c:3512
- usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
- usb_disconnect.cold+0x27a/0x78e drivers/usb/core/hub.c:2221
- hub_port_connect drivers/usb/core/hub.c:5129 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5418 [inline]
- port_event drivers/usb/core/hub.c:5564 [inline]
- hub_event+0x1c9c/0x4330 drivers/usb/core/hub.c:5646
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- process_scheduled_works kernel/workqueue.c:2338 [inline]
- worker_thread+0x85c/0x11f0 kernel/workqueue.c:2424
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-The buggy address belongs to the page:
-page:ffffea000086aa00 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x21aa8
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000000 ffffea0000ac0d08 ffff8880b9d3b288 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), pid 3456, ts 70583523123, free_ts 71218691485
- prep_new_page mm/page_alloc.c:2445 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4178
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5386
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- kmalloc_order+0x34/0xf0 mm/slab_common.c:945
- kmalloc_order_trace+0x14/0x120 mm/slab_common.c:961
- kmalloc_large include/linux/slab.h:520 [inline]
- kmalloc include/linux/slab.h:584 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- em28xx_usb_probe+0x1f7/0xd00 drivers/media/usb/em28xx/em28xx-cards.c:3855
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4a0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3324
- usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1355 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1406
- free_unref_page_prepare mm/page_alloc.c:3341 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3420
- __refcount_sub_and_test include/linux/refcount.h:282 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- kref_put.constprop.0.isra.0+0x3d/0x7e include/linux/kref.h:64
- em28xx_ir_fini.cold+0x7c/0x120 drivers/media/usb/em28xx/em28xx-input.c:875
- em28xx_close_extension+0xc9/0x2a0 drivers/media/usb/em28xx/em28xx-core.c:1143
- em28xx_usb_disconnect.cold+0x14b/0x237 drivers/media/usb/em28xx/em28xx-cards.c:4140
- usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
- __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1181
- device_release_driver_internal drivers/base/dd.c:1212 [inline]
- device_release_driver+0x26/0x40 drivers/base/dd.c:1235
- bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
- device_del+0x502/0xd40 drivers/base/core.c:3512
- usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
- usb_disconnect.cold+0x27a/0x78e drivers/usb/core/hub.c:2221
- hub_port_connect drivers/usb/core/hub.c:5129 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5418 [inline]
- port_event drivers/usb/core/hub.c:5564 [inline]
- hub_event+0x1c9c/0x4330 drivers/usb/core/hub.c:5646
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- process_scheduled_works kernel/workqueue.c:2338 [inline]
- worker_thread+0x85c/0x11f0 kernel/workqueue.c:2424
-
-Memory state around the buggy address:
- ffff888021aa8100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888021aa8180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888021aa8200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                    ^
- ffff888021aa8280: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888021aa8300: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+greg k-h
