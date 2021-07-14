@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563603C84A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907163C84D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239284AbhGNMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:50:15 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37818 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhGNMuN (ORCPT
+        id S239378AbhGNM6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:58:02 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:47070 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231384AbhGNM6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:50:13 -0400
-Received: by mail-io1-f71.google.com with SMTP id p7-20020a6b63070000b029050017e563a6so1158862iog.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 05:47:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+s3n4qWrtDMRm0uF1xF47boitAjAuz09jDtLN5Z2zUQ=;
-        b=kCYGT9CfCILCTcRd+E2fFVm2XU71RVAAmJoFFRAXfA2spxR9j8zktcFxH9zmGUiAek
-         7zAWCuD4p1xmobXG3ckevaciKBgw43Smiy9i6fZfVdpoaGG24IfkLHHI2gHi7hfBWyTW
-         3J2F7PWSPeFlw9/c3AN/THNbpXaLRmwoWkW7E/2F8B2GMLvctdbC+zWC8qarhPHG4ko2
-         me92LsgTZdMdfKtSBxgpKLrIByBCEQ5w+EjTVuokz2Easv3Y4JK3gvV1TDemcWKShS8M
-         07z+l1TUhYj/+TR0GP3/81o67ywKCVQVTKZAI9e3XPnaX4N2a55DZdP0/kG6/MLY84K3
-         tFoQ==
-X-Gm-Message-State: AOAM533ByF1qb1tKQbhd0tVLLH1vmH6CSs/wqwBarwsK2/kTfr8nGmlc
-        qlWB0r/h/CFsalnDEklycB0r4x5FOZ/E0tg+X4xIC3w+JKmA
-X-Google-Smtp-Source: ABdhPJww5+rallpvcS9/lG7WRwlzFcraa+5AzdSR4KRClUM8zU2hapspipP7BW22uGMMmHzL//i5p3xxzYE8GgV+DYLiBMC1LIaJ
+        Wed, 14 Jul 2021 08:58:01 -0400
+X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 08:58:00 EDT
+Date:   Wed, 14 Jul 2021 15:48:07 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     John Stultz <john.stultz@linaro.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <20210714124807.o22mottsrg3tv6nt@mobilestation>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
+ <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2204:: with SMTP id n4mr7092213ion.181.1626266841187;
- Wed, 14 Jul 2021 05:47:21 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 05:47:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000610af005c714c1d1@google.com>
-Subject: [syzbot] UBSAN: shift-out-of-bounds in profile_init
-From:   syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello John,
 
-syzbot found the following issue on:
+On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
+> On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > In accordance with the DWC USB3 bindings the corresponding node
+> > name is suppose to comply with the Generic USB HCD DT schema, which
+> > requires the USB nodes to have the name acceptable by the regexp:
+> > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> > named.
+> >
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11342328300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149a96d2300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114e5bc4300000
+> I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+Sorry to hear that. Alas there is no much can be done about it.
+DT-nodes name is a subject of DT-schema convention and as we've finally
+unified USB-controller nodes it shouldn't be reverted back. You can
+find the final USB-controller bindings in:
+Documentation/devicetree/bindings/usb/usb.yaml
+It strictly defines to have USB-nodes with names like "usb(@.*)".
+Reverting this patch will cause the DT-bindings check procedure
+failure. You can also find the naming convention defined in the
+latest DT spec:
+https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
 
-kernel profiling enabled (shift: 1000000)
-================================================================================
-UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
-shift exponent 1000000 is too large for 64-bit type 'long int'
-CPU: 0 PID: 8453 Comm: syz-executor969 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
- profile_init+0xfc/0x110 kernel/profile.c:110
- profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
- kobj_attr_store+0x50/0x80 lib/kobject.c:856
- sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
- kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
- call_write_iter include/linux/fs.h:2114 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x796/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee69
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffee8801868 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee69
-RDX: 00000000ffffff82 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 0000000000402e50 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ee0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-================================================================================
+See also device-tree bindings requirements listed in the file:
+Documentation/devicetree/bindings/writing-bindings.rst
+It says: "DO use node names matching the class of the device. Many
+standard names are defined in the DT Spec. If there isn't one,
+consider adding it."
 
+> 
+> In the exact same way an earlier patch broke HiKey960:
+>   https://lore.kernel.org/lkml/CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com/
+> 
+> (which I still have to carry a revert for).
+> 
+> I get that this change is useful so more dynamic userland can find
+> devices using consistent naming with future kernels (but doesn't the
+> dynamic userland have to handle the case for older kernels as well?)
+> But for userland that uses static configs, its painful as updating
+> userland to use the new node ids then causes older kernels to fail.
+> 
+> I'm looking into how we might be able to probe and set the property
+> dynamically, but AOSP's init system is far more aligned to static
+> configs.
+> 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+As Krzysztof said in
+https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
+and Bjorn noted in his response to your email, the only way to solve
+the problem is to fix the user-land app so one would be able to deal
+with both old and new DT-nodes name. Alternatively you can just
+replace the dts with older one, where the name still have
+the "dwc3"-prefix.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-Sergey
+
+> This will probably be ignored again, but it would be nice if we could
+> have a release where DTS changes don't break userland for one of my
+> boards. As it feels like its been awhile.
+> 
+> thanks
+> -john
