@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907163C84D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025EC3C84D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239378AbhGNM6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:58:02 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:47070 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhGNM6B (ORCPT
+        id S239344AbhGNM6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:58:30 -0400
+Received: from mta02.hs-regensburg.de ([194.95.104.12]:57498 "EHLO
+        mta02.hs-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231462AbhGNM63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:58:01 -0400
-X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 08:58:00 EDT
-Date:   Wed, 14 Jul 2021 15:48:07 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     John Stultz <john.stultz@linaro.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <20210714124807.o22mottsrg3tv6nt@mobilestation>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+        Wed, 14 Jul 2021 08:58:29 -0400
+X-Greylist: delayed 343 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 08:58:28 EDT
+Received: from E16S03.hs-regensburg.de (e16s03.hs-regensburg.de [IPv6:2001:638:a01:8013::93])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client CN "E16S03", Issuer "E16S03" (not verified))
+        by mta02.hs-regensburg.de (Postfix) with ESMTPS id 4GPy5D0TgKzyKv;
+        Wed, 14 Jul 2021 14:49:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oth-regensburg.de;
+        s=mta01-20160622; t=1626266992;
+        bh=0CtFi6kf50KzSJTbgdjhxL+nHslBoWYbSgQkNnXWe48=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To:From;
+        b=twUaIoDXiGsfy4Hi2vPBV4v2dKleUXUGQoE1ndXp5yCESnUW3hJ8Zp/EKgiWoxiA/
+         uapj2Nvc1wyJ9H7HCfrF1YcxQVT8gqUo20NW0tpu4X/NMf2itNXxHtyxUI2G1fAx9E
+         o6qVkhB+COr7mbIvEnwQpk1qI2ukmykhOb5hw3Z2U/usotCJeKUYtrnUeaK85niKAu
+         jPg/SpcmdtLlC3kio/glzALlpA69GVI9eaM9m5ml17afwvvFi9s98eVRUvrKyQrNjK
+         5bDnUhHd4BRv0H/4Rxf0r2vbCp8ZdxJhyuC+fTGPXDidNfagUJYrZAp3ZjttOX64+r
+         gGHvGbOH8Si7w==
+Received: from [IPv6:2001:638:a01:8061:5c51:6883:5436:5db]
+ (2001:638:a01:8013::138) by E16S03.hs-regensburg.de (2001:638:a01:8013::93)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.10; Wed, 14 Jul
+ 2021 14:49:51 +0200
+Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+ <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
+From:   Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+Message-ID: <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
+Date:   Wed, 14 Jul 2021 14:49:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [2001:638:a01:8013::138]
+X-ClientProxiedBy: E16S04.hs-regensburg.de (2001:638:a01:8013::94) To
+ E16S03.hs-regensburg.de (2001:638:a01:8013::93)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello John,
 
-On Tue, Jul 13, 2021 at 05:07:00PM -0700, John Stultz wrote:
-> On Tue, Oct 20, 2020 at 5:10 AM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > In accordance with the DWC USB3 bindings the corresponding node
-> > name is suppose to comply with the Generic USB HCD DT schema, which
-> > requires the USB nodes to have the name acceptable by the regexp:
-> > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> > named.
-> >
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+
+On 14/07/2021 08:54, Jiri Slaby wrote:
+> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+>> There is no need to try MSI/MSI-X only on selected devices.
+>> If MSI is not supported while neing advertised it means device
 > 
+> being
+> 
+>> is broken and we rather introduce a list of such devices which
+>> hopefully will be small or never appear.
+> 
+> Hmm, have you checked the commit which introduced the whitelist?
+> 
+>     Nevertheless, this needs to handled with care: while many 8250 devices
+>     actually claim to support MSI(-X) interrupts it should not be
+> enabled be
+>     default. I had at least one device in my hands with broken MSI
+>     implementation.
+> 
+>     So better introduce a whitelist with devices that are known to support
+>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
+> 
+> 
+> You should have at least CCed the author for an input.
 
-> I know folks like to ignore this, but this patch breaks AOSP on db845c. :(
-
-Sorry to hear that. Alas there is no much can be done about it.
-DT-nodes name is a subject of DT-schema convention and as we've finally
-unified USB-controller nodes it shouldn't be reverted back. You can
-find the final USB-controller bindings in:
-Documentation/devicetree/bindings/usb/usb.yaml
-It strictly defines to have USB-nodes with names like "usb(@.*)".
-Reverting this patch will cause the DT-bindings check procedure
-failure. You can also find the naming convention defined in the
-latest DT spec:
-https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
-
-See also device-tree bindings requirements listed in the file:
-Documentation/devicetree/bindings/writing-bindings.rst
-It says: "DO use node names matching the class of the device. Many
-standard names are defined in the DT Spec. If there isn't one,
-consider adding it."
+Yep, back then I was testing three different 8250 pci cards. All of them
+claimed to support MSI, while one really worked with MSI, the one that I
+whitelisted. So I thought it would be better to use legacy IRQs as long
+as no one tested a specific card to work with MSI.
 
 > 
-> In the exact same way an earlier patch broke HiKey960:
->   https://lore.kernel.org/lkml/CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com/
-> 
-> (which I still have to carry a revert for).
-> 
-> I get that this change is useful so more dynamic userland can find
-> devices using consistent naming with future kernels (but doesn't the
-> dynamic userland have to handle the case for older kernels as well?)
-> But for userland that uses static configs, its painful as updating
-> userland to use the new node ids then causes older kernels to fail.
-> 
-> I'm looking into how we might be able to probe and set the property
-> dynamically, but AOSP's init system is far more aligned to static
-> configs.
-> 
+>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> ---
+>>   drivers/tty/serial/8250/8250_pci.c | 28 ++++++++--------------------
+>>   1 file changed, 8 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/tty/serial/8250/8250_pci.c
+>> b/drivers/tty/serial/8250/8250_pci.c
+>> index 937861327aca..02825c8c5f84 100644
+>> --- a/drivers/tty/serial/8250/8250_pci.c
+>> +++ b/drivers/tty/serial/8250/8250_pci.c
+>> @@ -58,18 +58,6 @@ struct serial_private {
+>>     #define PCI_DEVICE_ID_HPE_PCI_SERIAL    0x37e
+>>   -static const struct pci_device_id pci_use_msi[] = {
+>> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9900,
+>> -             0xA000, 0x1000) },
+>> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9912,
+>> -             0xA000, 0x1000) },
+>> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9922,
+>> -             0xA000, 0x1000) },
+>> -    { PCI_DEVICE_SUB(PCI_VENDOR_ID_HP_3PAR,
+>> PCI_DEVICE_ID_HPE_PCI_SERIAL,
+>> -             PCI_ANY_ID, PCI_ANY_ID) },
+>> -    { }
+>> -};
+>> -
 
-As Krzysztof said in
-https://lore.kernel.org/lkml/20201221210423.GA2504@kozik-lap/
-and Bjorn noted in his response to your email, the only way to solve
-the problem is to fix the user-land app so one would be able to deal
-with both old and new DT-nodes name. Alternatively you can just
-replace the dts with older one, where the name still have
-the "dwc3"-prefix.
+Don't do that… And don't convert it to a blacklist. A blacklist will
+break users until they report that something doesn't work.
 
--Sergey
+  Ralf
 
-> This will probably be ignored again, but it would be nice if we could
-> have a release where DTS changes don't break userland for one of my
-> boards. As it feels like its been awhile.
+>>   static int pci_default_setup(struct serial_private*,
+>>         const struct pciserial_board*, struct uart_8250_port *, int);
+>>   @@ -3994,14 +3982,9 @@ pciserial_init_ports(struct pci_dev *dev,
+>> const struct pciserial_board *board)
+>>       if (board->flags & FL_NOIRQ) {
+>>           uart.port.irq = 0;
+>>       } else {
+>> -        if (pci_match_id(pci_use_msi, dev)) {
+>> -            dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
+>> -            pci_set_master(dev);
+>> -            rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
+>> -        } else {
+>> -            dev_dbg(&dev->dev, "Using legacy interrupts\n");
+>> -            rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
+>> -        }
+>> +        pci_set_master(dev);
 > 
-> thanks
-> -john
+> But bus mastering is not about MSIs. I *think* it's still OK, but you
+> need to document that in the commit log too.
+> 
+> Actually, why the commit which added this code turns on bus mastering?
+> 
+>> +
+>> +        rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
+>>           if (rc < 0) {
+>>               kfree(priv);
+>>               priv = ERR_PTR(rc);
+>> @@ -4009,6 +3992,11 @@ pciserial_init_ports(struct pci_dev *dev, const
+>> struct pciserial_board *board)
+>>           }
+>>             uart.port.irq = pci_irq_vector(dev, 0);
+>> +
+>> +        if (pci_dev_msi_enabled(dev))
+>> +            dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
+>> +        else
+>> +            dev_dbg(&dev->dev, "Using legacy interrupts\n");
+>>       }
+>>         uart.port.dev = &dev->dev;
+>>
+> 
+> thanks,
