@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A863C8AAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACEC3C8AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240020AbhGNSWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:22:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:38086 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhGNSWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:22:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3219D6E;
-        Wed, 14 Jul 2021 11:19:57 -0700 (PDT)
-Received: from [10.57.36.240] (unknown [10.57.36.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 830E83F774;
-        Wed, 14 Jul 2021 11:19:55 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] Apple M1 DART IOMMU driver
-To:     Sven Peter <sven@svenpeter.dev>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
+        id S240023AbhGNSXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhGNSXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 14:23:20 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCA5C06175F;
+        Wed, 14 Jul 2021 11:20:28 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id n24-20020a4ad4180000b029025bcb88a40eso854575oos.2;
+        Wed, 14 Jul 2021 11:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IZHV17HrDm3mXvlMglOQgvLLp42WlpMA1EiV1Ps+/BI=;
+        b=H+vm6oqHFE6x5nWY0AIBWZrMU/JFV1E7RlfPV+htdU7SqDZZNrKwrdLtrafZc/AorS
+         A1cI3NKH0fEKqOI4Al014QT8bwC0hHpab3fl6RAGB1cFpYFLf8fnP2oh4Rzrr+dfGKpw
+         Mf0r3bS175zI3IYORzlw2VwRPBmPKAVYUF2pmBbeHNKu4K6n75aOez1hPrxCwm6UtxNK
+         Jy+67R0NeXPH1meUzyTOjHe7YgUH46e0TKUhMdKS1PlV7MtP4wCP3tVD8ePGffDa5Xee
+         9VcZqpMV9OmUPoBjvETHo5dMsjF5p98QUm1pHe16Z1ij/jmr9TMkRHlOPr8vZjoHrMJl
+         e0cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IZHV17HrDm3mXvlMglOQgvLLp42WlpMA1EiV1Ps+/BI=;
+        b=mv2bsrwhcqARaKk7NsMkQn0QeatgikcadnZhKelQ+4mrZ+vkCfXOOMbujRsyy2U2+q
+         cL2O/skofEWpec5GOPtU1gx/d/tg3WqmaifIHTKED7zeEMa82NLoSqGLhl7Im1ASW7Xx
+         0J2rUrcSEaZ7qGwZ0Ij6WkVPI7Luoa82s6JUzfaoIeTauzBsSbgtky6Z1D65HishzKot
+         Tmt3nKfD6KDj+H4ZbQFIAXWVfTQZCCHrbwtwkQjFCG8s9UJpeWdegnTpytq5cbXHyPt6
+         JV06ot7axG/HgDVNoMfnA5ph7M2UvJmFVdn4ILz/LaTv00lwTqvN5MfVXdSu6meX8F9d
+         NwTA==
+X-Gm-Message-State: AOAM5307Pd8X0zkz2mjeldc6ExloR1Exu9uCy7IPGQAckWMViRVhuCsQ
+        EMxZu7ryA2lplAalnMF5PFc=
+X-Google-Smtp-Source: ABdhPJzsxslVMe/u0X4ex3JA+B6DQS3NdJKCEqD6Tg0m4IaMXYXw659YBjHMM1dTLnt4gmZP+/qkdg==
+X-Received: by 2002:a4a:97ed:: with SMTP id x42mr8831385ooi.49.1626286827439;
+        Wed, 14 Jul 2021 11:20:27 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.38])
+        by smtp.googlemail.com with ESMTPSA id b10sm645794oiy.4.2021.07.14.11.20.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 11:20:27 -0700 (PDT)
+Subject: Re: [PATCH] ipv6: remove unused local variable
+To:     Rocco Yue <rocco.yue@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        iommu@lists.linux-foundation.org, Alexander Graf <graf@amazon.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>, r.czerwinski@pengutronix.de
-References: <20210627143405.77298-1-sven@svenpeter.dev>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7261df01-34a9-4e53-37cd-ae1aa15b1fb4@arm.com>
-Date:   Wed, 14 Jul 2021 19:19:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        rocco.yue@gmail.com
+References: <20210714151533.6210-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <c524c725-84ce-0106-6e28-bf5c7dc36e30@gmail.com>
+Date:   Wed, 14 Jul 2021 12:20:25 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210627143405.77298-1-sven@svenpeter.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210714151533.6210-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-27 15:34, Sven Peter wrote:
-[...]
-> In the long term, I'd like to extend the dma-iommu framework itself to
-> support iommu pagesizes with a larger granule than the CPU pagesize if that is
-> something you agree with.
+On 7/14/21 9:15 AM, Rocco Yue wrote:
+> The local variable "struct net *net" in the two functions of
+> inet6_rtm_getaddr() and inet6_dump_addr() are actually useless,
+> so remove them.
+> 
+> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+> ---
+>  net/ipv6/addrconf.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
 
-BTW this isn't something we can fully support in general. IOMMU API 
-users may expect this to work:
+please add 'net' or 'net-next' in the subject line.  e.g.,
+[PATCH net-next]
 
-iommu_map(domain, iova, page_to_phys(p1), PAGE_SIZE, prot);
-iommu_map(domain, iova + PAGE_SIZE, page_to_phys(p2), PAGE_SIZE, prot);
-
-Although they do in principle have visibility of pgsize_bitmap, I still 
-doubt anyone is really prepared for CPU-page-aligned mappings to fail.
-Even at the DMA API level you could hide *some* of it (at the cost of 
-effectively only having 1/4 of the usable address space), but there are 
-still cases like where v4l2 has a hard requirement that a page-aligned 
-scatterlist can be mapped into a contiguous region of DMA addresses.
-
-> This would be important to later support the thunderbolt DARTs since I would be
-> very uncomfortable to have these running in (software or hardware) bypass mode.
-
-Funnily enough that's the one case that would be relatively workable, 
-since untrusted devices are currently subject to bounce-buffering of the 
-entire DMA request, so it doesn't matter so much how the bounce buffer 
-itself is mapped. Even with the possible future optimisation of only 
-bouncing the non-page-aligned start and end parts of a buffer I think it 
-still works (the physical alignment just has to be considered in terms 
-of the IOMMU granule).
-
-Robin.
+Reviewed-by: David Ahern <dsahern@kernel.org>
