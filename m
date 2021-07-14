@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C9E3C93F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FDA3C93FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 00:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbhGNWn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 18:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S231736AbhGNWsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 18:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236492AbhGNWnY (ORCPT
+        with ESMTP id S230507AbhGNWsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 18:43:24 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8299AC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:40:31 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id q4so5716536ljp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:40:31 -0700 (PDT)
+        Wed, 14 Jul 2021 18:48:39 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAB4C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:45:47 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id bn5so5399590ljb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XF9g4Kiw/Fnjhra0A3NHssg/L+MsgY/bbhNOhs2yWkg=;
-        b=XwnAiopxVuee/+xvAawo1KbGDlP9AIOqV52u6nh+zQy7X8YyvYLVsIWrsG5z4hsAZo
-         Us04RZB8+P1gHRtT9c5f7srdMs0z/wnINhl02yV17re/Cvj3nskjZ10AhDcDnZq6QQVD
-         AjLwXMP+HKQ5AC55ituGLykCuW4g6U7vxsBmc=
+        bh=VZY1MuucrPtSmSp30OAQiYqQAOnsQCoU9oTNEDnDA2c=;
+        b=kR7bqFDg5swVOvJGwGKJAKZpmRG8WEVb7WX8p8aUJH2GLKjUGvyXzOPI67BUGEhaR+
+         kEhqtVlVnFgNIpjMym1ZBneUelCELU/v43djuxMRgQ32Z3SxwdZ0YsvKR/NPXIR5j/yL
+         pBQvn+1zBRt6Qk/mWx8T9NSEZ5IxZNo9KWMkwPBnmw1+4qrk1iuUhMG8sBxara0JAAXh
+         QQYN4kbyi6XvD+XycCHZCRjJJfXi3WKSdSPmgHVrIh6YjVNqQk8jHNuzmO47bgnSLBu9
+         vCSveCyyMLYLU/b2W00xx41wPNQ3e7a7IE++nBE2EpOeemD8xG8saX0TTM6NAv6o4sSy
+         6f0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XF9g4Kiw/Fnjhra0A3NHssg/L+MsgY/bbhNOhs2yWkg=;
-        b=iaBjsUUynBqXqBQP8D1SQ4LvIHChWfOqwkauPDMRxO+Tt0jM14SNFNZSNg+gcB6Apt
-         wxfp4CBmvlVxCh86K558dCplUptpg4kImaRVtEK1F/M8tuAbg/hwKf+qPAkBqbJXt6+p
-         0D0HkI8WwUN/jhOFpI3S6WtcY5PptA4BEPiwFG7lMWSD027GtWnjmlLHcdjI/OYYSro7
-         ebj2rsyYvxiSUasDex14SVKxgffs2bpLraQLFh3AHv14VEJU9VntFzPYS6Xke+G4mJ0m
-         kZ6PeG/Zt72XhHMWLiZIiQpENJVepVGTNQbtJhBp6XL+oGT40yLWY38bvQax6fo1Wuno
-         kNcA==
-X-Gm-Message-State: AOAM530SeeL+j3NgnxQQzeGDetgwNER57XVJwPflsLeCFiRF16t/c7UA
-        2LE8V86Ghj4jQ12KicBPUADSTLMw7nHptjaV
-X-Google-Smtp-Source: ABdhPJwoquSnfJd9ci1ooc32bf1Z92VDpxolIXpDbLc5TEEZcCXjK5puL3v8zIimKlrzDrj7jA8/PQ==
-X-Received: by 2002:a2e:a22c:: with SMTP id i12mr141472ljm.267.1626302428870;
-        Wed, 14 Jul 2021 15:40:28 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id h10sm251611lfp.151.2021.07.14.15.40.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 15:40:28 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id a12so6334108lfb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:40:28 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr265721lfa.421.1626302428152;
- Wed, 14 Jul 2021 15:40:28 -0700 (PDT)
+        bh=VZY1MuucrPtSmSp30OAQiYqQAOnsQCoU9oTNEDnDA2c=;
+        b=PC33sRCJnWMgDAted0f99eLZpD9GpsXBcfyRrSS0RrqKML3oHlEGemktq/8RbW32kb
+         NfqrvBmn788b0Pk3R0Mnny4nia9o5v2K0vL4wiKnECumSOWACX8CKFRirv4XMH8djnYT
+         lNzxb+8d+8RmItrGpoEFYP8m1bpY+yUb3qSmr930/U3tsX9+0MeVDY8bqo0jPd/nLxaR
+         8wt2WOSxUqi1IuDxrm9Wt1CRDH7U10ygfK0MATSBn4afCnS94Wrf8G/FaOksgPHtH647
+         vZLELLsUCXn64ItYKU2zbZKiSq4jS74UJ3RPofjv25TTirX5NgesIQhSF0p2D60+tIQK
+         rLxg==
+X-Gm-Message-State: AOAM533B6NXLjYON40ab8yXGEWPOfzLR+juxbipsJHX61xp43dMuhejQ
+        F8Ehsimir1gkBCwo8t0xZ2yr6qsKl59IjYcrNCPyhA==
+X-Google-Smtp-Source: ABdhPJzQQmKwrYEowCzDGnEbtSR4Nzl53qXWclJ23SGLzmPTEsbmXHiK8oAw3gtNqbTVm8GJLWF635Cnsj2CYWkuYhI=
+X-Received: by 2002:a05:651c:308:: with SMTP id a8mr140735ljp.337.1626302745344;
+ Wed, 14 Jul 2021 15:45:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-3-ojeda@kernel.org>
- <CAKwvOdmhRuF5eTZ2ztZBrL6BvDkA57B7OfVuvCaEMfV8nkLXCQ@mail.gmail.com>
- <CAHk-=whzXv=Fu7dQshSTyd9H1-JS5=gyKwW-GMNGccAKs4Mwpg@mail.gmail.com>
- <87mtqo1wv6.fsf@disp2133> <CAHk-=whdi_biEOrzrYn7OC+wq+ckoaa5dFAATdM=n9P7Dp0YOA@mail.gmail.com>
- <87a6mo1v0q.fsf@disp2133>
-In-Reply-To: <87a6mo1v0q.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 14 Jul 2021 15:40:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjWiu5uak824BeWu5J+9n1NhQ9UKDGgcUfrumra6r+Z0A@mail.gmail.com>
-Message-ID: <CAHk-=wjWiu5uak824BeWu5J+9n1NhQ9UKDGgcUfrumra6r+Z0A@mail.gmail.com>
-Subject: Re: [PATCH 02/17] kallsyms: increase maximum kernel symbol length to 512
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
+References: <20210714073501.133736-1-haiyue.wang@intel.com>
+In-Reply-To: <20210714073501.133736-1-haiyue.wang@intel.com>
+From:   Catherine Sullivan <csully@google.com>
+Date:   Wed, 14 Jul 2021 15:45:09 -0700
+Message-ID: <CAH_-1qzu_X26sUehY9721+yG3xYVw_0eiPGb=0X4p0m7Jv+ddg@mail.gmail.com>
+Subject: Re: [PATCH v1] gve: fix the wrong AdminQ buffer overflow check
+To:     Haiyue Wang <haiyue.wang@intel.com>
+Cc:     netdev@vger.kernel.org, Sagi Shahar <sagis@google.com>,
+        Jon Olson <jonolson@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Awogbemila <awogbemila@google.com>,
+        Yangchun Fu <yangchun@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Bailey Forrest <bcf@google.com>, Kuo Zhao <kuozhao@google.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 1:49 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+On Wed, Jul 14, 2021 at 12:58 AM Haiyue Wang <haiyue.wang@intel.com> wrote:
 >
-> Sorry I was meaning to ask should the C symbols that get hashed
-> include their types in the hash as well?  Because if everything
-> is going to be hashed we need to clear definition of what we do
-> with good old C symbols as well.
+> The 'tail' pointer is also free-running count, so it needs to be masked
+> as 'adminq_prod_cnt' does, to become an index value of AdminQ buffer.
+>
+> Fixes: 5cdad90de62c ("gve: Batch AQ commands for creating and destroying queues.")
+> Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
 
-Oh, I guess if we wanted to be fancy, we could make the modversion
-information be part of the hash.
+Reviewed-by: Catherine Sullivan <csully@google.com>
 
-Because we already have that, and that's kind of what it is. But I
-wasn't actually thinking that fancy - I'd leave the C hash as just the
-name hash with no type info.
+> ---
+>  drivers/net/ethernet/google/gve/gve_adminq.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
+> index 5bb56b454541..f089d33dd48e 100644
+> --- a/drivers/net/ethernet/google/gve/gve_adminq.c
+> +++ b/drivers/net/ethernet/google/gve/gve_adminq.c
+> @@ -322,7 +322,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
+>         tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
+>
+>         // Check if next command will overflow the buffer.
+> -       if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
+> +       if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
+> +           (tail & priv->adminq_mask)) {
+>                 int err;
+>
+>                 // Flush existing commands to make room.
+> @@ -332,7 +333,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
+>
+>                 // Retry.
+>                 tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
+> -               if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
+> +               if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
+> +                   (tail & priv->adminq_mask)) {
+>                         // This should never happen. We just flushed the
+>                         // command queue so there should be enough space.
+>                         return -ENOMEM;
+> --
+> 2.32.0
+>
 
-Unless somebody really wants to do that modversions thing. It *would*
-be a very natural thing to do in that "link using hashes" world view..
-
-                Linus
+Thanks!
