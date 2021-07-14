@@ -2,85 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBFB3C86AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5633C870B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239589AbhGNPOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        id S239907AbhGNPPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232334AbhGNPOJ (ORCPT
+        with ESMTP id S239788AbhGNPOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:14:09 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDADC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:17 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso4124645wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XPksOXWvTkUtcqvTzVQpJTHtPXY+kFhB7qHKvutpcB0=;
-        b=JG2p07c0aobB2lS4GYpnWCxwQPzu7y6gVZXOhSQMuqKjQ1LWf2siyRefgpKZ8AWl6M
-         wjH6rOclkgo9fgk8O8rvAwbkP7i7JGkPshCENJ5CoTt5ek/IoWym4Gi3kYPQFcjkZu6N
-         0jVGT99wHgFbIo6NlJKyUyQ9kdy6nBhrK4QQ9FGL+skc53oO0gaEpvckzY7pherxCduz
-         CSJkTJzuknLZWOLjCIYftXqMAGVwBP0SN8w2cFEBRw6UoMZ2MrJdT/jYaCR2ayY8C+TS
-         xZ+2aQ5OPnaM6N6aPcSwXmNNiwwyqGL1ZfBWUmyxdHxNhDE3j0cy2HmjXhYqBKMsulTE
-         1WSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XPksOXWvTkUtcqvTzVQpJTHtPXY+kFhB7qHKvutpcB0=;
-        b=lVIzl2hd+KS9z+hKH7A7NynXz+Xy1Jdm8ytOFaidpRvreetLqaQeaWyW8vMOidxtnK
-         eiZd36boyTxM9CHrEA1a09EbERBb4DXU73dWn4KyPzgKt6LhXRcpMfgoEgxSHUWhc30y
-         oWwEeUum5w7hYmwDXTFbT2TNuxDz8IlAyabMSP+Ngcmvoh4mFU+1u4v/ICB+8KLV5tIk
-         6/XdX6HW/U0RqB93mF6IwX4VL0jmYm2OIp6ndVN7vZpH7quKP7pygp0sqmz/YJvs4MUD
-         W6b5OZcLacM/yE7GzSoL7AiJZy5xgD58hQKalhhXK8BMgYzEAdw80NMEJ7PtNLUDud0c
-         waBg==
-X-Gm-Message-State: AOAM532c1GgNPhfbXFPpwNkYs9hXD/HiDxWctlodcX8Hy+ZGEIwiEABD
-        gDOqli9BWRm2sjlAJX7nX0I3dCOrVvU=
-X-Google-Smtp-Source: ABdhPJzQMt1B+bHckwfLgt0P/bulirlyZhkN4ZmSGmG6ut1o03bIKamnZj5vG8mWPJJGF8TJV54vQA==
-X-Received: by 2002:a05:600c:8a9:: with SMTP id l41mr4775924wmp.152.1626275475909;
-        Wed, 14 Jul 2021 08:11:15 -0700 (PDT)
-Received: from agape ([5.171.72.142])
-        by smtp.gmail.com with ESMTPSA id n23sm2257926wms.4.2021.07.14.08.11.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 08:11:15 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] staging: rtl8723bs: add get_channel implementation
+        Wed, 14 Jul 2021 11:14:43 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE55C0613B0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:43 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
+        by xavier.telenet-ops.be with bizsmtp
+        id V3Be2500U4sai0K013Bf51; Wed, 14 Jul 2021 17:11:41 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3gXy-001ARB-Lo; Wed, 14 Jul 2021 17:11:38 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3gXx-00Acf3-0N; Wed, 14 Jul 2021 17:11:37 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
+Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v3 00/19] auxdisplay: ht16k33: Add character display support
 Date:   Wed, 14 Jul 2021 17:11:11 +0200
-Message-Id: <cover.1626275102.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
+Message-Id: <20210714151130.2531831-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds cfg80211 get_channel implementation.
-One of the benefits is having displayed channel info
-in iw dev output.
+	Hi all,
 
-Done some code cleaning as well.
+The Holtek HT16K33 LED controller is not only used for driving
+dot-matrix displays, but also for driving segment displays.
+The current auxdisplay driver is limited to dot-matrix displays, which
+are exposed as a frame buffer device.
 
-Tested-on: Lenovo Ideapad MiiX-300-10IBY
+This patch series extends the driver to 4-digit 7-segment and quad
+14-segment alphanumeric displays, allowing the user to display and
+scroll text messages.
 
-Fabio Aiuto (3):
-  staging: rtl8723bs: add get_channel cfg80211 implementation
-  staging: rtl8723bs: convert IsSupportedHT to snake_case
-  staging: rtl8723bs: fix camel case issue
+List of patches:
+  - Patch 1 provides font data for displaying ASCII characters on
+    14-segment displays,
+  - Patch 2 updates the HT16K33 DT bindings for segment displays,
+  - Patches 3-5 contain a bug fix and small improvements for the
+    Imagination Technologies ASCII LCD Display driver,
+  - Patch 6 extracts the character line display core support from the
+    Imagination Technologies ASCII LCD Display driver, for reuse,
+  - Patches 7-8 contain cleanups and improvements for the character line
+    display core driver,
+  - Patches 9-16 contain a bug fix, cleanups and improvements for the
+    HT16K33 driver, to prepare for segment display support,
+  - Patch 17 adds support for 7/14-segment displays to the HT16K33
+    driver,
+  - Patch 18 updates the HT16K33 DT bindings to document an LED subnode,
+  - Patch 19 adds segment display LED support to the HT16K33 driver,
+    to make use of hardware blinking, and to expose display color.
 
- .../staging/rtl8723bs/core/rtw_ioctl_set.c    |  2 +-
- .../staging/rtl8723bs/core/rtw_wlan_util.c    |  2 +-
- drivers/staging/rtl8723bs/include/ieee80211.h |  2 +-
- .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 53 ++++++++++++++++++-
- 4 files changed, 55 insertions(+), 4 deletions(-)
+Changes compared to v2[1]:
+  - Drop color property from display node,
+  - Use compat_only_sysfs_link_entry_to_kobj() instead of cooking our
+    own helper on top of kernfs_create_link(),
+  - Use "err" instead of "error" to be consistent with existing driver
+    naming style,
+  - Pass "dev" instead of "client" to ht16k33_fbdev_probe() and
+    ht16k33_seg_probe(),
+  - Drop local variable "node",
+  - Remove unneeded inclusion of <linux/leds.h> and <linux/of_device.h>,
+  - Document LED subnode,
+  - Remove unneeded C++ comment,
+  - Make the creation of the LED device dependent on the presence of the
+    "led" subnode in DT, so it can be used in dot-matrix mode too.
+  - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
+    all LED properties from DT, instead of manual LED name construction
+    based on just the "color" property,
+
+Changes compared to v1[2]:
+  - Fix type of color to uint32,
+  - "refresh-rate-hz" is still required for dot-matrix displays.
+  - Move "select LINEDISP" for HT16K33 symbol to correct patch,
+  - Add backwards compatibility "message" symlink to img-ascii-lcd,
+  - Connect backlight to fbdev in ht16k33 dot-matrix mode,
+  - Set "err = -EINVAL" in switch() case that cannot happen,
+  - Use "auxdisplay" instead of DRIVER_NAME in LED name.
+
+This series has been tested using an Adafruit 0.54" Quad Alphanumeric
+Red FeatherWing Display, plugged into an OrangeCrab ECP5-based FPGA
+board running linux-on-litex-vexriscv.
+7-segment display support is based purely on schematics, and has not
+been tested on actual hardware.  The changes to img-ascii-lcd.c are also
+untested, due to lack of hardware.
+
+Thanks!
+
+[1] "[PATCH v2 00/18] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210625125902.1162428-1-geert@linux-m68k.org/
+[2] "[PATCH 00/17] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210322144848.1065067-1-geert@linux-m68k.org/
+
+Geert Uytterhoeven (19):
+  uapi: Add <linux/map_to_14segment.h>
+  dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
+  auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
+  auxdisplay: img-ascii-lcd: Add helper variable dev
+  auxdisplay: img-ascii-lcd: Convert device attribute to sysfs_emit()
+  auxdisplay: Extract character line display core support
+  auxdisplay: linedisp: Use kmemdup_nul() helper
+  auxdisplay: linedisp: Add support for changing scroll rate
+  auxdisplay: ht16k33: Connect backlight to fbdev
+  auxdisplay: ht16k33: Use HT16K33_FB_SIZE in ht16k33_initialize()
+  auxdisplay: ht16k33: Remove unneeded error check in keypad probe()
+  auxdisplay: ht16k33: Convert to simple i2c probe function
+  auxdisplay: ht16k33: Add helper variable dev
+  auxdisplay: ht16k33: Move delayed work
+  auxdisplay: ht16k33: Extract ht16k33_brightness_set()
+  auxdisplay: ht16k33: Extract frame buffer probing
+  auxdisplay: ht16k33: Add support for segment displays
+  dt-bindings: auxdisplay: ht16k33: Document LED subnode
+  auxdisplay: ht16k33: Add LED support
+
+ .../bindings/auxdisplay/holtek,ht16k33.yaml   |  33 +-
+ drivers/auxdisplay/Kconfig                    |   8 +
+ drivers/auxdisplay/Makefile                   |   1 +
+ drivers/auxdisplay/ht16k33.c                  | 473 ++++++++++++++----
+ drivers/auxdisplay/img-ascii-lcd.c            | 205 ++------
+ drivers/auxdisplay/line-display.c             | 261 ++++++++++
+ drivers/auxdisplay/line-display.h             |  43 ++
+ include/uapi/linux/map_to_14segment.h         | 239 +++++++++
+ 8 files changed, 996 insertions(+), 267 deletions(-)
+ create mode 100644 drivers/auxdisplay/line-display.c
+ create mode 100644 drivers/auxdisplay/line-display.h
+ create mode 100644 include/uapi/linux/map_to_14segment.h
 
 -- 
-2.20.1
+2.25.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
