@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E948E3C91E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628233C91EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236858AbhGNUSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:18:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55308 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235375AbhGNUSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:18:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=altrnMbv/SB0Yb2YLSOF3NFD8ceIafb8UlwRDHdGk5c=; b=Kf2bamw41gyVk9J93clDShPKGc
-        7NnRaxZ51iRZoISV69nj9kWVt4wHFdbNTM38lQmeQTWBpYsz8N9t90xMqv4e49tpq6BK1MXXpei/n
-        g2+IGvtR4t5ZmqWRupR2aoiFiWwU2cOZ4zublW+95owFClINB5E8ct9TVd1EIsq+E3Oc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m3lHs-00DOVJ-87; Wed, 14 Jul 2021 22:15:20 +0200
-Date:   Wed, 14 Jul 2021 22:15:20 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
- layer 4 checksum
-Message-ID: <YO9F2LhTizvr1l11@lunn.ch>
-References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
- <20210714191723.31294-3-LinoSanfilippo@gmx.de>
- <20210714194812.stay3oqyw3ogshhj@skbuf>
+        id S238459AbhGNUUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240869AbhGNUT3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 16:19:29 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00A2C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:16:37 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id n14so5729407lfu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:16:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hlHm/WzQNtMTs2K3EbF6yImoGudX8KZZjDbB1a1VAPU=;
+        b=TJTslZ/O+mclDLyRLs2Na1rFxTJK1Iewbo87ZSvuPcjDK0QE9NyY4zBD1Aa0Nv12/R
+         JjTx9SO0K3ry/IAISAwGDN2Yfuz/mSyt9m/7wS+AlmRKGrcQONETWxym1Qs2Mxe+yFgt
+         gJqp/XYelzQhWhBoX8LaXPClxypV3t0kVyBbc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hlHm/WzQNtMTs2K3EbF6yImoGudX8KZZjDbB1a1VAPU=;
+        b=K+QPB8+o0vwjsNgxp2LKV3EdwmAhSUc6H9295vzGTU2pQf/WI0mNLKMGDuhOkemsHF
+         29/lC1aKUbhea+BWP020qxCFm++GRHTNXqcT6bh0NDutaUlzbvUW1e9Y9PC8gbBJb6NQ
+         a+4bezJM57SWns8lSPLdwwzCxH6qkUPvD4A0w75hCC9UEiGfCORvwKbxmNks0BJ5XHjV
+         XF9PdVUolBG4sUsTjlon2zutqXxAkhsu2cximOmHGGU3/TdnsEAix2iVSg/mn4WB9r10
+         fG65urwzNvy6UCwFdvBlfsP0ceTY5PGrdvySEsw4AJhXvPx+tW/yGkxskWM9JivJ37H1
+         AhMA==
+X-Gm-Message-State: AOAM5331bmX7o2AtANWkGk/4wqpfltzx89yvQ7s0PziduVaVSYRQVp4b
+        qDTYuHR4VSspt5dR/yJQZr+quf+YJtHmtHLp
+X-Google-Smtp-Source: ABdhPJw3c6hshzphFthpfxOP9ghuR00ph1U9GVFlQuGpG4omCB/SCiWWCX7B4s4YP3UUx8Tgbro3wQ==
+X-Received: by 2002:ac2:59db:: with SMTP id x27mr22460lfn.547.1626293795885;
+        Wed, 14 Jul 2021 13:16:35 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id c17sm239772lfr.88.2021.07.14.13.16.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 13:16:35 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id y7so4875499ljm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:16:35 -0700 (PDT)
+X-Received: by 2002:a2e:9c58:: with SMTP id t24mr10417152ljj.411.1626293795142;
+ Wed, 14 Jul 2021 13:16:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714194812.stay3oqyw3ogshhj@skbuf>
+References: <YO8Rw23KxCDjzKeA@infradead.org> <CAHk-=wjuDBQdUvaO=XaptgmvE_qeg_EuZjsUZf2vVoXPUMgAvg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjuDBQdUvaO=XaptgmvE_qeg_EuZjsUZf2vVoXPUMgAvg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 14 Jul 2021 13:16:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiaGVapioim31weBWs4bnzt7+wdyAx8GNFVgrFCLc-YXg@mail.gmail.com>
+Message-ID: <CAHk-=wiaGVapioim31weBWs4bnzt7+wdyAx8GNFVgrFCLc-YXg@mail.gmail.com>
+Subject: Re: [GIT PULL] configfs fix for Linux 5.14
+To:     Christoph Hellwig <hch@infradead.org>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 10:48:12PM +0300, Vladimir Oltean wrote:
-> Hi Lino,
-> 
-> On Wed, Jul 14, 2021 at 09:17:23PM +0200, Lino Sanfilippo wrote:
-> > If the checksum calculation is offloaded to the network device (e.g due to
-> > NETIF_F_HW_CSUM inherited from the DSA master device), the calculated
-> > layer 4 checksum is incorrect. This is since the DSA tag which is placed
-> > after the layer 4 data is seen as a part of the data portion and thus
-> > errorneously included into the checksum calculation.
-> > To avoid this, always calculate the layer 4 checksum in software.
-> > 
-> > Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> > ---
-> 
-> This needs to be solved more generically for all tail taggers. Let me
-> try out a few things tomorrow and come with a proposal.
+On Wed, Jul 14, 2021 at 1:05 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I hope/think that we always end up checking 'pos' in the VFS layer so
+> that this isn't a bug in practice
 
-Maybe the skb_linearize() is also a generic problem, since many of the
-tag drivers are using skb_put()? It looks like skb_linearize() is
-cheap because checking if the skb is already linear is cheap. So maybe
-we want to do it unconditionally?
+Yeah, we seem to make sure everything is fine in rw_verify_area().
 
-      Andrew
+We do allow negative 'pos' things, but only for files marked with
+FMODE_UNSIGNED_OFFSET, which is basically just for variations of
+/dev/mem and /proc/<pid>/mem that need the whole 64-bit range.
+
+So it _shouldn't_ be an issue here, but the points about just doing
+the legible and safe version stands.
+
+               Linus
