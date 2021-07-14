@@ -2,88 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2733C7FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCEE3C7FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238400AbhGNIBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:01:48 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:46978 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238287AbhGNIBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:01:46 -0400
-Received: by mail-wr1-f45.google.com with SMTP id d12so1984265wre.13;
-        Wed, 14 Jul 2021 00:58:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w1b6wrWBKDKa+tZj2BRGOgdt3If+IOv+NClRdPNKcBM=;
-        b=i8TEsoj8sokpDLOGUixv3RBwmDnYqp9xviN9mTQUnaPfIzBJIr7giU1BeIDV0PYmam
-         g9EjK8yBDymEsmDIAvChYJOB0PX8rBGkKYo7uPXpc0sRokQCV1zi1c/Vk7vg/edVuVH6
-         8FZOZyc6Y3Gh1BRDDE/pSWfwRXsY3PswKWsrdBVksn9IVs1iACUBLPPO9v9pw6q0orh1
-         +3uQY3kIU7laj2zmlQO3BegrGGYUyUl2/ZvOlqWdrEWVp1MINUwXTlaJElDrSAVjsXl+
-         9HqlMyWkQ1F2TuzS6fc3wWxdhuD1jc2LS20slwh680bTBiTkco+YHhL+Fvl+/o+Qui2r
-         bG4g==
-X-Gm-Message-State: AOAM531Su37pjqoLE2hCEC1C6X1oudHLqzIp7AmE6WWiKc/yIhjUPOa4
-        4mAxj8jCCLjan5bYdAFgwoSx/wDtP8nSHQ==
-X-Google-Smtp-Source: ABdhPJwPiZtOidE+kXKOB8zP/AitNMoyELHpBDkGKEgZ8xjPkTHgfAPY2I0Fhi98OW30ehHRa+RbxA==
-X-Received: by 2002:adf:eacb:: with SMTP id o11mr11844778wrn.62.1626249534391;
-        Wed, 14 Jul 2021 00:58:54 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id h9sm1265193wmb.35.2021.07.14.00.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 00:58:53 -0700 (PDT)
-Subject: Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
-From:   Jiri Slaby <jirislaby@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
- <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
- <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
-Message-ID: <33767cf0-2104-d7aa-2da8-5a3f5f20a654@kernel.org>
-Date:   Wed, 14 Jul 2021 09:58:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238411AbhGNICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:02:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238287AbhGNICW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0C96128B;
+        Wed, 14 Jul 2021 07:59:28 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 09:59:25 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>,
+        brauner@kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        gscrivan@redhat.com, Christoph Hellwig <hch@lst.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable-commits@vger.kernel.org, stable <stable@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
+Message-ID: <20210714075925.jtlfrhhuj4bzff3m@wittgenstein>
+References: <00000000000069c40405be6bdad4@google.com>
+ <000000000000b00c1105c6f971b2@google.com>
+ <CAHk-=wgWv1s1FbTxS+T7kbF-7LLm9Nz1eC+WBn+kr1WdYGtisA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgWv1s1FbTxS+T7kbF-7LLm9Nz1eC+WBn+kr1WdYGtisA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14. 07. 21, 8:54, Jiri Slaby wrote:
->> @@ -3994,14 +3982,9 @@ pciserial_init_ports(struct pci_dev *dev, const 
->> struct pciserial_board *board)
->>       if (board->flags & FL_NOIRQ) {
->>           uart.port.irq = 0;
->>       } else {
->> -        if (pci_match_id(pci_use_msi, dev)) {
->> -            dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
->> -            pci_set_master(dev);
->> -            rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
->> -        } else {
->> -            dev_dbg(&dev->dev, "Using legacy interrupts\n");
->> -            rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
->> -        }
->> +        pci_set_master(dev);
+On Tue, Jul 13, 2021 at 11:49:14AM -0700, Linus Torvalds wrote:
+> On Mon, Jul 12, 2021 at 9:12 PM syzbot
+> <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot has found a reproducer for the following issue on:
 > 
-> But bus mastering is not about MSIs. I *think* it's still OK, but you 
-> need to document that in the commit log too.
+> Hmm.
 > 
-> Actually, why the commit which added this code turns on bus mastering?
+> This issue is reported to have been already fixed:
+> 
+>     Fix commit: 9b5b8722 file: fix close_range() for unshare+cloexec
+> 
+> and that fix is already in the reported HEAD commit:
+> 
+> > HEAD commit:    7fef2edf sd: don't mess with SD_MINORS for CONFIG_DEBUG_BL..
+> 
+> and the oops report clearly is from that:
+> 
+> > CPU: 1 PID: 8445 Comm: syz-executor493 Not tainted 5.14.0-rc1-syzkaller #0
+> 
+> so the alleged fix is already there.
+> 
+> So clearly commit 9b5b872215fe ("file: fix close_range() for
+> unshare+cloexec") does *NOT* fix the issue.
+> 
+> This was originally bisected to that 582f1fb6b721 ("fs, close_range:
+> add flag CLOSE_RANGE_CLOEXEC") in
+> 
+>      https://syzkaller.appspot.com/bug?id=1bef50bdd9622a1969608d1090b2b4a588d0c6ac
+> 
+> which is where the "fix" is from.
+> 
+> It would probably be good if sysbot made this kind of "hey, it was
+> reported fixed, but it's not" very clear.
+> 
+> The KASAN report looks like a use-after-free, and that "use" is
+> actually the sanity check that the file count is non-zero, so it's
+> really a "struct file *" that has already been free'd.
+> 
+> That bogus free is a regular close() system call
+> 
+> >  filp_close+0x22/0x170 fs/open.c:1306
+> >  close_fd+0x5c/0x80 fs/file.c:628
+> >  __do_sys_close fs/open.c:1331 [inline]
+> >  __se_sys_close fs/open.c:1329 [inline]
+> 
+> And it was opened by a "creat()" system call:
+> 
+> > Allocated by task 8445:
+> >  __alloc_file+0x21/0x280 fs/file_table.c:101
+> >  alloc_empty_file+0x6d/0x170 fs/file_table.c:150
+> >  path_openat+0xde/0x27f0 fs/namei.c:3493
+> >  do_filp_open+0x1aa/0x400 fs/namei.c:3534
+> >  do_sys_openat2+0x16d/0x420 fs/open.c:1204
+> >  do_sys_open fs/open.c:1220 [inline]
+> >  __do_sys_creat fs/open.c:1294 [inline]
+> >  __se_sys_creat fs/open.c:1288 [inline]
+> >  __x64_sys_creat+0xc9/0x120 fs/open.c:1288
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> But it has apparently already been closed from a workqueue:
+> 
+> > Freed by task 8445:
+> >  __fput+0x288/0x920 fs/file_table.c:280
+> >  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+> 
+> So it's some kind of confusion and re-use of a struct file pointer.
+> 
+> Which is certainly consistent with the "fix" in 9b5b872215fe ("file:
+> fix close_range() for unshare+cloexec"), but it very much looks like
+> that fix was incomplete and not the full story.
+> 
+> Some fdtable got re-allocated? The fix that wasn't a fix ends up
+> re-checking the maximum file number under the file_lock, but there's
+> clearly something else going on too.
+> 
+> Christian?
 
-Forget about this line, I wasn't woken enough. Of course, MSI (writes) 
-to bus need bus mastering.
+Looking into this now.
 
-In any case, I'm still not sure what happens to devices which do not 
-support MSI if we enable mastering on them?
+I have to say I'm very confused by the syzkaller report here.
 
--- 
-js
-suse labs
+If I go to
+
+https://syzkaller.appspot.com/bug?extid=283ce5a46486d6acdbaf
+
+which is the original link in the report it shows me
+
+android-54	KASAN: use-after-free Read in filp_close	C			2	183d	183d	0/1	upstream: reported C repro on 2021/01/11 12:38
+
+which seems to indicate that this happened on an Android specific 5.4
+kernel?
+
+But ok, so I click on the link "upstream: reported C repro on 2021/01/11 12:38"
+which takes me to a google group
+
+https://groups.google.com/g/syzkaller-android-bugs/c/FQj0qcRSy_M/m/wrY70QFzBAAJ
+
+which again strongly indicates that this is an Android specific kernel?
+
+HEAD commit: c9951e5d Merge 5.4.88 into android12-5.4
+git tree: android12-5.4
+
+but then I can click on the dashboard link for that crash report and it
+takes me to:
+
+https://syzkaller.appspot.com/bug?extid=53897bcb31b82c7a08fe
+
+which seems to be the upstream report?
+
+So I'm a bit confused whether I'm even looking at the correct bug report
+but I'll just give the repro a try and see what's going on.
+
+Christian
