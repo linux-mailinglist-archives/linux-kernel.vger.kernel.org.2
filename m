@@ -2,228 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356A53C8A85
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856923C8A92
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239831AbhGNSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:16:33 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:41331 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhGNSQc (ORCPT
+        id S240002AbhGNSRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239974AbhGNSRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:16:32 -0400
-Date:   Wed, 14 Jul 2021 18:13:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1626286415;
-        bh=EG9s5cdMOG7EmUExUP0PZhifhepV9YS4Df7DmQpR5Cg=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=PHZYwtmuTLKCorL5dGE1q1194Yp6y/WzEdAg5vh9VBCs4LrJQ+D7AqjkS/X7QXbHt
-         ifFfiXRANUF9O/Eym/4cbZsy8u/+6XIE5WNyJlhiAboUcUO3FuAqrwA3c5J38wHYbH
-         xA+h28VLZb9Z19lHyxEnxPd+hVvv3efoHuAddvgA=
-To:     Rob Herring <robh@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re:  [PATCH] media: dt-bindings: media: venus: Add firmware-name
-Message-ID: <w_oXpbK_lWn1_5cR6AJDWVC_MW4ykO44yTR61UCxS-ifxbyjTmlqksj1DJYERqVyvQBAnxLgJ5-7JEDC8CjgUnuLq7kJbTYVrIVsdxt_D-w=@protonmail.com>
+        Wed, 14 Jul 2021 14:17:03 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174FCC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:14:11 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id f30so5184106lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:14:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O8TPU0hqO2c6lrmOpVCEHEZ3QntgeMzfXOeutKZUuGQ=;
+        b=GP0Dd2HejNzwHWckSqUuuJQz3ybU1NQTkuAQYQ0Iix+Gqdo0eWbTBj7XnDaLG0wE8k
+         08OctU1iaTR+/lL1dLgTUKi8wCk+YBwdSpn0GKuvAGGCSDTXUJI/aMos9QYPB3SKgEc/
+         PAkGIeIRMCIYXU5yjKfC0MyZtFjcbDMD3hIxnGNz6Na67oIJlknmivj1spY/A/5qz5Ba
+         h1I8KLXm+/aU4Kp8zxzQyuqrf52MKJN5gD5k96UWqJwy4ZIdiLeX0P0di+mSs4zycdR4
+         JYf35fE902Tc/W595ve57Iqs1LGBtYOmeKqw8jUZyPZKYI//Pi0OzfT+ooT83u22YhH/
+         v85Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O8TPU0hqO2c6lrmOpVCEHEZ3QntgeMzfXOeutKZUuGQ=;
+        b=dXl0kQ8XGQukvYVkiNdmdLN9lEdaKWRZ5tjLhlU9KrODFwCzbby/rdMqUSThSN5Bax
+         S5VUcphGFSlDGX6XXFsCdvLahxDlcPkoLl76PCvM8A+/Y7gWBHaLvrFwjqzVVnRUPgck
+         vc7AnDQA09blLyY3yeTG2nEnwcixq85s6yZhQGOPLyz4lWP0JyMDfZsUvm4nPRnT88X4
+         XDxPq72mTdyKlDezBYCigeMxeplSC2uqgyukfbfk3GkyrUDfn/BUShO9xPr8T4E9X9FU
+         mR68v9SGdU9R0bnrVOwFuUxSn4xStYgwwVkFcpa3Kwvim9mMJt/ss04gKhxAc4pMuNuM
+         2ckQ==
+X-Gm-Message-State: AOAM530fHssiYBzvKWYSb7Xcn7b6bZi7jHUWZs7UUZkXU/UBq9gGfDTT
+        TyARCvqZz2Trp1Wn7a7C4fhryMYIEpmRVG8C5Xvy5Q==
+X-Google-Smtp-Source: ABdhPJzGQBRL19G8n4JdfX5XiIs4hch17ulA/Fmu33Rkcgp58p/SczPkAD+RTaPFPpf30NDPB1c736FtkruzNIUr9lM=
+X-Received: by 2002:a05:6512:3e0c:: with SMTP id i12mr8768338lfv.122.1626286449128;
+ Wed, 14 Jul 2021 11:14:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-4-ojeda@kernel.org>
+In-Reply-To: <20210704202756.29107-4-ojeda@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 14 Jul 2021 11:13:57 -0700
+Message-ID: <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
+Subject: Re: [PATCH 03/17] Makefile: generate `CLANG_FLAGS` even in GCC builds
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, July 14th, 2021 at 10:03 PM, Rob Herring <robh@kernel.org> wr=
-ote:
+On Sun, Jul 4, 2021 at 1:28 PM <ojeda@kernel.org> wrote:
+>
+> From: Miguel Ojeda <ojeda@kernel.org>
+>
+> To support Rust under GCC-built kernels, we need to save the flags that
+> would have been passed if the kernel was being compiled with Clang.
+>
+> The reason is that `bindgen` -- the tool we use to generate Rust
+> bindings to the C side of the kernel -- relies on `libclang` to
+> parse C. Ideally:
+>
+>   - `bindgen` would support a GCC backend (requested at [1]),
+>
+>   - or the Clang driver would be perfectly compatible with GCC,
+>     including plugins. Unlikely, of course, but perhaps a big
+>     subset of configs may be possible to guarantee to be kept
+>     compatible nevertheless.
+>
+> This is also the reason why GCC builds are very experimental and some
+> configurations may not work (e.g. `GCC_PLUGIN_RANDSTRUCT`). However,
+> we keep GCC builds working (for some example configs) in the CI
+> to avoid diverging/regressing further, so that we are better prepared
+> for the future when a solution might become available.
+>
+> [1] https://github.com/rust-lang/rust-bindgen/issues/1949
+>
+> Link: https://github.com/Rust-for-Linux/linux/issues/167
+> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Co-developed-by: Finn Behrens <me@kloenk.de>
+> Signed-off-by: Finn Behrens <me@kloenk.de>
+> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-> On Tue, Jun 22, 2021 at 04:20:24PM +0000, Yassine Oudjana wrote:
->
-> > Date: Tue, 22 Jun 2021 20:08:25 +0400
-> >
-> > Subject: [PATCH] media: dt-bindings: media: venus: Add firmware-name
-> >
-> > Support for parsing the firmware-name property was added a while ago 1,
-> >
-> > but the dt-bindings were never updated with the new property. This patc=
-h
-> >
-> > adds it to all venus dt-bindings.
-> >
-> > Signed-off-by: Yassine Oudjana y.oudjana@protonmail.com
-> >
-> > .../devicetree/bindings/media/qcom,msm8916-venus.yaml | 5 +++++
-> >
-> > .../devicetree/bindings/media/qcom,msm8996-venus.yaml | 5 +++++
-> >
-> > .../devicetree/bindings/media/qcom,sc7180-venus.yaml | 5 +++++
-> >
-> > .../devicetree/bindings/media/qcom,sdm845-venus-v2.yaml | 5 +++++
-> >
-> > .../devicetree/bindings/media/qcom,sdm845-venus.yaml | 5 +++++
-> >
-> > 5 files changed, 25 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/media/qcom,msm8916-venus=
-.yaml b/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
-> >
-> > index 59ab16ad12f1..cb1b866d9c37 100644
-> >
-> > --- a/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
-> >
-> > +++ b/Documentation/devicetree/bindings/media/qcom,msm8916-venus.yaml
-> >
-> > @@ -80,6 +80,11 @@ properties:
-> >
-> > required:
-> >
-> > - iommus
-> >
-> > -   firmware-name:
-> > -   maxItems: 1
->
-> Not an array.
->
-Noted.
+Patch LGTM; please keep an eye on the series:
+https://lore.kernel.org/lkml/20210707224310.1403944-2-ndesaulniers@google.com/
 
-> Is there a specific pattern and/or default name you can specify?
->
-The pattern is usually something like "qcom/<soc>/<device>/venus.mbn", but =
-it can be any path really.
-The default would be to not set this property.
+If that lands in kbuild before this, this patch will need to be
+rebased to avoid a conflict in linux-next.
 
-> > -   description: |
-> > -        Relative firmware image path for venus.
-> >
-> >
-> >
-> > required:
-> >
-> > -   compatible
-> > -   reg
-> >
-> >     diff --git a/Documentation/devicetree/bindings/media/qcom,msm8996-v=
-enus.yaml b/Documentation/devicetree/bindings/media/qcom,msm8996-venus.yaml
-> >
-> >     index 199f45217b4a..b8809325138f 100644
-> >
-> >     --- a/Documentation/devicetree/bindings/media/qcom,msm8996-venus.ya=
-ml
-> >
-> >     +++ b/Documentation/devicetree/bindings/media/qcom,msm8996-venus.ya=
-ml
-> >
-> >     @@ -107,6 +107,11 @@ properties:
-> >
-> >     required:
-> >     -   iommus
-> >
-> > -   firmware-name:
-> > -   maxItems: 1
-> > -   description: |
-> > -        Relative firmware image path for venus.
-> >
-> >
-> >
-> > required:
-> >
-> > -   compatible
-> > -   reg
-> >
-> >     diff --git a/Documentation/devicetree/bindings/media/qcom,sc7180-ve=
-nus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
-> >
-> >     index 04013e5dd044..ffd3e2850366 100644
-> >
-> >     --- a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yam=
-l
-> >
-> >     +++ b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yam=
-l
-> >
-> >     @@ -99,6 +99,11 @@ properties:
-> >
-> >     required:
-> >     -   iommus
-> >
-> > -   firmware-name:
-> > -   maxItems: 1
-> > -   description: |
-> > -        Relative firmware image path for venus.
-> >
-> >
-> >
-> > required:
-> >
-> > -   compatible
-> > -   reg
-> >
-> >     diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-ve=
-nus-v2.yaml b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.=
-yaml
-> >
-> >     index 04b9af4db191..cd7a5e1374ce 100644
-> >
-> >     --- a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.=
-yaml
-> >
-> >     +++ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.=
-yaml
-> >
-> >     @@ -94,6 +94,11 @@ properties:
-> >
-> >     required:
-> >     -   iommus
-> >
-> > -   firmware-name:
-> > -   maxItems: 1
-> > -   description: |
-> > -        Relative firmware image path for venus.
-> >
-> >
-> >
-> > required:
-> >
-> > -   compatible
-> > -   reg
-> >
-> >     diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-ve=
-nus.yaml b/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yaml
-> >
-> >     index 680f37726fdf..ae256238a637 100644
-> >
-> >     --- a/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yam=
-l
-> >
-> >     +++ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus.yam=
-l
-> >
-> >     @@ -108,6 +108,11 @@ properties:
-> >
-> >     required:
-> >     -   iommus
-> >
-> > -   firmware-name:
-> > -   maxItems: 1
-> > -   description: |
-> > -        Relative firmware image path for venus.
-> >
-> >
-> >
-> > required:
-> >
-> > -   compatible
-> > -   reg
-> >
-> >     --
-> >
-> >     2.32.0
+So (tentatively :-P):
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+If the patch needs to be rebased on the series linked above, please
+drop my reviewed by tag and I will re-review. Perhaps putting me
+explicitly on Cc: in the commit message will help notify me if there
+are successive versions?
+
+> ---
+>  Makefile | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 0565caea036..6e823d8bd64 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -573,18 +573,23 @@ endif
+>  # and from include/config/auto.conf.cmd to detect the compiler upgrade.
+>  CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
+>
+> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
+> +
+>  ifneq ($(CROSS_COMPILE),)
+> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>  endif
+>  ifeq ($(LLVM_IAS),1)
+> -CLANG_FLAGS    += -integrated-as
+> +TENTATIVE_CLANG_FLAGS  += -integrated-as
+>  else
+> -CLANG_FLAGS    += -no-integrated-as
+> +TENTATIVE_CLANG_FLAGS  += -no-integrated-as
+>  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> +TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+>  endif
+> -CLANG_FLAGS    += -Werror=unknown-warning-option
+> +
+> +export TENTATIVE_CLANG_FLAGS
+> +
+> +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> +CLANG_FLAGS    += $(TENTATIVE_CLANG_FLAGS)
+>  KBUILD_CFLAGS  += $(CLANG_FLAGS)
+>  KBUILD_AFLAGS  += $(CLANG_FLAGS)
+>  export CLANG_FLAGS
+> --
+> 2.32.0
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
