@@ -2,70 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A933C7BA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9063C3C7BB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237570AbhGNCW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:22:28 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:46817 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237555AbhGNCW1 (ORCPT
+        id S237478AbhGNCZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237375AbhGNCZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:22:27 -0400
-Received: by mail-io1-f45.google.com with SMTP id p186so144252iod.13;
-        Tue, 13 Jul 2021 19:19:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oi7Iv96uLnmSi4m8AHsi5ndCWlB4bxoKEn36ydgdGgY=;
-        b=ERqbU16RuzZcq7xiaV27uG6mW2Nl2vATfKFrx2BsEk2wIn4A+uEPRuJHozhPalnr10
-         vCXz6D79CVtFasz75U8x+rFMV7XtIoKA+ZHRMK62E6gcj8KFcS1UGAGu1d6Qgxl2Qem/
-         BU9vrIJdAnMbEWr6jd7rBL5b7aCv45HIRcHgpvARO7wiTxd+L/qBFKkHVyJeGKXWvHTk
-         uJMosKdQwLoz8FWOb5weyAJIfBZzORnKdzT65JOplmcV1IiqHuLD3qJF++mC+SEahFwe
-         tXUCHQMqr4eTDfqLzDwhCaSAk1scug7uDVjEzqDz6VOg6GgwQBeHb0vXGkqfXNXhKWXY
-         QTew==
-X-Gm-Message-State: AOAM5308G6VCB6qNSgBQiEWxuvb8ENnPeZIrK4DBsBXg8ESx67O5v8zT
-        CmYWL5PlZHgT6RvEV7DC99u3H9v3ew==
-X-Google-Smtp-Source: ABdhPJxvzQSpzdIYwiscskZmM0NAT6/ND6QwbLxckamY1LNImoRxjpTptECdgf0QZFkRiPMYPt7nFw==
-X-Received: by 2002:a02:b199:: with SMTP id t25mr1719375jah.35.1626229175026;
-        Tue, 13 Jul 2021 19:19:35 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c7sm449977ilj.86.2021.07.13.19.19.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 19:19:34 -0700 (PDT)
-Received: (nullmailer pid 1318547 invoked by uid 1000);
-        Wed, 14 Jul 2021 02:19:31 -0000
-Date:   Tue, 13 Jul 2021 20:19:31 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 6/6] media: dt-bindings: mt9p031: Add missing required
- properties
-Message-ID: <20210714021931.GA1318494@robh.at.kernel.org>
-References: <20210712085535.11907-1-s.riedmueller@phytec.de>
- <20210712085535.11907-7-s.riedmueller@phytec.de>
+        Tue, 13 Jul 2021 22:25:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A99FC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B3fKLu6x90gYniUL5gogEh9zBG7fF7DVZEYNuV5m4q0=; b=NtmylrsCgZ2SnKyzsjA02m/cpv
+        Lojz2OtZCoq0uRMf8PJ1ERJm7b4U6OFL3HBn4sYNo0F8qsLxnkDI1Xu9uJde8fY7DlXIGEZHqERMM
+        LQEeUpvKEDDAq9sqPEZp+TaLJPVza+4VOfoF5nBJ4JYSb2FiDCiZkYfCWBhwxTlKEKsX0URFO5RZn
+        cUWANCeH+X8PJT6JLwEddaQSaw/cFaU55CRCo2PvgfaEqEsNyvsOs+gukMhIDmETdWzjM0ttjqt4W
+        JdNk2UNAnqVFCL8qzUMuZLFhv/OrWv8r5gTOvCKrDoXT90VBbahCDaMGw7m4vQbaUKA877XeYFGDF
+        1377F20w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3UVw-001kkZ-4U; Wed, 14 Jul 2021 02:20:51 +0000
+Date:   Wed, 14 Jul 2021 03:20:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: Make copy_huge_page() always available
+Message-ID: <YO5J/OSGQvHp1npk@casper.infradead.org>
+References: <20210712153207.39302-1-willy@infradead.org>
+ <20210713191244.553680171f9fab3bf6e0889b@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712085535.11907-7-s.riedmueller@phytec.de>
+In-Reply-To: <20210713191244.553680171f9fab3bf6e0889b@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 10:55:35 +0200, Stefan Riedmueller wrote:
-> Add missing required clocks and supply regulator properties for the
-> sensor input clock and vdd, vdd_io and vaa supply regulators.
+On Tue, Jul 13, 2021 at 07:12:44PM -0700, Andrew Morton wrote:
+> On Mon, 12 Jul 2021 16:32:07 +0100 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
 > 
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> ---
->  .../bindings/media/i2c/aptina,mt9p031.yaml    | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> > Rewrite copy_huge_page() and move it into mm/util.c so it's always
+> > available.  Fixes an exposure of uninitialised memory on configurations
+> > with HUGETLB and UFFD enabled and MIGRATION disabled.
 > 
+> Wait.  Exposing uninitialized memory is serious.  Can we please include
+> full info on this flaw and decide whether a -stable backport is justified? 
+> If not, why not, etc?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Well, the code was only merged this merge window, so as long as it goes
+in in the next few weeks, there's no need to trouble -stable with it.
