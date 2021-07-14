@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871613C7ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E7E3C7EDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238144AbhGNHAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:00:00 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:36594 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237948AbhGNG77 (ORCPT
+        id S238167AbhGNHDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:03:49 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35846 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237948AbhGNHDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:59:59 -0400
-Received: by mail-wr1-f42.google.com with SMTP id v5so1846382wrt.3;
-        Tue, 13 Jul 2021 23:57:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VhK975TeGNNyvZ4Fkw5/IuH4eLLeWHK0uf+OS1Uzh0M=;
-        b=f7ZY739VsT7y8UaTnSqPUtXjWWnmTEE77aZFYga5yv05hoYrnU2ObWjVpMW93WbaJJ
-         VZllACxH5NfZnIpL68+n5sCNSfPEj1dMk+LBnRTnD1DIRnI9Nl7u/zvcT5psDG4ndSAB
-         PbqeGADxl0PX7x0Uv5gvpqeWi5yPXo63TDQAhMV9ZTvPffMT/sFYNaRzmG5YbMhNk7+X
-         iWlVU8X6O1n8nrI4HNksZ2huV3uEjNCEw7vmDRqA3n92t+lkSoELQIeOK4wjvea0Og83
-         Q29hHD+ME4tdNZGbyPXOr3r/32unL81lmHm7qLNcn1xEY5xIHci35Sf730Auvc61SG85
-         P6lQ==
-X-Gm-Message-State: AOAM530m/c9nm8MEDSFKIl1fsgiGR9lXaG3YcfyxkpH40Fx1zdih6//o
-        ziHcnttItyB7d37k1jgluLw=
-X-Google-Smtp-Source: ABdhPJyL9/9bP39IyZtaVdQS+RhLxXtpjFjcNa/dxj/xvBzmRdG+TFCw+mfAfK7cTqEsjH7ckD0N1Q==
-X-Received: by 2002:a5d:634e:: with SMTP id b14mr10532450wrw.81.1626245827528;
-        Tue, 13 Jul 2021 23:57:07 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id u12sm1388132wrt.50.2021.07.13.23.57.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 23:57:06 -0700 (PDT)
-Subject: Re: [PATCH v1 1/4] serial: 8250_pci: Refactor the loop in
- pci_ite887x_init()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <136e3881-bff4-d1f0-e146-b5c0a58f2e80@kernel.org>
-Date:   Wed, 14 Jul 2021 08:57:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 14 Jul 2021 03:03:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CC48022972;
+        Wed, 14 Jul 2021 07:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626246056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EXfpwgyw6CEUgPbLD+Wqw0C3z2Gmg8ChSjydaanPZOE=;
+        b=rrDxyqTV2y0wteEKoNbf+YgaWZCrkZ+vkW9mZuQ88l0MoLfNEw9ty+wLHbO0sKrmZKKIcm
+        aYj3nJdczOheNVNbexcp5bOKWeDp/AgwAMukp/ylVs2f6h4UWgW0GOTEd9BWFTtAM5NB+N
+        0Z2IygPIm8DlbMnnWsA1S8iHqByePLc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626246056;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EXfpwgyw6CEUgPbLD+Wqw0C3z2Gmg8ChSjydaanPZOE=;
+        b=3JkZRU0+vbZiu+W8SQNirvJpbyjvzA12tZlYKU7ppclFCmAUJGnfKwT2BBKr3F3WVYfsW4
+        HVcou7voXM41G7Ag==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 2833DA3B88;
+        Wed, 14 Jul 2021 07:00:55 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 09:00:55 +0200
+Message-ID: <s5h5yxd1is8.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Geoffrey D. Bennett" <g@b4.vu>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 5.10 007/593] ALSA: usb-audio: scarlett2: Fix wrong resume call
+In-Reply-To: <20210713204643.GA21897@amd>
+References: <20210712060843.180606720@linuxfoundation.org>
+        <20210712060843.978749134@linuxfoundation.org>
+        <20210713204643.GA21897@amd>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13. 07. 21, 12:40, Andy Shevchenko wrote:
-> The loop can be refactored by using ARRAY_SIZE() instead of NULL terminator.
-> This reduces code base and makes it easier to read and understand.
+On Tue, 13 Jul 2021 22:46:43 +0200,
+Pavel Machek wrote:
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   drivers/tty/serial/8250/8250_pci.c | 16 +++++-----------
->   1 file changed, 5 insertions(+), 11 deletions(-)
+> Hi!
 > 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 02985cf90ef2..b9138bd08b7f 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -897,37 +897,31 @@ static int pci_netmos_init(struct pci_dev *dev)
->   /* enable IO_Space bit */
->   #define ITE_887x_POSIO_ENABLE		(1 << 31)
->   
-> +/* inta_addr are the configuration addresses of the ITE */
-> +static const short inta_addr[] = { 0x2a0, 0x2c0, 0x220, 0x240, 0x1e0, 0x200, 0x280, };
->   static int pci_ite887x_init(struct pci_dev *dev)
->   {
-> -	/* inta_addr are the configuration addresses of the ITE */
-> -	static const short inta_addr[] = { 0x2a0, 0x2c0, 0x220, 0x240, 0x1e0,
-> -							0x200, 0x280, 0 };
->   	int ret, i, type;
->   	struct resource *iobase = NULL;
->   	u32 miscr, uartbar, ioport;
->   
->   	/* search for the base-ioport */
-> -	i = 0;
-> -	while (inta_addr[i] && iobase == NULL) {
-> -		iobase = request_region(inta_addr[i], ITE_887x_IOSIZE,
-> -								"ite887x");
-> +	for (i = 0; i < ARRAY_SIZE(inta_addr); i++) {
-> +		iobase = request_region(inta_addr[i], ITE_887x_IOSIZE, "ite887x");
+> > This patch corrects those issues.  It introduces a new value type,
+> > USB_MIXER_BESPOKEN, which indicates a non-standard mixer element, and
+> > use this type for all scarlett2 mixer elements, as well as
+> > initializing the fixed unit id 0 for avoiding the overflow.
+> 
+> New mixer value is introduced, but printing code in mixer.c is not
+> updated.
+> 
+> Is something like this needed?
 
-Irrelevant whitespace change.
+Currently BESPOKEN type doesn't use the standard dump callback, hence
+this won't hit, but such a change wouldn't hurt.
 
->   		if (iobase != NULL) {
->   			/* write POSIO0R - speed | size | ioport */
->   			pci_write_config_dword(dev, ITE_887x_POSIO0,
->   				ITE_887x_POSIO_ENABLE | ITE_887x_POSIO_SPEED |
->   				ITE_887x_POSIO_IOSIZE_32 | inta_addr[i]);
->   			/* write INTCBAR - ioport */
-> -			pci_write_config_dword(dev, ITE_887x_INTCBAR,
-> -								inta_addr[i]);
-> +			pci_write_config_dword(dev, ITE_887x_INTCBAR, inta_addr[i]);
 
-detto
+thanks,
 
->   			ret = inb(inta_addr[i]);
->   			if (ret != 0xff) {
->   				/* ioport connected */
->   				break;
->   			}
->   			release_region(iobase->start, ITE_887x_IOSIZE);
-> -			iobase = NULL;
->   		}
-> -		i++;
->   	}
->   
->   	if (!inta_addr[i]) {
+Takashi
 
-OOB access?
-
-regards,
--- 
-js
-suse labs
+> 
+> 
+> > +++ b/sound/usb/mixer.h
+> > @@ -55,6 +55,7 @@ enum {
+> >  	USB_MIXER_U16,
+> >  	USB_MIXER_S32,
+> >  	USB_MIXER_U32,
+> > +	USB_MIXER_BESPOKEN,	/* non-standard type */
+> >  };
+> >
+> 
+> Best regards,
+> 							Pavel
+> 
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index 2b5281ef8fca..83d5e4d19128 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -3294,7 +3294,7 @@ static void snd_usb_mixer_dump_cval(struct snd_info_buffer *buffer,
+>  {
+>  	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+>  	static const char * const val_types[] = {
+> -		"BOOLEAN", "INV_BOOLEAN", "S8", "U8", "S16", "U16", "S32", "U32",
+> +		"BOOLEAN", "INV_BOOLEAN", "S8", "U8", "S16", "U16", "S32", "U32", "BESPOKEN", 
+>  	};
+> 
+> -- 
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> [2 Digital signature <application/pgp-signature (7bit)>]
+> 
