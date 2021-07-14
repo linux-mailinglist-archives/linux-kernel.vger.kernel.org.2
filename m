@@ -2,388 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299163C7C01
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E8F3C7C06
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237714AbhGNCti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237703AbhGNCth (ORCPT
+        id S237726AbhGNCuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:50:52 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:34756 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237501AbhGNCuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:49:37 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6874CC0613E9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:46:46 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id n187-20020a4a40c40000b029025e72bdf5d6so256789ooa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cgV6xvF1DtRkfWmB2cqboiTr4fd4G4ciBbO2znVwTys=;
-        b=WaszFHTXdDfJLzvOlsjOazKXpGizfc7eobnCb9TXjIw2gjE+qKl1XWj+sZNIKT+Ws7
-         9ItE/DyErH3FwmUBLV3i+AkAsFnTAFRvMG4zepbyyuNZZkzGRCjYEhBQWCytP4QnXZki
-         2F+/2msLt9qa3aDE1g+srPmFCATxkuEj+ilWFWoihbOuLG9eQR0sibFAPR+umM/Clbov
-         U97cqRUj43ZpTSy46ovMvhWSCzqSDaF7gENxUQinVkA0+135uyivHLYiLqWCokmuG1IB
-         EdYEaZCFWRxDsCBkQBLFa+UZJ1xgp/QJ2nhUGMfr0KhrPQZ1Xg3HFwnwXo1Z7MgTh6GN
-         1/kQ==
+        Tue, 13 Jul 2021 22:50:51 -0400
+Received: by mail-il1-f178.google.com with SMTP id e13so123578ilc.1;
+        Tue, 13 Jul 2021 19:48:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cgV6xvF1DtRkfWmB2cqboiTr4fd4G4ciBbO2znVwTys=;
-        b=uke4oYpRGY4CACT6dNOEfZsnvjLEv6ucnJeeUaB0iW8PiWEOb95XowLyv0PWglFLYC
-         SyseT4ZW8IU2IoC8HgZMSzpTSawRntv7O6YZ3bwtKpv7wpyryUTC9wywkdGNrLWQZ9OB
-         2NZVdB7lj4xLHlhctKRb4Xp1Tvke/xJ7UeiKUH3xQhnn5Qc9qNzuc4rd8Q4fhy7tyKRK
-         dFD1YgB3yj2R4uoP1YOO2O82vqG1Z4dKh2uMDOazGob0wDtWp9H03qAektDtRjE0CVN4
-         ZBSJ3XUTFEY1rQOAucU1kipDrXr1s5TL7/DGAdGTdMjpJxUFD6GVtGeW+txMFkDlGt4s
-         XB9w==
-X-Gm-Message-State: AOAM530Cb87dzp5BJZ+Db7MM2L3/ZnQ+cqCYzW7jWVQVLls8W1Iir9yY
-        Z3ghP9xNbOKU/MEDDkeigx/RGg==
-X-Google-Smtp-Source: ABdhPJz5mCbUHrJOoO9BdHKGbES4ztyEbvHYamznMTEFnEeAAEmFBn2VKn3zwz42x0c+U2bgKm/YAQ==
-X-Received: by 2002:a4a:18c2:: with SMTP id 185mr6167452ooo.6.1626230805694;
-        Tue, 13 Jul 2021 19:46:45 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x20sm218720otq.62.2021.07.13.19.46.44
+        bh=0Vdibdlzv5rYDH1Iu+VB2cu80QABZ2EylGkmlCLDsMw=;
+        b=kptj+nLmCIQe6XE+I47WD/3i/HhDF9/dIgIYf2ZXbijighVaD7lsue3lpblwkyc7IA
+         jiQmYlo0XzGDHHuuUWr/82bIVVj9A6IEZS9GB10hiLqAAn7kakdyHAf5YSyGrqGAfNV0
+         uMJhs6nFxDtZYdyQKShxyLdaI6XV30zHPsHX/uSdIKxpspeXdHbdmnTlCmeIOUEZN5Yb
+         Xy0bjvi4zcdjFe3mVvVJwGLm+F0Zec31+Idi79G1alHmYzwsCXg9PbBT2saAJAym/uZR
+         D5vwLFoCyaVTJjfEEDaRnxNZ7eg50yW9/+/N5csbgriMA+hq9lN8huEPO2v35Md3wRjT
+         Ijtw==
+X-Gm-Message-State: AOAM531dNjKUWy65vD8O61vz/IFHl6m44kgsM+B+W+CKSXdkH1kryENh
+        TYtWzs2EhnLjMm4kpX2iBg==
+X-Google-Smtp-Source: ABdhPJztRHwki29RWAW+hY6YfJ050sCaEl3rjgZFuQKcazg9fgO0dBkmXngFCoE8E5ZI1+Xmjc+3+A==
+X-Received: by 2002:a05:6e02:f05:: with SMTP id x5mr5034884ilj.268.1626230879666;
+        Tue, 13 Jul 2021 19:47:59 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t24sm426343ioh.24.2021.07.13.19.47.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 19:46:45 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 21:46:42 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, kgunda@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH V5 1/2] dt-bindings: pinctrl: qcom-pmic-gpio: Convert
- qcom pmic gpio bindings to YAML
-Message-ID: <YO5QErHuGaPhU41k@yoga>
-References: <1625032241-3458-1-git-send-email-skakit@codeaurora.org>
- <1625032241-3458-2-git-send-email-skakit@codeaurora.org>
+        Tue, 13 Jul 2021 19:47:59 -0700 (PDT)
+Received: (nullmailer pid 1362752 invoked by uid 1000);
+        Wed, 14 Jul 2021 02:47:56 -0000
+Date:   Tue, 13 Jul 2021 20:47:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     shruthi.sanil@intel.com
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH v4 1/2] dt-bindings: timer: Add bindings for Intel Keem
+ Bay SoC Timer
+Message-ID: <20210714024756.GA1355219@robh.at.kernel.org>
+References: <20210628061410.8009-1-shruthi.sanil@intel.com>
+ <20210628061410.8009-2-shruthi.sanil@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1625032241-3458-2-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <20210628061410.8009-2-shruthi.sanil@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30 Jun 00:50 CDT 2021, satya priya wrote:
-
-> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+On Mon, Jun 28, 2021 at 11:44:09AM +0530, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
 > 
-
-Thanks for updating this Satya, this is looking quite good now. Just got
-one issue with the definition of the state child node.
-
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-[..]
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> Add Device Tree bindings for the Timer IP, which can be used as
+> clocksource and clockevent device in the Intel Keem Bay SoC.
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
+> ---
+>  .../bindings/timer/intel,keembay-timer.yaml   | 170 ++++++++++++++++++
+>  1 file changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
 > new file mode 100644
-> index 0000000..22c58de
+> index 000000000000..24c149a4d220
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-> @@ -0,0 +1,259 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +++ b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+> +$id: http://devicetree.org/schemas/timer/intel,keembay-timer.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Qualcomm PMIC GPIO block
+> +title: Intel Keem Bay SoC Timers
 > +
 > +maintainers:
-> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +  - Shruthi Sanil <shruthi.sanil@intel.com>
 > +
-> +description:
-> +  This binding describes the GPIO block(s) found in the 8xxx series of
-> +  PMIC's from Qualcomm.
+> +description: |
+> +  The Intel Keem Bay timer driver supports clocksource and clockevent
+> +  features for the timer IP used in Intel Keembay SoC.
+> +  The timer block supports 1 free running counter and 8 timers.
+> +  The free running counter can be used as a clocksouce and
+> +  the timers can be used as clockevent. Each timer is capable of
+> +  generating inividual interrupt.
+
+clockevent and clocksource are Linuxisms. Don't use them in bindings.
+
+> +  Both the features are enabled through the timer general config register.
+> +
+> +  The parent node represents the common general configuration details and
+> +  the child nodes represents the counter and timers.
+
+I don't think all the child nodes are necessary. Are the counters and 
+timers configurable (say on another SoC)? If not, then a single node 
+here would suffice.
+
 > +
 > +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - qcom,pm660-gpio
-> +          - qcom,pm660l-gpio
-> +          - qcom,pm6150-gpio
-> +          - qcom,pm6150l-gpio
-> +          - qcom,pm7325-gpio
-> +          - qcom,pm8005-gpio
-> +          - qcom,pm8008-gpio
-> +          - qcom,pm8018-gpio
-> +          - qcom,pm8038-gpio
-> +          - qcom,pm8058-gpio
-> +          - qcom,pm8150-gpio
-> +          - qcom,pm8150b-gpio
-> +          - qcom,pm8350-gpio
-> +          - qcom,pm8350b-gpio
-> +          - qcom,pm8350c-gpio
-> +          - qcom,pm8916-gpio
-> +          - qcom,pm8917-gpio
-> +          - qcom,pm8921-gpio
-> +          - qcom,pm8941-gpio
-> +          - qcom,pm8950-gpio
-> +          - qcom,pm8994-gpio
-> +          - qcom,pm8998-gpio
-> +          - qcom,pma8084-gpio
-> +          - qcom,pmi8950-gpio
-> +          - qcom,pmi8994-gpio
-> +          - qcom,pmi8998-gpio
-> +          - qcom,pmk8350-gpio
-> +          - qcom,pmr735a-gpio
-> +          - qcom,pmr735b-gpio
-> +          - qcom,pms405-gpio
-> +          - qcom,pmx55-gpio
-> +
-> +      - enum:
-> +          - qcom,spmi-gpio
-> +          - qcom,ssbi-gpio
-> +
 > +  reg:
+> +    description: General configuration register address and length.
 > +    maxItems: 1
 > +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 44
-> +    description: |
-> +        Must contain an array of encoded interrupt specifiers for
-> +        each available GPIO
+> +  ranges: true
 > +
-> +  '#interrupt-cells':
+> +  "#address-cells":
 > +    const: 2
 > +
-> +  interrupt-controller: true
-> +
-> +  gpio-controller: true
-> +
-> +  gpio-ranges:
-> +    maxItems: 1
-> +
-> +  '#gpio-cells':
+> +  "#size-cells":
 > +    const: 2
-> +    description: |
-
-Not need for the '|', as the formatting isn't significant.
-
-> +        The first cell will be used to define gpio number and the
-> +        second denotes the flags for this gpio
+> +
+> +required:
+> +  - reg
+> +  - ranges
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +patternProperties:
+> +  "^counter@[0-9a-f]+$":
+> +    type: object
+> +    description: Properties for Intel Keem Bay counter
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - intel,keembay-counter
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - clocks
+> +
+> +  "^timer@[0-9a-f]+$":
+> +    type: object
+> +    description: Properties for Intel Keem Bay timer
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - intel,keembay-timer
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      interrupts:
+> +        maxItems: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - interrupts
+> +      - clocks
 > +
 > +additionalProperties: false
 > +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +patternProperties:
-> +  '.*':
-
-I would prefer this match to follow tlmm and go '-state$'
-
-> +    anyOf:
-
-Either we want the immediate child node to match gpio-pinctrl-state
-or we want one of more children matching gpio-pinctrl-state, but not
-both. So "oneOf".
-
-> +      - $ref: "pinmux-node.yaml"
-> +      - $ref: "pincfg-node.yaml"
-
-The generic definition is not sufficient, you want this to be
-
-	- $ref: "#/$defs/gpio-pinctrl-state"
-
-> +      - patternProperties:
-> +          ".*":
-
-The subnodes of the state can be named whatever, so this (the .*) is
-good.
-
-> +            $ref: "#/$defs/gpio-pinctrl-state"
-> +
-> +$defs:
-> +  gpio-pinctrl-state:
-
-This is too generic, how about qcom-pmic-gpio-state?
-
-> +    type: object
-> +    anyOf:
-
-I have this as "allOf" in the TLMM binding, not entirely sure what the
-implications of anyOf here would be though...
-
-> +      - $ref: "pinmux-node.yaml"
-> +      - $ref: "pincfg-node.yaml"
-> +    properties:
-> +      pins:
-> +        description: |
-> +            List of gpio pins affected by the properties specified in
-> +            this subnode.  Valid pins are
-> +                 - gpio1-gpio10 for pm6150
-> +                 - gpio1-gpio12 for pm6150l
-> +                 - gpio1-gpio10 for pm7325
-> +                 - gpio1-gpio4 for pm8005
-> +                 - gpio1-gpio2 for pm8008
-> +                 - gpio1-gpio6 for pm8018
-> +                 - gpio1-gpio12 for pm8038
-> +                 - gpio1-gpio40 for pm8058
-> +                 - gpio1-gpio10 for pm8150 (holes on gpio2, gpio5,
-> +                                            gpio7 and gpio8)
-> +                 - gpio1-gpio12 for pm8150b (holes on gpio3, gpio4
-> +                                             and gpio7)
-> +                 - gpio1-gpio12 for pm8150l (hole on gpio7)
-> +                 - gpio1-gpio4 for pm8916
-> +                 - gpio1-gpio10 for pm8350
-> +                 - gpio1-gpio8 for pm8350b
-> +                 - gpio1-gpio9 for pm8350c
-> +                 - gpio1-gpio38 for pm8917
-> +                 - gpio1-gpio44 for pm8921
-> +                 - gpio1-gpio36 for pm8941
-> +                 - gpio1-gpio8 for pm8950 (hole on gpio3)
-> +                 - gpio1-gpio22 for pm8994
-> +                 - gpio1-gpio26 for pm8998
-> +                 - gpio1-gpio22 for pma8084
-> +                 - gpio1-gpio2 for pmi8950
-> +                 - gpio1-gpio10 for pmi8994
-> +                 - gpio1-gpio4 for pmk8350
-> +                 - gpio1-gpio4 for pmr735a
-> +                 - gpio1-gpio4 for pmr735b
-> +                 - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
-> +                                            and gpio10)
-> +                 - gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
-> +                                            and gpio11)
-> +
-> +        items:
-> +          pattern: "^gpio([0-9]+)$"
-> +
-> +      function:
-> +        items:
-> +          - enum:
-> +              - normal
-> +              - paired
-> +              - func1
-> +              - func2
-> +              - dtest1
-> +              - dtest2
-> +              - dtest3
-> +              - dtest4
-> +              - func3  # supported by LV/MV GPIO subtypes
-> +              - func4  # supported by LV/MV GPIO subtypes
-> +
-> +      bias-disable: true
-> +      bias-pull-down: true
-> +      bias-pull-up: true
-> +
-> +      qcom,pull-up-strength:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: |
-> +            Specifies the strength to use for pull up, if selected.
-> +            Valid values are defined in
-> +            <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-> +            If this property is omitted 30uA strength will be used
-> +            if pull up is selected
-
-
-enum: [0, 1, 2, 3]
-
-> +
-> +      bias-high-impedance: true
-> +      input-enable: true
-> +      output-high: true
-> +      output-low: true
-> +      power-source: true
-> +
-> +      qcom,drive-strength:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: |
-> +            Selects the drive strength for the specified pins
-> +            Valid drive strength values are defined in
-> +            <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-> +        enum: [0, 1, 2, 3]
-> +
-> +      drive-push-pull: true
-> +      drive-open-drain: true
-> +      drive-open-source: true
-> +
-> +      qcom,analog-pass:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: |
-> +            The specified pins are configured in
-> +            analog-pass-through mode.
-> +
-> +      qcom,atest:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: |
-> +            Selects ATEST rail to route to GPIO when it's
-> +            configured in analog-pass-through mode.
-> +        enum: [1, 2, 3, 4]
-> +
-> +      qcom,dtest-buffer:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: |
-> +            Selects DTEST rail to route to GPIO when it's
-> +            configured as digital input.
-> +        enum: [1, 2, 3, 4]
-> +
-> +    required:
-> +      - pins
-> +      - function
-> +
-> +    additionalProperties: false
-> +
 > +examples:
 > +  - |
-> +    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #define KEEM_BAY_A53_TIM
 > +
-> +    pm8921_gpio: gpio@150 {
-> +      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
-> +      reg = <0x150 0x160>;
-> +      interrupts = <192 1>, <193 1>, <194 1>,
-> +                   <195 1>, <196 1>, <197 1>,
-> +                   <198 1>, <199 1>, <200 1>,
-> +                   <201 1>, <202 1>, <203 1>,
-> +                   <204 1>, <205 1>, <206 1>,
-> +                   <207 1>, <208 1>, <209 1>,
-> +                   <210 1>, <211 1>, <212 1>,
-> +                   <213 1>, <214 1>, <215 1>,
-> +                   <216 1>, <217 1>, <218 1>,
-> +                   <219 1>, <220 1>, <221 1>,
-> +                   <222 1>, <223 1>, <224 1>,
-> +                   <225 1>, <226 1>, <227 1>,
-> +                   <228 1>, <229 1>, <230 1>,
-> +                   <231 1>, <232 1>, <233 1>,
-> +                   <234 1>, <235 1>;
+> +    soc {
+> +        #address-cells = <0x2>;
+> +        #size-cells = <0x2>;
 > +
-> +      gpio-controller;
-> +      gpio-ranges = <&pm8921_gpio 0 0 44>;
-> +      #gpio-cells = <2>;
+> +        gpt@20331000 {
+> +            reg = <0x0 0x20331000 0x0 0xc>;
+> +            ranges = <0x0 0x0 0x20330000 0xF0>;
+> +            #address-cells = <0x1>;
+> +            #size-cells = <0x1>;
 > +
-> +      pm8921_gpio_keys: gpio-keys {
+> +            counter@203300e8 {
 
-Per my above request of changing the pattern, this would have to be
-"gpio-keys-state" instead.
+The unit address here is wrong. Should be 'e8'.
 
-Regards,
-bjorn
-
-> +        volume-keys {
-> +          pins = "gpio20", "gpio21";
-> +          function = "normal";
+> +                compatible = "intel,keembay-counter";
+> +                reg = <0xe8 0x8>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
 > +
-> +          input-enable;
-> +          bias-pull-up;
-> +          drive-push-pull;
-> +          qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
-> +          power-source = <PM8921_GPIO_S4>;
+> +            timer@20330010 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x10 0xc>;
+> +                interrupts = <GIC_SPI 0x3 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330020 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x20 0xc>;
+> +                interrupts = <GIC_SPI 0x4 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330030 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x30 0xc>;
+> +                interrupts = <GIC_SPI 0x5 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330040 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x40 0xc>;
+> +                interrupts = <GIC_SPI 0x6 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330050 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x50 0xc>;
+> +                interrupts = <GIC_SPI 0x7 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330060 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x60 0xc>;
+> +                interrupts = <GIC_SPI 0x8 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330070 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x70 0xc>;
+> +                interrupts = <GIC_SPI 0x9 IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
+> +
+> +            timer@20330080 {
+> +                compatible = "intel,keembay-timer";
+> +                reg = <0x80 0xc>;
+> +                interrupts = <GIC_SPI 0xa IRQ_TYPE_LEVEL_HIGH>;
+> +                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
+> +            };
 > +        };
-> +      };
 > +    };
+> +
 > +...
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
+> 2.17.1
+> 
 > 
