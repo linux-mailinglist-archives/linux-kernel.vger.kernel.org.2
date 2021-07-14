@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8970C3C9132
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E28B3C9136
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236148AbhGNT6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45484 "EHLO mail.kernel.org"
+        id S237767AbhGNT6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239499AbhGNTtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16AD061412;
-        Wed, 14 Jul 2021 19:44:16 +0000 (UTC)
+        id S239542AbhGNTtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3849061415;
+        Wed, 14 Jul 2021 19:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291857;
-        bh=8GeQ5M75UeMZspnSxlJDRK/s5IqEBi4K7a3A1jfCdVY=;
+        s=k20201202; t=1626291862;
+        bh=IKkargNYveoVZdQwP1M904Kw1M7HIv9eHZwa28UYzPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gOD2JLzrFzIeXOdWeZctlrEJB/ozgIpTzVrvEt3BtTnzv/6z6ZYnFwnqJg7cfIu1R
-         JuhqZ0nHa9h9qw2QQpA5NYyOndnyhqfj6Um7vUE9T4++4SiGihDCWpp8xmbImLE1dC
-         96EiR81gbymM0XBybpoXxBtg9tK2CMiGq3q/v/xO0NRyDba9froaUM9fT+YJVxLtvq
-         RRrGTx6K7j0mufFEdtYiTHUarVjNmDO0yB5/pWGL5OLKELrmOJdgWii0Vu0pWVJXFN
-         Y9H3llJ77V4hyj/j0xT9/BLBOlLod8xNqfMQzLRUPVuUFTxqxuuN53K8wOaJoDbzV/
-         zOCiJyWnQ6EtA==
+        b=kSSPD1lPWRWx91JtizpUMpnbnYK/Mqt/cocFXBrKbU3PQpwn4tUNqOIBEpHcfMqPK
+         ZJ1F/aJOGqSsdSzadWh9FkFpUmZFPyqnu5t8Jeegtgix8uX+N+qzOsgaPrz3h1Qhgi
+         MWuI7n4yJbOpWxTH2kAkw6rCh9zlpfTJAsi/caCuN9B1ap8y0CSVBGWLQbFT0Sutqj
+         92lVtCxi7TofwHzAlQBllp0iGVtVXrmjEWbd+IYbAPw6t5lhI2s4V9rkTvVnKJVO5g
+         eDIr2QnL810gI+W5DNRaOD5C1kSP/G84KnlbJSQDZ3owFR9kOsM5rO+r66BFTJ3+zx
+         CX6rkTAIBM6wA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
         Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 49/88] ARM: dts: stm32: fix stm32mp157c-odyssey card detect pin
-Date:   Wed, 14 Jul 2021 15:42:24 -0400
-Message-Id: <20210714194303.54028-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 52/88] ARM: dts: stm32: fix timer nodes on STM32 MCU to prevent warnings
+Date:   Wed, 14 Jul 2021 15:42:27 -0400
+Message-Id: <20210714194303.54028-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,35 +44,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szymaszek <gszymaszek@short.pl>
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
 
-[ Upstream commit 0171b07373cc8c2815ca5fa79a7308fdefa54ca4 ]
+[ Upstream commit 2388f14d8747f8304e26ee870790e188c9431efd ]
 
-The microSD card detect pin is physically connected to the MPU pin PI3.
-The Device Tree configuration of the card detect pin was wrong—it was
-set to pin PB7 instead. If such configuration was used, the kernel would
-hang on “Waiting for root device” when booting from a microSD card.
+Prevent warning seen with "make dtbs_check W=1" command:
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
+Warning (avoid_unnecessary_addr_size): /soc/timers@40001c00: unnecessary
+address-cells/size-cells without "ranges" or child "reg" property
+
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157c-odyssey.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32f429.dtsi | 8 --------
+ arch/arm/boot/dts/stm32f746.dtsi | 8 --------
+ arch/arm/boot/dts/stm32h743.dtsi | 4 ----
+ 3 files changed, 20 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey.dts b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-index a7ffec8f1516..be1dd5e9e744 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey.dts
-@@ -64,7 +64,7 @@ &sdmmc1 {
- 	pinctrl-0 = <&sdmmc1_b4_pins_a>;
- 	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
- 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
--	cd-gpios = <&gpiob 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-+	cd-gpios = <&gpioi 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
- 	disable-wp;
- 	st,neg-edge;
- 	bus-width = <4>;
+diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
+index 9adccd4209fb..0dc5fa94dbdf 100644
+--- a/arch/arm/boot/dts/stm32f429.dtsi
++++ b/arch/arm/boot/dts/stm32f429.dtsi
+@@ -283,8 +283,6 @@ timer@11 {
+ 		};
+ 
+ 		timers13: timers@40001c00 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40001C00 0x400>;
+ 			clocks = <&rcc 0 STM32F4_APB1_CLOCK(TIM13)>;
+@@ -299,8 +297,6 @@ pwm {
+ 		};
+ 
+ 		timers14: timers@40002000 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40002000 0x400>;
+ 			clocks = <&rcc 0 STM32F4_APB1_CLOCK(TIM14)>;
+@@ -633,8 +629,6 @@ timer@8 {
+ 		};
+ 
+ 		timers10: timers@40014400 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40014400 0x400>;
+ 			clocks = <&rcc 0 STM32F4_APB2_CLOCK(TIM10)>;
+@@ -649,8 +643,6 @@ pwm {
+ 		};
+ 
+ 		timers11: timers@40014800 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40014800 0x400>;
+ 			clocks = <&rcc 0 STM32F4_APB2_CLOCK(TIM11)>;
+diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f746.dtsi
+index 640ff54ed00c..81a6fe653e66 100644
+--- a/arch/arm/boot/dts/stm32f746.dtsi
++++ b/arch/arm/boot/dts/stm32f746.dtsi
+@@ -265,8 +265,6 @@ timer@11 {
+ 		};
+ 
+ 		timers13: timers@40001c00 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40001C00 0x400>;
+ 			clocks = <&rcc 0 STM32F7_APB1_CLOCK(TIM13)>;
+@@ -281,8 +279,6 @@ pwm {
+ 		};
+ 
+ 		timers14: timers@40002000 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40002000 0x400>;
+ 			clocks = <&rcc 0 STM32F7_APB1_CLOCK(TIM14)>;
+@@ -531,8 +527,6 @@ timer@8 {
+ 		};
+ 
+ 		timers10: timers@40014400 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40014400 0x400>;
+ 			clocks = <&rcc 0 STM32F7_APB2_CLOCK(TIM10)>;
+@@ -547,8 +541,6 @@ pwm {
+ 		};
+ 
+ 		timers11: timers@40014800 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-timers";
+ 			reg = <0x40014800 0x400>;
+ 			clocks = <&rcc 0 STM32F7_APB2_CLOCK(TIM11)>;
+diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
+index 7febe19e780d..1579707ea566 100644
+--- a/arch/arm/boot/dts/stm32h743.dtsi
++++ b/arch/arm/boot/dts/stm32h743.dtsi
+@@ -454,8 +454,6 @@ trigger@2 {
+ 		};
+ 
+ 		lptimer4: timer@58002c00 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-lptimer";
+ 			reg = <0x58002c00 0x400>;
+ 			clocks = <&rcc LPTIM4_CK>;
+@@ -470,8 +468,6 @@ pwm {
+ 		};
+ 
+ 		lptimer5: timer@58003000 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+ 			compatible = "st,stm32-lptimer";
+ 			reg = <0x58003000 0x400>;
+ 			clocks = <&rcc LPTIM5_CK>;
 -- 
 2.30.2
 
