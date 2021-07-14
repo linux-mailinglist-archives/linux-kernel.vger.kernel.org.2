@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297A23C8FC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851C83C8FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240346AbhGNTxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:53:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46238 "EHLO mail.kernel.org"
+        id S239895AbhGNTxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:53:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239109AbhGNTtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239115AbhGNTtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Jul 2021 15:49:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B05FC61411;
-        Wed, 14 Jul 2021 19:43:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E05B561410;
+        Wed, 14 Jul 2021 19:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291840;
-        bh=v16LNw21tEYiOZ/cDbAReCH71CMg1TUMCoA5fAVf4ro=;
+        s=k20201202; t=1626291844;
+        bh=S3IlfG69UXparSHCr+oLXcne8yC6qMFeodELkSRQv1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIcyLcdpqqtB9jvn2dKn52x9hlCZjnAYPl1I+jUHPYc+k2zdZ4cK0ShsvV6Ia06s+
-         lDxOlmBbc8Yhu62+rowK/JZYRmjrIuqN6b1yo+WMpyEKjUTAapCDZo5tbr/JL6bR6q
-         HJ5rUUWP4YarBbV8e0hV/JrMlOFlxJPp+XD/qptayrCzOUzoDOF5u31ZyrE5mb9Ye4
-         QKcVub8qCcX/RE+APhm0GlkI4DUbuKbCEJLI0MuD6jG7UM5tM7C70inXjHANot5msT
-         EXTGAPbQI5kgOWdJUDcoyLOvKfoxhIWc2tu5dx/pmTazfLBlGMNCxbNcTr+uBEEW+Y
-         Z2w0Qu6xUvYKQ==
+        b=SkacUGdPjgAfJNP9KrKxm7kGpTBNWV9oVZ9pKO+UXzeGSPtZ9/rKVPCgjcOeqqSKs
+         RS8lDQYy9geiHxd8hj33uN/Zqm6+8P9ZDkiBacy2RwrF1LZM0Xe9qeRaCYPir4Ajoi
+         GA0/YDdDkzdmWrFHWAGG4I13JjeOOPhASjxEleJm9M61Dy0xe/BoUp8ZWd+8Tcjlet
+         LlCyNQeZZfQiHBJJsKRq2Wtgpue2n68r5hTnzDWL45jLrj54UPxT1GhkOwmZY+hTIv
+         OHPWn45zKFKxIyBCV7ICOfGcO1gAaLt51QmKmoB2O7AHOLVuE4T80Cib05l3djD1A6
+         CoAPmOi6hD29A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
         Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 37/88] ARM: dts: dra7x-evm: Align GPIO hog names with dt-schema
-Date:   Wed, 14 Jul 2021 15:42:12 -0400
-Message-Id: <20210714194303.54028-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 40/88] ARM: dts: am335x: fix ti,no-reset-on-init flag for gpios
+Date:   Wed, 14 Jul 2021 15:42:15 -0400
+Message-Id: <20210714194303.54028-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -44,76 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit 0c149400c2f676e7b4cc68e517db29005a7a38c7 ]
+[ Upstream commit d7d30b8fcd111e9feb171023c0e0c8d855582dcb ]
 
-The dt-schema for nxp,pcf8575 expects GPIO hogs node names to end with a
-'hog' suffix.
+The ti,no-reset-on-init flag need to be at the interconnect target module
+level for the modules that have it defined.
+The ti-sysc driver handles this case, but produces warning, not a critical
+issue.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/dra7-evm.dts          | 2 +-
- arch/arm/boot/dts/dra71-evm.dts         | 2 +-
- arch/arm/boot/dts/dra72-evm-common.dtsi | 2 +-
- arch/arm/boot/dts/dra76-evm.dts         | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/am335x-baltos.dtsi              | 4 ++--
+ arch/arm/boot/dts/am335x-evmsk.dts                | 2 +-
+ arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi | 2 +-
+ arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi | 2 +-
+ arch/arm/boot/dts/am33xx-l4.dtsi                  | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
-index 38530dbb89a0..3dcb6e1f49bc 100644
---- a/arch/arm/boot/dts/dra7-evm.dts
-+++ b/arch/arm/boot/dts/dra7-evm.dts
-@@ -366,7 +366,7 @@ pcf_hdmi: gpio@26 {
- 		reg = <0x26>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
--		p1 {
-+		hdmi-audio-hog {
- 			/* vin6_sel_s0: high: VIN6, low: audio */
- 			gpio-hog;
- 			gpios = <1 GPIO_ACTIVE_HIGH>;
-diff --git a/arch/arm/boot/dts/dra71-evm.dts b/arch/arm/boot/dts/dra71-evm.dts
-index cad58f733bd6..6f24c38131be 100644
---- a/arch/arm/boot/dts/dra71-evm.dts
-+++ b/arch/arm/boot/dts/dra71-evm.dts
-@@ -185,7 +185,7 @@ &pcf_gpio_21 {
+diff --git a/arch/arm/boot/dts/am335x-baltos.dtsi b/arch/arm/boot/dts/am335x-baltos.dtsi
+index b7f64c7ba83d..77e23e736854 100644
+--- a/arch/arm/boot/dts/am335x-baltos.dtsi
++++ b/arch/arm/boot/dts/am335x-baltos.dtsi
+@@ -393,10 +393,10 @@ &aes {
+ 	status = "okay";
  };
  
- &pcf_hdmi {
--	p0 {
-+	hdmi-i2c-disable-hog {
- 		/*
- 		 * PM_OEn to High: Disable routing I2C3 to PM_I2C
- 		 * With this PM_SEL(p3) should not matter
-diff --git a/arch/arm/boot/dts/dra72-evm-common.dtsi b/arch/arm/boot/dts/dra72-evm-common.dtsi
-index b65b2dd094d0..f2384277d5dc 100644
---- a/arch/arm/boot/dts/dra72-evm-common.dtsi
-+++ b/arch/arm/boot/dts/dra72-evm-common.dtsi
-@@ -268,7 +268,7 @@ pcf_hdmi: pcf8575@26 {
- 		 */
- 		lines-initial-states = <0x0f2b>;
+-&gpio0 {
++&gpio0_target {
+ 	ti,no-reset-on-init;
+ };
  
--		p1 {
-+		hdmi-audio-hog {
- 			/* vin6_sel_s0: high: VIN6, low: audio */
- 			gpio-hog;
- 			gpios = <1 GPIO_ACTIVE_HIGH>;
-diff --git a/arch/arm/boot/dts/dra76-evm.dts b/arch/arm/boot/dts/dra76-evm.dts
-index 9bd01ae40b1d..df47ea59c9c4 100644
---- a/arch/arm/boot/dts/dra76-evm.dts
-+++ b/arch/arm/boot/dts/dra76-evm.dts
-@@ -381,7 +381,7 @@ pcf_hdmi: pcf8575@26 {
- 		reg = <0x26>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
--		p1 {
-+		hdmi-audio-hog {
- 			/* vin6_sel_s0: high: VIN6, low: audio */
- 			gpio-hog;
- 			gpios = <1 GPIO_ACTIVE_HIGH>;
+-&gpio3 {
++&gpio3_target {
+ 	ti,no-reset-on-init;
+ };
+diff --git a/arch/arm/boot/dts/am335x-evmsk.dts b/arch/arm/boot/dts/am335x-evmsk.dts
+index b43b94122d3c..bf05b68274c2 100644
+--- a/arch/arm/boot/dts/am335x-evmsk.dts
++++ b/arch/arm/boot/dts/am335x-evmsk.dts
+@@ -648,7 +648,7 @@ &aes {
+ 	status = "okay";
+ };
+ 
+-&gpio0 {
++&gpio0_target {
+ 	ti,no-reset-on-init;
+ };
+ 
+diff --git a/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi b/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
+index 4e90f9c23d2e..8121a199607c 100644
+--- a/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
++++ b/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
+@@ -150,7 +150,7 @@ &aes {
+ 	status = "okay";
+ };
+ 
+-&gpio0 {
++&gpio0_target {
+ 	ti,no-reset-on-init;
+ };
+ 
+diff --git a/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi b/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi
+index 98d8ed4ad967..39e5d2ce600a 100644
+--- a/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi
++++ b/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi
+@@ -353,7 +353,7 @@ &aes {
+ 	status = "okay";
+ };
+ 
+-&gpio0 {
++&gpio0_target {
+ 	ti,no-reset-on-init;
+ };
+ 
+diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+index ea20e4bdf040..29fafb67cfaa 100644
+--- a/arch/arm/boot/dts/am33xx-l4.dtsi
++++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+@@ -1723,7 +1723,7 @@ gpio2: gpio@0 {
+ 			};
+ 		};
+ 
+-		target-module@ae000 {			/* 0x481ae000, ap 56 3a.0 */
++		gpio3_target: target-module@ae000 {		/* 0x481ae000, ap 56 3a.0 */
+ 			compatible = "ti,sysc-omap2", "ti,sysc";
+ 			reg = <0xae000 0x4>,
+ 			      <0xae010 0x4>,
 -- 
 2.30.2
 
