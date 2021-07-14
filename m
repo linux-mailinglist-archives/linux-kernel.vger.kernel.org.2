@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D411E3C83DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8644E3C83E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239088AbhGNLaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
+        id S238969AbhGNLdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhGNL34 (ORCPT
+        with ESMTP id S232151AbhGNLdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:29:56 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCF1C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:27:05 -0700 (PDT)
+        Wed, 14 Jul 2021 07:33:08 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A11FC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:30:16 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
-        by michel.telenet-ops.be with bizsmtp
-        id UzT3250041ccfby06zT3Yt; Wed, 14 Jul 2021 13:27:03 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id UzWF2500Q1ccfby01zWF5D; Wed, 14 Jul 2021 13:30:15 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m3d2d-0017Xv-5e; Wed, 14 Jul 2021 13:27:03 +0200
+        id 1m3d5j-0017bO-1o; Wed, 14 Jul 2021 13:30:15 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m3d2c-00A7yD-Hv; Wed, 14 Jul 2021 13:27:02 +0200
+        id 1m3d5i-00A9SG-Bi; Wed, 14 Jul 2021 13:30:14 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH trivial] thermal: Spelling s/scallbacks/callbacks/
-Date:   Wed, 14 Jul 2021 13:27:01 +0200
-Message-Id: <ae38372996a23bb67769e2d62ca170ae9457c4df.1626261946.git.geert+renesas@glider.be>
+Subject: [PATCH] dt-bindings: memory: renesas,rpc-if: Miscellaneous improvements
+Date:   Wed, 14 Jul 2021 13:30:13 +0200
+Message-Id: <d430f9c06d6691fe8a98f923cdb7ca13772834b1.1626262043.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,26 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a misspelling of the word "callbacks".
+  - Add missing "#{address,size}-cells",
+  - Fix rejection of legitimate flash subnodes containing multiple
+    compatible values,
+  - Add missing list of required properties.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- include/linux/thermal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../memory-controllers/renesas,rpc-if.yaml    | 23 ++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index d296f3b88fb98e04..4abd8b8034d71c51 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -285,7 +285,7 @@ struct thermal_zone_params {
- };
+diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+index 990489fdd2ac33fe..c0d899a2305361b1 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
+@@ -56,17 +56,34 @@ properties:
+   resets:
+     maxItems: 1
  
- /**
-- * struct thermal_zone_of_device_ops - scallbacks for handling DT based zones
-+ * struct thermal_zone_of_device_ops - callbacks for handling DT based zones
-  *
-  * Mandatory:
-  * @get_temp: a pointer to a function that reads the sensor temperature.
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
+ patternProperties:
+   "flash@[0-9a-f]+$":
+     type: object
+     properties:
+       compatible:
+-        enum:
+-          - cfi-flash
+-          - jedec,spi-nor
++        contains:
++          enum:
++            - cfi-flash
++            - jedec,spi-nor
+ 
+ unevaluatedProperties: false
+ 
++required:
++  - compatible
++  - reg
++  - reg-names
++  - clocks
++  - power-domains
++  - resets
++  - '#address-cells'
++  - '#size-cells'
++
+ examples:
+   - |
+     #include <dt-bindings/clock/renesas-cpg-mssr.h>
 -- 
 2.25.1
 
