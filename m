@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F8C3C9160
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383633C913B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241416AbhGNT7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
+        id S241462AbhGNT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240004AbhGNTt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5318961421;
-        Wed, 14 Jul 2021 19:44:41 +0000 (UTC)
+        id S240151AbhGNTtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47A8F613E8;
+        Wed, 14 Jul 2021 19:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291882;
-        bh=aj3HxPOJKM4Ei30vxcMcaN/Vk5UphhfB5L2vh7AnYhA=;
+        s=k20201202; t=1626291885;
+        bh=IS1vLpPz6uocNDSd2Xrszaj7fRjp7DbJLKWZOOhIkb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M4wKT/Vy8XTbfQvJBEpJILGs8BJbmmAy8dnVG0Of9bWKUN1BjqDGM41xfzuqpRCQw
-         ixNiHYagAQtMsbkhzOBHhVzrDYhXJCH+kAE82XQ1jmfeW1wmcMgoHf43RkdhQUPPaq
-         MNyKOkAZPcaFzvLFxm3NHYF1kC/t33sPdPmBw6t3zT/u5BAWgFpp7jRf7JpE1Ac1zw
-         uV/c5rDaJUObwaj3wziSGguGEckyr95WCP2XN+LHucbxLWrJrwef7IDJwns8ldQR5C
-         t4TrSuSzduIXtfIHyB+nEajz6A24pShyrLmy79hBjdPrM2yvpfAmiQ8sP2OX/7qE7d
-         d8braLjWeyPHA==
+        b=UaDe1mc54t0bpcEiY7jC2YYOiUhJxeG33i2c1W8zOTDFEYDVBaoyAqI/0U7O+64+o
+         NQdYeMJBpQMLtYR/g5wS26M0x88HnJso3PqCq7H/Gxq7UH9HVuI3qOXK9jEULCmMKE
+         6qTYxsm2RsCqTRS0u5/lWQQSw+wNVSP+cPEwxtjgGV6tfrhvQ1XA71PnH3a1zppNIV
+         fOWsimOPd8zk48bO4b2UhsH7F7/QRspq6vXYGD/upDfhAsWYcj9ZHADZd8y/Mz8mKC
+         L8RSIHk+zyuuJj5IIItXSjTdXFQ7u3WHJughnmpiaAXWnGoKd0E5e4O/gIAdKxcE2i
+         Ik3bXY6PEmNZA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 65/88] ARM: dts: stm32: fix stpmic node for stm32mp1 boards
-Date:   Wed, 14 Jul 2021 15:42:40 -0400
-Message-Id: <20210714194303.54028-65-sashal@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 68/88] firmware: tegra: bpmp: Fix Tegra234-only builds
+Date:   Wed, 14 Jul 2021 15:42:43 -0400
+Message-Id: <20210714194303.54028-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -43,160 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit 4bf4abe19089245b7b12f35e5cafb5477b3e2c48 ]
+[ Upstream commit bd778b893963d67d7eb01f49d84ffcd3eaf229dd ]
 
-On some STM32 MP15 boards, stpmic node is not correct which generates
-warnings running "make dtbs_check W=1" command. Issues are:
+The tegra186_bpmp_ops symbol is used on Tegra234, so make sure it's
+available.
 
--"regulator-active-discharge" is not a boolean but an uint32.
--"regulator-over-current-protection" is not a valid entry for vref_ddr.
--LDO4 has a fixed voltage (3v3) so min/max entries are not allowed.
-
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157a-stinger96.dtsi   | 7 ++-----
- arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 5 +----
- arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi   | 5 +----
- arch/arm/boot/dts/stm32mp15xx-osd32.dtsi       | 7 ++-----
- 4 files changed, 6 insertions(+), 18 deletions(-)
+ drivers/firmware/tegra/Makefile       | 1 +
+ drivers/firmware/tegra/bpmp-private.h | 3 ++-
+ drivers/firmware/tegra/bpmp.c         | 3 ++-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-index 58275bcf9e26..4dd138d691c7 100644
---- a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
-@@ -184,8 +184,6 @@ vtt_ddr: ldo3 {
+diff --git a/drivers/firmware/tegra/Makefile b/drivers/firmware/tegra/Makefile
+index 49c87e00fafb..620cf3fdd607 100644
+--- a/drivers/firmware/tegra/Makefile
++++ b/drivers/firmware/tegra/Makefile
+@@ -3,6 +3,7 @@ tegra-bpmp-y			= bpmp.o
+ tegra-bpmp-$(CONFIG_ARCH_TEGRA_210_SOC)	+= bpmp-tegra210.o
+ tegra-bpmp-$(CONFIG_ARCH_TEGRA_186_SOC)	+= bpmp-tegra186.o
+ tegra-bpmp-$(CONFIG_ARCH_TEGRA_194_SOC)	+= bpmp-tegra186.o
++tegra-bpmp-$(CONFIG_ARCH_TEGRA_234_SOC)	+= bpmp-tegra186.o
+ tegra-bpmp-$(CONFIG_DEBUG_FS)	+= bpmp-debugfs.o
+ obj-$(CONFIG_TEGRA_BPMP)	+= tegra-bpmp.o
+ obj-$(CONFIG_TEGRA_IVC)		+= ivc.o
+diff --git a/drivers/firmware/tegra/bpmp-private.h b/drivers/firmware/tegra/bpmp-private.h
+index 54d560c48398..182bfe396516 100644
+--- a/drivers/firmware/tegra/bpmp-private.h
++++ b/drivers/firmware/tegra/bpmp-private.h
+@@ -24,7 +24,8 @@ struct tegra_bpmp_ops {
+ };
  
- 			vdd_usb: ldo4 {
- 				regulator-name = "vdd_usb";
--				regulator-min-microvolt = <3300000>;
--				regulator-max-microvolt = <3300000>;
- 				interrupts = <IT_CURLIM_LDO4 0>;
- 			};
+ #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
+-    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
++    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
++    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
+ extern const struct tegra_bpmp_ops tegra186_bpmp_ops;
+ #endif
+ #if IS_ENABLED(CONFIG_ARCH_TEGRA_210_SOC)
+diff --git a/drivers/firmware/tegra/bpmp.c b/drivers/firmware/tegra/bpmp.c
+index 0742a90cb844..5654c5e9862b 100644
+--- a/drivers/firmware/tegra/bpmp.c
++++ b/drivers/firmware/tegra/bpmp.c
+@@ -809,7 +809,8 @@ static const struct dev_pm_ops tegra_bpmp_pm_ops = {
+ };
  
-@@ -208,7 +206,6 @@ v1v8: ldo6 {
- 			vref_ddr: vref_ddr {
- 				regulator-name = "vref_ddr";
- 				regulator-always-on;
--				regulator-over-current-protection;
- 			};
- 
- 			bst_out: boost {
-@@ -219,13 +216,13 @@ bst_out: boost {
- 			vbus_otg: pwr_sw1 {
- 				regulator-name = "vbus_otg";
- 				interrupts = <IT_OCP_OTG 0>;
--				regulator-active-discharge;
-+				regulator-active-discharge = <1>;
- 			};
- 
- 			vbus_sw: pwr_sw2 {
- 				regulator-name = "vbus_sw";
- 				interrupts = <IT_OCP_SWOUT 0>;
--				regulator-active-discharge;
-+				regulator-active-discharge = <1>;
- 			};
- 		};
- 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-index b5601d270c8f..2d9461006810 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-@@ -173,8 +173,6 @@ vtt_ddr: ldo3 {
- 
- 			vdd_usb: ldo4 {
- 				regulator-name = "vdd_usb";
--				regulator-min-microvolt = <3300000>;
--				regulator-max-microvolt = <3300000>;
- 				interrupts = <IT_CURLIM_LDO4 0>;
- 			};
- 
-@@ -197,7 +195,6 @@ v1v2_hdmi: ldo6 {
- 			vref_ddr: vref_ddr {
- 				regulator-name = "vref_ddr";
- 				regulator-always-on;
--				regulator-over-current-protection;
- 			};
- 
- 			 bst_out: boost {
-@@ -213,7 +210,7 @@ vbus_otg: pwr_sw1 {
- 			 vbus_sw: pwr_sw2 {
- 				regulator-name = "vbus_sw";
- 				interrupts = <IT_OCP_SWOUT 0>;
--				regulator-active-discharge;
-+				regulator-active-discharge = <1>;
- 			 };
- 		};
- 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-index f496bbfa0be6..998ea30ae024 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-@@ -226,8 +226,6 @@ vtt_ddr: ldo3 {
- 
- 			vdd_usb: ldo4 {
- 				regulator-name = "vdd_usb";
--				regulator-min-microvolt = <3300000>;
--				regulator-max-microvolt = <3300000>;
- 				interrupts = <IT_CURLIM_LDO4 0>;
- 			};
- 
-@@ -249,7 +247,6 @@ v1v8: ldo6 {
- 			vref_ddr: vref_ddr {
- 				regulator-name = "vref_ddr";
- 				regulator-always-on;
--				regulator-over-current-protection;
- 			};
- 
- 			bst_out: boost {
-@@ -265,7 +262,7 @@ vbus_otg: pwr_sw1 {
- 			vbus_sw: pwr_sw2 {
- 				regulator-name = "vbus_sw";
- 				interrupts = <IT_OCP_SWOUT 0>;
--				regulator-active-discharge;
-+				regulator-active-discharge = <1>;
- 			};
- 		};
- 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-index 713485a95795..6706d8311a66 100644
---- a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
-@@ -146,8 +146,6 @@ vtt_ddr: ldo3 {
- 
- 			vdd_usb: ldo4 {
- 				regulator-name = "vdd_usb";
--				regulator-min-microvolt = <3300000>;
--				regulator-max-microvolt = <3300000>;
- 				interrupts = <IT_CURLIM_LDO4 0>;
- 			};
- 
-@@ -171,7 +169,6 @@ v1v2_hdmi: ldo6 {
- 			vref_ddr: vref_ddr {
- 				regulator-name = "vref_ddr";
- 				regulator-always-on;
--				regulator-over-current-protection;
- 			};
- 
- 			bst_out: boost {
-@@ -182,13 +179,13 @@ bst_out: boost {
- 			vbus_otg: pwr_sw1 {
- 				regulator-name = "vbus_otg";
- 				interrupts = <IT_OCP_OTG 0>;
--				regulator-active-discharge;
-+				regulator-active-discharge = <1>;
- 			};
- 
- 			vbus_sw: pwr_sw2 {
- 				regulator-name = "vbus_sw";
- 				interrupts = <IT_OCP_SWOUT 0>;
--				regulator-active-discharge;
-+				regulator-active-discharge = <1>;
- 			};
- 		};
- 
+ #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
+-    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
++    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
++    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
+ static const struct tegra_bpmp_soc tegra186_soc = {
+ 	.channels = {
+ 		.cpu_tx = {
 -- 
 2.30.2
 
