@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1C83C92A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B493C92AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbhGNVB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:01:57 -0400
-Received: from mga12.intel.com ([192.55.52.136]:11337 "EHLO mga12.intel.com"
+        id S234692AbhGNVCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229900AbhGNVB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:01:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190108995"
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="190108995"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 13:59:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="651277941"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Jul 2021 13:59:04 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 14 Jul 2021 13:59:03 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 14 Jul 2021 13:59:03 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Wed, 14 Jul 2021 13:59:03 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Chatre, Reinette" <reinette.chatre@intel.com>
-CC:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
-Thread-Topic: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
-Thread-Index: AQHXdCUcDncuRnkx9Ue+ht5iNpTdPatDbnyA//+NavA=
-Date:   Wed, 14 Jul 2021 20:59:03 +0000
-Message-ID: <31668f36583844cbbae0b10a594193d6@intel.com>
-References: <20210708181423.1312359-1-tony.luck@intel.com>
- <20210708181423.1312359-2-tony.luck@intel.com>
- <93845f78-120d-7522-bd3e-fe042380d29e@intel.com>
-In-Reply-To: <93845f78-120d-7522-bd3e-fe042380d29e@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230382AbhGNVCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 17:02:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 984FE613D2;
+        Wed, 14 Jul 2021 20:59:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626296362;
+        bh=46LZepb4ibcHU0dIyCjWFYG69WtsVts8G634YB/zfu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hmlhNAehPM0iCcte6ZJr9LRGH5D9qqDN/W/0PjfCSHsxS7KhBCr9sm5/SdafO8j/j
+         t+cc1OOWD+rL6MS2DhMF+xDgJvFz+es+pAV0m0PSY6zZbqnrMj0frvw7LF5duiTibe
+         Ea4woNOSjjGQlfKLfgOsr5T33NrnwmYhfqGoBT9kQ/07SOOtoi3w55nKEaaT5vunSd
+         VvXBspWcSAKODcVfjIQV31/hpB3qeyJmgn9iC0wHqw5LmrpDRe0qxuWpGUL/qzcWFB
+         GfD7xwVfzC6++b2wtywmmwPtqNWicVPo4A4CQEj3KMF6X4MZXBoBc+35lYLEU/coev
+         N/LAQDuW6xYSg==
+Date:   Wed, 14 Jul 2021 16:59:21 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.13 024/108] ARM: dts: imx25-pinfunc: Fix gpio
+ function name for pads GPIO_[A-F]
+Message-ID: <YO9QKRUOT0Kg0jZ9@sashalap>
+References: <20210714193800.52097-1-sashal@kernel.org>
+ <20210714193800.52097-24-sashal@kernel.org>
+ <20210714203550.zlbvfh6rfnah6iir@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210714203550.zlbvfh6rfnah6iir@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBDb3VsZCB0aGlzIHRyYWNraW5nIGJlIGRvbmUgYXQgdGhlIGVuY2xhdmUgcGFnZSAoc3RydWN0
-IHNneF9lbmNsX3BhZ2UpIA0KPiBpbnN0ZWFkPw0KDQpJbiBwcmluY2lwbGUgeWVzLiBUaG91Z2gg
-U2VhbiBoYXMgc29tZSBpc3N1ZXMgd2l0aCBtZSB0cmFja2luZyB0eXBlcw0KYXQgYWxsLg0KDQo+
-IFRoZSBlbmNsYXZlIHBhZ2UncyBFUEMgcGFnZSBpbmZvcm1hdGlvbiBpcyBub3QgYXZhaWxhYmxl
-IHdoZW4gDQo+IHRoZSBwYWdlIGlzIGluIHN3YXAgYW5kIGl0IHdvdWxkIGJlIHVzZWZ1bCB0byBr
-bm93IHRoZSBwYWdlIHR5cGUgd2l0aG91dCANCj4gbG9hZGluZyB0aGUgcGFnZSBmcm9tIHN3YXAu
-IFRoZSBpbmZvcm1hdGlvbiB3b3VsZCBjb250aW51ZSB0byBiZSANCj4gYWNjZXNzaWJsZSBmcm9t
-IHN0cnVjdCBlcGNfcGFnZSB2aWEgdGhlIG93bmVyIHBvaW50ZXIgdGhhdCBtYXkgbWFrZSBzb21l
-IA0KPiBvZiB0aGUgY2hhbmdlcyBlYXNpZXIgc2luY2UgaXQgd291bGQgbm90IGJlIG5lZWRlZCB0
-byBwYXNzIHRoZSBwYWdlIHR5cGUgDQo+IGFyb3VuZCBzbyBtdWNoIGFuZCB0aHVzIHBvc3NpYmx5
-IGFkZHJlc3MgdGhlIFNFQ1MgcGFnZSBpc3N1ZSB0aGF0IFNlYW4gDQo+IHBvaW50ZWQgb3V0IGlu
-DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvWU8zRnVCdXBRVEtZYUtCZkBnb29nbGUu
-Y29tLw0KDQpJIHRoaW5rIEkgbm90aWNlZCB0aGF0IHRoZSAib3duZXIiIHBvaW50ZXIgaW4gc2d4
-X2VuY2xfcGFnZSBkb2Vzbid0IHBvaW50DQpiYWNrIHRvIHRoZSBlcGNfcGFnZSBmb3IgYWxsIHR5
-cGVzIG9mIFNHWCBwYWdlcy4gU28gc29tZSBhZGRpdGlvbmFsDQpjaGFuZ2VzIHdvdWxkIGJlIG5l
-ZWRlZC4gSSdtIG5vdCBhdCBhbGwgc3VyZSB3aHkgdGhpcyBpcyBkaWZmZXJlbnQgKG9yDQp3aGF0
-IHVzZSB0aGUgbm9uLVJFRyBwYWdlcyB1c2UgIm93bmVyIiBmb3IuDQoNCj4+ICAgc3RydWN0IHNn
-eF9lcGNfcGFnZSB7DQo+PiAgIAl1bnNpZ25lZCBpbnQgc2VjdGlvbjsNCj4+IC0JdW5zaWduZWQg
-aW50IGZsYWdzOw0KPj4gKwl1MTYgZmxhZ3M7DQo+PiArCXUxNiB0eXBlOw0KPg0KPiBDb3VsZCB0
-aGlzIGJlICJlbnVtIHNneF9wYWdlX3R5cGUgdHlwZSIgPw0KDQpNYXliZS4gSSB0aG91Z2h0IEkg
-bmVlZGVkIGV4dHJhIHR5cGVzIChsaWtlIEZSRUUgYW5kIERJUlRZKS4gQnV0DQpTZWFuIHBvaW50
-ZWQgb3V0IGhvdyB0byBhdm9pZCBzb21lIG9mIHRoZW0uDQoNCi1Ub255DQo=
+On Wed, Jul 14, 2021 at 10:35:50PM +0200, Uwe Kleine-König wrote:
+>On Wed, Jul 14, 2021 at 03:36:36PM -0400, Sasha Levin wrote:
+>> From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>>
+>> [ Upstream commit e0cdd26af8eb9001689a4cde4f72c61c1c4b06be ]
+>>
+>> The pinfunc definitions used GPIO_A as function instead of GPIO_1_0 as
+>> done for all the other pins with GPIO functionality. Fix for consistency.
+>>
+>> There are no mainline users that needs adaption.
+>>
+>> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>> Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>I'm not convinced it's a good idea to take this patch for stable.
+>in-tree users are unaffected and the only effect this can have on
+>out-of-tree users is to break them. So the gain of having this is not
+>positive.
+>
+>Am I missing something?
+
+Hm, if those definitions don't have an in-tree users, why are they still
+around to begin with?
+
+-- 
+Thanks,
+Sasha
