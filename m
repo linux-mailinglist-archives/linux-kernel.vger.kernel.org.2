@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9883C9364
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332413C9369
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhGNVyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
+        id S233417AbhGNV43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhGNVyY (ORCPT
+        with ESMTP id S229498AbhGNV42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:54:24 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDF7C06175F;
-        Wed, 14 Jul 2021 14:51:32 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id h1so2134813plf.6;
-        Wed, 14 Jul 2021 14:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=xSXZsc9S1OE/57FZdD9wfjk5cX6z161zcXWV7Ia5wrw=;
-        b=LB+yhlbbgc0eFOjSGF+B2qd/ql4FjkJ0tFzC3VFAdIl2+Hp31+VRl/MsPWq7msTIo8
-         V0bV3GZY2nMR/MOZJQLRZzyOQ1RvrEOwdxemzGyqVdb6w9Oq349lZHwTs8MvjrSRZ7IR
-         yiYC6lcqYVxZzLCwJITKDhs2Tq7rPQjBfXDHOe9rTwWd5vzMZwhoSr2ZSiQZ1vm0eqos
-         bIYqgGK+O+pyQFDqDJiGYK4KXJ7sE8/fSrZqfDN9C5PPT2Eag2yrWJTZc34/6R4wazNm
-         S4slxCQkdKkcCYUl2zT4KxfVMp+lTyNYZpeL/1Gr8CFZwb2ucFT0+rdPRWMyUPnTUz6e
-         f0wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=xSXZsc9S1OE/57FZdD9wfjk5cX6z161zcXWV7Ia5wrw=;
-        b=YCRD2B6uF1lpGx+1FpimnTUi2bfnNqpabmfWAPb7juA8dHJMN2JZsAUW0miAiIV3IW
-         I2WUyXuaIO2Ynzu77eUQaQLXBqokx2jKu34n6fSLNxpqyqd8mn6OLu64SdgdeNgOekHu
-         lTHUAdotzM9EUwtWwqBMMv0WszZHm5mOgiyIituGw0iq/9JmmCMC9EtRh4p/A6SU2+9h
-         Rq4xv+vRwZDeAv623ozkvVHweUXogP34Nm3wVvjaTL1aLnKAGlTN3qvnAtcHvn7NBhx6
-         SdLiCkJLsMFpV4tNB85mTLU/d9WJFmvy4kLyRoqANXsbA3nPh5zJJoe+quttsD6Hq8b6
-         GPNA==
-X-Gm-Message-State: AOAM533t2pAQDEgDLRVfdOKge/n8tchrS8Qn+Ydm75SduxGQUXMOAJwp
-        qRzzQiUSZyHczIEt1zp2/s4=
-X-Google-Smtp-Source: ABdhPJz+oG8T4/iIeiWnL3/H83fEezI8x4L0R8OtQeGzCFHIBq8l+Gg5bDpINORjG+ARyxdyO58ifQ==
-X-Received: by 2002:a17:90a:4481:: with SMTP id t1mr13622pjg.232.1626299491614;
-        Wed, 14 Jul 2021 14:51:31 -0700 (PDT)
-Received: from raspberrypi ([210.183.35.240])
-        by smtp.gmail.com with ESMTPSA id 10sm3679597pjc.41.2021.07.14.14.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 14:51:31 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 22:51:26 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, austin.kim@lge.com,
-        kernel-team@lge.com, austindh.kim@gmail.com
-Subject: [PATCH v2] LSM: add NULL check for kcalloc()
-Message-ID: <20210714215126.GA818@raspberrypi>
+        Wed, 14 Jul 2021 17:56:28 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C189C06175F;
+        Wed, 14 Jul 2021 14:53:36 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 31C89CC;
+        Wed, 14 Jul 2021 23:53:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626299614;
+        bh=pWKpxPOvoAW7FKSdGJi+ZdPivLsbxsmn5uEaNivCJZQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HxupBf46z7lsaydCKXHIGaIcqgX6jf/wgEJkDCEodah700UlwEICBYdBA2nFI7O//
+         WfC95RiNsYHoVTcTx5m274S21CFjGuF/hOn8XODn0+G4k+EGOpNH3TSQFN5WIdkPC4
+         PnTqUYo3Ta4cAjkCynTVR5QbaHEHe0kEh8tZ6Nmo=
+Date:   Thu, 15 Jul 2021 00:53:32 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        kieran.bingham@ideasonboard.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+Message-ID: <YO9c3Aofj0UJ1c3f@pendragon.ideasonboard.com>
+References: <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
+ <20210713152454.GC4098@sirena.org.uk>
+ <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
+ <20210713181837.GE4098@sirena.org.uk>
+ <YO6RTh8ngNKZxzj+@pendragon.ideasonboard.com>
+ <20210714165948.GG4719@sirena.org.uk>
+ <YO8cVWNmUvU/LKGi@pendragon.ideasonboard.com>
+ <20210714172846.GI4719@sirena.org.uk>
+ <YO8hxyrHqY7K43wp@pendragon.ideasonboard.com>
+ <20210714191855.GJ4719@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210714191855.GJ4719@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+On Wed, Jul 14, 2021 at 08:18:55PM +0100, Mark Brown wrote:
+> On Wed, Jul 14, 2021 at 08:41:27PM +0300, Laurent Pinchart wrote:
+> > On Wed, Jul 14, 2021 at 06:28:46PM +0100, Mark Brown wrote:
+> > > On Wed, Jul 14, 2021 at 08:18:13PM +0300, Laurent Pinchart wrote:
+> > > > It's only one data point, but we're seeing adoption of the ACPI
+> > > > DT-in-DSD for camera. It's still not pretty of course.
+> > >
+> > > By non-Linux system vendors?
+> >
+> > For Windows-based machines, yes. It's fairly new, and the information I
+> > have is that those machines may ship DSDT containing both Windows-style
+> > (read: crap) data and Linux-style data for the same nodes. My fear is
+> > that only the former will be properly tested and the latter will thus be
+> > incorrect. The future will tell (I'm as usual very hopeful).
+> 
+> Adding the Intel audio people - it'd be good if we could get some
+> similar stuff started for the audio things.  Sadly in these sorts of
+> cases AIUI the Windows thing is broadly to match DMI data and supply
+> platform data so it's more a case of just not having essential
+> information in firmware, a bad format would be better TBH (assuming it's
+> accurate which also requires loads of quirks...).
 
-kcalloc() may return NULL when memory allocation fails.
-So it is necessary to add NULL check after the call to kcalloc() is made.
+On the camera side, the Windows-based machines I've worked with (Skylake
+and Kabylak) have data in the DSDT. There's data we can use directly,
+and there's a lot that is hardcoded in the Windows driver (including
+what voltage to program on the different outputs of an I2C-controlled
+regulator - you get that wrong, you fry your camera). I believe Intel
+provides a small set of reference designs with several options to the
+OEMs, and I wouldn't be surprised if some of the data present in ACPI
+that we don't know how to interpret would identify these options. I
+don't think the Windows driver has DMI-based quirks, the driver isn't
+machine-specific as far as I can tell.
 
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- security/security.c | 2 ++
- 1 file changed, 2 insertions(+)
+For newer devices, ACPI should contain Windows data in a format that the
+Windows team decides on its own, and data that is actually usable in the
+_DSD for Linux. I've also heard that the power management would be
+saner, with PM actually implemented in the DSDT. I haven't seen those
+DSDT yet though.
 
-diff --git a/security/security.c b/security/security.c
-index 09533cbb7221..f885c9e9bc35 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -321,6 +321,8 @@ static void __init ordered_lsm_init(void)
- 
- 	ordered_lsms = kcalloc(LSM_COUNT + 1, sizeof(*ordered_lsms),
- 				GFP_KERNEL);
-+	if (!ordered_lsms)
-+		return;
- 
- 	if (chosen_lsm_order) {
- 		if (chosen_major_lsm) {
 -- 
-2.20.1
+Regards,
 
+Laurent Pinchart
