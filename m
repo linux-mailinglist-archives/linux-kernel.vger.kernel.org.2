@@ -2,147 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5263C8056
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFB93C8059
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238545AbhGNIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238503AbhGNIiH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:38:07 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A5EC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:35:16 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B0871CC;
-        Wed, 14 Jul 2021 10:35:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1626251714;
-        bh=Twf37gpHkRFjIZj4IaTADsPtFGmGBJ8mFS3zLfz31Og=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lEupGLOMyaIutQvPv2pGN3xj08n77MWY4dL4fUFY3/SfUUAMnY56K1aqB4nfJHjf5
-         zklaNCszTZ5hpvQOdSyWmHLbYsutRTAVjIBzCDSWn0n4AIbp19vlYeLXJKiarSubvA
-         GXTQ5jDIVqDpQDkkQhC3MN+xswFRnfIGVu/HuHF0=
-Date:   Wed, 14 Jul 2021 11:35:13 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH] drm/of: free the iterator object on failure
-Message-ID: <YO6hwQwo1/BaaOZ3@pendragon.ideasonboard.com>
-References: <20210712155758.48286-1-steven.price@arm.com>
- <YOxyvIoJcZFAgUz5@pendragon.ideasonboard.com>
- <b420a4e6-8038-6c1e-7c97-75ef3bea3c21@arm.com>
- <YOy6VQNz8Htg6Usb@pendragon.ideasonboard.com>
- <5c3db755-c3fb-dfe7-3d23-bbbcc81af3d8@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5c3db755-c3fb-dfe7-3d23-bbbcc81af3d8@arm.com>
+        id S238561AbhGNIit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:38:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238482AbhGNIit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:38:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D43B16115A;
+        Wed, 14 Jul 2021 08:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626251758;
+        bh=HDymZW8IKRKt/jb2rj2qbgVXui81unjwJTpptk8kJ7c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RB/QPHzlz7sU+FJoEw2Rl9ORqYNYDU0ByM2fH+ZDN8PFpW72iGwx2iJTvk34xXdDK
+         4afkxT3NphonGmGcHZDxnWFZ4lKMQboC5f7pX9/gFmeZdoaXOYj1L75Q0sxdjkFEFQ
+         VcH5G+mYU4/gBv5D1pr9vF10r0Hn6jAwiGok9NiDCzN/SpQbBq6mnLsA/qvXhiy+Gg
+         l+xcAQNJMAH9+OoQyRKGxGjRtUi2zYRqBteaHq/g1Rbu2Nct06EorWxVIS/0uehre2
+         Xt4WnHe29rmSkUuhrgDndDxPRvg0wkqqITtZmFIA4OrmUMBFVir8u54QK5+2e1TzzH
+         jgjRxZ6A3X7SA==
+Date:   Wed, 14 Jul 2021 17:35:53 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
+        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
+        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf
+ running in 64-bit kernel
+Message-Id: <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
+In-Reply-To: <20210714065432.188061-1-yangjihong1@huawei.com>
+References: <20210714065432.188061-1-yangjihong1@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hi Yang,
 
-On Tue, Jul 13, 2021 at 05:16:16PM +0100, Steven Price wrote:
-> On 12/07/2021 22:55, Laurent Pinchart wrote:
-> > On Mon, Jul 12, 2021 at 10:31:52PM +0100, Steven Price wrote:
-> >> On 12/07/2021 17:50, Laurent Pinchart wrote:
-> >>> On Mon, Jul 12, 2021 at 04:57:58PM +0100, Steven Price wrote:
-> >>>> When bailing out due to the sanity check the iterator value needs to be
-> >>>> freed because the early return prevents for_each_child_of_node() from
-> >>>> doing the dereference itself.
-> >>>>
-> >>>> Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
-> >>>
-> >>> I don't think the Fixes tag is correct, the issue was already present
-> >>> before 4ee48cc5586b. The fix looks right though.
-> >>
-> >> I'm not sure quite what you mean by "already present". As I understand
-> >> it the timeline was:
-> >>
-> >> 1. 6529007522de drm: of: Add drm_of_lvds_get_dual_link_pixel_order
-> >>    The function was originally added. This made the mistake twice of
-> >>    calling of_node_put() on the wrong variable (remote_port rather than
-> >>    endpoint).
-> > 
-> > Correct.
-> > 
-> >> 2. 4ee48cc5586b drm: of: Fix double-free bug
-> >>    One of the of_node_put() calls was removed as it was a double-free.
-> >>    This left the first incorrect of_node_put() in place, and the second
-> >>    is now a straight leak.
-> > 
-> > That's right, but this commit didn't introduce the leak, it was already
-> > there in 6529007522de (in addition to the double-free).
-> 
-> Ah, I see what you mean. My thought process was that the original
-> comment had the bug "using the wrong variable", and (2) (partially)
-> fixed that but in the process introduced a new bug (a memory leak). But
-> I guess technically the memory leak was there from the beginning.
-> 
-> The other reason I referenced (2) in the Fixes line is because this
-> patch depends on patch (2), whereas it won't apply cleanly without.
-> 
-> However I don't think it really matters either way: (2) has already been
-> backported, and either way this needs fixing if either (1) or (2) are
-> present.
-> 
-> Would you like me to resend with a "Fixes: 6529007522de drm: of: Add
-> drm_of_lvds_get_dual_link_pixel_order", or are you happy to just fix
-> this up when merging?
+On Wed, 14 Jul 2021 14:54:32 +0800
+Yang Jihong <yangjihong1@huawei.com> wrote:
 
-I don't mind either way, from my point of view it can be fixed up by
-whoever will pick the patch up and merge it.
+> The "address" member  of "struct probe_trace_point" uses long data type.
+> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
+> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
+> An error occurs during address comparison in kprobe_warn_out_range function.
 
-> >> 3. b557a5f8da57 drm/of: free the right object
-> >>    This (correctly) fixes the first of_node_put() to free endpoint. And
-> >>    the post from Daniel was what caused me to look.
-> >>
-> >> 4. This patch
-> >>    Reintroduces the of_node_put() removed in (2) but putting endpoint
-> >>    rather than remote_port.
-> >>
-> >> I've put (2) in the Fixes line as this patch is fixing the leak
-> >> introduced by that patch, but that in itself was of course 'fixing' the
-> >> double free of the original patch.
-> >>
-> >>>> Signed-off-by: Steven Price <steven.price@arm.com>
-> >>>> ---
-> >>>>  drivers/gpu/drm/drm_of.c | 4 +++-
-> >>>>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> Daniel's email[1] made me take a look at this function and it appears
-> >>>> that for_each_child_of_node()'s interface had caused a bad bug fix due
-> >>>> to the hidden reference counting in the iterator.
-> >>>>
-> >>>> [1] https://lore.kernel.org/r/YOxQ5TbkNrqCGBDJ%40phenom.ffwll.local
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-> >>>> index 197c57477344..997b8827fed2 100644
-> >>>> --- a/drivers/gpu/drm/drm_of.c
-> >>>> +++ b/drivers/gpu/drm/drm_of.c
-> >>>> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
-> >>>>  		 * configurations by passing the endpoints explicitly to
-> >>>>  		 * drm_of_lvds_get_dual_link_pixel_order().
-> >>>>  		 */
-> >>>> -		if (!current_pt || pixels_type != current_pt)
-> >>>> +		if (!current_pt || pixels_type != current_pt) {
-> >>>> +			of_node_put(endpoint);
-> >>>>  			return -EINVAL;
-> >>>> +		}
-> >>>>  	}
-> >>>>  
-> >>>>  	return pixels_type;
+Good catch!
+I didn't imagine that such a use case. But that is important because perf
+probe can be used for cross-arch probe definition too.
+
+> 
+> Before:
+> 
+>   # perf probe -a schedule
+>   schedule is out of .text, skip it.
+>     Error: Failed to add events.
+> 
+> Solution:
+>   Change data type of "address" variable to u64 and change corresponding
+> address printing and value assignment.
+
+OK, as far as I can see, the other parts of the perf also uses u64 for
+"address" storing variables. (e.g. symbols, maps etc.)
+
+> 
+> After:
+> 
+>   # perf.new.new probe -a schedule
+>   Added new event:
+>     probe:schedule       (on schedule)
+> 
+>   You can now use it in all perf tools, such as:
+> 
+>           perf record -e probe:schedule -aR sleep 1
+> 
+>   # perf probe -l
+>     probe:schedule       (on schedule)
+
+I think you missed one thing here.
+Usually, this shows the filename and line number of schedule().
+
+Could you try below diff?
+
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index 7d2ba8419b0c..609ca1671501 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
+  *
+  * Find a line number and file name for @addr in @cu_die.
+  */
+-int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+-		    const char **fname, int *lineno)
++int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
++		     const char **fname, int *lineno)
+ {
+ 	Dwarf_Line *line;
+ 	Dwarf_Die die_mem;
+ 	Dwarf_Addr faddr;
+ 
+-	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
++	if (die_find_realfunc(cu_die, addr, &die_mem)
+ 	    && die_entrypc(&die_mem, &faddr) == 0 &&
+ 	    faddr == addr) {
+ 		*fname = dwarf_decl_file(&die_mem);
+@@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+ 		goto out;
+ 	}
+ 
+-	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
++	line = cu_getsrc_die(cu_die, addr);
+ 	if (line && dwarf_lineno(line, lineno) == 0) {
+ 		*fname = dwarf_linesrc(line, NULL, NULL);
+ 		if (!*fname)
+diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+index cb99646843a9..7ee0fa19b5c4 100644
+--- a/tools/perf/util/dwarf-aux.h
++++ b/tools/perf/util/dwarf-aux.h
+@@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
+ const char *cu_get_comp_dir(Dwarf_Die *cu_die);
+ 
+ /* Get a line number and file name for given address */
+-int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
++int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
+ 		     const char **fname, int *lineno);
+ 
+ /* Walk on functions at given address */
+diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+index 8ba01bbdf05c..50d861a80f57 100644
+--- a/tools/perf/util/probe-finder.c
++++ b/tools/perf/util/probe-finder.c
+@@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
+ 	}
+ 
+ 	/* Find a corresponding line (filename and lineno) */
+-	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
++	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
+ 	/* Don't care whether it failed or not */
+ 
+ 	/* Find a corresponding function (name, baseline and baseaddr) */
+@@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
+ }
+ 
+ static int line_range_walk_cb(const char *fname, int lineno,
+-			      Dwarf_Addr addr __maybe_unused,
+-			      void *data)
++			      Dwarf_Addr addr, void *data)
+ {
+ 	struct line_finder *lf = data;
+ 	const char *__fname;
+
 
 -- 
-Regards,
-
-Laurent Pinchart
+Masami Hiramatsu <mhiramat@kernel.org>
