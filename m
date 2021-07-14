@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715853C7F5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C729E3C7F62
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238311AbhGNHdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:33:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15010 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238289AbhGNHdQ (ORCPT
+        id S238337AbhGNHdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238316AbhGNHdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:33:16 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPpwn6typzbcX5;
-        Wed, 14 Jul 2021 15:27:05 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 15:30:22 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 14 Jul 2021 15:30:21 +0800
-Subject: Re: [PATCH 5.4 000/349] 5.4.132-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210712184735.997723427@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <35e1b5ce-eab0-5db7-0612-ce317fb4cf53@huawei.com>
-Date:   Wed, 14 Jul 2021 15:30:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 14 Jul 2021 03:33:46 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE987C06175F;
+        Wed, 14 Jul 2021 00:30:54 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso2879702wmc.1;
+        Wed, 14 Jul 2021 00:30:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=L2g9g7yfHG299CyeHIJtyTBc41aBL/LNrArS8gq1J/E=;
+        b=uqxAQZ8IIJABNCtcWoXwRrP7e+yyOh6+hDwkhoFHMMDgTEqNHeAhh7IC7qZx5NwXkF
+         skRHEujBEWiicCt55zr85elhUuO3qP3GlpF2b8PsqTPkhuxwJV77p6Gzl4XjaaCN6JKx
+         KXDa5O6CijKteIyo+vA88qQdE+Ye6N9HGMlMKNdjtv5PekO7nqhndGWsCiKBTWhLJYw5
+         pcwwAvFEPM+AbmaJcMJYaQbySgOOfWRoPhbfTVEPTREy+0BvdF4A2fI6Nakkd0V8N60g
+         TJhe7R5UXG8/gBSPV3XX5GJB6E3bDZY9sG4JudDe46xEH9ibdtrO4ePpEW0kGFbHmkMr
+         czmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=L2g9g7yfHG299CyeHIJtyTBc41aBL/LNrArS8gq1J/E=;
+        b=FsQcd7jXw4Zc2gSjptBDA9WBHXfc17dOir0dHbBHO28q9GtOE3iPy3KVmJRff4H7AZ
+         G8Y5KUYXQvJnTZcsNfFt59AT2lzUlrcG7ju977q7E7j/aJ+5CU1sBUczLU3OcdtO6NhM
+         InCA7uPujIyX9joPXlOgkQcKgKi/1tUdouJ2Lz89IjrJq4hsEFg7845JcqtzXQQk0ukU
+         CGTfXjEgLtXX6mkfCeV8sivsWzVawLTwvy6IInVOJQB1bhl6bY6+LpkBgKKbJQ6G4Odu
+         40JEU7Plk4wojBJ9U0BWpHChdS5u8U2r/Wnvkz5ICRoYQEjTAT6B8UN1fdlO9ek1S6jM
+         8j9Q==
+X-Gm-Message-State: AOAM531kochFCwvGzfJPS2rpnCEajpCxfobgnI6srKVJlDDM7m10A1F7
+        /s6KQ00YAxyGepgnmK8Lo6U=
+X-Google-Smtp-Source: ABdhPJymat3cBKMwhL7DHPc4P2FnxZy5OLh8NNlslYWEuiF7G9mh+gHL21oafIR8AJFfHAWm5g4Hkg==
+X-Received: by 2002:a05:600c:3b86:: with SMTP id n6mr9937769wms.28.1626247853529;
+        Wed, 14 Jul 2021 00:30:53 -0700 (PDT)
+Received: from localhost (p200300e41f023e00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f02:3e00:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id r19sm1515005wrg.74.2021.07.14.00.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 00:30:52 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 09:32:51 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     robh+dt@kernel.org, jonathanh@nvidia.com,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V2] arm64: tegra: Enable SMMU support for PCIe on Tegra194
+Message-ID: <YO6TI8G4av/YdWRx@orome.fritz.box>
+References: <20210713044414.25536-1-vidyas@nvidia.com>
+ <20210713113546.20286-1-vidyas@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210712184735.997723427@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BF9dEAmvU+kEpJVR"
+Content-Disposition: inline
+In-Reply-To: <20210713113546.20286-1-vidyas@nvidia.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--BF9dEAmvU+kEpJVR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/7/13 2:49, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.132 release.
-> There are 349 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 18:45:40 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.132-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Tue, Jul 13, 2021 at 05:05:46PM +0530, Vidya Sagar wrote:
+> As of commit c7289b1c8a4e ("arm64: tegra: Enable SMMU support on
+> Tegra194"), SMMU support is enabled system-wide on Tegra194. However,
+> there was a bit of overlap between the SMMU enablement and the PCIe
+> support addition, so the PCIe device tree nodes are missing the iommus
+> and interconnects properties. This in turn leads to SMMU faults for
+> these devices, since by default the ARM SMMU will fault.
+>=20
+> Add the iommus and interconnects properties to all the PCIe device
+> tree nodes to restore their functionality.
+>=20
+> Fixes: c7289b1c8a4e ("arm64: tegra: Enable SMMU support on Tegra194")
+>=20
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> V2:
+> * Changed interconnect-names from "dma-mem", "dma-mem" -> "dma-mem", "wri=
+te"
+> * Added Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>=20
+>  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 60 +++++++++++++++++++++---
+>  1 file changed, 54 insertions(+), 6 deletions(-)
 
-Tested on arm64 and x86 for 5.4.132-rc2,
+Applied, thanks.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.132-rc2
-Commit: 22b22e7110f52e9b2458fcb1a31aafea2590025f
-Compiler: gcc version 7.3.0 (GCC)
+Thierry
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+--BF9dEAmvU+kEpJVR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+-----BEGIN PGP SIGNATURE-----
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDukyMACgkQ3SOs138+
+s6EqgQ/+LAPj/wMeq+nUQ5nsqf6m4KuMCLaOuZtjSqOwSdYnajwe65rKgq6E1bi6
+dAR6nWiHpxDxsEMvPfE34JuHI/72IXGNiCUJOoycKOGabljiKZIkKTvNybghRTmR
+JdAqIcKeOZEt4kegBNp3DRSjOLvIJfM7TRgeV41gWwT+W8LvFMRPLrLPlm4L+mLD
+dVVjQdknVf6JX87VikPp5hiMLuaahOgn+ADr7mi9kehYSejjz2Zcg6oL4SbF9Vm3
+oPHuEaNmHUWvnkwMtNG+vzsw9rmgvn/NDIRMSZBvKdzRMKCO04BYVyuwgmqbK/1h
+YKdOnNUfvALFWiDVt6yUBVoHuckufNrv4JtbDqI2tfeLzaDfPVmTB9N8lRQqZB6H
+PmTX6a7cZF5LNJ+FqN4p1Mnm9/ONx4Yg0VJVA939hlVybGv+X5LhvFpwpqmTtMvd
+JZyWIkHDsJkvG5Byj8WrDTZvv/cYaDnWZHbH1vqDFXcQDO2ILhPqgie6pxOUzvcV
+WtdhL6hOqJWWMCv2nGrKlf7ctLonVVcfva/uR3mOUVdE4eSkMO8Jfah+KWCT5ATP
+NbIEbCoOQWGNHgJryGbxyhqPo54k3ZGCcN4KmFS1F03qow3E1y7bGo5wWbaxWpW4
+lW8pcakgxkn5csk6j0KiAK9BvCkFZ3PnqdfWOuiF0LVMrVJsTrU=
+=St/l
+-----END PGP SIGNATURE-----
+
+--BF9dEAmvU+kEpJVR--
