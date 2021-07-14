@@ -2,100 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EB33C9464
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F7C3C9479
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237546AbhGNXX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:23:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:43826 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237514AbhGNXX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:23:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5F9031B;
-        Wed, 14 Jul 2021 16:20:34 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D4893F7D8;
-        Wed, 14 Jul 2021 16:20:33 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 03/50] sched: Prepare for RT sleeping spin/rwlocks
-In-Reply-To: <20210713160746.207208684@linutronix.de>
-References: <20210713151054.700719949@linutronix.de> <20210713160746.207208684@linutronix.de>
-Date:   Thu, 15 Jul 2021 00:20:28 +0100
-Message-ID: <87r1g0mqir.mognet@arm.com>
+        id S237613AbhGNX0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:26:00 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:34589 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhGNXZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 19:25:59 -0400
+Received: by mail-io1-f45.google.com with SMTP id g22so4251340iom.1;
+        Wed, 14 Jul 2021 16:23:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ToZ6NY20pj8+1z2HLFxJgFpOq59/gnhKty7JQKi5xcg=;
+        b=dgcUZJIRGzUB1nRAqhLsaJl6tC0geliNkf7rZ58UZMZR8eCrGN6MxuELT3r9CyAn6Z
+         EG6B/zIs4nE1dWlTQc2DheO2GqCdLGPhEFSBgytccR2MDahlWbIwF5DtNTbcVMcIATW1
+         170+yNoD2IMyinn0WFDzzHndrUt1a+DsZf/65c7QhzcnUdlSEHPpwpSCOHKd4VNWdtx3
+         wL+JY/hmh/3Hx9JJqUSIlkoWT2dgXIWaBUgWa35Om7kPshW278xOmDR7dhM96n732EAN
+         p+PDNPuSbk3J4XFtl2BP2EIQdrOr+WVmg8LbcqD0M+OrzK+3CQ50KXQz/4BNRK28L25G
+         FEsg==
+X-Gm-Message-State: AOAM532+RfatINyAUWal/Os7wjSDRjfeV057P1iqd3nc1H9qHrkPbAfR
+        dP7YDrq0qcCvMPzXo71pRw==
+X-Google-Smtp-Source: ABdhPJxfw9SHxbrbwickx7w/F5na0i6rWNyFm1PDKfzfrJ/f/+TLM8pzZ5E1dknUASd44A4KH9STUw==
+X-Received: by 2002:a05:6602:134f:: with SMTP id i15mr421616iov.143.1626304986652;
+        Wed, 14 Jul 2021 16:23:06 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id f7sm2125738ilk.64.2021.07.14.16.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 16:23:05 -0700 (PDT)
+Received: (nullmailer pid 3734548 invoked by uid 1000);
+        Wed, 14 Jul 2021 23:23:03 -0000
+Date:   Wed, 14 Jul 2021 17:23:03 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+Cc:     sean@mess.org, mchehab@kernel.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com
+Subject: Re: [PATCH v3 1/2] media: rc: meson-irblaster: document device tree
+ bindings
+Message-ID: <20210714232303.GA3730974@robh.at.kernel.org>
+References: <20210709165753.29353-1-viktor.prutyanov@phystech.edu>
+ <20210709165753.29353-2-viktor.prutyanov@phystech.edu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709165753.29353-2-viktor.prutyanov@phystech.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 09, 2021 at 07:57:52PM +0300, Viktor Prutyanov wrote:
+> This patch adds binding documentation for the IR transmitter
+> available in Amlogic Meson SoCs.
+> 
+> Signed-off-by: Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+> ---
+>  changes in v2:
+>    - compatible = "amlogic,meson-g12a-irblaster" added
+>    - clocks, clock-names and mod-clock updated
+>  changes in v3:
+>    - mod-clock removed
+>    - max-fifo-level added
+> 
+>  .../media/amlogic,meson-irblaster.yaml        | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/amlogic,meson-irblaster.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/amlogic,meson-irblaster.yaml b/Documentation/devicetree/bindings/media/amlogic,meson-irblaster.yaml
+> new file mode 100644
+> index 000000000000..1e10aa0d3a94
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/amlogic,meson-irblaster.yaml
+> @@ -0,0 +1,65 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/media/amlogic,meson-irblaster.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Amlogic Meson IR blaster
+> +
+> +maintainers:
+> +  - Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+> +
+> +description: |
+> +  Some Amlogic SoCs such as A311D and T950D4 have IR transmitter
+> +  (blaster) controller onboard. It is capable of sending IR signals
+> +  with arbitrary carrier frequency and duty cycle.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: amlogic,meson-irblaster
+> +      - items:
+> +          - const: amlogic,meson-g12a-irblaster
+> +          - const: amlogic,meson-irblaster
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: sysclk
+> +      - const: xtal
+> +
+> +  max-fifo-level:
+> +    maxItems: 1
 
-On 13/07/21 17:10, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> Waiting for spinlocks and rwlocks on non RT enabled kernels is task::state
-> preserving. Any wakeup which matches the state is valid.
->
-> RT enabled kernels substitutes them with 'sleeping' spinlocks. This creates
-> an issue vs. task::state.
->
-> In order to block on the lock the task has to overwrite task::state and a
-> consecutive wakeup issued by the unlocker sets the state back to
-> TASK_RUNNING. As a consequence the task loses the state which was set
-> before the lock acquire and also any regular wakeup targeted at the task
-> while it is blocked on the lock.
->
+An array?
 
-I'm not sure I get this for spinlocks - p->__state != TASK_RUNNING means
-task is stopped (or about to be), IMO that doesn't go with spinning. I was
-thinking perhaps ptrace could be an issue, but I don't have a clear picture
-on that either. What am I missing?
+Needs a vendor prefix, type reference and constraints on allowed values.
 
-> @@ -213,6 +234,47 @@ struct task_group;
->               raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
->       } while (0)
->
-> +/*
-> + * PREEMPT_RT specific variants for "sleeping" spin/rwlocks
-> + *
-> + * RT's spin/rwlock substitutions are state preserving. The state of the
-> + * task when blocking on the lock is saved in task_struct::saved_state and
-> + * restored after the lock has been acquired.  These operations are
-> + * serialized by task_struct::pi_lock against try_to_wake_up(). Any non RT
-> + * lock related wakeups while the task is blocked on the lock are
-> + * redirected to operate on task_struct::saved_state to ensure that these
-> + * are not dropped. On restore task_struct::saved_state is set to
-> + * TASK_RUNNING so any wakeup attempt redirected to saved_state will fail.
-> + *
-> + * The lock operation looks like this:
-> + *
-> + *	current_save_and_set_rtlock_wait_state();
-> + *	for (;;) {
-> + *		if (try_lock())
-> + *			break;
-> + *		raw_spin_unlock_irq(&lock->wait_lock);
-> + *		schedule_rtlock();
-> + *		raw_spin_lock_irq(&lock->wait_lock);
-> + *		set_current_state(TASK_RTLOCK_WAIT);
-> + *	}
-> + *	current_restore_rtlock_saved_state();
-> + */
-> +#define current_save_and_set_rtlock_wait_state()			\
-> +	do {								\
-> +		raw_spin_lock(&current->pi_lock);			\
-> +		current->saved_state = current->state;			\
-                                                ^^^^^
-That one somehow survived the s/state/__state/ renaming.
+> +    description:
+> +      Maximum IR blaster FIFO fill level
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/g12a-clkc.h>
+> +
+> +    irblaster@ff80014c {
+> +      compatible = "amlogic,meson-g12a-irblaster", "amlogic,meson-irblaster";
+> +      reg = <0xff80014c 0x10>;
+> +      interrupts = <0 198 IRQ_TYPE_EDGE_RISING>;
+> +      clocks = <&clkc CLKID_CLK81>, <&xtal>;
+> +      clock-names = "sysclk", "xtal";
+> +    };
+> -- 
+> 2.21.0
+> 
+> 
