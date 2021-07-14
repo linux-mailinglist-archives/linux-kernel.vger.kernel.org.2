@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C729E3C7F62
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485DF3C7F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbhGNHdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238316AbhGNHdq (ORCPT
+        id S238308AbhGNHgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:36:08 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:11483 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238139AbhGNHgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:33:46 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE987C06175F;
-        Wed, 14 Jul 2021 00:30:54 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso2879702wmc.1;
-        Wed, 14 Jul 2021 00:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=L2g9g7yfHG299CyeHIJtyTBc41aBL/LNrArS8gq1J/E=;
-        b=uqxAQZ8IIJABNCtcWoXwRrP7e+yyOh6+hDwkhoFHMMDgTEqNHeAhh7IC7qZx5NwXkF
-         skRHEujBEWiicCt55zr85elhUuO3qP3GlpF2b8PsqTPkhuxwJV77p6Gzl4XjaaCN6JKx
-         KXDa5O6CijKteIyo+vA88qQdE+Ye6N9HGMlMKNdjtv5PekO7nqhndGWsCiKBTWhLJYw5
-         pcwwAvFEPM+AbmaJcMJYaQbySgOOfWRoPhbfTVEPTREy+0BvdF4A2fI6Nakkd0V8N60g
-         TJhe7R5UXG8/gBSPV3XX5GJB6E3bDZY9sG4JudDe46xEH9ibdtrO4ePpEW0kGFbHmkMr
-         czmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L2g9g7yfHG299CyeHIJtyTBc41aBL/LNrArS8gq1J/E=;
-        b=FsQcd7jXw4Zc2gSjptBDA9WBHXfc17dOir0dHbBHO28q9GtOE3iPy3KVmJRff4H7AZ
-         G8Y5KUYXQvJnTZcsNfFt59AT2lzUlrcG7ju977q7E7j/aJ+5CU1sBUczLU3OcdtO6NhM
-         InCA7uPujIyX9joPXlOgkQcKgKi/1tUdouJ2Lz89IjrJq4hsEFg7845JcqtzXQQk0ukU
-         CGTfXjEgLtXX6mkfCeV8sivsWzVawLTwvy6IInVOJQB1bhl6bY6+LpkBgKKbJQ6G4Odu
-         40JEU7Plk4wojBJ9U0BWpHChdS5u8U2r/Wnvkz5ICRoYQEjTAT6B8UN1fdlO9ek1S6jM
-         8j9Q==
-X-Gm-Message-State: AOAM531kochFCwvGzfJPS2rpnCEajpCxfobgnI6srKVJlDDM7m10A1F7
-        /s6KQ00YAxyGepgnmK8Lo6U=
-X-Google-Smtp-Source: ABdhPJymat3cBKMwhL7DHPc4P2FnxZy5OLh8NNlslYWEuiF7G9mh+gHL21oafIR8AJFfHAWm5g4Hkg==
-X-Received: by 2002:a05:600c:3b86:: with SMTP id n6mr9937769wms.28.1626247853529;
-        Wed, 14 Jul 2021 00:30:53 -0700 (PDT)
-Received: from localhost (p200300e41f023e00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f02:3e00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id r19sm1515005wrg.74.2021.07.14.00.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 00:30:52 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 09:32:51 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     robh+dt@kernel.org, jonathanh@nvidia.com,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V2] arm64: tegra: Enable SMMU support for PCIe on Tegra194
-Message-ID: <YO6TI8G4av/YdWRx@orome.fritz.box>
-References: <20210713044414.25536-1-vidyas@nvidia.com>
- <20210713113546.20286-1-vidyas@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BF9dEAmvU+kEpJVR"
-Content-Disposition: inline
-In-Reply-To: <20210713113546.20286-1-vidyas@nvidia.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+        Wed, 14 Jul 2021 03:36:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626247974;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=frxvPn/3DRth+yPvylduwkc8X0PJDf65B+98vS/70Xg=;
+    b=ZndagKNz7g4Gi0NcO/UrgxtqKefxPP9S8RAAUKLfpUQ1qDIIpQI8szpFftUGPjCDsp
+    Pr9EYfECFXE/XRgvIRFMewg1dBoWCNffoCGqD/6hq3snA4wPEGWZjZ8+uz5pkQS79ewN
+    dwWPCj1rTGBPozSlBihN1My9VTtNobvjMJpP2z30ZgNLXDlcoaiXHDNhUhn3t44ghcBG
+    1OAJl5+kFDFCMBcCT4RYfLrr1VfWgAoVfF8bFEHWi5C7RcV9jg1ShcuuVu3OYHB8VdlO
+    +TkDN4/KQuWTGWQm9ZMeOJjdj3ZoSAKzzJjHk6aj1jbzdWSBXuZrIvEppy6NEGuU3i0B
+    vZww==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43tlAA="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
+    with ESMTPSA id h06665x6E7WszQZ
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 14 Jul 2021 09:32:54 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v2] omap5-board-common: remove not physically existing
+ vdds_1v8_main fixed-regulator
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <e836d5d98b028bdbb8805bcf79489e0df28add6c.1625148021.git.hns@goldelico.com>
+Date:   Wed, 14 Jul 2021 09:32:52 +0200
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
+        devicetree@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <27948BF2-82E3-4140-A194-F938F3A64863@goldelico.com>
+References: <e836d5d98b028bdbb8805bcf79489e0df28add6c.1625148021.git.hns@goldelico.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        Graeme Gregory <gg@slimlogic.co.uk>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        peter.ujfalusi@gmail.com,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Any comments?
 
---BF9dEAmvU+kEpJVR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 13, 2021 at 05:05:46PM +0530, Vidya Sagar wrote:
-> As of commit c7289b1c8a4e ("arm64: tegra: Enable SMMU support on
-> Tegra194"), SMMU support is enabled system-wide on Tegra194. However,
-> there was a bit of overlap between the SMMU enablement and the PCIe
-> support addition, so the PCIe device tree nodes are missing the iommus
-> and interconnects properties. This in turn leads to SMMU faults for
-> these devices, since by default the ARM SMMU will fault.
+> Am 01.07.2021 um 16:00 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
 >=20
-> Add the iommus and interconnects properties to all the PCIe device
-> tree nodes to restore their functionality.
+> This device tree include file describes a fixed-regulator
+> connecting smps7_reg output (1.8V) to some 1.8V rail and
+> consumers (vdds_1v8_main).
 >=20
-> Fixes: c7289b1c8a4e ("arm64: tegra: Enable SMMU support on Tegra194")
+> This regulator does not physically exist.
 >=20
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> I assume it was introduced as a wrapper around smps7_reg
+> to provide a speaking signal name "vdds_1v8_main" as label.
+>=20
+> This fixed-regulator without real function was not an issue
+> in driver code until
+>=20
+>  Commit 98e48cd9283d ("regulator: core: resolve supply for =
+boot-on/always-on regulators")
+>=20
+> introduced a new check for regulator initialization which
+> makes Palmas regulator registration fail:
+>=20
+> [    5.407712] ldo1: supplied by vsys_cobra
+> [    5.412748] ldo2: supplied by vsys_cobra
+> [    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed =
+to register 48070000.i2c:palmas@48:palmas_pmic regulator
+>=20
+> The reason is that the supply-chain of regulators is too
+> long and goes from ldo3 through the virtual vdds_1v8_main
+> regulator and then back to smps7. This adds a cross-dependency
+> of probing Palmas regulators and the fixed-regulator which
+> leads to probe deferral by the new check and is no longer
+> resolved.
+>=20
+> Since we do not control what device tree files including this
+> one reference (either &vdds_1v8_main or &smps7_reg or both)
+> we keep both labels for smps7 for compatibility.
+>=20
+> Fixes: 98e48cd9283d ("regulator: core: resolve supply for =
+boot-on/always-on regulators")
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 > ---
-> V2:
-> * Changed interconnect-names from "dma-mem", "dma-mem" -> "dma-mem", "wri=
-te"
-> * Added Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> arch/arm/boot/dts/omap5-board-common.dtsi | 9 +--------
+> 1 file changed, 1 insertion(+), 8 deletions(-)
 >=20
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 60 +++++++++++++++++++++---
->  1 file changed, 54 insertions(+), 6 deletions(-)
+> diff --git a/arch/arm/boot/dts/omap5-board-common.dtsi =
+b/arch/arm/boot/dts/omap5-board-common.dtsi
+> index d8f13626cfd1..3a8f10231475 100644
+> --- a/arch/arm/boot/dts/omap5-board-common.dtsi
+> +++ b/arch/arm/boot/dts/omap5-board-common.dtsi
+> @@ -30,14 +30,6 @@ vsys_cobra: fixedregulator-vsys_cobra {
+> 		regulator-max-microvolt =3D <5000000>;
+> 	};
+>=20
+> -	vdds_1v8_main: fixedregulator-vdds_1v8_main {
+> -		compatible =3D "regulator-fixed";
+> -		regulator-name =3D "vdds_1v8_main";
+> -		vin-supply =3D <&smps7_reg>;
+> -		regulator-min-microvolt =3D <1800000>;
+> -		regulator-max-microvolt =3D <1800000>;
+> -	};
+> -
+> 	vmmcsd_fixed: fixedregulator-mmcsd {
+> 		compatible =3D "regulator-fixed";
+> 		regulator-name =3D "vmmcsd_fixed";
+> @@ -487,6 +479,7 @@ smps6_reg: smps6 {
+> 					regulator-boot-on;
+> 				};
+>=20
+> +				vdds_1v8_main:
+> 				smps7_reg: smps7 {
+> 					/* VDDS_1v8_OMAP over =
+VDDS_1v8_MAIN */
+> 					regulator-name =3D "smps7";
+> --=20
+> 2.31.1
+>=20
 
-Applied, thanks.
-
-Thierry
-
---BF9dEAmvU+kEpJVR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDukyMACgkQ3SOs138+
-s6EqgQ/+LAPj/wMeq+nUQ5nsqf6m4KuMCLaOuZtjSqOwSdYnajwe65rKgq6E1bi6
-dAR6nWiHpxDxsEMvPfE34JuHI/72IXGNiCUJOoycKOGabljiKZIkKTvNybghRTmR
-JdAqIcKeOZEt4kegBNp3DRSjOLvIJfM7TRgeV41gWwT+W8LvFMRPLrLPlm4L+mLD
-dVVjQdknVf6JX87VikPp5hiMLuaahOgn+ADr7mi9kehYSejjz2Zcg6oL4SbF9Vm3
-oPHuEaNmHUWvnkwMtNG+vzsw9rmgvn/NDIRMSZBvKdzRMKCO04BYVyuwgmqbK/1h
-YKdOnNUfvALFWiDVt6yUBVoHuckufNrv4JtbDqI2tfeLzaDfPVmTB9N8lRQqZB6H
-PmTX6a7cZF5LNJ+FqN4p1Mnm9/ONx4Yg0VJVA939hlVybGv+X5LhvFpwpqmTtMvd
-JZyWIkHDsJkvG5Byj8WrDTZvv/cYaDnWZHbH1vqDFXcQDO2ILhPqgie6pxOUzvcV
-WtdhL6hOqJWWMCv2nGrKlf7ctLonVVcfva/uR3mOUVdE4eSkMO8Jfah+KWCT5ATP
-NbIEbCoOQWGNHgJryGbxyhqPo54k3ZGCcN4KmFS1F03qow3E1y7bGo5wWbaxWpW4
-lW8pcakgxkn5csk6j0KiAK9BvCkFZ3PnqdfWOuiF0LVMrVJsTrU=
-=St/l
------END PGP SIGNATURE-----
-
---BF9dEAmvU+kEpJVR--
