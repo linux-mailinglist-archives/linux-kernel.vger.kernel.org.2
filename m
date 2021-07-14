@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8387A3C919A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A993C91A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242254AbhGNUEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46246 "EHLO mail.kernel.org"
+        id S242300AbhGNUEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238651AbhGNTsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238654AbhGNTsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Jul 2021 15:48:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAEDC613DD;
-        Wed, 14 Jul 2021 19:43:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 540B5613EE;
+        Wed, 14 Jul 2021 19:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291814;
-        bh=x+qdZzgSdk3d/ojZFp62G+S3M5I1KK3oAlR4rrJvUFE=;
+        s=k20201202; t=1626291817;
+        bh=/Y5p+u3HuN6J545R6s3d4Yr2Bp7btNdWGc+nyZL8xjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WL+AfbzGAbPpMGFVWMo/tTZhqELoSzrbbI+7I0+w/gfm/+nnVOkAm2mfK/g1NpJFw
-         yIyapYGJToYiAKzahnbKb3j9CecfQzQV4ZltR98dU7A91qByC1rNNh6avlij3lOenp
-         rqWRYNEqDeca3CANCvPFj1W9cfy7klNme13w0hMjn2qpyJrdjIeqPPiuB9aWG3srNl
-         i4V2kI8Vm4X5M9h6mNRaUAorWVhVhj1N+Hi3lg0WiJ64FZP+bYBKcxUBTjNhaX5Yjc
-         FUY6bCtmWeH7Iheio4rkdPUr/GQF+PxTY3AkBy57uGZZ2BZiFuSz4eGWYES9vDCbr9
-         I1l5hYkV198/g==
+        b=hM/ZMQ1xiWW0Y1jEk6XqDgVl8zyOrGV+kJqanVdzDqrlG0+CrGgLXnlroQqPwStfR
+         6eiBp94r4IFKv+TTd6rVju/1i7EqCmucSoT5Gf/o7aCXeveyz4JjIUTuI/6wg6xPNY
+         NzLSFtSL3kzoRzUVkufQ/hS0nFSZvhusXVJ1JDvdwtEDeoxu7UVHXs5SpujZCRJj/T
+         qmrExpk9lDFke4UyBeXogxD8bcQxub9M27NvgCGRgkjOfN5ap2HP/t74GRAkHoj8mY
+         TGaLCgtY8d44UTO931j1V8mvoLRSiyPQxNGkbZXyMsgDcgGjcwfAn/gIVSJDoNb71l
+         tde3S65Au42OQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 18/88] ARM: dts: BCM63xx: Fix NAND nodes names
-Date:   Wed, 14 Jul 2021 15:41:53 -0400
-Message-Id: <20210714194303.54028-18-sashal@kernel.org>
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 20/88] ARM: dts: imx25-pinfunc: Fix gpio function name for pads GPIO_[A-F]
+Date:   Wed, 14 Jul 2021 15:41:55 -0400
+Message-Id: <20210714194303.54028-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -43,50 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 75e2f012f6e34b93124d1d86eaa8f27df48e9ea0 ]
+[ Upstream commit e0cdd26af8eb9001689a4cde4f72c61c1c4b06be ]
 
-This matches nand-controller.yaml requirements.
+The pinfunc definitions used GPIO_A as function instead of GPIO_1_0 as
+done for all the other pins with GPIO functionality. Fix for consistency.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+There are no mainline users that needs adaption.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm63138.dtsi    | 2 +-
- arch/arm/boot/dts/bcm963138dvt.dts | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/imx25-pinfunc.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm63138.dtsi b/arch/arm/boot/dts/bcm63138.dtsi
-index 9c0325cf9e22..cca49a2e2d62 100644
---- a/arch/arm/boot/dts/bcm63138.dtsi
-+++ b/arch/arm/boot/dts/bcm63138.dtsi
-@@ -203,7 +203,7 @@ serial1: serial@620 {
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/boot/dts/imx25-pinfunc.h b/arch/arm/boot/dts/imx25-pinfunc.h
+index f984b702efc5..908caf810351 100644
+--- a/arch/arm/boot/dts/imx25-pinfunc.h
++++ b/arch/arm/boot/dts/imx25-pinfunc.h
+@@ -563,15 +563,15 @@
+ #define MX25_PAD_DE_B__DE_B			0x1f0 0x3ec 0x000 0x00 0x000
+ #define MX25_PAD_DE_B__GPIO_2_20		0x1f0 0x3ec 0x000 0x05 0x000
  
--		nand: nand@2000 {
-+		nand_controller: nand-controller@2000 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.0", "brcm,brcmnand";
-diff --git a/arch/arm/boot/dts/bcm963138dvt.dts b/arch/arm/boot/dts/bcm963138dvt.dts
-index 5b177274f182..df5c8ab90627 100644
---- a/arch/arm/boot/dts/bcm963138dvt.dts
-+++ b/arch/arm/boot/dts/bcm963138dvt.dts
-@@ -31,10 +31,10 @@ &serial1 {
- 	status = "okay";
- };
+-#define MX25_PAD_GPIO_A__GPIO_A			0x1f4 0x3f0 0x000 0x00 0x000
++#define MX25_PAD_GPIO_A__GPIO_1_0		0x1f4 0x3f0 0x000 0x00 0x000
+ #define MX25_PAD_GPIO_A__CAN1_TX		0x1f4 0x3f0 0x000 0x06 0x000
+ #define MX25_PAD_GPIO_A__USBOTG_PWR		0x1f4 0x3f0 0x000 0x02 0x000
  
--&nand {
-+&nand_controller {
- 	status = "okay";
+-#define MX25_PAD_GPIO_B__GPIO_B			0x1f8 0x3f4 0x000 0x00 0x000
++#define MX25_PAD_GPIO_B__GPIO_1_1		0x1f8 0x3f4 0x000 0x00 0x000
+ #define MX25_PAD_GPIO_B__USBOTG_OC		0x1f8 0x3f4 0x57c 0x02 0x001
+ #define MX25_PAD_GPIO_B__CAN1_RX		0x1f8 0x3f4 0x480 0x06 0x001
  
--	nandcs@0 {
-+	nand@0 {
- 		compatible = "brcm,nandcs";
- 		reg = <0>;
- 		nand-ecc-strength = <4>;
+-#define MX25_PAD_GPIO_C__GPIO_C			0x1fc 0x3f8 0x000 0x00 0x000
++#define MX25_PAD_GPIO_C__GPIO_1_2		0x1fc 0x3f8 0x000 0x00 0x000
+ #define MX25_PAD_GPIO_C__PWM4_PWMO		0x1fc 0x3f8 0x000 0x01 0x000
+ #define MX25_PAD_GPIO_C__I2C2_SCL		0x1fc 0x3f8 0x51c 0x02 0x001
+ #define MX25_PAD_GPIO_C__KPP_COL4		0x1fc 0x3f8 0x52c 0x03 0x001
+@@ -580,18 +580,18 @@
+ #define MX25_PAD_GPIO_C__CAN2_TX		0x1fc 0x3f8 0x000 0x06 0x000
+ #define MX25_PAD_GPIO_C__CSPI2_SS2		0x1fc 0x3f8 0x000 0x07 0x000
+ 
+-#define MX25_PAD_GPIO_D__GPIO_D			0x200 0x3fc 0x000 0x00 0x000
++#define MX25_PAD_GPIO_D__GPIO_1_3		0x200 0x3fc 0x000 0x00 0x000
+ #define MX25_PAD_GPIO_D__I2C2_SDA		0x200 0x3fc 0x520 0x02 0x001
+ #define MX25_PAD_GPIO_D__CAN2_RX		0x200 0x3fc 0x484 0x06 0x001
+ #define MX25_PAD_GPIO_D__CSPI3_SS2		0x200 0x3fc 0x4c4 0x07 0x001
+ 
+-#define MX25_PAD_GPIO_E__GPIO_E			0x204 0x400 0x000 0x00 0x000
++#define MX25_PAD_GPIO_E__GPIO_1_4		0x204 0x400 0x000 0x00 0x000
+ #define MX25_PAD_GPIO_E__I2C3_CLK		0x204 0x400 0x524 0x01 0x002
+ #define MX25_PAD_GPIO_E__LD16			0x204 0x400 0x000 0x02 0x000
+ #define MX25_PAD_GPIO_E__AUD7_TXD		0x204 0x400 0x000 0x04 0x000
+ #define MX25_PAD_GPIO_E__UART4_RXD		0x204 0x400 0x570 0x06 0x002
+ 
+-#define MX25_PAD_GPIO_F__GPIO_F			0x208 0x404 0x000 0x00 0x000
++#define MX25_PAD_GPIO_F__GPIO_1_5		0x208 0x404 0x000 0x00 0x000
+ #define MX25_PAD_GPIO_F__LD17			0x208 0x404 0x000 0x02 0x000
+ #define MX25_PAD_GPIO_F__AUD7_TXC		0x208 0x404 0x000 0x04 0x000
+ #define MX25_PAD_GPIO_F__UART4_TXD		0x208 0x404 0x000 0x06 0x000
 -- 
 2.30.2
 
