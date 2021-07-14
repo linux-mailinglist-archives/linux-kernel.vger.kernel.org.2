@@ -2,168 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DA13C839C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343E83C839F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239132AbhGNLUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:20:18 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:44579 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232161AbhGNLUR (ORCPT
+        id S239133AbhGNLUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhGNLUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:20:17 -0400
-X-UUID: 37b55c57c3454cd8b103485dbf769f8b-20210714
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Q6LzrYoLA5I8zE2H4Wb3+h6SVEZjseCiEm0eHzHqVVY=;
-        b=Y1vmKf1JjW7fRct618pV5oa5Z4kb7hgjD2TkcFjjj+p9/1ijs5I3S///bHnVdVC6E+/uh2bQgRjZwz9zBBWjc1A0gdm55I+yH1AmUv0OD9WlpoMtFWZcXajNzBTq+rTYerQnF/NKoW7HZIHuWMiF6mOIwa7HpXBtE7zudMjUugo=;
-X-UUID: 37b55c57c3454cd8b103485dbf769f8b-20210714
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1517682039; Wed, 14 Jul 2021 19:17:19 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
- 2021 19:17:15 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 14 Jul 2021 19:17:13 +0800
-Message-ID: <1626261434.14352.14.camel@mhfsdcap03>
-Subject: Re: [PATCH v6 06/11] drm/mediatek: Add pm runtime support for ovl
- and rdma
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "Will Deacon" <will.deacon@arm.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
-        <ming-fan.chen@mediatek.com>, <yi.kuo@mediatek.com>,
-        <acourbot@chromium.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Xia Jiang <xia.jiang@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "Eizan Miyamoto" <eizan@chromium.org>,
-        <anthony.huang@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>, <yongqiang.niu@mediatek.com>
-Date:   Wed, 14 Jul 2021 19:17:14 +0800
-In-Reply-To: <61aa5aa9-5bd2-e99c-02ef-f5d13526eb43@collabora.com>
-References: <20210714025626.5528-1-yong.wu@mediatek.com>
-         <20210714025626.5528-7-yong.wu@mediatek.com>
-         <61aa5aa9-5bd2-e99c-02ef-f5d13526eb43@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 14 Jul 2021 07:20:44 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7FAC06175F;
+        Wed, 14 Jul 2021 04:17:52 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id t17so3054175lfq.0;
+        Wed, 14 Jul 2021 04:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S9CrgQqGn5mkur2H1auPSMo6yYyTfwNd3lzn8O6SIGw=;
+        b=riPdNj4nnn9+vFqNzMZJogEZahBnodLVfG8St8ipsNT0UBjxKFX2vW3ci3rdWcmZ88
+         VRiImWCPQK7fykq639PSAazmul6V971xU7kpsDGmx80lalx05Nz04pd90+wjhlejxlYe
+         K8A89OJw/gI4YKCUMYhLiOe7h/8Z9Mdrrmcws8fsS4IDnLPMEgqppuoAsqsJz8JAFw/L
+         7p5eEU2P4SZLtekb/5hikLzOQKAT4iRISXSBwq9cv80cLXMvYn/5BKjFVTOng0qcJfjs
+         Ck2DzRyg9VQuUZfhstr0bbbk8yfcLI9RdK9iFuZYq9lIr8FdYd5CA25uItRMQg1O+E0g
+         yjIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S9CrgQqGn5mkur2H1auPSMo6yYyTfwNd3lzn8O6SIGw=;
+        b=KVkxzLGU79It/ptRsDqhwI0LaGpZu+PBgoONcpnh7yhX67ywrvcIfGYU4YoCb9eNiO
+         /6hQKJAj9mj3lGmyIIGMNnTUIzu2akh2spdB3RkM0EFIq604tzGtLeLr2UgFGR9PFav0
+         1gWKpS477WS6WNQ5cKieQIqGG6gNo1lLTtodiUVFVMAHpNrLRV7oIbBMrGA7C0ktjyZI
+         9metBYpz/uLx5fN1gqY+/7OIQHjhfvVrblig86HXP14aF/dKS5QXWSxb0hO8Cned9Px5
+         htwLj5kX4pKx6HOO/ITdKmO2FCkAzff27PbyGTXskPp5t+IWSklTgh0Iu2EBgZXW/15I
+         P2Rw==
+X-Gm-Message-State: AOAM5321cGThzmPoGzCV8TotPRRdE/dhTn3ngiRTgd4lY3MPFdTvxOZc
+        5NcmfabbhlFK7QpxuuMBFnN2z4V+kkU=
+X-Google-Smtp-Source: ABdhPJyB+72mH8f+hRwoSWwuew4QNci28WM3A0pjoJ19MaVqYMg2UaIgTNSbVLIAJhMLj+x+uuuFVA==
+X-Received: by 2002:a05:6512:34d1:: with SMTP id w17mr7752370lfr.439.1626261469836;
+        Wed, 14 Jul 2021 04:17:49 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.googlemail.com with ESMTPSA id b4sm141504lfp.223.2021.07.14.04.17.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 04:17:49 -0700 (PDT)
+Subject: Re: [PATCH v1] iommu/tegra-smmu: Change debugfs directory name
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Will Deacon <will@kernel.org>, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210712001341.11166-1-digetx@gmail.com>
+ <YO7B56Mkz3kx5U5Q@8bytes.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <43abb785-8b6a-555b-7d66-fa1911d2f8a0@gmail.com>
+Date:   Wed, 14 Jul 2021 14:17:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 71B93BC55DBF796D54EF11802D7AD481B3722F9B783DF86A1B40DE94AAC8E5FC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <YO7B56Mkz3kx5U5Q@8bytes.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA3LTE0IGF0IDEwOjQ0ICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
-Og0KPiANCj4gT24gMTQuMDcuMjEgMDQ6NTYsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gRnJvbTogWW9u
-Z3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gDQo+ID4gUHJlcGFy
-ZSBmb3Igc21pIGNsZWFuaW5nIHVwICJtZWRpYXRlayxsYXJiIi4NCj4gPiANCj4gPiBEaXNwbGF5
-IHVzZSB0aGUgZGlzcHN5cyBkZXZpY2UgdG8gY2FsbCBwbV9ydW10aW1lX2dldF9zeW5jIGJlZm9y
-ZS4NCj4gPiBUaGlzIHBhdGNoIGFkZCBwbV9ydW50aW1lX3h4IHdpdGggb3ZsIGFuZCByZG1hIGRl
-dmljZSB3aG9zZSBub2RlcyBoYXMNCj4gPiAiaW9tbXVzIiBwcm9wZXJ0eSwgdGhlbiBkaXNwbGF5
-IGNvdWxkIGhlbHAgcG1fcnVudGltZV9nZXQgZm9yIHNtaSB2aWENCj4gPiBvdmwgb3IgcmRtYSBk
-ZXZpY2UuDQo+ID4gDQo+ID4gQ0M6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQo+ID4gU2ln
-bmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+
-ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9uZy53dUBtZWRpYXRlay5jb20+DQo+ID4gKFlv
-bmc6IFVzZSBwbV9ydW50aW1lX3Jlc3VtZV9hbmRfZ2V0IGluc3RlYWQgb2YgcG1fcnVudGltZV9n
-ZXRfc3luYykNCj4gPiBBY2tlZC1ieTogQ2h1bi1LdWFuZyBIdSA8Y2h1bmt1YW5nLmh1QGtlcm5l
-bC5vcmc+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bf
-b3ZsLmMgIHwgIDkgKysrKysrKystDQo+ID4gICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X2Rpc3BfcmRtYS5jIHwgIDkgKysrKysrKystDQo+ID4gICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX2RybV9jcnRjLmMgIHwgMTIgKysrKysrKysrKystDQo+ID4gICAzIGZpbGVzIGNoYW5n
-ZWQsIDI3IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9vdmwuYyBiL2RyaXZlcnMvZ3B1
-L2RybS9tZWRpYXRlay9tdGtfZGlzcF9vdmwuYw0KPiA+IGluZGV4IGZhOWQ3OTk2M2NkMy4uZWE1
-NzYwZjg1NmVjIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-ZGlzcF9vdmwuYw0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9v
-dmwuYw0KPiA+IEBAIC0xMSw2ICsxMSw3IEBADQo+ID4gICAjaW5jbHVkZSA8bGludXgvb2ZfZGV2
-aWNlLmg+DQo+ID4gICAjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQo+ID4gICAjaW5jbHVkZSA8
-bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1l
-Lmg+DQo+ID4gICAjaW5jbHVkZSA8bGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmg+DQo+ID4g
-ICANCj4gPiAgICNpbmNsdWRlICJtdGtfZGlzcF9kcnYuaCINCj4gPiBAQCAtNDE0LDE1ICs0MTUs
-MjEgQEAgc3RhdGljIGludCBtdGtfZGlzcF9vdmxfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqcGRldikNCj4gPiAgIAkJcmV0dXJuIHJldDsNCj4gPiAgIAl9DQo+ID4gICANCj4gPiArCXBt
-X3J1bnRpbWVfZW5hYmxlKGRldik7DQo+ID4gKw0KPiA+ICAgCXJldCA9IGNvbXBvbmVudF9hZGQo
-ZGV2LCAmbXRrX2Rpc3Bfb3ZsX2NvbXBvbmVudF9vcHMpOw0KPiA+IC0JaWYgKHJldCkNCj4gPiAr
-CWlmIChyZXQpIHsNCj4gPiArCQlwbV9ydW50aW1lX2Rpc2FibGUoZGV2KTsNCj4gPiAgIAkJZGV2
-X2VycihkZXYsICJGYWlsZWQgdG8gYWRkIGNvbXBvbmVudDogJWRcbiIsIHJldCk7DQo+ID4gKwl9
-DQo+ID4gICANCj4gPiAgIAlyZXR1cm4gcmV0Ow0KPiA+ICAgfQ0KPiA+ICAgDQo+ID4gICBzdGF0
-aWMgaW50IG10a19kaXNwX292bF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikN
-Cj4gPiAgIHsNCj4gPiArCXBtX3J1bnRpbWVfZGlzYWJsZSgmcGRldi0+ZGV2KTsNCj4gPiArDQo+
-ID4gICAJcmV0dXJuIDA7DQo+ID4gICB9DQo+ID4gICANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX3JkbWEuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRp
-YXRlay9tdGtfZGlzcF9yZG1hLmMNCj4gPiBpbmRleCA3MDVmMjhjZWI0ZGQuLjBmMzFkMWM4ZTM3
-YyAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcmRt
-YS5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX3JkbWEuYw0K
-PiA+IEBAIC05LDYgKzksNyBAQA0KPiA+ICAgI2luY2x1ZGUgPGxpbnV4L29mX2RldmljZS5oPg0K
-PiA+ICAgI2luY2x1ZGUgPGxpbnV4L29mX2lycS5oPg0KPiA+ICAgI2luY2x1ZGUgPGxpbnV4L3Bs
-YXRmb3JtX2RldmljZS5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvcG1fcnVudGltZS5oPg0KPiA+
-ICAgI2luY2x1ZGUgPGxpbnV4L3NvYy9tZWRpYXRlay9tdGstY21kcS5oPg0KPiA+ICAgDQo+ID4g
-ICAjaW5jbHVkZSAibXRrX2Rpc3BfZHJ2LmgiDQo+ID4gQEAgLTMyNyw5ICszMjgsMTMgQEAgc3Rh
-dGljIGludCBtdGtfZGlzcF9yZG1hX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-DQo+ID4gICANCj4gPiAgIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBwcml2KTsNCj4gPiAg
-IA0KPiA+ICsJcG1fcnVudGltZV9lbmFibGUoZGV2KTsNCj4gPiArDQo+ID4gICAJcmV0ID0gY29t
-cG9uZW50X2FkZChkZXYsICZtdGtfZGlzcF9yZG1hX2NvbXBvbmVudF9vcHMpOw0KPiA+IC0JaWYg
-KHJldCkNCj4gPiArCWlmIChyZXQpIHsNCj4gPiArCQlwbV9ydW50aW1lX2Rpc2FibGUoZGV2KTsN
-Cj4gPiAgIAkJZGV2X2VycihkZXYsICJGYWlsZWQgdG8gYWRkIGNvbXBvbmVudDogJWRcbiIsIHJl
-dCk7DQo+ID4gKwl9DQo+ID4gICANCj4gPiAgIAlyZXR1cm4gcmV0Ow0KPiA+ICAgfQ0KPiA+IEBA
-IC0zMzgsNiArMzQzLDggQEAgc3RhdGljIGludCBtdGtfZGlzcF9yZG1hX3JlbW92ZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgew0KPiA+ICAgCWNvbXBvbmVudF9kZWwoJnBk
-ZXYtPmRldiwgJm10a19kaXNwX3JkbWFfY29tcG9uZW50X29wcyk7DQo+ID4gICANCj4gPiArCXBt
-X3J1bnRpbWVfZGlzYWJsZSgmcGRldi0+ZGV2KTsNCj4gPiArDQo+ID4gICAJcmV0dXJuIDA7DQo+
-ID4gICB9DQo+ID4gICANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVr
-L210a19kcm1fY3J0Yy5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fY3J0Yy5j
-DQo+ID4gaW5kZXggNDc0ZWZiODQ0MjQ5Li4wOGUzZjM1MjM3N2QgMTAwNjQ0DQo+ID4gLS0tIGEv
-ZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fY3J0Yy5jDQo+ID4gKysrIGIvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fY3J0Yy5jDQo+ID4gQEAgLTU1Nyw5ICs1NTcsMTUg
-QEAgc3RhdGljIHZvaWQgbXRrX2RybV9jcnRjX2F0b21pY19lbmFibGUoc3RydWN0IGRybV9jcnRj
-ICpjcnRjLA0KPiA+ICAgCQlyZXR1cm47DQo+ID4gICAJfQ0KPiA+ICAgDQo+ID4gKwlyZXQgPSBw
-bV9ydW50aW1lX3Jlc3VtZV9hbmRfZ2V0KGNvbXAtPmRldik7DQo+ID4gKwlpZiAocmV0IDwgMCkN
-Cj4gPiArCQlEUk1fREVWX0VSUk9SKGNvbXAtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgcG93ZXIg
-ZG9tYWluOiAlZFxuIiwNCj4gPiArCQkJICAgICAgcmV0KTsNCj4gDQo+IHNob3VsZG4ndCB0aGUg
-Y29kZSByZXR1cm4gaW4gY2FzZSBvZiBmYWlsdXJlIGhlcmU/DQoNCkFmdGVyIGNvbmZpcm0gd2l0
-aCB5b25ncWlhbmcsIFdlIHdpbGwgZml4IHRoaXMgaW4gbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3Mu
-DQoNCj4gDQo+IFRoYW5rcywNCj4gRGFmbmENCj4gDQo+ID4gKw0KPiA+ICAgCXJldCA9IG10a19j
-cnRjX2RkcF9od19pbml0KG10a19jcnRjKTsNCj4gPiAgIAlpZiAocmV0KSB7DQo+ID4gICAJCW10
-a19zbWlfbGFyYl9wdXQoY29tcC0+bGFyYl9kZXYpOw0KPiA+ICsJCXBtX3J1bnRpbWVfcHV0KGNv
-bXAtPmRldik7DQo+ID4gICAJCXJldHVybjsNCj4gPiAgIAl9DQo+ID4gICANCj4gPiBAQCAtNTcy
-LDcgKzU3OCw3IEBAIHN0YXRpYyB2b2lkIG10a19kcm1fY3J0Y19hdG9taWNfZGlzYWJsZShzdHJ1
-Y3QgZHJtX2NydGMgKmNydGMsDQo+ID4gICB7DQo+ID4gICAJc3RydWN0IG10a19kcm1fY3J0YyAq
-bXRrX2NydGMgPSB0b19tdGtfY3J0YyhjcnRjKTsNCj4gPiAgIAlzdHJ1Y3QgbXRrX2RkcF9jb21w
-ICpjb21wID0gbXRrX2NydGMtPmRkcF9jb21wWzBdOw0KPiA+IC0JaW50IGk7DQo+ID4gKwlpbnQg
-aSwgcmV0Ow0KPiA+ICAgDQo+ID4gICAJRFJNX0RFQlVHX0RSSVZFUigiJXMgJWRcbiIsIF9fZnVu
-Y19fLCBjcnRjLT5iYXNlLmlkKTsNCj4gPiAgIAlpZiAoIW10a19jcnRjLT5lbmFibGVkKQ0KPiA+
-IEBAIC01OTYsNiArNjAyLDEwIEBAIHN0YXRpYyB2b2lkIG10a19kcm1fY3J0Y19hdG9taWNfZGlz
-YWJsZShzdHJ1Y3QgZHJtX2NydGMgKmNydGMsDQo+ID4gICAJZHJtX2NydGNfdmJsYW5rX29mZihj
-cnRjKTsNCj4gPiAgIAltdGtfY3J0Y19kZHBfaHdfZmluaShtdGtfY3J0Yyk7DQo+ID4gICAJbXRr
-X3NtaV9sYXJiX3B1dChjb21wLT5sYXJiX2Rldik7DQo+ID4gKwlyZXQgPSBwbV9ydW50aW1lX3B1
-dChjb21wLT5kZXYpOw0KPiA+ICsJaWYgKHJldCA8IDApDQo+ID4gKwkJRFJNX0RFVl9FUlJPUihj
-b21wLT5kZXYsICJGYWlsZWQgdG8gZGlzYWJsZSBwb3dlciBkb21haW46ICVkXG4iLA0KPiA+ICsJ
-CQkgICAgICByZXQpOw0KPiA+ICAgDQo+ID4gICAJbXRrX2NydGMtPmVuYWJsZWQgPSBmYWxzZTsN
-Cj4gPiAgIH0NCj4gPiANCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fDQo+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51eC1tZWRp
-YXRla0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbWVkaWF0ZWsNCg0K
+14.07.2021 13:52, Joerg Roedel пишет:
+> On Mon, Jul 12, 2021 at 03:13:41AM +0300, Dmitry Osipenko wrote:
+>> -	err = iommu_device_sysfs_add(&smmu->iommu, dev, NULL, dev_name(dev));
+>> +	err = iommu_device_sysfs_add(&smmu->iommu, dev, NULL, "smmu");
+> 
+> Are you sure no one is relying on the old name so that this change
+> breaks ABI?
 
+IIUC, Thierry and Jon have a testing suite that uses the old name, but
+it shouldn't be a problem to support the new name in addition to the old
+name since it's internal/private testing suite.
+
+The reason I'm proposing this change is because it's not obvious where
+the SMMU debug is located when you look at the debugfs directory, it
+takes some effort to find it.
+
+> Also this change means that there is always be only one SMMU
+> per system. Is that guaranteed too?
+
+A single SMMU is guaranteed here. Only latest Tegra SoCs have two SMMUs
+and those are ARM SMMUs, while this is a legacy Tegra SMMU here.
