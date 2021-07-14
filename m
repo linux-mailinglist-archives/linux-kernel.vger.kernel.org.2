@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ECB3C88C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA673C88CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235756AbhGNQk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:40:29 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:46064 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbhGNQk2 (ORCPT
+        id S236134AbhGNQkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:40:36 -0400
+Received: from mail-il1-f179.google.com ([209.85.166.179]:35440 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235968AbhGNQkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:40:28 -0400
-Received: by mail-io1-f49.google.com with SMTP id y16so2866584iol.12;
-        Wed, 14 Jul 2021 09:37:36 -0700 (PDT)
+        Wed, 14 Jul 2021 12:40:36 -0400
+Received: by mail-il1-f179.google.com with SMTP id a11so2226489ilf.2;
+        Wed, 14 Jul 2021 09:37:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4tJeunAnZHlhQuigtds/Y0c5fgwGRcJ1HpFKTFeZvbU=;
-        b=gpTqHTfrN8ddNqSbMjZ4paKCkbcDPeLcyHWL0mkoA1cMfbVW8qwp7bOqxSGCSCgnBi
-         JAJLs9PFXNrsWB8rXdjxVJRTZEf/1ULq/YVTIRtK0iobrZhHcS57qDBoThYZK3me5TkK
-         ktDpmvvS1i8sx/I3GJJCNqMsw3aD/f4np5JtDL5Y5wFZF/F5OQy7YzPTrBJ5NQdGsuLm
-         ZEu+I/aKL7WzL2r18sQKCwpCn1IGWPpAAFyz2RkiWXfv552E9oTycWKSNZxP4R2g56AD
-         qeEYnltWBxuk+0QQh3fq+um9/jCcM9oU7k31RK+sX/7Zo58BJ4bcky695EDy3fRoaUCo
-         x8yQ==
-X-Gm-Message-State: AOAM531z3PePSZCqlOtZu47fbsYVmfdas42yJfoO88fYXttyGqBJ8Pbr
-        tDTLwSgsm4kw/QllNUuV3g==
-X-Google-Smtp-Source: ABdhPJzVkkc1P8a634IL2iHsgXQyZ4AE005dkCM4T2KN3A+q4PdX0vgxBSC65J1kRJPnYNA0vZBkvg==
-X-Received: by 2002:a02:a595:: with SMTP id b21mr9600496jam.122.1626280656051;
-        Wed, 14 Jul 2021 09:37:36 -0700 (PDT)
+        bh=wvSV9DfDpsl5FoylhFtZyQDYFQqbILb6lth89U0RgXo=;
+        b=eqU+kGuPYvB+vTueQhdU8Cx6fNymK5Qql3ki0ay0KWRKrR0mkPEVGBxs9rklUiN4AA
+         ZIm+3QpGyMtt/mAW0KMvUA3HBdRfgY24QjBCU79YzeufGC2BepQdTlIHsuXlHHia8G+5
+         xv8uMmPJtPSu9V7UYnYVxFCRXeI6AKTThaltxxgBCInUemJlWG2h6c1lY0PJ+z6Xi3JZ
+         1vgZdLy6p6hoXrwvPk7a4EiNUjlfE5UhO2l2zSttAcjIOd/7+O/L6StRirayPOC/T4JT
+         Jkl7YTEL7wIMY7RgeiH3KzbNzX5f2BzTKqFf7lRKcvGb0S5Af92HajCOFN5xJ7EZp2Ql
+         EAQQ==
+X-Gm-Message-State: AOAM531dsGok6vTxtVK9pqWIJq6yFNQtTNRSmrIcK59II5yBMGwbxBYX
+        Zu5z35Q2fMmhddxszOEYPA==
+X-Google-Smtp-Source: ABdhPJybfnKLyt3zWGR1Mz5MrmFhJLmJDYIPJ/v58lFR0tKBQH/gG7+vZ28acd295aiviIieUK1I9w==
+X-Received: by 2002:a05:6e02:1091:: with SMTP id r17mr7232171ilj.160.1626280664250;
+        Wed, 14 Jul 2021 09:37:44 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c26sm1446889ioa.32.2021.07.14.09.37.32
+        by smtp.gmail.com with ESMTPSA id p6sm1543333ilg.4.2021.07.14.09.37.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 09:37:35 -0700 (PDT)
-Received: (nullmailer pid 2719952 invoked by uid 1000);
-        Wed, 14 Jul 2021 16:37:31 -0000
-Date:   Wed, 14 Jul 2021 10:37:31 -0600
+        Wed, 14 Jul 2021 09:37:43 -0700 (PDT)
+Received: (nullmailer pid 2720225 invoked by uid 1000);
+        Wed, 14 Jul 2021 16:37:41 -0000
+Date:   Wed, 14 Jul 2021 10:37:41 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, soc@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Olof Johansson <olof@lixom.net>,
-        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
-        David Airlie <airlied@linux.ie>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Olof Johansson <olof@lixom.net>,
         linux-arm-kernel@lists.infradead.org,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v2 2/4] dt-bindings: vendor-prefixes: Add an entry for
- SKOV A/S
-Message-ID: <20210714163731.GA2719790@robh.at.kernel.org>
+        David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, soc@kernel.org
+Subject: Re: [PATCH v2 3/4] dt-bindings: arm: fsl: add SKOV imx6q and imx6dl
+ based boards
+Message-ID: <20210714163741.GB2719790@robh.at.kernel.org>
 References: <20210714045349.10963-1-o.rempel@pengutronix.de>
- <20210714045349.10963-3-o.rempel@pengutronix.de>
+ <20210714045349.10963-4-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714045349.10963-3-o.rempel@pengutronix.de>
+In-Reply-To: <20210714045349.10963-4-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 06:53:47 +0200, Oleksij Rempel wrote:
-> Add "skov" entry for the SKOV A/S: https://www.skov.com/en/
+On Wed, 14 Jul 2021 06:53:48 +0200, Oleksij Rempel wrote:
+> Add SKOV imx6q/dl LT2, LT6 and mi1010ait-1cp1 boards.
 > 
 > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
 
