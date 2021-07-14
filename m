@@ -2,162 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443803C89CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB5E3C89D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239234AbhGNRah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhGNRag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:30:36 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C15CC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:27:44 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id t25so3082553oiw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wkHXhJTtNhdujDSSCpFKRUIq7j2+Okh7s5O9R4Duq28=;
-        b=CTiZgmsMPg7rUmQ6jQ5PQMCHVZ+3AI90U+ST5VRy4r8VMP3HMT3C07oWLEwP42yVDG
-         kV3UqYyLRf+NtoEr3EYQn1/V/FX1mTZmF40PJo2o3Ff6zaszlPO0/wiKnU2RvWYmnz39
-         ML9O0LdyxioNfycghTUf+kQOJuc3Ge2UgNtNMucFCoBb+7TAAg07/TblKn/5uU9iRXKH
-         hEuoqii0/iaFVlv8vR2LMTU2BNaazJDxc4Sl3xn8aMWkwJW6lSrp/pZ+tYD1Igi/pJUE
-         HEnJ7np4Ko/J0lGBmb0H7QFtva88w8BiG9rcjTZEJezJadyKOdGjlO5UVLlMSxpfyk0s
-         jfYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wkHXhJTtNhdujDSSCpFKRUIq7j2+Okh7s5O9R4Duq28=;
-        b=X7ZRx706PUJcBzQqV/veyvXBFcdVNTE9TV7yUpyVtdZFic7AscIZtwe0bZ9GEgD/x1
-         bvh8fr9EAtacpTo42tAP5EoB0prVKB7bgwnDo360xsY2GaJGsuOknyctf/KnIZx+rvIh
-         mpnbwdFMkGr6o/HGLdAmmBSxnsxDjCZgr3/gHLcEol7lVMvg40lrNnfaQX9yYiqxRRHG
-         WFy7RFknWM0lxcml9CymXLLvdENpJL938LQFPlGKRi8Ap9d2Jzui56thXBHPYG/53YwJ
-         QlPh41nJypT0nKnVOSsCxLFNrM1JXsvJqy740W+Cd9b6Ml3FLGXTr2d/qUblziHVMQit
-         GESA==
-X-Gm-Message-State: AOAM533AuRLfI3sOHh2fpcVxEUtwP1xPCYg/h0MJK6iYnwMkuhdXNUGe
-        F3CnWcfGRSRpd5jxdoAhqpwY/g==
-X-Google-Smtp-Source: ABdhPJz/6HvilMktnhwiVEebv7cmG3egvmiRmPb8KqV+La6/uKQhY0T7S+IXezOFF5wEM2oIIzG0hw==
-X-Received: by 2002:aca:af01:: with SMTP id y1mr8456941oie.6.1626283663783;
-        Wed, 14 Jul 2021 10:27:43 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t207sm608372oif.27.2021.07.14.10.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 10:27:43 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 12:27:41 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        id S238387AbhGNRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhGNRcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:32:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 005B360FF1;
+        Wed, 14 Jul 2021 17:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626283763;
+        bh=oQjr3iu7tXHT5XdQo184Sz9Za+0jKH7IEfRHCYXDz+s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nj3RIkuBjAv5n5GsY1kvCcGysnYPrRwqsSBrBuoL+5LQGPoDVPH7Z931cIsuNf5Ns
+         b11jOWmf7+8v+Un8z/76dXF0gt3ZBn5pqDrZFr6Szxqg0qKdG6ruphcaLkOiMIFTPc
+         8VSkZBPEfnCp3NLw2erMloz1P/xznvy2vE+NRO3dTbwVMfJnbd8xP0U7r/xoSQklRJ
+         J44GIefwjbDwZWDpMi/U6dxiFeh0zPSyRkJuIMizejTTKMySCgU2GumI/CkUKBwYUu
+         4ItRQZ8HR4LIc4wMl4B460FCDAkw5R8DybW8FN7ay/1BuTCSzZvxUN1kIG+Aslkqnh
+         z3tCWhUnRstqQ==
+Date:   Wed, 14 Jul 2021 18:28:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] Bluetooth: hci_qca: provide default device data
-Message-ID: <YO8ejQ1PlQrFAbz8@yoga>
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
- <20210621223141.1638189-4-dmitry.baryshkov@linaro.org>
+        kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+Message-ID: <20210714172846.GI4719@sirena.org.uk>
+References: <20210712133428.GD4435@sirena.org.uk>
+ <CAHp75VcQUUDdLYbpvTXSMPvjBzbHtBxywVBPS_xfY5JXyo9XxA@mail.gmail.com>
+ <20210712170120.GG4435@sirena.org.uk>
+ <e17af9dc-78c0-adb8-1dfb-0698e7a4e394@gmail.com>
+ <20210713152454.GC4098@sirena.org.uk>
+ <CAHp75Ve=eY2KaPFgq3JDv1aGo_ajcNuKTV9rZQ+1f8uMJBocUw@mail.gmail.com>
+ <20210713181837.GE4098@sirena.org.uk>
+ <YO6RTh8ngNKZxzj+@pendragon.ideasonboard.com>
+ <20210714165948.GG4719@sirena.org.uk>
+ <YO8cVWNmUvU/LKGi@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WHz+neNWvhIGAO8A"
 Content-Disposition: inline
-In-Reply-To: <20210621223141.1638189-4-dmitry.baryshkov@linaro.org>
+In-Reply-To: <YO8cVWNmUvU/LKGi@pendragon.ideasonboard.com>
+X-Cookie: C for yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21 Jun 17:31 CDT 2021, Dmitry Baryshkov wrote:
 
-> In order to simplify probe function provide default device data. This
-> removes the rest of if (data) checks.
-> 
+--WHz+neNWvhIGAO8A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Wed, Jul 14, 2021 at 08:18:13PM +0300, Laurent Pinchart wrote:
+> On Wed, Jul 14, 2021 at 05:59:48PM +0100, Mark Brown wrote:
 
-Regards,
-Bjorn
+> > really look like each other and AIUI this stuff isn't getting adopted
+> > for actual firmware (as opposed to swnodes) outside of the embedded x86
+> > space.
 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/bluetooth/hci_qca.c | 24 ++++++++++++++----------
->  1 file changed, 14 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index 53deea2eb7b4..3704dbadba1d 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -1874,6 +1874,11 @@ static const struct qca_device_data qca_soc_data_wcn6750 = {
->  	.capabilities = QCA_CAP_WIDEBAND_SPEECH | QCA_CAP_VALID_LE_STATES,
->  };
->  
-> +static const struct qca_device_data qca_soc_data_default = {
-> +	.soc_type = QCA_ROME,
-> +	.num_vregs = 0,
-> +};
-> +
->  static void qca_power_shutdown(struct hci_uart *hu)
->  {
->  	struct qca_serdev *qcadev;
-> @@ -2019,12 +2024,15 @@ static int qca_serdev_probe(struct serdev_device *serdev)
->  	int err;
->  	bool power_ctrl_enabled = true;
->  
-> +	data = device_get_match_data(&serdev->dev);
-> +	if (!data)
-> +		return -EINVAL;
-> +
->  	qcadev = devm_kzalloc(&serdev->dev, sizeof(*qcadev), GFP_KERNEL);
->  	if (!qcadev)
->  		return -ENOMEM;
->  
->  	qcadev->serdev_hu.serdev = serdev;
-> -	data = device_get_match_data(&serdev->dev);
->  	serdev_device_set_drvdata(serdev, qcadev);
->  	device_property_read_string(&serdev->dev, "firmware-name",
->  					 &qcadev->firmware_name);
-> @@ -2033,9 +2041,8 @@ static int qca_serdev_probe(struct serdev_device *serdev)
->  	if (!qcadev->oper_speed)
->  		BT_DBG("UART will pick default operating speed");
->  
-> -	if (data &&
-> -	    (qca_is_wcn399x(data->soc_type) ||
-> -	    qca_is_wcn6750(data->soc_type))) {
-> +	if ((qca_is_wcn399x(data->soc_type) ||
-> +	     qca_is_wcn6750(data->soc_type))) {
->  		qcadev->btsoc_type = data->soc_type;
->  		qcadev->bt_power = devm_kzalloc(&serdev->dev,
->  						sizeof(struct qca_power),
-> @@ -2077,10 +2084,7 @@ static int qca_serdev_probe(struct serdev_device *serdev)
->  			return err;
->  		}
->  	} else {
-> -		if (data)
-> -			qcadev->btsoc_type = data->soc_type;
-> -		else
-> -			qcadev->btsoc_type = QCA_ROME;
-> +		qcadev->btsoc_type = data->soc_type;
->  
->  		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
->  					       GPIOD_OUT_LOW);
-> @@ -2309,9 +2313,9 @@ static SIMPLE_DEV_PM_OPS(qca_pm_ops, qca_suspend, qca_resume);
->  
->  #ifdef CONFIG_OF
->  static const struct of_device_id qca_bluetooth_of_match[] = {
-> -	{ .compatible = "qcom,qca6174-bt" },
-> +	{ .compatible = "qcom,qca6174-bt", .data = &qca_soc_data_default},
->  	{ .compatible = "qcom,qca6390-bt", .data = &qca_soc_data_qca6390},
-> -	{ .compatible = "qcom,qca9377-bt" },
-> +	{ .compatible = "qcom,qca9377-bt", .data = &qca_soc_data_default},
->  	{ .compatible = "qcom,wcn3990-bt", .data = &qca_soc_data_wcn3990},
->  	{ .compatible = "qcom,wcn3991-bt", .data = &qca_soc_data_wcn3991},
->  	{ .compatible = "qcom,wcn3998-bt", .data = &qca_soc_data_wcn3998},
-> -- 
-> 2.30.2
-> 
+> It's only one data point, but we're seeing adoption of the ACPI
+> DT-in-DSD for camera. It's still not pretty of course.
+
+By non-Linux system vendors?  My understanding has been that for audio
+people are just unwilling to provide the level of firmware description
+required to avoid quirks, there was some limited stuff with the NHLT
+table but it still required system software to quirk things.  If there's
+progress elsewhere perhaps the relevant people can be persuaded to have
+another go...
+
+> Once travel will be easier again, we'll plot a take over of the world in
+> a bar. Dealing with ACPI requires lots of whisky :-)
+
+Indeed!
+
+--WHz+neNWvhIGAO8A
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvHs0ACgkQJNaLcl1U
+h9BpVQf/ZwDGOuXDd1Ddz3ZHe8HDdBd9aiLpP0rIGJD5b97HQ29Cen4aLxkStQ1l
+8rLMCNuA452jN+AOWKio8TgRDYx9fK80kzkXGzjErsjax+G1yLLstMWpR5SsCLTB
+nsPXpMXyE+GXqT7BNJYHw4PUhwl6QhGKrJkTmPVz5G2CUrq1hjF9kZ5idBMNsM8E
+U6jXpXFuyaN2ur6HUtNad5SUKsCJ61UG7SpDvkUmRvxoS9cKFH/6q1dhNN6nT23f
+kMud9UAYs0RSaOqaZ8iCCgtv6zmQ6yt3/o5Z9uiJZCVIq9PZMoNoSZAi9+vYIk0L
+auWi/xr0KSW6p6E9XzdwTCZVtVHn8w==
+=4IKh
+-----END PGP SIGNATURE-----
+
+--WHz+neNWvhIGAO8A--
