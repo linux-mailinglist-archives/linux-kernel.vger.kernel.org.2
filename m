@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8644E3C83E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7393C83E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238969AbhGNLdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S239115AbhGNLdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232151AbhGNLdI (ORCPT
+        with ESMTP id S231533AbhGNLdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:33:08 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A11FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:30:16 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
-        by laurent.telenet-ops.be with bizsmtp
-        id UzWF2500Q1ccfby01zWF5D; Wed, 14 Jul 2021 13:30:15 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3d5j-0017bO-1o; Wed, 14 Jul 2021 13:30:15 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3d5i-00A9SG-Bi; Wed, 14 Jul 2021 13:30:14 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] dt-bindings: memory: renesas,rpc-if: Miscellaneous improvements
-Date:   Wed, 14 Jul 2021 13:30:13 +0200
-Message-Id: <d430f9c06d6691fe8a98f923cdb7ca13772834b1.1626262043.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Jul 2021 07:33:45 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DAFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:30:52 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id q16so3037056lfa.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Mozi9talEt/mI/l6KvxWbDISyLan2Xy8GUlPURIr5DU=;
+        b=U7/DhKhNmVUdV3Sye2e/5tqT84ejq9b5yhPmYNLkPRx9a4PpPntXnJeJsldN18S/3O
+         U/IfB+bPfJpi91IaxMRBELgtR58045qqqUtA0NaGm4KrPYLb8PEJAmCDBfJMJiV+yPEs
+         u+FJpfqTljOUwLcsyUuJ/rqJNy37vWx5m7vCLgf0kTbFcapnpi4dnly5cG2MojzneJud
+         5lGgGb244KCcTWKqkukmED7C+dYYKqRrl9BUn3OcfZVg6W+DvaPIJKijRIDtx4Clkn7+
+         0PMrAtQgReO9QW4mGxwxgvIef5D/GOnTSMjUVOxElanVPa00+PzPG7B/iblsBB1bxsiO
+         M5TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Mozi9talEt/mI/l6KvxWbDISyLan2Xy8GUlPURIr5DU=;
+        b=YsJ685Metw5D5Rj8ZVunEs0R5YYp77ueh1u5+OtjpE4VkXloolR/phml6gQCKN1pCD
+         FgxPhlJIpyzNq5nMjpNAHyAdAGnAqhzrDtBl9UNmwA+2Lt+Nn2LNOdGm7Y3mi7wwWPT7
+         /QlmhyuSMKAFKELrSCW45drydh0GD57g1j2VC//wylwE53WdknIlgR2VQl1pJ8wzSPVC
+         uFgDgt3HlClFM0UaZsw3Dz5ohHzD2/Ba2Xt8tHGs8OxHv93r8yZ5FQb6bdiGyqLtSHGW
+         dC5aEJqLXiz81l8FHmhb21CgN9OYN6+l1iCkLrCrcLN2/vxV9762B96Sfcjr74E+BeAt
+         LYAw==
+X-Gm-Message-State: AOAM532bXvsQ9DmBQtMqEUUwuRVX62jAN4RpTH9LIIdz0GgsfApymh9H
+        jRcSFqees/Mwv/GQH4Mfmr0kLEAyCERx3Nq62Sw=
+X-Google-Smtp-Source: ABdhPJwUhpfObmEbkB8VYjyIpMklkrYWIvHP5FEUUJdqgtIoodHkZfXkVjh+yrE+5+HBfi7CJXJGkq0fJRGW6CJwFOk=
+X-Received: by 2002:a19:fc03:: with SMTP id a3mr7716139lfi.327.1626262250947;
+ Wed, 14 Jul 2021 04:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a9a:5f46:0:b029:115:617:66a with HTTP; Wed, 14 Jul 2021
+ 04:30:50 -0700 (PDT)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <barrimurphy1965@gmail.com>
+Date:   Wed, 14 Jul 2021 13:30:50 +0200
+Message-ID: <CAGZA+7qTm0CGGCjhx8oJpgyH3LwwFhSGorymoqHZicSpL=vN=w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  - Add missing "#{address,size}-cells",
-  - Fix rejection of legitimate flash subnodes containing multiple
-    compatible values,
-  - Add missing list of required properties.
+Hallo
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- .../memory-controllers/renesas,rpc-if.yaml    | 23 ++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+Mein Name ist George Mike, ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+dir anbieten
+der n=C3=A4chste Angeh=C3=B6rige meines Klienten. Sie erben die Summe von (=
+8,5
+Millionen US-Dollar)
+Dollar, die mein Mandant vor seinem Tod auf der Bank hinterlie=C3=9F.
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-index 990489fdd2ac33fe..c0d899a2305361b1 100644
---- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-@@ -56,17 +56,34 @@ properties:
-   resets:
-     maxItems: 1
- 
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
- patternProperties:
-   "flash@[0-9a-f]+$":
-     type: object
-     properties:
-       compatible:
--        enum:
--          - cfi-flash
--          - jedec,spi-nor
-+        contains:
-+          enum:
-+            - cfi-flash
-+            - jedec,spi-nor
- 
- unevaluatedProperties: false
- 
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - power-domains
-+  - resets
-+  - '#address-cells'
-+  - '#size-cells'
-+
- examples:
-   - |
-     #include <dt-bindings/clock/renesas-cpg-mssr.h>
--- 
-2.25.1
+Mein Mandant ist ein B=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall gestorben ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
+50% dies tun werden
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Details:georgemike7031@gmail.com
 
+Vielen Dank im Voraus,
+Herr George Mike,
