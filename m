@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EDC3C8A7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9602E3C8A7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239944AbhGNSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 14:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhGNSMb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:12:31 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDA6C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:09:38 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id i5so5162178lfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 11:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ij5c5QtyImKnAJ85AhNr0s4HqHfwN57z+cA0A4w9TXQ=;
-        b=tP02GM10ESokXnfzuxqxyGhn+LXYrrm8TTsb0+WcG/RMMEk6ZIvyOA8njSVXinuPi0
-         8OwwVj78Cn36LsfAMVQzjEHdchb6s8HzynJKXNFaXWXyZgrttIZwZFNs0UaXLPTchX9j
-         4ebjWYjT3oVH01OKeOU9OCs90UQCyM0oN3DoHI0Q9aLfZCue3M7sOeSj8kENCZHrlqjU
-         zu8AVJD/bCI2Y2osCvdQEE6rnLXPf6c5NW0xSwWiNwsaz6DnHrSmUYX98wQY9UiCD+il
-         AARZX0oSlWsL+Vh8fDDpvJWY5oXQNSjZ2c6hfqx3VwCKvo6ysGipm+rBBTCOgTMIR3wQ
-         YFJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ij5c5QtyImKnAJ85AhNr0s4HqHfwN57z+cA0A4w9TXQ=;
-        b=A3O+ceUr07SXnMplwT0fDYXoa3dWtdIDtOqjtrSJ7ttMDV9HzWwjwFvxiQAXITvAvd
-         kD0kRRmUeDWdtSG0InTAm5te6NuIcRb5WlKaGMEHCaxVaZodn0jbHQXl8zNqzU83/JZR
-         9io+wEpmJztPtanThmRLvXrWwvGlqo6ajUb/0dBW2EwOrTPvf5wdB+JjCgaswEoCY8/Q
-         fhrkcW98EeYY77TOb0Er90gNRHRJbrXhn35UduzAHJurGNt20buO7GrvRLTwQNY2gDJV
-         GVrNU9pSJwT31ShJI3GIuMB3lLBsQCzGGaVbqSm9CxEmy+f+1ljrtxVx41tj1xv/aNo3
-         RD8A==
-X-Gm-Message-State: AOAM530mXYEwDOt1V7QG/GDPZg3PAjUFP3ZjIqaS4LNbZEl5+qN6bTGH
-        vrGJxznDjL1AXhWBguiY7OGKkY0kQJpjzCj1M+L8mA==
-X-Google-Smtp-Source: ABdhPJx4KbBG6lrTeab1p1OzfGrztNprrxVheKM54pSelWmgS8ycp9fITsymufFWStCtFwAgfHJPrlZycm5VIuP6blA=
-X-Received: by 2002:a05:6512:3e0c:: with SMTP id i12mr8754331lfv.122.1626286176530;
- Wed, 14 Jul 2021 11:09:36 -0700 (PDT)
+        id S239992AbhGNSMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 14:12:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:37972 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229651AbhGNSMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 14:12:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0A58D6E;
+        Wed, 14 Jul 2021 11:09:42 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABD033F774;
+        Wed, 14 Jul 2021 11:09:41 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 19:09:39 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 05/13] mailbox: pcc: Consolidate subspace doorbell
+ register parsing
+Message-ID: <20210714180939.GB49078@e120937-lin>
+References: <20210708180851.2311192-1-sudeep.holla@arm.com>
+ <20210708180851.2311192-6-sudeep.holla@arm.com>
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
- <YOaR1ZjToP/kgNsC@infradead.org> <CAK8P3a1ctLcHuLZfBJ7wXHRmidpQZ4EZdML1nqPJVGYVTgHmaw@mail.gmail.com>
- <CAKwvOdkaifETNvtTA3O9EToVHAK0N50wkT-bHOpQ2RmFg7qk0A@mail.gmail.com> <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Jul 2021 11:09:24 -0700
-Message-ID: <CAKwvOdkUUJU8Ktg8Wcvg3pbsyUWLCH0320nF-aQWre0hGTP2Ag@mail.gmail.com>
-Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708180851.2311192-6-sudeep.holla@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 1:07 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Thu, Jul 8, 2021 at 8:04 PM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
->
-> > > /usr/bin/powerpc64-linux-gnu-gcc-5.2.0
-> > > /usr/bin/powerpc64-linux-gnu-gcc -> powerpc64-linux-gnu-gcc-5.2.0
-> > > /usr/local/bin/ppc64le-linux-gcc-9
-> > > ~/bin/powerpc/powerpc-linux-unknown-gcc-12.0.20210708.experimental
-> > >
-> > > all of these should be able to cross-build any powerpc kernel, but
-> > > there is no obvious first choice (highest version, first in path,
-> > > ordered list of target triples, ...). I tried coming up with a heuristic
-> > > to pick a reasonable toolchain, but at some point gave up because
-> > > I failed to express that in a readable bash or Makefile syntax.
-> >
-> > Right; foremost in my mind was arm-linux-gnueabi-gcc vs
-> > arm-linux-gnueabihf-gcc.  That's not even to mention the versioned
-> > suffixes.
-> >
-> > In terms of multiversion support; this series doesn't regress doing
-> > things the hard/verbose way.  But I think for most users we can have a
-> > simpler common case; folks can play with their $PATH or focus on more
-> > hermetic builds if they want this new feature (CROSS_COMPILE
-> > inference) AND support for multiple versions of the same toolchain.
->
-> Fair enough. So how something like this:
->
-> powerpc-targets := powerpc32 powerpc64 powerpc32le \
->         powerpc32be powerpc64le powerpc64be ppc64le ppc64be
-> arm-targets := arm-linux-gnueabi arm-linux-gnueabihf
-> x86-targets := x86_64 i386 i686
-> x86_64-targets := x86
-> i386-targets := i686 x86 x86_64
-> parisc-targets := hppa64 hppa
-> ...
->
-> CROSS_COMPILE ?= `find-toolchain $(ARCH) $($(ARCH)-targets)`
->
-> where find-toolchain just finds the first working toolchain based, looking
-> for $(target)-linux-gcc $(target)-gcc $(target)-unknown-linux-gcc etc
-> in $(PATH) but ignoring the versions?
+On Thu, Jul 08, 2021 at 07:08:43PM +0100, Sudeep Holla wrote:
+> Extended PCC subspaces(Type 3 and 4) differs from generic(Type 0) and
+nit: s/differs/differ
 
-Sure, debian doesn't even package different versions of the cross GCC
-packages AFAIK; no idea about other distros.  Though the user may have
-built from source, or have multiple versions fetched from tarballs.
+> HW-Reduced Communication(Type 1 and 2) subspace structures. However some
+> fields share same offsets and same type of structure can be use to
+> extract the fields. In order to simplify that, let us move all the doorbell
+> register parsing into pcc_parse_subspace_db_reg and consolidate there.
+> It will be easier to extend it if required within the same.
+> 
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/mailbox/pcc.c | 31 +++++++++++++++++++++++--------
+>  1 file changed, 23 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+> index 55866676a508..5f19bee71c04 100644
+> --- a/drivers/mailbox/pcc.c
+> +++ b/drivers/mailbox/pcc.c
+> @@ -447,6 +447,28 @@ static int pcc_parse_subspace_irq(struct pcc_chan_info *pchan,
+>  	return 0;
+>  }
+>  
+> +/**
+> + * pcc_parse_subspace_db_reg - Parse the PCC doorbell register
+> + *
+> + * @pchan: Pointer to the PCC channel info structure.
+> + * @pcct_entry: Pointer to the ACPI subtable header.
+> + *
+> + */
+> +static void pcc_parse_subspace_db_reg(struct pcc_chan_info *pchan,
+> +				      struct acpi_subtable_header *pcct_entry)
+> +{
+> +	struct acpi_pcct_subspace *pcct_ss;
+> +	struct acpi_generic_address *db_reg;
+> +
+> +	pcct_ss = (struct acpi_pcct_subspace *)pcct_entry;
+> +
+> +	/* If doorbell is in system memory cache the virt address */
+> +	db_reg = &pcct_ss->doorbell_register;
+> +	if (db_reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
+> +		pchan->db_vaddr = acpi_os_ioremap(db_reg->address,
+> +						  db_reg->bit_width / 8);
+> +}
+> +
+>  /**
+>   * acpi_pcc_probe - Parse the ACPI tree for the PCCT.
+>   *
+> @@ -512,8 +534,6 @@ static int __init acpi_pcc_probe(void)
+>  
+>  	for (i = 0; i < count; i++) {
+>  		struct pcc_chan_info *pchan = chan_info + i;
+> -		struct acpi_generic_address *db_reg;
+> -		struct acpi_pcct_subspace *pcct_ss;
+>  		pcc_mbox_channels[i].con_priv = pcct_entry;
+>  
+>  		if (pcc_mbox_ctrl.txdone_irq) {
+> @@ -521,13 +541,8 @@ static int __init acpi_pcc_probe(void)
+>  			if (rc < 0)
+>  				goto err;
+>  		}
+> -		pcct_ss = (struct acpi_pcct_subspace *) pcct_entry;
+> +		pcc_parse_subspace_db_reg(pchan, pcct_entry);
+>  
+> -		/* If doorbell is in system memory cache the virt address */
+> -		db_reg = &pcct_ss->doorbell_register;
+> -		if (db_reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
+> -			pchan->db_vaddr = acpi_os_ioremap(db_reg->address,
+> -							  db_reg->bit_width / 8);
+>  		pcct_entry = (struct acpi_subtable_header *)
+>  			((unsigned long) pcct_entry + pcct_entry->length);
+>  	}
+> -- 
+> 2.25.1
+> 
 
-I think we can simplify the common case of "I just wan't to cross
-compile, I don't necessarily care about an older compiler version
-co-installed with a newer one." ("and if I did, I could still use
-CROSS_COMPILE the verbose way").
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
 
-> What I had actually planned was a set of helpers that allow you to
-> do this in multiple steps:
->
-> - if $(objtree)/scripts/cross/bin/gcc (or something else we pick)
->   exists and CROSS_COMPILE is not set, set CROSS_COMPILE
->   to $(objtree)/scripts/cross/bin/ in the Makefile
-> - add script to enumerate the installed toolchains
-> - add a second script to symlink one of those toolchains to
->   $(objtree)/scripts/cross/bin
-
-(and check the symlink isn't broken should the user uninstall a
-toolchain, or have their distro update their toolchain version)
-
-> - add a third script to download a cross-toolchain from kernel.org
->   for $(ARCH) and install it to one of the locations that the first
->   script looks for (/opt/cross/, $(HOME)/cross/, $(objtree)scripts/cross/)
-
-Would the user be prompted for the download? So during
-`defconfig`/configuration we could prompt and say "it looks like
-you're cross compiling without setting CROSS_COMPILE, would you like
-me to fetch a cross compiler for you?"
-
-Seems reasonable, when cross compiling with GCC.
--- 
 Thanks,
-~Nick Desaulniers
+Cristian
+
