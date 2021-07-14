@@ -2,186 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650823C7BA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242203C7BA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237550AbhGNCWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237530AbhGNCWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:22:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC2BA61361;
-        Wed, 14 Jul 2021 02:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626229160;
-        bh=i4eEglXPWeRoBvQUL6FzZPjJYWoDlvaJfAAc3qlwTWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LgkqHbJZAzEn6uKw0qpFx6ln7UosMGIId1eejH4/UBWbHINvip8cSTIArsl1gVFhh
-         tlhrrl+SjMzc4ePvztBw/IChvH/H3+dU9Gfwu9i9IJ2XZniDXKToweGJ+n8pBo1E62
-         zWk7bfneeE946gfv4GRMDkj8NrR+yFZK45AisyWQ2tjACrl4uQ1Vj/x4HDlIS/+OXY
-         Axia7uulEB8J7vyeRmTm5uc0VrIaxpz91cKku2IrkGspoXTIZyFL0+8gKNpW5P0SGw
-         GWe7xqorm1QA0VQ6HF6r+vQbR5V9IoQ8IvAxoQYkXwMUGz0fQwhaAkd4sHhEZIko9C
-         iO5IclZLFUOUQ==
-Date:   Tue, 13 Jul 2021 19:19:18 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-Message-ID: <YO5JptcNuT28JJtX@google.com>
-References: <20210601101024.119356-1-yuchao0@huawei.com>
- <YN32/NsjqJONbvz7@google.com>
- <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
- <YN5srPRZaPN9gpZ0@google.com>
- <b828fc22-f15a-8be4-631a-ed4ecb631386@kernel.org>
- <YOXo3CT5sBvj6p0J@google.com>
- <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
- <YO4jGkKLQWZKrgny@google.com>
- <8f8d5645-9860-3e16-a09d-1a988ca6be72@kernel.org>
+        id S237556AbhGNCWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237555AbhGNCWS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:22:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876A2C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:19:27 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y4so590383pfi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YUWPTzB4dLR17/T5lZ7IYCIE7LvDfGsZbPME2WfdaEQ=;
+        b=Skmc4/PTwW2vYOAvkxNEp/sYehALwIe3vbYmis9pp8B8s8+wKbwKLLkS2x6Uw0hnu3
+         0svGx8KcIUZK3SigWkrI1LBoqGu1Gr/zfFuUkQYY1z+GkIQJyZmhGqeDKIrbtkGJkA9/
+         pV4SFmb6Em4EJHyfkvu52ERl3YZgKA2kl4gFPSlJlROoiehQQIfHPqiC99fxTZvdJuLd
+         EiLrpiwCuiSYVnmy8yfgjiy36rHG6vuajRXQqWXRpeItlXDPp/KYqloeAmd8U0ejyp7Z
+         +rOKfLdJcEVKX2jUAiZJFb1dHgMx8bLQzO3xc3+iNg0jTqpv8EwU3a8X/RGDZ9tV/fe8
+         53JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YUWPTzB4dLR17/T5lZ7IYCIE7LvDfGsZbPME2WfdaEQ=;
+        b=fYmu+S1NS5WA8xFDqsEJMu1+ltc3eNU6a3sdeC2gwC8LwQQ7uk7rrCdsGxnlkXxVYQ
+         fJzPs0Y8ziPjSMLk/IEvfEx7erYyf6rZDgBHyCAUC+bBPy40glgxwAbyXKIO8GnNz2J1
+         8Dmj5AaQtTzz8B4f+vNmKstG/c8TuGmo/Bc1kICMqHOrug7Dh5DP4p3F0epyyL2qPWJu
+         PIfViB6fpHB7rT0liI6k0lOSOCn4ghDG6e0BMcVKaPChbOs960qcTf25XRZ7HgAv9r5H
+         SwiVBZkkpTSCXR5wG2nTyBa4lQII5NBXK3TtAIaLsruGiuHTToeUTEDA/DAYcVKGRD3G
+         1QuA==
+X-Gm-Message-State: AOAM530vzY/E+o1e2+x4Ge+jWER7rrdAY1dMwb27AuXiH3pkQQba4Ck7
+        OSkwFaIcuth0qdjPrj+X4v3+pw==
+X-Google-Smtp-Source: ABdhPJxLOPLEDHG4baKqARncau1utGS0ltDshGrrtQ4HLM6pZ8LZIXvVGdAGINqm7KHcuA2FTBkJpw==
+X-Received: by 2002:a63:6e09:: with SMTP id j9mr6980452pgc.275.1626229167125;
+        Tue, 13 Jul 2021 19:19:27 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id a6sm437140pjq.27.2021.07.13.19.19.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 19:19:26 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 07:49:24 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device
+ subnode
+Message-ID: <20210714021924.uob5wrasipzhbyrj@vireshk-i7>
+References: <cover.1626173013.git.viresh.kumar@linaro.org>
+ <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+ <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
+ <20210713151917.zouwfckidnjxvohn@vireshk-i7>
+ <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8f8d5645-9860-3e16-a09d-1a988ca6be72@kernel.org>
+In-Reply-To: <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/14, Chao Yu wrote:
-> On 2021/7/14 7:34, Jaegeuk Kim wrote:
-> > On 07/13, Chao Yu wrote:
-> > > On 2021/7/8 1:48, Jaegeuk Kim wrote:
-> > > > On 07/02, Chao Yu wrote:
-> > > > > On 2021/7/2 9:32, Jaegeuk Kim wrote:
-> > > > > > On 07/02, Chao Yu wrote:
-> > > > > > > On 2021/7/2 1:10, Jaegeuk Kim wrote:
-> > > > > > > > On 06/01, Chao Yu wrote:
-> > > > > > > > > [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
-> > > > > > > > > 
-> > > > > > > > > As [1] reported, if lower device doesn't support write barrier, in below
-> > > > > > > > > case:
-> > > > > > > > > 
-> > > > > > > > > - write page #0; persist
-> > > > > > > > > - overwrite page #0
-> > > > > > > > > - fsync
-> > > > > > > > >      - write data page #0 OPU into device's cache
-> > > > > > > > >      - write inode page into device's cache
-> > > > > > > > >      - issue flush
-> > > > > > > > 
-> > > > > > > > Well, we have preflush for node writes, so I don't think this is the case.
-> > > > > > > > 
-> > > > > > > >      fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
-> > > > > > > 
-> > > > > > > This is only used for atomic write case, right?
-> > > > > > > 
-> > > > > > > I mean the common case which is called from f2fs_issue_flush() in
-> > > > > > > f2fs_do_sync_file().
-> > > > > > 
-> > > > > > How about adding PREFLUSH when writing node blocks aligned to the above set?
-> > > > > 
-> > > > > You mean implementation like v1 as below?
-> > > > > 
-> > > > > https://lore.kernel.org/linux-f2fs-devel/20200120100045.70210-1-yuchao0@huawei.com/
-> > > > 
-> > > > Yea, I think so. :P
-> > > 
-> > > I prefer v2, we may have several schemes to improve performance with v2, e.g.
-> > > - use inplace IO to avoid newly added preflush
-> > > - use flush_merge option to avoid redundant preflush
-> > > - if lower device supports barrier IO, we can avoid newly added preflush
-> > 
-> > Doesn't v2 give one more flush than v1? Why do you want to take worse one and
+On 13-07-21, 13:34, Rob Herring wrote:
+> On Tue, Jul 13, 2021 at 9:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > We already do this for linux-event-codes.h and so I thought it is the
+> > right way of doing it :)
 > 
-> FUA implies an extra preflush command or similar mechanism in lower device to keep data
-> in bio being persistent before this command's completion.
+> Humm, maybe it's okay. Please double check then...
 > 
-> Also if lower device doesn't support FUA natively, block layer turns it into an empty
-> PREFLUSH command.
+> > Else we can create a new copy, which will be a mess, or use hardcoded
+> > values.
 > 
-> So, it's hard to say which one will win the benchmark game, maybe we need some
-> performance data before making the choice, but you know, it depends on device's
-> character.
+> Though you may not need the header based on what Arnd and I have suggested.
 
-I was looking at # of bios.
+Yeah, we may not need it at all. New node or not, reg property will
+get converted to a compatible anyway..
 
-> 
-> > try to improve back? Not clear the benefit on v2.
-> 
-> Well, if user suffer and complain performance regression with v1, any plan to improve it?
-> 
-> I just thought about plan B/C/D for no matter v1 or v2.
+Thanks.
 
-I assumed you wanted v2 since it might be used for B/C/D improvements. But, it
-seems it wasn't. My point is to save one bio, but piggyback the flag to the
-device driver.
-
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > > 
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > > 
-> > > > > > > 
-> > > > > > > And please see do_checkpoint(), we call f2fs_flush_device_cache() and
-> > > > > > > commit_checkpoint() separately to keep persistence order of CP datas.
-> > > > > > > 
-> > > > > > > See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
-> > > > > > > for details.
-> > > > > > > 
-> > > > > > > Thanks,
-> > > > > > > 
-> > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > If SPO is triggered during flush command, inode page can be persisted
-> > > > > > > > > before data page #0, so that after recovery, inode page can be recovered
-> > > > > > > > > with new physical block address of data page #0, however there may
-> > > > > > > > > contains dummy data in new physical block address.
-> > > > > > > > > 
-> > > > > > > > > Then what user will see is: after overwrite & fsync + SPO, old data in
-> > > > > > > > > file was corrupted, if any user do care about such case, we can suggest
-> > > > > > > > > user to use STRICT fsync mode, in this mode, we will force to trigger
-> > > > > > > > > preflush command to persist data in device cache in prior to node
-> > > > > > > > > writeback, it avoids potential data corruption during fsync().
-> > > > > > > > > 
-> > > > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > > > > > > ---
-> > > > > > > > > v2:
-> > > > > > > > > - fix this by adding additional preflush command rather than using
-> > > > > > > > > atomic write flow.
-> > > > > > > > >      fs/f2fs/file.c | 14 ++++++++++++++
-> > > > > > > > >      1 file changed, 14 insertions(+)
-> > > > > > > > > 
-> > > > > > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > > > > > > index 7d5311d54f63..238ca2a733ac 100644
-> > > > > > > > > --- a/fs/f2fs/file.c
-> > > > > > > > > +++ b/fs/f2fs/file.c
-> > > > > > > > > @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
-> > > > > > > > >      				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
-> > > > > > > > >      			goto flush_out;
-> > > > > > > > >      		goto out;
-> > > > > > > > > +	} else {
-> > > > > > > > > +		/*
-> > > > > > > > > +		 * for OPU case, during fsync(), node can be persisted before
-> > > > > > > > > +		 * data when lower device doesn't support write barrier, result
-> > > > > > > > > +		 * in data corruption after SPO.
-> > > > > > > > > +		 * So for strict fsync mode, force to trigger preflush to keep
-> > > > > > > > > +		 * data/node write order to avoid potential data corruption.
-> > > > > > > > > +		 */
-> > > > > > > > > +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
-> > > > > > > > > +								!atomic) {
-> > > > > > > > > +			ret = f2fs_issue_flush(sbi, inode->i_ino);
-> > > > > > > > > +			if (ret)
-> > > > > > > > > +				goto out;
-> > > > > > > > > +		}
-> > > > > > > > >      	}
-> > > > > > > > >      go_write:
-> > > > > > > > >      	/*
-> > > > > > > > > -- 
-> > > > > > > > > 2.29.2
+-- 
+viresh
