@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803853C9221
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A5C3C924D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhGNUfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:35:25 -0400
-Received: from mx4.securetransport.de ([178.254.6.145]:46468 "EHLO
-        mx4.securetransport.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbhGNUfY (ORCPT
+        id S231154AbhGNUot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:44:49 -0400
+Received: from st43p00im-zteg10063401.me.com ([17.58.63.175]:53771 "EHLO
+        st43p00im-zteg10063401.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230463AbhGNUos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:35:24 -0400
-X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 16:35:24 EDT
-Received: from mail.dh-electronics.com (business-24-134-97-169.pool2.vodafone-ip.de [24.134.97.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.securetransport.de (Postfix) with ESMTPSA id 00E5072085C;
-        Wed, 14 Jul 2021 22:25:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1626294344;
-        bh=1ydmi6FFj4AhAPhPs81r+ILQytchAfOzwLRI5g41Z9s=;
-        h=From:To:CC:Subject:Date:From;
-        b=pEI0ezBw2CLNZH9E6W3Ojn5lnnsM87ZwgfuMIWxee2keHWtibQnD81N+lvbLAc+qe
-         PhpZOJcVyqPOIGAVo+1w4g8c2X4L/+CQyT2Cda9cg4ssSymrjXm1TMeUIFbEp9O/CO
-         3/gfVhPleVIVYgyde5iGMAO3ptMdJ+quFONKuUCVEvTD/1k6XCwK8PM5cTluYw08gz
-         OUVC8teIxYX4n1+ymiZLwXYGX39NCyRtUU9jLJfEr5J9hKhfN7mFCNrAfNQPYioJjS
-         8uxjIZJ45g0zTugCnKDa6B8+LoKG/lmk05xhqb9VuoOqcd+Stg89QIXJrr7YDZY4yv
-         XktgGdmRR7NXQ==
-Received: from DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) by
- DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.12; Wed, 14 Jul 2021 22:25:32 +0200
-Received: from localhost.localdomain (172.16.51.7) by
- DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.12
- via Frontend Transport; Wed, 14 Jul 2021 22:25:32 +0200
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To:     <devicetree@vger.kernel.org>
-CC:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, <kernel@dh-electronics.com>,
-        Fabio Estevam <festevam@denx.de>
-Subject: [PATCH V3] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02 boards
-Date:   Wed, 14 Jul 2021 22:22:52 +0200
-Message-ID: <20210714202252.5898-1-cniedermaier@dh-electronics.com>
-X-Mailer: git-send-email 2.11.0
-X-klartext: yes
+        Wed, 14 Jul 2021 16:44:48 -0400
+X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Jul 2021 16:44:48 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1626294927;
+        bh=7DwUPoV9IztFfSwlvH+mW8SDazur3k/YH6VaR6m3ZKk=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=zOJ1t7Ok2BF0GgxbtBr9hUbdB8ijS9AdjtyTaeP8NP6/xBm2Q56USCMBL2rXWTWTv
+         Aq2h0iPfL4TyB3PKE4sGf55CC696mTXWhAZWNjxFrfCOqXNBtJ+TwYj1rn2ij0XrS5
+         ZklsGn7aIT6W+G+fXAYyYV4OatpJlh5B1DDu6OLTMIyOc8OTY0hOrWS68cLu8kWnbA
+         qpQPk+E8GCW3bcIyjRQ91dUINgzTbYioZkIJ/8loOC5f3a6P9OeC7SUemuHOfqyT6W
+         yyF3WFChg6T3iJz5umuPRRbOEdrh9ohJ9bsA3yaeIhAUP8BS9RfURaSCFA6L55lso6
+         O3O+tfh84MFrA==
+Received: from localhost.localdomain (dyn-72-33-2-114.uwnet.wisc.edu [72.33.2.114])
+        by st43p00im-zteg10063401.me.com (Postfix) with ESMTPSA id E8F874A047D;
+        Wed, 14 Jul 2021 20:35:25 +0000 (UTC)
+From:   Marco Kurzynski <marcokurzynski@icloud.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Marco Kurzynski <marcokurzynski@icloud.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/gpu/drm/i915/display: remove boilerplate code using LOCK_ALL macros
+Date:   Wed, 14 Jul 2021 15:33:25 -0500
+Message-Id: <20210714203324.146783-1-marcokurzynski@icloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-14_10:2021-07-14,2021-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2107140122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DH electronics DHCOM PicoITX and DHCOM DRC02 boards. The DHCOM DRC02
-device can only house a SOM with iMX6S and not with iMX6DL, due to some
-thermal design consideration. But for compatible fsl,imx6dl is chosen,
-because fsl,imx6s isn't available, the iMX6S is basically a iMX6DL with
-one CPU core disabled and therefore the kernel discerns the iMX6S/iMX6DL
-automatically.
+Replaced the boilerplate code for intel_display.c with
+DRM_MODESET_LOCK_ALL macros per the TODO in gpu
 
-Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: robh+dt@kernel.org
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: kernel@dh-electronics.com
-Cc: Fabio Estevam <festevam@denx.de>
-To: devicetree@vger.kernel.org
----
-V2: - Remove line with fsl,imx6s on the DRC02 Board
-V3: - Rework of the commit message
-    - Add Fabio Estevam to the CC list
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+(I apologize if I did something wrong, this is my first contribution of
+hopefully many, so excited!!!)
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 1c827c1954dc..6eff9e35f9a9 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -418,6 +418,12 @@ properties:
-           - const: dfi,fs700e-m60
-           - const: fsl,imx6dl
+Signed-off-by: Marco Kurzynski <marcokurzynski@icloud.com>
+---
+ drivers/gpu/drm/i915/display/intel_display.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+index 3bad4e00f7be..4a46d63b4d39 100644
+--- a/drivers/gpu/drm/i915/display/intel_display.c
++++ b/drivers/gpu/drm/i915/display/intel_display.c
+@@ -13307,22 +13307,12 @@ void intel_display_resume(struct drm_device *dev)
+ 	if (state)
+ 		state->acquire_ctx = &ctx;
  
-+      - description: i.MX6DL DHCOM PicoITX Board
-+        items:
-+          - const: dh,imx6dl-dhcom-picoitx
-+          - const: dh,imx6dl-dhcom-som
-+          - const: fsl,imx6dl
-+
-       - description: i.MX6DL Gateworks Ventana Boards
-         items:
-           - enum:
-@@ -469,6 +475,12 @@ properties:
-           - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
-           - const: fsl,imx6dl
+-	drm_modeset_acquire_init(&ctx, 0);
+-
+-	while (1) {
+-		ret = drm_modeset_lock_all_ctx(dev, &ctx);
+-		if (ret != -EDEADLK)
+-			break;
+-
+-		drm_modeset_backoff(&ctx);
+-	}
+-
++	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+ 	if (!ret)
+ 		ret = __intel_display_resume(dev, state, &ctx);
  
-+      - description: i.MX6S DHCOM DRC02 Board
-+        items:
-+          - const: dh,imx6s-dhcom-drc02
-+          - const: dh,imx6s-dhcom-som
-+          - const: fsl,imx6dl
-+
-       - description: i.MX6SL based Boards
-         items:
-           - enum:
+ 	intel_enable_ipc(dev_priv);
+-	drm_modeset_drop_locks(&ctx);
+-	drm_modeset_acquire_fini(&ctx);
++	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+ 
+ 	if (ret)
+ 		drm_err(&dev_priv->drm,
 -- 
-2.11.0
+2.25.1
 
