@@ -2,81 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D913C9444
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198A93C9445
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 01:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235883AbhGNXRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 19:17:42 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:43684 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhGNXRl (ORCPT
+        id S236369AbhGNXSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 19:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhGNXSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 19:17:41 -0400
-Received: by mail-io1-f48.google.com with SMTP id k16so4192110ios.10;
-        Wed, 14 Jul 2021 16:14:49 -0700 (PDT)
+        Wed, 14 Jul 2021 19:18:06 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2EDC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 16:15:14 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id w5-20020a0569021005b029055b51419c7dso4862620ybt.23
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 16:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DqMZpra5Z3HRb0F6ypU+rLLPpHVX8T6pVPn9AM2au8E=;
+        b=ofaJESsl8XfjG0V8ICG0P2YoedRTAkO26xasRPXkDyVVOt7Dw1IxYMkY32FsVtu1iu
+         XzTV3h8H1rSzW8FOJKuYVjyGyyzvKa5kBX2vwMlhGcneIVOSpIBLldJ1udHVWTVh8FpH
+         snmFEJqDfRJ7/wT8OhdRhbV/eUZkVlhLXbcNlWCRy4/apFPpB5O3q+LVHUHRSEH7AkjE
+         MaAn1XGaqgCgF9VXQg2xF8V5jVCkcb4Yyptj3YiLKhxdqVo7/BGc4Qn6PRa6No1aaTPI
+         CvgGbDr2Jd2CNdY4flP1utFxoRtfK/T39+60I3v9Idy9H5QtPo2Rlm5tXAQT75f1i9w/
+         W0fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h/hZfjolUitLaX6oOb58ZptnZlkhBHCK2VKrJSQEjbo=;
-        b=mqQUCGItXWq/ud9ByIlqVc3MzW3G4/0OIVHdOwf6fFYVZgwL/jIXzQ6gohydfSDJNH
-         xpsAh+YEl1QUphMAd7AMqIEexFISiIPTfgy/AD/1iwONfOHcz22Loe5d0ZhnBHTBfyCB
-         vfH2CnqQSMH/MCBdG8QaKNvqKScs7XPPWYCDD/RNaQXDc4O7l3i3gHKWOM4qelsWXM7v
-         vqSQcpUtWrhcHvez05UuNbcpNn0wucEQvcGHTE2V8LqCeGIjA7Yr4eYENA6xvgaY2hEg
-         VN4UlNmJrJVcqeUTLKRGXlt9Nt1v4qduTJFP7ODdq3yiabDgmW2ALdRpAtCPIM38Jq6W
-         SRcw==
-X-Gm-Message-State: AOAM533vbrT79LoTPX2Gkel+bP+yCBJxoFcjM1yYTkbKk31+jf0iPVFB
-        t9OVphMpivc+7IeWYMDd2Q==
-X-Google-Smtp-Source: ABdhPJzhyC/vwfS+dLQILbviGnVPtuNaPRZ64Q/MD49HkxGHbQAz6dJ82PvAkfxLh4oh7NRzSDlI+g==
-X-Received: by 2002:a5e:df08:: with SMTP id f8mr421399ioq.172.1626304489102;
-        Wed, 14 Jul 2021 16:14:49 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z11sm1969586ioh.14.2021.07.14.16.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 16:14:48 -0700 (PDT)
-Received: (nullmailer pid 3721314 invoked by uid 1000);
-        Wed, 14 Jul 2021 23:14:43 -0000
-Date:   Wed, 14 Jul 2021 17:14:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v1, 12/14] dt-bindings: media: mtk-vcodec: Adds decoder
- dt-bindings for mt8192
-Message-ID: <20210714231443.GA3720388@robh.at.kernel.org>
-References: <20210707062157.21176-1-yunfei.dong@mediatek.com>
- <20210707062157.21176-13-yunfei.dong@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707062157.21176-13-yunfei.dong@mediatek.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DqMZpra5Z3HRb0F6ypU+rLLPpHVX8T6pVPn9AM2au8E=;
+        b=G6jPI8WL2aEg+wrz2A9m5oZgSLcPV7b0E+hyQoGWYbSpf3SMdOwpMRo0XVUlEfucr1
+         R8XtLsCYNpQtTXSRKU6FBKJOmicQeCoHrrtaLYfWOcRaomQbg56wTIVT6W84F21V0N98
+         7g1NDMS8hRYL70hFv0iHzX17GUsOJNjbBmjocoG35xMv5ookSpWnWyyvQe6vKwGPr45x
+         q6caPwDR4+WFyIqsoVxI8z8H8hjNqwCDc0LmQiJ2aQ4ljGwVoTCAkvwXmbq77xo3EEOM
+         o8o5Yf03HHu/B1PluIQvmhKBaqgEyid6U3crKo2beqkquOYUvM5no8vZeSBXQG40xIEW
+         0yFA==
+X-Gm-Message-State: AOAM530SSP9h/ejZ7rHQjKVaj60BsFD1II7odcfkfM58MIilF8Tw71ey
+        kl1/irsDZdJTZPVXWt+azMCkXag4q+gdEA==
+X-Google-Smtp-Source: ABdhPJybk3UBrBC4rqlu/dHMP0SAAnOatz0g3pgP+dArk5BZpKumON9gUEfZhyQh+y2i8wrYJhFSV2UqkgpSxA==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:1109:2a1e:ff11:1796])
+ (user=dlatypov job=sendgmr) by 2002:a25:68ce:: with SMTP id
+ d197mr500955ybc.317.1626304513677; Wed, 14 Jul 2021 16:15:13 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 16:15:06 -0700
+Message-Id: <20210714231506.886386-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2] kunit: tool: add --kernel_args to allow setting module params
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 02:21:55PM +0800, Yunfei Dong wrote:
-> Adds decoder dt-bindings for mt8192.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  .../media/mediatek-vcodec-comp-decoder.txt    | 93 +++++++++++++++++++
->  1 file changed, 93 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec-comp-decoder.txt
+kunit.py currently does not make it possible for users to specify module
+parameters (/kernel arguments more generally) unless one directly tweaks
+the kunit.py code itself.
 
-Bindings are in schema format now.
+This hasn't mattered much so far, but this would make it easier to port
+existing tests that expose module parameters over to KUnit and/or let
+current KUnit tests take advantage of them.
 
-Rob
+Tested using an kunit internal parameter:
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit \
+    --kernel_args=kunit.filter_glob=kunit_status
+...
+Testing complete. 2 tests run. 0 failed. 0 crashed. 0 skipped.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+v1 -> v2:
+s/kernel_arg/kernel_args in documentation
+---
+ Documentation/dev-tools/kunit/running_tips.rst | 10 ++++++++++
+ tools/testing/kunit/kunit.py                   | 16 ++++++++++++----
+ 2 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
+index 7d99386cf94a..ebaaa2764207 100644
+--- a/Documentation/dev-tools/kunit/running_tips.rst
++++ b/Documentation/dev-tools/kunit/running_tips.rst
+@@ -80,6 +80,16 @@ file ``.kunitconfig``, you can just pass in the dir, e.g.
+ 	automagically, but tests could theoretically depend on incompatible
+ 	options, so handling that would be tricky.
+ 
++Setting kernel commandline parameters
++-------------------------------------
++
++You can use ``--kernel_args`` to pass arbitrary kernel arguments, e.g.
++
++.. code-block:: bash
++
++	$ ./tools/testing/kunit/kunit.py run --kernel_args=param=42 --kernel_args=param2=false
++
++
+ Generating code coverage reports under UML
+ ------------------------------------------
+ 
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index be8d8d4a4e08..03f3bc406955 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -28,12 +28,13 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
+ 			       ['jobs', 'build_dir', 'alltests',
+ 				'make_options'])
+ KunitExecRequest = namedtuple('KunitExecRequest',
+-			      ['timeout', 'build_dir', 'alltests', 'filter_glob'])
++                              ['timeout', 'build_dir', 'alltests',
++                               'filter_glob', 'kernel_args'])
+ KunitParseRequest = namedtuple('KunitParseRequest',
+ 			       ['raw_output', 'input_data', 'build_dir', 'json'])
+ KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
+ 					   'build_dir', 'alltests', 'filter_glob',
+-					   'json', 'make_options'])
++					   'kernel_args', 'json', 'make_options'])
+ 
+ KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
+ 
+@@ -92,6 +93,7 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
+ 	test_start = time.time()
+ 	result = linux.run_kernel(
++		args=request.kernel_args,
+ 		timeout=None if request.alltests else request.timeout,
+                 filter_glob=request.filter_glob,
+ 		build_dir=request.build_dir)
+@@ -150,7 +152,8 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 		return build_result
+ 
+ 	exec_request = KunitExecRequest(request.timeout, request.build_dir,
+-					request.alltests, request.filter_glob)
++				 request.alltests, request.filter_glob,
++				 request.kernel_args)
+ 	exec_result = exec_tests(linux, exec_request)
+ 	if exec_result.status != KunitStatus.SUCCESS:
+ 		return exec_result
+@@ -236,6 +239,9 @@ def add_exec_opts(parser) -> None:
+ 			    nargs='?',
+ 			    default='',
+ 			    metavar='filter_glob')
++	parser.add_argument('--kernel_args',
++			    help='Kernel command-line parameters. Maybe be repeated',
++			     action='append')
+ 
+ def add_parse_opts(parser) -> None:
+ 	parser.add_argument('--raw_output', help='don\'t format output from kernel',
+@@ -307,6 +313,7 @@ def main(argv, linux=None):
+ 				       cli_args.build_dir,
+ 				       cli_args.alltests,
+ 				       cli_args.filter_glob,
++				       cli_args.kernel_args,
+ 				       cli_args.json,
+ 				       cli_args.make_options)
+ 		result = run_tests(linux, request)
+@@ -361,7 +368,8 @@ def main(argv, linux=None):
+ 		exec_request = KunitExecRequest(cli_args.timeout,
+ 						cli_args.build_dir,
+ 						cli_args.alltests,
+-						cli_args.filter_glob)
++						cli_args.filter_glob,
++						cli_args.kernel_args)
+ 		exec_result = exec_tests(linux, exec_request)
+ 		parse_request = KunitParseRequest(cli_args.raw_output,
+ 						  exec_result.result,
+
+base-commit: 8096acd7442e613fad0354fc8dfdb2003cceea0b
+-- 
+2.32.0.93.g670b81a890-goog
 
