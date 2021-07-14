@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11783C9228
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79FC3C922C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhGNUg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
+        id S230155AbhGNUjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhGNUg6 (ORCPT
+        with ESMTP id S229650AbhGNUjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:36:58 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BF3C06175F;
-        Wed, 14 Jul 2021 13:34:05 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g4-20020a17090ace84b029017554809f35so4557854pju.5;
-        Wed, 14 Jul 2021 13:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:mime-version
-         :content-disposition;
-        bh=6u4Kc/MlFhTHYE4kKbxeOSm+0tW4tXnf9YsPfOpp7rA=;
-        b=JY39Xc8ma461Ms/wxEuC7yQisfQuS1mohIjI5VlQu84SiW3Y+JJjBhVa88yHuq7MFm
-         RIieJejVpKfs7cBGJRr8yKwLA+aEayvE2Mtr3E32t9N9XefKU7Eryz9MxNfOPd+USkga
-         Hwy5g38l32tygr7RtmTFxWDnbAuwMxnlkoJavWWBZAByFcwhhBesckhrgjIe9yPNmFpo
-         8VbtHjqvcGlA30aQeQMioCf7Wirq70n3SI6h0B+1O/73xIS24GTA6J7zXY0fjdt/szu4
-         Z2G4UopdcjVLdKyj5IcecBFksdlEPMwquL/HsRcLFeva1Vz6kzRTvJsatXnMjzRZ2Vpy
-         qm5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :mime-version:content-disposition;
-        bh=6u4Kc/MlFhTHYE4kKbxeOSm+0tW4tXnf9YsPfOpp7rA=;
-        b=sfeTsRvPwWsvpPwet387u90Hxzlk/oX/uWhSF62JIXucMdYdcn6kMH9LAv/bCDChFQ
-         KP2fSmhnUR6zAj4pUTT4ef+K1Y/1aUqn/jzmqjtWxQiP2pU93dcI5rVo29iUdt7Ra5+v
-         Z2X8TDQr6CZyJB6m5Zubv/D+rF10cDtguknFATCfhVnvM8MTCcpxjdnocs86eHQmmFwY
-         3BemzfOIXr5Ag9rNBgiLgysKgHZ6YuY9iwv2/Ck6TwAAhBiQhomKXkpDBtNFRcBCPfTG
-         EEFSb4VIGmsTegM5zRxTjDRskkJLxLy68qQw99bHd8EtUhmBW3HjECADqqwXpWwmtUWk
-         98gA==
-X-Gm-Message-State: AOAM533Yx65fdH7RlCz2W+6+GL2g008hYDZy63swUORuvqP43ZPOBsvL
-        bd/5wh+UNb3rDS2CBY6vhcc69AfmylaPfA==
-X-Google-Smtp-Source: ABdhPJzZJ0STVr0DLDGtvm14e9Go01kafX9HrOGjaC6KZcpC10daa8hyCoSVnNyHNos5ofpX05tG4Q==
-X-Received: by 2002:a17:902:7144:b029:12b:24ce:a83c with SMTP id u4-20020a1709027144b029012b24cea83cmr8868904plm.54.1626294845162;
-        Wed, 14 Jul 2021 13:34:05 -0700 (PDT)
-Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
-        by smtp.gmail.com with ESMTPSA id w22sm3677610pfu.50.2021.07.14.13.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:34:04 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 02:04:00 +0530
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     axboe@kernel.dk, hch@infradead.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] loop: fix setting arbitrarily large block size
-Message-ID: <YO9KONjiBOYhQ7mN@fedora>
-Reply-To: 20210626082406.348821-1-chouhan.shreyansh630@gmail.com
+        Wed, 14 Jul 2021 16:39:15 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45831C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:36:23 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m3lcB-0007Hc-J7; Wed, 14 Jul 2021 22:36:19 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m3lcA-0007cN-W8; Wed, 14 Jul 2021 22:36:18 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m3lcA-0005Zc-VE; Wed, 14 Jul 2021 22:36:18 +0200
+Date:   Wed, 14 Jul 2021 22:35:50 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.13 024/108] ARM: dts: imx25-pinfunc: Fix gpio
+ function name for pads GPIO_[A-F]
+Message-ID: <20210714203550.zlbvfh6rfnah6iir@pengutronix.de>
+References: <20210714193800.52097-1-sashal@kernel.org>
+ <20210714193800.52097-24-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k3zb7i65xmj5fean"
 Content-Disposition: inline
+In-Reply-To: <20210714193800.52097-24-sashal@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Just a ping so that this patch doesn't get lost.
+--k3zb7i65xmj5fean
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Shreyansh Chouhan.
+On Wed, Jul 14, 2021 at 03:36:36PM -0400, Sasha Levin wrote:
+> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+>=20
+> [ Upstream commit e0cdd26af8eb9001689a4cde4f72c61c1c4b06be ]
+>=20
+> The pinfunc definitions used GPIO_A as function instead of GPIO_1_0 as
+> done for all the other pins with GPIO functionality. Fix for consistency.
+>=20
+> There are no mainline users that needs adaption.
+>=20
+> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+I'm not convinced it's a good idea to take this patch for stable.
+in-tree users are unaffected and the only effect this can have on
+out-of-tree users is to break them. So the gain of having this is not
+positive.
+
+Am I missing something?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--k3zb7i65xmj5fean
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDvSqMACgkQwfwUeK3K
+7AnZuQf+NV8hcDo2RjWPLrtLPXe2b1g/CaaokgXh2p8Q/LvRQ6BsTgjRG0bqGx/V
+333ywJeLqwfb1xA8xLcM8vz10fcf9/JeeBE1j2QT+RoKKtqmeaRqVplNzq4KCxKL
+/84XA28SfDdqvPBjuuIABMEwJ6rxUmnE15gslXTivz9qg7Cp8480eDTQbzBU3Iww
+qXg2KVJUED1CnCOnL6D6o8hsMmENZHAJ1E5Y4NcvgA/DHx5PZHn4aOYIe7jTBHgH
+FKOPlu61k+Sw0YpnNBxIB4mHtNMcLucUZEBT6qTUe2ueCweLV8uqaRn3wV20jXHr
+x1enkacTlJjdJdt14hhqeerWMn9wyw==
+=G5Oc
+-----END PGP SIGNATURE-----
+
+--k3zb7i65xmj5fean--
