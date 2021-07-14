@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0683C9219
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433E13C921D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhGNUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:33:23 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:42997 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhGNUdW (ORCPT
+        id S235152AbhGNUeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232185AbhGNUeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:33:22 -0400
-Received: by mail-il1-f182.google.com with SMTP id h3so2862756ilc.9;
-        Wed, 14 Jul 2021 13:30:30 -0700 (PDT)
+        Wed, 14 Jul 2021 16:34:06 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33A4C06175F;
+        Wed, 14 Jul 2021 13:31:13 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id o8so2886860ilf.4;
+        Wed, 14 Jul 2021 13:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TyOypBduh8zc4oZxw1Jw5CWPkP+HxfVRfcAuq+y3WDE=;
+        b=NjmbscF6kBEfjMCLAWg3FCYvsVhOz3ydft84M9pkQa+4/61QXFa0dZsCmD/t2invcV
+         nA8oTdYCEXtKnBqGc1wxQIYzg0Hd9IfrjR4DVkPKIe8dn21RL/H2GdsfoQqG9X2tpNM0
+         E+kQJ7lPYFI63nkGDUj1qkE+222CIr47m76IO4nNuVkIFSiCNm5gmS2Xao9tV1f+95I/
+         PWUKww46Xwygs/0sm2M21vz12wp4alF3ncG87lkxwzZbKJ9gV9PT7kswFUB3OgRyinEj
+         uMbHIXYknS5MLCFr2RcOfjTAGubHPKSdFBtfDCKQreYagoBOG5/sC8JfL+aERwge2Rwm
+         KZ+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yeqH3519s9TR7u8H68VDtMcnBoL+fYSZSk2mtTvRFuU=;
-        b=YqrKTZKIJWPGdf4UJqQo9+mUkQ0exFSpFT5lzlPTh0YvDaAMrmDvl14l0eiFGsFehB
-         +Pf7JRLekoPIWFIlHmAwdc95ekMGiLYXTt96bKZsitLkcphDhmMkpIQu+7HHnZgW4uVE
-         sz3UtIZ3XotsblcyFm1bpGNU/y5SO8fokQuO648EHfvNH6Hd7eVNyRWeWKWHk+6cVJ6o
-         ZsO5L3fprlz55ZMZTK1PuwsrTVt7dtOLOLdVEHayS9+jeitH2J4KTRxglEXF6LZPcoFp
-         xQO4sCl05ppNq3ONIFJyfhFFf4fzQfoAj2TpAY/epsCnf/3sgi4G6BhRIqfzyE1bBXEB
-         fKkw==
-X-Gm-Message-State: AOAM530Xv2YQsfNIzr2InWkvANL4opQI28pTTWG+PrgyXuSfAOHgYEqv
-        WtoviWf/dekR0vXfaop9lA==
-X-Google-Smtp-Source: ABdhPJytuNpDn/33kY2kMBoOHeFD1ZZbC1vgPUMTXoRZDQ11PyuZ3uK32kK5pVfUKHhpW1D05/SOZQ==
-X-Received: by 2002:a05:6e02:1a28:: with SMTP id g8mr1031391ile.128.1626294629908;
-        Wed, 14 Jul 2021 13:30:29 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id m1sm1883001iok.33.2021.07.14.13.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:30:29 -0700 (PDT)
-Received: (nullmailer pid 3466710 invoked by uid 1000);
-        Wed, 14 Jul 2021 20:30:27 -0000
-Date:   Wed, 14 Jul 2021 14:30:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        list@opendingux.net, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: display/panel: Add Innolux EJ030NA
-Message-ID: <20210714203027.GA3466681@robh.at.kernel.org>
-References: <20210625121045.81711-1-paul@crapouillou.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TyOypBduh8zc4oZxw1Jw5CWPkP+HxfVRfcAuq+y3WDE=;
+        b=SHhW05PliNzJxp6/xWWloXzVytdTSgtCqYfXoG9mq6JNkt7UELdvamfbwFfvyWu5Th
+         3dxDD9ZlFm6D5r5vGeFh0U0E3LhgPfgvmQHpDS2hgSCbV/cPDSEkwUSEtDxS0laqSCbg
+         irno04vW8/m9kBZU7Hfk99rwkAeiyHqoTLFcRMR7vGx0aLyyDMXsEZMpV5Xjac8WNwW/
+         ShM9LxWw0VDauHevwr6vbsYJeyZNS+kOzEyLarU8g4uaqP/qMHHYldV+fA3jzQTIEvyx
+         VnyBMAA/+JTjNsZ4tJLYpLj2Ze3BU1/fAGtMIf6qrkpErHusILMwPBqLfhFKv9GRj76g
+         nKLw==
+X-Gm-Message-State: AOAM532EOhGvN+RY7ZkCkrF9pxfWjiJhgBmfdeER3lnAvc7cQEPgmhaZ
+        EisQOEn/3NesgZn5Fw148o67RtKXm3u80s0vzPU=
+X-Google-Smtp-Source: ABdhPJwAE54QtGjk6wjdMpERVvuoGiexA+ZndhhjqLbavlG69FKpSkNdz0lq9rT6inmUt/bcgrTgVXYMaogwEQSrnvU=
+X-Received: by 2002:a05:6e02:de6:: with SMTP id m6mr7931159ilj.203.1626294673267;
+ Wed, 14 Jul 2021 13:31:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625121045.81711-1-paul@crapouillou.net>
+References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-4-ojeda@kernel.org>
+ <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
+In-Reply-To: <CAKwvOdnO1ZbM_FzY3qwokEkWDxsr37t_u57H_wEO6Pbu6CqFZw@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 14 Jul 2021 22:31:02 +0200
+Message-ID: <CANiq72ncsna9J=xNHg+XqUyFthyRG9bh7Qdw1rb1_=9-GJJh5Q@mail.gmail.com>
+Subject: Re: [PATCH 03/17] Makefile: generate `CLANG_FLAGS` even in GCC builds
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 13:10:44 +0100, Paul Cercueil wrote:
-> Add binding for the Innolux EJ030NA panel, which is a 320x480 3.0" 4:3
-> 24-bit TFT LCD panel with non-square pixels and a delta-RGB 8-bit
-> interface.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  .../display/panel/innolux,ej030na.yaml        | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/innolux,ej030na.yaml
-> 
+On Wed, Jul 14, 2021 at 8:14 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Patch LGTM; please keep an eye on the series:
+> https://lore.kernel.org/lkml/20210707224310.1403944-2-ndesaulniers@google.com/
+>
+> If that lands in kbuild before this, this patch will need to be
+> rebased to avoid a conflict in linux-next.
+>
+> So (tentatively :-P):
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks for the heads up!
+
+Given how fast `rustc_codegen_gcc` is progressing, we may need to
+prioritize getting
+https://github.com/rust-lang/rust-bindgen/issues/1949 fixed so that we
+can drop this hack altogether and go for proper, full GCC support.
+
+> If the patch needs to be rebased on the series linked above, please
+> drop my reviewed by tag and I will re-review. Perhaps putting me
+> explicitly on Cc: in the commit message will help notify me if there
+> are successive versions?
+
+Ack -- will do that.
+
+Cheers,
+Miguel
