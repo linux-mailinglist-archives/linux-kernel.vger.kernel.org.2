@@ -2,126 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ED13C85B6
+	by mail.lfdr.de (Postfix) with ESMTP id ECA1E3C85B7
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 16:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhGNOCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 10:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhGNOCa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:02:30 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3887C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:59:38 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id l26so2343136oic.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MoeOURTbosH7NKRSKk2RFpZ07l20VBkJQlKIXN2X07Q=;
-        b=hvfXbGFOJ3fiDpmEUCCvPP2JIB0B8Q+eZ65ehQExbq0WZIvPVoTG+1fkMcDb5AA9/4
-         PdkPh8Yin4PLu8VATiw0Isi+oTQhXiZx+oOFB4SlzJhQ97GdTAhSAR9AWrCbtZluDMOs
-         kiTuL/mvyqfUkOqPcsDicRBrQXxZrwfjUTFy21qsgCDB8OEIQzUNw4ktkvr/Vb/ngggV
-         9aQo63envdA0/rKn71u1ziOAs0Hq+qXxGxww8AD9Ju5BUiuiZqq647ECpvGD6zL7N5yb
-         U8dYJVjNM534fHh7SjiBnC+3ivwGBMIL00tFaqZQlO67GoZikx+gdYSfe+2TU7ggMNoX
-         im2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MoeOURTbosH7NKRSKk2RFpZ07l20VBkJQlKIXN2X07Q=;
-        b=Huo2GkRXipM2vyGtGiWxShEIdTGA/MV5zOyOanNUzVTxVRlxa26U+hDws9hUHh1doE
-         to3/nnuFjYOcLFWki8sf5+Iiy6vyMjD5aDi+mSSSboNreu/n2OLi5BYXmo0KSliHt8ba
-         EOcgDz38a+tuLv1C+nmC00/R/JMzXvra+L+iZlMMwA6DJM1aOiiUQdsFTBdfbp8Rp8qb
-         DgJ1K3NwNHryqVF114+5G2isgjXkkP447TEmcOShk2DBdoChq99ukyAG/4tBMTl+K1BK
-         7iw9YX8TBZ0liUVBbPpmD0UQAwyLvZ24LLkjyfwInMplL61A8/filwJbFFyfB1Yalpc/
-         fnvQ==
-X-Gm-Message-State: AOAM5323DibFcUpt1FDXLI9j3n+3P4JR5XBQj21kjlRIOeOBw0424zy+
-        zJB2RL3vFotm8Xr0KEmz4x5+jq1mm9KGryVcFZ6fOQ==
-X-Google-Smtp-Source: ABdhPJwCPWqO6fJFtg2J2lL2fQgBE8vc42O0iKo8yKuuRtTayDlHUa5YjbKu1Jvk4/YJKrOpSs79NIGrjfXl2xgRvcw=
-X-Received: by 2002:a05:6808:144c:: with SMTP id x12mr7336900oiv.167.1626271178205;
- Wed, 14 Jul 2021 06:59:38 -0700 (PDT)
+        id S232684AbhGNOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 10:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231815AbhGNOCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:02:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E646115B;
+        Wed, 14 Jul 2021 13:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626271192;
+        bh=ciqWDtVYgONNOfm9E/ppqgHeRpjIs0YIgjGKThSyD/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BIFb143TO2MsQ7gb5N0STowb9BJ4LR0vFpix2VsaRlvZaWI1/CbThYB7wJK78IhL7
+         lQGfRCJJMBYgHb2o0w78yhG4r7ySBJvwiRv+lgJlQUO6r4fSeJbrD2V7MSt5UzGD82
+         8RVvJuU9e5Nf9LjT8TboXwKC8yBhtWB5w5nCXt1h/8s+HDeZqAz1vMG/zT/9jXCL1C
+         MbMrk8Y7OfoTVB15cgRmgFIaNgVlpLYfvYKsbrvrakAKtFe4rDQBeuU3IVSuCNd2Si
+         AIvmwBtjowMbU2iaLezN61H8GmeCUimTyx2DnbmtcsfhQccLPd1545itkHJgyPBd7y
+         hfipU7hIznWig==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4A6B7403F2; Wed, 14 Jul 2021 10:59:49 -0300 (-03)
+Date:   Wed, 14 Jul 2021 10:59:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Hunter, Adrian" <adrian.hunter@intel.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 10/11] perf env: Set flag for kernel is 64-bit mode
+Message-ID: <YO7t1UTrPh4TsiI9@kernel.org>
+References: <20210711104105.505728-1-leo.yan@linaro.org>
+ <20210711104105.505728-11-leo.yan@linaro.org>
+ <YOyGi9Zdrio7OmBX@kernel.org>
+ <20210713150953.GC748506@leoy-ThinkPad-X240s>
+ <PH0PR11MB56264B3A7E4709CB0635F320E0149@PH0PR11MB5626.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
- <YO56HTE3k95JLeje@kroah.com> <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
- <df63b875-f140-606a-862a-73b102345cd@praktifix.dwd.de> <YO7nHhW2t4wEiI9G@kroah.com>
- <CA+G9fYuhbE6sY3ykoiyqZqYSG=+V0r3z0TiaVL8LptbXWw=duQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYuhbE6sY3ykoiyqZqYSG=+V0r3z0TiaVL8LptbXWw=duQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 14 Jul 2021 19:29:26 +0530
-Message-ID: <CA+G9fYtWkOLVVKB0xYfAXWS57G1C2xV-Zbtp5i4dAJDJqwLQhg@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Holger Kiehl <Holger.Kiehl@dwd.de>, Jan Kara <jack@suse.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB56264B3A7E4709CB0635F320E0149@PH0PR11MB5626.namprd11.prod.outlook.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 at 19:22, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Wed, 14 Jul 2021 at 19:01, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
+Em Tue, Jul 13, 2021 at 05:31:03PM +0000, Hunter, Adrian escreveu:
+> > On Mon, Jul 12, 2021 at 03:14:35PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Sun, Jul 11, 2021 at 06:41:04PM +0800, Leo Yan escreveu:
+> > > > +++ b/tools/perf/util/env.c
+> > > > @@ -11,6 +11,7 @@
+> > > >  #include <stdlib.h>
+> > > >  #include <string.h>
 
-<trim>
+> > > > +int kernel_is_64_bit;
+> > > >  struct perf_env perf_env;
 
-> My two cents,
-> While running ssuite long running stress testing we have noticed deadlock.
->
-> > So if you drop that, all works well?  I'll go drop that from the queues
-> > now.
->
-> Let me drop that patch and test it again.
->
-> Crash log,
->
-> [ 1957.278399] ============================================
-> [ 1957.283717] WARNING: possible recursive locking detected
-> [ 1957.289031] 5.13.2-rc1 #1 Not tainted
-> [ 1957.292703] --------------------------------------------
-> [ 1957.298016] kworker/u8:7/236 is trying to acquire lock:
-> [ 1957.303241] ffff8cc203f92c38 (&bfqd->lock){-.-.}-{2:2}, at:
-> bfq_finish_requeue_request+0x55/0x500 [bfq]
-> [ 1957.312643]
-> [ 1957.312643] but task is already holding lock:
-> [ 1957.318467] ffff8cc203f92c38 (&bfqd->lock){-.-.}-{2:2}, at:
-> bfq_insert_requests+0x81/0x1750 [bfq]
-> [ 1957.327334]
-> [ 1957.327334] other info that might help us debug this:
-> [ 1957.333852]  Possible unsafe locking scenario:
-> [ 1957.333852]
-> [ 1957.339762]        CPU0
-> [ 1957.342206]        ----
-> [ 1957.344651]   lock(&bfqd->lock);
-> [ 1957.347873]   lock(&bfqd->lock);
-> [ 1957.351097]
-> [ 1957.351097]  *** DEADLOCK ***
-> [ 1957.351097]
+> > > Why can't this be in 'struct perf_env'?
 
-Also noticed on stable-rc 5.12.17-rc1.
+> > Good question.  I considered to add it in struct perf_env but finally I used this
+> > way; the reason is this variable "kernel_is_64_bit" is only used during
+> > recording phase for AUX ring buffer, and don't use it for report.  So seems to
+> > me it's over complexity to add a new field and just wander if it's necessary to
+> > save this field as new feature in the perf header.
 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> ref:
-> https://lkft.validation.linaro.org/scheduler/job/3058868#L2922
+> I think we store the arch, so if the "kernel_is_64_bit" calculation depends only on arch
+> then I guess we don't need a new feature at the moment.
 
-ref:
-https://lkft.validation.linaro.org/scheduler/job/3058423#L3125
+So, I wasn't suggesting to add this info to the perf.data file header,
+just to the in-memory 'struct perf_env'.
+
+And also we should avoid unconditionally initializing things that we may
+never need, please structure it as:
+
+static void perf_env__init_kernel_mode(struct perf_env *env)
+{
+       const char *arch = perf_env__raw_arch(env);
+
+       if (!strncmp(arch, "x86_64", 6)   || !strncmp(arch, "aarch64", 7) ||
+           !strncmp(arch, "arm64", 5)    || !strncmp(arch, "mips64", 6) ||
+           !strncmp(arch, "parisc64", 8) || !strncmp(arch, "riscv64", 7) ||
+           !strncmp(arch, "s390x", 5)    || !strncmp(arch, "sparc64", 7))
+               kernel_is_64_bit = 1;
+       else
+               kernel_is_64_bit = 0;
+}
 
 
-- Naresh
+void perf_env__init(struct perf_env *env)
+{
+	...
+	env->kernel_is_64_bit = -1;
+	...
+}
+
+bool perf_env__kernel_is_64_bit(struct perf_env *env)
+{
+	if (env->kernel_is_64_bit == -1)
+		perf_env__init_kernel_mode(env);
+
+	return env->kernel_is_64_bit;
+}
+
+One thing in my TODO is to crack down on the tons of initializations
+perf does unconditionally, last time I looked there are lots :-\
+
+- Arnaldo
+ 
+> > Combining the comment from Adrian in another email, I think it's good to add
+> > a new field "compat_mode" in the struct perf_env, and this field will be
+> > initialized in build-record.c.  Currently we don't need to save this value into
+> > the perf file, if later we need to use this value for decoding phase, then we
+> > can add a new feature item to save "compat_mode"
+> > into the perf file's header.
+
+> > If you have any different idea, please let me know.  Thanks!
