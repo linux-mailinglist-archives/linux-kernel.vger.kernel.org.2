@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF713C848D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094623C848F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239387AbhGNMks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56532 "EHLO mail.kernel.org"
+        id S239395AbhGNMku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:40:50 -0400
+Received: from mga04.intel.com ([192.55.52.120]:6215 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239284AbhGNMkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:40:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64E6E613C3;
-        Wed, 14 Jul 2021 12:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626266274;
-        bh=DGdlwCkZIlF7M2e5FrRY4R5tomviE45g2fM8RW577bo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P0AmCcOQg+Qu6zi4j2J9dm1OfCK4LkYH8OZGagz34TNSbAJyCp6C27ALPh+cMA0fF
-         l51XnU/CogMZ0jxfjFcPYM0c5F5MyEU6xN63vTgIZv3mnunj1Jfv4vb9MSr6SzXjPo
-         d9CpzIXZ0OWyGCPw0x9LNc9+Muvl51p1Zz/oWHiDJKw8lGWFthmUf7ssedrY+s1sLq
-         6NxSjMNHJsSMwZPRlhRc68+U4mqP0tgJcL/4Yuvpnk+yDXcrZJbBnKCaHD3l988B9+
-         6xtPbkwVlnfutCmyUDwk5HXV9CBpmfNvAAIQdPZE+4a3ujeXHRpEP1E3ZPHQ5E30NT
-         ttRrd6cThDo2A==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Simek <monstr@monstr.eu>, Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 4/4] memblock: stop poisoning raw allocations
-Date:   Wed, 14 Jul 2021 15:37:39 +0300
-Message-Id: <20210714123739.16493-5-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210714123739.16493-1-rppt@kernel.org>
-References: <20210714123739.16493-1-rppt@kernel.org>
+        id S239385AbhGNMkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:40:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="208520952"
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="208520952"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 05:37:54 -0700
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="630363863"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 05:37:53 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m3e94-00DJiN-SE; Wed, 14 Jul 2021 15:37:46 +0300
+Date:   Wed, 14 Jul 2021 15:37:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 1/4] serial: 8250_pci: Refactor the loop in
+ pci_ite887x_init()
+Message-ID: <YO7ammJpiMvqwb/+@smile.fi.intel.com>
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <136e3881-bff4-d1f0-e146-b5c0a58f2e80@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <136e3881-bff4-d1f0-e146-b5c0a58f2e80@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Jul 14, 2021 at 08:57:06AM +0200, Jiri Slaby wrote:
+> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+> > The loop can be refactored by using ARRAY_SIZE() instead of NULL terminator.
+> > This reduces code base and makes it easier to read and understand.
 
-Functions memblock_alloc_exact_nid_raw() and memblock_alloc_try_nid_raw()
-are intended for early memory allocation without overhead of zeroing the
-allocated memory. Since these functions were used to allocate the memory
-map, they have ended up with addition of a call to page_init_poison() that
-poisoned the allocated memory when CONFIG_PAGE_POISON was set.
+> > +		iobase = request_region(inta_addr[i], ITE_887x_IOSIZE, "ite887x");
+> 
+> Irrelevant whitespace change.
+> 
+> >   		if (iobase != NULL) {
+> >   			/* write POSIO0R - speed | size | ioport */
+> >   			pci_write_config_dword(dev, ITE_887x_POSIO0,
+> >   				ITE_887x_POSIO_ENABLE | ITE_887x_POSIO_SPEED |
+> >   				ITE_887x_POSIO_IOSIZE_32 | inta_addr[i]);
+> >   			/* write INTCBAR - ioport */
+> > -			pci_write_config_dword(dev, ITE_887x_INTCBAR,
+> > -								inta_addr[i]);
+> > +			pci_write_config_dword(dev, ITE_887x_INTCBAR, inta_addr[i]);
+> 
+> detto
+> 
+> >   			ret = inb(inta_addr[i]);
+> >   			if (ret != 0xff) {
+> >   				/* ioport connected */
+> >   				break;
+> >   			}
+> >   			release_region(iobase->start, ITE_887x_IOSIZE);
+> > -			iobase = NULL;
+> >   		}
+> > -		i++;
 
-Since the memory map is allocated using a dedicated memmep_alloc() function
-that takes care of the poisoning, remove page poisoning from the
-memblock_alloc_*_raw() functions.
+I believe with Joe's suggestion I can improve entire body of this branch
+perhaps in a separate patch. Do you prefer one or two patches?
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- mm/memblock.c | 20 ++++----------------
- 1 file changed, 4 insertions(+), 16 deletions(-)
+> >   	if (!inta_addr[i]) {
+> 
+> OOB access?
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 0041ff62c584..9748d0689f81 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1490,18 +1490,12 @@ void * __init memblock_alloc_exact_nid_raw(
- 			phys_addr_t min_addr, phys_addr_t max_addr,
- 			int nid)
- {
--	void *ptr;
--
- 	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pS\n",
- 		     __func__, (u64)size, (u64)align, nid, &min_addr,
- 		     &max_addr, (void *)_RET_IP_);
- 
--	ptr = memblock_alloc_internal(size, align,
--					   min_addr, max_addr, nid, true);
--	if (ptr && size > 0)
--		page_init_poison(ptr, size);
--
--	return ptr;
-+	return memblock_alloc_internal(size, align, min_addr, max_addr, nid,
-+				       true);
- }
- 
- /**
-@@ -1528,18 +1522,12 @@ void * __init memblock_alloc_try_nid_raw(
- 			phys_addr_t min_addr, phys_addr_t max_addr,
- 			int nid)
- {
--	void *ptr;
--
- 	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pS\n",
- 		     __func__, (u64)size, (u64)align, nid, &min_addr,
- 		     &max_addr, (void *)_RET_IP_);
- 
--	ptr = memblock_alloc_internal(size, align,
--					   min_addr, max_addr, nid, false);
--	if (ptr && size > 0)
--		page_init_poison(ptr, size);
--
--	return ptr;
-+	return memblock_alloc_internal(size, align, min_addr, max_addr, nid,
-+				       false);
- }
- 
- /**
+Yep, Dan reported the same. Missed during conversion. Will fix.
+
 -- 
-2.28.0
+With Best Regards,
+Andy Shevchenko
+
 
