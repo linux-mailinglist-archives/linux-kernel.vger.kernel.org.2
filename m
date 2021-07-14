@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD8D3C7BDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438D53C7BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237528AbhGNCfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:35:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:56010 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237375AbhGNCfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:35:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08C9F1FB;
-        Tue, 13 Jul 2021 19:32:11 -0700 (PDT)
-Received: from [10.163.65.222] (unknown [10.163.65.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BED43F7D8;
-        Tue, 13 Jul 2021 19:32:08 -0700 (PDT)
-Subject: Re: [PATCH] arm64/kexec: Test page size support with new TGRAN range
- values
-To:     kernel test robot <lkp@intel.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kbuild-all@lists.01.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
-References: <1626058969-14847-1-git-send-email-anshuman.khandual@arm.com>
- <202107130013.N3v7eJq1-lkp@intel.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d8151a2c-d970-5930-e19f-75210b7e1d8a@arm.com>
-Date:   Wed, 14 Jul 2021 08:02:56 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <202107130013.N3v7eJq1-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S237635AbhGNCjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237608AbhGNCjN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:39:13 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE58EC0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:36:21 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id m83so675178pfd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xlJdpfYrsJIKfnucuosznO4/0QXLV8smxEHyNUyFy9c=;
+        b=PAzN6QqBgB58ZiPctC9OxiGeH0GMimXU4onoY0i4KikiZWhkgD5Plekj9ZHV1rM5B/
+         ACTEVna0jWymuh0rtnJ8H3dJGCat5NT+td+RoWlZmaxvmsztrWgbtYuwSGoHjVmTuK/8
+         ANND404v1zp0umlg0NsQIFAy5IkCG4JXYZoBNLN8YvVUhi2/aQ37r4N43obWsPxz6OHx
+         z+sKTYuJUOcoPrZBMOGeJozUc5Ig1fEj+LZMgH4CtaFmSwd7253KK/sYTYroO81s5TCm
+         G1/ufHjittc2H3yyWK5zgwriryMePg7yo0Ra/PcIGmpBxI+XkBlnDyFmcl+fi/U5TEiK
+         g58Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xlJdpfYrsJIKfnucuosznO4/0QXLV8smxEHyNUyFy9c=;
+        b=MUPC1wyn+z/i/QckUerWHQIcwWp4Ib8DschpBOBXoWN3ZygRhuGls9reIBetJ2R3uF
+         eFza8THnPnGrAGaA3fYNHxE3YKetDPtRZ8TIXbdFStmQlE0wI63+ARBwNz1/3okWMooY
+         buhcIrJm77RDv6YfhnG8qHcRO/8vXyw2pEfGCqmpxvrwMCot62PPE8damz6DjeJ52/Jx
+         NfLYCqf/wtGjFp1XLzHdBLRsISqB3Odor4DXfIeKyjcfhxMXJGiLfVfnebzRC8sNPbjU
+         nsrJOTRn++X1L1oJ5p6yGR9VOww8EFGs9iju5aTE/fxOznrRYgibVv0pRzP3d8+CNqh6
+         LGjw==
+X-Gm-Message-State: AOAM533KD32dJl9DSwCjlnVRZjybaz2tTi9QbDXb/KpZKX8wGr4s9F0n
+        CQeEBvc3uT1duPYgFz1Zpb8=
+X-Google-Smtp-Source: ABdhPJzCpE3oydg5C22jmM7QM4Ygg3fgDYpMXhcjI1WOXo0gdq03NkVLQJQvHFQ8Gm5fJxnD0PH2qw==
+X-Received: by 2002:a65:6497:: with SMTP id e23mr7111851pgv.43.1626230181186;
+        Tue, 13 Jul 2021 19:36:21 -0700 (PDT)
+Received: from localhost.localdomain (1-171-13-208.dynamic-ip.hinet.net. [1.171.13.208])
+        by smtp.gmail.com with ESMTPSA id u16sm486022pfh.205.2021.07.13.19.36.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Jul 2021 19:36:20 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     broonie@kernel.org
+Cc:     lgirdwood@gmail.com, cy_huang@richtek.com, axel.lin@ingics.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: rtq6752: Fix the typo for reg define and author name
+Date:   Wed, 14 Jul 2021 10:36:10 +0800
+Message-Id: <1626230170-13648-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: ChiYuan Huang <cy_huang@richtek.com>
 
+Fix the typo for reg define and author name.
 
-On 7/12/21 9:37 PM, kernel test robot wrote:
-> Hi Anshuman,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on arm64/for-next/core]
-> [also build test ERROR on arm/for-next soc/for-next kvmarm/next v5.14-rc1 next-20210712]
-> [cannot apply to xlnx/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Anshuman-Khandual/arm64-kexec-Test-page-size-support-with-new-TGRAN-range-values/20210712-110329
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-> config: arm64-buildonly-randconfig-r005-20210712 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/48b74d46210916db21b8f568b92f1771827bffe9
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Anshuman-Khandual/arm64-kexec-Test-page-size-support-with-new-TGRAN-range-values/20210712-110329
->         git checkout 48b74d46210916db21b8f568b92f1771827bffe9
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    arch/arm64/kernel/head.S: Assembler messages:
->>> arch/arm64/kernel/head.S:705: Error: undefined symbol ID_AA64MMFR0_TGRAM64_SUPPORTED_MAX used as an immediate value
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ drivers/regulator/rtq6752-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Needs a typo fix. Missed 64K build I guess, will fix it.
+diff --git a/drivers/regulator/rtq6752-regulator.c b/drivers/regulator/rtq6752-regulator.c
+index fe31597..72a72aa 100644
+--- a/drivers/regulator/rtq6752-regulator.c
++++ b/drivers/regulator/rtq6752-regulator.c
+@@ -19,7 +19,7 @@ enum {
+ #define RTQ6752_REG_PAVDD	0x00
+ #define RTQ6752_REG_NAVDD	0x01
+ #define RTQ6752_REG_PAVDDONDLY	0x07
+-#define RTQ6752_REG_PAVDDSSTIME	0x07
++#define RTQ6752_REG_PAVDDSSTIME	0x08
+ #define RTQ6752_REG_NAVDDONDLY	0x0D
+ #define RTQ6752_REG_NAVDDSSTIME	0x0E
+ #define RTQ6752_REG_OPTION1	0x12
+@@ -280,6 +280,6 @@ static struct i2c_driver rtq6752_driver = {
+ };
+ module_i2c_driver(rtq6752_driver);
+ 
+-MODULE_AUTHOR("ChiYuan Hwang <cy_huang@richtek.com>");
++MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
+ MODULE_DESCRIPTION("Richtek RTQ6752 Regulator Driver");
+ MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
-s/ID_AA64MMFR0_TGRAM64_SUPPORTED_MAX/ID_AA64MMFR0_TGRAN64_SUPPORTED_MAX
