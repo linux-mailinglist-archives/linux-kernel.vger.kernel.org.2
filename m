@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABCE3C91C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32C43C91B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239309AbhGNUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241185AbhGNT54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:57:56 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656A1C06175F;
-        Wed, 14 Jul 2021 12:48:15 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id f9so4631540wrq.11;
-        Wed, 14 Jul 2021 12:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aUBnfseT0Zje0G2mRhBHziBu0gGM/po1m8DQFWGOJ/o=;
-        b=CX7Piuv6Dln3mJRSNmkklr+7tIkBfgYYnqF318JjM167vyqBwl/JhQSSwm9ZJ/rIIB
-         9BGMH+PwEceWIalwFeLIw8Ds5AAoq8TUPfIQRCyK11XUjiR5+0jBk+szZ1jUCIELEnzD
-         ZTg5k5Ra6b1tS2wSOTnYejPIad1KFpQRPGY389qYT0AmKhy8yJY9ANeeEKqFMBtzaxOw
-         iuXC38wiVwk8b4gyOZzZD1UG3e+BV1NeuZjBZI0H8cWwyfrG7ZG8npdqYkckjcfZRb9j
-         f7+e2js04X67g/ydqsIX8VuoaOk/CYnxPeCgRVq97VxSVQ97lsgsiJwwgi18PpoOf9GM
-         8xkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aUBnfseT0Zje0G2mRhBHziBu0gGM/po1m8DQFWGOJ/o=;
-        b=hd/SyXgROU6V6yFpPKsbRaADORL+BGe1sZu19ZCMGiaMIfQA6uC4fksF2RMt1Pn4mh
-         oP29KIyFdFDZd4D6lcSl5kpGHuholOQUGiBU1TCC2byyZ9PBCYrdK607WnwKNHUmlgrD
-         L7RVBjLzasKj4jb/binuFkn9UGwrhGSYFz0wLAtyGt8PrFbALKTDnfs4oh1sXeFYABkZ
-         a6eTStci0/ypyKdjor9kBcLLKPNmzxgHwODR/jjKhB+zWGZ/SSWhn2Mi7X6QBCWdc2Zp
-         xy7nT42y4VRYOXtExczHYDsvkx2ZE9bxfha8tedLbDDeayDVNb5cWUn0qCZTDrhttlyR
-         Z52Q==
-X-Gm-Message-State: AOAM531711Zdy76OzAqXxh/XDsPSBytZATp2o2/pzCQkZ907S6W2itZM
-        CdFnarZwM0GJIk8N+uHgrOg=
-X-Google-Smtp-Source: ABdhPJyNNCxhreBnW/CwIZZ/vYJQQU4HSJPOJiDlvP+OMcnzbH7MSEORMih0UI+hSnYwAk2HDjCjQQ==
-X-Received: by 2002:adf:e7cc:: with SMTP id e12mr15444294wrn.51.1626292094018;
-        Wed, 14 Jul 2021 12:48:14 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id o5sm2004382wms.43.2021.07.14.12.48.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 12:48:13 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 22:48:12 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
- layer 4 checksum
-Message-ID: <20210714194812.stay3oqyw3ogshhj@skbuf>
-References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
- <20210714191723.31294-3-LinoSanfilippo@gmx.de>
+        id S240341AbhGNUF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:05:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240396AbhGNTvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:51:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454D0613CF;
+        Wed, 14 Jul 2021 19:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626292116;
+        bh=n8HgM6WO45WIlTe1BG2AxxEVNh9IpZpYOvrLwQTKtSc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=meD3/4y97u7Z6tuCWHeeqhYy4j2eOz+Ns4rb8xzt8h7k2VDqvl4MtfCq622G0BaqT
+         TnNP/6342KG0VwNOWLJqUUWNp8yhTb9GFt0L0DBBSglPU2qbICXlF2lZ9l4ms9vpdK
+         QUZb+NXGyy5Pep/URM1NTsnt9DD+l/XMKPMPKQglWnd1+vtmMY33/6TbYrAh48kKBy
+         DYj14ToDcCyasyUoXt9KvD44cyZ37Q4XJfywIuX5bOQvCTBV7C21LeQRxrIE25HnjH
+         zBoeq3fJCkpqtrujG7aHUjszrRwG4Jy73gybIMHQNbS7kNkDNlmh3fgPktS6CbV0V8
+         Vw8dcQZEHBHJQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 01/10] ARM: brcmstb: dts: fix NAND nodes names
+Date:   Wed, 14 Jul 2021 15:48:24 -0400
+Message-Id: <20210714194833.56197-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714191723.31294-3-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lino,
+From: Rafał Miłecki <rafal@milecki.pl>
 
-On Wed, Jul 14, 2021 at 09:17:23PM +0200, Lino Sanfilippo wrote:
-> If the checksum calculation is offloaded to the network device (e.g due to
-> NETIF_F_HW_CSUM inherited from the DSA master device), the calculated
-> layer 4 checksum is incorrect. This is since the DSA tag which is placed
-> after the layer 4 data is seen as a part of the data portion and thus
-> errorneously included into the checksum calculation.
-> To avoid this, always calculate the layer 4 checksum in software.
-> 
-> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> ---
+[ Upstream commit 9a800ce1aada6e0f56b78e4713f4858c8990c1f7 ]
 
-This needs to be solved more generically for all tail taggers. Let me
-try out a few things tomorrow and come with a proposal.
+This matches nand-controller.yaml requirements.
+
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/bcm7445-bcm97445svmb.dts | 4 ++--
+ arch/arm/boot/dts/bcm7445.dtsi             | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
+index 0bb8d17e4c2d..e51c9b079432 100644
+--- a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
++++ b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
+@@ -13,10 +13,10 @@ memory {
+ 	};
+ };
+ 
+-&nand {
++&nand_controller {
+ 	status = "okay";
+ 
+-	nandcs@1 {
++	nand@1 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <1>;
+ 		nand-ecc-step-size = <512>;
+diff --git a/arch/arm/boot/dts/bcm7445.dtsi b/arch/arm/boot/dts/bcm7445.dtsi
+index 4791321969b3..3f002f2047f1 100644
+--- a/arch/arm/boot/dts/bcm7445.dtsi
++++ b/arch/arm/boot/dts/bcm7445.dtsi
+@@ -149,7 +149,7 @@ aon-ctrl@410000 {
+ 			reg-names = "aon-ctrl", "aon-sram";
+ 		};
+ 
+-		nand: nand@3e2800 {
++		nand_controller: nand-controller@3e2800 {
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-- 
+2.30.2
+
