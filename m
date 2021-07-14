@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D8A3C8296
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3EA3C829A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239090AbhGNKSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:18:25 -0400
-Received: from 8bytes.org ([81.169.241.247]:37742 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238728AbhGNKSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:18:22 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id C73C1352; Wed, 14 Jul 2021 12:15:27 +0200 (CEST)
-Date:   Wed, 14 Jul 2021 12:15:20 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-pci@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Rajat Jain <rajatja@google.com>, Will Deacon <will@kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, quic_c_gdjako@quicinc.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-Message-ID: <YO65OOScL5vru1Kr@8bytes.org>
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org>
- <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
- <YOaymBHc4g2cIfRn@8bytes.org>
- <edd1de35-5b9e-b679-9428-23c6d5005740@arm.com>
+        id S239035AbhGNKUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238728AbhGNKUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 06:20:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66C9C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EYzErK5xgdi3EIPpdk93cUhrQezZZQYmIThqOr+rBF8=; b=GtqCq1XcqP+uBBfV/urgniX2+w
+        E6TvvxoPdA0XLOQvrH2MhKiHUnTjXMBxrqCNgYn8wvGSDRrR/GsbgHFZAfW4iOZ66mtXt7L9n3ivj
+        1rc2+ierma5X42jcxGUSnWbR9KLVDPrR5wsxY++HCQPH0eyH54SEDumPwUuyWzUXPicTpyQ92AegP
+        uzyOZG6lcjIW8U3qqJZ/njg6yq2c39ewws3AZhBQMUesaEMQU6fdP5f4gDFGDvFSABtqAfGAaOcFQ
+        2tGMov5ovWZL4diYFsHYIuQgUEL7R2BhQh0/Nu+C8PHqyYrk3jnDUw4oC2xnQyekSEe4yu6K6AZQ7
+        Q0y0QV7w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3bww-00HS91-Q7; Wed, 14 Jul 2021 10:17:08 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 162B198689D; Wed, 14 Jul 2021 12:17:06 +0200 (CEST)
+Date:   Wed, 14 Jul 2021 12:17:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 05/50] sched: Provide schedule point for RT locks
+Message-ID: <20210714101705.GB2591@worktop.programming.kicks-ass.net>
+References: <20210713151054.700719949@linutronix.de>
+ <20210713160746.410991567@linutronix.de>
+ <20210714082820.GB2725@worktop.programming.kicks-ass.net>
+ <87y2a9b4xw.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <edd1de35-5b9e-b679-9428-23c6d5005740@arm.com>
+In-Reply-To: <87y2a9b4xw.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-On Fri, Jul 09, 2021 at 02:56:47PM +0100, Robin Murphy wrote:
-> As I mentioned before, conceptually I think this very much belongs in sysfs
-> as a user decision. We essentially have 4 levels of "strictness":
+On Wed, Jul 14, 2021 at 11:49:47AM +0200, Thomas Gleixner wrote:
+> On Wed, Jul 14 2021 at 10:28, Peter Zijlstra wrote:
+> > On Tue, Jul 13, 2021 at 05:10:59PM +0200, Thomas Gleixner wrote:
+> >
+> >> --- a/kernel/sched/core.c
+> >> +++ b/kernel/sched/core.c
+> >> @@ -5832,8 +5832,14 @@ pick_next_task(struct rq *rq, struct tas
+> >>   */
+> >>  #define	SM_NONE			0x0
+> >>  #define	SM_PREEMPT		0x1
+> >> -#define SM_MASK_PREEMPT		UINT_MAX
+> >> -#define SM_MASK_STATE		SM_MASK_PREEMPT
+> >> +#ifndef CONFIG_PREEMPT_RT
+> >> +# define SM_MASK_PREEMPT	UINT_MAX
+> >> +# define SM_MASK_STATE		SM_MASK_PREEMPT
+> >> +#else
+> >> +# define SM_RTLOCK_WAIT		0x2
+> >> +# define SM_MASK_PREEMPT	SM_PREEMPT
+> >> +# define SM_MASK_STATE		(SM_PREEMPT | SM_RTLOCK_WAIT)
+> >> +#endif
+> >
+> > Wouldn't something like this:
+> >
+> >
+> > #ifndef CONFIG_PREEMPT_RT
+> > # define SM_MASK_PREEMPT        (~0U)
+> > #else
+> > # define SM_RTLOCK_WAIT         0x2
+> > # define SM_MASK_PREEMPT        SM_PREEMPT
+> > #endif
+> >
+> > #define SM_MASK_STATE          (~0U)
+> >
+> > Be even better?
 > 
-> 1: DMA domain with bounce pages
-> 2: DMA domain
-> 3: DMA domain with flush queue
-> 4: Identity domain
+> SM_MASK_STATE is overengineered. See combo patch 4+5 below
 
-Together with reasonable defaults (influenced by compile-time
-options) it seems to be a good thing to configure at runtime via
-sysfs.
+Yep, that should result in similar code as my proposal, thanks!
 
-We already have CONFIG_IOMMU_DEFAULT_PASSTHROUGH, which can probably be
-extended to be an option list:
-
-	- CONFIG_IOMMU_DEFAULT_PASSTHROUGH: Trusted devices are identity
-					    mapped
-
-	- CONFIG_IOMMU_DEFAULT_DMA_STRICT: Trusted devices are DMA
-					   mapped with strict flush
-					   behavior on unmap
-
-	- CONFIG_IOMMU_DEFAULT_DMA_LAZY: Trusted devices are DMA mapped
-					 with flush queues for performance
-
-Untrusted devices always get into the DMA domain with bounce pages by
-default.
-
-The defaults can be changed at runtime via sysfs. We already have basic
-support for runtime switching of the default domain, so that can be
-re-used.
-
-Regards,
-
-	Joerg
-
+nit: you like UINT_MAX better than (~0U) ?
