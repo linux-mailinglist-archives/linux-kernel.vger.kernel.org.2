@@ -2,164 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5633C870B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7993C86B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239907AbhGNPPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
+        id S239617AbhGNPOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239788AbhGNPOn (ORCPT
+        with ESMTP id S239596AbhGNPOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:14:43 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE55C0613B0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:43 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
-        by xavier.telenet-ops.be with bizsmtp
-        id V3Be2500U4sai0K013Bf51; Wed, 14 Jul 2021 17:11:41 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXy-001ARB-Lo; Wed, 14 Jul 2021 17:11:38 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXx-00Acf3-0N; Wed, 14 Jul 2021 17:11:37 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 00/19] auxdisplay: ht16k33: Add character display support
-Date:   Wed, 14 Jul 2021 17:11:11 +0200
-Message-Id: <20210714151130.2531831-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Jul 2021 11:14:11 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC1CC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:18 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id j34so1795497wms.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PG9JbnafFmHtkZy14fnZvsQtgBLImOnC9bogzsBO68Q=;
+        b=UJHtGb+LwT0zy+L/w6Ws5+yY2JPkV63zglgb0IsBrakD8/DQb3oxW+jfRfWRXeV3sA
+         XuNeWFY/VynF2aMjgD5Biww9AGapOiJEkICLuGz5j405P5GZu5eOEgDotEoo+DnXl4sP
+         n1kbLVclzkqmbyaW06cUJON9PY169JskS/PexQZeC89o0IgwO2MsHYGGct4yE7vq6DW5
+         y3ZRkLdKfEpaaxyIbyGUjl390RvQlcbsC+eIOyZjPZngiMiL3GLMB9mGC8bOS8d/p8VY
+         NhuvpyP1O1lCl+IdeGFn5NfwOu0VbJsB39Jf5SO/MiQZyPSWBJB13sAnGH4m+NavqlrP
+         zczw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PG9JbnafFmHtkZy14fnZvsQtgBLImOnC9bogzsBO68Q=;
+        b=FkNOnpI+5aaIlZjYDh8GCn6cV9gq3MMDdMT1+beoCMAp9jzDbVwyKX0WyEB7b7TiyM
+         Oe7p0PW4DlTNX3qmyJZQupjZgMtFng37Qld1gKmGYRZFa3Gz6dp0UeAa5rbl7iQo7hKX
+         yCxKdHajs2fuSNlJ9wydKfMBTQrpW2sKK/e+kylWzHrOQJfKn5+pU+gcOLsgjExQnQ7T
+         eS9J1WCX95tjPmSzPLNPVOfq2wJKbiBR8WZyc0KrGH1/QFMMuUXHC6yqZGLT5tRMetrP
+         cFU/QXbTrqXM2O9Y54XHG/P/XT3mFfHMpKkFuW9URro26gEntSl/LLiQqwPxj0KAtg23
+         OBwQ==
+X-Gm-Message-State: AOAM531EinWduz+eSzZ/Kg4tS2dy62ZzWCNRM9e/u+j+2mqQCvIoj5e/
+        rMZnAyb/jFSqWrjs4zaNGm1bT6HX2Nw=
+X-Google-Smtp-Source: ABdhPJycD2OfxuPLYOiMg17H0K8RT5chzlF2QRpfN7l5Bx119sJzeU/7EJNbS6Q57qu5ONnRtiNZfQ==
+X-Received: by 2002:a1c:7706:: with SMTP id t6mr11833020wmi.36.1626275477293;
+        Wed, 14 Jul 2021 08:11:17 -0700 (PDT)
+Received: from agape ([5.171.72.142])
+        by smtp.gmail.com with ESMTPSA id c125sm6610982wme.36.2021.07.14.08.11.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 08:11:17 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] staging: rtl8723bs: add get_channel cfg80211 implementation
+Date:   Wed, 14 Jul 2021 17:11:12 +0200
+Message-Id: <2f00479d8369b82b590291bb0edf27bc3041b0f0.1626275102.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1626275102.git.fabioaiuto83@gmail.com>
+References: <cover.1626275102.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi all,
+add get_channel cfg80211 implementation to let userspace
+programs rely on nl80211 protocol to display channel
+information.
 
-The Holtek HT16K33 LED controller is not only used for driving
-dot-matrix displays, but also for driving segment displays.
-The current auxdisplay driver is limited to dot-matrix displays, which
-are exposed as a frame buffer device.
+Old iw dev output:
 
-This patch series extends the driver to 4-digit 7-segment and quad
-14-segment alphanumeric displays, allowing the user to display and
-scroll text messages.
+phy#0
+	Interface wlan0
+		ifindex 2
+		wdev 0x1
+		addr 34:c3:d2:73:eb:c7
+		ssid Fabio
+		type managed
+		txpower 12.00 dBm
 
-List of patches:
-  - Patch 1 provides font data for displaying ASCII characters on
-    14-segment displays,
-  - Patch 2 updates the HT16K33 DT bindings for segment displays,
-  - Patches 3-5 contain a bug fix and small improvements for the
-    Imagination Technologies ASCII LCD Display driver,
-  - Patch 6 extracts the character line display core support from the
-    Imagination Technologies ASCII LCD Display driver, for reuse,
-  - Patches 7-8 contain cleanups and improvements for the character line
-    display core driver,
-  - Patches 9-16 contain a bug fix, cleanups and improvements for the
-    HT16K33 driver, to prepare for segment display support,
-  - Patch 17 adds support for 7/14-segment displays to the HT16K33
-    driver,
-  - Patch 18 updates the HT16K33 DT bindings to document an LED subnode,
-  - Patch 19 adds segment display LED support to the HT16K33 driver,
-    to make use of hardware blinking, and to expose display color.
+Fixed output:
 
-Changes compared to v2[1]:
-  - Drop color property from display node,
-  - Use compat_only_sysfs_link_entry_to_kobj() instead of cooking our
-    own helper on top of kernfs_create_link(),
-  - Use "err" instead of "error" to be consistent with existing driver
-    naming style,
-  - Pass "dev" instead of "client" to ht16k33_fbdev_probe() and
-    ht16k33_seg_probe(),
-  - Drop local variable "node",
-  - Remove unneeded inclusion of <linux/leds.h> and <linux/of_device.h>,
-  - Document LED subnode,
-  - Remove unneeded C++ comment,
-  - Make the creation of the LED device dependent on the presence of the
-    "led" subnode in DT, so it can be used in dot-matrix mode too.
-  - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
-    all LED properties from DT, instead of manual LED name construction
-    based on just the "color" property,
+phy#0
+	Interface wlan0
+		ifindex 2
+		wdev 0x1
+		addr 34:c3:d2:73:eb:c7
+		ssid Fabio
+		type managed
+	new-->	channel 11 (2462 MHz), width: 20 MHz, center1: 2462 Mhz
+		txpower 12.00 dBm
 
-Changes compared to v1[2]:
-  - Fix type of color to uint32,
-  - "refresh-rate-hz" is still required for dot-matrix displays.
-  - Move "select LINEDISP" for HT16K33 symbol to correct patch,
-  - Add backwards compatibility "message" symlink to img-ascii-lcd,
-  - Connect backlight to fbdev in ht16k33 dot-matrix mode,
-  - Set "err = -EINVAL" in switch() case that cannot happen,
-  - Use "auxdisplay" instead of DRIVER_NAME in LED name.
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 53 ++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
-This series has been tested using an Adafruit 0.54" Quad Alphanumeric
-Red FeatherWing Display, plugged into an OrangeCrab ECP5-based FPGA
-board running linux-on-litex-vexriscv.
-7-segment display support is based purely on schematics, and has not
-been tested on actual hardware.  The changes to img-ascii-lcd.c are also
-untested, due to lack of hardware.
-
-Thanks!
-
-[1] "[PATCH v2 00/18] auxdisplay: ht16k33: Add character display support"
-    https://lore.kernel.org/r/20210625125902.1162428-1-geert@linux-m68k.org/
-[2] "[PATCH 00/17] auxdisplay: ht16k33: Add character display support"
-    https://lore.kernel.org/r/20210322144848.1065067-1-geert@linux-m68k.org/
-
-Geert Uytterhoeven (19):
-  uapi: Add <linux/map_to_14segment.h>
-  dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
-  auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
-  auxdisplay: img-ascii-lcd: Add helper variable dev
-  auxdisplay: img-ascii-lcd: Convert device attribute to sysfs_emit()
-  auxdisplay: Extract character line display core support
-  auxdisplay: linedisp: Use kmemdup_nul() helper
-  auxdisplay: linedisp: Add support for changing scroll rate
-  auxdisplay: ht16k33: Connect backlight to fbdev
-  auxdisplay: ht16k33: Use HT16K33_FB_SIZE in ht16k33_initialize()
-  auxdisplay: ht16k33: Remove unneeded error check in keypad probe()
-  auxdisplay: ht16k33: Convert to simple i2c probe function
-  auxdisplay: ht16k33: Add helper variable dev
-  auxdisplay: ht16k33: Move delayed work
-  auxdisplay: ht16k33: Extract ht16k33_brightness_set()
-  auxdisplay: ht16k33: Extract frame buffer probing
-  auxdisplay: ht16k33: Add support for segment displays
-  dt-bindings: auxdisplay: ht16k33: Document LED subnode
-  auxdisplay: ht16k33: Add LED support
-
- .../bindings/auxdisplay/holtek,ht16k33.yaml   |  33 +-
- drivers/auxdisplay/Kconfig                    |   8 +
- drivers/auxdisplay/Makefile                   |   1 +
- drivers/auxdisplay/ht16k33.c                  | 473 ++++++++++++++----
- drivers/auxdisplay/img-ascii-lcd.c            | 205 ++------
- drivers/auxdisplay/line-display.c             | 261 ++++++++++
- drivers/auxdisplay/line-display.h             |  43 ++
- include/uapi/linux/map_to_14segment.h         | 239 +++++++++
- 8 files changed, 996 insertions(+), 267 deletions(-)
- create mode 100644 drivers/auxdisplay/line-display.c
- create mode 100644 drivers/auxdisplay/line-display.h
- create mode 100644 include/uapi/linux/map_to_14segment.h
-
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index fd747c8d920e..d198d10ec272 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -2100,7 +2100,58 @@ void rtw_cfg80211_indicate_sta_disassoc(struct adapter *padapter, unsigned char
+ 	cfg80211_del_sta(ndev, da, GFP_ATOMIC);
+ }
+ 
++static u8 rtw_get_chan_type(struct adapter *adapter)
++{
++	struct mlme_ext_priv *mlme_ext = &adapter->mlmeextpriv;
++
++	switch (mlme_ext->cur_bwmode) {
++	case CHANNEL_WIDTH_20:
++		if (IsSupportedHT(adapter->registrypriv.wireless_mode))
++			return NL80211_CHAN_HT20;
++		else
++			return NL80211_CHAN_NO_HT;
++	case CHANNEL_WIDTH_40:
++		if (mlme_ext->cur_ch_offset == HAL_PRIME_CHNL_OFFSET_UPPER)
++			return NL80211_CHAN_HT40PLUS;
++		else
++			return NL80211_CHAN_HT40MINUS;
++	default:
++		return NL80211_CHAN_HT20;
++	}
+ 
++	return NL80211_CHAN_HT20;
++}
++
++static int cfg80211_rtw_get_channel(struct wiphy *wiphy, struct wireless_dev *wdev,
++				    struct cfg80211_chan_def *chandef)
++{
++	struct adapter *adapter = wiphy_to_adapter(wiphy);
++	struct registry_priv *registrypriv = &adapter->registrypriv;
++	enum nl80211_channel_type chan_type;
++	struct ieee80211_channel *chan = NULL;
++	int channel;
++	int freq;
++
++	if (!adapter->rtw_wdev)
++		return -ENODEV;
++
++	channel = rtw_get_oper_ch(adapter);
++	if (!channel)
++		return -ENODATA;
++
++	freq = rtw_ieee80211_channel_to_frequency(channel, NL80211_BAND_2GHZ);
++
++	chan = ieee80211_get_channel(adapter->rtw_wdev->wiphy, freq);
++
++	if (registrypriv->ht_enable) {
++		chan_type = rtw_get_chan_type(adapter);
++		cfg80211_chandef_create(chandef, chan, chan_type);
++	} else {
++		cfg80211_chandef_create(chandef, chan, NL80211_CHAN_NO_HT);
++	}
++
++	return 0;
++}
+ 
+ static netdev_tx_t rtw_cfg80211_monitor_if_xmit_entry(struct sk_buff *skb, struct net_device *ndev)
+ {
+@@ -2838,7 +2889,7 @@ static struct cfg80211_ops rtw_cfg80211_ops = {
+ 	.set_pmksa = cfg80211_rtw_set_pmksa,
+ 	.del_pmksa = cfg80211_rtw_del_pmksa,
+ 	.flush_pmksa = cfg80211_rtw_flush_pmksa,
+-
++	.get_channel = cfg80211_rtw_get_channel,
+ 	.add_virtual_intf = cfg80211_rtw_add_virtual_intf,
+ 	.del_virtual_intf = cfg80211_rtw_del_virtual_intf,
+ 
 -- 
-2.25.1
+2.20.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
