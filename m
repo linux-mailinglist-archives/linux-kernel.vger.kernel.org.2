@@ -2,205 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726213C80DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A7F3C80C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238793AbhGNJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
+        id S238679AbhGNI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238784AbhGNJAS (ORCPT
+        with ESMTP id S238496AbhGNI6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:00:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F636C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 01:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nkUhubg5MkzLt/9301ljwbThMqUHJt6p4fJPil7sfkI=; b=kqSGHzXMdmkiuXaNNsdHUIjr12
-        89IiRTKzdfpXQ+I1wkr5XVC/7g44iqMQTN+AWpFX9kpgMeHQGZ6btUlUSyq4FkAVDW7/ZDXSFlZ25
-        towPbs5bZ/Zbn/xP0IhsYIQpkucEgY2RCFiqqS+lQWYqhHgAJ/fe2DxmTsdAD2wQ/T4QWKMQQmxcX
-        Z60mUM8nW+OcLvFY74hpG7nOYcZ5PB0aSBnoyDLYxjti31RINu9ljZcJ3L4DILtfdTd7Oj1ATxcdz
-        wyvw1IgLGXVI6FSie3wwI06LBsl1s3Fs7354wb0A6Lr2TEjbartzV+J6SQYOr+ZXVLILce2Ch//eC
-        uXTzvYTw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3afd-0021fF-3l; Wed, 14 Jul 2021 08:55:21 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E909D98689D; Wed, 14 Jul 2021 10:55:07 +0200 (CEST)
-Date:   Wed, 14 Jul 2021 10:55:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 17/50] locking/rtmutex: Prepare RT rt_mutex_wake_q for RT
- locks
-Message-ID: <20210714085507.GC2725@worktop.programming.kicks-ass.net>
-References: <20210713151054.700719949@linutronix.de>
- <20210713160747.601687056@linutronix.de>
+        Wed, 14 Jul 2021 04:58:14 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4375C06175F;
+        Wed, 14 Jul 2021 01:55:21 -0700 (PDT)
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 768882DF;
+        Wed, 14 Jul 2021 10:55:19 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v2 0/2] PCI/ACPI: Simplify PCIe _OSC feature negotiation
+Date:   Wed, 14 Jul 2021 10:55:10 +0200
+Message-Id: <20210714085512.2176-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713160747.601687056@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 05:11:11PM +0200, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Add a rtlock_task pointer to rt_mutex_wake_q which allows to handle the RT
-> specific wakeup for spin/rwlock waiters. The pointer is just consuming 4/8
-> bytes on stack so it is provided unconditionaly to avoid #ifdeffery all
-> over the place.
-> 
-> No functional change for non-RT enabled kernels.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  kernel/locking/rtmutex.c        |   16 ++++++++++++++--
->  kernel/locking/rtmutex_common.h |    3 +++
->  2 files changed, 17 insertions(+), 2 deletions(-)
-> ---
-> --- a/kernel/locking/rtmutex.c
-> +++ b/kernel/locking/rtmutex.c
-> @@ -351,12 +351,24 @@ static __always_inline void rt_mutex_adj
->  static __always_inline void rt_mutex_wake_q_add(struct rt_mutex_wake_q_head *wqh,
->  						struct rt_mutex_waiter *w)
->  {
-> -	wake_q_add(&wqh->head, w->task);
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && w->wake_state != TASK_NORMAL) {
-> +		get_task_struct(w->task);
-> +		wqh->rtlock_task = w->task;
-> +	} else {
-> +		wake_q_add(&wqh->head, w->task);
-> +	}
->  }
->  
->  static __always_inline void rt_mutex_wake_up_q(struct rt_mutex_wake_q_head *wqh)
->  {
-> -	wake_up_q(&wqh->head);
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && wqh->rtlock_task) {
-> +		wake_up_state(wqh->rtlock_task, TASK_RTLOCK_WAIT);
-> +		put_task_struct(wqh->rtlock_task);
-> +		wqh->rtlock_task = NULL;
-> +	}
-> +
-> +	if (!wake_q_empty(&wqh->head))
-> +		wake_up_q(&wqh->head);
->  
->  	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
->  	preempt_enable();
-> --- a/kernel/locking/rtmutex_common.h
-> +++ b/kernel/locking/rtmutex_common.h
-> @@ -43,14 +43,17 @@ struct rt_mutex_waiter {
->   * rt_mutex_wake_q_head - Wrapper around regular wake_q_head to support
->   *			  "sleeping" spinlocks on RT
->   * @head:		The regular wake_q_head for sleeping lock variants
-> + * @rtlock_task:	Task pointer for RT lock (spin/rwlock) wakeups
->   */
->  struct rt_mutex_wake_q_head {
->  	struct wake_q_head	head;
-> +	struct task_struct	*rtlock_task;
->  };
->  
->  #define DEFINE_RT_MUTEX_WAKE_Q_HEAD(name)				\
->  	struct rt_mutex_wake_q_head name = {				\
->  		.head		= WAKE_Q_HEAD_INITIALIZER(name.head),	\
-> +		.rtlock_task	= NULL,					\
->  	}
+From: Joerg Roedel <jroedel@suse.de>
 
-This is a bit asymmetric, something like the below perhaps?
+Hi,
 
----
+here is the second version of my patch(es) to simplify the _OSC
+negotiation of PCIe features between Linux and the firmware.
 
---- a/include/linux/sched/wake_q.h
-+++ b/include/linux/sched/wake_q.h
-@@ -61,6 +61,11 @@ static inline bool wake_q_empty(struct w
- 
- extern void wake_q_add(struct wake_q_head *head, struct task_struct *task);
- extern void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task);
--extern void wake_up_q(struct wake_q_head *head);
-+extern void __wake_up_q(struct wake_q_head *head, unsigned int state);
-+
-+static inline void wake_up_q(struct wake_q_head *head)
-+{
-+	__wake_up_q(head, TASK_NORMAL);
-+}
- 
- #endif /* _LINUX_SCHED_WAKE_Q_H */
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -351,12 +351,20 @@ static __always_inline void rt_mutex_adj
- static __always_inline void rt_mutex_wake_q_add(struct rt_mutex_wake_q_head *wqh,
- 						struct rt_mutex_waiter *w)
- {
--	wake_q_add(&wqh->head, w->task);
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && w->wake_state != TASK_NORMAL) {
-+		wake_q_add(&wqh->rt_head, w->task);
-+	} else {
-+		wake_q_add(&wqh->head, w->task);
-+	}
- }
- 
- static __always_inline void rt_mutex_wake_up_q(struct rt_mutex_wake_q_head *wqh)
- {
--	wake_up_q(&wqh->head);
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !wake_q_empty(&wqh->rt_head))
-+		__wake_up_q(&wqh->rt_head, TASK_RTLOCK_WAIT);
-+
-+	if (!wake_q_empty(&wqh->head))
-+		wake_up_q(&wqh->head);
- 
- 	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
- 	preempt_enable();
---- a/kernel/locking/rtmutex_common.h
-+++ b/kernel/locking/rtmutex_common.h
-@@ -43,14 +43,17 @@ struct rt_mutex_waiter {
-  * rt_mutex_wake_q_head - Wrapper around regular wake_q_head to support
-  *			  "sleeping" spinlocks on RT
-  * @head:		The regular wake_q_head for sleeping lock variants
-+ * @rt_head:		The wake_q_head for RT lock (spin/rwlock) variants
-  */
- struct rt_mutex_wake_q_head {
- 	struct wake_q_head	head;
-+	struct wake_q_head	rt_head;
- };
- 
- #define DEFINE_RT_MUTEX_WAKE_Q_HEAD(name)				\
- 	struct rt_mutex_wake_q_head name = {				\
- 		.head		= WAKE_Q_HEAD_INITIALIZER(name.head),	\
-+		.rt_head	= WAKE_Q_HEAD_INITIALIZER(name.rt_head),\
- 	}
- 
- /*
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -916,7 +916,7 @@ void wake_q_add_safe(struct wake_q_head
- 		put_task_struct(task);
- }
- 
--void wake_up_q(struct wake_q_head *head)
-+void __wake_up_q(struct wake_q_head *head, unsigned int state)
- {
- 	struct wake_q_node *node = head->first;
- 
-@@ -932,7 +932,7 @@ void wake_up_q(struct wake_q_head *head)
- 		 * wake_up_process() executes a full barrier, which pairs with
- 		 * the queueing in wake_q_add() so as not to miss wakeups.
- 		 */
--		wake_up_process(task);
-+		wake_up_state(task, state);
- 		put_task_struct(task);
- 	}
- }
+The main part is in patch 1, which removes the _OSC call for supported
+features by merging it with the actuall _OSC call to negotiate the
+features with the firmware.
+
+This allows some simplifications of the code, notably the removal of
+the acpi_pci_osc_support() function and the control=NULL special
+casing in the acpi_pci_query_osc() function.
+
+Please review.
+
+Thanks,
+
+	Joerg
+
+Joerg Roedel (2):
+  PCI/APCI: Move acpi_pci_osc_support() check to negotiation phase
+  PCI/ACPI: Remove OSC_PCI_SUPPORT_MASKS and OSC_PCI_CONTROL_MASKS
+
+ drivers/acpi/pci_root.c | 116 ++++++++++++++++++----------------------
+ include/linux/acpi.h    |   2 -
+ 2 files changed, 52 insertions(+), 66 deletions(-)
+
+
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
+-- 
+2.31.1
+
