@@ -2,203 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122333C873A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1553C8745
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239584AbhGNPVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:21:32 -0400
-Received: from ofcsgdbm.dwd.de ([141.38.3.245]:44947 "EHLO ofcsgdbm.dwd.de"
+        id S239524AbhGNPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232308AbhGNPVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:21:31 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ofcsg2dn1.dwd.de (Postfix) with ESMTP id 4GQ1Ns5L8Hz1yQ8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 15:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
-        content-type:content-type:mime-version:references:message-id
-        :in-reply-to:subject:subject:from:from:date:date:received
-        :received:received:received:received:received:received:received;
-         s=dwd-csg20210107; t=1626275917; x=1627485518; bh=gk6Zd1VQ4AHyT
-        Uvq/4ZIJE45JUEru4L0zwq/otC8nKM=; b=LIcMcM5CwuSUF3AD8m+ZKqGXAUW6L
-        4LPD+j9vddB3ihjSQ2zL4LCr0M82O5LQNBoRwCKHFxbrlU+NaGHyEAudZJ4hxVs6
-        mNaZA5Gn4pyI76HKMCI3E5iMJ8bwJnsa68U31vflrSk5BB7mn9iBvHYwNXqLUnNw
-        5MslEFpZyWGqm8UfYXs8Auo0RIHIuBjdRW1Fx+Va5bcchAntF9RnNtlMC70dGbaP
-        wqsG8iAqLaU+NbShaDJAErLjWVe2O8hpoOnfFQVD5A1hbeJSwaLmA1z+XhwTJdaN
-        Uikn7X9WbbFlRJNvv/Orq/zX0GzCwo7YQPcrzowJ1UY5IC3nEnMuBHheg==
-X-Virus-Scanned: by amavisd-new at csg.dwd.de
-Received: from ofcsg2ctev2.dwd.de ([172.30.232.68])
-        by localhost (ofcsg2dn1.dwd.de [172.30.232.24]) (amavisd-new, port 10024)
-        with ESMTP id pgwSnGHa_VMA for <linux-kernel@vger.kernel.org>;
-        Wed, 14 Jul 2021 15:18:37 +0000 (UTC)
-Received: from ofcsg2ctev2.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id EB98D5E3C83
-        for <root@ofcsg2dn1.dwd.de>; Wed, 14 Jul 2021 15:18:35 +0000 (UTC)
-Received: from ofcsg2ctev2.dwd.de (unknown [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id D9AD35E1D70
-        for <root@ofcsg2dn1.dwd.de>; Wed, 14 Jul 2021 15:18:35 +0000 (UTC)
-X-DDEI-TLS-USAGE: Unused
-Received: from ofcsgdbm.dwd.de (unknown [172.30.232.24])
-        by ofcsg2ctev2.dwd.de (Postfix) with ESMTP
-        for <root@ofcsg2dn1.dwd.de>; Wed, 14 Jul 2021 15:18:35 +0000 (UTC)
-Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
- Wed, 14 Jul 2021 15:18:37 -0000
-Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
-        by ofcsg2dn1.dwd.de (Postfix) with ESMTPS id 4GQ1Ns30X3z1xPB;
-        Wed, 14 Jul 2021 15:18:37 +0000 (UTC)
-Received: from ofmailhub.dwd.de (ofldap.dwd.de [141.38.39.208])
-        by ofcsg2dvf2.dwd.de  with ESMTP id 16EFIaNs000632-16EFIaNt000632;
-        Wed, 14 Jul 2021 15:18:36 GMT
-Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
-        by ofmailhub.dwd.de (Postfix) with ESMTP id B72C6453CE;
-        Wed, 14 Jul 2021 15:18:36 +0000 (UTC)
-Date:   Wed, 14 Jul 2021 15:18:36 +0000 (GMT)
-From:   Holger Kiehl <Holger.Kiehl@dwd.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Jan Kara <jack@suse.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-In-Reply-To: <YO70VCcsg3k35C4E@kroah.com>
-Message-ID: <bdf6f4cc-e534-f572-8b47-40bb4e4eca78@praktifix.dwd.de>
-References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de> <YO56HTE3k95JLeje@kroah.com> <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de> <df63b875-f140-606a-862a-73b102345cd@praktifix.dwd.de>
- <YO7nHhW2t4wEiI9G@kroah.com> <efa2bd81-2219-9e17-2841-d9b63fde22a1@praktifix.dwd.de> <YO70VCcsg3k35C4E@kroah.com>
+        id S232308AbhGNPZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 11:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1637D600D1;
+        Wed, 14 Jul 2021 15:23:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626276180;
+        bh=ErxEyW8NtIlv3ONaJw/n1+m7LQJh/vqgQbCniL78/mU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mWEZ9fA9tuPv07fut8CYaGphQQkxiVQ6mGarAcBae6gYRNGVteXAO1v4J83jDsf5Y
+         IVEKsxbkeOF410Iz+/z5pMPsA2JDYVz92xhISiXrK5SK8dY/z5+mOratbvdKkDqKqc
+         JzVfP6FXzuE9Lyt5pSHkIbNnUBHp7+EPtZAQ5nWUMHqO8rw6DcAjtgAixMsVUyUTuM
+         HwuOX6+Nui/bs93j8Z6Ys/cEL0yXEYwC7PfKulBux9tARcYfRMPJUWNF2o5044FiCc
+         qjXNQw9OoNmDJHW5GEtsMyN+vewTgI49xqSfqg4EnBqtJZe7dXMZqJEoJ335xjRH/R
+         6B9R03NhhYajg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4F615403F2; Wed, 14 Jul 2021 12:22:57 -0300 (-03)
+Date:   Wed, 14 Jul 2021 12:22:57 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH 06/10] perf workqueue: introduce workqueue struct
+Message-ID: <YO8BUfFe4iNo/awZ@kernel.org>
+References: <cover.1626177381.git.rickyman7@gmail.com>
+ <efda4e29da6f6aa8c34a3751ed676c7ee0506cf8.1626177381.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-FE-Policy-ID: 2:2:1:SYSTEM
-X-TMASE-Version: DDEI-5.1-8.6.1018-26282.000
-X-TMASE-Result: 10--19.483800-10.000000
-X-TMASE-MatchedRID: 0+daXaNUWRWWfDtBOz4q28bYuTb6+cQg69aS+7/zbj/mNRhvDVinv2Kp
-        MJoimBcbPsj5qjS+dCEYwvDSTCG2BJQlTsRs6bL83nHtGkYl/VpF/jSlPtma/r0/f33kf9Gljn9
-        2T7igP2sXndhpsXecxygywW45LfL0yFuWu3nxO+19j6Il8VAHF8ZU3kmz9C/H3pxmYneHU6t/cL
-        JHsj+DkZhk/6bphJLMKISk8WdGcXCHbsX/GOLqdgPZZctd3P4BuqgVqRoQsiB7lDzh8Z+EhhBmt
-        oCUanEvwgx24xjlvojzX5siSEObomsc2OVQ/NyCfid4LSHtIANuWkE39mLwR2zpNYa+Tlcne/cQ
-        kmt0G7GVIsnYOY5w/uF45apSJW4bV6HcTxi1U3IqkSeDPauzryIk3dpe5X+hy5JfHvVu9Itvxt6
-        yFJGkPy7TvubsyJqlq4m5Bec/+bTecSkNT7l/2Tn/wcdfjLjCp5HLLTy++LOKpw8ALShsZoIV24
-        CuYj50/sXPK0ncsYCD2kmNFYh3E4R9x+rbFqRWhL9NX2TqmkAApu/OILCbuFGeC58QTjRVY2iR7
-        K8WcsyfGsabEL0iTCoUbIPi49csR+a91TJtsEMwNhI4fIyiAtQeZo36ab1gQjW74KwsSvRpA0qW
-        fVwWaLWrMaVJoeHukWBlIbwkmtSdqMbGsmxTg54CIKY/Hg3A2K+lN2ZUJHbEQdG7H66TyKsQd9q
-        PXhnJ/4rWvpj9UcgD/dHyT/Xh7Q==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-DDEI-PROCESSED-RESULT: Safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efda4e29da6f6aa8c34a3751ed676c7ee0506cf8.1626177381.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
+Em Tue, Jul 13, 2021 at 02:11:17PM +0200, Riccardo Mancini escreveu:
+> This patch adds the workqueue definition, along with simple creation and
+> destruction functions.
+> Furthermore, a simple subtest is added.
+> 
+> A workqueue is attached to a pool, on which it executes its workers.
+> Next patches will introduce workers.
+> 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/tests/workqueue.c          |  92 +++++++++++++
+>  tools/perf/util/workqueue/Build       |   1 +
+>  tools/perf/util/workqueue/workqueue.c | 184 ++++++++++++++++++++++++++
+>  tools/perf/util/workqueue/workqueue.h |  24 ++++
+>  4 files changed, 301 insertions(+)
+>  create mode 100644 tools/perf/util/workqueue/workqueue.c
+>  create mode 100644 tools/perf/util/workqueue/workqueue.h
+> 
+> diff --git a/tools/perf/tests/workqueue.c b/tools/perf/tests/workqueue.c
+> index 3c64db8203556847..423dc8a92ca2563c 100644
+> --- a/tools/perf/tests/workqueue.c
+> +++ b/tools/perf/tests/workqueue.c
+> @@ -5,6 +5,7 @@
+>  #include "tests.h"
+>  #include "util/debug.h"
+>  #include "util/workqueue/threadpool.h"
+> +#include "util/workqueue/workqueue.h"
+>  
+>  #define DUMMY_FACTOR 100000
+>  #define N_DUMMY_WORK_SIZES 7
+> @@ -13,6 +14,11 @@ struct threadpool_test_args_t {
+>  	int pool_size;
+>  };
+>  
+> +struct workqueue_test_args_t {
+> +	int pool_size;
+> +	int n_work_items;
+> +};
+> +
+>  struct test_task {
+>  	struct task_struct task;
+>  	int n_threads;
+> @@ -140,6 +146,58 @@ static int __test__threadpool(void *_args)
+>  	return 0;
+>  }
+>  
+> +
+> +static int __workqueue__prepare(struct threadpool_struct **pool,
+> +				struct workqueue_struct **wq,
+> +				int pool_size)
+> +{
+> +	int ret;
+> +
+> +	ret = __threadpool__prepare(pool, pool_size);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*wq = create_workqueue(*pool);
+> +	TEST_ASSERT_VAL("workqueue creation failure", *wq);
+> +	TEST_ASSERT_VAL("workqueue wrong size", workqueue_nr_threads(*wq) == pool_size);
+> +	TEST_ASSERT_VAL("threadpool is not executing", threadpool_is_busy(*pool));
+> +
+> +	return 0;
+> +}
+> +
+> +static int __workqueue__teardown(struct threadpool_struct *pool,
+> +				struct workqueue_struct *wq)
+> +{
+> +	int ret;
+> +
+> +	ret = destroy_workqueue(wq);
+> +	TEST_ASSERT_VAL("workqueue detruction failure", ret == 0);
+> +
+> +	ret = __threadpool__teardown(pool);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int __test__workqueue(void *_args)
+> +{
+> +	struct workqueue_test_args_t *args = _args;
+> +	struct threadpool_struct *pool;
+> +	struct workqueue_struct *wq;
+> +	int ret;
+> +
+> +	ret = __workqueue__prepare(&pool, &wq, args->pool_size);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = __workqueue__teardown(pool, wq);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct threadpool_test_args_t threadpool_test_args[] = {
+>  	{
+>  		.pool_size = 1
+> @@ -158,6 +216,33 @@ static const struct threadpool_test_args_t threadpool_test_args[] = {
+>  	}
+>  };
+>  
+> +static const struct workqueue_test_args_t workqueue_test_args[] = {
+> +	{
+> +		.pool_size = 1,
+> +		.n_work_items = 1
+> +	},
+> +	{
+> +		.pool_size = 1,
+> +		.n_work_items = 10
+> +	},
+> +	{
+> +		.pool_size = 2,
+> +		.n_work_items = 1
+> +	},
+> +	{
+> +		.pool_size = 2,
+> +		.n_work_items = 100
+> +	},
+> +	{
+> +		.pool_size = 16,
+> +		.n_work_items = 7
+> +	},
+> +	{
+> +		.pool_size = 16,
+> +		.n_work_items = 2789
+> +	}
+> +};
+> +
+>  struct test_case {
+>  	const char *desc;
+>  	int (*func)(void *args);
+> @@ -173,6 +258,13 @@ static struct test_case workqueue_testcase_table[] = {
+>  		.args = (void *) threadpool_test_args,
+>  		.n_args = (int)ARRAY_SIZE(threadpool_test_args),
+>  		.arg_size = sizeof(struct threadpool_test_args_t)
+> +	},
+> +	{
+> +		.desc = "Workqueue",
+> +		.func = __test__workqueue,
+> +		.args = (void *) workqueue_test_args,
+> +		.n_args = (int)ARRAY_SIZE(workqueue_test_args),
+> +		.arg_size = sizeof(struct workqueue_test_args_t)
+>  	}
+>  };
+>  
+> diff --git a/tools/perf/util/workqueue/Build b/tools/perf/util/workqueue/Build
+> index 8b72a6cd4e2cba0d..4af721345c0a6bb7 100644
+> --- a/tools/perf/util/workqueue/Build
+> +++ b/tools/perf/util/workqueue/Build
+> @@ -1 +1,2 @@
+>  perf-y += threadpool.o
+> +perf-y += workqueue.o
+> diff --git a/tools/perf/util/workqueue/workqueue.c b/tools/perf/util/workqueue/workqueue.c
+> new file mode 100644
+> index 0000000000000000..5099252a0662e788
+> --- /dev/null
+> +++ b/tools/perf/util/workqueue/workqueue.c
+> @@ -0,0 +1,184 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <errno.h>
+> +#include <string.h>
+> +#include <pthread.h>
+> +#include <linux/list.h>
+> +#include "debug.h"
+> +#include "workqueue.h"
+> +
+> +enum workqueue_status {
+> +	WORKQUEUE_STATUS__READY,	/* wq is ready to receive work */
+> +	WORKQUEUE_STATUS__ERROR,
+> +	WORKQUEUE_STATUS__MAX
+> +};
+> +
+> +struct workqueue_struct {
+> +	pthread_mutex_t		lock;		/* locking of the thread_pool */
+> +	pthread_cond_t		idle_cond;	/* all workers are idle cond */
+> +	struct threadpool_struct *pool;		/* underlying pool */
+> +	struct task_struct	task;		/* threadpool task */
+> +	struct list_head	busy_list;	/* busy workers */
+> +	struct list_head	idle_list;	/* idle workers */
+> +	struct list_head	pending;	/* pending work items */
+> +	int			msg_pipe[2];	/* main thread comm pipes */
+> +	enum workqueue_status	status;
+> +};
+> +
+> +/**
+> + * worker_thread - worker function executed on threadpool
+> + */
+> +static void worker_thread(int tidx, struct task_struct *task)
+> +{
+> +	struct workqueue_struct *wq = container_of(task, struct workqueue_struct, task);
+> +
+> +	pr_debug("hi from worker %d. Pool is in status %d\n", tidx, wq->status);
+> +}
+> +
+> +/**
+> + * attach_threadpool_to_workqueue - start @wq workers on @pool
+> + */
+> +static int attach_threadpool_to_workqueue(struct workqueue_struct *wq,
+> +					struct threadpool_struct *pool)
+> +{
+> +	int err;
+> +
+> +	if (!threadpool_is_ready(pool)) {
+> +		pr_err("workqueue: cannot attach to pool: pool is not ready\n");
+> +		return -1;
+> +	}
+> +
+> +	wq->pool = pool;
+> +
+> +	err = execute_in_threadpool(pool, &wq->task);
+> +	if (err)
+> +		return -1;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * detach_threadpool_from_workqueue - stop @wq workers on @pool
+> + */
+> +static int detach_threadpool_from_workqueue(struct workqueue_struct *wq)
+> +{
+> +	int ret, err = 0;
+> +
+> +	if (wq->status != WORKQUEUE_STATUS__READY) {
+> +		pr_err("workqueue: cannot attach to pool: wq is not ready\n");
+> +		return -1;
+> +	}
+> +
+> +	ret = wait_threadpool(wq->pool);
+> +	if (ret) {
+> +		pr_err("workqueue: error waiting threadpool\n");
+> +		err = -1;
+> +	}
+> +
+> +	wq->pool = NULL;
+> +	return err;
+> +}
+> +
+> +/**
+> + * create_workqueue - create a workqueue associated to @pool
+> + *
+> + * Only one workqueue can execute on a pool at a time.
+> + */
+> +struct workqueue_struct *create_workqueue(struct threadpool_struct *pool)
 
-> On Wed, Jul 14, 2021 at 02:07:10PM +0000, Holger Kiehl wrote:
-> > On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
-> > 
-> > > On Wed, Jul 14, 2021 at 01:26:26PM +0000, Holger Kiehl wrote:
-> > > > On Wed, 14 Jul 2021, Holger Kiehl wrote:
-> > > > 
-> > > > > On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
-> > > > > 
-> > > > > > On Wed, Jul 14, 2021 at 05:39:43AM +0000, Holger Kiehl wrote:
-> > > > > > > Hello,
-> > > > > > > 
-> > > > > > > On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
-> > > > > > > 
-> > > > > > > > This is the start of the stable review cycle for the 5.13.2 release.
-> > > > > > > > There are 800 patches in this series, all will be posted as a response
-> > > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > > let me know.
-> > > > > > > > 
-> > > > > > > > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> > > > > > > > Anything received after that time might be too late.
-> > > > > > > > 
-> > > > > > > With this my system no longer boots:
-> > > > > > > 
-> > > > > > >    [  OK  ] Reached target Swap.
-> > > > > > >    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
-> > > > > > >    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
-> > > > > > >    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
-> > > > > > >    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
-> > > > > > >    See 'systemctl status systemd-udev-settle.service' for details.
-> > > > > > >             Starting Activation of DM RAID sets...
-> > > > > > >    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
-> > > > > > >    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
-> > > > > > > 
-> > > > > > > System is a Fedora 34 with all updates applied. Two other similar
-> > > > > > > systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
-> > > > > > > and boots fine. The system where it does not boot has an Intel
-> > > > > > > Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
-> > > > > > > 
-> > > > > > > Any idea which patch I should drop to see if it boots again. I already
-> > > > > > > dropped
-> > > > > > > 
-> > > > > > >    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
-> > > > > > > 
-> > > > > > > and I just see that this one should also be dropped:
-> > > > > > > 
-> > > > > > >    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
-> > > > > > > 
-> > > > > > > Will still need to test this.
-> > > > > > 
-> > > > > > Can you run 'git bisect' to see what commit causes the problem?
-> > > > > > 
-> > > > > Yes, will try to do that. I think it will take some time ...
-> > > > > 
-> > > > With the help of Pavel Machek and Jiri Slaby I was able 'git bisect'
-> > > > this to:
-> > > > 
-> > > >    yoda:/usr/src/kernels/linux-5.13.y# git bisect good
-> > > >    a483f513670541227e6a31ac7141826b8c785842 is the first bad commit
-> > > >    commit a483f513670541227e6a31ac7141826b8c785842
-> > > >    Author: Jan Kara <jack@suse.cz>
-> > > >    Date:   Wed Jun 23 11:36:33 2021 +0200
-> > > > 
-> > > >        bfq: Remove merged request already in bfq_requests_merged()
-> > > > 
-> > > >        [ Upstream commit a921c655f2033dd1ce1379128efe881dda23ea37 ]
-> > > > 
-> > > >        Currently, bfq does very little in bfq_requests_merged() and handles all
-> > > >        the request cleanup in bfq_finish_requeue_request() called from
-> > > >        blk_mq_free_request(). That is currently safe only because
-> > > >        blk_mq_free_request() is called shortly after bfq_requests_merged()
-> > > >        while bfqd->lock is still held. However to fix a lock inversion between
-> > > >        bfqd->lock and ioc->lock, we need to call blk_mq_free_request() after
-> > > >        dropping bfqd->lock. That would mean that already merged request could
-> > > >        be seen by other processes inside bfq queues and possibly dispatched to
-> > > >        the device which is wrong. So move cleanup of the request from
-> > > >        bfq_finish_requeue_request() to bfq_requests_merged().
-> > > > 
-> > > >        Acked-by: Paolo Valente <paolo.valente@linaro.org>
-> > > >        Signed-off-by: Jan Kara <jack@suse.cz>
-> > > >        Link: https://lore.kernel.org/r/20210623093634.27879-2-jack@suse.cz
-> > > >        Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > > >        Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > 
-> > > >     block/bfq-iosched.c | 41 +++++++++++++----------------------------
-> > > >     1 file changed, 13 insertions(+), 28 deletions(-)
-> > > > 
-> > > > Holger
-> > > 
-> > > Wonderful!
-> > > 
-> > > So if you drop that, all works well?  I'll go drop that from the queues
-> > > now.
-> > > 
-> > Yes. Just double checked it took a plain 5.13.1, patched it with
-> > patch-5.13.2-rc1.xz and then reverted
-> > 
-> >    PATCH-5.13-259-800-bfq-Remove-merged-request-already-in-bfq_requests_merged
-> > 
-> > and it booted fine with no problems. Tested several times.
-> > Just wonder why it only happens on the Intel Broadwell CPU.
-> > Maybe it is the 128MB eDRAM L4 Cache ...
-> 
-> Wondeful!
-> 
-> Could you test 5.14-rc1 to verify if this problem is there or not?  If
-> it is, the developers need to know this so that they can work to fix the
-> regression.
-> 
-No. 5.14-rc1 boots fine. Could not see any problems with it. Just tried
-it.
+I wonder if we should use the exact same kernel signature and not pass a
+threadpool, essentially having just one threadpool in tools/perf/ that
+is used by create_workqueue(void)?
 
-Holger
+> +{
+> +	int err;
+> +	struct workqueue_struct *wq = malloc(sizeof(struct workqueue_struct));
+> +
+> +
+> +	err = pthread_mutex_init(&wq->lock, NULL);
+> +	if (err)
+> +		goto out_free_wq;
+> +
+> +	err = pthread_cond_init(&wq->idle_cond, NULL);
+> +	if (err)
+> +		goto out_destroy_mutex;
+> +
+> +	wq->pool = NULL;
+> +	INIT_LIST_HEAD(&wq->busy_list);
+> +	INIT_LIST_HEAD(&wq->idle_list);
+> +
+> +	INIT_LIST_HEAD(&wq->pending);
+> +
+> +	err = pipe(wq->msg_pipe);
+> +	if (err)
+> +		goto out_destroy_cond;
+> +
+> +	wq->task.fn = worker_thread;
+> +
+> +	err = attach_threadpool_to_workqueue(wq, pool);
+> +	if (err)
+> +		goto out_destroy_cond;
+> +
+> +	wq->status = WORKQUEUE_STATUS__READY;
+> +
+> +	return wq;
+> +
+> +out_destroy_cond:
+> +	pthread_cond_destroy(&wq->idle_cond);
+> +out_destroy_mutex:
+> +	pthread_mutex_destroy(&wq->lock);
+> +out_free_wq:
+> +	free(wq);
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * destroy_workqueue - stop @wq workers and destroy @wq
+> + */
+> +int destroy_workqueue(struct workqueue_struct *wq)
+> +{
+> +	int err = 0, ret;
+> +
+> +	ret = detach_threadpool_from_workqueue(wq);
+> +	if (ret) {
+> +		pr_err("workqueue: error detaching from threadpool.\n");
+> +		err = -1;
+> +	}
+> +
+> +	ret = pthread_mutex_destroy(&wq->lock);
+> +	if (ret) {
+> +		err = -1;
+> +		pr_err("workqueue: error pthread_mutex_destroy: %s\n",
+> +			strerror(errno));
+> +	}
+> +
+> +	ret = pthread_cond_destroy(&wq->idle_cond);
+> +	if (ret) {
+> +		err = -1;
+> +		pr_err("workqueue: error pthread_cond_destroy: %s\n",
+> +			strerror(errno));
+> +	}
+> +
+> +	ret = close(wq->msg_pipe[0]);
+> +	if (ret) {
+> +		err = -1;
+> +		pr_err("workqueue: error close msg_pipe[0]: %s\n",
+> +			strerror(errno));
+> +	}
+> +
+> +	ret = close(wq->msg_pipe[1]);
+> +	if (ret) {
+> +		err = -1;
+> +		pr_err("workqueue: error close msg_pipe[1]: %s\n",
+> +			strerror(errno));
+> +	}
+> +
+> +	free(wq);
+> +
+> +	return err;
+> +}
+> +
+> +/**
+> + * workqueue_nr_threads - get size of threadpool underlying @wq
+> + */
+> +int workqueue_nr_threads(struct workqueue_struct *wq)
+> +{
+> +	return threadpool_size(wq->pool);
+> +}
+> diff --git a/tools/perf/util/workqueue/workqueue.h b/tools/perf/util/workqueue/workqueue.h
+> new file mode 100644
+> index 0000000000000000..86ec1d69274f41db
+> --- /dev/null
+> +++ b/tools/perf/util/workqueue/workqueue.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __WORKQUEUE_WORKQUEUE_H
+> +#define __WORKQUEUE_WORKQUEUE_H
+> +
+> +#include <stdlib.h>
+> +#include <sys/types.h>
+> +#include <linux/list.h>
+> +#include "threadpool.h"
+> +
+> +struct work_struct;
+> +typedef void (*work_func_t)(struct work_struct *work);
+> +
+> +struct work_struct {
+> +	struct list_head entry;
+> +	work_func_t func;
+> +};
+> +
+> +struct workqueue_struct;
+> +
+> +extern struct workqueue_struct *create_workqueue(struct threadpool_struct *pool);
+> +extern int destroy_workqueue(struct workqueue_struct *wq);
+> +
+> +extern int workqueue_nr_threads(struct workqueue_struct *wq);
+> +#endif /* __WORKQUEUE_WORKQUEUE_H */
+> -- 
+> 2.31.1
+> 
+
+-- 
+
+- Arnaldo
