@@ -2,179 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EE73C7AEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B012F3C7AC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237295AbhGNBS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 21:18:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237198AbhGNBS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:18:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1193061289;
-        Wed, 14 Jul 2021 01:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626225335;
-        bh=FDjgY3JvycVwM0FY/fcoJONFmmXrBsv7R5u9GjJg09M=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=SzQb8367F+P4JVu2MdXPSwya4uSaAFM4HArQhNenMLcjRSVMjz495QsHZnxd7MeOE
-         W+YGlLRZvT42ixtt4+wUV0opn0C28rdXFBDHS1ZDlXekycpI99Gohi4ZETNZTPRBlG
-         7iiStPcIjjFtIIBpktOrWTxZguj4ASCoLXKvx/37nHEDlfXd0LR3Enxs2l5YrTUnTf
-         qeP3qine8TdhlZOKC0NAHQ0x4B2MhsKudwMVKQRNqGoYy1VmtVHDQmD/BuPophQwXP
-         MbbfcemtzCt4qtntKc+cgVNwjxUELplSzz31vxDTLT1FPd9DjZSTjbxkrgpwyEWA0q
-         TQbpFjqNLRqOQ==
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20210601101024.119356-1-yuchao0@huawei.com>
- <YN32/NsjqJONbvz7@google.com>
- <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
- <YN5srPRZaPN9gpZ0@google.com>
- <b828fc22-f15a-8be4-631a-ed4ecb631386@kernel.org>
- <YOXo3CT5sBvj6p0J@google.com>
- <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
- <YO4jGkKLQWZKrgny@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <8f8d5645-9860-3e16-a09d-1a988ca6be72@kernel.org>
-Date:   Wed, 14 Jul 2021 09:15:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237241AbhGNBFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:05:09 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6811 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237180AbhGNBFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 21:05:08 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPfGF6rP8zXrJg;
+        Wed, 14 Jul 2021 08:56:37 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by dggeml757-chm.china.huawei.com
+ (10.1.199.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
+ Jul 2021 09:02:14 +0800
+From:   Yi Zhuang <zhuangyi1@huawei.com>
+To:     <benh@kernel.crashing.org>, <paulus@samba.org>
+CC:     <zhuangyi1@huawei.com>, <hegdevasant@linux.vnet.ibm.com>,
+        <mpe@ellerman.id.au>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] powerpc/rtas_flash: fix a potential buffer overflow
+Date:   Wed, 14 Jul 2021 09:16:08 +0800
+Message-ID: <20210714011608.15043-1-zhuangyi1@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
 MIME-Version: 1.0
-In-Reply-To: <YO4jGkKLQWZKrgny@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/14 7:34, Jaegeuk Kim wrote:
-> On 07/13, Chao Yu wrote:
->> On 2021/7/8 1:48, Jaegeuk Kim wrote:
->>> On 07/02, Chao Yu wrote:
->>>> On 2021/7/2 9:32, Jaegeuk Kim wrote:
->>>>> On 07/02, Chao Yu wrote:
->>>>>> On 2021/7/2 1:10, Jaegeuk Kim wrote:
->>>>>>> On 06/01, Chao Yu wrote:
->>>>>>>> [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
->>>>>>>>
->>>>>>>> As [1] reported, if lower device doesn't support write barrier, in below
->>>>>>>> case:
->>>>>>>>
->>>>>>>> - write page #0; persist
->>>>>>>> - overwrite page #0
->>>>>>>> - fsync
->>>>>>>>      - write data page #0 OPU into device's cache
->>>>>>>>      - write inode page into device's cache
->>>>>>>>      - issue flush
->>>>>>>
->>>>>>> Well, we have preflush for node writes, so I don't think this is the case.
->>>>>>>
->>>>>>>      fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
->>>>>>
->>>>>> This is only used for atomic write case, right?
->>>>>>
->>>>>> I mean the common case which is called from f2fs_issue_flush() in
->>>>>> f2fs_do_sync_file().
->>>>>
->>>>> How about adding PREFLUSH when writing node blocks aligned to the above set?
->>>>
->>>> You mean implementation like v1 as below?
->>>>
->>>> https://lore.kernel.org/linux-f2fs-devel/20200120100045.70210-1-yuchao0@huawei.com/
->>>
->>> Yea, I think so. :P
->>
->> I prefer v2, we may have several schemes to improve performance with v2, e.g.
->> - use inplace IO to avoid newly added preflush
->> - use flush_merge option to avoid redundant preflush
->> - if lower device supports barrier IO, we can avoid newly added preflush
-> 
-> Doesn't v2 give one more flush than v1? Why do you want to take worse one and
+Since snprintf() returns the possible output size instead of the
+actual output size, the available flash_msg length returned by
+get_validate_flash_msg may exceed the given buffer limit when
+simple_read_from_buffer calls copy_to_user
 
-FUA implies an extra preflush command or similar mechanism in lower device to keep data
-in bio being persistent before this command's completion.
+Signed-off-by: Yi Zhuang <zhuangyi1@huawei.com>
+---
+ arch/powerpc/kernel/rtas_flash.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Also if lower device doesn't support FUA natively, block layer turns it into an empty
-PREFLUSH command.
+diff --git a/arch/powerpc/kernel/rtas_flash.c b/arch/powerpc/kernel/rtas_flash.c
+index a99179d83538..4aa6bad28556 100644
+--- a/arch/powerpc/kernel/rtas_flash.c
++++ b/arch/powerpc/kernel/rtas_flash.c
+@@ -473,6 +473,10 @@ static int get_validate_flash_msg(struct rtas_validate_flash_t *args_buf,
+ 		    (args_buf->update_results == VALIDATE_TMP_UPDATE))
+ 			n += snprintf(msg + n, msglen - n, "%s\n",
+ 					args_buf->buf);
++			if (n >= msglen) {
++				n = msglen;
++				printk(KERN_ERR "FLASH: msg too long.\n");
++			}
+ 	} else {
+ 		n = sprintf(msg, "%d\n", args_buf->status);
+ 	}
+-- 
+2.26.0.106.g9fadedd
 
-So, it's hard to say which one will win the benchmark game, maybe we need some
-performance data before making the choice, but you know, it depends on device's
-character.
-
-> try to improve back? Not clear the benefit on v2.
-
-Well, if user suffer and complain performance regression with v1, any plan to improve it?
-
-I just thought about plan B/C/D for no matter v1 or v2.
-
-Thanks,
-
-> 
->>
->> Thanks,
->>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>>>
->>>>>> And please see do_checkpoint(), we call f2fs_flush_device_cache() and
->>>>>> commit_checkpoint() separately to keep persistence order of CP datas.
->>>>>>
->>>>>> See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
->>>>>> for details.
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> If SPO is triggered during flush command, inode page can be persisted
->>>>>>>> before data page #0, so that after recovery, inode page can be recovered
->>>>>>>> with new physical block address of data page #0, however there may
->>>>>>>> contains dummy data in new physical block address.
->>>>>>>>
->>>>>>>> Then what user will see is: after overwrite & fsync + SPO, old data in
->>>>>>>> file was corrupted, if any user do care about such case, we can suggest
->>>>>>>> user to use STRICT fsync mode, in this mode, we will force to trigger
->>>>>>>> preflush command to persist data in device cache in prior to node
->>>>>>>> writeback, it avoids potential data corruption during fsync().
->>>>>>>>
->>>>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>>>>> ---
->>>>>>>> v2:
->>>>>>>> - fix this by adding additional preflush command rather than using
->>>>>>>> atomic write flow.
->>>>>>>>      fs/f2fs/file.c | 14 ++++++++++++++
->>>>>>>>      1 file changed, 14 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>>>> index 7d5311d54f63..238ca2a733ac 100644
->>>>>>>> --- a/fs/f2fs/file.c
->>>>>>>> +++ b/fs/f2fs/file.c
->>>>>>>> @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->>>>>>>>      				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
->>>>>>>>      			goto flush_out;
->>>>>>>>      		goto out;
->>>>>>>> +	} else {
->>>>>>>> +		/*
->>>>>>>> +		 * for OPU case, during fsync(), node can be persisted before
->>>>>>>> +		 * data when lower device doesn't support write barrier, result
->>>>>>>> +		 * in data corruption after SPO.
->>>>>>>> +		 * So for strict fsync mode, force to trigger preflush to keep
->>>>>>>> +		 * data/node write order to avoid potential data corruption.
->>>>>>>> +		 */
->>>>>>>> +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
->>>>>>>> +								!atomic) {
->>>>>>>> +			ret = f2fs_issue_flush(sbi, inode->i_ino);
->>>>>>>> +			if (ret)
->>>>>>>> +				goto out;
->>>>>>>> +		}
->>>>>>>>      	}
->>>>>>>>      go_write:
->>>>>>>>      	/*
->>>>>>>> -- 
->>>>>>>> 2.29.2
