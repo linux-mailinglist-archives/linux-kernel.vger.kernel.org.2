@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B093C91B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABCE3C91C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240561AbhGNUGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240394AbhGNTvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:51:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C622613B5;
-        Wed, 14 Jul 2021 19:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626292111;
-        bh=Ptn/D3BKAPwThCszw8ZpXF1NedydCCKuyQP5zXLUWnw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UCT4NJP+Y1LAk1VfoVKr2W5ojMThXRQ0Eh5dBmUkLmlcGuxoZTdestBdA2uFzu8uS
-         XNdHFcxEmuB6hi+EGYEHHLj7rnWbhs7faszVOda+7CnbBdgMCi3nIFyh5gWflX0F03
-         xQwo4p8VuGhPIz9u44ZRNy0vuSxCaxSjIcmGzTbpKvIgFiZsW9QkI/7Gp6BPw3XcL8
-         W1CRkuRV8S+5rbjWyPbtaTWrz5uEDXvrYD9UCgjEE5r/U5WCLkLNnDHvLHVNwAEkhk
-         JW4Gg20TH9FPsEvqR7tcqD3wH9xb57oW/J/k3IpVfGhf33suRZvXRX013eekbYNPtY
-         4t59iiMbllqcQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Odin Ugedal <odin@uged.al>, Peter Zijlstra <peterz@infradead.org>,
-        Ben Segall <bsegall@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 18/18] sched/fair: Fix CFS bandwidth hrtimer expiry type
-Date:   Wed, 14 Jul 2021 15:48:06 -0400
-Message-Id: <20210714194806.55962-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714194806.55962-1-sashal@kernel.org>
-References: <20210714194806.55962-1-sashal@kernel.org>
+        id S239309AbhGNUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241185AbhGNT54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:57:56 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656A1C06175F;
+        Wed, 14 Jul 2021 12:48:15 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id f9so4631540wrq.11;
+        Wed, 14 Jul 2021 12:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aUBnfseT0Zje0G2mRhBHziBu0gGM/po1m8DQFWGOJ/o=;
+        b=CX7Piuv6Dln3mJRSNmkklr+7tIkBfgYYnqF318JjM167vyqBwl/JhQSSwm9ZJ/rIIB
+         9BGMH+PwEceWIalwFeLIw8Ds5AAoq8TUPfIQRCyK11XUjiR5+0jBk+szZ1jUCIELEnzD
+         ZTg5k5Ra6b1tS2wSOTnYejPIad1KFpQRPGY389qYT0AmKhy8yJY9ANeeEKqFMBtzaxOw
+         iuXC38wiVwk8b4gyOZzZD1UG3e+BV1NeuZjBZI0H8cWwyfrG7ZG8npdqYkckjcfZRb9j
+         f7+e2js04X67g/ydqsIX8VuoaOk/CYnxPeCgRVq97VxSVQ97lsgsiJwwgi18PpoOf9GM
+         8xkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aUBnfseT0Zje0G2mRhBHziBu0gGM/po1m8DQFWGOJ/o=;
+        b=hd/SyXgROU6V6yFpPKsbRaADORL+BGe1sZu19ZCMGiaMIfQA6uC4fksF2RMt1Pn4mh
+         oP29KIyFdFDZd4D6lcSl5kpGHuholOQUGiBU1TCC2byyZ9PBCYrdK607WnwKNHUmlgrD
+         L7RVBjLzasKj4jb/binuFkn9UGwrhGSYFz0wLAtyGt8PrFbALKTDnfs4oh1sXeFYABkZ
+         a6eTStci0/ypyKdjor9kBcLLKPNmzxgHwODR/jjKhB+zWGZ/SSWhn2Mi7X6QBCWdc2Zp
+         xy7nT42y4VRYOXtExczHYDsvkx2ZE9bxfha8tedLbDDeayDVNb5cWUn0qCZTDrhttlyR
+         Z52Q==
+X-Gm-Message-State: AOAM531711Zdy76OzAqXxh/XDsPSBytZATp2o2/pzCQkZ907S6W2itZM
+        CdFnarZwM0GJIk8N+uHgrOg=
+X-Google-Smtp-Source: ABdhPJyNNCxhreBnW/CwIZZ/vYJQQU4HSJPOJiDlvP+OMcnzbH7MSEORMih0UI+hSnYwAk2HDjCjQQ==
+X-Received: by 2002:adf:e7cc:: with SMTP id e12mr15444294wrn.51.1626292094018;
+        Wed, 14 Jul 2021 12:48:14 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id o5sm2004382wms.43.2021.07.14.12.48.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 12:48:13 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 22:48:12 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
+ layer 4 checksum
+Message-ID: <20210714194812.stay3oqyw3ogshhj@skbuf>
+References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
+ <20210714191723.31294-3-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714191723.31294-3-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+Hi Lino,
 
-[ Upstream commit 72d0ad7cb5bad265adb2014dbe46c4ccb11afaba ]
+On Wed, Jul 14, 2021 at 09:17:23PM +0200, Lino Sanfilippo wrote:
+> If the checksum calculation is offloaded to the network device (e.g due to
+> NETIF_F_HW_CSUM inherited from the DSA master device), the calculated
+> layer 4 checksum is incorrect. This is since the DSA tag which is placed
+> after the layer 4 data is seen as a part of the data portion and thus
+> errorneously included into the checksum calculation.
+> To avoid this, always calculate the layer 4 checksum in software.
+> 
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> ---
 
-The time remaining until expiry of the refresh_timer can be negative.
-Casting the type to an unsigned 64-bit value will cause integer
-underflow, making the runtime_refresh_within return false instead of
-true. These situations are rare, but they do happen.
-
-This does not cause user-facing issues or errors; other than
-possibly unthrottling cfs_rq's using runtime from the previous period(s),
-making the CFS bandwidth enforcement less strict in those (special)
-situations.
-
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Ben Segall <bsegall@google.com>
-Link: https://lore.kernel.org/r/20210629121452.18429-1-odin@uged.al
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 5a349fcb634e..39b59248d9c3 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4196,7 +4196,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
- static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
- {
- 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
--	u64 remaining;
-+	s64 remaining;
- 
- 	/* if the call-back is running a quota refresh is already occurring */
- 	if (hrtimer_callback_running(refresh_timer))
-@@ -4204,7 +4204,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
- 
- 	/* is a quota refresh about to occur? */
- 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
--	if (remaining < min_expire)
-+	if (remaining < (s64)min_expire)
- 		return 1;
- 
- 	return 0;
--- 
-2.30.2
-
+This needs to be solved more generically for all tail taggers. Let me
+try out a few things tomorrow and come with a proposal.
