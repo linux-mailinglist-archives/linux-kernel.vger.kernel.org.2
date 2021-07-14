@@ -2,276 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73063C843F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68073C8441
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239278AbhGNMHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:07:21 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:37842 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhGNMHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:07:20 -0400
-Received: by mail-ot1-f48.google.com with SMTP id e1-20020a9d63c10000b02904b8b87ecc43so2202448otl.4;
-        Wed, 14 Jul 2021 05:04:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5e9knfz3JG2gvEu2JVirrsq3sLTuduOyNuC1JgchsD0=;
-        b=J+2TzqKqZXfTSoQnbwcAmHcwBFa0dmaZCyzZGSISr+sg/nyiEA/dFdY5N8EppxOqjh
-         OOfSiPQ+4OebJWLV7k+YU+KsBok/7l79vV6YpAQ2wiBtdj25VKbo6E9fVNEfJDfa1LA5
-         6CVOrsf6wlCpkcrKWygyoeLa9Oq0C0dgnU5fWTxDrPFtT3pHYBNt4KZYuBBbkhliOhro
-         4L2ZoZwKji2rk1KJ20Ll4588m+wx2bLoru2dFmipflIKroVwwRqYlJ7npFRBxS/LpeaJ
-         dR4IChYVJu88B06rB4n4FSHvv19ktlM47opLUo543W8tCnyMOiTGvJVe9olIYgDT60XJ
-         inAA==
-X-Gm-Message-State: AOAM5310gkHHzg83KZZPq8y3IQ6/WNMaDWBg+eFAvGmkK6BajkHh+usN
-        PtplrttQow0S+Fpb2z3cyLqNW+qhAY5nHnpwYhU=
-X-Google-Smtp-Source: ABdhPJyH6gHb9v+2jbbt+B7bBKNZJC6DMtAQiA/tEoDx2TTr3eweGm/4CmAvbMEjhoEXHsTd6x99boZ+xpCTfJGbb1c=
-X-Received: by 2002:a9d:2968:: with SMTP id d95mr7885578otb.321.1626264268335;
- Wed, 14 Jul 2021 05:04:28 -0700 (PDT)
+        id S239257AbhGNMJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:09:41 -0400
+Received: from mout.gmx.net ([212.227.17.21]:37231 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230492AbhGNMJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:09:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626264406;
+        bh=lxpFcYvSv+ZN5kjSF8j1xFhmw+hDTGIGlO0mGRo2Hso=;
+        h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
+        b=kg8Gvkmah6oC5hZtqHGw8EkJ+vTXjhVAgdl8r+/ZXk7aX3/brNfa3mxahGoMcoboG
+         pdzoqoom8OhENs6Mo6tjFswF3QUIurJerCFI3dk9EiUbstTl0YRs0X5TtMrwxSMH4Y
+         +g0iv9mCB6j4OttXDhkDuUxa2ojUMBkaZW92eNds=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from obelix.fritz.box ([46.142.1.123]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSKy8-1lb0yE2jRw-00SjUT; Wed, 14
+ Jul 2021 14:06:46 +0200
+From:   Ronald Warsow <rwarsow@gmx.de>
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Message-ID: <fdce0566-617d-cc0c-368a-761f8015c79a@gmx.de>
+Date:   Wed, 14 Jul 2021 14:06:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210714085512.2176-1-joro@8bytes.org> <20210714085512.2176-2-joro@8bytes.org>
-In-Reply-To: <20210714085512.2176-2-joro@8bytes.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 14 Jul 2021 14:04:17 +0200
-Message-ID: <CAJZ5v0if-5A0vZSTeDvqLtqE2jZrKjCFcRouR2uFgycZ7CdWkg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] PCI/APCI: Move acpi_pci_osc_support() check to
- negotiation phase
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:t65iRbTh5+mBCuPXyIrHQ6N4GkHmWuW7BcOyvJMCd2KB53nP99E
+ jYi1d2NTwDBGbHY8kbOnqRfYisXYpKDOMrZNR5vJiMK+TNG0RhbAx75eOZwJKZl2YKSi4iQ
+ fLhFjr9xe+8HrOww3QWge37k6butv8XdxnugFx/YPQWVgi2JS5qw9ELc2moEl4/FRFfZ0tV
+ mR+4Z7hgIcsd3k99sJzhQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9knAF4K6514=:dpJYqfor1fBCaAUqLQR7qX
+ 8rc0Ko+5exakDZVq+CyZWJUNFA02fHxnW8vYZnI2i0Yy5O3GEzo8p+D6IvbIMUC3VAxzu/+F/
+ CR+zoIyfH3wGCBSML2vKqewMIaAZfm8QCHOoZjLzn0IBsKj7aJwkiSlA6qQINDB5f6U4+QO63
+ NAyuHNLMCnaUt+faAqMnCG5SrhnVJ+9mHGajyYi0QRGuHpD1YWwvwiSmonawbrndV2o7dEXZT
+ gP55TiAQR/rOo3UucZCIY54c+b1C+kr8TtrnRBkvEWRb2gFC1UQsvwEfszALQePuA9ZZzGoHU
+ mW0Eu0u90xZTvfTkzOYQRqynRRhhRBq71yNX9TuidJhPezUHsalqcHuPhw4b6fKsCCdKl08G3
+ WVoiTvUetQweSENkust4dXbx8+LRLpdOi4Nn7YAfT6ZjINmOw/3fufOg+FBMLPCHh2firLALY
+ xXTReMbTT4XaKCIQ7X2XL1uyh2SSdBJouwsgt6FLMOW6PG8FH1NESI6IvWBodzE1V+IVhYS33
+ mvxBcttaQhDZAas2euM/7SERuUbQ5ccfxhQQX8NrxmsuUTmk2DOR5pPjYN2n5CtDoQzcVq7aE
+ sdES38Gbgb+DBwm1Ht2NuSW9wPNgyfthGBcLpHrBvaw1umVbCubvPYNc3N0bO/4zYx9Oh7Ufd
+ skv80OwDCnVXpB9lRdf7LWi+p88aVNCzRgs91wiryR1rokNrJl8CzKegw0RGtYGEO54rre7AM
+ ye11bYk7vsy65C+MSw5mLjKSbQGyLj3kf9tp/LTKNwJiY9kPfrev7bwVo7yOtSWyF5RI0LqxL
+ niEBsNmuVN6H8GGC4GaghCNlF9P8eUY21a34K+cFcINWZHrVWpSPK/mGa6kZQAeEq89SNaPX4
+ NpdNy1kd+bnrwVEHN1hCfF8obQH63OsF2eO6i4gUwCL0UfdHFcfB1rr4CS0ag8pyiblTnklR8
+ +qb89lqk+774Fn71iFj907VKVhWS9PE+iLpriCh5B5QK8iCbLCcAtU3CCrV/S1gktttOtCkS6
+ uO4yE4w8n7Ho0NPJdUn/T/4LxTjNXCb6iIE7t/kWYShhE4rFI0Js5wVPxxGwN68EzPIAEo5LI
+ EwqdABW5POtCEPMPc0FcPwYAWxVmCh9mEMQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 10:55 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> From: Joerg Roedel <jroedel@suse.de>
->
-> The acpi_pci_osc_support() does an _OSC query with _OSC supported set
-> to what the OS supports but a zero _OSC control value, only to later
-> claim the features Linux wants to control with an extra _OSC query.
->
-> Nothing between the two _OSC querys depends on the result of the first
-> one (if successfull), and if the supported query fails the control
-> query will fail too. So it is a good code simplification to combine
-> these two querys into one.
->
-> As a result the acpi_pci_osc_support() function can be removed and
-> acpi_pci_query_osc() be simplified because it no longer called with a
-> NULL pointer for *control. Also some code duplication in the existing
-> error paths was consolidated.
->
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  drivers/acpi/pci_root.c | 114 ++++++++++++++++++----------------------
->  1 file changed, 52 insertions(+), 62 deletions(-)
->
-> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> index d7deedf3548e..c703832b7f7f 100644
-> --- a/drivers/acpi/pci_root.c
-> +++ b/drivers/acpi/pci_root.c
-> @@ -201,31 +201,20 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
->
->         support &= OSC_PCI_SUPPORT_MASKS;
->         support |= root->osc_support_set;
-> +       *control &= OSC_PCI_CONTROL_MASKS;
->
->         capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
->         capbuf[OSC_SUPPORT_DWORD] = support;
-> -       if (control) {
-> -               *control &= OSC_PCI_CONTROL_MASKS;
-> -               capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
-> -       } else {
-> -               /* Run _OSC query only with existing controls. */
-> -               capbuf[OSC_CONTROL_DWORD] = root->osc_control_set;
-> -       }
-> +       capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
->
->         status = acpi_pci_run_osc(root->device->handle, capbuf, &result);
->         if (ACPI_SUCCESS(status)) {
->                 root->osc_support_set = support;
-> -               if (control)
-> -                       *control = result;
-> +               *control = result;
->         }
->         return status;
->  }
->
-> -static acpi_status acpi_pci_osc_support(struct acpi_pci_root *root, u32 flags)
-> -{
-> -       return acpi_pci_query_osc(root, flags, NULL);
-> -}
-> -
->  struct acpi_pci_root *acpi_pci_find_root(acpi_handle handle)
->  {
->         struct acpi_pci_root *root;
-> @@ -348,7 +337,8 @@ EXPORT_SYMBOL_GPL(acpi_get_pci_dev);
->   * _OSC bits the BIOS has granted control of, but its contents are meaningless
->   * on failure.
->   **/
-> -static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 req)
-> +static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32
-> +                                           *mask, u32 req, u32 support)
->  {
->         struct acpi_pci_root *root;
->         acpi_status status;
-> @@ -372,7 +362,7 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
->
->         /* Need to check the available controls bits before requesting them. */
->         while (*mask) {
-> -               status = acpi_pci_query_osc(root, root->osc_support_set, mask);
-> +               status = acpi_pci_query_osc(root, support, mask);
->                 if (ACPI_FAILURE(status))
->                         return status;
->                 if (ctrl == *mask)
-> @@ -402,7 +392,7 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
->  static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->                                  bool is_pcie)
->  {
-> -       u32 support, control, requested;
-> +       u32 support, control = 0, requested;
->         acpi_status status;
->         struct acpi_device *device = root->device;
->         acpi_handle handle = device->handle;
-> @@ -435,59 +425,49 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->                 support |= OSC_PCI_EDR_SUPPORT;
->
->         decode_osc_support(root, "OS supports", support);
-> -       status = acpi_pci_osc_support(root, support);
-> -       if (ACPI_FAILURE(status)) {
-> -               *no_aspm = 1;
->
-> -               /* _OSC is optional for PCI host bridges */
-> -               if ((status == AE_NOT_FOUND) && !is_pcie)
-> +       if (!pcie_ports_disabled) {
+hallo
 
-If pcie_ports_disabled is set, we don't want to request any control
-from the platform firmware at all and, specifically, we don't want to
-evaluate _OSC with the OSC_QUERY_ENABLE clear in
-capbuf[OSC_QUERY_DWORD].
+all fine here on an Intel i7-6700 box.
 
-I'm not sure how this is achieved after your changes.
+thanks
 
-> +               if ((support & ACPI_PCIE_REQ_SUPPORT) != ACPI_PCIE_REQ_SUPPORT) {
-> +                       decode_osc_support(root, "not requesting OS control; OS requires",
-> +                                       ACPI_PCIE_REQ_SUPPORT);
->                         return;
-> +               }
->
-> -               dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> -                        acpi_format_exception(status));
-> -               return;
-> -       }
-> -
-> -       if (pcie_ports_disabled) {
-> -               dev_info(&device->dev, "PCIe port services disabled; not requesting _OSC control\n");
-> -               return;
-> -       }
-> -
-> -       if ((support & ACPI_PCIE_REQ_SUPPORT) != ACPI_PCIE_REQ_SUPPORT) {
-> -               decode_osc_support(root, "not requesting OS control; OS requires",
-> -                                  ACPI_PCIE_REQ_SUPPORT);
-> -               return;
-> -       }
-> -
-> -       control = OSC_PCI_EXPRESS_CAPABILITY_CONTROL
-> -               | OSC_PCI_EXPRESS_PME_CONTROL;
-> +               control = OSC_PCI_EXPRESS_CAPABILITY_CONTROL
-> +                       | OSC_PCI_EXPRESS_PME_CONTROL;
->
-> -       if (IS_ENABLED(CONFIG_PCIEASPM))
-> -               control |= OSC_PCI_EXPRESS_LTR_CONTROL;
-> +               if (IS_ENABLED(CONFIG_PCIEASPM))
-> +                       control |= OSC_PCI_EXPRESS_LTR_CONTROL;
->
-> -       if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
-> -               control |= OSC_PCI_EXPRESS_NATIVE_HP_CONTROL;
-> +               if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
-> +                       control |= OSC_PCI_EXPRESS_NATIVE_HP_CONTROL;
->
-> -       if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
-> -               control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
-> +               if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
-> +                       control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
->
-> -       if (pci_aer_available())
-> -               control |= OSC_PCI_EXPRESS_AER_CONTROL;
-> +               if (pci_aer_available())
-> +                       control |= OSC_PCI_EXPRESS_AER_CONTROL;
->
-> -       /*
-> -        * Per the Downstream Port Containment Related Enhancements ECN to
-> -        * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
-> -        * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
-> -        * and EDR.
-> -        */
-> -       if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
-> -               control |= OSC_PCI_EXPRESS_DPC_CONTROL;
-> +               /*
-> +                * Per the Downstream Port Containment Related Enhancements ECN to
-> +                * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
-> +                * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
-> +                * and EDR.
-> +                */
-> +               if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
-> +                       control |= OSC_PCI_EXPRESS_DPC_CONTROL;
-> +       }
->
-> +       /* Need an _OSC call even with pcie_ports_disabled set */
->         requested = control;
->         status = acpi_pci_osc_control_set(handle, &control,
-> -                                         OSC_PCI_EXPRESS_CAPABILITY_CONTROL);
-> +                                         OSC_PCI_EXPRESS_CAPABILITY_CONTROL,
-> +                                         support);
-> +
->         if (ACPI_SUCCESS(status)) {
-> -               decode_osc_control(root, "OS now controls", control);
-> +               if (control)
-> +                       decode_osc_control(root, "OS now controls", control);
-> +
->                 if (acpi_gbl_FADT.boot_flags & ACPI_FADT_NO_ASPM) {
->                         /*
->                          * We have ASPM control, but the FADT indicates that
-> @@ -498,10 +478,8 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->                         *no_aspm = 1;
->                 }
->         } else {
-> -               decode_osc_control(root, "OS requested", requested);
-> -               decode_osc_control(root, "platform willing to grant", control);
-> -               dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> -                       acpi_format_exception(status));
-> +               /* Platform wants to control PCIe features */
-> +               root->osc_support_set = 0;
->
->                 /*
->                  * We want to disable ASPM here, but aspm_disabled
-> @@ -511,6 +489,18 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
->                  * root scan.
->                  */
->                 *no_aspm = 1;
-> +
-> +               /* _OSC is optional for PCI host bridges */
-> +               if ((status == AE_NOT_FOUND) && !is_pcie)
-> +                       return;
-> +
-> +               if (requested) {
-> +                       decode_osc_control(root, "OS requested", requested);
-> +                       decode_osc_control(root, "platform willing to grant", control);
-> +               }
-> +
-> +               dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> +                       acpi_format_exception(status));
->         }
->  }
->
-> --
-> 2.31.1
->
+
++++ UPDATE +++
+##############
+
+Regarding the above I need to be more accurate:
+The kernel compiles, boots and runs without errors -so far -.
+
+BUT: it seems under load it could lead to an dead box.
+
+
+what I did:
+
+running in one terminal: dmesg -w
+
+and in an second terminal:
+
+make clean && ccache -Czs && time make all -j $(nproc)
+
+
+leads within a minutes to an complete dead box after make has started !
+
+
+- no output regarding crashes, etc. in the first terminal running dmesg
+- no mouse, no keyboard, no switch via CRTL+ALT+F3 to a console
+- the box is dead
+- only the power button helps
+
+
+with kernel 5.13.1 all the above is fine
+
+
+anyone (too) ?
+
+=2D-
+regards
+
+Ronald
