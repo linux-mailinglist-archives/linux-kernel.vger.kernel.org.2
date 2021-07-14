@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D7C3C8C4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857133C8BE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhGNTlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232444AbhGNTlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C696C613CB;
-        Wed, 14 Jul 2021 19:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291511;
-        bh=x+qdZzgSdk3d/ojZFp62G+S3M5I1KK3oAlR4rrJvUFE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JE7XIv45yy6bPoYYI2LW1h8nJ0amBF1kYuFOMTrnseTJ1dOhfcePRr+dIg8kBrZ1Y
-         lv3A1vvDsbi/Tv39EdXshsm517+NfGw7VigxXMwQYko6rymFb01zmTtWiSxjCpVJQI
-         kXJ6Qv73hh8bbHaYzgRxHd5kHGyxBa6TK9LsxGzjiad2QpJqarOh6cPwG68MUC1P9I
-         alcTpDf7km2aV9TbbxxZPD+OpUYw5yhX2wDoqajgdlzmsTJDelEH7Jgu5g/HKWI82K
-         DUZl9uP/mPw3vZkbfSWIywE/poM1zj5QbwqdYJldqhzo/LypbV8Ugnng7dJc9qSbI+
-         y2jTrI7dvNr2w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 020/108] ARM: dts: BCM63xx: Fix NAND nodes names
-Date:   Wed, 14 Jul 2021 15:36:32 -0400
-Message-Id: <20210714193800.52097-20-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210714193800.52097-1-sashal@kernel.org>
-References: <20210714193800.52097-1-sashal@kernel.org>
+        id S230153AbhGNTjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:39:32 -0400
+Received: from mail-il1-f172.google.com ([209.85.166.172]:46746 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhGNTjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:39:31 -0400
+Received: by mail-il1-f172.google.com with SMTP id y6so2716387ilj.13;
+        Wed, 14 Jul 2021 12:36:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zCob8KnLhd7BVyF49DM2VLmSQ+kXCXBfTyyPAmEAwzI=;
+        b=Lwll3maTAauMq/kmig6/+L4RVxM5ZmCkKVoKN6R/WnWoA5JcFkvTUvdQ9MYDXx4uj4
+         KIgoPJzLwbI+h+0Yn02U/Iq9nXglt56ZCkmjJyUbB6ESt4Ju6IxFsw+9QiZuVUwYtgTW
+         kWPEpG4JyS34WVZ4l2vCa9o9x0h27IKACr3cPq88Wz7WegE7yCVrM9L4gMhatyoYxX9H
+         NVYV4pCK0KjRSp75P7Kv64JmmQUg5kMSwAQ/cgmZFXrTZ4Xq6gm3QIlKOQiBDts/a9Nc
+         sj1XsOp/xVJIsI+CT2pSkjBC29EbRP4s+6vC4D0jQm5qDA72z2Jjgd9Xdvni8xGWXbYh
+         2lzg==
+X-Gm-Message-State: AOAM532peqNAHBol5t9xL+9R41DaVc+fdKAF5KVcwbvvWklobOBYQV9e
+        51o9gCVe+jTTMemH3Q8zCw==
+X-Google-Smtp-Source: ABdhPJwKha/W8xIOBtkVzmhR5IEcLbaVE7Ber5zf4dzP6xubPe/9bWpTYcvAquj0RFBEywrVCkppQQ==
+X-Received: by 2002:a92:4a0d:: with SMTP id m13mr7916538ilf.129.1626291398220;
+        Wed, 14 Jul 2021 12:36:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id n5sm1829683ilo.78.2021.07.14.12.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 12:36:37 -0700 (PDT)
+Received: (nullmailer pid 3154413 invoked by uid 1000);
+        Wed, 14 Jul 2021 19:36:33 -0000
+Date:   Wed, 14 Jul 2021 13:36:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     dianders@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        saiprakash.ranjan@codeaurora.org, robin.murphy@arm.com,
+        linux-arm-kernel@lists.infradead.org, swboyd@chromium.org,
+        p.zabel@pengutronix.de, will@kernel.org, joro@8bytes.org,
+        linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
+        devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH 1/9] dt-bindings: remoteproc: qcom: pas: Add SC7280 MPSS
+ support
+Message-ID: <20210714193633.GA3154320@robh.at.kernel.org>
+References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
+ <1624564058-24095-2-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624564058-24095-2-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, 25 Jun 2021 01:17:30 +0530, Sibi Sankar wrote:
+> Add MPSS PAS support for SC7280 SoCs.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-[ Upstream commit 75e2f012f6e34b93124d1d86eaa8f27df48e9ea0 ]
-
-This matches nand-controller.yaml requirements.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/arm/boot/dts/bcm63138.dtsi    | 2 +-
- arch/arm/boot/dts/bcm963138dvt.dts | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/boot/dts/bcm63138.dtsi b/arch/arm/boot/dts/bcm63138.dtsi
-index 9c0325cf9e22..cca49a2e2d62 100644
---- a/arch/arm/boot/dts/bcm63138.dtsi
-+++ b/arch/arm/boot/dts/bcm63138.dtsi
-@@ -203,7 +203,7 @@ serial1: serial@620 {
- 			status = "disabled";
- 		};
- 
--		nand: nand@2000 {
-+		nand_controller: nand-controller@2000 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.0", "brcm,brcmnand";
-diff --git a/arch/arm/boot/dts/bcm963138dvt.dts b/arch/arm/boot/dts/bcm963138dvt.dts
-index 5b177274f182..df5c8ab90627 100644
---- a/arch/arm/boot/dts/bcm963138dvt.dts
-+++ b/arch/arm/boot/dts/bcm963138dvt.dts
-@@ -31,10 +31,10 @@ &serial1 {
- 	status = "okay";
- };
- 
--&nand {
-+&nand_controller {
- 	status = "okay";
- 
--	nandcs@0 {
-+	nand@0 {
- 		compatible = "brcm,nandcs";
- 		reg = <0>;
- 		nand-ecc-strength = <4>;
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
