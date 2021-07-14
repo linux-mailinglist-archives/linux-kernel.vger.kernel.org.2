@@ -2,200 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD0F3C7C11
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C0E3C7C17
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237599AbhGNCyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:54:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237415AbhGNCyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:54:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11DF66136E;
-        Wed, 14 Jul 2021 02:51:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626231080;
-        bh=TPrasmTq/xhjGBP6pq3SGLmKcWsOlA85wtzjRFrOM9I=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sKj6AdGs/MMqcffnMPYX/Z96oP+K+ByRAuShjlkbrxVScdrdGf1H4VS3GBJYB1qJW
-         AttAZvg/vpaPmQeixeIfXHm+zThzzU3Vb50q4OieKpoUvuPOpQS2YOiX6TJuZ5Ixbl
-         nq6Ac1KFqcdXBR+SailN9omVogNm/GCVdhJcE67mCKn85YlKveFi5AjADdOeXpIvP9
-         ZzaSnWw8DH5nrzJamZP4Q+0iieDa+Mm4eVMYbh5iKRLxKT7x2miEzQeQi9Qqs0Z7sM
-         uFpv5wdx/cYiPOvmFjEyZGuHMLLN6n/nsRtP64y9a97UNiNd+mqAc0m00H17ktvqqa
-         09t4wgGrcYR9g==
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20210601101024.119356-1-yuchao0@huawei.com>
- <YN32/NsjqJONbvz7@google.com>
- <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
- <YN5srPRZaPN9gpZ0@google.com>
- <b828fc22-f15a-8be4-631a-ed4ecb631386@kernel.org>
- <YOXo3CT5sBvj6p0J@google.com>
- <55e069f7-662d-630c-1201-d0163b38bc17@kernel.org>
- <YO4jGkKLQWZKrgny@google.com>
- <8f8d5645-9860-3e16-a09d-1a988ca6be72@kernel.org>
- <YO5JptcNuT28JJtX@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <c6abf9b4-adbb-f3a6-39a5-5b77ea8b1545@kernel.org>
-Date:   Wed, 14 Jul 2021 10:51:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237641AbhGNCy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237478AbhGNCy0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:54:26 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162C9C0613DD;
+        Tue, 13 Jul 2021 19:51:35 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 141so1130076ljj.2;
+        Tue, 13 Jul 2021 19:51:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y18MtVBNJCSt0reG0zKbcirRM5joaQD9M2TfGGnejyo=;
+        b=gghF/2RWHy96MSprDxIu9kWldrcM06u8UscUnK4/85eFYkT4gC0CU/eIgTguLDZaZb
+         7UvhFRBuHVpLpAhKxVTRQNM6oXlSM90Ftmit2D5hc5jz91hLAsunJ3ISEfnGt8uUko+8
+         kG8HY3AgohPCtHrIqGKSioqnVCeiWUm37mPyn2Jcx3H1TfTretFcDlVeLYutf1hUphK4
+         q1qA8VEhlXYhVcvXro0eNVbVFZ4xWQAOt61zO7ww0xLUBRd1AgwuSjh2uyUlnAB+xzgj
+         8n8W0kyZ/BYb3xK15jTX19uPuMDL0CZn5yKxjKWx7aIIUdDXTWTVqmZ0W7LZpokkpE9I
+         XDOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y18MtVBNJCSt0reG0zKbcirRM5joaQD9M2TfGGnejyo=;
+        b=JcotPwHthhzH1WgTgqRZ5CNNmcbbbbsNi5FoCfF2hRhh4KEjIYcY23VzdDQc/nZdkl
+         o73bXAIT1Pvn2WvhEW0t6Z+V/xK1pe5ENneiQ47f1M9vHDCaZX27X9W5K48TSkbYOUQV
+         Mr6L2Q68tmDWvEcwsjg+o+OX/O2qxWpBeHL+SKvgcY029Mxp7sRTJq+k25JIvo3QANsk
+         CIFT6AmGIZwl+AFJSthWcG3fw8xJqOHtkIEwK0VFFaYPs0L9QK4koj6rJMomvXQERtuK
+         aTBKN8q029bNK+wAbkjDCiWyYT2TQb80ZEKlFgZNJHxApLtL99TychMNLyg9Y6iFayu4
+         Y5dw==
+X-Gm-Message-State: AOAM53222HAP6HLowmMF/Gd2Qhm02j0b+lLwId3y9eLIrDUrnZMxLzjx
+        bDwvrwyc59InjlCLIJUgSuY=
+X-Google-Smtp-Source: ABdhPJyJ2nqd8NxVQVU1+U8BpqxjxS4jSQccHlgOfwshtNBtYCdX6vTu0CcxALxvKt7S+Cc8FiUj4w==
+X-Received: by 2002:a2e:8883:: with SMTP id k3mr6867850lji.247.1626231093520;
+        Tue, 13 Jul 2021 19:51:33 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id a10sm50281lfb.93.2021.07.13.19.51.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 19:51:33 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v2 0/7] Tegra Kconfig improvements for 5.15
+Date:   Wed, 14 Jul 2021 05:51:20 +0300
+Message-Id: <20210714025127.2411-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YO5JptcNuT28JJtX@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/14 10:19, Jaegeuk Kim wrote:
-> On 07/14, Chao Yu wrote:
->> On 2021/7/14 7:34, Jaegeuk Kim wrote:
->>> On 07/13, Chao Yu wrote:
->>>> On 2021/7/8 1:48, Jaegeuk Kim wrote:
->>>>> On 07/02, Chao Yu wrote:
->>>>>> On 2021/7/2 9:32, Jaegeuk Kim wrote:
->>>>>>> On 07/02, Chao Yu wrote:
->>>>>>>> On 2021/7/2 1:10, Jaegeuk Kim wrote:
->>>>>>>>> On 06/01, Chao Yu wrote:
->>>>>>>>>> [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
->>>>>>>>>>
->>>>>>>>>> As [1] reported, if lower device doesn't support write barrier, in below
->>>>>>>>>> case:
->>>>>>>>>>
->>>>>>>>>> - write page #0; persist
->>>>>>>>>> - overwrite page #0
->>>>>>>>>> - fsync
->>>>>>>>>>       - write data page #0 OPU into device's cache
->>>>>>>>>>       - write inode page into device's cache
->>>>>>>>>>       - issue flush
->>>>>>>>>
->>>>>>>>> Well, we have preflush for node writes, so I don't think this is the case.
->>>>>>>>>
->>>>>>>>>       fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
->>>>>>>>
->>>>>>>> This is only used for atomic write case, right?
->>>>>>>>
->>>>>>>> I mean the common case which is called from f2fs_issue_flush() in
->>>>>>>> f2fs_do_sync_file().
->>>>>>>
->>>>>>> How about adding PREFLUSH when writing node blocks aligned to the above set?
->>>>>>
->>>>>> You mean implementation like v1 as below?
->>>>>>
->>>>>> https://lore.kernel.org/linux-f2fs-devel/20200120100045.70210-1-yuchao0@huawei.com/
->>>>>
->>>>> Yea, I think so. :P
->>>>
->>>> I prefer v2, we may have several schemes to improve performance with v2, e.g.
->>>> - use inplace IO to avoid newly added preflush
->>>> - use flush_merge option to avoid redundant preflush
->>>> - if lower device supports barrier IO, we can avoid newly added preflush
->>>
->>> Doesn't v2 give one more flush than v1? Why do you want to take worse one and
->>
->> FUA implies an extra preflush command or similar mechanism in lower device to keep data
->> in bio being persistent before this command's completion.
->>
->> Also if lower device doesn't support FUA natively, block layer turns it into an empty
->> PREFLUSH command.
->>
->> So, it's hard to say which one will win the benchmark game, maybe we need some
->> performance data before making the choice, but you know, it depends on device's
->> character.
-> 
-> I was looking at # of bios.
-> 
->>
->>> try to improve back? Not clear the benefit on v2.
->>
->> Well, if user suffer and complain performance regression with v1, any plan to improve it?
->>
->> I just thought about plan B/C/D for no matter v1 or v2.
-> 
-> I assumed you wanted v2 since it might be used for B/C/D improvements. But, it
-> seems it wasn't. My point is to save one bio, but piggyback the flag to the
-> device driver.
+This series enables new Kconfig options, it also fixes CONFIG_FB and
+CROS_EC options.
 
-I doubt the conclusion...but it needs to get some data to prove it.
+Changelog:
 
-I think the right way is merging v1 now to fix the bug firstly, and let me do
-the comparison on them a little bit later to see whether we need another
-implementation... thoughts?
+v2: - Added two more patches from Maxim Schwalm that are fixing CROS_EC
+      options and refreshing tegra_defconfig.
 
-Thanks,
+    - Added fixes tag to the CONFIG_FB patch, thanks to Maxim for finding
+      the offending commit.
 
-> 
->>
->> Thanks,
->>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> And please see do_checkpoint(), we call f2fs_flush_device_cache() and
->>>>>>>> commit_checkpoint() separately to keep persistence order of CP datas.
->>>>>>>>
->>>>>>>> See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
->>>>>>>> for details.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>>
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> If SPO is triggered during flush command, inode page can be persisted
->>>>>>>>>> before data page #0, so that after recovery, inode page can be recovered
->>>>>>>>>> with new physical block address of data page #0, however there may
->>>>>>>>>> contains dummy data in new physical block address.
->>>>>>>>>>
->>>>>>>>>> Then what user will see is: after overwrite & fsync + SPO, old data in
->>>>>>>>>> file was corrupted, if any user do care about such case, we can suggest
->>>>>>>>>> user to use STRICT fsync mode, in this mode, we will force to trigger
->>>>>>>>>> preflush command to persist data in device cache in prior to node
->>>>>>>>>> writeback, it avoids potential data corruption during fsync().
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>>>>>>> ---
->>>>>>>>>> v2:
->>>>>>>>>> - fix this by adding additional preflush command rather than using
->>>>>>>>>> atomic write flow.
->>>>>>>>>>       fs/f2fs/file.c | 14 ++++++++++++++
->>>>>>>>>>       1 file changed, 14 insertions(+)
->>>>>>>>>>
->>>>>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>>>>>> index 7d5311d54f63..238ca2a733ac 100644
->>>>>>>>>> --- a/fs/f2fs/file.c
->>>>>>>>>> +++ b/fs/f2fs/file.c
->>>>>>>>>> @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->>>>>>>>>>       				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
->>>>>>>>>>       			goto flush_out;
->>>>>>>>>>       		goto out;
->>>>>>>>>> +	} else {
->>>>>>>>>> +		/*
->>>>>>>>>> +		 * for OPU case, during fsync(), node can be persisted before
->>>>>>>>>> +		 * data when lower device doesn't support write barrier, result
->>>>>>>>>> +		 * in data corruption after SPO.
->>>>>>>>>> +		 * So for strict fsync mode, force to trigger preflush to keep
->>>>>>>>>> +		 * data/node write order to avoid potential data corruption.
->>>>>>>>>> +		 */
->>>>>>>>>> +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
->>>>>>>>>> +								!atomic) {
->>>>>>>>>> +			ret = f2fs_issue_flush(sbi, inode->i_ino);
->>>>>>>>>> +			if (ret)
->>>>>>>>>> +				goto out;
->>>>>>>>>> +		}
->>>>>>>>>>       	}
->>>>>>>>>>       go_write:
->>>>>>>>>>       	/*
->>>>>>>>>> -- 
->>>>>>>>>> 2.29.2
+Dmitry Osipenko (5):
+  ARM: tegra_defconfig: Enable CONFIG_TEGRA30_TSENSOR
+  ARM: tegra_defconfig: Enable CONFIG_FB
+  ARM: tegra_defconfig: Enable Acer A500 drivers
+  ARM: multi_v7_defconfig: Enable Acer A500 drivers
+  ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
+
+Maxim Schwalm (2):
+  ARM: tegra_defconfig: Enable CONFIG_CROS_EC
+  ARM: tegra_defconfig: Rebuild defconfig
+
+ arch/arm/configs/multi_v7_defconfig |  4 ++++
+ arch/arm/configs/tegra_defconfig    | 25 ++++++++-----------------
+ 2 files changed, 12 insertions(+), 17 deletions(-)
+
+-- 
+2.32.0
+
