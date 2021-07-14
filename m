@@ -2,227 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99633C7BA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2983C7BA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237528AbhGNCWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:22:00 -0400
-Received: from mail-io1-f43.google.com ([209.85.166.43]:36422 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237370AbhGNCV7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:21:59 -0400
-Received: by mail-io1-f43.google.com with SMTP id u7so185683ion.3;
-        Tue, 13 Jul 2021 19:19:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J7z2oSLzVMt4SabkTXK9Gz/CtB++JstqH99nEoet3iE=;
-        b=tLeKFGed7hMGtdG+YEo/E3MiLo5Smg+0EwDZgpsaqz6E3cObuh23dEVtfK9DEcTzpX
-         pIudCTJ1uZroMcXvOON/sAVqqr2LH6DPMCs5GIDH9CgmFY9hjxE8wIWoCV6QlpvXuMZe
-         NA/hczMpAs2iEMZ5LEsDKF38FOyTcD5bJfAHNRH6BGWM6FJd1AePR5dHN6LDNkO8oLMy
-         bGp9XgJ2VRBVRPCPtqMVwslGJKi+y/mUQuFuUPbZ7ov42EGkK8nKq84V2r+2y9OR5IYx
-         LLugrjbKbB8vkT+7R6tzIE/yxHwlz2h5bLpFsMJd1st+mEv1fQ4Y2SdAoXa2y4IaH5eB
-         Qujw==
-X-Gm-Message-State: AOAM530fzlVpZv5x5NB/Joa1QDbrA+jQRaxQHhvZrKDNtmf3+R0KG3Mi
-        4CKou00J+pD3u9u+5BqmqSDHJogYhA==
-X-Google-Smtp-Source: ABdhPJyYsxBeRLUDTa6xK3WqJToa3dq7jqxLFr8eHgRDm1wJ2nu9DBMqK6ES7lSkInARegyykqkf3g==
-X-Received: by 2002:a6b:b2d1:: with SMTP id b200mr5412440iof.187.1626229147947;
-        Tue, 13 Jul 2021 19:19:07 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c7sm431400ile.69.2021.07.13.19.19.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 19:19:07 -0700 (PDT)
-Received: (nullmailer pid 1317722 invoked by uid 1000);
-        Wed, 14 Jul 2021 02:19:04 -0000
-Date:   Tue, 13 Jul 2021 20:19:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/6] media: dt-bindings: mt9p031: Convert bindings to
- yaml
-Message-ID: <20210714021904.GA1312716@robh.at.kernel.org>
-References: <20210712085535.11907-1-s.riedmueller@phytec.de>
- <20210712085535.11907-6-s.riedmueller@phytec.de>
+        id S237539AbhGNCWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:22:10 -0400
+Received: from mg.richtek.com ([220.130.44.152]:33230 "EHLO mg.richtek.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237530AbhGNCWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 22:22:10 -0400
+X-Greylist: delayed 1889 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Jul 2021 22:22:09 EDT
+X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
+        LIVER,40,3)
+Received: from 192.168.10.47
+        by mg.richtek.com with MailGates ESMTP Server V5.0(24174:0:AUTH_RELAY)
+        (envelope-from <cy_huang@richtek.com>); Wed, 14 Jul 2021 10:19:12 +0800 (CST)
+Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Wed, 14 Jul 2021
+ 10:19:11 +0800
+Received: from ex3.rt.l ([fe80::ede0:40a5:8f78:963e]) by ex3.rt.l
+ ([fe80::ede0:40a5:8f78:963e%2]) with mapi id 15.02.0858.010; Wed, 14 Jul 2021
+ 10:19:11 +0800
+From:   =?utf-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
+To:     "robh@kernel.org" <robh@kernel.org>,
+        "u0084500@gmail.com" <u0084500@gmail.com>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/2] regulator: rtq6752: Add binding document for Richtek
+ RTQ6752
+Thread-Topic: [PATCH 1/2] regulator: rtq6752: Add binding document for Richtek
+ RTQ6752
+Thread-Index: AQHXdNjO5meqnI1Ye0Cuv8PFds84A6tA8WiAgABMDYA=
+Date:   Wed, 14 Jul 2021 02:19:11 +0000
+Message-ID: <1626229151.3432.6.camel@richtek.com>
+References: <1625845236-30285-1-git-send-email-u0084500@gmail.com>
+         <20210713214659.GA892012@robh.at.kernel.org>
+In-Reply-To: <20210713214659.GA892012@robh.at.kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.18.5.2-0ubuntu3.2 
+x-originating-ip: [192.168.8.48]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6129D831EB06C84E9071AD0DE2DDE7C0@rt.l>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712085535.11907-6-s.riedmueller@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:55:34AM +0200, Stefan Riedmueller wrote:
-> Convert mt9p031 sensor bindings to yaml schema. Also update the
-> MAINTAINERS entry.
-> 
-> Although input-clock-frequency and pixel-clock-frequency have not been
-> definded as endpoint propierties in the textual bindings, the sensor
-> does parse them from the endpoint. Thus move these properties to the
-> endpoint in the new yaml bindings.
-> 
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> ---
->  .../bindings/media/i2c/aptina,mt9p031.yaml    | 75 +++++++++++++++++++
->  .../devicetree/bindings/media/i2c/mt9p031.txt | 40 ----------
->  MAINTAINERS                                   |  1 +
->  3 files changed, 76 insertions(+), 40 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
->  delete mode 100644 Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> new file mode 100644
-> index 000000000000..ad9a2db73d86
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> @@ -0,0 +1,75 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/aptina,mt9p031.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aptina 1/2.5-Inch 5Mp CMOS Digital Image Sensor
-> +
-> +maintainers:
-> +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> +
-> +description: |
-> +  The Aptina MT9P031 is a 1/2.5-inch CMOS active pixel digital image sensor
-> +  with an active array size of 2592H x 1944V. It is programmable through a
-> +  simple two-wire serial interface.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aptina,mt9p031
-> +      - aptina,mt9p031m
-> +
-> +  reg:
-> +    description: I2C device address
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: Chip reset GPIO
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +    additionalProperties: false
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-
-Doesn't look like you use any properties from video-interfaces.yaml. You 
-should just reference graph.yaml#/$defs/endpoint-base instead.
-
-> +        unevaluatedProperties: false
-> +
-> +        properties:
-> +          input-clock-frequency: true
-> +          pixel-clock-frequency: true
-
-These are custom properties, so they need a type, description, and any 
-constraints.
-
-> +
-> +        required:
-> +          - input-clock-frequency
-> +          - pixel-clock-frequency
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c0 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        mt9p031@5d {
-> +            compatible = "aptina,mt9p031";
-> +            reg = <0x5d>;
-> +            reset-gpios = <&gpio_sensor 0 0>;
-> +
-> +            port {
-> +                mt9p031_1: endpoint {
-> +                    input-clock-frequency = <6000000>;
-> +                    pixel-clock-frequency = <96000000>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/media/i2c/mt9p031.txt b/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> deleted file mode 100644
-> index cb60443ff78f..000000000000
-> --- a/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> +++ /dev/null
-> @@ -1,40 +0,0 @@
-> -* Aptina 1/2.5-Inch 5Mp CMOS Digital Image Sensor
-> -
-> -The Aptina MT9P031 is a 1/2.5-inch CMOS active pixel digital image sensor with
-> -an active array size of 2592H x 1944V. It is programmable through a simple
-> -two-wire serial interface.
-> -
-> -Required Properties:
-> -- compatible: value should be either one among the following
-> -	(a) "aptina,mt9p031" for mt9p031 sensor
-> -	(b) "aptina,mt9p031m" for mt9p031m sensor
-> -
-> -- input-clock-frequency: Input clock frequency.
-> -
-> -- pixel-clock-frequency: Pixel clock frequency.
-> -
-> -Optional Properties:
-> -- reset-gpios: Chip reset GPIO
-> -
-> -For further reading on port node refer to
-> -Documentation/devicetree/bindings/media/video-interfaces.txt.
-> -
-> -Example:
-> -
-> -	i2c0@1c22000 {
-> -		...
-> -		...
-> -		mt9p031@5d {
-> -			compatible = "aptina,mt9p031";
-> -			reg = <0x5d>;
-> -			reset-gpios = <&gpio3 30 0>;
-> -
-> -			port {
-> -				mt9p031_1: endpoint {
-> -					input-clock-frequency = <6000000>;
-> -					pixel-clock-frequency = <96000000>;
-> -				};
-> -			};
-> -		};
-> -		...
-> -	};
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a61f4f3b78a9..33dd81237a91 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12635,6 +12635,7 @@ M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
->  T:	git git://linuxtv.org/media_tree.git
-> +F:	Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
->  F:	drivers/media/i2c/mt9p031.c
->  F:	include/media/i2c/mt9p031.h
->  
-> -- 
-> 2.25.1
-> 
-> 
+PiBPbiBGcmksIEp1bCAwOSwgMjAyMSBhdCAxMTo0MDozNVBNICswODAwLCBjeV9odWFuZyB3cm90
+ZToNCj4gPg0KPiA+IEZyb206IENoaVl1YW4gSHVhbmcgPGN5X2h1YW5nQHJpY2h0ZWsuY29tPg0K
+PiA+DQo+ID4gQWRkIGJpbmRpbmcgZG9jdW1lbnQgZm9yIFJpY2h0ZWsgUlRRNjc1Mi4NCj4gPg0K
+PiA+IFNpZ25lZC1vZmYtYnk6IENoaVl1YW4gSHVhbmcgPGN5X2h1YW5nQHJpY2h0ZWsuY29tPg0K
+PiA+IC0tLQ0KPiA+ICAuLi4vcmVndWxhdG9yL3JpY2h0ZWsscnRxNjc1Mi1yZWd1bGF0b3IueWFt
+bCAgICAgICB8IDc4DQo+ID4gKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hh
+bmdlZCwgNzggaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gPiBEb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVndWxhdG9yL3JpY2h0ZWsscnRxNjc1Mi1y
+ZWd1bGF0b3IueWFtbA0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9yZWd1bGF0b3IvcmljaHRlayxydHE2NzUyLQ0KPiA+IHJlZ3VsYXRvci55
+YW1sDQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVndWxhdG9yL3Jp
+Y2h0ZWsscnRxNjc1Mi1yZWd1bGF0b3IueWFtbA0KPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+
+ID4gaW5kZXggMDAwMDAwMDAuLjY0MTg0MGUNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3JlZ3VsYXRvci9yaWNodGVrLHJ0cTY3
+NTItDQo+ID4gcmVndWxhdG9yLnlhbWwNCj4gPiBAQCAtMCwwICsxLDc4IEBADQo+ID4gKyMgU1BE
+WC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UNCj4gPiAr
+JVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hl
+bWFzL3JlZ3VsYXRvci9yaWNodGVrLHJ0cTY3NTItcmVndWxhdG9yLnlhbWwNCj4gPiAjDQo+ID4g
+KyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0K
+PiA+ICsNCj4gPiArdGl0bGU6IFJpY2h0ZWsgUlRRNjc1MiBURlQgTENEIFZvbHRhZ2UgUmVndWxh
+dG9yDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIENoaVl1YW4gSHVhbmcgPGN5
+X2h1YW5nQHJpY2h0ZWsuY29tPg0KPiA+ICsNCj4gPiArZGVzY3JpcHRpb246IHwNCj4gPiArICBU
+aGUgUlRRNjc1MiBpcyBhbiBJMkMgaW50ZXJmYWNlIHBnb3JhbW1hYmxlIHBvd2VyIG1hbmFnZW1l
+bnQgSUMuIEl0DQo+ID4gaW5jbHVkZXMNCj4gPiArICB0d28gc3luY2hyb25vdXMgYm9vc3QgY29u
+dmVydGVyIGZvciBQQVZERCwgYW5kIG9uZSBzeW5jaHJvbm91cyBOQVZERA0KPiA+ICsgIGJ1Y2st
+Ym9vc3QuIFRoZSBkZXZpY2UgaXMgc3VpdGFibGUgZm9yIGF1dG9tb3RpdmUgVEZULUxDRCBwYW5l
+bC4NCj4gPiArDQo+ID4gK3Byb3BlcnRpZXM6DQo+ID4gKyAgY29tcGF0aWJsZToNCj4gPiArICAg
+IGVudW06DQo+ID4gKyAgICAgIC0gcmljaHRlayxydHE2NzUyDQo+ID4gKw0KPiA+ICsgIHJlZzoN
+Cj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGVuYWJsZS1ncGlvczoNCj4gPiAr
+ICAgIGRlc2NyaXB0aW9uOiB8DQo+ID4gKyAgICAgIEEgY29ubmVjdGlvbiBvZiB0aGUgY2hpcCAn
+ZW5hYmxlJyBncGlvIGxpbmUuIElmIG5vdCBwcm92aWRlZCwgdHJlYXQNCj4gPiBpdCBhcw0KPiA+
+ICsgICAgICBleHRlcm5hbCBwdWxsIHVwLg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+
+ID4gKyAgcmVndWxhdG9yczoNCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgJHJlZjog
+cmVndWxhdG9yLnlhbWwjDQo+IFRoaXMgbm9kZSBpcyBub3QgYSByZWd1bGF0b3IsIGp1c3QgYSBj
+b250YWluZXIuIERyb3AuDQo+DQpZZXMuDQo+ID4NCj4gPiArDQo+ID4gKyAgICBwYXR0ZXJuUHJv
+cGVydGllczoNCj4gPiArICAgICAgIl4ocHxuKWF2ZGQkIjoNCj4gPiArICAgICAgICB0eXBlOiBv
+YmplY3QNCj4gPiArICAgICAgICAkcmVmOiByZWd1bGF0b3IueWFtbCMNCj4gPiArICAgICAgICBk
+ZXNjcmlwdGlvbjogfA0KPiA+ICsgICAgICAgICAgcmVndWxhdG9yIGRlc2NyaXB0aW9uIGZvciBw
+YXZkZCBhbmQgbmF2ZGQuDQo+ID4gKw0KPiA+ICsgICAgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZh
+bHNlDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiArICAt
+IHJlZw0KPiA+ICsgIC0gcmVndWxhdG9ycw0KPiA+ICsNCj4gPiArYWRkaXRpb25hbFByb3BlcnRp
+ZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICtleGFtcGxlczoNCj4gPiArICAtIHwNCj4gPiArICAgIGky
+YyB7DQo+ID4gKyAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAjc2l6ZS1j
+ZWxscyA9IDwwPjsNCj4gPiArDQo+ID4gKyAgICAgIHJ0cTY3NTJANmIgew0KPiA+ICsgICAgICAg
+IGNvbXBhdGlibGUgPSAicmljaHRlayxydHE2NzUyIjsNCj4gPiArICAgICAgICBzdGF0dXMgPSAi
+b2theSI7DQo+IERvbid0IHNob3cgc3RhdHVzIGluIGV4YW1wbGVzLg0KPg0KT2theS4NCg0KSSds
+bCB1c2Ugb25lIHBhdGNoIHRvIHVwZGF0ZSB0aGUgYWJvdmUgY29tbWVudC4NClRoYW5rcy4NCj4g
+Pg0KPiA+ICsgICAgICAgIHJlZyA9IDwweDZiPjsNCj4gPiArICAgICAgICBlbmFibGUtZ3Bpb3Mg
+PSA8JmdwaW8yNiAyIDA+Ow0KPiA+ICsNCj4gPiArICAgICAgICByZWd1bGF0b3JzIHsNCj4gPiAr
+ICAgICAgICAgIHBhdmRkIHsNCj4gPiArICAgICAgICAgICAgcmVndWxhdG9yLW5hbWUgPSAicnRx
+Njc1Mi1wYXZkZCI7DQo+ID4gKyAgICAgICAgICAgIHJlZ3VsYXRvci1taW4tbWljcm92b2x0ID0g
+PDUwMDAwMDA+Ow0KPiA+ICsgICAgICAgICAgICByZWd1bGF0b3ItbWF4LW1pY3Jvdm9sdCA9IDw3
+MzAwMDAwPjsNCj4gPiArICAgICAgICAgICAgcmVndWxhdG9yLWJvb3Qtb247DQo+ID4gKyAgICAg
+ICAgICB9Ow0KPiA+ICsgICAgICAgICAgbmF2ZGQgew0KPiA+ICsgICAgICAgICAgICByZWd1bGF0
+b3ItbmFtZSA9ICJydHE2NzUyLW5hdmRkIjsNCj4gPiArICAgICAgICAgICAgcmVndWxhdG9yLW1p
+bi1taWNyb3ZvbHQgPSA8NTAwMDAwMD47DQo+ID4gKyAgICAgICAgICAgIHJlZ3VsYXRvci1tYXgt
+bWljcm92b2x0ID0gPDczMDAwMDA+Ow0KPiA+ICsgICAgICAgICAgICByZWd1bGF0b3ItYm9vdC1v
+bjsNCj4gPiArICAgICAgICAgIH07DQo+ID4gKyAgICAgICAgfTsNCj4gPiArICAgICAgfTsNCj4g
+PiArICAgIH07DQoqKioqKioqKioqKioqIEVtYWlsIENvbmZpZGVudGlhbGl0eSBOb3RpY2UgKioq
+KioqKioqKioqKioqKioqKioNCg0KVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzIGUt
+bWFpbCBtZXNzYWdlIChpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzKSBtYXkgYmUgY29uZmlkZW50
+aWFsLCBwcm9wcmlldGFyeSwgcHJpdmlsZWdlZCwgb3Igb3RoZXJ3aXNlIGV4ZW1wdCBmcm9tIGRp
+c2Nsb3N1cmUgdW5kZXIgYXBwbGljYWJsZSBsYXdzLiBJdCBpcyBpbnRlbmRlZCB0byBiZSBjb252
+ZXllZCBvbmx5IHRvIHRoZSBkZXNpZ25hdGVkIHJlY2lwaWVudChzKS4gQW55IHVzZSwgZGlzc2Vt
+aW5hdGlvbiwgZGlzdHJpYnV0aW9uLCBwcmludGluZywgcmV0YWluaW5nIG9yIGNvcHlpbmcgb2Yg
+dGhpcyBlLW1haWwgKGluY2x1ZGluZyBpdHMgYXR0YWNobWVudHMpIGJ5IHVuaW50ZW5kZWQgcmVj
+aXBpZW50KHMpIGlzIHN0cmljdGx5IHByb2hpYml0ZWQgYW5kIG1heSBiZSB1bmxhd2Z1bC4gSWYg
+eW91IGFyZSBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50IG9mIHRoaXMgZS1tYWlsLCBvciBiZWxp
+ZXZlIHRoYXQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJyb3IsIHBsZWFzZSBu
+b3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSAoYnkgcmVwbHlpbmcgdG8gdGhpcyBlLW1haWwp
+LCBkZWxldGUgYW55IGFuZCBhbGwgY29waWVzIG9mIHRoaXMgZS1tYWlsIChpbmNsdWRpbmcgYW55
+IGF0dGFjaG1lbnRzKSBmcm9tIHlvdXIgc3lzdGVtLCBhbmQgZG8gbm90IGRpc2Nsb3NlIHRoZSBj
+b250ZW50IG9mIHRoaXMgZS1tYWlsIHRvIGFueSBvdGhlciBwZXJzb24uIFRoYW5rIHlvdSENCg==
