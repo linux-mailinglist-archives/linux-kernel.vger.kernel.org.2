@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4DA3C8151
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59163C8154
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238774AbhGNJVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
+        id S238804AbhGNJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238701AbhGNJU4 (ORCPT
+        with ESMTP id S238728AbhGNJU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:20:56 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8E1C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:18:05 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id j15-20020ac84c8f0000b0290257b7db4a28so1524278qtv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:18:05 -0700 (PDT)
+        Wed, 14 Jul 2021 05:20:59 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAE4C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:18:07 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id j186-20020a25d2c30000b029055ed6ffbea6so1776545ybg.14
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=2Vsop99W4s6lWe8cK6l6K/rAGWgwPIdctdVvFKdP78M=;
-        b=gBWgeFsqhwyu8Jg81RyLQeBBc5OyHx3T2DyqBT5xMSWP5u5/8hgXt/tFSvdf2LdCQx
-         zzqCaMFvdWy0J8rUZn3igwZy5Rq/6TdfdQUCyIjLqk35niAxH7dUOQ4cJLOtj822FTBA
-         a/eG17vn4rYw3uvIctBrV3IgB6lR1ob60rYJMPtzG+y1S51c1jX5UKSiL5YFvSeALlP8
-         +zWzDnC7BOM2KiQtvZa0JlGSLzrcWKpgAda3ShRleqK1F1sXg1oDAVzNUudQ/i1gE8Kp
-         qa5jxEsymw+Vqz6SYtVlhDXzpC3193/d8W3zfiHKeBjEFbvcEyo2MpU3oWQM1pF5l2+F
-         PWOA==
+        bh=FcI/RIY6fqkfvACcmmOBOBRj9VFnw/wDoj5wb2ryU84=;
+        b=TNW6CpKuyM53R38THHQO0l30/FsZ9YikSCaulyuCOpmdp6eXcsXkoxcbkYcVlTa3HD
+         x5q6GlfQUimHaaisAjdfphUOz0/lKnbvGxdC7Oi6oP5BWmA7oqA7E3vm+QLuu6KygR9u
+         7yXW9+luCs5FgL4y1khvw0TU3nzvQa7VivWYxwQur9hapOKYRW2OkZubYBaudJiGGbWS
+         bKx9ntWf5faubfJyRLuMSGX8nYX+mPHREiJSDZsAXBBYqLWVPb5DwY/88NJsaN3WrC5W
+         9r2Hm467OjHp1bMdchvb14u00iAstp/YVlY8woschlERs0/4VVpFxu1lpj9OrCNU+r2e
+         +4eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2Vsop99W4s6lWe8cK6l6K/rAGWgwPIdctdVvFKdP78M=;
-        b=dArKZBx2jMrlmUEDDrgdZqz3/eBOWwHRCaT7pGUv25hPxA2GQuqzSpyDDo6Aw0KPvV
-         NioNp3V3/7xg8TvvbuoBB2f/GJ9J2PrleFegMjCmzLvcdOCm4luEVtlow+8UjR2DxJUa
-         ufObgyl7PIewr9ctJrex4dPHao6c2PJJfzSlo8im6oHEfVBv4T600LU0+o5+fu7v0m3N
-         +RXPneo+IWNo9SH7s9Qp/733e75dUsqj+3bgvWgrNMm9TTXBPVqJiIj1dPDmD3sUju7L
-         NgkYfjG5qW4pJjf+VqFWQjc+2Osit0GC7d6re/v1pO4mc1jWm8Opyv1AwDXaIKWjohhk
-         NcbQ==
-X-Gm-Message-State: AOAM531Ih6gdcFWZofR5G4FSaC+NppLKEctsk+JTzK37mkkrhzTXd3g+
-        NNNKdKQ7pfp0UyA9Lf1xVqasUbtvGXkGV8M30xteqnKWYfVG+N0A/JLPsnJCNh4BFjBpFvyVxVg
-        z/jU9Evs6ITouMBG7mqn4QIdslpD5YPn8BD0PXvhhK/JJrEt2XW02WfSjcUxslSEbnA==
-X-Google-Smtp-Source: ABdhPJz2zt8lgNfZwPq++YTRg/x0pRYZOreTyrN/SaoKpaUvB2iz4ecDed9ZSeyCXEGf6kLf3iB0YGDsCQ==
+        bh=FcI/RIY6fqkfvACcmmOBOBRj9VFnw/wDoj5wb2ryU84=;
+        b=dzrPuiff00tzBuVk5pTIUQ/a4I8PM2Pym4LE814bh96IGy8d68nnUP9yinEUjsn58h
+         tTxEx7CSbY0xovmqtaqWK8EDvF97fOczD+YvdXSDxw4Xz1IPzl16/ptZ9KSg1OfFCHsc
+         gWgA/8XHVabGjdjCumak3p4c37j+EecAmO1HPTJNBwGENo7M3c0xX+5d++GG8aY2nIph
+         cqEbzQM0u12UMThuyuM7OR3RxC7+BZeypj0gUVjysFz+X0hQJg5IgQQjYrT1hn64VyBI
+         RsWdgbpCvBFdxw1lGK7KzyoQ9xIES95qZUrQQR3Xxsa1pHrdHli6VG3BHNU9APAfu91P
+         sNYQ==
+X-Gm-Message-State: AOAM531ctFAZmFGW5Yt9ruobdz1GJ2CAxyWVOrOP7thaea+ANC7IMALG
+        +gmzFi2adQ6cB5OmdRgapnL6O9s56jR1AVNcWKUZFDzIIiSr/y2M65jLHimNj5xCQ7gfukK7adW
+        zWMfRFbtQ5Vao9SIA7AS3BG5QvN93bzrobc2xs/B2OnYMz1RSNjG6JM5RrpxqzZPtAg==
+X-Google-Smtp-Source: ABdhPJwQumiJEuoqIwwwDHzc73CCuMQCDncvnVhvq5UA/X4SUeW+Mf62MlhxfQh8V4UyJqwzttHAa/vVQw==
 X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:c569:463c:c488:ac2])
- (user=morbo job=sendgmr) by 2002:a05:6214:13c8:: with SMTP id
- cg8mr9613493qvb.23.1626254284377; Wed, 14 Jul 2021 02:18:04 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 02:17:46 -0700
+ (user=morbo job=sendgmr) by 2002:a25:7355:: with SMTP id o82mr11572449ybc.471.1626254286988;
+ Wed, 14 Jul 2021 02:18:06 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 02:17:47 -0700
 In-Reply-To: <20210714091747.2814370-1-morbo@google.com>
-Message-Id: <20210714091747.2814370-3-morbo@google.com>
+Message-Id: <20210714091747.2814370-4-morbo@google.com>
 Mime-Version: 1.0
 References: <20210714091747.2814370-1-morbo@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH 2/3] bnx2x: remove unused variable 'cur_data_offset'
+Subject: [PATCH 3/3] scsi: qla2xxx: remove unused variable 'status'
 From:   Bill Wendling <morbo@google.com>
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-scsi@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -74,45 +74,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix the clang build warning:
 
-  drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c:1862:13: error: variable 'cur_data_offset' set but not used [-Werror,-Wunused-but-set-variable]
-        dma_addr_t cur_data_offset;
+  drivers/scsi/qla2xxx/qla_nx.c:2209:6: error: variable 'status' set but not used [-Werror,-Wunused-but-set-variable]
+        int status = 0;
 
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/scsi/qla2xxx/qla_nx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-index 27943b0446c2..f255fd0b16db 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-@@ -1858,7 +1858,6 @@ void bnx2x_iov_adjust_stats_req(struct bnx2x *bp)
- {
- 	int i;
- 	int first_queue_query_index, num_queues_req;
--	dma_addr_t cur_data_offset;
- 	struct stats_query_entry *cur_query_entry;
- 	u8 stats_count = 0;
- 	bool is_fcoe = false;
-@@ -1879,10 +1878,6 @@ void bnx2x_iov_adjust_stats_req(struct bnx2x *bp)
- 	       BNX2X_NUM_ETH_QUEUES(bp), is_fcoe, first_queue_query_index,
- 	       first_queue_query_index + num_queues_req);
- 
--	cur_data_offset = bp->fw_stats_data_mapping +
--		offsetof(struct bnx2x_fw_stats_data, queue_stats) +
--		num_queues_req * sizeof(struct per_queue_stats);
--
- 	cur_query_entry = &bp->fw_stats_req->
- 		query[first_queue_query_index + num_queues_req];
- 
-@@ -1933,7 +1928,6 @@ void bnx2x_iov_adjust_stats_req(struct bnx2x *bp)
- 			       cur_query_entry->funcID,
- 			       j, cur_query_entry->index);
- 			cur_query_entry++;
--			cur_data_offset += sizeof(struct per_queue_stats);
- 			stats_count++;
- 
- 			/* all stats are coalesced to the leading queue */
+diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
+index 615e44af1ca6..11aad97dfca8 100644
+--- a/drivers/scsi/qla2xxx/qla_nx.c
++++ b/drivers/scsi/qla2xxx/qla_nx.c
+@@ -2166,7 +2166,6 @@ qla82xx_poll(int irq, void *dev_id)
+ 	struct qla_hw_data *ha;
+ 	struct rsp_que *rsp;
+ 	struct device_reg_82xx __iomem *reg;
+-	int status = 0;
+ 	uint32_t stat;
+ 	uint32_t host_int = 0;
+ 	uint16_t mb[8];
+@@ -2195,7 +2194,6 @@ qla82xx_poll(int irq, void *dev_id)
+ 		case 0x10:
+ 		case 0x11:
+ 			qla82xx_mbx_completion(vha, MSW(stat));
+-			status |= MBX_INTERRUPT;
+ 			break;
+ 		case 0x12:
+ 			mb[0] = MSW(stat);
 -- 
 2.32.0.93.g670b81a890-goog
 
