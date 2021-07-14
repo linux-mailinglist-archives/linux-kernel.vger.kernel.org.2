@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181FB3C858B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3EC3C858F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbhGNNvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbhGNNvx (ORCPT
+        id S231829AbhGNNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:53:59 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:36748 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhGNNx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:51:53 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDB0C06175F;
-        Wed, 14 Jul 2021 06:49:01 -0700 (PDT)
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:e49e:3ed0:1a77:5623])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9C16A1F43015;
-        Wed, 14 Jul 2021 14:48:58 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Wed, 14 Jul 2021 09:53:58 -0400
+Received: by mail-io1-f42.google.com with SMTP id u7so2157452ion.3;
+        Wed, 14 Jul 2021 06:51:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=50++kkpNpej8/NTD9q8DshcKL4G56n58bwfZ59/K0OU=;
+        b=GX3mMdEKxQV1DYNgjzcnv9mWui8dFHR6+5ZKd0ZfPz8RSjmWnWhw+cI3Gue3hoTgYS
+         13sZA7QAWbx819BCMBFonHvTW85FZb1YX+lk7lczQvYQ7egEe6ry5VVUYhGPjMVdGApu
+         vD94vFMCv4iw5Pb9EqdZvFkdTnEsJpQQ24z0rn76SLk1qSZf0MDfZavPZxjD8g36a6Mf
+         OnkaVUL2AfN80o/FmySEVgoJ4ZL99CdrMG8zvlJhAtBG4bUT6DVJmYQwzgxlS3k9zLyG
+         xhfGQYwj0KDWsKg5SorLVdfkmwPJqto0LCLdKRP1JtcMBEg9FYowmJrfBgh6OSyQAvQr
+         tI2w==
+X-Gm-Message-State: AOAM530CEAeT6v7HfV0AJ+rSvUO9imIR9KYEeKy1MczsVD5hv409g/RK
+        7Rz1K1KxzAJETGNT92iwjw==
+X-Google-Smtp-Source: ABdhPJz5/RWe5S4IxADEtcsCGrwyKwDJjXmmQQVnQ78apEZMiVvJE4pVvZlqoWl7Or2AdYCn9IOTUQ==
+X-Received: by 2002:a02:7093:: with SMTP id f141mr8988326jac.24.1626270666077;
+        Wed, 14 Jul 2021 06:51:06 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id s2sm1323967ilq.45.2021.07.14.06.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 06:51:05 -0700 (PDT)
+Received: (nullmailer pid 2459772 invoked by uid 1000);
+        Wed, 14 Jul 2021 13:51:01 -0000
+Date:   Wed, 14 Jul 2021 07:51:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     dafna.hirschfeld@collabora.com, hverkuil@xs4all.nl,
-        kernel@collabora.com, dafna3@gmail.com, mchehab@kernel.org,
-        tfiga@chromium.org, enric.balletbo@collabora.com,
-        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
-        andrew-ct.chen@mediatek.com, tiffany.lin@mediatek.com,
-        matthias.bgg@gmail.com, acourbot@chromium.org, hsinyi@chromium.org,
-        eizan@chromium.org
-Subject: [PATCH] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-Date:   Wed, 14 Jul 2021 15:48:50 +0200
-Message-Id: <20210714134850.402-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory
+ limitation
+Message-ID: <20210714135101.GB2441138@robh.at.kernel.org>
+References: <cover.1626266516.git.geert+renesas@glider.be>
+ <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
+> Add two global variables (cap_mem_addr and cap_mem_size) for storing a
+> base address and size, describing a limited region in which memory may
+> be considered available for use by the kernel.  If enabled, memory
+> outside of this range is not available for use.
+> 
+> These variables can by filled by firmware-specific code, and used in
+> calls to memblock_cap_memory_range() by architecture-specific code.
+> An example user is the parser of the "linux,usable-memory-range"
+> property in the DT "/chosen" node.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> This is similar to how the initial ramdisk (phys_initrd_{start,size})
+> and ELF core headers (elfcorehdr_{addr,size})) are handled.
+> 
+> Does there exist a suitable place in the common memblock code to call
+> "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
+> have to be done in architecture-specific code?
 
-When running memcpy_toio:
-memcpy_toio(send_obj->share_buf, buf, len);
-it was found that errors appear if len is not a multiple of 8:
+Can't you just call it from early_init_dt_scan_usablemem? If the 
+property is present, you want to call it. If the property is not 
+present, nothing happens.
 
-[58.350841] mtk-mdp 14001000.rdma: processing failed: -22
-
-This patch ensure copy of a multile of 8 size by calling
-round_up(len, 8) when copying
-
-Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
-Reported-by: Alexandre Courbot <acourbot@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index ec290dde59cf..b464d8192119 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -316,6 +316,7 @@ int vpu_ipi_send(struct platform_device *pdev,
- {
- 	struct mtk_vpu *vpu = platform_get_drvdata(pdev);
- 	struct share_obj __iomem *send_obj = vpu->send_buf;
-+	unsigned char data[SHARE_BUF_SIZE];
- 	unsigned long timeout;
- 	int ret = 0;
- 
-@@ -349,7 +350,9 @@ int vpu_ipi_send(struct platform_device *pdev,
- 		}
- 	} while (vpu_cfg_readl(vpu, HOST_TO_VPU));
- 
--	memcpy_toio(send_obj->share_buf, buf, len);
-+	memset(data, 0, sizeof(data));
-+	memcpy(data, buf, len);
-+	memcpy_toio(send_obj->share_buf, data, round_up(len, 8));
- 	writel(len, &send_obj->len);
- 	writel(id, &send_obj->id);
- 
--- 
-2.17.1
-
+Rob
