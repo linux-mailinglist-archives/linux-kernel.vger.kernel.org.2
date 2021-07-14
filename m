@@ -2,52 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931433C80F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928893C80F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238196AbhGNJHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:07:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:60120 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238113AbhGNJHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:07:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F02A31B;
-        Wed, 14 Jul 2021 02:04:53 -0700 (PDT)
-Received: from bogus (unknown [10.57.79.213])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 563143F774;
-        Wed, 14 Jul 2021 02:04:52 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 10:03:53 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     james.morse@arm.com, gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, bobo.shaobowang@huawei.com,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v2] cacheinfo: clear cache_leaves(cpu) in
- free_cache_attributes()
-Message-ID: <20210714090353.6ncnqof74hwbx2gf@bogus>
-References: <1626226375-58730-1-git-send-email-wangxiongfeng2@huawei.com>
+        id S238141AbhGNJHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:07:37 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3392 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238113AbhGNJHg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:07:36 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GPrmn11kbz6D8yT;
+        Wed, 14 Jul 2021 16:50:17 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 11:04:43 +0200
+Received: from localhost (10.47.88.217) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 14 Jul
+ 2021 10:04:42 +0100
+Date:   Wed, 14 Jul 2021 10:04:22 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Pavel Machek <pavel@denx.de>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        frank zago <frank@zago.net>
+Subject: Re: [PATCH 5.10 073/593] iio: light: tcs3472: do not free
+ unallocated IRQ
+Message-ID: <20210714100422.000051a2@Huawei.com>
+In-Reply-To: <20210713213128.GA23770@amd>
+References: <20210712060843.180606720@linuxfoundation.org>
+        <20210712060851.173417192@linuxfoundation.org>
+        <20210713213128.GA23770@amd>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626226375-58730-1-git-send-email-wangxiongfeng2@huawei.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.88.217]
+X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:32:55AM +0800, Xiongfeng Wang wrote:
-> On ARM64, when PPTT(Processor Properties Topology Table) is not
-> implemented in ACPI boot, we will goto 'free_ci' with the following
-> print:
->   Unable to detect cache hierarchy for CPU 0
->
-> But some other codes may still use 'num_leaves' to iterate through the
-> 'info_list', such as get_cpu_cacheinfo_id(). If 'info_list' is NULL , it
-> would crash. So clear 'num_leaves' in free_cache_attributes().
->
+On Tue, 13 Jul 2021 23:31:28 +0200
+Pavel Machek <pavel@denx.de> wrote:
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> Hi!
+> 
+> > commit 7cd04c863f9e1655d607705455e7714f24451984 upstream.
+> > 
+> > Allocating an IRQ is conditional to the IRQ existence, but freeing it
+> > was not. If no IRQ was allocate, the driver would still try to free
+> > IRQ 0. Add the missing checks.
+> > 
+> > This fixes the following trace when the driver is removed:
+> > 
+> > [  100.667788] Trying to free already-free IRQ 0  
+> 
+> AFAICT this will need more fixing, because IRQ == 0 is a valid
+> IRQ. NO_IRQ (aka -1) should be safe to use for "no irq assigned".
+> 
 
---
-Regards,
-Sudeep
+I thought we had long put this to bed.  IRQ == 0 is not a valid irq number.
+If there is an error in parsing DT (e.g. no irq specified) it returns 0
+not NO_IRQ.  Naturally irq chips can have a 0, but that's pre translation to
+virtual IRQ space.
+
+Many years ago, ARM did have 0 as as valid IRQ, but that got cleaned up
+to make it easier to do generic code like this.
+
+Jonathan
+
+
+> Best regards,
+> 								Pavel
+> 
+> > +++ b/drivers/iio/light/tcs3472.c
+> > @@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_clie
+> >  	return 0;
+> >  
+> >  free_irq:
+> > -	free_irq(client->irq, indio_dev);
+> > +	if (client->irq)
+> > +		free_irq(client->irq, indio_dev);
+> >  buffer_cleanup:
+> >  	iio_triggered_buffer_cleanup(indio_dev);
+> >  	return ret;  
+> 
+
