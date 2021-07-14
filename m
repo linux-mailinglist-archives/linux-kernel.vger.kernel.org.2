@@ -2,264 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21DF3C82F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B4B3C82D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239144AbhGNKdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:33:45 -0400
-Received: from mail-yb1-f173.google.com ([209.85.219.173]:40721 "EHLO
-        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238368AbhGNKdn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:33:43 -0400
-Received: by mail-yb1-f173.google.com with SMTP id p22so2358830yba.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggejrFIHU4IU1zUZ09RQHXUpmIfLwxhtZeNfhpEhkw0=;
-        b=LfZvYfzouybIJIZ2GnjkLMwv3EUsmnGzVsIuKMfbs/zU0etPUMavJTsV/OeUqU4DXi
-         kwNlvU7ySI3RPtbzTTWYBU53LaEhIwJ/TOdwt2VA4R9liVPoM1ZIWuZd5BDvMbkq9ps5
-         sqqFuszv/QfBE+ExD6PjAVhl3W4YUBUOMM1YWylHFrB1VD2gesv2wJ/2+03KDJV3WO9o
-         332S9aXP46aR1GaFtJBiRhmfCAlB3ZYATQbg2SxoHF5aSYFnJmUQCgkQMjbDiKwbVjQP
-         MIKdbFw+G85tRyoLLP0KSIJo0QrSPvoINOpUsktGKbk5mSezmUNu/3jQVb6wgJInMv2/
-         uT5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggejrFIHU4IU1zUZ09RQHXUpmIfLwxhtZeNfhpEhkw0=;
-        b=AHFhh/BNFWXw17fLqGxlVMDpBtaCoTX79jYBfr0FbxYyffQKpnhgHc/kE4jpPz1bV6
-         KENzo2w3nVO/ZBLTQrzyqX7AY1vpyhUR/jcuh3E+n+5lCQ3/kM5O2mkz/EKOrDpedSwk
-         ZYjyRBN0ejX3UaZWJEN4374zrkm7XJo1yrvHq7OmHfhIvo3m/e0fT0qLa7bB8FTSdcBZ
-         dhiVf4/NZd6WA4h7kdF7rDVeC/MDkV4P0XDSe321jRZLp3zDRNEgvH2NdLAyAXzVAFoq
-         QKqTo8+Ee8jDjtSDJUpRQuTr4YMzRjaHViqY6K228bol9Lp3Tw0PUigv3Cp7GR8s0fLF
-         KyQw==
-X-Gm-Message-State: AOAM531uk9V4CPk2VtRKsixKHacaxkxeYPv7B3OZcSi3EQ8zKP9jU8DP
-        hiv2/ubRr7pbTtShOeFaGMF0I60hLn4gu2hyDUx2KA==
-X-Google-Smtp-Source: ABdhPJwohQQfGujAxrjDnl/WzZ7yPW3sL98NAebnW7oqyg68J8JI4cEvHL8KAYJscK8ikkCta38YZuBlDiOPCy5NZ0c=
-X-Received: by 2002:a25:fc1c:: with SMTP id v28mr12809647ybd.408.1626258575771;
- Wed, 14 Jul 2021 03:29:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
- <1626255285-5079-3-git-send-email-linyunsheng@huawei.com> <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
-In-Reply-To: <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Wed, 14 Jul 2021 13:28:55 +0300
-Message-ID: <CAC_iWj+HrRBtscrgR041OJov9MtaKnosw=w8A0L3tBx5e=Cguw@mail.gmail.com>
-Subject: Re: [PATCH rfc v5 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
+        id S238871AbhGNKcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:32:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:33100 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237788AbhGNKcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 06:32:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 51AFAD6E;
+        Wed, 14 Jul 2021 03:29:19 -0700 (PDT)
+Received: from [10.57.36.240] (unknown [10.57.36.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4FA73F774;
+        Wed, 14 Jul 2021 03:29:14 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-pci@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Rajat Jain <rajatja@google.com>, Will Deacon <will@kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, quic_c_gdjako@quicinc.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sonny Rao <sonnyrao@chromium.org>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org>
+ <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+ <YOaymBHc4g2cIfRn@8bytes.org> <edd1de35-5b9e-b679-9428-23c6d5005740@arm.com>
+ <YO65OOScL5vru1Kr@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <255adda2-3b5f-b080-4da1-f3c5d5a4f7a6@arm.com>
+Date:   Wed, 14 Jul 2021 11:29:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YO65OOScL5vru1Kr@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 at 13:18, Jesper Dangaard Brouer <jbrouer@redhat.com> wrote:
->
->
->
-> On 14/07/2021 11.34, Yunsheng Lin wrote:
-> > As suggested by Alexander, "A DMA mapping should be page
-> > aligned anyway so the lower 12 bits would be reserved 0",
-> > so it might make more sense to repurpose the lower 12 bits
-> > of the dma address to store the frag count for frag page
-> > support in page pool for 32 bit systems with 64 bit dma,
-> > which should be rare those days.
->
-> Do we have any real driver users with 32-bit arch and 64-bit DMA, that
-> want to use this new frag-count system you are adding to page_pool?
->
-> This "lower 12-bit use" complicates the code we need to maintain
-> forever. My guess is that it is never used, but we need to update and
-> maintain it, and it will never be tested.
->
-> Why don't you simply reject using page_pool flag PP_FLAG_PAGE_FRAG
-> during setup of the page_pool for this case?
->
->   if ((pool->p.flags & PP_FLAG_PAGE_FRAG) &&
->       (sizeof(dma_addr_t) > sizeof(unsigned long)))
->     goto reject-setup;
->
+On 2021-07-14 11:15, Joerg Roedel wrote:
+> Hi Robin,
+> 
+> On Fri, Jul 09, 2021 at 02:56:47PM +0100, Robin Murphy wrote:
+>> As I mentioned before, conceptually I think this very much belongs in sysfs
+>> as a user decision. We essentially have 4 levels of "strictness":
+>>
+>> 1: DMA domain with bounce pages
+>> 2: DMA domain
+>> 3: DMA domain with flush queue
+>> 4: Identity domain
+> 
+> Together with reasonable defaults (influenced by compile-time
+> options) it seems to be a good thing to configure at runtime via
+> sysfs.
+> 
+> We already have CONFIG_IOMMU_DEFAULT_PASSTHROUGH, which can probably be
+> extended to be an option list:
+> 
+> 	- CONFIG_IOMMU_DEFAULT_PASSTHROUGH: Trusted devices are identity
+> 					    mapped
+> 
+> 	- CONFIG_IOMMU_DEFAULT_DMA_STRICT: Trusted devices are DMA
+> 					   mapped with strict flush
+> 					   behavior on unmap
+> 
+> 	- CONFIG_IOMMU_DEFAULT_DMA_LAZY: Trusted devices are DMA mapped
+> 					 with flush queues for performance
 
-+1
+Indeed, I got focused on the sysfs angle, but rearranging the Kconfig 
+default that way to match makes a lot of sense, and is another thing 
+which should fall out really easily from my domain type rework, so I'll 
+add that to my branch now before I forget again.
 
->
-> > For normal system, the dma_addr[1] in 'struct page' is not
-> > used, so we can reuse one of the dma_addr for storing frag
-> > count, which means how many frags this page might be splited
-> > to.
-> >
-> > The PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to decide
-> > where to store the frag count, as the "sizeof(dma_addr_t) >
-> > sizeof(unsigned long)" is false for most systems those days,
-> > so hopefully the compiler will optimize out the unused code
-> > for those systems.
-> >
-> > The newly added page_pool_set_frag_count() should be called
-> > before the page is passed to any user. Otherwise, call the
-> > newly added page_pool_atomic_sub_frag_count_return().
-> >
-> > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> > ---
-> >   include/linux/mm_types.h |  8 +++++--
-> >   include/net/page_pool.h  | 54 ++++++++++++++++++++++++++++++++++++++++++------
-> >   net/core/page_pool.c     | 10 +++++++++
-> >   3 files changed, 64 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index d33d97c..82bcbb0 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -103,11 +103,15 @@ struct page {
-> >                       unsigned long pp_magic;
-> >                       struct page_pool *pp;
-> >                       unsigned long _pp_mapping_pad;
-> > +                     atomic_long_t pp_frag_count;
-> >                       /**
-> >                        * @dma_addr: might require a 64-bit value on
-> > -                      * 32-bit architectures.
-> > +                      * 32-bit architectures, if so, store the lower 32
-> > +                      * bits in pp_frag_count, and a DMA mapping should
-> > +                      * be page aligned, so the frag count can be stored
-> > +                      * in lower 12 bits for 4K page size.
-> >                        */
-> > -                     unsigned long dma_addr[2];
-> > +                     unsigned long dma_addr;
-> >               };
-> >               struct {        /* slab, slob and slub */
-> >                       union {
-> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> > index 8d7744d..ef449c2 100644
-> > --- a/include/net/page_pool.h
-> > +++ b/include/net/page_pool.h
-> > @@ -198,19 +198,61 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
-> >       page_pool_put_full_page(pool, page, true);
-> >   }
-> >
-> > +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT      \
-> > +                     (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > +
-> >   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
-> >   {
-> > -     dma_addr_t ret = page->dma_addr[0];
-> > -     if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > -             ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
-> > +     dma_addr_t ret = page->dma_addr;
-> > +
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +             ret <<= 32;
-> > +             ret |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
-> > +     }
-> > +
-> >       return ret;
-> >   }
-> >
-> >   static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> >   {
-> > -     page->dma_addr[0] = addr;
-> > -     if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > -             page->dma_addr[1] = upper_32_bits(addr);
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +             atomic_long_set(&page->pp_frag_count, addr & PAGE_MASK);
-> > +             addr >>= 32;
-> > +     }
-> > +
-> > +     page->dma_addr = addr;
-> > +}
-> > +
-> > +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
-> > +                                                       long nr)
-> > +{
-> > +     long frag_count = atomic_long_read(&page->pp_frag_count);
-> > +     long ret;
-> > +
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +             if ((frag_count & ~PAGE_MASK) == nr)
-> > +                     return 0;
-> > +
-> > +             ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-> > +             WARN_ON((ret & PAGE_MASK) != (frag_count & PAGE_MASK));
-> > +             ret &= ~PAGE_MASK;
-> > +     } else {
-> > +             if (frag_count == nr)
-> > +                     return 0;
-> > +
-> > +             ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-> > +             WARN_ON(ret < 0);
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static inline void page_pool_set_frag_count(struct page *page, long nr)
-> > +{
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> > +             nr |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
-> > +
-> > +     atomic_long_set(&page->pp_frag_count, nr);
-> >   }
-> >
-> >   static inline bool is_page_pool_compiled_in(void)
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index 78838c6..0082f33 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -198,6 +198,16 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-> >       if (dma_mapping_error(pool->p.dev, dma))
-> >               return false;
-> >
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
-> > +         WARN_ON(pool->p.flags & PP_FLAG_PAGE_FRAG &&
-> > +                 dma & ~PAGE_MASK)) {
-> > +             dma_unmap_page_attrs(pool->p.dev, dma,
-> > +                                  PAGE_SIZE << pool->p.order,
-> > +                                  pool->p.dma_dir,
-> > +                                  DMA_ATTR_SKIP_CPU_SYNC);
-> > +             return false;
-> > +     }
-> > +
-> >       page_pool_set_dma_addr(page, dma);
-> >
-> >       if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> >
->
+> Untrusted devices always get into the DMA domain with bounce pages by
+> default.
+> 
+> The defaults can be changed at runtime via sysfs. We already have basic
+> support for runtime switching of the default domain, so that can be
+> re-used.
+
+As mentioned yesterday, already done! I'm hoping to be able to post the 
+patches next week after some testing :)
+
+Cheers,
+Robin.
