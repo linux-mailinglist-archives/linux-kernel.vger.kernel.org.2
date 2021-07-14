@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117C63C7C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450D73C7C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237728AbhGNCyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
+        id S237661AbhGNCya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237664AbhGNCyb (ORCPT
+        with ESMTP id S237627AbhGNCy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:54:31 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DC0C0613E9;
+        Tue, 13 Jul 2021 22:54:28 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA439C0613DD;
         Tue, 13 Jul 2021 19:51:36 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id h19so1115203ljl.4;
+Received: by mail-lf1-x12f.google.com with SMTP id 22so875166lfy.12;
         Tue, 13 Jul 2021 19:51:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kpbizncc7+SuJBG6C71TwiHiHc9sZLjNv469fqOByg8=;
-        b=GRRjGYOZBjod34rUbjtJ3wV1jEinBlHDr0TGip0ybClPKEazc7krPRLyRck/mwIvB4
-         8pho6I7H2HwEVAU3SEdNr5kDlDk3tx/rrTheUpIbaJHprh7mSahlQRaKYOmo7vLSAzF4
-         zJAG5wAxf0ccnJ74YZ/qsNmaqHz5+shBQHyS4P4BoEDeqU0VN5Gv9TKVlcxyF8xpI7GL
-         w14321EYYUcQ9y/GiV2a3psBrnGIO+r4mkV0tFyzXEmkuiZz4LR6AU4E9P9As5VxUwj1
-         BFUgtEoBsifyweLQmhyszxNaazWnIXo1Q+TJOoDml7WdGd+wi1yc8Py81HcNd23xlgrU
-         brgg==
+        bh=T+h7Xnx/aF5REyi17i/Rfwigl3xjB1i2XDxnAZ/gSmw=;
+        b=AMRebTyvY8qScLni1zk0uNdWq1WyCQIEH9SmJC5dIJc7xKgB1PE/ym8ntDiYNL+ynz
+         CgYmj4H5osgxskLGMbVeAe+x/nyE5YTJhABQpavWQ6wx79dThPMPhVwbIF11BQYEbGSA
+         TQ6wtpnkeGYA+wGG4HvNyNR6ByTCGGEEwXGFALMpVsBMUfPKOB1soVjcsPs9lF6sckfJ
+         baNMnv/0nR9OeYqXmu0uyw+ISMlQKn1CpFBiCClX3jSEp9xULE22rD5TblhjI6r9IS5Q
+         3/wHbki0J8gluHL6mdfn9zEI6+IDC7gf+1MMjf3TdNJBR0jWi3UMzqGqSZxNA37drk6Q
+         5gqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kpbizncc7+SuJBG6C71TwiHiHc9sZLjNv469fqOByg8=;
-        b=tydSJMQ0Q0T1AJOSH9UzUm9NcNl+Li7K588Gwzmdzg1cJOdhtxBKi45ZFKRHXZixas
-         XibBXgz9Qj1FBiaEUVxs0rJ26xBxtoALOOiCUlhDoUhF4sFKkNn3Oz3Z3UDv04behEnV
-         3ldNJL980Y/0uTJXTCHbFx6oytW9+PDfsAx0Lmp2ylseENANV/b39YB8EKETpGBc31Tn
-         4ok39yQvZjB6ZQyvMvJXQY4iEJqKge+3ydTjtezbeHpHOxEUQfWm9nbxgq8Qv2a6uOhy
-         kqPtim9UmrB2+kvbrEAYzIxLgV4z/a0VBYT9wEiLCKEB0cxc6qF1W1V26QmZOnVBjZBn
-         P5rg==
-X-Gm-Message-State: AOAM5311DxS6QP3dXbq17uNH3pw8X3O9SVkC5Ix4CHPwtBwV91/LAsZM
-        HyQPZ32f4jqJOqo5Zz2MuyI=
-X-Google-Smtp-Source: ABdhPJzHZhbUNUAqLvKekablIWhJGlJkNT4wsjFOe8BeX0qwWQWPd0+5eZqDgUFGUSROm7IKlXLD0A==
-X-Received: by 2002:a05:651c:c8:: with SMTP id 8mr6771649ljr.334.1626231094693;
-        Tue, 13 Jul 2021 19:51:34 -0700 (PDT)
+        bh=T+h7Xnx/aF5REyi17i/Rfwigl3xjB1i2XDxnAZ/gSmw=;
+        b=KiY+s34dU7+NZFnJ8AhyoSsyVHVPKbI7dMOMLyfw22A5fAp0X+GIJFiZirwMYwJGK0
+         3NNofBDaYW2B+no3x98coIIj3g4Tlx2goVCx2jRb95n1VJHUpJxMWRMPDIjZ9XE912+H
+         XItH9nuSJDeBgvzW3FNCz8yxHf4iJ+GSr8F0edJ5fUvM1GO+MRcz+JRrRocGktD3SpxY
+         YwA5M8woInASJqoaz1QwSr9ylSJCf8L6A79f1b810AV9QKw9t790IHOszt5aXKZPn/2E
+         gus10ndHcW0kil1lvs6MetSwOsSWNYp3G05vUp3KUPRNVmDsmZNPQ1eqX6K7c4tuVLq8
+         xn7Q==
+X-Gm-Message-State: AOAM533VMYadmLUW5/3kuxl16Y8/bvXhzZwFsY+tPsSpbiT30aaoHmRi
+        a18jdMMU0FyZJ7+0o2xN1DQ=
+X-Google-Smtp-Source: ABdhPJyzV8Bq7WvhTdR6G7IDCNFvdN44wEYd+NYuMul+X24+237eh/fykTKzG4pXUVTc4LkIUt65MA==
+X-Received: by 2002:a05:6512:3fa1:: with SMTP id x33mr6106841lfa.378.1626231095274;
+        Tue, 13 Jul 2021 19:51:35 -0700 (PDT)
 Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
         by smtp.gmail.com with ESMTPSA id a10sm50281lfb.93.2021.07.13.19.51.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 19:51:34 -0700 (PDT)
+        Tue, 13 Jul 2021 19:51:35 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Maxim Schwalm <maxim.schwalm@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v2 2/7] ARM: tegra_defconfig: Enable CONFIG_FB
-Date:   Wed, 14 Jul 2021 05:51:22 +0300
-Message-Id: <20210714025127.2411-3-digetx@gmail.com>
+Subject: [PATCH v2 3/7] ARM: tegra_defconfig: Enable Acer A500 drivers
+Date:   Wed, 14 Jul 2021 05:51:23 +0300
+Message-Id: <20210714025127.2411-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210714025127.2411-1-digetx@gmail.com>
 References: <20210714025127.2411-1-digetx@gmail.com>
@@ -65,27 +65,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously CONFIG_FB was auto-selected, now it's not. We completely lost
-framebuffer in tegra_defconfig. Select the CONFIG_FB to fix it.
+Enable EC controller drivers of the Acer A500 tablet.
 
-Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/configs/tegra_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/configs/tegra_defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 63e7f3261e6d..ced01b114cd3 100644
+index ced01b114cd3..52db1c4f9de4 100644
 --- a/arch/arm/configs/tegra_defconfig
 +++ b/arch/arm/configs/tegra_defconfig
-@@ -209,6 +209,7 @@ CONFIG_DRM_LVDS_CODEC=y
- # CONFIG_LCD_CLASS_DEVICE is not set
- CONFIG_BACKLIGHT_CLASS_DEVICE=y
- CONFIG_BACKLIGHT_PWM=y
-+CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
- CONFIG_LOGO=y
+@@ -159,6 +159,7 @@ CONFIG_POWER_RESET_AS3722=y
+ CONFIG_POWER_RESET_GPIO=y
+ CONFIG_BATTERY_SBS=y
+ CONFIG_BATTERY_BQ27XXX=y
++CONFIG_BATTERY_ACER_A500=y
+ CONFIG_CHARGER_GPIO=y
+ CONFIG_CHARGER_SMB347=y
+ CONFIG_CHARGER_TPS65090=y
+@@ -182,6 +183,7 @@ CONFIG_MFD_PALMAS=y
+ CONFIG_MFD_TPS65090=y
+ CONFIG_MFD_TPS6586X=y
+ CONFIG_MFD_TPS65910=y
++CONFIG_MFD_ACER_A500_EC=y
+ CONFIG_REGULATOR=y
+ CONFIG_REGULATOR_FIXED_VOLTAGE=y
+ CONFIG_REGULATOR_AS3722=y
+@@ -266,6 +268,7 @@ CONFIG_LEDS_TRIGGER_GPIO=y
+ CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
+ CONFIG_LEDS_TRIGGER_TRANSIENT=y
+ CONFIG_LEDS_TRIGGER_CAMERA=y
++CONFIG_LEDS_ACER_A500=y
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_AS3722=y
+ CONFIG_RTC_DRV_DS1307=y
 -- 
 2.32.0
 
