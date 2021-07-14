@@ -2,153 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9747E3C84EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98BA3C84F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239404AbhGNNFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:05:21 -0400
-Received: from mail-dm3nam07on2071.outbound.protection.outlook.com ([40.107.95.71]:35200
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        id S239432AbhGNNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:05:57 -0400
+Received: from mail-dm6nam12on2088.outbound.protection.outlook.com ([40.107.243.88]:15777
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239372AbhGNNFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:05:20 -0400
+        id S239364AbhGNNFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 09:05:55 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lke9raxVp7dFkSkQJ8X4+KBmzE6evDhoLGaZmkBCahXjKPsZtljqwptC326cLWh85iOFZaKh9xt/TBkt2jIGzUq6evVsJr6PQAvd9FM7jTXaoBKRTi7EuXOK/SWmerIo/Y/tMHE8QTC3YbGyr5z/I8wpLxtDpbYqJHT3uYFFdy2vvkEqedktgGW1uWN4ab+hq2dTqkXVZMfqB+zLAppx5Wjr9UNuPqAokvMYBnXf25kbBAys8uBiodXTAVdvoVe0/soLTchvxBjLFJn4xd8jF1OmpRXAGZlX7rBWa1sAAW18pKrHPN1WgZI2vd54K0uI+L6VpN74C8JwCKQOuEOofQ==
+ b=Cu6GxpGq+LRA9/sDDDts+frTj8ZTifgcIB7nrPcqVmw73RSGnzS47jZTDbyafev/gIZ5/bAS6o0K5l7yFsXMGhw6O8ZqOc39jNGxHiFWfybiQZryfMnN8h1tdbz2LcbDDENqqzOXO7p3dd8c1DTujJVdK/XoHWTUbIt23Zt16kQG5MpW+OJS3bIY4E6x9N1D1ATMUanY2qRIZjMT1GNj55avl4KPEP1Z5jARHxpZ6Hj/8pYFd5SQwKjK/pqrAymptf+GPP8Jy4yliYPTNTU/4JbFkk9QW+gh/eVrEUnpxZkJxock7rz+9IDU4zA2cOFmbX6XETQETl/RxmiUji5N7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BNWAGlZc4AT89Geh4/FDb+TU4RQmdGGUEhprZygWLmU=;
- b=La7FC4s6/j3irsEXeDuGneiB5lLkDPIjXDgBlAFng5nspuXWipqiwHfs5T3A+hqaojZd1BttoT6Fy/tHO9La3wB6RrdHEYp9Z2XtMmP8X4bjOTl5AzjoN3tuZvGEOP1rwNFd476wutPaWNSxR91HQETmj8xtG85N6r/+RQgzT49V2G8eH0uGvB5qfHylg4oDeP5jirnZ6c9zZsva7bp1CYRwqVr8eD8x6ZGDx3omT+GYA4juOH/1PExugINc4QdgMFkyKHhlLKbYAYuaKGqcSwZSG9QPZJwTm+n+b7Whre8TNdRK/TjsEMIy8jxlX7lYnN0qSlQqP8b7M1NtpFQFdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=1z8TV4lfhpsOPtaDTnMBe4NgFq6Nz02iV8vlu6k78/U=;
+ b=Z9pK2sq5o1k8MBKZuwzOKTRH7Sk4m1UvSgfs5L93sfvzSA0ysa27GU/dISO206kT6RxvlSstC3SZx1tIUfhjC3UZpvSYa0vaujSuCAkrL2jQ8F1xCt7Bg8zgx+PYXmd6dG1290+xfTdqrGXkwG3uhPBVA4nkqM2x3DDKKHwix225WJQq/tM90ysIcp/zbRhskXRyI8DLjLU09RX+jPIzItZrBLdf4DrhKIa0hyHwxuVvKnqHVre0lqzVq8U3ttkUh0CERPE2NfbdUwczkIBy7s0ZHJiYayiN/Ed3TMLNafsu0UZFIgz4p3yVSSWq08tTgVii7upnsHMwrE97bcsaog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BNWAGlZc4AT89Geh4/FDb+TU4RQmdGGUEhprZygWLmU=;
- b=IUhVro7LagEde7BgyiYgW1r9vJ5XsFrk1OXjYL90XvF1fOxRSTNwqxc7Ap/UB2rAerUpA5Hw60MjCSW0ncnPtO5lqpztJp5ykiRm6TmevRHYgiJwIV+r5FmZ0nuAq0sF2zf3rU3ugqSnFlLokWqxvt2uv4GnQPSla8FxBFYMN/4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4253.namprd12.prod.outlook.com (2603:10b6:208:1de::16) with
+ bh=1z8TV4lfhpsOPtaDTnMBe4NgFq6Nz02iV8vlu6k78/U=;
+ b=Kp2ZUldmLhXCx18mX6gpkuIDpjCXTGbkYhSdN/o/Z5Gzhzsag/qhSDZr1b8fW8OioI+GMI//hX3iFkzEAgb66+5rJv4aMcnOLLqwAjlZBj9bPExjY/gHCK3t1JXyA50hH4aJ4Wxnf3PEZaNFk8XkCxJEkt+jbBZQaIYRbkuCU+LABgfV1aQQBGYl9li1T/vqaGChT+25wQDwBouW8Le5psjWaTAXt74N9F03JSL6njmRBgEb3S+ptEB8uxEgMK1ldJL0RlyemnHOLFsOdCIEFPnQd0+n6ZPmyVVF/amdU6yG2zUipopDfTpIlo8oatM/igeUx3ND7mwapOWT1unw+A==
+Received: from MW4PR03CA0107.namprd03.prod.outlook.com (2603:10b6:303:b7::22)
+ by BN8PR12MB3364.namprd12.prod.outlook.com (2603:10b6:408:40::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Wed, 14 Jul
- 2021 13:02:26 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
- 13:02:26 +0000
-Subject: Re: nouveau: failed to initialise sync
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>, bskeggs@redhat.com,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <YOC4uekpD7iA3xPi@Red> <1682547.0nLxAY2a9E@nvdebian>
- <dace0dea-7ca9-99cb-ad80-106824cb5e3f@amd.com>
- <20210714125652.eohw2s2pncplxovx@box.shutemov.name>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <8fd70eb5-7306-89a3-57f9-d633243c9df5@amd.com>
-Date:   Wed, 14 Jul 2021 15:02:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210714125652.eohw2s2pncplxovx@box.shutemov.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: FR0P281CA0086.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1e::22) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Wed, 14 Jul
+ 2021 13:03:02 +0000
+Received: from CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b7:cafe::d3) by MW4PR03CA0107.outlook.office365.com
+ (2603:10b6:303:b7::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Wed, 14 Jul 2021 13:03:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; broadcom.com; dkim=none (message not signed)
+ header.d=none;broadcom.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT006.mail.protection.outlook.com (10.13.174.246) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 13:03:01 +0000
+Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
+ 2021 13:03:00 +0000
+Date:   Wed, 14 Jul 2021 16:02:56 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Nitesh Lal <nilal@redhat.com>
+CC:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+        <linux-api@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, <jbrandeb@kernel.org>,
+        <frederic@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, <rostedt@goodmis.org>,
+        <peterz@infradead.org>, <davem@davemloft.net>,
+        <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
+        <stephen@networkplumber.org>, <rppt@linux.vnet.ibm.com>,
+        <chris.friesen@windriver.com>, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, <pjwaskiewicz@gmail.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        <shivasharan.srikanteshwara@broadcom.com>,
+        <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        <suganath-prabu.subramani@broadcom.com>,
+        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, <faisal.latif@intel.com>,
+        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, <borisp@nvidia.com>,
+        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
+        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
+        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+Subject: Re: [PATCH v3 06/14] RDMA/irdma: Use irq_set_affinity_and_hint
+Message-ID: <YO7ggLW78FWE4z+1@unreal>
+References: <20210713211502.464259-1-nitesh@redhat.com>
+ <20210713211502.464259-7-nitesh@redhat.com>
+ <YO7SiFE1dE0dFhkE@unreal>
+ <CAFki+Lm-CpKZai1fV5aMJzEb-x+003m8wLQShSrYpyNh3XC50Q@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:fe2b:fec6:eeb5:c7dc] (2a02:908:1252:fb60:fe2b:fec6:eeb5:c7dc) by FR0P281CA0086.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.8 via Frontend Transport; Wed, 14 Jul 2021 13:02:25 +0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAFki+Lm-CpKZai1fV5aMJzEb-x+003m8wLQShSrYpyNh3XC50Q@mail.gmail.com>
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9409b8bf-a30d-423f-c6bd-08d946c7a121
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4253:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB42532A51C12DEB23903D9FD783139@MN2PR12MB4253.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
+X-MS-Office365-Filtering-Correlation-Id: 29cf5632-499e-4e1a-2dfb-08d946c7b601
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3364:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3364E7C3E9DCE1D4D04A9F04BD139@BN8PR12MB3364.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UGQMjTMocqoIux2OYkxmU2aZwAav8C0gkYUufNuSMqeDOF+BTPqs9gVs94QODhSrVkvCZIjnzv1lBwMhtFNjF1uXChIGyWSxNJznvds4aHXpA2j/WMp3M6dGzXVdDO6kV8/0tLk7CgdETsMymGsmnrvpwV1cxSbTfo5NSwd35r+IuSn3+8uPlKKCMaJNEwlNGwJ8dpWQHx7mQfZgC7wA/FtxCsGO4eO6xefBARzk2wOtMUPRG/j7nZSfYzWN32wYPrZnUnr705Iaago50h9kHzwuUwY0uffGqtCbH0ZrAU9oAg/yZos5eQGtWB5b3inSgUoMOOWATlf7vEKyit23KKpbRIdWjJJq61cazeoQ/k0qLpvRzDUhRAmtLMpH5UjiKOVoD1g/9z8wro2RUFiTb4OMFPcBh8r75pgskXW72q8u0Pa3wmJtxCgNZzBUSc46kEiWhSPOVOR87HjqVEs7LbqvzeiULLFBddtqZlUOIAYFo2SLOfM/eCyBu/q1pcD5Ne3054WUSO3KObc5gnTOkpCd5ZRMe9/EwP/a+ZuOkejFdri6pGMeIA7ubNpYJcUJM0sm4UXw3hu0Z/H3CR/SzvJvrilcc+E+ybLjpUgDShRQBRQA59wBez4+JHA5oOul9db5MrpuqNhZ+dVyJFGXZGaehfb8Rp+29Hqvgt3jhIc0CLM6fg4btA2k/87CS3RtL48zRvJ+4ABdsdOgmoQNdHSS7wfkX6+xtoutUf0PPBGSWNF3nrmX38Yvta+zCJTP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(31696002)(2616005)(54906003)(316002)(8936002)(478600001)(6486002)(5660300002)(38100700002)(4326008)(8676002)(86362001)(66574015)(36756003)(66556008)(6666004)(66476007)(66946007)(186003)(31686004)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UlpJamptSjRPNjJDN0Fwb2Zra1VwVHdXZDNiNkh4ZC8wUnd4Tkk2c0VMTUk4?=
- =?utf-8?B?R0ZJWEt5MHdyS0ErdktscXR2SGVoRXlMREtJRTR2Mk9kMzF4K0V0NmRzN0Ft?=
- =?utf-8?B?QU9KYmFOVTR3VUVxTXRpTWJoZHhtR2pHcEp5WGdzSnJxTk5GMU9lYjZ6Lzlm?=
- =?utf-8?B?N1hqR1gvYktpM0JNU1JnSUdnYXdWOFdtM1VNbHROVTRobmFMNE5hbkV0ZGtG?=
- =?utf-8?B?dy9ZM1laUjN1MHhYNVl4eUJ3WDdCRklCV0tCQjFrNyt2SnJQeG5Ba2J6UXpE?=
- =?utf-8?B?akp0YkF3WEREcnBOSkpLRWQ5THpMWEFjcDZKUTNKYmNIRDBoTTR1TkpZV09x?=
- =?utf-8?B?NHluNWdaSnF6eWtJOGc2N1hNL3dCQXNqTU1nY1U0Nk5vT2JzZzlsRDNmdGFK?=
- =?utf-8?B?WlEvaUFvRjNwc0swMkZWQ3B5dnF6NEU0WndIa3JHdzBDbDUvY2s3a1cwOWFM?=
- =?utf-8?B?Wk9pZnBwZXBEVitycWNLQVYrcjR4SEorTlpnL1FlV3VPMzcwTUJpQjllbFhS?=
- =?utf-8?B?d0pMVkgrUHQyc3QrQ05FWVN3emJSd2IzQStiSStWVXFiSm9PSm95UFJTRk9y?=
- =?utf-8?B?YzBWZzQ5TWVUcG5lbHRWQitnd0dFZUFscTFUdW5VWWVUN1NQczNjR2tjcHgy?=
- =?utf-8?B?U3N0RWl6RnRKMVF1ZjVoY1dEM2hBcVVRQ0QvbkVxbzJDdFY3azdZSW5YTUZI?=
- =?utf-8?B?YzU1ODBEQUtPMDdCNjIwMGZHV1dqalJxTWpaNkkyRTJzOGlncHlOWGtvZFJs?=
- =?utf-8?B?cHE4NFA4aDRuRWtGR21aOFIwUm9sN1V0MkpFU0k1SGxnRUNNdFF3Tit2M3dQ?=
- =?utf-8?B?TzIrakZxMWIrUVVtQ2UwTEJlUVZrdzd3NGcybGtDS285Zk5oajF6RElhVWY5?=
- =?utf-8?B?VkRxMGx4WXNLaWdZOVlrUzRZc00vZTRIYnRZYXNLT3h3RlRZeHIyNGk4SThi?=
- =?utf-8?B?OEJQT3FBN2VSb3FZQUo0OWs5dVJNWlhpdWVXVHNzblRhWWF6YWVhdmEvRWxH?=
- =?utf-8?B?QjRLdDRtS2Z0L3BPMVVnM01FVDNsVUlLVWVwYVV0Mk9ZOFR1Tjlydjd0dE5C?=
- =?utf-8?B?UXN6THpTUkZYcENOZUFCSm0wVCtmR3ZVQmw3MllZT0M3L2R1MXFzb1R1LzFx?=
- =?utf-8?B?ejZzNnRiUmlOWjd2RmxXc2xubkE0TG5aczFNWm1sZkNmem9CYW5OazByeGt5?=
- =?utf-8?B?TzBpTUF3MGlxQ0ZtSUQ3aDRiM25FV01pMnMweURaRjdILzB1V2lOaE9WVW43?=
- =?utf-8?B?dUtzRGkzV0NRT0RDVWxwQXQybWtwWkVkMzJ2SCsrMDUvdjcrcUtpZmNWNFp1?=
- =?utf-8?B?T01nZTA0eGo3SVJrWmZubzhHcnZKVlEvcTRmQXdjRjFWaU9wRGNRWnJvYkxn?=
- =?utf-8?B?Y05GS3k2bERISVBsV0FpWnpuUlpWbjUxNTEzUnFsQW5DVGJtYjU2dTYxZmQy?=
- =?utf-8?B?NS94dWRERHVmK3IxUHN4QzJEaUVFZ0REbWFwM2xNSXRRREhDT0lEcmEyeFhY?=
- =?utf-8?B?TWs0RjJLSm1BYVpmbC82UnZUU2pUd2Myd2ljSDZ2ZGEzaWlvWGdmQlAvT3dv?=
- =?utf-8?B?Zk9JdU00eTJwR3htaU1wSWhHZzg4eTZwVmkyY0dGdFBxR1RreSs5cEMwd2xB?=
- =?utf-8?B?bFZHbDRjQ1dZSjN4UkJiVHBHMXlzVnVhMWhwbi9CcGxRMzJMSkRkVEdnM2ZI?=
- =?utf-8?B?SFU4aU1LL1gxUWhQYzNHNk8zVXJudklzTW5iZVJmZnQyam03RHhvL1ZZSjVu?=
- =?utf-8?B?YUlUYjM4Q0ZUZUpjUUtGTm1ORGE5TDRIWk4yOEtBNHpPVlFlWVhLZ3pZRUht?=
- =?utf-8?B?RUtIRG4vNVpMUStZcndaVmZFa3JXQWtJdWQzRnV4UGlIZXBGK0MzRTZJN1o0?=
- =?utf-8?Q?KdoNm7RTWFyDu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9409b8bf-a30d-423f-c6bd-08d946c7a121
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 13:02:26.7486
+X-Microsoft-Antispam-Message-Info: LsXtPSnnYgrI0O738l9dZX/e80v3jIB6/0kRpQHvlSy0EoSNZQO2CpmB0o1rTR4gqxklkD2ijAJ5hZdiJhwsVto/VzsEnT2IDHkX2ajHz4y03bqlWUyXzFkPgMXB93nvN0HRdKAQMk6mtf5iZ6MHpxKkO3D0nDc6JHsa6q3S8BRa6561ph/a3pvhzQvkTqgSv2w816ts70wStqmyVIKPSoyr35bG3YdvIFEEDUDv5nllrBMrgpB5LMF2zK/8oPZoIheztHkLEwSCMfliblqq4apcW5MX/9SAkQe5lSgj3AS3aFu23oMLCgLm0hHzPaBs8xl7Gg39vFIA8wWnL/ND1LqXUNatHyw1KJmKS2E8GhPR4hW+eCJsyJhy9+eQVG+z9CXd7eq8tPwHuhnVLkMQKBVidI2UcRPuqUEYCl57ooTGjMHo4nluQ8KvGsmXNEpvBu1VrwY58bk4W9cqXJhsZnYEutJ2g2TISQn+Rf6+/Vt3wjbv/qqypoC5PZaV1ZIygdmxbdIBAE3Zz9uJr4FCu1jlPc5DV5hlcjLxJD9ejSUVt3Tuap/+7ffasnEXZTlxax+L/VgwNvzDavfrDjj2EJYcmoAG1FG31lPNrLrOZu74ouChIHeAiTbpSGw+LPqHB5LWjWMM+Pef9n50PU2BDJTPWb7DTuCeBtDUQX0lHEEoQLSO+tjPf13xQuJCWOVbsBSMNBsIir565s298yiO5e0TyBF04+V32wJ6ZtG5NQbUQpL46WsEgZXM9sOuHkYW9AG9+uZOcoyW1yzLomCNgw==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(39850400004)(376002)(396003)(136003)(346002)(46966006)(36840700001)(478600001)(26005)(82310400003)(34020700004)(2906002)(70206006)(83380400001)(70586007)(86362001)(4326008)(54906003)(6916009)(9686003)(33716001)(186003)(356005)(16526019)(7636003)(8936002)(6666004)(336012)(53546011)(426003)(47076005)(8676002)(5660300002)(36860700001)(82740400003)(316002)(7416002)(7366002)(36906005)(7406005)(67856001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 13:03:01.4573
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l8Lyl4w6pzJsbDqNrMQlVz3YG5p48AKwttPoWG4mO82+fAH9Edw2tKL+1N215Q3N
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4253
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29cf5632-499e-4e1a-2dfb-08d946c7b601
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3364
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 14.07.21 um 14:56 schrieb Kirill A. Shutemov:
-> On Tue, Jul 06, 2021 at 08:58:37AM +0200, Christian König wrote:
->> Hi guys,
->>
->> yes nouveau was using the same functionality for internal BOs without
->> noticing it. This is fixes by the following commit:
->>
->> commit d098775ed44021293b1962dea61efb19297b8d02
->> Author: Christian König <christian.koenig@amd.com>
->> Date:   Wed Jun 9 19:25:56 2021 +0200
->>
->>      drm/nouveau: init the base GEM fields for internal BOs
->>
->>      TTMs buffer objects are based on GEM objects for quite a while
->>      and rely on initializing those fields before initializing the TTM BO.
->>
->>      Nouveau now doesn't init the GEM object for internally allocated BOs,
->>      so make sure that we at least initialize some necessary fields.
->>
->> Could be that the patch needs to be send to stable as well.
-> The regression is present in v5.14-rc1. Any idea when it will hit
-> upstream? I don't see it being applied to drm=next.
+On Wed, Jul 14, 2021 at 08:56:41AM -0400, Nitesh Lal wrote:
+> On Wed, Jul 14, 2021 at 8:03 AM Leon Romanovsky <leonro@nvidia.com> wrote:
+> >
+> > On Tue, Jul 13, 2021 at 05:14:54PM -0400, Nitesh Narayan Lal wrote:
+> > > The driver uses irq_set_affinity_hint() to update the affinity_hint mask
+> > > that is consumed by the userspace to distribute the interrupts and to apply
+> > > the provided mask as the affinity for its interrupts. However,
+> > > irq_set_affinity_hint() applying the provided cpumask as an affinity for
+> > > the interrupt is an undocumented side effect.
+> > >
+> > > To remove this side effect irq_set_affinity_hint() has been marked
+> > > as deprecated and new interfaces have been introduced. Hence, replace the
+> > > irq_set_affinity_hint() with the new interface irq_set_affinity_and_hint()
+> > > where the provided mask needs to be applied as the affinity and
+> > > affinity_hint pointer needs to be set and replace with
+> > > irq_update_affinity_hint() where only affinity_hint needs to be updated.
+> > >
+> > > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> > > ---
+> > >  drivers/infiniband/hw/irdma/hw.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+> > > index 7afb8a6a0526..7f13a051d4de 100644
+> > > --- a/drivers/infiniband/hw/irdma/hw.c
+> > > +++ b/drivers/infiniband/hw/irdma/hw.c
+> > > @@ -537,7 +537,7 @@ static void irdma_destroy_irq(struct irdma_pci_f *rf,
+> > >       struct irdma_sc_dev *dev = &rf->sc_dev;
+> > >
+> > >       dev->irq_ops->irdma_dis_irq(dev, msix_vec->idx);
+> > > -     irq_set_affinity_hint(msix_vec->irq, NULL);
+> > > +     irq_update_affinity_hint(msix_vec->irq, NULL);
+> > >       free_irq(msix_vec->irq, dev_id);
+> > >  }
+> > >
+> > > @@ -1087,7 +1087,7 @@ irdma_cfg_ceq_vector(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+> > >       }
+> > >       cpumask_clear(&msix_vec->mask);
+> > >       cpumask_set_cpu(msix_vec->cpu_affinity, &msix_vec->mask);
+> > > -     irq_set_affinity_hint(msix_vec->irq, &msix_vec->mask);
+> > > +     irq_set_affinity_and_hint(msix_vec->irq, &msix_vec->mask);
+> >
+> > I think that it needs to be irq_update_affinity_hint().
+> >
+> 
+> Ah! I got a little confused from our last conversation about mlx5.
+> 
+> IIUC mlx5 sub-function use case uses irdma (?) and that's why I thought
+> that perhaps we would also want to define the affinity here from the beginning.
 
-Well that question needs to answer Dave or somebody else from the 
-drm-misc maintainer team.
+mlx5 is connected to mlx5_ib/mlx5_vdpa e.t.c.
 
-This fix together with some others are already in drm-misc-next-fixes 
-waiting to be pushed upstream, but it looks like that hasn't happened yet.
+Not sure about that, but I think that only mlx5 implements SIOV model.
 
-Even Linus already pinged me where the fix for qxl got stuck.
-
-Regards,
-Christian.
+> 
+> In any case, I will make the change and re-post.
+> 
+> --
+> Thanks
+> Nitesh
+> 
