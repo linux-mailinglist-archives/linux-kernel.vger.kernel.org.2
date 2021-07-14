@@ -2,64 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2A83C8210
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE8F3C821B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238941AbhGNJyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:54:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60080 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238271AbhGNJyH (ORCPT
+        id S238981AbhGNJz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:55:26 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:54674
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238957AbhGNJzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:54:07 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626256274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M5fJRzonGN9uQmme0/djkgIoQ/GhoQQzRXG1HoHzAP8=;
-        b=E8rv9zkmiuP0AMHOg275EmBnnXZvZ3ZBn+s6ygH6fAkrqbA4184R4YXxWpwGjSrwmi9sES
-        TAIE94AuV250j1P2vyfIzejy+yK3oCNJowE2Npf88V7nKB0cmF11mtVmVIsaiXXKfdGUjT
-        Qrmq+vx7zU0BaadfVuHaLP/q6FEiZ0sXuL8+GMfY06wTwCPXbPA5p+ynSVb+1PzeOqKeTc
-        bjufKsHybp8jbar85E4CNUm0onvYFw0oqazB+nrxCfIdRX1FqJxGaLAexqzpDzwKLOY6AF
-        s2Mes51GFvBQyjoAlLkUsXnJbkCGuEPJQHhvyQOWHovw1Ff/rmO13ns0QmOreA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626256274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M5fJRzonGN9uQmme0/djkgIoQ/GhoQQzRXG1HoHzAP8=;
-        b=7WfdmIqyGNseiWMY7kVoDy3zQE6mKW4Reso9ZUZocTmhyO62FjebaGu2bw8Qe99OBTW09D
-        PJcwKSt0tzJLmJAg==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 16/50] locking/rtmutex: Use rt_mutex_wake_q_head
-In-Reply-To: <20210714085557.GD2725@worktop.programming.kicks-ass.net>
-References: <20210713151054.700719949@linutronix.de> <20210713160747.508939354@linutronix.de> <20210714085557.GD2725@worktop.programming.kicks-ass.net>
-Date:   Wed, 14 Jul 2021 11:51:14 +0200
-Message-ID: <87v95db4vh.ffs@nanos.tec.linutronix.de>
+        Wed, 14 Jul 2021 05:55:25 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 6152440618
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 09:52:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626256351;
+        bh=80zXfnJOV6lMeG5E5RjQ3UMMrg6S4mJKlz3aPhaJln4=;
+        h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
+        b=MJVL1E7f4cVZn4DDpqfig9e7WeOFR2h5wX3mWyojjMstVHRgeT+2zOuyhAWD2Mjfb
+         Q2acS3cd4pvgag/CKj8/1X086KYgM9AYPx5GXB9HOSfizTX5SyVA2DMGi2BJ+G7gkA
+         O9xmo+1DU8StsHz8oxXOHi2eXjOp0kGBlyYZmIvpXkmy1aP7JqwyNmTiQFosB4XHYy
+         d5xzeMt3GO69Vb52Q5z+AO+by0L7TeHOYtgdZ1DejBTiMbtLqaDrNNRFOaSvsQX0vc
+         bPmfKXlFJgvIpCvj5z47sb7WRLOGwWRSCre14M3usXAY12ji7EsnibQBhK2UH+Gqb1
+         5MDZKh2rf4nqA==
+Received: by mail-ed1-f71.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so953909edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:52:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=80zXfnJOV6lMeG5E5RjQ3UMMrg6S4mJKlz3aPhaJln4=;
+        b=sZvA3wux1+ETR/due15SAW5OxBmvaQL5MAFQMZRbMflQWZj6U4VC7Y0n5R8IdEA4S4
+         3YitMgPjXX++OZi2fX8vSgC8Bi7/Oc63gbww+zjgChsF5E74u6ts2+feKBNrf63gm7R4
+         JDgnQZev06it84OJUoQNaDz5knHo0i6W9RKxm1+91Jte63oly7jZFvomzLv+XcImadc0
+         WPc9BzZZkJwYIJbCqG0kmeM9dZFbJGteZKoirexV1ERxYHF2Rqu9dabPk6H/7dSZg7Qo
+         1C6tdDBNz6OUp3UfSsj8FB/ZdJC6gjBh9xf/IPaFxzy7jScPxjLmLdDk+LShJ6Fmirxd
+         eYNg==
+X-Gm-Message-State: AOAM530UPOu/dbIAnjESCE8c+h8ghTzYbR0W9OoQtcyhdiiBMANqa7iE
+        4QkLkMBInOLL3B1ntxWEeJ7j4t+r5QUUkaX8duRmfl0ewlipNRjf6Z5y1jS9tjtH6EoYafKLijM
+        nKV3ZOjva6CKCG7TfJwsRguNll+sWHDAEgu19P5S/qIG0jmONuxjZcub/sQ==
+X-Received: by 2002:a17:906:17c2:: with SMTP id u2mr2167082eje.117.1626256351024;
+        Wed, 14 Jul 2021 02:52:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6o86w5XcTXx0rweh1OQO8vQJqb2pD8eu/0VlUBpbyR5Fo/OYq0Lk+k1MJzySGibta0hOHd2nc95S32JqueFc=
+X-Received: by 2002:a17:906:17c2:: with SMTP id u2mr2167061eje.117.1626256350762;
+ Wed, 14 Jul 2021 02:52:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210712133500.1126371-1-kai.heng.feng@canonical.com>
+ <20210712133500.1126371-2-kai.heng.feng@canonical.com> <3947d70a-58d0-df93-24f1-1899fd567534@intel.com>
+ <CAAd53p79BwxPGRECYGrpCQbSJz8NY2WrG+AJCuaj89XNqCy59Q@mail.gmail.com> <16e188d5-f06e-23dc-2f71-c935240dd3b4@intel.com>
+In-Reply-To: <16e188d5-f06e-23dc-2f71-c935240dd3b4@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 14 Jul 2021 17:52:18 +0800
+Message-ID: <CAAd53p5Pyk80c0FjmqF9cjicNF8t0eTC7Y3BP-rWqW3O53K1Mg@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH 2/3] e1000e: Make mei_me active when
+ e1000e is in use
+To:     "Ruinskiy, Dima" <dima.ruinskiy@intel.com>
+Cc:     Sasha Neftin <sasha.neftin@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devora.fuxbrumer@intel.com, alexander.usyskin@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14 2021 at 10:55, Peter Zijlstra wrote:
-> On Tue, Jul 13, 2021 at 05:11:10PM +0200, Thomas Gleixner wrote:
->> +	DEFINE_RT_MUTEX_WAKE_Q_HEAD(wqh);
->> -	DEFINE_WAKE_Q(wake_q);
+On Wed, Jul 14, 2021 at 5:06 PM Ruinskiy, Dima <dima.ruinskiy@intel.com> wrote:
 >
-> The naming doesn't really line up nicely... Would DEFINE_RT_WAKE_Q()
-> work?
+> On 14/07/2021 9:28, Kai-Heng Feng wrote:
+> >> I do not know how MEI driver affect 1Gbe driver - so, I would suggest to
+> >> involve our CSME engineer (alexander.usyskin@intel.com) and try to
+> >> investigate this problem.
+> >> Does this problem observed on Dell systems? As I heard no reproduction
+> >> on Intel's RVP platform.
+> >> Another question: does disable mei_me runpm solve your problem?
+> >
+> > Yes, disabling runpm on mei_me can workaround the issue, and that's
+> > essentially what this patch does by adding DL_FLAG_PM_RUNTIME |
+> > DL_FLAG_RPM_ACTIVE flag.
+> >
+> > Kai-Heng
+> Hi, Kai-Heng,
+>
+> If the goal of the patch is to essentially disable runpm on mei_me, then
+> why is the patch touching code in the e1000e driver?
 
-Sure.
+We can put the workaround in e1000e, mei_me or as PCI quirk.
+But since the bug itself manifests in e1000e, I think it's more
+appropriate to put it here.
+
+To be more specific, it doesn't disable runtime suspend on mei_me, it
+makes mei_me the power supplier of e1000e.
+So when e1000e can be runtime suspended (i.e. no link partner), mei_me
+can also get runtime suspended too.
+
+>
+> I agree with Sasha Neftin; it seems like the wrong location, and the
+> wrong way to do it, even if it currently works. We need to understand
+> what causes runpm of mei_me to adversely affect LAN Rx, and for this we
+> need the involvement of mei_me owners.
+
+I think it's the right location, however I totally agree with your
+other arguments.
+There are many users already affected by this bug, so if a proper fix
+isn't available for now, the temporary workaround can help here.
+
+Kai-Heng
+
+>
+> --Dima
+> ---------------------------------------------------------------------
+> Intel Israel (74) Limited
+>
+> This e-mail and any attachments may contain confidential material for
+> the sole use of the intended recipient(s). Any review or distribution
+> by others is strictly prohibited. If you are not the intended
+> recipient, please contact the sender and delete all copies.
