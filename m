@@ -2,256 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05B63C842B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC473C842F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 14:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239284AbhGNMC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 08:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239276AbhGNMCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:02:53 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65D0C061766;
-        Wed, 14 Jul 2021 05:00:01 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id h9so2988203ljm.5;
-        Wed, 14 Jul 2021 05:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2npMGSVMz93HDxKFt2vGxTMDB6GmAmEEWPg6NT2aXQs=;
-        b=rk8KJK+wAW/0L1Hr5gSfUxfI5yh+B4nNkIHbRX2mUq6p2OqnyLv85lQF64i8yfHldp
-         jSoR+abxra7dhixDjqf9A3c0qvvv8bCf4k7Jspcb9kPfVNDeqCv4gnYYM+mzjAs8Owc3
-         GpZDI7+mabxI6TDghTnyMRXSO4DR5KHnU4G59+y5gm80X5cut+t3neuWGChGSfimJ3wF
-         4lr0F0CHOnicvLpbJZto8VYy1LJJeLYNDqPj68V7vCz8o+kqVj5X+x1+fHhBFJji2IrD
-         10KVO1ZVDHgbkhOC0KwnD7MmzdIvscPGHgde0TpiPtJtMC6+dkMKH+P2ljhkL3p/gt0x
-         e4aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2npMGSVMz93HDxKFt2vGxTMDB6GmAmEEWPg6NT2aXQs=;
-        b=s/7CQQFlMV8If9VtPyzC0cpoNPBjeUJ5fcwlvZP4Uf6v4qG7XDh5GPT62aF84RFKPz
-         VtXdUXiyQ+IhUPUWXzGiIZtZCJLi3vCJAI9x5eSy9ymmP5Gm+A/p0Izy8gMiyCVGhq3h
-         0eZTzLkUJK1ABqLTwixT6nGlFYya27l0/FuXDui6N3nVQMf2QePu8kEPEQYUQt6DAgny
-         1lz7keeEZI3NNnYtt3JQqWbqfGcCOPR8Vw62MjjyIBpLbX9mVebMsU9z7XcqYyknlaz+
-         VAlW7I43Hez5y5twOVN5ODH1pfbzU1+RkaLOLKTLD875hsFjiEZ/BXoSMx7T8jJguEX5
-         bBtQ==
-X-Gm-Message-State: AOAM532OHEb5Q9n72bMaB/dCEdKX8tI/pHQFdvf5ZdNAwOO5ixIG6EOh
-        EZhMVQoX65BePxEgDgW7f/ZIoCLadIM=
-X-Google-Smtp-Source: ABdhPJxRXEMPkgjgf2al80idTVWUieRnheauI9rCtgfQ2cRFxozEZt5qO3sP9o9GA1eYyHAJ2PF/2w==
-X-Received: by 2002:a2e:a288:: with SMTP id k8mr8577728lja.107.1626263999864;
-        Wed, 14 Jul 2021 04:59:59 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id x3sm149458lfr.201.2021.07.14.04.59.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 04:59:59 -0700 (PDT)
-Subject: Re: [PATCH v8 2/9] clk: tegra: Fix refcounting of gate clocks
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210516163041.12818-1-digetx@gmail.com>
- <20210516163041.12818-3-digetx@gmail.com>
- <fa13f623-dbd1-9b0c-dfd1-8d58800e04b4@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e61f1ee5-2c1e-7a1b-094e-810a587ce3cd@gmail.com>
-Date:   Wed, 14 Jul 2021 14:59:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239295AbhGNMEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 08:04:11 -0400
+Received: from mail-mw2nam10on2051.outbound.protection.outlook.com ([40.107.94.51]:30048
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230492AbhGNMEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:04:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GtyYLmaAYy+tVJJbLzMvmG0gAPrcdx2UNH8u70yeCWGlHfpi/CBCEeZMZcd26LWqMD9U26MGS9kktQoCOfB6C63UEAm54L8jz0XzmhIGnDjJY850LEZIwb8bTDkR2Yp/+u5orjckHShFhQLkqPNAacZb+qWa2eY6WTx+SrvLIQuUDl/8UZTxQzPofo10fF7zITWeBIK09/1J0XZV9ezyh9/OSx9+UAC5AZ2LQQiiGwo2OfV2cKaU/FNdwDXH4NB2WQ25wQfO9r0dtXWlMxcpL8HI0De9B5Rd2mEGB/S4/ySnoZkMFwt/DUhBUpa3mt6kCtufC4GSu6TiDgnMmCv4tA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Afk9pwx8zsfsMRAI1uzc5fLgBmmsPfPZAPCt3Nrfcxs=;
+ b=G2y64mIlxPC4KGBNPEzlWH1U+4LcgQRjA7JHuJOBVovrm81mTnkY0jp/VZu8RfiSHf9nEiNW9T0A0vJol1SvdX51wNcWgAidFrMPodvjblgqRzzrAJ5hLuwQYc0KA1XEMrhaHfme+VFJBm3j/s3KM2V3fedwZ8QE0cn4dPV6Xq0EFHH/xAPYlLq5ChFti0EQyYBIHUaV5OoAY0k11GB5k8xCtz0C4aG+NXeU0AkYmiMCX/s+mKPKOUGvGgn0OdBAnChA8UPUukCPHJblwrRBm4b7HePcAhQQHgsfiFkd6/eaYRklwg7DnKgNhjMA2VhUATJZQrAJvWko1LShMeiMOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Afk9pwx8zsfsMRAI1uzc5fLgBmmsPfPZAPCt3Nrfcxs=;
+ b=tjEZ8FQjGJqWaRtWzrrV2knn5dAGFHP8nI0+ywbc2Xkfa7BfOcD3UDdYCtH+XaXaCP7iiMRCdRpnU3ncPn3FcDDgw/RZcoSv3gpKt0IBVPQ7yH9LVQ4AGC800r2f4qFQzt2FyuRXOpgyJiZ6po3z0DBMlxZLY4ZvF4uyapUhMXx3EDK1PWPO3EIol3wxsWFtOoo9Rh1qlYGDyj8VIYJVAs0oAAV8ANsNEJnYsl9uBUMvdfrBsRxbRgx4Yse7VuDi4AA/I6qEHMn1nDE9Jd1mapyTkotlZ0rxIX60oYNp3Wr6deyfxDo7W+phlTmHgvB1xB15cByzy6ptViAmyU4kPg==
+Received: from BN6PR19CA0062.namprd19.prod.outlook.com (2603:10b6:404:e3::24)
+ by MWHPR12MB1647.namprd12.prod.outlook.com (2603:10b6:301:c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Wed, 14 Jul
+ 2021 12:01:17 +0000
+Received: from BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:e3:cafe::2a) by BN6PR19CA0062.outlook.office365.com
+ (2603:10b6:404:e3::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Wed, 14 Jul 2021 12:01:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; broadcom.com; dkim=none (message not signed)
+ header.d=none;broadcom.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT003.mail.protection.outlook.com (10.13.177.90) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 12:01:16 +0000
+Received: from localhost (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
+ 2021 12:01:15 +0000
+Date:   Wed, 14 Jul 2021 15:01:11 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+        <linux-api@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <tglx@linutronix.de>, <jesse.brandeburg@intel.com>,
+        <robin.murphy@arm.com>, <mtosatti@redhat.com>, <mingo@kernel.org>,
+        <jbrandeb@kernel.org>, <frederic@kernel.org>,
+        <juri.lelli@redhat.com>, <abelits@marvell.com>,
+        <bhelgaas@google.com>, <rostedt@goodmis.org>,
+        <peterz@infradead.org>, <davem@davemloft.net>,
+        <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
+        <stephen@networkplumber.org>, <rppt@linux.vnet.ibm.com>,
+        <chris.friesen@windriver.com>, <maz@kernel.org>,
+        <nhorman@tuxdriver.com>, <pjwaskiewicz@gmail.com>,
+        <sassmann@redhat.com>, <thenzl@redhat.com>,
+        <kashyap.desai@broadcom.com>, <sumit.saxena@broadcom.com>,
+        <shivasharan.srikanteshwara@broadcom.com>,
+        <sathya.prakash@broadcom.com>, <sreekanth.reddy@broadcom.com>,
+        <suganath-prabu.subramani@broadcom.com>,
+        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
+        <jkc@redhat.com>, <faisal.latif@intel.com>,
+        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
+        <ahleihel@redhat.com>, <kheib@redhat.com>, <borisp@nvidia.com>,
+        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
+        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
+        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
+        <nilal@redhat.com>, <tatyana.e.nikolova@intel.com>,
+        <mustafa.ismail@intel.com>, <ahs3@redhat.com>,
+        <chandrakanth.patil@broadcom.com>
+Subject: Re: [PATCH v3 13/14] net/mlx5: Use irq_set_affinity_and_hint
+Message-ID: <YO7SB4q9Q7S0lIbR@unreal>
+References: <20210713211502.464259-1-nitesh@redhat.com>
+ <20210713211502.464259-14-nitesh@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <fa13f623-dbd1-9b0c-dfd1-8d58800e04b4@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210713211502.464259-14-nitesh@redhat.com>
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 797b4754-2ad9-49a3-ea44-08d946bf15fd
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1647:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB16475C114E3A6D82D238DB70BD139@MWHPR12MB1647.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lHd8QiqpZAqYtLAnlPeVNhluLMUv7ZLOLrxyKbdLM2va1jb/KRejkIADZMVNCHcvGZ7p0NGXi8evV0PEyXNgAvPT1fER36ofobKa2IOyKRLtYB12bZgGLGRnuhj6iRNA0L+5RRphJx/KjyO9VmYrKApc+8OBhjGXGGsU9OLQKj7UGzGqFnveFz9o5mlUJwTsJ8nHEqM7/Ypxplm2F+ZQH4m5riJOlbJNz7FhoZn4pMKUEfB3F69qvTEsJSRb2Tm1pf6FByqVlhkE+8wF30ZahCIfqFZQx9MBKLrlfG6kMB/Uzd1CaVHEQCz+by51+oGtvN7PgClTee5W9i94A7Hd8zepPZEiNHnUrwOmXliSQBV3e2pjMTwaP+e/3o4sptZ/n2+AERc7ucB9FHqrDZSiJQShNigovmzlsAgEXV93X2Rpv6k876yJvbFj60tqWi+AZ4Kcn0ZupG+r1y2DlctGgk9/MsyUGcdixX999R9xiPmxKt70XqGKu/YPum2M2Fk+5bJ5J8ugef/PAZsKAn8jYqvglQfDQBV9uDzv2npHOjS4TYuwxj0rNSYJC0fw4NQFbXOhr/nyIW0mgY7zN9sbLTpoAkooOIyMa9VR8JdkszKkXQVvRNzKb+puYbYknGK1vwHPiRB5mpNkbLZSIdQg0F00wO9OlabyV+g0v54sZdn4M1qZYXkB+N6evm1C8PO2UNn5+BjqoIN4HI4Irl1fXNSYTNK+cyqS728duAlksBI=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(7916004)(346002)(39860400002)(136003)(376002)(396003)(46966006)(36840700001)(2906002)(70206006)(478600001)(6666004)(26005)(36906005)(70586007)(186003)(16526019)(82740400003)(82310400003)(356005)(86362001)(5660300002)(7636003)(47076005)(8676002)(9686003)(4326008)(36860700001)(83380400001)(316002)(7366002)(33716001)(34020700004)(7406005)(8936002)(7416002)(426003)(6916009)(54906003)(336012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 12:01:16.9526
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 797b4754-2ad9-49a3-ea44-08d946bf15fd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1647
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.07.2021 14:48, Jon Hunter пишет:
+On Tue, Jul 13, 2021 at 05:15:01PM -0400, Nitesh Narayan Lal wrote:
+> The driver uses irq_set_affinity_hint() to update the affinity_hint mask
+> that is consumed by the userspace to distribute the interrupts and to apply
+> the provided mask as the affinity for the mlx5 interrupts. However,
+> irq_set_affinity_hint() applying the provided cpumask as an affinity for
+> the interrupt is an undocumented side effect.
 > 
-> On 16/05/2021 17:30, Dmitry Osipenko wrote:
->> The refcounting of the gate clocks has a bug causing the enable_refcnt
->> to underflow when unused clocks are disabled. This happens because clk
->> provider erroneously bumps the refcount if clock is enabled at a boot
->> time, which it shouldn't be doing, and it does this only for the gate
->> clocks, while peripheral clocks are using the same gate ops and the
->> peripheral clocks are missing the initial bump. Hence the refcount of
->> the peripheral clocks is 0 when unused clocks are disabled and then the
->> counter is decremented further by the gate ops, causing the integer
->> underflow.
->>
->> Fix this problem by removing the erroneous bump and by implementing the
->> disable_unused() callback, which disables the unused gates properly.
->>
->> The visible effect of the bug is such that the unused clocks are never
->> gated if a loaded kernel module grabs the unused clocks and starts to use
->> them. In practice this shouldn't cause any real problems for the drivers
->> and boards supported by the kernel today.
->>
->> Acked-by: Thierry Reding <treding@nvidia.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
->>  drivers/clk/tegra/clk-periph.c      | 11 +++++
->>  2 files changed, 58 insertions(+), 25 deletions(-)
->>
->> diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
->> index 4b31beefc9fc..dc3f92678407 100644
->> --- a/drivers/clk/tegra/clk-periph-gate.c
->> +++ b/drivers/clk/tegra/clk-periph-gate.c
->> @@ -48,18 +48,9 @@ static int clk_periph_is_enabled(struct clk_hw *hw)
->>  	return state;
->>  }
->>  
->> -static int clk_periph_enable(struct clk_hw *hw)
->> +static void clk_periph_enable_locked(struct clk_hw *hw)
->>  {
->>  	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
->> -	unsigned long flags = 0;
->> -
->> -	spin_lock_irqsave(&periph_ref_lock, flags);
->> -
->> -	gate->enable_refcnt[gate->clk_num]++;
->> -	if (gate->enable_refcnt[gate->clk_num] > 1) {
->> -		spin_unlock_irqrestore(&periph_ref_lock, flags);
->> -		return 0;
->> -	}
->>  
->>  	write_enb_set(periph_clk_to_bit(gate), gate);
->>  	udelay(2);
->> @@ -78,6 +69,32 @@ static int clk_periph_enable(struct clk_hw *hw)
->>  		udelay(1);
->>  		writel_relaxed(0, gate->clk_base + LVL2_CLK_GATE_OVRE);
->>  	}
->> +}
->> +
->> +static void clk_periph_disable_locked(struct clk_hw *hw)
->> +{
->> +	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
->> +
->> +	/*
->> +	 * If peripheral is in the APB bus then read the APB bus to
->> +	 * flush the write operation in apb bus. This will avoid the
->> +	 * peripheral access after disabling clock
->> +	 */
->> +	if (gate->flags & TEGRA_PERIPH_ON_APB)
->> +		tegra_read_chipid();
->> +
->> +	write_enb_clr(periph_clk_to_bit(gate), gate);
->> +}
->> +
->> +static int clk_periph_enable(struct clk_hw *hw)
->> +{
->> +	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
->> +	unsigned long flags = 0;
->> +
->> +	spin_lock_irqsave(&periph_ref_lock, flags);
->> +
->> +	if (!gate->enable_refcnt[gate->clk_num]++)
->> +		clk_periph_enable_locked(hw);
->>  
->>  	spin_unlock_irqrestore(&periph_ref_lock, flags);
->>  
->> @@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
->>  
->>  	spin_lock_irqsave(&periph_ref_lock, flags);
->>  
->> -	gate->enable_refcnt[gate->clk_num]--;
->> -	if (gate->enable_refcnt[gate->clk_num] > 0) {
->> -		spin_unlock_irqrestore(&periph_ref_lock, flags);
->> -		return;
->> -	}
->> +	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
->> +
->> +	if (--gate->enable_refcnt[gate->clk_num] == 0)
->> +		clk_periph_disable_locked(hw);
->> +
->> +	spin_unlock_irqrestore(&periph_ref_lock, flags);
->> +}
+> To remove this side effect irq_set_affinity_hint() has been marked
+> as deprecated and new interfaces have been introduced. Hence, replace the
+> irq_set_affinity_hint() with the new interface irq_set_affinity_and_hint()
+> where the provided mask needs to be applied as the affinity and
+> affinity_hint pointer needs to be set and replace with
+> irq_update_affinity_hint() where only affinity_hint needs to be updated.
 > 
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> A consequence of this change is now I see the following on Tegra210
-> Jetson Nano ...
-> 
-> [    8.138810] ------------[ cut here ]------------
-> [    8.150529] WARNING: CPU: 3 PID: 1 at /dvs/git/dirty/git-master_l4t-upstream/kernel/drivers/clk/tegra/clk-periph-gate.c:103 clk_periph_disable+0x68/0x90
-> [    8.164279] Modules linked in:
-> [    8.167373] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc1-gb34c0e9111d0 #1
-> [    8.174905] Hardware name: NVIDIA Jetson Nano Developer Kit (DT)
-> [    8.180934] pstate: 000000c5 (nzcv daIF -PAN -UAO -TCO BTYPE=--)
-> [    8.186983] pc : clk_periph_disable+0x68/0x90
-> [    8.191388] lr : clk_periph_disable+0x20/0x90
-> [    8.195788] sp : ffff8000120abca0
-> [    8.199123] x29: ffff8000120abca0 x28: 0000000000000000 x27: ffff800011791070
-> [    8.206331] x26: ffff8000116e0458 x25: ffff800011fe3000 x24: ffff800011fe3000
-> [    8.213527] x23: ffff000080138000 x22: 0000000000000000 x21: 00000000000000c0
-> [    8.220725] x20: ffff0000800391b8 x19: ffff800012047000 x18: 0000000000000068
-> [    8.227920] x17: 0000000000000007 x16: 0000000000000001 x15: ffff800011222000
-> [    8.235116] x14: ffff8000120ab940 x13: ffff800011f629b8 x12: ffff000000000001
-> [    8.242313] x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-> [    8.249507] x8 : 0000000000000000 x7 : 0000000000000000 x6 : 0000000000000004
-> [    8.256700] x5 : ffff800011040d10 x4 : 0000000000000000 x3 : 000000000000000f
-> [    8.263892] x2 : ffff00008000c400 x1 : 0000000000000000 x0 : 0000000000000000
-> [    8.271088] Call trace:
-> [    8.273557]  clk_periph_disable+0x68/0x90
-> [    8.277615]  clk_sdmmc_mux_disable+0x1c/0x28
-> [    8.281924]  clk_disable_unused_subtree+0xac/0xe4
-> [    8.286685]  clk_disable_unused_subtree+0x3c/0xe4
-> [    8.291433]  clk_disable_unused_subtree+0x3c/0xe4
-> [    8.296182]  clk_disable_unused_subtree+0x3c/0xe4
-> [    8.300931]  clk_disable_unused_subtree+0x3c/0xe4
-> [    8.305678]  clk_disable_unused+0x5c/0xe8
-> [    8.309730]  do_one_initcall+0x58/0x1b8
-> [    8.313607]  kernel_init_freeable+0x22c/0x29c
-> [    8.318002]  kernel_init+0x20/0x120
-> [    8.321536]  ret_from_fork+0x10/0x18
-> [    8.325150] ---[ end trace b5b8bc7cd88ff097 ]---
-> 
-> 
-> Any thoughts on how to resolve this?
-> 
-> I now see this has been picked up for stable, but I don't see where
-> this was tagged for stable and so I am not sure how that happened?
 
-Seems you'll need to implement the disable_unused() callback for the
-clk_sdmmc_mux to fix it. It's good that this problem has been caught.
-
-diff --git a/drivers/clk/tegra/clk-sdmmc-mux.c
-b/drivers/clk/tegra/clk-sdmmc-mux.c
-index 316912d3b1a4..4f2c3309eea4 100644
---- a/drivers/clk/tegra/clk-sdmmc-mux.c
-+++ b/drivers/clk/tegra/clk-sdmmc-mux.c
-@@ -194,6 +194,15 @@ static void clk_sdmmc_mux_disable(struct clk_hw *hw)
- 	gate_ops->disable(gate_hw);
- }
-
-+static void clk_sdmmc_mux_disable_unused(struct clk_hw *hw)
-+{
-+	struct tegra_sdmmc_mux *sdmmc_mux = to_clk_sdmmc_mux(hw);
-+	const struct clk_ops *gate_ops = sdmmc_mux->gate_ops;
-+	struct clk_hw *gate_hw = &sdmmc_mux->gate.hw;
-+
-+	gate_ops->disable_unused(gate_hw);
-+}
-+
- static void clk_sdmmc_mux_restore_context(struct clk_hw *hw)
- {
- 	struct clk_hw *parent = clk_hw_get_parent(hw);
-@@ -218,6 +227,7 @@ static const struct clk_ops tegra_clk_sdmmc_mux_ops = {
- 	.is_enabled = clk_sdmmc_mux_is_enabled,
- 	.enable = clk_sdmmc_mux_enable,
- 	.disable = clk_sdmmc_mux_disable,
-+	.disable_unused = clk_sdmmc_mux_disable_unused,
- 	.restore_context = clk_sdmmc_mux_restore_context,
- };
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
