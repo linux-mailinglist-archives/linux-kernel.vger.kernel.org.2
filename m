@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ECA3C8912
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E574D3C8915
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 18:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhGNQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 12:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhGNQ5Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 12:57:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64187C06175F;
-        Wed, 14 Jul 2021 09:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Q0twLm1z1R0272a0gO8MDKn0VGtCaKOLX5zeaoDfy7Y=; b=fyvXzPlxhF3nWWnznUlnq4Dikm
-        hX2wJaaNocJtshQ0ww0fN1B4flWR1WAf9fv6REtMnCM11+TFwu72WK17oDrcLSDc9pOww0UZFQvGq
-        nk5K1LrOAyuAEF880y7lGv2O5lk6CYX5cz+rNEM4jAooUOPr0uzxpRDDd6VqmrTpu9OvzsM/Y0NpJ
-        vpK9G3MPxB49hQERwFqvHF2RBPArImxE4GZooADG7gXFSiBMWUIxP5xPDGYW8YLQyG9shv3Gfex64
-        9L7P98EIfUwgbPdWp075MRNcR5MBJFoGs28h/co7WlWPYfzKj3mMTFhyn1QWxCuwG5uZy9PqS/fpP
-        Qq3IMuyQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3i7r-002OGM-KU; Wed, 14 Jul 2021 16:53:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 29748300056;
-        Wed, 14 Jul 2021 18:52:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6195020141192; Wed, 14 Jul 2021 18:52:44 +0200 (CEST)
-Date:   Wed, 14 Jul 2021 18:52:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
-Message-ID: <YO8WWxWBmNuI0iUW@hirez.programming.kicks-ass.net>
-References: <20210714135420.69624-1-frederic@kernel.org>
- <20210714135420.69624-7-frederic@kernel.org>
+        id S236312AbhGNQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 12:57:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:37166 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235859AbhGNQ5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 12:57:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60CBED6E;
+        Wed, 14 Jul 2021 09:54:39 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 811A13F774;
+        Wed, 14 Jul 2021 09:54:37 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 17:54:34 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 03/13] mailbox: pcc: Refactor all PCC channel information
+ into a structure
+Message-ID: <20210714165434.GC6592@e120937-lin>
+References: <20210708180851.2311192-1-sudeep.holla@arm.com>
+ <20210708180851.2311192-4-sudeep.holla@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714135420.69624-7-frederic@kernel.org>
+In-Reply-To: <20210708180851.2311192-4-sudeep.holla@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 03:54:20PM +0200, Frederic Weisbecker wrote:
-> Add a new cpuset.isolation_mask file in order to be able to modify the
-> housekeeping cpumask for each individual isolation feature on runtime.
-> In the future this will include nohz_full, unbound timers,
-> unbound workqueues, unbound kthreads, managed irqs, etc...
+On Thu, Jul 08, 2021 at 07:08:41PM +0100, Sudeep Holla wrote:
+> Currently all the PCC channel specific information are stored/maintained
+> in global individual arrays for each of those information. It is not
+> scalable and not clean if we have to stash more channel specific
+> information. Couple of reasons to stash more information are to extend
+> the support to Type 3/4 PCCT subspace and also to avoid accessing the
+> PCCT table entries themselves each time we need the information.
 > 
-> Start with supporting domain exclusion and CPUs passed through
-> "isolcpus=".
+> This patch moves all those PCC channel specific information into a
+> separate structure pcc_chan_info.
 > 
-> The cpuset.isolation_mask defaults to 0. Setting it to 1 will exclude
-> the given cpuset from the domains (they will be attached to NULL domain).
-> As long as a CPU is part of any cpuset with cpuset.isolation_mask set to
-> 1, it will remain isolated even if it overlaps with another cpuset that
-> has cpuset.isolation_mask  set to 0. The same applies to parent and
-> subdirectories.
-> 
-> If a cpuset is a subset of "isolcpus=", it automatically maps it and
-> cpuset.isolation_mask will be set to 1. This subset is then cleared from
-> the initial "isolcpus=" mask. The user is then free to override
-> cpuset.isolation_mask to 0 in order to revert the effect of "isolcpus=".
-> 
-> Here is an example of use where the CPU 7 has been isolated on boot and
-> get re-attached to domains later from cpuset:
-> 
-> 	$ cat /proc/cmdline
-> 		isolcpus=7
-> 	$ cd /sys/fs/cgroup/cpuset
-> 	$ mkdir cpu7
-> 	$ cd cpu7
-> 	$ cat cpuset.cpus
-> 		0-7
-> 	$ cat cpuset.isolation_mask
-> 		0
-> 	$ ls /sys/kernel/debug/domains/cpu7	# empty because isolcpus=7
-> 	$ echo 7 > cpuset.cpus
-> 	$ cat cpuset.isolation_mask	# isolcpus subset automatically mapped
-> 		1
-> 	$ echo 0 > cpuset.isolation_mask
-> 	$ ls /sys/kernel/debug/domains/cpu7/
-> 		domain0  domain1
-> 
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
 
-cpusets already has means to create paritions; why are you creating
-something else?
+Hi Sudeep,
+
+>  drivers/mailbox/pcc.c | 106 +++++++++++++++++++++---------------------
+>  1 file changed, 53 insertions(+), 53 deletions(-)
+> 
+> diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+> index 23391e224a68..c5f481a615b0 100644
+> --- a/drivers/mailbox/pcc.c
+> +++ b/drivers/mailbox/pcc.c
+> @@ -64,12 +64,20 @@
+>  
+>  static struct mbox_chan *pcc_mbox_channels;
+>  
+> -/* Array of cached virtual address for doorbell registers */
+> -static void __iomem **pcc_doorbell_vaddr;
+> -/* Array of cached virtual address for doorbell ack registers */
+> -static void __iomem **pcc_doorbell_ack_vaddr;
+> -/* Array of doorbell interrupts */
+> -static int *pcc_doorbell_irq;
+> +/**
+> + * struct pcc_chan_info - PCC channel specific information
+> + *
+> + * @db_vaddr: cached virtual address for doorbell register
+> + * @db_ack_vaddr: cached virtual address for doorbell ack register
+> + * @db_irq: doorbell interrupt
+> + */
+> +struct pcc_chan_info {
+> +	void __iomem *db_vaddr;
+> +	void __iomem *db_ack_vaddr;
+> +	int db_irq;
+> +};
+
+Given that this db_irq represents the optional completion interrupt that is
+used platform-->OSPM to signal command completions and/or notifications/
+delayed_responses and it is mentioned indeed in ACPI 6.4 as "Platform
+Interrupt" and also referred in this driver as such somewherelse, is it not
+misleading to call it then here "doorbell interrupt" since the "doorbell" in
+this context is usually the interrupt that goes the other way around
+OSPM-->Platform and is indeed handled by a different set of dedicated Doorbell
+registers ? (that are indeed called Doorbell throughout this driver down below
+...but I understand this was the nomenclature used also before in this driver)
+
+Thanks,
+Cristian
+
