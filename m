@@ -2,255 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5F63C8B56
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 20:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A4D3C8B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240045AbhGNTCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:02:19 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:33398 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhGNTCR (ORCPT
+        id S232464AbhGNTEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhGNTEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:02:17 -0400
-Received: by mail-io1-f50.google.com with SMTP id z11so3486493iow.0;
-        Wed, 14 Jul 2021 11:59:25 -0700 (PDT)
+        Wed, 14 Jul 2021 15:04:42 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8B1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 12:01:49 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id p17so1920315plf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 12:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=t+S5VMEjBgR7YbUh7lHZQebY6xrdUNsIJ8awUiWwlAo=;
+        b=s4y3jQYLJ3sWce/75FApnRQPB73sXl9G83vK6s1c3/cYg4zsK/eOd4BIVm9NHfkh/c
+         HUudSQTcCvPv6/4j1vKsSYP0FkZi7B1Bw29diygdC57B7t5r0rZvdVBS5YPxeyB+LdwG
+         NQi/RrxeQcRAV3jZBRVNqfxLZqj6mNvXlg6WmqB7pPJDdEE5BjJktdN93wwdXrV9YZAO
+         PxFSLCuSasVoQQwxtkDKZdoGcqRIxEH/IrSQUZG/nxmhHwuS9xRiCUodyJNP6Bsi0ET5
+         1N++egGRmNy0QtCxgDYUYEo5BruGVyO87SCANIQE8Z0eGSidZ7kkj064R0Osn6a8Ptjs
+         3OcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zqn/UuKDKBVB65aNlLqXAidjfeKUMUwTatpSpLAxY4U=;
-        b=Tg0iPwpS5QNTRtOlO9GO+X+CmTx09K7dyV73lGBbCsGpzmvYkjX7kRDCGAANr1Wbbh
-         +Y3A4sxeFnp9kC8AbzYn2ZvX23YqilRInTk+PhUJlMMa1xlUwkWOWF313t2QSYrflQd+
-         szpjYMPHOCuKOvB4V0QB0XxGz/i7pvsy6vTu4yg6L0lxrz9M8IqTIMnpiUASCd1VAgFg
-         A/MdvbuS55EBSuEX3nY/LtlpgzFG9PXGo0og54Y2aDvTleoGFOxTenCPEjpfs8FALGNd
-         +Oiwk6EnqjFaue0oWsAvYFJ2DCidxbvKQb7FeEUoEn6/DBxTVa+k5QyjxgcoxlxhNdLf
-         upRw==
-X-Gm-Message-State: AOAM531aVisfg16DCK8gSVj090iYIQHEBgSbDWmjmz4cGlOFuHfgYVMe
-        zwic8xPtE6//2aQVJBcZ6Q==
-X-Google-Smtp-Source: ABdhPJxYKPIleDLKeTmh50SEBn76TTQwAq6xmaa4599i+vpnmfWqT0gXTEERcjvubH19PDmCTkbwVg==
-X-Received: by 2002:a02:9109:: with SMTP id a9mr10232121jag.93.1626289165340;
-        Wed, 14 Jul 2021 11:59:25 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r16sm1696281iln.30.2021.07.14.11.59.23
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=t+S5VMEjBgR7YbUh7lHZQebY6xrdUNsIJ8awUiWwlAo=;
+        b=mj0rY1rzhqDH9HAamdZGSDEj2+SLzf7UiovtrMCzpHScys1HVCkSR2SY0kXiK1qRvf
+         uEJ03B9XplIkHdgBj2BG/3as3osHL/5fQrXQLSloRQsVThsEQG6qRepuUMwZJmBwVGEX
+         xYHKY086fCVxipInt7oC41jS4EUWwaGH6se9VOpfEQ0S5r9flxKIXMzUhH+kA1wnKUI7
+         Nx+pK6Bh80K8cwfNf6TexBg5kNewQ+1CFPO4/kMHNDVQgQEo6PeT461ZE6kmRQTa/rwO
+         q7BR7M8OYxj1gMflzr7bjRBHLj/OVnv82Mhai0p/KhIYGGTwVRo1EoIQ0JYSy/Qiu0UT
+         ufJQ==
+X-Gm-Message-State: AOAM531yhrb8z4MM3CoDWMI42VIo6TdEQ7w4s3TXFnBygkK0P7rgB9OR
+        5KIsgBqaDWyYPxta484ZOFI=
+X-Google-Smtp-Source: ABdhPJxVlU2+daSLGaCkXrOL7wLe4hk/LWvR00dlwZxBrcTi8bJkpUrAdvm9YwNVQwCI6haaws2+Aw==
+X-Received: by 2002:a17:90a:7546:: with SMTP id q64mr5225514pjk.174.1626289309111;
+        Wed, 14 Jul 2021 12:01:49 -0700 (PDT)
+Received: from ?IPv6:2804:14c:482:92eb:ffdf:6b35:b94d:258? ([2804:14c:482:92eb:ffdf:6b35:b94d:258])
+        by smtp.gmail.com with ESMTPSA id f19sm2981386pjj.22.2021.07.14.12.01.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 11:59:24 -0700 (PDT)
-Received: (nullmailer pid 2937232 invoked by uid 1000);
-        Wed, 14 Jul 2021 18:59:22 -0000
-Date:   Wed, 14 Jul 2021 12:59:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Keiji Hayashibara <hayashibara.keiji@socionext.com>
-Subject: Re: [PATCH] dt-bindings: nvmem: Convert UniPhier eFuse bindings to
- json-schema
-Message-ID: <20210714185922.GA2857803@robh.at.kernel.org>
-References: <1624413058-17338-1-git-send-email-hayashi.kunihiko@socionext.com>
+        Wed, 14 Jul 2021 12:01:48 -0700 (PDT)
+Message-ID: <ff03c08047e0cdc79471d7bc35e48fa70efc1215.camel@gmail.com>
+Subject: Re: [PATCH v4 07/11] powerpc/pseries/iommu: Reorganize
+ iommu_table_setparms*() with new helper
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Wed, 14 Jul 2021 16:02:00 -0300
+In-Reply-To: <88e3b97e-201d-0782-0e95-8e3d2d850a38@ozlabs.ru>
+References: <20210430163145.146984-1-leobras.c@gmail.com>
+         <20210430163145.146984-8-leobras.c@gmail.com>
+         <e4984fa0-2afe-a987-4fb8-61b878431b1f@ozlabs.ru>
+         <97626d3883ed207b818760a8239babb08a6b5c59.camel@gmail.com>
+         <b25dff0f130b9ab721b8b524e55a3cd4c244a8f3.camel@gmail.com>
+         <88e3b97e-201d-0782-0e95-8e3d2d850a38@ozlabs.ru>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624413058-17338-1-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:50:58AM +0900, Kunihiko Hayashi wrote:
-> Convert the UniPhier eFuse binding to DT schema format.
-> 
-> Cc: Keiji Hayashibara <hayashibara.keiji@socionext.com>
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> ---
->  .../bindings/nvmem/socionext,uniphier-efuse.yaml   | 109 +++++++++++++++++++++
->  .../devicetree/bindings/nvmem/uniphier-efuse.txt   |  49 ---------
->  2 files changed, 109 insertions(+), 49 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
->  delete mode 100644 Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml b/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
-> new file mode 100644
-> index 0000000..e03c1ed
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/socionext,uniphier-efuse.yaml
-> @@ -0,0 +1,109 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/nvmem/socionext,uniphier-efuse.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Socionext UniPhier eFuse bindings
-> +
-> +maintainers:
-> +  - Keiji Hayashibara <hayashibara.keiji@socionext.com>
-> +  - Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> +
-> +allOf:
-> +  - $ref: "nvmem.yaml#"
-> +
-> +properties:
-> +  "#address-cells": true
-> +  "#size-cells": true
-> +
-> +  compatible:
-> +    const: socionext,uniphier-efuse
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  "^.*@[0-9a-f]+,[0-9]+$":
-
-nvmem.yaml has a different definition. Though it doesn't handle 
-overlapping addresses. You should extend nvmem.yaml like you have here. 
-The last part should be optional though.
-
-> +    type: object
-> +
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +
-> +      bits:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - reg
-
-All this is already defined in nvmem.yaml.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-
-Use 'unevaluatedProperties: false' and then you don't need to redefine 
-anything common here.
-
-> +
-> +examples:
-> +  - |
-> +    // The UniPhier eFuse should be a subnode of a "soc-glue" node.
-> +
-> +    soc-glue@5f900000 {
-> +        compatible = "simple-mfd";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges = <0x0 0x5f900000 0x2000>;
-> +
-> +        efuse@100 {
-> +            compatible = "socionext,uniphier-efuse";
-> +            reg = <0x100 0x28>;
-> +        };
-> +
-> +        efuse@200 {
-> +            compatible = "socionext,uniphier-efuse";
-> +            reg = <0x200 0x68>;
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +
-> +            /* Data cells */
-> +            usb_rterm0: trim@54,4 {
-> +                reg = <0x54 1>;
-> +                bits = <4 2>;
-> +            };
-> +            usb_rterm1: trim@55,4 {
-> +                reg = <0x55 1>;
-> +                bits = <4 2>;
-> +            };
-> +            usb_rterm2: trim@58,4 {
-> +                reg = <0x58 1>;
-> +                bits = <4 2>;
-> +            };
-> +            usb_rterm3: trim@59,4 {
-> +                reg = <0x59 1>;
-> +                bits = <4 2>;
-> +            };
-> +            usb_sel_t0: trim@54,0 {
-> +                reg = <0x54 1>;
-> +                bits = <0 4>;
-> +            };
-> +            usb_sel_t1: trim@55,0 {
-> +                reg = <0x55 1>;
-> +                bits = <0 4>;
-> +            };
-> +            usb_sel_t2: trim@58,0 {
-> +                reg = <0x58 1>;
-> +                bits = <0 4>;
-> +            };
-> +            usb_sel_t3: trim@59,0 {
-> +                reg = <0x59 1>;
-> +                bits = <0 4>;
-> +            };
-> +            usb_hs_i0: trim@56,0 {
-> +                reg = <0x56 1>;
-> +                bits = <0 4>;
-> +            };
-> +            usb_hs_i2: trim@5a,0 {
-> +                reg = <0x5a 1>;
-> +                bits = <0 4>;
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt b/Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt
-> deleted file mode 100644
-> index eccf490..0000000
-> --- a/Documentation/devicetree/bindings/nvmem/uniphier-efuse.txt
-> +++ /dev/null
-> @@ -1,49 +0,0 @@
-> -= UniPhier eFuse device tree bindings =
-> -
-> -This UniPhier eFuse must be under soc-glue.
-> -
-> -Required properties:
-> -- compatible: should be "socionext,uniphier-efuse"
-> -- reg: should contain the register location and length
-> -
-> -= Data cells =
-> -Are child nodes of efuse, bindings of which as described in
-> -bindings/nvmem/nvmem.txt
-> -
-> -Example:
-> -
-> -	soc-glue@5f900000 {
-> -		compatible = "socionext,uniphier-ld20-soc-glue-debug",
-> -			     "simple-mfd";
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		ranges = <0x0 0x5f900000 0x2000>;
-> -
-> -		efuse@100 {
-> -			compatible = "socionext,uniphier-efuse";
-> -			reg = <0x100 0x28>;
-> -		};
-> -
-> -		efuse@200 {
-> -			compatible = "socionext,uniphier-efuse";
-> -			reg = <0x200 0x68>;
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -
-> -			/* Data cells */
-> -			usb_mon: usb-mon@54 {
-> -				reg = <0x54 0xc>;
-> -			};
-> -		};
-> -	};
-> -
-> -= Data consumers =
-> -Are device nodes which consume nvmem data cells.
-> -
-> -Example:
-> -
-> -	usb {
-> -		...
-> -		nvmem-cells = <&usb_mon>;
-> -		nvmem-cell-names = "usb_mon";
-> -	}
-> -- 
-> 2.7.4
+On Wed, 2021-07-14 at 18:32 +1000, Alexey Kardashevskiy wrote:
 > 
 > 
+> On 13/07/2021 14:47, Leonardo Brás wrote:
+> > Hello Alexey,
+> > 
+> > On Fri, 2021-06-18 at 19:26 -0300, Leonardo Brás wrote:
+> > > > 
+> > > > > +                                        unsigned long liobn,
+> > > > > unsigned long win_addr,
+> > > > > +                                        unsigned long
+> > > > > window_size,
+> > > > > unsigned long page_shift,
+> > > > > +                                        unsigned long base,
+> > > > > struct
+> > > > > iommu_table_ops *table_ops)
+> > > > 
+> > > > 
+> > > > iommu_table_setparms() rather than passing 0 around.
+> > > > 
+> > > > The same comment about "liobn" - set it in
+> > > > iommu_table_setparms_lpar().
+> > > > The reviewer will see what field atters in what situation imho.
+> > > > 
+> > > 
+> > > The idea here was to keep all tbl parameters setting in
+> > > _iommu_table_setparms (or iommu_table_setparms_common).
+> > > 
+> > > I understand the idea that each one of those is optional in the
+> > > other
+> > > case, but should we keep whatever value is present in the other
+> > > variable (not zeroing the other variable), or do someting like:
+> > > 
+> > > tbl->it_index = 0;
+> > > tbl->it_base = basep;
+> > > (in iommu_table_setparms)
+> > > 
+> > > tbl->it_index = liobn;
+> > > tbl->it_base = 0;
+> > > (in iommu_table_setparms_lpar)
+> > > 
+> > 
+> > This one is supposed to be a question, but I missed the question
+> > mark.
+> > Sorry about that.
+> 
+> Ah ok :)
+> 
+> > I would like to get your opinion in this :)
+> 
+> Besides making the "base" parameter a pointer, I really do not have 
+> strong preference, just make it not hurting eyes of a reader, that's
+> all :)
+
+Ok, done :)
+
+> imho in general, rather than answering 5 weeks later, it is more 
+> productive to address whatever comments were made, add comments (in
+> the 
+> code or commit logs) why you are sticking to your initial approach, 
+> rebase and repost the whole thing. Thanks,
+
+Thanks for the tip, and for the reviewing :)
+
+Best regards,
+Leonardo Bras
+
+
