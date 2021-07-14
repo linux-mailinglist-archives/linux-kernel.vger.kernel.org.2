@@ -2,189 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98BA3C84F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B85C3C84F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239432AbhGNNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:05:57 -0400
-Received: from mail-dm6nam12on2088.outbound.protection.outlook.com ([40.107.243.88]:15777
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239364AbhGNNFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:05:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cu6GxpGq+LRA9/sDDDts+frTj8ZTifgcIB7nrPcqVmw73RSGnzS47jZTDbyafev/gIZ5/bAS6o0K5l7yFsXMGhw6O8ZqOc39jNGxHiFWfybiQZryfMnN8h1tdbz2LcbDDENqqzOXO7p3dd8c1DTujJVdK/XoHWTUbIt23Zt16kQG5MpW+OJS3bIY4E6x9N1D1ATMUanY2qRIZjMT1GNj55avl4KPEP1Z5jARHxpZ6Hj/8pYFd5SQwKjK/pqrAymptf+GPP8Jy4yliYPTNTU/4JbFkk9QW+gh/eVrEUnpxZkJxock7rz+9IDU4zA2cOFmbX6XETQETl/RxmiUji5N7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1z8TV4lfhpsOPtaDTnMBe4NgFq6Nz02iV8vlu6k78/U=;
- b=Z9pK2sq5o1k8MBKZuwzOKTRH7Sk4m1UvSgfs5L93sfvzSA0ysa27GU/dISO206kT6RxvlSstC3SZx1tIUfhjC3UZpvSYa0vaujSuCAkrL2jQ8F1xCt7Bg8zgx+PYXmd6dG1290+xfTdqrGXkwG3uhPBVA4nkqM2x3DDKKHwix225WJQq/tM90ysIcp/zbRhskXRyI8DLjLU09RX+jPIzItZrBLdf4DrhKIa0hyHwxuVvKnqHVre0lqzVq8U3ttkUh0CERPE2NfbdUwczkIBy7s0ZHJiYayiN/Ed3TMLNafsu0UZFIgz4p3yVSSWq08tTgVii7upnsHMwrE97bcsaog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1z8TV4lfhpsOPtaDTnMBe4NgFq6Nz02iV8vlu6k78/U=;
- b=Kp2ZUldmLhXCx18mX6gpkuIDpjCXTGbkYhSdN/o/Z5Gzhzsag/qhSDZr1b8fW8OioI+GMI//hX3iFkzEAgb66+5rJv4aMcnOLLqwAjlZBj9bPExjY/gHCK3t1JXyA50hH4aJ4Wxnf3PEZaNFk8XkCxJEkt+jbBZQaIYRbkuCU+LABgfV1aQQBGYl9li1T/vqaGChT+25wQDwBouW8Le5psjWaTAXt74N9F03JSL6njmRBgEb3S+ptEB8uxEgMK1ldJL0RlyemnHOLFsOdCIEFPnQd0+n6ZPmyVVF/amdU6yG2zUipopDfTpIlo8oatM/igeUx3ND7mwapOWT1unw+A==
-Received: from MW4PR03CA0107.namprd03.prod.outlook.com (2603:10b6:303:b7::22)
- by BN8PR12MB3364.namprd12.prod.outlook.com (2603:10b6:408:40::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Wed, 14 Jul
- 2021 13:03:02 +0000
-Received: from CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b7:cafe::d3) by MW4PR03CA0107.outlook.office365.com
- (2603:10b6:303:b7::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Wed, 14 Jul 2021 13:03:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; broadcom.com; dkim=none (message not signed)
- header.d=none;broadcom.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT006.mail.protection.outlook.com (10.13.174.246) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 13:03:01 +0000
-Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
- 2021 13:03:00 +0000
-Date:   Wed, 14 Jul 2021 16:02:56 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Nitesh Lal <nilal@redhat.com>
-CC:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        id S239427AbhGNNHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:07:09 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48580 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231391AbhGNNHG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 09:07:06 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C3FBC2029A;
+        Wed, 14 Jul 2021 13:04:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626267853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vw878GUl18v5F9RzhNHg0Q2/AB1LzvtGeWezbwoS2L4=;
+        b=JUv2S43+F3WKuvpY/TKcWoae7nhzZMCCF5w/qyce2Yozozgpup5077STiyWDeLRrXgMroE
+        UjpUNZmTRMmBwHkgyt1GPB/S2R5NKu1x/T27di6gDB4QLfoCdaHYI50P6iy9rvaoOjOe6z
+        d41lKQa8NhGAI/DeTqODL7CH9rM8pyc=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6273013A8C;
+        Wed, 14 Jul 2021 13:04:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id mlk2Fs3g7mDdTQAAGKfGzw
+        (envelope-from <jgross@suse.com>); Wed, 14 Jul 2021 13:04:13 +0000
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, <jbrandeb@kernel.org>,
-        <frederic@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, <rostedt@goodmis.org>,
-        <peterz@infradead.org>, <davem@davemloft.net>,
-        <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
-        <stephen@networkplumber.org>, <rppt@linux.vnet.ibm.com>,
-        <chris.friesen@windriver.com>, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, <pjwaskiewicz@gmail.com>,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        <shivasharan.srikanteshwara@broadcom.com>,
-        <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        <suganath-prabu.subramani@broadcom.com>,
-        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
-        Ken Cox <jkc@redhat.com>, <faisal.latif@intel.com>,
-        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, <borisp@nvidia.com>,
-        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
-        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
-        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Subject: Re: [PATCH v3 06/14] RDMA/irdma: Use irq_set_affinity_and_hint
-Message-ID: <YO7ggLW78FWE4z+1@unreal>
-References: <20210713211502.464259-1-nitesh@redhat.com>
- <20210713211502.464259-7-nitesh@redhat.com>
- <YO7SiFE1dE0dFhkE@unreal>
- <CAFki+Lm-CpKZai1fV5aMJzEb-x+003m8wLQShSrYpyNh3XC50Q@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-doc@vger.kernel.org, kvm@vger.kernel.org
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-7-jgross@suse.com>
+ <87h7gx2lkt.fsf@vitty.brq.redhat.com>
+ <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
+ <878s292k75.fsf@vitty.brq.redhat.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number of
+ vcpus per guest
+Message-ID: <62679c6a-2f23-c1d1-f54c-1872ec748965@suse.com>
+Date:   Wed, 14 Jul 2021 15:04:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAFki+Lm-CpKZai1fV5aMJzEb-x+003m8wLQShSrYpyNh3XC50Q@mail.gmail.com>
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 29cf5632-499e-4e1a-2dfb-08d946c7b601
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3364:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3364E7C3E9DCE1D4D04A9F04BD139@BN8PR12MB3364.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LsXtPSnnYgrI0O738l9dZX/e80v3jIB6/0kRpQHvlSy0EoSNZQO2CpmB0o1rTR4gqxklkD2ijAJ5hZdiJhwsVto/VzsEnT2IDHkX2ajHz4y03bqlWUyXzFkPgMXB93nvN0HRdKAQMk6mtf5iZ6MHpxKkO3D0nDc6JHsa6q3S8BRa6561ph/a3pvhzQvkTqgSv2w816ts70wStqmyVIKPSoyr35bG3YdvIFEEDUDv5nllrBMrgpB5LMF2zK/8oPZoIheztHkLEwSCMfliblqq4apcW5MX/9SAkQe5lSgj3AS3aFu23oMLCgLm0hHzPaBs8xl7Gg39vFIA8wWnL/ND1LqXUNatHyw1KJmKS2E8GhPR4hW+eCJsyJhy9+eQVG+z9CXd7eq8tPwHuhnVLkMQKBVidI2UcRPuqUEYCl57ooTGjMHo4nluQ8KvGsmXNEpvBu1VrwY58bk4W9cqXJhsZnYEutJ2g2TISQn+Rf6+/Vt3wjbv/qqypoC5PZaV1ZIygdmxbdIBAE3Zz9uJr4FCu1jlPc5DV5hlcjLxJD9ejSUVt3Tuap/+7ffasnEXZTlxax+L/VgwNvzDavfrDjj2EJYcmoAG1FG31lPNrLrOZu74ouChIHeAiTbpSGw+LPqHB5LWjWMM+Pef9n50PU2BDJTPWb7DTuCeBtDUQX0lHEEoQLSO+tjPf13xQuJCWOVbsBSMNBsIir565s298yiO5e0TyBF04+V32wJ6ZtG5NQbUQpL46WsEgZXM9sOuHkYW9AG9+uZOcoyW1yzLomCNgw==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(39850400004)(376002)(396003)(136003)(346002)(46966006)(36840700001)(478600001)(26005)(82310400003)(34020700004)(2906002)(70206006)(83380400001)(70586007)(86362001)(4326008)(54906003)(6916009)(9686003)(33716001)(186003)(356005)(16526019)(7636003)(8936002)(6666004)(336012)(53546011)(426003)(47076005)(8676002)(5660300002)(36860700001)(82740400003)(316002)(7416002)(7366002)(36906005)(7406005)(67856001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 13:03:01.4573
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29cf5632-499e-4e1a-2dfb-08d946c7b601
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3364
+In-Reply-To: <878s292k75.fsf@vitty.brq.redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="QkRP2XJGCpYimeKxucgaGGg6ugLFlQKDv"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 08:56:41AM -0400, Nitesh Lal wrote:
-> On Wed, Jul 14, 2021 at 8:03 AM Leon Romanovsky <leonro@nvidia.com> wrote:
-> >
-> > On Tue, Jul 13, 2021 at 05:14:54PM -0400, Nitesh Narayan Lal wrote:
-> > > The driver uses irq_set_affinity_hint() to update the affinity_hint mask
-> > > that is consumed by the userspace to distribute the interrupts and to apply
-> > > the provided mask as the affinity for its interrupts. However,
-> > > irq_set_affinity_hint() applying the provided cpumask as an affinity for
-> > > the interrupt is an undocumented side effect.
-> > >
-> > > To remove this side effect irq_set_affinity_hint() has been marked
-> > > as deprecated and new interfaces have been introduced. Hence, replace the
-> > > irq_set_affinity_hint() with the new interface irq_set_affinity_and_hint()
-> > > where the provided mask needs to be applied as the affinity and
-> > > affinity_hint pointer needs to be set and replace with
-> > > irq_update_affinity_hint() where only affinity_hint needs to be updated.
-> > >
-> > > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> > > ---
-> > >  drivers/infiniband/hw/irdma/hw.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-> > > index 7afb8a6a0526..7f13a051d4de 100644
-> > > --- a/drivers/infiniband/hw/irdma/hw.c
-> > > +++ b/drivers/infiniband/hw/irdma/hw.c
-> > > @@ -537,7 +537,7 @@ static void irdma_destroy_irq(struct irdma_pci_f *rf,
-> > >       struct irdma_sc_dev *dev = &rf->sc_dev;
-> > >
-> > >       dev->irq_ops->irdma_dis_irq(dev, msix_vec->idx);
-> > > -     irq_set_affinity_hint(msix_vec->irq, NULL);
-> > > +     irq_update_affinity_hint(msix_vec->irq, NULL);
-> > >       free_irq(msix_vec->irq, dev_id);
-> > >  }
-> > >
-> > > @@ -1087,7 +1087,7 @@ irdma_cfg_ceq_vector(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
-> > >       }
-> > >       cpumask_clear(&msix_vec->mask);
-> > >       cpumask_set_cpu(msix_vec->cpu_affinity, &msix_vec->mask);
-> > > -     irq_set_affinity_hint(msix_vec->irq, &msix_vec->mask);
-> > > +     irq_set_affinity_and_hint(msix_vec->irq, &msix_vec->mask);
-> >
-> > I think that it needs to be irq_update_affinity_hint().
-> >
-> 
-> Ah! I got a little confused from our last conversation about mlx5.
-> 
-> IIUC mlx5 sub-function use case uses irdma (?) and that's why I thought
-> that perhaps we would also want to define the affinity here from the beginning.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--QkRP2XJGCpYimeKxucgaGGg6ugLFlQKDv
+Content-Type: multipart/mixed; boundary="YrABznfRmMOBrlRFVSKYKqv3BupeD5ypY";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Paolo Bonzini <pbonzini@redhat.com>,
+ Sean Christopherson <seanjc@google.com>, Wanpeng Li <wanpengli@tencent.com>,
+ Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+ kvm@vger.kernel.org
+Message-ID: <62679c6a-2f23-c1d1-f54c-1872ec748965@suse.com>
+Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number of
+ vcpus per guest
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-7-jgross@suse.com>
+ <87h7gx2lkt.fsf@vitty.brq.redhat.com>
+ <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
+ <878s292k75.fsf@vitty.brq.redhat.com>
+In-Reply-To: <878s292k75.fsf@vitty.brq.redhat.com>
 
-mlx5 is connected to mlx5_ib/mlx5_vdpa e.t.c.
+--YrABznfRmMOBrlRFVSKYKqv3BupeD5ypY
+Content-Type: multipart/mixed;
+ boundary="------------6B3428D48E814889440993D9"
+Content-Language: en-US
 
-Not sure about that, but I think that only mlx5 implements SIOV model.
+This is a multi-part message in MIME format.
+--------------6B3428D48E814889440993D9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> In any case, I will make the change and re-post.
-> 
-> --
-> Thanks
-> Nitesh
-> 
+On 14.07.21 13:45, Vitaly Kuznetsov wrote:
+> Juergen Gross <jgross@suse.com> writes:
+>=20
+>> On 14.07.21 13:15, Vitaly Kuznetsov wrote:
+>>> Juergen Gross <jgross@suse.com> writes:
+>>>
+>>>> Today the maximum number of vcpus of a kvm guest is set via a #defin=
+e
+>>>> in a header file.
+>>>>
+>>>> In order to support higher vcpu numbers for guests without generally=
+
+>>>> increasing the memory consumption of guests on the host especially o=
+n
+>>>> very large systems add a boot parameter for specifying the number of=
+
+>>>> allowed vcpus for guests.
+>>>>
+>>>> The default will still be the current setting of 288. The value 0 ha=
+s
+>>>> the special meaning to limit the number of possible vcpus to the
+>>>> number of possible cpus of the host.
+>>>>
+>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>> ---
+>>>>    Documentation/admin-guide/kernel-parameters.txt | 10 ++++++++++
+>>>>    arch/x86/include/asm/kvm_host.h                 |  5 ++++-
+>>>>    arch/x86/kvm/x86.c                              |  7 +++++++
+>>>>    3 files changed, 21 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Docum=
+entation/admin-guide/kernel-parameters.txt
+>>>> index 99bfa53a2bbd..8eb856396ffa 100644
+>>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>>> @@ -2373,6 +2373,16 @@
+>>>>    			guest can't have more vcpus than the set value + 1.
+>>>>    			Default: 1023
+>>>>   =20
+>>>> +	kvm.max_vcpus=3D	[KVM,X86] Set the maximum allowed numbers of vcpu=
+s per
+>>>> +			guest. The special value 0 sets the limit to the number
+>>>> +			of physical cpus possible on the host (including not
+>>>> +			yet hotplugged cpus). Higher values will result in
+>>>> +			slightly higher memory consumption per guest. Depending
+>>>> +			on the value and the virtual topology the maximum
+>>>> +			allowed vcpu-id might need to be raised, too (see
+>>>> +			kvm.max_vcpu_id parameter).
+>>>
+>>> I'd suggest to at least add a sanity check: 'max_vcpu_id' should alwa=
+ys
+>>> be >=3D 'max_vcpus'. Alternatively, we can replace 'max_vcpu_id' with=
+ say
+>>> 'vcpu_id_to_vcpus_ratio' and set it to e.g. '4' by default.
+>>
+>> Either would be fine with me.
+>>
+>> A default of '2' for the ratio would seem more appropriate for me,
+>> however. A thread count per core not being a power of 2 is quite
+>> unlikely, and the worst case scenario for cores per socket would be
+>> 2^n + 1.
+>>
+>=20
+> (I vaguely recall AMD EPYC had more than thread id (package id?)
+> encapsulated into APIC id).
+
+Ah, yes, that rings a bell.
+
+> Personally, I'd vote for introducing a 'ratio' parameter then so
+> generally users will only have to set 'kvm.max_vcpus'.
+
+Okay.
+
+Default '4' then? Or '2 ^ (topology_levels - 2)' (assuming a
+topology_level of 3 on Intel: thread/core/socket and 4 on EPYC:
+thread/core/package/socket).
+
+>=20
+>>>
+>>>> +			Default: 288
+>>>> +
+>>>>    	l1tf=3D           [X86] Control mitigation of the L1TF vulnerabi=
+lity on
+>>>>    			      affected CPUs
+>>>>   =20
+>>>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/=
+kvm_host.h
+>>>> index 39cbc4b6bffb..65ae82a5d444 100644
+>>>> --- a/arch/x86/include/asm/kvm_host.h
+>>>> +++ b/arch/x86/include/asm/kvm_host.h
+>>>> @@ -37,7 +37,8 @@
+>>>>   =20
+>>>>    #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>>>>   =20
+>>>> -#define KVM_MAX_VCPUS 288
+>>>> +#define KVM_DEFAULT_MAX_VCPUS 288
+>>>> +#define KVM_MAX_VCPUS max_vcpus
+>>>>    #define KVM_SOFT_MAX_VCPUS 240
+>>>>    #define KVM_DEFAULT_MAX_VCPU_ID 1023
+>>>>    #define KVM_MAX_VCPU_ID max_vcpu_id
+>>>> @@ -1509,6 +1510,8 @@ extern u64  kvm_max_tsc_scaling_ratio;
+>>>>    extern u64  kvm_default_tsc_scaling_ratio;
+>>>>    /* bus lock detection supported? */
+>>>>    extern bool kvm_has_bus_lock_exit;
+>>>> +/* maximum number of vcpus per guest */
+>>>> +extern unsigned int max_vcpus;
+>>>>    /* maximum vcpu-id */
+>>>>    extern unsigned int max_vcpu_id;
+>>>>    /* per cpu vcpu bitmasks (disable preemption during usage) */
+>>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>>> index a9b0bb2221ea..888c4507504d 100644
+>>>> --- a/arch/x86/kvm/x86.c
+>>>> +++ b/arch/x86/kvm/x86.c
+>>>> @@ -177,6 +177,10 @@ module_param(force_emulation_prefix, bool, S_IR=
+UGO);
+>>>>    int __read_mostly pi_inject_timer =3D -1;
+>>>>    module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+>>>>   =20
+>>>> +unsigned int __read_mostly max_vcpus =3D KVM_DEFAULT_MAX_VCPUS;
+>>>> +module_param(max_vcpus, uint, S_IRUGO);
+>>>> +EXPORT_SYMBOL_GPL(max_vcpus);
+>>>> +
+>>>>    unsigned int __read_mostly max_vcpu_id =3D KVM_DEFAULT_MAX_VCPU_I=
+D;
+>>>>    module_param(max_vcpu_id, uint, S_IRUGO);
+>>>>   =20
+>>>> @@ -10648,6 +10652,9 @@ int kvm_arch_hardware_setup(void *opaque)
+>>>>    	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>>>>    		rdmsrl(MSR_IA32_XSS, host_xss);
+>>>>   =20
+>>>> +	if (max_vcpus =3D=3D 0)
+>>>> +		max_vcpus =3D num_possible_cpus();
+>>>
+>>> Is this special case really needed? I mean 'max_vcpus' is not '0' by
+>>> default so whoever sets it manually probably knows how big his guests=
+
+>>> are going to be anyway and it is not always obvious how many CPUs are=
+
+>>> reported by 'num_possible_cpus()' (ACPI tables can be weird for examp=
+le).
+>>
+>> The idea was to make it easy for anyone managing a large fleet of host=
+s
+>> and wanting to have a common setting for all of them.
+>>
+>=20
+> I see. It seems to be uncommon indeed to run guests with more vCPUs tha=
+n
+> host pCPUs so everything >=3D num_online_cpus() should be OK. My only
+> concern about num_possible_cpus() is that it is going to be hard to
+> explain what 'possible CPUs' mean (but whoever cares that much about
+> wasting memory can always set the required value manually).
+
+Right.
+
+
+Juergen
+
+--------------6B3428D48E814889440993D9
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------6B3428D48E814889440993D9--
+
+--YrABznfRmMOBrlRFVSKYKqv3BupeD5ypY--
+
+--QkRP2XJGCpYimeKxucgaGGg6ugLFlQKDv
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDu4MwFAwAAAAAACgkQsN6d1ii/Ey80
+kAgAhNWv3RLh5CvLSMKKq0xEzMkCtelIiLTE+Cy0bNPk61fwo/DZ51UoPuzLCDKrkXjAaN7ZLa6R
+UDGfbDRyM/n6Ssoe7L+3DBeV2e9DossVVip1H3Pikky8KZQwm2OCqiE8qwwSgmlKvG6jwBJqubfJ
+OdeN90UMZ2o5PJ2FzxSmLLebtQXiMY+rEa5lXn20XF2io6DBdjmmLzTHki7KpCDDvm4QY58OCSor
+a3v6QyhU5s+IJrtBYXArdMP96mfAI7Pnm7k2o5ofmLA+v8+sA46lb2NuH/SFvm/DxnfrpRcj6KVs
+kXDZUltKKRYV+tqv64f/F8ae1qhfUUZWUAST86TGqw==
+=A2uc
+-----END PGP SIGNATURE-----
+
+--QkRP2XJGCpYimeKxucgaGGg6ugLFlQKDv--
