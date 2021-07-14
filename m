@@ -2,147 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13E53C7B90
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE72C3C7B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 04:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237478AbhGNCRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 22:17:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24242 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237439AbhGNCRj (ORCPT
+        id S237490AbhGNCSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 22:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237409AbhGNCSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:17:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626228888;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lETjBLf02DlKWY99ILUZ8EMCaetURHel393ebRunFe0=;
-        b=RpanRK4do7fmp5b/4CL2veP13uT33cWzgV4AxMm8fCh2lRD5BVlU7EWkK5WiUGZ+PL6+2S
-        1vji2GCy00j8WYjqi7eRw9kvwLx0fYZoE7VPje+IrQ7xP5ng09w+2deSH7oVggqWUkhLlW
-        eaudGc368XAVesmd5r8TNo66Ez40IyA=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-4kphtghsMCe93rcY52F2Zw-1; Tue, 13 Jul 2021 22:14:47 -0400
-X-MC-Unique: 4kphtghsMCe93rcY52F2Zw-1
-Received: by mail-pf1-f197.google.com with SMTP id b10-20020a056a000ccab029032dc5f71f6aso491357pfv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 19:14:46 -0700 (PDT)
+        Tue, 13 Jul 2021 22:18:11 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DCEC0613DD;
+        Tue, 13 Jul 2021 19:15:20 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id w13so852543qtc.0;
+        Tue, 13 Jul 2021 19:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ihUz2ub3dK3zageyv2Hu+IeY9LSRCwULU5UjPrUxU5E=;
+        b=k6LsXReISAP/dzPe3s/81fdm6FGDdft8OfrDMiFhY5bgJ9YDC0wOJGUNl0c3qB+U0b
+         xBwuN/n2yWHakqYZGbowTRV6/+MsP0DXb926LcN2TvJwAGcPvRDKX1XRXesDXnANTfhL
+         TGeVGCOFi1hoWzVIaioD4c6MN76ybEvf+n+P+Opteg7A4UgRZLbXS2hYs6aE7qjE1gnR
+         g/sNmfp+jA9xMtN8MF+A8PM/C7WAVbcpGtUTl/AN7NW33D7bqkxLDPKNfUtRJ9SLl/jb
+         a12uF+Vol6wv9HN2ErflDbbCSfKLPX12NAvkCLm6+p6atHQTVTDCigsS8oD9LKzGoe1B
+         T0Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=lETjBLf02DlKWY99ILUZ8EMCaetURHel393ebRunFe0=;
-        b=eghunmIH9hf6awJU/ApseP+QCQjtsKpZFSKSSJVRh7E4DJeKqfmx4sro1VaV3NehLW
-         pYxzbqBqX71iehVnKGE7kVTH8GBT3n6pgGfLAvSZ5f4jXzimcuJvmCD9SKpgch6d15et
-         b2TlcJ1yq+GAbfS7Ngyw1XDyaXzpgfnfSLA1C5pfgORVXo3IBcca5xdYb2sRaNxf2qsi
-         9/E3jLya8ZpT+yXf8SOK1fyvaU6XvR0SQNZ2CGhLm6MnDkwPR64eIpDAMasMyvKnn5z0
-         fLcJhmGm9cRmrfIIcbkUroiEaauDUjSfwWJ9jE7e3ChIHbYy79C3d5/xRycUCwgkykJE
-         j1OQ==
-X-Gm-Message-State: AOAM5304rTcZWo9vmPGhxBp37KXj/qEFSBuhw84sq3sTQ/A27rz8Zcpu
-        ApnYEwcpxSpaQu2faG8YXuCL/h5yvmo8zpNv8Ovuh41EzAMH39dQMUXVW1G9UMyHrHqEyKkLHxT
-        vFfy4Ky6dnv9T95+eVYPHRKLXrCVA8riuWR5DFtckxBXtHR+ExmZVD+QGA0ZePiTAOlXz8c/A7m
-        X9
-X-Received: by 2002:a17:90a:5b10:: with SMTP id o16mr7219063pji.76.1626228885738;
-        Tue, 13 Jul 2021 19:14:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOiPXFxUcdLZWrtqR5/IHD7VsylcBTQze23cRfzIoKwRQb/qtzHoUNsMb4X6hRI8thHVVbZQ==
-X-Received: by 2002:a17:90a:5b10:: with SMTP id o16mr7219014pji.76.1626228885330;
-        Tue, 13 Jul 2021 19:14:45 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id p40sm469474pfw.79.2021.07.13.19.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 19:14:44 -0700 (PDT)
-Subject: Re: [PATCH v9 13/17] vdpa: factor out vhost_vdpa_pa_map() and
- vhost_vdpa_pa_unmap()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
-        parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        joro@8bytes.org, gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210713084656.232-1-xieyongji@bytedance.com>
- <20210713084656.232-14-xieyongji@bytedance.com> <20210713113114.GL1954@kadam>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <20e75b53-0dce-2f2d-b717-f78553bddcd8@redhat.com>
-Date:   Wed, 14 Jul 2021 10:14:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ihUz2ub3dK3zageyv2Hu+IeY9LSRCwULU5UjPrUxU5E=;
+        b=IVGeqa1htSrXIeQPQVIu4sLH6HfUqiD2sSFGw4kCzU98iYrr5+YoM0OAXLpGSVpvYc
+         N4DgIN9SmAk/jlsTSjiEz0YGFdQpe4mLL84CgsNT+mPPFV8JSdEcDiEdBX501GXwI90z
+         QWahVysxFxkidc3WxosfYGurDzufXzGYHCTvajnfvveix1bFuCCyHjv8NXe7n5dZXVhK
+         p2HdduDET54MDGAq+L9d0/lfHZqSgTJLn4/NbLc3EM/rGzTnjSld8KS4cfz2iy20eZbM
+         KSJh4YTAATkDpkxkEN5h0s05j/hn5r91o5WF/BDo554xYYeAcy/AGnL1A75u48lXFME4
+         p9rA==
+X-Gm-Message-State: AOAM533DKuOlyvSdsfd8BGMiXTSsNZnM+YFxk050fKCW2sNQUGVvngBZ
+        i6JxE8cg7eqqe5Q1Ui4fykl/QAACPRxSUg5RWVk=
+X-Google-Smtp-Source: ABdhPJzHgode6yZ7b6qJjH7wITPjRVWeZnZ14AG5ycpzEdjguBpPDh2cFWVhu1JG6WMhiIl7EZMf1a1hhYnnJKMJCCY=
+X-Received: by 2002:ac8:5401:: with SMTP id b1mr7027141qtq.112.1626228919907;
+ Tue, 13 Jul 2021 19:15:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210713113114.GL1954@kadam>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210705090050.15077-1-reniuschengl@gmail.com>
+ <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
+ <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+ <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
+ <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
+ <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
+ <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
+ <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
+ <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com>
+ <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com> <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
+In-Reply-To: <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
+From:   Renius Chen <reniuschengl@gmail.com>
+Date:   Wed, 14 Jul 2021 10:15:08 +0800
+Message-ID: <CAJU4x8uCAQoozeAqa6icVba61uo_eP+NtOxgnLzsXh6g2HeQdA@mail.gmail.com>
+Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Adrain,
 
-ÔÚ 2021/7/13 ÏÂÎç7:31, Dan Carpenter Ð´µÀ:
-> On Tue, Jul 13, 2021 at 04:46:52PM +0800, Xie Yongji wrote:
->> @@ -613,37 +618,28 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
->>   	}
->>   }
->>   
->> -static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->> -					   struct vhost_iotlb_msg *msg)
->> +static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
->> +			     u64 iova, u64 size, u64 uaddr, u32 perm)
->>   {
->>   	struct vhost_dev *dev = &v->vdev;
->> -	struct vhost_iotlb *iotlb = dev->iotlb;
->>   	struct page **page_list;
->>   	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>   	unsigned int gup_flags = FOLL_LONGTERM;
->>   	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>   	unsigned long lock_limit, sz2pin, nchunks, i;
->> -	u64 iova = msg->iova;
->> +	u64 start = iova;
->>   	long pinned;
->>   	int ret = 0;
->>   
->> -	if (msg->iova < v->range.first ||
->> -	    msg->iova + msg->size - 1 > v->range.last)
->> -		return -EINVAL;
-> This is not related to your patch, but can the "msg->iova + msg->size"
-> addition can have an integer overflow.  From looking at the callers it
-> seems like it can.  msg comes from:
->    vhost_chr_write_iter()
->    --> dev->msg_handler(dev, &msg);
->        --> vhost_vdpa_process_iotlb_msg()
->           --> vhost_vdpa_process_iotlb_update()
+What do you think of this patch?
+Or do you have any ideas or suggestions about the modification for
+Ulf's comments?
+
+Thank you.
 
 
-Yes.
+Best regards,
 
+Renius
 
+Renius Chen <reniuschengl@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=889:49=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> If I'm thinking of the right thing then these are allowed to overflow to
-> 0 because of the " - 1" but not further than that.  I believe the check
-> needs to be something like:
+> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:16=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> >
+> > [...]
+> >
+> > >
+> > > Thanks, I understand what you mean.
+> > >
+> > > I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
+> > > drivers/mmc/host folder, and found that in some SD/MMC host controlle=
+r
+> > > driver codes such as alcor.c, cavium.c, ...etc, there are also
+> > > behaviors for monitoring the request in their driver. What's the
+> > > difference between theirs and ours?
+> >
+> > Those checks are there to allow the HWs to be supported properly.
+> >
+> > >
+> > > And if the code that monitors the requstes does not belong the driver=
+,
+> > > where should I implement the code and how to add some functions only
+> > > for GL9763e in that place, in your opinion?
+> >
+> > Honestly, I am not sure what suits your use case best.
+> >
+> > So far we have used runtime PM with a default auto suspend timeout, in
+> > combination with dev PM Qos. In other words, run as fast as possible
+> > to complete the requests in the queue then go back to idle and enter a
+> > low power state. Clearly, that seems not to be sufficient for your use
+> > case, sorry.
+> >
+> Yes, the runtime PM, auto suspend, and PM Qos are all about the
+> suspend/resume behaviors of the system or related to power states such
+> as D0/D3 of the device. But these are totally different from the ASPM
+> L0s/L1 for link states. Entering/exiting the ASPM is pure hardware
+> behavior on the link layer and is not handled by any codes in
+> drivers/mmc/core or drivers/mmc/host. We'd like to try to modify the
+> patch by your opinions, but we are also confused about what or where
+> suits our use case best. So we wonder how to start the modification
+> and may need some suggestions to deal with the work, sorry.
 >
-> 	if (msg->iova < v->range.first ||
-> 	    msg->iova - 1 > U64_MAX - msg->size ||
-
-
-I guess we don't need - 1 here?
-
-Thanks
-
-
-> 	    msg->iova + msg->size - 1 > v->range.last)
+> Thank you.
 >
-> But writing integer overflow check correctly is notoriously difficult.
-> Do you think you could send a fix for that which is separate from the
-> patcheset?  We'd want to backport it to stable.
 >
-> regards,
-> dan carpenter
+> Best regards,
 >
-
+> Renius
+>
+>
+> > Kind regards
+> > Uffe
