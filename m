@@ -2,169 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8303C8201
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CAC3C81C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238973AbhGNJsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:48:21 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:20206 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238679AbhGNJsU (ORCPT
+        id S238926AbhGNJkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:40:13 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11303 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238840AbhGNJkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:48:20 -0400
-X-UUID: d47159a861df460888dafaa9dfd513d7-20210714
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=N7Ur6qluGe0C2Kw8vaHLJyOyh69s2OtfuvTQ9IuA/qw=;
-        b=MW0dRH4JsR+L1eDKVlOevSF1+wkhDlwOAowmDSzbeW5cn88KhKU7nibVi8NFkFtldxhabcidC/KwrysULabpbxl4jzzaObEAuth13NPQZS9uBfj7n8k0g/va2m7KoGxu0+o/UTJRGriULNSecCkWnzZBhyUhYBNVI3Ycwy24GMA=;
-X-UUID: d47159a861df460888dafaa9dfd513d7-20210714
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 625873358; Wed, 14 Jul 2021 17:45:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS33N1.mediatek.inc (172.27.4.75) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 14 Jul 2021 17:45:19 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Wed, 14 Jul 2021 17:44:56 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <christian.koenig@amd.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: Re: [PATCH] dma-buf: add kernel count for dma_buf
-Date:   Wed, 14 Jul 2021 17:44:54 +0800
-Message-ID: <20210714094454.66922-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1bfb2001-b7d7-28b0-7fdf-ae9dbb7395b5@amd.com>
-References: <1bfb2001-b7d7-28b0-7fdf-ae9dbb7395b5@amd.com>
+        Wed, 14 Jul 2021 05:40:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GPsjp4pRrz8sl4;
+        Wed, 14 Jul 2021 17:32:46 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:37:15 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
+ Jul 2021 17:37:14 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH 0/3] optimize the queue idle judgment
+Date:   Wed, 14 Jul 2021 17:45:26 +0800
+Message-ID: <20210714094529.758808-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-X-TM-SNTS-SMTP: 6AE036491462D192DE816201D6A5207DB9700EE9AB309572719CC33867359DFD2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogR3VhbmdtaW5nIENhbyA8R3VhbmdtaW5nLkNhb0BtZWRpYXRlay5jb20+DQoNCk9uIFdl
-ZCwgMjAyMS0wNy0xNCBhdCAxMDo0NiArMDIwMCwgQ2hyaXN0aWFuIEvDtm5pZyB3cm90ZToNCj4g
-QW0gMTQuMDcuMjEgdW0gMDk6MTEgc2NocmllYiBndWFuZ21pbmcuY2FvQG1lZGlhdGVrLmNvbToN
-Cj4gPiBGcm9tOiBHdWFuZ21pbmcgQ2FvIDxHdWFuZ21pbmcuQ2FvQG1lZGlhdGVrLmNvbT4NCj4g
-PiANCj4gPiBBZGQgYSByZWZjb3VudCBmb3Iga2VybmVsIHRvIHByZXZlbnQgVUFGKFVzZSBBZnRl
-ciBGcmVlKSBpc3N1ZS4NCj4gDQo+IFdlbGwgTkFLIG9uIHNvIG1hbnkgbGV2ZWxzLg0KPiANCj4g
-PiANCj4gPiBXZSBjYW4gYXNzdW1lIGEgY2FzZSBsaWtlIGJlbG93Og0KPiA+ICAgICAgMS4ga2Vy
-bmVsIHNwYWNlIGFsbG9jIGRtYV9idWYoZmlsZSBjb3VudCA9IDEpDQo+ID4gICAgICAyLiBrZXJu
-ZWwgdXNlIGRtYV9idWYgdG8gZ2V0IGZkKGZpbGUgY291bnQgPSAxKQ0KPiA+ICAgICAgMy4gdXNl
-cnNwYWNlIHVzZSBmZCB0byBkbyBtYXBwaW5nIChmaWxlIGNvdW50ID0gMikNCj4gDQo+IENyZWF0
-aW5nIGFuIHVzZXJzcGFjZSBtYXBwaW5nIGluY3JlYXNlcyB0aGUgcmVmZXJlbmNlIGNvdW50IGZv
-ciB0aGUgDQo+IHVuZGVybHlpbmcgZmlsZSBvYmplY3QuDQo+IA0KPiBTZWUgdGhlIGltcGxlbWVu
-dGF0aW9uIG9mIG1tYXBfcmVnaW9uKCk6DQo+IC4uLg0KPiAgICAgICAgICAgICAgICAgIHZtYS0+
-dm1fZmlsZSA9IGdldF9maWxlKGZpbGUpOw0KPiAgICAgICAgICAgICAgICAgIGVycm9yID0gY2Fs
-bF9tbWFwKGZpbGUsIHZtYSk7DQo+IC4uLg0KPiANCj4gV2hhdCBjYW4gaGFwcGVuIGlzIHRoZSB0
-aGUgdW5kZXJseWluZyBleHBvcnRlciByZWRpcmVjdHMgdGhlIG1tYXAgdG8NCj4gYSANCj4gZGlm
-ZmVyZW50IGZpbGUsIGUuZy4gVFRNIG9yIEdFTSBkcml2ZXJzIGRvIHRoYXQgYWxsIHRoZSB0aW1l
-Lg0KPiANCj4gQnV0IHRoaXMgaXMgZmluZSBzaW5jZSB0aGVuIHRoZSBWQSBtYXBwaW5nIGlzIGlu
-ZGVwZW5kZW50IG9mIHRoZSBETUEtDQo+IGJ1Zi4NCj4gDQo+ID4gICAgICA0LiBrZXJuZWwgY2Fs
-bCBkbWFfYnVmX3B1dCAoZmlsZSBjb3VudCA9IDEpDQo+ID4gICAgICA1LiB1c2VycHNhY2UgY2xv
-c2UgYnVmZmVyIGZkKGZpbGUgY291bnQgPSAwKQ0KPiA+ICAgICAgNi4gYXQgdGhpcyB0aW1lLCBi
-dWZmZXIgaXMgcmVsZWFzZWQsIGJ1dCB2YSBpcyB2YWxpZCEhDQo+ID4gICAgICAgICBTbyB3ZSBz
-dGlsbCBjYW4gcmVhZC93cml0ZSBidWZmZXIgdmlhIG1tYXAgdmEsDQo+ID4gICAgICAgICBpdCBt
-YXliZSBjYXVzZSBtZW1vcnkgbGVhaywgb3Iga2VybmVsIGV4Y2VwdGlvbi4NCj4gPiAgICAgICAg
-IEFuZCBhbHNvLCBpZiB3ZSB1c2UgImxzIC1sbCIgdG8gd2F0Y2ggY29ycmVzcG9uZGluZyBwcm9j
-ZXNzDQo+ID4gICAgICAgICAgICAgZmQgbGluayBpbmZvLCBpdCBhbHNvIHdpbGwgY2F1c2Uga2Vy
-bmVsIGV4Y2VwdGlvbi4NCj4gPiANCj4gPiBBbm90aGVyIGNhc2U6DQo+ID4gICAgICAgVXNpbmcg
-ZG1hX2J1Zl9mZCB0byBnZW5lcmF0ZSBtb3JlIHRoYW4gMSBmZCwgYmVjYXVzZQ0KPiA+ICAgICAg
-IGRtYV9idWZfZmQgd2lsbCBub3QgaW5jcmVhc2UgZmlsZSBjb3VudCwgdGh1cywgd2hlbiBjbG9z
-ZQ0KPiA+ICAgICAgIHRoZSBzZWNvbmQgZmQsIGl0IG1heWJlIG9jY3VycyBlcnJvci4NCj4gDQo+
-IEVhY2ggb3BlbmVkIGZkIHdpbGwgaW5jcmVhc2UgdGhlIHJlZmVyZW5jZSBjb3VudCBzbyB0aGlz
-IGlzDQo+IGNlcnRhaW5seSANCj4gbm90IGNvcnJlY3Qgd2hhdCB5b3UgZGVzY3JpYmUgaGVyZS4N
-Cj4gDQo+IFJlZ2FyZHMsDQo+IENocmlzdGlhbi4NCj4gDQoNClllcywgbW1hcCB3aWxsIGluY3Jl
-YXNlIGZpbGUgY291bnQgYnkgY2FsbGluZyBnZXRfZmlsZSwgc28gc3RlcFsyXSAtPg0Kc3RlcFsz
-XSwgZmlsZSBjb3VudCBpbmNyZWFzZSAxLg0KDQpCdXQsIGRtYV9idWZfZmQoKSB3aWxsIG5vdCBp
-bmNyZWFzZSBmaWxlIGNvdW50Lg0KZnVuY3Rpb24gImRtYV9idWZfZmQoc3RydWN0IGRtYV9idWYg
-KmRtYWJ1ZiwgaW50IGZsYWdzKSIganVzdCBnZXQgYW4NCnVudXNlZCBmZCwgdmlhIGNhbGwgImdl
-dF91bnVzZWRfZmRfZmxhZ3MoZmxhZ3MpIiwgYW5kIGNhbGwNCiJmZF9pbnN0YWxsKGZkLCBkbWFi
-dWYtPmZpbGUpIiwgaXQgd2lsbCBsZXQgYXNzb2NpYXRlZCAic3RydWN0IGZpbGUqICINCmluIHRh
-c2sncyBmZHQtPmZkW2ZkXSBwb2ludHMgdG8gdGhpcyBkbWFfYnVmLmZpbGUsIG5vdCBpbmNyZWFz
-ZSB0aGUNCmZpbGUgY291bnQgb2YgZG1hX2J1Zi5maWxlLg0KSSB0aGluayB0aGlzIGlzIGNvbmZ1
-c2luZywgSSBjYW4gZ2V0IG1vcmUgdGhhbiAxIGZkcyB2aWEgZG1hX2J1Zl9mZCwNCmJ1dCB0aGV5
-IGRvbid0IG5lZWQgdG8gY2xvc2UgaXQgYmVjYXVzZSB0aGV5IGRvbid0IGluY3JlYXNlIGZpbGUg
-Y291bnQuDQoNCkhvd2V2ZXIsIGRtYV9idWZfcHV0KCkgY2FuIGRlY3JlYXNlIGZpbGUgY291bnQg
-YXQga2VybmVsIHNpZGUgZGlyZWN0bHkuDQpJZiBzb21lYm9keSB3cml0ZSBhIGtvIHRvIHB1dCBm
-aWxlIGNvdW50IG9mIGRtYV9idWYuZmlsZSBtYW55IHRpbWVzLCBpdA0Kd2lsbCBjYXVzZSBidWZm
-ZXIgZnJlZWQgZWFybGllciB0aGFuIGV4Y2VwdC4gQXQgbGFzdCBvbiBBbmRyb2lkLCBJDQp0aGlu
-ayB0aGlzIGlzIGEgbGl0dGxlIGJpdCBkYW5nZXJvdXMuDQoNCj4gPiANCj4gPiBTb2x1dGlvbjoN
-Cj4gPiAgICAgIEFkZCBhIGtlcm5lbCBjb3VudCBmb3IgZG1hX2J1ZiwgYW5kIG1ha2Ugc3VyZSB0
-aGUgZmlsZSBjb3VudA0KPiA+ICAgICAgICAgIG9mIGRtYV9idWYuZmlsZSBob2xkIGJ5IGtlcm5l
-bCBpcyAxLg0KPiA+IA0KPiA+IE5vdGVzOiBGb3IgdGhpcyBzb2x1dGlvbiwga3JlZiBjb3VsZG4n
-dCB3b3JrIGJlY2F1c2Uga2VybmVsIHJlZg0KPiA+ICAgICAgICAgbWF5YmUgYWRkZWQgZnJvbSAw
-LCBidXQga3JlZiBkb24ndCBhbGxvdyBpdC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBHdWFu
-Z21pbmcgQ2FvIDxHdWFuZ21pbmcuQ2FvQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgIGRy
-aXZlcnMvZG1hLWJ1Zi9kbWEtYnVmLmMgfCAyMyArKysrKysrKysrKysrKysrKysrLS0tLQ0KPiA+
-ICAgaW5jbHVkZS9saW51eC9kbWEtYnVmLmggICB8ICA2ICsrKystLQ0KPiA+ICAgMiBmaWxlcyBj
-aGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2RtYS1idWYvZG1hLWJ1Zi5jIGIvZHJpdmVycy9kbWEtYnVmL2RtYS1i
-dWYuYw0KPiA+IGluZGV4IDUxMWZlMGQyMTdhMC4uMDRlZTkyYWFjOGI5IDEwMDY0NA0KPiA+IC0t
-LSBhL2RyaXZlcnMvZG1hLWJ1Zi9kbWEtYnVmLmMNCj4gPiArKysgYi9kcml2ZXJzL2RtYS1idWYv
-ZG1hLWJ1Zi5jDQo+ID4gQEAgLTYyLDYgKzYyLDcgQEAgc3RhdGljIHZvaWQgZG1hX2J1Zl9yZWxl
-YXNlKHN0cnVjdCBkZW50cnkNCj4gPiAqZGVudHJ5KQ0KPiA+ICAgICBpZiAodW5saWtlbHkoIWRt
-YWJ1ZikpDQo+ID4gICAgICAgICAgICAgcmV0dXJuOw0KPiA+ICAgDQo+ID4gKyAgIFdBUk5fT04o
-YXRvbWljNjRfcmVhZCgmZG1hYnVmLT5rZXJuZWxfcmVmKSk7DQo+ID4gICAgIEJVR19PTihkbWFi
-dWYtPnZtYXBwaW5nX2NvdW50ZXIpOw0KPiA+ICAgDQo+ID4gICAgIC8qDQo+ID4gQEAgLTU1NSw2
-ICs1NTYsNyBAQCBzdHJ1Y3QgZG1hX2J1ZiAqZG1hX2J1Zl9leHBvcnQoY29uc3Qgc3RydWN0DQo+
-ID4gZG1hX2J1Zl9leHBvcnRfaW5mbyAqZXhwX2luZm8pDQo+ID4gICAgICAgICAgICAgZ290byBl
-cnJfbW9kdWxlOw0KPiA+ICAgICB9DQo+ID4gICANCj4gPiArICAgYXRvbWljNjRfc2V0KCZkbWFi
-dWYtPmtlcm5lbF9yZWYsIDEpOw0KPiA+ICAgICBkbWFidWYtPnByaXYgPSBleHBfaW5mby0+cHJp
-djsNCj4gPiAgICAgZG1hYnVmLT5vcHMgPSBleHBfaW5mby0+b3BzOw0KPiA+ICAgICBkbWFidWYt
-PnNpemUgPSBleHBfaW5mby0+c2l6ZTsNCj4gPiBAQCAtNjE3LDYgKzYxOSw5IEBAIGludCBkbWFf
-YnVmX2ZkKHN0cnVjdCBkbWFfYnVmICpkbWFidWYsIGludA0KPiA+IGZsYWdzKQ0KPiA+ICAgDQo+
-ID4gICAgIGZkX2luc3RhbGwoZmQsIGRtYWJ1Zi0+ZmlsZSk7DQo+ID4gICANCj4gPiArICAgLyog
-QWRkIGZpbGUgY250IGZvciBlYWNoIG5ldyBmZCAqLw0KPiA+ICsgICBnZXRfZmlsZShkbWFidWYt
-PmZpbGUpOw0KPiA+ICsNCj4gPiAgICAgcmV0dXJuIGZkOw0KPiA+ICAgfQ0KPiA+ICAgRVhQT1JU
-X1NZTUJPTF9HUEwoZG1hX2J1Zl9mZCk7DQo+ID4gQEAgLTYyNiwxMiArNjMxLDEzIEBAIEVYUE9S
-VF9TWU1CT0xfR1BMKGRtYV9idWZfZmQpOw0KPiA+ICAgICogQGZkOiAgIFtpbl0gICAgZmQgYXNz
-b2NpYXRlZCB3aXRoIHRoZSBzdHJ1Y3QgZG1hX2J1ZiB0byBiZQ0KPiA+IHJldHVybmVkDQo+ID4g
-ICAgKg0KPiA+ICAgICogT24gc3VjY2VzcywgcmV0dXJucyB0aGUgc3RydWN0IGRtYV9idWYgYXNz
-b2NpYXRlZCB3aXRoIGFuIGZkOw0KPiA+IHVzZXMNCj4gPiAtICogZmlsZSdzIHJlZmNvdW50aW5n
-IGRvbmUgYnkgZmdldCB0byBpbmNyZWFzZSByZWZjb3VudC4gcmV0dXJucw0KPiA+IEVSUl9QVFIN
-Cj4gPiAtICogb3RoZXJ3aXNlLg0KPiA+ICsgKiBkbWFidWYncyByZWYgcmVmY291bnRpbmcgZG9u
-ZSBieSBrcmVmX2dldCB0byBpbmNyZWFzZSByZWZjb3VudC4NCj4gPiArICogUmV0dXJucyBFUlJf
-UFRSIG90aGVyd2lzZS4NCj4gPiAgICAqLw0KPiA+ICAgc3RydWN0IGRtYV9idWYgKmRtYV9idWZf
-Z2V0KGludCBmZCkNCj4gPiAgIHsNCj4gPiAgICAgc3RydWN0IGZpbGUgKmZpbGU7DQo+ID4gKyAg
-IHN0cnVjdCBkbWFfYnVmICpkbWFidWY7DQo+ID4gICANCj4gPiAgICAgZmlsZSA9IGZnZXQoZmQp
-Ow0KPiA+ICAgDQo+ID4gQEAgLTY0Myw3ICs2NDksMTIgQEAgc3RydWN0IGRtYV9idWYgKmRtYV9i
-dWZfZ2V0KGludCBmZCkNCj4gPiAgICAgICAgICAgICByZXR1cm4gRVJSX1BUUigtRUlOVkFMKTsN
-Cj4gPiAgICAgfQ0KPiA+ICAgDQo+ID4gLSAgIHJldHVybiBmaWxlLT5wcml2YXRlX2RhdGE7DQo+
-ID4gKyAgIGRtYWJ1ZiA9IGZpbGUtPnByaXZhdGVfZGF0YTsNCj4gPiArICAgLyogcmVwbGFjZSBm
-aWxlIGNvdW50IGluY3JlYXNlIGFzIHJlZiBpbmNyZWFzZSBmb3Iga2VybmVsIHVzZXINCj4gPiAq
-Lw0KPiA+ICsgICBnZXRfZG1hX2J1ZihkbWFidWYpOw0KPiA+ICsgICBmcHV0KGZpbGUpOw0KPiA+
-ICsNCj4gPiArICAgcmV0dXJuIGRtYWJ1ZjsNCj4gPiAgIH0NCj4gPiAgIEVYUE9SVF9TWU1CT0xf
-R1BMKGRtYV9idWZfZ2V0KTsNCj4gPiAgIA0KPiA+IEBAIC02NjIsNyArNjczLDExIEBAIHZvaWQg
-ZG1hX2J1Zl9wdXQoc3RydWN0IGRtYV9idWYgKmRtYWJ1ZikNCj4gPiAgICAgaWYgKFdBUk5fT04o
-IWRtYWJ1ZiB8fCAhZG1hYnVmLT5maWxlKSkNCj4gPiAgICAgICAgICAgICByZXR1cm47DQo+ID4g
-ICANCj4gPiAtICAgZnB1dChkbWFidWYtPmZpbGUpOw0KPiA+ICsgICBpZiAoV0FSTl9PTighYXRv
-bWljNjRfcmVhZCgmZG1hYnVmLT5rZXJuZWxfcmVmKSkpDQo+ID4gKyAgICAgICAgICAgcmV0dXJu
-Ow0KPiA+ICsNCj4gPiArICAgaWYgKCFhdG9taWM2NF9kZWNfcmV0dXJuKCZkbWFidWYtPmtlcm5l
-bF9yZWYpKQ0KPiA+ICsgICAgICAgICAgIGZwdXQoZG1hYnVmLT5maWxlKTsNCj4gPiAgIH0NCj4g
-PiAgIEVYUE9SVF9TWU1CT0xfR1BMKGRtYV9idWZfcHV0KTsNCj4gPiAgIA0KPiA+IGRpZmYgLS1n
-aXQgYS9pbmNsdWRlL2xpbnV4L2RtYS1idWYuaCBiL2luY2x1ZGUvbGludXgvZG1hLWJ1Zi5oDQo+
-ID4gaW5kZXggZWZkYzU2YjlkOTVmLi5iYzc5MGNiMDI4ZWIgMTAwNjQ0DQo+ID4gLS0tIGEvaW5j
-bHVkZS9saW51eC9kbWEtYnVmLmgNCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2RtYS1idWYuaA0K
-PiA+IEBAIC0zMDgsNiArMzA4LDcgQEAgc3RydWN0IGRtYV9idWZfb3BzIHsNCj4gPiAgIHN0cnVj
-dCBkbWFfYnVmIHsNCj4gPiAgICAgc2l6ZV90IHNpemU7DQo+ID4gICAgIHN0cnVjdCBmaWxlICpm
-aWxlOw0KPiA+ICsgICBhdG9taWM2NF90IGtlcm5lbF9yZWY7DQo+ID4gICAgIHN0cnVjdCBsaXN0
-X2hlYWQgYXR0YWNobWVudHM7DQo+ID4gICAgIGNvbnN0IHN0cnVjdCBkbWFfYnVmX29wcyAqb3Bz
-Ow0KPiA+ICAgICBzdHJ1Y3QgbXV0ZXggbG9jazsNCj4gPiBAQCAtNDM2LDcgKzQzNyw3IEBAIHN0
-cnVjdCBkbWFfYnVmX2V4cG9ydF9pbmZvIHsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgLm93bmVyID0gVEhJU19NT0RVTEUgfQ0KPiA+ICAgDQo+ID4gICAvKioNCj4g
-PiAtICogZ2V0X2RtYV9idWYgLSBjb252ZW5pZW5jZSB3cmFwcGVyIGZvciBnZXRfZmlsZS4NCj4g
-PiArICogZ2V0X2RtYV9idWYgLSBpbmNyZWFzZSBhIGtlcm5lbCByZWYgb2YgZG1hLWJ1Zg0KPiA+
-ICAgICogQGRtYWJ1ZjogICAgICAgW2luXSAgICBwb2ludGVyIHRvIGRtYV9idWYNCj4gPiAgICAq
-DQo+ID4gICAgKiBJbmNyZW1lbnRzIHRoZSByZWZlcmVuY2UgY291bnQgb24gdGhlIGRtYS1idWYs
-IG5lZWRlZCBpbiBjYXNlDQo+ID4gb2YgZHJpdmVycw0KPiA+IEBAIC00NDYsNyArNDQ3LDggQEAg
-c3RydWN0IGRtYV9idWZfZXhwb3J0X2luZm8gew0KPiA+ICAgICovDQo+ID4gICBzdGF0aWMgaW5s
-aW5lIHZvaWQgZ2V0X2RtYV9idWYoc3RydWN0IGRtYV9idWYgKmRtYWJ1ZikNCj4gPiAgIHsNCj4g
-PiAtICAgZ2V0X2ZpbGUoZG1hYnVmLT5maWxlKTsNCj4gPiArICAgaWYgKGF0b21pYzY0X2luY19y
-ZXR1cm4oJmRtYWJ1Zi0+a2VybmVsX3JlZikgPT0gMSkNCj4gPiArICAgICAgICAgICBnZXRfZmls
-ZShkbWFidWYtPmZpbGUpOw0KPiA+ICAgfQ0KPiA+ICAgDQo+ID4gICAvKioNCj4gDQo+IA==
+bfqq might plug I/O dispatch when it remains temporarily empty while
+being served, this will benefit for both sequence io bandwidth and relative
+sync io control.
+
+This path set tries to extend the two special cases that idle is not
+needed, and can get better bandwidth.
+
+1) only one group is activated.
+2) when more than one groups are activated, all queues are issuring
+requests with same size.
+
+Yu Kuai (3):
+  block, bfq: do not idle if only one cgroup is activated
+  block, bfq: add support to record request size information
+  block, bfq: consider request size in bfq_asymmetric_scenario()
+
+ block/bfq-iosched.c | 50 +++++++++++++++++++++++++++++++++++++--------
+ block/bfq-iosched.h | 16 +++++++++++++++
+ 2 files changed, 57 insertions(+), 9 deletions(-)
+
+-- 
+2.31.1
 
