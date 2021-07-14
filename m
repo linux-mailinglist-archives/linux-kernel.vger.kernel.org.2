@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566543C9289
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402F53C928A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhGNUxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:53:32 -0400
-Received: from mail-il1-f179.google.com ([209.85.166.179]:41873 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhGNUxb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:53:31 -0400
-Received: by mail-il1-f179.google.com with SMTP id p3so2930078ilg.8;
-        Wed, 14 Jul 2021 13:50:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OWiXarIXPKw2aPNSw9cZV80U357Vkr2GsrGVpeyjsQc=;
-        b=r+p5GVPlvwqJBg7VZwdjrNVLcebvyuIEReFtyCCY7FpWztuF9gogCX5fHog7UO8gRp
-         xi83kU7SHalZGQwrvNzGargsnal4ojFVuemA4kX6uYgWtdVDAR3CMbwcMM8G/BYaUvLP
-         P2p0vjs3wtTWIIvFOOHk6OjgnOBRZv4xrc7toD51im85wM5gaTa/L2jvBB50FGTRtdtm
-         znhH1u90mpfe/G7xInM10wV/bYLfxaAsmtWbxT72t4FKnNIbXkNiWbOYFvnxaJQ2DJpS
-         7ckXxqCEcLGmBRlnQukoC5xIMk+C8b3Gdou8OZpw9X3/4iwbjXc4wFOBD1qulBRtnpfX
-         g5Fg==
-X-Gm-Message-State: AOAM532KGu+vivFgf+OvcBuYZbTnDUc1F6f092Q0Xi8LYuIINsXt4ICO
-        1fSDDtZLzvvBxYzB9u8Ydw==
-X-Google-Smtp-Source: ABdhPJzIfokFz27UgVWurE1fZaeC9BUgl5IrSdDrPhzocFmPLHSsTMbDVpo92BgESGG0aAKy86GhDw==
-X-Received: by 2002:a92:ddce:: with SMTP id d14mr8016882ilr.279.1626295838837;
-        Wed, 14 Jul 2021 13:50:38 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id 204sm1844033ioc.50.2021.07.14.13.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:50:38 -0700 (PDT)
-Received: (nullmailer pid 3498425 invoked by uid 1000);
-        Wed, 14 Jul 2021 20:50:35 -0000
-Date:   Wed, 14 Jul 2021 14:50:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     phone-devel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Kathiravan T <kathirav@codeaurora.org>,
-        devicetree@vger.kernel.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 4/5] dt-bindings: power: rpmpd: Add SM6115 to rpmpd
- binding
-Message-ID: <20210714205035.GA3498367@robh.at.kernel.org>
-References: <20210627185927.695411-1-iskren.chernev@gmail.com>
- <20210627185927.695411-5-iskren.chernev@gmail.com>
+        id S234288AbhGNUxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:53:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234219AbhGNUxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 16:53:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9079A613CA;
+        Wed, 14 Jul 2021 20:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626295844;
+        bh=CtzzVdl51zx/rlsi8l05bn7zD2QP6rolv/PqX1ww260=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KSzvYnlaCw+nRDow/TZt5MQp9+BmvyuwLHlSWBsZtakmn/5kpiG2OaOwKzVSY3R5c
+         3Z82VV1F2I3R9sxWJgvmtvQWyEr8l7iCr2iHhXLvXCxNbtuO2ShcOSd3KrN9G4RzOH
+         sT1IzQNy2pcXlFMKbncT3ttr0ByDAGP7HR+fH27W3i8CXhsIo+N0byjfg3NXVPZli4
+         aENJdo8a4CuOhG46e/b52JOJpr1Dy9EKJnBliRHwndGcUwC68IOJFLh+grMNuajCRb
+         HRLmoJUSh6Z1Dc4/G9kwcOXQ+RD/mLMTVFNAUkK6v4s5hlvHg1FlJuom5zZKUXlq8P
+         T13fl/tRbzURQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 648AC5C0355; Wed, 14 Jul 2021 13:50:44 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        valentin.schneider@arm.com, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu/urgent 1/2] scftorture: Avoid false-positive warnings in scftorture_invoker()
+Date:   Wed, 14 Jul 2021 13:50:42 -0700
+Message-Id: <20210714205043.2033697-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210714204928.GA2033276@paulmck-ThinkPad-P17-Gen-1>
+References: <20210714204928.GA2033276@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210627185927.695411-5-iskren.chernev@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 21:59:26 +0300, Iskren Chernev wrote:
-> Add compatible and constants for the power domains exposed by the RPM
-> in the Qualcomm SM4250/6115 platforms.
-> 
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> ---
->  .../devicetree/bindings/power/qcom,rpmpd.yaml          |  1 +
->  include/dt-bindings/power/qcom-rpmpd.h                 | 10 ++++++++++
->  2 files changed, 11 insertions(+)
-> 
+If the call to set_cpus_allowed_ptr() in scftorture_invoker()
+fails, a later WARN_ONCE() complains.  But with the advent of
+570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of
+nr_cpus_allowed"), this complaint can be drowned out by complaints from
+smp_processor_id().  The rationale for this change is that scftorture's
+kthreads are not marked with PF_NO_SETAFFINITY, which means that a system
+administrator could change affinity at any time.
 
-Acked-by: Rob Herring <robh@kernel.org>
+However, scftorture is a torture test, and the system administrator might
+well have a valid test-the-test reason for changing affinity.  This commit
+therefore changes to raw_smp_processor_id() in order to avoid the noise,
+and also adds a WARN_ON_ONCE() to the call to set_cpus_allowed_ptr() in
+order to directly detect immediate failure.  There is no WARN_ON_ONCE()
+within the test loop, allowing human-reflex-based affinity resetting,
+if desired.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/scftorture.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 2377cbb32474..29e8fc5d91a7 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -405,15 +405,15 @@ static int scftorture_invoker(void *arg)
+ 
+ 	VERBOSE_SCFTORTOUT("scftorture_invoker %d: task started", scfp->cpu);
+ 	cpu = scfp->cpu % nr_cpu_ids;
+-	set_cpus_allowed_ptr(current, cpumask_of(cpu));
++	WARN_ON_ONCE(set_cpus_allowed_ptr(current, cpumask_of(cpu)));
+ 	set_user_nice(current, MAX_NICE);
+ 	if (holdoff)
+ 		schedule_timeout_interruptible(holdoff * HZ);
+ 
+-	VERBOSE_SCFTORTOUT("scftorture_invoker %d: Waiting for all SCF torturers from cpu %d", scfp->cpu, smp_processor_id());
++	VERBOSE_SCFTORTOUT("scftorture_invoker %d: Waiting for all SCF torturers from cpu %d", scfp->cpu, raw_smp_processor_id());
+ 
+ 	// Make sure that the CPU is affinitized appropriately during testing.
+-	curcpu = smp_processor_id();
++	curcpu = raw_smp_processor_id();
+ 	WARN_ONCE(curcpu != scfp->cpu % nr_cpu_ids,
+ 		  "%s: Wanted CPU %d, running on %d, nr_cpu_ids = %d\n",
+ 		  __func__, scfp->cpu, curcpu, nr_cpu_ids);
+-- 
+2.31.1.189.g2e36527f23
+
