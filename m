@@ -2,153 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FEB3C81E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0BB3C81E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238871AbhGNJpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:45:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238720AbhGNJpB (ORCPT
+        id S238911AbhGNJpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238896AbhGNJpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:45:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626255729;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZplaldvdPUqWqjFHRQy6XqAYb6B2IbOETrAj7lOt6Jc=;
-        b=U/iYW3aw5IvGT0aLmnDGEgbNSbd3zFCuMNZvKUaU6vdvh/QQ3wHtRhFO8uI/3Yie8wQicU
-        A0VzkvKIq4XVYe2Pz89y/TfGPrHHYaqbLAtkTA32Rg5QWVy+NaiLybW60HuUIXYIm1eYq7
-        IR5D4ADt9M7YDgtgA9PJudwghn9bWfk=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-8m_9zB-tOH2nTGj6cFyM2g-1; Wed, 14 Jul 2021 05:42:08 -0400
-X-MC-Unique: 8m_9zB-tOH2nTGj6cFyM2g-1
-Received: by mail-pf1-f198.google.com with SMTP id t18-20020a056a001392b02903039eb2e663so1241057pfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:42:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ZplaldvdPUqWqjFHRQy6XqAYb6B2IbOETrAj7lOt6Jc=;
-        b=DaCpFIoXlPOZJlbS65Kk+lzQCDLGAFP7VFL8jaNr/kRH0iDN71QcX1kGLLoz7pACRz
-         jDySOPPyMvex9T7qZQ/+igeJ9HrnWscob0z5FaorvGbhRqjE8VFsoVBPII2M0sSaBTWv
-         8AuK2nMeCD3+k2bocXxvk9dudi4Eu/WJxaiErbZ4JKivZK210JiBcEJUupGs+/h/u7Xx
-         IU4ZltyEKQcAQ2S+YIVaLdz4MptKBZ1QcmS4XIVrrlJ5dzWC+Sb1aObqmrOBhIYAaZPp
-         QLDIu8abMNdw9uPeLphIYWdYZdFSfQfPm+c7EbbpPKsqPcVRuyB2L9KrhXNXVXYCzVYP
-         Nm8Q==
-X-Gm-Message-State: AOAM531HPyAN2kXBc0dAWkEh8dyzskQ1i/af8YCxUPI8JYTCr9Anu/Hr
-        Qio+MDKUdWvRJDZVEDQFLk+/JJkjQNq6I2iSLpA54Ar8PDsM+bWPmJ39zOuTiApEMFAFp7HWsxO
-        GyR4MqVnFKTkDRyX46ovDv8cLxlxzjU2oS6+EtRNkmbb46GtWCt/9M/WsaXN6E8tjSE1khgY1SH
-        /3
-X-Received: by 2002:a17:90a:7a86:: with SMTP id q6mr3009945pjf.141.1626255727321;
-        Wed, 14 Jul 2021 02:42:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzB8iUML1glTVs5bknbuEkym014DDJoi+0qmllMveSYsw48CwsnGAccGqgHSeXUC5btvXZSoA==
-X-Received: by 2002:a17:90a:7a86:: with SMTP id q6mr3009902pjf.141.1626255726913;
-        Wed, 14 Jul 2021 02:42:06 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id p5sm2075572pfn.46.2021.07.14.02.41.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 02:42:06 -0700 (PDT)
-Subject: Re: [PATCH v9 13/17] vdpa: factor out vhost_vdpa_pa_map() and
- vhost_vdpa_pa_unmap()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
-        corbet@lwn.net, mika.penttila@nextfour.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210713084656.232-1-xieyongji@bytedance.com>
- <20210713084656.232-14-xieyongji@bytedance.com> <20210713113114.GL1954@kadam>
- <20e75b53-0dce-2f2d-b717-f78553bddcd8@redhat.com>
- <20210714080512.GW1954@kadam>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <db02315d-0ffe-f4a2-da67-5a014060fa4a@redhat.com>
-Date:   Wed, 14 Jul 2021 17:41:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Wed, 14 Jul 2021 05:45:10 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D1EC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:42:17 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:39cc:190a:2775:cfe7])
+        by laurent.telenet-ops.be with bizsmtp
+        id UxiF2500Q1ccfby01xiFKs; Wed, 14 Jul 2021 11:42:15 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3bPD-0015cg-0F; Wed, 14 Jul 2021 11:42:15 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3bPC-00A3QK-Ca; Wed, 14 Jul 2021 11:42:14 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2] dt-bindings: phy: Rename Intel Keem Bay USB PHY bindings
+Date:   Wed, 14 Jul 2021 11:42:13 +0200
+Message-Id: <91235a64185f7446fc58e638d77691078d3114d1.1626255556.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210714080512.GW1954@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the only file not using the "intel,keembay-*" pattern.
+Fortunately the actual compatible value is already following the
+standard scheme.
 
-在 2021/7/14 下午4:05, Dan Carpenter 写道:
-> On Wed, Jul 14, 2021 at 10:14:32AM +0800, Jason Wang wrote:
->> 在 2021/7/13 下午7:31, Dan Carpenter 写道:
->>> On Tue, Jul 13, 2021 at 04:46:52PM +0800, Xie Yongji wrote:
->>>> @@ -613,37 +618,28 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
->>>>    	}
->>>>    }
->>>> -static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>> -					   struct vhost_iotlb_msg *msg)
->>>> +static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
->>>> +			     u64 iova, u64 size, u64 uaddr, u32 perm)
->>>>    {
->>>>    	struct vhost_dev *dev = &v->vdev;
->>>> -	struct vhost_iotlb *iotlb = dev->iotlb;
->>>>    	struct page **page_list;
->>>>    	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>>>    	unsigned int gup_flags = FOLL_LONGTERM;
->>>>    	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>>>    	unsigned long lock_limit, sz2pin, nchunks, i;
->>>> -	u64 iova = msg->iova;
->>>> +	u64 start = iova;
->>>>    	long pinned;
->>>>    	int ret = 0;
->>>> -	if (msg->iova < v->range.first ||
->>>> -	    msg->iova + msg->size - 1 > v->range.last)
->>>> -		return -EINVAL;
->>> This is not related to your patch, but can the "msg->iova + msg->size"
->>> addition can have an integer overflow.  From looking at the callers it
->>> seems like it can.  msg comes from:
->>>     vhost_chr_write_iter()
->>>     --> dev->msg_handler(dev, &msg);
->>>         --> vhost_vdpa_process_iotlb_msg()
->>>            --> vhost_vdpa_process_iotlb_update()
->>
->> Yes.
->>
->>
->>> If I'm thinking of the right thing then these are allowed to overflow to
->>> 0 because of the " - 1" but not further than that.  I believe the check
->>> needs to be something like:
->>>
->>> 	if (msg->iova < v->range.first ||
->>> 	    msg->iova - 1 > U64_MAX - msg->size ||
->>
->> I guess we don't need - 1 here?
-> The - 1 is important.  The highest address is 0xffffffff.  So it goes
-> start + size = 0 and then start + size - 1 == 0xffffffff.
+Fixes: 4086afa2a1627939 ("dt-bindings: phy: Add Intel Keem Bay USB PHY bindings")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+v2:
+  - Add Acked-by.
+---
+ .../{intel,phy-keembay-usb.yaml => intel,keembay-phy-usb.yaml}  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ rename Documentation/devicetree/bindings/phy/{intel,phy-keembay-usb.yaml => intel,keembay-phy-usb.yaml} (93%)
 
-
-Right, so actually
-
-msg->iova = 0xfffffffe, msg->size=2 is valid.
-
-Thanks
-
-
->
-> I guess we could move the - 1 to the other side?
->
-> 	msg->iova > U64_MAX - msg->size + 1 ||
->
-> regards,
-> dan carpenter
->
->
+diff --git a/Documentation/devicetree/bindings/phy/intel,phy-keembay-usb.yaml b/Documentation/devicetree/bindings/phy/intel,keembay-phy-usb.yaml
+similarity index 93%
+rename from Documentation/devicetree/bindings/phy/intel,phy-keembay-usb.yaml
+rename to Documentation/devicetree/bindings/phy/intel,keembay-phy-usb.yaml
+index a217bb8ac5bc0887..52815b6c2b88d019 100644
+--- a/Documentation/devicetree/bindings/phy/intel,phy-keembay-usb.yaml
++++ b/Documentation/devicetree/bindings/phy/intel,keembay-phy-usb.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/phy/intel,phy-keembay-usb.yaml#
++$id: http://devicetree.org/schemas/phy/intel,keembay-phy-usb.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Intel Keem Bay USB PHY bindings
+-- 
+2.25.1
 
