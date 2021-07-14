@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A303C8FCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B003C8FD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240418AbhGNTxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:53:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46320 "EHLO mail.kernel.org"
+        id S240472AbhGNTx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:53:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239234AbhGNTtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC32A61405;
-        Wed, 14 Jul 2021 19:44:09 +0000 (UTC)
+        id S239440AbhGNTtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:49:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E623613E3;
+        Wed, 14 Jul 2021 19:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626291850;
-        bh=liSe6McanGWa85HIg5Ho5nJWQTQVWy1aqtWDNjbkKxs=;
+        s=k20201202; t=1626291856;
+        bh=Ed0Pg0OWGIFlFZrx0tiPa85Dhwh9kL6vU+lJKFjwC0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cq/BmJTVe99paow+PF40DivL82vFftt4WP5nqL3aS0rJjn/qrhmVvpkxPV1qzl9fC
-         b3hUyX6DO9toDUhls8Wam+ri93rC8drWK290thw6gPqdNNwu6JB4fAzvpB3oMNeJPw
-         B00tfA9xXwk+ypZWeR3MZ2EkWr5V5id9uwJjNi34z0HccqBHJbWamQ+6OTTAVcbzeL
-         juFVt+ZOHFM/8cdu7a0EH7wgauW7pCh2H9jOS7yH4hD4GXgOWX1yp2mMCaxOIWzmP0
-         VrPS00umz31njE5TvMUvTgRdXDnZWVhSnVKVxaqKc3syf8XBb3IekmyGTxPQ2y6wjZ
-         y/82mX+YVo+cg==
+        b=GO4vjwFErIr1RObemCrFfdEoX1rWpsxbq6s9YUCtMrWfIRf/wXpghMd4W1Yc2Q8ys
+         fabUZluVmS21x/55u3X0grBkilLtq1H0kFPu+pxsoqv6z0PVXVOfkkxDpGhxipBfl6
+         dJkC72W/zF0rrV5+xlI7hkx+42U2ViBXrQUGgJ4Hqbs/moW+flhSCQaw6dbgCn0dNc
+         4lCB5BIz5ZXaaWkorpMQQDRh0u3/aeS4GKnJpCidqsO+ycRTawgl9OGwgYHAFlT2T6
+         AwhiepSXwAZ6Ztiv8dduc5lgKgfl0sYsR/WUMvtop9DEfIPT82gID5S4F82Dh29pUI
+         IU+UHvLalKTpw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
+Cc:     Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 44/88] ARM: tegra: nexus7: Correct 3v3 regulator GPIO of PM269 variant
-Date:   Wed, 14 Jul 2021 15:42:19 -0400
-Message-Id: <20210714194303.54028-44-sashal@kernel.org>
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 48/88] ARM: dts: stm32: Fix touchscreen node on dhcom-pdk2
+Date:   Wed, 14 Jul 2021 15:42:23 -0400
+Message-Id: <20210714194303.54028-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210714194303.54028-1-sashal@kernel.org>
 References: <20210714194303.54028-1-sashal@kernel.org>
@@ -44,35 +47,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit c4dd6066bc304649e3159f1c7a08ece25d537e00 ]
+[ Upstream commit 4b5fadef3fc2ab8863ffdf31eed6a745b1bf6e61 ]
 
-The 3v3 regulator GPIO is GP6 and not GP7, which is the DDR regulator.
-Both regulators are always-on, nevertheless the DT model needs to be
-corrected, fix it.
+Fix make dtbs_check warning:
+arch/arm/boot/dts/stm32mp157c-dhcom-pdk2.dt.yaml:0:0: /soc/i2c@40015000/polytouch@38: failed to match any schema with compatible: ['edt,edt-ft5x06']
 
-Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-index bfc06b988781..215e497652d8 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-@@ -143,7 +143,7 @@ vdd_core: core-regulator@60 {
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index 180a0187a956..a2d903c0d57f 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -182,8 +182,8 @@ sgtl5000_rx_endpoint: endpoint@1 {
+ 
  	};
  
- 	vdd_3v3_sys: regulator@1 {
--		gpio = <&pmic 7 GPIO_ACTIVE_HIGH>;
-+		gpio = <&pmic 6 GPIO_ACTIVE_HIGH>;
- 		enable-active-high;
- 	};
- };
+-	polytouch@38 {
+-		compatible = "edt,edt-ft5x06";
++	touchscreen@38 {
++		compatible = "edt,edt-ft5406";
+ 		reg = <0x38>;
+ 		interrupt-parent = <&gpiog>;
+ 		interrupts = <2 IRQ_TYPE_EDGE_FALLING>; /* GPIO E */
 -- 
 2.30.2
 
