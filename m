@@ -2,285 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933D63C7E24
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5452A3C7E16
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238006AbhGNFzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:55:01 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.223]:13894 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237957AbhGNFy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:54:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626241857;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kIn18Gl5jJH4Qdjhpwk/B77xDmu22AE5ZZyc01lwBWU=;
-    b=dlKtEsaKCju2aKn8wTYqlt3fydAvh0U7DKx1ZOMm0kfyF3b6+/C4M6omw+GL8NMD8l
-    +hTK1PNgTkWxr1/2Ad7xOG6RSNOQvUrJ1RPlYk0dcWxwbygIqzvT/ZeuEg3ssqSPYAXL
-    kbprzolGu/bCp0FjItI2NSHGN7Ne3I7AWKzZJRCmXqp08dhMcW9DETAkpWfNGdbvVB5N
-    AT7q+9RJ+xSxshYwr+UuO4kBm2nPhyYr28xfKmfzpW/L9Fg6/Pmy2W/7yzsDkH30mI/C
-    2/ZSCTXwdqqShOQfXMPJvisPG0iRzN8ywSSMvu74KqwkcuS2jMHExGWd43OX8KxEYPfN
-    L2nQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXPSI/SaRQ=="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
-    with ESMTPSA id N0753fx6E5ouwyZ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 14 Jul 2021 07:50:56 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
-Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>
-Subject: [PATCH v41 05/13] LRNG - add common generic hash support
-Date:   Wed, 14 Jul 2021 07:45:48 +0200
-Message-ID: <2460884.q7F22EL2Vm@positron.chronox.de>
-In-Reply-To: <7822794.ITf6fX9eNu@positron.chronox.de>
-References: <7822794.ITf6fX9eNu@positron.chronox.de>
+        id S237989AbhGNFtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:49:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238000AbhGNFs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 01:48:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AA4F6138C;
+        Wed, 14 Jul 2021 05:46:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626241568;
+        bh=qpiaAFUsqnwaGdijxGchyZ5M0lzPsLjYvvrGTXz2/Uo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DSp6UMHOa2hXgETJuM3JV9ykRpWXqo/Pdp9m/RI6E1XTiqgYkkjyYpYgMwoBrfZXM
+         JkXgZooyJW4NSSven9SEu4Difc84iwAxHiNrFoNiucodx05hRTNTVgzQ30zygqcFgF
+         2hlG7IGnreCrK3uXgSO32DzRBX2Isqc8Ru8DGTz0=
+Date:   Wed, 14 Jul 2021 07:46:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Holger Kiehl <Holger.Kiehl@dwd.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+Message-ID: <YO56HTE3k95JLeje@kroah.com>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LRNG switchable DRNG support also allows the replacement of the hash
-implementation used as conditioning component. The common generic hash
-support code provides the required callbacks using the synchronous hash
-implementations of the kernel crypto API.
+On Wed, Jul 14, 2021 at 05:39:43AM +0000, Holger Kiehl wrote:
+> Hello,
+> 
+> On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+> 
+> > This is the start of the stable review cycle for the 5.13.2 release.
+> > There are 800 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> > Anything received after that time might be too late.
+> > 
+> With this my system no longer boots:
+> 
+>    [  OK  ] Reached target Swap.
+>    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
+>    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
+>    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
+>    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
+>    See 'systemctl status systemd-udev-settle.service' for details.
+>             Starting Activation of DM RAID sets...
+>    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
+>    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
+> 
+> System is a Fedora 34 with all updates applied. Two other similar
+> systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
+> and boots fine. The system where it does not boot has an Intel
+> Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
+> 
+> Any idea which patch I should drop to see if it boots again. I already
+> dropped
+> 
+>    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
+> 
+> and I just see that this one should also be dropped:
+> 
+>    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
+> 
+> Will still need to test this.
 
-All synchronous hash implementations supported by the kernel crypto API
-can be used as part of the LRNG with this generic support.
+Can you run 'git bisect' to see what commit causes the problem?
 
-The generic support is intended to be configured by separate switchable
-DRNG backends.
+thanks,
 
-CC: Torsten Duwe <duwe@lst.de>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-CC: Alexander Lobakin <alobakin@mailbox.org>
-CC: "Peter, Matthias" <matthias.peter@bsi.bund.de>
-CC: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-CC: Neil Horman <nhorman@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
----
- drivers/char/lrng/Kconfig           |   8 +++
- drivers/char/lrng/Makefile          |   1 +
- drivers/char/lrng/lrng_kcapi_hash.c | 103 ++++++++++++++++++++++++++++
- drivers/char/lrng/lrng_kcapi_hash.h |  20 ++++++
- 4 files changed, 132 insertions(+)
- create mode 100644 drivers/char/lrng/lrng_kcapi_hash.c
- create mode 100644 drivers/char/lrng/lrng_kcapi_hash.h
-
-diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index c10a0c3f2015..ab17c45a356b 100644
---- a/drivers/char/lrng/Kconfig
-+++ b/drivers/char/lrng/Kconfig
-@@ -209,4 +209,12 @@ menuconfig LRNG_DRNG_SWITCH
- 	  accessible via the external interfaces. With this configuration
- 	  option other DRNGs can be selected and loaded at runtime.
- 
-+if LRNG_DRNG_SWITCH
-+
-+config LRNG_KCAPI_HASH
-+	bool
-+	select CRYPTO_HASH
-+
-+endif # LRNG_DRNG_SWITCH
-+
- endif # LRNG
-diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index 0eb4a6849c88..40f8826edeeb 100644
---- a/drivers/char/lrng/Makefile
-+++ b/drivers/char/lrng/Makefile
-@@ -11,3 +11,4 @@ obj-y				+= lrng_pool.o lrng_aux.o \
- obj-$(CONFIG_NUMA)		+= lrng_numa.o
- obj-$(CONFIG_SYSCTL)		+= lrng_proc.o
- obj-$(CONFIG_LRNG_DRNG_SWITCH)	+= lrng_switch.o
-+obj-$(CONFIG_LRNG_KCAPI_HASH)	+= lrng_kcapi_hash.o
-diff --git a/drivers/char/lrng/lrng_kcapi_hash.c b/drivers/char/lrng/lrng_kcapi_hash.c
-new file mode 100644
-index 000000000000..9647d980e468
---- /dev/null
-+++ b/drivers/char/lrng/lrng_kcapi_hash.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * Backend for providing the hash primitive using the kernel crypto API.
-+ *
-+ * Copyright (C) 2021, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <crypto/hash.h>
-+
-+#include "lrng_kcapi_hash.h"
-+
-+struct lrng_hash_info {
-+	struct crypto_shash *tfm;
-+};
-+
-+static inline void _lrng_kcapi_hash_free(struct lrng_hash_info *lrng_hash)
-+{
-+	struct crypto_shash *tfm = lrng_hash->tfm;
-+
-+	crypto_free_shash(tfm);
-+	kfree(lrng_hash);
-+}
-+
-+void *lrng_kcapi_hash_alloc(const char *name)
-+{
-+	struct lrng_hash_info *lrng_hash;
-+	struct crypto_shash *tfm;
-+	int ret;
-+
-+	if (!name) {
-+		pr_err("Hash name missing\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	tfm = crypto_alloc_shash(name, 0, 0);
-+	if (IS_ERR(tfm)) {
-+		pr_err("could not allocate hash %s\n", name);
-+		return ERR_CAST(tfm);
-+	}
-+
-+	ret = sizeof(struct lrng_hash_info);
-+	lrng_hash = kmalloc(ret, GFP_KERNEL);
-+	if (!lrng_hash) {
-+		crypto_free_shash(tfm);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	lrng_hash->tfm = tfm;
-+
-+	pr_info("Hash %s allocated\n", name);
-+
-+	return lrng_hash;
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_alloc);
-+
-+u32 lrng_kcapi_hash_digestsize(void *hash)
-+{
-+	struct lrng_hash_info *lrng_hash = (struct lrng_hash_info *)hash;
-+	struct crypto_shash *tfm = lrng_hash->tfm;
-+
-+	return crypto_shash_digestsize(tfm);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_digestsize);
-+
-+void lrng_kcapi_hash_dealloc(void *hash)
-+{
-+	struct lrng_hash_info *lrng_hash = (struct lrng_hash_info *)hash;
-+
-+	_lrng_kcapi_hash_free(lrng_hash);
-+	pr_info("Hash deallocated\n");
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_dealloc);
-+
-+int lrng_kcapi_hash_init(struct shash_desc *shash, void *hash)
-+{
-+	struct lrng_hash_info *lrng_hash = (struct lrng_hash_info *)hash;
-+	struct crypto_shash *tfm = lrng_hash->tfm;
-+
-+	shash->tfm = tfm;
-+	return crypto_shash_init(shash);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_init);
-+
-+int lrng_kcapi_hash_update(struct shash_desc *shash, const u8 *inbuf,
-+			   u32 inbuflen)
-+{
-+	return crypto_shash_update(shash, inbuf, inbuflen);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_update);
-+
-+int lrng_kcapi_hash_final(struct shash_desc *shash, u8 *digest)
-+{
-+	return crypto_shash_final(shash, digest);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_final);
-+
-+void lrng_kcapi_hash_zero(struct shash_desc *shash)
-+{
-+	shash_desc_zero(shash);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_zero);
-diff --git a/drivers/char/lrng/lrng_kcapi_hash.h b/drivers/char/lrng/lrng_kcapi_hash.h
-new file mode 100644
-index 000000000000..2f94558d2dd6
---- /dev/null
-+++ b/drivers/char/lrng/lrng_kcapi_hash.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright (C) 2020 - 2021, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#ifndef _LRNG_KCAPI_HASH_H
-+#define _LRNG_KCAPI_HASH_H
-+
-+#include <linux/module.h>
-+
-+void *lrng_kcapi_hash_alloc(const char *name);
-+u32 lrng_kcapi_hash_digestsize(void *hash);
-+void lrng_kcapi_hash_dealloc(void *hash);
-+int lrng_kcapi_hash_init(struct shash_desc *shash, void *hash);
-+int lrng_kcapi_hash_update(struct shash_desc *shash, const u8 *inbuf,
-+			   u32 inbuflen);
-+int lrng_kcapi_hash_final(struct shash_desc *shash, u8 *digest);
-+void lrng_kcapi_hash_zero(struct shash_desc *shash);
-+
-+#endif /* _LRNG_KCAPI_HASH_H */
--- 
-2.31.1
-
-
-
-
+greg k-h
