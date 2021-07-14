@@ -2,78 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435233C8954
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3433A3C8959
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhGNRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:09:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54418 "EHLO mail.kernel.org"
+        id S236088AbhGNRKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:10:39 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26414 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhGNRJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:09:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 091C760698;
-        Wed, 14 Jul 2021 17:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626282398;
-        bh=jNlgPMgZN4EpeXdbNIPWr2KBnHm3nge8Gn/GKjF3UcM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ILSC5K0tDOrDr4SlSUXGH6bqhvwLgftnZt5TJjGqh2as10U6G16uGvu7X/IsbyXpz
-         tlmngxBsxhiLjdEjrgqvGNC8lgMNrIT6J+B3EizyztvYsVj/3s+RiGnL7Zf3GabA5L
-         k7uhx6G6WxD5HkgrFX6ZQcZuSkiw3yav0ww78VaondYtDEXQQGN35lI06p+785kN2X
-         IYwwdQTF/d5ijNVY5FsUm6WCYtvAavJ0NvsGYErZU2zXEiNq5wT5SgMAnsC/obX+F/
-         CJwbDpN2GfkYJOpvS+si33nSTNIYe6+pZ/1fD6nbrgUJ8JTVDN56jDLZluXx7YZ8q4
-         rW7/LCxlqcW+A==
-Date:   Wed, 14 Jul 2021 18:06:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 01/13] spi: spi-mem: Add DTR templates for cmd, address,
- dummy and data phase
-Message-ID: <20210714170601.GH4719@sirena.org.uk>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-2-a-nandan@ti.com>
+        id S229591AbhGNRKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 13:10:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="271502514"
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="271502514"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 10:07:46 -0700
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; 
+   d="scan'208";a="571239941"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 10:07:46 -0700
+Date:   Wed, 14 Jul 2021 10:07:46 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Javier Pello <javier.pello@urjc.es>
+Cc:     Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/ext2: Avoid page_address on pages returned by
+ ext2_get_page
+Message-ID: <20210714170746.GL3169279@iweiny-DESK2.sc.intel.com>
+References: <20210713165821.8a268e2c1db4fd5cf452acd2@urjc.es>
+ <20210713165918.10da0318af5b9b73e599a517@urjc.es>
+ <20210713163018.GF24271@quack2.suse.cz>
+ <20210713193319.a223cd12e3fb8687f0cae0e8@urjc.es>
+ <20210714090013.GA9457@quack2.suse.cz>
+ <20210714185448.8707ac239e9f12b3a7f5b9f9@urjc.es>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MP5ln1Rcf9Bvi+ZW"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713130538.646-2-a-nandan@ti.com>
-X-Cookie: C for yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210714185448.8707ac239e9f12b3a7f5b9f9@urjc.es>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 14, 2021 at 06:54:48PM +0200, Javier Pello wrote:
+> From: Javier Pello <javier.pello@urjc.es>
+> 
+> Commit 782b76d7abdf02b12c46ed6f1e9bf715569027f7 ("fs/ext2: Replace
+> kmap() with kmap_local_page()") replaced the kmap/kunmap calls in
+> ext2_get_page/ext2_put_page with kmap_local_page/kunmap_local for
+> efficiency reasons. As a necessary side change, the commit also
+> made ext2_get_page (and ext2_find_entry and ext2_dotdot) return
+> the mapping address along with the page itself, as it is required
+> for kunmap_local, and converted uses of page_address on such pages
+> to use the newly returned address instead. However, uses of
+> page_address on such pages were missed in ext2_check_page and
+> ext2_delete_entry, which triggers oopses if kmap_local_page happens
+> to return an address from high memory. Fix this now by converting
+> the remaining uses of page_address to use the right address, as
+> returned by kmap_local_page.
+> 
 
---MP5ln1Rcf9Bvi+ZW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Again thanks for catching this!
 
-On Tue, Jul 13, 2021 at 01:05:26PM +0000, Apurva Nandan wrote:
-> Setting dtr field of spi_mem_op is useful when creating templates
-> for DTR ops in spinand.h. Also, 2 bytes cmd phases are required when
-> operating in Octal DTR SPI mode.
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---MP5ln1Rcf9Bvi+ZW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvGXgACgkQJNaLcl1U
-h9CuOgf+OZwzBjuqfvGXu9HhhtOFIDOriNVdP8bqqDTVfmTIZw5qLXv2KsASJQbR
-67Y0bQeUvlIfaOboTjdE5OWWKavRE+3VASCjAShLl4QrYigm6RKXfK8YEAWIg2Ia
-sJhBSQGr+wCNcRyT1OF8p1QNW5rQanlqTS54Vuyy9PISDO2YCmMnngOLe/0LrKaB
-AATXpiINw2//4wZQz5PFSZYNRp4BarGHps9ZpcV1SSApVTD9sOpCPd1lkTXRWP/4
-72P+tfVCerB3REvELGRMbVs7Gg21xfwWC2S67QzprmQ/1jYSRGd7DV25i74tZIEw
-A189cTmusslEmBTPQnZVvNaakXWlzg==
-=RuqX
------END PGP SIGNATURE-----
-
---MP5ln1Rcf9Bvi+ZW--
+> Signed-off-by: Javier Pello <javier.pello@urjc.es>
+> Fixes: 782b76d7abdf ("fs/ext2: Replace kmap() with kmap_local_page()")
+> ---
+> 
+> v2: Use char * for the new parameter to ext2_delete_entry.
+> 
+>  fs/ext2/dir.c   | 12 ++++++------
+>  fs/ext2/ext2.h  |  3 ++-
+>  fs/ext2/namei.c |  4 ++--
+>  3 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+> index 14292dba..2c2f179b 100644
+> --- a/fs/ext2/dir.c
+> +++ b/fs/ext2/dir.c
+> @@ -106,12 +106,11 @@ static int ext2_commit_chunk(struct page *page, loff_t pos, unsigned len)
+>  	return err;
+>  }
+>  
+> -static bool ext2_check_page(struct page *page, int quiet)
+> +static bool ext2_check_page(struct page *page, int quiet, char *kaddr)
+>  {
+>  	struct inode *dir = page->mapping->host;
+>  	struct super_block *sb = dir->i_sb;
+>  	unsigned chunk_size = ext2_chunk_size(dir);
+> -	char *kaddr = page_address(page);
+>  	u32 max_inumber = le32_to_cpu(EXT2_SB(sb)->s_es->s_inodes_count);
+>  	unsigned offs, rec_len;
+>  	unsigned limit = PAGE_SIZE;
+> @@ -205,7 +204,8 @@ static struct page * ext2_get_page(struct inode *dir, unsigned long n,
+>  	if (!IS_ERR(page)) {
+>  		*page_addr = kmap_local_page(page);
+>  		if (unlikely(!PageChecked(page))) {
+> -			if (PageError(page) || !ext2_check_page(page, quiet))
+> +			if (PageError(page) || !ext2_check_page(page, quiet,
+> +								*page_addr))
+>  				goto fail;
+>  		}
+>  	}
+> @@ -584,10 +584,10 @@ int ext2_add_link (struct dentry *dentry, struct inode *inode)
+>   * ext2_delete_entry deletes a directory entry by merging it with the
+>   * previous entry. Page is up-to-date.
+>   */
+> -int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+> +int ext2_delete_entry (struct ext2_dir_entry_2 *dir, struct page *page,
+> +			char *kaddr)
+>  {
+>  	struct inode *inode = page->mapping->host;
+> -	char *kaddr = page_address(page);
+>  	unsigned from = ((char*)dir - kaddr) & ~(ext2_chunk_size(inode)-1);
+>  	unsigned to = ((char *)dir - kaddr) +
+>  				ext2_rec_len_from_disk(dir->rec_len);
+> @@ -607,7 +607,7 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+>  		de = ext2_next_entry(de);
+>  	}
+>  	if (pde)
+> -		from = (char*)pde - (char*)page_address(page);
+> +		from = (char *)pde - kaddr;
+>  	pos = page_offset(page) + from;
+>  	lock_page(page);
+>  	err = ext2_prepare_chunk(page, pos, to - from);
+> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+> index b0a69482..e512630c 100644
+> --- a/fs/ext2/ext2.h
+> +++ b/fs/ext2/ext2.h
+> @@ -740,7 +740,8 @@ extern int ext2_inode_by_name(struct inode *dir,
+>  extern int ext2_make_empty(struct inode *, struct inode *);
+>  extern struct ext2_dir_entry_2 *ext2_find_entry(struct inode *, const struct qstr *,
+>  						struct page **, void **res_page_addr);
+> -extern int ext2_delete_entry (struct ext2_dir_entry_2 *, struct page *);
+> +extern int ext2_delete_entry(struct ext2_dir_entry_2 *dir, struct page *page,
+> +			     char *kaddr);
+>  extern int ext2_empty_dir (struct inode *);
+>  extern struct ext2_dir_entry_2 *ext2_dotdot(struct inode *dir, struct page **p, void **pa);
+>  extern void ext2_set_link(struct inode *, struct ext2_dir_entry_2 *, struct page *, void *,
+> diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+> index 1f69b816..5f6b7560 100644
+> --- a/fs/ext2/namei.c
+> +++ b/fs/ext2/namei.c
+> @@ -293,7 +293,7 @@ static int ext2_unlink(struct inode * dir, struct dentry *dentry)
+>  		goto out;
+>  	}
+>  
+> -	err = ext2_delete_entry (de, page);
+> +	err = ext2_delete_entry (de, page, page_addr);
+>  	ext2_put_page(page, page_addr);
+>  	if (err)
+>  		goto out;
+> @@ -397,7 +397,7 @@ static int ext2_rename (struct user_namespace * mnt_userns,
+>  	old_inode->i_ctime = current_time(old_inode);
+>  	mark_inode_dirty(old_inode);
+>  
+> -	ext2_delete_entry(old_de, old_page);
+> +	ext2_delete_entry(old_de, old_page, old_page_addr);
+>  
+>  	if (dir_de) {
+>  		if (old_dir != new_dir)
+> -- 
+> 2.30.1
