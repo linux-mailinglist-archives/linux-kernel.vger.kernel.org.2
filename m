@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CFB3C9350
+	by mail.lfdr.de (Postfix) with ESMTP id 175193C934F
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235990AbhGNVsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhGNVsl (ORCPT
+        id S232527AbhGNVsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:48:40 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:46901 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhGNVsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:48:41 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D3EC06175F;
-        Wed, 14 Jul 2021 14:45:48 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id b12so3225323pfv.6;
-        Wed, 14 Jul 2021 14:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EDJeHP+Cbj06l1JuifY/WPhYURdEEHaTycc8ZayHpA8=;
-        b=WZiXZEXBKnzhS35KThjFYPiHo61MrjTSYO6cnoEHj6lG/aGyGtKmDL11E7ubxQMxki
-         7xy3TSE4GQeqC/xzzOrApVbtwklTTRbxW59AODcpnnk/XdL8Cplyqi+ZySgiN9DKsphD
-         h2mCbIZoWcDdlbSkx16sjIfrTvnyD6UixJu/nvDTYPSs6cRcilQ2eIEye/Yw3lujowFW
-         ChI/hsK+CzcaJe2cIR4aAhYigF2VTzLSd7vXxkNFRIgaBLL9AiJ4iptpsS4vOd5RN2S9
-         glG16eKCQu9G3E66b8jpu6F+eOqCtcShkXGBKC3PTQ9SGWLF9LE7YmDtpQutZ07w4EIc
-         2MEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EDJeHP+Cbj06l1JuifY/WPhYURdEEHaTycc8ZayHpA8=;
-        b=KkJID8h0Sx6lYMoKhVnPLtB3sLCzezXYY56VNTdfRl9t3WqBSb9kYb0pcTMZeFVOE8
-         SAEnCnXvGRRRNpRE0MKWFy78+TxrHP8v5UgpUL5FhJuit7jVI8XFrQHselhmwqOOZmDg
-         4bSuAyqOfVfnC4kw0XUUL1B4qVB6aibzwhuKT9ziRpEGq4wI5+D91M4NkTtWyZNR58UK
-         9+wGioonr2Fcy6ons0tZB688w4XLmGXKmlFuL3RyOPhrwnpZuKx2TqzOYHOoWUviyVpr
-         FB+O+JJTbxXQNiR6JqPNF24Q+LdXu+SGir0zEo4oVE4AJSGjd7e6oVxqUhsB4GJUw7Oh
-         dOfw==
-X-Gm-Message-State: AOAM5335Z2rAGiXBuYAY3kLxrW04euRb4QLzcRJ122UMLNmwxC7bXK88
-        W/7s+OXajz+o/AuWk7fEM3VgXBo3uzJeE9Q8/o0=
-X-Google-Smtp-Source: ABdhPJwBuWsmhLdoBODfd6Y7T5rfHShgFXe5lmmjFpOv6Ue1yzAKyKiVz5KAk3n67uGPzAy2T98Z0KaIKjlWhZfEwGY=
-X-Received: by 2002:aa7:9a4e:0:b029:32b:34a7:2e4e with SMTP id
- x14-20020aa79a4e0000b029032b34a72e4emr183163pfj.20.1626299147861; Wed, 14 Jul
- 2021 14:45:47 -0700 (PDT)
+        Wed, 14 Jul 2021 17:48:39 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210714214546epoutp025391adaeedd8cb5149ae12e4d83e802c~RxnT0rQfU1551115511epoutp02i
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 21:45:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210714214546epoutp025391adaeedd8cb5149ae12e4d83e802c~RxnT0rQfU1551115511epoutp02i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1626299146;
+        bh=Hk8XY5Qw0DnsZL6Vhvi4dqC+Go+d089gtAq84ur/LYg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=oDgchS+xYYzxdthJV0K4Zmf7TILhIKKa+jpISXh0ATmH3dQMMVZyUYKGZ4bvUy1MW
+         HhxT+wLYVxcxVnazFuK2QG0T0B8D9jGRzutoJa2OVWby9wuxsI4nZskTDrHlrgGJn4
+         Iog4KXdbSZ3Nanshwm3F7Q4t3Ri7xdeEBWw15RrU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210714214545epcas1p1cb8576ffe6c5e7094890cd264e543dd5~RxnTARsjY1177911779epcas1p1J;
+        Wed, 14 Jul 2021 21:45:45 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4GQ9zW0dgbz4x9Pt; Wed, 14 Jul
+        2021 21:45:43 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EC.98.09952.60B5FE06; Thu, 15 Jul 2021 06:45:42 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210714214541epcas1p26debc79a3994d74058acaec507447dd4~RxnP_BmOy0323503235epcas1p2n;
+        Wed, 14 Jul 2021 21:45:41 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210714214541epsmtrp2f5c2e1571a712e28a1c94345cc330d26~RxnP9SDEJ2448924489epsmtrp2O;
+        Wed, 14 Jul 2021 21:45:41 +0000 (GMT)
+X-AuditID: b6c32a35-447ff700000026e0-37-60ef5b0630d9
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2A.4E.08394.50B5FE06; Thu, 15 Jul 2021 06:45:41 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210714214541epsmtip17b5905f0ce96e26b00edf2af3fb11714~RxnPo1AN-0598805988epsmtip1E;
+        Wed, 14 Jul 2021 21:45:41 +0000 (GMT)
+Subject: Re: [PATCH] mmc: dw_mmc: Fix hang on data CRC error
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, kernel <kernel@axis.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <5c025295-fa14-d363-89a2-e96e3b278419@samsung.com>
+Date:   Thu, 15 Jul 2021 06:46:34 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210714001127.GA994@raspberrypi> <CAHC9VhSd7hTXUyeYB1=icx+W40f4E=1fzp4AC3B2gHFeubArRg@mail.gmail.com>
-In-Reply-To: <CAHC9VhSd7hTXUyeYB1=icx+W40f4E=1fzp4AC3B2gHFeubArRg@mail.gmail.com>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Thu, 15 Jul 2021 06:45:37 +0900
-Message-ID: <CADLLry7E+THeMSPLR7kxu-hzA21NHh=tLms0UJ1Wru4NFJ5jRA@mail.gmail.com>
-Subject: Re: [PATCH v2] lsm_audit,selinux: return early for possible NULL
- audit buffers
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>,
-        kernel-team@lge.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210714114921.GA22706@axis.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdlhTX5c9+n2CQVeIxacWVYvLu+awWRz5
+        389ocXxtuMX5bf4OrB7X1wV43Lm2h83j8ya5AOaobJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4
+        UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoG1KCmWJOaVAoYDE4mIlfTubovzSklSFjPziElul
+        1IKUnALLAr3ixNzi0rx0veT8XCtDAwMjU6DChOyMltaYggdcFVv3HWFtYPzL0cXIySEhYCJx
+        8WQfaxcjF4eQwA5GiQNvuqCcT4wSDy9uY4JwvjFKTF/0kxGmZdGhOywQib2MEhvu3WSGcN4z
+        Smw+fpsNpEpYwEbi4r0rYLYIUMe2ya/A5jIL7GOUOL+3nRUkwSagI7H923EmEJtXwE7i+rcG
+        sAYWAVWJ3oM7wdaJCkRKnN+9gAWiRlDi5MwnYDangJ7E0pVfmEFsZgFxiVtP5jNB2PIS29/O
+        AbtIQuARu8SJo7uYIO52kdi4eyYLhC0s8er4FnYIW0ri87u9bBB2tcSu5jNQzR2MEre2NUE1
+        G0vsXzoZyOYA2qApsX6XPkRYUWLn77mMEIv5JN597WEFKZEQ4JXoaBOCKFGRuPT6JRPMqrtP
+        /rNC2B4Sk5bMYJnAqDgLyWuzkLwzC8k7sxAWL2BkWcUollpQnJueWmxYYIgc3ZsYwUlRy3QH
+        48S3H/QOMTJxMB5ilOBgVhLhXWr0NkGINyWxsiq1KD++qDQntfgQoykwsCcyS4km5wPTcl5J
+        vKGpkbGxsYWJoZmpoaGSOO9OtkMJQgLpiSWp2ampBalFMH1MHJxSDUzZ99aURS3mPe9kN6NO
+        dOmzvNcTTqhmPpoWqq9syPYr7/WdyO8HClZtVVphn5+0VeTh+eTlrbGpGtUfrVJ9ls/pZD3g
+        Wf3kMOOBKz8PGhdH2LQrRbK8fKHgxv5lxj62A+XdD2Wzg+Ui73zZu31Kk3tye3hFKHfLQ6Ym
+        DdEWFzEeMS31ZN5rnRP5M+Nevb/5gaWPx+0004yQp9LHavkXRz48fl3S77/epfz4rFtMl35w
+        /33n4friN0+9v9L7suADJyPWyUw2XFz+TE8z6/ahpT89P4bP2pppfrSF6dqq7lCtMONZfpl3
+        GOc6/7l6N1RvTxTzRUPVb59knias6rCb2B2wmN/9T/XUUD55yWd7/yuxFGckGmoxFxUnAgA7
+        G3dFEwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWy7bCSnC5r9PsEg9VNhhafWlQtLu+aw2Zx
+        5H8/o8XxteEW57f5O7B6XF8X4HHn2h42j8+b5AKYo7hsUlJzMstSi/TtErgyWlpjCh5wVWzd
+        d4S1gfEvRxcjJ4eEgInEokN3WLoYuTiEBHYzSlx+NI0JIiEl8fnpVLYuRg4gW1ji8OFiiJq3
+        jBIX9kwEqxEWsJG4eO8KG4gtAjRo2+RXrCBFzAL7GCVebNjPAtdx9esSRpAqNgEdie3fjoN1
+        8wrYSVz/1gDWzSKgKtF7cCdYjahApMTnBSCTQGoEJU7OfMICYnMK6EksXfmFGcRmFlCX+DPv
+        EpQtLnHryXwmCFteYvvbOcwTGIVmIWmfhaRlFpKWWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcr
+        TswtLs1L10vOz93ECI4DLc0djNtXfdA7xMjEwXiIUYKDWUmEd6nR2wQh3pTEyqrUovz4otKc
+        1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamA4vW3yrJ+PbSuOpEYt2fw67sUmo
+        /b6kX4vsjfRo7oe224IqZvff8Cv5sd75ahyL16GVwmeeN3Jvz3Vaus2ML+OnZXDxJi3rF/8O
+        ZjwPS/uTF/Hj8ZxfqQItxbwii3aHSzc6HDnYe1PR2V9SzLd8G9O2Pf6WTh25TZ1Xp0s8VOHg
+        Cz+pmjg1KftSjZqSkZys45Pm3dpZ2kf+7JBMExAKi+44vPHSgbTUX1Zfp7lc4Y0/71IxcYe2
+        feWpvfOXLwt3UIkNd1Cbtp7vgH2r48zDn7a1Re8LlDo/TSzj/32tY++8n+/Zujr+SNiri/WB
+        4j9DkiRtLKrs3U8ll3D8iD0zbfWa3+IGjA3Wy4tNiqqUlViKMxINtZiLihMB2Wt+Z/ICAAA=
+X-CMS-MailID: 20210714214541epcas1p26debc79a3994d74058acaec507447dd4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210630102240epcas1p33bbdffb5eb553a49badaffab756d482c
+References: <CGME20210630102240epcas1p33bbdffb5eb553a49badaffab756d482c@epcas1p3.samsung.com>
+        <20210630102232.16011-1-vincent.whitchurch@axis.com>
+        <81c1b56d-e1be-b3fb-6b44-fc8054f1dd8b@samsung.com>
+        <20210714114921.GA22706@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 7=EC=9B=94 15=EC=9D=BC (=EB=AA=A9) =EC=98=A4=EC=A0=84 4:26, P=
-aul Moore <paul@paul-moore.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Tue, Jul 13, 2021 at 8:11 PM Austin Kim <austindh.kim@gmail.com> wrote=
-:
-> >
-> > From: Austin Kim <austin.kim@lge.com>
-> >
-> > audit_log_start() may return NULL in below cases:
-> >
-> >   - when audit is not initialized.
-> >   - when audit backlog limit exceeds.
-> >
-> > After the call to audit_log_start() is made and then possible NULL audi=
-t
-> > buffer argument is passed to audit_log_*() functions,
-> > audit_log_*() functions return immediately in case of a NULL audit buff=
-er
-> > argument.
-> >
-> > But it is optimal to return early when audit_log_start() returns NULL,
-> > because it is not necessary for audit_log_*() functions to be called wi=
-th
-> > NULL audit buffer argument.
-> >
-> > So add exception handling for possible NULL audit buffers where
-> > return value can be handled from callers.
-> >
-> > Signed-off-by: Austin Kim <austin.kim@lge.com>
-> > ---
-> >  security/selinux/hooks.c       | 4 ++++
-> >  security/selinux/ss/services.c | 2 ++
-> >  2 files changed, 6 insertions(+)
->
-> Merged into selinux/next, thank you!
+On 7/14/21 8:49 PM, Vincent Whitchurch wrote:
+> On Thu, Jul 01, 2021 at 12:06:31AM +0200, Jaehoon Chung wrote:
+>> On 6/30/21 7:22 PM, Vincent Whitchurch wrote:
+>>> When a Data CRC interrupt is received, the driver disables the DMA, then
+>>> sends the stop/abort command and then waits for Data Transfer Over.
+>>>
+>>> However, sometimes, when a data CRC error is received in the middle of a
+>>> multi-block write transfer, the Data Transfer Over interrupt is never
+>>> received, and the driver hangs and never completes the request.
+>>>
+>>> The driver sets the BMOD.SWR bit (SDMMC_IDMAC_SWRESET) when stopping the
+>>> DMA, but according to the manual CMD.STOP_ABORT_CMD should be programmed
+>>> "before assertion of SWR".  Do these operations in the recommended
+>>> order.  With this change the Data Transfer Over is always received
+>>> correctly in my tests.
+>>
+>> I will check with your patch. I didn't see any CRC error on my targets before.
+> 
+> Have you had a chance to check it?  You can use the fault-injection
+> patch if you want to trigger aborted transfers without getting real CRC
+> errors:
+> 
+>  https://protect2.fireeye.com/v1/url?k=96c33914-c958001f-96c2b25b-002590f5b904-9a89d187f33934b7&q=1&e=308eae3a-44b8-43d7-be54-24e9b850f4ad&u=https%3A%2F%2Flore.kernel.org%2Flinux-mmc%2F20210701080534.23138-1-vincent.whitchurch%40axis.com%2F
+> 
 
-Great, thanks for review and feedback.
-
-Thanks,
-Austin Kim
-
->
-> --
-> paul moore
-> www.paul-moore.com
