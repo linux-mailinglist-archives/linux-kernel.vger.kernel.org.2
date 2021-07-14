@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B58A3C92D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981DB3C92D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhGNVMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:12:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234998AbhGNVME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:12:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B46BF613CC;
-        Wed, 14 Jul 2021 21:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1626296952;
-        bh=hHlXOWAlgpR5zYXZWRZLzEhjTkhsaaifQTA1+gqRSu4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=y44sm/PmDvlcm+SYUSSbjyrMdahlB1dXzuDoxpGIElSAhhuyE/IxYd8wq7baRA0Sk
-         HNL7tgdBEaKQOd/hZSXZsY9cGjpHhqQ7x9qLAjaLew4dlqO+y7G4fKolAExtHlUI3w
-         R3zDLSDN9Ash9MzS9pVhT547n9ygj/6rb7PJraZg=
-Date:   Wed, 14 Jul 2021 14:09:11 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>, Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-Id: <20210714140911.6c45f8f4a9b129ed36bb9d06@linux-foundation.org>
-In-Reply-To: <YO7lZpqC4xrMPXQg@kroah.com>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
-        <YO0zXVX9Bx9QZCTs@kroah.com>
-        <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
-        <YO6r1k7CIl16o61z@kroah.com>
-        <YO7lZpqC4xrMPXQg@kroah.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234966AbhGNVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:12:47 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:36776 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234356AbhGNVMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 17:12:46 -0400
+Received: by mail-io1-f48.google.com with SMTP id u7so3873792ion.3;
+        Wed, 14 Jul 2021 14:09:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i1vfhn+CRUOHYGpYKbityrVIovO4erqwqnKHptg/N30=;
+        b=R/dnMhlSWDgn0GNUZqr5+OgrFWQSa46FItQHl67lkhKom9rW/PMysKtK3VqmFtzo6E
+         3Thso54zZngCN/S7a+jhgXTiBwGxFC7luEo+cikxq/PR6eduTHG+7D3mrpLrzlsiBOzY
+         QUAaqFCABl1cxAV/bVQcxD2hEmwhSCFk49DHyO7Y4MqWvy6Cuwc799YGJmuPiEmdrNOW
+         XQSCurLc/W6Sj2wgUmNbLc1UEkJ4GMmuK2vf3dvhuYC46ezHhafWEO4UTywMcvCIjs/K
+         RPzREZ/06m/Hbq8KXHW1C7OUb38cu+kxMuW3LU8ofEMvAJ2IsXR+nSpNzUKzTv863lsz
+         +5Hg==
+X-Gm-Message-State: AOAM531arpk5w74rAlD4QyrTlv3pye5+XF6sWa7ZFXuJSzJOlEk1LPd2
+        tC+ikKydZdzx9dF1FzwOWw==
+X-Google-Smtp-Source: ABdhPJz7iMkOpKxv+9qy0XrhTd1+HIsoMrLD7EmQMOatdz2vJMZUodErwzMhE5Hr2jtWY1ej2fSMSg==
+X-Received: by 2002:a05:6638:2726:: with SMTP id m38mr181470jav.115.1626296994336;
+        Wed, 14 Jul 2021 14:09:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id e14sm1859050ile.2.2021.07.14.14.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 14:09:53 -0700 (PDT)
+Received: (nullmailer pid 3528907 invoked by uid 1000);
+        Wed, 14 Jul 2021 21:09:49 -0000
+Date:   Wed, 14 Jul 2021 15:09:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     vkoul@kernel.org, devicetree@vger.kernel.org,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        kishon@ti.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: phy: Add the Amlogic Meson8 HDMI TX
+ PHY bindings
+Message-ID: <20210714210949.GA3528846@robh.at.kernel.org>
+References: <20210629182047.893415-1-martin.blumenstingl@googlemail.com>
+ <20210629182047.893415-2-martin.blumenstingl@googlemail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629182047.893415-2-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 15:23:50 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Tue, 29 Jun 2021 20:20:46 +0200, Martin Blumenstingl wrote:
+> Amlogic Meson8, Meson8b and Meson8m2 all include an identical (or at
+> least very similar) HDMI TX PHY. The PHY registers are part of the HHI
+> register area.
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  .../phy/amlogic,meson8-hdmi-tx-phy.yaml       | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml
+> 
 
-> > But it really feels odd that you all take the time to add a "Hey, this
-> > fixes this specific commit!" tag in the changelog, yet you do not
-> > actually want to go and fix the kernels that have that commit in it.
-> > This is an odd signal to others that watch the changelogs for context
-> > clues.  Perhaps you might not want to do that anymore.
-> 
-> I looked at some of these patches and it seems really odd to me that you
-> all are marking them with Fixes: tags, but do not want them backported.
-> 
-> First example is babbbdd08af9 ("mm/huge_memory.c: don't discard hugepage
-> if other processes are mapping it")
-> 
-> Why is this not ok to backport?
-> 
-> Also what about e6be37b2e7bd ("mm/huge_memory.c: add missing read-only
-> THP checking in transparent_hugepage_enabled()")?
-> 
-> And 41eb5df1cbc9 ("mm: memcg/slab: properly set up gfp flags for objcg
-> pointer array")?
-> 
-> And 6acfb5ba150c ("mm: migrate: fix missing update page_private to
-> hugetlb_page_subpool")?
-> 
-> And 832b50725373 ("mm: mmap_lock: use local locks instead of disabling
-> preemption")? (the RT people want that...)
-> 
-> And f7ec104458e0 ("mm/page_alloc: fix counting of managed_pages")?
-> 
-> Do you want to rely on systems where these fixes are not applied?
-> 
-> I can understand if you all want to send them to us later after they
-> have been "tested out" in Linus's tree, that's fine, but to just not
-> want them applied at all feels odd to me.
-
-Broadly speaking: end-user impact.  If we don't have reports of the
-issue causing a user-visible problem and we don't expect such things to
-occur, don't backport.  Why risk causing some regression when we cannot
-identify any benefit?  (and boy do my fingers get tired asking people
-to describe the user-visible effects of the bug they claim to have fixed!)
-
-Of course, screwups can happen and user-useful patches may be passed
-over.
-
+Reviewed-by: Rob Herring <robh@kernel.org>
