@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62D33C83A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907A43C83AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239047AbhGNLVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:21:18 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:29856 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237788AbhGNLVQ (ORCPT
+        id S239207AbhGNLWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232161AbhGNLWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:21:16 -0400
-X-UUID: a0124a582aaf4af196a2e5fb2fc74a12-20210714
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jGb3Fw2ghMBhqRR5HNnLI1fFNCmMhlcMRemz5Ei6vYI=;
-        b=DCftle3drc3MLosi/1G5PTrEmJcKPQwKoFJBBWP8jbqdXE2DwHhL/y3EVLXW5YANSgbS/Pi0bYnAo7u2MVCr6NlEqOVKM2vXtCC3VLIDi98+2EbsC6oEdymQP2ti9WJkBIZ/Zez8o49ktXGUyTMm/NnCJfjYvHiYTIF+DfjmUuQ=;
-X-UUID: a0124a582aaf4af196a2e5fb2fc74a12-20210714
-Received: from mtkmrs31.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 119119299; Wed, 14 Jul 2021 19:18:21 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Jul
- 2021 19:18:17 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 14 Jul 2021 19:18:16 +0800
-Message-ID: <1626261496.14352.16.camel@mhfsdcap03>
-Subject: Re: Aw: [PATCH v6 00/11] Clean up "mediatek,larb"
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Frank Wunderlich <frank-w@public-files.de>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "Will Deacon" <will.deacon@arm.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
-        <ming-fan.chen@mediatek.com>, <yi.kuo@mediatek.com>,
-        <acourbot@chromium.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Xia Jiang <xia.jiang@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "Eizan Miyamoto" <eizan@chromium.org>, <anthony.huang@mediatek.com>
-Date:   Wed, 14 Jul 2021 19:18:16 +0800
-In-Reply-To: <trinity-7d9ebdc9-4849-4d93-bfb5-429dcb4ee449-1626253158870@3c-app-gmx-bs01>
-References: <20210714025626.5528-1-yong.wu@mediatek.com>
-         <trinity-7d9ebdc9-4849-4d93-bfb5-429dcb4ee449-1626253158870@3c-app-gmx-bs01>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 14 Jul 2021 07:22:21 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7B1C06175F;
+        Wed, 14 Jul 2021 04:19:29 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id dj21so2684908edb.0;
+        Wed, 14 Jul 2021 04:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=t9BiriwpOcNEknMm/iM0jLz5+veRh3lTn49M6YjFIAg=;
+        b=hlIl5a1YaVJjTVmyVNJnn1PWoxiuSvlzAUJuzged3kbs3f0MnU3O6thtTUDVgDi92h
+         a6lVeKJkqp820ALDwGpl0U4ZoxAMjMn+acN9pcaGjCoFS1XYuXtgTSIiCcsOc/c7MsP8
+         SV7Ic6lu7fje6N2E7q3i3Gdu7cHTbVqzUHZLBHfD0bbPc+hF+ZjxM+XZGWfRuzu9go1z
+         z5rtou2E5Z9P1+P+XLCjbPmePtW3jjmWFaqHG8cW+A6CPjQ0Vuh7TsCvNw/S1tFCMBK5
+         /BTyNdrp012ROvh3zA1ftXagejr6fJjP4/LUtc1mqDEBgzXR03Il/kL+LBMq1e71S5df
+         9iLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t9BiriwpOcNEknMm/iM0jLz5+veRh3lTn49M6YjFIAg=;
+        b=t7cme94IFJwjHHgXpu0THyNluAff06f/cEkgCn9x73zRQxSbQ7+TQiST9rtv2hQjBR
+         MaEcBeM4b1tIgIK5YYQBWeodWDOIcH1Wx66BNNo0Epk4CLorR5LdD2bKvYG7brSABJsV
+         958RFGiADhcdkjf2VzwOTB7ahwlW1S24vw344DmltTSdD0yDgixhFkV46fpF0ojeRxEg
+         9tFdnqJMsZpiGjCkBwc7PPG17Ps91OC7E0oJu11IDBnqSiG1g8gjnBpprjZ2sFHvoXgU
+         8aqBblBw/tW5gggLU9cEvjK2KPO++qAtG3AZrhNgcFo7lj66sacN/dIBxgr7V7nszwYs
+         8IrQ==
+X-Gm-Message-State: AOAM533OAwsToo0zagXhXFKU0Pp/5Td99PpBsR5Fh0eW3RKd5RkFw5/X
+        l2F0ot9TDiLxWY4Abo6tx60=
+X-Google-Smtp-Source: ABdhPJyStSekdjayeUViGApOVQNa7pYq8yu4/35Q8QcMoWOA1JNSFYmBgCv5OylZFSiL/p6MZ/P2KA==
+X-Received: by 2002:a05:6402:35d4:: with SMTP id z20mr13349613edc.138.1626261567652;
+        Wed, 14 Jul 2021 04:19:27 -0700 (PDT)
+Received: from [192.168.0.108] ([77.127.114.213])
+        by smtp.gmail.com with ESMTPSA id v16sm137541edc.52.2021.07.14.04.19.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 04:19:27 -0700 (PDT)
+Subject: Re: [PATCH v3 14/14] net/mlx4: Use irq_update_affinity_hint
+To:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        tglx@linutronix.de, jesse.brandeburg@intel.com,
+        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
+        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
+        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
+        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
+        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
+        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, nilal@redhat.com,
+        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
+        ahs3@redhat.com, leonro@nvidia.com, chandrakanth.patil@broadcom.com
+References: <20210713211502.464259-1-nitesh@redhat.com>
+ <20210713211502.464259-15-nitesh@redhat.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <c2d794bf-20b4-95fa-dfba-e85cf6b74bd4@gmail.com>
+Date:   Wed, 14 Jul 2021 14:19:20 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 194C4630574F716762D04534E2ED131E926154033AFA8FFE4228D830E0E139F02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210713211502.464259-15-nitesh@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA3LTE0IGF0IDEwOjU5ICswMjAwLCBGcmFuayBXdW5kZXJsaWNoIHdyb3Rl
-Og0KPiBIaSwNCj4gDQo+IHNvcnJ5IHRoaXMgKG9yIHRoZSAyIGRlcGVuY3ktc2VyaWVzKSBjYXVz
-ZSBhIE5VTEwgUG9pbnRlciBkZXJlZiBpbiBpb21tdV9ncm91cF9yZW1vdmVfZGV2aWNlIG9uIG10
-NzYyMy9icGktcjINCg0KSGkgRnJhbmssDQoNClRoYW5rcyBmb3IgeW91ciByZXBvcnQuIG10NzYy
-MyB1c2UgbXRrX2lvbW11X3YxLmMuDQoNCkkgd2lsbCB0cnkgdG8gcmVwcm9kdWNlIHRoaXMgbG9j
-YWxseS4NCg0KPiANCj4gaSB3b25kZXIgd2h5IG9uIGJvb3R1cCBhIGNsZWFudXAgaXMgcnVuLCBi
-dXQgaGF2ZSBubyBoaW50IGFib3V0IHRoaXMuDQo+IA0KPiBzaW5jZSAiZHRzOiBtdGstbWRwOiBy
-ZW1vdmUgbWVkaWF0ZWssIHZwdSBwcm9wZXJ0eSBmcm9tIHByaW1hcnkgTURQIGRldmljZSIgYWxs
-IGlzIGdvb2QsIGkgZ3Vlc3MgcHJvYmxlbSBjb21lcyB1cCB3aGlsZSByZW1vdmluZyBsYXJiIHdp
-dGggRFQNCj4gDQo+IHRoaXMgaXMgYmFja3RyYWNlDQo+IA0KPiBbICAgIDYuMjc0NDY1XSBQQyBp
-cyBhdCBpb21tdV9ncm91cF9yZW1vdmVfZGV2aWNlKzB4MjgvMHgxNDgNCj4gWyAgICA2LjI3OTg3
-N10gTFIgaXMgYXQgaW9tbXVfcmVsZWFzZV9kZXZpY2UrMHg0Yy8weDcwDQo+IA0KPiBbICAgIDYu
-Njc0MzQ3XSBCYWNrdHJhY2U6DQo+IFsgICAgNi42NzY3OTddIFs8YzBjOWMzN2M+XSAoaW9tbXVf
-Z3JvdXBfcmVtb3ZlX2RldmljZSkgZnJvbSBbPGMwNmJmMDI4Pl0gKGlvbW0pDQo+IFsgICAgNi42
-ODYyMjFdICByNzowMDAwMDAwMCByNjpjMDZiZjA0YyByNTpjMGQ3YTFhYyByNDpjMjFmYzAxMA0K
-PiBbICAgIDYuNjkxODgzXSBbPGMwNmJlZmRjPl0gKGlvbW11X3JlbGVhc2VfZGV2aWNlKSBmcm9t
-IFs8YzA2YmYwNjQ+XSAocmVtb3ZlX2lvKQ0KPiBbICAgIDYuNzAwNjg5XSAgcjU6MDAwMDAwMDAg
-cjQ6MDAwMDAwMDANCj4gWyAgICA2LjcwNDI2NV0gWzxjMDZiZjA0Yz5dIChyZW1vdmVfaW9tbXVf
-Z3JvdXApIGZyb20gWzxjMDczMzQzND5dIChidXNfZm9yX2VhYykNCj4gWyAgICA2LjcxMjcyNV0g
-WzxjMDczMzNhYz5dIChidXNfZm9yX2VhY2hfZGV2KSBmcm9tIFs8YzA2YmY2NTg+XSAoYnVzX3Nl
-dF9pb21tdSkNCj4gWyAgICA2LjcyMDc1M10gIHI2OmMzMzFmNDQwIHI1OmMxNDA2ZjU4IHI0OmZm
-ZmZmZmVhDQo+IFsgICAgNi43MjUzNzBdIFs8YzA2YmY1YTA+XSAoYnVzX3NldF9pb21tdSkgZnJv
-bSBbPGMwNmMxZTg4Pl0gKG10a19pb21tdV9wcm9iZSspDQo+IFsgICAgNi43MzM0ODRdICByNzpj
-MzJkYjBiOCByNjpjMjFmOWMwMCByNTpjMzMxZjFjMCByNDowMDAwMDAwMA0KPiBbICAgIDYuNzM5
-MTQ1XSBbPGMwNmMxYmZjPl0gKG10a19pb21tdV9wcm9iZSkgZnJvbSBbPGMwNzM4YzE0Pl0gKHBs
-YXRmb3JtX3Byb2JlKQ0KPiBbICAgIDYuNzQ3MTc2XSAgcjEwOmMyMWY5YzEwIHI5OmMyNDk2ZjU0
-IHI4OmMxNDYyM2I4IHI3OmMxNDYyM2I4IHI2OmMxNDA1YjkwIHI1MA0KPiBbICAgIDYuNzU1MDEy
-XSAgcjQ6MDAwMDAwMDANCj4gWyAgICA2Ljc1NzU0NF0gWzxjMDczOGJhOD5dIChwbGF0Zm9ybV9w
-cm9iZSkgZnJvbSBbPGMwNzM1OTY4Pl0gKHJlYWxseV9wcm9iZS5wYSkNCj4gWyAgICA2Ljc2NjAw
-Nl0gIHI3OmMxNDYyM2I4IHI2OmMxNDA1YjkwIHI1OjAwMDAwMDAwIHI0OmMyMWY5YzEwDQo+IFsg
-ICAgNi43NzE2NjddIFs8YzA3MzU4YTA+XSAocmVhbGx5X3Byb2JlLnBhcnQuMCkgZnJvbSBbPGMw
-NzM1Y2VjPl0gKHJlYWxseV9wcm8pDQo+IFsgICAgNi43Nzk4NjZdICByNzpjMjFmOWMxMCByNjpj
-MjU0OWU3NCByNTpjMTQwNWI5MCByNDpjMjFmOWMxMA0KPiBbICAgIDYuNzg1NTI3XSBbPGMwNzM1
-Y2E0Pl0gKHJlYWxseV9wcm9iZSkgZnJvbSBbPGMwNzM1ZGUwPl0gKF9fZHJpdmVyX3Byb2JlX2Rl
-KQ0KPiBbICAgIDYuNzkzOTg0XSAgcjU6YzE0MDViOTAgcjQ6YzIxZjljMTANCj4gWyAgICA2Ljc5
-NzU2MF0gWzxjMDczNWQzMD5dIChfX2RyaXZlcl9wcm9iZV9kZXZpY2UpIGZyb20gWzxjMDczNWZh
-MD5dIChkcml2ZXJfcCkNCj4gWyAgICA2LjgwNjU0M10gIHI5OmMyNDk2ZjU0IHI4OjAwMDAwMDA4
-IHI3OmMyMWY5YzEwIHI2OmMyNTQ5ZTc0IHI1OmMxNGM2ZWM4IHI0OjQNCj4gWyAgICA2LjgxNDI5
-MV0gWzxjMDczNWY1Yz5dIChkcml2ZXJfcHJvYmVfZGV2aWNlKSBmcm9tIFs8YzA3MzY0MTA+XSAo
-X19kZXZpY2VfYSkNCj4gWyAgICA2LjgyMzQ0OF0gIHI5OmMyNDk2ZjU0IHI4OjAwMDAwMDAwIHI3
-OmMyMWY5YzEwIHI2OmMyNTQ5ZTc0IHI1OmMxNDA1YjkwIHI0OjENCj4gWyAgICA2LjgzMTE5Nl0g
-WzxjMDczNjM1Yz5dIChfX2RldmljZV9hdHRhY2hfZHJpdmVyKSBmcm9tIFs8YzA3MzM1NDA+XSAo
-YnVzX2ZvcikNCj4gWyAgICA2Ljg0MDAwN10gIHI3OmMxNDYyM2I4IHI2OmMwNzM2MzVjIHI1OmMy
-NTQ5ZTc0IHI0OjAwMDAwMDAwDQo+IFsgICAgNi44NDU2NjldIFs8YzA3MzM0YWM+XSAoYnVzX2Zv
-cl9lYWNoX2RydikgZnJvbSBbPGMwNzM1N2U4Pl0gKF9fZGV2aWNlX2F0dGEpDQo+IFsgICAgNi44
-NTQwNDRdICByNjowMDAwMDAwMSByNTpjMjFmOWM1NCByNDpjMjFmOWMxMA0KPiBbICAgIDYuODU4
-NjYyXSBbPGMwNzM1NmU0Pl0gKF9fZGV2aWNlX2F0dGFjaCkgZnJvbSBbPGMwNzM2NjJjPl0gKGRl
-dmljZV9pbml0aWFsKQ0KPiBbICAgIDYuODY3MjA3XSAgcjY6YzIxZjljMTAgcjU6YzE0MDZmNTgg
-cjQ6YzE0MDZjYTANCj4gWyAgICA2Ljg3MTgyNV0gWzxjMDczNjYxMD5dIChkZXZpY2VfaW5pdGlh
-bF9wcm9iZSkgZnJvbSBbPGMwNzM0NmRjPl0gKGJ1c19wcm9iZSkNCj4gWyAgICA2Ljg4MDQ1NF0g
-WzxjMDczNDY0OD5dIChidXNfcHJvYmVfZGV2aWNlKSBmcm9tIFs8YzA3MzRjYzg+XSAoZGVmZXJy
-ZWRfcHJvYikNCj4gDQo+IA0KPiBiaXNlY3Qgc2hvd3MgdGhpcyBjb21taXQgYXMgYnJlYWtpbmc6
-DQo+IA0KPiBBdXRob3I6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiBEYXRlOiAg
-IFdlZCBKdWwgMTQgMTA6NTY6MTcgMjAyMSArMDgwMA0KPiANCj4gICAgIGlvbW11L21lZGlhdGVr
-OiBBZGQgcHJvYmVfZGVmZXIgZm9yIHNtaS1sYXJiDQo+IA0KPiAgICAgUHJlcGFyZSBmb3IgYWRk
-aW5nIGRldmljZV9saW5rLg0KPiANCj4gcmVnYXJkcyBGcmFuaw0KDQo=
 
+
+On 7/14/2021 12:15 AM, Nitesh Narayan Lal wrote:
+> The driver uses irq_set_affinity_hint() to update the affinity_hint mask
+> that is consumed by the userspace to distribute the interrupts. However,
+> under the hood irq_set_affinity_hint() also applies the provided cpumask
+> (if not NULL) as the affinity for the given interrupt which is an
+> undocumented side effect.
+> 
+> To remove this side effect irq_set_affinity_hint() has been marked
+> as deprecated and new interfaces have been introduced. Hence, replace the
+> irq_set_affinity_hint() with the new interface irq_update_affinity_hint()
+> that only updates the affinity_hint pointer.
+> 
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+
+Thanks for you patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+
+Tariq
