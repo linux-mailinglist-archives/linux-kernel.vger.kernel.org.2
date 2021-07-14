@@ -2,135 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79D63C8156
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19843C815C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238302AbhGNJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238189AbhGNJVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:21:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78FC361370;
-        Wed, 14 Jul 2021 09:18:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626254298;
-        bh=TaQMEAMiqW5ftXExwf1yrkJI+SslnJWeSCkRVn4NqSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o4lGqiJB0Ge6QP1LDnusUIRfmL1dsAT0/rUkEMH5n8Yf3vspME4x08nh2OS08T31K
-         Uo/egFjhyyY3YuzXS/RnJu3WEdtbL2V7l3i9G8KxcsbKg4FTsZKd03We97jVVBMR5n
-         ycrBXBZsvuCyIdzk03FUSlq3NfQaW34/Dwma9yQI=
-Date:   Wed, 14 Jul 2021 11:18:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Michal Hocko <mhocko@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
+        id S238822AbhGNJV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:21:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46658 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238806AbhGNJVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:21:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626254343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=znVfHiAcFHX9tJuBNtdE1enTDALli5tsEzq060vRh+Q=;
+        b=Rqynwccc1t7SAl0xRgpx4HyTa9nOrPu8i0l2bXdKjwarcz0j5RpsE5BFO73p/4LORG0eBB
+        L7/VH8DhLGj9K355nmda1wNJA9qzImhxKHAiErSqC41VZ0TVYhe3U2wsymevI/p6celRGV
+        4oxN/rajsgIKynJBBNCNayE4q3JTDe0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-515-nQkNRMj3N_WxmjWm5Vh2DA-1; Wed, 14 Jul 2021 05:19:01 -0400
+X-MC-Unique: nQkNRMj3N_WxmjWm5Vh2DA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73754A40C2;
+        Wed, 14 Jul 2021 09:18:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-19.rdu2.redhat.com [10.10.118.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5028146;
+        Wed, 14 Jul 2021 09:18:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YO23WOUhhZtL6Gtn@cmpxchg.org>
+References: <YO23WOUhhZtL6Gtn@cmpxchg.org> <20210712030701.4000097-1-willy@infradead.org> <20210712030701.4000097-11-willy@infradead.org> <YOzdKYejOEUbjvMj@cmpxchg.org> <YOz3Lms9pcsHPKLt@casper.infradead.org> <20210713091533.GB4132@worktop.programming.kicks-ass.net>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     dhowells@redhat.com, Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO6r1k7CIl16o61z@kroah.com>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com>
- <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v13 010/137] mm: Add folio flag manipulation functions
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3996757.1626254335.1@warthog.procyon.org.uk>
+Date:   Wed, 14 Jul 2021 10:18:55 +0100
+Message-ID: <3996758.1626254335@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 06:28:13PM -0700, Andrew Morton wrote:
-> On Tue, 13 Jul 2021 08:31:57 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Johannes Weiner <hannes@cmpxchg.org> wrote:
+
+> For example, in __set_page_dirty_no_writeback()
 > 
-> > 
-> > > Amongst the 2000+ patches posted today, there are a significant number
-> > > of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
-> > > yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
-> > > 
-> > > Am I out of date?  I thought that had been agreed not to happen:
-> > > https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
-> > > is the thread I found when I looked for confirmation, but I believe the
-> > > same has been agreed before and since too.
-> > > 
-> > > Andrew goes to a lot of trouble to establish which Fixes from his tree
-> > > ought to go to stable.  Of course there will be exceptions which we
-> > > later decide should go in after all; but it's worrying when there's a
-> > > wholesale breach like this, and I think most of them should be dropped.
-> > > 
-> > > To pick on just one of many examples (sorry Miaohe!), a patch that
-> > > surprises me, but I've not had time to look into so far, and would
-> > > not want accelerated into X stable releases, 385/800
-> > > 
-> > > > Miaohe Lin <linmiaohe@huawei.com>
-> > > >     mm/shmem: fix shmem_swapin() race with swapoff
-> > 
-> > Sasha, and I, take patches from Linus's tree like the above one that
-> > have "Fixes:" tags in them as many many maintainers do not remember to
-> > put "cc: stable" on their patches.
+> 	if (folio_is_dirty())
+> 		return !folio_testset_dirty()
 > 
-> As do many many developers.  I always check.
+> is less clear about what's going on than would be:
 > 
-> > The above patch says it fixes a problem in the 5.1 kernel release, so
-> > Sasha queued it up for 5.10, 5.12, and 5.13.  Odds are he should have
-> > also sent a "FAILED" notice for 5.4, but we don't always do that for
-> > patches only with a Fixes tag all the time as we only have so much we
-> > can do...
-> > 
-> > So is that tag incorrect?  If not, why was it not cc: stable?  Why is it
-> > not valid for a stable release?
-> 
-> Usually because we judged that the seriousness of the problem did not
-> justify the risk & churn of backporting its fix.
-> 
-> >  So far, all automated testing seems to
-> > show that there are no regressions in these releases with these commits
-> > in them.  If there was a problem, how would it show up?
-> > 
-> > And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
-> > bot, but that is not what caused this commit to be added to a stable
-> > release.
-> > 
-> > Trying to keep a "do not apply" list for Fixes: tags only is much harder
-> > for both of us as we do these semi-manually and review them
-> > individually.  Trying to remember what subsystem only does Fixes tags
-> > yet really doesn't mean it is an impossible task.
-> 
-> Well, it shouldn't be super hard to skip all patches which have Fixes:,
-> Signed-off-by:akpm and no cc:stable?
+> 	if (folio_test_dirty())
+> 		return !folio_testset_dirty()
 
-Ok, I will do this now (goes and writes this down...)
+"if (folio_is_dirty())" reads better to me as that's more or less how you'd
+structure a sentence beginning with "if" in English.
 
-But it really feels odd that you all take the time to add a "Hey, this
-fixes this specific commit!" tag in the changelog, yet you do not
-actually want to go and fix the kernels that have that commit in it.
-This is an odd signal to others that watch the changelogs for context
-clues.  Perhaps you might not want to do that anymore.
+On the other hand, folio_test_xxx() fits in with a folio_testset_xxx() naming
+style.  English doesn't really have test-and-set operator words.
 
-> I'd really really prefer this, please.  At present this -stable
-> promiscuity is overriding the (sometime carefully) considered decisions
-> of the MM developers, and that's a bit scary.  I've actually been
-> spending the past couple of years believing that if I left off
-> cc:stable, the fix wasn't going to go into -stable!
+David
 
-That used to be the case, but we have had to deal with all of the
-subsystems where people were NOT putting cc: stable on them, and only
-Fixes: tags.  It's slowly getting better, but some subsystems refuse to
-do this for some reason (it's hard to wrangle 4000 people to all do the
-same thing...)
-
-> Alternatively I could just invent a new tag to replace the "Fixes:"
-> ("Fixes-no-backport?") to be used on patches which fix a known previous
-> commit but which we don't want backported.
-
-No please, that's not needed, I'll just ignore these types of patches
-now, and will go drop these from the queues.
-
-Sasha, can you also add these to your "do not apply" script as well?
-
-thanks,
-
-greg k-h
