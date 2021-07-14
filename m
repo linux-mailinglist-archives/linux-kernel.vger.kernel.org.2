@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA2D3C92FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF733C92FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 23:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbhGNVYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
+        id S235550AbhGNVZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbhGNVYo (ORCPT
+        with ESMTP id S230361AbhGNVZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:24:44 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7855AC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 14:21:52 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id t3so5079667edc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 14:21:52 -0700 (PDT)
+        Wed, 14 Jul 2021 17:25:19 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773FEC06175F;
+        Wed, 14 Jul 2021 14:22:27 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id m11-20020a05600c3b0bb0290228f19cb433so4759882wms.0;
+        Wed, 14 Jul 2021 14:22:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=8/bc9o6ImRq3WEIe9Pdfc2k5usBIjCoRIS0Uvdw4IE8=;
-        b=OB5guEjh4blJ03UGIxA5YrZ1GM+4ucO9v42uHL04xI0hmlnYvupb69rBZ94lGhwaLN
-         GzwP1+g/7AWLfBlPBY7GLfcTq3niHbf0x9Vfb/nqmhnrZpvcXnqgZu72lWFXXuVVjdqk
-         PqIcgOrpOVJyVAiEoGqqT1ls7z+iKiH+w8OAcSf+K5pIXrPLh4vOy1FhxnK9BK448+ca
-         fG2QZnBB2U1UB+wT/0HgoNhd6+77abZoWHUYfQc7AO0T4rBH3FptbiI34yHwrhJb5WE+
-         3efM2lLRLBzeRKSaDhFCypq6vX2SY0PkcN43tnXQw9EPagnjuUNvIdowyfQeDZQiahSn
-         iEmA==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=CIRnAXS4kpWdvJcn2XozsC0b0WhxNiBbiK8rnYsAOog=;
+        b=i/0D/Lo4dBaqJRALJ4RSwYbveiNR3saCBf1mPZUInMxD82/qO+QJNvSxdTUTmG+Rfn
+         VBwva0TJgM3RJuLjuslygW46LuCW1uEDm6dI5dGDxCSP0qa4fJi4dSw5wyWNOB+AiWjv
+         gOKF7e7wRXueiEZGP0Wi0ZBZr+BieCmQAc6kpK/fLKgqIf9Apj/qoX8B7Ho/CMPJvAZL
+         XB2xm/67POuQKWWDcv2AFf3CLvgRZ1RQuKsxtDZZThnOwBJRwRFJRGro8/w6H3PQyrcR
+         Z65aNit6OI5gyOsHoAOLsjE6m4GxLZtDxums9XUAAYpC5z2BTToqP1dEgBwhJfXIi+YJ
+         eryg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=8/bc9o6ImRq3WEIe9Pdfc2k5usBIjCoRIS0Uvdw4IE8=;
-        b=itjY2siX1l/1Yu7zHwX01u6tSkRcPRMrFhIjZONtTbUQreqp6pPp08RhsJrSS4gtxq
-         gZUhgvM6VYYn3uh3uRCmKw3QQSaMqnj0An0uqAUYfzM9Cn5dK9w3oWdVv3SA0Ya85QiK
-         JDT9pJkJBuMZiuKzt8pgSifOKV5i8dxQavMzaeUPcG2hh1HmhjMi7HLCk6gViKzuMvlG
-         +gR+2hqRiELIxVhytm/PNPEkzFkgmF9t3vEYf3GfkHNDKvzyWCWnpPCkp4yAGtPup3rr
-         WJM45hYwRYvPWzaXiF/kDXRi2tEJ7zOKvel0nj7GIPdtMKD87JaZtAxRGLJySwwvdV4b
-         JQZA==
-X-Gm-Message-State: AOAM532mCDptRKkIRFdpG5qJ7yQ1Upi3DsuTLC4+rmlsOCuJGZ8W2M3a
-        HxyX+HUq2FT06Vj29mS/oA==
-X-Google-Smtp-Source: ABdhPJzxDcNA1vDLPluaKS09JMmHXY1TArRbW7zFH5yNLFMmeI+/XmglxvkN6FU0FGGrUjjc/wmHFw==
-X-Received: by 2002:a05:6402:1001:: with SMTP id c1mr505002edu.26.1626297711114;
-        Wed, 14 Jul 2021 14:21:51 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.254.76])
-        by smtp.gmail.com with ESMTPSA id c28sm1171664ejc.102.2021.07.14.14.21.50
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=CIRnAXS4kpWdvJcn2XozsC0b0WhxNiBbiK8rnYsAOog=;
+        b=aBmT4cwLiYSqikVZXi7VrUI6AVm2tWtQl5MBcVWRMZjYL4vil6f/S98CorkAK4Ge5J
+         66BS9zgT3hAQSFWTbxvYwEt5sjCn3vScH3T9co1kDAOS+0i4WbNJLCEQlIF0/GPMt5st
+         pjpWTH35S/m25U1RuHSfKBh9qS5+wPrdFzzGx9nMJSCG3FK8n0WLqjlgm2mse2cHtkNa
+         MevJ/s8uvx0atWmBhYjltjh4gpiKexAMGukiVqtiS2Abb0NqTCsExehoYwn8KKk+ZRmx
+         kEFKhJojO/J52MRn0+/2YZarOTYcv5+R1ACGQgIUnF6wzkYi3AEly13UJWb8xiH5vIwP
+         LF3Q==
+X-Gm-Message-State: AOAM532tF8feTBlac9kNw77n6v/LwUYIKUZ9NVoUAiJxxKGO6XX7E6BE
+        p83+B8JHxlTmPeBguhJeb+g=
+X-Google-Smtp-Source: ABdhPJwDrCz9FsDZKoBjaAgL29ifocM6k4N6g7tfFpetT5EWq/0u75rtEoJnjOn7zd8cHYK67Uylvw==
+X-Received: by 2002:a7b:c452:: with SMTP id l18mr6146605wmi.164.1626297746109;
+        Wed, 14 Jul 2021 14:22:26 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec65.dynamic.kabel-deutschland.de. [95.91.236.101])
+        by smtp.googlemail.com with ESMTPSA id v2sm3825333wro.48.2021.07.14.14.22.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 14:21:50 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 00:21:49 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] sched: mark do_group_exit() as noreturn
-Message-ID: <YO9VbRoMnaOgqGbu@localhost.localdomain>
+        Wed, 14 Jul 2021 14:22:25 -0700 (PDT)
+Message-ID: <5f6b14c0a86e419b05102599602307a4782d8c64.camel@gmail.com>
+Subject: Re: [PATCH] scsi: ufs: add missing host_lock in setup_xfer_req
+From:   Bean Huo <huobean@gmail.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
+        Asutosh Das <asutoshd@codeaurora.org>
+Date:   Wed, 14 Jul 2021 23:22:24 +0200
+In-Reply-To: <b0cd26d0-6ebc-b633-8669-a558597cc91d@acm.org>
+References: <20210701005117.3846179-1-jaegeuk@kernel.org>
+         <38432018-e8bf-f9f3-00bf-cd4b81c95c88@acm.org>
+         <69b367bc44084f901d0d71fb8f9633ea7e5df36b.camel@gmail.com>
+         <b0cd26d0-6ebc-b633-8669-a558597cc91d@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_group_exit() calls do_exit() which doesn't return.
+On Wed, 2021-07-14 at 11:09 -0700, Bart Van Assche wrote:
+> On 7/13/21 12:45 PM, Bean Huo wrote:
+> 
+> > This change only impacts on the Samsung exynos platform. and Can's
+> > optimization patch is to optimise the host_lock,, and removed
+> > host_lock, now add back in this function makes sense to me.
+> > but I am thinking how about hba->host_sem?
+> 
+> 
+> Hi Bean,
+> 
+> 
+> 
+> Calls of exynos_ufs_specify_nexus_t_xfer_req() must be serialized,
+> hence 
+> 
+> Jaegeuks' patch. This function is called from the I/O submission path
+> so 
+> 
+> performance matters. My understanding is that spinlocks have less 
+> 
+> overhead than semaphores. Hence the choice for a spinlock.
+> 
+> 
+> 
+> Thanks,
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+> 
+Bart,
 
- include/linux/sched/task.h |    2 +-
- kernel/exit.c              |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+After adding spin_lock/unlock_irqsave()
+in ufshcd_vops_setup_xfer_req(), there will be 4 times of call of
+host_lock lock/unlock in ufshcd_send_command(). Reduce the code scope
+of protection, but increase the number of calls to
+spin_lock/unlock_irqsave().  Almost each sub-funciton
+in ufshcd_send_command() calls spin_lock/unlock_irqsave(). why not
+directly take spin_lock/unlock_irqsave() away from each sub-fun, and
+increase the scope in ufshcd_send_command()?
 
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -77,7 +77,7 @@ static inline void exit_thread(struct task_struct *tsk)
- {
- }
- #endif
--extern void do_group_exit(int);
-+__noreturn void do_group_exit(int);
- 
- extern void exit_files(struct task_struct *);
- extern void exit_itimers(struct signal_struct *);
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -895,8 +895,8 @@ SYSCALL_DEFINE1(exit, int, error_code)
-  * Take down every thread in the group.  This is called by fatal signals
-  * as well as by sys_exit_group (below).
-  */
--void
--do_group_exit(int exit_code)
-+__noreturn
-+void do_group_exit(int exit_code)
- {
- 	struct signal_struct *sig = current->signal;
- 
+Bean
+
+
+
+
+
+
+
+> Bart
+
