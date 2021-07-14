@@ -2,67 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6A63C92A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1C83C92A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbhGNVAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 17:00:07 -0400
-Received: from mail-io1-f52.google.com ([209.85.166.52]:34731 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbhGNVAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 17:00:06 -0400
-Received: by mail-io1-f52.google.com with SMTP id g22so3843403iom.1;
-        Wed, 14 Jul 2021 13:57:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9LS8fKQuOgmkNfETWUyNRS6P6FD5jXpwPj5qUOt7Pyw=;
-        b=G/0sA4DmgY3hpoJNg87b3Jx1nlS7FhHAcP59HZzHjopQTNEpR9w+zMH6p9rYQ+6t+W
-         QBpFdvguP99gwdEPfnuhS+z3Y98N+6Kb9xuPWKsy/tVix/UT4mF6WCigd+s5+6fBLP3x
-         kUPRxBcCUUIRzOTIMI/5KWat4SVTiLvbAQQif+WI8oqcaoqVQhiNm41BFNtXpurHgIXZ
-         WIHBNG3dN2/d6kbLQmXFSNSKeWROV19TfAqk/oRDeidrmyOFl1SPqvCh4+x77WlkdkMJ
-         sE9F6mvVIvhOQI2Zaa0QGKEHhYbzaJ60bVdREzF9RAkOm1c2JarUikspjmt7UEY/Xhre
-         Hi4Q==
-X-Gm-Message-State: AOAM530eocxYn7Uy+K87nlJ8pXIjFU8SuFVooE3MVc8d0AbrlE/aeH0I
-        YmQD/ZdWSOIBkQRqOzKOCQ==
-X-Google-Smtp-Source: ABdhPJyxGysiXjud+pQe2JRzci8UiWpphXPQ4Qzkq404XV4K3iV7FbqhnKSJ4KLrpCUnDWTkzdAzqA==
-X-Received: by 2002:a02:628b:: with SMTP id d133mr159620jac.27.1626296233896;
-        Wed, 14 Jul 2021 13:57:13 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id g22sm1776087ion.10.2021.07.14.13.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:57:13 -0700 (PDT)
-Received: (nullmailer pid 3509125 invoked by uid 1000);
-        Wed, 14 Jul 2021 20:57:10 -0000
-Date:   Wed, 14 Jul 2021 14:57:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>, devicetree@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add sc8180x PCIe
- compatible
-Message-ID: <20210714205710.GA3509073@robh.at.kernel.org>
-References: <20210629004509.1788286-1-bjorn.andersson@linaro.org>
+        id S234577AbhGNVB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 17:01:57 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11337 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhGNVB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 17:01:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190108995"
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="190108995"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 13:59:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="651277941"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Jul 2021 13:59:04 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 14 Jul 2021 13:59:03 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 14 Jul 2021 13:59:03 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
+ Wed, 14 Jul 2021 13:59:03 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Chatre, Reinette" <reinette.chatre@intel.com>
+CC:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
+Thread-Topic: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
+Thread-Index: AQHXdCUcDncuRnkx9Ue+ht5iNpTdPatDbnyA//+NavA=
+Date:   Wed, 14 Jul 2021 20:59:03 +0000
+Message-ID: <31668f36583844cbbae0b10a594193d6@intel.com>
+References: <20210708181423.1312359-1-tony.luck@intel.com>
+ <20210708181423.1312359-2-tony.luck@intel.com>
+ <93845f78-120d-7522-bd3e-fe042380d29e@intel.com>
+In-Reply-To: <93845f78-120d-7522-bd3e-fe042380d29e@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210629004509.1788286-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Jun 2021 17:45:08 -0700, Bjorn Andersson wrote:
-> Add a compatible for the sc8180x PCIe PHY.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-
-Acked-by: Rob Herring <robh@kernel.org>
+PiBDb3VsZCB0aGlzIHRyYWNraW5nIGJlIGRvbmUgYXQgdGhlIGVuY2xhdmUgcGFnZSAoc3RydWN0
+IHNneF9lbmNsX3BhZ2UpIA0KPiBpbnN0ZWFkPw0KDQpJbiBwcmluY2lwbGUgeWVzLiBUaG91Z2gg
+U2VhbiBoYXMgc29tZSBpc3N1ZXMgd2l0aCBtZSB0cmFja2luZyB0eXBlcw0KYXQgYWxsLg0KDQo+
+IFRoZSBlbmNsYXZlIHBhZ2UncyBFUEMgcGFnZSBpbmZvcm1hdGlvbiBpcyBub3QgYXZhaWxhYmxl
+IHdoZW4gDQo+IHRoZSBwYWdlIGlzIGluIHN3YXAgYW5kIGl0IHdvdWxkIGJlIHVzZWZ1bCB0byBr
+bm93IHRoZSBwYWdlIHR5cGUgd2l0aG91dCANCj4gbG9hZGluZyB0aGUgcGFnZSBmcm9tIHN3YXAu
+IFRoZSBpbmZvcm1hdGlvbiB3b3VsZCBjb250aW51ZSB0byBiZSANCj4gYWNjZXNzaWJsZSBmcm9t
+IHN0cnVjdCBlcGNfcGFnZSB2aWEgdGhlIG93bmVyIHBvaW50ZXIgdGhhdCBtYXkgbWFrZSBzb21l
+IA0KPiBvZiB0aGUgY2hhbmdlcyBlYXNpZXIgc2luY2UgaXQgd291bGQgbm90IGJlIG5lZWRlZCB0
+byBwYXNzIHRoZSBwYWdlIHR5cGUgDQo+IGFyb3VuZCBzbyBtdWNoIGFuZCB0aHVzIHBvc3NpYmx5
+IGFkZHJlc3MgdGhlIFNFQ1MgcGFnZSBpc3N1ZSB0aGF0IFNlYW4gDQo+IHBvaW50ZWQgb3V0IGlu
+DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvWU8zRnVCdXBRVEtZYUtCZkBnb29nbGUu
+Y29tLw0KDQpJIHRoaW5rIEkgbm90aWNlZCB0aGF0IHRoZSAib3duZXIiIHBvaW50ZXIgaW4gc2d4
+X2VuY2xfcGFnZSBkb2Vzbid0IHBvaW50DQpiYWNrIHRvIHRoZSBlcGNfcGFnZSBmb3IgYWxsIHR5
+cGVzIG9mIFNHWCBwYWdlcy4gU28gc29tZSBhZGRpdGlvbmFsDQpjaGFuZ2VzIHdvdWxkIGJlIG5l
+ZWRlZC4gSSdtIG5vdCBhdCBhbGwgc3VyZSB3aHkgdGhpcyBpcyBkaWZmZXJlbnQgKG9yDQp3aGF0
+IHVzZSB0aGUgbm9uLVJFRyBwYWdlcyB1c2UgIm93bmVyIiBmb3IuDQoNCj4+ICAgc3RydWN0IHNn
+eF9lcGNfcGFnZSB7DQo+PiAgIAl1bnNpZ25lZCBpbnQgc2VjdGlvbjsNCj4+IC0JdW5zaWduZWQg
+aW50IGZsYWdzOw0KPj4gKwl1MTYgZmxhZ3M7DQo+PiArCXUxNiB0eXBlOw0KPg0KPiBDb3VsZCB0
+aGlzIGJlICJlbnVtIHNneF9wYWdlX3R5cGUgdHlwZSIgPw0KDQpNYXliZS4gSSB0aG91Z2h0IEkg
+bmVlZGVkIGV4dHJhIHR5cGVzIChsaWtlIEZSRUUgYW5kIERJUlRZKS4gQnV0DQpTZWFuIHBvaW50
+ZWQgb3V0IGhvdyB0byBhdm9pZCBzb21lIG9mIHRoZW0uDQoNCi1Ub255DQo=
