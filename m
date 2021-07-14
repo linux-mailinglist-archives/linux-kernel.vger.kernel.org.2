@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354763C812C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9AB3C8129
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238912AbhGNJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:16:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57936 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238721AbhGNJQM (ORCPT
+        id S238887AbhGNJQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:16:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35506 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238398AbhGNJQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:16:12 -0400
+        Wed, 14 Jul 2021 05:16:09 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4A0FA205A0;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 75342229F0;
         Wed, 14 Jul 2021 09:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1626253997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bHGfMeUXs8p1cLbGby6jhmJq6dYDqeI/JYGDlozOImk=;
-        b=PPKn46yiUCOSH1Dm73Wc40ccUh6BbDbnvm83G5XK3PiK7fTUKmd5TbGTT22BXcOqY9k/m5
-        4Izeyn/V2+K0xdVSe2gPWn8/Vv8O3+vHSH92LB26QlPwn7voVoCdVC9rTqKjO3edn0oiUh
-        bKhBkih1ZWq35dgvlplUoFTqYfLPebk=
+        bh=l9IRLed4cwkWvChLvlKSVseSM5swjBmObAmAEV28Zhc=;
+        b=owSuuX2qgX8YRWLwR45yco4eU2wq1OrmEeV+Ay2dx58bSqOTZk4ijswiprdKIbVdpqAhMW
+        jgevYT+A+e7DcmnBOTaIUqTbM79t6KD3PxUMQ97Q1uV8Bzbn8WjQJ8dMQYU94hRgudgXqv
+        /7xdaWDLczCiEJu5MPpXhu5Nivs5rhk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1626253997;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bHGfMeUXs8p1cLbGby6jhmJq6dYDqeI/JYGDlozOImk=;
-        b=2aT2X6NqcMBcyCkeyzcpZeusKOd7yepKHChBQo41co9OGY2eFoVeOYPbVrXsiORMQZocL3
-        g6Gykl7Pj8G/deAw==
+        bh=l9IRLed4cwkWvChLvlKSVseSM5swjBmObAmAEV28Zhc=;
+        b=56/NxJ2uhkhxUstbVTVB3BxFIrNlQpyoVkClVC3NbRN2u0aR6W/y/zoPdhy+XY1tu0cI/e
+        3PHH/1Id5kkDmaAQ==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 23676A3B8A;
+        by relay2.suse.de (Postfix) with ESMTPS id 4DBECA3B85;
         Wed, 14 Jul 2021 09:13:17 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 09/11] amiserial: pack and sort includes
-Date:   Wed, 14 Jul 2021 11:13:12 +0200
-Message-Id: <20210714091314.8292-9-jslaby@suse.cz>
+Subject: [PATCH 10/11] amiserial: switch rs_table to a single state
+Date:   Wed, 14 Jul 2021 11:13:13 +0200
+Message-Id: <20210714091314.8292-10-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210714091314.8292-1-jslaby@suse.cz>
 References: <20210714091314.8292-1-jslaby@suse.cz>
@@ -54,102 +54,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The #include directives are in different places in amiserial:
-1) there is no reason for that, and
-2) it makes hard to judge what is included and what is not.
-
-Therefore, move all the includes to a single place and sort them.
+amiserial deals only with a single serial, so drop the rs_table array
+and NR_PORTS and define a single non-array serial_state for simplicity
+instead.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/amiserial.c | 50 ++++++++++++++++++-----------------------
- 1 file changed, 22 insertions(+), 28 deletions(-)
+ drivers/tty/amiserial.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
-index 4658df1b5623..0a76e70a0b96 100644
+index 0a76e70a0b96..dffaff5a587a 100644
 --- a/drivers/tty/amiserial.c
 +++ b/drivers/tty/amiserial.c
-@@ -22,8 +22,6 @@
-  *
-  */
+@@ -97,9 +97,7 @@ static void change_speed(struct tty_struct *tty, struct serial_state *info,
+ static void rs_wait_until_sent(struct tty_struct *tty, int timeout);
  
--#include <linux/delay.h>
+ 
+-static struct serial_state rs_table[1];
 -
- /* Set of debugging defines */
+-#define NR_PORTS ARRAY_SIZE(rs_table)
++static struct serial_state serial_state;
  
- #undef SERIAL_DEBUG_INTR
-@@ -35,40 +33,38 @@
-  * End of serial driver configuration section.
-  */
- 
--#include <linux/module.h>
--
--#include <linux/types.h>
--#include <linux/serial.h>
--#include <linux/serial_reg.h>
--#include <linux/errno.h>
--#include <linux/signal.h>
--#include <linux/sched.h>
--#include <linux/kernel.h>
--#include <linux/timer.h>
--#include <linux/interrupt.h>
--#include <linux/tty.h>
--#include <linux/tty_flip.h>
-+#include <linux/bitops.h>
- #include <linux/circ_buf.h>
- #include <linux/console.h>
--#include <linux/major.h>
--#include <linux/string.h>
-+#include <linux/delay.h>
-+#include <linux/errno.h>
- #include <linux/fcntl.h>
--#include <linux/ptrace.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
- #include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/major.h>
- #include <linux/mm.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/ptrace.h>
- #include <linux/seq_file.h>
-+#include <linux/serial.h>
-+#include <linux/serial_reg.h>
-+#include <linux/sched.h>
-+#include <linux/signal.h>
- #include <linux/slab.h>
--#include <linux/init.h>
--#include <linux/bitops.h>
--#include <linux/platform_device.h>
--
--#include <asm/setup.h>
--
--
--#include <asm/irq.h>
-+#include <linux/string.h>
-+#include <linux/timer.h>
-+#include <linux/tty_flip.h>
-+#include <linux/tty.h>
-+#include <linux/types.h>
-+#include <linux/uaccess.h>
- 
- #include <asm/amigahw.h>
- #include <asm/amigaints.h>
-+#include <asm/irq.h>
-+#include <asm/setup.h>
- 
- struct serial_state {
- 	struct tty_port		tport;
-@@ -105,8 +101,6 @@ static struct serial_state rs_table[1];
- 
- #define NR_PORTS ARRAY_SIZE(rs_table)
- 
--#include <linux/uaccess.h>
--
  /* some serial hardware definitions */
  #define SDR_OVRUN   (1<<15)
- #define SDR_RBF     (1<<14)
+@@ -1424,7 +1422,7 @@ static inline void line_info(struct seq_file *m, int line,
+ static int rs_proc_show(struct seq_file *m, void *v)
+ {
+ 	seq_printf(m, "serinfo:1.0 driver:4.30\n");
+-	line_info(m, 0, &rs_table[0]);
++	line_info(m, 0, &serial_state);
+ 	return 0;
+ }
+ 
+@@ -1494,11 +1492,11 @@ static const struct tty_port_operations amiga_port_ops = {
+  */
+ static int __init amiga_serial_probe(struct platform_device *pdev)
+ {
++	struct serial_state *state = &serial_state;
+ 	unsigned long flags;
+-	struct serial_state * state;
+ 	int error;
+ 
+-	serial_driver = alloc_tty_driver(NR_PORTS);
++	serial_driver = alloc_tty_driver(1);
+ 	if (!serial_driver)
+ 		return -ENOMEM;
+ 
+@@ -1516,7 +1514,6 @@ static int __init amiga_serial_probe(struct platform_device *pdev)
+ 	serial_driver->flags = TTY_DRIVER_REAL_RAW;
+ 	tty_set_operations(serial_driver, &serial_ops);
+ 
+-	state = rs_table;
+ 	memset(state, 0, sizeof(*state));
+ 	state->port = (int)&amiga_custom.serdatr; /* Just to give it a value */
+ 	tty_port_init(&state->tport);
 -- 
 2.32.0
 
