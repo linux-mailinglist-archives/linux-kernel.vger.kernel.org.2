@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3443C881E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923EE3C881B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239864AbhGNP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41996 "EHLO mail.kernel.org"
+        id S239785AbhGNP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239778AbhGNP66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 915DB613CB;
-        Wed, 14 Jul 2021 15:56:06 +0000 (UTC)
+        id S239775AbhGNP7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 11:59:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 279F2613CF;
+        Wed, 14 Jul 2021 15:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626278167;
-        bh=euWLJF8O1gpFql8jqo5Afw+yAqgIphMrVOqkBThYSkE=;
+        s=k20201202; t=1626278169;
+        bh=E0sbg0M0ocyf6VkUrKaPVCDLNkU0SdHrK7wgF4xeYjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rTQXGGEpKAJ7B4H1hLq7js0qIbbKYecfd2QRqaLzVjDnJXDmlpZoPkaskkt/ApIdg
-         MkjRrQmInTNu5rXdpHY4lWAsbbkP7pAje8ulPrj3p97uUzZRc5BQrPmdNMdHsL7lRp
-         /sVelUswkyJWqZyybGzT6qwfj66RdQE8eknvyqdwYnRFG1XFQM3yFw/1faG2biaQfO
-         9R18GfbwwYmW8VHu1yAPQ8SOTw4zCKIVEv5HH+8QVLcl6Z2xrxTMFxDeKvVBepHyS2
-         QBVJhtjuB9EFDwTk02bJuzNB7ye585upGZCNLN79PF8jKTjOoPeZM8sj6PzLUEnKuh
-         VF3IcR0a0s7Bg==
+        b=jzxaodBUycHnj95sPiOWFeTjCo2njjf9wo+VzDaj0R0ryDe3CzMJwYJw9s10rMB2K
+         qt9MLFEm7OHhpzjK5whAqo8CcJBiPLcSqjs3M3xrvqBxF0vwWrCthGNxonfqqPTmJt
+         DABDL4zVrSWGx93ocmY4Qj20JJgs5Xmd6rMs8rEwDv8X/aiH6r8qTXvEquN5OoZiay
+         SqsO1Xr4u8u16bbbiywfEkE0DtH8JsTcSKb3UgQrspMgOx/M/7qyZ1zCvm6c1isuZM
+         pn5/e3Az/PJH8En3RPK8OJY0CzXbOqGlHJVQGIUV17mooeQm/o7p9CtwH7DDq8D5hW
+         +153+IW4PEdlw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        swboyd@chromium.org, vkoul@kernel.org, akashast@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-geni-qcom: Remove confusing comment about setting the watermark
-Date:   Wed, 14 Jul 2021 16:55:16 +0100
-Message-Id: <162627784667.55213.15626451683083900981.b4-ty@kernel.org>
+To:     cy_huang <u0084500@gmail.com>, robh+dt@kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+        cy_huang@richtek.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] regulator: rtq6752: Refine binding document
+Date:   Wed, 14 Jul 2021 16:55:17 +0100
+Message-Id: <162627768618.55091.3455363305744240999.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210712085010.1.Ie3bb9f9d30d6475bb75251d32635194c1c72b9ee@changeid>
-References: <20210712085010.1.Ie3bb9f9d30d6475bb75251d32635194c1c72b9ee@changeid>
+In-Reply-To: <1626229532-13037-1-git-send-email-u0084500@gmail.com>
+References: <1626229532-13037-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,26 +41,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 08:50:17 -0700, Douglas Anderson wrote:
-> The comment in setup_fifo_xfer() about setting the watermark wasn't
-> quite proper grammar and also stopped making sense around commit
-> 6d66507d9b55 ("spi: spi-geni-qcom: Don't wait to start 1st transfer if
-> transmitting"). After that commit we actually start the transfer
-> _before_ the watermark interrupt comes.
-> 
-> I don't think the comment really has any value anymore. We've already
-> got a comment when we grab the spinlock saying that our interrupt can
-> come any time as a result of the things in the locked section. Let's
-> just remove it.
+On Wed, 14 Jul 2021 10:25:32 +0800, cy_huang wrote:
+> Drop regulators property reference and remove the status in example dts.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: spi-geni-qcom: Remove confusing comment about setting the watermark
-      commit: 57f1c12e455fc6c4c0db2c9f14e57b95822c2321
+[1/1] regulator: rtq6752: Refine binding document
+      commit: e98fb032170bfa2e671a01e356a7ee86a2038312
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
