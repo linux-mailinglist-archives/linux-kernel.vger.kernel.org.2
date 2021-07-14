@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B301C3C8BB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90593C8BBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 21:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbhGNTfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 15:35:43 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:35746 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhGNTfm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 15:35:42 -0400
-Received: by mail-il1-f169.google.com with SMTP id a11so2736405ilf.2;
-        Wed, 14 Jul 2021 12:32:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P1VAUlEyjs73Bx47V1Jfiky3UvvDoViqJHQRhTR3K1Y=;
-        b=MYajywoqu0VgFENOec/EEM2+kK7yrViJIa74y+hiOPvUhLxDByzjtNQDU31nreQLd/
-         u8xS/cZ/Y8bH8nS/kXoz2pAohDLR+bb6m+3hBIwKYVHfvN0hkHQejCKdkp/KAJSjxQrL
-         7xcK73XABRRluEOW7YwKCAXTZkUZPxHCFSTGZS5G1gpr9kPKdNBeVvbeU8EMV/9awEzK
-         lHwB6DkySQEVLSkyf19diAyFL+Vm9nAub09Kp3T640UPG8tdMrhcJTZDsnuP6x/xothu
-         48WKgmN2wMT2wT5LoZZ1KEJ/sakaDfD95KPlcZ2DvRsfWwTf3u+sV5FS0/exDrgFXAW6
-         zXjQ==
-X-Gm-Message-State: AOAM531rsYkEYDjdwEhYw279GFRQxfwD4vVgYQjeVQTjfG99jxAmRcvC
-        C/rsIk/sE/Mo+Mggb+uaUNZ9TcIGhg==
-X-Google-Smtp-Source: ABdhPJwHzjzD0JWdrl/v0E+7zAdqUT9uQ+9746AJrdOx7rukqDaUTh2BferopKTZdNflJ33syc3Q/A==
-X-Received: by 2002:a92:3302:: with SMTP id a2mr7790789ilf.62.1626291169718;
-        Wed, 14 Jul 2021 12:32:49 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p19sm1726825iob.7.2021.07.14.12.32.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 12:32:48 -0700 (PDT)
-Received: (nullmailer pid 3134962 invoked by uid 1000);
-        Wed, 14 Jul 2021 19:32:46 -0000
-Date:   Wed, 14 Jul 2021 13:32:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Emil Renner Berthing <esmil@mailme.dk>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: add starfive,jh7100-temp
- bindings
-Message-ID: <20210714193246.GA3134908@robh.at.kernel.org>
-References: <20210624162108.832518-1-esmil@mailme.dk>
- <20210624162108.832518-2-esmil@mailme.dk>
+        id S230030AbhGNTgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 15:36:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhGNTgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 15:36:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E9760698;
+        Wed, 14 Jul 2021 19:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626291234;
+        bh=6t8P63gUUVmHpSDAy+xkJ87md14MyIPty+YX4jWejW4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TH7S5C/G90qfYco8QyzfxkfNyp4Z1j8TOKuOVi3B7wpT42765dmXT5aTkV9Jbb97B
+         NPp+ozMz5/8yvmFCquH7/myfT2P9BfhTNqQu3cTikZDlq3JI9wPHtX9MeeA2xUpfe7
+         LJGUMI+px+WkF0fqBi/YZAyjhmnjbnrSjc69kEYpSU85/aBjzLtFaYSIuHQset9958
+         tCAxKTRwMQ/pWfXTzoeU4Rb071hv7KHRR/gaAEDg9E1XhXo9pqa5gLLF7iuRlJZrVf
+         WMCJfPEsZl8n2t49BwALHqsDIEftANv2Ru/NsDLluPb8upWhO2f0vPvXUCkCbHZrad
+         c9m3kfM/SBgUA==
+Date:   Wed, 14 Jul 2021 20:33:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, vkoul@kernel.org,
+        vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH 00/10] soundwire/ASoC: add mockup codec support
+Message-ID: <20210714193315.GK4719@sirena.org.uk>
+References: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="g4MvFqI7wmANiPDo"
 Content-Disposition: inline
-In-Reply-To: <20210624162108.832518-2-esmil@mailme.dk>
+In-Reply-To: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
+X-Cookie: C for yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 18:21:07 +0200, Emil Renner Berthing wrote:
-> From: Emil Renner Berthing <kernel@esmil.dk>
-> 
-> Add bindings for the temperature sensor on the StarFive JH7100 SoC.
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->  .../bindings/hwmon/starfive,jh7100-temp.yaml  | 43 +++++++++++++++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+--g4MvFqI7wmANiPDo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jul 14, 2021 at 11:21:59AM +0800, Bard Liao wrote:
+> Adding mockup SoundWire codec is useful to debug driver/topology changes
+> without having any actual device connected.
+
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-sdw-mockup-codec
+
+for you to fetch changes up to 0ccac3bcf3564cbcba483dec20c7550939873f59:
+
+  ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests (2021-07-14 18:02:07 +0100)
+
+----------------------------------------------------------------
+ASoC: Add mockup SoundWire CODEC
+
+Useful for bringup testing, not for production usage.
+
+----------------------------------------------------------------
+Pierre-Louis Bossart (4):
+      ASoC: codecs: add SoundWire mockup device support
+      ASoC: soc-acpi: cnl: add table for SoundWire mockup devices
+      ASoC: soc-acpi: tgl: add table for SoundWire mockup devices
+      ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests
+
+ sound/soc/codecs/Kconfig                           |  18 ++
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/sdw-mockup.c                      | 310 +++++++++++++++++++++
+ sound/soc/intel/boards/Kconfig                     |   1 +
+ sound/soc/intel/boards/sof_sdw.c                   |  41 +++
+ sound/soc/intel/common/Makefile                    |   3 +-
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c  |  15 +
+ .../intel/common/soc-acpi-intel-sdw-mockup-match.c | 166 +++++++++++
+ .../intel/common/soc-acpi-intel-sdw-mockup-match.h |  17 ++
+ sound/soc/intel/common/soc-acpi-intel-tgl-match.c  |  23 ++
+ 10 files changed, 595 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/codecs/sdw-mockup.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-sdw-mockup-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-sdw-mockup-match.h
+
+--g4MvFqI7wmANiPDo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvO/oACgkQJNaLcl1U
+h9D7HQf9H4qYjHhqgj4kDvFhdKdFwRRYYaRQcB0IT7zKt4T2NHRl4YX3D2sLOoZz
+/tC4hdM9nwW8BWOsamCScZyKHjtQoE7PjKQwyWMD8JTG8HBKr5NqDiGzdiKUvp0C
+6S+q9Ft3n9zI+G5pGfhTJeIPEtItdvly4xWkbGzuD4ovGbxEte6KM5GBekekmCss
+uEx88ujhNReKj50Q2EHmd+DxblESue3Zm9Xx6JI7tpP83aTM8qv5LZ31F8uYXuRZ
+K0rx0qXqRV47jWGBsQxftShM797m9zowC8Rl9/gTLs1R3g4PVPye40G5kIhnmEpc
+gT3Xq/2+v6991DJh6++wN46L0E26OA==
+=f5bU
+-----END PGP SIGNATURE-----
+
+--g4MvFqI7wmANiPDo--
