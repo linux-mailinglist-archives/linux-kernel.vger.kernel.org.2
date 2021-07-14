@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8713D3C813D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121273C8143
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238442AbhGNJS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238144AbhGNJS5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:18:57 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B389CC06175F;
-        Wed, 14 Jul 2021 02:16:05 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id n11so1198241plc.2;
-        Wed, 14 Jul 2021 02:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dqq4wN8QDeSEWFTLSBBUZmKIr6mpKClIb1WpfjF4Q+k=;
-        b=aey7v3ZOh0MMLYdfNMzqu7PRcBUY9yKTzJJH31SWAuZLDkQl/tQTyn7PoOHZVjJ5PT
-         56hwXO5GPv9kJuZkX2xWwjwGaM3jeA3GQn2Ed5C2UJxeM7nCaZlcVh6QR888IrImrOFu
-         M5Sahu2IcIgTqekEjquz6uU5wHjreJ3nmy4dzRTAV7/Zn1lihSeHoCtNn6jAfgpgIedG
-         /af5TCZMjs6MYEO9A9HpgiqSDnfjqIv/jJDF3tNBuHTy+Rt0VaE0sINEGg7kVEXsRv/S
-         2gzH4x1XgP4j9FcIIyG4WcSMbsx3s1rks0u8P7gncYakhENIOjeav4ymEv8BOJtqVh6j
-         Gp+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dqq4wN8QDeSEWFTLSBBUZmKIr6mpKClIb1WpfjF4Q+k=;
-        b=bb1xp969snCG98C52dWCSCsRDVCgJL+lPSGwD08om0bgUGsKWXoSZigWpnxUwYCTDu
-         KtfepZ6fFG7kx9UGvtoV9BjizWOSzYjKNuckFPwop/I2gqiptMw7/0KZcUL7FpFrpRwN
-         BfiaKA1F+zKqT8PviQS7aHnc1L2N8rdYGELnBqPRv0w7KL+6/J0ixMC9xoCptggiD+aN
-         C8WBje1njnxj/DQu5Hk+DNZB4jCPA6ru+JzZ2Spq89nftyXBFC7WZcNvkhtJW7eG6xp6
-         DWcAcbYCMG7TWUpqxj6TG9ZomR8cECNvwGhztQY25K6EA3jDouJZH5stpqgGsUOhKTPE
-         P/8A==
-X-Gm-Message-State: AOAM5320LL1ZXZAjCXXbsj2l8ejqJbpVeyq+mAU0t6ymVJkxOFIUnzp0
-        OA96euqRXYdIJkWtdrHAN2vfozc2I1MB9WhJzlU=
-X-Google-Smtp-Source: ABdhPJxbhqa9FnlKYPe9ads46cXv/QtRH6yzLeD7LfqpLoOmX6VGy8Q0SzoujEELuo2onErHXjeYsnDJm4gsnjDTVuk=
-X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr8898309pjb.228.1626254165248;
- Wed, 14 Jul 2021 02:16:05 -0700 (PDT)
+        id S238473AbhGNJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:20:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:62308 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238179AbhGNJUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:20:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207296715"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="207296715"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 02:17:17 -0700
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="494122677"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 02:17:13 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m3b0s-00DFlH-HQ; Wed, 14 Jul 2021 12:17:06 +0300
+Date:   Wed, 14 Jul 2021 12:17:06 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd <nd@arm.com>
+Subject: Re: [PATCH v2 1/4] fs: introduce helper d_path_unsafe()
+Message-ID: <YO6rkgKpca/Z0LtH@smile.fi.intel.com>
+References: <20210623055011.22916-1-justin.he@arm.com>
+ <20210623055011.22916-2-justin.he@arm.com>
+ <YNL6jcrN42YjDWpB@smile.fi.intel.com>
+ <AM6PR08MB4376C83428D8D5F61C0BF3F2F7079@AM6PR08MB4376.eurprd08.prod.outlook.com>
+ <AM6PR08MB4376DB011A86FCD8C76FE80DF7139@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
- <20210713104026.58560-3-andriy.shevchenko@linux.intel.com> <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
-In-Reply-To: <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 14 Jul 2021 12:15:25 +0300
-Message-ID: <CAHp75VeuG08M9nURpEmW79euKSJkYvLnFiUe+6cGpRHL4zUOfw@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
-To:     Jiri Slaby <jirislaby@kernel.org>, Randy Wright <rwright@hpe.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB4376DB011A86FCD8C76FE80DF7139@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 9:55 AM Jiri Slaby <jirislaby@kernel.org> wrote:
->
-> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
-> > There is no need to try MSI/MSI-X only on selected devices.
-> > If MSI is not supported while neing advertised it means device
->
-> being
->
-> > is broken and we rather introduce a list of such devices which
-> > hopefully will be small or never appear.
->
-> Hmm, have you checked the commit which introduced the whitelist?
-
-Nope, my bad.
-
->      Nevertheless, this needs to handled with care: while many 8250 devices
->      actually claim to support MSI(-X) interrupts it should not be
-> enabled be
->      default. I had at least one device in my hands with broken MSI
->      implementation.
->
->      So better introduce a whitelist with devices that are known to support
->      MSI(-X) interrupts. I tested all devices mentioned in the patch.
-
-Thanks, but I still think that blacklisting is better. All drivers I
-have split (or participated in splitting) from 8250_pci have enabled
-MSI for the entire subset they serve for.
-
-> You should have at least CCed the author for an input.
-
-Thanks. I also added Randy, who extended the list.
+On Wed, Jul 14, 2021 at 08:33:10AM +0000, Justin He wrote:
+> > From: Justin He
+> > Sent: Thursday, June 24, 2021 1:49 PM
+> > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Sent: Wednesday, June 23, 2021 5:11 PM
+> > > On Wed, Jun 23, 2021 at 01:50:08PM +0800, Jia He wrote:
 
 ...
 
-> > +             pci_set_master(dev);
->
-> But bus mastering is not about MSIs.
+> > > > +	const char *dname = smp_load_acquire(&name->name); /* ^^^ */
+> > >
+> > > I have commented on the comment here. What does it mean for mere reader?
+> > >
+> > 
+> > Do you suggest making the comment "/* ^^^ */" more clear?
 
-Strictly speaking it's not, but MSI won't work without DMA.
+Yes.
 
->  I *think* it's still OK, but you
-> need to document that in the commit log too.
->
-> Actually, why the commit which added this code turns on bus mastering?
+> > It is detailed already in prepend_name_with_len()'s comments:
+> > > * Load acquire is needed to make sure that we see that terminating NUL,
+> > > * which is similar to prepend_name().
 
 -- 
 With Best Regards,
 Andy Shevchenko
+
+
