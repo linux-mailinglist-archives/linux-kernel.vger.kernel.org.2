@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2BF3C8728
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA653C872F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239647AbhGNPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S239567AbhGNPRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239608AbhGNPQk (ORCPT
+        with ESMTP id S232308AbhGNPRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:16:40 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1437CC06175F;
-        Wed, 14 Jul 2021 08:13:48 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id e20so3906939ljn.8;
-        Wed, 14 Jul 2021 08:13:47 -0700 (PDT)
+        Wed, 14 Jul 2021 11:17:40 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C35C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:14:48 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id l26so2620454oic.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GztcTOsUqEihFXn3Q2HotsLpAiI5v2MRtVUADm5nE2M=;
-        b=GuuD5AUWzD4szy767jIAfUPEbCm+DAz3oMX+l+cze0C6RVSHnnS4HMlCovzyloBU30
-         O7+Fi92es4OtWurIs7RZQlMv5K5fB3dZQD3/T/X5gTuKGy3VSx3EafxIuokhnVENrCmr
-         Ntr+rR/0/Lpyg0lGTctYYXkxTPt+lNNK0Yb+88MyqMS8ITsPPYCv9KiHJUjWlWSxu9dV
-         wi91vfNZO8hNiquAekt7JIMQTEZY1VlUMOnqf9NXMHs4SoS6yaZv56wsmdl7o0AE+EtH
-         wM7Gayrcbr56p1g/B+Ee4eRESfnUukSzXs9cF3a0qv8bnwuJTwMqz+WKQiIaxvW8IoFA
-         lnLA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nA/s4q3xWQ1MrD5GGKsmBhEEWIQqKBBxr9yke92X18k=;
+        b=mASXKz3d4VxWdnOhtRGY9xdrq/pnCp4byEIzOE6gDPLvnRfO+Yqrkf1jTieiwkodkW
+         lFdpPmwssfHbKute20ufcT2hcU02WypCA1mZDs+33eSDPrKZlsQYs4fEQWY9YTV3uj5m
+         oXPDRyB6DxUGa4iH1DK+CseeVPprdDb49bAbg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GztcTOsUqEihFXn3Q2HotsLpAiI5v2MRtVUADm5nE2M=;
-        b=KHqSpAhgS+0H6p35+l1CUEeEjNJHnCg+izF+cJSykkjg/BeKHpk63R7rwhvCZUkgF1
-         2lRtzR+4EIHPyt8Tsc09uuFz5KHmHoL5Aqe4YrWBGOa+WrPegTiAJNbNGF1vMObduhqT
-         j0Wl6s8IC4b24CQ+t+zr5ViIzFQRQs6MLclumLiVnXIMWYwUhRQuTjFrrIRWU92AmSJO
-         tp2v1AxTf1qBmMFT1d0VKlRtd7aQ7FU6NUxXFB6jGinchN0O9xGkPmw8k1LlPtnqFYzQ
-         yImmb9n6RVB2pvlvVafNUCAK31g+id8bcg5FJVaSerCMc5X31KpzGSAl/YQyK9fUfws5
-         R+Tg==
-X-Gm-Message-State: AOAM53371u9XQnymFrq21lnDzoYGzqDIQOmLOejH32B4Ako/DIxBjvlM
-        rpKTBxwyXeFwOk5zzw2gEgAoxJ/eLcc=
-X-Google-Smtp-Source: ABdhPJxd7XItkZMbc1ywTqFI9DfcL57kFHqq8ei6QSbVOkDgVsFwR8X39raQrW0tQZWkGd0ptYtISA==
-X-Received: by 2002:a2e:9e95:: with SMTP id f21mr9383501ljk.137.1626275626276;
-        Wed, 14 Jul 2021 08:13:46 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id t24sm184249lfb.76.2021.07.14.08.13.45
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nA/s4q3xWQ1MrD5GGKsmBhEEWIQqKBBxr9yke92X18k=;
+        b=MeaDMARNRSRxf4q9auojEiE9yEH+RQ+oHCoVFiR92ZIAn++Vtf3Dkc2fEfh7JN4AmM
+         Y98OLQO372lPlV4FwkR1jKBniTZjX5X+O8T33e7BarnmYN7TYaJKx/EQ8SV6PgRliSdc
+         qK+59HMC+L0WcqqGDsiK1a+TSu2Z3OHHSVgIYPm6m7QeBhMwhJ2SAH/Jel1SrutP9bRH
+         /9zq7C2JZrJ34JFVto3ZvfNxwCT+ANlbb7qS3ZRRWFn1fAHjQhSu2L75aVDrlhuezLdD
+         PRA3hB0uOv1LQKzI6/s7fbpqAWuh4i13QJNZx+rtKtr+P28VnyIs4U9dImVuaNbBPRz4
+         i6fQ==
+X-Gm-Message-State: AOAM533CmgJcncuRvv5d9leUoPSIZVXZLgoSs7ZehxKJ8JRfFjtXyAAG
+        EUlZr/ZmqsNpD9WMFf1UfzxhmVfMf1Tq0Q==
+X-Google-Smtp-Source: ABdhPJxllALQQc8A9PICc4FjWHEb2B03dfGSu2FS3Er7cCowkPjxv8PwEK9yeipRwAwf85Of0laoWQ==
+X-Received: by 2002:a05:6808:138c:: with SMTP id c12mr7690704oiw.144.1626275687833;
+        Wed, 14 Jul 2021 08:14:47 -0700 (PDT)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
+        by smtp.gmail.com with ESMTPSA id v3sm473396ood.16.2021.07.14.08.14.46
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 08:13:45 -0700 (PDT)
-Subject: Re: [PATCH v8 2/9] clk: tegra: Fix refcounting of gate clocks
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210516163041.12818-1-digetx@gmail.com>
- <20210516163041.12818-3-digetx@gmail.com>
- <fa13f623-dbd1-9b0c-dfd1-8d58800e04b4@nvidia.com>
- <e61f1ee5-2c1e-7a1b-094e-810a587ce3cd@gmail.com>
-Message-ID: <35e7f162-1746-82c7-4129-0654beb77a79@gmail.com>
-Date:   Wed, 14 Jul 2021 18:13:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 14 Jul 2021 08:14:46 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 75-20020a9d08510000b02904acfe6bcccaso2778906oty.12
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:14:46 -0700 (PDT)
+X-Received: by 2002:a25:8082:: with SMTP id n2mr13261292ybk.79.1626275675582;
+ Wed, 14 Jul 2021 08:14:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e61f1ee5-2c1e-7a1b-094e-810a587ce3cd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+ <YOaymBHc4g2cIfRn@8bytes.org> <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
+ <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com>
+In-Reply-To: <e3555c49-2978-355f-93bb-dbfa7d09cab8@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 14 Jul 2021 08:14:24 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
+Message-ID: <CAD=FV=XaTqNDn=vLEXfJ2dV+EH2UoxPfzWeiS+_sZ9hrQ274bw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
+        Saravana Kannan <saravanak@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.07.2021 14:59, Dmitry Osipenko пишет:
-> I now see this has been picked up for stable, but I don't see where
-> this was tagged for stable and so I am not sure how that happened?
+Hi,
 
-I don't know it was picked for stable. Maybe bot picks up all patches
-that have a "fix" word in commit message.
+On Tue, Jul 13, 2021 at 11:07 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-07-08 15:36, Doug Anderson wrote:
+> [...]
+> >> Or document for the users that want performance how to
+> >> change the setting, so that they can decide.
+> >
+> > Pushing this to the users can make sense for a Linux distribution but
+> > probably less sense for an embedded platform. So I'm happy to make
+> > some way for a user to override this (like via kernel command line),
+> > but I also strongly believe there should be a default that users don't
+> > have to futz with that we think is correct.
+>
+> FYI I did make progress on the "punt it to userspace" approach. I'm not
+> posting it even as an RFC yet because I still need to set up a machine
+> to try actually testing any of it (it's almost certainly broken
+> somewhere), but in the end it comes out looking surprisingly not too bad
+> overall. If you're curious to take a look in the meantime I put it here:
+>
+> https://gitlab.arm.com/linux-arm/linux-rm/-/commits/iommu/fq
+
+Being able to change this at runtime through sysfs sounds great and it
+fills all the needs I'm aware of, thanks! In Chrome OS we can just use
+this with some udev rules and get everything we need. I'm happy to
+give this a spin when you're ready for extra testing.
+
+-Doug
