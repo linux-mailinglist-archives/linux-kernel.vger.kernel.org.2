@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6889E3C8110
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47CA3C810B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238663AbhGNJQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:16:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
+        id S238463AbhGNJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:15:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238396AbhGNJP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238141AbhGNJP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Jul 2021 05:15:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D023613B6;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67D14613B2;
         Wed, 14 Jul 2021 09:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626253985;
-        bh=q+8JoyZy41b0E54mkPzbSx9EwxDzqQzc896e/gOvyK4=;
+        bh=CvgsRWOvpdhYc2CPuXHiO8KmPrKQY0raxwB2Nd36tUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iPz9Q6uSJgfdvbvPTEUDUcH5tzbA6RlIZFWiQerXX4bIATvFulLP2biHGH86e2P1R
-         k3A32sYl9/DUR6pdCFTmarf+2Za4/dD4b+cmgJE8HszpGP6PA4RBE8ox9f/Ru64jop
-         z7sBjh9b2oTEXiB169VfNc0H8yUFnCFCPB86/nwhhQnEp5Xd0b/5B3Ak5NosF1wcdo
-         DTqVh3ZOx4OjfS1EVNYZO8edk0IVm/lyFaiyNbXYqXAo3GNt9zD8Rd/oyS8pTWdda0
-         cqHcSwK2pGWo7KAntIK+OQDIgjVQ2RPytsl6WFAEcZuNeap2ED9QfUn+x4/l8/YiAj
-         QZypzyGDEAhmw==
+        b=S9cMCc2cJBYPljpqMDkwoetrYHG5ivgwEK3JamQWYeAbDJGM6pDI6geQtXLn6iLWI
+         LtFFNdzLE5qA/vmIK8FGCQdACeYh+9FLzcvmZhvGEFyMa6DFPmr9Bf4vUv14EhuVcD
+         7kxs3zSsAkiKK5vE+CcHeGj9GuJrqiLYMd0tV52JTcnhfJJoEjA/++bQKbgl0PgzC1
+         QgD6CJFFOaTQ1u3NUExFmZOm4InkPwlQt/aM46P2y/mnEWdxFcvw8XpKgyOB1jEciF
+         lNFHN/Rws+ll0HkIstST5wEK8Z6RV8QvLd4oB5TFNoyB+KKcEORmJsqAwn+UBK9UVC
+         l15QOggRnoybA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1m3awx-007q2X-9G; Wed, 14 Jul 2021 11:13:03 +0200
+        id 1m3awx-007q2b-Aw; Wed, 14 Jul 2021 11:13:03 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH v13 5/9] staging: hi6421-spmi-pmic: rename spmi_device struct
-Date:   Wed, 14 Jul 2021 11:12:57 +0200
-Message-Id: <fd61e6d5b5ae666f0c6daee94be5aabcad9fe528.1626253775.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v13 6/9] staging: hisilicon,hi6421-spmi-pmic.yaml: fix patternProperties
+Date:   Wed, 14 Jul 2021 11:12:58 +0200
+Message-Id: <223da345b9f27d5e8f439b7d0594cb0128edcf16.1626253775.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626253775.git.mchehab+huawei@kernel.org>
 References: <cover.1626253775.git.mchehab+huawei@kernel.org>
@@ -44,43 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's not call a pointer to spmi_device as pdev, as it is
-something else.
+The regex at the patternProperties is wrong, although this was
+not reported as the DT schema was not enforcing properties.
+
+Fix it.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-index f63ba73c9e33..c9c0c3d7011f 100644
---- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-+++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-@@ -26,19 +26,19 @@ static const struct regmap_config regmap_config = {
- 	.fast_io	= true
- };
+diff --git a/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml b/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+index a2963bea87ea..b06131504d75 100644
+--- a/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
++++ b/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+@@ -41,6 +41,8 @@ properties:
+   regulators:
+     type: object
  
--static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
-+static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
- {
--	struct device *dev = &pdev->dev;
-+	struct device *dev = &sdev->dev;
- 	struct regmap *regmap;
- 	int ret;
++    additionalProperties: false
++
+     properties:
+       '#address-cells':
+         const: 1
+@@ -49,11 +51,13 @@ properties:
+         const: 0
  
--	regmap = devm_regmap_init_spmi_ext(pdev, &regmap_config);
-+	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
+     patternProperties:
+-      '^ldo[0-9]+@[0-9a-f]$':
++      '^(ldo|LDO)[0-9]+$':
+         type: object
  
--	dev_set_drvdata(&pdev->dev, regmap);
-+	dev_set_drvdata(&sdev->dev, regmap);
+         $ref: "/schemas/regulator/regulator.yaml#"
  
--	ret = devm_mfd_add_devices(&pdev->dev, PLATFORM_DEVID_NONE,
-+	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
- 				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
- 				   NULL, 0, NULL);
- 	if (ret < 0)
++        unevaluatedProperties: false
++
+ required:
+   - compatible
+   - reg
 -- 
 2.31.1
 
