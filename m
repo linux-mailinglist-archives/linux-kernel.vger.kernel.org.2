@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782023C86BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C333C86E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239665AbhGNPOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
+        id S239709AbhGNPOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239609AbhGNPOO (ORCPT
+        with ESMTP id S239777AbhGNPOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:14:14 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFBEC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:21 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id a13so3620530wrf.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zyox365Ii1ilVd+ni/OL8Ydjg+OlcC8rNpEGzbROUls=;
-        b=ZD8s4DPOC3TwbMAg+1aCt7u1StwxGMAUHjB03GK3mYEOflCSzbbxGSxgHg8E3JLna9
-         0munI40MRScQQUqDXASBJTj3eOjUh5dv6YkKbWN5fQjkNDyneXJ1hXLnMZvzRd341s93
-         3JRSt+xirFz8bRTHr14uzPYm7VDsQRhjwc48cx+fvlPXWIIhNKk7vm7IVlpDKNnWvm6c
-         dv7GCiisgovNbXpa3V4/tIKjBXg0hs1JvtZ2qWkxNRHuNHy3h2x3Qbu33ZGLEP3x+Ejf
-         6DUVKlejlA6vRkoON47p38Rs3jr7dfjlliwTj/2y6a4J+TcbiejwJZzET5vh8FYHW9Sx
-         vSEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zyox365Ii1ilVd+ni/OL8Ydjg+OlcC8rNpEGzbROUls=;
-        b=p4L5XPB9WzdrFGfu+0Rwt7lOwBhIIASpJ8nJarKBtwZFjSVOBZW6dwilvsziOSAMN1
-         D+GzbezCz5xrHByknQdCjT/3V+/CrEhKocsY8zNu3XSJah7Ewyr84rJqNYDYHCKxH5q1
-         9ztAcG2WVF5N+73kj+F4qCA6PQwIt4rCbzvxNuwqlBBR98FiqvSUJMQkFJR2lXhzScga
-         Lj2PvTJzvOCE5YskjO1GxqzYUwbBrCia9VcFgDzSGhyfnXSokn5pqjkk8u0zs1HGqMyb
-         kQGeJUIvncYVITQBRS8ikNLuA+IUjiSpRvr7EYkEAxizBfi6pnq6QSHwHbZafYdHGUvP
-         +YIQ==
-X-Gm-Message-State: AOAM533P/WVXqchINJQvGjRc0vDiEojHfUZDQ85CBbW2M4LypEUFYfjx
-        crLRk/qEFN4amPRO0k1xwyukRPQqdQk=
-X-Google-Smtp-Source: ABdhPJwoI0gHScSZ086DexxRaXyQoEy4B+/YFie/X2ZPOoFJxDlZDVbaU3twTVOjiDR9wyrVATmgXw==
-X-Received: by 2002:adf:f9c9:: with SMTP id w9mr13428258wrr.107.1626275479758;
-        Wed, 14 Jul 2021 08:11:19 -0700 (PDT)
-Received: from agape ([5.171.72.142])
-        by smtp.gmail.com with ESMTPSA id 204sm2415441wma.30.2021.07.14.08.11.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 08:11:19 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: rtl8723bs: fix camel case issue
+        Wed, 14 Jul 2021 11:14:37 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A212C0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 08:11:41 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
+        by andre.telenet-ops.be with bizsmtp
+        id V3Bd2500P4sai0K013BdMS; Wed, 14 Jul 2021 17:11:40 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3gXx-001ARE-KN; Wed, 14 Jul 2021 17:11:37 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m3gXx-00AcfN-5R; Wed, 14 Jul 2021 17:11:37 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
+Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v3 03/19] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
 Date:   Wed, 14 Jul 2021 17:11:14 +0200
-Message-Id: <a708b2b9902bedf5bd0466b05516a4c5b4f43723.1626275102.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1626275102.git.fabioaiuto83@gmail.com>
-References: <cover.1626275102.git.fabioaiuto83@gmail.com>
+Message-Id: <20210714151130.2531831-4-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210714151130.2531831-1-geert@linux-m68k.org>
+References: <20210714151130.2531831-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix following post commit hook checkpatch issue:
+While writing an empty string to a device attribute is a no-op, and thus
+does not need explicit safeguards, the user can still write a single
+newline to an attribute file:
 
-CHECK: Avoid CamelCase: <NetType>
-45: FILE: drivers/staging/rtl8723bs/include/ieee80211.h:170:
-+#define is_supported_ht(NetType) (((NetType)
-	& (WIRELESS_11_24N)) ? true : false)
+    echo > .../message
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+If that happens, img_ascii_lcd_display() trims the newline, yielding an
+empty string, and causing an infinite loop in img_ascii_lcd_scroll().
+
+Fix this by adding a check for empty strings.  Clear the display in case
+one is encountered.
+
+Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/staging/rtl8723bs/include/ieee80211.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Untested with img-ascii-lcd, but triggered with my initial version of
+linedisp.
 
-diff --git a/drivers/staging/rtl8723bs/include/ieee80211.h b/drivers/staging/rtl8723bs/include/ieee80211.h
-index 8eb0557a077a..b2c1a7dafcee 100644
---- a/drivers/staging/rtl8723bs/include/ieee80211.h
-+++ b/drivers/staging/rtl8723bs/include/ieee80211.h
-@@ -167,7 +167,7 @@ enum network_type {
+v3:
+  - No changes,
+
+v2:
+  - No changes.
+---
+ drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index 1cce409ce5cacbc8..e33ce0151cdfd150 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
+ 	if (msg[count - 1] == '\n')
+ 		count--;
  
- #define IsSupportedTxCCK(NetType) (((NetType) & (WIRELESS_11B)) ? true : false)
- #define IsSupportedTxOFDM(NetType) (((NetType) & (WIRELESS_11G) ? true : false)
--#define is_supported_ht(NetType) (((NetType) & (WIRELESS_11_24N)) ? true : false)
-+#define is_supported_ht(net_type) (((net_type) & (WIRELESS_11_24N)) ? true : false)
- 
- struct ieee_param {
- 	u32 cmd;
++	if (!count) {
++		/* clear the LCD */
++		devm_kfree(&ctx->pdev->dev, ctx->message);
++		ctx->message = NULL;
++		ctx->message_len = 0;
++		memset(ctx->curr, ' ', ctx->cfg->num_chars);
++		ctx->cfg->update(ctx);
++		return 0;
++	}
++
+ 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
+ 	if (!new_msg)
+ 		return -ENOMEM;
 -- 
-2.20.1
+2.25.1
 
