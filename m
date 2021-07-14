@@ -2,165 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFB93C8059
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69383C805D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238561AbhGNIit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:38:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238482AbhGNIit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:38:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D43B16115A;
-        Wed, 14 Jul 2021 08:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626251758;
-        bh=HDymZW8IKRKt/jb2rj2qbgVXui81unjwJTpptk8kJ7c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RB/QPHzlz7sU+FJoEw2Rl9ORqYNYDU0ByM2fH+ZDN8PFpW72iGwx2iJTvk34xXdDK
-         4afkxT3NphonGmGcHZDxnWFZ4lKMQboC5f7pX9/gFmeZdoaXOYj1L75Q0sxdjkFEFQ
-         VcH5G+mYU4/gBv5D1pr9vF10r0Hn6jAwiGok9NiDCzN/SpQbBq6mnLsA/qvXhiy+Gg
-         l+xcAQNJMAH9+OoQyRKGxGjRtUi2zYRqBteaHq/g1Rbu2Nct06EorWxVIS/0uehre2
-         Xt4WnHe29rmSkUuhrgDndDxPRvg0wkqqITtZmFIA4OrmUMBFVir8u54QK5+2e1TzzH
-         jgjRxZ6A3X7SA==
-Date:   Wed, 14 Jul 2021 17:35:53 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
-        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
-        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
-        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf
- running in 64-bit kernel
-Message-Id: <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
-In-Reply-To: <20210714065432.188061-1-yangjihong1@huawei.com>
-References: <20210714065432.188061-1-yangjihong1@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S238610AbhGNIjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:39:52 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:44564 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238482AbhGNIjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:39:52 -0400
+Received: by mail-wr1-f54.google.com with SMTP id f9so2137878wrq.11;
+        Wed, 14 Jul 2021 01:37:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GROROvL9gTpopa9rK0I2AZCVqoD2tSZHDr2c/EQ9HJ8=;
+        b=gzDjMiKYxXU59AoYgtH+FT1zuWBVw2hFm1koddGjO5NqMDXUVqjm71iOERcROhXiqL
+         uPp1xJEJneNmYffZ3GBm/AGUB/NYD/Mq4JlQJnP6Dr39OASohrF5gy/YgzHFf3mu8J+o
+         DiLHOFIUA8P25OoksZnSme+MM1/YD/tHrFn5eTHML9737h7SUvU2x8mQKtb4JW5soby1
+         Um4C+AdVZf5EocPf+unwhXb/V7JIvhuMPwEVg4Q0JhSxX3KRc79ec/VXbWnAM10By1VF
+         Sdgevt0BDPuP/lNKm1CAjTHSQgClshQ5hta7pxoMjy4wQoTvlIOJ2mrmGW2tB4qAIR7I
+         O65A==
+X-Gm-Message-State: AOAM533YVKPo7Cwh64lnwFoHKl1+QD7M2HNWSFalBBYnjeUz/YaMoqGq
+        xZbLNfQv/9gyfi22CPlyuC4vLJ4S7tgxBw==
+X-Google-Smtp-Source: ABdhPJxdhFBUJyjXZm21HyX5xoIANyUHLknD4Qe3clWaZoDj9Q/QevlhCLs7FebqTqxJn0JwU1ZDEQ==
+X-Received: by 2002:adf:e586:: with SMTP id l6mr11680936wrm.26.1626251819556;
+        Wed, 14 Jul 2021 01:36:59 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id p4sm1758210wrt.23.2021.07.14.01.36.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 01:36:59 -0700 (PDT)
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+To:     Holger Kiehl <Holger.Kiehl@dwd.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210712060912.995381202@linuxfoundation.org>
+ <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
+ <YO56HTE3k95JLeje@kroah.com>
+ <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
+ <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <a59b73aa-24f6-7395-6b99-d6c62feb0fc4@kernel.org>
+Date:   Wed, 14 Jul 2021 10:36:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20653f1-deaa-6fac-1f8-19319e87623a@praktifix.dwd.de>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+On 14. 07. 21, 10:15, Holger Kiehl wrote:
+>> Yes, will try to do that. I think it will take some time ...
+>>
+> Hmm, I am doing something wrong?
 
-On Wed, 14 Jul 2021 14:54:32 +0800
-Yang Jihong <yangjihong1@huawei.com> wrote:
+No, you are not: -rcs are not tagged.
 
-> The "address" member  of "struct probe_trace_point" uses long data type.
-> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
-> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
-> An error occurs during address comparison in kprobe_warn_out_range function.
-
-Good catch!
-I didn't imagine that such a use case. But that is important because perf
-probe can be used for cross-arch probe definition too.
-
+>     git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+>     cd linux-5.13.y/
+>     git tag|grep v5.13
+>     v5.13
+>     v5.13-rc1
+>     v5.13-rc2
+>     v5.13-rc3
+>     v5.13-rc4
+>     v5.13-rc5
+>     v5.13-rc6
+>     v5.13-rc7
+>     v5.13.1
 > 
-> Before:
-> 
->   # perf probe -a schedule
->   schedule is out of .text, skip it.
->     Error: Failed to add events.
-> 
-> Solution:
->   Change data type of "address" variable to u64 and change corresponding
-> address printing and value assignment.
+> There is no v5.13.2-rc1. It is my first time with 'git bisect'. Must be
+> doing something wrong. How can I get the correct git kernel rc version?
 
-OK, as far as I can see, the other parts of the perf also uses u64 for
-"address" storing variables. (e.g. symbols, maps etc.)
+So just bisect v5.13.1..linux-5.13.y.
 
-> 
-> After:
-> 
->   # perf.new.new probe -a schedule
->   Added new event:
->     probe:schedule       (on schedule)
-> 
->   You can now use it in all perf tools, such as:
-> 
->           perf record -e probe:schedule -aR sleep 1
-> 
->   # perf probe -l
->     probe:schedule       (on schedule)
-
-I think you missed one thing here.
-Usually, this shows the filename and line number of schedule().
-
-Could you try below diff?
-
-diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 7d2ba8419b0c..609ca1671501 100644
---- a/tools/perf/util/dwarf-aux.c
-+++ b/tools/perf/util/dwarf-aux.c
-@@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
-  *
-  * Find a line number and file name for @addr in @cu_die.
-  */
--int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
--		    const char **fname, int *lineno)
-+int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
-+		     const char **fname, int *lineno)
- {
- 	Dwarf_Line *line;
- 	Dwarf_Die die_mem;
- 	Dwarf_Addr faddr;
- 
--	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
-+	if (die_find_realfunc(cu_die, addr, &die_mem)
- 	    && die_entrypc(&die_mem, &faddr) == 0 &&
- 	    faddr == addr) {
- 		*fname = dwarf_decl_file(&die_mem);
-@@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
- 		goto out;
- 	}
- 
--	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
-+	line = cu_getsrc_die(cu_die, addr);
- 	if (line && dwarf_lineno(line, lineno) == 0) {
- 		*fname = dwarf_linesrc(line, NULL, NULL);
- 		if (!*fname)
-diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-index cb99646843a9..7ee0fa19b5c4 100644
---- a/tools/perf/util/dwarf-aux.h
-+++ b/tools/perf/util/dwarf-aux.h
-@@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
- const char *cu_get_comp_dir(Dwarf_Die *cu_die);
- 
- /* Get a line number and file name for given address */
--int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
-+int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
- 		     const char **fname, int *lineno);
- 
- /* Walk on functions at given address */
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 8ba01bbdf05c..50d861a80f57 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
- 	}
- 
- 	/* Find a corresponding line (filename and lineno) */
--	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
-+	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
- 	/* Don't care whether it failed or not */
- 
- 	/* Find a corresponding function (name, baseline and baseaddr) */
-@@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
- }
- 
- static int line_range_walk_cb(const char *fname, int lineno,
--			      Dwarf_Addr addr __maybe_unused,
--			      void *data)
-+			      Dwarf_Addr addr, void *data)
- {
- 	struct line_finder *lf = data;
- 	const char *__fname;
-
-
+regards,
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+js
+suse labs
