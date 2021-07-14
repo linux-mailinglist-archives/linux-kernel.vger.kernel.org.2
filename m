@@ -2,188 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A1F3C813E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598DA3C8161
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238421AbhGNJTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:19:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15011 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238250AbhGNJTg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:19:36 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPsHT6WvLzbcXc;
-        Wed, 14 Jul 2021 17:13:25 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Jul 2021 17:16:38 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 14 Jul
- 2021 17:16:37 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <tj@kernel.org>, <jiangshanlai@gmail.com>, <xuqiang36@huawei.com>,
-        <paskripkin@gmail.com>
-Subject: [PATCH v3] workqueue: fix UAF in pwq_unbound_release_workfn()
-Date:   Wed, 14 Jul 2021 17:19:33 +0800
-Message-ID: <20210714091934.3124170-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S238699AbhGNJWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:22:31 -0400
+Received: from mail-eopbgr70048.outbound.protection.outlook.com ([40.107.7.48]:61166
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238179AbhGNJWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:22:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bKxBdUVvRQrgem8ymWoGr3giEkZ8RqfJ7S55jN/gsVfZgIto5vcKAa6rGuBHmNyKhu5VN13kX71eMHZlU1Uyp+rqTrA3eYmatHg2CbODLIyEjEeXZcl02de5AvCLIAwxcKGdOYCXnc/uxSOtcbvhh2sdBVffnRLPHYPT+UVbDI+ztsoNZpF3SXye+EXRvQdtwzlB1m/UxBwww2HP8HvqJMm3s6NzSp8VWw4kS6p8WAplHP+n3jdRfHWzEQENDry4zELUFRbCN5suEggDvBKFqJ0F/HG/2Z7g/HLP+WtPVcNRa0Ae+aX0yA6MuZQz1KP9ChZzJ++R8kLhvwmYlmmRQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yQsy4ZKJ0Ez5bIpR/+Ah/ZKiUK/KrzAL8RpnJr+GIfg=;
+ b=l7s8BINtXQ27hhF4zNFwaB/LcZJ9oDcccT0j945JnTYSjKjuFs6Jkf/x79s8c6EvTuODfGDi3r7xC4bUS5jjpk0uYEI2Tmc/9CK/xugPB4ZLAuTtaniKDOE6rJQxDNksYZ6itlumBkmpsWPrSkAU88OoOifYoP4baPabVjO0H8SH7aiqB0bJ7lVGUT1we9qtJoudarYDfChAidWHhNWZMraI/6sKle18vOQ9rVPVskQKV/6U8N7tDe3coVZTRC3awQyQ9hX/1VlYTRCoCrtKYUXRnf6wVjUtdyuDjxOGzb7/RU8LxfJ4UHz3vl8RcQRYaHl7dThEDZA4npgh8qodkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yQsy4ZKJ0Ez5bIpR/+Ah/ZKiUK/KrzAL8RpnJr+GIfg=;
+ b=SKCeNWo8FEi8s6A6kyhZ6qVil6CikffYp42pB6gjLUqVsdPBQMUZ8mtKvembhpCe+TxDzV1TAun5t/8e2T2zZIfyXvH+w7A0rXuorClaKaA3NVK45W9Oi8RXzBDUkWS/zu/UVMCBv9evbn0BhgGwziwcWW1UyBMWynsd26B04CM=
+Authentication-Results: collabora.com; dkim=none (message not signed)
+ header.d=none;collabora.com; dmarc=none action=none
+ header.from=wolfvision.net;
+Received: from AM0PR08MB4516.eurprd08.prod.outlook.com (2603:10a6:208:13b::14)
+ by AM9PR08MB6803.eurprd08.prod.outlook.com (2603:10a6:20b:301::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Wed, 14 Jul
+ 2021 09:19:37 +0000
+Received: from AM0PR08MB4516.eurprd08.prod.outlook.com
+ ([fe80::490d:17f7:8463:c167]) by AM0PR08MB4516.eurprd08.prod.outlook.com
+ ([fe80::490d:17f7:8463:c167%7]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
+ 09:19:37 +0000
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: rockchip: Add compatible for
+ rk3568 HDMI
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hjc@rock-chips.com, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, algea.cao@rock-chips.com,
+        andy.yan@rock-chips.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210707120323.401785-1-benjamin.gaignard@collabora.com>
+ <20210707120323.401785-2-benjamin.gaignard@collabora.com>
+ <1bd64284-0a20-12e3-e2e7-19cdfdbf1a25@wolfvision.net>
+ <3865833.Ac65pObt5d@diego>
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+Organization: WolfVision GmbH
+Message-ID: <33532a38-52e6-179a-9ed9-76bbb9618168@wolfvision.net>
+Date:   Wed, 14 Jul 2021 11:19:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <3865833.Ac65pObt5d@diego>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AS8PR04CA0040.eurprd04.prod.outlook.com
+ (2603:10a6:20b:312::15) To AM0PR08MB4516.eurprd08.prod.outlook.com
+ (2603:10a6:208:13b::14)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.100.125] (91.118.163.37) by AS8PR04CA0040.eurprd04.prod.outlook.com (2603:10a6:20b:312::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Wed, 14 Jul 2021 09:19:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c961f310-a969-4dce-b761-08d946a88088
+X-MS-TrafficTypeDiagnostic: AM9PR08MB6803:
+X-Microsoft-Antispam-PRVS: <AM9PR08MB6803A0EE62EDF6FE30FF62BBF2139@AM9PR08MB6803.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WBxII1fER60rQ28MmPd0Sv9qWEA8VU6IR09oz2/6W+qjBYMmPLZoTK05eg5rAyHdpPlOK2KIcTOvbWE7H3MhejilWeod0N77bKEzdSEVn9V787cIFTJOzfFSs+IYeE6OGryUlmwxcaGnmNCAbZ2upFGB9XttFfAR+YyxqH0Zg9aE4oiYdkbrQcgPjncb4ofTUewGwtnllD4eIsznW1iuMWR1hOgoRljrWOfbVmD3xjRckL0BZ63MsANHMrtAOi18ogKJBvPq1pDvLAgt+d8KUOC02lpBLRmx6vQSR8w9UOaQ7x+WFXzwHUx5nm4jEEAgS45e6SQw4q0mPwActjfvxwtYHkF2vW9I1GwSInuBz2Ysvg6tvmAt5xExDRI8m5t2c67Yu3oAS3BhfUALnToJowq9Vbs83Q+hZ+GJ7Ovz3QG2pbasfzKTDiovlwaVkHQY21wdmjf3DbjG3rjQoyuvGmXBf8L5nbcVPZzCuB3yBi7XURaW3CD8WsN7h//Dx/ePbusbar72SgZ6NBS8h6osG6DPkKiQ+TpJKoJXHPuilL0snfnhS9JBCRUJtfYwpkP99/UMpzJUucK7gslKGWM1AV/xk1H/xL1mGz8HYZDVvTEvtsO4qDNf1gVoK4nnUVyoFvSH0tR4jy8e/KKBnKANa5nYBUkDdz7r9eVkYe7HyDwJs90sjI6ppqndSTTKJHBwm808MoOZhmk5St1uIajbi7iG5kKMj06e2LpkrQh70YnvfEIrrGzDsfZ49bpNOsKBvwzhbs9Ku4VAiNyXOe/ZNg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR08MB4516.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39840400004)(376002)(396003)(66946007)(66476007)(66556008)(8676002)(2616005)(7416002)(186003)(83380400001)(8936002)(316002)(53546011)(38350700002)(52116002)(38100700002)(36916002)(66574015)(5660300002)(110136005)(44832011)(2906002)(16576012)(478600001)(36756003)(31686004)(4326008)(6486002)(86362001)(956004)(31696002)(966005)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OXEwSW1TNGhUTVFYSklqcTg4bmlPYldkaGpHeUdKbTU0UzM5NEI5aGNoMFla?=
+ =?utf-8?B?U2lXRDNCbXUzOXpwNVBBVmhWeTdocHFxaldNNmorKzh2Q2k2T1JVSE5kbGEw?=
+ =?utf-8?B?MVIyY2lZZDJGY09kNitieVNSMndnTmtCcTdFT0JqUWs1OXRIazlPdVZxKzE2?=
+ =?utf-8?B?azFsSUQ2SWNaK2JNWG1SeTRiQ2E4eUZlZjZjN0RtY0d1OVJoTVdvSGZVQ01H?=
+ =?utf-8?B?MVFTY1VwWkZmb2lHSjlzKy9qc2t3K09ITWs3VVp5NURLL05nQjB5TjdJME5N?=
+ =?utf-8?B?YmtFOUpqaTdXNzdZejQzU0x3dm43eDFjYXRXMmpBSkNaalBCMUJQamJFZnly?=
+ =?utf-8?B?Mmp1eWhPRytQRG9CODV6UGpUTFp0eG83eFBBNU5FQ1JuUGJJaEk3RW9LcVBp?=
+ =?utf-8?B?RkRhYmpxd3NUd0xIMEdkSFN6cDY5M3cvbTArSjEzajFuclkxL3oxa3l3dzBB?=
+ =?utf-8?B?YzhQQzNjdEdxYUd2ZjFPU0s2VFgxM2hMbWxGbVdxdmVGYnVkVE80ZjRORlFz?=
+ =?utf-8?B?SXFiZXhkWWRlMHFLMjR1bUVseDRuNXZobGdoU05GZDZBbEwyRTZXNE9ZNW1s?=
+ =?utf-8?B?clplbGdiZVVWeXRIeFMwUnR5cGtBUVhsbzNPbVBSbWVIUHRMaG1xTDNRcGxn?=
+ =?utf-8?B?YWRBSGpCTDkxRVIvS3NSNWk5elVhallKTFdrek1pWEs3NklyY0l5dDZpZjNX?=
+ =?utf-8?B?QWVQUnYzckFiNHFReDhIYkVVa24zdTRtMENlSlZwNmdsS0NKdE13RG9LdElS?=
+ =?utf-8?B?aGgzN2hKQnpKWFdNNmpNdGJHUFlpR04rVndZM0x5ZmJCVGFJajdFK2wvVE10?=
+ =?utf-8?B?K2p0aUNrOTZiY0Iyanh0dkV2UE9hbitoTFloWnY5RGZCTnZhLzF5SHZEUi9M?=
+ =?utf-8?B?VnlUZXBwdmIxWHFVWUp3RUFjUWFlTS9iUEI1K3BNZ0ZsbC8wOHJkK09sMjQy?=
+ =?utf-8?B?YVBXMnNZVjFLbHRteUoyYzUydEZncStKUEluMDcyckV2Wnl6WFBORVdGTHBj?=
+ =?utf-8?B?dFVsbVFXOGJnK2g5a0tLYXJobzRkZVJCbytHU1RqOU1BbGlST3F6UHRORDly?=
+ =?utf-8?B?WDR2NkJCR0l3OGRTRWVXRFd3cUNLWCtvS0dhR3Q0Vm5wYm9FMFlUeThxa0JF?=
+ =?utf-8?B?bjc0dXRqRU51ZXgxRTVicVdoZU85Vlk4WU5zdjdvOFZTMnBqWlI2VjZMdjNL?=
+ =?utf-8?B?czdyejZYSVRsSVZBOXV2S2lwTjJFajVTekdtVkxOd3lMNHdpd29VTVc2QUhq?=
+ =?utf-8?B?ZVhxMXJubFZERnd6dHJJaUgxK3RjL2VleFR3YlZpajhYU0hmL0hyUGYzNHl1?=
+ =?utf-8?B?U0tGUi9oRGxrUHdwcmR6WXVoeGV2MjdqN2xuM0dya3dLUmxuL0pGVEUxbndO?=
+ =?utf-8?B?M0FYdHp5aFVpK1UyRWNxR0I5SzJFU0VBZjNQY3pHUXlpRjYwMlI4SjE5d3VY?=
+ =?utf-8?B?Z0hCSk9ieUdUR2xnak1rUEdOTlBmK2R4MElxTkxQbXkwOVloeGl5SHhsRURY?=
+ =?utf-8?B?eUdZTUVaeUtpbUticjNrRzZGOFlWZEgxSTNQdFIvejhidCthd041aVZ5cEVL?=
+ =?utf-8?B?bU8zblRLa2xxZ0ZEYnB5cFRWTWhsdCtaRGVzTmFRTWxnYWpuT003YlVsSjRG?=
+ =?utf-8?B?ZHhKWmJRWllXc051dDE2OWtRajZOcjVTYkZHc1o1VG44RFp4RTlCUHBaZlBR?=
+ =?utf-8?B?a3lRbjZuQUhGSXJCbTZ1SHBpODIyaG5Ta25Mc1VmT2VMdHQ1OWpFWDlBam5u?=
+ =?utf-8?Q?FafsklQSJKoLVGlK5cYKrVxcfkVPP5fpl/324WZ?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: c961f310-a969-4dce-b761-08d946a88088
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR08MB4516.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 09:19:37.5588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6jf55n0gRjyk0PTCuKIqAPmhdF0aTFfwaINjDoQSCKN+cUw1AsctfOjxCwLVpQ4x+3P/hXjMvxRQsrBq3c1aFWf6/lRBhjYC3DguyRMtBlM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR08MB6803
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a UAF report when doing fuzz test:
+Hello Heiko,
 
-[  152.880091][ T8030] ==================================================================
-[  152.881240][ T8030] BUG: KASAN: use-after-free in pwq_unbound_release_workfn+0x50/0x190
-[  152.882442][ T8030] Read of size 4 at addr ffff88810d31bd00 by task kworker/3:2/8030
-[  152.883578][ T8030]
-[  152.883932][ T8030] CPU: 3 PID: 8030 Comm: kworker/3:2 Not tainted 5.13.0+ #249
-[  152.885014][ T8030] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[  152.886442][ T8030] Workqueue: events pwq_unbound_release_workfn
-[  152.887358][ T8030] Call Trace:
-[  152.887837][ T8030]  dump_stack_lvl+0x75/0x9b
-[  152.888525][ T8030]  ? pwq_unbound_release_workfn+0x50/0x190
-[  152.889371][ T8030]  print_address_description.constprop.10+0x48/0x70
-[  152.890326][ T8030]  ? pwq_unbound_release_workfn+0x50/0x190
-[  152.891163][ T8030]  ? pwq_unbound_release_workfn+0x50/0x190
-[  152.891999][ T8030]  kasan_report.cold.15+0x82/0xdb
-[  152.892740][ T8030]  ? pwq_unbound_release_workfn+0x50/0x190
-[  152.893594][ T8030]  __asan_load4+0x69/0x90
-[  152.894243][ T8030]  pwq_unbound_release_workfn+0x50/0x190
-[  152.895057][ T8030]  process_one_work+0x47b/0x890
-[  152.895778][ T8030]  worker_thread+0x5c/0x790
-[  152.896439][ T8030]  ? process_one_work+0x890/0x890
-[  152.897163][ T8030]  kthread+0x223/0x250
-[  152.897747][ T8030]  ? set_kthread_struct+0xb0/0xb0
-[  152.898471][ T8030]  ret_from_fork+0x1f/0x30
-[  152.899114][ T8030]
-[  152.899446][ T8030] Allocated by task 8884:
-[  152.900084][ T8030]  kasan_save_stack+0x21/0x50
-[  152.900769][ T8030]  __kasan_kmalloc+0x88/0xb0
-[  152.901416][ T8030]  __kmalloc+0x29c/0x460
-[  152.902014][ T8030]  alloc_workqueue+0x111/0x8e0
-[  152.902690][ T8030]  __btrfs_alloc_workqueue+0x11e/0x2a0
-[  152.903459][ T8030]  btrfs_alloc_workqueue+0x6d/0x1d0
-[  152.904198][ T8030]  scrub_workers_get+0x1e8/0x490
-[  152.904929][ T8030]  btrfs_scrub_dev+0x1b9/0x9c0
-[  152.905599][ T8030]  btrfs_ioctl+0x122c/0x4e50
-[  152.906247][ T8030]  __x64_sys_ioctl+0x137/0x190
-[  152.906916][ T8030]  do_syscall_64+0x34/0xb0
-[  152.907535][ T8030]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  152.908365][ T8030]
-[  152.908688][ T8030] Freed by task 8884:
-[  152.909243][ T8030]  kasan_save_stack+0x21/0x50
-[  152.909893][ T8030]  kasan_set_track+0x20/0x30
-[  152.910541][ T8030]  kasan_set_free_info+0x24/0x40
-[  152.911265][ T8030]  __kasan_slab_free+0xf7/0x140
-[  152.911964][ T8030]  kfree+0x9e/0x3d0
-[  152.912501][ T8030]  alloc_workqueue+0x7d7/0x8e0
-[  152.913182][ T8030]  __btrfs_alloc_workqueue+0x11e/0x2a0
-[  152.913949][ T8030]  btrfs_alloc_workqueue+0x6d/0x1d0
-[  152.914703][ T8030]  scrub_workers_get+0x1e8/0x490
-[  152.915402][ T8030]  btrfs_scrub_dev+0x1b9/0x9c0
-[  152.916077][ T8030]  btrfs_ioctl+0x122c/0x4e50
-[  152.916729][ T8030]  __x64_sys_ioctl+0x137/0x190
-[  152.917414][ T8030]  do_syscall_64+0x34/0xb0
-[  152.918034][ T8030]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  152.918872][ T8030]
-[  152.919203][ T8030] The buggy address belongs to the object at ffff88810d31bc00
-[  152.919203][ T8030]  which belongs to the cache kmalloc-512 of size 512
-[  152.921155][ T8030] The buggy address is located 256 bytes inside of
-[  152.921155][ T8030]  512-byte region [ffff88810d31bc00, ffff88810d31be00)
-[  152.922993][ T8030] The buggy address belongs to the page:
-[  152.923800][ T8030] page:ffffea000434c600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10d318
-[  152.925249][ T8030] head:ffffea000434c600 order:2 compound_mapcount:0 compound_pincount:0
-[  152.926399][ T8030] flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
-[  152.927515][ T8030] raw: 057ff00000010200 dead000000000100 dead000000000122 ffff888009c42c80
-[  152.928716][ T8030] raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-[  152.929890][ T8030] page dumped because: kasan: bad access detected
-[  152.930759][ T8030]
-[  152.931076][ T8030] Memory state around the buggy address:
-[  152.931851][ T8030]  ffff88810d31bc00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  152.932967][ T8030]  ffff88810d31bc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  152.934068][ T8030] >ffff88810d31bd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  152.935189][ T8030]                    ^
-[  152.935763][ T8030]  ffff88810d31bd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  152.936847][ T8030]  ffff88810d31be00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  152.937940][ T8030] ==================================================================
+On 7/13/21 10:49 AM, Heiko Stübner wrote:
+> Hi Michael,
+> 
+> Am Dienstag, 13. Juli 2021, 10:44:00 CEST schrieb Michael Riesch:
+>> The HDMI TX block in the RK3568 requires two power supplies, which have
+>> to be enabled in some cases (at least on the RK3568 EVB1 the voltages
+>> VDDA0V9_IMAGE and VCCA1V8_IMAGE are disabled by default). It would be
+>> great if this was considered by the driver and the device tree binding.
+>> I am not sure, though, whether this is a RK3568 specific or
+>> rockchip_dw_hdmi specific thing. Maybe it can even enter the Synopsis DW
+>> HDMI driver.
+> 
+> I do remember that this discussion happened many years back already.
+> And yes the supplies are needed for all but back then there was opposition
+> as these are supposedly phy-related supplies, not for the dw-hdmi itself.
+> [There are variants with an external phy, like on the rk3328]
+> 
+> See discussion on [0]
+> 
+> [0] https://dri-devel.freedesktop.narkive.com/pen2zWo1/patch-v3-1-2-drm-bridge-dw-hdmi-support-optional-supply-regulators
 
-If apply_wqattrs_prepare() fails in alloc_workqueue(), it will call put_pwq()
-which invoke a work queue to call pwq_unbound_release_workfn() and use the 'wq'.
-The 'wq' allocated in alloc_workqueue() will be freed in error path when
-apply_wqattrs_prepare() fails. So it will lead a UAF.
+Thanks for the pointer. My summary of this discussion would be the
+following:
 
-CPU0                                          CPU1
-alloc_workqueue()
-alloc_and_link_pwqs()
-apply_wqattrs_prepare() fails
-apply_wqattrs_cleanup()
-schedule_work(&pwq->unbound_release_work)
-kfree(wq)
-                                              worker_thread()
-                                              pwq_unbound_release_workfn() <- trigger uaf here
+ - There was no consensus on how to handle the issue. The voltages still
+have to be enabled from the outside of the driver.
+ - Open question: rockchip-specific or general solution? (one may detect
+a tendency towards a rockchip-specific solution)
+ - Open question: separation of the phy from the dw_hdmi IP core?
 
-If apply_wqattrs_prepare() fails, the new pwq are not linked, it doesn't
-hold any reference to the 'wq', 'wq' is invalid to access in the worker,
-so add check pwq if linked to fix this.
+First of all, IMHO the driver should enable those voltages, otherwise we
+will have the same discussion again in 5-6 years :-)
 
-Fixes: 2d5f0764b526 ("workqueue: split apply_workqueue_attrs() into 3 stages")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v3:
-  drop the v2 and v1 changes, add check pwq in pwq_unbound_release_workfn()
-v2:
-  also use free_wqattrs_ctx() in workqueue_apply_unbound_cpumask()
----
- kernel/workqueue.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+Then, the rockchip,dw-hdmi binding features a property "phys",
+presumably to handle external phys (e.g., for the RK3328). This fact and
+the referenced discussion suggest a rockchip-specific solution.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 50142fc08902..f148eacda55a 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -3676,15 +3676,21 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
- 						  unbound_release_work);
- 	struct workqueue_struct *wq = pwq->wq;
- 	struct worker_pool *pool = pwq->pool;
--	bool is_last;
-+	bool is_last = false;
- 
--	if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
--		return;
-+	/*
-+	 * when @pwq is not linked, it doesn't hold any reference to the
-+	 * @wq, and @wq is invalid to access.
-+	 */
-+	if (!list_empty(&pwq->pwqs_node)) {
-+		if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-+			return;
- 
--	mutex_lock(&wq->mutex);
--	list_del_rcu(&pwq->pwqs_node);
--	is_last = list_empty(&wq->pwqs);
--	mutex_unlock(&wq->mutex);
-+		mutex_lock(&wq->mutex);
-+		list_del_rcu(&pwq->pwqs_node);
-+		is_last = list_empty(&wq->pwqs);
-+		mutex_unlock(&wq->mutex);
-+	}
- 
- 	mutex_lock(&wq_pool_mutex);
- 	put_unbound_pool(pool);
--- 
-2.25.1
+In the Rockchip documentation (at least for RK3328, RK3399 and RK3568),
+there are two extra voltages denoted as "HDMI PHY analog power". It
+would be tempting to add the internal phy to the device tree and glue it
+to the dw-hdmi using the "phys" property. However, as pointed out in the
+referenced discussion, the configuration registers of the phy are
+somewhat interleaved with the dw-hdmi registers and a clear separation
+may be tricky.
 
+As a more pragmatic alternative, we could add optional supplies to the
+rockchip,dw-hdmi binding and evaluate the "phys" property. If the latter
+is not specified, the internal phy is used and the supplies must be
+enabled. Would such an approach be acceptable?
+
+Best regards,
+Michael
+
+>> On 7/7/21 2:03 PM, Benjamin Gaignard wrote:
+>>> Define a new compatible for rk3568 HDMI.
+>>> This version of HDMI hardware block needs two new clocks hclk_vio and hclk
+>>> to provide phy reference clocks.
+>>>
+>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>> ---
+>>> version 2:
+>>> - Add the clocks needed for the phy.
+>>>
+>>>  .../bindings/display/rockchip/rockchip,dw-hdmi.yaml         | 6 +++++-
+>>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+>>> index 75cd9c686e985..cb8643b3a8b84 100644
+>>> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+>>> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
+>>> @@ -23,6 +23,7 @@ properties:
+>>>        - rockchip,rk3288-dw-hdmi
+>>>        - rockchip,rk3328-dw-hdmi
+>>>        - rockchip,rk3399-dw-hdmi
+>>> +      - rockchip,rk3568-dw-hdmi
+>>>  
+>>>    reg-io-width:
+>>>      const: 4
+>>> @@ -51,8 +52,11 @@ properties:
+>>>            - vpll
+>>>        - enum:
+>>>            - grf
+>>> +          - hclk_vio
+>>> +          - vpll
+>>> +      - enum:
+>>> +          - hclk
+>>>            - vpll
+>>> -      - const: vpll
+>>
+>> The description and documentation of the clocks are somewhat misleading
+>> IMHO. This is not caused by your patches, of course. But maybe this is a
+>> chance to clean them up a bit.
+>>
+>> It seems that the CEC clock is an optional clock of the dw-hdmi driver.
+>> Shouldn't it be documented in the synopsys,dw-hdmi.yaml?
+>>
+>> Also, it would be nice if the clocks hclk_vio and hclk featured a
+>> description in the binding.
+>>
+>> BTW, I am not too familiar with the syntax here, but shouldn't items in
+>> clocks and items in clock-names be aligned (currently, there is a plain
+>> list vs. an enum structure)?
+>>
+>> Best regards,
+>> Michael
+>>
+>>>  
+>>>    ddc-i2c-bus:
+>>>      $ref: /schemas/types.yaml#/definitions/phandle
+>>>
+>>
+> 
+> 
+> 
+> 
