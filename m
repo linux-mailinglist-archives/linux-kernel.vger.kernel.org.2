@@ -2,219 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA1D3C80F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FD93C8100
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238339AbhGNJI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S238196AbhGNJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238271AbhGNJI4 (ORCPT
+        with ESMTP id S238123AbhGNJPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:08:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A90C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:06:05 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1m3aq6-0004XS-9m; Wed, 14 Jul 2021 11:05:58 +0200
-Message-ID: <8f8a307a2dc99ca3beab2767ac3188b4ba1a394f.camel@pengutronix.de>
-Subject: Re: [PATCH v16 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Robin Gong <yibin.gong@nxp.com>, vkoul@kernel.org,
-        broonie@kernel.org, shawnguo@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
-        robh+dt@kernel.org, catalin.marinas@arm.com, will.deacon@arm.com,
-        festevam@gmail.com, s.hauer@pengutronix.de,
-        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
-        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
-        frieder.schrempf@kontron.de, m.felsch@pengutronix.de,
-        xiaoning.wang@nxp.com
-Date:   Wed, 14 Jul 2021 11:05:56 +0200
-In-Reply-To: <1626258052-22198-1-git-send-email-yibin.gong@nxp.com>
-References: <1626258052-22198-1-git-send-email-yibin.gong@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Wed, 14 Jul 2021 05:15:08 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7C3C06175F;
+        Wed, 14 Jul 2021 02:12:16 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id t186so2083596ybf.2;
+        Wed, 14 Jul 2021 02:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6bVeuBZ+uHS+T9NWs1tv6fdQJ/mndrZqGXpNYSa9tmk=;
+        b=uVcvspPXg73FKHPV9TYzvChNQGmZdqkTUJgyeDrzILGhINZ2zyxU65hRwI9qO76s4G
+         j75r9wJZ+qaH1qMcFCqxnFD8lRU3BAFjkhbvydLx9rpwQ5sgVWd6QD3z17LeCYhsGVI5
+         sDfW0eK0STu5/UN4UouEIXKTAWWdHvm4+2KVHnQ6akyDBvwyaReYJLKZAxPqWhDGhJ2n
+         GbXaQgqwHUFpwKhhw6Y5aFmMp8o8x1xORN/ZmT7TcxnUm5FX0ijS5uQlIaNkP0446w/l
+         rJCLwCwK+wbdnF7zli5Maj6sVvDQNWoI2NhnYQab76bZjBmHI5qwCpXRI4YTNgYvV5Hm
+         uuxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6bVeuBZ+uHS+T9NWs1tv6fdQJ/mndrZqGXpNYSa9tmk=;
+        b=KAWtKueBWvX6pQQmt0Oz0x+4FUlizotAt1/boisvs4x1MVBR/GQsyQ4ymmDY7fPxHR
+         dLE5qTvjrM+ioA2gGiKRD77MQgHN8VioXJXuMHFI1m5gLhNln3XbOhtoNq2kAacf2LZP
+         hGY1v0iIqO6N2MRHvxOtpJymX9EOIYQubksuak8Ln8gi6i80egPKHICcO9x7oWKTbxeU
+         6HnKHz0vs9fb7Cd2O1Y0MNWtGMt8hbJxc7GCyk4XjocjA3MuxJAJbb0rv70CW3kd2G8+
+         dobqCQa1ZZIySLPhMmKjPllWYclmjhWsOLpRDqTP0WwbdFMfU3f1GykFbKiU9vrPm/u2
+         cOqw==
+X-Gm-Message-State: AOAM532rxsutpkjxy3YUuPzRjhP67X+FOtUlOIYQCzcXDi1ryNVd2+Ir
+        0dyv8YtSWkv9+9S2n4CPEI5vJrzfbC4asuJZbT8=
+X-Google-Smtp-Source: ABdhPJxcXETfZJ/SkV++NyHUkyxlbQsDb9qwARZX4FM46+dm3V5fCSR4PCCVCheWLLTzk3qYhMpXksW+qX4NRob4ZWc=
+X-Received: by 2002:a25:7e86:: with SMTP id z128mr11955572ybc.222.1626253935652;
+ Wed, 14 Jul 2021 02:12:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210703181937.510ec0fa@jic23-huawei>
+In-Reply-To: <20210703181937.510ec0fa@jic23-huawei>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 14 Jul 2021 10:11:49 +0100
+Message-ID: <CA+V-a8uzeepfd+8Wfd2n2EXeXQ9QJZhR+X8j29Y7DGNu8+aH+g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation for
+ Renesas RZ/G2L A/D converter
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-iio@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod, Mark, Shawn,
+Hi Jonathan,
 
-with this revision I think this series is ready to be picked up, at
-least I couldn't spot any blockers anymore.
+Thank you for the review.
 
-How would you like to deal with this? While the complete series is
-needed to fix the issues and restore proper DMA functionality on
-unaffected SoCs, there are no dependencies between the patches
-targeting different subsystems.
-Do you prefer to pick dma/spi/dt patches from this series in your
-respective trees, or do you want the whole series to go through the imx
-tree? AFAICS all dma and spi patches are already acked, so taking them
-through one tree would be possible, I think.
+On Sat, Jul 3, 2021 at 6:17 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 29 Jun 2021 23:03:27 +0100
+> Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> > Add binding documentation for Renesas RZ/G2L A/D converter block.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Hi,
+>
+> See inline
+>
+> Jonathan
+>
+> > ---
+> >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
+> >  1 file changed, 121 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> > new file mode 100644
+> > index 000000000000..db935d6d59eb
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> > @@ -0,0 +1,121 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/adc/renesas,rzg2l-adc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Renesas RZ/G2L ADC
+> > +
+> > +maintainers:
+> > +  - Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > +
+> > +description: |
+> > +  A/D Converter block is a successive approximation analog-to-digital converter
+> > +  with a 12-bit accuracy. Up to eight analog input channels can be selected.
+> > +  Conversions can be performed in single or repeat mode. Result of the ADC is
+> > +  stored in a 32-bit data register corresponding to each channel.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +          - enum:
+> > +              - renesas,r9a07g044-adc   # RZ/G2{L,LC}
+> > +          - const: renesas,rzg2l-adc
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: converter clock
+> > +      - description: peripheral clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: adclk
+> > +      - const: pclk
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +
+> > +  resets:
+> > +    maxItems: 2
+> > +
+> > +  reset-names:
+> > +    items:
+> > +      - const: presetn
+> > +      - const: adrst-n
+> > +
+> > +  renesas-rzg2l,adc-trigger-mode:
+> > +    $ref: /schemas/types.yaml#/definitions/uint8
+> > +    description: Trigger mode for A/D converter
+> > +    enum:
+> > +      - 0 # Software trigger mode (Defaults)
+> > +      - 1 # Asynchronous trigger using ADC_TRG trigger input pin
+> > +      - 2 # Synchronous trigger (Trigger from MTU3a/GPT)
+>
+> Is this a function of the board in some fashion?  If not it sounds like
+> something that should be in control of userspace.  Normally we'd
+> do that by having the driver register some iio_triggers and depending
+> on which one is selected do the equivalent of what you have here.
+>
+Agreed for Asynchronous and Synchronous triggers. WRT Software trigger
+should this be registered as a  iio_triggers too or read_raw()
+callback (with IIO_CHAN_INFO_RAW case)  should be treated as Software
+trigger?
 
-Regards,
-Lucas
+> > +    default: 0
+> > +
+> > +  gpios:
+> > +    description:
+> > +      ADC_TRG trigger input pin
+> > +    maxItems: 1
+> Why is this mode useful?  I'm assuming the gpio write would take a register
+> write and the software trigger mode also requires a register write.
+>
+Yes gpio write would take a register write.
 
-Am Mittwoch, dem 14.07.2021 um 18:20 +0800 schrieb Robin Gong:
-> There is ecspi ERR009165 on i.mx6/7 soc family, which cause FIFO
-> transfer to be send twice in DMA mode. Please get more information from:
-> https://www.nxp.com/docs/en/errata/IMX6DQCE.pdf. The workaround is adding
-> new sdma ram script which works in XCH  mode as PIO inside sdma instead
-> of SMC mode, meanwhile, 'TX_THRESHOLD' should be 0. The issue should be
-> exist on all legacy i.mx6/7 soc family before i.mx6ul.
-> NXP fix this design issue from i.mx6ul, so newer chips including i.mx6ul/
-> 6ull/6sll do not need this workaroud anymore. All other i.mx6/7/8 chips
-> still need this workaroud. This patch set add new 'fsl,imx6ul-ecspi'
-> for ecspi driver and 'ecspi_fixed' in sdma driver to choose if need errata
-> or not.
-> The first two reverted patches should be the same issue, though, it
-> seems 'fixed' by changing to other shp script. Hope Sean or Sascha could
-> have the chance to test this patch set if could fix their issues.
-> Besides, enable sdma support for i.mx8mm/8mq and fix ecspi1 not work
-> on i.mx8mm because the event id is zero.
-> 
-> PS:
->    Please get sdma firmware from below linux-firmware and copy it to your
-> local rootfs /lib/firmware/imx/sdma.
-> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/imx/sdma
-> 
-> v2:
->   1.Add commit log for reverted patches.
->   2.Add comment for 'ecspi_fixed' in sdma driver.
->   3.Add 'fsl,imx6sll-ecspi' compatible instead of 'fsl,imx6ul-ecspi'
->     rather than remove.
-> v3:
->   1.Confirm with design team make sure ERR009165 fixed on i.mx6ul/i.mx6ull
->     /i.mx6sll, not fixed on i.mx8m/8mm and other i.mx6/7 legacy chips.
->     Correct dts related dts patch in v2.
->   2.Clean eratta information in binding doc and new 'tx_glitch_fixed' flag
->     in spi-imx driver to state ERR009165 fixed or not.
->   3.Enlarge burst size to fifo size for tx since tx_wml set to 0 in the
->     errata workaroud, thus improve performance as possible.
-> v4:
->   1.Add Ack tag from Mark and Vinod
->   2.Remove checking 'event_id1' zero as 'event_id0'.
-> v5:
->   1.Add the last patch for compatible with the current uart driver which
->     using rom script, so both uart ram script and rom script supported
->     in latest firmware, by default uart rom script used. UART driver
->     will be broken without this patch.
-> v6:
->   1.Resend after rebase the latest next branch.
->   2.Remove below No.13~No.15 patches of v5 because they were mergered.
->   	ARM: dts: imx6ul: add dma support on ecspi
->   	ARM: dts: imx6sll: correct sdma compatible
->   	arm64: defconfig: Enable SDMA on i.mx8mq/8mm
->   3.Revert "dmaengine: imx-sdma: fix context cache" since
->     'context_loaded' removed.
-> v7:
->   1.Put the last patch 13/13 'Revert "dmaengine: imx-sdma: fix context
->     cache"' to the ahead of 03/13 'Revert "dmaengine: imx-sdma: refine
->     to load context only once" so that no building waring during comes out
->     during bisect.
->   2.Address Sascha's comments, including eliminating any i.mx6sx in this
->     series, adding new 'is_imx6ul_ecspi()' instead imx in imx51 and taking
->     care SMC bit for PIO.
->   3.Add back missing 'Reviewed-by' tag on 08/15(v5):09/13(v7)
->    'spi: imx: add new i.mx6ul compatible name in binding doc'
-> v8:
->   1.remove 0003-Revert-dmaengine-imx-sdma-fix-context-cache.patch and merge
->     it into 04/13 of v7
->   2.add 0005-spi-imx-fallback-to-PIO-if-dma-setup-failure.patch for no any
->     ecspi function broken even if sdma firmware not updated.
->   3.merge 'tx.dst_maxburst' changes in the two continous patches into one
->     patch to avoid confusion.
->   4.fix typo 'duplicated'.
-> v9:
->   1. add "spi: imx: add dma_sync_sg_for_device after fallback from dma"
->      to fix the potential issue brought by commit bcd8e7761ec9("spi: imx:
->      fallback to PIO if dma setup failure") which is the only one patch
->      of v8 merged. Thanks Matthias for reporting:
->      https://lore.kernel.org/linux-arm-kernel/5d246dd81607bb6e5cb9af86ad4e53f7a7a99c50.camel@ew.tq-group.com/
->   2. remove 05/13 of v8 "spi: imx:fallback to PIO if dma setup failure"
->      since it's been merged.
-> v10:
->   1. remove 01/13 "spi: imx: add dma_sync_sg_for_device after fallback from dma"
->      since there is another independent patch merged:
->      -- commit 809b1b04df898 ("spi: introduce fallback to pio")
->   2. add "dmaengine: dma: imx-sdma: add fw_loaded and is_ram_script" which
->      is used to fix the potential dma_alloc_coherent() failure while this
->      patchset applied but sdma firmware may not be ready for long time.
->   3. burst size change back from fifo size to normal wml to align with nxp
->      internal tree which has been test for years. Overnight with loopback
->      test with spidev failed with fifo size, but pass with wml(half of fifo
->      size).Seems the whole fifo size fed may cause rxfifo overflow during
->      tx shift out while rx shift in.
->      "spi: imx: remove ERR009165 workaround on i.mx6ul"
->   4. remove 12/13 'dmaengine: imx-sdma: fix ecspi1 rx dma not work on i.mx8mm'
->      since below two similar patches merged:
->      -- commit 25962e1a7f1d ("dmaengine: imx-sdma: Fix the event id check to
->      include RX event for UART6")
->      -- commit 2f57b8d57673 ("dmaengine: imx-sdma: Fix: Remove 'always true'
->      comparison")
-> v11:
->   1. change dev_err() to dev_warn_once() in case sdma firmware not loaded to
->      eliminate meaningless duplicate log print.
-> v12:
->   1. take care uart_2_mcu_addr/uartsh_2_mcu_addr since such rom scripts are
->      now located in the bottom part of sdma_script_start_addrs which are beyond
->      the SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1. Reported by Frieder as below:
->      https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2263544.html
-> v13:
->   1. rebase with latest linux-next.
->   2. remove 09/12 'spi: imx: add new i.mx6ul compatible name in binding doc'
->      since it's been converted to yaml already.
->   3. add 'Fixes', 'Cc: stable@vger.kernel.org' and 'Test-by' tags for 03,04
->      since they are confirmed fix by Richard Leitner:
->      https://lkml.org/lkml/2020/8/17/39
->      https://www.spinics.net/lists/dmaengine/msg23489.html
->   4. fix potential descriptor free unexpected on the next transfer before
->      the last channel terminated:
->      https://www.spinics.net/lists/dmaengine/msg23400.html
-> v14:
->   1. rebase with latest linux-next.
-> 
-> v15:
->   1. reuse IMX51_ECSPI type instead of new IMX6UL_ECSPI driver.
->   2. use mcu_2_app rom script directly instead of ram script on i.mx6ul.
-> 
-> v16:
->   1. move 'sdmac->is_ram_script = false' from sdma_config_write() to
->      sdma_get_pc() for addressing Lucas's concern.
-> 
-> Robin Gong (12):
->   Revert "ARM: dts: imx6q: Use correct SDMA script for SPI5 core"
->   Revert "ARM: dts: imx6: Use correct SDMA script for SPI cores"
->   Revert "dmaengine: imx-sdma: refine to load context only once"
->   dmaengine: imx-sdma: remove duplicated sdma_load_context
->   dmaengine: dma: imx-sdma: add fw_loaded and is_ram_script
->   dmaengine: imx-sdma: add mcu_2_ecspi script
->   spi: imx: fix ERR009165
->   spi: imx: remove ERR009165 workaround on i.mx6ul
->   dmaengine: imx-sdma: remove ERR009165 on i.mx6ul
->   dma: imx-sdma: add i.mx6ul compatible name
->   dmaengine: imx-sdma: add uart rom script
->   dmaengine: imx-sdma: add terminated list for freed descriptor in
->     worker
-> 
->  .../devicetree/bindings/dma/fsl-imx-sdma.txt       |  1 +
->  arch/arm/boot/dts/imx6q.dtsi                       |  2 +-
->  arch/arm/boot/dts/imx6qdl.dtsi                     |  8 +-
->  drivers/dma/imx-sdma.c                             | 93 ++++++++++++++++------
->  drivers/spi/spi-imx.c                              | 41 ++++++++--
->  5 files changed, 111 insertions(+), 34 deletions(-)
-> 
+> Normally the reason for a pin like this is to support synchronising with
+> external hardware.   If that's the case, we should call that out here.
+> often the pin isn't even connected to a gpio in our control.
+> (i.e. it's a trigger signal from some other device.)
+>
+So just setting the GPIO pin as input should do the trick.
 
+> > +
+> > +  renesas-rzg2l,adc-channels:
+> > +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> > +    description: Input channels available on platform
+> > +    uniqueItems: true
+> > +    minItems: 1
+> > +    maxItems: 8
+> > +    items:
+> > +      enum: [0, 1, 2, 3, 4, 5, 6, 7]
+>
+> Is this a function of different devices (should have different compatibles)
+> or of what is wired up.  If it's what is wired up, then how do you know which
+Its channels which are wired, for example if channels 0-5 are wired up
+the board dts would include the property "renesas-rzg2l,adc-channels =
+/bits/ 8 <0 1 2 3 4 5>;"
 
+> subset of channels are connected?  We have the generic adc channel binding
+> in iio/adc/adc.yaml for the case where we only want to expose those channels
+> that are wired up.  It uses a node per channel.
+>
+Agreed will do that and drop the custom "renesas-rzg2l,adc-channels"
+
+Cheers,
+Prabhakar
+> > +
+> > +  "#io-channel-cells":
+> > +    const: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - clocks
+> > +  - clock-names
+> > +  - power-domains
+> > +  - resets
+> > +  - reset-names
+> > +  - renesas-rzg2l,adc-channels
+> > +  - "#io-channel-cells"
+> > +
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        renesas-rzg2l,adc-trigger-mode:
+> > +          const: 1
+> > +    then:
+> > +      required:
+> > +        - gpios
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/r9a07g044-cpg.h>
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +
+> > +    adc: adc@10059000 {
+> > +      compatible = "renesas,r9a07g044-adc", "renesas,rzg2l-adc";
+> > +      reg = <0x10059000 0x400>;
+> > +      interrupts = <GIC_SPI 347 IRQ_TYPE_EDGE_RISING>;
+> > +      clocks = <&cpg CPG_MOD R9A07G044_ADC_ADCLK>,
+> > +               <&cpg CPG_MOD R9A07G044_ADC_PCLK>;
+> > +      clock-names = "adclk", "pclk";
+> > +      power-domains = <&cpg>;
+> > +      resets = <&cpg R9A07G044_ADC_PRESETN>,
+> > +               <&cpg R9A07G044_ADC_ADRST_N>;
+> > +      reset-names = "presetn", "adrst-n";
+> > +      #io-channel-cells = <1>;
+> > +      renesas-rzg2l,adc-trigger-mode = /bits/ 8 <0>;
+> > +      renesas-rzg2l,adc-channels = /bits/ 8 <0 1 2 3 4 5 6>;
+> > +    };
+>
