@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E703C8779
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE8E3C8797
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 17:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239593AbhGNPdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 11:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232419AbhGNPdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:33:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A22C6613C5;
-        Wed, 14 Jul 2021 15:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626276647;
-        bh=LrE32zCSfmq/HRGIAaJzLKDx2mJFgMfjgbIdQislivY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FUl5UN8dZ9XIhWJFag+7K4uDQ0/dveCjPpqaDCPzRJGQ0guJ4Sae3MwiD9A7Fq5bX
-         BJ4cMJSaUGUY4MIZvj5HynHIIvncT4gxhpEfJGGX081P2wEr5BSJNt9SrKtqhtlFIY
-         /8oxG1D+PCj5OylvXStbfCLqOyPrLZSnRXg+6XZQKtDsgssf+/lvR7FhmIBaPN74f2
-         4iElhFqmNkuRRIvcK+MV6cgKyGN8Rnz/Zi8DTF1SVS58gCJ5gjwJYiPsrS0l/JuErk
-         XPegBFYCzeWPtvqYD3kajGdsx2bdjgfO14Yf20hq7ENx1bk8modZCz/YfnKRjpk7n1
-         CRggQx51iMyyA==
-Date:   Wed, 14 Jul 2021 11:30:46 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO8DJkVzHFmPv6vz@sashalap>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com>
- <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
- <YO6X2og4mzqAEwJn@dhcp22.suse.cz>
+        id S239922AbhGNPeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 11:34:20 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58130 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239868AbhGNPeJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 11:34:09 -0400
+X-UUID: 2de3c61ee52744549a0ccee3a3b85973-20210714
+X-UUID: 2de3c61ee52744549a0ccee3a3b85973-20210714
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1787064300; Wed, 14 Jul 2021 23:31:14 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 14 Jul 2021 23:31:12 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Jul 2021 23:31:12 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        <rocco.yue@gmail.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: [PATCH] ipv6: remove unused local variable
+Date:   Wed, 14 Jul 2021 23:15:33 +0800
+Message-ID: <20210714151533.6210-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YO6X2og4mzqAEwJn@dhcp22.suse.cz>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:52:58AM +0200, Michal Hocko wrote:
->On Tue 13-07-21 18:28:13, Andrew Morton wrote:
->> At present this -stable
->> promiscuity is overriding the (sometime carefully) considered decisions
->> of the MM developers, and that's a bit scary.
->
->Not only scary, it is also a waste of precious time of those who
->carefuly evaluate stable tree backports.
+The local variable "struct net *net" in the two functions of
+inet6_rtm_getaddr() and inet6_dump_addr() are actually useless,
+so remove them.
 
-I'm just as concerned with the other direction: we end up missing quite
-a lot of patches that are needed in practice, and no one is circling
-back to make sure that we have everything we need.
+Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+---
+ net/ipv6/addrconf.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-I took a peek at SUSE's tree to see how things work there, and looking
-at the very latest mm/ commit:
-
-commit c8c7b321edcf7a7e8c22dc66e0366f72aa2390f0
-Author: Michal Koutný <mkoutny@suse.com>
-Date:   Tue May 4 11:12:10 2021 +0200
-
-     mm: memcontrol: fix cpuhotplug statistics flushing
-     (bsc#1185606).
-     
-     suse-commit: 3bba386a33fac144abf2507554cb21552acb16af
-
-This seems to be commit a3d4c05a4474 ("mm: memcontrol: fix cpuhotplug
-statistics flushing") upstream, and I assume that it was picked because
-it fixed a real bug someone cares about.
-
-I can maybe understand that at the time that the patch was
-written/committed it didn't seem like stable@ material and thus there
-was no cc to stable.
-
-But once someone realized it needs to be backported, why weren't we told
-to take it into stable too?
-
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 3bf685fe64b9..e2f625e39455 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -5211,8 +5211,7 @@ static int inet6_dump_addr(struct sk_buff *skb, struct netlink_callback *cb,
+ 		.netnsid = -1,
+ 		.type = type,
+ 	};
+-	struct net *net = sock_net(skb->sk);
+-	struct net *tgt_net = net;
++	struct net *tgt_net = sock_net(skb->sk);
+ 	int idx, s_idx, s_ip_idx;
+ 	int h, s_h;
+ 	struct net_device *dev;
+@@ -5351,7 +5350,7 @@ static int inet6_rtm_valid_getaddr_req(struct sk_buff *skb,
+ static int inet6_rtm_getaddr(struct sk_buff *in_skb, struct nlmsghdr *nlh,
+ 			     struct netlink_ext_ack *extack)
+ {
+-	struct net *net = sock_net(in_skb->sk);
++	struct net *tgt_net = sock_net(in_skb->sk);
+ 	struct inet6_fill_args fillargs = {
+ 		.portid = NETLINK_CB(in_skb).portid,
+ 		.seq = nlh->nlmsg_seq,
+@@ -5359,7 +5358,6 @@ static int inet6_rtm_getaddr(struct sk_buff *in_skb, struct nlmsghdr *nlh,
+ 		.flags = 0,
+ 		.netnsid = -1,
+ 	};
+-	struct net *tgt_net = net;
+ 	struct ifaddrmsg *ifm;
+ 	struct nlattr *tb[IFA_MAX+1];
+ 	struct in6_addr *addr = NULL, *peer;
 -- 
-Thanks,
-Sasha
+2.18.0
+
