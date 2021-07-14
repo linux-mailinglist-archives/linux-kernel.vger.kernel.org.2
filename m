@@ -2,125 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7203C7E92
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE3E3C7E93
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhGNGgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 02:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S238113AbhGNGh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 02:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238028AbhGNGgP (ORCPT
+        with ESMTP id S238053AbhGNGhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:36:15 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AAEC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:33:23 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id v26so706668iom.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:33:23 -0700 (PDT)
+        Wed, 14 Jul 2021 02:37:24 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8B7C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:34:33 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id a127so1118293pfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fF0A3SNyCoLJ9V4Mf6IFTlcVxCvyAcihWUy7P8dtXJI=;
-        b=DN/o78lFqAKsgN5uUZevIfvTthvAaqLUS7o/z4AqRbGBER//DxjodEcfhITop+1Sbi
-         5xnPBW4khvCZ9s+B1EueYDKprlSNK7aHd7gD0NOPaVX7FC2k2vU+jDakW2TtboEyTibR
-         qoWxRSuHKBrIIysihP1UKdBy4Awi8uwDvRoP4=
+        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Zv97ObQ/Z/rhqbdjveG+GUycVqcvp6CtCQ8XYCDuC4=;
+        b=Zzf3zCigJnwu0GkfVV/33GMU8rqydtDXp+OF8AkpXG8e2DKa2NWZODT1VIoqQKCfSQ
+         Y+yrNZsBrvk+SOGcDull7JmRBTUmBTwlCysH496dfnm9CMe8qbnTwJwbbt6YRnQRb7xw
+         7MeXybxy0NDU74dp7ObdgSDsmjnZcw5PduzUvjakfN1ZkJvFFXzMDoQLaTlxflf+vR03
+         qkLr6bSZ9vy6ZSDkw9bzaln5wGnmLXSZVO9sy2b7n/uCcqzUd2LM6jIb+EgUguoEjEeX
+         7yNKSxULwXbC/qUGIrXNRh+JrpiAQHgb2B5HgpoB26eN4R+/RFu0sj2IALIl6oRJ1d8l
+         f4BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fF0A3SNyCoLJ9V4Mf6IFTlcVxCvyAcihWUy7P8dtXJI=;
-        b=eXS3J8YZwSelhIhyHxLHEdl3E/IOYDxP+qQGLCP5GVpwiqQhDK4ak398bmPm/1pnId
-         9aJlbLER+G4uppLHbtl90B9PlAQkiJyazH5EYV9Ex1w/FT6HUIdI8rZ5n7guHTx2ymGq
-         OrldJuPsIg7j/VJeunnec4g//iS+5cfKBfNLYTfWfLPEjng7VA20VAuciiorSXZED5C+
-         zqMGflZ+nMTiah6DCHQ4UUSeuiJkeY+btYeCTY1ssa1p3q8WQhRqjnhBgks8uMwEyBxd
-         5u1obhHnJcObJjk4S0IJhY9ljkTVohtwKbQm0whtJBa4aBK6p/65mU72vpSsUh45Yi02
-         DFNg==
-X-Gm-Message-State: AOAM531DUcBugMvjmabJKh/Ulqh+aHA7ArOIFCxfpMIGb8XIRX+QtjCa
-        wXqMnP89g5a6l/PcW813dzfMR3oQyrvnw5NvflG6bw==
-X-Google-Smtp-Source: ABdhPJziJytxeQ51ecTdT3CtD4o86bg7Q+pPkL3Gi50sJ3vzYsr9bjOhfcALk+Ji1bGlr/PbCYsHfE4mxG+wawo0Vso=
-X-Received: by 2002:a02:cce6:: with SMTP id l6mr7474610jaq.114.1626244402499;
- Tue, 13 Jul 2021 23:33:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Zv97ObQ/Z/rhqbdjveG+GUycVqcvp6CtCQ8XYCDuC4=;
+        b=o1xVYsWADvO8SknRET9SZCewBgj5gVxX7A/vS1vmXOFLwXQyXkQVYM30nFYc8jlQwn
+         UH5iSDRoSQogezGzKcLYWAJIrXAkpYA44HUOM8HCr0MP2crprVBeWHxej/mRIRJJTnY8
+         RqQ4OmB0LAwujSLE6HU6SU4g7xU76uOk1CZBC3pdsdbCVLhIZn5p71xB6YS9zYRZeEPG
+         iaHoVmredkP80aZKp9twm/bHuyRUMknnGstlup35nito9GekbEJXu7T2MAc9LCtS7HEi
+         xiIJeR8rpSFHu2Ir3+AdvDGbQt40DKOIJyZKSBQKf7hTLOtCf17x89qeMgYf+KEm2NU4
+         K8/Q==
+X-Gm-Message-State: AOAM531D9rYknyHeENo7ICb4M/Gr/dmVaWkV80CdVtBvAnG+qAeUVV7A
+        2mC6S2744r4VDNJWzwFsAuc8ILaTZ8rBCA==
+X-Google-Smtp-Source: ABdhPJx1No9b9oYJteDebHS1Qapi2iTA3o8n/4bqPGnDFBwRyeSQmTJP1/kBR+iRzaU1iI7SI4XTiQ==
+X-Received: by 2002:a63:381:: with SMTP id 123mr8027287pgd.395.1626244472450;
+        Tue, 13 Jul 2021 23:34:32 -0700 (PDT)
+Received: from anisinha-lenovo.ba.nuagenetworks.net ([115.96.109.231])
+        by smtp.googlemail.com with ESMTPSA id y198sm1260590pfg.116.2021.07.13.23.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jul 2021 23:34:31 -0700 (PDT)
+From:   Ani Sinha <ani@anisinha.ca>
+To:     linux-kernel@vger.kernel.org
+Cc:     anirban.sinha@nokia.com, mikelley@microsoft.com,
+        Ani Sinha <ani@anisinha.ca>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v3] checkpatch: add a rule to check general block comment style
+Date:   Wed, 14 Jul 2021 12:04:22 +0530
+Message-Id: <20210714063422.2164699-1-ani@anisinha.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210705053429.4380-1-jason-jh.lin@mediatek.com> <20210705053429.4380-6-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210705053429.4380-6-jason-jh.lin@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Wed, 14 Jul 2021 14:32:56 +0800
-Message-ID: <CAJMQK-g-3-WeLMH57cJBWVt1=i7SuxwGG2Ae253igEEX9oywKA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] mailbox: cmdq: fix GCE can not receive hardward event
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@google.com>, nancy.lin@mediatek.com,
-        singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 1:35 PM jason-jh.lin <jason-jh.lin@mediatek.com> wrote:
->
-> For the design of GCE hardware event signal transportation,
-> evnet rx will send the event signal to all GCE event merges
-> after receiving the event signal from the other hardware.
->
-> Because GCE event merges need to response to event rx, their
-> clocks must be enabled at that time.
->
-> To make sure all the gce clock is enabled while receiving the
-> hardware event, each cmdq mailbox should enable or disable
-> the others gce clk at the same time.
->
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 102 +++++++++++++++++++++++------
->  1 file changed, 83 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-> index fc67888a677c..44a3cf252fd5 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -19,6 +19,7 @@
->
->  #define CMDQ_OP_CODE_MASK              (0xff << CMDQ_OP_CODE_SHIFT)
->  #define CMDQ_NUM_CMD(t)                        (t->cmd_buf_size / CMDQ_INST_SIZE)
-> +#define CMDQ_GCE_NUM_MAX               (2)
->
->  #define CMDQ_CURR_IRQ_STATUS           0x10
->  #define CMDQ_SYNC_TOKEN_UPDATE         0x68
-> @@ -73,14 +74,16 @@ struct cmdq {
->         u32                     thread_nr;
->         u32                     irq_mask;
->         struct cmdq_thread      *thread;
-> -       struct clk              *clock;
-> +       struct clk              *clock[CMDQ_GCE_NUM_MAX];
->         bool                    suspended;
->         u8                      shift_pa;
-> +       u32                     gce_num;
->  };
->
->  struct gce_plat {
->         u32 thread_nr;
->         u8 shift;
-> +       u32 gce_num;
->  };
->
->  u8 cmdq_get_shift_pa(struct mbox_chan *chan)
-> @@ -120,11 +123,15 @@ static void cmdq_init(struct cmdq *cmdq)
->  {
->         int i;
->
-> -       WARN_ON(clk_enable(cmdq->clock) < 0);
-> +       for (i = 0; i < cmdq->gce_num; i++)
-> +               WARN_ON(clk_enable(cmdq->clock[i]) < 0);
-> +
-You can use clk_bulk_enable instead of looping. Same for clk_bulk_disable.
+The preferred style for long (multi-line) comments is:
 
-<snip>
+.. code-block:: c
+
+	/*
+	 * This is the preferred style for multi-line
+	 * comments in the Linux kernel source code.
+	 * Please use it consistently.
+	 *
+	 * Description:  A column of asterisks on the left side,
+	 * with beginning and ending almost-blank lines.
+	 */
+
+It seems rule in checkpatch.pl is missing to ensure this for
+non-networking related changes. This patch adds this rule.
+
+Tested with
+$ cat drivers/net/t.c
+    /* foo */
+
+    /*
+     * foo
+     */
+
+    /* foo
+     */
+
+    /* foo
+     * bar */
+
+$ ./scripts/checkpatch.pl -f drivers/net/t.c
+WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+line #1: FILE: drivers/net/t.c:1:
++    /* foo */
+
+WARNING: networking block comments don't use an empty /* line, use /* Comment...
+line #4: FILE: drivers/net/t.c:4:
++    /*
++     * foo
+
+WARNING: Block comments use a trailing */ on a separate line
+line #11: FILE: drivers/net/t.c:11:
++     * bar */
+
+total: 0 errors, 3 warnings, 0 checks, 11 lines checked
+
+
+For a non-networking related code we see the following when run for
+the same file:
+
+$ ./scripts/checkpatch.pl -f arch/x86/kernel/t.c
+WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+line #1: FILE: arch/x86/kernel/t.c:1:
++    /* foo */
+
+WARNING: Block comments use a leading /* on a separate line
+line #7: FILE: arch/x86/kernel/t.c:7:
++    /* foo
+
+WARNING: Block comments use a leading /* on a separate line
+line #10: FILE: arch/x86/kernel/t.c:10:
++    /* foo
+
+WARNING: Block comments use a trailing */ on a separate line
+line #11: FILE: arch/x86/kernel/t.c:11:
++     * bar */
+
+total: 0 errors, 4 warnings, 11 lines checked
+
+In the second case, there is no warning on line 4 and in the first
+case, there is no warning on line 10.
+
+Signed-off-by: Ani Sinha <ani@anisinha.ca>
+---
+ scripts/checkpatch.pl | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+Changelog:
+v1: initial patch
+v2: commit log updated to reflect the output from checkpatch.pl
+    when run against the same file both in networking and
+    non-networking case. This helps in comparing results apples to
+    apples.
+v3: line numbers got lost in the commit log as git eliminated all lines
+    starting with '#'. Fixed it by prefixing with word 'line'. The work
+    'line' does not however appear in the checkpatch.pl output.
+ 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23697a6b1eaa..5f047b762aa1 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3833,6 +3833,14 @@ sub process {
+ 			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+ 		}
+ 
++# Block comments use /* on a line of its own
++		if (!($realfile =~ m@^(drivers/net/|net/)@) &&
++		    $rawline !~ m@^\+.*/\*.*\*/[ \t)}]*$@ &&	#inline /*...*/
++		    $rawline =~ m@^\+.*/\*\*?+[ \t]*[^ \t]@) { # /* or /** non-blank
++		    WARN("BLOCK_COMMENT_STYLE",
++			 "Block comments use a leading /* on a separate line\n" . $herecurr);
++		}
++
+ # Block comments use * on subsequent lines
+ 		if ($prevline =~ /$;[ \t]*$/ &&			#ends in comment
+ 		    $prevrawline =~ /^\+.*?\/\*/ &&		#starting /*
+-- 
+2.25.1
+
