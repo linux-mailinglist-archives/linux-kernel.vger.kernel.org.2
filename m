@@ -2,431 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8495B3C7E7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B093C7E8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 08:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238074AbhGNG0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 02:26:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:58492 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237958AbhGNG03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 02:26:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 601BC6D;
-        Tue, 13 Jul 2021 23:23:38 -0700 (PDT)
-Received: from [10.163.65.222] (unknown [10.163.65.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E44C43F774;
-        Tue, 13 Jul 2021 23:23:34 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 01/12] mm/debug_vm_pgtable: Introduce struct
- vm_pgtable_debug
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com,
-        chuhu@redhat.com
-References: <20210706061748.161258-1-gshan@redhat.com>
- <20210706061748.161258-2-gshan@redhat.com>
-Message-ID: <a74549ac-6794-25a0-7238-2591745e6810@arm.com>
-Date:   Wed, 14 Jul 2021 11:54:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237958AbhGNGbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 02:31:20 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:40452
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237948AbhGNGbN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 02:31:13 -0400
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id E0DB640658
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 06:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626244095;
+        bh=ifAKi/8NC0EOibZ4i+5eRwicNltCDFNtD419Xm7JbbU=;
+        h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
+        b=u3Dr4RRtR+dXZ80PvpHgV028rCHu+ayargtP+OXzzAPrQGCp/cIcZhBvP8UW3hQeL
+         8yY2j8hc708R+WmkBeGbNWRKpvmEyT2vgnytEzaUeVqn6qJGl4SJb8YTQctom8uomj
+         7DV7YAW7A8pPf/j0Qvm4tz7dnP6Wv6iN+dbK8O8Jxw9gzFmxjIKIoxpmTz/plFBQ9V
+         au5XaI0JJ3hC8fBXeDZlH+4W0WzyUp5lOSApVcUS8/8zR+lsMINfD8/POjv1KDs0fv
+         D4jceeGalucYeazXbArMgrbFrNEU3zxwG7QhtAwv8+8Csi9Aztiz/ZkoQ/vGy7+j8X
+         ZutKyzDzKb1oQ==
+Received: by mail-ej1-f71.google.com with SMTP id nc15-20020a1709071c0fb029052883e9de3eso327917ejc.19
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 23:28:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ifAKi/8NC0EOibZ4i+5eRwicNltCDFNtD419Xm7JbbU=;
+        b=hRHqp+zW6sINE8Gy1QRwI6QLd8QVgVcmfaakfB/fZNssqDZ7VxhfVoNVwLv85xkclP
+         BLares5EMK2lPrEcEDYalHYY8cPc0CEQCYr6tMN6nz8fIaOmu9jl4HQQytRCjSdLZldt
+         WPmpS0XNpcFQC00c70KC9UrleSbVTBY4FRgFYgSjT4va+LuDHgj7u2jxv1obKyPAurNc
+         AeorneBXHAOFiDxE5UPEJFrmX6C/VTzNxMg+OqxLnh83/HX2KmJ9z9Gl/fBrafXAp5de
+         2Vcb3ruC8mJgJziULfdbH8Em7W+UBVRxpRxCSK65M3z1vt7P3XQz4ig0DazwesW/dTS8
+         EjAQ==
+X-Gm-Message-State: AOAM530gMkedA5XMyyhA8mV7ga1LlSTSTPRH2gzhlav8kc4/aYusHZdO
+        rOuFWWog36oKrhjKJk5PO4JgfsqU5F/lUX3k+8OjdrfA3MnTy6DsBmI2ABXh0+1Gsv5PBZDxAXC
+        BzWVrd44Rg0yyS9r+l5wDYLDn7668XOY01SHdqFTpS7EO6ClaIXruZM2oeQ==
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10892548ejc.192.1626244095514;
+        Tue, 13 Jul 2021 23:28:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3w8m7rtpG6oHyvf3utp6yndL+zmE52W2nspCRV/NYU9TmybG/CY6KQGvNk27u7N3Zfg/SOzh8s5fSCAGMCaw=
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10892512ejc.192.1626244095137;
+ Tue, 13 Jul 2021 23:28:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210706061748.161258-2-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210712133500.1126371-1-kai.heng.feng@canonical.com>
+ <20210712133500.1126371-2-kai.heng.feng@canonical.com> <3947d70a-58d0-df93-24f1-1899fd567534@intel.com>
+In-Reply-To: <3947d70a-58d0-df93-24f1-1899fd567534@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 14 Jul 2021 14:28:03 +0800
+Message-ID: <CAAd53p79BwxPGRECYGrpCQbSJz8NY2WrG+AJCuaj89XNqCy59Q@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH 2/3] e1000e: Make mei_me active when
+ e1000e is in use
+To:     Sasha Neftin <sasha.neftin@intel.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        devora.fuxbrumer@intel.com, alexander.usyskin@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sasha,
 
-On 7/6/21 11:47 AM, Gavin Shan wrote:
-> In debug_vm_pgtable(), there are many local variables introduced
-> to track the needed information and they are passed to the functions
-> for various test cases. It'd better to introduce a struct as place
-> holder for these information. With it, what the functions for various
-> test cases need is the struct, to simplify the code. It makes the code
-> easier to be maintained.
-> 
-> Besides, set_pte_at() could access the data on the corresponding pages.
-
-s/set_pte_at()/set_pxx_at() to accommodate similar helpers in other page
-table modifying tests as well.
-
-> So the test cases using set_pte_at() should have the pages allocated
-> from buddy. Otherwise, we're acceessing pages that aren't owned by us.
-
-typo here. s/acceessing/accessing/
-
-> This causes issues like page flag corruption. So we need the allocated
-> pages for these tests where set_pte_at() is used. The struct is introduced
-> so that the old and new implementation can coexist so that the patches
-> can be organized in a easy way.
-
-s/a easy/an easy/
-
-The rationale for the structure should be explained better. I am wondering
-whether it would be preferable to solve the dynamic page allocation problem
-first in respective test functions, before introducing this structure which
-will convert all test functions.
-
-> 
-> This introduces "struct vm_pgtable_debug" for above purposes. The struct
-> is initialized and destroyed, but the information in the struct isn't
-> used yet. They will be used in subsequent patches.
-
-There are two set of resources before all functions use the new structure.
-Makes sense.
-
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  mm/debug_vm_pgtable.c | 210 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 209 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 1c922691aa61..225e2ea4d72f 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -58,6 +58,36 @@
->  #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
->  #define RANDOM_NZVALUE	GENMASK(7, 0)
->  
-> +struct vm_pgtable_debug {
-
-Name should contain 'args'. Probably something like pgtable_debug_args ?
-
-> +	struct mm_struct	*mm;
-> +	struct vm_area_struct	*vma;
-
-Linked objects..
-
-> +
-> +	pgd_t			*pgdp;
-> +	p4d_t			*p4dp;
-> +	pud_t			*pudp;
-> +	pmd_t			*pmdp;
-> +	pte_t			*ptep;
-
-pgtable pointers..
-
-> +
-> +	p4d_t			*start_p4dp;
-> +	pud_t			*start_pudp;
-> +	pmd_t			*start_pmdp;
-> +	pgtable_t		start_ptep;
-
-Saved pgtable pointers..
-
-> +
-> +	unsigned long		vaddr;
-> +	pgprot_t		page_prot;
-> +	pgprot_t		page_prot_none;
-
-Other miscellaneous objects..
-
-> +
-> +	unsigned long		pud_pfn;
-> +	unsigned long		pmd_pfn;
-> +	unsigned long		pte_pfn;
-
-Dynamically allocated objects..
-
-> +
-> +	unsigned long		fixed_pgd_pfn;
-> +	unsigned long		fixed_p4d_pfn;
-> +	unsigned long		fixed_pud_pfn;
-> +	unsigned long		fixed_pmd_pfn;
-> +	unsigned long		fixed_pte_pfn;
-> +};
-
-Derived from symbol 'start_kernel' objects..
-
-> +
->  static void __init pte_basic_tests(unsigned long pfn, int idx)
->  {
->  	pgprot_t prot = protection_map[idx];
-> @@ -955,8 +985,180 @@ static unsigned long __init get_random_vaddr(void)
->  	return random_vaddr;
->  }
->  
-> +static void __init free_mem(struct vm_pgtable_debug *debug)
-> +{
-> +	struct page *page = NULL;
-> +	int order = 0;
-> +
-> +	/* Free (huge) page */
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-
-Replace #ifdef with IS_ENABLED(). There is no symbol visibility problem
-without those #ifdef here.
-
-> +	if (has_transparent_hugepage() &&
-> +	    debug->pud_pfn != ULONG_MAX) {
-> +		page = pfn_to_page(debug->pud_pfn);
-> +		order = HPAGE_PUD_SHIFT - PAGE_SHIFT;
-> +	}
-> +#endif
-> +
-> +	if (has_transparent_hugepage() &&
-> +	    debug->pmd_pfn != ULONG_MAX && !page) {
-> +		page = pfn_to_page(debug->pmd_pfn);
-> +		order = HPAGE_PMD_ORDER;
-> +	}
-> +#endif
-> +
-> +	if (debug->pte_pfn != ULONG_MAX && !page) {
-> +		page = pfn_to_page(debug->pte_pfn);
-> +		order = 0;
-> +	}
-
-This could be further simplified.
-
-	if (debug->pud_pfn) {
-		__free_pages(page, PUD_ORDER)
-		done
-	}
-
-	if (debug->pmd_pfn) {
-		__free_pages(page, PMD_ORDER)
-		done
-	}
-
-	if (debug->pte_pfn)
-		__free_pages(page, 0)
-
-If the debug->pxx_pfn is positive and (!= ULONG_MAX), it can be assumed
-that pxx level memory was allocated successfully and is being freed up
-here. Just need to start from the highest order though.
-
-> +
-> +	if (page)
-> +		__free_pages(page, order);
-
-From here...
-
-> +
-> +	/* Free page table */
-> +	if (debug->start_ptep) {
-> +		pte_free(debug->mm, debug->start_ptep);
-> +		mm_dec_nr_ptes(debug->mm);
-> +	}
-> +
-> +	if (debug->start_pmdp) {
-> +		pmd_free(debug->mm, debug->start_pmdp);
-> +		mm_dec_nr_pmds(debug->mm);
-> +	}
-> +
-> +	if (debug->start_pudp) {
-> +		pud_free(debug->mm, debug->start_pudp);
-> +		mm_dec_nr_puds(debug->mm);
-> +	}
-> +
-> +	if (debug->start_p4dp)
-> +		p4d_free(debug->mm, debug->p4dp);
-> +
-> +	/* Free vma and mm struct */
-> +	if (debug->vma)
-> +		vm_area_free(debug->vma);
-> +	if (debug->mm)
-> +		mmdrop(debug->mm);
-> +}
-
-Till here...
-
-I am wondering whether it is really necessary to cross check all these
-elements here for being non-NULL, before freeing or rather destroying.
-Except for the allocated huge memory containing pfns and pages, all
-other elements should be asserted before proceeding with the test.
-Hence no additional checks should be required while freeing.
-
-> +
-> +static int __init alloc_mem(struct vm_pgtable_debug *debug)
-> +{
-> +	struct page *page = NULL;
-> +	phys_addr_t phys;
-> +	int ret = 0;
-> +
-> +	/* Initialize the debugging data */
-> +	debug->mm             = NULL;
-> +	debug->vma            = NULL;
-> +	debug->pgdp           = NULL;
-> +	debug->p4dp           = NULL;
-> +	debug->pudp           = NULL;
-> +	debug->pmdp           = NULL;
-> +	debug->ptep           = NULL;
-> +	debug->start_p4dp     = NULL;
-> +	debug->start_pudp     = NULL;
-> +	debug->start_pmdp     = NULL;
-> +	debug->start_ptep     = NULL;
-> +	debug->vaddr          = 0UL;
-> +	debug->page_prot      = vm_get_page_prot(VM_READ | VM_WRITE | VM_EXEC);
-
-Should use VMFLAGS instead.
-
-> +	debug->page_prot_none = __P000;
-> +	debug->pud_pfn        = ULONG_MAX;
-> +	debug->pmd_pfn        = ULONG_MAX;
-> +	debug->pte_pfn        = ULONG_MAX;
-> +	debug->fixed_pgd_pfn  = ULONG_MAX;
-> +	debug->fixed_p4d_pfn  = ULONG_MAX;
-> +	debug->fixed_pud_pfn  = ULONG_MAX;
-> +	debug->fixed_pmd_pfn  = ULONG_MAX;
-> +	debug->fixed_pte_pfn  = ULONG_MAX;
-
-It should instead define yet another helper, which would reset all
-structure elements to NULL or some unusable values before they get
-initialized here. Possibly [reset/clr]_debug_pgtable_args() ?
-
-> +
-> +	/* Allocate mm and vma */
-> +	debug->mm = mm_alloc();
-> +	if (!debug->mm) {
-> +		pr_warn("Failed to allocate mm struct\n");
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	debug->vma = vm_area_alloc(debug->mm);
-> +	if (!debug->vma) {
-> +		pr_warn("Failed to allocate vma\n");
-
-s/pr_warn/pr_err. Please dont change any warning levels here.
-
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	/* Figure out the virtual address and allocate page table entries */
-> +	debug->vaddr = get_random_vaddr();
-> +	debug->pgdp = pgd_offset(debug->mm, debug->vaddr);
-> +	debug->p4dp = p4d_alloc(debug->mm, debug->pgdp, debug->vaddr);
-> +	debug->pudp = debug->p4dp ?
-> +		      pud_alloc(debug->mm, debug->p4dp, debug->vaddr) : NULL;
-> +	debug->pmdp = debug->pudp ?
-> +		      pmd_alloc(debug->mm, debug->pudp, debug->vaddr) : NULL;
-> +	debug->ptep = debug->pmdp ?
-> +		      pte_alloc_map(debug->mm, debug->pmdp, debug->vaddr) : NULL;
-
-(PXXX ?) construct is really required here. Should not pxx_alloc()
-return NULL if the previous level pointer is NULL ? Regardless it
-might be better to just assert that these intermediary levels are
-allocated before proceeding further. It does not make sense to go
-ahead with the test if any of the allocations failed ! Similar to
-mm and vma.
-
-
-> +	if (!debug->ptep) {
-> +		pr_warn("Failed to allocate page table\n");
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	/*
-> +	 * The above page table entries will be modified. Lets save the
-> +	 * page table entries so that they can be released when the tests
-> +	 * are completed.
-> +	 */
-> +	debug->start_p4dp = p4d_offset(debug->pgdp, 0UL);
-> +	debug->start_pudp = pud_offset(debug->p4dp, 0UL);
-> +	debug->start_pmdp = pmd_offset(debug->pudp, 0UL);
-> +	debug->start_ptep = pmd_pgtable(*(debug->pmdp));
-
-Please keep the existing construct via tmp pointer obtained from
-READ_ONCE() on (debug->pmdp) before getting used in pmd_pgtable().
-
-> +
-> +	/*
-> +	 * Figure out the fixed addresses, which are all around the kernel
-> +	 * symbol (@start_kernel). The corresponding PFNs might be invalid,
-> +	 * but it's fine as the following tests won't access the pages.
-> +	 */
-> +	phys = __pa_symbol(&start_kernel);
-> +	debug->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
-> +	debug->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
-> +	debug->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
-> +	debug->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
-> +	debug->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
-> +
-> +	/*
-> +	 * Allocate (huge) pages because some of the tests need to access
-> +	 * the data in the pages. The corresponding tests will be skipped
-> +	 * if we fail to allocate (huge) pages.
-> +	 */
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-
-There is no symbol visibility problem without this #ifdef. Hence
-please use IS_ENABLED() constructs here instead.
-
-> +	if (has_transparent_hugepage()) {
-> +		page = alloc_pages(GFP_KERNEL, HPAGE_PUD_SHIFT - PAGE_SHIFT);
-> +		if (page)
-> +			debug->pud_pfn = page_to_pfn(page);
-			debug->pmd_pfn = debug->pud_pfn;
-			debug->pte_pfn = debug->pud_pfn;
-			done; skip;
-> +	}
-> +#endif
-> +
-> +	if (has_transparent_hugepage()) {
-> +		page = page ? page : alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
-> +		if (page)
-> +			debug->pmd_pfn = page_to_pfn(page);
-			debug->pte_pfn = debug->pmd_pfn;
-			done; skip;
-> +	}
-> +#endif
-> +
-> +	page = page ? page : alloc_pages(GFP_KERNEL, 0);
-> +	if (page)
-> +		debug->pte_pfn = page_to_pfn(page);
-
-With the above mentioned changes (page ?) constructs should not be
-required anymore.
-
-> +
-> +	return 0;
-> +
-> +error:
-> +	free_mem(debug);
-> +	return ret;
-> +}
-> +
->  static int __init debug_vm_pgtable(void)
->  {
-> +	struct vm_pgtable_debug debug;
-
-This should be renamed.
-
-s/debug/pgtable_args ?
-
->  	struct vm_area_struct *vma;
->  	struct mm_struct *mm;
->  	pgd_t *pgdp;
-> @@ -970,9 +1172,13 @@ static int __init debug_vm_pgtable(void)
->  	unsigned long vaddr, pte_aligned, pmd_aligned;
->  	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
->  	spinlock_t *ptl = NULL;
-> -	int idx;
-> +	int idx, ret;
->  
->  	pr_info("Validating architecture page table helpers\n");
-> +	ret = alloc_mem(&debug);
-> +	if (ret)
-> +		return ret;
-> +
->  	prot = vm_get_page_prot(VMFLAGS);
->  	vaddr = get_random_vaddr();
->  	mm = mm_alloc();
-> @@ -1127,6 +1333,8 @@ static int __init debug_vm_pgtable(void)
->  	mm_dec_nr_pmds(mm);
->  	mm_dec_nr_ptes(mm);
->  	mmdrop(mm);
-> +
-> +	free_mem(&debug);
->  	return 0;
->  }
->  late_initcall(debug_vm_pgtable);
+On Wed, Jul 14, 2021 at 1:39 PM Sasha Neftin <sasha.neftin@intel.com> wrote:
 >
+> On 7/12/2021 16:34, Kai-Heng Feng wrote:
+> > Many users report rather sluggish RX speed on TGP I219. Since
+> > "intel_idle.max_cstate=1" doesn't help, so it's not caused by deeper
+> > package C-state.
+> >
+> > A workaround that always works is to make sure mei_me is runtime active
+> > when e1000e is in use.
+> >
+> > The root cause is still unknown, but since many users are affected by
+> > the issue, implment the quirk in the driver as a temporary workaround.
+> Hello Kai-Heng,
+> First - thanks for the investigation of this problem. As I know CSME/AMT
+> not POR on Linux and not supported. Recently we started add support for
+> CSME/AMT none provisioned version (handshake with CSME in s0ix flow -
+> only CSME with s0ix will support). It is not related to rx bandwidth
+> problem.
+
+I am aware that ME is not POR under Linux, so the commit message
+states clearly that the patch is just a "temporary workaround".
+Not every laptop can disable ME/AMT, and I don't think asking user to
+fiddle with BIOS is a good thing, hence the patch.
+
+> I do not know how MEI driver affect 1Gbe driver - so, I would suggest to
+> involve our CSME engineer (alexander.usyskin@intel.com) and try to
+> investigate this problem.
+> Does this problem observed on Dell systems? As I heard no reproduction
+> on Intel's RVP platform.
+> Another question: does disable mei_me runpm solve your problem?
+
+Yes, disabling runpm on mei_me can workaround the issue, and that's
+essentially what this patch does by adding DL_FLAG_PM_RUNTIME |
+DL_FLAG_RPM_ACTIVE flag.
+
+Kai-Heng
+
+> >
+> > Also adds mei_me as soft dependency to ensure the device link can be
+> > created if e1000e is in initramfs.
+> >
+> > BugLink: https://bugs.launchpad.net/bugs/1927925
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213377
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213651
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >   drivers/net/ethernet/intel/e1000e/netdev.c | 26 ++++++++++++++++++++++
+> >   1 file changed, 26 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> > index 5835d6cf2f51..e63445a8ce12 100644
+> > --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> > +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> > @@ -7317,6 +7317,27 @@ static const struct net_device_ops e1000e_netdev_ops = {
+> >       .ndo_features_check     = passthru_features_check,
+> >   };
+> >
+> > +static void e1000e_create_device_links(struct pci_dev *pdev)
+> > +{
+> > +     struct pci_dev *tgp_mei_me;
+> > +
+> > +     /* Find TGP mei_me devices and make e1000e power depend on mei_me */
+> > +     tgp_mei_me = pci_get_device(PCI_VENDOR_ID_INTEL, 0xa0e0, NULL);
+> > +     if (!tgp_mei_me) {
+> > +             tgp_mei_me = pci_get_device(PCI_VENDOR_ID_INTEL, 0x43e0, NULL);
+> > +             if (!tgp_mei_me)
+> > +                     return;
+> > +     }
+> > +
+> > +     if (device_link_add(&pdev->dev, &tgp_mei_me->dev,
+> > +                         DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE |
+> > +                         DL_FLAG_AUTOREMOVE_CONSUMER))
+> > +             pci_info(pdev, "System and runtime PM depends on %s\n",
+> > +                      pci_name(tgp_mei_me));
+> > +
+> > +     pci_dev_put(tgp_mei_me);
+> > +}
+> > +
+> >   /**
+> >    * e1000_probe - Device Initialization Routine
+> >    * @pdev: PCI device information struct
+> > @@ -7645,6 +7666,9 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >       if (pci_dev_run_wake(pdev) && hw->mac.type != e1000_pch_cnp)
+> >               pm_runtime_put_noidle(&pdev->dev);
+> >
+> > +     if (hw->mac.type == e1000_pch_tgp)
+> > +             e1000e_create_device_links(pdev);
+> > +
+> >       return 0;
+> >
+> >   err_register:
+> > @@ -7917,6 +7941,8 @@ static void __exit e1000_exit_module(void)
+> >   }
+> >   module_exit(e1000_exit_module);
+> >
+> > +/* Ensure device link can be created if e1000e is in the initramfs. */
+> > +MODULE_SOFTDEP("pre: mei_me");
+> >   MODULE_AUTHOR("Intel Corporation, <linux.nics@intel.com>");
+> >   MODULE_DESCRIPTION("Intel(R) PRO/1000 Network Driver");
+> >   MODULE_LICENSE("GPL v2");
+> >
+> Thanks,Sasha
