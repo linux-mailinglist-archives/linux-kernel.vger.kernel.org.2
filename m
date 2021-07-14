@@ -2,100 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7148C3C83F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F26E3C83FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 13:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239133AbhGNLj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 07:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238969AbhGNLjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 07:39:55 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F07C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:37:04 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id u25so2852937ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=WjldPce2yJdyEw8QkPgsa1Sc+VM1DW1QEwVUXhzbOZE=;
-        b=Wpsk3CKnBrWEgBwrYX1DD+I5VROoYr7vUmlGxjfRNsqj5IY6ipJi6oETSMNiukrDm3
-         RQhWY+UaQZmLhfKssgvqz52CCeobtRYA99VxH+RGbSoZ91ZO0iW3bezF1jGczu1/UDZy
-         okCfVnB76edi3X2aQecuyUWyk4fFblXUPxYK77HKqBxR6JEoJV494ScX2PfG3EWmB2vV
-         9eBRTkUBBGiSFznWxsSRU8DEir/grBm2e2lfvlMktMugZ/Ji9IzqGkpsf/QwSFgOIt6X
-         9mZWH0/9qfI/tAWxBLj1TlXIpBTn8QyPZMflJpNsAbGYtjaoFtT6GQqZ4Lyl+VqNmImt
-         iPsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=WjldPce2yJdyEw8QkPgsa1Sc+VM1DW1QEwVUXhzbOZE=;
-        b=ZCXlYLtO1HhhAvYgm5Ry07ov6AiX+xx4krxlrws71+xOuGsGllnOTg3NPWEDxeA3SN
-         pzLXabebX6+GccSV53GkbH4tSHy/Ka+EZq4dWbwkeZjGyecmANBBOS9e9/gz7HBZ4XIX
-         pXbiZsSswtQNHgvPzlM9cXV8pveWHKdyGzAHO9fk63dpO+22c4dZnSuGDlLPxzYdqpzO
-         IfjgUfGl+KmQor1uMLXiq4MXIQC7EP338fEkwWcHFbiR7Mvg1sB6oBSrwAk6YvNDXGC1
-         D5jr5goJUPHa1Uu6uua/uW10HKKxYIO/IgPWRlA4r7fNSVw6VfCAai0Inb2sNt1+GRZe
-         e8GQ==
-X-Gm-Message-State: AOAM530v+qx5yfLRurDQw5gWLVYe1cnAT3Ryh4JKIHCUFYs90UgDHhLR
-        1XhYhZbt83eQ7rNunq2YTSLFMfPHr921G+VxlFA=
-X-Google-Smtp-Source: ABdhPJzxUWBlVSljNHxpIsY5XnMvPdQXcPaHD+UNsf0kpp8DVp72RKtaDxFub39bTZ8wKw9yP+Lr9DcE0BajvkLGzW8=
-X-Received: by 2002:a2e:808d:: with SMTP id i13mr8930157ljg.172.1626262622573;
- Wed, 14 Jul 2021 04:37:02 -0700 (PDT)
+        id S239088AbhGNLml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 07:42:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:34072 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230164AbhGNLmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 07:42:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6B11D6E;
+        Wed, 14 Jul 2021 04:39:48 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EEFF93F774;
+        Wed, 14 Jul 2021 04:39:47 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: [PATCH] sched/fair: Update nohz.next_balance for newly NOHZ-idle CPUs
+Date:   Wed, 14 Jul 2021 12:39:28 +0100
+Message-Id: <20210714113928.2795632-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a2e:b8c4:0:0:0:0:0 with HTTP; Wed, 14 Jul 2021 04:37:02
- -0700 (PDT)
-Reply-To: westuniontogounionpayment@gmail.com
-From:   emma prince <p846216@gmail.com>
-Date:   Wed, 14 Jul 2021 11:37:02 +0000
-Message-ID: <CA+ww1H0M0Lqn4_L0SY9RgE9fXet+mzwDKJDjJu5YUh6TS1xjYA@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Pemenang yang terhormat,
+Consider a system with some NOHZ-idle CPUs, such that
 
-Saya ingin mengucapkan selamat kepada Anda atas kemenangan besar ini, di mana
-Saya menelepon alamat email Anda. saya ingin kamu tahu
-Apa yang dirayakan lotere setiap tahun (Molotrie 2021). Ini adalah
-situs web tempat Anda dapat memeriksanya:
+  nohz.idle_cpus_mask = S
+  nohz.next_balance = T
 
-(https://www.lotteryusa.com/missouri/lotto/year).
+When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
+with:
 
-(Nomor pemenang: 3 - 5 - 18 - 36 - 39 - 41)
+  nohz.idle_cpus_mask = S \U {k}
+  nohz.next_balance = T
 
-Lotere: $3 juta
+Note that the nohz.next_balance hasn't changed - it won't be updated until
+a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
+has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
 
-Semua peserta dipilih melalui sistem
-Pemungutan suara komputer.
-Terdiri dari Microsoft YAHOO / GMAIL / HOTMAIL / OUTLOOK
+  cpu_rq(k).next_balance < nohz.next_balance
 
-Pengguna lebih dari 20.000 perusahaan dan 3.000.000 alamat email.
-Dan nama-nama unik dari seluruh dunia.
+In such scenarios, the existing nohz.next_balance will prevent any NOHZ
+balance from happening, which itself will prevent nohz.next_balance from
+being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
+delays of over 12ms caused by this were observed on an arm64 RB5 board.
 
-Faktanya, alamat email Anda adalah sebuah alamat
-Alamat email yang ditentukan
-Siapa yang memenangkan permainan lotre bersponsor nasional (Molotrie
-2021) tahun ini.
+Track which CPUs are iterated over during a NOHZ idle balance with a new
+cpumask. When considering whether to kick a NOHZ idle balance, use this
+cpumask to determine if any CPU has entered NOHZ idle but hasn't had its
+rq.next_balance collated into nohz.next_balance yet, and kick a NOHZ_STATS
+balance if it is the case.
 
-Uang $ 3 juta Anda akan ditransfer kepada Anda melalui Western
-Bersatu atas namamu,
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ kernel/sched/core.c |  8 ++++++++
+ kernel/sched/fair.c | 19 +++++++++++++++++--
+ 2 files changed, 25 insertions(+), 2 deletions(-)
 
-Kirim informasi lengkap Anda ke kantor rujukan Tony Elumelu, Anda akan
-menerima 5.000 masing-masing
-Sehari sampai dana Anda mengkonfirmasi $ 3 juta
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 0c22cd026440..1bc4cbc1f85e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8893,6 +8893,10 @@ static struct kmem_cache *task_group_cache __read_mostly;
+ DECLARE_PER_CPU(cpumask_var_t, load_balance_mask);
+ DECLARE_PER_CPU(cpumask_var_t, select_idle_mask);
+ 
++#ifdef CONFIG_NOHZ_COMMON
++DECLARE_PER_CPU(cpumask_var_t, nohz_balance_mask);
++#endif /* CONFIG_NOHZ_COMMON */
++
+ void __init sched_init(void)
+ {
+ 	unsigned long ptr = 0;
+@@ -8942,6 +8946,10 @@ void __init sched_init(void)
+ 			cpumask_size(), GFP_KERNEL, cpu_to_node(i));
+ 		per_cpu(select_idle_mask, i) = (cpumask_var_t)kzalloc_node(
+ 			cpumask_size(), GFP_KERNEL, cpu_to_node(i));
++#ifdef CONFIG_NOHZ_COMMON
++		per_cpu(nohz_balance_mask, i) = (cpumask_var_t)kzalloc_node(
++			cpumask_size(), GFP_KERNEL, cpu_to_node(i));
++#endif /* CONFIG_NOHZ_COMMON */
+ 	}
+ #endif /* CONFIG_CPUMASK_OFFSTACK */
+ 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 11d22943753f..497208a1afb8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5694,8 +5694,11 @@ DEFINE_PER_CPU(cpumask_var_t, select_idle_mask);
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+ 
++DEFINE_PER_CPU(cpumask_var_t, nohz_balance_mask);
++
+ static struct {
+-	cpumask_var_t idle_cpus_mask;
++	cpumask_var_t idle_cpus_mask;    /* CPUs in NOHZ idle */
++	cpumask_var_t last_balance_mask; /* CPUs covered by last NOHZ balance */
+ 	atomic_t nr_cpus;
+ 	int has_blocked;		/* Idle CPUS has blocked load */
+ 	unsigned long next_balance;     /* in jiffy units */
+@@ -10351,6 +10354,13 @@ static void nohz_balancer_kick(struct rq *rq)
+ unlock:
+ 	rcu_read_unlock();
+ out:
++	/*
++	 * Some CPUs have recently gone into NOHZ idle; kick a balance to
++	 * collate the proper next balance interval.
++	 */
++	if (!cpumask_subset(nohz.idle_cpus_mask, nohz.last_balance_mask))
++		flags |= NOHZ_STATS_KICK;
++
+ 	if (flags)
+ 		kick_ilb(flags);
+ }
+@@ -10487,6 +10497,7 @@ static bool update_nohz_stats(struct rq *rq)
+ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 			       enum cpu_idle_type idle)
+ {
++	struct cpumask *cpus = this_cpu_cpumask_var_ptr(nohz_balance_mask);
+ 	/* Earliest time when we have to do rebalance again */
+ 	unsigned long now = jiffies;
+ 	unsigned long next_balance = now + 60*HZ;
+@@ -10518,7 +10529,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	 * Start with the next CPU after this_cpu so we will end with this_cpu and let a
+ 	 * chance for other idle cpu to pull load.
+ 	 */
+-	for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
++	cpumask_copy(cpus, nohz.idle_cpus_mask);
++	for_each_cpu_wrap(balance_cpu, cpus, this_cpu+1) {
+ 		if (!idle_cpu(balance_cpu))
+ 			continue;
+ 
+@@ -10565,6 +10577,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	if (likely(update_next_balance))
+ 		nohz.next_balance = next_balance;
+ 
++	cpumask_copy(nohz.last_balance_mask, cpus);
++
+ 	WRITE_ONCE(nohz.next_blocked,
+ 		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+ 
+@@ -11550,6 +11564,7 @@ __init void init_sched_fair_class(void)
+ 	nohz.next_balance = jiffies;
+ 	nohz.next_blocked = jiffies;
+ 	zalloc_cpumask_var(&nohz.idle_cpus_mask, GFP_NOWAIT);
++	zalloc_cpumask_var(&nohz.last_balance_mask, GFP_NOWAIT);
+ #endif
+ #endif /* SMP */
+ 
+-- 
+2.25.1
 
-Email [westuniontogounionpayment@gmail.com]
-Kirimkan informasi lengkap Anda ke Tony Elumelu seperti gambar di bawah ini
-
-nama lengkap Anda .........
-Negaramu ......
-Nomor telepon Anda .....
-Salinan paspor Anda ......
-
-Kirimkan informasi lengkap Anda kepadanya
-[Westuniontogounionpayment@gmail.com]
