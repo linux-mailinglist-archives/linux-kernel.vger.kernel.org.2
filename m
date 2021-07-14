@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196603C8585
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF0B3C8587
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhGNNt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:49:29 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:45679 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhGNNt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:49:28 -0400
-Received: by mail-il1-f182.google.com with SMTP id b6so1602025iln.12;
-        Wed, 14 Jul 2021 06:46:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bylNDni7LUKM7pnvITfXsrZTIr6B2PAmOuvv1NHx8Os=;
-        b=P4v8PyWHHHFOwzlU2Utzs6Lv5JtidYpO/wKUoPdmE5IgsQeBxcviWg8XJsio6vmGtK
-         TRYg3rh6EPQBzV+yeDY2Et6TcF33dqidoxkztK2hSQdiy7/xi64DEXLcALuNem9N5JiX
-         o0Dgl4H/1xp7iEpYJAuJH1QxPsRNSwb+Dloe5G+xWIsvZmtyg3Xp+yCemRp3B2jgLZsF
-         8S66UdxdaO4poFuoBXLgLEKG8Mw95mH0+xVRhYJLSMhS9gDqjrT3cLLfIujzEwSKj19b
-         KygcGcvYt3thvtT4yvjR30LYyDE64GKeL5xaNdk+kcrTXmH1AdOagBbZfA/VjTO7SASy
-         hZFw==
-X-Gm-Message-State: AOAM531joPPc+CuKm2vOT70WibT1cyPMAuPgxicja2swMgGfvZZm5BGX
-        z2kXaAgo74YBnl35JmRNiw==
-X-Google-Smtp-Source: ABdhPJwzly6VLXsrTTboxhXnHeZCdEuUQxDBu27t3pSa2+1X8fR4x8BA5P9eHwkkY5vz+JeKbPGq8A==
-X-Received: by 2002:a92:8712:: with SMTP id m18mr6301471ild.132.1626270397009;
-        Wed, 14 Jul 2021 06:46:37 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id t8sm1178729iog.21.2021.07.14.06.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 06:46:36 -0700 (PDT)
-Received: (nullmailer pid 2452887 invoked by uid 1000);
-        Wed, 14 Jul 2021 13:46:32 -0000
-Date:   Wed, 14 Jul 2021 07:46:32 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
-        linux-mm@kvack.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 01/10] crash_dump: Make elfcorehdr_{addr,size} always
- visible
-Message-ID: <20210714134632.GA2441138@robh.at.kernel.org>
-References: <cover.1626266516.git.geert+renesas@glider.be>
- <0721f629d5e75b7b7e655458a63cbd767baaa409.1626266516.git.geert+renesas@glider.be>
+        id S232362AbhGNNu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:50:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231543AbhGNNuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 09:50:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 998F1613BE;
+        Wed, 14 Jul 2021 13:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626270483;
+        bh=vp5bXzXlnCDxY/OLVr7ZLCC70W2Er4KbPTvly6fC8eY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S1F9m75Veld9IhxIiskErUdfRJx/tHSn/Xt2Gpjb6B2M07z0iJidmT1LER/cn8e+c
+         Dic6lVsKzoRoP6VMOR0mfWFnQrHNock6EaTNeGAci7H0wmYSlJbL2qDpOvqOGfEwv1
+         3xZC9vLB7F1nDbscEEW4OdBrZu7IJRa53Vi2O7gTWxLIGCcH0hG6KOmDOHcwscgE2H
+         NUv9AZPDZNuXv+RmLGyXgr6VoW2MxfITbckI2l2AFLHcT9Y39TO7/OJ415+xEm3QMc
+         AETndup64IIsghIqKetcRUO0XC5pRVxmd7vKq79gxR/btu47PRenXOTJ/DK4zPIbsh
+         AuEhD2fMcfgoQ==
+From:   Christian Brauner <brauner@kernel.org>
+To:     linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com,
+        stable@kernel.org, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH 1/2] cgroup: verify that source is a string
+Date:   Wed, 14 Jul 2021 15:47:49 +0200
+Message-Id: <20210714134750.1223146-1-brauner@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <https://lore.kernel.org/lkml/20210714091446.vt4ieretnkjzi7qg@wittgenstein>
+References: <https://lore.kernel.org/lkml/20210714091446.vt4ieretnkjzi7qg@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0721f629d5e75b7b7e655458a63cbd767baaa409.1626266516.git.geert+renesas@glider.be>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2566; h=from:subject; bh=12+DNVCz6V74ceolxYGLmdvTW/UekPMGixUDyW+L3PU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMSS8e814IFz5c40mu3nerx+Jrnu6Q7Zqr1vx1tX63F5Wtnl+ XDs6O0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbCt43hv8f5AiOm/GnLlOOUC+fevm jh0D+VMffl3BtbSs5sywxpl2Rk+LqoTuf91hkTniQZuB07rqvwrOYXa0Ufwwom6TKX174TWQA=
+X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 02:50:11PM +0200, Geert Uytterhoeven wrote:
-> Make the forward declarations of elfcorehdr_addr and elfcorehdr_size
-> always available, like is done for phys_initrd_start and
-> phys_initrd_size.  Code referring to these symbols can then just check
-> for IS_ENABLED(CONFIG_CRASH_DUMP), instead of requiring conditional
-> compilation using an #ifdef, thus preparing to increase compile
-> coverage.
-> 
-> Suggested-by: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v4:
->   - New.
-> ---
->  include/linux/crash_dump.h | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
-> index a5192b718dbe4f9a..ad31893d13d634de 100644
-> --- a/include/linux/crash_dump.h
-> +++ b/include/linux/crash_dump.h
-> @@ -10,13 +10,14 @@
->  
->  #include <linux/pgtable.h> /* for pgprot_t */
->  
-> +/* For IS_ENABLED(CONFIG_CRASH_DUMP) */
-> +extern unsigned long long elfcorehdr_addr;
-> +extern unsigned long long elfcorehdr_size;
-> +
->  #ifdef CONFIG_CRASH_DUMP
->  #define ELFCORE_ADDR_MAX	(-1ULL)
->  #define ELFCORE_ADDR_ERR	(-2ULL)
+From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Seems like these could be needed and no need to hide them, so perhaps 
-just move the #ifdef down.
+The following sequence can be used to trigger a UAF:
 
->  
-> -extern unsigned long long elfcorehdr_addr;
-> -extern unsigned long long elfcorehdr_size;
-> -
->  extern int elfcorehdr_alloc(unsigned long long *addr, unsigned long long *size);
->  extern void elfcorehdr_free(unsigned long long addr);
->  extern ssize_t elfcorehdr_read(char *buf, size_t count, u64 *ppos);
-> -- 
-> 2.25.1
-> 
-> 
+int fscontext_fd = fsopen("cgroup");
+int fd_null = open("/dev/null, O_RDONLY);
+int fsconfig(fscontext_fd, FSCONFIG_SET_FD, "source", fd_null);
+close_range(3, ~0U, 0);
+
+The cgroup v1 specific fs parser expects a string for the "source"
+parameter. However, it is perfectly legitimate to e.g. specify a file
+descriptor for the "source" parameter. The fs parser doesn't know what a
+filesystem allows there. So it's a bug to assume that "source" is always
+of type fs_value_is_string when it can reasonably also be
+fs_value_is_file.
+
+This assumption in the cgroup code causes a UAF because struct
+fs_parameter uses a union for the actual value. Access to that union
+is guarded by the param->type member. Since the cgroup paramter parser
+didn't check param->type but unconditionally moved param->string into
+fc->source a close on the fscontext_fd would trigger a UAF during
+put_fs_context() which frees fc->source thereby freeing the file stashed
+in param->file causing a UAF during a close of the fd_null.
+
+Fix this by verifying that param->type is actually a string and report
+an error if not.
+
+In follow up patches I'll add a new generic helper that can be used here
+and by other filesystems instead of this error-prone copy-pasta fix. But
+fixing it in here first makes backporting a it to stable a lot easier.
+
+Reported-by: syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: <stable@kernel.org>
+Cc: syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ kernel/cgroup/cgroup-v1.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index ee93b6e89587..527917c0b30b 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -912,6 +912,8 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	opt = fs_parse(fc, cgroup1_fs_parameters, param, &result);
+ 	if (opt == -ENOPARAM) {
+ 		if (strcmp(param->key, "source") == 0) {
++			if (param->type != fs_value_is_string)
++				return invalf(fc, "Non-string source");
+ 			if (fc->source)
+ 				return invalf(fc, "Multiple sources not supported");
+ 			fc->source = param->string;
+
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
+-- 
+2.30.2
+
