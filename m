@@ -2,117 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD06E3C7F39
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC98A3C7F3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 09:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238296AbhGNHTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 03:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238251AbhGNHTM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:19:12 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17487C061574;
-        Wed, 14 Jul 2021 00:16:20 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so873890pjb.0;
-        Wed, 14 Jul 2021 00:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4jskSB1DiBrCiUAFGdix3WJoQ/5LpAf9kLsHxzYGWlc=;
-        b=aBnm4uMqxZz/6szSq4h3/Lvp5XYySG8q5QI6oVkY5qjzZC4JfcgSfMK5SWr9wYC3RV
-         d2ejs98KdVRLplXz9TnVZ5PS9VUifrC2E0MpdQtZ+BIxS0u/3KPqsH5ZCq5nZ2r4060I
-         K3aqYT2vmmcjBM7ApJsS93Sndqj47afxjL22lLoHy9b+fxt9sPHZN+V7yI2ztNEHIgBg
-         YtOM/uZIgT+OB9zhQ+iooVzsJCGofqbUGqD1Q2q3Keh2S5v7ff30BRYBScpH0ldyOJSI
-         Ho7KEmwKC2601WcLw6k4SXHZcFBwlpLF85LMEj5V97EGa1DRgLogrFas5mUM4rdRMWh9
-         iSag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4jskSB1DiBrCiUAFGdix3WJoQ/5LpAf9kLsHxzYGWlc=;
-        b=qViiocWBSwa3CdUlt4IXGgblCeQcpQm3eXnGvYj+nVcpjGyIJNSeAkYZS/U5W8c+z0
-         uM0qlNQ6bYlB3v4HGP90G3Vz0DACjq+ynp9zo3PC75igaYJIMvP4na+4GqYdL2W+bK44
-         2nBVqSsjY+sBA0o9ZAt9YN12reO4lhkz6BCLT4FHqsj4FZUoQaE1AnmDT/Y6RqyAK56K
-         ThCK/4+9qA6xKnG+49poHbc7Pc1oZYOjtcqZiMftFEm63ynJe0FiZDC+QqeQ3To8ZYJu
-         lCCFUNF5Aldxjy56+Vt8xbpJUyhlMAvGOnHP1afqmRe4jRZ3h7k6n35Ir1tdTX3igrnY
-         sMrg==
-X-Gm-Message-State: AOAM532cKVpYQ87tZD7s6ZSio5QG97QvKaRnD3WhTm+/YYu63LFJ8Z3T
-        GQTDXiJnsz/DtteQtuBQC5M=
-X-Google-Smtp-Source: ABdhPJyM8jMHSnCRzzj3bfdyJuQOdTHPQcEJPFcr+YrIBVa+uFcpvm4t8wVSK6oC2YVjFrQEbATvdQ==
-X-Received: by 2002:a17:902:830a:b029:128:bcba:6be9 with SMTP id bd10-20020a170902830ab0290128bcba6be9mr6674289plb.53.1626246979637;
-        Wed, 14 Jul 2021 00:16:19 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.218])
-        by smtp.gmail.com with ESMTPSA id 133sm1583623pfx.39.2021.07.14.00.16.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 00:16:19 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] usb: hso: remove the bailout parameter
-Date:   Wed, 14 Jul 2021 15:15:33 +0800
-Message-Id: <20210714071547.656587-2-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210714071547.656587-1-mudongliangabcd@gmail.com>
-References: <20210714071547.656587-1-mudongliangabcd@gmail.com>
+        id S238252AbhGNHTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 03:19:38 -0400
+Received: from ofcsgdbm.dwd.de ([141.38.3.245]:43789 "EHLO ofcsgdbm.dwd.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238079AbhGNHTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 03:19:38 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ofcsg2dn2.dwd.de (Postfix) with ESMTP id 4GPpht0t7Sz2y3G
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 07:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
+        content-type:content-type:mime-version:references:message-id
+        :in-reply-to:subject:subject:from:from:date:date:received
+        :received:received:received:received:received:received:received;
+         s=dwd-csg20210107; t=1626247006; x=1627456607; bh=1s7lxNqxN+bHS
+        f0hCw3xT7C5Y+Vk8m//mrEUE5NwLCo=; b=yHROI2lQtfSsRD0mx+KfvtqWT98XQ
+        yHpkA4inUYTZtYWp1xDhc4tfUBFDZuC+vPHs7VrnnEdO3HsxER7B43IAOzdffetF
+        I89nl2sdS7jCdJO9XtJE+IpQRu6IYijEjGFhRYVx+MH8/lvB4f2H2nnFGB2J8pfF
+        mlqFn4XbRPrc9uo0j9E/dN3PxEb0fL5RucXLP5Q+7vYIIczogp6rqIWoA8Ti2Y7l
+        RbQNYOIHXCIXH7xv+fkfCQdt3NoarZXtX+G4BjLcOpDRxkgIAnH87mK8F7eRNM79
+        t1Y8FcrB/ZSv8EulbMBEuGAcvgOI0S/VP6Dna7XbwAvyPrRE10gr9A4ew==
+X-Virus-Scanned: by amavisd-new at csg.dwd.de
+Received: from ofcsg2ctev1.dwd.de ([172.30.232.67])
+        by localhost (ofcsg2dn2.dwd.de [172.30.232.25]) (amavisd-new, port 10024)
+        with ESMTP id HQjPgQGimil4 for <linux-kernel@vger.kernel.org>;
+        Wed, 14 Jul 2021 07:16:46 +0000 (UTC)
+Received: from ofcsg2ctev1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id BE83F5E3C27
+        for <root@ofcsg2dn2.dwd.de>; Wed, 14 Jul 2021 07:16:43 +0000 (UTC)
+Received: from ofcsg2ctev1.dwd.de (unknown [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id AE4C95E1C95
+        for <root@ofcsg2dn2.dwd.de>; Wed, 14 Jul 2021 07:16:43 +0000 (UTC)
+X-DDEI-TLS-USAGE: Unused
+Received: from ofcsgdbm.dwd.de (unknown [172.30.232.25])
+        by ofcsg2ctev1.dwd.de (Postfix) with ESMTP
+        for <root@ofcsg2dn2.dwd.de>; Wed, 14 Jul 2021 07:16:43 +0000 (UTC)
+Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
+ Wed, 14 Jul 2021 07:16:45 -0000
+Received: from ofcsg2dvf2.dwd.de (ofcsg2dvf2.dwd.de [172.30.232.11])
+        by ofcsg2dn2.dwd.de (Postfix) with ESMTPS id 4GPphs5jDcz2y3G;
+        Wed, 14 Jul 2021 07:16:45 +0000 (UTC)
+Received: from ofmailhub.dwd.de (ofldap.dwd.de [141.38.39.196])
+        by ofcsg2dvf2.dwd.de  with ESMTP id 16E7GjTs012705-16E7GjTt012705;
+        Wed, 14 Jul 2021 07:16:45 GMT
+Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
+        by ofmailhub.dwd.de (Postfix) with ESMTP id 23118E2BEB;
+        Wed, 14 Jul 2021 07:16:45 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 07:16:45 +0000 (GMT)
+From:   Holger Kiehl <Holger.Kiehl@dwd.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+In-Reply-To: <YO56HTE3k95JLeje@kroah.com>
+Message-ID: <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
+References: <20210712060912.995381202@linuxfoundation.org> <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de> <YO56HTE3k95JLeje@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+X-FE-Policy-ID: 2:2:1:SYSTEM
+X-TMASE-Version: DDEI-5.1-8.6.1018-26280.006
+X-TMASE-Result: 10--19.910000-10.000000
+X-TMASE-MatchedRID: 6lay9u8oTUOWfDtBOz4q28bYuTb6+cQg69aS+7/zbj/mNRhvDVinv2Kp
+        MJoimBcbPsj5qjS+dCEYwvDSTCG2BJQlTsRs6bL83nHtGkYl/VpF/jSlPtma/r0/f33kf9Gljn9
+        2T7igP2sXndhpsXecxygywW45LfL0yFuWu3nxO+19j6Il8VAHF8ZU3kmz9C/H3pxmYneHU6t/cL
+        JHsj+DkZhk/6bphJLMKISk8WdGcXCHbsX/GOLqdgPZZctd3P4BuqgVqRoQsiB7lDzh8Z+EhhBmt
+        oCUanEvwgx24xjlvojzX5siSEObomsc2OVQ/NyCfid4LSHtIANuWkE39mLwR2zpNYa+Tlcne/cQ
+        kmt0G7GVIsnYOY5w/uF45apSJW4bV6HcTxi1U3IqkSeDPauzryIk3dpe5X+hhtFYAGqp0CGjxYy
+        RBa/qJWP1xUvrlhy15MIx11wv+CPiRhduhvElsvJT+hf62k2YIbZSWXZZ520=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-DDEI-PROCESSED-RESULT: Safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two invocation sites of hso_free_net_device. After
-refactoring hso_create_net_device, this parameter is useless.
-Remove the bailout in the hso_free_net_device and change the invocation
-sites of this function
+On Wed, 14 Jul 2021, Greg Kroah-Hartman wrote:
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/net/usb/hso.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> On Wed, Jul 14, 2021 at 05:39:43AM +0000, Holger Kiehl wrote:
+> > Hello,
+> > 
+> > On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+> > 
+> > > This is the start of the stable review cycle for the 5.13.2 release.
+> > > There are 800 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > With this my system no longer boots:
+> > 
+> >    [  OK  ] Reached target Swap.
+> >    [   75.213852] NMI watchdog: Watchdog detected hard LOCKUP on cpu 0
+> >    [   75.213926] NMI watchdog: Watchdog detected hard LOCKUP on cpu 2
+> >    [   75.213962] NMI watchdog: Watchdog detected hard LOCKUP on cpu 4
+> >    [FAILED] Failed to start Wait for udev To Complete Device Initialization.
+> >    See 'systemctl status systemd-udev-settle.service' for details.
+> >             Starting Activation of DM RAID sets...
+> >    [      ] (1 of 2) A start job is running for Activation of DM RAID sets (..min ..s / no limit)
+> >    [      ] (2 of 2) A start job is running for Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling (..min ..s / no limit)
+> > 
+> > System is a Fedora 34 with all updates applied. Two other similar
+> > systems with AMD CPUs (Ryzen 4750G + 3400G) this does not happen
+> > and boots fine. The system where it does not boot has an Intel
+> > Xeon E3-1285L v4 CPU. All of them use a dm_crypt root filesystem.
+> > 
+> > Any idea which patch I should drop to see if it boots again. I already
+> > dropped
+> > 
+> >    [PATCH 5.13 743/800] ASoC: Intel: sof_sdw: add quirk support for Brya and BT-offload
+> > 
+> > and I just see that this one should also be dropped:
+> > 
+> >    [PATCH 5.13 768/800] hugetlb: address ref count racing in prep_compound_gigantic_page
+> > 
+> > Will still need to test this.
+> 
+> Can you run 'git bisect' to see what commit causes the problem?
+> 
+Yes, will try to do that. I think it will take some time ...
 
-diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-index 90fa4d9fa119..91cace7aa657 100644
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2353,7 +2353,7 @@ static int remove_net_device(struct hso_device *hso_dev)
- }
- 
- /* Frees our network device */
--static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
-+static void hso_free_net_device(struct hso_device *hso_dev)
- {
- 	int i;
- 	struct hso_net *hso_net = dev2net(hso_dev);
-@@ -2376,7 +2376,7 @@ static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
- 	kfree(hso_net->mux_bulk_tx_buf);
- 	hso_net->mux_bulk_tx_buf = NULL;
- 
--	if (hso_net->net && !bailout)
-+	if (hso_net->net)
- 		free_netdev(hso_net->net);
- 
- 	kfree(hso_dev);
-@@ -3137,7 +3137,7 @@ static void hso_free_interface(struct usb_interface *interface)
- 				rfkill_unregister(rfk);
- 				rfkill_destroy(rfk);
- 			}
--			hso_free_net_device(network_table[i], false);
-+			hso_free_net_device(network_table[i]);
- 		}
- 	}
- }
--- 
-2.25.1
-
+Holger
