@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9983C832E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C1F3C8330
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 12:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239220AbhGNKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 06:47:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28391 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239148AbhGNKrh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:47:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626259485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOKE2GZL6fTWgITADtSj3+kfbdCqczacGjJyqa6cu2Q=;
-        b=UuFMdrRpwhx5o65V1/BPJpahs/4o5mfLJ4DJD3FOmZR472JnrVdRvCpUKkrwz9j1ZmBBQW
-        uBA0P02AsnojpMi4ZHgT1diYOq5vbcsM3/oiiGCuoGpd1RkGZuE7FewrLxtRQtuOmmYg68
-        oqW8EspCStHwt987b3djXdg+dv6zs9A=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-q11ZtIv3Plqvit6r1w7z6Q-1; Wed, 14 Jul 2021 06:44:42 -0400
-X-MC-Unique: q11ZtIv3Plqvit6r1w7z6Q-1
-Received: by mail-wr1-f71.google.com with SMTP id k3-20020a5d52430000b0290138092aea94so1280984wrc.20
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 03:44:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nOKE2GZL6fTWgITADtSj3+kfbdCqczacGjJyqa6cu2Q=;
-        b=dqbqVLS7vufS/GGyPVKFC13DZmvoQjyjniTRxkBT8SKSXqI+FvUcUNt5SkWDdsh2n4
-         1qj5pftAUFD9aD57/ARn4uxAN4sUeNG8oFG7nmoOkf5ZbF/JhXjKInUdE8jq/QQ5QqcA
-         ubVqPrNa26MyRYXNEHwIlOxEKJXhC5bBV6QuF2THJa7mozavityXXmIDZ5llLEjgjn5x
-         z8crgWsi4cg4hn+G+tWfiVcP6uVLTxhehblmFu7Y98E4FCoNMx8mNtuKjsK4q+lQuDdv
-         ZuaMueZSnCDf/eEmPk2aH55hjtJBK2u6u45OiYWX3ha16lW0dWRXKqwzzX7N0iMQ9iFt
-         r8VA==
-X-Gm-Message-State: AOAM531WjuHVylxW770Uf2M/aFfF3t0qW8iQIZfmr1/usqA9Fzbh33cB
-        vBuzC/iM4zbix3iDsMX91onGq+8S4VoGp2nc7ihNQDrwCtUKmEMHDrUptURzV7hNyAGVEuixhUV
-        4AsTeCGYb2sY8X0+lApGyHUxJ
-X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr12065470wrt.293.1626259480992;
-        Wed, 14 Jul 2021 03:44:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBrhPbsqvtDXxSIp+KaPgOZIl+LpZ7BZeaQ/21MrKE7Luf9eg3eKwmIBISMRnttuaBR9R+yg==
-X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr12065451wrt.293.1626259480804;
-        Wed, 14 Jul 2021 03:44:40 -0700 (PDT)
-Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.gmail.com with ESMTPSA id 19sm1750935wmu.17.2021.07.14.03.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 03:44:39 -0700 (PDT)
-Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <jlelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        He Zhe <zhe.he@windriver.com>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <20210714063814-mutt-send-email-mst@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6aa0d9b6-94f8-6321-9015-da56ac93d863@redhat.com>
-Date:   Wed, 14 Jul 2021 12:44:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239199AbhGNKtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 06:49:12 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24002 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237788AbhGNKtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 06:49:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210367740"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="210367740"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 03:46:18 -0700
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; 
+   d="scan'208";a="413247577"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 03:46:15 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m3cP3-00DHKT-Rc; Wed, 14 Jul 2021 13:46:09 +0300
+Date:   Wed, 14 Jul 2021 13:46:09 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Subject: Re: [RFC PATCH] clk: fractional-divider: Correct max_{m,n} handed
+ over to rational_best_approximation()
+Message-ID: <YO7AcaHyB8js9FJg@smile.fi.intel.com>
+References: <20210714064129.1321277-1-victor.liu@nxp.com>
+ <YO6qfQMcvr9szZTJ@smile.fi.intel.com>
+ <1f1b38f9c42093bea5e6a8ccb458bdf799069157.camel@nxp.com>
+ <YO6+nkzDlNM/KJio@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210714063814-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YO6+nkzDlNM/KJio@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/21 12:41, Michael S. Tsirkin wrote:
->> --------------- 8< ---------------
->> From: Paolo Bonzini <pbonzini@redhat.com>
->> Subject: [PATCH] eventfd: protect eventfd_wake_count with a local_lock
->>
->> eventfd_signal assumes that spin_lock_irqsave/spin_unlock_irqrestore is
->> non-preemptable and therefore increments and decrements the percpu
->> variable inside the critical section.
->>
->> This obviously does not fly with PREEMPT_RT.  If eventfd_signal is
->> preempted and an unrelated thread calls eventfd_signal, the result is
->> a spurious WARN.  To avoid this, protect the percpu variable with a
->> local_lock.
->>
->> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
->> Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
->> Cc: stable@vger.kernel.org
->> Cc: He Zhe <zhe.he@windriver.com>
->> Cc: Jens Axboe <axboe@kernel.dk>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+On Wed, Jul 14, 2021 at 01:38:22PM +0300, Andy Shevchenko wrote:
+> On Wed, Jul 14, 2021 at 06:10:46PM +0800, Liu Ying wrote:
+> > On Wed, 2021-07-14 at 12:12 +0300, Andy Shevchenko wrote:
+> > > On Wed, Jul 14, 2021 at 02:41:29PM +0800, Liu Ying wrote:
 > 
+> ...
 > 
-> Makes sense ...
-> 
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> 
-> want to send this to the windriver guys so they can test?
-> Here's the list from that thread:
+> > > > /*
+> > > >  * Get rate closer to *parent_rate to guarantee there is no overflow
+> > > >  * for m and n. In the result it will be the nearest rate left shifted
+> > > >  * by (scale - fd->nwidth) bits.
+> > > >  */
+> > > 
+> > > I don't know how to rephrase above comment better.
+> > > 
+> > > > scale = fls_long(*parent_rate / rate - 1);
+> > > > if (scale > fd->nwidth)
+> > > > 	rate <<= scale - fd->nwidth;
+> > > 
+> > > This takes an advantage of the numbers be in a form of
+> > > 
+> > > 	n = k * 2^m, (1)
+> > > 
+> > > where m will be scale in the snippet above. Thus, if n can be represented by
+> > > (1), we opportunistically reduce amount of bits needed for it by shifting right
+> > > by m bits.
 
-I included He Zhe, but it should be enough for Daniel to test it.  The 
-bug is quite obvious once you wear your PREEMPT_RT goggles.
+> > > Does it make sense?
+> > 
+> > Thanks for your explaination.
+> > But, sorry, Jacky and I still don't understand this.
 
-Paolo
+
+It seems I poorly chose the letters for (1). Let's rewrite above as
+
+This takes an advantage of the numbers be in a form of
+
+	a = k * 2^b, (1)
+
+where b will be scale in the snippet above. Thus, if a can be represented by
+(1), we opportunistically reduce amount of bits needed for it by shifting right
+by b bits.
+
+Also note, "shifting right" here is about the result of n (see below).
+
+> Okay, We have two values in question:
+>  r_o (original rate of the parent clock)
+>  r_u (the rate user asked for)
+> 
+> We have a pre-scaler block which asks for
+>  m (denominator)
+>  n (nominator)
+> values to be provided to satisfy the (2)
+> 
+> 	r_u ~= r_o * m / n, (2)
+> 
+> where we try our best to make it "=" instead of "~=".
+> 
+> Now, m and n have the limitation by a range, e.g.
+> 
+> 	n >= 1, n < N_lim, where N_lim = 2^nlim. (3)
+> 
+> Hence, from (2) and (3), assuming the worst case m = 1,
+> 
+> 	ln2(r_o / r_u) <= nlim. (4)
+> 
+> The above code tries to satisfy (4).
+> 
+> Have you got it now?
+> 
+> > > The code looks good to me, btw, although I dunno if you need to call the newly
+> > > introduced function before or after the above mentioned snippet.
+> > 
+> > Assuming that snippet is fully orthogonal to this patch, then it
+> > doesn't matter if it's before or after.
+> 
+> Please, double check this. Because you play with limits, while we expect them
+> to satisfy (3).
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
