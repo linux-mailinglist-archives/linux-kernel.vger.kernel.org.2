@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34723C853D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDE03C8543
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 15:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhGNN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 09:26:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231391AbhGNN0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 09:26:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33DAD613B6;
-        Wed, 14 Jul 2021 13:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626269032;
-        bh=8YweS0lldK7zFXXHnB47WnsCb1i6ItUCidY2qcQq06U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IFDfD23EOd+aE4fwhDT8JLwKE2CxDe2MLiSZuNk06Yt/hf9YgphVvDpqAU0w8+DWx
-         CPgzi3qgJ5UoajCJI/m1jCLyu5QdLEd+9V9HF0RgClp7sXScjYAjsSay9+UZcZu4bJ
-         UBpxgUx8OuQnvo6hw1gaNg+OPCqhQ/mDJ0B507Mc=
-Date:   Wed, 14 Jul 2021 15:23:50 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Michal Hocko <mhocko@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: 5.13.2-rc and others have many not for stable
-Message-ID: <YO7lZpqC4xrMPXQg@kroah.com>
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com>
- <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
- <YO6r1k7CIl16o61z@kroah.com>
+        id S231935AbhGNN2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 09:28:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45712 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231391AbhGNN2D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 09:28:03 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16EDFrIk066326;
+        Wed, 14 Jul 2021 09:25:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xk7fQo3cNb82lvfg0DyWEvxbqnwJtuEL6Bv2LaV32WI=;
+ b=ljXZrSkan+fXOkIdB4OQjify6RS928QT1PLrRVEyZuSFOFUWUg5yIWqx3IkE3vR17WGT
+ pVQjdOxw53wrn+ZHFn3PN2q4v+9dA0ToUDjMYhF4gZTdQKvnTpB3pMZ1fSBPJvwCXNPT
+ K80nSmhFJxKZUXa3UxCr37wVwlu8O8QhIDilRCofTDhKTl/4oMlVc6udfyFKV01x+uNV
+ E03xJJZwy1Qk8Ry8Duulfq3VIr81A7kJX7RvQzTljYE8bM5CBJF3kbRDY91QZmwytmGM
+ wqLH+aaaODQVOUNB4cA6NhIdI8fhriWR3wXNdiu5Om3UkoqOCMvaOq/ZOtyEMeaj7nYx +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39sey9vgkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 09:25:10 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16EDH9Fa074426;
+        Wed, 14 Jul 2021 09:25:10 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39sey9vgk5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 09:25:09 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16EDIA64010096;
+        Wed, 14 Jul 2021 13:25:09 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma03wdc.us.ibm.com with ESMTP id 39q36c45ny-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Jul 2021 13:25:09 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16EDP5tp54460886
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Jul 2021 13:25:05 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20AD613606A;
+        Wed, 14 Jul 2021 13:25:05 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE5EF136055;
+        Wed, 14 Jul 2021 13:25:03 +0000 (GMT)
+Received: from [9.85.184.30] (unknown [9.85.184.30])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 14 Jul 2021 13:25:03 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210713013815.57e8a8cb.pasic@linux.ibm.com>
+ <5dd3cc05-f789-21a3-50c7-ee80d850a105@linux.ibm.com>
+ <20210713184517.48eacee6.pasic@linux.ibm.com>
+ <20210713170533.GF136586@nvidia.com>
+ <9512a7fb-cc55-cd9b-cdf9-7c19d0567311@linux.ibm.com>
+ <20210713192138.GG136586@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <dc18ff02-80f6-e59e-5f08-417434e74706@linux.ibm.com>
+Date:   Wed, 14 Jul 2021 09:25:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO6r1k7CIl16o61z@kroah.com>
+In-Reply-To: <20210713192138.GG136586@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: X5AJ5zYoa4ftOIdf_4qa1Ft-1rzlB1x_
+X-Proofpoint-ORIG-GUID: F1OCd-iPYhSLRl0yaEZaKOhT5Ud_a4zl
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-14_07:2021-07-14,2021-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1015 priorityscore=1501
+ impostorscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107140081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:18:14AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Jul 13, 2021 at 06:28:13PM -0700, Andrew Morton wrote:
-> > On Tue, 13 Jul 2021 08:31:57 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > 
-> > > 
-> > > > Amongst the 2000+ patches posted today, there are a significant number
-> > > > of them Signed-off-by Andrew, Signed-off-by Linus, Signed-off-by Sasha:
-> > > > yet never Cc'ed to stable (nor even posted as AUTOSELs, I think).
-> > > > 
-> > > > Am I out of date?  I thought that had been agreed not to happen:
-> > > > https://lore.kernel.org/linux-mm/20190808000533.7701-1-mike.kravetz@oracle.com/
-> > > > is the thread I found when I looked for confirmation, but I believe the
-> > > > same has been agreed before and since too.
-> > > > 
-> > > > Andrew goes to a lot of trouble to establish which Fixes from his tree
-> > > > ought to go to stable.  Of course there will be exceptions which we
-> > > > later decide should go in after all; but it's worrying when there's a
-> > > > wholesale breach like this, and I think most of them should be dropped.
-> > > > 
-> > > > To pick on just one of many examples (sorry Miaohe!), a patch that
-> > > > surprises me, but I've not had time to look into so far, and would
-> > > > not want accelerated into X stable releases, 385/800
-> > > > 
-> > > > > Miaohe Lin <linmiaohe@huawei.com>
-> > > > >     mm/shmem: fix shmem_swapin() race with swapoff
-> > > 
-> > > Sasha, and I, take patches from Linus's tree like the above one that
-> > > have "Fixes:" tags in them as many many maintainers do not remember to
-> > > put "cc: stable" on their patches.
-> > 
-> > As do many many developers.  I always check.
-> > 
-> > > The above patch says it fixes a problem in the 5.1 kernel release, so
-> > > Sasha queued it up for 5.10, 5.12, and 5.13.  Odds are he should have
-> > > also sent a "FAILED" notice for 5.4, but we don't always do that for
-> > > patches only with a Fixes tag all the time as we only have so much we
-> > > can do...
-> > > 
-> > > So is that tag incorrect?  If not, why was it not cc: stable?  Why is it
-> > > not valid for a stable release?
-> > 
-> > Usually because we judged that the seriousness of the problem did not
-> > justify the risk & churn of backporting its fix.
-> > 
-> > >  So far, all automated testing seems to
-> > > show that there are no regressions in these releases with these commits
-> > > in them.  If there was a problem, how would it show up?
-> > > 
-> > > And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
-> > > bot, but that is not what caused this commit to be added to a stable
-> > > release.
-> > > 
-> > > Trying to keep a "do not apply" list for Fixes: tags only is much harder
-> > > for both of us as we do these semi-manually and review them
-> > > individually.  Trying to remember what subsystem only does Fixes tags
-> > > yet really doesn't mean it is an impossible task.
-> > 
-> > Well, it shouldn't be super hard to skip all patches which have Fixes:,
-> > Signed-off-by:akpm and no cc:stable?
-> 
-> Ok, I will do this now (goes and writes this down...)
-> 
-> But it really feels odd that you all take the time to add a "Hey, this
-> fixes this specific commit!" tag in the changelog, yet you do not
-> actually want to go and fix the kernels that have that commit in it.
-> This is an odd signal to others that watch the changelogs for context
-> clues.  Perhaps you might not want to do that anymore.
 
-I looked at some of these patches and it seems really odd to me that you
-all are marking them with Fixes: tags, but do not want them backported.
+> This patch shows it works as a rwsem - look at what had to be changed
+> to make it so and you will find some clue to where the problems are in
+> kvm_busy version.
+>
+> In any event, I don't care anymore - please just get this merged, to
+> AlexW's tree so I don't have conflicts with the rest of the ap changes
+> for VFIO I've got queued up.
 
-First example is babbbdd08af9 ("mm/huge_memory.c: don't discard hugepage
-if other processes are mapping it")
+Christian, can you merge this with AlexW's tree? Halil suggested
+the 'fixes' and 'cc stable' tags ought to be removed, do I need
+to post another version or can you take those out when merging?
 
-Why is this not ok to backport?
+>
+> Jason
 
-Also what about e6be37b2e7bd ("mm/huge_memory.c: add missing read-only
-THP checking in transparent_hugepage_enabled()")?
-
-And 41eb5df1cbc9 ("mm: memcg/slab: properly set up gfp flags for objcg
-pointer array")?
-
-And 6acfb5ba150c ("mm: migrate: fix missing update page_private to
-hugetlb_page_subpool")?
-
-And 832b50725373 ("mm: mmap_lock: use local locks instead of disabling
-preemption")? (the RT people want that...)
-
-And f7ec104458e0 ("mm/page_alloc: fix counting of managed_pages")?
-
-Do you want to rely on systems where these fixes are not applied?
-
-I can understand if you all want to send them to us later after they
-have been "tested out" in Linus's tree, that's fine, but to just not
-want them applied at all feels odd to me.
-
-thanks,
-
-greg k-h
