@@ -2,123 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2443C7E00
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B163A3C7E05
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbhGNFnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237802AbhGNFnc (ORCPT
+        id S237946AbhGNFpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:45:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48642 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237911AbhGNFpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:43:32 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C04C0613EE
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:40:41 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id l26so1030028oic.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QBnwuBKRxZeDSW4QGiqymAuzRo+K3Iyzls75/osdlvc=;
-        b=asxkx/1UsDSGw3MeY3llVFdUkBuaw0FyNXL84TfALrLohJ4zBrLh6yRm9A54xlu5SQ
-         q5QlJ1hxVW/15s4nMKF5PEv0UyFINaFZE9dq2apkxdS2L8odPuuN3MGJnioIbfjlbAs5
-         OzHzjn05QFKxsrevQbCcdpgShJS724oVd57iz6C7d3X3PCLwOPyRliBnYLPIA6AtU52g
-         TvG2GzY4WK0VQii9Il68TaJYLCx02IXOvwNmgKP6P/+zBV0R7l8X4R8wk0QXEcltkJ4+
-         Bv/Tgb0pfNkNApWhc2CnVxoWHSamSuExPwccYmOJQ30iI0IktYI3vzy8lf36jBLgUmh8
-         BwYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QBnwuBKRxZeDSW4QGiqymAuzRo+K3Iyzls75/osdlvc=;
-        b=m7EQCL9fbGMNcT3bxRRYZKA3i32vBRHZcgmKXdNVdTYf2p8I8/XfLlp4t+AUUvCDdY
-         0fkBMqr/ckeRWMDWcCBBttUAofGzx77DT8klytBvHod68Th0kumgUXxQ4T3DBSjm2O23
-         ZTQO/Es6/B2x35wMWIWyTVA5arrjJirPD0EFjP2gbmdzTdX2BK6HuszYF+gZqE9mNSFO
-         II/52MxNAUAls6XVDxdLcX56a2UCBic78uqyAfZ/8+yQyYuTSpKdJzYHbm/Dq1DRkgBa
-         YV1YoU10zWjBvMmsReBARHI3/dLY5m285KSJD3lTureQw0n8VsfsIYYtaIZJSaJ5Q08v
-         UWZA==
-X-Gm-Message-State: AOAM532xmL1v8kr0qqW+cEKhn9Vst37BlcfZZCraDbAuCJvARS9TCnJ7
-        G1NAyqBQdk9aA5lgmgBbm6L/V4ePcf8P3nV+NAWQEA==
-X-Google-Smtp-Source: ABdhPJxMyKbaHPYLjI1W+Bc5q6MCpGy1B2M+e5JeRhMGebMYNwGIEAKA1DRB4YKkchRFoIAr0IY5gyoMjxELKQxwRNI=
-X-Received: by 2002:aca:5e06:: with SMTP id s6mr4518903oib.40.1626241241058;
- Tue, 13 Jul 2021 22:40:41 -0700 (PDT)
+        Wed, 14 Jul 2021 01:45:01 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2C8042025A;
+        Wed, 14 Jul 2021 05:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626241324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rJc53/NgI/MlkbNakLnrrlenQJNQiPmdp8kUnW8IcSg=;
+        b=MrQch05yattnZKPVWPPfFWxprgXPmSvsPBIoQZPuD58TLWruhJyiJl0s9rjP5HX6cw0OXc
+        tnHGa55wElsvGucb+NjpBt5bdQS0zMsfeeVG8GuXNquiu+r6vfyYfdOG98bVOxZMKwyMt3
+        KCn0SQRKom9sow7kWP8mDbfcyRdGTHQ=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 39CE3A3B81;
+        Wed, 14 Jul 2021 05:42:03 +0000 (UTC)
+Date:   Wed, 14 Jul 2021 07:41:57 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Evan Green <evgreen@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Enable suspend-only swap spaces
+Message-ID: <YO55FCfsjalGicMo@dhcp22.suse.cz>
+References: <20210709105012.v2.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+ <YOvpVRSMJe8NQuS2@dhcp22.suse.cz>
+ <CAE=gft7Qd3NSnoFYaXv=FkP0=Je85mNOKojuW5rhg6HkS=usLA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
-In-Reply-To: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Wed, 14 Jul 2021 11:10:30 +0530
-Message-ID: <CAH=2Nty-Zi4g0wmNZ7mKNKz8CZu9X9jLqxeFDVJaXKnkOqsASA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] pinctrl: qcom/pinctrl-spmi-gpio: Add support for
- pmic-gpio on SA8155p-adp
-To:     MSM <linux-arm-msm@vger.kernel.org>
-Cc:     bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE=gft7Qd3NSnoFYaXv=FkP0=Je85mNOKojuW5rhg6HkS=usLA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon 12-07-21 14:32:05, Evan Green wrote:
+> On Mon, Jul 12, 2021 at 12:03 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > [Cc linux-api]
+> >
+> > On Fri 09-07-21 10:50:48, Evan Green wrote:
+> > > Currently it's not possible to enable hibernation without also enabling
+> > > generic swap for a given swap area. These two use cases are not the
+> > > same. For example there may be users who want to enable hibernation,
+> > > but whose drives don't have the write endurance for generic swap
+> > > activities.
+> > >
+> > > Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
+> > > generic swapping to it. This region can still be wired up for use in
+> > > suspend-to-disk activities, but will never have regular pages swapped to
+> > > it.
+> >
+> > Could you expand some more on why a strict exclusion is really
+> > necessary? I do understand that one might not want to have swap storage
+> > available all the time but considering that swapon is really a light
+> > operation so something like the following should be a reasonable
+> > workaround, no?
+> >         swapon storage/file
+> >         s2disk
+> >         swapoff storage
+> 
+> Broadly, it seemed like a reasonable thing for the kernel to be able
+> to do. The workaround you suggest does work for some use cases, but it
+> seems like a gap the kernel could more naturally fill.
+> 
+> Without getting too off into the weeds, there a handful of factors
+> that make this change particularly useful to me:
+> 
+>  * Slicing off part of your SSD to be SLC (single level cell) is
+> expensive. From what I understand you gain endurance and speed at the
+> cost of 3-4x capacity. In other words for every 1GB of SLC space you
+> need for swap, it costs you 3-4GB of storage space out of the primary
+> namespace. So I'm incentivized to size this region as small as
+> possible. Hibernate's speed/endurance requirements are not quite as
+> harsh as regular swap. Steering them separately gives me the ability
+> to put the hibernate image in regular storage, and not be forced to
+> oversize expensive/fast swap space.
 
-On Tue, 29 Jun 2021 at 18:04, Bhupesh Sharma <bhupesh.sharma@linaro.org> wrote:
->
-> Changes since v3:
-> -----------------
-> - v3 series can be found here: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
-> - Rebased patchset on pinctrl/devel branch.
-> - Added Reviewed-by from Bjorn for patches 1 to 4 and Ack from Rob for
->   patches 1 and 2.
->
-> Changes since v2:
-> -----------------
-> - v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21
-> - Addressed review comments from Bjorn and Mark.
-> - As per suggestion from Bjorn, separated the patches in different
->   patchsets (specific to each subsystem) to ease review and patch application.
->
-> Changes since v1:
-> -----------------
-> - v1 series can be found here: https://lore.kernel.org/linux-arm-msm/20210607113840.15435-1-bhupesh.sharma@linaro.org/T/#mc524fe82798d4c4fb75dd0333318955e0406ad18
-> - Addressed review comments from Bjorn and Vinod received on the v1
->   series.
->
-> This series adds the pmic-gpio support code for SA8155p-adp board
-> which is based on Qualcomm snapdragon sa8155p SoC which in turn is
-> simiar to the sm8150 SoC.
->
-> This board supports a new PMIC -> PMM8155AU.
->
-> While at it, also make some cosmetic changes to the qcom pinctrl-spmi-gpio
-> driver and dt-bindings to make sure the compatibles are
-> in alphabetical order.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
->
-> Bhupesh Sharma (4):
->   dt-bindings: pinctrl: qcom,pmic-gpio: Arrange compatibles
->     alphabetically
->   dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for SA8155p-adp
->   pinctrl: qcom/pinctrl-spmi-gpio: Arrange compatibles alphabetically
->   pinctrl: qcom/pinctrl-spmi-gpio: Add compatible for pmic-gpio on
->     SA8155p-adp
->
->  .../bindings/pinctrl/qcom,pmic-gpio.txt       | 64 ++++++++++---------
->  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c      | 35 +++++-----
->  2 files changed, 51 insertions(+), 48 deletions(-)
->
-> --
-> 2.31.1
+OK, this is likely true but it doesn't really explain/justify a
+dedicated swap storage for hibernation.
 
-Ping. Any comments on this version?
+>  * Even with the workaround, swap can end up in the hibernate region.
+> Hibernate starts by allocating its giant 50%-of-memory region, which
+> is often the forcing function for pushing things into swap. With the
+> workaround, even if my hibernate region is in last priority, there's
+> still a reasonable chance I'll end up swapping into it.
 
-Thanks,
-Bhupesh
+Right there is no guarantee but why does that matter at all. From the
+kernel point of view it doesn't really makes much difference what was
+the source of the swapout.
+
+> If I have
+> different security designs for swap space and hibernate, then even a
+> chance of some swap leaking into this region is a problem.
+
+Could you expand some more about the this part please?
+
+>  * I also want to limit the online attack surface that swap presents.
+> I can make headway here by disallowing open() calls on active swap
+> regions (via an LSM), and permanently disabling swapon/swapoff system
+> calls after early init. The workaround isn't great for me because I
+> want to set everything up at early init time and then not touch it. By
+> suspend time, on my system I no longer have the ability to make
+> swapon/swapoff calls.
+
+This is clearly a policy call.
+
+All that being said, I am still missing any justification for the
+dedicated swap storage. This is an ABI thing so the reasoning should be
+really solid.
+-- 
+Michal Hocko
+SUSE Labs
