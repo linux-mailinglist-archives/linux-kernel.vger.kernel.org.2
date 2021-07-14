@@ -2,167 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDCC3C8966
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA303C896F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 19:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237468AbhGNRNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 13:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhGNRNH (ORCPT
+        id S237168AbhGNRQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 13:16:04 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:60104 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhGNRQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 13:13:07 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91065C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:10:14 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id b14-20020a056830310eb02904c7e78705f4so3190633ots.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 10:10:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WljVwMgt8MmNIHRKgOl9FuBOXN9yb1WIc0SSJd8F1g8=;
-        b=FRGUPPRXo0hHbuF+jBDSkTQ4iqndt8V5NTcAOFVGAThqMwCCzwZk5K8tPXv3w7BSxc
-         H5vHHmNXht7h/k2YbrL+cC8dTSSkBgo6nEBu2xjeHv1RPfS+t7+iqImknJVDQKz2wLuq
-         z2XZBihUpbHe/UwEuBhXIAe0ml1gyRDe8jz7738KOq3L6iBOE01PXMIkqrbT4iBwZGdf
-         aVE30AmAd+7LTLpUY10fj8M/x2ACQAkIr45arQ6F/oeE5EVqHVD4/6J2cvvRt1/ZwD9r
-         korpQK4VwcptZsV0WXhyUOZ/IM/s6yBarr6tYxHfiNmb/EoVAA4dSbGJVGZHK5gro/OA
-         YblQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WljVwMgt8MmNIHRKgOl9FuBOXN9yb1WIc0SSJd8F1g8=;
-        b=AaForwpzHczb6EQwYWDkc+EklTMvOazXSoFEOEC7G8XTfhDqv9T4ZIMuDn52d9Harq
-         REj/ViFJZ5/T0WL9btTmnWqkuEsVxnznx01fEkfbQJ1/arapZK7t6cOb5qvoGbobHbBV
-         kF9W6/MyLzLvCAea4QD8r9r8OIz0XKHbhPJ7xSTkez2RRGLRRZYyQYgApEmbasCwglcF
-         NoO+YxeYsEySw4T+IOKV6F6Q1UG9wCKjw9hOxH5CwdmHS9inSiUrcGoyWTd5M/gUzikL
-         ieQ+QYbEkPI2EzK6kDph2cLywMC0IZ4CkbFRqEOTQG3CYnTT5VIUftzGut2K3CQsAyLt
-         //dA==
-X-Gm-Message-State: AOAM532HsgPw1B8eQ01wWvUnTAVmGkmIOT8jkglrDL2QBslfqa9S475G
-        CGggO/9Yp7PoL9NhPWbQavec4g==
-X-Google-Smtp-Source: ABdhPJzj4XrbFecWv5la+KvE6ks1sWoks2nxcoBXwLoxijbRm2q4j+1XJjRlx6BCSdTVX6lyGC7ESg==
-X-Received: by 2002:a05:6830:1118:: with SMTP id w24mr9162120otq.89.1626282613845;
-        Wed, 14 Jul 2021 10:10:13 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i188sm615879oih.7.2021.07.14.10.10.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 10:10:13 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 12:10:10 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
- powerup sequence
-Message-ID: <YO8ackdFtbGhAqtM@yoga>
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
- <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
- <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
- <20210706115517.GB4529@sirena.org.uk>
- <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
- <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com>
- <20210714164710.GC2719790@robh.at.kernel.org>
+        Wed, 14 Jul 2021 13:16:03 -0400
+Received: from [2601:449:8480:af0::97c7]
+        by baldur.buserror.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <oss@buserror.net>)
+        id 1m3iQJ-0004e6-4c; Wed, 14 Jul 2021 12:11:51 -0500
+Message-ID: <63a72f648297e96c140a1412c20bd3796398a932.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Marek =?ISO-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 14 Jul 2021 12:11:49 -0500
+In-Reply-To: <20210704134325.24842-1-pali@kernel.org>
+References: <20210604233455.fwcu2chlsed2gwmu@pali>
+         <20210704134325.24842-1-pali@kernel.org>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714164710.GC2719790@robh.at.kernel.org>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0::97c7
+X-SA-Exim-Rcpt-To: pali@kernel.org, andrew@lunn.ch, linux@armlinux.org.uk, madalin.bucur@nxp.com, camelia.groza@oss.nxp.com, robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org, kabel@kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-16.0 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+Subject: Re: [PATCH] powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 14 Jul 11:47 CDT 2021, Rob Herring wrote:
-
-> On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
-> > Hi,
-> > 
-> > On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > - Peter (the email was bouncing)
-> > 
-> > + Peter's kernel.org address
-> > 
-> > >
-> > > On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
-> > > >
-> > > > On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
-> > > > > On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
-> > > >
-> > > > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
-> > > > > > being controlled through the UART and WiFi being present on PCIe
-> > > > > > bus. Both blocks share common power sources. Add device driver handling
-> > > > > > power sequencing of QCA6390/1.
-> > > >
-> > > > > Power sequencing of discoverable buses have been discussed several
-> > > > > times before at LKML. The last attempt [1] I am aware of, was in 2017
-> > > > > from Peter Chen. I don't think there is a common solution, yet.
-> > > >
-> > > > This feels a bit different to the power sequencing problem - it's not
-> > > > exposing the individual inputs to the device but rather is a block that
-> > > > manages everything but needs a bit of a kick to get things going (I'd
-> > > > guess that with ACPI it'd be triggered via AML).  It's in the same space
-> > > > but it's not quite the same issue I think, something that can handle
-> > > > control of the individual resources might still struggle with this.
-> > >
-> > > Well, to me it looks very similar to those resouses we could manage
-> > > with the mmc pwrseq, for SDIO. It's also typically the same kind of
-> > > combo-chips that moved from supporting SDIO to PCIe, for improved
-> > > performance I guess. More importantly, the same constraint to
-> > > pre-power on the device is needed to allow it to be discovered/probed.
-> > 
-> > In our case we'd definitely use pwrseq for PCIe bus and we can also
-> > benefit from using pwrseq for serdev and for platform busses also (for
-> > the same story of WiFi+BT chips).
-> > 
-> > I can take a look at rewriting pwrseq code to also handle the PCIe
-> > bus. Rewriting it to be a generic lib seems like an easy task,
-> > plugging it into PCIe code would be more fun.
-> > 
-> > Platform and serdev... Definitely even more fun.
+On Sun, 2021-07-04 at 15:43 +0200, Pali Rohár wrote:
+> Property phy-connection-type contains invalid value "sgmii-2500" per scheme
+> defined in file ethernet-controller.yaml.
 > 
-> I don't want to see pwrseq (the binding) expanded to other buses. If 
-> that was the answer, we wouldn't be having this discussion. It was a 
-> mistake for MMC IMO. 
+> Correct phy-connection-type value should be "2500base-x".
 > 
-
-But what do you want to see?
-
-We have a single piece of hardware that needs a specific power sequence,
-which is interacted with using both UART and PCIe.
-
-> If pwrseq works as a kernel library/api, then I have no issue with that.
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Fixes: 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to the
+> board device tree(s)")
+> ---
+>  arch/powerpc/boot/dts/fsl/t1023rdb.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > 
-> > > Therefore, I think it would be worth having a common solution for
-> > > this, rather than a solution per subsystem or even worse, per device.
-> 
-> Power sequencing requirements are inheritently per device unless we're 
-> talking about standard connectors. 
-> 
+> diff --git a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> index 5ba6fbfca274..f82f85c65964 100644
+> --- a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> +++ b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> @@ -154,7 +154,7 @@
+>  
+>                         fm1mac3: ethernet@e4000 {
+>                                 phy-handle = <&sgmii_aqr_phy3>;
+> -                               phy-connection-type = "sgmii-2500";
+> +                               phy-connection-type = "2500base-x";
+>                                 sleep = <&rcpm 0x20000000>;
+>                         };
+>  
 
-Do you mean "device" as in the IC or device as in struct device? Because
-we do have one physical IC, that has a need for a specific power on
-sequence, but we have two struct device, on two different busses in
-Linux interacting with this thing.
+Acked-by: Scott Wood <oss@buserror.net>
 
-> This is a solved problem on MDIO. It's quite simple. If there's a DT 
-> node for a device you haven't discovered, then probe it anyways.
-> 
+-Scott
 
-Okay, so DT tells us that there's actually a WiFi thing on the PCIe bus,
-even though we can't find it, so we probe something...then what?
 
-Regards,
-Bjorn
