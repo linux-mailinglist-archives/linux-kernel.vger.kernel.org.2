@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00E43C7DBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 06:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A27B3C7DC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 07:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237864AbhGNFCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 01:02:30 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47076
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229451AbhGNFC3 (ORCPT
+        id S237860AbhGNFGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 01:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhGNFGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 01:02:29 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 59D614054E
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 04:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626238777;
-        bh=IuNCZleIvRlLDBhEJUxcoa5xesWkXuXCrji39Y/aMPw=;
-        h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
-        b=oRphYpdinUW/r8iLyGw3EUSNu2NsivHyjeqX2j8GRgZ8bjLta2Ygj4h0Ajz4Fi4y/
-         n+vldnmywXFuU7cbngTgTso66ZWOhjlvOPRiK27haqSN0xFEh/4QhCeSJCkqIXtYjn
-         37jOMvptS2FCK50fYlXaNcCKp11RlGtE1RmmNK2hro8W0QkhZqX/BOMGrYY6B0dxHF
-         CHI9No5i0VhlyNUIH7XmCJ3JLuCpY9UuBiNl6bJBlRI+YTcsxGuz/07+r3tFHpPCPl
-         To5ngp+FPR/yQan+hAHm2FaVhH7KqdRWBM6kNRwYmvhxOAJeg8gAfq894Ot8MKIyGl
-         iraVwnxcqjEpA==
-Received: by mail-ed1-f71.google.com with SMTP id v4-20020a50a4440000b02903ab1f22e1dcso546057edb.23
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 21:59:37 -0700 (PDT)
+        Wed, 14 Jul 2021 01:06:40 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36D1C0613DD
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:03:47 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id f30so1430237lfj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Jul 2021 22:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pTuVEphYGt/YG2LcKDrOchB/Dk+EVAhqx0QyLXps/0g=;
+        b=gvJh8+vey3w75pjEhgJKeIWuWzOSoTh+5BJZWDgDp5Pd84oWsx0F07RdlKxAhFI/aI
+         /x7+weirB+7RD8fbD4TNzuQzewRdIxmaKK68aeo2udfgwtvh2UfBkfpWeVZitBi0z8UY
+         Bd8KU/b4BDVfLMD0iaW8/bLUxb/NnIYGeW2B4zasZ83nYiQbwRfS3/GLd5NuQBLO9eio
+         9VomgFr6R44kwxNFEKf0VgRPCKHPJVIucee5jox4avHxwczVBDZdvhIupOxSfYe7vtuh
+         8AYnBSuufMajZzzjO1WZLwjtZ7xckNJwLMJNHnnR8yiLZuM3XxOGdTn/myAwoWVTNciK
+         fTIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IuNCZleIvRlLDBhEJUxcoa5xesWkXuXCrji39Y/aMPw=;
-        b=cbmbNHAvG/BxapAqr3v/XH15KO/J/MFWshzIsfsvG+x7/+0IDUJyRfEvonmFavzp2u
-         F9Cc3mQ0kvhOtyN+v9EClyzjrvGk1aJ079oLl6Ei2MIEeAxZ25Yd//zwB+zg/dIvu+w+
-         hkxq9MGUoefoC2kbxp6dHbq4/Xm+TjrptE0qDouQlk9iKATWVPqfTMEKrlMW9xtTcAyz
-         SIeirmOfiXJg6dpP3YVGj383XAep9P3HrCZu9i7lH1+wcc2sz0c7FvwBxAzZ2pTUdznT
-         ELBNgv3zJqAQCHwx3YRcKZaDtn2xQwSzHnj7zROa9QbxRkEMb9UK+0/9OqmT5U5UbxA/
-         8K2Q==
-X-Gm-Message-State: AOAM531OGFfBXYl4O8Zk+MfbGVh6WYncgrXOmOXH2rSi9y5/dZDyJNS8
-        Elk0cbLpp+yfaAi6iMbJGhdotzTEXqtCEXcvC8QRDNM3LXuAkCL1kFTOhoY8Ga6U/Yz2nEPOnfy
-        C1tT97/fAfl8tbXsiYlSTxl90VBmJhOxz6q4LDRagofZ2wOAU6TlDIUw4/Q==
-X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10478505ejc.192.1626238777054;
-        Tue, 13 Jul 2021 21:59:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRbJHePPsqGNhB2jafTmgA7eCmZexPsfPxuY56irzwgXiVYXY8NchRXgcLJLBngqftlOI645bXKZZ6n8PRSoc=
-X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr10478490ejc.192.1626238776826;
- Tue, 13 Jul 2021 21:59:36 -0700 (PDT)
+        bh=pTuVEphYGt/YG2LcKDrOchB/Dk+EVAhqx0QyLXps/0g=;
+        b=q47/rcKE09i8znR0v1vD826vt5uHoVL25l5vC+yqv+bB3NW354+H4TOSElHTgOlGhn
+         prJuHBMicd227sufk8MhXZ32GQrCTrW6/SmoGQHZ7VJ9Zvf9XJcsb2padnj9MTT5SOum
+         /YhHND+Uy1Gt93WtfA+LCuN1e8zy2uBgESKfjehRR0fVD6AQuz2+McErcMgzs9v1OiHh
+         JWbkXqYtMtVJqBQeWI2G22GsLmhrT+b62hmXUiD26ULHX1MWSGv87KNumxVmIkot37b3
+         2oN/jHfRrH1wII14zjhbFjgdeBu6q/oAr0aWNKnjqugUJGkfb8uGRnbnHHFH2bMP0FAH
+         lovQ==
+X-Gm-Message-State: AOAM530LJfs3k/r/QBCHVwmxN56g+LXLtFH7eVv7aEcEFsQaMTdbDqFB
+        KSJE8ZIPzc06ws9jLBvJDcvIeu9vqr+vQL1CrsShXw==
+X-Google-Smtp-Source: ABdhPJydrOOQhPrApP8nB/aQKjBoFxdhbG4/w3eb3JR2bRClfRoBhBa3ir3YpPTLcBD9ocQsV9JDL6JWxlY7j2bW7As=
+X-Received: by 2002:a05:6512:511:: with SMTP id o17mr6651295lfb.396.1626239026149;
+ Tue, 13 Jul 2021 22:03:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210708074232.924844-1-kai.heng.feng@canonical.com>
- <YObFJREB9/JlcNZP@8bytes.org> <fde11cec-d1bd-49be-f129-c69a973d1b3b@arm.com>
- <CAAd53p40RcG0oeYr9QAKMjYRtyq7he=d_b_a39n4Rt5JSVScRQ@mail.gmail.com>
- <f3bdedcb-5602-cbca-7df1-019e8b8c4217@arm.com> <YO4odF0EwqxfNLFq@fedora>
-In-Reply-To: <YO4odF0EwqxfNLFq@fedora>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 14 Jul 2021 12:59:25 +0800
-Message-ID: <CAAd53p4jgKGuLOyZH+KEzz-KiR2D0Th4MCBo13m4JO+a=n2Lhw@mail.gmail.com>
-Subject: Re: [PATCH] iommu/amd: Enable swiotlb if any device supports iommu v2
- and uses identity mapping
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, will@kernel.org,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>
+References: <20210708122447.3880803-1-sumit.garg@linaro.org>
+ <CAD=FV=UhL32e7spQjr38Lwng0D7mUK+R7iGnmBah=tXzzXsO5g@mail.gmail.com>
+ <CAFA6WYN4gMv9Hkuq=3v_UKg+Y1OvFfbOqgZxt7yGSd2RnVBdJw@mail.gmail.com>
+ <CAD=FV=X9w_eY9cSkJLsF57bqL=FQFNcybG+P6tYT5mWTnG3TJA@mail.gmail.com>
+ <20210713151032.hvsbufswijxt6uxk@maple.lan> <CAD=FV=Wb_utQLP+U9Nv4=PUTdY49acRG03_Pxk31f4dR3673SQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=Wb_utQLP+U9Nv4=PUTdY49acRG03_Pxk31f4dR3673SQ@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 14 Jul 2021 10:33:33 +0530
+Message-ID: <CAFA6WYOMMGxoVg-WezjwAUhPjsu-dfKi=1DY-RDJjyiEA9P7QA@mail.gmail.com>
+Subject: Re: [PATCH v3] kdb: Get rid of custom debug heap allocator
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 7:57 AM Konrad Rzeszutek Wilk <konrad@darnok.org> wrote:
+On Tue, 13 Jul 2021 at 20:42, Doug Anderson <dianders@chromium.org> wrote:
 >
-> On Thu, Jul 08, 2021 at 03:43:42PM +0100, Robin Murphy wrote:
-> > On 2021-07-08 14:57, Kai-Heng Feng wrote:
-> > > On Thu, Jul 8, 2021 at 6:18 PM Robin Murphy <robin.murphy@arm.com> wrote:
-> > > >
-> > > > On 2021-07-08 10:28, Joerg Roedel wrote:
-> > > > > On Thu, Jul 08, 2021 at 03:42:32PM +0800, Kai-Heng Feng wrote:
-> > > > > > @@ -344,6 +344,9 @@ static int iommu_init_device(struct device *dev)
-> > > > > >
-> > > > > >               iommu = amd_iommu_rlookup_table[dev_data->devid];
-> > > > > >               dev_data->iommu_v2 = iommu->is_iommu_v2;
-> > > > > > +
-> > > > > > +            if (dev_data->iommu_v2)
-> > > > > > +                    swiotlb = 1;
-> > > > >
-> > > > > This looks like the big hammer, as it will affect all other systems
-> > > > > where the AMD GPUs are in their own group.
-> > > > >
-> > > > > What is needed here is an explicit check whether a non-iommu-v2 device
-> > > > > is direct-mapped because it shares a group with the GPU, and only enable
-> > > > > swiotlb in this case.
-> > > >
-> > > > Right, it's basically about whether any DMA-limited device might at any
-> > > > time end up in an IOMMU_DOMAIN_IDENTITY domain. And given the
-> > > > possibility of device hotplug and the user being silly with the sysfs
-> > > > interface, I don't think we can categorically determine that at boot time.
-> > > >
-> > > > Also note that Intel systems are likely to be similarly affected (in
-> > > > fact intel-iommu doesn't even have the iommu_default_passthough() check
-> > > > so it's probably even easier to blow up).
+> Hi,
+>
+> On Tue, Jul 13, 2021 at 8:10 AM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > On Tue, Jul 13, 2021 at 06:45:52AM -0700, Doug Anderson wrote:
+> > > Hi,
 > > >
-> > > swiotlb is enabled by pci_swiotlb_detect_4gb() and intel-iommu doesn't
-> > > disable it.
+> > > On Tue, Jul 13, 2021 at 4:24 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > >
+> > > > > >  int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+> > > > > >  {
+> > > > > >         int ret = 0;
+> > > > > >         unsigned long symbolsize = 0;
+> > > > > >         unsigned long offset = 0;
+> > > > > > -#define knt1_size 128          /* must be >= kallsyms table size */
+> > > > > > -       char *knt1 = NULL;
+> > > > > > +       static char namebuf[KSYM_NAME_LEN];
+> > > > >
+> > > > > I guess this also ends up fixing a bug too, right? My greps show that
+> > > > > "KSYM_NAME_LEN" is 512
+> > > >
+> > > > I can see "KSYM_NAME_LEN" defined as 128 here [1]. Are you looking at
+> > > > any other header file?
+> > > >
+> > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kallsyms.h#n18
+> > >
+> > > Ah ha, it's recent! See commit f2f6175186f4 ("kallsyms: increase
+> > > maximum kernel symbol length to 512")
 > >
-> > Oh, right... I did say I found this dance hard to follow. Clearly I
-> > shouldn't have trusted what I thought I remembered from looking at it
-> > yesterday :)
+> > Ineed. So recent that I think it hasn't been merged to mainline yet!
 > >
-> > Also not helped by the fact that it sets iommu_detected which *does* disable
-> > SWIOTLB, but only on IA-64.
-> >
-> > > I wonder if we can take the same approach in amd-iommu?
-> >
-> > Certainly if there's a precedent for leaving SWIOTLB enabled even if it
-> > *might* be redundant, that seems like the easiest option (it's what we do on
-> > arm64 too, but then we have system topologies where some devices may not be
-> > behind IOMMUs even when others are). More fun would be to try to bring it up
-> > at the first sign of IOMMU_DOMAIN_IDENTITY if it was disabled previously,
-> > but I don't have the highest hope of that being practical.
+> > This patch is part of the rust patch set. IIUC it is in linux-next for
+> > wider testing but I'd be surprised if it gets merged to mainline anytime
+> > soon (and even more amazed if it is merged without being rebased and
+> > given a new hash value ;-) ).
 >
-> <scratches his head>
-> It is kind of silly to enable SWIOTLB which will just eat 64MB of memory
-> "just in case".
+> Ah, good point. Yeah, I should have mentioned that I was looking at
+> linuxnext. I guess maybe the right compromise is just to mention that
+> we'll be more robust in case that other #define changes. ;-)
 >
-> The SWIOTLB does have support to do late initialization (xen-pcifront
-> does that for example - so if you add devices that can't do 64-bit it
-> will allocate something like 4MB).
->
-> Would that be a better choice going forward - that is allocate this
-> under those conditions?
 
-But how to practically do swiotlb late init on 32-bit capable devices?
-On the first DMA map requested by the driver?
+Okay, I will update the commit description accordingly.
 
-Kai-Heng
+-Sumit
 
-> >
-> > Robin.
+> -Doug
