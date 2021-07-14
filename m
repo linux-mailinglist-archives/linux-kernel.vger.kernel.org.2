@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF593C8166
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C823C8168
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 11:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238508AbhGNJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 05:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
+        id S238677AbhGNJX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 05:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238179AbhGNJXu (ORCPT
+        with ESMTP id S238179AbhGNJX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:23:50 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0471BC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:20:59 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id y17so1737368pgf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:20:58 -0700 (PDT)
+        Wed, 14 Jul 2021 05:23:56 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68ACC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:21:04 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id a2so1773449pgi.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 02:21:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pXaZpxV+G9LRpUwF+VG87MLwHGWNlv6eVU68Ll1BDlg=;
-        b=g9aguBnwL1920OCwUhqI3Lc2IO3wEKFUYXyt4p/cwHmuxEILVxh9mCSu9o0GwgtZO/
-         wDxqvMQ1ZbiH6IKJHUiIPV3UpcITtfYmpdPxud8pNaCiUvW4xu36P1GqJ+kJzTmLLVcd
-         RdbstYinUCtwGZBtxTWq4GBGizTXYTsDQD49emXEPQ6A5PHpMQDyKUurFxmjWRe29RnC
-         1/bok7yNN2gB730SHadWTJnC4V+qr6ewnzyR7j2Gb1qse6sxVDy4syZ7xfv5p50v2NTB
-         ZstpW+Ku5pkS4IAB4iKj2loqbQYjiSEszi1mTN7NAx/O9PQeL6M5hoYhAyTIW/3Gewp8
-         n2Mg==
+        bh=1wb5iN6C/r/jl8NTvJ6JTzD0t7BIT0w39tfIUzR0c+I=;
+        b=zplQE4G7tcgmBinMSn8w4wPywLrIByLSGqitptn1ZR9FdsRi1QXv75GdAavbVA7JN4
+         LyVVy0vtZerXQwmXr6nlVQzQ3wBO5qAZAXBObfbOI49LsAX5QlP+g6vJsXVcdvmcZwT6
+         Gtv+myhlxOWU74E1cjQjT6kd3Y5OOiBtoi7kmyBlIfLms9+pQsxkmrhpzv2F7OGgj/Cg
+         QjRJvLHu25gepnxpMVz6Q15ZrVzwLM4tpLz3sboZo42D7V6oxAwSsJmTab3xWFFXa7Ki
+         mrOks3PQ1/lBeMR5srIeZCq9NCxEM81sIhf5bY2Hz1lS64edYvUANFsmm+YFyDWPIdhV
+         rHaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pXaZpxV+G9LRpUwF+VG87MLwHGWNlv6eVU68Ll1BDlg=;
-        b=jUk2FBokLlT4ps/BJWE09clAMbZzOQ5+vVflzTHN9LG1sPEBR18rOHPDSODoPY+3tJ
-         9mKAYrhq+7M7GqZ6Z9gj0plEDhvXMCi67+qpcJ7xQN72sg2JQ+ctpAcK30tF2kArdyLk
-         ETaPe7/kV/S1ZcFgsRyQD8RNX9RSLAphS8XOWQfRTUzlzslHPGhmfzGtx9efUwhEZ1tK
-         BTnhChzHyfIfrEw2NXtppuEfM8j9qTXL+hB9RHKTRmNezQivV0Pf96BkX7EXB+7g4KMl
-         YQzVjmvbTcmhlQrWlDsHHC70RR1tV2QXOZhy3ogSHdkt3CX2sxdRa5dKt1HnVt8BMa8h
-         5aoQ==
-X-Gm-Message-State: AOAM532P8C9V4qRF83IlmKPi1gnIPdOzCA3lc0LQi2nc3miVqba6Yn2H
-        LV9unFL0g6uBsveK+YAQf1T1Uw==
-X-Google-Smtp-Source: ABdhPJxjjEP8yL9wM+fk5lNc/bRm4F/w/VpzdXNoCSV1b00VidI9N1OgiQuYPqXD7Wap1+ynN2apBg==
-X-Received: by 2002:a63:de45:: with SMTP id y5mr8563948pgi.261.1626254458547;
-        Wed, 14 Jul 2021 02:20:58 -0700 (PDT)
+        bh=1wb5iN6C/r/jl8NTvJ6JTzD0t7BIT0w39tfIUzR0c+I=;
+        b=gqxVB2qcT0VB8FnM+G+mZUI2C5dViIQMblYVBt3xmuHPj3nWeMKyyzErCoS5fyYwLV
+         pHbIWNH1tUnC2ce84Jeq8hFKBN+2ZaTOBs7k97j5Hhjl89WIKa7Bl2OshsUgzA9s5jJm
+         CX9KDH8pAPrhT9iJZPnTZ+ERus9FJhUkgOFvUb6TekalanrjIrYmOyjjLROfEI7USIMD
+         anttrEndVKHFITIz47kVzcA9IxjuemkxlJI8hI5WKXIX/RfS+hQUwSUA5tK4T1M29Muo
+         P+sXe+TdUzd9cjXvAfQT3wN0H+nswNEUBvqifLkdbXQEDhm49GSoAAnsGXOqBOgA/7Xh
+         D4Pw==
+X-Gm-Message-State: AOAM5306Auw7IkbU9eb8bPjf+4lbaOs097hveQm1593V5h6bL1OPM3s8
+        PPdQd2s09uDGR6Mg8B6NkLE35Q==
+X-Google-Smtp-Source: ABdhPJzEijXZzF0Qf19GMjfpTQOk+y74uZh4grXC65z8xbeHoDsVcjqOTYZMN3z9W/kZBgak8cDqZQ==
+X-Received: by 2002:a65:564f:: with SMTP id m15mr8717302pgs.346.1626254464534;
+        Wed, 14 Jul 2021 02:21:04 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.243])
-        by smtp.gmail.com with ESMTPSA id k19sm1742540pji.32.2021.07.14.02.20.52
+        by smtp.gmail.com with ESMTPSA id k19sm1742540pji.32.2021.07.14.02.20.58
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Jul 2021 02:20:58 -0700 (PDT)
+        Wed, 14 Jul 2021 02:21:04 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
         osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
@@ -57,9 +57,9 @@ Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, zhengqi.arch@bytedance.com,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 1/5] mm: introduce PAGEFLAGS_MASK to replace ((1UL << NR_PAGEFLAGS) - 1)
-Date:   Wed, 14 Jul 2021 17:17:56 +0800
-Message-Id: <20210714091800.42645-2-songmuchun@bytedance.com>
+Subject: [PATCH 2/5] mm: introduce save_page_flags to cooperate with show_page_flags
+Date:   Wed, 14 Jul 2021 17:17:57 +0800
+Message-Id: <20210714091800.42645-3-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210714091800.42645-1-songmuchun@bytedance.com>
 References: <20210714091800.42645-1-songmuchun@bytedance.com>
@@ -69,87 +69,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of hard-coding ((1UL << NR_PAGEFLAGS) - 1) everywhere, introducing
-PAGEFLAGS_MASK to make the code clear to get the page flags.
+Introduce save_page_flags to return the page flags which can cooperate
+with show_page_flags. If we want to hihe some page flags from users, it
+will be useful to alter save_page_flags directly. This is a preparation
+for the next patch to hide some page flags from users.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- include/linux/page-flags.h      | 4 +++-
- include/trace/events/page_ref.h | 4 ++--
- lib/test_printf.c               | 2 +-
- lib/vsprintf.c                  | 2 +-
- 4 files changed, 7 insertions(+), 5 deletions(-)
+ include/trace/events/mmflags.h  | 3 +++
+ include/trace/events/page_ref.h | 8 ++++----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 5922031ffab6..358d3f6fa976 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -178,6 +178,8 @@ enum pageflags {
- 	PG_reported = PG_uptodate,
- };
+diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+index 390270e00a1d..69cb84b1257e 100644
+--- a/include/trace/events/mmflags.h
++++ b/include/trace/events/mmflags.h
+@@ -121,6 +121,9 @@ IF_HAVE_PG_IDLE(PG_idle,		"idle"		)		\
+ IF_HAVE_PG_ARCH_2(PG_arch_2,		"arch_2"	)		\
+ IF_HAVE_PG_SKIP_KASAN_POISON(PG_skip_kasan_poison, "skip_kasan_poison")
  
-+#define PAGEFLAGS_MASK		(~((1UL << NR_PAGEFLAGS) - 1))
++#define save_page_flags(page)						\
++	(((page)->flags & ~PAGEFLAGS_MASK))
 +
- #ifndef __GENERATING_BOUNDS_H
- 
- static inline unsigned long _compound_head(const struct page *page)
-@@ -859,7 +861,7 @@ static inline void ClearPageSlabPfmemalloc(struct page *page)
-  * alloc-free cycle to prevent from reusing the page.
-  */
- #define PAGE_FLAGS_CHECK_AT_PREP	\
--	(((1UL << NR_PAGEFLAGS) - 1) & ~__PG_HWPOISON)
-+	(~(PAGEFLAGS_MASK | __PG_HWPOISON))
- 
- #define PAGE_FLAGS_PRIVATE				\
- 	(1UL << PG_private | 1UL << PG_private_2)
+ #define show_page_flags(flags)						\
+ 	(flags) ? __print_flags(flags, "|",				\
+ 	__def_pageflag_names						\
 diff --git a/include/trace/events/page_ref.h b/include/trace/events/page_ref.h
-index 5d2ea93956ce..643b1b4e9f27 100644
+index 643b1b4e9f27..53d303048d27 100644
 --- a/include/trace/events/page_ref.h
 +++ b/include/trace/events/page_ref.h
+@@ -28,7 +28,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_template,
+ 
+ 	TP_fast_assign(
+ 		__entry->pfn = page_to_pfn(page);
+-		__entry->flags = page->flags;
++		__entry->flags = save_page_flags(page);
+ 		__entry->count = page_ref_count(page);
+ 		__entry->mapcount = page_mapcount(page);
+ 		__entry->mapping = page->mapping;
 @@ -38,7 +38,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_template,
  
  	TP_printk("pfn=0x%lx flags=%s count=%d mapcount=%d mapping=%p mt=%d val=%d",
  		__entry->pfn,
--		show_page_flags(__entry->flags & ((1UL << NR_PAGEFLAGS) - 1)),
-+		show_page_flags(__entry->flags & ~PAGEFLAGS_MASK),
+-		show_page_flags(__entry->flags & ~PAGEFLAGS_MASK),
++		show_page_flags(__entry->flags),
  		__entry->count,
  		__entry->mapcount, __entry->mapping, __entry->mt,
  		__entry->val)
+@@ -77,7 +77,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
+ 
+ 	TP_fast_assign(
+ 		__entry->pfn = page_to_pfn(page);
+-		__entry->flags = page->flags;
++		__entry->flags = save_page_flags(page);
+ 		__entry->count = page_ref_count(page);
+ 		__entry->mapcount = page_mapcount(page);
+ 		__entry->mapping = page->mapping;
 @@ -88,7 +88,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
  
  	TP_printk("pfn=0x%lx flags=%s count=%d mapcount=%d mapping=%p mt=%d val=%d ret=%d",
  		__entry->pfn,
--		show_page_flags(__entry->flags & ((1UL << NR_PAGEFLAGS) - 1)),
-+		show_page_flags(__entry->flags & ~PAGEFLAGS_MASK),
+-		show_page_flags(__entry->flags & ~PAGEFLAGS_MASK),
++		show_page_flags(__entry->flags),
  		__entry->count,
  		__entry->mapcount, __entry->mapping, __entry->mt,
  		__entry->val, __entry->ret)
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 8ac71aee46af..eadcc6458b10 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -614,7 +614,7 @@ page_flags_test(int section, int node, int zone, int last_cpupid,
- 	bool append = false;
- 	int i;
- 
--	flags &= BIT(NR_PAGEFLAGS) - 1;
-+	flags &= ~PAGEFLAGS_MASK;
- 	if (flags) {
- 		page_flags |= flags;
- 		snprintf(cmp_buf + size, BUF_SIZE - size, "%s", name);
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index dd006adfe853..ff7c180a2971 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -2019,7 +2019,7 @@ static const struct page_flags_fields pff[] = {
- static
- char *format_page_flags(char *buf, char *end, unsigned long flags)
- {
--	unsigned long main_flags = flags & (BIT(NR_PAGEFLAGS) - 1);
-+	unsigned long main_flags = flags & ~PAGEFLAGS_MASK;
- 	bool append = false;
- 	int i;
- 
 -- 
 2.11.0
 
