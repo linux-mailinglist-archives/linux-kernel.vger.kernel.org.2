@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83943C7B33
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1CE3C7B36
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 03:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237397AbhGNB6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Jul 2021 21:58:19 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:39441 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhGNB6S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:58:18 -0400
-Received: by mail-il1-f169.google.com with SMTP id a7so11955iln.6;
-        Tue, 13 Jul 2021 18:55:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GyixVvvN8xYoDdReijEmK7j+HPjzKgwZBAHLb0q9B1c=;
-        b=QCkXNO/IXcaWz6gPUaz7W+FswU4vgS7sJjvi1fSyx/NZxXIwVsfzg8bSZzcq85jgQi
-         oueK7rQjHrcAIP4w6G/q/T+kpcNUcqpLuoFa5dzW9bANCkqavI4g1e2xbA1NCpB90HjW
-         SZ3ORRR4lkaK2kTULt/DWsVKUebeon0cA07iHfPovrtRIL56QBAjNHM6IktcPk0+MA1n
-         ZSPw4tNk8HSBkHTPX9m0nyumJPCplnct3PqiRFvRCRVGrgDoR4bx4VV4WOPrxyM4FQTJ
-         8S32DpaYYWM/qJgucb/wUW2kyxYna0e95YD0UWYg0QAzEtWfp3+4Uvgrqm/Qpn3SCYpC
-         0zXQ==
-X-Gm-Message-State: AOAM532jmdpU239WSqQySkiQXv4csuF1AgVsYdsBPs+usPUR3dPGNo43
-        RxSp+KNcLDwtcIZI2BF+Sg==
-X-Google-Smtp-Source: ABdhPJzdi/kxKVUi6wh+3oNlY2WUkI3leixL7fD/UzDBGp79/lDvoIMgifqy9i4sE7opJ7yMSN5Djg==
-X-Received: by 2002:a92:360b:: with SMTP id d11mr4929511ila.111.1626227726602;
-        Tue, 13 Jul 2021 18:55:26 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id k10sm338422ion.38.2021.07.13.18.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 18:55:25 -0700 (PDT)
-Received: (nullmailer pid 1280482 invoked by uid 1000);
-        Wed, 14 Jul 2021 01:55:21 -0000
-Date:   Tue, 13 Jul 2021 19:55:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     phone-devel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: pinctrl: qcom: Add SM6115 pinctrl
- bindings
-Message-ID: <20210714015521.GA1280423@robh.at.kernel.org>
-References: <20210627185628.691435-1-iskren.chernev@gmail.com>
- <20210627185628.691435-2-iskren.chernev@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210627185628.691435-2-iskren.chernev@gmail.com>
+        id S237427AbhGNB7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Jul 2021 21:59:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:27572 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237376AbhGNB7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Jul 2021 21:59:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="271383327"
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
+   d="scan'208";a="271383327"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 18:56:11 -0700
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; 
+   d="scan'208";a="493511001"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2021 18:56:08 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, bard.liao@intel.com
+Subject: [PATCH] soundwire: cadence: Remove ret variable from sdw_cdns_irq()
+Date:   Wed, 14 Jul 2021 09:55:55 +0800
+Message-Id: <20210714015555.17685-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 21:56:27 +0300, Iskren Chernev wrote:
-> Add device tree binding Documentation details for Qualcomm SM6115 and
-> SM4250 pinctrl.
-> 
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  .../bindings/pinctrl/qcom,sm6115-pinctrl.yaml | 180 ++++++++++++++++++
->  1 file changed, 180 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6115-pinctrl.yaml
-> 
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The ret is not used in the interrupt handler, it is just returned without
+any condition or change.
+We can return the IRQ_HANDLED directly.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/cadence_master.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 25950422b085..9a9b6110e763 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -822,7 +822,6 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ {
+ 	struct sdw_cdns *cdns = dev_id;
+ 	u32 int_status;
+-	int ret = IRQ_HANDLED;
+ 
+ 	/* Check if the link is up */
+ 	if (!cdns->link_up)
+@@ -900,7 +899,7 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ 	}
+ 
+ 	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
+-	return ret;
++	return IRQ_HANDLED;
+ }
+ EXPORT_SYMBOL(sdw_cdns_irq);
+ 
+-- 
+2.17.1
+
