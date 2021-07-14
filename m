@@ -2,233 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D923C91EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690E83C91F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 22:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239787AbhGNUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 16:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239542AbhGNUU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:20:26 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1CFC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:17:34 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id s18so3674187pgg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 13:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gI+EA8/Nf0J6cK0TpEGVYGTiyDY2bGvR4CfRf7LwiKE=;
-        b=g5d0iCWIXzMtG9uTu4/WlfhcZDBDTSjF3SH5HB9h4kkyFWdS7ZFPeo0oNtlcStWvtn
-         OANE7EZVNP4nmKgWq8tgYnWAvrvGJWebyAdeeXhf96uLFGMcFQsamzdhmuuzVPYGOyb8
-         O5RDhJG8U68pCLJi5ASJNrLwnUrnkZNoF7FD6XOsrw74H2NswKJvPvJgBvUDCkLvprwV
-         NLId20507N3qid+yv8cijIDtEser1wyOco2oH3TW+xXgGAo00hgYD3DO+d60Or3VkQeb
-         Wx27yxaXGRcyWXv3NnYcW7bUilesUtohyflmFOm3jAn7bgNguf6V8uYVWOpKM14JokT9
-         aPoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gI+EA8/Nf0J6cK0TpEGVYGTiyDY2bGvR4CfRf7LwiKE=;
-        b=bnZwAva3AEDBWcFGVBLi0QNm4AafRfCIU47EtE5xNr+K6oGPef2ZsY9NEIK0JF38ne
-         SGTWiNw7QvXmDa2haSbd0Ksng7E0wGf33FGmmCZWFGWSlolGd5Z16r7gc5HiGqpai+U7
-         WomzQjWTLCFtdtHDhfe+bdoavsfVsx2FJvZfTtNz9+oX7Suk0QKJhxkkKtzbsv9b2CEj
-         uK3uuxOw5+rwUtP2GDI/12Y0cYoXzlr+qO4PZ7Ms1xV+Ro8LoR7Z+pHTyiyViesGcFxx
-         3zl4rtsfZRyxNqcwMANQF6qS4lhNWeSELNv/BGaxIlk8M9cwqXd63m5hCeiKLaG0kKA+
-         sTDQ==
-X-Gm-Message-State: AOAM530kX/gXHNv/cVTHVi7jusDlTR/rnAzAVjzV1F/SvqM0Yk6hirIe
-        MeH18BKRFmIKE3BjWr5ezfZZeg==
-X-Google-Smtp-Source: ABdhPJxZmb+DhcGTDT/5mCgrCU1UlHYl4NvPyzbchWS9bE34G11Vek+44z/cDUPxjy/753noD0t2Cw==
-X-Received: by 2002:a63:471b:: with SMTP id u27mr11470643pga.301.1626293853407;
-        Wed, 14 Jul 2021 13:17:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p1sm3784881pfp.137.2021.07.14.13.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 13:17:32 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 20:17:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 01/40] KVM: SVM: Add support to handle AP
- reset MSR protocol
-Message-ID: <YO9GWVsZmfXJ4BRl@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-2-brijesh.singh@amd.com>
+        id S237638AbhGNUVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 16:21:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237002AbhGNUVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 16:21:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31CC7613D0;
+        Wed, 14 Jul 2021 20:18:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626293932;
+        bh=oYfnou5QrrOb7U0CV0cSAUF5DqCBPcwnE78QZi9FPqs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KFD+vift05YPCmw5Vr9xI+ZHM31/3sC5I9gz9gL/6DW9sOE07lf1UCTq0EfTYgCEd
+         h71LEfsQRV0QQxh9gliJ1jWfeU/79expDoGm6sI9vSbQ4ThK2OetF1Nj9oXi/o8AKe
+         O0Uyxshop86+JTQqjFWQUkpu921cKp2S3VHa/b8BpXwYvZTEidz8/YdjI5NPkCW/3+
+         GnYLoBnNhFZdPcF1wkvtUZpxVIZMWc1Z9WrHcp/4nQ0EQmG0Vrup/L5iE/rmewvsre
+         2C4GDDCqltRAszNcug50BSur0PJEPpUKl3vvsE+gKCNMX88qZ+4F9/jyZe2gMdp74m
+         jQtOHPhUfXBzw==
+Received: by mail-wm1-f44.google.com with SMTP id m11-20020a05600c3b0bb0290228f19cb433so4673668wms.0;
+        Wed, 14 Jul 2021 13:18:52 -0700 (PDT)
+X-Gm-Message-State: AOAM5331WgChpdIt99qs/cS1FgvfWQAA7K/fHFmvAyN6dCoL7ok/C1Iy
+        3X5zFskuNuAGpsc2k5gB8e1fkU0T0CBZvzchXNo=
+X-Google-Smtp-Source: ABdhPJwjV7O1SlNLPN2Cm4d3pik+v/hHQtZHMVCFrC1Vcx0o4N80DdVJ3CMItTwtQaQjCya28wbk+9hn2XKJu57ALbU=
+X-Received: by 2002:a1c:4e0c:: with SMTP id g12mr5971146wmh.120.1626293930689;
+ Wed, 14 Jul 2021 13:18:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-2-brijesh.singh@amd.com>
+References: <20210707224310.1403944-1-ndesaulniers@google.com>
+ <YOaR1ZjToP/kgNsC@infradead.org> <CAK8P3a1ctLcHuLZfBJ7wXHRmidpQZ4EZdML1nqPJVGYVTgHmaw@mail.gmail.com>
+ <CAKwvOdkaifETNvtTA3O9EToVHAK0N50wkT-bHOpQ2RmFg7qk0A@mail.gmail.com>
+ <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com> <CAKwvOdkUUJU8Ktg8Wcvg3pbsyUWLCH0320nF-aQWre0hGTP2Ag@mail.gmail.com>
+In-Reply-To: <CAKwvOdkUUJU8Ktg8Wcvg3pbsyUWLCH0320nF-aQWre0hGTP2Ag@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 14 Jul 2021 22:18:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3R7FeA3Qjm9+bTz0Zd3=eFkXjgjmB24kewpVOPMtSbHQ@mail.gmail.com>
+Message-ID: <CAK8P3a3R7FeA3Qjm9+bTz0Zd3=eFkXjgjmB24kewpVOPMtSbHQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> Add support for AP Reset Hold being invoked using the GHCB MSR protocol,
-> available in version 2 of the GHCB specification.
+On Wed, Jul 14, 2021 at 8:09 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Fri, Jul 9, 2021 at 1:07 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > On Thu, Jul 8, 2021 at 8:04 PM 'Nick Desaulniers' via Clang Built
+> > Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > > > /usr/bin/powerpc64-linux-gnu-gcc-5.2.0
+> > > > /usr/bin/powerpc64-linux-gnu-gcc -> powerpc64-linux-gnu-gcc-5.2.0
+> > > > /usr/local/bin/ppc64le-linux-gcc-9
+> > > > ~/bin/powerpc/powerpc-linux-unknown-gcc-12.0.20210708.experimental
+> > > >
+> > > > all of these should be able to cross-build any powerpc kernel, but
+> > > > there is no obvious first choice (highest version, first in path,
+> > > > ordered list of target triples, ...). I tried coming up with a heuristic
+> > > > to pick a reasonable toolchain, but at some point gave up because
+> > > > I failed to express that in a readable bash or Makefile syntax.
+> > >
+> > > Right; foremost in my mind was arm-linux-gnueabi-gcc vs
+> > > arm-linux-gnueabihf-gcc.  That's not even to mention the versioned
+> > > suffixes.
+> > >
+> > > In terms of multiversion support; this series doesn't regress doing
+> > > things the hard/verbose way.  But I think for most users we can have a
+> > > simpler common case; folks can play with their $PATH or focus on more
+> > > hermetic builds if they want this new feature (CROSS_COMPILE
+> > > inference) AND support for multiple versions of the same toolchain.
+> >
+> > Fair enough. So how something like this:
+> >
+> > powerpc-targets := powerpc32 powerpc64 powerpc32le \
+> >         powerpc32be powerpc64le powerpc64be ppc64le ppc64be
+> > arm-targets := arm-linux-gnueabi arm-linux-gnueabihf
+> > x86-targets := x86_64 i386 i686
+> > x86_64-targets := x86
+> > i386-targets := i686 x86 x86_64
+> > parisc-targets := hppa64 hppa
+> > ...
+> >
+> > CROSS_COMPILE ?= `find-toolchain $(ARCH) $($(ARCH)-targets)`
+> >
+> > where find-toolchain just finds the first working toolchain based, looking
+> > for $(target)-linux-gcc $(target)-gcc $(target)-unknown-linux-gcc etc
+> > in $(PATH) but ignoring the versions?
+>
+> Sure, debian doesn't even package different versions of the cross GCC
+> packages AFAIK; no idea about other distros.  Though the user may have
+> built from source, or have multiple versions fetched from tarballs.
 
-Please provide a brief overview of the protocol, and why it's needed.  I assume
-it's to allow AP wakeup without a shared GHCB?
+I have an Ubuntu installation with gcc-9, gcc-10 and gcc-11 cross
+toolchains installed from through apt, but none that is just 'gcc'
+without a version as the ones I built myself are.
 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
+> I think we can simplify the common case of "I just want to cross
+> compile, I don't necessarily care about an older compiler version
+> co-installed with a newer one." ("and if I did, I could still use
+> CROSS_COMPILE the verbose way").
 
-...
+Right, in my example above one would still have to set CC=
+since the detected target triple has no $(CROSS_COMPILE)gcc,
+only the versioned ones.
 
->  static u8 sev_enc_bit;
->  static DECLARE_RWSEM(sev_deactivate_lock);
->  static DEFINE_MUTEX(sev_bitmap_lock);
-> @@ -2199,6 +2203,9 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
->  
->  void sev_es_unmap_ghcb(struct vcpu_svm *svm)
->  {
-> +	/* Clear any indication that the vCPU is in a type of AP Reset Hold */
-> +	svm->ap_reset_hold_type = AP_RESET_HOLD_NONE;
-> +
->  	if (!svm->ghcb)
->  		return;
->  
-> @@ -2404,6 +2411,22 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->  				  GHCB_MSR_INFO_POS);
->  		break;
->  	}
-> +	case GHCB_MSR_AP_RESET_HOLD_REQ:
-> +		svm->ap_reset_hold_type = AP_RESET_HOLD_MSR_PROTO;
-> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
+Setting up the symlinks however should get you there.
 
-The hold type feels like it should be a param to kvm_emulate_ap_reset_hold().
+> > What I had actually planned was a set of helpers that allow you to
+> > do this in multiple steps:
+> >
+> > - if $(objtree)/scripts/cross/bin/gcc (or something else we pick)
+> >   exists and CROSS_COMPILE is not set, set CROSS_COMPILE
+> >   to $(objtree)/scripts/cross/bin/ in the Makefile
+> > - add script to enumerate the installed toolchains
+> > - add a second script to symlink one of those toolchains to
+> >   $(objtree)/scripts/cross/bin
+>
+> (and check the symlink isn't broken should the user uninstall a
+> toolchain, or have their distro update their toolchain version)
 
-> +
-> +		/*
-> +		 * Preset the result to a non-SIPI return and then only set
-> +		 * the result to non-zero when delivering a SIPI.
-> +		 */
-> +		set_ghcb_msr_bits(svm, 0,
-> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
-> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
-> +
-> +		set_ghcb_msr_bits(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
-> +				  GHCB_MSR_INFO_MASK,
-> +				  GHCB_MSR_INFO_POS);
+There are lots of options for the policy here. My preference would
+be to just pick the one from the symlink before any other, and then
+have a step 'make config' family of commands that checks that
+the selected toolchain actually produces object code for the selected
+architecture.
 
-It looks like all uses set an arbitrary value and then the response.  I think
-folding the response into the helper would improve both readability and robustness.
-I also suspect the helper needs to do WRITE_ONCE() to guarantee the guest sees
-what it's supposed to see, though memory ordering is not my strong suit.
+> > - add a third script to download a cross-toolchain from kernel.org
+> >   for $(ARCH) and install it to one of the locations that the first
+> >   script looks for (/opt/cross/, $(HOME)/cross/, $(objtree)scripts/cross/)
+>
+> Would the user be prompted for the download? So during
+> `defconfig`/configuration we could prompt and say "it looks like
+> you're cross compiling without setting CROSS_COMPILE, would you like
+> me to fetch a cross compiler for you?"
+>
+> Seems reasonable, when cross compiling with GCC.
 
-Might even be able to squeeze in a build-time assertion.
+I don't think we want interactive commands in the build system other
+than 'make config', but it would be reasonable to print something like
 
-Also, do the guest-provided contents actually need to be preserved?  That seems
-somewhat odd.
+"no compiler found", "selected compiler ${CC} does not match architecture
+${ARCH}", or "selected compiler ${CC} does not work", followed by a
+list of suggested commands to configure or download a different toolchain.
 
-E.g. can it be
-
-static void set_ghcb_msr_response(struct vcpu_svm *svm, u64 response, u64 value,
-				  u64 mask, unsigned int pos)
-{
-	u64 val = (response << GHCB_MSR_INFO_POS) | (val << pos);
-
-	WRITE_ONCE(svm->vmcb->control.ghcb_gpa |= (value & mask) << pos;
-}
-
-and
-
-		set_ghcb_msr_response(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
-				      GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
-				      GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
-
-> +		break;
->  	case GHCB_MSR_TERM_REQ: {
->  		u64 reason_set, reason_code;
->  
-> @@ -2491,6 +2514,7 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
->  		ret = svm_invoke_exit_handler(vcpu, SVM_EXIT_IRET);
->  		break;
->  	case SVM_VMGEXIT_AP_HLT_LOOP:
-> +		svm->ap_reset_hold_type = AP_RESET_HOLD_NAE_EVENT;
->  		ret = kvm_emulate_ap_reset_hold(vcpu);
->  		break;
->  	case SVM_VMGEXIT_AP_JUMP_TABLE: {
-> @@ -2628,13 +2652,29 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->  		return;
->  	}
->  
-> -	/*
-> -	 * Subsequent SIPI: Return from an AP Reset Hold VMGEXIT, where
-> -	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
-> -	 * non-zero value.
-> -	 */
-> -	if (!svm->ghcb)
-> -		return;
-> +	/* Subsequent SIPI */
-> +	switch (svm->ap_reset_hold_type) {
-> +	case AP_RESET_HOLD_NAE_EVENT:
-> +		/*
-> +		 * Return from an AP Reset Hold VMGEXIT, where the guest will
-> +		 * set the CS and RIP. Set SW_EXIT_INFO_2 to a non-zero value.
-> +		 */
-> +		ghcb_set_sw_exit_info_2(svm->ghcb, 1);
-> +		break;
-> +	case AP_RESET_HOLD_MSR_PROTO:
-> +		/*
-> +		 * Return from an AP Reset Hold VMGEXIT, where the guest will
-> +		 * set the CS and RIP. Set GHCB data field to a non-zero value.
-> +		 */
-> +		set_ghcb_msr_bits(svm, 1,
-> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
-> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
->  
-> -	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
-> +		set_ghcb_msr_bits(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
-> +				  GHCB_MSR_INFO_MASK,
-> +				  GHCB_MSR_INFO_POS);
-> +		break;
-> +	default:
-> +		break;
-> +	}
->  }
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 0b89aee51b74..ad12ca26b2d8 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -174,6 +174,7 @@ struct vcpu_svm {
->  	struct ghcb *ghcb;
->  	struct kvm_host_map ghcb_map;
->  	bool received_first_sipi;
-> +	unsigned int ap_reset_hold_type;
-
-Can't this be a u8?
-
->  
->  	/* SEV-ES scratch area support */
->  	void *ghcb_sa;
-> -- 
-> 2.17.1
-> 
+       Arnd
