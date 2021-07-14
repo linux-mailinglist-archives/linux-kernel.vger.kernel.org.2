@@ -2,195 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5043C7FC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CE53C7FC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Jul 2021 10:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238427AbhGNILR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 04:11:17 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:3236 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238343AbhGNILQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:11:16 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16E81YoY003626;
-        Wed, 14 Jul 2021 08:08:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : in-reply-to : mime-version;
- s=corp-2020-01-29; bh=sP+gi1YeQoq5lXNV/bCjjei80BFYJX4fXC5JRtbqkmg=;
- b=JsHpC6Q30t+O3vryX2WKEjZ7vcvkLWFEnWJX6twieKDvRjL8AQbf7AZwjU3pg6hqJjXo
- n/TzVER3ZCAS3jVT5sJqBX0lI2RKjYYXJc7nb9LQi6/qMH8IBZYVkCe5+dNgWt38Y77J
- Uk1C191uYI+CKlqWw6XKJ6peZ86r5g1I/HVbphtBKPAJOa18wtpY1cgIOa4dMgG1ZfXk
- 0GqDxSqyFU4S7/Weoa/EUQW980bjqKeW5VVeg0Zdwlwm56FAXsTaZFhCR6UapSEVZ4gr
- 7o2335VBNGeUzMmEJbihHNMXA61AnjF7w2wioRd4BG700237YhA4oQmxa/s3iSNZ8fdN aQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39sbtuht88-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Jul 2021 08:08:20 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16E80vPT004487;
-        Wed, 14 Jul 2021 08:08:19 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2043.outbound.protection.outlook.com [104.47.51.43])
-        by aserp3030.oracle.com with ESMTP id 39qycyyrme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Jul 2021 08:08:19 +0000
+        id S238453AbhGNILU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 04:11:20 -0400
+Received: from mail-co1nam11on2053.outbound.protection.outlook.com ([40.107.220.53]:22791
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238343AbhGNILT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 04:11:19 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e1qXEkQoHjR53aG0GfFPMLYv5W67Ht2o05TK3h8JQuixxUUrwe88kUmje94qR/9NxfFJ9oDJN+VbT74UPp1pmjR9P8Jrj9aX6rMERIxbocPWJ/qudaSnXJll26pVgqk5dtzQtikOkFiz15ZE6BavI7A+U9HU5G7GYVA2my02EWQHL9HuK9QGTxgUl/uhvk2vozXFHyHbfNBsduVx/nLRZCVO5vKdMXJBPupoaBYAPfTEfBJNjZEctMQ5sqZ9Smgr7JdUsLL4px8wh5P6ZxPf1mPnq1955/XnuYNhxlnGHNeuCYXT3J1QfyKLVi3Ge3cjF183WNh16s9SWenFqrveGg==
+ b=oVjZQB5m7gyn0nHy826KSHsS+MqnhGNtYNRyJrijXulJD2bXl1FMZtTYPjR4TY6/5chmViwIYe28sdW8CqnH633rPTNoHO+dn78j3IhSU3E/LbhbXWi1yxsmIUTjMSpuC+ffLNRUUvzY6LROZqRAJ7msbmovvRCJrJdSnfRTPqcmHWdYbxSJDtUEVeVi/r7SKU1wUTGR4N4RrjCUem6ivEcz9T1obnLOODS/R3gtwW8VWt29L0wh+4w+wKbUrVRJUrHOBONXy/gNB4yhVsuDDDorUvrVpEMaI+HHvyFzAgsEyw74cDqW+t5s2wXAZt5zZuAFcW3RwHrx79UICqaAmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sP+gi1YeQoq5lXNV/bCjjei80BFYJX4fXC5JRtbqkmg=;
- b=lRh0O+uewEC32iZtczpdfbpjlK/LuhoE8W44oMzNN6M+dC0x50SZZWCIJimUHR36PIuidPmrYLIOeK3e/z5sD/Pbd1RzP2v1KcLkyBEQtYwAJQ7xVSTkaoTn5ntX3zAaLBMnrrZn3oKhOWvWeQq2QDmAJsR6UB1NvOoU3qN9idUX7TpaqGek1asJWHWV8559Xw6ow+9x4lMh2ofjPYmUQkuhXwXl5hGrM45LZBXYN/Ty7Tbb5LuWxrFN/0AMwyuGvpGKJcGddD7WQHrCoidCZa/1o5NTFJ7LvYAO2Hsb1uzEsuCz9rWNnVkvXRLDhZQXxNVXhHtXFjVXRxgFzV8e8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+ bh=52KCmdHBf87mICT6mt4GC9cZbpx9CEDzvtlAuXVocVc=;
+ b=GTlK00g+hf78y0aSsDCu0kw5Ex0222+1qNW+mB0+5hAMnjd0ORAy0SbIYQXTyuZ6Zrl2/cyFJS67wGH1fwwwfnWPSlIW7qcAi/SXwRMRxg8rRtbVqfiUClzJuoX77EJ8XM/QomdCehgAzPwx7NIWwlUZhrWSPRm8z2B5Jo6jNrAse09VDMH2dw+fF9OGc5Y0XrDQ09rnO5zpwK3euuICPwYajItbNdJZulDZWD8dMKWOpAS6ww1FMCDn38B9aVR+u+kR5plCOqQWG3HMMtyaT1hanWat2DnuLqstWWPATllYLD2MKUH/FUiBbt3FbxlpTZJsNV8CZ1ddQ6iqtDyZUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=towertech.it smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sP+gi1YeQoq5lXNV/bCjjei80BFYJX4fXC5JRtbqkmg=;
- b=xinXD4I0+5KwgpLFBo/y7Uzxtt8NyZy61zeu2X8+s0AbkJskz1JgTrIDL8zOzXDRT1mIw9HY48t7nzXEj0Ec1R2hDMXa023BDteWtWWRCDcboy7lEJGBoMPyUsX97B9oxekbpsr68wkZugy5dlenpWUD4ZVghtkEA0sp9EyvX58=
-Authentication-Results: lists.01.org; dkim=none (message not signed)
- header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR1001MB2397.namprd10.prod.outlook.com
- (2603:10b6:301:32::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.22; Wed, 14 Jul
- 2021 08:08:17 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4308.027; Wed, 14 Jul 2021
- 08:08:17 +0000
-Date:   Wed, 14 Jul 2021 11:07:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/4] serial: 8250_pci: Refactor the loop in
- pci_ite887x_init()
-Message-ID: <202107140052.28NaY2ZC-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0008.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::13)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+ bh=52KCmdHBf87mICT6mt4GC9cZbpx9CEDzvtlAuXVocVc=;
+ b=KAqgGt1QtTcW9NybsFQXWaXaluYMDprzJPwHn4rypJq6QTWNjdHNzyUauWzZzutxvKCwjK7jtc5cW5tgXe64ViB8Z45g2Plt4TqShrdzvzKkhvSFlMQaQ+uzrDyt+8kO8OGk90O/PFLs5Z4zS5Vj241JcotL69ZkoCIK2p2gtSo=
+Received: from DM6PR07CA0100.namprd07.prod.outlook.com (2603:10b6:5:337::33)
+ by SN6PR02MB4351.namprd02.prod.outlook.com (2603:10b6:805:a9::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Wed, 14 Jul
+ 2021 08:08:24 +0000
+Received: from DM3NAM02FT046.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:337:cafe::24) by DM6PR07CA0100.outlook.office365.com
+ (2603:10b6:5:337::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend
+ Transport; Wed, 14 Jul 2021 08:08:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; towertech.it; dkim=none (message not signed)
+ header.d=none;towertech.it; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT046.mail.protection.outlook.com (10.13.4.67) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4308.20 via Frontend Transport; Wed, 14 Jul 2021 08:08:24 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 01:08:23 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 14 Jul 2021 01:08:23 -0700
+Envelope-to: git@xilinx.com,
+ a.zummo@towertech.it,
+ alexandre.belloni@bootlin.com,
+ linux-rtc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.23.81.239] (port=57830 helo=xhdsneeli41x.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <srinivas.neeli@xilinx.com>)
+        id 1m3ZwL-000AKo-SH; Wed, 14 Jul 2021 01:08:22 -0700
+From:   Srinivas Neeli <srinivas.neeli@xilinx.com>
+To:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
+        <michal.simek@xilinx.com>, <sgoud@xilinx.com>,
+        <shubhraj@xilinx.com>
+CC:     <linux-rtc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>
+Subject: [PATCH] rtc: zynqmp: Add calibration set and get support
+Date:   Wed, 14 Jul 2021 13:38:09 +0530
+Message-ID: <20210714080809.34289-1-srinivas.neeli@xilinx.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JNAP275CA0008.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21 via Frontend Transport; Wed, 14 Jul 2021 08:08:08 +0000
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e3b561ba-3a92-4ab2-9de4-08d9469e88f1
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2397:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB239706032DA89CF45A6DB82D8E139@MWHPR1001MB2397.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Office365-Filtering-Correlation-Id: 91321ba1-7cf8-4ed7-fc57-08d9469e8dc0
+X-MS-TrafficTypeDiagnostic: SN6PR02MB4351:
+X-Microsoft-Antispam-PRVS: <SN6PR02MB43518FAA752C4F563FF23475AF139@SN6PR02MB4351.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DkLARr+gGtVJUzpPl+9b/rojAoLS4ChpQeAH/qqf/bD4ODM5YUmf6tBLG0SyVd8jsqgjZz0/xA7Zy4SfZAM/cVCTMlvLjfYV08EByIzILp2t421d4/yJUU8X3mcMsK9vqGbaYtJodTI2SBkG9gFznCSbJKXr61H6xeQpTiP7sw7rIpJ3OZSh4JWB952QVhGhublv/9sYpQUjojnutsm2Pi7jPKF41kTg+z0hV3aAWjVDY5qIGRo694m5Y7vOqYjCdjKFjEjBlUJGVDSbkhz8nKicFXW3f6TrqAFXWLKtLpLxDN8KSZT2Eh0uVpIw3fi6PlYjLSibfSx3W4/1GviEcR8zrZtit18VIr6Zg7Qc2pXactlFfrfQFOqhlUukWhPSlypnxbObG6d5eei9bJ4GROgDbg3bcJE15t2nQCAuABXg9uaw/h2SkUCnM6oadpCifJ8ciXOrQGR4zrXVzfzwSfMCfEQ3poPEDcpCRn9PKwN+dmWaIEmEvtewgSUEvMbMl1mVR3al6B/sAQU6gp7w0zexKTA/DnqWaQW3XgqQgqsKXYyMiiytySdyrGMn6txYLuKsHPXUTOT5U2SYcFJK2m458hzWJ953QMgvVcmsi8V0L5kacCiShndlZ7xikBjQS6kGcTlsnYHcX361mrk+YX28jzHTGaO9gNkijOOY8jSlAhPc5toPnuCScr7/4cSiygAiD6/R3tNwK0iSmbWwXcrYXkufXo9PQZIEEXqVKBOnnUwZAeVaJacqGvj8vYU42mXWd6qiK5J5aCfnGN9UbOFrrz4JKgnHRGorbR+qLqRidHuojpcVq+nZSDTnv04k1WVNm+a4qWx8wTevX3NOXg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(136003)(396003)(376002)(86362001)(83380400001)(38100700002)(38350700002)(36756003)(478600001)(966005)(6666004)(52116002)(6496006)(4326008)(8936002)(956004)(8676002)(44832011)(26005)(186003)(66556008)(66476007)(1076003)(54906003)(66946007)(9686003)(2906002)(6486002)(5660300002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tO9uPvIUhtJk+Me8Fw18WpK19tzbwoL7WVDf7wdTsRyoBNGVt1fEVmSMaawR?=
- =?us-ascii?Q?DXuaxRnJaQDADMEknyu3PfpQX+gkLFD6zzonaxdct9Or3CtPE5rtovMaFbIV?=
- =?us-ascii?Q?eiQpxpTSP6gUa4Fh74AoZwG3O0tQqK+NdO7UNSzRaUgfB5GlH2FeJSJtwAVE?=
- =?us-ascii?Q?hFfmV2IO/EIRqqmKhaIFqeB1kefVUEuWf5c/fAGonNyqL/ApDFYJFnNnKrra?=
- =?us-ascii?Q?IZTl4hDtlZqM6lJ2AMVKpSD9jHHwKv9Vf4XsHCLW+vf/2uOxYMSIdJLafYEz?=
- =?us-ascii?Q?lcqjW2IrFnTvkHDWnMYQUp4zUjAUnRcx/i63t6rvZ8rfitYMJRQ/SOC9/dix?=
- =?us-ascii?Q?K9DFTsOfCgGCb2eNNrEgIhyVQXEW/ioSwk+1W6C/BBAU011+nmD81+R9iHNk?=
- =?us-ascii?Q?cs6W1tbdAW6RUWM2mvc2AEAsVUeXL1A9aT9WO+9RTVpeWNY8ytJ7spe2uuNX?=
- =?us-ascii?Q?jeQU5a0gUFWJF3EUCxzlK/S7o8kZVFh5Oda8E/j3uer7pbMEjd93ytfQb3m2?=
- =?us-ascii?Q?CAK8fDbrw5kWX012qI53EweUl544VVFZxkkbaLCuNxe4pjVRCC+A8RIag8ux?=
- =?us-ascii?Q?4FZ4E6HIRjAouTGS1FKPjReXhu2H9EAaSNDxU+2Q6eAthZw1I6fTM+qcLark?=
- =?us-ascii?Q?MCDa+zEGxO9Hr/BYG3mmgmusER1Kxfb1Aq36WEu4r71usEIYM51+9DEqqJfR?=
- =?us-ascii?Q?ztHzI1l6NnHZVmPJtv6MrQBwpJ2iN+si7dN+g8IxFcDLMxw8TUUMTnEnb6pS?=
- =?us-ascii?Q?HplMrHAc0V/TxTcXJmrb7m1Lpvw9redFVXxn0CNaQuBH4m6wfWi4ZBp4L89U?=
- =?us-ascii?Q?O+K0QvZdexzf/Og5wrNevw4WftuY1GBVF7N8g/TeCDZ1VM6pnzt5+0PZ47yc?=
- =?us-ascii?Q?q5/BNN2zWAgKkvWG26CLjf7ruEv3DFve2r9nKaRA3f4BNmVz/UiMWTSSeYpw?=
- =?us-ascii?Q?D47XPn/yS4UilnuX4Xs6rcwL0sOhoG+wBaM0w6TyVZCFwRTYSh2q2//67Mcz?=
- =?us-ascii?Q?xLOe/2uB58KfBUgJ5DsqoDOgWzYU5pH1ezz8kq9Q+5y2K4Zo/IZBORi+xP1H?=
- =?us-ascii?Q?/onnkyEJkLOIcuECpNwgeEVdj4mhqMs0y+HB5OptPjHMtQ2izNusN4zansDY?=
- =?us-ascii?Q?Hw7McICQ9kfXUDU/JFK894B3/eslhenWwf5v9X/vpQ8JbJgVrDtgdB8u1+G9?=
- =?us-ascii?Q?mEo9JTXEwhYj66wDZ8AMT+1v+uoMla6iaR6zCTalTiVj1wkA9nDlJYSZOGRv?=
- =?us-ascii?Q?arM+zDlXA715Bb85bfmvfA0fIwVlXjVvDJC+Dc4lbn5HdCAvHOhxnVojg4Jo?=
- =?us-ascii?Q?C0ST2p/SYzKg5cr497XcwiyG?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3b561ba-3a92-4ab2-9de4-08d9469e88f1
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 08:08:17.1335
+X-Microsoft-Antispam-Message-Info: 0JvL908xtNRWCAv+rodhXw0zDGSQQVOSMtv5nFS57+scXlM1k4yftKWNuY2kN5Gy5IABPwnz47Spy2Qe2atWWGpRtK1Ypf1oMFduVQ7RSvGWqfjmiFfhmFqxYCHVsl4DXldLkbEcUhkYN81xTDLBv+2PCEjh48hPzMAYoOY3vpiuH8qF36KBIRAmfM4Mh+uYYAsNbixo8qGe07wy1c9ve5LWfoQ0cxFXgQtUmjqT1naG6+IpBF0m97k8AcXHXU+H6wZEjw9Iw3vuaPT1pPEfHRZvSx4aDH+LjkJJK3oF32Rdmw4p4OqOOkMTV6wVbwz+tLHoUYxAco36/nsT9wPQgwN8Fe7fNSs/6U8WL0KQOphrXYP183bewo1bxNrPsqXBrb6R0YWbSs9uZCBs8NMvM4PpEo0YE/5CesP/jR7MiqAWQdjv3aXsRa2508NaKayYxOADHJh0Y0bsq5ZaEZr+BF7qPL2fdYn4E1dWrWZ9SMrhG0F0gf5pz6tPOfsmTaaNWEKAO2bA5OGQyPJY2op72ULoRJixQWWNNry+pKkzr4gQc4H9BLVKzFPkAis7u+uQ+zAED+loEvPatGCxNgFMREo8ZrQ4fRi2lbjrbduGy6F4J+KtrY3sp0VYNhNQkyuEWr6PwNZupkMOYrFCMwtT8FuzAIWmNMgNacY482lLpIiyUVfP182MAu1bFUnCuYdMZSThizlSSzwwh4nzbedu4qa8jeYYzB4tJZ0O+us/I61+7E5qEdo197tP1FO8xlNw
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(46966006)(36840700001)(5660300002)(47076005)(70586007)(186003)(70206006)(7696005)(82740400003)(82310400003)(36756003)(26005)(36860700001)(36906005)(83380400001)(54906003)(8936002)(2906002)(2616005)(7636003)(9786002)(6666004)(44832011)(356005)(110136005)(4326008)(107886003)(478600001)(336012)(8676002)(6636002)(1076003)(426003)(316002)(102446001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2021 08:08:24.5708
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Xc4J9IDutgUeYmBrco1Di3fHKH5GP15Xjkr5DvYy2T4ebxXVahZNZ7eDqgpb/hlg8ElVnaCyczbd5roq5s3enGq6t/DaV4CK7LsMDcdiEcY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2397
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10044 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107140051
-X-Proofpoint-GUID: 4H5Oy5Wlydt-xfagvqpIN9UnqHo1yKqT
-X-Proofpoint-ORIG-GUID: 4H5Oy5Wlydt-xfagvqpIN9UnqHo1yKqT
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91321ba1-7cf8-4ed7-fc57-08d9469e8dc0
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT046.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4351
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Zynqmp RTC controller has a calibration feature to compensate
+time deviation due to input clock inaccuracy.
+Set and get calibration API's are used for setting and getting
+calibration value from the controller calibration register.
 
-url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/serial-8250_pci-Refactor-the-loop-in-pci_ite887x_init/20210713-184225
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-config: x86_64-randconfig-m001-20210713 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-smatch warnings:
-drivers/tty/serial/8250/8250_pci.c:927 pci_ite887x_init() error: buffer overflow 'inta_addr' 7 <= 7 (assuming for loop doesn't break)
-
-vim +927 drivers/tty/serial/8250/8250_pci.c
-
-97f2398f0f6a89 drivers/tty/serial/8250/8250_pci.c Andy Shevchenko    2021-07-13  901  static const short inta_addr[] = { 0x2a0, 0x2c0, 0x220, 0x240, 0x1e0, 0x200, 0x280, };
-f79abb828e1d85 drivers/serial/8250_pci.c          Ralf Baechle       2007-08-30  902  static int pci_ite887x_init(struct pci_dev *dev)
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  903  {
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  904  	int ret, i, type;
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  905  	struct resource *iobase = NULL;
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  906  	u32 miscr, uartbar, ioport;
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  907  
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  908  	/* search for the base-ioport */
-97f2398f0f6a89 drivers/tty/serial/8250/8250_pci.c Andy Shevchenko    2021-07-13  909  	for (i = 0; i < ARRAY_SIZE(inta_addr); i++) {
-                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
-
-97f2398f0f6a89 drivers/tty/serial/8250/8250_pci.c Andy Shevchenko    2021-07-13  910  		iobase = request_region(inta_addr[i], ITE_887x_IOSIZE, "ite887x");
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  911  		if (iobase != NULL) {
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  912  			/* write POSIO0R - speed | size | ioport */
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  913  			pci_write_config_dword(dev, ITE_887x_POSIO0,
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  914  				ITE_887x_POSIO_ENABLE | ITE_887x_POSIO_SPEED |
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  915  				ITE_887x_POSIO_IOSIZE_32 | inta_addr[i]);
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  916  			/* write INTCBAR - ioport */
-97f2398f0f6a89 drivers/tty/serial/8250/8250_pci.c Andy Shevchenko    2021-07-13  917  			pci_write_config_dword(dev, ITE_887x_INTCBAR, inta_addr[i]);
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  918  			ret = inb(inta_addr[i]);
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  919  			if (ret != 0xff) {
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  920  				/* ioport connected */
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  921  				break;
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  922  			}
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  923  			release_region(iobase->start, ITE_887x_IOSIZE);
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  924  		}
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  925  	}
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  926  
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22 @927  	if (!inta_addr[i]) {
-
-Should this be changed to if (i == ARRAY_SIZE(inta_addr)) {?
-
-af8c5b8debb046 drivers/tty/serial/8250/8250_pci.c Greg Kroah-Hartman 2013-09-28  928  		dev_err(&dev->dev, "ite887x: could not find iobase\n");
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  929  		return -ENODEV;
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  930  	}
-84f8c6fc0e3b6e drivers/serial/8250_pci.c          Niels de Vos       2007-08-22  931  
-
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/rtc/rtc-zynqmp.c | 101 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 84 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/rtc/rtc-zynqmp.c b/drivers/rtc/rtc-zynqmp.c
+index f440bb52be92..718f60d42760 100644
+--- a/drivers/rtc/rtc-zynqmp.c
++++ b/drivers/rtc/rtc-zynqmp.c
+@@ -36,10 +36,16 @@
+ #define RTC_OSC_EN		BIT(24)
+ #define RTC_BATT_EN		BIT(31)
+ 
+-#define RTC_CALIB_DEF		0x198233
++#define RTC_CALIB_DEF		0x8000
+ #define RTC_CALIB_MASK		0x1FFFFF
+ #define RTC_ALRM_MASK          BIT(1)
+ #define RTC_MSEC               1000
++#define RTC_FR_MASK		0xF0000
++#define RTC_SEC_MAX_VAL		0xFFFFFFFF
++#define RTC_FR_MAX_TICKS	16
++#define RTC_OFFSET_MAX		150000
++#define RTC_OFFSET_MIN		-150000
++#define RTC_PPB			1000000000LL
+ 
+ struct xlnx_rtc_dev {
+ 	struct rtc_device	*rtc;
+@@ -61,13 +67,6 @@ static int xlnx_rtc_set_time(struct device *dev, struct rtc_time *tm)
+ 	 */
+ 	new_time = rtc_tm_to_time64(tm) + 1;
+ 
+-	/*
+-	 * Writing into calibration register will clear the Tick Counter and
+-	 * force the next second to be signaled exactly in 1 second period
+-	 */
+-	xrtcdev->calibval &= RTC_CALIB_MASK;
+-	writel(xrtcdev->calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
+-
+ 	writel(new_time, xrtcdev->reg_base + RTC_SET_TM_WR);
+ 
+ 	/*
+@@ -174,14 +173,76 @@ static void xlnx_init_rtc(struct xlnx_rtc_dev *xrtcdev)
+ 	rtc_ctrl |= RTC_BATT_EN;
+ 	writel(rtc_ctrl, xrtcdev->reg_base + RTC_CTRL);
+ 
+-	/*
+-	 * Based on crystal freq of 33.330 KHz
+-	 * set the seconds counter and enable, set fractions counter
+-	 * to default value suggested as per design spec
+-	 * to correct RTC delay in frequency over period of time.
++	/* Update calibvalue */
++	xrtcdev->calibval = readl(xrtcdev->reg_base + RTC_CALIB_RD);
++}
++
++static int xlnx_rtc_read_offset(struct device *dev, long *offset)
++{
++	struct xlnx_rtc_dev *xrtcdev = dev_get_drvdata(dev);
++	long offset_val = 0;
++	unsigned int tick_mult = RTC_PPB / (xrtcdev->calibval & RTC_TICK_MASK);
++
++	/* Offset with seconds ticks */
++	offset_val = xrtcdev->calibval & RTC_TICK_MASK;
++	offset_val = offset_val - RTC_CALIB_DEF;
++	offset_val = offset_val * tick_mult;
++
++	/* Offset with fractional ticks */
++	if (xrtcdev->calibval & RTC_FR_EN)
++		offset_val += ((xrtcdev->calibval & RTC_FR_MASK) >> RTC_FR_DATSHIFT)
++			* (tick_mult / RTC_FR_MAX_TICKS);
++	*offset = offset_val;
++
++	return 0;
++}
++
++static int xlnx_rtc_set_offset(struct device *dev, long offset)
++{
++	struct xlnx_rtc_dev *xrtcdev = dev_get_drvdata(dev);
++	short int  max_tick;
++	unsigned char fract_tick = 0;
++	unsigned int calibval;
++	int fract_offset;
++	unsigned int tick_mult = RTC_PPB / (xrtcdev->calibval & RTC_TICK_MASK);
++
++	/* Make sure offset value is within supported range */
++	if (offset < RTC_OFFSET_MIN || offset > RTC_OFFSET_MAX)
++		return -ERANGE;
++
++	/* Number ticks for given offset */
++	max_tick = div_s64_rem(offset, tick_mult, &fract_offset);
++
++	/* Number fractional ticks for given offset */
++	if (fract_offset) {
++		if (fract_offset < 0) {
++			fract_offset = fract_offset + tick_mult;
++			max_tick--;
++		}
++		if (fract_offset > (tick_mult / RTC_FR_MAX_TICKS)) {
++			for (fract_tick = 1; fract_tick < 16; fract_tick++) {
++				if (fract_offset <=
++				    (fract_tick *
++				     (tick_mult / RTC_FR_MAX_TICKS)))
++					break;
++			}
++		}
++	}
++
++	/* Zynqmp RTC uses second and fractional tick
++	 * counters for compensation
+ 	 */
+-	xrtcdev->calibval &= RTC_CALIB_MASK;
+-	writel(xrtcdev->calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
++	calibval = max_tick + RTC_CALIB_DEF;
++
++	if (fract_tick)
++		calibval |= RTC_FR_EN;
++
++	calibval |= (fract_tick << RTC_FR_DATSHIFT);
++
++	writel(calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
++	xrtcdev->calibval = calibval;
++
++	return 0;
+ }
+ 
+ static const struct rtc_class_ops xlnx_rtc_ops = {
+@@ -190,6 +251,8 @@ static const struct rtc_class_ops xlnx_rtc_ops = {
+ 	.read_alarm	  = xlnx_rtc_read_alarm,
+ 	.set_alarm	  = xlnx_rtc_set_alarm,
+ 	.alarm_irq_enable = xlnx_rtc_alarm_irq_enable,
++	.read_offset	  = xlnx_rtc_read_offset,
++	.set_offset	  = xlnx_rtc_set_offset,
+ };
+ 
+ static irqreturn_t xlnx_rtc_interrupt(int irq, void *id)
+@@ -215,6 +278,7 @@ static int xlnx_rtc_probe(struct platform_device *pdev)
+ {
+ 	struct xlnx_rtc_dev *xrtcdev;
+ 	int ret;
++	unsigned int calibval;
+ 
+ 	xrtcdev = devm_kzalloc(&pdev->dev, sizeof(*xrtcdev), GFP_KERNEL);
+ 	if (!xrtcdev)
+@@ -256,9 +320,12 @@ static int xlnx_rtc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = of_property_read_u32(pdev->dev.of_node, "calibration",
+-				   &xrtcdev->calibval);
++				   &calibval);
+ 	if (ret)
+-		xrtcdev->calibval = RTC_CALIB_DEF;
++		calibval = RTC_CALIB_DEF;
++	ret = readl(xrtcdev->reg_base + RTC_CALIB_RD);
++	if (!ret)
++		writel(calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
+ 
+ 	xlnx_init_rtc(xrtcdev);
+ 
+-- 
+2.31.1
 
