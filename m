@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5523CA8C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6843CA63C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242115AbhGOTCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
+        id S238254AbhGOSqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240521AbhGOSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:53:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41C13613E9;
-        Thu, 15 Jul 2021 18:50:50 +0000 (UTC)
+        id S237813AbhGOSqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 351F361396;
+        Thu, 15 Jul 2021 18:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375050;
-        bh=GxypP4UT325zqr4kTvvAIepMI0OmMlma2dxIYZxwOw4=;
+        s=korg; t=1626374591;
+        bh=eSSeVjX4tABcygdynp3aCwh5KTzk60SBxkDdrdVEiRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nq/5np+ojXDRvpq5AAxpwNXkFHIkOfSyyH3FzRtA/AjOMdEapkxWLfO4RpLO7vi6d
-         3CYM8guwaF0ypXyE0VwfWehggjAolG8XEM0DJNYh4iiii+X+Jy2RQCmTSNXJnjE/I/
-         uEej0MxTZrslG/cqwsT2tYYXfQf+TIKsWUcclApo=
+        b=hfcerTPBFtJEC3Q2ad4SgkmJprSGcLAe0euEjS1i36hgAWEnZHEnqkkm/ADzvZOiv
+         DIwIBetHqtmV4JQFtIWQ43J7Z7CY94pF/7tzGZJ6nAzi4YY8v0/Uky4V2HFytoHs++
+         zyBA/cPLn7+kmwJX4DT9ulN+RJEe4vOzCBTmbFzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cameron Nemo <cnemo@tutanota.com>,
-        Chen-Yu Tsai <wens@csie.org>, Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 5.10 137/215] arm64: dts: rockchip: Enable USB3 for rk3328 Rock64
-Date:   Thu, 15 Jul 2021 20:38:29 +0200
-Message-Id: <20210715182623.781542019@linuxfoundation.org>
+        stable@vger.kernel.org, Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 063/122] RDMA/cma: Fix rdma_resolve_route() memory leak
+Date:   Thu, 15 Jul 2021 20:38:30 +0200
+Message-Id: <20210715182506.276275401@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cameron Nemo <cnemo@tutanota.com>
+From: Gerd Rausch <gerd.rausch@oracle.com>
 
-commit bbac8bd65f5402281cb7b0452c1c5f367387b459 upstream.
+[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
 
-Enable USB3 nodes for the rk3328-based PINE Rock64 board.
+Fix a memory leak when "mda_resolve_route() is called more than once on
+the same "rdma_cm_id".
 
-The separate power regulator is not added as it is controlled by the
-same GPIO line as the existing VBUS regulators, so it is already
-enabled. Also there is no port representation to tie the regulator to.
+This is possible if cma_query_handler() triggers the
+RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
+allows rdma_resolve_route() to be called again.
 
-[wens@csie.org: Rebased onto v5.12]
-
-Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
-[wens@csie.org: Rewrote commit message]
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20210504083616.9654-2-wens@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328-rock64.dts |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-@@ -384,6 +384,11 @@
- 	status = "okay";
- };
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 92428990f0cc..ec9e9598894f 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2719,7 +2719,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
  
-+&usbdrd3 {
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
- &usb_host0_ehci {
- 	status = "okay";
- };
+ 	cma_init_resolve_route_work(work, id_priv);
+ 
+-	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
++	if (!route->path_rec)
++		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+ 	if (!route->path_rec) {
+ 		ret = -ENOMEM;
+ 		goto err1;
+-- 
+2.30.2
+
 
 
