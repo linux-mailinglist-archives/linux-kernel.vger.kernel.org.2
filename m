@@ -2,51 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9EB3C9F63
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52373C9F64
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237473AbhGONZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:25:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49660 "EHLO mail.kernel.org"
+        id S237505AbhGONZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:25:44 -0400
+Received: from mga18.intel.com ([134.134.136.126]:3098 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232558AbhGONZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:25:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 384D061004;
-        Thu, 15 Jul 2021 13:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626355347;
-        bh=lH5ymrz8JU9jyVhq1Q6mGkPbDZRW2fukd22yPSeuGGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EkmNC0uj0cKZq4UxSGJMkRqeliaWb5nZqbssyDMBwsAZAhr7eb2PgqLk8iPOuUdwd
-         4cs1EFw0Q8NqdaNVRzxkjrVIAoqyb7grZx6VB05wp7wZfO3lnQKh+7KHf1a10WQxMM
-         ZttAGDNK4bXi/1FVcEUJqV+3nPHYTz+b4IW134tI=
-Date:   Thu, 15 Jul 2021 15:22:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        axboe@kernel.dk
-Subject: Re: [PATCH stable-5.10] io_uring: fix clear IORING_SETUP_R_DISABLED
- in wrong function
-Message-ID: <YPA2kfnTb5VtSTMm@kroah.com>
-References: <20210715131825.2410912-1-yangyingliang@huawei.com>
+        id S232558AbhGONZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:25:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="197809764"
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="197809764"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 06:22:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="505793494"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Jul 2021 06:22:48 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 0E815262; Thu, 15 Jul 2021 16:23:14 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] auxdisplay: charlcd: Drop unneeded terminator entry
+Date:   Thu, 15 Jul 2021 16:23:10 +0300
+Message-Id: <20210715132310.31514-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715131825.2410912-1-yangyingliang@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 09:18:25PM +0800, Yang Yingliang wrote:
-> In commit 3ebba796fa25 ("io_uring: ensure that SQPOLL thread is started for exit"),
-> the IORING_SETUP_R_DISABLED is cleared in io_sq_offload_start(), but when backport
-> it to stable-5.10, IORING_SETUP_R_DISABLED is cleared in __io_req_task_submit(),
-> move clearing IORING_SETUP_R_DISABLED to io_sq_offload_start() to fix this.
-> 
-> Fixes: 6cae8095490ca ("io_uring: ensure that SQPOLL thread is started for exit")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  fs/io_uring.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Besides 0 not being, strictly speaking, a pointer it's redundant after
+the actual terminator NULL entry. Drop the former for good.
 
-I need an ack from Jens before I can take this...
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/auxdisplay/charlcd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
+index 24fd6f369ebe..e9bc5fb4da28 100644
+--- a/drivers/auxdisplay/charlcd.c
++++ b/drivers/auxdisplay/charlcd.c
+@@ -638,8 +638,7 @@ static int panel_notify_sys(struct notifier_block *this, unsigned long code,
+ 
+ static struct notifier_block panel_notifier = {
+ 	panel_notify_sys,
+-	NULL,
+-	0
++	NULL
+ };
+ 
+ int charlcd_register(struct charlcd *lcd)
+-- 
+2.30.2
+
