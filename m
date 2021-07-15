@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB4E3CA9BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BF93CABD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242527AbhGOTIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34984 "EHLO mail.kernel.org"
+        id S1343829AbhGOTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:24:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241486AbhGOS5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E709B613D7;
-        Thu, 15 Jul 2021 18:54:53 +0000 (UTC)
+        id S241614AbhGOTHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:07:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C8D61400;
+        Thu, 15 Jul 2021 19:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375294;
-        bh=U5d+IQlTddjEZl0QJnMHPslwINwvo5dCAYuN2dhfEOQ=;
+        s=korg; t=1626375836;
+        bh=4WLk7xslN4QJLfFAgeeGGRJMsiwnd0T7uFKjsNRSBk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M0bQlgMc5NFQCkfQ7FKjDaWNhLw3nw/OO2mFTIqeBrt4yZAhGnZhflzFepvTU/v5h
-         GMGZ4aS41hgoENzAfwLkMfh7TtsOfdZjClBfLEj9WuVW5hOwJOac+V04FFqh8gBqf3
-         LNplmzsvV4389QhIcymXQsObQ6hMCTPWShbLrj6I=
+        b=rmJbTvaLf0LTzV5xN/IbEJ/2wa3yYQYgYMdaZtW7u1w5U9Alqd6/a4Iy1RESDxaPz
+         qu9BntvP32E1ZxhK/yedBpFdmqeUHlA+TItKmEx5rKjeetPAL/PC+iyNtMhuAketMF
+         XwNkK6AO/zh53Ji6yUs7uMg6V2gD0huHwJecYw3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 008/242] net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
+Subject: [PATCH 5.13 015/266] clk: renesas: rcar-usb2-clock-sel: Fix error handling in .probe()
 Date:   Thu, 15 Jul 2021 20:36:10 +0200
-Message-Id: <20210715182553.263989979@linuxfoundation.org>
+Message-Id: <20210715182616.532025460@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 443ef39b499cc9c6635f83238101f1bb923e9326 ]
+[ Upstream commit a20a40a8bbc2cf4b29d7248ea31e974e9103dd7f ]
 
-Sparse is not happy about handling of strict types in pch_ptp_match():
+The error handling paths after pm_runtime_get_sync() have no refcount
+decrement, which leads to refcount leak.
 
-  .../pch_gbe_main.c:158:33: warning: incorrect type in argument 2 (different base types)
-  .../pch_gbe_main.c:158:33:    expected unsigned short [usertype] uid_hi
-  .../pch_gbe_main.c:158:33:    got restricted __be16 [usertype]
-  .../pch_gbe_main.c:158:45: warning: incorrect type in argument 3 (different base types)
-  .../pch_gbe_main.c:158:45:    expected unsigned int [usertype] uid_lo
-  .../pch_gbe_main.c:158:45:    got restricted __be32 [usertype]
-  .../pch_gbe_main.c:158:56: warning: incorrect type in argument 4 (different base types)
-  .../pch_gbe_main.c:158:56:    expected unsigned short [usertype] seqid
-  .../pch_gbe_main.c:158:56:    got restricted __be16 [usertype]
-
-Fix that by switching to use proper accessors to BE data.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Flavio Suligoi <f.suligoi@asem.it>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Link: https://lore.kernel.org/r/20210415073338.22287-1-dinghao.liu@zju.edu.cn
+[geert: Remove now unused variable priv]
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/clk/renesas/rcar-usb2-clock-sel.c | 24 ++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 1b32a43f7024..df0501b5fe83 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -107,7 +107,7 @@ static int pch_ptp_match(struct sk_buff *skb, u16 uid_hi, u32 uid_lo, u16 seqid)
+diff --git a/drivers/clk/renesas/rcar-usb2-clock-sel.c b/drivers/clk/renesas/rcar-usb2-clock-sel.c
+index 34a85dc95beb..9fb79bd79435 100644
+--- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
++++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
+@@ -128,10 +128,8 @@ static int rcar_usb2_clock_sel_resume(struct device *dev)
+ static int rcar_usb2_clock_sel_remove(struct platform_device *pdev)
  {
- 	u8 *data = skb->data;
- 	unsigned int offset;
--	u16 *hi, *id;
-+	u16 hi, id;
- 	u32 lo;
+ 	struct device *dev = &pdev->dev;
+-	struct usb2_clock_sel_priv *priv = platform_get_drvdata(pdev);
  
- 	if (ptp_classify_raw(skb) == PTP_CLASS_NONE)
-@@ -118,14 +118,11 @@ static int pch_ptp_match(struct sk_buff *skb, u16 uid_hi, u32 uid_lo, u16 seqid)
- 	if (skb->len < offset + OFF_PTP_SEQUENCE_ID + sizeof(seqid))
- 		return 0;
+ 	of_clk_del_provider(dev->of_node);
+-	clk_hw_unregister(&priv->hw);
+ 	pm_runtime_put(dev);
+ 	pm_runtime_disable(dev);
  
--	hi = (u16 *)(data + offset + OFF_PTP_SOURCE_UUID);
--	id = (u16 *)(data + offset + OFF_PTP_SEQUENCE_ID);
-+	hi = get_unaligned_be16(data + offset + OFF_PTP_SOURCE_UUID + 0);
-+	lo = get_unaligned_be32(data + offset + OFF_PTP_SOURCE_UUID + 2);
-+	id = get_unaligned_be16(data + offset + OFF_PTP_SEQUENCE_ID);
+@@ -164,9 +162,6 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->rsts))
+ 		return PTR_ERR(priv->rsts);
  
--	memcpy(&lo, &hi[1], sizeof(lo));
+-	pm_runtime_enable(dev);
+-	pm_runtime_get_sync(dev);
 -
--	return (uid_hi == *hi &&
--		uid_lo == lo &&
--		seqid  == *id);
-+	return (uid_hi == hi && uid_lo == lo && seqid == id);
+ 	clk = devm_clk_get(dev, "usb_extal");
+ 	if (!IS_ERR(clk) && !clk_prepare_enable(clk)) {
+ 		priv->extal = !!clk_get_rate(clk);
+@@ -183,6 +178,8 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 	}
+ 
++	pm_runtime_enable(dev);
++	pm_runtime_get_sync(dev);
+ 	platform_set_drvdata(pdev, priv);
+ 	dev_set_drvdata(dev, priv);
+ 
+@@ -190,11 +187,20 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
+ 	init.ops = &usb2_clock_sel_clock_ops;
+ 	priv->hw.init = &init;
+ 
+-	clk = clk_register(NULL, &priv->hw);
+-	if (IS_ERR(clk))
+-		return PTR_ERR(clk);
++	ret = devm_clk_hw_register(NULL, &priv->hw);
++	if (ret)
++		goto pm_put;
++
++	ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
++	if (ret)
++		goto pm_put;
++
++	return 0;
+ 
+-	return of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
++pm_put:
++	pm_runtime_put(dev);
++	pm_runtime_disable(dev);
++	return ret;
  }
  
- static void
-@@ -135,7 +132,6 @@ pch_rx_timestamp(struct pch_gbe_adapter *adapter, struct sk_buff *skb)
- 	struct pci_dev *pdev;
- 	u64 ns;
- 	u32 hi, lo, val;
--	u16 uid, seq;
- 
- 	if (!adapter->hwts_rx_en)
- 		return;
-@@ -151,10 +147,7 @@ pch_rx_timestamp(struct pch_gbe_adapter *adapter, struct sk_buff *skb)
- 	lo = pch_src_uuid_lo_read(pdev);
- 	hi = pch_src_uuid_hi_read(pdev);
- 
--	uid = hi & 0xffff;
--	seq = (hi >> 16) & 0xffff;
--
--	if (!pch_ptp_match(skb, htons(uid), htonl(lo), htons(seq)))
-+	if (!pch_ptp_match(skb, hi, lo, hi >> 16))
- 		goto out;
- 
- 	ns = pch_rx_snap_read(pdev);
+ static const struct dev_pm_ops rcar_usb2_clock_sel_pm_ops = {
 -- 
 2.30.2
 
