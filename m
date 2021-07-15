@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5C13CA23A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83FF3CA233
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhGOQ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:26:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:6821 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhGOQ0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:26:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="197765346"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="197765346"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 09:22:09 -0700
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="413692583"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 09:22:08 -0700
-Date:   Thu, 15 Jul 2021 09:21:41 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-Message-ID: <20210715162141.GA593686@otc-nc-03>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
- <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
- <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
- <BN9PR11MB54336D6A8CAE31F951770A428C129@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210715124813.GC543781@nvidia.com>
- <20210715135757.GC590891@otc-nc-03>
- <20210715152325.GF543781@nvidia.com>
+        id S231200AbhGOQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:25:24 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:54428 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhGOQZX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 12:25:23 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4GQflx2N84z1sFhS;
+        Thu, 15 Jul 2021 18:22:21 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4GQflx1VZfz1qqkP;
+        Thu, 15 Jul 2021 18:22:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 6d6OuwsxCZ1H; Thu, 15 Jul 2021 18:22:20 +0200 (CEST)
+X-Auth-Info: br3tlGgw4vIUf1Ch6+xeO/8ruM6sgiE8T8bKkq2wu8SAavokerfEAnRbwSVoSWqf
+Received: from igel.home (ppp-46-244-186-22.dynamic.mnet-online.de [46.244.186.22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 15 Jul 2021 18:22:20 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 89C322C21E9; Thu, 15 Jul 2021 18:22:19 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
+References: <20210621032855.130650-1-tongtiangen@huawei.com>
+X-Yow:  Sometime in 1993 NANCY SINATRA will lead a BLOODLESS COUP on GUAM!!
+Date:   Thu, 15 Jul 2021 18:22:19 +0200
+In-Reply-To: <20210621032855.130650-1-tongtiangen@huawei.com> (Tong Tiangen's
+        message of "Mon, 21 Jun 2021 11:28:55 +0800")
+Message-ID: <87pmvjtumc.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715152325.GF543781@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 12:23:25PM -0300, Jason Gunthorpe wrote:
-> On Thu, Jul 15, 2021 at 06:57:57AM -0700, Raj, Ashok wrote:
-> > On Thu, Jul 15, 2021 at 09:48:13AM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Jul 15, 2021 at 06:49:54AM +0000, Tian, Kevin wrote:
-> > > 
-> > > > No. You are right on this case. I don't think there is a way to 
-> > > > differentiate one mdev from the other if they come from the
-> > > > same parent and attached by the same guest process. In this
-> > > > case the fault could be reported on either mdev (e.g. the first
-> > > > matching one) to get it fixed in the guest.
-> > > 
-> > > If the IOMMU can't distinguish the two mdevs they are not isolated
-> > > and would have to share a group. Since group sharing is not supported
-> > > today this seems like a non-issue
-> > 
-> > Does this mean we have to prevent 2 mdev's from same pdev being assigned to
-> > the same guest? 
-> 
-> No, it means that the IOMMU layer has to be able to distinguish them.
+On Jun 21 2021, Tong Tiangen wrote:
 
-Ok, the guest has no control over it, as it see 2 separate pci devices and
-thinks they are all different.
+> This patch adds stack overflow detection to riscv, usable when
+> CONFIG_VMAP_STACK=y.
 
-Only time when it can fail is during the bind operation. From guest
-perspective a bind in vIOMMU just turns into a write to local table and a
-invalidate will cause the host to update the real copy from the shadow.
+This breaks get_wchan:
 
-There is no way to fail the bind? and Allocation of the PASID is also a
-separate operation and has no clue how its going to be used in the guest.
+[   65.609696] Unable to handle kernel paging request at virtual address ffffffd0003bbde8
+[   65.610460] Oops [#1]
+[   65.610626] Modules linked in: virtio_blk virtio_mmio rtc_goldfish btrfs blake2b_generic libcrc32c xor raid6_pq sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
+[   65.611670] CPU: 2 PID: 1 Comm: systemd Not tainted 5.14.0-rc1-1.g34fe32a-default #1 openSUSE Tumbleweed (unreleased) c62f7109153e5a0897ee58ba52393ad99b070fd2
+[   65.612334] Hardware name: riscv-virtio,qemu (DT)
+[   65.613008] epc : get_wchan+0x5c/0x88
+[   65.613334]  ra : get_wchan+0x42/0x88
+[   65.613625] epc : ffffffff800048a4 ra : ffffffff8000488a sp : ffffffd00021bb90
+[   65.614008]  gp : ffffffff817709f8 tp : ffffffe07fe91b80 t0 : 00000000000001f8
+[   65.614411]  t1 : 0000000000020000 t2 : 0000000000000000 s0 : ffffffd00021bbd0
+[   65.614818]  s1 : ffffffd0003bbdf0 a0 : 0000000000000001 a1 : 0000000000000002
+[   65.615237]  a2 : ffffffff81618008 a3 : 0000000000000000 a4 : 0000000000000000
+[   65.615637]  a5 : ffffffd0003bc000 a6 : 0000000000000002 a7 : ffffffe27d370000
+[   65.616022]  s2 : ffffffd0003bbd90 s3 : ffffffff8071a81e s4 : 0000000000003fff
+[   65.616407]  s5 : ffffffffffffc000 s6 : 0000000000000000 s7 : ffffffff81618008
+[   65.616845]  s8 : 0000000000000001 s9 : 0000000180000040 s10: 0000000000000000
+[   65.617248]  s11: 000000000000016b t3 : 000000ff00000000 t4 : 0c6aec92de5e3fd7
+[   65.617672]  t5 : fff78f60608fcfff t6 : 0000000000000078
+[   65.618088] status: 0000000000000120 badaddr: ffffffd0003bbde8 cause: 000000000000000d
+[   65.618621] [<ffffffff800048a4>] get_wchan+0x5c/0x88
+[   65.619008] [<ffffffff8022da88>] do_task_stat+0x7a2/0xa46
+[   65.619325] [<ffffffff8022e87e>] proc_tgid_stat+0xe/0x16
+[   65.619637] [<ffffffff80227dd6>] proc_single_show+0x46/0x96
+[   65.619979] [<ffffffff801ccb1e>] seq_read_iter+0x190/0x31e
+[   65.620341] [<ffffffff801ccd70>] seq_read+0xc4/0x104
+[   65.620633] [<ffffffff801a6bfe>] vfs_read+0x6a/0x112
+[   65.620922] [<ffffffff801a701c>] ksys_read+0x54/0xbe
+[   65.621206] [<ffffffff801a7094>] sys_read+0xe/0x16
+[   65.621474] [<ffffffff8000303e>] ret_from_syscall+0x0/0x2
+[   65.622169] ---[ end trace f24856ed2b8789c5 ]---
+[   65.622832] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-> 
-> This either means they are "SW mdevs" which does not involve the IOMMU
-> layer and puts both the responsibility for isolation and idenfication
-> on the mdev driver.
+Andreas.
 
-When you mean SW mdev, is it the GPU like case where mdev is purely a SW
-construct? or SIOV type where RID+PASID case?
-
-> 
-> Or they are some "PASID mdev" which does allow the IOMMU to isolate
-> them.
-> 
-> What can't happen is to comingle /dev/iommu control over the pdev
-> between two mdevs.
-> 
-> ie we can't talk about faults for IOMMU on SW mdevs - faults do not
-> come from the IOMMU layer, they have to come from inside the mdev it
-> self, somehow.
-
-Recoverable faults for guest needs to be sent to guest? A page-request from
-mdev1 and from mdev2 will both look alike when the process is sharing it.
-
-Do we have any isolation requirements here? its the same process. So if the
-page-request it sent to guest and even if you report it for mdev1, after
-the PRQ is resolved by guest, the request from mdev2 from the same guest
-should simply work?
-
-
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
