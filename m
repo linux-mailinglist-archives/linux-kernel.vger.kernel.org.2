@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2483CABAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323663CA973
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244884AbhGOTWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39762 "EHLO mail.kernel.org"
+        id S242965AbhGOTGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242231AbhGOTFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42921613D1;
-        Thu, 15 Jul 2021 19:02:25 +0000 (UTC)
+        id S241669AbhGOS4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE48E613DF;
+        Thu, 15 Jul 2021 18:53:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375745;
-        bh=VCbkn5xnj6I8I39UGSdZSENyID19O7Gl0jTqClZXik8=;
+        s=korg; t=1626375214;
+        bh=INyJeFAVFCMDDxPWIB66WGq+MIN1r+ZSRaBmZN4dAmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LDSFJJon4MgI6QLCNNmhatcqnu4ScfGXPf7zRFu9hjAf4j9YxjRKBFnqHiJ8zwfp0
-         NW5dRfyy7GatFbPoNMvP2gXdIWLFSaTtXHp7oFZDzqthNhaCnQeD/Da+WHU1Um5NIB
-         IMKpiHycamcnmKLecqVQAeGQvp6dUih14uLz08+o=
+        b=MicLsVEkcOolqrgPDJ9KziNi5gaC8U5HP3hVY4QSf5sT2i2kbQeAcx2n733ycjPVy
+         sLp1OByj6R8xJ8U/z0GNUX0r9KD2YRhOZjWvxLo8OdM9Cw50wc013OSVRlzoHp5dSC
+         dXu0VJ5By+upWYlau6oLM+kGlvvMxWS9eQJpfx/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.12 219/242] PCI: aardvark: Fix checking for PIO Non-posted Request
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 209/215] dm writecache: write at least 4k when committing
 Date:   Thu, 15 Jul 2021 20:39:41 +0200
-Message-Id: <20210715182631.614351427@linuxfoundation.org>
+Message-Id: <20210715182636.125429718@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 8ceeac307a79f68c0d0c72d6e48b82fa424204ec upstream.
+commit 867de40c4c23e6d7f89f9ce4272a5d1b1484c122 upstream.
 
-PIO_NON_POSTED_REQ for PIO_STAT register is incorrectly defined. Bit 10 in
-register PIO_STAT indicates the response is to a non-posted request.
+SSDs perform badly with sub-4k writes (because they perfrorm
+read-modify-write internally), so make sure writecache writes at least
+4k when committing.
 
-Link: https://lore.kernel.org/r/20210624213345.3617-2-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
+Fixes: 991bd8d7bc78 ("dm writecache: commit just one block, not a full page")
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-writecache.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -57,7 +57,7 @@
- #define   PIO_COMPLETION_STATUS_UR		1
- #define   PIO_COMPLETION_STATUS_CRS		2
- #define   PIO_COMPLETION_STATUS_CA		4
--#define   PIO_NON_POSTED_REQ			BIT(0)
-+#define   PIO_NON_POSTED_REQ			BIT(10)
- #define PIO_ADDR_LS				(PIO_BASE_ADDR + 0x8)
- #define PIO_ADDR_MS				(PIO_BASE_ADDR + 0xc)
- #define PIO_WR_DATA				(PIO_BASE_ADDR + 0x10)
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -532,7 +532,11 @@ static void ssd_commit_superblock(struct
+ 
+ 	region.bdev = wc->ssd_dev->bdev;
+ 	region.sector = 0;
+-	region.count = wc->block_size >> SECTOR_SHIFT;
++	region.count = max(4096U, wc->block_size) >> SECTOR_SHIFT;
++
++	if (unlikely(region.sector + region.count > wc->metadata_sectors))
++		region.count = wc->metadata_sectors - region.sector;
++
+ 	region.sector += wc->start_sector;
+ 
+ 	req.bi_op = REQ_OP_WRITE;
 
 
