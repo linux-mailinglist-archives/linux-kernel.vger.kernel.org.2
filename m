@@ -2,239 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507BB3C9AE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7193C9AF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240790AbhGOIzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 04:55:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:49200 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240731AbhGOIzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:55:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FE966D;
-        Thu, 15 Jul 2021 01:52:45 -0700 (PDT)
-Received: from [10.57.33.248] (unknown [10.57.33.248])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7A213F774;
-        Thu, 15 Jul 2021 01:52:43 -0700 (PDT)
-Subject: Re: [PATCH 5/5] coresight: trbe: Prohibit tracing while handling an
- IRQ
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        al.grant@arm.com, leo.yan@linaro.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, peterz@infradead.org, Tamas.Zsoldos@arm.com,
-        will@kernel.org
-References: <20210712113830.2803257-1-suzuki.poulose@arm.com>
- <20210712113830.2803257-6-suzuki.poulose@arm.com>
- <1837b3ae-cc0b-d4ba-7d26-1debdc60c016@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <5b5b20cd-0b2e-e911-5df7-da502d9230b6@arm.com>
-Date:   Thu, 15 Jul 2021 09:52:42 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S237008AbhGOJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:04:12 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:36772 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhGOJEK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 05:04:10 -0400
+Received: by mail-vs1-f46.google.com with SMTP id o19so386382vsn.3;
+        Thu, 15 Jul 2021 02:01:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wHPy6x4feXL9uDlB10yPqrmcfEqEPnqgR0YupDxTlwk=;
+        b=hoGSamOJV/wvLGQnHuvS8w120eUSiiOMa+48JsjwBiO2LWtVEJroEU0vYuORBVpL7b
+         C4AIBRE3dRbXb26puVhj0cvvvkxqaBR1CYEa6ct5uHB4SlOnjlnKbo1vXgY38wjotBOy
+         w0dkKtK4IiIvV0i2boesXbd331+R8EzLSre4jpjjs66LlPxvPXy7wu9fXvv+RDlRqGTM
+         NRG3w6DOZKtJWGl+LMTHfivC4TBEBJzNSGXwpShNZAcmMP0g5Ld/31an82ffc8CWxGpW
+         ktcNen/LKYNxFWEX12fcw4LCDRsVGspYZ7CGEpXblN9uPoGkXACoy3gmdQC35RjuTrNS
+         RawQ==
+X-Gm-Message-State: AOAM532nLE5q3//pQdBv3gef5eFNdrVmjP2hn3oxU8owiU3Nx6yuPwuo
+        oK5CuPyDOMhLks0wqUJx25S2yu/UgsExsqgfcmorEAYeIvU=
+X-Google-Smtp-Source: ABdhPJyHbu5bKyE9McjVS58P54gR93m9cwPTzGItU00xvW8wNQJ6mPmFugIONz0RDU/lJAyh+7l06tep7NazsZKJYtg=
+X-Received: by 2002:a67:3c2:: with SMTP id 185mr5002824vsd.42.1626339676281;
+ Thu, 15 Jul 2021 02:01:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1837b3ae-cc0b-d4ba-7d26-1debdc60c016@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+ <YO0zXVX9Bx9QZCTs@kroah.com> <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+ <YO6r1k7CIl16o61z@kroah.com> <YO7sNd+6Vlw+hw3y@sashalap> <YO8EQZF4+iQ13QU/@mit.edu>
+ <YO8Gzl2zmg8+R8Uu@kroah.com> <YO8dN9U7J2bi1gkf@mit.edu> <YO8gFgQIRYvCODBT@kroah.com>
+In-Reply-To: <YO8gFgQIRYvCODBT@kroah.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 15 Jul 2021 11:01:04 +0200
+Message-ID: <CAMuHMdUi+HsApqRwBDBFnfnAOs9EprDh5HCV4UncEL_cnXZasA@mail.gmail.com>
+Subject: Re: 5.13.2-rc and others have many not for stable
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2021 04:09, Anshuman Khandual wrote:
-> A small nit. Paragraphs in the commit message do not seem to be aligned
-> properly to a maximum 75 characters width.
-> 
-> On 7/12/21 5:08 PM, Suzuki K Poulose wrote:
->> When the TRBE generates an IRQ, we stop the TRBE, collect the trace
->> and then reprogram the TRBE with the updated buffer pointers in case
->> of a spurious IRQ. We might also leave the TRBE disabled, on an
->> overflow interrupt, without touching the ETE. This means the
->> the ETE is only disabled when the event is disabled later (via irq_work).
->> This is incorrect, as the ETE trace is still ON without actually being
->> captured and may be routed to the ATB.
-> 
-> I had an assumption that when the TRBE is stopped, ETE would also stop
-> implicitly given that the trace packets are not being accepted anymore.
-> But if that assumption does not always hold true, then yes trace must
-> be stopped upon a TRBE IRQ.
+Hi Greg et al,
 
-No, the ETE never stops, until it is stopped. The ETE doesn't care who
-is the consumer of the trace. Be it TRBE or ATB or any other sink.
+On Wed, Jul 14, 2021 at 7:36 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Wed, Jul 14, 2021 at 01:21:59PM -0400, Theodore Y. Ts'o wrote:
+> > On Wed, Jul 14, 2021 at 05:46:22PM +0200, Greg Kroah-Hartman wrote:
+> > > The number of valid cases where someone puts a "Fixes:" tag, and that
+> > > patch should NOT be backported is really really slim.  Why would you put
+> > > that tag and not want to have known-broken kernels fixed?
+> > >
+> > > If it really is not an issue, just do not put the "Fixes:" tag?
+> >
+> > I think it really boils down to what the tags are supposed to mean and
+> > what do they imply.
+> >
+> > The argument from the other side is if the Stable maintainers are
+> > interpreting the Fixes: tag as an implicit "CC: stable", why should we
+> > have the "Cc: stable" tag at all in that case?
+>
+> I would love to not have to look at the Fixes: tag, but today we have to
+> because not all subsystems DO use cc: stable.
+>
+> We miss loads of real fixes if we only go by cc: stable right now.  If
+> you can go and fix those subsystems to actually remember to do this
+> "properly", wonderful, we will not have to mess with only Fixes: tags
+> again.
+>
+> But until that happens, we have to live with what we have.  And all we
+> have are "hints" like Fixes: to go off of.
 
-> 
->>
->> So, we move the CPU into trace prohibited state (for all exception
->> levels) upon entering the IRQ handler. The state is restored before
->> enabling the TRBE back. Otherwise the trace remains prohibited.
->> Since, the ETM/ETE driver controls the TRFCR_EL1 per session,
->> (from commit "coresight: etm4x: Use Trace Filtering controls dynamically")
-> 
-> commit SHA ID ?
-> 
+IMHO the biggest issues with "Cc: stable" are that (a) in general
+it's hard to know if a patch is (not) worthwhile to be backported,
+and (b) without a Fixes: tag it doesn't tell you what version(s)
+it should be applied to.
 
-The patch is in this series, not committed yet.
+Just having a Fixes: tag fixes the latter, and allows you to defer
+the decision to backport.
 
->> the tracing can be restored/enabled back when the event is rescheduled
->> in.
-> 
-> Makes sense.
-> 
->>
->> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 43 ++++++++++++++++++--
->>   1 file changed, 40 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index c0c264264427..e4d88e0de2a8 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -83,6 +83,31 @@ struct trbe_drvdata {
->>   	struct platform_device *pdev;
->>   };
->>   
->> +static inline void write_trfcr(u64 val)
->> +{
->> +	write_sysreg_s(val, SYS_TRFCR_EL1);
->> +	isb();
->> +}
->> +
-> 
-> There is another instance of write_trfcr() in coresight-etm4x-core.c and
-> some other writes into SYS_TRFCR_EL1 elsewhere. write_trfcr() should be
-> factored out and moved to a common place.
+> > We could also have the policy that in the case where you have a fix
+> > for a bug, but it's super subtle, and shouldn't be automatically
+> > backported, that the this should be explained in the commit, e.g.,
+> >
+> >    This commit fixes a bug in "1adeadbeef33: lorem ipsum dolor sit
+> >    amet" but it is touching code which subtle and quick to anger, the
+> >    bug isn't all that serious.  So please don't backport it
+> >    automatically; someone should manually do the backport and run the
+> >    fooblat test before sumitting it to the stable maintainers.
+>
+> That's wonderful, I would love to see that more, and we do see that on
+> some commits.  And we mostly catch them (I miss them at times, but
+> that's my fault, not the developer/maintainers fault.)
 
-Agreed, but I couldn't find a right candidate for this. Welcome
-to suggestions. May be we could add something like:
+In my experience, the hardest cases are the ones where a patch fixes
+a real bug, but the fix has an obscure implicit dependency on another
+commit in a different subsystem (e.g. driver and DTS interaction).
+When backporting, a regression is introduced if the dependency
+is not present yet in the stable tree.
 
-asm/self-hosted.h
+> > Andrew seems to be of the opinion that these sorts of cases are very
+> > common.  I don't have enough data to have a strong opinion either way.
+> > But if you are right that it is a rare case, then sure, simply
+> > omitting the Fixes: tag and using text in the commit description would
+> > work.  We just need to agree that this is the convention that we all
+> > shoulf be using.
+> >
+> > I still wonder though what's the point of having the "Cc: stable" tag
+> > if it's implicitly assumed to be there if there is a Fixes: tagle.
+>
+> Because cc: stable came first, and for some reason people think that it
+> is all that is necessary to get patches committed to the stable tree,
+> despite it never being documented or that way.  I have to correct
+> someone about this about 2x a month on the stable@vger list.
 
-> 
->> +/*
->> + * Prohibit the CPU tracing at all ELs, in preparation to collect
->> + * the trace buffer.
->> + *
->> + * Returns the original value of the trfcr for restoring later.
->> + */
->> +static u64 cpu_prohibit_tracing(void)
->> +{
->> +	u64 trfcr = read_sysreg_s(SYS_TRFCR_EL1);
->> +
->> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
->> +	return trfcr;
->> +}
-> 
-> This also should be factored out along with etm4x_prohibit_trace()
-> usage and moved to a common header instead.
-> 
->> +
->> +static void cpu_restore_tracing(u64 trfcr)
->> +{
->> +	write_trfcr(trfcr);
->> +}
->> +
->>   static int trbe_alloc_node(struct perf_event *event)
->>   {
->>   	if (event->cpu == -1)
->> @@ -681,7 +706,7 @@ static int arm_trbe_disable(struct coresight_device *csdev)
->>   	return 0;
->>   }
->>   
->> -static void trbe_handle_spurious(struct perf_output_handle *handle)
->> +static void trbe_handle_spurious(struct perf_output_handle *handle, u64 trfcr)
->>   {
->>   	struct trbe_buf *buf = etm_perf_sink_config(handle);
->>   
->> @@ -691,6 +716,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
->>   		trbe_drain_and_disable_local();
->>   		return;
->>   	}
-> 
-> A small comment here would be great because this will be the only
-> IRQ handler path, where it actually restores the tracing back.
+For a developer, it's much easier to not care about "Cc: stable"
+at all, because as soon as you add a "Cc: stable" to a patch, or CC
+stable, someone will compain ;-)  Much easier to just add a Fixes: tag,
+and know it will be backported to trees that have the "buggy" commit.
 
-Agreed
+Gr{oetje,eeting}s,
 
-> 
->> +	cpu_restore_tracing(trfcr);
->>   	trbe_enable_hw(buf);
->>   }
->>   
->> @@ -760,7 +786,18 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->>   	struct perf_output_handle **handle_ptr = dev;
->>   	struct perf_output_handle *handle = *handle_ptr;
->>   	enum trbe_fault_action act;
->> -	u64 status;
->> +	u64 status, trfcr;
->> +
->> +	/*
->> +	 * Prohibit the tracing, while we process this. We turn
->> +	 * things back right, if we get to enabling the TRBE
->> +	 * back again. Otherwise, the tracing still remains
->> +	 * prohibited, until the perf event state changes
->> +	 * or another event is scheduled. This ensures that
->> +	 * the trace is not generated when it cannot be
->> +	 * captured.
->> +	 */
-> 
-> Right.
-> 
-> But a small nit though. Please keep the comments here formatted and
-> aligned with the existing ones.
-> 
+                        Geert
 
-ok
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->> +	trfcr = cpu_prohibit_tracing();
->>   
->>   	/*
->>   	 * Ensure the trace is visible to the CPUs and
->> @@ -791,7 +828,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->>   		trbe_handle_overflow(handle);
->>   		break;
->>   	case TRBE_FAULT_ACT_SPURIOUS:
->> -		trbe_handle_spurious(handle);
->> +		trbe_handle_spurious(handle, trfcr);
->>   		break;
->>   	case TRBE_FAULT_ACT_FATAL:
->>   		trbe_stop_and_truncate_event(handle);
->>
-> 
-> But stopping the trace (even though from a sink IRQ handler) is a source
-> device action. Should not this be done via a new coresight_ops_source
-> callback instead ?
-
-It is a valid point. But that has limitations.
-Here is the list:
-
-   * Stopping the source is a heavy hammer, especially if we
-     are about to continue the trace soon. (e.g, spurious
-     interrupt and possibly soon for FILL events with reworking
-     the flags)
-
-   * Stopping the source, via source_ops() is doing things
-     under the driving mode of the session, perf vs sysfs.
-     We only support perf though, but if there is another
-     user.
-
-   * This is agnostic to the mode (as above), the TRBE driver
-     doesn't need to be taught, how to find the path and
-     stop the current session for the given mode.
-
-   * If the tracing is enabled in kernel mode, the ETE still
-     generates the trace until we trigger the longer route
-     for disabling, which is not nice.
-
-Suzuki
-
-
-
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
