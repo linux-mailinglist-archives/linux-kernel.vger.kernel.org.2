@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA173C9F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F124D3C9F97
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhGONkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhGONkN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:40:13 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A339C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:37:19 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id o72-20020a9d224e0000b02904bb9756274cso6170072ota.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=CCE8TnToa40TjxZS2pAEtgB7fp8wJAwNW2S+cHYVgbo=;
-        b=uBM1/SibOW2ZTl01qsa0lgjtkYO01A4N6GkKpsXk/c9S9Kz3veuYgOQVvRa6zF95Ys
-         VQQlZeTj9p1tm0jRYV042VHsc+pUVq/4aKZvp7s/1P695ZwnVlJo0wpvNiIuAR4ddTZU
-         DnJoK7MRmIsG0oAXpTbccSuuVGQcSpFbGb9xcLzZKWcgIEf6eqiGNo90S3CyErYgY9p7
-         vy1DW4Oya/5WzLZQoeAGnH6NMnDiT/iCJVMs4/IyE3STLQZvMyLQmcM0KX33NmqhCUvS
-         RVGgfpne/YTkET2AFhuqgkKcav22wv4whMy3iBM2N95AAcycJ+nluGFrekQuIpG3xbLK
-         UVUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=CCE8TnToa40TjxZS2pAEtgB7fp8wJAwNW2S+cHYVgbo=;
-        b=Iy0XMpumVllPvJ6q6kO4u7IcF5dt57N5RIwqAfxwBjbcoOSjJd4Epn8dj8sFAbDDWg
-         guI8Y/xw36QZZEJgX14/QhsRsyrFpMQjQ7a5HxUJEEVsdeRnAmTgXqbCP0Q8+53SbpeY
-         sD5JpwW6+c32CKtB0T49Ssg5IcpFZ67hcA/I3TY+HghU5OftJ7juevE/8iZXM5NgmuJB
-         K10A0VEJUKpeOz5Kmq31pZmydLuVw1wxCr1TvWXkZ6oS1QNlRbbg/jjnaBJtXku1ZhoJ
-         vThXG5ilgZV96dX9c+ITqOsEBSNHfUcoue0ByFjUTxo+SSy2V70jSp+h/ITEAPnNqrW9
-         qayQ==
-X-Gm-Message-State: AOAM533E/CvAoy7LnfPHbn5o9YHzGwP7LmiVg/7sRzkfAypQB3CoCvJo
-        Ga+m8ZV4oUKZMd9yeXHfNeGEE1D6OIDHexLzjlw=
-X-Google-Smtp-Source: ABdhPJwvi87jILoVGs98LyoY6ibAmpQiV6uSzie8lqr0N1po2Ip1vYMt9dEZKykhF8tccH7k4mZvJak6SmoRdPPRHDk=
-X-Received: by 2002:a05:6830:b91:: with SMTP id a17mr3326758otv.357.1626356238679;
- Thu, 15 Jul 2021 06:37:18 -0700 (PDT)
+        id S232729AbhGONlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:41:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:52736 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231327AbhGONlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:41:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC47B31B;
+        Thu, 15 Jul 2021 06:38:26 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C4B43F694;
+        Thu, 15 Jul 2021 06:38:25 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:38:23 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 10/13] mailbox: pcc: Avoid accessing PCCT table in
+ pcc_send_data and pcc_mbox_irq
+Message-ID: <20210715133823.GE6592@e120937-lin>
+References: <20210708180851.2311192-1-sudeep.holla@arm.com>
+ <20210708180851.2311192-11-sudeep.holla@arm.com>
 MIME-Version: 1.0
-Received: by 2002:a4a:e4cc:0:0:0:0:0 with HTTP; Thu, 15 Jul 2021 06:37:18
- -0700 (PDT)
-Reply-To: untnatcomp@gmail.com
-From:   headquartersoffice office <headquartersofficeo@gmail.com>
-Date:   Thu, 15 Jul 2021 13:37:18 +0000
-Message-ID: <CAPu9JKmTwi53=tsZ9nO_w3PB-obUwOjzvdm7Tbj-3GH7jvG2bg@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708180851.2311192-11-sudeep.holla@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Bonjour mon cher ami
+On Thu, Jul 08, 2021 at 07:08:48PM +0100, Sudeep Holla wrote:
+> Now that the con_priv is availvale solely for PCC mailbox controller
+> driver, let us use the same to save the channel specific information
+> in it so that we can it whenever required instead of parsing the PCCT
+> table entries every time in both pcc_send_data and pcc_mbox_irq.
+> 
+> We can now use the newly introduces PCC register bundle to simplify both
+> saving of channel specific information and accessing them without repeated
+> checks for the subspace type.
+> 
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---o
+[snip]
+>
 
-j'esp=C3=A8re que tu vas bien aujourd'hui
+Sorry missed this small doxygen break along the way early:
 
-Veuillez confirmer la r=C3=A9ception de ce message car j'ai de bonnes
-nouvelles pour vous.
+>  /**
+> @@ -516,19 +457,20 @@ static int pcc_parse_subspace_irq(struct pcc_chan_info *pchan,
+>   * @pcct_entry: Pointer to the ACPI subtable header.
+>   *
+>   */
+> -static void pcc_parse_subspace_db_reg(struct pcc_chan_info *pchan,
+> -				      struct acpi_subtable_header *pcct_entry)
+> +static int pcc_parse_subspace_db_reg(struct pcc_chan_info *pchan,
+> +				     struct acpi_subtable_header *pcct_entry)
+>  {
+> +	int ret = 0;
+> +
 
-Contactez mon email (untnatcomp@gmail.com)
 
-Sinc=C3=A8rement
-Sandra Moris
+drivers/mailbox/pcc.c:485: warning: No description found for return value of 'pcc_parse_subspace_db_reg'
+
+Thanks,
+Cristian
