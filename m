@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBC93CADF8
+	by mail.lfdr.de (Postfix) with ESMTP id 781EA3CADF9
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236242AbhGOUds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:33:48 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:46770 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235562AbhGOUdg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:33:36 -0400
-Received: by mail-pg1-f174.google.com with SMTP id w15so7680535pgk.13;
-        Thu, 15 Jul 2021 13:30:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AfqEur0D3iK3wyEW51FZ1fhyTp8fBt0DR6t9c5iQRFU=;
-        b=LJTI+yPMYraA7gtyGtl01g2cptfLkGFKeTSHj9npWGA7OH+LR58+7XjnVQqIRiIun4
-         OYqmm8nvCpdBnBpR1sbrOkb8t7MlQpSwSJ7zNQpus+qUbGW3gX4Y59yZ2jZecyNvlUJP
-         xQANE89GvjQRiGfKTdygdej0tTAuVRkteQyErmkS1U6n9bLzJGxaqEnmpkCV51apk2dT
-         dlSHRgcT6XK2iVaROnvReibsahWpibfV1nuh7jwktUwqny779HfB2PN+STD/KmjNttwt
-         5tJBzIBbfWRoS+SgXLr9i0f+T/m3o9iKjCoJvdSFp4HMC/6pGxZLBWxvcyY5d6n75MlU
-         3yuw==
-X-Gm-Message-State: AOAM530p1x84YNbJOVFGZqf6b6rw6BkpQjiz7TyCU7fcG38TvEvg3RtF
-        kQvGOLJh/UqYppTKUNfM1XI=
-X-Google-Smtp-Source: ABdhPJzLLk9/HVBihINhuBBcs6/6TX0zKV3W5XGbbD/4A0NdvuGBJ+D6kaoExAX9KjjzyvAm94yIgg==
-X-Received: by 2002:a62:7c16:0:b029:329:8d4c:d12d with SMTP id x22-20020a627c160000b02903298d4cd12dmr6510253pfc.47.1626381042892;
-        Thu, 15 Jul 2021 13:30:42 -0700 (PDT)
-Received: from localhost ([191.96.120.37])
-        by smtp.gmail.com with ESMTPSA id a22sm7476719pfv.113.2021.07.15.13.30.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 13:30:42 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk
-Cc:     hare@suse.de, bvanassche@acm.org, ming.lei@redhat.com,
-        hch@infradead.org, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [RFC 5/5] block/sx8: add error handling support for add_disk()
-Date:   Thu, 15 Jul 2021 13:30:25 -0700
-Message-Id: <20210715203025.2018218-6-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210715203025.2018218-1-mcgrof@kernel.org>
-References: <20210715203025.2018218-1-mcgrof@kernel.org>
+        id S237563AbhGOUeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:34:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235562AbhGOUeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 16:34:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E6D613D9;
+        Thu, 15 Jul 2021 20:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626381068;
+        bh=D8iIjq9U2XEFr/hbdrVDkVdZ7qoyKY+1QmdzD+wWDeI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nKd4Vn3EySbupuKBcpLik0cbPh+D0tFpaPyXYJT2Vlq2iB0sGK+7FP8tXNvIIfeEs
+         gbWtm3l83sRuMxkpKkxE7eErs7wH/77Lo9Dy3KHHYLWAlkye+4g1/98sseH7dURa0T
+         qiNP39w/QuEdohn4MRBiK+oxo+BG6kJif1jJn+71LDEKKbOs1qMzsJxWjdYkzBgF2y
+         sjvg3URy8RrDI8lMqNSCOpSCE5iC2/RhFxevLVeD6vjedHBumc2LVy1pgYPISFF8Jt
+         RnrpzvjTiKy0rRp72YjomjNf8qdpBkJVMX5y0v6cEYTIGCVpju9SqXwDMoOm3vaVw8
+         jrgGIwuqb20/A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B0313403F2; Thu, 15 Jul 2021 17:31:05 -0300 (-03)
+Date:   Thu, 15 Jul 2021 17:31:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 14/20] perf util/lzma: close lzma stream
+Message-ID: <YPCbCfXujLOiEDkz@kernel.org>
+References: <cover.1626343282.git.rickyman7@gmail.com>
+ <aaf50bdce7afe996cfc06e1bbb36e4a2a9b9db93.1626343282.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aaf50bdce7afe996cfc06e1bbb36e4a2a9b9db93.1626343282.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+Em Thu, Jul 15, 2021 at 06:07:19PM +0200, Riccardo Mancini escreveu:
+> ASan reports memory leaks when running the perf test
+> "88: Check open filename arg using perf trace + vfs_getname".
+> One of these is caused by the lzma stream never being closed inside
+> lzma_decompress_to_file.
+> 
+> This patch adds the missing lzma_end.
 
-A completion is used to notify the initial probe what is
-happening and so we must defer error handling on completion.
-Do this by remembering the error and using the shared cleanup
-function.
+Fixes: 80a32e5b498a7547 ("perf tools: Add lzma decompression support for kernel module")
 
-The tags are shared and so are hanlded later for the
-driver already.
+Thanks, applied.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/sx8.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+- Arnaldo
 
-diff --git a/drivers/block/sx8.c b/drivers/block/sx8.c
-index 6a6dc3fffa5c..34bbd033e2fd 100644
---- a/drivers/block/sx8.c
-+++ b/drivers/block/sx8.c
-@@ -297,6 +297,7 @@ struct carm_host {
  
- 	struct work_struct		fsm_task;
- 
-+	int probe_err;
- 	struct completion		probe_comp;
- };
- 
-@@ -1202,8 +1203,11 @@ static void carm_fsm_task (struct work_struct *work)
- 				struct gendisk *disk = port->disk;
- 
- 				set_capacity(disk, port->capacity);
--				add_disk(disk);
--				activated++;
-+				host->probe_err = add_disk(disk);
-+				if (!host->probe_err)
-+					activated++;
-+				else
-+					break;
- 			}
- 
- 		printk(KERN_INFO DRV_NAME "(%s): %d ports activated\n",
-@@ -1213,11 +1217,9 @@ static void carm_fsm_task (struct work_struct *work)
- 		reschedule = 1;
- 		break;
- 	}
--
- 	case HST_PROBE_FINISHED:
- 		complete(&host->probe_comp);
- 		break;
--
- 	case HST_ERROR:
- 		/* FIXME: TODO */
- 		break;
-@@ -1515,7 +1517,10 @@ static int carm_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_out_free_irq;
- 
- 	DPRINTK("waiting for probe_comp\n");
-+	host->probe_err = -ENODEV;
- 	wait_for_completion(&host->probe_comp);
-+	if (host->probe_err)
-+		goto err_out_disks;
- 
- 	printk(KERN_INFO "%s: pci %s, ports %d, io %llx, irq %u, major %d\n",
- 	       host->name, pci_name(pdev), (int) CARM_MAX_PORTS,
-@@ -1526,6 +1531,8 @@ static int carm_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
- 	pci_set_drvdata(pdev, host);
- 	return 0;
- 
-+err_out_disks:
-+	carm_free_all_disks(host);
- err_out_free_irq:
- 	free_irq(pdev->irq, host);
- err_out_blkdev_disks:
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/util/lzma.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/lzma.c b/tools/perf/util/lzma.c
+> index 39062df0262915bd..51424cdc3b682c64 100644
+> --- a/tools/perf/util/lzma.c
+> +++ b/tools/perf/util/lzma.c
+> @@ -69,7 +69,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+>  
+>  			if (ferror(infile)) {
+>  				pr_err("lzma: read error: %s\n", strerror(errno));
+> -				goto err_fclose;
+> +				goto err_lzma_end;
+>  			}
+>  
+>  			if (feof(infile))
+> @@ -83,7 +83,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+>  
+>  			if (writen(output_fd, buf_out, write_size) != write_size) {
+>  				pr_err("lzma: write error: %s\n", strerror(errno));
+> -				goto err_fclose;
+> +				goto err_lzma_end;
+>  			}
+>  
+>  			strm.next_out  = buf_out;
+> @@ -95,11 +95,13 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+>  				break;
+>  
+>  			pr_err("lzma: failed %s\n", lzma_strerror(ret));
+> -			goto err_fclose;
+> +			goto err_lzma_end;
+>  		}
+>  	}
+>  
+>  	err = 0;
+> +err_lzma_end:
+> +	lzma_end(&strm);
+>  err_fclose:
+>  	fclose(infile);
+>  	return err;
+> -- 
+> 2.31.1
+> 
+
 -- 
-2.27.0
 
+- Arnaldo
