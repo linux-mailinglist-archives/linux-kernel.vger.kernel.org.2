@@ -2,70 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDA03C9627
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E613C9628
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhGODMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:12:07 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11308 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhGODMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:12:06 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GQK3Z6mlJz7tFq;
-        Thu, 15 Jul 2021 11:04:42 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 11:09:12 +0800
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 15 Jul 2021 11:09:11 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <will@kernel.org>,
-        <longman@redhat.com>, <boqun.feng@gmail.com>
-CC:     <wanghaibin.wang@huawei.com>, <linux-kernel@vger.kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH] locking/qspinlock: Fix typo of lock word transition in the uncontended case
-Date:   Thu, 15 Jul 2021 11:08:47 +0800
-Message-ID: <20210715030847.2038-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        id S232858AbhGODMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:12:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:45866 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232770AbhGODMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:12:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1203AD6E;
+        Wed, 14 Jul 2021 20:09:15 -0700 (PDT)
+Received: from [10.163.66.71] (unknown [10.163.66.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 859693F7D8;
+        Wed, 14 Jul 2021 20:09:11 -0700 (PDT)
+Subject: Re: [PATCH 5/5] coresight: trbe: Prohibit tracing while handling an
+ IRQ
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        al.grant@arm.com, leo.yan@linaro.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, peterz@infradead.org, Tamas.Zsoldos@arm.com,
+        will@kernel.org
+References: <20210712113830.2803257-1-suzuki.poulose@arm.com>
+ <20210712113830.2803257-6-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <1837b3ae-cc0b-d4ba-7d26-1debdc60c016@arm.com>
+Date:   Thu, 15 Jul 2021 08:39:59 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210712113830.2803257-6-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the queue head is the only one in the queue and nobody is concurrently
-setting PENDING bit, the uncontended transition should be n,0,0 -> 0,0,1.
+A small nit. Paragraphs in the commit message do not seem to be aligned
+properly to a maximum 75 characters width.
 
-Fix the typo.
+On 7/12/21 5:08 PM, Suzuki K Poulose wrote:
+> When the TRBE generates an IRQ, we stop the TRBE, collect the trace
+> and then reprogram the TRBE with the updated buffer pointers in case
+> of a spurious IRQ. We might also leave the TRBE disabled, on an
+> overflow interrupt, without touching the ETE. This means the
+> the ETE is only disabled when the event is disabled later (via irq_work).
+> This is incorrect, as the ETE trace is still ON without actually being
+> captured and may be routed to the ATB.
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- kernel/locking/qspinlock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I had an assumption that when the TRBE is stopped, ETE would also stop
+implicitly given that the trace packets are not being accepted anymore.
+But if that assumption does not always hold true, then yes trace must
+be stopped upon a TRBE IRQ.
 
-diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
-index cbff6ba53d56..591835415698 100644
---- a/kernel/locking/qspinlock.c
-+++ b/kernel/locking/qspinlock.c
-@@ -355,7 +355,7 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
- 	 * If we observe contention, there is a concurrent locker.
- 	 *
- 	 * Undo and queue; our setting of PENDING might have made the
--	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
-+	 * n,0,0 -> 0,0,1 transition fail and it will now be waiting
- 	 * on @next to become !NULL.
- 	 */
- 	if (unlikely(val & ~_Q_LOCKED_MASK)) {
--- 
-2.19.1
+> 
+> So, we move the CPU into trace prohibited state (for all exception
+> levels) upon entering the IRQ handler. The state is restored before
+> enabling the TRBE back. Otherwise the trace remains prohibited.
+> Since, the ETM/ETE driver controls the TRFCR_EL1 per session,
+> (from commit "coresight: etm4x: Use Trace Filtering controls dynamically")
 
+commit SHA ID ?
+
+> the tracing can be restored/enabled back when the event is rescheduled
+> in.
+
+Makes sense.
+
+> 
+> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 43 ++++++++++++++++++--
+>  1 file changed, 40 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index c0c264264427..e4d88e0de2a8 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -83,6 +83,31 @@ struct trbe_drvdata {
+>  	struct platform_device *pdev;
+>  };
+>  
+> +static inline void write_trfcr(u64 val)
+> +{
+> +	write_sysreg_s(val, SYS_TRFCR_EL1);
+> +	isb();
+> +}
+> +
+
+There is another instance of write_trfcr() in coresight-etm4x-core.c and
+some other writes into SYS_TRFCR_EL1 elsewhere. write_trfcr() should be
+factored out and moved to a common place.
+
+> +/*
+> + * Prohibit the CPU tracing at all ELs, in preparation to collect
+> + * the trace buffer.
+> + *
+> + * Returns the original value of the trfcr for restoring later.
+> + */
+> +static u64 cpu_prohibit_tracing(void)
+> +{
+> +	u64 trfcr = read_sysreg_s(SYS_TRFCR_EL1);
+> +
+> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
+> +	return trfcr;
+> +}
+
+This also should be factored out along with etm4x_prohibit_trace()
+usage and moved to a common header instead.
+
+> +
+> +static void cpu_restore_tracing(u64 trfcr)
+> +{
+> +	write_trfcr(trfcr);
+> +}
+> +
+>  static int trbe_alloc_node(struct perf_event *event)
+>  {
+>  	if (event->cpu == -1)
+> @@ -681,7 +706,7 @@ static int arm_trbe_disable(struct coresight_device *csdev)
+>  	return 0;
+>  }
+>  
+> -static void trbe_handle_spurious(struct perf_output_handle *handle)
+> +static void trbe_handle_spurious(struct perf_output_handle *handle, u64 trfcr)
+>  {
+>  	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>  
+> @@ -691,6 +716,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
+>  		trbe_drain_and_disable_local();
+>  		return;
+>  	}
+
+A small comment here would be great because this will be the only
+IRQ handler path, where it actually restores the tracing back.
+
+> +	cpu_restore_tracing(trfcr);
+>  	trbe_enable_hw(buf);
+>  }
+>  
+> @@ -760,7 +786,18 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	struct perf_output_handle **handle_ptr = dev;
+>  	struct perf_output_handle *handle = *handle_ptr;
+>  	enum trbe_fault_action act;
+> -	u64 status;
+> +	u64 status, trfcr;
+> +
+> +	/*
+> +	 * Prohibit the tracing, while we process this. We turn
+> +	 * things back right, if we get to enabling the TRBE
+> +	 * back again. Otherwise, the tracing still remains
+> +	 * prohibited, until the perf event state changes
+> +	 * or another event is scheduled. This ensures that
+> +	 * the trace is not generated when it cannot be
+> +	 * captured.
+> +	 */
+
+Right.
+
+But a small nit though. Please keep the comments here formatted and
+aligned with the existing ones.
+
+> +	trfcr = cpu_prohibit_tracing();
+>  
+>  	/*
+>  	 * Ensure the trace is visible to the CPUs and
+> @@ -791,7 +828,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  		trbe_handle_overflow(handle);
+>  		break;
+>  	case TRBE_FAULT_ACT_SPURIOUS:
+> -		trbe_handle_spurious(handle);
+> +		trbe_handle_spurious(handle, trfcr);
+>  		break;
+>  	case TRBE_FAULT_ACT_FATAL:
+>  		trbe_stop_and_truncate_event(handle);
+> 
+
+But stopping the trace (even though from a sink IRQ handler) is a source
+device action. Should not this be done via a new coresight_ops_source
+callback instead ?
