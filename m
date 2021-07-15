@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8263CAB4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E998A3CA8EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244527AbhGOTS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:18:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39762 "EHLO mail.kernel.org"
+        id S243428AbhGOTEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243372AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDA4D613F9;
-        Thu, 15 Jul 2021 18:59:57 +0000 (UTC)
+        id S240599AbhGOSyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDCB9613D0;
+        Thu, 15 Jul 2021 18:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375598;
-        bh=6JATwP12G/64FbgrNsJhSq7lJ8aC9o29Lv6SkZrlzBc=;
+        s=korg; t=1626375067;
+        bh=PolS+7aZnFZs1pDZxZ9Fgg0SpLVGAqOvR8aCwenTItE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MguIofEP+Imbew8odYHMip7NBqbooqoN7bQPx3PKWFrgD5I04k4eSVUtR17o5wZ3y
-         wxzsZu99KHpKb6O8GW80gNzxl6WH1CG+MkC2BjUEY0tPKFuSA3kR+VT1AWC5en1IsL
-         f2XfsEaElJYqpKDunH521YAslqqabZs+KfO4Bb2E=
+        b=V6JcmSufoRXvTOGmMSPsWrPuwa2VE+XtEACvx/JAs2BGOyj1RP8mfcZDMQ7f0bOeX
+         AaM5zsEijjJvUU0WsLooN8CW52mVCg4BklRtXWZLpCHiSbnLLbbdEss9BIteYVcN4C
+         pvXUVfrHQMo5dQSvhLnFJok31EmbtxyuKadSvMRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolaus Schaller <hns@goldelico.com>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
-        <zhouyanjie@wanyeetech.com>, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 153/242] MIPS: CI20: Reduce clocksource to 750 kHz.
+        Matthew Wilcox <willy@infradead.org>,
+        yangerkun <yangerkun@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Hanjun Guo <guohanjun@huawei.com>
+Subject: [PATCH 5.10 143/215] io_uring: convert io_buffer_idr to XArray
 Date:   Thu, 15 Jul 2021 20:38:35 +0200
-Message-Id: <20210715182620.181549345@linuxfoundation.org>
+Message-Id: <20210715182624.875109621@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +40,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 23c64447b3538a6f34cb38aae3bc19dc1ec53436 ]
+commit 9e15c3a0ced5a61f320b989072c24983cb1620c1 upstream.
 
-The original clock (3 MHz) is too fast for the clocksource,
-there will be a chance that the system may get stuck.
+Like we did for the personality idr, convert the IO buffer idr to use
+XArray. This avoids a use-after-free on removal of entries, since idr
+doesn't like doing so from inside an iterator, and it nicely reduces
+the amount of code we need to support this feature.
 
-Reported-by: Nikolaus Schaller <hns@goldelico.com>
-Tested-by: Nikolaus Schaller <hns@goldelico.com> # on CI20
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Acked-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 5a2e745d4d43 ("io_uring: buffer registration infrastructure")
+Cc: stable@vger.kernel.org
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: yangerkun <yangerkun@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/boot/dts/ingenic/ci20.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/io_uring.c |   43 +++++++++++++++----------------------------
+ 1 file changed, 15 insertions(+), 28 deletions(-)
 
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index 8877c62609de..3a4eaf1f3f48 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -525,10 +525,10 @@
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -344,7 +344,7 @@ struct io_ring_ctx {
+ 	struct socket		*ring_sock;
+ #endif
  
- &tcu {
- 	/*
--	 * 750 kHz for the system timer and 3 MHz for the clocksource,
-+	 * 750 kHz for the system timer and clocksource,
- 	 * use channel #0 for the system timer, #1 for the clocksource.
- 	 */
- 	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
- 					  <&tcu TCU_CLK_OST>;
--	assigned-clock-rates = <750000>, <3000000>, <3000000>;
-+	assigned-clock-rates = <750000>, <750000>, <3000000>;
- };
--- 
-2.30.2
-
+-	struct idr		io_buffer_idr;
++	struct xarray		io_buffers;
+ 
+ 	struct xarray		personalities;
+ 	u32			pers_next;
+@@ -1212,7 +1212,7 @@ static struct io_ring_ctx *io_ring_ctx_a
+ 	INIT_LIST_HEAD(&ctx->cq_overflow_list);
+ 	init_completion(&ctx->ref_comp);
+ 	init_completion(&ctx->sq_thread_comp);
+-	idr_init(&ctx->io_buffer_idr);
++	xa_init_flags(&ctx->io_buffers, XA_FLAGS_ALLOC1);
+ 	xa_init_flags(&ctx->personalities, XA_FLAGS_ALLOC1);
+ 	mutex_init(&ctx->uring_lock);
+ 	init_waitqueue_head(&ctx->wait);
+@@ -2990,7 +2990,7 @@ static struct io_buffer *io_buffer_selec
+ 
+ 	lockdep_assert_held(&req->ctx->uring_lock);
+ 
+-	head = idr_find(&req->ctx->io_buffer_idr, bgid);
++	head = xa_load(&req->ctx->io_buffers, bgid);
+ 	if (head) {
+ 		if (!list_empty(&head->list)) {
+ 			kbuf = list_last_entry(&head->list, struct io_buffer,
+@@ -2998,7 +2998,7 @@ static struct io_buffer *io_buffer_selec
+ 			list_del(&kbuf->list);
+ 		} else {
+ 			kbuf = head;
+-			idr_remove(&req->ctx->io_buffer_idr, bgid);
++			xa_erase(&req->ctx->io_buffers, bgid);
+ 		}
+ 		if (*len > kbuf->len)
+ 			*len = kbuf->len;
+@@ -3960,7 +3960,7 @@ static int __io_remove_buffers(struct io
+ 	}
+ 	i++;
+ 	kfree(buf);
+-	idr_remove(&ctx->io_buffer_idr, bgid);
++	xa_erase(&ctx->io_buffers, bgid);
+ 
+ 	return i;
+ }
+@@ -3978,7 +3978,7 @@ static int io_remove_buffers(struct io_k
+ 	lockdep_assert_held(&ctx->uring_lock);
+ 
+ 	ret = -ENOENT;
+-	head = idr_find(&ctx->io_buffer_idr, p->bgid);
++	head = xa_load(&ctx->io_buffers, p->bgid);
+ 	if (head)
+ 		ret = __io_remove_buffers(ctx, head, p->bgid, p->nbufs);
+ 	if (ret < 0)
+@@ -4069,21 +4069,14 @@ static int io_provide_buffers(struct io_
+ 
+ 	lockdep_assert_held(&ctx->uring_lock);
+ 
+-	list = head = idr_find(&ctx->io_buffer_idr, p->bgid);
++	list = head = xa_load(&ctx->io_buffers, p->bgid);
+ 
+ 	ret = io_add_buffers(p, &head);
+-	if (ret < 0)
+-		goto out;
+-
+-	if (!list) {
+-		ret = idr_alloc(&ctx->io_buffer_idr, head, p->bgid, p->bgid + 1,
+-					GFP_KERNEL);
+-		if (ret < 0) {
++	if (ret >= 0 && !list) {
++		ret = xa_insert(&ctx->io_buffers, p->bgid, head, GFP_KERNEL);
++		if (ret < 0)
+ 			__io_remove_buffers(ctx, head, p->bgid, -1U);
+-			goto out;
+-		}
+ 	}
+-out:
+ 	if (ret < 0)
+ 		req_set_fail_links(req);
+ 
+@@ -8411,19 +8404,13 @@ static int io_eventfd_unregister(struct
+ 	return -ENXIO;
+ }
+ 
+-static int __io_destroy_buffers(int id, void *p, void *data)
+-{
+-	struct io_ring_ctx *ctx = data;
+-	struct io_buffer *buf = p;
+-
+-	__io_remove_buffers(ctx, buf, id, -1U);
+-	return 0;
+-}
+-
+ static void io_destroy_buffers(struct io_ring_ctx *ctx)
+ {
+-	idr_for_each(&ctx->io_buffer_idr, __io_destroy_buffers, ctx);
+-	idr_destroy(&ctx->io_buffer_idr);
++	struct io_buffer *buf;
++	unsigned long index;
++
++	xa_for_each(&ctx->io_buffers, index, buf)
++		__io_remove_buffers(ctx, buf, index, -1U);
+ }
+ 
+ static void io_ring_ctx_free(struct io_ring_ctx *ctx)
 
 
