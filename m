@@ -2,201 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3043C964B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C569A3C964D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234263AbhGODPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        id S231824AbhGODRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbhGODPl (ORCPT
+        with ESMTP id S230507AbhGODRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:15:41 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96461C061764;
-        Wed, 14 Jul 2021 20:12:47 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id i4so2148081qvq.10;
-        Wed, 14 Jul 2021 20:12:47 -0700 (PDT)
+        Wed, 14 Jul 2021 23:17:33 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B25C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:14:39 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id b12so3806649pfv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aE1V8QRfi8n6sF30lMvTx95RKdAsIa59F0QLZHJ2zOc=;
-        b=m0qFAw1m0kNwdNacHFNTF36k2HELiH8XJ81F8hZMnBvE0tR7vpIbe4pkRLhtVUuc4C
-         QsuMbYCpXTCt20+yduDxtsb6nCKF1O5e+xu9OBgPR5WIGtzFsGKJ5td9I9T2YeD74suq
-         F4g6zU0+1n2NdSEV4xJh+3PL0liOs3mSSkh2BCloqtCoQ0Ks9aXKYv9xf0YFoiIX5PE2
-         i5qkbIK1zOjet3p1e/1GbqchhsnHV/JLSGODIUu72dKpWZLjwJGTWvnJVzpnVaw9d+fm
-         /Wmc9niXw+M5SX9ypa4rt/dQyB5RQzl92bZt/nuLFWIyt//0AROZA6sOWo/ILP792Yqt
-         ILng==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=abyDHR0XRwSMrhA06McE4t3PEmRieAURZX1e2KLvRB4=;
+        b=GpJrAxJZnwq6fPqj8j+JHs+SBdIKLopRRZJAb5ZcmyHLusiVn99YhZBxYgVboYwU9u
+         US0lZR9SBIKwKCWkN3F/BhKpLSaRyOW5gW7jy5fz4a8kOLH40jTC6NlJTTJeWLJhA11v
+         8JGETmCMlhSucSeLzyOxmakWCODX48tCeF9PgB9wnvm0nbpWl5kHDhV0hA6RVr1Jg4Uo
+         uqmqEkc77BVC9ZQcww9O/bFKW92oWMJ8+DQBjPdL851Qu3I8eBLOkiKhqUXKQ+E7t7cz
+         lmkhegsbt6bIAehkd8FtcU4/1NvoDbz+ESe3D54NCuYvJI8dTErWVITaDvqR05rsf7BN
+         WBmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aE1V8QRfi8n6sF30lMvTx95RKdAsIa59F0QLZHJ2zOc=;
-        b=KQsCDcMEggbE9gPQjgmZ2Ds+i5H61J0jMjcXmyu5zIYcpO4WswPQjWTK8t55dc8VWs
-         M/aimTo6aY4fwQQE5XwnbKsk8um/O3Z+2k4cvJjJiS2i+HN+W1tupyX7R+kyvVR3EZox
-         HcqLMWmC7I7kyj89hYQ3PJu7sz0V5pBsekInhPom3cq99yfjGjMT/fQNlH/lf30hY46I
-         e+PZ8YcvDO/EOJcOA0OHmOa+8VJz6f0b7ILM3Rwi9GDBfYj1W8/4aYTYHxTYZBYCCG7b
-         yYzJ4A/t0g9TSXJku7c+q/pGvPG7OG5d4P1m7aKcKFXGpaEEce1UfkGKv6iG9l97JZ9g
-         UZNg==
-X-Gm-Message-State: AOAM533v33B1EL0xMaHk62w3dVS3SX86CW4napim4IbqCMcTcUY8FDjl
-        mCRgCmUFV3rtx3R7f6qPRd4=
-X-Google-Smtp-Source: ABdhPJzqjXQ0AVrEApOwNga/whINVfmKLmbLmX3gNSLkmbXvS9XTMyqE7+miZ/AQ7v5MOeF2A3+Lbw==
-X-Received: by 2002:a0c:ea31:: with SMTP id t17mr1753088qvp.17.1626318766735;
-        Wed, 14 Jul 2021 20:12:46 -0700 (PDT)
-Received: from shaak.. (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id t125sm1932847qkf.41.2021.07.14.20.12.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 20:12:46 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, peda@axentia.se, jic23@kernel.org,
-        lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v5 10/10] dt-bindings: iio: afe: add bindings for temperature transducers
-Date:   Wed, 14 Jul 2021 23:12:15 -0400
-Message-Id: <20210715031215.1534938-11-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210715031215.1534938-1-liambeguin@gmail.com>
-References: <20210715031215.1534938-1-liambeguin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=abyDHR0XRwSMrhA06McE4t3PEmRieAURZX1e2KLvRB4=;
+        b=WzADKEEguRhPfEp/RG4kC9MNIsRkDXlahNxPyfZ5EWCOyT/t+5SEx7Jho/XiHmsXsq
+         u6GNS3mTGIJmP4U2/fuTtN4W2CjZWj9b5oRSsTpr2p0rs3JDWaO7G/9VZsZN0GOTSkKt
+         M1KdPwuJNZPEapZR08HNB6gL6TfeKptl/Iw7/Bip0J3IDs9gTH6ajZ7/XCSbhq1PHmpZ
+         pAWCYeM9pXdeh6kNz9RFScCdsOraRMJ4GYTLoxfVTkRO2Nua0A44/2pZKpR9g2/aSavA
+         2tamju1f6uj+K9RgTEvkF6F0RcG+wRygTOCQukcbaCs6nin+huWk1v9CFDxAzJ14Pur5
+         56Ow==
+X-Gm-Message-State: AOAM530+bHuggLBN4MBVh8SRUMtLyl3iG997ExJIt4JC3CDc8DfUBbnF
+        cmn6EZNw9oWDSQrV6cAvOFfhrlrbdOCzWYutG05s5w==
+X-Google-Smtp-Source: ABdhPJzOV/c1LX6O04F3PPyi2lFcjnNcqYqiySbWv2hUD0oiEItNo7TlW6+E2Zb4oR9B+ECHbIgo9Bnly2g2+ovg/vs=
+X-Received: by 2002:a65:63ce:: with SMTP id n14mr1740199pgv.273.1626318879171;
+ Wed, 14 Jul 2021 20:14:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210710002441.167759-1-mike.kravetz@oracle.com>
+ <20210710002441.167759-4-mike.kravetz@oracle.com> <CAMZfGtWvGZZ1VaPzZbEro7nYCHS6tGCL5kYm3ArSQ5b5E0-o5g@mail.gmail.com>
+ <6c38223b-83f4-ef7d-68d7-27c0f6ae6359@oracle.com>
+In-Reply-To: <6c38223b-83f4-ef7d-68d7-27c0f6ae6359@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 15 Jul 2021 11:14:03 +0800
+Message-ID: <CAMZfGtWjZAJfPdow2VgNL9T9jYdLLgekKnnQVtKyzaEwC4FfJQ@mail.gmail.com>
+Subject: Re: [External] [PATCH 3/3] hugetlb: before freeing hugetlb page set
+ dtor to appropriate value
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+On Thu, Jul 15, 2021 at 1:39 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 7/14/21 3:57 AM, Muchun Song wrote:
+> > On Sat, Jul 10, 2021 at 8:25 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >> +       /*
+> >> +        * Very subtle
+> >> +        *
+> >> +        * For non-gigantic pages set the destructor to the normal compound
+> >> +        * page dtor.  This is needed in case someone takes an additional
+> >> +        * temporary ref to the page, and freeing is delayed until they drop
+> >> +        * their reference.
+> >> +        *
+> >> +        * For gigantic pages set the destructor to the null dtor.  This
+> >> +        * destructor will never be called.  Before freeing the gigantic
+> >> +        * page destroy_compound_gigantic_page will turn the compound page
+> >> +        * into a simple group of pages.  After this the destructor does not
+> >> +        * apply.
+> >> +        *
+> >> +        * This handles the case where more than one ref is held when and
+> >> +        * after update_and_free_page is called.
+> >> +        */
+> >>         set_page_refcounted(page);
+> >> -       set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+> >> +       if (hstate_is_gigantic(h))
+> >> +               set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+> >> +       else
+> >> +               set_compound_page_dtor(page, COMPOUND_PAGE_DTOR);
+> >
+> > Hi Mike,
+> >
+> > The race is really subtle. But we also should remove the WARN from
+> > free_contig_range, right? Because the refcount of the head page of
+> > the gigantic page can be greater than one, but free_contig_range has
+> > the following warning.
+> >
+> > WARN(count != 0, "%lu pages are still in use!\n", count);
+> >
+>
+> I did hit that warning in my testing and thought about removing it.
+> However, I decided to keep it because non-hugetlb code also makes use of
+> alloc_contig_range/free_contig_range and it might be useful in those
+> cases.
+>
+> My 'guess' is that the warning was added not because of temporary ref
+> count increases but rather to point out any code that forgot to drop a
+> reference.
 
-An ADC is often used to measure other quantities indirectly.
-This binding describe one case, the measurement of a temperature
-through a temperature transducer (either voltage or current).
+Got it. At least this patch looks good to me. So
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- .../iio/afe/temperature-transducer.yaml       | 114 ++++++++++++++++++
- 1 file changed, 114 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-new file mode 100644
-index 000000000000..41411514aee0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/afe/temperature-transducer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Temperature Transducer
-+
-+maintainers:
-+  - Liam Beguin <lvb@xiphos.com>
-+
-+description: |
-+  A temperature transducer is a device that converts a thermal quantity
-+  into any other physical quantity. This binding applies to temperature to
-+  voltage (like the LTC2997), and temperature to current (like the AD590)
-+  linear transducers.
-+  In both cases these are assumed to be connected to a voltage ADC.
-+
-+  When an io-channel measures the output voltage of a temperature analog front
-+  end such as a temperature transducer, the interesting measurement is almost
-+  always the corresponding temperature, not the voltage output. This binding
-+  describes such a circuit.
-+
-+  The general transfer function here is (using SI units)
-+    V(T) = Rsense * Isense(T)
-+    T = (Isense(T) / alpha) + offset
-+    T = 1 / (Rsense * alpha) * (V + offset * Rsense * alpha)
-+
-+  When using a temperature to voltage transducer, Rsense is set to 1.
-+
-+  The following circuits show a temperature to current and a temperature to
-+  voltage transducer that can be used with this binding.
-+
-+           VCC
-+          -----
-+            |
-+        +---+---+
-+        | AD590 |                               VCC
-+        +---+---+                              -----
-+            |                                    |
-+            V proportional to T             +----+----+
-+            |                          D+ --+         |
-+            +---- Vout                      | LTC2997 +--- Vout
-+            |                          D- --+         |
-+        +---+----+                          +---------+
-+        | Rsense |                               |
-+        +---+----+                             -----
-+            |                                   GND
-+          -----
-+           GND
-+
-+properties:
-+  compatible:
-+    const: temperature-transducer
-+
-+  io-channels:
-+    maxItems: 1
-+    description: |
-+      Channel node of a voltage io-channel.
-+
-+  '#io-channel-cells':
-+    const: 0
-+
-+  sense-offset-millicelsius:
-+    description: |
-+      Temperature offset.
-+      This offset is commonly used to convert from Kelvins to degrees Celsius.
-+      In that case, sense-offset-millicelsius would be set to <(-273150)>.
-+    default: 0
-+
-+  sense-resistor-ohms:
-+    description: |
-+      The sense resistor.
-+      By default sense-resistor-ohms cancels out the resistor making the
-+      circuit behave like a temperature transducer.
-+    default: 1
-+
-+  alpha-ppm-per-celsius:
-+    description: |
-+      Sometimes referred to as output gain, slope, or temperature coefficient.
-+
-+      alpha is expressed in parts per million which can be micro-amps per
-+      degrees Celsius or micro-volts per degrees Celsius. The is the main
-+      characteristic of a temperature transducer and should be stated in the
-+      datasheet.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - io-channels
-+  - alpha-ppm-per-celsius
-+
-+examples:
-+  - |
-+    ad950: temperature-sensor-0 {
-+        compatible = "temperature-transducer";
-+        #io-channel-cells = <0>;
-+        io-channels = <&temp_adc 3>;
-+
-+        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-+        sense-resistor-ohms = <8060>;
-+        alpha-ppm-per-celsius = <1>; /* 1 uA/K */
-+    };
-+  - |
-+    znq_tmp: temperature-sensor-1 {
-+        compatible = "temperature-transducer";
-+        #io-channel-cells = <0>;
-+        io-channels = <&temp_adc 2>;
-+
-+        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-+        alpha-ppm-per-celsius = <4000>; /* 4 mV/K */
-+    };
-+...
--- 
-2.30.1.489.g328c10930387
+>
+> BTW - It is not just the 'head' page which could trigger this warning, but
+> any 'tail' page as well.  That is because we do not call free_contig_range
+> with a compound page, but rather a group of pages all with ref count of
+> at least one.
 
+Right.
+
+>
+> I'm happy to remove the warning if people do not think it is generally
+> useful.
+
+For me, I suggest removing it. If someone has any ideas, please
+let us know.
+
+> --
+> Mike Kravetz
