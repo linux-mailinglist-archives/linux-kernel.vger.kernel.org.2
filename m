@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6B13CABE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A993CA9C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344496AbhGOT0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:26:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
+        id S242731AbhGOTJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243365AbhGOTJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:09:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2AC961410;
-        Thu, 15 Jul 2021 19:05:32 +0000 (UTC)
+        id S241536AbhGOS5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07FC8613D1;
+        Thu, 15 Jul 2021 18:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375933;
+        s=korg; t=1626375301;
         bh=d09ir3kgb9xtU564t4rO0NluCjTTcHfF8TAcNZAL3Ak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Tt/yd8LYfktVqIu9nNGk5ShJkzLOWNJN7Cos683/U0+nwduFmLTF7v3WPPjhfyc+
-         HXgSrzCkihXXc4+LOL6h2RqUcbeH2t8En+8iCtrQ17AsVk7f5lla7u7voQpJiW0cJ0
-         nT6QNzeToOk9+50ixJ03eU319y2iUiCCFBinmWbk=
+        b=VPKBG7pwFQtoy7MEuA7otREsKLg/0G2ZVwu5dswSrr+nqwqVnhvXar6hKwQ50LVtj
+         CCdXj1zLgAgjGEQ8WRjBEroOJZlojLsCEX0c9laofkg8XtWD0we3qioI9TzVsnwAiv
+         B7yH3xGuJbGA1ulhKe0QXXUwjmKmZx7gAoUdAZ9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,12 +29,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 028/266] net: mdio: provide shim implementation of devm_of_mdiobus_register
-Date:   Thu, 15 Jul 2021 20:36:23 +0200
-Message-Id: <20210715182619.052634011@linuxfoundation.org>
+Subject: [PATCH 5.12 022/242] net: mdio: provide shim implementation of devm_of_mdiobus_register
+Date:   Thu, 15 Jul 2021 20:36:24 +0200
+Message-Id: <20210715182555.669787927@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
