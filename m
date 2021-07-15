@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D26F3CA5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35493CA834
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235966AbhGOSpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:45:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45268 "EHLO mail.kernel.org"
+        id S242313AbhGOS7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235030AbhGOSou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:44:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF94661396;
-        Thu, 15 Jul 2021 18:41:55 +0000 (UTC)
+        id S240096AbhGOSwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:52:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3669B613E4;
+        Thu, 15 Jul 2021 18:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374516;
-        bh=FlMvHtQsuOPJncd+fzNsujxC2o2xRhcZN14NdAJ0cRc=;
+        s=korg; t=1626374980;
+        bh=a2TYuJh7PkCVniY4/fKjO/f6OUDpXJ887zt9Jfrveuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZOhvA3YFITFDXibmxOH8ypJfzaEQiSaTvjMjkCaUhUEmNAhtjfuLDBlIuXU7rdSa
-         CIjeepMZpSJkeKl7Nvmv7E2anm5Ga0aWbp+sxWI/IgMEhMUAwth7DoEwHSgPO/Leio
-         lWpbZE+mbi7v6jUBLKymPHA1VfRXYZU4Scjbec78=
+        b=Ngpw1F+QOio8usCUKOCJBFDf/2jk1A6R1GkmeHVg95XXX/Y3sdQCR2dv2deoidzyy
+         yzUKCDq0g7Y2RB8adtLqacoCcoS0vQWAcNaORasYcW0XExXWBnwyschgmWICgF4hsQ
+         WmU5gz9t7npai3nwR3RsHQoNCSN+cXuZHtCkAMUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Radim Pavlik <radim.pavlik@tbs-biometrics.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Xiao Yang <yangx.jy@fujitsu.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 025/122] pinctrl: mcp23s08: fix race condition in irq handler
-Date:   Thu, 15 Jul 2021 20:37:52 +0200
-Message-Id: <20210715182455.523370505@linuxfoundation.org>
+Subject: [PATCH 5.10 101/215] RDMA/rxe: Dont overwrite errno from ib_umem_get()
+Date:   Thu, 15 Jul 2021 20:37:53 +0200
+Message-Id: <20210715182617.166839179@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-References: <20210715182448.393443551@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-[ Upstream commit 897120d41e7afd9da435cb00041a142aeeb53c07 ]
+[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
 
-Checking value of MCP_INTF in mcp23s08_irq suggests that the handler may be
-called even when there is no interrupt pending.
+rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
+fails so it's hard for user to know which actual error happens in
+ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
+trying to pin pages on a DAX file.
 
-But the actual interrupt could happened between reading MCP_INTF and MCP_GPIO.
-In this situation we got nothing from MCP_INTF, but the event gets acknowledged
-on the expander by reading MCP_GPIO. This leads to losing events.
+Return actual error as mlx4/mlx5 does.
 
-Fix the problem by not reading any register until we see something in MCP_INTF.
-
-The error was reproduced and fix tested on MCP23017.
-
-Signed-off-by: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
-Link: https://lore.kernel.org/r/AM7PR06MB6769E1183F68DEBB252F665ABA3E9@AM7PR06MB6769.eurprd06.prod.outlook.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index d8bcbefcba89..9d5e2d9b6b93 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -459,6 +459,11 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
- 	if (mcp_read(mcp, MCP_INTF, &intf))
- 		goto unlock;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index d2ce852447c1..026285f7f36a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -139,7 +139,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
+ 	if (IS_ERR(umem)) {
+ 		pr_warn("err %d from rxe_umem_get\n",
+ 			(int)PTR_ERR(umem));
+-		err = -EINVAL;
++		err = PTR_ERR(umem);
+ 		goto err1;
+ 	}
  
-+	if (intf == 0) {
-+		/* There is no interrupt pending */
-+		return IRQ_HANDLED;
-+	}
-+
- 	if (mcp_read(mcp, MCP_INTCAP, &intcap))
- 		goto unlock;
- 
-@@ -476,11 +481,6 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
- 	mcp->cached_gpio = gpio;
- 	mutex_unlock(&mcp->lock);
- 
--	if (intf == 0) {
--		/* There is no interrupt pending */
--		return IRQ_HANDLED;
--	}
--
- 	dev_dbg(mcp->chip.parent,
- 		"intcap 0x%04X intf 0x%04X gpio_orig 0x%04X gpio 0x%04X\n",
- 		intcap, intf, gpio_orig, gpio);
 -- 
 2.30.2
 
