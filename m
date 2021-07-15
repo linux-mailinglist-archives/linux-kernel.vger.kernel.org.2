@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6E63CAB8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8693CA8F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244957AbhGOTUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:20:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38862 "EHLO mail.kernel.org"
+        id S236792AbhGOTEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242690AbhGOTFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DB9613C4;
-        Thu, 15 Jul 2021 19:01:38 +0000 (UTC)
+        id S241803AbhGOSzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 488CA613D1;
+        Thu, 15 Jul 2021 18:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375699;
-        bh=lujL2cvlgyfZDifBxwWYnoklm+/o68G+SorLx8OaS6U=;
+        s=korg; t=1626375169;
+        bh=2wcLH/MjR6vnjHJ+bCuMtovL+XwRk6NvzTwRJB2jEXI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hizRh1jPZ0RuwffvqtSubK/93BuhLb5fcdi3p6dEcmz+AQYEq9akc386YqEIrnoXR
-         Jndkv/WF29tygetu7SRxGuR9TnMJ+atg1SumgYOa2fvKYhns2659WIDNRUZImM2YP+
-         Anz/IgeDyy55shHu9WonNtHih4TAXmJ/CiOR5jXk=
+        b=s3pDV7LptHn+IhFhKpmLvwQV1sxhbIP/vT2FszhldnD4mlKMIqkJ+XFnzsJHQRsQk
+         vIbMt+Sep6MQJoy7SGcB8VW7glvUg7lNve1u87jY1tghqV/cDJahPubb/aefIYrr4F
+         OYXFkYy0nrqkG14pH/PWgjHyOxZg2t13nMcnNMlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Pavlu <petr.pavlu@suse.com>,
-        Corey Minyard <cminyard@mvista.com>
-Subject: [PATCH 5.12 197/242] ipmi/watchdog: Stop watchdog timer when the current action is none
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH 5.10 187/215] extcon: intel-mrfld: Sync hardware and software state on init
 Date:   Thu, 15 Jul 2021 20:39:19 +0200
-Message-Id: <20210715182627.908812353@linuxfoundation.org>
+Message-Id: <20210715182632.285294831@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,72 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Pavlu <petr.pavlu@suse.com>
+From: Ferry Toth <ftoth@exalondelft.nl>
 
-commit 2253042d86f57d90a621ac2513a7a7a13afcf809 upstream.
+commit ecb5bdff901139850fb3ca3ae2d0cccac045bc52 upstream.
 
-When an IPMI watchdog timer is being stopped in ipmi_close() or
-ipmi_ioctl(WDIOS_DISABLECARD), the current watchdog action is updated to
-WDOG_TIMEOUT_NONE and _ipmi_set_timeout(IPMI_SET_TIMEOUT_NO_HB) is called
-to install this action. The latter function ends up invoking
-__ipmi_set_timeout() which makes the actual 'Set Watchdog Timer' IPMI
-request.
+extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+DRD to detect a change in the switch position. This change initializes the
+status at probe time.
 
-For IPMI 1.0, this operation results in fully stopping the watchdog timer.
-For IPMI >= 1.5, function __ipmi_set_timeout() always specifies the "don't
-stop" flag in the prepared 'Set Watchdog Timer' IPMI request. This causes
-that the watchdog timer has its action correctly updated to 'none' but the
-timer continues to run. A problem is that IPMI firmware can then still log
-an expiration event when the configured timeout is reached, which is
-unexpected because the watchdog timer was requested to be stopped.
-
-The patch fixes this problem by not setting the "don't stop" flag in
-__ipmi_set_timeout() when the current action is WDOG_TIMEOUT_NONE which
-results in stopping the watchdog timer. This makes the behaviour for
-IPMI >= 1.5 consistent with IPMI 1.0. It also matches the logic in
-__ipmi_heartbeat() which does not allow to reset the watchdog if the
-current action is WDOG_TIMEOUT_NONE as that would start the timer.
-
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-Message-Id: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Corey Minyard <cminyard@mvista.com>
+Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/char/ipmi/ipmi_watchdog.c |   22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/extcon/extcon-intel-mrfld.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/char/ipmi/ipmi_watchdog.c
-+++ b/drivers/char/ipmi/ipmi_watchdog.c
-@@ -371,16 +371,18 @@ static int __ipmi_set_timeout(struct ipm
- 	data[0] = 0;
- 	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
+--- a/drivers/extcon/extcon-intel-mrfld.c
++++ b/drivers/extcon/extcon-intel-mrfld.c
+@@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct pla
+ 	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+ 	struct regmap *regmap = pmic->regmap;
+ 	struct mrfld_extcon_data *data;
++	unsigned int status;
+ 	unsigned int id;
+ 	int irq, ret;
  
--	if ((ipmi_version_major > 1)
--	    || ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
--		/* This is an IPMI 1.5-only feature. */
--		data[0] |= WDOG_DONT_STOP_ON_SET;
--	} else if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
--		/*
--		 * In ipmi 1.0, setting the timer stops the watchdog, we
--		 * need to start it back up again.
--		 */
--		hbnow = 1;
-+	if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
-+		if ((ipmi_version_major > 1) ||
-+		    ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
-+			/* This is an IPMI 1.5-only feature. */
-+			data[0] |= WDOG_DONT_STOP_ON_SET;
-+		} else {
-+			/*
-+			 * In ipmi 1.0, setting the timer stops the watchdog, we
-+			 * need to start it back up again.
-+			 */
-+			hbnow = 1;
-+		}
- 	}
+@@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct pla
+ 	/* Get initial state */
+ 	mrfld_extcon_role_detect(data);
  
- 	data[1] = 0;
++	/*
++	 * Cached status value is used for cable detection, see comments
++	 * in mrfld_extcon_cable_detect(), we need to sync cached value
++	 * with a real state of the hardware.
++	 */
++	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
++	data->status = status;
++
+ 	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+ 	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
+ 
 
 
