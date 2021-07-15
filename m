@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192F23CABB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5633A3CA97D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243916AbhGOTWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:22:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
+        id S241387AbhGOTG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241811AbhGOTGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:06:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AFE9613E6;
-        Thu, 15 Jul 2021 19:02:32 +0000 (UTC)
+        id S241183AbhGOS4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1F3613D6;
+        Thu, 15 Jul 2021 18:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375752;
-        bh=wJW9/bWdgGLuAi77N/GftS9RWl0VFrkxM6LNFtYqLTQ=;
+        s=korg; t=1626375226;
+        bh=19ICkVh5it/5+IOgolq39gZO6qVQRuxNYNevM4zbGJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S15XtuDi72S2L1UVQ40LrC0hd34b1a9Z4hTqAdjVIpvYejcKkG4kLCvA6z8G9Ubud
-         MF3skfDAWFAdukdoXr3VwtPA/G/OsgJLZDwnyDRK1ZjgzZYSSS9CecBqOdONSAJ1Vd
-         ZlOgdVEqBJ8xPD83hhrusZk1gygLq4ThoJsX34MI=
+        b=Ker7jAl5b4VZJvQB1BJ6iXsp5yxJqg4XBW4cCVScmb+qVZb7X2GhbqoV76hG9XNw5
+         P+pVVcfz31r3wwLry+W7t0vzfn33U4YHiBTECpIhF1M1VtcHvCSXK80EZ7dJuqTTGd
+         a+Lvf9BuIunNLA2d/s7QQAk/8orFxqbNHdkgEWkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.12 222/242] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
-Date:   Thu, 15 Jul 2021 20:39:44 +0200
-Message-Id: <20210715182632.093534439@linuxfoundation.org>
+        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: [PATCH 5.10 213/215] smackfs: restrict bytes count in smk_set_cipso()
+Date:   Thu, 15 Jul 2021 20:39:45 +0200
+Message-Id: <20210715182636.747467525@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,79 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-commit da3a1858c3a37c09446e1470c48352897d59d11b upstream.
+commit 49ec114a6e62d8d320037ce71c1aaf9650b3cafd upstream.
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
+Oops, I failed to update subject line.
 
-There is a bug at ccs_pm_get_init(): when this function returns
-an error, the stream is not started, and RPM usage_count
-should not be incremented. However, if the calls to
-v4l2_ctrl_handler_setup() return errors, it will be kept
-incremented.
+>From 07571157c91b98ce1a4aa70967531e64b78e8346 Mon Sep 17 00:00:00 2001
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date: Mon, 12 Apr 2021 22:25:06 +0900
+Subject: [PATCH 5.10 213/215] smackfs: restrict bytes count in smk_set_cipso()
 
-At ccs_suspend() the best is to replace it by the new
-pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter automatically,
-in the case of errors.
+Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
+functions") missed that count > SMK_CIPSOMAX check applies to only
+format == SMK_FIXED24_FMT case.
 
-Fixes: 96e3a6b92f23 ("media: smiapp: Avoid maintaining power state information")
-Cc: stable@vger.kernel.org
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/i2c/ccs/ccs-core.c |   32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ security/smack/smackfs.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/media/i2c/ccs/ccs-core.c
-+++ b/drivers/media/i2c/ccs/ccs-core.c
-@@ -1880,21 +1880,33 @@ static int ccs_pm_get_init(struct ccs_se
- 	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
- 	int rval;
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -855,6 +855,8 @@ static ssize_t smk_set_cipso(struct file
+ 	if (format == SMK_FIXED24_FMT &&
+ 	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
+ 		return -EINVAL;
++	if (count > PAGE_SIZE)
++		return -EINVAL;
  
-+	/*
-+	 * It can't use pm_runtime_resume_and_get() here, as the driver
-+	 * relies at the returned value to detect if the device was already
-+	 * active or not.
-+	 */
- 	rval = pm_runtime_get_sync(&client->dev);
--	if (rval < 0) {
--		pm_runtime_put_noidle(&client->dev);
-+	if (rval < 0)
-+		goto error;
- 
--		return rval;
--	} else if (!rval) {
--		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
--					       ctrl_handler);
--		if (rval)
--			return rval;
-+	/* Device was already active, so don't set controls */
-+	if (rval == 1)
-+		return 0;
- 
--		return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
--	}
-+	/* Restore V4L2 controls to the previously suspended device */
-+	rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->ctrl_handler);
-+	if (rval)
-+		goto error;
- 
-+	rval = v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-+	if (rval)
-+		goto error;
-+
-+	/* Keep PM runtime usage_count incremented on success */
- 	return 0;
-+error:
-+	pm_runtime_put(&client->dev);
-+	return rval;
- }
- 
- static int ccs_set_stream(struct v4l2_subdev *subdev, int enable)
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
 
 
