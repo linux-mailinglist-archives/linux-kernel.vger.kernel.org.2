@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A5D3CAD59
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E48C3CAD6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243890AbhGOT6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:58:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        id S245662AbhGOUBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:01:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345576AbhGOTyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:54:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18E9A61073;
-        Thu, 15 Jul 2021 19:52:01 +0000 (UTC)
+        id S242702AbhGOT5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:57:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C9661396;
+        Thu, 15 Jul 2021 19:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626378721;
-        bh=XBqQm/qyQmEIVPgYlJirxh3AhpJzp/fXOspqXaszJhQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lWI4/VjdPWxyaFNDCvqb4MfF2OS84B/SJBa/xK4iSBX/iFYjosXhjhcDhxcftnLen
-         VrT22NbJLEkf/GvaAvH7Uo1vvQPx85WmWwAX7Y4Wehgsba+aqfPQ1EwMOnjhkyEmLw
-         XX3zGL4VvpUW/IegsjTAhqEM/17UZ+4F86s4dJ91p+94vPeqo4HWwbFG6+/osO/y5b
-         vIPoWbEK0a6vbSeKp43lap1JDQ/j1r6067eAfMhQxj91l7f+E25k0Z1IDD5+DqQZc2
-         GGmWRMo1giNIR8NPbEQKbB/RWrMWnCRgKoMIdj/D4VriDm5yANmFUjQ1oUpGyuXDbr
-         ITF19iKvSQygA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 96B4D403F2; Thu, 15 Jul 2021 16:51:58 -0300 (-03)
-Date:   Thu, 15 Jul 2021 16:51:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Kan Liang <kan.liang@intel.com>, Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 03/20] perf test: session_topology: delete session->evlist
-Message-ID: <YPCR3idcrZV0Zifh@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com>
+        s=k20201202; t=1626378882;
+        bh=OzI5qhsw9AWhl+RWxjpuRTSWtsOMOBgBrux4E7l3Z2I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NH+fs8MuRLsG1XRUSbfDBM8sdao0m6yKhpXexYBnFO8fjVUi5nLJRF8uG1fkRspDo
+         NL4FCx7JB6WOMqxjeH6ZbhaUmCVbjbNgA+lU0Nbf05eYHogat2YAWwLpZmXCxthpGG
+         xmWWdZT46YmgKYG+WJ2SIsMCca2zzLvyLY0dEwVBqknjGStVC4OBGclOvDKBHtSt6B
+         zLAl1k3zTVp9+lHM8GBDG08TwKMHTF1YjtdKj+ZNZ1sqh/pK5N8N8HAzqikaLJJa5X
+         fT0VrVqZVLI+CRLtWguNNm3nPE/2DYcH6f3uXLdzEHsRCyarghyo7KDE/czJSqZJ4j
+         fyiBG2tycEQ1w==
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dt-bindings: renesas: rsnd: Fix incorrect 'port' regex schema
+Date:   Thu, 15 Jul 2021 20:53:58 +0100
+Message-Id: <162637883862.27669.2616702519037982107.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210715185952.1470138-1-robh@kernel.org>
+References: <20210715185952.1470138-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:08PM +0200, Riccardo Mancini escreveu:
-> ASan reports a memory leak related to session->evlist while running
-> the perf test "41: Session topology".
-> 
-> When perf_data is in write mode, session->evlist is owned by the
-> caller, which should also take care of deleting it.
-> 
-> This patch adds the missing evlist__delete.
+On Thu, 15 Jul 2021 12:59:52 -0600, Rob Herring wrote:
+> A property regex goes under 'patternProperties', not 'properties'
+> schema. Otherwise, the regex is interpretted as a fixed string.
 
-Thanks, applied.
+Applied to
 
-- Arnaldo
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/tests/topology.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-> index ec4e3b21b8311f57..b5efe675b321746e 100644
-> --- a/tools/perf/tests/topology.c
-> +++ b/tools/perf/tests/topology.c
-> @@ -61,6 +61,7 @@ static int session_write_header(char *path)
->  	TEST_ASSERT_VAL("failed to write header",
->  			!perf_session__write_header(session, session->evlist, data.file.fd, true));
->  
-> +	evlist__delete(session->evlist);
->  	perf_session__delete(session);
->  
->  	return 0;
-> -- 
-> 2.31.1
-> 
+Thanks!
 
--- 
+[1/1] ASoC: dt-bindings: renesas: rsnd: Fix incorrect 'port' regex schema
+      commit: 9a3223b0713369e6258fd8656e0c0a5ed794d186
 
-- Arnaldo
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
