@@ -2,293 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ED93CA4C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E7C3CA4CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbhGOR4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:56:00 -0400
-Received: from mail-mw2nam10on2042.outbound.protection.outlook.com ([40.107.94.42]:22881
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S236481AbhGOR4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:56:35 -0400
+Received: from mail-bn7nam10on2054.outbound.protection.outlook.com ([40.107.92.54]:51439
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235859AbhGORz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:55:59 -0400
+        id S231181AbhGOR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:56:34 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SRsnjl2GLuacc+aRYpGlOh6S0msNKYMNCdmfpzM0iJyLq5OTwIFqi19LsQ1/3Bc9xpB3m71wjr6uNaJyCQQVDZnRUnsB6NH8xN+TZC3iY3m53u+GDtHrvr4SRljQLKcwH8Pl9zK59ZWNMFbXxPRoeCVN6F/HRX/Fv59HnRQRKl52TnV02AqIJjL5K28Yvm03sJNnHm89mZTkhLOyR73mamtrgK6+TerTCo56VnYHYx/AKghQ0vEjzDUo5VdaxLyRhf83gpvAi3tOQ4Qi6Pvv4MoCOB5JfYHmHfueTjOoTp+Xth29X/byM54KvsgzlULWa42uu0WN3ZhwHh7wffSiXg==
+ b=TJ0EucaL9AkKe7pArIEQaBgCgOFABch7cPNFbJ/rvW4NGeY3oZpmWn1YS+179WUNLyF7idGy1hGfoxasANg/n6eMDvMPj/C2WLWhbT++syc5fsYXL2hHpyyUpIld61gvHqXFZtG+K4cGmDvYLFwwnP5FnrEGNe8sTZ26g/m5iuyZyA8+/TE75bpRcab7Jau6Jhs97B+1TMZ4CnNOlFi8MNTTU38niouT/8iyWd+XXQ8ZoQTmD1dY5tKbnXLCf5U6b6rD01wdgW5qsWKwFCguaIanDgmMzAKpkIQZdH/38oWCaL24h4G6TOYcgDMcgJFf+HTqgjcd8vhPW5tCBrd4XQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dHGbjgat4NFqgkyB/3j90mnnuhFQHp9NaeBgzZdzN+c=;
- b=Zu4La3KinhAjyOYJ0GhNC3kMzvL73W53kMFak3VUzwuhZgECMVuD7suiZwfyWB1Er/3DClgQmoTvMKQMD2TgrdFjmRcPz/CeDe9tLyaWbyzWMGesOsP7Hev6ZteeGyZtdY17/jAKowUqm44fENdd2Yb1kLIHrk6Af1oc5F/GBRkuE4ZVRKKIUl034zthiRwRXYVtfhYjdtwybGldK/uK7FzITc/S2hmalhCPaqrJ7U8r7pkMdAvvQOt6TMF0YQgYqx9aJG53C84yRP0SvzwQuloNGUslld4SwO/DyY1GevKRZzR3vXUbfr8wj5d9QOcDRq6PzDHsF/Gg7HGz/1L5rw==
+ bh=FmV9zT6u80YCCP8B9PXO/s58ZFnj7eOfM7QMVbQRwfY=;
+ b=L687BNyZpNSveQo6EabM/5iM2oqCeY1ZTdt+NRGcY1yqDFmqJUsFbTD4R2pi3LBqKvJ9AS+YaThgbxoiPgIsAOFpL+PE7dPfaJxBMpU/Kx7g1nwMpJD3bQ6w6l6Cuo/mzJoAUe4uuPQTi1Z8vPUuZ+NBwaBuuJlr3omMqYZKKwcqLEyyN/ZflkXUWtarxWGeKr2s/QQKjhG3EwKHRhjLZsq+LnRxjf9kOxIozitnk+AzzBQN/Khmhhn4svU+4q3utG5lKvAzUOd9CcYEKI/Z8Csvdi33vJ+o9evSEhO9SwNDwuVY+b7w4g6ELrU1vFQ5T7g6iAjurzd67BxiPLj6Dw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dHGbjgat4NFqgkyB/3j90mnnuhFQHp9NaeBgzZdzN+c=;
- b=fWeewICmVjlXXjfS6lFWle8IDUoh4kV8JUyZ0FxqRD8ZqBrzVchfKZiVsUXG9H1PDAqJrtXtBo/FbS8IXKQYhjZNHPXNr1sEQhPu1ZmVPfIMys0SKAcknv9FkHnUOB7+nHOfORr4r96TosGI6Lz07wkt4S5U0nr1KLerV8WWN34X+yaCzRT+ZotqRq3WXgm3rl28WGvlT7ITWXlnTKikKjwF9Llfqy0zwKfWlDCs8fKa16CfS+/rxCPUO7mB7allCRGsnM3L9CM8jApqNCkFgiwsIEHPOA6BUXAj60DT0FuhaiwBevq7GJmZW6uINDMB1gwhEqAoiqFT6BEQpXHrug==
+ bh=FmV9zT6u80YCCP8B9PXO/s58ZFnj7eOfM7QMVbQRwfY=;
+ b=IGsT9ZJ7Yt3PVWdXVL2i38ubkoMi4ShXJ4X07E2WOC4NhD0c0Ywqkeytw4F9X0WoO2g4jGUDP8N7MvRAntgE3DF8TZQoQ6QZNKgDUrSCziT4NiyuEOrvmy+aRZj+LJeSTGlgpnLrTv+12uR2Eav/MhDIrjkkiCmckrPm5sn/xYpt0BUt4g5lBZ3X5TYM51RC4qaZ25NH1gjMnuqGxUnWaAG1yyVf8OfU6l+kTKbRp6Cw+oYX3XEoZZbJzM6e5BCdaZjCYkRDMVC0+1CWDGoV7fE40FFExCa5+9lFwz0B14M6ZE0Oe/cjypKD85u1bfcOuUAuRa0JLhW3YaCZNQRJYA==
 Authentication-Results: intel.com; dkim=none (message not signed)
  header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by MN2PR12MB4046.namprd12.prod.outlook.com (2603:10b6:208:1da::23) with
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5080.namprd12.prod.outlook.com (2603:10b6:208:30a::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Thu, 15 Jul
- 2021 17:53:04 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dcee:535c:30e:95f4]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dcee:535c:30e:95f4%6]) with mapi id 15.20.4331.023; Thu, 15 Jul 2021
- 17:53:04 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH -V10 1/9] mm/numa: automatically generate node migration order
-Date:   Thu, 15 Jul 2021 13:52:46 -0400
-X-Mailer: MailMate (1.14r5812)
-Message-ID: <54FB91E8-C415-439F-988C-292B85F9794D@nvidia.com>
-In-Reply-To: <20210715055145.195411-2-ying.huang@intel.com>
-References: <20210715055145.195411-1-ying.huang@intel.com>
- <20210715055145.195411-2-ying.huang@intel.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_57AFD51D-3D2E-469C-8555-7D6896C16678_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR05CA0058.namprd05.prod.outlook.com
- (2603:10b6:208:236::27) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22; Thu, 15 Jul
+ 2021 17:53:38 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
+ 17:53:38 +0000
+Date:   Thu, 15 Jul 2021 14:53:36 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+Subject: Re: [RFC v2] /dev/iommu uAPI proposal
+Message-ID: <20210715175336.GH543781@nvidia.com>
+References: <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
+ <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
+ <BN9PR11MB54336D6A8CAE31F951770A428C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210715124813.GC543781@nvidia.com>
+ <20210715135757.GC590891@otc-nc-03>
+ <20210715152325.GF543781@nvidia.com>
+ <20210715162141.GA593686@otc-nc-03>
+ <20210715171826.GG543781@nvidia.com>
+ <20210715174836.GB593686@otc-nc-03>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715174836.GB593686@otc-nc-03>
+X-ClientProxiedBy: YT2PR01CA0001.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:38::6) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [169.254.198.0] (216.228.112.22) by MN2PR05CA0058.namprd05.prod.outlook.com (2603:10b6:208:236::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.9 via Frontend Transport; Thu, 15 Jul 2021 17:53:01 +0000
+Received: from mlx.ziepe.ca (206.223.160.26) by YT2PR01CA0001.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 17:53:38 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m45YG-002lUp-Tw; Thu, 15 Jul 2021 14:53:36 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 056bd9aa-3aa4-45c1-51a5-08d947b96514
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4046:
+X-MS-Office365-Filtering-Correlation-Id: 2dcd2400-e72c-4ee9-363f-08d947b979b8
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5080:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB404681317ABD0C9C0C79C40EC2129@MN2PR12MB4046.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5080E230F438A553D9AB8FABC2129@BL1PR12MB5080.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5O1nM+P/L0g2W9P06A32WY2G18kqXxbeaLk3/DdWDpg0Lj3YQpsmrt5fUnSQC+7XRsApDoUZ5JSMuLwSun1TX04ueCVKBJS8CYNFRgTZ71vwflVhseajMGwJQURa6jQuZ56QXkv7yHNKKQ48nUFAGtlRbCBBxpsfjVOVx3+MqHjpVb1NKA/hxMzApfzh+LDcy4Zkxf2miCXAaBk+SZZ+WSd0Oe6jlxAQFVL+A0NxYj2po662Lg7jXUO85DxE/viRM4ztFSZ/eJQHhYzH1ccAi8K3G2gKP+gD7Z67Uoqna6oeYisjH43oTuq7VgTpEmaq8SnLPfrBBEAlXxBbhQdbtVHChE4W2J1dEk4PPAGdG27/cbqoisrYgdu79a9FLvctPNLW5yZDyriGRrr4LXX7NUtYwaXbpKz/XfHG1oUf0inH74CcHAkfjO1sPwthCc3ZFKcmeOrWX+zKxQqVtnRO4Jde5D9rmu5je0LzasYvt04VIdA9Kmuf5XX+w+9U3hicjXvkF+1IyrVzne1sil5joRFsPaBBFTWJvJy9SCazKYO6J2neR0CxrR94pD/uSKIHkYtSSzmMShuPFNQoVXAQMlpjcyIsesXjEq/J41yLtbK/rwi2uk8fTzB3LrtWr/4UmjnNyanRWbusCpaOvnCUCJLTIVeZfN+SovTUiyTz2zCBXXh0FlcZAvh+YmklIqN3tVIiOI10rl+RoywglA5391m1GEdC+Y2YBESOZJ05q1fltL9hEic0bTf75qp+ugR49Xk9NrhdcZZeG/xqNJNQ+tpeDfF0JupFLt8Wsklrgff/uBNICrLQovj6RS23Q2lx/tyaoJhnC2ROanPT1J2ByQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(376002)(396003)(66946007)(21480400003)(8676002)(7416002)(316002)(26005)(6916009)(6486002)(53546011)(36756003)(66556008)(66476007)(86362001)(6666004)(186003)(33656002)(83380400001)(38100700002)(956004)(5660300002)(2616005)(478600001)(2906002)(966005)(235185007)(8936002)(54906003)(33964004)(4326008)(16576012)(78286007)(72826004)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: g/8iNgriH7xmJY6JhKx6opdI3m2Re9+smQABBiuodUQA0LLa+SCAt+sxhJT82zWSUlfhHwo47fNkmMI/wbbDHaUixfXxWzjfxRgCURm7PBMQc11jiMWsGxzVKHlP3+f7qVSgwSWBSDmBjio2EGSpIOnjZNonBSFoShl6bXOmGQNOSGRL3xumTaigXIH8E46k+YjErXisxyxZF7R6Pg+aHWOT30OYUWQF3EHjUnZvNlU9q/JDc9oqsCfEjf41XFnnBzfkdsQCGHCS6s/ZHX/vYfaa0hyp+XA4bJXVkPJXfCoPSNfsUnD8oWLzwlYjaTVEVdUm1lOnUFxV61olLD7Q6G6qtJr1iGJf3gP8sLtubPAbFOy4z1JUJMXmZre4Q0q0MLfBQLX4VUgFTeE6TXeN7KORJRepe3P/MUEvK+RWBzdQ3qshP38k9zMeN44kZ1vZS0IF66yELju4Hn0eWXddlalyZP7fqVa/pTEkT38gibS7+ttu2OqcheAEW598P4LXGkVru9bxeYYhkSQK09iT9K+l0gU+cAr4O4wK+Fqz1YpLw0xAiByAWFxyeai6znX2uXniev1gVsnuV6M1nZ0HMdKsPSBMC+6C2/VU9i2u4p9PRCe+l5qLeNwqbMnZi9KXDCN530PwboXN/pi6ek6Ilvq1lkomITuXaXpo3OVOBDr5Jb92DeTeptT/QFSTK/jPH+pJkUINBUhZZ0pF+QZM1Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(39860400002)(396003)(2906002)(316002)(54906003)(186003)(9786002)(38100700002)(9746002)(2616005)(36756003)(426003)(26005)(66946007)(86362001)(4744005)(478600001)(83380400001)(33656002)(4326008)(6916009)(66556008)(8676002)(8936002)(66476007)(7416002)(5660300002)(1076003)(27376004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b3NGaWpmcXBpYkh3ejYrVWpTRGRwNUtNQWFOM0NDSkhsRDQ4NFVkTGNjZ0R0?=
- =?utf-8?B?MTlndGRLZk1YaXV6SnVRc1BjUkhwSkowcW5qZmRYa29BaWYxL2M2eDZRTTQ5?=
- =?utf-8?B?THEzUlkyREhkVi9HbWJNZitnRGVSNXpRV0JGRTRYU3FmUFAvdkJyWGlkU1Nm?=
- =?utf-8?B?Yk4zaFV1N3FVMEpoSGYwMmFNQ3dITVdoOXRuVUZYem5NZGwyR3NkcFVnOUMr?=
- =?utf-8?B?OGd6a3doOUFTM3VyV2NoZlRnVmhpbnFVM1ZKbVNGLzJVd0dGM0JCSk01VExj?=
- =?utf-8?B?S2VCcWdhOTlWSmtZZ00zYUZOUXJWL0xISUJxanJQNkpMQ28wbUNtYTBBbFNl?=
- =?utf-8?B?Zy9kMm9MNlNicDVyRWVHWmtObUNTOU0yTGhoVkxIK0ZoZjhqT2E1b01HM01Q?=
- =?utf-8?B?QlJRY0JCUE9taDl3WHFZY2JoQk9kcXZqdmhKNW1UQkJ3K0s5MWNPVUJsdVhR?=
- =?utf-8?B?NGVReEJiSXlSU09wZnozMXRVbDE0RVlVblluSlBDTWl1TnloeWZudXVGUCt1?=
- =?utf-8?B?ZGZsM01kMHFXcUVCVnFqSFlHVTFRR2M2ZTVMK0RKMm1BOVhLV2VveU5OelZt?=
- =?utf-8?B?RzEvWHY3RlZMemIrY2Joa3NMNnkwcG1mU2QyUWM0V3paK0RSSnlqNFYydHZP?=
- =?utf-8?B?TnVQQzkyTEQ5L2hlRHFvTHJSWWZvL0JzdkdmWUxVMHR3UGtNTDZwL3M1OUpx?=
- =?utf-8?B?T2tCUUZsdXYyZXZIZ2FURnpoYXVsU1NBcGJabDl1K2dMSzJlNHh2Q3VlczBy?=
- =?utf-8?B?UVZxUzlHWmtzcVViNEdMUFo1MVVmTitNUXhCNUV5ZVNVUmlPS01ibHZPdlI5?=
- =?utf-8?B?OHhKTXJVVVdncU1JdUR3cHlBb21Delh1V0dyQkVEUFlza2ExM3hXRlBuZDd3?=
- =?utf-8?B?aHFPa1pWN1lBYzRFam9SWlN3RklxVFFXWDJlcEtCbmJzSi9GTlo0Z1lDNHFV?=
- =?utf-8?B?LzUwOGtqRi9waURnVzJLdmZjVTF0VUN3SW5maWFXb2wvZnRpbVh6dWQ4d1BB?=
- =?utf-8?B?OEtKZktGdjV6Q1FYSXFqT0p6bEFhN0xid0xteUpnMkpSS1NSY0NscDlybGVm?=
- =?utf-8?B?QzlpK0RhL1N1cGlWYytkcW90OHJvTURKeW1CaGJBY0VVUjBYNno0VStVaEZp?=
- =?utf-8?B?TjRVaGp1eEk1SWd0aGNoQm0xV216ZlVwejhscHBFdUU5d2pTRFZuNHFzQWF3?=
- =?utf-8?B?bzhxK05RNlpqeTRINVo4Z1o5YVVPOHEyaFFsSDg1RkovL3RaN3VNZ2pxUEdP?=
- =?utf-8?B?TjRabXJVS0dCM3gwaDZ3U2tzd2pYekJEM1JnVEE2ZU8vY2dFT0N0ZHViTmty?=
- =?utf-8?B?bW9sdUhGbFFVZTl2bzFOc1B0cHZOUTBNVmJiUStLdG85VFJ4Wkdvb216eGR4?=
- =?utf-8?B?YnVISkppRTBiZEhqM3JhT0NxSzFvVUs5OGZuaFN1NDRYZXFFaVFWZGRYQUtn?=
- =?utf-8?B?N3VTYVZpdUJFY2xDajNxdWRBSEVVdzhzbUZra1N0N2V4N3BSN0N3Z2ZCUU1j?=
- =?utf-8?B?T2FZMCtRMlRNMHhsanB2Q09RRk9DQnd0ZVloMUZLMmJlNUd5czJiVExsd1pX?=
- =?utf-8?B?aFZ2dHlSSjFBTCswdGsxZlZxT3o4M1BQbVREVlB4bmJpZWhrdk9JTzlHcjRz?=
- =?utf-8?B?UllmRjZDMlBaMW5pTU13eFZjMVhwNXUvZW95eHd3bkdkVDlXNUtJOVhIWkx6?=
- =?utf-8?B?ZTZqR0tQVjdRUm53dzBWZEwrTTNKdjRNcmVZdE9WdW9rRG5BVlBUVFdkY2g4?=
- =?utf-8?Q?qGkV8LQpklsTIgROhhFpCnOy18NXgA9McKMYzqZ?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9yrwgJAoiR0veLWutXCMdTCKxShh5bT5TuFFH7FUKaAnTBWMRwjgLUzcddMu?=
+ =?us-ascii?Q?8+rpbrL9KCIVoJN+p9vORE3oOgwWEzgvlq47jiAetB9fZrEE0gTggQ2bbg3f?=
+ =?us-ascii?Q?4HvDQAgJXQ4ic6CTtp+eV+o7A1qmvZJwBpuadgKcZ7FDmDkPVrzDof+iZLmw?=
+ =?us-ascii?Q?q2CzX2cMmj91G3w5BiRDiapWzeaARo//zU6vAOwdE1ckXPATFOwJXVRgBeYr?=
+ =?us-ascii?Q?BjeFirzZeha6bl7YPaImKCHOgv1JwQa8YTGxJ7pGrJ4DKGUYSo+ThLRV4X8T?=
+ =?us-ascii?Q?UNskj/FSQoNhogOkuRqCYpV0+m8favBs/DtKXMl3x4tEXJX2gJaOaKB7ejK+?=
+ =?us-ascii?Q?OZB1WVSn4fmiG0EBL/RQBCyJxQpSuvhaqGj2VCfj6A4UWK7fyKhUrmb6IFZS?=
+ =?us-ascii?Q?tuzLMDVpTNus2IO+TeOXGwpzxF7BqfijUL7bpoN0l9H7YmPdd4qE5iQmgAIX?=
+ =?us-ascii?Q?zr4KzkmmFN58apnzE2IT8Si+xFGym7vGkuV9rwWxMXziSStUA4T6G5URiF4f?=
+ =?us-ascii?Q?JqFvweCRJUwlhWMNwKVvF7eLZyRZbZ2XhtCToKuOvg9oVs4hlrZ4QQik82Se?=
+ =?us-ascii?Q?cLa3eHIF2C5bmoqHOp7RsIGGJAo9uvdIZlYMZKDV7rm1WIjBd92U8BYhXN4j?=
+ =?us-ascii?Q?wNZi4rwq57UTHhXwG5N+oDM0kwqc+nRir694d9/HyCAee67gQfitr1vrGKYp?=
+ =?us-ascii?Q?cRKjCX0ji1Nm+VaAlpj5jtyr2p79kbkX5oCLDkdICr7JclnjqKosG87GoNf6?=
+ =?us-ascii?Q?pBUDD4SnkRktTerzFKwLjvslXW798zMlXGGAZMFVrF1yxGb158dkIh6J9yRS?=
+ =?us-ascii?Q?u9fPUcJ36b1TzjiifsM3tsayqVxwExenlvDaGoGJYDuW82UlZC6wIgv2l5YY?=
+ =?us-ascii?Q?uRLOji5yE4Xpj2XU1nw1GpdL1WdLyQp/YvkoxE9xpcgEKR+3vhVeEycPMTFs?=
+ =?us-ascii?Q?s1EnHsfpEyhvRKFSlDe4aZQKMsMq8Mz7jx5LVSXEELTeF9okxbR9J78ukkM0?=
+ =?us-ascii?Q?HZQZbAy8WeXE5ymqH36zE2I4tOnlrvCUlzx4kSkMdUYGNCwNC2ftzQA+0HMW?=
+ =?us-ascii?Q?EsU/skM6JOC3MCevCci7lhBwEfPutcxa5vj9lAMlSNTLx1VQ0C/NgopiCkTp?=
+ =?us-ascii?Q?15f1nZfbvwPzV54PpuoVQKhs0IhVsYKQoUj3hY9YmAK07rR4VoT+76gZZfnc?=
+ =?us-ascii?Q?7KlpSRE6bSa/MexnshpUAeSULd9yztl0wbcUDI5AwNQqkV+J5aoCClgKAs+Y?=
+ =?us-ascii?Q?76cbU5of+gTFPxW9ozBx7adIl9qYj7cDteZyZ26ZjC0CkgVMvEq6ekrm9j9a?=
+ =?us-ascii?Q?CIwqnOQEgmqecgXotYv6YgTR?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 056bd9aa-3aa4-45c1-51a5-08d947b96514
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dcd2400-e72c-4ee9-363f-08d947b979b8
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 17:53:04.1267
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 17:53:38.7866
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4YokXL7jAzqKEtM+Fphl2cPOlUNyxUJ+5BXq4dt8XQ10vtcupEkBV8wOTzwVqha0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4046
+X-MS-Exchange-CrossTenant-UserPrincipalName: oxvgb5EmDQz54joG/1Z/lnmbQSb9tpsylbtZ4hedWnHcJTcjFNg0dfn2Ldd0rjdE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_57AFD51D-3D2E-469C-8555-7D6896C16678_=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jul 15, 2021 at 10:48:36AM -0700, Raj, Ashok wrote:
 
-On 15 Jul 2021, at 1:51, Huang Ying wrote:
+> > > Do we have any isolation requirements here? its the same process. So if the
+> > > page-request it sent to guest and even if you report it for mdev1, after
+> > > the PRQ is resolved by guest, the request from mdev2 from the same guest
+> > > should simply work?
+> > 
+> > I think we already talked about this and said it should not be done.
+> 
+> I get the should not be done, I'm wondering where should that be
+> implemented?
 
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Prepare for the kernel to auto-migrate pages to other memory nodes
-> with a node migration table. This allows creating single migration
-> target for each NUMA node to enable the kernel to do NUMA page
-> migrations instead of simply discarding colder pages. A node with no
-> target is a "terminal node", so reclaim acts normally there.  The
-> migration target does not fundamentally _need_ to be a single node,
-> but this implementation starts there to limit complexity.
->
-> When memory fills up on a node, memory contents can be
-> automatically migrated to another node.  The biggest problems are
-> knowing when to migrate and to where the migration should be
-> targeted.
->
-> The most straightforward way to generate the "to where" list would
-> be to follow the page allocator fallback lists.  Those lists
-> already tell us if memory is full where to look next.  It would
-> also be logical to move memory in that order.
->
-> But, the allocator fallback lists have a fatal flaw: most nodes
-> appear in all the lists.  This would potentially lead to migration
-> cycles (A->B, B->A, A->B, ...).
->
-> Instead of using the allocator fallback lists directly, keep a
-> separate node migration ordering.  But, reuse the same data used
-> to generate page allocator fallback in the first place:
-> find_next_best_node().
->
-> This means that the firmware data used to populate node distances
-> essentially dictates the ordering for now.  It should also be
-> architecture-neutral since all NUMA architectures have a working
-> find_next_best_node().
->
-> RCU is used to allow lock-less read of node_demotion[] and prevent
-> demotion cycles been observed.  If multiple reads of node_demotion[]
-> are performed, a single rcu_read_lock() must be held over all reads to
-> ensure no cycles are observed.  Details are as follows.
->
-> =3D=3D=3D What does RCU provide? =3D=3D=3D
->
-> Imaginge a simple loop which walks down the demotion path looking
+The iommu layer cannot have ambiguity. Every RID or RID,PASID slot
+must have only one device attached to it. Attempting to connect two
+devices to the same slot fails on the iommu layer.
 
-s/Imaginge/Imagine
+So the 2nd mdev will fail during IOASID binding when it tries to bind
+to the same PASID that the first mdev is already bound to.
 
-> for the last node:
->
->         terminal_node =3D start_node;
->         while (node_demotion[terminal_node] !=3D NUMA_NO_NODE) {
->                 terminal_node =3D node_demotion[terminal_node];
->         }
->
-> The initial values are:
->
->         node_demotion[0] =3D 1;
->         node_demotion[1] =3D NUMA_NO_NODE;
->
-> and are updated to:
->
->         node_demotion[0] =3D NUMA_NO_NODE;
->         node_demotion[1] =3D 0;
->
-> What guarantees that the cycle is not observed:
->
->         node_demotion[0] =3D 1;
->         node_demotion[1] =3D 0;
->
-> and would loop forever?
->
-> With RCU, a rcu_read_lock/unlock() can be placed around the
-> loop.  Since the write side does a synchronize_rcu(), the loop
-> that observed the old contents is known to be complete before the
-> synchronize_rcu() has completed.
->
-> RCU, combined with disable_all_migrate_targets(), ensures that
-> the old migration state is not visible by the time
-> __set_migration_target_nodes() is called.
->
-> =3D=3D=3D What does READ_ONCE() provide? =3D=3D=3D
->
-> READ_ONCE() forbids the compiler from merging or reordering
-> successive reads of node_demotion[].  This ensures that any
-> updates are *eventually* observed.
->
-> Consider the above loop again.  The compiler could theoretically
-> read the entirety of node_demotion[] into local storage
-> (registers) and never go back to memory, and *permanently*
-> observe bad values for node_demotion[].
->
-> Note: RCU does not provide any universal compiler-ordering
-> guarantees:
->
-> 	https://lore.kernel.org/lkml/20150921204327.GH4029@linux.vnet.ibm.com/=
-
->
-> This code is unused for now.  It will be called later in the
-> series.
->
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
->
-> --
->
-> Changes from 20210618:
->  * Merge patches for data structure definition and initialization
->  * Move RCU usage from the next patch in series per Zi's comments
->
-> Changes from 20210302:
->  * Fix typo in node_demotion[] comment
->
-> Changes since 20200122:
->  * Make node_demotion[] __read_mostly
->  * Add big node_demotion[] comment
->
-> Changes in July 2020:
->  - Remove loop from next_demotion_node() and get_online_mems().
->    This means that the node returned by next_demotion_node()
->    might now be offline, but the worst case is that the
->    allocation fails.  That's fine since it is transient.
-> ---
->  mm/internal.h   |   5 ++
->  mm/migrate.c    | 216 ++++++++++++++++++++++++++++++++++++++++++++++++=
-
->  mm/page_alloc.c |   2 +-
->  3 files changed, 222 insertions(+), 1 deletion(-)
-
-LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
-
-
-=E2=80=94
-Best Regards,
-Yan, Zi
-
---=_MailMate_57AFD51D-3D2E-469C-8555-7D6896C16678_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmDwde4PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKq+wQAJTMu8rhEmJPI8kL1eEXoqaI9EM4y35TaEe8
-TR9RJdoDPeuUENnL0kaS5L1ZdklVGMYbn4Yb2/zMIvvsLDEOzb0LYOZM/6S8df3e
-dWsSEqwHHTHK2qFf79irxl5YPosfDJ49jyybXxafGYqbbm/mQK12h6OQu5nf/tp+
-hVduIhFoVmK4oU+yz0ZhqwkPv4ej89YJv0BmfNe+43mwd/M12saPBZCdJV3Mcb1N
-ImiivCNnbrt/Die1o6uBAP6qUhmd12c9sREqFk35nV0xo2x3p2KJKVRLSMYnoKjI
-Dk7gURqv5r7oUXKmADoY1uq7i22IHDK+sXtzXXGtOMAWaCEcxtHMaJNOhj+BkL+K
-1lbO3Dda8uLcUOeS3jdJQK6owXpTHclB2pKwsJxgdzoEcR40am6lmCZ5/KyGlSmI
-Iwc/7KnvvBYstZ2/0l2hZJja7wp5ZvUqtvE2RRDchnYH0YSxcpL8PUr3l4EFTn9L
-l4VsL3benuYkJFpmXrC9GLtfmQFpZ2rsj4CvhQtrkBJnu3nZKGBpy5SlbSG7/2Zn
-rJSQARIhW8kiPs5Me0zrpRzDDbvZz63RFAX6Kpd74BX5UwGNzTbs4SnzOp+T7jnp
-SuxtkMGelrQZzIZaf5NoyghZif13RJB/EJA/s6DFAwj1fziF+x497d8uiR2ziPkY
-2hFgb25R
-=hx1V
------END PGP SIGNATURE-----
-
---=_MailMate_57AFD51D-3D2E-469C-8555-7D6896C16678_=--
+Jason
