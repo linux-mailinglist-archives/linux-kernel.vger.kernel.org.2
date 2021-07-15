@@ -2,105 +2,462 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497E83C99B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD543C99B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240378AbhGOHkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:40:24 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36482 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229620AbhGOHkX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:40:23 -0400
-X-UUID: 6d577b4522f542c0af4e6c6b7242da3c-20210715
-X-UUID: 6d577b4522f542c0af4e6c6b7242da3c-20210715
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1235068172; Thu, 15 Jul 2021 15:37:26 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Jul 2021 15:37:25 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 15 Jul 2021 15:37:25 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <lecopzer.chen@mediatek.com>
-CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <samitolvanen@google.com>, <yj.chiang@mediatek.com>
-Subject: [PATCH v4] Kbuild: lto: fix module versionings mismatch in GNU make 3.X
-Date:   Thu, 15 Jul 2021 15:37:16 +0800
-Message-ID: <20210715073716.17477-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S240386AbhGOHk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:40:28 -0400
+Received: from comms.puri.sm ([159.203.221.185]:36506 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhGOHkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 03:40:25 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 2DEF5DFAD4;
+        Thu, 15 Jul 2021 00:37:32 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0Ympdg_EmsdR; Thu, 15 Jul 2021 00:37:29 -0700 (PDT)
+Message-ID: <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
+Subject: Re: [PATCH v6 2/3] media: imx: add a driver for i.MX8MQ mipi csi rx
+ phy and controller
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
+        kernel@pengutronix.de, kernel@puri.sm,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
+        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
+        shawnguo@kernel.org, slongerbeam@gmail.com
+Date:   Thu, 15 Jul 2021 09:37:24 +0200
+In-Reply-To: <YO8r6pZAduu1ZMK4@pendragon.ideasonboard.com>
+References: <20210714111931.324485-1-martin.kepplinger@puri.sm>
+         <20210714111931.324485-3-martin.kepplinger@puri.sm>
+         <YO8r6pZAduu1ZMK4@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building modules(CONFIG_...=m), I found some of module versions
-are incorrect and set to 0.
-This can be found in build log for first clean build which shows
+Am Mittwoch, dem 14.07.2021 um 21:24 +0300 schrieb Laurent Pinchart:
+> Hi Martin,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Jul 14, 2021 at 01:19:30PM +0200, Martin Kepplinger wrote:
+> > Add a driver to support the i.MX8MQ MIPI CSI receiver. The hardware
+> > side
+> > is based on
+> > https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/imx8/mxc-mipi-csi2_yav.c?h=imx_5.4.70_2.3.0
+> > 
+> > It's built as part of VIDEO_IMX7_CSI because that's documented to
+> > support
+> > i.MX8M platforms. This driver adds i.MX8MQ support where currently
+> > only the
+> > i.MX8MM platform has been supported.
+> > 
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > ---
+> >  drivers/staging/media/imx/Makefile           |   1 +
+> >  drivers/staging/media/imx/imx8mq-mipi-csi2.c | 949
+> > +++++++++++++++++++
+> >  2 files changed, 950 insertions(+)
+> >  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+> > 
+> > diff --git a/drivers/staging/media/imx/Makefile
+> > b/drivers/staging/media/imx/Makefile
+> > index 6ac33275cc97..19c2fc54d424 100644
+> > --- a/drivers/staging/media/imx/Makefile
+> > +++ b/drivers/staging/media/imx/Makefile
+> > @@ -16,3 +16,4 @@ obj-$(CONFIG_VIDEO_IMX_CSI) += imx6-mipi-csi2.o
+> >  
+> >  obj-$(CONFIG_VIDEO_IMX7_CSI) += imx7-media-csi.o
+> >  obj-$(CONFIG_VIDEO_IMX7_CSI) += imx7-mipi-csis.o
+> > +obj-$(CONFIG_VIDEO_IMX7_CSI) += imx8mq-mipi-csi2.o
+> > diff --git a/drivers/staging/media/imx/imx8mq-mipi-csi2.c
+> > b/drivers/staging/media/imx/imx8mq-mipi-csi2.c
+> > new file mode 100644
+> > index 000000000000..949b3ef7a20a
+> > --- /dev/null
+> > +++ b/drivers/staging/media/imx/imx8mq-mipi-csi2.c
+> > @@ -0,0 +1,949 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Freescale i.MX8MQ SoC series MIPI-CSI2 receiver driver
+> 
+> Maybe they should be called NXP these days :-)
+> 
+> > + *
+> > + * Copyright (C) 2021 Purism SPC
+> > + */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/interconnect.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/io.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/mfd/syscon.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/regulator/consumer.h>
+> > +#include <linux/reset.h>
+> > +#include <linux/spinlock.h>
+> > +
+> > +#include <media/v4l2-common.h>
+> > +#include <media/v4l2-device.h>
+> > +#include <media/v4l2-fwnode.h>
+> > +#include <media/v4l2-mc.h>
+> > +#include <media/v4l2-subdev.h>
+> > +
+> > +#define MIPI_CSI2_DRIVER_NAME                  "imx8mq-mipi-csi2"
+> > +#define
+> > MIPI_CSI2_SUBDEV_NAME                  MIPI_CSI2_DRIVER_NAME
+> > +
+> > +#define MIPI_CSI2_PAD_SINK                     0
+> > +#define MIPI_CSI2_PAD_SOURCE                   1
+> > +#define MIPI_CSI2_PADS_NUM                     2
+> > +
+> > +#define MIPI_CSI2_DEF_PIX_WIDTH                        640
+> > +#define MIPI_CSI2_DEF_PIX_HEIGHT               480
+> > +
+> > +/* Register map definition */
+> > +
+> > +/* i.MX8MQ CSI-2 controller CSR */
+> > +#define CSI2RX_CFG_NUM_LANES                   0x100
+> > +#define CSI2RX_CFG_DISABLE_DATA_LANES          0x104
+> > +#define CSI2RX_BIT_ERR                         0x108
+> > +#define CSI2RX_IRQ_STATUS                      0x10c
+> > +#define CSI2RX_IRQ_MASK                                0x110
+> > +#define CSI2RX_IRQ_MASK_ALL                    0x1ff
+> > +#define CSI2RX_IRQ_MASK_ULPS_STATUS_CHANGE     0x8
+> > +#define CSI2RX_ULPS_STATUS                     0x114
+> > +#define CSI2RX_PPI_ERRSOT_HS                   0x118
+> > +#define CSI2RX_PPI_ERRSOTSYNC_HS               0x11c
+> > +#define CSI2RX_PPI_ERRESC                      0x120
+> > +#define CSI2RX_PPI_ERRSYNCESC                  0x124
+> > +#define CSI2RX_PPI_ERRCONTROL                  0x128
+> > +#define CSI2RX_CFG_DISABLE_PAYLOAD_0           0x12c
+> > +#define CSI2RX_CFG_VID_P_FIFO_SEND_LEVEL       0x188
+> > +#define CSI2RX_CFG_DISABLE_PAYLOAD_1           0x130
+> > +
+> > +enum {
+> > +       ST_POWERED      = 1,
+> > +       ST_STREAMING    = 2,
+> > +       ST_SUSPENDED    = 4,
+> > +};
+> > +
+> > +static const char * const imx8mq_mipi_csi_clk_id[] = {
+> > +       "core",
+> > +       "esc",
+> > +       "ui",
+> > +};
+> > +
+> > +#define CSI2_NUM_CLKS  ARRAY_SIZE(imx8mq_mipi_csi_clk_id)
+> > +
+> > +#define        GPR_CSI2_1_RX_ENABLE            BIT(13)
+> > +#define        GPR_CSI2_1_VID_INTFC_ENB        BIT(12)
+> > +#define        GPR_CSI2_1_HSEL                 BIT(10)
+> > +#define        GPR_CSI2_1_CONT_CLK_MODE        BIT(8)
+> > +#define        GPR_CSI2_1_S_PRG_RXHS_SETTLE(x) (((x) & 0x3f) << 2)
+> > +
+> > +/*
+> > + * The send level configures the number of entries that must
+> > accumulate in
+> > + * the Pixel FIFO before the data will be transferred to the video
+> > output.
+> > + * See 
+> > https://community.nxp.com/t5/i-MX-Processors/IMX8M-MIPI-CSI-Host-Controller-send-level/m-p/864005/highlight/true#M131704
+> > + */
+> > +#define CSI2RX_SEND_LEVEL                      64
+> > +
+> > +struct csi_state {
+> > +       struct device *dev;
+> > +       void __iomem *regs;
+> > +       struct clk_bulk_data clks[CSI2_NUM_CLKS];
+> > +       struct reset_control *rst;
+> > +       struct regulator *mipi_phy_regulator;
+> > +
+> > +       struct v4l2_subdev sd;
+> > +       struct media_pad pads[MIPI_CSI2_PADS_NUM];
+> > +       struct v4l2_async_notifier notifier;
+> > +       struct v4l2_subdev *src_sd;
+> > +
+> > +       struct v4l2_fwnode_bus_mipi_csi2 bus;
+> > +
+> > +       struct mutex lock; /* Protect csi2_fmt, format_mbus, state,
+> > hs_settle*/
+> 
+> Missing space before */
+> 
+> > +       const struct csi2_pix_format *csi2_fmt;
+> > +       struct v4l2_mbus_framefmt format_mbus[MIPI_CSI2_PADS_NUM];
+> > +       u32 state;
+> > +       u32 hs_settle;
+> > +
+> > +       struct regmap *phy_gpr;
+> > +       u8 phy_gpr_reg;
+> > +
+> > +       struct icc_path                 *icc_path;
+> > +       s32                             icc_path_bw;
+> > +};
+> > +
+> > +/* ---------------------------------------------------------------
+> > --------------
+> > + * Format helpers
+> > + */
+> > +
+> > +struct csi2_pix_format {
+> > +       u32 code;
+> > +       u8 width;
+> > +};
+> > +
+> > +static const struct csi2_pix_format imx8mq_mipi_csi_formats[] = {
+> > +       /* RAW (Bayer and greyscale) formats. */
+> > +       {
+> > +               .code = MEDIA_BUS_FMT_SBGGR8_1X8,
+> > +               .width = 8,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGBRG8_1X8,
+> > +               .width = 8,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGRBG8_1X8,
+> > +               .width = 8,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SRGGB8_1X8,
+> > +               .width = 8,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_Y8_1X8,
+> > +               .width = 8,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
+> > +               .width = 10,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGBRG10_1X10,
+> > +               .width = 10,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
+> > +               .width = 10,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SRGGB10_1X10,
+> > +               .width = 10,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_Y10_1X10,
+> > +               .width = 10,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SBGGR12_1X12,
+> > +               .width = 12,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGBRG12_1X12,
+> > +               .width = 12,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGRBG12_1X12,
+> > +               .width = 12,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SRGGB12_1X12,
+> > +               .width = 12,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_Y12_1X12,
+> > +               .width = 12,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SBGGR14_1X14,
+> > +               .width = 14,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGBRG14_1X14,
+> > +               .width = 14,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SGRBG14_1X14,
+> > +               .width = 14,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_SRGGB14_1X14,
+> > +               .width = 14,
+> > +       }, {
+> > +       /* YUV formats */
+> > +               .code = MEDIA_BUS_FMT_YUYV8_2X8,
+> > +               .width = 16,
+> > +       }, {
+> > +               .code = MEDIA_BUS_FMT_YUYV8_1X16,
+> > +               .width = 16,
+> > +       }
+> > +};
+> > +
+> > +static const struct csi2_pix_format *find_csi2_format(u32 code)
+> > +{
+> > +       unsigned int i;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(imx8mq_mipi_csi_formats); i++)
+> > +               if (code == imx8mq_mipi_csi_formats[i].code)
+> > +                       return &imx8mq_mipi_csi_formats[i];
+> > +       return NULL;
+> > +}
+> > +
+> > +/* ---------------------------------------------------------------
+> > --------------
+> > + * Hardware configuration
+> > + */
+> > +
+> > +static inline void imx8mq_mipi_csi_write(struct csi_state *state,
+> > u32 reg, u32 val)
+> > +{
+> > +       writel(val, state->regs + reg);
+> > +}
+> > +
+> > +static int imx8mq_mipi_csi_sw_reset(struct csi_state *state)
+> > +{
+> > +       int ret;
+> > +
+> > +       ret = reset_control_assert(state->rst);
+> 
+> That's peculiar, is there no need to deassert reset ?
+> 
+> > +       if (ret < 0) {
+> > +               dev_err(state->dev, "Failed to assert resets:
+> > %d\n", ret);
+> > +               return ret;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void imx8mq_mipi_csi_system_enable(struct csi_state *state,
+> > int on)
+> > +{
+> > +       if (!on) {
+> > +               imx8mq_mipi_csi_write(state,
+> > CSI2RX_CFG_DISABLE_DATA_LANES, 0xf);
+> > +               return;
+> > +       }
+> > +
+> > +       regmap_update_bits(state->phy_gpr,
+> > +                          state->phy_gpr_reg,
+> > +                          0x3fff,
+> > +                          GPR_CSI2_1_RX_ENABLE |
+> > +                          GPR_CSI2_1_VID_INTFC_ENB |
+> > +                          GPR_CSI2_1_HSEL |
+> > +                          GPR_CSI2_1_CONT_CLK_MODE |
+> > +                          GPR_CSI2_1_S_PRG_RXHS_SETTLE(state-
+> > >hs_settle));
+> > +}
+> > +
+> > +static void imx8mq_mipi_csi_set_params(struct csi_state *state)
+> > +{
+> > +       int lanes = state->bus.num_data_lanes;
+> > +
+> > +       imx8mq_mipi_csi_write(state, CSI2RX_CFG_NUM_LANES, lanes -
+> > 1);
+> > +       imx8mq_mipi_csi_write(state, CSI2RX_CFG_DISABLE_DATA_LANES,
+> > +                             (0xf << lanes) & 0xf);
+> > +       imx8mq_mipi_csi_write(state, CSI2RX_IRQ_MASK,
+> > CSI2RX_IRQ_MASK_ALL);
+> > +       imx8mq_mipi_csi_write(state, 0x180, 1);
+> > +       /* vid_vc */
+> > +       imx8mq_mipi_csi_write(state, 0x184, 1);
+> > +       imx8mq_mipi_csi_write(state, 0x188, CSI2RX_SEND_LEVEL);
+> > +}
+> > +
+> > +static int imx8mq_mipi_csi_clk_enable(struct csi_state *state)
+> > +{
+> > +       return clk_bulk_prepare_enable(CSI2_NUM_CLKS, state->clks);
+> > +}
+> > +
+> > +static void imx8mq_mipi_csi_clk_disable(struct csi_state *state)
+> > +{
+> > +       clk_bulk_disable_unprepare(CSI2_NUM_CLKS, state->clks);
+> > +}
+> > +
+> > +static int imx8mq_mipi_csi_clk_get(struct csi_state *state)
+> > +{
+> > +       unsigned int i;
+> > +
+> > +       for (i = 0; i < CSI2_NUM_CLKS; i++)
+> > +               state->clks[i].id = imx8mq_mipi_csi_clk_id[i];
+> > +
+> > +       return devm_clk_bulk_get(state->dev, CSI2_NUM_CLKS, state-
+> > >clks);
+> > +}
+> > +
+> > +static int imx8mq_mipi_csi_calc_hs_settle(struct csi_state *state)
+> > +{
+> > +       u32 width = state->format_mbus[MIPI_CSI2_PAD_SINK].width;
+> > +       u32 height = state->format_mbus[MIPI_CSI2_PAD_SINK].height;
+> > +       s64 link_freq;
+> > +       u32 lane_rate;
+> > +
+> > +       /* Calculate the line rate from the pixel rate. */
+> > +       link_freq = v4l2_get_link_freq(state->src_sd->ctrl_handler,
+> > +                                      state->csi2_fmt->width,
+> > +                                      state->bus.num_data_lanes *
+> > 2);
+> > +       if (link_freq < 0) {
+> > +               dev_err(state->dev, "Unable to obtain link
+> > frequency: %d\n",
+> > +                       (int)link_freq);
+> > +               return link_freq;
+> > +       }
+> > +
+> > +       lane_rate = link_freq * 2;
+> > +       if (lane_rate < 80000000 || lane_rate > 1500000000) {
+> > +               dev_dbg(state->dev, "Out-of-bound lane rate %u\n",
+> > lane_rate);
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       /* 
+> > https://community.nxp.com/t5/i-MX-Processors/Explenation-for-HS-SETTLE-parameter-in-MIPI-CSI-D-PHY-registers/m-p/764275/highlight/true#M118744
+> >  */
+> > +       if (lane_rate < 250000000)
+> > +               state->hs_settle = 0xb;
+> > +       else if (lane_rate < 500000000)
+> > +               state->hs_settle = 0x8;
+> > +       else
+> > +               state->hs_settle = 0x6;
+> 
+> We could possibly compute this value based on the formula from the
+> table
+> in that page, but maybe that's overkill ? If you want to give it a
+> try,
+> it would be along those lines.
+> 
+>         /*
+>          * The D-PHY specification requires Ths-settle to be in the
+> range
+>          * 85ns + 6*UI to 140ns + 10*UI, with the unit interval UI
+> being half
+>          * the clock period.
+>          *
+>          * The Ths-settle value is expressed in the hardware as a
+> multiple of
+>          * the Esc clock period:
+>          *
+>          * Ths-settle = (PRG_RXHS_SETTLE + 1) * Tperiod of RxClkInEsc
+>          *
+>          * Due to the one cycle inaccuracy introduced by rounding,
+> the
+>          * documentation recommends picking a value away from the
+> boundaries.
+>          * Let's pick the average.
+>          */
+>         esc_clk_rate = clk_get_rate(...);
+> 
+>         min_ths_settle = 85 + 6 * 1000000 / (lane_rate / 1000);
+>         max_ths_settle = 140 + 10 * 1000000 / (lane_rate / 1000);
+>         ths_settle = (min_ths_settle + max_ths_settle) / 2;
+> 
+>         state->hs_settle = ths_settle * esc_clk_rate / 1000000000 -
+> 1;
+> 
 
-WARNING: EXPORT symbol "XXXX" [drivers/XXX/XXX.ko] version generation failed,
-symbol will not be versioned.
+I experimented a bit but would like to leave this as a task for later
+if that's ok. it's correct and simple now. also, using clks[i].clk
+based on the name string would feel better to submit seperately later.
 
-But in second build(incremental build), the WARNING disappeared and the
-module version becomes valid CRC and make someone who want to change
-modules without updating kernel image can't insert their modules.
-
-The problematic code is
-+	$(foreach n, $(filter-out FORCE,$^),				\
-+		$(if $(wildcard $(n).symversions),			\
-+			; cat $(n).symversions >> $@.symversions))
-
-For example:
-  rm -f fs/notify/built-in.a.symversions    ; rm -f fs/notify/built-in.a; \
-llvm-ar cDPrST fs/notify/built-in.a fs/notify/fsnotify.o \
-fs/notify/notification.o fs/notify/group.o ...
-
-`foreach n` shows nothing to `cat` into $(n).symversions because
-`if $(wildcard $(n).symversions)` return nothing, but actually
-they do exist during this line was executed.
-
--rw-r--r-- 1 root root 168580 Jun 13 19:10 fs/notify/fsnotify.o
--rw-r--r-- 1 root root    111 Jun 13 19:10 fs/notify/fsnotify.o.symversions
-
-The reason is the $(n).symversions are generated at runtime, but
-Makefile wildcard function expends and checks the file exist or not
-during parsing the Makefile.
-
-Thus fix this by use `test` shell command to check the file
-existence in runtime.
-
-Rebase from both:
-1. [https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/]
-2. [https://lore.kernel.org/lkml/20210702032943.7865-1-lecopzer.chen@mediatek.com/]
-
-Fixes: 38e89184900385 ("kbuild: lto: fix module versioning")
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
----
- scripts/Makefile.build | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 10b2f2380d6f..02197cb8e3a7 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -386,7 +386,7 @@ ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
-       cmd_update_lto_symversions =					\
- 	rm -f $@.symversions						\
- 	$(foreach n, $(filter-out FORCE,$^),				\
--		$(if $(wildcard $(n).symversions),			\
-+		$(if $(shell test -s $(n).symversions && echo y),	\
- 			; cat $(n).symversions >> $@.symversions))
- else
-       cmd_update_lto_symversions = echo >/dev/null
--- 
-2.18.0
+> 
 
