@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5013CABB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255C93CA964
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243797AbhGOTW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:22:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
+        id S242847AbhGOTGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241438AbhGOTFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D15A613F1;
-        Thu, 15 Jul 2021 19:02:11 +0000 (UTC)
+        id S242002AbhGOS4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B43613D0;
+        Thu, 15 Jul 2021 18:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375731;
-        bh=+KNdvSiSTwrRQseY2ACMiYBWQDELdkM7Ft8ARJ2W67w=;
+        s=korg; t=1626375202;
+        bh=yD8e8WJdVZmULPVGiZv1xgiYX5ubqFqt5bbOCI7VAJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g/RZ/IuwQL90s2SVkRLnbad9ZZzaLEeUsFtqoXgeTBBhpm6WtYHLPQ4w46l7wuCQx
-         3288wYN81HAeECyCatsI0pgIDcDDFJq6qZFfTk6VBklm1eh5g4ZcQi+BNHHjMvb+t2
-         bT7dIbYSehLX/e6rmosYCATJLCqxoLvy8Gy/+wUI=
+        b=Y4ZfsSBhrZ6N6JzC3Oo66DkF28yeYMmq7KEfL2zDj0rMO25sQdlYQJcNUlz0JP0ZZ
+         uVpIM9ukvIKsxkjaCV5jycVWtxLgKivNtJI4X7+7uwsuVxhBIFDawNtPrxPbqBKF8C
+         QhitsVH5EwWybj3CmpX6u05fl5lJQLJGBAc/4WmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: [PATCH 5.12 213/242] coresight: Propagate symlink failure
-Date:   Thu, 15 Jul 2021 20:39:35 +0200
-Message-Id: <20210715182630.681224360@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 204/215] media: gspca/sq905: fix control-request direction
+Date:   Thu, 15 Jul 2021 20:39:36 +0200
+Message-Id: <20210715182635.232669425@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Linton <jeremy.linton@arm.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 51dd19a7e9f8fbbb7cd92b8a357091911eae7f78 upstream.
+commit 53ae298fde7adcc4b1432bce2dbdf8dac54dfa72 upstream.
 
-If the symlink is unable to be created, the driver goes
-ahead and continues device creation. Instead lets propagate
-the failure, and fail the probe.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Link: https://lore.kernel.org/r/20210526204042.2681700-1-jeremy.linton@arm.com
-Fixes: 8a7365c2d418 ("coresight: Expose device connections via sysfs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20210614175901.532683-7-mathieu.poirier@linaro.org
+Fix the USB_REQ_SYNCH_FRAME request which erroneously used
+usb_sndctrlpipe().
+
+Fixes: 27d35fc3fb06 ("V4L/DVB (10639): gspca - sq905: New subdriver.")
+Cc: stable@vger.kernel.org      # 2.6.30
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwtracing/coresight/coresight-core.c |    2 +-
+ drivers/media/usb/gspca/sq905.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hwtracing/coresight/coresight-core.c
-+++ b/drivers/hwtracing/coresight/coresight-core.c
-@@ -1367,7 +1367,7 @@ static int coresight_fixup_device_conns(
- 		}
+--- a/drivers/media/usb/gspca/sq905.c
++++ b/drivers/media/usb/gspca/sq905.c
+@@ -116,7 +116,7 @@ static int sq905_command(struct gspca_de
  	}
  
--	return 0;
-+	return ret;
- }
- 
- static int coresight_remove_match(struct device *dev, void *data)
+ 	ret = usb_control_msg(gspca_dev->dev,
+-			      usb_sndctrlpipe(gspca_dev->dev, 0),
++			      usb_rcvctrlpipe(gspca_dev->dev, 0),
+ 			      USB_REQ_SYNCH_FRAME,                /* request */
+ 			      USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 			      SQ905_PING, 0, gspca_dev->usb_buf, 1,
 
 
