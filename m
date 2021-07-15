@@ -2,188 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170333C9B2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E7A3C9B34
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237031AbhGOJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbhGOJNB (ORCPT
+        id S233061AbhGOJSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:18:05 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:37552 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhGOJSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:13:01 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC04C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:10:07 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id a12so8610249lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=9gvzqDIemci/icf/CrYzh97il3z5m8X8hyJ/qIYo0Os=;
-        b=euuQfcNwchFF0Y8fNGufYfpPZ7625E3ZZdMSRWqNhXJGkDZ0lpXM65j0xjEIfGNKsL
-         PpLtyhuq5ND+/sndpzLBaseILlcl5J00OcImMuRgKA3k2tLQkMXlfUBbnwWfcjguwh57
-         hv4WzebAdnrET9I62mAljQ9qEjROYz9EIpvSu9+PSgP/8BBHJCcdMdr2nOhqp9BdJ5wW
-         k2vK/eP97V8fWrvdMZUr5/h6tXgYPhydkiIjwvV1nY7ESjTWFidDSv+coknKxoivzJO+
-         njxn+ijYPmYKCwVY5IQ8n9kjJKQzwrh5w3F+kBYQ6JblAM4fwgFRD2mbXCNvZrTWismb
-         V9QA==
+        Thu, 15 Jul 2021 05:18:03 -0400
+Received: by mail-il1-f200.google.com with SMTP id h11-20020a056e021b8bb029020d99b97ad3so2908532ili.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:15:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=9gvzqDIemci/icf/CrYzh97il3z5m8X8hyJ/qIYo0Os=;
-        b=gUTNyjxyD0l/hBm0WGwRLuZOFjySfEGlyMncPcSJ+DMYfLtlq65RInhWwrb+Qo/6Pn
-         /RaUlBjhwFYFPIBcXhN+b68g4mjQOycYYNsxMBf3CPrJ+5E9Bsyqawz+1iK5/7j3JnTL
-         NyMBmvu7nUo2FNn0dflMTqQ70RLYrEYmsrxdWZbfO0UVjHMZ+pgNvo3WNbehY4K0Y86E
-         5eVu5r8u6ARxwY2zCYFXa4bDUdCMajcYX8m+qWhXl0xCXGJVxuqHwX/L+rJJpPDT8M6k
-         7YIc+sNuXdE+XK3ZFyXKRtdLI4g1E9UB138+Y/3T9sVFWdCJbT++IdSw9tSrepUBiaS/
-         RmWA==
-X-Gm-Message-State: AOAM532law46d0VGBCt7wRVlxNQufLaBbpEkqQ91GVn1H4Uie6KI+SqT
-        6Wkte1JnqeFGnGrtub2iH5Y=
-X-Google-Smtp-Source: ABdhPJzpoXFKX9X8/dQqRnjhIcXDouI3TuXkrZh4nORPxX/nb+O3lqZMaxqyQKCewVl80SaCJFfklg==
-X-Received: by 2002:a19:911e:: with SMTP id t30mr2616500lfd.229.1626340206336;
-        Thu, 15 Jul 2021 02:10:06 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id t22sm145010lfd.131.2021.07.15.02.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 02:10:06 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 12:10:02 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
-        tzimmermann@suse.de, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-Subject: Re: [PATCH v4 03/17] drm/uAPI: Add "active bpc" as feedback channel
- for "max bpc" drm property
-Message-ID: <20210715121002.32fa8e1d@eldfell>
-In-Reply-To: <d55fcc23-2531-9da8-5c0c-68454e15411b@tuxedocomputers.com>
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
-        <20210618091116.14428-4-wse@tuxedocomputers.com>
-        <18bbd0cf-4c37-ce9d-eb63-de4131a201e1@tuxedocomputers.com>
-        <11cd3340-46a1-9a6a-88f5-95c225863509@tuxedocomputers.com>
-        <20210630112141.319f67eb@eldfell>
-        <ca2827b5-9f6f-164b-6b3f-3f01898d3202@tuxedocomputers.com>
-        <20210701104256.247538e1@eldfell>
-        <b8db0280-f979-26a6-bf1b-148f8c4cc638@tuxedocomputers.com>
-        <d55fcc23-2531-9da8-5c0c-68454e15411b@tuxedocomputers.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=JLjJihMlHnsYuGox5nm+OcQejYVamIZ+rYpuha60Zps=;
+        b=ntSR6IL1K3ICFU9cLBuhRFpyPgWIKhA6Ym/Sy/7JJ4DHfdoOn9UsmO5llm1ixoME5z
+         U526GGsEtSMwpiXDEMlAY8ZIPcfRwyRyKkwLjwWQjoXuFKRezse8ofndEmwI95is9S7c
+         Iac5C6ovwlHY0TGfPA6600QjbuEyKaO7gRcfF/6K8tyMaL/RraAyGixtjkQPcfEl2K8e
+         0+maIbILHFSNXcRw+CiBidJNAU24A0WXU6Z2hAuEPraZWXxr33J8AjoWSwX0M7RDSrVX
+         Oeq4lKJ1+D26E/eaYWz6Ic4KC+QT1BXkJfT/mi3gWsXB3s3lnHQFsSTYZym97JKMlO5Z
+         dn4w==
+X-Gm-Message-State: AOAM530EJ5fn1BCmXsSqxjhRUqeCiOuRkJETdzirFKGfO5WwGPf9MQ9E
+        j9RAoYegtQhlHqN/6UqEUQ8ro8QglT9WkqP1W8EN1p4/uSAt
+X-Google-Smtp-Source: ABdhPJzgwn90CTTaI2LMN7TsOpDvnKLfuzubj1OabkTHzS2MBqGfVkELGn33dyoFhXNt2hnZs3XRyUhaGbWcjJ4mW1ivsjMnSdwl
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/SMR4M7.1Z/f8VbFUwKkibVw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6638:3291:: with SMTP id f17mr3082308jav.143.1626340510467;
+ Thu, 15 Jul 2021 02:15:10 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 02:15:10 -0700
+In-Reply-To: <9c692289-0d4b-a462-99b3-37f3c6521d84@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000690cd505c725e894@google.com>
+Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
+From:   syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/SMR4M7.1Z/f8VbFUwKkibVw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Wed, 14 Jul 2021 20:18:57 +0200
-Werner Sembach <wse@tuxedocomputers.com> wrote:
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in io_sq_thread_park
 
-> Am 01.07.21 um 13:30 schrieb Werner Sembach:
-> > Am 01.07.21 um 09:42 schrieb Pekka Paalanen: =20
-> >> On Wed, 30 Jun 2021 11:42:10 +0200
-> >> Werner Sembach <wse@tuxedocomputers.com> wrote:
-> >> =20
-> >>> Am 30.06.21 um 10:21 schrieb Pekka Paalanen: =20
-> >>>> On Tue, 29 Jun 2021 13:02:05 +0200
-> >>>> Werner Sembach <wse@tuxedocomputers.com> wrote:
-> >>>>    =20
-> >>>>> Am 28.06.21 um 19:03 schrieb Werner Sembach: =20
-> >>>>>> Am 18.06.21 um 11:11 schrieb Werner Sembach: =20
-> >>>>>>> Add a new general drm property "active bpc" which can be used by =
-graphic
-> >>>>>>> drivers to report the applied bit depth per pixel back to userspa=
-ce.
-> >>>>>>>
-> >>>>>>> While "max bpc" can be used to change the color depth, there was =
-no way to
-> >>>>>>> check which one actually got used. While in theory the driver cho=
-oses the
-> >>>>>>> best/highest color depth within the max bpc setting a user might =
-not be
-> >>>>>>> fully aware what his hardware is or isn't capable off. This is me=
-ant as a
-> >>>>>>> quick way to double check the setup.
-> >>>>>>>
-> >>>>>>> In the future, automatic color calibration for screens might also=
- depend on
-> >>>>>>> this information being available.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> >>>>>>> ---
-> >>>>>>>    drivers/gpu/drm/drm_connector.c | 51 +++++++++++++++++++++++++=
-++++++++
-> >>>>>>>    include/drm/drm_connector.h     |  8 ++++++
-> >>>>>>>    2 files changed, 59 insertions(+)
+INFO: task kworker/u4:1:10 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:1    state:D stack:26320 pid:   10 ppid:     2 flags:0x00004000
+Workqueue: events_unbound io_ring_exit_work
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
+ schedule+0xd3/0x270 kernel/sched/core.c:6019
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6078
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x7b6/0x10a0 kernel/locking/mutex.c:1104
+ io_sq_thread_park+0x79/0xd0 fs/io_uring.c:7314
+ io_ring_exit_work+0x15a/0x1600 fs/io_uring.c:8771
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task iou-sqp-23145:23155 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:iou-sqp-23145   state:D stack:28720 pid:23155 ppid:  8844 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
+ schedule+0xd3/0x270 kernel/sched/core.c:6019
+ io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9150
+ io_sq_thread+0xaac/0x1250 fs/io_uring.c:6916
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-> New idea: Instead of the "active"-properties with various if cases in=20
-> the kernel code, there could just be blob properties exposing the hdmi=20
-> infoframes, hdmi general control packages, dp misc0 and misc1 and dp vsc=
-=20
-> sdp.
->=20
-> Combined they have all the color information and it is made sure that=20
-> it's what is actually send to the monitor (I would consider sending=20
-> something differed then what is told in the infoframes a bug).
->=20
-> They also have built in version numbers, if in the future they contain=20
-> more information.
->=20
-> Only disadvantage: We leave parsing for human readable output to the=20
-> userspace.
->=20
-> Alternatively keep the "active"-properties but fill them from the=20
-> infoframes.
->=20
-> I'm not entirely sure where to do that on amd, because there the=20
-> infoframes are directly created in the dc code shortly before writing=20
-> them to the hardware registers and immediately forgotten afterwards. But=
-=20
-> you still have access to the connector struct from that code so the=20
-> property could be updated directly there.
->=20
+Showing all locks held in the system:
+3 locks held by kworker/u4:1/10:
+ #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2247
+ #1: ffffc90000cf7db0 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2251
+ #2: ffff88803d708470 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x79/0xd0 fs/io_uring.c:7314
+1 lock held by khungtaskd/1620:
+ #0: ffffffff8b97b900 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
+1 lock held by in:imklog/8316:
+ #0: ffff888022f82ff0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
+1 lock held by iou-sqp-23145/23155:
+ #0: ffff88803d708470 (&sqd->lock){+.+.}-{3:3}, at: io_sqd_handle_event+0x2d6/0x350 fs/io_uring.c:6836
 
-Hi,
+=============================================
 
-I'm not fundamentally against that as long as we have a common
-userspace library to parse those blobs. In libdrm perhaps? Or a new
-library?
+NMI backtrace for cpu 1
+CPU: 1 PID: 1620 Comm: khungtaskd Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 10540 Comm: kworker/u4:10 Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy8 ieee80211_iface_work
+RIP: 0010:write_comp_data kernel/kcov.c:218 [inline]
+RIP: 0010:__sanitizer_cov_trace_switch+0x65/0xf0 kernel/kcov.c:320
+Code: 10 31 c9 65 4c 8b 24 25 00 f0 01 00 4d 85 d2 74 6b 4c 89 e6 bf 03 00 00 00 4c 8b 4c 24 20 49 8b 6c c8 10 e8 2d ff ff ff 84 c0 <74> 47 49 8b 84 24 18 15 00 00 41 8b bc 24 14 15 00 00 48 8b 10 48
+RSP: 0018:ffffc9000bfa7030 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000016
+RDX: 0000000000000000 RSI: ffff88801c5d8000 RDI: 0000000000000003
+RBP: 0000000000000084 R08: ffffffff8aaa7a20 R09: ffffffff88878073
+R10: 0000000000000020 R11: 0000000000000003 R12: ffff88801c5d8000
+R13: dffffc0000000000 R14: ffff888053061087 R15: ffff888053061086
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f87cdfe4090 CR3: 000000002a61f000 CR4: 0000000000350ef0
+Call Trace:
+ _ieee802_11_parse_elems_crc+0x1e3/0x1f90 net/mac80211/util.c:1018
+ ieee802_11_parse_elems_crc+0x89e/0xfe0 net/mac80211/util.c:1478
+ ieee802_11_parse_elems net/mac80211/ieee80211_i.h:2186 [inline]
+ ieee80211_bss_info_update+0x463/0xb70 net/mac80211/scan.c:212
+ ieee80211_rx_bss_info net/mac80211/ibss.c:1126 [inline]
+ ieee80211_rx_mgmt_probe_beacon+0xcc6/0x17c0 net/mac80211/ibss.c:1615
+ ieee80211_ibss_rx_queued_mgmt+0xd30/0x1610 net/mac80211/ibss.c:1642
+ ieee80211_iface_process_skb net/mac80211/iface.c:1426 [inline]
+ ieee80211_iface_work+0x7f7/0xa40 net/mac80211/iface.c:1462
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-But I also don't know about the technical feasibility, is it a good
-idea.
 
-OTOH, that could be the best thing for testing drivers vs. KMS UAPI
-when you don't have a hardware HDMI/DP grabber to inspect the
-infoframes. So maybe kernel CI would like that?
+Tested on:
 
+commit:         1b48773f io_uring: fix io_drain_req()
+git tree:       git://git.kernel.dk/linux-block io_uring-5.14
+console output: https://syzkaller.appspot.com/x/log.txt?x=12040824300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cfe2c0e42bc9993d
+dashboard link: https://syzkaller.appspot.com/bug?extid=ac957324022b7132accf
+compiler:       
 
-Thanks,
-pq
-
---Sig_/SMR4M7.1Z/f8VbFUwKkibVw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDv+2oACgkQI1/ltBGq
-qqcCww//b733aNOKh+AB43HwqpEMB7fT+jzdnNxC0QgSctkmcrnbNn4D9JFx+Q0z
-d5UVW1d1NQd8Fxhy1MkibsiaNWln1fmz1iBrBX+yMO7GzC/BF0S5XqObAwGRqMjg
-X3+maA4bxJ+qXPIsPzmHMXKO4f0ZRLdEsqOckWuNh1idIa3YY9Vh0yH4MVfNC3QL
-QLGsMvl7ohzxNd4QG5U6379JJ7A5Jf6JEvdHMWOx261Qd3CoKYqmCcQ+ktZMoj3K
-Wp9aRqBhNNa9JW9fUmwQHjJHgJT4K9dvzpjxwS77DAGmwMJ1LdF3pIo8LsOxIEer
-rSSXmV9QsRkPwfIGwbImrlpGt5vfKHGwqlzaQGgo6VSwVKTYvzcYu7NIeAD9Uqhg
-DJPk9yFPmLWULf4vIKDfHgif1AERVgJrgZM2qBSsA2EHyOYe+dbWQibnJCmUb/PD
-1FkY4UEWVgB/IMi2Z7YZehwsJnr38MqTk8oLRMQXfT081PENqCGcnEtjDXkxB2vp
-kxzXuSj55cVJOm1ubEmcmVa9MIFCtcj80i7iplk5IBLdYo9bsgN+r9kYURLNzKbt
-TMN/tFdnqRQIuSSyVBa8TxtqIZqk4RO/3rwzpcTaZGYEwz5kn+zE2Ly7Z9uzYVT4
-GrACR/syePdF3NdF5EDZjUlRlc5Z99S212BXc6VAXzG4cpz50zE=
-=eCGP
------END PGP SIGNATURE-----
-
---Sig_/SMR4M7.1Z/f8VbFUwKkibVw--
