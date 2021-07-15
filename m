@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D9E3CAB53
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843153CA8E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245072AbhGOTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
+        id S241139AbhGOTDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:03:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243669AbhGOTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19153613D1;
-        Thu, 15 Jul 2021 19:00:25 +0000 (UTC)
+        id S241594AbhGOSya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6579613C4;
+        Thu, 15 Jul 2021 18:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375626;
-        bh=OTxsgqVgi1Gufn4LEmptwvp+ZGtUdUp4cG7hu4xj9Pk=;
+        s=korg; t=1626375097;
+        bh=s8APKRts4g61bRdxFjLALSRTTSlPfsObbXSKR9bY5q4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iyC1IaDpTQ8lfBuFm3VzH7hdunMo+1/E8nTZ3QikW6UYTbFsFDjH8ydkbsGUW8RRt
-         Ccj+dQ5Sl8yWMZ2t7kf4urKr+uzdelrCW2uSY1MhYaYfaLfZtsVW/04Xsta5B3Fjlj
-         9OOxoNHtMmEoE49op4rRpSZ3Bj/hqc+RvC9YEs7o=
+        b=L4aEj8ERv6RgQ9AsQk1gUl0FtMG1JaNuC6uyMqVFwSKZjhzJAkuPGIJg9YP8zXK5A
+         v0coY2myyUITaJz2wUk365bYKYPzSEsaeFdqA8LpUBxS3wo3oFjU/a7OlHlQQbb0s8
+         hFjytt9nKKVnw8v5qE8CuQCR3+Avq4+xUUREcKH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH 5.12 168/242] drm/vc4: txp: Properly set the possible_crtcs mask
-Date:   Thu, 15 Jul 2021 20:38:50 +0200
-Message-Id: <20210715182622.835172841@linuxfoundation.org>
+        stable@vger.kernel.org, Sachi King <nakato@nakato.io>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.10 159/215] pinctrl/amd: Add device HID for new AMD GPIO controller
+Date:   Thu, 15 Jul 2021 20:38:51 +0200
+Message-Id: <20210715182627.632296969@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-commit bf6de8e61509f3c957d7f75f017b18d40a18a950 upstream.
+commit 1ca46d3e43569186bd1decfb02a6b4c4ddb4304b upstream.
 
-The current code does a binary OR on the possible_crtcs variable of the
-TXP encoder, while we want to set it to that value instead.
+Add device HID AMDI0031 to the AMD GPIO controller driver match table.
+This controller can be found on Microsoft Surface Laptop 4 devices and
+seems similar enough that we can just copy the existing AMDI0030 entry.
 
-Cc: <stable@vger.kernel.org> # v5.9+
-Fixes: 39fcb2808376 ("drm/vc4: txp: Turn the TXP into a CRTC of its own")
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-2-maxime@cerno.tech
+Cc: <stable@vger.kernel.org> # 5.10+
+Tested-by: Sachi King <nakato@nakato.io>
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Link: https://lore.kernel.org/r/20210512210316.1982416-1-luzmaximilian@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/vc4/vc4_txp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-amd.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/vc4/vc4_txp.c
-+++ b/drivers/gpu/drm/vc4/vc4_txp.c
-@@ -507,7 +507,7 @@ static int vc4_txp_bind(struct device *d
- 		return ret;
- 
- 	encoder = &txp->connector.encoder;
--	encoder->possible_crtcs |= drm_crtc_mask(crtc);
-+	encoder->possible_crtcs = drm_crtc_mask(crtc);
- 
- 	ret = devm_request_irq(dev, irq, vc4_txp_interrupt, 0,
- 			       dev_name(dev), txp);
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -952,6 +952,7 @@ static int amd_gpio_remove(struct platfo
+ static const struct acpi_device_id amd_gpio_acpi_match[] = {
+ 	{ "AMD0030", 0 },
+ 	{ "AMDI0030", 0},
++	{ "AMDI0031", 0},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, amd_gpio_acpi_match);
 
 
