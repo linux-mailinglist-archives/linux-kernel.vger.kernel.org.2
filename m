@@ -2,96 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54AC3CAF4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FB63CAF56
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhGOWpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhGOWpQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:45:16 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960EDC06175F;
-        Thu, 15 Jul 2021 15:42:22 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id gp5-20020a17090adf05b0290175c085e7a5so478290pjb.0;
-        Thu, 15 Jul 2021 15:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BVw7rlbdXsx2expzS3jO3rYzvYP2WBigJE1GsKn9KwE=;
-        b=b9UEeZqGzOBksShhEPzCyQ2Fc0et/7zj7p3ocT5jCbppaORm/qyo2RdGhF7YcnbZIZ
-         F34BYOxqh6ikBeOBJOljNoCcC2pYC+yZ41IzvXTPOz/KNFIpZ0oKwlPBwZIoldryUSCa
-         ccxOUTwJgVu0Rpcs+inu+1cCwf6jsPc+4J9zC4m0TrSPc39vkQSRWgyrsHlkOso49+Mj
-         schCNds35ZY94KG8PfrEbZVKDZEhCvCmQW63R0zdekInPMOP4OJxXFYm9nO9YYFDGuJY
-         UsUM7xIUouvr/dfEWWsurz63zdTkAAAf3BmUqC8bTLyh2O/f7rKAG8/kNR+2x/FxwjXw
-         acKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BVw7rlbdXsx2expzS3jO3rYzvYP2WBigJE1GsKn9KwE=;
-        b=M3wcmHSeZ0u+DCISxwd/tZa29WgCkXMNyTuDDyvH/iuWxLbTVTk1XI0N1m+WvHJu7Y
-         BkecfynBkKz90a/gZZMS6Ulx67Se4ssx+QbJhhhR+hIkWDrUae/b5zDHhLgzT+qgInip
-         XMhKHpsd1c81p/7ua7LzYXHCuYjkTMbpbvWkcgxg5uF/LyS295MaeeDSxOAA25jeOMR8
-         Y6W/u/T/cJ5/xfTRvKtFsZ3fZ+B7UYuoW+R5RcJ1XJWUcEfAJCK41AEnQ0JaeNgaYo5h
-         PXUt1NYBIl2hipJyia36PNO/NLCZk0cNbM/7MVTxCWd7aF1Gv8pCscHnUjP8OTgz1IGM
-         zmIQ==
-X-Gm-Message-State: AOAM5316yq4UkP/2Yqracg7LpD6iu/5IWtAzvS9vguXbrzHIqXdgNIPS
-        2wlWsoCl8Fw+3xr5kStRoSGtiZ0D1ySUjg==
-X-Google-Smtp-Source: ABdhPJzszR91tpSpUt65aYswOXLeynPqcjp5jJfZirvB0pXJbppuX9YO3T7ZbXW1MXdp1Zpp0leZHw==
-X-Received: by 2002:a17:902:d50a:b029:12b:59a9:9586 with SMTP id b10-20020a170902d50ab029012b59a99586mr3071517plg.62.1626388941547;
-        Thu, 15 Jul 2021 15:42:21 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w186sm7921536pfw.106.2021.07.15.15.42.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 15:42:21 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/266] 5.13.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210715182613.933608881@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <698aae7d-daa1-da76-2693-5a3488f5b493@gmail.com>
-Date:   Thu, 15 Jul 2021 15:42:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232327AbhGOWp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:45:57 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:53550 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhGOWpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:45:53 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m4A4G-0005t7-9k; Fri, 16 Jul 2021 00:42:56 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     "cl@rock-chips.com" <cl@rock-chips.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, lee.jones@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jbx6244@gmail.com, linux-rockchip@lists.infradead.org,
+        zhangqing@rock-chips.com
+Subject: Re: (subset) [PATCH v1 0/3] arm64: dts: rockchip: add pmu and qos nodes for rk3568
+Date:   Fri, 16 Jul 2021 00:42:48 +0200
+Message-Id: <162638886252.651069.1161379837751983635.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210624114719.1685-1-cl@rock-chips.com>
+References: <20210624114719.1685-1-cl@rock-chips.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 11:35 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.3 release.
-> There are 266 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, 24 Jun 2021 19:47:16 +0800, cl@rock-chips.com wrote:
+> v1:
+> 1. Document rk3568 compatible for pmu and qos nodes.
+> 2. Add the power-management and qos nodes to the core rk3568 dtsi.
 > 
-> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> Anything received after that time might be too late.
+> Liang Chen (3):
+>   dt-bindings: arm: rockchip: add rk3568 compatible string to pmu.yaml
+>   dt-binding: mfd: syscon: add rk3568 QoS register compatible
+>   arm64: dts: rockchip: add pmu and qos nodes for rk3568
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> [...]
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Applied, thanks!
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+[1/3] dt-bindings: arm: rockchip: add rk3568 compatible string to pmu.yaml
+      commit: b1c64924df5d2caedb8714148ce177d3384dfafd
+[3/3] arm64: dts: rockchip: add pmu and qos nodes for rk3568
+      commit: d178bed180ef7e7ac16d3c586fb7330b3cb8fc4d
+
+Best regards,
 -- 
-Florian
+Heiko Stuebner <heiko@sntech.de>
