@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8873CAC85
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5C73CAC89
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343665AbhGOTiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51362 "EHLO mail.kernel.org"
+        id S237752AbhGOTiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242071AbhGOTMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DDFE61158;
-        Thu, 15 Jul 2021 19:09:28 +0000 (UTC)
+        id S241663AbhGOTN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:13:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 848F561285;
+        Thu, 15 Jul 2021 19:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376169;
-        bh=HhaYMKe+gYvr5fouIoEMZDfS7Qqzvf/gvr/BR7jO6tM=;
+        s=korg; t=1626376183;
+        bh=IloEIHZ6H7uEgqGDO3TXEOTuOxpsyBiUrf0vYoTrYxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DhgGl/bZE0C/7Tgh5Mxo1WhmWlRSgKHPIcAVcijrCa7ASW22j6Jyu0RqLJa049gaj
-         gUWPOMYhaobYDQyeMuZ+wLR8T50y6XUUdxh5GZnNfMeTT/hq8mse80UjRP3pqAZh2q
-         9U8zFOMuO27cfz4PyluivheoXcvjtb3vypxPMQ1k=
+        b=jCkRrcyzvVjKe+7KOcVgEY90k62pyPdwxwR5RpIh4w2R3kRGMthOxg9wBBb7ylZ5Z
+         iprlWRncDBCIaoG4TZeO0gV42XwEDAR7GAn8pNHa7hfssT0LHm/K97Kk2+yz3wbn8n
+         nSe2JvFmiu0SyiSltMpAz94FxkcHIpeYd6eUisio=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Stanley.Yang" <Stanley.Yang@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 119/266] drm/amdgpu: fix bad address translation for sienna_cichlid
-Date:   Thu, 15 Jul 2021 20:37:54 +0200
-Message-Id: <20210715182634.909727446@linuxfoundation.org>
+Subject: [PATCH 5.13 120/266] drm/amdkfd: Walk through list with dqm lock hold
+Date:   Thu, 15 Jul 2021 20:37:55 +0200
+Message-Id: <20210715182635.087282383@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,48 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley.Yang <Stanley.Yang@amd.com>
+From: xinhui pan <xinhui.pan@amd.com>
 
-[ Upstream commit 6ec598cc9dfbf40433e94a2ed1a622e3ef80268b ]
+[ Upstream commit 56f221b6389e7ab99c30bbf01c71998ae92fc584 ]
 
-Signed-off-by: Stanley.Yang <Stanley.Yang@amd.com>
-Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+To avoid any list corruption.
+
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h | 5 +++++
- drivers/gpu/drm/amd/amdgpu/umc_v8_7.c   | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ .../drm/amd/amdkfd/kfd_device_queue_manager.c | 22 ++++++++++---------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h
-index bbcccf53080d..e5a75fb788dd 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h
-@@ -21,6 +21,11 @@
- #ifndef __AMDGPU_UMC_H__
- #define __AMDGPU_UMC_H__
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+index e9b3e2e32bf8..f0bad74af230 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+@@ -1709,7 +1709,7 @@ static int process_termination_cpsch(struct device_queue_manager *dqm,
+ 		struct qcm_process_device *qpd)
+ {
+ 	int retval;
+-	struct queue *q, *next;
++	struct queue *q;
+ 	struct kernel_queue *kq, *kq_next;
+ 	struct mqd_manager *mqd_mgr;
+ 	struct device_process_node *cur, *next_dpn;
+@@ -1766,24 +1766,26 @@ static int process_termination_cpsch(struct device_queue_manager *dqm,
+ 		qpd->reset_wavefronts = false;
+ 	}
  
-+/*
-+ * (addr / 256) * 4096, the higher 26 bits in ErrorAddr
-+ * is the index of 4KB block
-+ */
-+#define ADDR_OF_4KB_BLOCK(addr)			(((addr) & ~0xffULL) << 4)
- /*
-  * (addr / 256) * 8192, the higher 26 bits in ErrorAddr
-  * is the index of 8KB block
-diff --git a/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c b/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c
-index 89d20adfa001..af59a35788e3 100644
---- a/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c
-+++ b/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c
-@@ -234,7 +234,7 @@ static void umc_v8_7_query_error_address(struct amdgpu_device *adev,
- 		err_addr &= ~((0x1ULL << lsb) - 1);
+-	dqm_unlock(dqm);
+-
+-	/* Outside the DQM lock because under the DQM lock we can't do
+-	 * reclaim or take other locks that others hold while reclaiming.
+-	 */
+-	if (found)
+-		kfd_dec_compute_active(dqm->dev);
+-
+ 	/* Lastly, free mqd resources.
+ 	 * Do free_mqd() after dqm_unlock to avoid circular locking.
+ 	 */
+-	list_for_each_entry_safe(q, next, &qpd->queues_list, list) {
++	while (!list_empty(&qpd->queues_list)) {
++		q = list_first_entry(&qpd->queues_list, struct queue, list);
+ 		mqd_mgr = dqm->mqd_mgrs[get_mqd_type_from_queue_type(
+ 				q->properties.type)];
+ 		list_del(&q->list);
+ 		qpd->queue_count--;
++		dqm_unlock(dqm);
+ 		mqd_mgr->free_mqd(mqd_mgr, q->mqd, q->mqd_mem_obj);
++		dqm_lock(dqm);
+ 	}
++	dqm_unlock(dqm);
++
++	/* Outside the DQM lock because under the DQM lock we can't do
++	 * reclaim or take other locks that others hold while reclaiming.
++	 */
++	if (found)
++		kfd_dec_compute_active(dqm->dev);
  
- 		/* translate umc channel address to soc pa, 3 parts are included */
--		retired_page = ADDR_OF_8KB_BLOCK(err_addr) |
-+		retired_page = ADDR_OF_4KB_BLOCK(err_addr) |
- 				ADDR_OF_256B_BLOCK(channel_index) |
- 				OFFSET_IN_256B_BLOCK(err_addr);
- 
+ 	return retval;
+ }
 -- 
 2.30.2
 
