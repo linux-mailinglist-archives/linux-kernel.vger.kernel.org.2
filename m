@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893A03CAB59
+	by mail.lfdr.de (Postfix) with ESMTP id D54853CAB5A
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245233AbhGOTT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
+        id S245275AbhGOTTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234996AbhGOTEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240608AbhGOTEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:04:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E110C613F7;
-        Thu, 15 Jul 2021 19:00:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A2C613F5;
+        Thu, 15 Jul 2021 19:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375654;
-        bh=jSKqkZ+UU4PmhEyzCaosrPO3qLRJWJGjTNDb4ZWQLdQ=;
+        s=korg; t=1626375656;
+        bh=pTQ+NakHpAF9fF1GZfft8UgM0pu0m5bVmwOfu9zlOCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1XEGRvK8Wgd0xkYcU4miEWro2hm2+jppMbsJ7Tp1R8m1LtZnbo+F/RYLp4U8cKdtL
-         GHVFclo1q35lXrYyPvM0Hf2/gEgSjsn7CteReGwCjuLmEp4Pn5opm8pTTWhvYPUvQh
-         U+bURhYGvPwESSt5NE0G3S7jtwtRvzrPGqrIAVnM=
+        b=LSiceCCya+3aS4+BKhobD6UfMYFrwRFpZlpGq3dEg3Fq2H2HQJ2Yv90/PimuBkmB+
+         BSXlde4lEzyZGzkUgddEL6tUwTNjtG7UigNO+Tv5q8/cRL2ZK3QiQHImDQt7J+5xze
+         HqcRj/mmQ2utTS/f+/L/w2xr5Pyi+vT6jAzWGVJs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
+        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
         Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 5.12 179/242] drm/arm/malidp: Always list modifiers
-Date:   Thu, 15 Jul 2021 20:39:01 +0200
-Message-Id: <20210715182624.784336851@linuxfoundation.org>
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org
+Subject: [PATCH 5.12 180/242] drm/nouveau: Dont set allow_fb_modifiers explicitly
+Date:   Thu, 15 Jul 2021 20:39:02 +0200
+Message-Id: <20210715182624.964000017@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -44,50 +43,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 26c3e7fd5a3499e408915dadae5d5360790aae9a upstream.
+commit cee93c028288b9af02919f3bd8593ba61d1e610d upstream.
 
-Even when all we support is linear, make that explicit. Otherwise the
-uapi is rather confusing.
+Since
 
-Acked-by: Liviu Dudau <liviu.dudau@arm.com>
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+commit 890880ddfdbe256083170866e49c87618b706ac7
+Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Fri Jan 4 09:56:10 2019 +0100
+
+    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
+
+this is done automatically as part of plane init, if drivers set the
+modifier list correctly. Which is the case here.
+
+Note that this fixes an inconsistency: We've set the cap everywhere,
+but only nv50+ supports modifiers. Hence cc stable, but not further
+back then the patch from Paul.
+
 Reviewed-by: Lyude Paul <lyude@redhat.com>
-Cc: stable@vger.kernel.org
+Cc: stable@vger.kernel.org # v5.1 +
 Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Liviu Dudau <liviu.dudau@arm.com>
-Cc: Brian Starkey <brian.starkey@arm.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-2-daniel.vetter@ffwll.ch
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: nouveau@lists.freedesktop.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-6-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/arm/malidp_planes.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_display.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/gpu/drm/arm/malidp_planes.c
-+++ b/drivers/gpu/drm/arm/malidp_planes.c
-@@ -922,6 +922,11 @@ static const struct drm_plane_helper_fun
- 	.atomic_disable = malidp_de_plane_disable,
- };
+--- a/drivers/gpu/drm/nouveau/nouveau_display.c
++++ b/drivers/gpu/drm/nouveau/nouveau_display.c
+@@ -700,7 +700,6 @@ nouveau_display_create(struct drm_device
  
-+static const uint64_t linear_only_modifiers[] = {
-+	DRM_FORMAT_MOD_LINEAR,
-+	DRM_FORMAT_MOD_INVALID
-+};
-+
- int malidp_de_planes_init(struct drm_device *drm)
- {
- 	struct malidp_drm *malidp = drm->dev_private;
-@@ -985,8 +990,8 @@ int malidp_de_planes_init(struct drm_dev
- 		 */
- 		ret = drm_universal_plane_init(drm, &plane->base, crtcs,
- 				&malidp_de_plane_funcs, formats, n,
--				(id == DE_SMART) ? NULL : modifiers, plane_type,
--				NULL);
-+				(id == DE_SMART) ? linear_only_modifiers : modifiers,
-+				plane_type, NULL);
+ 	dev->mode_config.preferred_depth = 24;
+ 	dev->mode_config.prefer_shadow = 1;
+-	dev->mode_config.allow_fb_modifiers = true;
  
- 		if (ret < 0)
- 			goto cleanup;
+ 	if (drm->client.device.info.chipset < 0x11)
+ 		dev->mode_config.async_page_flip = false;
 
 
