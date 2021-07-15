@@ -2,192 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302E83CA386
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E034B3CA38E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhGORHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:07:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhGORHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:07:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E60613C7;
-        Thu, 15 Jul 2021 17:04:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626368655;
-        bh=bPvv+GuQRfR80fMr5P/23l3R3Zi3VuquweU/TFGBrVc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=RV+ouwlG+1xu/MVl5OXu4MxJhHCDjHy+Jh6aRTkrWjP1w24bu+M31TJY1feBpPdO4
-         HuPiR1qa0uXgvUxXPDygb/YCsOv3FZzkFG8wZYFq8tzB/dKs1eIHn9AujL18qfRF7B
-         tNe83aGA8DEGmQ2sqrdz2m90KUnaK09czlsTCSErk5y3AOsUwmUbs/xnvPaY++6PHc
-         2xvRRkhQja2Upko5M3bZwCEMFDEy1RJo3YDbHd64KaUD4DbbKOSVFmqhBsRBqFrGkd
-         b0fnkXkHG28XOV1rzLHdyXr3uMbXLGlPgxHsqMsqYSQ2DHdBtCJngiir1UygnIURKw
-         C/XIr3vxK4tMw==
-Message-ID: <17b88fc429ddd354cff468849bc16de25086df2d.camel@kernel.org>
-Subject: Re: [PATCH] tracing: Do no reference char * as a string in
- histograms
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Date:   Thu, 15 Jul 2021 12:04:13 -0500
-In-Reply-To: <20210715000206.025df9d2@rorschach.local.home>
-References: <20210715000206.025df9d2@rorschach.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S231480AbhGORIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:08:00 -0400
+Received: from mail-dm6nam10on2049.outbound.protection.outlook.com ([40.107.93.49]:23392
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229566AbhGORH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:07:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UPde9tS2Fex8UrYCRkPwfUcim0ZtR6OCY0yi436RuW/wur4xjcMIPRmjrJlfTkS4qW253Eae59HMq8wSsovlc5cKRTLbgZrbzeoIUDLxC8hssZD4F9J082JtY0vZAlm3joH6JMH86Uoe+l4ZF4k3/J2jdDL2+G+CwetmI+MRx4RzI7lIAT3igs5mWHpLNkpcCpHG3zN9T9OKSQh/c0O3Oe8KCd+1HdfmvdyIPzPAdAi1jGPlybbqMP/XrH3s8Fm3QxgtyBPF6tUFppqHIRDS6qTfHY4D12FtPtcTP5AkxzGkL4/EOMs8n5lCeSC2uL3NR6twfw88ze8clUyGJGXyDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zPz4dbfGXn7Y8IxUX7EdLiWUhqJ8TjGtm559N/aElH4=;
+ b=TMxsqfIgDEScEAa3G9dtPsKZL3rN06PCUCi7U4G8LHe9g6JKzl22rm1ZkcK6MozrPYpyvhPYtRbfQlAIm77GSuzp86qLwgiz+uJgxAv0nkQTvSEa3w9Ep+SSJ/QfxgUzY8yZEm/WD2AGAeQFBtd9g52Zp8btU0K2pgLNQpsh2uxrdMB6EF7mhPEXo0AgqCQUPZqs4tXae379W797lbQaeVYce56Ub4ktJl/2tS+Q8Cu8vtfNNTXjRQXHYN4mMJyXgeIJX4Q+Tae8GLFwki5LDwPqlRcae+pJWaGmGIynbUNow64iKTNYrw6ZNMT1Lna87VmPkNLXPXGM6ICaMgJfrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zPz4dbfGXn7Y8IxUX7EdLiWUhqJ8TjGtm559N/aElH4=;
+ b=Ywz+lFwN739ndtOfxZ4E4tUSQL1DAdmYXGgnj6gjJq9Wkz4eGHJ8Uw8dn6W9VgMsv/ynnWWTYqGm5RcDSyeAaIBvWAF51rki6hwjb/2CzjiXU77uZ1rU9sk+OmNKoxx41Ek77lfxqCQmihc2oBcJZ7PUUcP9tLXOIX6+vjjJn3I=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM8PR12MB5397.namprd12.prod.outlook.com (2603:10b6:8:38::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4331.23; Thu, 15 Jul 2021 17:05:03 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::73:2581:970b:3208]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::73:2581:970b:3208%3]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
+ 17:05:03 +0000
+Subject: Re: [PATCH Part2 RFC v4 01/40] KVM: SVM: Add support to handle AP
+ reset MSR protocol
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-2-brijesh.singh@amd.com> <YO9GWVsZmfXJ4BRl@google.com>
+ <e634061d-78f4-dcb2-b7e5-ebcb25585765@amd.com> <YPBYMiOB44dhhPfr@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <02dc78a6-9aa7-cb0f-af48-aed4c4a94f6e@amd.com>
+Date:   Thu, 15 Jul 2021 12:05:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YPBYMiOB44dhhPfr@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0201CA0057.namprd02.prod.outlook.com
+ (2603:10b6:803:20::19) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.241] (165.204.77.1) by SN4PR0201CA0057.namprd02.prod.outlook.com (2603:10b6:803:20::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 17:05:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: de651d38-134e-48d0-5f36-08d947b2b006
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5397:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM8PR12MB539749E74A63938ACDBD456CEC129@DM8PR12MB5397.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O3HhZOd+j41zVwJ5IWRGUmbHeYzx5sipQT6VEWSU0jGvItpbqXYdqkr2S/0x774PHcWOsXhE8/jKYwDffH79GR/IY6OhgDD4n45LRYf8G6Vb61IAA3RYigZSqa26Rhg3quFqZVvQXtpg+balbyYFZYPn1INTSmfjcWFaW0u8OBZY5fDSFaIOYC1rpMRMoTjk81Xcb46bWg/fCgaqHpXydlcGOlu+U83ZavWiIGrr4hvyrt+EVMbK4aBP1W3cT7/1Ac5XbTdW2MTgfvDfzQoIMsIT9v1NDjhXfA1yK7qN6ZdRfG1NbERiY89bz3DZgo80ooimu0apNsPzqaMIW+MUc+M6o3CbA8oicX/iz31we4U57OYUhYb05skmA/gl4KyrukQIAv0EnQ2FTNuqu4e5iDyRysyQD8vVEBTFlh20MJdJ9ECe0atHo3SkOIgv4DIvlfe/DjEZZk1kz6j7ub9Tl7GU8AXmr5vEir7mjCcimeJyRcOFilhrH69uRlsVEvIvecbboOXLfo8fzypTzuRGpb1nqhG/0BiGQJhBj5jICSAzzGULOBNLzvE0WLDX0HJmECMzIu+pi/XxKdhxr0OJ20QTMRutuSkMiXRlhAgDh+4JRZWfRngD4D22I35fLvbvu44kORcO5pQrpZMFpwKtyDpkCaBW8gLnQvKvq9Lqd6aMLw/1JUUxrvC6PI25ER7yP1T3OokE+28GeMf7JtW4yJM9EXdWAfxkzHSCkd+t2yU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(478600001)(38100700002)(36756003)(53546011)(31696002)(26005)(6486002)(2906002)(86362001)(316002)(186003)(31686004)(16576012)(54906003)(6916009)(4326008)(7406005)(7416002)(83380400001)(8676002)(2616005)(956004)(66556008)(66476007)(8936002)(66946007)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnhEb0tQSnk3YXNhRHJwWnJLZVgzS09zYUpTZ3hvS2M5MFNKY3VKUmx4RU1p?=
+ =?utf-8?B?aFFEeUZoOGY5RGZSNkcxT3hxSGpZazEwNWJudDJMbmdISVA2dS9IZEhtVllC?=
+ =?utf-8?B?cXlxSHF5K3dyNUQzZUI2VXYvaVNxdEVJWlFqR2NCazlpdnR1RTVVZWNWYzh3?=
+ =?utf-8?B?R2diK00ybDlKQUpkRkxoTHY2TWdnd0M2Z0dKRFBwekg3bWFmeHFxUG5xd0c0?=
+ =?utf-8?B?YS81QjVKbGZFY1ZKN0xVeFh6bnBMaTBueEt3L1RiaGp4ckhRMktSaUpGS1k0?=
+ =?utf-8?B?aWlHWGhzVC85S1EzdjRnd2U5cnRCWHlTdjhYQy9rZlhrcUUyR1JBYlFyVGZs?=
+ =?utf-8?B?K3Z4Unh6WllNUkU1dHQwOE5CNW1yM0hXbmxXaytmOTVqd08zamNab2xNMGNN?=
+ =?utf-8?B?NENHWFg5R0ZPYU5ZRUNVbDBTMjZxa08zOHRYOXRXcVRoVXZZTU56VDZnaklk?=
+ =?utf-8?B?ODZrUmgvL0dWWUZoUVJETXJrTUtDbHIyanJKTHEzUlJVOTlVRXJLMS9DeTFx?=
+ =?utf-8?B?YkhJeU5xMmJmbzNxKzhHNURudjNYRFhqUWE1RFdhWC8zbGl5dHh1SDl6U0pw?=
+ =?utf-8?B?ZXRLRjJYdWRkalRuTWVVcE8zbmhFK3MxQjBHUjNEWUs2NWx2L3phWGI0dVFN?=
+ =?utf-8?B?QzlVNmxZYmF5cnB0N0lNUEJjQVVPQnI3Qm0zSHNGY3FZYXhuWmY2Vld1OEQz?=
+ =?utf-8?B?Z3NjVFg5ZzJQNnRQNlUxWGswd1ZMY3FsOEVPZjlMRS9la1R1WXNiRGlmRi8v?=
+ =?utf-8?B?bnNwMDdaTWoza1Jyd1M4NHVwbW5Ib0N1Ly9uL0F4SGVIdDczbHdNZjZXSjJP?=
+ =?utf-8?B?M2VhUDlYZVRHR09FT1dPeTFKR1JWN0NDbmhiTms0aTZ2UFg4OFJJNklUaVhG?=
+ =?utf-8?B?U1Y1VXFyZmZRQzZCNzdPSDA3RnZ0RXhFaCtTcXhSUmp4a280WWJ4ZVhUdUJl?=
+ =?utf-8?B?SlRCeVgyQlVZd0EyVm9IWEwyNUc0d0ozSm9zbWV4OHYwNXovalYwbUNWRHJC?=
+ =?utf-8?B?eGN5eHBuQVhyVlhFNnJJNDBZOTh5YUZzeTFFN3d3ZWRFN25KYVlsYWtYTUdi?=
+ =?utf-8?B?R1FOajNRS3NnOGxra0Y5cUhUZlBoTnQrVlVPRkZBak85bXJTaFpmOU53aWls?=
+ =?utf-8?B?aFJBbkxDOW9Db3YzYm1CblRHQ3lwZzVpWk92dmlZSUxFQldOUlhyd2ZwQkJT?=
+ =?utf-8?B?UmovdS9tR2VtTWVBMzliY1ZRL1NaeGdMbXZYRGdHU3JJNGdDWEpZQ1ltdmc0?=
+ =?utf-8?B?UEdIQm1jZHAram93Y2xtNmtxOFVJdUZwMkV0NC9ZTmFlVDZaZENmSmdNY0Q0?=
+ =?utf-8?B?Y0hCNDVmVm4yUFZZWGR2S1EvRDg2aWphK0FHbittWTIrTmh6a2wrc1M1aHV4?=
+ =?utf-8?B?YTRWLzk0cWFIcUY2RXpSQWtnRzhlelR3R2l2K3k3Sll4aE9xL2FOWHFoWjJ6?=
+ =?utf-8?B?OW94RDBwa1hUcXh3Q3c2VFVjZ1cyaEFvM0dtd24xZGl4L3N1OWhxV1piNldM?=
+ =?utf-8?B?eExXNmo2dmYyMHVPeWxsZ09hT1NjcU9jbmtuclVCZktvRmRnbk5ZOTU1TnlN?=
+ =?utf-8?B?Q1U0T3hyampqT1oveGlqNUk2UEpkY1puYW1DK0hnUjhBbUVBbHNSbmN3eE8z?=
+ =?utf-8?B?UVVkOUJzV3M0YzIyeDBHNDhadnMzU0lNaVhLdnQ0QmY1RW1vQlNKbU1SSzhn?=
+ =?utf-8?B?OFdRZmNidUNZUXZSUHhESndwQXJaV3dDdXVqZy9SSkVHWUxIUWRXQlpBUjZm?=
+ =?utf-8?Q?rBahteqVtYOad+gEMAe/ufz7k5XWEZpY1fo9cEy?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de651d38-134e-48d0-5f36-08d947b2b006
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 17:05:03.6069
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N5yFBVDCMzOi0gtO3XZYOW0kKXGRcMUChlRXS3V+J+iJ6KSUGl5F5gELkSz3HNsVskIGGSmEQnN8Kfz5lLaWCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5397
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-On Thu, 2021-07-15 at 00:02 -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 7/15/21 10:45 AM, Sean Christopherson wrote:
+> On Thu, Jul 15, 2021, Tom Lendacky wrote:
+>> On 7/14/21 3:17 PM, Sean Christopherson wrote:
+>>>> +	case GHCB_MSR_AP_RESET_HOLD_REQ:
+>>>> +		svm->ap_reset_hold_type = AP_RESET_HOLD_MSR_PROTO;
+>>>> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
+>>>
+>>> The hold type feels like it should be a param to kvm_emulate_ap_reset_hold().
+>>
+>> I suppose it could be, but then the type would have to be tracked in the
+>> kvm_vcpu_arch struct instead of the vcpu_svm struct, so I opted for the
+>> latter. Maybe a helper function, sev_ap_reset_hold(), that sets the type
+>> and then calls kvm_emulate_ap_reset_hold(), but I'm not seeing a big need
+>> for it.
 > 
-> The histogram logic was allowing events with char * pointers to be
-> used as
-> normal strings. But it was easy to crash the kernel with:
+> Huh.  Why is kvm_emulate_ap_reset_hold() in x86.c?  That entire concept is very
+> much SEV specific.  And if anyone argues its not SEV specific, then the hold type
+> should also be considered generic, i.e. put in kvm_vcpu_arch.
+
+That was based on review comments where it was desired that the halt be
+identified as specifically from the AP reset hold vs a normal halt. So
+kvm_emulate_ap_reset_hold() was created using KVM_MP_STATE_AP_RESET_HOLD
+and KVM_EXIT_AP_RESET_HOLD instead of exporting a version of
+kvm_vcpu_halt() with the state and reason as arguments.
+
+If there's no objection, then I don't have any issues with moving the hold
+type to kvm_vcpu_arch and adding a param to kvm_emulate_ap_reset_hold().
+
 > 
->  # echo 'hist:keys=filename' >
-> events/syscalls/sys_enter_openat/trigger
+>>>> +
+>>>> +		/*
+>>>> +		 * Preset the result to a non-SIPI return and then only set
+>>>> +		 * the result to non-zero when delivering a SIPI.
+>>>> +		 */
+>>>> +		set_ghcb_msr_bits(svm, 0,
+>>>> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
+>>>> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
+>>>> +
+>>>> +		set_ghcb_msr_bits(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
+>>>> +				  GHCB_MSR_INFO_MASK,
+>>>> +				  GHCB_MSR_INFO_POS);
+>>>
+>>> It looks like all uses set an arbitrary value and then the response.  I think
+>>> folding the response into the helper would improve both readability and robustness.
+>>
+>> Joerg pulled this patch out and submitted it as part of a small, three
+>> patch series, so it might be best to address this in general in the
+>> SEV-SNP patches or as a follow-on series specifically for this re-work.
+>>
+>>> I also suspect the helper needs to do WRITE_ONCE() to guarantee the guest sees
+>>> what it's supposed to see, though memory ordering is not my strong suit.
+>>
+>> This is writing to the VMCB that is then used to set the value of the
+>> guest MSR. I don't see anything done in general for writes to the VMCB, so
+>> I wouldn't think this should be any different.
 > 
-> And open some files, and boom!
+> Ooooh, right.  I was thinking this was writing memory that's shared with the
+> guest, but this is KVM's copy of the GCHB MSR, not the GHCB itself.  Thanks!
 > 
->  BUG: unable to handle page fault for address: 00007f2ced0c3280
->  #PF: supervisor read access in kernel mode
->  #PF: error_code(0x0000) - not-present page
->  PGD 1173fa067 P4D 1173fa067 PUD 1171b6067 PMD 1171dd067 PTE 0
->  Oops: 0000 [#1] PREEMPT SMP
->  CPU: 6 PID: 1810 Comm: cat Not tainted 5.13.0-rc5-test+ #61
->  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
-> v03.03 07/14/2016
->  RIP: 0010:strlen+0x0/0x20
->  Code: f6 82 80 2a 0b a9 20 74 11 0f b6 50 01 48 83 c0 01 f6 82 80 2a
-> 0b
-> a9 20 75 ef c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 <80> 3f
-> 00 74
-> 10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3
+>>> Might even be able to squeeze in a build-time assertion.
+>>>
+>>> Also, do the guest-provided contents actually need to be preserved?  That seems
+>>> somewhat odd.
+>>
+>> Hmmm... not sure I see where the guest contents are being preserved.
 > 
->  RSP: 0018:ffffbdbf81567b50 EFLAGS: 00010246
->  RAX: 0000000000000003 RBX: ffff93815cdb3800 RCX: ffff9382401a22d0
->  RDX: 0000000000000100 RSI: 0000000000000000 RDI: 00007f2ced0c3280
->  RBP: 0000000000000100 R08: ffff9382409ff074 R09: ffffbdbf81567c98
->  R10: ffff9382409ff074 R11: 0000000000000000 R12: ffff9382409ff074
->  R13: 0000000000000001 R14: ffff93815a744f00 R15: 00007f2ced0c3280
->  FS:  00007f2ced0f8580(0000) GS:ffff93825a800000(0000)
-> knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 00007f2ced0c3280 CR3: 0000000107069005 CR4: 00000000001706e0
->  Call Trace:
->   event_hist_trigger+0x463/0x5f0
->   ? find_held_lock+0x32/0x90
->   ? sched_clock_cpu+0xe/0xd0
->   ? lock_release+0x155/0x440
->   ? kernel_init_free_pages+0x6d/0x90
->   ? preempt_count_sub+0x9b/0xd0
->   ? kernel_init_free_pages+0x6d/0x90
->   ? get_page_from_freelist+0x12c4/0x1680
->   ? __rb_reserve_next+0xe5/0x460
->   ? ring_buffer_lock_reserve+0x12a/0x3f0
->   event_triggers_call+0x52/0xe0
->   ftrace_syscall_enter+0x264/0x2c0
->   syscall_trace_enter.constprop.0+0x1ee/0x210
->   do_syscall_64+0x1c/0x80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> The fact that set_ghcb_msr_bits() is a RMW flow implies _something_ is being
+> preserved.  And unless KVM explicitly zeros/initializes control.ghcb_gpa, the
+> value being preserved is the value last written by the guest.  E.g. for CPUID
+> emulation, KVM reads the guest-requested function and register from ghcb_gpa,
+> then writes back the result.  But set_ghcb_msr_bits() is a RMW on a subset of
+> bits, and thus it's preserving the guest's value for the bits not being written.
+
+Yes, set_ghcb_msr_bits() is a RMW helper, but the intent was to set every
+bit. So for CPUID, I missed setting the reserved area to 0. There wouldn't
+be an issue initializing the whole field to zero once everything has been
+pulled out for the MSR protocol function being invoked.
+
 > 
-> Where it triggered a fault on strlen(key) where key was the filename.
-> 
-> The reason is that filename is a char * to user space, and the
-> histogram
-> code just blindly dereferenced it, with obvious bad results.
-> 
-> I originally tried to use strncpy_from_user/kernel_nofault() but
-> found
-> that there's other places that its dereferenced and not worth the
-> effort.
-> 
-> Just do not allow "char *" to act like strings.
+> Unless there is an explicit need to preserve the guest value, the whole RMW thing
+> is unnecessary and confusing.
 
-The original commit introducing FILTER_PTR_STR only intended char *
-string dereferences when it was known to be safe:
+I guess it depends on who's reading the code. I don't find it confusing,
+which is probably why I implemented it that way :) But, yes, it certainly
+can be changed to create the result and then have a single function that
+combines the result and response code and sets the ghcb_gpa, which would
+have eliminated the missed setting of the reserved area.
 
-commit 87a342f5db69d53ea70493bb1ec69c9047677038
-Author: Li Zefan <lizf@cn.fujitsu.com>
-Date:   Fri Aug 7 10:33:43 2009 +0800
-
-    tracing/filters: Support filtering for char * strings
-
-    ...
-
-    The filtering will not dereference "char *" unless the developer
-    explicitly sets FILTER_PTR_STR in __field_ext.
-
-
-But it looks like a later patch opened it up for trace_define_field()
-to get around that for any char * field:  
-
-commit 5967bd5c4239be449744a1471daf60c866486c24
-Author: Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat May 25 09:58:00 2019 -0700
-
-    tracing: Let filter_assign_type() detect FILTER_PTR_STRING
-    
-    filter_assign_type() could detect dynamic string and static
-    string, but not string pointers. Teach filter_assign_type()
-    to detect string pointers, and this will be needed by trace
-    event injection code.
-    
-    BTW, trace event hist uses FILTER_PTR_STRING too.
-    Link: http://lkml.kernel.org/r/20190525165802.25944-3-xiyou.wangcong@gmail.com
-
-
-Not sure what the correct fix is at this point, but it would seem that
-if the original intent was honored, the histogram code should still be
-allowed to use them.
-
+Thanks,
 Tom
-
-
-
-> Cc: stable@vger.kernel.org
-> Fixes: 79e577cbce4c4 ("tracing: Support string type key properly")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_events_hist.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c
-> b/kernel/trace/trace_events_hist.c
-> index 0207aeed31e6..16a9dfc9fffc 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -1689,7 +1689,9 @@ static struct hist_field
-> *create_hist_field(struct hist_trigger_data *hist_data,
->  	if (WARN_ON_ONCE(!field))
->  		goto out;
->  
-> -	if (is_string_field(field)) {
-> +	/* Pointers to strings are just pointers and dangerous to
-> dereference */
-> +	if (is_string_field(field) &&
-> +	    (field->filter_type != FILTER_PTR_STRING)) {
->  		flags |= HIST_FIELD_FL_STRING;
->  
->  		hist_field->size = MAX_FILTER_STR_VAL;
-> @@ -4495,8 +4497,6 @@ static inline void add_to_key(char
-> *compound_key, void *key,
->  		field = key_field->field;
->  		if (field->filter_type == FILTER_DYN_STRING)
->  			size = *(u32 *)(rec + field->offset) >> 16;
-> -		else if (field->filter_type == FILTER_PTR_STRING)
-> -			size = strlen(key);
->  		else if (field->filter_type == FILTER_STATIC_STRING)
->  			size = field->size;
->  
-
