@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78713CA603
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FFE3CA859
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237286AbhGOSpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:45:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45802 "EHLO mail.kernel.org"
+        id S242689AbhGOS7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:59:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235738AbhGOSpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:45:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82DED613D1;
-        Thu, 15 Jul 2021 18:42:21 +0000 (UTC)
+        id S239286AbhGOSxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:53:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6DCC613CA;
+        Thu, 15 Jul 2021 18:50:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374542;
-        bh=THJPcmkfH78OpzqAj5LeSvs8Vk5FqCJ8OEAfz0IuGEg=;
+        s=korg; t=1626375006;
+        bh=L8p0SwQFqnS23W3Kn4oqQgCrUhp80/4lWpUPylWHEpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DoUHVaaE7T1nh0E004M5H2ST+ZpPFxORkj1CRnQto235TqBgXa28ki5drkaRgsaHt
-         iUch92D8hKmj9wqROoosrwU5Ac2+IXAH1O190GxpXq/n72JZaegit1UNyllqIZMvyy
-         fh6Oadq2b4R26v7cEW0qhOQb/8coyw2M2Acu1/28=
+        b=uGCvwUCcXjVLmWpkbJHrJoDbtT/0eFnE9b/6Tgk7GVA2RbMgxc3oAssQor/dY3YAx
+         F4D11ZOJayNwcC03bU0NJt32KGhbTQrzsQoXC7EuwhZMXeeHW1+wjltrcpxhlvuI+i
+         OFzY0njPk9V+V1YodF+wrcoJ+0N8PSd5zRycV8jo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liwei Song <liwei.song@windriver.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 026/122] ice: set the value of global config lock timeout longer
-Date:   Thu, 15 Jul 2021 20:37:53 +0200
-Message-Id: <20210715182455.715995230@linuxfoundation.org>
+Subject: [PATCH 5.10 102/215] iwlwifi: mvm: dont change band on bound PHY contexts
+Date:   Thu, 15 Jul 2021 20:37:54 +0200
+Message-Id: <20210715182617.349250475@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-References: <20210715182448.393443551@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liwei Song <liwei.song@windriver.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit fb3612840d4f587a0af9511a11d7989d1fa48206 ]
+[ Upstream commit 8835a64f74c46baebfc946cd5a2c861b866ebcee ]
 
-It may need hold Global Config Lock a longer time when download DDP
-package file, extend the timeout value to 5000ms to ensure that
-download can be finished before other AQ command got time to run,
-this will fix the issue below when probe the device, 5000ms is a test
-value that work with both Backplane and BreakoutCable NVM image:
+When we have a P2P Device active, we attempt to only change the
+PHY context it uses when we get a new remain-on-channel, if the
+P2P Device is the only user of the PHY context.
 
-ice 0000:f4:00.0: VSI 12 failed lan queue config, error ICE_ERR_CFG
-ice 0000:f4:00.0: Failed to delete VSI 12 in FW - error: ICE_ERR_AQ_TIMEOUT
-ice 0000:f4:00.0: probe failed due to setup PF switch: -12
-ice: probe of 0000:f4:00.0 failed with error -12
+This is fine if we're switching within a band, but if we're
+switching bands then the switch implies a removal and re-add
+of the PHY context, which isn't permitted by the firmware while
+it's bound to an interface.
 
-Signed-off-by: Liwei Song <liwei.song@windriver.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fix the code to skip the unbind/release/... cycle only if the
+band doesn't change (or we have old devices that can switch the
+band on the fly as well.)
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210612142637.e9ac313f70f3.I713b9d109957df7e7d9ed0861d5377ce3f8fccd3@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_type.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../net/wireless/intel/iwlwifi/mvm/mac80211.c | 24 ++++++++++++++-----
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_type.h b/drivers/net/ethernet/intel/ice/ice_type.h
-index 6667d17a4206..0b2e657b96eb 100644
---- a/drivers/net/ethernet/intel/ice/ice_type.h
-+++ b/drivers/net/ethernet/intel/ice/ice_type.h
-@@ -48,7 +48,7 @@ enum ice_aq_res_ids {
- /* FW update timeout definitions are in milliseconds */
- #define ICE_NVM_TIMEOUT			180000
- #define ICE_CHANGE_LOCK_TIMEOUT		1000
--#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	3000
-+#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	5000
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index d42165559df6..8cba923b1ec6 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3794,6 +3794,7 @@ static int iwl_mvm_roc(struct ieee80211_hw *hw,
+ 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
+ 	struct cfg80211_chan_def chandef;
+ 	struct iwl_mvm_phy_ctxt *phy_ctxt;
++	bool band_change_removal;
+ 	int ret, i;
  
- enum ice_aq_res_access_type {
- 	ICE_RES_READ = 1,
+ 	IWL_DEBUG_MAC80211(mvm, "enter (%d, %d, %d)\n", channel->hw_value,
+@@ -3874,19 +3875,30 @@ static int iwl_mvm_roc(struct ieee80211_hw *hw,
+ 	cfg80211_chandef_create(&chandef, channel, NL80211_CHAN_NO_HT);
+ 
+ 	/*
+-	 * Change the PHY context configuration as it is currently referenced
+-	 * only by the P2P Device MAC
++	 * Check if the remain-on-channel is on a different band and that
++	 * requires context removal, see iwl_mvm_phy_ctxt_changed(). If
++	 * so, we'll need to release and then re-configure here, since we
++	 * must not remove a PHY context that's part of a binding.
+ 	 */
+-	if (mvmvif->phy_ctxt->ref == 1) {
++	band_change_removal =
++		fw_has_capa(&mvm->fw->ucode_capa,
++			    IWL_UCODE_TLV_CAPA_BINDING_CDB_SUPPORT) &&
++		mvmvif->phy_ctxt->channel->band != chandef.chan->band;
++
++	if (mvmvif->phy_ctxt->ref == 1 && !band_change_removal) {
++		/*
++		 * Change the PHY context configuration as it is currently
++		 * referenced only by the P2P Device MAC (and we can modify it)
++		 */
+ 		ret = iwl_mvm_phy_ctxt_changed(mvm, mvmvif->phy_ctxt,
+ 					       &chandef, 1, 1);
+ 		if (ret)
+ 			goto out_unlock;
+ 	} else {
+ 		/*
+-		 * The PHY context is shared with other MACs. Need to remove the
+-		 * P2P Device from the binding, allocate an new PHY context and
+-		 * create a new binding
++		 * The PHY context is shared with other MACs (or we're trying to
++		 * switch bands), so remove the P2P Device from the binding,
++		 * allocate an new PHY context and create a new binding.
+ 		 */
+ 		phy_ctxt = iwl_mvm_get_free_phy_ctxt(mvm);
+ 		if (!phy_ctxt) {
 -- 
 2.30.2
 
