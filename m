@@ -2,106 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BDB3CA066
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D081F3CA062
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237317AbhGOOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237214AbhGOOTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237223AbhGOOTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Jul 2021 10:19:24 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C911EC061764;
-        Thu, 15 Jul 2021 07:16:31 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id l26so6749479oic.7;
-        Thu, 15 Jul 2021 07:16:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4VxI2L0yDJbm1mdgu23WFwFGwDvtph71lznk9ZAf7ns=;
-        b=iX8PYN7gHr/H92boVQFSkt/tEHrgmCZzcXEDnFwBIBvXzU7OxhsZqreKw+UjTPeArz
-         nXnPxOdf3XeapIBKhGhAa1km67S2Hex3hTKPDq2K/ahDUlhZ+mc5K8M0m2ts4O1dOFa5
-         vkkQr42eUR0o+cVgvKRzDG37AFZUV1dQA2k+dchmKyg6YAi2M1ebydlK3QXCfN2+UEog
-         e7+ESF9mqeEK8TIcn2Qtv3ZnXXZcKZ2Q0wX+9vJFbqhh0tebhGfrqtGwhBYkb4jY2hkR
-         UFFEGyQxtncwqYljGTRnhzbX+I5euxrYGI/GOXRsHp7QyhfJQcViGASVxoC5PUrxfCe8
-         H6xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4VxI2L0yDJbm1mdgu23WFwFGwDvtph71lznk9ZAf7ns=;
-        b=W/b7ryH/CVPJ+8Nj9qYn0wLyqEtl1O9tFqdg12xlAbUAvq0487iU4lcVfzWUaGbZ33
-         8+T5JUVtWfrW5N/NnI725Tcl9e0ioriE8Izf/KCFa3c1USkyHBNrNfAJi93hU+tAejKo
-         moMz91pOxIX785tbqrvHmcrhQM2OnZeSlnV2nePkj8HZ+6X87cK9Gg/61fUT+GhNup9p
-         ELCdqUfxb6JLI3n3rl7zCKqC6GRK7KpdsYgIph8xEbpC8mtzZavxkCM8JUfqYOThDDlW
-         rZFI1UalILQcJuy5KV5X7ugRwmRdnLezmmiABHBXIBKrh7VIznUvJwTATWQqQK743AER
-         CssA==
-X-Gm-Message-State: AOAM530NRtSqXUvc1FSroBBRT0142suo13Ql4hD1DkNOw371/04wLmbQ
-        dK1stmGrgUDXnnltCbEPgwc=
-X-Google-Smtp-Source: ABdhPJy/b6gtbTS1t6QfL9RXPPvNQQChgDPlcuKFIdFVILXHlSuVNWPoWfknIpXHkhY8SDvfKMQmfA==
-X-Received: by 2002:aca:bdc4:: with SMTP id n187mr3878062oif.169.1626358591289;
-        Thu, 15 Jul 2021 07:16:31 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.38])
-        by smtp.googlemail.com with ESMTPSA id b10sm1251418oiy.4.2021.07.15.07.16.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 07:16:30 -0700 (PDT)
-Subject: Re: [PATCH v2] net: ipv6: remove unused local variable
-To:     Rocco Yue <rocco.yue@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rocco.yue@gmail.com
-References: <20210715042034.6525-1-rocco.yue@mediatek.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <20986885-73a5-8e58-0eb9-54b0723467e4@gmail.com>
-Date:   Thu, 15 Jul 2021 08:16:28 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+Received: from mga14.intel.com ([192.55.52.115]:60029 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236344AbhGOOTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:19:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="210366765"
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="210366765"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 07:16:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="413657783"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 15 Jul 2021 07:16:27 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EBE15262; Thu, 15 Jul 2021 17:16:54 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: [PATCH v1 1/2] ACPI: configfs: Use sysfs_emit() in "show" functions
+Date:   Thu, 15 Jul 2021 17:16:50 +0300
+Message-Id: <20210715141651.82325-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210715042034.6525-1-rocco.yue@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/21 10:20 PM, Rocco Yue wrote:
-> The local variable "struct net *net" in the two functions of
-> inet6_rtm_getaddr() and inet6_dump_addr() are actually useless,
-> so remove them.
-> 
-> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
-> ---
->  net/ipv6/addrconf.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
+The sysfs_emit() function was introduced to make it less ambiguous
+which function is preferred when writing to the output buffer in
+a "show" callback [1].
 
-a v2 with no changelog. From what I can tell the only difference is
-"net: " in the Subject line which is not what I said in the last email.
+Convert the GPIO library sysfs interface from sprintf() to sysfs_emit()
+accordingly, as the latter is aware of the PAGE_SIZE buffer and correctly
+returns the number of bytes written into the buffer.
 
-Let me try again: There are 2 trees - net for bug fixes and net-next for
-development (anything that is not a bug fix). Each patch should specify
-which tree the patch is for by putting 'net' or 'net-next' in the
-brackets ([]). This is a cleanup not a bug fix, so this patch should be:
+No functional change intended.
 
-[PATCH net-next] ipv6: remove unused local variable
+[1] Documentation/filesystems/sysfs.rst
 
-and really that should be
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/acpi/acpi_configfs.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-[PATCH net-next] ipv6: remove unnecessary local variable
+diff --git a/drivers/acpi/acpi_configfs.c b/drivers/acpi/acpi_configfs.c
+index 76b83b181356..6e6ef8a1f447 100644
+--- a/drivers/acpi/acpi_configfs.c
++++ b/drivers/acpi/acpi_configfs.c
+@@ -103,7 +103,7 @@ static ssize_t acpi_table_signature_show(struct config_item *cfg, char *str)
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->signature);
++	return sysfs_emit(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->signature);
+ }
+ 
+ static ssize_t acpi_table_length_show(struct config_item *cfg, char *str)
+@@ -113,7 +113,7 @@ static ssize_t acpi_table_length_show(struct config_item *cfg, char *str)
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%d\n", h->length);
++	return sysfs_emit(str, "%d\n", h->length);
+ }
+ 
+ static ssize_t acpi_table_revision_show(struct config_item *cfg, char *str)
+@@ -123,7 +123,7 @@ static ssize_t acpi_table_revision_show(struct config_item *cfg, char *str)
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%d\n", h->revision);
++	return sysfs_emit(str, "%d\n", h->revision);
+ }
+ 
+ static ssize_t acpi_table_oem_id_show(struct config_item *cfg, char *str)
+@@ -133,7 +133,7 @@ static ssize_t acpi_table_oem_id_show(struct config_item *cfg, char *str)
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%.*s\n", ACPI_OEM_ID_SIZE, h->oem_id);
++	return sysfs_emit(str, "%.*s\n", ACPI_OEM_ID_SIZE, h->oem_id);
+ }
+ 
+ static ssize_t acpi_table_oem_table_id_show(struct config_item *cfg, char *str)
+@@ -143,7 +143,7 @@ static ssize_t acpi_table_oem_table_id_show(struct config_item *cfg, char *str)
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%.*s\n", ACPI_OEM_TABLE_ID_SIZE, h->oem_table_id);
++	return sysfs_emit(str, "%.*s\n", ACPI_OEM_TABLE_ID_SIZE, h->oem_table_id);
+ }
+ 
+ static ssize_t acpi_table_oem_revision_show(struct config_item *cfg, char *str)
+@@ -153,7 +153,7 @@ static ssize_t acpi_table_oem_revision_show(struct config_item *cfg, char *str)
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%d\n", h->oem_revision);
++	return sysfs_emit(str, "%d\n", h->oem_revision);
+ }
+ 
+ static ssize_t acpi_table_asl_compiler_id_show(struct config_item *cfg,
+@@ -164,7 +164,7 @@ static ssize_t acpi_table_asl_compiler_id_show(struct config_item *cfg,
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->asl_compiler_id);
++	return sysfs_emit(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->asl_compiler_id);
+ }
+ 
+ static ssize_t acpi_table_asl_compiler_revision_show(struct config_item *cfg,
+@@ -175,7 +175,7 @@ static ssize_t acpi_table_asl_compiler_revision_show(struct config_item *cfg,
+ 	if (!h)
+ 		return -EINVAL;
+ 
+-	return sprintf(str, "%d\n", h->asl_compiler_revision);
++	return sysfs_emit(str, "%d\n", h->asl_compiler_revision);
+ }
+ 
+ CONFIGFS_ATTR_RO(acpi_table_, signature);
+-- 
+2.30.2
 
-If you send more versions of a patch always put a changelog - a summary
-of what is different in the current patch versus the previous ones.
-
-No need to send another version of this patch unless you get a comment
-requesting change, or the maintainers ask for a re-send.
-
-Reviewed-by: David Ahern <dsahern@kernel.org>
