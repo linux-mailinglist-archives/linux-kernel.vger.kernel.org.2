@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A1B3CA6E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57C33CA897
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239859AbhGOSvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:51:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50284 "EHLO mail.kernel.org"
+        id S243227AbhGOTBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238374AbhGOSsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:48:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54DF1613D2;
-        Thu, 15 Jul 2021 18:45:28 +0000 (UTC)
+        id S241383AbhGOSyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C130613CC;
+        Thu, 15 Jul 2021 18:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374728;
-        bh=Mjf4HxiQbo/+SU70ssid65t4QSYTJdd0JJdJXbHjkRU=;
+        s=korg; t=1626375085;
+        bh=rW93JwSRcb60jll51CbFhD2yndHxZ3ziZyzq7BdlFXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bQ1yTpu/tKulEJmI2g4bE3iIcj0PSZHkmpRv+5qhm2lKXk5k9gc1jf2UhjXw5vWwD
-         00dzlrhmnCnpofJiyvLIuOK3P5uT9fQW+bqaEYyzB1WJgIci/uyykEGe3ncq8x70o1
-         s0pGaax3ppBIn9tQ7ncrWL30kgZUAtI5DKO4w4QY=
+        b=D2nDMDUuGk6RnZX142gdKZZ46jRXCKNNghRSCkxAGpUoTfWFtYqy/eitTY11Qlomm
+         tDQeyg8jOqBHDs2O+7JG1jtzTGRVzPCsrnwWQy5viOvaYZJZ1hJeNDjXqB4fLywUiF
+         /ETAn+XLT+9qL4jddggdrWYg2M4ybBdpcEFs4mKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhanglianjie <zhanglianjie@uniontech.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/122] MIPS: loongsoon64: Reserve memory below starting pfn to prevent Oops
-Date:   Thu, 15 Jul 2021 20:38:37 +0200
-Message-Id: <20210715182508.148278788@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 146/215] powerpc/mm: Fix lockup on kernel exec fault
+Date:   Thu, 15 Jul 2021 20:38:38 +0200
+Message-Id: <20210715182625.429841379@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-References: <20210715182448.393443551@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhanglianjie <zhanglianjie@uniontech.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 6817c944430d00f71ccaa9c99ff5b0096aeb7873 ]
+commit cd5d5e602f502895e47e18cd46804d6d7014e65c upstream.
 
-The cause of the problem is as follows:
-1. when cat /sys/devices/system/memory/memory0/valid_zones,
-   test_pages_in_a_zone() will be called.
-2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
-   The smallest pfn of the numa node in the mips architecture is 128,
-   and the page corresponding to the previous 0~127 pfn is not
-   initialized (page->flags is 0xFFFFFFFF)
-3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
-   of bounds in the corresponding array,
-   &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
-   access to the out-of-bounds zone member variables appear abnormal,
-   resulting in Oops.
-Therefore, it is necessary to keep the page between 0 and the minimum
-pfn to prevent Oops from appearing.
+The powerpc kernel is not prepared to handle exec faults from kernel.
+Especially, the function is_exec_fault() will return 'false' when an
+exec fault is taken by kernel, because the check is based on reading
+current->thread.regs->trap which contains the trap from user.
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For instance, when provoking a LKDTM EXEC_USERSPACE test,
+current->thread.regs->trap is set to SYSCALL trap (0xc00), and
+the fault taken by the kernel is not seen as an exec fault by
+set_access_flags_filter().
+
+Commit d7df2443cd5f ("powerpc/mm: Fix spurious segfaults on radix
+with autonuma") made it clear and handled it properly. But later on
+commit d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute
+faults") removed that handling, introducing test based on error_code.
+And here is the problem, because on the 603 all upper bits of SRR1
+get cleared when the TLB instruction miss handler bails out to ISI.
+
+Until commit cbd7e6ca0210 ("powerpc/fault: Avoid heavy
+search_exception_tables() verification"), an exec fault from kernel
+at a userspace address was indirectly caught by the lack of entry for
+that address in the exception tables. But after that commit the
+kernel mainly relies on KUAP or on core mm handling to catch wrong
+user accesses. Here the access is not wrong, so mm handles it.
+It is a minor fault because PAGE_EXEC is not set,
+set_access_flags_filter() should set PAGE_EXEC and voila.
+But as is_exec_fault() returns false as explained in the beginning,
+set_access_flags_filter() bails out without setting PAGE_EXEC flag,
+which leads to a forever minor exec fault.
+
+As the kernel is not prepared to handle such exec faults, the thing to
+do is to fire in bad_kernel_fault() for any exec fault taken by the
+kernel, as it was prior to commit d3ca587404b3.
+
+Fixes: d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute faults")
+Cc: stable@vger.kernel.org # v4.14+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/024bb05105050f704743a0083fe3548702be5706.1625138205.git.christophe.leroy@csgroup.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/mips/loongson64/loongson-3/numa.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/mm/fault.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/mips/loongson64/loongson-3/numa.c b/arch/mips/loongson64/loongson-3/numa.c
-index 8f20d2cb3767..7e7376cc94b1 100644
---- a/arch/mips/loongson64/loongson-3/numa.c
-+++ b/arch/mips/loongson64/loongson-3/numa.c
-@@ -200,6 +200,9 @@ static void __init node_mem_init(unsigned int node)
- 		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
- 			memblock_reserve((node_addrspace_offset | 0xfe000000),
- 					 32 << 20);
-+
-+		/* Reserve pfn range 0~node[0]->node_start_pfn */
-+		memblock_reserve(0, PAGE_SIZE * start_pfn);
- 	}
- }
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -198,9 +198,7 @@ static bool bad_kernel_fault(struct pt_r
+ {
+ 	int is_exec = TRAP(regs) == 0x400;
  
--- 
-2.30.2
-
+-	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
+-	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
+-				      DSISR_PROTFAULT))) {
++	if (is_exec) {
+ 		pr_crit_ratelimited("kernel tried to execute %s page (%lx) - exploit attempt? (uid: %d)\n",
+ 				    address >= TASK_SIZE ? "exec-protected" : "user",
+ 				    address,
 
 
