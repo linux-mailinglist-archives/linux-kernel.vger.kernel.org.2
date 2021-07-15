@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242413CABD6
+	by mail.lfdr.de (Postfix) with ESMTP id 961E83CABD7
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344132AbhGOTZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:25:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
+        id S1344169AbhGOTZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238874AbhGOTI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:08:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E47613E4;
-        Thu, 15 Jul 2021 19:04:07 +0000 (UTC)
+        id S242464AbhGOTIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:08:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DEC7613F8;
+        Thu, 15 Jul 2021 19:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375848;
-        bh=epLAffIQc77bcA44wYbXzn+8dh4Eepktdm8W90mUD4c=;
+        s=korg; t=1626375864;
+        bh=h50X7yqGEaTpjIyoJe/7TnUg0U13htKsKuz+qBmIFpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kspZghBlRQOBHt6lgeOsvMdVhZHua1nJYtmx2vAxp4LhR+jDkqGsKHP04oxLxittD
-         65GJHoxX1IZMBtaaGT4N+m1T3WGByqDMwke1QzhPTDTqMS2/WX9dgCYtknVVQX44ze
-         P9LCsxzbu04ByDp6ou+FgbYkQWrs9KPCRXCZxwS4=
+        b=h9UrtYH9tKe1IjjcrIlY5BeCg2MIFVVVwbtD2fcPwIpUjOGVAciflfZW5HFAtWUww
+         HjnMYDeBvfztA1URPHcy8n303Pza2m6Es3cd7POJAq6w1snmc9WsrvZw+Hc0X2V/wx
+         ssE1Ue3vja05zFPiJWwHKc+bMugQUvAePDZneDig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Brandon Syu <Brandon.Syu@amd.com>,
+        Wenjing Liu <Wenjing.Liu@amd.com>,
+        Wayne Lin <waynelin@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 002/266] drm/zte: Dont select DRM_KMS_FB_HELPER
-Date:   Thu, 15 Jul 2021 20:35:57 +0200
-Message-Id: <20210715182614.345201238@linuxfoundation.org>
+Subject: [PATCH 5.13 004/266] drm/amd/display: fix HDCP reset sequence on reinitialize
+Date:   Thu, 15 Jul 2021 20:35:59 +0200
+Message-Id: <20210715182614.688433527@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,33 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Brandon Syu <Brandon.Syu@amd.com>
 
-[ Upstream commit a50e74bec1d17e95275909660c6b43ffe11ebcf0 ]
+[ Upstream commit 99c248c41c2199bd34232ce8e729d18c4b343b64 ]
 
-Selecting DRM_FBDEV_EMULATION will include the correct settings for
-fbdev emulation. Drivers should not override this.
+[why]
+When setup is called after hdcp has already setup,
+it would cause to disable HDCP flow won’t execute.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-4-tzimmermann@suse.de
+[how]
+Don't clean up hdcp content to be 0.
+
+Signed-off-by: Brandon Syu <Brandon.Syu@amd.com>
+Reviewed-by: Wenjing Liu <Wenjing.Liu@amd.com>
+Acked-by: Wayne Lin <waynelin@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/zte/Kconfig | 1 -
+ drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/zte/Kconfig b/drivers/gpu/drm/zte/Kconfig
-index 90ebaedc11fd..aa8594190b50 100644
---- a/drivers/gpu/drm/zte/Kconfig
-+++ b/drivers/gpu/drm/zte/Kconfig
-@@ -3,7 +3,6 @@ config DRM_ZTE
- 	tristate "DRM Support for ZTE SoCs"
- 	depends on DRM && ARCH_ZX
- 	select DRM_KMS_CMA_HELPER
--	select DRM_KMS_FB_HELPER
- 	select DRM_KMS_HELPER
- 	select SND_SOC_HDMI_CODEC if SND_SOC
- 	select VIDEOMODE_HELPERS
+diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c
+index 68a6481d7f8f..b963226e8af4 100644
+--- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c
++++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c
+@@ -260,7 +260,6 @@ enum mod_hdcp_status mod_hdcp_setup(struct mod_hdcp *hdcp,
+ 	struct mod_hdcp_output output;
+ 	enum mod_hdcp_status status = MOD_HDCP_STATUS_SUCCESS;
+ 
+-	memset(hdcp, 0, sizeof(struct mod_hdcp));
+ 	memset(&output, 0, sizeof(output));
+ 	hdcp->config = *config;
+ 	HDCP_TOP_INTERFACE_TRACE(hdcp);
 -- 
 2.30.2
 
