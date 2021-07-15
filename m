@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7273CAD6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FE03CAD72
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245190AbhGOUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47308 "EHLO mail.kernel.org"
+        id S1344692AbhGOUBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:01:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345186AbhGOT5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:57:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF73613BB;
-        Thu, 15 Jul 2021 19:54:47 +0000 (UTC)
+        id S245416AbhGOT6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:58:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B60561167;
+        Thu, 15 Jul 2021 19:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626378888;
-        bh=xLfV2Xzoq8UnSTpc2A9kdDwCb0yJZGzCeCFP8zdZ6T0=;
+        s=k20201202; t=1626378890;
+        bh=lerGOnSYus8vIfj3B0eHBWlmQtEDko6BAArnD5ahpKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nW7X3pvKpKyyKQ+wqSHdjqnHi72GKi9DcurDSCnhQj74uZ9NBbhh0zz2BKD2D9XrK
-         LkGZH/vx4VNtZK4rKc2oICzbMwduM7KoNuTHgHPUDGu/AYpZpV7DuqyQqip82ugH3e
-         GupWaSkha67CQj/AzXRt7vU9IDv+NSkflIyBWiJ2Ak4Wo0MrwG1I4LOBW/BN1STTMu
-         Im25sblKJ37F0E6S67Tkp7s9qTfP7f+xJH6MCS/OANa+359hEez/xbGn1iSPc0ZwJ1
-         KIvGkYBjT0Twy/wUQYvJpvi8dxn8paO/AeYV20SHK+G3sDDDfa2d4JVC702135yP27
-         /FFQXBIjFsYbA==
+        b=a2j9+GRBV9nnUWslh3DPNNioYvy2UxkrDMBfd50OuzarhVfs30B0NbgwDXnlviIdi
+         A6mNbI7FhMcltcYrDt3AxDpH7JXWkx09u1N6Ddshb8QbBcYdUNQx9I+j3ZOiLQWq4s
+         rVQyrqi6tvOHyS3CETrMomGBaqeK7P3DyH0wb5vro4DfRy3dMFUN6Uz9itY41Kif3O
+         zKMCgG26pTGPUcu2e6HEwIu7Inw81WpTjPeh9br6nb23b544FY9uBmX1mA4ehn6BLc
+         Yc5g6gE1sBNJJtW5f0/XAEOioXyOzcRBaG7A5JTH39YzjcFVkzh2lR0FVMmRDGzkao
+         Ha4FdgbXEcCfg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Colin King <colin.king@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+To:     Vincent Pelletier <plr.vincent@gmail.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: rt6245: make a const array func_base static, makes object smaller
-Date:   Thu, 15 Jul 2021 20:54:00 +0100
-Message-Id: <162637868448.27563.16170731868799436759.b4-ty@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] regulator: da9063: Add support for full-current mode.
+Date:   Thu, 15 Jul 2021 20:54:01 +0100
+Message-Id: <162637868447.27563.13293081169063391335.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210715141531.27672-1-colin.king@canonical.com>
-References: <20210715141531.27672-1-colin.king@canonical.com>
+In-Reply-To: <824518e6391b783a12eba9ff0527f06607a34bfb.1626160826.git.plr.vincent@gmail.com>
+References: <824518e6391b783a12eba9ff0527f06607a34bfb.1626160826.git.plr.vincent@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,15 +42,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 15:15:31 +0100, Colin King wrote:
-> Don't populate the const array func_base on the stack but instead it
-> static. Makes the object code smaller by 55 bytes:
-> 
-> Before:
->    text    data     bss     dec    hex filename
->    6422    3216      64    9702   25e6 drivers/regulator/rt6245-regulator.o
-> 
-> [...]
+On Tue, 13 Jul 2021 07:20:31 +0000, Vincent Pelletier wrote:
+> In addition to the ability of merging some power outputs, this chip has
+> an overdrive mode.
+> BCORE1, BCORE2 and BPRO have this ability, in which case the legal
+> current draw is increased from 2 amps to 2.5 amps (at the expense of
+> a quiescent current increase), and the configurable current limits
+> are doubled.
+> If a current higher than maximum half-current mode is requested, enable
+> overdrive, and scale the current limit down.
+> Symmetrically, scale the current limit up when querying a overdrive-enabled
+> regulator.
 
 Applied to
 
@@ -57,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: rt6245: make a const array func_base static, makes object smaller
-      commit: 508f8ccd993d1ff5c9a3092f179f33bd7a825bac
+[1/1] regulator: da9063: Add support for full-current mode.
+      commit: 541ee8f640327f951e7039278057827322231ab0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
