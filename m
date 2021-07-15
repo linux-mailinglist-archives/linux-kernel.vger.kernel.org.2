@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544953C9F66
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AD83C9F6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237536AbhGON0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:26:16 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42114
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235177AbhGON0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:26:15 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 768B1408AD;
-        Thu, 15 Jul 2021 13:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626355401;
-        bh=Uwn776T1F4J+gds7fS/Yo8RJJ52hlWTCH+h60abETp0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=wXPiAyTIzM25I4kfDrLYfRwNhHooYlC296Xd3HbxjujuZiIQUX0T+Ui5IOri0saU7
-         UgJY4UtcFbeLNwWpqz3GYLQonlQb6YsBjx+0ZX9CZeVrnTzmDcGyDUU+5UnYJu6VxI
-         kxEq8CeDsZi/RhSGo46L3oI4HItrxvh92meKxgn+SkJ1sbS4y70HSPb5Qq/a2wD/gl
-         hjnJ5+g+IqCY+5bgf+CSvU5ZWBTICK/qW9mc+lMcQbeQAbT/5Ij5zrFAPkHTa6qPLq
-         xZHVaTH3OGKaIYC6bMwgC1McT3QwSWDhn6ykJesEnXHasIxPfsqSswbZSAhMJPQeVa
-         V1iSzHuFrjq/w==
-From:   Colin King <colin.king@canonical.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: imx: fix missing 3rd argument in macro imx_mmdc_perf_init
-Date:   Thu, 15 Jul 2021 14:23:21 +0100
-Message-Id: <20210715132321.25388-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S237608AbhGON2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:28:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:52634 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhGON2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:28:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9188F31B;
+        Thu, 15 Jul 2021 06:25:12 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 88D1B3F694;
+        Thu, 15 Jul 2021 06:25:11 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:24:13 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 03/13] mailbox: pcc: Refactor all PCC channel information
+ into a structure
+Message-ID: <20210715132413.m5dxa33ydsxoya7j@bogus>
+References: <20210708180851.2311192-1-sudeep.holla@arm.com>
+ <20210708180851.2311192-4-sudeep.holla@arm.com>
+ <20210714165434.GC6592@e120937-lin>
+ <20210715112710.55ylycforkessxju@bogus>
+ <20210715125048.GD6592@e120937-lin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715125048.GD6592@e120937-lin>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Jul 15, 2021 at 01:50:48PM +0100, Cristian Marussi wrote:
+> On Thu, Jul 15, 2021 at 12:27:10PM +0100, Sudeep Holla wrote:
+> > On Wed, Jul 14, 2021 at 05:54:34PM +0100, Cristian Marussi wrote:
+> > > On Thu, Jul 08, 2021 at 07:08:41PM +0100, Sudeep Holla wrote:
+> > > > Currently all the PCC channel specific information are stored/maintained
+> > > > in global individual arrays for each of those information. It is not
+> > > > scalable and not clean if we have to stash more channel specific
+> > > > information. Couple of reasons to stash more information are to extend
+> > > > the support to Type 3/4 PCCT subspace and also to avoid accessing the
+> > > > PCCT table entries themselves each time we need the information.
+> > > >
+> > > > This patch moves all those PCC channel specific information into a
+> > > > separate structure pcc_chan_info.
+> > > >
+> > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > > ---
+> > >
+> > > Hi Sudeep,
+> > >
+> > > >  drivers/mailbox/pcc.c | 106 +++++++++++++++++++++---------------------
+> > > >  1 file changed, 53 insertions(+), 53 deletions(-)
+> > > >
+> > > > diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+> > > > index 23391e224a68..c5f481a615b0 100644
+> > > > --- a/drivers/mailbox/pcc.c
+> > > > +++ b/drivers/mailbox/pcc.c
+> > > > @@ -64,12 +64,20 @@
+> > > >
+> > > >  static struct mbox_chan *pcc_mbox_channels;
+> > > >
+> > > > -/* Array of cached virtual address for doorbell registers */
+> > > > -static void __iomem **pcc_doorbell_vaddr;
+> > > > -/* Array of cached virtual address for doorbell ack registers */
+> > > > -static void __iomem **pcc_doorbell_ack_vaddr;
+> > > > -/* Array of doorbell interrupts */
+> > > > -static int *pcc_doorbell_irq;
+> > > > +/**
+> > > > + * struct pcc_chan_info - PCC channel specific information
+> > > > + *
+> > > > + * @db_vaddr: cached virtual address for doorbell register
+> > > > + * @db_ack_vaddr: cached virtual address for doorbell ack register
+> > > > + * @db_irq: doorbell interrupt
+> > > > + */
+> > > > +struct pcc_chan_info {
+> > > > +	void __iomem *db_vaddr;
+> > > > +	void __iomem *db_ack_vaddr;
+> > > > +	int db_irq;
+> > > > +};
+> > >
+> > > Given that this db_irq represents the optional completion interrupt that is
+> > > used platform-->OSPM to signal command completions and/or notifications/
+> > > delayed_responses and it is mentioned indeed in ACPI 6.4 as "Platform
+> > > Interrupt" and also referred in this driver as such somewherelse, is it not
+> > > misleading to call it then here "doorbell interrupt" since the "doorbell" in
+> > > this context is usually the interrupt that goes the other way around
+> > > OSPM-->Platform and is indeed handled by a different set of dedicated Doorbell
+> > > registers ? (that are indeed called Doorbell throughout this driver down below
+> > > ...but I understand this was the nomenclature used also before in this driver)
+> > >
+> >
+> > Exactly, I share your thoughts and I completely agree. I didn't want to change
+> > it in this patch as that would mix 2 different change and makes it hard to
+> > review. I assume you might have already seen the 8/13 which renames this
+> > before we add more such registers in later patches.
+> >
+>
+> Yes indeed, but db_irq is not renamed even later when db_vaddr/db_ack_addr are
+> consolidated and renamed. So that confused me even more :D
+>
 
-The function imx_mmdc_perf_init recently had a 3rd argument added to
-it but the equivalent macro was not updated and is still the older
-2 argument version. Fix this by adding in the missing 3rd argumement
-mmdc_ipg_clk.
+Yikes! That was not intentional. Since I re-ordered some of the changes
+after making them originally, I relied on regex to get it right and ease
+the rebasing which I know I failed terribly. I will fix that too.
 
-Fixes: f07ec8536580 ("ARM: imx: add missing clk_disable_unprepare()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/arm/mach-imx/mmdc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 4a6f1359e1e9..af12668d0bf5 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -534,7 +534,7 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
- 
- #else
- #define imx_mmdc_remove NULL
--#define imx_mmdc_perf_init(pdev, mmdc_base) 0
-+#define imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk) 0
- #endif
- 
- static int imx_mmdc_probe(struct platform_device *pdev)
--- 
-2.31.1
-
+--
+Regards,
+Sudeep
