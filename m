@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86093CABE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28EE3CA988
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245754AbhGOTY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
+        id S241937AbhGOTHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:07:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241532AbhGOTHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA54861158;
-        Thu, 15 Jul 2021 19:03:32 +0000 (UTC)
+        id S241252AbhGOS5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8351613E5;
+        Thu, 15 Jul 2021 18:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375813;
-        bh=+H5wUAr7V9fkMmf4EVqWe5kdVPs57aQ+x+P4CG9MZoY=;
+        s=korg; t=1626375247;
+        bh=rr5LzAO3DQl7AErU8Q6JXC0obSTqPA+8Xc7/kY8zDhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmPax2yC7XFyTNCBdmnQ3lDdXJOVDh9y1Lx7xQs1irXF4rddydxDKutG7oRfJPAlH
-         wak8D/3ud0UXeDGg1BlePAx2sF5XbKpCJpfcJ4r03wkgjVsAKkIWQxqGBKP2yD0qv7
-         p10/pTcAQwk0dBCW7Mvdco1teZY+ah0ZN4p0s82s=
+        b=muf9i8OnhdJHqoTuevXfAmiTX2DJf63kwPMsqiMhk61dq4Gqe5cZULgVUjAgvud/I
+         JZc6E5++zKTzkEfMCyrIJTH/FUbst+9LjJSpqJRVJeNznZE7LM76nIhJ7tdVRYkPDo
+         xxY8N3835y/qzdqQVq3/H46TTjn4zdTPzvRMefto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Paul Burton <paulburton@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.12 210/242] tracing: Simplify & fix saved_tgids logic
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
+Subject: [PATCH 5.10 200/215] PCI: aardvark: Implement workaround for the readback value of VEND_ID
 Date:   Thu, 15 Jul 2021 20:39:32 +0200
-Message-Id: <20210715182630.195443522@linuxfoundation.org>
+Message-Id: <20210715182634.506919851@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,111 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Burton <paulburton@google.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit b81b3e959adb107cd5b36c7dc5ba1364bbd31eb2 upstream.
+commit 7f71a409fe3d9358da07c77f15bb5b7960f12253 upstream.
 
-The tgid_map array records a mapping from pid to tgid, where the index
-of an entry within the array is the pid & the value stored at that index
-is the tgid.
+Marvell Armada 3700 Functional Errata, Guidelines, and Restrictions
+document describes in erratum 4.1 PCIe value of vendor ID (Ref #: 243):
 
-The saved_tgids_next() function iterates over pointers into the tgid_map
-array & dereferences the pointers which results in the tgid, but then it
-passes that dereferenced value to trace_find_tgid() which treats it as a
-pid & does a further lookup within the tgid_map array. It seems likely
-that the intent here was to skip over entries in tgid_map for which the
-recorded tgid is zero, but instead we end up skipping over entries for
-which the thread group leader hasn't yet had its own tgid recorded in
-tgid_map.
+    The readback value of VEND_ID (RD0070000h [15:0]) is 1B4Bh, while it
+    should read 11ABh.
 
-A minimal fix would be to remove the call to trace_find_tgid, turning:
+    The firmware can write the correct value, 11ABh, through VEND_ID
+    (RD0076044h [15:0]).
 
-  if (trace_find_tgid(*ptr))
+Implement this workaround in aardvark driver for both PCI vendor id and PCI
+subsystem vendor id.
 
-into:
+This change affects and fixes PCI vendor id of emulated PCIe root bridge.
+After this change emulated PCIe root bridge has correct vendor id.
 
-  if (*ptr)
-
-..but it seems like this logic can be much simpler if we simply let
-seq_read() iterate over the whole tgid_map array & filter out empty
-entries by returning SEQ_SKIP from saved_tgids_show(). Here we take that
-approach, removing the incorrect logic here entirely.
-
-Link: https://lkml.kernel.org/r/20210630003406.4013668-1-paulburton@google.com
-
-Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Joel Fernandes <joelaf@google.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Paul Burton <paulburton@google.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lore.kernel.org/r/20210624222621.4776-5-pali@kernel.org
+Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace.c |   38 +++++++++++++-------------------------
- 1 file changed, 13 insertions(+), 25 deletions(-)
+ drivers/pci/controller/pci-aardvark.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5352,37 +5352,20 @@ static const struct file_operations trac
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -124,6 +124,7 @@
+ #define     LTSSM_MASK				0x3f
+ #define     LTSSM_L0				0x10
+ #define     RC_BAR_CONFIG			0x300
++#define VENDOR_ID_REG				(LMI_BASE_ADDR + 0x44)
  
- static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
- {
--	int *ptr = v;
-+	int pid = ++(*pos);
+ /* PCIe core controller registers */
+ #define CTRL_CORE_BASE_ADDR			0x18000
+@@ -385,6 +386,16 @@ static void advk_pcie_setup_hw(struct ad
+ 	reg |= (IS_RC_MSK << IS_RC_SHIFT);
+ 	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
  
--	if (*pos || m->count)
--		ptr++;
--
--	(*pos)++;
--
--	for (; ptr <= &tgid_map[PID_MAX_DEFAULT]; ptr++) {
--		if (trace_find_tgid(*ptr))
--			return ptr;
--	}
-+	if (pid > PID_MAX_DEFAULT)
-+		return NULL;
- 
--	return NULL;
-+	return &tgid_map[pid];
- }
- 
- static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
- {
--	void *v;
--	loff_t l = 0;
--
--	if (!tgid_map)
-+	if (!tgid_map || *pos > PID_MAX_DEFAULT)
- 		return NULL;
- 
--	v = &tgid_map[0];
--	while (l <= *pos) {
--		v = saved_tgids_next(m, v, &l);
--		if (!v)
--			return NULL;
--	}
--
--	return v;
-+	return &tgid_map[*pos];
- }
- 
- static void saved_tgids_stop(struct seq_file *m, void *v)
-@@ -5391,9 +5374,14 @@ static void saved_tgids_stop(struct seq_
- 
- static int saved_tgids_show(struct seq_file *m, void *v)
- {
--	int pid = (int *)v - tgid_map;
-+	int *entry = (int *)v;
-+	int pid = entry - tgid_map;
-+	int tgid = *entry;
++	/*
++	 * Replace incorrect PCI vendor id value 0x1b4b by correct value 0x11ab.
++	 * VENDOR_ID_REG contains vendor id in low 16 bits and subsystem vendor
++	 * id in high 16 bits. Updating this register changes readback value of
++	 * read-only vendor id bits in PCIE_CORE_DEV_ID_REG register. Workaround
++	 * for erratum 4.1: "The value of device and vendor ID is incorrect".
++	 */
++	reg = (PCI_VENDOR_ID_MARVELL << 16) | PCI_VENDOR_ID_MARVELL;
++	advk_writel(pcie, reg, VENDOR_ID_REG);
 +
-+	if (tgid == 0)
-+		return SEQ_SKIP;
- 
--	seq_printf(m, "%d %d\n", pid, trace_find_tgid(pid));
-+	seq_printf(m, "%d %d\n", pid, tgid);
- 	return 0;
- }
- 
+ 	/* Set Advanced Error Capabilities and Control PF0 register */
+ 	reg = PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX |
+ 		PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX_EN |
 
 
