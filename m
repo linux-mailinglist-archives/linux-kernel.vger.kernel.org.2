@@ -2,34 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454993CACE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8E13CACEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244796AbhGOTqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:46:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50954 "EHLO mail.kernel.org"
+        id S1343904AbhGOTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:47:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244210AbhGOTQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:16:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6106F613D1;
-        Thu, 15 Jul 2021 19:12:21 +0000 (UTC)
+        id S244301AbhGOTQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:16:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A07613ED;
+        Thu, 15 Jul 2021 19:12:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376341;
-        bh=2wcLH/MjR6vnjHJ+bCuMtovL+XwRk6NvzTwRJB2jEXI=;
+        s=korg; t=1626376344;
+        bh=2M7JojDu52S5+PbtEO65Idqxw6cb7+62V046UCki0XI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i6lXnQB3D/QbS8wHw1OTaOGyrK3GgqTAMAa1iEqJIXpEj8nmZltM3U8PAeV66UWej
-         VKXLIjAXJ8ji9AeawSmjo4T+GgOPzVSASeXwEVty7bTSLk7vnz4QEw7ntLSrCrz2MH
-         9pXpJgIHeskKmKkrxu7YRRQ0McRgGqJ9B/3MIruI=
+        b=1HHDpM0aKZUWRJTE3rzzyv7TpgmdoeCeXlyW1R3gQZ4oBpS1dlzLDGJVs0N+91/8V
+         oUPQHvFn8eGCPvZA5jXdC7CQLchXIknFDwCas49AxYDPzEd+ZMEjX1daRA4WwmPiIz
+         j4cPZEhkNF4PSqce4I+26rWqp3qPb4fOlEZL+EP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH 5.13 230/266] extcon: intel-mrfld: Sync hardware and software state on init
-Date:   Thu, 15 Jul 2021 20:39:45 +0200
-Message-Id: <20210715182650.151022390@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.13 231/266] lkdtm: Enable DOUBLE_FAULT on all architectures
+Date:   Thu, 15 Jul 2021 20:39:46 +0200
+Message-Id: <20210715182650.217658895@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,48 +38,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ferry Toth <ftoth@exalondelft.nl>
+From: Kees Cook <keescook@chromium.org>
 
-commit ecb5bdff901139850fb3ca3ae2d0cccac045bc52 upstream.
+commit f123c42bbeff26bfe8bdb08a01307e92d51eec39 upstream.
 
-extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
-DRD to detect a change in the switch position. This change initializes the
-status at probe time.
+Where feasible, I prefer to have all tests visible on all architectures,
+but to have them wired to XFAIL. DOUBLE_FAIL was set up to XFAIL, but
+wasn't actually being added to the test list.
 
+Fixes: cea23efb4de2 ("lkdtm/bugs: Make double-fault test always available")
 Cc: stable@vger.kernel.org
-Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210623203936.3151093-7-keescook@chromium.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/extcon/extcon-intel-mrfld.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/misc/lkdtm/core.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/extcon/extcon-intel-mrfld.c
-+++ b/drivers/extcon/extcon-intel-mrfld.c
-@@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct pla
- 	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
- 	struct regmap *regmap = pmic->regmap;
- 	struct mrfld_extcon_data *data;
-+	unsigned int status;
- 	unsigned int id;
- 	int irq, ret;
- 
-@@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct pla
- 	/* Get initial state */
- 	mrfld_extcon_role_detect(data);
- 
-+	/*
-+	 * Cached status value is used for cable detection, see comments
-+	 * in mrfld_extcon_cable_detect(), we need to sync cached value
-+	 * with a real state of the hardware.
-+	 */
-+	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
-+	data->status = status;
-+
- 	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
- 	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
- 
+--- a/drivers/misc/lkdtm/core.c
++++ b/drivers/misc/lkdtm/core.c
+@@ -177,9 +177,7 @@ static const struct crashtype crashtypes
+ 	CRASHTYPE(STACKLEAK_ERASING),
+ 	CRASHTYPE(CFI_FORWARD_PROTO),
+ 	CRASHTYPE(FORTIFIED_STRSCPY),
+-#ifdef CONFIG_X86_32
+ 	CRASHTYPE(DOUBLE_FAULT),
+-#endif
+ #ifdef CONFIG_PPC_BOOK3S_64
+ 	CRASHTYPE(PPC_SLB_MULTIHIT),
+ #endif
 
 
