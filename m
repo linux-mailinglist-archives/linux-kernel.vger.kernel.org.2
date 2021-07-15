@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219A23CACB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1728F3CACB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344369AbhGOTnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50134 "EHLO mail.kernel.org"
+        id S238660AbhGOTmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:42:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244673AbhGOTPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:15:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0523161418;
-        Thu, 15 Jul 2021 19:11:11 +0000 (UTC)
+        id S244747AbhGOTPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:15:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5D8E61406;
+        Thu, 15 Jul 2021 19:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376271;
-        bh=rhRpncM7YAEI4dDuqLn6BK0a0nui5MB+JeBm0/VH770=;
+        s=korg; t=1626376276;
+        bh=Xq9+RcqxqciyxgEScOP8qdfipj9wOF0O4LK0toNgIu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zT5GnTMBlVEftOU+4pg4BeoshJn6sxQFpyNI2Dmq1aasZIeYEYTdF+w0jfXzV1EUK
-         UHPwdmExcjFBi3PJjtuUxMqtE+R3g8wrXwc3B1bMzJGhHWoydgSAYHK+opIRYU8inR
-         JV5X2YOw6++g0FgbuCbY+MVCUgX1hiftzwiG7fgc=
+        b=qcTCJU3uqBx9nUYa8hFAHfhAqa1oRn42A0899HsLkcAJj5bXPv/2Wf/1DlCOuHNfP
+         Ccv/QAjPRpJ3j13z2YM7DqkLNCAvfXD6Y3Su6pCdbD6IHRY2Wg6OktOlil8FzAz3WE
+         DJ24jjcvnCcv5LBR42DhDXMsFbhWWZGMRyKjMp3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        nicholas.kazlauskas@amd.com, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, Roman.Li@amd.com, hersenxs.wu@amd.com,
-        danny.wang@amd.com,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.13 199/266] drm/amd/display: Reject non-zero src_y and src_x for video planes
-Date:   Thu, 15 Jul 2021 20:39:14 +0200
-Message-Id: <20210715182645.487346639@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH 5.13 200/266] drm/ingenic: Fix pixclock rate for 24-bit serial panels
+Date:   Thu, 15 Jul 2021 20:39:15 +0200
+Message-Id: <20210715182645.600691101@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -42,72 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harry Wentland <harry.wentland@amd.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit c6c6a712199ab355ce333fa5764a59506bb107c1 upstream.
+commit 60a6b73dd821e98fe958b2a83393ccd724b306b1 upstream.
 
-[Why]
-This hasn't been well tested and leads to complete system hangs on DCN1
-based systems, possibly others.
+When using a 24-bit panel on a 8-bit serial bus, the pixel clock
+requested by the panel has to be multiplied by 3, since the subpixels
+are shifted sequentially.
 
-The system hang can be reproduced by gesturing the video on the YouTube
-Android app on ChromeOS into full screen.
+The code (in ingenic_drm_encoder_atomic_check) already computed
+crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
+used crtc_state->adjusted_mode->clock instead.
 
-[How]
-Reject atomic commits with non-zero drm_plane_state.src_x or src_y values.
-
-v2:
- - Add code comment describing the reason we're rejecting non-zero
-   src_x and src_y
- - Drop gerrit Change-Id
- - Add stable CC
- - Based on amd-staging-drm-next
-
-v3: removed trailing whitespace
-
-Signed-off-by: Harry Wentland <harry.wentland@amd.com>
-Cc: stable@vger.kernel.org
-Cc: nicholas.kazlauskas@amd.com
-Cc: amd-gfx@lists.freedesktop.org
-Cc: alexander.deucher@amd.com
-Cc: Roman.Li@amd.com
-Cc: hersenxs.wu@amd.com
-Cc: danny.wang@amd.com
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when using a 3x8-bit panel")
+Cc: stable@vger.kernel.org # v5.10
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com>	# CI20/jz4780 (HDMI) and Alpha400/jz4730 (LCD)
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210323144008.166248-1-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -4049,6 +4049,23 @@ static int fill_dc_scaling_info(const st
- 	     scaling_info->src_rect.y != 0))
- 		return -EINVAL;
- 
-+	/*
-+	 * For reasons we don't (yet) fully understand a non-zero
-+	 * src_y coordinate into an NV12 buffer can cause a
-+	 * system hang. To avoid hangs (and maybe be overly cautious)
-+	 * let's reject both non-zero src_x and src_y.
-+	 *
-+	 * We currently know of only one use-case to reproduce a
-+	 * scenario with non-zero src_x and src_y for NV12, which
-+	 * is to gesture the YouTube Android app into full screen
-+	 * on ChromeOS.
-+	 */
-+	if (state->fb &&
-+	    state->fb->format->format == DRM_FORMAT_NV12 &&
-+	    (scaling_info->src_rect.x != 0 ||
-+	     scaling_info->src_rect.y != 0))
-+		return -EINVAL;
-+
- 	scaling_info->src_rect.width = state->src_w >> 16;
- 	if (scaling_info->src_rect.width == 0)
- 		return -EINVAL;
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -342,7 +342,7 @@ static void ingenic_drm_crtc_atomic_flus
+ 	if (priv->update_clk_rate) {
+ 		mutex_lock(&priv->clk_mutex);
+ 		clk_set_rate(priv->pix_clk,
+-			     crtc_state->adjusted_mode.clock * 1000);
++			     crtc_state->adjusted_mode.crtc_clock * 1000);
+ 		priv->update_clk_rate = false;
+ 		mutex_unlock(&priv->clk_mutex);
+ 	}
 
 
