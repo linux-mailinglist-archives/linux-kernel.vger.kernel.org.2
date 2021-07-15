@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F633CAB65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C183CA8EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245676AbhGOTT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38160 "EHLO mail.kernel.org"
+        id S243634AbhGOTEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242158AbhGOTFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE44861415;
-        Thu, 15 Jul 2021 19:01:07 +0000 (UTC)
+        id S239608AbhGOSzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28344613CF;
+        Thu, 15 Jul 2021 18:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375668;
-        bh=EGdQPc8OlX8kWlU3VQgA63gB5PagL84NDe5Jk5DgzZs=;
+        s=korg; t=1626375139;
+        bh=jWZGCnsAY9L7zigkpJsKBGOJiuu91rRo/tR1JLcJN4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E0uZfS05KQAQyCd83KnVbcYW5LP/1zoFV9CndmAAUHTdIXGh7UPrNV4RQ/EQecKKl
-         beukrOMEtE/c7sRCVQsanwE+y7pj4s4jSk27mfZpIkFtZOlIybblgHEUYmGGDd5rvz
-         vI0GTukp0YuIJg0H3g52mU2SfNzp3Sxk5drrFWU8=
+        b=Ex6xUfT7UaI802q40eMA0y5UngRHp7NAPG5WQsPoWnD4BRFFhfBk6ucTZpWNzg9eW
+         5HVF1/8gQWZ9z60D8T4YFExnLsvoD+nr/sj246VkBweAzI01Zw5bPoiJW1sFSsLVK1
+         BRwtcHB5X+6f/+OJ2aSJJj2B39bkOUcjDl3NbCI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.12 185/242] mmc: core: clear flags before allowing to retune
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 175/215] ASoC: tegra: Set driver_name=tegra for all machine drivers
 Date:   Thu, 15 Jul 2021 20:39:07 +0200
-Message-Id: <20210715182625.906251805@linuxfoundation.org>
+Message-Id: <20210715182630.428810554@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +39,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit 77347eda64ed5c9383961d1de9165f9d0b7d8df6 upstream.
+commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
 
-It might be that something goes wrong during tuning so the MMC core will
-immediately trigger a retune. In our case it was:
+The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
+Tegra UCMs don't match by the path/name.
 
- - we sent a tuning block
- - there was an error so we need to send an abort cmd to the eMMC
- - the abort cmd had a CRC error
- - retune was set by the MMC core
+All Tegra machine drivers are specifying the card's name, but it has no
+effect if model name is specified in the device-tree since it overrides
+the card's name. We need to set the driver_name to "tegra" in order to
+get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
+path has a form of driver_name/card_name.
 
-This lead to a vicious circle causing a performance regression of 75%.
-So, clear retuning flags before we enable retuning to start with a known
-cleared state.
+The old lookup paths that are based on driver module name continue to
+work as before. Note that UCM matching never worked for Tegra ASoC drivers
+if they were compiled as built-in, this is fixed by supporting the new
+naming scheme.
 
-Reported-by Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Fixes: bd11e8bd03ca ("mmc: core: Flag re-tuning is needed on CRC errors")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210624151616.38770-2-wsa+renesas@sang-engineering.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/core/core.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/tegra/tegra_alc5632.c  |    1 +
+ sound/soc/tegra/tegra_max98090.c |    1 +
+ sound/soc/tegra/tegra_rt5640.c   |    1 +
+ sound/soc/tegra/tegra_rt5677.c   |    1 +
+ sound/soc/tegra/tegra_sgtl5000.c |    1 +
+ sound/soc/tegra/tegra_wm8753.c   |    1 +
+ sound/soc/tegra/tegra_wm8903.c   |    1 +
+ sound/soc/tegra/tegra_wm9712.c   |    1 +
+ sound/soc/tegra/trimslice.c      |    1 +
+ 9 files changed, 9 insertions(+)
 
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -937,11 +937,14 @@ int mmc_execute_tuning(struct mmc_card *
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc
  
- 	err = host->ops->execute_tuning(host, opcode);
+ static struct snd_soc_card snd_soc_tegra_alc5632 = {
+ 	.name = "tegra-alc5632",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_alc5632_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max
  
--	if (err)
-+	if (err) {
- 		pr_err("%s: tuning execution failed: %d\n",
- 			mmc_hostname(host), err);
--	else
-+	} else {
-+		host->retune_now = 0;
-+		host->need_retune = 0;
- 		mmc_retune_enable(host);
-+	}
+ static struct snd_soc_card snd_soc_tegra_max98090 = {
+ 	.name = "tegra-max98090",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_max98090_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5
  
- 	return err;
- }
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
+ 	.name = "tegra-rt5640",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5640_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5677 = {
+ 	.name = "tegra-rt5677",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5677_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_sgtl5000.c
++++ b/sound/soc/tegra/tegra_sgtl5000.c
+@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgt
+ 
+ static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
+ 	.name = "tegra-sgtl5000",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_sgtl5000_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
+ 	.name = "tegra-wm8753",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8753_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -235,6 +235,7 @@ static struct snd_soc_dai_link tegra_wm8
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8903 = {
+ 	.name = "tegra-wm8903",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8903_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9
+ 
+ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ 	.name = "tegra-wm9712",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm9712_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice
+ 
+ static struct snd_soc_card snd_soc_trimslice = {
+ 	.name = "tegra-trimslice",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &trimslice_tlv320aic23_dai,
+ 	.num_links = 1,
 
 
