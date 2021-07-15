@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D493CAB62
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115D23CA8ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245564AbhGOTTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        id S243577AbhGOTEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241628AbhGOTFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5718B6141A;
-        Thu, 15 Jul 2021 19:01:10 +0000 (UTC)
+        id S239383AbhGOSzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D10AD613C4;
+        Thu, 15 Jul 2021 18:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375671;
-        bh=ABPESi/tvCvsDdS+Q26E3nZ0CcXREcFW90/hodmz2z0=;
+        s=korg; t=1626375144;
+        bh=s5hHcSw2lwzQd6yShPQcB+bG5BiV+Y/+hfnpVyQMXp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DcCfXgUzNK5Gx5wDi0FyNuBoaOeKnw8BSmff5p81YF24wvyjmsRI6FzG4h5wM+Xd9
-         NR3/dCJhhLkhqqWBdkHkfI+1plhUNlJI2yOsCE0Yhf+tfWMqabEGNQUek99Y8lWzRQ
-         bRAyq6+YAGljx6pUYQQetSJTBsiFNryI77ElydaU=
+        b=Yldtm+BaJCIdKUMfouxyfaV1GTXb9ovDEPH/rnaKr6+w3MKrJuA034moQVIMNrNSQ
+         eSzSB9xjVXBot9z48okrZCn3a+uwIHHoB3oUUJP+PorZ1jnQwodW6Iz9JIyTQn94C0
+         yx2byEMjo4QwrIcNBMe9vVPze7qI0Yr3ilo/j8W0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.12 186/242] mmc: core: Allow UHS-I voltage switch for SDSC cards if supported
-Date:   Thu, 15 Jul 2021 20:39:08 +0200
-Message-Id: <20210715182626.054194048@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 177/215] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+Date:   Thu, 15 Jul 2021 20:39:09 +0200
+Message-Id: <20210715182630.728413546@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Löhle <CLoehle@hyperstone.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 09247e110b2efce3a104e57e887c373e0a57a412 upstream.
+commit fca41af18e10318e4de090db47d9fa7169e1bf2f upstream.
 
-While initializing an UHS-I SD card, the mmc core first tries to switch to
-1.8V I/O voltage, before it continues to change the settings for the bus
-speed mode.
+fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
+which violates clang's CFI checking because fw_cfg_showrev()'s second
+parameter is 'struct attribute', whereas the ->show() member of 'struct
+kobj_structure' expects the second parameter to be of type 'struct
+kobj_attribute'.
 
-However, the current behaviour in the mmc core is inconsistent and doesn't
-conform to the SD spec. More precisely, an SD card that supports UHS-I must
-set both the SD_OCR_CCS bit and the SD_OCR_S18R bit in the OCR register
-response. When switching to 1.8V I/O the mmc core correctly checks both of
-the bits, but only the SD_OCR_S18R bit when changing the settings for bus
-speed mode.
+$ cat /sys/firmware/qemu_fw_cfg/rev
+3
 
-Rather than actually fixing the code to confirm to the SD spec, let's
-deliberately deviate from it by requiring only the SD_OCR_S18R bit for both
-parts. This enables us to support UHS-I for SDSC cards (outside spec),
-which is actually being supported by some existing SDSC cards. Moreover,
-this fixes the inconsistent behaviour.
+$ dmesg | grep "CFI failure"
+[   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
 
-Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-Link: https://lore.kernel.org/r/CWXP265MB26803AE79E0AD5ED083BF2A6C4529@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
+this would have been caught automatically by the incompatible pointer
+types compiler warning. Update fw_cfg_showrev() accordingly.
+
+Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1299
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@redhat.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Cc: stable@vger.kernel.org
-[Ulf: Rewrote commit message and comments to clarify the changes]
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://lore.kernel.org/r/20210211194258.4137998-1-nathan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/core/sd.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/firmware/qemu_fw_cfg.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -847,11 +847,13 @@ try_again:
- 		return err;
+--- a/drivers/firmware/qemu_fw_cfg.c
++++ b/drivers/firmware/qemu_fw_cfg.c
+@@ -299,15 +299,13 @@ static int fw_cfg_do_platform_probe(stru
+ 	return 0;
+ }
  
- 	/*
--	 * In case CCS and S18A in the response is set, start Signal Voltage
--	 * Switch procedure. SPI mode doesn't support CMD11.
-+	 * In case the S18A bit is set in the response, let's start the signal
-+	 * voltage switch procedure. SPI mode doesn't support CMD11.
-+	 * Note that, according to the spec, the S18A bit is not valid unless
-+	 * the CCS bit is set as well. We deliberately deviate from the spec in
-+	 * regards to this, which allows UHS-I to be supported for SDSC cards.
- 	 */
--	if (!mmc_host_is_spi(host) && rocr &&
--	   ((*rocr & 0x41000000) == 0x41000000)) {
-+	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
- 		err = mmc_set_uhs_voltage(host, pocr);
- 		if (err == -EAGAIN) {
- 			retries--;
+-static ssize_t fw_cfg_showrev(struct kobject *k, struct attribute *a, char *buf)
++static ssize_t fw_cfg_showrev(struct kobject *k, struct kobj_attribute *a,
++			      char *buf)
+ {
+ 	return sprintf(buf, "%u\n", fw_cfg_rev);
+ }
+ 
+-static const struct {
+-	struct attribute attr;
+-	ssize_t (*show)(struct kobject *k, struct attribute *a, char *buf);
+-} fw_cfg_rev_attr = {
++static const struct kobj_attribute fw_cfg_rev_attr = {
+ 	.attr = { .name = "rev", .mode = S_IRUSR },
+ 	.show = fw_cfg_showrev,
+ };
 
 
