@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3734E3C98C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26713C98CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbhGOG1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:27:08 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:16163 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231149AbhGOG1H (ORCPT
+        id S240199AbhGOGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:32:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7011 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhGOGcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:27:07 -0400
-X-UUID: 0a5205d548114b71bf449392ac64c6d6-20210715
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=FdJEfNIhRevGn/F/LNRstNPMVmwpSKWT+XSRG+RptUo=;
-        b=XwcGYvS5eBEW2tM7yKQuXk4RNV6DmpPFDWGENSlPuFnEwQSJXNoRyAOCwMMeYXtRYceq1lpEl36aLbSJSBpnvnuru//JIBbV0w3pt04fCU3tTl5FdEgEkWfDHVNhEtI7E0bEIe2vTgoOK97xYsA1o1YhDZiXATIDr8zLsEFJvy8=;
-X-UUID: 0a5205d548114b71bf449392ac64c6d6-20210715
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 149916070; Thu, 15 Jul 2021 14:24:11 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS33N2.mediatek.inc (172.27.4.76) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Jul 2021 14:24:08 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Thu, 15 Jul 2021 14:24:07 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <guangming.cao@mediatek.com>
-CC:     <Brian.Starkey@arm.com>, <benjamin.gaignard@linaro.org>,
-        <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
-        <john.stultz@linaro.org>, <labbott@redhat.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <lmark@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <sumit.semwal@linaro.org>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH] dma-heap: Let dma heap use dma_map_attrs to map & unmap iova
-Date:   Thu, 15 Jul 2021 14:24:05 +0800
-Message-ID: <20210715062405.98932-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210708101421.9101-1-guangming.cao@mediatek.com>
-References: <20210708101421.9101-1-guangming.cao@mediatek.com>
+        Thu, 15 Jul 2021 02:32:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQPT04QJtzXtJ0;
+        Thu, 15 Jul 2021 14:23:32 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 14:29:11 +0800
+Received: from [10.174.185.67] (10.174.185.67) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 14:29:10 +0800
+Subject: Re: [RFC v2] /dev/iommu uAPI proposal
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Kirti Wankhede" <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
+ <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
+Date:   Thu, 15 Jul 2021 14:29:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: D20BB1BADB131EDFEA63427CEE31F7C3446A8B841868204EDF379FDAF8A9A92E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.67]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogR3VhbmdtaW5nIENhbyA8R3VhbmdtaW5nLkNhb0BtZWRpYXRlay5jb20+DQoNCk9uIFRo
-dSwgMjAyMS0wNy0wOCBhdCAxODoxNCArMDgwMCwgZ3VhbmdtaW5nLmNhb0BtZWRpYXRlay5jb20g
-d3JvdGU6DQoNCkhpIFN1bWl0LCBDaHJpc3RpYW4sIE1hdHRoaWFzLA0KDQpnZW50bGUgcGluZyBm
-b3IgdGhpcyBwYXRjaCA6KQ0KDQpCUnMhDQpHdWFuZ21pbmcNCg0KPiBGcm9tOiBHdWFuZ21pbmcg
-Q2FvIDxHdWFuZ21pbmcuQ2FvQG1lZGlhdGVrLmNvbT4NCj4gDQo+IEZvciBkbWEtaGVhcCB1c2Vy
-cywgdGhleSBjYW4ndCBieXBhc3MgY2FjaGUgc3luYyB3aGVuIG1hcC91bm1hcCBpb3ZhDQo+IHdp
-dGggZG1hIGhlYXAuIEJ1dCB0aGV5IGNhbiBkbyBpdCBieSBhZGRpbmcgRE1BX0FUVFJfU0tJUF9D
-UFVfU1lOQw0KPiBpbnRvIGRtYV9hbGxvY19hdHRycy4NCj4gDQo+IFRvIGtlZXAgYWxpZ25tZW50
-LCBhdCBkbWFfaGVhcCBzaWRlLCBhbHNvIHVzZQ0KPiBkbWFfYnVmX2F0dGFjaG1lbnQuZG1hX21h
-cF9hdHRycyB0byBkbyBpb3ZhIG1hcCAmIHVubWFwLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogR3Vh
-bmdtaW5nIENhbyA8R3VhbmdtaW5nLkNhb0BtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVy
-cy9kbWEtYnVmL2hlYXBzL2NtYV9oZWFwLmMgICAgfCA2ICsrKystLQ0KPiAgZHJpdmVycy9kbWEt
-YnVmL2hlYXBzL3N5c3RlbV9oZWFwLmMgfCA2ICsrKystLQ0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA4
-IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9kbWEtYnVmL2hlYXBzL2NtYV9oZWFwLmMgYi9kcml2ZXJzL2RtYS0NCj4gYnVmL2hlYXBzL2Nt
-YV9oZWFwLmMNCj4gaW5kZXggMGMwNWI3OTg3MGY5Li4yYzlmZWIzYmZjM2UgMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvZG1hLWJ1Zi9oZWFwcy9jbWFfaGVhcC5jDQo+ICsrKyBiL2RyaXZlcnMvZG1h
-LWJ1Zi9oZWFwcy9jbWFfaGVhcC5jDQo+IEBAIC05OSw5ICs5OSwxMCBAQCBzdGF0aWMgc3RydWN0
-IHNnX3RhYmxlDQo+ICpjbWFfaGVhcF9tYXBfZG1hX2J1ZihzdHJ1Y3QgZG1hX2J1Zl9hdHRhY2ht
-ZW50ICphdHRhY2htZQ0KPiAgew0KPiAgCXN0cnVjdCBkbWFfaGVhcF9hdHRhY2htZW50ICphID0g
-YXR0YWNobWVudC0+cHJpdjsNCj4gIAlzdHJ1Y3Qgc2dfdGFibGUgKnRhYmxlID0gJmEtPnRhYmxl
-Ow0KPiArCWludCBhdHRycyA9IGF0dGFjaG1lbnQtPmRtYV9tYXBfYXR0cnM7DQo+ICAJaW50IHJl
-dDsNCj4gIA0KPiAtCXJldCA9IGRtYV9tYXBfc2d0YWJsZShhdHRhY2htZW50LT5kZXYsIHRhYmxl
-LCBkaXJlY3Rpb24sIDApOw0KPiArCXJldCA9IGRtYV9tYXBfc2d0YWJsZShhdHRhY2htZW50LT5k
-ZXYsIHRhYmxlLCBkaXJlY3Rpb24sDQo+IGF0dHJzKTsNCj4gIAlpZiAocmV0KQ0KPiAgCQlyZXR1
-cm4gRVJSX1BUUigtRU5PTUVNKTsNCj4gIAlhLT5tYXBwZWQgPSB0cnVlOw0KPiBAQCAtMTEzLDkg
-KzExNCwxMCBAQCBzdGF0aWMgdm9pZCBjbWFfaGVhcF91bm1hcF9kbWFfYnVmKHN0cnVjdA0KPiBk
-bWFfYnVmX2F0dGFjaG1lbnQgKmF0dGFjaG1lbnQsDQo+ICAJCQkJICAgZW51bSBkbWFfZGF0YV9k
-aXJlY3Rpb24gZGlyZWN0aW9uKQ0KPiAgew0KPiAgCXN0cnVjdCBkbWFfaGVhcF9hdHRhY2htZW50
-ICphID0gYXR0YWNobWVudC0+cHJpdjsNCj4gKwlpbnQgYXR0cnMgPSBhdHRhY2htZW50LT5kbWFf
-bWFwX2F0dHJzOw0KPiAgDQo+ICAJYS0+bWFwcGVkID0gZmFsc2U7DQo+IC0JZG1hX3VubWFwX3Nn
-dGFibGUoYXR0YWNobWVudC0+ZGV2LCB0YWJsZSwgZGlyZWN0aW9uLCAwKTsNCj4gKwlkbWFfdW5t
-YXBfc2d0YWJsZShhdHRhY2htZW50LT5kZXYsIHRhYmxlLCBkaXJlY3Rpb24sIGF0dHJzKTsNCj4g
-IH0NCj4gIA0KPiAgc3RhdGljIGludCBjbWFfaGVhcF9kbWFfYnVmX2JlZ2luX2NwdV9hY2Nlc3Mo
-c3RydWN0IGRtYV9idWYgKmRtYWJ1ZiwNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZG1hLWJ1Zi9o
-ZWFwcy9zeXN0ZW1faGVhcC5jIGIvZHJpdmVycy9kbWEtDQo+IGJ1Zi9oZWFwcy9zeXN0ZW1faGVh
-cC5jDQo+IGluZGV4IDIzYTdlNzRlZjk2Ni4uZmM3YjFlMDI5ODhlIDEwMDY0NA0KPiAtLS0gYS9k
-cml2ZXJzL2RtYS1idWYvaGVhcHMvc3lzdGVtX2hlYXAuYw0KPiArKysgYi9kcml2ZXJzL2RtYS1i
-dWYvaGVhcHMvc3lzdGVtX2hlYXAuYw0KPiBAQCAtMTMwLDkgKzEzMCwxMCBAQCBzdGF0aWMgc3Ry
-dWN0IHNnX3RhYmxlDQo+ICpzeXN0ZW1faGVhcF9tYXBfZG1hX2J1ZihzdHJ1Y3QgZG1hX2J1Zl9h
-dHRhY2htZW50ICphdHRhYw0KPiAgew0KPiAgCXN0cnVjdCBkbWFfaGVhcF9hdHRhY2htZW50ICph
-ID0gYXR0YWNobWVudC0+cHJpdjsNCj4gIAlzdHJ1Y3Qgc2dfdGFibGUgKnRhYmxlID0gYS0+dGFi
-bGU7DQo+ICsJaW50IGF0dHJzID0gYXR0YWNobWVudC0+ZG1hX21hcF9hdHRyczsNCj4gIAlpbnQg
-cmV0Ow0KPiAgDQo+IC0JcmV0ID0gZG1hX21hcF9zZ3RhYmxlKGF0dGFjaG1lbnQtPmRldiwgdGFi
-bGUsIGRpcmVjdGlvbiwgMCk7DQo+ICsJcmV0ID0gZG1hX21hcF9zZ3RhYmxlKGF0dGFjaG1lbnQt
-PmRldiwgdGFibGUsIGRpcmVjdGlvbiwNCj4gYXR0cnMpOw0KPiAgCWlmIChyZXQpDQo+ICAJCXJl
-dHVybiBFUlJfUFRSKHJldCk7DQo+ICANCj4gQEAgLTE0NSw5ICsxNDYsMTAgQEAgc3RhdGljIHZv
-aWQgc3lzdGVtX2hlYXBfdW5tYXBfZG1hX2J1ZihzdHJ1Y3QNCj4gZG1hX2J1Zl9hdHRhY2htZW50
-ICphdHRhY2htZW50LA0KPiAgCQkJCSAgICAgIGVudW0gZG1hX2RhdGFfZGlyZWN0aW9uDQo+IGRp
-cmVjdGlvbikNCj4gIHsNCj4gIAlzdHJ1Y3QgZG1hX2hlYXBfYXR0YWNobWVudCAqYSA9IGF0dGFj
-aG1lbnQtPnByaXY7DQo+ICsJaW50IGF0dHJzID0gYXR0YWNobWVudC0+ZG1hX21hcF9hdHRyczsN
-Cj4gIA0KPiAgCWEtPm1hcHBlZCA9IGZhbHNlOw0KPiAtCWRtYV91bm1hcF9zZ3RhYmxlKGF0dGFj
-aG1lbnQtPmRldiwgdGFibGUsIGRpcmVjdGlvbiwgMCk7DQo+ICsJZG1hX3VubWFwX3NndGFibGUo
-YXR0YWNobWVudC0+ZGV2LCB0YWJsZSwgZGlyZWN0aW9uLCBhdHRycyk7DQo+ICB9DQo+ICANCj4g
-IHN0YXRpYyBpbnQgc3lzdGVtX2hlYXBfZG1hX2J1Zl9iZWdpbl9jcHVfYWNjZXNzKHN0cnVjdCBk
-bWFfYnVmDQo+ICpkbWFidWYsDQo+IC0tIA0KPiAyLjE3LjENCj4g
+On 2021/7/15 11:55, Tian, Kevin wrote:
+>> From: Shenming Lu <lushenming@huawei.com>
+>> Sent: Thursday, July 15, 2021 11:21 AM
+>>
+>> On 2021/7/9 15:48, Tian, Kevin wrote:
+>>> 4.6. I/O page fault
+>>> +++++++++++++++++++
+>>>
+>>> uAPI is TBD. Here is just about the high-level flow from host IOMMU driver
+>>> to guest IOMMU driver and backwards. This flow assumes that I/O page
+>> faults
+>>> are reported via IOMMU interrupts. Some devices report faults via device
+>>> specific way instead of going through the IOMMU. That usage is not
+>> covered
+>>> here:
+>>>
+>>> -   Host IOMMU driver receives a I/O page fault with raw fault_data {rid,
+>>>     pasid, addr};
+>>>
+>>> -   Host IOMMU driver identifies the faulting I/O page table according to
+>>>     {rid, pasid} and calls the corresponding fault handler with an opaque
+>>>     object (registered by the handler) and raw fault_data (rid, pasid, addr);
+>>>
+>>> -   IOASID fault handler identifies the corresponding ioasid and device
+>>>     cookie according to the opaque object, generates an user fault_data
+>>>     (ioasid, cookie, addr) in the fault region, and triggers eventfd to
+>>>     userspace;
+>>>
+>>
+>> Hi, I have some doubts here:
+>>
+>> For mdev, it seems that the rid in the raw fault_data is the parent device's,
+>> then in the vSVA scenario, how can we get to know the mdev(cookie) from
+>> the
+>> rid and pasid?
+>>
+>> And from this point of view，would it be better to register the mdev
+>> (iommu_register_device()) with the parent device info?
+>>
+> 
+> This is what is proposed in this RFC. A successful binding generates a new
+> iommu_dev object for each vfio device. For mdev this object includes 
+> its parent device, the defPASID marking this mdev, and the cookie 
+> representing it in userspace. Later it is iommu_dev being recorded in
+> the attaching_data when the mdev is attached to an IOASID:
+> 
+> 	struct iommu_attach_data *__iommu_device_attach(
+> 		struct iommu_dev *dev, u32 ioasid, u32 pasid, int flags);
+> 
+> Then when a fault is reported, the fault handler just needs to figure out 
+> iommu_dev according to {rid, pasid} in the raw fault data.
+> 
 
+Yeah, we have the defPASID that marks the mdev and refers to the default
+I/O address space, but how about the non-default I/O address spaces?
+Is there a case that two different mdevs (on the same parent device)
+are used by the same process in the guest, thus have a same pasid route
+in the physical IOMMU? It seems that we can't figure out the mdev from
+the rid and pasid in this case...
+
+Did I misunderstand something?... :-)
+
+Thanks,
+Shenming
