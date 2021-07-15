@@ -2,77 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BAE3CAFA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5353CAFAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhGOXae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 19:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231849AbhGOXac (ORCPT
+        id S231849AbhGOXdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 19:33:10 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:42591 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbhGOXdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 19:30:32 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECED9C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:27:37 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id u7so8486286ion.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=osEHxnbqkKfllh7yBx8CxwUvom3YXLUsPzxXJb1aBZA=;
-        b=cGAoy8mJIPCCvX29zvxLWTVOQRmv6EEOzWJ8/xWrGg4dyMpd7yE9RVGKV+V8YerZOR
-         4/k3ovRl4fh+qDvsKlPfwkAEBYFdO5H0A60lSBghSfLzhXrWiSL2TQkFQptBSs7+XawY
-         nxJkHqm0hiF0A+b4xjjqaYrZAFRDxyK6LnonPHaeACyrkRXaxePyxA3TTCHRVDnEglT9
-         z+yDwY7MVzmIBlTyscW+mNjhY1LYjoKU0FEyxNHl73lomm3gfGvuOq3fTZomsZMlD8se
-         FoXeIgPB3/VL5ck2iHneRYcz5A+b+30Gkp+gwiSZyGDGfNIJzw234xjgpiyCQ7pqy1Nr
-         15SQ==
+        Thu, 15 Jul 2021 19:33:06 -0400
+Received: by mail-lj1-f169.google.com with SMTP id r16so11408657ljk.9;
+        Thu, 15 Jul 2021 16:30:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=osEHxnbqkKfllh7yBx8CxwUvom3YXLUsPzxXJb1aBZA=;
-        b=gkYEW55evyK0XxibugzWBrZIG/P2qENPzw3+0eh9N+w+vQJf3uY/26Fuoof2TazFjg
-         82aQ8y0CpEZojSWMm6fxUbs6z35v7A8msE93uPBCCTmUGIApfWv9wo45uGrd2aDXAUKx
-         AxUShvrZ8aKPpAlXtbwD+06twxeRaoKbzdw0Mj7DBzn373RJVLYiq2TXYMb3RoycxHYP
-         kdSFit19OPmrx5rbJ/n8y/fCl6qfZ6Ap0EDkJhOC2li10bYJeRujzSL6SMlioZTSZOJh
-         CuqJ83GVY2nRVRuKcvSspEhbADzPDvPqlU2le68YffbZLLaZ6c0PYi7KYuCBcjE4MI/I
-         QEeg==
-X-Gm-Message-State: AOAM530FMbStR3Nuc9B2O8pO+XqC27DgKq7azayixdV5xvmY/+LeCg2L
-        WjmP2f08ZfU0RfD6NFPtsHH864wADe4FM4AbIvw=
-X-Google-Smtp-Source: ABdhPJw+M3HiAGSiKBJMmx2eP+iFWPacEhDHA7mJnNhxrlxTC9Mg7R9DSCDvYUplDVAfCL+McCrFonbu3lbHNBsae7Y=
-X-Received: by 2002:a5e:d512:: with SMTP id e18mr4995700iom.149.1626391657480;
- Thu, 15 Jul 2021 16:27:37 -0700 (PDT)
+        bh=kFLF5dLDMFQXulu+4BY8SRF+bEZjlT/AnQcVLaG0zZM=;
+        b=kwGEhig21M6NS6b6uMbmWiXCv2/8Bv4C1Y1QCxQpBbMksh6cMZx5GDwiHBpQr79rej
+         R739QH0da742B82EPy1SI4CPR29wmQPvCpIBFId5jv8QLTRwCrVbOnkCxLZXoQ+AlRRR
+         dFflQ3fgGVhh1SVAoBn2xJyy04EOxGCx1yZUvUS7+YRJO1rUuMAelcAHFKRANOlVvgWh
+         s663nkVVoheuFKzzhcgkOvbuyf7ou6lElwhEm1Sc30bjj/XaOKG4K3mSdLRYamGGJhQn
+         LxiDavSB8TH5bkO0ptQwvazlgnc845WufvqMBje1uUuVaqeKqrp3iHKQYSkEwY+vzet0
+         5gqA==
+X-Gm-Message-State: AOAM531c9AIO6lDnNNH2Y1JLrZpEq0vW4JNXULmPFB5pRmixqoFkhN0r
+        GPvTPEhOlpYZaN6VdJzfymRm5Y4WPDatEZXt7XA=
+X-Google-Smtp-Source: ABdhPJy6BnS7zq3FhGZ3NpsswN8kcyMi2+woNPayUrTzGJi+Nqxr0BIX4W8HzboK+Yqme+0tPMNPOHcyWSxoDnuhmCA=
+X-Received: by 2002:a2e:9a4a:: with SMTP id k10mr6271585ljj.52.1626391810237;
+ Thu, 15 Jul 2021 16:30:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
- <CAHp75VeL89xaP9xjnigvv7Hki20=b7drp5iZ+ZfhZke6WGWsRA@mail.gmail.com>
- <20210714110218.izcop7grykhfyvll@lem-wkst-02.lemonage> <CAHp75VdGnuOPUKYSc0cFvXEY8Vt7LGiP2pS518=890FfV9Fk=g@mail.gmail.com>
-In-Reply-To: <CAHp75VdGnuOPUKYSc0cFvXEY8Vt7LGiP2pS518=890FfV9Fk=g@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Jul 2021 01:27:26 +0200
-Message-ID: <CANiq72mO9RAUosO0=WWquENZvPHTwo0kpUCHW_1ELeb6uCtTkg@mail.gmail.com>
-Subject: Re: [RFC] auxdisplay: Fix oops on hd44780 module unloading
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
+References: <cover.1626177381.git.rickyman7@gmail.com> <46f9e291af3d87c212d279717d56eeab4cbfde68.1626177381.git.rickyman7@gmail.com>
+ <YO7xpFg0F5Fv/7sI@kernel.org>
+In-Reply-To: <YO7xpFg0F5Fv/7sI@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 15 Jul 2021 16:29:59 -0700
+Message-ID: <CAM9d7chhjRhif=1+Sjjwrc2p+mLN+Lv4LY8dFZZpk5z5VG-+Pw@mail.gmail.com>
+Subject: Re: [RFC PATCH 01/10] perf workqueue: threadpool creation and destruction
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 4:12 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> I think you meant "RFT" in the subject line.
-> Anyway, I have tested it and it seems to be working fine.
->
-> Reported-and-tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Hi Riccardo and Arnaldo,
 
-Thanks for testing Andy -- queued.
+On Wed, Jul 14, 2021 at 7:16 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Jul 13, 2021 at 02:11:12PM +0200, Riccardo Mancini escreveu:
+> > The workqueue library is made up by two components:
+> >  - threadpool: handles the lifetime of the threads
+> >  - workqueue: handles work distribution among the threads
+> >
+> > This first patch introduces the threadpool, starting from its creation
+> > and destruction functions.
+> > Thread management is based on the prototype from Alexey:
+> > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+> >
+> > Each thread in the threadpool executes the same function (aka task)
+> > with a different argument tidx.
+> > Threads use a pair of pipes to communicate with the main process.
+> > The threadpool is static (all threads will be spawned at the same time).
+> > Future work could include making it resizable and adding affinity support
+> > (as in Alexey prototype).
+> >
+> > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > ---
+> >  tools/perf/util/Build                  |   1 +
+> >  tools/perf/util/workqueue/Build        |   1 +
+> >  tools/perf/util/workqueue/threadpool.c | 175 +++++++++++++++++++++++++
+> >  tools/perf/util/workqueue/threadpool.h |  19 +++
+> >  4 files changed, 196 insertions(+)
+> >  create mode 100644 tools/perf/util/workqueue/Build
+> >  create mode 100644 tools/perf/util/workqueue/threadpool.c
+> >  create mode 100644 tools/perf/util/workqueue/threadpool.h
+> >
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 2d4fa13041789cd6..c7b09701661c869d 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -180,6 +180,7 @@ perf-$(CONFIG_LIBBABELTRACE) += data-convert-bt.o
+> >  perf-y += data-convert-json.o
+> >
+> >  perf-y += scripting-engines/
+> > +perf-y += workqueue/
+> >
+> >  perf-$(CONFIG_ZLIB) += zlib.o
+> >  perf-$(CONFIG_LZMA) += lzma.o
+> > diff --git a/tools/perf/util/workqueue/Build b/tools/perf/util/workqueue/Build
+> > new file mode 100644
+> > index 0000000000000000..8b72a6cd4e2cba0d
+> > --- /dev/null
+> > +++ b/tools/perf/util/workqueue/Build
+> > @@ -0,0 +1 @@
+> > +perf-y += threadpool.o
+> > diff --git a/tools/perf/util/workqueue/threadpool.c b/tools/perf/util/workqueue/threadpool.c
+> > new file mode 100644
+> > index 0000000000000000..70c67569f956a3e2
+> > --- /dev/null
+> > +++ b/tools/perf/util/workqueue/threadpool.c
+> > @@ -0,0 +1,175 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <stdlib.h>
+> > +#include <stdio.h>
+> > +#include <unistd.h>
+> > +#include <errno.h>
+> > +#include <string.h>
+> > +#include "debug.h"
+> > +#include "asm/bug.h"
+> > +#include "threadpool.h"
+> > +
+> > +enum threadpool_status {
+> > +     THREADPOOL_STATUS__STOPPED,             /* no threads */
+> > +     THREADPOOL_STATUS__ERROR,               /* errors */
+> > +     THREADPOOL_STATUS__MAX
+> > +};
+> > +
+> > +struct threadpool_struct {
+>
+> Can this be just 'struct threadpool'? I think its descriptive enough:
+>
+> > +     int                     nr_threads;     /* number of threads in the pool */
+> > +     struct thread_struct    *threads;       /* array of threads in the pool */
+> > +     struct task_struct      *current_task;  /* current executing function */
 
-Cheers,
-Miguel
+Does this mean it can only have a single function to run?
+Why do we need it?
+
+
+> > +     enum threadpool_status  status;         /* current status of the pool */
+> > +};
+> > +
+> > +struct thread_struct {
+> > +     int                             idx;    /* idx of thread in pool->threads */
+> > +     pid_t                           tid;    /* tid of thread */
+> > +     struct threadpool_struct        *pool;  /* parent threadpool */
+> > +     struct {
+> > +             int from[2];                    /* messages from thread (acks) */
+> > +             int to[2];                      /* messages to thread (commands) */
+
+It can be confusing if you think from the main thread.
+Maybe 'ack' and 'cmd' would be better.
+
+
+> > +     } pipes;
+> > +};
+>
+> This one, since we have already a 'struct thread' in tools/perf, to
+> represent a PERF_RECORD_FORK, perhaps we can call it 'struct threadpool_entry'?
+
+I think we can even use 'worker' instead of 'thread' but it requires
+huge renaming and conflicts so I won't insist on it strongly.  :)
+
+Thanks,
+Namhyung
