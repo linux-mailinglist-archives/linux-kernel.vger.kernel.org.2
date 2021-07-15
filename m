@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AB53CAB1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9793CA8F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243751AbhGOTR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:17:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39756 "EHLO mail.kernel.org"
+        id S242873AbhGOTEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243377AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD6D461158;
-        Thu, 15 Jul 2021 19:00:04 +0000 (UTC)
+        id S242040AbhGOSyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF927613C4;
+        Thu, 15 Jul 2021 18:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375605;
-        bh=Lrpn29ql0xqhMrkZzmDpW6BQgwWK+WinwHTw7COMlJo=;
+        s=korg; t=1626375111;
+        bh=WnfKwdefcVhKmY+SMQ457/yqAt2i1E6NF6MSh8EUvak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B2Jq3GdLn65+8iJROnmGR/57eil6BXgL+DvrZro07b7zAXUHKKdxC9UX8ouQ5Qfwq
-         W/Zz9XJGnbdcdxlJQjGqnYVwPTPjkMsaKDFBu2TL4kvXyYALDpbVsDPALXwj/jlH0q
-         Bf+h6QgJOOogARR75Cq5ALd+Uw6ZRhO2kkb7eZgs=
+        b=VXnZBrHPJYIMWoyRfYx5TwchxT539pmM1BR05Jc1lLG1+3FfjIZyqCaC8qe2CC7BR
+         wE8mrwDWaCIPlAk68wiFMxotSezDG7LRwgYQmPQ12LRwJ6/cQgi0Jwtny0EGO3snYu
+         Zlvm+kgRXfekqJU/cUBpUv3Wgjn0k9ieGHc86V/g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.12 156/242] MIPS: MT extensions are not available on MIPS32r1
-Date:   Thu, 15 Jul 2021 20:38:38 +0200
-Message-Id: <20210715182620.641269257@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 147/215] powerpc/barrier: Avoid collision with clangs __lwsync macro
+Date:   Thu, 15 Jul 2021 20:38:39 +0200
+Message-Id: <20210715182625.614403654@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit cad065ed8d8831df67b9754cc4437ed55d8b48c0 upstream.
+commit 015d98149b326e0f1f02e44413112ca8b4330543 upstream.
 
-MIPS MT extensions were added with the MIPS 34K processor, which was
-based on the MIPS32r2 ISA.
+A change in clang 13 results in the __lwsync macro being defined as
+__builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
+the target supports. This breaks the build because of -Werror in
+arch/powerpc, along with thousands of warnings:
 
-This fixes a build error when building a generic kernel for a MIPS32r1
-CPU.
+ In file included from arch/powerpc/kernel/pmc.c:12:
+ In file included from include/linux/bug.h:5:
+ In file included from arch/powerpc/include/asm/bug.h:109:
+ In file included from include/asm-generic/bug.h:20:
+ In file included from include/linux/kernel.h:12:
+ In file included from include/linux/bitops.h:32:
+ In file included from arch/powerpc/include/asm/bitops.h:62:
+ arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
+ #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+        ^
+ <built-in>:308:9: note: previous definition is here
+ #define __lwsync __builtin_ppc_lwsync
+        ^
+ 1 error generated.
 
-Fixes: c434b9f80b09 ("MIPS: Kconfig: add MIPS_GENERIC_KERNEL symbol")
-Cc: stable@vger.kernel.org # v5.9
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Undefine this macro so that the runtime patching introduced by
+commit 2d1b2027626d ("powerpc: Fixup lwsync at runtime") continues to
+work properly with clang and the build no longer breaks.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1386
+Link: https://github.com/llvm/llvm-project/commit/62b5df7fe2b3fda1772befeda15598fbef96a614
+Link: https://lore.kernel.org/r/20210528182752.1852002-1-nathan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/include/asm/cpu-features.h |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/powerpc/include/asm/barrier.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -64,6 +64,8 @@
- 	((MIPS_ISA_REV >= (ge)) && (MIPS_ISA_REV < (lt)))
- #define __isa_range_or_flag(ge, lt, flag) \
- 	(__isa_range(ge, lt) || ((MIPS_ISA_REV < (lt)) && __isa(flag)))
-+#define __isa_range_and_ase(ge, lt, ase) \
-+	(__isa_range(ge, lt) && __ase(ase))
- 
- /*
-  * SMP assumption: Options of CPU 0 are a superset of all processors.
-@@ -421,7 +423,7 @@
+--- a/arch/powerpc/include/asm/barrier.h
++++ b/arch/powerpc/include/asm/barrier.h
+@@ -46,6 +46,8 @@
+ #    define SMPWMB      eieio
  #endif
  
- #ifndef cpu_has_mipsmt
--#define cpu_has_mipsmt		__isa_lt_and_ase(6, MIPS_ASE_MIPSMT)
-+#define cpu_has_mipsmt		__isa_range_and_ase(2, 6, MIPS_ASE_MIPSMT)
- #endif
- 
- #ifndef cpu_has_vp
++/* clang defines this macro for a builtin, which will not work with runtime patching */
++#undef __lwsync
+ #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+ #define dma_rmb()	__lwsync()
+ #define dma_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
 
 
