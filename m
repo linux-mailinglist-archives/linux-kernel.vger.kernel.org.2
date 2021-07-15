@@ -2,126 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461853CAE6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B86C3CAE6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhGOVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:19:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhGOVTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:19:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5214613C1;
-        Thu, 15 Jul 2021 21:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626383788;
-        bh=CnrIyDI+hMYkodapZe7ZAAirBYSm1eZwp2RO6e4FtiM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qqW34Wx6L0x70i/9t+HwbrXUmhdDwCl9RALBzLL2ZGbLGEGmjcanDHEs5jugWDn36
-         trB17qqEA4Lwppxf4fBNfzoTdcwCGcvvMG4VOQ4QaLwFxWke8Y8TyxA2/YA9lZ162l
-         V9y+9gL11x3wd0Bx3hSitYGhGMzBYc4jjWhJPfxuCLby/sZXrc1Wq4rXCaASjdSEbU
-         v7Sr63trssEHbeUH9xYkJ/5kObZKUCqKYX14Mvuj3Bl+viUj67Kovx9CIHRcawX+i8
-         EfsfMBEIL8WXT7Yo7A8KcwiKJ0li151K4BNbvm/Dj/jIQYUPSlgmdOc9cFlIXjrbcs
-         CbCnDDQlqGG/w==
-Date:   Thu, 15 Jul 2021 14:16:28 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 093/138] iomap: Convert iomap_page_create to take a
- folio
-Message-ID: <20210715211628.GF22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-94-willy@infradead.org>
+        id S229651AbhGOVWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhGOVWQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:22:16 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7862BC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:19:21 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y4so7807690pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=student-cerritos-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D0OhYkjJX+icCnS8y/R2T1NSb2j9lN0NsqfakqZJQhc=;
+        b=U8Q50/trE+Q5ldn76TBWjJHBB5CMYImyxa0DoddZjUVD0BAf28Zr7M9G8xI0RnjJM9
+         wlWpEHNQkx5dtU3ZKEmqeC94uOTYsgsZUs/uprBrvQ6Rh2twSrXlXxLSbo/FOy/BDLKE
+         Ogvp04Xb5+s0dT2xXO765Jjxu3if+VY3v7I77yHHgLz0YOa+jhOOfUsMz5bncGAvHcQR
+         dVBbswCgOkz0GqVfofhjCM6cfn5BOx6AhOwEMGpThIAZyklSg3Oe43BAT60cU6BdMk8h
+         jamIEmiXx0ZjECnbFLmBV9WmPkIRQ+Mem4zU/BHGN2bhR4F6QnIFq5Gh4zFn9Tm0gX8I
+         vsnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D0OhYkjJX+icCnS8y/R2T1NSb2j9lN0NsqfakqZJQhc=;
+        b=ilX1j/4krSpQMdR1EUyw+jRXVCnAviXQAPLrnJgSVLDx0Rfq3ku/sDIeHvZn8fCSWz
+         f3OU/rrE6gtxFGzdCNYYuofSD8x0vmb3KNkdTsQyL5tjL2mKNzNd3yhbtZOPYVOwayzp
+         vpjIawYS/pbLjnocjM7ar7b9Fex2jiJP8foGdtylZ2xfSML04IiQv6DPcHsphBGxj3ks
+         caOyByQFSelWIZw9Ru3uVO9gZ+H4E1+ttWmi+mc3DbnCoUWmTFneXIHRrH8cOyb5hY8F
+         eEqsRBMpj/Dp80Nt/6SBVhVBQwwQWcZsGOn4jgeN/55cLGoLCyjrTZ0tVFi1pV1sUECU
+         q0NA==
+X-Gm-Message-State: AOAM533+BZxvynzYYGFTfcmE6o5ENr6m+tGT/fMPszV/R7CkaOxxMxVi
+        Z3RDbJ9JwOjIfQgkHKLKtKWXOA==
+X-Google-Smtp-Source: ABdhPJxX+wsrbSEY7lxOPuDSESPjKjsqxnhONORWQQY6K55aaa3aWQLY9IN7KwfoYh523KsHbYt+9g==
+X-Received: by 2002:a65:6555:: with SMTP id a21mr6512902pgw.53.1626383960970;
+        Thu, 15 Jul 2021 14:19:20 -0700 (PDT)
+Received: from fedora.. (066-215-081-126.biz.spectrum.com. [66.215.81.126])
+        by smtp.gmail.com with ESMTPSA id gb10sm9811371pjb.43.2021.07.15.14.19.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 14:19:20 -0700 (PDT)
+From:   Amy Parker <apark0006@student.cerritos.edu>
+To:     pavel@ucw.cz
+Cc:     Amy Parker <apark0006@student.cerritos.edu>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] leds: change led_brightness definition from enum to typedef
+Date:   Thu, 15 Jul 2021 14:18:55 -0700
+Message-Id: <cover.1626383424.git.apark0006@student.cerritos.edu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-94-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:36:19AM +0100, Matthew Wilcox (Oracle) wrote:
-> This function already assumed it was being passed a head page, so
-> just formalise that.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+This patch series solves the TODO listed in drivers/leds, and changes
+the implementation of led_brightness from an enum to a combined typedef
+of a u8 and set of macro definitions as suggested in the TODO.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Amy Parker <apark0006@student.cerritos.edu>
 
---D
+Amy Parker (2):
+  swap led_brightness from enum to typedef
+  drivers/leds/TODO: update TODO to reflect changes
 
-> ---
->  fs/iomap/buffered-io.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index cd5c2f24cb7e..c15a0ac52a32 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -42,11 +42,10 @@ static inline struct iomap_page *to_iomap_page(struct folio *folio)
->  static struct bio_set iomap_ioend_bioset;
->  
->  static struct iomap_page *
-> -iomap_page_create(struct inode *inode, struct page *page)
-> +iomap_page_create(struct inode *inode, struct folio *folio)
->  {
-> -	struct folio *folio = page_folio(page);
->  	struct iomap_page *iop = to_iomap_page(folio);
-> -	unsigned int nr_blocks = i_blocks_per_page(inode, page);
-> +	unsigned int nr_blocks = i_blocks_per_folio(inode, folio);
->  
->  	if (iop || nr_blocks <= 1)
->  		return iop;
-> @@ -54,9 +53,9 @@ iomap_page_create(struct inode *inode, struct page *page)
->  	iop = kzalloc(struct_size(iop, uptodate, BITS_TO_LONGS(nr_blocks)),
->  			GFP_NOFS | __GFP_NOFAIL);
->  	spin_lock_init(&iop->uptodate_lock);
-> -	if (PageUptodate(page))
-> +	if (folio_test_uptodate(folio))
->  		bitmap_fill(iop->uptodate, nr_blocks);
-> -	attach_page_private(page, iop);
-> +	folio_attach_private(folio, iop);
->  	return iop;
->  }
->  
-> @@ -235,7 +234,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->  {
->  	struct iomap_readpage_ctx *ctx = data;
->  	struct page *page = ctx->cur_page;
-> -	struct iomap_page *iop = iomap_page_create(inode, page);
-> +	struct folio *folio = page_folio(page);
-> +	struct iomap_page *iop = iomap_page_create(inode, folio);
->  	bool same_page = false, is_contig = false;
->  	loff_t orig_pos = pos;
->  	unsigned poff, plen;
-> @@ -547,7 +547,8 @@ static int
->  __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->  		struct page *page, struct iomap *srcmap)
->  {
-> -	struct iomap_page *iop = iomap_page_create(inode, page);
-> +	struct folio *folio = page_folio(page);
-> +	struct iomap_page *iop = iomap_page_create(inode, folio);
->  	loff_t block_size = i_blocksize(inode);
->  	loff_t block_start = round_down(pos, block_size);
->  	loff_t block_end = round_up(pos + len, block_size);
-> @@ -955,6 +956,7 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
->  		void *data, struct iomap *iomap, struct iomap *srcmap)
->  {
->  	struct page *page = data;
-> +	struct folio *folio = page_folio(page);
->  	int ret;
->  
->  	if (iomap->flags & IOMAP_F_BUFFER_HEAD) {
-> @@ -964,7 +966,7 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
->  		block_commit_write(page, 0, length);
->  	} else {
->  		WARN_ON_ONCE(!PageUptodate(page));
-> -		iomap_page_create(inode, page);
-> +		iomap_page_create(inode, folio);
->  		set_page_dirty(page);
->  	}
->  
-> -- 
-> 2.30.2
-> 
+ Documentation/leds/leds-class-flash.rst       |  2 +-
+ arch/arm/mach-davinci/board-dm365-evm.c       |  4 +--
+ arch/arm/mach-footbridge/ebsa285.c            |  4 +--
+ arch/arm/mach-footbridge/netwinder-hw.c       |  4 +--
+ arch/arm/mach-pxa/idp.c                       |  4 +--
+ arch/arm/mach-pxa/lubbock.c                   |  4 +--
+ arch/arm/mach-pxa/mainstone.c                 |  4 +--
+ arch/arm/plat-omap/debug-leds.c               |  4 +--
+ arch/mips/alchemy/devboards/db1000.c          |  4 +--
+ arch/mips/alchemy/devboards/db1200.c          |  4 +--
+ arch/mips/alchemy/devboards/db1300.c          |  4 +--
+ arch/mips/txx9/rbtx4939/setup.c               |  2 +-
+ arch/x86/platform/ts5500/ts5500.c             |  4 +--
+ drivers/gpu/drm/nouveau/nouveau_led.c         |  4 +--
+ drivers/hid/hid-asus.c                        |  4 +--
+ drivers/hid/hid-bigbenff.c                    |  4 +--
+ drivers/hid/hid-corsair.c                     |  6 ++--
+ drivers/hid/hid-elan.c                        |  2 +-
+ drivers/hid/hid-google-hammer.c               |  2 +-
+ drivers/hid/hid-gt683r.c                      |  4 +--
+ drivers/hid/hid-led.c                         | 20 ++++++------
+ drivers/hid/hid-lenovo.c                      |  4 +--
+ drivers/hid/hid-lg-g15.c                      | 24 +++++++-------
+ drivers/hid/hid-lg4ff.c                       |  4 +--
+ drivers/hid/hid-picolcd_leds.c                |  4 +--
+ drivers/hid/hid-sony.c                        |  4 +--
+ drivers/hid/hid-steelseries.c                 |  8 ++---
+ drivers/hid/hid-u2fzero.c                     |  2 +-
+ drivers/hid/hid-wiimote-modules.c             |  4 +--
+ drivers/hid/wacom.h                           |  2 +-
+ drivers/hid/wacom_sys.c                       |  8 ++---
+ drivers/hwmon/applesmc.c                      |  2 +-
+ drivers/hwmon/pmbus/ibm-cffps.c               |  2 +-
+ drivers/input/input-leds.c                    |  4 +--
+ drivers/input/joystick/xpad.c                 |  2 +-
+ drivers/input/keyboard/applespi.c             |  2 +-
+ drivers/input/keyboard/cap11xx.c              |  2 +-
+ drivers/input/keyboard/lm8323.c               |  2 +-
+ drivers/input/keyboard/qt2160.c               |  4 +--
+ drivers/input/keyboard/tm2-touchkey.c         |  2 +-
+ drivers/input/misc/apanel.c                   |  2 +-
+ drivers/input/misc/ims-pcu.c                  |  4 +--
+ drivers/input/misc/wistron_btns.c             |  4 +--
+ drivers/input/touchscreen/stmfts.c            |  4 +--
+ drivers/leds/TODO                             |  4 ---
+ drivers/leds/blink/leds-lgm-sso.c             |  6 ++--
+ drivers/leds/flash/leds-rt4505.c              |  4 +--
+ drivers/leds/flash/leds-rt8515.c              |  2 +-
+ drivers/leds/led-class-multicolor.c           |  2 +-
+ drivers/leds/led-triggers.c                   |  2 +-
+ drivers/leds/leds-88pm860x.c                  |  2 +-
+ drivers/leds/leds-aat1290.c                   |  8 ++---
+ drivers/leds/leds-acer-a500.c                 |  2 +-
+ drivers/leds/leds-adp5520.c                   |  2 +-
+ drivers/leds/leds-an30259a.c                  |  2 +-
+ drivers/leds/leds-apu.c                       |  4 +--
+ drivers/leds/leds-ariel.c                     |  4 +--
+ drivers/leds/leds-as3645a.c                   |  4 +--
+ drivers/leds/leds-asic3.c                     |  2 +-
+ drivers/leds/leds-aw2013.c                    |  2 +-
+ drivers/leds/leds-bcm6328.c                   |  2 +-
+ drivers/leds/leds-bcm6358.c                   |  2 +-
+ drivers/leds/leds-bd2802.c                    |  2 +-
+ drivers/leds/leds-blinkm.c                    |  8 ++---
+ drivers/leds/leds-clevo-mail.c                |  2 +-
+ drivers/leds/leds-cobalt-qube.c               |  2 +-
+ drivers/leds/leds-cobalt-raq.c                |  4 +--
+ drivers/leds/leds-cpcap.c                     |  2 +-
+ drivers/leds/leds-cr0014114.c                 |  2 +-
+ drivers/leds/leds-da903x.c                    |  2 +-
+ drivers/leds/leds-da9052.c                    |  4 +--
+ drivers/leds/leds-dac124s085.c                |  2 +-
+ drivers/leds/leds-el15203000.c                |  2 +-
+ drivers/leds/leds-fsg.c                       | 12 +++----
+ drivers/leds/leds-gpio.c                      |  4 +--
+ drivers/leds/leds-hp6xx.c                     |  4 +--
+ drivers/leds/leds-ip30.c                      |  2 +-
+ drivers/leds/leds-ipaq-micro.c                |  2 +-
+ drivers/leds/leds-is31fl319x.c                |  2 +-
+ drivers/leds/leds-is31fl32xx.c                |  2 +-
+ drivers/leds/leds-ktd2692.c                   |  6 ++--
+ drivers/leds/leds-lm3530.c                    |  4 +--
+ drivers/leds/leds-lm3532.c                    |  2 +-
+ drivers/leds/leds-lm3533.c                    |  4 +--
+ drivers/leds/leds-lm355x.c                    |  6 ++--
+ drivers/leds/leds-lm3601x.c                   |  2 +-
+ drivers/leds/leds-lm36274.c                   |  2 +-
+ drivers/leds/leds-lm3642.c                    |  6 ++--
+ drivers/leds/leds-lm3692x.c                   |  4 +--
+ drivers/leds/leds-lm3697.c                    |  2 +-
+ drivers/leds/leds-locomo.c                    |  6 ++--
+ drivers/leds/leds-lp3944.c                    |  4 +--
+ drivers/leds/leds-lp3952.c                    |  2 +-
+ drivers/leds/leds-lp50xx.c                    |  2 +-
+ drivers/leds/leds-lp55xx-common.c             |  4 +--
+ drivers/leds/leds-lp8788.c                    |  2 +-
+ drivers/leds/leds-lp8860.c                    |  2 +-
+ drivers/leds/leds-lt3593.c                    |  2 +-
+ drivers/leds/leds-max77650.c                  |  2 +-
+ drivers/leds/leds-max77693.c                  |  2 +-
+ drivers/leds/leds-max8997.c                   |  4 +--
+ drivers/leds/leds-mc13783.c                   |  2 +-
+ drivers/leds/leds-menf21bmc.c                 |  2 +-
+ drivers/leds/leds-mlxcpld.c                   |  4 +--
+ drivers/leds/leds-mlxreg.c                    |  8 ++---
+ drivers/leds/leds-mt6323.c                    | 10 +++---
+ drivers/leds/leds-net48xx.c                   |  2 +-
+ drivers/leds/leds-netxbig.c                   |  2 +-
+ drivers/leds/leds-nic78bx.c                   |  4 +--
+ drivers/leds/leds-ns2.c                       |  4 +--
+ drivers/leds/leds-ot200.c                     |  2 +-
+ drivers/leds/leds-pca9532.c                   |  4 +--
+ drivers/leds/leds-pca955x.c                   |  2 +-
+ drivers/leds/leds-pca963x.c                   |  4 +--
+ drivers/leds/leds-pm8058.c                    |  6 ++--
+ drivers/leds/leds-powernv.c                   |  8 ++---
+ drivers/leds/leds-pwm.c                       |  2 +-
+ drivers/leds/leds-rb532.c                     |  4 +--
+ drivers/leds/leds-regulator.c                 |  4 +--
+ drivers/leds/leds-s3c24xx.c                   |  2 +-
+ drivers/leds/leds-sc27xx-bltc.c               |  4 +--
+ drivers/leds/leds-sgm3140.c                   |  2 +-
+ drivers/leds/leds-spi-byte.c                  |  2 +-
+ drivers/leds/leds-ss4200.c                    |  2 +-
+ drivers/leds/leds-sunfire.c                   | 18 +++++------
+ drivers/leds/leds-syscon.c                    |  2 +-
+ drivers/leds/leds-tca6507.c                   |  2 +-
+ drivers/leds/leds-tlc591xx.c                  |  2 +-
+ drivers/leds/leds-tps6105x.c                  |  2 +-
+ drivers/leds/leds-turris-omnia.c              |  2 +-
+ drivers/leds/leds-wm831x-status.c             |  4 +--
+ drivers/leds/leds-wm8350.c                    |  2 +-
+ drivers/leds/leds-wrap.c                      |  6 ++--
+ drivers/leds/trigger/ledtrig-audio.c          |  6 ++--
+ drivers/leds/trigger/ledtrig-camera.c         |  4 +--
+ drivers/leds/uleds.c                          |  2 +-
+ drivers/macintosh/via-pmu-led.c               |  2 +-
+ drivers/media/radio/radio-shark.c             |  6 ++--
+ drivers/media/radio/radio-shark2.c            |  4 +--
+ drivers/media/rc/redrat3.c                    |  2 +-
+ drivers/media/rc/ttusbir.c                    |  4 +--
+ drivers/media/rc/winbond-cir.c                |  4 +--
+ .../media/v4l2-core/v4l2-flash-led-class.c    |  6 ++--
+ drivers/mmc/host/rtsx_usb_sdmmc.c             |  2 +-
+ drivers/mmc/host/sdhci.c                      |  2 +-
+ drivers/net/arcnet/com20020-pci.c             |  4 +--
+ drivers/net/dsa/hirschmann/hellcreek_ptp.c    | 12 +++----
+ drivers/net/wireless/ath/ath5k/led.c          |  2 +-
+ drivers/net/wireless/ath/ath9k/gpio.c         |  2 +-
+ drivers/net/wireless/ath/ath9k/htc.h          |  2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_gpio.c |  2 +-
+ drivers/net/wireless/ath/carl9170/led.c       |  2 +-
+ drivers/net/wireless/broadcom/b43/leds.c      |  2 +-
+ .../net/wireless/broadcom/b43legacy/leds.c    |  2 +-
+ .../broadcom/brcm80211/brcmsmac/led.c         |  2 +-
+ drivers/net/wireless/intel/iwlegacy/common.c  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/led.c  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/led.c  |  2 +-
+ drivers/net/wireless/intersil/p54/led.c       |  2 +-
+ .../net/wireless/mediatek/mt76/mt7603/init.c  |  2 +-
+ .../wireless/mediatek/mt76/mt7615/pci_init.c  |  2 +-
+ .../net/wireless/mediatek/mt76/mt76x02_util.c |  2 +-
+ .../net/wireless/ralink/rt2x00/rt2400pci.c    |  2 +-
+ .../net/wireless/ralink/rt2x00/rt2500pci.c    |  2 +-
+ .../net/wireless/ralink/rt2x00/rt2500usb.c    |  2 +-
+ .../net/wireless/ralink/rt2x00/rt2800lib.c    |  2 +-
+ drivers/net/wireless/ralink/rt2x00/rt61pci.c  |  2 +-
+ drivers/net/wireless/ralink/rt2x00/rt73usb.c  |  2 +-
+ .../wireless/realtek/rtl818x/rtl8187/leds.c   |  2 +-
+ .../platform/chrome/cros_kbd_led_backlight.c  |  4 +--
+ .../platform/chrome/wilco_ec/keyboard_leds.c  |  4 +--
+ drivers/platform/x86/acer-wmi.c               |  2 +-
+ drivers/platform/x86/asus-laptop.c            |  8 ++---
+ drivers/platform/x86/asus-wireless.c          |  4 +--
+ drivers/platform/x86/asus-wmi.c               | 18 +++++------
+ drivers/platform/x86/dell/alienware-wmi.c     |  4 +--
+ drivers/platform/x86/dell/dell-laptop.c       | 16 +++++-----
+ drivers/platform/x86/dell/dell-wmi-led.c      |  2 +-
+ drivers/platform/x86/dell/dell-wmi-privacy.c  |  2 +-
+ drivers/platform/x86/eeepc-laptop.c           |  4 +--
+ drivers/platform/x86/fujitsu-laptop.c         | 22 ++++++-------
+ drivers/platform/x86/hp_accel.c               |  8 ++---
+ drivers/platform/x86/huawei-wmi.c             |  2 +-
+ drivers/platform/x86/ideapad-laptop.c         |  4 +--
+ drivers/platform/x86/lg-laptop.c              |  8 ++---
+ drivers/platform/x86/samsung-laptop.c         |  4 +--
+ drivers/platform/x86/system76_acpi.c          | 16 +++++-----
+ drivers/platform/x86/thinkpad_acpi.c          | 20 ++++++------
+ drivers/platform/x86/topstar-laptop.c         |  4 +--
+ drivers/platform/x86/toshiba_acpi.c           | 12 +++----
+ drivers/staging/greybus/light.c               |  4 +--
+ drivers/staging/nvec/nvec_paz00.c             |  2 +-
+ drivers/video/backlight/adp8860_bl.c          |  4 +--
+ drivers/video/backlight/adp8870_bl.c          |  4 +--
+ drivers/video/backlight/lm3639_bl.c           |  4 +--
+ include/linux/led-class-multicolor.h          |  4 +--
+ include/linux/leds-regulator.h                |  2 +-
+ include/linux/leds.h                          | 31 +++++++++----------
+ include/linux/mfd/wm8350/pmic.h               |  2 +-
+ include/media/v4l2-flash-led-class.h          |  6 ++--
+ net/rfkill/core.c                             |  2 +-
+ sound/pci/hda/hda_generic.c                   |  6 ++--
+ sound/pci/hda/hda_generic.h                   |  4 +--
+ sound/pci/hda/patch_conexant.c                |  6 ++--
+ sound/pci/hda/patch_realtek.c                 | 12 +++----
+ sound/pci/hda/patch_sigmatel.c                |  4 +--
+ sound/usb/line6/toneport.c                    |  2 +-
+ 207 files changed, 436 insertions(+), 441 deletions(-)
+
+-- 
+2.31.1
+
