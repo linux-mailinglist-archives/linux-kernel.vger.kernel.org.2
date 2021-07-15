@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0EE3CA920
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A393CA92C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241644AbhGOTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
+        id S241269AbhGOTFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242304AbhGOSz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C90F613CA;
-        Thu, 15 Jul 2021 18:53:03 +0000 (UTC)
+        id S241829AbhGOSz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE4A613D6;
+        Thu, 15 Jul 2021 18:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375183;
-        bh=A4fkhWVz99NIUQ8loIoU09gIJ3czNtlDyfWaePm15HQ=;
+        s=korg; t=1626375186;
+        bh=S/HQrOVbppMec7LdP7TGunGwI3Po1YPh9Qvj5tlwGvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ESPqdgn4nufm34md/8yeRvj+j0L6jmxhgJB6hj10TpHQyu0hFWFlNA/JfjowEXXoX
-         1e/PmNQkekN30rsSKkg/wChLzjAvFAwgRqHF+ETykMkZe8T748ROcjybMGapahF7Dy
-         pukrF9EfUAa9gZHTnODRkhqajseRRbrjWLpe+nFs=
+        b=RheJ/phhlG2aPAKeRiuwbkyuH6eRk1TRn3/oJUvcoDaC9U26hkDOTEFRrvS+h9H00
+         cXquNxwae5b21jXSuGBNI+yXBNBgS2Ua9U+FEb4Hk4+APKB2yFVw7y+3vKBrDO6nvp
+         f2iWMPaxihvXlQ7FSf2myvqlCqGCFssWgEQtvSSI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianmin Lv <lvjianmin@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 152/215] drm/radeon: Call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64
-Date:   Thu, 15 Jul 2021 20:38:44 +0200
-Message-Id: <20210715182626.440333643@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH 5.10 153/215] drm/vc4: txp: Properly set the possible_crtcs mask
+Date:   Thu, 15 Jul 2021 20:38:45 +0200
+Message-Id: <20210715182626.571416114@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -40,60 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit c1bfd74bfef77bcefc88d12eaf8996c0dfd51331 upstream.
+commit bf6de8e61509f3c957d7f75f017b18d40a18a950 upstream.
 
-On the Loongson64 platform used with Radeon GPU, shutdown or reboot failed
-when console=tty is in the boot cmdline.
+The current code does a binary OR on the possible_crtcs variable of the
+TXP encoder, while we want to set it to that value instead.
 
-radeon_suspend_kms() puts the hw in the suspend state, especially set fb
-state as FBINFO_STATE_SUSPENDED:
-
-        if (fbcon) {
-                console_lock();
-                radeon_fbdev_set_suspend(rdev, 1);
-                console_unlock();
-        }
-
-Then avoid to do any more fb operations in the related functions:
-
-        if (p->state != FBINFO_STATE_RUNNING)
-                return;
-
-So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to fix
-this issue, it looks like some kind of workaround like powerpc.
-
-Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
-Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Cc: <stable@vger.kernel.org> # v5.9+
+Fixes: 39fcb2808376 ("drm/vc4: txp: Turn the TXP into a CRTC of its own")
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-2-maxime@cerno.tech
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/radeon/radeon_drv.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/vc4/vc4_txp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -416,13 +416,13 @@ radeon_pci_shutdown(struct pci_dev *pdev
- 	if (radeon_device_is_virtual())
- 		radeon_pci_remove(pdev);
+--- a/drivers/gpu/drm/vc4/vc4_txp.c
++++ b/drivers/gpu/drm/vc4/vc4_txp.c
+@@ -503,7 +503,7 @@ static int vc4_txp_bind(struct device *d
+ 		return ret;
  
--#ifdef CONFIG_PPC64
-+#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
- 	/*
- 	 * Some adapters need to be suspended before a
- 	 * shutdown occurs in order to prevent an error
--	 * during kexec.
--	 * Make this power specific becauase it breaks
--	 * some non-power boards.
-+	 * during kexec, shutdown or reboot.
-+	 * Make this power and Loongson specific because
-+	 * it breaks some other boards.
- 	 */
- 	radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
- #endif
+ 	encoder = &txp->connector.encoder;
+-	encoder->possible_crtcs |= drm_crtc_mask(crtc);
++	encoder->possible_crtcs = drm_crtc_mask(crtc);
+ 
+ 	ret = devm_request_irq(dev, irq, vc4_txp_interrupt, 0,
+ 			       dev_name(dev), txp);
 
 
