@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35493CA834
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78713CA603
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242313AbhGOS7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
+        id S237286AbhGOSpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:45:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240096AbhGOSwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:52:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3669B613E4;
-        Thu, 15 Jul 2021 18:49:40 +0000 (UTC)
+        id S235738AbhGOSpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:45:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82DED613D1;
+        Thu, 15 Jul 2021 18:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374980;
-        bh=a2TYuJh7PkCVniY4/fKjO/f6OUDpXJ887zt9Jfrveuo=;
+        s=korg; t=1626374542;
+        bh=THJPcmkfH78OpzqAj5LeSvs8Vk5FqCJ8OEAfz0IuGEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ngpw1F+QOio8usCUKOCJBFDf/2jk1A6R1GkmeHVg95XXX/Y3sdQCR2dv2deoidzyy
-         yzUKCDq0g7Y2RB8adtLqacoCcoS0vQWAcNaORasYcW0XExXWBnwyschgmWICgF4hsQ
-         WmU5gz9t7npai3nwR3RsHQoNCSN+cXuZHtCkAMUI=
+        b=DoUHVaaE7T1nh0E004M5H2ST+ZpPFxORkj1CRnQto235TqBgXa28ki5drkaRgsaHt
+         iUch92D8hKmj9wqROoosrwU5Ac2+IXAH1O190GxpXq/n72JZaegit1UNyllqIZMvyy
+         fh6Oadq2b4R26v7cEW0qhOQb/8coyw2M2Acu1/28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Yang <yangx.jy@fujitsu.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Liwei Song <liwei.song@windriver.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 101/215] RDMA/rxe: Dont overwrite errno from ib_umem_get()
+Subject: [PATCH 5.4 026/122] ice: set the value of global config lock timeout longer
 Date:   Thu, 15 Jul 2021 20:37:53 +0200
-Message-Id: <20210715182617.166839179@linuxfoundation.org>
+Message-Id: <20210715182455.715995230@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Yang <yangx.jy@fujitsu.com>
+From: Liwei Song <liwei.song@windriver.com>
 
-[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
+[ Upstream commit fb3612840d4f587a0af9511a11d7989d1fa48206 ]
 
-rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
-fails so it's hard for user to know which actual error happens in
-ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
-trying to pin pages on a DAX file.
+It may need hold Global Config Lock a longer time when download DDP
+package file, extend the timeout value to 5000ms to ensure that
+download can be finished before other AQ command got time to run,
+this will fix the issue below when probe the device, 5000ms is a test
+value that work with both Backplane and BreakoutCable NVM image:
 
-Return actual error as mlx4/mlx5 does.
+ice 0000:f4:00.0: VSI 12 failed lan queue config, error ICE_ERR_CFG
+ice 0000:f4:00.0: Failed to delete VSI 12 in FW - error: ICE_ERR_AQ_TIMEOUT
+ice 0000:f4:00.0: probe failed due to setup PF switch: -12
+ice: probe of 0000:f4:00.0 failed with error -12
 
-Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Liwei Song <liwei.song@windriver.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+ drivers/net/ethernet/intel/ice/ice_type.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index d2ce852447c1..026285f7f36a 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -139,7 +139,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
- 	if (IS_ERR(umem)) {
- 		pr_warn("err %d from rxe_umem_get\n",
- 			(int)PTR_ERR(umem));
--		err = -EINVAL;
-+		err = PTR_ERR(umem);
- 		goto err1;
- 	}
+diff --git a/drivers/net/ethernet/intel/ice/ice_type.h b/drivers/net/ethernet/intel/ice/ice_type.h
+index 6667d17a4206..0b2e657b96eb 100644
+--- a/drivers/net/ethernet/intel/ice/ice_type.h
++++ b/drivers/net/ethernet/intel/ice/ice_type.h
+@@ -48,7 +48,7 @@ enum ice_aq_res_ids {
+ /* FW update timeout definitions are in milliseconds */
+ #define ICE_NVM_TIMEOUT			180000
+ #define ICE_CHANGE_LOCK_TIMEOUT		1000
+-#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	3000
++#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	5000
  
+ enum ice_aq_res_access_type {
+ 	ICE_RES_READ = 1,
 -- 
 2.30.2
 
