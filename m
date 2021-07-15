@@ -2,213 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090D83CA040
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08883CA03F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238419AbhGOOKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:10:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:59890 "EHLO mga12.intel.com"
+        id S238393AbhGOOK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231446AbhGOOK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:10:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190232478"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="190232478"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 07:07:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="495445439"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Jul 2021 07:07:33 -0700
-Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 15 Jul 2021 07:07:31 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Thu, 15 Jul 2021 07:07:31 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Thu, 15 Jul 2021 07:07:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ev1doja6eC+21ZYreweoam3UNEiyDlE4UdHcNc9B2SpnI56T+ouH6wvfkItf6eob3M1ZiL7SoVPY9Lfx4ghGC2KforbCCVRDO+sb85CBhu08XFBVJaMCHwyLXGL4VuwSSTG9u8VqX3AENFAw+fYyPqCifvvSHmy5DfAN5kufgpmuEf11MMkqXioqPjTghklfY9cZ/vCExPEwl/CZGYp8dJ5viUujVUz3I5gQIE5VCQLwiUfraaHsa9k/CEhJbVlD6ktEh0S8B02AmS5Egzvaj0uHxQ801+JegL3e6cTodVYdArzgtA94gMzyu662+s5w9U2S33tRY+Stzf2IDqBn0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pQBdv8XpvtSkWtfTDa6UYa928vjjCK6yigCXiAlstck=;
- b=Nh3jiv6f1fTeR2Urea+NAlPMpcPLWgdaRXXh7LsJNprirl/fkdDmIkhoICB6BYVbpYKDHU+M1m9zUuS14roG73eP2/j+BME7cFfVfdcxDVEg+4lW1lzf4c5MZhm4zgxeRMk51wOYwwP3cJBffkSdYUuclVqhjFZZeH2iiq8JFHUY2DNlKJIXQjWPBXIXxA2sKvwTgQmhmHoDKZfW6zeQqZC/wK7zTY38zacFE8Gxz1ZClLWlPSFyc+67ws0AABfsXKPUwKPi8jKgtixN+TJqvnLIH8xXkn0w1K56vIJmj385Cdhp16RfS/1xlgkN3SA5jAbsraty214WikMdwdMcKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pQBdv8XpvtSkWtfTDa6UYa928vjjCK6yigCXiAlstck=;
- b=fJMq7PAUwEwTGvCCrHXktM96iy5+DYYa1/prAWS0FSI/ie1ya9fV/avATlJ3AGK8jGBJHM+GZiRaetdZ7CYIFtTru0uyUlgdbOqTYIGoVe9ntUOZS3O9ah1pAnT4uSP3dCVOt+yb9K7/DnE6BZHhiDJFkeLs7TYvylkz3g/NfYw=
-Received: from BYAPR11MB3256.namprd11.prod.outlook.com (2603:10b6:a03:76::19)
- by BYAPR11MB3446.namprd11.prod.outlook.com (2603:10b6:a03:1a::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Thu, 15 Jul
- 2021 14:07:28 +0000
-Received: from BYAPR11MB3256.namprd11.prod.outlook.com
- ([fe80::f1f3:ba46:dd24:f466]) by BYAPR11MB3256.namprd11.prod.outlook.com
- ([fe80::f1f3:ba46:dd24:f466%7]) with mapi id 15.20.4308.027; Thu, 15 Jul 2021
- 14:07:28 +0000
-From:   "Moore, Robert" <robert.moore@intel.com>
-To:     Marcin Wojtas <mw@semihalf.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>
-CC:     "jaz@semihalf.com" <jaz@semihalf.com>,
-        "gjb@semihalf.com" <gjb@semihalf.com>,
-        "upstream@semihalf.com" <upstream@semihalf.com>,
-        "Samer.El-Haj-Mahmoud@arm.com" <Samer.El-Haj-Mahmoud@arm.com>,
-        "jon@solid-run.com" <jon@solid-run.com>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>
-Subject: RE: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
-Thread-Topic: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
-Thread-Index: AQHXePnnR//FH/r3cki0IN+Vh3tJWatEEynw
-Date:   Thu, 15 Jul 2021 14:07:28 +0000
-Message-ID: <BYAPR11MB3256CACCFB4A08B5D450D3A087129@BYAPR11MB3256.namprd11.prod.outlook.com>
-References: <20210714214346.1397942-1-mw@semihalf.com>
- <20210714214346.1397942-2-mw@semihalf.com>
-In-Reply-To: <20210714214346.1397942-2-mw@semihalf.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: semihalf.com; dkim=none (message not signed)
- header.d=none;semihalf.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3762b71d-8271-419f-a951-08d94799e138
-x-ms-traffictypediagnostic: BYAPR11MB3446:
-x-microsoft-antispam-prvs: <BYAPR11MB3446718EF5E57BE6440A944C87129@BYAPR11MB3446.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:374;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1HWT/Yxtw0jj9gnvQXHR+kKb/rBiO+r8NLC5Tw8h/g27mmOoZZ+ufHRDsaKLj0OljGqiHSGCw6nezO7KQO5BJnWiHVur7CPTYi+SNnGu6p1mwNNaSA9fs2hC8HYNx45mJiKMI5fbNly0c/yUc9Xij/EOBWD+2bhv4p9k83i5lDmKdWw2UOMVUYAgIwYa9n5lGCAM786rffOEcfzsw0yT0CryrcbnkeRWmSd//pp/6oUpGV2Se35MHBl9IOk1R6w59CrIdcGpC9in+SN1zWmcI3FtkfYyvQ89DeCUIiigl2ThLNKZZdKlgYG732t8+SmcxLhwKYZ3ZAHJ5U+9gjiigS8plI/Ejgj6T5QPlxS4yhCVwS3Y16Y6iltAjir6QYdIcDzOhkDRLY4RPctdzLdg/Ut5nTKsL4C9/pytDBnKCysu/Yb9FVzqy7C0VPHP3eINGDTa8DfZGO3f4YgSdtxd2JzImD0Iy4+To3DB0kNhL2LrCLgzQp/Nnk+QAdCOgoK/JwcOz7kbYsROdgdwUBqL7z+d735Dfo+2Ni+086kAqAroKXvvPgUsTDEW3+0XXjm5dR/rKZCyBqw6aL9OwtLdVtnturEP+CuDvVYXiU1k3uirxYBbIXev7ffAN2CLCTE0BY57HBMjckDP0VIsjADKC5sTYrrRJUTecpK0G9x8BLIvb7nNoAA19SOXwNLukd1821v+PwAO3XbJtV6aREPWJsDnBhXu/4Z6oz6TtYVPDwZ3afeY4Xoib/Jgwl+rjkuw9Fi8Fb/5OxwJqTgdHSdaalgo4LiWywc1qu/5JUADui+ckBGzGkFVYSssFprpDJyZdJyfWVN7CcgxUgDjg3yMBw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3256.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(4326008)(71200400001)(86362001)(6506007)(52536014)(64756008)(66446008)(83380400001)(66556008)(66476007)(66946007)(316002)(8936002)(2906002)(54906003)(5660300002)(53546011)(76116006)(110136005)(122000001)(55016002)(8676002)(966005)(33656002)(38100700002)(26005)(7696005)(9686003)(7416002)(45080400002)(478600001)(38070700004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?h3F+9zv7A560Iup7AhONYCGU5zBmOq+Wy85jKCkSvap2mkOYM7HsoNYYhshq?=
- =?us-ascii?Q?YGiNK4ZUK4X1vLHKMhMma9yakkWtloKe3v7UBEZUHqWyHwJfOL4j82jaT2Jj?=
- =?us-ascii?Q?axpHxWJayj3577g4xuvcr4li2wrcs7BVqytGJ8NXclKYmVg+6LCzklksa+J5?=
- =?us-ascii?Q?lNTMebGFZu0xWeNqepT21gKMzg3A0o8Gri1g+6jRFQRdh8352Uz3cUgDHhmx?=
- =?us-ascii?Q?9AYjvaoyRkThXxPSSQ4UYjLC3VSJjVZVx3YnydAthdj3jIec1DQ1JdLo0rrg?=
- =?us-ascii?Q?5FXuDUFnikD2X0ngRWAeRjGXl6VQxt/AAiAtAjkKVveMl8WkAA4qtTmRJGJm?=
- =?us-ascii?Q?WWg08hAb7k4w9ZQ0HgWv0IFPs31iZ+QOR4XSf7B11EN+t164jf9jwaBdb5ph?=
- =?us-ascii?Q?CHFMDHfvp764SU8E4UGyYoOrhpaqRx1KOu04+msjQF0/Eb2OBPkYEszTkWBY?=
- =?us-ascii?Q?mmle5WxJ5UtyT3tR/NwB9A3DEYoxpPuTEYzl/nJHxOA56Rf8pK0ptHTbG2TX?=
- =?us-ascii?Q?P2fOfNmgZCD/SyaCYKiBk/Cyp5kp8CHc6s++YSm4Sd2CtVukKOy2ybVAPgXB?=
- =?us-ascii?Q?Grod/8Lt0+PaEAN3EXAOMdmZ+YYdveFhWHLy0s48jWG/LnCR7XZptX/be/V8?=
- =?us-ascii?Q?Rj3FdwrkCFTWvxo/A5dW0MKSwsEcI6AcBPLdwDUl1L4NGwFuQvs9pFBaOkAY?=
- =?us-ascii?Q?BtDOR86KIOs1C2VcMiX2A4Dgkc2VcAWxC87k5yHJB5+DyUzf5FfcAo9+nYTi?=
- =?us-ascii?Q?jZgtt/u6NzCvxFzgs3J7/nrHyuNly3sBj7Cb4WdSREU8JJZNDp2ytz8K8ypd?=
- =?us-ascii?Q?2cLr1+yda1FPjSDtilYd04L/HgrPR2DkBw4vtnusf5zubzlliyIhkye4ahYS?=
- =?us-ascii?Q?CzGIEkKfkgIiLe8SHVVPXOPwaMx8ffyW5Rcfa5IBH7mH4vWRJeJmTlItbdob?=
- =?us-ascii?Q?ZrFPl54OMKn1vhhaNMtuptqpl/RVTlZlqZ5y/29FPcnTv5cwwrCoMfC0qfXW?=
- =?us-ascii?Q?nDwJcM5/IMdkz5uR57KtMz++W5/qvZ2AvC6Qgsfq5FplboL9dpLE426wTyrM?=
- =?us-ascii?Q?YQSGT7qSgkT8wXGMhZFva9XhwN/6MiRtvyBvAFjDQeLQ7CNSGjnRTKW5UEf6?=
- =?us-ascii?Q?mypLlBvZSbTHytXkD70uoHfLDNTkWTcxyUYnnBu1SPTmasl3bPBDoxHUIdYl?=
- =?us-ascii?Q?RoQ0xeDrtYw0iIJ6rpGXDi0fqQeXAzLDWC+IfuYpRRI2kb8f8QbGQaCOwBiL?=
- =?us-ascii?Q?vXKcu5e/JQzpcvCj1EabddfAw+jOXTXmx0vLmT2kefRGNY6avd22C1OXWK00?=
- =?us-ascii?Q?32V5rQcJ8ZbhacOXPSNnwTih?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231247AbhGOOK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B5CC6127C;
+        Thu, 15 Jul 2021 14:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626358053;
+        bh=dFeB4e16g3rrlu2n8GN+oPiDsHQIeLZDFdt+eqm3v9M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=qx4pKYd7mS+/bUW4N+sAg8RWBXPJmFgK9lzKC44PszQn7czdtmpeDEGWpV+NQ90Bq
+         AYxFgfqVEjaSEHPnUndkHQlPI+Tws66iktJE1ZVFWbqBeqrOGZOKkCDSCm8cX3spfP
+         U7Kcy6vGFR7K5izS5DjlmOlvqYKul73PUEkvLlNRYhhhIfm+pEs4oYtJgerOgAoQ1t
+         54rcmuf4oomYRKqbp2HCbyEoemW+AET6ppcvfHfAxdZ8yLOskCg7rzFEhFr28wBEOR
+         B6fwEL0EWpW4Q33oxPcM6c5Ivmjeym8/9s67bcP1hpnAKDQqk4xqw2pK8+na8tM11c
+         33Io6jCn+PZhg==
+Date:   Thu, 15 Jul 2021 09:07:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Guohan Lu <lguohan@gmail.com>,
+        Billie Alsup <balsup@cisco.com>,
+        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Sergey Miroshnichenko <s.miroshnichenko@yadro.com>
+Subject: Re: [RFC][PATCH] PCI: Reserve address space for powered-off devices
+ behind PCIe bridges
+Message-ID: <20210715140731.GA1955912@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3256.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3762b71d-8271-419f-a951-08d94799e138
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2021 14:07:28.3141
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yIaI63kJzqsO/PYoz4CJe3u1TUxgAobJN/bMyjec2KT+kzObUZisHdxPjV2M0MU+DUk9PJPHvnjCyWU2AqZ+AA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3446
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <49cb0be4-d2ac-2fbd-9327-fa7341a014e2@molgen.mpg.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was already reported (with a patch that we've already merged) by semih=
-alf-wojtas-marcin
+[+cc Sergey]
 
------Original Message-----
-From: Marcin Wojtas <mw@semihalf.com>=20
-Sent: Wednesday, July 14, 2021 2:44 PM
-To: linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; devel@acpica.=
-org
-Cc: jaz@semihalf.com; gjb@semihalf.com; upstream@semihalf.com; Samer.El-Haj=
--Mahmoud@arm.com; jon@solid-run.com; tn@semihalf.com; rjw@rjwysocki.net; le=
-nb@kernel.org; Moore, Robert <robert.moore@intel.com>; Marcin Wojtas <mw@se=
-mihalf.com>
-Subject: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
+On Thu, Jul 15, 2021 at 03:50:49PM +0200, Paul Menzel wrote:
+> [Add Billie’s correct address.]
+> 
+> Am 13.07.21 um 09:31 schrieb Paul Menzel:
+> > From: balsup <balsup@contoso.com>
+> 
+> Billie Alsup <balsup@cisco.com>
+> 
+> > Data path devices are powered off by default, they will not be visible at
+> > BIOS stage and memory for these devices is not reserved.
+> > 
+> > By default, no address space would be reserved on the bridges for these
+> > unpowered devices. When they were powered up, they could fail to initialize
+> > because there was no appropriately aligned window available for a given
+> > BAR.
+> > 
+> > This patch will reserve address space for data path devices that are behind
+> > PCIe bridge, so that when devices are available PCIe subsystem will be
+> > assign the address within the specified range.
+> > 
+> > Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+> > ---
+> > This patch was submitted to the SONiC project for a Cisco device [1].
+> > It’s better to have it reviewed and committed upstream though.
+> > 
+> >   drivers/pci/setup-bus.c | 159 ++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 159 insertions(+)
+> > 
+> > diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+> > index 2ce636937c6e..266097984e19 100644
+> > --- a/drivers/pci/setup-bus.c
+> > +++ b/drivers/pci/setup-bus.c
+> > @@ -967,6 +967,148 @@ static inline resource_size_t calculate_mem_align(resource_size_t *aligns,
+> >   	return min_align;
+> >   }
+> > +#define PLX_RES_MAGIC_VALUE            0xABBA
+> > +#define PLX_RES_DS_PORT_REG0           0xC6C
+> > +#define PLX_RES_DS_PORT_REG1           0xC70
+> > +#define PLX_RES_MAGIC_OFFSET           0xC76
+> > +#define PLX_RES_NP_MASK                0x1
+> > +#define PLX_RES_P_MASK                 0x1F
+> > +
+> > +static struct pci_dev *
+> > +plx_find_nt_device(struct pci_bus *bus, unsigned short brg_dev_id)
+> > +{
+> > +	struct pci_dev *dev, *nt_virt_dev = NULL;
+> > +	struct pci_bus *child_bus;
+> > +	unsigned short vendor, devid, class;
+> > +
+> > +	if (!bus)
+> > +		return NULL;
+> > +
+> > +	list_for_each_entry(child_bus, &bus->children, node) {
+> > +		list_for_each_entry(dev, &child_bus->devices, bus_list) {
+> > +			vendor = dev->vendor;
+> > +			devid = dev->device;
+> > +			class = dev->class >> 8;
+> > +
+> > +			if ((vendor == PCI_VENDOR_ID_PLX) &&
+> > +					(brg_dev_id == devid) &&
+> > +					(class == PCI_CLASS_BRIDGE_OTHER)) {
+> > +				dev_dbg(&dev->dev, "Found NT device 0x%x\n",
+> > +						devid);
+> > +				nt_virt_dev = dev;
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		if (nt_virt_dev)
+> > +			break;
+> > +	}
+> > +	return nt_virt_dev;
+> > +}
+> > +
+> > +static resource_size_t
+> > +pci_get_plx_downstream_res_size(struct pci_bus *bus, unsigned long res_type)
+> > +{
+> > +	int depth = 0;
+> > +	resource_size_t size = 0;
+> > +	struct pci_dev *dev = bus->self;
+> > +	struct pci_bus *tmp_bus;
+> > +	struct pci_dev *nt_virt_dev;
+> > +	u16 res_magic = 0;
+> > +
+> > +	/*
+> > +	 * 32 bits to store the memory requirement for PLX ports.
+> > +	 * Following is the layout:
+> > +	 * np32_0:1;  --> non-prefetchable port 0
+> > +	 * p64_0:5;   --> prefetchable port 0
+> > +	 * np32_1:1;  --> non-prefetchable port 1
+> > +	 * p64_1:5;   --> prefetchable port 1
+> > +	 * np32_2:1;  --> non-prefetchable port 2
+> > +	 * p64_2:5;   --> prefetchable port 2
+> > +	 * np32_3:1;  --> non-prefetchable port 3
+> > +	 * p64_3:5;   --> prefetchable port 3
+> > +	 * np32_4:1;  --> non-prefetchable port 4
+> > +	 * p64_4:5;   --> prefetchable port 4
+> > +	 * reserved:2;
+> > +	 */
+> > +	unsigned int port_bitmap;
+> > +
+> > +	u32 mem_res_bitmap = 0;
+> > +	unsigned int ds_port_offset = 0;
+> > +	unsigned short multiplier = 0;
+> > +	unsigned short np_size = 0;
+> > +
+> > +	/*
+> > +	 * PLX8713 used on FC4 and FC8
+> > +	 * PLX8725 used on FC12 and FC18
+> > +	 */
+> > +	if (!dev || dev->vendor != PCI_VENDOR_ID_PLX ||
+> > +			((dev->device & 0xFF00) != 0x8700))
+> > +		return size;
+> > +
+> > +	tmp_bus = bus;
+> > +	while (tmp_bus->parent) {
+> > +		tmp_bus = tmp_bus->parent;
+> > +		depth++;
+> > +	}
+> > +
+> > +	/* Only for Second level bridges */
+> > +	if (depth != 5)
+> > +		return size;
+> > +
+> > +	nt_virt_dev = plx_find_nt_device(bus->parent, 0x87b0);
+> > +	if (nt_virt_dev) {
+> > +		pci_read_config_word(nt_virt_dev, PLX_RES_MAGIC_OFFSET,
+> > +				&res_magic);
+> > +		dev_dbg(&nt_virt_dev->dev,
+> > +				"Magic offset of 0x%x found in NT device\n", res_magic);
+> > +	}
+> > +
+> > +	if (res_magic == PLX_RES_MAGIC_VALUE) {
+> > +		/*
+> > +		 * The pacifics are connected on PLX ports:
+> > +		 *  FC4 and FC8: #3, #4
+> > +		 *  FC12       : #3, #4, #5
+> > +		 *  FC18       : #3, #4, #5, #11
+> > +		 */
+> > +
+> > +		/* Calculate resource based on EEPROM values */
+> > +		ds_port_offset = (bus->number - bus->parent->number) - 1;
+> > +		if (ds_port_offset < 5) {
+> > +			pci_read_config_dword(nt_virt_dev, PLX_RES_DS_PORT_REG0,
+> > +					&mem_res_bitmap);
+> > +		} else {
+> > +			ds_port_offset -= 5;
+> > +			pci_read_config_dword(nt_virt_dev, PLX_RES_DS_PORT_REG1,
+> > +					&mem_res_bitmap);
+> > +		}
+> > +		port_bitmap = mem_res_bitmap;
+> > +		dev_dbg(&bus->dev, "Port offset: 0x%x, res bitmap 0x%x\n",
+> > +				ds_port_offset, mem_res_bitmap);
+> > +
+> > +		if (ds_port_offset < 5) {
+> > +			u8 m[] = { 26, 20, 14, 8, 2 };
+> > +			u8 s[] = { 31, 25, 19, 13, 7 };
+> > +
+> > +			multiplier = (port_bitmap >> m[ds_port_offset]) & PLX_RES_P_MASK;
+> > +			np_size = (port_bitmap >> s[ds_port_offset]) & PLX_RES_NP_MASK;
+> > +
+> > +			dev_dbg(&bus->dev, "Multiplier: %d, np_size: %d\n",
+> > +					multiplier, np_size);
+> > +
+> > +			if (res_type & IORESOURCE_PREFETCH) {
+> > +				size = 0x100000 << (multiplier - 1);
+> > +				dev_dbg(&bus->dev, "Pref Multiplier %d, Size 0x%llx\n",
+> > +						multiplier, (long long) size);
+> > +			} else if (np_size) {
+> > +				size = 0x100000;
+> > +				dev_dbg(&bus->dev, "NP Size 0x%llx\n", (long long) size);
+> > +			}
+> > +		}
+> > +	}
+> > +	return size;
+> > +}
+> > +
+> >   /**
+> >    * pbus_size_mem() - Size the memory window of a given bus
+> >    *
+> > @@ -1001,6 +1143,7 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+> >   	resource_size_t children_add_size = 0;
+> >   	resource_size_t children_add_align = 0;
+> >   	resource_size_t add_align = 0;
+> > +	unsigned int dev_count = 0;
+> >   	if (!b_res)
+> >   		return -ENOSPC;
+> > @@ -1016,6 +1159,7 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+> >   	list_for_each_entry(dev, &bus->devices, bus_list) {
+> >   		int i;
+> > +		dev_count++;
+> >   		for (i = 0; i < PCI_NUM_RESOURCES; i++) {
+> >   			struct resource *r = &dev->resource[i];
+> >   			resource_size_t r_size;
+> > @@ -1071,6 +1215,21 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+> >   		}
+> >   	}
+> > +	/* Static allocation for FC pacific */
+> > +	if (!size && !dev_count) {
+> > +		size = pci_get_plx_downstream_res_size(bus, type);
+> > +		if (size) {
+> > +			order = __ffs(size);
+> > +			dev_dbg(&bus->self->dev, "order for %llx is %u\n", (long long) size, order);
+> > +			if ((order >= 20) &&
+> > +					((order -= 20) < ARRAY_SIZE(aligns)) &&
+> > +					(order > max_order)) {
+> > +				max_order = order;
+> > +				dev_dbg(&bus->self->dev, "max_order reset to %d; size %zx\n", max_order, (size_t)size);
+> > +			}
+> > +		}
+> > +	}
+> > +
+> >   	min_align = calculate_mem_align(aligns, max_order);
+> >   	min_align = max(min_align, window_alignment(bus, b_res->flags));
+> >   	size0 = calculate_memsize(size, min_size, 0, 0, resource_size(b_res), min_align);
+> 
+> This is basically a request for comments, how to deal with such
+> hardware, which is going to run Linux based network operating
+> systems (NOS) like SONiC.
 
-ACPICA commit d95c7d206b5836c7770e8e9cd613859887fded8f
+I don't think this patch is practical for upstream as-is because it
+inserts so much device-specific stuff in generic code.  That won't
+scale when we try to extend it for other similar devices.
 
-The Microsoft Debug Port Table 2 (DBG2) specification revision September 21=
-, 2020 comprises additional Serial Port Subtypes [1].
-Reflect that in the actbl1.h header file.
+I think the long-term solution is something like Sergey's work on
+movable BARs [1], but that needs testing and review and hasn't been
+merged yet.
 
-[1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acpi-=
-debug-port-table
+In the short term, you might be able to work around this with the
+"pci=resource_alignment=" or "pci=hpmmiosize=" kernel parameters.
 
-Link: https://github.com/acpica/acpica/commit/d95c7d20
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
----
- include/acpi/actbl1.h | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index ef2872dea0=
-1c..7bbb3e2bd33f 100644
---- a/include/acpi/actbl1.h
-+++ b/include/acpi/actbl1.h
-@@ -482,7 +482,7 @@ struct acpi_csrt_descriptor {
-  * DBG2 - Debug Port Table 2
-  *        Version 0 (Both main table and subtables)
-  *
-- * Conforms to "Microsoft Debug Port Table 2 (DBG2)", December 10, 2015
-+ * Conforms to "Microsoft Debug Port Table 2 (DBG2)", September 21,=20
-+ 2020
-  *
-  *************************************************************************=
-*****/
-=20
-@@ -532,11 +532,24 @@ struct acpi_dbg2_device {
-=20
- #define ACPI_DBG2_16550_COMPATIBLE  0x0000
- #define ACPI_DBG2_16550_SUBSET      0x0001
-+#define ACPI_DBG2_MAX311XE_SPI      0x0002
- #define ACPI_DBG2_ARM_PL011         0x0003
-+#define ACPI_DBG2_MSM8X60           0x0004
-+#define ACPI_DBG2_16550_NVIDIA      0x0005
-+#define ACPI_DBG2_TI_OMAP           0x0006
-+#define ACPI_DBG2_APM88XXXX         0x0008
-+#define ACPI_DBG2_MSM8974           0x0009
-+#define ACPI_DBG2_SAM5250           0x000A
-+#define ACPI_DBG2_INTEL_USIF        0x000B
-+#define ACPI_DBG2_IMX6              0x000C
- #define ACPI_DBG2_ARM_SBSA_32BIT    0x000D
- #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
- #define ACPI_DBG2_ARM_DCC           0x000F
- #define ACPI_DBG2_BCM2835           0x0010
-+#define ACPI_DBG2_SDM845_1_8432MHZ  0x0011
-+#define ACPI_DBG2_16550_WITH_GAS    0x0012
-+#define ACPI_DBG2_SDM845_7_372MHZ   0x0013
-+#define ACPI_DBG2_INTEL_LPSS        0x0014
-=20
- #define ACPI_DBG2_1394_STANDARD     0x0000
-=20
---
-2.29.0
-
+[1] https://lore.kernel.org/linux-pci/20191024171228.877974-1-s.miroshnichenko@yadro.com/
