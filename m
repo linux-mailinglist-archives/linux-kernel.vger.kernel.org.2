@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90643CA751
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E265D3CA74C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbhGOSxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:53:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52374 "EHLO mail.kernel.org"
+        id S240535AbhGOSxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:53:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238534AbhGOStx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:49:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F56F613D1;
-        Thu, 15 Jul 2021 18:46:59 +0000 (UTC)
+        id S239648AbhGOStz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:49:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A51F8613CF;
+        Thu, 15 Jul 2021 18:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374819;
-        bh=x1TvY+knuN5gDF07XZ/Q+PwYNswhi2uTCeBf1ReKKX8=;
+        s=korg; t=1626374822;
+        bh=9xVSFwSdGvi+MG5/iZ3T4N9Ju40mVHzCL+79qf0SEa0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fGWBbMP7YW8ZkhGZCERDX3QSdOTIstV2e7nsUyxdn0AlmN+l7kOp67jakO2ijh9oa
-         JgPKjETFNw36FsTQSyFKi/w+2wMBugSOdOeHZTWMfF2ymJPGfRwVF08dDodkSi1TYd
-         Vk7S8mZAc9eGyj402DbczKREZ4Rxi8kpBTmbRGl8=
+        b=KcV610yc2EPU5QXMOhMhhFZ6mIB/ZWjIfrOU18h9L8bdjLquLQZAO5BBl0nFQeNbF
+         PlcU4xaoJe7wYxIjvJYyOhyTboSc5g+Pu1T8QZ5FTh7Zox8WZhN3G3FjFYTp9P+QU/
+         TY/TT3b0xKYvtIbQM2/EUBEgiXnNgRMsS1ItmGBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        kernel test robot <lkp@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 039/215] RDMA/rtrs: Change MAX_SESS_QUEUE_DEPTH
-Date:   Thu, 15 Jul 2021 20:36:51 +0200
-Message-Id: <20210715182606.192472378@linuxfoundation.org>
+Subject: [PATCH 5.10 040/215] clk: tegra: Fix refcounting of gate clocks
+Date:   Thu, 15 Jul 2021 20:36:52 +0200
+Message-Id: <20210715182606.361284619@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -42,49 +40,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 3a98ea7041b7d18ac356da64823c2ba2f8391b3e ]
+[ Upstream commit c592c8a28f5821e880ac6675781cd8a151b0737c ]
 
-Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
-and the minimum chunk size is 4096 (2^12).
-Therefore the maximum sess_queue_depth is 65536 (2^16).
+The refcounting of the gate clocks has a bug causing the enable_refcnt
+to underflow when unused clocks are disabled. This happens because clk
+provider erroneously bumps the refcount if clock is enabled at a boot
+time, which it shouldn't be doing, and it does this only for the gate
+clocks, while peripheral clocks are using the same gate ops and the
+peripheral clocks are missing the initial bump. Hence the refcount of
+the peripheral clocks is 0 when unused clocks are disabled and then the
+counter is decremented further by the gate ops, causing the integer
+underflow.
 
-Link: https://lore.kernel.org/r/20210528113018.52290-6-jinpu.wang@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fix this problem by removing the erroneous bump and by implementing the
+disable_unused() callback, which disables the unused gates properly.
+
+The visible effect of the bug is such that the unused clocks are never
+gated if a loaded kernel module grabs the unused clocks and starts to use
+them. In practice this shouldn't cause any real problems for the drivers
+and boards supported by the kernel today.
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
+ drivers/clk/tegra/clk-periph.c      | 11 +++++
+ 2 files changed, 58 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 8caad0a2322b..51c60f542876 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -47,12 +47,15 @@ enum {
- 	MAX_PATHS_NUM = 128,
+diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
+index 4b31beefc9fc..dc3f92678407 100644
+--- a/drivers/clk/tegra/clk-periph-gate.c
++++ b/drivers/clk/tegra/clk-periph-gate.c
+@@ -48,18 +48,9 @@ static int clk_periph_is_enabled(struct clk_hw *hw)
+ 	return state;
+ }
+ 
+-static int clk_periph_enable(struct clk_hw *hw)
++static void clk_periph_enable_locked(struct clk_hw *hw)
+ {
+ 	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
+-	unsigned long flags = 0;
+-
+-	spin_lock_irqsave(&periph_ref_lock, flags);
+-
+-	gate->enable_refcnt[gate->clk_num]++;
+-	if (gate->enable_refcnt[gate->clk_num] > 1) {
+-		spin_unlock_irqrestore(&periph_ref_lock, flags);
+-		return 0;
+-	}
+ 
+ 	write_enb_set(periph_clk_to_bit(gate), gate);
+ 	udelay(2);
+@@ -78,6 +69,32 @@ static int clk_periph_enable(struct clk_hw *hw)
+ 		udelay(1);
+ 		writel_relaxed(0, gate->clk_base + LVL2_CLK_GATE_OVRE);
+ 	}
++}
++
++static void clk_periph_disable_locked(struct clk_hw *hw)
++{
++	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
++
++	/*
++	 * If peripheral is in the APB bus then read the APB bus to
++	 * flush the write operation in apb bus. This will avoid the
++	 * peripheral access after disabling clock
++	 */
++	if (gate->flags & TEGRA_PERIPH_ON_APB)
++		tegra_read_chipid();
++
++	write_enb_clr(periph_clk_to_bit(gate), gate);
++}
++
++static int clk_periph_enable(struct clk_hw *hw)
++{
++	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
++	unsigned long flags = 0;
++
++	spin_lock_irqsave(&periph_ref_lock, flags);
++
++	if (!gate->enable_refcnt[gate->clk_num]++)
++		clk_periph_enable_locked(hw);
+ 
+ 	spin_unlock_irqrestore(&periph_ref_lock, flags);
+ 
+@@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
+ 
+ 	spin_lock_irqsave(&periph_ref_lock, flags);
+ 
+-	gate->enable_refcnt[gate->clk_num]--;
+-	if (gate->enable_refcnt[gate->clk_num] > 0) {
+-		spin_unlock_irqrestore(&periph_ref_lock, flags);
+-		return;
+-	}
++	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
++
++	if (--gate->enable_refcnt[gate->clk_num] == 0)
++		clk_periph_disable_locked(hw);
++
++	spin_unlock_irqrestore(&periph_ref_lock, flags);
++}
++
++static void clk_periph_disable_unused(struct clk_hw *hw)
++{
++	struct tegra_clk_periph_gate *gate = to_clk_periph_gate(hw);
++	unsigned long flags = 0;
++
++	spin_lock_irqsave(&periph_ref_lock, flags);
  
  	/*
--	 * With the size of struct rtrs_permit allocated on the client, 4K
--	 * is the maximum number of rtrs_permits we can allocate. This number is
--	 * also used on the client to allocate the IU for the user connection
--	 * to receive the RDMA addresses from the server.
-+	 * Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
-+	 * and the minimum chunk size is 4096 (2^12).
-+	 * So the maximum sess_queue_depth is 65536 (2^16) in theory.
-+	 * But mempool_create, create_qp and ib_post_send fail with
-+	 * "cannot allocate memory" error if sess_queue_depth is too big.
-+	 * Therefore the pratical max value of sess_queue_depth is
-+	 * somewhere between 1 and 65536 and it depends on the system.
+-	 * If peripheral is in the APB bus then read the APB bus to
+-	 * flush the write operation in apb bus. This will avoid the
+-	 * peripheral access after disabling clock
++	 * Some clocks are duplicated and some of them are marked as critical,
++	 * like fuse and fuse_burn for example, thus the enable_refcnt will
++	 * be non-zero here if the "unused" duplicate is disabled by CCF.
  	 */
--	MAX_SESS_QUEUE_DEPTH = 4096,
-+	MAX_SESS_QUEUE_DEPTH = 65536,
+-	if (gate->flags & TEGRA_PERIPH_ON_APB)
+-		tegra_read_chipid();
+-
+-	write_enb_clr(periph_clk_to_bit(gate), gate);
++	if (!gate->enable_refcnt[gate->clk_num])
++		clk_periph_disable_locked(hw);
  
- 	RTRS_HB_INTERVAL_MS = 5000,
- 	RTRS_HB_MISSED_MAX = 5,
+ 	spin_unlock_irqrestore(&periph_ref_lock, flags);
+ }
+@@ -114,6 +138,7 @@ const struct clk_ops tegra_clk_periph_gate_ops = {
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+ 	.disable = clk_periph_disable,
++	.disable_unused = clk_periph_disable_unused,
+ };
+ 
+ struct clk *tegra_clk_register_periph_gate(const char *name,
+@@ -148,9 +173,6 @@ struct clk *tegra_clk_register_periph_gate(const char *name,
+ 	gate->enable_refcnt = enable_refcnt;
+ 	gate->regs = pregs;
+ 
+-	if (read_enb(gate) & periph_clk_to_bit(gate))
+-		enable_refcnt[clk_num]++;
+-
+ 	/* Data in .init is copied by clk_register(), so stack variable OK */
+ 	gate->hw.init = &init;
+ 
+diff --git a/drivers/clk/tegra/clk-periph.c b/drivers/clk/tegra/clk-periph.c
+index 67620c7ecd9e..79ca3aa072b7 100644
+--- a/drivers/clk/tegra/clk-periph.c
++++ b/drivers/clk/tegra/clk-periph.c
+@@ -100,6 +100,15 @@ static void clk_periph_disable(struct clk_hw *hw)
+ 	gate_ops->disable(gate_hw);
+ }
+ 
++static void clk_periph_disable_unused(struct clk_hw *hw)
++{
++	struct tegra_clk_periph *periph = to_clk_periph(hw);
++	const struct clk_ops *gate_ops = periph->gate_ops;
++	struct clk_hw *gate_hw = &periph->gate.hw;
++
++	gate_ops->disable_unused(gate_hw);
++}
++
+ static void clk_periph_restore_context(struct clk_hw *hw)
+ {
+ 	struct tegra_clk_periph *periph = to_clk_periph(hw);
+@@ -126,6 +135,7 @@ const struct clk_ops tegra_clk_periph_ops = {
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+ 	.disable = clk_periph_disable,
++	.disable_unused = clk_periph_disable_unused,
+ 	.restore_context = clk_periph_restore_context,
+ };
+ 
+@@ -135,6 +145,7 @@ static const struct clk_ops tegra_clk_periph_nodiv_ops = {
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+ 	.disable = clk_periph_disable,
++	.disable_unused = clk_periph_disable_unused,
+ 	.restore_context = clk_periph_restore_context,
+ };
+ 
 -- 
 2.30.2
 
