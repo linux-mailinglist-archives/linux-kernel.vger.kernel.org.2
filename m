@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFCC3C9ED2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3805B3C9ED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237390AbhGOMnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 08:43:16 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59086
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229946AbhGOMnP (ORCPT
+        id S237454AbhGOMos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 08:44:48 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:38682 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237422AbhGOMoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 08:43:15 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id BBB854057E;
-        Thu, 15 Jul 2021 12:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626352821;
-        bh=AmOVYckpwNAaXTV3DzCNna6wdwLn6NLZ6K6/8u4iK8w=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=WiC1/QqjZB3fmo4rjb9Pq0sxQyEydMClS3x8p1GFnd22mZswav06O+Wt9S0RZH3CG
-         +qgkm6TOibZc+2TKs5P52KDj1qtLeQW09skug3Z0vkcxsXUm7/Lt5eCz69MX8OVJ/1
-         LKmkMvUKqQmn63fBR9/ymj0m2f041x4ogXzLJqpWEP6QsIjcyri5UO9DyEZ8/hfM0n
-         mZN8M615+d3TUEeXMO0FVp3CHNe/mYotHK0YTpuvZHji+ZEllJLI4qpYZvsMTX0XOe
-         2dBoCmFgEV/9xW0HxBRK4WrqU761i4n9Lpz3W3236RT1lvkLs/kenyB31WXTI9eNE+
-         BJNuTM6RL3hYg==
-Subject: Re: Range checking on r1 in function reg_set_seen in
- arch/s390/net/bpf_jit_comp.c
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Michael Holzheu <holzheu@linux.vnet.ibm.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        linux-s390@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <845025d4-11b9-b16d-1dd6-1e0bd66b0e20@canonical.com>
- <8b280523cf98294bee897615de84546e241b4e11.camel@linux.ibm.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <96c114c8-1369-05d3-6b44-78ac4e5e73fb@canonical.com>
-Date:   Thu, 15 Jul 2021 13:40:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 15 Jul 2021 08:44:46 -0400
+Received: by mail-wm1-f46.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so5959417wmb.3;
+        Thu, 15 Jul 2021 05:41:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=O+M79BeIDhVxQMgy3sWJEueXStEdWGM0NwaNbUc7J0U=;
+        b=TvjY9mxKzzY5f+viYkVwvLEyysfn//OyXoqnJK1HOw4Bf6LRhjiOqITAFuiM0WTcUQ
+         Jo/Sx13E6NWbgTFyjSpOfv5SvRC4xQvZGtWaHcxbBRCA39KHeljU95UogRsnQzabCSh0
+         2mD1Uv1dyYiD9D1sKzbPOiAg94orIUznKPtYF6weKy34ieE36l4fnT2SgT9rWNjaobGG
+         dtzXkWLcUxIZE5UOsYJmDxhmJQrsfxIF7ORZer5aqKAJkRBmKo3baclIpyif+KUspSvn
+         /MNWtyN+0FXtf8Y9R9HyNg5t5ikuAzgn9uv+SFDCFVoTzVFtijtrBmEnMGiI1AvHMw3k
+         gvVQ==
+X-Gm-Message-State: AOAM533H+rG4CzViu07zoWKOyVlv8rVuTBmdkdX7K0gmndR8tjuFYzdD
+        HMDfo7PbKXqXNCNhmhKxQvs=
+X-Google-Smtp-Source: ABdhPJw4oTEykLpOhMa5XYDn+I227/hwlyerTSfZaX8R1JcoHZ5I/ELuigkif0DBqS58jDM/hImNJA==
+X-Received: by 2002:a05:600c:8a9:: with SMTP id l41mr10569478wmp.152.1626352912160;
+        Thu, 15 Jul 2021 05:41:52 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id r16sm8148995wmg.11.2021.07.15.05.41.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 05:41:51 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 12:41:50 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 4/4] bus: Make remove callback return void
+Message-ID: <20210715123636.ychn4zea2dltnwxg@liuwe-devbox-debian-v2>
+References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
+ <20210706154803.1631813-5-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <8b280523cf98294bee897615de84546e241b4e11.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210706154803.1631813-5-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2021 13:09, Ilya Leoshkevich wrote:
-> On Thu, 2021-07-15 at 13:02 +0100, Colin Ian King wrote:
->> Hi
->>
->> Static analysis with cppcheck picked up an interesting issue with the
->> following inline helper function in arch/s390/net/bpf_jit_comp.c :
->>
->> static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
->> {
->>         u32 r1 = reg2hex[b1];
->>
->>         if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
->>                 jit->seen_reg[r1] = 1;
->> }
->>
->> Although I believe r1 is always within range, the range check on r1
->> is
->> being performed before the more cache/memory expensive lookup on
->> jit->seen_reg[r1].  I can't see why the range change is being
->> performed
->> after the access of jit->seen_reg[r1]. The following seems more
->> correct:
->>
->>         if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
->>                 jit->seen_reg[r1] = 1;
->>
->> ..since the check on r1 are less expensive than !jit->seen_reg[r1]
->> and
->> also the range check ensures the array access is not out of bounds. I
->> was just wondering if I'm missing something deeper to why the order
->> is
->> the way it is.
->>
->> Colin
-> 
-> Hi,
-> 
-> I think your analysis is correct, thanks for spotting this!
-> Even though I don't think the performance difference would be 
-> measurable here, not confusing future readers is a good reason
-> to make a change that you suggest.
-> Do you plan to send a patch?
+(Drop irrelevant CCs to avoid spamming people)
 
-I'll send a patch later today.  Colin
-> 
-> Best regards,
-> Ilya
-> 
+On Tue, Jul 06, 2021 at 05:48:03PM +0200, Uwe Kleine-K�nig wrote:
+>  drivers/hv/vmbus_drv.c                    | 5 +----
 
+Acked-by: Wei Liu <wei.liu@kernel.org>
+
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index 57bbbaa4e8f7..392c1ac4f819 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -922,7 +922,7 @@ static int vmbus_probe(struct device *child_device)
+>  /*
+>   * vmbus_remove - Remove a vmbus device
+>   */
+> -static int vmbus_remove(struct device *child_device)
+> +static void vmbus_remove(struct device *child_device)
+>  {
+>  	struct hv_driver *drv;
+>  	struct hv_device *dev = device_to_hv_device(child_device);
+> @@ -932,11 +932,8 @@ static int vmbus_remove(struct device *child_device)
+>  		if (drv->remove)
+>  			drv->remove(dev);
+>  	}
+> -
+> -	return 0;
+>  }
+>  
