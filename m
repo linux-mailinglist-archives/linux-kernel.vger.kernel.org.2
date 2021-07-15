@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835F33C99BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574EC3C99C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhGOHmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhGOHmn (ORCPT
+        id S240402AbhGOHm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:42:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50280 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232345AbhGOHm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:42:43 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936B6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:39:50 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id b26so8255677lfo.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RbV1qy6tsLWfKrDuSsvc9bUACKfeR7Oc9sX7ozt1Vx0=;
-        b=DLguvjWEMocTkdw1rblF0HMFSj1ky99nS7jKdXxcdsmfL5WNLppbK2a5L62XX7xpsU
-         KEAP2P0+N6TYxa8X5G2v/a6subexhIk6QcKhffawY5rVpEeJ/JFyAFDDI/qo7pK6tVoV
-         1pzXW3DX6bVdPzr6qJWa1AOHBSgfnGJKsis9mISoD7CMkttMkkBVJNdIYq+fn3JvACyK
-         APZY+c579zDSUj7wTOA7ccCGu6iTZ6wi+hRorumUhXfY4IAMGie4l7IPFSyxOhyota72
-         +RyQcWGfyszpsRdPe8UksD/iwFTivOa6I8587sKl68G8gmfoBlR3sQQ/bDG1DqBrps2N
-         ZCbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RbV1qy6tsLWfKrDuSsvc9bUACKfeR7Oc9sX7ozt1Vx0=;
-        b=XzoobE21ch9JQBbaDsGRAz9xIbcYIitUlIS2Dk/4sjEp1eCRQXegnqNJYrDUokEJw2
-         +oL/araBD4XjcVFv8KdPC1bUakwtLjkEwvPMdeX0q7S9qFpc6MmjCOPkH+XF1M53W3of
-         Kl2PpcQiD6m5dK3kcLa7G3JQ/JKrM3pKGGcWdxCNeoBxHiNUuWR3w59TfuQ+qM9z9DCc
-         dAMjMKl5FD0k/8leRSNtMfJLvaLiFgmR5+Y6+WFous7Hjx41s/BnJ6vXoumo0BRQnoxx
-         eyKoMMdEgIpejs5BMK/TpekEC/nF6uPECPnFbF8Dw3Jwy5pEd3XwDjmQeuQzpdV6Ja5u
-         GkHA==
-X-Gm-Message-State: AOAM533MEGmdUTH1Zrc9HORuavfWFERgfN1hI77Lxa+Q3al/GrO9u5RS
-        cFLrRCJnLZ10t8/EdMgZvDGeBLoaW4stuSYwgTY=
-X-Google-Smtp-Source: ABdhPJzctcCKvkmJCdAvVZwAE6A94bEK5hPH90lNgU/YTADVTWx+ppiFHflOJl1Ygu8geOZO+p5upB7wdV/pJibMWgA=
-X-Received: by 2002:a19:c1d5:: with SMTP id r204mr2381718lff.594.1626334788911;
- Thu, 15 Jul 2021 00:39:48 -0700 (PDT)
+        Thu, 15 Jul 2021 03:42:56 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A07AC2279C;
+        Thu, 15 Jul 2021 07:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626334801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5JMBVUc1fC80+7deLYH6ZLQZq/uUCL7N+S0Ckg+qtbI=;
+        b=Twb6x088Ds05jfTu5/IB5porBtTYCy7ypb/AOBkBIcuTOW8D+d7upMLB1l3nohEF7iPW/p
+        8deiq9K1vIvBrAZjm5PrzzYiClmYOaPP+BfxFaSOoAZgjQKRVJE/jYn3GYYxV/6Wzn5j3A
+        OCFRqAN5FYIib3+LRrkkcU505ZTakD0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626334801;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5JMBVUc1fC80+7deLYH6ZLQZq/uUCL7N+S0Ckg+qtbI=;
+        b=iCqY9l43TypCWFiyhhci4MfAifGCRh3LrqaNuvVgpKgYxC55KpqRWrvVubNKGrttlJ8kft
+        DVVygz62vy0zvcDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FEF413C2C;
+        Thu, 15 Jul 2021 07:40:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id teNrHVDm72BeZwAAMHmgww
+        (envelope-from <jroedel@suse.de>); Thu, 15 Jul 2021 07:40:00 +0000
+Date:   Thu, 15 Jul 2021 09:39:58 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 01/40] KVM: SVM: Add support to handle AP
+ reset MSR protocol
+Message-ID: <YO/mTtzslwrAxuxz@suse.de>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-2-brijesh.singh@amd.com>
+ <YO9GWVsZmfXJ4BRl@google.com>
 MIME-Version: 1.0
-References: <20210616154436.GA7619@lst.de> <20210622133414.132754-1-rm.skakun@gmail.com>
- <YO4si0to/XYximwM@fedora>
-In-Reply-To: <YO4si0to/XYximwM@fedora>
-From:   Roman Skakun <rm.skakun@gmail.com>
-Date:   Thu, 15 Jul 2021 10:39:38 +0300
-Message-ID: <CADu_u-OMx6Pj4DQDoOsdh6aNAzYys-+R=o+OzHYtLm=nECgkyQ@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc addresses
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Roman Skakun <roman_skakun@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YO9GWVsZmfXJ4BRl@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This looks like it wasn't picked up? Should it go in rc1?
+On Wed, Jul 14, 2021 at 08:17:29PM +0000, Sean Christopherson wrote:
+> On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> > From: Tom Lendacky <thomas.lendacky@amd.com>
+> > 
+> > Add support for AP Reset Hold being invoked using the GHCB MSR protocol,
+> > available in version 2 of the GHCB specification.
+> 
+> Please provide a brief overview of the protocol, and why it's needed.  I assume
+> it's to allow AP wakeup without a shared GHCB?
 
-Hi, Konrad!
+Yes, this is needed for SEV-ES kexec support to park APs without the
+need for memory that will be owned by the new kernel when APs are woken
+up.
 
-This looks like an unambiguous bug, and should be in rc1.
+You can have a look into my SEV-ES kexec/kdump patch-set for details:
 
-Cheers!
+	https://lore.kernel.org/lkml/20210705082443.14721-1-joro@8bytes.org/
 
-=D1=81=D1=80, 14 =D0=B8=D1=8E=D0=BB. 2021 =D0=B3. =D0=B2 03:15, Konrad Rzes=
-zutek Wilk <konrad.wilk@oracle.com>:
->
-> On Tue, Jun 22, 2021 at 04:34:14PM +0300, Roman Skakun wrote:
-> > This commit is dedicated to fix incorrect conversion from
-> > cpu_addr to page address in cases when we get virtual
-> > address which allocated in the vmalloc range.
-> > As the result, virt_to_page() cannot convert this address
-> > properly and return incorrect page address.
-> >
-> > Need to detect such cases and obtains the page address using
-> > vmalloc_to_page() instead.
-> >
-> > Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-> > Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
-> > ---
-> > Hey!
-> > Thanks for suggestions, Christoph!
-> > I updated the patch according to your advice.
-> > But, I'm so surprised because nobody catches this problem
-> > in the common code before. It looks a bit strange as for me.
->
-> This looks like it wasn't picked up? Should it go in rc1?
-> >
-> >
-> >  kernel/dma/ops_helpers.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-> > index 910ae69cae77..782728d8a393 100644
-> > --- a/kernel/dma/ops_helpers.c
-> > +++ b/kernel/dma/ops_helpers.c
-> > @@ -5,6 +5,14 @@
-> >   */
-> >  #include <linux/dma-map-ops.h>
-> >
-> > +static struct page *cpu_addr_to_page(void *cpu_addr)
-> > +{
-> > +     if (is_vmalloc_addr(cpu_addr))
-> > +             return vmalloc_to_page(cpu_addr);
-> > +     else
-> > +             return virt_to_page(cpu_addr);
-> > +}
-> > +
-> >  /*
-> >   * Create scatter-list for the already allocated DMA buffer.
-> >   */
-> > @@ -12,7 +20,7 @@ int dma_common_get_sgtable(struct device *dev, struct=
- sg_table *sgt,
-> >                void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> >                unsigned long attrs)
-> >  {
-> > -     struct page *page =3D virt_to_page(cpu_addr);
-> > +     struct page *page =3D cpu_addr_to_page(cpu_addr);
-> >       int ret;
-> >
-> >       ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
-> > @@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_are=
-a_struct *vma,
-> >               return -ENXIO;
-> >
-> >       return remap_pfn_range(vma, vma->vm_start,
-> > -                     page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgo=
-ff,
-> > +                     page_to_pfn(cpu_addr_to_page(cpu_addr)) + vma->vm=
-_pgoff,
-> >                       user_count << PAGE_SHIFT, vma->vm_page_prot);
-> >  #else
-> >       return -ENXIO;
-> > --
-> > 2.25.1
-> >
+I also sent this patch separatly earlier this week to enable GHCB
+protocol version 2 support in KVM.
 
+Regards,
 
-
---=20
-Best Regards, Roman.
+	Joerg
