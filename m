@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40603CAF65
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE193CAF6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhGOWvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGOWva (ORCPT
+        id S231466AbhGOWwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:52:02 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54670 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGOWwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:51:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6390C06175F;
-        Thu, 15 Jul 2021 15:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4qnSrdZ/w1EUw3zlkvJMz7MVun67Nfs0vsvhY9+UfNI=; b=aUikITyByImuKlueFD/xvuB2jf
-        vRl67XKzSCrw+VgQRCOVNNHC7AShTiw1eMjI2XVUg7cAKuglCLo/fFFjP+JJ8BLDE/YbBybXIOSuo
-        Uh2YL4Vz8C8a/6NCHrMQFbwChE1lA5+Su+cEpHHT4e4usjB2cFslFNUW9d7izazTOX4L72EvNag+X
-        dKd6Lxnh8p27bmSFkHnt8LI+5iIKOgKuj7bDhELu06GPOkARzeOzV16BdNGD/9bkcPPpiasN/nAHn
-        nyYrGj7UMBC0INae5MEOjwOzg2Wng0EcgrrH1B4lSON7rNrEnKa4RiJPfQXNqq4IPueaf39kWcoXo
-        t5AI+gvg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m4A9A-003wr7-5o; Thu, 15 Jul 2021 22:48:10 +0000
-Date:   Thu, 15 Jul 2021 23:48:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 098/138] iomap: Use folio offsets instead of page
- offsets
-Message-ID: <YPC7ILHEYv1JKKJW@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-99-willy@infradead.org>
- <20210715212657.GI22357@magnolia>
+        Thu, 15 Jul 2021 18:52:01 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0C4C81C0B82; Fri, 16 Jul 2021 00:49:06 +0200 (CEST)
+Date:   Fri, 16 Jul 2021 00:49:05 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Maxim Mikityanskiy <maxtram95@gmail.com>,
+        linux-leds@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>,
+        Oliver Neukum <oneukum@suse.de>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] HID: hid-input: Add offhook and ring LEDs for
+ headsets
+Message-ID: <20210715224905.GA18180@duo.ucw.cz>
+References: <20210703220202.5637-1-maxtram95@gmail.com>
+ <20210703220202.5637-2-maxtram95@gmail.com>
+ <CAO-hwJJxJqgW6CGPmvL41teh6vgWfSg55qoXWL3TjQx+mvsbHg@mail.gmail.com>
+ <nycvar.YFH.7.76.2107152057230.8253@cbobk.fhfr.pm>
+ <YPCc/k89XNTmeKVo@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
 Content-Disposition: inline
-In-Reply-To: <20210715212657.GI22357@magnolia>
+In-Reply-To: <YPCc/k89XNTmeKVo@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 02:26:57PM -0700, Darrick J. Wong wrote:
-> > +	size_t poff = offset_in_folio(folio, *pos);
-> > +	size_t plen = min_t(loff_t, folio_size(folio) - poff, length);
-> 
-> I'm confused about 'size_t poff' here vs. 'unsigned end' later -- why do
-> we need a 64-bit quantity for poff?  I suppose some day we might want to
-> have folios larger than 4GB or so, but so far we don't need that large
-> of a byte offset within a page/folio, right?
-> 
-> Or are you merely moving the codebase towards using size_t for all byte
-> offsets?
 
-Both.  'end' isn't a byte count -- it's a block count.
+--AqsLC8rIMeq19msA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >  	if (orig_pos <= isize && orig_pos + length > isize) {
-> > -		unsigned end = offset_in_page(isize - 1) >> block_bits;
-> > +		unsigned end = offset_in_folio(folio, isize - 1) >> block_bits;
+On Thu 2021-07-15 13:39:26, Dmitry Torokhov wrote:
+> On Thu, Jul 15, 2021 at 08:57:44PM +0200, Jiri Kosina wrote:
+> > On Tue, 6 Jul 2021, Benjamin Tissoires wrote:
+> >=20
+> > > > A lot of USBHID headsets available on the market have LEDs that ind=
+icate
+> > > > ringing and off-hook states when used with VoIP applications. This
+> > > > commit exposes these LEDs via the standard sysfs interface.
 
-That right shift makes it not-a-byte-count.
+> > > > diff --git a/drivers/input/input-leds.c b/drivers/input/input-leds.c
+> > > > index 0b11990ade46..bc6e25b9af25 100644
+> > > > --- a/drivers/input/input-leds.c
+> > > > +++ b/drivers/input/input-leds.c
+> > > > @@ -33,6 +33,8 @@ static const struct {
+> > > >         [LED_MISC]      =3D { "misc" },
+> > > >         [LED_MAIL]      =3D { "mail" },
+> > > >         [LED_CHARGING]  =3D { "charging" },
+> > > > +       [LED_OFFHOOK]   =3D { "offhook" },
+> > >=20
+> > > I am pretty sure this also needs to be reviewed by the led folks.
+> > > Adding them in Cc.
+> >=20
+> > Can we please get Ack from the LED maintainers? Thanks.
+>=20
+> I do not think we should be adding more LED bits to the input
+> subsystem/events; this functionality should be routed purely though LED
+> subsystem. input-leds is a bridge for legacy input functionality
+> reflecting it onto the newer LED subsystem.
 
-I don't especially want to do all the work needed to support folios >2GB,
-but I do like using size_t to represent a byte count.
+If we do it purely through the LED subsystem, will it get trickier to
+associate the devices?
 
+Anyway, it is a headset. What does headset have to do with input
+subsystem? Sounds like sound device to me... And we already have a
+"micmute" LED which sounds quite similar to the "offhook" LED... no?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--AqsLC8rIMeq19msA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPC7YQAKCRAw5/Bqldv6
+8gcPAJoDbpsTmTdVpXp1Ml88kfL3fP+EawCeOSmtI7COjr20zwk8v32ccx3+yWw=
+=9Htt
+-----END PGP SIGNATURE-----
+
+--AqsLC8rIMeq19msA--
