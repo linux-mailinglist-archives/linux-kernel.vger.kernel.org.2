@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4E23CA5DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F154B3CA5B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhGOSoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:44:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
+        id S231534AbhGOSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231395AbhGOSoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:44:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC951613CA;
-        Thu, 15 Jul 2021 18:41:11 +0000 (UTC)
+        id S231216AbhGOSoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 332E9613CC;
+        Thu, 15 Jul 2021 18:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374472;
-        bh=TMzPzvQwFNp+5+SRLt8873mTQakIk68eo+B+7cG/M6M=;
+        s=korg; t=1626374474;
+        bh=M6GNRjaiGoU075Gb/3SUC/E2uZ2SyiNzb2Ji1eBbKpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z5stEusN1ihVDft9s43C9l8Gu78iDUuUiv7ToHQrLjj+Ige6asdgx+WMZ9NSk+erX
-         bLiWRKvbyPrCr0bGotSRz53MfkrfqeWAUv9a/7St298msJ1XS/s2oqAoiqUQQ2nnD8
-         XkKlkscs0NrrVUAVI2MdYYdnCmsbd0NgACCe6GRY=
+        b=ZOsR6+cqW3AysfqCvmPKMdT8suIMB7IfCh4Nwc436GqdlDfmQQPrxu/rbZF0Zvb/S
+         oMKquimVoJNoJyizTswpT+3wHshrvtsiJ0xlM+EHkDwFk/YQ0A14qUDo+p1jT8DBI1
+         wrGaB5w1gZfWC2dLltQNu78CyohBACjBDNHYrr64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
+        stable@vger.kernel.org,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 014/122] drm/virtio: Fix double free on probe failure
-Date:   Thu, 15 Jul 2021 20:37:41 +0200
-Message-Id: <20210715182452.927127869@linuxfoundation.org>
+Subject: [PATCH 5.4 015/122] drm/sched: Avoid data corruptions
+Date:   Thu, 15 Jul 2021 20:37:42 +0200
+Message-Id: <20210715182453.207055368@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -40,36 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
+[ Upstream commit 0b10ab80695d61422337ede6ff496552d8ace99d ]
 
-The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
-But such failure will be caught by virtio_gpu_probe() and then
-virtio_gpu_release() will be called to do some cleanup which
-will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
-to NULL to avoid double free.
+Wait for all dependencies of a job  to complete before
+killing it to avoid data corruptions.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210519141407.88444-1-andrey.grodzovsky@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/scheduler/sched_entity.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index 6dcc05ab31eb..4f855b242dfd 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -218,6 +218,7 @@ err_ttm:
- err_vbufs:
- 	vgdev->vdev->config->del_vqs(vgdev->vdev);
- err_vqs:
-+	dev->dev_private = NULL;
- 	kfree(vgdev);
- 	return ret;
- }
+diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+index 1a5153197fe9..57f9baad9e36 100644
+--- a/drivers/gpu/drm/scheduler/sched_entity.c
++++ b/drivers/gpu/drm/scheduler/sched_entity.c
+@@ -235,11 +235,16 @@ static void drm_sched_entity_kill_jobs_cb(struct dma_fence *f,
+ static void drm_sched_entity_kill_jobs(struct drm_sched_entity *entity)
+ {
+ 	struct drm_sched_job *job;
++	struct dma_fence *f;
+ 	int r;
+ 
+ 	while ((job = to_drm_sched_job(spsc_queue_pop(&entity->job_queue)))) {
+ 		struct drm_sched_fence *s_fence = job->s_fence;
+ 
++		/* Wait for all dependencies to avoid data corruptions */
++		while ((f = job->sched->ops->dependency(job, entity)))
++			dma_fence_wait(f, false);
++
+ 		drm_sched_fence_scheduled(s_fence);
+ 		dma_fence_set_error(&s_fence->finished, -ESRCH);
+ 
 -- 
 2.30.2
 
