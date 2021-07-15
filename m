@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C183CAA77
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8093CAA70
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242482AbhGOTNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
+        id S237890AbhGOTNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:13:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241665AbhGOTBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:01:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59B96613D6;
-        Thu, 15 Jul 2021 18:57:50 +0000 (UTC)
+        id S241938AbhGOTBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:01:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE657613DC;
+        Thu, 15 Jul 2021 18:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375470;
-        bh=fKUD4iN2+LvMxirRuESye6PTUzOC5Oed4ow7L8huVTo=;
+        s=korg; t=1626375473;
+        bh=TRgNq0RCv+xZeGNXwvsLOUrnCmvhW5krvQzCnNyScIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uX+tgGhMm11ibF3DehshCvbFrqQTo/pvk7Xo4LEQStiPrQzlXINrYLWDv/Uw+UqFa
-         UDTv1RGTIu+Ev7oRM4qzaY4gm/FYIgsyXYzOiPxzz8oF2tVKYH+n/b3G8Qa+qRbfD6
-         XPqdx4INV9z+TzRPDmu/MSC6nES19vjR39HJ/d9I=
+        b=awDBdnZftaudcAXsM7jw/uUFHKJyarLvCuhJ43248UE0pkGCo3KTdbRR/cn0kVbdM
+         cjNnlQ2NU2bFWnBkVydpt2J4zp7V1MUwv/P7+xLRPlJ2nCgoWsvOy8XNk4ud4X+Ngb
+         MNHpmaiuNK4GePnNO2MhprHYmGPYzFCeqGUqXLcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 100/242] net: sched: fix error return code in tcf_del_walker()
-Date:   Thu, 15 Jul 2021 20:37:42 +0200
-Message-Id: <20210715182610.666317012@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 101/242] io_uring: fix false WARN_ONCE
+Date:   Thu, 15 Jul 2021 20:37:43 +0200
+Message-Id: <20210715182610.814803765@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,35 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 55d96f72e8ddc0a294e0b9c94016edbb699537e1 ]
+[ Upstream commit e6ab8991c5d0b0deae0961dc22c0edd1dee328f5 ]
 
-When nla_put_u32() fails, 'ret' could be 0, it should
-return error code in tcf_del_walker().
+WARNING: CPU: 1 PID: 11749 at fs/io-wq.c:244 io_wqe_wake_worker fs/io-wq.c:244 [inline]
+WARNING: CPU: 1 PID: 11749 at fs/io-wq.c:244 io_wqe_enqueue+0x7f6/0x910 fs/io-wq.c:751
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+A WARN_ON_ONCE() in io_wqe_wake_worker() can be triggered by a valid
+userspace setup. Replace it with pr_warn.
+
+Reported-by: syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/f7ede342c3342c4c26668f5168e2993e38bbd99c.1623949695.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/act_api.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/io-wq.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index f6d5755d669e..d17a66aab8ee 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -381,7 +381,8 @@ static int tcf_del_walker(struct tcf_idrinfo *idrinfo, struct sk_buff *skb,
- 	}
- 	mutex_unlock(&idrinfo->lock);
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 4eba531bea5a..b836737f96f3 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -243,7 +243,8 @@ static void io_wqe_wake_worker(struct io_wqe *wqe, struct io_wqe_acct *acct)
+ 	 * Most likely an attempt to queue unbounded work on an io_wq that
+ 	 * wasn't setup with any unbounded workers.
+ 	 */
+-	WARN_ON_ONCE(!acct->max_workers);
++	if (unlikely(!acct->max_workers))
++		pr_warn_once("io-wq is not configured for unbound workers");
  
--	if (nla_put_u32(skb, TCA_FCNT, n_i))
-+	ret = nla_put_u32(skb, TCA_FCNT, n_i);
-+	if (ret)
- 		goto nla_put_failure;
- 	nla_nest_end(skb, nest);
+ 	rcu_read_lock();
+ 	ret = io_wqe_activate_free_worker(wqe);
+@@ -991,6 +992,8 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
  
+ 	if (WARN_ON_ONCE(!data->free_work || !data->do_work))
+ 		return ERR_PTR(-EINVAL);
++	if (WARN_ON_ONCE(!bounded))
++		return ERR_PTR(-EINVAL);
+ 
+ 	wq = kzalloc(sizeof(*wq), GFP_KERNEL);
+ 	if (!wq)
 -- 
 2.30.2
 
