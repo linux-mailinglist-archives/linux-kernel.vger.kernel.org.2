@@ -2,145 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7193C9AF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE38B3C9AF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237008AbhGOJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:04:12 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:36772 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbhGOJEK (ORCPT
+        id S239315AbhGOJHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhGOJHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:04:10 -0400
-Received: by mail-vs1-f46.google.com with SMTP id o19so386382vsn.3;
-        Thu, 15 Jul 2021 02:01:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wHPy6x4feXL9uDlB10yPqrmcfEqEPnqgR0YupDxTlwk=;
-        b=hoGSamOJV/wvLGQnHuvS8w120eUSiiOMa+48JsjwBiO2LWtVEJroEU0vYuORBVpL7b
-         C4AIBRE3dRbXb26puVhj0cvvvkxqaBR1CYEa6ct5uHB4SlOnjlnKbo1vXgY38wjotBOy
-         w0dkKtK4IiIvV0i2boesXbd331+R8EzLSre4jpjjs66LlPxvPXy7wu9fXvv+RDlRqGTM
-         NRG3w6DOZKtJWGl+LMTHfivC4TBEBJzNSGXwpShNZAcmMP0g5Ld/31an82ffc8CWxGpW
-         ktcNen/LKYNxFWEX12fcw4LCDRsVGspYZ7CGEpXblN9uPoGkXACoy3gmdQC35RjuTrNS
-         RawQ==
-X-Gm-Message-State: AOAM532nLE5q3//pQdBv3gef5eFNdrVmjP2hn3oxU8owiU3Nx6yuPwuo
-        oK5CuPyDOMhLks0wqUJx25S2yu/UgsExsqgfcmorEAYeIvU=
-X-Google-Smtp-Source: ABdhPJyHbu5bKyE9McjVS58P54gR93m9cwPTzGItU00xvW8wNQJ6mPmFugIONz0RDU/lJAyh+7l06tep7NazsZKJYtg=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr5002824vsd.42.1626339676281;
- Thu, 15 Jul 2021 02:01:16 -0700 (PDT)
+        Thu, 15 Jul 2021 05:07:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBC1C06175F;
+        Thu, 15 Jul 2021 02:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YXhmaFe3CRPX9WF+r+FgIAgegXjAeJeUfdmdJwL81/I=; b=bqya5XKMcJVGm3ZMaBVDVpRRaY
+        EBfcpjtG0+lNfWQ03HrPVSyZI3a7Nkrevl9+zAkl/UAKBpAfPXRQxNQT9cY5BWCps9Sq0NcuW572Y
+        3ICi67u8qitRFzUp4HZ3vsYLMIB5V2c1KA/PeHDV/L/edec1YjAG5pem1cGmYLRLVSW/GYLhXsVQ8
+        1/Z4564w28Jax/rKWbKzltlL28ntHtFvleH34zfFerhrC+myR3GFEJGq+x3cOTbXb8ka4PdyKpnCA
+        rjmJ+EtiShC+GkF9nIv3lC+1R9ch9KT+gigCmYxPaaDquoe+HTskqVB4wtvhZ/Bj/VVlOR1eVJ/NO
+        jJk8RAlA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3xI5-0006WI-42; Thu, 15 Jul 2021 09:04:21 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 12D1A9867B3; Thu, 15 Jul 2021 11:04:20 +0200 (CEST)
+Date:   Thu, 15 Jul 2021 11:04:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Saenz <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
+Message-ID: <20210715090419.GH2725@worktop.programming.kicks-ass.net>
+References: <20210714135420.69624-1-frederic@kernel.org>
+ <20210714135420.69624-7-frederic@kernel.org>
+ <YO8WWxWBmNuI0iUW@hirez.programming.kicks-ass.net>
+ <20210714231338.GA65963@lothringen>
 MIME-Version: 1.0
-References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
- <YO0zXVX9Bx9QZCTs@kroah.com> <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
- <YO6r1k7CIl16o61z@kroah.com> <YO7sNd+6Vlw+hw3y@sashalap> <YO8EQZF4+iQ13QU/@mit.edu>
- <YO8Gzl2zmg8+R8Uu@kroah.com> <YO8dN9U7J2bi1gkf@mit.edu> <YO8gFgQIRYvCODBT@kroah.com>
-In-Reply-To: <YO8gFgQIRYvCODBT@kroah.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 15 Jul 2021 11:01:04 +0200
-Message-ID: <CAMuHMdUi+HsApqRwBDBFnfnAOs9EprDh5HCV4UncEL_cnXZasA@mail.gmail.com>
-Subject: Re: 5.13.2-rc and others have many not for stable
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714231338.GA65963@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg et al,
+On Thu, Jul 15, 2021 at 01:13:38AM +0200, Frederic Weisbecker wrote:
+> On Wed, Jul 14, 2021 at 06:52:43PM +0200, Peter Zijlstra wrote:
 
-On Wed, Jul 14, 2021 at 7:36 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Wed, Jul 14, 2021 at 01:21:59PM -0400, Theodore Y. Ts'o wrote:
-> > On Wed, Jul 14, 2021 at 05:46:22PM +0200, Greg Kroah-Hartman wrote:
-> > > The number of valid cases where someone puts a "Fixes:" tag, and that
-> > > patch should NOT be backported is really really slim.  Why would you put
-> > > that tag and not want to have known-broken kernels fixed?
-> > >
-> > > If it really is not an issue, just do not put the "Fixes:" tag?
-> >
-> > I think it really boils down to what the tags are supposed to mean and
-> > what do they imply.
-> >
-> > The argument from the other side is if the Stable maintainers are
-> > interpreting the Fixes: tag as an implicit "CC: stable", why should we
-> > have the "Cc: stable" tag at all in that case?
->
-> I would love to not have to look at the Fixes: tag, but today we have to
-> because not all subsystems DO use cc: stable.
->
-> We miss loads of real fixes if we only go by cc: stable right now.  If
-> you can go and fix those subsystems to actually remember to do this
-> "properly", wonderful, we will not have to mess with only Fixes: tags
-> again.
->
-> But until that happens, we have to live with what we have.  And all we
-> have are "hints" like Fixes: to go off of.
+> > cpusets already has means to create paritions; why are you creating
+> > something else?
+> 
+> I was about to answer that the semantics of isolcpus, which reference
+> a NULL domain, are different from SD_LOAD_BALANCE implied by
+> cpuset.sched_load_balance. But then I realize that SD_LOAD_BALANCE has
+> been removed.
+> 
+> How cpuset.sched_load_balance is implemented then? Commit
+> e669ac8ab952df2f07dee1e1efbf40647d6de332 ("sched: Remove checks against
+> SD_LOAD_BALANCE") advertize that setting cpuset.sched_load_balance to 0
+> ends up creating NULL domain but that's not what I get. For example if I
+> mount a single cpuset root (no other cpuset mountpoints):
 
-IMHO the biggest issues with "Cc: stable" are that (a) in general
-it's hard to know if a patch is (not) worthwhile to be backported,
-and (b) without a Fixes: tag it doesn't tell you what version(s)
-it should be applied to.
+SD_LOAD_BALANCE was only for when you wanted to stop balancing inside a
+domain tree. That no longer happens (and hasn't for a *long* time).
+Cpusets simply creates multiple domain trees (or the empty one if its
+just one CPU).
 
-Just having a Fixes: tag fixes the latter, and allows you to defer
-the decision to backport.
+> $ mount -t cgroup none ./cpuset -o cpuset
+> $ cd cpuset
+> $ cat cpuset.cpus
+> 0-7
+> $ cat cpuset.sched_load_balance
+> 1
+> $ echo 0 > cpuset.sched_load_balance
+> $ ls /sys/kernel/debug/domains/cpu1/
+> domain0  domain1
+> 
+> I still get the domains on all CPUs...
 
-> > We could also have the policy that in the case where you have a fix
-> > for a bug, but it's super subtle, and shouldn't be automatically
-> > backported, that the this should be explained in the commit, e.g.,
-> >
-> >    This commit fixes a bug in "1adeadbeef33: lorem ipsum dolor sit
-> >    amet" but it is touching code which subtle and quick to anger, the
-> >    bug isn't all that serious.  So please don't backport it
-> >    automatically; someone should manually do the backport and run the
-> >    fooblat test before sumitting it to the stable maintainers.
->
-> That's wonderful, I would love to see that more, and we do see that on
-> some commits.  And we mostly catch them (I miss them at times, but
-> that's my fault, not the developer/maintainers fault.)
+(note, that's the cgroup-v1 interface, the cgroup-v2 interface is
+significantly different)
 
-In my experience, the hardest cases are the ones where a patch fixes
-a real bug, but the fix has an obscure implicit dependency on another
-commit in a different subsystem (e.g. driver and DTS interaction).
-When backporting, a regression is introduced if the dependency
-is not present yet in the stable tree.
+I'd suggest doing: echo 1 > /debug/sched/verbose, if I do the above I
+get:
 
-> > Andrew seems to be of the opinion that these sorts of cases are very
-> > common.  I don't have enough data to have a strong opinion either way.
-> > But if you are right that it is a rare case, then sure, simply
-> > omitting the Fixes: tag and using text in the commit description would
-> > work.  We just need to agree that this is the convention that we all
-> > shoulf be using.
-> >
-> > I still wonder though what's the point of having the "Cc: stable" tag
-> > if it's implicitly assumed to be there if there is a Fixes: tagle.
->
-> Because cc: stable came first, and for some reason people think that it
-> is all that is necessary to get patches committed to the stable tree,
-> despite it never being documented or that way.  I have to correct
-> someone about this about 2x a month on the stable@vger list.
+[1290784.889705] CPU0 attaching NULL sched-domain.
+[1290784.894830] CPU1 attaching NULL sched-domain.
+[1290784.899947] CPU2 attaching NULL sched-domain.
+[1290784.905056] CPU3 attaching NULL sched-domain.
+[1290784.910153] CPU4 attaching NULL sched-domain.
+[1290784.915252] CPU5 attaching NULL sched-domain.
+[1290784.920338] CPU6 attaching NULL sched-domain.
+[1290784.925439] CPU7 attaching NULL sched-domain.
+[1290784.930535] CPU8 attaching NULL sched-domain.
+[1290784.935660] CPU9 attaching NULL sched-domain.
+[1290784.940911] CPU10 attaching NULL sched-domain.
+[1290784.946117] CPU11 attaching NULL sched-domain.
+[1290784.951317] CPU12 attaching NULL sched-domain.
+[1290784.956507] CPU13 attaching NULL sched-domain.
+[1290784.961688] CPU14 attaching NULL sched-domain.
+[1290784.966876] CPU15 attaching NULL sched-domain.
+[1290784.972047] CPU16 attaching NULL sched-domain.
+[1290784.977218] CPU17 attaching NULL sched-domain.
+[1290784.982383] CPU18 attaching NULL sched-domain.
+[1290784.987552] CPU19 attaching NULL sched-domain.
+[1290784.992724] CPU20 attaching NULL sched-domain.
+[1290784.997893] CPU21 attaching NULL sched-domain.
+[1290785.003063] CPU22 attaching NULL sched-domain.
+[1290785.008230] CPU23 attaching NULL sched-domain.
+[1290785.013400] CPU24 attaching NULL sched-domain.
+[1290785.018568] CPU25 attaching NULL sched-domain.
+[1290785.023736] CPU26 attaching NULL sched-domain.
+[1290785.028905] CPU27 attaching NULL sched-domain.
+[1290785.034074] CPU28 attaching NULL sched-domain.
+[1290785.039241] CPU29 attaching NULL sched-domain.
+[1290785.044409] CPU30 attaching NULL sched-domain.
+[1290785.049579] CPU31 attaching NULL sched-domain.
+[1290785.054816] CPU32 attaching NULL sched-domain.
+[1290785.059986] CPU33 attaching NULL sched-domain.
+[1290785.065154] CPU34 attaching NULL sched-domain.
+[1290785.070323] CPU35 attaching NULL sched-domain.
+[1290785.075492] CPU36 attaching NULL sched-domain.
+[1290785.080662] CPU37 attaching NULL sched-domain.
+[1290785.085832] CPU38 attaching NULL sched-domain.
+[1290785.091001] CPU39 attaching NULL sched-domain.
 
-For a developer, it's much easier to not care about "Cc: stable"
-at all, because as soon as you add a "Cc: stable" to a patch, or CC
-stable, someone will compain ;-)  Much easier to just add a Fixes: tag,
-and know it will be backported to trees that have the "buggy" commit.
+Then when I do:
 
-Gr{oetje,eeting}s,
+# mkdir /cgroup/A
+# echo 0,20 > /cgroup/A/cpuset.cpus
 
-                        Geert
+I get:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+[1291020.749036] CPU0 attaching sched-domain(s):
+[1291020.754251]  domain-0: span=0,20 level=SMT
+[1291020.759061]   groups: 0:{ span=0 }, 20:{ span=20 }
+[1291020.765386] CPU20 attaching sched-domain(s):
+[1291020.770399]  domain-0: span=0,20 level=SMT
+[1291020.775210]   groups: 20:{ span=20 }, 0:{ span=0 }
+[1291020.780831] root domain span: 0,20 (max cpu_capacity = 1024)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+IOW, I've created a load-balance domain on just the first core of the
+system.
+
+# echo 0-1,20-21 > /cgroup/A/cpuset.cpus
+
+Extends it to the first two cores:
+
+[1291340.260699] CPU0 attaching NULL sched-domain.
+[1291340.265820] CPU20 attaching NULL sched-domain.
+[1291340.271403] CPU0 attaching sched-domain(s):
+[1291340.276315]  domain-0: span=0,20 level=SMT
+[1291340.281122]   groups: 0:{ span=0 }, 20:{ span=20 }
+[1291340.286719]   domain-1: span=0-1,20-21 level=MC
+[1291340.292011]    groups: 0:{ span=0,20 cap=2048 }, 1:{ span=1,21 cap=2048 }
+[1291340.299855] CPU1 attaching sched-domain(s):
+[1291340.304757]  domain-0: span=1,21 level=SMT
+[1291340.309564]   groups: 1:{ span=1 }, 21:{ span=21 }
+[1291340.315190]   domain-1: span=0-1,20-21 level=MC
+[1291340.320474]    groups: 1:{ span=1,21 cap=2048 }, 0:{ span=0,20 cap=2048 }
+[1291340.328307] CPU20 attaching sched-domain(s):
+[1291340.333344]  domain-0: span=0,20 level=SMT
+[1291340.338136]   groups: 20:{ span=20 }, 0:{ span=0 }
+[1291340.343721]   domain-1: span=0-1,20-21 level=MC
+[1291340.348980]    groups: 0:{ span=0,20 cap=2048 }, 1:{ span=1,21 cap=2048 }
+[1291340.356783] CPU21 attaching sched-domain(s):
+[1291340.361755]  domain-0: span=1,21 level=SMT
+[1291340.366534]   groups: 21:{ span=21 }, 1:{ span=1 }
+[1291340.372099]   domain-1: span=0-1,20-21 level=MC
+[1291340.377364]    groups: 1:{ span=1,21 cap=2048 }, 0:{ span=0,20 cap=2048 }
+[1291340.385216] root domain span: 0-1,20-21 (max cpu_capacity = 1024)
+
