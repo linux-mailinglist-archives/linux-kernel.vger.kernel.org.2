@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFC63CA76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C0C3CA76E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240983AbhGOSxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52350 "EHLO mail.kernel.org"
+        id S241045AbhGOSx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:53:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240310AbhGOSuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:50:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8027F613E9;
-        Thu, 15 Jul 2021 18:47:15 +0000 (UTC)
+        id S240509AbhGOSuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:50:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2CE2613DB;
+        Thu, 15 Jul 2021 18:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374835;
-        bh=G2nzf0gXd2W5OSMmOy62iXfCIWuNGIizdeqqd4gYbWY=;
+        s=korg; t=1626374840;
+        bh=kCdTWq7fWYA1GEGr+aSKfE6tn0rSyjfSV023TumUpz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cs//9cDFwrfs/x4HzBldUuHfNw4IwVpeVNIWtQNlmiRYXZZBqoSAUFeMQ1GroZx1t
-         u2oDIaoudFOTe8YwfzC96npYaTPyr5gm0awKv6viDSYvGecZDc18t5ii8pYE0GSGSu
-         eWQm8i/CZv6I4015RuPmaG3k8peubG65Xt9DB7Bg=
+        b=FxdVvwQoJ7+xIeQNJoM3eX+g5Ol5bA+oNr5XeRW4CZe6M0LPM1FR+x3/K+zBufPlm
+         T0UDCFDwZfE5S92TTfh+XgBlIcswDTYtwnHA/iT8UPJRBNS+Y/qOiWxWyhu3+fD1uW
+         ZC920FJcyeTzUQSFyTgph6Ms6tz8+XHB6SBhOg9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 046/215] MIPS: ingenic: Select CPU_SUPPORTS_CPUFREQ && MIPS_EXTERNAL_TIMER
-Date:   Thu, 15 Jul 2021 20:36:58 +0200
-Message-Id: <20210715182607.520293689@linuxfoundation.org>
+Subject: [PATCH 5.10 047/215] drm/amd/display: Avoid HDCP over-read and corruption
+Date:   Thu, 15 Jul 2021 20:36:59 +0200
+Message-Id: <20210715182607.713417088@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -40,38 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit eb3849370ae32b571e1f9a63ba52c61adeaf88f7 ]
+[ Upstream commit 06888d571b513cbfc0b41949948def6cb81021b2 ]
 
-The clock driving the XBurst CPUs in Ingenic SoCs is integer divided
-from the main PLL. As such, it is possible to control the frequency of
-the CPU, either by changing the divider, or by changing the rate of the
-main PLL.
+Instead of reading the desired 5 bytes of the actual target field,
+the code was reading 8. This could result in a corrupted value if the
+trailing 3 bytes were non-zero, so instead use an appropriately sized
+and zero-initialized bounce buffer, and read only 5 bytes before casting
+to u64.
 
-The XBurst CPUs also lack the CP0 timer; the TCU, a separate piece of
-hardware in the SoC, provides this functionality.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 1917ccd39256..1a63f592034e 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -418,6 +418,8 @@ config MACH_INGENIC_SOC
- 	select MIPS_GENERIC
- 	select MACH_INGENIC
- 	select SYS_SUPPORTS_ZBOOT_UART16550
-+	select CPU_SUPPORTS_CPUFREQ
-+	select MIPS_EXTERNAL_TIMER
+diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
+index f244b72e74e0..53eab2b8e2c8 100644
+--- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
++++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
+@@ -29,8 +29,10 @@ static inline enum mod_hdcp_status validate_bksv(struct mod_hdcp *hdcp)
+ {
+ 	uint64_t n = 0;
+ 	uint8_t count = 0;
++	u8 bksv[sizeof(n)] = { };
  
- config LANTIQ
- 	bool "Lantiq based platforms"
+-	memcpy(&n, hdcp->auth.msg.hdcp1.bksv, sizeof(uint64_t));
++	memcpy(bksv, hdcp->auth.msg.hdcp1.bksv, sizeof(hdcp->auth.msg.hdcp1.bksv));
++	n = *(uint64_t *)bksv;
+ 
+ 	while (n) {
+ 		count++;
 -- 
 2.30.2
 
