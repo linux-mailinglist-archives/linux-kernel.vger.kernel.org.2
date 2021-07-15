@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF96B3CA745
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9886A3CA74B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240250AbhGOSxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:53:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
+        id S240755AbhGOSxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:53:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239708AbhGOSt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:49:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE996613DF;
-        Thu, 15 Jul 2021 18:47:03 +0000 (UTC)
+        id S239566AbhGOSuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:50:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41E84613D8;
+        Thu, 15 Jul 2021 18:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374824;
-        bh=J9jzMF9UE8azGOzNI1ZPfuhQllO46jyFP0pJ2whawEw=;
+        s=korg; t=1626374826;
+        bh=vRhNXClf9Vk824eWZ0E1A24JGfsQynC8Y7DYt02HcVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VnJJJLS+bJYOf9gezOwukFz9Qok6ziHcBmNJgTrWTt5nbHSaqxj2Eon4rgwYnhWSy
-         /8AStiwJeYZsVxUqxP212/Tdkbs7JPeKYfm9ZH5sOJFepSPu7dWFvC4uyMUfx8qIMl
-         dKWZMfWdvIT1gDMe7gu2wrOaHrUMwrtuidTtY+ro=
+        b=o46r1/aeT8TL5GSqLzFJ9qjdp2YAYkA/jCQKAbNweeTC0FDXXjqtPj+8tKQRUX8bV
+         +086EYyjstDq6jWtLvi3hHENGAaM1DyX+x858XOMp0xP1NrCSRGwJXk70EYSt+C/4V
+         YyCrVXYzzw3AyO1LOfNUSfaS94t+GX0N4sD4DeuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Robert Foss <robert.foss@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 041/215] clk: tegra: Ensure that PLLU configuration is applied properly
-Date:   Thu, 15 Jul 2021 20:36:53 +0200
-Message-Id: <20210715182606.551249060@linuxfoundation.org>
+Subject: [PATCH 5.10 042/215] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
+Date:   Thu, 15 Jul 2021 20:36:54 +0200
+Message-Id: <20210715182606.752275838@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -40,59 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit a7196048cd5168096c2c4f44a3939d7a6dcd06b9 ]
+[ Upstream commit f674555ee5444c8987dfea0922f1cf6bf0c12847 ]
 
-The PLLU (USB) consists of the PLL configuration itself and configuration
-of the PLLU outputs. The PLLU programming is inconsistent on T30 vs T114,
-where T114 immediately bails out if PLLU is enabled and T30 re-enables
-a potentially already enabled PLL (left after bootloader) and then fully
-reprograms it, which could be unsafe to do. The correct way should be to
-skip enabling of the PLL if it's already enabled and then apply
-configuration to the outputs. This patch doesn't fix any known problems,
-it's a minor improvement.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210531135622.3348252-1-yukuai3@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/tegra/clk-pll.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
-index c5cc0a2dac6f..d709ecb7d8d7 100644
---- a/drivers/clk/tegra/clk-pll.c
-+++ b/drivers/clk/tegra/clk-pll.c
-@@ -1131,7 +1131,8 @@ static int clk_pllu_enable(struct clk_hw *hw)
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index d0c65610ebb5..f56ff97c9899 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -2369,9 +2369,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
+ 	clk_prepare_enable(clk);
  
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
-@@ -1748,15 +1749,13 @@ static int clk_pllu_tegra114_enable(struct clk_hw *hw)
- 		return -EINVAL;
+ 	pm_runtime_enable(dev);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+-		dev_err(dev, "pm_runtime_get_sync failed\n");
++		dev_err(dev, "pm_runtime_resume_and_get failed\n");
+ 		pm_runtime_disable(dev);
+ 		goto clk_disable;
  	}
- 
--	if (clk_pll_is_enabled(hw))
--		return 0;
--
- 	input_rate = clk_hw_get_rate(__clk_get_hw(osc));
- 
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
- 
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
 -- 
 2.30.2
 
