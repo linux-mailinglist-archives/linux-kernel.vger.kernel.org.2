@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C7E3C9F29
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BA53C9F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237346AbhGONPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:15:21 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:41677 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhGONPU (ORCPT
+        id S237402AbhGONPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhGONPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:15:20 -0400
+        Thu, 15 Jul 2021 09:15:49 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6B9C06175F;
+        Thu, 15 Jul 2021 06:12:54 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id m11-20020a05600c3b0bb0290228f19cb433so6040278wms.0;
+        Thu, 15 Jul 2021 06:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1626354747; x=1657890747;
-  h=to:cc:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=AqZy8HmmWkaGvQFDci/L+GLAUjlRxpXnx9pIV90+KUE=;
-  b=ekxsoCdWT/crflPaUxyjrQQNiKyxBOmGK8jcZgZevBPuPtX17R+Cmw5r
-   fFzUiUf+3Q7ZmzFkZkpeGxq+FP9T1FsIvM6LBHgDIblt+LH24DWi+1JHv
-   5rZ5o4FQL6JXXA5yC4tKHFTRYo+aGd15lgD3xwoF4B6qIYJJG+cTx2gJk
-   I=;
-X-IronPort-AV: E=Sophos;i="5.84,242,1620691200"; 
-   d="scan'208";a="12271328"
-Subject: Re: Coverity Scan model file, license, public access
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 15 Jul 2021 13:12:13 +0000
-Received: from EX13D02EUB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 06584A17C2;
-        Thu, 15 Jul 2021 13:12:12 +0000 (UTC)
-Received: from u6fc700a6f3c650.ant.amazon.com (10.43.161.199) by
- EX13D02EUB001.ant.amazon.com (10.43.166.150) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 15 Jul 2021 13:12:08 +0000
-To:     Kroah-Hartman <greg@kroah.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "foersleo@amazon.de" <foersleo@amazon.de>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        "Gustavo A. R. Silva" <garsilva@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <d7f096ee-7a9b-684e-433a-f8f3f0e6288d@amazon.de>
- <YOSKuEcPoy/dw0st@kroah.com>
-From:   Norbert Manthey <nmanthey@amazon.de>
-Message-ID: <a41221c8-86e5-494d-68fd-0a0b87c99e83@amazon.de>
-Date:   Thu, 15 Jul 2021 15:12:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i5BqZo+UJii6eVoVtrvlFBm02AdZ6ngSZGRnTQ9knW0=;
+        b=Q5wPxqWuyRTCvaA4qSWrVpkXPVblBrXMdEmusZz0L4K4OoH3J00/VnCLF5UkLwFuxc
+         /ym+2Z5r+nFS4JaFkIPtdFcgKWyIr/KOwpQ983k87dwKrJlb7zzPOJWiiTcKVBmakMun
+         kr+7zEktxOIzyaEVcqbbKcNL2eDhNR4LPqEr0zyhU+IsMei34ydapf1pZGMSooKIHV7+
+         q+bkC7OZXWjU/cHx2Vzc9+Z7fFMrMPrjo/ZMcvZODt7yLQA7esgNm4zb+I2zxYQGr7wP
+         tokrmlPnTN//zTH/j+e/UPP1h41qvfk5cyrMO1A3GQ3liB7OW7IQAt9GG18rpJWUOuDD
+         /ogg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i5BqZo+UJii6eVoVtrvlFBm02AdZ6ngSZGRnTQ9knW0=;
+        b=pFJd1eo2x1bjcPBw1uuX+eK7R/2moqxhUxBeHaPBToHgqvgcVZb1dFVS9rO8H/Xxzi
+         hpZOKlAyRURL6cUqSEY9jq1YwHIJg/vj0ymTCW+zr/ihM93lISn0IjSpsLNgYwEheL9T
+         qMHR8EW9FDgIq/okFCMdeVKlQ6cowc9/FyaXSFlKiGUxnyVdhPEY0gYJerpbL1KflwZX
+         rZJUGzNLk8YyYLesLqHSbCGOFXrH4t8q08sK17WLYwJDDcIrzyfNQM5JtUKs5tJwgHuj
+         JoNGsm2BFNcI5HQUQlboEwKk37/wq1yTCkj4zKiW0Nb2T5dKrpoL2HDy9Orevt9xcZZG
+         zArA==
+X-Gm-Message-State: AOAM531NjGMmHJbpxHbGL7nKVmoHWx6DuEpDnPCrl/NvqM4oqsO8k0rx
+        5epYTSMfB3lWvPGRh4ZuYq4=
+X-Google-Smtp-Source: ABdhPJx5lVW/56Yyl02hf1vj7XesE1yFC5JK6ae9CjLhh3fUwpB+7mnQ7V50HwlHFjpCmKUWsfl/Dg==
+X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr10731754wmq.40.1626354773280;
+        Thu, 15 Jul 2021 06:12:53 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id v30sm7092964wrv.85.2021.07.15.06.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 06:12:52 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 16:12:51 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
+ layer 4 checksum
+Message-ID: <20210715131251.zhtcsjkat267yrtl@skbuf>
+References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
+ <20210714191723.31294-3-LinoSanfilippo@gmx.de>
+ <20210714194812.stay3oqyw3ogshhj@skbuf>
+ <YO9F2LhTizvr1l11@lunn.ch>
+ <20210715065455.7nu7zgle2haa6wku@skbuf>
+ <trinity-84a570e8-7b5f-44f7-b10c-169d4307d653-1626347772540@3c-app-gmx-bap31>
+ <20210715114908.ripblpevmdujkf2m@skbuf>
+ <trinity-0dbbc59b-1e7d-4f58-8611-adb281a82477-1626354270982@3c-app-gmx-bap31>
 MIME-Version: 1.0
-In-Reply-To: <YOSKuEcPoy/dw0st@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-X-Originating-IP: [10.43.161.199]
-X-ClientProxiedBy: EX13D49UWB003.ant.amazon.com (10.43.163.121) To
- EX13D02EUB001.ant.amazon.com (10.43.166.150)
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <trinity-0dbbc59b-1e7d-4f58-8611-adb281a82477-1626354270982@3c-app-gmx-bap31>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNy82LzIxIDY6NTQgUE0sIEtyb2FoLUhhcnRtYW4gd3JvdGU6Cj4gCj4gCj4gT24gVHVlLCBK
-dWwgMDYsIDIwMjEgYXQgMDk6NDU6NDdBTSArMDIwMCwgTm9yYmVydCBNYW50aGV5IHdyb3RlOgo+
-PiBEZWFyIGFsbCwKPj4KPj4gSSB3b3VsZCBsaWtlIHRvIHdvcmsgd2l0aCBjb2RlIGFuYWx5c2lz
-IG9uIHRoZSBMaW51eCBrZXJuZWwuIFRoZQo+PiBjdXJyZW50bHkgdXNlZCBDb3Zlcml0eSBzZXR1
-cCBhbHJlYWR5IHVzZXMgYSBtb2RlbCBmaWxlIFsxXSB0byBpbXByb3ZlCj4+IHRoZSBwcmVjaXNp
-b24gb2YgdGhlIGFuYWx5c2lzLiBUbyB0aGUgYmVzdCBvZiBteSBrbm93bGVkZ2UsIHRoaXMgbW9k
-ZWwKPj4gZmlsZSBpcyBjdXJyZW50bHkgbm90IHB1YmxpY2x5IGFjY2Vzc2libGUuIEkgZGlkIG5v
-dCBmaW5kIGEgbGljZW5zZQo+PiBhdHRhY2hlZCB0byAgWzFdLCBub3IgYW55IGluZm9ybWF0aW9u
-IGFib3V0IGxpY2Vuc2luZy4KPiAKPiBJIGhhdmUgbm8gaWRlYSB3aG8gd3JvdGUgdGhhdCB0aGlu
-Zywgc29ycnkuCgpJcyB0aGVyZSBhbnlib2R5IGVsc2Ugd2hvIGtub3dzIG1vcmUgYWJvdXQgdGhl
-IGhpc3Rvcnkgb2YgdGhlIHVzZWQKQ292ZXJpdHkgbW9kZWw/IFRoYW5rcy4KCkJlc3QsCk5vcmJl
-cnQKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4g
-MzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwg
-Sm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcg
-dW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
+On Thu, Jul 15, 2021 at 03:04:31PM +0200, Lino Sanfilippo wrote:
+> Please note that skb_put() asserts that the SKB is linearized. So I think we
+> should rather clear both NETIF_F_FRAGLIST and NETIF_F_SG unconditionally since also
+> header taggers use some form of skb_put() dont they?
 
+The tail taggers use skb_put() as part of the routine to make room for
+the tail tag.
+
+Some of the header taggers use __skb_put_padto() when the packets are
+too small (under ETH_ZLEN). When they are so small they are definitely
+linear already.
+
+We don't have a third form/use of skb_put().
