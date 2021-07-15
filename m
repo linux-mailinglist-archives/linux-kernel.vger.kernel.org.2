@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA1D3C9CF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893213C9CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241526AbhGOKll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234408AbhGOKlj (ORCPT
+        id S241529AbhGOKml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:42:41 -0400
+Received: from outbound-smtp31.blacknight.com ([81.17.249.62]:37402 "EHLO
+        outbound-smtp31.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234408AbhGOKmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:41:39 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1375C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:38:45 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id g19so8245955ybe.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XFYcji550HYtqpGml52HF9Ker4jPqPp7oBMbaMj4XAw=;
-        b=Q5c/Ai4GgArz4t67eHsHrrkbmuwf2BtOsrIrY95J4QgKeP+4J+aPiw3TdTuERQXh7a
-         DXN7QD6MbjQ9Yogq+LCTo8ePKlu95ChrQSPQ3IE9qk0LtTkdSAKtGiE737u7gMm6/yVk
-         LfeQlg0eTEmjOTLf7UO+ZPQStqdAtKv06w3WxKzqp/CoGLVz+sgtDPWaA4RpZprwplYT
-         rhcfrbZBHloYZ87sJ2rPGIN4+AXKWFhfZche+6WJVkZqrIdZKOGGn829WoebmhL0l4rc
-         Du5wIm32cNEbaltkeFkfh7TI79sptxwxDY9w5H73uF3TFjh62KMDKWIyqtNiFkt6C3Ru
-         hcwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XFYcji550HYtqpGml52HF9Ker4jPqPp7oBMbaMj4XAw=;
-        b=svzsPl1sAijGCHOOFtmTPJJbWo6Mzwv7cPL07iHVGf6phHsj7wLeMgxx/TaZhGOHPW
-         zrvLcG/pddqKGqWWk70WBSgnqa2QpQ7uma8YQt88Hc9ynXwp/wAxN1EMWldVMsniyAqy
-         hmg1z74Pp10WW6rH/1cM3Yi0uqEBcajVhFCjMCX1/iRP4s6lHxXb34+1LI2eByT9Yfbf
-         pFqO2xJUTF/DuIicUI3M4fyBkDFu0lO5Uz+tCN2Pd40AxIz/M6x6980+j7SynrDWaZZl
-         HFUXRbSEdbIA8VIVboTwvev0LXf1PL5ashWVFJXtH8L4rd/+0MIYUjkiW7bS4Fza3FxF
-         2Ong==
-X-Gm-Message-State: AOAM532Oz+rcI7rDv56W3Pzx6VA2XB1LY/dy4nMPm335V0nr/g3rW1X1
-        hyQsOqXNvd7drOomdXtv4/ILTDD+GNvSCPd+tzDAdQ==
-X-Google-Smtp-Source: ABdhPJxBcQOKHD07R2/OtEh3a6KqCV3jUpBAJwH1FAEBUxgXE4903UF437AA8l/ko3y/fwGkCoVYbS7DitCwwPHe8zE=
-X-Received: by 2002:a25:41c7:: with SMTP id o190mr4468817yba.256.1626345525162;
- Thu, 15 Jul 2021 03:38:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
- <bf326953-495f-db01-e554-42f4421d237a@huawei.com> <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
-In-Reply-To: <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Thu, 15 Jul 2021 13:38:07 +0300
-Message-ID: <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com>
-Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
- page_pool packets
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
+        Thu, 15 Jul 2021 06:42:40 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp31.blacknight.com (Postfix) with ESMTPS id 152D2138013
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:39:46 +0100 (IST)
+Received: (qmail 15713 invoked from network); 15 Jul 2021 10:39:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jul 2021 10:39:45 -0000
+Date:   Thu, 15 Jul 2021 11:39:44 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Subject: Re: 5.13.2-rc and others have many not for stable
+Message-ID: <20210715103944.GQ3809@techsingularity.net>
+References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+ <YO0zXVX9Bx9QZCTs@kroah.com>
+ <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+ <YO6r1k7CIl16o61z@kroah.com>
+ <YO7lZpqC4xrMPXQg@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YO7lZpqC4xrMPXQg@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 at 13:00, Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> On Thu, 15 Jul 2021 at 07:01, Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >
-> > On 2021/7/9 14:29, Ilias Apalodimas wrote:
-> > > As Alexander points out, when we are trying to recycle a cloned/expanded
-> > > SKB we might trigger a race.  The recycling code relies on the
-> > > pp_recycle bit to trigger,  which we carry over to cloned SKBs.
-> > > If that cloned SKB gets expanded or if we get references to the frags,
-> > > call skbb_release_data() and overwrite skb->head, we are creating separate
-> > > instances accessing the same page frags.  Since the skb_release_data()
-> > > will first try to recycle the frags,  there's a potential race between
-> > > the original and cloned SKB, since both will have the pp_recycle bit set.
-> > >
-> > > Fix this by explicitly those SKBs not recyclable.
-> > > The atomic_sub_return effectively limits us to a single release case,
-> > > and when we are calling skb_release_data we are also releasing the
-> > > option to perform the recycling, or releasing the pages from the page pool.
-> > >
-> > > Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
-> > > Reported-by: Alexander Duyck <alexanderduyck@fb.com>
-> > > Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
-> > > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> > > ---
-> > > Changes since v1:
-> > > - Set the recycle bit to 0 during skb_release_data instead of the
-> > >   individual fucntions triggering the issue, in order to catch all
-> > >   cases
-> > >  net/core/skbuff.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > > index 12aabcda6db2..f91f09a824be 100644
-> > > --- a/net/core/skbuff.c
-> > > +++ b/net/core/skbuff.c
-> > > @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
-> > >       if (skb->cloned &&
-> > >           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
-> > >                             &shinfo->dataref))
-> > > -             return;
-> > > +             goto exit;
-> >
-> > Is it possible this patch may break the head frag page for the original skb,
-> > supposing it's head frag page is from the page pool and below change clears
-> > the pp_recycle for original skb, causing a page leaking for the page pool?
-> >
->
-> So this would leak eventually dma mapping if the skb is cloned (and
-> the dataref is now +1) and we are freeing the original skb first?
->
+On Wed, Jul 14, 2021 at 03:23:50PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 14, 2021 at 11:18:14AM +0200, Greg Kroah-Hartman wrote:
+> > On Tue, Jul 13, 2021 at 06:28:13PM -0700, Andrew Morton wrote:
+> > > On Tue, 13 Jul 2021 08:31:57 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > > >  So far, all automated testing seems to
+> > > > show that there are no regressions in these releases with these commits
+> > > > in them.  If there was a problem, how would it show up?
+> > > > 
+> > > > And as far as I know, mm/ stuff is still not triggered by the AUTOSEL
+> > > > bot, but that is not what caused this commit to be added to a stable
+> > > > release.
+> > > > 
+> > > > Trying to keep a "do not apply" list for Fixes: tags only is much harder
+> > > > for both of us as we do these semi-manually and review them
+> > > > individually.  Trying to remember what subsystem only does Fixes tags
+> > > > yet really doesn't mean it is an impossible task.
+> > > 
+> > > Well, it shouldn't be super hard to skip all patches which have Fixes:,
+> > > Signed-off-by:akpm and no cc:stable?
+> > 
+> > Ok, I will do this now (goes and writes this down...)
+> > 
+> > But it really feels odd that you all take the time to add a "Hey, this
+> > fixes this specific commit!" tag in the changelog, yet you do not
+> > actually want to go and fix the kernels that have that commit in it.
+> > This is an odd signal to others that watch the changelogs for context
+> > clues.  Perhaps you might not want to do that anymore.
+> 
+> I looked at some of these patches and it seems really odd to me that you
+> all are marking them with Fixes: tags, but do not want them backported.
+> 
+> First example is babbbdd08af9 ("mm/huge_memory.c: don't discard hugepage
+> if other processes are mapping it")
+> 
+> Why is this not ok to backport?
+> 
+> Also what about e6be37b2e7bd ("mm/huge_memory.c: add missing read-only
+> THP checking in transparent_hugepage_enabled()")?
+> 
+> And 41eb5df1cbc9 ("mm: memcg/slab: properly set up gfp flags for objcg
+> pointer array")?
+> 
+> And 6acfb5ba150c ("mm: migrate: fix missing update page_private to
+> hugetlb_page_subpool")?
+> 
+> And 832b50725373 ("mm: mmap_lock: use local locks instead of disabling
+> preemption")? (the RT people want that...)
+> 
 
-Apologies for the noise, my description was not complete.
-The case you are thinking is clone an SKB and then expand the original?
+This one at least is theoritical in nature for a backport because
+PREEMPT_RT cannot be selected as no arch defines ARCH_SUPPORTS_RT
+yet. If is was heading to any stable branch, it would be under
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git/.
+The latest kernel there is v5.10-rt and the Fixes tag is for 5.11 so that
+fix would be ignored.
 
-thanks
-/Ilias
-
-
-> > >
-> > >       skb_zcopy_clear(skb, true);
-> > >
-> > > @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
-> > >               kfree_skb_list(shinfo->frag_list);
-> > >
-> > >       skb_free_head(skb);
-> > > +exit:
-> > > +     skb->pp_recycle = 0;
-> > >  }
-> > >
-> > >  /*
-> > >
+-- 
+Mel Gorman
+SUSE Labs
