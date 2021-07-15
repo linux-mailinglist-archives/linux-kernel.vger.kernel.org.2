@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A443C99B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77AC3C99B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240374AbhGOHhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:37:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49702 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhGOHhw (ORCPT
+        id S231924AbhGOHja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:39:30 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:57045 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229620AbhGOHj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:37:52 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 30FC22278A;
-        Thu, 15 Jul 2021 07:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626334498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W8D9wkVQjCjpsTZI0LeYY1YMvGOjfr6Eirr0wGuU3zw=;
-        b=APjYsBSzgmbv27H6ngdklOnm9sX810tgnWNVSpE3s+unB4aMNPcDpcvOGlmEiHo/xnNGMQ
-        zHqMGpiKfxahJdarGVTSMzzuZ5Mno14SlVZBzIxWzIj5dZLHjykzt6z2uVeiAJ0imSm3GT
-        /OKEyKp9e/6m+n19R8VOa9w1vzg4ij8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626334498;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W8D9wkVQjCjpsTZI0LeYY1YMvGOjfr6Eirr0wGuU3zw=;
-        b=j2sex9s0TGkB2tMcV8yUueddvu5574zDPkwrO+mqwSFNEYFpeaXk1dPvZEm49EyIY+DJOS
-        qzgb5Rk+EfrwCGCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1CFA13C2C;
-        Thu, 15 Jul 2021 07:34:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id T82EMSHl72APZgAAMHmgww
-        (envelope-from <jroedel@suse.de>); Thu, 15 Jul 2021 07:34:57 +0000
-Date:   Thu, 15 Jul 2021 09:34:55 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] PCI/APCI: Move acpi_pci_osc_support() check to
- negotiation phase
-Message-ID: <YO/lH2fEwTNeQso1@suse.de>
-References: <20210714085512.2176-1-joro@8bytes.org>
- <20210714085512.2176-2-joro@8bytes.org>
- <CAJZ5v0if-5A0vZSTeDvqLtqE2jZrKjCFcRouR2uFgycZ7CdWkg@mail.gmail.com>
+        Thu, 15 Jul 2021 03:39:29 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 9AF3A1C4EF3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:36:35 +0100 (IST)
+Received: (qmail 20263 invoked from network); 15 Jul 2021 07:36:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jul 2021 07:36:35 -0000
+Date:   Thu, 15 Jul 2021 08:36:34 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Zhang Qiang <Qiang.Zhang@windriver.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+Message-ID: <20210715073633.GN3809@techsingularity.net>
+References: <20210713135625.7615-1-mgorman@techsingularity.net>
+ <20210713135625.7615-5-mgorman@techsingularity.net>
+ <YO/XDUoj1N7tlZKa@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0if-5A0vZSTeDvqLtqE2jZrKjCFcRouR2uFgycZ7CdWkg@mail.gmail.com>
+In-Reply-To: <YO/XDUoj1N7tlZKa@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-On Wed, Jul 14, 2021 at 02:04:17PM +0200, Rafael J. Wysocki wrote:
-> >         decode_osc_support(root, "OS supports", support);
-> > -       status = acpi_pci_osc_support(root, support);
-> > -       if (ACPI_FAILURE(status)) {
-> > -               *no_aspm = 1;
-> >
-> > -               /* _OSC is optional for PCI host bridges */
-> > -               if ((status == AE_NOT_FOUND) && !is_pcie)
-> > +       if (!pcie_ports_disabled) {
+On Thu, Jul 15, 2021 at 07:34:53AM +0100, Christoph Hellwig wrote:
+> On Tue, Jul 13, 2021 at 02:56:25PM +0100, Mel Gorman wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
+> > 
+> > Fix an unresolved symbol error when CONFIG_DEBUG_INFO_BTF=y:
 > 
-> If pcie_ports_disabled is set, we don't want to request any control
-> from the platform firmware at all and, specifically, we don't want to
-> evaluate _OSC with the OSC_QUERY_ENABLE clear in
-> capbuf[OSC_QUERY_DWORD].
-> 
-> I'm not sure how this is achieved after your changes.
+> I still fundamentally disagreed with this "fix".  Whatever code requires
+> a function to be non-static without a prototype and reference is
+> completely fucked up beyond rescue and needs to be disabled util
+> it can be fixed instead of worked around like this.
 
-Yeah, it isn't. The acpi_pci_osc_control_set() function will always do
-an _OSC call with OSC_QUERY_ENABLE clear. I will come up with a new
-approach.
+I'm definitely not happy with the fix but the breakage was unintentional
+and given that it was done for a W=1 warning, the patch was low priority
+and I felt that users that do error injection to stress failure paths at
+least had some value. If I was fixing something important, I would feel
+differently and we've slammed patches before that fixed warnings while
+introducing worse problems. I'm still hoping that BTF gets fixed because
+it's the right thing to do.
 
-Thanks,
-
-	Joerg
-
+-- 
+Mel Gorman
+SUSE Labs
