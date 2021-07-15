@@ -2,198 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9CD3CA279
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734B83CA27D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhGOQg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhGOQg0 (ORCPT
+        id S232118AbhGOQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:36:49 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:38590 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhGOQgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:36:26 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9107AC06175F;
-        Thu, 15 Jul 2021 09:33:32 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso4038325wmj.4;
-        Thu, 15 Jul 2021 09:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=FpstuIIN0DB2WHE/Hcl2SOa1IWvxixa590FX0bfpwfE=;
-        b=BdAJ+gTPLbBFZP4N6+1Ryck8w3TjNik+tH0tKPVpaqDJsxVu9skZDfKZSW3DX7RPkg
-         kaPuZIt4iRW7kD1YMBBI9KsMmxC6Zl/FQTuOKIU8x0LD8FB389rDMrxZfyN9/yalKn/f
-         6q6FkTiApz7DT7lawHd2XvSUdK8Enz5bpxrZDpHlTKI3Su7BZ/X4mquHetv8I8w2h2Sz
-         dRpRY4bS/Moer7MkzRBZ1t7lbEKHdHWyszxIxbhOMo3ILBAZki0v/+QLM6dEvK0eI1fK
-         Ws/62NdmmHEaJWJILTaqFZVNkwPP5fBFbCX6OADcVaInZkepGTN6leKHXR+CTneaRGYG
-         jZeQ==
+        Thu, 15 Jul 2021 12:36:48 -0400
+Received: by mail-io1-f47.google.com with SMTP id k11so7186664ioa.5;
+        Thu, 15 Jul 2021 09:33:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=FpstuIIN0DB2WHE/Hcl2SOa1IWvxixa590FX0bfpwfE=;
-        b=rVMWMjmXhjpdMNiSFgUpIuqJuz/eYbe049VcvGRaLXfowc4GpQZhdvTeJRvgGxS8t5
-         geS0DVbUfEZRGYoRRYnPsmKVVHX/oQCZs3DKGJ7rc05T8WVUr2CtAsGz6IUOxiP2XVTM
-         90mCnbbIBja6MmBpKED/X9miKjcgTAfna52tr8i9JmjExZHpsWaL6USO0wRHJIeuCFtM
-         j8WykoXcgOfTH1qn2pHQj9ULFRqP5kU0UwxL8pft70kRw4pb+obdC1rUQMC+DlUoqN+N
-         eeZKbHl4nt4mXWl8EqvCFIojSuVvyvCrDUSxqpHmOgNZmkmAn67u5yozZjcYL5CFfBCU
-         3eww==
-X-Gm-Message-State: AOAM533DZhuG8IandGnI7dwcqRmQ+kcypyDyfl7euLDLszI7KftOilw+
-        DRm8S5QpkRkHBP2txMyWZaI=
-X-Google-Smtp-Source: ABdhPJzzdtcC8TEKqc1Q7jxIw+KmSvRm7a3pW8MnUe6GpYEUjoG6ijbJMOhsf2PUW5SS3UrGRcmfWA==
-X-Received: by 2002:a05:600c:5107:: with SMTP id o7mr5600699wms.184.1626366810818;
-        Thu, 15 Jul 2021 09:33:30 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.gmail.com with ESMTPSA id i12sm7069635wrp.57.2021.07.15.09.33.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y6bIe4Hr1YorCPfBGvzQ6LpfYt1mUHZ0WYD1UKQ11fI=;
+        b=OddwE8C60Dd27dV54u5M1RJKaYtymzqwYRMPD7bgAmQK3SvIsfXUT0kLiTsNxKbbAg
+         /relrKhwAdeHMhsjM9K4Qez5v2C8zYtmoNqKx/1bL4d2i96mPMqbp5f4gTeFxST3yxbA
+         Taah/w/JX4gfngi144B3kbQLe5O9fprZexAwerFIJccVrRTwwnT3cnFf6KOAItJTFOLz
+         AuypePdbGeZKh/2KwvPjMb3a/WbKMZQYNde9Gn9+mNgbbFt/Epi84aBWJ8AiBkogmdC4
+         SJ7ySCEkxlL2x15q7+igCDHhHqabaEzNhYx72p/yuj03WauJ9/815Dzpj71D30AXR4F6
+         vA2A==
+X-Gm-Message-State: AOAM532DenXw5O5ru+DseSs52MoJ8Rg9Dyx766eS3XIOp0tk+4vf0V0e
+        xww+yW8xIrZoDH/G10xpgA==
+X-Google-Smtp-Source: ABdhPJwjABnFg4T6xJSJ0P5H8lKstHXlXYapvPvsNoHN3wsp0lAAJVLxEKy3tFw/NsOsULzmDiFcUg==
+X-Received: by 2002:a5d:8d16:: with SMTP id p22mr3786404ioj.90.1626366834397;
+        Thu, 15 Jul 2021 09:33:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id f16sm3263591ilc.53.2021.07.15.09.33.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 09:33:30 -0700 (PDT)
-Message-ID: <959c58526c5388eb891fd8a5927b5abc08c46a58.camel@gmail.com>
-Subject: Re: [RFC PATCH 02/10] perf tests: add test for workqueue
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Date:   Thu, 15 Jul 2021 18:33:29 +0200
-In-Reply-To: <YO7+g3wvtvJ+Zm5o@kernel.org>
-References: <cover.1626177381.git.rickyman7@gmail.com>
-         <333e2e3986d32cf8894105f149abb543a84ec91c.1626177381.git.rickyman7@gmail.com>
-         <YO7+g3wvtvJ+Zm5o@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        Thu, 15 Jul 2021 09:33:53 -0700 (PDT)
+Received: (nullmailer pid 1202003 invoked by uid 1000);
+        Thu, 15 Jul 2021 16:33:50 -0000
+Date:   Thu, 15 Jul 2021 10:33:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] dt-bindings: iio: adc: ad7949: add per channel
+ reference
+Message-ID: <20210715163350.GA1196436@robh.at.kernel.org>
+References: <20210713043425.3321230-1-liambeguin@gmail.com>
+ <20210713043425.3321230-5-liambeguin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713043425.3321230-5-liambeguin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
-
-On Wed, 2021-07-14 at 12:10 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Jul 13, 2021 at 02:11:13PM +0200, Riccardo Mancini escreveu:
-> > It will have subtests testing threadpool and workqueue separately.
-> > This patch only introduces the first subtest, checking that the
-> > threadpool is correctly created and destructed.
-> > This test will be expanded when new functions are added in next
-> > patches.
-> > 
-> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-<SNIP>
-> > +
-> > +
-> > +static int __test__threadpool(void *_args)
-> > +{
-> > +       struct threadpool_test_args_t *args = _args;
-> > +       struct threadpool_struct *pool;
-> > +       int ret;
-> > +
-> > +       ret = __threadpool__prepare(&pool, args->pool_size);
+On Tue, Jul 13, 2021 at 12:34:25AM -0400, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
 > 
-> Turn the last three lines into one;
-
-ok
-
+> Add bindings documentation describing per channel reference voltage
+> selection.
+> This adds the adi,internal-ref-mv property, and child nodes for each
+> channel. This is required to properly configure the ADC sample request
+> based on which reference source should be used for the calculation.
 > 
->         int ret = __threadpool__prepare(&pool, args->pool_size);
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  .../bindings/iio/adc/adi,ad7949.yaml          | 71 +++++++++++++++++--
+>  1 file changed, 67 insertions(+), 4 deletions(-)
 > 
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       ret = __threadpool__teardown(pool);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       return 0;
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> index 9b56bd4d5510..18abba3b0b4d 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> @@ -26,19 +26,65 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  vrefin-supply:
+> +    description:
+> +      Buffered ADC reference voltage supply.
+> +
+>    vref-supply:
+>      description:
+> -      ADC reference voltage supply
+> +      Unbuffered ADC reference voltage supply.
+>  
+>    spi-max-frequency: true
+>  
+> -  "#io-channel-cells":
+> +  '#io-channel-cells':
+>      const: 1
+>  
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +
+
+extra blank line.
+
+>  required:
+>    - compatible
+>    - reg
+> -  - vref-supply
+> +
+> +patternProperties:
+> +  '^channel@([0-7])$':
+> +    type: object
+> +    description: |
+> +      Represents the external channels which are connected to the ADC.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          The channel number.
+> +          Up to 4 channels, numbered from 0 to 3 for adi,ad7682.
+> +          Up to 8 channels, numbered from 0 to 7 for adi,ad7689 and adi,ad7949.
+> +        items:
+> +          minimum: 0
+> +          maximum: 7
+> +
+> +      adi,internal-ref-mv:
+
+Use standard unit suffix name. Then you can drop the type $ref.
+
+> +        description: |
+> +          Internal reference voltage selection in millivolts.
+> +
+> +          If no internal reference is specified, the channel will default to the
+> +          external reference defined by vrefin-supply (or vref-supply).
+> +          vrefin-supply will take precedence over vref-supply if both are defined.
+> +
+> +          If no supplies are defined, the reference selection will default to
+> +          4096mV internal reference.
+> +
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [2500, 4096]
+> +        default: 4096
+> +
+> +    required:
+> +      - reg
+> +
+> +    additionalProperties: false
+>  
+>  additionalProperties: false
+>  
+> @@ -49,9 +95,26 @@ examples:
+>          #size-cells = <0>;
+>  
+>          adc@0 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+>              compatible = "adi,ad7949";
+>              reg = <0>;
+> -            vref-supply = <&vdd_supply>;
+> +            vrefin-supply = <&vdd_supply>;
+> +
+> +            channel@0 {
+> +                adi,internal-ref-mv = <4096>;
+> +                reg = <0>;
+> +            };
+> +
+> +            channel@1 {
+> +                adi,internal-ref-mv = <2500>;
+> +                reg = <1>;
+> +            };
+> +
+> +            channel@2 {
+> +                reg = <2>;
+> +            };
+>          };
+>      };
+>  ...
+> -- 
+> 2.30.1.489.g328c10930387
 > 
-> Humm, will you add something here in the following csets? Otherwise turn
-> these 5 lines into one:
 > 
->         return __threadpool__teardown(pool);
-
-ok, it was just copy-paste from above.
-
-Thanks,
-Riccardo
-
-> 
-> > +}
-> > +
-> > +static const struct threadpool_test_args_t threadpool_test_args[] = {
-> > +       {
-> > +               .pool_size = 1
-> > +       },
-> > +       {
-> > +               .pool_size = 2
-> > +       },
-> > +       {
-> > +               .pool_size = 4
-> > +       },
-> > +       {
-> > +               .pool_size = 8
-> > +       },
-> > +       {
-> > +               .pool_size = 16
-> > +       }
-> > +};
-> > +
-> > +struct test_case {
-> > +       const char *desc;
-> > +       int (*func)(void *args);
-> > +       void *args;
-> > +       int n_args;
-> > +       int arg_size;
-> > +};
-> > +
-> > +static struct test_case workqueue_testcase_table[] = {
-> > +       {
-> > +               .desc = "Threadpool",
-> > +               .func = __test__threadpool,
-> > +               .args = (void *) threadpool_test_args,
-> > +               .n_args = (int)ARRAY_SIZE(threadpool_test_args),
-> > +               .arg_size = sizeof(struct threadpool_test_args_t)
-> > +       }
-> > +};
-> > +
-> > +
-> > +int test__workqueue(struct test *test __maybe_unused, int i)
-> > +{
-> > +       int j, ret = 0;
-> > +       struct test_case *tc;
-> > +
-> > +       if (i < 0 || i >= (int)ARRAY_SIZE(workqueue_testcase_table))
-> > +               return -1;
-> > +
-> > +       tc = &workqueue_testcase_table[i];
-> > +
-> > +       for (j = 0; j < tc->n_args; j++) {
-> > +               ret = tc->func(tc->args + (j*tc->arg_size));
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +
-> > +int test__workqueue_subtest_get_nr(void)
-> > +{
-> > +       return (int)ARRAY_SIZE(workqueue_testcase_table);
-> > +}
-> > +
-> > +const char *test__workqueue_subtest_get_desc(int i)
-> > +{
-> > +       if (i < 0 || i >= (int)ARRAY_SIZE(workqueue_testcase_table))
-> > +               return NULL;
-> > +       return workqueue_testcase_table[i].desc;
-> > +}
-> > -- 
-> > 2.31.1
-> > 
-> 
-
-
