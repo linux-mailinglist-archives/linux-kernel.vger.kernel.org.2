@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973513CAB4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3496F3CAB40
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244914AbhGOTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39662 "EHLO mail.kernel.org"
+        id S241161AbhGOTSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:18:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240196AbhGOTC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:02:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACFCF613D4;
-        Thu, 15 Jul 2021 18:59:05 +0000 (UTC)
+        id S242677AbhGOTC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:02:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16D60613EB;
+        Thu, 15 Jul 2021 18:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375546;
-        bh=qtWVfVGLjEHOGhp+RnyTUVgAV8ZVWuVkOTUHXaCUNo0=;
+        s=korg; t=1626375548;
+        bh=LEb2Bs3wCYJs84G3awPLv8h4ima8q0QSZGPBFsyY92E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hYO7V1PfmPGICYmHgCkPxE5hNX5pTW9QwQer8o4wIA4XKSaSG3bOzTDcv06M2AHQX
-         uWD9uyq0/bruPID8Pq2eM3twCdGr1nIB6krKjHRI+PiEyfUzdRmSlKr3/ExRW+krPT
-         QkyPeFjOgzhAxorSj3kVYGEie5EtHRK78e9YMYMY=
+        b=JRN+W6yW3IwjGbXS0GJDY8k1G3o2xKDEgnjkBe0K2eURMQgc4rf76ZCQKexHEvy0B
+         D8k8+tF3JBqs8Dl0JbMOdI8VRTEdrvru9tVwACX5ZQoRPK9El55+ILdLkgH1A1SxWG
+         5ucCHIGXXKR1BASM2Bv8Q2aO20mc24IgUcDouulQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Jones <dsj@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 133/242] net: ip: avoid OOM kills with large UDP sends over loopback
-Date:   Thu, 15 Jul 2021 20:38:15 +0200
-Message-Id: <20210715182616.429013463@linuxfoundation.org>
+Subject: [PATCH 5.12 134/242] RDMA/cma: Fix rdma_resolve_route() memory leak
+Date:   Thu, 15 Jul 2021 20:38:16 +0200
+Message-Id: <20210715182616.602078122@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,184 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Gerd Rausch <gerd.rausch@oracle.com>
 
-[ Upstream commit 6d123b81ac615072a8525c13c6c41b695270a15d ]
+[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
 
-Dave observed number of machines hitting OOM on the UDP send
-path. The workload seems to be sending large UDP packets over
-loopback. Since loopback has MTU of 64k kernel will try to
-allocate an skb with up to 64k of head space. This has a good
-chance of failing under memory pressure. What's worse if
-the message length is <32k the allocation may trigger an
-OOM killer.
+Fix a memory leak when "mda_resolve_route() is called more than once on
+the same "rdma_cm_id".
 
-This is entirely avoidable, we can use an skb with page frags.
+This is possible if cma_query_handler() triggers the
+RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
+allows rdma_resolve_route() to be called again.
 
-af_unix solves a similar problem by limiting the head
-length to SKB_MAX_ALLOC. This seems like a good and simple
-approach. It means that UDP messages > 16kB will now
-use fragments if underlying device supports SG, if extra
-allocator pressure causes regressions in real workloads
-we can switch to trying the large allocation first and
-falling back.
-
-v4: pre-calculate all the additions to alloclen so
-    we can be sure it won't go over order-2
-
-Reported-by: Dave Jones <dsj@fb.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ip_output.c  | 32 ++++++++++++++++++--------------
- net/ipv6/ip6_output.c | 32 +++++++++++++++++---------------
- 2 files changed, 35 insertions(+), 29 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 3aab53beb4ea..3ec3b67c184f 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1054,7 +1054,7 @@ static int __ip_append_data(struct sock *sk,
- 			unsigned int datalen;
- 			unsigned int fraglen;
- 			unsigned int fraggap;
--			unsigned int alloclen;
-+			unsigned int alloclen, alloc_extra;
- 			unsigned int pagedlen;
- 			struct sk_buff *skb_prev;
- alloc_new_skb:
-@@ -1074,35 +1074,39 @@ alloc_new_skb:
- 			fraglen = datalen + fragheaderlen;
- 			pagedlen = 0;
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index bb46f794f324..8d94a6bfcac1 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2793,7 +2793,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
  
-+			alloc_extra = hh_len + 15;
-+			alloc_extra += exthdrlen;
-+
-+			/* The last fragment gets additional space at tail.
-+			 * Note, with MSG_MORE we overallocate on fragments,
-+			 * because we have no idea what fragment will be
-+			 * the last.
-+			 */
-+			if (datalen == length + fraggap)
-+				alloc_extra += rt->dst.trailer_len;
-+
- 			if ((flags & MSG_MORE) &&
- 			    !(rt->dst.dev->features&NETIF_F_SG))
- 				alloclen = mtu;
--			else if (!paged)
-+			else if (!paged &&
-+				 (fraglen + alloc_extra < SKB_MAX_ALLOC ||
-+				  !(rt->dst.dev->features & NETIF_F_SG)))
- 				alloclen = fraglen;
- 			else {
- 				alloclen = min_t(int, fraglen, MAX_HEADER);
- 				pagedlen = fraglen - alloclen;
- 			}
+ 	cma_init_resolve_route_work(work, id_priv);
  
--			alloclen += exthdrlen;
--
--			/* The last fragment gets additional space at tail.
--			 * Note, with MSG_MORE we overallocate on fragments,
--			 * because we have no idea what fragment will be
--			 * the last.
--			 */
--			if (datalen == length + fraggap)
--				alloclen += rt->dst.trailer_len;
-+			alloclen += alloc_extra;
- 
- 			if (transhdrlen) {
--				skb = sock_alloc_send_skb(sk,
--						alloclen + hh_len + 15,
-+				skb = sock_alloc_send_skb(sk, alloclen,
- 						(flags & MSG_DONTWAIT), &err);
- 			} else {
- 				skb = NULL;
- 				if (refcount_read(&sk->sk_wmem_alloc) + wmem_alloc_delta <=
- 				    2 * sk->sk_sndbuf)
--					skb = alloc_skb(alloclen + hh_len + 15,
-+					skb = alloc_skb(alloclen,
- 							sk->sk_allocation);
- 				if (unlikely(!skb))
- 					err = -ENOBUFS;
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index ff4f9ebcf7f6..497974b4372a 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1555,7 +1555,7 @@ emsgsize:
- 			unsigned int datalen;
- 			unsigned int fraglen;
- 			unsigned int fraggap;
--			unsigned int alloclen;
-+			unsigned int alloclen, alloc_extra;
- 			unsigned int pagedlen;
- alloc_new_skb:
- 			/* There's no room in the current skb */
-@@ -1582,17 +1582,28 @@ alloc_new_skb:
- 			fraglen = datalen + fragheaderlen;
- 			pagedlen = 0;
- 
-+			alloc_extra = hh_len;
-+			alloc_extra += dst_exthdrlen;
-+			alloc_extra += rt->dst.trailer_len;
-+
-+			/* We just reserve space for fragment header.
-+			 * Note: this may be overallocation if the message
-+			 * (without MSG_MORE) fits into the MTU.
-+			 */
-+			alloc_extra += sizeof(struct frag_hdr);
-+
- 			if ((flags & MSG_MORE) &&
- 			    !(rt->dst.dev->features&NETIF_F_SG))
- 				alloclen = mtu;
--			else if (!paged)
-+			else if (!paged &&
-+				 (fraglen + alloc_extra < SKB_MAX_ALLOC ||
-+				  !(rt->dst.dev->features & NETIF_F_SG)))
- 				alloclen = fraglen;
- 			else {
- 				alloclen = min_t(int, fraglen, MAX_HEADER);
- 				pagedlen = fraglen - alloclen;
- 			}
--
--			alloclen += dst_exthdrlen;
-+			alloclen += alloc_extra;
- 
- 			if (datalen != length + fraggap) {
- 				/*
-@@ -1602,30 +1613,21 @@ alloc_new_skb:
- 				datalen += rt->dst.trailer_len;
- 			}
- 
--			alloclen += rt->dst.trailer_len;
- 			fraglen = datalen + fragheaderlen;
- 
--			/*
--			 * We just reserve space for fragment header.
--			 * Note: this may be overallocation if the message
--			 * (without MSG_MORE) fits into the MTU.
--			 */
--			alloclen += sizeof(struct frag_hdr);
--
- 			copy = datalen - transhdrlen - fraggap - pagedlen;
- 			if (copy < 0) {
- 				err = -EINVAL;
- 				goto error;
- 			}
- 			if (transhdrlen) {
--				skb = sock_alloc_send_skb(sk,
--						alloclen + hh_len,
-+				skb = sock_alloc_send_skb(sk, alloclen,
- 						(flags & MSG_DONTWAIT), &err);
- 			} else {
- 				skb = NULL;
- 				if (refcount_read(&sk->sk_wmem_alloc) + wmem_alloc_delta <=
- 				    2 * sk->sk_sndbuf)
--					skb = alloc_skb(alloclen + hh_len,
-+					skb = alloc_skb(alloclen,
- 							sk->sk_allocation);
- 				if (unlikely(!skb))
- 					err = -ENOBUFS;
+-	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
++	if (!route->path_rec)
++		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+ 	if (!route->path_rec) {
+ 		ret = -ENOMEM;
+ 		goto err1;
 -- 
 2.30.2
 
