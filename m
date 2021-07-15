@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6884C3CAA8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AE93CAA1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243679AbhGOTN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:13:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35104 "EHLO mail.kernel.org"
+        id S243820AbhGOTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242840AbhGOTAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DECB613CC;
-        Thu, 15 Jul 2021 18:57:08 +0000 (UTC)
+        id S242894AbhGOTAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:00:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E14860D07;
+        Thu, 15 Jul 2021 18:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375428;
-        bh=Epu5Df6xEQfp3jQIPeK2nKJRr9rVgUOibI+mTwuHG74=;
+        s=korg; t=1626375431;
+        bh=Uos9+KnPgKQ1lzahEFwmTisuEs0itSOpPl5U0et2OZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yvA2mQMXJFSCx+4jlJfviooPImb7/M1mM5fw0a6goOX2q1VwuebEDOVtdQy1h08KT
-         Bcrcc+yz0+tL/jZlRr4KF8JOhYfhYI0Prm1PbRMvvhc01am9UFo49hyHxR3/a4zBIW
-         JE8kVGmuQ80+Vt8HE7NbqJY3r3rUf57B5LxXx9ns=
+        b=Cyx08xFVi2cAbkw3bPsaA59Xpxotxyyh0a0h6DpB9uQbnz0l0BpgfPNZbPCwz7Lhs
+         Zsd4ygsFOiZNMh9bAgFIjRJbS7jzJNNIG/7UuNZtlTTQVcuvBalGkSZ12D+FFrFou1
+         oPy5gxfGFhtE2bOJuTuIqxeki9rxeQQDgYHdT0rQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <lijunp213@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 084/242] ibmvnic: fix kernel build warnings in build_hdr_descs_arr
-Date:   Thu, 15 Jul 2021 20:37:26 +0200
-Message-Id: <20210715182607.822210170@linuxfoundation.org>
+Subject: [PATCH 5.12 085/242] xfrm: Fix error reporting in xfrm_state_construct.
+Date:   Thu, 15 Jul 2021 20:37:27 +0200
+Message-Id: <20210715182607.977275450@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,36 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <lijunp213@gmail.com>
+From: Steffen Klassert <steffen.klassert@secunet.com>
 
-[ Upstream commit 73214a690c50a134bd364e1a4430e0e7ac81a8d8 ]
+[ Upstream commit 6fd06963fa74197103cdbb4b494763127b3f2f34 ]
 
-Fix the following kernel build warnings:
-drivers/net/ethernet/ibm/ibmvnic.c:1516: warning: Function parameter or member 'skb' not described in 'build_hdr_descs_arr'
-drivers/net/ethernet/ibm/ibmvnic.c:1516: warning: Function parameter or member 'indir_arr' not described in 'build_hdr_descs_arr'
-drivers/net/ethernet/ibm/ibmvnic.c:1516: warning: Excess function parameter 'txbuff' description in 'build_hdr_descs_arr'
+When memory allocation for XFRMA_ENCAP or XFRMA_COADDR fails,
+the error will not be reported because the -ENOMEM assignment
+to the err variable is overwritten before. Fix this by moving
+these two in front of the function so that memory allocation
+failures will be reported.
 
-Signed-off-by: Lijun Pan <lijunp213@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Tobias Brunner <tobias@strongswan.org>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/xfrm/xfrm_user.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 3c77897b3f31..df10b87ca0f8 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1528,7 +1528,8 @@ static int create_hdr_descs(u8 hdr_field, u8 *hdr_data, int len, int *hdr_len,
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index 5a0ef4361e43..817e714dedea 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -580,6 +580,20 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
  
- /**
-  * build_hdr_descs_arr - build a header descriptor array
-- * @txbuff: tx buffer
-+ * @skb: tx socket buffer
-+ * @indir_arr: indirect array
-  * @num_entries: number of descriptors to be sent
-  * @hdr_field: bit field determining which headers will be sent
-  *
+ 	copy_from_user_state(x, p);
+ 
++	if (attrs[XFRMA_ENCAP]) {
++		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
++				   sizeof(*x->encap), GFP_KERNEL);
++		if (x->encap == NULL)
++			goto error;
++	}
++
++	if (attrs[XFRMA_COADDR]) {
++		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
++				    sizeof(*x->coaddr), GFP_KERNEL);
++		if (x->coaddr == NULL)
++			goto error;
++	}
++
+ 	if (attrs[XFRMA_SA_EXTRA_FLAGS])
+ 		x->props.extra_flags = nla_get_u32(attrs[XFRMA_SA_EXTRA_FLAGS]);
+ 
+@@ -600,23 +614,9 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
+ 				   attrs[XFRMA_ALG_COMP])))
+ 		goto error;
+ 
+-	if (attrs[XFRMA_ENCAP]) {
+-		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
+-				   sizeof(*x->encap), GFP_KERNEL);
+-		if (x->encap == NULL)
+-			goto error;
+-	}
+-
+ 	if (attrs[XFRMA_TFCPAD])
+ 		x->tfcpad = nla_get_u32(attrs[XFRMA_TFCPAD]);
+ 
+-	if (attrs[XFRMA_COADDR]) {
+-		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
+-				    sizeof(*x->coaddr), GFP_KERNEL);
+-		if (x->coaddr == NULL)
+-			goto error;
+-	}
+-
+ 	xfrm_mark_get(attrs, &x->mark);
+ 
+ 	xfrm_smark_init(attrs, &x->props.smark);
 -- 
 2.30.2
 
