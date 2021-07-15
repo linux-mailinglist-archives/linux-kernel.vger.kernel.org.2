@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5774F3CA674
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73D83CA677
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239405AbhGOSsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48284 "EHLO mail.kernel.org"
+        id S238929AbhGOSsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238169AbhGOSqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:46:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EB21613D0;
-        Thu, 15 Jul 2021 18:43:50 +0000 (UTC)
+        id S231679AbhGOSqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F24A6613D1;
+        Thu, 15 Jul 2021 18:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374631;
-        bh=Lv3lxuGyJeuLMJTWI4YcPDocwK7dkQEidDuVLf0rJRg=;
+        s=korg; t=1626374633;
+        bh=T6B42xJXCvzxyS1Yyia+GXBfJd7XvG9BGKMmjXmNc3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CdaToz6SvdQRv0A1gvsTzwPA46m5tWU0loNqH65bN7Pm5g5uX6BYkMcPlO4TBlpb9
-         ++qQpx+6P9q3BwdunaGRSKFG6W76QXXhDQQzQvV71qBPDPlryPl5mz18j8WTActai2
-         IOIlNt58WC+nqicFpqUwCWYd0JjfGXByPcVvQVUA=
+        b=bm8Z13mPfVE9NpYlAkgxnCXU7zyoyt/9FERQijTYanOY17i2AE8MvBl/JPX2kFhRa
+         DZccrML9nUwNhW3yk6TYzMOVz3rHFuhtXNUgEzmGEL5o+D+WWK11Oj9SHlsFdWKXdH
+         WgWarE8QN1aKthJd31C39DedHrZ26vBY1cKZs6ZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        nicholas.kazlauskas@amd.com, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, Roman.Li@amd.com, hersenxs.wu@amd.com,
-        danny.wang@amd.com,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.4 082/122] drm/amd/display: Reject non-zero src_y and src_x for video planes
-Date:   Thu, 15 Jul 2021 20:38:49 +0200
-Message-Id: <20210715182512.371332105@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH 5.4 083/122] drm/tegra: Dont set allow_fb_modifiers explicitly
+Date:   Thu, 15 Jul 2021 20:38:50 +0200
+Message-Id: <20210715182512.573693683@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -42,72 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harry Wentland <harry.wentland@amd.com>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit c6c6a712199ab355ce333fa5764a59506bb107c1 upstream.
+commit be4306ad928fcf736cbe2616b6dd19d91f1bc083 upstream.
 
-[Why]
-This hasn't been well tested and leads to complete system hangs on DCN1
-based systems, possibly others.
+Since
 
-The system hang can be reproduced by gesturing the video on the YouTube
-Android app on ChromeOS into full screen.
+commit 890880ddfdbe256083170866e49c87618b706ac7
+Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Fri Jan 4 09:56:10 2019 +0100
 
-[How]
-Reject atomic commits with non-zero drm_plane_state.src_x or src_y values.
+    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
 
-v2:
- - Add code comment describing the reason we're rejecting non-zero
-   src_x and src_y
- - Drop gerrit Change-Id
- - Add stable CC
- - Based on amd-staging-drm-next
+this is done automatically as part of plane init, if drivers set the
+modifier list correctly. Which is the case here.
 
-v3: removed trailing whitespace
+It was slightly inconsistently though, since planes with only linear
+modifier support haven't listed that explicitly. Fix that, and cc:
+stable to allow userspace to rely on this. Again don't backport
+further than where Paul's patch got added.
 
-Signed-off-by: Harry Wentland <harry.wentland@amd.com>
-Cc: stable@vger.kernel.org
-Cc: nicholas.kazlauskas@amd.com
-Cc: amd-gfx@lists.freedesktop.org
-Cc: alexander.deucher@amd.com
-Cc: Roman.Li@amd.com
-Cc: hersenxs.wu@amd.com
-Cc: danny.wang@amd.com
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org # v5.1 +
+Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: linux-tegra@vger.kernel.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210413094904.3736372-10-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/gpu/drm/tegra/dc.c  |   10 ++++++++--
+ drivers/gpu/drm/tegra/drm.c |    2 --
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -2649,6 +2649,23 @@ static int fill_dc_scaling_info(const st
- 	     scaling_info->src_rect.y != 0))
- 		return -EINVAL;
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -919,6 +919,11 @@ static const struct drm_plane_helper_fun
+ 	.atomic_disable = tegra_cursor_atomic_disable,
+ };
  
-+	/*
-+	 * For reasons we don't (yet) fully understand a non-zero
-+	 * src_y coordinate into an NV12 buffer can cause a
-+	 * system hang. To avoid hangs (and maybe be overly cautious)
-+	 * let's reject both non-zero src_x and src_y.
-+	 *
-+	 * We currently know of only one use-case to reproduce a
-+	 * scenario with non-zero src_x and src_y for NV12, which
-+	 * is to gesture the YouTube Android app into full screen
-+	 * on ChromeOS.
-+	 */
-+	if (state->fb &&
-+	    state->fb->format->format == DRM_FORMAT_NV12 &&
-+	    (scaling_info->src_rect.x != 0 ||
-+	     scaling_info->src_rect.y != 0))
-+		return -EINVAL;
++static const uint64_t linear_modifiers[] = {
++	DRM_FORMAT_MOD_LINEAR,
++	DRM_FORMAT_MOD_INVALID
++};
 +
- 	scaling_info->src_rect.width = state->src_w >> 16;
- 	if (scaling_info->src_rect.width == 0)
- 		return -EINVAL;
+ static struct drm_plane *tegra_dc_cursor_plane_create(struct drm_device *drm,
+ 						      struct tegra_dc *dc)
+ {
+@@ -947,7 +952,7 @@ static struct drm_plane *tegra_dc_cursor
+ 
+ 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
+ 				       &tegra_plane_funcs, formats,
+-				       num_formats, NULL,
++				       num_formats, linear_modifiers,
+ 				       DRM_PLANE_TYPE_CURSOR, NULL);
+ 	if (err < 0) {
+ 		kfree(plane);
+@@ -1065,7 +1070,8 @@ static struct drm_plane *tegra_dc_overla
+ 
+ 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
+ 				       &tegra_plane_funcs, formats,
+-				       num_formats, NULL, type, NULL);
++				       num_formats, linear_modifiers,
++				       type, NULL);
+ 	if (err < 0) {
+ 		kfree(plane);
+ 		return ERR_PTR(err);
+--- a/drivers/gpu/drm/tegra/drm.c
++++ b/drivers/gpu/drm/tegra/drm.c
+@@ -122,8 +122,6 @@ static int tegra_drm_load(struct drm_dev
+ 	drm->mode_config.max_width = 4096;
+ 	drm->mode_config.max_height = 4096;
+ 
+-	drm->mode_config.allow_fb_modifiers = true;
+-
+ 	drm->mode_config.normalize_zpos = true;
+ 
+ 	drm->mode_config.funcs = &tegra_drm_mode_config_funcs;
 
 
