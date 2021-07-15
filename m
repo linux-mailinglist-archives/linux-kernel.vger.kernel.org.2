@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4CA3CABCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A63D3CA9AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343675AbhGOTYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        id S242171AbhGOTI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242381AbhGOTHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CBD161404;
-        Thu, 15 Jul 2021 19:03:44 +0000 (UTC)
+        id S241892AbhGOS5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D38F7613CA;
+        Thu, 15 Jul 2021 18:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375825;
-        bh=4Mt4v9bMCOudDyhdtrCCX0r/sixBGxI4RN+fVqB2L84=;
+        s=korg; t=1626375282;
+        bh=kIJjCrthO1egSsvVnu+MUx6xexkyLYYkfMkFavHOCk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A5BQehIYIJ7UEgqjGl02jnNW5hqWOxHfsMl1SL/BEVAfNWfvH06odQahcJMzCvDuH
-         GI2KmocYcg8+R73L/ji4TpqWh9AF5XoKp3of3cNFc0/Jc2IR4V+mz+iKUr1S3lFrsp
-         D/QpdBWRufc6jM6u7xHEe+Qmd4jroo+GQaUsb9fY=
+        b=g55YOIPQN2fzg3/2TH8mh5d6BQ8OPnBvI1O8qNdWbOmyn21HXaTMibSE10dgCBt7o
+         JRBm4xOaVpc7/uwqN5hODXtYKkBq9GyQXPwUZFOQe99PgAzg/itmDoTDohCbSXJPds
+         SCHoY6rgvBvoHV5X6k5WJ1qBtJf5XarxI0dP85XA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 010/266] drm/imx: Add 8 pixel alignment fix
+Subject: [PATCH 5.12 003/242] drm/ast: Fixed CVE for DP501
 Date:   Thu, 15 Jul 2021 20:36:05 +0200
-Message-Id: <20210715182615.701212657@linuxfoundation.org>
+Message-Id: <20210715182552.362293449@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,202 +42,272 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+From: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
 
-[ Upstream commit 94dfec48fca756cef90263a03e81f24dae24a5c6 ]
+[ Upstream commit ba4e0339a6a33e2ba341703ce14ae8ca203cb2f1 ]
 
-Some standard resolutions like 1366x768 do not work properly with
-i.MX6 SoCs, since the horizontal resolution needs to be aligned
-to 8 pixels (so 1360x768 or 1368x768 would work).
+[Bug][DP501]
+If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
+CVE_2019_6260 item3, and then the monitor's EDID is unable read through
+Parade DP501.
+The reason is the DP501's FW is mapped to BMC addressing space rather
+than Host addressing space.
+The resolution is that using "pci_iomap_range()" maps to DP501's FW that
+stored on the end of FB (Frame Buffer).
+In this case, FrameBuffer reserves the last 2MB used for the image of
+DP501.
 
-This patch allocates framebuffers allocated to 8 pixels. The extra
-time required to send the extra pixels are removed from the blank
-time. In order to expose the correct display size to userspace,
-the stride is increased without increasing the width.
-
-Without this patch systems with this display resolution hang
-indefinitely during boot up.
-
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Link: https://lore.kernel.org/r/20210428222953.235280-3-sebastian.reichel@collabora.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210421085859.17761-1-kuohsiang_chou@aspeedtech.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/imx/imx-drm-core.c | 19 ++++++++++++++++++-
- drivers/gpu/drm/imx/imx-ldb.c      |  5 +++++
- drivers/gpu/drm/imx/ipuv3-crtc.c   | 11 ++++++++++-
- drivers/gpu/drm/imx/ipuv3-plane.c  | 19 +++++++++++++++----
- drivers/gpu/ipu-v3/ipu-dc.c        |  5 +++++
- drivers/gpu/ipu-v3/ipu-di.c        |  7 +++++++
- 6 files changed, 60 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++---------
+ drivers/gpu/drm/ast/ast_drv.h   |  12 +++
+ drivers/gpu/drm/ast/ast_main.c  |  11 ++-
+ 3 files changed, 125 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
-index e6a88c8cbd69..8457b9788cda 100644
---- a/drivers/gpu/drm/imx/imx-drm-core.c
-+++ b/drivers/gpu/drm/imx/imx-drm-core.c
-@@ -145,9 +145,26 @@ static const struct drm_ioctl_desc imx_drm_ioctls[] = {
- 	/* none so far */
- };
+diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
+index 88121c0e0d05..cd93c44f2662 100644
+--- a/drivers/gpu/drm/ast/ast_dp501.c
++++ b/drivers/gpu/drm/ast/ast_dp501.c
+@@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size)
+ 	u32 i, data;
+ 	u32 boot_address;
  
-+static int imx_drm_dumb_create(struct drm_file *file_priv,
-+			       struct drm_device *drm,
-+			       struct drm_mode_create_dumb *args)
-+{
-+	u32 width = args->width;
-+	int ret;
++	if (ast->config_mode != ast_use_p2a)
++		return false;
 +
-+	args->width = ALIGN(width, 8);
+ 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
+ 	if (data) {
+ 		boot_address = get_fw_base(ast);
+@@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)
+ 	u8 *fw_addr = NULL;
+ 	u8 jreg;
+ 
++	if (ast->config_mode != ast_use_p2a)
++		return false;
 +
-+	ret = drm_gem_cma_dumb_create(file_priv, drm, args);
-+	if (ret)
-+		return ret;
+ 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
+ 	if (!data) {
+ 
+@@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
+ 	struct ast_private *ast = to_ast_private(dev);
+ 	u32 boot_address, offset, data;
+ 	u8 linkcap[4], linkrate, linklanes, maxclk = 0xff;
++	u32 *plinkcap;
+ 
+-	boot_address = get_fw_base(ast);
+-
+-	/* validate FW version */
+-	offset = 0xf000;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if ((data & 0xf0) != 0x10) /* version: 1x */
+-		return maxclk;
+-
+-	/* Read Link Capability */
+-	offset  = 0xf014;
+-	*(u32 *)linkcap = ast_mindwm(ast, boot_address + offset);
+-	if (linkcap[2] == 0) {
+-		linkrate = linkcap[0];
+-		linklanes = linkcap[1];
+-		data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
+-		if (data > 0xff)
+-			data = 0xff;
+-		maxclk = (u8)data;
++	if (ast->config_mode == ast_use_p2a) {
++		boot_address = get_fw_base(ast);
 +
-+	args->width = width;
-+	return ret;
-+}
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = ast_mindwm(ast, boot_address + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
++			return maxclk;
 +
- static const struct drm_driver imx_drm_driver = {
- 	.driver_features	= DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
--	DRM_GEM_CMA_DRIVER_OPS,
-+	DRM_GEM_CMA_DRIVER_OPS_WITH_DUMB_CREATE(imx_drm_dumb_create),
- 	.ioctls			= imx_drm_ioctls,
- 	.num_ioctls		= ARRAY_SIZE(imx_drm_ioctls),
- 	.fops			= &imx_drm_driver_fops,
-diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-index ffdc492c5bc5..53132ddf9587 100644
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -274,6 +274,11 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 			 "%s: mode exceeds 85 MHz pixel clock\n", __func__);
++		/* Read Link Capability */
++		offset  = AST_DP501_LINKRATE;
++		plinkcap = (u32 *)linkcap;
++		*plinkcap  = ast_mindwm(ast, boot_address + offset);
++		if (linkcap[2] == 0) {
++			linkrate = linkcap[0];
++			linklanes = linkcap[1];
++			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
++			if (data > 0xff)
++				data = 0xff;
++			maxclk = (u8)data;
++		}
++	} else {
++		if (!ast->dp501_fw_buf)
++			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
++
++		/* dummy read */
++		offset = 0x0000;
++		data = readl(ast->dp501_fw_buf + offset);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = readl(ast->dp501_fw_buf + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
++			return maxclk;
++
++		/* Read Link Capability */
++		offset = AST_DP501_LINKRATE;
++		plinkcap = (u32 *)linkcap;
++		*plinkcap = readl(ast->dp501_fw_buf + offset);
++		if (linkcap[2] == 0) {
++			linkrate = linkcap[0];
++			linklanes = linkcap[1];
++			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
++			if (data > 0xff)
++				data = 0xff;
++			maxclk = (u8)data;
++		}
+ 	}
+ 	return maxclk;
+ }
+@@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, u8 *ediddata)
+ {
+ 	struct ast_private *ast = to_ast_private(dev);
+ 	u32 i, boot_address, offset, data;
++	u32 *pEDIDidx;
+ 
+-	boot_address = get_fw_base(ast);
+-
+-	/* validate FW version */
+-	offset = 0xf000;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if ((data & 0xf0) != 0x10)
+-		return false;
+-
+-	/* validate PnP Monitor */
+-	offset = 0xf010;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if (!(data & 0x01))
+-		return false;
++	if (ast->config_mode == ast_use_p2a) {
++		boot_address = get_fw_base(ast);
+ 
+-	/* Read EDID */
+-	offset = 0xf020;
+-	for (i = 0; i < 128; i += 4) {
+-		data = ast_mindwm(ast, boot_address + offset + i);
+-		*(u32 *)(ediddata + i) = data;
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = ast_mindwm(ast, boot_address + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
++			return false;
++
++		/* validate PnP Monitor */
++		offset = AST_DP501_PNPMONITOR;
++		data = ast_mindwm(ast, boot_address + offset);
++		if (!(data & AST_DP501_PNP_CONNECTED))
++			return false;
++
++		/* Read EDID */
++		offset = AST_DP501_EDID_DATA;
++		for (i = 0; i < 128; i += 4) {
++			data = ast_mindwm(ast, boot_address + offset + i);
++			pEDIDidx = (u32 *)(ediddata + i);
++			*pEDIDidx = data;
++		}
++	} else {
++		if (!ast->dp501_fw_buf)
++			return false;
++
++		/* dummy read */
++		offset = 0x0000;
++		data = readl(ast->dp501_fw_buf + offset);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = readl(ast->dp501_fw_buf + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
++			return false;
++
++		/* validate PnP Monitor */
++		offset = AST_DP501_PNPMONITOR;
++		data = readl(ast->dp501_fw_buf + offset);
++		if (!(data & AST_DP501_PNP_CONNECTED))
++			return false;
++
++		/* Read EDID */
++		offset = AST_DP501_EDID_DATA;
++		for (i = 0; i < 128; i += 4) {
++			data = readl(ast->dp501_fw_buf + offset + i);
++			pEDIDidx = (u32 *)(ediddata + i);
++			*pEDIDidx = data;
++		}
  	}
  
-+	if (!IS_ALIGNED(mode->hdisplay, 8)) {
-+		dev_warn(ldb->dev,
-+			 "%s: hdisplay does not align to 8 byte\n", __func__);
+ 	return true;
+diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
+index f871fc36c2f7..a3f67a34f616 100644
+--- a/drivers/gpu/drm/ast/ast_drv.h
++++ b/drivers/gpu/drm/ast/ast_drv.h
+@@ -121,6 +121,7 @@ struct ast_private {
+ 
+ 	void __iomem *regs;
+ 	void __iomem *ioregs;
++	void __iomem *dp501_fw_buf;
+ 
+ 	enum ast_chip chip;
+ 	bool vga2_clone;
+@@ -298,6 +299,17 @@ int ast_mode_config_init(struct ast_private *ast);
+ #define AST_MM_ALIGN_SHIFT 4
+ #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
+ 
++#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
++#define AST_DP501_FW_VERSION_1		BIT(4)
++#define AST_DP501_PNP_CONNECTED		BIT(1)
++
++#define AST_DP501_DEFAULT_DCLK	65
++
++#define AST_DP501_GBL_VERSION	0xf000
++#define AST_DP501_PNPMONITOR	0xf010
++#define AST_DP501_LINKRATE	0xf014
++#define AST_DP501_EDID_DATA	0xf020
++
+ int ast_mm_init(struct ast_private *ast);
+ 
+ /* ast post */
+diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+index c29cc7f19863..189d783f6e2c 100644
+--- a/drivers/gpu/drm/ast/ast_main.c
++++ b/drivers/gpu/drm/ast/ast_main.c
+@@ -99,7 +99,7 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
+ 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+ 		/* Double check it's actually working */
+ 		data = ast_read32(ast, 0xf004);
+-		if (data != 0xFFFFFFFF) {
++		if ((data != 0xFFFFFFFF) && (data != 0x00)) {
+ 			/* P2A works, grab silicon revision */
+ 			ast->config_mode = ast_use_p2a;
+ 
+@@ -411,6 +411,7 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
+ 		return ast;
+ 	dev = &ast->base;
+ 
++	dev->pdev = pdev;
+ 	pci_set_drvdata(pdev, dev);
+ 
+ 	ast->regs = pcim_iomap(pdev, 1, 0);
+@@ -450,6 +451,14 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
++	/* map reserved buffer */
++	ast->dp501_fw_buf = NULL;
++	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
++		ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
++		if (!ast->dp501_fw_buf)
++			drm_info(dev, "failed to map reserved buffer!\n");
 +	}
 +
- 	if (dual) {
- 		serial_clk = 3500UL * mode->clock;
- 		imx_ldb_set_clock(ldb, mux, 0, serial_clk, di_clk);
-diff --git a/drivers/gpu/drm/imx/ipuv3-crtc.c b/drivers/gpu/drm/imx/ipuv3-crtc.c
-index e6431a227feb..9c8829f945b2 100644
---- a/drivers/gpu/drm/imx/ipuv3-crtc.c
-+++ b/drivers/gpu/drm/imx/ipuv3-crtc.c
-@@ -305,10 +305,19 @@ static void ipu_crtc_mode_set_nofb(struct drm_crtc *crtc)
- 	sig_cfg.vsync_pin = imx_crtc_state->di_vsync_pin;
- 
- 	drm_display_mode_to_videomode(mode, &sig_cfg.mode);
-+	if (!IS_ALIGNED(sig_cfg.mode.hactive, 8)) {
-+		unsigned int new_hactive = ALIGN(sig_cfg.mode.hactive, 8);
-+
-+		dev_warn(ipu_crtc->dev, "8-pixel align hactive %d -> %d\n",
-+			 sig_cfg.mode.hactive, new_hactive);
-+
-+		sig_cfg.mode.hfront_porch = new_hactive - sig_cfg.mode.hactive;
-+		sig_cfg.mode.hactive = new_hactive;
-+	}
- 
- 	ipu_dc_init_sync(ipu_crtc->dc, ipu_crtc->di,
- 			 mode->flags & DRM_MODE_FLAG_INTERLACE,
--			 imx_crtc_state->bus_format, mode->hdisplay);
-+			 imx_crtc_state->bus_format, sig_cfg.mode.hactive);
- 	ipu_di_init_sync_panel(ipu_crtc->di, &sig_cfg);
- }
- 
-diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
-index 233310712deb..886de0f80b4e 100644
---- a/drivers/gpu/drm/imx/ipuv3-plane.c
-+++ b/drivers/gpu/drm/imx/ipuv3-plane.c
-@@ -30,6 +30,11 @@ to_ipu_plane_state(struct drm_plane_state *p)
- 	return container_of(p, struct ipu_plane_state, base);
- }
- 
-+static unsigned int ipu_src_rect_width(const struct drm_plane_state *state)
-+{
-+	return ALIGN(drm_rect_width(&state->src) >> 16, 8);
-+}
-+
- static inline struct ipu_plane *to_ipu_plane(struct drm_plane *p)
- {
- 	return container_of(p, struct ipu_plane, base);
-@@ -441,6 +446,12 @@ static int ipu_plane_atomic_check(struct drm_plane *plane,
- 	if (old_fb && fb->pitches[0] != old_fb->pitches[0])
- 		crtc_state->mode_changed = true;
- 
-+	if (ALIGN(fb->width, 8) * fb->format->cpp[0] >
-+	    fb->pitches[0] + fb->offsets[0]) {
-+		dev_warn(dev, "pitch is not big enough for 8 pixels alignment");
-+		return -EINVAL;
-+	}
-+
- 	switch (fb->format->format) {
- 	case DRM_FORMAT_YUV420:
- 	case DRM_FORMAT_YVU420:
-@@ -616,7 +627,7 @@ static void ipu_plane_atomic_update(struct drm_plane *plane,
- 	if (ipu_state->use_pre) {
- 		axi_id = ipu_chan_assign_axi_id(ipu_plane->dma);
- 		ipu_prg_channel_configure(ipu_plane->ipu_ch, axi_id,
--					  drm_rect_width(&new_state->src) >> 16,
-+					  ipu_src_rect_width(new_state),
- 					  drm_rect_height(&new_state->src) >> 16,
- 					  fb->pitches[0], fb->format->format,
- 					  fb->modifier, &eba);
-@@ -649,9 +660,9 @@ static void ipu_plane_atomic_update(struct drm_plane *plane,
- 		break;
- 	}
- 
--	ipu_dmfc_config_wait4eot(ipu_plane->dmfc, drm_rect_width(dst));
-+	ipu_dmfc_config_wait4eot(ipu_plane->dmfc, ALIGN(drm_rect_width(dst), 8));
- 
--	width = drm_rect_width(&new_state->src) >> 16;
-+	width = ipu_src_rect_width(new_state);
- 	height = drm_rect_height(&new_state->src) >> 16;
- 	info = drm_format_info(fb->format->format);
- 	ipu_calculate_bursts(width, info->cpp[0], fb->pitches[0],
-@@ -716,7 +727,7 @@ static void ipu_plane_atomic_update(struct drm_plane *plane,
- 
- 		ipu_cpmem_zero(ipu_plane->alpha_ch);
- 		ipu_cpmem_set_resolution(ipu_plane->alpha_ch,
--					 drm_rect_width(&new_state->src) >> 16,
-+					 ipu_src_rect_width(new_state),
- 					 drm_rect_height(&new_state->src) >> 16);
- 		ipu_cpmem_set_format_passthrough(ipu_plane->alpha_ch, 8);
- 		ipu_cpmem_set_high_priority(ipu_plane->alpha_ch);
-diff --git a/drivers/gpu/ipu-v3/ipu-dc.c b/drivers/gpu/ipu-v3/ipu-dc.c
-index 34b4075a6a8e..ca96b235491a 100644
---- a/drivers/gpu/ipu-v3/ipu-dc.c
-+++ b/drivers/gpu/ipu-v3/ipu-dc.c
-@@ -167,6 +167,11 @@ int ipu_dc_init_sync(struct ipu_dc *dc, struct ipu_di *di, bool interlaced,
- 
- 	dc->di = ipu_di_get_num(di);
- 
-+	if (!IS_ALIGNED(width, 8)) {
-+		dev_warn(priv->dev,
-+			 "%s: hactive does not align to 8 byte\n", __func__);
-+	}
-+
- 	map = ipu_bus_format_to_map(bus_format);
- 
- 	/*
-diff --git a/drivers/gpu/ipu-v3/ipu-di.c b/drivers/gpu/ipu-v3/ipu-di.c
-index e617f60afeea..666223c6bec4 100644
---- a/drivers/gpu/ipu-v3/ipu-di.c
-+++ b/drivers/gpu/ipu-v3/ipu-di.c
-@@ -506,6 +506,13 @@ int ipu_di_adjust_videomode(struct ipu_di *di, struct videomode *mode)
- {
- 	u32 diff;
- 
-+	if (!IS_ALIGNED(mode->hactive, 8) &&
-+	    mode->hfront_porch < ALIGN(mode->hactive, 8) - mode->hactive) {
-+		dev_err(di->ipu->dev, "hactive %d is not aligned to 8 and front porch is too small to compensate\n",
-+			mode->hactive);
-+		return -EINVAL;
-+	}
-+
- 	if (mode->vfront_porch >= 2)
- 		return 0;
- 
+ 	ret = ast_mode_config_init(ast);
+ 	if (ret)
+ 		return ERR_PTR(ret);
 -- 
 2.30.2
 
