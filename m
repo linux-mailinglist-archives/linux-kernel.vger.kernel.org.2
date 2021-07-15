@@ -2,190 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0033CAFA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BAE3CAFA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhGOX1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 19:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36452 "EHLO
+        id S232502AbhGOXae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 19:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhGOX1o (ORCPT
+        with ESMTP id S231849AbhGOXac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 19:27:44 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6E6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:24:49 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 81-20020a370b540000b02903b854c43335so4965983qkl.21
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:24:49 -0700 (PDT)
+        Thu, 15 Jul 2021 19:30:32 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECED9C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:27:37 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id u7so8486286ion.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:27:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xtzBKsfvMGcp1K3C06sE0keOSrupFddw8Qz1483rUH0=;
-        b=evFhSvwfDnvoiWO1FssNjqss2R2cZZALzVhwgMv5oZwHKK5vctruLuY5M6ue3Ibi7z
-         LJRY7c8SF0lTn82O8TKELaI36doUxZEQMkz4z3cpwyvXvQ+McSLAtXxR57VO5CMI5DfF
-         U0xem9u/xRTAkGhaJempk2GOHrt03K5BvVXjBafZW1XEicfV+Fg5BrX+uSD/bXixzPjf
-         MZEFgz54zrNhmrutQbOm8PC+mFDvMdn7Y7qKV3FW7y50+3YNT/CiZItEFarmZnw5G6p9
-         Og5OFaJoZtY3H+nhjelXyu2V235QgVa6UA19EsyLyXaNgzQwUXEmSlRwTuJTTgOEFoOM
-         eSCg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=osEHxnbqkKfllh7yBx8CxwUvom3YXLUsPzxXJb1aBZA=;
+        b=cGAoy8mJIPCCvX29zvxLWTVOQRmv6EEOzWJ8/xWrGg4dyMpd7yE9RVGKV+V8YerZOR
+         4/k3ovRl4fh+qDvsKlPfwkAEBYFdO5H0A60lSBghSfLzhXrWiSL2TQkFQptBSs7+XawY
+         nxJkHqm0hiF0A+b4xjjqaYrZAFRDxyK6LnonPHaeACyrkRXaxePyxA3TTCHRVDnEglT9
+         z+yDwY7MVzmIBlTyscW+mNjhY1LYjoKU0FEyxNHl73lomm3gfGvuOq3fTZomsZMlD8se
+         FoXeIgPB3/VL5ck2iHneRYcz5A+b+30Gkp+gwiSZyGDGfNIJzw234xjgpiyCQ7pqy1Nr
+         15SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xtzBKsfvMGcp1K3C06sE0keOSrupFddw8Qz1483rUH0=;
-        b=kuYfF8GuYonLsWE5qILpe5VTG4BP32umoXnhBPppPW7Tt3PjAc6eGtY9UmA92g5hdF
-         OzZSkwcsSg49VDnZhRmA5w3SYe2Uf+uxYyYPhajL0KPVioELkqn8mDxnsrTebG76pH8J
-         +R8Il54HwmNQqUEhHtPnq+3QAsw4Rr3B9/N9b5XZKiFN+TGuSBTLM6VUzYQIuEWQCgKD
-         GD2wl0ehqogI0vRwXMyfOQca1RsdBFc7GaIA6PeJBI3qE1zHWVfUg4PaxcX2wBncwt33
-         I6pR1kQOAtHLR8s7WN2xxqdM/+14zqxXaRHaCaDQUSWs7RHL7ebgf54ZNWsnoBMp8QIp
-         Id3g==
-X-Gm-Message-State: AOAM532tRrr64r5f5ClY5qvE9z7o1/Ou/mmHjVIf3Z9GVWnYuG583y93
-        v9CmfC86M0THXlb/UZO/j3ucq8HnTs6M1Q==
-X-Google-Smtp-Source: ABdhPJyk0KcyBbmeslmFmqYbL+2LRCFwjepnPlaN0C5SZtW0Tu6BpW2c6jZevl+Ya0lDw9kpl1oucUsx4cvS/g==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:24a2:4c13:4cc0:8818])
- (user=dlatypov job=sendgmr) by 2002:a05:6214:186d:: with SMTP id
- eh13mr6867008qvb.35.1626391488871; Thu, 15 Jul 2021 16:24:48 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 16:24:41 -0700
-Message-Id: <20210715232441.1380885-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH] lib/test: convert test_sort.c to use KUnit
-From:   Daniel Latypov <dlatypov@google.com>
-To:     akpm@linux-foundation.org
-Cc:     pravin.shedge4linux@gmail.com, brendanhiggins@google.com,
-        davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, Daniel Latypov <dlatypov@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=osEHxnbqkKfllh7yBx8CxwUvom3YXLUsPzxXJb1aBZA=;
+        b=gkYEW55evyK0XxibugzWBrZIG/P2qENPzw3+0eh9N+w+vQJf3uY/26Fuoof2TazFjg
+         82aQ8y0CpEZojSWMm6fxUbs6z35v7A8msE93uPBCCTmUGIApfWv9wo45uGrd2aDXAUKx
+         AxUShvrZ8aKPpAlXtbwD+06twxeRaoKbzdw0Mj7DBzn373RJVLYiq2TXYMb3RoycxHYP
+         kdSFit19OPmrx5rbJ/n8y/fCl6qfZ6Ap0EDkJhOC2li10bYJeRujzSL6SMlioZTSZOJh
+         CuqJ83GVY2nRVRuKcvSspEhbADzPDvPqlU2le68YffbZLLaZ6c0PYi7KYuCBcjE4MI/I
+         QEeg==
+X-Gm-Message-State: AOAM530FMbStR3Nuc9B2O8pO+XqC27DgKq7azayixdV5xvmY/+LeCg2L
+        WjmP2f08ZfU0RfD6NFPtsHH864wADe4FM4AbIvw=
+X-Google-Smtp-Source: ABdhPJw+M3HiAGSiKBJMmx2eP+iFWPacEhDHA7mJnNhxrlxTC9Mg7R9DSCDvYUplDVAfCL+McCrFonbu3lbHNBsae7Y=
+X-Received: by 2002:a5e:d512:: with SMTP id e18mr4995700iom.149.1626391657480;
+ Thu, 15 Jul 2021 16:27:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
+ <CAHp75VeL89xaP9xjnigvv7Hki20=b7drp5iZ+ZfhZke6WGWsRA@mail.gmail.com>
+ <20210714110218.izcop7grykhfyvll@lem-wkst-02.lemonage> <CAHp75VdGnuOPUKYSc0cFvXEY8Vt7LGiP2pS518=890FfV9Fk=g@mail.gmail.com>
+In-Reply-To: <CAHp75VdGnuOPUKYSc0cFvXEY8Vt7LGiP2pS518=890FfV9Fk=g@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Jul 2021 01:27:26 +0200
+Message-ID: <CANiq72mO9RAUosO0=WWquENZvPHTwo0kpUCHW_1ELeb6uCtTkg@mail.gmail.com>
+Subject: Re: [RFC] auxdisplay: Fix oops on hd44780 module unloading
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This follows up commit ebd09577be6c ("lib/test: convert
-lib/test_list_sort.c to use KUnit").
+On Thu, Jul 15, 2021 at 4:12 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> I think you meant "RFT" in the subject line.
+> Anyway, I have tested it and it seems to be working fine.
+>
+> Reported-and-tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Converting this test to KUnit makes the test a bit shorter, standardizes
-how it reports pass/fail, and adds an easier way to run the test [1].
+Thanks for testing Andy -- queued.
 
-Like ebd09577be6c, this leaves the file and Kconfig option name the
-same, but slightly changes their dependencies (needs CONFIG_KUNIT).
-
-[1] Can be run via
-$ ./tools/testing/kunit/kunit.py run --kunitconfig /dev/stdin <<EOF
-CONFIG_KUNIT=y
-CONFIG_TEST_SORT=y
-EOF
-
-[11:30:27] Starting KUnit Kernel ...
-[11:30:30] ============================================================
-[11:30:30] ======== [PASSED] lib_sort ========
-[11:30:30] [PASSED] test_sort
-[11:30:30] ============================================================
-[11:30:30] Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
-[11:30:30] Elapsed time: 37.032s total, 0.001s configuring, 34.090s building, 0.000s running
-
-Note: this is the time it took after a `make mrproper`.
-
-With an incremental rebuild, this looks more like:
-[11:38:58] Elapsed time: 6.444s total, 0.001s configuring, 3.416s building, 0.000s running
-
-Since the test has no dependencies, it can also be run (with some other
-tests) with just:
-$ ./tools/testing/kunit/kunit.py run
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- lib/Kconfig.debug |  5 +++--
- lib/test_sort.c   | 40 +++++++++++++++++++---------------------
- 2 files changed, 22 insertions(+), 23 deletions(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 831212722924..a9f7097fbb86 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2078,8 +2078,9 @@ config TEST_MIN_HEAP
- 	  If unsure, say N.
- 
- config TEST_SORT
--	tristate "Array-based sort test"
--	depends on DEBUG_KERNEL || m
-+	tristate "Array-based sort test" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
- 	help
- 	  This option enables the self-test function of 'sort()' at boot,
- 	  or at module load time.
-diff --git a/lib/test_sort.c b/lib/test_sort.c
-index 52edbe10f2e5..be02e3a098cf 100644
---- a/lib/test_sort.c
-+++ b/lib/test_sort.c
-@@ -1,4 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <kunit/test.h>
-+
- #include <linux/sort.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -7,18 +10,17 @@
- 
- #define TEST_LEN 1000
- 
--static int __init cmpint(const void *a, const void *b)
-+static int cmpint(const void *a, const void *b)
- {
- 	return *(int *)a - *(int *)b;
- }
- 
--static int __init test_sort_init(void)
-+static void test_sort(struct kunit *test)
- {
--	int *a, i, r = 1, err = -ENOMEM;
-+	int *a, i, r = 1;
- 
--	a = kmalloc_array(TEST_LEN, sizeof(*a), GFP_KERNEL);
--	if (!a)
--		return err;
-+	a = kunit_kmalloc_array(test, TEST_LEN, sizeof(*a), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a);
- 
- 	for (i = 0; i < TEST_LEN; i++) {
- 		r = (r * 725861) % 6599;
-@@ -27,24 +29,20 @@ static int __init test_sort_init(void)
- 
- 	sort(a, TEST_LEN, sizeof(*a), cmpint, NULL);
- 
--	err = -EINVAL;
- 	for (i = 0; i < TEST_LEN-1; i++)
--		if (a[i] > a[i+1]) {
--			pr_err("test has failed\n");
--			goto exit;
--		}
--	err = 0;
--	pr_info("test passed\n");
--exit:
--	kfree(a);
--	return err;
-+		KUNIT_ASSERT_LE(test, a[i], a[i + 1]);
- }
- 
--static void __exit test_sort_exit(void)
--{
--}
-+static struct kunit_case sort_test_cases[] = {
-+	KUNIT_CASE(test_sort),
-+	{}
-+};
-+
-+static struct kunit_suite sort_test_suite = {
-+	.name = "lib_sort",
-+	.test_cases = sort_test_cases,
-+};
- 
--module_init(test_sort_init);
--module_exit(test_sort_exit);
-+kunit_test_suites(&sort_test_suite);
- 
- MODULE_LICENSE("GPL");
-
-base-commit: 8096acd7442e613fad0354fc8dfdb2003cceea0b
--- 
-2.32.0.402.g57bb445576-goog
-
+Cheers,
+Miguel
