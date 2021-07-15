@@ -2,140 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6037E3C96CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 06:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F073C96D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 06:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhGOEDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 00:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S231627AbhGOEE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 00:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhGOEDv (ORCPT
+        with ESMTP id S229922AbhGOEEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 00:03:51 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A635CC06175F;
-        Wed, 14 Jul 2021 21:00:58 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id e14so3899167qkl.9;
-        Wed, 14 Jul 2021 21:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6rmQU8jGx9qyfU1QaPi0lk+AKU6KfThL1irBy+Grp3M=;
-        b=kbAZJiSxCI+J5bbjEdRXpIrM96GIXkIs94HB8bdkDJfnxiQVAsVtonrl7HlHnnxn10
-         5S23XyY+z+lF3qqPJ4iAyP7+plY5yW1P2CbS18vOFEYbtGfMH+ZU5V1D9ivCISbZeILK
-         5X0t8MB+UVqn+wxa/mcIF3t0rD9FPNWCPoZWQSwnEiq9+/jQ9MUCjL1tRRNF5WW8PNVZ
-         BfQKgmQF8+U1Gpe6d8sfehCfZ9HTiAKQOH9iKV7WByjgb3WYihrk5YOccr7FaiVRMzgo
-         ArdAZVHixj852JUyYKPf263d1Z2M3Jtuz4znWlIQu6zNVsidhS223fg7AgfjRHELER4a
-         5iZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6rmQU8jGx9qyfU1QaPi0lk+AKU6KfThL1irBy+Grp3M=;
-        b=ne8FIlaG8FXZRiV/Ho17it02CGkL26esxRyIrkHDXorJg9/YNE+AStCcNu+E3QS2rt
-         X/3hDAkkz6eKRGlFFq4Wsx+DHdcGdSIuMPdpwvxBNHJMrHa3buw5EE6VgnLPa1M4JtcM
-         YzYPsiZ4G3RmJ0CVT7VHqL/YbfP1TEWwtKbla9j/8qdrt6vZLDlOHjM+Xy685ma0CwDk
-         b1/e83GcsSAQu6SwXwo9iaMErdEMFr+ylSfaIrd1LrMiTrqYeXlzRGEro19jlFwa6rKr
-         KJtKRRGRsAZPzmAbQwrSuQwdeUxqDOIlNOMo508Ed6yvdC5YX9iSEPvGgd7K/ZfGkk6/
-         y3Rg==
-X-Gm-Message-State: AOAM533UdWm9HDspAlco0xIyypRXngLyDCeH+adc++97Vmwxerjrp2y5
-        D9Rq329UMye6u2pl/G/J3Fc=
-X-Google-Smtp-Source: ABdhPJx06BAR0FJNVGXQ4AOnEF8YxXz85J+lxiWBq3RelI+CV1DaPgQz5DICRdCoL+7G0d2CQIPO7A==
-X-Received: by 2002:ae9:eb54:: with SMTP id b81mr1380516qkg.192.1626321657934;
-        Wed, 14 Jul 2021 21:00:57 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id 8sm825419qkb.105.2021.07.14.21.00.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 21:00:57 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 7D39E27C0054;
-        Thu, 15 Jul 2021 00:00:56 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 15 Jul 2021 00:00:56 -0400
-X-ME-Sender: <xms:97LvYLHaYuyXUyyPMxyEoVUgtVCf2SWJgcqsWztfcbY0KnagWDuEMg>
-    <xme:97LvYIU_tNcQh20OYoQKaVL8GwkxfbnbnVk0K0DAw5PVSq-2G9Rzjz-_Rf4abXIPd
-    Z8pi1okUvGlKYZ6Xw>
-X-ME-Received: <xmr:97LvYNLhzKQLko0Og82ynK7jkku7cccrkCVfisR0zATWrPYauO9TQiBr1XE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelgddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:97LvYJE-mszBMf8KPRMxqYu61NTghuvkTmSsZaqm7_7bXagbS8c5ug>
-    <xmx:97LvYBWu0lmNLmV97SWJFkfQF8KWKaZOzVGidBgn9jHqC0UgZNKaaA>
-    <xmx:97LvYEOZXbkwT89zGQEBuiOeKYGbWqvjVGbnEyQivWkRDD3NzlXuNw>
-    <xmx:-LLvYIMSjQ9oE94tjv9wfJ5f1fok4dSWnULErg_X_8i-uWLjevoh6WuWHso>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 15 Jul 2021 00:00:54 -0400 (EDT)
-Date:   Thu, 15 Jul 2021 11:59:14 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [EXTERNAL] [RFC v4 5/7] PCI: hv: Use pci_host_bridge::domain_nr
- for PCI domain
-Message-ID: <YO+ykuwmfYcY3L0N@boqun-archlinux>
-References: <20210714102737.198432-1-boqun.feng@gmail.com>
- <20210714102737.198432-6-boqun.feng@gmail.com>
- <MW4PR21MB2002D9659313C9B642171629C0139@MW4PR21MB2002.namprd21.prod.outlook.com>
+        Thu, 15 Jul 2021 00:04:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918F5C06175F;
+        Wed, 14 Jul 2021 21:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=PSN9WkEJMgxnxvx0ERIMZ9XtSwSkMfCNyELdamaG3X8=; b=sSanZsUqIYF0IEsFromte2IhP5
+        v7UWwigspuTBNkvIqFgl+qRldS55g4MSColNQmo4RrMOMEl2Rbn5qTS5a57m/ZXrx3Mqzdjf4sdgU
+        laEF/y5PQ/DGwDex4vrQVrm5KdCn2rRBg1Dg3gK8u9df4d1Vq2KBSR3RbzltxOUb2Mh/6W26ShreJ
+        uRQDpQVIRqslHr9sp2BzF8wbTuKm+sqGx8Nes0Q4xVPCdRinDDO4zLZEp5gQdfT4HlICQvXFITBVG
+        ha5cIqCtPP8myhdeynyRGP2SVjc00cheEe0ZA8K3FrKo5DFrO9MIOTmX8hd7eKhrDHTRAqmEoFClS
+        qZhGaJww==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3sXH-002vc7-2t; Thu, 15 Jul 2021 03:59:54 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH v14 028/138] mm/filemap: Add folio_wake_bit()
+Date:   Thu, 15 Jul 2021 04:35:14 +0100
+Message-Id: <20210715033704.692967-29-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210715033704.692967-1-willy@infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW4PR21MB2002D9659313C9B642171629C0139@MW4PR21MB2002.namprd21.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 05:04:38PM +0000, Sunil Muthuswamy wrote:
-> > diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> > index 8d42da5dd1d4..5741b1dd3c14 100644
-> > --- a/drivers/pci/controller/pci-hyperv.c
-> > +++ b/drivers/pci/controller/pci-hyperv.c
-> > @@ -2299,7 +2299,7 @@ static void hv_eject_device_work(struct work_struct *work)
-> >  	 * because hbus->bridge->bus may not exist yet.
-> >  	 */
-> >  	wslot = wslot_to_devfn(hpdev->desc.win_slot.slot);
-> > -	pdev = pci_get_domain_bus_and_slot(hbus->sysdata.domain, 0, wslot);
-> > +	pdev = pci_get_domain_bus_and_slot(hbus->bridge->domain_nr, 0, wslot);
-> >  	if (pdev) {
-> >  		pci_lock_rescan_remove();
-> >  		pci_stop_and_remove_bus_device(pdev);
-> > @@ -3071,6 +3071,7 @@ static int hv_pci_probe(struct hv_device *hdev,
-> >  			 "PCI dom# 0x%hx has collision, using 0x%hx",
-> >  			 dom_req, dom);
-> > 
-> > +	hbus->bridge->domain_nr = dom;
-> >  	hbus->sysdata.domain = dom;
-> With your other patches everything is moving over to based off of bridge->domain_nr.
-> Do we still need to update sysdata.domain?
+Convert wake_up_page_bit() to folio_wake_bit().  All callers have a folio,
+so use it directly.  Saves 66 bytes of text in end_page_private_2().
 
-Yes, we still need it, because x86 is not a CONFIG_PCI_DOMAINS_GENERIC=y
-architecture, and this patchset only makes CONFIG_PCI_DOMAINS_GENERIC=y
-archs work with bridge->domain_nr. x86 still use the arch-specific
-pci_domain_nr(), so we need to set the field in sysdata.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Reviewed-by: David Howells <dhowells@redhat.com>
+---
+ mm/filemap.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-Regards,
-Boqun
+diff --git a/mm/filemap.c b/mm/filemap.c
+index b55c89d7997f..a3ef9abcbcde 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1121,14 +1121,14 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
+ 	return (flags & WQ_FLAG_EXCLUSIVE) != 0;
+ }
+ 
+-static void wake_up_page_bit(struct page *page, int bit_nr)
++static void folio_wake_bit(struct folio *folio, int bit_nr)
+ {
+-	wait_queue_head_t *q = page_waitqueue(page);
++	wait_queue_head_t *q = page_waitqueue(&folio->page);
+ 	struct wait_page_key key;
+ 	unsigned long flags;
+ 	wait_queue_entry_t bookmark;
+ 
+-	key.page = page;
++	key.page = &folio->page;
+ 	key.bit_nr = bit_nr;
+ 	key.page_match = 0;
+ 
+@@ -1163,7 +1163,7 @@ static void wake_up_page_bit(struct page *page, int bit_nr)
+ 	 * page waiters.
+ 	 */
+ 	if (!waitqueue_active(q) || !key.page_match) {
+-		ClearPageWaiters(page);
++		folio_clear_waiters(folio);
+ 		/*
+ 		 * It's possible to miss clearing Waiters here, when we woke
+ 		 * our page waiters, but the hashed waitqueue has waiters for
+@@ -1179,7 +1179,7 @@ static void folio_wake(struct folio *folio, int bit)
+ {
+ 	if (!folio_test_waiters(folio))
+ 		return;
+-	wake_up_page_bit(&folio->page, bit);
++	folio_wake_bit(folio, bit);
+ }
+ 
+ /*
+@@ -1446,7 +1446,7 @@ void folio_unlock(struct folio *folio)
+ 	BUILD_BUG_ON(PG_locked > 7);
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+ 	if (clear_bit_unlock_is_negative_byte(PG_locked, folio_flags(folio, 0)))
+-		wake_up_page_bit(&folio->page, PG_locked);
++		folio_wake_bit(folio, PG_locked);
+ }
+ EXPORT_SYMBOL(folio_unlock);
+ 
+@@ -1463,11 +1463,12 @@ EXPORT_SYMBOL(folio_unlock);
+  */
+ void end_page_private_2(struct page *page)
+ {
+-	page = compound_head(page);
+-	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
+-	clear_bit_unlock(PG_private_2, &page->flags);
+-	wake_up_page_bit(page, PG_private_2);
+-	put_page(page);
++	struct folio *folio = page_folio(page);
++
++	VM_BUG_ON_FOLIO(!folio_test_private_2(folio), folio);
++	clear_bit_unlock(PG_private_2, folio_flags(folio, 0));
++	folio_wake_bit(folio, PG_private_2);
++	folio_put(folio);
+ }
+ EXPORT_SYMBOL(end_page_private_2);
+ 
+-- 
+2.30.2
 
-> 
