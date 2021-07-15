@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFC13CA0E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA643CA0E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237559AbhGOOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbhGOOqN (ORCPT
+        id S237806AbhGOOqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:46:50 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:40204
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234745AbhGOOqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:46:13 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8D8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 07:43:19 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id y4so6489303pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 07:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=re68oozSXCNcEuLqYPK0MfMJDizX2uWBaEmtTrtMpWI=;
-        b=vcTTxOzuIbNNJKDsiYkUiKcmzWQC/UzlH2SLX9olvT4MqNK2/ddS4NllYspfxm6Hhp
-         bs8o2CJIDCun6S5T4C/1gv0qEAoJ6AFe7/Z14RD38jzHJSMjjezVf5e0hiu2nUwmOatA
-         JbyCAkZpuDFui/LcaKU+61wrru/fNtMpnHoiUu8b+LS4hT1HxwFEZ4Zn56xIxkmXqBdq
-         pIdphAwzM5IIH/w6vckqOxnOiH3xnckCzsYlmdhwN9p1zhZAO0qXOVjEFPW5BjXOlIiN
-         XmSSaB65KC+yVfLML9it4AYHvuxAoBqmgRFY6K4JEFlXsf8aqumH5kflvV8AMZn3dysp
-         gbPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=re68oozSXCNcEuLqYPK0MfMJDizX2uWBaEmtTrtMpWI=;
-        b=kzZU4cZ7y4aq2iHt/PejfDhfMzmvKKxRvVcQ9RJr5+iHBnuhjhO/c0Msw4kfV8EcIn
-         XRQZ/rQfb0k4kPbvXr47alqHuaKLKPZUpHAU2kGDZ3uuFZ2cCCKrp40+ve0CVUm0HJ1w
-         GmnWj0DLxGZ+yL8icdfNtyNW1rheISaW7Xg4aR+91NA/lxs7mgujChZuxGMj6JMZQ+5o
-         apj6NnSSk/e3miPiK0Vqml/USlwjmU0BT00qvUqKOqeLqTsyif0JLXucvzwq7QJtxLDy
-         2kj+F8nXxsSvY2c+scCz+7FpED94DSX03d46Va8UdGMhtusobJQUXx3aIKKNPKqugVeq
-         DMhQ==
-X-Gm-Message-State: AOAM532wl6OuLflQygAPPzOWp0fXH9nvnAthUObKNFp1+8x3uYRKEe6F
-        3BlUy4sfzQC/cM1la/pj/mL6NVotvUeHKbv7lbiBKvcF+zA=
-X-Google-Smtp-Source: ABdhPJwiAj51g++PDpSWSBfxB90tZ0lCiNnIZprzlOKYyQB8KmSDoXZY0iYQu8MkkTZYGWCvp7IZYnhwROqWnZkvuIc=
-X-Received: by 2002:a63:d014:: with SMTP id z20mr4959361pgf.203.1626360198909;
- Thu, 15 Jul 2021 07:43:18 -0700 (PDT)
+        Thu, 15 Jul 2021 10:46:49 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 3894D4057E;
+        Thu, 15 Jul 2021 14:43:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626360235;
+        bh=gfs+8/c8hnN8i/caRw7hYMCuUCYqZVb6lnRHT6b4R+Q=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=gD/Vf+hjnBEAE7QGXUPYOvycIlwFLK6pPMepWb9CndW3pG9tg3vrGVNnSaYic8e1D
+         s8BHi56rzerLcrtlk4UkFEY8Mq7Lz/6+SCvOMK7qLhWDUNuMRLRFic1JJWmC45NKlI
+         XTqn2rrPRPLvrlbYnGU6SlAF1BX3cLTTMsxYMaqbYNX66hS1A74FI1I4DIwSl2pSSv
+         45JJ5CDWZpgZGaSifQH2xOsemHu9vfYvjQOLBNsR3YmvU3HvtsUVss5YbtwAODyAxc
+         7FLi8Khg8IxSGMDP13MjQcWbsNu8PuckJRR2YSnw0dYGf42r2q5L/Ds+62elxAX901
+         1XFNSIquCrepg==
+From:   Colin King <colin.king@canonical.com>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: bridge: make const array frs_limits static, makes object smaller
+Date:   Thu, 15 Jul 2021 15:43:55 +0100
+Message-Id: <20210715144355.28675-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210715132310.31514-1-andriy.shevchenko@linux.intel.com> <20210715142546.GG27830@1wt.eu>
-In-Reply-To: <20210715142546.GG27830@1wt.eu>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 15 Jul 2021 17:42:39 +0300
-Message-ID: <CAHp75VereWXovC3Bc_Gb_KpkE_-hfZQC+OpHM0v6hyOByS8B_g@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] auxdisplay: charlcd: Drop unneeded terminator entry
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 5:27 PM Willy Tarreau <w@1wt.eu> wrote:
-> On Thu, Jul 15, 2021 at 04:23:10PM +0300, Andy Shevchenko wrote:
-> > Besides 0 not being, strictly speaking, a pointer it's redundant after
-> > the actual terminator NULL entry. Drop the former for good.
->
-> It seems to me that there is confusion caused by the absence of
-> the field names
+From: Colin Ian King <colin.king@canonical.com>
 
-My gosh, you are right!
-v2 on its way, thanks for review!
+Don't populate the const array frs_limits on the stack but instead it
+static. Makes the object code smaller by 128 bytes:
 
+Before:
+   text    data     bss     dec     hex filename
+  25155    7440      64   32659    7f93 ./drivers/gpu/drm/bridge/tc358768.o
+
+After:
+   text    data     bss     dec     hex filename
+  25059    7408      64   32531    7f13 ./drivers/gpu/drm/bridge/tc358768.o
+
+(gcc version 10.3.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/bridge/tc358768.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+index 8ed8302d6bbb..2495ea46b091 100644
+--- a/drivers/gpu/drm/bridge/tc358768.c
++++ b/drivers/gpu/drm/bridge/tc358768.c
+@@ -291,7 +291,7 @@ static int tc358768_calc_pll(struct tc358768_priv *priv,
+ 			     const struct drm_display_mode *mode,
+ 			     bool verify_only)
+ {
+-	const u32 frs_limits[] = {
++	static const u32 frs_limits[] = {
+ 		1000000000,
+ 		500000000,
+ 		250000000,
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.1
+
