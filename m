@@ -2,250 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093323C9893
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 07:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A153C989B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 07:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240157AbhGOFzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 01:55:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:22887 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240121AbhGOFze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 01:55:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="197661976"
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="197661976"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 22:52:42 -0700
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="505591660"
-Received: from yhuang6-mobl1.sh.intel.com ([10.238.6.138])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 22:52:39 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH -V10 9/9] mm/migrate: add sysfs interface to enable reclaim migration
-Date:   Thu, 15 Jul 2021 13:51:45 +0800
-Message-Id: <20210715055145.195411-10-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210715055145.195411-1-ying.huang@intel.com>
-References: <20210715055145.195411-1-ying.huang@intel.com>
+        id S238520AbhGOGB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:01:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27653 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231910AbhGOGB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 02:01:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626328714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bys4CYtSgkKoR1XSPOkurwc5Ir5mdkIuDGtdtvpCIGU=;
+        b=iYA+/jqIPyCIYHk0576Wu64Sf0AoS+p12cY4zTg7OgOMa5sd/VNG84FA1+uiUT1T/FwppX
+        xRPYY8vSgYzRWSo0qIkWvX+UjoThKNhceK1Y1R1vP1WvFz7zB5WWetDzDDAlKl8wCg+uB3
+        AqcMf8zCjmL+Pd2YczFQve9WBqj3Zj0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-QdwvScezMzONdUh5l_Wyqg-1; Thu, 15 Jul 2021 01:58:32 -0400
+X-MC-Unique: QdwvScezMzONdUh5l_Wyqg-1
+Received: by mail-wr1-f70.google.com with SMTP id o10-20020a05600002cab02901426384855aso297768wry.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 22:58:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Bys4CYtSgkKoR1XSPOkurwc5Ir5mdkIuDGtdtvpCIGU=;
+        b=ENFpNtKWOT9Qp5WN+oflUUcshzduvjOM17/V/PJJW+UFXpYHLDhGmT9FtPn0NG4QQG
+         TowgTkNDbojUOqmjqo0t14gG0iSgBUdef39+eoIPSYauNpZsDm1FhVOzituLdhlfR0Ag
+         Gi84s7AJGHANxkw1IBaL+plZYseHRtgD1dJx4YfQvY7+PmmQogmqHRYd1NRT1mmYPb6c
+         J5QcSh2PCfR4KAeVxNwHTxXsICsYWCjX4MiggiwOvZ0SEM9+rUdf8vSzDAA3wsLIEryb
+         2YS9kbkSxH5i9b0szOBbIHvkSsg6cL2Wiwx6H7/Ja6ZcGnfCpRfqpT4KTZBgzingZjIc
+         ekxw==
+X-Gm-Message-State: AOAM5315/uU5wPWE3ztQOT6A5lGFhQdv+qgrEZU1XeLAtUKhjFOi/c3R
+        CYtt4DQffAeVH4vB9uDHrAiJevfrtiSR4g8u5pJa0C7muN2ugMTrVnIPFsFa8BZbquQ5G7VKmhD
+        C54i9qiRlGythCo4/AhwYe7Ru
+X-Received: by 2002:a5d:5103:: with SMTP id s3mr3015106wrt.180.1626328711396;
+        Wed, 14 Jul 2021 22:58:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3E4SoWUJj2CjUpFkZsDNJKZV50Hbs/CmiuA1iv5C47c1yMiWjEexrW/LoT8GoK2myy1FN6g==
+X-Received: by 2002:a5d:5103:: with SMTP id s3mr3015072wrt.180.1626328711040;
+        Wed, 14 Jul 2021 22:58:31 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id y16sm5188687wrw.42.2021.07.14.22.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 22:58:30 -0700 (PDT)
+To:     Jason Wang <jasowang@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Juri Lelli <jlelli@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        He Zhe <zhe.he@windriver.com>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <4b53e2be-c38e-7509-dfcf-94f5bf5dcc10@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+Message-ID: <52348289-5d4d-f4a4-6fe3-f0c24cc6d9f9@redhat.com>
+Date:   Thu, 15 Jul 2021 07:58:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <4b53e2be-c38e-7509-dfcf-94f5bf5dcc10@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some method is obviously needed to enable reclaim-based migration.
+On 15/07/21 06:14, Jason Wang wrote:
+>> This obviously does not fly with PREEMPT_RT.  If eventfd_signal is
+>> preempted and an unrelated thread calls eventfd_signal, the result is
+>> a spurious WARN.  To avoid this, protect the percpu variable with a
+>> local_lock.
+> 
+> But local_lock only disable migration not preemption.
 
-Just like traditional autonuma, there will be some workloads that
-will benefit like workloads with more "static" configurations where
-hot pages stay hot and cold pages stay cold.  If pages come and go
-from the hot and cold sets, the benefits of this approach will be
-more limited.
+On mainline PREEMPT_RT, local_lock is an array of per-CPU spinlocks. 
+When two eventfd_signals run on the same CPU and one is preempted, the 
+spinlocks avoid that the second sees eventfd_wake_count > 0.
 
-The benefits are truly workload-based and *not* hardware-based.
-We do not believe that there is a viable threshold where certain
-hardware configurations should have this mechanism enabled while
-others do not.
+Thanks,
 
-To be conservative, earlier work defaulted to disable reclaim-
-based migration and did not include a mechanism to enable it.
-This proposes add a new sysfs file
+Paolo
 
-  /sys/kernel/mm/numa/demotion_enabled
-
-as a method to enable it.
-
-We are open to any alternative that allows end users to enable
-this mechanism or disable it if workload harm is detected (just
-like traditional autonuma).
-
-Once this is enabled page demotion may move data to a NUMA node
-that does not fall into the cpuset of the allocating process.
-This could be construed to violate the guarantees of cpusets.
-However, since this is an opt-in mechanism, the assumption is
-that anyone enabling it is content to relax the guarantees.
-
-Originally-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Huang Ying <ying.huang@intel.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Wei Xu <weixugc@google.com>
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-
-Changes since 20210618:
- * Guard next_demotion_node() with numa_demotion_enabled if necessary
-   per Wei's comments.
-
-Changes since 20210331:
- * Use sysfs interface separated from the zone_reclaim sysctl.
-
-Changes since 20210304:
- * Add Documentation/ material about relaxing cpuset constraints
-
-Changes since 20200122:
- * Changelog material about relaxing cpuset constraints
----
- .../ABI/testing/sysfs-kernel-mm-numa          | 24 ++++++++
- include/linux/mempolicy.h                     |  4 ++
- mm/mempolicy.c                                | 61 +++++++++++++++++++
- mm/vmscan.c                                   |  5 +-
- 4 files changed, 92 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-numa
-
-diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-numa b/Documentation/ABI/testing/sysfs-kernel-mm-numa
-new file mode 100644
-index 000000000000..77e559d4ed80
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-numa
-@@ -0,0 +1,24 @@
-+What:		/sys/kernel/mm/numa/
-+Date:		June 2021
-+Contact:	Linux memory management mailing list <linux-mm@kvack.org>
-+Description:	Interface for NUMA
-+
-+What:		/sys/kernel/mm/numa/demotion_enabled
-+Date:		June 2021
-+Contact:	Linux memory management mailing list <linux-mm@kvack.org>
-+Description:	Enable/disable demoting pages during reclaim
-+
-+		Page migration during reclaim is intended for systems
-+		with tiered memory configurations.  These systems have
-+		multiple types of memory with varied performance
-+		characteristics instead of plain NUMA systems where
-+		the same kind of memory is found at varied distances.
-+		Allowing page migration during reclaim enables these
-+		systems to migrate pages from fast tiers to slow tiers
-+		when the fast tier is under pressure.  This migration
-+		is performed before swap.  It may move data to a NUMA
-+		node that does not fall into the cpuset of the
-+		allocating process which might be construed to violate
-+		the guarantees of cpusets.  This should not be enabled
-+		on systems which need strict cpuset location
-+		guarantees.
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index 0aaf91b496e2..4ca025e2a77e 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -184,6 +184,8 @@ extern bool vma_migratable(struct vm_area_struct *vma);
- extern int mpol_misplaced(struct page *, struct vm_area_struct *, unsigned long);
- extern void mpol_put_task_policy(struct task_struct *);
- 
-+extern bool numa_demotion_enabled;
-+
- #else
- 
- struct mempolicy {};
-@@ -292,5 +294,7 @@ static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
- {
- 	return NULL;
- }
-+
-+#define numa_demotion_enabled	false
- #endif /* CONFIG_NUMA */
- #endif
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 939eabcaf488..e675bfb856da 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -3021,3 +3021,64 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
- 		p += scnprintf(p, buffer + maxlen - p, ":%*pbl",
- 			       nodemask_pr_args(&nodes));
- }
-+
-+bool numa_demotion_enabled = false;
-+
-+#ifdef CONFIG_SYSFS
-+static ssize_t numa_demotion_enabled_show(struct kobject *kobj,
-+					  struct kobj_attribute *attr, char *buf)
-+{
-+	return sysfs_emit(buf, "%s\n",
-+			  numa_demotion_enabled? "true" : "false");
-+}
-+
-+static ssize_t numa_demotion_enabled_store(struct kobject *kobj,
-+					   struct kobj_attribute *attr,
-+					   const char *buf, size_t count)
-+{
-+	if (!strncmp(buf, "true", 4) || !strncmp(buf, "1", 1))
-+		numa_demotion_enabled = true;
-+	else if (!strncmp(buf, "false", 5) || !strncmp(buf, "0", 1))
-+		numa_demotion_enabled = false;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+
-+static struct kobj_attribute numa_demotion_enabled_attr =
-+	__ATTR(demotion_enabled, 0644, numa_demotion_enabled_show,
-+	       numa_demotion_enabled_store);
-+
-+static struct attribute *numa_attrs[] = {
-+	&numa_demotion_enabled_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group numa_attr_group = {
-+	.attrs = numa_attrs,
-+};
-+
-+static int __init numa_init_sysfs(void)
-+{
-+	int err;
-+	struct kobject *numa_kobj;
-+
-+	numa_kobj = kobject_create_and_add("numa", mm_kobj);
-+	if (!numa_kobj) {
-+		pr_err("failed to create numa kobject\n");
-+		return -ENOMEM;
-+	}
-+	err = sysfs_create_group(numa_kobj, &numa_attr_group);
-+	if (err) {
-+		pr_err("failed to register numa group\n");
-+		goto delete_obj;
-+	}
-+	return 0;
-+
-+delete_obj:
-+	kobject_put(numa_kobj);
-+	return err;
-+}
-+subsys_initcall(numa_init_sysfs);
-+#endif
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b697f1a6108c..1afbbd7e853a 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -521,6 +521,8 @@ static long add_nr_deferred(long nr, struct shrinker *shrinker,
- 
- static bool can_demote_anon_pages(int nid, struct scan_control *sc)
- {
-+	if (!numa_demotion_enabled)
-+		return false;
- 	if (sc) {
- 		if (sc->no_demotion)
- 			return false;
-@@ -531,8 +533,7 @@ static bool can_demote_anon_pages(int nid, struct scan_control *sc)
- 	if (next_demotion_node(nid) == NUMA_NO_NODE)
- 		return false;
- 
--	// FIXME: actually enable this later in the series
--	return false;
-+	return true;
- }
- 
- static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
--- 
-2.30.2
+> Or anything I missed here?
+> 
+> Thanks
+> 
+> 
+>>
+>> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+>> Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
+>> Cc: stable@vger.kernel.org
+>> Cc: He Zhe <zhe.he@windriver.com>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>>
+>> diff --git a/fs/eventfd.c b/fs/eventfd.c
+>> index e265b6dd4f34..7d27b6e080ea 100644
+>> --- a/fs/eventfd.c
+>> +++ b/fs/eventfd.c
+>> @@ -12,6 +12,7 @@
+>>  #include <linux/fs.h>
+>>  #include <linux/sched/signal.h>
+>>  #include <linux/kernel.h>
+>> +#include <linux/local_lock.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/list.h>
+>>  #include <linux/spinlock.h>
+>> @@ -25,6 +26,7 @@
+>>  #include <linux/idr.h>
+>>  #include <linux/uio.h>
+>>
+>> +static local_lock_t eventfd_wake_lock = 
+>> INIT_LOCAL_LOCK(eventfd_wake_lock);
+>>  DEFINE_PER_CPU(int, eventfd_wake_count);
+>>
+>>  static DEFINE_IDA(eventfd_ida);
+>> @@ -71,8 +73,11 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+>>       * it returns true, the eventfd_signal() call should be deferred 
+>> to a
+>>       * safe context.
+>>       */
+>> -    if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
+>> +    local_lock(&eventfd_wake_lock);
+>> +    if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count))) {
+>> +        local_unlock(&eventfd_wake_lock);
+>>          return 0;
+>> +    }
+>>
+>>      spin_lock_irqsave(&ctx->wqh.lock, flags);
+>>      this_cpu_inc(eventfd_wake_count);
+>> @@ -83,6 +88,7 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+>>          wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+>>      this_cpu_dec(eventfd_wake_count);
+>>      spin_unlock_irqrestore(&ctx->wqh.lock, flags);
+>> +    local_unlock(&eventfd_wake_lock);
+>>
+>>      return n;
+>>  }
+>>
+> 
 
