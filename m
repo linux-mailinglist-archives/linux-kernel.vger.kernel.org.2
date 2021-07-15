@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDF03CA1BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8918D3CA1C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239571AbhGOP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:59:19 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42513 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239546AbhGOP7R (ORCPT
+        id S239596AbhGOQBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239415AbhGOQBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:59:17 -0400
-Received: from callcc.thunk.org (96-65-121-81-static.hfc.comcastbusiness.net [96.65.121.81])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16FFu7nG013646
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 11:56:08 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 2D4984202F5; Thu, 15 Jul 2021 11:56:07 -0400 (EDT)
-Date:   Thu, 15 Jul 2021 11:56:07 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 000/138] Memory folios
-Message-ID: <YPBal2dhY+Rv3APB@mit.edu>
-References: <20210715033704.692967-1-willy@infradead.org>
+        Thu, 15 Jul 2021 12:01:00 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9E3C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:58:06 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id ee25so8832133edb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CEb5a1maIQQgHYmKJB3wbVzZJDH16Rwjgv/JsDYzDW4=;
+        b=NYmYiWqwZ7wq29hbL4QMhRiMKrd9SOlvd18wyaXqGvRAGRbzBaJthm960JE2gQPqOH
+         RcKw1rkiJdrekSMIZ1VkOMQPAgyvbaVaHcSdWk6wRPQNZJ6eByaj5cC9FfJw5A5CPPIz
+         vTp6sziLVcfp59AZG6byxXmy5nAIACQGJv140=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CEb5a1maIQQgHYmKJB3wbVzZJDH16Rwjgv/JsDYzDW4=;
+        b=p+Ja+En0DRSZ58wVAvqDx5ipr0NkVFAXu52s6odybPT7gGpzoMacThoy/WPqxbAZPC
+         EOQSyjq83x+J+0koN293qJN+ocSx5XeIYNvujjymQlxDFCphs4+dW6kLGRncVMJiBwSd
+         0K5mPU+NCRIv8Vxz65hRfgWvmfsfbRnuqIsRoQq+hmxfvHJ0I8fy3qKi8EeGUPi94eu4
+         TSytE6VFhuTe9nFQ0XXbelBMSMSBHFWUtNgTfP2rVdqy+PnaloS5ck9RMPKPuYfzPU/8
+         GqRZwlIcc9mji1rrNI+bjMoGLTk+18JSWpEe4hOpgaHXZPQt3sCtBGU5vZtaGrjogokp
+         /20A==
+X-Gm-Message-State: AOAM533vI4NMYWEUt3Yr6Wgqeb1aPOzNN1Wdkau8GqNMO1oBih/KVb4E
+        R4YWTl8yUM8s2S/euxxBICXrENPSRFYZFmTSxYgkcQ==
+X-Google-Smtp-Source: ABdhPJzbx5mWi4SVxmU66lSkrv7u5T0QyI6zXoCXUYV4qW+xU3i3I1P9jmNb8I7dkhiEXZ68f70jjsvNjynRj5bSSGA=
+X-Received: by 2002:a50:9b06:: with SMTP id o6mr8161258edi.284.1626364685536;
+ Thu, 15 Jul 2021 08:58:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-1-willy@infradead.org>
+References: <2b1b798e-8449-11e-e2a1-daf6a341409b@google.com>
+ <YO0zXVX9Bx9QZCTs@kroah.com> <20210713182813.2fdd57075a732c229f901140@linux-foundation.org>
+ <YO6X2og4mzqAEwJn@dhcp22.suse.cz> <YO8DJkVzHFmPv6vz@sashalap>
+In-Reply-To: <YO8DJkVzHFmPv6vz@sashalap>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Thu, 15 Jul 2021 10:57:54 -0500
+Message-ID: <CAFxkdAqE0vKCyr4qFjtKmn46rHn+RJsn7m_MX6jjbN6FZcDLMA@mail.gmail.com>
+Subject: Re: 5.13.2-rc and others have many not for stable
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:34:46AM +0100, Matthew Wilcox (Oracle) wrote:
-> Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
-> benefit from a larger "page size".  As an example, an earlier iteration
-> of this idea which used compound pages (and wasn't particularly tuned)
-> got a 7% performance boost when compiling the kernel.
-> 
-> Using compound pages or THPs exposes a weakness of our type system.
-> Functions are often unprepared for compound pages to be passed to them,
-> and may only act on PAGE_SIZE chunks.  Even functions which are aware of
-> compound pages may expect a head page, and do the wrong thing if passed
-> a tail page.
-> 
-> We also waste a lot of instructions ensuring that we're not looking at
-> a tail page.  Almost every call to PageFoo() contains one or more hidden
-> calls to compound_head().  This also happens for get_page(), put_page()
-> and many more functions.
-> 
-> This patch series uses a new type, the struct folio, to manage memory.
-> It converts enough of the page cache, iomap and XFS to use folios instead
-> of pages, and then adds support for multi-page folios.  It passes xfstests
-> (running on XFS) with no regressions compared to v5.14-rc1.
+On Wed, Jul 14, 2021 at 10:30 AM Sasha Levin <sashal@kernel.org> wrote:
+>
+> On Wed, Jul 14, 2021 at 09:52:58AM +0200, Michal Hocko wrote:
+> >On Tue 13-07-21 18:28:13, Andrew Morton wrote:
+> >> At present this -stable
+> >> promiscuity is overriding the (sometime carefully) considered decision=
+s
+> >> of the MM developers, and that's a bit scary.
+> >
+> >Not only scary, it is also a waste of precious time of those who
+> >carefuly evaluate stable tree backports.
+>
+> I'm just as concerned with the other direction: we end up missing quite
+> a lot of patches that are needed in practice, and no one is circling
+> back to make sure that we have everything we need.
+>
 
-Hey Willy,
+It does work both ways. For those of us maintaining a kernel for a
+community distro, without an army of engineers actually paying
+attention, the current stable process has fixed more bugs than it has
+introduced.  But it does occasionally introduce them as well. When it
+does, it is typically pretty easy to see where, as stable releases
+tend to be smaller than this set was, so only a few patches in any
+given subsystem or driver.  If we go back to a case where only Cc:
+stable patches are selected, I suppose the logical step would be for
+maintainers like me to make sure that we send a message to stable
+whenever we pull a patch from upstream that fixes an actual issue that
+users are seeing.  I don't have a strong objection to this, but it is
+more work.
 
-I must confess I've lost the thread of the plot in terms of how you
-hope to get the Memory folio work merged upstream.  There are some
-partial patch sets that just have the mm core, and then there were
-some larger patchsets include some in the past which as I recall,
-would touch ext4 (but which isn't in this set).
+Justin
 
-I was wondering if you could perhaps post a roadmap for how this patch
-set might be broken up, and which subsections you were hoping to
-target for the upcoming merge window versus the following merge
-windows.
-
-Also I assume that for file systems that aren't converted to use
-Folios, there won't be any performance regressions --- is that
-correct?  Or is that something we need to watch for?  Put another way,
-if we don't land all of the memory folio patches before the end of the
-calendar year, and we cut an LTS release with some file systems
-converted and some file systems not yet converted, are there any
-potential problems in that eventuality?
-
-Thanks!
-
-						- Ted
+> I took a peek at SUSE's tree to see how things work there, and looking
+> at the very latest mm/ commit:
+>
+> commit c8c7b321edcf7a7e8c22dc66e0366f72aa2390f0
+> Author: Michal Koutn=C3=BD <mkoutny@suse.com>
+> Date:   Tue May 4 11:12:10 2021 +0200
+>
+>      mm: memcontrol: fix cpuhotplug statistics flushing
+>      (bsc#1185606).
+>
+>      suse-commit: 3bba386a33fac144abf2507554cb21552acb16af
+>
+> This seems to be commit a3d4c05a4474 ("mm: memcontrol: fix cpuhotplug
+> statistics flushing") upstream, and I assume that it was picked because
+> it fixed a real bug someone cares about.
+>
+> I can maybe understand that at the time that the patch was
+> written/committed it didn't seem like stable@ material and thus there
+> was no cc to stable.
+>
+> But once someone realized it needs to be backported, why weren't we told
+> to take it into stable too?
+>
+> --
+> Thanks,
+> Sasha
