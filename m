@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D953CA9DF
+	by mail.lfdr.de (Postfix) with ESMTP id F08A73CA9E0
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244077AbhGOTKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37350 "EHLO mail.kernel.org"
+        id S244110AbhGOTKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243165AbhGOTAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:00:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA616601FE;
-        Thu, 15 Jul 2021 18:57:19 +0000 (UTC)
+        id S243210AbhGOTAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E07610C7;
+        Thu, 15 Jul 2021 18:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375440;
-        bh=iNcNQir2cRVMu562KVKOKY2dPsh8LJRdvfF8o5bwC1Q=;
+        s=korg; t=1626375442;
+        bh=6rF2GL9WIIQWkZO/BED3ShKt4VEZx8DQg4Uu0Zr1E20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FsidDSlBfvGgsDhRVY5EcljLpeuZ4w1voxTIgQM1ZuLea9nFsCMrYSJUaJh2hxGEw
-         CUXoab2ToIeNUd+on649u1fmLU8fYkMoYsmU6ROytEyIR6FEhcmPZiYyV+A9FQ7YB2
-         fK2WLGAhTa+DV7h2Z6NH3UVmGW2VvA8m03PlQwpI=
+        b=lg6vLErifHd8hCP16l2a7LQTRICooTvN0mjVoHN3Shu8Ggtn/P3wQ8JJHFBhSpDmU
+         1H7jwJX3XjO2QDevH7c0v3BVRd5P0z0VftTHjaXkHIaanDnuY+9CYPzIiNt8YLj4a7
+         JV10QkYlwF4C+u2UZtoqgn8zuOEgvX/5cHhdZRHk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 088/242] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
-Date:   Thu, 15 Jul 2021 20:37:30 +0200
-Message-Id: <20210715182608.532399056@linuxfoundation.org>
+Subject: [PATCH 5.12 089/242] cw1200: add missing MODULE_DEVICE_TABLE
+Date:   Thu, 15 Jul 2021 20:37:31 +0200
+Message-Id: <20210715182608.721340691@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,41 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Gibson <leegib@gmail.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit d10a87a3535cce2b890897914f5d0d83df669c63 ]
+[ Upstream commit dd778f89225cd258e8f0fed2b7256124982c8bb5 ]
 
-Function wl1251_cmd_scan calls memcpy without checking the length.
-Harden by checking the length is within the maximum allowed size.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210428115508.25624-1-leegib@gmail.com
+Link: https://lore.kernel.org/r/1620788714-14300-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireless/st/cw1200/cw1200_sdio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
-index 498c8db2eb48..d7a869106782 100644
---- a/drivers/net/wireless/ti/wl1251/cmd.c
-+++ b/drivers/net/wireless/ti/wl1251/cmd.c
-@@ -454,9 +454,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
- 		cmd->channels[i].channel = channels[i]->hw_value;
- 	}
+diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
+index b65ec14136c7..4c30b5772ce0 100644
+--- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
++++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
+@@ -53,6 +53,7 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
+ 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
+ 	{ /* end: all zeroes */			},
+ };
++MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
  
--	cmd->params.ssid_len = ssid_len;
--	if (ssid)
--		memcpy(cmd->params.ssid, ssid, ssid_len);
-+	if (ssid) {
-+		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
-+
-+		cmd->params.ssid_len = len;
-+		memcpy(cmd->params.ssid, ssid, len);
-+	}
+ /* hwbus_ops implemetation */
  
- 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
- 	if (ret < 0) {
 -- 
 2.30.2
 
