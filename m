@@ -2,81 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AA03CA078
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394053CA074
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238781AbhGOOVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:21:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237305AbhGOOVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:21:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0B9B6127C;
-        Thu, 15 Jul 2021 14:18:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626358698;
-        bh=6Tn/bHMMoFMkTpR5Cc+yMgZwnfSPFP99ggxrB8ZaDts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lt1+xDmjNlKpUQJ4DVBCaZQXeM4xO/RTBAFX0h0daQaABwztUHGNrS80LLRIpUn8l
-         iQ8m83UftbZPLae6PtV/AAQGkX3U81e9NsaT1TAPO583x79IfvzKnHM0XukQozjue/
-         datrukQ46KWvo0TpJJddvluztrTKMz4lpMpcozyrBtalAIhW/7/wXvmmg9tLf3ZO7S
-         ajHkydWWux7qTJ1xF73x0AX5+U+HET/ghqg6/4fq05QS7zmTmDU0V9jeCF0xJc30Gc
-         pvmC5unBHkLJ5EOdPdiG5RGM/L036H8LS75cMFedSEJEK+ea/Zp1wzGusU2RHL63dB
-         +Dwt2OqyM7uZw==
-Date:   Thu, 15 Jul 2021 15:17:40 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vijendar Mukunda <vijendar.mukunda@amd.com>
-Cc:     alsa-devel@alsa-project.org, amistry@google.com,
-        nartemiev@google.com, Alexander.Deucher@amd.com,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3] ASoC: add a flag to reverse the stop sequence
-Message-ID: <20210715141740.GC4590@sirena.org.uk>
-References: <20210708175529.13313-1-vijendar.mukunda@amd.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NU0Ex4SbNnrxsi6C"
-Content-Disposition: inline
-In-Reply-To: <20210708175529.13313-1-vijendar.mukunda@amd.com>
-X-Cookie: You look tired.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S238752AbhGOOUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238665AbhGOOUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:20:48 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00473C06175F;
+        Thu, 15 Jul 2021 07:17:53 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so6168837wms.1;
+        Thu, 15 Jul 2021 07:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=WlcQjV1pVGOdbbJgTKcaNM0AAWDKgA3E4feJJrmCLBs=;
+        b=JSHy2P38ya/DHrqRszHIyHx6r4x5mXZOeteeXd631reo6Y05ZYpWxhGAE284a6HkEM
+         R5XejMxtLKqvpifIMWJvLQj1tc6u2qGnb8z5YRA0DGCFWZkN7loSKHZDNlrUIRfClmko
+         Sm689jCIy8cLcMqShcpiS70Tltmtsd42p+IMrhXvw7uKqT9FaW/p19Ls/1l6x3USO+X3
+         qJ9yKlszmesIxVb1QkDYNWQqRyI3/lAz0n7Jah7oWw3dD1xmpNkRJilQxCTKXfzwzqsO
+         KBPA1yE/697sjqb+hzQM1tmSLCybn3g8c1/0hOR8RDAnb0S2Voap038l3YM2Bzgxvvrx
+         MGqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=WlcQjV1pVGOdbbJgTKcaNM0AAWDKgA3E4feJJrmCLBs=;
+        b=r1ch1FGIez8KIa0+5CAOWv1g1RPoPDCR0VrPiBZkI++sdRRP2DLGHNAo2wTFxBQswM
+         IUKGbaxg8wZYfirfy2o3/si9zAF3xuwVJxENQLaril11xyhWqwTOyw/YvD+Euy8kQoEm
+         E+Dn1v17pGeQEV3Z5fJe7AbUa8UxqMB8YaOYQtm3h+EJLlG70fF60gMoyZYJqUxMBu5A
+         yq/BIcnY9U2Orim14YlB9n2GxcrkPCvBFi6LzRe0w0JuggBksNZsV70G1IWmr8ddGJ+4
+         UcYvtwwgIkepTy/Quek21q6K2J6zSWykFVDiltcuOVnhXeiEZTEWi+Cmpyh0zT3s1OD8
+         y42Q==
+X-Gm-Message-State: AOAM530sMcM3UfrOLI68mg9Xwc0oOBTmvl5Dn1fMwFmD//dukKqp9Poa
+        R3EpnJv+5Du8RweR67T4nCW8c8Ih4SRDmAiNs0k=
+X-Google-Smtp-Source: ABdhPJwLU6f+GNqlVZ74sviIzwZHetRsfXAWmohgY9YwygGiXaXxK+QaqXsdPuHfUlud1LH9YSZi6Q==
+X-Received: by 2002:a7b:c934:: with SMTP id h20mr4794896wml.59.1626358672602;
+        Thu, 15 Jul 2021 07:17:52 -0700 (PDT)
+Received: from poker.lan (static.2-229-210-222.ip198.fastwebnet.it. [2.229.210.222])
+        by smtp.gmail.com with ESMTPSA id u16sm7989094wrw.36.2021.07.15.07.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 07:17:52 -0700 (PDT)
+From:   Andrea Merello <andrea.merello@gmail.com>
+To:     jic23@kernel.org, lars@metafoo.de
+Cc:     robh+dt@kernel.org, matt.ranostay@konsulko.com,
+        andriy.shevchenko@linux.intel.com, vlad.dogaru@intel.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andrea Merello <andrea.merello@iit.it>
+Subject: [PATCH 3/4] dt-bindings: iio: imu: add bosch BNO055 serdev driver bindings
+Date:   Thu, 15 Jul 2021 16:17:41 +0200
+Message-Id: <20210715141742.15072-4-andrea.merello@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210715141742.15072-1-andrea.merello@gmail.com>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Introduce new documentation file for the BNO055 serdev driver that will
+be included in next patches of this same series
 
---NU0Ex4SbNnrxsi6C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+Cc: Andrea Merello <andrea.merello@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Matt Ranostay <matt.ranostay@konsulko.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vlad Dogaru <vlad.dogaru@intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-iio@vger.kernel.org
+---
+ .../bindings/iio/imu/bosch,bno055-serial.yaml | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
 
-On Thu, Jul 08, 2021 at 11:25:27PM +0530, Vijendar Mukunda wrote:
+diff --git a/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml b/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
+new file mode 100644
+index 000000000000..743c784ebc94
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/imu/bosch,bno055-serial.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Serial-attached Bosch BNO055
++
++maintainers:
++  - Jonathan Cameron <jic23@kernel.org>
++
++description: |
++  Inertial Measurement Unit with Accelerometer, Gyroscope, Magnetometer and
++  internal MCU for sensor fusion
++  https://www.bosch-sensortec.com/products/smart-sensors/bno055/
++
++properties:
++  compatible:
++    enum:
++     - bosch,bno055-serial
++
++  reset-gpios:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++ - |
++   #include <dt-bindings/gpio/gpio.h>
++   bno055 {
++      compatible = "bosch,bno055-serial";
++      reset-gpios = <&gpio0 54 GPIO_ACTIVE_LOW>;
++      clocks = <&imu_clk>;
++   };
+-- 
+2.17.1
 
->  include/sound/soc.h                  |  6 ++++++
->  sound/soc/amd/acp-da7219-max98357a.c |  5 +++++
->  sound/soc/soc-pcm.c                  | 22 ++++++++++++++++------
->  3 files changed, 27 insertions(+), 6 deletions(-)
-
-This should be two patches, one adding a new feature and the other using
-it.
-
---NU0Ex4SbNnrxsi6C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDwQ4QACgkQJNaLcl1U
-h9ABpQf/XSip+BC68mqysPaI6+TXiMCNF6fKsG5ZD8dvlFh+bGqRrm+qOG/CHnqd
-IjTNrzxysPvNM19HhztFyrUyv0rAETY+4hpOFoOng4MruSnCgMOq0qBj/Xt7cxMU
-6mdWVWy9JZdFLzEUrWg6G49yr9LysgwY6HQcUVMrisi+spm6m+IG+YDGTgb5CHG5
-wqpatcj2DSoLVeOlZW9BuSZZ8+SXXcE4yy0Zh3Wm6Q7LmTw0GR4uLEoNGeQAl870
-vuFXYREMa17MCBSY83f/AWfTGJPHSneO4n3+axyfUEvQ8NKgCmScl78o8lhWi/dg
-SAQCw5LHw8j3qOhM7nFWDhAJg9raWg==
-=8oKq
------END PGP SIGNATURE-----
-
---NU0Ex4SbNnrxsi6C--
