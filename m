@@ -2,102 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A1B3C9F0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BE73C9F0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhGONFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:05:11 -0400
-Received: from mail-m176216.qiye.163.com ([59.111.176.216]:59924 "EHLO
-        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbhGONFJ (ORCPT
+        id S233147AbhGONFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:05:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3416 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229679AbhGONFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:05:09 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=ec0mgI6TSn26h05me9Y511YkmKix0j2choqab79NQpWwdYwHdae579KGyy32asZ940yJttkOXeOEXz7BfbEtwPcxeMoE9P9XXr20Lh+TJ4WWJml9KCFmGyQ2J3ksHDdspYW13Vnovsni8+q2YvjrBAPnyyw3ndPji21T4WCFsrk=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=afWtvPuUPasiz54i1xEfKaQE+Zpd2SbORekVq+VnRAM=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176216.qiye.163.com (Hmail) with ESMTP id C064DC201CD;
-        Thu, 15 Jul 2021 21:02:14 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AHYA9ADdD1ErH8DLzqN8tqrS.3.1626354134777.Hmail.link@vivo.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel@vivo.com,
-        syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com,
-        Wang Qing <wangqing@vivo.com>
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2Ml0gbW0vcGFnZV9hbGxvYzogZml4IGFsbG9jX3BhZ2VzX2J1bGsvc2V0X3BhZ2Vfb3duZXIgcGFuaWMgb24gaXJxIGRpc2FibGVk?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <20210715115731.GS3809@techsingularity.net>
+        Thu, 15 Jul 2021 09:05:49 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GQZ151VnFz6D92V;
+        Thu, 15 Jul 2021 20:48:25 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 15:02:54 +0200
+Received: from localhost (10.47.82.59) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 15 Jul
+ 2021 14:02:53 +0100
+Date:   Thu, 15 Jul 2021 14:02:32 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <linux-iio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation
+ for Renesas RZ/G2L A/D converter
+Message-ID: <20210715140232.0000408c@Huawei.com>
+In-Reply-To: <CA+V-a8spDa5PiGzp6-4mHTEMfQYJ5NnQ44vwgdtu_sfVG5OO5Q@mail.gmail.com>
+References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        <20210703181937.510ec0fa@jic23-huawei>
+        <CA+V-a8uzeepfd+8Wfd2n2EXeXQ9QJZhR+X8j29Y7DGNu8+aH+g@mail.gmail.com>
+        <20210714133913.000075a6@Huawei.com>
+        <CA+V-a8spDa5PiGzp6-4mHTEMfQYJ5NnQ44vwgdtu_sfVG5OO5Q@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Received: from link@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 15 Jul 2021 21:02:14 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p2o5qyi?= <link@vivo.com>
-Date:   Thu, 15 Jul 2021 21:02:14 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUIeT0hWGRhCTR4fGU9KT0
-        pMVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OSk1KS0hNTEJON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MyI6Qjo*Hz9KPgkzQz83AQo1Qw8KCShVSFVKTUlNSE5PSkhOS0NCVTMWGhIXVRcSFRA7DRIN
-        FFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSVlXWQgBWUFNS01MNwY+
-X-HM-Tid: 0a7aaa42af0ad976kuwsc064dc201cd
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.82.59]
+X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gQlVHOiBzbGVlcGluZyBmdW5jdGlvbiBjYWxsZWQgZnJvbSBpbnZhbGlkIGNvbnRleHQgYXQg
-bW0vcGFnZV9hbGxvYy5jOjUxNzkKPj4gaW5fYXRvbWljKCk6IDAsIGlycXNfZGlzYWJsZWQoKTog
-MSwgbm9uX2Jsb2NrOiAwLCBwaWQ6IDEsIG5hbWU6IHN3YXBwZXIvMAo+PiAKPj4gX19kdW1wX3N0
-YWNrIGxpYi9kdW1wX3N0YWNrLmM6NzkgW2lubGluZV0KPj4gZHVtcF9zdGFja19sdmwrMHhjZC8w
-eDEzNCBsaWIvZHVtcF9zdGFjay5jOjk2Cj4+IF9fX21pZ2h0X3NsZWVwLmNvbGQrMHgxZjEvMHgy
-Mzcga2VybmVsL3NjaGVkL2NvcmUuYzo5MTUzCj4+IHByZXBhcmVfYWxsb2NfcGFnZXMrMHgzZGEv
-MHg1ODAgbW0vcGFnZV9hbGxvYy5jOjUxNzkKPj4gX19hbGxvY19wYWdlcysweDEyZi8weDUwMCBt
-bS9wYWdlX2FsbG9jLmM6NTM3NQo+PiBhbGxvY19wYWdlcysweDE4Yy8weDJhMCBtbS9tZW1wb2xp
-Y3kuYzoyMjcyCj4+IHN0YWNrX2RlcG90X3NhdmUrMHgzOWQvMHg0ZTAgbGliL3N0YWNrZGVwb3Qu
-YzozMDMKPj4gc2F2ZV9zdGFjaysweDE1ZS8weDFlMCBtbS9wYWdlX293bmVyLmM6MTIwCj4+IF9f
-c2V0X3BhZ2Vfb3duZXIrMHg1MC8weDI5MCBtbS9wYWdlX293bmVyLmM6MTgxCj4+IHByZXBfbmV3
-X3BhZ2UgbW0vcGFnZV9hbGxvYy5jOjI0NDUgW2lubGluZV0KPj4gX19hbGxvY19wYWdlc19idWxr
-KzB4OGI5LzB4MTg3MCBtbS9wYWdlX2FsbG9jLmM6NTMxMwo+PiAKPj4gVGhlIHByb2JsZW0gaXMg
-Y2F1c2VkIGJ5IHNldF9wYWdlX293bmVyIGFsbG9jIG1lbW9yeSB0byBzYXZlIHN0YWNrIHdpdGgK
-Pj4gR0ZQX0tFUk5FTCBpbiBsb2NhbF9yaXEgZGlzYWJsZWQuCj4+IFNvLCB3ZSBqdXN0IGNhbid0
-IGFzc3VtZSB0aGF0IGFsbG9jIGZsYWdzIHNob3VsZCBiZSBzYW1lIHdpdGggbmV3IHBhZ2UsCj4+
-IHByZXBfbmV3X3BhZ2Ugc2hvdWxkIHByZXAvdHJhY2UgdGhlIHBhZ2UgZ2ZwLCBidXQgc2hvdWxk
-bid0IHVzZSB0aGUgc2FtZQo+PiBnZnAgdG8gZ2V0IG1lbW9yeSwgbGV0J3MgZGVwZW5kIG9uIGNh
-bGxlci4KPj4gU28sIGhlcmUgaXMgdHdvIGdmcCBmbGFncywgYWxsb2NfZ2ZwIHVzZWQgdG8gYWxs
-b2MgbWVtb3J5LCBkZXBlbmQgb24KPj4gY2FsbGVyLCBwYWdlX2dmcF9tYXNrIGlzIHBhZ2UncyBn
-ZnAsIHVzZWQgdG8gdHJhY2UvcHJlcCBpdHNlbGYKPj4gQnV0IGluIG1vc3Qgc2l0dWF0aW9uLCBz
-YW1lIGlzIG9rLCBpbiBhbGxvY19wYWdlc19idWxrLCB1c2UgR0ZQX0FUT01JQwo+PiBpcyBvay4o
-ZXZlbiBpZiBzZXRfcGFnZV9vd25lciBzYXZlIGJhY2t0cmFjZSBmYWlsZWQsIGxpbWl0ZWQgaW1w
-YWN0KQo+PiAKPj4gdjI6Cj4+IC0gYWRkIG1vcmUgZGVzY3JpcHRpb24uCj4+IAo+PiBGaXhlczog
-MGY4N2Q5ZDMwZjIxICgibW0vcGFnZV9hbGxvYzogYWRkIGFuIGFycmF5LWJhc2VkIGludGVyZmFj
-ZSB0byB0aGUgYnVsayBwYWdlIGFsbG9jYXRvciIpCj4+IFJlcG9ydGVkLWJ5OiBzeXpib3QrYjA3
-ZDg0NDBlZGI1Zjg5ODhlZWFAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQo+PiBTdWdnZXN0ZWQt
-Ynk6IFdhbmcgUWluZyA8d2FuZ3FpbmdAdml2by5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFlhbmcg
-SHVhbiA8bGlua0B2aXZvLmNvbT4KPgo+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIx
-MDcxMzE1MjEwMC4xMDM4MS0yLW1nb3JtYW5AdGVjaHNpbmd1bGFyaXR5Lm5ldC8KPmlzIG5vdyBw
-YXJ0IG9mIGEgc2VyaWVzIHRoYXQgaGFzIGJlaW5nIHNlbnQgdG8gTGludXMuIEhlbmNlLCB0aGUg
-Rml4ZXMKPnBhcnQgaXMgbm8gbG9uZ2VyIGFwcGxpY2FibGUgYW5kIHRoZSBwYXRjaCB3aWxsIG5v
-IGxvbmdlciBiZSBhZGRyZXNpbmcKPmFuIGF0b21pYyBzbGVlcCBidWcuICBUaGlzIHBhdGNoIHNo
-b3VsZCBiZSB0cmVhdGVkIGFzIGFuIGVuaGFuY2VtZW50CkhpIE1lbCBHb3JtYW4sIHRoYW5rcyBm
-b3IgeW91ciByZXBseS4KSSBzZWUgdGhlIGZpeCBwYXRjaCwgaXQgZml4IHRoaXMgYnVnIGJ5IGFi
-YW5kb24gYWxsb2MgYnVsayBmZWF0dXJlIHdoZW4gcGFnZV9vd25lciBpcyBzZXQuIApCdXQgaW4g
-bXkgb3BpbmlvbiwgaXQgY2FuJ3QgcmVhbGx5IGZpeCB0aGlzIGJ1ZywgaXQncyBhIGNpcmN1bXZl
-bnRpb24gcGxhbi4KPnRvIGFsbG93IGJ1bGsgYWxsb2NhdGlvbnMgd2hlbiBQQUdFX09XTkVSIGlz
-IHNldC4gRm9yIHRoYXQsIGl0IHNob3VsZAo+aW5jbHVkZSBhIG5vdGUgb24gdGhlIHBlcmZvcm1h
-bmNlIGlmIFBBR0VfT1dORVIgaXMgdXNlZCB3aXRoIGVpdGhlciBORlMKPm9yIGhpZ2gtc3BlZWQg
-bmV0d29ya2luZyB0byBqdXN0aWZ5IHRoZSBhZGRpdGlvbmFsIGNvbXBsZXhpdHkuCk15IHBhdGNo
-IGp1c3Qgc3BsaXQgdGhlIHByZXBfbmV3X3BhZ2UgcGFnZV9nZnAgaW50byBhbGxvY19nZnAoZm9y
-IGFsbG9jIGJ1bGsgaXMgR0ZQX0FUT01JQywKZm9yIG90aGVyJ3Mgbm8gY2hhbmdlKSBhbmQgdHJh
-Y2UgcGFnZSBnZnAuICBTbywgd2Ugd2lsbCBub3QgdXNlIHRoZSBlcnJvciB3YXkgdG8gZ2V0IG1l
-bW9yeS4gClNvLCBJIHRoaW5rIHRoaXMgd2lsbCBub3QgYWZmZWN0IGFsbG9jIGJ1bGsgcGVyZm9y
-bWFuY2Ugd2hlbiBwYWdlX293bmVyIGlzIG9uKGNvbXBhcmUgd2l0aCBvcmlnaW4gcGF0Y2gpIGJ1
-dApjYW4gcmVhbGx5IGZpeCB0aGlzICBidWcgcmF0aGVyIHRoYW4gZXZhZGUuCkFuZCB0aGlzIHBh
-dGNoIGNhbiBsZXQgYWxsb2MgYnVsayBmZWF0dXJlIGFuZCBwYWdlX293bmVyIGZlYXR1cmUgd29y
-ayB0b2doZXIKU28sIEkgd2lsbCBzZW5kIHBhdGNoIGFnYWluIGJhc2VkIG9uIHRoZSBmaXggcGF0
-Y2guClRoYW5rIHlvdQpZYW5nIEh1YW4KPgo+LS0gCj5NZWwgR29ybWFuCj5TVVNFIExhYnMKDQoN
-Cg==
+On Wed, 14 Jul 2021 19:24:27 +0100
+"Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
+
+> Hi Jonathan,
+> 
+> On Wed, Jul 14, 2021 at 1:39 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Wed, 14 Jul 2021 10:11:49 +0100
+> > "Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
+> >  
+> > > Hi Jonathan,
+> > >
+> > > Thank you for the review.
+> > >
+> > > On Sat, Jul 3, 2021 at 6:17 PM Jonathan Cameron <jic23@kernel.org> wrote:  
+> > > >
+> > > > On Tue, 29 Jun 2021 23:03:27 +0100
+> > > > Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > >  
+> > > > > Add binding documentation for Renesas RZ/G2L A/D converter block.
+> > > > >
+> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>  
+> > > > Hi,
+> > > >
+> > > > See inline
+> > > >
+> > > > Jonathan
+> > > >  
+> > > > > ---
+> > > > >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
+> > > > >  1 file changed, 121 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..db935d6d59eb
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> > > > > @@ -0,0 +1,121 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/iio/adc/renesas,rzg2l-adc.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Renesas RZ/G2L ADC
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > > +
+> > > > > +description: |
+> > > > > +  A/D Converter block is a successive approximation analog-to-digital converter
+> > > > > +  with a 12-bit accuracy. Up to eight analog input channels can be selected.
+> > > > > +  Conversions can be performed in single or repeat mode. Result of the ADC is
+> > > > > +  stored in a 32-bit data register corresponding to each channel.
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    oneOf:
+> > > > > +      - items:
+> > > > > +          - enum:
+> > > > > +              - renesas,r9a07g044-adc   # RZ/G2{L,LC}
+> > > > > +          - const: renesas,rzg2l-adc
+> > > > > +
+> > > > > +  reg:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  interrupts:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clocks:
+> > > > > +    items:
+> > > > > +      - description: converter clock
+> > > > > +      - description: peripheral clock
+> > > > > +
+> > > > > +  clock-names:
+> > > > > +    items:
+> > > > > +      - const: adclk
+> > > > > +      - const: pclk
+> > > > > +
+> > > > > +  power-domains:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  resets:
+> > > > > +    maxItems: 2
+> > > > > +
+> > > > > +  reset-names:
+> > > > > +    items:
+> > > > > +      - const: presetn
+> > > > > +      - const: adrst-n
+> > > > > +
+> > > > > +  renesas-rzg2l,adc-trigger-mode:
+> > > > > +    $ref: /schemas/types.yaml#/definitions/uint8
+> > > > > +    description: Trigger mode for A/D converter
+> > > > > +    enum:
+> > > > > +      - 0 # Software trigger mode (Defaults)
+> > > > > +      - 1 # Asynchronous trigger using ADC_TRG trigger input pin
+> > > > > +      - 2 # Synchronous trigger (Trigger from MTU3a/GPT)  
+> > > >
+> > > > Is this a function of the board in some fashion?  If not it sounds like
+> > > > something that should be in control of userspace.  Normally we'd
+> > > > do that by having the driver register some iio_triggers and depending
+> > > > on which one is selected do the equivalent of what you have here.
+> > > >  
+> > > Agreed for Asynchronous and Synchronous triggers. WRT Software trigger
+> > > should this be registered as a  iio_triggers too or read_raw()
+> > > callback (with IIO_CHAN_INFO_RAW case)  should be treated as Software
+> > > trigger?
+> > >  
+> >
+> > Normally we'd use an external trigger to provide the software trigger
+> > (plus as you say sysfs reads will map to this functionality).
+> >
+> > Something like the sysfs trigger or the hrtimer one would get used, though
+> > also fine to use the dataready trigger from a different device (if you want
+> > approximately synced dta.
+> >  
+> We can live with syfs reads for now for SW triggers. Coming back to HW
+> triggers I responded too quickly!. I am now trying to implement a gpio
+> based HW trigger i.e. to kick adc conversion start but I couldn't find
+> any drivers doing that. I looked at iio-trig-interrupt.c which
+> registers irq based triggers, so something similar needs to be
+> implemented in the adc driver? If that is the case the gpio has to be
+> passed via to DT and use gpio_to_irq to register the handler. Or is it
+> that I am missing something here ?
+
+Ok, I'm not really following the usecase for this. Is the thought that you'll
+get lower latency / jitter triggering via a gpio rather than using a
+bus write to the device (though on an integrated ADC I can't see why that would
+be the case)?
+
+If so, then what is actually setting the gpio?  Something is ultimately
+acting as the real trigger.  A common model would be an hrtimer trigger
+for example.   If you then want to wire the driver up to capture on demand
+using the gpio (to reduce latency) that's fine, but the gpio itself is
+never a trigger in the sense of an IIO trigger (rather than a trigger
+to the ADC itself).  In that case, have the trigger handler set the
+the gpio and wait for data capture to finish.  Quite a few drivers
+do this as some devices can only start sampling on an external pin being
+set.  E.g. adc/ad7606.c 
+
+The iio-trig-interrupt is about using an external interrupt to trigger
+a capture initialized by a register write or similar, it's not a direct
+hardware capture signal.
+
+Jonathan
+
+> 
+> Cheers,
+> Prabhakar
+> 
+> > > > > +    default: 0
+> > > > > +
+> > > > > +  gpios:
+> > > > > +    description:
+> > > > > +      ADC_TRG trigger input pin
+> > > > > +    maxItems: 1  
+> > > > Why is this mode useful?  I'm assuming the gpio write would take a register
+> > > > write and the software trigger mode also requires a register write.
+> > > >  
+> > > Yes gpio write would take a register write.
+> > >  
+> > > > Normally the reason for a pin like this is to support synchronising with
+> > > > external hardware.   If that's the case, we should call that out here.
+> > > > often the pin isn't even connected to a gpio in our control.
+> > > > (i.e. it's a trigger signal from some other device.)
+> > > >  
+> > > So just setting the GPIO pin as input should do the trick.  
+> >
+> > Probably the best plan if you actually care about people writing some
+> > trigger up to it that is otherwise invisible to the system.
+> >  
+> > >  
+> > > > > +
+> > > > > +  renesas-rzg2l,adc-channels:
+> > > > > +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> > > > > +    description: Input channels available on platform
+> > > > > +    uniqueItems: true
+> > > > > +    minItems: 1
+> > > > > +    maxItems: 8
+> > > > > +    items:
+> > > > > +      enum: [0, 1, 2, 3, 4, 5, 6, 7]  
+> > > >
+> > > > Is this a function of different devices (should have different compatibles)
+> > > > or of what is wired up.  If it's what is wired up, then how do you know which  
+> > > Its channels which are wired, for example if channels 0-5 are wired up
+> > > the board dts would include the property "renesas-rzg2l,adc-channels =
+> > > /bits/ 8 <0 1 2 3 4 5>;"
+> > >  
+> > > > subset of channels are connected?  We have the generic adc channel binding
+> > > > in iio/adc/adc.yaml for the case where we only want to expose those channels
+> > > > that are wired up.  It uses a node per channel.
+> > > >  
+> > > Agreed will do that and drop the custom "renesas-rzg2l,adc-channels"  
+> >
+> > Great,
+> >
+> > Jonathan
+> >  
+> > >
+> > > Cheers,
+> > > Prabhakar  
+> > > > > +
+> > > > > +  "#io-channel-cells":
+> > > > > +    const: 1
+> > > > > +
+> > > > > +required:
+> > > > > +  - compatible
+> > > > > +  - reg
+> > > > > +  - interrupts
+> > > > > +  - clocks
+> > > > > +  - clock-names
+> > > > > +  - power-domains
+> > > > > +  - resets
+> > > > > +  - reset-names
+> > > > > +  - renesas-rzg2l,adc-channels
+> > > > > +  - "#io-channel-cells"
+> > > > > +
+> > > > > +allOf:
+> > > > > +  - if:
+> > > > > +      properties:
+> > > > > +        renesas-rzg2l,adc-trigger-mode:
+> > > > > +          const: 1
+> > > > > +    then:
+> > > > > +      required:
+> > > > > +        - gpios
+> > > > > +
+> > > > > +additionalProperties: false
+> > > > > +
+> > > > > +examples:
+> > > > > +  - |
+> > > > > +    #include <dt-bindings/clock/r9a07g044-cpg.h>
+> > > > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > > > > +
+> > > > > +    adc: adc@10059000 {
+> > > > > +      compatible = "renesas,r9a07g044-adc", "renesas,rzg2l-adc";
+> > > > > +      reg = <0x10059000 0x400>;
+> > > > > +      interrupts = <GIC_SPI 347 IRQ_TYPE_EDGE_RISING>;
+> > > > > +      clocks = <&cpg CPG_MOD R9A07G044_ADC_ADCLK>,
+> > > > > +               <&cpg CPG_MOD R9A07G044_ADC_PCLK>;
+> > > > > +      clock-names = "adclk", "pclk";
+> > > > > +      power-domains = <&cpg>;
+> > > > > +      resets = <&cpg R9A07G044_ADC_PRESETN>,
+> > > > > +               <&cpg R9A07G044_ADC_ADRST_N>;
+> > > > > +      reset-names = "presetn", "adrst-n";
+> > > > > +      #io-channel-cells = <1>;
+> > > > > +      renesas-rzg2l,adc-trigger-mode = /bits/ 8 <0>;
+> > > > > +      renesas-rzg2l,adc-channels = /bits/ 8 <0 1 2 3 4 5 6>;
+> > > > > +    };  
+> > > >  
+> >  
+
