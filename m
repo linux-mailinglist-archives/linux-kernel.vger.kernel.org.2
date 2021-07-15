@@ -2,132 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFFF3C9DE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DD33C9DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhGOLn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:43:56 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11282 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhGOLnz (ORCPT
+        id S229745AbhGOLrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:47:21 -0400
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:48078 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229710AbhGOLrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:43:55 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GQXNl2fTHz1CK4j;
-        Thu, 15 Jul 2021 19:35:19 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:40:58 +0800
-Received: from [10.67.102.248] (10.67.102.248) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:40:58 +0800
-Subject: Re: [PATCH v2] perf probe: Fix add event failed when 32-bit perf
- running in 64-bit kernel
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
-        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
-        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
-        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210715063723.11926-1-yangjihong1@huawei.com>
- <20210715180505.11d1209c91d37c239abe65d7@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <de8ee605-4376-fc9d-e842-c3f488d673a7@huawei.com>
-Date:   Thu, 15 Jul 2021 19:40:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 15 Jul 2021 07:47:20 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 30EE9CAE50
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:44:26 +0100 (IST)
+Received: (qmail 5069 invoked from network); 15 Jul 2021 11:44:25 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jul 2021 11:44:25 -0000
+Date:   Thu, 15 Jul 2021 12:44:24 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     yong w <yongw.pur@gmail.com>
+Cc:     wuzhouhui <wuzhouhui14@mails.ucas.ac.cn>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, nico@fluxnic.net, wang.yong12@zte.com.cn
+Subject: Re: Re: [BUG] ramfs system panic when using dd to create files
+Message-ID: <20210715114424.GR3809@techsingularity.net>
+References: <CAOH5QeChR8s6vENfRdGtUeeqKsSSbeFkY9TArmOyDcUvgAgU7Q@mail.gmail.com>
+ <CAOH5QeC0PhnZY6Cpe4zZ8o07XHA4-5B3xGEontkezrYu=Jt0VQ@mail.gmail.com>
+ <7074179d.c3fd.17aa3f148cc.Coremail.wuzhouhui14@mails.ucas.ac.cn>
+ <CAOH5QeCV3c-=RiwGrUn7214NRZye7wYFmPSyFWxw-0Zvk=j2GQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715180505.11d1209c91d37c239abe65d7@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAOH5QeCV3c-=RiwGrUn7214NRZye7wYFmPSyFWxw-0Zvk=j2GQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hiramatsu,
+On Wed, Jul 14, 2021 at 10:30:22PM +0800, yong w wrote:
+> Thanks for your reply!
+> 
+> > Limit max size of ramfs.
+> It's no use using size to limit the size of ramfs.
+> "mount -t ramfs -o size=10M ramfs /ramfs" is the command i use.
+> 
 
-On 2021/7/15 17:05, Masami Hiramatsu wrote:
-> On Thu, 15 Jul 2021 14:37:23 +0800
-> Yang Jihong <yangjihong1@huawei.com> wrote:
-> 
->> The "address" member  of "struct probe_trace_point" uses long data type.
->> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
->> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
->> An error occurs during address comparison in kprobe_warn_out_range function.
->>
->> Before:
->>
->>    # perf probe -a schedule
->>    schedule is out of .text, skip it.
->>      Error: Failed to add events.
->>
->> Solution:
->>    Change data type of "address" variable to u64 and change corresponding
->> address printing and value assignment.
->>
->> After:
->>
->>    # perf.new.new probe -a schedule
->>    Added new event:
->>      probe:schedule       (on schedule)
->>
->>    You can now use it in all perf tools, such as:
->>
->>            perf record -e probe:schedule -aR sleep 1
->>
->>    # perf probe -l
->>      probe:schedule       (on schedule@kernel/sched/core.c)
->>    # perf record -e probe:schedule -aR sleep 1
->>    [ perf record: Woken up 1 times to write data ]
->>    [ perf record: Captured and wrote 0.156 MB perf.data (1366 samples) ]
->>    # perf report --stdio
->>    # To display the perf.data header info, please use --header/--header-only options.
->>    #
->>    #
->>    # Total Lost Samples: 0
->>    #
->>    # Samples: 1K of event 'probe:schedule'
->>    # Event count (approx.): 1366
->>    #
->>    # Overhead  Command          Shared Object      Symbol
->>    # ........  ...............  .................  ............
->>    #
->>         6.22%  migration/0      [kernel.kallsyms]  [k] schedule
->>         6.22%  migration/1      [kernel.kallsyms]  [k] schedule
->>         6.22%  migration/2      [kernel.kallsyms]  [k] schedule
->>         6.22%  migration/3      [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/10     [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/11     [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/12     [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/13     [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/14     [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/15     [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/4      [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/5      [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/6      [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/7      [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/8      [kernel.kallsyms]  [k] schedule
->>         6.15%  migration/9      [kernel.kallsyms]  [k] schedule
->>         0.22%  rcu_sched        [kernel.kallsyms]  [k] schedule
->>    ...
->>    #
->>    # (Cannot load tips.txt file, please install perf!)
->>    #
->>
-> 
-> OK, this looks good to me :)
-> 
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-Thanks for the Acked :)
+ramfs does not support size= limiting, that's what tmpfs is for.
 
-Jihong
+> >
+> > The comments already explains why kernel should panic on this situation:
+> >             /*
+> >              * If we got here due to an actual allocation at the
+> >              * system level, we cannot survive this and will enter
+> >              * an endless loop in the allocator. Bail out now.
+> >              */
+>
+> But it causes panic, actually , I don't want it panics
+
+Then use tmpfs and specify size=. It's mentioned in filesystems/tmpfs.rst
+
+--8<--
+If you compare it to ramfs (which was the template to create tmpfs)
+you gain swapping and limit checking. Another similar thing is the RAM
+disk (/dev/ram*), which simulates a fixed size hard disk in physical
+RAM, where you have to create an ordinary filesystem on top. Ramdisks
+cannot swap and you do not have the possibility to resize them.
+--8<--
+
+-- 
+Mel Gorman
+SUSE Labs
