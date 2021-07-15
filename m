@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52373C9F64
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544953C9F66
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237505AbhGONZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:25:44 -0400
-Received: from mga18.intel.com ([134.134.136.126]:3098 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232558AbhGONZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:25:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="197809764"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="197809764"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 06:22:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="505793494"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Jul 2021 06:22:48 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 0E815262; Thu, 15 Jul 2021 16:23:14 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] auxdisplay: charlcd: Drop unneeded terminator entry
-Date:   Thu, 15 Jul 2021 16:23:10 +0300
-Message-Id: <20210715132310.31514-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S237536AbhGON0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:26:16 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42114
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235177AbhGON0P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:26:15 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 768B1408AD;
+        Thu, 15 Jul 2021 13:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626355401;
+        bh=Uwn776T1F4J+gds7fS/Yo8RJJ52hlWTCH+h60abETp0=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=wXPiAyTIzM25I4kfDrLYfRwNhHooYlC296Xd3HbxjujuZiIQUX0T+Ui5IOri0saU7
+         UgJY4UtcFbeLNwWpqz3GYLQonlQb6YsBjx+0ZX9CZeVrnTzmDcGyDUU+5UnYJu6VxI
+         kxEq8CeDsZi/RhSGo46L3oI4HItrxvh92meKxgn+SkJ1sbS4y70HSPb5Qq/a2wD/gl
+         hjnJ5+g+IqCY+5bgf+CSvU5ZWBTICK/qW9mc+lMcQbeQAbT/5Ij5zrFAPkHTa6qPLq
+         xZHVaTH3OGKaIYC6bMwgC1McT3QwSWDhn6ykJesEnXHasIxPfsqSswbZSAhMJPQeVa
+         V1iSzHuFrjq/w==
+From:   Colin King <colin.king@canonical.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: imx: fix missing 3rd argument in macro imx_mmdc_perf_init
+Date:   Thu, 15 Jul 2021 14:23:21 +0100
+Message-Id: <20210715132321.25388-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Besides 0 not being, strictly speaking, a pointer it's redundant after
-the actual terminator NULL entry. Drop the former for good.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The function imx_mmdc_perf_init recently had a 3rd argument added to
+it but the equivalent macro was not updated and is still the older
+2 argument version. Fix this by adding in the missing 3rd argumement
+mmdc_ipg_clk.
+
+Fixes: f07ec8536580 ("ARM: imx: add missing clk_disable_unprepare()")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/auxdisplay/charlcd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/mach-imx/mmdc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index 24fd6f369ebe..e9bc5fb4da28 100644
---- a/drivers/auxdisplay/charlcd.c
-+++ b/drivers/auxdisplay/charlcd.c
-@@ -638,8 +638,7 @@ static int panel_notify_sys(struct notifier_block *this, unsigned long code,
+diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
+index 4a6f1359e1e9..af12668d0bf5 100644
+--- a/arch/arm/mach-imx/mmdc.c
++++ b/arch/arm/mach-imx/mmdc.c
+@@ -534,7 +534,7 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
  
- static struct notifier_block panel_notifier = {
- 	panel_notify_sys,
--	NULL,
--	0
-+	NULL
- };
+ #else
+ #define imx_mmdc_remove NULL
+-#define imx_mmdc_perf_init(pdev, mmdc_base) 0
++#define imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk) 0
+ #endif
  
- int charlcd_register(struct charlcd *lcd)
+ static int imx_mmdc_probe(struct platform_device *pdev)
 -- 
-2.30.2
+2.31.1
 
