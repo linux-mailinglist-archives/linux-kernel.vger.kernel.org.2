@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D83CAD6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A8A3CAD71
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343863AbhGOUBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:01:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
+        id S1344422AbhGOUBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245422AbhGOT6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF22D613C9;
-        Thu, 15 Jul 2021 19:54:52 +0000 (UTC)
+        id S1345027AbhGOT5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:57:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68B95613DA;
+        Thu, 15 Jul 2021 19:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626378893;
-        bh=cqaP2qSL289NbVmzp2jQGNpJC6oOR6ORaU2+jb0bmTg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mIUjIXhdRDbiTxDSNrTBHTDwvicprpO59NDPscKol2GkYZ8YlmnEdD87UF4yZ6zOm
-         1w/yCmrxa6JRg3eKT1nMrq+hxQRe8r4B4N/A88uFej2/OL7KhPvtqeYHv3vYaqmFZP
-         zZfJHlhQMcXnaiEf+OBvQeYXD4DhmEbtN6WAUV6CNbVzjAmgWadBcSgqtgICIElhyb
-         +6/ZWycEtHkBD9pDppr85uuUZiWfM7OAOynXnQxmZaBmcKlfMQvL4DCSPWfTYXFHX1
-         eGhG4ciXt4oVoCW5M8QzCqRzfha4n5zPR3tm1MZzIjW4ody1FoqRYU14A4WN/quWSg
-         h+UJ1wLQ9zmhQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Colin King <colin.king@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: codecs: lpass-rx-macro: clean up for-loop indentation in switch statement
-Date:   Thu, 15 Jul 2021 20:54:02 +0100
-Message-Id: <162637837991.27358.2893417037818285699.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210709152424.460446-1-colin.king@canonical.com>
-References: <20210709152424.460446-1-colin.king@canonical.com>
+        s=k20201202; t=1626378848;
+        bh=b/cM3lLGocyFqH187slOjN0KGM0gpqViLiQYCWp1ApI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BXD7yHsy7w/D8omyhmAVccFSgutn3bQ5jP8T4Lh35P6Z/BlKI3u+xEUGhl0fyXcDX
+         fvP3IKc8zHmcvFq6MBeb38w2NiZw+bCv0VeKjCtic0i54t+qVQwIVBipuFZmbUuTqH
+         lehn//fSJEnrLP8VTmPYJ/u4vTXn6rNthrraY6tKF6x9lwI5DxTJ+AecK/mlP3XVrI
+         DwFjj9TxZFSdJlJUVXglSEE6Gpdxu3hrqUx+NdMSca6nzma0dZk15oaB/j8/euKmbb
+         8x2pwqnc7S/IEVhz5RxNvCeox9W7guaiLZKXulWasfjRSnYpZ/g5v20cu0gLxIZRIa
+         Se1xHXcocPrOw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id ABA82403F2; Thu, 15 Jul 2021 16:54:05 -0300 (-03)
+Date:   Thu, 15 Jul 2021 16:54:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 04/20] perf test: event_update: fix memory leak of evlist
+Message-ID: <YPCSXRiyAxAFxFzc@kernel.org>
+References: <cover.1626343282.git.rickyman7@gmail.com>
+ <f7994ad63d248f7645f901132d208fadf9f2b7e4.1626343282.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7994ad63d248f7645f901132d208fadf9f2b7e4.1626343282.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 16:24:24 +0100, Colin King wrote:
-> The for-loop is not indented enough and needs one more level
-> of indentation. Add in the indentation across the block of code.
+Em Thu, Jul 15, 2021 at 06:07:09PM +0200, Riccardo Mancini escreveu:
+> ASan reports a memory leak when running the perf test
+> "49: Synthesize attr update" caused by evlist not being deleted.
+> 
+> This patch adds the missing evlist__delete and removes the
+> perf_cpu_map__put since it's already being deleted by evlist__delete.
 
-Applied to
+Thanks, applied.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+- Arnaldo
 
-Thanks!
+ 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/tests/event_update.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/event_update.c b/tools/perf/tests/event_update.c
+> index 656218179222cc58..932ab0740d11ced6 100644
+> --- a/tools/perf/tests/event_update.c
+> +++ b/tools/perf/tests/event_update.c
+> @@ -118,6 +118,6 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
+>  	TEST_ASSERT_VAL("failed to synthesize attr update cpus",
+>  			!perf_event__synthesize_event_update_cpus(&tmp.tool, evsel, process_event_cpus));
+>  
+> -	perf_cpu_map__put(evsel->core.own_cpus);
+> +	evlist__delete(evlist);
+>  	return 0;
+>  }
+> -- 
+> 2.31.1
+> 
 
-[1/1] ASoC: codecs: lpass-rx-macro: clean up for-loop indentation in switch statement
-      commit: 622d9ac3d969d0f62bbe68f4844bb5b8adea5a40
+-- 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+- Arnaldo
