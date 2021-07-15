@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5853CAB5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E963CAB5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245407AbhGOTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
+        id S245335AbhGOTTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240256AbhGOTEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241167AbhGOTEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:04:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB8D3613E5;
-        Thu, 15 Jul 2021 19:00:46 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94A676140F;
+        Thu, 15 Jul 2021 19:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375647;
-        bh=E1rfawRYE3YC1A6vcqcfifcrxN/c0o1AcCscCPZDZlc=;
+        s=korg; t=1626375652;
+        bh=a6833TJ0mkZ/v03O42FFwRWBA1BZaCeWzqtkI87+qAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oveI0Kf6iCURMd53xdRXi3aYfAePiLcV1EGArviCTdBAI4GJXVb5wZRH6A7+P94mv
-         fX3zTkUPKVHsOe9hou5B2ojqDj4TsS/Ir+3UfBAHzSfg3hyd9W7NtWO/1MWqivkBxm
-         73uDTog3qagLh+44SbvTuskfAO9nbIHgBjkPmICU=
+        b=ifHUVJo923cPIeMgzCYdNtbXSK734F0wyUFcX0mSu350PHHd35Bm2kCJN+ABrUQ75
+         SbiM0eWYA7BPnX87g/2bfHD9A4o4Uzzc+GBF46psKFrZh6fp+erX+D9nNDOqY0wKxb
+         o2z8X/TDVwYrxzAlN74CttYScU1bfKtAL/M4RWJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH 5.12 177/242] drm/tegra: Dont set allow_fb_modifiers explicitly
-Date:   Thu, 15 Jul 2021 20:38:59 +0200
-Message-Id: <20210715182624.391118308@linuxfoundation.org>
+        Lyude Paul <lyude@redhat.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 5.12 178/242] drm/msm/mdp4: Fix modifier support enabling
+Date:   Thu, 15 Jul 2021 20:39:00 +0200
+Message-Id: <20210715182624.585313160@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -46,82 +47,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit be4306ad928fcf736cbe2616b6dd19d91f1bc083 upstream.
+commit 35cbb8c91e9cf310277d3dfb4d046df8edf2df33 upstream.
 
-Since
+Setting the cap without the modifier list is very confusing to
+userspace. Fix that by listing the ones we support explicitly.
 
-commit 890880ddfdbe256083170866e49c87618b706ac7
-Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Fri Jan 4 09:56:10 2019 +0100
+Stable backport so that userspace can rely on this working in a
+reasonable way, i.e. that the cap set implies IN_FORMATS is available.
 
-    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
-
-this is done automatically as part of plane init, if drivers set the
-modifier list correctly. Which is the case here.
-
-It was slightly inconsistently though, since planes with only linear
-modifier support haven't listed that explicitly. Fix that, and cc:
-stable to allow userspace to rely on this. Again don't backport
-further than where Paul's patch got added.
-
-Cc: stable@vger.kernel.org # v5.1 +
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Cc: stable@vger.kernel.org
 Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
+Cc: Rob Clark <robdclark@chromium.org>
+Cc: Jordan Crouse <jordan@cosmicpenguin.net>
+Cc: Emil Velikov <emil.velikov@collabora.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: linux-tegra@vger.kernel.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210413094904.3736372-10-daniel.vetter@ffwll.ch
+Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-5-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/tegra/dc.c  |   10 ++++++++--
- drivers/gpu/drm/tegra/drm.c |    2 --
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c   |    2 --
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c |    8 +++++++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -947,6 +947,11 @@ static const struct drm_plane_helper_fun
- 	.atomic_disable = tegra_cursor_atomic_disable,
- };
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -88,8 +88,6 @@ static int mdp4_hw_init(struct msm_kms *
+ 	if (mdp4_kms->rev > 1)
+ 		mdp4_write(mdp4_kms, REG_MDP4_RESET_STATUS, 1);
  
-+static const uint64_t linear_modifiers[] = {
+-	dev->mode_config.allow_fb_modifiers = true;
+-
+ out:
+ 	pm_runtime_put_sync(dev->dev);
+ 
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
+@@ -347,6 +347,12 @@ enum mdp4_pipe mdp4_plane_pipe(struct dr
+ 	return mdp4_plane->pipe;
+ }
+ 
++static const uint64_t supported_format_modifiers[] = {
++	DRM_FORMAT_MOD_SAMSUNG_64_32_TILE,
 +	DRM_FORMAT_MOD_LINEAR,
 +	DRM_FORMAT_MOD_INVALID
 +};
 +
- static struct drm_plane *tegra_dc_cursor_plane_create(struct drm_device *drm,
- 						      struct tegra_dc *dc)
- {
-@@ -975,7 +980,7 @@ static struct drm_plane *tegra_dc_cursor
+ /* initialize plane */
+ struct drm_plane *mdp4_plane_init(struct drm_device *dev,
+ 		enum mdp4_pipe pipe_id, bool private_plane)
+@@ -375,7 +381,7 @@ struct drm_plane *mdp4_plane_init(struct
+ 	type = private_plane ? DRM_PLANE_TYPE_PRIMARY : DRM_PLANE_TYPE_OVERLAY;
+ 	ret = drm_universal_plane_init(dev, plane, 0xff, &mdp4_plane_funcs,
+ 				 mdp4_plane->formats, mdp4_plane->nformats,
+-				 NULL, type, NULL);
++				 supported_format_modifiers, type, NULL);
+ 	if (ret)
+ 		goto fail;
  
- 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
- 				       &tegra_plane_funcs, formats,
--				       num_formats, NULL,
-+				       num_formats, linear_modifiers,
- 				       DRM_PLANE_TYPE_CURSOR, NULL);
- 	if (err < 0) {
- 		kfree(plane);
-@@ -1094,7 +1099,8 @@ static struct drm_plane *tegra_dc_overla
- 
- 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
- 				       &tegra_plane_funcs, formats,
--				       num_formats, NULL, type, NULL);
-+				       num_formats, linear_modifiers,
-+				       type, NULL);
- 	if (err < 0) {
- 		kfree(plane);
- 		return ERR_PTR(err);
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -1122,8 +1122,6 @@ static int host1x_drm_probe(struct host1
- 	drm->mode_config.max_width = 4096;
- 	drm->mode_config.max_height = 4096;
- 
--	drm->mode_config.allow_fb_modifiers = true;
--
- 	drm->mode_config.normalize_zpos = true;
- 
- 	drm->mode_config.funcs = &tegra_drm_mode_config_funcs;
 
 
