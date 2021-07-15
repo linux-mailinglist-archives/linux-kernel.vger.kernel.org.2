@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD3D3CAD65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7273CAD6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242804AbhGOUA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:00:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46978 "EHLO mail.kernel.org"
+        id S245190AbhGOUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244114AbhGOT5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:57:03 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 632E6613D0;
-        Thu, 15 Jul 2021 19:54:07 +0000 (UTC)
-Date:   Thu, 15 Jul 2021 15:54:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH] tracing: Do no reference char * as a string in
- histograms
-Message-ID: <20210715155400.28f0dfd0@oasis.local.home>
-In-Reply-To: <17b88fc429ddd354cff468849bc16de25086df2d.camel@kernel.org>
-References: <20210715000206.025df9d2@rorschach.local.home>
-        <17b88fc429ddd354cff468849bc16de25086df2d.camel@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1345186AbhGOT5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:57:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF73613BB;
+        Thu, 15 Jul 2021 19:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626378888;
+        bh=xLfV2Xzoq8UnSTpc2A9kdDwCb0yJZGzCeCFP8zdZ6T0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nW7X3pvKpKyyKQ+wqSHdjqnHi72GKi9DcurDSCnhQj74uZ9NBbhh0zz2BKD2D9XrK
+         LkGZH/vx4VNtZK4rKc2oICzbMwduM7KoNuTHgHPUDGu/AYpZpV7DuqyQqip82ugH3e
+         GupWaSkha67CQj/AzXRt7vU9IDv+NSkflIyBWiJ2Ak4Wo0MrwG1I4LOBW/BN1STTMu
+         Im25sblKJ37F0E6S67Tkp7s9qTfP7f+xJH6MCS/OANa+359hEez/xbGn1iSPc0ZwJ1
+         KIvGkYBjT0Twy/wUQYvJpvi8dxn8paO/AeYV20SHK+G3sDDDfa2d4JVC702135yP27
+         /FFQXBIjFsYbA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Colin King <colin.king@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: rt6245: make a const array func_base static, makes object smaller
+Date:   Thu, 15 Jul 2021 20:54:00 +0100
+Message-Id: <162637868448.27563.16170731868799436759.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210715141531.27672-1-colin.king@canonical.com>
+References: <20210715141531.27672-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 12:04:13 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+On Thu, 15 Jul 2021 15:15:31 +0100, Colin King wrote:
+> Don't populate the const array func_base on the stack but instead it
+> static. Makes the object code smaller by 55 bytes:
+> 
+> Before:
+>    text    data     bss     dec    hex filename
+>    6422    3216      64    9702   25e6 drivers/regulator/rt6245-regulator.o
+> 
+> [...]
 
-> Not sure what the correct fix is at this point, but it would seem that
-> if the original intent was honored, the histogram code should still be
-> allowed to use them.
+Applied to
 
-Note, it can in a patch I plan on sending in the next merge window that
-Tzvetomir and I are working on. We succeeded in getting the "eprobe"
-working which allows you to do much more with event fields than the
-current histogram code does.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-Otherwise, I need a way to get the pointer and not a string. As I
-discovered, the string may not have any content in it, and you can't
-fault within a tracepoint, and you are left with just passing in
-"(fault)", or something. Which is not useful at all!
+Thanks!
 
-What we have as a working prototype is this:
+[1/1] regulator: rt6245: make a const array func_base static, makes object smaller
+      commit: 508f8ccd993d1ff5c9a3092f179f33bd7a825bac
 
- # cd /sys/kernel/tracing
- # echo 'e:myopen syscalls.sys_enter_openat file=$filename:ustring' > kprobe_events
- # trace-cmd start -e myopen -F ~/bin/openat
- # cat trace
-          openat-1928    [000] ...2  1540.638692: myopen: (0) file="/etc/ld.so.cache"
-          openat-1928    [000] ...2  1540.638692: myopen: (0) file="/lib64/libc.so.6"
-          openat-1928    [000] ...2  1540.638694: myopen: (0) file=(fault)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-And if we were to enforce this on a histogram, all we will see is
-"fault" because the filename is first referenced inside the system call
-and at the beginning of the call, it is not mapped in, and we can not
-map it in inside a tracepoint. You are left with just putting in some
-stub string (which kprobes uses "(fault)").
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-But, because now filename is a pointer, that the histograms can pass
-around, it is much more useful, as I can use this to pass the filename
-pointer to the exit of the system call!
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
- # echo 'hist:keys=common_pid:f=filename' > events/syscalls/sys_enter_openat/trigger
- # echo 'openret unsigned long file; long ret' > synthetic_events
- # echo 'hist:keys=common_pid:file=$f:onmatch(syscalls.sys_enter_openat).trace(openret,$file,ret)' > events/syscalls/sys_exit_openat/trigger
- # echo 'e:myopen synthetic.openret file=$file:ustring ret=$ret:s64' > kprobe_events
- # trace-cmd start -e myopen -F ~/bin/openat
- # cat trace
-          openat-1994    [002] ...3  2052.403323: myopen: (0) file="/etc/ld.so.cache" ret=3
-          openat-1994    [002] ...3  2052.403350: myopen: (0) file="/lib64/libc.so.6" ret=3
-          openat-1994    [002] ...3  2052.403555: myopen: (0) file="/etc/passwd" ret=3
-
-Now, not only can we see the filename, because we passed the pointer
-from the sys_enter to the sys_exit, we also can show the return of the
-system call.
-
-This allows for a much more flexibility than the histograms by
-themselves have. If you want the file names via pointers, you can then
-create these event_probes and use them in the histograms as well. Which
-gives you the full flexibility of kprobes but on the fields of events.
-
-Note, without this patch, because the histograms thinks 'char *' is a
-string, you can't pass the pointer, but only the string. Hence, you
-only get "(fault)", which is pretty darn useless.
-
-This is another rationale for why I want this patch.
-
-FYI, the above is cut and paste from working code, but it still needs a
-bit of clean up before we post it.
-
--- Steve
+Thanks,
+Mark
