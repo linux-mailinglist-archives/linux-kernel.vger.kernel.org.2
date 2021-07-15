@@ -2,55 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADFE3C9997
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B013C999C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240335AbhGOH05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbhGOH04 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:26:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F077C06175F;
-        Thu, 15 Jul 2021 00:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1u+yT6IFUTSw8uuRjzesJ7WhUZssdnULKNc/AOe1yAM=; b=kfkHfEclUImyj4PpiZ2KWs6l9n
-        NdcjLNJc0X7A5W4CdIFjQF4TiI+B4+DgXebNYKwGtP1D71XfHqIQAK0Y0zdMkqoulLuRkxwI8+1w+
-        noZJqouLcHhpfg309o48Ii44Y0yKzG/WmzNDZtf0BQPgB5pshW4k8PXXiUTSVwbGijK6FessGx0X2
-        raMTzvcAzQKmTvkjB8CmIPXp0dDK7FsTM7RHu9wKVbEbTgHz2C1u4NRxKpYLp0EBBZmDEcoh2e+J+
-        aNF55xmARLyXuI3xVIUe77MzuusQ2C4qRjAcrQ7t6PS6OBZ+YA0CsQSlHs/Kfc9idDUx15fshnsVK
-        ft6CBF/A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3vi0-0035uk-Qy; Thu, 15 Jul 2021 07:23:05 +0000
-Date:   Thu, 15 Jul 2021 08:23:00 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
-        osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] block: add error handling for *add_disk*()
-Message-ID: <YO/iVNCSTWy5EmoP@infradead.org>
-References: <20210715045531.420201-1-mcgrof@kernel.org>
+        id S240340AbhGOH3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229973AbhGOH3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 03:29:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E65B6128B;
+        Thu, 15 Jul 2021 07:26:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626333998;
+        bh=MX13di5LHd3D7Na23Fk3TKOgbM5nHbJhT3eiJPdsLTE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=V2888euA4ssGyF8u3AyHMeAqPi0aG/qo+WA8gLqa3qOiD/A17zXq0oBWYMrEIw2jN
+         n4hLAOG8XzK2t+BQF5Vz+TLJnoKfyvAPwzpe2MxaSSmBKjVyIcjC84bjJ0LRIB52vt
+         v1Iqaw03ng88nJdyhdnk4EQIBs751zMrB0X5SEc9MrPfz+ckbDD4RqidZ3SBoyo1DS
+         gBjlwPc7lvhdTYz0aZS5ZMVHH7+TdSzVG91a/0hW+RxjYwj+06FhFL+yY7LZKEKp/s
+         HVGjXhlvtWq3tCzqhL0UCpzcZQ9MvvgJOyytei9kZRWKJ1OyuKxKociaRA6fyx+k1H
+         Z/gh/y6RXqMXA==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Jia He <justin.he@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
+        Jia He <justin.he@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Chen Lin <chen.lin5@zte.com.cn>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH RFC 10/13] usb: gadget: simplify the printing with '%pD'
+ specifier
+In-Reply-To: <20210715031533.9553-11-justin.he@arm.com>
+References: <20210715031533.9553-1-justin.he@arm.com>
+ <20210715031533.9553-11-justin.he@arm.com>
+Date:   Thu, 15 Jul 2021 10:26:29 +0300
+Message-ID: <874kcwyr4q.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715045531.420201-1-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:55:25PM -0700, Luis Chamberlain wrote:
-> Although I've dropped driver conversion at this point I've
-> converted all drivers over, but that series is about 80
-> patches... and so should be dealt with after this basic core
-> work is reviewed and merged.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I think we need at least a few sample conversions to show how
-you intend this to be used.
+Jia He <justin.he@arm.com> writes:
+
+> After the behavior of '%pD' is changed to print the full path of file,
+> the log printing in fsg_common_create_lun() can be simplified.
+>
+> Given the space with proper length would be allocated in vprintk_store(),
+> it is worthy of dropping kmalloc()/kfree() to avoid additional space
+> allocation. The error case is well handled in d_path_unsafe(), the error
+> string would be copied in '%pD' buffer, no need to additionally handle
+> IS_ERR().
+>
+> Cc: Felipe Balbi <balbi@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: Chen Lin <chen.lin5@zte.com.cn>
+> Cc: linux-usb@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Jia He <justin.he@arm.com>
+
+Acked-by: Felipe Balbi <balbi@kernel.org>
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmDv4yURHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUjJKAgAiATl1ws5K/uJxFsWiLFkdu88ekG4GdT8
+6UEm/gfpSpJL/co64jwkj+ZgLVlftmWR2rMhy3Z33nBqcHDac1P1Z01dzEz7pHq1
+ObBhXD9Fa/Mcv9JlMT7nkuoThwGW8Z7Nk+s7YKKSoen0W8rOMGJ2jxDWOohHlu9y
+d+I+GrUMJGYtk1pdrkVslr6f9TlPXg0p7/dzaQZonQLrBMoAliOZPK/Ahzqi/Mig
+NPzBY/u1OIvo1XJw2xZRYKnhDOYSsyE79FjZJOhrxvfElQntsOUSNRhR5bwrenxN
+Sg1FWu1+fJRXlZZVygHbfvvvvkl7jRgorkBOfKlzVWWeiQxDpXbbNQ==
+=GqR6
+-----END PGP SIGNATURE-----
+--=-=-=--
