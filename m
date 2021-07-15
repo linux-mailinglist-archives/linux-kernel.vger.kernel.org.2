@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56643CA3A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B4E3CA3A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhGOROr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:14:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231977AbhGOROp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:14:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 298FB613D8;
-        Thu, 15 Jul 2021 17:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626369112;
-        bh=FY4e+oZ1PFtHlMAKa/Bsp5UEp0fB77fsFYJPP2oLU6U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KXXddtYDTrm0gSn9hX/wlxWLaGSOhAF0JIE80yuFrp41mSOsycIe5H7/PowCrqoCG
-         H1yFnyrY8gC5fRTpb85ZkSuT7lwhtFww3+uX14gCVnKXGefiPU2E3GybGPHpy3ZYhY
-         rCocgvbdZoYDv/JY60VJRxss50LmwwYTQYhnQjBYumauSRTAd0nkkl6BAjpAPvb1Tu
-         V/JkBneUfyIdkgkQm9JuIuPgK87OUoW05LRCsvffzsEk+KOaEtCfsUA+vu7dJjnG6i
-         y4XvIXDDREY7ocscb3Hk+ks773TBx31HDbXLNT2YHyOM8E8DUB9xNZ/NuTgNroQQor
-         icHAyHi7bL6qw==
-Date:   Thu, 15 Jul 2021 10:11:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jia He <justin.he@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 07/13] iomap: simplify iomap_swapfile_fail() with
- '%pD' specifier
-Message-ID: <20210715171151.GU22402@magnolia>
-References: <20210715031533.9553-1-justin.he@arm.com>
- <20210715031533.9553-8-justin.he@arm.com>
+        id S232590AbhGORPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:15:21 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:34425 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhGORPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:15:20 -0400
+Received: by mail-io1-f41.google.com with SMTP id g22so7335499iom.1;
+        Thu, 15 Jul 2021 10:12:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZVELhrfvc5pcUyULq5NUcKRjoYbdkpGVUx8160StOzw=;
+        b=ih/ZTP3Zms9kScoGPZZYh8zMOwamwPTbfXTI/Rx3NwS4fDn/biDTWBQhQIz5Ro9U6M
+         Xl6I3jTCL+yfzgjsY/BpTVmxb439WiJMKk7JG0sL4sqrXPK5yP3ZDTMmBCypdzo21L8a
+         jdYPiRIHg94+8bDzhjoMsNViV2m59ydUHQ0P/Dt8s83ScugtWSKYR9cEFn9ZjoYfG11C
+         9OxbwQQYMjAMrmq3cSUoF8gz1t+5e/EDBLo2PkZ19gw1yhPRdpAhBhtNgNpWQngQ1r2Y
+         cZb5Jh3ZOZsUyfRMABxZzMXn7u9KafcOVZUw3/2RrWF53Xc31qzm/GUwYnJyM1HzGNU5
+         dKOg==
+X-Gm-Message-State: AOAM530F8C1+cW1yC9NoTr8wLo6fcmi7oh0yglJ+TCR6dMTSh3c61UGr
+        v8Hn1trYB4zoZTYhg0oQjQ==
+X-Google-Smtp-Source: ABdhPJykBLYjZ4cF9fSKxRji2zzMcU72ZD0DLVzS2AetdFvKiBYglthqS6FNSvaFO9Ofu8kggqzB8A==
+X-Received: by 2002:a5e:a609:: with SMTP id q9mr3804801ioi.57.1626369145685;
+        Thu, 15 Jul 2021 10:12:25 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id i14sm3047235ilu.71.2021.07.15.10.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 10:12:24 -0700 (PDT)
+Received: (nullmailer pid 1260573 invoked by uid 1000);
+        Thu, 15 Jul 2021 17:12:20 -0000
+Date:   Thu, 15 Jul 2021 11:12:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        linux-kernel@vger.kernel.org, Jack Zhu <jack.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        devicetree@vger.kernel.org, Wei Fu <tekkamanninja@gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: riscv: add starfive jh7100 bindings
+Message-ID: <20210715171220.GA1259840@robh.at.kernel.org>
+References: <20210713063018.3000459-1-drew@beagleboard.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715031533.9553-8-justin.he@arm.com>
+In-Reply-To: <20210713063018.3000459-1-drew@beagleboard.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 11:15:27AM +0800, Jia He wrote:
-> After the behavior of '%pD' is change to print the full path of file,
-> iomap_swapfile_fail() can be simplified.
+On Mon, 12 Jul 2021 23:30:18 -0700, Drew Fustini wrote:
+> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
+> BeagleV Starlight JH7100 board [2].
 > 
-> Given the space with proper length would be allocated in vprintk_store(),
-> the kmalloc() is not required any more.
+> [1] https://github.com/starfive-tech/beaglev_doc
+> [2] https://github.com/beagleboard/beaglev-starlight
 > 
-> Besides, the previous number postfix of '%pD' in format string is
-> pointless.
-> 
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: "Darrick J. Wong" <djwong@kernel.org>
-> Cc: linux-xfs@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Jia He <justin.he@arm.com>
-
-Seems reasonable to me...
-Acked-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 > ---
->  fs/iomap/direct-io.c | 2 +-
->  fs/iomap/swapfile.c  | 8 +-------
->  2 files changed, 2 insertions(+), 8 deletions(-)
+> v4 changes:
+> - removed JH7100 SoC revision number after discussion with Geert
 > 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..e876a5f9d888 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -426,7 +426,7 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
->  		 * iomap_apply() call in the DIO path, then it will see the
->  		 * DELALLOC block that the page-mkwrite allocated.
->  		 */
-> -		pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %pD4 Comm: %.20s\n",
-> +		pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %pD Comm: %.20s\n",
->  				    dio->iocb->ki_filp, current->comm);
->  		return -EIO;
->  	default:
-> diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
-> index 6250ca6a1f85..17032c14e466 100644
-> --- a/fs/iomap/swapfile.c
-> +++ b/fs/iomap/swapfile.c
-> @@ -73,13 +73,7 @@ static int iomap_swapfile_add_extent(struct iomap_swapfile_info *isi)
->  
->  static int iomap_swapfile_fail(struct iomap_swapfile_info *isi, const char *str)
->  {
-> -	char *buf, *p = ERR_PTR(-ENOMEM);
-> -
-> -	buf = kmalloc(PATH_MAX, GFP_KERNEL);
-> -	if (buf)
-> -		p = file_path(isi->file, buf, PATH_MAX);
-> -	pr_err("swapon: file %s %s\n", IS_ERR(p) ? "<unknown>" : p, str);
-> -	kfree(buf);
-> +	pr_err("swapon: file %pD %s\n", isi->file, str);
->  	return -EINVAL;
->  }
->  
-> -- 
-> 2.17.1
+> v3 changes:
+> - added revision number for the board and soc after question from Palmer
 > 
+> v2 changes:
+> - removed "items:" entry that only had "const: starfive,jh7100"
+> - correct typo in Description:
+> 
+> Results of running checks:
+>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dt_binding_check \
+>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
+>     CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+>     DTEX    Documentation/devicetree/bindings/riscv/starfive.example.dts
+>     SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+>     DTC     Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
+>     CHECK   Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
+>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dtbs_check \
+>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
+>     SYNC    include/config/auto.conf.cmd
+>     UPD     include/config/kernel.release
+>     SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dtb
+>     DTC     arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
+>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
+>     DTC     arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
+>     CHECK   arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
+>     CHECK   arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
+>     CHECK   arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
+> 
+> The dts file is from vendor repo and is being cleaned up right now in
+> preperation for submitting to the mailing list:
+> https://github.com/starfive-tech/linux/tree/beaglev/arch/riscv/boot/dts/starfive
+> 
+>  .../devicetree/bindings/riscv/starfive.yaml   | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/riscv/starfive.yaml
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+(I'm expecting the RiscV maintainers to take this.)
