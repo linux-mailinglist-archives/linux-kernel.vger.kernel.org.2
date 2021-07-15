@@ -2,597 +2,697 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF183C99D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D39A3C99DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240474AbhGOHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:50:51 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:52553 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231785AbhGOHuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:50:50 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 0B8002B011CF;
-        Thu, 15 Jul 2021 03:47:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 15 Jul 2021 03:47:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=N
-        Ov7jiopagSnGAS6p/FZibV4TWfEsquqg1pqD3quAGk=; b=zwE686/llzIfzNsKN
-        eTnNhXpS/7+2u5pUeCpNTQzo7Kygd0yBmkPnJASBo9lSWCq9Bqojv7FDQoiYCE/Q
-        nPGoweF5WN3TNCozSWMguwbry/fi/PtJzTElAUpQdqLp+MnYbFeE2EMSjKRHlikN
-        UG4eWAdx1Pv91WQr77F8+trM/4XlQ5F5fDrKyA+HQxmSdibDsWgki/84L2CGRMxE
-        CsEdlzRRVtMVfYG1M/M6MDAuqXT5HnO/YFLpGd+j4upLxjZ1+aApsRxjwInogWuo
-        xvmhEqGKcYFcTMVOCIPuEb2Rx6q54hhF30dFmn+1pXVXXVnXFEsyAiLYWcNn8WL/
-        lNZkg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=NOv7jiopagSnGAS6p/FZibV4TWfEsquqg1pqD3quA
-        Gk=; b=Zxn4uDl71FMFa5dz3ZVxMbSKCkUC/gCNYkqCNyD2SCSo+ZuORW3y6kOVr
-        vFd8ae5He16hkDwN1WMTKPw+ua8JlfR2/bR/GutLPJNYPxNsmb1qspqwLqSbehUf
-        KE5mQtSkrDMAMpgbzLpJhN6IlKeEnFZzjdnRiCu01QR8hqX9GKeoBodzDMscCBqC
-        ehuI08mUfPG7Jk/GzTEpDtKW5EO1vB/jt3lDWZ8uF4jsoqr8n1fUgxIl1HtaerYx
-        OcOFCRcHsVeMbONvxrQPqCS329FNW/8yAKF1RxarJf1ZeVhiDn/0uvmpwOy+tejV
-        7+8fUqcA25Qfqpboob8TNIEpdFCKQ==
-X-ME-Sender: <xms:KejvYHBw0TLcu5D41Zue7XzkCr_WXTsXb_ozo2B_FwBzlccKq0TmYQ>
-    <xme:KejvYNibZ93wmhS8pJ27I25qbv4oLTdMkSy2PB5YkELzSJ24udyTw6xhgURqMG-sL
-    uE7BbdnMTw9kMJJtX4>
-X-ME-Received: <xmr:KejvYCnDoU3FJSfTMiUtdcFpKhMJ8Jzx92Cl-RUK17eWxkwqOTcmcEm1wBds_KQQG2nhsf-zFTb3oDpmqypQxIze56q4mSS7gRDy>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelgddugeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggugfgjsehtqh
-    ertddttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegt
-    vghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepgfejtedtjefggfffvdetuedthe
-    dtheegheeuteekfeeghfdtteejkeeludegvddunecuvehluhhsthgvrhfuihiivgeptden
-    ucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:KejvYJxa5h8Ty9ih5wYIgqWN_5S5Ns2pzqr0NsVQcz-nhak4FVzdcA>
-    <xmx:KejvYMSAkJbX-aHmTFzgOhOeDs8q-Au6NnMOVyBGhnSVitQhjPBrMw>
-    <xmx:KejvYMaHzRwTDzfvCpx9UdBUow__HWZUcKkMNR6OTL29TS5huGoNEg>
-    <xmx:K-jvYDIi-wStCRaN5qfFgbUPx1xxQfyZcoVcjhM-kcsjiCtwzUTihIXJMr0>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 15 Jul 2021 03:47:53 -0400 (EDT)
-Date:   Thu, 15 Jul 2021 09:47:50 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     fengzheng923@gmail.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, wens@csie.org, jernej.skrabec@gmail.com,
-        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v6 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-Message-ID: <20210715074750.ewbggulc5kast6ez@gilmour>
-References: <20210711122055.4529-1-fengzheng923@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S240490AbhGOHv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:51:27 -0400
+Received: from mail-bn8nam11on2087.outbound.protection.outlook.com ([40.107.236.87]:10976
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231785AbhGOHvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 03:51:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NU/QE9KGg8IsMaVzJ7U31cxYN76xsC9U3z82VzY7Oqbkn75cZXOsSiXVukGOg1xMz6v7C7vZR+L+Rt4FJN8VcRmcsvJS6Nbd/5hZbYw2J8wHYgSiNlQnVZI2QElCOV0GAsbPdg6NInRnmqvPQlmYeiDhmU4I0XUZfWPQku4zKRnCgB6ZvGFf2ITgUHGo4MxVLlrVwQsIvqpOEuCgTKiY9L/0UPt2Uuh8qFKkk9udjWhBrNzGyxzqxfY8Ck7tZ66qY9A+D8B535x3GHsXI7BTDZChhmnBHGSLQmdruRAMfFtkgrst13m6+kwiBipRQ6ew9zBqLQNvKXsfSJ7mRy7d+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UBL1iCAwVsGQL7bQt91aqNXaOvqZuqlHJ3C02j/cn6w=;
+ b=BZCG3GZuGxo6mF1aXzY8SLIi80JhS1RxVt8k35ABOfrIm7qW9oEkgh/Ze1OmggxRJ3h8H4q7VntEg2B7tFr82rgX61Q1HjqiJFBIoijcWRb3POhjUrng4QoB7rU58uTV05MaAl8tiBgJKkfhveArkKQzZVBtnhCYxttPGkFFAIAiJqOslQpnQXeqnEjrs6qpihQ8vJgd31HtDUtgZkPqxGUGzSnboPwYjA4FsJpfxeEmumhqooW9zSwslWTzmQbzEtLwRCWJ/z08+6N62zkTGMpG+soAUWCGxoUBHE/NTKOhpe1z6V+lUQu8C5oSRoOmKkQDvQg0oW/ZiqpdKRAEFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UBL1iCAwVsGQL7bQt91aqNXaOvqZuqlHJ3C02j/cn6w=;
+ b=jIPfRtcmq1GR1Q5eUDJuSmc/HijgydFSsxJP3Otftu3OCcTNQw6hHy0hLm5QWPryOuBkAVaOymb4MuROxWp5Koo89uBFCOF/d3B0gttLt85BIlfOg7ybI1nAXSAgKDJhEoRphK2Lr2m9vBjKoqAdcit+kRDUFlbMdBeRbkq8LtU=
+Received: from BY5PR02MB6916.namprd02.prod.outlook.com (2603:10b6:a03:234::18)
+ by BYAPR02MB5461.namprd02.prod.outlook.com (2603:10b6:a03:a3::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Thu, 15 Jul
+ 2021 07:48:25 +0000
+Received: from BY5PR02MB6916.namprd02.prod.outlook.com
+ ([fe80::38e3:990b:4d03:fd06]) by BY5PR02MB6916.namprd02.prod.outlook.com
+ ([fe80::38e3:990b:4d03:fd06%9]) with mapi id 15.20.4331.023; Thu, 15 Jul 2021
+ 07:48:25 +0000
+From:   Anand Ashok Dumbre <ANANDASH@xilinx.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     "lars@metafoo.de" <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        git-dev <git-dev@xilinx.com>, Michal Simek <michals@xilinx.com>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Manish Narani <MNARANI@xilinx.com>
+Subject: RE: [PATCH v6 2/4] iio: adc: Add Xilinx AMS driver
+Thread-Topic: [PATCH v6 2/4] iio: adc: Add Xilinx AMS driver
+Thread-Index: AQHXaSbtDGFAxFZ6nESrsiS8rtP1uaszMzUAgBCU7UA=
+Date:   Thu, 15 Jul 2021 07:48:25 +0000
+Message-ID: <BY5PR02MB69165A85F14243048187870BA9129@BY5PR02MB6916.namprd02.prod.outlook.com>
+References: <20210624182939.12881-1-anand.ashok.dumbre@xilinx.com>
+        <20210624182939.12881-3-anand.ashok.dumbre@xilinx.com>
+ <20210704193108.20e19692@jic23-huawei>
+In-Reply-To: <20210704193108.20e19692@jic23-huawei>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5f45beb6-e90e-4452-4cc6-08d94764ed58
+x-ms-traffictypediagnostic: BYAPR02MB5461:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR02MB5461EBBF440AB58813860E72A9129@BYAPR02MB5461.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: x/2f9jEOEsclcDVktP6yveI/UiwciYEtcsxkTSqmFv/i8OGOZZnph1plSmM36nC+sHdrWEx3sRC6zED7YMl3wqlmWZvE71KW25KdkiUXfffg4kJUtXwsGzKZJNRgicwgZqlsOHkwX/2oypYJqKkV2/RiD0kXqgPTBRZuz12BttKX+tfXqWpptdzIeirEzdK2MWWU7Ad4UEfok0xPKONIl5k1gmDJCPwNlk3msBkbMiJprk4waOCldxgHVcvBEsfO1ybe9Wxrd9YEPWSW3XjWNlY9Xskvina5VKW/hvyMVX6CU+aKMg6yir4YGm9aoKep+1+Z4rK/VdN5636lPAaRJJsc3xZvEic89cqb/JtpCZv7l/stFmdwZ7w2oIWL8NBrdCzaTiaCb7H/OK/9/DlcynL+ryb2oBJK4ICp02feVdjfNLA+CQx/FWBkbrUfJQx1aq/sLNZE76rz8/lq2C7i2dAssVjwEEaDf1B8UOcKoS7RZ2N51+UUFxT5es8gVQmx7fn4PGtSqMiql22hCrPpkFbxVhFZTyvwFNEl4QEW/V4F1NTtBEDmmieAm/TOtSVWK3KsDGTwOgTouBEcp8R5fS0ZnTBT49bvedtRdAQ9vT+jF5l54hEevZzbLZL+r4bju2o7VkyfU+kiU0H8E1iouQ1zkLRmyrJ5UAsh+RKsor6+Aqft+iTlJX7y2z58DnXCUh4HtqOJ1MO8Ixevv1eyFQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6916.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(366004)(66556008)(66476007)(7696005)(478600001)(6916009)(8936002)(71200400001)(52536014)(64756008)(4326008)(9686003)(55016002)(53546011)(8676002)(30864003)(26005)(66946007)(316002)(186003)(5660300002)(86362001)(107886003)(66446008)(6506007)(2906002)(76116006)(38100700002)(122000001)(33656002)(54906003)(83380400001)(38070700004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?u13unTtO6XpzoVmofFbOTEytxROVVeVjybBVyoImnNwojzEqPk1sOBJOb2ze?=
+ =?us-ascii?Q?hKIak0JpkqVnDQpQS57aKNmWGu7N7Mk8zMd0BxGNs3FFzfau5JHLkPhj11sQ?=
+ =?us-ascii?Q?aepKB4PO/fnUuLFEXMGog5FPhPGP1HR+UzFkCNk7kv3pWM9eKmJTRpMIuy6C?=
+ =?us-ascii?Q?O2zVFDSbsNtAHyUwYMor+zb+7L8Dp2jfIELahOaWSsvi5n/00wOGOQlJNlKb?=
+ =?us-ascii?Q?oA9BgFfo2spM3tLQKY0aN1MIGX4rQWnYCnbQyZM5XNBK7CYWJZ5dhIblKYgi?=
+ =?us-ascii?Q?nNYaWpVOAl6ptkiuk1jYDbDBQR28VSrINC6HYDLrLk4q11rUj1d4LLTDA4sP?=
+ =?us-ascii?Q?xxhd3T3tfpUhAvQA55BHZvZ3qQ5mltZ44XMt/byf4ZZ7ygrpn9UuNEDfJDEh?=
+ =?us-ascii?Q?1ps4eBJuvJO2z9oawWevoLtcMWBLhNRR5ehJ5+8Hrp41LpgTmvs3NTGW7SMT?=
+ =?us-ascii?Q?Hz7zA3BFeFjL4fcb/dw7mrF3pms/VVRrohXJz57b7xvbDaiu/D1gs1Qiawq9?=
+ =?us-ascii?Q?ldNkaGr8g0unWUEirdDD8PWb/roZFYwkCMP58Ru5rzboYarl+StJtC/Nr8Dm?=
+ =?us-ascii?Q?PntM0CqNgCSgWJKomuHApS3WVr3y8Aob+8TNb+5p4Ba/UEVbGkQdPkScf8Mf?=
+ =?us-ascii?Q?QLTFdA4jsQ+lEuF+vL3rTLgYM4Q18ov5N9sBb0XaxbRfKON+hZUo+D1Cokfm?=
+ =?us-ascii?Q?gQVnAGYeAZ0gupVE77oA2NRRDgjvPq5ARq9GynHx6md7mTaaynRbzUYC5O24?=
+ =?us-ascii?Q?KPWn7xpjaU1WBXB3k/Gno/63GdKDz2z4Z4r5uswzUGmCmWzctjm/iTKHTwdG?=
+ =?us-ascii?Q?qJ7ZMpXXeUwqNL38zsa8KUIbNo5nIREyAkiSUkREzCiZpypkiwnAi/X+b2WZ?=
+ =?us-ascii?Q?8ik0tYZM7Qlerp9RtJ4izAZ8kbPQ8jagZTYIm/bCoX/hcxuakJJEfS9i7MTY?=
+ =?us-ascii?Q?UrhF/sbfmniiCHVoMm3MZ0ugZJfxgPov9XMQ3h8eeGGCua5xPGfEgtCaKUq/?=
+ =?us-ascii?Q?ChbytVdk2zKeEDAgmJV9IhY39JoJSM4o9pXXbQsKcTdQM2IzjsQZlt/gMsYX?=
+ =?us-ascii?Q?42SqpItCjgscG0Cwsyf4M87QEY7OVf0PVaKiANtsc1TlKnNW2En8yLZA9KCt?=
+ =?us-ascii?Q?cjbx1RKeTwqDM/xvbEhZoB9wdLfWPOYv1qo43KOA8j9qn+TMXWNNBDHwo45W?=
+ =?us-ascii?Q?CKGPo1i0NSNOtzjA+avGlfwah/wtRsgzIfe6dXIdfrDBkZ4Ke2GlNxQt81km?=
+ =?us-ascii?Q?6iBbpzlTXRWA4Ib+r5Bygen6e3hvWRtfs6eY6WzS/6ovPCBPk8/g2MN1bRdq?=
+ =?us-ascii?Q?1ySO5tup9DH1Go5crQpz3wut?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210711122055.4529-1-fengzheng923@gmail.com>
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6916.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f45beb6-e90e-4452-4cc6-08d94764ed58
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2021 07:48:25.2172
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Bp/h3Mz+SE4g54LJBesNrBMr+Q5o+4pZAmWAphyvwcPLY11Nfd+5jOGULsxBUucNyouw2HonC+Mr+GDeYpkvuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5461
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On Sun, Jul 11, 2021 at 08:20:55AM -0400, fengzheng923@gmail.com wrote:
-> From: Ban Tao <fengzheng923@gmail.com>
+
+> -----Original Message-----
+> From: Jonathan Cameron <jic23@kernel.org>
+> Sent: Sunday 4 July 2021 7:31 PM
+> To: Anand Ashok Dumbre <ANANDASH@xilinx.com>
+> Cc: lars@metafoo.de; linux-iio@vger.kernel.org; git-dev <git-
+> dev@xilinx.com>; Michal Simek <michals@xilinx.com>;
+> pmeerw@pmeerw.net; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Manish Narani <MNARANI@xilinx.com>
+> Subject: Re: [PATCH v6 2/4] iio: adc: Add Xilinx AMS driver
 >=20
-> The Allwinner H6 and later SoCs have an DMIC block
-> which is capable of capture.
+> On Thu, 24 Jun 2021 19:29:37 +0100
+> Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com> wrote:
 >=20
-> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> > The AMS includes an ADC as well as on-chip sensors that can be used to
+> > sample external voltages and monitor on-die operating conditions, such
+> > as temperature and supply voltage levels. The AMS has two SYSMON
+> blocks.
+> > PL-SYSMON block is capable of monitoring off chip voltage and
+> > temperature.
+> > PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
+> > from external master. Out of these interface currently only DRP is
+> > supported.
+> > Other block PS-SYSMON is memory mapped to PS.
+> > The AMS can use internal channels to monitor voltage and temperature
+> > as well as one primary and up to 16 auxiliary channels for measuring
+> > external voltages.
+> > The voltage and temperature monitoring channels also have event
+> > capability which allows to generate an interrupt when their value
+> > falls below or raises above a set threshold.
+> >
+> > Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> > Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+
+Hi Jonathan,
+
+Thank you for the review.
+
+My comments inline.
+
+Thanks,
+Anand
 >=20
-> ---
-> v1->v2:
-> 1.Fix some compilation errors.
-> 2.Modify some code styles.
-> ---
-> v2->v3:
-> None.
-> ---
-> v3->v4:
-> 1.add sig_bits.
-> ---
-> v4->v5:
-> None.
-> ---
-> v5->v6:
-> 1.Modify RXFIFO_CTL_MODE to mode 1.
-> ---
->  MAINTAINERS                   |   7 +
->  sound/soc/sunxi/Kconfig       |   8 +
->  sound/soc/sunxi/Makefile      |   1 +
->  sound/soc/sunxi/sun50i-dmic.c | 403 ++++++++++++++++++++++++++++++++++
->  4 files changed, 419 insertions(+)
->  create mode 100644 sound/soc/sunxi/sun50i-dmic.c
+> Hi Anand,
 >=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e924f9e5df97..8d700baaa3ca 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -760,6 +760,13 @@ L:	linux-media@vger.kernel.org
->  S:	Maintained
->  F:	drivers/staging/media/sunxi/cedrus/
-> =20
-> +ALLWINNER DMIC DRIVERS
-> +M:	Ban Tao <fengzheng923@gmail.com>
-> +L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-> +F:	sound/soc/sunxi/sun50i-dmic.c
-> +
->  ALPHA PORT
->  M:	Richard Henderson <rth@twiddle.net>
->  M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> index ddcaaa98d3cb..2a3bf7722e11 100644
-> --- a/sound/soc/sunxi/Kconfig
-> +++ b/sound/soc/sunxi/Kconfig
-> @@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
->  	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
->  	  A10 and affiliated SoCs.
-> =20
-> +config SND_SUN50I_DMIC
-> +	tristate "Allwinner H6 DMIC Support"
-> +	depends on (OF && ARCH_SUNXI) || COMPILE_TEST
-> +	select SND_SOC_GENERIC_DMAENGINE_PCM
-> +	help
-> +	  Say Y or M to add support for the DMIC audio block in the Allwinner
-> +	  H6 and affiliated SoCs.
-> +
->  config SND_SUN8I_ADDA_PR_REGMAP
->  	tristate
->  	select REGMAP
-> diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-> index a86be340a076..4483fe9c94ef 100644
-> --- a/sound/soc/sunxi/Makefile
-> +++ b/sound/soc/sunxi/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) +=3D sun8i-codec-ana=
-log.o
->  obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) +=3D sun50i-codec-analog.o
->  obj-$(CONFIG_SND_SUN8I_CODEC) +=3D sun8i-codec.o
->  obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) +=3D sun8i-adda-pr-regmap.o
-> +obj-$(CONFIG_SND_SUN50I_DMIC) +=3D sun50i-dmic.o
-> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-> new file mode 100644
-> index 000000000000..bbac836ba4de
-> --- /dev/null
-> +++ b/sound/soc/sunxi/sun50i-dmic.c
-> @@ -0,0 +1,403 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +//
-> +// This driver supports the DMIC in Allwinner's H6 SoCs.
-> +//
-> +// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
-> +
-> +#include <linux/clk.h>
-> +#include <linux/device.h>
-> +#include <linux/of_device.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/reset.h>
-> +#include <sound/dmaengine_pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +
-> +#define SUN50I_DMIC_EN_CTL		(0x00)
-> +	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
-> +	#define SUN50I_DMIC_EN_CTL_CHAN(v)		((v) << 0)
-> +	#define SUN50I_DMIC_EN_CTL_CHAN_MASK		GENMASK(7, 0)
-> +#define SUN50I_DMIC_SR			(0x04)
-> +	#define SUN50I_DMIC_SR_SAMPLE_RATE(v)		((v) << 0)
-> +	#define SUN50I_DMIC_SR_SAMPLE_RATE_MASK		GENMASK(2, 0)
-> +#define SUN50I_DMIC_CTL			(0x08)
-> +	#define SUN50I_DMIC_CTL_OVERSAMPLE_RATE		BIT(0)
-> +#define SUN50I_DMIC_DATA			(0x10)
-> +#define SUN50I_DMIC_INTC			(0x14)
-> +	#define SUN50I_DMIC_FIFO_DRQ_EN			BIT(2)
-> +#define SUN50I_DMIC_INT_STA		(0x18)
-> +	#define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING	BIT(1)
-> +	#define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING	BIT(0)
-> +#define SUN50I_DMIC_RXFIFO_CTL		(0x1c)
-> +	#define SUN50I_DMIC_RXFIFO_CTL_FLUSH		BIT(31)
-> +	#define SUN50I_DMIC_RXFIFO_CTL_MODE		BIT(9)
-> +	#define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION	BIT(8)
-> +#define SUN50I_DMIC_CH_NUM		(0x24)
-> +	#define SUN50I_DMIC_CH_NUM_N(v)			((v) << 0)
-> +	#define SUN50I_DMIC_CH_NUM_N_MASK		GENMASK(2, 0)
-> +#define SUN50I_DMIC_CNT			(0x2c)
-> +	#define SUN50I_DMIC_CNT_N			BIT(0)
-> +#define SUN50I_DMIC_HPF_CTRL		(0x38)
-> +#define SUN50I_DMIC_VERSION		(0x50)
-> +
-> +
+> A few comments inline from a fresh read.
+> Only significant one is that the use of separate masks and shifts differs=
+ from
+> how they are normally done in the kernel these days.
+> FIELD_PREP() and FIELD_GET() allow a single mask definition to be cleanly
+> used for both the shift and masking in a nice clean way.
+>=20
+> Thanks,
+>=20
+> Jonathan
+>=20
+> > ---
+> >  drivers/iio/adc/Kconfig      |   13 +
+> >  drivers/iio/adc/Makefile     |    1 +
+> >  drivers/iio/adc/xilinx-ams.c | 1342
+> > ++++++++++++++++++++++++++++++++++
+> >  3 files changed, 1356 insertions(+)
+> >  create mode 100644 drivers/iio/adc/xilinx-ams.c
+> >
+> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig index
+> > c7946c439612..c011ab30ec9a 100644
+> > --- a/drivers/iio/adc/Kconfig
+> > +++ b/drivers/iio/adc/Kconfig
+> > @@ -1256,4 +1256,17 @@ config XILINX_XADC
+> >  	  The driver can also be build as a module. If so, the module will be
+> called
+> >  	  xilinx-xadc.
+> >
+> > +config XILINX_AMS
+> > +	tristate "Xilinx AMS driver"
+> > +	depends on ARCH_ZYNQMP || COMPILE_TEST
+> > +	depends on HAS_IOMEM
+> > +	help
+> > +	  Say yes here to have support for the Xilinx AMS.
+> > +
+> > +	  The driver supports Voltage and Temperature monitoring on Xilinx
+> Ultrascale
+> > +	  devices.
+> > +
+> > +	  The driver can also be built as a module. If so, the module will be
+> called
+> > +	  xilinx-ams.
+> > +
+> >  endmenu
+> > diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile index
+> > a226657d19c0..99e031f44479 100644
+> > --- a/drivers/iio/adc/Makefile
+> > +++ b/drivers/iio/adc/Makefile
+> > @@ -112,4 +112,5 @@ obj-$(CONFIG_VF610_ADC) +=3D vf610_adc.o
+> >  obj-$(CONFIG_VIPERBOARD_ADC) +=3D viperboard_adc.o  xilinx-xadc-y :=3D
+> > xilinx-xadc-core.o xilinx-xadc-events.o
+> >  obj-$(CONFIG_XILINX_XADC) +=3D xilinx-xadc.o
+> > +obj-$(CONFIG_XILINX_AMS) +=3D xilinx-ams.o
+> >  obj-$(CONFIG_SD_ADC_MODULATOR) +=3D sd_adc_modulator.o diff --git
+> > a/drivers/iio/adc/xilinx-ams.c b/drivers/iio/adc/xilinx-ams.c new file
+> > mode 100644 index 000000000000..463e3162726c
+> > --- /dev/null
+> > +++ b/drivers/iio/adc/xilinx-ams.c
+> > @@ -0,0 +1,1342 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Xilinx AMS driver
+> > + *
+> > + *  Copyright (C) 2021 Xilinx, Inc.
+> > + *
+> > + *  Manish Narani <mnarani@xilinx.com>
+> > + *  Rajnikant Bhojani <rajnikant.bhojani@xilinx.com>  */
+> > +
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/io.h>
+> > +#include <linux/iopoll.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/slab.h>
+> > +
+> > +#include <linux/iio/events.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/sysfs.h>
+> > +
+> > +static const unsigned int AMS_UNMASK_TIMEOUT_MS =3D 500;
+> > +
+> > +/* AMS registers definitions */
+> > +#define AMS_ISR_0			0x010
+> > +#define AMS_ISR_1			0x014
+> > +#define AMS_IER_0			0x020
+> > +#define AMS_IER_1			0x024
+> > +#define AMS_IDR_0			0x028
+> > +#define AMS_IDR_1			0x02c
+> > +#define AMS_PS_CSTS			0x040
+> > +#define AMS_PL_CSTS			0x044
+> > +
+> > +#define AMS_VCC_PSPLL0			0x060
+> > +#define AMS_VCC_PSPLL3			0x06C
+> > +#define AMS_VCCINT			0x078
+> > +#define AMS_VCCBRAM			0x07C
+> > +#define AMS_VCCAUX			0x080
+> > +#define AMS_PSDDRPLL			0x084
+> > +#define AMS_PSINTFPDDR			0x09C
+> > +
+> > +#define AMS_VCC_PSPLL0_CH		48
+> > +#define AMS_VCC_PSPLL3_CH		51
+> > +#define AMS_VCCINT_CH			54
+> > +#define AMS_VCCBRAM_CH			55
+> > +#define AMS_VCCAUX_CH			56
+> > +#define AMS_PSDDRPLL_CH			57
+> > +#define AMS_PSINTFPDDR_CH		63
+> > +
+> > +#define AMS_REG_CONFIG0			0x100
+> > +#define AMS_REG_CONFIG1			0x104
+> > +#define AMS_REG_CONFIG3			0x10C
+> > +#define AMS_REG_SEQ_CH0			0x120
+> > +#define AMS_REG_SEQ_CH1			0x124
+> > +#define AMS_REG_SEQ_CH2			0x118
+> > +
+> > +#define AMS_TEMP			0x000
+> > +#define AMS_SUPPLY1			0x004
+> > +#define AMS_SUPPLY2			0x008
+> > +#define AMS_VP_VN			0x00c
+> > +#define AMS_VREFP			0x010
+> > +#define AMS_VREFN			0x014
+> > +#define AMS_SUPPLY3			0x018
+> > +#define AMS_SUPPLY4			0x034
+> > +#define AMS_SUPPLY5			0x038
+> > +#define AMS_SUPPLY6			0x03c
+> > +#define AMS_SUPPLY7			0x200
+> > +#define AMS_SUPPLY8			0x204
+> > +#define AMS_SUPPLY9			0x208
+> > +#define AMS_SUPPLY10			0x20c
+> > +#define AMS_VCCAMS			0x210
+> > +#define AMS_TEMP_REMOTE			0x214
+> > +
+> > +#define AMS_REG_VAUX(x)			(0x40 + 4 * (x))
+> > +
+> > +#define AMS_PS_RESET_VALUE		0xFFFF
+> > +#define AMS_PL_RESET_VALUE		0xFFFF
+> > +
+> > +#define AMS_CONF0_CHANNEL_NUM_MASK	GENMASK(6, 0)
+> > +
+> > +#define AMS_CONF1_SEQ_MASK		GENMASK(15, 12)
+> > +#define AMS_CONF1_SEQ_DEFAULT		(0 << 12)
+> > +#define AMS_CONF1_SEQ_CONTINUOUS	(2 << 12)
+> > +#define AMS_CONF1_SEQ_SINGLE_CHANNEL	(3 << 12)
+>=20
+> FIELD_PREP(AMS_CONFG1_SEQ_MASK, 0) or even better, define the values
+> as not shifted and have
+>=20
+> FIELD_PREP(AMS_CONFIG1_SEQ_MASK, AMS_CONF1_SEQ_DEFAULT) etc in
+> the relevant places inline.
+>=20
+Will fix this in next series.
+>=20
+> > +
+> > +#define AMS_REG_SEQ0_MASK		0xFFFF
+> > +#define AMS_REG_SEQ2_MASK		0x003F
+> > +#define AMS_REG_SEQ1_MASK		0xFFFF
+> > +#define AMS_REG_SEQ2_MASK_SHIFT		16
+> > +#define AMS_REG_SEQ1_MASK_SHIFT		22
+>=20
+> As below, combine mask and shift into a shifted mask then you can use
+> FIELD_PREP() to do the magic for you.
 
-There's multiple blank lines here
+Will fix this in next series.
+>=20
+> > +
+> > +#define AMS_REGCFG1_ALARM_MASK		0xF0F
+> > +#define AMS_REGCFG3_ALARM_MASK		0x3F
+> > +
+> > +#define AMS_ALARM_TEMP			0x140
+> > +#define AMS_ALARM_SUPPLY1		0x144
+> > +#define AMS_ALARM_SUPPLY2		0x148
+> > +#define AMS_ALARM_SUPPLY3		0x160
+> > +#define AMS_ALARM_SUPPLY4		0x164
+> > +#define AMS_ALARM_SUPPLY5		0x168
+> > +#define AMS_ALARM_SUPPLY6		0x16c
+> > +#define AMS_ALARM_SUPPLY7		0x180
+> > +#define AMS_ALARM_SUPPLY8		0x184
+> > +#define AMS_ALARM_SUPPLY9		0x188
+> > +#define AMS_ALARM_SUPPLY10		0x18c
+> > +#define AMS_ALARM_VCCAMS		0x190
+> > +#define AMS_ALARM_TEMP_REMOTE		0x194
+> > +#define AMS_ALARM_THRESHOLD_OFF_10	0x10
+> > +#define AMS_ALARM_THRESHOLD_OFF_20	0x20
+> > +
+> > +#define AMS_ALARM_THR_DIRECT_MASK	0x01
+> > +#define AMS_ALARM_THR_MIN		0x0000
+> > +#define AMS_ALARM_THR_MAX		0xffff
+> > +
+> > +#define AMS_NO_OF_ALARMS		32
+> > +#define AMS_PL_ALARM_START		16
+> > +#define AMS_ISR0_ALARM_MASK		0xFFFFFFFFU
+> > +#define AMS_ISR1_ALARM_MASK		0xE000001FU
+> > +#define AMS_ISR1_EOC_MASK		0x00000008U
+> > +#define AMS_ISR1_INTR_MASK_SHIFT	32
+> > +#define AMS_ISR0_ALARM_2_TO_0_MASK	0x07
+> > +#define AMS_ISR0_ALARM_6_TO_3_MASK	0x78
+> > +#define AMS_ISR0_ALARM_12_TO_7_MASK	0x3F
+> > +#define AMS_CONF1_ALARM_2_TO_0_SHIFT	1
+>=20
+> Can we handle these via a single mask that includes the shift and
+> FIELD_PREP() etc?  That tends to make it easier to review by ensuring we
+> don't have multiple defines to deal with.
+>=20
 
-> +struct sun50i_dmic_dev {
-> +	struct clk *dmic_clk;
-> +	struct clk *bus_clk;
-> +	struct reset_control *rst;
-> +	struct regmap *regmap;
-> +	struct snd_dmaengine_dai_dma_data dma_params_rx;
-> +	unsigned int chan_en;
-> +};
-> +
-> +struct dmic_rate {
-> +	unsigned int samplerate;
-> +	unsigned int rate_bit;
-> +};
-> +
-> +static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
-> +			       struct snd_soc_dai *cpu_dai)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
-> +	struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(asoc_rtd_to_cp=
-u(rtd, 0));
-> +
-> +	/* only support capture */
-> +	if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
-> +		return -EINVAL;
-> +
-> +	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> +			   SUN50I_DMIC_RXFIFO_CTL_FLUSH,
-> +			   SUN50I_DMIC_RXFIFO_CTL_FLUSH);
-> +	regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
-> +				 struct snd_pcm_hw_params *params,
-> +				 struct snd_soc_dai *cpu_dai)
-> +{
-> +	int i =3D 0;
-> +	unsigned long rate =3D params_rate(params);
-> +	unsigned int mclk =3D 0;
-> +	unsigned int channels =3D params_channels(params);
-> +	struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(cpu_dai);
-> +	static struct dmic_rate dmic_rate_s[] =3D {
-> +		{44100, 0x0},
-> +		{48000, 0x0},
-> +		{22050, 0x2},
-> +		{24000, 0x2},
-> +		{11025, 0x4},
-> +		{12000, 0x4},
-> +		{32000, 0x1},
-> +		{16000, 0x3},
-> +		{8000,  0x5},
-> +	};
+Will fix this in next series.
 
-We should order these items. It looks like descending rate makes the
-most sense?
+> > +#define AMS_CONF1_ALARM_6_TO_3_SHIFT	5
+> > +#define AMS_CONF3_ALARM_12_TO_7_SHIFT	8
+>=20
+>=20
+> > +
+> > +#define AMS_PS_CSTS_PS_READY		0x08010000U
+> > +#define AMS_PL_CSTS_ACCESS_MASK		0x00000001U
+> > +
+> > +#define AMS_PL_MAX_FIXED_CHANNEL	10
+> > +#define AMS_PL_MAX_EXT_CHANNEL		20
+> > +
+> > +#define AMS_INIT_TIMEOUT_US		10000
+> > +
+> > +/*
+> > + * Following scale and offset value is derived from
+> > + * UG580 (v1.7) December 20, 2016
+> > + */
+> > +#define AMS_SUPPLY_SCALE_1VOLT		1000
+> > +#define AMS_SUPPLY_SCALE_3VOLT		3000
+> > +#define AMS_SUPPLY_SCALE_6VOLT		6000
+> > +#define AMS_SUPPLY_SCALE_DIV_BIT	16
+> > +
+> > +#define AMS_TEMP_SCALE			509314
+> > +#define AMS_TEMP_SCALE_DIV_BIT		16
+> > +#define AMS_TEMP_OFFSET			-((280230L << 16) /
+> 509314)
+> > +
+> > +enum ams_alarm_bit {
+> > +	AMS_ALARM_BIT_TEMP,
+> > +	AMS_ALARM_BIT_SUPPLY1,
+> > +	AMS_ALARM_BIT_SUPPLY2,
+> > +	AMS_ALARM_BIT_SUPPLY3,
+> > +	AMS_ALARM_BIT_SUPPLY4,
+> > +	AMS_ALARM_BIT_SUPPLY5,
+> > +	AMS_ALARM_BIT_SUPPLY6,
+> > +	AMS_ALARM_BIT_RESERVED,
+> > +	AMS_ALARM_BIT_SUPPLY7,
+> > +	AMS_ALARM_BIT_SUPPLY8,
+> > +	AMS_ALARM_BIT_SUPPLY9,
+> > +	AMS_ALARM_BIT_SUPPLY10,
+> > +	AMS_ALARM_BIT_VCCAMS,
+> > +	AMS_ALARM_BIT_TEMP_REMOTE
+> > +};
+> > +
+> > +enum ams_seq {
+> > +	AMS_SEQ_VCC_PSPLL,
+> > +	AMS_SEQ_VCC_PSBATT,
+> > +	AMS_SEQ_VCCINT,
+> > +	AMS_SEQ_VCCBRAM,
+> > +	AMS_SEQ_VCCAUX,
+> > +	AMS_SEQ_PSDDRPLL,
+> > +	AMS_SEQ_INTDDR
+> > +};
+> > +
+> > +enum ams_ps_pl_seq {
+> > +	AMS_SEQ_CALIB,
+> > +	AMS_SEQ_RSVD_1,
+> > +	AMS_SEQ_RSVD_2,
+> > +	AMS_SEQ_TEST,
+> > +	AMS_SEQ_RSVD_4,
+> > +	AMS_SEQ_SUPPLY4,
+> > +	AMS_SEQ_SUPPLY5,
+> > +	AMS_SEQ_SUPPLY6,
+> > +	AMS_SEQ_TEMP,
+> > +	AMS_SEQ_SUPPLY2,
+> > +	AMS_SEQ_SUPPLY1,
+> > +	AMS_SEQ_VP_VN,
+> > +	AMS_SEQ_VREFP,
+> > +	AMS_SEQ_VREFN,
+> > +	AMS_SEQ_SUPPLY3,
+> > +	AMS_SEQ_CURRENT_MON,
+> > +	AMS_SEQ_SUPPLY7,
+> > +	AMS_SEQ_SUPPLY8,
+> > +	AMS_SEQ_SUPPLY9,
+> > +	AMS_SEQ_SUPPLY10,
+> > +	AMS_SEQ_VCCAMS,
+> > +	AMS_SEQ_TEMP_REMOTE,
+> > +	AMS_SEQ_MAX
+> > +};
+> > +
+> > +#define AMS_SEQ(x)		(AMS_SEQ_MAX + (x))
+> > +#define AMS_VAUX_SEQ(x)		(AMS_SEQ_MAX + (x))
+> > +
+> > +#define AMS_PS_SEQ_MAX		AMS_SEQ_MAX
+> > +#define PS_SEQ(x)		(x)
+> > +#define PL_SEQ(x)		(AMS_PS_SEQ_MAX + (x))
+> > +
+> > +#define AMS_CHAN_TEMP(_scan_index, _addr) { \
+> > +	.type =3D IIO_TEMP, \
+> > +	.indexed =3D 1, \
+> > +	.address =3D (_addr), \
+> > +	.info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) | \
+> > +		BIT(IIO_CHAN_INFO_SCALE) | \
+> > +		BIT(IIO_CHAN_INFO_OFFSET), \
+> > +	.info_mask_shared_by_all =3D BIT(IIO_CHAN_INFO_SAMP_FREQ), \
+> > +	.event_spec =3D ams_temp_events, \
+> > +	.num_event_specs =3D ARRAY_SIZE(ams_temp_events), \
+> > +	.scan_index =3D (_scan_index), \
+> > +	.scan_type =3D { \
+> > +		.sign =3D 'u', \
+> > +		.realbits =3D 12, \
+> > +		.storagebits =3D 16, \
+> > +		.shift =3D 4, \
+> > +		.endianness =3D IIO_CPU, \
+>=20
+> Currently these are only documentation i think as no support for using th=
+em
+> in this driver (buffered modes).  You could drop them until you need them=
+ in
+> some future patch.
 
-Also, I'm not sure why we need to make that array local, can't this be a
-global variable?
+Makes sense, will remove the scan_type part, but will retain the scan index=
+, since it=20
+is used in some logic inside the rest of the code.
 
-> +	/* DMIC num is N+1 */
-> +	regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
-> +			   SUN50I_DMIC_CH_NUM_N_MASK,
-> +			   SUN50I_DMIC_CH_NUM_N(channels - 1));
-> +	host->chan_en =3D (1 << channels) - 1;
-> +	regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
+>=20
+> > +	}, \
+> > +}
+> > +
+>=20
+> ...
+>=20
+> > +static int ams_enable_single_channel(struct ams *ams, unsigned int
+> > +offset) {
+> > +	u8 channel_num =3D 0;
+> > +
+> > +	switch (offset) {
+> > +	case AMS_VCC_PSPLL0:
+> > +		channel_num =3D AMS_VCC_PSPLL0_CH;
+> > +		break;
+> > +	case AMS_VCC_PSPLL3:
+> > +		channel_num =3D AMS_VCC_PSPLL3_CH;
+> > +		break;
+> > +	case AMS_VCCINT:
+> > +		channel_num =3D AMS_VCCINT_CH;
+> > +		break;
+> > +	case AMS_VCCBRAM:
+> > +		channel_num =3D AMS_VCCBRAM_CH;
+> > +		break;
+> > +	case AMS_VCCAUX:
+> > +		channel_num =3D AMS_VCCAUX_CH;
+> > +		break;
+> > +	case AMS_PSDDRPLL:
+> > +		channel_num =3D AMS_PSDDRPLL_CH;
+> > +		break;
+> > +	case AMS_PSINTFPDDR:
+> > +		channel_num =3D AMS_PSINTFPDDR_CH;
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* set single channel, sequencer off mode */
+> > +	ams_ps_update_reg(ams, AMS_REG_CONFIG1,
+> AMS_CONF1_SEQ_MASK,
+> > +			  AMS_CONF1_SEQ_SINGLE_CHANNEL);
+> > +
+> > +	/* write the channel number */
+> > +	ams_ps_update_reg(ams, AMS_REG_CONFIG0,
+> AMS_CONF0_CHANNEL_NUM_MASK,
+> > +			  channel_num);
+>=20
+> nitpick: Blank line here.
 
-Do we need to store the channels bitmask in the main structure? It looks
-fairly easy to generate, so I guess we could just use a macro
+Will fix this in next series.
 
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> +				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S24_LE:
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> +				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
-> +				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
-> +		break;
+>=20
+> > +	return 0;
+> > +}
+> > +
+>=20
+> ...
+>=20
+> > +static int ams_get_ext_chan(struct device_node *chan_node,
+> > +			    struct iio_chan_spec *channels, int num_channels)
+> {
+> > +	struct device_node *child;
+> > +	unsigned int reg;
+> > +	int ret;
+> > +
+> > +	for_each_child_of_node(chan_node, child) {
+> > +		ret =3D of_property_read_u32(child, "reg", &reg);
+> > +		if (ret || reg > (AMS_PL_MAX_EXT_CHANNEL + 30))
+> > +			continue;
+> > +
+> > +		memcpy(&channels[num_channels], &ams_pl_channels[reg
+> +
+> > +		       AMS_PL_MAX_FIXED_CHANNEL - 30], sizeof(*channels));
+> > +
+> > +		if (of_property_read_bool(child,
+> > +					  "xlnx,bipolar"))
+>=20
+> Above fits on one line easily.
 
-These two defines could be named a bit better, it's not really clear
-what SUN50I_DMIC_RXFIFO_CTL_RESOLUTION means, exactly, as opposed to 0
-(while it's actually the sample width).
+Will fix this in next series.
 
-What about something like SUN50I_DMIC_RXFIFO_CTL_SAMPLE_16 (for 0) and
-_24 (for 1), while changing SUN50I_DMIC_RXFIFO_CTL_RESOLUTION for
-SUN50I_DMIC_RXFIFO_CTL_SAMPLE_MASK ?
+>=20
+> > +			channels[num_channels].scan_type.sign =3D	's';
+> > +
+> > +		num_channels++;
+> > +	}
+> > +
+> > +	return num_channels;
+> > +}
+> > +
+>=20
+> ...
+>=20
+> > +
+> > +static int ams_probe(struct platform_device *pdev) {
+> > +	struct iio_dev *indio_dev;
+> > +	struct ams *ams;
+> > +	struct resource *res;
+> > +	int ret;
+> > +
+> > +	if (!pdev->dev.of_node)
+> > +		return -ENODEV;
+> > +
+> > +	indio_dev =3D devm_iio_device_alloc(&pdev->dev, sizeof(*ams));
+> > +	if (!indio_dev)
+> > +		return -ENOMEM;
+> > +
+> > +	ams =3D iio_priv(indio_dev);
+> > +	mutex_init(&ams->lock);
+> > +
+> > +	indio_dev->name =3D "xilinx-ams";
+> > +
+> > +	indio_dev->info =3D &iio_ams_info;
+> > +	indio_dev->modes =3D INDIO_DIRECT_MODE;
+> > +
+> > +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	ams->base =3D devm_ioremap_resource(&pdev->dev, res);
+>=20
+> devm_platform_ioremap_resource()
+> Slight reduction in boilerplate.
 
-> +	default:
-> +		dev_err(cpu_dai->dev, "Invalid format!\n");
-> +		return -EINVAL;
-> +	}
-> +	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> +			   SUN50I_DMIC_RXFIFO_CTL_MODE,
-> +			   SUN50I_DMIC_RXFIFO_CTL_MODE);
+Will fix this in next series.
 
-Same thing here, MODE doesn't really explain what this does, and why
-we'd want to always set it.
+>=20
+> > +	if (IS_ERR(ams->base))
+> > +		return PTR_ERR(ams->base);
+> > +
+> > +	ams->clk =3D devm_clk_get(&pdev->dev, NULL);
+> > +	if (IS_ERR(ams->clk))
+> > +		return PTR_ERR(ams->clk);
+> > +	clk_prepare_enable(ams->clk);
+> > +	devm_add_action_or_reset(&pdev->dev, (void
+> *)clk_disable_unprepare,
+> > +				 ams->clk);
+> > +
+> > +	INIT_DELAYED_WORK(&ams->ams_unmask_work,
+> ams_unmask_worker);
+> > +	devm_add_action_or_reset(&pdev->dev, (void
+> *)cancel_delayed_work,
+>=20
+> I'm not keen on casting away the function pointer type.  Normally we'd ju=
+st
+> wrap it in a local function, to make it clear it was deliberate and avoid
+> potential nasty problems if the signature of the function ever changes.
+>=20
+> It's 3 lines of boilerplate, but will give me warm fuzzy feelings!
+> Same for the other case above.  The fact this isn't done in exising kerne=
+l code
+> make this particularly risky.
 
-I guess 0 is LSB_ZERO and 1 is MSB_SIGN?
+Makes sense. I will revert the code back to its original and handle the cas=
+es using goto
+and inside remove()
 
-> +	switch (rate) {
-> +	case 11025:
-> +	case 22050:
-> +	case 44100:
-> +		mclk =3D 22579200;
-> +		break;
-> +	case 8000:
-> +	case 12000:
-> +	case 16000:
-> +	case 24000:
-> +	case 32000:
-> +	case 48000:
-> +		mclk =3D 24576000;
-> +		break;
-> +	default:
-> +		dev_err(cpu_dai->dev, "Invalid rate!\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (clk_set_rate(host->dmic_clk, mclk)) {
-> +		dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
-> +		return -EINVAL;
-> +	}
-> +
-> +	for (i =3D 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
-> +		if (dmic_rate_s[i].samplerate =3D=3D rate) {
-> +			regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
-> +					   SUN50I_DMIC_SR_SAMPLE_RATE_MASK,
-> +					   SUN50I_DMIC_SR_SAMPLE_RATE(dmic_rate_s[i].rate_bit));
-> +			break;
-> +		}
-> +	}
-> +
-> +	switch (params_physical_width(params)) {
-> +	case 16:
-> +		host->dma_params_rx.addr_width =3D DMA_SLAVE_BUSWIDTH_2_BYTES;
-> +		break;
-> +	case 32:
-> +		host->dma_params_rx.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +		break;
-> +	default:
-> +		dev_err(cpu_dai->dev, "Unsupported physical sample width: %d\n",
-> +			params_physical_width(params));
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* oversamplerate adjust */
-> +	if (params_rate(params) >=3D 24000)
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-> +				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
-> +				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
-> +	else
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-> +				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int =
-cmd,
-> +			       struct snd_soc_dai *dai)
-> +{
-> +	int ret =3D 0;
-> +	struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
-> +
-> +	if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
-> +		return -EINVAL;
-> +
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		/* DRQ ENABLE */
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-> +				   SUN50I_DMIC_FIFO_DRQ_EN,
-> +				   SUN50I_DMIC_FIFO_DRQ_EN);
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> +				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
-> +				   SUN50I_DMIC_EN_CTL_CHAN(host->chan_en));
-> +		/* Global enable */
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> +				   SUN50I_DMIC_EN_CTL_GLOBE,
-> +				   SUN50I_DMIC_EN_CTL_GLOBE);
-> +		break;
+>=20
+> > +				 &ams->ams_unmask_work);
+> > +
+> > +	ret =3D ams_init_device(ams);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "failed to initialize AMS\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret =3D ams_parse_dt(indio_dev, pdev);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "failure in parsing DT\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ams_enable_channel_sequence(indio_dev);
+> > +
+> > +	ams->irq =3D platform_get_irq(pdev, 0);
+>=20
+> platform_get_irq () can return errors, in particular -EPROBE_DEFER so I'd
+> check that and return before you call devm_request_irq() I'm not sure
+> devm_request_irq() will not eat that error code.
+>=20
 
-Do we really need to clear the channel and global enable bits? and DRQ?
+Will fix this in next series.
 
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		/* DRQ DISABLE */
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-> +				   SUN50I_DMIC_FIFO_DRQ_EN, 0);
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> +				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
-> +				   SUN50I_DMIC_EN_CTL_CHAN(0));
-> +		/* Global disable */
-> +		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> +				   SUN50I_DMIC_EN_CTL_GLOBE, 0);
-> +		break;
-> +
-> +	default:
-> +		ret =3D -EINVAL;
-> +		break;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
-> +{
-> +	struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
-> +
-> +	snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_soc_dai_ops sun50i_dmic_dai_ops =3D {
-> +	.startup	=3D sun50i_dmic_startup,
-> +	.trigger	=3D sun50i_dmic_trigger,
-> +	.hw_params	=3D sun50i_dmic_hw_params,
-> +};
-> +
-> +static const struct regmap_config sun50i_dmic_regmap_config =3D {
-> +	.reg_bits =3D 32,
-> +	.reg_stride =3D 4,
-> +	.val_bits =3D 32,
-> +	.max_register =3D SUN50I_DMIC_VERSION,
-> +	.cache_type =3D REGCACHE_NONE,
-> +};
-> +
-> +#define	SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
-> +#define SUN50I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_L=
-E)
+>=20
+> > +	ret =3D devm_request_irq(&pdev->dev, ams->irq, &ams_irq, 0, "ams-
+> irq",
+> > +			       indio_dev);
+> > +	if (ret < 0) {
+> > +		dev_err(&pdev->dev, "failed to register interrupt\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	platform_set_drvdata(pdev, indio_dev);
+> > +
+> > +	return iio_device_register(indio_dev); }
+> > +
+> > +static int ams_remove(struct platform_device *pdev) {
+> > +	struct iio_dev *indio_dev =3D platform_get_drvdata(pdev);
+> > +
+> > +	iio_device_unregister(indio_dev);
+>=20
+> If this is all you have in remove, then you can use devm_iio_device_regis=
+ter()
+> in probe() and not need an remove() callback at all.
 
-SUN50I_DMIC_RATES has a tab between the define and its name, while
-SUN50I_FORMATS has the tab after the name. We should be consistent.
-Similarly, we should name both with the SUN50I_DMIC prefix.
+I think remove will have more functions since I am getting rid of devm_add_=
+action_or_reset()
 
-> +static struct snd_soc_dai_driver sun50i_dmic_dai =3D {
-> +	.capture =3D {
-> +		.channels_min =3D 1,
-> +		.channels_max =3D 8,
-> +		.rates =3D SUN50I_DMIC_RATES,
-> +		.formats =3D SUN50I_FORMATS,
-> +		.sig_bits =3D 21,
-> +	},
-> +	.probe =3D sun50i_dmic_soc_dai_probe,
-> +	.ops =3D &sun50i_dmic_dai_ops,
-> +	.name =3D "dmic",
-> +};
-> +
-> +static const struct of_device_id sun50i_dmic_of_match[] =3D {
-> +	{
-> +		.compatible =3D "allwinner,sun50i-h6-dmic",
-> +	},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
-> +
-> +static const struct snd_soc_component_driver sun50i_dmic_component =3D {
-> +	.name		=3D "sun50i-dmic",
-> +};
-> +
-> +static int sun50i_dmic_runtime_suspend(struct device *dev)
-> +{
-> +	struct sun50i_dmic_dev *host  =3D dev_get_drvdata(dev);
-> +
-> +	clk_disable_unprepare(host->dmic_clk);
-> +	clk_disable_unprepare(host->bus_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sun50i_dmic_runtime_resume(struct device *dev)
-> +{
-> +	struct sun50i_dmic_dev *host  =3D dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret =3D clk_prepare_enable(host->dmic_clk);
-> +	if (ret)
-> +		return ret;
-
-A new line here would be great.
-
-> +	ret =3D clk_prepare_enable(host->bus_clk);
-> +	if (ret)
-> +		clk_disable_unprepare(host->dmic_clk);
-> +
-> +	return ret;
-
-In general we prefer to treat the error path and the success path
-differently. In this case it would mean changing that part to
-
-ret =3D clk_prepare_enable(host->bus_clk);
-if (ret) {
-   	 clk_disable_unprepare(host->dmic_clk);
-	 return ret;
-}
-
-return 0;
-
-> +}
-> +
-> +static int sun50i_dmic_probe(struct platform_device *pdev)
-> +{
-> +	struct sun50i_dmic_dev *host;
-> +	struct resource *res;
-> +	int ret;
-> +	void __iomem *base;
-> +
-> +	host =3D devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
-> +	if (!host)
-> +		return -ENOMEM;
-> +
-> +	/* Get the addresses */
-> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	base =3D devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(base))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(base),
-> +				     "get resource failed.\n");
-> +
-> +	host->regmap =3D devm_regmap_init_mmio(&pdev->dev, base,
-> +						&sun50i_dmic_regmap_config);
-
-Your second line should be aligned on the opening parenthesis
-
-> +	/* Clocks */
-> +	host->bus_clk =3D devm_clk_get(&pdev->dev, "bus");
-> +	if (IS_ERR(host->bus_clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
-> +				     "failed to get bus clock.\n");
-> +
-> +	host->dmic_clk =3D devm_clk_get(&pdev->dev, "mod");
-> +	if (IS_ERR(host->dmic_clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
-> +				     "failed to get dmic clock.\n");
-> +
-> +	host->dma_params_rx.addr =3D res->start + SUN50I_DMIC_DATA;
-> +	host->dma_params_rx.maxburst =3D 8;
-> +
-> +	platform_set_drvdata(pdev, host);
-> +
-> +	host->rst =3D devm_reset_control_get_optional_exclusive(&pdev->dev, NUL=
-L);
-> +	if (IS_ERR(host->rst))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-> +				     "Failed to get reset.\n");
-
-Your binding states that the reset is mandatory so you don't need the
-optional variant.
-
-> +	reset_control_deassert(host->rst);
-
-Can't this be moved to the runtime_pm hooks?
-
-> +	ret =3D devm_snd_soc_register_component(&pdev->dev,
-> +				&sun50i_dmic_component, &sun50i_dmic_dai, 1);
-
-Your second line should be aligned on the opening parenthesis
-
-> +	if (ret)
-> +		return dev_err_probe(&pdev->dev, ret,
-> +				     "failed to register component.\n");
-> +
-> +	pm_runtime_enable(&pdev->dev);
-> +	if (!pm_runtime_enabled(&pdev->dev)) {
-> +		ret =3D sun50i_dmic_runtime_resume(&pdev->dev);
-> +		if (ret)
-> +			goto err_unregister;
-> +	}
-
-We have a depends on PM on some drivers already, so I guess it would
-just make sense to add one more here instead of dealing with whether
-runtime_pm is compiled in or not.
-
-Also, the name of the label is misleading: it's called err_unregister
-but you don't need to unregister anything and you actually disable
-runtime_pm for that device.
-
-err_disable_runtime_pm or something similar would be a better pick
-
-Thanks!
-Maxime
+>=20
+> > +
+> > +	return 0;
+> > +}
+> > +
+>=20
+> ...
