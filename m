@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4433CAECE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705093CAED1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbhGOV4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbhGOV4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:56:18 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CA8C061762
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:53:23 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so7468860pju.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fT5PdprpzzVdpuGRQjB10wOKBXaawvXKa53cRx1HK6I=;
-        b=svmrN+O4TI98vQfj9n2X/vE50XmQmqn1PaXKCP4Nr/CQyCC4gpvE/2A44G7O3EEASy
-         /EfSX6dHh4q+I/a6RzTa5Z+Q8thrryvjaD57bsWLXbdH95pEPz+xykR9xEgUdH4Bv4Z3
-         ZoAGTa8Dt+Ijjc+XetNUvdXC7ojCQeJcD0LZiPZWKk/RdXBOQA7PxVYGDtHqNFQ/g3+1
-         ouQ3Nz6ZGFswmzMs7fe8Jr1UislrbNvLnmgdVpL88bQPCqp5nJlc9aQYclxLYlImlTzk
-         iqbO3a14CqCw0bGU2cATmeN0NT1CTHGMNXISk50SAZ9lM50oC08Hg9k5l20FPm3XWnsR
-         s63g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fT5PdprpzzVdpuGRQjB10wOKBXaawvXKa53cRx1HK6I=;
-        b=nopZxafoZ4fYQYjjDaRbtyKOsTVFRh7kFRRl5vFwF+D9A6haxuDsA3xjOAQpwq64Bp
-         iCsAo/fsVX+pCaIOCnqrFfII8js91aGyxwnI/lbQsOUpy0skZBoL3UzAUCaJ8lhC44n9
-         qGO7PvyiuqLEfV38qqPDvU0qcNvMGaWZpQdLFBFxmcqxfFptDYg7G+IJZhGvEd2yNnjw
-         HG2fxGYIdjCgWo3fyEDBQfgMckgPBs1GnePePPeptGKU/z8VGaddBc9H1vbPXdvkU9LX
-         Iznl/7RZQJ3R+38NZtZAiQe8eL7kwlgxXx4Kj1xrwnXm+83QPeY29nitXcXJNQQy3wit
-         rToQ==
-X-Gm-Message-State: AOAM533G0vIHH5lU+2SW1FBOD610k+gsNr1AoYEbAUtfkY2RXJEw3UAU
-        77p3kpEyr/9c6qJAepOiAdKoWQ==
-X-Google-Smtp-Source: ABdhPJwIwDUr/HSzt1W7U3WJexPF19d/NdRvrPK8Jq2C1qfjx7umE1NH31E27//HtmrPWVEOD8ZZLw==
-X-Received: by 2002:a17:90a:9b89:: with SMTP id g9mr12007893pjp.200.1626386003022;
-        Thu, 15 Jul 2021 14:53:23 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m21sm7561729pfo.159.2021.07.15.14.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 14:53:22 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 21:53:18 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 10/40] x86/fault: Add support to handle the
- RMP fault for user address
-Message-ID: <YPCuTiNET/hJHqOY@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-11-brijesh.singh@amd.com>
- <3c6b6fc4-05b2-8d18-2eb8-1bd1a965c632@intel.com>
- <2b4accb6-b68e-02d3-6fed-975f90558099@amd.com>
- <a249b101-87d1-2e66-d7d6-af737c045cc3@intel.com>
- <5592d8ff-e2c3-6474-4a10-96abe1962d6f@amd.com>
- <bfb857d2-8e3c-4a3b-c64e-96a16c0c6d49@intel.com>
- <aef6be8a-c93a-1aaa-57fe-116e70483542@amd.com>
- <c3c71a5b-8100-63f2-1792-d7b53731147c@intel.com>
- <298d2e19-566d-2e58-b639-724c10885646@amd.com>
+        id S231529AbhGOV6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:58:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229776AbhGOV6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:58:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A836260240;
+        Thu, 15 Jul 2021 21:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626386111;
+        bh=IZhXG0pFZmYaSBld/7CAwZc8B7u7L40FuYffUY/p3/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W3DFgeuTWh5VVOoNJ0gbXPTbjBbFT/EgbckCbMmG8A+gngFuTlO0l2+0gBjrmOs77
+         q5nBihgxs2PiXv2qpSoCEg+GtXnsXMUtzyp7sRBrgm/MGceXZ5P0ova+s5NY+SOrXd
+         herhQ/ELYwITCcyT7XTabXrmTQIpYULgs3KXhumjLFjJPIkzwr94t/rxleAEshmt/R
+         749cFi2H7R4ku2B5KGpUzhtRpy0rGSA5aRQIfbqCoBs95X0MPtrZ5bIVCxs50uJM+0
+         kBJ+K5ZMF1QNRA0zMjKMPf6uTPlDb1QBa+xetSgUrhMdhov9AjBIJKubIUyVFCdR8x
+         NCp0l/GTTpiSw==
+Date:   Thu, 15 Jul 2021 14:55:11 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 104/138] iomap: Convert iomap_write_end_inline to
+ take a folio
+Message-ID: <20210715215511.GO22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-105-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <298d2e19-566d-2e58-b639-724c10885646@amd.com>
+In-Reply-To: <20210715033704.692967-105-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021, Brijesh Singh wrote:
+On Thu, Jul 15, 2021 at 04:36:30AM +0100, Matthew Wilcox (Oracle) wrote:
+> Inline data only occupies a single page, but using a folio means that
+> we don't need to call compound_head() in PageUptodate().
 > 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+/me isn't the expert on inlinedata, but this looks reasonable to me...
+
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  fs/iomap/buffered-io.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> On 7/12/21 11:29 AM, Dave Hansen wrote:
-> > On 7/12/21 9:24 AM, Brijesh Singh wrote:
-> > > Apologies if I was not clear in the messaging, that's exactly what I
-> > > mean that we don't feed RMP entries during the page state change.
-> > > 
-> > > The sequence of the operation is:
-> > > 
-> > > 1. Guest issues a VMGEXIT (page state change) to add a page in the RMP
-> > > 2. Hyperivosr adds the page in the RMP table.
-> > > 
-> > > The check will be inside the hypervisor (#2), to query the backing page
-> > > type, if the backing page is from the hugetlbfs, then don't add the page
-> > > in the RMP, and fail the page state change VMGEXIT.
-> > 
-> > Right, but *LOOOOOONG* before that, something walked the page tables and
-> > stuffed the PFN into the NPT (that's the AMD equivalent of EPT, right?).
-> >   You could also avoid this whole mess by refusing to allow hugetblfs to
-> > be mapped into the guest in the first place.
-> > 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index c616ef1feb21..ac33f19325ab 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -662,18 +662,18 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
+>  	return copied;
+>  }
+>  
+> -static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+> +static size_t iomap_write_end_inline(struct inode *inode, struct folio *folio,
+>  		struct iomap *iomap, loff_t pos, size_t copied)
+>  {
+>  	void *addr;
+>  
+> -	WARN_ON_ONCE(!PageUptodate(page));
+> +	WARN_ON_ONCE(!folio_test_uptodate(folio));
+>  	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
+>  
+> -	flush_dcache_page(page);
+> -	addr = kmap_atomic(page);
+> +	flush_dcache_folio(folio);
+> +	addr = kmap_local_folio(folio, 0);
+>  	memcpy(iomap->inline_data + pos, addr + pos, copied);
+> -	kunmap_atomic(addr);
+> +	kunmap_local(addr);
+>  
+>  	mark_inode_dirty(inode);
+>  	return copied;
+> @@ -690,7 +690,7 @@ static size_t iomap_write_end(struct inode *inode, loff_t pos, size_t len,
+>  	size_t ret;
+>  
+>  	if (srcmap->type == IOMAP_INLINE) {
+> -		ret = iomap_write_end_inline(inode, page, iomap, pos, copied);
+> +		ret = iomap_write_end_inline(inode, folio, iomap, pos, copied);
+>  	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+>  		ret = block_write_end(NULL, inode->i_mapping, pos, len, copied,
+>  				page, NULL);
+> -- 
+> 2.30.2
 > 
-> Ah, that should be doable. For SEV stuff, we require the VMM to register the
-> memory region to the hypervisor during the VM creation time. I can check the
-> hugetlbfs while registering the memory region and fail much earlier.
-
-That's technically unnecessary, because this patch is working on the wrong set of
-page tables when handling faults from KVM.
-
-The host page tables constrain KVM's NPT, but the two are not mirrors of each
-other.  Specifically, KVM cannot exceed the size of the host page tables because
-that would give the guest access to memory it does not own, but KVM isn't required
-to use the same size as the host.  E.g. a 1gb page in the host can be 1gb, 2mb, or
-4kb in the NPT.
-
-The code "works" because the size contraints mean it can't get false negatives,
-only false positives, false positives will never be fatal, e.g. the fault handler
-may unnecessarily demote a 1gb, and demoting a host page will further constrain
-KVM's NPT.
-
-The distinction matters because it changes our options.  For RMP violations on
-NPT due to page size mismatches, KVM can and should handle the fault without
-consulting the primary MMU, i.e. by demoting the NPT entry.  That means KVM does
-not need to care about hugetlbfs or any other backing type that cannot be split
-since KVM will never initiate a host page split in response to a #NPT RMP violation.
-
-That doesn't mean that hugetlbfs will magically work since e.g. get/put_user()
-will fault and fail, but that's a generic non-KVM problem since nothing prevents
-remapping and/or accessing the page(s) outside of KVM context.
-
-The other reason to not disallow hugetlbfs and co. is that a guest that's
-enlightened to operate at 2mb granularity, e.g. always do page state changes on
-2mb chunks, can play nice with hugetlbfs without ever hitting an RMP violation.
-
-Last thought, have we taken care in the guest side of things to work at 2mb
-granularity when possible?  AFAICT, PSMASH is effectively a one-way street since
-RMPUPDATE to restore a 2mb RMP is destructive, i.e. requires PVALIDATE on the
-entire 2mb chunk, and the guest can't safely do that without reinitializing the
-whole page, e.g. would either lose data or have to save/init/restore.
