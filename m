@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0842A3CAC74
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5173CAC76
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344474AbhGOTfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:35:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
+        id S1344538AbhGOTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243591AbhGOTLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:11:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3AC1613F2;
-        Thu, 15 Jul 2021 19:08:48 +0000 (UTC)
+        id S243656AbhGOTLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:11:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F283A60FF4;
+        Thu, 15 Jul 2021 19:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376129;
-        bh=3cAvlyliElTdZCBJoTGyt2k+dShk1FBrC6SP8aQZuwo=;
+        s=korg; t=1626376131;
+        bh=KYy/ZnJwIZOkmYg9gryDdBg5r+MYNCbmlEXTKfQ0oJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z1nuifqUw+VYHQ/DOQjFmmKsTScZDRoegfqUNT8dXg+HNjJoWSGUG+Y9W5Gsm34nL
-         bSHgYNbnOaYj7BTmpfNEVoUqtXQRP6ZU6Zbi1Sv91RNYXkSEVtERihk8XuFJTJmgM9
-         Ue9cQ6F/9Isylm46D9Tjo2lCbGTv42Uk1sx0Jkr8=
+        b=JjxhA1n+b+Qgkvr6QK1Ke7zg+ijR0rhppZv7hWTet0P1qHlB/R4rCZ8TJawMSlFwf
+         Ub5WKVNEsOackTZoCOGJyJvSX7LrWqnZ/sSP3XjQhjghEH/HQNGZB6PJ4LzV5amMJV
+         W4SpUCZ+SaApWBM65G18XvthmKejJB5X2d4xFD/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Shaul Triebitz <shaul.triebitz@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 139/266] iwlwifi: mvm: apply RX diversity per PHY context
-Date:   Thu, 15 Jul 2021 20:38:14 +0200
-Message-Id: <20210715182638.223992086@linuxfoundation.org>
+Subject: [PATCH 5.13 140/266] iwlwifi: mvm: fix error print when session protection ends
+Date:   Thu, 15 Jul 2021 20:38:15 +0200
+Message-Id: <20210715182638.385136025@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,183 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Shaul Triebitz <shaul.triebitz@intel.com>
 
-[ Upstream commit a171399fd687a7d2fa56a10c9a2d7084a647677d ]
+[ Upstream commit 976ac0af7ba2c5424bc305b926c0807d96fdcc83 ]
 
-SMPS requests may differ per interfaces due to e.g. Bluetooth
-only interfering on 2.4 GHz, so if that's the case we should,
-in the case of multiple PHY contexts, still allow RX diversity
-on PHY context that have no interfaces with SMPS requests.
+When the session protection ends and the Driver is not
+associated or a beacon was not heard, the Driver
+prints "No beacons heard...".
+That's confusing for the case where not associated.
+Change the print when not associated to "Not associated...".
 
-Fix the code to pass through the PHY context in question and
-skip interfaces with non-matching PHY context while iterating.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Shaul Triebitz <shaul.triebitz@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210617100544.123c6b05809d.I992e3d1c6a29850d02eeec01712b5b685b963a87@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20210617100544.41a5a5a894fa.I9eabb76e7a3a7f4abbed8f2ef918f1df8e825726@changeid
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/mvm.h  |  3 +-
- .../net/wireless/intel/iwlwifi/mvm/phy-ctxt.c | 15 ++++++----
- .../net/wireless/intel/iwlwifi/mvm/utils.c    | 28 ++++++++++++++-----
- 3 files changed, 32 insertions(+), 14 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/time-event.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h b/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-index 4d9d4d6892fc..02cf52133857 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-@@ -1827,7 +1827,8 @@ int iwl_mvm_disable_beacon_filter(struct iwl_mvm *mvm,
- void iwl_mvm_update_smps(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
- 				enum iwl_mvm_smps_type_request req_type,
- 				enum ieee80211_smps_mode smps_request);
--bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm);
-+bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm,
-+				  struct iwl_mvm_phy_ctxt *ctxt);
- 
- /* Low latency */
- int iwl_mvm_update_low_latency(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-index 0fd51f6aa206..4ed2338027d1 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
- /*
-- * Copyright (C) 2012-2014, 2018-2020 Intel Corporation
-+ * Copyright (C) 2012-2014, 2018-2021 Intel Corporation
-  * Copyright (C) 2013-2014 Intel Mobile Communications GmbH
-  * Copyright (C) 2017 Intel Deutschland GmbH
-  */
-@@ -76,6 +76,7 @@ static void iwl_mvm_phy_ctxt_cmd_hdr(struct iwl_mvm_phy_ctxt *ctxt,
- }
- 
- static void iwl_mvm_phy_ctxt_set_rxchain(struct iwl_mvm *mvm,
-+					 struct iwl_mvm_phy_ctxt *ctxt,
- 					 __le32 *rxchain_info,
- 					 u8 chains_static,
- 					 u8 chains_dynamic)
-@@ -93,7 +94,7 @@ static void iwl_mvm_phy_ctxt_set_rxchain(struct iwl_mvm *mvm,
- 	 * between the two antennas is sufficiently different to impact
- 	 * performance.
- 	 */
--	if (active_cnt == 1 && iwl_mvm_rx_diversity_allowed(mvm)) {
-+	if (active_cnt == 1 && iwl_mvm_rx_diversity_allowed(mvm, ctxt)) {
- 		idle_cnt = 2;
- 		active_cnt = 2;
- 	}
-@@ -113,6 +114,7 @@ static void iwl_mvm_phy_ctxt_set_rxchain(struct iwl_mvm *mvm,
-  * Add the phy configuration to the PHY context command
-  */
- static void iwl_mvm_phy_ctxt_cmd_data_v1(struct iwl_mvm *mvm,
-+					 struct iwl_mvm_phy_ctxt *ctxt,
- 					 struct iwl_phy_context_cmd_v1 *cmd,
- 					 struct cfg80211_chan_def *chandef,
- 					 u8 chains_static, u8 chains_dynamic)
-@@ -123,7 +125,7 @@ static void iwl_mvm_phy_ctxt_cmd_data_v1(struct iwl_mvm *mvm,
- 	/* Set the channel info data */
- 	iwl_mvm_set_chan_info_chandef(mvm, &cmd->ci, chandef);
- 
--	iwl_mvm_phy_ctxt_set_rxchain(mvm, &tail->rxchain_info,
-+	iwl_mvm_phy_ctxt_set_rxchain(mvm, ctxt, &tail->rxchain_info,
- 				     chains_static, chains_dynamic);
- 
- 	tail->txchain_info = cpu_to_le32(iwl_mvm_get_valid_tx_ant(mvm));
-@@ -133,6 +135,7 @@ static void iwl_mvm_phy_ctxt_cmd_data_v1(struct iwl_mvm *mvm,
-  * Add the phy configuration to the PHY context command
-  */
- static void iwl_mvm_phy_ctxt_cmd_data(struct iwl_mvm *mvm,
-+				      struct iwl_mvm_phy_ctxt *ctxt,
- 				      struct iwl_phy_context_cmd *cmd,
- 				      struct cfg80211_chan_def *chandef,
- 				      u8 chains_static, u8 chains_dynamic)
-@@ -143,7 +146,7 @@ static void iwl_mvm_phy_ctxt_cmd_data(struct iwl_mvm *mvm,
- 	/* Set the channel info data */
- 	iwl_mvm_set_chan_info_chandef(mvm, &cmd->ci, chandef);
- 
--	iwl_mvm_phy_ctxt_set_rxchain(mvm, &cmd->rxchain_info,
-+	iwl_mvm_phy_ctxt_set_rxchain(mvm, ctxt, &cmd->rxchain_info,
- 				     chains_static, chains_dynamic);
- }
- 
-@@ -170,7 +173,7 @@ static int iwl_mvm_phy_ctxt_apply(struct iwl_mvm *mvm,
- 		iwl_mvm_phy_ctxt_cmd_hdr(ctxt, &cmd, action);
- 
- 		/* Set the command data */
--		iwl_mvm_phy_ctxt_cmd_data(mvm, &cmd, chandef,
-+		iwl_mvm_phy_ctxt_cmd_data(mvm, ctxt, &cmd, chandef,
- 					  chains_static,
- 					  chains_dynamic);
- 
-@@ -186,7 +189,7 @@ static int iwl_mvm_phy_ctxt_apply(struct iwl_mvm *mvm,
- 					 action);
- 
- 		/* Set the command data */
--		iwl_mvm_phy_ctxt_cmd_data_v1(mvm, &cmd, chandef,
-+		iwl_mvm_phy_ctxt_cmd_data_v1(mvm, ctxt, &cmd, chandef,
- 					     chains_static,
- 					     chains_dynamic);
- 		ret = iwl_mvm_send_cmd_pdu(mvm, PHY_CONTEXT_CMD,
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
-index c566be99a4c7..a89eb7c40ee7 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
-@@ -683,23 +683,37 @@ void iwl_mvm_accu_radio_stats(struct iwl_mvm *mvm)
- 	mvm->accu_radio_stats.on_time_scan += mvm->radio_stats.on_time_scan;
- }
- 
-+struct iwl_mvm_diversity_iter_data {
-+	struct iwl_mvm_phy_ctxt *ctxt;
-+	bool result;
-+};
-+
- static void iwl_mvm_diversity_iter(void *_data, u8 *mac,
- 				   struct ieee80211_vif *vif)
- {
- 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
--	bool *result = _data;
-+	struct iwl_mvm_diversity_iter_data *data = _data;
- 	int i;
- 
-+	if (mvmvif->phy_ctxt != data->ctxt)
-+		return;
-+
- 	for (i = 0; i < NUM_IWL_MVM_SMPS_REQ; i++) {
- 		if (mvmvif->smps_requests[i] == IEEE80211_SMPS_STATIC ||
--		    mvmvif->smps_requests[i] == IEEE80211_SMPS_DYNAMIC)
--			*result = false;
-+		    mvmvif->smps_requests[i] == IEEE80211_SMPS_DYNAMIC) {
-+			data->result = false;
-+			break;
-+		}
- 	}
- }
- 
--bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm)
-+bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm,
-+				  struct iwl_mvm_phy_ctxt *ctxt)
- {
--	bool result = true;
-+	struct iwl_mvm_diversity_iter_data data = {
-+		.ctxt = ctxt,
-+		.result = true,
-+	};
- 
- 	lockdep_assert_held(&mvm->mutex);
- 
-@@ -711,9 +725,9 @@ bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm)
- 
- 	ieee80211_iterate_active_interfaces_atomic(
- 			mvm->hw, IEEE80211_IFACE_ITER_NORMAL,
--			iwl_mvm_diversity_iter, &result);
-+			iwl_mvm_diversity_iter, &data);
- 
--	return result;
-+	return data.result;
- }
- 
- void iwl_mvm_send_low_latency_cmd(struct iwl_mvm *mvm,
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
+index 83342a6a6d5b..f19081a6f046 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
+@@ -310,6 +310,8 @@ static void iwl_mvm_te_handle_notif(struct iwl_mvm *mvm,
+ 			 * and know the dtim period.
+ 			 */
+ 			iwl_mvm_te_check_disconnect(mvm, te_data->vif,
++				!te_data->vif->bss_conf.assoc ?
++				"Not associated and the time event is over already..." :
+ 				"No beacon heard and the time event is over already...");
+ 			break;
+ 		default:
+@@ -808,6 +810,8 @@ void iwl_mvm_rx_session_protect_notif(struct iwl_mvm *mvm,
+ 			 * and know the dtim period.
+ 			 */
+ 			iwl_mvm_te_check_disconnect(mvm, vif,
++						    !vif->bss_conf.assoc ?
++						    "Not associated and the session protection is over already..." :
+ 						    "No beacon heard and the session protection is over already...");
+ 			spin_lock_bh(&mvm->time_event_lock);
+ 			iwl_mvm_te_clear_data(mvm, te_data);
 -- 
 2.30.2
 
