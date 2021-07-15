@@ -2,163 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EFD3C9C10
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2873C9C13
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhGOJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:45:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43245 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231655AbhGOJpW (ORCPT
+        id S235613AbhGOJqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhGOJqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:45:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626342149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4PdOfMSnG9LJU18W2DtAkqVS77pNiWqr5hxkOihWpm0=;
-        b=M03ha2Of0EUT4Jwher8d1HZTBBF1NvuFdZP4x3PAtBe4qXSqqY3aQDADgvzEM/AEa7yhcL
-        RBYZF8kCzeSQ5B58BTVmif5p3k+aRbfZCuXzDVz4O5P2TMfeHd6mRsn2FvDVObXcJKbfcy
-        4TWqjVQN130byboaPnWtza8pzPzkCQU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-fsuh34bDMnS4W_XuIb_Lxg-1; Thu, 15 Jul 2021 05:42:28 -0400
-X-MC-Unique: fsuh34bDMnS4W_XuIb_Lxg-1
-Received: by mail-wr1-f72.google.com with SMTP id d8-20020adf9c880000b0290141a87409b5so2221044wre.16
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:42:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=4PdOfMSnG9LJU18W2DtAkqVS77pNiWqr5hxkOihWpm0=;
-        b=IC/7yphTGqNyQgibOQXLUS6OzSLG/AesXiata4V191xSFIKIbD8AaRPd8iUqTjO8ZO
-         sN2UKGQQCTcNhJ17YR3+gz9DvotN4b9MjtNQ4TymB7SBw4zfgoeY+yuiSQlPUx6zzCiK
-         li/YwjtpkMXZvN2n6x4n7+LbKdmDzok+AzJPnhMnQwl6vVuTzuAfj4kD7aA0+0rPEuvc
-         G9St3DCKMGVek3+WTblLg2AzFhuX4XeJTe6gCEFlEUfvvT7ovoBOwyMxBTBxeVcbG/s9
-         nf9GiHnv0eZw4+OG1v4rqcQR9qBZIZUONmJw4vRdot6MTD9W3pMOuKhVQovigaj2LpCd
-         jRZA==
-X-Gm-Message-State: AOAM533AmAMA7qiH3l7jy8Wudkd4Y8pyCxZw58SPzlYngz2seOBsLgrI
-        f24/DQYPUA6RlP0YlPcoIF4DKHavb/QBGhSqroY6aRfFUG2Vz396LOV6zpoCmq/xk1Wa9b8xhcf
-        FPlXR1cGqhVLD0tGFSLmgXVa4
-X-Received: by 2002:a1c:4e18:: with SMTP id g24mr3536118wmh.175.1626342144027;
-        Thu, 15 Jul 2021 02:42:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAXwE/gJvtgWH3VbzGQK7W3cyGE+l9fkhB4QJqLvhmzLWnJPkHReE1uIFCe9c8tBBrApBQSg==
-X-Received: by 2002:a1c:4e18:: with SMTP id g24mr3536099wmh.175.1626342143837;
-        Thu, 15 Jul 2021 02:42:23 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bb3.dip0.t-ipconnect.de. [79.242.59.179])
-        by smtp.gmail.com with ESMTPSA id q5sm4533504wmc.0.2021.07.15.02.42.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 02:42:23 -0700 (PDT)
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-acpi@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jia He <justin.he@arm.com>, Joe Perches <joe@perches.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210712124052.26491-1-david@redhat.com>
- <20210712124052.26491-2-david@redhat.com> <YO9FWrT9h21e/G8X@osiris>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 1/4] mm/memory_hotplug: use "unsigned long" for PFN in
- zone_for_pfn_range()
-Message-ID: <99c59db8-4c3d-6bee-9acc-41a8f76899ef@redhat.com>
-Date:   Thu, 15 Jul 2021 11:42:21 +0200
+        Thu, 15 Jul 2021 05:46:44 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3824C06175F;
+        Thu, 15 Jul 2021 02:43:51 -0700 (PDT)
+Received: from [IPv6:2a01:e0a:4cb:a870:674e:7061:b49f:bcc0] (unknown [IPv6:2a01:e0a:4cb:a870:674e:7061:b49f:bcc0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 77EB61F4167D;
+        Thu, 15 Jul 2021 10:43:47 +0100 (BST)
+Subject: Re: [PATCH v4 8/9] media: hevc: Add scaling matrix control
+To:     Ezequiel Garcia <ezequiel@collabora.com>, hverkuil@xs4all.nl,
+        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210625141143.577998-1-benjamin.gaignard@collabora.com>
+ <20210625141143.577998-9-benjamin.gaignard@collabora.com>
+ <043580ca84a9f3bf38ee633eda910a19781e9e76.camel@collabora.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <d73ec20f-f3ee-a1d3-4cd9-fbe623c60d38@collabora.com>
+Date:   Thu, 15 Jul 2021 11:43:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YO9FWrT9h21e/G8X@osiris>
+In-Reply-To: <043580ca84a9f3bf38ee633eda910a19781e9e76.camel@collabora.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.21 22:13, Heiko Carstens wrote:
-> On Mon, Jul 12, 2021 at 02:40:49PM +0200, David Hildenbrand wrote:
->> Checkpatch complained on a follow-up patch that we are using "unsigned"
->> here, which defaults to "unsigned int" and checkpatch is correct.
+
+Le 13/07/2021 à 00:21, Ezequiel Garcia a écrit :
+> Hi Benjamin,
+>
+> I believe the scaling matrix uAPI patch(es) and the support
+> in Hantro G2 could be moved to its own series and maybe
+> merged sooner than the rest (which may need more discussion).
+>
+> Couple remarks below.
+>   
+> On Fri, 2021-06-25 at 16:11 +0200, Benjamin Gaignard wrote:
+>> HEVC scaling lists are used for the scaling process for transform
+>> coefficients.
+>> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
+>> encoded in the bitstream.
 >>
->> Use "unsigned long" instead, just as we do in other places when handling
->> PFNs. This can bite us once we have physical addresses in the range of
->> multiple TB.
->>
->> Fixes: e5e689302633 ("mm, memory_hotplug: display allowed zones in the preferred ordering")
->> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 >> ---
->>   include/linux/memory_hotplug.h | 4 ++--
->>   mm/memory_hotplug.c            | 4 ++--
->>   2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> I'd propose to add Cc: <stable@vger.kernel.org> since I actually had
-> the fun to try to debug something like this a couple of years ago:
-> 6cdb18ad98a4 ("mm/vmstat: fix overflow in mod_zone_page_state()")
-> 
+>> Note: V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED is not change by this
+>> patch. There is a thread about the naming/usage of this flag here:
+>> https://lore.kernel.org/linux-arm-kernel/20210610154442.806107-8-benjamin.gaignard@collabora.com/
+>> but that doesn't concern the scaling matrix control by itself.
+>>
+> If I am reading the spec correctly, we have fields in
+> SPS (scaling_list_enabled_flag, scaling_list_data_present_flag)
+> and PPS (scaling_list_data_present_flag).
+>
+> We don't need all that, since all a driver needs to know
+> is whether a scaling list is to be applied for the current frame.
+>    
+> Would you mind adding a patch moving the flag to the PPS?
 
-Good point, and thinking again what can go wrong, I tend to agree. We 
-are trying to keep zones contiguous and it could happen that we end up 
-with something like ZONE_DMA here (via default_kernel_zone_for_pfn()) 
-and would consequently online something to ZONE_DMA that doesn't belong 
-there, resulting in crashes.
+Extract from the spec:
+- scaling_list_enabled_flag equal 1 specifies that a scaling list is used for scaling process for transform coefficients.
+- sps_scaling_list_data_present_flag equal to 1 specifies that the scaling_list_data( ) syntax structure is present in the SPS.
+- pps_scaling_list_data_present_flag equal to 1 specifies that parameters are present in the PPS to modify the scaling lists specified by the active SPS.
 
-@Andrew can you add  Cc: <stable@vger.kernel.org> and
+For me V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED represent scaling_list_enabled_flag while the other are
+used to build the scaling lists values. So it is good named from my point of view.
 
-"As we will search for a fitting zone using the wrong pfn, we might end 
-up onlining memory to one of the special kernel zones, such as ZONE_DMA, 
-which can end badly as the onlined memory does not satisfy properties of 
-these zones."
+>
+>> version 2:
+>>   - Fix structure name in ext-ctrls-codec.rst
+>>
+>>   .../media/v4l/ext-ctrls-codec.rst             | 45 +++++++++++++++++++
+>>   .../media/v4l/vidioc-queryctrl.rst            |  6 +++
+>>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 +++
+>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
+>>   include/media/hevc-ctrls.h                    | 11 +++++
+>>   5 files changed, 72 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> index dc096a5562cd..3865acb9e0fd 100644
+>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> @@ -3071,6 +3071,51 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>>   
+>>       \normalsize
+>>   
+>> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
+>> +    Specifies the HEVC scaling matrix parameters used for the scaling process
+>> +    for transform coefficients.
+>> +    These matrix and parameters are defined according to :ref:`hevc`.
+>> +    They are described in section 7.4.5 "Scaling list data semantics" of
+>> +    the specification.
+>> +
+> This needs some additional documentation about the order of the lists.
+> See the docs that we've added for the scaling_list_{} fields in
+> V4L2_CID_STATELESS_H264_SCALING_MATRIX.
 
-Thanks Heiko!
+I will do dedicated patches for scaling lists feature and add that.
 
--- 
-Thanks,
+Benjamin
 
-David / dhildenb
-
+>
+> Thanks!
