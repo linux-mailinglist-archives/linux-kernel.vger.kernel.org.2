@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06243CA6E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05A13CA670
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239926AbhGOSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:51:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50694 "EHLO mail.kernel.org"
+        id S239005AbhGOSry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:47:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238252AbhGOSsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:48:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0421D613D1;
-        Thu, 15 Jul 2021 18:45:25 +0000 (UTC)
+        id S238252AbhGOSqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 214B5613CF;
+        Thu, 15 Jul 2021 18:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374726;
-        bh=x2d3s+M9ffO8WKcKbJnipoQ6rY/uOJF9uGl6E3dC7IY=;
+        s=korg; t=1626374626;
+        bh=Ry6vRimaxT1PY/pQesSq6oEjfin/Mo0V5go0WQ8VCIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GNTRZhRT8aBBU1ID7amlMUr4zVE5CgOeVzJ1O0TYH1LSRZlFhfJ6N+8h2HjDnVHcU
-         DBmhMkONHW7XjOfxLBmDlA4h3XjMBmDiBBuVruaCBK3ToqT05mJDKah+tlFhp4v2uc
-         +hz304NkHsVa6B1FEzPYXBE5ZeQSXs+xXB+T7924=
+        b=OTnGDiGdTX+8rEh5COK+oxD24POTFAHLZuQ4uXZBJJqb4qwQTsP4ED2r4ZHP356mS
+         LDTBVibo0fgJnCJm1DMIWOoEP6ntnHl89ScPM4iwafJLnhob07ml5cdATvXyzIp3fA
+         o/ucSHua2fEF9HD0EPpoyxHcrIOLtNatcQvKeCUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 5.4 079/122] drm/rockchip: dsi: remove extra component_del() call
-Date:   Thu, 15 Jul 2021 20:38:46 +0200
-Message-Id: <20210715182511.287062400@linuxfoundation.org>
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>
+Subject: [PATCH 5.4 080/122] drm/amd/display: fix incorrrect valid irq check
+Date:   Thu, 15 Jul 2021 20:38:47 +0200
+Message-Id: <20210715182511.529826740@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -39,55 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-commit b354498bbe65c917d521b3b56317ddc9ab217425 upstream.
+commit e38ca7e422791a4d1c01e56dbf7f9982db0ed365 upstream.
 
-commit cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support") added
-this devcnt field and call to component_del(). However, these both
-appear to be erroneous changes left over from an earlier version of the
-patch. In the version merged, nothing ever modifies devcnt, meaning
-component_del() runs unconditionally and in addition to the
-component_del() calls in dw_mipi_dsi_rockchip_host_detach(). The second
-call fails to delete anything and produces a warning in dmesg.
+valid DAL irq should be < DAL_IRQ_SOURCES_NUMBER.
 
-If we look at the previous version of the patch[1], however, we see that
-it had logic to calculate devcnt and call component_add() in certain
-situations. This was removed in v6, and the fact that the deletion code
-was not appears to have been an oversight.
-
-[1] https://patchwork.kernel.org/project/dri-devel/patch/20180821140515.22246-8-heiko@sntech.de/
-
-Fixes: cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support")
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-and-tested-by: Evan Quan <evan.quan@amd.com>
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/201385acb0eeb5dfb037afdc6a94bfbcdab97f99.1618797778.git.tommyhebb@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/gpu/drm/amd/display/dc/irq_types.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -231,7 +231,6 @@ struct dw_mipi_dsi_rockchip {
- 	struct dw_mipi_dsi *dmd;
- 	const struct rockchip_dw_dsi_chip_data *cdata;
- 	struct dw_mipi_dsi_plat_data pdata;
--	int devcnt;
+--- a/drivers/gpu/drm/amd/display/dc/irq_types.h
++++ b/drivers/gpu/drm/amd/display/dc/irq_types.h
+@@ -163,7 +163,7 @@ enum irq_type
  };
  
- struct dphy_pll_parameter_map {
-@@ -1001,9 +1000,6 @@ static int dw_mipi_dsi_rockchip_remove(s
- {
- 	struct dw_mipi_dsi_rockchip *dsi = platform_get_drvdata(pdev);
+ #define DAL_VALID_IRQ_SRC_NUM(src) \
+-	((src) <= DAL_IRQ_SOURCES_NUMBER && (src) > DC_IRQ_SOURCE_INVALID)
++	((src) < DAL_IRQ_SOURCES_NUMBER && (src) > DC_IRQ_SOURCE_INVALID)
  
--	if (dsi->devcnt == 0)
--		component_del(dsi->dev, &dw_mipi_dsi_rockchip_ops);
--
- 	dw_mipi_dsi_remove(dsi->dmd);
- 
- 	return 0;
+ /* Number of Page Flip IRQ Sources. */
+ #define DAL_PFLIP_IRQ_SRC_NUM \
 
 
