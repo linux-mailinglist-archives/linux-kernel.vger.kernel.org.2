@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DE13CA8B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E4B3CA660
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242193AbhGOTCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
+        id S238835AbhGOSr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241160AbhGOSyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73D6A613D7;
-        Thu, 15 Jul 2021 18:51:11 +0000 (UTC)
+        id S237783AbhGOSq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CA9613CF;
+        Thu, 15 Jul 2021 18:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375071;
-        bh=Jt/aDsq1Stl07LbDBGnFnJezfY3j/6id96MaEfUjrqY=;
+        s=korg; t=1626374614;
+        bh=LGzdI1v0S5Zx+cdVoMYUzOdVZTttiJ4l1Davo96KDtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FRW3sU5lQt8z6sC81oU5Qn76jJnAhLnVqdu3WUjtO2x52IN7upWJ1mGtzbg5Ut2pX
-         1PRywsD/xPpKE8vCJQSkRTWSBYQJpA8NVu4utj5Pm/rT4lli8dcktOi+T6hJF5oYeM
-         SVq6/qQeCw6yOB4i1Dk9h/94DwveFFfCFXtDwnEI=
+        b=hbcDrT5PH3a/X8YrC0aFcHmROgloTXmCZPd8LczGRUzMklSXGusqKk/m4mljiOwD3
+         ZfhnQqF5PIQJ4SngLAvp3exNeJMYCl+hu8chmlJRRD8WKXPG//Hy5nd5bgFtZtpeda
+         LGYozhn7ECusfX9LxxzSDTZbZVpyzfvpeVONfoXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 105/215] iwlwifi: pcie: fix context info freeing
-Date:   Thu, 15 Jul 2021 20:37:57 +0200
-Message-Id: <20210715182617.939392544@linuxfoundation.org>
+Subject: [PATCH 5.4 031/122] net: moxa: Use devm_platform_get_and_ioremap_resource()
+Date:   Thu, 15 Jul 2021 20:37:58 +0200
+Message-Id: <20210715182456.876823976@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 26d18c75a7496c4c52b0b6789e713dc76ebfbc87 ]
+[ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
 
-After firmware alive, iwl_trans_pcie_gen2_fw_alive() is called
-to free the context info. However, on gen3 that will then free
-the context info with the wrong size.
+Use devm_platform_get_and_ioremap_resource() to simplify
+code and avoid a null-ptr-deref by checking 'res' in it.
 
-Since we free this allocation later, let it stick around until
-the device is stopped for now, freeing some of it earlier is a
-separate change.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210618105614.afb63fb8cbc1.If4968db8e09f4ce2a1d27a6d750bca3d132d7d70@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/moxa/moxart_ether.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
-index 4c3ca2a37696..b031e9304983 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
-@@ -269,7 +269,8 @@ void iwl_trans_pcie_gen2_fw_alive(struct iwl_trans *trans, u32 scd_addr)
- 	/* now that we got alive we can free the fw image & the context info.
- 	 * paging memory cannot be freed included since FW will still use it
- 	 */
--	iwl_pcie_ctxt_info_free(trans);
-+	if (trans->trans_cfg->device_family < IWL_DEVICE_FAMILY_AX210)
-+		iwl_pcie_ctxt_info_free(trans);
+diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
+index f70bb81e1ed6..9f7eaae51335 100644
+--- a/drivers/net/ethernet/moxa/moxart_ether.c
++++ b/drivers/net/ethernet/moxa/moxart_ether.c
+@@ -480,14 +480,13 @@ static int moxart_mac_probe(struct platform_device *pdev)
+ 	priv->ndev = ndev;
+ 	priv->pdev = pdev;
  
- 	/*
- 	 * Re-enable all the interrupts, including the RF-Kill one, now that
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	ndev->base_addr = res->start;
+-	priv->base = devm_ioremap_resource(p_dev, res);
++	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(priv->base)) {
+ 		dev_err(p_dev, "devm_ioremap_resource failed\n");
+ 		ret = PTR_ERR(priv->base);
+ 		goto init_fail;
+ 	}
++	ndev->base_addr = res->start;
+ 
+ 	spin_lock_init(&priv->txlock);
+ 
 -- 
 2.30.2
 
