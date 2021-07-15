@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10873CAE78
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849F03CAE7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhGOVYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:24:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhGOVX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:23:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC4261370;
-        Thu, 15 Jul 2021 21:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626384066;
-        bh=Rw8o6ytQU5EtxnBDGvOPJFHtFL+W8pEdTFS0nDyL4To=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dA6woPO0Ue5JWodjxKVbr5qmYNQkNKPPqKYxy1sYKm2L1Iuim3imV4s7Lua/9+DhB
-         3+l+oCbVncCxXEo5X98oYvxlQ9dpeElrdmJly0GA9UHPNFozxlfUE5WUfjBUms+L7b
-         fIczy+qua3Ef6+vJFPyPX5BlJeyeF+bcviqkaNhKzeNoP3zWKxd+xAXO3bQtCFuMIm
-         Cj4Rn35rSIgyU+lRzHcjOtjFE0hB6Nk3ScYq9XN4VE2vQMBVVuTXV2BP+ZiY3trNsF
-         EkP2Z+jVLQkEYSRBEhsZ5Ndkn8Ofe27jlcKz0fpWXJ+n/aq8opXVjMbgCbWoant+FX
-         hElOxz7WaPCHg==
-Date:   Thu, 15 Jul 2021 14:21:05 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 097/138] iomap: Pass the iomap_page into
- iomap_set_range_uptodate
-Message-ID: <20210715212105.GH22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-98-willy@infradead.org>
+        id S229816AbhGOV2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhGOV16 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:27:58 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC3BC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:25:03 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id m68so6648642qke.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=DaVOmq+ky2aKlTbXjlJhgQnevRQejh0VwTRZ+HloBa8=;
+        b=qJDnpRxofz2Hlo+gMfuGdUi8cOn0gUzAo5zLObGWaUn0j69A8qkGUB/TMXnj2zEmqq
+         iFNypCFhhALMlb4j0IK3VcHsSgMzzEyOYFQLfLC840MWbZncLkhXNeXIhQ3dHDYJTg+L
+         2gA1NNlElqRjk5d1DitMI7xjdRgYTs6aJDvLPWt7NSPYKSZ7M1aDkk8X4Qp0sV+3QPUX
+         HGsqeS+g45r7KGArB9mkNTugXZntHaV0wL53qN0ywcN1qMhkVWB/3AbTYB2nwNyeiH94
+         C8b2YJbcNhE9dWKbXFuYUHToxrz2PhK/bhhKYhCa38RYUZ2LJi/QOGQp73eei0sNX3vc
+         QaBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=DaVOmq+ky2aKlTbXjlJhgQnevRQejh0VwTRZ+HloBa8=;
+        b=i8vTG6XWz+1hTThsB5Nzj6dwr44bBRkzmXOWCFzWJGQSshINLLZeBAQwFhAXd4b/5a
+         6dSHE/QN+oWbC3Eroh21LSzvHYyH8ymNftSh2gJ6hmvPLDkFgqZLFK4LbnpzEDyH/OPD
+         McIQIgkr4VPuf5mvdMpXsHR6mkzeBdbdgEC+La3eZxS+Ltz7gyH+A2dSzMWJiy9+FqWh
+         l0qQUDTOouf7SHiUzv9jDiLdheb7KaSxlyU3X0eh1mkACIwxu6ncGgQsPZ+G928uP+Yg
+         4oCiasGN3s5OtiR38khgnqqPKpsZPzb/7y4JRZdcBDW3N0KeLUUjX1AM9eE4h4yQyhw9
+         PBUQ==
+X-Gm-Message-State: AOAM533hq0P51RO5akjbu53dtDf2HqTI+i7+dZhGyCeHaTxwCvCxGbIw
+        w632Q98ant74kFjteHYJWxqOMQ==
+X-Google-Smtp-Source: ABdhPJwCGg3Vz/WiK9xLxoYGia0a9otTss3FNqvg493xwQyPxZMjwBDtoYgzp5yfizE9X0EdnIxeUg==
+X-Received: by 2002:a37:a8e:: with SMTP id 136mr5911478qkk.498.1626384302874;
+        Thu, 15 Jul 2021 14:25:02 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 16sm2479145qty.15.2021.07.15.14.25.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 14:25:02 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:24:37 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     syzbot <syzbot+2e3ee45ea14cd0b81f26@syzkaller.appspotmail.com>
+cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ munlock_vma_pages_range
+In-Reply-To: <0000000000001e294505c72eec63@google.com>
+Message-ID: <2613cb2-2a80-2077-c16e-9618dcb69c9f@google.com>
+References: <0000000000001e294505c72eec63@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-98-willy@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:36:23AM +0100, Matthew Wilcox (Oracle) wrote:
-> All but one caller already has the iomap_page, and we can avoid getting
-> it again.
+On Thu, 15 Jul 2021, syzbot wrote:
+
+> Hello,
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> syzbot found the following issue on:
+> 
+> HEAD commit:    98f7fdced2e0 Merge tag 'irq-urgent-2021-07-11' of git://gi..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13576e9c300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=da2203b984f4af9f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2e3ee45ea14cd0b81f26
+> compiler:       Debian clang version 11.0.1-2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+2e3ee45ea14cd0b81f26@syzkaller.appspotmail.com
+> 
+> BUG: sleeping function called from invalid context at mm/mlock.c:482
 
-Took me a while to distinguish iomap_iop_set_range_uptodate and
-iomap_set_range_uptodate, but yes, this looks pretty simple.
+Fixed by
+023e1a8dd502 ("mm/rmap: fix new bug: premature return from page_mlock_one()")
+which went into the tree soon after the HEAD shown above
+(but was posted before any syzbot report, so contained no syzbot tag).
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
+> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 14373, name: syz-executor.5
+> INFO: lockdep is turned off.
+> Preemption disabled at:
+> [<0000000000000000>] 0x0
+> CPU: 1 PID: 14373 Comm: syz-executor.5 Tainted: G        W         5.13.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
+>  ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9154
+>  munlock_vma_pages_range+0xa80/0xf60 mm/mlock.c:482
+>  mlock_fixup+0x40f/0x580 mm/mlock.c:552
+>  apply_mlockall_flags mm/mlock.c:768 [inline]
+>  __do_sys_munlockall+0x1ef/0x310 mm/mlock.c:810
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f448bc37188 EFLAGS: 00000246 ORIG_RAX: 0000000000000098
+> RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+> R13: 00007ffe7eb2d2ef R14: 00007f448bc37300 R15: 0000000000022000
+> 
+> 
 > ---
->  fs/iomap/buffered-io.c | 25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 6b41019a51a3..fbe4ebc074ce 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -134,11 +134,9 @@ iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
->  	*lenp = plen;
->  }
->  
-> -static void
-> -iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
-> +static void iomap_iop_set_range_uptodate(struct page *page,
-> +		struct iomap_page *iop, unsigned off, unsigned len)
->  {
-> -	struct folio *folio = page_folio(page);
-> -	struct iomap_page *iop = to_iomap_page(folio);
->  	struct inode *inode = page->mapping->host;
->  	unsigned first = off >> inode->i_blkbits;
->  	unsigned last = (off + len - 1) >> inode->i_blkbits;
-> @@ -151,14 +149,14 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
->  	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
->  }
->  
-> -static void
-> -iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
-> +static void iomap_set_range_uptodate(struct page *page,
-> +		struct iomap_page *iop, unsigned off, unsigned len)
->  {
->  	if (PageError(page))
->  		return;
->  
-> -	if (page_has_private(page))
-> -		iomap_iop_set_range_uptodate(page, off, len);
-> +	if (iop)
-> +		iomap_iop_set_range_uptodate(page, iop, off, len);
->  	else
->  		SetPageUptodate(page);
->  }
-> @@ -174,7 +172,8 @@ iomap_read_page_end_io(struct bio_vec *bvec, int error)
->  		ClearPageUptodate(page);
->  		SetPageError(page);
->  	} else {
-> -		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
-> +		iomap_set_range_uptodate(page, iop, bvec->bv_offset,
-> +						bvec->bv_len);
->  	}
->  
->  	if (!iop || atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending))
-> @@ -254,7 +253,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->  
->  	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
->  		zero_user(page, poff, plen);
-> -		iomap_set_range_uptodate(page, poff, plen);
-> +		iomap_set_range_uptodate(page, iop, poff, plen);
->  		goto done;
->  	}
->  
-> @@ -583,7 +582,7 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->  			if (status)
->  				return status;
->  		}
-> -		iomap_set_range_uptodate(page, poff, plen);
-> +		iomap_set_range_uptodate(page, iop, poff, plen);
->  	} while ((block_start += plen) < block_end);
->  
->  	return 0;
-> @@ -645,6 +644,8 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->  static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->  		size_t copied, struct page *page)
->  {
-> +	struct folio *folio = page_folio(page);
-> +	struct iomap_page *iop = to_iomap_page(folio);
->  	flush_dcache_page(page);
->  
->  	/*
-> @@ -660,7 +661,7 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->  	 */
->  	if (unlikely(copied < len && !PageUptodate(page)))
->  		return 0;
-> -	iomap_set_range_uptodate(page, offset_in_page(pos), len);
-> +	iomap_set_range_uptodate(page, iop, offset_in_page(pos), len);
->  	__set_page_dirty_nobuffers(page);
->  	return copied;
->  }
-> -- 
-> 2.30.2
-> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
