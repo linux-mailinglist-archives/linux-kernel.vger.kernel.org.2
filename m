@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039B73CA69B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CB03CA69C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240154AbhGOStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48812 "EHLO mail.kernel.org"
+        id S240429AbhGOSt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:49:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238538AbhGOSrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C57613D2;
-        Thu, 15 Jul 2021 18:44:20 +0000 (UTC)
+        id S231321AbhGOSrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:47:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A1D8613D0;
+        Thu, 15 Jul 2021 18:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374661;
-        bh=bEhxiJfXKelDOYmrF7VDpzDeC9mwLyPm+++Zf04X9l4=;
+        s=korg; t=1626374663;
+        bh=olyDjE2D53U+4YbHBN/EaMbR1X0nVqz1klnU62fx4Zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RcoKvNyG/G8AYR7ucxBAiHENlL3pIvducuey2tL33FhkBB64LCpoNup2JmmxLKNzg
-         eko+Cgq9RoG5qwq29N4QXeJBbVs1U9Z7Db7u6eOHAcDxI2IFXs40t1X+uegkp9Eegn
-         i4eX+F+J+Bw5A1yM96/EGegVXDmmXdQggirIdEVE=
+        b=MODSMuZlstmC6Dbc5dp0tQ2/HA/8oGNkwyytLcDggxcf8NrLKXoZ6aq7Z91WmGhsH
+         lK6op5mi9HW06U98Vjki6ePEIbZ0FV5yIrH2C+nFk/b29BckOtmuyC00/H/oSnY8dw
+         2qgZQ2G0vUNG7JLhdv/0uprUU7pSd1IFBDpR1fUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 094/122] ASoC: tegra: Set driver_name=tegra for all machine drivers
-Date:   Thu, 15 Jul 2021 20:39:01 +0200
-Message-Id: <20210715182516.697718751@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 095/122] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+Date:   Thu, 15 Jul 2021 20:39:02 +0200
+Message-Id: <20210715182517.397691644@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -39,131 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
+commit fca41af18e10318e4de090db47d9fa7169e1bf2f upstream.
 
-The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
-Tegra UCMs don't match by the path/name.
+fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
+which violates clang's CFI checking because fw_cfg_showrev()'s second
+parameter is 'struct attribute', whereas the ->show() member of 'struct
+kobj_structure' expects the second parameter to be of type 'struct
+kobj_attribute'.
 
-All Tegra machine drivers are specifying the card's name, but it has no
-effect if model name is specified in the device-tree since it overrides
-the card's name. We need to set the driver_name to "tegra" in order to
-get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
-path has a form of driver_name/card_name.
+$ cat /sys/firmware/qemu_fw_cfg/rev
+3
 
-The old lookup paths that are based on driver module name continue to
-work as before. Note that UCM matching never worked for Tegra ASoC drivers
-if they were compiled as built-in, this is fixed by supporting the new
-naming scheme.
+$ dmesg | grep "CFI failure"
+[   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
 
+Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
+this would have been caught automatically by the incompatible pointer
+types compiler warning. Update fw_cfg_showrev() accordingly.
+
+Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1299
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@redhat.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210211194258.4137998-1-nathan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/tegra/tegra_alc5632.c  |    1 +
- sound/soc/tegra/tegra_max98090.c |    1 +
- sound/soc/tegra/tegra_rt5640.c   |    1 +
- sound/soc/tegra/tegra_rt5677.c   |    1 +
- sound/soc/tegra/tegra_sgtl5000.c |    1 +
- sound/soc/tegra/tegra_wm8753.c   |    1 +
- sound/soc/tegra/tegra_wm8903.c   |    1 +
- sound/soc/tegra/tegra_wm9712.c   |    1 +
- sound/soc/tegra/trimslice.c      |    1 +
- 9 files changed, 9 insertions(+)
+ drivers/firmware/qemu_fw_cfg.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc
+--- a/drivers/firmware/qemu_fw_cfg.c
++++ b/drivers/firmware/qemu_fw_cfg.c
+@@ -296,15 +296,13 @@ static int fw_cfg_do_platform_probe(stru
+ 	return 0;
+ }
  
- static struct snd_soc_card snd_soc_tegra_alc5632 = {
- 	.name = "tegra-alc5632",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_alc5632_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_max98090.c
-+++ b/sound/soc/tegra/tegra_max98090.c
-@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max
+-static ssize_t fw_cfg_showrev(struct kobject *k, struct attribute *a, char *buf)
++static ssize_t fw_cfg_showrev(struct kobject *k, struct kobj_attribute *a,
++			      char *buf)
+ {
+ 	return sprintf(buf, "%u\n", fw_cfg_rev);
+ }
  
- static struct snd_soc_card snd_soc_tegra_max98090 = {
- 	.name = "tegra-max98090",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_max98090_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5
- 
- static struct snd_soc_card snd_soc_tegra_rt5640 = {
- 	.name = "tegra-rt5640",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5640_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5
- 
- static struct snd_soc_card snd_soc_tegra_rt5677 = {
- 	.name = "tegra-rt5677",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5677_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_sgtl5000.c
-+++ b/sound/soc/tegra/tegra_sgtl5000.c
-@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgt
- 
- static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
- 	.name = "tegra-sgtl5000",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_sgtl5000_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8753.c
-+++ b/sound/soc/tegra/tegra_wm8753.c
-@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8753 = {
- 	.name = "tegra-wm8753",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8753_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -217,6 +217,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8903 = {
- 	.name = "tegra-wm8903",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8903_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9
- 
- static struct snd_soc_card snd_soc_tegra_wm9712 = {
- 	.name = "tegra-wm9712",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm9712_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/trimslice.c
-+++ b/sound/soc/tegra/trimslice.c
-@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice
- 
- static struct snd_soc_card snd_soc_trimslice = {
- 	.name = "tegra-trimslice",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &trimslice_tlv320aic23_dai,
- 	.num_links = 1,
+-static const struct {
+-	struct attribute attr;
+-	ssize_t (*show)(struct kobject *k, struct attribute *a, char *buf);
+-} fw_cfg_rev_attr = {
++static const struct kobj_attribute fw_cfg_rev_attr = {
+ 	.attr = { .name = "rev", .mode = S_IRUSR },
+ 	.show = fw_cfg_showrev,
+ };
 
 
