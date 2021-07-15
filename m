@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6643CAB5D
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5853CAB5E
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245371AbhGOTTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
+        id S245407AbhGOTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240737AbhGOTEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A8D1601FE;
-        Thu, 15 Jul 2021 19:00:44 +0000 (UTC)
+        id S240256AbhGOTEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB8D3613E5;
+        Thu, 15 Jul 2021 19:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375645;
-        bh=NE56XfDYBzeQRAQsBT8J3evwNYFGUI9IN8n1ZYPDVDo=;
+        s=korg; t=1626375647;
+        bh=E1rfawRYE3YC1A6vcqcfifcrxN/c0o1AcCscCPZDZlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SIUpxo19xqeYSm8pycs3l8u/NLwhfo6uIR9Gbf5D6nYzrS4KkvnffA47jjv+x7da2
-         PslT9lcCi8+FzOTd3+kswnswVHsOIjLdkCegvvgGQy6uN+nPSfGitvv37DCm/XG+TP
-         wfIVK3wm5werrPpFCLrVtDCesmcWc1peU2We9EQs=
+        b=oveI0Kf6iCURMd53xdRXi3aYfAePiLcV1EGArviCTdBAI4GJXVb5wZRH6A7+P94mv
+         fX3zTkUPKVHsOe9hou5B2ojqDj4TsS/Ir+3UfBAHzSfg3hyd9W7NtWO/1MWqivkBxm
+         73uDTog3qagLh+44SbvTuskfAO9nbIHgBjkPmICU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH 5.12 176/242] drm/ingenic: Fix pixclock rate for 24-bit serial panels
-Date:   Thu, 15 Jul 2021 20:38:58 +0200
-Message-Id: <20210715182624.203982376@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH 5.12 177/242] drm/tegra: Dont set allow_fb_modifiers explicitly
+Date:   Thu, 15 Jul 2021 20:38:59 +0200
+Message-Id: <20210715182624.391118308@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,40 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 60a6b73dd821e98fe958b2a83393ccd724b306b1 upstream.
+commit be4306ad928fcf736cbe2616b6dd19d91f1bc083 upstream.
 
-When using a 24-bit panel on a 8-bit serial bus, the pixel clock
-requested by the panel has to be multiplied by 3, since the subpixels
-are shifted sequentially.
+Since
 
-The code (in ingenic_drm_encoder_atomic_check) already computed
-crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
-used crtc_state->adjusted_mode->clock instead.
+commit 890880ddfdbe256083170866e49c87618b706ac7
+Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Fri Jan 4 09:56:10 2019 +0100
 
-Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when using a 3x8-bit panel")
-Cc: stable@vger.kernel.org # v5.10
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>	# CI20/jz4780 (HDMI) and Alpha400/jz4730 (LCD)
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210323144008.166248-1-paul@crapouillou.net
+    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
+
+this is done automatically as part of plane init, if drivers set the
+modifier list correctly. Which is the case here.
+
+It was slightly inconsistently though, since planes with only linear
+modifier support haven't listed that explicitly. Fix that, and cc:
+stable to allow userspace to rely on this. Again don't backport
+further than where Paul's patch got added.
+
+Cc: stable@vger.kernel.org # v5.1 +
+Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: linux-tegra@vger.kernel.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210413094904.3736372-10-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tegra/dc.c  |   10 ++++++++--
+ drivers/gpu/drm/tegra/drm.c |    2 --
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -341,7 +341,7 @@ static void ingenic_drm_crtc_atomic_flus
- 	if (priv->update_clk_rate) {
- 		mutex_lock(&priv->clk_mutex);
- 		clk_set_rate(priv->pix_clk,
--			     crtc_state->adjusted_mode.clock * 1000);
-+			     crtc_state->adjusted_mode.crtc_clock * 1000);
- 		priv->update_clk_rate = false;
- 		mutex_unlock(&priv->clk_mutex);
- 	}
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -947,6 +947,11 @@ static const struct drm_plane_helper_fun
+ 	.atomic_disable = tegra_cursor_atomic_disable,
+ };
+ 
++static const uint64_t linear_modifiers[] = {
++	DRM_FORMAT_MOD_LINEAR,
++	DRM_FORMAT_MOD_INVALID
++};
++
+ static struct drm_plane *tegra_dc_cursor_plane_create(struct drm_device *drm,
+ 						      struct tegra_dc *dc)
+ {
+@@ -975,7 +980,7 @@ static struct drm_plane *tegra_dc_cursor
+ 
+ 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
+ 				       &tegra_plane_funcs, formats,
+-				       num_formats, NULL,
++				       num_formats, linear_modifiers,
+ 				       DRM_PLANE_TYPE_CURSOR, NULL);
+ 	if (err < 0) {
+ 		kfree(plane);
+@@ -1094,7 +1099,8 @@ static struct drm_plane *tegra_dc_overla
+ 
+ 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
+ 				       &tegra_plane_funcs, formats,
+-				       num_formats, NULL, type, NULL);
++				       num_formats, linear_modifiers,
++				       type, NULL);
+ 	if (err < 0) {
+ 		kfree(plane);
+ 		return ERR_PTR(err);
+--- a/drivers/gpu/drm/tegra/drm.c
++++ b/drivers/gpu/drm/tegra/drm.c
+@@ -1122,8 +1122,6 @@ static int host1x_drm_probe(struct host1
+ 	drm->mode_config.max_width = 4096;
+ 	drm->mode_config.max_height = 4096;
+ 
+-	drm->mode_config.allow_fb_modifiers = true;
+-
+ 	drm->mode_config.normalize_zpos = true;
+ 
+ 	drm->mode_config.funcs = &tegra_drm_mode_config_funcs;
 
 
