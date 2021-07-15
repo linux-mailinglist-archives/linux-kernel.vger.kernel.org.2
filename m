@@ -2,191 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE67F3C958B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0753C958F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhGOBXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:23:03 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6819 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhGOBXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:23:02 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQGcJ09KhzXtFy;
-        Thu, 15 Jul 2021 09:14:24 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 09:20:01 +0800
-Received: from [10.67.102.248] (10.67.102.248) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 09:20:01 +0800
-Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf running
- in 64-bit kernel
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
-        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
-        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
-        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210714065432.188061-1-yangjihong1@huawei.com>
- <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <9cb859df-f2ef-732b-756e-c8d2acefe85c@huawei.com>
-Date:   Thu, 15 Jul 2021 09:20:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234405AbhGOBZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:25:45 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:47213 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230087AbhGOBZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 21:25:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GQGp20xr2z9sWc;
+        Thu, 15 Jul 2021 11:22:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626312171;
+        bh=S8dYEGRyMbsUwrAfkSHdZxUQGu4j3Eb0WLbICS0H75Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VAMj0pbNxBO5XarmNnP37VuKb/jm2PDpOKeeJw5K1jh4m43tiuupJqSfRbAiP9nOd
+         sw3UifeftxszgL0Tft1uv9TJD/q/zC4pCzFMnQBMwDu9HBTvFOfzKfLe9qfgqcDkuR
+         NoytsRB6WuXhU70MUMt6r41WXsFEiwS0T7iTYz6DK7/hKjPmZeSbYlk9QK/G0PWJY/
+         m5GXfFUjPVfD02q2Jz78OJYRsEa4VA5PmbGPpwDWlaO/xqCDl09qKDHQfWKemtc5Dq
+         2UiIHTQb1CvUf+6kO2mkEBp1HKSYYhwF6D529k0BM4F3enIDdDMybbBoFi7uVFWjb1
+         Rhidy9sgHBCPQ==
+Date:   Thu, 15 Jul 2021 11:22:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: linux-next: manual merge of the workqueues tree with Linus' tree
+Message-ID: <20210715112249.3893674b@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/WtMV7HyEwKj80K7ymvafE01";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hiramatsu,
+--Sig_/WtMV7HyEwKj80K7ymvafE01
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/7/14 16:35, Masami Hiramatsu wrote:
-> Hi Yang,
-> 
-> On Wed, 14 Jul 2021 14:54:32 +0800
-> Yang Jihong <yangjihong1@huawei.com> wrote:
-> 
->> The "address" member  of "struct probe_trace_point" uses long data type.
->> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
->> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
->> An error occurs during address comparison in kprobe_warn_out_range function.
-> 
-> Good catch!
-> I didn't imagine that such a use case. But that is important because perf
-> probe can be used for cross-arch probe definition too.
-> 
->>
->> Before:
->>
->>    # perf probe -a schedule
->>    schedule is out of .text, skip it.
->>      Error: Failed to add events.
->>
->> Solution:
->>    Change data type of "address" variable to u64 and change corresponding
->> address printing and value assignment.
-> 
-> OK, as far as I can see, the other parts of the perf also uses u64 for
-> "address" storing variables. (e.g. symbols, maps etc.)
-> 
->>
->> After:
->>
->>    # perf.new.new probe -a schedule
->>    Added new event:
->>      probe:schedule       (on schedule)
->>
->>    You can now use it in all perf tools, such as:
->>
->>            perf record -e probe:schedule -aR sleep 1
->>
->>    # perf probe -l
->>      probe:schedule       (on schedule)
-> 
-> I think you missed one thing here.
-> Usually, this shows the filename and line number of schedule().
-Yes,  I tried the following diff and now it can show the filename (as is 
-function entry, relative line number is 0), thank you very much :)
+Hi all,
 
-The test result in my environment is as follows:
+Today's linux-next merge of the workqueues tree got a conflict in:
 
-# perf probe -a schedule
-Added new event:
-   probe:schedule       (on schedule)
+  include/linux/fs_context.h
 
-You can now use it in all perf tools, such as:
+between commit:
 
-         perf record -e probe:schedule -aR sleep 1
+  d1d488d81370 ("fs: add vfs_parse_fs_param_source() helper")
 
-# perf probe -l schedule -k vmlinux.debug
-   probe:schedule       (on schedule@kernel/sched/core.c)
+from Linus' tree and commit:
 
+  7f5ba4806d3c ("cgroup1: fix leaked context root causing sporadic NULL der=
+ef in LTP")
 
-Can I put the following diff together and submit a v2 patch?
-> 
-> Could you try below diff?
-> 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 7d2ba8419b0c..609ca1671501 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
->    *
->    * Find a line number and file name for @addr in @cu_die.
->    */
-> -int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
-> -		    const char **fname, int *lineno)
-> +int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
-> +		     const char **fname, int *lineno)
->   {
->   	Dwarf_Line *line;
->   	Dwarf_Die die_mem;
->   	Dwarf_Addr faddr;
->   
-> -	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
-> +	if (die_find_realfunc(cu_die, addr, &die_mem)
->   	    && die_entrypc(&die_mem, &faddr) == 0 &&
->   	    faddr == addr) {
->   		*fname = dwarf_decl_file(&die_mem);
-> @@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
->   		goto out;
->   	}
->   
-> -	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
-> +	line = cu_getsrc_die(cu_die, addr);
->   	if (line && dwarf_lineno(line, lineno) == 0) {
->   		*fname = dwarf_linesrc(line, NULL, NULL);
->   		if (!*fname)
-> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-> index cb99646843a9..7ee0fa19b5c4 100644
-> --- a/tools/perf/util/dwarf-aux.h
-> +++ b/tools/perf/util/dwarf-aux.h
-> @@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
->   const char *cu_get_comp_dir(Dwarf_Die *cu_die);
->   
->   /* Get a line number and file name for given address */
-> -int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
-> +int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
->   		     const char **fname, int *lineno);
->   
->   /* Walk on functions at given address */
-> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-> index 8ba01bbdf05c..50d861a80f57 100644
-> --- a/tools/perf/util/probe-finder.c
-> +++ b/tools/perf/util/probe-finder.c
-> @@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
->   	}
->   
->   	/* Find a corresponding line (filename and lineno) */
-> -	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
-> +	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
->   	/* Don't care whether it failed or not */
->   
->   	/* Find a corresponding function (name, baseline and baseaddr) */
-> @@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
->   }
->   
->   static int line_range_walk_cb(const char *fname, int lineno,
-> -			      Dwarf_Addr addr __maybe_unused,
-> -			      void *data)
-> +			      Dwarf_Addr addr, void *data)
->   {
->   	struct line_finder *lf = data;
->   	const char *__fname;
-> 
-> 
+from the workqueues tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/fs_context.h
+index e2bc16300c82,5b44b0195a28..000000000000
+--- a/include/linux/fs_context.h
++++ b/include/linux/fs_context.h
+@@@ -139,8 -139,7 +139,9 @@@ extern int vfs_parse_fs_string(struct f
+  extern int generic_parse_monolithic(struct fs_context *fc, void *data);
+  extern int vfs_get_tree(struct fs_context *fc);
+  extern void put_fs_context(struct fs_context *fc);
+ +extern int vfs_parse_fs_param_source(struct fs_context *fc,
+ +				     struct fs_parameter *param);
++ extern void fc_drop_locked(struct fs_context *fc);
+ =20
+  /*
+   * sget() wrappers to be called from the ->get_tree() op.
+
+--Sig_/WtMV7HyEwKj80K7ymvafE01
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDvjekACgkQAVBC80lX
+0GwOswf+MxjIFnL+cXRKTqcbopGhNRrtQYiwoH/3ldfzBQMBvh1e08sXF+IhYfOm
+Rf9KNB2KZzJS0ATf0RU3jwx0jBgn6QUM9st6Srymnn2Rmf5j28g6t3pm1WVh5PiJ
+JXFcNyOvTkWapl+oKCyscptxbmhJClGDBVbvpshaknSqFWdcBDNtvbsJnSwKiZ3P
+LGhn/e0qO58JLHs3IJlM4OhysYCFrsMoEbCjwUrNnur12RWRR0YNhWUBeEJHCW7X
+o5QoU7KaKWS1TARXRufFFRFOlZnNs+cjsS/gVCmawvxCoRUWliwFEfldvE0uHHU8
+sSACp4h1RofUj67UXQxn8dFLicLYew==
+=yH6A
+-----END PGP SIGNATURE-----
+
+--Sig_/WtMV7HyEwKj80K7ymvafE01--
