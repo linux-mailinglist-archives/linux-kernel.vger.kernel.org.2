@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFBE3CAAEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4F43CAAF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244398AbhGOTQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:16:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        id S229617AbhGOTQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:16:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243298AbhGOTBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:01:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB09613ED;
-        Thu, 15 Jul 2021 18:58:46 +0000 (UTC)
+        id S243278AbhGOTBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:01:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18CAC601FE;
+        Thu, 15 Jul 2021 18:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375527;
-        bh=V+HbKc4x6+LAJEgQTouvuy37V+Np+L0h/aB3oMk1irI=;
+        s=korg; t=1626375529;
+        bh=9VgLUQBs92xOKfCw9yNr7isD9zAUSEpSnUkmlmOKwBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=acQXZZaiE0IdX0Z73z7yU/H+r4yBwEVUsrd8475V94X0Z3G2M8f1g7BBhl4VYan/x
-         TbzBFej/J8S2v9Tr3Rvy2B1KyoMMLMjHxP50zLL1gBAgrd16jZH3dQQvWtaSccBzVn
-         cbQS3EJn8adt/I6gJJqFxdxmALE3QJClh7clPyRk=
+        b=ub3t5N81Gt6fk7vEsBhk1H9dFblMezP7Rf72lRsHntxfRAXYeId4UqUfrKZlM3B7p
+         M910xd+egCCPG8YjE5LISmSnGpuiv+vqWpz1JS5F/UzcE/M8UFFqf5tRjhLIEJrRkJ
+         8SdQhzcSfCslQV9Kif8DXj/nwC0r2fRi9AneW2Vc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ping-Ke Shih <pkshih@realtek.com>,
+        stable@vger.kernel.org,
+        Thiraviyam Mariyappan <tmariyap@codeaurora.org>,
         Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 126/242] cfg80211: fix default HE tx bitrate mask in 2G band
-Date:   Thu, 15 Jul 2021 20:38:08 +0200
-Message-Id: <20210715182615.227950927@linuxfoundation.org>
+Subject: [PATCH 5.12 127/242] mac80211: consider per-CPU statistics if present
+Date:   Thu, 15 Jul 2021 20:38:09 +0200
+Message-Id: <20210715182615.394880851@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,42 +41,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ping-Ke Shih <pkshih@realtek.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 9df66d5b9f45c39b3925d16e8947cc10009b186d ]
+[ Upstream commit d656a4c6ead6c3f252b2f2532bc9735598f7e317 ]
 
-In 2G band, a HE sta can only supports HT and HE, but not supports VHT.
-In this case, default HE tx bitrate mask isn't filled, when we use iw to
-set bitrates without any parameter.
+If we have been keeping per-CPU statistics, consider them
+regardless of USES_RSS, because we may not actually fill
+those, for example in non-fast-RX cases when the connection
+is not compatible with fast-RX. If we didn't fill them, the
+additional data will be zero and not affect anything, and
+if we did fill them then it's more correct to consider them.
 
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Link: https://lore.kernel.org/r/20210609075944.51130-1-pkshih@realtek.com
+This fixes an issue in mesh mode where some statistics are
+not updated due to USES_RSS being set, but fast-RX isn't
+used.
+
+Reported-by: Thiraviyam Mariyappan <tmariyap@codeaurora.org>
+Link: https://lore.kernel.org/r/20210610220814.13b35f5797c5.I511e9b33c5694e0d6cef4b6ae755c873d7c22124@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/nl80211.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ net/mac80211/sta_info.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index a5224da63832..be0f616f85d3 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -4779,11 +4779,10 @@ static int nl80211_parse_tx_bitrate_mask(struct genl_info *info,
- 		       sband->ht_cap.mcs.rx_mask,
- 		       sizeof(mask->control[i].ht_mcs));
+diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
+index 13250cadb420..e18c3855f616 100644
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -2088,10 +2088,9 @@ static struct ieee80211_sta_rx_stats *
+ sta_get_last_rx_stats(struct sta_info *sta)
+ {
+ 	struct ieee80211_sta_rx_stats *stats = &sta->rx_stats;
+-	struct ieee80211_local *local = sta->local;
+ 	int cpu;
  
--		if (!sband->vht_cap.vht_supported)
--			continue;
+-	if (!ieee80211_hw_check(&local->hw, USES_RSS))
++	if (!sta->pcpu_rx_stats)
+ 		return stats;
+ 
+ 	for_each_possible_cpu(cpu) {
+@@ -2191,9 +2190,7 @@ static void sta_set_tidstats(struct sta_info *sta,
+ 	int cpu;
+ 
+ 	if (!(tidstats->filled & BIT(NL80211_TID_STATS_RX_MSDU))) {
+-		if (!ieee80211_hw_check(&local->hw, USES_RSS))
+-			tidstats->rx_msdu +=
+-				sta_get_tidstats_msdu(&sta->rx_stats, tid);
++		tidstats->rx_msdu += sta_get_tidstats_msdu(&sta->rx_stats, tid);
+ 
+ 		if (sta->pcpu_rx_stats) {
+ 			for_each_possible_cpu(cpu) {
+@@ -2272,7 +2269,6 @@ void sta_set_sinfo(struct sta_info *sta, struct station_info *sinfo,
+ 		sinfo->rx_beacon = sdata->u.mgd.count_beacon_signal;
+ 
+ 	drv_sta_statistics(local, sdata, &sta->sta, sinfo);
 -
--		vht_tx_mcs_map = le16_to_cpu(sband->vht_cap.vht_mcs.tx_mcs_map);
--		vht_build_mcs_mask(vht_tx_mcs_map, mask->control[i].vht_mcs);
-+		if (sband->vht_cap.vht_supported) {
-+			vht_tx_mcs_map = le16_to_cpu(sband->vht_cap.vht_mcs.tx_mcs_map);
-+			vht_build_mcs_mask(vht_tx_mcs_map, mask->control[i].vht_mcs);
-+		}
+ 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_INACTIVE_TIME) |
+ 			 BIT_ULL(NL80211_STA_INFO_STA_FLAGS) |
+ 			 BIT_ULL(NL80211_STA_INFO_BSS_PARAM) |
+@@ -2307,8 +2303,7 @@ void sta_set_sinfo(struct sta_info *sta, struct station_info *sinfo,
  
- 		he_cap = ieee80211_get_he_iftype_cap(sband, wdev->iftype);
- 		if (!he_cap)
+ 	if (!(sinfo->filled & (BIT_ULL(NL80211_STA_INFO_RX_BYTES64) |
+ 			       BIT_ULL(NL80211_STA_INFO_RX_BYTES)))) {
+-		if (!ieee80211_hw_check(&local->hw, USES_RSS))
+-			sinfo->rx_bytes += sta_get_stats_bytes(&sta->rx_stats);
++		sinfo->rx_bytes += sta_get_stats_bytes(&sta->rx_stats);
+ 
+ 		if (sta->pcpu_rx_stats) {
+ 			for_each_possible_cpu(cpu) {
 -- 
 2.30.2
 
