@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBBB3CAD7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBE03CAD83
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242779AbhGOUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:03:41 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42906 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243897AbhGOUDV (ORCPT
+        id S241224AbhGOUFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346563AbhGOUE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:03:21 -0400
-Received: by mail-io1-f71.google.com with SMTP id v21-20020a5d90550000b0290439ea50822eso4406719ioq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:00:27 -0700 (PDT)
+        Thu, 15 Jul 2021 16:04:56 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518D7C0613E6;
+        Thu, 15 Jul 2021 12:50:02 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 70so4253768pgh.2;
+        Thu, 15 Jul 2021 12:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qko599Uq/EcKOeMa5T6Nbxwrwz7YFbQgmwQPU6o2zKk=;
+        b=TEHAbMt0EG92C22jB5zzkNiVLa1JG5U+5zkwDILA21nD3DHz4nsqWmpxMAXThr0ffx
+         GC0uOu5iHTM2FgDEGPCZyv1BxjtM+37RMZmVbn9s98aWdwueIyR/N9fwiDGrg9LZqg1A
+         Q+XAkVVGzgTbCG2HbM7IM/upocugVJVK3eUKk7Q8mE9CRYIEropQs9+PffCaVgv4Wgx7
+         Oi92j/iDLnuWRuTwQG2xqk4t8sSt3ezjXCDIb7vSzW9ZI7a2kECb7B+lM3kyrV2Ipa/J
+         QAhnoZ7cpE3UyZCnUxaAKXPJ7PnhJuBa/609Dp08uMSN2untVnkAh+/M4Lf2udX/bJqI
+         vVDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ubhdISJb5EaJQpZfKVhtUqGoI9Mz/JTjLbwTPkd4q7k=;
-        b=q5uneQ8xx3Zby932XbMCgTcTCeeAqIIgwmVdptWvje149AtHFxNj0lBGcHMAeDHJcG
-         TkcErKizwMvTJdx0h+AkfV1oZWRWtsxxTBHewRxRiPgl8RB6Q2h9n9MGSCpUhXGoxz3B
-         CbzB5yzkryaj7jyKr/M+pMKh3yuTLtErItlfnCUr8MWeX0u2rajzd7hkVeijZwWq+r0W
-         fjXTi+FRwsZV4TQeGZDeQVqjqrIo22KFbje2qvD3pY756uMzchSVZ00ITaZLRU/vA10k
-         m5aJw7+B0lt8S3BJrEYi8RyHdNi+2qTBwIjVfWtpADNSs4EenzNg7PvuH8lia/QEDH0X
-         aynA==
-X-Gm-Message-State: AOAM533YTF6LwtdsfZvPUPSdWjgkzs7k6e4LWq3WrM89XR90/o/wlcay
-        L2mRUyCsFTgJ5ui4P7WOuopU0cnxDPSUAU/06Hr28hqRF9hd
-X-Google-Smtp-Source: ABdhPJwAoePgxihGzWFAyucDPF5L+getVP+WShbvuZpMC9VrJFZwsF+1gldAXTSn4eZx2vAvCeE13Uiy+Trl5hSLWfkDKSDReW7X
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qko599Uq/EcKOeMa5T6Nbxwrwz7YFbQgmwQPU6o2zKk=;
+        b=Em8PjWllnT9CL96BI4TbY3CV7jIYq4epolhmAurIzMnmmZ6pOKpTrsCSEW+YXHgXwP
+         o/z5GlCu6XQsQoGvAcnrprYf25ZK1WHDmRCFsyoTg4JxtA15yHEmh51+XQOQksr8Jzo3
+         dor/ZODkKLv76I9YbvVIeS1k6l/+8PD/DA8Az9oOQzrHiOJUHh6pZlZP5I+1jU6XncFz
+         yS3l/YtGmheTipknDgA0fxcwZh9Ig2Xiv82yrwDiqB0ZGEGnn0JpdhDzD9XbW+htZAjq
+         K7a3FJRczgIMCVVxe8nOoFlIHWB9lp/QPY/TqQwTZaAU0Pv+9HdWrpP9bAV3XFIFoCST
+         1G+g==
+X-Gm-Message-State: AOAM5313pB2MFm8rWVuzYm8dIodIao7sqNeAMo1emPVZlEPbtOPImb0L
+        a0iS8ErsekMsg4Jew3pnmS8=
+X-Google-Smtp-Source: ABdhPJy5Iy1XdpWlOnr8lZfv6Wh0OYsaY+OZCiV2nQD/fxlHso3X3itJOJBriBz6LnzNHgMlXPrQKw==
+X-Received: by 2002:a63:1308:: with SMTP id i8mr6216999pgl.19.1626378601809;
+        Thu, 15 Jul 2021 12:50:01 -0700 (PDT)
+Received: from rishi-Nitro-AN515-52.. ([2405:201:9007:9a24:c780:f892:bcfb:77c9])
+        by smtp.googlemail.com with ESMTPSA id a22sm7418045pfv.113.2021.07.15.12.49.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 12:50:01 -0700 (PDT)
+From:   Saptarshi Patra <saptarshi.patra.22@gmail.com>
+Cc:     saptarshi.patra.22@gmail.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH] media: usb: uvc: uvc_driver: Added a function pr_info() in uvc_driver and staging: android: Decleared file operation with const keyword in android keyword
+Date:   Fri, 16 Jul 2021 01:19:10 +0530
+Message-Id: <20210715194911.8267-1-saptarshi.patra.22@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:11c6:: with SMTP id 189mr5557529jaf.20.1626379227372;
- Thu, 15 Jul 2021 13:00:27 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 13:00:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001e294505c72eec63@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in munlock_vma_pages_range
-From:   syzbot <syzbot+2e3ee45ea14cd0b81f26@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+media: usb: uvc: uvc_driver: Decleared a function called
+ pr_info()  with a string input "I changed uvcvideo driver in the Linux
+ Kernel"
 
-syzbot found the following issue on:
+Added the function pr_info() to see the message / input string using dmesg
 
-HEAD commit:    98f7fdced2e0 Merge tag 'irq-urgent-2021-07-11' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13576e9c300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da2203b984f4af9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=2e3ee45ea14cd0b81f26
-compiler:       Debian clang version 11.0.1-2
+staging: android: Decleared file operation with const keyword
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Warning found by the checkpatch.pl script
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2e3ee45ea14cd0b81f26@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at mm/mlock.c:482
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 14373, name: syz-executor.5
-INFO: lockdep is turned off.
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 14373 Comm: syz-executor.5 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
- ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9154
- munlock_vma_pages_range+0xa80/0xf60 mm/mlock.c:482
- mlock_fixup+0x40f/0x580 mm/mlock.c:552
- apply_mlockall_flags mm/mlock.c:768 [inline]
- __do_sys_munlockall+0x1ef/0x310 mm/mlock.c:810
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f448bc37188 EFLAGS: 00000246 ORIG_RAX: 0000000000000098
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffe7eb2d2ef R14: 00007f448bc37300 R15: 0000000000022000
-
-
+Signed-off-by: Saptarshi Patra <saptarshi.patra.22@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/media/usb/uvc/uvc_driver.c | 2 +-
+ drivers/staging/android/ashmem.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 9a791d8ef200..0b47ca75091b 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2352,7 +2352,7 @@ static int uvc_probe(struct usb_interface *intf,
+ 		(const struct uvc_device_info *)id->driver_info;
+ 	int function;
+ 	int ret;
+-
++	pr_info("I changed uvcvideo driver in the Linux Kernel\n");
+ 	/* Allocate memory for the device and initialize it. */
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (dev == NULL)
+diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+index ddbde3f8430e..4c6b420fbf4d 100644
+--- a/drivers/staging/android/ashmem.c
++++ b/drivers/staging/android/ashmem.c
+@@ -377,7 +377,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
+ 
+ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+-	static struct file_operations vmfile_fops;
++	static const struct file_operations vmfile_fops;
+ 	struct ashmem_area *asma = file->private_data;
+ 	int ret = 0;
+ 
+-- 
+2.30.2
+
