@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88083CA984
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FF93CA985
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238625AbhGOTHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
+        id S243020AbhGOTHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:07:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242086AbhGOS4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF754613D7;
-        Thu, 15 Jul 2021 18:53:54 +0000 (UTC)
+        id S239976AbhGOS4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4295F613D9;
+        Thu, 15 Jul 2021 18:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375235;
-        bh=Q8tCaovNO/yY6nnNDbQcWGAtMidmnvcjFfhUOh6C8ys=;
+        s=korg; t=1626375237;
+        bh=sVhJ9Ua9XktMFt+Jrg29u7/0hwbuCGE/h+8ziQOROd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LQhzO0H9yl/utouMa5xnjXMSKaAnG+l/QeaGaXoEqCs2fJNGdeyD41XnbdiG1lnU2
-         GxcGEjCkp1bKcRuKKs8EPX/foiJeCcbNh9171Oep7AABaSucAhQGI50xRqWwk0Mpq8
-         nk5FQYSOZtPn6nzEr1zGuWHgMRREddfdERtm0ziE=
+        b=nD+Yj6kO13zhtb7uRrjx5o4pDcCVv2iBm8VCowe3yArdQS/YqrnIR8etHB8A52k2U
+         UmNBvF1RObmIzjUACR26oFxqtfiVdv/j91DKZOFqSd0dG783g2vqbAxqTpxkv08jrv
+         PBcvK364RV2ENGLwiUXjhodK9ecvszX6Qtq7hkBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 195/215] dm zoned: check zone capacity
-Date:   Thu, 15 Jul 2021 20:39:27 +0200
-Message-Id: <20210715182633.618817941@linuxfoundation.org>
+Subject: [PATCH 5.10 196/215] dm writecache: flush origin device when writing and cache is full
+Date:   Thu, 15 Jul 2021 20:39:28 +0200
+Message-Id: <20210715182633.802741131@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -39,40 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit bab68499428ed934f0493ac74197ed6f36204260 upstream.
+commit ee55b92a7391bf871939330f662651b54be51b73 upstream.
 
-The dm-zoned target cannot support zoned block devices with zones that
-have a capacity smaller than the zone size (e.g. NVMe zoned namespaces)
-due to the current chunk zone mapping implementation as it is assumed
-that zones and chunks have the same size with all blocks usable.
-If a zoned drive is found to have zones with a capacity different from
-the zone size, fail the target initialization.
+Commit d53f1fafec9d086f1c5166436abefdaef30e0363 ("dm writecache: do
+direct write if the cache is full") changed dm-writecache, so that it
+writes directly to the origin device if the cache is full.
+Unfortunately, it doesn't forward flush requests to the origin device,
+so that there is a bug where flushes are being ignored.
 
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Cc: stable@vger.kernel.org # v5.9+
+Fix this by adding missing flush forwarding.
+
+For PMEM mode, we fix this bug by disabling direct writes to the origin
+device, because it performs better.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: d53f1fafec9d ("dm writecache: do direct write if the cache is full")
+Cc: stable@vger.kernel.org # v5.7+
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-zoned-metadata.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/md/dm-writecache.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@ -1390,6 +1390,13 @@ static int dmz_init_zone(struct blk_zone
- 		return -ENXIO;
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -1297,8 +1297,12 @@ static int writecache_map(struct dm_targ
+ 			writecache_flush(wc);
+ 			if (writecache_has_error(wc))
+ 				goto unlock_error;
++			if (unlikely(wc->cleaner))
++				goto unlock_remap_origin;
+ 			goto unlock_submit;
+ 		} else {
++			if (dm_bio_get_target_bio_nr(bio))
++				goto unlock_remap_origin;
+ 			writecache_offload_bio(wc, bio);
+ 			goto unlock_return;
+ 		}
+@@ -1377,7 +1381,7 @@ read_next_block:
+ 			}
+ 			e = writecache_pop_from_freelist(wc, (sector_t)-1);
+ 			if (unlikely(!e)) {
+-				if (!found_entry) {
++				if (!WC_MODE_PMEM(wc) && !found_entry) {
+ direct_write:
+ 					e = writecache_find_entry(wc, bio->bi_iter.bi_sector, WFE_RETURN_FOLLOWING);
+ 					if (e) {
+@@ -2483,7 +2487,7 @@ overflow:
+ 		goto bad;
  	}
  
-+	/*
-+	 * Devices that have zones with a capacity smaller than the zone size
-+	 * (e.g. NVMe zoned namespaces) are not supported.
-+	 */
-+	if (blkz->capacity != blkz->len)
-+		return -ENXIO;
-+
- 	switch (blkz->type) {
- 	case BLK_ZONE_TYPE_CONVENTIONAL:
- 		set_bit(DMZ_RND, &zone->flags);
+-	ti->num_flush_bios = 1;
++	ti->num_flush_bios = WC_MODE_PMEM(wc) ? 1 : 2;
+ 	ti->flush_supported = true;
+ 	ti->num_discard_bios = 1;
+ 
 
 
