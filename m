@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4125E3CADB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8BC3CADC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244835AbhGOUT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:19:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47288 "EHLO
+        id S1343727AbhGOUVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:21:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58336 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244763AbhGOUTB (ORCPT
+        by vger.kernel.org with ESMTP id S239464AbhGOUTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:19:01 -0400
+        Thu, 15 Jul 2021 16:19:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626380167;
+        s=mimecast20190719; t=1626380171;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ltWxXgdsERQEx3E6ySA6em4pDoRaSyrvcOj0w7z20l8=;
-        b=CCAUyH0f7SC5kyXh8GMbBb9EOfFqh/MQ6mYAoDsKHH27fUdM72cpfnpo/np6Bpzz853YpC
-        ToCtYkaJZ+dPklTdDPiSVSCmdFIIGrODj80rGkv3b70caY9DVQHVV8xzcXKDJR8e+ADdKT
-        lNb1kdmwZ34o7lhiFg8POWoyOGSj/aU=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-DfYPIdMAN0qeUTsVLMRtkA-1; Thu, 15 Jul 2021 16:16:06 -0400
-X-MC-Unique: DfYPIdMAN0qeUTsVLMRtkA-1
-Received: by mail-qt1-f199.google.com with SMTP id z6-20020a05622a0606b029025368c044d9so5009646qta.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:16:06 -0700 (PDT)
+        bh=LFcYHlyDKbLlgbIUnPtt3LhncHUQTe/w3qvUe3g6dgM=;
+        b=YOrYhR/WdapuSJRIZrvhMOQiKuUgqNfd2cmu/RAoyHIlvg3QPs7qn1w880agZp1OrR/sW0
+        GUvSsW/O1NdnxOIuCQ5oNW5EGuNAEiWkzds8Mpo4NfKooDVTP/HZ7RLiYqevEaDD2t860B
+        CAdzPHG98li9UqcVpWucWbSsUNDepGs=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-Jc-0fa3kNMO_Q75xZ-kqfg-1; Thu, 15 Jul 2021 16:16:10 -0400
+X-MC-Unique: Jc-0fa3kNMO_Q75xZ-kqfg-1
+Received: by mail-qk1-f200.google.com with SMTP id h12-20020a05620a400cb02903b8e915ccceso1329743qko.18
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:16:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ltWxXgdsERQEx3E6ySA6em4pDoRaSyrvcOj0w7z20l8=;
-        b=q8YuySNnL/fV3nPeImcVO+omTzWeyijKbyRtbFP7AxUvgOBEDxx3LBcqLvkzTEYewB
-         GzPhcxAkhr6AFvIHxyYoRD6ir7ZhCeT1KlnCCwiP0SrFiALpQSR7VfSRerb+ZVrSqblU
-         Wp++ZY90lOdxbXhTS5JEtT/NZuSnBGBtesIlL+P9Tv18B8NxynMtzmyVhTndz0OWPf05
-         Bzt8BLLTzDXZn++YUMF3IET25ozpI+mKlNqqYoMLqIZ3EVEPWPDQdCs/9ZULAawQL6Zs
-         hhhUhIvpmj0NTfiprMcBnw/u+bFN6kr4DEl+vaGiyxxdLXGE2Jh2V1pLRkmF0s3t9oMO
-         UZxw==
-X-Gm-Message-State: AOAM533lIQZxr3WYXLOHsWA4yskCpllitclQmLvyLJRD/Q7ycNdLkSbJ
-        Us3Po4E97rlpc9Ef2GScSOXpqcvLxYZZCyL0A5zRa1MaX3dT9t6riA3/OcQpBWZBxj4ZfKs3gN+
-        lWkRhDWACwliE7sWcHCdACjLVhwijroMyBQ6PkRXg9cC743tdclMEZJePwxtRZIiKVGztzDw9gA
+        bh=LFcYHlyDKbLlgbIUnPtt3LhncHUQTe/w3qvUe3g6dgM=;
+        b=pz/3EEgxAgqdaGnFkM8I8JBMdLUj83MY3sekJZPhLF43fFZ9KSZsIgiDRKN9vucpVz
+         j6iUvwr8jf5fK25J4/b7uYgQhHw253vIM8HxVo8tRPyDFKtr1y/U4Xh8TFmlYqvTIbgm
+         yhSgVAkvCMovBKirS28K1U4MOd0U7E+ckDbg5v3CaMyScLezdaRbc1DoMEvGz5kMB81k
+         GSiSUXhbBDgpPQzYe9qqmHh8fyB3/8fFuRpPXskYGZrLB5abFsjIF07p0IucWZJGOYgl
+         Q8pS6qkxjE8ZP2I8AUyimGmVQhFpEZKgdzHjHMlfdDrNQUFbUjenuYkc/AB3jApyEC8b
+         GUNA==
+X-Gm-Message-State: AOAM530afAPnL44ITTEIFF4uXbx6OSiQK9IpzUk7Srb8p5tg8PZW3/yK
+        2umet05aDdQ+6IIiU89VAG12qOH7s+qm2D99MOIiBemcnsj+oOLDfN72INUp3lAz2/MlihjYrxV
+        DkNqonsC2BZRAKQOeyG5qh0U6ffv8u2sWqwVFwdMoeDLS5TmJZASQNzbB3xX/M5tQt7dKE/pVUg
         ==
-X-Received: by 2002:a05:620a:1eb:: with SMTP id x11mr5686356qkn.16.1626380165773;
-        Thu, 15 Jul 2021 13:16:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTC10tfMm3pV49bd4wppQjkiX3paXGPpQYHfxNtmjnsg+u4bX3Eh1j3I/WypQ2MQKfcLIqUg==
-X-Received: by 2002:a05:620a:1eb:: with SMTP id x11mr5686323qkn.16.1626380165505;
-        Thu, 15 Jul 2021 13:16:05 -0700 (PDT)
+X-Received: by 2002:ac8:110c:: with SMTP id c12mr5780301qtj.201.1626380169835;
+        Thu, 15 Jul 2021 13:16:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDAI/RGFVMXseRIsiXI0+GYwkXgmr6GBcXlMnsNgdtorEkJR8QBSr81kv2GUt4rMDqMXJibQ==
+X-Received: by 2002:ac8:110c:: with SMTP id c12mr5780264qtj.201.1626380169556;
+        Thu, 15 Jul 2021 13:16:09 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id j65sm3147909qkd.17.2021.07.15.13.16.04
+        by smtp.gmail.com with ESMTPSA id j3sm2894807qka.96.2021.07.15.13.16.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 13:16:05 -0700 (PDT)
+        Thu, 15 Jul 2021 13:16:09 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
@@ -69,9 +69,9 @@ Cc:     Axel Rasmussen <axelrasmussen@google.com>,
         Hugh Dickins <hughd@google.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH v5 12/26] shmem/userfaultfd: Allows file-back mem to be uffd wr-protected on thps
-Date:   Thu, 15 Jul 2021 16:16:02 -0400
-Message-Id: <20210715201602.211496-1-peterx@redhat.com>
+Subject: [PATCH v5 13/26] shmem/userfaultfd: Handle the left-overed special swap ptes
+Date:   Thu, 15 Jul 2021 16:16:06 -0400
+Message-Id: <20210715201606.211559-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210715201422.211004-1-peterx@redhat.com>
 References: <20210715201422.211004-1-peterx@redhat.com>
@@ -81,49 +81,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't have "huge" version of PTE_SWP_UFFD_WP_SPECIAL, instead when necessary
-we split the thp if the huge page is uffd wr-protected previously.
+Note that the special uffd-wp swap pte can be left over even if the page under
+the pte got evicted.  Normally when evict a page, we will unmap the ptes by
+walking through the reverse mapping.  However we never tracked such information
+for the special swap ptes because they're not real mappings but just markers.
+So we need to take care of that when we see a marker but when it's actually
+meaningless (the page behind it got evicted).
 
-However split the thp is not enough, because file-backed thp is handled totally
-differently comparing to anonymous thps - rather than doing a real split, the
-thp pmd will simply got dropped in __split_huge_pmd_locked().
-
-That is definitely not enough if e.g. when there is a thp covers range [0, 2M)
-but we want to wr-protect small page resides in [4K, 8K) range, because after
-__split_huge_pmd() returns, there will be a none pmd.
-
-Here we leverage the previously introduced change_protection_prepare() macro so
-that we'll populate the pmd with a pgtable page.  Then change_pte_range() will
-do all the rest for us, e.g., install the uffd-wp swap special pte marker at
-any pte that we'd like to wr-protect, under the protection of pgtable lock.
+We have already taken care of that in e.g. alloc_set_pte() where we'll treat
+the special swap pte as pte_none() when necessary.  However we need to also
+teach userfaultfd itself on either UFFDIO_COPY or handling page faults, so that
+everything will still work as expected.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/mprotect.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ fs/userfaultfd.c | 15 +++++++++++++++
+ mm/userfaultfd.c | 13 ++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 8ec85b276975..3fcb87b59696 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -306,8 +306,16 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
- 		}
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index f6e0f0c0d0e5..e1c1cbc7bcc8 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -329,6 +329,21 @@ static inline bool userfaultfd_must_wait(struct userfaultfd_ctx *ctx,
+ 	 */
+ 	if (pte_none(*pte))
+ 		ret = true;
++	/*
++	 * We also treat the swap special uffd-wp pte as the pte_none() here.
++	 * This should in most cases be a missing event, as we never handle
++	 * wr-protect upon a special uffd-wp swap pte - it should first be
++	 * converted into a normal read request before handling wp.  It just
++	 * means the page/swap cache that backing this pte is gone, so this
++	 * special pte is leftover.
++	 *
++	 * We can't simply replace it with a none pte because we're not with
++	 * the pgtable lock here.  Instead of taking it and clearing the pte,
++	 * the easy way is to let UFFDIO_COPY understand this pte too when
++	 * trying to install a new page onto it.
++	 */
++	if (pte_swp_uffd_wp_special(*pte))
++		ret = true;
+ 	if (!pte_write(*pte) && (reason & VM_UFFD_WP))
+ 		ret = true;
+ 	pte_unmap(pte);
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 2a9c9e6eb876..0c7212dfb95d 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -100,7 +100,18 @@ int mfill_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	}
  
- 		if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)) {
--			if (next - addr != HPAGE_PMD_SIZE) {
-+			if (next - addr != HPAGE_PMD_SIZE ||
-+			    /* Uffd wr-protecting a file-backed memory range */
-+			    unlikely(!vma_is_anonymous(vma) &&
-+				     (cp_flags & MM_CP_UFFD_WP))) {
- 				__split_huge_pmd(vma, pmd, addr, false, NULL);
-+				/*
-+				 * For file-backed, the pmd could have been
-+				 * gone; still provide a pte pgtable if needed.
-+				 */
-+				change_protection_prepare(vma, pmd, addr, cp_flags);
- 			} else {
- 				int nr_ptes = change_huge_pmd(vma, pmd, addr,
- 							      newprot, cp_flags);
+ 	ret = -EEXIST;
+-	if (!pte_none(*dst_pte))
++	/*
++	 * Besides the none pte, we also allow UFFDIO_COPY to install a pte
++	 * onto the uffd-wp swap special pte, because that pte should be the
++	 * same as a pte_none() just in that it contains wr-protect information
++	 * (which could only be dropped when unmap the memory).
++	 *
++	 * It's safe to drop that marker because we know this is part of a
++	 * MISSING fault, and the caller is very clear about this page missing
++	 * rather than wr-protected.  Then we're sure the wr-protect bit is
++	 * just a leftover so it's useless already and is the same as none pte.
++	 */
++	if (!pte_none(*dst_pte) && !pte_swp_uffd_wp_special(*dst_pte))
+ 		goto out_unlock;
+ 
+ 	if (page_in_cache)
 -- 
 2.31.1
 
