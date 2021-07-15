@@ -2,205 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD893C9F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A1B3C9F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232334AbhGONEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbhGONEV (ORCPT
+        id S232438AbhGONFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:05:11 -0400
+Received: from mail-m176216.qiye.163.com ([59.111.176.216]:59924 "EHLO
+        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229679AbhGONFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:04:21 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E1AC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:01:27 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id r16so8678998ljk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9qgjG+VmOg62wB3+7tY5M7lgrcHCWQtXRGsmqDwvz/k=;
-        b=cUwCGOGor/3UZRgPKnLEsv+ZthjT7SbE5ERYwcfm40FaFHYP5bu+9LexBTGa/hZWXn
-         DTZ72IlAmuQ21MEOC0SgO/HQPIfZltuX9rGgbU3myKpiv1EkPj/7xGMyhCibGK2/Wzb3
-         ulz+5i+4GFDcnWP78AGgcyrWbHClMy745h8+U84aJSe5yWtOVxbPwr/n7xJEgTNn5DaA
-         Xh6MZH+Xm5ZsAReWHwXjsS5rrcWOhzUSYe3eFKCL6LUVXgSsx7O04zvcVo3f9l0mypSt
-         4OBnlulWrY1SVLumKVC85r0OnYID3MCkHjfomlpIBYYUcUJKAGd0T3y7UubbjEtxCmIz
-         NIVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9qgjG+VmOg62wB3+7tY5M7lgrcHCWQtXRGsmqDwvz/k=;
-        b=LHzbmUIrWGebUB8LWYz2mews5HwiIWOvVO7crXDPCfbYO+3pxlnLXVLLaSRx5dvUj8
-         1usHaI6MpsrK8tmsDcx808RtTEnYe4GtPSjDeQJl4f3AReRJuqszUpkdM/IT4sLt8CBB
-         qQvnSoOEfzJHFXMSIQ1zJnTRcY0nyyna9rtvLQa9M7DYZ506B2W8+68HKTYhbYPIAurE
-         NNenocmAdVBxrlzNm3GU+RsA4KpuTuvSm7JvaUntrHiOsMawwBmXeWxqCZoco1c91Bji
-         QsmOmGYreJGv5E4YLPmn2WSf473ScYZgjOs8aFVjyGHgDvrNPrGZFME3HOOlCqMFrroU
-         uafg==
-X-Gm-Message-State: AOAM530Kuojk5NT+hmNjkinkshJGwWYAHXwNxpbVOUB+EK0ME4WRFJ+Y
-        jKDncClCM6kxFdtJVOiG2VAHh37FQWn9cbWO7Jv8VA==
-X-Google-Smtp-Source: ABdhPJwQyYxyUToYgPSRIBF4a92iZ8u30ZqIsOG6Elso2p10ejPne+eptCnbPf34HZlwsomcwTXTlgBqG044BmjcIIg=
-X-Received: by 2002:a2e:9c02:: with SMTP id s2mr3898697lji.299.1626354080019;
- Thu, 15 Jul 2021 06:01:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210714113928.2795632-1-valentin.schneider@arm.com>
- <CAKfTPtCKJEgm=hXkKz0pHDE2d3Bz+6wp1kkNB+P+OpzWcR1+wg@mail.gmail.com> <87lf67n63p.mognet@arm.com>
-In-Reply-To: <87lf67n63p.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 15 Jul 2021 15:01:08 +0200
-Message-ID: <CAKfTPtCdKK97_6m5C9Jp1yDLraJqm7PF-XL+0h64Bmab-4Px+g@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Update nohz.next_balance for newly NOHZ-idle CPUs
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
+        Thu, 15 Jul 2021 09:05:09 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=ec0mgI6TSn26h05me9Y511YkmKix0j2choqab79NQpWwdYwHdae579KGyy32asZ940yJttkOXeOEXz7BfbEtwPcxeMoE9P9XXr20Lh+TJ4WWJml9KCFmGyQ2J3ksHDdspYW13Vnovsni8+q2YvjrBAPnyyw3ndPji21T4WCFsrk=;
+        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
+        bh=afWtvPuUPasiz54i1xEfKaQE+Zpd2SbORekVq+VnRAM=;
+        h=date:mime-version:subject:message-id:from;
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176216.qiye.163.com (Hmail) with ESMTP id C064DC201CD;
+        Thu, 15 Jul 2021 21:02:14 +0800 (CST)
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AHYA9ADdD1ErH8DLzqN8tqrS.3.1626354134777.Hmail.link@vivo.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel@vivo.com,
+        syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com,
+        Wang Qing <wangqing@vivo.com>
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2Ml0gbW0vcGFnZV9hbGxvYzogZml4IGFsbG9jX3BhZ2VzX2J1bGsvc2V0X3BhZ2Vfb3duZXIgcGFuaWMgb24gaXJxIGRpc2FibGVk?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <20210715115731.GS3809@techsingularity.net>
+MIME-Version: 1.0
+Received: from link@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 15 Jul 2021 21:02:14 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2o5qyi?= <link@vivo.com>
+Date:   Thu, 15 Jul 2021 21:02:14 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUIeT0hWGRhCTR4fGU9KT0
+        pMVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OSk1KS0hNTEJON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MyI6Qjo*Hz9KPgkzQz83AQo1Qw8KCShVSFVKTUlNSE5PSkhOS0NCVTMWGhIXVRcSFRA7DRIN
+        FFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSVlXWQgBWUFNS01MNwY+
+X-HM-Tid: 0a7aaa42af0ad976kuwsc064dc201cd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 at 13:56, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> Hi Vincent,
->
-> Thanks for taking a look.
->
-> On 15/07/21 09:42, Vincent Guittot wrote:
-> > On Wed, 14 Jul 2021 at 13:39, Valentin Schneider
-> > <valentin.schneider@arm.com> wrote:
-> >>
-> >> Consider a system with some NOHZ-idle CPUs, such that
-> >>
-> >>   nohz.idle_cpus_mask = S
-> >>   nohz.next_balance = T
-> >>
-> >> When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
-> >> with:
-> >>
-> >>   nohz.idle_cpus_mask = S \U {k}
-> >>   nohz.next_balance = T
-> >>
-> >> Note that the nohz.next_balance hasn't changed - it won't be updated until
-> >> a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
-> >> has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
-> >>
-> >>   cpu_rq(k).next_balance < nohz.next_balance
-> >>
-> >> In such scenarios, the existing nohz.next_balance will prevent any NOHZ
-> >> balance from happening, which itself will prevent nohz.next_balance from
-> >> being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
-> >> delays of over 12ms caused by this were observed on an arm64 RB5 board.
-> >
-> > How many CPUs has the arm64 RB5 ?
->
-> That's an 8 CPU DynamIQ system - 4 littles, 3 bigs and one "huge". That
-> should give us a regular balance_interval of 8ms, but our tests have picked
-> up CPUs staying idle for >20ms when they really have stuff to pull. In this
-> case balance_interval increases are involved.
->
-> >> @@ -10351,6 +10354,13 @@ static void nohz_balancer_kick(struct rq *rq)
-> >>  unlock:
-> >>         rcu_read_unlock();
-> >>  out:
-> >> +       /*
-> >> +        * Some CPUs have recently gone into NOHZ idle; kick a balance to
-> >> +        * collate the proper next balance interval.
-> >> +        */
-> >> +       if (!cpumask_subset(nohz.idle_cpus_mask, nohz.last_balance_mask))
-> >
-> > I don't really like having to manipulate a cpumask just to trigger an
-> > ILB and force the update of nohz.next_balance. Could we use something
-> > similar to nohz.has_blocked and introduce a nohz.force_update.
-> > manipulating cpumask will even be more complex if we start to have a
-> > per node idle_cpus_mask like proposed here:
-> > https://lore.kernel.org/lkml/20210701055323.2199175-1-npiggin@gmail.com/
-> >
-> > Also
-> >
-> >
-> > Something like below is simpler
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 44e44c235f1f..91c314f58982 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -10657,6 +10657,9 @@ static void nohz_newidle_balance(struct rq *this_rq)
-> >         if (this_rq->avg_idle < sysctl_sched_migration_cost)
-> >                 return;
-> >
-> > +       if (time_before(this_rq->next_balance, READ_ONCE(nohz.next_balance))
-> > +               WRITE_ONCE(nohz.need_update, 1);
-> > +
->
-> I think we have to do this unconditionally, as we can observe the old
-> nohz.next_balance while a NOHZ balance is ongoing (which will update
-> nohz.next_balance without taking into account this newly idle CPU).
-
-so maybe add this in nohz_balance_enter_idle() after the
-smp_mb__after_atomic(). Ilb will see the cpu in the idle_cpus_mask so
-even if nohz.next_balance is updated, it will take into account this
-newly idle cpu
-
-My goal was to use mechanism similar to what is used of nohz.has_blocked
-
-
->
->
-> >         /* Don't need to update blocked load of idle CPUs*/
-> >         if (!READ_ONCE(nohz.has_blocked) ||
-> >             time_before(jiffies, READ_ONCE(nohz.next_blocked)))
-> >
-> >
-> > Then we have to test nohz.need_update in nohz_balancer_kick()
-> >
->
-> But then, when can we safely clear this new nohz.need_update? We can't do
-> it unconditionally in nohz_idle_balance() as this could race with a new CPU
-> going NOHZ idle.
-
-not with the proposal above
-
->
-> Perhaps instead we could have a single nohz.needs_update_mask, the CPU is
-> set in nohz_newidle_balance(), cleared when iterated over in
-> _nohz_idle_balance(), and nohz_balancer_kick() can trigger an
-> e.g. NOHZ_UPDATE_KICK if this new cpumask is non-empty.
->
-> >> +               flags |= NOHZ_STATS_KICK;
-> >
-> > people complain that an update of blocked load is time consuming so we
-> > should not kick this update unnecessarily.
-> > We should introduce a new bit like NOHZ_NEXT_KICK that will only go
-> > through idle cpus and update nohz.next_balance
-> >
->
-> That sounds reasonable.
->
-> >> +
-> >>         if (flags)
-> >>                 kick_ilb(flags);
-> >>  }
-> >> @@ -10487,6 +10497,7 @@ static bool update_nohz_stats(struct rq *rq)
-> >>  static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
-> >>                                enum cpu_idle_type idle)
-> >>  {
-> >> +       struct cpumask *cpus = this_cpu_cpumask_var_ptr(nohz_balance_mask);
-> >>         /* Earliest time when we have to do rebalance again */
-> >>         unsigned long now = jiffies;
-> >>         unsigned long next_balance = now + 60*HZ;
-> >> @@ -10518,7 +10529,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
-> >>          * Start with the next CPU after this_cpu so we will end with this_cpu and let a
-> >>          * chance for other idle cpu to pull load.
-> >>          */
-> >> -       for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
-> >> +       cpumask_copy(cpus, nohz.idle_cpus_mask);
-> >
-> > we are not sure to go through all idle cpus and ilb can abort
-> >
->
-> Right, this is missing something to re-kick an update, but I think we can
-> get rid of that entirely...
+Pj4gQlVHOiBzbGVlcGluZyBmdW5jdGlvbiBjYWxsZWQgZnJvbSBpbnZhbGlkIGNvbnRleHQgYXQg
+bW0vcGFnZV9hbGxvYy5jOjUxNzkKPj4gaW5fYXRvbWljKCk6IDAsIGlycXNfZGlzYWJsZWQoKTog
+MSwgbm9uX2Jsb2NrOiAwLCBwaWQ6IDEsIG5hbWU6IHN3YXBwZXIvMAo+PiAKPj4gX19kdW1wX3N0
+YWNrIGxpYi9kdW1wX3N0YWNrLmM6NzkgW2lubGluZV0KPj4gZHVtcF9zdGFja19sdmwrMHhjZC8w
+eDEzNCBsaWIvZHVtcF9zdGFjay5jOjk2Cj4+IF9fX21pZ2h0X3NsZWVwLmNvbGQrMHgxZjEvMHgy
+Mzcga2VybmVsL3NjaGVkL2NvcmUuYzo5MTUzCj4+IHByZXBhcmVfYWxsb2NfcGFnZXMrMHgzZGEv
+MHg1ODAgbW0vcGFnZV9hbGxvYy5jOjUxNzkKPj4gX19hbGxvY19wYWdlcysweDEyZi8weDUwMCBt
+bS9wYWdlX2FsbG9jLmM6NTM3NQo+PiBhbGxvY19wYWdlcysweDE4Yy8weDJhMCBtbS9tZW1wb2xp
+Y3kuYzoyMjcyCj4+IHN0YWNrX2RlcG90X3NhdmUrMHgzOWQvMHg0ZTAgbGliL3N0YWNrZGVwb3Qu
+YzozMDMKPj4gc2F2ZV9zdGFjaysweDE1ZS8weDFlMCBtbS9wYWdlX293bmVyLmM6MTIwCj4+IF9f
+c2V0X3BhZ2Vfb3duZXIrMHg1MC8weDI5MCBtbS9wYWdlX293bmVyLmM6MTgxCj4+IHByZXBfbmV3
+X3BhZ2UgbW0vcGFnZV9hbGxvYy5jOjI0NDUgW2lubGluZV0KPj4gX19hbGxvY19wYWdlc19idWxr
+KzB4OGI5LzB4MTg3MCBtbS9wYWdlX2FsbG9jLmM6NTMxMwo+PiAKPj4gVGhlIHByb2JsZW0gaXMg
+Y2F1c2VkIGJ5IHNldF9wYWdlX293bmVyIGFsbG9jIG1lbW9yeSB0byBzYXZlIHN0YWNrIHdpdGgK
+Pj4gR0ZQX0tFUk5FTCBpbiBsb2NhbF9yaXEgZGlzYWJsZWQuCj4+IFNvLCB3ZSBqdXN0IGNhbid0
+IGFzc3VtZSB0aGF0IGFsbG9jIGZsYWdzIHNob3VsZCBiZSBzYW1lIHdpdGggbmV3IHBhZ2UsCj4+
+IHByZXBfbmV3X3BhZ2Ugc2hvdWxkIHByZXAvdHJhY2UgdGhlIHBhZ2UgZ2ZwLCBidXQgc2hvdWxk
+bid0IHVzZSB0aGUgc2FtZQo+PiBnZnAgdG8gZ2V0IG1lbW9yeSwgbGV0J3MgZGVwZW5kIG9uIGNh
+bGxlci4KPj4gU28sIGhlcmUgaXMgdHdvIGdmcCBmbGFncywgYWxsb2NfZ2ZwIHVzZWQgdG8gYWxs
+b2MgbWVtb3J5LCBkZXBlbmQgb24KPj4gY2FsbGVyLCBwYWdlX2dmcF9tYXNrIGlzIHBhZ2UncyBn
+ZnAsIHVzZWQgdG8gdHJhY2UvcHJlcCBpdHNlbGYKPj4gQnV0IGluIG1vc3Qgc2l0dWF0aW9uLCBz
+YW1lIGlzIG9rLCBpbiBhbGxvY19wYWdlc19idWxrLCB1c2UgR0ZQX0FUT01JQwo+PiBpcyBvay4o
+ZXZlbiBpZiBzZXRfcGFnZV9vd25lciBzYXZlIGJhY2t0cmFjZSBmYWlsZWQsIGxpbWl0ZWQgaW1w
+YWN0KQo+PiAKPj4gdjI6Cj4+IC0gYWRkIG1vcmUgZGVzY3JpcHRpb24uCj4+IAo+PiBGaXhlczog
+MGY4N2Q5ZDMwZjIxICgibW0vcGFnZV9hbGxvYzogYWRkIGFuIGFycmF5LWJhc2VkIGludGVyZmFj
+ZSB0byB0aGUgYnVsayBwYWdlIGFsbG9jYXRvciIpCj4+IFJlcG9ydGVkLWJ5OiBzeXpib3QrYjA3
+ZDg0NDBlZGI1Zjg5ODhlZWFAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQo+PiBTdWdnZXN0ZWQt
+Ynk6IFdhbmcgUWluZyA8d2FuZ3FpbmdAdml2by5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFlhbmcg
+SHVhbiA8bGlua0B2aXZvLmNvbT4KPgo+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIx
+MDcxMzE1MjEwMC4xMDM4MS0yLW1nb3JtYW5AdGVjaHNpbmd1bGFyaXR5Lm5ldC8KPmlzIG5vdyBw
+YXJ0IG9mIGEgc2VyaWVzIHRoYXQgaGFzIGJlaW5nIHNlbnQgdG8gTGludXMuIEhlbmNlLCB0aGUg
+Rml4ZXMKPnBhcnQgaXMgbm8gbG9uZ2VyIGFwcGxpY2FibGUgYW5kIHRoZSBwYXRjaCB3aWxsIG5v
+IGxvbmdlciBiZSBhZGRyZXNpbmcKPmFuIGF0b21pYyBzbGVlcCBidWcuICBUaGlzIHBhdGNoIHNo
+b3VsZCBiZSB0cmVhdGVkIGFzIGFuIGVuaGFuY2VtZW50CkhpIE1lbCBHb3JtYW4sIHRoYW5rcyBm
+b3IgeW91ciByZXBseS4KSSBzZWUgdGhlIGZpeCBwYXRjaCwgaXQgZml4IHRoaXMgYnVnIGJ5IGFi
+YW5kb24gYWxsb2MgYnVsayBmZWF0dXJlIHdoZW4gcGFnZV9vd25lciBpcyBzZXQuIApCdXQgaW4g
+bXkgb3BpbmlvbiwgaXQgY2FuJ3QgcmVhbGx5IGZpeCB0aGlzIGJ1ZywgaXQncyBhIGNpcmN1bXZl
+bnRpb24gcGxhbi4KPnRvIGFsbG93IGJ1bGsgYWxsb2NhdGlvbnMgd2hlbiBQQUdFX09XTkVSIGlz
+IHNldC4gRm9yIHRoYXQsIGl0IHNob3VsZAo+aW5jbHVkZSBhIG5vdGUgb24gdGhlIHBlcmZvcm1h
+bmNlIGlmIFBBR0VfT1dORVIgaXMgdXNlZCB3aXRoIGVpdGhlciBORlMKPm9yIGhpZ2gtc3BlZWQg
+bmV0d29ya2luZyB0byBqdXN0aWZ5IHRoZSBhZGRpdGlvbmFsIGNvbXBsZXhpdHkuCk15IHBhdGNo
+IGp1c3Qgc3BsaXQgdGhlIHByZXBfbmV3X3BhZ2UgcGFnZV9nZnAgaW50byBhbGxvY19nZnAoZm9y
+IGFsbG9jIGJ1bGsgaXMgR0ZQX0FUT01JQywKZm9yIG90aGVyJ3Mgbm8gY2hhbmdlKSBhbmQgdHJh
+Y2UgcGFnZSBnZnAuICBTbywgd2Ugd2lsbCBub3QgdXNlIHRoZSBlcnJvciB3YXkgdG8gZ2V0IG1l
+bW9yeS4gClNvLCBJIHRoaW5rIHRoaXMgd2lsbCBub3QgYWZmZWN0IGFsbG9jIGJ1bGsgcGVyZm9y
+bWFuY2Ugd2hlbiBwYWdlX293bmVyIGlzIG9uKGNvbXBhcmUgd2l0aCBvcmlnaW4gcGF0Y2gpIGJ1
+dApjYW4gcmVhbGx5IGZpeCB0aGlzICBidWcgcmF0aGVyIHRoYW4gZXZhZGUuCkFuZCB0aGlzIHBh
+dGNoIGNhbiBsZXQgYWxsb2MgYnVsayBmZWF0dXJlIGFuZCBwYWdlX293bmVyIGZlYXR1cmUgd29y
+ayB0b2doZXIKU28sIEkgd2lsbCBzZW5kIHBhdGNoIGFnYWluIGJhc2VkIG9uIHRoZSBmaXggcGF0
+Y2guClRoYW5rIHlvdQpZYW5nIEh1YW4KPgo+LS0gCj5NZWwgR29ybWFuCj5TVVNFIExhYnMKDQoN
+Cg==
