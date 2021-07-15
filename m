@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AA53CA71C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441CF3CA756
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240057AbhGOSw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:52:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
+        id S240831AbhGOSxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239301AbhGOSto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:49:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13D0B613D0;
-        Thu, 15 Jul 2021 18:46:49 +0000 (UTC)
+        id S239795AbhGOStt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:49:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF601613DC;
+        Thu, 15 Jul 2021 18:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374810;
-        bh=4Fu4G4b/XGeKu5EbAcyA0kyrm0McafbQWyb4+B87B1E=;
+        s=korg; t=1626374815;
+        bh=fkdniDa+xDCETYQggD9oaebwsk6k8b5LwB+FE25nR24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZqNJDEwHShtxZyyNJ5XVwo79e9Lgk8JLHaKQkgaeVCs6SYSfuVPz5lxsfV+AHcSb/
-         x0VMtDYH08WdwII7RAnSVtq5M/xMAbygRuGQZsJkIHk91oMJMoMzLfwRPukZCBLoUA
-         3x7skN5lPOvVfFOwSF6TQEyfDPgU1Rxio1MKeeMs=
+        b=0TEBNrqIUldT56nKCN4IXU9pO0dMzZxz4xgDMxvxEL1Y1riZv2LUwf8oYXtvD71o0
+         m/TGfnt3+ohBGIshlbZz3mJYWkszakXFZydV+pie5Ex/yOSty5YWZVcictndj0AHSr
+         hoBFO/RVsWGbiRg2dNsX45/j8c5Wr7f/4QghhcxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
         Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/215] drm: rockchip: add missing registers for RK3188
-Date:   Thu, 15 Jul 2021 20:36:48 +0200
-Message-Id: <20210715182605.793336807@linuxfoundation.org>
+Subject: [PATCH 5.10 037/215] drm: rockchip: add missing registers for RK3066
+Date:   Thu, 15 Jul 2021 20:36:49 +0200
+Message-Id: <20210715182605.892049642@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -42,37 +42,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alex Bee <knaerzche@gmail.com>
 
-[ Upstream commit ab64b448a175b8a5a4bd323b8f74758c2574482c ]
+[ Upstream commit 742203cd56d150eb7884eb45abb7d9dbc2bdbf04 ]
 
 Add dither_up, dsp_lut_en and data_blank registers to enable their
-respective functionality for RK3188's VOP.
-While at that also fix .dsp_blank register which is (only) set with
-BIT24 (same as RK3066)
+respective functionality for RK3066's VOP.
+
+While at that also fix .rb_swap and .format registers for all windows,
+which have to be set though RK3066_SYS_CTRL1 register.
+Also remove .scl from win1: Scaling is only supported on the primary
+plane.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210528130554.72191-3-knaerzche@gmail.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20210528130554.72191-4-knaerzche@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index 80053d91a301..b8dcee64a1f7 100644
+index b8dcee64a1f7..a6fe03c3748a 100644
 --- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
 +++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -505,7 +505,10 @@ static const struct vop_common rk3188_common = {
- 	.dither_down_sel = VOP_REG(RK3188_DSP_CTRL0, 0x1, 27),
- 	.dither_down_en = VOP_REG(RK3188_DSP_CTRL0, 0x1, 11),
- 	.dither_down_mode = VOP_REG(RK3188_DSP_CTRL0, 0x1, 10),
--	.dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x3, 24),
-+	.dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 24),
-+	.dither_up = VOP_REG(RK3188_DSP_CTRL0, 0x1, 9),
-+	.dsp_lut_en = VOP_REG(RK3188_SYS_CTRL, 0x1, 28),
-+	.data_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 25),
+@@ -349,8 +349,8 @@ static const struct vop_win_phy rk3066_win0_data = {
+ 	.nformats = ARRAY_SIZE(formats_win_full),
+ 	.format_modifiers = format_modifiers_win_full,
+ 	.enable = VOP_REG(RK3066_SYS_CTRL1, 0x1, 0),
+-	.format = VOP_REG(RK3066_SYS_CTRL0, 0x7, 4),
+-	.rb_swap = VOP_REG(RK3066_SYS_CTRL0, 0x1, 19),
++	.format = VOP_REG(RK3066_SYS_CTRL1, 0x7, 4),
++	.rb_swap = VOP_REG(RK3066_SYS_CTRL1, 0x1, 19),
+ 	.act_info = VOP_REG(RK3066_WIN0_ACT_INFO, 0x1fff1fff, 0),
+ 	.dsp_info = VOP_REG(RK3066_WIN0_DSP_INFO, 0x0fff0fff, 0),
+ 	.dsp_st = VOP_REG(RK3066_WIN0_DSP_ST, 0x1fff1fff, 0),
+@@ -361,13 +361,12 @@ static const struct vop_win_phy rk3066_win0_data = {
  };
  
- static const struct vop_win_data rk3188_vop_win_data[] = {
+ static const struct vop_win_phy rk3066_win1_data = {
+-	.scl = &rk3066_win_scl,
+ 	.data_formats = formats_win_full,
+ 	.nformats = ARRAY_SIZE(formats_win_full),
+ 	.format_modifiers = format_modifiers_win_full,
+ 	.enable = VOP_REG(RK3066_SYS_CTRL1, 0x1, 1),
+-	.format = VOP_REG(RK3066_SYS_CTRL0, 0x7, 7),
+-	.rb_swap = VOP_REG(RK3066_SYS_CTRL0, 0x1, 23),
++	.format = VOP_REG(RK3066_SYS_CTRL1, 0x7, 7),
++	.rb_swap = VOP_REG(RK3066_SYS_CTRL1, 0x1, 23),
+ 	.act_info = VOP_REG(RK3066_WIN1_ACT_INFO, 0x1fff1fff, 0),
+ 	.dsp_info = VOP_REG(RK3066_WIN1_DSP_INFO, 0x0fff0fff, 0),
+ 	.dsp_st = VOP_REG(RK3066_WIN1_DSP_ST, 0x1fff1fff, 0),
+@@ -382,8 +381,8 @@ static const struct vop_win_phy rk3066_win2_data = {
+ 	.nformats = ARRAY_SIZE(formats_win_lite),
+ 	.format_modifiers = format_modifiers_win_lite,
+ 	.enable = VOP_REG(RK3066_SYS_CTRL1, 0x1, 2),
+-	.format = VOP_REG(RK3066_SYS_CTRL0, 0x7, 10),
+-	.rb_swap = VOP_REG(RK3066_SYS_CTRL0, 0x1, 27),
++	.format = VOP_REG(RK3066_SYS_CTRL1, 0x7, 10),
++	.rb_swap = VOP_REG(RK3066_SYS_CTRL1, 0x1, 27),
+ 	.dsp_info = VOP_REG(RK3066_WIN2_DSP_INFO, 0x0fff0fff, 0),
+ 	.dsp_st = VOP_REG(RK3066_WIN2_DSP_ST, 0x1fff1fff, 0),
+ 	.yrgb_mst = VOP_REG(RK3066_WIN2_MST, 0xffffffff, 0),
+@@ -408,6 +407,9 @@ static const struct vop_common rk3066_common = {
+ 	.dither_down_en = VOP_REG(RK3066_DSP_CTRL0, 0x1, 11),
+ 	.dither_down_mode = VOP_REG(RK3066_DSP_CTRL0, 0x1, 10),
+ 	.dsp_blank = VOP_REG(RK3066_DSP_CTRL1, 0x1, 24),
++	.dither_up = VOP_REG(RK3066_DSP_CTRL0, 0x1, 9),
++	.dsp_lut_en = VOP_REG(RK3066_SYS_CTRL1, 0x1, 31),
++	.data_blank = VOP_REG(RK3066_DSP_CTRL1, 0x1, 25),
+ };
+ 
+ static const struct vop_win_data rk3066_vop_win_data[] = {
 -- 
 2.30.2
 
