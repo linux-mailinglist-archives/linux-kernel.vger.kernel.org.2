@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B0E3CACDF
+	by mail.lfdr.de (Postfix) with ESMTP id BB1BB3CACE0
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245610AbhGOTqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:46:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50894 "EHLO mail.kernel.org"
+        id S245526AbhGOTqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:46:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243838AbhGOTP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244045AbhGOTP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:15:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16DE061370;
-        Thu, 15 Jul 2021 19:12:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6584B613C4;
+        Thu, 15 Jul 2021 19:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376332;
-        bh=oeHtHu3SOTnq8xDXXFlMf7eT9quDwllg4ho5H1FEKSM=;
+        s=korg; t=1626376334;
+        bh=XqrB24X1ye5kgsWGM7gXL+a8soN9g30UbzZFfOELc3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=olqwvRaregawMTHlxlcWVNpwm7n+mFE4P4caGJG8V2p6usMEJOWag79+SVkECh+00
-         wO2UwYQIjkHg7oDLPn1r24Izf6SSY2Po2cGfsDvuMC+alzinRZHXURtF37LUkM4kSH
-         ASV6qxw1kD0YzF9GsxCiCLPrSmwWTcIsYZMBGql4=
+        b=hbgV2SD/iCAtpqpO7rJ14GL8l3/Aav2Dq8S2+37JnqEFZ538T3qmpqpQpG0ME1FLF
+         SzgTfvdC9mufZydDJpHW15T0UflGqoZAL0B7m5J3kUpw7QSvqNrBLrX45V7aDssy6H
+         Q32aCLxkWPxFGYJHhVD53+RZKanp8RVcqBjROz6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5.13 226/266] mfd: syscon: Free the allocated name field of struct regmap_config
-Date:   Thu, 15 Jul 2021 20:39:41 +0200
-Message-Id: <20210715182648.972371678@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5.13 227/266] nvmem: core: add a missing of_node_put
+Date:   Thu, 15 Jul 2021 20:39:42 +0200
+Message-Id: <20210715182649.225195642@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -39,47 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Limeng <Meng.Li@windriver.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 56a1188159cb2b87fbcb5a7a7afb38a4dd9db0c1 upstream.
+commit 63879e2964bceee2aa5bbe8b99ea58bba28bb64f upstream.
 
-The commit 529a1101212a("mfd: syscon: Don't free allocated name
-for regmap_config") doesn't free the allocated name field of struct
-regmap_config, but introduce a memory leak. There is another
-commit 94cc89eb8fa5("regmap: debugfs: Fix handling of name string
-for debugfs init delays") fixing this debugfs init issue from root
-cause. With this fixing, the name field in struct regmap_debugfs_node
-is removed. When initialize debugfs for syscon driver, the name
-field of struct regmap_config is not used anymore. So, the allocated
-name field of struct regmap_config is need to be freed directly after
-regmap initialization to avoid memory leak.
+'for_each_child_of_node' performs an of_node_get on each iteration, so a
+return from the middle of the loop requires an of_node_put.
 
-Cc: stable@vger.kernel.org
-Fixes: 529a1101212a("mfd: syscon: Don't free allocated name for regmap_config")
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210611102321.11509-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/syscon.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvmem/core.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/mfd/syscon.c
-+++ b/drivers/mfd/syscon.c
-@@ -108,6 +108,7 @@ static struct syscon *of_syscon_register
- 	syscon_config.max_register = resource_size(&res) - reg_io_width;
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -686,15 +686,17 @@ static int nvmem_add_cells_from_of(struc
+ 			continue;
+ 		if (len < 2 * sizeof(u32)) {
+ 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
++			of_node_put(child);
+ 			return -EINVAL;
+ 		}
  
- 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
-+	kfree(syscon_config.name);
- 	if (IS_ERR(regmap)) {
- 		pr_err("regmap init failed\n");
- 		ret = PTR_ERR(regmap);
-@@ -144,7 +145,6 @@ err_clk:
- 	regmap_exit(regmap);
- err_regmap:
- 	iounmap(base);
--	kfree(syscon_config.name);
- err_map:
- 	kfree(syscon);
- 	return ERR_PTR(ret);
+ 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
+-		if (!cell)
++		if (!cell) {
++			of_node_put(child);
+ 			return -ENOMEM;
++		}
+ 
+ 		cell->nvmem = nvmem;
+-		cell->np = of_node_get(child);
+ 		cell->offset = be32_to_cpup(addr++);
+ 		cell->bytes = be32_to_cpup(addr);
+ 		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
+@@ -715,11 +717,12 @@ static int nvmem_add_cells_from_of(struc
+ 				cell->name, nvmem->stride);
+ 			/* Cells already added will be freed later. */
+ 			kfree_const(cell->name);
+-			of_node_put(cell->np);
+ 			kfree(cell);
++			of_node_put(child);
+ 			return -EINVAL;
+ 		}
+ 
++		cell->np = of_node_get(child);
+ 		nvmem_cell_add(cell);
+ 	}
+ 
 
 
