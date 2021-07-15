@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1706B3CABC8
+	by mail.lfdr.de (Postfix) with ESMTP id D63D03CABCA
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245134AbhGOTYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46538 "EHLO mail.kernel.org"
+        id S245531AbhGOTYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:24:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241596AbhGOTG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:06:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5C161412;
-        Thu, 15 Jul 2021 19:03:16 +0000 (UTC)
+        id S242437AbhGOTHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:07:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEBC761403;
+        Thu, 15 Jul 2021 19:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375797;
-        bh=feewwdOoKwoxjQtypCouCsjy4aJHDB7WzTa5g28dmaY=;
+        s=korg; t=1626375799;
+        bh=fb8gOiQrEf7WMMt9bnuvLr3twVkQHK/nTUyeq/tbNNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uqHHUam8YDlLcBKdXAiQJtwI7UHXSU51V+B892FOcT+avWfapD94DYCj1LZstun04
-         YZZSfK1fwKQThxgMlgL5HbvQR19h5gXkhmkT7OTa17sYKgbjY8qpd+ZtPoWLDuAZHF
-         vXvbvQFCd94EatxZ0KEphuwuz7EesFHFz0KH+aYY=
+        b=SqIcS1ks2zMiEZixanyiic62fF4OZ12V7CJlu4CslPBaQ+eYRtT4sM77DSLdb029L
+         Y/7gX7uNhFWMNMSqBI1fNC6wRqnv4Dv8IJUxQsNYVUq4MVP4FYXMWzqrL4Dm/mHajs
+         8dC/V5YPxzaae6xhrwVQCfxBZiUypgZyxw7LFeG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.12 239/242] media: v4l2-core: explicitly clear ioctl input data
-Date:   Thu, 15 Jul 2021 20:40:01 +0200
-Message-Id: <20210715182634.914664628@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: [PATCH 5.12 240/242] smackfs: restrict bytes count in smk_set_cipso()
+Date:   Thu, 15 Jul 2021 20:40:02 +0200
+Message-Id: <20210715182635.102657808@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,44 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-commit 7b53cca764f9b291b7907fcd39d9e66ad728ee0b upstream.
+commit 49ec114a6e62d8d320037ce71c1aaf9650b3cafd upstream.
 
-As seen from a recent syzbot bug report, mistakes in the compat ioctl
-implementation can lead to uninitialized kernel stack data getting used
-as input for driver ioctl handlers.
+Oops, I failed to update subject line.
 
-The reported bug is now fixed, but it's possible that other related
-bugs are still present or get added in the future. As the drivers need
-to check user input already, the possible impact is fairly low, but it
-might still cause an information leak.
+>From 07571157c91b98ce1a4aa70967531e64b78e8346 Mon Sep 17 00:00:00 2001
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date: Mon, 12 Apr 2021 22:25:06 +0900
+Subject: [PATCH 5.12 240/242] smackfs: restrict bytes count in smk_set_cipso()
 
-To be on the safe side, always clear the entire ioctl buffer before
-calling the conversion handler functions that are meant to initialize
-them.
+Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
+functions") missed that count > SMK_CIPSOMAX check applies to only
+format == SMK_FIXED24_FMT case.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c |    2 ++
+ security/smack/smackfs.c |    2 ++
  1 file changed, 2 insertions(+)
 
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -3166,8 +3166,10 @@ static int video_get_user(void __user *a
- 		if (copy_from_user(parg, (void __user *)arg, n))
- 			err = -EFAULT;
- 	} else if (in_compat_syscall()) {
-+		memset(parg, 0, n);
- 		err = v4l2_compat_get_user(arg, parg, cmd);
- 	} else {
-+		memset(parg, 0, n);
- #if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
- 		switch (cmd) {
- 		case VIDIOC_QUERYBUF_TIME32:
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -855,6 +855,8 @@ static ssize_t smk_set_cipso(struct file
+ 	if (format == SMK_FIXED24_FMT &&
+ 	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
+ 		return -EINVAL;
++	if (count > PAGE_SIZE)
++		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
 
 
