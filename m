@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EA53CA99A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA003CABE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbhGOTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
+        id S244324AbhGOTZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:25:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240822AbhGOS5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B66C0613D0;
-        Thu, 15 Jul 2021 18:54:34 +0000 (UTC)
+        id S243173AbhGOTJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 963F3613D4;
+        Thu, 15 Jul 2021 19:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375275;
-        bh=54JwrYKmyebOQcU6kiScVFvJq22l5JE8GEnssN0hO2I=;
+        s=korg; t=1626375907;
+        bh=0E242/wKL+VMPkZAHRHtRYzna5i8ew0F4mdX8PYmGis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IfMaAKHq/7OrmO+iKu6Vf7KgCCKxZzarM73/9F524xT0j3EbKWdxeVIXD95Ycunv1
-         k32g8IYA7v2XsGECSELxkdabg3JJSX+cWNM1IZBwavNZDvyZGmcU/Ns2/gHEe1Zqki
-         ItzK5ju+LKnRZehMs0r2Zo/9HXqZTIuikDF3Q4zY=
+        b=h5/sZEJ3OZQ4S7gfHW0Vy5zqtjxqv0tOkVaLvAb0pCPl3gmDi8fvupYtRJDR/TA3F
+         DysKd0Obq9+JGvtfw5Y1oAwWmpF4nAgsN/UPHzzAhrLgRS3tTJaTkOicqeLKfYEYRc
+         c4Dbc3n5e8ZeO1Held3c1xk+LO57+w4D8gowSUbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 019/242] drm/bridge: lt9611: Add missing MODULE_DEVICE_TABLE
-Date:   Thu, 15 Jul 2021 20:36:21 +0200
-Message-Id: <20210715182555.119072739@linuxfoundation.org>
+Subject: [PATCH 5.13 027/266] drm/virtio: Fix double free on probe failure
+Date:   Thu, 15 Jul 2021 20:36:22 +0200
+Message-Id: <20210715182618.859758518@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit 8d0b1fe81e18eb66a2d4406386760795fe0d77d9 ]
+[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
+But such failure will be caught by virtio_gpu_probe() and then
+virtio_gpu_release() will be called to do some cleanup which
+will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
+to NULL to avoid double free.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1620801955-19188-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/lontium-lt9611.c | 1 +
+ drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
-index d734d9402c35..c1926154eda8 100644
---- a/drivers/gpu/drm/bridge/lontium-lt9611.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
-@@ -1209,6 +1209,7 @@ static struct i2c_device_id lt9611_id[] = {
- 	{ "lontium,lt9611", 0 },
- 	{}
- };
-+MODULE_DEVICE_TABLE(i2c, lt9611_id);
- 
- static const struct of_device_id lt9611_match_table[] = {
- 	{ .compatible = "lontium,lt9611" },
+diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+index b375394193be..37a21a88d674 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_kms.c
++++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+@@ -234,6 +234,7 @@ err_scanouts:
+ err_vbufs:
+ 	vgdev->vdev->config->del_vqs(vgdev->vdev);
+ err_vqs:
++	dev->dev_private = NULL;
+ 	kfree(vgdev);
+ 	return ret;
+ }
 -- 
 2.30.2
 
