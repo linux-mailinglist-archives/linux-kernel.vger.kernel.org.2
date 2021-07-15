@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E4B3CA660
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5723CA664
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238835AbhGOSr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
+        id S238871AbhGOSrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237783AbhGOSq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:46:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CA9613CF;
-        Thu, 15 Jul 2021 18:43:34 +0000 (UTC)
+        id S238150AbhGOSqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3998613CA;
+        Thu, 15 Jul 2021 18:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374614;
-        bh=LGzdI1v0S5Zx+cdVoMYUzOdVZTttiJ4l1Davo96KDtk=;
+        s=korg; t=1626374617;
+        bh=i+7VfnBAJHPyvgIzum+stAFwX+rBqBMLvA3Du6yopzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hbcDrT5PH3a/X8YrC0aFcHmROgloTXmCZPd8LczGRUzMklSXGusqKk/m4mljiOwD3
-         ZfhnQqF5PIQJ4SngLAvp3exNeJMYCl+hu8chmlJRRD8WKXPG//Hy5nd5bgFtZtpeda
-         LGYozhn7ECusfX9LxxzSDTZbZVpyzfvpeVONfoXU=
+        b=VmPr171HlZOdU2czDPu92aigL7wI41x1gRwgOd88C6bmDoB9rkUeaOZmM7L+WyHEc
+         6zqWC2Jx797R5eFXJzVvZOXltvfDXbI1sRVcb2puuA9NM2SPJ26VSp7AqhmR3dnWqo
+         JXLVxRLKgRd8XLLTvkfvzobIbU5OhVDPiOH7oyqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Roman Li <roman.li@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 031/122] net: moxa: Use devm_platform_get_and_ioremap_resource()
-Date:   Thu, 15 Jul 2021 20:37:58 +0200
-Message-Id: <20210715182456.876823976@linuxfoundation.org>
+Subject: [PATCH 5.4 032/122] drm/amd/display: Update scaling settings on modeset
+Date:   Thu, 15 Jul 2021 20:37:59 +0200
+Message-Id: <20210715182457.044589964@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -40,40 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Roman Li <roman.li@amd.com>
 
-[ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
+[ Upstream commit c521fc316d12fb9ea7b7680e301d673bceda922e ]
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code and avoid a null-ptr-deref by checking 'res' in it.
+[Why]
+We update scaling settings when scaling mode has been changed.
+However when changing mode from native resolution the scaling mode previously
+set gets ignored.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[How]
+Perform scaling settings update on modeset.
+
+Signed-off-by: Roman Li <roman.li@amd.com>
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Acked-by: Stylon Wang <stylon.wang@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
-index f70bb81e1ed6..9f7eaae51335 100644
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -480,14 +480,13 @@ static int moxart_mac_probe(struct platform_device *pdev)
- 	priv->ndev = ndev;
- 	priv->pdev = pdev;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 6e31e899192c..fca466d4806b 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6832,7 +6832,8 @@ skip_modeset:
+ 	BUG_ON(dm_new_crtc_state->stream == NULL);
  
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ndev->base_addr = res->start;
--	priv->base = devm_ioremap_resource(p_dev, res);
-+	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(priv->base)) {
- 		dev_err(p_dev, "devm_ioremap_resource failed\n");
- 		ret = PTR_ERR(priv->base);
- 		goto init_fail;
- 	}
-+	ndev->base_addr = res->start;
- 
- 	spin_lock_init(&priv->txlock);
+ 	/* Scaling or underscan settings */
+-	if (is_scaling_state_different(dm_old_conn_state, dm_new_conn_state))
++	if (is_scaling_state_different(dm_old_conn_state, dm_new_conn_state) ||
++				drm_atomic_crtc_needs_modeset(new_crtc_state))
+ 		update_stream_scaling_settings(
+ 			&new_crtc_state->mode, dm_new_conn_state, dm_new_crtc_state->stream);
  
 -- 
 2.30.2
