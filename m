@@ -2,94 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCD53CA50A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC5C3CA51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237539AbhGOSOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
+        id S237739AbhGOSPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233916AbhGOSOW (ORCPT
+        with ESMTP id S237690AbhGOSPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:14:22 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB5CC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:11:28 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id v20so10751623eji.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xFNcy37c+BnJmbGuVLgBOx81eX2e2c/KJb9k8Y2Otp4=;
-        b=KM/X5+2FdDaB+GeERQSAkF2pO4RsG3QXA+s39Eut0Wy4eYIF8KVO+vM4tDdpJm5mZ2
-         sL6jpjuL92+pP6d7x8aUW/1RsWoZrVr/tDzuttsoiBsdA11B1VdDFDqkY8VCnfkBd1ZQ
-         mzKz6IuD4fYuPbPlCGvN+i8sO1l5kVVanwMfmWxJ2FRK+ZeYY2aHVTAWz28dD2zxrmvB
-         4i7Y7RGFm63mwaipFdUCyea2doWi5l4JcQK6GSrV0dub7ISBNtSjiB8CHxQWv55pJ9mV
-         yi7mAxXcj6ruq+lGocXldjSyg8zn9APwMfsU1bCAc+5bhjgiSdRvnplgBHZCEilqQQLN
-         ZQgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xFNcy37c+BnJmbGuVLgBOx81eX2e2c/KJb9k8Y2Otp4=;
-        b=PRBHke0rtC76gSxvLxgVZ5LBt9AHbopmVDGJWA/7eWP9/V/l2CXdbWBa6hnVNc1lvO
-         JvArEV3qivwAdpw1r0cZDTbtQpDlevpxFlE7bq3JLlhKrp8IHq6EhiuoArUFFiukSDlc
-         N0Fy5Tai2fFANxoinFMxUTLzjVVPd/bLrXIocNbID2p2jDplT3IzwsEBRU2Q6ffgG/aT
-         oMMtv+YQhOxK2HFb6Q+/Ea5ehjQ/iuRF8Y9HyOF3OCRaThiZpcPYZsUAj/T6ybDOTm5O
-         SpW90MIxmw35/m5MdQ6LrHCP0hxwmmeYhk7epm+5hrrb/d2NRKQrDwr8tDdCNS0gwlUu
-         ITuQ==
-X-Gm-Message-State: AOAM531k3WvYDOawEmlhG5+5hlMguC+UoaD3mdKmOOrD5NF5WGhTlX67
-        iISYUFOuCQD3qH756wFm+h6P5s8JoSiZ/6puX8uJnQ==
-X-Google-Smtp-Source: ABdhPJw20x8zM9yk0v6py5sxnw1GfLqy7pUfvhYM1HI/OSIxyiJ+BqGcVW7bi0WRGjmMuAfSCpW6oa+KgojFjhu4Z04=
-X-Received: by 2002:a17:906:c14a:: with SMTP id dp10mr7112755ejc.426.1626372687355;
- Thu, 15 Jul 2021 11:11:27 -0700 (PDT)
+        Thu, 15 Jul 2021 14:15:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B55C06175F;
+        Thu, 15 Jul 2021 11:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1wkBxUEbT0DVYtgLY8bo8fqQViCHE6yFAYwJFSkVK9o=; b=XNCqO8BCe71uTviFBhVmUUycKI
+        JDvtIxhdi/4acLD11VtR8tfkf/b+XqqtnxWrL2q7aIVcS+ulQtP7QPQav33pp8FMiNRDgz1KIEgiz
+        TNMnVp42zr/0wUo4S+Sw8zx1eV8WdkompgFrC8YIL9R6g+DvccShLFfWZd8zWV4mw7OYn4EPiXare
+        10S7AayZ19gJAaKczF9p6BrO5OMNiC9WCUUy6ZaMzyIECGttgTpIUkLHtJ7xVFueE68NR0UTFuda5
+        5khceIUdQP2lyJo+SmEP/frd2FNQCrWsawtt4gGUuk2nbP11BlQnmgSrK4tcjMBZg+qvI/04SaxgE
+        zog6uMLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m45p0-003blr-HW; Thu, 15 Jul 2021 18:11:16 +0000
+Date:   Thu, 15 Jul 2021 19:10:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm: Rename PMD_ORDER to PMD_TABLE_ORDER
+Message-ID: <YPB6Lu2YiAWC7rDc@casper.infradead.org>
+References: <20210715134612.809280-1-willy@infradead.org>
+ <20210715134612.809280-2-willy@infradead.org>
+ <20210715164740.GN22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <cover.1626371112.git.zhansayabagdaulet@gmail.com> <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
-In-Reply-To: <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 15 Jul 2021 14:10:51 -0400
-Message-ID: <CA+CK2bDT4cnqNNtP-vXqvnt=s+HhZ6_PZ1Vu=qXPbMYzQRUqUw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: KSM: fix ksm_run data type
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715164740.GN22278@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 2:01 PM Zhansaya Bagdauletkyzy
-<zhansayabagdaulet@gmail.com> wrote:
->
-> ksm_run is declared as unsigned long but in run_store(), it is converted
-> to unsigned int. Change its type to unsigned int.
->
-> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> ---
->  mm/ksm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/ksm.c b/mm/ksm.c
-> index 3fa9bc8a67cf..057d0c245bf4 100644
-> --- a/mm/ksm.c
-> +++ b/mm/ksm.c
-> @@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
->  #define KSM_RUN_MERGE  1
->  #define KSM_RUN_UNMERGE        2
->  #define KSM_RUN_OFFLINE        4
-> -static unsigned long ksm_run = KSM_RUN_STOP;
-> +static unsigned int ksm_run = KSM_RUN_STOP;
->  static void wait_while_offlining(void);
->
->  static DECLARE_WAIT_QUEUE_HEAD(ksm_thread_wait);
-> @@ -2874,7 +2874,7 @@ KSM_ATTR(pages_to_scan);
->  static ssize_t run_show(struct kobject *kobj, struct kobj_attribute *attr,
->                         char *buf)
->  {
-> -       return sysfs_emit(buf, "%lu\n", ksm_run);
-> +       return sysfs_emit(buf, "%u\n", ksm_run);
+On Thu, Jul 15, 2021 at 05:47:41PM +0100, Russell King (Oracle) wrote:
+> On Thu, Jul 15, 2021 at 02:46:10PM +0100, Matthew Wilcox (Oracle) wrote:
+> > This is the order of the page table allocation, not the order of a PMD.
+> > -#define PMD_ORDER	3
+> > +#define PMD_TABLE_ORDER	3
+> >  #else
+> >  #define PG_DIR_SIZE	0x4000
+> > -#define PMD_ORDER	2
+> > +#define PMD_TABLE_ORDER	2
+> 
+> I think PMD_ENTRY_ORDER would make more sense here - this is the
+> power-of-2 of an individual PMD entry, not of the entire table.
 
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+But ... we have two kinds of PMD entries.  We have the direct entry that
+points to a 1-16MB sized chunk of memory, and we have the table entry that
+points to a 4k-32k chunk of memory that contains PTEs.  So I don't think
+calling it 'entry' order actually disambiguates anything.  That's why
+I went with 'table' -- I can't think of anything else to call it!
+PMD_PTE_ARRAY_ORDER doesn't seem like an improvement to me ...
