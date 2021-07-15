@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB933CAB21
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF0E3CA943
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244417AbhGOTRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:17:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
+        id S242864AbhGOTFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243369AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34ECC613FE;
-        Thu, 15 Jul 2021 19:00:00 +0000 (UTC)
+        id S240120AbhGOS4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65032613D1;
+        Thu, 15 Jul 2021 18:53:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375600;
-        bh=p4UoKnK//5jgto48d8wuORtdCGB0SzO6Zsdb0CdF16A=;
+        s=korg; t=1626375190;
+        bh=dyshn5kvxDEI0SM2myXYKNppDxlJZf63QS5mPCGGb8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qa9m4TY0tbBcAomjWEczHOrLRIKQxh/TTQOLV7POqRbo09JJyo8qkq4CSEylAI0qc
-         TJO8znbvGw8ld0YSM/ia/fLBU/l/lTWLq/71qMrd1IhRjIRzpSyLBdYXM3emxYYECW
-         0OA2yvZdkhHLjD/qRrcxNklrYkziGwqhqibl05Es=
+        b=GmPfx9DVbmXFryobMV/UeDc8143EwZ+AAeI2vkcr/gHfFK6Pd5wYW3cd4n9cRcdxN
+         NJmN/q8dHUprKpLbzEVx6FY9WGF3oFhn2fU8q1OnzQQAkMPScq1JYC95NDhfpeF9DD
+         vICvaUss/H7DFCVnp07HNHmuBfLKCOyFIVZ5oV+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.12 154/242] PCI: tegra194: Fix host initialization during resume
-Date:   Thu, 15 Jul 2021 20:38:36 +0200
-Message-Id: <20210715182620.324770673@linuxfoundation.org>
+        Gulam Mohamed <gulam.mohamed@oracle.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hanjun Guo <guohanjun@huawei.com>
+Subject: [PATCH 5.10 145/215] scsi: iscsi: Fix iSCSI cls conn state
+Date:   Thu, 15 Jul 2021 20:38:37 +0200
+Message-Id: <20210715182625.263662643@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vidya Sagar <vidyas@nvidia.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-commit c4bf1f25c6c187864681d5ad4dd1fa92f62d5d32 upstream.
+commit 0dcf8febcb7b9d42bec98bc068e01d1a6ea578b8 upstream.
 
-Commit 275e88b06a27 ("PCI: tegra: Fix host link initialization") broke
-host initialization during resume as it misses out calling the API
-dw_pcie_setup_rc() which is required for host and MSI initialization.
+In commit 9e67600ed6b8 ("scsi: iscsi: Fix race condition between login and
+sync thread") I missed that libiscsi was now setting the iSCSI class state,
+and that patch ended up resetting the state during conn stoppage and using
+the wrong state value during ep_disconnect. This patch moves the setting of
+the class state to the class module and then fixes the two issues above.
 
-Link: https://lore.kernel.org/r/20210504172157.29712-1-vidyas@nvidia.com
-Fixes: 275e88b06a27 ("PCI: tegra: Fix host link initialization")
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20210406171746.5016-1-michael.christie@oracle.com
+Fixes: 9e67600ed6b8 ("scsi: iscsi: Fix race condition between login and sync thread")
+Cc: Gulam Mohamed <gulam.mohamed@oracle.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/pci/controller/dwc/pcie-tegra194.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/libiscsi.c             |   26 +++-----------------------
+ drivers/scsi/scsi_transport_iscsi.c |   18 +++++++++++++++---
+ 2 files changed, 18 insertions(+), 26 deletions(-)
 
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -2214,6 +2214,8 @@ static int tegra_pcie_dw_resume_noirq(st
- 		goto fail_host_init;
+--- a/drivers/scsi/libiscsi.c
++++ b/drivers/scsi/libiscsi.c
+@@ -3089,9 +3089,10 @@ fail_mgmt_tasks(struct iscsi_session *se
+ 	}
+ }
+ 
+-static void iscsi_start_session_recovery(struct iscsi_session *session,
+-					 struct iscsi_conn *conn, int flag)
++void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
+ {
++	struct iscsi_conn *conn = cls_conn->dd_data;
++	struct iscsi_session *session = conn->session;
+ 	int old_stop_stage;
+ 
+ 	mutex_lock(&session->eh_mutex);
+@@ -3149,27 +3150,6 @@ static void iscsi_start_session_recovery
+ 	spin_unlock_bh(&session->frwd_lock);
+ 	mutex_unlock(&session->eh_mutex);
+ }
+-
+-void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
+-{
+-	struct iscsi_conn *conn = cls_conn->dd_data;
+-	struct iscsi_session *session = conn->session;
+-
+-	switch (flag) {
+-	case STOP_CONN_RECOVER:
+-		cls_conn->state = ISCSI_CONN_FAILED;
+-		break;
+-	case STOP_CONN_TERM:
+-		cls_conn->state = ISCSI_CONN_DOWN;
+-		break;
+-	default:
+-		iscsi_conn_printk(KERN_ERR, conn,
+-				  "invalid stop flag %d\n", flag);
+-		return;
+-	}
+-
+-	iscsi_start_session_recovery(session, conn, flag);
+-}
+ EXPORT_SYMBOL_GPL(iscsi_conn_stop);
+ 
+ int iscsi_conn_bind(struct iscsi_cls_session *cls_session,
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -2479,10 +2479,22 @@ static void iscsi_if_stop_conn(struct is
+ 	 * it works.
+ 	 */
+ 	mutex_lock(&conn_mutex);
++	switch (flag) {
++	case STOP_CONN_RECOVER:
++		conn->state = ISCSI_CONN_FAILED;
++		break;
++	case STOP_CONN_TERM:
++		conn->state = ISCSI_CONN_DOWN;
++		break;
++	default:
++		iscsi_cls_conn_printk(KERN_ERR, conn,
++				      "invalid stop flag %d\n", flag);
++		goto unlock;
++	}
++
+ 	conn->transport->stop_conn(conn, flag);
+-	conn->state = ISCSI_CONN_DOWN;
++unlock:
+ 	mutex_unlock(&conn_mutex);
+-
+ }
+ 
+ static void stop_conn_work_fn(struct work_struct *work)
+@@ -2973,7 +2985,7 @@ static int iscsi_if_ep_disconnect(struct
+ 		mutex_lock(&conn->ep_mutex);
+ 		conn->ep = NULL;
+ 		mutex_unlock(&conn->ep_mutex);
+-		conn->state = ISCSI_CONN_DOWN;
++		conn->state = ISCSI_CONN_FAILED;
  	}
  
-+	dw_pcie_setup_rc(&pcie->pci.pp);
-+
- 	ret = tegra_pcie_dw_start_link(&pcie->pci);
- 	if (ret < 0)
- 		goto fail_host_init;
+ 	transport->ep_disconnect(ep);
 
 
