@@ -2,54 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613CB3C990D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B3E3C9934
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238903AbhGOGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:55:37 -0400
-Received: from 8bytes.org ([81.169.241.247]:38500 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236519AbhGOGzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:55:35 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 0D83D352; Thu, 15 Jul 2021 08:52:40 +0200 (CEST)
-Date:   Thu, 15 Jul 2021 08:52:33 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Sven Peter <sven@svenpeter.dev>, Will Deacon <will@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Alexander Graf <graf@amazon.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Subject: Re: [PATCH v4 0/3] Apple M1 DART IOMMU driver
-Message-ID: <YO/bMUAOLRgOJOvl@8bytes.org>
-References: <20210627143405.77298-1-sven@svenpeter.dev>
- <7261df01-34a9-4e53-37cd-ae1aa15b1fb4@arm.com>
- <CAK8P3a18XK2mfMGbZ+M32Mbabhbkd+=DNrnzampOah_j=rWozw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a18XK2mfMGbZ+M32Mbabhbkd+=DNrnzampOah_j=rWozw@mail.gmail.com>
+        id S237227AbhGOG5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:57:45 -0400
+Received: from smtp3.hiworks.co.kr ([121.254.168.205]:27935 "EHLO
+        smtp3.hiworks.co.kr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232953AbhGOG5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 02:57:44 -0400
+Received: (qmail 167850 invoked from network); 15 Jul 2021 15:54:49 +0900
+Received: from unknown (HELO hiworks.co.kr) (192.168.10.161)
+        by 0 (qmail 1.03 + ejcp v14) with SMTP;
+        15 Jul 2021 15:54:49 +0900
+Received: (qmail 152933 invoked from network); 15 Jul 2021 15:54:48 +0900
+Received: from unknown (HELO localhost.localdomain) (tykwon@m2i.co.kr@58.75.176.98)
+        by 0 (qmail 1.03 + ejcp v14) with SMTP;
+        15 Jul 2021 15:54:48 +0900
+X-Authinfo: HIWORKS SMTP authenticated <tykwon@m2i.co.kr|58.75.176.98|tykwon@m2i.co.kr|210715155448_4300152139>
+From:   Kwon Tae-young <tykwon@m2i.co.kr>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Kwon Tae-young <tykwon@m2i.co.kr>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mq-evk: add CD pinctrl for usdhc2
+Date:   Thu, 15 Jul 2021 15:54:31 +0900
+Message-Id: <20210715065431.25370-1-tykwon@m2i.co.kr>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 10:51:34PM +0200, Arnd Bergmann wrote:
-> The question is how we can best allow one but not the other.
+Add CD pinctrl for usdhc2.
 
-By only allowing to allocate domains of type IDENTITY and DMA, but fail
-to allocate UNMANAGED domains.
+Signed-off-by: Kwon Tae-young <tykwon@m2i.co.kr>
+---
+ arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Regards,
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+index 4d2035e3dd7c..87f571d6d843 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
+@@ -403,9 +403,9 @@
+ 	assigned-clocks = <&clk IMX8MQ_CLK_USDHC2>;
+ 	assigned-clock-rates = <200000000>;
+ 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+-	pinctrl-0 = <&pinctrl_usdhc2>;
+-	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+-	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
++	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
+ 	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+ 	vmmc-supply = <&reg_usdhc2_vmmc>;
+ 	status = "okay";
+@@ -565,6 +565,12 @@
+ 		>;
+ 	};
+ 
++	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
++		fsl,pins = <
++			MX8MQ_IOMUXC_SD2_CD_B_GPIO2_IO12		0x41
++		>;
++	};
++
+ 	pinctrl_usdhc2: usdhc2grp {
+ 		fsl,pins = <
+ 			MX8MQ_IOMUXC_SD2_CLK_USDHC2_CLK			0x83
+-- 
+2.17.1
 
-	Joerg
