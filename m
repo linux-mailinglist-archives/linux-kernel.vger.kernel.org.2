@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF4A3C9967
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040F03C996C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239232AbhGOHMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S240234AbhGOHO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236815AbhGOHM3 (ORCPT
+        with ESMTP id S239105AbhGOHO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:12:29 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7F1C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:09:36 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id w1so4097186ilg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:09:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9B+oTQwgmo4p1Ky+jMiYsVX5twnQnFrh+/KabLkfKoM=;
-        b=gXX+pNEeNfCIXnvpl5zzg72jHjH+3zkYJyYwbmO1kzh6ft7/OouMUm8xc5cxG1XPp8
-         Vfl1oHQrkntzz2y4B62MFB0npJvEz/EllABrsOjYb23ZWwcji9c17WbupAJqSMCKjf0q
-         P9puY5/sExP8rW+vR6b7vTTJ9DDQLHDyikWKMFxq6Z+CSp+C0hNwnB5kLycCHNfoPdF0
-         ZME0I/BW6gRIqG6XyZirldBU3sEofWoFpeDFdYt+CBSvj2oKp21RqmylUxRHM9lqPuuJ
-         Njxiq/CD9vBHyByW1XrAxcB0Y//F+cqnQDlTU5eH2uxU8VpUmofQm/oQOYs4ipZrnaFl
-         xsFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9B+oTQwgmo4p1Ky+jMiYsVX5twnQnFrh+/KabLkfKoM=;
-        b=CjoLZpo9QKOn0wu+knfXvQ4rcNkAzAao7eB3WALQbUhJjzS+6+ISlUJBiyfD5lorJ+
-         a0T9enVpFH2nnjQouclGNEZOLtqawIkaSUvfzWa1ZBQ+Re/+o8nlKr5tN3nG3TaOifZ8
-         oE/whRX94DdJE1u2Li+oCdqYR+S76CkWKjutXjFJ/OY9fFjzDJxDo5Nb0o21QYmdqVNJ
-         UCRwaM6z6DlCoBMfWR44iLWp0aVJtA8edI3emx3sTVH2VehQroR/Zz+r2Oto1tuvOgYY
-         7ei/GbsUN6xj+poEK5/O6nv5n6YRjy4cELQUbDO9ouIqP11Nm7wqeFDj9ZQggvhM41gg
-         inBg==
-X-Gm-Message-State: AOAM533OeEwp3q3PCNKSEIul0J7fYEaru7pB0Tk7e/Vvp+8lkVtRbAy0
-        lWCYQmxdKs4bDdcCYWqZxrCWHcskwFIvW8f2E4RG0w==
-X-Google-Smtp-Source: ABdhPJwuKUmsa/XevSPh49jg4k4QcER8gMdTrKqp3qt3Rwy5IFwH+L9++y/Wz79S7Mh+BnEstfthYeRZOPSds8h1z9k=
-X-Received: by 2002:a92:d990:: with SMTP id r16mr1786919iln.204.1626332975821;
- Thu, 15 Jul 2021 00:09:35 -0700 (PDT)
+        Thu, 15 Jul 2021 03:14:58 -0400
+Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993A1C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:12:05 -0700 (PDT)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout1.routing.net (Postfix) with ESMTP id E318940735;
+        Thu, 15 Jul 2021 07:12:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1626333123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bHCbwCI5MpbahEdZ+ZAHQEIG0Qqobtp7he3SCKGjng4=;
+        b=Pb96nc4oos96q/wIf13w4dIhW+2Laxqwiz+nFcTpqusgGZU30ArRSv5AOjc6VCpL/l8xWy
+        d/buLhtWrzb7aZ76Z7Sb1OrvX0nWCn/aNDEKMcBCnedXwKl5D4ZSOh2hOGss2Nm+X4l7Vr
+        iLzDzVb9z1ADeHC/BhOgRBBDrWmkFzw=
+Received: from localhost.localdomain (fttx-pool-80.245.79.66.bambit.de [80.245.79.66])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 0DAE5100A1A;
+        Thu, 15 Jul 2021 07:11:21 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     iommu@lists.linux-foundation.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, yong.wu@mediatek.com
+Subject: [PATCH] iommu: check if group is NULL before remove device
+Date:   Thu, 15 Jul 2021 09:10:43 +0200
+Message-Id: <20210715071043.82055-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com> <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
-In-Reply-To: <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 15 Jul 2021 15:09:25 +0800
-Message-ID: <CA+Px+wWNcSkxvsEoUrgBN73+jhq8qjFJodYjQnY1zW2d0a5yRA@mail.gmail.com>
-Subject: Re: [PATCH 8/8] i2c: mediatek: modify bus speed calculation formula
-To:     Kewei Xu <kewei.xu@mediatek.com>
-Cc:     wsa@the-dreams.de, matthias.bgg@gmail.com, robh+dt@kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com, qii.wang@mediatek.com,
-        qiangming.xia@mediatek.com, ot_daolong.zhu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: 820bd0e5-1d97-456a-a2a2-24dfac31751b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 10:32 AM Kewei Xu <kewei.xu@mediatek.com> wrote:
-> When clock-div is 0 or greater than 1, the bus speed
-> calculated by the old speed calculation formula will be
-> larger than the target speed. So we update the formula.
-The patch sounds like a fix up.  Need a "Fixes" tag.
+From: Frank Wunderlich <frank-w@public-files.de>
 
->         for (clk_div = 1; clk_div <= max_clk_div; clk_div++) {
->                 clk_src = parent_clk / clk_div;
-> +               i2c->ac_timing.inter_clk_div = clk_div - 1;
-Using the way to pass the parameter "inter_clk_div" to
-mtk_i2c_calculate_speed() looks like a hack.  inter_clk_div is set
-again[1] next to the for loop.
+if probe is failing, iommu_group may be not initialized,
+so freeing it will result in NULL pointer access
 
-[1]: https://elixir.bootlin.com/linux/v5.14-rc1/source/drivers/i2c/busses/i2c-mt65xx.c#L831
+Fixes: d72e31c93746 ("iommu: IOMMU Groups")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+ drivers/iommu/iommu.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 5419c4b9f27a..63f0af10c403 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -924,6 +924,9 @@ void iommu_group_remove_device(struct device *dev)
+ 	struct iommu_group *group = dev->iommu_group;
+ 	struct group_device *tmp_device, *device = NULL;
+ 
++	if (!group)
++		return;
++
+ 	dev_info(dev, "Removing from iommu group %d\n", group->id);
+ 
+ 	/* Pre-notify listeners that a device is being removed. */
+-- 
+2.25.1
 
-
-I have no domain knowledge of what/how the patch fixes.  But if this
-is a standalone fixup patch, suggest separating to an independent
-patch.
