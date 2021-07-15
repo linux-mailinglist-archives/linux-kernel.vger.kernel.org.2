@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63C03CA990
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86093CABE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241970AbhGOTH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33088 "EHLO mail.kernel.org"
+        id S245754AbhGOTY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240954AbhGOS46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 531D1613CA;
-        Thu, 15 Jul 2021 18:54:04 +0000 (UTC)
+        id S241532AbhGOTHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:07:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA54861158;
+        Thu, 15 Jul 2021 19:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375244;
-        bh=/0S9Xm4DZAfbwf6rg+o7JBMLwmd5iJ+UXot2NeUo40E=;
+        s=korg; t=1626375813;
+        bh=+H5wUAr7V9fkMmf4EVqWe5kdVPs57aQ+x+P4CG9MZoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZP2vA0rT2Tcw/Gnw4fK7NH4KfRSHVYuLGnPa7yFtdhqQYj2Xtc8io3KoG/etYPin6
-         oo07AQWlpL3zgAUhnw19qWmK3NG50ZFkzib9xhqjMlR8kwyxBhExIuiqOERTcKSIAU
-         YVBHxTamE9dUC5arJ3NYnQ8jzmO7t93ksO4HE6V8=
+        b=kmPax2yC7XFyTNCBdmnQ3lDdXJOVDh9y1Lx7xQs1irXF4rddydxDKutG7oRfJPAlH
+         wak8D/3ud0UXeDGg1BlePAx2sF5XbKpCJpfcJ4r03wkgjVsAKkIWQxqGBKP2yD0qv7
+         p10/pTcAQwk0dBCW7Mvdco1teZY+ah0ZN4p0s82s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.10 199/215] PCI: aardvark: Fix checking for PIO Non-posted Request
-Date:   Thu, 15 Jul 2021 20:39:31 +0200
-Message-Id: <20210715182634.347352464@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Paul Burton <paulburton@google.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.12 210/242] tracing: Simplify & fix saved_tgids logic
+Date:   Thu, 15 Jul 2021 20:39:32 +0200
+Message-Id: <20210715182630.195443522@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Paul Burton <paulburton@google.com>
 
-commit 8ceeac307a79f68c0d0c72d6e48b82fa424204ec upstream.
+commit b81b3e959adb107cd5b36c7dc5ba1364bbd31eb2 upstream.
 
-PIO_NON_POSTED_REQ for PIO_STAT register is incorrectly defined. Bit 10 in
-register PIO_STAT indicates the response is to a non-posted request.
+The tgid_map array records a mapping from pid to tgid, where the index
+of an entry within the array is the pid & the value stored at that index
+is the tgid.
 
-Link: https://lore.kernel.org/r/20210624213345.3617-2-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
+The saved_tgids_next() function iterates over pointers into the tgid_map
+array & dereferences the pointers which results in the tgid, but then it
+passes that dereferenced value to trace_find_tgid() which treats it as a
+pid & does a further lookup within the tgid_map array. It seems likely
+that the intent here was to skip over entries in tgid_map for which the
+recorded tgid is zero, but instead we end up skipping over entries for
+which the thread group leader hasn't yet had its own tgid recorded in
+tgid_map.
+
+A minimal fix would be to remove the call to trace_find_tgid, turning:
+
+  if (trace_find_tgid(*ptr))
+
+into:
+
+  if (*ptr)
+
+..but it seems like this logic can be much simpler if we simply let
+seq_read() iterate over the whole tgid_map array & filter out empty
+entries by returning SEQ_SKIP from saved_tgids_show(). Here we take that
+approach, removing the incorrect logic here entirely.
+
+Link: https://lkml.kernel.org/r/20210630003406.4013668-1-paulburton@google.com
+
+Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joel Fernandes <joelaf@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Paul Burton <paulburton@google.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace.c |   38 +++++++++++++-------------------------
+ 1 file changed, 13 insertions(+), 25 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -56,7 +56,7 @@
- #define   PIO_COMPLETION_STATUS_UR		1
- #define   PIO_COMPLETION_STATUS_CRS		2
- #define   PIO_COMPLETION_STATUS_CA		4
--#define   PIO_NON_POSTED_REQ			BIT(0)
-+#define   PIO_NON_POSTED_REQ			BIT(10)
- #define PIO_ADDR_LS				(PIO_BASE_ADDR + 0x8)
- #define PIO_ADDR_MS				(PIO_BASE_ADDR + 0xc)
- #define PIO_WR_DATA				(PIO_BASE_ADDR + 0x10)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5352,37 +5352,20 @@ static const struct file_operations trac
+ 
+ static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
+ {
+-	int *ptr = v;
++	int pid = ++(*pos);
+ 
+-	if (*pos || m->count)
+-		ptr++;
+-
+-	(*pos)++;
+-
+-	for (; ptr <= &tgid_map[PID_MAX_DEFAULT]; ptr++) {
+-		if (trace_find_tgid(*ptr))
+-			return ptr;
+-	}
++	if (pid > PID_MAX_DEFAULT)
++		return NULL;
+ 
+-	return NULL;
++	return &tgid_map[pid];
+ }
+ 
+ static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
+ {
+-	void *v;
+-	loff_t l = 0;
+-
+-	if (!tgid_map)
++	if (!tgid_map || *pos > PID_MAX_DEFAULT)
+ 		return NULL;
+ 
+-	v = &tgid_map[0];
+-	while (l <= *pos) {
+-		v = saved_tgids_next(m, v, &l);
+-		if (!v)
+-			return NULL;
+-	}
+-
+-	return v;
++	return &tgid_map[*pos];
+ }
+ 
+ static void saved_tgids_stop(struct seq_file *m, void *v)
+@@ -5391,9 +5374,14 @@ static void saved_tgids_stop(struct seq_
+ 
+ static int saved_tgids_show(struct seq_file *m, void *v)
+ {
+-	int pid = (int *)v - tgid_map;
++	int *entry = (int *)v;
++	int pid = entry - tgid_map;
++	int tgid = *entry;
++
++	if (tgid == 0)
++		return SEQ_SKIP;
+ 
+-	seq_printf(m, "%d %d\n", pid, trace_find_tgid(pid));
++	seq_printf(m, "%d %d\n", pid, tgid);
+ 	return 0;
+ }
+ 
 
 
