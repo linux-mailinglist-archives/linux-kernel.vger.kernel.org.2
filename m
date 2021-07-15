@@ -2,135 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26713C98CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D07B3C98D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240199AbhGOGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:32:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7011 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhGOGcH (ORCPT
+        id S234545AbhGOGiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhGOGiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:32:07 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQPT04QJtzXtJ0;
-        Thu, 15 Jul 2021 14:23:32 +0800 (CST)
-Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 14:29:11 +0800
-Received: from [10.174.185.67] (10.174.185.67) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 14:29:10 +0800
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
- <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
-Date:   Thu, 15 Jul 2021 14:29:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 15 Jul 2021 02:38:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D74C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CBl2VbaTdlKaH4VdQOVbFJXpYe5+X4n0PYeP3gGFhmw=; b=HVx5UynZUPZuFSLz1peXEzSiui
+        fHGlitA5xB/4BNt7w4RTcKEKAgwaLusWMwKEzR5DcPnKgA042rT0ykbOH2gd5iyb0lak+N2DeEKbX
+        /Cp8E78iwPXeic83+AOir9G5hKZr/NpKW/xPtL6+NR68k1TA32s8th1Yc1ZI8CoeFKFw362DKfIKv
+        xN1ESk5G3ObdxLzTD4f+boNFRjZC+GI0XelAWbo+tG/27DAVoJKHjB5q8IF/8ix40WjRUPp5guFJQ
+        an62NYznW4UVydbRgLN0jNhebePBI3caQ4TPRo8FSDjPc5dtA7xY50PkhozSqarP4C6J2GXxQKr1F
+        v5I4p7fg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3uxR-0033qb-UF; Thu, 15 Jul 2021 06:35:00 +0000
+Date:   Thu, 15 Jul 2021 07:34:53 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Zhang Qiang <Qiang.Zhang@windriver.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+Message-ID: <YO/XDUoj1N7tlZKa@infradead.org>
+References: <20210713135625.7615-1-mgorman@techsingularity.net>
+ <20210713135625.7615-5-mgorman@techsingularity.net>
 MIME-Version: 1.0
-In-Reply-To: <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.67]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500022.china.huawei.com (7.185.36.162)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713135625.7615-5-mgorman@techsingularity.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/15 11:55, Tian, Kevin wrote:
->> From: Shenming Lu <lushenming@huawei.com>
->> Sent: Thursday, July 15, 2021 11:21 AM
->>
->> On 2021/7/9 15:48, Tian, Kevin wrote:
->>> 4.6. I/O page fault
->>> +++++++++++++++++++
->>>
->>> uAPI is TBD. Here is just about the high-level flow from host IOMMU driver
->>> to guest IOMMU driver and backwards. This flow assumes that I/O page
->> faults
->>> are reported via IOMMU interrupts. Some devices report faults via device
->>> specific way instead of going through the IOMMU. That usage is not
->> covered
->>> here:
->>>
->>> -   Host IOMMU driver receives a I/O page fault with raw fault_data {rid,
->>>     pasid, addr};
->>>
->>> -   Host IOMMU driver identifies the faulting I/O page table according to
->>>     {rid, pasid} and calls the corresponding fault handler with an opaque
->>>     object (registered by the handler) and raw fault_data (rid, pasid, addr);
->>>
->>> -   IOASID fault handler identifies the corresponding ioasid and device
->>>     cookie according to the opaque object, generates an user fault_data
->>>     (ioasid, cookie, addr) in the fault region, and triggers eventfd to
->>>     userspace;
->>>
->>
->> Hi, I have some doubts here:
->>
->> For mdev, it seems that the rid in the raw fault_data is the parent device's,
->> then in the vSVA scenario, how can we get to know the mdev(cookie) from
->> the
->> rid and pasid?
->>
->> And from this point of view，would it be better to register the mdev
->> (iommu_register_device()) with the parent device info?
->>
+On Tue, Jul 13, 2021 at 02:56:25PM +0100, Mel Gorman wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> This is what is proposed in this RFC. A successful binding generates a new
-> iommu_dev object for each vfio device. For mdev this object includes 
-> its parent device, the defPASID marking this mdev, and the cookie 
-> representing it in userspace. Later it is iommu_dev being recorded in
-> the attaching_data when the mdev is attached to an IOASID:
+> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
 > 
-> 	struct iommu_attach_data *__iommu_device_attach(
-> 		struct iommu_dev *dev, u32 ioasid, u32 pasid, int flags);
-> 
-> Then when a fault is reported, the fault handler just needs to figure out 
-> iommu_dev according to {rid, pasid} in the raw fault data.
-> 
+> Fix an unresolved symbol error when CONFIG_DEBUG_INFO_BTF=y:
 
-Yeah, we have the defPASID that marks the mdev and refers to the default
-I/O address space, but how about the non-default I/O address spaces?
-Is there a case that two different mdevs (on the same parent device)
-are used by the same process in the guest, thus have a same pasid route
-in the physical IOMMU? It seems that we can't figure out the mdev from
-the rid and pasid in this case...
-
-Did I misunderstand something?... :-)
-
-Thanks,
-Shenming
+I still fundamentally disagreed with this "fix".  Whatever code requires
+a function to be non-static without a prototype and reference is
+completely fucked up beyond rescue and needs to be disabled util
+it can be fixed instead of worked around like this.
