@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A90F3CA8CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C63A3CAB49
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241629AbhGOTDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56184 "EHLO mail.kernel.org"
+        id S244863AbhGOTSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240898AbhGOSxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:53:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49741613E3;
-        Thu, 15 Jul 2021 18:50:43 +0000 (UTC)
+        id S242363AbhGOTDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:03:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C5276127C;
+        Thu, 15 Jul 2021 18:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375043;
-        bh=EfF/j/9tYFALjllAB11e/KdjZIR9rz7LwCtzJFJiq8M=;
+        s=korg; t=1626375574;
+        bh=stvcF6uXrbquSGSrH8uLYFq78eQal4IKJZFjo3M7OhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zc5DZ0ZIHy6t37jyL5UyHm5tfcaoEYzku6B7zesQoiUynLJb47v5EaEJ/ebx9EVH3
-         Z4Ql8O1JIBXD5dRLwajjcqWMNd+q64uGhRMYnwASf3ZyuoVco06lCbkyQno+XAiijT
-         N/6zX3+CgDgA+w9mb2g/sH9qZjWfKRl4KmUzbU70=
+        b=RDCWBfGrHFl9G08W8+xluwk3G5OHidjbSeuJaj85Py5Ahc5HL5B+XQQY4ZxqnPqTx
+         sn3FWtRifwc86qXPPmZQRyFTWtz7bPdniYjUJlJJuxlIebzAzUKO/a1WBqt99//3Gi
+         IoKsfo2T/Y/wGeoBk8hOPPII/QCE2ma/pmHusSbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.10 134/215] MIPS: MT extensions are not available on MIPS32r1
+        stable@vger.kernel.org, Tim Jiang <tjiang@codeaurora.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 144/242] Bluetooth: btusb: use default nvm if boardID is 0 for wcn6855.
 Date:   Thu, 15 Jul 2021 20:38:26 +0200
-Message-Id: <20210715182623.255659127@linuxfoundation.org>
+Message-Id: <20210715182618.523947667@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Tim Jiang <tjiang@codeaurora.org>
 
-commit cad065ed8d8831df67b9754cc4437ed55d8b48c0 upstream.
+[ Upstream commit ca17a5cccf8b6d35dab4729bea8f4350bc0b4caf ]
 
-MIPS MT extensions were added with the MIPS 34K processor, which was
-based on the MIPS32r2 ISA.
+if boardID is 0, will use the default nvm file without surfix.
 
-This fixes a build error when building a generic kernel for a MIPS32r1
-CPU.
-
-Fixes: c434b9f80b09 ("MIPS: Kconfig: add MIPS_GENERIC_KERNEL symbol")
-Cc: stable@vger.kernel.org # v5.9
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/cpu-features.h |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btusb.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -64,6 +64,8 @@
- 	((MIPS_ISA_REV >= (ge)) && (MIPS_ISA_REV < (lt)))
- #define __isa_range_or_flag(ge, lt, flag) \
- 	(__isa_range(ge, lt) || ((MIPS_ISA_REV < (lt)) && __isa(flag)))
-+#define __isa_range_and_ase(ge, lt, ase) \
-+	(__isa_range(ge, lt) && __ase(ase))
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index ec17772defc2..64b0e68c68eb 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -4228,9 +4228,15 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 	int err;
  
- /*
-  * SMP assumption: Options of CPU 0 are a superset of all processors.
-@@ -423,7 +425,7 @@
- #endif
- 
- #ifndef cpu_has_mipsmt
--#define cpu_has_mipsmt		__isa_lt_and_ase(6, MIPS_ASE_MIPSMT)
-+#define cpu_has_mipsmt		__isa_range_and_ase(2, 6, MIPS_ASE_MIPSMT)
- #endif
- 
- #ifndef cpu_has_vp
+ 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-			 le32_to_cpu(ver->rom_version),
+-			 le16_to_cpu(ver->board_id));
++		/* if boardid equal 0, use default nvm without surfix */
++		if (le16_to_cpu(ver->board_id) == 0x0) {
++			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
++				 le32_to_cpu(ver->rom_version));
++		} else {
++			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
++				le32_to_cpu(ver->rom_version),
++				le16_to_cpu(ver->board_id));
++		}
+ 	} else {
+ 		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+ 			 le32_to_cpu(ver->rom_version));
+-- 
+2.30.2
+
 
 
