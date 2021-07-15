@@ -2,189 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE64C3CA299
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C144A3CA29D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbhGOQpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:45:12 -0400
-Received: from mga17.intel.com ([192.55.52.151]:51413 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhGOQpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:45:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="190958698"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="190958698"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 09:42:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="428859618"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Jul 2021 09:42:11 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 15 Jul 2021 09:42:11 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 15 Jul 2021 09:42:10 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Thu, 15 Jul 2021 09:42:10 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Thu, 15 Jul 2021 09:42:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RGQQrUSP/t2S520O1CC4gDLXMzLhzpFMHgc/Oa4sP2IomBE3d6cMv+piEvK+xVNhxebCWcLW0i1mZw7UqVzvPAb6D7/DBWpr5h7J4HuEb75+cJ0zg5mjT5Ts8Tx4lc6ibb2O1eXVRgvsA8Aw81fTPNG9Lye6EE0kzJRmA5lpGGNn43vf3YJt4Gzfug/mjlQb6rtJaWvYGqhfzO7W6QI5y9jBfPZZapRJHx3bnEwt290Aj4ukXP1bXwFyR/DYOT4fIcau94bg7hZokOCusu5lfSwwN/vySmnJgfNNsAwo2SMCdTrRSAL6oHazWSKtUWPf7bri9YVAC4ix7OGWypktAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jFpBaYLaVSYZ/nY23JZd6mgFX6YxX+kBbVunJNceDuk=;
- b=XxrY12CXjx+v6AS8AeOySzEkrKVibl/exgjxS8DCHlSRiI2Qmmgz6Jhm56a0cu+BAXzgQv7Yrqxnm9eP89pRe2wrvvGo+h4mARUtbZl1Tg4e5mTHk7uU7e/dmJv6neAP8mX9sPFtkbS8YG1XchKD3SX2fvLZvJMoV3KOIKa8Q0VHZliFU7NInYIeh5QlcdjQfoliZW3GzN0boRm/SgJBOqjBVqbi77Z/ekPQV0tZdTrBd5xqVYkH166P52pVtlaSfjFDUkeYIck1AZBnooqbWz6OWJXLB7A8FtIrbSxkvKHo0H8ZBDj794QDfJT/Xb6HtXMVXCFcnAHUiMgOmX05+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jFpBaYLaVSYZ/nY23JZd6mgFX6YxX+kBbVunJNceDuk=;
- b=gCCqYstAV+OdXu5DfCWGZZBErlvqeb0Omsqk7rWaNmwqY4BLiS18EivqwssYC6o8kx/OhwBeBE+L1dkM8rVouL6Ui3NJEHtyF/EI925SYqZmskJfdlB839eqE8DM7T6arD7bzw196CpOvWE3z6ab5+eWro5p8v340n+VZcXDr7g=
-Received: from SN6PR11MB2589.namprd11.prod.outlook.com (2603:10b6:805:53::12)
- by SA2PR11MB4971.namprd11.prod.outlook.com (2603:10b6:806:118::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Thu, 15 Jul
- 2021 16:42:05 +0000
-Received: from SN6PR11MB2589.namprd11.prod.outlook.com
- ([fe80::357a:ba5:ee4f:d5f1]) by SN6PR11MB2589.namprd11.prod.outlook.com
- ([fe80::357a:ba5:ee4f:d5f1%7]) with mapi id 15.20.4331.022; Thu, 15 Jul 2021
- 16:42:05 +0000
-From:   "Winiarska, Iwona" <iwona.winiarska@intel.com>
-To:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-CC:     "corbet@lwn.net" <corbet@lwn.net>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
-Subject: Re: [PATCH 07/14] peci: Add peci-aspeed controller driver
-Thread-Topic: [PATCH 07/14] peci: Add peci-aspeed controller driver
-Thread-Index: AQHXd2rgJ2vtBAF9sEOGUwpyjZOFA6tAWaGAgAPoOAA=
-Date:   Thu, 15 Jul 2021 16:42:05 +0000
-Message-ID: <787288238eba562e1e1927469c7e8dbb2b4912df.camel@intel.com>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
-         <20210712220447.957418-8-iwona.winiarska@intel.com>
-         <b894ba5e-e1ae-e5dd-87be-dc33912dd5c0@infradead.org>
-In-Reply-To: <b894ba5e-e1ae-e5dd-87be-dc33912dd5c0@infradead.org>
-Accept-Language: en-US, pl-PL
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1fd327b6-2fab-4858-555d-08d947af7b03
-x-ms-traffictypediagnostic: SA2PR11MB4971:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB4971FE592B1B7F0622AEF02DEC129@SA2PR11MB4971.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gyxKdI7QMvk0+6w7NUHnDBn2JaXeNoqiufa40DMoqAyZHBQaFExPM6FvcGs8eAxxxPfD3ooDgIYnlPlHVR24si/hia/ZJad7XISv90pUoxQPho7WUmaiU7/AkncoJVTi89xQv8VemoUnBQF60oI5WJLgVSs5TSw8g8QHy4PyAlZRTHpWQq32rJQp8obiuTYNshukUWRiEaUVv7L5lE59zc9+mvqRF/F7jnCfliOQ7/zrjtfLkZhVjGZNE0XXPyMI4HLICLSOa6GlrSAcRA1RLe6LkUDBWiYEhwci+ha0207sQ3wXuA4XJizh+m/KXTH+TmIy6vRqlPm8QV4ZuZFXOPvhmvqz0tXWjtfQ4PBrH3x1E2JIG7mdpQGIyO/zJsFNGY6baLaIpw/pzg6IUVvVxDGdDsB5FXQQqln3UjoYP2t/I0/7sMHDikuhe5TK4yTfcULY/18tiZBDB4kkIqGz1JA51pXxNJAOWE/eFugn1iqAyTiUDbbusPPXBOD0EA827TOKZnl2YolvbohNO/rwmPnqt73D9ruz+ZWXK0QfeHd8wfatA7lwDcEW+iXuGsGBnjXZeNXdtsbgcL8BRXhoDH3V/LgTUNaWwNiPYr+aGpRQ75wh5bknt3MQ92/KnqaOmRNmZPH/fHUl2jn0eBIWlKl5Di2Xwvu/74gJsWhR57zdknyxknrqsKGKq3tqci831CAiHRhhAaoViHaeS+NlgA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2589.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(136003)(39860400002)(346002)(53546011)(6506007)(7416002)(26005)(5660300002)(186003)(64756008)(66556008)(66476007)(91956017)(2616005)(316002)(66446008)(478600001)(66946007)(76116006)(8936002)(54906003)(8676002)(2906002)(38100700002)(122000001)(36756003)(6512007)(6486002)(86362001)(110136005)(4326008)(4744005)(71200400001)(38070700004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VTcvZmJMOCtnOG15ajhrMXJtUzVQdWdHZVBKZlVtRENmdkJvNHFoZHUydnRU?=
- =?utf-8?B?ODVHTmdDZjdsT1FaNXltNmJQcWI3eWhOOHBScUF6MXF2Wm41a2t5UG96ZVNS?=
- =?utf-8?B?SUpDNXQ2OEQ2M1Fvd1E1Z3h3Q0hpQ01rcFF1WVBmQUtQQ2dVZzFPM2NxR1V5?=
- =?utf-8?B?Z0J2Q0lINjNLTit4bmg1eVhlNXlMazcraS9oeVUrbGVJcS9aUEF0VUpkVXkr?=
- =?utf-8?B?eUdISFAySlVOU0srUTRrdmpZd1kyT2UybElSSVB0eUhLUkprNkl5Mncybmhu?=
- =?utf-8?B?ajNZTVJ0OTI0SE9WaElyTmlXcTZpRkJ1cjBpblFZbmt4d1RnKzF6dkVKcGZP?=
- =?utf-8?B?RTFiMEtaQUdkOTVWS0F4c1o2MzVHU1pjV1pqcXluckJHK1lBY0FEM2kwZkdI?=
- =?utf-8?B?ejJScHE0b3lrbFZmWUZqQk9HMVJPbzFUSklmL005WWpiVVN6Ylk2akEwZWY0?=
- =?utf-8?B?KzBGVUVpcENTbE4zSXRpejcybWRwejNraHBybEQwcEJsejVEWDgrMEZBTEJm?=
- =?utf-8?B?NnJJMFpYbW0rdWsxY2ZHM043UzhTVjE4QjB6ZmgzNUpBQXpDZndkcEEzZ0hV?=
- =?utf-8?B?RC94YjU2Zjc3SVAvREtQdDRSWEs0enpTTFFUUHZxRmxCMHNZaTFlNVVLc05G?=
- =?utf-8?B?MW92ZGV6eWx4RUtVQUxOMnJDTHdhbjhLWTF1eG9WTDg3cmNESTNMdVo2c0dW?=
- =?utf-8?B?ckZGQXVzbDhkSUVDSndhRnZ1cXBoRVpQb1Y0Ynl3dVR6NHVkSWxLYmhCN2tu?=
- =?utf-8?B?bXFsZUJoWVg5RlFKSEtmVXYrWWdmRnk0VW85MjZURUw3WTJTekU2RlFUVUFj?=
- =?utf-8?B?YXNqMklLY1NIRmpUNWRiRitpc1VnbTRKaEJJRmNYWndxYkdxM1dZRmlxdnJ3?=
- =?utf-8?B?SlRoK0J2S3RCTWZOL0dzSUF5bUJpVkUyVkZaVitvdXBqL09GT0JiOWk2a0tk?=
- =?utf-8?B?L29oNUs1MDFUdm95bVBrNGtNMlJCZnZWYVM0MUlhOWxicjh4bGF6YkdUd0dq?=
- =?utf-8?B?dzRveVhoZ0IxcUR3Tzc1WW9Db1p3TUE1WTE3bWwrM2ZDZkhjU3Q2bEZpaXBm?=
- =?utf-8?B?NDg3R3ZSV252c1gwZUR6aGEwR0NQOGRPWElFWnZ2cDVQcGFKZlNCakdXRGU0?=
- =?utf-8?B?OTRZYjRYQnh4N2JxVGFseWtqRXpMVWN2SmxoN3FrS3FQNkRnTVEwWVFOMWJF?=
- =?utf-8?B?NVRtU1poYmZzaFBhZUR5Mzl2bWxCczVuV0J3d0xmOHhBQ0NKb1JJVW1vOVRE?=
- =?utf-8?B?L0ZvbW4vY2Fsa3dtRldIbERLWFhCbkpxQklmTUxMclp6SDF4cXBTTXdpQkVX?=
- =?utf-8?B?d1FuQW1RZ2EvODYydjN6OHBONjFkL1MzZVYrTUZWMXBGUXFQOFVzdkhZTnRH?=
- =?utf-8?B?Rm9DTnpMbjBHRkRLUEdVWmVrZGMvMXhZU2JHVEwrU0N6MG9YV01LZ0dlN3E4?=
- =?utf-8?B?R2wzVm1ENElTREx4c1NxTmZVckV6NDFOQ0ZSeDlNTTV0OWg2aXBhbHRNdlpJ?=
- =?utf-8?B?bm1IdW96M3lMQ1l2eUxQRnNKaDdyM25vbXpkUDZpNTNUVytIbWkrc3hueXcx?=
- =?utf-8?B?N2NHMGhwK0VWdHo1enBVRkxNbDV1U3NKVTI1elpoUUxJUFFTZmY4cGJyY0x5?=
- =?utf-8?B?NFZnVUJIaFp6VGQ4ejI0cTM0c294RTJuVTM5cHA1MlVIN2E5VjdYdUtMMUtX?=
- =?utf-8?B?YVJONHB5Z0ZxUkdyTnF2UnFhRTRDbS9zajN3KzRtQkNhQk1kZnZMekZlU1li?=
- =?utf-8?B?ZXZ2ZGxaanpVMXcvWXVueFArbVdIYkdDYmR0Q285ZjRYU3RQV0ZuRnlrYzNk?=
- =?utf-8?B?S3FIVTN4SjhTTzBobGNpZz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2B787E8B3692894BA90BD5E7C6604444@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S233463AbhGOQpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233299AbhGOQpO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 12:45:14 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA9BC06175F;
+        Thu, 15 Jul 2021 09:42:19 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id f17so8636301wrt.6;
+        Thu, 15 Jul 2021 09:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=UjnH7JFTdfMTc0/hWrQFgZ71PCIq4Fc621eK7BI7/00=;
+        b=eCVo/eNkepVwO96hm0mx42fBP1HO0hFxfMFyJtZcHi+qU7BhmZbJELj4HjEt7WdlTs
+         8MoWmigDQxOq4cwWFvlmfVw/1Ms1NsdFtZLIks68p7BmdJ5hV5S+gw6m6THGcNobt0Dp
+         QP32Svv2O1JsoJGwuGaLYgsGah2TePjWHbwiOYz1TDFyiop2DtIHpIDbyLaYNbSAPq6X
+         sVx1PkigH2a2r6000I7YB5+sMY062FXjBussghiB7cGRwhHtJFCSqQywS7ikzpNmoJ3a
+         RjkyLcFpN55zMiL1Mhv024lAqUFdphy1bhBZG2O/MrdAIzTNKNYBHjUoFge2jmH580/b
+         nNkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=UjnH7JFTdfMTc0/hWrQFgZ71PCIq4Fc621eK7BI7/00=;
+        b=THf75vUhA6VqKvJhCTMkF6jUZBIS8EzAzU6U3qw+TSvH/RZEnIrkYUcuEotVOJbafy
+         vLlNSaKbLCVaMuhaZHeUkgdwigqZ3ehm3IfF2skLPHU76Qlo0bUpVVTFWWzcXZDNLE2B
+         0OHRTAgs0wbdZedyjkUx0WIhu4br7HVOFxfwPN6tOlykXpfbD36AlHdfXvJ+qTEdCe6O
+         cJnbI1qOnJ+K0KpLEnF9UniRl2SmDGlhMbxcKNNV1IuZetEQ+6zPni0Fc/AHsSqqVGmC
+         mXAnRQO308qr7e3ALf7trFSYTMKa+JuHgKfcmQOfdP3A+9YwdCjSu7lRMA7H5vSDY3eo
+         wUzA==
+X-Gm-Message-State: AOAM531mqfpFy1zzcm/qdtM+xPqeZSWqr1pKN2mHMqvBCx8K0r9Lf69b
+        FocMQTsIlswcp8LL5O5MP+0=
+X-Google-Smtp-Source: ABdhPJxPm/5IJKkHB+pTEWRRjDBELQ80aPXQfTG/P2W2rt66uxjWdqPh4rOII0Eu3lpuYRUHjxZWBw==
+X-Received: by 2002:a5d:5271:: with SMTP id l17mr6641712wrc.239.1626367338270;
+        Thu, 15 Jul 2021 09:42:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.gmail.com with ESMTPSA id n2sm6924870wrx.40.2021.07.15.09.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 09:42:17 -0700 (PDT)
+Message-ID: <b758e519c0fe1336ce01d741b2340734faac7af2.camel@gmail.com>
+Subject: Re: [RFC PATCH 03/10] perf workqueue: add threadpool start and stop
+ functions
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Date:   Thu, 15 Jul 2021 18:42:16 +0200
+In-Reply-To: <YO7/n4YAy/R08Wss@kernel.org>
+References: <cover.1626177381.git.rickyman7@gmail.com>
+         <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
+         <YO7/n4YAy/R08Wss@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2589.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fd327b6-2fab-4858-555d-08d947af7b03
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2021 16:42:05.6751
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 856WZrpK8XFTVVYUCiM/uvi03hI5YI5C3i9zitx6vqqBia77bK6P7YinZ1JF/PdL7XkKfoZFkPKbiYNfiGnm35OSDCMeJNcSo635QNOO/l4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4971
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA3LTEyIGF0IDIyOjAyIC0wNzAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
-IE9uIDcvMTIvMjEgMzowNCBQTSwgSXdvbmEgV2luaWFyc2thIHdyb3RlOg0KPiA+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL3BlY2kvY29udHJvbGxlci9LY29uZmlnDQo+ID4gYi9kcml2ZXJzL3BlY2kv
-Y29udHJvbGxlci9LY29uZmlnDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAw
-MDAwMDAwMDAwMDAuLjhkZGJlNDk0Njc3Zg0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9k
-cml2ZXJzL3BlY2kvY29udHJvbGxlci9LY29uZmlnDQo+ID4gQEAgLTAsMCArMSwxMiBAQA0KPiA+
-ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkNCj4gPiArDQo+ID4gK2Nv
-bmZpZyBQRUNJX0FTUEVFRA0KPiA+ICvCoMKgwqDCoMKgwqDCoHRyaXN0YXRlICJBU1BFRUQgUEVD
-SSBzdXBwb3J0Ig0KPiA+ICvCoMKgwqDCoMKgwqDCoGRlcGVuZHMgb24gQVJDSF9BU1BFRUQgfHwg
-Q09NUElMRV9URVNUDQo+ID4gK8KgwqDCoMKgwqDCoMKgZGVwZW5kcyBvbiBPRg0KPiA+ICvCoMKg
-wqDCoMKgwqDCoGRlcGVuZHMgb24gSEFTX0lPTUVNDQo+ID4gK8KgwqDCoMKgwqDCoMKgaGVscA0K
-PiA+ICvCoMKgwqDCoMKgwqDCoMKgIEVuYWJsZSB0aGlzIGRyaXZlciBpZiB5b3Ugd2FudCB0byBz
-dXBwb3J0IEFTUEVFRCBQRUNJDQo+ID4gY29udHJvbGxlci4NCj4gPiArDQo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqAgVGhpcyBkcml2ZXIgY2FuIGJlIGFsc28gYnVpbGQgYXMgYSBtb2R1bGUuIElmIHNv
-LCB0aGUNCj4gPiBtb2R1bGUNCj4gDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBjYW4gYWxzbyBiZSBidWlsdCBhcyBhIG1vZHVsZS4NCg0KVGhhbmsgeW91IFJh
-bmR5IC0gSSdsbCBmaXggdGhpcyBpbiB2Mi4NCg0KLUl3b25hDQoNCj4gDQo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqAgd2lsbCBiZSBjYWxsZWQgcGVjaS1hc3BlZWQuDQo+IA0KPiANCj4gLS0gDQo+IH5S
-YW5keQ0KPiANCg0K
+Hi Arnaldo,
+
+On Wed, 2021-07-14 at 12:15 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Jul 13, 2021 at 02:11:14PM +0200, Riccardo Mancini escreveu:
+> > This patch adds the start and stop functions, alongside the thread
+> > function.
+> > Each thread will run until a stop signal is received.
+> > Furthermore, start and stop are added to the test.
+> > 
+> > Thread management is based on the prototype from Alexey:
+> > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+> > 
+> > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+<SNIP>
+> >  
+> >  static int __threadpool__teardown(struct threadpool_struct *pool)
+> >  {
+> > +       int ret;
+> > +
+> > +       ret = stop_threadpool(pool);
+> 
+>         int ret = stop_threadpool(pool);
+
+ok
+
+> 
+> > +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
+> > +       TEST_ASSERT_VAL("stopped threadpool is ready",
+> > +                       !threadpool_is_ready(pool));
+> > +
+> >         destroy_threadpool(pool);
+> >  
+> >         return 0;
+> > diff --git a/tools/perf/util/workqueue/threadpool.c
+> > b/tools/perf/util/workqueue/threadpool.c
+> > index 70c67569f956a3e2..f4635ff782b9388e 100644
+> > --- a/tools/perf/util/workqueue/threadpool.c
+> > +++ b/tools/perf/util/workqueue/threadpool.c
+> > @@ -4,12 +4,23 @@
+> >  #include <unistd.h>
+> >  #include <errno.h>
+> >  #include <string.h>
+> > +#include <pthread.h>
+> > +#include <signal.h>
+> > +#include <syscall.h>
+> >  #include "debug.h"
+> >  #include "asm/bug.h"
+> >  #include "threadpool.h"
+> >  
+> > +#ifndef HAVE_GETTID
+> > +static inline pid_t gettid(void)
+> > +{
+> > +       return (pid_t)syscall(__NR_gettid);
+> > +}
+> > +#endif
+> 
+> Isn't this defined elsewhere? Yeah, when we decide to move it to
+> tools/lib/workqueue/ we'll need it, but for now, reduce patch size.
+
+No, it's just statically defined in tools/perf/jvmti/jvmti_agent.c.
+I saw there is a libc_compat.h header in tools/include/tools, I could put this
+definition there, and remove the one from jvmti_agent.c.
+
+<SNIP>
+> > +/**
+> > + * wait_thread - receive ack from thread
+> > + *
+> > + * NB: call only from main thread!
+> > + */
+> > +static int wait_thread(struct thread_struct *thread)
+> > +{
+> > +       int res;
+> > +       enum thread_msg msg = THREAD_MSG__UNDEFINED;
+> > +
+> > +       res = read(thread->pipes.from[0], &msg, sizeof(msg));
+> 
+>         int res = read(thread->pipes.from[0], &msg, sizeof(msg));
+
+ok
+
+<SNIP>
+> > +/**
+> > + * threadpool_thread - function running on thread
+> > + *
+> > + * This function waits for a signal from main thread to start executing
+> > + * a task.
+> > + * On completion, it will go back to sleep, waiting for another signal.
+> > + * Signals are delivered through pipes.
+> > + */
+> > +static void *threadpool_thread(void *args)
+> 
+>    threadpool_function()
+> 
+>  ETOMANY 'thread' in a name.
+
+Agreed :)
+
+<SNIP>
+
+> > +/**
+> > + * start_threadpool - start all threads in the pool.
+> > + *
+> > + * The function blocks until all threads are up and running.
+> > + */
+> > +int start_threadpool(struct threadpool_struct *pool)
+> 
+> int threadpool__start(struct threadpool *pool)
+
+ok
+
+> 
+> > +{
+> > +       int err;
+> > +
+> > +       if (pool->status != THREADPOOL_STATUS__STOPPED) {
+> > +               pr_err("threadpool: starting not stopped pool\n");
+> > +               return -1;
+> > +       }
+> > +
+> > +       err = __start_threadpool(pool);
+> > +       pool->status = err ? THREADPOOL_STATUS__ERROR :
+> > THREADPOOL_STATUS__READY;
+> > +       return err;
+> > +}
+> > +
+> > +/**
+> > + * stop_threadpool - stop all threads in the pool.
+> > + *
+> > + * This function blocks waiting for ack from all threads.
+> > + */
+> > +int stop_threadpool(struct threadpool_struct *pool)
+> 
+> int threadpool__stop(struct threadpool *pool)
+
+ok
+
+> 
+> > +{
+> > +       int t, ret, err = 0;
+> > +
+> > +       if (pool->status != THREADPOOL_STATUS__READY) {
+> > +               pr_err("threadpool: stopping not ready pool\n");
+> > +               return -1;
+> > +       }
+> > +
+> > +       for (t = 0; t < pool->nr_threads; t++) {
+> > +               ret = terminate_thread(&pool->threads[t]);
+> > +               if (ret && !err)
+> > +                       err = -1;
+> > +       }
+> > +
+> > +       pool->status = err ? THREADPOOL_STATUS__ERROR :
+> > THREADPOOL_STATUS__STOPPED;
+> > +
+> > +       return err;
+> > +}
+> > +
+> > +/**
+> > + * threadpool_is_ready - check if the threads are running
+> > + */
+> > +bool threadpool_is_ready(struct threadpool_struct *pool)
+> 
+> bool threadpool__is_ready(struct threadpool *pool)
+
+ok
+
+Thanks,
+Riccardo
+
+> 
+> > +{
+> > +       return pool->status == THREADPOOL_STATUS__READY;
+> > +}
+> > diff --git a/tools/perf/util/workqueue/threadpool.h
+> > b/tools/perf/util/workqueue/threadpool.h
+> > index 2b9388c768a0b588..b62cad2b2c5dd331 100644
+> > --- a/tools/perf/util/workqueue/threadpool.h
+> > +++ b/tools/perf/util/workqueue/threadpool.h
+> > @@ -14,6 +14,11 @@ struct task_struct {
+> >  extern struct threadpool_struct *create_threadpool(int n_threads);
+> >  extern void destroy_threadpool(struct threadpool_struct *pool);
+> >  
+> > +extern int start_threadpool(struct threadpool_struct *pool);
+> > +extern int stop_threadpool(struct threadpool_struct *pool);
+> > +
+> >  extern int threadpool_size(struct threadpool_struct *pool);
+> >  
+> > +extern bool threadpool_is_ready(struct threadpool_struct *pool);
+> > +
+> >  #endif /* __WORKQUEUE_THREADPOOL_H */
+> > -- 
+> > 2.31.1
+> > 
+> 
+
+
