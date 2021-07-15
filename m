@@ -2,70 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F05F3CA463
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9E33CA468
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhGORdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:33:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55852 "EHLO mail.kernel.org"
+        id S230471AbhGORdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:33:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:55852 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhGORc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:32:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 20B3F613D7;
-        Thu, 15 Jul 2021 17:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626370205;
-        bh=Flw15wMFOWTWZ7Do+OUNzQu22+yegu+u/76/RBpVfhU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZguZuy3lQQkuS/6Fq0dHl9+jEgMhtzK+EGvgr4YT9CSs3WYP/OoMIdSSGHODf6p+t
-         HeBszqG2XAb8MEF3f0St0AYHrWQUBH4HzIf7/sh0ZWkSSbRE9ixEMPiQHacB+3amFX
-         UmaoIBTDzMFPiyclEYX7n9c6fAJnjFb/jfddlvnR1t9SRnxs2uPmaXXtwxbL8Pee6M
-         mnQe4+0ic4Rvcnyc7A9TX8OtdckjrhqPCb4WdfH+LFqKScKCXAI9Lh/cYSzV0O5rSN
-         ilxbEc3ID6nGETkQ2qnXO0H+HdyFqyrBGWkmEXmqkuDNlY76gCTFoyfFCE2yqbiSR9
-         XsgYylndwlybA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0AF73609CF;
-        Thu, 15 Jul 2021 17:30:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229837AbhGORdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:33:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41B1A6D;
+        Thu, 15 Jul 2021 10:30:53 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E25B3F7D8;
+        Thu, 15 Jul 2021 10:30:51 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com
+Subject: [PATCH v6 00/24] x86/resctrl: Merge the CDP resources
+Date:   Thu, 15 Jul 2021 17:30:19 +0000
+Message-Id: <20210715173043.14222-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] ipv6: remove unnecessary local variable
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162637020504.11955.9930812995357254562.git-patchwork-notify@kernel.org>
-Date:   Thu, 15 Jul 2021 17:30:05 +0000
-References: <20210715142643.2648-1-rocco.yue@mediatek.com>
-In-Reply-To: <20210715142643.2648-1-rocco.yue@mediatek.com>
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, matthias.bgg@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        rocco.yue@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi folks,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Changes since v5? Nothing: just picked up the tags, (rebased and retested).
+---
 
-On Thu, 15 Jul 2021 22:26:43 +0800 you wrote:
-> The local variable "struct net *net" in the two functions of
-> inet6_rtm_getaddr() and inet6_dump_addr() are actually useless,
-> so remove them.
-> 
-> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
-> ---
->  net/ipv6/addrconf.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+This series re-folds the resctrl code so the CDP resources (L3CODE et al)
+behaviour is all contained in the filesystem parts, with a minimum amount
+of arch specific code.
 
-Here is the summary with links:
-  - [net-next] ipv6: remove unnecessary local variable
-    https://git.kernel.org/netdev/net-next/c/87117baf4f92
+Arm have some CPU support for dividing caches into portions, and
+applying bandwidth limits at various points in the SoC. The collective term
+for these features is MPAM: Memory Partitioning and Monitoring.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+MPAM is similar enough to Intel RDT, that it should use the defacto linux
+interface: resctrl. This filesystem currently lives under arch/x86, and is
+tightly coupled to the architecture.
+Ultimately, my plan is to split the existing resctrl code up to have an
+arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
+MPAM can be wired up.
 
+x86 might have two resources with cache controls, (L2 and L3) but has
+extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
+if CDP is enabled for the corresponding cache.
+
+MPAM has an equivalent feature to CDP, but its a property of the CPU,
+not the cache. Resctrl needs to have x86's odd/even behaviour, as that
+its the ABI, but this isn't how the MPAM hardware works. It is entirely
+possible that an in-kernel user of MPAM would not be using CDP, whereas
+resctrl is.
+
+Pretending L3CODE and L3DATA are entirely separate resources is a neat
+trick, but doing this is specific to x86.
+Doing this leaves the arch code in control of various parts of the
+filesystem ABI: the resources names, and the way the schemata are parsed.
+Allowing this stuff to vary between architectures is bad for user space.
+
+This series collapses the CODE/DATA resources, moving all the user-visible
+resctrl ABI into what becomes the filesystem code. CDP becomes the type of
+configuration being applied to a cache. This is done by adding a
+struct resctrl_schema to the parts of resctrl that will move to fs. This
+holds the arch-code resource that is in use for this schema, along with
+other properties like the name, and whether the configuration being applied
+is CODE/DATA/BOTH.
+
+This lets us fold the extra resources out of the arch code so that they
+don't need to be duplicated if the equivalent feature to CDP is missing, or
+implemented in a different way.
+
+
+The first two patches split the resource and domain structs to have an
+arch specific 'hw' portion, and the rest that is visible to resctrl.
+Future series massage the resctrl code so there are no accesses to 'hw'
+structures in the parts of resctrl that will move to fs, providing helpers
+where necessary.
+
+This series adds temporary scaffolding, which it removes a few patches
+later. This is to allow things like the ctrlval arrays and resources to be
+merged separately, which should make is easier to bisect. These things
+are marked temporary, and should all be gone by the end of the series.
+
+This series is a little rough around the monitors, would a fake
+struct resctrl_schema for the monitors simplify things, or be a source
+of bugs?
+
+A side effect of merging these resources, is their names are no longer printed
+in the kernel log at boot. e.g:
+| resctrl: L3 allocation detected
+| resctrl: MB allocation detected
+| resctrl: L3 monitoring detected
+would previously have had extra entries for 'L3CODE' and 'L3DATA'.
+User-space cannot rely on this to discover CDP support, as the kernel log may
+be inaccessible, may have been overwritten by newer messages, and because
+parsing the kernel log is a bad idea.
+
+
+This series is based on v5.14-rc1, and can be retrieved from:
+git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v6
+
+v5: https://lore.kernel.org/lkml/20210617175820.24037-1-james.morse@arm.com/
+v4: https://lore.kernel.org/lkml/20210614200941.12383-1-james.morse@arm.com/
+v3: https://lore.kernel.org/lkml/20210519162424.27654-1-james.morse@arm.com/
+v2: https://lore.kernel.org/lkml/20210312175849.8327-1-james.morse@arm.com/
+v1: https://lore.kernel.org/lkml/20201030161120.227225-1-james.morse@arm.com/
+
+Parts were previously posted as an RFC here:
+https://lore.kernel.org/lkml/20200214182947.39194-1-james.morse@arm.com/
+
+
+Thanks,
+
+James Morse (24):
+  x86/resctrl: Split struct rdt_resource
+  x86/resctrl: Split struct rdt_domain
+  x86/resctrl: Add a separate schema list for resctrl
+  x86/resctrl: Pass the schema in info dir's private pointer
+  x86/resctrl: Label the resources with their configuration type
+  x86/resctrl: Walk the resctrl schema list instead of an arch list
+  x86/resctrl: Store the effective num_closid in the schema
+  x86/resctrl: Add resctrl_arch_get_num_closid()
+  x86/resctrl: Pass the schema to resctrl filesystem functions
+  x86/resctrl: Swizzle rdt_resource and resctrl_schema in
+    pseudo_lock_region
+  x86/resctrl: Add a helper to read/set the CDP configuration
+  x86/resctrl: Move the schemata names into struct resctrl_schema
+  x86/resctrl: Group staged configuration into a separate struct
+  x86/resctrl: Allow different CODE/DATA configurations to be staged
+  x86/resctrl: Rename update_domains() resctrl_arch_update_domains()
+  x86/resctrl: Add a helper to read a closid's configuration
+  x86/resctrl: Pass configuration type to resctrl_arch_get_config()
+  x86/resctrl: Make ctrlval arrays the same size
+  x86/resctrl: Apply offset correction when config is staged
+  x86/resctrl: Calculate the index from the configuration type
+  x86/resctrl: Merge the ctrl_val arrays
+  x86/resctrl: Remove rdt_cdp_peer_get()
+  x86/resctrl: Expand resctrl_arch_update_domains()'s msr_param range
+  x86/resctrl: Merge the CDP resources
+
+ arch/x86/kernel/cpu/resctrl/core.c        | 276 ++++++-------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 164 +++++---
+ arch/x86/kernel/cpu/resctrl/internal.h    | 232 ++++-------
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  44 ++-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  12 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 459 ++++++++++++----------
+ include/linux/resctrl.h                   | 185 +++++++++
+ 7 files changed, 776 insertions(+), 596 deletions(-)
+
+-- 
+2.30.2
 
