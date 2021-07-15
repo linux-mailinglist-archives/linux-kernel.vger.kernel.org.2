@@ -2,42 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C963CA618
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B43D3CA622
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237705AbhGOSqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:46:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
+        id S237945AbhGOSqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235859AbhGOSpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:45:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE8DD613CA;
-        Thu, 15 Jul 2021 18:42:45 +0000 (UTC)
+        id S237195AbhGOSpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:45:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 681D4613CC;
+        Thu, 15 Jul 2021 18:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374566;
-        bh=mBvZYToQtkgC6df+fX3mmDN1sKeSJlBaaQtmS/9AmRk=;
+        s=korg; t=1626374570;
+        bh=EjBpclgkSdPHUatK/nI23yhe84JUSTS6Y1pt06ji7m4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HmwCVQrO/RCe/bYAclhzDuu19yih18oiPliKng5SzDQuBDCw/9Jmka2KbZ528QA5u
-         yIVg6yBOG1DCAn1zC8uI5cDYQwSVPHogkevqUlaQ3TFyt/Wg4EeuWd4xb1X266TUw2
-         umeizZjm52sRLee1gx1FFiRgnlZywQCq+ag44/QA=
+        b=utVv3mVCK56ATntdmdx7ll2RUiCGRk/lr8XdSRITSPkj2nM34qAbTMm7hXvef4nDP
+         q6fdvFftbz9jBdh4CQ1l1ujeE1AJWg4K4Cue7uSZjjyUFRiCpReIb1oLmQLw0wa4IS
+         wFW7/ZQTwJRxs5N2wiVw+ls6ivLTH9nxpbPN7eXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        lixianming <lixianming5@huawei.com>,
-        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        stable@vger.kernel.org, Xiao Yang <yangx.jy@fujitsu.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/122] vsock: notify server to shutdown when client has pending signal
-Date:   Thu, 15 Jul 2021 20:38:20 +0200
-Message-Id: <20210715182503.180492990@linuxfoundation.org>
+Subject: [PATCH 5.4 054/122] RDMA/rxe: Dont overwrite errno from ib_umem_get()
+Date:   Thu, 15 Jul 2021 20:38:21 +0200
+Message-Id: <20210715182503.334665371@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -49,70 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng(Mike) <longpeng2@huawei.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-[ Upstream commit c7ff9cff70601ea19245d997bb977344663434c7 ]
+[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
 
-The client's sk_state will be set to TCP_ESTABLISHED if the server
-replay the client's connect request.
+rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
+fails so it's hard for user to know which actual error happens in
+ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
+trying to pin pages on a DAX file.
 
-However, if the client has pending signal, its sk_state will be set
-to TCP_CLOSE without notify the server, so the server will hold the
-corrupt connection.
+Return actual error as mlx4/mlx5 does.
 
-            client                        server
-
-1. sk_state=TCP_SYN_SENT         |
-2. call ->connect()              |
-3. wait reply                    |
-                                 | 4. sk_state=TCP_ESTABLISHED
-                                 | 5. insert to connected list
-                                 | 6. reply to the client
-7. sk_state=TCP_ESTABLISHED      |
-8. insert to connected list      |
-9. *signal pending* <--------------------- the user kill client
-10. sk_state=TCP_CLOSE           |
-client is exiting...             |
-11. call ->release()             |
-     virtio_transport_close
-      if (!(sk->sk_state == TCP_ESTABLISHED ||
-	      sk->sk_state == TCP_CLOSING))
-		return true; *return at here, the server cannot notice the connection is corrupt*
-
-So the client should notify the peer in this case.
-
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jorgen Hansen <jhansen@vmware.com>
-Cc: Norbert Slusarek <nslusarek@gmx.net>
-Cc: Andra Paraschiv <andraprs@amazon.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: David Brazdil <dbrazdil@google.com>
-Cc: Alexander Popov <alex.popov@linux.com>
-Suggested-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lkml.org/lkml/2021/5/17/418
-Signed-off-by: lixianming <lixianming5@huawei.com>
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c | 2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index c82e7b52ab1f..d4104144bab1 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1217,7 +1217,7 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index ffbc50341a55..f885e245699b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -173,7 +173,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
+ 	if (IS_ERR(umem)) {
+ 		pr_warn("err %d from rxe_umem_get\n",
+ 			(int)PTR_ERR(umem));
+-		err = -EINVAL;
++		err = PTR_ERR(umem);
+ 		goto err1;
+ 	}
  
- 		if (signal_pending(current)) {
- 			err = sock_intr_errno(timeout);
--			sk->sk_state = TCP_CLOSE;
-+			sk->sk_state = sk->sk_state == TCP_ESTABLISHED ? TCP_CLOSING : TCP_CLOSE;
- 			sock->state = SS_UNCONNECTED;
- 			vsock_transport_cancel_pkt(vsk);
- 			goto out_wait;
 -- 
 2.30.2
 
