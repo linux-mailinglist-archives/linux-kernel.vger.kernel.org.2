@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D983CAB2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249363CAB42
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243200AbhGOTSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:18:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39498 "EHLO mail.kernel.org"
+        id S244820AbhGOTSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:18:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239159AbhGOTCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:02:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF806613DD;
-        Thu, 15 Jul 2021 18:59:00 +0000 (UTC)
+        id S239033AbhGOTDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:03:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14F1C61370;
+        Thu, 15 Jul 2021 18:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375541;
-        bh=yQK+7EMPW+anCuBOtmGBLrgSUk/BCsTb+VKx6gKoMiU=;
+        s=korg; t=1626375567;
+        bh=EfgEJylRHF1NQY/Yx5XZyMIOkbTSyQmMOC7KGA5XTKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnxD3/8aQIGE834AehmNd0JM37HS2KsCyO3akBiSpdiabW/aBmlKyF+X2MlIZrcPZ
-         2b5d1HWBInBO6+2E5x8QESBvTH/uFTLL52oXmj+7eEmrMd0CEmPaf1CXu8Q/1k02IT
-         EDD2uUosdStqrDIJm94aEGMJTwCu3ecHJHYJx9D8=
+        b=epSY+3v+X1ZjapaqCkzYQlcnnyqwhGdE9qzZ+7w9zHeg18nZKMfDmryBuR6VKnurh
+         eeLaFszSEzuOS2/VtJHevYi0aZ3qgWtnl0VwDvbzzBN8dlhUl3PT5e4LIjWbNu1Jhg
+         n2oOKotgjNfdT1xDXhXi6lJZXmItGY53oy2o86Ng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Logush Oliver <ollogush@amd.com>,
-        Charlene Liu <Charlene.Liu@amd.com>,
-        Bindu Ramamurthy <bindu.r@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Xiao Yang <yangx.jy@fujitsu.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 114/242] drm/amd/display: Fix edp_bootup_bl_level initialization issue
-Date:   Thu, 15 Jul 2021 20:37:56 +0200
-Message-Id: <20210715182613.192400413@linuxfoundation.org>
+Subject: [PATCH 5.12 115/242] RDMA/rxe: Dont overwrite errno from ib_umem_get()
+Date:   Thu, 15 Jul 2021 20:37:57 +0200
+Message-Id: <20210715182613.358387461@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -43,36 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logush Oliver <ollogush@amd.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-[ Upstream commit eeb90e26ed05dd44553d557057bf35f08f853af8 ]
+[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
 
-[why]
-Updating the file to fix the missing line
+rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
+fails so it's hard for user to know which actual error happens in
+ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
+trying to pin pages on a DAX file.
 
-Signed-off-by: Logush Oliver <ollogush@amd.com>
-Reviewed-by: Charlene Liu <Charlene.Liu@amd.com>
-Acked-by: Bindu Ramamurthy <bindu.r@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Return actual error as mlx4/mlx5 does.
+
+Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c | 2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-index 9f9fda3118d1..500bcd0ecf4d 100644
---- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-+++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-@@ -1944,7 +1944,7 @@ static enum bp_result get_integrated_info_v2_1(
- 		info_v2_1->edp1_info.edp_pwr_down_bloff_to_vary_bloff;
- 	info->edp1_info.edp_panel_bpc =
- 		info_v2_1->edp1_info.edp_panel_bpc;
--	info->edp1_info.edp_bootup_bl_level =
-+	info->edp1_info.edp_bootup_bl_level = info_v2_1->edp1_info.edp_bootup_bl_level;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 9f63947bab12..fe2b7d223183 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -135,7 +135,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 	if (IS_ERR(umem)) {
+ 		pr_warn("err %d from rxe_umem_get\n",
+ 			(int)PTR_ERR(umem));
+-		err = -EINVAL;
++		err = PTR_ERR(umem);
+ 		goto err1;
+ 	}
  
- 	info->edp2_info.edp_backlight_pwm_hz =
- 	le16_to_cpu(info_v2_1->edp2_info.edp_backlight_pwm_hz);
 -- 
 2.30.2
 
