@@ -2,341 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033873C9B26
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961CC3C9B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239363AbhGOJLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:11:44 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:44690 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240884AbhGOJLV (ORCPT
+        id S235267AbhGOJMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhGOJMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:11:21 -0400
-X-UUID: 896a0b493e8b4e088a0eac8f99ef9484-20210715
-X-UUID: 896a0b493e8b4e088a0eac8f99ef9484-20210715
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1270496675; Thu, 15 Jul 2021 17:08:25 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Jul 2021 17:08:23 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 15 Jul 2021 17:08:23 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Yuwen Ng <yuwen.ng@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH v3 13/13] usb: mtu3: support suspend/resume for dual-role mode
-Date:   Thu, 15 Jul 2021 17:07:58 +0800
-Message-ID: <1626340078-29111-14-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1626340078-29111-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1626340078-29111-1-git-send-email-chunfeng.yun@mediatek.com>
+        Thu, 15 Jul 2021 05:12:44 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69072C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:09:51 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id y4so5390919pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:09:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KUb2QkrkQ8ko4G078uye8RdkQ5z0d+6I4mThvq6tm5M=;
+        b=LsTt8+jKu7B2i3FTudYEE6Cx0zDvQrhi/SyMFOLRQ0RA8dvTjPxYA4KfIQGrVmwQiD
+         XkFdISvOWcgEJyCbg4z/KPXoUG6xgRwwZBPCt6raWN9FRWTbWUsGnk5s289nys7fn4sX
+         B0+Oy0Xuz4roi2d5VWeGko2eDqXACou67289I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KUb2QkrkQ8ko4G078uye8RdkQ5z0d+6I4mThvq6tm5M=;
+        b=WW5NhOvS6rtOfUjTguNCA5HFZlLPQAnLFHQWi7gcizAO88UfzBgyaIIP5wNygX/pCK
+         L+3K48w3r/GDm/Jw/j+uoJAwxrv/gPd05voEed0WeFv1p4zwws0cURdGxn4ra3fKCWBF
+         jIG5meezK5tmxctnQABEBdmNFI1vUc28F9oRdTX7yYRn1BAgYOzfbML2aOHGRajMh8Jh
+         h7hfpHs25G0Jplk9YAQXjZQsc052Jh6OvD57JG+OrcKvC2H30ezETyTR/+BKnf2fE/Al
+         /Djg9f6gbUjpJvnCLoyyqUw+GI+Uxhd5ZNjbT2l8VlWfSuLKB3XqU/PgUMDeIh2yhLwZ
+         icRw==
+X-Gm-Message-State: AOAM5319SjUW4iGRxsiWizffZxyEUUcMcOqkQ78mf4qBDEjANfgN79+b
+        ixYArqGWzGvr/PBQOv05RHNZ4w==
+X-Google-Smtp-Source: ABdhPJwlXpAIZhgHr+sKRH9JqJhO8b5bbttsmXnjTJUyUqXp5WVPhcSpjW5bawKM30k3u+REa/x7wA==
+X-Received: by 2002:a65:67d6:: with SMTP id b22mr3565984pgs.271.1626340190981;
+        Thu, 15 Jul 2021 02:09:50 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:cf9:3b54:4709:3747])
+        by smtp.gmail.com with ESMTPSA id o10sm5837260pfu.131.2021.07.15.02.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 02:09:50 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 18:09:45 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
+Message-ID: <YO/7WS/WefdkFFbj@google.com>
+References: <20210521155624.174524-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521155624.174524-1-senozhatsky@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support suspend/resume for dual-role mode including the single
-port and multi-ports supported by host controller, when the host
-supports mult-ports, only port0 (u2/u3) is used to support dual
-role mode.
+On (21/05/22 00:56), Sergey Senozhatsky wrote:
+> Soft watchdog timer function checks if a virtual machine
+> was suspended and hence what looks like a lockup in fact
+> is a false positive.
+> 
+> This is what kvm_check_and_clear_guest_paused() does: it
+> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
+> and if it's set then we need to touch all watchdogs and bail
+> out.
+> 
+> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
+> check works fine.
+> 
+> There is, however, one more watchdog that runs from IRQ, so
+> watchdog timer fn races with it, and that watchdog is not aware
+> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
+> 
+> apic_timer_interrupt()
+>  smp_apic_timer_interrupt()
+>   hrtimer_interrupt()
+>    __hrtimer_run_queues()
+>     tick_sched_timer()
+>      tick_sched_handle()
+>       update_process_times()
+>        rcu_sched_clock_irq()
+> 
+> This triggers RCU stalls on our devices during VM resume.
+> 
+> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
+> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
+> then there is nothing on this VCPU that touches watchdogs and
+> RCU reads stale gp stall timestamp and new jiffies value, which
+> makes it think that RCU has stalled.
+> 
+> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
+> don't report RCU stalls when we resume the VM.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2~3: no changes
----
- drivers/usb/mtu3/mtu3_core.c | 32 +++++++-------
- drivers/usb/mtu3/mtu3_dr.c   |  2 +
- drivers/usb/mtu3/mtu3_dr.h   |  8 ++++
- drivers/usb/mtu3/mtu3_host.c | 10 +----
- drivers/usb/mtu3/mtu3_plat.c | 84 ++++++++++++++++++++++++++----------
- 5 files changed, 89 insertions(+), 47 deletions(-)
+Hello Paul,
 
-diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
-index a800920d38b9..f90e5cdec614 100644
---- a/drivers/usb/mtu3/mtu3_core.c
-+++ b/drivers/usb/mtu3/mtu3_core.c
-@@ -9,7 +9,6 @@
-  */
- 
- #include <linux/dma-mapping.h>
--#include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-@@ -1008,12 +1007,25 @@ void ssusb_gadget_exit(struct ssusb_mtk *ssusb)
- 	mtu3_hw_exit(mtu);
- }
- 
-+bool ssusb_gadget_ip_sleep_check(struct ssusb_mtk *ssusb)
-+{
-+	struct mtu3 *mtu = ssusb->u3d;
-+
-+	/* host only, should wait for ip sleep */
-+	if (!mtu)
-+		return true;
-+
-+	/* device is started and pullup D+, ip can sleep */
-+	if (mtu->is_active && mtu->softconnect)
-+		return true;
-+
-+	/* ip can't sleep if not pullup D+ when support device mode */
-+	return false;
-+}
-+
- int ssusb_gadget_suspend(struct ssusb_mtk *ssusb, pm_message_t msg)
- {
- 	struct mtu3 *mtu = ssusb->u3d;
--	void __iomem *ibase = mtu->ippc_base;
--	u32 value;
--	int ret = 0;
- 
- 	if (!mtu->gadget_driver)
- 		return 0;
-@@ -1024,17 +1036,7 @@ int ssusb_gadget_suspend(struct ssusb_mtk *ssusb, pm_message_t msg)
- 	mtu3_dev_suspend(mtu);
- 	synchronize_irq(mtu->irq);
- 
--	/* wait for ip to sleep */
--	if (mtu->is_active && mtu->softconnect) {
--		ret = readl_poll_timeout(ibase + U3D_SSUSB_IP_PW_STS1,
--				value, (value & SSUSB_IP_SLEEP_STS), 100, 100000);
--		if (ret) {
--			dev_err(mtu->dev, "ip sleep failed!!!\n");
--			ret = -EBUSY;
--		}
--	}
--
--	return ret;
-+	return 0;
- }
- 
- int ssusb_gadget_resume(struct ssusb_mtk *ssusb, pm_message_t msg)
-diff --git a/drivers/usb/mtu3/mtu3_dr.c b/drivers/usb/mtu3/mtu3_dr.c
-index 30e7e5fc0f88..a6b04831b20b 100644
---- a/drivers/usb/mtu3/mtu3_dr.c
-+++ b/drivers/usb/mtu3/mtu3_dr.c
-@@ -149,6 +149,7 @@ static void ssusb_mode_sw_work(struct work_struct *work)
- 
- 	dev_dbg(ssusb->dev, "set role : %s\n", usb_role_string(desired_role));
- 	mtu3_dbg_trace(ssusb->dev, "set role : %s", usb_role_string(desired_role));
-+	pm_runtime_get_sync(ssusb->dev);
- 
- 	switch (desired_role) {
- 	case USB_ROLE_HOST:
-@@ -169,6 +170,7 @@ static void ssusb_mode_sw_work(struct work_struct *work)
- 	default:
- 		dev_err(ssusb->dev, "invalid role\n");
- 	}
-+	pm_runtime_put(ssusb->dev);
- }
- 
- static void ssusb_set_mode(struct otg_switch_mtk *otg_sx, enum usb_role role)
-diff --git a/drivers/usb/mtu3/mtu3_dr.h b/drivers/usb/mtu3/mtu3_dr.h
-index 5286f9f5ee18..e325508bddf4 100644
---- a/drivers/usb/mtu3/mtu3_dr.h
-+++ b/drivers/usb/mtu3/mtu3_dr.h
-@@ -59,6 +59,8 @@ int ssusb_gadget_init(struct ssusb_mtk *ssusb);
- void ssusb_gadget_exit(struct ssusb_mtk *ssusb);
- int ssusb_gadget_suspend(struct ssusb_mtk *ssusb, pm_message_t msg);
- int ssusb_gadget_resume(struct ssusb_mtk *ssusb, pm_message_t msg);
-+bool ssusb_gadget_ip_sleep_check(struct ssusb_mtk *ssusb);
-+
- #else
- static inline int ssusb_gadget_init(struct ssusb_mtk *ssusb)
- {
-@@ -79,6 +81,12 @@ ssusb_gadget_resume(struct ssusb_mtk *ssusb, pm_message_t msg)
- {
- 	return 0;
- }
-+
-+static inline bool ssusb_gadget_ip_sleep_check(struct ssusb_mtk *ssusb)
-+{
-+	return true;
-+}
-+
- #endif
- 
- 
-diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
-index a0a6a181b752..7d528f3c2482 100644
---- a/drivers/usb/mtu3/mtu3_host.c
-+++ b/drivers/usb/mtu3/mtu3_host.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/clk.h>
--#include <linux/iopoll.h>
- #include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
-@@ -254,7 +253,6 @@ int ssusb_host_suspend(struct ssusb_mtk *ssusb)
- 	int num_u3p = ssusb->u3_ports;
- 	int num_u2p = ssusb->u2_ports;
- 	u32 value;
--	int ret;
- 	int i;
- 
- 	/* power down u3 ports except skipped ones */
-@@ -280,13 +278,7 @@ int ssusb_host_suspend(struct ssusb_mtk *ssusb)
- 	/* power down host ip */
- 	mtu3_setbits(ibase, U3D_SSUSB_IP_PW_CTRL1, SSUSB_IP_HOST_PDN);
- 
--	/* wait for host ip to sleep */
--	ret = readl_poll_timeout(ibase + U3D_SSUSB_IP_PW_STS1, value,
--			  (value & SSUSB_IP_SLEEP_STS), 100, 100000);
--	if (ret)
--		dev_err(ssusb->dev, "ip sleep failed!!!\n");
--
--	return ret;
-+	return 0;
- }
- 
- static void ssusb_host_setup(struct ssusb_mtk *ssusb)
-diff --git a/drivers/usb/mtu3/mtu3_plat.c b/drivers/usb/mtu3/mtu3_plat.c
-index e174ada689f2..81266f34986f 100644
---- a/drivers/usb/mtu3/mtu3_plat.c
-+++ b/drivers/usb/mtu3/mtu3_plat.c
-@@ -45,6 +45,29 @@ int ssusb_check_clocks(struct ssusb_mtk *ssusb, u32 ex_clks)
- 	return 0;
- }
- 
-+static int wait_for_ip_sleep(struct ssusb_mtk *ssusb)
-+{
-+	bool sleep_check = true;
-+	u32 value;
-+	int ret;
-+
-+	if (!ssusb->is_host)
-+		sleep_check = ssusb_gadget_ip_sleep_check(ssusb);
-+
-+	if (!sleep_check)
-+		return 0;
-+
-+	/* wait for ip enter sleep mode */
-+	ret = readl_poll_timeout(ssusb->ippc_base + U3D_SSUSB_IP_PW_STS1, value,
-+				 (value & SSUSB_IP_SLEEP_STS), 100, 100000);
-+	if (ret) {
-+		dev_err(ssusb->dev, "ip sleep failed!!!\n");
-+		ret = -EBUSY;
-+	}
-+
-+	return ret;
-+}
-+
- static int ssusb_phy_init(struct ssusb_mtk *ssusb)
- {
- 	int i;
-@@ -421,6 +444,28 @@ static int mtu3_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int resume_ip_and_ports(struct ssusb_mtk *ssusb, pm_message_t msg)
-+{
-+	switch (ssusb->dr_mode) {
-+	case USB_DR_MODE_PERIPHERAL:
-+		ssusb_gadget_resume(ssusb, msg);
-+		break;
-+	case USB_DR_MODE_HOST:
-+		ssusb_host_resume(ssusb, false);
-+		break;
-+	case USB_DR_MODE_OTG:
-+		ssusb_host_resume(ssusb, !ssusb->is_host);
-+		if (!ssusb->is_host)
-+			ssusb_gadget_resume(ssusb, msg);
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int mtu3_suspend_common(struct device *dev, pm_message_t msg)
- {
- 	struct ssusb_mtk *ssusb = dev_get_drvdata(dev);
-@@ -432,26 +477,36 @@ static int mtu3_suspend_common(struct device *dev, pm_message_t msg)
- 	case USB_DR_MODE_PERIPHERAL:
- 		ret = ssusb_gadget_suspend(ssusb, msg);
- 		if (ret)
--			return ret;
-+			goto err;
- 
- 		break;
- 	case USB_DR_MODE_HOST:
- 		ssusb_host_suspend(ssusb);
- 		break;
- 	case USB_DR_MODE_OTG:
--		if (!ssusb->is_host)
--			return 0;
--
-+		if (!ssusb->is_host) {
-+			ret = ssusb_gadget_suspend(ssusb, msg);
-+			if (ret)
-+				goto err;
-+		}
- 		ssusb_host_suspend(ssusb);
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
-+
-+	ret = wait_for_ip_sleep(ssusb);
-+	if (ret)
-+		goto sleep_err;
-+
- 	ssusb_phy_power_off(ssusb);
- 	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
- 	ssusb_wakeup_set(ssusb, true);
- 
--	return 0;
-+sleep_err:
-+	resume_ip_and_ports(ssusb, msg);
-+err:
-+	return ret;
- }
- 
- static int mtu3_resume_common(struct device *dev, pm_message_t msg)
-@@ -470,24 +525,7 @@ static int mtu3_resume_common(struct device *dev, pm_message_t msg)
- 	if (ret)
- 		goto phy_err;
- 
--	switch (ssusb->dr_mode) {
--	case USB_DR_MODE_PERIPHERAL:
--		ssusb_gadget_resume(ssusb, msg);
--		break;
--	case USB_DR_MODE_HOST:
--		ssusb_host_resume(ssusb, false);
--		break;
--	case USB_DR_MODE_OTG:
--		if (!ssusb->is_host)
--			return 0;
--
--		ssusb_host_resume(ssusb, true);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
-+	return resume_ip_and_ports(ssusb, msg);
- 
- phy_err:
- 	clk_bulk_disable_unprepare(BULK_CLKS_CNT, ssusb->clks);
--- 
-2.18.0
-
+I've noticed that this patch set didn't make it to Linus's tree.
+Was it intentional?
