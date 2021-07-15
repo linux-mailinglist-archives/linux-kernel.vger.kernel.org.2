@@ -2,588 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8C13CA483
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412A63CA48B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhGORfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:35:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:56500 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235580AbhGORev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:34:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 632FF6D;
-        Thu, 15 Jul 2021 10:31:57 -0700 (PDT)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7038B3F7D8;
-        Thu, 15 Jul 2021 10:31:55 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com, bobo.shaobowang@huawei.com
-Subject: [PATCH v6 24/24] x86/resctrl: Merge the CDP resources
-Date:   Thu, 15 Jul 2021 17:30:43 +0000
-Message-Id: <20210715173043.14222-25-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210715173043.14222-1-james.morse@arm.com>
-References: <20210715173043.14222-1-james.morse@arm.com>
+        id S235954AbhGORfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235891AbhGORfb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:35:31 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4029EC06175F;
+        Thu, 15 Jul 2021 10:32:38 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id gh6so3230888qvb.3;
+        Thu, 15 Jul 2021 10:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZMhm9Q1ft2ZuJHnsgYob9UiHLcsqHs1PTnUjZmty0Ss=;
+        b=de2SvrF1oRHJ1RaUTUgDxztdq/aLJitMAt74d4K3e+TPceDirxz+g7MUVorInP8RCe
+         n4Y/Wh8ocWciGZp/lgpKTFdM8CQTP8iquH75D7ETaN4eGuQ8CG2fQga5yawfHzjH46is
+         geb98vOpP6lOVVVCq+WvVQfxyNb7mJwi7Fe17kojvJXI+mSKSDoRcinUg1Ywz+Mnh6HL
+         ujVKAhBjfkiBuUHKAQx1P3ko4Fyf9zR70NH8PRPybe/xXdgkfHG4LDx8GabXdHjliuGV
+         ubFDcwe/v5npezWOmPbfvrGu5rXaoigwILGnDu0HFBtUtFhmzxt/QQ/RmqZkd3redq+p
+         vYag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZMhm9Q1ft2ZuJHnsgYob9UiHLcsqHs1PTnUjZmty0Ss=;
+        b=WsOqVeFAowF5x6FIP8pabpo8DONmOt09qtjW6Zwyl5DL7U5vIdHrkiSsiLyjcspRSb
+         Q5ShjYWp9x4T9VtBiBgeasc8iuov8ohxYjwLqFRUMfIG8mcKbJIc5dfCbIDOvvmZ5T5W
+         5t9aw97WvWJW8hhzb+LesQnTZ7NWE/nn5U6qGERYooZIJqTF6Wwgc8/aSs8OC8/KUbc3
+         zYWmGBu9J60E4wuDWN6D6utuKM7zKL3jjLHZDBWaYumKDN6iIbU6L9oy6g5ySX7GyZAf
+         YPKOGrI9ADkymDcB4Wi0p++gnxbcyT+V2NA6yPMnDFwFOzwFsAUjry8X+O51pz5oFhPQ
+         4zBw==
+X-Gm-Message-State: AOAM533PfjSpjGdtRSbBUNMnjGyU+8CGCkVnh90jZ10FlMj05DzcIvwP
+        CkF2T1BsmFutxJL/dSF+ecc=
+X-Google-Smtp-Source: ABdhPJzKHeH+osOcaM58zeKsiokt6uEE3J17OoNO8AREwf9A+BMGPyp6zlg0BpheemYCI32KDnDO2A==
+X-Received: by 2002:ad4:5343:: with SMTP id v3mr5422776qvs.45.1626370357369;
+        Thu, 15 Jul 2021 10:32:37 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id p21sm2801615qki.36.2021.07.15.10.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 10:32:36 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E4C6E27C005A;
+        Thu, 15 Jul 2021 13:32:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 15 Jul 2021 13:32:35 -0400
+X-ME-Sender: <xms:M3HwYIAN0PR7g0_40VYCKzYo8y5tH4Iva0qBf2_P-KPi8eUJLyZDlA>
+    <xme:M3HwYKjbrOLoP_Ot813QT8wFXwN5DhXR6S5ZXh0bMyoSJieWMTrFfwGDo5TAUOJ9P
+    -MHnpnq8L_3qGWvTw>
+X-ME-Received: <xmr:M3HwYLnOMvf1qXvbEs6ylWTZYNJJPfEEaEkddjTWZjOJdktyuQruOueeT6G2MA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtgdejjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:M3HwYOymyysziTxpCE0cwXUtYcbZH_bdRBVkOWGV0kdZCvY97FdX8g>
+    <xmx:M3HwYNTegWM2MP_61k8YLADy8nvalcUicTErG9eMU5Ro45NEL1ix4w>
+    <xmx:M3HwYJb01NDLjj17HywZ3Vadhl3oLzDX2pN6CtKJocxkRRC-iyWy_w>
+    <xmx:M3HwYPkuKHLTL0P9oBpTbjpRmfWYUsJ-UrGs6XL4J_K1z0cO26FPAagA1VY>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Jul 2021 13:32:34 -0400 (EDT)
+Date:   Fri, 16 Jul 2021 01:30:52 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [RFC v4 1/7] PCI: Introduce domain_nr in pci_host_bridge
+Message-ID: <YPBwzO7c/rw09IkE@boqun-archlinux>
+References: <20210714102737.198432-2-boqun.feng@gmail.com>
+ <20210714193319.GA1867593@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714193319.GA1867593@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrl uses struct rdt_resource to describe the available hardware
-resources. The domains of the CDP aliases share a single ctrl_val[]
-array. The only differences between the struct rdt_hw_resource
-aliases is the name and conf_type.
+On Wed, Jul 14, 2021 at 02:33:19PM -0500, Bjorn Helgaas wrote:
+> On Wed, Jul 14, 2021 at 06:27:31PM +0800, Boqun Feng wrote:
+> > Currently we retrieve the PCI domain number of the host bridge from the
+> > bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
+> > we have the information at PCI host bridge probing time, and it makes
+> > sense that we store it into pci_host_bridge. One benefit of doing so is
+> > the requirement for supporting PCI on Hyper-V for ARM64, because the
+> > host bridge of Hyper-V doesn't have pci_config_window, whereas ARM64 is
+> > a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
+> > number from pci_config_window on ARM64 Hyper-V guest.
+> > 
+> > As the preparation for ARM64 Hyper-V PCI support, we introduce the
+> > domain_nr in pci_host_bridge and a sentinel value to allow drivers to
+> > set domain numbers properly at probing time. Currently
+> > CONFIG_PCI_DOMAINS_GENERIC=y archs are only users of this
+> > newly-introduced field.
+> 
+> Thanks for pushing on this.  PCI_DOMAINS_GENERIC is really not very
+> generic today and it will be good to make it more so.
+> 
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> >  drivers/pci/probe.c |  6 +++++-
+> >  include/linux/pci.h | 10 ++++++++++
+> >  2 files changed, 15 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > index 79177ac37880..60c50d4f156f 100644
+> > --- a/drivers/pci/probe.c
+> > +++ b/drivers/pci/probe.c
+> > @@ -594,6 +594,7 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
+> >  	bridge->native_pme = 1;
+> >  	bridge->native_ltr = 1;
+> >  	bridge->native_dpc = 1;
+> > +	bridge->domain_nr = PCI_DOMAIN_NR_NOT_SET;
+> >  
+> >  	device_initialize(&bridge->dev);
+> >  }
+> > @@ -898,7 +899,10 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+> >  	bus->ops = bridge->ops;
+> >  	bus->number = bus->busn_res.start = bridge->busnr;
+> >  #ifdef CONFIG_PCI_DOMAINS_GENERIC
+> > -	bus->domain_nr = pci_bus_find_domain_nr(bus, parent);
+> > +	if (bridge->domain_nr == PCI_DOMAIN_NR_NOT_SET)
+> > +		bus->domain_nr = pci_bus_find_domain_nr(bus, parent);
+> > +	else
+> > +		bus->domain_nr = bridge->domain_nr;
+> 
+> The domain_nr in struct pci_bus is really only used by
+> pci_domain_nr().  It seems like it really belongs in the struct
+> pci_host_bridge and probably doesn't need to be duplicated in the
+> struct pci_bus.  But that's probably a project for the future.
+> 
 
-The name from struct rdt_hw_resource is visible to user-space. To
-support another architecture, as many user-visible details should be
-handled in the filesystem parts of the code that is common to all
-architectures. The name and conf_type go together.
+Agreed. Maybe we can define pci_bus_domain_nr() as:
 
-Remove conf_type and the CDP aliases. When CDP is supported and
-enabled, schemata_list_create() can create two schema using the
-single resource, generating the CODE/DATA suffix to the schema
-name itself.
-This allows the alloc_ctrlval_array() and complications around free()ing
-the ctrl_val arrays to be removed.
+	static inline int pci_domain_nr(struct pci_bus *bus)
+	{
+		struct device *bridge = bus->bridge;
+		struct pci_host_bridge *b = container_of(bridge, struct pci_host_bridge, dev);
 
-Reviewed-by: Jamie Iles <jamie@nuviainc.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: James Morse <james.morse@arm.com>
----
-Changes since v3:
- * Added braces around an else
- * Removed a space.
+		return b->domain_nr;
+	}
 
-Changes since v2:
- * Removed stray conf_type that remained in the arch specific struct
- * Shuffled commit message,
+but apart from corretness (e.g. should we use get_device() for
+bus->bridge?), it makes more sense if ->domain_nr of pci_host_bridge
+is used (as a way to set domain number at probing time) for most of
+drivers and archs. ;-)
 
-Changes since v1:
- * rdt_get_cdp_config() is kept for its comment.
----
- arch/x86/kernel/cpu/resctrl/core.c     | 178 ++-----------------------
- arch/x86/kernel/cpu/resctrl/internal.h |   6 -
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 140 +++++++++----------
- 3 files changed, 85 insertions(+), 239 deletions(-)
+> >  #endif
+> >  
+> >  	b = pci_find_bus(pci_domain_nr(bus), bridge->busnr);
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index 540b377ca8f6..952bb7d46576 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -526,6 +526,15 @@ static inline int pci_channel_offline(struct pci_dev *pdev)
+> >  	return (pdev->error_state != pci_channel_io_normal);
+> >  }
+> >  
+> > +/*
+> > + * PCI Conventional has at most 256 PCI bus segments and PCI Express has at
+> > + * most 65536 "PCI Segments Groups", therefore -1 is not a valid PCI domain
+> 
+> s/Segments/Segment/
+> 
+> Do you have a reference for these limits?  I don't think either
+> Conventional PCI or PCIe actually specifies a hardware limit on the
+> number of domains (I think PCI uses "segment group" to mean the same
+> thing).
+> 
+> "Segment" in the Conventional PCI spec, r3.0, means a bus segment,
+> which connects all the devices on a single bus.  Obviously there's a
+> limit of 256 buses under a single host bridge, but that's different
+> concept than a domain/segment group.
+> 
+> The PCI Firmware spec, r3.3, defines "Segment Group Number" as being
+> in the range 0..65535, but as far as I know, that's just a firmware
+> issue, and it applies equally to Conventional PCI and PCIe.
+> 
+> I think you're right that -1 is a reasonable sentinel; I just don't
+> want to claim a difference here unless there really is one.
+> 
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 4c0b1265ffd4..4b8813bafffd 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -62,7 +62,6 @@ mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m,
- struct rdt_hw_resource rdt_resources_all[] = {
- 	[RDT_RESOURCE_L3] =
- 	{
--		.conf_type			= CDP_NONE,
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_L3,
- 			.name			= "L3",
-@@ -78,45 +77,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.msr_base		= MSR_IA32_L3_CBM_BASE,
- 		.msr_update		= cat_wrmsr,
- 	},
--	[RDT_RESOURCE_L3DATA] =
--	{
--		.conf_type			= CDP_DATA,
--		.r_resctrl = {
--			.rid			= RDT_RESOURCE_L3DATA,
--			.name			= "L3DATA",
--			.cache_level		= 3,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L3DATA),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L3_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
--	[RDT_RESOURCE_L3CODE] =
--	{
--		.conf_type			= CDP_CODE,
--		.r_resctrl = {
--			.rid			= RDT_RESOURCE_L3CODE,
--			.name			= "L3CODE",
--			.cache_level		= 3,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L3CODE),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L3_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
- 	[RDT_RESOURCE_L2] =
- 	{
--		.conf_type			= CDP_NONE,
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_L2,
- 			.name			= "L2",
-@@ -132,45 +94,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.msr_base		= MSR_IA32_L2_CBM_BASE,
- 		.msr_update		= cat_wrmsr,
- 	},
--	[RDT_RESOURCE_L2DATA] =
--	{
--		.conf_type			= CDP_DATA,
--		.r_resctrl = {
--			.rid			= RDT_RESOURCE_L2DATA,
--			.name			= "L2DATA",
--			.cache_level		= 2,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L2DATA),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L2_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
--	[RDT_RESOURCE_L2CODE] =
--	{
--		.conf_type			= CDP_CODE,
--		.r_resctrl = {
--			.rid			= RDT_RESOURCE_L2CODE,
--			.name			= "L2CODE",
--			.cache_level		= 2,
--			.cache = {
--				.min_cbm_bits	= 1,
--			},
--			.domains		= domain_init(RDT_RESOURCE_L2CODE),
--			.parse_ctrlval		= parse_cbm,
--			.format_str		= "%d=%0*x",
--			.fflags			= RFTYPE_RES_CACHE,
--		},
--		.msr_base		= MSR_IA32_L2_CBM_BASE,
--		.msr_update		= cat_wrmsr,
--	},
- 	[RDT_RESOURCE_MBA] =
- 	{
--		.conf_type			= CDP_NONE,
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_MBA,
- 			.name			= "MB",
-@@ -339,40 +264,24 @@ static void rdt_get_cache_alloc_cfg(int idx, struct rdt_resource *r)
- 	r->alloc_enabled = true;
- }
- 
--static void rdt_get_cdp_config(int level, int type)
-+static void rdt_get_cdp_config(int level)
- {
--	struct rdt_resource *r_l = &rdt_resources_all[level].r_resctrl;
--	struct rdt_hw_resource *hw_res_l = resctrl_to_arch_res(r_l);
--	struct rdt_resource *r = &rdt_resources_all[type].r_resctrl;
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
--
--	hw_res->num_closid = hw_res_l->num_closid;
--	r->cache.cbm_len = r_l->cache.cbm_len;
--	r->default_ctrl = r_l->default_ctrl;
--	r->cache.shareable_bits = r_l->cache.shareable_bits;
--	r->data_width = (r->cache.cbm_len + 3) / 4;
--	r->alloc_capable = true;
- 	/*
- 	 * By default, CDP is disabled. CDP can be enabled by mount parameter
- 	 * "cdp" during resctrl file system mount time.
- 	 */
--	r->alloc_enabled = false;
- 	rdt_resources_all[level].cdp_enabled = false;
--	rdt_resources_all[type].cdp_enabled = false;
--	r_l->cdp_capable = true;
--	r->cdp_capable = true;
-+	rdt_resources_all[level].r_resctrl.cdp_capable = true;
- }
- 
- static void rdt_get_cdp_l3_config(void)
- {
--	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3DATA);
--	rdt_get_cdp_config(RDT_RESOURCE_L3, RDT_RESOURCE_L3CODE);
-+	rdt_get_cdp_config(RDT_RESOURCE_L3);
- }
- 
- static void rdt_get_cdp_l2_config(void)
- {
--	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2DATA);
--	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2CODE);
-+	rdt_get_cdp_config(RDT_RESOURCE_L2);
- }
- 
- static void
-@@ -509,57 +418,6 @@ void setup_default_ctrlval(struct rdt_resource *r, u32 *dc, u32 *dm)
- 	}
- }
- 
--static u32 *alloc_ctrlval_array(struct rdt_resource *r, struct rdt_domain *d,
--				bool mba_sc)
--{
--	/* these are for the underlying hardware, they may not match r/d */
--	struct rdt_domain *underlying_domain;
--	struct rdt_hw_resource *hw_res;
--	struct rdt_hw_domain *hw_dom;
--	bool remapped;
--
--	switch (r->rid) {
--	case RDT_RESOURCE_L3DATA:
--	case RDT_RESOURCE_L3CODE:
--		hw_res = &rdt_resources_all[RDT_RESOURCE_L3];
--		remapped = true;
--		break;
--	case RDT_RESOURCE_L2DATA:
--	case RDT_RESOURCE_L2CODE:
--		hw_res = &rdt_resources_all[RDT_RESOURCE_L2];
--		remapped = true;
--		break;
--	default:
--		hw_res = resctrl_to_arch_res(r);
--		remapped = false;
--	}
--
--	/*
--	 * If we changed the resource, we need to search for the underlying
--	 * domain. Doing this for all resources would make it tricky to add the
--	 * first resource, as domains aren't added to a resource list until
--	 * after the ctrlval arrays have been allocated.
--	 */
--	if (remapped)
--		underlying_domain = rdt_find_domain(&hw_res->r_resctrl, d->id,
--						    NULL);
--	else
--		underlying_domain = d;
--	hw_dom = resctrl_to_arch_dom(underlying_domain);
--
--	if (mba_sc) {
--		if (hw_dom->mbps_val)
--			return hw_dom->mbps_val;
--		return kmalloc_array(hw_res->num_closid,
--				     sizeof(*hw_dom->mbps_val), GFP_KERNEL);
--	} else {
--		if (hw_dom->ctrl_val)
--			return hw_dom->ctrl_val;
--		return kmalloc_array(hw_res->num_closid,
--				     sizeof(*hw_dom->ctrl_val), GFP_KERNEL);
--	}
--}
--
- static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- {
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
-@@ -567,11 +425,13 @@ static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- 	struct msr_param m;
- 	u32 *dc, *dm;
- 
--	dc = alloc_ctrlval_array(r, d, false);
-+	dc = kmalloc_array(hw_res->num_closid, sizeof(*hw_dom->ctrl_val),
-+			   GFP_KERNEL);
- 	if (!dc)
- 		return -ENOMEM;
- 
--	dm = alloc_ctrlval_array(r, d, true);
-+	dm = kmalloc_array(hw_res->num_closid, sizeof(*hw_dom->mbps_val),
-+			   GFP_KERNEL);
- 	if (!dm) {
- 		kfree(dc);
- 		return -ENOMEM;
-@@ -730,14 +590,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 		if (d->plr)
- 			d->plr->d = NULL;
- 
--		/* temporary: these four don't have a unique ctrlval array */
--		if (r->rid != RDT_RESOURCE_L3CODE &&
--		    r->rid != RDT_RESOURCE_L3DATA &&
--		    r->rid != RDT_RESOURCE_L2CODE &&
--		    r->rid != RDT_RESOURCE_L2DATA) {
--			kfree(hw_dom->ctrl_val);
--			kfree(hw_dom->mbps_val);
--		}
-+		kfree(hw_dom->ctrl_val);
-+		kfree(hw_dom->mbps_val);
- 		bitmap_free(d->rmid_busy_llc);
- 		kfree(d->mbm_total);
- 		kfree(d->mbm_local);
-@@ -1017,11 +871,7 @@ static __init void rdt_init_res_defs_intel(void)
- 		hw_res = resctrl_to_arch_res(r);
- 
- 		if (r->rid == RDT_RESOURCE_L3 ||
--		    r->rid == RDT_RESOURCE_L3DATA ||
--		    r->rid == RDT_RESOURCE_L3CODE ||
--		    r->rid == RDT_RESOURCE_L2 ||
--		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE) {
-+		    r->rid == RDT_RESOURCE_L2) {
- 			r->cache.arch_has_sparse_bitmaps = false;
- 			r->cache.arch_has_empty_bitmaps = false;
- 			r->cache.arch_has_per_cpu_cfg = false;
-@@ -1041,11 +891,7 @@ static __init void rdt_init_res_defs_amd(void)
- 		hw_res = resctrl_to_arch_res(r);
- 
- 		if (r->rid == RDT_RESOURCE_L3 ||
--		    r->rid == RDT_RESOURCE_L3DATA ||
--		    r->rid == RDT_RESOURCE_L3CODE ||
--		    r->rid == RDT_RESOURCE_L2 ||
--		    r->rid == RDT_RESOURCE_L2DATA ||
--		    r->rid == RDT_RESOURCE_L2CODE) {
-+		    r->rid == RDT_RESOURCE_L2) {
- 			r->cache.arch_has_sparse_bitmaps = true;
- 			r->cache.arch_has_empty_bitmaps = true;
- 			r->cache.arch_has_per_cpu_cfg = true;
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 0260b1a63b86..b82b7def4242 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -369,7 +369,6 @@ struct rdt_parse_data {
- 
- /**
-  * struct rdt_hw_resource - arch private attributes of a resctrl resource
-- * @conf_type:		The type that should be used when configuring. temporary
-  * @r_resctrl:		Attributes of the resource used directly by resctrl.
-  * @num_closid:		Maximum number of closid this hardware can support,
-  *			regardless of CDP. This is exposed via
-@@ -387,7 +386,6 @@ struct rdt_parse_data {
-  * msr_update and msr_base.
-  */
- struct rdt_hw_resource {
--	enum resctrl_conf_type	conf_type;
- 	struct rdt_resource	r_resctrl;
- 	u32			num_closid;
- 	unsigned int		msr_base;
-@@ -418,11 +416,7 @@ extern struct dentry *debugfs_resctrl;
- 
- enum resctrl_res_level {
- 	RDT_RESOURCE_L3,
--	RDT_RESOURCE_L3DATA,
--	RDT_RESOURCE_L3CODE,
- 	RDT_RESOURCE_L2,
--	RDT_RESOURCE_L2DATA,
--	RDT_RESOURCE_L2CODE,
- 	RDT_RESOURCE_MBA,
- 
- 	/* Must be the last */
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 7cf4bf3583a9..89123a4977cf 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1880,10 +1880,10 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
- 	if (!r->cdp_capable)
- 		return;
- 
--	if (r == &rdt_resources_all[RDT_RESOURCE_L2DATA].r_resctrl)
-+	if (r->rid == RDT_RESOURCE_L2)
- 		l2_qos_cfg_update(&hw_res->cdp_enabled);
- 
--	if (r == &rdt_resources_all[RDT_RESOURCE_L3DATA].r_resctrl)
-+	if (r->rid == RDT_RESOURCE_L3)
- 		l3_qos_cfg_update(&hw_res->cdp_enabled);
- }
- 
-@@ -1912,68 +1912,42 @@ static int set_mba_sc(bool mba_sc)
- 	return 0;
- }
- 
--static int cdp_enable(int level, int data_type, int code_type)
-+static int cdp_enable(int level)
- {
--	struct rdt_resource *r_ldata = &rdt_resources_all[data_type].r_resctrl;
--	struct rdt_resource *r_lcode = &rdt_resources_all[code_type].r_resctrl;
- 	struct rdt_resource *r_l = &rdt_resources_all[level].r_resctrl;
- 	int ret;
- 
--	if (!r_l->alloc_capable || !r_ldata->alloc_capable ||
--	    !r_lcode->alloc_capable)
-+	if (!r_l->alloc_capable)
- 		return -EINVAL;
- 
- 	ret = set_cache_qos_cfg(level, true);
--	if (!ret) {
--		r_l->alloc_enabled = false;
--		r_ldata->alloc_enabled = true;
--		r_lcode->alloc_enabled = true;
-+	if (!ret)
- 		rdt_resources_all[level].cdp_enabled = true;
--		rdt_resources_all[data_type].cdp_enabled = true;
--		rdt_resources_all[code_type].cdp_enabled = true;
--	}
-+
- 	return ret;
- }
- 
--static void cdp_disable(int level, int data_type, int code_type)
-+static void cdp_disable(int level)
- {
- 	struct rdt_hw_resource *r_hw = &rdt_resources_all[level];
--	struct rdt_resource *r = &r_hw->r_resctrl;
--
--	r->alloc_enabled = r->alloc_capable;
- 
- 	if (r_hw->cdp_enabled) {
--		rdt_resources_all[data_type].r_resctrl.alloc_enabled = false;
--		rdt_resources_all[code_type].r_resctrl.alloc_enabled = false;
- 		set_cache_qos_cfg(level, false);
- 		r_hw->cdp_enabled = false;
--		rdt_resources_all[data_type].cdp_enabled = false;
--		rdt_resources_all[code_type].cdp_enabled = false;
- 	}
- }
- 
- int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
- {
- 	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
--	enum resctrl_res_level code_type, data_type;
- 
- 	if (!hw_res->r_resctrl.cdp_capable)
- 		return -EINVAL;
- 
--	if (l == RDT_RESOURCE_L3) {
--		code_type = RDT_RESOURCE_L3CODE;
--		data_type = RDT_RESOURCE_L3DATA;
--	} else if (l == RDT_RESOURCE_L2) {
--		code_type = RDT_RESOURCE_L2CODE;
--		data_type = RDT_RESOURCE_L2DATA;
--	} else {
--		return -EINVAL;
--	}
--
- 	if (enable)
--		return cdp_enable(l, data_type, code_type);
-+		return cdp_enable(l);
- 
--	cdp_disable(l, data_type, code_type);
-+	cdp_disable(l);
- 
- 	return 0;
- }
-@@ -2072,48 +2046,80 @@ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
- 	return ret;
- }
- 
--static int schemata_list_create(void)
-+static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type)
- {
- 	struct resctrl_schema *s;
--	struct rdt_resource *r;
-+	const char *suffix = "";
- 	int ret, cl;
- 
-+	s = kzalloc(sizeof(*s), GFP_KERNEL);
-+	if (!s)
-+		return -ENOMEM;
-+
-+	s->res = r;
-+	s->num_closid = resctrl_arch_get_num_closid(r);
-+	if (resctrl_arch_get_cdp_enabled(r->rid))
-+		s->num_closid /= 2;
-+
-+	s->conf_type = type;
-+	switch (type) {
-+	case CDP_CODE:
-+		suffix = "CODE";
-+		break;
-+	case CDP_DATA:
-+		suffix = "DATA";
-+		break;
-+	case CDP_NONE:
-+		suffix = "";
-+		break;
-+	}
-+
-+	ret = snprintf(s->name, sizeof(s->name), "%s%s", r->name, suffix);
-+	if (ret >= sizeof(s->name)) {
-+		kfree(s);
-+		return -EINVAL;
-+	}
-+
-+	cl = strlen(s->name);
-+
-+	/*
-+	 * If CDP is supported by this resource, but not enabled,
-+	 * include the suffix. This ensures the tabular format of the
-+	 * schemata file does not change between mounts of the filesystem.
-+	 */
-+	if (r->cdp_capable && !resctrl_arch_get_cdp_enabled(r->rid))
-+		cl += 4;
-+
-+	if (cl > max_name_width)
-+		max_name_width = cl;
-+
-+	INIT_LIST_HEAD(&s->list);
-+	list_add(&s->list, &resctrl_schema_all);
-+
-+	return 0;
-+}
-+
-+static int schemata_list_create(void)
-+{
-+	struct rdt_resource *r;
-+	int ret = 0;
-+
- 	for_each_alloc_enabled_rdt_resource(r) {
--		s = kzalloc(sizeof(*s), GFP_KERNEL);
--		if (!s)
--			return -ENOMEM;
-+		if (resctrl_arch_get_cdp_enabled(r->rid)) {
-+			ret = schemata_list_add(r, CDP_CODE);
-+			if (ret)
-+				break;
- 
--		s->res = r;
--		s->conf_type = resctrl_to_arch_res(r)->conf_type;
--		s->num_closid = resctrl_arch_get_num_closid(r);
--		if (resctrl_arch_get_cdp_enabled(r->rid))
--			s->num_closid /= 2;
--
--		ret = snprintf(s->name, sizeof(s->name), r->name);
--		if (ret >= sizeof(s->name)) {
--			kfree(s);
--			return -EINVAL;
-+			ret = schemata_list_add(r, CDP_DATA);
-+		} else {
-+			ret = schemata_list_add(r, CDP_NONE);
- 		}
- 
--		cl = strlen(s->name);
--
--		/*
--		 * If CDP is supported by this resource, but not enabled,
--		 * include the suffix. This ensures the tabular format of the
--		 * schemata file does not change between mounts of the
--		 * filesystem.
--		 */
--		if (r->cdp_capable && !resctrl_arch_get_cdp_enabled(r->rid))
--			cl += 4;
--
--		if (cl > max_name_width)
--			max_name_width = cl;
--
--		INIT_LIST_HEAD(&s->list);
--		list_add(&s->list, &resctrl_schema_all);
-+		if (ret)
-+			break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static void schemata_list_destroy(void)
--- 
-2.30.2
+I think you're right, I got confused on the concepts of "Segment" and
+"Segment Group".
 
+After digging in specs, I haven't find any difference on the limitation
+between Conventional PCI and PCIe. The PCI Firmware spec, r3.2, refers
+ACPI (3.0 and later) spec for the details of "Segment Group", and in
+ACPI spec v6.3, the description _SEG object says:
+
+"""
+The lower 16 bits of _SEG returned integer is the PCI Segment Group
+number. Other bits are reserved.
+"""
+
+So I'm thinking replacing the comments with:
+
+Currently in ACPI spec, for each PCI host bridge, PCI Segment Group
+number is limited to a 16-bit value, therefore (int)-1 is not a valid
+PCI domain number, and can be used as a sentinel value indicating
+->domain_nr is not set by the driver (and CONFIG_PCI_DOMAINS_GENERIC=y
+archs will set it with pci_bus_find_domain_nr()).
+
+Thoughts?
+
+Regards,
+BOqun
+
+> > + * number, and can be used as a sentinel value indicating ->domain_nr is not
+> > + * set by the driver (and CONFIG_PCI_DOMAINS_GENERIC=y can set it in generic
+> > + * code).
+> > + */
+> > +#define PCI_DOMAIN_NR_NOT_SET (-1)
+> > +
+> >  struct pci_host_bridge {
+> >  	struct device	dev;
+> >  	struct pci_bus	*bus;		/* Root bus */
+> > @@ -533,6 +542,7 @@ struct pci_host_bridge {
+> >  	struct pci_ops	*child_ops;
+> >  	void		*sysdata;
+> >  	int		busnr;
+> > +	int		domain_nr;
+> >  	struct list_head windows;	/* resource_entry */
+> >  	struct list_head dma_ranges;	/* dma ranges resource list */
+> >  	u8 (*swizzle_irq)(struct pci_dev *, u8 *); /* Platform IRQ swizzler */
+> > -- 
+> > 2.30.2
+> > 
