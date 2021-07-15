@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE5E3CAD06
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3403CAD27
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347408AbhGOTwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
+        id S1344677AbhGOTy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242630AbhGOTSI (ORCPT
+        with ESMTP id S1344987AbhGOTai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:18:08 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A408C0604DE
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:02:49 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id p9so4762370pjl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:02:49 -0700 (PDT)
+        Thu, 15 Jul 2021 15:30:38 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87257C08EC74
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:08:10 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id t17so11788870lfq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oe0BZYoHi++518OmcwQpv+uyHbR3qsM3BitMXqojLoA=;
-        b=KkSoOuy20ieZTTXspwwIJZ/qwvEcmIUCW96k3EuDRkw1sCkqqKfcmfbO91AF6k1qhS
-         8qnpkDZ6aWj0wfJH/0hAVGRBjnP0q0JPwZg61NCU6R+M8HCzy6OVuMROhqb2IxlGGoCv
-         h1+17kiQAK58iY2HB5gvPlpH+s2RiLYwdKFn4epefcWw4HfC7qk7/xXjY8aVibZ26rts
-         AoJs2gHmC4xTh18jlPJvspNV3vIEX4rBUvYS8GYD11eUpQ7dqa57tcEImxEXNrBDBqn0
-         pwW57P75F9EH0EvkFeWxKfIN17JyRtO8gcNDpqmXT6o+6jdGBDLaigPBdnc8a1FhTSz1
-         yzZw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lKQRAlePlTMlxkEvsDgVWIhm5eYPypHEzL5OrGHVjJI=;
+        b=gU5afgnHt6RHmCo+fr9n2ut1P1aFxcoE+WoQB1vwKsMcnGhR73sfI6/YfpJBIJnpqh
+         CGHyDzjNSYRsvrQ9sB+7b3CTTTiX8K405mqs0xPkpBhodaUdMcetjAcIeOjaWqFGrpPc
+         Gn5/F1eE4K7Tfd7GhDOm0yKCzplxDwwhdLyX4ijdZ/fS1NbKB3yDU5mB1anfTv0iAsHc
+         RxEBEzqb0PNIjn409FJjKyKoaaq+c7L4BbhGqsttdY+v4urd79w4o36lzTqve54Vv+zH
+         94F/Wf0z63OlfAAM2CZoRGydfZHlXat6rLzUes8MY5631HQbcAI/4TtijzM8zU8SJRoh
+         pciQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oe0BZYoHi++518OmcwQpv+uyHbR3qsM3BitMXqojLoA=;
-        b=iNuGtJWKJ0iZS1QO37S3MX4hv6UO96sAqnzMrNpKAUei/t5jMU04v2GRumzWn+DA05
-         ZRyW7LKiqcuU0oqXPBPXDCgteXu86wIEZR9+E7CsMQJT6COpR1gWRUz6ICDTUd8TCJYl
-         kRFzuNuiXFR9MuJ6c+Yd34JDxm7RXGTD1RJzuDL9rFoBDmXyuAwTzfrU7y8vh21UxvCj
-         bn+QbDatTwfAUn2qZ4JfFC3wRwojDI9FuLVTkjfRA2CKNZwBkKb68ex0jwzfsGc9UrR5
-         enE3DzC5kxjIDc8bOZUMtxjHbsgK4oUojCCplzmBzoYXTaXb6g+HTmH5/E29oJAntWUd
-         eHzg==
-X-Gm-Message-State: AOAM532i36Ru3EL0huPLlZlYdgm3nWMB3ZCD1c5MzFdjlBo+iIQrM4HI
-        CQZB5Y6+CZ6I3TwgOYyKv7cH/A==
-X-Google-Smtp-Source: ABdhPJw1dGPTVY/rw4APz9cGy+L54ppHFLemTQp3wX/mwVOXEld90LmZMJamyx8+JoKLrw9sxnMJtQ==
-X-Received: by 2002:a17:90a:738e:: with SMTP id j14mr11741420pjg.227.1626375768822;
-        Thu, 15 Jul 2021 12:02:48 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id s20sm10639941pjn.23.2021.07.15.12.02.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lKQRAlePlTMlxkEvsDgVWIhm5eYPypHEzL5OrGHVjJI=;
+        b=dWdModqotxYwTSgvQQ4BN2CHrAmVdezv/iwIi5HH8mnueFY3ZAUUh/ZeiQnC9qYJ4/
+         YEFaemENaIbutllSr9DWayZbcoYHIzyYnTMrx9nh5baN7lZIiur5HZn9R0e1DNq6R8cG
+         AIpdKX8v9aql49FN+jOy257lIxqbyNbZgu2zmKMNc5lRZHNkO9c18uBXoVlIIqS4XWji
+         5xFLZt6KwjEMdPgVLP2DzcrUaEpil4T30XWh6c1203zJ9149EuCZg1c/Pg6IhvSzmqT2
+         NqyCvNtVoBWECK+k2kM2Up5tHvanpUtoCSF+JGjmVSkibqbpClNVDSO10sEIVcSaBu+B
+         rRBA==
+X-Gm-Message-State: AOAM530KrHeGoel3kqQbbYEEX/1x+FuNH+tq1y+PO593siys8aWozZsQ
+        4N3TMzYGQVfu9maK7wRTRW4WAA==
+X-Google-Smtp-Source: ABdhPJxAlbu5YugiR3VVgcx8jzlq4Lf7DJUoJ/mXxwjj5EjvRt5VMzewDCJYH37BtZZlf9eulah+cw==
+X-Received: by 2002:a05:6512:b96:: with SMTP id b22mr4789014lfv.155.1626376088904;
+        Thu, 15 Jul 2021 12:08:08 -0700 (PDT)
+Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
+        by smtp.gmail.com with ESMTPSA id c6sm469646lfp.196.2021.07.15.12.08.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 12:02:48 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 19:02:44 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 08/40] x86/traps: Define RMP violation #PF
- error code
-Message-ID: <YPCGVKESqZFWwdyB@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-9-brijesh.singh@amd.com>
+        Thu, 15 Jul 2021 12:08:08 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] extcon: usb-gpio: Use the right includes
+Date:   Thu, 15 Jul 2021 21:06:06 +0200
+Message-Id: <20210715190606.429251-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-9-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> Bit 31 in the page fault-error bit will be set when processor encounters
-> an RMP violation.
-> 
-> While at it, use the BIT() macro.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/trap_pf.h | 18 +++++++++++-------
->  arch/x86/mm/fault.c            |  1 +
->  2 files changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/trap_pf.h b/arch/x86/include/asm/trap_pf.h
-> index 10b1de500ab1..29f678701753 100644
-> --- a/arch/x86/include/asm/trap_pf.h
-> +++ b/arch/x86/include/asm/trap_pf.h
-> @@ -2,6 +2,8 @@
->  #ifndef _ASM_X86_TRAP_PF_H
->  #define _ASM_X86_TRAP_PF_H
->  
-> +#include <vdso/bits.h>  /* BIT() macro */
+The USB GPIO extcon driver does not use any of the legacy
+includes <linux/gpio.h> or <linux/of_gpio.h> but
+exploits the fact that this brings in <linux/mod_device_table.h>.
+Fix this up by using the right includes.
 
-What are people's thoughts on using linux/bits.h instead of vdso.bits.h, even
-though the vDSO version is technically sufficient?  Seeing the "vdso" reference
-definitely made me blink slowly a few times.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/extcon/extcon-usb-gpio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> +
->  /*
->   * Page fault error code bits:
->   *
-> @@ -12,15 +14,17 @@
->   *   bit 4 ==				1: fault was an instruction fetch
->   *   bit 5 ==				1: protection keys block access
->   *   bit 15 ==				1: SGX MMU page-fault
-> + *   bit 31 ==				1: fault was an RMP violation
->   */
->  enum x86_pf_error_code {
-> -	X86_PF_PROT	=		1 << 0,
-> -	X86_PF_WRITE	=		1 << 1,
-> -	X86_PF_USER	=		1 << 2,
-> -	X86_PF_RSVD	=		1 << 3,
-> -	X86_PF_INSTR	=		1 << 4,
-> -	X86_PF_PK	=		1 << 5,
-> -	X86_PF_SGX	=		1 << 15,
-> +	X86_PF_PROT	=		BIT(0),
-> +	X86_PF_WRITE	=		BIT(1),
-> +	X86_PF_USER	=		BIT(2),
-> +	X86_PF_RSVD	=		BIT(3),
-> +	X86_PF_INSTR	=		BIT(4),
-> +	X86_PF_PK	=		BIT(5),
-> +	X86_PF_SGX	=		BIT(15),
-> +	X86_PF_RMP	=		BIT(31),
->  };
->  
->  #endif /* _ASM_X86_TRAP_PF_H */
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 1c548ad00752..2715240c757e 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -545,6 +545,7 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
->  		 !(error_code & X86_PF_PROT) ? "not-present page" :
->  		 (error_code & X86_PF_RSVD)  ? "reserved bit violation" :
->  		 (error_code & X86_PF_PK)    ? "protection keys violation" :
-> +		 (error_code & X86_PF_RMP)   ? "rmp violation" :
->  					       "permissions violation");
->  
->  	if (!(error_code & X86_PF_USER) && user_mode(regs)) {
-> -- 
-> 2.17.1
-> 
+diff --git a/drivers/extcon/extcon-usb-gpio.c b/drivers/extcon/extcon-usb-gpio.c
+index f06be6d4e2a9..0cb440bdd5cb 100644
+--- a/drivers/extcon/extcon-usb-gpio.c
++++ b/drivers/extcon/extcon-usb-gpio.c
+@@ -7,18 +7,17 @@
+  */
+ 
+ #include <linux/extcon-provider.h>
+-#include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
+ #include <linux/pinctrl/consumer.h>
++#include <linux/mod_devicetable.h>
+ 
+ #define USB_GPIO_DEBOUNCE_MS	20	/* ms */
+ 
+-- 
+2.31.1
+
