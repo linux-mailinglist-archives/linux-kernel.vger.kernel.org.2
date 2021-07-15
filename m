@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368343CA152
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE6D3CA15B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238744AbhGOPUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:20:06 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51766 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232994AbhGOPUF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:20:05 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FFCAr2025316;
-        Thu, 15 Jul 2021 17:17:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=6AuPIvPC0e4Jj6MaY2nbVdaznRVtBzyFnECY1u8Uo40=;
- b=i4vi2MHt7MEUOlYT/yLTfYf8/eNpnqujEbk7OIShASyW3UPqBWFFlkq4KeOBDFc01Jy7
- 4+983uBaf+L1wRnReOouKw4OnAnoyFPim+CC0AmMh88u597HstRGQIp6FZpHfqxtZJ8D
- 9mcaBmBok4Y8tZXMy4dqP0RxI2NU5QJ76SKubMTo45dG3VMap4qSoL/xJlATye64z+of
- iz6rT3er60l9tdSvcT6YlGAZFnh+d7NIn+XD4k+RkJqRzhfJFOqmRLDPZz8O8SpAlhtr
- nB2JDgVHtQ2LXHkovynHo5A2yt1lGspmcUvRTEUMMUNMMoo+9yCgY9P6qRA0mlf2EI74 DQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39tac3v6au-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 17:17:02 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8023A10002A;
-        Thu, 15 Jul 2021 17:17:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6C2A02291D7;
-        Thu, 15 Jul 2021 17:17:01 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Jul
- 2021 17:16:35 +0200
-Subject: Re: [PATCH 0/2] Add new IPCC mailbox to support the coprocessor
- detach on some stm32mp15x boards
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Rob Herring <robh@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210614164940.27153-1-arnaud.pouliquen@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <40d3f649-f56e-15bd-f7ef-59c62028c317@foss.st.com>
-Date:   Thu, 15 Jul 2021 17:16:35 +0200
+        id S238712AbhGOPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:22:32 -0400
+Received: from mga01.intel.com ([192.55.52.88]:37631 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238380AbhGOPWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 11:22:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="232393404"
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="232393404"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 08:19:12 -0700
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="495513685"
+Received: from bmookkia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.123.85])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 08:19:11 -0700
+Subject: Re: [PATCH v2 6/6] tools/tdx: Add a sample attestation user app
+To:     Mian Yousaf Kaukab <ykaukab@suse.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210715083635.GA112769@suse.de>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <a7757efc-cb62-013f-8976-427b354ff0f1@linux.intel.com>
+Date:   Thu, 15 Jul 2021 08:19:08 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210614164940.27153-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210715083635.GA112769@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-15_10:2021-07-14,2021-07-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud
 
-On 6/14/21 6:49 PM, Arnaud Pouliquen wrote:
-> Purpose:
->    Add the IPCC channel 4 as "detach" mailbox to support the remoteproc the feature added in [1].
-> 
->    The enable of this feature is a design choice. As consequence, the new mbox is declared
->    only for stm32mp157c-ed1 & stm32mp15x-dkx boards maintained by ST Microelectronics.
-> 
-> Aim:
->    Allow to send to the remote processor a HW signal on IPCC channel 4 when user space requests
->    to detach the main processor from the remote processor (e.g. a reboot of the  Linux processor
->    on a crash).
-> 
-> [1] https://patchwork.ozlabs.org/project/devicetree-bindings/cover/20210331073347.8293-1-arnaud.pouliquen@foss.st.com/
-> 
-> Arnaud Pouliquen (2):
->    ARM: dts: stm32: Add coprocessor detach mbox on stm32mp157c-ed1 board
->    ARM: dts: stm32: Add coprocessor detach mbox on stm32mp15x-dkx boards
-> 
->   arch/arm/boot/dts/stm32mp157c-ed1.dts  | 4 ++--
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 4 ++--
->   2 files changed, 4 insertions(+), 4 deletions(-)
-> 
 
-Series Applied on stm32-next;
+On 7/15/21 1:36 AM, Mian Yousaf Kaukab wrote:
+> In tdg_attest_ioctl() TDX_CMD_GEN_QUOTE case is calling
+> tdx_mcall_tdreport() same as TDX_CMD_GET_TDREPORT case. Then what is
+> the point of calling get_tdreport() here? Do you mean to call
+> gen_report_data()?
 
-thanks
-Alex
+Yes, I also noticed this issue and fixed the attestation driver to
+to get TDREPORT data as input to get TDQUOTE.
+
+I will be posting the fixed version of attestation driver today.
+
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
