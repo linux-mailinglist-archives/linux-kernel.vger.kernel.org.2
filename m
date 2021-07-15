@@ -2,59 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C103C959A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C761C3C959C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhGOBdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:33:24 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24419 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231186AbhGOBdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:33:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190829872"
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="190829872"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 18:30:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="494835756"
-Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2021 18:30:27 -0700
-Date:   Thu, 15 Jul 2021 09:30:17 +0800
-From:   Li Fei1 <fei1.li@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuo.a.liu@intel.com,
-        fei1.li@intel.com
-Subject: Re: [PATCH] MAINTAINERS: Change ACRN HSM driver maintainer
-Message-ID: <20210715013017.GA13195@louislifei-OptiPlex-7050>
-References: <20210714082614.88560-1-shuo.a.liu@intel.com>
- <YO6sv1zUxljRRcdN@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YO6sv1zUxljRRcdN@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S235144AbhGOBgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234878AbhGOBgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 21:36:48 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D2CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:54 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id e19-20020ad442b30000b02902dc988b8675so2987861qvr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8vnGhtmp+njtNtIuKwFZim7rfIp3lR+vOjiRHXUJKyQ=;
+        b=FtVARWUY3U8/9Tw4oLPAphMR3pXqBM60v7dYlimahcB70OGTYW8bslo/9wNAXlFI46
+         y22CdMWEZVZaw/xZpduxvuTcA9WTxKSwMCBvw6xh7vscbm3aZNrVpBOI6yk4DJqPMTSq
+         8FsPf9s36iTloS5gBmOUBHtek2X1XFCx/mvCmGlpGeA6pcOnzeY03cU20vakLfX/FfYF
+         iATRuajUrB2xiDkEo0OF7eDMjB9+Yh10SFXV87f/Yi02TkB8gWMU4AjV7siy7YcI7Js3
+         +OdGfKfe4jC6GvJZ2GJREsSfVFXgNPNVm25oqdgLkyDYNBu3K93Ydza8w4f7IhYQga85
+         ZyWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8vnGhtmp+njtNtIuKwFZim7rfIp3lR+vOjiRHXUJKyQ=;
+        b=Vh7V5YjLqZJXfGz8oc/FejLiQFA2+5yX/hSfS6Ziyx6L00cRy4vBzuKD5chidLue2/
+         KytIs6M1xyuEUACU0xhtw6uClDifMbIi6uIRk1YhSUsR74walYBBqK72uksHKL95AJtE
+         Y17NAYGY1vk76ZlAatHHndgE1djNlHwLeYjWAkeuKGWDNnYfi8Z2CHUazM+EMyf+joaR
+         aMh4QwI8faG64yNKmLKQc1v4wBAuRLaaFl0V45S47C44uXP8sr6OXsi/6TolTvNzDAB3
+         QGnJKvU0c8Kxt5jD978NwMN31FnlTlakTU/KgACxfYTgcuCn0UihCBQDmigFvCiKku00
+         yLnA==
+X-Gm-Message-State: AOAM530XgXa8SvaIkCgewd9bZJwjkJtyFHjOLGU+NRK1dcg8miU25gY+
+        jxTZGdYywtVbrFawJjMj9EsT1bLpoMhz
+X-Google-Smtp-Source: ABdhPJxUUNr0W3XsmB5xISQcI8yr8AX+7mp+8KI4DxlCKSI8oq0R1FwhPnhrhA7lYo2TKDZ0wgkv/2OtvDyO
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:c0a3:e3b0:6b14:de32])
+ (user=irogers job=sendgmr) by 2002:a05:6214:13c8:: with SMTP id
+ cg8mr1210074qvb.23.1626312833833; Wed, 14 Jul 2021 18:33:53 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 18:33:36 -0700
+Message-Id: <20210715013343.2286699-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH 0/7] Tidy perf Documentation build
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:22:07AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jul 14, 2021 at 04:26:14PM +0800, Shuo Liu wrote:
-> > Shuo steps down, Fei will take over.
-> > 
-> > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Perf's Documenation Makefile is based off git's, but some parts of it
+were never completed. 'make info' also fails. These patches fix 'make
+info' and do some related tidy up. Two missing files are added from git.
 
-Acked-by: Fei Li <fei1.li@intel.com>
+Ian Rogers (7):
+  perf doc: Fix perfman.info build
+  perf doc: Fix doc.dep
+  perf doc: Remove references to user-manual
+  perf doc: Add info pages to all target.
+  perf doc: Remove cmd-list.perl references
+  perf doc: Remove howto-index.sh related references.
+  perf doc: Reorganize ARTICLES variables.
 
-Thanks.
+ tools/perf/Documentation/Makefile          | 74 +++-------------------
+ tools/perf/Documentation/build-docdep.perl | 46 ++++++++++++++
+ tools/perf/Documentation/cat-texi.perl     | 46 ++++++++++++++
+ 3 files changed, 100 insertions(+), 66 deletions(-)
+ create mode 100755 tools/perf/Documentation/build-docdep.perl
+ create mode 100755 tools/perf/Documentation/cat-texi.perl
 
-> > ---
-> >  MAINTAINERS | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> We need an ack from the person you are assigning this to :)
-> 
-> thanks,
-> 
-> greg k-h
+-- 
+2.32.0.402.g57bb445576-goog
+
