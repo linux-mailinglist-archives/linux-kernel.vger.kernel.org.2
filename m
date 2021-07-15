@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C183CA8EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFA73CA8FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243634AbhGOTEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59488 "EHLO mail.kernel.org"
+        id S243613AbhGOTEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239608AbhGOSzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28344613CF;
-        Thu, 15 Jul 2021 18:52:19 +0000 (UTC)
+        id S239944AbhGOSzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B700613DA;
+        Thu, 15 Jul 2021 18:52:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375139;
-        bh=jWZGCnsAY9L7zigkpJsKBGOJiuu91rRo/tR1JLcJN4U=;
+        s=korg; t=1626375142;
+        bh=+eZ0yTPFBqX/+7MawF+ewYY+p2odJue09D667njTbPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ex6xUfT7UaI802q40eMA0y5UngRHp7NAPG5WQsPoWnD4BRFFhfBk6ucTZpWNzg9eW
-         5HVF1/8gQWZ9z60D8T4YFExnLsvoD+nr/sj246VkBweAzI01Zw5bPoiJW1sFSsLVK1
-         BRwtcHB5X+6f/+OJ2aSJJj2B39bkOUcjDl3NbCI0=
+        b=MzfqFH0GCh4xhoYQxC7+UEwlerbzyJy0iyilFRleDYvhjlPIRn1bLKu30P/6Qm2Vo
+         80g2p+wZiI0OaxZIrBW0SQYfUP+CF7TW87asH7dRPlNmj+frAmJ65yerkf4fqFEtxl
+         FVH+PFBH5601CuoOc1LbcGKLYXwp6PWu0gqvx7Xo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 175/215] ASoC: tegra: Set driver_name=tegra for all machine drivers
-Date:   Thu, 15 Jul 2021 20:39:07 +0200
-Message-Id: <20210715182630.428810554@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Sergeev <asergeev@carbonrobotics.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.10 176/215] i40e: fix PTP on 5Gb links
+Date:   Thu, 15 Jul 2021 20:39:08 +0200
+Message-Id: <20210715182630.580341150@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -39,131 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
+commit 26b0ce8dd3dd704393dbace4dc416adfeffe531f upstream.
 
-The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
-Tegra UCMs don't match by the path/name.
+As reported by Alex Sergeev, the i40e driver is incrementing the PTP
+clock at 40Gb speeds when linked at 5Gb. Fix this bug by making
+sure that the right multiplier is selected when linked at 5Gb.
 
-All Tegra machine drivers are specifying the card's name, but it has no
-effect if model name is specified in the device-tree since it overrides
-the card's name. We need to set the driver_name to "tegra" in order to
-get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
-path has a form of driver_name/card_name.
-
-The old lookup paths that are based on driver module name continue to
-work as before. Note that UCM matching never worked for Tegra ASoC drivers
-if they were compiled as built-in, this is fixed by supporting the new
-naming scheme.
-
+Fixes: 3dbdd6c2f70a ("i40e: Add support for 5Gbps cards")
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Alex Sergeev <asergeev@carbonrobotics.com>
+Suggested-by: Alex Sergeev <asergeev@carbonrobotics.com>
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/tegra/tegra_alc5632.c  |    1 +
- sound/soc/tegra/tegra_max98090.c |    1 +
- sound/soc/tegra/tegra_rt5640.c   |    1 +
- sound/soc/tegra/tegra_rt5677.c   |    1 +
- sound/soc/tegra/tegra_sgtl5000.c |    1 +
- sound/soc/tegra/tegra_wm8753.c   |    1 +
- sound/soc/tegra/tegra_wm8903.c   |    1 +
- sound/soc/tegra/tegra_wm9712.c   |    1 +
- sound/soc/tegra/trimslice.c      |    1 +
- 9 files changed, 9 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_ptp.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc
+--- a/drivers/net/ethernet/intel/i40e/i40e_ptp.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ptp.c
+@@ -11,13 +11,14 @@
+  * operate with the nanosecond field directly without fear of overflow.
+  *
+  * Much like the 82599, the update period is dependent upon the link speed:
+- * At 40Gb link or no link, the period is 1.6ns.
+- * At 10Gb link, the period is multiplied by 2. (3.2ns)
++ * At 40Gb, 25Gb, or no link, the period is 1.6ns.
++ * At 10Gb or 5Gb link, the period is multiplied by 2. (3.2ns)
+  * At 1Gb link, the period is multiplied by 20. (32ns)
+  * 1588 functionality is not supported at 100Mbps.
+  */
+ #define I40E_PTP_40GB_INCVAL		0x0199999999ULL
+ #define I40E_PTP_10GB_INCVAL_MULT	2
++#define I40E_PTP_5GB_INCVAL_MULT	2
+ #define I40E_PTP_1GB_INCVAL_MULT	20
  
- static struct snd_soc_card snd_soc_tegra_alc5632 = {
- 	.name = "tegra-alc5632",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_alc5632_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_max98090.c
-+++ b/sound/soc/tegra/tegra_max98090.c
-@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max
- 
- static struct snd_soc_card snd_soc_tegra_max98090 = {
- 	.name = "tegra-max98090",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_max98090_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5
- 
- static struct snd_soc_card snd_soc_tegra_rt5640 = {
- 	.name = "tegra-rt5640",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5640_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5
- 
- static struct snd_soc_card snd_soc_tegra_rt5677 = {
- 	.name = "tegra-rt5677",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5677_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_sgtl5000.c
-+++ b/sound/soc/tegra/tegra_sgtl5000.c
-@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgt
- 
- static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
- 	.name = "tegra-sgtl5000",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_sgtl5000_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8753.c
-+++ b/sound/soc/tegra/tegra_wm8753.c
-@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8753 = {
- 	.name = "tegra-wm8753",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8753_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -235,6 +235,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8903 = {
- 	.name = "tegra-wm8903",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8903_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9
- 
- static struct snd_soc_card snd_soc_tegra_wm9712 = {
- 	.name = "tegra-wm9712",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm9712_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/trimslice.c
-+++ b/sound/soc/tegra/trimslice.c
-@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice
- 
- static struct snd_soc_card snd_soc_trimslice = {
- 	.name = "tegra-trimslice",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &trimslice_tlv320aic23_dai,
- 	.num_links = 1,
+ #define I40E_PRTTSYN_CTL1_TSYNTYPE_V1  BIT(I40E_PRTTSYN_CTL1_TSYNTYPE_SHIFT)
+@@ -465,6 +466,9 @@ void i40e_ptp_set_increment(struct i40e_
+ 	case I40E_LINK_SPEED_10GB:
+ 		mult = I40E_PTP_10GB_INCVAL_MULT;
+ 		break;
++	case I40E_LINK_SPEED_5GB:
++		mult = I40E_PTP_5GB_INCVAL_MULT;
++		break;
+ 	case I40E_LINK_SPEED_1GB:
+ 		mult = I40E_PTP_1GB_INCVAL_MULT;
+ 		break;
 
 
