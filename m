@@ -2,159 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4423C9ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C693C9ABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240294AbhGOIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 04:38:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22021 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229620AbhGOIiH (ORCPT
+        id S240332AbhGOIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 04:38:53 -0400
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:58495 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229620AbhGOIiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:38:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626338114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yi9obYV2IFRXQcU5OjCWyacMaSnPkoEY5XTUowFAJiA=;
-        b=QY3UlvQKTFBw7KtnAyfarbb15LRCTHoH0yTuLS9YPQRTjQN5a8D67n5VSzZCQBrSaIVlB9
-        4QSS62jW02RiTVBCtFix4bPKuNiWm0dg+zWehbW0ZDRKrrsjzUKkb6iF4PotkLuK1pqvHj
-        LPcHAETy0pkz7ZqV9MFbPY2yfjGqu+w=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-0g8kaB68OsKvOYvFLiSMiA-1; Thu, 15 Jul 2021 04:35:12 -0400
-X-MC-Unique: 0g8kaB68OsKvOYvFLiSMiA-1
-Received: by mail-wr1-f71.google.com with SMTP id z6-20020a5d4c860000b029013a10564614so2982502wrs.15
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 01:35:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Yi9obYV2IFRXQcU5OjCWyacMaSnPkoEY5XTUowFAJiA=;
-        b=MHTnHBMJ2tWhwblBIIhVPWffspDc+57Z7WSUh2IAIrnjRtyzOOxRPE+aulOgRha48K
-         aFsxwMXaRLo/yMZiDyuDRBglJJ2lpUH36G50i8CZq5eJmNk5Sqrwq8e4Nke+/faYv8Us
-         KsDBizctTkSPdBNtEuc9C//X6kLAMRVxS919B+26CriwwNdf3Ll8zh7TXprHPL43G1Pv
-         0qcKiIzIHrXNOL75cJFRNsfG+0fxHMLmT3kE9ulkiQuguuKOPEiaf2bbKQT+7EchEmPO
-         zs8l/A9Un75lDJxWgRw8/8BEHGygXrrntc1/DQz/s2Zieh0AR5aYh2Si4JLGqfeC2Jnk
-         po5Q==
-X-Gm-Message-State: AOAM531S4szNwdkgI5S+zRS+tq9tA+C1yV/OojqFanQGSi8pbjYzBOpP
-        gsgSRBWTat+jYk9LtUCSX/t4CE3eARVdzS5KdvH/djgwLxJnypqGxm0pXNmsNhfhflyB4p5ZNQP
-        nseIODjURI+m64Lla95ARK7iH
-X-Received: by 2002:a5d:50c7:: with SMTP id f7mr4007232wrt.126.1626338111390;
-        Thu, 15 Jul 2021 01:35:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOcHackGTT36UUmS+7YRBiz7L/liYJnRUoJLQrhvcqPYVpB5MzgW5RyeKFX9AYIL0Pg+nx6Q==
-X-Received: by 2002:a5d:50c7:: with SMTP id f7mr4007203wrt.126.1626338111178;
-        Thu, 15 Jul 2021 01:35:11 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id d10sm5342281wro.43.2021.07.15.01.35.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 01:35:10 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Zhang Qiang <Qiang.Zhang@windriver.com>,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
- static"
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>, acme@kernel.org,
-        Jiri Olsa <jolsa@redhat.com>
-References: <20210713152100.10381-1-mgorman@techsingularity.net>
- <20210713152100.10381-5-mgorman@techsingularity.net>
- <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
-Message-ID: <5db9011e-9b52-b415-70b6-c7ee1b01436b@redhat.com>
-Date:   Thu, 15 Jul 2021 10:35:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 15 Jul 2021 04:38:52 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id 168B41C5267
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:35:59 +0100 (IST)
+Received: (qmail 14109 invoked from network); 15 Jul 2021 08:35:58 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jul 2021 08:35:58 -0000
+Date:   Thu, 15 Jul 2021 09:35:57 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm/page_alloc: avoid hard lockups in __alloc_pages_bulk()
+Message-ID: <20210715083557.GP3809@techsingularity.net>
+References: <20210710112929.232268-1-qiang.zhang@windriver.com>
+ <20210710114613.0db3ac139a7b3102a6ca3ad4@linux-foundation.org>
+ <YOoMq0Bl6M/LV6mJ@casper.infradead.org>
+ <BL1PR11MB54785E7EA2BFBDAA393F15BBFF179@BL1PR11MB5478.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <BL1PR11MB54785E7EA2BFBDAA393F15BBFF179@BL1PR11MB5478.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc. Jiri Olsa + Arnaldo
-
-On 14/07/2021 09.06, John Hubbard wrote:
-> On 7/13/21 8:21 AM, Mel Gorman wrote:
->> From: Matteo Croce <mcroce@microsoft.com>
->>
->> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
->>
->> Fix an unresolved symbol error when CONFIG_DEBUG_INFO_BTF=y:
->>
->>    LD      vmlinux
->>    BTFIDS  vmlinux
->> FAILED unresolved symbol should_fail_alloc_page
->> make: *** [Makefile:1199: vmlinux] Error 255
->> make: *** Deleting file 'vmlinux'
+On Sat, Jul 10, 2021 at 10:57:53PM +0000, Zhang, Qiang wrote:
+> ________________________________
+> ??????: Matthew Wilcox <willy@infradead.org>
+> ????????: ??????, ???? 11, 2021 05:10
+> ??????: Andrew Morton
+> ????: Zhang, Qiang; mgorman@techsingularity.net; linux-mm@kvack.org; linux-kernel@vger.kernel.org
+> ????: Re: [PATCH] mm/page_alloc: avoid hard lockups in __alloc_pages_bulk()
 > 
-> Yes! I ran into this yesterday. Your patch fixes this build failure
-> for me, so feel free to add:
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
 > 
-> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> On Sat, Jul 10, 2021 at 11:46:13AM -0700, Andrew Morton wrote:
+> > On Sat, 10 Jul 2021 19:29:29 +0800 qiang.zhang@windriver.com wrote:
+> >
+> > > From: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > > The __alloc_pages_bulk() mainly used for batch allocation of
+> > > order-0 pages, in the case of holding pagesets.lock, if too
+> > > many pages are required, maybe trigger hard lockup watchdog.
+> >
+> > Ouch.  Has this been observed in testing?  If so, can you please share
+> > the kernel debug output from that event?
 > 
+> >This should be fixed in the caller by asking for fewer pages.
+> >The NFS and vmalloc cases have already been fixed for this.
 > 
-> However, I should add that I'm still seeing another build failure, after
-> fixing the above:
+> The NFS and vmalloc cases haven  been fixed??
+> I don??t see if there is any information about that?
 > 
-> LD      vmlinux
-> BTFIDS  vmlinux
-> FAILED elf_update(WRITE): no error
 
-This elf_update(WRITE) error is new to me.
+AFAIK, NFS simply doesn't ask for a large enough number of pages to be
+of concern. For vmalloc, it's somewhat theoritical that it can happen
+for anything other than a stress test but this exists
+https://lore.kernel.org/r/20210705170537.43060-1-urezki@gmail.com
 
-> make: *** [Makefile:1176: vmlinux] Error 255
-> make: *** Deleting file 'vmlinux'
+I had no objection to the patch but didn't feel strongly enough to say
+anything about it either given that it was triggered artifically.
 
-It is annoying that vmlinux is deleted in this case, because I usually 
-give Jiri the output from 'resolve_btfids -v' on vmlinux.
-
-  $ ./tools/bpf/resolve_btfids/resolve_btfids -v vmlinux.failed
-
-You can do:
-$ git diff
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 3b261b0f74f0..02dec10a7d75 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -302,7 +302,8 @@ cleanup()
-         rm -f .tmp_symversions.lds
-         rm -f .tmp_vmlinux*
-         rm -f System.map
--       rm -f vmlinux
-+       # rm -f vmlinux
-+       mv vmlinux vmlinux.failed
-         rm -f vmlinux.o
-  }
-
-
-> 
-> 
-> ...and un-setting CONFIG_DEBUG_INFO_BTF makes that disappear. Maybe someone
-> who is understands the BTFIDS build step can shed some light on that; I'm
-> not there yet. :)
-
-I'm just a user/consume of output from the BTFIDS build step, I think 
-Jiri Olsa own the tool resolve_btfids, and ACME pahole.  I've hit a 
-number of issues in the past that Jiri and ACME help resolve quickly.
-The most efficient solution I've found was to upgrade pahole to a newer 
-version.
-
-What version of pahole does your build system have?
-
-What is your GCC version?
-
---Jesper
-
+-- 
+Mel Gorman
+SUSE Labs
