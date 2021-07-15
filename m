@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305703CA8DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F633CAB65
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242305AbhGOTDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:03:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59286 "EHLO mail.kernel.org"
+        id S245676AbhGOTT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242402AbhGOSzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D6C613C4;
-        Thu, 15 Jul 2021 18:52:14 +0000 (UTC)
+        id S242158AbhGOTFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE44861415;
+        Thu, 15 Jul 2021 19:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375135;
-        bh=V4JGcCcIve5zm2wBydiLP5y0SxYpXcftaSdlt/R27uI=;
+        s=korg; t=1626375668;
+        bh=EGdQPc8OlX8kWlU3VQgA63gB5PagL84NDe5Jk5DgzZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZ7mAkxPFzGG6RTLkkniRC2CXDSAT1XJFDuzfGrN0b9tPemqDheLefb5gr5f3kK1L
-         8mZAMBENUb3bgB1V72Eifa6ZUhHOZpcb/WEEYiHGyOIRCu1m//smyW6Y/HRNvb4aM0
-         CS7RK760Y8WoDrx7c2JeYw0VR1knTtuaskUH5oKE=
+        b=E0uZfS05KQAQyCd83KnVbcYW5LP/1zoFV9CndmAAUHTdIXGh7UPrNV4RQ/EQecKKl
+         beukrOMEtE/c7sRCVQsanwE+y7pj4s4jSk27mfZpIkFtZOlIybblgHEUYmGGDd5rvz
+         vI0GTukp0YuIJg0H3g52mU2SfNzp3Sxk5drrFWU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russ Weight <russell.h.weight@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH 5.10 174/215] fpga: stratix10-soc: Add missing fpga_mgr_free() call
-Date:   Thu, 15 Jul 2021 20:39:06 +0200
-Message-Id: <20210715182630.263640117@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.12 185/242] mmc: core: clear flags before allowing to retune
+Date:   Thu, 15 Jul 2021 20:39:07 +0200
+Message-Id: <20210715182625.906251805@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russ Weight <russell.h.weight@intel.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit d9ec9daa20eb8de1efe6abae78c9835ec8ed86f9 upstream.
+commit 77347eda64ed5c9383961d1de9165f9d0b7d8df6 upstream.
 
-The stratix10-soc driver uses fpga_mgr_create() function and is therefore
-responsible to call fpga_mgr_free() to release the class driver resources.
-Add a missing call to fpga_mgr_free in the s10_remove() function.
+It might be that something goes wrong during tuning so the MMC core will
+immediately trigger a retune. In our case it was:
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
-Fixes: e7eef1d7633a ("fpga: add intel stratix10 soc fpga manager driver")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210614170909.232415-3-mdf@kernel.org
+ - we sent a tuning block
+ - there was an error so we need to send an abort cmd to the eMMC
+ - the abort cmd had a CRC error
+ - retune was set by the MMC core
+
+This lead to a vicious circle causing a performance regression of 75%.
+So, clear retuning flags before we enable retuning to start with a known
+cleared state.
+
+Reported-by Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Fixes: bd11e8bd03ca ("mmc: core: Flag re-tuning is needed on CRC errors")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210624151616.38770-2-wsa+renesas@sang-engineering.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/fpga/stratix10-soc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/core/core.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -454,6 +454,7 @@ static int s10_remove(struct platform_de
- 	struct s10_priv *priv = mgr->priv;
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -937,11 +937,14 @@ int mmc_execute_tuning(struct mmc_card *
  
- 	fpga_mgr_unregister(mgr);
-+	fpga_mgr_free(mgr);
- 	stratix10_svc_free_channel(priv->chan);
+ 	err = host->ops->execute_tuning(host, opcode);
  
- 	return 0;
+-	if (err)
++	if (err) {
+ 		pr_err("%s: tuning execution failed: %d\n",
+ 			mmc_hostname(host), err);
+-	else
++	} else {
++		host->retune_now = 0;
++		host->need_retune = 0;
+ 		mmc_retune_enable(host);
++	}
+ 
+ 	return err;
+ }
 
 
