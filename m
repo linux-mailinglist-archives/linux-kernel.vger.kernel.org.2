@@ -2,106 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AB23C99D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DEF3C99D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbhGOHrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        id S240464AbhGOHua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbhGOHry (ORCPT
+        with ESMTP id S231785AbhGOHua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:47:54 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ABEC06175F;
-        Thu, 15 Jul 2021 00:45:00 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id l11so3221093pji.5;
-        Thu, 15 Jul 2021 00:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3H3QucrgEfBfWLW7Yv3LB8AXp4eWdNO8XfGBK/bcpzE=;
-        b=CMNeH5VmJGRqAXS/AvAllS3PqwdjoJbxCRmngkrH41hiVpIManVkJBv7RzRIotc59k
-         UTiQk01o1Ic4WFKMZorhktNbKXCe/RgI5C7WDFV300wVa7yxbcedja4CPygOHIheCvM6
-         hVCPn2fo2hZCwLcbnVc871DLrvZy6yjyRE+TbgRbB8FlM0ObnDMKpr950yYASMuFv5+/
-         j0Lep5ydcdJ+C3PMJFs7z93zxrhFjBV1iGWmRWWwGxDfOnAQM0/qL21LfMqkIcwQicbr
-         Djwwz/9T8zAIJmkm4McKSDWH+sbPRxopa2mHXF0k1VsOqglInOPmVHFhW7Fto1pkFCcE
-         hlVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3H3QucrgEfBfWLW7Yv3LB8AXp4eWdNO8XfGBK/bcpzE=;
-        b=CxfMOZoV9b1THVqqM5pfPPDeG1MwGFvFYThgoKWKznyLDC4+TO+JbG4cpNYFdrPBKw
-         WFsLjV9KtfgaCUjS4/2pMFzo9b15okjKTZrSnBZchSyKfnd2E7fABCIRLl9KF0YcfSIj
-         zugYJIRTB9zdEWVClaeWPVbF9yYaWQC9l2sYlG7x9TtBvXovGjK35bkk5p/VaU4d2mV/
-         IZLYNuLc1GZtq69EAiqs5WmOYPqCy/pZkxDGQtl9/hpq+FViCRDDUH2pM/pfyVnqoI8g
-         BrF+YKFpg6VyMAlq/6Qvj2b528up2JODaXWwE7nMO/9Ed26N9TmaFJJ5IPke4WLZwxug
-         xZOw==
-X-Gm-Message-State: AOAM531I3kurpZkECdgODR7O9//B8ynF89XO8oYOCjCW9DRPcQtXl+Up
-        em0lv+OMU73tlUarVi4m3Yg0Sq25oNU=
-X-Google-Smtp-Source: ABdhPJxawBhQnz9L11JWFp/HWmMhtlszU/lv3a9P8s3WIDjJRh1wyfft9iOylxGvQ4wocpArZJC9KA==
-X-Received: by 2002:a17:90b:1244:: with SMTP id gx4mr3067652pjb.192.1626335100159;
-        Thu, 15 Jul 2021 00:45:00 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id t26sm5702039pgu.35.2021.07.15.00.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 00:44:59 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     davem@davemloft.net
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] net:stmmac: Fix the unsigned expression compared with zero
-Date:   Thu, 15 Jul 2021 00:45:39 -0700
-Message-Id: <20210715074539.226600-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 15 Jul 2021 03:50:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ED6C06175F;
+        Thu, 15 Jul 2021 00:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t/GtyAHDP5R7bDqXQXeOux5v2ylrcWkxXlOfeLBFR7c=; b=hhiNJJvF++u93zDIoFJt4KYj6R
+        LIeRC3SylkpPpRs1SFnaM9slpbRM/VQZVx1QkHiC1u/4o9uGyO7XdvJvLvkODNXjWjKdDEsGVRZuf
+        SCIMdLj2emNTRFoZxkLxijZ7q1VY4TJeYEXL8Ml3CA3OIXu0Y6RpU5LZfmTQS+rFOXYUFl/YAN7iw
+        yQ3Tw+kp3H8FqKyXwDzy00J7AuBySEkOSy48GXMWKhTRZE1VkhG+lJc4v8ohces3R4hvZHunSb8S9
+        YgI7xdzH8zFUA+dOE/ucq9VHiNdYzqSWPSKvaIUjKvyuRWZ9LkXKXyH8EptATP7Zl4dBXH7gio8VR
+        iQziDGQQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3w4R-0036yY-PH; Thu, 15 Jul 2021 07:46:19 +0000
+Date:   Thu, 15 Jul 2021 08:46:11 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
+        osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] block: move disk invalidation from del_gendisk()
+ into a helper
+Message-ID: <YO/nw2qDRg3yQDJj@infradead.org>
+References: <20210715045531.420201-1-mcgrof@kernel.org>
+ <20210715045531.420201-4-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715045531.420201-4-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+I don't really like many of these helpers as they are rather
+confusing.  Below is a patch ontop of your whole series that
+massages it into something I find much easier to follow.
+The big caveats are:
 
-WARNING:  Unsigned expression "queue" compared with zero.
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ - this moves the bdi link creation earlier, which is safe and probably
+   preferable. (should go into a prep patch).
+ - del_gendisk now needs to cope with not set up events and integrity
+   kobject
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 7b8404a21544..a4cf2c640531 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1699,7 +1699,7 @@ static int init_dma_rx_desc_rings(struct net_device *dev, gfp_t flags)
+I also have a bunch of changes to del_gendisk which might require
+backporting, let me try to get those out ASAP.
+
+diff --git a/block/blk-integrity.c b/block/blk-integrity.c
+index e46f47f2dec9..3135adab2e7c 100644
+--- a/block/blk-integrity.c
++++ b/block/blk-integrity.c
+@@ -446,6 +446,8 @@ int blk_integrity_add(struct gendisk *disk)
+ 
+ void blk_integrity_del(struct gendisk *disk)
+ {
++	if (!disk->integrity_kobj.state_initialized)
++		return;
+ 	kobject_uevent(&disk->integrity_kobj, KOBJ_REMOVE);
+ 	kobject_del(&disk->integrity_kobj);
+ 	kobject_put(&disk->integrity_kobj);
+diff --git a/block/disk-events.c b/block/disk-events.c
+index 0262784be34c..af7d7249eefa 100644
+--- a/block/disk-events.c
++++ b/block/disk-events.c
+@@ -458,7 +458,8 @@ void disk_del_events(struct gendisk *disk)
+ 		disk_block_events(disk);
+ 
+ 		mutex_lock(&disk_events_mutex);
+-		list_del_init(&disk->ev->node);
++		if (!list_empty(&disk->ev->node))
++			list_del_init(&disk->ev->node);
+ 		mutex_unlock(&disk_events_mutex);
+ 	}
+ }
+diff --git a/block/genhd.c b/block/genhd.c
+index c6c9c196ff27..0c8c71d78536 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -390,68 +390,8 @@ static void disk_scan_partitions(struct gendisk *disk)
+ 		blkdev_put(bdev, FMODE_READ);
+ }
+ 
+-static void disk_announce(struct gendisk *disk)
+-{
+-	struct device *ddev = disk_to_dev(disk);
+-
+-	/* announce the disk and partitions after all partitions are created */
+-	dev_set_uevent_suppress(ddev, 0);
+-	disk_uevent(disk, KOBJ_ADD);
+-}
+-
+-static void unregister_disk_partitions(struct gendisk *disk)
+-{
+-	mutex_lock(&disk->open_mutex);
+-	disk->flags &= ~GENHD_FL_UP;
+-	blk_drop_partitions(disk);
+-	mutex_unlock(&disk->open_mutex);
+-
+-	fsync_bdev(disk->part0);
+-	__invalidate_device(disk->part0, true);
+-
+-	/*
+-	 * Unhash the bdev inode for this device so that it can't be looked
+-	 * up any more even if openers still hold references to it.
+-	 */
+-	remove_inode_hash(disk->part0->bd_inode);
+-
+-	set_capacity(disk, 0);
+-}
+-
+-static void disk_invalidate(struct gendisk *disk)
+-{
+-	if (!(disk->flags & GENHD_FL_HIDDEN)) {
+-		sysfs_remove_link(&disk_to_dev(disk)->kobj, "bdi");
+-
+-		/*
+-		 * Unregister bdi before releasing device numbers (as they can
+-		 * get reused and we'd get clashes in sysfs).
+-		 */
+-		bdi_unregister(disk->queue->backing_dev_info);
+-	}
+-
+-	blk_unregister_queue(disk);
+-
+-	kobject_put(disk->part0->bd_holder_dir);
+-	kobject_put(disk->slave_dir);
+-
+-	part_stat_set_all(disk->part0, 0);
+-	disk->part0->bd_stamp = 0;
+-	if (!sysfs_deprecated)
+-		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
+-	pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
+-	device_del(disk_to_dev(disk));
+-}
+-
+-static void unregister_disk(struct gendisk *disk)
+-{
+-	unregister_disk_partitions(disk);
+-	disk_invalidate(disk);
+-}
+-
+-static int __must_check register_disk(struct device *parent,
+-				      struct gendisk *disk,
+-				      const struct attribute_group **groups)
++static int register_disk(struct device *parent, struct gendisk *disk,
++		const struct attribute_group **groups)
+ {
+ 	struct device *ddev = disk_to_dev(disk);
+ 	int err;
+@@ -498,20 +438,22 @@ static int __must_check register_disk(struct device *parent,
+ 	if (disk->flags & GENHD_FL_HIDDEN)
+ 		return 0;
+ 
+-	disk_scan_partitions(disk);
+-	disk_announce(disk);
+-
+ 	if (disk->queue->backing_dev_info->dev) {
+ 		err = sysfs_create_link(&ddev->kobj,
+-			  &disk->queue->backing_dev_info->dev->kobj,
+-			  "bdi");
++			  &disk->queue->backing_dev_info->dev->kobj, "bdi");
+ 		if (WARN_ON(err))
+ 			goto exit_del_block_depr;
+ 	}
++
++	disk_scan_partitions(disk);
++
++	/* announce the disk and partitions after all partitions are created */
++	dev_set_uevent_suppress(ddev, 0);
++	disk_uevent(disk, KOBJ_ADD);
++
  	return 0;
  
- err_init_rx_buffers:
--	while (queue >= 0) {
-+	do {
- 		struct stmmac_rx_queue *rx_q = &priv->rx_queue[queue];
+ exit_del_block_depr:
+-	unregister_disk_partitions(disk);
+ 	if (!sysfs_deprecated)
+ 		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
+ exit_del_device:
+@@ -614,6 +556,7 @@ static int __device_add_disk(struct device *parent, struct gendisk *disk,
+ 		bdi_set_owner(bdi, dev);
+ 		bdev_add(disk->part0, dev->devt);
+ 	}
++
+ 	ret = register_disk(parent, disk, groups);
+ 	if (ret)
+ 		goto exit_unregister_bdi;
+@@ -628,13 +571,11 @@ static int __device_add_disk(struct device *parent, struct gendisk *disk,
  
- 		if (rx_q->xsk_pool)
-@@ -1710,11 +1710,7 @@ static int init_dma_rx_desc_rings(struct net_device *dev, gfp_t flags)
- 		rx_q->buf_alloc_num = 0;
- 		rx_q->xsk_pool = NULL;
+ 	ret = blk_integrity_add(disk);
+ 	if (ret)
+-		goto exit_del_events;
++		goto exit_unregister_disk;
  
--		if (queue == 0)
--			break;
--
--		queue--;
--	}
-+	} while (queue--);
- 
+ 	return 0;
+-exit_del_events:
+-	disk_del_events(disk);
+ exit_unregister_disk:
+-	unregister_disk(disk);
++	del_gendisk(disk);
  	return ret;
+ 
+ exit_unregister_bdi:
+@@ -691,7 +632,44 @@ void del_gendisk(struct gendisk *disk)
+ 
+ 	blk_integrity_del(disk);
+ 	disk_del_events(disk);
+-	unregister_disk(disk);
++
++	mutex_lock(&disk->open_mutex);
++	disk->flags &= ~GENHD_FL_UP;
++	blk_drop_partitions(disk);
++	mutex_unlock(&disk->open_mutex);
++
++	fsync_bdev(disk->part0);
++	__invalidate_device(disk->part0, true);
++
++	/*
++	 * Unhash the bdev inode for this device so that it can't be looked
++	 * up any more even if openers still hold references to it.
++	 */
++	remove_inode_hash(disk->part0->bd_inode);
++
++	set_capacity(disk, 0);
++
++	if (!(disk->flags & GENHD_FL_HIDDEN)) {
++		sysfs_remove_link(&disk_to_dev(disk)->kobj, "bdi");
++
++		/*
++		 * Unregister bdi before releasing device numbers (as they can
++		 * get reused and we'd get clashes in sysfs).
++		 */
++		bdi_unregister(disk->queue->backing_dev_info);
++	}
++
++	blk_unregister_queue(disk);
++
++	kobject_put(disk->part0->bd_holder_dir);
++	kobject_put(disk->slave_dir);
++
++	part_stat_set_all(disk->part0, 0);
++	disk->part0->bd_stamp = 0;
++	if (!sysfs_deprecated)
++		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
++	pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
++	device_del(disk_to_dev(disk));
  }
--- 
-2.25.1
-
+ EXPORT_SYMBOL(del_gendisk);
+ 
