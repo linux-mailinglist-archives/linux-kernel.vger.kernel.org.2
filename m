@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9663C3CA9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778383CAAE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243906AbhGOTKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242505AbhGOS7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8707F613D0;
-        Thu, 15 Jul 2021 18:56:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626375410;
-        bh=h8VhkJGv7XBlYbGJhIbYQWwxLGpNUt9qSt9i6JbEzSA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=FbZLfbNCxaDykYsqZQEwXtA10VhNEzqCz3CH0vTk3EzdlTlUjwcC6hKBXttGHUd0C
-         iqNZrkhCK1tO8JtwqYFp5PRkd9h2RVaHQ1Ei9x69q7HEm7tx49MRJV5QDhfEUHvSzM
-         ejM2uL8Mt0+zvFoarESpfMUM7d3isPs8hSFUi+R1W0rR+1WnzDYTbyfbif48ZHw3iW
-         QqtICE2h98rG7/Mhw2goBD5Ll1Xlp6DTPMchAlel9IflNb9/ml6jo/2rSULp2VJMHk
-         DESwQFImwuypPe/2wM3CGVDGu7YuiNdAV3/C8vq9dB1jfSo51mZVIPmiVGz4jMHCbm
-         ZxM6FrMIW1biw==
-Date:   Thu, 15 Jul 2021 13:56:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Billie Alsup (balsup)" <balsup@cisco.com>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Guohan Lu <lguohan@gmail.com>,
-        "Madhava Reddy Siddareddygari (msiddare)" <msiddare@cisco.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Sergey Miroshnichenko <s.miroshnichenko@yadro.com>
-Subject: Re: [RFC][PATCH] PCI: Reserve address space for powered-off devices
- behind PCIe bridges
-Message-ID: <20210715185649.GA1984276@bjorn-Precision-5520>
+        id S241942AbhGOTPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242284AbhGOTBv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:01:51 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FF8C0617A6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:58:14 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id c17so10941058ejk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fYKgvYLgvtSQW10Pkkm7+cl/2v+kKNbnHVNtsf/foy4=;
+        b=I1P8lxvHTr2xXP69nPZ/+7IW0uj06lsFuq2VivGUARKQjT/5ggKxzGM/n1ztJmatLe
+         TivTuUjTr0xe94W6KYF0CnsoTjtYoNL3fhEORVO+D+sr1IcKbUeKmdOXZtn7JjWlq2lC
+         ndCldBAAjucaHQaVBIzY8bnHI15b61gOPyrQBBhncKqmMeCwI1E+z6z35j/8Ch6o1yHr
+         TQpeoAET9IMB86aBuFqGpt6K+m2BMNet9rvWt2Vzpk6dvEfeFR98AJ2l2qlRE7kmFb2v
+         1oIBGWdwQpP0w8BVr1FVuGhlDBxr52MIK+pj93nepBC0y4FXPK4MWKHfeKBZpIlbgx2l
+         zpsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fYKgvYLgvtSQW10Pkkm7+cl/2v+kKNbnHVNtsf/foy4=;
+        b=J7eDwomrJiFWwlbl+dMdFX34nU3kdoggUVJ4z12M3f8sCOHqAHDW6nNLPQOfPelYVS
+         BKgAstNYTibfG3SdF8pKNYFZ0s8C8IlaclW6+WkuH5f11gFaJwZb2D+lt25uljgcK8nj
+         FoNEzos/2oKAeKnQRA8SWZGTJP0qQs3nRNlqdj6jE3tnNEt2ppVecdN9ZYiN/IGKWcPz
+         DI0S5bkINDdgdDD74kC8ZDOyVujaa9r7Yp7ag0DSPdgDYXsAwMQedWUTDNGwKk5NeMI7
+         3kyvUOsJ76HlbnwIjH+lWTCSVS3gv2EOQVdJBXnMFwZ/uyX9+TteUdrYBJkKzm0pYdBp
+         yAGg==
+X-Gm-Message-State: AOAM530BuaBoEbEu5CFfVjHhI9l26+OIkf2aX5GnFJJsX3Ra/ZwrFE/E
+        YsmCXBkF9wYyUvtU7HY00xAXdXKLlTO3VCoLJSsOKw==
+X-Google-Smtp-Source: ABdhPJyJb8MbkcAOF0uAQweRXiBLqmMU0tzuj8g4DHd1+KDxsnz3qffsAdA3JfM/2GRyO1QcVkQx647Qmhs6PVl7pvs=
+X-Received: by 2002:a17:906:8558:: with SMTP id h24mr7138820ejy.519.1626375493122;
+ Thu, 15 Jul 2021 11:58:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <545AA576-42A5-47A7-A08A-062582B1569A@cisco.com>
+References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
+ <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
+ <YPB7rBlU1SinK6FR@casper.infradead.org> <CA+CK2bCPMmbr+=h4evTkbJoEFQu_th_NOe0Gp11hU7xz3fLZ8A@mail.gmail.com>
+ <YPB+tT0AcOB4UZQ5@casper.infradead.org>
+In-Reply-To: <YPB+tT0AcOB4UZQ5@casper.infradead.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 15 Jul 2021 14:57:37 -0400
+Message-ID: <CA+CK2bBqFr+_jxr2KU4DWv7GmOztfP8Lc+dKjy=YeUDvotyoBQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: KSM: fix ksm_run data type
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 06:12:25PM +0000, Billie Alsup (balsup) wrote:
-> It took me a while to figure out that the "New Outlook" option
-> doesn't actually allow sending plain text, so I have to switch to
-> "Old Outlook" mode.
+On Thu, Jul 15, 2021 at 2:30 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, Jul 15, 2021 at 02:21:21PM -0400, Pavel Tatashin wrote:
+> > On Thu, Jul 15, 2021 at 2:18 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Fri, Jul 16, 2021 at 12:01:01AM +0600, Zhansaya Bagdauletkyzy wrote:
+> > > > +++ b/mm/ksm.c
+> > > > @@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
+> > > >  #define KSM_RUN_MERGE        1
+> > > >  #define KSM_RUN_UNMERGE      2
+> > > >  #define KSM_RUN_OFFLINE      4
+> > > > -static unsigned long ksm_run = KSM_RUN_STOP;
+> > > > +static unsigned int ksm_run = KSM_RUN_STOP;
+> > >
+> > > Should this be an enum instead?
+> >
+> > I think "unsigned int" is OK here, as it is exposed as uint to users:
+> > Documentation/ABI/testing/sysfs-kernel-mm-ksm
+> >
+> > /sys/kernel/mm/ksm/run
+> >
+> > run: write 0 to disable ksm, read 0 while ksm is disabled.
+> >
+> > - write 1 to run ksm, read 1 while ksm is running.
+> > - write 2 to disable ksm and unmerge all its pages.
+>
+> The document is out of date then as it does not mention 'offline'.
 
-Since you've gone to that much trouble already, also note
-http://vger.kernel.org/majordomo-info.html and
-https://people.kernel.org/tglx/notes-about-netiquette 
+The offline mode cannot be set externally.
 
-BTW, the attribution in the email you quoted below got corrupted in
-such a way that it appears that I wrote the whole thing, instead of 
-what actually happened, which is that I wrote a half dozen lines of
-response to your email.  Linux uses old skool email conventions ;)
+In run_store()
+   if (flags > KSM_RUN_UNMERGE)
+      return -EINVAL;
 
-> It is not clear as to what parameters Linux would use to consider a
-> window broken.
+>
+> Also, why does the call to kstrtouint() specify base 10?  If it is a
+> bitmap, then permitting 0x [1] is more natural.  I would expect to see
+> base 0 there.
 
-By "broken," I just mean things that are prohibited by the PCI spec,
-like "region doesn't fit in a window of an upstream device" or
-"non-prefetchable region placed in a prefetchable window."
+Users can only write 0, 1, or 2, it is not a bitmap from the user's
+perspective as the user cannot write: '3' . But, I think it is
+somewhat weird that ksm_run is used as a bitmap internally with
+KSM_RUN_OFFLINE = 4.
 
-> But if the kernel preserves some bridge window
-> assignment, then it seems feasible for our BIOS to run this same
-> algorithm (reading PLX persistent scratch registers to determine
-> window sizes).  I will raise this possibility with our own kernel
-> team to discuss with the bios team.  We can also look more closely
-> at the resource_alignment options to see if that might suffice.
-> Thanks for the information!
+Imo, KSM_RUN_OFFLINE should be placed in a separate boolean from "ksm_run".
 
-> From: Bjorn Helgaas <helgaas@kernel.org>
-> Date: Thursday, July 15, 2021 at 10:14 AM
-> To: "Billie Alsup (balsup)" <balsup@cisco.com>
-> Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Bjorn Helgaas <bhelgaas@google.com>, Guohan Lu <lguohan@gmail.com>, "Madhava Reddy Siddareddygari (msiddare)" <msiddare@cisco.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Sergey Miroshnichenko <s.miroshnichenko@yadro.com>
-> Subject: Re: [RFC][PATCH] PCI: Reserve address space for powered-off devices behind PCIe bridges
-> 
-> On Thu, Jul 15, 2021 at 04:52:26PM +0000, Billie Alsup (balsup) wrote:
-> We are aware of how Cisco device specific this code is, and hadn't
-> intended to upstream it.  This code was originally written for an
-> older kernel version (4.8.28-WR9.0.0.26_cgl).  I am not the original
-> author; I just ported it into various SONiC linux kernels.  We use
-> ACPI with SONiC (although not on our non-SONiC products), so I
-> thought I might be able to define such windows within the ACPI tree
-> and have some generic code to read such configuration information
-> from the ACPI tables,. However, initial attempts failed so I went
-> with the existing approach.  I believe we did look at the hpmmiosize
-> parameter, but iirc it applied to each bridge, rather than being a
-> pool of address space to dynamically parcel out as necessary.
-> 
-> Right.  I mentioned "pci=resource_alignment=" because it claims to be
-> able to specify window sizes for specific bridges.  But I haven't
-> exercised that myself.
-> 
-> There are multiple bridges involved in the hardware (there are 8
-> hot-plug fabric cards, each with multiple PCI devices).  Devices on
-> the card are in multiple power zones, so all devices are not
-> immediately visible to the pci scanning code.  The top level bridge
-> reserves close to 5G.  The 2nd level (towards the fabric cards)
-> reserve 4.5G.  The 3rd level has 9 bridges each reserving 512M.  The
-> 4th level reserves 384M (with a 512M alignment restriction iirc).
-> The 5th level reserves 384M (again with an alignment restriction).
-> That defines the bridge hierarchy visible at boot.  Things behind
-> that 5th level are hot-plugged where there are two more bridge
-> levels and 5 devices (1 requiring 2x64M blocks and 4 requiring
-> 1x64M).
-> 
-> I'm not sure if the Cisco kernel team has revisited the hpmmiosize
-> and resource_alignment parameters since this initial implementation.
-> Reading the description of Sergey's patches, he seems to be
-> approaching the same problem from a different direction.   It is
-> unclear if such an approach is practical for our environment.   It
-> would require updates to all of our SONiC drivers to support
-> stopping/remapping/restarting, and it is unclear if that is
-> acceptable.  It is certainly less preferable to pre-reserving the
-> required space.  For our embedded product, we know exactly what
-> devices will be plugged in, and allowing that to be pre-programmed
-> into the PLX eeprom gives us the flexibility we need.  
-> 
-> If you know up front what devices are possible and how much space they
-> need, possibly your firmware could assign the bridge windows you need.
-> Linux generally does not change window assignments unless they are
-> broken.
-> 
-> Bjorn
-> 
-> 
+>
+> [1] or even 0b, although I see that _parse_integer_fixup_radix does not
+> support the 0b notation.
