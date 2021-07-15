@@ -2,133 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E003CA81E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DFE3CA84B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240092AbhGOS6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:58:40 -0400
-Received: from mga12.intel.com ([192.55.52.136]:21600 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240446AbhGOSwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:52:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="190290083"
-X-IronPort-AV: E=Sophos;i="5.84,243,1620716400"; 
-   d="scan'208";a="190290083"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 11:49:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,243,1620716400"; 
-   d="scan'208";a="495603050"
-Received: from snchan-mobl2.amr.corp.intel.com (HELO [10.209.125.33]) ([10.209.125.33])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 11:49:04 -0700
-Subject: Re: [PATCH v6 0/6] Introduce multi-preference mempolicy
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <20210714171540.7cb9e221d683b531928b71f5@linux-foundation.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fb4a6789-d461-e83e-c718-baff88026a88@intel.com>
-Date:   Thu, 15 Jul 2021 11:49:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239660AbhGOTAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:00:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29792 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234996AbhGOSxb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:53:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626375036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ajo5pEoABKRkdq+bnCfkdDE2HRwtDgm2wvZbZ9VLVZ8=;
+        b=i6kE4if4BrkNMBFM54QTgw4hS3JbdPYCjp5ZeaJg5hC80bOiDCfNPSGPkEOCVDcKtindzw
+        ZRJEWZaKS0iT9sSoO+3Zm8FLqEs8wa4Rw2ZtcnnGDYAQHKeV1yI/F9cxsFH+yAjPJ5xMoM
+        wISqmAZvV3HEB3BwK5AqwlLRwRTp6DE=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-y6YhzUx0O86XnZhyQwd2JA-1; Thu, 15 Jul 2021 14:50:35 -0400
+X-MC-Unique: y6YhzUx0O86XnZhyQwd2JA-1
+Received: by mail-qk1-f197.google.com with SMTP id y5-20020a37af050000b02903a9c3f8b89fso4533849qke.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:50:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ajo5pEoABKRkdq+bnCfkdDE2HRwtDgm2wvZbZ9VLVZ8=;
+        b=irz6WmCFeAvBzLzHR9hiivgBrSiwu3mUx3KScp1gsGl7ENFSfrxb76s4UcwlWftuBp
+         ZGIffsGfp27i0VqYCtePxochpAY52F3Tv/0oCtI/+j6O6QXgl+/wnMTKlL+prjvrFd13
+         gcdG9AzEqyoo2kZCbO6TU/06/+zCLPSLejUtwGFD1ByAbcUh0WQatAD7keZfB2bwTfS8
+         O37qze38vD6VTu90ypJj/IrMN0FTwGlzwEFq1gX5ExKpueuFaKV/f4OkICHFXFWggTyH
+         QRJ/e5Uh9aufTFcNq7GaUWU1bxupfKVCBjAOGhFXYhzA5660/y+ndfUAU9i8XciE9M11
+         aASw==
+X-Gm-Message-State: AOAM530Gj29ZstOr4nyvz4ywhTnlGmSuw228roQsnkz6D36LteYWi+pH
+        jB2ypkvuLC9STI26sx6TtyfZBIU2vOr2rdiS4zHhsvkpObF5Li8ZhTIueGiVHWqFyY60K/NSH/X
+        sPt/A1J5CzcPKdtGuLrgBoI3z
+X-Received: by 2002:a37:6516:: with SMTP id z22mr5535728qkb.203.1626375035101;
+        Thu, 15 Jul 2021 11:50:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaJBbwU0SqGt6eHeIVQYvxpX46Wf+EuOQUC/AtpPiJpD1RZFiUPvltMICDKtggPapZlPUikQ==
+X-Received: by 2002:a37:6516:: with SMTP id z22mr5535708qkb.203.1626375034888;
+        Thu, 15 Jul 2021 11:50:34 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id o10sm2281394qtv.62.2021.07.15.11.50.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 11:50:34 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:50:33 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Jerome Glisse <jglisse@redhat.com>
+Subject: Re: [PATCH v4 06/26] shmem/userfaultfd: Handle uffd-wp special pte
+ in page fault handler
+Message-ID: <YPCDeYZxaeV+N5m/@t490s>
+References: <20210714222117.47648-7-peterx@redhat.com>
+ <202107151452.ClaDCF2a-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210714171540.7cb9e221d683b531928b71f5@linux-foundation.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <202107151452.ClaDCF2a-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/21 5:15 PM, Andrew Morton wrote:
-> On Mon, 12 Jul 2021 16:09:28 +0800 Feng Tang <feng.tang@intel.com> wrote:
->> This patch series introduces the concept of the MPOL_PREFERRED_MANY mempolicy.
->> This mempolicy mode can be used with either the set_mempolicy(2) or mbind(2)
->> interfaces. Like the MPOL_PREFERRED interface, it allows an application to set a
->> preference for nodes which will fulfil memory allocation requests. Unlike the
->> MPOL_PREFERRED mode, it takes a set of nodes. Like the MPOL_BIND interface, it
->> works over a set of nodes. Unlike MPOL_BIND, it will not cause a SIGSEGV or
->> invoke the OOM killer if those preferred nodes are not available.
-> Do we have any real-world testing which demonstrates the benefits of
-> all of this?
+On Thu, Jul 15, 2021 at 02:20:21PM +0800, kernel test robot wrote:
+> Hi Peter,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.14-rc1 next-20210714]
+> [cannot apply to hnaz-linux-mm/master asm-generic/master linux/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Peter-Xu/userfaultfd-wp-Support-shmem-and-hugetlbfs/20210715-062718
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 8096acd7442e613fad0354fc8dfdb2003cceea0b
+> config: x86_64-randconfig-r021-20210714 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 0e49c54a8cbd3e779e5526a5888c683c01cc3c50)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/8b3e70f40b8333a803e642ed5c8cce738985881c
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Peter-Xu/userfaultfd-wp-Support-shmem-and-hugetlbfs/20210715-062718
+>         git checkout 8b3e70f40b8333a803e642ed5c8cce738985881c
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> mm/memory.c:4167:6: error: implicit declaration of function 'uffd_disable_fault_around' [-Werror,-Wimplicit-function-declaration]
+>            if (uffd_disable_fault_around(vmf->vma))
+>                ^
+>    1 error generated.
+> 
+> 
+> vim +/uffd_disable_fault_around +4167 mm/memory.c
+> 
+>   4159	
+>   4160	/* Return true if we should do read fault-around, false otherwise */
+>   4161	static inline bool should_fault_around(struct vm_fault *vmf)
+>   4162	{
+>   4163		/* No ->map_pages?  No way to fault around... */
+>   4164		if (!vmf->vma->vm_ops->map_pages)
+>   4165			return false;
+>   4166	
+> > 4167		if (uffd_disable_fault_around(vmf->vma))
+>   4168			return false;
+>   4169	
+>   4170		return fault_around_bytes >> PAGE_SHIFT > 1;
+>   4171	}
+>   4172	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Yes, it's actually been quite useful in practice already.
+Will squash this into the patch:
 
-If we take persistent memory media (PMEM) and hot-add/online it with the
-DAX kmem driver, we get NUMA nodes with lots of capacity (~6TB is
-typical) but weird performance; PMEM has good read speed, but low write
-speed.
+---8<---
+diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+index c4228acd1d80..4382240de7c3 100644
+--- a/include/linux/userfaultfd_k.h
++++ b/include/linux/userfaultfd_k.h
+@@ -283,6 +283,11 @@ static inline bool pte_swp_uffd_wp_special(pte_t pte)
+        return false;
+ }
+ 
++static inline bool uffd_disable_fault_around(struct vm_area_struct *vma)
++{
++       return false;
++}
++
+ #endif /* CONFIG_USERFAULTFD */
+ 
+ #endif /* _LINUX_USERFAULTFD_K_H */
+---8<---
 
-That low write speed is *so* low that it dominates the performance more
-than the distance from the CPUs.  Folks who want PMEM really don't care
-about locality.  The discussions with the testers usually go something
-like this:
+Thanks,
 
-Tester: How do I make my test use PMEM on nodes 2 and 3?
-Kernel Guys: use 'numactl --membind=2-3'
-Tester: I tried that, but I'm getting allocation failures once I fill up
-        PMEM.  Shouldn't it fall back to DRAM?
-Kernel Guys: Fine, use 'numactl --preferred=2-3'
-Tester: That worked, but it started using DRAM after it exhausted node 2
-Kernel Guys:  Dang it.  I forgot --preferred ignores everything after
-              the first node.  Fine, we'll patch the kernel.
+-- 
+Peter Xu
 
-This has happened more than once.  End users want to be able to specify
-a specific physical media, but don't want to have to deal with the sharp
-edges of strict binding.
-
-This has happened both with slow media like PMEM and "faster" media like
-High-Bandwidth Memory.
