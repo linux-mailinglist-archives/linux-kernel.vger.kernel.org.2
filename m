@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752E93CA340
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793E23CA349
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbhGOQz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        id S234881AbhGOQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhGOQzZ (ORCPT
+        with ESMTP id S229695AbhGOQ4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:55:25 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B458FC06175F;
-        Thu, 15 Jul 2021 09:52:31 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id j9so6029927pfc.5;
-        Thu, 15 Jul 2021 09:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5mUlg+XLAlWs2OpGsm7v1Fxu/dScyzw5iATM/EAu2yA=;
-        b=Usx8MphYIkqlfCMOPrXG6SMy8C3xTpgMSgFEPeWJ6KRIWjauV5XzBe6Bs2gVK+jcn2
-         jQ5mq6lx18Q14GQpc7DuCL6zEeyy0u7DNix1bdscl+GSRS38NkGhd+8BxktMTbBcqaPI
-         My0xt93eB9/MRbSwiGorYyuOJa0FXGHikM8MZIV9+za6QrORyrR++BuxY5pSIgU0EuH+
-         wgM44M4LEfn4DAr/72Xyk/C55oZHZSKRVaFdv6NFRoqIWvmp9EfRm8xEHDl4TfMsi21s
-         NzXtoIARIWcRZW79iX53qHbE5AncBusdCdeNMtGJ7z/CwfX7cSlB8AhysekFiwcEMM/E
-         W3Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5mUlg+XLAlWs2OpGsm7v1Fxu/dScyzw5iATM/EAu2yA=;
-        b=SWScJh0x60pI36NH6XSXviI/xtvUU/kWu+P9VGSawB6ynrLJ6W68kU6n7DScYEuF+q
-         P8yal12AWg+juFmW4qZuPZ9mRQX2ZFUNjEha3gwXanOVLEcZ9bP1xQa09xm2uQVg8OG/
-         LtbiLWIkMmPPv+NeBbiYdy32Oopv+XhOxsXBaX8VhBH5dNGUkOq50P6CcQCvp4Eh8Cbe
-         vP1tJU9IOGpfs2q398NiWqaEJ+1IGabqjIGKY4BU8f00NvSWVuFpmLBtZxUD7t1X7/ST
-         3GQp5Tzf2RW+m/16qydtfKeCCm57YKlD3htnTFNhJLA9dSqO8wcxC8kbZYmin0BmBznd
-         qFow==
-X-Gm-Message-State: AOAM532Dj2gD2wH5NHsCvXQZZV7seCiaUKcJvfwPfyHduSZ0vAhNCU9G
-        14p0dfY6yA8JHzAsGGlHCLPbzn9n/hDy/SP2foQ=
-X-Google-Smtp-Source: ABdhPJxbxh9MntYcaLyvO5NKj1X9Jd024SE3i4PphFkTofHotG9CHRDsLmrs+8TpoEP0WCtgUHxu9XuSS2x3Z/nMqZg=
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
- p30-20020a056a000a1eb02902e289d85c87mr5462920pfh.73.1626367951167; Thu, 15
- Jul 2021 09:52:31 -0700 (PDT)
+        Thu, 15 Jul 2021 12:56:13 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1E9C06175F;
+        Thu, 15 Jul 2021 09:53:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=SHLau5Ake9xcwQGIQtYxnHJNJDrvOEPwwI40kAVcRog=; b=U8UTMSyF6jF6T0gR2j3D29bvs
+        eItdcAl8yoYyPm0BOaqxfp0KAqwYLm3tCNGL3UOXkwf2YVG3YLDETqIWI2+TSILpWhKSi+ZfIepQo
+        lLen0o6KgjL85hkzakJ1QZk21sjlzGaASbY+nCfE7vBnPME0Mzb+H5RRmAZ+ZNIKuXcRPERLyqXtq
+        VdtZCLk1naymemWuZBuS7BxTMY7tagmEv9JEUS6/HzNAPZKSxBYrlmfrzjhaGexuK2It2kZa4r1/A
+        CGDiaLgNp8Hmc8kCrs/WvG5KWvG0MHFhzYQbO2P7Gy0lVzLUmA2kl6R0xkg6NYiRgFN4tL0/sUnPU
+        SpUuGxGOA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46188)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m44bq-00015M-DY; Thu, 15 Jul 2021 17:53:14 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m44bl-0002LK-Cz; Thu, 15 Jul 2021 17:53:09 +0100
+Date:   Thu, 15 Jul 2021 17:53:09 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>
+Subject: Re: [PATCH v1 00/16] .map_sg() error cleanup
+Message-ID: <20210715165309.GO22278@shell.armlinux.org.uk>
+References: <20210715164544.6827-1-logang@deltatee.com>
 MIME-Version: 1.0
-References: <20210715120752.29174-1-andriy.shevchenko@linux.intel.com> <202107152356.7gQSC0vc-lkp@intel.com>
-In-Reply-To: <202107152356.7gQSC0vc-lkp@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 15 Jul 2021 19:51:51 +0300
-Message-ID: <CAHp75VcxP6QSoATProqjqJ_kmjXr4FfjijohCyumrw_gmj904w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] clk: fractional-divider: Export approximation algo
- to the CCF users
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, kbuild-all@lists.01.org,
-        Michael Turquette <mturquette@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715164544.6827-1-logang@deltatee.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 7:49 PM kernel test robot <lkp@intel.com> wrote:
-> I love your patch! Yet something to improve:
+On Thu, Jul 15, 2021 at 10:45:28AM -0600, Logan Gunthorpe wrote:
+> Hi,
+> 
+> This series is spun out and expanded from my work to add P2PDMA support
+> to DMA map operations[1].
+> 
+> The P2PDMA work requires distinguishing different error conditions in
+> a map_sg operation. dma_map_sgtable() already allows for returning an
+> error code (where as dma_map_sg() is only allowed to return zero)
+> however, it currently only returns -EINVAL when a .map_sg() call returns
+> zero.
+> 
+> This series cleans up all .map_sg() implementations to return appropriate
+> error codes. After the cleanup, dma_map_sg() will still return zero,
+> however dma_map_sgtable() will pass the error code from the .map_sg()
+> call. Thanks go to Martn Oliveira for doing a lot of the cleanup of the
+> obscure implementations.
+> 
+> The patch set is based off of v5.14-rc1 and a git repo can be found
+> here:
 
-Definitely!
+Have all the callers for dma_map_sg() been updated to check for error
+codes? If not, isn't that a pre-requisit to this patch set?
 
-> All errors (new ones prefixed by >>):
->
-> >> drivers/clk/rockchip/clk.c:27:10: fatal error: clk-fractional-divider.h: No such file or directory
->       27 | #include "clk-fractional-divider.h"
->          |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    compilation terminated.
+From what I see in Linus' current tree, we still have cases today
+where the return value of dma_map_sg() is compared with zero to
+detect failure, so I think that needs fixing before we start changing
+the dma_map_sg() implementation to return negative numbers.
 
-Indeed. No idea how to compile-test this on x86.
-Let me see what I can do to avoid other issues.
+I also notice that there are various places that don't check the
+return value - and returning a negative number instead of zero may
+well cause random other bits to be set in fields.
 
+So, I think there's a fair amount of work to do in all the drivers
+before this change can be considered.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
