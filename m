@@ -2,30 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6F03C965C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A3C3C965D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhGODTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:19:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:46008 "EHLO foss.arm.com"
+        id S232320AbhGODTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:19:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:46020 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233989AbhGODTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:19:09 -0400
+        id S234069AbhGODTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:19:12 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 718951042;
-        Wed, 14 Jul 2021 20:16:16 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F34F1042;
+        Wed, 14 Jul 2021 20:16:19 -0700 (PDT)
 Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 17AC33F7D8;
-        Wed, 14 Jul 2021 20:16:13 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F147E3F7D8;
+        Wed, 14 Jul 2021 20:16:16 -0700 (PDT)
 From:   Jia He <justin.he@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        Jia He <justin.he@arm.com>, Miklos Szeredi <miklos@szeredi.hu>,
-        linux-unionfs@vger.kernel.org
-Subject: [PATCH RFC 06/13] ovl: remove the number postfix of '%pD' in format string
-Date:   Thu, 15 Jul 2021 11:15:26 +0800
-Message-Id: <20210715031533.9553-7-justin.he@arm.com>
+        Jia He <justin.he@arm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH RFC 07/13] iomap: simplify iomap_swapfile_fail() with '%pD' specifier
+Date:   Thu, 15 Jul 2021 11:15:27 +0800
+Message-Id: <20210715031533.9553-8-justin.he@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210715031533.9553-1-justin.he@arm.com>
 References: <20210715031533.9553-1-justin.he@arm.com>
@@ -33,29 +34,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the behavior of '%pD' is changed to print the full path of file,
-the previous number postfix is pointless.
+After the behavior of '%pD' is change to print the full path of file,
+iomap_swapfile_fail() can be simplified.
 
-Cc: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-unionfs@vger.kernel.org
+Given the space with proper length would be allocated in vprintk_store(),
+the kmalloc() is not required any more.
+
+Besides, the previous number postfix of '%pD' in format string is
+pointless.
+
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Suggested-by: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Jia He <justin.he@arm.com>
 ---
- fs/overlayfs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/iomap/direct-io.c | 2 +-
+ fs/iomap/swapfile.c  | 8 +-------
+ 2 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index 4d53d3b7e5fe..f073c32319cd 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -62,7 +62,7 @@ static struct file *ovl_open_realfile(const struct file *file,
- 	}
- 	revert_creds(old_cred);
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 9398b8c31323..e876a5f9d888 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -426,7 +426,7 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+ 		 * iomap_apply() call in the DIO path, then it will see the
+ 		 * DELALLOC block that the page-mkwrite allocated.
+ 		 */
+-		pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %pD4 Comm: %.20s\n",
++		pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %pD Comm: %.20s\n",
+ 				    dio->iocb->ki_filp, current->comm);
+ 		return -EIO;
+ 	default:
+diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
+index 6250ca6a1f85..17032c14e466 100644
+--- a/fs/iomap/swapfile.c
++++ b/fs/iomap/swapfile.c
+@@ -73,13 +73,7 @@ static int iomap_swapfile_add_extent(struct iomap_swapfile_info *isi)
  
--	pr_debug("open(%p[%pD2/%c], 0%o) -> (%p, 0%o)\n",
-+	pr_debug("open(%p[%pD/%c], 0%o) -> (%p, 0%o)\n",
- 		 file, file, ovl_whatisit(inode, realinode), file->f_flags,
- 		 realfile, IS_ERR(realfile) ? 0 : realfile->f_flags);
+ static int iomap_swapfile_fail(struct iomap_swapfile_info *isi, const char *str)
+ {
+-	char *buf, *p = ERR_PTR(-ENOMEM);
+-
+-	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+-	if (buf)
+-		p = file_path(isi->file, buf, PATH_MAX);
+-	pr_err("swapon: file %s %s\n", IS_ERR(p) ? "<unknown>" : p, str);
+-	kfree(buf);
++	pr_err("swapon: file %pD %s\n", isi->file, str);
+ 	return -EINVAL;
+ }
  
 -- 
 2.17.1
