@@ -2,240 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBD53CA136
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197FC3CA13B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238315AbhGOPPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238230AbhGOPPg (ORCPT
+        id S238320AbhGOPSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:18:15 -0400
+Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:46577
+        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231970AbhGOPSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:15:36 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDC0C06175F;
-        Thu, 15 Jul 2021 08:12:43 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:674e:7061:b49f:bcc0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6FAB31F43A00;
-        Thu, 15 Jul 2021 16:12:39 +0100 (BST)
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
-        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk,
-        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v1 2/2] media: hantro: Add scaling lists feature
-Date:   Thu, 15 Jul 2021 17:12:23 +0200
-Message-Id: <20210715151223.656453-3-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210715151223.656453-1-benjamin.gaignard@collabora.com>
-References: <20210715151223.656453-1-benjamin.gaignard@collabora.com>
+        Thu, 15 Jul 2021 11:18:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1626362120; bh=4CvhvD+YpkoeYCVkPbTAYLogsxR/Zf4NlBwQ9Vt1Ec0=; h=Subject:To:References:Cc:From:Date:In-Reply-To:From:Subject:Reply-To; b=mcN2cMwflq3Tai3TNSQOUbAHvOL93vwm/ipZ9FMhXs/y80/Ekg3aNKoI8YEw6gB17+2Sp46sBNm0BsN+kNo3QoS8cEDDv919rFUTQYP+75sgJ92+BpRjq97aWbpoHYpyQchwAfeWxkmKXnTKc4XzvJ7cMhPNwgt53MCKLPB3codLWcBaRRelhPsXmiRE7dHNoKDKcWcEcsAsJyfRjqkbtRRZ0A0Iv6AZ8hgSmd3EPokILDJnZUFcbTS+6sY6UmaLmVS9A/+URNScyvVt9olAONu8wLaqz2lGYYIN7eeZuX7Dlc0nCQWe9tzqAxiAlqLxwo7NVqc0vOBREuYTg2cHhQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1626362120; bh=XnMnr1JvSZAO4RBFToBbfW4G1oBjf69MwIUMKqJw11o=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=C0XT9cpdrOhfpcxzxZ4DQYySmO5G4Jci6yviEn0ACGPaBYF5lvk/aeNv4mEwETZKvmoKtaCrS/OKJPLrAYrWm/Sv5MpkM7enlMl7WWQ6NmWUQuXQ0fs2X/a0QNE1iWL1YwdtTo1/rPhJ8qbvHuyo9AFARn1aXw+fW8MRTGg0u28BJWOl2PSAs5dPgNfhl1IFssjIovYd2cPIHLIGEwWbGrYp4AavpJdK7f9l29SKh6Ucx9DZNbQXHvM6+W4K9z/6VL5W78hDt7mF894Au4vfH0zeoIn7tSUnXNBv6xD/i/nQxiqBtkhpY8zHD7co6r8FHxBSHe07GM4SXzqslKtypw==
+X-YMail-OSG: KI7wRBgVM1kt3.4PyMz7fMu4vy9lRtBlfI9uTxoeWZXJTUq1hGVwU_eExiBFcxC
+ VysJzvbwGCVncFzw3J1ENZJJJ4l9EegUjz9H2Zud1VR9x_COVmUA1HZCHDtTEa5fZm4sH.n7zzpr
+ nAb4n0S0IUuM.oKyjJdPd_qnXUd4Hw.AJF5oN3NSGnWihIpDo0ljz558EFbjmRsmivZXThjobJNu
+ iv80at3tD3KsmkCRe0AkrkVXEKc9oqfmUF6BXQDsxoD35xBqigmj5VofFCguF8lqmGI3qkx3PUO9
+ uS5FUSS1xj9HGW1IM._vQNu8t31rJOy2rIfvfpJG9x5_OuNS2iKoWq09M.9EcNQUKr_4gAeE5NhG
+ dFvnPf4NApDG_GmVbsRlb.duUmY_KnEn7WtaGkNS57CJ.Jj7omw2kog_.k69GV_CywZhn8nDLOc.
+ DWpQPFq2CYB.6NiQfwa5RpI.46usU7b7Fd0eGiCiaWju7DqVSpfhLsAJPVxhRFYBcNvH25ipIPw2
+ YXqigcvjtbWSKdoQKeiaLm2e521_4y1cBHq8IhaC29xW4deC36.Fw_T09Xp8TnWMLa7pvYyagNh7
+ JseHi3N_2V5YccSvz64a.c_jH6q8Ek5WWNEsCyxfoTuudPyL5saRNokwnNzBPFdcc9gEIg2A86YF
+ ed7F4a1TGoJwHWoufdr_iZJnCPEhkzhncbcUlWJFFFNCrSHuRlvCkIu4W..mp4IiYmHXAkXMT1mz
+ 5L_XdYALw9zYWyKyCFGKAsMsqT4.5zcFlwtCOQiGYPlmkwm1EAuqyvRa4lIN0rfnfhPcRPJTK.1s
+ EjEQrY4W3CJJ9RSTr1bnONODAt9OISmLf1eX441fBqt8gqUfVEXPeqPb2TDwNX75FLtu3Kr7QMw7
+ 8Z1yo4_wxR5YD8EKZocUerhA6g6VlDfNrL_sbP1m4WwYha2IctagfIb1wQ_nPu7A5LQ1jcAQtBbH
+ TZEcKOT97Bb0QwTUM2g7aRqmlwNKR1ZaS50jCTNCbGpIj7pJUXQQHvmn4kCKy6dlq4cPIxj1pD.p
+ vakYBQ5m0urysM61H8LckH4cLdq_U5a6FutNMRGC9k1ApPudRU4yb_NLZrx5Rk_0yI9XIdxn_qz9
+ 4mnF2Vcr5diLY5kwdQnC_zP.8KOg6DZlCAjcg3Xj68eFPi2XddWvBwDFSR.Mqg5y8u7BY1AKS2l9
+ fndrade_ZQXcocLTTeB3UsC7fy7JTi_LNNGNoY8nI5hRvg9_3QMuwS9Np2Zou4jNxkMq59TdiMqp
+ jSiohvD0.5q1unOElgi0tvhEbc49QDQr6zCifTsSwLiv7eengx0wececzNS4yYqWU1VkeJBCrMtS
+ swWuNa1ptz5RZP4w7awvMSUtOFVAeg4G0izNfyMeZKXZ5ohr1ow3wv76vvQYH5zmHjfezKlkms68
+ qpECm2v7l5Tc1QNOssd8U6Rjscxcr6OnyVAnyHRGVsnmw_BL1wruwz884Zs32pqeJM6Dzyj9NsDq
+ rLqJXRt9f1yc0JqpLYOk1apesYOTp0dEjDxRBsdynRsiHi6n1Aw3DQSWDEi_IbAfy9NlvAh4cf6h
+ Kp8XQ7sPT9MEO3NlmIh7d9xSsZHe.CdB_nQIOCU2jnhnqv7XjB7fdv9X02FkiZDjkNAeK0dgXxwG
+ aMiC8pR7GaBxcpnXgDBYRPcK24sGAjYHiZAvXLpivi5vyZ474wCCktS_EBSlGlbaGuATtmhvyKP5
+ uRDup4p78oCF_bYb77CoGGada6NKBUhHeYR1akazUNKgZgaoGMDPg02nuEq4nHxYTNusZUfVXyyv
+ nT64uoSjLrohdVNcQMVuzm2_GjwfgMsufq88wz0nFNX678zyWSA.6HIY8Sg9RUrXKMKg9bQzS7z5
+ tepgpg1dVSReFQZzw_NEO8_YseEpcFlrmNb0W.cwnZWtSx2EHlVoT5PApUxJKFVsrJiDc_FUH3Sd
+ Hj4Y3GO1aBSisOdxV6r17piQc3XWo5k_WL6z_JLkup8u3YCliQnz.9QcdqCO4_sOHZQbi8CtW8bl
+ btYYTEunCAYTWIL4sMUM65J_fC1rbWohfKff94gDhNbBukECm4L83_Kt0ViiuSrAHqxXa7ICc3N4
+ WVQNxGQEbGI2.uwexLIph9d4kaeOTpY.vpAkWV6TPsJHirAQaqsfATPSaVcCZrnK27LFcm4H5piY
+ X0haObgOpJrFS0FTqrVNv860cj20v09.yx204_if9hwgPpqarwi58aMtoMjKlaS5kCwznTmGVatM
+ .Jo6KUoNGpRO_3YH5d90lcQy3SHJHfz6YJyqrDYAmw5EH28.2AZHdqRrSefb4jJaEPu6HM2E39ce
+ hTTA8i0w3r4e1hD4xFgupw0p_ahDslRqFQ77v5kf9mAOByk2lyo8F6K_82jPCRWi8_yD5Sai3qsv
+ K80Xgfuyf9OEW4pmiyHUXrI1hPIIq30T6fBHDdUoM7s9NImsctgCiwDhAHILB5YgTaaQbjsm12fd
+ ASp4Qy2obSMvj.8cEc9OT_FPVOpTJdqJWLOTjpv4Mkh65T8eFdYdoij4aVk9vmngkD4UY1iEKBtp
+ jDtVAO42uhOoMTeFFjIqbuYjBSZpJiZYye4dCE05YJOnjq_d8_gC_kAQ0cFiDsgeTp6YUQcKKbu.
+ xySofxhy.RyWpuK4XgD8nU5CUsWVSPbusW2mp5VO4VGVZRLRoTJXXTv4OFDpkNtRB_NbqPjA3OFk
+ -
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Thu, 15 Jul 2021 15:15:20 +0000
+Received: by kubenode507.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID caafd5e4d794c8466d7f7d628a81ecbc;
+          Thu, 15 Jul 2021 15:15:14 +0000 (UTC)
+Subject: Re: [PATCH] Smack: Fix wrong semantics in smk_access_entry()
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210715091724.45768-1-tianjia.zhang@linux.alibaba.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <ae938c7b-2f7a-27ec-7077-ceeb517ba97f@schaufler-ca.com>
+Date:   Thu, 15 Jul 2021 08:15:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715091724.45768-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.18469 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the bitstream embedded scaling lists allow the driver to use
-them for decode the frames.
-The scaling lists are expected to be in raster scan order (i.e. not up
-right diagonal scan order)
-Allocate the memory needed to store lists.
+On 7/15/2021 2:17 AM, Tianjia Zhang wrote:
+> In the smk_access_entry() function, if no matching rule is found
+> in the rust_list, a negative error code will be used to perform bit
+> operations with the MAY_ enumeration value. This is semantically
+> wrong. This patch fixes this issue.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- drivers/staging/media/hantro/hantro_drv.c     |  8 +--
- .../staging/media/hantro/hantro_g2_hevc_dec.c | 52 +++++++++++++++++++
- drivers/staging/media/hantro/hantro_hevc.c    | 21 ++++++++
- drivers/staging/media/hantro/hantro_hw.h      |  3 ++
- 4 files changed, 81 insertions(+), 3 deletions(-)
+Indeed, the code as written is functioning correctly by
+sheer luck. I will take this patch. Thank you.
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 8ad074a464fe..5610b7821a54 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -267,9 +267,6 @@ static int hantro_try_ctrl(struct v4l2_ctrl *ctrl)
- 		    sps->bit_depth_luma_minus8 != 2)
- 			/* Only 8-bit or 10-bit is supported */
- 			return -EINVAL;
--		if (sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED)
--			/* No scaling support */
--			return -EINVAL;
- 	}
- 	return 0;
- }
-@@ -451,6 +448,11 @@ static const struct hantro_ctrl controls[] = {
- 		.cfg = {
- 			.id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
- 		},
-+	}, {
-+		.codec = HANTRO_HEVC_DECODER,
-+		.cfg = {
-+			.id = V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX,
-+		},
- 	}, {
- 		.codec = HANTRO_HEVC_DECODER,
- 		.cfg = {
-diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-index 90de74aa6b13..f95135ad553c 100644
---- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-@@ -608,6 +608,56 @@ static void set_buffers(struct hantro_ctx *ctx)
- 	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
- }
- 
-+static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
-+	const struct v4l2_ctrl_hevc_scaling_matrix *sc = ctrls->scaling;
-+	const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
-+	u8 *p = ((u8 *)ctx->hevc_dec.scaling_lists.cpu);
-+	unsigned int scaling_list_enabled;
-+	unsigned int i, j, k;
-+
-+	scaling_list_enabled = !!(sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED);
-+	hantro_reg_write(vpu, &g2_scaling_list_e, scaling_list_enabled);
-+
-+	if (!scaling_list_enabled)
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_16x16); i++)
-+		*p++ = sc->scaling_list_dc_coef_16x16[i];
-+
-+	for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_32x32); i++)
-+		*p++ = sc->scaling_list_dc_coef_32x32[i];
-+
-+	/* 128-bit boundary */
-+	p += 8;
-+
-+	/* write scaling lists column by column */
-+
-+	for (i = 0; i < 6; i++)
-+		for (j = 0; j < 4; j++)
-+			for (k = 0; k < 4; k++)
-+				*p++ = sc->scaling_list_4x4[i][4 * k + j];
-+
-+	for (i = 0; i < 6; i++)
-+		for (j = 0; j < 8; j++)
-+			for (k = 0; k < 8; k++)
-+				*p++ = sc->scaling_list_8x8[i][8 * k + j];
-+
-+	for (i = 0; i < 6; i++)
-+		for (j = 0; j < 8; j++)
-+			for (k = 0; k < 8; k++)
-+				*p++ = sc->scaling_list_16x16[i][8 * k + j];
-+
-+	for (i = 0; i < 2; i++)
-+		for (j = 0; j < 8; j++)
-+			for (k = 0; k < 8; k++)
-+				*p++ = sc->scaling_list_32x32[i][8 * k + j];
-+
-+	hantro_write_addr(vpu, HEVC_SCALING_LIST, ctx->hevc_dec.scaling_lists.dma);
-+}
-+
- static void hantro_g2_check_idle(struct hantro_dev *vpu)
- {
- 	int i;
-@@ -668,6 +718,8 @@ int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
- 	set_buffers(ctx);
- 	prepare_tile_info_buffer(ctx);
- 
-+	prepare_scaling_list_buffer(ctx);
-+
- 	hantro_end_prepare_run(ctx);
- 
- 	hantro_reg_write(vpu, &g2_mode, HEVC_DEC_MODE);
-diff --git a/drivers/staging/media/hantro/hantro_hevc.c b/drivers/staging/media/hantro/hantro_hevc.c
-index 4e816ea73018..95f765d9ff4e 100644
---- a/drivers/staging/media/hantro/hantro_hevc.c
-+++ b/drivers/staging/media/hantro/hantro_hevc.c
-@@ -20,6 +20,8 @@
- /* tile border coefficients of filter */
- #define VERT_SAO_RAM_SIZE 48 /* bytes per pixel */
- 
-+#define SCALING_LIST_SIZE (16 * 64)
-+
- #define MAX_TILE_COLS 20
- #define MAX_TILE_ROWS 22
- 
-@@ -296,6 +298,11 @@ int hantro_hevc_dec_prepare_run(struct hantro_ctx *ctx)
- 	if (WARN_ON(!ctrls->decode_params))
- 		return -EINVAL;
- 
-+	ctrls->scaling =
-+		hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX);
-+	if (WARN_ON(!ctrls->scaling))
-+		return -EINVAL;
-+
- 	ctrls->sps =
- 		hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SPS);
- 	if (WARN_ON(!ctrls->sps))
-@@ -324,6 +331,12 @@ void hantro_hevc_dec_exit(struct hantro_ctx *ctx)
- 				  hevc_dec->tile_sizes.dma);
- 	hevc_dec->tile_sizes.cpu = NULL;
- 
-+	if (hevc_dec->scaling_lists.cpu)
-+		dma_free_coherent(vpu->dev, hevc_dec->scaling_lists.size,
-+				  hevc_dec->scaling_lists.cpu,
-+				  hevc_dec->scaling_lists.dma);
-+	hevc_dec->scaling_lists.cpu = NULL;
-+
- 	if (hevc_dec->tile_filter.cpu)
- 		dma_free_coherent(vpu->dev, hevc_dec->tile_filter.size,
- 				  hevc_dec->tile_filter.cpu,
-@@ -367,6 +380,14 @@ int hantro_hevc_dec_init(struct hantro_ctx *ctx)
- 
- 	hevc_dec->tile_sizes.size = size;
- 
-+	hevc_dec->scaling_lists.cpu = dma_alloc_coherent(vpu->dev, SCALING_LIST_SIZE,
-+							 &hevc_dec->scaling_lists.dma,
-+							 GFP_KERNEL);
-+	if (!hevc_dec->scaling_lists.cpu)
-+		return -ENOMEM;
-+
-+	hevc_dec->scaling_lists.size = SCALING_LIST_SIZE;
-+
- 	hantro_hevc_ref_init(ctx);
- 
- 	return 0;
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index d8126f8178f5..1becc22af0f9 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -108,6 +108,7 @@ struct hantro_h264_dec_hw_ctx {
-  */
- struct hantro_hevc_dec_ctrls {
- 	const struct v4l2_ctrl_hevc_decode_params *decode_params;
-+	const struct v4l2_ctrl_hevc_scaling_matrix *scaling;
- 	const struct v4l2_ctrl_hevc_sps *sps;
- 	const struct v4l2_ctrl_hevc_pps *pps;
- 	u32 hevc_hdr_skip_length;
-@@ -120,6 +121,7 @@ struct hantro_hevc_dec_ctrls {
-  * @tile_sao:		Tile SAO buffer
-  * @tile_bsd:		Tile BSD control buffer
-  * @ref_bufs:		Internal reference buffers
-+ * @scaling_lists:	Scaling lists buffer
-  * @ref_bufs_poc:	Internal reference buffers picture order count
-  * @ref_bufs_used:	Bitfield of used reference buffers
-  * @ctrls:		V4L2 controls attached to a run
-@@ -131,6 +133,7 @@ struct hantro_hevc_dec_hw_ctx {
- 	struct hantro_aux_buf tile_sao;
- 	struct hantro_aux_buf tile_bsd;
- 	struct hantro_aux_buf ref_bufs[NUM_REF_PICTURES];
-+	struct hantro_aux_buf scaling_lists;
- 	int ref_bufs_poc[NUM_REF_PICTURES];
- 	u32 ref_bufs_used;
- 	struct hantro_hevc_dec_ctrls ctrls;
--- 
-2.25.1
+>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  security/smack/smack_access.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/security/smack/smack_access.c b/security/smack/smack_acces=
+s.c
+> index 1f391f6a3d47..d2186e2757be 100644
+> --- a/security/smack/smack_access.c
+> +++ b/security/smack/smack_access.c
+> @@ -81,23 +81,22 @@ int log_policy =3D SMACK_AUDIT_DENIED;
+>  int smk_access_entry(char *subject_label, char *object_label,
+>  			struct list_head *rule_list)
+>  {
+> -	int may =3D -ENOENT;
+>  	struct smack_rule *srp;
+> =20
+>  	list_for_each_entry_rcu(srp, rule_list, list) {
+>  		if (srp->smk_object->smk_known =3D=3D object_label &&
+>  		    srp->smk_subject->smk_known =3D=3D subject_label) {
+> -			may =3D srp->smk_access;
+> -			break;
+> +			int may =3D srp->smk_access;
+> +			/*
+> +			 * MAY_WRITE implies MAY_LOCK.
+> +			 */
+> +			if ((may & MAY_WRITE) =3D=3D MAY_WRITE)
+> +				may |=3D MAY_LOCK;
+> +			return may;
+>  		}
+>  	}
+> =20
+> -	/*
+> -	 * MAY_WRITE implies MAY_LOCK.
+> -	 */
+> -	if ((may & MAY_WRITE) =3D=3D MAY_WRITE)
+> -		may |=3D MAY_LOCK;
+> -	return may;
+> +	return -ENOENT;
+>  }
+> =20
+>  /**
 
