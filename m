@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46743CA775
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680FB3CA77B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240498AbhGOSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53086 "EHLO mail.kernel.org"
+        id S241200AbhGOSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:54:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240432AbhGOSuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239747AbhGOSuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 14:50:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AAE6613D6;
-        Thu, 15 Jul 2021 18:47:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9516E613ED;
+        Thu, 15 Jul 2021 18:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374842;
-        bh=RsiBvBu2PyDliwGlIUaelQ+D+RBFtAp5elbXc7441XY=;
+        s=korg; t=1626374845;
+        bh=XgRCXrZzfo4r2WSm0JFleqkKshN6fWmDVtnciUsyALw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/+Uk6sr4HwbUqdfCS9396YzmH72AYoApCTdUq4xQVIoWIpL5JS1Ht/HKmjtEEh2u
-         BcOoO9UKF6mODAMhaVPayEOYZom1zTVeOLN6r0rBv0I5c6O1CKJD8a2N+KKs7Q34+B
-         QuBMS26vw2GDrh29R4ftahe3PxV+yO3afgCyXw9E=
+        b=pqbkiN0PdsypDc21mPcj9r6BYKTa3cHiQ4wyhfTsYS8jtoyznTL7k64fZdN00rJcg
+         tWIV3NaLu/c6uEurcqzv0YXwa7SReBo6cbNsVhPTxkNFstfkLLtACLzLpZI9P7r3eY
+         QvlDfs12PeBBUcfHRvGdMRgZkfp4kG85c7a07t1k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiansong Chen <Jiansong.Chen@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, mingkun bian <bianmingkun@gmail.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 048/215] drm/amdgpu: remove unsafe optimization to drop preamble ib
-Date:   Thu, 15 Jul 2021 20:37:00 +0200
-Message-Id: <20210715182607.889760131@linuxfoundation.org>
+Subject: [PATCH 5.10 049/215] net: tcp better handling of reordering then loss cases
+Date:   Thu, 15 Jul 2021 20:37:01 +0200
+Message-Id: <20210715182608.079063114@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -41,59 +43,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiansong Chen <Jiansong.Chen@amd.com>
+From: Yuchung Cheng <ycheng@google.com>
 
-[ Upstream commit 7d9c70d23550eb86a1bec1954ccaa8d6ec3a3328 ]
+[ Upstream commit a29cb6914681a55667436a9eb7a42e28da8cf387 ]
 
-Take the situation with gfxoff, the optimization may cause
-corrupt CE ram contents. In addition emit_cntxcntl callback
-has similar optimization which firmware can handle properly
-even for power feature.
+This patch aims to improve the situation when reordering and loss are
+ocurring in the same flight of packets.
 
-Signed-off-by: Jiansong Chen <Jiansong.Chen@amd.com>
-Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Previously the reordering would first induce a spurious recovery, then
+the subsequent ACK may undo the cwnd (based on the timestamps e.g.).
+However the current loss recovery does not proceed to invoke
+RACK to install a reordering timer. If some packets are also lost, this
+may lead to a long RTO-based recovery. An example is
+https://groups.google.com/g/bbr-dev/c/OFHADvJbTEI
+
+The solution is to after reverting the recovery, always invoke RACK
+to either mount the RACK timer to fast retransmit after the reordering
+window, or restarts the recovery if new loss is identified. Hence
+it is possible the sender may go from Recovery to Disorder/Open to
+Recovery again in one ACK.
+
+Reported-by: mingkun bian <bianmingkun@gmail.com>
+Signed-off-by: Yuchung Cheng <ycheng@google.com>
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ net/ipv4/tcp_input.c | 45 +++++++++++++++++++++++++-------------------
+ 1 file changed, 26 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
-index 28f20f0b722f..163188ce02bd 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
-@@ -128,7 +128,7 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
- 	struct amdgpu_device *adev = ring->adev;
- 	struct amdgpu_ib *ib = &ibs[0];
- 	struct dma_fence *tmp = NULL;
--	bool skip_preamble, need_ctx_switch;
-+	bool need_ctx_switch;
- 	unsigned patch_offset = ~0;
- 	struct amdgpu_vm *vm;
- 	uint64_t fence_ctx;
-@@ -221,7 +221,6 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
- 	if (need_ctx_switch)
- 		status |= AMDGPU_HAVE_CTX_SWITCH;
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index fac5c1469cee..4d4b641c204d 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -2802,8 +2802,17 @@ static void tcp_process_loss(struct sock *sk, int flag, int num_dupack,
+ 	*rexmit = REXMIT_LOST;
+ }
  
--	skip_preamble = ring->current_ctx == fence_ctx;
- 	if (job && ring->funcs->emit_cntxcntl) {
- 		status |= job->preamble_status;
- 		status |= job->preemption_status;
-@@ -239,14 +238,6 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
- 	for (i = 0; i < num_ibs; ++i) {
- 		ib = &ibs[i];
++static bool tcp_force_fast_retransmit(struct sock *sk)
++{
++	struct tcp_sock *tp = tcp_sk(sk);
++
++	return after(tcp_highest_sack_seq(tp),
++		     tp->snd_una + tp->reordering * tp->mss_cache);
++}
++
+ /* Undo during fast recovery after partial ACK. */
+-static bool tcp_try_undo_partial(struct sock *sk, u32 prior_snd_una)
++static bool tcp_try_undo_partial(struct sock *sk, u32 prior_snd_una,
++				 bool *do_lost)
+ {
+ 	struct tcp_sock *tp = tcp_sk(sk);
  
--		/* drop preamble IBs if we don't have a context switch */
--		if ((ib->flags & AMDGPU_IB_FLAG_PREAMBLE) &&
--		    skip_preamble &&
--		    !(status & AMDGPU_PREAMBLE_IB_PRESENT_FIRST) &&
--		    !amdgpu_mcbp &&
--		    !amdgpu_sriov_vf(adev)) /* for SRIOV preemption, Preamble CE ib must be inserted anyway */
--			continue;
+@@ -2828,7 +2837,9 @@ static bool tcp_try_undo_partial(struct sock *sk, u32 prior_snd_una)
+ 		tcp_undo_cwnd_reduction(sk, true);
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPPARTIALUNDO);
+ 		tcp_try_keep_open(sk);
+-		return true;
++	} else {
++		/* Partial ACK arrived. Force fast retransmit. */
++		*do_lost = tcp_force_fast_retransmit(sk);
+ 	}
+ 	return false;
+ }
+@@ -2852,14 +2863,6 @@ static void tcp_identify_packet_loss(struct sock *sk, int *ack_flag)
+ 	}
+ }
+ 
+-static bool tcp_force_fast_retransmit(struct sock *sk)
+-{
+-	struct tcp_sock *tp = tcp_sk(sk);
 -
- 		if (job && ring->funcs->emit_frame_cntl) {
- 			if (secure != !!(ib->flags & AMDGPU_IB_FLAGS_SECURE)) {
- 				amdgpu_ring_emit_frame_cntl(ring, false, secure);
+-	return after(tcp_highest_sack_seq(tp),
+-		     tp->snd_una + tp->reordering * tp->mss_cache);
+-}
+-
+ /* Process an event, which can update packets-in-flight not trivially.
+  * Main goal of this function is to calculate new estimate for left_out,
+  * taking into account both packets sitting in receiver's buffer and
+@@ -2929,17 +2932,21 @@ static void tcp_fastretrans_alert(struct sock *sk, const u32 prior_snd_una,
+ 		if (!(flag & FLAG_SND_UNA_ADVANCED)) {
+ 			if (tcp_is_reno(tp))
+ 				tcp_add_reno_sack(sk, num_dupack, ece_ack);
+-		} else {
+-			if (tcp_try_undo_partial(sk, prior_snd_una))
+-				return;
+-			/* Partial ACK arrived. Force fast retransmit. */
+-			do_lost = tcp_force_fast_retransmit(sk);
+-		}
+-		if (tcp_try_undo_dsack(sk)) {
+-			tcp_try_keep_open(sk);
++		} else if (tcp_try_undo_partial(sk, prior_snd_una, &do_lost))
+ 			return;
+-		}
++
++		if (tcp_try_undo_dsack(sk))
++			tcp_try_keep_open(sk);
++
+ 		tcp_identify_packet_loss(sk, ack_flag);
++		if (icsk->icsk_ca_state != TCP_CA_Recovery) {
++			if (!tcp_time_to_recover(sk, flag))
++				return;
++			/* Undo reverts the recovery state. If loss is evident,
++			 * starts a new recovery (e.g. reordering then loss);
++			 */
++			tcp_enter_recovery(sk, ece_ack);
++		}
+ 		break;
+ 	case TCP_CA_Loss:
+ 		tcp_process_loss(sk, flag, num_dupack, rexmit);
 -- 
 2.30.2
 
